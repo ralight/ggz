@@ -1,51 +1,49 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class='pane' width='100%'>
+<table class='pane'>
 <tr>
 <td>
-<font size='3'>
 <font color='#ff0000'>Achtung:</font>
 Dieses Programm wird nicht weitergepflegt.
-</font>
+Besuche den <a href="http://dev.ggzgamingzone.org/graveyard/">Friedhof</a>,
+um mehr Informationen darüber zu bekommen.
 </td>
 </tr>
 </table>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>ModSniffer</b><br>
+<b>ModSniffer</b><br/>
 Erzeugung von KDE-Menüeinträgen für alle Spiele.
-<br>
+<br/><br/>
 
-<table class="inner">
+<table class="twoside">
 <tr>
-<td valign="top">
+<td>
 
-<i>Hauptmerkmale</i><br>
+<i>Hauptmerkmale</i><br/>
 <ul>
 <li>Erstellt KDE-Systemmenü-Einträge unter Spiele/GGZ
 <li>Erstellt Startinformationen für GGZap
 </ul>
-<br>
+<br/>
 
-<i>Detaillierte Informationen</i><br>
+<i>Detaillierte Informationen</i><br/>
 Dieses kleine Tool sollte einmalig nach der Installation aufgerufen werden,
 und anschließend jeweils nach dem Hinzufügen oder aktualiseren von Spielen.
 Die Unterstützung von externen Spielen durch ModSniffer ist auch vorgesehen.
 
-</td><td valign="top">
+</td><td>
 
-<i>Screenshot:</i><br>
+<i>Screenshot:</i><br/>
 <img src="/utils/pics/modsniff.png">
 
 </td>
 </tr>
 </table>
 
-</font>
 </td>
 </tr>
 </table>

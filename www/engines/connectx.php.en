@@ -1,64 +1,54 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>ConnectX</b><br>
+<b>ConnectX</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>ConnectX features</i><br>
+<i>ConnectX features</i><br/>
 <ul>
 <li>2 game clients available: ConnectX (Windows), GGZBoard (SDL)
 <li>AI opponent available
 </ul>
-<br>
+<br/>
 
-<i>ConnectX rules</i><br>
+<i>ConnectX rules</i><br/>
 ConnectX resembles the well-known 4-in-a-row game.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/connectx/"><i>Server: ConnectX</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_windows.png">
-<i>Windows client: ConnectX</i><br>
-<a href="/games/connectx/"><i>No screenshot available</i></a>
+<i>Windows client: ConnectX</i><br/>
+<a href="/gameclients/connectx/"><i>No screenshot available</i></a>
 <!--
-<a href="/games/connectx/"><img src="/games/pics/connectx.png"></a>
+<a href="/gameclients/connectx/"><img src="/gameclients/thumbs/connectx.png"></a>
 -->
-<br><br>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: GGZBoard</i><br>
-<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
-<br><br>
+<i>SDL client: GGZBoard</i><br/>
+<a href="/gameclients/ggzboard/"><img src="/gameclients/thumbs/ggzboard.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>GNOME client: Gnect</i><br>
-<a href="/games/gnect/"><img src="/games/pics/gnect.png"></a>
-<br><br>
+<i>GNOME client: Gnect</i><br/>
+<a href="/gameclients/gnect/"><img src="/gameclients/thumbs/gnect.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/connectx/"><i>Server: ConnectX</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

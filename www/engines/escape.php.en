@@ -1,19 +1,14 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Escape</b><br>
+<b>Escape</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Escape features</i><br>
+<i>Escape features</i><br/>
 <ul>
 <li>2 game clients available: Escape (Windows), Escape/SDL (SDL)
 <li>supports statistics
@@ -21,9 +16,9 @@ Board game for 2 players.
 <li>AI opponent available
 <li>single-player mode (SDL client)
 </ul>
-<br>
+<br/>
 
-<i>Escape rules</i><br>
+<i>Escape rules</i><br/>
 The game board is a grid of dots, not disimilar to the Connect-the-Dots board.
 The board is entirely enclosed with "walls" with the exception of the two ends where a section
 (the "goal") is designated as the place where each player wants to escape to.
@@ -42,36 +37,29 @@ or else result in a draw.
 
 Moving along a wall is not allowed.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/escape/"><i>Server: Escape</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_windows.png">
-<i>Windows client: Escape</i><br>
-<a href="/games/escape/"><img src="/games/pics/escape.png"></a>
-<br>
-
-<br>
+<i>Windows client: Escape</i><br/>
+<a href="/gameclients/escape/"><img src="/gameclients/thumbs/escape.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: Escape/SDL</i><br>
-<a href="/games/escape-sdl/"><img src="/games/pics/escape-sdl.png"></a>
-<br>
+<i>SDL client: Escape/SDL</i><br/>
+<a href="/gameclients/escape-sdl/"><img src="/gameclients/thumbs/escape-sdl.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/escape/"><i>Server: Escape</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

@@ -1,19 +1,18 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Metacle</b><br>
+<b>Metacle</b><br/>
 Aggregation of metaserver data.
-<br>
+<br/><br/>
 
-<table class="inner">
+<table class="twoside">
 <tr>
-<td valign="top">
+<td>
 
-<i>Metacle's features</i><br>
+<i>Metacle's features</i><br/>
 <ul>
 <li>Supports several metaservers, like the
 <a href="/backend/metaserver/">GGZ Metaserver</a>, Freeciv, WorldForge, T.E.G.,
@@ -21,23 +20,22 @@ Monopd, LiquidWar, ...
 <li>Exports the data as RSS and to a web frontend
 <li>Support for publish-subscribe for immediate update notification
 </ul>
-<br>
+<br/>
 
-<i>Detailed information</i><br>
+<i>Detailed information</i><br/>
 The Metacle service is not released together with GGZ, but it runs online at
 <a href="http://metacle.ggzgamingzone.org/">metacle.ggzgamingzone.org</a>.
 It will enable tight online gaming integration into the user's desktops.
 
-</td><td valign="top">
+</td><td>
 
-<i>A screenshot of the web frontend:</i><br>
+<i>A screenshot of the web frontend:</i><br/>
 <img src="/backend/pics/metacle.png">
 
 </td>
 </tr>
 </table>
 
-</font>
 </td>
 </tr>
 </table>

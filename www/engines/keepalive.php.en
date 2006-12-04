@@ -1,54 +1,44 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Keepalive</b><br>
+<b>Keepalive</b><br/>
 Role play game for 2-1000 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Keepalive features</i><br>
+<i>Keepalive features</i><br/>
 <ul>
 <li>KDE game client
 <li>Real-time movements
 <li>Eternal game, can always be rejoined
 <li>Intro menu with avatar and world selection
 </ul>
-<br>
+<br/>
 
-<i>Keepalive rules</i><br>
+<i>Keepalive rules</i><br/>
 So far, Keepalive is an experimental game.
 The player can only move around and die at one day.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/keepalive/"><i>Server: Keepalive</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_kde.png">
-<i>KDE client: Keepalive</i><br>
-<a href="/games/keepalive/"><img src="/games/pics/keepalive.png"></a>
-<br>
+<i>KDE client: Keepalive</i><br/>
+<a href="/gameclients/keepalive/"><img src="/gameclients/thumbs/keepalive.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/keepalive/"><i>Server: Keepalive</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

@@ -5,11 +5,7 @@
 <td>
 Software:
 |
-<a href="/engines/">Engines</a>
-|
-<a href="/games/">Game clients</a>
-|
-<a href="/gameservers/">Game servers</a>
+<a href="/games/">Games</a>
 |
 <a href="/clients/">Core clients</a>
 |
@@ -34,7 +30,7 @@ utilities are available.
 
 There are individual category pages for
 <a href="/engines/">game engines</a>,
-<a href="/games/">game clients</a> and
+<a href="/gameclients/">game clients</a> and
 <a href="/gameservers/">game servers</a>,
 as well as for
 <a href="/clients/">core clients</a>,
@@ -88,7 +84,7 @@ ported and cross-desktop software.
 
 <tr>
 <td valign="top">
-<img src="/games/pics/xadrez-chines.png"/>
+<img src="/gameclients/pics/xadrez-chines.png"/>
 </td>
 <td valign="top">
 <i>Gaming experience</i>
@@ -104,7 +100,7 @@ make GGZ the outstanding online gaming platform.
 
 <tr>
 <td valign="top">
-<img src="/games/pics/freeciv.png"/>
+<img src="/gameclients/pics/freeciv.png"/>
 </td>
 <td valign="top">
 <i>Free games community</i>

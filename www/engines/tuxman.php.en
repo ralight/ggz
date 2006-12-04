@@ -1,61 +1,64 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class='pane'>
 <tr>
 <td>
-<font size="3">
+<font color='#ff0000'>Warning:</font>
+This engine is not supported anymore.
+Visit the <a href="http://dev.ggzgamingzone.org/graveyard/">graveyard</a>
+for more information.
+</td>
+</tr>
+</table>
 
-<b>Tuxman</b><br>
+<table class="content">
+<tr>
+<td>
+
+<b>Tuxman</b><br/>
 Arcade game for one player.
-<br>
+<br/><br/>
+
 <table class="listnorm">
 <tr><td>
 The game client is not a GGZ project but it does provide GGZ support.
 The project homepage is:
-<br>
+<br/>
 <a href="http://dak0r.de/~badwolf/ftpnet/badwolf/tuxman/index.php">dak0r.de/~badwolf/ftpnet/badwolf/tuxman/index.php</a>.
 </td></tr>
 </table>
+<br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Tuxman features</i><br>
+<i>Tuxman features</i><br/>
 <ul>
 <li>SDL game client
 <li>real-time movements
 <li>AI opponents available
 </ul>
-<br>
+<br/>
 
-<i>Tuxman rules</i><br>
+<i>Tuxman rules</i><br/>
 Tuxman is basically an implementation of Pacman.
 You have to munch through each level (room) without being eaten by monsters.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/tuxman/"><i>Server: Tuxman</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: Tuxman</i><br>
-<a href="/games/tuxman/"><img src="/games/pics/tuxman.png"></a>
-<br>
+<i>SDL client: Tuxman</i><br/>
+<a href="/gameclients/tuxman/"><img src="/gameclients/thumbs/tuxman.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/tuxman/"><i>Server: Tuxman</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

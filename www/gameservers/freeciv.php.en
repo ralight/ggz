@@ -1,27 +1,24 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Freeciv Server</b><br>
+<b>Freeciv Server</b><br/>
 Strategy game for 2-30 players.
-<br>
+<br/><br/>
+
 <table class="listnorm">
 <tr><td>
 This game server is not a GGZ project but it does provide GGZ support.
 The project homepage is:
-<br>
+<br/>
 <a href="http://www.freeciv.org/">www.freeciv.org</a>.
 </td></tr>
 </table>
+<br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Supports the <a href="/engines/freeciv/">Freeciv</a> engine
 <li>Supports AI players
@@ -33,9 +30,9 @@ The Freeciv server can run in GGZ mode to allow for playing games online.
 It provides moderate GGZ support, including statistics and spectators.
 Support is experimental right now, a patch is needed from the 'playground' module.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game server support</i><br>
+<i>GGZ game server support</i><br/>
 <table class="listnorm">
 <tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
@@ -43,29 +40,24 @@ Support is experimental right now, a patch is needed from the 'playground' modul
 <tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 </table>
 
-<br>
+<br/>
 
-<i>Homepage of the Freeciv server</i><br>
+<i>Homepage of the Freeciv server</i><br/>
 <a href="http://www.freeciv.org/" target="blank">http://www.freeciv.org/</a>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/engines/freeciv/"><i>Engine: Freeciv</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: Freeciv</i><br>
-<a href="/games/freeciv/"><img src="/games/pics/freeciv.png"></a>
-<br>
+<i>Gtk+ client: Freeciv</i><br/>
+<a href="/gameclients/freeciv/"><img src="/gameclients/thumbs/freeciv.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/freeciv/"><i>Engine: Freeciv</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

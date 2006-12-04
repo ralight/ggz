@@ -1,33 +1,21 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Kommando-Client</b><br>
+<b>Kommando-Client</b><br/>
 Werkzeug für administrative Aufgaben (ggz-cmd).
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Merkmale</i><br>
+<i>Merkmale</i><br/>
 <ul>
 <li>Kann die Verfügbarkeit von GGZ-Servern prüfen (entweder für sich oder über
 <a href="http://www.nagios.org/">Nagios</a>)
 <li>Kann Meldungen in alle Räume eines GGZ-Servers absetzen
 </ul>
-<br>
+<br/>
 
-</td><td valign="top">
-
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

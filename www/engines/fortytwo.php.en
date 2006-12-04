@@ -1,51 +1,41 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>FortyTwo</b><br>
+<b>FortyTwo</b><br/>
 Card game for ??? players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>FortyTwo features</i><br>
+<i>FortyTwo features</i><br/>
 <ul>
 <li>Gtk+ game client
 </ul>
-<br>
+<br/>
 
-<i>FortyTwo rules</i><br>
+<i>FortyTwo rules</i><br/>
 This card game is not documented here yet.
 Like all GGZCards game, Bridge belongs to the class of bid-taking card games.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/ggzcards/"><i>Server: GGZCards</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: GGZCards</i><br>
-<a href="/games/ggzcards/"><img src="/games/pics/ggzcards.png"></a>
-<br>
+<i>Gtk+ client: GGZCards</i><br/>
+<a href="/gameclients/ggzcards/"><img src="/gameclients/thumbs/ggzcards.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/ggzcards/"><i>Server: GGZCards</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

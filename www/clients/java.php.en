@@ -1,34 +1,31 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Java core client: GGZ-Java</b><br>
-<br>
+<b>Java core client: GGZ-Java</b><br/>
+<br/>
 
-<table class="inner">
+<table class="twoside">
 <tr>
-<td valign="top" width="100%">
+<td>
 
-<i>Features</i><br>
+<i>Features</i><br/>
 <ul>
 <li>ideal for integration with web browsers (as a Java Applet)
 <li>can also be built as an application for desktop usage
-<li>contains a core client and several <a href="/games/ggzjava/">game clients</a> at once!
+<li>contains a core client and several <a href="/gameclients/ggzjava/">game clients</a> at once!
 </ul>
-<br>
 
-</td><td valign="top">
+</td><td>
 
-<img src="/clients/pics/ggzjava.png"><br>
+<img src="/clients/pics/ggzjava.png"><br/>
 
 </td>
 </tr>
 </table>
 
-</font>
 </td>
 </tr>
 </table>

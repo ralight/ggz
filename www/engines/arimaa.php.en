@@ -1,67 +1,59 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Arimaa</b><br>
+<b>Arimaa</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
+
 <table class="listnorm">
 <tr><td>
 The Arimaa game name and rules belong to its inventor.
 The GGZ multi-board game GGZBoard understands the Arimaa game rules
 if the (currently external) Arimaa module is downloaded.
 The original game homepage is:
-<br>
+<br/>
 <a href="http://www.arimaa.com/">arimaa.com</a>.
 </td></tr>
 </table>
+<br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Arimaa features</i><br>
+<i>Arimaa features</i><br/>
 <ul>
 <li>SDL game client available
 </ul>
-<br>
+<br/>
 
-<i>Arimaa rules</i><br>
+<i>Arimaa rules</i><br/>
 Yet to be written down.
 Arimaa is played on a Chess board which has four trap fields. The pieces are not the
 regular Chess pieces, but instead animal characters.
 Pieces are not jumped on, but they are pushed or pulled into a trap to have them
 removed from the board.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 Arimaa networking adheres to the <a href="http://dev.ggzgamingzone.org/protocols/">Bogaprot</a>
 protocol which is shared by many board games.
 The <a href="http://dev.ggzgamingzone.org/protocols/bogaprot.protocol">XML protocol file</a>
 can also be examined directly.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/arimaa/"><i>Server: Arimaa</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: GGZBoard</i><br>
-<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
-<br>
+<i>SDL client: GGZBoard</i><br/>
+<a href="/gameclients/ggzboard/"><img src="/gameclients/thumbs/ggzboard.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/arimaa/"><i>Server: Arimaa</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

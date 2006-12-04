@@ -1,28 +1,23 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Hastings 1066</b><br>
+<b>Hastings 1066</b><br/>
 Board game for 2 to 8 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Hastings 1066 features</i><br>
+<i>Hastings 1066 features</i><br/>
 <ul>
 <li>2 game clients available: Hastings1066 (Gtk+) and Fyrdman (KDE)
 <li>AI opponents available
 <li>supports game spectators
 <li>multiple maps available
 </ul>
-<br>
+<br/>
 
-<i>Hastings 1066 rules</i><br>
+<i>Hastings 1066 rules</i><br/>
 In 1066, England was taken by William the Conqueror and his Normans.
 In this game, each player belongs to one of the nations involved (normally
 there are just two nations), and has to fight the other one. A number of
@@ -33,36 +28,29 @@ away. If it captures an opposite knight, the victim is taken out of the game.
 
 The game ends if all but one nations have been destroyed.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/hastings/"><i>Server: Hastings</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: Hastings1066</i><br>
-<a href="/games/hastings/"><img src="/games/pics/hastings.png"></a>
-<br>
-
-<br>
+<i>Gtk+ client: Hastings1066</i><br/>
+<a href="/gameclients/hastings/"><img src="/gameclients/thumbs/hastings.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_kde.png">
-<i>KDE client: Fyrdman</i><br>
-<a href="/games/fyrdman/"><img src="/games/pics/fyrdman.png"></a>
-<br>
+<i>KDE client: Fyrdman</i><br/>
+<a href="/gameclients/fyrdman/"><img src="/gameclients/thumbs/fyrdman.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/hastings/"><i>Server: Hastings</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

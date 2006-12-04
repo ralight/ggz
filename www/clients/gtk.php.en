@@ -1,35 +1,32 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Gtk+ client: GGZ-Gtk</b><br>
-<br>
+<b>Gtk+ client: GGZ-Gtk</b><br/>
+<br/>
 
-<table class="inner">
+<table class="twoside">
 <tr>
-<td valign="top" width="100%">
+<td>
 
-<i>Features</i><br>
+<i>Features</i><br/>
 <ul>
 <li>small and fast graphical core client
 <li>chat supports auto completion and history
 <li>login profiles
 <li>displays lag values
 </ul>
-<br>
 
-</td><td valign="top">
+</td><td>
 
-<img src="/clients/pics/ggz-gtk.png"><br>
+<img src="/clients/pics/ggz-gtk.png"><br/>
 
 </td>
 </tr>
 </table>
 
-</font>
 </td>
 </tr>
 </table>

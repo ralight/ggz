@@ -1,19 +1,14 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Chinese Chess</b><br>
+<b>Chinese Chess</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Chinese Chess features</i><br>
+<i>Chinese Chess features</i><br/>
 <ul>
 <li>SDL game client
 <li>supports statistics
@@ -21,36 +16,31 @@ Board game for 2 players.
 <li>AI opponent available
 <li>single-player mode
 </ul>
-<br>
+<br/>
 
-<i>Chinese Chess rules</i><br>
+<i>Chinese Chess rules</i><br/>
 Not yet written down.
 Basically, Chinese Chess is a more complex and asymmetric variant of Chess
 with a more individual movement of the pieces.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/cchess/"><i>Server: Chinese Chess</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: Xadrez Chinês</i><br>
-<a href="/games/cchess/"><img src="/games/pics/xadrez-chines.png"></a>
-<br>
+<i>SDL client: Xadrez Chinês</i><br/>
+<a href="/gameclients/cchess/"><img src="/gameclients/thumbs/xadrez-chines.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/cchess/"><i>Server: Chinese Chess</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

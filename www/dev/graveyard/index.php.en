@@ -1,0 +1,50 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content">
+<tr>
+<td>
+
+<b>GGZ Graveyard</b><br/>
+Games and applications which fall apart after being unmaintained for some time
+are removed from the SVN trunk and put into the graveyard, that is, there is
+some virtual commemoration for them.
+<br/><br/>
+
+If you want to help reviving one of the games, feel free to contact the
+GGZ developers!
+<br/><br/>
+
+<i>La Pocha:</i><br/>
+<a href="/gameclients/lapocha/">Client</a> from GGZ, has been removed<br/>
+<a href="/gameservers/lapocha/">Server</a> from GGZ, has been removed<br/>
+<a href="/engines/lapocha/">Engine</a> is now supported by GGZCards and GGZ-Java<br/>
+<br/>
+
+<i>Tuxman:</i><br/>
+<a href="/gameclients/tuxman/">Client</a> from external, seems to be unmaintained<br/>
+<a href="/gameservers/tuxman/">Server</a> from GGZ, has been removed<br/>
+<a href="/engines/tuxman/">Engine</a> is not supported in GGZ anymore<br/>
+<br/>
+
+<i>Batalla Naval:</i><br/>
+Client from external, seems to be unmaintained<br/>
+Server from external, seems to be unmaintained<br/>
+Engine is not supported in GGZ anymore<br/>
+<br/>
+
+<i>XTux Arena:</i><br/>
+Client from external, seems to be unmaintained<br/>
+Server from external, seems to be unmaintained<br/>
+Engine is not supported in GGZ anymore<br/>
+<br/>
+
+<i>ModSniffer</i><br/>
+Utility from GGZ, has been removed<br/>
+<br/>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

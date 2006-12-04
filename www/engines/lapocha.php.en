@@ -1,53 +1,43 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>La Pocha</b><br>
+<b>La Pocha</b><br/>
 Card game for 4 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>La Pocha features</i><br>
+<i>La Pocha features</i><br/>
 <ul>
 <li>Gtk+ game client
 </ul>
-<br>
+<br/>
 
-<i>La Pocha rules</i><br>
+<i>La Pocha rules</i><br/>
 Before each turn, all players consecutively bid and then play their decks.
 Initially, the deck consists of one card only, but more cards are added over
 time starting in the 4th turn.
 The best bidder wins the game.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/ggzcards/"><i>Server: GGZCards</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: GGZCards</i><br>
-<a href="/games/ggzcards/"><img src="/games/pics/ggzcards.png"></a>
-<br><br>
+<i>Gtk+ client: GGZCards</i><br/>
+<a href="/gameclients/ggzcards/"><img src="/gameclients/thumbs/ggzcards.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/ggzcards/"><i>Server: GGZCards</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

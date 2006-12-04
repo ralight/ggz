@@ -1,28 +1,23 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Connect The Dots</b><br>
+<b>Connect The Dots</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Connect The Dots features</i><br>
+<i>Connect The Dots features</i><br/>
 <ul>
 <li>2 game clients available: Dots (Gtk+) and KDots (KDE)
 <li>AI opponents available
 <li>supports statistics
 <li>supports game spectators
 </ul>
-<br>
+<br/>
 
-<i>Connect The Dots rules</i><br>
+<i>Connect The Dots rules</i><br/>
 The first player (game host) selects a suitable horizontal and
 vertical size of the board - the more cells, the longer will the game take.
 
@@ -33,34 +28,28 @@ further cell can be marked anymore.
 The game ends if all cells are marked. The winner is the one who got most cells
 to be marked with his colour.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/dots/"><i>Server: Connect The Dots</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: Dots</i><br>
-<a href="/games/dots/"><img src="/games/pics/dots.png"></a>
-<br>
-
-<br>
+<i>Gtk+ client: Dots</i><br/>
+<a href="/gameclients/dots/"><img src="/gameclients/thumbs/dots.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_kde.png">
-<i>KDE client: KDots</i><br>
-<a href="/games/kdots/"><img src="/games/pics/kdots.png"></a>
-<br>
+<i>KDE client: KDots</i><br/>
+<a href="/gameclients/kdots/"><img src="/gameclients/thumbs/kdots.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/dots/"><i>Server: Connect The Dots</i></a>
+<br/><br/>
 
 </font>
 </td>

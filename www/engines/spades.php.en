@@ -1,75 +1,65 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Spades</b><br>
+<b>Spades</b><br/>
 Card game for 4 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Spades features</i><br>
+<i>Spades features</i><br/>
 <ul>
 <li>Gtk+ and Java game clients
 <li>AI opponents available
 </ul>
-<br>
+<br/>
 
-<i>Remark</i><br>
+<i>Remark</i><br/>
 NetSpades was the original Spades game in GGZ, ported from the original
 version which supported Gtk+ and Slang frontends, dating back to 1997.
 With GGZCards, a new server and (generic) client is available, but the
 game is kept in GGZ nevertheless.
-<br><br>
+<br/><br/>
 
-<i>Spades rules</i><br>
+<i>Spades rules</i><br/>
 The first player (game host) is given the privilege to choose the minimum
 bid and the score needed to win a game.
 Each player then selects a bid and submits it.
 This marks the start of the turns, in which all players clock-wise propose
 a card. The one with the highest card and color wins the trick.
 Since the game is named NetSpades, one can assume that Spades is trump.
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/spades/"><i>Server: NetSpades</i></a>
-<br><br>
-
-<a href="/gameservers/ggzcards/"><i>Server: GGZCards</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: NetSpades</i><br>
-<a href="/games/spades/"><img src="/games/pics/netspades.png"></a>
-<br><br>
+<i>Gtk+ client: NetSpades</i><br/>
+<a href="/gameclients/spades/"><img src="/gameclients/thumbs/netspades.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: GGZCards</i><br>
-<a href="/games/ggzcards/"><img src="/games/pics/ggzcards.png"></a>
-<br><br>
+<i>Gtk+ client: GGZCards</i><br/>
+<a href="/gameclients/ggzcards/"><img src="/gameclients/thumbs/ggzcards.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_java.png">
-<i>Java client: GGZ-Java</i><br>
-<a href="/games/ggzjava/"><img src="/games/pics/ggzjava.png"></a>
-<br><br>
+<i>Java client: GGZ-Java</i><br/>
+<a href="/gameclients/ggzjava/"><img src="/gameclients/thumbs/ggzjava.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/spades/"><i>Server: NetSpades</i></a>
+<br/><br/>
 
-</font>
+<a href="/gameservers/ggzcards/"><i>Server: GGZCards</i></a>
+<br/><br/>
+
 </td>
 </tr>
 </table>

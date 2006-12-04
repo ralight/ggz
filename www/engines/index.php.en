@@ -1,50 +1,41 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="pane" width="100%">
+<table class="pane">
 <tr>
 <td>
-<font size="3">
-<a href="/software.php">Software:</a>
+<a href="/games/">Games:</a>
 |
 Engines
 |
-<a href="/games/">Game clients</a>
+<a href="/gameclients/">Game clients</a>
 |
 <a href="/gameservers/">Game servers</a>
-|
-<a href="/clients/">Core clients</a>
-|
-<a href="/utils/">Utilities</a>
-|
-<a href="/backend/">Backends</a>
-</font>
 </td>
 </tr>
 </table>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZ Engines Pages</b><br>
+<b>GGZ engines pages</b><br/>
 Game engines determine the game rules and communication protocols between
 game clients and game servers.
 Whereever possible, GGZ tries to adhere to existing game engine standards
 or at least support them optionally.
 Note that some of the games listed here are not part of the GGZ project,
 however some of them provide GGZ support, while others got a client reimplementation
-for GGZ. The <a href="/games/">games page</a> lists game clients categorically
-(by package), rather than by engine.
+for GGZ. The <a href="/gameclients/">game clients page</a> lists game clients
+categorically (by package), rather than by engine.
 The following game engines are currently playable on GGZ:
-<br><br>
+<br/><br/>
 
 <table class="inner">
 <tr><td>
 
-<i>Board games:</i><br>
+<i>Board games:</i><br/>
 
-<table class="listnorm">
+<table class="listnorm3">
 <tr>
 <td><i>Engine</i></td>
 <td><i>Corresponding clients</i></td>
@@ -55,19 +46,19 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/tictactoe/">TicTacToe</a></td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/tictactoe/">TicTacToe (Gtk+)</a><br>
+<a href="/gameclients/tictactoe/">TicTacToe (Gtk+)</a><br/>
 <img src="/pics/icons/game_kde.png">
-<a href="/games/ktictactux/">KTicTacTux (KDE)</a><br>
+<a href="/gameclients/ktictactux/">KTicTacTux (KDE)</a><br/>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/ttt3d/">TTT3D (SDL)</a><br>
+<a href="/gameclients/ttt3d/">TTT3D (SDL)</a><br/>
 <img src="/pics/icons/game_grubby.png">
-<a href="/games/guruttt/">Guru-TTT (Grubby)</a><br>
+<a href="/gameclients/guruttt/">Guru-TTT (Grubby)</a><br/>
 <img src="/pics/icons/game_console.png">
-<a href="/games/tttxt/">TTTXT (Console)</a>
+<a href="/gameclients/tttxt/">TTTXT (Console)</a><br/>
 </td>
 <td>
-<a href="/gameservers/tictactoe/">TicTacToe server</a><br>
-<a href="/gameservers/rubytoe/">RubyToe server</a>
+<a href="/gameservers/tictactoe/">TicTacToe server</a><br/>
+<a href="/gameservers/rubytoe/">RubyToe server</a><br/>
 </td>
 </tr>
 
@@ -75,9 +66,9 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/dots/">Connect The Dots</a></td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/dots/">Dots (Gtk+)</a><br>
+<a href="/gameclients/dots/">Dots (Gtk+)</a><br/>
 <img src="/pics/icons/game_kde.png">
-<a href="/games/kdots/">KDots (KDE)</a><br>
+<a href="/gameclients/kdots/">KDots (KDE)</a><br/>
 </td>
 <td><a href="/gameservers/dots/">Dots server</a></td>
 </tr>
@@ -86,9 +77,9 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/hastings/">Hastings1066</a></td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/hastings/">Hastings1066 (Gtk+)</a><br>
+<a href="/gameclients/hastings/">Hastings1066 (Gtk+)</a><br/>
 <img src="/pics/icons/game_kde.png">
-<a href="/games/fyrdman/">Fyrdman (KDE)</a><br>
+<a href="/gameclients/fyrdman/">Fyrdman (KDE)</a><br/>
 </td>
 <td><a href="/gameservers/hastings/">Hastings server</a></td>
 </tr>
@@ -97,13 +88,13 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/reversi/">Reversi</a></td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/reversi/">Reversi (Gtk+)</a><br>
+<a href="/gameclients/reversi/">Reversi (Gtk+)</a><br/>
 <img src="/pics/icons/game_kde.png">
-<a href="/games/kreversi/">KReversi (KDE)</a><br>
+<a href="/gameclients/kreversi/">KReversi (KDE)</a><br/>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+<a href="/gameclients/ggzboard/">GGZBoard (SDL)</a><br/>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/iagno/">Iagno (GNOME)</a><br>
+<a href="/gameclients/iagno/">Iagno (GNOME)</a><br/>
 </td>
 <td><a href="/gameservers/reversi/">Reversi server</a></td>
 </tr>
@@ -112,7 +103,7 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/combat/">Combat</a></td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/combat/">Combat (Gtk+)</a><br>
+<a href="/gameclients/combat/">Combat (Gtk+)</a><br/>
 </td>
 <td><a href="/gameservers/combat/">Combat server</a></td>
 </tr>
@@ -121,13 +112,13 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/chess/">Chess</a></td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/chess/">Chess (Gtk+)</a><br>
+<a href="/gameclients/chess/">Chess (Gtk+)</a><br/>
 <img src="/pics/icons/game_kde.png">
-<a href="/games/koenig/">Koenig (KDE)</a><br>
+<a href="/gameclients/koenig/">Koenig (KDE)</a><br/>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+<a href="/gameclients/ggzboard/">GGZBoard (SDL)</a><br/>
 <img src="/pics/icons/game_grubby.png">
-<a href="/games/guruchess/">Guru-Chess (Grubby)</a><br>
+<a href="/gameclients/guruchess/">Guru-Chess (Grubby)</a><br/>
 </td>
 <td><a href="/gameservers/chess/">Chess server</a></td>
 </tr>
@@ -136,7 +127,7 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/cchess/">Chinese Chess</a></td>
 <td>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/cchess/">Xadrez Chinês (SDL)</a><br>
+<a href="/gameclients/cchess/">Xadrez Chinês (SDL)</a><br/>
 </td>
 <td><a href="/gameservers/cchess/">Chinese Chess server</a></td>
 </tr>
@@ -145,9 +136,9 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/ccheckers/">Chinese Checkers</a></td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/ccheckers/">Chinese Checkers (Gtk+)</a><br>
+<a href="/gameclients/ccheckers/">Chinese Checkers (Gtk+)</a><br/>
 <img src="/pics/icons/game_kde.png">
-<a href="/games/kcc/">KCC (KDE)</a><br>
+<a href="/gameclients/kcc/">KCC (KDE)</a><br/>
 </td>
 <td><a href="/gameservers/ccheckers/">Chinese Checkers server</a></td>
 </tr>
@@ -156,7 +147,7 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/krosswater/">Krosswater</a></td>
 <td>
 <img src="/pics/icons/game_kde.png">
-<a href="/games/krosswater/">Krosswater (KDE)</a><br>
+<a href="/gameclients/krosswater/">Krosswater (KDE)</a><br/>
 </td>
 <td><a href="/gameservers/krosswater/">Krosswater server</a></td>
 </tr>
@@ -165,7 +156,7 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/muehle/">Mühle</a></td>
 <td>
 <img src="/pics/icons/game_kde.png">
-<a href="/games/muehle/">Mühle (KDE)</a><br>
+<a href="/gameclients/muehle/">Mühle (KDE)</a><br/>
 </td>
 <td><a href="/gameservers/muehle/">Muehle server</a></td>
 </tr>
@@ -174,9 +165,9 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/escape/">Escape</a></td>
 <td>
 <img src="/pics/icons/game_windows.png">
-<a href="/games/escape/">Escape (Windows)</a><br>
+<a href="/gameclients/escape/">Escape (Windows)</a><br/>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/escape-sdl/">Escape/SDL (SDL)</a><br>
+<a href="/gameclients/escape-sdl/">Escape/SDL (SDL)</a><br/>
 </td>
 <td><a href="/gameservers/escape/">Escape server</a></td>
 </tr>
@@ -185,11 +176,11 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/connectx/">ConnectX</a></td>
 <td>
 <img src="/pics/icons/game_windows.png">
-<a href="/games/connectx/">ConnectX (Windows)</a><br>
+<a href="/gameclients/connectx/">ConnectX (Windows)</a><br/>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+<a href="/gameclients/ggzboard/">GGZBoard (SDL)</a><br/>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/gnect/">Gnect (GNOME)</a><br>
+<a href="/gameclients/gnect/">Gnect (GNOME)</a><br/>
 </td>
 <td><a href="/gameservers/connectx/">ConnectX server</a></td>
 </tr>
@@ -198,7 +189,7 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/checkers/">Checkers</a></td>
 <td>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+<a href="/gameclients/ggzboard/">GGZBoard (SDL)</a><br/>
 </td>
 <td><a href="/gameservers/checkers/">Checkers server</a></td>
 </tr>
@@ -207,7 +198,7 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/hnefatafl/">Hnefatafl</a></td>
 <td>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+<a href="/gameclients/ggzboard/">GGZBoard (SDL)</a><br/>
 </td>
 <td><a href="/gameservers/hnefatafl/">Hnefatafl server</a></td>
 </tr>
@@ -219,9 +210,9 @@ The following game engines are currently playable on GGZ:
 </td>
 <td>
 <img src="/pics/icons/game_x11.png">
-<a href="/games/cgoban/">CGoBan (X11)</a><br>
+<a href="/gameclients/cgoban/">CGoBan (X11)</a><br/>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+<a href="/gameclients/ggzboard/">GGZBoard (SDL)</a><br/>
 </td>
 <td><a href="/gameservers/goserver/">Go server</a></td>
 </tr>
@@ -230,7 +221,7 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/ludo/">Ludo/Bogaprot</a></td>
 <td>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+<a href="/gameclients/ggzboard/">GGZBoard (SDL)</a><br/>
 </td>
 <td><a href="/gameservers/ludo/">Ludo server</a></td>
 </tr>
@@ -239,7 +230,7 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/arimaa/">Arimaa/Bogaprot</a></td>
 <td>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+<a href="/gameclients/ggzboard/">GGZBoard (SDL)</a><br/>
 </td>
 <td><a href="/gameservers/arimaa/">Arimaa server</a></td>
 </tr>
@@ -248,7 +239,7 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/shogi/">Shogi</a></td>
 <td>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+<a href="/gameclients/ggzboard/">GGZBoard (SDL)</a><br/>
 </td>
 <td>---</td>
 </tr>
@@ -257,11 +248,12 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/sudoku/">Sudoku</a></td>
 <td>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/ggzboard/">GGZBoard (SDL)</a><br>
+<a href="/gameclients/ggzboard/">GGZBoard (SDL)</a><br/>
 </td>
 <td>---</td>
 </tr>
 
+<!--
 <tr>
 <td>
 <img src="/pics/icons/game_rip.png">
@@ -269,18 +261,19 @@ Batalla Naval
 </td>
 <td>
 <img src="/pics/icons/game_rip.png">
-Batalla Naval (GNOME) - R.I.P.<br>
+Batalla Naval (GNOME) - R.I.P.<br/>
 </td>
 <td>Batalla Naval server</td>
 </tr>
+-->
 
 </table>
 
-<br>
+<br/>
 
-<i>Card games:</i><br>
+<i>Card games:</i><br/>
 
-<table class="listnorm">
+<table class="listnorm3">
 <tr>
 <td><i>Engine</i></td>
 <td><i>Corresponding clients</i></td>
@@ -291,7 +284,7 @@ Batalla Naval (GNOME) - R.I.P.<br>
 <td><a href="/engines/spades/">NetSpades</a></td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/spades/">NetSpades (Gtk+)</a><br>
+<a href="/gameclients/spades/">NetSpades (Gtk+)</a><br/>
 </td>
 <td><a href="/gameservers/spades/">NetSpades server</a></td>
 </tr>
@@ -300,9 +293,9 @@ Batalla Naval (GNOME) - R.I.P.<br>
 <td><a href="/engines/spades/">Spades</a></td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/ggzcards/">GGZCards (Gtk+)</a><br>
+<a href="/gameclients/ggzcards/">GGZCards (Gtk+)</a><br/>
 <img src="/pics/icons/game_java.png">
-<a href="/games/ggzjava/">GGZ-Java (Java)</a><br>
+<a href="/gameclients/ggzjava/">GGZ-Java (Java)</a><br/>
 </td>
 <td><a href="/gameservers/ggzcards/">GGZCards server</a></td>
 </tr>
@@ -310,12 +303,14 @@ Batalla Naval (GNOME) - R.I.P.<br>
 <tr>
 <td><a href="/engines/lapocha/">LaPocha</a></td>
 <td>
+<!--
 <img src="/pics/icons/game_rip.png">
-LaPocha (Gtk+) - R.I.P.<br>
+LaPocha (Gtk+) - R.I.P.<br/>
+-->
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/ggzcards/">GGZCards (Gtk+)</a><br>
+<a href="/gameclients/ggzcards/">GGZCards (Gtk+)</a><br/>
 <img src="/pics/icons/game_java.png">
-<a href="/games/ggzjava/">GGZ-Java (Java)</a><br>
+<a href="/gameclients/ggzjava/">GGZ-Java (Java)</a><br/>
 </td>
 <td><a href="/gameservers/ggzcards/">GGZCards server</a></td>
 </tr>
@@ -324,9 +319,9 @@ LaPocha (Gtk+) - R.I.P.<br>
 <td><a href="/engines/bridge/">Bridge</a></td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/ggzcards/">GGZCards (Gtk+)</a><br>
+<a href="/gameclients/ggzcards/">GGZCards (Gtk+)</a><br/>
 <img src="/pics/icons/game_java.png">
-<a href="/games/ggzjava/">GGZ-Java (Java)</a><br>
+<a href="/gameclients/ggzjava/">GGZ-Java (Java)</a><br/>
 </td>
 <td><a href="/gameservers/ggzcards/">GGZCards server</a></td>
 </tr>
@@ -335,7 +330,7 @@ LaPocha (Gtk+) - R.I.P.<br>
 <td><a href="/engines/fortytwo/">FortyTwo</a></td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/ggzcards/">GGZCards (Gtk+)</a><br>
+<a href="/gameclients/ggzcards/">GGZCards (Gtk+)</a><br/>
 </td>
 <td><a href="/gameservers/ggzcards/">GGZCards server</a></td>
 </tr>
@@ -344,9 +339,9 @@ LaPocha (Gtk+) - R.I.P.<br>
 <td><a href="/engines/hearts/">Hearts</a></td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/ggzcards/">GGZCards (Gtk+)</a><br>
+<a href="/gameclients/ggzcards/">GGZCards (Gtk+)</a><br/>
 <img src="/pics/icons/game_java.png">
-<a href="/games/ggzjava/">GGZ-Java (Java)</a><br>
+<a href="/gameclients/ggzjava/">GGZ-Java (Java)</a><br/>
 </td>
 <td><a href="/gameservers/ggzcards/">GGZCards server</a></td>
 </tr>
@@ -355,9 +350,9 @@ LaPocha (Gtk+) - R.I.P.<br>
 <td><a href="/engines/suaro/">Suaro</a></td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/ggzcards/">GGZCards (Gtk+)</a><br>
+<a href="/gameclients/ggzcards/">GGZCards (Gtk+)</a><br/>
 <img src="/pics/icons/game_java.png">
-<a href="/games/ggzjava/">GGZ-Java (Java)</a><br>
+<a href="/gameclients/ggzjava/">GGZ-Java (Java)</a><br/>
 </td>
 <td><a href="/gameservers/ggzcards/">GGZCards server</a></td>
 </tr>
@@ -366,9 +361,9 @@ LaPocha (Gtk+) - R.I.P.<br>
 <td><a href="/engines/sueca/">Sueca</a></td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/ggzcards/">GGZCards (Gtk+)</a><br>
+<a href="/gameclients/ggzcards/">GGZCards (Gtk+)</a><br/>
 <img src="/pics/icons/game_java.png">
-<a href="/games/ggzjava/">GGZ-Java (Java)</a><br>
+<a href="/gameclients/ggzjava/">GGZ-Java (Java)</a><br/>
 </td>
 <td><a href="/gameservers/ggzcards/">GGZCards server</a></td>
 </tr>
@@ -377,20 +372,20 @@ LaPocha (Gtk+) - R.I.P.<br>
 <td><a href="/engines/whist/">Whist</a></td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/ggzcards/">GGZCards (Gtk+)</a><br>
+<a href="/gameclients/ggzcards/">GGZCards (Gtk+)</a><br/>
 <img src="/pics/icons/game_java.png">
-<a href="/games/ggzjava/">GGZ-Java (Java)</a><br>
+<a href="/gameclients/ggzjava/">GGZ-Java (Java)</a><br/>
 </td>
 <td><a href="/gameservers/ggzcards/">GGZCards server</a></td>
 </tr>
 
 </table>
 
-<br>
+<br/>
 
-<i>Other games:</i><br>
+<i>Other games:</i><br/>
 
-<table class="listnorm">
+<table class="listnorm3">
 <tr>
 <td><i>Engine</i></td>
 <td><i>Corresponding clients</i></td>
@@ -401,7 +396,7 @@ LaPocha (Gtk+) - R.I.P.<br>
 <td><a href="/engines/keepalive/">Keepalive</a></td>
 <td>
 <img src="/pics/icons/game_kde.png">
-<a href="/games/keepalive/">Keepalive (KDE)</a><br>
+<a href="/gameclients/keepalive/">Keepalive (KDE)</a><br/>
 </td>
 <td><a href="/gameservers/keepalive/">Keepalive server</a></td>
 </tr>
@@ -410,18 +405,18 @@ LaPocha (Gtk+) - R.I.P.<br>
 <td><a href="/engines/geekgame/">Geekgame</a></td>
 <td>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/geekgame/">Geekgame (SDL)</a><br>
+<a href="/gameclients/geekgame/">Geekgame (SDL)</a><br/>
 </td>
 <td><a href="/gameservers/geekgame/">Geekgame server</a></td>
 </tr>
 
 </table>
 
-<br>
+<br/>
 
-<i>Arcade games:</i><br>
+<i>Arcade games:</i><br/>
 
-<table class="listnorm">
+<table class="listnorm3">
 <tr>
 <td><i>Engine</i></td>
 <td><i>Corresponding clients</i></td>
@@ -435,9 +430,9 @@ LaPocha (Gtk+) - R.I.P.<br>
 </td>
 <td>
 <img src="/pics/icons/game_kde.png">
-<a href="/games/kamikaze/">Kamikaze (KDE)</a><br>
+<a href="/gameclients/kamikaze/">Kamikaze (KDE)</a><br/>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/pykamikaze/">PyKamikaze (SDL)</a><br>
+<a href="/gameclients/pykamikaze/">PyKamikaze (SDL)</a><br/>
 </td>
 <td><a href="/gameservers/kamikaze/">Kamikaze server</a></td>
 </tr>
@@ -449,11 +444,12 @@ LaPocha (Gtk+) - R.I.P.<br>
 </td>
 <td>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/tuxman/">Tuxman (SDL)</a><br>
+<a href="/gameclients/tuxman/">Tuxman (SDL)</a><br/>
 </td>
 <td><a href="/gameservers/tuxman/">Tuxman server</a></td>
 </tr>
 
+<!--
 <tr>
 <td>
 <img src="/pics/icons/game_rip.png">
@@ -461,29 +457,30 @@ XTux Arena
 </td>
 <td>
 <img src="/pics/icons/game_rip.png">
-XTux Arena (SDL) - R.I.P.<br>
+XTux Arena (SDL) - R.I.P.<br/>
 </td>
 <td>XTux Arena server</td>
 </tr>
+-->
 
 <tr>
 <td>
 <a href="/engines/gnibbles/">Gnibbles</a>
 </td>
 <td>
-<img src="/pics/icons/game_sdl.png">
-<a href="/games/gnibbles/">Gnibbles (GNOME)</a><br>
+<img src="/pics/icons/game_gnome.png">
+<a href="/gameclients/gnibbles/">Gnibbles (GNOME)</a><br/>
 </td>
 <td><a href="/gameservers/gnibbles/">Gnibbles server</a></td>
 </tr>
 
 </table>
 
-<br>
+<br/>
 
-<i>Strategy games:</i><br>
+<i>Strategy games:</i><br/>
 
-<table class="listnorm">
+<table class="listnorm3">
 <tr>
 <td><i>Engine</i></td>
 <td><i>Corresponding clients</i></td>
@@ -497,7 +494,7 @@ XTux Arena (SDL) - R.I.P.<br>
 </td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/teg/">T.E.G. (GNOME)</a><br>
+<a href="/gameclients/teg/">T.E.G. (GNOME)</a><br/>
 </td>
 <td><a href="/gameservers/teg/">T.E.G. server</a></td>
 </tr>
@@ -509,7 +506,7 @@ XTux Arena (SDL) - R.I.P.<br>
 </td>
 <td>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/widelands/">Widelands (SDL)</a><br>
+<a href="/gameclients/widelands/">Widelands (SDL)</a><br/>
 </td>
 <td>(no dedicated server)</td>
 </tr>
@@ -521,7 +518,7 @@ XTux Arena (SDL) - R.I.P.<br>
 </td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/games/freeciv/">Freeciv (Gtk+)</a><br>
+<a href="/gameclients/freeciv/">Freeciv (Gtk+)</a><br/>
 </td>
 <td><a href="/gameservers/freeciv/">Freeciv server</a></td>
 </tr>
@@ -533,7 +530,7 @@ XTux Arena (SDL) - R.I.P.<br>
 </td>
 <td>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/freelords/">Freelords (SDL)</a><br>
+<a href="/gameclients/freelords/">Freelords (SDL)</a><br/>
 </td>
 <td><a href="/gameservers/freelords/">Freelords server</a></td>
 </tr>
@@ -544,7 +541,6 @@ XTux Arena (SDL) - R.I.P.<br>
 </tr>
 </table>
 
-</font>
 </td>
 </tr>
 </table>

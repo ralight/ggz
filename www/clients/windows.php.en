@@ -1,41 +1,38 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Windows client: WGGZ</b><br>
-<br>
+<b>Windows client: WGGZ</b><br/>
+<br/>
 
-<table class="inner">
+<table class="twoside">
 <tr>
-<td valign="top" width="100%">
+<td>
 
-<i>Features</i><br>
+<i>Features</i><br/>
 <ul>
 <li>port of GGZ to Windows
 <li>supports several games
 </ul>
-<br>
 
-<i>Note about the Windows port of GGZ</i><br>
+<i>Note about the Windows port of GGZ</i><br/>
 Historically, the <a href="http://wggz.sourceforge.net/">WGGZ project</a>
 has provided a port of the most important client-side GGZ components to
 Windows. This project is currently not active. However, most of GGZ runs fine
 under Cygwin. Work is being done on supporting native compilation using the
 mingw compiler.
-<br>
+<br/>
 
-</td><td valign="top">
+</td><td>
 
-<img src="/clients/pics/wggz.png"><br>
+<img src="/clients/pics/wggz.png"><br/>
 
 </td>
 </tr>
 </table>
 
-</font>
 </td>
 </tr>
 </table>

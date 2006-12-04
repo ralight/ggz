@@ -1,56 +1,46 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Ludo</b><br>
+<b>Ludo</b><br/>
 Board game for 2-4 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Ludo features</i><br>
+<i>Ludo features</i><br/>
 <ul>
 <li>SDL game client available
 <li>AI opponent available
 <li>Game involves dice
 </ul>
-<br>
+<br/>
 
-<i>Ludo rules</i><br>
+<i>Ludo rules</i><br/>
 Yet to be written down.
 The game is known as Mensch Ärgere Dich Nicht in the German-speaking countries.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 Ludo networking adheres to the <a href="http://dev.ggzgamingzone.org/protocols/">Bogaprot</a>
 protocol which is shared by many board games.
 The <a href="http://dev.ggzgamingzone.org/protocols/bogaprot.protocol">XML protocol file</a>
 can also be examined directly.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/ludo/"><i>Server: Ludo</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: GGZBoard</i><br>
-<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
-<br>
+<i>SDL client: GGZBoard</i><br/>
+<a href="/gameclients/ggzboard/"><img src="/gameclients/thumbs/ggzboard.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/ludo/"><i>Server: Ludo</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

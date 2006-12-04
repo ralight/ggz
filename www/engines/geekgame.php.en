@@ -1,53 +1,44 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Geekgame</b><br>
+<b>Geekgame</b><br/>
 Board game for 2-5 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Geekgame features</i><br>
+<i>Geekgame features</i><br/>
 <ul>
 <li>SDL game client
 <li>AI opponents available
 <li>Single player mode
 </ul>
-<br>
+<br/>
 
-<i>Geekgame rules</i><br>
+<i>Geekgame rules</i><br/>
 The game supports 4 modes of varying difficulty: easy, matrix, havoc and hax0r.
 Depending on their rules, 0s and 1s have to be rearranged on the game board.
 Each player tries to disturb the others while arranging the numbers to his advantage.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/geekgame/"><i>Server: Geekgame</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: Geekgame</i><br>
-<a href="/games/geekgame/"><img src="/games/pics/geekgame.png"></a>
+<i>SDL client: Geekgame</i><br/>
+<a href="/gameclients/geekgame/"><img src="/gameclients/thumbs/geekgame.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/geekgame/"><i>Server: Geekgame</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

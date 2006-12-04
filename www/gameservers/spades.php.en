@@ -1,19 +1,14 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>NetSpades Server</b><br>
+<b>NetSpades Server</b><br/>
 Card game for 4 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Supports the <a href="/engines/spades/">NetSpades</a> engine
 <li>Supports AI players
@@ -25,9 +20,9 @@ The NetSpades server originates from pre-GGZ times. As such, it has an interesti
 implementation of the connection to the GGZ server, but still works flawlessly,
 even though no real GGZ features are being used.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game server support</i><br>
+<i>GGZ game server support</i><br/>
 <table class="listnorm">
 <tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">no</td></tr>
@@ -35,29 +30,24 @@ even though no real GGZ features are being used.
 <tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/engines/spades/"><i>Engine: NetSpades</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: NetSpades</i><br>
-<a href="/games/spades/"><img src="/games/pics/netspades.png"></a>
-<br><br>
+<i>Gtk+ client: NetSpades</i><br/>
+<a href="/gameclients/spades/"><img src="/gameclients/thumbs/netspades.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_java.png">
-<i>Java client: GGZ-Java</i><br>
-<a href="/games/ggzjava/"><img src="/games/pics/ggzjava.png"></a>
-<br><br>
+<i>Java client: GGZ-Java</i><br/>
+<a href="/gameclients/ggzjava/"><img src="/gameclients/thumbs/ggzjava.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/spades/"><i>Engine: NetSpades</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

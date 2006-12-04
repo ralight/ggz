@@ -9,9 +9,9 @@ include("style.php");
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 </head>
-<body bgcolor="#dcdcdc" background="/pics/site/bg.png" text="#000000" link="#000000" vlink="#000000" alink="#000000">
+<body>
 
-<table class="pane" width="100%">
+<table class="pane">
 <tr>
 <td>
 <font size="6">
@@ -23,20 +23,20 @@ GGZ Gaming Zone
 </tr>
 </table>
 
-<table class="pane" width="100%">
+<table class="pane">
 <tr>
 <td>
-<font size="3">
 <a href="/">Capa</a>
 |
-<a href="/software.php">Jogos e aplicações</a>
+<a href="/games/">Jogos</a>
 |
-<a href="/developers.php">Desenvolvidores</a>
+<a href="/software/">Aplições</a>
 |
-<a href="/community.php">Valorizações</a>
+<a href="/documentation/">Documentação</a>
 |
-<a href="/live.php">Jogos na hora</a>
-</font>
+<a href="/developers/">Desenvolvidores</a>
+|
+<a href="/community/">Jogos na hora @ Comunidade GGZ</a>
 </td>
 </tr>
 </table>
@@ -51,14 +51,12 @@ function outdated($lang = "en")
 	if(substr($file, -4, 4) == ".php") $file = "$file.$lang";
 	else $file = substr($file, 0, -2) . "$lang";
 
-	echo "<table class='pane' width='100%'>\n";
+	echo "<table class='pane'>\n";
 	echo "<tr>\n";
 	echo "<td>\n";
-	echo "<font size='3'>\n";
 	echo "<font color='#ff0000'>Aviso:</font>\n";
 	echo "Uma versão mais nova desta página está disponível no original.\n";
 	echo "<a href='$file'>Ver a última versão</a>.\n";
-	echo "</font>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";

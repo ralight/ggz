@@ -1,27 +1,22 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Reversi</b><br>
+<b>Reversi</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Reversi features</i><br>
+<i>Reversi features</i><br/>
 <ul>
 <li>3 game clients available: Reversi (Gtk+), KReversi (KDE), GGZBoard (SDL)
 <li>AI opponents available
 <li>supports statistics
 </ul>
-<br>
+<br/>
 
-<i>Reversi rules</i><br>
+<i>Reversi rules</i><br/>
 Starting from an initial position, each player in turn puts one stone
 onto the board. The goal is to have as many opposite stones as possible
 between the new one and any other own one, so they can get converted.
@@ -29,43 +24,34 @@ between the new one and any other own one, so they can get converted.
 The game ends if no stones can be set anymore. The player with the most
 stones wins the game.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/reversi/"><i>Server: Reversi</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: Reversi</i><br>
-<a href="/games/reversi/"><img src="/games/pics/reversi.png"></a>
-<br>
-
-<br>
+<i>Gtk+ client: Reversi</i><br/>
+<a href="/gameclients/reversi/"><img src="/gameclients/thumbs/reversi.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_kde.png">
-<i>KDE client: KReversi</i><br>
-<a href="/games/kreversi/"><img src="/games/pics/kreversi.png"></a>
-<br>
-
-<br>
+<i>KDE client: KReversi</i><br/>
+<a href="/gameclients/kreversi/"><img src="/gameclients/thumbs/kreversi.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: GGZBoard</i><br>
-<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
-<br>
+<i>SDL client: GGZBoard</i><br/>
+<a href="/gameclients/ggzboard/"><img src="/gameclients/thumbs/ggzboard.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/reversi/"><i>Server: Reversi</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

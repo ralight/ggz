@@ -1,41 +1,38 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZap</b><br>
+<b>GGZap</b><br/>
 KDE quick-launcher for GGZ games
-<br>
+<br/><br/>
 
-<table class="inner">
+<table class="twoside">
 <tr>
-<td valign="top">
+<td>
 
-<i>The main features</i><br>
+<i>The main features</i><br/>
 <ul>
 <li>System tray applet with direct games selection
 <li>Game reservations
 </ul>
-<br>
 
-<i>Detailed information</i><br>
+<i>Detailed information</i><br/>
 Instead of launching a GGZ core client for chatting and launching games,
 one can also have GGZap running in the background and then select a game
 for playing immediately (if a free seat is found on one table) or later
 (it will then launch a table and wait for other players).
 
-</td><td valign="top">
+</td><td>
 
-<i>Screenshot:</i><br>
+<i>Screenshot:</i><br/>
 <img src="/utils/pics/ggzap.png">
 
 </td>
 </tr>
 </table>
 
-</font>
 </td>
 </tr>
 </table>

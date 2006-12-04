@@ -1,71 +1,58 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>TicTacToe</b><br>
+<b>TicTacToe</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>TicTacToe features</i><br>
+<i>TicTacToe features</i><br/>
 <ul>
 <li>5 game clients available: TicTacToe (Gtk+), KTicTacTux (KDE), SDL/OpenGL (TTT3D), Console (TTTXT), Grubby (Guru-TTT)
 <li>supports statistics
 <li>supports game spectators
 <li>AI opponent available
 </ul>
-<br>
+<br/>
 
-<i>TicTacToe rules</i><br>
+<i>TicTacToe rules</i><br/>
 One player uses the cross, the other one the circle (or similar symbols).
 Then they try to get 3 of their symbols in a row (horizontally, vertically
 or diagonally) by putting a symbol on a free field in each turn.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 <a href="http://dev.ggzgamingzone.org/protocols/tictactoe.ggzcomm">XML protocol</a>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/tictactoe/"><i>Server: TicTacToe</i></a>
-<br><br>
-
-<a href="/gameservers/rubytoe/"><i>Server: RubyToe</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: TicTacTux</i><br>
-<a href="/games/tictactoe/"><img src="/games/pics/tictactoe.png"></a>
-<br>
-
-<br>
+<i>Gtk+ client: TicTacToe</i><br/>
+<a href="/gameclients/tictactoe/"><img src="/gameclients/thumbs/tictactoe.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_kde.png">
-<i>KDE client: KTicTacTux</i><br>
-<a href="/games/tictactoe/"><img src="/games/pics/ktictactux.png"></a>
-<br>
-
-<br>
+<i>KDE client: KTicTacTux</i><br/>
+<a href="/gameclients/ktictactux/"><img src="/gameclients/thumbs/ktictactux.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL/OpenGL client: TTT3D</i><br>
-<a href="/games/tictactoe/"><img src="/games/pics/ttt3d.png"></a>
+<i>SDL/OpenGL client: TTT3D</i><br/>
+<a href="/gameclients/ttt3d/"><img src="/gameclients/thumbs/ttt3d.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/tictactoe/"><i>Server: TicTacToe</i></a>
+<br/><br/>
 
-</font>
+<a href="/gameservers/rubytoe/"><i>Server: RubyToe</i></a>
+<br/><br/>
+
 </td>
 </tr>
 </table>

@@ -1,33 +1,30 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>SDL client: Víbora</b><br>
-<br>
+<b>SDL client: Víbora</b><br/>
+<br/>
 
-<table class="inner">
+<table class="twoside">
 <tr>
-<td valign="top" width="100%">
+<td>
 
-<i>Features</i><br>
+<i>Features</i><br/>
 <ul>
 <li>fullscreen graphical client
 <li>easy usage
 </ul>
-<br>
 
-</td><td valign="top">
+</td><td>
 
-<img src="/clients/pics/vibora.png"><br>
+<img src="/clients/pics/vibora.png"><br/>
 
 </td>
 </tr>
 </table>
 
-</font>
 </td>
 </tr>
 </table>

@@ -1,13 +1,13 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Gnibbles</b><br>
+<b>Gnibbles</b><br/>
 Action game for 2 players.
-<br>
+<br/><br/>
+
 <table class="listnorm">
 <tr><td>
 Neither the game server nor the game client are GGZ projects but they do provide GGZ support.
@@ -15,44 +15,36 @@ The project homepage is:
 <a href="http://www.gnome.org/projects/gnome-games/">gnome.org</a>.
 </td></tr>
 </table>
+<br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Gnibbles features</i><br>
+<i>Gnibbles features</i><br/>
 <ul>
 <li>GNOME client
 </ul>
-<br>
+<br/>
 
-<i>Gnibbles rules</i><br>
+<i>Gnibbles rules</i><br/>
 The game is well-documented in the handbook which is part of the
 Gnibbles game client.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/gnibbles/"><i>Server: Gnibbles</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>GNOME client: Gnibbles</i><br>
-<a href="/games/gnibbles/"><img src="/games/pics/gnibbles.png"></a>
-<br>
+<i>GNOME client: Gnibbles</i><br/>
+<a href="/gameclients/gnibbles/"><img src="/gameclients/thumbs/gnibbles.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/gnibbles/"><i>Server: Gnibbles</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

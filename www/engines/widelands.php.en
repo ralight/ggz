@@ -1,57 +1,49 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Widelands</b><br>
+<b>Widelands</b><br/>
 Strategy game for 2-8 players.
-<br>
+<br/><br/>
+
 <table class="listnorm">
 <tr><td>
 The game client is not a GGZ project but it does provide GGZ support.
 The project homepage is:
 <a href="http://widelands.sourceforge.net/">widelands.sourceforge.net</a>.
-<br>
+<br/>
 </td></tr>
 </table>
+<br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Widelands features</i><br>
+<i>Widelands features</i><br/>
 <ul>
 <li>SDL game client
 <li>client-side server
 </ul>
 
-<i>Widelands rules</i><br>
+<i>Widelands rules</i><br/>
 In Widelands, the player leads a tribe from a single headquarter
 to a prosporous nation. Construction, expansion, economy and battles
 are the main elements of this game.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client:</i><br>
-<a href="/games/widelands/"><img src="/games/pics/widelands.png"></a>
-<br>
+<i>SDL client:</i><br/>
+<a href="/gameclients/widelands/"><img src="/gameclients/thumbs/widelands.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

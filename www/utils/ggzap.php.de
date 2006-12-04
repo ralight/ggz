@@ -1,42 +1,39 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZap</b><br>
+<b>GGZap</b><br/>
 KDE-Schnellstarter für GGZ-Spiele
-<br>
+<br/><br/>
 
-<table class="inner">
+<table class="twoside">
 <tr>
-<td valign="top">
+<td>
 
-<i>Hauptmerkmale</i><br>
+<i>Hauptmerkmale</i><br/>
 <ul>
 <li>Kicker-Einbindung als Systray-Applet mit direkter Spiele-Auswahl
 <li>Spielreservierungen
 </ul>
-<br>
 
-<i>Detaillierte Informationen</i><br>
+<i>Detaillierte Informationen</i><br/>
 Anstelle eines GGZ Core-Clients, den man zum Chatten und Spielen startet,
 kann man auch GGZap im Hintergrund laufen lassen und dann ein Spiel
 zum sofortigen Start (falls ein freier Platz an einem Spieltisch gefunden wird)
 oder zum späteren Start auswählen. Im zweiten Fall wird ein Spiel gestartet und
 auf hinzukommende Spieler gewartet.
 
-</td><td valign="top">
+</td><td>
 
-<i>Screenshot:</i><br>
+<i>Screenshot:</i><br/>
 <img src="/utils/pics/ggzap.png">
 
 </td>
 </tr>
 </table>
 
-</font>
 </td>
 </tr>
 </table>

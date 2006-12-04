@@ -1,27 +1,24 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Freelords Server</b><br>
+<b>Freelords Server</b><br/>
 Strategy game for 2-8 players.
-<br>
+<br/><br/>
+
 <table class="listnorm">
 <tr><td>
 This game server is not a GGZ project but it does provide GGZ support.
 The project homepage is:
-<br>
+<br/>
 <a href="http://www.freelords.org/">www.freelords.org</a>.
 </td></tr>
 </table>
+<br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Supports the <a href="/engines/freelords/">Freelords</a> engine
 <li>Supports AI players
@@ -33,9 +30,9 @@ The Freelords server is an experimental server which has been written explicitel
 to implement GGZ support. It might be extended later on.
 It provides basic GGZ support.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game server support</i><br>
+<i>GGZ game server support</i><br/>
 <table class="listnorm">
 <tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">no</td></tr>
@@ -43,29 +40,24 @@ It provides basic GGZ support.
 <tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
-<br>
+<br/>
 
-<i>Homepage of the Freelords server</i><br>
+<i>Homepage of the Freelords server</i><br/>
 <a href="http://www.freelords.org/" target="blank">http://www.freelords.org/</a>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/engines/freelords/"><i>Engine: Freelords</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: Freelords</i><br>
-<a href="/games/freelords/"><img src="/games/pics/freelords.png"></a>
-<br>
+<i>SDL client: Freelords</i><br/>
+<a href="/gameclients/freelords/"><img src="/gameclients/thumbs/freelords.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/freelords/"><i>Engine: Freelords</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

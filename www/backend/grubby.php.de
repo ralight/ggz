@@ -1,19 +1,18 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Grubby</b><br>
+<b>Grubby</b><br/>
 Der Chatbot der GGZ Gaming Zone.
-<br>
+<br/><br/>
 
-<table class="inner">
+<table class="twoside">
 <tr>
-<td valign="top">
+<td>
 
-<i>Grubby's Eigenschaften</i><br>
+<i>Grubby's Eigenschaften</i><br/>
 <ul>
 <li>Modularer Aufbau
 <li>Unterstützung für Internationalisierung (i18n) und Spielereigenschaften
@@ -22,9 +21,9 @@ Der Chatbot der GGZ Gaming Zone.
 <li>Script-fähig via Python, Perl, Ruby und Tcl
 <li>Kann ein paar spiele spielen (nach Einladung)
 </ul>
-<br>
+<br/>
 
-<i>Detail-Information</i><br>
+<i>Detail-Information</i><br/>
 Spieler sind sicherlich an all den verfügbaren Kommandos interessiert, welche im
 <a href="http://www.ggzgamingzone.org/docs/grubby/user-manual.de.html">Nutzerhandbuch</a>
 aufgelistet sind.
@@ -32,16 +31,15 @@ Wer hingegen an Grubby's Design interessiert ist, schaut bitte im
 <a href="http://www.ggzgamingzone.org/docs/grubby/admin-manual.html">Administratorhandbuch</a>
 nach.
 
-</td><td valign="top">
+</td><td>
 
-<i>Ein Bild von Grubby:</i><br>
+<i>Ein Bild von Grubby:</i><br/>
 <img src="/backend/pics/grubbybig.png">
 
 </td>
 </tr>
 </table>
 
-</font>
 </td>
 </tr>
 </table>

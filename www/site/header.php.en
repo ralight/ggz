@@ -28,6 +28,8 @@ GGZ Gaming Zone
 <td>
 <a href="/">Front page</a>
 |
+<a href="/games/">Games</a>
+|
 <a href="/software/">Software</a>
 |
 <a href="/documentation/">Documentation</a>
@@ -52,11 +54,9 @@ function outdated($lang = "en")
 	echo "<table class='pane'>\n";
 	echo "<tr>\n";
 	echo "<td>\n";
-	echo "<font size='3'>\n";
 	echo "<font color='#ff0000'>Warning:</font>\n";
 	echo "A newer version of this page is available in the original language.\n";
 	echo "<a href='$file'>View latest version</a>.\n";
-	echo "</font>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";

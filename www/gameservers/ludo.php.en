@@ -1,17 +1,12 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
 <b>Ludo Server</b><br>
 Board game for 2-4 players.
-<br>
-
-<table class="inner">
-<tr>
-<td valign="top">
+<br><br>
 
 <i>Fact sheet</i><br>
 <ul>
@@ -35,24 +30,19 @@ The Ludo server shares its protocol (Bogaprot) with other board game servers.
 <tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
+<b>Related pages</b>
+<br><br>
+
+<img src="/pics/icons/game_sdl.png">
+<i>SDL client: GGZBoard</i><br>
+<a href="/gameclients/ggzboard/"><img src="/gameclients/thumbs/ggzboard.png"></a>
 <br><br>
 
 <a href="/engines/ludo/"><i>Engine: Ludo/Bogaprot</i></a>
 <br><br>
 
-<img src="/pics/icons/game_sdl.png">
-<i>SDL client: GGZBoard</i><br>
-<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
-<br><br>
-
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

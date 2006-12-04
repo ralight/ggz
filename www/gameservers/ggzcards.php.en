@@ -1,19 +1,14 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZCards Server</b><br>
+<b>GGZCards Server</b><br/>
 Multiple card games for 2-6 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Supports the <a href="/engines/lapocha/">LaPocha</a>, <a href="/engines/bridge/">Bridge</a>, <a href="/engines/fortytwo/">FortyTwo</a>, <a href="/engines/hearts/">Hearts</a>, <a href="/engines/suaro/">Suaro</a>, <a href="/engines/sueca/">Sueca</a>, <a href="/engines/whist/">Whist</a> and <a href="/engines/spades/">Spades</a> engines
 <li>Supports AI players
@@ -26,9 +21,9 @@ For LaPocha, this is the GGZCards variant of the LaPocha game server, succeeding
 original LaPocha server which is since no longer part of GGZ.
 In all these GGZCards games, many GGZ features are supported.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game server support</i><br>
+<i>GGZ game server support</i><br/>
 <table class="listnorm">
 <tr><td><i>Spectators</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 <tr><td><i>Statistics</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
@@ -36,50 +31,45 @@ In all these GGZCards games, many GGZ features are supported.
 <tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 </table>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/engines/lapocha/"><i>Engine: LaPocha</i></a>
-<br><br>
-
-<a href="/engines/bridge/"><i>Engine: Bridge</i></a>
-<br><br>
-
-<a href="/engines/fortytwo/"><i>Engine: FortyTwo</i></a>
-<br><br>
-
-<a href="/engines/hearts/"><i>Engine: Hearts</i></a>
-<br><br>
-
-<a href="/engines/suaro/"><i>Engine: Suaro</i></a>
-<br><br>
-
-<a href="/engines/sueca/"><i>Engine: Sueca</i></a>
-<br><br>
-
-<a href="/engines/whist/"><i>Engine: Whist</i></a>
-<br><br>
-
-<a href="/engines/spades/"><i>Engine: Spades</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: GGZCards</i><br>
-<a href="/games/ggzcards/"><img src="/games/pics/ggzcards.png"></a>
-<br><br>
+<i>Gtk+ client: GGZCards</i><br/>
+<a href="/gameclients/ggzcards/"><img src="/gameclients/thumbs/ggzcards.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_java.png">
-<i>Java client: GGZ-Java</i><br>
-<a href="/games/ggzjava/"><img src="/games/pics/ggzjava.png"></a>
-<br><br>
+<i>Java client: GGZ-Java</i><br/>
+<a href="/gameclients/ggzjava/"><img src="/gameclients/thumbs/ggzjava.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/lapocha/"><i>Engine: LaPocha</i></a>
+<br/><br/>
 
-</font>
+<a href="/engines/bridge/"><i>Engine: Bridge</i></a>
+<br/><br/>
+
+<a href="/engines/fortytwo/"><i>Engine: FortyTwo</i></a>
+<br/><br/>
+
+<a href="/engines/hearts/"><i>Engine: Hearts</i></a>
+<br/><br/>
+
+<a href="/engines/suaro/"><i>Engine: Suaro</i></a>
+<br/><br/>
+
+<a href="/engines/sueca/"><i>Engine: Sueca</i></a>
+<br/><br/>
+
+<a href="/engines/whist/"><i>Engine: Whist</i></a>
+<br/><br/>
+
+<a href="/engines/spades/"><i>Engine: Spades</i></a>
+<br/><br/>
+
 </td>
 </tr>
 </table>

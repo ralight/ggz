@@ -1,13 +1,13 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Freeciv</b><br>
+<b>Freeciv</b><br/>
 Strategy game for 2-30 players.
-<br>
+<br/><br/>
+
 <table class="listnorm">
 <tr><td>
 Neither the game server nor the game client are GGZ projects but they do provide GGZ support.
@@ -15,47 +15,39 @@ The project homepage is:
 <a href="http://www.freeciv.org/">freeciv.org</a>.
 </td></tr>
 </table>
+<br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Freeciv features</i><br>
+<i>Freeciv features</i><br/>
 <ul>
 <li>Gtk+ and other game clients
 <li>AI opponents available
 </ul>
-<br>
+<br/>
 
-<i>Freeciv rules</i><br>
+<i>Freeciv rules</i><br/>
 The usual civilization-style game rules apply, although Freeciv can be
 configured in nearly every aspect.
 A detailed manual is available at
 <a href="http://www.freeciv.org/index.php/Game_Manual">http://www.freeciv.org/index.php/Game_Manual</a>.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/freeciv/"><i>Server: Freeciv</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: Freeciv</i><br>
-<a href="/games/freeciv/"><img src="/games/pics/freeciv.png"></a>
-<br>
+<i>Gtk+ client: Freeciv</i><br/>
+<a href="/gameclients/freeciv/"><img src="/gameclients/thumbs/freeciv.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/freeciv/"><i>Server: Freeciv</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

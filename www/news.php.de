@@ -1,9 +1,8 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
 <b>GGZ Gaming Zone Neuigkeiten</b><br>
 Archivierte Ankündigungen.
@@ -11,7 +10,6 @@ Archivierte Ankündigungen.
 
 <?php include_once("site/newsparser.php"); ?>
 
-</font>
 </td>
 </tr>
 </table>

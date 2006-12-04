@@ -1,34 +1,31 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Console client: GGZ-Txt</b><br>
-<br>
+<b>Console client: GGZ-Txt</b><br/>
+<br/>
 
-<table class="inner">
+<table class="twoside">
 <tr>
-<td valign="top" width="100%">
+<td>
 
-<i>Features</i><br>
+<i>Features</i><br/>
 <ul>
 <li>doesn't need X11 to run
 <li>support for terminal colours and readline functionality
 <li>can be used to play games, e.g. when running in xterm
 </ul>
-<br>
 
-</td><td valign="top">
+</td><td>
 
-<img src="/clients/pics/ggz-txt.png"><br>
+<img src="/clients/pics/ggz-txt.png"><br/>
 
 </td>
 </tr>
 </table>
 
-</font>
 </td>
 </tr>
 </table>

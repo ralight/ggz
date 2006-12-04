@@ -1,19 +1,14 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Keepalive Server</b><br>
+<b>Keepalive Server</b><br/>
 Role play game for 2-1000 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Supports the <a href="/engines/keepalive/">Keepalive</a> engine
 <li>Implemented in C++
@@ -24,9 +19,9 @@ The Keepalive server is a very experimental server which is running as long as t
 GGZ server is running, i.e. logging into a running game is always possible.
 The server is also reachable from the outside without GGZ.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game server support</i><br>
+<i>GGZ game server support</i><br/>
 <table class="listnorm">
 <tr><td><i>Spectators</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 <tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">no</td></tr>
@@ -34,24 +29,19 @@ The server is also reachable from the outside without GGZ.
 <tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 </table>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/engines/keepalive/"><i>Engine: Keepalive</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_kde.png">
-<i>KDE client: Keepalive</i><br>
-<a href="/games/keepalive/"><img src="/games/pics/keepalive.png"></a>
-<br><br>
+<i>KDE client: Keepalive</i><br/>
+<a href="/gameclients/keepalive/"><img src="/gameclients/thumbs/keepalive.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/keepalive/"><i>Engine: Keepalive</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

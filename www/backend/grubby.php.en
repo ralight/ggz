@@ -3,17 +3,16 @@
 <table class="content" width="100%">
 <tr>
 <td>
-<font size="3">
 
-<b>Grubby</b><br>
+<b>Grubby</b><br/>
 The GGZ Gaming Zone chat bot.
-<br>
+<br/><br/>
 
-<table class="inner">
+<table class="twoside">
 <tr>
-<td valign="top">
+<td>
 
-<i>Grubby's features</i><br>
+<i>Grubby's features</i><br/>
 <ul>
 <li>Modular design
 <li>Support for internationalization (i18n) and player properties
@@ -22,24 +21,23 @@ The GGZ Gaming Zone chat bot.
 <li>Scriptable via Python, Perl, Ruby and Tcl
 <li>Can play some admin on invitation
 </ul>
-<br>
+<br/>
 
-<i>Detailed information</i><br>
+<i>Detailed information</i><br/>
 Players might want to find out all the available commands, which are listed in the
 <a href="http://www.ggzgamingzone.org/docs/grubby/user-manual.en.html">user manual</a>.
 If you're interested in grubby's design, please have a look into the
 <a href="http://www.ggzgamingzone.org/docs/grubby/admin-manual.html">admin manual</a>.
 
-</td><td valign="top">
+</td><td>
 
-<i>An image of grubby:</i><br>
+<i>An image of grubby:</i><br/>
 <img src="/backend/pics/grubbybig.png">
 
 </td>
 </tr>
 </table>
 
-</font>
 </td>
 </tr>
 </table>

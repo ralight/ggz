@@ -1,19 +1,18 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZ Community</b><br>
+<b>GGZ Community</b><br/>
 Web portal for GGZ servers including making GGZ statistics accessible via browser.
-<br>
+<br/><br/>
 
-<table class="inner">
+<table class="twoside">
 <tr>
-<td valign="top">
+<td>
 
-<i>The main features</i><br>
+<i>The main features</i><br/>
 <ul>
 <li>Themeable, internationalized web portal
 <li>Handles player registrations
@@ -27,21 +26,20 @@ Web portal for GGZ servers including making GGZ statistics accessible via browse
 </ul>
 
 
-<i>Detailed information</i><br>
+<i>Detailed information</i><br/>
 The web interface can be found online at
 <a href="http://www.ggzcommunity.org">http://www.ggzcommunity.org</a>.
 It refers to the GGZ server running at <a href="ggz://live.ggzgamingzone.org">live.ggzgamingzone.org</a>.
 
-</td><td valign="top">
+</td><td>
 
-<i>Screenshot:</i><br>
+<i>Screenshot:</i><br/>
 <img src="/backend/pics/db2web.png">
 
 </td>
 </tr>
 </table>
 
-</font>
 </td>
 </tr>
 </table>

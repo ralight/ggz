@@ -1,19 +1,18 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZ Community</b><br>
+<b>GGZ Community</b><br/>
 Webportal für GGZ-Server mit Anzeige der Statistiken in Webbrowsern.
-<br>
+<br/><br/>
 
-<table class="inner">
+<table class="twoside">
 <tr>
-<td valign="top">
+<td>
 
-<i>Die wichtigsten Merkmale</i><br>
+<i>Die wichtigsten Merkmale</i><br/>
 <ul>
 <li>Anpassbares, internationalisiertes Webportal
 <li>Nimmt Spieler-Registrierungen vor
@@ -26,23 +25,22 @@ Webportal für GGZ-Server mit Anzeige der Statistiken in Webbrowsern.
 <li>Etwa 4000 Zeilen Code
 </ul>
 
-<i>Detaillierte Informationen</i><br>
+<i>Detaillierte Informationen</i><br/>
 Die Webschnittstelle kann online unter
 <a href="http://www.ggzcommunity.org">http://www.ggzcommunity.org</a>
 aufgerufen werden.
 Sie ist auf den GGZ-Server von <a href="ggz://live.ggzgamingzone.org">live.ggzgamingzone.org</a>
 konfiguriert.
 
-</td><td valign="top">
+</td><td>
 
-<i>Abbildung:</i><br>
+<i>Abbildung:</i><br/>
 <img src="/backend/pics/db2web.png">
 
 </td>
 </tr>
 </table>
 
-</font>
 </td>
 </tr>
 </table>

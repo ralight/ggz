@@ -1,19 +1,14 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Reversi Server</b><br>
+<b>Reversi Server</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Supports the <a href="/engines/reversi/">Reversi</a> engine
 <li>Supports AI players
@@ -24,9 +19,9 @@ Board game for 2 players.
 The Reversi server implements the Reversi board game.
 An integrated AI is available, as is support for recording statistics.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game server support</i><br>
+<i>GGZ game server support</i><br/>
 <table class="listnorm">
 <tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
@@ -34,34 +29,29 @@ An integrated AI is available, as is support for recording statistics.
 <tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 </table>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/engines/reversi/"><i>Engine: Reversi</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: Reversi</i><br>
-<a href="/games/reversi/"><img src="/games/pics/reversi.png"></a>
-<br><br>
+<i>Gtk+ client: Reversi</i><br/>
+<a href="/gameclients/reversi/"><img src="/gameclients/thumbs/reversi.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_kde.png">
-<i>KDE client: KReversi</i><br>
-<a href="/games/kreversi/"><img src="/games/pics/kreversi.png"></a>
-<br><br>
+<i>KDE client: KReversi</i><br/>
+<a href="/gameclients/kreversi/"><img src="/gameclients/thumbs/kreversi.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: GGZBoard</i><br>
-<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
-<br><br>
+<i>SDL client: GGZBoard</i><br/>
+<a href="/gameclients/ggzboard/"><img src="/gameclients/thumbs/ggzboard.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/reversi/"><i>Engine: Reversi</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

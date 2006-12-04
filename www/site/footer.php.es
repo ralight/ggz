@@ -1,9 +1,8 @@
 <br>
 
-<table class="pane" width="100%">
+<table class="pane">
 <tr>
 <td>
-<font size="3">
 International
 <?php
 include("international.php");
@@ -14,7 +13,6 @@ include("international.php");
 <a href="/network.php">Servidores/Red</a>
 |
 <a href="/contact.php">Contacto</a>
-</font>
 </td>
 </tr>
 </table>

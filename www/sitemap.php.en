@@ -1,32 +1,32 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
 <b>GGZ web pages sitemap</b><br>
 The number of web pages is permanently increasing. This page helps
 to find the right page more easily.
 <br><br>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<a href="/software.php">Software Overview</a>
+<a href="/software/">Software Overview</a>
 <u>
-<li><a href="/engines/">Game engines (types/protocols)</a>
-<li><a href="/games/">Game clients</a>
-<li><a href="/gameservers/">Game servers</a>
 <li><a href="/clients/">Core clients</a>
 <li><a href="/utils/">Utilities</a>
 <li><a href="/backend/">Backend</a>
 </u>
 
 <br>
+<a href="/games/">Games Overview</a>
+<u>
+<li><a href="/engines/">Game engines (types/protocols)</a>
+<li><a href="/gameclients/">Game clients</a>
+<li><a href="/gameservers/">Game servers</a>
+</u>
 
-<a href="/docs.php">Documentation Overview</a>
+<br>
+
+<a href="/documentation/">Documentation Overview</a>
 <u>
 <li><a href="/docs/spec/">GGZ protocol specification</a>
 <li><a href="/docs/api/">Developer API documentation</a>
@@ -38,20 +38,16 @@ to find the right page more easily.
 
 <a href="/releases/">Release Information Overview</a>
 <u>
-<li><a href="/releases/0.0.12/">Current release</a>
+<li><a href="/releases/latest/">Current release</a>
 </u>
 
 <br>
 
 <a href="/screenshots/">Screenshots Overview</a>
 <u>
-<li><a href="/screenshots/0.0.12/">Current screenshots</a>
+<li><a href="/screenshots/0.0.13/">Current screenshots</a>
 </u>
 
-</td>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

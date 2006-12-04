@@ -1,35 +1,32 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Gtk+-Client: GGZ-Gtk</b><br>
-<br>
+<b>Gtk+-Client: GGZ-Gtk</b><br/>
+<br/>
 
-<table class="inner">
+<table class="twoside">
 <tr>
-<td valign="top" width="100%">
+<td>
 
-<i>Merkmale</i><br>
+<i>Merkmale</i><br/>
 <ul>
 <li>kleiner und schneller graphischer Core-Client
 <li>Chat unterstützt Auto-Vervollständigung und Eingabewiederholung
 <li>Login-Profile
 <li>zeigt Verbindungsqualität an
 </ul>
-<br>
 
-</td><td valign="top">
+</td><td>
 
-<img src="/clients/pics/ggz-gtk.png"><br>
+<img src="/clients/pics/ggz-gtk.png"><br/>
 
 </td>
 </tr>
 </table>
 
-</font>
 </td>
 </tr>
 </table>

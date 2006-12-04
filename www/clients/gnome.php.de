@@ -1,33 +1,30 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GNOME-Client: GGZ-Gnome</b><br>
-<br>
+<b>GNOME-Client: GGZ-Gnome</b><br/>
+<br/>
 
-<table class="inner">
+<table class="twoside">
 <tr>
-<td valign="top" width="100%">
+<td>
 
-<i>Merkmale</i><br>
+<i>Merkmale</i><br/>
 <ul>
 <li>Buntes Erscheinungsbild
 <li>Einfache Login-Methoden
 </ul>
-<br>
 
-</td><td valign="top">
+</td><td>
 
-<img src="/clients/pics/ggz-gnome.png"><br>
+<img src="/clients/pics/ggz-gnome.png"><br/>
 
 </td>
 </tr>
 </table>
 
-</font>
 </td>
 </tr>
 </table>

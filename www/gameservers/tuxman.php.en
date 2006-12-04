@@ -1,19 +1,25 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class='pane'>
 <tr>
 <td>
-<font size="3">
+<font color='#ff0000'>Warning:</font>
+This application is not maintained anymore.
+Visit the <a href="http://dev.ggzgamingzone.org/graveyard/">graveyard</a>
+for more information.
+</td>
+</tr>
+</table>
 
-<b>Tuxman Server</b><br>
-Arcade game for one player.
-<br>
-
-<table class="inner">
+<table class="content">
 <tr>
-<td valign="top">
+<td>
 
-<i>Fact sheet</i><br>
+<b>Tuxman Server</b><br/>
+Arcade game for one player.
+<br/><br/>
+
+<i>Fact sheet</i><br/>
 <ul>
 <li>Supports the <a href="/engines/tuxman/">Tuxman</a> engine
 <li>Supports AI players
@@ -24,9 +30,9 @@ Arcade game for one player.
 The Tuxman server implements the logic for the Tuxman game.
 It provides very basic GGZ support.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game server support</i><br>
+<i>GGZ game server support</i><br/>
 <table class="listnorm">
 <tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">no</td></tr>
@@ -34,26 +40,21 @@ It provides very basic GGZ support.
 <tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
-<br>
+<br/>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/engines/tuxman/"><i>Engine: Tuxman</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: Tuxman</i><br>
-<a href="/games/tuxman/"><img src="/games/pics/tuxman.png"></a>
-<br>
+<i>SDL client: Tuxman</i><br/>
+<a href="/gameclients/tuxman/"><img src="/gameclients/thumbs/tuxman.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/tuxman/"><i>Engine: Tuxman</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

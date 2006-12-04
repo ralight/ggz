@@ -1,88 +1,79 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="pane" width="100%">
+<table class="pane">
 <tr>
 <td>
-<font size="3">
-<a href="/software.php">Software:</a>
+<a href="/games/">Games:</a>
 |
 <a href="/engines/">Engines</a>
 |
-<a href="/games/">Game clients</a>
+<a href="/gameclients/">Game clients</a>
 |
 Game servers
-|
-<a href="/clients/">Core clients</a>
-|
-<a href="/utils/">Utilities</a>
-|
-<a href="/backend/">Backends</a>
-</font>
 </td>
 </tr>
 </table>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZ Gameserver Pages</b><br>
+<b>GGZ game server pages</b><br/>
 The following game servers have been created by the GGZ Gaming Zone developers:
-<br><br>
+<br/><br/>
 
 <table class="inner">
 <tr><td>
 
-<i>Board game servers:</i><br>
+<i>Board game servers:</i><br/>
 <a href="/gameservers/tictactoe/">TicTacToe</a>
-<br>
+<br/>
 <a href="/gameservers/rubytoe/">RubyToe</a>
-<br>
+<br/>
 <a href="/gameservers/dots/">Connect The Dots</a>
-<br>
+<br/>
 <a href="/gameservers/hastings/">Hastings1066</a>
-<br>
+<br/>
 <a href="/gameservers/reversi/">Reversi</a>
-<br>
+<br/>
 <a href="/gameservers/combat/">Combat</a>
-<br>
+<br/>
 <a href="/gameservers/chess/">Chess</a>
-<br>
+<br/>
 <a href="/gameservers/cchess/">Chinese Chess</a>
-<br>
+<br/>
 <a href="/gameservers/ccheckers/">Chinese Checkers</a>
-<br>
+<br/>
 <a href="/gameservers/krosswater/">Krosswater</a>
-<br>
+<br/>
 <a href="/gameservers/muehle/">Mühle</a>
-<br>
+<br/>
 <a href="/gameservers/escape/">Escape</a>
-<br>
+<br/>
 <a href="/gameservers/connectx/">ConnectX</a>
-<br>
+<br/>
 <a href="/gameservers/goserver/">Go</a>
-<br>
+<br/>
 <a href="/gameservers/checkers/">Checkers</a>
-<br>
+<br/>
 <a href="/gameservers/hnefatafl/">Hnefatafl</a>
-<br>
+<br/>
 <a href="/gameservers/ludo/">Ludo</a>
-<br>
+<br/>
 <a href="/gameservers/arimaa/">Arimaa</a>
-<br>
-<br>
+<br/>
+<br/>
 
-<i>Card game servers:</i><br>
+<i>Card game servers:</i><br/>
 <a href="/gameservers/spades/">NetSpades</a>
-<br>
+<br/>
 <a href="/gameservers/ggzcards/">GGZCards</a> (LaPocha, Bridge, FortyTwo, Hearts, Suaro, Sueca, Whist, Spades)
-<br>
-<br>
+<br/>
+<br/>
 
-<i>Other GGZ game servers:</i><br>
+<i>Other GGZ game servers:</i><br/>
 <a href="/gameservers/keepalive/">Keepalive</a>
-<br>
+<br/>
 <a href="/gameservers/geekgame/">Geekgame</a>
 
 </td>
@@ -95,29 +86,27 @@ or they're part of GGZ but external clients are needed.
 <table class="inner">
 <tr><td>
 
-<i>External game servers:</i><br>
+<i>External game servers:</i><br/>
 <a href="/gameservers/kamikaze/">Kamikaze</a>
-<br>
-<a href="/gameservers/tuxman/">Tuxman Server</a> (part of GGZ)
-<br>
+<br/>
 <a href="/gameservers/teg/">T.E.G.</a>
-<br>
+<br/>
 <a href="/gameservers/freeciv/">Freeciv</a>
-<br>
+<br/>
 <a href="/gameservers/freelords/">Freelords</a>
-<br>
+<br/>
 <a href="/gameservers/gnibbles/">Gnibbles</a>
-<br>
-Batalla Naval (unmaintained)
-<br>
-XTux Arena (unmaintained)
-<br>
+<br/>
 
 </td>
 </tr>
 </table>
 
-</font>
+There are some game servers which are not maintained
+anymore. They are still of interest for developers and other
+interested people and can be found in the
+<a href="http://dev.ggzgamingzone.org/graveyard/">graveyard</a>.
+
 </td>
 </tr>
 </table>

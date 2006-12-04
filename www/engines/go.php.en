@@ -1,70 +1,59 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Go/GMP</b><br>
+<b>Go/GMP</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
+
 <table class="listnorm">
 <tr><td>
 Neither the game server nor the game client are GGZ projects but they do provide GGZ support.
 The project homepage is:
-<br>
+<br/>
 <a href=" http://www.gnu.org/software/gnugo/">gnu.org/software/gnugo</a>.
 </td></tr>
 </table>
+<br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Go/GMP features</i><br>
+<i>Go/GMP features</i><br/>
 <ul>
 <li>2 game clients available: CGoBan (X11), GGZBoard (SDL)
 <li>AI opponent available
 </ul>
 
-<i>Go rules</i><br>
+<i>Go rules</i><br/>
 The usual Go rules apply.
 It should be noted that the GGZ integration merely forwards moves executed
 by either human players or the local AI, which requires a GNU Go installation.
 In later versions, move tracking and statistics will be handled as well.
 A custom client will probably also be developed.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/goserver/"><i>Server: Goserver</i></a>
-<br><br>
-
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_x11.png">
-<i>X11 client: CGoBan</i><br>
-<a href="/games/gnugo/"><img src="/games/pics/gnugo.png"></a>
-<br>
-
-<br>
+<i>X11 client: CGoBan</i><br/>
+<a href="/gameclients/gnugo/"><img src="/gameclients/thumbs/gnugo.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: GGZBoard</i><br>
-<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
-<br>
+<i>SDL client: GGZBoard</i><br/>
+<a href="/gameclients/ggzboard/"><img src="/gameclients/thumbs/ggzboard.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/goserver/"><i>Server: Goserver</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

@@ -1,19 +1,14 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Go Server</b><br>
+<b>Go Server</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Supports the <a href="/engines/go/">Go/GMP</a> engine
 <li>Supports an AI player via <a href="http://www.gnu.org/software/gnugo/">GNU Go</a>
@@ -24,9 +19,9 @@ Board game for 2 players.
 The Go server is basically a wrapper around the GNU Go engine.
 It provides only the minimum GGZ support as of now.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game server support</i><br>
+<i>GGZ game server support</i><br/>
 <table class="listnorm">
 <tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">no</td></tr>
@@ -34,31 +29,26 @@ It provides only the minimum GGZ support as of now.
 <tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
-<br>
+<br/>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/engines/go/"><i>Engine: Go/GMP</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_x11.png">
-<i>X11 client: CGoBan</i><br>
-<a href="/games/cgoban/"><img src="/games/pics/gnugo.png"></a>
-<br><br>
+<i>X11 client: CGoBan</i><br/>
+<a href="/gameclients/cgoban/"><img src="/gameclients/thumbs/gnugo.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: GGZBoard</i><br>
-<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
-<br>
+<i>SDL client: GGZBoard</i><br/>
+<a href="/gameclients/ggzboard/"><img src="/gameclients/thumbs/ggzboard.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/go/"><i>Engine: Go/GMP</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

@@ -1,56 +1,46 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Sueca</b><br>
+<b>Sueca</b><br/>
 Card game for ??? players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Sueca features</i><br>
+<i>Sueca features</i><br/>
 <ul>
 <li>Gtk+ and Java game clients
 </ul>
-<br>
+<br/>
 
-<i>Sueca rules</i><br>
+<i>Sueca rules</i><br/>
 This card game is not documented here yet.
 Like all GGZCards game, Bridge belongs to the class of bid-taking card games.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/ggzcards/"><i>Server: GGZCards</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: GGZCards</i><br>
-<a href="/games/ggzcards/"><img src="/games/pics/ggzcards.png"></a>
-<br><br>
+<i>Gtk+ client: GGZCards</i><br/>
+<a href="/gameclients/ggzcards/"><img src="/gameclients/thumbs/ggzcards.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_java.png">
-<i>Java client: GGZ-Java</i><br>
-<a href="/games/ggzjava/"><img src="/games/pics/ggzjava.png"></a>
-<br><br>
+<i>Java client: GGZ-Java</i><br/>
+<a href="/gameclients/ggzjava/"><img src="/gameclients/thumbs/ggzjava.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/ggzcards/"><i>Server: GGZCards</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

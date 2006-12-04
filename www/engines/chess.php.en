@@ -1,66 +1,52 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Chess</b><br>
+<b>Chess</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Chess features</i><br>
+<i>Chess features</i><br/>
 <ul>
 <li>4 game clients available: Chess (Gtk+), Koenig (KDE), GGZBoard (SDL) and Guru-Chess (Grubby)
 <li>supports statistics
 </ul>
-<br>
+<br/>
 
-<i>Chess rules</i><br>
+<i>Chess rules</i><br/>
 On game startup, the clock option is selected by the game host.
 Afterwards, the normal chess rules apply.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/chess/"><i>Server: Chess</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: Chess</i><br>
-<a href="/games/chess/"><img src="/games/pics/chess.png"></a>
-<br>
-
-<br>
+<i>Gtk+ client: Chess</i><br/>
+<a href="/gameclients/chess/"><img src="/gameclients/thumbs/chess.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_kde.png">
-<i>KDE client: Koenig</i><br>
-<a href="/games/koenig/"><img src="/games/pics/koenig.png"></a>
-<br>
-
-<br>
+<i>KDE client: Koenig</i><br/>
+<a href="/gameclients/koenig/"><img src="/gameclients/thumbs/koenig.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: GGZBoard</i><br>
-<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
-<br>
+<i>SDL client: GGZBoard</i><br/>
+<a href="/gameclients/ggzboard/"><img src="/gameclients/thumbs/ggzboard.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/chess/"><i>Server: Chess</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

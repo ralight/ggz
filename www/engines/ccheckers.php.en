@@ -1,63 +1,51 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Chinese Checkers</b><br>
+<b>Chinese Checkers</b><br/>
 Board game for 2 to 6 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Chinese Checkers features</i><br>
+<i>Chinese Checkers features</i><br/>
 <ul>
 <li>2 game clients available: Chinese Checkers (Gtk+) and KCC (KDE)
 <li>AI opponents available
 <li>supports statistics
 </ul>
-<br>
+<br/>
 
-<i>Chinese Checkers rules</i><br>
+<i>Chinese Checkers rules</i><br/>
 The classic Chinese Checkers rules apply.
 Each turn, a player selects a route from one of his points to a hole,
 by either going to a hole next to the point, or jumping over other
 points if necessary. The goal is to place all points into the holes
 in the opposite edge of the star.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/ccheckers/"><i>Server: Chinese Checkers</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: Chinese Checkers</i><br>
-<a href="/games/ccheckers/"><img src="/games/pics/ccheckers.png"></a>
-<br>
-
-<br>
+<i>Gtk+ client: Chinese Checkers</i><br/>
+<a href="/gameclients/ccheckers/"><img src="/gameclients/thumbs/ccheckers.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_kde.png">
-<i>KDE client: KCC</i><br>
-<a href="/games/kcc/"><img src="/games/pics/kcc.png"></a>
-<br>
+<i>KDE client: KCC</i><br/>
+<a href="/gameclients/kcc/"><img src="/gameclients/thumbs/kcc.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/ccheckers/"><i>Server: Chinese Checkers</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

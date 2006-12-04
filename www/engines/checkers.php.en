@@ -1,53 +1,43 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Checkers</b><br>
+<b>Checkers</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Checkers features</i><br>
+<i>Checkers features</i><br/>
 <ul>
 <li>SDL game client available
 <li>AI opponent available
 </ul>
-<br>
+<br/>
 
-<i>Checkers rules</i><br>
+<i>Checkers rules</i><br/>
 Yet to be written down.
 The Checkers game is sometimes also known under the name Draughts,
 and sometimes as Dame.
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/checkers/"><i>Server: Checkers</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: GGZBoard</i><br>
-<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
-<br>
+<i>SDL client: GGZBoard</i><br/>
+<a href="/gameclients/ggzboard/"><img src="/gameclients/thumbs/ggzboard.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/checkers/"><i>Server: Checkers</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

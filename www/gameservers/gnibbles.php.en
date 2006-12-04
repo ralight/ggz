@@ -1,27 +1,24 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Gnibbles Server</b><br>
+<b>Gnibbles Server</b><br/>
 Action game for 2 players.
-<br>
+<br/><br/>
+
 <table class="listnorm">
 <tr><td>
 This game server is not a GGZ project but it does provide GGZ support.
 The project homepage is:
-<br>
+<br/>
 <a href="http://www.gnome.org/projects/gnome-games/">gnome.org</a>.
 </td></tr>
 </table>
+<br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Supports the <a href="/engines/gnibbles/">Gnibbles</a> engine
 <li>Implemented in C
@@ -32,9 +29,9 @@ The project homepage is:
 The Gnibbles server is implementing the multiplayer features for the
 Gnibbles game client.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game server support</i><br>
+<i>GGZ game server support</i><br/>
 <table class="listnorm">
 <tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">yes</td></tr>
@@ -42,29 +39,24 @@ Gnibbles game client.
 <tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/no.png">yes</td></tr>
 </table>
 
-<br>
+<br/>
 
-<i>Homepage of the Gnibbles server</i><br>
+<i>Homepage of the Gnibbles server</i><br/>
 <a href="http://www.gnome.org/projects/gnome-games/" target="blank">http://www.gnome.org/projects/gnome-games/</a>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/engines/gnibbles/"><i>Engine: Gnibbles</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>GNOME client: Gnibbles</i><br>
-<a href="/games/gnibbles/"><img src="/games/pics/gnibbles.png"></a>
-<br>
+<i>GNOME client: Gnibbles</i><br/>
+<a href="/gameclients/gnibbles/"><img src="/gameclients/thumbs/gnibbles.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/gnibbles/"><i>Engine: Gnibbles</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

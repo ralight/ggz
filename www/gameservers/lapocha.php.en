@@ -1,23 +1,31 @@
 <?php include_once("../site/header.php"); ?>
 
+<table class='pane'>
+<tr>
+<td>
+<font color='#ff0000'>Warning:</font>
+This application is not maintained anymore.
+Visit the <a href="http://dev.ggzgamingzone.org/graveyard/">graveyard</a>
+for more information.
+</td>
+</tr>
+</table>
+
 <table class="content">
 <tr>
 <td>
 
-<b>Chinese Chess Server</b><br/>
-Board game for 2 players.
+<b>La Pocha Server</b><br/>
+Card game for 4 players.
 <br/><br/>
 
 <i>Fact sheet</i><br/>
 <ul>
-<li>Supports the <a href="/engines/cchess/">Chinese Chess</a> engine
-<li>Supports an AI player
-<li>Implemented in Python
-<li>GGZ is required (no standalone mode)
+<li>GGZ is required (no standalone operation)
 </ul>
 
-This is the server for the Xadrez Chinês client. It does a very basic
-job of verifying the moves and playing the AI side if requested.
+This client was the original La Pocha server for GGZ.
+It has since been superceded by GGZCards.
 
 <br/><br/>
 
@@ -29,17 +37,19 @@ job of verifying the moves and playing the AI side if requested.
 <tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
+<br/>
+
 </td><td>
 
 <b>Related pages</b>
 <br/><br/>
 
-<img src="/pics/icons/game_sdl.png">
-<i>SDL client: Xadrez Chinês</i><br/>
-<a href="/gameclients/cchess/"><img src="/gameclients/thumbs/xadrez-chines.png"></a>
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: La Pocha</i><br/>
+<a href="/gameclients/lapocha/"><img src="/gameclients/thumbs/lapocha.png"></a>
 <br/><br/>
 
-<a href="/engines/cchess/"><i>Engine: Chinese Chess</i></a>
+<a href="/engines/lapocha/"><i>Engine: La Pocha</i></a>
 <br/><br/>
 
 </td>

@@ -1,9 +1,8 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
 <b>Notícias da GGZ Gaming Zone</b><br>
 Arquivos das notícias.
@@ -11,7 +10,6 @@ Arquivos das notícias.
 
 <?php include_once("site/newsparser.php"); ?>
 
-</font>
 </td>
 </tr>
 </table>

@@ -1,19 +1,14 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZ Server</b><br>
+<b>GGZ Server</b><br/>
 The GGZ Gaming Zone Main Server (ggzd).
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>GGZ Server features</i><br>
+<i>GGZ Server features</i><br/>
 <ul>
 <li>User system with authorized users and anonymous access
 <li>Provides rooms with associated game types
@@ -23,20 +18,12 @@ The GGZ Gaming Zone Main Server (ggzd).
 <li>Integration with Zeroconf systems like Avahi or Howl
 <li>IPv6 enabled
 </ul>
-<br>
 
-<i>Detailed information</i><br>
+<i>Detailed information</i><br/>
 The GGZ protocol can be looked up <a href="/docs/design/html/">here</a>.
 People who want to run a GGZ server should definitely read the
 <a href="/docs/guides/hosting/">GGZ Hosting Guide</a>.
 
-</td><td valign="top">
-
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

@@ -1,26 +1,21 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Krosswater</b><br>
+<b>Krosswater</b><br/>
 Board game for 2 to 4 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Krosswater features</i><br>
+<i>Krosswater features</i><br/>
 <ul>
 <li>KDE game client
 <li>AI opponents available
 </ul>
-<br>
+<br/>
 
-<i>Krosswater rules</i><br>
+<i>Krosswater rules</i><br/>
 The goal is to cross the water from the left to the right.
 To achieve it, stones in the water must be reordered that a path leads
 from the player in horizontal or vertical steps to the right side.
@@ -28,29 +23,24 @@ from the player in horizontal or vertical steps to the right side.
 Nasty opponents are going to try to take stones from your way to insert
 them into theirs...
 
-<br><br>
+<br/><br/>
 
-<i>Protocol and documentation</i><br>
+<i>Protocol and documentation</i><br/>
 No further information present.
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/gameservers/krosswater/"><i>Server: Krosswater</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_kde.png">
-<i>KDE client: Krosswater</i><br>
-<a href="/games/krosswater/"><img src="/games/pics/krosswater.png"></a>
-<br>
+<i>KDE client: Krosswater</i><br/>
+<a href="/gameclients/krosswater/"><img src="/gameclients/thumbs/krosswater.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/gameservers/krosswater/"><i>Server: Krosswater</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

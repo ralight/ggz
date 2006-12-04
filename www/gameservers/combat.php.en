@@ -1,19 +1,14 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Combat Server</b><br>
+<b>Combat Server</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Supports the <a href="/engines/combat/">Combat</a> engine
 <li>Supports AI players
@@ -26,9 +21,9 @@ The Combat game server implements the Combat board game.
 Levels can be uploaded from the client and are then transferred
 to the other client.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game server support</i><br>
+<i>GGZ game server support</i><br/>
 <table class="listnorm">
 <tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">no</td></tr>
@@ -36,24 +31,19 @@ to the other client.
 <tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 </table>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/engines/combat/"><i>Engine: Combat</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: Combat</i><br>
-<a href="/games/combat/"><img src="/games/pics/combat.png"></a>
-<br><br>
+<i>Gtk+ client: Combat</i><br/>
+<a href="/gameclients/combat/"><img src="/gameclients/thumbs/combat.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/combat/"><i>Engine: Combat</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>

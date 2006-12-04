@@ -1,18 +1,17 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>KDE client: KGGZ</b><br>
-<br>
+<b>KDE client: KGGZ</b><br/>
+<br/>
 
-<table class="inner">
+<table class="twoside">
 <tr>
-<td valign="top" width="100%">
+<td>
 
-<i>Features</i><br>
+<i>Features</i><br/>
 <ul>
 <li>displays icons of all game types
 <li>chat supports auto completion and history
@@ -20,17 +19,15 @@
 <li>can be shrinked into the systray to not disturb while being idle
 <li>grubby communication dialog
 </ul>
-<br>
 
-</td><td valign="top">
+</td><td>
 
-<img src="/clients/pics/kggz.png"><br>
+<img src="/clients/pics/kggz.png"><br/>
 
 </td>
 </tr>
 </table>
 
-</font>
 </td>
 </tr>
 </table>

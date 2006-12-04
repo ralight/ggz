@@ -1,39 +1,27 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZ-Metaserver</b><br>
+<b>GGZ-Metaserver</b><br/>
 Der GGZ Gaming Zone-Metaserver (ggzmetaserv).
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Merkmale des GGZ-Metaservers</i><br>
+<i>Merkmale des GGZ-Metaservers</i><br/>
 <ul>
 <li>Generisches XML-basiertes Übertragungs- und Synchronisationsformat
 <li>Kann GGZ-Server-Listen, Spielresultate und mehr speichern
 <li>Wird auch in anderen Projekten verwendet
 (z.B. <a href="http://kderadiostation.coolprojects.org/">KDE Radio Station</a>)
 </ul>
-<br>
+<br/>
 
-<i>Detaillierte Informationen</i><br>
+<i>Detaillierte Informationen</i><br/>
 Solange bis eine vollständige Dokumentation verfügbar ist, sollte man die
 <a href="/docs/server/metaserver/">alten Metaserver-Seiten</a>
 konsultieren.
 
-</td><td valign="top">
-
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

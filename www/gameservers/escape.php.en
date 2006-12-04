@@ -1,19 +1,14 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Escape Server</b><br>
+<b>Escape Server</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Supports the <a href="/engines/escape/">Escape</a> engine
 <li>Supports an AI player
@@ -23,9 +18,9 @@ Board game for 2 players.
 
 A server implementing the Escape game, which provides basic GGZ support.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game server support</i><br>
+<i>GGZ game server support</i><br/>
 <table class="listnorm">
 <tr><td><i>Spectators</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 <tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">no</td></tr>
@@ -33,29 +28,24 @@ A server implementing the Escape game, which provides basic GGZ support.
 <tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 </table>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/engines/escape/"><i>Engine: Escape</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_windows.png">
-<i>Windows client: Escape</i><br>
-<a href="/games/escape/"><img src="/games/pics/escape.png"></a>
-<br><br>
+<i>Windows client: Escape</i><br/>
+<a href="/gameclients/escape/"><img src="/gameclients/thumbs/escape.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: Escape/SDL</i><br>
-<a href="/games/escape-sdl/"><img src="/games/pics/escape-sdl.png"></a>
-<br><br>
+<i>SDL client: Escape/SDL</i><br/>
+<a href="/gameclients/escape-sdl/"><img src="/gameclients/thumbs/escape-sdl.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/escape/"><i>Engine: Escape</i></a>
+<br/><br/>
 
-</font>
 </td>
 </tr>
 </table>
