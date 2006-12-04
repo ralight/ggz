@@ -1,13 +1,18 @@
-#ifndef KGGZ_SEATSDIALOG_H
-#define KGGZ_SEATSDIALOG_H
+#ifndef KGGZGAMES_SEATSDIALOG_H
+#define KGGZGAMES_SEATSDIALOG_H
+
+#include <kggzmod/event.h>
 
 #include <qwidget.h>
-
-#include <ggzmod.h>
 
 namespace KIO
 {
 	class Job;
+};
+
+namespace KGGZMod
+{
+	class Module;
 };
 
 class QScrollView;
@@ -21,15 +26,16 @@ class KGGZSeatsDialog : public QWidget
 		KGGZSeatsDialog(QWidget *parent = NULL, const char *name = NULL);
 		~KGGZSeatsDialog();
 
-		void setMod(GGZMod *mod);
+		void setMod(KGGZMod::Module *mod);
 
 	private slots:
 		void slotDisplay(int id);
 		void slotTaskData(KIO::Job *job, const QByteArray&);
 		void slotTaskResult(KIO::Job *job);
+		void slotInfo(KGGZMod::Event event);
 
 	private:
-		GGZMod *m_mod;
+		KGGZMod::Module *m_mod;
 		QScrollView *m_view;
 		QWidget *m_root;
 		QMap<int, QLabel*> m_hostnames;
@@ -48,7 +54,6 @@ class KGGZSeatsDialog : public QWidget
 		void displaySeats();
 		void displaySpectators();
 		void infos();
-		static void handle_info(GGZMod *mod, GGZModEvent e, const void *data);
 };
 
 #endif

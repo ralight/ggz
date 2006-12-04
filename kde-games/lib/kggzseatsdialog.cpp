@@ -1,5 +1,14 @@
 #include "kggzseatsdialog.h"
 
+#include <kggzmod/module.h>
+#include <kggzmod/player.h>
+
+#include <kdebug.h>
+#include <klocale.h>
+#include <kseparator.h>
+#include <kcombobox.h>
+#include <kio/job.h>
+
 #include <qlayout.h>
 #include <qframe.h>
 #include <qlabel.h>
@@ -8,21 +17,11 @@
 #include <qscrollview.h>
 #include <qimage.h>
 
-#include <kdebug.h>
-#include <klocale.h>
-#include <kseparator.h>
-#include <kcombobox.h>
-#include <kio/job.h>
-
 #include <math.h>
-
-static KGGZSeatsDialog *obj = NULL;
 
 KGGZSeatsDialog::KGGZSeatsDialog(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
-	obj = this;
-
 	m_root = NULL;
 	m_oldmode = displayseats;
 
@@ -61,19 +60,24 @@ KGGZSeatsDialog::~KGGZSeatsDialog()
 {
 }
 
-void KGGZSeatsDialog::setMod(GGZMod *mod)
+void KGGZSeatsDialog::setMod(KGGZMod::Module *mod)
 {
 	m_mod = mod;
 
-	ggzmod_set_handler(mod, GGZMOD_EVENT_INFO, &handle_info);
-	ggzmod_player_request_info(mod, -1);
+	KGGZMod::InfoRequest ir(-1);
+	mod->sendRequest(ir);
+
+	connect(mod, SIGNAL(signalEvent(KGGZMod::Event)), SLOT(slotInfo(KGGZMod::Event)));
 
 	displaySeats();
 }
 
 void KGGZSeatsDialog::displaySeats()
 {
-	int count = ggzmod_get_num_seats(m_mod);
+	//int count = ggzmod_get_num_seats(m_mod);
+	// FIXME: filter according to settings?
+
+	int count = m_mod->players().count();
 	int digits = (int)(log(count) / log(10) + 1);
 
 	if(m_root)
@@ -91,7 +95,7 @@ void KGGZSeatsDialog::displaySeats()
 
 	for(int i = 0; i < count; i++)
 	{
-		GGZSeat seat = ggzmod_get_seat(m_mod, i);
+		KGGZMod::Player *p = *(m_mod->players().at(i));
 
 		QFrame *w = new QFrame(m_root);
 		w->setFrameStyle(QFrame::Panel | QFrame::Raised);
@@ -107,30 +111,30 @@ void KGGZSeatsDialog::displaySeats()
 		photoframe->setFixedSize(64, 64);
 
 		QString type = "unknown";
-		switch(seat.type)
+		switch(p->type())
 		{
-			case GGZ_SEAT_PLAYER:
+			case KGGZMod::Player::player:
 				type = i18n("Player");
 				break;
-			case GGZ_SEAT_OPEN:
+			case KGGZMod::Player::open:
 				type = i18n("Open");
 				break;
-			case GGZ_SEAT_RESERVED:
+			case KGGZMod::Player::reserved:
 				type = i18n("Reserved");
 				break;
-			case GGZ_SEAT_BOT:
+			case KGGZMod::Player::bot:
 				type = i18n("AI bot");
 				break;
-			case GGZ_SEAT_ABANDONED:
+			case KGGZMod::Player::abandoned:
 				type = i18n("Abandoned");
 				break;
-			case GGZ_SEAT_NONE:
+			case KGGZMod::Player::unknown:
 			default:
 				break;
 		}
 		QLabel *typelabel = new QLabel(i18n("Type: %1").arg(type), w);
 
-		QString name = seat.name;
+		QString name = p->name();
 	       	if(name.isNull()) name = i18n("(unnamed)");
 		QLabel *namelabel = new QLabel("<b><i>" + name + "</i></b>", w);
 		namelabel->setBackgroundColor(QColor(255, 255, 255));
@@ -179,7 +183,10 @@ void KGGZSeatsDialog::displaySeats()
 
 void KGGZSeatsDialog::displaySpectators()
 {
-	int count = ggzmod_get_num_spectator_seats(m_mod);
+	//int count = ggzmod_get_num_spectator_seats(m_mod);
+	// FIXME: see displaySeats();
+
+	int count = m_mod->players().count();
 	int digits = (int)(log(count) / log(10) + 1);
 
 	if(m_root)
@@ -193,7 +200,7 @@ void KGGZSeatsDialog::displaySpectators()
 
 	for(int i = 0; i < count; i++)
 	{
-		GGZSpectatorSeat seat = ggzmod_get_spectator_seat(m_mod, i);
+		KGGZMod::Player *p = *(m_mod->players().at(i));
 
 		QFrame *w = new QFrame(m_root);
 		w->setFrameStyle(QFrame::Panel | QFrame::Raised);
@@ -206,7 +213,7 @@ void KGGZSeatsDialog::displaySpectators()
 		QString type = i18n("Spectator");
 		QLabel *typelabel = new QLabel(i18n("Type: %1").arg(type), w);
 
-		QString name = seat.name;
+		QString name = p->name();
 	       	if(name.isNull()) name = i18n("(unnamed)");
 		QLabel *namelabel = new QLabel("<b><i>" + name + "</i></b>", w);
 		namelabel->setBackgroundColor(QColor(255, 255, 255));
@@ -233,38 +240,40 @@ void KGGZSeatsDialog::displaySpectators()
 	m_root->show();
 }
 
-void KGGZSeatsDialog::handle_info(GGZMod *mod, GGZModEvent e, const void *data)
+void KGGZSeatsDialog::slotInfo(KGGZMod::Event event)
 {
-	Q_UNUSED(mod);
-	Q_UNUSED(e);
-	Q_UNUSED(data);
-
-	obj->infos();
+	if(event.type() == KGGZMod::Event::info)
+	{
+		infos();
+	}
 }
 
 void KGGZSeatsDialog::infos()
 {
-	int count = ggzmod_get_num_seats(m_mod);
+	//int count = ggzmod_get_num_seats(m_mod);
+	// FIXME: See display*
+	int count = m_mod->players().count();
 	for(int i = 0; i < count; i++)
 	{
-		GGZPlayerInfo *info = ggzmod_player_get_info(m_mod, i);
-		if(info)
+		KGGZMod::Player *p = *(m_mod->players().at(i));
+		// FIXME: condition if info is really there? not really needed
+		if(/*info*/1==1)
 		{
-			if(info->host)
+			if(p->hostname())
 			{
-				QString hostname = i18n("Host: %1").arg(info->host);
+				QString hostname = i18n("Host: %1").arg(p->hostname());
 				m_hostnames[i]->setText(hostname);
 				m_hostnames[i]->show();
 			}
-			if(info->realname)
+			if(p->realname())
 			{
-				QString realname = i18n("Realname: %1").arg(info->realname);
+				QString realname = i18n("Realname: %1").arg(p->realname());
 				m_realnames[i]->setText(realname);
 				m_realnames[i]->show();
 			}
-			if(info->photo)
+			if(p->photo())
 			{
-				KIO::TransferJob *job = KIO::get(info->photo, false, false);
+				KIO::TransferJob *job = KIO::get(p->photo(), false, false);
 				connect(job, SIGNAL(data(KIO::Job*, const QByteArray&)),
 					SLOT(slotTaskData(KIO::Job*, const QByteArray&)));
 				connect(job, SIGNAL(result(KIO::Job*)),
@@ -319,5 +328,4 @@ void KGGZSeatsDialog::slotTaskResult(KIO::Job *job)
 	m_photodata.remove(job);
 	m_phototasks.remove(job);
 }
-
 
