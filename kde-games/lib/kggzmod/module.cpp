@@ -15,7 +15,7 @@
 //#include <qdatastream.h>
 
 //#include <unistd.h>
-#include <stdlib.h> // for free()
+#include <stdlib.h> // for free() and getenv()
 #include <netinet/in.h> // for ntohl()
 
 using namespace KGGZMod;
@@ -74,16 +74,17 @@ Module::State Module::state() const
 	return d->m_state;
 }
 
-int Module::fd() const
+/*int Module::fd() const
 {
 	return d->m_fd;
-}
+}*/
 
 void ModulePrivate::sendRequest(Request request)
 {
 	if(!m_net)
 	{
 		kdDebug() << "[kggzmod] error: not connected" << endl;
+		return;
 	}
 
 	Request::Type opcode = request.type();
@@ -405,5 +406,11 @@ void ModulePrivate::insertPlayer(Player::Type seattype, QString name, int seat)
 		}
 	}
 	m_players.append(p);
+}
+
+bool Module::isGGZ()
+{
+	if(getenv("GGZMODE")) return true;
+	else return false;
 }
 

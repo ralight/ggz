@@ -32,7 +32,9 @@ class Module : public QObject
 
 		QValueList<Player*> players() const;
 		State state() const;
-		int fd() const;
+		//int fd() const;
+
+		static bool isGGZ();
 
 	signals:
 		void signalEvent(KGGZMod::Event event);
