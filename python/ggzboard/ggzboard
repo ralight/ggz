@@ -152,6 +152,9 @@ class GGZBoard:
 			return None
 		if filename[-4:] == ".png":
 			return pygame.image.load(filename)
+		if filename[0] != "/":
+			# pyrsvgsdl needs absolute filenames
+			filename = os.getcwd() + "/" + filename
 		svg = rsvgsdl.render(filename, width, height)
 		rawdata = svg.data()
 		if rawdata:

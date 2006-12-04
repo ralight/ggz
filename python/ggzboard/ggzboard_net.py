@@ -45,12 +45,7 @@ class NetworkBase:
 		return self.inputthinking
 
 	def getbyte(self):
-		#k = 0
-		#for i in range(99999):
-		#	for j in range(9):
-		#		k += j - i
 		opstr = self.sock.recv(4)
-		#print ">> LEN >>", len(opstr)
 		if len(opstr) < 4:
 			self.errorcode = 1
 			return 0
@@ -62,9 +57,9 @@ class NetworkBase:
 		op += c2 * 256 * 256
 		op += c3 * 256
 		op += c4
-		#if op >= 2**31:
-		#	op -= 2**32
-		return socket.ntohl(op)
+		if socket.ntohl(op) == op:
+			op = socket.ntohl(op)
+		return op
 
 	def getchar(self):
 		opstr = self.sock.recv(1)
@@ -85,15 +80,13 @@ class NetworkBase:
 		return opstr
 
 	def sendbyte(self, byte):
-		nbyte = socket.htonl(byte)
+		nbyte = byte
+		if socket.htonl(nbyte) == nbyte:
+			nbyte = socket.htonl(nbyte)
 		c1 = (nbyte >> 24) & 0xFF
 		c2 = (nbyte >> 16) & 0xFF
 		c3 = (nbyte >> 8) & 0xFF
 		c4 = (nbyte >> 0) & 0xFF
-		#self.sock.send(chr(c1))
-		#self.sock.send(chr(c2))
-		#self.sock.send(chr(c3))
-		#self.sock.send(chr(c4))
 		s = chr(c1) + chr(c2) + chr(c3) + chr(c4)
 		self.sock.send(s)
 
