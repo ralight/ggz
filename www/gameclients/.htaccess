@@ -1,2 +1,2 @@
-ErrorDocument 404 /games/frontends.php
+ErrorDocument 404 /gameclients/frontends.php
 
