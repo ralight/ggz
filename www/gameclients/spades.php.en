@@ -1,24 +1,19 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>NetSpades</b><br>
+<b>NetSpades</b><br/>
 Card game for 4 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Screenshot</i><br>
-<img src="/games/pics/netspades.png">
+<i>Screenshot</i><br/>
+<img src="/gameclients/pics/netspades.png">
 <br clear="all">
-<br>
+<br/>
 
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Special old-style GGZ game client
 <li>derived from the original NetSpades project
@@ -28,32 +23,26 @@ NetSpades is an old online cards game client. This is the (remaining)
 Gtk+ version, while there also was a Curses version available before the
 port to GGZ.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game client support</i><br>
+<i>GGZ game client support</i><br/>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <a href="/engines/spades/"><i>Engine: Spades</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/gameservers/spades/"><i>Server: NetSpades</i></a>
-<br><br>
+<br/><br/>
 
-
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

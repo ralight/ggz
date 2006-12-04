@@ -1,24 +1,19 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Koenig</b><br>
+<b>Koenig</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Screenshot</i><br>
-<img src="/games/pics/koenig.png">
+<i>Screenshot</i><br/>
+<img src="/gameclients/pics/koenig.png">
 <br clear="all">
-<br>
+<br/>
 
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>support for different clock options
 <li>keeps history of moves
@@ -30,38 +25,36 @@ It supports move verification by using the libcgc library.
 Additional piece graphics can be downloaded via KNewStuff, there are several sets available
 since the theme loader is compatible with Knights themesets.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game client support</i><br>
+<i>GGZ game client support</i><br/>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 <tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 </table>
 
-</td><td valign="top">
+</td><td>
 
-<a href="/engines/chess/"><i>Engine: Chess</i></a>
-<br><br>
-
-<a href="/gameservers/chess/"><i>Server: Chess</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: Chess</i><br>
-<a href="/games/chess/"><img src="/games/pics/chess.png"></a>
-<br><br>
+<i>Gtk+ client: Chess</i><br/>
+<a href="/gameclients/chess/"><img src="/gameclients/thumbs/chess.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: GGZBoard</i><br>
-<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
-<br><br>
+<i>SDL client: GGZBoard</i><br/>
+<a href="/gameclients/ggzboard/"><img src="/gameclients/thumbs/ggzboard.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/chess/"><i>Engine: Chess</i></a>
+<br/><br/>
 
-</font>
+<a href="/gameservers/chess/"><i>Server: Chess</i></a>
+<br/><br/>
+
 </td>
 </tr>
 </table>

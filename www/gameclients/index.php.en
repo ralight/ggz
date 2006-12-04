@@ -1,202 +1,466 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="pane" width="100%">
+<table class="pane">
 <tr>
 <td>
-<font size="3">
-<a href="/software.php">Software:</a>
+<a href="/games/">Games:</a>
 |
 <a href="/engines/">Engines</a>
 |
 Game clients
 |
 <a href="/gameservers/">Game servers</a>
-|
-<a href="/clients/">Core clients</a>
-|
-<a href="/utils/">Utilities</a>
-|
-<a href="/backend/">Backends</a>
-</font>
 </td>
 </tr>
 </table>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZ Games Pages</b><br>
+<b>GGZ game clients pages</b><br/>
+Games listed on this page are the ones the player gets to see when playing.
+Some of the game clients have been developed within GGZ, some others by
+independent developers.
+Some clients can play several related games as once, those are known
+as multi-engine clients.
 The following game clients have been created by the GGZ Gaming Zone developers:
-<br><br>
+<br/>
 
 <table class="inner">
 <tr><td>
 
-<i>KDE games collection:</i><br>
-<img src="/pics/icons/game_kde.png">
-<a href="/games/ktictactux/">KTicTacTux</a> (TicTacToe engine)
-<br>
-<img src="/pics/icons/game_kde.png">
-<a href="/games/kdots/">KDots</a> (Connect The Dots engine)
-<br>
-<img src="/pics/icons/game_kde.png">
-<a href="/games/fyrdman/">Fyrdman</a> (Hastings1066 engine)
-<br>
-<img src="/pics/icons/game_kde.png">
-<a href="/games/kreversi/">KReversi</a> (Reversi engine)
-<br>
-<img src="/pics/icons/game_kde.png">
-<a href="/games/koenig/">Koenig</a> (Chess engine)
-<br>
-<img src="/pics/icons/game_kde.png">
-<a href="/games/kcc/">KCC</a> (Chinese Checkers engine)
-<br>
-<img src="/pics/icons/game_kde.png">
-<a href="/games/krosswater/">Krosswater</a> (Krosswater engine)
-<br>
-<img src="/pics/icons/game_kde.png">
-<a href="/games/muehle/">Mühle</a> (Mühle engine)
-<br>
-<img src="/pics/icons/game_kde.png">
-<a href="/games/keepalive/">Keepalive</a> (Keepalive engine)
-<br>
+<i>KDE games collection:</i><br/>
+This collection of games for users of the
+<a href="http://www.kde.org/">K Desktop Environment</a>
+contains 9 games as well as support libraries for other
+KDE game developers.
+Some of the games can also be played without network
+against the computer.
+More information is available on
+the appropriate <a href="/packages/">package</a> page.
+<br/><br/>
 
-<br>
+<table class="listnorm3">
+<tr>
+<td><i>Client</i></td>
+<td><i>Supported engines</i></td>
+</tr>
 
-<i>Gtk+ games collection:</i><br>
-<img src="/pics/icons/game_gnome.png">
-<a href="/games/tictactoe/">TicTacToe</a> (TicTacToe engine)
-<br>
-<img src="/pics/icons/game_gnome.png">
-<a href="/games/dots/">Dots</a> (Connect The Dots engine)
-<br>
-<img src="/pics/icons/game_gnome.png">
-<a href="/games/hastings/">Hastings1066</a> (Hastings1066 engine)
-<br>
-<img src="/pics/icons/game_gnome.png">
-<a href="/games/reversi/">Reversi</a> (Reversi engine)
-<br>
-<img src="/pics/icons/game_gnome.png">
-<a href="/games/combat/">Combat</a> (Combat engine)
-<br>
-<img src="/pics/icons/game_gnome.png">
-<a href="/games/chess/">Chess</a> (Chess engine)
-<br>
-<img src="/pics/icons/game_gnome.png">
-<a href="/games/ccheckers/">Chinese Checkers</a> (Chinese Checkers engine)
-<br>
-<img src="/pics/icons/game_gnome.png">
-<a href="/games/spades/">NetSpades</a> (NetSpades engine)
-<br>
-<img src="/pics/icons/game_gnome.png">
-<a href="/games/ggzcards/">GGZCards</a> (Bridge, FortyTwo, Hearts, LaPocha, Spades, Suaro, Sueca, Whist engines)
-<br>
+<tr><td>
+<img src="/pics/icons/game_kde.png">
+<a href="/gameclients/ktictactux/">KTicTacTux</a>
+</td><td>
+<a href="/engines/tictactoe/">TicTacToe</a>
+</td></tr>
 
-<br>
+<tr><td>
+<img src="/pics/icons/game_kde.png">
+<a href="/gameclients/kdots/">KDots</a>
+</td><td>
+<a href="/engines/dots/">Connect The Dots</a>
+</td></tr>
 
-<i>SDL games collection:</i><br>
+<tr><td>
+<img src="/pics/icons/game_kde.png">
+<a href="/gameclients/fyrdman/">Fyrdman</a>
+</td><td>
+<a href="/engines/hastings/">Hastings1066</a>
+</td></tr>
 
+<tr><td>
+<img src="/pics/icons/game_kde.png">
+<a href="/gameclients/kreversi/">KReversi</a>
+</td><td>
+<a href="/engines/reversi/">Reversi</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_kde.png">
+<a href="/gameclients/koenig/">Koenig</a>
+</td><td>
+<a href="/engines/chess/">Chess</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_kde.png">
+<a href="/gameclients/kcc/">KCC</a>
+</td><td>
+<a href="/engines/ccheckers/">Chinese Checkers</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_kde.png">
+<a href="/gameclients/krosswater/">Krosswater</a>
+</td><td>
+<a href="/engines/krosswater/">Krosswater</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_kde.png">
+<a href="/gameclients/muehle/">Mühle</a>
+</td><td>
+<a href="/engines/muehle/">Mühle</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_kde.png">
+<a href="/gameclients/keepalive/">Keepalive</a>
+</td><td>
+<a href="/engines/keepalive/">Keepalive</a>
+</td></tr>
+</table>
+
+<br/>
+
+<i>Gtk+ games collection:</i><br/>
+Based on the <a href="http://www.gtk.org/">Gtk+</a>
+toolkit, 9 game clients have been created and bundled together
+in this package, which also contains support libraries
+for other Gtk+ game developers. 16 games can be played
+with this package in total.
+More information is available on
+the appropriate <a href="/packages/">package</a> page.
+<br/><br/>
+
+<table class="listnorm3">
+<tr>
+<td><i>Client</i></td>
+<td><i>Supported engines</i></td>
+</tr>
+
+<tr><td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/gameclients/tictactoe/">TicTacToe</a>
+</td><td>
+<a href="/engines/tictactoe/">TicTacToe</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/gameclients/dots/">Dots</a>
+</td><td>
+<a href="/engines/dots/">Connect The Dots</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/gameclients/hastings/">Hastings1066</a>
+</td><td>
+<a href="/engines/hastings/">Hastings1066</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/gameclients/reversi/">Reversi</a>
+</td><td>
+<a href="/engines/reversi/">Reversi</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/gameclients/combat/">Combat</a>
+</td><td>
+<a href="/engines/combat/">Combat</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/gameclients/chess/">Chess</a>
+</td><td>
+<a href="/engines/chess/">Chess</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/gameclients/ccheckers/">Chinese Checkers</a>
+</td><td>
+<a href="/engines/ccheckers/">Chinese Checkers</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/gameclients/spades/">NetSpades</a>
+</td><td>
+<a href="/engines/spades/">NetSpades</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_gnome.png">
+<a href="/gameclients/ggzcards/">GGZCards</a>
+</td><td>
+<a href="/engines/bridge/">Bridge</a><br/>
+<a href="/engines/fortytwo/">FortyTwo</a><br/>
+<a href="/engines/hearts/">Hearts</a><br/>
+<a href="/engines/lapocha/">LaPocha</a><br/>
+<a href="/engines/spades/">Spades</a><br/>
+<a href="/engines/suaro/">Suaro</a><br/>
+<a href="/engines/sueca/">Sueca</a><br/>
+<a href="/engines/whist/">Whist</a><br/>
+</td></tr>
+</table>
+
+<br/>
+
+<i>SDL games collection:</i><br/>
+For friends of fullscreen games, 2 games have been written using
+the <a href="http://www.libsdl.org/">SDL</a> library which is very
+popular among game developers.
+More information is available on
+the appropriate <a href="/packages/">package</a> page.
+<br/><br/>
+
+<table class="listnorm3">
+<tr>
+<td><i>Client</i></td>
+<td><i>Supported engines</i></td>
+</tr>
+
+<tr><td>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/ttt3d/">TTT3D</a> (TicTacToe engine)
-<br>
+<a href="/gameclients/ttt3d/">TTT3D</a>
+</td><td>
+<a href="/engines/tictactoe/">TicTacToe</a>
+</td></tr>
+
+<tr><td>
 <img src="/pics/icons/game_sdl.png">
-<a href="/games/geekgame/">Geekgame</a> (Geekgame engine)
-<br>
+<a href="/gameclients/geekgame/">Geekgame</a>
+</td><td>
+<a href="/engines/geekgame/">Geekgame</a>
+</td></tr>
+</table>
 
-<br>
+<br/>
 
-<i>SDL/Python games collection:</i><br>
+<i>SDL/Python games collection:</i><br/>
+The <a href="http://www.pygame.org/">Pygame</a> builds upon the SDL
+platform and make game development with Python easy. GGZ includes
+3 game clients in this package, making it possible to play
+12 games in total. Most games can also be played without network
+against the computer.
+More information is available on
+the appropriate <a href="/packages/">package</a> page.
+<br/><br/>
 
-<img src="/pics/icons/game_sdl.png">
-<a href="/games/ggzboard/">GGZBoard</a> (Reversi, Chess, Go, Checkers, Hnefatafl, ConnectX, Ludo, Shogi, Sudoku, (Arimaa) engines)
-<br>
-<img src="/pics/icons/game_sdl.png">
-<a href="/games/cchess/">Xadrez Chinês</a> (Chinese Chess engine)
-<br>
-<img src="/pics/icons/game_sdl.png">
-<a href="/games/escape-sdl/">Escape/SDL</a> (Escape engine)
-<br>
+<table class="listnorm3">
+<tr>
+<td><i>Client</i></td>
+<td><i>Supported engines</i></td>
+</tr>
 
-<br>
+<tr><td>
+<img src="/pics/icons/game_pygame.png">
+<a href="/gameclients/ggzboard/">GGZBoard</a>
+</td><td>
+<a href="/engines/reversi/">Reversi</a><br/>
+<a href="/engines/chess/">Chess</a><br/>
+<a href="/engines/go/">Go</a><br/>
+<a href="/engines/checkers/">Checkers</a><br/>
+<a href="/engines/hnefatafl/">Hnefatafl</a><br/>
+<a href="/engines/connectx/">ConnectX</a><br/>
+<a href="/engines/ludo/">Ludo</a><br/>
+<a href="/engines/shogi/">Shogi</a><br/>
+<a href="/engines/sudoku/">Sudoku</a><br/>
+<a href="/engines/arimaa/">(Arimaa)</a><br/>
+</td></tr>
 
-<i>Other GGZ game clients:</i><br>
+<tr><td>
+<img src="/pics/icons/game_pygame.png">
+<a href="/gameclients/cchess/">Xadrez Chinês</a>
+</td><td>
+<a href="/engines/cchess/">Chinese Chess</a>
+</td></tr>
 
-<img src="/pics/icons/game_grubby.png">
-<a href="/games/guruttt/">Guru-TTT</a> (TicTacToe engine)
-<br>
-<img src="/pics/icons/game_grubby.png">
-<a href="/games/guruchess/">Guru-Chess</a> (Chess engine)
-<br>
-<img src="/pics/icons/game_console.png">
-<a href="/games/tttxt/">TTTXT</a> (TicTacToe engine)
-<br>
-<img src="/pics/icons/game_windows.png">
-<a href="/games/escape/">Escape</a> (Escape engine)
-<br>
-<img src="/pics/icons/game_windows.png">
-<a href="/games/connectx/">ConnectX</a> (ConnectX engine)
-<br>
+<tr><td>
+<img src="/pics/icons/game_pygame.png">
+<a href="/gameclients/escape-sdl/">Escape/SDL</a>
+</td><td>
+<a href="/engines/escape/">Escape</a>
+</td></tr>
+</table>
+
+<br/>
+
+<i>Java games collection:</i><br/>
+While not really a collection as it only contains 1 game,
+this game supports nearly all of the GGZCards games.
+It is implemented using <a href="http://dev.java.net/">Java</a>
+and is extremely popular with Spades players who use the applet
+version of it.
+More information is available on
+the appropriate <a href="/packages/">package</a> page.
+<br/><br/>
+
+<table class="listnorm3">
+<tr>
+<td><i>Client</i></td>
+<td><i>Supported engines</i></td>
+</tr>
+
+<tr><td>
 <img src="/pics/icons/game_java.png">
-<a href="/games/ggzjava/">GGZ-Java</a> (a multitude of game engines)
-<br>
+<a href="/gameclients/ggzjava/">GGZCards</a>
+</td><td>
+<a href="/engines/bridge/">Bridge</a><br/>
+<a href="/engines/hearts/">Hearts</a><br/>
+<a href="/engines/lapocha/">LaPocha</a><br/>
+<a href="/engines/spades/">Spades</a><br/>
+<a href="/engines/suaro/">Suaro</a><br/>
+<a href="/engines/sueca/">Sueca</a><br/>
+<a href="/engines/whist/">Whist</a><br/>
+</td></tr>
+</table>
+
+<br/>
+
+<i>Other GGZ game clients:</i><br/>
+These game clients are special programs which are used to
+let Grubby (the chatbot) play games or to have some test
+games for the command line and for Windows.
+<br/><br/>
+
+<img src="/pics/icons/game_grubby.png">
+<a href="/gameclients/guruttt/">Guru-TTT</a> (TicTacToe engine)
+<br/>
+<img src="/pics/icons/game_grubby.png">
+<a href="/gameclients/guruchess/">Guru-Chess</a> (Chess engine)
+<br/>
+<img src="/pics/icons/game_console.png">
+<a href="/gameclients/tttxt/">TTTXT</a> (TicTacToe engine)
+<br/>
+<img src="/pics/icons/game_windows.png">
+<a href="/gameclients/escape/">Escape</a> (Escape engine)
+<br/>
+<img src="/pics/icons/game_windows.png">
+<a href="/gameclients/connectx/">ConnectX</a> (ConnectX engine)
+<br/>
 
 </td>
 </tr>
 </table>
 
-The following games are not part of GGZ, they're developed externally:
+</td></tr>
+<tr><td>
+<b>External game clients</b><br/>
+</td></tr>
+<tr><td>
+
+The following games are not part of GGZ, they're developed externally
+by other projects. We appreciate game developers who support GGZ in
+their games.
 
 <table class="inner">
 <tr><td>
 
-<i>External games:</i><br>
-<img src="/pics/icons/kamikaze.png">
-<a href="/games/kamikaze/">Kamikaze</a> (Kamikaze engine)
-<br>
-<img src="/pics/icons/kamikaze.png">
-<a href="/games/pykamikaze/">PyKamikaze</a> (Kamikaze engine)
-<br>
-<img src="/pics/icons/tuxman.png">
-<a href="/games/tuxman/">Tuxman</a> (Tuxman engine)
-<br>
-<img src="/pics/icons/teg.png">
-<a href="/games/teg/">T.E.G.</a> (T.E.G. engine)
-<br>
-<img src="/pics/icons/cgoban.png">
-<a href="/games/cgoban/">Go/CGoBan</a> (Go engine)
-<br>
-<img src="/pics/icons/widelands.png">
-<a href="/games/widelands/">Widelands</a> (Widelands engine)
-<br>
-<img src="/pics/icons/freeciv.png">
-<a href="/games/freeciv/">Freeciv</a> (Freeciv engine)
-<br>
-<img src="/pics/icons/freelords.png">
-<a href="/games/freelords/">Freelords</a> (Freelords engine)
-<br>
+<i>GNOME game clients:</i><br/>
+These clients are developed as part of the
+<a href="http://www.gnome.org/projects/gnome-games/">GNOME Games</a>
+project.
+<br/><br/>
+
+<table class="listnorm3">
+<tr>
+<td><i>Client</i></td>
+<td><i>Supported engines</i></td>
+</tr>
+
+<tr><td>
+<img src="/pics/icons/game_gnome.png">
 <img src="/pics/icons/gnect.png">
-<a href="/games/gnect/">Gnect</a> (ConnectX engine), in GNOME Games package
-<br>
+<a href="/gameclients/gnect/">Gnect</a>
+</td><td>
+<a href="/engines/connectx/">ConnectX</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_gnome.png">
 <img src="/pics/icons/gnome-nibbles.png">
-<a href="/games/gnibbles/">Gnibbles</a> (Gnibbles engine), in GNOME Games package
-<br>
+<a href="/gameclients/gnibbles/">Gnibbles</a>
+</td><td>
+<a href="/engines/gnibbles/">Gnibbles</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_gnome.png">
 <img src="/pics/icons/gnome-iagno.png">
-<a href="/games/iagno/">Iagno</a> (Reversi engine), in GNOME Games package
-<br>
-<img src="/pics/icons/game_rip.png">
-Batalla Naval (unmaintained)
-<br>
-<img src="/pics/icons/game_rip.png">
-XTux Arena (unmaintained)
-<br>
+<a href="/gameclients/iagno/">Iagno</a>
+</td><td>
+<a href="/engines/reversi/">Reversi</a>
+</td></tr>
+</table>
+
+<br/>
+
+<i>Other external game clients:</i><br/>
+Games of various projects which support GGZ.
+<br/><br/>
+
+<table class="listnorm3">
+<tr>
+<td><i>Client</i></td>
+<td><i>Supported engines</i></td>
+</tr>
+
+<tr><td>
+<img src="/pics/icons/kamikaze.png">
+<a href="/gameclients/kamikaze/">Kamikaze</a>
+</td><td>
+<a href="/engines/kamikaze/">Kamikaze</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/kamikaze.png">
+<a href="/gameclients/pykamikaze/">PyKamikaze</a>
+</td><td>
+<a href="/engines/kamikaze/">Kamikaze</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/teg.png">
+<a href="/gameclients/teg/">T.E.G.</a>
+</td><td>
+<a href="/engines/teg/">T.E.G.</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/cgoban.png">
+<a href="/gameclients/cgoban/">CGoBan</a>
+</td><td>
+<a href="/engines/go/">Go</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/widelands.png">
+<a href="/gameclients/widelands/">Widelands</a>
+</td><td>
+<a href="/engines/widelands/">Widelands</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/freeciv.png">
+<a href="/gameclients/freeciv/">Freeciv</a>
+</td><td>
+<a href="/engines/freeciv/">Freeciv</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/freelords.png">
+<a href="/gameclients/freelords/">Freelords</a>
+</td><td>
+<a href="/engines/freelords/">Freelords</a>
+</td></tr>
+</table>
 
 </td>
 </tr>
 </table>
 
-</font>
+Finally, there are some game clients which are not maintained
+anymore. They are still of interest for developers and other
+interested people and can be found in the
+<a href="http://dev.ggzgamingzone.org/graveyard/">graveyard</a>.
+
 </td>
 </tr>
 </table>

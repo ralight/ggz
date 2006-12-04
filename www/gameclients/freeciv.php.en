@@ -1,32 +1,29 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Freeciv</b><br>
+<b>Freeciv</b><br/>
 Strategy game for 2-30 players.
-<br>
+<br/><br/>
+
 <table class="listnorm">
 <tr><td>
 This game client is not a GGZ project but it does provide GGZ support.
 The project homepage is:
-<br>
+<br/>
 <a href="http://www.freeciv.org/">freeciv.org</a>.
 </td></tr>
 </table>
+<br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Screenshot</i><br>
-<img src="/games/pics/freeciv.png">
+<i>Screenshot</i><br/>
+<img src="/gameclients/pics/freeciv.png">
 <br clear="all">
-<br>
+<br/>
 
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Single player mode (local AIs)
 <li>Scenarios and nation/tile/rule sets (themes)
@@ -38,36 +35,31 @@ configured in nearly every aspect.
 A detailed manual is available at
 <a href="http://www.freeciv.org/index.php/Game_Manual">http://www.freeciv.org/index.php/Game_Manual</a>.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game client support</i><br>
+<i>GGZ game client support</i><br/>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
-<br>
+<br/>
 
-<i>Homepage of Freeciv</i><br>
+<i>Homepage of Freeciv</i><br/>
 <a href="http://www.freeciv.org/" target="blank">http://www.freeciv.org/</a>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <a href="/engines/freeciv/"><i>Engine: Freeciv</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/gameservers/freeciv/"><i>Server: Freeciv</i></a>
-<br><br>
+<br/><br/>
 
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

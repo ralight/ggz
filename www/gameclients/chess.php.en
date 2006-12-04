@@ -1,24 +1,19 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Chess</b><br>
+<b>Chess</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Screenshot</i><br>
-<img src="/games/pics/chess.png">
+<i>Screenshot</i><br/>
+<img src="/gameclients/pics/chess.png">
 <br clear="all">
-<br>
+<br/>
 
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>support for different clock options
 <li>keeps history of moves
@@ -27,38 +22,33 @@ Board game for 2 players.
 This Gtk+ chess client, like all GGZ chess clients, implements a custom chessd-derived protocol.
 It supports move verification by using the libcgc library.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game client support</i><br>
+<i>GGZ game client support</i><br/>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 <tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
-</td><td valign="top">
-
-<a href="/engines/chess/"><i>Engine: Chess</i></a>
-<br><br>
-
-<a href="/gameservers/chess/"><i>Server: Chess</i></a>
-<br><br>
+</td><td>
 
 <img src="/pics/icons/game_kde.png">
-<i>KDE client: Koenig</i><br>
-<a href="/games/koenig/"><img src="/games/pics/koenig.png"></a>
-<br><br>
+<i>KDE client: Koenig</i><br/>
+<a href="/gameclients/koenig/"><img src="/gameclients/thumbs/koenig.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: GGZBoard</i><br>
-<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
-<br><br>
+<i>SDL client: GGZBoard</i><br/>
+<a href="/gameclients/ggzboard/"><img src="/gameclients/thumbs/ggzboard.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/chess/"><i>Engine: Chess</i></a>
+<br/><br/>
 
-</font>
+<a href="/gameservers/chess/"><i>Server: Chess</i></a>
+<br/><br/>
+
 </td>
 </tr>
 </table>

@@ -1,24 +1,19 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Keepalive</b><br>
+<b>Keepalive</b><br/>
 Role play game for 2-1000 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Screenshot</i><br>
-<img src="/games/pics/keepalive.png">
+<i>Screenshot</i><br/>
+<img src="/gameclients/pics/keepalive.png">
 <br clear="all">
-<br>
+<br/>
 
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>KDE game client
 <li>Real-time movements
@@ -29,31 +24,26 @@ Role play game for 2-1000 players.
 Keepalive is a somewhat experimental game in which the player joins one of the available
 worlds. The gameplay is thought to be RPG-like.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game client support</i><br>
+<i>GGZ game client support</i><br/>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <a href="/engines/keepalive/"><i>Engine: Keepalive</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/gameservers/keepalive/"><i>Server: Keepalive</i></a>
-<br><br>
+<br/><br/>
 
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

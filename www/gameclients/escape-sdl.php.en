@@ -1,24 +1,19 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Escape/SDL</b><br>
+<b>Escape/SDL</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Screenshot</i><br>
-<img src="/games/pics/escape-sdl.png">
+<i>Screenshot</i><br/>
+<img src="/gameclients/pics/escape-sdl.png">
 <br clear="all">
-<br>
+<br/>
 
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>implemented using the Pygame toolkit
 <li>supports single player mode
@@ -27,36 +22,31 @@ Board game for 2 players.
 The Escape/SDL client is a python-based version of the existing Escape game.
 Local games are also possible with this client.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game client support</i><br>
+<i>GGZ game client support</i><br/>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/engines/escape/"><i>Engine: Escape</i></a>
-<br><br>
-
-<a href="/gameservers/escape/"><i>Server: Escape</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_windows.png">
-<i>Windows client: Escape</i><br>
-<a href="/games/escape/"><img src="/games/pics/escape.png"></a>
-<br><br>
+<i>Windows client: Escape</i><br/>
+<a href="/gameclients/escape/"><img src="/gameclients/thumbs/escape.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/escape/"><i>Engine: Escape</i></a>
+<br/><br/>
 
-</font>
+<a href="/gameservers/escape/"><i>Server: Escape</i></a>
+<br/><br/>
+
 </td>
 </tr>
 </table>

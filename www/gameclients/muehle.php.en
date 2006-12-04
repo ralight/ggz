@@ -1,24 +1,19 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Muehle</b><br>
+<b>Muehle</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Screenshot</i><br>
-<img src="/games/pics/muehle.png">
+<i>Screenshot</i><br/>
+<img src="/gameclients/pics/muehle.png">
 <br clear="all">
-<br>
+<br/>
 
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>supports themes
 <li>supports different board layouts
@@ -27,31 +22,26 @@ Board game for 2 players.
 The Muehle client can play regular Muehle games (Nine Men's Morris)
 as well as Roman and other variants. New board layouts can easily be added.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game client support</i><br>
+<i>GGZ game client support</i><br/>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <a href="/engines/muehle/"><i>Engine: Muehle</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/gameservers/muehle/"><i>Server: Muehle</i></a>
-<br><br>
+<br/><br/>
 
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

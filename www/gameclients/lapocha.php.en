@@ -1,51 +1,58 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class='pane' width='100%'>
+<table class='pane'>
 <tr>
 <td>
-<font size='3'>
 <font color='#ff0000'>Warning:</font>
 This application is not maintained anymore.
-</font>
+Visit the <a href="http://dev.ggzgamingzone.org/graveyard/">graveyard</a>
+for more information.
 </td>
 </tr>
 </table>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>La Pocha</b><br>
+<b>La Pocha</b><br/>
 Card game for 4 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
+<i>Screenshot</i><br/>
+<img src="/gameclients/pics/lapocha.png">
+<br clear="all">
+<br/>
 
-<i>La Pocha features</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Gtk+ game client
 </ul>
-<br>
+<br/>
 
-<i>La Pocha rules</i><br>
-Before each turn, all players consecutively bid and then play their decks.
-Initially, the deck consists of one card only, but more cards are added over
-time starting in the 4th turn.
-The best bidder wins the game.
+This client was the original La Pocha client for GGZ.
+It has since been superceded by GGZCards.
 
-</td><td valign="top">
+<br/><br/>
 
-<i>Gtk+ client:</i><br>
-<img src="/games/pics/lapocha.png"><br>
-
-</td>
-</tr>
+<i>GGZ game client support</i><br/>
+<table class="listnorm">
+<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
-</font>
+</td><td>
+
+<b>Related pages</b>
+<br/><br/>
+
+<a href="/engines/lapocha/"><i>Engine: La Pocha</i></a>
+<br/><br/>
+
+<a href="/gameservers/lapocha/"><i>Server: La Pocha</i></a>
+<br/><br/>
+
 </td>
 </tr>
 </table>

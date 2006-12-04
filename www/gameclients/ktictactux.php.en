@@ -1,24 +1,19 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>KTicTacTux</b><br>
+<b>KTicTacTux</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Screenshot</i><br>
-<img src="/games/pics/ktictactux.png">
+<i>Screenshot</i><br/>
+<img src="/gameclients/pics/ktictactux.png">
 <br clear="all">
-<br>
+<br/>
 
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Simple TTT client
 <li>Support for an AI player
@@ -31,41 +26,36 @@ the seat configuration.
 Additionally, one of the available themes can be selected,
 and new themes can be downloaded.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game client support</i><br>
+<i>GGZ game client support</i><br/>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 <tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 </table>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/engines/tictactoe/"><i>Engine: TicTacToe</i></a>
-<br><br>
-
-<a href="/gameservers/tictactoe/"><i>Server: TicTacToe</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: TicTacToe</i><br>
-<a href="/games/tictactoe/"><img src="/games/pics/tictactoe.png"></a>
-<br><br>
+<i>Gtk+ client: TicTacToe</i><br/>
+<a href="/gameclients/tictactoe/"><img src="/gameclients/thumbs/tictactoe.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL/OpenGL client: TTT3D</i><br>
-<a href="/games/ttt3d/"><img src="/games/pics/ttt3d.png"></a>
-<br><br>
+<i>SDL/OpenGL client: TTT3D</i><br/>
+<a href="/gameclients/ttt3d/"><img src="/gameclients/thumbs/ttt3d.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/tictactoe/"><i>Engine: TicTacToe</i></a>
+<br/><br/>
 
-</font>
+<a href="/gameservers/tictactoe/"><i>Server: TicTacToe</i></a>
+<br/><br/>
+
 </td>
 </tr>
 </table>

@@ -1,32 +1,29 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>CGoBan</b><br>
+<b>CGoBan</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
+
 <table class="listnorm">
 <tr><td>
 This game client is not a GGZ project but it does provide GGZ support.
 The project homepage is:
-<br>
+<br/>
 <a href="http://www.gnu.org/software/gnugo/">gnu.org/software/gnugo</a>.
 </td></tr>
 </table>
+<br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Screenshot</i><br>
-<img src="/games/pics/gnugo.png">
+<i>Screenshot</i><br/>
+<img src="/gameclients/pics/gnugo.png">
 <br clear="all">
-<br>
+<br/>
 
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Includes local AI using GNU Go
 <li>GGZ integration uses python-based wrapper program (Go Client)
@@ -37,32 +34,27 @@ The CGoBan client is one of the two possible clients for Go games on GGZ,
 the other one being GGZBoard. It is a traditional client used by many players,
 and also allows for logging onto dedicated Go networks.
 
-<br><br>
+<br/><br/>
 
-<i>Homepage of CGoBan</i><br>
+<i>Homepage of CGoBan</i><br/>
 <a href="http://www.gnu.org/software/gnugo/" target="blank">http://www.gnu.org/software/gnugo/</a>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/engines/go/"><i>Engine: Go/GMP</i></a>
-<br><br>
-
-<a href="/gameservers/goserver/"><i>Server: Go Server</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: GGZBoard</i><br>
-<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
-<br>
+<i>SDL client: GGZBoard</i><br/>
+<a href="/gameclients/ggzboard/"><img src="/gameclients/thumbs/ggzboard.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/go/"><i>Engine: Go/GMP</i></a>
+<br/><br/>
 
-</font>
+<a href="/gameservers/goserver/"><i>Server: Go Server</i></a>
+<br/><br/>
+
 </td>
 </tr>
 </table>

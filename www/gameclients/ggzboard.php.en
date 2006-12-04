@@ -1,24 +1,19 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZBoard</b><br>
+<b>GGZBoard</b><br/>
 Board game framework for 2-4 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Screenshot</i><br>
-<img src="/games/pics/ggzboard.png">
+<i>Screenshot</i><br/>
+<img src="/gameclients/pics/ggzboard.png">
 <br clear="all">
-<br>
+<br/>
 
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>SDL/python game client, based on Pygame
 <li>AI opponents available
@@ -36,82 +31,77 @@ part of the GGZBoard source, all sharing a common Bogaprot core.
 The chess AI is shared with the GGZ chess server, and for Go the GNU Go engine is
 used locally, as is GNU Shogi for the Shogi game.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game client support</i><br>
+<i>GGZ game client support</i><br/>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 <tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 </table>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <a href="/engines/chess/"><i>Engine: Chess</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/engines/checkers/"><i>Engine: Checkers</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/engines/reversi/"><i>Engine: Reversi</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/engines/go/"><i>Engine: Go/GMP</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/engines/hnefatafl/"><i>Engine: Hnefatafl</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/engines/ludo/"><i>Engine: Ludo/Bogaprot</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/engines/arimaa/"><i>Engine: Arimaa/Bogaprot</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/engines/connectx/"><i>Engine: ConnectX</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/engines/shogi/"><i>Engine: Shogi</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/engines/sudoku/"><i>Engine: Sudoku</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/gameservers/chess/"><i>Server: Chess</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/gameservers/checkers/"><i>Server: Checkers</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/gameservers/reversi/"><i>Server: Reversi</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/gameservers/goserver/"><i>Server: Goserver</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/gameservers/hnefatafl/"><i>Server: Hnefatafl</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/gameservers/connectx/"><i>Server: ConnectX</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/gameservers/ludo/"><i>Server: Ludo</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/gameservers/arimaa/"><i>Server: Arimaa</i></a>
-<br><br>
+<br/><br/>
 
 Alternative clients for some of the games are available.
 Check the <a href="/engines/">engines</a> page.
 
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

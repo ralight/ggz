@@ -1,32 +1,29 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Gnect</b><br>
+<b>Gnect</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
+
 <table class="listnorm">
 <tr><td>
 This game client is not a GGZ project but it does provide GGZ support.
 The project homepage is:
-<br>
+<br/>
 <a href="http://www.gnome.org/projects/gnome-games/">gnome.org</a>.
 </td></tr>
 </table>
+<br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Screenshot</i><br>
-<img src="/games/pics/gnect.png">
+<i>Screenshot</i><br/>
+<img src="/gameclients/pics/gnect.png">
 <br clear="all">
-<br>
+<br/>
 
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Single player mode (local AI: Velena engine)
 <li>GGZ support is optional
@@ -37,41 +34,36 @@ The client can be compiled with GGZ support in order to allow for games
 on GGZ servers. It uses the ConnectX protocol already present in GGZ's
 Four-in-a-row games.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game client support</i><br>
+<i>GGZ game client support</i><br/>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
-<br>
+<br/>
 
-<i>Homepage of Gnect</i><br>
+<i>Homepage of Gnect</i><br/>
 <a href="http://www.gnome.org/projects/gnome-games/" target="blank">http://www.gnome.org/projects/gnome-games/</a>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/engines/connectx/"><i>Engine: ConnectX</i></a>
-<br><br>
-
-<a href="/gameservers/connectx/"><i>Server: ConnectX</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
-<i>SDL client: GGZBoard</i><br>
-<a href="/games/ggzboard/"><img src="/games/pics/ggzboard.png"></a>
-<br><br>
+<i>SDL client: GGZBoard</i><br/>
+<a href="/gameclients/ggzboard/"><img src="/gameclients/thumbs/ggzboard.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/connectx/"><i>Engine: ConnectX</i></a>
+<br/><br/>
 
-</font>
+<a href="/gameservers/connectx/"><i>Server: ConnectX</i></a>
+<br/><br/>
+
 </td>
 </tr>
 </table>

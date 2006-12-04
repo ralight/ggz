@@ -1,32 +1,29 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>T.E.G. (Tenes Empanadas Graciela)</b><br>
+<b>T.E.G. (Tenes Empanadas Graciela)</b><br/>
 Strategy game for 2-6 players.
-<br>
+<br/><br/>
+
 <table class="listnorm">
 <tr><td>
 This game client is not a GGZ project but it does provide GGZ support.
 The project homepage is:
-<br>
+<br/>
 <a href="http://teg.sourceforge.net/">teg.sourceforge.net</a>.
 </td></tr>
 </table>
+<br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Screenshot</i><br>
-<img src="/games/pics/teg.png">
+<i>Screenshot</i><br/>
+<img src="/gameclients/pics/teg.png">
 <br clear="all">
-<br>
+<br/>
 
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>GGZ mode optional (supports conventional gaming)
 <li>Client-side AIs are included
@@ -36,36 +33,31 @@ The project homepage is:
 The T.E.G. client is a mature GNOME game client which usually connects directly
 to the T.E.G. server, but can be used on GGZ as well.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game client support</i><br>
+<i>GGZ game client support</i><br/>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
-<br>
+<br/>
 
-<i>Homepage of TEG</i><br>
+<i>Homepage of TEG</i><br/>
 <a href="http://teg.sourceforge.net/" target="blank">http://teg.sourceforge.net/</a>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <a href="/engines/teg/"><i>Engine: T.E.G.</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/gameservers/teg/"><i>Server: T.E.G.</i></a>
-<br><br>
+<br/><br/>
 
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

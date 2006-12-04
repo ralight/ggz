@@ -1,32 +1,29 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Freelords</b><br>
+<b>Freelords</b><br/>
 Strategy game for 2-8 players.
-<br>
+<br/><br/>
+
 <table class="listnorm">
 <tr><td>
 This game client is not a GGZ project but it does provide GGZ support.
 The project homepage is:
-<br>
+<br/>
 <a href="http://www.freelords.org/">freelords.org</a>.
 </td></tr>
 </table>
+<br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Screenshot</i><br>
-<img src="/games/pics/freelords.png">
+<i>Screenshot</i><br/>
+<img src="/gameclients/pics/freelords.png">
 <br clear="all">
-<br>
+<br/>
 
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Single player mode (local AIs)
 <li>GGZ support is optional
@@ -36,36 +33,31 @@ Freelords is a strategy game.
 The client can be compiled with GGZ support in order to allow for games
 on GGZ servers.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game client support</i><br>
+<i>GGZ game client support</i><br/>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
-<br>
+<br/>
 
-<i>Homepage of Freelords</i><br>
+<i>Homepage of Freelords</i><br/>
 <a href="http://www.freelords.org/" target="blank">http://www.freelords.org/</a>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <a href="/engines/freelords/"><i>Engine: Freelords</i></a>
-<br><br>
+<br/><br/>
 
 <a href="/gameservers/freelords/"><i>Server: Freelords</i></a>
-<br><br>
+<br/><br/>
 
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

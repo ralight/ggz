@@ -1,24 +1,19 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>TTT3D</b><br>
+<b>TTT3D</b><br/>
 Board game for 2 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Screenshot</i><br>
-<img src="/games/pics/ttt3d.png">
+<i>Screenshot</i><br/>
+<img src="/gameclients/pics/ttt3d.png">
 <br clear="all">
-<br>
+<br/>
 
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>Simple TTT client
 <li>Requires OpenGL acceleration
@@ -27,41 +22,36 @@ Board game for 2 players.
 A 3D client based on the SDL and Mesa 3D libraries.
 Controlling the game board happens via key presses only.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game client support</i><br>
+<i>GGZ game client support</i><br/>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
-</td><td valign="top">
+</td><td>
 
-<i>Related pages:</i>
-<br><br>
-
-<a href="/engines/tictactoe/"><i>Engine: TicTacToe</i></a>
-<br><br>
-
-<a href="/gameservers/tictactoe/"><i>Server: TicTacToe</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: TicTacToe</i><br>
-<a href="/games/tictactoe/"><img src="/games/pics/tictactoe.png"></a>
-<br><br>
+<i>Gtk+ client: TicTacToe</i><br/>
+<a href="/gameclients/tictactoe/"><img src="/gameclients/thumbs/tictactoe.png"></a>
+<br/><br/>
 
 <img src="/pics/icons/game_kde.png">
-<i>KDE client: KTicTacTux</i><br>
-<a href="/games/ktictactux/"><img src="/games/pics/ktictactux.png"></a>
-<br><br>
+<i>KDE client: KTicTacTux</i><br/>
+<a href="/gameclients/ktictactux/"><img src="/gameclients/thumbs/ktictactux.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/tictactoe/"><i>Engine: TicTacToe</i></a>
+<br/><br/>
 
-</font>
+<a href="/gameservers/tictactoe/"><i>Server: TicTacToe</i></a>
+<br/><br/>
+
 </td>
 </tr>
 </table>

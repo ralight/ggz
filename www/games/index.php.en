@@ -1,0 +1,49 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="pane">
+<tr>
+<td>
+Games:
+|
+<a href="/engines/">Engines</a>
+|
+<a href="/gameclients/">Game clients</a>
+|
+<a href="/gameservers/">Game servers</a>
+</td>
+</tr>
+</table>
+
+<table class="content">
+<tr>
+<td valign="top">
+
+<b>Playing games on GGZ</b><br/>
+We do not claim to have every game of the world but we do have a lot of them!
+The navigation above provides a complete listing of supported games and
+the software which is used to let you play them.
+<br/><br/>
+
+Playing on GGZ means meeting friends, keeping statistics and enjoying tournaments.
+
+</td><td valign="top">
+
+<b>Cool games in review</b><br/>
+<table class="list">
+<tr><td>
+<nobr>
+<a href="/gameclients/ggzjava/">GGZCards on Java</a>
+<hr>
+<a href="/gameclients/ggzboard/">GGZBoard</a>
+<hr>
+<a href="/gameclients/freeciv/">Freeciv</a>
+</nobr>
+</td></tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

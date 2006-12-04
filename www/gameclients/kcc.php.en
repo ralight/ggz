@@ -1,24 +1,19 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>KCC</b><br>
+<b>KCC</b><br/>
 Board game for 2 to 6 players.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Screenshot</i><br>
-<img src="/games/pics/kcc.png">
+<i>Screenshot</i><br/>
+<img src="/gameclients/pics/kcc.png">
 <br clear="all">
-<br>
+<br/>
 
-<i>Fact sheet</i><br>
+<i>Fact sheet</i><br/>
 <ul>
 <li>KDE client implementation
 <li>supports statistics
@@ -29,38 +24,31 @@ Board game for 2 to 6 players.
 The Chinese Checkers game is sometimes also known as Halma.
 This KDE client can use the same themes as the Gtk+ client.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ game client support</i><br>
+<i>GGZ game client support</i><br/>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 <tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 </table>
 
-</td><td valign="top">
+</td><td>
 
-</td><td valign="top">
-
-<i>Related pages:</i>
-<br><br>
-
-<a href="/engines/ccheckers/"><i>Engine: Chinese Checkers</i></a>
-<br><br>
-
-<a href="/gameservers/ccheckers/"><i>Server: Chinese Checkers</i></a>
-<br><br>
+<b>Related pages</b>
+<br/><br/>
 
 <img src="/pics/icons/game_kde.png">
-<i>Gtk+ client: Chinese Checkers</i><br>
-<a href="/games/ccheckers/"><img src="/games/pics/ccheckers.png"></a>
-<br><br>
+<i>Gtk+ client: Chinese Checkers</i><br/>
+<a href="/gameclients/ccheckers/"><img src="/gameclients/thumbs/ccheckers.png"></a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
+<a href="/engines/ccheckers/"><i>Engine: Chinese Checkers</i></a>
+<br/><br/>
 
-</font>
+<a href="/gameservers/ccheckers/"><i>Server: Chinese Checkers</i></a>
+<br/><br/>
+
 </td>
 </tr>
 </table>

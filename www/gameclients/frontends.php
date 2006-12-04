@@ -58,9 +58,9 @@ switch($uri)
 
 if ($origuri != $uri) :
 	include($_SERVER['DOCUMENT_ROOT'] . "/site/header.php");
-	echo "The game $origuri is a frontend for the game engine $uri.<br>\n";
-	echo "It does not yet have its own home page.<br>\n";
-	echo "Please visit the <a href='/engines/$uri/'>common $uri engine page</a>.<br>\n";
+	echo "The game $origuri is a frontend for the game engine $uri.<br/>\n";
+	echo "It does not yet have its own home page.<br/>\n";
+	echo "Please visit the <a href='/engines/$uri/'>common $uri engine page</a>.<br/>\n";
 	include($_SERVER['DOCUMENT_ROOT'] . "/site/footer.php");
 else:
 	include($_SERVER['DOCUMENT_ROOT'] . "/site/error.php.en");
