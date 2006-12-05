@@ -131,8 +131,9 @@ void MainWindow::slotMenu(int id)
 			synchronize();
 			break;
 		case game_seats:
-			seats = new KGGZSeatsDialog();
-			seats->setMod(network->getMod());
+			/*seats = new KGGZSeatsDialog();
+			seats->setMod(network->getMod());*/
+			// FIXME: disabled until ported to kggzmod
 			break;
 #ifdef HAVE_KNEWSTUFF
 		case game_newlevels:

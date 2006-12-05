@@ -103,8 +103,9 @@ void KDotsWin::slotMenu(int id)
 			kdots_replay->show();
 			break;
 		case menuseats:
-			seats = new KGGZSeatsDialog();
-			seats->setMod(m_dots->getProto()->getMod());
+			/*seats = new KGGZSeatsDialog();
+			seats->setMod(m_dots->getProto()->getMod());*/
+			// FIXME: disabled until kdots uses kggzmod
 			break;
 	}
 }

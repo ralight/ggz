@@ -199,8 +199,9 @@ void KCCWin::slotMenu(int id)
 			score();
 			break;
 		case menuseats:
-			seats = new KGGZSeatsDialog();
-			seats->setMod(m_kcc->getProto()->mod);
+			/*seats = new KGGZSeatsDialog();
+			seats->setMod(m_kcc->getProto()->mod);*/
+			// FIXME: disabled until ported to kggzmod
 			break;
 #ifdef HAVE_KNEWSTUFF
 		case menutheme:

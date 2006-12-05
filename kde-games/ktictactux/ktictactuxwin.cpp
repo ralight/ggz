@@ -160,8 +160,9 @@ void KTicTacTuxWin::slotMenu(int id)
 			break;
 #endif
 		case menuggzplayers:
-			seats = new KGGZSeatsDialog();
-			seats->setMod(m_tux->getMod());
+			/*seats = new KGGZSeatsDialog();
+			seats->setMod(m_tux->getMod());*/
+			// FIXME: disabled until ported to kggzmod
 			break;
 		case menuquit:
 			close();
