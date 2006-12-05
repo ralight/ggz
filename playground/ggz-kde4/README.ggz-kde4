@@ -4,13 +4,17 @@ GGZ Gaming Zone for KDE 4
 This directory contains the first bits of what shall become a
 decent GGZ support for KDE 4 games.
 
-Right now it contains a port of the 'kggzmod' library only.
+Right now it contains a port of the 'kggzmod' library.
 To compile it, change the include paths to kdecore in kggzmod-kde4.pro,
 run qmake-qt4 and finally make.
+
+It also contains a port of the 'kconnectx' example game.
+Compilation works similar to kggzmod.
 
 At a later point in time we'll add the 'kggzgames' library which
 includes the common game dialogs. It also contains a Qt wrapper for
 RSVG but I think we can use Qt4's SVG loader instead.
+KConnectX will then have the seats dialog functionality again.
 
 We also need CMake files :)
 
