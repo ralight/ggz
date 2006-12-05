@@ -99,6 +99,8 @@ AC_CONFIG_FILES([
 	kcc/themes/Makefile
 	kcc/themes/default/Makefile
 	kcc/module.dsc
+	kconnectx/Makefile
+	kconnectx/module.dsc
 	lib/Makefile
 	lib/kggzmod/Makefile
 ])

@@ -1,0 +1,10 @@
+[ModuleInfo]
+Author = Josef Spillner
+CommandLine = @ggzexecmoddir@/kconnectx
+Frontend = kde
+Homepage = http://www.ggzgamingzone.org/games/kconnectx/
+Name = KConnectX
+ProtocolEngine = ConnectX
+ProtocolVersion = 2
+Version = 0.0.1
+
