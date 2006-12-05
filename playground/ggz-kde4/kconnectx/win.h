@@ -14,10 +14,12 @@
 #include <kmainwindow.h>
 
 // Qt includes
-#include <qmap.h>
+#include <QMap>
 
 // Forward declarations
-class KPopupMenu;
+class KMenu;
+class KAction;
+class QAction;
 
 // The game window
 class Win : public KMainWindow
@@ -25,18 +27,11 @@ class Win : public KMainWindow
 	Q_OBJECT
 	public:
 		// Constructor
-		Win(QWidget *parent = NULL, const char *name = NULL);
+		Win(QWidget *parent = 0);
 		// Destructor
 		~Win();
 		// The game object
 		KConnectX *game() const;
-		// Menu ids
-		enum MenuEntries
-		{
-			menuquit = 1,
-			menuscore = 2,
-			menuplayers = 3
-		};
 		// Status bar entries
 		enum StatusEntries
 		{
@@ -51,7 +46,7 @@ class Win : public KMainWindow
 		// Receive statistics
 		void slotNetworkScore(int wins, int losses, int ties);
 		// Menu slot
-		void slotMenu(int id);
+		void slotMenu(QAction*);
 		// Game is over
 		void slotGameOver();
 
@@ -59,7 +54,8 @@ class Win : public KMainWindow
 		// The game itself
 		KConnectX *m_game;
 		// The menus;
-		KPopupMenu *m_menugame, *m_menuggz;
+		KMenu *m_menugame, *m_menuggz;
+		KAction *m_actexit, *m_actggz, *m_acthistory;
 };
 
 #endif

@@ -15,7 +15,7 @@
 
 // Qt includes
 #include <qdatastream.h>
-#include <qsocketdevice.h>
+#include <q3socketdevice.h>
 
 // Empty constructor
 Proto::Proto()
@@ -82,7 +82,7 @@ void Proto::slotNetwork(int fd)
 
 	if(!m_dev)
 	{
-		m_dev = new QSocketDevice(fd, QSocketDevice::Stream);
+		m_dev = new Q3SocketDevice(fd, Q3SocketDevice::Stream);
 		m_net = new QDataStream(m_dev);
 	}
 

@@ -11,13 +11,11 @@
 #include "proto.h"
 
 // Qt includes
-#include <qevent.h>
-#include <qwidget.h>
+#include <QWidget>
 
 class QPushButton;
 class QFrame;
 class QGridLayout;
-class QHBoxLayout;
 
 // KConnectX GUI for KDE
 class KConnectX : public QWidget
@@ -25,7 +23,7 @@ class KConnectX : public QWidget
 	Q_OBJECT
 	public:
 		// Constructor
-		KConnectX(QWidget *parent = NULL, const char *name = NULL);
+		KConnectX(QWidget *parent = 0);
 		// Destructor
 		~KConnectX();
 		// Request network scores

@@ -13,7 +13,7 @@
 // GGZ-KDE-Games includes
 #include <kggzmod/module.h>
 
-class QSocketDevice;
+class Q3SocketDevice;
 class QDataStream;
 
 // Generic KConnectX client protocol handler
@@ -81,7 +81,7 @@ class Proto : public QObject
 
 	private:
 		KGGZMod::Module *m_kggzmod;
-		QSocketDevice *m_dev;
+		Q3SocketDevice *m_dev;
 		QDataStream *m_net;
 
 		struct ConnectXData

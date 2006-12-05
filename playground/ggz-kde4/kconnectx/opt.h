@@ -8,17 +8,17 @@
 #define KCONNECTX_OPT_H
 
 // KDE includes
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 class QSlider;
 class QLabel;
 
-class Opt : public KDialogBase
+class Opt : public KDialog
 {
 	Q_OBJECT
 	public:
 		// Constructor
-		Opt(QWidget *parent = NULL, const char *name = NULL);
+		Opt(QWidget *parent = 0);
 
 		void setBoardHeightRange(char min, char max);
 		void setBoardWidthRange(char min, char max);

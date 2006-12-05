@@ -8,45 +8,39 @@
 #include "win.h"
 
 // GGZ-KDE-Games includes
-#include "kggzseatsdialog.h"
+#warning commented kggzseatsdialog until it will be ported
+//#include "kggzseatsdialog.h"
 
 // KDE includes
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kmenubar.h>
 #include <klocale.h>
 #include <kstatusbar.h>
-#include <kapplication.h>
 #include <kmessagebox.h>
-#include <kdebug.h>
-#include <kiconloader.h>
-
-// Qt includes
-#include <qdir.h>
-#include <qstringlist.h>
+#include <kicon.h>
+#include <kaction.h>
 
 // Constructor
-Win::Win(QWidget *parent, const char *name)
-: KMainWindow(parent, name)
+Win::Win(QWidget *parent)
+: KMainWindow(parent)
 {
 	m_game = new KConnectX(this);
 	setCentralWidget(m_game);
 
-	m_menugame = new KPopupMenu(this);
-	m_menugame->insertItem(KGlobal::iconLoader()->loadIcon("exit", KIcon::Small),
-		i18n("Quit"),
-		menuquit);
+	m_menugame = new KMenu(i18n("Game"), this);
+	m_actexit = new KAction(KIcon("exit"), i18n("Quit"), actionCollection(), "act_exit");
+	m_menugame->addAction( m_actexit );
 
-	m_menuggz = new KPopupMenu(this);
-	m_menuggz->insertItem(KGlobal::iconLoader()->loadIcon("ggz", KIcon::Small),
-		i18n("Seats && Spectators"),
-		menuplayers);
-	m_menuggz->insertItem(KGlobal::iconLoader()->loadIcon("history", KIcon::Small),
-		i18n("View score"),
-		menuscore);
+	m_menuggz = new KMenu(i18n("GGZ"), this);
+	m_actggz = new KAction(KIcon("ggz"),i18n("Seats && Spectators"), actionCollection(), "act_ggz");
+	m_menuggz->addAction( m_actggz );
 
-	menuBar()->insertItem(i18n("Game"), m_menugame);
-	menuBar()->insertItem(i18n("GGZ"), m_menuggz);
-	menuBar()->insertItem(i18n("Help"), helpMenu());
+	m_acthistory = new KAction(KIcon("history"),i18n("View score"), actionCollection(), "act_history");
+	m_menuggz->addAction( m_acthistory );
+
+	menuBar()->addMenu(m_menugame);
+	menuBar()->addMenu(m_menuggz);
+	menuBar()->addMenu(helpMenu());
 
 	statusBar()->insertItem(i18n("Status"), statusgame);
 
@@ -61,11 +55,11 @@ Win::Win(QWidget *parent, const char *name)
 		SLOT(slotGameOver()));
 
 	connect(m_menugame,
-		SIGNAL(activated(int)),
-		SLOT(slotMenu(int)));
+		SIGNAL(triggered(QAction*)),
+		SLOT(slotMenu(QAction*)));
 	connect(m_menuggz,
-		SIGNAL(activated(int)),
-		SLOT(slotMenu(int)));
+		SIGNAL(triggered(QAction*)),
+		SLOT(slotMenu(QAction*)));
 
 	setCaption(i18n("KConnectX Test Client"));
 	resize(250, 250);
@@ -90,24 +84,29 @@ KConnectX *Win::game() const
 }
 
 // Handle menu stuff
-void Win::slotMenu(int id)
+void Win::slotMenu(QAction* act)
 {
-	QDir d;
-	KGGZSeatsDialog *seats;
+#warning commented kggzseatsdialog until it will be ported
+	//also commented if(act == m_actggz) below
+        //uncomment it too after porting is done
+        //
+	//KGGZSeatsDialog *seats;
 
 	// Standard menu entries
-	switch(id)
+	if(act == m_acthistory)
 	{
-		case menuscore:
-			score();
-			break;
-		case menuplayers:
-			seats = new KGGZSeatsDialog();
-			seats->setMod(m_game->proto()->mod());
-			break;
-		case menuquit:
-			close();
-			break;
+		score();
+	}
+	else if(act == m_actggz)
+	{
+		/* 
+		seats = new KGGZSeatsDialog();
+		seats->setMod(m_game->proto()->mod());
+		 */
+	}
+	else if(act == m_actexit)
+	{
+		close();
 	}
 }
 
@@ -138,7 +137,7 @@ void Win::slotNetworkScore(int wins, int losses, int ties)
 // Game is over
 void Win::slotGameOver()
 {
-	m_menugame->setItemEnabled(menuscore, false);
-	m_menugame->setItemEnabled(menuplayers, false);
+	m_acthistory->setEnabled(false);
+	m_actggz->setEnabled(false);
 }
 

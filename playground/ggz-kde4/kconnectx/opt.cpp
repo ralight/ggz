@@ -11,23 +11,25 @@
 #include <klocale.h>
 
 // Qt includes
-#include <qslider.h>
-#include <qlayout.h>
-#include <qlabel.h>
+#include <QSlider>
+#include <QVBoxLayout>
+#include <QLabel>
 
-Opt::Opt(QWidget *parent, const char *name)
-: KDialogBase(parent, name, true, QString::null, KDialogBase::Ok)
+Opt::Opt(QWidget *parent)
+: KDialog(parent)
 {
-	QWidget *root = makeMainWidget();
+	setButtons( KDialog::Ok );
+	QWidget *root = new QWidget();
+	setMainWidget(root);
 
 	m_boardwidth = new QSlider(root);
-	m_boardwidth->setOrientation(QSlider::Horizontal);
+	m_boardwidth->setOrientation(Qt::Horizontal);
 
 	m_boardheight = new QSlider(root);
-	m_boardheight->setOrientation(QSlider::Horizontal);
+	m_boardheight->setOrientation(Qt::Horizontal);
 
 	m_connectlength = new QSlider(root);
-	m_connectlength->setOrientation(QSlider::Horizontal);
+	m_connectlength->setOrientation(Qt::Horizontal);
 
 	m_lboardwidth = new QLabel(QString::null, root);
 	m_lboardheight = new QLabel(QString::null, root);
@@ -37,7 +39,8 @@ Opt::Opt(QWidget *parent, const char *name)
 	connect(m_boardheight, SIGNAL(valueChanged(int)), SLOT(slotHeight(int)));
 	connect(m_connectlength, SIGNAL(valueChanged(int)), SLOT(slotLength(int)));
 
-	QVBoxLayout *vbox = new QVBoxLayout(root, 5);
+	QVBoxLayout *vbox = new QVBoxLayout(root);
+	vbox->setMargin(5);
 	vbox->add(m_lboardwidth);
 	vbox->add(m_boardwidth);
 	vbox->add(m_lboardheight);

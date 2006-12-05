@@ -18,19 +18,17 @@
 #include <kstandarddirs.h>
 
 // Qt includes
-#include <qlayout.h>
-#include <qpixmap.h>
-#include <qpushbutton.h>
-
-// System includes
-#include <stdio.h>
-#include <stdlib.h>
+#include <QLayout>
+#include <QPixmap>
+#include <QPushButton>
+#include <QGridLayout>
+#include <QFrame>
 
 // Constructor
-KConnectX::KConnectX(QWidget *parent, const char *name)
-: QWidget(parent, name)
+KConnectX::KConnectX(QWidget *parent)
+: QWidget(parent)
 {
-	m_widgetbox = NULL;
+	m_widgetbox = 0;
 
 	m_proto = new Proto();
 
@@ -94,7 +92,7 @@ void KConnectX::slotOptions(char boardwidth, char boardheight, char connectlengt
 	m_stacks.clear();
 	// FIXME: setAutoDelete() or similar?
 
-	m_widgetbox = new QGridLayout(this, boardheight + 1, boardwidth);
+	m_widgetbox = new QGridLayout(this);
 
 	for(int i = 0; i < boardwidth; i++)
 	{
@@ -160,8 +158,8 @@ void KConnectX::slotMove(int move)
 
 void KConnectX::doMove(QString colour, int column)
 {
-	int boardwidth = m_widgetbox->numCols();
-	int boardheight = m_widgetbox->numRows();
+	int boardwidth = m_widgetbox->columnCount();
+	int boardheight = m_widgetbox->rowCount();
 	int j = (boardheight - 2) - m_stacks[column];
 
 	int acc = j * boardwidth + column;
