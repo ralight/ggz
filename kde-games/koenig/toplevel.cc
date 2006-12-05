@@ -322,10 +322,11 @@ void TopLevel::slotNewstuff()
 
 void TopLevel::slotSeats()
 {
-	KGGZSeatsDialog *seats;
+	/*KGGZSeatsDialog *seats;
 
 	seats = new KGGZSeatsDialog();
-	seats->setMod(game->getGGZ()->getMod());
+	seats->setMod(game->getGGZ()->getMod());*/
+	// FIXME: disabled until port to kggzmod
 }
 
 bool TopLevel::queryClose()
