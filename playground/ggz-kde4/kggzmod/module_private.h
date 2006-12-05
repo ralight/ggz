@@ -1,0 +1,67 @@
+#ifndef KGGZMOD_MODULE_PRIVATE_H
+#define KGGZMOD_MODULE_PRIVATE_H
+
+#include <kggzmod/module.h>
+#include <kggzmod/player.h>
+
+#include <QSocketNotifier>
+#include <QAbstractSocket>
+#include <QDataStream>
+#include <QList>
+
+namespace KGGZMod
+{
+
+class ModulePrivate : public QObject
+{
+	Q_OBJECT
+	public:
+		enum GGZEvents
+		{
+			msglaunch = 0,
+			msgserver = 1,
+			msgserverfd = 2,
+			msgplayer = 3,
+			msgseat = 4,
+			msgspectatorseat = 5,
+			msgchat = 6,
+			msgstats = 7,
+			msginfo = 8
+		};
+
+		void connect();
+		void disconnect();
+		void sendRequest(Request request);
+		void insertPlayer(Player::Type seattype, QString name, int seat);
+		Player *self() const;
+
+		QString m_name;
+		int m_fd;
+		Module::State m_state;
+		QList<Player*> m_players;
+		QList<Player*> m_spectators;
+
+		QSocketNotifier *m_notifier;
+		QAbstractSocket *m_dev;
+		QDataStream *m_net;
+		QSocketNotifier *m_gnotifier;
+
+		int m_playerseats;
+		int m_spectatorseats;
+
+		int m_myseat;
+		bool m_myspectator;
+
+	public slots:
+		void slotGGZEvent();
+
+	signals:
+		void signalEvent(KGGZMod::Event event);
+		void signalError();
+		void signalNetwork(int fd);
+};
+
+}
+
+#endif
+
