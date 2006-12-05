@@ -16,6 +16,8 @@
 #include <qlcdnumber.h>
 #include <qscrollview.h>
 #include <qimage.h>
+#include <qpopupmenu.h>
+#include <qtoolbutton.h>
 
 #include <math.h>
 
@@ -53,6 +55,7 @@ KGGZSeatsDialog::KGGZSeatsDialog(QWidget *parent, const char *name)
 	connect(ok, SIGNAL(clicked()), SLOT(close()));
 
 	setCaption(i18n("Players, Bots and Spectators"));
+	resize(300, 300);
 	show();
 }
 
@@ -74,9 +77,6 @@ void KGGZSeatsDialog::setMod(KGGZMod::Module *mod)
 
 void KGGZSeatsDialog::displaySeats()
 {
-	//int count = ggzmod_get_num_seats(m_mod);
-	// FIXME: filter according to settings?
-
 	int count = m_mod->players().count();
 	int digits = (int)(log(count) / log(10) + 1);
 
@@ -88,6 +88,8 @@ void KGGZSeatsDialog::displaySeats()
 		m_hostnames.clear();
 		m_realnames.clear();
 		m_photos.clear();
+		m_buttons.clear();
+		m_buttondata.clear();
 	}
 	m_root = new QWidget(m_view->viewport());
 	m_view->addChild(m_root);
@@ -109,6 +111,9 @@ void KGGZSeatsDialog::displaySeats()
 		photoframe->setBackgroundColor(QColor(120, 120, 120));
 		photoframe->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 		photoframe->setFixedSize(64, 64);
+
+		QToolButton *actionbutton = new QToolButton(DownArrow, w);
+		actionbutton->setText(i18n("Action..."));
 
 		QString type = "unknown";
 		switch(p->type())
@@ -156,6 +161,7 @@ void KGGZSeatsDialog::displaySeats()
 		box2->addSpacing(5);
 		QVBoxLayout *box5 = new QVBoxLayout(box2);
 		box5->add(numberframe);
+		box5->add(actionbutton);
 		box5->addStretch(1);
 		box2->addSpacing(5);
 		QVBoxLayout *box4 = new QVBoxLayout(box2);
@@ -172,6 +178,11 @@ void KGGZSeatsDialog::displaySeats()
 		box3->add(hostlabel);
 		box3->addStretch(1);
 		box2->addStretch(1);
+
+		m_buttons[actionbutton] = i;
+		m_buttondata[actionbutton] = actionbutton;
+
+		connect(actionbutton, SIGNAL(clicked()), SLOT(slotAction()));
 	}
 
 	vboxmain->addStretch(1);
@@ -183,10 +194,7 @@ void KGGZSeatsDialog::displaySeats()
 
 void KGGZSeatsDialog::displaySpectators()
 {
-	//int count = ggzmod_get_num_spectator_seats(m_mod);
-	// FIXME: see displaySeats();
-
-	int count = m_mod->players().count();
+	int count = m_mod->spectators().count();
 	int digits = (int)(log(count) / log(10) + 1);
 
 	if(m_root)
@@ -200,7 +208,7 @@ void KGGZSeatsDialog::displaySpectators()
 
 	for(int i = 0; i < count; i++)
 	{
-		KGGZMod::Player *p = *(m_mod->players().at(i));
+		KGGZMod::Player *p = *(m_mod->spectators().at(i));
 
 		QFrame *w = new QFrame(m_root);
 		w->setFrameStyle(QFrame::Panel | QFrame::Raised);
@@ -240,6 +248,95 @@ void KGGZSeatsDialog::displaySpectators()
 	m_root->show();
 }
 
+void KGGZSeatsDialog::slotAction()
+{
+	int seat;
+       
+	if(m_buttons.contains(sender()))
+	{
+		seat = m_buttons[sender()];
+		kdDebug() << "seat " << seat << " oldmode " << m_oldmode << endl;
+
+		KGGZMod::Player *p = *(m_mod->players().at(seat));
+		KGGZMod::Player *pself = m_mod->self();
+
+		QPopupMenu *pop = new QPopupMenu(this);
+		pop->insertItem(i18n("Statistics..."), viewstats);
+		pop->insertSeparator();
+		if(p->type() == KGGZMod::Player::open)
+		{
+			if(pself->type() == KGGZMod::Player::spectator)
+			{
+				pop->insertItem(i18n("Sit down here"), sitdown);
+			}
+			pop->insertItem(i18n("Add a bot here"), botadd);
+		}
+		else if(p->type() == KGGZMod::Player::bot)
+		{
+			pop->insertItem(i18n("Boot bot and open seat"), botremove);
+		}
+		else if(p->type() == KGGZMod::Player::player)
+		{
+			if(pself->type() == KGGZMod::Player::player)
+			{
+				pop->insertItem(i18n("Stand up"), sitdown);
+			}
+			pop->insertItem(i18n("Boot player and open seat"), bootplayer);
+		}
+		else if(p->type() == KGGZMod::Player::reserved)
+		{
+		}
+		else if(p->type() == KGGZMod::Player::abandoned)
+		{
+		}
+
+		const QToolButton *buttonkey = dynamic_cast<const QToolButton*>(sender());
+		QToolButton *button = m_buttondata[buttonkey];
+		button->setPopup(pop);
+		button->openPopup();
+
+		connect(pop, SIGNAL(activated(int)), SLOT(slotMenu(int)));
+	}
+	else
+	{
+		kdDebug() << "error" << endl;
+		// error!
+	}
+}
+
+void KGGZSeatsDialog::slotMenu(int id)
+{
+	if(id == standup)
+	{
+		KGGZMod::StandRequest req;
+		m_mod->sendRequest(req);
+	}
+	else if(id == sitdown)
+	{
+		KGGZMod::SitRequest req(0);
+		m_mod->sendRequest(req);
+	}
+	else if(id == bootplayer)
+	{
+		KGGZMod::BootRequest req("foo");
+		m_mod->sendRequest(req);
+	}
+	else if(id == botadd)
+	{
+		KGGZMod::BotRequest req(0);
+		m_mod->sendRequest(req);
+	}
+	else if(id == botremove)
+	{
+		KGGZMod::OpenRequest req(0);
+		m_mod->sendRequest(req);
+	}
+	else if(id == viewstats)
+	{
+		// FIXME: stats???
+	}
+}
+
 void KGGZSeatsDialog::slotInfo(KGGZMod::Event event)
 {
 	if(event.type() == KGGZMod::Event::info)
@@ -250,8 +347,6 @@ void KGGZSeatsDialog::slotInfo(KGGZMod::Event event)
 
 void KGGZSeatsDialog::infos()
 {
-	//int count = ggzmod_get_num_seats(m_mod);
-	// FIXME: See display*
 	int count = m_mod->players().count();
 	for(int i = 0; i < count; i++)
 	{

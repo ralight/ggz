@@ -46,6 +46,8 @@ Module::Module(QString name)
 	d->m_playerseats = 0;
 	d->m_spectatorseats = 0;
 
+	d->m_myseat = -1;
+
 	connect(d, SIGNAL(signalEvent(KGGZMod::Event)), this, SIGNAL(signalEvent(KGGZMod::Event)));
 	connect(d, SIGNAL(signalError()), this, SIGNAL(signalError()));
 	connect(d, SIGNAL(signalNetwork(int)), this, SIGNAL(signalNetwork(int)));
@@ -67,6 +69,11 @@ void Module::sendRequest(Request request)
 QValueList<Player*> Module::players() const
 {
 	return d->m_players;
+}
+
+QValueList<Player*> Module::spectators() const
+{
+	return d->m_spectators;
 }
 
 Module::State Module::state() const
@@ -214,6 +221,9 @@ void ModulePrivate::slotGGZEvent()
 		e.data["player"] = QString(_player);
 		free(_player);
 
+		m_myseat = _seat;
+		m_myspectator = (_isspectator != 0);
+
 		insertPlayer((_isspectator ? Player::spectator : Player::player),
 			e.data["player"], _seat);
 
@@ -300,7 +310,7 @@ void ModulePrivate::slotGGZEvent()
 			}
 			stat->init(statpriv);
 
-			for(it = m_players.begin(); it != m_players.end(); it++)
+			/*for(it = m_players.begin(); it != m_players.end(); it++)
 			{
 				int condition = false;
 				if(i < m_playerseats)
@@ -321,12 +331,16 @@ void ModulePrivate::slotGGZEvent()
 				}
 				if(condition)
 				{
-//					(*it).stats = stat;
 					(*it)->d->m_stats = stat;
 					it = m_players.end();
 				}
 				i++;
-			}
+			}*/
+
+			Player *p;
+			if(i < m_playerseats) p = *(m_players.at(i));
+			else p = *(m_spectators.at(i));
+			p->d->m_stats = stat;
 		}
 
 		emit signalEvent(e);
@@ -386,6 +400,22 @@ void ModulePrivate::disconnect()
 	m_gnotifier = 0;
 }
 
+Player *ModulePrivate::self() const
+{
+	QValueList<Player*>::Iterator it;
+
+	if(m_myspectator)
+	{
+		return *(m_spectators.at(m_myseat));
+	}
+	else
+	{
+		return *(m_players.at(m_myseat));
+	}
+
+	return 0;
+}
+
 void ModulePrivate::insertPlayer(Player::Type seattype, QString name, int seat)
 {
 	QValueList<Player*>::Iterator it;
@@ -397,20 +427,40 @@ void ModulePrivate::insertPlayer(Player::Type seattype, QString name, int seat)
 	ppriv->m_seat = seat;
 	p->init(ppriv);
 
-	for(it = m_players.begin(); it != m_players.end(); it++)
+	if(seattype == Player::spectator)
 	{
-		if((*it)->name() == p->name())
+		for(it = m_players.begin(); it != m_players.end(); it++)
 		{
-			it = m_players.remove(it);
-			it = m_players.end();
+			if((*it)->name() == p->name())
+			{
+				it = m_spectators.remove(it);
+				it = m_spectators.end();
+			}
 		}
+		m_spectators.append(p);
 	}
-	m_players.append(p);
+	else
+	{
+		for(it = m_players.begin(); it != m_players.end(); it++)
+		{
+			if((*it)->name() == p->name())
+			{
+				it = m_players.remove(it);
+				it = m_players.end();
+			}
+		}
+		m_players.append(p);
+	}
 }
 
 bool Module::isGGZ()
 {
 	if(getenv("GGZMODE")) return true;
 	else return false;
+}
+
+Player *Module::self() const
+{
+	return d->self();
 }
 

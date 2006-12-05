@@ -32,11 +32,13 @@ class ModulePrivate : public QObject
 		void disconnect();
 		void sendRequest(Request request);
 		void insertPlayer(Player::Type seattype, QString name, int seat);
+		Player *self() const;
 
 		QString m_name;
 		int m_fd;
 		Module::State m_state;
 		QValueList<Player*> m_players;
+		QValueList<Player*> m_spectators;
 
 		QSocketNotifier *m_notifier;
 		QSocketDevice *m_dev;
@@ -45,6 +47,9 @@ class ModulePrivate : public QObject
 
 		int m_playerseats;
 		int m_spectatorseats;
+
+		int m_myseat;
+		bool m_myspectator;
 
 	public slots:
 		void slotGGZEvent();

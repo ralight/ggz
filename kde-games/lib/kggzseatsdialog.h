@@ -18,6 +18,7 @@ namespace KGGZMod
 class QScrollView;
 class QLabel;
 class QFrame;
+class QToolButton;
 
 class KGGZSeatsDialog : public QWidget
 {
@@ -33,6 +34,8 @@ class KGGZSeatsDialog : public QWidget
 		void slotTaskData(KIO::Job *job, const QByteArray&);
 		void slotTaskResult(KIO::Job *job);
 		void slotInfo(KGGZMod::Event event);
+		void slotAction();
+		void slotMenu(int id);
 
 	private:
 		KGGZMod::Module *m_mod;
@@ -43,12 +46,24 @@ class KGGZSeatsDialog : public QWidget
 		QMap<int, QFrame*> m_photos;
 		QMap<KIO::Job*, int> m_phototasks;
 		QMap<KIO::Job*, QByteArray> m_photodata;
+		QMap<const QObject*, int> m_buttons;
+		QMap<const QObject*, QToolButton*> m_buttondata;
 		int m_oldmode;
 
 		enum DisplayModes
 		{
 			displayseats,
 			displayspectators
+		};
+
+		enum PlayerActions
+		{
+			standup,
+			sitdown,
+			bootplayer,
+			botadd,
+			botremove,
+			viewstats
 		};
 
 		void displaySeats();

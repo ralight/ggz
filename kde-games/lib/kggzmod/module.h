@@ -31,10 +31,13 @@ class Module : public QObject
 		void sendRequest(Request request);
 
 		QValueList<Player*> players() const;
+		QValueList<Player*> spectators() const;
 		State state() const;
 		//int fd() const;
 
 		static bool isGGZ();
+
+		Player *self() const;
 
 	signals:
 		void signalEvent(KGGZMod::Event event);

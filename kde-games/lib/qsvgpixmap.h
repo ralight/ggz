@@ -15,6 +15,9 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+#ifndef KGGZGAMES_QSVGPIXMAP_H
+#define KGGZGAMES_QSVGPIXMAP_H
+
 #include <qpixmap.h>
 
 class QSvgPixmap
@@ -23,3 +26,4 @@ class QSvgPixmap
 		static QPixmap pixmap(QString filename, int width, int height);
 };
 
+#endif
