@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 8533 2006-08-26 01:26:29Z jdorje $
+ * $Id: server.c 8706 2006-12-06 02:44:50Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -40,6 +40,7 @@
 #include <winsock2.h>
 #endif
 #include <signal.h>
+#include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
 
