@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 8373 2006-07-19 11:41:33Z josef $
+ * $Id: game.c 8705 2006-12-06 01:04:14Z jdorje $
  *
  * Functions for handling game events
  *
@@ -374,15 +374,10 @@ gboolean can_launch_gametype(GGZGameType *gt)
 	const char *version = ggzcore_gametype_get_prot_version(gt);
 	const int num = ggzcore_module_get_num_by_type(game, engine, version);
 
-	if (num == 0) {
-		return FALSE;
+	if (embedded_protocol_engine && embedded_protocol_version) {
+	  return (strcmp(engine, embedded_protocol_engine) == 0
+		  && strcmp(version, embedded_protocol_version) == 0);
+	} else {
+	  return (num > 0);
 	}
-
-	if (embedded_protocol_engine && embedded_protocol_version
-	    && (strcmp(engine, embedded_protocol_engine) != 0
-		|| strcmp(version, embedded_protocol_version) != 0)) {
-		return FALSE;
-	}
-
-	return TRUE;
 }
