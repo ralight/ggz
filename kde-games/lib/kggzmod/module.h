@@ -64,31 +64,112 @@ class Module : public QObject
 {
 	Q_OBJECT
 	public:
+		/**
+		 * Initialisation of online gaming through GGZ.
+		 *
+		 * Before online gaming is activated, the validity of
+		 * the GGZ environment should be checked with the static
+		 * \ref isGGZ method.
+		 *
+		 * @param name Name of the game client
+		 */
 		Module(QString name);
 		~Module();
 
+		/**
+		 * The state a GGZ game can be in. These states are controlled
+		 * by the GGZ server (for \ref created, \ref connected and
+		 * \ref waiting) and afterwards by the game server which toggles
+		 * between \ref waiting and \ref playing until finally reaching
+		 * \ref done.
+		 */
 		enum State
 		{
-			created,
-			connected,
-			waiting,
-			playing,
-			done
+			created,	/**< The initial state. */
+			connected,	/**< The GGZ core client could be contacted successfully. */
+			waiting,	/**< The connection to the game server has been established. */
+			playing,	/**< The game client is now playing. */
+			done		/**< The game is over. */
 		};
 
+		/**
+		 * Sends a request to the GGZ core client.
+		 *
+		 * The request is then forwarded to the GGZ server if necessary.
+		 * In most cases, an event will be delivered back to the game client.
+		 *
+		 * @param request The request to the GGZ core client
+		 */
 		void sendRequest(Request request);
 
+		/**
+		 * Returns the list of seats on the table.
+		 *
+		 * This includes all active players, bots, open seats
+		 * and abandoned/reserved seats.
+		 */
 		QValueList<Player*> players() const;
+
+		/**
+		 * Returns the list of game spectators.
+		 */
 		QValueList<Player*> spectators() const;
+
+		/**
+		 * Returns the current state the game is in.
+		 */
 		State state() const;
 
+		/**
+		 * Checks if the game is started in a GGZ environment.
+		 *
+		 * Calling \ref Module should only be done in case a
+		 * GGZ environment has been detected.
+		 *
+		 * @return \b true if the game runs on GGZ, \b false otherwise
+		 */
 		static bool isGGZ();
 
+		/**
+		 * Returns information about the player who is running the
+		 * game client.
+		 *
+		 * @return player information, or \b null if not available yet
+		 */
 		Player *self() const;
 
 	signals:
+		/**
+		 * An event from the GGZ core client has happened.
+		 *
+		 * Such events can be ignored but are still useful for many
+		 * games to know.
+		 *
+		 * @param event The event from the core client
+		 */
 		void signalEvent(KGGZMod::Event event);
+
+		/**
+		 * An error has occurred.
+		 *
+		 * In such a case, the game client should terminate its
+		 * multiplayer mode and depending on the situation also
+		 * terminate itself.
+		 */
 		void signalError();
+
+		/**
+		 * Messages from the game server are available.
+		 *
+		 * If the connection to the game server is active and
+		 * the game server writes out a message, the file descriptor
+		 * contained in this event can be used to communicate with
+		 * the game server.
+		 * The file descriptor is initially reported in a
+		 * \ref signalEvent as well as a \ref ServerEvent.
+		 *
+		 * @param fd File descriptor from which to read the message
+		 */
 		void signalNetwork(int fd);
 
 	private:
