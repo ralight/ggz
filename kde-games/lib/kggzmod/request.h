@@ -108,7 +108,7 @@ class StandRequest : public Request
 };
 
 /**
- * @short Stand-up request to the GGZ core client.
+ * @short Sit-down request to the GGZ core client.
  *
  * This request lets one become a player again if one is currently
  * a spectator.
@@ -124,7 +124,7 @@ class SitRequest : public Request
 };
 
 /**
- * @short Stand-up request to the GGZ core client.
+ * @short Player-booting request to the GGZ core client.
  *
  * This request removes a player from the table.
  * The seat will then be open.
