@@ -59,3 +59,9 @@ InfoRequest::InfoRequest(int seat)
 	data["seat"] = QString::number(seat);
 }
 
+InfoRequest::InfoRequest()
+: Request(Request::info)
+{
+	data["seat"] = -1;
+}
+

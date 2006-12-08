@@ -9,6 +9,7 @@ Player::Player()
 
 	d->m_type = Player::unknown;
 	d->m_seat = -1;
+	d->m_stats = 0;
 }
 
 Player::Type Player::type() const
