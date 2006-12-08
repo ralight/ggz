@@ -13,14 +13,14 @@ class Request
 	public:
 		enum Type
 		{
-			state,	/**< Change the state (-> state). */
+			state,	/**< Change the state. */
 			stand,	/**< Stand up from seat. */
-			sit,	/**< Sit down again if possible (-> seat). */
-			boot,	/**< Boot a player from table (-> player). */
-			bot,	/**< Let a bot join the game (-> seat). */
-			open,	/**< Open up a bot seat (-> seat). */
-			chat,	/**< Send a chat message (-> message). */
-			info	/**< Request infos about a player (-> seat). */
+			sit,	/**< Sit down again if possible. */
+			boot,	/**< Boot a player from table. */
+			bot,	/**< Let a bot join the game. */
+			open,	/**< Open up a bot seat. */
+			chat,	/**< Send a chat message. */
+			info	/**< Request infos about a player. */
 		};
 
 		Request(Type type);
@@ -79,6 +79,7 @@ class InfoRequest : public Request
 {
 	public:
 		InfoRequest(int seat);
+		InfoRequest();
 };
 
 }

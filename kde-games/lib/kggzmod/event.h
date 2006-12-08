@@ -10,16 +10,18 @@ class Player;
 
 class Event
 {
+	friend class ModulePrivate;
+
 	public:
 		enum Type
 		{
-			launch,		/**< Game was launched. */
-			server,		/**< Connected to server (-> fd). */
-			self,		/**< Your seat was assigned (-> player). */
-			seat,		/**< Someone's seat changed (-> player). */
-			chat,		/**< A chat message was received (-> player, message) */
-			stats,		/**< Statistics have been received for all player. */
-			info		/**< Information about a player has arrived (-> player). */
+			launch,	/**< Game was launched. */
+			server,	/**< Connected to server. */
+			self,	/**< Your seat was assigned. */
+			seat,	/**< Someone's seat changed. */
+			chat,	/**< A chat message was received */
+			stats,	/**< Statistics have been received for a player. */
+			info	/**< Information about a player has arrived. */
 		};
 
 		Event(Type type);
@@ -28,8 +30,13 @@ class Event
 
 		QMap<QString, QString> data;
 
+	protected:
+		Player *m_player;
+
 	private:
 		Type m_type;
+		//Module *m_mod;
+		//Player *playerbyname(QString name);
 };
 
 class LaunchEvent : public Event
@@ -71,6 +78,7 @@ class StatsEvent : public Event
 {
 	public:
 		StatsEvent(const Event& event);
+		Player *player() const;
 };
 
 class InfoEvent : public Event

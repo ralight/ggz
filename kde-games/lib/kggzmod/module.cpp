@@ -1,7 +1,6 @@
 #include "module.h"
 #include "module_private.h"
 
-//#include <kggzmod/player.h>
 #include <kggzmod/statistics.h>
 #include "player_private.h"
 #include "statistics_private.h"
@@ -10,11 +9,6 @@
 
 #include <kdebug.h>
 
-//#include <qsocketnotifier.h>
-//#include <qsocketdevice.h>
-//#include <qdatastream.h>
-
-//#include <unistd.h>
 #include <stdlib.h> // for free() and getenv()
 #include <netinet/in.h> // for ntohl()
 
@@ -81,11 +75,6 @@ Module::State Module::state() const
 	return d->m_state;
 }
 
-/*int Module::fd() const
-{
-	return d->m_fd;
-}*/
-
 void ModulePrivate::sendRequest(Request request)
 {
 	if(!m_net)
@@ -149,6 +138,8 @@ void ModulePrivate::slotGGZEvent()
 	int _seattype;
 	int _hasrecord, _hasrating, _hasranking, _hashighscore;
 	int _wins, _losses, _ties, _forfeits, _rating, _ranking, _highscore;
+	int _num;
+	char *_realname, *_photo;
 	QValueList<Player*>::Iterator it;
 
 	kdDebug() << "[kggzmod] debug: input from GGZ has arrived" << endl;
@@ -161,9 +152,10 @@ void ModulePrivate::slotGGZEvent()
 		disconnect();
 		kdDebug() << "[kggzmod] error: unknown opcode" << endl;
 		emit signalError();
+		return;
 	}
 
-	// FIXME: also treat opcode 'msgerror' as signalError()!
+	// FIXME: also treat ggzmod 'error' events as signalError()!
 
 	if(opcode == msglaunch)
 	{
@@ -188,18 +180,21 @@ void ModulePrivate::slotGGZEvent()
 		//emit signalEvent(e);
 
 		// FIXME: we don't handle this variant
+
+		disconnect();
+		kdDebug() << "[kggzmod] error: we don't handle msgserver" << endl;
+		emit signalError();
 	}
 	if(opcode == msgserverfd)
 	{
 		sendRequest(StateRequest(Module::waiting));
 
 		Event e(Event::server);
-		// FIXME: this is a send_fd operation!
-		//*m_net >> _fd;
-		//_fd = ntohl(_fd);
+		// FIXME: this is a send_fd operation, might not be portable!
 		ret = readfiledescriptor(m_fd, &_fd);
 		if(!ret)
 		{
+			disconnect();
 			kdDebug() << "[kggzmod] error: socket reading failed" << endl;
 			emit signalError();
 			return;
@@ -226,6 +221,8 @@ void ModulePrivate::slotGGZEvent()
 
 		insertPlayer((_isspectator ? Player::spectator : Player::player),
 			e.data["player"], _seat);
+		e.m_player = findPlayer((_isspectator ? Player::spectator : Player::player),
+			e.data["player"]);
 
 		emit signalEvent(e);
 	}
@@ -239,6 +236,7 @@ void ModulePrivate::slotGGZEvent()
 		free(_player);
 
 		insertPlayer((Player::Type)_seattype, e.data["player"], _seat);
+		e.m_player = findPlayer((Player::Type)_seattype, e.data["player"]);
 
 		if(_seat >= m_playerseats) m_playerseats = _seat + 1;
 
@@ -253,6 +251,7 @@ void ModulePrivate::slotGGZEvent()
 		free(_player);
 
 		insertPlayer(Player::spectator, e.data["player"], _seat);
+		e.m_player = findPlayer(Player::spectator, e.data["player"]);
 
 		if(_seat >= m_spectatorseats) m_spectatorseats = _seat + 1;
 
@@ -267,6 +266,9 @@ void ModulePrivate::slotGGZEvent()
 		e.data["message"] = QString(_message);
 		free(_player);
 		free(_message);
+
+		e.m_player = findPlayer(Player::player, e.data["player"]);
+
 		emit signalEvent(e);
 	}
 	if(opcode == msgstats)
@@ -310,37 +312,47 @@ void ModulePrivate::slotGGZEvent()
 			}
 			stat->init(statpriv);
 
-			/*for(it = m_players.begin(); it != m_players.end(); it++)
-			{
-				int condition = false;
-				if(i < m_playerseats)
-				{
-					int x = i;
-					if(((*it)->seat() == x) && ((*it)->type() != Player::spectator))
-					{
-						condition = true;
-					}
-				}
-				else
-				{
-					int x = i - m_playerseats;
-					if(((*it)->seat() == x) && ((*it)->type() == Player::spectator))
-					{
-						condition = true;
-					}
-				}
-				if(condition)
-				{
-					(*it)->d->m_stats = stat;
-					it = m_players.end();
-				}
-				i++;
-			}*/
-
 			Player *p;
 			if(i < m_playerseats) p = *(m_players.at(i));
 			else p = *(m_spectators.at(i));
 			p->d->m_stats = stat;
+		}
+
+		emit signalEvent(e);
+	}
+	if(opcode == msginfo)
+	{
+		Event e(Event::info);
+
+		*m_net >> _num;
+
+		for(int i = 0; i < _num; i++)
+		{
+			*m_net >> _seat;
+			*m_net >> _realname;
+			*m_net >> _photo;
+			*m_net >> _host;
+			//e.data["realname"] = QString(_realname);
+			//e.data["photo"] = QString(_photo);
+			//e.data["host"] = QString(_host);
+			QString realname(_realname);
+			QString photo(_photo);
+			QString host(_host);
+			free(_host);
+			free(_photo);
+			free(_realname);
+
+			for(it = m_players.begin(); it != m_players.end(); it++)
+			{
+				if((*it)->seat() == _seat)
+				{
+					Player *p = (*it);
+					p->d->m_realname = realname;
+					p->d->m_hostname = host;
+					p->d->m_photo = photo;
+					break;
+				}
+			}
 		}
 
 		emit signalEvent(e);
@@ -364,6 +376,7 @@ void ModulePrivate::connect()
 	{
 		kdDebug() << "[kggzmod] error: GGZSOCKET not set" << endl;
 		emit signalError();
+		return;
 	}
 
 	m_fd = ggzsocket.toInt();
@@ -378,9 +391,11 @@ void ModulePrivate::connect()
 
 	if(!m_dev->isValid())
 	{
+		disconnect();
 		kdDebug() << "[kggzmod] error: socket is erroneous" << endl;
 		emit signalError();
 		// FIXME: signal is not propagated???
+		return;
 	}
 
 	kdDebug() << "[kggzmod] debug: connect() is finished" << endl;
@@ -402,8 +417,6 @@ void ModulePrivate::disconnect()
 
 Player *ModulePrivate::self() const
 {
-	QValueList<Player*>::Iterator it;
-
 	if(m_myspectator)
 	{
 		return *(m_spectators.at(m_myseat));
@@ -411,6 +424,34 @@ Player *ModulePrivate::self() const
 	else
 	{
 		return *(m_players.at(m_myseat));
+	}
+
+	return 0;
+}
+
+Player* ModulePrivate::findPlayer(Player::Type seattype, QString name)
+{
+	QValueList<Player*>::Iterator it;
+
+	if(seattype == Player::spectator)
+	{
+		for(it = m_spectators.begin(); it != m_spectators.end(); it++)
+		{
+			if((*it)->name() == name)
+			{
+				return (*it);
+			}
+		}
+	}
+	else
+	{
+		for(it = m_players.begin(); it != m_players.end(); it++)
+		{
+			if((*it)->name() == name)
+			{
+				return (*it);
+			}
+		}
 	}
 
 	return 0;
@@ -429,12 +470,12 @@ void ModulePrivate::insertPlayer(Player::Type seattype, QString name, int seat)
 
 	if(seattype == Player::spectator)
 	{
-		for(it = m_players.begin(); it != m_players.end(); it++)
+		for(it = m_spectators.begin(); it != m_spectators.end(); it++)
 		{
 			if((*it)->name() == p->name())
 			{
 				it = m_spectators.remove(it);
-				it = m_spectators.end();
+				break;
 			}
 		}
 		m_spectators.append(p);
@@ -446,7 +487,7 @@ void ModulePrivate::insertPlayer(Player::Type seattype, QString name, int seat)
 			if((*it)->name() == p->name())
 			{
 				it = m_players.remove(it);
-				it = m_players.end();
+				break;
 			}
 		}
 		m_players.append(p);

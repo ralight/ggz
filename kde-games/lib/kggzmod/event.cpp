@@ -5,6 +5,8 @@ using namespace KGGZMod;
 Event::Event(Type type)
 {
 	m_type = type;
+	//m_mod = mod;
+	m_player = 0;
 }
 
 Event::Type Event::type() const
@@ -35,9 +37,9 @@ SelfEvent::SelfEvent(const Event& event) : Event(Event::self)
 
 Player *SelfEvent::self() const
 {
-	QString p = data["player"];
-	// FIXME: find out player - how to access list?
-	return NULL;
+	//QString p = data["player"];
+	//return NULL;
+	return m_player;
 }
 
 SeatEvent::SeatEvent(const Event& event) : Event(Event::seat)
@@ -47,9 +49,9 @@ SeatEvent::SeatEvent(const Event& event) : Event(Event::seat)
 
 Player *SeatEvent::player() const
 {
-	QString p = data["player"];
-	// FIXME: find out player - how to access list?
-	return NULL;
+	//QString p = data["player"];
+	//return NULL;
+	return m_player;
 }
 
 ChatEvent::ChatEvent(const Event& event) : Event(Event::chat)
@@ -59,9 +61,9 @@ ChatEvent::ChatEvent(const Event& event) : Event(Event::chat)
 
 Player *ChatEvent::player() const
 {
-	QString p = data["player"];
-	// FIXME: find out player - how to access list?
-	return NULL;
+	//QString p = data["player"];
+	//return NULL;
+	return m_player;
 }
 
 QString ChatEvent::message() const
@@ -74,6 +76,13 @@ StatsEvent::StatsEvent(const Event& event) : Event(Event::stats)
 	data = event.data;
 }
 
+Player *StatsEvent::player() const
+{
+	//QString p = data["player"];
+	//return NULL;
+	return m_player;
+}
+
 InfoEvent::InfoEvent(const Event& event) : Event(Event::info)
 {
 	data = event.data;
@@ -81,8 +90,12 @@ InfoEvent::InfoEvent(const Event& event) : Event(Event::info)
 
 Player *InfoEvent::player() const
 {
-	QString p = data["player"];
-	// FIXME: find out player - how to access list?
-	return NULL;
+	//QString p = data["player"];
+	//return NULL;
+	return m_player;
 }
+
+//Player *playerbyname(QString name)
+//{
+//}
 

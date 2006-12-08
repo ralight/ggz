@@ -67,7 +67,7 @@ void KGGZSeatsDialog::setMod(KGGZMod::Module *mod)
 {
 	m_mod = mod;
 
-	KGGZMod::InfoRequest ir(-1);
+	KGGZMod::InfoRequest ir;
 	mod->sendRequest(ir);
 
 	connect(mod, SIGNAL(signalEvent(KGGZMod::Event)), SLOT(slotInfo(KGGZMod::Event)));

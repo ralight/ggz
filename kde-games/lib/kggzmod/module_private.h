@@ -32,6 +32,7 @@ class ModulePrivate : public QObject
 		void disconnect();
 		void sendRequest(Request request);
 		void insertPlayer(Player::Type seattype, QString name, int seat);
+		Player *findPlayer(Player::Type seattype, QString name);
 		Player *self() const;
 
 		QString m_name;
