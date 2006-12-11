@@ -41,12 +41,12 @@ Opt::Opt(QWidget *parent)
 
 	QVBoxLayout *vbox = new QVBoxLayout(root);
 	vbox->setMargin(5);
-	vbox->add(m_lboardwidth);
-	vbox->add(m_boardwidth);
-	vbox->add(m_lboardheight);
-	vbox->add(m_boardheight);
-	vbox->add(m_lconnectlength);
-	vbox->add(m_connectlength);
+	vbox->addWidget(m_lboardwidth);
+	vbox->addWidget(m_boardwidth);
+	vbox->addWidget(m_lboardheight);
+	vbox->addWidget(m_boardheight);
+	vbox->addWidget(m_lconnectlength);
+	vbox->addWidget(m_connectlength);
 }
 
 void Opt::slotWidth(int width)
@@ -66,8 +66,8 @@ void Opt::slotLength(int length)
 
 void Opt::setBoardHeightRange(char min, char max)
 {
-	m_boardheight->setMinValue(min);
-	m_boardheight->setMaxValue(max);
+	m_boardheight->setMinimum(min);
+	m_boardheight->setMaximum(max);
 
 	if(min == max) m_boardheight->setEnabled(false);
 	else m_boardheight->setEnabled(true);
@@ -77,8 +77,8 @@ void Opt::setBoardHeightRange(char min, char max)
 
 void Opt::setBoardWidthRange(char min, char max)
 {
-	m_boardwidth->setMinValue(min);
-	m_boardwidth->setMaxValue(max);
+	m_boardwidth->setMinimum(min);
+	m_boardwidth->setMaximum(max);
 
 	if(min == max) m_boardwidth->setEnabled(false);
 	else m_boardwidth->setEnabled(true);
@@ -88,8 +88,8 @@ void Opt::setBoardWidthRange(char min, char max)
 
 void Opt::setConnectLengthRange(char min, char max)
 {
-	m_connectlength->setMinValue(min);
-	m_connectlength->setMaxValue(max);
+	m_connectlength->setMinimum(min);
+	m_connectlength->setMaximum(max);
 
 	if(min == max) m_connectlength->setEnabled(false);
 	else m_connectlength->setEnabled(true);

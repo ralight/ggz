@@ -13,7 +13,7 @@
 // GGZ-KDE-Games includes
 #include <kggzmod/module.h>
 
-class Q3SocketDevice;
+class QAbstractSocket;
 class QDataStream;
 
 // Generic KConnectX client protocol handler
@@ -75,34 +75,34 @@ class Proto : public QObject
 		void signalOver(char winner);
 
 	private slots:
-		void slotEvent(KGGZMod::Event event);
+		void slotEvent(const KGGZMod::Event& event);
 		void slotError();
 		void slotNetwork(int fd);
 
 	private:
 		KGGZMod::Module *m_kggzmod;
-		Q3SocketDevice *m_dev;
+		QAbstractSocket *m_dev;
 		QDataStream *m_net;
 
 		struct ConnectXData
 		{
-			Q_INT32 myseat;
-			Q_INT32 type1;
-			Q_INT32 type2;
+			qint32 myseat;
+			qint32 type1;
+			qint32 type2;
 			QString name1;
 			QString name2;
-			Q_INT32 move;
-			Q_INT8 winner;
-			Q_INT8 movestatus;
-			Q_INT8 boardwidth;
-			Q_INT8 boardheight;
-			Q_INT8 connectlength;
-			Q_INT8 minboardwidth;
-			Q_INT8 maxboardwidth;
-			Q_INT8 minboardheight;
-			Q_INT8 maxboardheight;
-			Q_INT8 minconnectlength;
-			Q_INT8 maxconnectlength;
+			qint32 move;
+			qint8 winner;
+			qint8 movestatus;
+			qint8 boardwidth;
+			qint8 boardheight;
+			qint8 connectlength;
+			qint8 minboardwidth;
+			qint8 maxboardwidth;
+			qint8 minboardheight;
+			qint8 maxboardheight;
+			qint8 minconnectlength;
+			qint8 maxconnectlength;
 		};
 
 		ConnectXData m_data;

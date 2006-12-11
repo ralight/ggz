@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 
 	Win *win = new Win();
 
-	a.setMainWidget(win);
+	//a.setMainWidget(win); // FIXME - not needed for Qt4?
 	return a.exec();
 }
 

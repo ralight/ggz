@@ -173,7 +173,10 @@ void KConnectX::doMove(QString colour, int column)
 
 	KStandardDirs d;
 	QString filename = d.findResource("data", "kconnectx/" + colour + ".png");
-	w->setPaletteBackgroundPixmap(QPixmap(filename));
+
+	QPalette palette;
+	palette.setBrush(w->backgroundRole(), QBrush(QPixmap(filename)));
+	w->setPalette(palette);
 
 	m_stacks[column] += 1;
 }

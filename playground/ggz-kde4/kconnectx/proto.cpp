@@ -15,7 +15,7 @@
 
 // Qt includes
 #include <qdatastream.h>
-#include <q3socketdevice.h>
+#include <qabstractsocket.h>
 
 // Empty constructor
 Proto::Proto()
@@ -25,7 +25,7 @@ Proto::Proto()
 	m_dev = 0;
 	m_net = 0;
 
-	connect(m_kggzmod, SIGNAL(signalEvent(KGGZMod::Event)), SLOT(slotEvent(KGGZMod::Event)));
+	connect(m_kggzmod, SIGNAL(signalEvent(const KGGZMod::Event&)), SLOT(slotEvent(const KGGZMod::Event&)));
 	connect(m_kggzmod, SIGNAL(signalError()), SLOT(slotError()));
 	connect(m_kggzmod, SIGNAL(signalNetwork(int)), SLOT(slotNetwork(int)));
 }
@@ -37,7 +37,7 @@ Proto::~Proto()
 	delete m_dev;
 }
 
-void Proto::slotEvent(KGGZMod::Event event)
+void Proto::slotEvent(const KGGZMod::Event& event)
 {
 	kdDebug() << "PROTO: Event! type=" << event.type() << endl;
 
@@ -82,7 +82,8 @@ void Proto::slotNetwork(int fd)
 
 	if(!m_dev)
 	{
-		m_dev = new Q3SocketDevice(fd, Q3SocketDevice::Stream);
+		m_dev = new QAbstractSocket(QAbstractSocket::TcpSocket, this);
+		m_dev->setSocketDescriptor(fd);
 		m_net = new QDataStream(m_dev);
 	}
 
@@ -237,9 +238,9 @@ void Proto::sendOptions(char boardwidth, char boardheight, char connectlength)
 	}
 
 	*m_net << sndoptions;
-	*m_net << (Q_INT8)boardheight;
-	*m_net << (Q_INT8)boardwidth;
-	*m_net << (Q_INT8)connectlength;
+	*m_net << (qint8)boardheight;
+	*m_net << (qint8)boardwidth;
+	*m_net << (qint8)connectlength;
 }
 
 void Proto::sendRestart()
