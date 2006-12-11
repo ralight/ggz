@@ -1,20 +1,25 @@
 <?xml alibi="this is to let vim highlight all XML tags within this file ;)"?>
 
 This document describes the format of GGZComm protocols.
+The GGZComm protocol itself is based on XML. However, the game protocol it
+describes is message-oriented, and can be implemented as either opcode-based
+binary messages or XML messages, depending on the generation parameters.
 
 Each protocol starts with the standard XML header, including version and
-(maybe) the encoding.
+(maybe) the encoding which defaults to 'utf-8'.
 
 	<?xml version="1.0"?>
 
 What follows is the protocol top-level tag ('ggzcomm'), which contains the
 game name ('engine') and its version ('version').
+No namespace declaration is required, however it should implicitly be assumed
+to equal 'urn:ggz:ggzcomm' and hence any other namespace is not conformant.
 
 	<ggzcomm engine="GGZCards" version="2">
 		...
 	</ggzcomm>
 
-Within these tags, we have 4 types of tags now: Those which describes which
+Within this tag, we have 4 types of tags now: Those which describes which
 events are sent by the server ('server'), which ones are sent by the client and
 received by the server ('client'), those who guarantee a certain order
 ('protocol'), and constants definitions ('definitions').
@@ -23,12 +28,15 @@ The following applies to the client and server tags:
 Each side can have any number of events ('event'), each of them may carry
 information in it or be empty.
 Information ('data') tags always contain an identifier ('name') and an
-associated data type ('type').
+associated data type ('type'), where type is either 'int', 'byte' or 'string'
+(explained below).
 Optionally, the attribute 'global' can be supplied (as in global="protocol"), to
 make this variable visible globally within the protocol address space. If
 global is set to "all", even the application will be able to access it. Special
 care should then be taken for the naming, as renaming of variables can happen
 if any conflicts are discovered.
+
+!! FIXME: global access not implemented yet
 
 	<event name="msg_language">
 		<data name="language" type="string"/>
@@ -48,14 +56,18 @@ A constant can be defined in order to allow evaluations.
 The type is assumed to be integer ('int'), unless the type parameter is given,
 which can also be 'string' or 'byte', where string refers to an easysock-style
 string, that is, one which is prefixed with an integer containing its length.
+The type 'int' refers to 4-byte signed, whereas 'byte' refers to 1-byte signed.
+For the usage of constants in opcodes, the default type is also 'int',
+and can be changed by giving an 'opcodetype' attribute to the definitions.
 
-	<definitions>
+	<definitions opcodetype="byte">
 		<def name="game_message_text" value="5"/>
 	</definitions>
 
 There are five standard definitions always available, namely 'ggz:seat_open',
 'ggz:seat_bot', 'ggz:seat_player', 'ggz:seat_reserved', and
-'ggz:seat_abandoned'.
+'ggz:seat_abandoned'. Others in the 'ggz' namespace might be added over
+time and should not be used by game protocols.
 
 Conditional execution is contained in evaluation blocks, which consist of
 data as well as a condition, which can be of type 'equal', 'unequal',
@@ -78,12 +90,17 @@ This can then be used for simple types of algorithms:
 	</event>
 
 Finally, the links exist to ensure a certain order of data.
+Since in XML the order of attributes doesn't matter, either 'client'
+or 'server' must be listed as the 'initiator'.
 
 	<protocol>
-		<link server="req_move" client="rsp_move"/>
+		<link server="req_move" client="rsp_move" initiator="server" />
 	</protocol>
+
+!!! FIXME: No followup messages yet
 
 Josef Spillner
 30.04.2002
 updated 27.12.2005
+updated 09.12.2006
 

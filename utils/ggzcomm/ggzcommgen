@@ -333,14 +333,20 @@ class GGZCommEvent
 		return x
 	end
 
-	def network_python(role)
+	def network_python(role, opcodetype)
 		x = ""
 		seq = 0
 
 		data = @name
 		if @section == role then
 			x += "\t\t# assign fd??\n"
-			x += "\t\tself.sendbyte(" + data + ")\n"
+			if opcodetype == "int"
+				x += "\t\tself.sendint(self." + data + ")\n"
+			elsif opcodetype == "byte"
+				x += "\t\tself.sendbyte(self." + data + ")\n"
+			end
+		else
+			x += "\t\tmsgobj = " + data + "()\n"
 		end
 
 		myvars = Hash.new
@@ -401,29 +407,29 @@ class GGZCommEvent
 						x += indent + "\t# assign fd???\n"
 						case type
 							when "string"
-								x += indent + "\tself.sendstring(self." + data + index + ")\n"
+								x += indent + "\tself.sendstring(msgobj." + data + index + ")\n"
 							when "byte"
-								x += indent + "\tself.sendchar(self." + data + index + ")\n"
+								x += indent + "\tself.sendbyte(msgobj." + data + index + ")\n"
 							when "int"
-								x += indent + "\tself.sendbyte(self." + data + index + ")\n"
+								x += indent + "\tself.sendint(msgobj." + data + index + ")\n"
 						end
 					else
 						x += indent + "\t# assign fd???\n"
 						case type
 							when "string"
-								x += indent + "\tself." + data + index + " = self.getstring()\n"
+								x += indent + "\tmsgobj." + data + index + " = self.getstring()\n"
 							when "byte"
-								x += indent + "\tself." + data + index + " = self.getchar()\n"
+								x += indent + "\tmsgobj." + data + index + " = self.getbyte()\n"
 							when "int"
-								x += indent + "\tself." + data + index + " = self.getbyte()\n"
+								x += indent + "\tmsgobj." + data + index + " = self.getint()\n"
 						end
 					end
 			end
 		end
 
 		if @section != role then
-			x += "\t\tif notifier:\n"
-			x += "\t\t\tnotifier(" + name + ")\n"
+			x += "\t\tif self.notifier:\n"
+			x += "\t\t\tself.notifier(\"" + @name + "\", msgobj)\n"
 		end
 
 		return x
@@ -511,9 +517,9 @@ class GGZCommEvent
 							when "string"
 								x += indent + "\t@" + data + index + " = getstring()\n"
 							when "byte"
-								x += indent + "\t@" + data + index + " = getchar()\n"
-							when "int"
 								x += indent + "\t@" + data + index + " = getbyte()\n"
+							when "int"
+								x += indent + "\t@" + data + index + " = getint()\n"
 						end
 					end
 			end
@@ -546,6 +552,26 @@ class GGZComm
 		@constants["ggz:seat_player"] = "3"
 		@constants["ggz:seat_reserved"] = "4"
 		@constants["ggz:seat_abandoned"] = "5"
+
+		@opcodetype = "int"
+	end
+
+	def handle_definitions(data)
+		data.each do |key, value|
+			if @verbose then
+				puts key + "=" + value
+			end
+			case key
+				when "opcodetype"
+					if value == "int" or value == "byte" then
+						@opcodetype = value
+					else
+						error "Invalid value for 'opcodetype'."
+					end
+				else
+					error "Unknown attribute '" + key + "' for definitions, only 'opcodetype' is allowed."
+			end
+		end
 	end
 
 	def handle_toplevel(data)
@@ -556,8 +582,12 @@ class GGZComm
 			case key
 				when "engine"
 					@engine = value
+					@protocol = @engine
 				when "version"
 					@version = value
+				when "xmlns"
+					if value != "urn:ggz:ggzcomm" then
+					end
 				else
 					error "Unknown attribute '" + key + "' for ggzcomm, only 'version' and 'engine' are allowed."
 			end
@@ -662,8 +692,9 @@ class GGZComm
 	def handle_protocol_link(data)
 		xclient = nil
 		xserver = nil
-		xfollowup = nil
+		#xfollowup = nil
 		mode = nil
+		initiator = nil
 		data.each do |key, value|
 			if @verbose then
 				puts "link:" + key + "=" + value
@@ -674,7 +705,7 @@ class GGZComm
 					if mode == nil then
 						mode = "client"
 					elsif mode == "server"
-						mode = "server-client"
+						mode = "both"
 					else
 						error "No 'client' attribute allowed here."
 					end
@@ -683,22 +714,32 @@ class GGZComm
 					if mode == nil then
 						mode = "server"
 					elsif mode == "client"
-						mode = "client-server"
+						mode = "both"
 					else
 						error "No 'server' attribute allowed here."
 					end
-				when "followup"
-					xfollowup = value
+				when "initiator"
+					if initiator == nil then
+						if value == "server" or value == "client" then
+							initiator = value
+						else
+							error "Invalid 'initiator' value."
+						end
+					else
+						error "Duplicate 'initiator' attribute found."
+					end
+				#when "followup"
+				#	xfollowup = value
 				else
 					error "No '" + key + "' attribute allowed for the 'link' tag."
 			end
 		end
 		# no followups yet - XXX FIXME!!!
-		if (xclient and xserver) then
-			if mode == "client-server"
-				@clientlinks[xclient] = xserver
-				@serverlinks[xserver] = xclient
-			elsif mode == "server-client"
+		if mode == "both" then
+			if initiator == "server"
+				@clientlinks[xserver] = xclient
+				@serverlinks[xclient] = xserver
+			elsif initiator == "client"
 				@serverlinks[xserver] = xclient
 				@clientlinks[xclient] = xserver
 			end
@@ -724,7 +765,11 @@ class GGZComm
 			end
 		end
 		if xname && xtype
-			@event.add(xname, xtype)
+			if xtype == "int" or xtype == "byte" or xtype == "string" then
+				@event.add(xname, xtype)
+			else
+				error "Invalid value for the 'type' tag."
+			end
 		else
 			error "Missing one of the attributes 'name' or 'type' for the 'data' tag."
 		end
@@ -735,14 +780,19 @@ class GGZComm
 		@protocol = file
 		section = "toplevel"
 		parser = XMLParser.new
+		filename = file
 
-		filename = file + ".protocol"
 		begin
 			f = File.new(filename)
 		rescue
-			puts "Could not open " + filename + "!"
-			#return
-			raise
+			filename = file + ".protocol"
+			begin
+				f = File.new(filename)
+			rescue
+				puts "Could not open " + filename + "!"
+				#return
+				raise
+			end
 		end
 
 		# cut off xml header
@@ -772,6 +822,7 @@ class GGZComm
 								section = "client"
 							when "definitions"
 								section = "definitions"
+								handle_definitions(data)
 							when "event"
 								if section == "client" || section == "server"
 									handle_event(data, section)
@@ -1005,7 +1056,11 @@ class GGZComm
 			end
 			f.puts "void ggzcomm_network_main(void)"
 			f.puts "{"
-			f.puts "\tint opcode;"
+			if @opcodetype == "int"
+				f.puts "\tint opcode;"
+			elsif @opcodetype == "byte"
+				f.puts "\tchar opcode;"
+			end
 			f.puts ""
 			if library == "dio" then
 				f.puts "\tif(!dio) dio = ggz_dio_new(fd);"
@@ -1020,7 +1075,11 @@ class GGZComm
 			if library == "dio"
 				f.puts "\tggz_dio_get_int(dio, &opcode);"
 			else
-				f.puts "\tggz_read_int(fd, &opcode);"
+				if @opcodetype == "int"
+					f.puts "\tggz_read_int(fd, &opcode);"
+				elsif @opcodetype == "byte"
+					f.puts "\tggz_read_char(fd, &opcode);"
+				end
 			end
 			f.puts ""
 			if mode == "debug":
@@ -1228,7 +1287,11 @@ class GGZComm
 			end
 			f.puts "void " + @engine + "::ggzcomm_network_main()"
 			f.puts "{"
-			f.puts "\tint opcode;"
+			if @opcodetype == "int"
+				f.puts "\tint opcode;"
+			elsif @opcodetype == "byte"
+				f.puts "\tQ_INT8 opcode;"
+			end
 			f.puts "\t*socket >> opcode;"
 			f.puts ""
 			f.puts "\tif(requirelink)"
@@ -1271,17 +1334,15 @@ class GGZComm
 			f.puts "### Protocol '" + @engine + "', version '" + @version + "'"
 			f.puts ""
 			f.puts "import socket"
-			f.puts ""
-			f.puts "class " + @engine + ":"
-			if @constants.length > 0 then
-				f.puts "\tdef __init__(self):"
-				@constants.each do |name, value|
-					next if not value
-					f.puts "\t\tself." + varname(name) + " = " + value
-				end
+			if xmlcode:
+				f.puts "import xml.sax"
+				f.puts "import xml.sax.handler"
+				f.puts "import xml.sax.writer"
 			end
-			f.puts ""
 			@eventlist.each do |event|
+				f.puts ""
+				f.puts "class " + varname(event.name) + ":"
+				f.puts "\tdef __init__(self):"
 				event.datalist.each do |data, type, option|
 					next if data == '%SEQ'
 					next if data == '%ENDSEQ'
@@ -1289,68 +1350,326 @@ class GGZComm
 					next if data == '%ENDEVAL'
 					f.puts "\t\tself." + data + " = None"
 				end
+				if event.datalist.length == 0 then
+					f.puts "\t\tpass"
+				end
 			end
 			f.puts ""
+			if xmlcode then
+				f.puts "class Parser(xml.sax.handler.ContentHandler):"
+				f.puts "\tdef __init__(self):"
+				f.puts "\t\txml.sax.handler.ContentHandler.__init__(self)"
+				f.puts ""
+				f.puts "\t\tself.valid = False"
+				f.puts "\t\tself.message = None"
+				f.puts "\t\tself.msgobj = None"
+				f.puts "\t\tself.chars = []"
+				f.puts "\t\tself.messagehandler = None"
+				f.puts "\t\tself.errorhandler = None"
+				if mode == "debug"
+					f.puts "\t\tself.verbose = True"
+				else
+					f.puts "\t\tself.verbose = False"
+				end
+				f.puts ""
+				f.puts "\t\tself.debug(\"=> parser initialised\")"
+				f.puts ""
+				f.puts "\tdef debug(self, str):"
+				f.puts "\t\tif self.verbose:"
+				f.puts "\t\t\tprint str"
+				f.puts ""
+				f.puts "\tdef setmessagehandler(self, handler):"
+				f.puts "\t\tself.messagehandler = handler"
+				f.puts ""
+				f.puts "\tdef seterrorhandler(self, handler):"
+				f.puts "\t\tself.errorhandler = handler"
+				f.puts ""
+				f.puts "\tdef firemessage(self, name, message):"
+				f.puts "\t\tif self.messagehandler:"
+				f.puts "\t\t\tself.messagehandler(name, message)"
+				f.puts "\t\telse:"
+				f.puts "\t\t\tprint \"[parser] warning: no message handler set!\""
+				f.puts ""
+				f.puts "\tdef error(self, str):"
+				f.puts "\t\tif self.errorhandler:"
+				f.puts "\t\t\tself.errorhandler(str)"
+				f.puts "\t\telse:"
+				f.puts "\t\t\tprint \"[parser] warning: no error handler set!\""
+				f.puts "\t\t\tprint str"
+				f.puts ""
+				f.puts "\tdef setverbose(self, verbose):"
+				f.puts "\t\tself.verbose = verbose"
+				f.puts ""
+				f.puts "\tdef characters(self, content):"
+				f.puts "\t\tself.debug(\"=> content \" + content)"
+				f.puts "\t\tself.chars.append(content)"
+				f.puts ""
+				f.puts "\tdef endElement(self, name):"
+				f.puts "\t\tself.debug(\"=> end element \" + name)"
+				f.puts ""
+				f.puts "\t\tif self.valid:"
+				f.puts "\t\t\tif self.message == None:"
+				f.puts "\t\t\t\tif name == \"ggzcomm-xml\":"
+				f.puts "\t\t\t\t\tself.valid = False"
+				f.puts "\t\t\t\t\tself.debug(\" -> end session\")"
+				f.puts "\t\t\t\telse:"
+				f.puts "\t\t\t\t\tself.error(\"expected ggzcomm-xml\")"
+				@eventlist.each do |event|
+					f.puts "\t\t\telif self.message == \"" + event.name + "\":"
+					f.puts "\t\t\t\tif name == \"" + event.name + "\":"
+					f.puts "\t\t\t\t\tself.debug(\" -> fire options handler!\")"
+					f.puts "\t\t\t\t\tself.firemessage(self.message, self.msgobj)"
+					f.puts "\t\t\t\t\tself.message = None"
+					f.puts "\t\t\t\t\tself.msgobj = None"
+					event.datalist.each do |data, type, option|
+						next if data == '%SEQ'
+						next if data == '%ENDSEQ'
+						next if data == '%EVAL'
+						next if data == '%ENDEVAL'
+						f.puts "\t\t\t\telif name == \"" + data + "\":"
+						f.puts "\t\t\t\t\tself.debug(\"--- \" + str(self.chars))"
+						if type == "int"
+							expr = "int(\"\".join(self.chars))"
+						else
+							expr = "\"\".join(self.chars)"
+						end
+						f.puts "\t\t\t\t\tself.msgobj." + data + " = " + expr
+					end
+					if event.datalist.length > 0
+						f.puts "\t\t\t\telse:"
+						f.puts "\t\t\t\t\tself.error(\"expected " + event.name + " message part\")"
+					else
+						f.puts "\t\t\t\t\tself.error(\"invalid " + event.name + " message part\")"
+					end
+				end
+				f.puts "\t\telse:"
+				f.puts "\t\t\tself.error(\"invalid state\")"
+				f.puts ""
+				f.puts "\tdef startElement(self, name, attrs):"
+				f.puts "\t\tself.debug(\"=> start element \" + name)"
+				f.puts ""
+				f.puts "\t\tif not self.valid:"
+				f.puts "\t\t\tif name == \"ggzcomm-xml\":"
+				f.puts "\t\t\t\tself.valid = True"
+				f.puts "\t\t\t\tself.debug(\" -> start session!\")"
+				f.puts "\t\telse:"
+				f.puts "\t\t\tif self.message == None:"
+				ifword = "if"
+				@eventlist.each do |event|
+					f.puts "\t\t\t\t" + ifword + " name == \"" + event.name + "\":"
+					f.puts "\t\t\t\t\tself.message = name"
+					f.puts "\t\t\t\t\tself.msgobj = " + event.name + "()"
+					f.puts "\t\t\t\t\tself.debug(\" -> " + event.name + " start\")"
+					ifword = "elif"
+				end
+				f.puts "\t\t\t\telse:"
+				f.puts "\t\t\t\t\tself.error(\"expected message\")"
+				@eventlist.each do |event|
+					f.puts "\t\t\telif self.message == \"" + event.name + "\":"
+					ifword = "if"
+					event.datalist.each do |data, type, option|
+						next if data == '%SEQ'
+						next if data == '%ENDSEQ'
+						next if data == '%EVAL'
+						next if data == '%ENDEVAL'
+						f.puts "\t\t\t\t" + ifword + " name == \"" + data + "\":"
+						f.puts "\t\t\t\t\tself.debug(\"+++\")"
+						f.puts "\t\t\t\t\tself.chars = []"
+						ifword = "elif"
+					end
+					if event.datalist.length > 0
+						f.puts "\t\t\t\telse:"
+						f.puts "\t\t\t\t\tself.error(\"expected " + event.name + " message part\")"
+					else
+						f.puts "\t\t\t\t\tself.error(\"invalid " + event.name + " message part\")"
+					end
+				end
+				f.puts "\t\t\telse:"
+				f.puts "\t\t\t\tself.error(\"invalid message state\")"
+				f.puts ""
+				f.puts "class Device:"
+				f.puts "\tdef __init__(self, socket):"
+				f.puts "\t\tself.socket = socket"
+				f.puts ""
+				f.puts "\tdef write(self, s):"
+				f.puts "\t\tself.socket.send(s)"
+				f.puts ""
+				f.puts "class Stream:"
+				f.puts "\tdef __init__(self, socket):"
+				f.puts "\t\tself.socket = socket"
+				f.puts ""
+				f.puts "\tdef getByteStream(self):"
+				f.puts "\t\treturn self"
+				f.puts ""
+				f.puts "\tdef getSystemId(self):"
+				f.puts "\t\treturn \"ggzcomm\""
+				f.puts ""
+				f.puts "\tdef read(self, bufsize):"
+				f.puts "\t\treturn self.socket.recv(bufsize)"
+			end
+			f.puts ""
+			f.puts "class " + @engine + ":"
+			if @constants.length > 0 or xmlcode then
+				f.puts "\tdef __init__(self):"
+				if xmlcode:
+					f.puts "\t\tself.parser = Parser()"
+					#f.puts ""
+				else
+					@constants.each do |name, value|
+						next if not value
+						f.puts "\t\tself." + varname(name) + " = " + value
+					end
+				end
+				f.puts ""
+			end
+			#@eventlist.each do |event|
+			#	event.datalist.each do |data, type, option|
+			#		next if data == '%SEQ'
+			#		next if data == '%ENDSEQ'
+			#		next if data == '%EVAL'
+			#		next if data == '%ENDEVAL'
+			#		f.puts "\t\tself." + data + " = None"
+			#	end
+			#end
+			#f.puts ""
 			f.puts "\t\tself.notifier = None"
 			f.puts "\t\tself.fd = -1"
 			f.puts "\t\tself.socket = -1"
 			f.puts "\t\tself.ret = 0"
 			f.puts "\t\tself.requirelink = 0"
 			f.puts "\t\tself.nextlink = 0"
+			f.puts "\t\tself.writer = None"
 			f.puts ""
 			@eventlist.each do |event|
 				if event.section != role then
 					#f.print "static "
 				end
-				f.puts "\tdef ggzcomm_" + event.name + "(self):"
-				f.puts event.network_python(role)
-				if links[event.name] then
-					f.puts ""
-					f.puts "\t\tself.requirelink = 1"
-					f.puts "\t\tself.nextlink = " + links[event.name]
+				if event.section != role
+					f.puts "\tdef ggzcomm_" + event.name + "(self):"
+				else
+					f.puts "\tdef ggzcomm_" + event.name + "(self, msgobj):"
+				end
+				if not xmlcode
+					f.puts event.network_python(role, @opcodetype)
+					if links[event.name] then
+						f.puts ""
+						f.puts "\t\tself.requirelink = 1"
+						f.puts "\t\tself.nextlink = self." + links[event.name]
+					end
+				else
+					f.puts "\t\tself.writer.startElement(\"" + event.name + "\")"
+					event.datalist.each do |data, type, option|
+						next if data == '%SEQ'
+						next if data == '%ENDSEQ'
+						next if data == '%EVAL'
+						next if data == '%ENDEVAL'
+						f.puts "\t\tself.writer.startElement(\"" + data + "\")"
+						f.puts "\t\ts = str(msgobj." + data + ")"
+						f.puts "\t\tself.writer.characters(s, 0, len(s))"
+						f.puts "\t\tself.writer.endElement(\"" + data + "\")"
+					end
+					f.puts "\t\tself.writer.endElement(\"" + event.name + "\")"
 				end
 				f.puts ""
 			end
-			f.puts "\tdef getbyte(self):"
-			f.puts "\t\topstr = self.socket.recv(4)"
-			f.puts "\t\tif len(opstr) < 4:"
-			f.puts "\t\t\traise Exception()"
-			f.puts "\t\tc1 = ord(opstr[0])"
-			f.puts "\t\tc2 = ord(opstr[1])"
-			f.puts "\t\tc3 = ord(opstr[2])"
-			f.puts "\t\tc4 = ord(opstr[3])"
-			f.puts "\t\top = c1 * 256 * 256 * 256 + c2 * 256 * 256 + c3 * 256 + c4"
-			f.puts "\t\treturn socket.ntohl(op)"
-			f.puts ""
-			f.puts "\tdef getstring(self):"
-			f.puts "\t\tlength = self.getbyte()"
-			f.puts "\t\topstr = self.socket.recv(length)"
-			f.puts "\t\tif len(opstr) < length:"
-			f.puts "\t\t\traise Exception()"
-			f.puts "\t\treturn opstr"
-			f.puts ""
+			if not xmlcode:
+				f.puts "\tdef getbyte(self):"
+				f.puts "\t\topstr = self.socket.recv(1)"
+				f.puts "\t\tif len(opstr) < 1:"
+				f.puts "\t\t\traise Exception()"
+				f.puts "\t\top = ord(opstr[0])"
+				f.puts "\t\treturn op"
+				f.puts ""
+				f.puts "\tdef getint(self):"
+				f.puts "\t\topstr = self.socket.recv(4)"
+				f.puts "\t\tif len(opstr) < 4:"
+				f.puts "\t\t\traise Exception()"
+				f.puts "\t\tc1 = ord(opstr[0])"
+				f.puts "\t\tc2 = ord(opstr[1])"
+				f.puts "\t\tc3 = ord(opstr[2])"
+				f.puts "\t\tc4 = ord(opstr[3])"
+				f.puts "\t\top = c1 * 256 * 256 * 256 + c2 * 256 * 256 + c3 * 256 + c4"
+				f.puts "\t\tif socket.ntohl(op) == op:"
+				f.puts "\t\t\top = socket.ntohl(op)"
+				f.puts "\t\treturn op"
+				f.puts ""
+				f.puts "\tdef getstring(self):"
+				f.puts "\t\tlength = self.getint()"
+				f.puts "\t\topstr = self.socket.recv(length)"
+				f.puts "\t\tif len(opstr) < length:"
+				f.puts "\t\t\traise Exception()"
+				f.puts "\t\treturn opstr"
+				f.puts ""
+				f.puts "\tdef sendint(self, int):"
+				f.puts "\t\tif socket.ntohl(int) == int:"
+				f.puts "\t\t\tint = socket.ntohl(int)"
+				f.puts "\t\tc1 = (int >> 24) & 0xFF"
+				f.puts "\t\tc2 = (int >> 16) & 0xFF"
+				f.puts "\t\tc3 = (int >> 8) & 0xFF"
+				f.puts "\t\tc4 = (int >> 0) & 0xFF"
+				f.puts "\t\ts = chr(c1) + chr(c2) + chr(c3) + chr(c4)"
+				f.puts "\t\tself.socket.send(s)"
+				f.puts ""
+				f.puts "\tdef sendbyte(self, byte):"
+				f.puts "\t\tself.socket.send(chr(byte))"
+				f.puts ""
+				f.puts "\tdef sendstring(self, str):"
+				f.puts "\t\tself.sendint(len(str))"
+				f.puts "\t\tself.socket.send(str)"
+				f.puts ""
+			end
 			f.puts "\tdef ggzcomm_network_main(self):"
-			f.puts "\t\topcode = self.getbyte()"
-			f.puts ""
-			f.puts "\t\tif(self.requirelink):"
-			f.puts "\t\t\tif opcode != self.nextlink:"
-			f.puts "\t\t\t\traise Exception()"
-			f.puts "\t\t\tself.requirelink = 0"
-			f.puts ""
-			@eventlist.each do |event|
-				if event.section != role
-					f.puts "\t\tif opcode == " + event.name + ":\n"
-					f.puts "\t\t\tself.ggzcomm_" + event.name() + "()\n"
+			if xmlcode
+				f.puts "\t\tstream = Stream(self.socket)"
+				f.puts "\t\txml.sax.parse(stream, self.parser)"
+			else
+				if @opcodetype == "int"
+					f.puts "\t\topcode = self.getint()"
+				elsif @opcodetype == "byte"
+					f.puts "\t\topcode = self.getbyte()"
 				end
+				f.puts ""
+				f.puts "\t\tif(self.requirelink):"
+				f.puts "\t\t\tif opcode != self.nextlink:"
+				f.puts "\t\t\t\traise Exception()"
+				f.puts "\t\t\tself.requirelink = 0"
+				f.puts ""
+				ifword = "if"
+				@eventlist.each do |event|
+					if event.section != role
+						f.puts "\t\t" + ifword + " opcode == self." + event.name + ":\n"
+						f.puts "\t\t\tself.ggzcomm_" + event.name() + "()\n"
+						ifword = "elif"
+					end
+				end
+				f.puts "\t\telse:"
+				f.puts "\t\t\traise Exception()"
 			end
 			f.puts ""
 			f.puts "\tdef ggzcomm_set_notifier_callback(self, notifier):"
 			f.puts "\t\tself.notifier = notifier"
+			if xmlcode:
+				f.puts "\t\tself.parser.setmessagehandler(notifier)"
+				# FIXME: error handler? seterrorhandler!
+			end
 			f.puts ""
 			f.puts "\tdef ggzcomm_set_fd(self, fd):"
 			f.puts "\t\tself.fd = fd"
 			f.puts "\t\tself.socket = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)"
+			if xmlcode
+				f.puts "\t\tdevice = Device(self.socket)"
+				f.puts "\t\tself.writer = xml.sax.writer.XmlWriter(device)"
+				f.puts "\t\tself.writer.startElement(\"ggzcomm-xml\")"
+			end
 			f.puts ""
+			f.puts "\tdef ggzcomm_set_socket(self, socket):"
+			f.puts "\t\tself.socket = socket"
+			f.puts "\t\tself.fd = socket.fileno()"
+			if xmlcode
+				f.puts "\t\tdevice = Device(self.socket)"
+				f.puts "\t\tself.writer = xml.sax.writer.XmlWriter(device)"
+				f.puts "\t\tself.writer.startElement(\"ggzcomm-xml\")"
+			end
 			f.close
 		elsif format == "ruby" and library == "socket"
 			f = File.new(basename + ".rb", "w")
@@ -1400,7 +1719,7 @@ class GGZComm
 				f.puts "\tend"
 				f.puts ""
 			end
-			f.puts "\tdef getbyte"
+			f.puts "\tdef getint"
 			f.puts "\t\topstr = @socket.recv(4)"
 			f.puts "\t\tif opstr.len < 4"
 			f.puts "\t\t\traise 'ggzcommerror'"
@@ -1415,7 +1734,7 @@ class GGZComm
 			f.puts "\tend"
 			f.puts ""
 			f.puts "\tdef getstring"
-			f.puts "\t\tlength = getbyte()"
+			f.puts "\t\tlength = getint()"
 			f.puts "\t\topstr = @socket.recv(length)"
 			f.puts "\t\tif opstr.len < length"
 			f.puts "\t\t\traise 'ggzcommerror'"
@@ -1424,7 +1743,11 @@ class GGZComm
 			f.puts "\tend"
 			f.puts ""
 			f.puts "\tdef ggzcomm_network_main"
-			f.puts "\t\topcode = getbyte()"
+			if @opcodetype == "int"
+				f.puts "\t\topcode = getint()"
+			elsif @opcodetype == "byte"
+				f.puts "\t\topcode = getbyte()"
+			end
 			f.puts ""
 			f.puts "\t\tif @requirelink"
 			f.puts "\t\t\tif opcode != @nextlink"

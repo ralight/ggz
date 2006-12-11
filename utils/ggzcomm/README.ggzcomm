@@ -27,3 +27,20 @@ currently in use with the Tic-Tac-Toe game server:
 
 ./ggzcommgen -i easysock -l c -r server tictactoe
 
+Here's a table of supported programming languages and libraries (the
+parameters to --language and --interface, respectively):
+
+Language | Library  | Status
+==========================================
+C        | easysock | in use (TTT server)
+         | dio      | experimental
+---------+----------+-------------
+C++      | qt       | in use (kconnectx)?
+         | mnet     | experimental
+         | easysock | -- (only in C)
+         | dio      | -- (only in C)
+---------+----------+-------------
+Python   | socket   | in use (examples)
+---------+----------+-------------
+Ruby     | socket   | experimental
+

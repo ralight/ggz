@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ggzcomm engine="connectx" version="2">
-	<definitions>
+<ggzcomm engine="connectx" version="2" xmlns="urn:ggz:ggzcomm">
+	<definitions opcodetype="int">
 		<def name="msgseat" value="0"/>
 		<def name="msgplayers" value="1"/>
 		<def name="msgmove" value="2"/>
@@ -84,10 +84,10 @@
 		</event>
 	</server>
 	<protocol>
-		<link client="reqsync" server="sndsync"/>
-		<link server="reqmove" client="sndmove"/>
-		<link client="sndmove" server="rspmove"/>
-		<link server="reqoptions" client="sndoptions"/>
+		<link client="reqsync" server="sndsync" initiator="client"/>
+		<link server="reqmove" client="sndmove" initiator="server"/>
+		<link client="sndmove" server="rspmove" initiator="client"/>
+		<link server="reqoptions" client="sndoptions" initiator="server"/>
 	</protocol>
 </ggzcomm>
 
