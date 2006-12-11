@@ -14,6 +14,10 @@ class StatisticsPrivate
 		int rating;
 		int ranking;
 		int highscore;
+		bool hasrecord;
+		bool hasrating;
+		bool hasranking;
+		bool hashighscore;
 };
 
 }

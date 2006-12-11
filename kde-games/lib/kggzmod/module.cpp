@@ -42,7 +42,7 @@ Module::Module(QString name)
 
 	d->m_myseat = -1;
 
-	connect(d, SIGNAL(signalEvent(KGGZMod::Event)), this, SIGNAL(signalEvent(KGGZMod::Event)));
+	connect(d, SIGNAL(signalEvent(const KGGZMod::Event&)), this, SIGNAL(signalEvent(const KGGZMod::Event&)));
 	connect(d, SIGNAL(signalError()), this, SIGNAL(signalError()));
 	connect(d, SIGNAL(signalNetwork(int)), this, SIGNAL(signalNetwork(int)));
 
@@ -82,6 +82,8 @@ void ModulePrivate::sendRequest(Request request)
 		kdDebug() << "[kggzmod] error: not connected" << endl;
 		return;
 	}
+
+	kdDebug() << "[kggzmod] debug: send a request" << endl;
 
 	Request::Type opcode = request.type();
 	// FIXME: in networking we always assume sizeof(opcode) = 4!
@@ -291,24 +293,33 @@ void ModulePrivate::slotGGZEvent()
 
 			Statistics *stat = new Statistics();
 			StatisticsPrivate *statpriv = new StatisticsPrivate();
+			statpriv->hasrecord = false;
+			statpriv->hasrating = false;
+			statpriv->hasranking = false;
+			statpriv->hashighscore = false;
+
 			if(_hasrecord)
 			{
 				statpriv->wins = _wins;
 				statpriv->losses = _wins;
 				statpriv->ties = _ties;
 				statpriv->forfeits = _forfeits;
+				statpriv->hasrecord = true;
 			}
 			if(_hasrating)
 			{
 				statpriv->rating = _rating;
+				statpriv->hasrating = true;
 			}
 			if(_hasranking)
 			{
 				statpriv->ranking = _ranking;
+				statpriv->hasranking = true;
 			}
 			if(_hashighscore)
 			{
 				statpriv->highscore = _highscore;
+				statpriv->hashighscore = true;
 			}
 			stat->init(statpriv);
 
@@ -366,7 +377,7 @@ void ModulePrivate::connect()
 	QString ggzmode = getenv("GGZMODE");
 	if(ggzmode.isNull())
 	{
-		kdDebug() << "[kgg:mod] info: GGZMODE not set, ignore" << endl;
+		kdDebug() << "[kggzmod] info: GGZMODE not set, ignore" << endl;
 		// FIXME: alternatively throw error as well?
 		return;
 	}
@@ -466,6 +477,7 @@ void ModulePrivate::insertPlayer(Player::Type seattype, QString name, int seat)
 	ppriv->m_type = seattype;
 	ppriv->m_name = name;
 	ppriv->m_seat = seat;
+	ppriv->m_stats = 0;
 	p->init(ppriv);
 
 	if(seattype == Player::spectator)
