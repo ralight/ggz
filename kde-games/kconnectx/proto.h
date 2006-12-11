@@ -75,7 +75,7 @@ class Proto : public QObject
 		void signalOver(char winner);
 
 	private slots:
-		void slotEvent(KGGZMod::Event event);
+		void slotEvent(const KGGZMod::Event& event);
 		void slotError();
 		void slotNetwork(int fd);
 

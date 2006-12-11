@@ -25,7 +25,7 @@ Proto::Proto()
 	m_dev = 0;
 	m_net = 0;
 
-	connect(m_kggzmod, SIGNAL(signalEvent(KGGZMod::Event)), SLOT(slotEvent(KGGZMod::Event)));
+	connect(m_kggzmod, SIGNAL(signalEvent(const KGGZMod::Event&)), SLOT(slotEvent(const KGGZMod::Event&)));
 	connect(m_kggzmod, SIGNAL(signalError()), SLOT(slotError()));
 	connect(m_kggzmod, SIGNAL(signalNetwork(int)), SLOT(slotNetwork(int)));
 }
@@ -37,7 +37,7 @@ Proto::~Proto()
 	delete m_dev;
 }
 
-void Proto::slotEvent(KGGZMod::Event event)
+void Proto::slotEvent(const KGGZMod::Event& event)
 {
 	kdDebug() << "PROTO: Event! type=" << event.type() << endl;
 
