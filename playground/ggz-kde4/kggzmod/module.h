@@ -148,7 +148,7 @@ class Module : public QObject
 		 *
 		 * @param event The event from the core client
 		 */
-		void signalEvent(KGGZMod::Event event);
+ 		void signalEvent(const KGGZMod::Event& event);
 
 		/**
 		 * An error has occurred.

@@ -72,6 +72,15 @@ class Event
 		Type type() const;
 
 		/**
+		 * Returns the pointer to the player associated with the event.
+		 *
+		 * If no player is associated, this returns \b null.
+		 *
+		 * @return player associated with an event
+		 */
+		Player *player() const;
+
+		/**
 		 * Data storage for all events.
 		 *
 		 * Independent of the actual type of the event,

@@ -14,6 +14,11 @@ Statistics::Statistics()
 	d->rating = -1;
 	d->ranking = -1;
 	d->highscore = -1;
+
+	d->hasrecord = false;
+	d->hasranking = false;
+	d->hasrating = false;
+	d->hashighscore = false;
 }
 
 Statistics::~Statistics()
@@ -54,6 +59,26 @@ int Statistics::ranking() const
 int Statistics::highscore() const
 {
 	return d->highscore;
+}
+
+bool Statistics::hasRecord() const
+{
+	return d->hasrecord;
+}
+
+bool Statistics::hasRating() const
+{
+	return d->hasrating;
+}
+
+bool Statistics::hasRanking() const
+{
+	return d->hasranking;
+}
+
+bool Statistics::hasHighscore() const
+{
+	return d->hashighscore;
 }
 
 void Statistics::init(StatisticsPrivate *x)

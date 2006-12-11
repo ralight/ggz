@@ -13,6 +13,11 @@ Event::Type Event::type() const
 	return m_type;
 }
 
+Player *Event::player() const
+{
+	return m_player;
+}
+
 LaunchEvent::LaunchEvent(const Event& event) : Event(Event::launch)
 {
 	data = event.data;
@@ -32,6 +37,7 @@ int ServerEvent::fd() const
 SelfEvent::SelfEvent(const Event& event) : Event(Event::self)
 {
 	data = event.data;
+	m_player = event.player();
 }
 
 Player *SelfEvent::self() const
@@ -42,6 +48,7 @@ Player *SelfEvent::self() const
 SeatEvent::SeatEvent(const Event& event) : Event(Event::seat)
 {
 	data = event.data;
+	m_player = event.player();
 }
 
 Player *SeatEvent::player() const
@@ -52,6 +59,7 @@ Player *SeatEvent::player() const
 ChatEvent::ChatEvent(const Event& event) : Event(Event::chat)
 {
 	data = event.data;
+	m_player = event.player();
 }
 
 Player *ChatEvent::player() const
@@ -67,6 +75,7 @@ QString ChatEvent::message() const
 StatsEvent::StatsEvent(const Event& event) : Event(Event::stats)
 {
 	data = event.data;
+	m_player = event.player();
 }
 
 Player *StatsEvent::player() const
@@ -77,6 +86,7 @@ Player *StatsEvent::player() const
 InfoEvent::InfoEvent(const Event& event) : Event(Event::info)
 {
 	data = event.data;
+	m_player = event.player();
 }
 
 Player *InfoEvent::player() const
