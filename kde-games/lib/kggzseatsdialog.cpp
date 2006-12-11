@@ -2,6 +2,7 @@
 
 #include <kggzmod/module.h>
 #include <kggzmod/player.h>
+#include <kggzmod/statistics.h>
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -25,6 +26,7 @@ KGGZSeatsDialog::KGGZSeatsDialog(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	m_root = NULL;
+	m_mod = NULL;
 	m_oldmode = displayseats;
 
 	m_view = new QScrollView(this);
@@ -70,7 +72,7 @@ void KGGZSeatsDialog::setMod(KGGZMod::Module *mod)
 	KGGZMod::InfoRequest ir;
 	mod->sendRequest(ir);
 
-	connect(mod, SIGNAL(signalEvent(KGGZMod::Event)), SLOT(slotInfo(KGGZMod::Event)));
+	connect(mod, SIGNAL(signalEvent(const KGGZMod::Event&)), SLOT(slotInfo(const KGGZMod::Event&)));
 
 	displaySeats();
 }
@@ -259,6 +261,7 @@ void KGGZSeatsDialog::slotAction()
 
 		KGGZMod::Player *p = *(m_mod->players().at(seat));
 		KGGZMod::Player *pself = m_mod->self();
+		m_currentplayer = p;
 
 		QPopupMenu *pop = new QPopupMenu(this);
 		pop->insertItem(i18n("Statistics..."), viewstats);
@@ -290,12 +293,12 @@ void KGGZSeatsDialog::slotAction()
 		{
 		}
 
+		connect(pop, SIGNAL(activated(int)), SLOT(slotMenu(int)));
+
 		const QToolButton *buttonkey = dynamic_cast<const QToolButton*>(sender());
 		QToolButton *button = m_buttondata[buttonkey];
 		button->setPopup(pop);
 		button->openPopup();
-
-		connect(pop, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	}
 	else
 	{
@@ -306,6 +309,8 @@ void KGGZSeatsDialog::slotAction()
 
 void KGGZSeatsDialog::slotMenu(int id)
 {
+	kdDebug() << "slotMenu! id=" << id << endl;
+
 	if(id == standup)
 	{
 		KGGZMod::StandRequest req;
@@ -313,35 +318,44 @@ void KGGZSeatsDialog::slotMenu(int id)
 	}
 	else if(id == sitdown)
 	{
-		KGGZMod::SitRequest req(0);
+		KGGZMod::SitRequest req(m_currentplayer->seat());
 		m_mod->sendRequest(req);
 	}
 	else if(id == bootplayer)
 	{
-		KGGZMod::BootRequest req("foo");
+		KGGZMod::BootRequest req(m_currentplayer->name());
 		m_mod->sendRequest(req);
 	}
 	else if(id == botadd)
 	{
-		KGGZMod::BotRequest req(0);
+		KGGZMod::BotRequest req(m_currentplayer->seat());
 		m_mod->sendRequest(req);
 	}
 	else if(id == botremove)
 	{
-		KGGZMod::OpenRequest req(0);
+		KGGZMod::OpenRequest req(m_currentplayer->seat());
 		m_mod->sendRequest(req);
 	}
 	else if(id == viewstats)
 	{
-		// FIXME: stats???
+		// FIXME: how to display stats for all players globally???
+		KGGZMod::Statistics *s = m_currentplayer->stats();
+		if(s->hasRecord())
+		{
+			kdDebug() << "Wins: " << s->wins() << endl;
+		}
 	}
 }
 
-void KGGZSeatsDialog::slotInfo(KGGZMod::Event event)
+void KGGZSeatsDialog::slotInfo(const KGGZMod::Event& event)
 {
 	if(event.type() == KGGZMod::Event::info)
 	{
 		infos();
+	}
+	else if(event.type() == KGGZMod::Event::seat)
+	{
+			//KGGZMod::SeatEvent se = (KGGZMod::SeatEvent)event;
 	}
 }
 
@@ -354,19 +368,19 @@ void KGGZSeatsDialog::infos()
 		// FIXME: condition if info is really there? not really needed
 		if(/*info*/1==1)
 		{
-			if(p->hostname())
+			if(!p->hostname().isEmpty())
 			{
 				QString hostname = i18n("Host: %1").arg(p->hostname());
 				m_hostnames[i]->setText(hostname);
 				m_hostnames[i]->show();
 			}
-			if(p->realname())
+			if(!p->realname().isEmpty())
 			{
 				QString realname = i18n("Realname: %1").arg(p->realname());
 				m_realnames[i]->setText(realname);
 				m_realnames[i]->show();
 			}
-			if(p->photo())
+			if(!p->photo().isEmpty())
 			{
 				KIO::TransferJob *job = KIO::get(p->photo(), false, false);
 				connect(job, SIGNAL(data(KIO::Job*, const QByteArray&)),

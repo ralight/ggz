@@ -13,6 +13,7 @@ namespace KIO
 namespace KGGZMod
 {
 	class Module;
+	class Player;
 };
 
 class QScrollView;
@@ -33,7 +34,7 @@ class KGGZSeatsDialog : public QWidget
 		void slotDisplay(int id);
 		void slotTaskData(KIO::Job *job, const QByteArray&);
 		void slotTaskResult(KIO::Job *job);
-		void slotInfo(KGGZMod::Event event);
+		void slotInfo(const KGGZMod::Event& event);
 		void slotAction();
 		void slotMenu(int id);
 
@@ -49,6 +50,7 @@ class KGGZSeatsDialog : public QWidget
 		QMap<const QObject*, int> m_buttons;
 		QMap<const QObject*, QToolButton*> m_buttondata;
 		int m_oldmode;
+		KGGZMod::Player *m_currentplayer;
 
 		enum DisplayModes
 		{
