@@ -252,14 +252,14 @@ class GGZCommEvent
 		return x
 	end
 
-	def network_cpp(role)
+	def network_cpp(role, engine)
 		x = ""
 		seq = 0
 
 		data = @name
 		if @section == role then
-			x += "\t*socket << " + data + ";\n"
-			x += "\tif(socketdev.error() != QSocketDevice::NoError) emit signalError();\n"
+			x += "\t*socket << message_" + data + ";\n"
+			x += "\tif(socketdev->error() != QSocketDevice::NoError) emit signalError();\n"
 		end
 
 		myvars = Hash.new
@@ -318,16 +318,16 @@ class GGZCommEvent
 				else
 					myvars[data] = 1
 					if @section == role then
-						x += indent + "\t*socket << " + data + index + ";\n"
+						x += indent + "\t*socket << " + "message." + data + index + ";\n"
 					else
-						x += indent + "\t*socket >> " + data + index + ";\n"
+						x += indent + "\t*socket >> " + "message." + data + index + ";\n"
 					end
-					x += indent + "\tif(socketdev.error() != QSocketDevice::NoError) emit signalError();\n"
+					x += indent + "\tif(socketdev->error() != QSocketDevice::NoError) emit signalError();\n"
 			end
 		end
 
 		if @section != role then
-			x += "\temit signalNotification(" + name + ");\n"
+			x += "\temit signalNotification(" + engine + "Opcodes::message_" + name + ", message);\n"
 		end
 
 		return x
@@ -934,8 +934,8 @@ class GGZComm
 			error "Unknown role '" + role + "'"
 		end
 
-		checkvars = Hash.new
 		@eventlist.each do |event|
+			checkvars = Hash.new
 			event.datalist.each do |name, type|
 				next if name == '%SEQ'
 				next if name == '%EVAL'
@@ -1153,59 +1153,73 @@ class GGZComm
 			f.puts "class QSocketDevice;"
 			if xmlcode then
 				f.puts "class QXmlInputSource;"
+				f.puts "class QXmlSimpleReader;"
 			end
+
 			f.puts ""
-			f.puts "class " + @engine + " : public QObject"
+			f.puts "class " + @engine + "Opcodes"
 			f.puts "{"
 			f.puts "\tpublic:"
 
-			f.puts "\tenum Opcodes"
+			f.puts "\tenum Opcode"
 			f.puts "\t{"
 			i = 0
 			@eventlist.each do |event|
 				if i > 0 then
 					f.puts ","
 				end
-				f.print "\t\t" + event.name + " = " + @constants[event.name]
+				f.print "\t\tmessage_" + event.name + " = " + @constants[event.name]
 				@constants[event.name] = nil
 				i += 1
 			end
 			f.puts ""
 			f.puts "\t};"
+			f.puts "};"
+			f.puts ""
 
-			i = 0
+			f.puts "class msg"
+			f.puts "{"
+			f.puts "\tpublic:"
+			f.puts "\tmsg(" + @engine + "Opcodes::Opcode type){m_type = type;}"
+			f.puts "\t" + @engine + "Opcodes::Opcode type() const{return m_type;}"
+			f.puts "\tprivate:"
+			f.puts "\t" + @engine + "Opcodes::Opcode m_type;"
+			f.puts "};"
+
 			@eventlist.each do |event|
-				i += event.decl(true).length
-			end
-			if i > 0
 				f.puts ""
-				@eventlist.each do |event|
-					if event.decl(true) != "" then
-						f.puts event.decl(true);
-					end
-				end
+				f.puts "class " + event.name + " : public msg"
+				f.puts "{"
+				f.puts "\tpublic:"
+				f.puts "\t" + event.name + "() : msg(" + @engine + "Opcodes::message_" + event.name + "){}"
+				f.puts event.decl(true)
+				f.puts "};"
 			end
 
 			f.puts ""
+			f.puts "class " + @engine + " : public QObject"
+			f.puts "{"
+			f.puts "\tQ_OBJECT"
+			f.puts "\tpublic:"
 			f.puts "\t" + @engine + "();"
 			f.puts ""
 			f.puts "\tvoid ggzcomm_network_main();"
 			f.puts ""
 			@eventlist.each do |event|
-				if event.section != role then
-					f.puts "\tvoid ggzcomm_" + event.name + "();"
+				if event.section == role then
+					f.puts "\tvoid ggzcomm_" + event.name + "(const " + event.name + "& message);"
 				end
 			end
 			f.puts ""
 			f.puts "\tvoid ggzcomm_set_fd(int usefd);"
 			f.puts ""
 			f.puts "\tsignals:"
-			f.puts "\tvoid signalNotification(int message);"
+			f.puts "\tvoid signalNotification(" + @engine + "Opcodes::Opcode messagetype, const msg& message);"
 			f.puts "\tvoid signalError();"
 			f.puts ""
 			f.puts "\tprivate:"
 			@eventlist.each do |event|
-				if event.section == role then
+				if event.section != role then
 					f.puts "\tvoid ggzcomm_" + event.name + "();"
 				end
 			end
@@ -1234,7 +1248,7 @@ class GGZComm
 			f.puts "#include \"" + basename + ".h" + "\""
 			f.puts "#include <qsocketdevice.h>"
 			if xmlcode then
-				f.puts "#include <xml.h>"
+				f.puts "#include <qxml.h>"
 			else
 				f.puts "#include <qdatastream.h>"
 			end
@@ -1245,28 +1259,33 @@ class GGZComm
 					f.puts "#define " + varname(name) + " " + value
 				end
 			end
-			if xmlcode then
-				f.puts ""
-				f.puts "static struct {"
-				i = 0
-				@eventlist.each do |event|
-					if i > 0 then
-						f.puts ","
-					end
-					f.print "\t{\"" + event.name + "\", " + event.name + "}"
-					@constants[event.name] = nil
-					i += 1
-				end
-				f.puts ""
-				f.puts "} tags;"
-			end
+			#if xmlcode then
+			#	f.puts ""
+			#	f.puts "static struct tags {"
+			#	i = 0
+			#	@eventlist.each do |event|
+			#		if i > 0 then
+			#			f.puts ","
+			#		end
+			#		f.print "\t{\"" + event.name + "\", " + @engine + "Opcodes::message_" + event.name + "}"
+			#		@constants[event.name] = nil
+			#		i += 1
+			#	end
+			#	f.puts ""
+			#	f.puts "};"
+			#end
 			f.puts ""
 			f.puts @engine + "::" + @engine + "()"
 			f.puts ": QObject()"
 			f.puts "{"
 			f.puts "\trequirelink = 0;"
 			f.puts "\tfd = -1;"
-			f.puts "\tsocket = NULL;"
+			if xmlcode then
+				f.puts "\treader = NULL;"
+				f.puts "\tsource = NULL;"
+			else
+				f.puts "\tsocket = NULL;"
+			end
 			f.puts "\tsocketdev = NULL;"
 			f.puts "}"
 			f.puts ""
@@ -1274,13 +1293,24 @@ class GGZComm
 				#if event.section != role then
 				#	f.print "static "
 				#end
-				f.puts "void " + @engine + "::ggzcomm_" + event.name + "(void)"
+				if event.section != role
+					f.puts "void " + @engine + "::ggzcomm_" + event.name + "()"
+				else
+					f.puts "void " + @engine + "::ggzcomm_" + event.name + "(const " + event.name + "& message)"
+				end
 				f.puts "{"
-				f.puts event.network_cpp(role)
+				if event.section != role
+					f.puts "\t" + event.name + " message;"
+				end
+				if not xmlcode
+					f.puts event.network_cpp(role, @engine)
+				else
+					# FIXME!
+				end
 				if links[event.name] then
 					f.puts ""
-					f.puts "\t\trequirelink = 1;"
-					f.puts "\t\tnextlink = " + links[event.name] + ";"
+					f.puts "\trequirelink = 1;"
+					f.puts "\tnextlink = " + @engine + "Opcodes::message_" + links[event.name] + ";"
 				end
 				f.puts "}"
 				f.puts ""
@@ -1292,7 +1322,11 @@ class GGZComm
 			elsif @opcodetype == "byte"
 				f.puts "\tQ_INT8 opcode;"
 			end
-			f.puts "\t*socket >> opcode;"
+			if not xmlcode
+				f.puts "\t*socket >> opcode;"
+			else
+				# FIXME!
+			end
 			f.puts ""
 			f.puts "\tif(requirelink)"
 			f.puts "\t{"
@@ -1304,7 +1338,7 @@ class GGZComm
 			f.puts "\t{"
 			@eventlist.each do |event|
 				if event.section != role
-					f.puts "\t\tcase " + event.name + ":\n"
+					f.puts "\t\tcase " + @engine + "Opcodes::message_" + event.name + ":\n"
 					f.puts "\t\t\tggzcomm_" + event.name() + "();\n"
 					f.puts "\t\t\tbreak;"
 				end
