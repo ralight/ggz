@@ -1,7 +1,4 @@
-SUBDIRS = .
-
-commdir = $(prefix)/bin
-comm_SCRIPTS = ggzcommgen
+bin_SCRIPTS = ggzcommgen
 
 EXTRA_DIST = \
 	DESIGN \
