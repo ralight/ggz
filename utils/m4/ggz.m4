@@ -447,6 +447,8 @@ AC_ARG_WITH(ggzconfig,
     [  ac_ggz_config="$withval"
     ])
 
+ac_ggz_config_orig=$ac_ggz_config
+
 AC_CACHE_VAL(ac_cv_have_ggzconfig,
 [
 ggz_config_dirs="$ac_ggz_config $ac_ggz_stdbin"
@@ -488,6 +490,10 @@ if test "$have_ggz_config" != yes; then
 else
   pathto_app=`echo $prefix/bin/ | tr -s "/"`
   pathto_ggz=`echo $ac_ggz_config/ | tr -s "/"`
+
+  if test "$ac_ggz_config_orig" != "NO"; then
+    pathto_app=$pathto_ggz
+  fi
 
   if test "x$pathto_app" != "x$pathto_ggz"; then
     AC_MSG_RESULT([$have_ggz_config (dismissed due to different prefix)])
