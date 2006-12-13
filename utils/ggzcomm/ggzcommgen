@@ -65,7 +65,7 @@ class GGZCommEvent
 		return @evallist
 	end
 
-	def decl(definition)
+	def decl(definition, qtmode)
 		x = ""
 		seq = 0
 		count = 0
@@ -91,7 +91,11 @@ class GGZCommEvent
 						when "string"
 							type = "char*"
 						when "byte"
-							type = "char"
+							if qtmode then
+								type = "Q_INT8"
+							else
+								type = "char"
+							end
 					end
 					if definition then
 						x = x + "\t"
@@ -100,8 +104,14 @@ class GGZCommEvent
 					#for i in (1..seq)
 					#	x = x + "*"
 					#end
-					if seq == 1 then
-						data += "[" + count.to_s + "]";
+					for i in (1..seq)
+						#data += "[" + count.to_s + "]";
+						if count.to_i.to_s == count then
+							data += "[" + count.to_s + "]";
+						else
+							data += "[100]";
+							# FIXME: boundaries
+						end
 					end
 					if not definition then
 						x = x + " " + data
@@ -177,12 +187,13 @@ class GGZCommEvent
 					#x = x + indent + "\tif(" + count.to_s + " > " + maxcount.to_s + ") ggzcomm_error();\n"
 					x = x + indent + "\tfor(" + vname + " = 0; " + vname + " < " + count.to_s + "; " + vname + "++)\n"
 					x = x + indent + "\t{\n"
-					index = "[" + vname + "]"
+					index += "[" + vname + "]"
 				when "%ENDSEQ"
 					seq -= 1
 					count = 0
 					x = x + indent + "}\n"
-					index = ""
+					#index = ""
+					index.gsub!(/\[(\w+)\]$/, "")
 				when "%EVAL"
 					seq += 1
 					x = x + indent + "\tif("
@@ -258,7 +269,7 @@ class GGZCommEvent
 
 		data = @name
 		if @section == role then
-			x += "\t*socket << message_" + data + ";\n"
+			x += "\t*socket << " + engine + "Opcodes::message_" + data + ";\n"
 			x += "\tif(socketdev->error() != QSocketDevice::NoError) emit signalError();\n"
 		end
 
@@ -273,7 +284,12 @@ class GGZCommEvent
 			case data
 				when "%SEQ"
 					seq += 1
-					count = type
+					if type.to_i.to_s == type then
+						count = type
+						# FIXME: go here when type is a number (constant) - better way?
+					else
+						count = "message." + type
+					end
 					maxcount = option
 					if myvars[count] then
 						if not maxcount then
@@ -284,12 +300,13 @@ class GGZCommEvent
 					#x = x + indent + "\tif(" + count.to_s + " > " + maxcount.to_s + ") emit signalError();\n"
 					x = x + indent + "\tfor(int " + vname + " = 0; " + vname + " < " + count.to_s + "; " + vname + "++)\n"
 					x = x + indent + "\t{\n"
-					index = "[" + vname + "]"
+					index += "[" + vname + "]"
 				when "%ENDSEQ"
 					seq -= 1
 					count = 0
 					x = x + indent + "}\n"
-					index = ""
+					#index = ""
+					index.gsub!(/\[(\w+)\]$/, "")
 				when "%EVAL"
 					seq += 1
 					x = x + indent + "\tif("
@@ -307,7 +324,7 @@ class GGZCommEvent
 						if i > 0 then
 							x = x + " || "
 						end
-						x = x + "(" + name + index + " " + type + " " + varname(result) + ")"
+						x = x + "(message." + name + index + " " + type + " " + varname(result) + ")"
 						i += 1
 					end
 					x = x + ")\n"
@@ -965,15 +982,15 @@ class GGZComm
 
 			i = 0
 			@eventlist.each do |event|
-				i += event.decl(true).length
+				i += event.decl(true, false).length
 			end
 			if i > 0
 				f.puts ""
 				f.puts "struct variables_t"
 				f.puts "{"
 				@eventlist.each do |event|
-					if event.decl(true) != "" then
-						f.puts event.decl(true);
+					if event.decl(true, false) != "" then
+						f.puts event.decl(true, false);
 					end
 				end
 				f.puts "};"
@@ -1192,7 +1209,7 @@ class GGZComm
 				f.puts "{"
 				f.puts "\tpublic:"
 				f.puts "\t" + event.name + "() : msg(" + @engine + "Opcodes::message_" + event.name + "){}"
-				f.puts event.decl(true)
+				f.puts event.decl(true, true)
 				f.puts "};"
 			end
 
