@@ -1165,9 +1165,13 @@ class GGZComm
 			f.puts "#define GGZCOMM_" + proto + "_H"
 			f.puts ""
 			f.puts "#include <qobject.h>"
+			if xmlcode then
+				f.puts "#include <qxml.h>"
+			end
 			f.puts ""
 			f.puts "class QDataStream;"
 			f.puts "class QSocketDevice;"
+			f.puts "class QSocket;"
 			if xmlcode then
 				f.puts "class QXmlInputSource;"
 				f.puts "class QXmlSimpleReader;"
@@ -1213,6 +1217,28 @@ class GGZComm
 				f.puts "};"
 			end
 
+			if xmlcode then
+				f.puts ""
+				f.puts "class " + @engine + "XML : public QXmlDefaultHandler"
+				f.puts "{"
+				f.puts "\tpublic:"
+				f.puts "\t\t" + @engine + "XML();"
+				f.puts "\t\tbool startElement(const QString& nsuri, const QString& lname, const QString& qname, const QXmlAttributes& atts);"
+				f.puts "\t\tbool endElement(const QString& nsuri, const QString& lname, const QString& qname);"
+				f.puts "\t\tbool characters(const QString& s);"
+				@eventlist.each do |event|
+					f.puts "\t\t" + event.name + " msg_" + event.name + ";"
+					# XXX only for recv-role
+				end
+				f.puts "\t\tQString lastmsg;"
+				f.puts "\tprivate:"
+				f.puts "\t\t" + @engine + "Opcodes::Opcode lastmessage;"
+				f.puts "\t\tbool streamstarted;"
+				f.puts "\t\tbool streammessage;"
+				f.puts "\t\tQString data;"
+				f.puts "};"
+			end
+
 			f.puts ""
 			f.puts "class " + @engine + " : public QObject"
 			f.puts "{"
@@ -1229,12 +1255,14 @@ class GGZComm
 			end
 			f.puts ""
 			f.puts "\tvoid ggzcomm_set_fd(int usefd);"
+			f.puts "\tvoid ggzcomm_set_socket(QSocket *socket);"
 			f.puts ""
 			f.puts "\tsignals:"
 			f.puts "\tvoid signalNotification(" + @engine + "Opcodes::Opcode messagetype, const msg& message);"
 			f.puts "\tvoid signalError();"
 			f.puts ""
 			f.puts "\tprivate:"
+			f.puts "\t\tvoid handle(bool ret);"
 			@eventlist.each do |event|
 				if event.section != role then
 					f.puts "\tvoid ggzcomm_" + event.name + "();"
@@ -1246,9 +1274,11 @@ class GGZComm
 			f.puts "\tint requirelink;"
 			f.puts "\tint nextlink;"
 			f.puts "\tQSocketDevice *socketdev;"
+			f.puts "\tQSocket *clientsocket;"
 			if xmlcode then
 				f.puts "\tQXmlInputSource *source;"
 				f.puts "\tQXmlSimpleReader *reader;"
+				f.puts "\t" + @engine + "XML *handler;"
 			else
 				f.puts "\tQDataStream *socket;"
 			end
@@ -1264,6 +1294,7 @@ class GGZComm
 			f.puts ""
 			f.puts "#include \"" + basename + ".h" + "\""
 			f.puts "#include <qsocketdevice.h>"
+			f.puts "#include <qsocket.h>"
 			if xmlcode then
 				f.puts "#include <qxml.h>"
 			else
@@ -1334,49 +1365,248 @@ class GGZComm
 			end
 			f.puts "void " + @engine + "::ggzcomm_network_main()"
 			f.puts "{"
-			if @opcodetype == "int"
-				f.puts "\tint opcode;"
-			elsif @opcodetype == "byte"
-				f.puts "\tQ_INT8 opcode;"
-			end
 			if not xmlcode
+				if @opcodetype == "int"
+					f.puts "\tint opcode;"
+				elsif @opcodetype == "byte"
+					f.puts "\tQ_INT8 opcode;"
+				end
+				f.puts ""
 				f.puts "\t*socket >> opcode;"
 			else
 				# FIXME!
-			end
-			f.puts ""
-			f.puts "\tif(requirelink)"
-			f.puts "\t{"
-			f.puts "\t\tif(opcode != nextlink) emit signalError();"
-			f.puts "\t\trequirelink = 0;"
-			f.puts "\t}"
-			f.puts ""
-			f.puts "\tswitch(opcode)"
-			f.puts "\t{"
-			@eventlist.each do |event|
-				if event.section != role
-					f.puts "\t\tcase " + @engine + "Opcodes::message_" + event.name + ":\n"
-					f.puts "\t\t\tggzcomm_" + event.name() + "();\n"
-					f.puts "\t\t\tbreak;"
+				f.puts "\tif(!reader) return;"
+				f.puts ""
+				f.puts "\tbool ret = reader->parseContinue();"
+				if mode == "debug" then
+					f.puts "\tqDebug(\"parseContinue :: %i\", ret);"
 				end
+				f.puts "\thandle(ret);"
 			end
-			f.puts "\t}"
+			if not xmlcode then
+				f.puts ""
+				f.puts "\tif(requirelink)"
+				f.puts "\t{"
+				f.puts "\t\tif(opcode != nextlink) emit signalError();"
+				f.puts "\t\trequirelink = 0;"
+				f.puts "\t}"
+				f.puts ""
+				f.puts "\tswitch(opcode)"
+				f.puts "\t{"
+				@eventlist.each do |event|
+					if event.section != role
+						f.puts "\t\tcase " + @engine + "Opcodes::message_" + event.name + ":\n"
+						f.puts "\t\t\tggzcomm_" + event.name() + "();\n"
+						f.puts "\t\t\tbreak;"
+					end
+				end
+				f.puts "\t}"
+			end
 			f.puts "}"
+
+			if xmlcode then
+				f.puts ""
+				f.puts "void " + @engine + "::handle(bool ret)"
+				f.puts "{"
+				f.puts "\tif(!ret)"
+				f.puts "\t{"
+				f.puts "\t\temit signalError();"
+				f.puts "\t\treturn;"
+				f.puts "\t}"
+				f.puts ""
+				f.puts "\tif(!handler->lastmsg.isEmpty())"
+				f.puts "\t{"
+				@eventlist.each do |event|
+					f.puts "\t\tif(handler->lastmsg == \"" + event.name + "\")"
+					f.puts "\t\t{"
+					f.puts "\t\t\temit signalNotification(" + @engine + "Opcodes::message_" + event.name + ", handler->msg_" + event.name + ");"
+					f.puts "\t\t}"
+				end
+				f.puts "\t}"
+				f.puts "}"
+			end
 			f.puts ""
 			f.puts "void " + @engine + "::ggzcomm_set_fd(int usefd)"
 			f.puts "{"
+			if mode == "debug" then
+				f.puts "\tqDebug(\"set fd; start parsing\");"
+			end
 			f.puts "\tfd = usefd;"
 			f.puts "\tsocketdev = new QSocketDevice(fd, QSocketDevice::Stream);"
 			if xmlcode then
 				f.puts "\tsource = new QXmlInputSource(socketdev);"
 				f.puts "\treader = new QXmlSimpleReader();"
-				#f.puts "\treader->setContentHandler(handler);"
-				f.puts "\treader->parse(source);"
+				f.puts "\thandler = new " + @engine + "XML();"
+				f.puts "\treader->setContentHandler(handler);"
+				f.puts "\tbool ret = reader->parse(source, true);"
+				if mode == "debug" then
+					f.puts "\tqDebug(\"finished parsing (a bit) :: %i\", ret);"
+				end
+				f.puts "\thandle(ret);"
 			else
 				f.puts "\tsocket = new QDataStream(socketdev);"
 			end
 			f.puts "}"
 			f.puts ""
+			f.puts "void " + @engine + "::ggzcomm_set_socket(QSocket *socket)"
+			f.puts "{"
+			if mode == "debug" then
+				f.puts "\tqDebug(\"set socket; start parsing\");"
+			end
+			f.puts "\tclientsocket = socket;"
+			if xmlcode then
+				f.puts "\tsource = new QXmlInputSource(clientsocket);"
+				f.puts "\treader = new QXmlSimpleReader();"
+				f.puts "\thandler = new " + @engine + "XML();"
+				f.puts "\treader->setContentHandler(handler);"
+				f.puts "\tbool ret = reader->parse(source, true);"
+				if mode == "debug" then
+					f.puts "\tqDebug(\"finished parsing (a bit) :: %i\", ret);"
+				end
+				f.puts "\thandle(ret);"
+			end
+			f.puts "}"
+			f.puts ""
+			if xmlcode then
+				f.puts @engine + "XML::" + @engine + "XML()"
+				f.puts "{"
+				f.puts "\tstreamstarted = false;"
+				f.puts "\tstreammessage = false;"
+				f.puts "}"
+				f.puts ""
+				f.puts "bool " + @engine + "XML::startElement(const QString& nsuri, const QString& lname, const QString& qname, const QXmlAttributes& atts)"
+				f.puts "{"
+				if mode == "debug" then
+					f.puts "\tqDebug(\"sax: start element! %s [%s]\", qname.utf8().data(), lname.utf8().data());"
+				end
+				f.puts "\tlastmsg = QString::null;"
+				f.puts ""
+				f.puts "\tif(!streamstarted)"
+				f.puts "\t{"
+				f.puts "\t\tif(lname == \"ggzcomm-xml\")"
+				f.puts "\t\t{"
+				f.puts "\t\t\tstreamstarted = true;"
+				f.puts "\t\t}"
+				f.puts "\t\telse"
+				f.puts "\t\t{"
+				f.puts "\t\treturn false;"
+				f.puts "\t\t}"
+				f.puts "\t}"
+				f.puts "\telse"
+				f.puts "\t{"
+				f.puts "\t\tif(!streammessage)"
+				f.puts "\t\t{"
+				ifword = "if"
+				@eventlist.each do |event|
+					f.puts "\t\t\t" + ifword + "(lname == \"" + event.name + "\")"
+					f.puts "\t\t\t{"
+					f.puts "\t\t\t\tlastmessage = " + @engine + "Opcodes::message_" + event.name + ";"
+					f.puts "\t\t\t\tstreammessage = true;"
+					f.puts "\t\t\t}"
+					ifword = "else if"
+				end
+				f.puts "\t\t\telse"
+				f.puts "\t\t\t{"
+				f.puts "\t\t\t\treturn false;"
+				f.puts "\t\t\t}"
+				f.puts "\t\t}"
+				@eventlist.each do |event|
+					f.puts "\t\telse if(lastmessage == " + @engine + "Opcodes::message_" + event.name + ")"
+					f.puts "\t\t{"
+					ifword = "if"
+					event.datalist.each do |data, type, option|
+						next if data == '%SEQ'
+						next if data == '%ENDSEQ'
+						next if data == '%EVAL'
+						next if data == '%ENDEVAL'
+						f.puts "\t\t\tif(lname == \"" + data + "\")"
+						f.puts "\t\t\t{"
+						f.puts "\t\t\t\t//..."
+						f.puts "\t\t\t}"
+					end
+					if event.datalist.length == 0 then
+						f.puts "\t\t\treturn false;"
+					else
+						f.puts "\t\t\telse"
+						f.puts "\t\t\t{"
+						f.puts "\t\t\t\treturn false;"
+						f.puts "\t\t\t}"
+					end
+					f.puts "\t\t}"
+				end
+				f.puts "\t}"
+				f.puts ""
+				f.puts "\treturn true;"
+				f.puts "}"
+				f.puts ""
+				f.puts "bool " + @engine + "XML::endElement(const QString& nsuri, const QString& lname, const QString& qname)"
+				f.puts "{"
+				if mode == "debug"
+					f.puts "\tqDebug(\"sax: end element! %s\", qname.utf8().data());"
+				end
+				f.puts "\tif(!streamstarted)"
+				f.puts "\t{"
+				f.puts "\t\treturn false;"
+				f.puts "\t}"
+				f.puts "\telse"
+				f.puts "\t{"
+				f.puts "\t\tif(streammessage)"
+				f.puts "\t\t{"
+				ifword = "if"
+				@eventlist.each do |event|
+					f.puts "\t\t\t" + ifword + "(lastmessage == " + @engine + "Opcodes::message_" + event.name + ")"
+					f.puts "\t\t\t{"
+					f.puts "\t\t\t\tif(lname == \"" + event.name + "\")"
+					f.puts "\t\t\t\t{"
+					if mode == "debug"
+						f.puts "\t\t\t\t\tqDebug(\"..." + event.name + "....\");"
+					end
+					f.puts "\t\t\t\t\tlastmsg = \"" + event.name + "\";"
+					f.puts "\t\t\t\t}"
+					event.datalist.each do |data, type, option|
+						next if data == '%SEQ'
+						next if data == '%ENDSEQ'
+						next if data == '%EVAL'
+						next if data == '%ENDEVAL'
+						f.puts "\t\t\t\telse if(lname == \"" + data + "\")"
+						f.puts "\t\t\t\t{"
+						f.puts "\t\t\t\t\tmsg_" + event.name + "." + data + " = data.toInt();"
+						# FIXME: types != int!
+						f.puts "\t\t\t\t}"
+					end
+					f.puts "\t\t\t}"
+					ifword = "else if"
+				end
+				f.puts "\t\t\telse"
+				f.puts "\t\t\t{"
+				f.puts "\t\t\t\treturn false;"
+				f.puts "\t\t\t}"
+				f.puts "\t\t}"
+				f.puts "\t\telse"
+				f.puts "\t\t{"
+				f.puts "\t\t\tif(lname == \"ggzcomm-xml\")"
+				f.puts "\t\t\t{"
+				f.puts "\t\t\t\tstreamstarted = false;"
+				f.puts "\t\t\t}"
+				f.puts "\t\t\telse"
+				f.puts "\t\t\t{"
+				f.puts "\t\t\t\treturn false;"
+				f.puts "\t\t\t}"
+				f.puts "\t\t}"
+				f.puts "\t}"
+				f.puts ""
+				f.puts "\treturn true;"
+				f.puts "}"
+				f.puts ""
+				f.puts "bool " + @engine + "XML::characters(const QString& s)"
+				f.puts "{"
+				if mode == "debug" then
+					f.puts "\tqDebug(\"sax: characters! %s\", s.utf8().data());"
+				end
+				f.puts "\tdata.append(s);"
+				f.puts "\treturn true;"
+				f.puts "}"
+			end
 			f.close
 		elsif format == "python" and library == "socket"
 			#error "Currently unsupported"
