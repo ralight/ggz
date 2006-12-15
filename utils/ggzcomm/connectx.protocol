@@ -54,8 +54,8 @@
 			<data name="boardwidth" type="byte"/>
 			<data name="connectlength" type="byte"/>
 			<data name="turn" type="byte"/>
-			<sequence count="boardwidth">
-				<sequence count="boardheight">
+			<sequence count="boardwidth" maxcount="100">
+				<sequence count="boardheight" maxcount="100">
 					<data name="board" type="byte"/>
 				</sequence>
 			</sequence>

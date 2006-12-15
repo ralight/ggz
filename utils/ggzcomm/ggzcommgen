@@ -89,7 +89,11 @@ class GGZCommEvent
 					end
 					case type
 						when "string"
-							type = "char*"
+							if qtmode then
+								type = "QString"
+							else
+								type = "char*"
+							end
 						when "byte"
 							if qtmode then
 								type = "Q_INT8"
@@ -110,7 +114,7 @@ class GGZCommEvent
 							data += "[" + count.to_s + "]";
 						else
 							data += "[100]";
-							# FIXME: boundaries
+							# FIXME: boundaries (maxcount?)
 						end
 					end
 					if not definition then
@@ -258,6 +262,109 @@ class GGZCommEvent
 				x += "\n"
 			end
 			x += "\tif(notifier_func) (notifier_func)(" + name + ");\n"
+		end
+
+		return x
+	end
+
+	def network_cpp_xml(role, engine)
+		x = ""
+		##seq = 0
+		cseq = 0
+
+		myvars = Hash.new
+		maxcounts = Hash.new
+
+		index = ""
+		@datalist.each do |data, type, option|
+			indent = "\t\t\t\t"
+			##for i in (1..seq)
+			##	indent += "\t"
+			##end
+			case data
+				when "%SEQ"
+					##seq += 1
+					cseq += 1
+					if type.to_i.to_s == type then
+						count = type
+						# FIXME: go here when type is a number (constant) - better way?
+					else
+						count = "msg_" + @name + "." + type
+					end
+					maxcount = option
+					if myvars[count] then
+						if not maxcount then
+							error "Sequence using variable '" + count + "' needs maxcount argument."
+						end
+					end
+					vname = "i" + cseq.to_s
+					maxcounts[cseq] = maxcount
+					##x = x + indent + "\tfor(int " + vname + " = 0; " + vname + " < " + count.to_s + "; " + vname + "++)\n"
+					##x = x + indent + "\t{\n"
+					index += "[msg_" + @name + "." + vname + "]"
+				when "%ENDSEQ"
+					##seq -= 1
+					cseq -= 0
+					count = 0
+					##x = x + indent + "}\n"
+					index.gsub!(/\[(\w+)\]$/, "")
+				when "%EVAL"
+					##seq += 1
+					##x = x + indent + "\tif("
+					i = 0
+					@evallist.each do |name, result, type|
+						if type == "equal"
+							type = "=="
+						elsif type == "unequal"
+							type = "!="
+						elsif type == "smaller"
+							type = "<"
+						elsif type == "larger"
+							type = ">"
+						end
+						if i > 0 then
+							##x = x + " || "
+						end
+						##x = x + "(msg_" + @name + "." + name + index + " " + type + " " + varname(result) + ")"
+						i += 1
+					end
+					##x = x + ")\n"
+					##x = x + indent + "\t{\n"
+				when "%ENDEVAL"
+					##seq -= 1
+					##x = x + indent + "}\n"
+				else
+					myvars[data] = 1
+					if @section == role then
+						# FIXME: consider role here?
+					end
+
+					x = x + indent + "else if(lname == \"" + data + "\")\n"
+					x = x + indent + "{\n"
+					if type == "int"
+						assignexpr = "data.toInt()"
+					elsif type == "byte"
+						assignexpr = "data.toInt()"
+					else
+						assignexpr = "data"
+					end
+					x = x + indent + "\tmsg_" + @name + "." + data + index + " = " + assignexpr + ";\n"
+					if cseq > 0
+						vname = "i" + cseq.to_s
+						x = x + indent + "\tmsg_" + @name + "." + vname + "++;\n"
+						if cseq > 1
+							# FIXME: make nesting work for any cseq
+							vname2 = "i1"
+							max = maxcounts[1]
+							x = x + indent + "\tif(msg_" + @name + "." + vname + " == " + max + ")\n"
+							x = x + indent + "\t{\n"
+							x = x + indent + "\t\tmsg_" + @name + "." + vname2 + "++;\n"
+							x = x + indent + "\t\tmsg_" + @name + "." + vname + " = 0;\n"
+							x = x + indent + "\t}\n"
+						end
+					end
+					x = x + indent + "}\n"
+			end
 		end
 
 		return x
@@ -1214,6 +1321,14 @@ class GGZComm
 				f.puts "\tpublic:"
 				f.puts "\t" + event.name + "() : msg(" + @engine + "Opcodes::message_" + event.name + "){}"
 				f.puts event.decl(true, true)
+				seq = 0
+				event.datalist.each do |data, type, option|
+					case data
+						when "%SEQ"
+							seq += 1
+							f.puts "\tint i" + seq.to_s + ";";
+					end
+				end
 				f.puts "};"
 			end
 
@@ -1489,7 +1604,7 @@ class GGZComm
 				f.puts "\t\t}"
 				f.puts "\t\telse"
 				f.puts "\t\t{"
-				f.puts "\t\treturn false;"
+				f.puts "\t\t\treturn false;"
 				f.puts "\t\t}"
 				f.puts "\t}"
 				f.puts "\telse"
@@ -1502,6 +1617,16 @@ class GGZComm
 					f.puts "\t\t\t{"
 					f.puts "\t\t\t\tlastmessage = " + @engine + "Opcodes::message_" + event.name + ";"
 					f.puts "\t\t\t\tstreammessage = true;"
+
+					seq = 0
+					event.datalist.each do |data, type, option|
+						case data
+							when "%SEQ"
+								seq += 1
+								f.puts "\t\t\t\tmsg_" + event.name + ".i" + seq.to_s + " = 0;";
+						end
+					end
+
 					f.puts "\t\t\t}"
 					ifword = "else if"
 				end
@@ -1519,10 +1644,11 @@ class GGZComm
 						next if data == '%ENDSEQ'
 						next if data == '%EVAL'
 						next if data == '%ENDEVAL'
-						f.puts "\t\t\tif(lname == \"" + data + "\")"
+						f.puts "\t\t\t" + ifword + "(lname == \"" + data + "\")"
 						f.puts "\t\t\t{"
 						f.puts "\t\t\t\t//..."
 						f.puts "\t\t\t}"
+						ifword = "else if"
 					end
 					if event.datalist.length == 0 then
 						f.puts "\t\t\treturn false;"
@@ -1563,17 +1689,9 @@ class GGZComm
 					end
 					f.puts "\t\t\t\t\tlastmsg = \"" + event.name + "\";"
 					f.puts "\t\t\t\t}"
-					event.datalist.each do |data, type, option|
-						next if data == '%SEQ'
-						next if data == '%ENDSEQ'
-						next if data == '%EVAL'
-						next if data == '%ENDEVAL'
-						f.puts "\t\t\t\telse if(lname == \"" + data + "\")"
-						f.puts "\t\t\t\t{"
-						f.puts "\t\t\t\t\tmsg_" + event.name + "." + data + " = data.toInt();"
-						# FIXME: types != int!
-						f.puts "\t\t\t\t}"
-					end
+
+					f.puts event.network_cpp_xml(role, @engine)
+
 					f.puts "\t\t\t}"
 					ifword = "else if"
 				end
