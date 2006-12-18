@@ -30,7 +30,7 @@
 	</client>
 	<server>
 		<event name="msgseat">
-			<data name="num" type="int"/>
+			<data name="num" type="int" min="0" max="1"/>
 		</event>
 		<event name="msgplayers">
 			<sequence count="2">
@@ -43,19 +43,19 @@
 		</event>
 		<event name="reqmove"/>
 		<event name="rspmove">
-			<data name="status" type="byte"/>
+			<data name="status" type="byte" min="-4" max="0"/>
 			<data name="column" type="int"/>
 		</event>
 		<event name="msgmove">
 			<data name="column" type="int"/>
 		</event>
 		<event name="sndsync">
-			<data name="boardheight" type="byte"/>
-			<data name="boardwidth" type="byte"/>
-			<data name="connectlength" type="byte"/>
+			<data name="boardheight" type="byte" min="4" max="15"/>
+			<data name="boardwidth" type="byte" min="4" max="20"/>
+			<data name="connectlength" type="byte" min="3" max="6"/>
 			<data name="turn" type="byte"/>
-			<sequence count="boardwidth" maxcount="100">
-				<sequence count="boardheight" maxcount="100">
+			<sequence count="boardwidth" mincount="4" maxcount="20">
+				<sequence count="boardheight" mincount="4" maxcount="15">
 					<data name="board" type="byte"/>
 				</sequence>
 			</sequence>
@@ -67,7 +67,7 @@
 		</event>
 		-->
 		<event name="msggameover">
-			<data name="winner" type="byte"/>
+			<data name="winner" type="byte" min="0" max="1"/>
 		</event>
 		<event name="reqoptions">
 			<data name="minboardwidth" type="byte"/>

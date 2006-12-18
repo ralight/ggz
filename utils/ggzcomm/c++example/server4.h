@@ -3,11 +3,10 @@
 
 #include "connectx_server.h"
 
-#include <qserversocket.h>
-
 class QSocketNotifier;
+class QTcpServer;
 
-class Server : public QServerSocket
+class Server : public QObject
 {
 	Q_OBJECT
 	public:
@@ -15,11 +14,11 @@ class Server : public QServerSocket
 	private slots:
 		void slotCommNotification(connectxOpcodes::Opcode messagetype, const msg& message);
 		void slotCommError();
-		void slotNetwork(int fd);
+		void slotConnection();
+		void slotNetwork();
 	private:
-		void newConnection(int socket);
 		connectx *m_cx;
-		QSocketNotifier *m_notifier;
+		QTcpServer *m_s;
 };
 
 #endif

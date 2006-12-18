@@ -1,0 +1,34 @@
+QT4DIR = /home/josef/Incoming/vista-20061207/kde4/qt-copy
+qt4inc = $(QT4DIR)/include
+qt4lib = $(QT4DIR)/lib
+MOC = moc -DQT4
+
+all: gen-stamp source
+
+gen-stamp:
+	$(MAKE) xml
+	touch $@
+
+source:
+	$(MOC) -o connectx_client.moc.cpp connectx_client.h
+	$(MOC) -o connectx_server.moc.cpp connectx_server.h
+	$(MOC) -o server4.moc.cpp server4.h
+	$(MOC) -o client4.moc.cpp client4.h
+	g++ -Wall -o client4 client4.cpp connectx_client.cpp connectx_client.moc.cpp client4.moc.cpp -I $(qt4inc) -I $(qt4inc)/QtCore -I $(qt4inc)/QtNetwork -I $(qt4inc)/QtXml -L $(qt4lib) -lQtCore -lQtNetwork -lQtXml
+	g++ -Wall -o server4 server4.cpp connectx_server.cpp connectx_server.moc.cpp server4.moc.cpp -I $(qt4inc) -I $(qt4inc)/QtCore -I $(qt4inc)/QtNetwork -I $(qt4inc)/QtXml -L $(qt4lib) -lQtCore -lQtNetwork -lQtXml
+
+opcodes:
+	../ggzcommgen --language c++ --interface qt4 --mode debug --role client ../connectx.protocol
+	../ggzcommgen --language c++ --interface qt4 --mode debug --role server ../connectx.protocol
+
+xml:
+	../ggzcommgen --xml --language c++ --interface qt4 --mode debug --role client ../connectx.protocol
+	../ggzcommgen --xml --language c++ --interface qt4 --mode debug --role server ../connectx.protocol
+
+clean:
+	rm -f connectx_client.{cpp,h}
+	rm -f connectx_server.{cpp,h}
+	rm -f *.moc.cpp
+	rm -f client4 server4
+	rm -f gen-stamp
+
