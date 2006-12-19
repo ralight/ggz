@@ -19,8 +19,10 @@
 
 /* Standard trigger declarations */
 extern Datum ggzsync(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(trigf);
+PG_FUNCTION_INFO_V1(ggzsync);
+#ifdef PG_MODULE_MAGIC
 PG_MODULE_MAGIC;
+#endif
 
 /* Global variables */
 PGconn *peerconn = NULL;
@@ -61,8 +63,13 @@ Datum ggzsync(PG_FUNCTION_ARGS)
 	TupleDesc tupdesc;
 	HeapTuple rettuple;
 	bool checknull = false;
-	bool isnull;
-	int ret, i;
+	int i;
+
+	int columns;
+	char *value;
+	PGresult *res;
+	char query[2048];
+	char *c_handle, *c_password;
 
 	/* On the first run, do a lazy-connection */
 	if(!peerconn)
@@ -83,31 +90,40 @@ Datum ggzsync(PG_FUNCTION_ARGS)
 	&& TRIGGER_FIRED_BEFORE(trigdata->tg_event))
 		checknull = true;
 
+	/* find out the values which are in the active tuple */
 	tupdesc = trigdata->tg_relation->rd_att;
+	columns = tupdesc->natts;
+	elog(INFO, "[debug] Columns %i", columns);
 
-	/* connect to SPI manager */
-	if((ret = SPI_connect()) < 0)
-		elog(INFO, "ggzsync: SPI connection returned failed.");
-
-	/* get number of rows in table */
-	ret = SPI_exec("SELECT count(*) FROM users", 0);
-
-	if(ret < 0)
-		elog(NOTICE, "ggzsync: SPI query failed.");
-
-	/* count(*) returns int8, so be careful to convert */
-	i = DatumGetInt64(SPI_getbinval(SPI_tuptable->vals[0],
-		SPI_tuptable->tupdesc, 1, &isnull));
-
-	elog(INFO, "ggzsync: There are %d rows in users.", i);
-
-	SPI_finish();
-
-	if (checknull)
+	for(i = 0; i < columns; i++)
 	{
-		SPI_getbinval(rettuple, tupdesc, 1, &isnull);
-		if (isnull)
-			rettuple = NULL;
+		Form_pg_attribute a = tupdesc->attrs[i];
+		NameData name = a->attname;
+
+		value = SPI_getvalue(trigdata->tg_trigtuple, tupdesc, i + 1);
+
+		elog(INFO, "[debug] - column %i=%s: %s", i, name.data, value);
+	}
+
+	c_handle = SPI_getvalue(trigdata->tg_trigtuple, tupdesc, 1);
+	c_password = SPI_getvalue(trigdata->tg_trigtuple, tupdesc, 2);
+
+	/* Synchronise the tuple */
+	if(TRIGGER_FIRED_BY_INSERT(trigdata->tg_event))
+	{
+		elog(INFO, "[debug] insert!");
+
+		snprintf(query, sizeof(query),
+			"INSERT INTO users2 (username, password) VALUES ('%s', '%s')",
+			c_handle, c_password);
+		res = PQexec(peerconn, query);
+
+		if(PQresultStatus(res) != PGRES_COMMAND_OK)
+		{
+			elog(ERROR, "ggzsync: Sync insert failed.");
+		}
+
+		PQclear(res);
 	}
 
 	return PointerGetDatum(rettuple);
