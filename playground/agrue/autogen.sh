@@ -1,150 +1,110 @@
-#!/bin/sh
-# Run this to generate all the initial makefiles, etc.
+#!/usr/bin/env bash
+#
+# GGZ Gaming Zone bootstrap script for developers.
+# To be used for SVN checkouts. Needs bash and perl installed.
 
 srcdir=`dirname $0`
-PKG_NAME="ggzd"
 
-DIE=0
-
-(autoconf --version) < /dev/null > /dev/null 2>&1 || {
-  echo
-  echo "**Error**: You must have \`autoconf' installed to."
-  echo "Download the appropriate package for your distribution,"
-  echo "or get the source tarball at ftp://ftp.gnu.org/pub/gnu/"
-  DIE=1
-}
-
-(grep "^AM_PROG_LIBTOOL" $srcdir/configure.in >/dev/null) && {
-  (libtool --version) < /dev/null > /dev/null 2>&1 || {
+if test -z "$*"; then
+  if test -z "$NOCONFIGURE"; then
+    echo "** Warning: I am going to run 'configure' with no arguments."
+    echo "** If you wish to pass any to it, please specify them on the"
+    echo "** '$0' command line."
     echo
-    echo "**Error**: You must have \`libtool' installed."
-    echo "Get ftp://ftp.gnu.org/pub/gnu/libtool-1.2d.tar.gz"
-    echo "(or a newer version if it is available)"
-    DIE=1
-  }
+  fi
+fi
+
+echo -n "Bootstrapping GGZ... "
+echo -n "[prerequisites]"
+
+# Make sure autotools are installed
+
+version_check()
+{
+log="$log\t++ Checking for $1,"
+($1 --version >/dev/null 2>&1) || { log="$log not found!\n"; bailout=1; return; }
+vline=`$1 --version | head -1`
+needed="$2"
+
+version=`echo $vline | perl -e "\\$_ = <STDIN>; \\$_ =~ m/(\d[\.\d]+)/; print \\$1"`
+vmajor="0`echo $version | cut -d . -f 1`"
+vminor="0`echo $version | cut -s -d . -f 2`"
+vmicro="0`echo $version | cut -s -d . -f 3`"
+nmajor="0`echo $needed | cut -d . -f 1`"
+nminor="0`echo $needed | cut -s -d . -f 2`"
+nmicro="0`echo $needed | cut -s -d . -f 3`"
+
+old=0
+if [ $vmajor -lt $nmajor ]; then old=1;
+elif [ $vmajor -eq $nmajor ] && [ $vminor -lt $nminor ]; then old=1;
+elif [ $vmajor -eq $nmajor ] && [ $vminor -eq $nminor ] && [ $vmicro -lt $nmicro ]; then old=1;
+fi
+
+vall="$vmajor.$vminor.$vmicro"
+nall="$nmajor.$nminor.$nmicro"
+vversion=`echo $vall | perl -e "\\$_ = <STDIN>; \\$_ =~ s/(^|\.)0(\d+)/\\$1\\$2/g; print"`
+nversion=`echo $nall | perl -e "\\$_ = <STDIN>; \\$_ =~ s/(^|\.)0(\d+)/\\$1\\$2/g; print"`
+
+log="$log need $nversion, found $vversion -"
+if test $old = "1"; then
+  log="$log too old!\n"
+  bailout=1
+else
+  log="$log ok.\n"
+fi
 }
 
-grep "^AM_GNU_GETTEXT" $srcdir/configure.in >/dev/null && {
-  grep "sed.*POTFILES" $srcdir/configure.in >/dev/null || \
-  (gettext --version) < /dev/null > /dev/null 2>&1 || {
-    echo
-    echo "**Error**: You must have \`gettext' installed."
-    echo "Get ftp://alpha.gnu.org/gnu/gettext-0.10.35.tar.gz"
-    echo "(or a newer version if it is available)"
-    DIE=1
-  }
-}
+log=""
+bailout=0
+need_libtool=0
 
-grep "^AM_GNOME_GETTEXT" $srcdir/configure.in >/dev/null && {
-  grep "sed.*POTFILES" $srcdir/configure.in >/dev/null || \
-  (gettext --version) < /dev/null > /dev/null 2>&1 || {
-    echo
-    echo "**Error**: You must have \`gettext' installed."
-    echo "Get ftp://alpha.gnu.org/gnu/gettext-0.10.35.tar.gz"
-    echo "(or a newer version if it is available)"
-    DIE=1
-  }
-}
+(grep "\bAC_PROG_LIBTOOL" $srcdir/configure.ac >/dev/null) && need_libtool=1
+(grep "\bAC_GGZ_PLATFORM" $srcdir/configure.ac >/dev/null) && need_libtool=1
 
-(automake --version) < /dev/null > /dev/null 2>&1 || {
+version_check "autoconf" "2.57"
+version_check "automake" "1.7"
+if test "x$need_libtool" = "x1"; then
+	version_check "libtool" "1.4.4"
+fi
+version_check "gettext" "0.10.40"
+
+if test "x$bailout" = "x1"; then
   echo
-  echo "**Error**: You must have \`automake' installed."
-  echo "Get ftp://ftp.gnu.org/pub/gnu/automake-1.3.tar.gz"
-  echo "(or a newer version if it is available)"
-  DIE=1
-  NO_AUTOMAKE=yes
-}
-
-
-# if no automake, don't bother testing for aclocal
-test -n "$NO_AUTOMAKE" || (aclocal --version) < /dev/null > /dev/null 2>&1 || {
-  echo
-  echo "**Error**: Missing \`aclocal'.  The version of \`automake'"
-  echo "installed doesn't appear recent enough."
-  echo "Get ftp://ftp.gnu.org/pub/gnu/automake-1.3.tar.gz"
-  echo "(or a newer version if it is available)"
-  DIE=1
-}
-
-if test "$DIE" -eq 1; then
+  echo "** Error: some prerequisites could not be found:"
+  echo -e $log
   exit 1
 fi
 
-if test -z "$*"; then
-  echo "**Warning**: I am going to run \`configure' with no arguments."
-  echo "If you wish to pass any to it, please specify them on the"
-  echo \`$0\'" command line."
-  echo
+# Run autotools suite
+
+if test -d $srcdir/m4; then
+	echo -n "[m4]"
+	cat $srcdir/m4/*.m4 > $srcdir/acinclude.m4
 fi
+if test "x$need_libtool" = "x1"; then
+	echo -n "[libtoolize]"
+	(cd $srcdir && libtoolize --force --copy >/dev/null) || { echo "libtoolize failed."; exit; }
+fi
+echo -n "[aclocal]"
+(cd $srcdir && aclocal) || { echo "aclocal failed."; exit; }
+echo -n "[autoheader]"
+autoheader -I $srcdir || { echo "autoheader failed."; exit; }
+echo -n "[automake]"
+set -o pipefail 2>/dev/null && { ((cd $srcdir && automake --foreign --add-missing 2>&1) | (grep -v installing || true)) || { echo "automake failed." ; exit; } } || { (cd $srcdir && automake --foreign --add-missing) || { echo "automake failed." ; exit; } }
+if test -f $srcdir/am_edit; then
+	echo -n "[am_edit]"
+	perl $srcdir/am_edit --foreign-libtool --no-autodist || { echo "am_edit failed."; exit; }
+fi
+echo -n "[autoconf]"
+autoconf -I $srcdir $srcdir/configure.ac > $srcdir/configure && chmod +x $srcdir/configure || { echo "autoconf failed."; exit; }
+echo ""
 
-case $CC in
-xlc )
-  am_opt=--include-deps;;
-esac
+# Run configuration
 
-echo "Creating extra autoconf macros..."
-cp acinclude.ggz acinclude.m4
-
-for coin in `find $srcdir -name configure.in -print`
-do 
-  dr=`dirname $coin`
-  if test -f $dr/NO-AUTO-GEN; then
-    echo skipping $dr -- flagged as no auto-gen
-  else
-    echo processing $dr
-    macrodirs=`sed -n -e 's,AM_ACLOCAL_INCLUDE(\(.*\)),\1,gp' < $coin`
-    ( cd $dr
-      aclocalinclude="$ACLOCAL_FLAGS"
-      for k in $macrodirs; do
-  	if test -d $k; then
-          aclocalinclude="$aclocalinclude -I $k"
-  	##else 
-	##  echo "**Warning**: No such directory \`$k'.  Ignored."
-        fi
-      done
-      if grep "^AM_GNU_GETTEXT" configure.in >/dev/null; then
-	if grep "sed.*POTFILES" configure.in >/dev/null; then
-	  : do nothing -- we still have an old unmodified configure.in
-	else
-	  echo "Creating $dr/aclocal.m4 ..."
-	  test -r $dr/aclocal.m4 || touch $dr/aclocal.m4
-	  echo "Running gettextize...  Ignore non-fatal messages."
-	  echo "no" | gettextize --force --copy
-	  echo "Making $dr/aclocal.m4 writable ..."
-	  test -r $dr/aclocal.m4 && chmod u+w $dr/aclocal.m4
-        fi
-      fi
-      if grep "^AM_GNOME_GETTEXT" configure.in >/dev/null; then
-	echo "Creating $dr/aclocal.m4 ..."
-	test -r $dr/aclocal.m4 || touch $dr/aclocal.m4
-	echo "Running gettextize...  Ignore non-fatal messages."
-	echo "no" | gettextize --force --copy
-	echo "Making $dr/aclocal.m4 writable ..."
-	test -r $dr/aclocal.m4 && chmod u+w $dr/aclocal.m4
-      fi
-      if grep "^AM_PROG_LIBTOOL" configure.in >/dev/null; then
-	echo "Running libtoolize..."
-	libtoolize --force --copy
-      fi
-      echo "Running aclocal $aclocalinclude ..."
-      aclocal $aclocalinclude
-      if grep "^AM_CONFIG_HEADER" configure.in >/dev/null; then
-	echo "Running autoheader..."
-	autoheader
-      fi
-      echo "Running automake --gnu $am_opt ..."
-      automake --add-missing --gnu $am_opt
-      echo "Running autoconf ..."
-      autoconf
-    )
-  fi
-done
-
-#conf_flags="--enable-maintainer-mode --enable-compile-warnings" #--enable-iso-c
-
-if test x$NOCONFIGURE = x; then
+if test -z "$NOCONFIGURE"; then
   echo Running $srcdir/configure $conf_flags "$@" ...
   $srcdir/configure $conf_flags "$@"
 else
-  echo Skipping configure process.
+  echo Skipping configure process as requested.
 fi
+

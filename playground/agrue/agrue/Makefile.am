@@ -1,8 +1,9 @@
-SUBDIRS = .
-
 bin_PROGRAMS = agrue
 
-agrue_SOURCES = agrue.c protocols.h
+agrue_SOURCES = main.c net.c
+agrue_LDADD = $(LIB_GGZCORE)
+agrue_LDFLAGS = $(GGZCORE_LDFLAGS)
+agrue_CPPFLAGS = $(GGZCORE_INCLUDES)
 
-agrue_LDADD = $(LDADD) $(LIB_GGZ)
+noinst_HEADERS = net.h
 
