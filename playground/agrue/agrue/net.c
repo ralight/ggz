@@ -85,11 +85,11 @@ void net_work(Agrue *agrue)
 	fd = ggzcore_server_get_fd(agrue->server);
 
 	if (fd < 0) {
-		fprintf(stderr, "(net) Could not connect to server.\n");
+		fprintf(stderr, "(net) [%s] ERROR: Could not connect to server.\n", agrue->name);
 		return;
 	}
 
-	while(1)
+	while(!agrue->finished)
 	{
 		FD_ZERO(&set);
 		FD_SET(fd, &set);
@@ -105,7 +105,8 @@ void net_work(Agrue *agrue)
 		if(random < agrue->mobility)
 		{
 			roomnumber = rand() % ggzcore_server_get_num_rooms(agrue->server);
-			ggzcore_server_join_room(agrue->server, roomnumber);
+			room = ggzcore_server_get_nth_room(agrue->server, roomnumber);
+			ggzcore_server_join_room(agrue->server, room);
 		}
 		else
 		{
@@ -175,12 +176,14 @@ GGZHookReturn net_hook_login(unsigned int id, const void *ed, const void *ud)
 GGZHookReturn net_hook_roomlist(unsigned int id, const void *ed, const void *ud)
 {
 	Agrue *agrue = (Agrue*)ud;
+	GGZRoom *room;
 
 #ifdef AGRUE_DEBUG
 	printf("(net-debug) [%s] got rooms; now join room\n", agrue->name);
 #endif
 
-	ggzcore_server_join_room(agrue->server, 0);
+	room = ggzcore_server_get_nth_room(agrue->server, 0);
+	ggzcore_server_join_room(agrue->server, room);
 
 	return GGZ_HOOK_OK;
 }
@@ -212,10 +215,12 @@ GGZHookReturn net_hook_enter(unsigned int id, const void *ed, const void *ud)
 
 GGZHookReturn net_hook_fail(unsigned int id, const void *ed, const void *ud)
 {
+	Agrue *agrue = (Agrue*)ud;
 	const char *msg = ed;
 
-	fprintf(stderr, "ERROR: %s\n", msg);
-	/* FIXME: indicate error in Agrue structure? */
+	fprintf(stderr, "(net) [%s] ERROR: %s\n", agrue->name, msg);
+
+	agrue->finished = 1;
 
 	return GGZ_HOOK_OK;
 }
@@ -256,7 +261,11 @@ GGZHookReturn net_hook_chat(unsigned int id, const void *ed, const void *ud)
 
 GGZHookReturn net_hook_chatfail(unsigned int id, const void *ed, const void *ud)
 {
-	fprintf(stderr, "ERROR: Chat failed!\n");
+	Agrue *agrue = (Agrue*)ud;
+
+	fprintf(stderr, "(net) [%s] ERROR: Chat failed!\n", agrue->name);
+
+	agrue->finished = 1;
 
 	return GGZ_HOOK_OK;
 }

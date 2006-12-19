@@ -17,6 +17,8 @@
 #include <getopt.h>
 #include <signal.h>
 #include <time.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #define AGRUE_VERSION "0.1"
 
@@ -25,7 +27,7 @@
 static pid_t pids[MAX_AGRUES];
 static int instances;
 
-void termhandler(int signum)
+static void termhandler(int signum)
 {
 	int i;
 
@@ -33,7 +35,8 @@ void termhandler(int signum)
 
 	for(i = 0; i < instances; i++)
 	{
-		kill(pids[i], SIGKILL);
+		if(pids[i] != -1)
+			kill(pids[i], SIGKILL);
 	}
 
 	printf("Agrue: Exit\n");
@@ -47,6 +50,8 @@ int main(int argc, char *argv[])
 	int i;
 	pid_t pid;
 	char name[32];
+	int status;
+	int instancesleft;
 
 	struct option options[] =
 	{
@@ -149,8 +154,10 @@ int main(int argc, char *argv[])
 	signal(SIGINT, termhandler);*/
 
 	srand(time(NULL));
+	setbuf(stdout, NULL);
 
 	instances = optinstances;
+	instancesleft = instances;
 
 	for(i = 0; i < optinstances; i++)
 	{
@@ -168,15 +175,19 @@ int main(int argc, char *argv[])
 			agrue->frequency = optfrequency;
 			agrue->mobility = optmobility;
 			agrue->activity = optactivity;
+			agrue->finished = 0;
+
+			printf("(main) [%s] created...\n", agrue->name);
 
 			net_connect(opthost, 5688, agrue);
 			net_work(agrue);
 
-			fprintf(stderr, "Error: Something happened!\n");
+			fprintf(stderr, "(main) [%s] Error: Something happened, agrue killed!\n", agrue->name);
+			exit(-1);
 		}
 		else if(pid == -1)
 		{
-			fprintf(stderr, "Error: Not enough resources!\n");
+			fprintf(stderr, "(main) Error: Not enough resources for more agrues!\n");
 			exit(-1);
 		}
 		else
@@ -185,7 +196,29 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	while(1);
+	while(instancesleft > 0)
+	{
+		pid = wait(&status);
+		if(pid == -1)
+		{
+			fprintf(stderr, "(main) Error: Cannot wait for agrues, kill them all!\n");
+			//termhandler();
+			exit(-1);
+		}
+
+		for(i = 0; i < instances; i++)
+		{
+			if(pids[i] == pid)
+			{
+				pids[i] = -1;
+				instancesleft -= 1;
+				break;
+			}
+		}
+		printf("(main) Child %i killed with status %i; %i agrues left\n", pid, status, instancesleft);
+	}
+
+	printf("Agrue: finished.\n");
 
 	return 0;
 }

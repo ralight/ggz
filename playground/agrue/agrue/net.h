@@ -18,6 +18,7 @@ struct agrue_t
 	int frequency;
 	int mobility;
 	int activity;
+	int finished;
 };
 typedef struct agrue_t Agrue;
 
