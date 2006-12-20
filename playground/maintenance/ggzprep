@@ -1,26 +1,32 @@
 # Preparation for GGZ development:
 # Fetches all needed packages from the distribution
-# Supported distributions: (K)Ubuntu 6.06, (K)Ubuntu 5.04
+# Supported distributions: (K)Ubuntu 6.06/Debian etch, (K)Ubuntu 5.04
 # Only (K)Ubuntu 6.06 is fully tested (based on pkg-ggz debian packages)
 
-# Test for Linux distro compatibility
-
-distro=`grep ^DISTRIB_ID= /etc/lsb-release | cut -d "=" -f 2`
-version=`grep ^DISTRIB_RELEASE= /etc/lsb-release | cut -d "=" -f 2`
+# Test for Linux distro compatibility, unless explicitly given
 
 echo "*** Welcome to 'ggzprep', the GGZ Gaming Zone dependency installer."
-if [ -z "$distro" ] || [ -z "$version" ]; then
-	echo "!!! Error: Distribution is not LSB-compliant (no /etc/lsb-release)."
-	exit
-fi
-echo "*** Your LSB-compliant Linux distribution is: $distro ($version)"
-if test $distro = "Ubuntu" && test $version = "5.04"; then
-	distro=hoary
-elif test $distro = "Ubuntu" && test $version = "6.06 (LTS)"; then
-	distro=dapper
+
+if [ -z "$1" ]; then
+	distro=`grep ^DISTRIB_ID= /etc/lsb-release 2>/dev/null | cut -d "=" -f 2`
+	version=`grep ^DISTRIB_RELEASE= /etc/lsb-release 2>/dev/null | cut -d "=" -f 2`
+
+	if [ -z "$distro" ] || [ -z "$version" ]; then
+		echo "!!! Error: Distribution is not LSB-compliant (no /etc/lsb-release)."
+		exit
+	fi
+	echo "*** Your LSB-compliant Linux distribution is: $distro ($version)"
+	if test $distro = "Ubuntu" && test $version = "5.04"; then
+		distro=hoary
+	elif test $distro = "Ubuntu" && test $version = "6.06 (LTS)"; then
+		distro=dapper
+	else
+		echo "!!! Error: This distribution is not yet supported."
+		exit
+	fi
 else
-	echo "!!! Error: This distribution is not yet supported."
-	exit
+	echo "*** Warning: Proceeding without compatibility check."
+	distro=$1
 fi
 
 # Assign a temporary file name
@@ -29,7 +35,7 @@ tmpfile=`tempfile`
 
 # Fill temporary file with packages depending on the distribution
 
-if test $distro = "dapper"; then
+if test $distro = "dapper" || test $distro = "etch"; then
 
 cat > $tmpfile << ENDOFPACKAGESLIST
 
