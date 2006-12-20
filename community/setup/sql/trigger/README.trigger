@@ -23,9 +23,21 @@ The 'pg_config' utility must be installed.
 Call 'make', followed by 'make install', to copy the compiled trigger into
 the database server.
 
+To make the trigger work, the configuration file 'ggz2phpbb.conf' from the
+directory setup/scripts needs to be copied to ggzd's configuration directory.
+Assuming that all of GGZ is installed into the same directory:
+
+cp ../../scripts/ggz2phpbb.conf `ggz-config -c`/ggzd
+
+Do not forget to edit this file!
 Afterwards, the two following functions must be called within the GGZ
 database:
 
 CREATE FUNCTION ggzsync() RETURNS trigger AS '$libdir/ggzsync_trigger.so' LANGUAGE C;
 CREATE TRIGGER tggzsync BEFORE INSERT OR UPDATE OR DELETE ON users FOR EACH ROW EXECUTE PROCEDURE ggzsync();
+
+The easiest for testing is a dummy phpBB users table within the same database which ggzd uses:
+
+CREATE TABLE phpbb_users (user_id int, username varchar(25), user_password varchar(32),
+   user_email varchar(255), user_from varchar(100), user_active smallint, user_level int, user_regdate int);
 
