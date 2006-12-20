@@ -1,6 +1,6 @@
 # Configuration file for the ggz2phpbb.pl script
 
-[General]
+[Forum]
 
 DatabaseHost = @PHPBBHOST@
 DatabaseName = @PHPBBNAME@

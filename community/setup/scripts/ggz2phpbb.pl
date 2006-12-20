@@ -40,10 +40,10 @@ if(!$phpbbcfg){
 ## connection parameters for phpBB
 
 my $phpbb_type = "Pg";
-my $phpbb_host = $phpbbcfg->val("General", "DatabaseHost");
-my $phpbb_name = $phpbbcfg->val("General", "DatabaseName");
-my $phpbb_user = $phpbbcfg->val("General", "DatabaseUsername");
-my $phpbb_pass = $phpbbcfg->val("General", "DatabasePassword");
+my $phpbb_host = $phpbbcfg->val("Forum", "DatabaseHost");
+my $phpbb_name = $phpbbcfg->val("Forum", "DatabaseName");
+my $phpbb_user = $phpbbcfg->val("Forum", "DatabaseUsername");
+my $phpbb_pass = $phpbbcfg->val("Forum", "DatabasePassword");
 
 ## connection parameters for GGZ
 
