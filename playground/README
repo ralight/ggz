@@ -25,7 +25,7 @@
 
 	Agrue:
 		A GGZ Real User Emulator
-		Simulates high load on servers. Needs porting to the new GGZ protocol.
+		Simulates high load on servers. Was recently ported and works again.
 
 	C-Base:
 		C programming taken to the next level. Some experimental functions
