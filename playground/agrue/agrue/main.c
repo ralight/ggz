@@ -45,6 +45,7 @@ static void termhandler(int signum)
 int main(int argc, char *argv[])
 {
 	char *opthost = NULL;
+	int optport = 5688;
 	int optinstances = 1;
 	int optfrequency = 0, optmobility = 0, optactivity = 10;
 	int i;
@@ -58,6 +59,7 @@ int main(int argc, char *argv[])
 		{"help", no_argument, 0, 'h'},
 		{"version", no_argument, 0, 'v'},
 		{"host", required_argument, 0, 'H'},
+		{"port", required_argument, 0, 'p'},
 		{"instances", required_argument, 0, 'i'},
 		{"frequency", required_argument, 0, 'f'},
 		{"mobility", required_argument, 0, 'm'},
@@ -69,7 +71,7 @@ int main(int argc, char *argv[])
 
 	while(1)
 	{
-		opt = getopt_long(argc, argv, "hvH:i:f:m:a:", options, &optindex);
+		opt = getopt_long(argc, argv, "hvH:i:f:m:a:p:", options, &optindex);
 		if(opt == -1) break;
 		switch(opt)
 		{
@@ -79,17 +81,25 @@ int main(int argc, char *argv[])
 				printf("Published under GNU GPL conditions\n\n");
 				printf("Recognized options:\n");
 				printf("[-H | --host     ]: Connect to this host\n");
-				printf("[-i | --instances]: Number of Agrue instances to launch (1-%i)\n",
-					MAX_AGRUES);
-				printf("[-f | --frequency]: Frequency of reconnection (0-100)\n");
-				printf("[-m | --mobility ]: Frequency of switching rooms (0-100)\n");
-				printf("[-a | --activity ]: Frequency of chatting (0-100)\n");
+				printf("[-p | --port     ]: Port on which ggzd runs (default: %i)\n",
+					optport);
+				printf("[-i | --instances]: Number of Agrue instances to launch (1-%i, default: %i)\n",
+					MAX_AGRUES, optinstances);
+				printf("[-f | --frequency]: Frequency of reconnection (0-100, default: %i)\n",
+					optfrequency);
+				printf("[-m | --mobility ]: Frequency of switching rooms (0-100, default: %i)\n",
+					optmobility);
+				printf("[-a | --activity ]: Frequency of chatting (0-100, default: %i)\n",
+					optactivity);
 				printf("[-v | --version  ]: Display version number\n");
 				printf("[-h | --help     ]: Show this help screen\n");
 				exit(0);
 				break;
 			case 'H':
 				opthost = optarg;
+				break;
+			case 'p':
+				optport = atoi(optarg);
 				break;
 			case 'v':
 				printf("Agrue version %s\n", AGRUE_VERSION);
@@ -117,6 +127,12 @@ int main(int argc, char *argv[])
 	if(!opthost)
 	{
 		fprintf(stderr, "Error: No host given.\n");
+		exit(-1);
+	}
+
+	if(!optport)
+	{
+		fprintf(stderr, "Error: Invalid port number.\n");
 		exit(-1);
 	}
 
@@ -181,7 +197,7 @@ int main(int argc, char *argv[])
 
 			printf("(main) [%s] created...\n", agrue->name);
 
-			net_connect(opthost, 5688, agrue);
+			net_connect(opthost, optport, agrue);
 			net_work(agrue);
 
 			fprintf(stderr, "(main) [%s] Error: Something happened, agrue killed!\n", agrue->name);
