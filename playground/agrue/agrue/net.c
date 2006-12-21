@@ -30,6 +30,7 @@ static GGZHookReturn net_hook_roomleave(unsigned int id, const void *ed, const v
 static GGZHookReturn net_hook_chat(unsigned int id, const void *ed, const void *ud);
 static GGZHookReturn net_hook_chatfail(unsigned int id, const void *ed, const void *ud);
 static GGZHookReturn net_hook_typelist(unsigned int id, const void *ed, const void *ud);
+static GGZHookReturn net_hook_logout(unsigned int id, const void *ed, const void *ud);
 
 static void net_internal_init(void)
 {
@@ -44,32 +45,51 @@ void net_connect(const char *host, int port, Agrue *agrue)
 {
 	GGZServer *server;
 
+	if(!agrue->server)
+	{
+		net_internal_init();
+
+		server = ggzcore_server_new();
+
+		agrue->save_host = strdup(host);
+		agrue->save_port = port;
+		agrue->server = server;
+	}
+	else
+	{
+		host = agrue->save_host;
+		port = agrue->save_port;
+		server = agrue->server;
+	}
+
 #ifdef AGRUE_DEBUG
 	printf("(net-debug) [%s] connect to %s:%i...\n", agrue->name, host, port);
 #endif
 
-	net_internal_init();
+	if(1 == 1)
+	{
+		/* FIXME: we shouldn't have to re-do everything on the server object */
+		/*        but we disconnect and reset because logout alone followed by */
+		/*        login doesn't seem to work */
 
-	server = ggzcore_server_new();
-
-	ggzcore_server_add_event_hook_full(server, GGZ_CONNECTED, net_hook_connect, agrue);
-	ggzcore_server_add_event_hook_full(server, GGZ_CONNECT_FAIL, net_hook_fail, agrue);
-	ggzcore_server_add_event_hook_full(server, GGZ_NEGOTIATED, net_hook_negotiate, agrue);
-	ggzcore_server_add_event_hook_full(server, GGZ_NEGOTIATE_FAIL, net_hook_fail, agrue);
-	ggzcore_server_add_event_hook_full(server, GGZ_LOGGED_IN, net_hook_login, agrue);
-	ggzcore_server_add_event_hook_full(server, GGZ_LOGIN_FAIL, net_hook_fail, agrue);
-	ggzcore_server_add_event_hook_full(server, GGZ_ENTERED, net_hook_enter, agrue);
-	ggzcore_server_add_event_hook_full(server, GGZ_ENTER_FAIL, net_hook_fail, agrue);
-	ggzcore_server_add_event_hook_full(server, GGZ_ROOM_LIST, net_hook_roomlist, agrue);
-	ggzcore_server_add_event_hook_full(server, GGZ_TYPE_LIST, net_hook_typelist, agrue);
-	ggzcore_server_add_event_hook_full(server, GGZ_PROTOCOL_ERROR, net_hook_fail, agrue);
-	ggzcore_server_add_event_hook_full(server, GGZ_NET_ERROR, net_hook_fail, agrue);
-	ggzcore_server_add_event_hook_full(server, GGZ_CHAT_FAIL, net_hook_chatfail, agrue);
+		ggzcore_server_add_event_hook_full(server, GGZ_CONNECTED, net_hook_connect, agrue);
+		ggzcore_server_add_event_hook_full(server, GGZ_CONNECT_FAIL, net_hook_fail, agrue);
+		ggzcore_server_add_event_hook_full(server, GGZ_NEGOTIATED, net_hook_negotiate, agrue);
+		ggzcore_server_add_event_hook_full(server, GGZ_NEGOTIATE_FAIL, net_hook_fail, agrue);
+		ggzcore_server_add_event_hook_full(server, GGZ_LOGGED_IN, net_hook_login, agrue);
+		ggzcore_server_add_event_hook_full(server, GGZ_LOGIN_FAIL, net_hook_fail, agrue);
+		ggzcore_server_add_event_hook_full(server, GGZ_ENTERED, net_hook_enter, agrue);
+		ggzcore_server_add_event_hook_full(server, GGZ_ENTER_FAIL, net_hook_fail, agrue);
+		ggzcore_server_add_event_hook_full(server, GGZ_ROOM_LIST, net_hook_roomlist, agrue);
+		ggzcore_server_add_event_hook_full(server, GGZ_TYPE_LIST, net_hook_typelist, agrue);
+		ggzcore_server_add_event_hook_full(server, GGZ_PROTOCOL_ERROR, net_hook_fail, agrue);
+		ggzcore_server_add_event_hook_full(server, GGZ_NET_ERROR, net_hook_fail, agrue);
+		ggzcore_server_add_event_hook_full(server, GGZ_CHAT_FAIL, net_hook_chatfail, agrue);
+		ggzcore_server_add_event_hook_full(server, GGZ_LOGOUT, net_hook_logout, agrue);
+	}
 
 	ggzcore_server_set_hostinfo(server, host, port, 0);
 	ggzcore_server_connect(server);
-
-	agrue->server = server;
 }
 
 void net_work(Agrue *agrue)
@@ -114,6 +134,18 @@ void net_work(Agrue *agrue)
 			{
 				room = ggzcore_server_get_cur_room(agrue->server);
 				ggzcore_room_chat(room, GGZ_CHAT_NORMAL, NULL, "Here be some text.");
+			}
+
+			if(random < agrue->frequency)
+			{
+				if(agrue->idle)
+				{
+#ifdef AGRUE_DEBUG
+					printf("(net-debug) [%s] ++ trigger logout\n", agrue->name);
+#endif
+					agrue->idle = 0;
+					ggzcore_server_logout(agrue->server);
+				}
 			}
 		}
 	}
@@ -199,7 +231,7 @@ GGZHookReturn net_hook_enter(unsigned int id, const void *ed, const void *ud)
 	GGZRoom *room;
 
 #ifdef AGRUE_DEBUG
-	printf("(net-debug) [%s] room joined; now list players\n", agrue->name);
+	printf("(net-debug) [%s] room joined; now list players (and go idle)...\n", agrue->name);
 #endif
 
 	room = ggzcore_server_get_cur_room(agrue->server);
@@ -209,6 +241,8 @@ GGZHookReturn net_hook_enter(unsigned int id, const void *ed, const void *ud)
 	ggzcore_room_add_event_hook_full(room, GGZ_ROOM_ENTER, net_hook_roomenter, ud);
 	ggzcore_room_add_event_hook_full(room, GGZ_ROOM_LEAVE, net_hook_roomleave, ud);
 	ggzcore_room_add_event_hook_full(room, GGZ_CHAT_EVENT, net_hook_chat, ud);
+
+	agrue->idle = 1;
 
 	return GGZ_HOOK_OK;
 }
@@ -266,6 +300,23 @@ GGZHookReturn net_hook_chatfail(unsigned int id, const void *ed, const void *ud)
 	fprintf(stderr, "(net) [%s] ERROR: Chat failed!\n", agrue->name);
 
 	agrue->finished = 1;
+
+	return GGZ_HOOK_OK;
+}
+
+GGZHookReturn net_hook_logout(unsigned int id, const void *ed, const void *ud)
+{
+	Agrue *agrue = (Agrue*)ud;
+
+#ifdef AGRUE_DEBUG
+	printf("(net-debug) [%s] logged out for relogin\n", agrue->name);
+#endif
+	ggzcore_server_disconnect(agrue->server);
+	ggzcore_server_reset(agrue->server);
+
+	net_connect(NULL, 0, agrue);
+
+	/*ggzcore_server_login(agrue->server);*/
 
 	return GGZ_HOOK_OK;
 }

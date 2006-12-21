@@ -19,6 +19,9 @@ struct agrue_t
 	int mobility;
 	int activity;
 	int finished;
+	int idle;
+	char *save_host;
+	int save_port;
 };
 typedef struct agrue_t Agrue;
 

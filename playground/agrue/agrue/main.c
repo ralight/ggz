@@ -165,6 +165,7 @@ int main(int argc, char *argv[])
 		if(pid == 0)
 		{
 			srand(getpid() * time(NULL));
+			setbuf(stdout, NULL);
 
 			snprintf(name, sizeof(name), "agrue-%i", i);
 
@@ -176,6 +177,7 @@ int main(int argc, char *argv[])
 			agrue->mobility = optmobility;
 			agrue->activity = optactivity;
 			agrue->finished = 0;
+			agrue->idle = 0;
 
 			printf("(main) [%s] created...\n", agrue->name);
 
