@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 8561 2006-08-31 08:00:24Z jdorje $
+ * $Id: client.c 8742 2006-12-22 06:06:05Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -25,6 +25,10 @@
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
+#endif
+
+#ifdef GGZ_SERVER
+#  define AI_CLIENT
 #endif
 
 #ifndef AI_CLIENT

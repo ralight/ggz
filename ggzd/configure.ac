@@ -1,5 +1,5 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 8649 2006-11-09 01:08:31Z josef $
+# $Id: configure.ac 8742 2006-12-22 06:06:05Z jdorje $
 # ================================
 
 AC_INIT([GGZ server], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
@@ -170,6 +170,8 @@ AC_SUBST(packagesrcdir)
 AC_SUBST(ggzdroomdir)
 AC_SUBST(ggzdgamedir)
 CPPFLAGS="$CPPFLAGS -DGGZDDATADIR=\\\"$ggzddatadir\\\""
+
+AC_DEFINE([GGZ_SERVER], 1, [Tell preprocessor we're compiling server code])
 
 dnl Which progs to compile
 dnl ======================
