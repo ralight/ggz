@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 8279 2006-06-27 07:29:39Z josef $
+ * $Id: room.c 8744 2006-12-23 06:27:16Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -430,8 +430,8 @@ GGZClientReqError room_join(GGZPlayer* player, const int room)
 	}
 
 	/* Check permissions to enter new room */
-	if(room != -1 && rooms[room].perms != 0 &&
-	   perms_check(player, rooms[room].perms) == PERMS_DENY) {
+	if (room != -1 && rooms[room].perms != 0
+	    && !perms_check(player, rooms[room].perms)) {
 		pthread_rwlock_unlock(&rooms[room].lock);
 		if(old_room != -1)
 			pthread_rwlock_unlock(&rooms[old_room].lock);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 05/04/2002 (code moved from control.c)
  * Desc: General utility functions for ggzd
- * $Id: util.h 6416 2004-11-17 22:02:24Z jdorje $
+ * $Id: util.h 8744 2006-12-23 06:27:16Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -28,6 +28,8 @@
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
+
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 
 /* Functionally similar to "mkdir -p". */
 void check_path(const char* full_path);

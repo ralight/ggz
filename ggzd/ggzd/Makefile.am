@@ -76,7 +76,7 @@ ggzd_LDADD = \
 	$(LIB_FAM) \
         $(LIB_PTHREADS)
 
-ggzduedit_SOURCES = ggzduedit.c perms.h
+ggzduedit_SOURCES = ggzduedit.c perms.h perms.c
 
 ggzduedit_CPPFLAGS = \
 	-I$(top_srcdir)/ggzd/database \

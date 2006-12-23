@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 8663 2006-11-20 09:48:56Z josef $
+ * $Id: login.c 8744 2006-12-23 06:27:16Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -190,7 +190,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 		/* Setup initial registered player info */
 		player->login_status = GGZ_LOGIN_REGISTERED;
 		player->uid = db_pe.user_id;
-		perms_init(player, &db_pe);
+		perms_init_from_db(&player->perms, &db_pe);
 		log_login_regd();
 	}
 	snprintf(player->name, sizeof(player->name), "%s", name);
@@ -254,7 +254,8 @@ static GGZReturn login_add_user(ggzdbPlayerEntry *db_entry,
 	else
 		strncpy(db_entry->email, "", sizeof(db_entry->name));
 	strncpy(db_entry->name, "", sizeof(db_entry->name));
-	db_entry->perms = PERMS_DEFAULT_SETTINGS;
+	perms_init_from_list(&db_entry->perms,
+			     perms_default, num_perms_default);
 	db_entry->last_login = time(NULL);
 	
 	/* If we tried to overwrite a value, then we know it existed */

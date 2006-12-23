@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 8521 2006-08-16 15:22:42Z josef $
+ * $Id: chat.c 8744 2006-12-23 06:27:16Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -71,8 +71,9 @@ GGZClientReqError chat_room_enqueue(int room, GGZChatType type,
 	/* A message to room -1 announces to all rooms */
 	if(room == -1) {
 		GGZClientReqError status = E_OK;
-		if(perms_check(sender, PERMS_CHAT_ANNOUNCE) != PERMS_ALLOW)
+		if (!perms_check(sender, PERMS_CHAT_ANNOUNCE)) {
 			return E_NO_PERMISSION;
+		}
 		roomnum = room_get_num_rooms();
 		for(i = 0; i < roomnum; i++) {
 			GGZClientReqError result;
@@ -160,7 +161,7 @@ GGZClientReqError chat_player_enqueue(const char* receiver, GGZChatType type,
 		return E_USR_LOOKUP;
 	}
 
-	rcvr_has_hostperm = perms_is_host(rcvr);
+	rcvr_has_hostperm = perms_is_host(rcvr->perms);
 
 	/* Get information about the sender */
 	pthread_rwlock_rdlock(&sender->lock);

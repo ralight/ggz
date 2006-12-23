@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 8567 2006-09-03 05:35:12Z jdorje $
+ * $Id: ggzduedit.c 8744 2006-12-23 06:27:16Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -39,7 +39,6 @@
 #include "ggzdb.h"
 #include "ggzdb_proto.h"
 #include "datatypes.h" /* For Options type */
-#define PERMS_DEFINE_STR_TABLE
 #include "perms.h"
 
 
@@ -106,38 +105,37 @@ static void list_players(void)
 
 static void show_all_perms(void)
 {
-	int i;
+	Perm p;
 
 	printf("Available permissions:\n");
-	for(i=0; i<9; i++) {
-		printf(" [%s] (bit %i)\n", perms_str_table[i], i);
+	for (p = 0; p < PERMS_COUNT; p++) {
+		printf(" [%32s] (bit %i)\n", perm_names[p], p);
 	}
 }
 
 
 static void show_perms(unsigned int perms, int add_spaces)
 {
-	int i;
-	unsigned int testbit=1;
 	int first=1;
 	int col=1;
+	Perm p;
 
-	for(i=0; i<32; i++) {
-		if((perms & testbit) == testbit) {
+	for (p = 0; p < PERMS_COUNT; p++) {
+		if (perms & (1 << p)) {
 			if(first) {
-				printf("%s", perms_str_table[i]);
+				printf("%32s", perm_names[p]);
 				first = 0;
 			} else if(col) {
-				printf("      %s\n", perms_str_table[i]);
+				printf("      %32s\n", perm_names[p]);
 				col = 0;
 			} else {
 				if(add_spaces)
 					printf("%*c", add_spaces, ' ');
-				printf("               %s", perms_str_table[i]);
+				printf("               %32s",
+				       perm_names[p]);
 				col = 1;
 			}
 		}
-		testbit <<= 1;
 	}
 
 	if(first)
@@ -146,15 +144,15 @@ static void show_perms(unsigned int perms, int add_spaces)
 		printf("\n");
 
 	printf("               -> roles: ");
-	if((perms & PERMS_ADMIN_MASK) == PERMS_ADMIN_MASK)
+	if (perms_is_admin(perms))
 		printf("[admin]");
-	if((perms & PERMS_HOST_MASK) == PERMS_HOST_MASK)
+	if (perms_is_host(perms))
 		printf("[host]");
-	if((perms & PERMS_DEFAULT_SETTINGS) == PERMS_DEFAULT_SETTINGS)
+	if (perms_is_set(perms, PERMS_ROOMS_LOGIN))
 		printf("[registered]");
-	if((perms & PERMS_DEFAULT_ANON) == PERMS_DEFAULT_ANON)
+	if (perms_is_set(perms, PERMS_NO_STATS))
 		printf("[guest]");
-	if(perms & PERMS_CHAT_BOT)
+	if (perms_is_set(perms, PERMS_CHAT_BOT))
 		printf("[chatbot]");
 	printf("\n");
 }
