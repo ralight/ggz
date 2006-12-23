@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 8744 2006-12-23 06:27:16Z jdorje $
+ * $Id: login.c 8746 2006-12-23 21:35:25Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -254,7 +254,7 @@ static GGZReturn login_add_user(ggzdbPlayerEntry *db_entry,
 	else
 		strncpy(db_entry->email, "", sizeof(db_entry->name));
 	strncpy(db_entry->name, "", sizeof(db_entry->name));
-	perms_init_from_list(&db_entry->perms,
+	ggz_perms_init_from_list(&db_entry->perms,
 			     perms_default, num_perms_default);
 	db_entry->last_login = time(NULL);
 	

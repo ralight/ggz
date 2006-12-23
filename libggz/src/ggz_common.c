@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 8547 2006-08-28 02:11:50Z jdorje $
+ * $Id: ggz_common.c 8746 2006-12-23 21:35:25Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -421,4 +421,72 @@ GGZClientReqError ggz_string_to_error(const char *str)
 		return E_USR_TAKEN;
 
 	return E_UNKNOWN;
+}
+
+
+bool ggz_perms_is_host(GGZPermset perms)
+{
+	return (ggz_perms_is_set(perms, GGZ_PERM_EDIT_TABLES)
+		|| ggz_perms_is_set(perms, GGZ_PERM_TABLE_PRIVMSG));
+}
+
+
+bool ggz_perms_is_bot(GGZPermset perms)
+{
+	return ggz_perms_is_set(perms, GGZ_PERM_CHAT_BOT);
+}
+
+
+bool ggz_perms_is_admin(GGZPermset perms)
+{
+	return (ggz_perms_is_set(perms, GGZ_PERM_ROOMS_ADMIN)
+		&& ggz_perms_is_set(perms, GGZ_PERM_CHAT_ANNOUNCE)
+		&& ggz_perms_is_set(perms, GGZ_PERM_EDIT_TABLES)
+		&& ggz_perms_is_set(perms, GGZ_PERM_TABLE_PRIVMSG));
+}
+
+
+void ggz_perms_init_from_list(GGZPermset *perms, GGZPerm *list, size_t listsz)
+{
+	int i;
+
+	*perms = 0;
+	for (i = 0; i < listsz; i++) {
+		*perms |= (1 << list[i]);
+	}
+}
+
+
+bool ggz_perms_is_set(GGZPermset perms, GGZPerm perm)
+{
+	return (perms & (1 << perm)) != 0;
+}
+
+
+const char *ggz_perm_get_name(GGZPerm perm)
+{
+	switch (perm) {
+	case GGZ_PERM_JOIN_TABLE:
+		return "PERMS_JOIN_TABLE";
+	case GGZ_PERM_LAUNCH_TABLE:
+		return "PERMS_LAUNCH_TABLE";
+	case GGZ_PERM_ROOMS_LOGIN:
+		return "PERMS_ROOMS_LOGIN";
+	case GGZ_PERM_ROOMS_ADMIN:
+		return "PERMS_ROOMS_ADMIN";
+	case GGZ_PERM_CHAT_ANNOUNCE:
+		return "PERMS_CHAT_ANNOUNCE";
+	case GGZ_PERM_CHAT_BOT:
+		return "PERMS_CHAT_BOT";
+	case GGZ_PERM_NO_STATS:
+		return "PERMS_NO_STATS";
+	case GGZ_PERM_EDIT_TABLES:
+		return "PERMS_EDIT_TABLES";
+	case GGZ_PERM_TABLE_PRIVMSG:
+		return "PERMS_TABLE_PRIVMSG";
+	case GGZ_PERM_COUNT:
+		break;
+	}
+
+	return "PERM_UNKNOWN";
 }

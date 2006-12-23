@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 8744 2006-12-23 06:27:16Z jdorje $
+ * $Id: ggzduedit.c 8746 2006-12-23 21:35:25Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -105,34 +105,35 @@ static void list_players(void)
 
 static void show_all_perms(void)
 {
-	Perm p;
+	GGZPerm p;
 
 	printf("Available permissions:\n");
-	for (p = 0; p < PERMS_COUNT; p++) {
-		printf(" [%32s] (bit %i)\n", perm_names[p], p);
+	for (p = 0; p < GGZ_PERM_COUNT; p++) {
+		printf(" [%32s] (bit %i)\n", ggz_perm_get_name(p), p);
 	}
 }
 
 
-static void show_perms(unsigned int perms, int add_spaces)
+static void show_perms(GGZPermset perms, int add_spaces)
 {
 	int first=1;
 	int col=1;
-	Perm p;
+	GGZPerm p;
 
-	for (p = 0; p < PERMS_COUNT; p++) {
-		if (perms & (1 << p)) {
+	for (p = 0; p < GGZ_PERM_COUNT; p++) {
+		if (ggz_perms_is_set(perms, p)) {
+			const char *name = ggz_perm_get_name(p);
+
 			if(first) {
-				printf("%32s", perm_names[p]);
+				printf("%24s", name);
 				first = 0;
 			} else if(col) {
-				printf("      %32s\n", perm_names[p]);
+				printf("        %24s\n", name);
 				col = 0;
 			} else {
 				if(add_spaces)
 					printf("%*c", add_spaces, ' ');
-				printf("               %32s",
-				       perm_names[p]);
+				printf("               %24s", name);
 				col = 1;
 			}
 		}
@@ -144,15 +145,15 @@ static void show_perms(unsigned int perms, int add_spaces)
 		printf("\n");
 
 	printf("               -> roles: ");
-	if (perms_is_admin(perms))
+	if (ggz_perms_is_admin(perms))
 		printf("[admin]");
-	if (perms_is_host(perms))
+	if (ggz_perms_is_host(perms))
 		printf("[host]");
-	if (perms_is_set(perms, PERMS_ROOMS_LOGIN))
+	if (ggz_perms_is_set(perms, GGZ_PERM_ROOMS_LOGIN))
 		printf("[registered]");
-	if (perms_is_set(perms, PERMS_NO_STATS))
+	if (ggz_perms_is_set(perms, GGZ_PERM_NO_STATS))
 		printf("[guest]");
-	if (perms_is_set(perms, PERMS_CHAT_BOT))
+	if (ggz_perms_is_set(perms, GGZ_PERM_CHAT_BOT))
 		printf("[chatbot]");
 	printf("\n");
 }

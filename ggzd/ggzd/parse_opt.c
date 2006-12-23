@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 8744 2006-12-23 06:27:16Z jdorje $
+ * $Id: parse_opt.c 8746 2006-12-23 21:35:25Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -670,7 +670,7 @@ static void parse_game(char *name, char *dir)
 			snprintf(db_pe.handle, sizeof(db_pe.handle), "%s",
 				game_info.named_bots[i][0]);
 			db_status = ggzdb_player_get(&db_pe);
-			if ((db_pe.perms & (1 << PERMS_CHAT_BOT))
+			if ((db_pe.perms & (1 << GGZ_PERM_CHAT_BOT))
 			    && (db_status != GGZDB_ERR_NOTFOUND)) {
 				dbg_msg(GGZ_DBG_CONFIGURATION,
 					"named_bot <%s> registered already.",
@@ -679,9 +679,9 @@ static void parse_game(char *name, char *dir)
 			}
 
 			db_pe.user_id = ggzdb_player_next_uid();
-			perms_init_from_list(&db_pe.perms,
+			ggz_perms_init_from_list(&db_pe.perms,
 					     perms_default, num_perms_default);
-			db_pe.perms |= (1 << PERMS_CHAT_BOT);
+			db_pe.perms |= (1 << GGZ_PERM_CHAT_BOT);
 			db_pe.last_login = time(NULL);
 			snprintf(db_pe.handle, sizeof(db_pe.handle), "%s",
 				game_info.named_bots[i][0]);
@@ -840,9 +840,9 @@ static void parse_room(char *name, char *dir, int announce)
 				      "EntryRestriction", NULL);
 	if(strval) {
 		if(!strcasecmp(strval, "Admin"))
-			rooms[num].perms = 1 << PERMS_ROOMS_ADMIN;
+			rooms[num].perms = 1 << GGZ_PERM_ROOMS_ADMIN;
 		else if(!strcasecmp(strval, "Registered"))
-			rooms[num].perms = 1 << PERMS_ROOMS_LOGIN;
+			rooms[num].perms = 1 << GGZ_PERM_ROOMS_LOGIN;
 		else if(!strcasecmp(strval, "None"))
 			rooms[num].perms = 0;
 		else

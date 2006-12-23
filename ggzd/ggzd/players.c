@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 8744 2006-12-23 06:27:16Z jdorje $
+ * $Id: players.c 8746 2006-12-23 21:35:25Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -103,7 +103,7 @@ GGZPlayer* player_new(GGZClient *client)
 	player->transit = false;
 	player->room = -1;
 	player->login_status = GGZ_LOGIN_NONE;
-	perms_init_from_list(&player->perms,
+	ggz_perms_init_from_list(&player->perms,
 			     perms_default_anon, num_perms_default_anon);
 	strcpy(player->name, "<none>");
 	player->room_events = NULL;
@@ -290,13 +290,13 @@ GGZPlayerType player_get_type(GGZPlayer *player)
 
 	if (player->login_status == GGZ_LOGIN_ANON) {
 		type = GGZ_PLAYER_GUEST;
-	} else if (perms_is_bot(player->perms)) {
+	} else if (ggz_perms_is_bot(player->perms)) {
 		/* Check for a bot first, because bots may have admin
 		 * capabilities as well */
 		type = GGZ_PLAYER_BOT;
-	} else if (perms_is_admin(player->perms)) {
+	} else if (ggz_perms_is_admin(player->perms)) {
 		type = GGZ_PLAYER_ADMIN;
-	} else if (perms_is_host(player->perms)) {
+	} else if (ggz_perms_is_host(player->perms)) {
 		type = GGZ_PLAYER_HOST;
 	} else {
 		type = GGZ_PLAYER_NORMAL;
@@ -331,7 +331,7 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 	dbg_msg(GGZ_DBG_TABLE, "Handling table launch for %s", player->name);
 
 	/* Check permissions */
-	if (!perms_check(player, PERMS_LAUNCH_TABLE)) {
+	if (!perms_check(player, GGZ_PERM_LAUNCH_TABLE)) {
 		dbg_msg(GGZ_DBG_TABLE, "%s insufficient perms to launch",
 			player->name);
 		if(net_send_table_launch(player->client->net,
@@ -446,7 +446,7 @@ static GGZTable *check_table_perms(GGZPlayer *player,
 
 	/* perms_check does a read-lock on the player.  This will succeed
 	 * since we are the player thread. */
-	if (perms_check(player, PERMS_EDIT_TABLES)) {
+	if (perms_check(player, GGZ_PERM_EDIT_TABLES)) {
 		return table;
 	}
 
@@ -627,7 +627,7 @@ GGZPlayerHandlerStatus player_table_join(GGZPlayer* player,
 		status = E_AT_TABLE;
 	else if (player->transit)
 		status = E_IN_TRANSIT;
-	else if (!perms_check(player, PERMS_JOIN_TABLE))
+	else if (!perms_check(player, GGZ_PERM_JOIN_TABLE))
 		status = E_NO_PERMISSION;
 	else if (player->game_fd < 0) {
 		/* You have to establish the channel (direct connection)
@@ -663,7 +663,7 @@ GGZPlayerHandlerStatus player_table_join_spectator(GGZPlayer* player, int index)
 		status = E_AT_TABLE;
 	else if (player->transit)
 		status = E_IN_TRANSIT;
-	else if (!perms_check(player, PERMS_JOIN_TABLE))
+	else if (!perms_check(player, GGZ_PERM_JOIN_TABLE))
 		status = E_NO_PERMISSION;
 	else /* Send a join event to the table */
 		status = player_transit(player, GGZ_TRANSIT_JOIN_SPECTATOR,
@@ -1422,7 +1422,7 @@ GGZPlayerHandlerStatus player_admin(GGZPlayer* player, GGZAdminType type,
 	}
 
 	/* Only hosts and admins can do admin actions */
-	if (!perms_is_host(player->perms)) {
+	if (!ggz_perms_is_host(player->perms)) {
 		dbg_msg(GGZ_DBG_CHAT, "%s is no host!", player->name);
 		if (net_send_admin_result(player->client->net, E_NO_PERMISSION) < 0)
 			return GGZ_REQ_DISCONNECT;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/23/01
  * Desc: Functions for dealing with user permissions
- * $Id: perms.c 8744 2006-12-23 06:27:16Z jdorje $
+ * $Id: perms.c 8746 2006-12-23 21:35:25Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -33,65 +33,35 @@
 #include "perms.h"
 #include "players.h"
 
-void perms_init_from_db(Permset *perms, ggzdbPlayerEntry *pe)
+void perms_init_from_db(GGZPermset *perms, ggzdbPlayerEntry *pe)
 {
 	*perms = pe->perms;
 }
 
 
-void perms_init_from_list(Permset *perms, Perm *list, size_t listsz)
-{
-	int i;
-
-	*perms = 0;
-	for (i = 0; i < listsz; i++) {
-		*perms |= (1 << list[i]);
-	}
-}
-
-
-bool perms_is_set(Permset perms, Perm perm)
-{
-	return (perms & (1 << perm)) != 0;
-}
-
-
-bool perms_check(GGZPlayer *player, Perm perm)
+bool perms_check(GGZPlayer *player, GGZPerm perm)
 {
 	bool result;
 
-	if (perm < 0 || perm >= PERMS_COUNT) {
+	if (perm < 0 || perm >= GGZ_PERM_COUNT) {
 	  err_msg("Invalid perm %d.", perm);
 	  return false;
 	}
 
 	pthread_rwlock_rdlock(&player->lock);
-	result = perms_is_set(player->perms, perm);
+	result = ggz_perms_is_set(player->perms, perm);
 	pthread_rwlock_unlock(&player->lock);
 
 	return result;
 }
 
-char *perm_names[PERMS_COUNT] = {
-	"PERMS_JOIN_TABLE",		/* 00000001 */
-	"PERMS_LAUNCH_TABLE",
-	"PERMS_ROOMS_LOGIN",
-	"PERMS_ROOMS_ADMIN",
-	"PERMS_CHAT_ANNOUNCE",		/* 00000010 */
-	"PERMS_CHAT_BOT",
-	"PERMS_NO_STATS",
-	"PERMS_EDIT_TABLES",
-	"PERMS_TABLE_PRIVMSG"		/* 00000100 */
-};
-
-
-Perm perms_default_anon[] = {
-  PERMS_JOIN_TABLE, PERMS_LAUNCH_TABLE, PERMS_NO_STATS
+GGZPerm perms_default_anon[] = {
+  GGZ_PERM_JOIN_TABLE, GGZ_PERM_LAUNCH_TABLE, GGZ_PERM_NO_STATS
 };
 
 /* Permissions for newly-registered user. */
-Perm perms_default[] = {
-  PERMS_JOIN_TABLE, PERMS_LAUNCH_TABLE, PERMS_ROOMS_LOGIN
+GGZPerm perms_default[] = {
+  GGZ_PERM_JOIN_TABLE, GGZ_PERM_LAUNCH_TABLE, GGZ_PERM_ROOMS_LOGIN
 };
 
 const int num_perms_default_anon = ARRAY_SIZE(perms_default_anon);

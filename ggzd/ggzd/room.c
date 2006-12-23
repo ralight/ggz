@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 8744 2006-12-23 06:27:16Z jdorje $
+ * $Id: room.c 8746 2006-12-23 21:35:25Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -356,7 +356,7 @@ static void update_room_stats(GGZPlayer *player, int game_type)
 
 	/* Don't show stats for guest players at all.  Later it may be
 	   that some games will want to let guest players have stats. */
-	if (!perms_check(player, PERMS_NO_STATS)
+	if (!perms_check(player, GGZ_PERM_NO_STATS)
 	    && game_type >= 0) {
 		pthread_rwlock_rdlock(&game_types[game_type].lock);
 		strcpy(stats.game, game_types[game_type].name);

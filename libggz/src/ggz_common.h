@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 8547 2006-08-28 02:11:50Z jdorje $
+ * $Id: ggz_common.h 8746 2006-12-23 21:35:25Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -28,6 +28,9 @@
 
 #ifndef __GGZ_COMMON_H__
 #define __GGZ_COMMON_H__
+
+#include <stdbool.h>
+#include <sys/types.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -364,6 +367,50 @@ const char *ggz_error_to_string(GGZClientReqError err);
  */
 GGZClientReqError ggz_string_to_error(const char *err_str);
 
+
+
+/**
+ * @defgroup perms Player permissions
+ *
+ * These definitions and functions provide a set of permissions that GGZ
+ * players may have.
+ */
+
+/** @brief Boolean permissions for GGZ players. */
+typedef enum {
+	GGZ_PERM_JOIN_TABLE,	/**< Can join a table */
+	GGZ_PERM_LAUNCH_TABLE,	/**< Can launch a new table */
+	GGZ_PERM_ROOMS_LOGIN,	/**< Can enter login-only rooms */
+	GGZ_PERM_ROOMS_ADMIN,	/**< Can enter admin-only rooms */
+	GGZ_PERM_CHAT_ANNOUNCE,	/**< Can make announcements */
+	GGZ_PERM_CHAT_BOT,	/**< Player is a known bot */
+	GGZ_PERM_NO_STATS,	/**< No stats for this player. */
+	GGZ_PERM_EDIT_TABLES,	/**< Can edit tables. */
+	GGZ_PERM_TABLE_PRIVMSG,	/**< Can send private messages at a table */
+	GGZ_PERM_COUNT		/**< Placeholder */
+} GGZPerm;
+
+/** @brief A permission set (bitfield) contains all perms for one player. */
+typedef unsigned int GGZPermset;
+
+/** @brief Return true if the perm set qualifies the player as a 'host' */
+bool ggz_perms_is_host(GGZPermset perms);
+
+/** @brief Return true if the perm set qualifies the player as a 'bot' */
+bool ggz_perms_is_bot(GGZPermset perms);
+
+/** @brief Return true if the perm set qualifies the player as an 'admin' */
+bool ggz_perms_is_admin(GGZPermset perms);
+
+/** @brief Initialize the perm set from the given list array. */
+void ggz_perms_init_from_list(GGZPermset *perms,
+			      GGZPerm *list, size_t listsz);
+
+/** @brief Return true if the permissions is in the set. */
+bool ggz_perms_is_set(GGZPermset perms, GGZPerm perm);
+
+/** @brief Return a text name for the permission. */
+const char *ggz_perm_get_name(GGZPerm perm);
 
 #ifdef __cplusplus
 }

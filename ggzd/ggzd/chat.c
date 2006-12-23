@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 8744 2006-12-23 06:27:16Z jdorje $
+ * $Id: chat.c 8746 2006-12-23 21:35:25Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -71,7 +71,7 @@ GGZClientReqError chat_room_enqueue(int room, GGZChatType type,
 	/* A message to room -1 announces to all rooms */
 	if(room == -1) {
 		GGZClientReqError status = E_OK;
-		if (!perms_check(sender, PERMS_CHAT_ANNOUNCE)) {
+		if (!perms_check(sender, GGZ_PERM_CHAT_ANNOUNCE)) {
 			return E_NO_PERMISSION;
 		}
 		roomnum = room_get_num_rooms();
@@ -161,7 +161,7 @@ GGZClientReqError chat_player_enqueue(const char* receiver, GGZChatType type,
 		return E_USR_LOOKUP;
 	}
 
-	rcvr_has_hostperm = perms_is_host(rcvr->perms);
+	rcvr_has_hostperm = ggz_perms_is_host(rcvr->perms);
 
 	/* Get information about the sender */
 	pthread_rwlock_rdlock(&sender->lock);
@@ -190,8 +190,8 @@ GGZClientReqError chat_player_enqueue(const char* receiver, GGZChatType type,
 	}
 
 	/* Truth table for whether private messages are allowed.
-	 * Perm = has PERMS_TABLE_PRIVMSG
-	 * NoPerm = doesn't have PERMS_TABLE_MSG
+	 * Perm = has GGZ_PERM_TABLE_PRIVMSG
+	 * NoPerm = doesn't have GGZ_PERM_TABLE_MSG
 	 * At = At a table
 	 * NotAt = Not at a table
 	 *
@@ -201,14 +201,14 @@ GGZClientReqError chat_player_enqueue(const char* receiver, GGZChatType type,
 	 *            NoPerm,NotAt     Y          Y           Y          N
 	 *            NoPerm,At        Y          Y           N          N
 	 *
-	 * This basically means that people with PERMS_TABLE_PRIVMSG can
+	 * This basically means that people with GGZ_PERM_TABLE_PRIVMSG can
 	 * privmsg with anybody and have them privmsg back as well.
 	 * Without being able to privmsg to/from normal players at a table
 	 * it would make this permission pretty useless.
 	 */
 
-	sender_has_perm = perms_check(sender, PERMS_TABLE_PRIVMSG);
-	rcvr_has_perm = perms_check(rcvr, PERMS_TABLE_PRIVMSG);
+	sender_has_perm = perms_check(sender, GGZ_PERM_TABLE_PRIVMSG);
+	rcvr_has_perm = perms_check(rcvr, GGZ_PERM_TABLE_PRIVMSG);
 
 	if ( (!sender_has_perm && !rcvr_has_perm && rcvr_at_table) ||
 					(!rcvr_has_perm && !sender_has_perm && sender_at_table)){
