@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 8745 2006-12-23 19:50:30Z jdorje $
+
 SUBDIRS = database meta
 
 EXTRA_DIST = ggzd.conf.example.in ggzd.test.in ggzd.motd entry.room
@@ -76,7 +79,9 @@ ggzd_LDADD = \
 	$(LIB_FAM) \
         $(LIB_PTHREADS)
 
-ggzduedit_SOURCES = ggzduedit.c perms.h perms.c
+ggzduedit_SOURCES =	ggzdb.h ggzdb_proto.h datatypes.h	\
+			ggzduedit.c 				\
+			perms.h perms.c
 
 ggzduedit_CPPFLAGS = \
 	-I$(top_srcdir)/ggzd/database \
