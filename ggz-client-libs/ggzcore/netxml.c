@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 8547 2006-08-28 02:11:50Z jdorje $
+ * $Id: netxml.c 8747 2006-12-24 09:18:47Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -2093,6 +2093,7 @@ static void _ggzcore_net_handle_player(GGZNet * net,
 	GGZRoom *room;
 	const char *name, *str_type;
 	int table, lag;
+	GGZPermset perms;
 	GGZXMLElement *parent;
 	const char *parent_tag, *parent_type;
 	int wins, losses, ties, forfeits, rating, ranking, highscore;
@@ -2107,13 +2108,14 @@ static void _ggzcore_net_handle_player(GGZNet * net,
 	name = ATTR(element, "ID");
 	table = str_to_int(ATTR(element, "TABLE"), -1);
 	lag = str_to_int(ATTR(element, "LAG"), 0);
+	perms = str_to_int(ATTR(element, "PERMS"), 0);
 
 	/* Set player's type */
 	type = ggz_string_to_playertype(str_type);
 
 	/* Set up GGZPlayer object */
 	ggz_player = _ggzcore_player_new();
-	_ggzcore_player_init(ggz_player, name, room, table, type, lag);
+	_ggzcore_player_init(ggz_player, name, room, table, type, perms, lag);
 
 	/* FIXME: should these be initialized through an accessor function? */
 	wins = str_to_int(ATTR(element, "WINS"), NO_RECORD);
@@ -2554,8 +2556,9 @@ static int str_to_int(const char *str, int dflt)
 {
 	int val;
 
-	if (!str || sscanf(str, "%d", &val) < 1)
-		return dflt;
+	if (!str) return dflt;
+	if (sscanf(str, "0x%x", &val) == 1) return val;
+	if (sscanf(str, "%d", &val) == 1) return val;
 
-	return val;
+	return dflt;
 }

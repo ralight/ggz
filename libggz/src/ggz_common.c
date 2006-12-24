@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 8746 2006-12-23 21:35:25Z jdorje $
+ * $Id: ggz_common.c 8747 2006-12-24 09:18:47Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -467,26 +467,26 @@ const char *ggz_perm_get_name(GGZPerm perm)
 {
 	switch (perm) {
 	case GGZ_PERM_JOIN_TABLE:
-		return "PERMS_JOIN_TABLE";
+		return "JOIN_TABLE";
 	case GGZ_PERM_LAUNCH_TABLE:
-		return "PERMS_LAUNCH_TABLE";
+		return "LAUNCH_TABLE";
 	case GGZ_PERM_ROOMS_LOGIN:
-		return "PERMS_ROOMS_LOGIN";
+		return "ROOMS_LOGIN";
 	case GGZ_PERM_ROOMS_ADMIN:
-		return "PERMS_ROOMS_ADMIN";
+		return "ROOMS_ADMIN";
 	case GGZ_PERM_CHAT_ANNOUNCE:
-		return "PERMS_CHAT_ANNOUNCE";
+		return "CHAT_ANNOUNCE";
 	case GGZ_PERM_CHAT_BOT:
-		return "PERMS_CHAT_BOT";
+		return "CHAT_BOT";
 	case GGZ_PERM_NO_STATS:
-		return "PERMS_NO_STATS";
+		return "NO_STATS";
 	case GGZ_PERM_EDIT_TABLES:
-		return "PERMS_EDIT_TABLES";
+		return "EDIT_TABLES";
 	case GGZ_PERM_TABLE_PRIVMSG:
-		return "PERMS_TABLE_PRIVMSG";
+		return "TABLE_PRIVMSG";
 	case GGZ_PERM_COUNT:
 		break;
 	}
 
-	return "PERM_UNKNOWN";
+	return "(UNKNOWN)";
 }

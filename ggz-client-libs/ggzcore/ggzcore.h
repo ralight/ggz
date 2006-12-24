@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 8536 2006-08-26 03:20:06Z jdorje $
+ * $Id: ggzcore.h 8747 2006-12-24 09:18:47Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -1157,6 +1157,9 @@ GGZRoom *ggzcore_player_get_room(const GGZPlayer *player);
 
 /** @brief Return the player's table, or NULL if none */
 GGZTable* ggzcore_player_get_table(const GGZPlayer *player);
+
+/** @brief Return true iff the player has this permission. */
+bool ggzcore_player_has_perm(const GGZPlayer *player, GGZPerm perm);
 
 /** @brief Return the player's lag class (1..5) */
 int ggzcore_player_get_lag(const GGZPlayer *player);

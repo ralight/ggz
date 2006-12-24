@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 8533 2006-08-26 01:26:29Z jdorje $
+ * $Id: room.c 8747 2006-12-24 09:18:47Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -203,7 +203,7 @@ GGZPlayer *_ggzcore_room_get_player_by_name(const GGZRoom * room,
 
 	if (room->players) {
 		player = _ggzcore_player_new();
-		_ggzcore_player_init(player, name, NULL, -1, 0, 0);
+		_ggzcore_player_init(player, name, NULL, -1, 0, 0, 0);
 		entry = ggz_list_search(room->players, player);
 
 		if (entry)
@@ -668,6 +668,7 @@ void _ggzcore_room_add_player(GGZRoom * room, GGZPlayer * pdata,
 	_ggzcore_player_init(player, ggzcore_player_get_name(pdata),
 			     _ggzcore_player_get_room(pdata),
 			     -1, ggzcore_player_get_type(pdata),
+			     _ggzcore_player_get_perms(pdata),
 			     ggzcore_player_get_lag(pdata));
 	_ggzcore_player_init_stats(player, wins, losses, ties, forfeits,
 				   rating, ranking, highscore);
@@ -701,7 +702,7 @@ void _ggzcore_room_remove_player(GGZRoom * room, const char *name,
 	/* Only try to delete if the list exists */
 	if (room->players) {
 		GGZPlayer *player = _ggzcore_player_new();
-		_ggzcore_player_init(player, name, NULL, -1, 0, 0);
+		_ggzcore_player_init(player, name, NULL, -1, 0, 0, 0);
 		entry = ggz_list_search(room->players, player);
 		if (entry) {
 			GGZServer *server = _ggzcore_room_get_server(room);

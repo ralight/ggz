@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 8476 2006-08-05 10:14:29Z josef $
+ * $Id: net.c 8747 2006-12-24 09:18:47Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -534,10 +534,11 @@ GGZReturn net_send_player(GGZNetIO *net, GGZPlayer *player)
 
 	/* The caller should ensure that these values are safe to access... */
 	ret = _net_send_line(net, 
-			      "<PLAYER ID='%s' TYPE='%s' TABLE='%d' "
-			      "LAG='%d'%s/>",
-			      player_name_quoted, type_desc, player->table,
-			      player->lag_class, stats);
+			     "<PLAYER ID='%s' TYPE='%s' TABLE='%d' "
+			     "PERMS='0x%08X' LAG='%d'%s/>",
+			     player_name_quoted, type_desc, player->table,
+			     player->perms,
+			     player->lag_class, stats);
 
 	ggz_free(player_name_quoted);
 

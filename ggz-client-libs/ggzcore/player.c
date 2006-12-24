@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: player.c 8183 2006-06-12 23:15:12Z jdorje $
+ * $Id: player.c 8747 2006-12-24 09:18:47Z jdorje $
  *
  * This fils contains functions for handling players
  *
@@ -54,6 +54,9 @@ struct _GGZPlayer {
 	/* Server ID of table player is at */
 	int table;
 
+	/* Player permissions */
+	GGZPermset perms;
+
 	/* Lag of the player */
 	int lag;
 
@@ -103,6 +106,12 @@ GGZTable *ggzcore_player_get_table(const GGZPlayer * player)
 	return _ggzcore_player_get_table(player);
 }
 
+bool ggzcore_player_has_perm(const GGZPlayer *player, GGZPerm perm)
+{
+	if (!player)
+		return false;
+	return _ggzcore_player_has_perm(player, perm);
+}
 
 int ggzcore_player_get_lag(const GGZPlayer * player)
 {
@@ -159,6 +168,8 @@ GGZPlayer *_ggzcore_player_new(void)
 	/* Set to invalid table */
 	player->table = -1;
 
+	player->perms = 0;
+
 	/* Assume no lag */
 	player->lag = -1;
 
@@ -178,12 +189,15 @@ void _ggzcore_player_init(GGZPlayer * player,
 			  const char *name,
 			  GGZRoom * room,
 			  const int table,
-			  const GGZPlayerType type, const int lag)
+			  const GGZPlayerType type,
+			  const GGZPermset perms,
+			  const int lag)
 {
 	player->name = ggz_strdup(name);
 	player->room = room;
 	player->table = table;
 	player->type = type;
+	player->perms = perms;
 	player->lag = lag;
 }
 
@@ -248,6 +262,18 @@ GGZTable *_ggzcore_player_get_table(const GGZPlayer * player)
 		return NULL;
 
 	return ggzcore_room_get_table_by_id(player->room, player->table);
+}
+
+
+GGZPermset _ggzcore_player_get_perms(const GGZPlayer * player)
+{
+	return player->perms;
+}
+
+
+bool _ggzcore_player_has_perm(const GGZPlayer *player, GGZPerm perm)
+{
+	return ggz_perms_is_set(player->perms, perm);
 }
 
 
@@ -333,6 +359,7 @@ int _ggzcore_player_compare(const void *p, const void *q)
 }
 
 
+#if 0 /* deprecated */
 void *_ggzcore_player_create(void *p)
 {
 	GGZPlayer *new, *src = p;
@@ -343,6 +370,7 @@ void *_ggzcore_player_create(void *p)
 
 	return (void *)new;
 }
+#endif
 
 
 void _ggzcore_player_destroy(void *p)

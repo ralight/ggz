@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: player.h 7889 2006-03-07 09:57:32Z josef $
+ * $Id: player.h 8747 2006-12-24 09:18:47Z jdorje $
  *
  * This fils contains functions for handling players
  *
@@ -40,7 +40,9 @@ void _ggzcore_player_init(GGZPlayer * player,
 			  const char *name,
 			  GGZRoom * room,
 			  const int table,
-			  const GGZPlayerType type, const int lag);
+			  const GGZPlayerType type,
+			  const GGZPermset perms,
+			  const int lag);
 void _ggzcore_player_init_stats(GGZPlayer * player,
 				int wins, int losses, int ties,
 				int forfeits, int rating, int ranking,
@@ -53,6 +55,8 @@ void _ggzcore_player_set_lag(GGZPlayer * player, const int lag);
 char *_ggzcore_player_get_name(const GGZPlayer * player);
 GGZPlayerType _ggzcore_player_get_type(const GGZPlayer * player);
 struct _GGZTable *_ggzcore_player_get_table(const GGZPlayer * player);
+GGZPermset _ggzcore_player_get_perms(const GGZPlayer * player);
+bool _ggzcore_player_has_perm(const GGZPlayer *player, GGZPerm perm);
 int _ggzcore_player_get_lag(const GGZPlayer * player);
 GGZRoom *_ggzcore_player_get_room(const GGZPlayer * player);
 

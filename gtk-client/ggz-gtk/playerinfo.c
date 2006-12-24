@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 8532 2006-08-25 23:28:47Z jdorje $
+ * $Id: playerinfo.c 8747 2006-12-24 09:18:47Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -88,6 +88,8 @@ static GtkWidget *create_dlg_info(GGZServer *server)
 	GtkWidget *table;
 	GtkWidget *type_label;
 	GtkWidget *type;
+	GtkWidget *perms_label;
+	GtkWidget *perms;
 	GtkWidget *record_label;
 	GtkWidget *record;
 	GtkWidget *rating_label;
@@ -109,7 +111,7 @@ static GtkWidget *create_dlg_info(GGZServer *server)
 	g_object_set_data(G_OBJECT(dlg_info), "dialog_vbox", dialog_vbox);
 	gtk_widget_show(dialog_vbox);
 
-	display_table = gtk_table_new(8, 3, FALSE);
+	display_table = gtk_table_new(9, 3, FALSE);
 	gtk_widget_ref(display_table);
 	g_object_set_data_full(G_OBJECT(dlg_info), "display_table",
 			       display_table,
@@ -183,6 +185,18 @@ static GtkWidget *create_dlg_info(GGZServer *server)
 			 2, 3, 2, 3, GTK_EXPAND, 0, 0, 0);
 	gtk_label_set_line_wrap(GTK_LABEL(type), TRUE);
 
+	/* Add permissions label */
+	perms_label = gtk_label_new(_("Permissions:"));
+	gtk_widget_show(perms_label);
+	gtk_table_attach(GTK_TABLE(display_table), perms_label,
+			 1, 2, 3, 4, 0, 0, 0, 0);
+	perms = gtk_label_new("");
+	gtk_widget_show(perms);
+	gtk_table_attach(GTK_TABLE(display_table), perms,
+			 2, 3, 3, 4, GTK_EXPAND, 0, 0, 0);
+	g_object_set_data(G_OBJECT(dlg_info), "perms", perms);
+	gtk_label_set_line_wrap(GTK_LABEL(perms), TRUE);
+
 	/* Add "Record" label */
 	record_label = gtk_label_new(_("Record:"));
 	gtk_widget_ref(record_label);
@@ -191,7 +205,7 @@ static GtkWidget *create_dlg_info(GGZServer *server)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	/* gtk_widget_show is called later. */
 	gtk_table_attach(GTK_TABLE(display_table), record_label,
-			 1, 2, 3, 4, 0, 0, 0, 0);
+			 1, 2, 4, 5, 0, 0, 0, 0);
 
 	record = gtk_label_new("");
 	gtk_widget_ref(record);
@@ -199,7 +213,7 @@ static GtkWidget *create_dlg_info(GGZServer *server)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	/* gtk_widget_show is called later. */
 	gtk_table_attach(GTK_TABLE(display_table), record,
-			 2, 3, 3, 4, GTK_EXPAND, 0, 0, 0);
+			 2, 3, 4, 5, GTK_EXPAND, 0, 0, 0);
 
 	/* Add "Rating" label */
 	rating_label = gtk_label_new(_("Rating:"));
@@ -209,7 +223,7 @@ static GtkWidget *create_dlg_info(GGZServer *server)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	/* gtk_widget_show is called later. */
 	gtk_table_attach(GTK_TABLE(display_table), rating_label,
-			 1, 2, 4, 5, 0, 0, 0, 0);
+			 1, 2, 5, 6, 0, 0, 0, 0);
 
 	rating = gtk_label_new("");
 	gtk_widget_ref(rating);
@@ -217,7 +231,7 @@ static GtkWidget *create_dlg_info(GGZServer *server)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	/* gtk_widget_show is called later. */
 	gtk_table_attach(GTK_TABLE(display_table), rating,
-			 2, 3, 4, 5, GTK_EXPAND, 0, 0, 0);
+			 2, 3, 5, 6, GTK_EXPAND, 0, 0, 0);
 
 	/* Add "Ranking" label */
 	ranking_label = gtk_label_new(_("Rank:"));
@@ -227,7 +241,7 @@ static GtkWidget *create_dlg_info(GGZServer *server)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	/* gtk_widget_show is called later. */
 	gtk_table_attach(GTK_TABLE(display_table), ranking_label,
-			 1, 2, 5, 6, 0, 0, 0, 0);
+			 1, 2, 6, 7, 0, 0, 0, 0);
 
 	ranking = gtk_label_new("");
 	gtk_widget_ref(ranking);
@@ -235,7 +249,7 @@ static GtkWidget *create_dlg_info(GGZServer *server)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	/* gtk_widget_show is called later. */
 	gtk_table_attach(GTK_TABLE(display_table), ranking,
-			 2, 3, 5, 6, GTK_EXPAND, 0, 0, 0);
+			 2, 3, 6, 7, GTK_EXPAND, 0, 0, 0);
 
 	/* Add "Highscore" label */
 	highscore_label = gtk_label_new(_("Score:"));
@@ -245,7 +259,7 @@ static GtkWidget *create_dlg_info(GGZServer *server)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	/* gtk_widget_show is called later. */
 	gtk_table_attach(GTK_TABLE(display_table), highscore_label,
-			 1, 2, 6, 7, 0, 0, 0, 0);
+			 1, 2, 7, 8, 0, 0, 0, 0);
 
 	highscore = gtk_label_new("");
 	gtk_widget_ref(highscore);
@@ -253,7 +267,7 @@ static GtkWidget *create_dlg_info(GGZServer *server)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	/* gtk_widget_show is called later. */
 	gtk_table_attach(GTK_TABLE(display_table), highscore,
-			 2, 3, 6, 7, GTK_EXPAND, 0, 0, 0);
+			 2, 3, 7, 8, GTK_EXPAND, 0, 0, 0);
 
 	/* Add "Private chat" label */
 	chat_label = gtk_label_new(_("Message:"));
@@ -263,7 +277,7 @@ static GtkWidget *create_dlg_info(GGZServer *server)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(chat_label);
 	gtk_table_attach(GTK_TABLE(display_table), chat_label,
-			 1, 2, 7, 8, 0, 0, 0, 0);
+			 1, 2, 8, 9, 0, 0, 0, 0);
 
 	chat = gtk_entry_new();
 	gtk_widget_ref(chat);
@@ -271,7 +285,7 @@ static GtkWidget *create_dlg_info(GGZServer *server)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(chat);
 	gtk_table_attach(GTK_TABLE(display_table), chat,
-			 2, 3, 7, 8, GTK_EXPAND, 0, 0, 0);
+			 2, 3, 8, 9, GTK_EXPAND, 0, 0, 0);
 	g_signal_connect(chat, "activate",
 			 GTK_SIGNAL_FUNC(chat_activate), server);
 
@@ -298,11 +312,12 @@ void player_info_create_or_raise(GGZPlayer *player)
 	GGZRoom *room = ggzcore_player_get_room(player);
 	GGZTable *table = ggzcore_player_get_table(player);
 	GGZServer *server = ggzcore_room_get_server(room);
-	char text[128];
+	char text[1024];
 	char *ptype = _("Unknown");
 	int wins, losses, ties, forfeits;
 	int rating, ranking;
 	int highscore;
+	GGZPerm p;
 
 	if (!dialog) {
 		dialog = create_dlg_info(server);
@@ -350,6 +365,21 @@ void player_info_create_or_raise(GGZPlayer *player)
 		break;
 	}
 	gtk_label_set_text(GTK_LABEL(tmp), ptype);
+
+	tmp = g_object_get_data(G_OBJECT(dialog), "perms");
+	text[0] = '\0';
+	for (p = 0; p < GGZ_PERM_COUNT; p++) {
+	  if (ggzcore_player_has_perm(player, p)) {
+	    snprintf(text + strlen(text), sizeof(text) - strlen(text),
+		     "%s\n", ggz_perm_get_name(p));
+	  }
+	}
+	if (text[0] == '\0') {
+	  snprintf(text, sizeof(text), _("none/unknown"));
+	} else {
+	  text[strlen(text) - 1] = '\0';
+	}
+	gtk_label_set_text(GTK_LABEL(tmp), text);
 
 	/* The only thing we don't show is lag. */
 
