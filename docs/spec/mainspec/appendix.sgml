@@ -1021,7 +1021,8 @@
 		  <row rowsep="0">
 		    <entry namest="C1" nameend="C3">
 		      &lt;PLAYER ID='id' TYPE='type' TABLE='table'
-		      LAG='lag' WINS='wins' LOSSES='losses' TIES='ties'
+		      PERMS='perms' LAG='lag'
+                      WINS='wins' LOSSES='losses' TIES='ties'
 		      FORFEITS='forfeits' RATING='rating' RANKING='rating'
 		      HIGHSCORE='highscore'/&gt;
 		    </entry>
@@ -1049,6 +1050,12 @@
 			<entry>TABLE</entry>
 			<entry>int</entry>
 			<entry>-1</entry>
+		  </row>
+
+		  <row rowsep="1">
+			<entry>PERMS</entry>
+			<entry>int/hex</entry>
+			<entry>0x0000000F</entry>
 		  </row>
 
 		  <row rowsep="1">
@@ -1128,6 +1135,16 @@
 	      <para>
 		ID number of table at which player is "sitting"; -1
 		or not present if the player is not at a table.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">PERMS</emphasis></term>
+	    <listitem>
+	      <para>
+                Player permission set - an integer bitfield giving which
+                permissions the player has, according to the enumeration in
+                ggz_common.h.
 	      </para>
 	    </listitem>
 	  </varlistentry>
