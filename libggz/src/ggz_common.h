@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 8749 2006-12-25 02:07:57Z jdorje $
+ * $Id: ggz_common.h 8751 2006-12-25 02:37:19Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -123,11 +123,11 @@ typedef enum {
  * problems by several levels of punishment.
  */
 typedef enum {
-	GGZ_ADMIN_GAG   = 0,   /**< Player chat is ignored by all others */
-	GGZ_ADMIN_UNGAG = 1,   /**< Reversion of temporary gagging */
-	GGZ_ADMIN_KICK  = 2,   /**< Player is kicked from the server */
-	GGZ_ADMIN_BAN   = 3,   /**< Player is banned permanently (NOT USED YET) */
-	GGZ_ADMIN_UNKNOWN = 4  /**< Invalid admin type */
+	GGZ_ADMIN_GAG,		/**< Player chat is ignored by all others */
+	GGZ_ADMIN_UNGAG,	/**< Reversion of temporary gagging */
+	GGZ_ADMIN_KICK,		/**< Player is kicked from the server */
+	GGZ_ADMIN_BAN,		/**< Player banned permanently (unused) */
+	GGZ_ADMIN_UNKNOWN	/**< Invalid admin type */
 } GGZAdminType;
 
 /** @brief A player type.
