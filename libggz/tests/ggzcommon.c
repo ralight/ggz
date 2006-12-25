@@ -24,14 +24,15 @@ int values[][3][6] = { { {2, 3, 5, 6, 7, 0}, {1, 4, 8, 32, 1000, 0}, {7} },
 int main()
 {
 	int i, result = 0;
+	const char *str;
 
 	for (i = 0; tests[i]; i++) {
 		GGZNumberList list = ggz_numberlist_read(tests[i]), list2;
-		char *str;
 		int j;
 		int *yes = values[i][0];
 		int *no = values[i][1];
 		int max = values[i][2][0];
+		char *str;
 
 		for (j = 0; yes[j] > 0; j++)
 			if (!ggz_numberlist_isset(&list, yes[j])) {
@@ -59,6 +60,126 @@ int main()
 			result = 1;
 		}
 		ggz_free(str);
+	}
+
+#define GGZ_SEAT_COUNT (GGZ_SEAT_ABANDONED + 1)
+	for (i = 0; i < GGZ_SEAT_COUNT; i++) {
+		str = ggz_seattype_to_string(i);
+		if (i != ggz_string_to_seattype(str)) {
+			printf("Error: seattype %d incorrectly matches "
+			       "string %s.\n",
+			       i, str);
+			result = 1;
+		}
+	}
+	str = ggz_seattype_to_string(GGZ_SEAT_COUNT);
+	if (strcmp(str, ggz_seattype_to_string(-1)) != 0) {
+		printf("Error: seattype %d incorrectly matches "
+		       "string %s.\n",
+		       GGZ_SEAT_COUNT, str);
+		result = 1;
+	}
+
+#define GGZ_CHAT_COUNT (GGZ_CHAT_TABLE + 1)
+	for (i = 0; i < GGZ_CHAT_COUNT; i++) {
+		const char *str = ggz_chattype_to_string(i);
+
+		if (i != ggz_string_to_chattype(str)) {
+			printf("Error: chattype %d incorrectly matches "
+			       "string %s.\n",
+			       i, str);
+			result = 1;
+		}
+	}
+	str = ggz_chattype_to_string(GGZ_CHAT_COUNT);
+	if (strcmp(str, ggz_chattype_to_string(-1)) != 0) {
+		printf("Error: chattype %d incorrectly matches "
+		       "string %s.\n",
+		       GGZ_CHAT_COUNT, str);
+		result = 1;
+	}
+
+#define GGZ_LEAVE_COUNT (GGZ_LEAVE_GAMEERROR + 1)
+	for (i = 0; i < GGZ_LEAVE_COUNT; i++) {
+		const char *str = ggz_leavetype_to_string(i);
+
+		if (i != ggz_string_to_leavetype(str)) {
+			printf("Error: leavetype %d incorrectly matches "
+			       "string %s.\n",
+			       i, str);
+			result = 1;
+		}
+	}
+	str = ggz_leavetype_to_string(GGZ_LEAVE_COUNT);
+	if (strcmp(str, ggz_leavetype_to_string(-1)) != 0) {
+		printf("Error: leavetype %d incorrectly matches "
+		       "string %s.\n",
+		       GGZ_LEAVE_COUNT, str);
+		result = 1;
+	}
+
+#define GGZ_PLAYER_COUNT (GGZ_PLAYER_UNKNOWN + 1)
+	for (i = 0; i < GGZ_PLAYER_COUNT; i++) {
+		const char *str = ggz_playertype_to_string(i);
+
+		if (i != ggz_string_to_playertype(str)) {
+			printf("Error: playertype %d incorrectly matches "
+			       "string %s.\n",
+			       i, str);
+			result = 1;
+		}
+	}
+	str = ggz_playertype_to_string(GGZ_PLAYER_COUNT);
+	if (strcmp(str, ggz_playertype_to_string(-1)) != 0) {
+		printf("Error: playertype %d incorrectly matches "
+		       "string %s.\n",
+		       GGZ_PLAYER_COUNT, str);
+		result = 1;
+	}
+
+#define GGZ_ADMIN_COUNT (GGZ_ADMIN_UNKNOWN + 1)
+	for (i = 0; i < GGZ_ADMIN_COUNT; i++) {
+		const char *str = ggz_admintype_to_string(i);
+
+		if (i != ggz_string_to_admintype(str)) {
+			printf("Error: admintype %d incorrectly matches "
+			       "string %s.\n",
+			       i, str);
+			result = 1;
+		}
+	}
+	str = ggz_admintype_to_string(GGZ_ADMIN_COUNT);
+	if (strcmp(str, ggz_admintype_to_string(-1)) != 0) {
+		printf("Error: admintype %d incorrectly matches "
+		       "string %s.\n",
+		       GGZ_ADMIN_COUNT, str);
+		result = 1;
+	}
+
+#define E_LOWEST (E_USR_TAKEN - 1)
+	for (i = 0; i > E_LOWEST; i--) {
+		const char *str = ggz_error_to_string(i);
+
+		if (i != ggz_string_to_error(str)) {
+			printf("Error: errortype %d incorrectly matches "
+			       "string %s.\n",
+			       i, str);
+			result = 1;
+		}
+	}
+	str = ggz_error_to_string(E_LOWEST);
+	if (strcmp(str, ggz_error_to_string(1000)) != 0) {
+		printf("Error: error %d incorrectly matches "
+		       "string %s.\n",
+		       E_LOWEST, str);
+		result = 1;
+	}
+	str = ggz_error_to_string(1);
+	if (strcmp(str, ggz_error_to_string(1000)) != 0) {
+		printf("Error: error %d incorrectly matches "
+		       "string %s.\n",
+		       1, str);
+		result = 1;
 	}
 
 	for (i = 0; i <= GGZ_PERM_COUNT; i++) {
