@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 8746 2006-12-23 21:35:25Z jdorje $
+ * $Id: ggz_common.h 8749 2006-12-25 02:07:57Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -409,8 +409,25 @@ void ggz_perms_init_from_list(GGZPermset *perms,
 /** @brief Return true if the permissions is in the set. */
 bool ggz_perms_is_set(GGZPermset perms, GGZPerm perm);
 
-/** @brief Return a text name for the permission. */
-const char *ggz_perm_get_name(GGZPerm perm);
+/** @brief Get a string identifier for the GGZPerm.
+ *
+ *  This returns a pointer to a static string describing the given permission.
+ *  It is useful for text-based communications protocols and debugging
+ *  output.
+ *  @param perm The GGZPerm, which determines the string returned.
+ *  @note This is the inverse of ggz_string_to_perm.
+ */
+const char *ggz_perm_to_string(GGZPerm perm);
+
+/** @brief Get a GGZPerm for the given string identifier.
+ *
+ *  This returns a GGZPerm that is associated with the given string
+ *  description.
+ *  @param perm_str A string describing a GGZPerm.
+ *  @note If the perm_str cannot be parsed GGZ_PERM_COUNT may be returned.
+ *  @note This is the inverse of ggz_perm_to_string.
+ */
+GGZPerm ggz_string_to_perm(const char *perm_str);
 
 #ifdef __cplusplus
 }

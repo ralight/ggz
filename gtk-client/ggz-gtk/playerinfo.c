@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 8747 2006-12-24 09:18:47Z jdorje $
+ * $Id: playerinfo.c 8749 2006-12-25 02:07:57Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -371,7 +371,7 @@ void player_info_create_or_raise(GGZPlayer *player)
 	for (p = 0; p < GGZ_PERM_COUNT; p++) {
 	  if (ggzcore_player_has_perm(player, p)) {
 	    snprintf(text + strlen(text), sizeof(text) - strlen(text),
-		     "%s\n", ggz_perm_get_name(p));
+		     "%s\n", ggz_perm_to_string(p));
 	  }
 	}
 	if (text[0] == '\0') {

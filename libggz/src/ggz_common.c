@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 8747 2006-12-24 09:18:47Z jdorje $
+ * $Id: ggz_common.c 8749 2006-12-25 02:07:57Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -35,6 +35,8 @@
 #include "ggz_common.h"
 
 #include "support.h"
+
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 
 #define OPEN_SEAT_NAME "open"
 #define BOT_SEAT_NAME "bot"
@@ -463,30 +465,40 @@ bool ggz_perms_is_set(GGZPermset perms, GGZPerm perm)
 }
 
 
-const char *ggz_perm_get_name(GGZPerm perm)
+static const char *perm_names[] = {
+	"join_table",
+	"launch_table",
+	"rooms_login",
+	"rooms_admin",
+	"chat_announce",
+	"chat_bot",
+	"no_stats",
+	"edit_tables",
+	"edit_privmsg"
+};
+
+
+const char *ggz_perm_to_string(GGZPerm perm)
 {
-	switch (perm) {
-	case GGZ_PERM_JOIN_TABLE:
-		return "JOIN_TABLE";
-	case GGZ_PERM_LAUNCH_TABLE:
-		return "LAUNCH_TABLE";
-	case GGZ_PERM_ROOMS_LOGIN:
-		return "ROOMS_LOGIN";
-	case GGZ_PERM_ROOMS_ADMIN:
-		return "ROOMS_ADMIN";
-	case GGZ_PERM_CHAT_ANNOUNCE:
-		return "CHAT_ANNOUNCE";
-	case GGZ_PERM_CHAT_BOT:
-		return "CHAT_BOT";
-	case GGZ_PERM_NO_STATS:
-		return "NO_STATS";
-	case GGZ_PERM_EDIT_TABLES:
-		return "EDIT_TABLES";
-	case GGZ_PERM_TABLE_PRIVMSG:
-		return "TABLE_PRIVMSG";
-	case GGZ_PERM_COUNT:
-		break;
+	if (perm >= 0 && perm < ARRAY_SIZE(perm_names)) {
+		return perm_names[perm];
+	} else {
+		return "(UNKNOWN)";
+	}
+}
+
+
+GGZPerm ggz_string_to_perm(const char *perm_str)
+{
+	GGZPerm p;
+
+	if (!perm_str) return GGZ_PERM_COUNT;
+
+	for (p = 0; p < GGZ_PERM_COUNT; p++) {
+		if (strcasecmp(perm_str, perm_names[p]) == 0) {
+			return p;
+		}
 	}
 
-	return "(UNKNOWN)";
+	return GGZ_PERM_COUNT;
 }

@@ -61,5 +61,16 @@ int main()
 		ggz_free(str);
 	}
 
+	for (i = 0; i <= GGZ_PERM_COUNT; i++) {
+		const char *str = ggz_perm_to_string(i);
+
+		if (i != ggz_string_to_perm(str)) {
+			printf("Error: permission %d incorrectly matches "
+			       "string %s.\n",
+			       i, str);
+			result = 1;
+		}
+	}
+
 	return result;
 }
