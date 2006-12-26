@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 8549 2006-08-28 23:21:24Z jdorje $
+ * $Id: playerlist.c 8755 2006-12-26 07:45:15Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -60,7 +60,8 @@ static void client_player_info_activate(GtkMenuItem * menuitem, gpointer data)
 	player_info_create_or_raise(player);
 }
 
-static void client_player_friends_click(GtkMenuItem * menuitem, gpointer data)
+static void client_player_friends_activate(GtkMenuItem * menuitem,
+					   gpointer data)
 {
 	GGZPlayer *player = data;
 
@@ -70,7 +71,8 @@ static void client_player_friends_click(GtkMenuItem * menuitem, gpointer data)
 		chat_remove_friend(ggzcore_player_get_name(player));
 }
 
-static void client_player_ignore_click(GtkMenuItem * menuitem, gpointer data)
+static void client_player_ignore_activate(GtkMenuItem * menuitem,
+					  gpointer data)
 {
 	GGZPlayer *player = data;
 
@@ -80,23 +82,73 @@ static void client_player_ignore_click(GtkMenuItem * menuitem, gpointer data)
 		chat_remove_ignore(ggzcore_player_get_name(player));
 }
 
+static void client_player_kick_activate(GtkMenuItem * menuitem, gpointer data)
+{
+	GGZPlayer *player = data;
+
+	ggzcore_room_admin(ggzcore_server_get_cur_room(server),
+			   GGZ_ADMIN_KICK,
+			   ggzcore_player_get_name(player), NULL);
+}
+
+static void client_player_gag_activate(GtkMenuItem * menuitem, gpointer data)
+{
+	GGZPlayer *player = data;
+
+	ggzcore_room_admin(ggzcore_server_get_cur_room(server),
+			   GGZ_ADMIN_GAG,
+			   ggzcore_player_get_name(player), NULL);
+}
+
+static void client_player_ungag_activate(GtkMenuItem * menuitem, gpointer data)
+{
+	GGZPlayer *player = data;
+
+	ggzcore_room_admin(ggzcore_server_get_cur_room(server),
+			   GGZ_ADMIN_UNGAG,
+			   ggzcore_player_get_name(player), NULL);
+}
+
+static void client_player_ban_activate(GtkMenuItem * menuitem, gpointer data)
+{
+  /* TODO */
+}
+
+static bool is_admin(void)
+{
+	const char *handle = ggzcore_server_get_handle(server);
+	const GGZPlayer *player = ggzcore_server_get_player(server, handle);
+
+	if (player) {
+		GGZPlayerType type = ggzcore_player_get_type(player);
+
+		return (type == GGZ_PLAYER_HOST || type == GGZ_PLAYER_ADMIN);
+	} else {
+		return FALSE;
+	}
+}
+
 static GtkWidget *create_mnu_player(GGZPlayer *player, gboolean is_friend,
 				    gboolean is_ignore)
 {
 	GtkWidget *mnu_player;
 	GtkWidget *info;
-	GtkWidget *separator9;
+	GtkWidget *separator;
 	GtkWidget *friends;
 	GtkWidget *ignore;
+	GtkWidget *kick;
+	GtkWidget *gag;
+	GtkWidget *ungag;
+	GtkWidget *ban;
 
 	mnu_player = gtk_menu_new();
 
 	info = gtk_menu_item_new_with_label(_("Info"));
 	gtk_container_add(GTK_CONTAINER(mnu_player), info);
 
-	separator9 = gtk_menu_item_new();
-	gtk_container_add(GTK_CONTAINER(mnu_player), separator9);
-	gtk_widget_set_sensitive(separator9, FALSE);
+	separator = gtk_menu_item_new();
+	gtk_container_add(GTK_CONTAINER(mnu_player), separator);
+	gtk_widget_set_sensitive(separator, FALSE);
 
 	friends = gtk_check_menu_item_new_with_label(_("Friends"));
 	gtk_container_add(GTK_CONTAINER(mnu_player), friends);
@@ -108,14 +160,46 @@ static GtkWidget *create_mnu_player(GGZPlayer *player, gboolean is_friend,
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ignore),
 				       is_ignore);
 
+	separator = gtk_menu_item_new();
+	gtk_container_add(GTK_CONTAINER(mnu_player), separator);
+	gtk_widget_set_sensitive(separator, FALSE);
+
+	kick = gtk_menu_item_new_with_label(_("Kick player"));
+	gtk_container_add(GTK_CONTAINER(mnu_player), kick);
+	gtk_widget_set_sensitive(kick, is_admin());
+
+	gag = gtk_menu_item_new_with_label(_("Gag player"));
+	gtk_container_add(GTK_CONTAINER(mnu_player), gag);
+	gtk_widget_set_sensitive(gag, is_admin());
+
+	ungag = gtk_menu_item_new_with_label(_("Ungag player"));
+	gtk_container_add(GTK_CONTAINER(mnu_player), ungag);
+	gtk_widget_set_sensitive(ungag, is_admin());
+
+	ban = gtk_menu_item_new_with_label(_("Ban player"));
+	gtk_container_add(GTK_CONTAINER(mnu_player), ban);
+	gtk_widget_set_sensitive(ban, FALSE);
+
 	g_signal_connect(GTK_OBJECT(info), "activate",
 			 GTK_SIGNAL_FUNC(client_player_info_activate),
 			 player);
 	g_signal_connect(GTK_OBJECT(friends), "activate",
-			 GTK_SIGNAL_FUNC(client_player_friends_click),
+			 GTK_SIGNAL_FUNC(client_player_friends_activate),
 			 player);
 	g_signal_connect(GTK_OBJECT(ignore), "activate",
-			 GTK_SIGNAL_FUNC(client_player_ignore_click),
+			 GTK_SIGNAL_FUNC(client_player_ignore_activate),
+			 player);
+	g_signal_connect(GTK_OBJECT(kick), "activate",
+			 GTK_SIGNAL_FUNC(client_player_kick_activate),
+			 player);
+	g_signal_connect(GTK_OBJECT(gag), "activate",
+			 GTK_SIGNAL_FUNC(client_player_gag_activate),
+			 player);
+	g_signal_connect(GTK_OBJECT(ungag), "activate",
+			 GTK_SIGNAL_FUNC(client_player_ungag_activate),
+			 player);
+	g_signal_connect(GTK_OBJECT(ban), "activate",
+			 GTK_SIGNAL_FUNC(client_player_ban_activate),
 			 player);
 
 	return mnu_player;
