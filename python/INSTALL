@@ -3,12 +3,12 @@ Installing the GGZ python packages
 
 This is somewhat different from how C/C++ packages work.
 First of all, while autoconf is used, automake is not - the python
-distutils are used instead.
+distutils are used instead for some parts of ggz-python.
 
 A standard installation procedure would be:
 
-# Run autoconf etc. if configure does not exist yet (i.e. CVS checkout)
-./autogen.sh
+# Run autoconf etc. if configure does not exist yet (i.e. SVN checkout)
+./autogen.sh --prefix=/home/ggz/build
 # Configure package, to be installed to where the other GGZ packages reside
 ./configure --prefix=/home/ggz/build
 # Compilation of python wrapper modules

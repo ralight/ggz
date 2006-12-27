@@ -16,9 +16,6 @@ def hook_leave (seat):
 	print "* leave: ", seat
 	print "(Name: " + ggzdmod.getPlayerName(seat) + ")"
 
-def hook_log ():
-	print "* log"
-
 def hook_data (seat):
 	print "* data: ", seat
 	print "(Name: " + ggzdmod.getPlayerName(seat) + ")"
@@ -30,7 +27,6 @@ print ">> register callbacks"
 ggzdmod.setHandler(ggzdmod.EVENT_STATE, hook_state)
 ggzdmod.setHandler(ggzdmod.EVENT_JOIN, hook_join)
 ggzdmod.setHandler(ggzdmod.EVENT_LEAVE, hook_leave)
-ggzdmod.setHandler(ggzdmod.EVENT_LOG, hook_log)
 ggzdmod.setHandler(ggzdmod.EVENT_DATA, hook_data)
 ggzdmod.setHandler(ggzdmod.EVENT_ERROR, hook_error)
 
