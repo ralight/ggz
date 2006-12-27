@@ -118,7 +118,7 @@ void GGZGameServer::stateEvent()
 {
 }
 
-// Virtuel player special hook: idle method
+// Virtual player special hook: idle method
 void GGZGameServer::idleEvent()
 {
 }
@@ -259,6 +259,8 @@ GGZGameServerPrivate::GGZGameServerPrivate(GGZGameServer *parent)
 	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, &handle_spectator_leave);
 	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SPECTATOR_DATA, &handle_spectator_data);
 	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SPECTATOR_SEAT, &handle_spectator_seat);
+
+	selfcheck();
 }
 
 // Destructor of the internal class

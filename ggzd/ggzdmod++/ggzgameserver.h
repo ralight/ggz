@@ -147,7 +147,6 @@ class GGZGameServer
 			if(!s->client) return -1;
 			return s->client->fd;
 		}
-		int open(){return playercount(Seat::open);}
 
 	private:
 		GGZGameServerPrivate *m_private;

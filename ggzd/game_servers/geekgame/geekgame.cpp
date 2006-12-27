@@ -122,7 +122,7 @@ void Geekgame::dataEvent(int player)
 			}
 
 			// If ready, announce game start
-			if(open() == 0) game_start();
+			if(playercount(Seat::open) == 0) game_start();
 			break;
 		case op_client_ruleset:
 			ggz_read_string_alloc(channel, &ruleset);

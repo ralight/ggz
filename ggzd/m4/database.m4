@@ -94,10 +94,43 @@ AC_DEFUN([AC_GGZ_DATABASE_DB4],
 	db4lib=""
 	db4inc=""
 
+	dnl Check for include files
+
+	AC_CHECK_HEADER(db.h,
+	[
+		db4inc="db.h"
+		database=db4
+	],
+	[
+		AC_CHECK_HEADER(db4/db.h,
+		[
+			db4inc="db4/db.h"
+			database=db4
+			DATABASE_INCLUDES="-I /usr/include/db4"
+		],
+		[
+			AC_CHECK_HEADER(db42/db.h,
+			[
+				db4inc="db42/db.h"
+				database=db4
+				DATABASE_INCLUDES="-I /usr/include/db42"
+			],
+			[])
+		])
+	])
+
+	if test "$database" = "db4" && test "$db4inc" = ""; then
+		AC_MSG_ERROR([cannot configure db4 (db4-dev needed)])
+	fi
+
+	dnl Get the minor version of db4 so we get a matching library
+
+	minor=$(grep DB_VERSION_MINOR /usr/include/$db4inc 2>/dev/null | cut -f 3)
+
 	dnl Check for db4 libraries
 	dnl Version priority: db4.4, db4.3, db4.2, db4.1, db4.0, db (unversioned)
 
-	if test "$db4lib" = ""; then
+	if test "$db4lib" = "" || test "$minor" = "4"; then
 		AC_CHECK_LIB(db-4.4, db_env_create_4004,
 		[
 			db4lib="-ldb-4.4"
@@ -120,7 +153,7 @@ AC_DEFUN([AC_GGZ_DATABASE_DB4],
 		])
 	fi
 
-	if test "$db4lib" = ""; then
+	if test "$db4lib" = "" || test "$minor" = "3"; then
 		AC_CHECK_LIB(db-4.3, db_env_create_4003,
 		[
 			db4lib="-ldb-4.3"
@@ -143,7 +176,7 @@ AC_DEFUN([AC_GGZ_DATABASE_DB4],
 		])
 	fi
 
-	if test "$db4lib" = ""; then
+	if test "$db4lib" = "" || test "$minor" = "2"; then
 		AC_CHECK_LIB(db-4.2, db_env_create_4002,
 		[
 			db4lib="-ldb-4.2"
@@ -166,7 +199,7 @@ AC_DEFUN([AC_GGZ_DATABASE_DB4],
 		])
 	fi
 
-	if test "$db4lib" = ""; then
+	if test "$db4lib" = "" || test "$minor" = "1"; then
 		AC_CHECK_LIB(db-4.1, db_env_create_4001,
 		[
 			db4lib="-ldb-4.1"
@@ -189,7 +222,7 @@ AC_DEFUN([AC_GGZ_DATABASE_DB4],
 		])
 	fi
 
-	if test "$db4lib" = ""; then
+	if test "$db4lib" = "" || test "$minor" = "0"; then
 		AC_CHECK_LIB(db-4.0, db_env_create_4000,
 		[
 			db4lib="-ldb-4.0"
@@ -223,35 +256,6 @@ AC_DEFUN([AC_GGZ_DATABASE_DB4],
 
 	if test "$database" = "db4" && test "$db4lib" = ""; then
 		AC_MSG_ERROR([cannot configure db4 (libdb4 needed)])
-	fi
-
-	dnl Check for include files
-
-	AC_CHECK_HEADER(db.h,
-	[
-		db4inc="db.h"
-		database=db4
-	],
-	[
-		AC_CHECK_HEADER(db4/db.h,
-		[
-			db4inc="db4/db.h"
-			database=db4
-			DATABASE_INCLUDES="-I /usr/include/db4"
-		],
-		[
-			AC_CHECK_HEADER(db42/db.h,
-			[
-				db4inc="db42/db.h"
-				database=db4
-				DATABASE_INCLUDES="-I /usr/include/db42"
-			],
-			[])
-		])
-	])
-
-	if test "$database" = "db4" && test "$db4inc" = ""; then
-		AC_MSG_ERROR([cannot configure db4 (db4-dev needed)])
 	fi
 
 	dnl Setup variables
