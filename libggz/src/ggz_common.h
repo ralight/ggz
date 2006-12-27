@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 8751 2006-12-25 02:37:19Z jdorje $
+ * $Id: ggz_common.h 8759 2006-12-27 04:02:24Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -405,6 +405,12 @@ bool ggz_perms_is_admin(GGZPermset perms);
 /** @brief Initialize the perm set from the given list array. */
 void ggz_perms_init_from_list(GGZPermset *perms,
 			      GGZPerm *list, size_t listsz);
+
+/** @brief Sets/clears the given permission.
+ *  @param perms The permissions set to modify.
+ *  @param perm The permission in the set to change.
+ *  @param value Whether to set or clear the permission from the set. */
+void ggz_perms_set(GGZPermset *perms, GGZPerm perm, bool val);
 
 /** @brief Return true if the permissions is in the set. */
 bool ggz_perms_is_set(GGZPermset perms, GGZPerm perm);

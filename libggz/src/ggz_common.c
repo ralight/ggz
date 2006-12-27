@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 8750 2006-12-25 02:28:43Z jdorje $
+ * $Id: ggz_common.c 8759 2006-12-27 04:02:24Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -459,9 +459,19 @@ void ggz_perms_init_from_list(GGZPermset *perms, GGZPerm *list, size_t listsz)
 }
 
 
+void ggz_perms_set(GGZPermset *perms, GGZPerm perm, bool val)
+{
+	if (perm >= 0 || perm < GGZ_PERM_COUNT) {
+		(*perms) |= (1 << perm);
+	}
+	/* Else fail silently. */
+}
+
+
 bool ggz_perms_is_set(GGZPermset perms, GGZPerm perm)
 {
-	return (perms & (1 << perm)) != 0;
+	return (perm >= 0 && perm < GGZ_PERM_COUNT
+		&& (perms & (1 << perm)) != 0);
 }
 
 
