@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 8763 2006-12-27 10:02:33Z jdorje $
+ * $Id: net.c 8765 2006-12-27 11:20:31Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -146,7 +146,8 @@ static void _net_handle_tls_start(GGZNetIO *net, GGZXMLElement *element);
 /* Utility functions */
 static int str_to_int(const char *str, int dflt);
 static bool check_playerconn(GGZNetIO *net, const char *type);
-static void _net_dump_data(struct _GGZNetIO *net, char *data, int size);
+static void _net_dump_data(struct _GGZNetIO *net, char *data, int size,
+			   bool outgoing);
 static GGZReturn _net_send_result(GGZNetIO *net, const char *action,
 				  GGZClientReqError code);
 static GGZReturn _net_send_login_normal_status(GGZNetIO *net,
@@ -1065,7 +1066,7 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 		return GGZ_REQ_DISCONNECT;
 	}
 
-	_net_dump_data(net, buf, len);
+	_net_dump_data(net, buf, len, false);
 
 	/* If len == 0 then we've reached EOF */
 	done = (len == 0);
@@ -1159,10 +1160,19 @@ static void _net_parse_text(void *data, const char *text, int len)
 }
 
 
-static void _net_dump_data(GGZNetIO *net, char *data, int size)
+static void _net_dump_data(GGZNetIO *net, char *data, int size, bool outgoing)
 {
-	if (net->dump_file > 0)
+	char marker[32];
+
+	if (net->dump_file > 0) {
+		if(outgoing)
+			snprintf(marker, sizeof(marker), "=> %i ", net->fd);
+		else
+			snprintf(marker, sizeof(marker), "%i => ", net->fd);
+
+		write(net->dump_file, marker, strlen(marker));
 		write(net->dump_file, data, size);
+	}
 }
 
 static GGZXMLElement* _net_new_element(const char *tag,
@@ -2310,6 +2320,8 @@ static GGZReturn _net_send_line(GGZNetIO *net, char *line, ...)
 	vsnprintf(buf, sizeof(buf) - 1, line, ap);
 	va_end(ap);
 	strcat(buf, "\n");
+
+	_net_dump_data(net, buf, strlen(buf), true);
 
 	if (ggz_tls_write(net->fd, buf, strlen(buf)) < 0)
 		return GGZ_ERROR;
