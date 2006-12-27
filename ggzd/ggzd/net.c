@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 8747 2006-12-24 09:18:47Z jdorje $
+ * $Id: net.c 8761 2006-12-27 05:59:29Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1134,60 +1134,49 @@ static void _net_dump_data(GGZNetIO *net, char *data, int size)
 static GGZXMLElement* _net_new_element(const char *tag,
 				       const char * const *attrs)
 {
-	void (*process_func)();
+	void (*process_func)(GGZNetIO *net, GGZXMLElement *element) = NULL;
+	int i;
+	struct {
+		const char *tag;
+		void (*process_func)(GGZNetIO *net, GGZXMLElement *element);
+	} tags[] = {
+#define TAG(t) {#t, _net_handle_ ## t}
+		TAG(session),
+		TAG(login),
+		TAG(channel),
+		TAG(name),
+		TAG(password),
+		TAG(email),
+		TAG(update),
+		TAG(list),
+		TAG(enter),
+		TAG(chat),
+		TAG(admin),
+		TAG(reason),
+		TAG(info),
+		TAG(join),
+		TAG(leave),
+		TAG(reseat),
+		TAG(launch),
+		TAG(table),
+		TAG(seat),
+		TAG(desc),
+		TAG(motd),
+		TAG(pong),
+		TAG(ping),
+		TAG(tls_start)
+#undef TAG
+	};
+	typedef void (*ggzxmlfunc)(void *, GGZXMLElement *);
 
-	if (strcasecmp(tag, "SESSION") == 0)
-		process_func = _net_handle_session;
-	else if (strcasecmp(tag, "LOGIN") == 0)
-		process_func = _net_handle_login;
-	else if (strcasecmp(tag, "CHANNEL") == 0)
-		process_func = _net_handle_channel;
-	else if (strcasecmp(tag, "NAME") == 0)
-		process_func = _net_handle_name;
-	else if (strcasecmp(tag, "PASSWORD") == 0)
-		process_func = _net_handle_password;
-	else if (strcasecmp(tag, "EMAIL") == 0)
-		process_func = _net_handle_email;
-	else if (strcasecmp(tag, "UPDATE") == 0)
-		process_func = _net_handle_update;
-	else if (strcasecmp(tag, "LIST") == 0)
-		process_func = _net_handle_list;
-	else if (strcasecmp(tag, "ENTER") == 0)
-		process_func = _net_handle_enter;
-	else if (strcasecmp(tag, "CHAT") == 0)
-		process_func = _net_handle_chat;
-	else if (strcasecmp(tag, "ADMIN") == 0)
-		process_func = _net_handle_admin;
-	else if (strcasecmp(tag, "REASON") == 0)
-		process_func = _net_handle_reason;
-	else if (strcasecmp(tag, "INFO") == 0)
-		process_func = _net_handle_info;
-	else if (strcasecmp(tag, "JOIN") == 0)
-		process_func = _net_handle_join;
-	else if (strcasecmp(tag, "LEAVE") == 0)
-		process_func = _net_handle_leave;
-	else if (strcasecmp(tag, "RESEAT") == 0)
-		process_func = _net_handle_reseat;
-	else if (strcasecmp(tag, "LAUNCH") == 0)
-		process_func = _net_handle_launch;
-	else if (strcasecmp(tag, "TABLE") == 0)
-		process_func = _net_handle_table;
-	else if (strcasecmp(tag, "SEAT") == 0)
-		process_func = _net_handle_seat;
-	else if (strcasecmp(tag, "DESC") == 0)
-		process_func = _net_handle_desc;
-	else if (strcasecmp(tag, "MOTD") == 0)
-		process_func = _net_handle_motd;
-	else if (strcasecmp(tag, "PONG") == 0)
-		process_func = _net_handle_pong;
-	else if (strcasecmp(tag, "PING") == 0)
-		process_func = _net_handle_ping;
-	else if (strcmp(tag, "TLS_START") == 0)
-		process_func = _net_handle_tls_start;
-	else
-		process_func = NULL;
+	for (i = 0; i < ARRAY_SIZE(tags); i++) {
+		if (strcasecmp(tags[i].tag, tag) == 0) {
+			process_func = tags[i].process_func;
+			break;
+		}
+	}
 
-	return ggz_xmlelement_new(tag, attrs, process_func, NULL);
+	return ggz_xmlelement_new(tag, attrs, (ggzxmlfunc)process_func, NULL);
 }
 
 
