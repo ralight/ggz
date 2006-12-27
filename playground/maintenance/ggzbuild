@@ -5,6 +5,11 @@
 import os
 import sys
 #import glob
+import signal
+
+# Revert python's own signal modification for external sub-processes
+# FIXME: It's a hack, see mail to ggz-dev about this weird issue
+signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
 """
 Create a file ~/.ggzbuildrc with per-module entries such as:
