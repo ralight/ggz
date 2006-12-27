@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 8760 2006-12-27 04:05:26Z jdorje $
+ * $Id: ggz_common.c 8762 2006-12-27 10:00:21Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -38,6 +38,7 @@
 
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 
+/* These are defined by the network protocol */
 #define OPEN_SEAT_NAME "open"
 #define BOT_SEAT_NAME "bot"
 #define PLAYER_SEAT_NAME "player"
@@ -89,6 +90,7 @@ GGZSeatType ggz_string_to_seattype(const char *type_str)
 	return GGZ_SEAT_NONE;
 }
 
+/* These are defined by the network protocol */
 #define NORMAL_CHAT_NAME "normal"
 #define ANNOUNCE_CHAT_NAME "announce"
 #define BEEP_CHAT_NAME "beep"
@@ -139,6 +141,7 @@ GGZChatType ggz_string_to_chattype(const char *type_str)
 	return GGZ_CHAT_UNKNOWN;
 }
 
+/* These are defined by the network protocol */
 #define GAG_ADMIN_NAME "gag"
 #define UNGAG_ADMIN_NAME "ungag"
 #define KICK_ADMIN_NAME "kick"
@@ -181,6 +184,7 @@ GGZAdminType ggz_string_to_admintype(const char *type_str)
 	return GGZ_ADMIN_UNKNOWN;
 }
 
+/* These are defined by the network protocol */
 #define NORMAL_LEAVETYPE_NAME "normal"
 #define BOOT_LEAVETYPE_NAME "boot"
 #define GAMEOVER_LEAVETYPE_NAME "gameover"
@@ -221,6 +225,7 @@ GGZLeaveType ggz_string_to_leavetype(const char *type_str)
 	return GGZ_LEAVE_GAMEERROR;
 }
 
+/* These are defined by the network protocol */
 #define GUEST_PLAYER_NAME "guest"
 #define NORMAL_PLAYER_NAME "normal"
 #define ADMIN_PLAYER_NAME "admin"
@@ -271,6 +276,7 @@ GGZPlayerType ggz_string_to_playertype(const char *type_str)
 	return GGZ_PLAYER_UNKNOWN; /* ? */
 }
 
+/* These are defined by the network protocol */
 #define TRUE_NAME "true"
 #define FALSE_NAME "false"
 
@@ -481,6 +487,7 @@ bool ggz_perms_is_set(GGZPermset perms, GGZPerm perm)
 }
 
 
+/* These are defined by the network protocol */
 static const char *perm_names[] = {
 	"join_table",
 	"launch_table",
