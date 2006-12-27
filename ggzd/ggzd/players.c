@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 8746 2006-12-23 21:35:25Z jdorje $
+ * $Id: players.c 8763 2006-12-27 10:02:33Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -1403,8 +1403,9 @@ GGZPlayerHandlerStatus player_chat(GGZPlayer* player, GGZChatType type,
 }
 
 
-GGZPlayerHandlerStatus player_admin(GGZPlayer* player, GGZAdminType type,
-				   const char *target, const char *reason)
+GGZPlayerHandlerStatus player_room_admin(GGZPlayer* player, GGZAdminType type,
+					 const char *target,
+					 const char *reason)
 {
 	GGZClientReqError status = E_BAD_OPTIONS;
 	GGZPlayer* rcvr;
@@ -1486,6 +1487,68 @@ GGZPlayerHandlerStatus player_admin(GGZPlayer* player, GGZAdminType type,
 
 	dbg_msg(GGZ_DBG_CHAT, "%s's admin action result: %d", player->name, status);
 	if (net_send_admin_result(player->client->net, status) < 0)
+		return GGZ_REQ_DISCONNECT;
+
+	/* Don't return the admin error code */
+	return GGZ_REQ_OK;
+}
+
+
+GGZPlayerHandlerStatus player_perms_admin(GGZPlayer *player,
+					  const char *target,
+					  GGZPerm perm, bool set)
+{
+	GGZPlayer* rcvr;
+
+	dbg_msg(GGZ_DBG_CHAT, "Handling admin perm action for %s",
+		player->name);
+
+	/* Only admins can do permission actions */
+	if (!ggz_perms_is_admin(player->perms)) {
+		dbg_msg(GGZ_DBG_CHAT, "%s is no admin!", player->name);
+		if (net_send_admin_result(player->client->net,
+					  E_NO_PERMISSION) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_OK;
+	}
+
+	/* Find out target player. Returns with write-lock on. */
+	rcvr = hash_player_lookup(target);
+	if (rcvr == NULL) {
+		if (net_send_admin_result(player->client->net,
+					  E_USR_LOOKUP) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_OK;
+	}
+	if (rcvr == player || rcvr->login_status == GGZ_LOGIN_ANON) {
+		pthread_rwlock_unlock(&rcvr->lock);
+		if (net_send_admin_result(player->client->net,
+					  E_BAD_OPTIONS) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_OK;
+	}
+
+	if (ggz_perms_is_set(rcvr->perms, perm) != set) {
+		ggzdbPlayerEntry entry;
+
+		snprintf(entry.handle, sizeof(entry.handle), rcvr->name);
+		if (ggzdb_player_get(&entry) != GGZDB_NO_ERROR) {
+			pthread_rwlock_unlock(&rcvr->lock);
+			if (net_send_admin_result(player->client->net,
+						  E_USR_LOOKUP) < 0)
+				return GGZ_REQ_DISCONNECT;
+			return GGZ_REQ_OK;
+		}
+
+		ggz_perms_set(&rcvr->perms, perm, set);
+		perms_set_to_db(rcvr->perms, &entry);
+
+		room_update_event(rcvr->name, GGZ_PLAYER_UPDATE_PERMS,
+				  rcvr->room, -1);
+	}
+
+	pthread_rwlock_unlock(&rcvr->lock);
+	if (net_send_admin_result(player->client->net, E_OK) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	/* Don't return the admin error code */

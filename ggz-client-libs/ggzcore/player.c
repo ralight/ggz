@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: player.c 8747 2006-12-24 09:18:47Z jdorje $
+ * $Id: player.c 8763 2006-12-27 10:02:33Z jdorje $
  *
  * This fils contains functions for handling players
  *
@@ -111,6 +111,13 @@ bool ggzcore_player_has_perm(const GGZPlayer *player, GGZPerm perm)
 	if (!player)
 		return false;
 	return _ggzcore_player_has_perm(player, perm);
+}
+
+int ggzcore_player_set_perm(GGZPlayer *player, GGZPerm perm, bool set)
+{
+	if (!player || perm < 0 || perm >= GGZ_PERM_COUNT || set != !!set)
+		return -1;
+	return _ggzcore_player_set_perm(player, perm, set);
 }
 
 int ggzcore_player_get_lag(const GGZPlayer * player)
@@ -277,6 +284,33 @@ bool _ggzcore_player_has_perm(const GGZPlayer *player, GGZPerm perm)
 }
 
 
+/* Not to be confused with _ggzcore_player_set_perm */
+int _ggzcore_player_set_perm(GGZPlayer *player, GGZPerm perm, bool set)
+{
+	GGZServer *server = ggzcore_room_get_server(player->room);
+	GGZNet *net = _ggzcore_server_get_net(server);
+	const char *handle = ggzcore_server_get_handle(server);
+	const GGZPlayer *me = ggzcore_server_get_player(server, handle);
+
+	if (me->type != GGZ_PLAYER_ADMIN) {
+		return -1;
+	}
+
+	if (_ggzcore_net_send_perm_admin(net, player, perm, set) < 0) {
+		return -1;
+	}
+
+#if 0
+	/* Setting this automatically would improve situation with lag but
+	   presents bigger problems if the operation fails at the server
+	   end. */
+	_ggzcore_player_set_perm(&player->perms, perm, set);
+#endif
+
+	return 0;
+}
+
+
 int _ggzcore_player_get_lag(const GGZPlayer * player)
 {
 	return player->lag;
@@ -396,6 +430,24 @@ void _ggzcore_room_set_player_lag(GGZRoom * room, const char *name,
 	}
 }
 
+
+void _ggzcore_room_set_player_perms(GGZRoom * room, const char *name,
+				    GGZPermset perms, GGZPlayerType type)
+{
+	/* FIXME: This should be sending a player "class-based" event */
+	GGZPlayer *player;
+
+	ggz_debug(GGZCORE_DBG_ROOM, "Setting lag to 0x%08X for %s",
+		  perms, name);
+
+	player = _ggzcore_room_get_player_by_name(room, name);
+	/* make sure they're still in room */
+	if (player && player->perms != perms) {
+		player->perms = perms;
+		player->type = type;
+		_ggzcore_room_event(room, GGZ_PLAYER_PERMS, name);
+	}
+}
 
 void _ggzcore_room_set_player_stats(GGZRoom * room, GGZPlayer * pdata)
 {

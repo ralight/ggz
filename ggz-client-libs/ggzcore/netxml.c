@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 8758 2006-12-27 03:09:36Z jdorje $
+ * $Id: netxml.c 8763 2006-12-27 10:02:33Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -594,8 +594,8 @@ int _ggzcore_net_send_chat(GGZNet * net, const GGZChatType type,
 
 
 /* Send an <ADMIN> tag for gag/ungag/kick/... */
-int _ggzcore_net_send_admin(GGZNet * net, const GGZAdminType type,
-			    const char *player, const char *reason)
+int _ggzcore_net_send_room_admin(GGZNet * net, const GGZAdminType type,
+				 const char *player, const char *reason)
 {
 	const char *reason_text;
 	char *reason_text_quoted;
@@ -653,6 +653,20 @@ int _ggzcore_net_send_admin(GGZNet * net, const GGZAdminType type,
 	}
 
 	return result;
+}
+
+
+int _ggzcore_net_send_perm_admin(GGZNet * net, GGZPlayer *player,
+				 GGZPerm perm, bool set)
+{
+	const char *permname = ggz_perm_to_string(perm);
+	const char *setname = bool_to_str(set);
+	const char *playername = _ggzcore_player_get_name(player);
+
+	return _ggzcore_net_send_line(net,
+				      "<ADMINPERM PLAYER='%s' PERM='%s' "
+				      "VALUE='%s'/>",
+				      playername, permname, setname);
 }
 
 
@@ -1538,6 +1552,12 @@ static void _ggzcore_net_player_update(GGZNet * net,
 		int lag = ggzcore_player_get_lag(player);
 
 		_ggzcore_room_set_player_lag(room, player_name, lag);
+	} else if (strcasecmp(action, "perms") == 0) {
+		GGZPermset permset = _ggzcore_player_get_perms(player);
+		GGZPlayerType type = _ggzcore_player_get_type(player);
+
+		_ggzcore_room_set_player_perms(room, player_name,
+					       permset, type);
 	} else if (strcasecmp(action, "stats") == 0) {
 		/* FIXME: Should be a player "class-based" event */
 		_ggzcore_room_set_player_stats(room, player);

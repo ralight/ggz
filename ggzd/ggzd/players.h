@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 8474 2006-08-04 14:48:01Z josef $
+ * $Id: players.h 8763 2006-12-27 10:02:33Z jdorje $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -132,8 +132,12 @@ GGZEventFuncReturn player_launch_callback(void* target, size_t size,
 
 GGZPlayerHandlerStatus player_chat(GGZPlayer* player, GGZChatType type,
 				   const char *target, const char *msg);
-GGZPlayerHandlerStatus player_admin(GGZPlayer* player, GGZAdminType type,
-				   const char *target, const char *reason);
+GGZPlayerHandlerStatus player_room_admin(GGZPlayer* player, GGZAdminType type,
+					 const char *target,
+					 const char *reason);
+GGZPlayerHandlerStatus player_perms_admin(GGZPlayer *player,
+					  const char *target,
+					  GGZPerm perm, bool set);
 GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table);
 GGZPlayerHandlerStatus player_table_join(GGZPlayer* player,
 					 int table_index,

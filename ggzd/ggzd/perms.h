@@ -34,8 +34,8 @@
 extern GGZPerm perms_default_anon[], perms_default[];
 extern const int num_perms_default_anon, num_perms_default;
 
-/* These functions must already have a player read-lock. */
 void perms_init_from_db(GGZPermset *perms, ggzdbPlayerEntry *db_pe);
+bool perms_set_to_db(GGZPermset perms, ggzdbPlayerEntry *pe);
 
 /* Acquires a read-lock and checks for the permission. */
 bool perms_check(GGZPlayer *player, GGZPerm perm);

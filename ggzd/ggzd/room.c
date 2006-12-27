@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 8746 2006-12-23 21:35:25Z jdorje $
+ * $Id: room.c 8763 2006-12-27 10:02:33Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -554,6 +554,7 @@ static GGZEventFuncReturn room_event_callback(void* target_player,
 	/* Don't deliver updates about ourself (except lag/stats) */
 	if (event->opcode != GGZ_PLAYER_UPDATE_LAG
 	    && event->opcode != GGZ_PLAYER_UPDATE_STATS
+	    && event->opcode != GGZ_PLAYER_UPDATE_PERMS
 	    && strcasecmp(event->player, player->name) == 0)
 		return GGZ_EVENT_OK;
 

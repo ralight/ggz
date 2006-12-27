@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 8747 2006-12-24 09:18:47Z jdorje $
+ * $Id: room.c 8763 2006-12-27 10:02:33Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -60,7 +60,8 @@ static char *_ggzcore_room_events[] = {
 	"GGZ_TABLE_LEAVE_FAIL",
 	"GGZ_PLAYER_LAG",
 	"GGZ_PLAYER_STATS",
-	"GGZ_PLAYER_COUNT"
+	"GGZ_PLAYER_COUNT",
+	"GGZ_PLAYER_PERMS"
 };
 
 /*
@@ -860,7 +861,7 @@ int _ggzcore_room_admin(GGZRoom *room, GGZAdminType type,
 
 	net = _ggzcore_server_get_net(room->server);
 
-	return _ggzcore_net_send_admin(net, type, player, reason);
+	return _ggzcore_net_send_room_admin(net, type, player, reason);
 }
 
 

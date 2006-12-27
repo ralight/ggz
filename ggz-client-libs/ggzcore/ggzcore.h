@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 8747 2006-12-24 09:18:47Z jdorje $
+ * $Id: ggzcore.h 8763 2006-12-27 10:02:33Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -518,7 +518,12 @@ typedef enum {
 
 	/** The number of players in a room has arrived.
 	 *  @param data The room (GGZRoom*) */
-	GGZ_PLAYER_COUNT
+	GGZ_PLAYER_COUNT,
+
+	/** A player's permissions have been updated.
+	 *  @see ggzcore_player_get_perm
+	 *  @param data The name of the player whose stats have changed. */
+	GGZ_PLAYER_PERMS
 } GGZRoomEvent;
 
 
@@ -1103,7 +1108,7 @@ int ggzcore_room_chat(GGZRoom *room,
 		      const char *player,
 		      const char *msg);
 
-/** @brief Administrative actions.
+/** @brief Server- and room-level administrative actions.
  *  @param room Your current room.
  *  @param type Type of action (gag, ungag, kick, ...)
  *  @param player Name of the target player
@@ -1160,6 +1165,13 @@ GGZTable* ggzcore_player_get_table(const GGZPlayer *player);
 
 /** @brief Return true iff the player has this permission. */
 bool ggzcore_player_has_perm(const GGZPlayer *player, GGZPerm perm);
+
+/** @brief Administer player permissions.
+ *  @param player Name of the target player
+ *  @param perm The permission to (un)set.
+ *  @param set Whether to set or clear the permission.
+ *  @return 0 on success, negative on failure */
+int ggzcore_player_set_perm(GGZPlayer *player, GGZPerm perm, bool set);
 
 /** @brief Return the player's lag class (1..5) */
 int ggzcore_player_get_lag(const GGZPlayer *player);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 8761 2006-12-27 05:59:29Z jdorje $
+ * $Id: net.c 8763 2006-12-27 10:02:33Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -139,6 +139,7 @@ static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_ping(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_info(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_admin(GGZNetIO *net, GGZXMLElement *element);
+static void _net_handle_adminperm(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_reason(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_tls_start(GGZNetIO *net, GGZXMLElement *element);
 
@@ -564,6 +565,26 @@ static GGZReturn _net_send_player_lag(GGZNetIO *net, GGZPlayer *player)
 }
 
 
+static GGZReturn _net_send_player_perms(GGZNetIO *net, GGZPlayer *player)
+{
+	GGZPlayerType type = player_get_type(player);
+	const char *type_desc = ggz_playertype_to_string(type);
+	char *player_name_quoted;
+	GGZReturn ret;
+
+	player_name_quoted = ggz_xml_escape(player->name);
+
+	/* The caller should ensure that these values are safe to access... */
+	ret = _net_send_line(net, 
+			     "<PLAYER ID='%s' TYPE='%s' PERMS='0x%08X'/>",
+			     player_name_quoted, type_desc, player->perms);
+
+	ggz_free(player_name_quoted);
+
+	return ret;
+}
+
+
 static GGZReturn _net_send_player_stats(GGZNetIO *net, GGZPlayer *player)
 {
 	char stats[512];
@@ -814,6 +835,19 @@ GGZReturn net_send_player_update(GGZNetIO *net, GGZPlayerUpdateType opcode,
 		_net_send_line(net, "<UPDATE TYPE='player' ACTION='stats' "
 			       "ROOM='%d'>", room_id);
 		_net_send_player_stats(net, player);
+		return _net_send_line(net, "</UPDATE>");
+	case GGZ_PLAYER_UPDATE_PERMS:
+		player = hash_player_lookup(name);
+		if (!player) {
+			err_msg("Player lookup failed!");
+			return GGZ_OK;
+		}
+		p2 = *player;
+		pthread_rwlock_unlock(&player->lock);
+
+		_net_send_line(net, "<UPDATE TYPE='player' ACTION='perms' "
+			       "ROOM='%d'>", room_id);
+		_net_send_player_perms(net, &p2);
 		return _net_send_line(net, "</UPDATE>");
 	}
 
@@ -1152,6 +1186,7 @@ static GGZXMLElement* _net_new_element(const char *tag,
 		TAG(enter),
 		TAG(chat),
 		TAG(admin),
+		TAG(adminperm),
 		TAG(reason),
 		TAG(info),
 		TAG(join),
@@ -1609,11 +1644,32 @@ static void _net_handle_admin(GGZNetIO *net, GGZXMLElement *element)
 		type = ggz_string_to_admintype(action_str);
 	}
 
-	player_admin(net->client->data, type, player, reason);
+	player_room_admin(net->client->data, type, player, reason);
 
 	if (reason) {
 		ggz_free(reason);
 	}
+}
+
+
+/* Functions for <ADMINPERM> tag */
+static void _net_handle_adminperm(GGZNetIO *net, GGZXMLElement *element)
+{
+	const char *player, *permstr, *valuestr;
+	bool value;
+	GGZPerm perm;
+
+	if (!element) return;
+	if (!check_playerconn(net, "admin")) return;
+
+	player = ggz_xmlelement_get_attr(element, "PLAYER");
+	permstr = ggz_xmlelement_get_attr(element, "PERM");
+	valuestr = ggz_xmlelement_get_attr(element, "VALUE");
+
+	perm = ggz_string_to_perm(permstr);
+	value = str_to_bool(valuestr, false);
+
+	player_perms_admin(net->client->data, player, perm, value);
 }
 
 
@@ -2072,10 +2128,11 @@ static int str_to_int(const char *str, int dflt)
 {
 	int val;
 
-	if (!str || sscanf(str, "%d", &val) < 1)
-		return dflt;
+	if (!str) return dflt;
+	if (sscanf(str, "0x%x", &val) == 1) return val;
+	if (sscanf(str, "%d", &val) == 1) return val;
 
-	return val;
+	return dflt;
 }
 
 

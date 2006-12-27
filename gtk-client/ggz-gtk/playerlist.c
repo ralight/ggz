@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 8756 2006-12-27 02:43:20Z jdorje $
+ * $Id: playerlist.c 8763 2006-12-27 10:02:33Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -126,16 +126,14 @@ static void permdata_free(gpointer data, GClosure *closure)
 
 static void client_player_perm_activate(GtkMenuItem * menuitem, gpointer data)
 {
-#if 0 /* No ggzcore support for this yet. */
 	PermData *pdata = data;
 	gboolean isset
 	  = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menuitem));
 
-	printf("Toggling %s on %s from %d.\n",
-	       ggzcore_player_get_name(pdata->player),
-	       ggz_perm_to_string(pdata->perm),
-	       (int)isset);
-#endif
+	if (ggzcore_player_set_perm(pdata->player, pdata->perm, isset) < 0) {
+		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
+				   _("Could not change permission."));
+	}
 }
 
 static bool is_admin(void)

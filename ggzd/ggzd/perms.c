@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/23/01
  * Desc: Functions for dealing with user permissions
- * $Id: perms.c 8746 2006-12-23 21:35:25Z jdorje $
+ * $Id: perms.c 8763 2006-12-27 10:02:33Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -36,6 +36,13 @@
 void perms_init_from_db(GGZPermset *perms, ggzdbPlayerEntry *pe)
 {
 	*perms = pe->perms;
+}
+
+/* Returns TRUE on success, FALSE on failure. */
+bool perms_set_to_db(GGZPermset perms, ggzdbPlayerEntry *pe)
+{
+	pe->perms = perms;
+	return (ggzdb_player_update(pe) != GGZDB_NO_ERROR);
 }
 
 
