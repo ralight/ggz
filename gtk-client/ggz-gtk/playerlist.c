@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 8755 2006-12-26 07:45:15Z jdorje $
+ * $Id: playerlist.c 8756 2006-12-27 02:43:20Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -111,7 +111,31 @@ static void client_player_ungag_activate(GtkMenuItem * menuitem, gpointer data)
 
 static void client_player_ban_activate(GtkMenuItem * menuitem, gpointer data)
 {
-  /* TODO */
+	/* TODO */
+}
+
+typedef struct {
+	GGZPlayer *player;
+	GGZPerm perm;
+} PermData;
+
+static void permdata_free(gpointer data, GClosure *closure)
+{
+	g_free(data);
+}
+
+static void client_player_perm_activate(GtkMenuItem * menuitem, gpointer data)
+{
+#if 0 /* No ggzcore support for this yet. */
+	PermData *pdata = data;
+	gboolean isset
+	  = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menuitem));
+
+	printf("Toggling %s on %s from %d.\n",
+	       ggzcore_player_get_name(pdata->player),
+	       ggz_perm_to_string(pdata->perm),
+	       (int)isset);
+#endif
 }
 
 static bool is_admin(void)
@@ -128,6 +152,34 @@ static bool is_admin(void)
 	}
 }
 
+static const char *perm_name(GGZPerm p)
+{
+	switch (p) {
+	case GGZ_PERM_JOIN_TABLE:
+	  return _("Can join tables");
+	case GGZ_PERM_ROOMS_LOGIN:
+	  return _("Can join rooms");
+	case GGZ_PERM_LAUNCH_TABLE:
+	  return _("Can launch tables");
+	case GGZ_PERM_ROOMS_ADMIN:
+	  return _("Room administrator");
+	case GGZ_PERM_CHAT_ANNOUNCE:
+	  return _("Can make server announcements");
+	case GGZ_PERM_CHAT_BOT:
+	  return _("Is a bot");
+	case GGZ_PERM_NO_STATS:
+	  return _("No stats for this player");
+	case GGZ_PERM_EDIT_TABLES:
+	  return _("Can admin tables");
+	case GGZ_PERM_TABLE_PRIVMSG:
+	  return _("Can send private messages at a table");
+	case GGZ_PERM_COUNT:
+	  break;
+	}
+
+	return NULL;
+}
+
 static GtkWidget *create_mnu_player(GGZPlayer *player, gboolean is_friend,
 				    gboolean is_ignore)
 {
@@ -140,6 +192,8 @@ static GtkWidget *create_mnu_player(GGZPlayer *player, gboolean is_friend,
 	GtkWidget *gag;
 	GtkWidget *ungag;
 	GtkWidget *ban;
+	GtkWidget *perms[GGZ_PERM_COUNT];
+	GGZPerm p;
 
 	mnu_player = gtk_menu_new();
 
@@ -179,6 +233,31 @@ static GtkWidget *create_mnu_player(GGZPlayer *player, gboolean is_friend,
 	ban = gtk_menu_item_new_with_label(_("Ban player"));
 	gtk_container_add(GTK_CONTAINER(mnu_player), ban);
 	gtk_widget_set_sensitive(ban, FALSE);
+
+	separator = gtk_menu_item_new();
+	gtk_container_add(GTK_CONTAINER(mnu_player), separator);
+	gtk_widget_set_sensitive(separator, FALSE);
+
+	for (p = 0; p < GGZ_PERM_COUNT; p++) {
+		const char *name = perm_name(p);
+		bool isset = ggzcore_player_has_perm(player, p);
+		PermData *pdata = g_malloc(sizeof(*pdata));
+
+		if (name == NULL) continue;
+		perms[p] = gtk_check_menu_item_new_with_label(name);
+
+		gtk_container_add(GTK_CONTAINER(mnu_player), perms[p]);
+		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(perms[p]),
+					       isset);
+		gtk_widget_set_sensitive(perms[p], is_admin());
+
+		pdata->player = player;
+		pdata->perm = p;
+
+		g_signal_connect_data(GTK_OBJECT(perms[p]), "activate",
+			GTK_SIGNAL_FUNC(client_player_perm_activate),
+			pdata, permdata_free, 0);
+	}
 
 	g_signal_connect(GTK_OBJECT(info), "activate",
 			 GTK_SIGNAL_FUNC(client_player_info_activate),
@@ -221,6 +300,7 @@ static gboolean player_list_event(GtkWidget *widget,
 					   &path, NULL, NULL, NULL)) {
 		return FALSE;
 	}
+	/* FIXME: must free path variable? */
 	gtk_tree_model_get_iter(model, &iter, path);
 
 	gtk_tree_model_get(model, &iter, PLAYER_COLUMN_NAME, &name, -1);
