@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 8747 2006-12-24 09:18:47Z jdorje $
+ * $Id: netxml.c 8757 2006-12-27 03:07:46Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -572,7 +572,6 @@ int _ggzcore_net_send_chat(GGZNet * net, const GGZChatType type,
 						chat_text_quoted);
 		break;
 	case GGZ_CHAT_UNKNOWN:
-	default:
 		/* Returning an error would mean a *network* error,
 		   which isn't the case. */
 		result = 0;
@@ -596,12 +595,12 @@ int _ggzcore_net_send_chat(GGZNet * net, const GGZChatType type,
 
 /* Send an <ADMIN> tag for gag/ungag/kick/... */
 int _ggzcore_net_send_admin(GGZNet * net, const GGZAdminType type,
-			   const char *player, const char *reason)
+			    const char *player, const char *reason)
 {
 	const char *reason_text;
 	char *reason_text_quoted;
 	char *my_text = NULL;
-	int result;
+	int result = -1;
 
 	ggz_debug(GGZCORE_DBG_NET, "Sending administrative action");
 
@@ -641,9 +640,8 @@ int _ggzcore_net_send_admin(GGZNet * net, const GGZAdminType type,
 						"</ADMIN>");
 		break;
 	case GGZ_ADMIN_BAN:
-	default:
+	case GGZ_ADMIN_UNKNOWN:
 		/* Not yet in use. */
-		result = -1;
 		break;
 	}
 
@@ -1227,7 +1225,7 @@ static void _ggzcore_net_handle_result(GGZNet * net,
 		_ggzcore_room_set_table_leave_status(room, code);
 	else if (strcasecmp(action, "chat") == 0) {
 		if (code != E_OK) {
-		      GGZErrorEventData error = { status:code };
+			GGZErrorEventData error = { status:code };
 
 			switch (code) {
 			case E_NOT_IN_ROOM:
