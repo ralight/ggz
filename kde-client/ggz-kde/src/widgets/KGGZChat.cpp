@@ -168,7 +168,7 @@ void KGGZChat::slotSend()
 					if(player)
 					{
 						if(inputline.startsWith("/gag")) triggerevent = EVENT_GAG;
-						if(inputline.startsWith("/ungag")) triggerevent = EVENT_GAG;
+						if(inputline.startsWith("/ungag")) triggerevent = EVENT_UNGAG;
 						if(inputline.startsWith("/kick")) triggerevent = EVENT_KICK;
 						op2 = strtok(NULL, " ");
 						if(op2) strcat(inputargs, op2);
@@ -277,7 +277,7 @@ void KGGZChat::slotSend()
 			receive(NULL, i18n("Administrative actions."), RECEIVE_INFO);
 			receive(NULL, i18n("/gag &lt;player&gt; - force global ignore."), RECEIVE_INFO);
 			receive(NULL, i18n("/ungag &lt;player&gt; - revert gagging."), RECEIVE_INFO);
-			receive(NULL, i18n("/kick &lt;player&gt; - kick player from server."), RECEIVE_INFO);
+			receive(NULL, i18n("/kick &lt;player&gt; &lt;reason&gt; - kick player from server."), RECEIVE_INFO);
 			break;
 		case EVENT_CHAT:
 			emit signalChat(inputtext, NULL, RECEIVE_CHAT);
