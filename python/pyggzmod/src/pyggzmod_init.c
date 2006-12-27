@@ -57,27 +57,6 @@ static PyObject *pyggzmod_cb_error = NULL;
 
 /*   Enumeration of GGZModType (GGZMOD_GAME, GGZMOD_GGZ) */
 
-/* Unimplemented methods (TODO!) */
-
-/*   ggzmod_request_stand */
-/*   ggzmod_request_sit */
-/*   ggzmod_request_boot */
-/*   ggzmod_request_bot */
-/*   ggzmod_request_open */
-/*   ggzmod_request_chat */
-
-/*   ggzmod_player_get_record */
-/*   ggzmod_player_get_rating */
-/*   ggzmod_player_get_ranking */
-/*   ggzmod_player_get_highscore */
-/*   ggzmod_spectator_get_record */
-/*   ggzmod_spectator_get_rating */
-/*   ggzmod_spectator_get_ranking */
-/*   ggzmod_spectator_get_highscore */
-
-/*   ggzmod_player_request_info */
-/*   ggzmod_player_get_info */
-
 /**********************************************/
 /* GGZMod object methods just like in C       */
 /**********************************************/
