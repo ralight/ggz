@@ -1,5 +1,5 @@
 dnl Configuration for the Gtk+ core client
-# $Id: configure.ac 8595 2006-09-24 20:02:30Z josef $
+# $Id: configure.ac 8764 2006-12-27 11:18:08Z josef $
 dnl ======================================
 
 AC_INIT([GGZ Gtk+ client], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
@@ -24,7 +24,6 @@ AC_GGZ_INIT(defaults, export)
 AC_GGZ_LIBGGZ
 AC_GGZ_VERSION(0, 0, 14)
 AC_GGZ_GGZCORE
-AC_GGZ_GGZMOD
 AC_GGZ_INTL
 
 
@@ -92,6 +91,7 @@ fi
 # Library settings
 # ================
 AM_CONDITIONAL(INSTALL_GGZ_GTK, true)
+AM_CONDITIONAL([COND_GAIM], [test "$have_gaim" = yes])
 
 dnl Various dirs
 dnl ============

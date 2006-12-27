@@ -1,8 +1,12 @@
+#include "config.h"
+
+#include <gaim/version.h>
+
 #define GAIM_PLUGINS 1
+
 #include <gdk/gdk.h>
 #include <gtk/gtkplug.h>
 
-#include <gaim/config.h>
 #include <gaim/debug.h>
 #include <gaim/gaim.h>
 #include <gaim/core.h>
@@ -14,13 +18,25 @@
 #include <gaim/gtkblist.h>
 #include <gaim/signals.h>
 #include <gaim/util.h>
-#include <gaim/internal.h>
 #include <gaim/cmds.h>
 #include <gaim/debug.h>
 #include <gaim/plugin.h>
-#include <gaim/version.h>
+
+#if GAIM_MAJOR_VERSION < 2
+/* 1.5.0 only */
+#include <gaim/config.h>
+#include <gaim/internal.h>
+#else
+/* 2.0.0 only */
+#include <gaim/conversation.h>
+#endif
 
 #include <ggz.h>
+
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "ggz.xpm"
 
@@ -106,7 +122,11 @@ gboolean PopMenu(GtkMenu *menu, GdkEvent *ev) {
 static void nouvelle_convers(GaimConversation *conv, void *data) {
 //	printf("Une nouvelle conversation:%s!!\n", gaim_conversation_get_name(conv));
 	GaimGtkConversation *gtkconv = GAIM_GTK_CONVERSATION(conv);
+#if GAIM_MAJOR_VERSION < 2
 	GtkWidget *bbox=gtkconv->bbox;
+#else
+	GtkWidget *bbox=gtkconv->lower_hbox;
+#endif
 	GtkWidget *icon;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
@@ -132,7 +152,11 @@ static void nouvelle_convers(GaimConversation *conv, void *data) {
 
 	sg = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 
+#if GAIM_MAJOR_VERSION < 2
 	icon = gaim_gtkconv_button_new("ggzicon", "Jouer", "Pfff", gtkconv->tooltips, GTK_SIGNAL_FUNC(PopMenu), NULL);
+#else
+	icon = NULL; /* FIXME! */
+#endif
 	if(icon == NULL) {
 		printf("Arf :/ \n");
 		return;
@@ -227,8 +251,12 @@ static void message_recu2(GaimAccount *acct,char **sender, char **buffer,int fla
 	if(gtk_dialog_run(GTK_DIALOG(pDialog)) == GTK_RESPONSE_NO)
 	{
 		gtk_widget_destroy(pDialog);
-		
+
+#if GAIM_MAJOR_VERSION < 2
 		gaim_conv_im_send(GAIM_CONV_IM(gaim_conversation_new(GAIM_CONV_IM,acct,*sender)), g_strdup_printf("%srefuse_game %s", HEADER, FOOTER));
+#else
+		gaim_conv_im_send(GAIM_CONV_IM(gaim_conversation_new(GAIM_CONV_TYPE_IM,acct,*sender)), g_strdup_printf("%srefuse_game %s", HEADER, FOOTER));
+#endif
 		*buffer=NULL;
 		return;
 	}

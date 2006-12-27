@@ -4,7 +4,6 @@ dnl ======================================
 dnl
 dnl Call: AC_GAIM(major, minor, micro)
 dnl Returns: $have_gaim (= yes/no)
-dnl Sets: GAIMPLUGIN (for SUBDIRS)
 dnl
 dnl Copyright (C) 2004 - 2006 Josef Spillner <josef@ggzgamingzone.org>
 dnl
@@ -66,14 +65,11 @@ else
 
   AC_RUN_IFELSE(
     [AC_LANG_PROGRAM([[$testprologue]], [[$testbody]])],
-    [
-      GAIMPLUGIN='gaim-plugin'
-      AC_SUBST(GAIMPLUGIN)
-    ],
+    [],
     [
       AC_MSG_WARN([The Gaim version is too old. Version $major.$minor.$micro is required.])
 	  have_gaim=no
-	]
+    ]
   )
 fi
 
