@@ -1,11 +1,12 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8772 2006-12-28 13:02:47Z oojah $
+# $Id: Makefile.am 8774 2006-12-28 14:25:34Z oojah $
 
 SUBDIRS = .
 
 grubbydir = $(libdir)/grubby/modules
 grubby_LTLIBRARIES = \
 	libgurumod_badword.la \
+#	libgurumod_banner.la \
 	libgurumod_embed.la \
 	libgurumod_exec.la \
 	libgurumod_extra.la \
@@ -25,6 +26,10 @@ noinst_HEADERS = game.h
 libgurumod_badword_la_SOURCES = badword.c
 libgurumod_badword_la_LIBADD = $(LIB_GGZCORE)
 libgurumod_badword_la_LDFLAGS = -module -avoid-version $(GGZCORE_LDFLAGS)
+
+#libgurumod_banner_la_SOURCES = banner.c
+#libgurumod_banner_la_LIBADD = $(mysql_libraries)
+#libgurumod_banner_la_LDFLAGS = -module -avoid-version
 
 libgurumod_embed_la_SOURCES = embed.c
 libgurumod_embed_la_LIBADD = $(ruby_libraries) $(perl_libraries) $(python_libraries) $(tcl_libraries) $(php_libraries)
