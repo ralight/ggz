@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 8749 2006-12-25 02:07:57Z jdorje $
+ * $Id: playerinfo.c 8771 2006-12-28 09:28:29Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -40,6 +40,7 @@
 
 #include "chat.h"
 #include "client.h"
+#include "ggzutils.h"
 #include "playerinfo.h"
 #include "support.h"
 
@@ -369,15 +370,16 @@ void player_info_create_or_raise(GGZPlayer *player)
 	tmp = g_object_get_data(G_OBJECT(dialog), "perms");
 	text[0] = '\0';
 	for (p = 0; p < GGZ_PERM_COUNT; p++) {
-	  if (ggzcore_player_has_perm(player, p)) {
-	    snprintf(text + strlen(text), sizeof(text) - strlen(text),
-		     "%s\n", ggz_perm_to_string(p));
-	  }
+		if (ggzcore_player_has_perm(player, p)) {
+			snprintf(text + strlen(text),
+				 sizeof(text) - strlen(text),
+				 "%s\n", perm_name(p));
+		}
 	}
 	if (text[0] == '\0') {
-	  snprintf(text, sizeof(text), _("none/unknown"));
+		snprintf(text, sizeof(text), _("none/unknown"));
 	} else {
-	  text[strlen(text) - 1] = '\0';
+		text[strlen(text) - 1] = '\0';
 	}
 	gtk_label_set_text(GTK_LABEL(tmp), text);
 

@@ -35,6 +35,7 @@ libggz_gtk_la_SOURCES =	about.c \
 			game.h \
 			ggzclient.c \
 			ggzclient.h \
+			ggzutils.c	ggzutils.h	\
 			ggz-embed.h		\
 			ggz-gtk.h		\
 			launch.c \

@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 8763 2006-12-27 10:02:33Z jdorje $
+ * $Id: playerlist.c 8771 2006-12-28 09:28:29Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -36,6 +36,7 @@
 #include <ggzcore.h>
 
 #include "chat.h"
+#include "ggzutils.h"
 #include "playerinfo.h"
 #include "playerlist.h"
 #include "server.h"
@@ -148,34 +149,6 @@ static bool is_admin(void)
 	} else {
 		return FALSE;
 	}
-}
-
-static const char *perm_name(GGZPerm p)
-{
-	switch (p) {
-	case GGZ_PERM_JOIN_TABLE:
-	  return _("Can join tables");
-	case GGZ_PERM_ROOMS_LOGIN:
-	  return _("Can join rooms");
-	case GGZ_PERM_LAUNCH_TABLE:
-	  return _("Can launch tables");
-	case GGZ_PERM_ROOMS_ADMIN:
-	  return _("Room administrator");
-	case GGZ_PERM_CHAT_ANNOUNCE:
-	  return _("Can make server announcements");
-	case GGZ_PERM_CHAT_BOT:
-	  return _("Is a bot");
-	case GGZ_PERM_NO_STATS:
-	  return _("No stats for this player");
-	case GGZ_PERM_EDIT_TABLES:
-	  return _("Can admin tables");
-	case GGZ_PERM_TABLE_PRIVMSG:
-	  return _("Can send private messages at a table");
-	case GGZ_PERM_COUNT:
-	  break;
-	}
-
-	return NULL;
 }
 
 static GtkWidget *create_mnu_player(GGZPlayer *player, gboolean is_friend,
