@@ -103,7 +103,7 @@ Gurucore *guru_module_init(const char *datadir)
 			printf(_("ERROR: Couldn't find player functions\n"));
 			exit(-1);
 		}
-		(playerinit)(datadir2);
+		(playerinit)(core->datadir);
 
 		ggz_free(module);
 	}
