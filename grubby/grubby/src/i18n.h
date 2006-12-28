@@ -21,6 +21,9 @@
 /* Initializes the i18n subsystem with a default language */
 void guru_i18n_initialize(const char *language, const char *systemlanguage);
 
+/* Frees memory allocated for i18n */
+void guru_i18n_cleanup(void);
+
 /* Sets the language to the given locale code */
 void guru_i18n_setlanguage(const char *language);
 

@@ -64,28 +64,28 @@ static void net_internal_queueadd(const char *player, const char *message, int t
 	}
 
 	/* Insert new grubby structure */
-	guru = (Guru*)malloc(sizeof(Guru));
+	guru = (Guru*)ggz_malloc(sizeof(Guru));
 	guru->type = type;
-	if(player) guru->player = strdup(player);
+	if(player) guru->player = ggz_strdup(player);
 	else guru->player = NULL;
 	guru->playertype = PLAYER_UNKNOWN;
 	if(message)
 	{
-		guru->message = strdup(message);
+		guru->message = ggz_strdup(message);
 		guru->list = NULL;
-		listtoken = strdup(message);
+		listtoken = ggz_strdup(message);
 		token = strtok(listtoken, " ,./:?!\'");
 		i = 0;
 		while(token)
 		{
-			guru->list = (char**)realloc(guru->list, (i + 2) * sizeof(char*));
-			guru->list[i] = (char*)malloc(strlen(token) + 1);
+			guru->list = (char**)ggz_realloc(guru->list, (i + 2) * sizeof(char*));
+			guru->list[i] = (char*)ggz_malloc(strlen(token) + 1);
 			strcpy(guru->list[i], token);
 			guru->list[i + 1] = NULL;
 			i++;
 			token = strtok(NULL, " ,./:?!\'");
 		}
-		free(listtoken);
+		ggz_free(listtoken);
 	}
 	else
 	{
@@ -95,7 +95,7 @@ static void net_internal_queueadd(const char *player, const char *message, int t
 
 	/* Insert structure into queue */
 	queuelen++;
-	queue = (Guru**)realloc(queue, sizeof(Guru*) * queuelen);
+	queue = (Guru**)ggz_realloc(queue, sizeof(Guru*) * queuelen);
 	queue[queuelen - 2] = guru;
 	queue[queuelen - 1] = NULL;
 }
@@ -135,7 +135,7 @@ void net_join(const char *room)
 	fprintf(irc, "JOIN %s\r\n", room);
 	fflush(irc);
 
-	chatroom = strdup(room);
+	chatroom = ggz_strdup(room);
 
 	status = NET_GOTREADY;
 }
@@ -185,7 +185,7 @@ void net_output(Guru *output)
 
 	/* Handle multi-line answers */
 	if(!output->message) return;
-	msg = strdup(output->message);
+	msg = ggz_strdup(output->message);
 	token = strtok(msg, "\r\n");
 	while(token)
 	{
@@ -204,7 +204,7 @@ void net_output(Guru *output)
 		}
 		token = strtok(NULL, "\n");
 	}
-	free(msg);
+	ggz_free(msg);
 }
 
 void chat(const char *message)
@@ -217,7 +217,7 @@ void chat(const char *message)
 	int type;
 
 	/* Extract player name */
-	player = strdup(message + 1);
+	player = ggz_strdup(message + 1);
 	part = strstr(player, "!");
 	if(part) part[0] = 0;
 	else player = NULL;
@@ -230,7 +230,7 @@ void chat(const char *message)
 	part = strstr(message, "PRIVMSG");
 	if(part)
 	{
-		tmp = strdup(part);
+		tmp = ggz_strdup(part);
 		token = strtok(tmp, " ");
 		if(token)
 		{
@@ -240,18 +240,18 @@ void chat(const char *message)
 				if(!strcmp(token, chatroom))
 				{
 					token = strtok(NULL, "\r\n");
-					msg = strdup(token + 1);
+					msg = ggz_strdup(token + 1);
 					type = GURU_CHAT;
 				}
 				else if(!strcmp(token, guruname))
 				{
 					token = strtok(NULL, "\r\n");
-					msg = strdup(token + 1);
+					msg = ggz_strdup(token + 1);
 					type = GURU_PRIVMSG;
 				}
 			}
 		}
-		free(tmp);
+		ggz_free(tmp);
 	}
 	else
 	{
@@ -259,8 +259,15 @@ void chat(const char *message)
 		if(strstr(message, " QUIT ")) type = GURU_LEAVE;
 	}
 
-	if(!type) return;
-	if((!msg) && ((type == GURU_PRIVMSG) || (type == GURU_CHAT))) return;
+	if(!type){
+		ggz_free(player);
+		if(msg) ggz_free(msg); /* This should never come true, but does no harm */
+		return;
+	}
+	if((!msg) && ((type == GURU_PRIVMSG) || (type == GURU_CHAT))){
+		ggz_free(player);
+		return;
+	}
 
 	/* Ignore all self-generates messages */
 	net_internal_queueadd(player, msg, type);
@@ -276,7 +283,7 @@ void chat(const char *message)
 		fflush(logstream);
 	}
 
-	if(msg) free(msg);
-	free(player);
+	if(msg) ggz_free(msg);
+	ggz_free(player);
 }
 

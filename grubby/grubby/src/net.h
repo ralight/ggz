@@ -23,6 +23,7 @@ enum States
 };
 
 /* Interface */
+void net_cleanup(void);
 void net_connect(const char *host, int port, const char *name, const char *password);
 void net_join(const char *room);
 int net_status(void);

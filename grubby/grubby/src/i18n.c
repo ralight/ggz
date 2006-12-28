@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
+#include <ggz.h>
 
 #include "config.h"
 #include "player.h"
@@ -24,8 +25,21 @@ static char *systemstdlang = NULL;
 /* Initializes the i18n subsystem */
 void guru_i18n_initialize(const char *language, const char *systemlanguage)
 {
-	if(language) stdlang = strdup(language);
-	if(systemlanguage) systemstdlang = strdup(systemlanguage);
+	if(language) stdlang = ggz_strdup(language);
+	if(systemlanguage) systemstdlang = ggz_strdup(systemlanguage);
+}
+
+/* Frees memory allocated for i18n */
+void guru_i18n_cleanup(void)
+{
+	if(stdlang){
+		ggz_free(stdlang);
+		stdlang = NULL;
+	}
+	if(systemstdlang){
+		ggz_free(systemstdlang);
+		systemstdlang = NULL;
+	}
 }
 
 /* Sets the language to the given locale code */
@@ -84,7 +98,7 @@ char *guru_i18n_check(char *player, char *message, int language)
 	if(!message) return NULL;
 
 	ret = NULL;
-	msg = strdup(message);
+	msg = ggz_strdup(message);
 	token = strtok(msg, " .,:");
 	i = 0;
 	c = 0;
@@ -102,15 +116,21 @@ char *guru_i18n_check(char *player, char *message, int language)
 		i++;
 		token = strtok(NULL, " .,:");
 	}
-	free(msg);
+	ggz_free(msg);
 
 	if(!ret)
 	{
 		if(language)
 		{
 			p = guru_player_lookup(player);
-			if((p) && (p->language)) guru_i18n_setlanguage(p->language);
-			else guru_i18n_setlanguage(stdlang);
+			if((p) && (p->language)){
+				guru_i18n_setlanguage(p->language);
+				if(p){
+					guru_player_free(p);
+				}
+			}else{
+				guru_i18n_setlanguage(stdlang);
+			}
 		}
 		else guru_i18n_setlanguage(stdlang);
 	}
@@ -130,7 +150,7 @@ char *guru_i18n_translate(char *player, char *messageset)
 	Player *p;
 
 	if(!messageset) return NULL;
-	messageset = strdup(messageset); /* FIXME: eeek! this bug is not normal! */
+	messageset = ggz_strdup(messageset); /* FIXME: eeek! this bug is not normal! */
 
 	/*printf("--trans1: %s, %s\n", player, messageset);*/
 	if(player)
@@ -146,7 +166,7 @@ char *guru_i18n_translate(char *player, char *messageset)
 
 	if(ret)
 	{
-		free(ret);
+		ggz_free(ret);
 		ret = NULL;
 	}
 
@@ -159,10 +179,10 @@ char *guru_i18n_translate(char *player, char *messageset)
 	if(strcmp(message, messageset))
 	{
 		guru_i18n_setcatalog(0);
-		return strdup(message); /* FIXME: another leak */
+		return ggz_strdup(message); /* FIXME: another leak */
 	}
 	
-	dup = strdup(messageset);
+	dup = ggz_strdup(messageset);
 	messageset = dup;
 	token = strtok(messageset, "\n");
 	i = 0;
@@ -170,16 +190,16 @@ char *guru_i18n_translate(char *player, char *messageset)
 	{
 		/*printf("Lookup: %s\n", token);*/
 
-		tmptoken = (char*)malloc(strlen(token) + 2);
+		tmptoken = (char*)ggz_malloc(strlen(token) + 2);
 		strcpy(tmptoken, token);
 		strcat(tmptoken, "\n");
 
 		message = _(tmptoken);
 
-		free(tmptoken);
+		ggz_free(tmptoken);
 
 		/*printf("* translating \"%s\" to \"%s\"\n", token, message);*/
-		ret = (char*)realloc(ret, (ret ? strlen(ret) : 0) + strlen(message) + (ret ? 2 : 1));
+		ret = (char*)ggz_realloc(ret, (ret ? strlen(ret) : 0) + strlen(message) + (ret ? 2 : 1));
 		if(!i) strcpy(ret, message);
 		else
 		{
@@ -189,7 +209,7 @@ char *guru_i18n_translate(char *player, char *messageset)
 		token = strtok(NULL, "\n");
 		i++;
 	}
-	free(dup);
+	ggz_free(dup);
 
 	guru_i18n_setcatalog(0);
 

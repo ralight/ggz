@@ -11,6 +11,8 @@
 #include "net.h"
 #include "i18n.h"
 #include "config.h"
+#include <ggz.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,6 +20,14 @@
 #include <getopt.h>
 
 #define GRUBBY_VERSION "0.9.1"
+
+static int running;
+
+/* Clean up nicely on SIGTERM to allow easier memory debugging */
+void sighandler(int signum)
+{
+	running = 0;
+}
 
 /* Execute administrative commands */
 /* FIXME: Log admin commands */
@@ -58,7 +68,7 @@ static int admin(Guru *guru, Gurucore *core)
 			if((!strcmp(guru->list[1], "goto")) && (valid = 1))
 			{
 				room = guru->list[2];
-				guru->message = strdup(__("Yes, I follow, my master."));
+				guru->message = ggz_strdup(__("Yes, I follow, my master."));
 				(core->net_output)(guru);
 				sleep(2);
 				(core->net_join)(room);
@@ -68,7 +78,7 @@ static int admin(Guru *guru, Gurucore *core)
 			{
 				if(!strcmp(guru->list[2], "off")) (core->net_log)(NULL);
 				else (core->net_log)(core->logfile);
-				guru->message = strdup(__("Toggled logging."));
+				guru->message = ggz_strdup(__("Toggled logging."));
 				(core->net_output)(guru);
 				return 1;
 			}
@@ -76,7 +86,7 @@ static int admin(Guru *guru, Gurucore *core)
 		default:
 			if((!strcmp(guru->list[1], "announce")) && (valid = 1))
 			{
-				guru->message = strdup(guru->list[2]);
+				guru->message = ggz_strdup(guru->list[2]);
 				guru->type = GURU_ADMIN;
 				(core->net_output)(guru);
 				return 1;
@@ -110,6 +120,8 @@ int main(int argc, char *argv[])
 	int opt;
 
 	extern int _nl_msg_cat_cntr;
+
+	signal(SIGTERM, sighandler);
 
 	bindtextdomain("grubby", PREFIX "/share/locale");
 	textdomain("grubby");
@@ -178,7 +190,8 @@ int main(int argc, char *argv[])
 	if(core->i18n_init) (core->i18n_init)(core->language, getenv("LANG"));
 
 	/* Main loop */
-	while(1)
+	running = 1;
+	while(running)
 	{
 		/* Permanently check states */
 		switch((core->net_status)())
@@ -220,7 +233,7 @@ int main(int argc, char *argv[])
 
 						if(input)
 						{
-							free(guru->message);
+							ggz_free(guru->message);
 							guru->message = input;
 							/*guru->message = (core->i18n_translate)(guru->player, guru->message);*/
 							(core->net_output)(guru);

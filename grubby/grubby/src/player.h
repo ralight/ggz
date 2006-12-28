@@ -42,6 +42,7 @@ Player *guru_player_lookup(const char *name);
 void guru_player_save(Player *p);
 void guru_player_free(Player *p);
 Player *guru_player_new(void);
+void guru_player_cleanup(void);
 
 #endif
 

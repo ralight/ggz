@@ -36,20 +36,20 @@ static Player *duplicate(Player *p)
 	Player *q;
 
 	if(!p) return NULL;
-	q = (Player*)malloc(sizeof(Player));
+	q = (Player*)ggz_malloc(sizeof(Player));
 	q->status = p->status;
 	q->firstseen = p->firstseen;
 	q->lastseen = p->lastseen;
 	q->lastactive = p->lastactive;
-	if(p->name) q->name = strdup(p->name);
+	if(p->name) q->name = ggz_strdup(p->name);
 	else q->name = NULL;
-	if(p->realname) q->realname = strdup(p->realname);
+	if(p->realname) q->realname = ggz_strdup(p->realname);
 	else q->realname = NULL;
-	if(p->publicinfo) q->publicinfo = strdup(p->publicinfo);
+	if(p->publicinfo) q->publicinfo = ggz_strdup(p->publicinfo);
 	else q->publicinfo = NULL;
-	if(p->language) q->language = strdup(p->language);
+	if(p->language) q->language = ggz_strdup(p->language);
 	else q->language = NULL;
-	if(p->contact) q->contact = strdup(p->contact);
+	if(p->contact) q->contact = ggz_strdup(p->contact);
 	else q->contact = NULL;
 	q->origin = p;
 
@@ -61,13 +61,13 @@ static void cleanup(Player *p)
 {
 	if(!p) return;
 	if(!p->origin) return;
-	if(p->name) free(p->name);
-	if(p->realname) free(p->realname);
-	if(p->language) free(p->language);
-	if(p->publicinfo) free(p->publicinfo);
-	if(p->contact) free(p->contact);
+	if(p->name) ggz_free(p->name);
+	if(p->realname) ggz_free(p->realname);
+	if(p->language) ggz_free(p->language);
+	if(p->publicinfo) ggz_free(p->publicinfo);
+	if(p->contact) ggz_free(p->contact);
 	p->origin = NULL;
-	free(p);
+	ggz_free(p);
 }
 
 /* Set duplication policy */
@@ -80,7 +80,7 @@ void guru_player_policy(int duplication)
 Player *guru_player_new(void)
 {
 	Player *p;
-	p = (Player*)malloc(sizeof(Player));
+	p = (Player*)ggz_malloc(sizeof(Player));
 	p->name = NULL;
 	p->realname = NULL;
 	p->language = NULL;
@@ -118,11 +118,11 @@ Player *guru_player_lookup(const char *name)
 	/* If not found, try to look him up */
 	if(handle == -1)
 	{
-		path = (char*)malloc(strlen(playerdatadir) + strlen(PLAYERDB) + 1);
+		path = (char*)ggz_malloc(strlen(playerdatadir) + strlen(PLAYERDB) + 1);
 		strcpy(path, playerdatadir);
 		strcat(path, PLAYERDB);
 		handle = ggz_conf_parse(path, GGZ_CONF_CREATE | GGZ_CONF_RDWR);
-		free(path);
+		ggz_free(path);
 		if(handle < 0) return NULL;
 	}
 
@@ -130,8 +130,8 @@ Player *guru_player_lookup(const char *name)
 	if(!exist) return NULL;
 
 	/* Get him into the list */
-	p = (Player*)malloc(sizeof(Player));
-	p->name = strdup(name);
+	p = (Player*)ggz_malloc(sizeof(Player));
+	p->name = ggz_strdup(name);
 	p->firstseen = exist;
 	p->lastseen = ggz_conf_read_int(handle, name, "LASTSEEN", 0);
 	p->lastactive = ggz_conf_read_int(handle, name, "LASTACTIVE", 0);
@@ -144,7 +144,7 @@ Player *guru_player_lookup(const char *name)
 
 	/* FIXME: cache is disabled until a shared memory instance is possible among the plugins */
 	/*
-	list = (Player**)realloc(list, ++listsize + 1);
+	list = (Player**)ggz_realloc(list, ++listsize + 1);
 	list[listsize - 1] = p;
 	list[listsize] = NULL;
 	*/
@@ -180,9 +180,17 @@ void guru_player_save(Player *p)
 	ggz_conf_commit(handle);
 }
 
-/* Manage to cleanup all associated memory */
+/* Manage to cleanup all memory associated with a player */
 void guru_player_free(Player *p)
 {
 	cleanup(p);
 }
 
+/* Clean up all memory for this module */
+void guru_player_cleanup(void)
+{
+	if(handle >= 0){
+		ggz_conf_close(handle);
+		handle = -1;
+	}
+}

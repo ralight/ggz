@@ -29,14 +29,14 @@ char **modulenamelist = NULL;
 void **modulelist = NULL;
 modulefunc *functionlist = NULL;
 int modulecount = 0;
-Gurucore *core;
-int handler;
-char *datadir2;
+Gurucore *core = NULL;
+int handler = -1;
 
 /* Load the module list and activate the initial modules */
 Gurucore *guru_module_init(const char *datadir)
 {
 	int ret;
+	char *datadir2 = NULL;
 	char *path;
 	char **list;
 	int count, i;
@@ -46,30 +46,30 @@ Gurucore *guru_module_init(const char *datadir)
 	playerinitfunc playerinit;
 
 	/* Find out grubby's data directory first */
-	if(datadir) datadir2 = strdup(datadir);
+	if(datadir) datadir2 = ggz_strdup(datadir);
 	else
 	{
 		home = getenv("HOME");
-		datadir2 = (char*)malloc(strlen(home) + 10);
+		datadir2 = (char*)ggz_malloc(strlen(home) + 10);
 		strcpy(datadir2, home);
 		strcat(datadir2, "/.ggz");
 	}
 
 	/* Open configuration file */
-	path = (char*)malloc(strlen(datadir2) + strlen(GRUBBYCONF) + 1);
+	path = (char*)ggz_malloc(strlen(datadir2) + strlen(GRUBBYCONF) + 1);
 	strcpy(path, datadir2);
 	strcat(path, GRUBBYCONF);
 	handler = ggz_conf_parse(path, GGZ_CONF_RDONLY);
-	free(path);
+	ggz_free(path);
 	if(handler < 0)
 	{
-		free(datadir2);
+		ggz_free(datadir2);
 		return NULL;
 	}
 
 	/* Load main option into grubby's core */
-	core = (Gurucore*)malloc(sizeof(Gurucore));
-	core->datadir = datadir2;
+	core = (Gurucore*)ggz_malloc(sizeof(Gurucore));
+	core->datadir = ggz_strdup(datadir2);
 
 	core->host = ggz_conf_read_string(handler, "preferences", "host", "localhost");
 	core->name = ggz_conf_read_string(handler, "preferences", "name", "grubby/unnamed");
@@ -104,6 +104,8 @@ Gurucore *guru_module_init(const char *datadir)
 			exit(-1);
 		}
 		(playerinit)(datadir2);
+
+		ggz_free(module);
 	}
 
 	/* Load net plugin */
@@ -126,6 +128,7 @@ Gurucore *guru_module_init(const char *datadir)
 		exit(-1);
 	}
 	printf(_("OK\n"));
+	ggz_free(module);
 
 	/* Load i18n plugin */
 	core->i18n_init = NULL;
@@ -151,24 +154,82 @@ Gurucore *guru_module_init(const char *datadir)
 			exit(-1);
 		}
 		printf(_("OK\n"));
+		ggz_free(module);
 	}
 
 	/* Add all specified generic plugins */
 	ret = ggz_conf_read_list(handler, "guru", "modules", &count, &list);
 	if(ret >= 0)
 	{
-		for(i = 0; i < count; i++)
+		for(i = 0; i < count; i++){
 			guru_module_add(list[i]);
+			ggz_free(list[i]);
+		}
+		ggz_free(list);
 	}
+
+	ggz_free(datadir2);
 
 	return core;
 }
 
 int guru_module_shutdown(Gurucore *guru)
 {
+	int i;
+	void (*ptr)(void);
+
 	if(!guru) return 0;
-	if(guru->datadir) free(guru->datadir);
-	free(guru);
+
+	/* Free non-core modules */
+	for(i = 0; i < modulecount; i++){
+		guru_module_remove(modulenamelist[i]);
+	}
+	ggz_free(modulelist);
+	ggz_free(functionlist);
+	ggz_free(modulenamelist);
+
+	/* Stop logging */
+	if(guru->net_log) (guru->net_log)(NULL);
+
+	/* Free core modules */
+	if(guru->playerhandle){
+		ptr = dlsym(guru->playerhandle, "guru_player_cleanup");
+		if(ptr){
+			(ptr)();
+		}
+		dlclose(guru->playerhandle);
+	}
+	if(guru->i18nhandle){
+		ptr = dlsym(guru->i18nhandle, "guru_i18n_cleanup");
+		if(ptr){
+			(ptr)();
+		}
+		dlclose(guru->i18nhandle);
+	}
+	if(guru->nethandle){
+		ptr = dlsym(guru->nethandle, "net_cleanup");
+		if(ptr){
+			(ptr)();
+		}
+		/* Comment out the below to help with memory debugging with valgrind, otherwise the symbols are unresolved. */
+		dlclose(guru->nethandle);
+	}
+
+	if(guru->host) ggz_free(guru->host);
+	if(guru->name) ggz_free(guru->name);
+	if(guru->password) ggz_free(guru->password);
+	if(guru->owner) ggz_free(guru->owner);
+	if(guru->language) ggz_free(guru->language);
+	if(guru->autojoin) ggz_free(guru->autojoin);
+	if(guru->logfile) ggz_free(guru->logfile);
+	if(guru->datadir) ggz_free(guru->datadir);
+	ggz_free(guru);
+
+	if(handler >= 0){
+		ggz_conf_close(handler);
+		handler = -1;
+	}
+
 	return 1;
 }
 
@@ -199,36 +260,43 @@ int guru_module_add(const char *modulealias)
 	if((handle = dlopen(modulename, RTLD_NOW)) == NULL)
 	{
 		printf(_("ERROR: Not a shared library!\n"));
+		ggz_free(modulename);
 		return 0;
 	}
 	init = dlsym(handle, "gurumod_init");
 	if(!init)
 	{
 		printf(_("ERROR: Invalid module (init)!\n"));
+		dlclose(handle);
+		ggz_free(modulename);
 		return 0;
 	}
 	func = dlsym(handle, "gurumod_exec");
 	if(!func)
 	{
 		printf(_("ERROR: Invalid module (exec)!\n"));
+		dlclose(handle);
+		ggz_free(modulename);
 		return 0;
 	}
 
 	/* Initialize the plugin */
-	(init)(datadir2);
+	(init)(core->datadir);
 
 	/* Insert it into the plugin list for later reference */
 	modulecount++;
-	modulelist = (void**)realloc(modulelist, (modulecount + 1) * sizeof(void*));
-	functionlist = (modulefunc*)realloc(functionlist, (modulecount + 1) * sizeof(modulefunc));
-	modulenamelist = (char**)realloc(modulenamelist, (modulecount + 1) * sizeof(char*));
+	modulelist = (void**)ggz_realloc(modulelist, (modulecount + 1) * sizeof(void*));
+	functionlist = (modulefunc*)ggz_realloc(functionlist, (modulecount + 1) * sizeof(modulefunc));
+	modulenamelist = (char**)ggz_realloc(modulenamelist, (modulecount + 1) * sizeof(char*));
 	modulelist[modulecount - 1] = handle;
 	modulelist[modulecount] = NULL;
 	functionlist[modulecount - 1] = func;
 	functionlist[modulecount] = NULL;
-	modulenamelist[modulecount - 1] = (char*)malloc(strlen(modulealias) + 1);
+	modulenamelist[modulecount - 1] = (char*)ggz_malloc(strlen(modulealias) + 1);
 	strcpy(modulenamelist[modulecount - 1], modulealias);
 	modulenamelist[modulecount] = NULL;
+
+	ggz_free(modulename);
 
 	printf(_("OK\n"));
 	return 1;
@@ -238,14 +306,20 @@ int guru_module_add(const char *modulealias)
 int guru_module_remove(const char *modulealias)
 {
 	int i;
+	void (*ptr)(void);
 
 	for(i = 0; i < modulecount; i++)
 	{
 		if((modulenamelist[i]) && (!strcmp(modulenamelist[i], modulealias)))
 		{
-			dlclose(modulelist);
+
+			ptr = dlsym(modulelist[i], "gurumod_finish");
+			if(ptr) (ptr)();
+
+			/* Comment out the below to help with memory debugging with valgrind, otherwise the symbols are unresolved. */
+			dlclose(modulelist[i]);
 			modulelist[i] = NULL;
-			free(modulenamelist[i]);
+			ggz_free(modulenamelist[i]);
 			modulenamelist[i] = NULL;
 			functionlist[i] = NULL;
 			return 1;
@@ -265,15 +339,15 @@ static char *guru_modules_list(void)
 	/* Build up list dynamically */
 	prepend = __("List of available modules:");
 	none = __("No modules loaded at all.");
-	if(list) free(list);
-	list = (char*)malloc(strlen(prepend) + 1);
+	if(list) ggz_free(list);
+	list = (char*)ggz_malloc(strlen(prepend) + 1);
 	strcpy(list, prepend);
 	j = 0;
 	for(i = 0; i < modulecount; i++)
 	{
 		if(modulenamelist[i])
 		{
-			list = (char*)realloc(list, strlen(list) + strlen(modulenamelist[i]) + 2);
+			list = (char*)ggz_realloc(list, strlen(list) + strlen(modulenamelist[i]) + 2);
 			strcat(list, " ");
 			strcat(list, modulenamelist[i]);
 			j++;
@@ -281,7 +355,7 @@ static char *guru_modules_list(void)
 	}
 	if(!j)
 	{
-		list = (char*)realloc(list, strlen(list) + strlen(none) + 2);
+		list = (char*)ggz_realloc(list, strlen(list) + strlen(none) + 2);
 		strcat(list, " ");
 		strcat(list, none);
 	}
@@ -321,14 +395,14 @@ static Guru *guru_module_internal(Guru *message)
 	/* Process given commands */
 	if(modules == 2)
 	{
-		free(message->message);
+		ggz_free(message->message);
 		message->message = guru_modules_list();
 		message->type = GURU_PRIVMSG;
 		return message;
 	}
 	if((modules == 1) && ((modadd) || (modremove) || (modreload)) && (mod))
 	{
-		free(message->message);
+		ggz_free(message->message);
 		message->type = GURU_PRIVMSG;
 		if((core->owner) && (!strcmp(core->owner, message->player)))
 		{
@@ -350,7 +424,7 @@ static Guru *guru_module_internal(Guru *message)
 			}
 		}
 		else message->message = __("Only my owner can change the module setup.");
-		if(mod) free(mod);
+		if(mod) ggz_free(mod);
 		return message;
 	}
 
@@ -385,7 +459,7 @@ Guru *guru_module_work(Guru *message, int priority)
 			}
 		}
 	}
-	free(message->message);
+	if(message->message) ggz_free(message->message);
 	return NULL;
 }
 

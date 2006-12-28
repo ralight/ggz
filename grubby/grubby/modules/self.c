@@ -113,12 +113,12 @@ Guru *gurumod_exec(Guru *message)
 
 			/* Find out grubby's data directory first */
 			home = getenv("HOME");
-			datadir = (char*)malloc(strlen(home) + 10);
+			datadir = (char*)ggz_malloc(strlen(home) + 10);
 			strcpy(datadir, home);
 			strcat(datadir, "/.ggz");
 
 			/* Open configuration file */
-			path = (char*)malloc(strlen(datadir) + strlen(GRUBBYCONF) + 1);
+			path = (char*)ggz_malloc(strlen(datadir) + strlen(GRUBBYCONF) + 1);
 			strcpy(path, datadir);
 			strcat(path, GRUBBYCONF);
 			handler = ggz_conf_parse(path, GGZ_CONF_RDONLY);
@@ -171,8 +171,8 @@ Guru *gurumod_exec(Guru *message)
 			if(can(buffer)) strcat(buffer, __("i am from <countrycode>: register language\n"));
 
 			ggz_conf_close(handler);
-			free(path);
-			free(datadir);
+			ggz_free(path);
+			ggz_free(datadir);
 
 			message->message = buffer;
 			message->type = GURU_PRIVMSG;

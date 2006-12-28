@@ -8,6 +8,7 @@
 ********************************************************************/
 
 #include "net.h"
+#include <ggz.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -62,28 +63,28 @@ static void net_internal_queueadd(const char *player, const char *message, int t
 	}
 
 	/* Insert new grubby structure */
-	guru = (Guru*)malloc(sizeof(Guru));
+	guru = (Guru*)ggz_malloc(sizeof(Guru));
 	guru->type = type;
-	if(player) guru->player = strdup(player);
+	if(player) guru->player = ggz_strdup(player);
 	else guru->player = NULL;
 	guru->playertype = PLAYER_UNKNOWN;
 	if(message)
 	{
-		guru->message = strdup(message);
+		guru->message = ggz_strdup(message);
 		guru->list = NULL;
-		listtoken = strdup(message);
+		listtoken = ggz_strdup(message);
 		token = strtok(listtoken, " ,./:?!\'");
 		i = 0;
 		while(token)
 		{
-			guru->list = (char**)realloc(guru->list, (i + 2) * sizeof(char*));
-			guru->list[i] = (char*)malloc(strlen(token) + 1);
+			guru->list = (char**)ggz_realloc(guru->list, (i + 2) * sizeof(char*));
+			guru->list[i] = (char*)ggz_malloc(strlen(token) + 1);
 			strcpy(guru->list[i], token);
 			guru->list[i + 1] = NULL;
 			i++;
 			token = strtok(NULL, " ,./:?!\'");
 		}
-		free(listtoken);
+		ggz_free(listtoken);
 	}
 	else
 	{
@@ -93,7 +94,7 @@ static void net_internal_queueadd(const char *player, const char *message, int t
 
 	/* Insert structure into queue */
 	queuelen++;
-	queue = (Guru**)realloc(queue, sizeof(Guru*) * queuelen);
+	queue = (Guru**)ggz_realloc(queue, sizeof(Guru*) * queuelen);
 	queue[queuelen - 2] = guru;
 	queue[queuelen - 1] = NULL;
 }
@@ -109,7 +110,7 @@ void net_connect(const char *host, int port, const char *name, const char *passw
 	printf("Enter your name please:\n");
 	fgets(buffer, sizeof(buffer), stdin);
 	buffer[strlen(buffer) - 1] = 0;
-	playername = strdup(buffer);
+	playername = ggz_strdup(buffer);
 
 	/*fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);*/
 
@@ -161,7 +162,7 @@ void net_output(Guru *output)
 
 	/* Handle multi-line answers */
 	if(!output->message) return;
-	msg = strdup(output->message);
+	msg = ggz_strdup(output->message);
 	token = strtok(msg, "\n");
 	while(token)
 	{
@@ -179,7 +180,7 @@ void net_output(Guru *output)
 		}
 		token = strtok(NULL, "\n");
 	}
-	free(msg);
+	ggz_free(msg);
 }
 
 void chat(const char *message)

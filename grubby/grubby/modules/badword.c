@@ -28,11 +28,11 @@ void gurumod_init(const char *datadir)
 	int count;
 
 	home = getenv("HOME");
-	path = (char*)malloc(strlen(home) + strlen(BADWORDCONF) + 1);
+	path = (char*)ggz_malloc(strlen(home) + strlen(BADWORDCONF) + 1);
 	strcpy(path, home);
 	strcat(path, BADWORDCONF);
 	handle = ggz_conf_parse(path, GGZ_CONF_RDONLY);
-	free(path);
+	ggz_free(path);
 	if(handle < 0) return;
 	ret = ggz_conf_read_list(handle, "badwords", "badwords", &count, &badwordlist);
 
@@ -93,7 +93,7 @@ Guru *gurumod_exec(Guru *message)
 		{
 			if(!you)
 			{
-				if(!buf) buf = (char*)malloc(strlen(message->player) + 1024);
+				if(!buf) buf = (char*)ggz_malloc(strlen(message->player) + 1024);
 				strcpy(buf, message->player);
 				strcat(buf, __(" is a dirty evil bastard."));
 				message->message = buf;
