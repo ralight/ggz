@@ -99,6 +99,7 @@ void net_work(Agrue *agrue)
 	fd_set set;
 	struct timeval to;
 	GGZRoom *room;
+	int roomcount;
 	int random;
 	int roomnumber;
 
@@ -124,12 +125,17 @@ void net_work(Agrue *agrue)
 		random = rand() % 100;
 		if(random < agrue->mobility)
 		{
-			roomnumber = rand() % ggzcore_server_get_num_rooms(agrue->server);
-			room = ggzcore_server_get_nth_room(agrue->server, roomnumber);
-			ggzcore_server_join_room(agrue->server, room);
+			roomcount = ggzcore_server_get_num_rooms(agrue->server);
+			if(roomcount > 0){
+				roomnumber = rand() % roomcount;
+				room = ggzcore_server_get_nth_room(agrue->server, roomnumber);
+				ggzcore_server_join_room(agrue->server, room);
+			}
 		}
 		else
 		{
+			/* Need a new random number here or activity and frequency *must* be > mobility */
+			random = rand() % 100;
 			if(random < agrue->activity)
 			{
 				room = ggzcore_server_get_cur_room(agrue->server);
