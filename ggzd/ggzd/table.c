@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 8609 2006-10-03 03:17:03Z jdorje $
+ * $Id: table.c 8776 2006-12-30 10:14:45Z oojah $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -362,7 +362,11 @@ static void* table_new_thread(void *index_ptr)
 	}
 	count = ++rooms[table->room].table_count;
 	/* Find empty spot in room */ 
-	for (i = 0; i < rooms[table->room].max_tables; i++)
+	/* FIXME - there are problems with table 0 locking up, probably
+	 * due to something being incorrectly initialised somewhere.
+	 * A 1 based index is better anyway.and will hopefully help us
+	 * find the problem more easily. Roger 20061230 */
+	for (i = 1; i < rooms[table->room].max_tables; i++)
 		if (rooms[table->room].tables[i] == NULL)
 			break;
 	rooms[table->room].tables[i] = table;
@@ -442,8 +446,8 @@ static GGZReturn table_start_game(GGZTable *table)
 	ggzdmod_set_gamedata(table->ggzdmod, table);
 
 	/* Setup handlers for game module events */
-        ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_STATE, &table_handle_state);
-        ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_LOG, &table_log);
+	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_STATE, &table_handle_state);
+	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_LOG, &table_log);
 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_GAMEREPORT,
 			    &table_game_report);
 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_SAVEGAMEREPORT,
@@ -458,7 +462,7 @@ static GGZReturn table_start_game(GGZTable *table)
 			    &table_game_req_open);
 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_ERROR, &table_error);
 	
-        /* Setup seats for game table */
+	/* Setup seats for game table */
 	num_seats = seats_num(table);
 	ggzdmod_set_num_seats(table->ggzdmod, num_seats);
 	for (i = 0; i < num_seats; i++) {
@@ -468,7 +472,7 @@ static GGZReturn table_start_game(GGZTable *table)
 			seat.name = table->seat_names[i];
 		else
 			seat.name = NULL;
-		seat.fd = -1;
+			seat.fd = -1;
 		if (ggzdmod_set_seat(table->ggzdmod, &seat) < 0)
 			status = GGZ_ERROR;
 	}
