@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 8567 2006-09-03 05:35:12Z jdorje $
+ * $Id: game.c 8780 2007-01-02 12:15:46Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -54,7 +54,7 @@ struct chess_info game_info;
  * Use to store the time of the current play */
 struct timeval chronometer;
 /* Savegame file */
-static FILE *savegame;
+static FILE *savegame = NULL;
 /* Moves table */
 /*static char moves[1000][6];
 static int currentmove;*/
@@ -188,7 +188,7 @@ static int game_update(int event_id, const void *data)
         /* FIXME: fallback to ggzchess, in case no gnuchess is installed? */
 
 		if (ai_type == AI_GGZCHESS) {
-      	  chess_ai_init((color == BLACK ? C_BLACK : C_WHITE), 2);
+			chess_ai_init((color == BLACK ? C_BLACK : C_WHITE), 2);
 		} else {
 			gnuchess_ai_init((color == BLACK ? C_BLACK : C_WHITE), 2);
 			ret = gnuchess_launch();

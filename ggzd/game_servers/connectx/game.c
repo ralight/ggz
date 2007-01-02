@@ -4,7 +4,7 @@
  * Project: GGZ ConnectX game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 8498 2006-08-08 09:02:27Z josef $
+ * $Id: game.c 8780 2007-01-02 12:15:46Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -30,6 +30,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ggz.h>
+
+#include <stdio.h>
+#include <stdarg.h>
 
 #include "game.h"
 #include "ai-velena.h"
@@ -82,6 +85,7 @@ struct connectx_game_t {
 
 /* Global game variables */
 struct connectx_game_t connectx_game;
+static FILE *savegame = NULL;
 
 /* Network IO functions */
 static int game_send_seat(int seat);
@@ -105,6 +109,7 @@ static int game_read_options(int seat);
 //static int game_handle_newgame(int seat);
 static void game_bot_init(void);
 
+static void game_save(char *fmt, ...);
 
 static char game_check_win(void);
 int game_check_tile(int x, int y, int d, int count);
@@ -182,6 +187,8 @@ void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, const void *data)
 	GGZdModState new_state;
 	const GGZSeat *old_seat = data;
 	GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
+
+	game_save("player%i joins as %s", new_seat.num + 1, new_seat.name);
 
 	if(seats_full()){
 		if(connectx_game.state == CONNECTX_STATE_WAITING){
@@ -490,6 +497,7 @@ static int game_do_move(int move)
 	}
 
 	game_send_move(connectx_game.turn, move);
+	game_save("move player%i %i", connectx_game.turn + 1, move + 1);
 
 	for(i=0; i < ggzdmod_get_max_num_spectators(connectx_game.ggz); i++){
 		fd = (ggzdmod_get_spectator(connectx_game.ggz, i)).fd;
@@ -507,6 +515,12 @@ static int game_do_move(int move)
 		game_send_gameover(victor);
 		/* Notify GGZ server of game over */
 		ggzdmod_set_state(connectx_game.ggz, GGZDMOD_STATE_DONE);
+		/* Finish savegame */
+		game_save("winner %i", victor + 1);
+		if(savegame){
+			fclose(savegame);
+			savegame = NULL;
+		}
 	}
 
 	return 0;
@@ -602,7 +616,7 @@ static char game_check_win(void)
 					if(game_check_tile(x, y, d, 1)>=connectx_game.connectlength){
 						if(connectx_game.board[x][y]==dtPlayer1){
 							return 1;
-							}else{
+						}else{
 							return 0;
 						}
 					}
@@ -713,11 +727,16 @@ static int game_read_options(int seat)
 	ggzdmod_log(connectx_game.ggz, "\tboardwidth=%d", connectx_game.boardwidth);
 	ggzdmod_log(connectx_game.ggz, "\tconnectlength=%d", connectx_game.connectlength);
 
+	/* Save the options to the savegame file */
+	game_save("option boardheight %i", connectx_game.boardheight);
+	game_save("option boardwidth %i", connectx_game.boardwidth);
+	game_save("option connectlength %i", connectx_game.connectlength);
+
 	/* Mark everything as empty */
 	for(p = 0;p<=connectx_game.boardwidth;p++){
 		for(q = 0;q<=connectx_game.boardheight+1;q++){
 			connectx_game.board[p][q] = dtEmpty;
-      	}
+		}
 	}
 
 	//game_send_options(0);
@@ -763,4 +782,32 @@ static int game_handle_newgame(int seat)
 	return status;
 }
 #endif
+
+static void game_save(char *fmt, ...)
+{
+	int fd;
+	char *savegamepath, *savegamename;
+	char buffer[1024];
+	va_list ap;
+
+	if(!savegame) {
+		savegamepath = strdup(GGZDDATADIR "/gamedata/ConnectX/savegame.XXXXXX");
+		fd = mkstemp(savegamepath);
+		savegamename = strdup(savegamepath + strlen(savegamepath) - strlen("savegame.XXXXXX"));
+		free(savegamepath);
+		if(fd < 0) return;
+		savegame = fdopen(fd, "w");
+		if(!savegame) return;
+
+		ggzdmod_report_savegame(connectx_game.ggz, savegamename);
+		free(savegamename);
+	}
+
+	va_start(ap, fmt);
+	vsnprintf(buffer, sizeof(buffer), fmt, ap);
+	va_end(ap);
+
+	fprintf(savegame, "%s\n", buffer);
+	fflush(savegame);
+}
 

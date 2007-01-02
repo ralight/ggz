@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 28th June 2001
  * Desc: Game functions
- * $Id: game.h 6892 2005-01-25 04:09:21Z jdorje $
+ * $Id: game.h 8780 2007-01-02 12:15:46Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -26,7 +26,6 @@
 #include "ggzdmod.h"
 
 #define GGZSPECTATORS
-#define GGZSTATISTICS
 
 /* GGZdMod callbacks */
 void game_handle_ggz_state(GGZdMod *ggz,

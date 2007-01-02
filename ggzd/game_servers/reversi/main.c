@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: main loop for the server
- * $Id: main.c 5033 2002-10-25 22:13:36Z jdorje $
+ * $Id: main.c 8780 2007-01-02 12:15:46Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -34,7 +34,7 @@
 #include <unistd.h>
 
 int main(void) {
-	GGZdMod *ggz= ggzdmod_new(GGZDMOD_GAME);
+	GGZdMod *ggz = ggzdmod_new(GGZDMOD_GAME);
 
 	/* game_init is called at the start of _each_ game, so we must do
 	   ggz stuff here. */

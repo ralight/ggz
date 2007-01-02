@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 7107 2005-04-15 17:54:31Z jdorje $
+ * $Id: game.c 8780 2007-01-02 12:15:46Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -33,10 +33,18 @@
 #include <stdlib.h>
 #include <ggz.h>
 
+#include <stdio.h>
+#include <string.h>
+#include <stdarg.h>
+
 #include "game.h"
 
 // Global game variables
-struct rvr_game_t rvr_game;
+static struct rvr_game_t rvr_game;
+static FILE *savegame = NULL;
+
+// Forward declarations
+static void game_save(char *fmt, ...);
 
 // Initializes everything
 void game_init(GGZdMod *ggzdmod) {
@@ -56,6 +64,12 @@ void game_init(GGZdMod *ggzdmod) {
 	rvr_game.board[CART(4,5)] = BLACK;
 	// Inits random number generator
 	srand(time(0));
+
+	// Save initial positions
+	game_save("white-init 4 4");
+	game_save("white-init 5 5");
+	game_save("black-init 5 4");
+	game_save("black-init 4 5");
 }
 
 // Handle server messages
@@ -65,8 +79,8 @@ void game_handle_ggz_state(GGZdMod* ggz, GGZdModEvent event,
 	GGZdModState new_state = ggzdmod_get_state(ggz);
 	const GGZdModState *old_state_ptr = data;
 	const GGZdModState old_state = *old_state_ptr;
-	
-	// Check if it's the right time to launch the game and if ggz could do taht
+
+	// Check if it's the right time to launch the game and if ggz could do that
 	if (old_state == GGZDMOD_STATE_CREATED) {
 		assert(rvr_game.state == RVR_STATE_INIT);
 	}
@@ -121,7 +135,7 @@ void game_handle_ggz_seat(GGZdMod* ggz, GGZdModEvent event,
 		new_state = GGZDMOD_STATE_DONE;
 	else
 		new_state = GGZDMOD_STATE_WAITING;
-	
+
 	// That's great!! Do stuff
 
 	if (new_seat.type == GGZ_SEAT_PLAYER)
@@ -163,7 +177,7 @@ int game_send_players(void) {
 			ggzdmod_log(rvr_game.ggz, "Can't send player list!\n");
 			return -1;
 		}
-	
+
 		for (i = 0; i < ggzdmod_get_num_seats(rvr_game.ggz); i++) {
 			if (ggz_write_int(fd, ggzdmod_get_seat(rvr_game.ggz, i).type) < 0)
 				return -1;
@@ -184,27 +198,26 @@ int game_send_sync(int seat) {
 	ggzdmod_log(rvr_game.ggz, "Handling sync for player %d", seat);
 
 	// Send SYNC message and current turn
-	
+
 	if (ggz_write_int(fd, RVR_MSG_SYNC) < 0 || ggz_write_char(fd, rvr_game.turn) < 0)
 		return -1;
 
 	// Send current board state
-	
+
 	for (i = 0; i < 64; i++) {
 		if (ggz_write_char(fd, rvr_game.board[i]) < 0)
 			return -1;
 	}
 
 	// That's fine
-	
-	return 0;
 
+	return 0;
 }
 
 int game_start(void) {
 
 	int i, fd;
-	
+
 	// Start game variables
 	rvr_game.state = RVR_STATE_PLAYING;
 
@@ -275,7 +288,6 @@ int game_handle_move(int seat, int *move) {
 	game_make_move(SEAT2PLAYER(seat), status);
 
 	return status;
-
 }
 
 void game_play(void) {
@@ -291,7 +303,7 @@ void game_play(void) {
 	}
 
 	// It's not! Wait until the player sends the message...
-	
+
 	return;
 }
 
@@ -309,7 +321,7 @@ int game_bot_move(int player) {
 int game_check_move(int player, int move) {
 
 	int x = X(move), y = Y(move), status = 0;
-	
+
 	// Check if it's right time
 	if (rvr_game.state != RVR_STATE_PLAYING)
 		return RVR_ERROR_WRONGTURN;
@@ -333,12 +345,11 @@ int game_check_move(int player, int move) {
 	status += game_check_direction(player,-1, 1, x, y);
 	status += game_check_direction(player,-1, 0, x, y);
 	status += game_check_direction(player,-1,-1, x, y);
-	
+
 	if (status > 0)
 		return move;
 	else
 		return RVR_ERROR_INVALIDMOVE;
-
 }
 	
 int game_check_direction(int player, int vx, int vy, int x, int y) {
@@ -359,8 +370,10 @@ int game_make_move(int player, int move) {
 	if (move >= 0) {
 		rvr_game.board[move] = player;
 
+		// Save the move to the savegame file
+		game_save("%s %i %i", (player == BLACK ? "black" : "white"), X(move), Y(move));
+
 		// Now goes through all directions, marking the board
-	
 		status += game_mark_board(player, 0,-1, x, y);
 		status += game_mark_board(player, 1,-1, x, y);
 		status += game_mark_board(player, 1, 0, x, y);
@@ -370,12 +383,10 @@ int game_make_move(int player, int move) {
 		status += game_mark_board(player,-1, 0, x, y);
 		status += game_mark_board(player,-1,-1, x, y);
 
-
 		// Change turn
 		rvr_game.turn*=-1;
 
 		game_update_scores();
-
 	} else
 		status = -1;
 
@@ -398,16 +409,13 @@ int game_make_move(int player, int move) {
 
 		// AI play
 		game_play();
-
 	}
-
 
 	// If couldn`t make the move, sends sync to the player
 	if (status < 0)
 			game_send_sync(PLAYER2SEAT(player));
 
 	return status;
-
 }
 
 int game_check_over(void) {
@@ -437,7 +445,7 @@ int game_check_over(void) {
 
 	// If he can, then skip the players move.
 	// If he can't, end the game
-	
+
 	if (status > 0)
 		game_skip_move();
 	else {
@@ -447,10 +455,6 @@ int game_check_over(void) {
 
 	return 0;
 }
-
-
-
-
 
 int game_mark_board(int player, int vx, int vy, int x, int y) {
 	int i, j;
@@ -477,13 +481,12 @@ void game_skip_move(void) {
 	rvr_game.turn*=-1;
 
 	return;
-
 }
 
 void game_gameover(void) {
 	int seat, fd, winner;
 	GGZGameResult results[2];
-	
+
 	// Ends everything
 	rvr_game.turn = EMPTY;
 	rvr_game.state = RVR_STATE_DONE;
@@ -501,8 +504,14 @@ void game_gameover(void) {
 		results[0] = results[1] = GGZ_GAME_TIE;
 	}
 
-	/* Report game to GGZ */
+	// Report game to GGZ
 	ggzdmod_report_game(rvr_game.ggz, NULL, results, NULL);
+
+	// Finish the savegame
+	if(savegame) {
+		fclose(savegame);
+		savegame = NULL;
+	}
 
 	// Send message	
 	for (seat = 0; seat < ggzdmod_get_num_seats(rvr_game.ggz); seat++) {
@@ -512,7 +521,7 @@ void game_gameover(void) {
 		if (ggz_write_int(fd, RVR_MSG_GAMEOVER) < 0 || ggz_write_int(fd, winner) < 0)
 			ggzdmod_log(rvr_game.ggz, "Can't send gameover message");
 	}
-	
+
 	// What to do now?
 	// Puts human players score = 0
 	// When they send a REQ_AGAIN message, put it = 1
@@ -520,9 +529,8 @@ void game_gameover(void) {
 	ggzdmod_log(rvr_game.ggz, "Game is over. Waiting to see if we should play again\n");
 	rvr_game.white = (ggzdmod_get_seat(rvr_game.ggz, PLAYER2SEAT(WHITE)).type == GGZ_SEAT_BOT);
 	rvr_game.black = (ggzdmod_get_seat(rvr_game.ggz, PLAYER2SEAT(BLACK)).type == GGZ_SEAT_BOT);
-	
-	return;
 
+	return;
 }
 
 int game_play_again(int seat) {
@@ -532,12 +540,12 @@ int game_play_again(int seat) {
 		ggzdmod_log(rvr_game.ggz, "The game wasn`t over yet! Are you crazy?\n");
 		return RVR_SERVER_ERROR;
 	}
-	
+
 	if (SEAT2PLAYER(seat) == WHITE)
 		rvr_game.white = 1;
 	else if (SEAT2PLAYER(seat) == BLACK)
 		rvr_game.black = 1;
-	
+
 	if (rvr_game.white && rvr_game.black) {
 		// Starts is again
 		game_init(rvr_game.ggz);
@@ -546,9 +554,7 @@ int game_play_again(int seat) {
 		game_play();
 	}
 
-
 	return RVR_SERVER_OK;
-
 }
 
 void game_update_scores(void) {
@@ -561,5 +567,33 @@ void game_update_scores(void) {
 		if (rvr_game.board[i] == BLACK)
 			rvr_game.black++;
 	}
+}
+
+static void game_save(char *fmt, ...)
+{
+	int fd;
+	char *savegamepath, *savegamename;
+	char buffer[1024];
+	va_list ap;
+
+	if(!savegame) {
+		savegamepath = strdup(GGZDDATADIR "/gamedata/Reversi/savegame.XXXXXX");
+		fd = mkstemp(savegamepath);
+		savegamename = strdup(savegamepath + strlen(savegamepath) - strlen("savegame.XXXXXX"));
+		free(savegamepath);
+		if(fd < 0) return;
+		savegame = fdopen(fd, "w");
+		if(!savegame) return;
+
+		ggzdmod_report_savegame(rvr_game.ggz, savegamename);
+		free(savegamename);
+	}
+
+	va_start(ap, fmt);
+	vsnprintf(buffer, sizeof(buffer), fmt, ap);
+	va_end(ap);
+
+	fprintf(savegame, "%s\n", buffer);
+	fflush(savegame);
 }
 

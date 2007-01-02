@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 7107 2005-04-15 17:54:31Z jdorje $
+ * $Id: game.c 8780 2007-01-02 12:15:46Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -32,8 +32,6 @@
 #include <ggz.h>
 
 #include "game.h"
-
-//#define GGZSPECTATORS
 
 /* Data structure for Escape game */
 struct escape_game_t {
