@@ -4,7 +4,7 @@
 <title>
 GGZ Gaming Zone Features
 </title>
-</head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <style type="text/css">
 tt {background-color: #e0e0ff}
 h2 {background-color: #e0a040}
@@ -12,6 +12,7 @@ h3 {background-color: #e0a040}
 div {font-family: sans-serif}
 th {text-align: left}
 </style>
+</head>
 <body>
 
 <div>
@@ -19,8 +20,8 @@ th {text-align: left}
 <h2>GGZ Gaming Zone Features</h2>
 
 <small>
-<i>Revision: 0.1</i><br>
-<i>Date: 26.02.2005</i><br>
+<i>Revision: 0.2</i><br>
+<i>Date: 30.12.2006</i><br>
 <i>Author: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
 </small>
 
@@ -29,6 +30,24 @@ Often, game developers ask: Does it make sense to use GGZ for my games?
 What kind of functionality can I expect? Which kinds of games are
 supported? Those questions should be clarified after reading through
 this document.
+In addition, reading "GGZ Game Modules" and the "GGZ Game Developer Guide"
+is recommended for developers.
+</p>
+
+<h3>Success stories</h3>
+
+<p>
+Certainly, when evaluating GGZ as a platform for multiplayer games, a look to
+existing game projects will give the best answer.
+There is a
+<a href="http://dev.ggzgamingzone.org/external/">dedicated webpage</a> for
+the so-called "external game projects". Most prominently, the GNOME Games
+suite as well as individual game projects like Freeciv, TEG and Widelands
+make use of GGZ.
+GGZ is also widely available on Linux distributions, which makes the use
+of GGZ libraries very easy. Some efforts have been directed at integrating
+GGZ libraries with other games and toolkits.
+We want game authors to use GGZ!
 </p>
 
 <h3>The architecture</h3>
@@ -71,7 +90,7 @@ The following list should give some hints.
 
 <ul>
 <li>seat reservations or unlimited seats per table
-<li>AI players (soon distinguishable!)
+<li>AI players, user-selectable ("named bots")
 <li>host player can boot players, replace them with bots etc.
 <li>leaving and rejoining games
 <li>game spectators
@@ -80,8 +99,9 @@ The following list should give some hints.
 <li>teams with leaders and membership management
 <li>tournament organization
 <li>server-side savegames
-<li>eternal games (keepalive)
-<li>sharing levels and themes
+<li>eternal games ("keepalive")
+<li>sharing levels and themes ("get hot new stuff")
+<li>web-based player community with savegame reviews and rankings
 </ul>
 
 <p>
@@ -107,7 +127,7 @@ Games which do not want to have the server running on GGZ, e.g. because of
 speed reasons, can still be designed in a peer-to-peer manner using UDP
 connections, while leaving a TCP connection to the GGZ game server open.
 This connection can be used to set up the game, find players and eventually
-report (untrusted) results.
+report (untrusted) results to the GGZCollector server.
 </p>
 
 <p>
