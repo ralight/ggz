@@ -533,6 +533,10 @@ else
     packagesrcdir=`cd $srcdir && pwd`
     AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Path where the source is located])
 
+    if test "$ggzmoduleconfdir" = ""; then
+      AC_MSG_ERROR([ggz-config is unusable. Maybe LD_LIBRARY_PATH needs to be set.])
+    fi
+
     AC_SUBST(ggzmoduleconfdir)
     AC_SUBST(ggzexecmoddir)
     AC_SUBST(ggzdatadir)
