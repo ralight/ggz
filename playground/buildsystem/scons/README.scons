@@ -1,0 +1,13 @@
+What is scons?
+- A python-based alternative to GNU autotools.
+
+What to do with the files?
+- Copy SConstruct to libggz.
+- Copy SConscript to libggz/src.
+- Call scons.
+
+What is missing?
+- Real configure checks for some of the targets.
+- Library versioning.
+- Optional dependencies like the TLS libraries.
+
