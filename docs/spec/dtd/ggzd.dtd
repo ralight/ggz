@@ -12,7 +12,8 @@
 <!ATTLIST OPTIONS	CHATLEN		CDATA #REQUIRED>
 
 <!ELEMENT MOTD (#PCDATA)>
-<!ATTLIST MOTD 		PRIORITY	( high | low | normal ) "normal"> 
+<!ATTLIST MOTD 		PRIORITY	( high | low | normal ) "normal"
+			URL		CDATA #IMPLIED> 
 
 <!ELEMENT PING EMPTY>
 <!ATTLIST PING		ID		CDATA #IMPLIED >
@@ -23,8 +24,8 @@
 
 <!ELEMENT RESULT (PASSWORD | LIST)?>
 <!ATTLIST RESULT	ACTION		( chat | enter | launch | leave | list | login ) "chat"
-			<!--CODE		( ok | usr\ lookup | bad options | room full | table full | table empty | launch fail | join fail | no table | leave fail | leave forbidden | already logged in | not in room | at table | in transit | no permission | bad xml | seat assign fail | no channel ) "ok" > -->
 			CODE		CDATA #REQUIRED>
+			<!--CODE		( ok | usr\ lookup | bad options | room full | table full | table empty | launch fail | join fail | no table | leave fail | leave forbidden | already logged in | not in room | at table | in transit | no permission | bad xml | seat assign fail | no channel ) "ok" > -->
 
 <!ELEMENT PASSWORD (#PCDATA)>
 
@@ -32,7 +33,7 @@
 <!ATTLIST LIST		TYPE		( game | player | room | table ) "game"
 			ROOM		CDATA #IMPLIED>
 
-<!ELEMENT GAME (PROTOCOL, ALLOW, ABOUT?, DESC?)>
+<!ELEMENT GAME (PROTOCOL, ALLOW, BOT*, ABOUT?, DESC?)>
 <!ATTLIST GAME		ID		CDATA #REQUIRED
 			NAME		CDATA #REQUIRED
 			VERSION		CDATA #REQUIRED>
@@ -41,10 +42,15 @@
 <!ATTLIST PROTOCOL	ENGINE		CDATA #REQUIRED
 			VERSION		CDATA #REQUIRED>
 
+<!ELEMENT BOT EMPTY>
+<!ATTLIST BOT NAME CDATA #REQUIRED
+              CLASS CDATA #REQUIRED>
+
 <!ELEMENT ALLOW EMPTY>
 <!ATTLIST ALLOW		PLAYERS		CDATA #REQUIRED
 			BOTS		CDATA #REQUIRED
-			SPECTATORS	( true | false ) "false">
+			SPECTATORS	( true | false ) "false"
+			PEERS ( true | false ) "false">
 
 <!ELEMENT ABOUT EMPTY>
 <!ATTLIST ABOUT		AUTHOR		CDATA #REQUIRED
@@ -55,7 +61,8 @@
 <!ELEMENT ROOM (DESC?)>
 <!ATTLIST ROOM		ID		CDATA #REQUIRED
 			NAME		CDATA #REQUIRED
-			GAME		CDATA #REQUIRED>
+			GAME		CDATA #REQUIRED
+			PLAYERS		CDATA #IMPLIED>
 
 <!ELEMENT PLAYER EMPTY>
 <!ATTLIST PLAYER	ID		CDATA #REQUIRED
@@ -68,7 +75,8 @@
 			FORFEITS	CDATA #IMPLIED
 			RATING		CDATA #IMPLIED
 			RANKING		CDATA #IMPLIED
-			HIGHSCORE	CDATA #IMPLIED >
+			HIGHSCORE	CDATA #IMPLIED
+			PERMS		CDATA #IMPLIED>
 
 <!ELEMENT TABLE (DESC?, SEAT*, SPECTATOR*)>
 <!ATTLIST TABLE		ID		CDATA #REQUIRED
@@ -87,7 +95,9 @@
 <!ELEMENT UPDATE (TABLE | PLAYER)>
 <!ATTLIST UPDATE	TYPE		( player | table ) "player"
 			ACTION		( add | delete | desc | join | lag | leave | resize | seat | stats | status ) "add"
-			ROOM		CDATA #REQUIRED>
+			ROOM		CDATA #REQUIRED
+			TOROOM		CDATA #IMPLIED
+			FROMROOM	CDATA #IMPLIED>
 
 <!ELEMENT JOIN EMPTY>
 <!ATTLIST JOIN		TABLE		CDATA #REQUIRED
