@@ -6,3 +6,22 @@
   The ggzd-specific parts of the current "ggz design document" should
   move into the ggzd documentation file (docs/server/ggzd).
 
+* The unmaintained documentation should move into a "historic documents"
+  section.
+  This is a bit similar to the graveyard for code. However old documents
+  often still contain wise information...
+  Candidates are the "adding GGZ to games" text file, the articles,
+  the old metaserver documentation, the historic ggz-kde-games text
+  and more.
+  Another area of cleanups are the internal GGZ games. The protocol
+  documentation should move to ggzcomm. Everything else should be
+  brought up to date.
+
+* Currently, no inter-documentation links are possible. This is because
+  the layout is different when installed from when being on the internet.
+  Some unification must be done. However, the grouping is sometimes by
+  content (e.g. server vs. games) and sometimes by form (e.g. guide
+  vs. tutorial).
+  Also, not everything on the internet is installed here, like doxygen
+  API docs. They could be included as a copy maybe.
+
