@@ -1,0 +1,108 @@
+Index: kreversigame.h
+===================================================================
+--- kreversigame.h	(Revision 615209)
++++ kreversigame.h	(Arbeitskopie)
+@@ -30,6 +30,11 @@
+ 
+ class Engine;
+ 
++namespace KGGZMod
++{
++    class Module;
++};
++
+ /**
+  *  KReversiGame incapsulates all of the game logic.
+  *  Whenever the board state changes it emits corresponding signals.
+@@ -148,6 +153,9 @@
+     void boardChanged();
+     void moveFinished();
+     void computerCantMove();
++    void networkError();
++private slots:
++    void networkData(int fd);
+ private:
+     enum Direction { Up, Down, Right, Left, UpLeft, UpRight, DownLeft, DownRight };
+     /**
+@@ -215,5 +223,9 @@
+      *  @see m_changedChips
+      */
+     QStack<PosList> m_undoStack;
++    /**
++     *  Network connection to GGZ
++     */
++    KGGZMod::Module *m_mod;
+ };
+ #endif
+Index: CMakeLists.txt
+===================================================================
+--- CMakeLists.txt	(Revision 615209)
++++ CMakeLists.txt	(Arbeitskopie)
+@@ -1,3 +1,5 @@
++include(GGZ.cmake)
++
+ project(kreversi)
+ add_subdirectory( pics ) 
+ add_subdirectory( sounds ) 
+@@ -2,4 +4,5 @@
+ add_subdirectory( icons ) 
++add_subdirectory( kggzmod )
+ 
+-include_directories( ${CMAKE_SOURCE_DIR}/libkdegames ${CMAKE_SOURCE_DIR}/libkdegames/highscore  )
++include_directories( ${CMAKE_SOURCE_DIR}/libkdegames ${CMAKE_SOURCE_DIR}/libkdegames/highscore ${KGGZMOD_INCLUDE_DIR} )
+ 
+@@ -24,9 +27,10 @@
+ 
+ kde4_add_executable(kreversi ${kreversi_SRCS})
+ 
+-target_link_libraries(kreversi ${KDE4_KDEUI_LIBS} kdegames)
++target_link_libraries(kreversi ${KDE4_KDEUI_LIBS} kdegames ${KGGZMOD_LIBS})
+ install(TARGETS kreversi  DESTINATION ${BIN_INSTALL_DIR} )
+ 
++register_ggz_module(module.dsc)
+ 
+ ########### install files ###############
+ 
+Index: kreversigame.cpp
+===================================================================
+--- kreversigame.cpp	(Revision 615209)
++++ kreversigame.cpp	(Arbeitskopie)
+@@ -22,6 +22,8 @@
+  ********************************************************************/
+ #include <kdebug.h>
+ 
++#include <kggzmod/module.h>
++
+ #include "kreversigame.h"
+ #include "Engine.h"
+ 
+@@ -39,11 +41,19 @@
+     m_score[White] = m_score[Black] = 2;
+ 
+     m_engine = new Engine(1);
++
++    if(KGGZMod::Module::isGGZ())
++    {
++        m_mod = new KGGZMod::Module("KReversi");
++	connect(m_mod, SIGNAL(signalError()), SIGNAL(networkError()));
++	connect(m_mod, SIGNAL(signalNetwork(int)), SLOT(networkData(int)));
++    }
+ }
+ 
+ KReversiGame::~KReversiGame()
+ {
+     delete m_engine;
++    delete m_mod;
+ }
+ 
+ void KReversiGame::makePlayerMove( int row, int col, bool demoMode )
+@@ -574,4 +584,9 @@
+     return m_cells[row][col];
+ }
+ 
++void KReversiGame::networkData(int fd)
++{
++    kDebug() << "Network traffic on fd " << fd << endl;
++}
++
+ #include "kreversigame.moc"

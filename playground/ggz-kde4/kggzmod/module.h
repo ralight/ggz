@@ -59,6 +59,9 @@ class Player;
  * information and similar actions. The \ref Request class
  * has more details.
  *
+ * Note: This is the KDE 4 version of kggzmod. There is also
+ * a KDE 3 version available.
+ *
  * @author Josef Spillner (josef@ggzgamingzone.org)
  */
 class Module : public QObject

@@ -17,4 +17,14 @@ RSVG but I think we can use Qt4's SVG loader instead.
 KConnectX will then have the seats dialog functionality again.
 
 We also need CMake files :)
+A first attempt at supporting GGZ in CMake can be found in
+playground/buildsystem/cmake.
+
+Summary of GGZ-in-KDE4-efforts as of late December 2006:
+ - kggzmod   [||||||||| ] - core GGZ game module library
+ - kggzgames [          ] - common seats dialogs and player management
+ - cmake     [|||||     ] - CMake files for GGZ library checks
+ - kconnectx [||||      ] - KConnectX demo game for kggzmod
+ - kreversi  [||        ] - GGZ support for KDE's KReversi game
+ - kgameggz  [          ] - integration of kggzmod into KGame library
 
