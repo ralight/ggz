@@ -27,6 +27,10 @@
 		A GGZ Real User Emulator
 		Simulates high load on servers. Was recently ported and works again.
 
+	Buildsystem:
+		Experimental scons build system files for libggz, as alternative to the
+		autotools. Also includes CMake checks for GGZ.
+
 	C-Base:
 		C programming taken to the next level. Some experimental functions
 		for safe programming.
@@ -98,10 +102,6 @@
 
 	POVray:
 		Original POVray sources of the GGZ project logo.
-
-	Scons:
-		Experimental scons build system files for libggz, as alternative to the
-		autotools.
 
 	Server:
 		Code generation framework for data handling in multi-threaded code.
