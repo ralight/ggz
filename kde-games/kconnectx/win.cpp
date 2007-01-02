@@ -9,6 +9,7 @@
 
 // GGZ-KDE-Games includes
 #include "kggzseatsdialog.h"
+#include "kggzsystem.h"
 
 // KDE includes
 #include <kpopupmenu.h>
@@ -70,6 +71,8 @@ Win::Win(QWidget *parent, const char *name)
 	setCaption(i18n("KConnectX Test Client"));
 	resize(250, 250);
 	show();
+
+	KGGZSystem::checkInstallation(this, "kconnectx");
 }
 
 // Destructor

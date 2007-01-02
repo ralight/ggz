@@ -48,7 +48,7 @@ Toplevel::Toplevel()
 {
 	KPopupMenu *menu_theme, *menu_player;
 	int counter;
-	KStandardDirs d;
+	KStandardDirs *d = KGlobal::dirs();
 	QString s;
 	QWidget *root;
 	QVBoxLayout *vbox;
@@ -64,8 +64,7 @@ Toplevel::Toplevel()
 
 	counter = 0;
 	menu_variants = new KPopupMenu(this);
-	d.addResourceDir("data", GGZDATADIR);
-	s = d.findResource("data", "muehle/rc");
+	s = d->findResource("data", "muehle/rc");
 	KSimpleConfig conf(s);
 	conf.setGroup("Muehle");
 	variantslist = conf.readListEntry("Variants");
@@ -81,7 +80,7 @@ Toplevel::Toplevel()
 
 	counter = 0;
 	menu_theme = new KPopupMenu(this);
-	s = d.findResource("data", "muehle/themerc");
+	s = d->findResource("data", "muehle/themerc");
 	KSimpleConfig tconf(s);
 	tconf.setGroup("Themes");
 	themelist = tconf.readListEntry("Themes");

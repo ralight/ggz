@@ -1,6 +1,6 @@
 # Reversi description file
 [ModuleInfo]
-Name = Reversi
+Name = KGGZReversi
 Author = Ismael Orenstein
 CommandLine = @ggzexecmoddir@/ggz.kreversi --ggz
 Frontend = kde

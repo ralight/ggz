@@ -94,12 +94,9 @@ void KCCWin::newTheme(QString theme)
 
 void KCCWin::scanNewThemes()
 {
-	KStandardDirs d;
+	KStandardDirs *d = KGlobal::dirs();
 
-	d.addResourceDir("data", GGZDATADIR);
-	d.addResourceDir("data", QDir::home().path() + "/.ggz/games");
-
-	QString basedir = d.findResource("data", "kcc/");
+	QString basedir = d->findResource("data", "kcc/");
 	QDir dir(basedir);
 	QStringList s = dir.entryList(QDir::Files);
 	for(QStringList::iterator it = s.begin(); it != s.end(); it++)
@@ -115,17 +112,14 @@ void KCCWin::scanNewThemes()
 // Read in all themes
 void KCCWin::loadThemes()
 {
-	KStandardDirs d;
+	KStandardDirs *d = KGlobal::dirs();
 	QString type;
 	int index = menuthemes;
 	int valid;
 
-	d.addResourceDir("data", GGZDATADIR);
-	d.addResourceDir("data", QDir::home().path() + "/.ggz/games");
-
 	// Recursively scan all data directories
 	kdDebug() << "loadThemes" << endl;
-	QStringList list(d.findDirs("data", "kcc/"));
+	QStringList list(d->findDirs("data", "kcc/"));
 	for(QStringList::iterator it = list.begin(); it != list.end(); it++)
 	{
 		kdDebug() << "Scan dir: " << (*it) << endl;

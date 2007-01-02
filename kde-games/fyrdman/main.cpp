@@ -3,6 +3,8 @@
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 
+#include <kggzsystem.h>
+
 #include "mainwindow.h"
 
 static const KCmdLineOptions op[] =
@@ -33,6 +35,8 @@ int main(int argc, char **argv)
 	args = KCmdLineArgs::parsedArgs();
 
 	KApplication app;
+
+	KGGZSystem::ensureInstallation();
 
 	mainwindow = new MainWindow();
 	app.setMainWidget(mainwindow);

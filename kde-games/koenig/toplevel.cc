@@ -292,8 +292,8 @@ void TopLevel::slotNewstuff()
 	KNS::DownloadDialog::open("chess/theme");
 #endif
 
-	KStandardDirs d;
-	QString basedir = d.findResource("data", "koenig/");
+	KStandardDirs *d = KGlobal::dirs();
+	QString basedir = d->findResource("data", "koenig/");
 	QDir dir(basedir);
 	QStringList s = dir.entryList(QDir::Files);
 	for(QStringList::iterator it = s.begin(); it != s.end(); it++)

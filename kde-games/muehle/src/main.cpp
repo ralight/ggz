@@ -21,6 +21,9 @@
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 
+// GGZ-KDE includes
+#include <kggzsystem.h>
+
 // Muehle includes
 #include "toplevel.h"
 
@@ -51,6 +54,7 @@ int main(int argc, char **argv)
 	args = KCmdLineArgs::parsedArgs();
 
 	KApplication a;
+	KGGZSystem::ensureInstallation();
 
 	top = new Toplevel();
 	if(args->isSet("ggz"))

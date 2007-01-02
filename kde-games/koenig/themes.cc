@@ -93,9 +93,9 @@ void Themes::scanDir(QString directory)
 
 void Themes::scan()
 {
-	KStandardDirs d;
+	KStandardDirs *d = KGlobal::dirs();
 
-	QStringList basedirs = d.findDirs("data", "koenig");
+	QStringList basedirs = d->findDirs("data", "koenig");
 	for(QStringList::iterator it = basedirs.begin(); it != basedirs.end(); it++)
 		scanDir(*it);
 }

@@ -7,6 +7,9 @@
 // KCC includes
 #include "kccwin.h"
 
+// GGZ-KDE includes
+#include <kggzsystem.h>
+
 // KDE includes
 #include <kapplication.h>
 #include <kcmdlineargs.h>
@@ -43,6 +46,8 @@ int main(int argc, char **argv)
 	args = KCmdLineArgs::parsedArgs();
 
 	KApplication a;
+	KGGZSystem::ensureInstallation();
+
 	kccwin = new KCCWin(NULL);
 	if(args->isSet("ggz"))
 	{

@@ -21,6 +21,8 @@
 #include <kcmdlineargs.h>
 #include <klocale.h>
 
+#include <kggzsystem.h>
+
 #include "toplevel.h"
 
 static const KCmdLineOptions op[] =
@@ -51,6 +53,8 @@ int main(int argc, char **argv)
 	args = KCmdLineArgs::parsedArgs();
 
 	KApplication app;
+	KGGZSystem::ensureInstallation();
+
 	TopLevel *toplevel = new TopLevel;
 	if(args->isSet("ggz")) toplevel->initNetworkPreGui();
 	else toplevel->initLocalPreGui();

@@ -496,15 +496,14 @@ void Board::loose()
 // Change the active theme
 void Board::setTheme(const QString &theme)
 {
-	KStandardDirs d;
+	KStandardDirs *d = KGlobal::dirs();
 
 	if(bg) delete bg;
 	if(black) delete black;
 	if(white) delete white;
-	d.addResourceDir("data", GGZDATADIR);
-	bg = new QPixmap(d.findResource("data", QString("muehle/themes/%1/bg.png").arg(theme)));
-	black = new QPixmap(d.findResource("data", QString("muehle/themes/%1/black.png").arg(theme)));
-	white = new QPixmap(d.findResource("data", QString("muehle/themes/%1/white.png").arg(theme)));
+	bg = new QPixmap(d->findResource("data", QString("muehle/themes/%1/bg.png").arg(theme)));
+	black = new QPixmap(d->findResource("data", QString("muehle/themes/%1/black.png").arg(theme)));
+	white = new QPixmap(d->findResource("data", QString("muehle/themes/%1/white.png").arg(theme)));
 
 	parentWidget()->setErasePixmap(*bg);
 
@@ -515,7 +514,7 @@ void Board::setTheme(const QString &theme)
 // Change the active variant
 void Board::setVariant(const QString &variant)
 {
-	KStandardDirs d;
+	KStandardDirs *d = KGlobal::dirs();
 	QString s;
 	int x1, y1, x2, y2;
 
@@ -531,8 +530,7 @@ void Board::setVariant(const QString &variant)
 		m_turn = 1;
 	}
 
-	d.addResourceDir("data", GGZDATADIR);
-	s = d.findResource("data", QString("muehle/%1").arg(variant));
+	s = d->findResource("data", QString("muehle/%1").arg(variant));
 	kdDebug(12101) << "Load variant: " << variant << endl;
 	if(s.isNull())
 	{

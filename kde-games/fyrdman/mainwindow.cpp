@@ -257,8 +257,8 @@ void MainWindow::scanLevels(QString basedir)
 
 void MainWindow::scanNewLevels()
 {
-	KStandardDirs d;
-	QString basedir = d.findResource("data", "fyrdman/");
+	KStandardDirs *d = KGlobal::dirs();
+	QString basedir = d->findResource("data", "fyrdman/");
 	QDir dir(basedir);
 	QStringList s = dir.entryList();
 	for(QStringList::iterator it = s.begin(); it != s.end(); it++)

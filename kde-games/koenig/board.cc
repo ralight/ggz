@@ -40,12 +40,12 @@
 ChessBoard::ChessBoard(QWidget *parent, const char *name)
 	: QWidget(parent, name, Qt::WNoAutoErase)
 {
-	KStandardDirs d;
+	KStandardDirs *d = KGlobal::dirs();
 
 	kdDebug(12101) << "ChessBoard::ChessBoard()" << endl;
 
 	// load figure pixmaps
-	QString pixmapdir = d.findResource("data", "koenig/pics/");
+	QString pixmapdir = d->findResource("data", "koenig/pics/");
 	setTheme(pixmapdir);
 
 	// I like QuickHacks ;)

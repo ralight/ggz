@@ -9,6 +9,7 @@
 
 // GGZ-KDE-Games includes
 #include <kggzmod/module.h>
+#include <kggzsystem.h>
 
 // KDE includes
 #include <kapplication.h>
@@ -33,6 +34,8 @@ int main(int argc, char **argv)
 
 	KCmdLineArgs::init(argc, argv, &about);
 	KApplication a;
+
+	KGGZSystem::ensureInstallation();
 
 	if(!KGGZMod::Module::isGGZ())
 	{
