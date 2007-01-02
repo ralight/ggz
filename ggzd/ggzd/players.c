@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 8779 2007-01-02 12:14:04Z josef $
+ * $Id: players.c 8801 2007-01-02 20:52:54Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -489,13 +489,17 @@ GGZPlayerHandlerStatus player_table_desc_update(GGZPlayer* player,
 	return GGZ_REQ_OK;
 }
 
+/* Called by the network code when the client sends an <UPDATE> for the
+   table seat.  This can be used for instance to toggle bot and open
+   seats. */
 GGZPlayerHandlerStatus player_table_seat_update(GGZPlayer *player,
 						int room_id, int table_id,
 						GGZTableSeat *seat)
 {
 	bool allow;
-
 	GGZTable *table = check_table_perms(player, room_id, table_id);
+	GGZNumberList bots_allowed;
+
 	if (!table) {
 		if(net_send_update_result(player->client->net,
 					  E_NO_PERMISSION) < 0)
@@ -505,8 +509,22 @@ GGZPlayerHandlerStatus player_table_seat_update(GGZPlayer *player,
 
 	pthread_rwlock_rdlock(&game_types[table->type].lock);
 	allow = game_types[table->type].allow_leave;
+	bots_allowed = game_types[table->type].bot_allow_list;
 	pthread_rwlock_unlock(&game_types[table->type].lock);
 	pthread_rwlock_unlock(&table->lock);
+
+	/* Check if adding a bot player is allowed. */
+	if (allow && seat->type == GGZ_SEAT_BOT) {
+		const int bots = seats_count(table, GGZ_SEAT_BOT);
+
+		if (!ggz_numberlist_isset(&bots_allowed, bots + 1)) {
+			allow = false;
+		}
+	}
+
+	/* FIXME: I think this may be a significiant security hole, as we do
+	   not do full checking of the seat change here and it is not
+	   checked at all later that I can see. --jdorje */
 
 	if (!allow) {
 		if(net_send_update_result(player->client->net,
