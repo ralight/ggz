@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 8300 2006-07-03 07:45:15Z josef $
+ * $Id: ggzmod-ggz.c 8778 2007-01-02 12:11:34Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -827,7 +827,11 @@ static int game_fork(GGZMod * ggzmod)
 		}
 
 		/* FIXME: can we call ggzmod_ggz_log() from here? */
-		execv(ggzmod->argv[0], ggzmod->argv);	/* run game */
+		if (ggzmod->argv[0] == '/') {
+			execv(ggzmod->argv[0], ggzmod->argv);	/* run specified executable */
+		} else {
+			execvp(ggzmod->argv[0], ggzmod->argv);	/* run game in PATH */
+		}
 
 		/* We should never get here.  If we do, it's an eror */
 		/* we still can't send error messages... */
