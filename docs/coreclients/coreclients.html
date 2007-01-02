@@ -4,7 +4,7 @@
 <title>
 GGZ Gaming Zone Core Clients
 </title>
-</head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <style type="text/css">
 tt {background-color: #e0e0ff}
 h2 {background-color: #f09020}
@@ -12,6 +12,7 @@ h3 {background-color: #f09020}
 div {font-family: sans-serif}
 th {text-align: left}
 </style>
+</head>
 <body>
 
 <div>
@@ -19,16 +20,19 @@ th {text-align: left}
 <h2>GGZ Gaming Zone Core Clients</h2>
 
 <small>
-<i>Revision: 0.2</i><br>
-<i>Date: 31.12.2005</i><br>
+<i>Revision: 0.3</i><br>
+<i>Date: 30.12.2006</i><br>
 <i>Author: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
 </small>
 
 <p>
-Core clients enable players to log into GGZ servers, chat, select a game,
-view the network lag and handle numerous smaller task.
+Core clients enable players to log into GGZ servers, chat, select a game
+for play or spectating, view the network lag and handle numerous smaller
+tasks.
 Hence, they are an essential part of GGZ and their internals should be
 well understood.
+A core client <a href="corefeatures.html">feature comparison matrix</a>
+is aiding in finding out which clients provide which functionality.
 </p>
 
 <h3>The programmes themselves</h3>
@@ -45,10 +49,10 @@ the encryption, and of course the nickname.
 After having logged in, the core client will enter the first room,
 called the Entry Room or Lounge. It doesn't have any games associated
 with it so only chatting is possible. Within each room, players can
-view their peers and their properties (whether they are guests, bots,
-regular players or admins). They also can start a private conversation,
-check their connection lag, and talk with the chatbot, for which a
-visual dialog might exist.
+view their peers and their properties (including privilege status,
+buddy list status and game statistics). They also can start a private
+conversation, check their connection lag, and talk with the chatbot,
+for which a visual dialog might exist.
 </p>
 
 <p>
@@ -61,17 +65,82 @@ Core clients still handle tasks like transmitting the player list,
 highscores and so on.
 </p>
 
+<p>
+A core client lets some privileged users perform additional actions.
+GGZ differentiates into admins, hosts, regular registered users,
+registered bots and guest users.
+Hosts can make other players be quiet or kick them from the server
+if they behave badly. They can also chat in private at tables while
+they're playing, which is forbidden for non-privileged players.
+Administrators can do all that and in addition
+modify the permissions of registered players so that new hosts or
+administrators can be created.
+The first set of actions is called "admin actions", the second one
+"player permission management".
+</p>
+
+<h3>Existing core clients</h3>
+
+<p>
+Regular GGZ core clients present themselves online at the
+<a href="http://www.ggzgamingzone.org/clients/">core client homepages</a>.
+This includes KGGZ, GGZ-Gtk and GGZ-Gnome for typical Linux desktops running
+e.g. KDE, GNOME or XFCE, GGZ-Java for any desktop or usage as an applet on
+webpages and Víbora for full-screen environments.
+It also includes ggz-txt for text console users such as found alot
+among GGZ developers.
+Beside the regular GGZ core clients, some special clients exist.
+The first group of special core clients includes include all programs which
+behave a bit different from regular core clients but nevertheless use
+the same technical base. This group includes Grubby (the chatbot),
+TelGGZ, the Telnet wrapper for GGZ, and GGZap and ggz-wrapper which
+are tools for launching GGZ games quickly. GGZap is a graphical tool
+for KDE, whereas ggz-wrapper is a command-line tool used by the instant
+messenger plugins for Gaim and Kopete.
+The second group of special core clients are games which run in
+"embedded mode". Those are games which not only can be
+launched by other core clients, but they connect to GGZ servers
+themselves! Of course in most cases they won't have all the features
+that regular core clients have, but the advantage is that one can
+launch a network game right away from the application menu.
+It is considered good habit to support both launching from core clients
+and running in "embedded mode" at the same time at least for larger games.
+The GGZ Game Development Guide has more information on that topic.
+</p>
+
+<p>
+In summary, the following core clients exist:
+<ul>
+<li>Regular core clients: KGGZ, GGZ-Gtk, GGZ-Gnome, GGZ-Java, ggz-txt
+<li>Special core clients: Grubby, TelGGZ, GGZap, ggz-wrapper, ggz-cmd
+<li>Games running in "embedded mode"
+</ul>
+</p>
+
 <h3>A building block: ggzcore</h3>
 
 <p>
 The ggzcore library has been written to support the development of
-core clients. It is currently used in the standard clients (like
-KGGZ, ggz-gtk, ggz-gnome, ggz-txt and Víbora), as well as in
-grubby the chatbot, the telnet wrapper, and the command line
-tool ggz-wrapper which is used by the instant messenger plugins
-for Gaim and Kopete.
+core clients. It is currently used in the regular clients
+as well as in the special clients and games which run in "embedded mode".
+However, not all of those use ggzcore directly, which is written in
+C and therefore mainly used by C programmers.
 Wrappers exist for C++ (called GGZCore++) and Python (called
-PyGGZCoreSimple).
+PyGGZCoreSimple). GGZCore++ is used by KGGZ and GGZap, and
+PyGGZCoreSimple is used by Víbora, the Pygame/SDL core client.
+In addition, GGZ-Java provides its own reimplementation of ggzcore.
+It is not yet offered as a library but usable as a package
+under the name ggz.client.core.
+An overview about the ggzcore library and its counterparts for
+other programming languages is given on its
+<a href="http://dev.ggzgamingzone.org/libraries/ggzcore/">developer homepage</a>.
+The overview includes links to API documentation if available.
+</p>
+
+<p>
+The following text is a guide on how to use ggzcore.
+It sort of represents a tutorial which at some later point will be
+moved to its own document.
 </p>
 
 <p>
@@ -85,13 +154,15 @@ not used right now but might be so in the future.
 is desired.
 <li>GGZ_OPT_THREADED_IO enables asynchronous hostname lookups for the
 initial server connection, to ensure that no single operation in ggzcore
-blocks the application.
+blocks the application. This is highly experimental and depends on the
+appropriate asynchronous operations in libggz.
 <li>GGZ_OPT_EMBEDDED is for core clients which shall only start a single
 game, and do so without launching an external process but consider themselves
 the game. Put the other way around, it is a game which comes with an integrated
-core client. An example for this is Widelands.
+core client ("embedded games"). An example for this is Widelands.
 <li>GGZ_OPT_RECONNECT enables automatic reconnection in case the connection
-breaks.
+breaks. This is also experimental, and especially will not restore
+any running game yet.
 </ul>
 </p>
 
@@ -113,7 +184,7 @@ GGZ_LOGIN_FAIL, if the subsequent login did not succeed.
 </p>
 
 <p>
-As can bee seen in the picture, the server hosts a lot of room.
+As can bee seen in the picture, the server hosts a lot of rooms.
 The room list can be fetched by calling <tt>ggzcore_server_list_rooms</tt>,
 for which the event GGZ_ROOM_LIST will asynchronously be generated
 later on. The client can then change the room, this is what
