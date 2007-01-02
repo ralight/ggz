@@ -62,7 +62,7 @@ class Auth
 			$cookie = "$cookiestem$stamp";
 			$cookie = str_replace("=", "", $cookie);
 			$database->exec("DELETE FROM auth WHERE handle = '%^'", array($username));
-			$database->exec("INSERT INTO auth (handle, cookie) VALUES ('%^', '%^')"), array($username, $cookie);
+			$database->exec("INSERT INTO auth (handle, cookie) VALUES ('%^', '%^')", array($username, $cookie));
 			setcookie(Auth::cookiename(), $cookie, 0, "/");
 			return true;
 		endif;

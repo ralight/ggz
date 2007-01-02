@@ -29,6 +29,7 @@ class Config
 		global $ggzname;
 		global $ggzversion;
 		global $ggzgamedir;
+		global $ggzconfigfile;
 
 		global $communitytheme;
 
@@ -38,6 +39,18 @@ class Config
 			$this->theme = "default";
 			$this->unconfigured = 1;
 			return;
+		endif;
+
+		if ($ggzconfigfile) :
+			$ini = $this->parseconfigfile($ggzconfigfile);
+			if ($ini) :
+				$dbhost = $ini["General"]["DatabaseHost"];
+				$dbname = $ini["General"]["DatabaseName"];
+				$dbuser = $ini["General"]["DatabaseUsername"];
+				$dbpass = $ini["General"]["DatabasePassword"];
+				$dbtype = $ini["General"]["DatabaseType"];
+				$ggzname = $ini["General"]["ServerName"];
+			endif;
 		endif;
 
 		$this->config = array();
@@ -61,12 +74,44 @@ class Config
 		$this->config['ggzname'] = $ggzname;
 		$this->config['ggzversion'] = $ggzversion;
 		$this->config['ggzgamedir'] = $ggzgamedir;
+		$this->config['ggzconfigfile'] = $ggzconfigfile;
 
 		if (!$communitytheme) :
 			$communitytheme = "default";
 		endif;
 
 		$this->theme = $communitytheme;
+	}
+
+	function parseconfigfile($configfile)
+	{
+		$f = @fopen($configfile, "r");
+		if(!$f) :
+			return null;
+		endif;
+
+		$section = "";
+		$content = array();
+		while(!feof($f))
+		{
+			$a = fgets($f);
+			if ($a == "\n") continue;
+			$a = substr($a, 0, strlen($a) - 1);
+			if ($a[0] == "#") continue;
+			if (($a[0] == "[") and ($a[strlen($a) - 1] == "]")) :
+				$section = substr($a, 1, strlen($a) - 2);
+				continue;
+			endif;
+			#echo "//$section// $a<br>";
+			$entry = explode("=", $a);
+			$key = trim($entry[0]);
+			$value = trim($entry[1]);
+			#echo "::$key::$value::<br>";
+			$content[$section][$key] = $value;
+		}
+		fclose($f);
+
+		return $content;
 	}
 
 	function getvalue($key)

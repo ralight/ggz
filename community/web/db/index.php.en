@@ -4,8 +4,12 @@ include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
 
 include("top.inc");
 include("stats.php");
+include("ggzd.php");
 
 $stat->calculateGeneral();
+
+$ggzd = new GGZD(Config::getvalue("ggzurl"));
+$ggzd->parse();
 
 ?>
 <div id="main">
@@ -42,10 +46,7 @@ $stat->calculateGeneral();
 		<a name="database"></a>
 	</h1>
 	<div class="text">
-
-	GGZ Gaming Zone Version <b><?php Config::put("ggzversion") ?></b><br>
-	Server name <b><?php Config::put("ggzname") ?></b><br>
-	Server host <b><a href="<?php Config::put("ggzurl"); ?>"><?php Config::put("ggzurl") ?></a></b><br>
+	<?php $ggzd->output(); ?>
 	</div>
 </div>
 

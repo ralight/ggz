@@ -7,6 +7,10 @@ class Database
 
 	function Database($type)
 	{
+		if ($type == "pgsql") :
+			$type = "postgresql";
+		endif;
+
 		$this->type = $type;
 	}
 

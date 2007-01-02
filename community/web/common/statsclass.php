@@ -32,7 +32,11 @@ class Statistics
 		$database = $this->database;
 
 		$res = $database->exec("SELECT value FROM control WHERE key = 'version'", NULL);
-		$version = $database->result($res, 0, "value");
+		if ($database->numrows($res) == 1) :
+			$version = $database->result($res, 0, "value");
+		else :
+			$version = "undefined";
+		endif;
 		return $version;
 	}
 

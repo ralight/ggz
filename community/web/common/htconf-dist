@@ -1,18 +1,20 @@
 <?php
 
-// Fill out the values, and
-// rename this file to .htconf or htconf!
+// Fill out the values, and rename this file to htconf!
+// Values which are commented out are fetched automatically from
+// ggzd or its configuration file, if set.
 
-$dbhost = "localhost";
-$dbname = "xxx";
-$dbuser = "xxx";
-$dbpass = "xxx";
-$dbtype = "postgresql";
+$ggzconfigfile = "/...../etc/ggzd/ggzd.conf";
+#$dbhost = "localhost";
+#$dbname = "xxx";
+#$dbuser = "xxx";
+#$dbpass = "xxx";
+#$dbtype = "postgresql";
 
-$ggzhost = "localhost";
 $ggzurl = "ggz://localhost:5688";
-$ggzname = "Local Zone";
-$ggzversion = "0.0.12";
+#$ggzhost = "localhost";
+#$ggzname = "Local Zone";
+#$ggzversion = "0.0.12";
 
 $ggzgamedir = "/...../var/ggzd/gamedata/";
 
