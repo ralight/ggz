@@ -45,67 +45,111 @@ int GGZCorePlayer::type()
 
 int GGZCorePlayer::recordWins()
 {
-	int record, ret, dummy;
+	int record, dummy;
 
-	ret = ggzcore_player_get_record(m_player, &record, &dummy, &dummy, &dummy);
-	if(ret) return record;
-	return 0;
+	(void) ggzcore_player_get_record(m_player, &record, &dummy, &dummy, &dummy);
+	return record;
 }
 
 int GGZCorePlayer::recordLosses()
 {
-	int record, ret, dummy;
+	int record, dummy;
 
-	ret = ggzcore_player_get_record(m_player, &dummy, &record, &dummy, &dummy);
-	if(ret) return record;
-	return 0;
+	(void)ggzcore_player_get_record(m_player, &dummy, &record, &dummy, &dummy);
+	return record;
 }
 
 int GGZCorePlayer::recordTies()
 {
-	int record, ret, dummy;
+	int record, dummy;
 
-	ret = ggzcore_player_get_record(m_player, &dummy, &dummy, &record, &dummy);
-	if(ret) return record;
-	return 0;
+	(void)ggzcore_player_get_record(m_player, &dummy, &dummy, &record, &dummy);
+	return record;
 }
 
 int GGZCorePlayer::recordForfeits()
 {
-	int record, ret, dummy;
+	int record, dummy;
 
-	ret = ggzcore_player_get_record(m_player, &dummy, &dummy, &dummy, &record);
-	if(ret) return record;
-	return 0;
+	(void)ggzcore_player_get_record(m_player, &dummy, &dummy, &dummy, &record);
+	return record;
 }
 
 int GGZCorePlayer::rating()
 {
 	int rating;
-	int ret;
 
-	ret = ggzcore_player_get_rating(m_player, &rating);
-	if(ret) return rating;
-	return 0;
+	(void)ggzcore_player_get_rating(m_player, &rating);
+	return rating;
 }
 
 int GGZCorePlayer::ranking()
 {
 	int ranking;
-	int ret;
 
-	ret = ggzcore_player_get_ranking(m_player, &ranking);
-	if(ret) return ranking;
-	return 0;
+	(void)ggzcore_player_get_ranking(m_player, &ranking);
+	return ranking;
 }
 
 int GGZCorePlayer::highscore()
 {
 	int highscore;
+
+	(void)ggzcore_player_get_highscore(m_player, &highscore);
+	return highscore;
+}
+
+bool GGZCorePlayer::hasRecord()
+{
+	int record, ret, dummy;
+
+	ret = ggzcore_player_get_record(m_player, &record, &dummy, &dummy, &dummy);
+	if(ret) return true;
+	return false;
+}
+
+bool GGZCorePlayer::hasRating()
+{
+	int rating;
+	int ret;
+
+	ret = ggzcore_player_get_rating(m_player, &rating);
+	if(ret) return true;
+	return false;
+}
+
+bool GGZCorePlayer::hasRanking()
+{
+	int ranking;
+	int ret;
+
+	ret = ggzcore_player_get_ranking(m_player, &ranking);
+	if(ret) return true;
+	return false;
+}
+
+bool GGZCorePlayer::hasHighscore()
+{
+	int highscore;
 	int ret;
 
 	ret = ggzcore_player_get_highscore(m_player, &highscore);
-	if(ret) return highscore;
-	return 0;
+	if(ret) return true;
+	return false;
+}
+
+bool GGZCorePlayer::hasPermission(PlayerPermission permission)
+{
+	return ggzcore_player_has_perm(m_player, (GGZPerm)permission);
+}
+
+bool GGZCorePlayer::grantPermission(PlayerPermission permission)
+{
+	return ggzcore_player_set_perm(m_player, (GGZPerm)permission, 1);
+}
+
+bool GGZCorePlayer::revokePermission(PlayerPermission permission)
+{
+	return ggzcore_player_set_perm(m_player, (GGZPerm)permission, 0);
 }
 

@@ -81,6 +81,7 @@ KGGZUsers::KGGZUsers(QWidget *parent, const char *name)
 	m_menu_info = new QPopupMenu(NULL);
 	m_menu_info->insertItem(i18n("Player"), infoplayer);
 	m_menu_info->insertItem(i18n("Game results"), inforecord);
+	m_menu_info->insertItem(i18n("Grant host privileges"), infoadminhost);
 
 	connect(this,
 		SIGNAL(rightButtonPressed(QListViewItem*, const QPoint&, int)),
@@ -349,9 +350,15 @@ void KGGZUsers::displayPlayer(QString playername)
 
 void KGGZUsers::displayRecord(GGZCorePlayer *player)
 {
+	bool hasrecord, hasrating, hasranking, hashighscore;
 	int wins, losses, ties, forfeits;
 	int rating, ranking, highscore;
 	QString text;
+
+	hasrecord = player->hasRecord();
+	hasrating = player->hasRating();
+	hasranking = player->hasRanking();
+	hashighscore = player->hasHighscore();
 
 	wins = player->recordWins();
 	losses = player->recordLosses();
@@ -363,14 +370,21 @@ void KGGZUsers::displayRecord(GGZCorePlayer *player)
 	rating = player->rating();
 
 	text = i18n("Information about %1:\n").arg(player->name());
-	text = text + i18n("Wins: %1\nLosses: %2\n").arg(wins).arg(losses);
-	text = text + i18n("Ties: %1\nForfeits: %2\n").arg(ties).arg(forfeits);
-	if(rating)
+	if(hasrecord)
+	{
+		text = text + i18n("Wins: %1\nLosses: %2\n").arg(wins).arg(losses);
+		text = text + i18n("Ties: %1\nForfeits: %2\n").arg(ties).arg(forfeits);
+	}
+	if(hasrating)
 		text = text + i18n("Rating: %1\n").arg(rating);
-	if(ranking)
+	if(hasranking)
 		text = text + i18n("Ranking: %1\n").arg(ranking);
-	if(highscore)
+	if(hashighscore)
 		text = text + i18n("Highscore: %1\n").arg(highscore);
+	if((!hasrecord) && (!hasrating) && (!hasranking) && (!hashighscore))
+	{
+		text = text + i18n("No statistics found.\n").arg(ranking);
+	}
 
 	KMessageBox::information(this, text, i18n("Player game information"));
 }
@@ -403,6 +417,7 @@ void KGGZUsers::slotInformation(int id)
 
 	if(id == infoplayer) displayPlayer(playername);
 	else if(id == inforecord) displayRecord(player);
+	else if(id == infoadminhost) adminHost(player);
 }
 
 void KGGZUsers::setRoom(GGZCoreRoom *room)
@@ -425,5 +440,15 @@ void KGGZUsers::slotContext(int id)
 		message = KInputDialog::getText(i18n("Private message"), i18n("Message text"));
 		if(!message.isNull()) emit signalChat(message, player, KGGZChat::RECEIVE_PERSONAL);
 	}
+}
+
+void KGGZUsers::adminHost(GGZCorePlayer *player)
+{
+	bool ret;
+	
+	ret = player->grantPermission(GGZCorePlayer::roomsadmin);
+	if(!ret) KMessageBox::sorry(this,
+		i18n("Player privileges could not be changed"),
+		i18n("Player management"));
 }
 

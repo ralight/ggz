@@ -111,7 +111,8 @@ class KGGZUsers : public KListView
 		{
 			inforecord,
 			infomessage,
-			infoplayer
+			infoplayer,
+			infoadminhost
 		};
 
 		// Returns the item which represents the requested table
@@ -130,6 +131,8 @@ class KGGZUsers : public KListView
 		void displayRecord(GGZCorePlayer *player);
 		// Message box with general information
 		void displayPlayer(QString playername);
+		// Toggle host privileges for a player
+		void adminHost(GGZCorePlayer *player);
 		
 		// The list displaying the users
 		QListViewItem *itemmain;

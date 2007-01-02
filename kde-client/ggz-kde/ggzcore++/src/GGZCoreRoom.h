@@ -49,7 +49,8 @@ class GGZCoreRoom
 			tableleavefail = GGZ_TABLE_LEAVE_FAIL,
 			playerlag = GGZ_PLAYER_LAG,
 			stats = GGZ_PLAYER_STATS,
-			count = GGZ_PLAYER_COUNT
+			count = GGZ_PLAYER_COUNT,
+			perms = GGZ_PLAYER_PERMS
 		};
 
 		enum ChatTypes

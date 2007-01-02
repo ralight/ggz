@@ -44,6 +44,21 @@ class GGZCorePlayer
 		};
 
 		/**
+		 * Available permissions */
+		enum PlayerPermission
+		{
+			jointable = GGZ_PERM_JOIN_TABLE,
+			launchtable = GGZ_PERM_LAUNCH_TABLE,
+			roomslogin = GGZ_PERM_ROOMS_LOGIN,
+			roomsadmin = GGZ_PERM_ROOMS_ADMIN,
+			chatannounce = GGZ_PERM_CHAT_ANNOUNCE,
+			chatbot = GGZ_PERM_CHAT_BOT,
+			nostats = GGZ_PERM_NO_STATS,
+			edittables = GGZ_PERM_EDIT_TABLES,
+			tablemessage = GGZ_PERM_TABLE_PRIVMSG
+		};
+
+		/**
 		 * Return the name of this player. */
 		char* name();
 		/**
@@ -59,16 +74,26 @@ class GGZCorePlayer
 
 		/**
 		 * Player statistics */
+		bool hasRecord();
+		bool hasRating();
+		bool hasRanking();
+		bool hasHighscore();
+
+		/**
+		 * More player statistics */
 		int recordWins();
 		int recordLosses();
 		int recordTies();
 		int recordForfeits();
-
-		/**
-		 * More player statistics */
 		int rating();
 		int ranking();
 		int highscore();
+
+		/**
+		 * Permissions */
+		bool hasPermission(PlayerPermission permission);
+		bool grantPermission(PlayerPermission permission);
+		bool revokePermission(PlayerPermission permission);
 
 	private:
 		GGZPlayer *m_player;

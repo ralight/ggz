@@ -790,6 +790,9 @@ void KGGZ::roomCollector(unsigned int id, const void* data)
 		case GGZCoreRoom::count:
 			roomnumber = *(int*)data;
 			break;
+		case GGZCoreRoom::perms:
+			player = QString((char*)data);
+			break;
 	}
 
 	switch(id)
@@ -947,6 +950,10 @@ void KGGZ::roomCollector(unsigned int id, const void* data)
 			emit signalRoomChanged(ggzcore_room_get_name(room),
 				ggzcore_gametype_get_prot_engine(ggzcore_room_get_gametype(room)),
 				roomnumber, ggzcore_room_get_num_players(room));
+			break;
+		case GGZCoreRoom::perms:
+			KGGZDEBUG("perms!\n");
+			KGGZDEBUG("Player: %s\n", player.utf8().data());
 			break;
 		default:
 			KGGZDEBUG("unknown\n");
