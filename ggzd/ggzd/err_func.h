@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error function prototypes
- * $Id: err_func.h 8238 2006-06-21 10:39:12Z oojah $
+ * $Id: err_func.h 8779 2007-01-02 12:14:04Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -95,6 +95,7 @@ extern LogInfo log_info;
 int logfile_set_facility(char *);
 
 /* Initialize the log files */
+void logfile_preinitialize(void);
 void logfile_initialize(void);
 
 /* Log a normal message */

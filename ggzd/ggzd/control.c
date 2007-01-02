@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8663 2006-11-20 09:48:56Z josef $
+ * $Id: control.c 8779 2007-01-02 12:14:04Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -558,7 +558,10 @@ int main(int argc, char *argv[])
 	socklen_t addrlen;
 	struct sockaddr_in addr;
 	fd_set active_fd_set, read_fd_set;
-	struct timeval tv;
+	struct timeval tv, *tvp;
+	int seconds;
+
+	logfile_preinitialize();
 
 	/* Parse options */
 	parse_args(argc, argv);
@@ -668,9 +671,18 @@ int main(int argc, char *argv[])
 		}
 
 		read_fd_set = active_fd_set;
-		tv.tv_sec = log_next_update_sec();
-		tv.tv_usec = 0;
-		status = select((select_max + 1), &read_fd_set, NULL, NULL, &tv);
+		seconds = log_next_update_sec();
+		if(seconds == 0)
+		{
+			tvp = NULL;
+		}
+		else
+		{
+			tv.tv_sec = seconds;
+			tv.tv_usec = 0;
+			tvp = &tv;
+		}
+		status = select((select_max + 1), &read_fd_set, NULL, NULL, tvp);
 
 		if (status < 0) {
 			if (errno == EINTR) {

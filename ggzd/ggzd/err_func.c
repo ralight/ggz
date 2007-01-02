@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 8476 2006-08-05 10:14:29Z josef $
+ * $Id: err_func.c 8779 2007-01-02 12:14:04Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -227,6 +227,13 @@ int logfile_set_facility(char *facstr)
 }
 
 
+/* Initialize some settings for logging */
+void logfile_preinitialize(void)
+{
+	update_info.update_interval = LOG_UPDATE_INTERVAL;
+}
+
+
 /* Initialize the log files */
 void logfile_initialize(void)
 {
@@ -254,7 +261,6 @@ void logfile_initialize(void)
 	}
 
 	pthread_mutex_init(&update_info.mut, NULL);
-	update_info.update_interval = LOG_UPDATE_INTERVAL;
 	update_info.next_update = time(NULL) + update_info.update_interval;
 	update_info.start_time = time(NULL);
 	update_info.anon_users = 0;
@@ -323,7 +329,7 @@ int log_next_update_sec(void)
 	int max_select_wait;
 
 	if((max_select_wait = update_info.next_update - time(NULL)) < 1)
-		max_select_wait = 1;
+		max_select_wait = 0;
 
 	return max_select_wait;
 }

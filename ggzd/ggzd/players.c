@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 8763 2006-12-27 10:02:33Z jdorje $
+ * $Id: players.c 8779 2007-01-02 12:14:04Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -991,9 +991,12 @@ GGZPlayerHandlerStatus player_table_info(GGZPlayer *player, int seat_num)
 
 			}
 
-			ggz_free(realname);
-			ggz_free(photo);
-			ggz_free(host);
+			if(realname)
+				ggz_free(realname);
+			if(photo)
+				ggz_free(photo);
+			if(host)
+				ggz_free(host);
 		}
 	}
 	
