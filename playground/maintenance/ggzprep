@@ -39,11 +39,24 @@ if test $distro = "dapper" || test $distro = "etch"; then
 
 cat > $tmpfile << ENDOFPACKAGESLIST
 
+gnuchess
+gnubg
+gnugo
+gnushogi
+libxml-parser-ruby1.8
+
+ant
 make
 autoconf
 automake1.9
 libtool
 g++
+java-gcj-compat-dev
+
+ngrep
+sloccount
+netcat
+vim
 
 libavahi-compat-howl-dev
 libdb4.3-dev
@@ -60,6 +73,7 @@ libsdl-ttf2.0-dev
 libsdl-mixer1.2-dev
 libsilc-dev
 docbook-dsssl
+docbook
 gs
 gaim-dev
 gettext
@@ -89,11 +103,24 @@ if test $distro = "hoary"; then
 
 cat > $tmpfile << ENDOFPACKAGESLIST
 
+gnuchess
+gnubg
+gnugo
+gnushogi
+libxml-parser-ruby1.8
+
+ant
 make
 autoconf
 automake1.9
 libtool
 g++
+java-gcj-compat-dev
+
+ngrep
+sloccount
+netcat
+vim
 
 libhowl-dev
 libdb4.3-dev
@@ -110,6 +137,7 @@ libsdl-ttf2.0-dev
 libsdl-mixer1.2-dev
 libsilc-dev
 docbook-dsssl
+docbook
 gs
 gaim-dev
 gettext
