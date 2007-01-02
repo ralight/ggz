@@ -71,13 +71,13 @@ See @url{http://www.ggzgamingzone.org/docs/guides/gamedev/} for the latest editi
 * Game Clients:: Get into the player's eye
 * Game Servers:: Where the real magic takes place
 * Programming Details:: Network, configuration etc.
-* Glossary:: Index of all special terms
 
 @c @detailmenu
 @c The GGZ System
 @c * foo....
 @c @end detailmenu
 @end menu
+@c * Glossary:: Index of all special terms
 
 @c End of master menu ==========================================
 @c Body ========================================================
@@ -550,6 +550,11 @@ development framework, in the C++ programming language.
 The GGZBoard variant Kuobe, which currently lives in GGZ Playground,
 is a KDE game written in Python.
 
+Starting from version 0.0.14, the KDE GGZ Games library (libkggzgames)
+is used in GGZ. It contains a dialog for player management, system
+integration code and at its core the kggzmod library which was already
+introduced earlier.
+
 @subsection Gtk+, GNOME (C)
 
 There are several useful game libraries for Gtk+, including GtkGLArea.
@@ -875,6 +880,32 @@ ggz_free(answer);
 The library supports IPv6, and offers an experimental feature to perform
 operations such as host name lookups asynchronously.
 
+@subsection DIO (C), in libggz
+
+As an alternative to the easysock functions in libggz, the Data I/O module
+(DIO) can be used. Its main difference is that all read and write operations
+are non-blocking. This is achieved by using a buffer.
+
+@verbatim
+GGZDataIO *dio;
+dio = ggz_dio_new(fd);
+...
+ggz_dio_packet_start(dio);
+ggz_dio_put_int(dio, 0);
+ggz_dio_packet_end(dio);
+...
+ggz_dio_set_read_callback(read_cb);
+ggz_dio_read_data();
+...
+void read_cb(GGZDataIO *dio, void *user)
+{
+	ggz_dio_get_int(dio, &opcode);
+}
+@end verbatim
+
+DIO is not well-documented but not too hard to use. The GGZ game servers
+Tic-Tac-Toe and GGZCards make use of it.
+
 @subsection Qt (C++)
 
 Those game clients which use the Qt toolkit will most likely use the Qt network
@@ -1055,12 +1086,12 @@ For SDL games written in C, a special implementation written for Widelands
 @c End of body =================================================
 @c Footer ======================================================
 
-@node Glossary
-@unnumbered Glossary
+@c @node Glossary
+@c @unnumbered Glossary
 
-@printindex cp
+@c @printindex cp
+@c @contents
 
-@contents
 @bye
 
 @c End of footer ===============================================
