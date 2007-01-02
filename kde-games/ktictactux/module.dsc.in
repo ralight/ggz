@@ -1,11 +1,11 @@
 # KTicTacTux description file
 [ModuleInfo]
 Author = Josef Spillner
-CommandLine = @ggzexecmoddir@/ktictactux_client --ggz --icon @prefix@/share/icons/hicolor/32x32/apps/ktictactux.png
+CommandLine = @ggzexecmoddir@/ktictactux_client
 Frontend = kde
 Homepage = http://www.ggzgamingzone.org/games/ktictactux/
 Name = KTicTacTux
 ProtocolEngine = TicTacToe
-ProtocolVersion = 4
+ProtocolVersion = 5
 Version = 0.0.10
 

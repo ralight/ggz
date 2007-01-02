@@ -15,10 +15,10 @@ noinst_HEADERS = \
 	ktictactuxproto.h \
 	qwhiteframe.h
 
-AM_CPPFLAGS = -I $(top_srcdir)/lib $(all_includes) $(LIBGGZ_INCLUDES) $(LIBGGZMOD_INCLUDES)
+AM_CPPFLAGS = -I $(top_srcdir)/lib $(all_includes) $(LIBGGZ_INCLUDES)
 
-ktictactux_client_LDFLAGS = $(LIBGGZ_LDFLAGS) $(LIBGGZMOD_LDFLAGS) $(all_libraries)
-ktictactux_client_LDADD = $(top_builddir)/lib/libkggzgames.la $(LIB_KDECORE) $(LIB_KDEUI) $(KNEWSTUFF) $(LIB_GGZ) $(LIB_GGZMOD)
+ktictactux_client_LDFLAGS = $(LIBGGZ_LDFLAGS) $(all_libraries)
+ktictactux_client_LDADD = $(top_builddir)/lib/kggzmod/libkggzmod.la $(top_builddir)/lib/libkggzgames.la $(LIB_KDECORE) $(LIB_KDEUI) $(KNEWSTUFF) $(LIB_GGZ)
 
 METASOURCES = AUTO
 

@@ -1,13 +1,11 @@
 //////////////////////////////////////////////////////////////////////
 // KTicTacTux
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001 - 2006 Josef Spillner <josef@ggzgamingzone.org>
 // Published under GNU GPL conditions
 //////////////////////////////////////////////////////////////////////
 
 // KTicTacTux includes
 #include "ktictactuxwin.h"
-
-#include "kggzseatsdialog.h"
 
 // KDE includes
 #include <kpopupmenu.h>
@@ -34,8 +32,6 @@
 KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 : KMainWindow(parent, name)
 {
-	KStandardDirs d;
-
 	m_tux = new KTicTacTux(this);
 	setCentralWidget(m_tux);
 
@@ -72,8 +68,6 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 	connect(mggz, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(mtheme, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 
-	enableNetwork(false);
-
 	loadThemes();
 
 	KConfig *conf = kapp->config();
@@ -104,22 +98,16 @@ void KTicTacTuxWin::slotScore(const QString &score)
 	statusBar()->changeItem(score, 2);
 }
 
-// Return the game object
-KTicTacTux *KTicTacTuxWin::tux()
-{
-	return m_tux;
-}
-
 // Change the theme
 void KTicTacTuxWin::changeTheme(QString theme)
 {
-	KStandardDirs d;
+	KStandardDirs *d = KGlobal::dirs();
 	int id;
 
 	// fall back to default if no theme is set or theme is no more installed
 	if((theme == QString::null) || m_player1[theme] == QString::null)
 	{
-		theme = d.findResource("data", "ktictactux/classic");
+		theme = d->findResource("data", "ktictactux/classic");
 	}
 
 	// try to enable the corresponding menu item
@@ -140,7 +128,6 @@ void KTicTacTuxWin::slotMenu(int id)
 {
 	KConfig *conf;
 	QDir d;
-	KGGZSeatsDialog *seats;
 
 	// Standard menu entries
 	switch(id)
@@ -160,9 +147,7 @@ void KTicTacTuxWin::slotMenu(int id)
 			break;
 #endif
 		case menuggzplayers:
-			/*seats = new KGGZSeatsDialog();
-			seats->setMod(m_tux->getMod());*/
-			// FIXME: disabled until ported to kggzmod
+			m_tux->seats();
 			break;
 		case menuquit:
 			close();
@@ -172,7 +157,7 @@ void KTicTacTuxWin::slotMenu(int id)
 	// Dynamic theme menu entries
 	if(id >= menuthemes)
 	{
-		changeTheme(m_themes[mtheme->text(id)]);
+		changeTheme(m_themes[m_themenames[id]]);
 		conf = kapp->config();
 		conf->setGroup("Settings");
 		conf->writeEntry("theme", m_themes[mtheme->text(id)]);
@@ -187,6 +172,13 @@ void KTicTacTuxWin::enableNetwork(bool enabled)
 	m_networked = enabled;
 
 	mggz->setEnabled(enabled);
+
+	if(enabled)
+	{
+		m_tux->setOpponent(PLAYER_NETWORK);
+	}
+
+	m_tux->init();
 }
 
 // Display scores
@@ -221,19 +213,31 @@ void KTicTacTuxWin::score()
 // Display network score
 void KTicTacTuxWin::slotNetworkScore(int wins, int losses, int ties)
 {
-	QString comment = "";
-	if(!(wins + losses + ties))
-		comment = i18n("Of course, because you didn't play yet.");
-	else if(losses > wins * 2)
-		comment = i18n("You are so bad.");
-	else if(wins > losses * 2)
-		comment = i18n("You're a TicTacTux expert!");
+	QString comment;
 
-	KMessageBox::information(this,
-		i18n("Human players have been beaten %1 times by you, you lost %2 times. "
-			"%3 ties were achieved. "
-			"%4").arg(wins).arg(losses).arg(ties).arg(comment),
-		i18n("KTicTacTux network score"));
+	if(wins == -1)
+	{
+		comment = i18n("Playing as a guest doesn't allow for scores.");
+
+		KMessageBox::sorry(this,
+			comment,
+			i18n("KTicTacTux network score"));
+	}
+	else
+	{
+		if(!(wins + losses + ties))
+			comment = i18n("Of course, because you didn't play yet.");
+		else if(losses > wins * 2)
+			comment = i18n("You are so bad.");
+		else if(wins > losses * 2)
+			comment = i18n("You're a TicTacTux expert!");
+
+		KMessageBox::information(this,
+			i18n("Human players have been beaten %1 times by you, you lost %2 times. "
+				"%3 ties were achieved. "
+				"%4").arg(wins).arg(losses).arg(ties).arg(comment),
+			i18n("KTicTacTux network score"));
+	}
 }
 
 // Game is over
@@ -246,14 +250,14 @@ void KTicTacTuxWin::slotGameOver()
 // Read in all themes
 void KTicTacTuxWin::loadThemes()
 {
-	KStandardDirs d;
+	KStandardDirs *d = KGlobal::dirs();
 	QString name, player1, player2;
 	QString file;
 	int index = menuthemes;
 
 	// Recursively scan all data directories
 	kdDebug() << "loadThemes" << endl;
-	QStringList list(d.findDirs("data", "ktictactux"));
+	QStringList list(d->findDirs("data", "ktictactux"));
 	for(QStringList::iterator it = list.begin(); it != list.end(); it++)
 	{
 		QDir dir((*it));
@@ -277,7 +281,9 @@ void KTicTacTuxWin::loadThemes()
 				m_player1[file] = (*it) + player1;
 				m_player2[file] = (*it) + player2;
 
-				mtheme->insertItem(KGlobal::iconLoader()->loadIcon("imagegallery", KIcon::Small), name, index++);
+				m_themenames[index] = name;
+				mtheme->insertItem(KGlobal::iconLoader()->loadIcon("imagegallery", KIcon::Small), name, index);
+				index++;
 			}
 		}
 	}

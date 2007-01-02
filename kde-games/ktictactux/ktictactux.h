@@ -1,18 +1,21 @@
 //////////////////////////////////////////////////////////////////////
 // KTicTacTux
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001 - 2006 Josef Spillner <josef@ggzgamingzone.org>
 // Published under GNU GPL conditions
 //////////////////////////////////////////////////////////////////////
 
 #ifndef KTICTACTUX_H
 #define KTICTACTUX_H
 
-// KDE includes
-#include <qwidget.h>
-
 // KTicTacTux includes
 #include "config.h"
 #include "ktictactuxproto.h"
+
+// GGZ-KDE-Games includes
+#include <kggzmod/module.h>
+
+// KDE includes
+#include <qwidget.h>
 
 // Qt includes
 #include <qevent.h>
@@ -47,16 +50,18 @@ class KTicTacTux : public QWidget
 		void statistics();
 		// Network operation
 		void network();
+		// Display seats dialog
+		void seats();
 
-		GGZMod *getMod();
+		//GGZMod *getMod();
 
 	public slots:
 		// Evaluate user input
 		void slotSelected(QWidget *widget);
-		// Evaluate network input
-		void slotNetwork();
-		// Evaluate network control input
-		void slotDispatch();
+		// Network input from GGZ
+		void slotNetwork(int fd);
+		// Network error
+		void slotError();
 
 	signals:
 		// Emit the game status
@@ -92,8 +97,6 @@ class KTicTacTux : public QWidget
 
 		// Array of boxes for the images
 		QWhiteFrame *frame[3][3];
-		// ID of the first box
-		//WId m_firstid;
 		// The player who does the next move
 		int m_turn;
 		// Coordinates of any field

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 // KTicTacTux
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001 - 2006 Josef Spillner <josef@ggzgamingzone.org>
 // Published under GNU GPL conditions
 //////////////////////////////////////////////////////////////////////
 
@@ -10,16 +10,19 @@
 // KTicTacTux includes
 #include "qwhiteframe.h"
 
+// GGZ-KDE-Games includes
+#include <kggzseatsdialog.h>
+
 // KDE includes
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kconfig.h>
 #include <kapplication.h>
+#include <kdebug.h>
 
 // Qt includes
 #include <qlayout.h>
 #include <qpixmap.h>
-#include <qsocketnotifier.h>
 
 // System includes
 #include <stdio.h>
@@ -60,19 +63,19 @@ KTicTacTux::KTicTacTux(QWidget *parent, const char *name)
 	setCaption("KTicTacTux");
 	show();
 
-	//m_firstid = frame[0][0]->winId();
 	m_turn = 0;
 
 	m_score_opp = 0;
 	m_score_you = 0;
 
-	proto = new KTicTacTuxProto(this);
+	m_opponent = PLAYER_AI;
+
+	proto = new KTicTacTuxProto();
 }
 
 // Destructor
 KTicTacTux::~KTicTacTux()
 {
-	proto->shutdown();
 	delete proto;
 }
 
@@ -83,9 +86,8 @@ void KTicTacTux::slotSelected(QWidget *widget)
 	int id;
 
 	if(proto->state != proto->statemove) return;
-	if(m_turn != proto->num) return;
+	if(m_turn != proto->num()) return;
 
-	//id = widget->winId() - m_firstid;
 	tmp = reinterpret_cast<QWhiteFrame*>(widget);
 	id = tmp->id();
 
@@ -151,7 +153,7 @@ void KTicTacTux::getNextTurn()
 {
 	m_turn = (++m_turn) % 2;
 
-	if(m_turn == proto->num) yourTurn();
+	if(m_turn == proto->num()) yourTurn();
 	else opponentTurn();
 
 	drawBoard();
@@ -183,7 +185,7 @@ int KTicTacTux::gameOver()
 		{
 			emit signalStatus(i18n("Game Over!"));
 
-			if((m_opponent == PLAYER_NETWORK) && (proto->num < 0))
+			if((m_opponent == PLAYER_NETWORK) && (proto->num() < 0))
 			{
 				announce(i18n("The game is over."));
 			}
@@ -252,21 +254,13 @@ void KTicTacTux::announce(QString str)
 // Initialize either network or AI mode
 void KTicTacTux::init()
 {
-	QSocketNotifier *sn;
-
 	proto->init();
 
-	if(m_opponent == PLAYER_NETWORK)
-	{
-		proto->connect();
-		sn = new QSocketNotifier(proto->fdcontrol, QSocketNotifier::Read, this);
-		connect(sn, SIGNAL(activated(int)), SLOT(slotDispatch()));
-	}
-	else
+	if(m_opponent == PLAYER_AI)
 	{
 		m_turn++;
 		proto->seats[0] = getPlayer(0);
-    	proto->seats[1] = getPlayer(1);
+		proto->seats[1] = getPlayer(1);
 		getNextTurn();
 	}
 }
@@ -364,8 +358,12 @@ void KTicTacTux::setOpponent(int type)
 {
 	m_opponent = type;
 	if(m_opponent == PLAYER_NETWORK)
+	{
 		emit signalScore(i18n("Network game"));
-	else proto->num = 0;
+		proto->mod = new KGGZMod::Module("ktictactux");
+		connect(proto->mod, SIGNAL(signalError()), SLOT(slotError()));
+		connect(proto->mod, SIGNAL(signalNetwork(int)), SLOT(slotNetwork(int)));
+	}
 	emit signalStatus(i18n("Waiting for opponent!"));
 }
 
@@ -380,24 +378,39 @@ void KTicTacTux::statistics()
 {
 	proto->getStatistics();
 
-	emit signalNetworkScore(proto->stats[0], proto->stats[1], proto->stats[2]);
+	if(proto->stats_record)
+		emit signalNetworkScore(proto->stats_wins, proto->stats_losses, proto->stats_ties);
+	else
+		emit signalNetworkScore(-1, -1, -1);
 }
 
-// Handle network input
-void KTicTacTux::network()
+// Network error
+void KTicTacTux::slotError()
 {
-	QSocketNotifier *sn;
+	disconnect(proto->mod, 0, 0, 0);
 
-	sn = new QSocketNotifier(proto->fd, QSocketNotifier::Read, this);
-	connect(sn, SIGNAL(activated(int)), SLOT(slotNetwork()));
+	KMessageBox::error(this,
+		i18n("A network error has occurred. The game will be terminated."),
+		i18n("Network error"));
+
+	// FIXME: we should do this before displaying the message box
+	// however the core client will kill our game client then
+	delete proto;
+	proto = NULL;
 }
 
 // Network data
-void KTicTacTux::slotNetwork()
+void KTicTacTux::slotNetwork(int fd)
 {
 	int op;
 
+	proto->fd = fd;
+
+	kdDebug() << "Network data arriving on fd " << fd << "!" << endl;
+
 	op = proto->getOp();
+
+	kdDebug() << "Opcode is " << op << endl;
 
 	switch(op)
 	{
@@ -407,12 +420,12 @@ void KTicTacTux::slotNetwork()
 		case KTicTacTuxProto::msgplayers:
 			proto->getPlayers();
 			proto->state = proto->statewait;
-			if((proto->num >= 0) && (proto->names[!proto->num][0]))
-				emit signalScore(i18n("Network game with %1").arg(proto->names[!proto->num]));
+			if((proto->num() >= 0) && (proto->names[!proto->num()][0]))
+				emit signalScore(i18n("Network game with %1").arg(proto->names[!proto->num()]));
 			break;
 		case KTicTacTuxProto::reqmove:
 			proto->state = proto->statemove;
-			m_turn = proto->num;
+			m_turn = proto->num();
 			emit signalStatus(i18n("Your move"));
 			break;
 		case KTicTacTuxProto::rspmove:
@@ -437,19 +450,18 @@ void KTicTacTux::slotNetwork()
 			break;
 		case KTicTacTuxProto::msgmove:
 			proto->getOpponentMove();
-			if(proto->num < 0) emit signalStatus(i18n("Watching the game"));
+			if(proto->num() < 0) emit signalStatus(i18n("Watching the game"));
 			break;
 		case KTicTacTuxProto::sndsync:
 			proto->getSync();
 			break;
-//		case proto->sndstats:
-//			proto->getStatistics();
-//			emit signalNetworkScore(proto->stats[0], proto->stats[1]);
-//			break;
 		case KTicTacTuxProto::msggameover:
 			proto->getGameOver();
 			proto->state = proto->statedone;
 			gameOver();
+			break;
+		default:
+			slotError();
 			break;
 	}
 	drawBoard();
@@ -483,14 +495,12 @@ void KTicTacTux::setTheme(QString t1, QString t2)
 	drawBoard();
 }
 
-// Evaluate network control input
-void KTicTacTux::slotDispatch()
+// Displays the player management dialog
+void KTicTacTux::seats()
 {
-	proto->dispatch();
-}
+	KGGZSeatsDialog *seats;
 
-GGZMod *KTicTacTux::getMod()
-{
-	return proto->mod;
+	seats = new KGGZSeatsDialog();
+	seats->setMod(proto->mod);
 }
 

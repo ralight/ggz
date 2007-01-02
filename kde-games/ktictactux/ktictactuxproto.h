@@ -1,23 +1,24 @@
 //////////////////////////////////////////////////////////////////////
 // KTicTacTux
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001 - 2006 Josef Spillner <josef@ggzgamingzone.org>
 // Published under GNU GPL conditions
 //////////////////////////////////////////////////////////////////////
 
 #ifndef KTICTACTUX_PROTO_H
 #define KTICTACTUX_PROTO_H
 
-#include <ggzmod.h>
-
 // Forward declarations
-class KTicTacTux;
+namespace KGGZMod
+{
+	class Module;
+};
 
 // Generic TicTacToe client protocol handler
 class KTicTacTuxProto
 {
 	public:
 		// Constructor
-		KTicTacTuxProto(KTicTacTux *game);
+		KTicTacTuxProto();
 		// Destructor
 		~KTicTacTuxProto();
 
@@ -70,35 +71,32 @@ class KTicTacTuxProto
 
 		// A winner, if any
 		char winner;
+		// Holds a move
+		int move;
 
-		// Game socket
-		int fd;
-		// Game control socket
-		int fdcontrol;
-		// Seat number
-		int num;
 		// Both seats
 		int seats[2];
 		// Both names
 		char names[2][17];
+		// Own seat number sent by game server
+		int seatnum;
 
 		// The board representation
 		BoardOwners board[3][3];
 		// The current game state
 		States state;
-		// Holds a move
-		int move;
 		// The player who is on
 		char turn;
-		// Statistics
-		int stats[2];
 
-		// Connect to the socket
-		void connect();
+		// Statistics
+		bool stats_record;
+		int stats_wins;
+		int stats_losses;
+		int stats_ties;
+		int stats_forfeits;
+
 		// Initialize protocol
 		void init();
-		// Shutdown game
-		void shutdown();
 
 		// Read opcode
 		int getOp();
@@ -123,21 +121,14 @@ class KTicTacTuxProto
 		int sendMyMove();
 		// Synchronize game
 		void sendSync();
-		// Fetch statistics
-		void sendStatistics();
 
-		// GGZMod object
-		GGZMod *mod;
-		// Game object
-		KTicTacTux *gameobject;
-		// Self object
-		static KTicTacTuxProto *self;
+		// GGZ game module object
+		KGGZMod::Module *mod;
+		// Socket to game server
+		int fd;
 
-		// Callback for control channel
-		static void handle_server(GGZMod *mod, GGZModEvent e,
-					  const void *data);
-		// Dispatch loop
-		void dispatch();
+		// Seat number
+		int num();
 };
 
 #endif

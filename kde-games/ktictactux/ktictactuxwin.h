@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 // KTicTacTux
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001 - 2006 Josef Spillner <josef@ggzgamingzone.org>
 // Published under GNU GPL conditions
 //////////////////////////////////////////////////////////////////////
 
@@ -28,8 +28,6 @@ class KTicTacTuxWin : public KMainWindow
 		KTicTacTuxWin(QWidget *parent = NULL, const char *name = NULL);
 		// Destructor
 		~KTicTacTuxWin();
-		// The game object
-		KTicTacTux *tux();
 		// Menu ids
 		enum MenuEntries
 		{
@@ -70,6 +68,7 @@ class KTicTacTuxWin : public KMainWindow
 		bool m_networked;
 		// List of themes
 		QMap<QString, QString> m_themes, m_player1, m_player2;
+		QMap<int, QString> m_themenames;
 };
 
 #endif
