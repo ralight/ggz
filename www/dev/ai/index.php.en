@@ -27,7 +27,7 @@ This page gives an overview about current AI players, their strengths and so on.
 <tr><td>gnushogi</td><td>Shogi</td><td>Python</td><td>wrapper (xboard protocol)</td><td>GGZBoard Shogi client</td></tr>
 <tr><td>gnugo</td><td>Go</td><td>Python</td><td>wrapper (gtp protocol)</td><td>GGZBoard Go client</td></tr>
 <tr><td>gnugo</td><td>Go</td><td>Python</td><td>wrapper (gmp protocol)</td><td>GGZ-Python Go server</td></tr>
-<tr><td>ggzttt</td><td>Tic-Tac-Toe</td><td>C</td><td>library</td><td>Tic-Tac-Toe server</td></tr>
+<tr><td>ggzttt</td><td>Tic-Tac-Toe</td><td>C</td><td>library</td><td>Tic-Tac-Toe server, RubyToe server</td></tr>
 <tr><td>ggzchess</td><td>Chess</td><td>C, Python</td><td>library</td><td>Chess server, GGZBoard Chess client ...</td></tr>
 <tr><td></td><td></td><td></td><td></td><td>... Grubby (client), Koenig client</td></tr>
 </table>

@@ -37,6 +37,7 @@ GGZ core clients and advanced games can use ggzcore to communicate with the GGZ 
 <tr><td>ggzcore</td><td>Language: C</td><td>Location: ggz-client-libs/ggzcore/ggzcore.h</td></tr>
 <tr><td>ggzcore++</td><td>Language: C++</td><td>Location: kde-client/ggz-kde/ggzcore++</td></tr>
 <tr><td>pyggzcoresimple</td><td>Language: Python</td><td>Location: python/pyggzcore</td></tr>
+<tr><td>ggzcore-java</td><td>Language: Java</td><td>Location: java/src/ggz/client/core</td></tr>
 </table>
 
 <br>
@@ -65,12 +66,14 @@ retrieving the server message of the day (MOTD) or player statistics, handling p
 per-table chat as well as administrative messages, and managing the game launch and join events for
 players and spectators.
 The ggzcore library depends on libggz from the GGZ project and on expat for XML handling.
+The ggzcore-java library is not a wrapper but a reimplementation and as such does not have these
+dependencies directly, any Java XML parser is fine.
 <br><br>
 
 <i>More information</i><br>
 You might want to start with the <a href="http://www.ggzgamingzone.org/docs/api/ggzcore/">API documentation</a>.
 Examples of usage include ggz-gtk, ggz-txt and ggz-gnome for the C library, kggz for the C++ wrapper
-and vibora for the Python wrapper. As special core clients, also grubby and the Gaim and Kopete IM plugins
+and víbora for the Python wrapper. As special core clients, also grubby and the Gaim and Kopete IM plugins
 as well as ggzap use ggzcore. Finally, games such as Widelands use the embedded feature of ggzcore.
 The communication protocol between ggzcore and the GGZ server ggzd is standardized in the
 <a href="http://www.ggzgamingzone.org/docs/design/html/">main protocol specification</a>.
