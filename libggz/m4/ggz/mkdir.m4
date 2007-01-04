@@ -1,4 +1,4 @@
-# $Id: mkdir.m4 5859 2004-02-09 01:38:22Z jdorje $
+# $Id: mkdir.m4 8809 2007-01-04 20:38:26Z jdorje $
 # FUNC_MKDIR_TAKES_ONE_ARG defines MKDIR_TAKES_ONE_ARG if, well, mkdir takes
 # one arg (instead of 2 like it does on POSIX systems).
 #

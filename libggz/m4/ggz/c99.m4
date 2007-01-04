@@ -11,7 +11,7 @@
 
 # Originally written by Jason Short for Freeciv.  Imported and updated for
 # GGZ.  The canonical copy of this resides in the libggz module.
-# $Id: c99.m4 7750 2006-01-07 22:20:47Z jdorje $
+# $Id: c99.m4 8809 2007-01-04 20:38:26Z jdorje $
 
 # Check C99-style variadic macros (required):
 #
