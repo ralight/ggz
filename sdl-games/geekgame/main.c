@@ -1,7 +1,7 @@
 /*
  * Geekgame - a game which only real geeks understand
  * Copyright (C) 2002 - 2004 Josef Spillner, josef@ggzgamingzone.org
- * $Id: main.c 7271 2005-06-10 12:43:29Z josef $
+ * $Id: main.c 8805 2007-01-04 14:34:23Z josef $
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -61,8 +61,8 @@
 #include "config.h"
 
 /* Hard-coded definitions */
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
+#define SCREEN_WIDTH_FALLBACK 800
+#define SCREEN_HEIGHT_FALLBACK 600
 
 #define ARRAY_WIDTH 20
 #define ARRAY_HEIGHT 10
@@ -304,8 +304,8 @@ static void drawbox(int x, int y, int w, int h, SDL_Surface *screen,
 	}
 	else
 	{
-		if((x < 0) || (x + w > SCREEN_WIDTH - 5)) return;
-		if((y < 0) || (y + h > SCREEN_HEIGHT - 5)) return;
+		if((x < 0) || (x + w > screen->w - 5)) return;
+		if((y < 0) || (y + h > screen->h - 5)) return;
 	}
 
 	rect.x = x;
@@ -668,8 +668,8 @@ static void screen_scanning(int display)
 	{
 		rect.x = 0;
 		rect.y = 0;
-		rect.w = SCREEN_WIDTH;
-		rect.h = SCREEN_HEIGHT;
+		rect.w = screen->w;
+		rect.h = screen->h;
 		SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
 
 		renderdesc(50, 50, "Scanning...", 1);
@@ -703,6 +703,7 @@ static void screen_scanning(int display)
 		}
 		if(!fontpath) fontpath = scan_file("/usr/share/fonts/truetype", "*.ttf");
 		if(!fontpath) fontpath = scan_file("/usr/share/fonts/truetype/freefont", "*.ttf");
+		if(!fontpath) fontpath = scan_file("/usr/share/fonts/truetype/openoffice", "*.ttf");
 		if(!fontpath) fontpath = scan_file("/usr/X11R6/lib/X11/fonts/TrueType", "*.ttf");
 
 		/* Scanning for music */
@@ -790,8 +791,8 @@ static void screen_intro(int firsttime)
 
 	rect.x = 0;
 	rect.y = 0;
-	rect.w = SCREEN_WIDTH;
-	rect.h = SCREEN_HEIGHT;
+	rect.w = screen->w;
+	rect.h = screen->h;
 	SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
 	SDL_UpdateRect(screen, rect.x, rect.y, rect.w, rect.h);
 
@@ -1361,8 +1362,8 @@ static void screen_outtro(void)
 
 	rect.x = 0;
 	rect.y = 0;
-	rect.w = SCREEN_WIDTH;
-	rect.h = SCREEN_HEIGHT;
+	rect.w = screen->w;
+	rect.h = screen->h;
 	SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
 	rendermode(22, 24, "The game is over.");
 	if(!ggzmode)
@@ -1398,6 +1399,8 @@ int startgame(void)
 	Uint32 init;
 	char path[STRING_LENGTH];
 	int step;
+	int scrwidth, scrheight;
+	const SDL_VideoInfo *vidinfo;
 
 	init = SDL_INIT_VIDEO;
 #ifdef HAVE_SOUND
@@ -1451,12 +1454,24 @@ int startgame(void)
 	icon = IMG_Load(path);
 	if(icon) SDL_WM_SetIcon(icon, 0);
 
-	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0,
+	if(usefullscreen)
+	{
+		vidinfo = SDL_GetVideoInfo();
+		scrwidth = vidinfo->current_w;
+		scrheight = vidinfo->current_h;
+	}
+	else
+	{
+		scrwidth = SCREEN_WIDTH_FALLBACK;
+		scrheight = SCREEN_HEIGHT_FALLBACK;
+	}
+
+	screen = SDL_SetVideoMode(scrwidth, scrheight, 0,
 		SDL_OPENGL | (usefullscreen ? SDL_FULLSCREEN : SDL_RESIZABLE));
 
 	geekgame_intro();
 
-	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0,
+	screen = SDL_SetVideoMode(scrwidth, scrheight, 0,
 		(usefullscreen ? SDL_FULLSCREEN : 0));
 
 	if(!players) players = MAX_PLAYERS;
