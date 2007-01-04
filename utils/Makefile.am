@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 8813 2007-01-04 22:52:10Z jdorje $
+
 if COND_METASERV
 METASERV_DIR = metaserv
 endif
@@ -13,5 +16,6 @@ endif
 
 SUBDIRS = man $(METASERV_DIR) $(TELGGZ_DIR) $(CMDCLIENT_DIR) $(GGZCOMM_DIR)
 
-EXTRA_DIST = README.GGZ \
-		m4/ggz.m4 m4/iconv.m4
+EXTRA_DIST = README.GGZ
+
+ACLOCAL_AMFLAGS = -I m4 -I m4/ggz
