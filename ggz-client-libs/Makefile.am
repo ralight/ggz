@@ -1,6 +1,10 @@
-SUBDIRS = ggzmod-ggz ggzcore ggzmod ggz-config $(GGZWRAP_SUBDIR) man tests desktop po
+if COND_GGZWRAP
+GGZWRAP_DIR = ggzwrap
+endif
 
-EXTRA_DIST = README.GGZ QuickStart.GGZ \
-	indent.pro \
-	m4/ggz.m4 m4/ggz-debug.m4 m4/i18n.mk m4/iconv.m4 m4/libtool.m4 \
-	m4/mkdir.m4 m4/system.m4
+SUBDIRS = ggzmod-ggz ggzcore ggzmod ggz-config $(GGZWRAP_DIR) man tests desktop po
+
+EXTRA_DIST = README.GGZ QuickStart.GGZ indent.pro
+
+ACLOCAL_AMFLAGS = -I m4
+

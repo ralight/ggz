@@ -38,12 +38,7 @@ AC_GGZ_INTL
 AC_ARG_ENABLE([ggzwrap],
               AS_HELP_STRING([--disable-ggzwrap], [Don't build ggz wrapper]),
               [enable_ggzwrap=$enableval], [enable_ggzwrap="yes"])
-if test "x$enable_ggzwrap" = "xyes"; then
-  GGZWRAP_SUBDIR="ggzwrap ggz-wrapper"
-else
-  GGZWRAP_SUBDIR=""
-fi
-AC_SUBST(GGZWRAP_SUBDIR)
+AM_CONDITIONAL([COND_GGZWRAP], [test "$enable_ggzwrap" = yes])
 
 # Check for header files
 # ======================
