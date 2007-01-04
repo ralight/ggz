@@ -1,4 +1,4 @@
-EXTRA_DIST = README.GGZ QuickStart.GGZ Doxyfile m4/ggz.m4
+EXTRA_DIST = README.GGZ QuickStart.GGZ Doxyfile
 
 SUBDIRS = src tests man
 
