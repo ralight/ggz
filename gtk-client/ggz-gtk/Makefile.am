@@ -3,7 +3,7 @@ AM_CPPFLAGS = $(GTK_CFLAGS) -I$(top_srcdir)/intl \
 	$(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES) \
 	-DGGZGTKDATADIR=\"$(ggzgtkdatadir)\"
 
-ggzgtkdata_DATA =	about_bg.png		\
+dist_ggzgtkdata_DATA =	about_bg.png		\
 			ggz_gtk_admin.svg 	\
 			ggz_gtk_guest.svg 	\
 			ggz_gtk_registered.svg	\
@@ -83,5 +83,3 @@ libggz_gtk_la_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLAGS) -version-info 0:0:0
 #ggz-gtk-icon.o: ggz-gtk-icon.rc
 #	i586-mingw32msvc-windres -i $< $@
 #endif
-
-EXTRA_DIST = $(pics)
