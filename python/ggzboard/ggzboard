@@ -85,12 +85,33 @@ class GGZBoardUI:
 
 	def togglefullscreen(self):
 		self.isfullscreen = not self.isfullscreen
+		self.currentres = None
 		if self.isfullscreen:
+			info = pygame.display.Info()
+			try:
+				# Pygame 1.8+ only
+				w = info.current_w
+				h = info.current_h
+			except:
+				# Pygame up to 1.7 don't know the current screen resolution
+				w = -1
+				h = -1
 			modes = pygame.display.list_modes(0, FULLSCREEN)
 			if modes != -1:
-				self.currentres = modes[0]
-				self.screen = pygame.display.set_mode(self.currentres, DOUBLEBUF)
-				pygame.display.toggle_fullscreen()
+				safemodes = ((1024, 768), (800, 600))
+				for mode in modes:
+					if pygame.display.mode_ok(mode, DOUBLEBUF | FULLSCREEN):
+						if w == -1:
+							if not self.currentres:
+								self.currentres = mode
+							if mode in safemodes:
+								self.currentres = mode
+								break
+						if w == mode[0] and h == mode[1]:
+							self.currentres = mode
+							break
+				if self.currentres:
+					self.screen = pygame.display.set_mode(self.currentres, DOUBLEBUF | FULLSCREEN)
 			else:
 				pygame.display.toggle_fullscreen()
 		else:
