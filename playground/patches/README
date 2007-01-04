@@ -10,6 +10,10 @@ Widelands GGZ integration:
 Game-side channels (for running GGZ in windows):
  ggz-client-libs.channels.diff
 
+GGZD Mysql phpbb - change the column names to match those used in phpbb
+ mysql_phpbb.diff
+ 
+
 Old patches (just to keep it in memory)
 ---------------------------------------
 
