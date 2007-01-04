@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8745 2006-12-23 19:50:30Z jdorje $
+# $Id: Makefile.am 8815 2007-01-04 22:55:03Z jdorje $
 
 SUBDIRS = database meta
 
@@ -26,6 +26,7 @@ ggzd_SOURCES = \
 	event.c \
 	event.h \
 	ggzd.h \
+	ggzdb.h \
 	parse_opt.c \
 	parse_opt.h \
 	players.c \
