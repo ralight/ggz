@@ -2,7 +2,7 @@
  * File: client.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.h 8222 2006-06-20 02:59:29Z jdorje $
+ * $Id: client.h 8811 2007-01-04 22:39:18Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -25,6 +25,9 @@
 
 #include <ggzcore.h>
 
+#ifndef __CLIENT_H__
+#define __CLIENT_H__
+
 void client_join_table(void);
 
 void client_start_table_join(void);
@@ -35,10 +38,10 @@ GtkWidget* create_win_main (void);
 #define DEFAULT_FONT "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-1"
 
 enum ggz_page {
-  GGZ_PAGE_FIRSTLOGIN,
-  GGZ_PAGE_LOGIN,
-  GGZ_PAGE_MAIN,
-  GGZ_PAGE_PROPS
+	GGZ_PAGE_FIRSTLOGIN,
+	GGZ_PAGE_LOGIN,
+	GGZ_PAGE_MAIN,
+	GGZ_PAGE_PROPS
 };
 
 void main_activate(void);
@@ -51,3 +54,5 @@ extern void (*launched_cb)(void);
 extern void (*ggz_closed_cb)(void);
 extern const char *embedded_protocol_engine, *embedded_protocol_version;
 extern const char *embedded_default_profile;
+
+#endif /* __CLIENT_H__ */

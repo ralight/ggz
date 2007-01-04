@@ -2,7 +2,7 @@
  * File: ggzclient.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.h 7739 2006-01-07 03:29:34Z jdorje $
+ * $Id: ggzclient.h 8811 2007-01-04 22:39:18Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -23,8 +23,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#ifndef _GGZ_
-#define _GGZ_
+#ifndef __GGZCLIENT_H__
+#define __GGZCLIENT_H__
 
 #include "ggzcore.h"
 
@@ -35,4 +35,4 @@ int ggz_connection_query(void);
 /* Should be called any time we disconnect from the server. */
 void server_disconnect(void);
 
-#endif
+#endif /* __GGZCLIENT_H__ */
