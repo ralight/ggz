@@ -2,7 +2,7 @@ dnl ======================================
 dnl GGZ Gaming Zone - Configuration Macros
 dnl ======================================
 dnl
-dnl Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org
+dnl Copyright (C) 2001 - 2007 Josef Spillner, josef@ggzgamingzone.org
 dnl This file has heavily been inspired by KDE's acinclude :)
 dnl It is published under the conditions of the GNU General Public License.
 dnl
@@ -18,7 +18,7 @@ dnl
 dnl ======================================
 dnl
 dnl History:
-dnl   See the CVS log for a full history.
+dnl   See the SVN log for a full history.
 dnl
 dnl ------------------------------------------------------------------------
 dnl Content of this file:
@@ -51,6 +51,9 @@ dnl   AC_GGZ_ERROR - user-friendly error messages
 dnl   AC_GGZ_FIND_FILE - macro for convenience (thanks kde)
 dnl   AC_GGZ_REMOVEDUPS - eliminate duplicate list elements
 dnl
+
+# Version number of this script
+# serial 0014
 
 dnl ------------------------------------------------------------------------
 dnl Find a directory containing a single file
@@ -215,6 +218,13 @@ AC_DEFUN([AC_GGZ_VERSION],
 	testbody="$testbody if(LIBGGZ_VERSION_MICRO < $micro) return -1;"
 	testbody="$testbody return 0;"
 
+	save_libs=$LIBS
+	save_ldflags=$LDFLAGS
+	save_cppflags=$CPPFLAGS
+	LDFLAGS=$LIBGGZ_LDFLAGS
+	LIBS=$LIB_GGZ
+	CPPFLAGS=$LIBGGZ_INCLUDES
+
 	AC_MSG_CHECKING([for GGZ library version: $major.$minor.$micro])
 	AC_RUN_IFELSE(
 		[AC_LANG_PROGRAM([[$testprologue]], [[$testbody]])],
@@ -231,6 +241,10 @@ AC_DEFUN([AC_GGZ_VERSION],
 		fi
 		$5
 	fi
+
+	LIBS=$save_libs
+	LDFLAGS=$save_ldflags
+	CPPFLAGS=$save_cppflags
 ])
 
 dnl ------------------------------------------------------------------------
@@ -329,7 +343,6 @@ else
 fi
 
 ])
-
 
 dnl ------------------------------------------------------------------------
 dnl Try to find the ggzcore headers and libraries.
@@ -957,12 +970,15 @@ fi
 
 ])
 
-# AC_GGZ_CHECK_SERVER
-#   Check for presence of GGZ server libraries.
-#
-#   Simply call this function in programs that use GGZ.  GGZ_SERVER will
-#   be #defined in config.h, and created as a conditional
-#   in Makefile.am files, if server libraries are present.
+dnl ------------------------------------------------------------------------
+dnl AC_GGZ_CHECK_SERVER
+dnl   Check for presence of GGZ server libraries.
+dnl
+dnl   Simply call this function in programs that use GGZ.  GGZ_SERVER will
+dnl   be #defined in config.h, and created as a conditional
+dnl   in Makefile.am files, if server libraries are present.
+dnl ------------------------------------------------------------------------
+dnl
 AC_DEFUN([AC_GGZ_CHECK_SERVER],
 [
   AC_GGZ_LIBGGZ([try_ggz="yes"], [try_ggz="no"])
@@ -994,15 +1010,18 @@ AC_DEFUN([AC_GGZ_CHECK_SERVER],
   AM_CONDITIONAL(GGZ_SERVER, test "$ggz_server" = "yes")
 ])
 
-# AC_GGZ_CHECK
-#   Check for presence of GGZ client and server libraries.
-#
-#   Simply call this function in programs that use GGZ.  GGZ_SERVER and
-#   GGZ_CLIENT will be #defined in config.h, and created as conditionals
-#   in Makefile.am files.
-#
-#   The only argument accepted gives the frontend for client embedding:
-#      "gtk" => means the libggz-gtk library will be checked
+dnl ------------------------------------------------------------------------
+dnl AC_GGZ_CHECK
+dnl   Check for presence of GGZ client and server libraries.
+dnl
+dnl   Simply call this function in programs that use GGZ.  GGZ_SERVER and
+dnl   GGZ_CLIENT will be #defined in config.h, and created as conditionals
+dnl   in Makefile.am files.
+dnl
+dnl   The only argument accepted gives the frontend for client embedding:
+dnl      "gtk" => means the libggz-gtk library will be checked
+dnl ------------------------------------------------------------------------
+dnl
 AC_DEFUN([AC_GGZ_CHECK],
 [
   AC_GGZ_INIT
