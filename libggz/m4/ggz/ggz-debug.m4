@@ -1,5 +1,5 @@
 # AC_GGZ_DEBUG
-# $Id: ggz-debug.m4 5748 2004-01-27 08:44:46Z josef $
+# $Id: ggz-debug.m4 8808 2007-01-04 20:36:55Z jdorje $
 #
 # Check for debugging choices.  Sets $enable_debug, $enable_debug_gdb,
 # and $enable_debug_mem.
