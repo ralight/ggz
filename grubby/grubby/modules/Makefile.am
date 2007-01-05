@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8823 2007-01-05 00:02:41Z jdorje $
+# $Id: Makefile.am 8830 2007-01-05 00:35:55Z jdorje $
 
 SUBDIRS = .
 
@@ -14,8 +14,8 @@ grubby_LTLIBRARIES = \
 	libgurumod_people.la \
 	libgurumod_programming.la \
 	libgurumod_self.la \
-	libgurumod_simplereturn.la \
-	libgurumod_time.la
+	libgurumod_simplereturn.la
+# missing: libgurumod_time.la
 # removed: libgurumod_banner.la 
 
 AM_CPPFLAGS = -I$(top_srcdir)/grubby/src $(GGZCORE_INCLUDES) \
@@ -60,6 +60,6 @@ libgurumod_self_la_LDFLAGS = -module -avoid-version
 libgurumod_simplereturn_la_SOURCES = simplereturn.c
 libgurumod_simplereturn_la_LDFLAGS = -module -avoid-version
 
-libgurumod_time_la_SOURCES = time.c
-libgurumod_time_la_LDFLAGS = -module -avoid-version
+#libgurumod_time_la_SOURCES = time.c
+#libgurumod_time_la_LDFLAGS = -module -avoid-version
 
