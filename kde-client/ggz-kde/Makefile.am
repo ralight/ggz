@@ -4,5 +4,5 @@ endif
 
 SUBDIRS = $(GGZCOREPP_SUBDIR) src data doc po
 
-EXTRA_DIST = README COPYING Current.Status ChangeLog DESIGN
-# Removed: TODO
+EXTRA_DIST = README COPYING Current.Status DESIGN
+# Removed: TODO ChangeLog
