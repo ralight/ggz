@@ -8,9 +8,10 @@ all-local: design-html design.pdf design.txt
 
 design-html: $(SGML_FILES)
 	$(SGML2HTML) $(srcdir)/design.sgml
-	-mkdir design-html
+	mkdir -p design-html
 	-mv *.html design-html
 	-cp /usr/share/gtk-doc/data/*.png design-html
+	-cp design-html/book1.htm design-html/index.html
 	$(FIG2DEV) -Ljpeg server_arch.fig > design-html/server_arch.jpg
 
 design.pdf: $(SGML_FILES)
@@ -28,7 +29,7 @@ clean-local:
 	rm -f design.aux design.jtex design.log design.out design.pdf
 
 install-data-local:
-	$(mkinstalldirs) $(DESTDIR)$(GGZDOCDIR)/spec
-	cp -r design-html $(DESTDIR)$(GGZDOCDIR)/spec
-	cp -r design.txt $(DESTDIR)$(GGZDOCDIR)/spec
-	cp -r design.pdf $(DESTDIR)$(GGZDOCDIR)/spec
+	$(mkinstalldirs) $(DESTDIR)$(GGZDOCDIR)/design
+	cp -r design-html $(DESTDIR)$(GGZDOCDIR)/design
+	cp -r design.txt $(DESTDIR)$(GGZDOCDIR)/design
+	cp -r design.pdf $(DESTDIR)$(GGZDOCDIR)/design

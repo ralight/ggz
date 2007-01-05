@@ -8,9 +8,10 @@ all-local: clientspec-html clientspec.pdf clientspec.txt
 
 clientspec-html: $(SGML_FILES)
 	$(SGML2HTML) $(srcdir)/clientspec.sgml
-	-mkdir clientspec-html
+	mkdir -p clientspec-html
 	-cp /usr/share/gtk-doc/data/*.png clientspec-html
 	-mv *.html clientspec-html
+	-cp clientspec-html/book1.htm clientspec-html/index.html
 
 clientspec.pdf: $(SGML_FILES)
 	$(SGML2PDF) $(srcdir)/clientspec.sgml

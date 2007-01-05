@@ -8,9 +8,10 @@ all-local: serverspec-html serverspec.pdf serverspec.txt
 
 serverspec-html: $(SGML_FILES)
 	$(SGML2HTML) $(srcdir)/serverspec.sgml
-	-mkdir serverspec-html
+	mkdir -p serverspec-html
 	-cp /usr/share/gtk-doc/data/*.png serverspec-html
 	-mv *.html serverspec-html
+	-cp serverspec-html/book1.htm serverspec-html/index.html
 
 serverspec.pdf: $(SGML_FILES)
 	$(SGML2PDF) $(srcdir)/serverspec.sgml
