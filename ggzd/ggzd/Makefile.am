@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8815 2007-01-04 22:55:03Z jdorje $
+# $Id: Makefile.am 8835 2007-01-05 10:32:57Z jdorje $
 
 SUBDIRS = database meta
 
@@ -26,7 +26,6 @@ ggzd_SOURCES = \
 	event.c \
 	event.h \
 	ggzd.h \
-	ggzdb.h \
 	parse_opt.c \
 	parse_opt.h \
 	players.c \
@@ -80,7 +79,7 @@ ggzd_LDADD = \
 	$(LIB_FAM) \
         $(LIB_PTHREADS)
 
-ggzduedit_SOURCES =	ggzdb.h ggzdb_proto.h datatypes.h	\
+ggzduedit_SOURCES =	datatypes.h	\
 			ggzduedit.c 				\
 			perms.h perms.c
 
