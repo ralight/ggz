@@ -39,7 +39,8 @@ int main(int argc, char **argv)
 
 	if(!KGGZMod::Module::isGGZ())
 	{
-//		qFatal("Error: kconnectx must run from GGZ client!");
+		qWarning("Error: kconnectx must run from GGZ client!");
+		return -1;
 	}
 
 	Win *win = new Win();

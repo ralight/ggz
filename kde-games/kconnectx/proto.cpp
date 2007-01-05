@@ -77,6 +77,9 @@ void Proto::slotNetwork(int fd)
 {
 	int opcode;
 	char *tmp;
+	QByteArray buffer;
+	Q_LONG available, oldavailable;
+	QDataStream net(buffer, IO_ReadOnly);
 
 	kdDebug() << "PROTO: Network! fd=" << fd << endl;
 
@@ -86,13 +89,43 @@ void Proto::slotNetwork(int fd)
 		m_net = new QDataStream(m_dev);
 	}
 
-	*m_net >> opcode;
+	available = 0;
+
+	while((!available) || (!net.atEnd()))
+	{
+
+	while(true)
+	{
+		if(m_dev->bytesAvailable() > (Q_LONG)10000)
+		{
+			kdDebug() << "PROTO: network overflow" << endl;
+			m_kggzmod->disconnect();
+			return;
+		}
+
+		kdDebug() << "PROTO: bytesavailable=" << m_dev->bytesAvailable() << endl;
+		buffer.resize(buffer.size() + m_dev->bytesAvailable());
+		oldavailable = m_dev->readBlock(buffer.data() + available, m_dev->bytesAvailable());
+		if(oldavailable == -1)
+		{
+			kdDebug() << "PROTO: network error" << endl;
+			m_kggzmod->disconnect();
+			return;
+		}
+		available += oldavailable;
+		m_dev->waitForMore(100);
+		if(m_dev->bytesAvailable() == 0) break;
+	}
+
+	buffer.truncate(available);
+	kdDebug() << "BUFFER: " << buffer << endl;
+
+	net >> opcode;
 	kdDebug() << "PROTO: opcode=" << opcode << endl;
-	kdDebug() << "PROTO: bytesavailable=" << m_dev->bytesAvailable() << endl;
 
 	if(opcode == msgseat)
 	{
-		*m_net >> m_data.myseat;
+		net >> m_data.myseat;
 		kdDebug() << "PROTO: +seat" << endl;
 		kdDebug() << " seat: " << m_data.myseat << endl;
 
@@ -100,17 +133,17 @@ void Proto::slotNetwork(int fd)
 	}
 	else if(opcode == msgplayers)
 	{
-		*m_net >> m_data.type1;
+		net >> m_data.type1;
 		if(m_data.type1 != KGGZMod::Player::open)
 		{
-			*m_net >> tmp;
+			net >> tmp;
 			m_data.name1 = QString(tmp);
 			free(tmp);
 		}
-		*m_net >> m_data.type2;
+		net >> m_data.type2;
 		if(m_data.type2 != KGGZMod::Player::open)
 		{
-			*m_net >> tmp;
+			net >> tmp;
 			m_data.name2 = QString(tmp);
 			free(tmp);
 		}
@@ -124,7 +157,7 @@ void Proto::slotNetwork(int fd)
 	}
 	else if(opcode == msgmove)
 	{
-		*m_net >> m_data.move;
+		net >> m_data.move;
 		kdDebug() << "PROTO: +move" << endl;
 		kdDebug() << " move: " << m_data.move << endl;
 
@@ -132,7 +165,7 @@ void Proto::slotNetwork(int fd)
 	}
 	else if(opcode == msggameover)
 	{
-		*m_net >> m_data.winner;
+		net >> m_data.winner;
 		kdDebug() << "PROTO: +gameover" << endl;
 		kdDebug() << " winner: " << m_data.winner << endl;
 
@@ -146,8 +179,8 @@ void Proto::slotNetwork(int fd)
 	}
 	else if(opcode == rspmove)
 	{
-		*m_net >> m_data.movestatus;
-		*m_net >> m_data.move;
+		net >> m_data.movestatus;
+		net >> m_data.move;
 		kdDebug() << "PROTO: +rspmove" << endl;
 		kdDebug() << " status: " << m_data.movestatus << endl;
 		kdDebug() << " move: " << m_data.move << endl;
@@ -162,9 +195,9 @@ void Proto::slotNetwork(int fd)
 	}
 	else if(opcode == msgoptions)
 	{
-		*m_net >> m_data.boardheight;
-		*m_net >> m_data.boardwidth;
-		*m_net >> m_data.connectlength;
+		net >> m_data.boardheight;
+		net >> m_data.boardwidth;
+		net >> m_data.connectlength;
 		kdDebug() << "PROTO: +msgoptions" << endl;
 		kdDebug() << " board width: " << m_data.boardwidth << endl;
 		kdDebug() << " board height: " << m_data.boardheight << endl;
@@ -174,12 +207,12 @@ void Proto::slotNetwork(int fd)
 	}
 	else if(opcode == reqoptions)
 	{
-		*m_net >> m_data.minboardwidth;
-		*m_net >> m_data.maxboardwidth;
-		*m_net >> m_data.minboardheight;
-		*m_net >> m_data.maxboardheight;
-		*m_net >> m_data.minconnectlength;
-		*m_net >> m_data.maxconnectlength;
+		net >> m_data.minboardwidth;
+		net >> m_data.maxboardwidth;
+		net >> m_data.minboardheight;
+		net >> m_data.maxboardheight;
+		net >> m_data.minconnectlength;
+		net >> m_data.maxconnectlength;
 		kdDebug() << "PROTO: +reqoptions" << endl;
 		kdDebug() << " min board width: " << m_data.minboardwidth << endl;
 		kdDebug() << " max board width: " << m_data.maxboardwidth << endl;
@@ -208,6 +241,9 @@ void Proto::slotNetwork(int fd)
 	{
 		kdDebug() << "PROTO: unknown opcode, treat as error!" << endl;
 		m_kggzmod->disconnect();
+		return;
+	}
+
 	}
 }
 

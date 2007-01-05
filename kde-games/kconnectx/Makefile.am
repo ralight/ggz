@@ -21,7 +21,7 @@ kconnectx_LDADD = $(top_builddir)/lib/libkggzgames.la $(top_builddir)/lib/kggzmo
 METASOURCES = AUTO
 
 pixmapdir = $(kde_datadir)/kconnectx
-dist_pixmap_DATA = red.png yellow.png
+dist_pixmap_DATA = red.svg.png yellow.svg.png red.svg yellow.svg
 
 KDE_ICON = kconnectx
 

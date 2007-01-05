@@ -10,6 +10,9 @@
 // KConnectX includes
 #include "opt.h"
 
+// GGZ-KDE-Games includes
+#include <qsvgpixmap.h>
+
 // KDE includes
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -89,9 +92,14 @@ void KConnectX::slotOptions(char boardwidth, char boardheight, char connectlengt
 {
 	emit signalStatus(i18n("Reading options"));
 
+	m_boardwidth = boardwidth;
+	m_boardheight = boardheight;
+	Q_UNUSED(connectlength);
+
 	m_buttons.clear();
 	m_widgets.clear();
 	m_stacks.clear();
+	m_colours.clear();
 	// FIXME: setAutoDelete() or similar?
 
 	m_widgetbox = new QGridLayout(this, boardheight + 1, boardwidth);
@@ -160,23 +168,20 @@ void KConnectX::slotMove(int move)
 
 void KConnectX::doMove(QString colour, int column)
 {
-	int boardwidth = m_widgetbox->numCols();
-	int boardheight = m_widgetbox->numRows();
-	int j = (boardheight - 2) - m_stacks[column];
+	int j = (m_boardheight - 1) - m_stacks[column];
 
-	int acc = j * boardwidth + column;
+	int acc = j * m_boardwidth + column;
 	if(!m_widgets.contains(acc))
 	{
 		// FIXME: this is a bogus move from the server!
 		kdDebug() << "SERVER SENT BOGUS MOVE " << column << endl;
 		return;
 	}
-	QWidget *w = m_widgets[acc];
 
-	QString filename = KGlobal::dirs()->findResource("data", "kconnectx/" + colour + ".png");
-	w->setPaletteBackgroundPixmap(QPixmap(filename));
-
+	m_colours[acc] = colour;
 	m_stacks[column] += 1;
+
+	drawBoard();
 }
 
 void KConnectX::slotOver(char winner)
@@ -230,5 +235,28 @@ void KConnectX::statistics()
 Proto *KConnectX::proto() const
 {
 	return m_proto;
+}
+
+void KConnectX::drawBoard()
+{
+	for(int i = 0; i < m_boardwidth; i++)
+	{
+		for(int j = 0; j < m_boardheight; j++)
+		{
+			int key = j * m_boardwidth + i;
+			if(!m_colours.contains(key)) continue;
+			QWidget *w = m_widgets[key];
+			QString colour = m_colours[key];
+			QString filename = KGlobal::dirs()->findResource("data", "kconnectx/" + colour + ".svg");
+			w->setPaletteBackgroundPixmap(QSvgPixmap::pixmap(filename, w->width(), w->height()));
+		}
+	}
+}
+
+void KConnectX::resizeEvent(QResizeEvent *e)
+{
+	Q_UNUSED(e);
+
+	drawBoard();
 }
 

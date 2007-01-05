@@ -54,11 +54,16 @@ class KConnectX : public QWidget
 		// Emit game over status
 		void signalGameOver();
 
+	protected:
+		void resizeEvent(QResizeEvent *e);
+
 	private:
 		// Ask for another game, showing current results
 		void announce(QString str);
 		// Perform a move
 		void doMove(QString colour, int column);
+		// Draw the game board
+		void drawBoard();
 
 		// Internal protocol class
 		Proto *m_proto;
@@ -66,8 +71,10 @@ class KConnectX : public QWidget
 		QMap<const QPushButton*, int> m_buttons;
 		QMap<int, QFrame*> m_widgets;
 		QMap<int, int> m_stacks;
+		QMap<int, QString> m_colours;
 		// Layout for the grid
 		QGridLayout *m_widgetbox;
+		int m_boardwidth, m_boardheight;
 };
 
 #endif

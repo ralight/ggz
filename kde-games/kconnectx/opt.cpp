@@ -69,7 +69,12 @@ void Opt::setBoardHeightRange(char min, char max)
 	if(min == max) m_boardheight->setEnabled(false);
 	else m_boardheight->setEnabled(true);
 
-	slotHeight(min);
+	if((min <= 7) && (max >= 7))
+	{
+		m_boardheight->setValue(7);
+		//slotHeight(7);
+	}
+	//else slotHeight(min);
 }
 
 void Opt::setBoardWidthRange(char min, char max)
@@ -80,7 +85,12 @@ void Opt::setBoardWidthRange(char min, char max)
 	if(min == max) m_boardwidth->setEnabled(false);
 	else m_boardwidth->setEnabled(true);
 
-	slotWidth(min);
+	if((min <= 7) && (max >= 7))
+	{
+		m_boardwidth->setValue(7);
+		//slotWidth(7);
+	}
+	//else slotWidth(min);
 }
 
 void Opt::setConnectLengthRange(char min, char max)
@@ -91,7 +101,12 @@ void Opt::setConnectLengthRange(char min, char max)
 	if(min == max) m_connectlength->setEnabled(false);
 	else m_connectlength->setEnabled(true);
 
-	slotLength(min);
+	if((min <= 4) && (max >= 4))
+	{
+		m_connectlength ->setValue(4);
+		//slotLength(4);
+	}
+	//else slotLength(min);
 }
 
 char Opt::boardHeight()
