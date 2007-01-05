@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 8119 2006-06-07 07:23:30Z jdorje $
+ * $Id: ggzmod.c 8837 2007-01-05 12:49:29Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -60,11 +60,12 @@
 #include "ggzcore-ggz.h"
 
 #include "ggzmod.h"
-/*#include "ggzmod-ggz.h"*/
 #include "mod.h"
 #include "io.h"
 #include "protocol.h"
 
+/* See ggzmod-ggz.h for an explanation. */
+#define GGZMOD_DEFAULT_FD 53
 
 /* 
  * internal function prototypes
@@ -678,10 +679,10 @@ int ggzmod_connect(GGZMod * ggzmod)
 		if(ggzsocketstr) {
 			items = sscanf(ggzsocketstr, "%d", &ggzsocket);
 			if (items == 0) {
-				ggzsocket = 103;
+				ggzsocket = GGZMOD_DEFAULT_FD;
 			}
 		} else {
-			ggzsocket = 103;
+			ggzsocket = GGZMOD_DEFAULT_FD;
 		}
 
 #ifdef HAVE_SOCKETPAIR
