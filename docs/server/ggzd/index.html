@@ -20,8 +20,8 @@ th {text-align: left}
 <h2>GGZ Gaming Zone Server Documentation</h2>
 
 <small>
-<i>Revision: 0.3</i><br>
-<i>Date: 30.05.2006</i><br>
+<i>Revision: 0.4</i><br>
+<i>Date: 05.01.2007</i><br>
 <i>Author: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
 </small>
 
@@ -62,8 +62,8 @@ entries.
 <p>
 Further dependencies include <tt>libggz</tt>, <tt>expat</tt>, <tt>gettext</tt>
 and optionally <tt>howl</tt> or <tt>avahi</tt>, plus (also optional)
-<tt>fam</tt>. Additionally, depending on the database type, a database
-client library will be needed, too.
+<tt>fam</tt> or <tt>inotify</tt>. Additionally, depending on the database type,
+a database client library will be needed, too.
 The libggz library is mainly used for memory allocation, networking code and
 security handling (both hashing and encryption).
 The XML protocol handling is the task of expat, while gettext is used
@@ -92,7 +92,8 @@ be running before ggzd starts.
 <p>
 The database can either be embedded or running as an external process, even
 on another host. Supported databases include <tt>DB4</tt>, <tt>SQlite</tt>,
-<tt>MySQL</tt> and <tt>PostgreSQL</tt>.
+<tt>MySQL</tt> and <tt>PostgreSQL</tt>. With the <tt>DBI</tt> interface,
+a number of databases can be used without recompilation of ggzd.
 </p>
 
 <p>
@@ -154,15 +155,38 @@ separate process. For each game server, there is exactly one table within
 ggzd.
 </p>
 
+<h3>Games</h3>
+
+<p>
+The GGZ server launches games through the GGZ-side interface of the ggzdmod
+library. Games use the game-side interface to this library in order to register
+events and send requests.
+</p>
+
+<p>
+Debug messages from game servers are sent to the GGZ server, where they are
+processed according to the GGZ server's debugging policy. Likewise, statistics
+reports at the end of a game end up in ggzd's database, whereas savegames are
+stored within the directory for embedded databases on disk.
+</p>
+
 <h3>Permissions</h3>
 
 <p>
 The GGZ server is aware of the concept of privileges. Depending on the status
-of a player (anonymous, registered or administrator), actions might or might
+of a player (anonymous, registered, host or administrator), actions might or might
 not be possible. In general, only administrators may broadcast messages to all
 rooms and enter restricted rooms, and only registered users (including admins)
 may get entries in the statistics database, although anonymous users are
 registered there in the participation list.
+</p>
+
+<p>
+The management of privileges can to some extent be handled directly over the
+network by already privileged players, whereas for detailed settings,
+the ggzduedit tool is necessary. Refer to the GGZ Hosting Guide for details
+on ggzduedit and to the core clients documentation for details on how to
+administrate from within a core client.
 </p>
 
 </div>
