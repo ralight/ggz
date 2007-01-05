@@ -1045,29 +1045,28 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             public void run() {
                 Sprite[] player_cards = sprites[play_hand];
                 for (int card_num = 0; card_num < player_cards.length; card_num++) {
-                    if (player_cards[card_num] != null) {
+                    Sprite sprite = player_cards[card_num];
+                    if (sprite != null) {
                         boolean isFound = false;
                         for (int i = 0; i < valid_cards.length; i++) {
-                            if (player_cards[card_num].card().equals(
-                                    valid_cards[i])) {
+                            if (sprite.card().equals(valid_cards[i])) {
                                 isFound = true;
                                 break;
                             }
                         }
-                        player_cards[card_num].setEnabled(isFound);
-                        player_cards[card_num].setSelectable(isFound);
+                        sprite.setEnabled(isFound);
+                        sprite.setSelectable(isFound);
                         if (isFound) {
                             // Remove ourselves first to prevent receiving
                             // multiple notifications. This is safe to do even
                             // if we are not registered yet.
-                            player_cards[card_num]
-                                    .removeActionListener(CardGamePanel.this);
-                            player_cards[card_num]
-                                    .removeMouseListener(spriteHighlighter);
-                            player_cards[card_num]
-                                    .addActionListener(CardGamePanel.this);
-                            player_cards[card_num]
-                                    .addMouseListener(spriteHighlighter);
+                            sprite.removeActionListener(CardGamePanel.this);
+                            sprite.removeMouseListener(spriteHighlighter);
+                            sprite.addActionListener(CardGamePanel.this);
+                            sprite.addMouseListener(spriteHighlighter);
+                            // TODO When we migrate to Java 5, select the card
+                            // if the mouse is already over it and "single click
+                            // to play" is enabled.
                         }
                     }
                 }
@@ -1125,7 +1124,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         // We only play sprites that are selected. Depending on user
         // preferences, sprites are either automatically selected on mouse over
         // or by clicking them.
-        if (sprite.isSelected()) {
+        if (isSingleClickToPlayCardEnabled || sprite.isSelected()) {
             // A card was played by us, find the hand we played from.
             int play_hand;
             int index_of_sprite_in_hand = -1;
