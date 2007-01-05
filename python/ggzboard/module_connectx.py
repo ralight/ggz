@@ -7,8 +7,8 @@ import random
 
 class Game:
 	def __init__(self):
-		self.width = 4
-		self.height = 4
+		self.width = 7
+		self.height = 7
 		self.swaptiles = 0
 		self.autoscaletiles = 1
 		self.setonly = 1

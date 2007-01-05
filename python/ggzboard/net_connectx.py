@@ -130,8 +130,8 @@ class Network(NetworkBase, NetworkInfo):
 			self.errorcode = 1
 
 	def sendoptions(self):
-		self.boardheight = 4
-		self.boardwidth = 4
+		self.boardheight = 7
+		self.boardwidth = 7
 		self.connectlength = 4
 
 		self.sendbyte(self.SND_OPTIONS)
