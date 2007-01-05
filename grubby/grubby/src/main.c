@@ -24,7 +24,7 @@
 static int running;
 
 /* Clean up nicely on SIGTERM to allow easier memory debugging */
-void sighandler(int signum)
+static void sighandler(int signum)
 {
 	running = 0;
 }
