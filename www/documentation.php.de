@@ -99,10 +99,16 @@ Grubby-Architektur:
 <br>
 <br>
 
-GGZ Design-Dokument und Protokoll-Referenz:
+GGZ Design-Dokument:
 <a href="/docs/design/html/">HTML</a>,
 <a href="/docs/design/design.txt">Text</a>,
 <a href="/docs/design/design.pdf">PDF</a>
+<br>
+
+GGZ Haupt-Protokoll-Referenz:
+<a href="/docs/spec/html/">HTML</a>,
+<a href="/docs/spec/mainspec.txt">Text</a>,
+<a href="/docs/spec/mainspec.pdf">PDF</a>
 <br>
 
 GGZ Server-Server (ggzdmod) Protokoll-Referenz:
