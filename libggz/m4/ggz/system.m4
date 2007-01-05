@@ -106,7 +106,10 @@ if test "x$MSGFMT" = "x"; then intl=0; fi
 if test "x$MSGMERGE" = "x"; then intl=0; fi
 AM_ICONV
 AC_CHECK_LIB(intl, gettext, [LIB_GETTEXT="-lintl $LIBICONV"])
+save_libs=$LIBS
+LIBS="$LIB_GETTEXT"
 AC_CHECK_FUNCS([gettext ngettext], [], [intl=0])
+LIBS=$save_libs
 AC_CHECK_HEADERS([libintl.h locale.h])
 if test "$intl" = 0; then
   if test "x$2" = "xignore"; then
