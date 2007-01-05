@@ -39,7 +39,7 @@ QPixmap QSvgPixmap::pixmap(QString filename, int width, int height)
 
 	if(buf)
 	{
-		guchar *foo = gdk_pixbuf_get_pixels(buf);
+		guchar *pixdata = gdk_pixbuf_get_pixels(buf);
 		int test = 1;
 		if(!(*(char*)&test & 0xFF)) bigendian = true;
 		if(bigendian)
@@ -47,14 +47,14 @@ QPixmap QSvgPixmap::pixmap(QString filename, int width, int height)
 			for(int i = 0; i < width; i++)
 				for(int j = 0; j < height; j++)
 				{
-					unsigned int pixel = *(unsigned int*)(foo + (j * width + i) * 4);
+					unsigned int pixel = *(unsigned int*)(pixdata + (j * width + i) * 4);
 					int a, r, g, b;
 					r = (pixel >> 24) & 0xFF;
 					g = (pixel >> 16) & 0xFF;
 					b = (pixel >> 8) & 0xFF;
 					a = (pixel >> 0) & 0xFF;
 					pixel = (a << 24) + (r << 16) + (g << 8) + (b << 0);
-					*(unsigned int*)(foo + (j * width + i) * 4) = pixel;
+					*(unsigned int*)(pixdata + (j * width + i) * 4) = pixel;
 				}
 		}
 
@@ -63,7 +63,11 @@ QPixmap QSvgPixmap::pixmap(QString filename, int width, int height)
 		im.setAlphaBuffer(true);
 		tmp.convertFromImage(im);
 	}
-	else tmp = QPixmap(filename + ".png");
+	else
+	{
+		qDebug("QSvgPixmap: Error on file %s, falling back to PNG.", filename.utf8().data());
+		tmp = QPixmap(filename + ".png");
+	}
 #else
 	tmp = QPixmap(filename + ".png");
 #endif
