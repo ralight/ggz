@@ -82,7 +82,7 @@ if test "x$need_libtool" = "x1"; then
 	(cd $srcdir && libtoolize --force --copy >/dev/null) || { echo "libtoolize failed."; exit; }
 fi
 echo -n "[aclocal]"
-(cd $srcdir && aclocal -I m4) || { echo "aclocal failed."; exit; }
+(cd $srcdir && aclocal -I m4 -I m4/ggz) || { echo "aclocal failed."; exit; }
 echo -n "[autoheader]"
 autoheader -I $srcdir || { echo "autoheader failed."; exit; }
 echo -n "[automake]"
