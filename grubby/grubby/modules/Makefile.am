@@ -1,12 +1,11 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8774 2006-12-28 14:25:34Z oojah $
+# $Id: Makefile.am 8823 2007-01-05 00:02:41Z jdorje $
 
 SUBDIRS = .
 
 grubbydir = $(libdir)/grubby/modules
 grubby_LTLIBRARIES = \
 	libgurumod_badword.la \
-#	libgurumod_banner.la \
 	libgurumod_embed.la \
 	libgurumod_exec.la \
 	libgurumod_extra.la \
@@ -17,6 +16,7 @@ grubby_LTLIBRARIES = \
 	libgurumod_self.la \
 	libgurumod_simplereturn.la \
 	libgurumod_time.la
+# removed: libgurumod_banner.la 
 
 AM_CPPFLAGS = -I$(top_srcdir)/grubby/src $(GGZCORE_INCLUDES) \
 	$(ruby_includes) $(perl_includes) $(python_includes) $(tcl_includes) $(php_includes)
