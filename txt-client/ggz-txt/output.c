@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 8597 2006-09-24 20:09:52Z josef $
+ * $Id: output.c 8845 2007-01-06 23:50:21Z oojah $
  *
  * Functions for display text/messages
  *
@@ -276,12 +276,14 @@ void output_rooms(void)
 		room = ggzcore_server_get_nth_room(server, i);
 		type = ggzcore_room_get_gametype(room);
 		if (type)
-			output_text(_("-- Room %d : %s (%s)"), i,
-				    ggzcore_room_get_name(room),
-				    ggzcore_gametype_get_name(type));
+			output_text(_("-- Room %d : %s (%s) (Players: %d)"), i,
+					ggzcore_room_get_name(room),
+					ggzcore_gametype_get_name(type),
+					ggzcore_room_get_num_players(room));
 		else
-			output_text(_("-- Room %d : %s"), i,
-				    ggzcore_room_get_name(room));
+			output_text(_("-- Room %d : %s (Players: %d)"), i,
+					ggzcore_room_get_name(room),
+					ggzcore_room_get_num_players(room));
 	}
 }
 
