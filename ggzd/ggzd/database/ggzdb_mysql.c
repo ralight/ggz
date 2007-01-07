@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 8403 2006-07-24 16:26:15Z oojah $
+ * $Id: ggzdb_mysql.c 8846 2007-01-07 19:45:28Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -68,9 +68,9 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 		return GGZ_ERROR;
 	}
 
-	snprintf(query, sizeof(query), "CREATE TABLE users "
-		"(id int4 AUTO_INCREMENT PRIMARY KEY, handle varchar(255), password varchar(255), "
-		"name varchar(255), email varchar(255), lastlogin int8, perms int8, firstlogin int8)");
+	snprintf(query, sizeof(query), "CREATE TABLE `users` "
+		"(`id` int4 AUTO_INCREMENT PRIMARY KEY, `handle` varchar(255), `password` varchar(255), "
+		"`name` varchar(255), `email` varchar(255), `lastlogin` int8, `perms` int8, `firstlogin` int8)");
 
 	rc = mysql_query(conn, query);
 
@@ -114,8 +114,8 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	int rc;
 	char query[4096];
 
-	snprintf(query, sizeof(query), "INSERT INTO users "
-		"(handle, password, name, email, lastlogin, perms, firstlogin) VALUES "
+	snprintf(query, sizeof(query), "INSERT INTO `users` "
+		"(`handle`, `password`, `name`, `email`, `lastlogin`, `perms`, `firstlogin`) VALUES "
 		"('%s', '%s', '%s', '%s', %li, %u, %li)",
 		pe->handle, pe->password, pe->name, pe->email, pe->last_login, pe->perms, time(NULL));
 
@@ -142,8 +142,8 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	char query[4096];
 
 	snprintf(query, sizeof(query), "SELECT "
-		"password, name, email, lastlogin, perms FROM users WHERE "
-		"LOWER(handle) = LOWER('%s')",
+		"`password`,`name`,`email`,`lastlogin`,`perms` FROM `users` WHERE "
+		"LOWER(`handle`) = LOWER('%s')",
 		pe->handle);
 
 	pthread_mutex_lock(&mutex);
@@ -182,9 +182,9 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	int rc;
 	char query[4096];
 
-	snprintf(query, sizeof(query), "UPDATE users SET "
-		"password = '%s', name = '%s', email = '%s', lastlogin = %li, perms = %u WHERE "
-		"LOWER(handle) = LOWER('%s')",
+	snprintf(query, sizeof(query), "UPDATE `users` SET "
+		"`password`='%s',`name`='%s',`email`='%s',`lastlogin`=%li,`perms`=%u WHERE "
+		"LOWER(`handle`)=LOWER('%s')",
 		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
 
 	pthread_mutex_lock(&mutex);
@@ -216,7 +216,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 	}
 
 	snprintf(query, sizeof(query), "SELECT "
-		"id, handle, password, name, email, lastlogin, perms FROM users");
+		"`id`,`handle`,`password`,`name`,`email`,`lastlogin`,`perms` FROM `users`");
 	result = mysql_query(conn, query);
 
 	if (!result) {
@@ -309,10 +309,10 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 	player_quoted = _ggz_sql_escape(stats->player);
 
 	snprintf(query, sizeof(query),
-		"UPDATE stats "
-		"SET wins = %i, losses = %i, ties = %i, forfeits = %i, "
-		"rating = %f, ranking = %u, highscore = %li "
-		"WHERE LOWER(handle) = LOWER('%s') AND game = '%s'",
+		"UPDATE `stats` "
+		"SET `wins`=%i,`losses`=%i,`ties`=%i,`forfeits`=%i,"
+		"`rating`=%f,`ranking`=%u,`highscore`=%li "
+		"WHERE LOWER(`handle`) = LOWER('%s') AND `game`='%s'",
 		stats->wins, stats->losses, stats->ties, stats->forfeits,
 		stats->rating, stats->ranking, stats->highest_score,
 		player_quoted, stats->game);
@@ -322,8 +322,8 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 	if(!rc){
 		if (!mysql_affected_rows(conn)) {
 			snprintf(query, sizeof(query),
-				"INSERT INTO stats "
-				"(handle, game, wins, losses, ties, forfeits, rating, ranking, highscore) VALUES "
+				"INSERT INTO `stats` "
+				"(`handle`,`game`,`wins`,`losses`,`ties`,`forfeits`,`rating`,`ranking`,`highscore`) VALUES "
 				"('%s', '%s', %i, %i, %i, %i, %f, %u, %li)",
 				player_quoted, stats->game,
 				stats->wins, stats->losses, stats->ties, stats->forfeits,
@@ -409,7 +409,7 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	char *player_quoted;
 
 	snprintf(query, sizeof(query),
-		"SELECT MAX(id) FROM matches");
+		"SELECT MAX(`id`) FROM `matches`");
 
 	pthread_mutex_lock(&mutex);
 	rc = mysql_query(conn, query);
@@ -440,8 +440,8 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	player_quoted = _ggz_sql_escape(stats->player);
 
 	snprintf(query, sizeof(query),
-		"INSERT INTO matchplayers "
-		"(match, handle, playertype) VALUES "
+		"INSERT INTO `matchplayers` "
+		"(`match`,`handle`,`playertype`) VALUES "
 		"(%s, '%s', '%s')",
 		number, player_quoted, playertype);
 
@@ -500,8 +500,8 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 	owner_quoted = _ggz_sql_escape(owner);
 
 	snprintf(query, sizeof(query),
-		"INSERT INTO savegames"
-		"(date, game, owner, savegame) VALUES "
+		"INSERT INTO `savegames`"
+		"(`date`,`game`,`owner`,`savegame`) VALUES "
 		"(%li, '%s', '%s', '%s')",
 		time(NULL), game, owner, savegame);
 
@@ -531,8 +531,8 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 
 	snprintf(query, sizeof(query),
 		 "SELECT "
-		 "id, photo "
-		 "FROM userinfo WHERE LOWER(handle) = LOWER('%s')",
+		 "`id`,`photo` "
+		 "FROM `userinfo` WHERE LOWER(`handle`) = LOWER('%s')",
 		 handle_quoted);
 
 	ggz_free(handle_quoted);
