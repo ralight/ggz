@@ -13,6 +13,19 @@ import re
 import gettext
 gettext.install("ggzpython", None, 1)
 
+try:
+	import ggzsettings
+	DATAPATH = ggzsettings.DATAPATH + "/ggzboard/"
+	MODULEPATH = ggzsettings.MODULEPATH + "/ggzboard/"
+	I18NPATH = ggzsettings.I18NPATH
+	sys.path = [ggzsettings.MODULEPATH + "/ggzboard/"] + sys.path
+	sys.path = [ggzsettings.MODULEPATH + "/common/"] + sys.path
+except:
+	DATAPATH = "./"
+	MODULEPATH = "./"
+	I18NPATH = "./"
+	sys.path = ["../lib/"] + sys.path
+
 import bogaprot
 from module_madn import *
 
@@ -23,9 +36,8 @@ class LudoServer(bogaprot.BogaprotServer):
 	def table_full(self):
 		full = 1
 		for i in range(bogaprot.ggzdmod.getNumSeats()):
-			name = bogaprot.ggzdmod.seatName(i)
-			type = bogaprot.ggzdmod.seatType(i)
-			fd = bogaprot.ggzdmod.seatFd(i)
+			seat = bogaprot.ggzdmod.getSeat(i)
+			(number, type, name, fd) = seat
 			if type != bogaprot.ggzdmod.SEAT_PLAYER and type != bogaprot.ggzdmod.SEAT_BOT:
 				full = 0
 		return full

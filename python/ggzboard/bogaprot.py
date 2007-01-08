@@ -17,7 +17,7 @@ from ggzboard_net import *
 
 class BogaprotServer(NetworkBase):
 
-    ### Class definition
+	### Class definition
 
 	def __init__(self):
 		NetworkBase.__init__(self)
@@ -40,11 +40,16 @@ class BogaprotServer(NetworkBase):
 			method(i)
 		print "<= done."
 
+	def seatFd(self, i):
+		seat = ggzdmod.getSeat(i)
+		(number, type, name, fd) = seat
+		return fd
+
 	### Send methods
 
 	def send_seat(self, i):
 		print "-> send seat to", i
-		fd = ggzdmod.seatFd(i)
+		fd = self.seatFd(i)
 		if fd != -1:
 			self.init(fd)
 			self.sendbyte(self.MSG_SEAT)
@@ -53,22 +58,22 @@ class BogaprotServer(NetworkBase):
 
 	def send_players(self, i):
 		print "-> send players to", i
-		fd = ggzdmod.seatFd(i)
+		fd = self.seatFd(i)
 		if fd != -1:
 			self.init(fd)
 			self.sendbyte(self.MSG_PLAYERS)
 			self.sendbyte(ggzdmod.getNumSeats())
 			for j in range(ggzdmod.getNumSeats()):
-				type = ggzdmod.seatType(j)
+				seat = ggzdmod.getSeat(j)
+				(number, type, name, fd) = seat
 				self.sendbyte(type)
 				if type != ggzdmod.SEAT_OPEN:
-					name = ggzdmod.seatName(j)
 					self.sendstring(name)
 		print "<- done"
 
 	def send_start(self, i):
 		print "-> send start to", i
-		fd = ggzdmod.seatFd(i)
+		fd = self.seatFd(i)
 		if fd != -1:
 			self.init(fd)
 			self.sendbyte(self.MSG_START)
@@ -76,7 +81,7 @@ class BogaprotServer(NetworkBase):
 
 	def send_gameover(self, i):
 		print "-> send gameover to", i
-		fd = ggzdmod.seatFd(i)
+		fd = self.seatFd(i)
 		if fd != -1:
 			self.init(fd)
 			self.sendbyte(self.MSG_GAMEOVER)
@@ -85,7 +90,7 @@ class BogaprotServer(NetworkBase):
 
 	def send_reqmove(self, i):
 		print "-> send reqmove to", i
-		fd = ggzdmod.seatFd(i)
+		fd = self.seatFd(i)
 		if fd != -1:
 			self.init(fd)
 			self.sendbyte(self.REQ_MOVE)
@@ -94,7 +99,7 @@ class BogaprotServer(NetworkBase):
 
 	def send_rspmove(self, i):
 		print "-> send rspmove to", i
-		fd = ggzdmod.seatFd(i)
+		fd = self.seatFd(i)
 		if fd != -1:
 			self.init(fd)
 			self.sendbyte(self.RSP_MOVE)
@@ -105,7 +110,7 @@ class BogaprotServer(NetworkBase):
 
 	def send_move(self, i):
 		print "-> send move to", i
-		fd = ggzdmod.seatFd(i)
+		fd = self.seatFd(i)
 		if fd != -1:
 			self.init(fd)
 			self.sendbyte(self.MSG_MOVE)
@@ -117,7 +122,7 @@ class BogaprotServer(NetworkBase):
 
 	def send_dice(self, i):
 		print "-> send dice to", i
-		fd = ggzdmod.seatFd(i)
+		fd = self.seatFd(i)
 		if fd != -1:
 			self.init(fd)
 			self.sendbyte(self.MSG_DICE)
@@ -128,7 +133,7 @@ class BogaprotServer(NetworkBase):
 
 	def receive_move(self, i):
 		print "<- receive move from", i
-		fd = ggzdmod.seatFd(i)
+		fd = self.seatFd(i)
 		if fd != -1:
 			self.init(fd)
 			self.vars["source"] = self.getbyte()

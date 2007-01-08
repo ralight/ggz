@@ -26,7 +26,9 @@ class Network:
 		op += ord(opstr[1]) * 256 * 256
 		op += ord(opstr[2]) * 256
 		op += ord(opstr[3])
-		return socket.ntohl(op)
+		if socket.ntohl(op) == op:
+			op = socket.ntohl(op)
+		return op
 
 	def getchar(self):
 		opstr = self.sock.recv(1)
@@ -39,15 +41,19 @@ class Network:
 		return opstr
 
 	def sendbyte(self, byte):
-		nbyte = socket.htonl(byte)
+		nbyte = byte
+		if socket.htonl(nbyte) == nbyte:
+			nbyte = socket.htonl(nbyte)
 		c1 = (nbyte >> 24) & 0xFF
 		c2 = (nbyte >> 16) & 0xFF
 		c3 = (nbyte >> 8) & 0xFF
 		c4 = (nbyte >> 0) & 0xFF
-		self.sock.send(chr(c1))
-		self.sock.send(chr(c2))
-		self.sock.send(chr(c3))
-		self.sock.send(chr(c4))
+		s = chr(c1) + chr(c2) + chr(c3) + chr(c4)
+		self.sock.send(s)
+		#self.sock.send(chr(c1))
+		#self.sock.send(chr(c2))
+		#self.sock.send(chr(c3))
+		#self.sock.send(chr(c4))
 
 	def sendchar(self, char):
 		self.sock.send(chr(char))

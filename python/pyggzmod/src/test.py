@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Test game client for the GGZ Gaming Zone
-# Written in Python, using pyggzdmod
+# Written in Python, using pyggzmod
 
 import ggzmod
 

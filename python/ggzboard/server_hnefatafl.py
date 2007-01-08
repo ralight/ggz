@@ -14,6 +14,20 @@ import gettext
 gettext.install("ggzpython", None, 1)
 
 import ggzdmod
+
+try:
+	import ggzsettings
+	DATAPATH = ggzsettings.DATAPATH + "/ggzboard/"
+	MODULEPATH = ggzsettings.MODULEPATH + "/ggzboard/"
+	I18NPATH = ggzsettings.I18NPATH
+	sys.path = [ggzsettings.MODULEPATH + "/ggzboard/"] + sys.path
+	sys.path = [ggzsettings.MODULEPATH + "/common/"] + sys.path
+except:
+	DATAPATH = "./"
+	MODULEPATH = "./"
+	I18NPATH = "./"
+	sys.path = ["../lib/"] + sys.path
+
 from module_hnefatafl import *
 from ggzboard_net import *
 
@@ -41,33 +55,37 @@ class Server(NetworkBase):
 	def table_full(self):
 		full = 1
 		for i in range(ggzdmod.getNumSeats()):
-			name = ggzdmod.seatName(i)
-			type = ggzdmod.seatType(i)
-			fd = ggzdmod.seatFd(i)
+			seat = ggzdmod.getSeat(i)
+			(number, type, name, fd) = seat
 			if type != ggzdmod.SEAT_PLAYER and type != ggzdmod.SEAT_BOT:
 				full = 0
 		return full
 
+	def seatFd(self, i):
+		seat = ggzdmod.getSeat(i)
+		(number, type, name, fd) = seat
+		return fd
+
 	def send_players(self):
 		for i in range(ggzdmod.getNumSeats()):
-			fd = ggzdmod.seatFd(i)
+			fd = self.seatFd(i)
 			if fd != -1:
 				net.init(fd)
 				net.sendbyte(self.MSG_SEAT)
 				net.sendbyte(i)
 				net.sendbyte(self.MSG_PLAYERS)
 				for j in range(ggzdmod.getNumSeats()):
-					type = ggzdmod.seatType(j)
+					seat = ggzdmod.getSeat(j)
+					(number, type, name, fd) = seat
 					print "TYPE", type
 					net.sendbyte(type)
 					if type != ggzdmod.SEAT_OPEN:
-						name = ggzdmod.seatName(j)
 						print "NAME", name
 						net.sendstring(name)
 
 	def send_start(self):
 		for i in range(ggzdmod.getNumSeats()):
-			fd = ggzdmod.seatFd(i)
+			fd = self.seatFd(i)
 			if fd != -1:
 				net.init(fd)
 				net.sendbyte(self.MSG_START)

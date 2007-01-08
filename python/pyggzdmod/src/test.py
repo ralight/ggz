@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 #
 # Test game server for the GGZ Gaming Zone
-# Written in Python
+# Written in Python, using pyggzdmod
 
-import ggzdmod;
+import ggzdmod
 
 def hook_state ():
 	print "* state"

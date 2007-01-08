@@ -132,6 +132,8 @@ class Network:
 		op += ord(opstr[1]) * 256 * 256
 		op += ord(opstr[2]) * 256
 		op += ord(opstr[3])
+		if socket.ntohl(op) == op:
+			op = socket.ntohl(op)
 		return op
 
 	def getchar(self):
@@ -145,7 +147,9 @@ class Network:
 		return opstr
 
 	def sendbyte(self, byte):
-		nbyte = socket.htonl(byte)
+		nbyte = byte
+		if socket.htonl(nbyte) == nbyte:
+			nbyte = socket.htonl(nbyte)
 		c1 = (nbyte >> 24) & 0xFF
 		c2 = (nbyte >> 16) & 0xFF
 		c3 = (nbyte >> 8) & 0xFF
@@ -572,8 +576,8 @@ def main(ggzmode):
 				aierror = 1
 
 if __name__ == "__main__":
-		if len(sys.argv) == 2 and sys.argv[1] == "--ggz":
-			main(1)
-		else:
-			main(0)
+	if len(sys.argv) == 2 and sys.argv[1] == "--ggz":
+		main(1)
+	else:
+		main(0)
 

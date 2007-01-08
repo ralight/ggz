@@ -16,8 +16,7 @@ For library documentation please refer to the C header file ggz_server.h.
 
 This is the content of PyGGZDMod:
 src/ - module source and test file (test.py)
-civil/ - preliminary civil support
-tictactoe/ - Upcoming GGZ TicTacToe server (drop-in replacement)
+doc/ - some minimal documentation
 
 Thanks to #pygame for the improved setup file.
 
