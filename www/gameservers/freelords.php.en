@@ -34,8 +34,10 @@ It provides basic GGZ support.
 
 <i>GGZ game server support</i><br/>
 <table class="listnorm">
+<tr><td><i>Play-again</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Bot players</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 <tr><td><i>Named Bots</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Savegames</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
