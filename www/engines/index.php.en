@@ -181,6 +181,8 @@ The following game engines are currently playable on GGZ:
 <a href="/gameclients/ggzboard/">GGZBoard (SDL)</a><br/>
 <img src="/pics/icons/game_gnome.png">
 <a href="/gameclients/gnect/">Gnect (GNOME)</a><br/>
+<img src="/pics/icons/game_kde.png">
+<a href="/gameclients/kconnectx/">KConnectX (KDE)</a><br/>
 </td>
 <td><a href="/gameservers/connectx/">ConnectX server</a></td>
 </tr>
