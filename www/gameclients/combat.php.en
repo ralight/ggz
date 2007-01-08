@@ -30,6 +30,14 @@ This is the unique Combat client for GGZ. It is implemented in the Gtk+ toolkit.
 <tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
+
+<br/>
+
+<i>Game languages</i><br/>
+<table class="listnorm">
+<tr><td>English, German</td></tr>
+</table>
+
 </td><td>
 
 <b>Related pages</b>

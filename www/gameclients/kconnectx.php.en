@@ -4,30 +4,30 @@
 <tr>
 <td>
 
-<b>Reversi</b><br/>
+<b>KConnectX</b><br/>
 Board game for 2 players.
 <br/><br/>
 
 <i>Screenshot</i><br/>
-<img src="/gameclients/pics/reversi.png">
+<img src="/gameclients/pics/kconnectx.png">
 <br clear="all">
 <br/>
 
 <i>Fact sheet</i><br/>
 <ul>
-<li>Simple Gtk+ client for Reversi
+<li>Client for the ConnectX engine
 </ul>
-<br/>
 
-This is the Gtk+ client for the Reversi board game.
-Some options can be configured from within the game client.
+The KConnectX game lets one play four-in-a-row games.
+It is equipped with the common dialog for viewing and editing
+the seat configuration.
 
 <br/><br/>
 
 <i>GGZ game client support</i><br/>
 <table class="listnorm">
 <tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
-<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
@@ -35,17 +35,12 @@ Some options can be configured from within the game client.
 
 <i>Game languages</i><br/>
 <table class="listnorm">
-<tr><td>English, German</td></tr>
+<tr><td>English</td></tr>
 </table>
 
 </td><td>
 
 <b>Related pages</b>
-<br/><br/>
-
-<img src="/pics/icons/game_kde.png">
-<i>KDE client: KReversi</i><br/>
-<a href="/gameclients/kreversi/"><img src="/gameclients/thumbs/kreversi.png"></a>
 <br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
@@ -54,14 +49,14 @@ Some options can be configured from within the game client.
 <br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>GNOME client: Iagno</i><br/>
-<a href="/gameclients/iagno/"><img src="/gameclients/thumbs/iagno.png"></a>
+<i>GNOME client: Gnect</i><br/>
+<a href="/gameclients/gnect/"><img src="/gameclients/thumbs/gnect.png"></a>
 <br/><br/>
 
-<a href="/engines/reversi/"><i>Engine: Reversi</i></a>
+<a href="/engines/connectx/"><i>Engine: ConnectX</i></a>
 <br/><br/>
 
-<a href="/gameservers/reversi/"><i>Server: Reversi</i></a>
+<a href="/gameservers/connectx/"><i>Server: ConnectX</i></a>
 <br/><br/>
 
 </td>
