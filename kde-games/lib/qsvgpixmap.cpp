@@ -57,6 +57,21 @@ QPixmap QSvgPixmap::pixmap(QString filename, int width, int height)
 					*(unsigned int*)(pixdata + (j * width + i) * 4) = pixel;
 				}
 		}
+		else
+		{
+			for(int i = 0; i < width; i++)
+				for(int j = 0; j < height; j++)
+				{
+					unsigned int pixel = *(unsigned int*)(pixdata + (j * width + i) * 4);
+					int a, r, g, b;
+					a = (pixel >> 24) & 0xFF;
+					b = (pixel >> 16) & 0xFF;
+					g = (pixel >> 8) & 0xFF;
+					r = (pixel >> 0) & 0xFF;
+					pixel = (a << 24) + (r << 16) + (g << 8) + (b << 0);
+					*(unsigned int*)(pixdata + (j * width + i) * 4) = pixel;
+				}
+		}
 
 		QImage im(gdk_pixbuf_get_pixels(buf), gdk_pixbuf_get_width(buf), gdk_pixbuf_get_height(buf),
 			gdk_pixbuf_get_bits_per_sample(buf) * 4, 0, 0, QImage::IgnoreEndian);
