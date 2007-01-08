@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 8567 2006-09-03 05:35:12Z jdorje $
+ * $Id: game.c 8860 2007-01-08 13:46:29Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -29,6 +29,8 @@
  * Thus, a lot of #ifdefs are used which are not intended to be undefined,
  * but rather to localize the special features.
  * A simple game can do without them, but their usage is strongly encouraged.
+ * The features correspond to those advertised on the GGZ webpages and in the
+ * game feature comparison document.
  */
 
 /* === Include files === */
@@ -68,6 +70,8 @@
 #define GGZSAVEDGAMES /* do not undefine */
 /* The game supports distinguishable named bots */
 #define GGZBOTHASNAME /* do not undefine */
+/* The game supports to play one more time; FIXME: not used yet */
+#define GGZAGAINQUERY /* do not undefine */
 
 /* === Tic-Tac-Toe protocol (otherwise now defined in net.h) === */
 
