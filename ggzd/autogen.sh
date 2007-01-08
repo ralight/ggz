@@ -82,14 +82,18 @@ if test "x$need_libtool" = "x1"; then
 	(cd $srcdir && libtoolize --force --copy >/dev/null) || { echo "libtoolize failed."; exit; }
 fi
 echo -n "[aclocal]"
-(cd $srcdir && aclocal -I m4 -I m4/ggz) || { echo "aclocal failed."; exit; }
+if test -d $srcdir/m4; then
+	(cd $srcdir && aclocal -I m4 -I m4/ggz) || { echo "aclocal failed."; exit; }
+else
+	(cd $srcdir && aclocal) || { echo "aclocal failed."; exit; }
+fi
 echo -n "[autoheader]"
-autoheader -I $srcdir || { echo "autoheader failed."; exit; }
+(cd $srcdir && autoheader) || { echo "autoheader failed."; exit; }
 echo -n "[automake]"
 set -o pipefail 2>/dev/null && { ((cd $srcdir && automake --add-missing --gnu 2>&1) | (grep -v installing || true)) || { echo "automake failed." ; exit; } } || { (cd $srcdir && automake --add-missing --gnu) || { echo "automake failed." ; exit; } }
 if test -f $srcdir/am_edit; then
 	echo -n "[am_edit]"
-	perl $srcdir/am_edit --foreign-libtool --no-autodist || { echo "am_edit failed."; exit; }
+	(cd $srcdir && perl am_edit --foreign-libtool --no-autodist) || { echo "am_edit failed."; exit; }
 fi
 echo -n "[autoconf]"
 autoconf -I $srcdir $srcdir/configure.ac > $srcdir/configure && chmod +x $srcdir/configure || { echo "autoconf failed."; exit; }
