@@ -15,7 +15,7 @@ mainspec.pdf: $(SGML_FILES)
 	-$(SGML2PDF) $(srcdir)/mainspec.sgml
 
 mainspec.txt: design-txt.dsl $(SGML_FILES)
-	$(JADE) -tsgml -ilynx -d$(srcdir)/design-txt.dsl\#lynx mainspec.sgml > tmp.html
+	$(JADE) -tsgml -ilynx -d$(srcdir)/design-txt.dsl\#lynx $(srcdir)/mainspec.sgml > tmp.html
 	$(LYNX) -dump tmp.html -nolist > mainspec.txt
 	-rm tmp.html
 

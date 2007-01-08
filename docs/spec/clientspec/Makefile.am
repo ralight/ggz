@@ -17,7 +17,7 @@ clientspec.pdf: $(SGML_FILES)
 	$(SGML2PDF) $(srcdir)/clientspec.sgml
 
 clientspec.txt: design-txt.dsl $(SGML_FILES)
-	$(JADE) -tsgml -ilynx -d$(srcdir)/design-txt.dsl\#lynx clientspec.sgml > tmp.html
+	$(JADE) -tsgml -ilynx -d$(srcdir)/design-txt.dsl\#lynx $(srcdir)/clientspec.sgml > tmp.html
 	$(LYNX) -dump tmp.html -nolist > clientspec.txt
 	-rm tmp.html
 

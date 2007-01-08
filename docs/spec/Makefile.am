@@ -12,14 +12,14 @@ design-html: $(SGML_FILES)
 	-mv *.html design-html
 	-cp /usr/share/gtk-doc/data/*.png design-html
 	-cp design-html/book1.htm design-html/index.html
-	$(FIG2DEV) -Ljpeg server_arch.fig > design-html/server_arch.jpg
+	$(FIG2DEV) -Ljpeg $(srcdir)/server_arch.fig > design-html/server_arch.jpg
 
 design.pdf: $(SGML_FILES)
-	$(FIG2DEV) -Ljpeg server_arch.fig > server_arch.jpg
+	$(FIG2DEV) -Ljpeg $(srcdir)/server_arch.fig > server_arch.jpg
 	-$(SGML2PDF) $(srcdir)/design.sgml
 
 design.txt: design-txt.dsl $(SGML_FILES)
-	$(JADE) -tsgml -ilynx -d$(srcdir)/design-txt.dsl\#lynx design.sgml > tmp.html
+	$(JADE) -tsgml -ilynx -d$(srcdir)/design-txt.dsl\#lynx $(srcdir)/design.sgml > tmp.html
 	$(LYNX) -dump tmp.html -nolist > design.txt
 	-rm tmp.html
 

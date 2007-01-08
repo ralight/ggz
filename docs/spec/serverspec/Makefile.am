@@ -17,7 +17,7 @@ serverspec.pdf: $(SGML_FILES)
 	$(SGML2PDF) $(srcdir)/serverspec.sgml
 
 serverspec.txt: design-txt.dsl $(SGML_FILES)
-	$(JADE) -tsgml -ilynx -d$(srcdir)/design-txt.dsl\#lynx serverspec.sgml > tmp.html
+	$(JADE) -tsgml -ilynx -d$(srcdir)/design-txt.dsl\#lynx $(srcdir)/serverspec.sgml > tmp.html
 	$(LYNX) -dump tmp.html -nolist > serverspec.txt
 	-rm tmp.html
 
