@@ -100,6 +100,8 @@ class KTicTacTuxProto
 
 		// Read opcode
 		int getOp();
+		// Read packet size, if any
+		int getPacksize();
 		// Get the seats
 		int getSeat();
 		// Get the player names
@@ -115,6 +117,8 @@ class KTicTacTuxProto
 		// Get statistics
 		void getStatistics();
 
+		// Send packet size, if any
+		int sendPacksize(int packsize);
 		// Send decision on a new game
 		int sendOptions();
 		// Send out own move

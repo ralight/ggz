@@ -402,14 +402,16 @@ void KTicTacTux::slotError()
 // Network data
 void KTicTacTux::slotNetwork(int fd)
 {
-	int op;
+	int packsize, op;
 
 	proto->fd = fd;
 
 	kdDebug() << "Network data arriving on fd " << fd << "!" << endl;
 
+	packsize = proto->getPacksize();
 	op = proto->getOp();
 
+	kdDebug() << "Packsize is " << packsize << endl;
 	kdDebug() << "Opcode is " << op << endl;
 
 	switch(op)

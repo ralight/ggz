@@ -19,6 +19,9 @@
 // System includes
 #include <stdio.h>
 
+// Use DIO packets as of protocol five
+#define USE_DIO
+
 // Empty constructor
 KTicTacTuxProto::KTicTacTuxProto()
 {
@@ -55,6 +58,27 @@ void KTicTacTuxProto::init()
 		board[i % 3][i / 3] = none;
 	state = stateinit;
 	turn = none;
+}
+
+// Get packet size (2 bytes for DIO)
+int KTicTacTuxProto::getPacksize()
+{
+#ifdef USE_DIO
+	char packhigh, packlow;
+	int packsize;
+	int ret;
+
+	ret = ggz_read_char(fd, &packhigh);
+	if(ret == -1) return -1;
+	ret = ggz_read_char(fd, &packlow);
+	if(ret == -1) return -1;
+
+	packsize = packhigh * 256 + packlow;
+
+	return packsize;
+#else
+	return -1;
+#endif
 }
 
 // Get opcode
@@ -164,9 +188,31 @@ void KTicTacTuxProto::getStatistics()
 	}
 }
 
+// Send the packsize for a packet
+int KTicTacTuxProto::sendPacksize(int packsize)
+{
+#ifdef USE_DIO
+	char packhigh, packlow;
+	int ret = 0;
+
+	packsize += 2;
+
+	packlow = packsize & 0xFF;
+	packhigh = (packsize >> 8) & 0xFF;
+
+	ret |= ggz_write_char(fd, packhigh);
+	ret |= ggz_write_char(fd, packlow);
+
+	return ret;
+#else
+	return -1;
+#endif
+}
+
 // Send the options
 int KTicTacTuxProto::sendOptions()
 {
+	sendPacksize(4);
 	return ggz_write_int(fd, 0);
 }
 
@@ -175,6 +221,7 @@ int KTicTacTuxProto::sendMyMove()
 {
 	int ret = 0;
 
+	sendPacksize(8);
 	ret |= ggz_write_int(fd, sndmove);
 	ret |= ggz_write_int(fd, move);
 
@@ -184,6 +231,7 @@ int KTicTacTuxProto::sendMyMove()
 // Synchronize game
 void KTicTacTuxProto::sendSync()
 {
+	sendPacksize(4);
 	ggz_write_int(fd, reqsync);
 }
 
