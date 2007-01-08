@@ -1,13 +1,13 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8819 2007-01-04 23:38:21Z jdorje $
+# $Id: Makefile.am 8864 2007-01-08 13:50:22Z josef $
 
 SUBDIRS = src motd-editor pixmaps po man
 
 desktopdir = $(datadir)/applications
-desktop_DATA = ggz-gnome.desktop motd-editor.desktop
+dist_desktop_DATA = ggz-gnome.desktop motd-editor.desktop
 
 schemadir = $(sysconfdir)/gconf/schemas/
-schema_DATA = ggz-gnome.schemas
+dist_schema_DATA = ggz-gnome.schemas
 
 EXTRA_DIST = README.GGZ indent.pro
 
