@@ -42,6 +42,12 @@ Engine is not supported in GGZ anymore<br/>
 Utility from GGZ, has been removed<br/>
 <br/>
 
+<i>Several libraries...</i><br/>
+The former 'libgensecure' library is now part of libggz.<br/>
+The former 'easysock' library is now part of libggz.<br/>
+The former 'minidom' library is now part of libggzmeta.<br/>
+<br/>
+
 </td>
 </tr>
 </table>
