@@ -1,7 +1,7 @@
 /*
  * Geekgame - a game which only real geeks understand
  * Copyright (C) 2002 - 2004 Josef Spillner, josef@ggzgamingzone.org
- * $Id: main.c 8805 2007-01-04 14:34:23Z josef $
+ * $Id: main.c 8856 2007-01-08 13:41:50Z josef $
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -91,6 +91,7 @@ static char array[ARRAY_WIDTH][ARRAY_HEIGHT];
 static int winner = -1;
 static int usesound = 1;
 static int usefullscreen = 0;
+static int useintro = 1;
 static int gamerunning = 0;
 static int modemenu = 0;
 static int arraywidth, arrayheight;
@@ -388,12 +389,13 @@ int main(int argc, char *argv[])
 		{"help", no_argument, 0, 'h'},
 		{"nosound", no_argument, 0, 'n'},
 		{"players", required_argument, 0, 'p'},
+		{"skipintro", no_argument, 0, 's'},
 		{0, 0, 0, 0}
 	};
 	int index = 0, c;
 	int ret;
 
-	while((c = getopt_long(argc, argv, "fghnp:", op, &index)) != -1)
+	while((c = getopt_long(argc, argv, "fghnp:s", op, &index)) != -1)
 	{
 		switch(c)
 		{
@@ -411,6 +413,7 @@ int main(int argc, char *argv[])
 				printf("[-g | --ggz       ] Run game in GGZ mode\n");
 				printf("[-h | --help      ] This help\n");
 				printf("[-n | --nosound   ] Don't use sound or music\n");
+				printf("[-s | --skipintro ] Skip the introductory animation\n");
 				printf("[-p | --players=x ] Number of players for single player mode ");
 				printf("(default: %i)\n", MAX_PLAYERS);
 				return 0;
@@ -425,6 +428,9 @@ int main(int argc, char *argv[])
 					printf("Invalid player count %s, using %i\n", optarg, MAX_PLAYERS);
 					players = MAX_PLAYERS;
 				}
+				break;
+			case 's':
+				useintro = 0;
 				break;
 			default:
 				fprintf(stderr, "Type '%s --help' to get a list of options.\n", argv[0]);
@@ -530,8 +536,9 @@ void rendermode(int x, int y, const char *mode)
 	SDL_Rect rect;
 
 	SDL_Color green = {0x3F, 0xFF, 0x5F, 0};
+	SDL_Color black = {0x00, 0x00, 0x00, 0};
 
-	text = TTF_RenderText_Solid(font, mode, green);
+	text = TTF_RenderUTF8_Shaded(font, mode, green, black);
 	if(text)
 	{
 		rect.x = x;
@@ -552,10 +559,11 @@ static void renderscore(int x, int y, int sum)
 	SDL_Surface *text;
 	SDL_Rect rect;
 
-	SDL_Color black = {0xFF, 0xFF, 0xFF, 0};
+	SDL_Color white = {0xFF, 0xFF, 0xFF, 0};
+	SDL_Color black = {0x00, 0x00, 0x00, 0};
 
 	snprintf(score, sizeof(score), "%i", sum);
-	text = TTF_RenderText_Solid(font, score, black);
+	text = TTF_RenderUTF8_Shaded(font, score, white, black);
 	if(text)
 	{
 		rect.x = x;
@@ -586,7 +594,7 @@ static void renderdesc(int x, int y, const char *desc, int active)
 	token = strtok(tmp, "\n");
 	while(token)
 	{
-		text = TTF_RenderText_Solid(font, token, (active ? white : black));
+		text = TTF_RenderUTF8_Shaded(font, token, (active ? white : black), black);
 		if(text)
 		{
 			rect.x = x;
@@ -701,9 +709,11 @@ static void screen_scanning(int display)
 			snprintf(path, sizeof(path), "%s/fonts", data_global());
 			fontpath = scan_file(path, "*.ttf");
 		}
-		if(!fontpath) fontpath = scan_file("/usr/share/fonts/truetype", "*.ttf");
+		if(!fontpath) fontpath = scan_file("/usr/share/fonts/truetype/ttf-bitstream-vera", "Vera.ttf");
+		if(!fontpath) fontpath = scan_file("/usr/share/fonts/truetype/ttf-bitstream-vera", "*.ttf");
 		if(!fontpath) fontpath = scan_file("/usr/share/fonts/truetype/freefont", "*.ttf");
 		if(!fontpath) fontpath = scan_file("/usr/share/fonts/truetype/openoffice", "*.ttf");
+		if(!fontpath) fontpath = scan_file("/usr/share/fonts/truetype", "*.ttf");
 		if(!fontpath) fontpath = scan_file("/usr/X11R6/lib/X11/fonts/TrueType", "*.ttf");
 
 		/* Scanning for music */
@@ -1466,10 +1476,13 @@ int startgame(void)
 		scrheight = SCREEN_HEIGHT_FALLBACK;
 	}
 
-	screen = SDL_SetVideoMode(scrwidth, scrheight, 0,
-		SDL_OPENGL | (usefullscreen ? SDL_FULLSCREEN : SDL_RESIZABLE));
+	if(useintro)
+	{
+		screen = SDL_SetVideoMode(scrwidth, scrheight, 0,
+			SDL_OPENGL | (usefullscreen ? SDL_FULLSCREEN : SDL_RESIZABLE));
 
-	geekgame_intro();
+		geekgame_intro();
+	}
 
 	screen = SDL_SetVideoMode(scrwidth, scrheight, 0,
 		(usefullscreen ? SDL_FULLSCREEN : 0));
