@@ -68,9 +68,9 @@ void KGGZPacket::slotNetwork(int fd)
 			// Error!
 		}
 		packsizestream >> size;
-		m_size = (int)size;
-		m_input.resize(m_size - 2);
-		kdDebug() << "<kggzpacket> input init; packsize = " << m_size << endl;
+		m_size = (int)size - 2;
+		m_input.resize(m_size);
+		kdDebug() << "<kggzpacket> input init; packsize = 2 + " << m_size << endl;
 	}
 
 	len = m_socket->bytesAvailable();
