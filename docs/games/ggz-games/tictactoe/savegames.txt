@@ -1,0 +1,45 @@
+Sent via email to ggz-dev by josef on March 18 2005:
+
+This is the first server-side savegame we have. Since there doesn't yet seem 
+to be any standard format for TTT, I made one up :-)
+It will follow below, but before it should be said what will be needed for 
+savegames.
+My idea is that each game creates a temporary file or directory for each 
+played game, if the game is to be recorded. (To make it easy, we'll simply 
+save every game for now.)
+Then there should be a ggzdmod function to register the name, and ggzdmod 
+associates the state with it (i.e. WAITING, RUNNING, DONE).
+If the game terminates properly, this should somehow be associated with the 
+other match data such as scores. If it aborts while still running, the game 
+host should later have the chance on picking up on it again.
+In this case, another ggzdmod function would tell the name (instead of NULL), 
+and the game does not create a new savegame file, but reads in the old 
+savegame (assuming it supports this of course).
+
+Now, the savegame format for TTT:
+Each line is prefixed with either 'player1' or 'player2', or 'players' if it 
+applies to both.
+At first the players join the game, but they can always leave it if leave & 
+rejoin is supported:
+ player1 join XXX
+ player2 join YYY
+ player2 leave YYY
+ player2 join ZZZ
+When the players are ready, the game starts (PREGAME -> PLAYING):
+ players options 3 3
+ players start 1111340924
+The options field is for upward compatibility, and the start value is the 
+timestamp.
+ player1 move 0 0
+ player2 move 1 1
+Now the players made their first moves, when suddenly the game aborts. However 
+the players are joining back.
+ player1 join XXX
+ player2 join ZZZ
+ players continue 1111340938
+ player1 move 0 1
+ player2 move 1 2
+ player1 move 0 2
+ player1 winner 1111340959
+This could be 'players tie 1111340959'  alternatively.
+
