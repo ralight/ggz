@@ -1,6 +1,6 @@
 Index: docs/spec/dtd/ggz_client.dtd
 ===================================================================
---- docs/spec/dtd/ggz_client.dtd	(revision 8872)
+--- docs/spec/dtd/ggz_client.dtd	(revision 8885)
 +++ docs/spec/dtd/ggz_client.dtd	(working copy)
 @@ -1,8 +1,12 @@
  <!-- ggz_client.dtd -->
@@ -16,9 +16,169 @@ Index: docs/spec/dtd/ggz_client.dtd
  <!ELEMENT LOGIN (NAME, PASSWORD?)>
  <!ATTLIST LOGIN		TYPE		( normal | first | guest ) "guest">
  
+Index: ggz-client-libs/ggzcore/ggzcore.h
+===================================================================
+--- ggz-client-libs/ggzcore/ggzcore.h	(revision 8885)
++++ ggz-client-libs/ggzcore/ggzcore.h	(working copy)
+@@ -685,6 +685,22 @@
+  * Functions for setting GGZServer data
+  */
+ 
++/** @brief Set client version information
++ *
++ *  Call this function to set the client name and version
++ *  for sending to the server before connecting to it.
++ *  This is not compulsary, but is a sensible thing to do.
++ *
++ *  @param server The GGZ server object.
++ *  @param name A string containing the client name (e.g. ggz-txt)
++ *  @param version A string containing the client version (e.g. 1.0)
++ *  @return 0 on success, -1 on error.
++ *  @note Should never fail when given valid input.
++ */
++int ggzcore_server_set_client_version(GGZServer *server,
++				const char *name,
++				const char *version);
++
+ /** @brief Set host info for connecting to the server.
+  *
+  *  Call this function to set host info for the GGZ server
+Index: ggz-client-libs/ggzcore/netxml.c
+===================================================================
+--- ggz-client-libs/ggzcore/netxml.c	(revision 8885)
++++ ggz-client-libs/ggzcore/netxml.c	(working copy)
+@@ -373,13 +373,15 @@
+  * only for registered logins. */
+ int _ggzcore_net_send_login(GGZNet * net, GGZLoginType login_type,
+ 			    const char *handle, const char *password, const char *email,
+-			    const char *language)
++			    const char *language, const char *client_name, const char *client_version)
+ {
+ 	const char *type = "guest";
+ 	int status;
+ 	char *handle_quoted;
+ 	char *password_quoted;
+ 	char *email_quoted;
++	char *client_name_quoted;
++	char *client_version_quoted;
+ 
+ 	switch (login_type) {
+ 	case GGZ_LOGIN:
+@@ -401,6 +403,17 @@
+ 		_ggzcore_net_send_line(net, "<LANGUAGE>%s</LANGUAGE>",
+ 				       language);
+ 	}
++	if (client_name && client_version) {
++		client_name_quoted = ggz_xml_escape(client_name);
++		client_version_quoted = ggz_xml_escape(client_version);
++
++		_ggzcore_net_send_line(net, "<CLIENT NAME='%s' VERSION='%s'/>",
++						client_name_quoted, client_version_quoted);
++
++		ggz_free(client_name_quoted);
++		ggz_free(client_version_quoted);
++	}
++
+ 	_ggzcore_net_send_line(net, "<LOGIN TYPE='%s'>", type);
+ 	_ggzcore_net_send_line(net, "<NAME>%s</NAME>", handle_quoted);
+ 
+Index: ggz-client-libs/ggzcore/server.c
+===================================================================
+--- ggz-client-libs/ggzcore/server.c	(revision 8885)
++++ ggz-client-libs/ggzcore/server.c	(working copy)
+@@ -151,6 +151,10 @@
+ 	struct {
+ 		int players_changed;
+ 	} queued_events;
++
++	/* Client name and version passed to the server. */
++	char *client_name;
++	char *client_version;
+ };
+ 
+ #ifndef HAVE_WINSOCK2_H
+@@ -243,6 +247,26 @@
+ }
+ 
+ 
++int ggzcore_server_set_client_version(GGZServer *server,
++				const char *name,
++				const char *version)
++{
++	/* Check for valid arguments */
++	if (server && name && version && server->state == GGZ_STATE_OFFLINE) {
++		/* The client should only call this once, but it doesn't
++		 * really matter if they call it multiple times as we
++		 * clean up properly. */
++		if(server->client_name) ggz_free(server->client_name);
++		if(server->client_version) ggz_free(server->client_version);
++
++		server->client_name = ggz_xml_escape(name);
++		server->client_version = ggz_xml_escape(version);
++		return 0;
++	} else
++		return -1;
++}
++
++
+ int ggzcore_server_set_hostinfo(GGZServer * server, const char *host,
+ 				const unsigned int port,
+ 				const unsigned int use_tls)
+@@ -1271,7 +1295,7 @@
+ 
+ 	status = _ggzcore_net_send_login(server->net, server->type,
+ 					 server->handle, server->password, server->email,
+-					 getenv("LANG"));
++					 getenv("LANG"), server->client_name, server->client_version);
+ 
+ 	if (status == 0)
+ 		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_TRY);
+@@ -1406,6 +1430,16 @@
+ 			server->event_hooks[i] = NULL;
+ 		}
+ 	}
++
++	if (server->client_name) {
++		ggz_free(server->client_name);
++		server->client_name = NULL;
++	}
++
++	if (server->client_version) {
++		ggz_free(server->client_version);
++		server->client_version = NULL;
++	}
+ }
+ 
+ 
+Index: ggz-client-libs/ggzcore/net.h
+===================================================================
+--- ggz-client-libs/ggzcore/net.h	(revision 8885)
++++ ggz-client-libs/ggzcore/net.h	(working copy)
+@@ -57,7 +57,7 @@
+ /* Functions for sending data/requests to server */
+ int _ggzcore_net_send_login(GGZNet * net, GGZLoginType login_type,
+ 			    const char *handle, const char *password, const char *email,
+-			    const char *language);
++			    const char *language, const char *client_name, const char *client_version);
+ int _ggzcore_net_send_channel(GGZNet * net, const char *id);
+ int _ggzcore_net_send_motd(GGZNet * net);
+ int _ggzcore_net_send_list_types(GGZNet * net, const char verbose);
+Index: txt-client/ggz-txt/server.c
+===================================================================
+--- txt-client/ggz-txt/server.c	(revision 8885)
++++ txt-client/ggz-txt/server.c	(working copy)
+@@ -80,6 +80,8 @@
+ 	server = ggzcore_server_new();
+ 	ggzcore_server_set_hostinfo(server, host, port, 0);
+ 	ggzcore_server_set_logininfo(server, type, login, password, NULL);
++	ggzcore_server_set_client_version(server, "ggz-txt", VERSION);
++
+ 	server_register(server);
+ 	sessiondump =
+ 	    ggzcore_conf_read_string("Debug", "SessionLog", NULL);
 Index: ggzd/ggzd/net.c
 ===================================================================
---- ggzd/ggzd/net.c	(revision 8873)
+--- ggzd/ggzd/net.c	(revision 8885)
 +++ ggzd/ggzd/net.c	(working copy)
 @@ -118,6 +118,7 @@
  
