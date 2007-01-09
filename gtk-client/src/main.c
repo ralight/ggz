@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 8576 2006-09-11 23:41:19Z jdorje $
+ * $Id: main.c 8882 2007-01-09 17:46:35Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -171,7 +171,7 @@ int main (int argc, char *argv[])
 		Server serv;
 		serv.name = NULL;
 		serv.host = host;
-		serv.port = atoi(port);
+		serv.port = (port ? atoi(port) : 5688);
 		serv.type = GGZ_LOGIN_GUEST;
 		serv.login = user;
 		serv.password = NULL;
