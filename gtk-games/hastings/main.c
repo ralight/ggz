@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main loop
- * $Id: main.c 6667 2005-01-14 03:21:47Z jdorje $
+ * $Id: main.c 8880 2007-01-09 17:22:14Z josef $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -132,7 +132,7 @@ static void initialize_about_dialog(void)
 	      "            Josef Spillner   <josef@ggzgamingzone.org>\n"
 	      "\n"
 	      "Website:\n"
-	      "        http://www.ggzgamingzone.org/games/hastings/");
+	      "        http://www.ggzgamingzone.org/gameclients/hastings/");
 	char *header;
 
 	header = g_strdup_printf(_("GGZ Gaming Zone\n"

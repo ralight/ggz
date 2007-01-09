@@ -1,9 +1,9 @@
-# $Id: ccheckers.dsc 8254 2006-06-22 09:30:47Z oojah $
+# $Id: ccheckers.dsc 8880 2007-01-09 17:22:14Z josef $
 
 [GameInfo]
 Author = Rich Gade
 Description = GGZ game module for playing Chinese Checkers
-Homepage = http://www.ggzgamingzone.org/games/chinese-checkers/
+Homepage = http://www.ggzgamingzone.org/gameservers/chinese-checkers/
 Name = ccheckers
 Version = 0.0.3
 

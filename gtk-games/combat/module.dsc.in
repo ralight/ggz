@@ -6,4 +6,4 @@ ProtocolVersion = @COMBAT_PROTOCOL_VERSION@
 Version = @COMBAT_VERSION@
 CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.combat @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
-Homepage = http://www.ggzgamingzone.org/games/combat/
+Homepage = http://www.ggzgamingzone.org/gameclients/combat/

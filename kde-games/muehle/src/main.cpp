@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 		KAboutData::License_GPL,
 		"Copyright (C) 2001, 2002 Josef Spillner",
 		I18N_NOOP("This game is part of the GGZ Gaming Zone."),
-		"http://www.ggzgamingzone.org/games/muehle/",
+		"http://www.ggzgamingzone.org/gameclients/muehle/",
 		"josef@ggzgamingzone.org");
 	about->addAuthor("Josef Spillner", "Programming", "josef@ggzgamingzone.org");
 	about->setTranslator(I18N_NOOP("TRANSLATOR-NAME"), I18N_NOOP("TRANSLATOR-EMAIL"));

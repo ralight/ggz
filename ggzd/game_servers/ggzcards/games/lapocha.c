@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 8561 2006-08-31 08:00:24Z jdorje $
+ * $Id: lapocha.c 8880 2007-01-09 17:22:14Z josef $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -73,7 +73,7 @@ static void lap_send_scores(void);
 game_data_t lapocha_data = {
 	"lapocha",
 	N_("La Pocha"),
-	"http://www.ggzgamingzone.org/games/lapocha/",
+	"http://www.ggzgamingzone.org/gameservers/ggzcards/",
 	lapocha_is_valid_game,
 	lapocha_init_game,
 	game_get_options,

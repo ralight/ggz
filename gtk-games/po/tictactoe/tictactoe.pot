@@ -24,7 +24,7 @@ msgstr ""
 msgid ""
 "Copyright (C) 2000 by Brent Hendricks\n"
 "\n"
-"Website: http://www.ggzgamingzone.org/games/tictactoe/"
+"Website: http://www.ggzgamingzone.org/gameclients/tictactoe/"
 msgstr ""
 
 #: ../../tictactoe/main.c:90

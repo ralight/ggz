@@ -2,7 +2,7 @@
 [GameInfo]
 Author = Jason Short
 Description = GGZ Cards game module for Sueca
-Homepage = http://www.ggzgamingzone.org/games/ggzcards/
+Homepage = http://www.ggzgamingzone.org/gameservers/ggzcards/
 Name = GGZCards-Sueca
 Version = @GGZCARDS_VERSION@
 

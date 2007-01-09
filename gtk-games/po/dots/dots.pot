@@ -204,7 +204,7 @@ msgid ""
 "            Rich Gade        <rgade@users.sourceforge.net>\n"
 "\n"
 "Website:\n"
-"        http://www.ggzgamingzone.org/games/dots/"
+"        http://www.ggzgamingzone.org/gameclients/dots/"
 msgstr ""
 
 #: ../dots/main.c:157

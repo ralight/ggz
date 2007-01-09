@@ -2,7 +2,7 @@
 [GameInfo]
 Author = Rich Gade
 Description = GGZ Cards game module for La Pocha
-Homepage = http://www.ggzgamingzone.org/games/ggzcards/
+Homepage = http://www.ggzgamingzone.org/gameservers/ggzcards/
 Name = GGZCards-LaPocha
 Version = @GGZCARDS_VERSION@
 

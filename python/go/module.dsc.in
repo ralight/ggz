@@ -2,7 +2,7 @@
 Author = Josef Spillner
 CommandLine = @prefix@/lib/ggz/goclient --ggz
 Frontend = x11
-Homepage = http://www.ggzgamingzone.org/games/gnugo/
+Homepage = http://www.ggzgamingzone.org/gameclients/cgoban/
 Name = CGoBan
 ProtocolEngine = GMP
 ProtocolVersion = 1

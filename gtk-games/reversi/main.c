@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
- * $Id: main.c 6666 2005-01-14 03:21:29Z jdorje $
+ * $Id: main.c 8880 2007-01-09 17:22:14Z josef $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -254,7 +254,7 @@ static void initialize_about_dialog(void)
 	      "            Rich Gade <rgade@users.sourceforge.net>\n"
 	      "\n"
 	      "Website:\n"
-	      "        http://www.ggzgamingzone.org/games/reversi/");
+	      "        http://www.ggzgamingzone.org/gameclients/reversi/");
 	char *header;
 	header = g_strdup_printf(_("GGZ Gaming Zone\n"
 				   "Reversi Version %s"), VERSION);

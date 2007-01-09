@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 		KAboutData::License_GPL_V2,
 		"Copyright (C) 2001 - 2004 Tobias Koenig & Josef Spillner",
 		I18N_NOOP("This game is part of the GGZ Gaming Zone."),
-		"http://www.ggzgamingzone.org/games/koenig/",
+		"http://www.ggzgamingzone.org/gameclients/koenig/",
 		"josef@ggzgamingzone.org");
 
 	aboutData.addAuthor("Tobias KÃ¶nig", "Creator", "tokoe@kde.org");

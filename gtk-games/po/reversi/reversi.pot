@@ -29,7 +29,7 @@ msgid ""
 "            Rich Gade <rgade@users.sourceforge.net>\n"
 "\n"
 "Website:\n"
-"        http://www.ggzgamingzone.org/games/reversi/"
+"        http://www.ggzgamingzone.org/gameclients/reversi/"
 msgstr ""
 
 #: ../reversi/main.c:260

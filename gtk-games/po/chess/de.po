@@ -32,11 +32,11 @@ msgstr "Über Schach"
 msgid ""
 "Copyright (C) 2001 Ismael Orenstein.\n"
 "\n"
-"Website: http://www.ggzgamingzone.org/games/chess/"
+"Website: http://www.ggzgamingzone.org/gameclients/chess/"
 msgstr ""
 "Copyright (C) 2001 Ismael Orenstein.\n"
 "\n"
-"Webseite: http://www.ggzgamingzone.org/games/chess/"
+"Webseite: http://www.ggzgamingzone.org/gameclients/chess/"
 
 #: ../chess/main_win.c:58
 msgid "/_Table"

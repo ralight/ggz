@@ -38,19 +38,19 @@ internally.
 The following game clients beside the ones mentioned above support AI players, so that
 they can be played locally against the computer:
 <br>
-<a href="http://www.ggzgamingzone.org/games/ggzboard/">GGZBoard</a> (for Ludo),
-<a href="http://www.ggzgamingzone.org/games/ktictactux/">KTicTacTux</a>,
-<a href="http://www.ggzgamingzone.org/games/fyrdman/">Fyrdman</a>,
-<a href="http://www.ggzgamingzone.org/games/kcc/">KCC</a>,
-<a href="http://www.ggzgamingzone.org/games/muehle/">Muehle</a> (external perl script),
-<a href="http://www.ggzgamingzone.org/games/geekgame/">Geekgame</a>
+<a href="http://www.ggzgamingzone.org/gameclients/ggzboard/">GGZBoard</a> (for Ludo),
+<a href="http://www.ggzgamingzone.org/gameclients/ktictactux/">KTicTacTux</a>,
+<a href="http://www.ggzgamingzone.org/gameclients/fyrdman/">Fyrdman</a>,
+<a href="http://www.ggzgamingzone.org/gameclients/kcc/">KCC</a>,
+<a href="http://www.ggzgamingzone.org/gameclients/muehle/">Muehle</a> (external perl script),
+<a href="http://www.ggzgamingzone.org/gameclients/geekgame/">Geekgame</a>
 <br>
 The following game clients provide some dummy AI players mostly based on random decisions
 so that they at least appear to be playable:
 <br>
-<a href="http://www.ggzgamingzone.org/games/escape-sdl/">Escape/SDL</a>,
-<a href="http://www.ggzgamingzone.org/games/cchess/">Xadrez Chinês</a>,
-<a href="http://www.ggzgamingzone.org/games/ggzboard/">GGZBoard</a>
+<a href="http://www.ggzgamingzone.org/gameclients/escape-sdl/">Escape/SDL</a>,
+<a href="http://www.ggzgamingzone.org/gameclients/cchess/">Xadrez Chinês</a>,
+<a href="http://www.ggzgamingzone.org/gameclients/ggzboard/">GGZBoard</a>
 (for ConnectX, Hnefatafl, Checkers, Reversi)
 
 <br><br>

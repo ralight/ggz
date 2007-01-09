@@ -3,7 +3,7 @@
 Author = Josef Spillner
 CommandLine = @ggzexecmoddir@/kdots_client --ggz --icon @prefix@/share/icons/hicolor/32x32/apps/kdots.png
 Frontend = kde
-Homepage = http://www.ggzgamingzone.org/games/kdots/
+Homepage = http://www.ggzgamingzone.org/gameclients/kdots/
 Name = KDots
 ProtocolEngine = Dots
 ProtocolVersion = 4

@@ -31,7 +31,7 @@ msgstr ""
 msgid ""
 "Copyright (C) 2001 Ismael Orenstein.\n"
 "\n"
-"Website: http://www.ggzgamingzone.org/games/chess/"
+"Website: http://www.ggzgamingzone.org/gameclients/chess/"
 msgstr ""
 
 #: ../chess/main_win.c:58

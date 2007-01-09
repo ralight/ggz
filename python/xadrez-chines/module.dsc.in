@@ -2,7 +2,7 @@
 Author = Josef Spillner
 CommandLine = @prefix@/bin/xadrez-chines --ggz
 Frontend = sdl
-Homepage = http://www.ggzgamingzone.org/games/xadrezchines/
+Homepage = http://www.ggzgamingzone.org/gameclients/xadrezchines/
 Name = Xadrez Chinês
 ProtocolEngine = CChess
 ProtocolVersion = 1

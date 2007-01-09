@@ -1,11 +1,10 @@
+Name = TTTXT
 [ModuleInfo]
-Game = TicTacToe
 Author = Josef Spillner
 CommandLine = @ggzexecmoddir@/tttxt --ggz
 Frontend = console
 Environment = console
-Homepage = http://www.ggzgamingzone.org/games/tttxt/
-Name = TTTXT
+Homepage = http://www.ggzgamingzone.org/gameclients/tttxt/
 ProtocolEngine = TicTacToe
 ProtocolVersion = 4
 Version = 0.0.1

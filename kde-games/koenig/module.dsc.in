@@ -3,7 +3,7 @@
 Author = Tobias Koenig & Josef Spillner
 CommandLine = @ggzexecmoddir@/koenig --ggz
 Frontend = kde
-Homepage = http://www.ggzgamingzone.org/games/koenig/
+Homepage = http://www.ggzgamingzone.org/gameclients/koenig/
 Name = Koenig
 ProtocolVersion = 3
 ProtocolEngine = Chess

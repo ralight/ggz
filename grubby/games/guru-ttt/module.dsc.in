@@ -1,10 +1,9 @@
 [ModuleInfo]
-Game = TicTacToe
+Name = Guru TicTacToe
 Author = Josef Spillner
 CommandLine = @ggzexecmoddir@/guru-ttt
 Frontend = guru
-Homepage = http://www.ggzgamingzone.org/games/tictactoe/
-Name = Guru TicTacToe
+Homepage = http://www.ggzgamingzone.org/gameclients/guruttt/
 ProtocolEngine = TicTacToe
 ProtocolVersion = 4
 Version = 0.0.1

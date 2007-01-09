@@ -1,9 +1,9 @@
-# $Id: keepalive.dsc 8254 2006-06-22 09:30:47Z oojah $
+# $Id: keepalive.dsc 8880 2007-01-09 17:22:14Z josef $
 
 [GameInfo]
 Author = Josef Spillner
 Description = Experimental GGZ game: permanent games and server-side storage
-Homepage = http://www.ggzgamingzone.org/games/keepalive/
+Homepage = http://www.ggzgamingzone.org/gameservers/keepalive/
 Name = Keepalive
 Version = 0.1
 

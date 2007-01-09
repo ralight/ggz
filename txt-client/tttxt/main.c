@@ -143,7 +143,7 @@ static void drawabout(void)
 	gotoxy(10, 6);
 	printf("This game is part of the GGZ Gaming Zone.");
 	gotoxy(10, 7);
-	printf("http://www.ggzgamingzone.org/games/tttxt/");
+	printf("http://www.ggzgamingzone.org/gameclients/tttxt/");
 
 	gotoxy(10, 9);
 	printf("%s%s%s%s", COLOR_RED, "E",

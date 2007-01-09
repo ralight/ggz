@@ -203,7 +203,7 @@ msgid ""
 "            Rich Gade        <rgade@users.sourceforge.net>\n"
 "\n"
 "Website:\n"
-"        http://www.ggzgamingzone.org/games/dots/"
+"        http://www.ggzgamingzone.org/gameclients/dots/"
 msgstr ""
 "Autore:\n"
 "        Gtk+ Client:\n"
@@ -216,7 +216,7 @@ msgstr ""
 "            Rich Gade        <rgade@users.sourceforge.net>\n"
 "\n"
 "Webseite:\n"
-"        http://www.ggzgamingzone.org/games/dots/"
+"        http://www.ggzgamingzone.org/gameclients/dots/"
 
 #: ../dots/main.c:157
 #, c-format

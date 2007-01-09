@@ -1,9 +1,9 @@
-# $Id: hastings.dsc 8254 2006-06-22 09:30:47Z oojah $
+# $Id: hastings.dsc 8880 2007-01-09 17:22:14Z josef $
 
 [GameInfo]
 Author = Josef Spillner
 Description = Conquer ancient reigns
-Homepage = http://www.ggzgamingzone.org/games/hastings/
+Homepage = http://www.ggzgamingzone.org/gameservers/hastings/
 Name = Hastings
 Version = 0.0.7
 

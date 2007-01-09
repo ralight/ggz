@@ -1,10 +1,9 @@
 [ModuleInfo]
-Game = Chess
+Name = Guru Chess
 Author = Josef Spillner
 CommandLine = @ggzexecmoddir@/guru-chess
 Frontend = guru
-Homepage = http://www.ggzgamingzone.org/games/chess/
-Name = Guru Chess
+Homepage = http://www.ggzgamingzone.org/gameclients/guruchess/
 ProtocolEngine = Chess
 ProtocolVersion = 3
 Version = 0.0.8

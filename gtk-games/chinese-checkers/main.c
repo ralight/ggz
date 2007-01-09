@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Main loop and supporting logic
- * $Id: main.c 6333 2004-11-12 02:27:20Z jdorje $
+ * $Id: main.c 8880 2007-01-09 17:22:14Z josef $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -115,7 +115,7 @@ static void initialize_about_dialog(void)
 {
 	const char *content =
 	    _
-	    ("Visit us at http://www.ggzgamingzone.org/games/chinese-checkers/\n"
+	    ("Visit us at http://www.ggzgamingzone.org/gameclients/chinese-checkers/\n"
 	     "\n"
 	     "Copyright (C) 2000, 2001 Richard Gade and Brent Hendricks \n");
 	char *header;

@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 		KAboutData::License_GPL,
 		"Copyright (C) 2002 Josef Spillner",
 		I18N_NOOP(""),
-		"http://www.ggzgamingzone.org/games/keepalive/",
+		"http://www.ggzgamingzone.org/gameclients/keepalive/",
 		"josef@ggzgamingzone.org");
 	about->addAuthor("Josef Spillner", I18N_NOOP("Initial developer"), "josef@ggzgamingzone.org");
 	about->setTranslator(I18N_NOOP("TRANSLATOR-NAME"), I18N_NOOP("TRANSLATOR-EMAIL"));

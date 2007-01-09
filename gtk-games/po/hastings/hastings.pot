@@ -38,7 +38,7 @@ msgid ""
 "            Josef Spillner   <josef@ggzgamingzone.org>\n"
 "\n"
 "Website:\n"
-"        http://www.ggzgamingzone.org/games/hastings/"
+"        http://www.ggzgamingzone.org/gameclients/hastings/"
 msgstr ""
 
 #: ../hastings/main.c:140

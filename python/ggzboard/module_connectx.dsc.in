@@ -7,4 +7,5 @@ ProtocolEngine = ConnectX
 ProtocolVersion = 2
 CommandLine = @prefix@/bin/ggzboard --ggz --game connectx
 Frontend = sdl
-Homepage = http://www.ggzgamingzone.org/games/ggzboard/
+Homepage = http://www.ggzgamingzone.org/gameclients/ggzboard/
+

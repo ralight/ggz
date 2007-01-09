@@ -28,7 +28,7 @@ msgid ""
 "            Rich Gade <rgade@users.sourceforge.net>\n"
 "\n"
 "Website:\n"
-"        http://www.ggzgamingzone.org/games/reversi/"
+"        http://www.ggzgamingzone.org/gameclients/reversi/"
 msgstr ""
 "Autoren:\n"
 "        Gtk+-Client:\n"
@@ -41,7 +41,7 @@ msgstr ""
 "            Rich Gade <rgade@users.sourceforge.net>\n"
 "\n"
 "Webseite:\n"
-"        http://www.ggzgamingzone.org/games/reversi/"
+"        http://www.ggzgamingzone.org/gameclients/reversi/"
 
 #: ../reversi/main.c:260
 #, c-format

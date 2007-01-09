@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 		KAboutData::License_GPL,
 		"(C) 2001, 2002 Josef Spillner",
 		I18N_NOOP("This game is part of the GGZ Gaming Zone."),
-		"http://www.ggzgamingzone.org/games/krosswater/",
+		"http://www.ggzgamingzone.org/gameclients/krosswater/",
 		"josef@ggzgamingzone.org");
 
 	about->addAuthor("Josef Spillner", I18N_NOOP("Initial developer"), "josef@ggzgamingzone.org");

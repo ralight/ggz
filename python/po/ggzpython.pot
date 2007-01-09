@@ -215,7 +215,7 @@ msgid "More information can be found on the GGZBoard homepage:"
 msgstr ""
 
 #: ../ggzboard/ggzboard:485
-msgid "http://www.ggzgamingzone.org/games/ggzboard/"
+msgid "http://www.ggzgamingzone.org/gameclients/ggzboard/"
 msgstr ""
 
 #: ../ggzboard/ggzboard:498

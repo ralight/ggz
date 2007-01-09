@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
- * $Id: main.c 8159 2006-06-11 21:47:06Z jdorje $
+ * $Id: main.c 8880 2007-01-09 17:22:14Z josef $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -151,7 +151,7 @@ static void initialize_about_dialog(void)
 	      "            Rich Gade        <rgade@users.sourceforge.net>\n"
 	      "\n"
 	      "Website:\n"
-	      "        http://www.ggzgamingzone.org/games/dots/");
+	      "        http://www.ggzgamingzone.org/gameclients/dots/");
 
 	header = g_strdup_printf(_("GGZ Gaming Zone\n"
 				   "Connect The Dots Version %s"),

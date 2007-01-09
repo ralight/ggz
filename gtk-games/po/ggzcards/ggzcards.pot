@@ -169,7 +169,7 @@ msgid ""
 "            Brent Hendricks  <bmh@users.sourceforge.net>\n"
 "\n"
 "Website:\n"
-"        http://www.ggzgamingzone.org/games/ggzcards/"
+"        http://www.ggzgamingzone.org/gameclients/ggzcards/"
 msgstr ""
 
 #: ../ggzcards/main.c:195

@@ -7,4 +7,4 @@ ProtocolEngine = @CHESS_PROTOCOL_ENGINE@
 ProtocolVersion = @CHESS_PROTOCOL_VERSION@
 CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.chess @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
-Homepage = http://www.ggzgamingzone.org/games/chess/
+Homepage = http://www.ggzgamingzone.org/gameclients/chess/

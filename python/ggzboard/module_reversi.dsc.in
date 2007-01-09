@@ -7,4 +7,4 @@ ProtocolEngine = Reversi
 ProtocolVersion = 4
 CommandLine = @prefix@/bin/ggzboard --ggz --game reversi
 Frontend = sdl
-Homepage = http://www.ggzgamingzone.org/games/reversi/
+Homepage = http://www.ggzgamingzone.org/gameclients/ggzboard/

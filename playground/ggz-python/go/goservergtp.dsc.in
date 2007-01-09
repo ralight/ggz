@@ -1,7 +1,7 @@
 [GameInfo]
 Author = Josef Spillner
 Description = GNU Go wrapper
-Homepage = http://www.ggzgamingzone.org/games/gnugo/
+Homepage = http://www.ggzgamingzone.org/gameservers/gnugo/
 Name = GNU Go GTP
 Version = 0.1
 

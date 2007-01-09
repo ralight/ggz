@@ -43,7 +43,7 @@ msgstr ""
 
 #: ../chinese-checkers/main.c:118
 msgid ""
-"Visit us at http://www.ggzgamingzone.org/games/chinese-checkers/\n"
+"Visit us at http://www.ggzgamingzone.org/gameclients/chinese-checkers/\n"
 "\n"
 "Copyright (C) 2000, 2001 Richard Gade and Brent Hendricks \n"
 msgstr ""

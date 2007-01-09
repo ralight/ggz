@@ -1,9 +1,9 @@
-# $Id: connectx.dsc 8498 2006-08-08 09:02:27Z josef $
+# $Id: connectx.dsc 8880 2007-01-09 17:22:14Z josef $
 
 [GameInfo]
 Author = Roger Light
 Description = Place X tiles in a row.
-Homepage = http://wggz.sf.net
+Homepage = http://www.ggzgamingzone.org/gameservers/connectx/
 Name = ConnectX
 Version = 0.0.1
 

@@ -4,7 +4,7 @@
 // Connect the Dots game for KDE, using the Dots classes
 // Copyright (C) 2001 - 2004 Josef Spillner
 // josef@ggzgamingzone.org
-// http://www.ggzgamingzone.org/games/kdots/
+// http://www.ggzgamingzone.org/gameclients/kdots/
 //
 ///////////////////////////////////////////////////////////////
 

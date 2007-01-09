@@ -3,7 +3,7 @@
 [GameInfo]
 Author = Jason Short
 Description = GGZ Cards game module for Suaro
-Homepage = http://www.ggzgamingzone.org/games/ggzcards/
+Homepage = http://www.ggzgamingzone.org/gameservers/ggzcards/
 Name = GGZCards-Suaro
 Version = @GGZCARDS_VERSION@
 

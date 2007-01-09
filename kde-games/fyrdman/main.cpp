@@ -24,7 +24,7 @@ int main(int argc, char **argv)
 		KAboutData::License_GPL,
 		I18N_NOOP("Copyright (C) 2002, 2003 Josef Spillner"),
 		I18N_NOOP("This game is part of the GGZ Gaming Zone."),
-		"http://www.ggzgamingzone.org/games/fyrdman/",
+		"http://www.ggzgamingzone.org/gameclients/fyrdman/",
 		"josef@ggzgamingzone.org");
 
 	data.addAuthor("Josef Spillner", I18N_NOOP("Initial developer"), "josef@ggzgamingzone.org");

@@ -23,11 +23,11 @@ msgstr "Schaue dem Spiel zu..."
 msgid ""
 "Copyright (C) 2000 by Brent Hendricks\n"
 "\n"
-"Website: http://www.ggzgamingzone.org/games/tictactoe/"
+"Website: http://www.ggzgamingzone.org/gameclients/tictactoe/"
 msgstr ""
 "Copyright (C) 2000 by Brent Hendricks\n"
 "\n"
-"Webseite: http://www.ggzgamingzone.org/games/tictactoe/"
+"Webseite: http://www.ggzgamingzone.org/gameclients/tictactoe/"
 
 #: ../../tictactoe/main.c:90
 #, c-format

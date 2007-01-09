@@ -63,7 +63,7 @@ void DlgAbout::paintEvent(QPaintEvent *e)
 	p.setFont(QFont("arial", 10));
 	p.drawText(15, 90, i18n("Try to cross the water the most efficient way!"));
 	p.drawText(15, 105, i18n("This game is part of the GGZ Gaming Zone."));
-	p.drawText(15, 120, "http://www.ggzgamingzone.org/games/krosswater/");
+	p.drawText(15, 120, "http://www.ggzgamingzone.org/gameclients/krosswater/");
 	p.drawText(15, 140, "Copyright (C) 2001, 2002 Josef Spillner");
 	p.drawText(15, 155, "josef@ggzgamingzone.org");
 	p.drawText(15, 170, "The MindX Open Source Project");

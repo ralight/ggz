@@ -8,4 +8,4 @@ ProtocolEngine = Hnefatafl
 ProtocolVersion = 1
 CommandLine = @prefix@/bin/ggzboard --ggz --game hnefatafl
 Frontend = sdl
-Homepage = http://www.ggzgamingzone.org/games/hnefatafl/
+Homepage = http://www.ggzgamingzone.org/gameclients/ggzboard/

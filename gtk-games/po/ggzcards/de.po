@@ -172,7 +172,7 @@ msgid ""
 "            Brent Hendricks  <bmh@users.sourceforge.net>\n"
 "\n"
 "Website:\n"
-"        http://www.ggzgamingzone.org/games/ggzcards/"
+"        http://www.ggzgamingzone.org/gameclients/ggzcards/"
 msgstr ""
 "Autoren: \n"
 "        Gtk+ Client:\n"
@@ -193,7 +193,7 @@ msgstr ""
 "            Brent Hendricks  <bmh@users.sourceforge.net>\n"
 "\n"
 "Webseite:\n"
-"        http://www.ggzgamingzone.org/games/ggzcards/"
+"        http://www.ggzgamingzone.org/gameclients/ggzcards/"
 
 #: ../ggzcards/main.c:195
 #, c-format

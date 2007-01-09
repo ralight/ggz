@@ -7,4 +7,5 @@ ProtocolEngine = GMP
 ProtocolVersion = 1
 CommandLine = @prefix@/bin/ggzboard --ggz --game go
 Frontend = sdl
-Homepage = http://www.ggzgamingzone.org/games/go/
+Homepage = http://www.ggzgamingzone.org/gameclients/ggzboard/
+

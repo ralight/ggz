@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 		KAboutData::License_GPL,
 		"Copyright (C) 2002, 2003 Josef Spillner",
 		QString::null,
-		"http://www.ggzgamingzone.org/games/keepalive/",
+		"http://www.ggzgamingzone.org/gameclients/keepalive/",
 		"josef@ggzgamingzone.org");
 	about->addAuthor("Josef Spillner", I18N_NOOP("Development"), "josef@ggzgamingzone.org", "http://mindx.dyndns.org");
 

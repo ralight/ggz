@@ -5,7 +5,7 @@
 // Copyright (C) 2001, 2002 Josef Spillner
 // dr_maux@users.sourceforge.net
 // The MindX Open Source Project
-// http://mindx.sourceforge.net/games/kdots/
+// http://mindx.sourceforge.net/gameclients/kdots/
 //
 ///////////////////////////////////////////////////////////////
 
@@ -71,7 +71,7 @@ void KDotsAbout::mousePressEvent(QMouseEvent *e)
 
 	if(m_highlight)
 	{
-		kapp->invokeBrowser("http://www.ggzgamingzone.org/games/kdots/");
+		kapp->invokeBrowser("http://www.ggzgamingzone.org/gameclients/kdots/");
 	}
 }
 
@@ -119,7 +119,7 @@ void KDotsAbout::paintEvent(QPaintEvent *e)
 		pen = p.pen();
 		p.setPen(QColor(255, 0, 0));
 	}
-	p.drawText(20, 160, measure("http://www.ggzgamingzone.org/games/kdots/"));
+	p.drawText(20, 160, measure("http://www.ggzgamingzone.org/gameclients/kdots/"));
 	if(m_highlight) p.setPen(pen);
 	p.drawText(20, 200, measure(i18n("Thanks to www.drachenburg.de")));
 	p.drawText(20, 220, measure(i18n("for their dragon images!")));

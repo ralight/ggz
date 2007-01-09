@@ -8,4 +8,5 @@ ProtocolEngine = Checkers
 ProtocolVersion = 1
 CommandLine = @prefix@/bin/ggzboard --ggz --game checkers
 Frontend = sdl
-Homepage = http://www.ggzgamingzone.org/games/checkers/
+Homepage = http://www.ggzgamingzone.org/gameclients/ggzboard/
+

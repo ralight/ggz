@@ -2,7 +2,7 @@
 [GameInfo]
 Author = Jason Short, Brent Hendricks
 Description = GGZ game module for trick-taking card games
-Homepage = http://www.ggzgamingzone.org/games/ggzcards/
+Homepage = http://www.ggzgamingzone.org/gameservers/ggzcards/
 Name = GGZCards-Spades
 Version = @GGZCARDS_VERSION@
 

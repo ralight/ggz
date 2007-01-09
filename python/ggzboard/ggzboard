@@ -523,7 +523,7 @@ class GGZBoard:
 				text.append(_("Each of the games provides an in-game helpscreen."))
 				text.append("")
 				text.append(_("More information can be found on the GGZBoard homepage:"))
-				text.append(_("http://www.ggzgamingzone.org/games/ggzboard/"))
+				text.append(_("http://www.ggzgamingzone.org/gameclients/ggzboard/"))
 				i = 0
 				for line in text:
 					img = ui.smallfont.render(line, 1, (255, 200, 0))

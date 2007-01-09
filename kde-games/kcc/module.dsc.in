@@ -3,7 +3,7 @@
 Author = Josef Spillner
 CommandLine = @ggzexecmoddir@/kcc --ggz --icon @prefix@/share/icons/hicolor/32x32/apps/kcc.png
 Frontend = kde
-Homepage = http://www.ggzgamingzone.org/games/kcc/
+Homepage = http://www.ggzgamingzone.org/gameclients/kcc/
 Name = KCC
 ProtocolEngine = CCheckers
 ProtocolVersion = 3

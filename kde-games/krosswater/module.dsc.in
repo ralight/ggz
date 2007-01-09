@@ -3,7 +3,7 @@
 Author = Josef Spillner
 CommandLine = @ggzexecmoddir@/krosswater_client --ggz --icon @prefix@/share/icons/hicolor/32x32/apps/krosswater.png
 Frontend = kde
-Homepage = http://www.ggzgamingzone.org/games/krosswater/
+Homepage = http://www.ggzgamingzone.org/gameclients/krosswater/
 Name = Krosswater
 ProtocolEngine = Krosswater
 ProtocolVersion = 3

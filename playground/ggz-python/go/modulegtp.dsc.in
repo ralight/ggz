@@ -2,7 +2,7 @@
 Author = Josef Spillner
 CommandLine = @prefix@/bin/vai --ggz
 Frontend = sdl
-Homepage = http://www.ggzgamingzone.org/games/vai/
+Homepage = http://www.ggzgamingzone.org/gameclients/vai/
 Name = Vai
 ProtocolEngine = GTP
 ProtocolVersion = 2

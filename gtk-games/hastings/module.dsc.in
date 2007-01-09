@@ -3,7 +3,7 @@
 Author = Josef Spillner
 CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.hastings @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
-Homepage = http://www.ggzgamingzone.org/games/hastings/
+Homepage = http://www.ggzgamingzone.org/gameclients/hastings/
 Name = Hastings
 ProtocolEngine = @HASTINGS_PROTOCOL_ENGINE@
 ProtocolVersion = @HASTINGS_PROTOCOL_VERSION@

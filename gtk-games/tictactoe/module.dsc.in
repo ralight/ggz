@@ -6,7 +6,7 @@ Author = Brent Hendricks
 # CommandLine path is figured relative to GameDir unless starting with /
 CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.ttt @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
-Homepage = http://www.ggzgamingzone.org/games/tictactoe/
+Homepage = http://www.ggzgamingzone.org/gameclients/tictactoe/
 ProtocolEngine = TicTacToe
 ProtocolVersion = 5
 Version = 0.0.5

@@ -3,7 +3,7 @@
 Author = Rich Gade
 CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.dots @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
-Homepage = http://www.ggzgamingzone.org/games/dots/
+Homepage = http://www.ggzgamingzone.org/gameclients/dots/
 Name = Dots
 ProtocolEngine = @DOTS_PROTOCOL_ENGINE@
 ProtocolVersion = @DOTS_PROTOCOL_VERSION@

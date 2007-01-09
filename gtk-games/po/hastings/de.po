@@ -37,7 +37,7 @@ msgid ""
 "            Josef Spillner   <josef@ggzgamingzone.org>\n"
 "\n"
 "Website:\n"
-"        http://www.ggzgamingzone.org/games/hastings/"
+"        http://www.ggzgamingzone.org/gameclients/hastings/"
 msgstr ""
 "Autoren:\n"
 "        Gtk+ Client:\n"
@@ -47,7 +47,7 @@ msgstr ""
 "            Josef Spillner        <dr_maux@users.sourceforge.net>\n"
 "\n"
 "Webseite:\n"
-"        http://www.ggzgamingzone.org/games/hastings/"
+"        http://www.ggzgamingzone.org/gameclients/hastings/"
 
 #: ../hastings/main.c:140
 #, c-format

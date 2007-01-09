@@ -1,7 +1,7 @@
 [GameInfo]
 Author = Josef Spillner
 Description = Arimaa Server
-Homepage = http://www.ggzgamingzone.org/games/arimaa/
+Homepage = http://www.ggzgamingzone.org/gameservers/arimaa/
 Name = Arimaa
 Version = 0.0.1
 
