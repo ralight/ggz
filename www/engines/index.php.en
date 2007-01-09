@@ -55,6 +55,8 @@ The following game engines are currently playable on GGZ:
 <a href="/gameclients/guruttt/">Guru-TTT (Grubby)</a><br/>
 <img src="/pics/icons/game_console.png">
 <a href="/gameclients/tttxt/">TTTXT (Console)</a><br/>
+<img src="/pics/icons/game_java.png">
+<a href="/gameclients/ggzjava-ttt/">GGZ-Java TTT (Java)</a><br/>
 </td>
 <td>
 <a href="/gameservers/tictactoe/">TicTacToe server</a><br/>

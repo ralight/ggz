@@ -317,6 +317,13 @@ the appropriate <a href="/packages/">package</a> page.
 <a href="/engines/sueca/">Sueca</a><br/>
 <a href="/engines/whist/">Whist</a><br/>
 </td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_java.png">
+<a href="/gameclients/ggzjava-ttt/">GGZJava-TTT</a>
+</td><td>
+<a href="/engines/tictactoe/">TicTacToe</a><br/>
+</td></tr>
 </table>
 
 <br/>
