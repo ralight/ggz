@@ -9,7 +9,8 @@ prefix = /usr/local
 all: compile
 
 compile:
-	ant -Dsvnant.unspec=true application-jar
+	ant -Dsvnant.unspec=true jar
+	cp ggz-java-unspec.jar ggz-java-client.jar
 
 makerun:
 	cd src && javac */*/*.java */*/*/*.java
@@ -17,7 +18,7 @@ makerun:
 
 install:
 	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggz-java
-	cp ggz-java-client*.jar $(DESTDIR)$(prefix)/share/ggz/ggz-java/ggz-java-client.jar
+	cp ggz-java-client*.jar $(DESTDIR)$(prefix)/share/ggz/ggz-java/ggz-java-unspec.jar
 	mkdir -p $(DESTDIR)$(prefix)/bin
 	cp integration/ggz-java $(DESTDIR)$(prefix)/bin
 	mkdir -p $(DESTDIR)$(prefix)/share/man/man6
