@@ -7,11 +7,15 @@
 #ifndef KTICTACTUX_PROTO_H
 #define KTICTACTUX_PROTO_H
 
+#include <qobject.h>
+
 // Forward declarations
 namespace KGGZMod
 {
 	class Module;
 };
+
+class KGGZPacket;
 
 // Generic TicTacToe client protocol handler
 class KTicTacTuxProto
@@ -70,14 +74,14 @@ class KTicTacTuxProto
 		};
 
 		// A winner, if any
-		char winner;
+		Q_INT8 winner;
 		// Holds a move
 		int move;
 
 		// Both seats
 		int seats[2];
 		// Both names
-		char names[2][17];
+		char *names[2];
 		// Own seat number sent by game server
 		int seatnum;
 
@@ -86,7 +90,7 @@ class KTicTacTuxProto
 		// The current game state
 		States state;
 		// The player who is on
-		char turn;
+		Q_INT8 turn;
 
 		// Statistics
 		bool stats_record;
@@ -100,8 +104,6 @@ class KTicTacTuxProto
 
 		// Read opcode
 		int getOp();
-		// Read packet size, if any
-		int getPacksize();
 		// Get the seats
 		int getSeat();
 		// Get the player names
@@ -117,8 +119,6 @@ class KTicTacTuxProto
 		// Get statistics
 		void getStatistics();
 
-		// Send packet size, if any
-		int sendPacksize(int packsize);
 		// Send decision on a new game
 		int sendOptions();
 		// Send out own move
@@ -128,8 +128,8 @@ class KTicTacTuxProto
 
 		// GGZ game module object
 		KGGZMod::Module *mod;
-		// Socket to game server
-		int fd;
+		// GGZ packet reader
+		KGGZPacket *packet;
 
 		// Seat number
 		int num();

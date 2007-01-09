@@ -58,8 +58,8 @@ class KTicTacTux : public QWidget
 	public slots:
 		// Evaluate user input
 		void slotSelected(QWidget *widget);
-		// Network input from GGZ
-		void slotNetwork(int fd);
+		// Network input (quantized packets) from GGZ
+		void slotPacket();
 		// Network error
 		void slotError();
 

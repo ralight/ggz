@@ -12,6 +12,7 @@
 
 // GGZ-KDE-Games includes
 #include <kggzseatsdialog.h>
+#include <kggzpacket.h>
 
 // KDE includes
 #include <klocale.h>
@@ -361,8 +362,11 @@ void KTicTacTux::setOpponent(int type)
 	{
 		emit signalScore(i18n("Network game"));
 		proto->mod = new KGGZMod::Module("ktictactux");
+		proto->packet = new KGGZPacket();
+
+		connect(proto->packet, SIGNAL(signalPacket()), SLOT(slotPacket()));
 		connect(proto->mod, SIGNAL(signalError()), SLOT(slotError()));
-		connect(proto->mod, SIGNAL(signalNetwork(int)), SLOT(slotNetwork(int)));
+		connect(proto->mod, SIGNAL(signalNetwork(int)), proto->packet, SLOT(slotNetwork(int)));
 	}
 	emit signalStatus(i18n("Waiting for opponent!"));
 }
@@ -400,18 +404,14 @@ void KTicTacTux::slotError()
 }
 
 // Network data
-void KTicTacTux::slotNetwork(int fd)
+void KTicTacTux::slotPacket()
 {
-	int packsize, op;
+	int op;
 
-	proto->fd = fd;
+	kdDebug() << "Network data arriving from packet reader" << endl;
 
-	kdDebug() << "Network data arriving on fd " << fd << "!" << endl;
-
-	packsize = proto->getPacksize();
 	op = proto->getOp();
 
-	kdDebug() << "Packsize is " << packsize << endl;
 	kdDebug() << "Opcode is " << op << endl;
 
 	switch(op)

@@ -11,6 +11,7 @@
 #include <kggzmod/module.h>
 #include <kggzmod/player.h>
 #include <kggzmod/statistics.h>
+#include <kggzpacket.h>
 
 // GGZ includes
 #include <ggz.h>
@@ -19,15 +20,12 @@
 // System includes
 #include <stdio.h>
 
-// Use DIO packets as of protocol five
-#define USE_DIO
-
 // Empty constructor
 KTicTacTuxProto::KTicTacTuxProto()
 {
 	seatnum = -1;
-	names[0][0] = 0;
-	names[1][0] = 0;
+	names[0] = NULL;
+	names[1] = NULL;
 
 	stats_record = false;
 	stats_wins = -1;
@@ -36,12 +34,13 @@ KTicTacTuxProto::KTicTacTuxProto()
 	stats_forfeits = -1;
 
 	mod = NULL;
-	fd = -1;
+	packet = NULL;
 }
 
 // Even more empty destructor
 KTicTacTuxProto::~KTicTacTuxProto()
 {
+	delete packet;
 	delete mod;
 }
 
@@ -60,34 +59,12 @@ void KTicTacTuxProto::init()
 	turn = none;
 }
 
-// Get packet size (2 bytes for DIO)
-int KTicTacTuxProto::getPacksize()
-{
-#ifdef USE_DIO
-	char packhigh, packlow;
-	int packsize;
-	int ret;
-
-	ret = ggz_read_char(fd, &packhigh);
-	if(ret == -1) return -1;
-	ret = ggz_read_char(fd, &packlow);
-	if(ret == -1) return -1;
-
-	packsize = packhigh * 256 + packlow;
-
-	return packsize;
-#else
-	return -1;
-#endif
-}
-
 // Get opcode
 int KTicTacTuxProto::getOp()
 {
-	int op, ret;
+	int op;
 
-	ret = ggz_read_int(fd, &op);
-	if(ret == -1) return -1;
+	*packet->inputstream() >> op;
 
 	return op;
 }
@@ -95,35 +72,34 @@ int KTicTacTuxProto::getOp()
 // Get one's own seat number
 int KTicTacTuxProto::getSeat()
 {
-	return ggz_read_int(fd, &seatnum);
+	*packet->inputstream() >> seatnum;
+
+	return seatnum;
 }
 
 // Receive the player names
 int KTicTacTuxProto::getPlayers()
 {
-	int ret = 0;
-
 	for(int i = 0; i < 2; i++)
 	{
-		ret |= ggz_read_int(fd, &seats[i]);
+		*packet->inputstream() >> seats[i];
 		if((seats[i] == GGZ_SEAT_PLAYER) || (seats[i] == GGZ_SEAT_BOT))
-			ret |= ggz_read_string(fd, (char*)&names[i], 17);
+			*packet->inputstream() >> names[i];
 	}
 
-	return ret;
+	return 1;
 }
 
 // Ask whether move was ok
 int KTicTacTuxProto::getMoveStatus()
 {
-	char status;
-	int ret;
+	Q_INT8 status;
 
-	ret = ggz_read_char(fd, &status);
+	*packet->inputstream() >> status;
 
 	if(status == 0) board[move % 3][move / 3] = player;
 
-	return ret;
+	return 1;
 }
 
 // Get opponent's move
@@ -131,10 +107,9 @@ int KTicTacTuxProto::getOpponentMove()
 {
 	int move;
 	int nummove;
-	int ret = 0;
 
-	ret |= ggz_read_int(fd, &nummove);
-	ret |= ggz_read_int(fd, &move);
+	*packet->inputstream() >> nummove;
+	*packet->inputstream() >> move;
 
 	if(num() < 0)
 	{
@@ -143,31 +118,34 @@ int KTicTacTuxProto::getOpponentMove()
 	}
 	else board[move % 3][move / 3] = opponent;
 
-	return ret;
+	return 1;
 }
 
 // Oooops... volunteers :-)
 int KTicTacTuxProto::getSync()
 {
-	char space;
-	int ret = 0;
+	Q_INT8 space;
 
-	ret |= ggz_read_char(fd, &turn);
+	*packet->inputstream() >> turn;
+
 	for(int i = 0; i < 9; i++)
 	{
-		ret |= ggz_read_char(fd, &space);
+		*packet->inputstream() >> space;
+
 		if(space == 0) board[i % 3][i / 3] = opponent;
 		else if(space == 1) board[i % 3][i / 3] = player;
 		else board[i % 3][i / 3] = none;
 	}
 
-	return ret;
+	return 1;
 }
 
 // Read the winner over the network
 int KTicTacTuxProto::getGameOver()
 {
-	return ggz_read_char(fd, &winner);
+	*packet->inputstream() >> winner;
+
+	return winner;
 }
 
 // Read statistics
@@ -188,50 +166,29 @@ void KTicTacTuxProto::getStatistics()
 	}
 }
 
-// Send the packsize for a packet
-int KTicTacTuxProto::sendPacksize(int packsize)
-{
-#ifdef USE_DIO
-	char packhigh, packlow;
-	int ret = 0;
-
-	packsize += 2;
-
-	packlow = packsize & 0xFF;
-	packhigh = (packsize >> 8) & 0xFF;
-
-	ret |= ggz_write_char(fd, packhigh);
-	ret |= ggz_write_char(fd, packlow);
-
-	return ret;
-#else
-	return -1;
-#endif
-}
-
 // Send the options
 int KTicTacTuxProto::sendOptions()
 {
-	sendPacksize(4);
-	return ggz_write_int(fd, 0);
+	*packet->outputstream() << 0;
+	packet->flush();
+
+	return 1;
 }
 
 // Send the own move, to be approved
 int KTicTacTuxProto::sendMyMove()
 {
-	int ret = 0;
+	*packet->outputstream() << sndmove;
+	*packet->outputstream() << move;
+	packet->flush();
 
-	sendPacksize(8);
-	ret |= ggz_write_int(fd, sndmove);
-	ret |= ggz_write_int(fd, move);
-
-	return ret;
+	return 1;
 }
 
 // Synchronize game
 void KTicTacTuxProto::sendSync()
 {
-	sendPacksize(4);
-	ggz_write_int(fd, reqsync);
+	*packet->outputstream() << reqsync;
+	packet->flush();
 }
 
