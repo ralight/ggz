@@ -1,0 +1,72 @@
+Index: docs/spec/dtd/ggz_client.dtd
+===================================================================
+--- docs/spec/dtd/ggz_client.dtd	(revision 8872)
++++ docs/spec/dtd/ggz_client.dtd	(working copy)
+@@ -1,8 +1,12 @@
+ <!-- ggz_client.dtd -->
+-<!ELEMENT SESSION ((LANGUAGE*, LOGIN?, CHANNEL*, MOTD*, LIST*, PONG*, CHAT*, UPDATE*, JOIN*, LEAVE*, TLS_START*)*)>
++<!ELEMENT SESSION ((LANGUAGE*, CLIENT?, LOGIN?, CHANNEL*, MOTD*, LIST*, PONG*, CHAT*, UPDATE*, JOIN*, LEAVE*, TLS_START*)*)>
+ 
+ <!ELEMENT LANGUAGE (#PCDATA)>
+ 
++<!ELEMENT CLIENT EMPTY>
++<!ATTLIST CLIENT	NAME	CDATA #REQUIRED
++					VERSION	CDATA #REQUIRED>
++
+ <!ELEMENT LOGIN (NAME, PASSWORD?)>
+ <!ATTLIST LOGIN		TYPE		( normal | first | guest ) "guest">
+ 
+Index: ggzd/ggzd/net.c
+===================================================================
+--- ggzd/ggzd/net.c	(revision 8873)
++++ ggzd/ggzd/net.c	(working copy)
+@@ -118,6 +118,7 @@
+ 
+ /* Handler functions for various tags */
+ static void _net_handle_session(GGZNetIO *net, GGZXMLElement *session);
++static void _net_handle_client(GGZNetIO *net, GGZXMLElement *client);
+ static void _net_handle_channel(GGZNetIO *net, GGZXMLElement *channel);
+ static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login);
+ static void _net_handle_name(GGZNetIO *net, GGZXMLElement *element);
+@@ -1186,6 +1187,7 @@
+ 	} tags[] = {
+ #define TAG(t) {#t, _net_handle_ ## t}
+ 		TAG(session),
++		TAG(client),
+ 		TAG(login),
+ 		TAG(channel),
+ 		TAG(name),
+@@ -1232,7 +1234,33 @@
+ 	net_send_logout(net, E_OK);
+ }
+ 
++/* Functions for <CLIENT> tag */
++static void _net_handle_client(GGZNetIO *net, GGZXMLElement *element)
++{
++	char unknown[8] = "unknown";
++	const char *name, *version;
++	const char *logname, *logversion;
+ 
++	if(!element) return;
++
++	name = ggz_xmlelement_get_attr(element, "NAME");
++	if(name){
++		logname = name;
++	}else{
++		logname = unknown;
++	}
++
++	version = ggz_xmlelement_get_attr(element, "VERSION");
++	if(version){
++		logversion = version;
++	}else{
++		logversion = unknown;
++	}
++
++	log_msg(GGZ_LOG_CONNECTION_INFO, "CLIENT %s version %s",
++			logname, logversion);
++}
++
+ /* Functions for <CHANNEL> tag */
+ static void _net_handle_channel(GGZNetIO *net, GGZXMLElement *element)
+ {

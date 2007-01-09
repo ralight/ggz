@@ -12,6 +12,9 @@ Game-side channels (for running GGZ in windows):
 
 GGZD Mysql phpbb - change the column names to match those used in phpbb
  mysql_phpbb.diff
+
+Log client versions in ggzd
+ client_version.diff
  
 
 Old patches (just to keep it in memory)
