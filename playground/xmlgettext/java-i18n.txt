@@ -1,0 +1,7 @@
+In order to facilitate translation merging and re-use of existing i18n
+tools, do the following for each language:
+
+./prop2potrev.pl orig-props translated-props > XXX.de
+... work on XXX.de ...
+./pot2proprev.pl XXX.de > translated-props
+

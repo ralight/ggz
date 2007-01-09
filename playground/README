@@ -109,6 +109,7 @@
 
 	XMLGettext:
 		An xgettext variant to extract textual information from xml files.
+		Also contains Java properties <-> gettext conversion routines.
 
 	-------------------------------------------------------------------------
 	Graveyard:
