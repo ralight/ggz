@@ -17,8 +17,8 @@
  */
 package ggz.cards.common;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
+import ggz.common.dio.DIOOutputStream;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -32,20 +32,10 @@ import java.io.OutputStream;
  * @author Helg.Bredow
  * 
  */
-public class GGZCardOutputStream extends DataOutputStream {
-    private ByteArrayOutputStream buffer;
-
-    private DataOutputStream output;
+public class GGZCardOutputStream extends DIOOutputStream {
 
     public GGZCardOutputStream(OutputStream os) {
-        super(new ByteArrayOutputStream());
-        // The actual stream that will eventually be writtin to when the flush()
-        // method is called.
-        output = new DataOutputStream(os);
-        // Cast our decorated stream back to what we know it is for convenience.
-        // We have to do it this way because we can't create the buffer before
-        // calling the super constructor.
-        buffer = (ByteArrayOutputStream) out;
+        super(os);
     }
 
     public void write_card(Card card) throws IOException {
@@ -104,36 +94,6 @@ public class GGZCardOutputStream extends DataOutputStream {
             throw new IllegalArgumentException("seat must be >= 0 and < 127");
         }
         write(seat);
-    }
-
-    /**
-     * Writes a char string to the given fd preceeded by its size. The string is
-     * encoded using UTF-8.
-     */
-    public void write_string(String message) throws IOException {
-        byte[] bytes = message.getBytes("UTF-8");
-        int size = bytes.length + 1;
-
-        writeInt(size);
-        write(bytes);
-        // I think we need to write the null terminator, if not then adjust size
-        // above.
-        write(0);
-    }
-
-    /**
-     * Writes out the bytes that we have accumulated in previous write
-     * operations, preceded by a packet header that specifies the size of the
-     * packet.
-     */
-    public void end_packet() throws IOException {
-        // Write the size of the packet that is being sent, this size must
-        // include the two bytes for this header.
-        output.writeShort(buffer.size() + 2);
-        buffer.writeTo(output);
-        output.flush();
-        // Get ready for the next packet.
-        buffer.reset();
     }
 
     private static byte encode_suit(Suit suit) {

@@ -51,6 +51,10 @@ public class Module {
                 "ggz.cards.CardGamePanel", "/ggz/ui/images/hearts.gif"));
         add(new Module("GGZCards-Euchre", "GGZCards", "17",
                 "ggz.cards.CardGamePanel", "/ggz/ui/images/euchre.gif"));
+        
+        // Tic Tac Toe
+        add(new Module("TicTacToe", "TicTacToe", "5",
+                "ggz.tictactoe.TicTacToePanel", "/ggz/ui/images/tic_tac_toe.gif"));
     }
 
     private static void add(Module module) {

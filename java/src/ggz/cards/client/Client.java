@@ -190,8 +190,8 @@ public class Client {
     }
 
     private void handle_text_message() throws IOException {
-        String mark = this.fd_in.read_string();
-        String message = this.fd_in.read_string();
+        String mark = this.fd_in.readString();
+        String message = this.fd_in.readString();
         if ("Scores".equals(mark)) {
             this.scores = message;
         } else if ("Options".equals(mark)) {
@@ -203,7 +203,7 @@ public class Client {
     private void handle_cardlist_message() throws IOException {
         Card[][] cardlist = new Card[this.num_players][];
 
-        String mark = this.fd_in.read_string();
+        String mark = this.fd_in.readString();
 
         for (int p = 0; p < this.num_players; p++) {
             int num_cards = this.fd_in.readInt();
@@ -231,7 +231,7 @@ public class Client {
      */
     private void handle_player_message() throws IOException {
         int player = this.fd_in.read_seat();
-        String message = this.fd_in.read_string();
+        String message = this.fd_in.readString();
 
         game.set_player_message(player, message);
     }
@@ -259,7 +259,7 @@ public class Client {
     }
 
     private void handle_msg_newgame() throws IOException {
-        this.gametype = fd_in.read_string();
+        this.gametype = fd_in.readString();
         CardSetType cardset_type = fd_in.read_cardset_type();
 
         /* HACK: reset hand number to zero. */
@@ -349,7 +349,7 @@ public class Client {
             String old_name, new_name;
 
             type = fd_in.readInt();
-            new_name = fd_in.read_string();
+            new_name = fd_in.readString();
             ggzseat = fd_in.readInt();
             new_type = SeatType.valueOf(type);
             team = fd_in.readInt();
@@ -535,8 +535,8 @@ public class Client {
         /* Read in all of the bidding choices. */
         for (int i = 0; i < possible_bids; i++) {
             bid_choices[i] = fd_in.read_bid();
-            bid_texts[i] = fd_in.read_string();
-            bid_descs[i] = fd_in.read_string();
+            bid_texts[i] = fd_in.readString();
+            bid_descs[i] = fd_in.readString();
         }
 
         /* Get the bid */
@@ -579,7 +579,7 @@ public class Client {
     /* A badplay message indicates an invalid play, and requests a new one. */
     private void handle_msg_badplay() throws IOException {
         /* Read the error message for the bad play. */
-        String err_msg = fd_in.read_string();
+        String err_msg = fd_in.readString();
 
         /* Get a new play. */
         set_game_state(STATE_PLAY);
@@ -770,13 +770,13 @@ public class Client {
 
         /* Read all the options, their defaults, and the possible choices. */
         for (int i = 0; i < option_cnt; i++) {
-            types[i] = fd_in.read_string();
-            descs[i] = fd_in.read_string();
+            types[i] = fd_in.readString();
+            descs[i] = fd_in.readString();
             choice_cnt[i] = fd_in.readInt();
             defaults[i] = fd_in.readInt();
             option_choices[i] = new String[choice_cnt[i]];
             for (int j = 0; j < choice_cnt[i]; j++) {
-                option_choices[i][j] = fd_in.read_string();
+                option_choices[i][j] = fd_in.readString();
             }
         }
 
@@ -796,21 +796,21 @@ public class Client {
         log.fine("Sending language " + lang + " to the server.");
 
         fd_out.write_opcode(ClientOpCode.MSG_LANGUAGE);
-        fd_out.write_string(lang);
-        fd_out.end_packet();
+        fd_out.writeString(lang);
+        fd_out.endPacket();
     }
 
     /* A newgame message tells the server to start a new game. */
     public void send_newgame() throws IOException {
         fd_out.write_opcode(ClientOpCode.RSP_NEWGAME);
-        fd_out.end_packet();
+        fd_out.endPacket();
     }
 
     /* A bid message tells the server our choice for a bid. */
     public void send_bid(int bid) throws IOException {
         fd_out.write_opcode(ClientOpCode.RSP_BID);
         fd_out.writeInt(bid);
-        fd_out.end_packet();
+        fd_out.endPacket();
     }
 
     /* An options message tells the server our choices for options. */
@@ -821,21 +821,21 @@ public class Client {
         for (int i = 0; i < option_cnt; i++) {
             fd_out.writeInt(option_indexes[i]);
         }
-        fd_out.end_packet();
+        fd_out.endPacket();
     }
 
     /* A play message tells the server our choice for a play. */
     public void send_play(Card card) throws IOException {
         fd_out.write_opcode(ClientOpCode.RSP_PLAY);
         fd_out.write_card(card);
-        fd_out.end_packet();
+        fd_out.endPacket();
     }
 
     /* A sync request asks for a sync from the server. */
     private void send_sync_request() throws IOException {
         log.fine("Sending sync request to server.");
         fd_out.write_opcode(ClientOpCode.REQ_SYNC);
-        fd_out.end_packet();
+        fd_out.endPacket();
     }
 
     /* This function handles any input from the server. */
@@ -843,7 +843,7 @@ public class Client {
         // Skip past the packet size, we don't need it since
         // we are using blocking sockets so we just keep
         // reading until we have what we need.
-        this.fd_in.start_packet();
+        this.fd_in.startPacket();
         ServerOpCode opcode = this.fd_in.read_opcode();
 
         log.fine("Received " + opcode + " opcode from the server.");
