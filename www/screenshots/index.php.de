@@ -1,9 +1,8 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td colspan="2">
-<font size="3">
 <b>GGZ Gaming Zone-Screenshots</b><br>
 <br>
 Screenshots werden hier verfügbar gemacht, um einen ersten Eindruck davon

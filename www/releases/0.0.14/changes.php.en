@@ -1,0 +1,180 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="pane">
+<tr>
+<td>
+<a href="index.php">GGZ 0.0.14 Release:</a>
+|
+<a href="release.php">Announcement</a>
+|
+Changelog
+|
+<a href="download.php">Download</a>
+|
+<a href="installation.php">Installation</a>
+|
+<a href="credits.php">Credits</a>
+|
+<a href="play.php">Go play!</a>
+</td>
+</tr>
+</table>
+
+<table class="content">
+<tr>
+<td colspan="2">
+<i>Comprehensive overview about the GGZ Gaming Zone 0.0.14 Release (Changes)</i>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+KDE Client
+</td><td bgcolor="#ffd000" valign="top">
+Zeroconf support via KDNSSD<br/>
+Player management and administration<br/>
+Better metaserver dialog<br/>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Gtk+ Client
+</td><td bgcolor="#ffd000" valign="top">
+Configuration dialog for the Gaim plugin<br/>
+Windows installer<br/>
+Player management and administration<br/>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GNOME Client
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+KDE Games
+</td><td bgcolor="#ffd000" valign="top">
+New library: kggzmod to make Qt/KDE game development easier<br/>
+New game: KConnectX, a client for the ConnectX engine<br/>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Gtk+ Games
+</td><td bgcolor="#ffd000" valign="top">
+Ability to run all games in 'embedded ggzcore' mode<br/>
+Improvements in GGZCards including non-blocking network code and table messages<br/>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+SDL Games
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GGZ server (ggzd, libggzdmod)
+</td><td bgcolor="#ffd000" valign="top">
+Publishing of game information to the GGZ metaserver<br/>
+Support for the Avahi Zeroconf library, in addition to Howl<br/>
+Completely overhauled ggzdmod++ library for game authors<br/>
+Cleaned-up ggzdmod library without the GGZ-side interface<br/>
+Support for dynamic room additions and removals in ggzd<br/>
+Support for on-the-wire player management and permission handling in ggzd<br/>
+Support for DBI database backends and hex-encoded password hashes<br/>
+Ability to start ggzd without ggzd.conf, using only default values<br/>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GGZ Base Library (libggz)
+</td><td bgcolor="#ffd000" valign="top">
+Asynchronous socket functions (dio)<br/>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GGZ Client Libs (libggzcore, libggzmod)
+</td><td bgcolor="#ffd000" valign="top">
+Support for dynamic room additions and removals, player management and permissions in ggzcore<br/>
+Desktop-aware general purpose GGZ core client wrapper ('ggz')<br/>
+Improved manual pages for tools and libraries<br/>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Game servers
+</td><td bgcolor="#ffd000" valign="top">
+XBoard/GNU Chess AI support for the Chess server<br/>
+Velena AI support for the ConnectX server<br/>
+Many new GGZCards options and improvements<br/>
+Addition of per-room command line arguments to game servers<br/>
+Savegame support for Reversi and ConnectX<br/>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Grubby
+</td><td bgcolor="#ffd000" valign="top">
+Support for PHP scripts in modembed<br/>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Text client
+</td><td bgcolor="#ffd000" valign="top">
+Support for player admin actions<br/>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Utilities
+</td><td bgcolor="#ffd000" valign="top">
+Major overhaul of the GGZ metaserver and correponding client interface library<br/>
+Improved manual pages for all utilities<br/>
+More network source code generators and XML support for GGZComm<br/>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Documentation
+</td><td bgcolor="#ffd000" valign="top">
+GGZBoard overview documentation<br/>
+API documentation for pyggzmod in doxygen style<br/>
+New metaserver introduction and protocol specification<br/>
+Extended game developer and server hosting guides<br/>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Python stuff
+</td><td bgcolor="#ffd000" valign="top">
+New GGZBoard game: Shogi<br/>
+New GGZBoard game: Sudoku<br/>
+Completely overhauled wrappers for ggz(d)mod libraries<br/>
+Pygame integration layer for ggzmod<br/>
+More standards-compliant packaging and installation<br/>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Community Web Interface
+</td><td bgcolor="#ffd000" valign="top">
+Overhauled tournament scheduler<br/>
+Some help pages<br/>
+Trigger for forum database synchronisation<br/>
+Easier system integration of the whole Community installation<br/>
+Integration of Cocodrilo engine for data downloads<br/>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GGZ for Java
+</td><td bgcolor="#ffd000" valign="top">
+Higher functionality, now covering most GGZ core client features<br/>
+Webstart facility and system integration<br/>
+Themeable and much improved user interface<br/>
+Integrated help file<br/>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<i>Goals for 0.0.15</i><br/>
+Nothing has been decided yet. Some ideas were floating around:
+<ul>
+<li>Load balancing among GGZ servers</li>
+<li>Port of KDE games and clients to KDE 4</li>
+<li>...</li>
+</ul>
+There is a Playground SVN module where very unstable development takes place.
+Every game and game-related developer is encouraged to use this module.
+<br/><br/>
+</td></tr>
+
+</table>
+
+<?php include_once("../../site/footer.php"); ?>

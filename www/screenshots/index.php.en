@@ -1,14 +1,14 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td colspan="2">
-<font size="3">
 <b>GGZ Gaming Zone Screenshots</b><br>
 <br>
 Screenshots are made available here to give a first impression of what
 GGZ is all about.
 <br><br>
+<a href="/screenshots/0.0.14/">Version 0.0.14</a><br>
 <a href="/screenshots/0.0.13/">Version 0.0.13</a><br>
 <a href="/screenshots/0.0.12/">Version 0.0.12</a><br>
 <a href="/screenshots/0.0.11/">Version 0.0.11</a><br>

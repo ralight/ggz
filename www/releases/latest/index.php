@@ -1,6 +1,6 @@
 <?php
 
-$latest = "0.0.13";
+$latest = "0.0.14";
 
 $uri = $_SERVER['REQUEST_URI'];
 

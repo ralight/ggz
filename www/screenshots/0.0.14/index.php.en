@@ -1,0 +1,49 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="content">
+<tr>
+<td colspan="2">
+
+<b>GGZ 0.0.14 Screenshots</b><br>
+
+These screenshots have been made for release 0.0.14.
+The previous ones of version 0.0.7 up to 0.0.13 are still available
+<a href="/screenshots/">here</a>.
+<br><br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="metacle.png"><img src="metacle.small.png" alt="The Metacle" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="sudoku.png"><img src="sudoku.small.png" alt="GGZBoard Sudoku" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Aggregation of meta servers is the task of the Metacle
+</td><td bgcolor="#ffffa0">
+GGZBoard fans can now enjoy Sudoku puzzles
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="ggz-java-tables.png"><img src="ggz-java-tables.small.png" alt="GGZ Java" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="ggz-gtk-win32.png"><img src="ggz-gtk-win32.small.png" alt="Windows port of GGZ" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+GGZ-Java was greatly enhanced
+</td><td bgcolor="#ffffa0">
+For the first time, GGZ-Gtk+ runs on Win32
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="spaders.png"><img src="spaders.small.png" alt="Spaders community" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href=".png"><img src=".small.png" alt="" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Spades players really like GGZ
+</td><td bgcolor="#ffffa0">
+
+</td></tr>
+</table>
+
+<?php include_once("../../site/footer.php"); ?>
