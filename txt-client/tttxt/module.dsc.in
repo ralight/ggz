@@ -1,5 +1,5 @@
-Name = TTTXT
 [ModuleInfo]
+Name = TTTXT
 Author = Josef Spillner
 CommandLine = @ggzexecmoddir@/tttxt --ggz
 Frontend = console
