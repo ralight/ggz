@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 8763 2006-12-27 10:02:33Z jdorje $
+ * $Id: netxml.c 8888 2007-01-10 02:28:31Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -59,6 +59,8 @@
 
 /* For convenience */
 #define XML_BUFFSIZE 8192
+
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 
 #define ATTR ggz_xmlelement_get_attr
 
@@ -162,8 +164,8 @@ static void _ggzcore_net_handle_room(GGZNet *, GGZXMLElement *);
 static void _ggzcore_net_handle_player(GGZNet *, GGZXMLElement *);
 static void _ggzcore_net_handle_table(GGZNet *, GGZXMLElement *);
 static void _ggzcore_net_handle_seat(GGZNet *, GGZXMLElement *);
-static void _ggzcore_net_handle_spectator_seat(GGZNet * net,
-					       GGZXMLElement * seat);
+static void _ggzcore_net_handle_spectator(GGZNet * net,
+					  GGZXMLElement * seat);
 static void _ggzcore_net_handle_chat(GGZNet *, GGZXMLElement *);
 static void _ggzcore_net_handle_info(GGZNet *, GGZXMLElement *);
 static void _ggzcore_net_handle_playerinfo(GGZNet *, GGZXMLElement *);
@@ -1044,63 +1046,50 @@ static void _ggzcore_net_dump_data(GGZNet * net, char *data, int size)
 static GGZXMLElement *_ggzcore_net_new_element(const char *tag,
 					       const char *const *attrs)
 {
-	void (*process_func) ();
+	void (*process_func) (GGZNet *net, GGZXMLElement *element) = NULL;
+	int i;
+	struct {
+		const char *tag;
+		void (*process_func)(GGZNet *net, GGZXMLElement *element);
+	} tags[] = {
+#define TAG(t) {#t, _ggzcore_net_handle_ ## t}
+	  TAG(server),
+	  TAG(options),
+	  TAG(motd),
+	  TAG(result),
+	  TAG(list),
+	  TAG(update),
+	  TAG(game),
+	  TAG(protocol),
+	  TAG(allow),
+	  TAG(about),
+	  TAG(bot),
+	  TAG(room),
+	  TAG(player),
+	  TAG(table),
+	  TAG(seat),
+	  TAG(spectator),
+	  TAG(leave),
+	  TAG(join),
+	  TAG(chat),
+	  TAG(info),
+	  TAG(playerinfo),
+	  TAG(desc),
+	  TAG(password),
+	  TAG(ping),
+	  TAG(session)
+#undef TAG
+	};
+	typedef void (*ggzxmlfunc)(void *, GGZXMLElement *);
 
-	/* FIXME: Could we do this with a table lookup? */
-	if (strcasecmp(tag, "SERVER") == 0)
-		process_func = _ggzcore_net_handle_server;
-	else if (strcasecmp(tag, "OPTIONS") == 0)
-		process_func = _ggzcore_net_handle_options;
-	else if (strcasecmp(tag, "MOTD") == 0)
-		process_func = _ggzcore_net_handle_motd;
-	else if (strcasecmp(tag, "RESULT") == 0)
-		process_func = _ggzcore_net_handle_result;
-	else if (strcasecmp(tag, "LIST") == 0)
-		process_func = _ggzcore_net_handle_list;
-	else if (strcasecmp(tag, "UPDATE") == 0)
-		process_func = _ggzcore_net_handle_update;
-	else if (strcasecmp(tag, "GAME") == 0)
-		process_func = _ggzcore_net_handle_game;
-	else if (strcasecmp(tag, "PROTOCOL") == 0)
-		process_func = _ggzcore_net_handle_protocol;
-	else if (strcasecmp(tag, "ALLOW") == 0)
-		process_func = _ggzcore_net_handle_allow;
-	else if (strcasecmp(tag, "ABOUT") == 0)
-		process_func = _ggzcore_net_handle_about;
-	else if (strcasecmp(tag, "BOT") == 0)
-		process_func = _ggzcore_net_handle_bot;
-	else if (strcasecmp(tag, "ROOM") == 0)
-		process_func = _ggzcore_net_handle_room;
-	else if (strcasecmp(tag, "PLAYER") == 0)
-		process_func = _ggzcore_net_handle_player;
-	else if (strcasecmp(tag, "TABLE") == 0)
-		process_func = _ggzcore_net_handle_table;
-	else if (strcasecmp(tag, "SEAT") == 0)
-		process_func = _ggzcore_net_handle_seat;
-	else if (strcasecmp(tag, "SPECTATOR") == 0)
-		process_func = _ggzcore_net_handle_spectator_seat;
-	else if (strcasecmp(tag, "LEAVE") == 0)
-		process_func = _ggzcore_net_handle_leave;
-	else if (strcasecmp(tag, "JOIN") == 0)
-		process_func = _ggzcore_net_handle_join;
-	else if (strcasecmp(tag, "CHAT") == 0)
-		process_func = _ggzcore_net_handle_chat;
-	else if (strcasecmp(tag, "INFO") == 0)
-		process_func = _ggzcore_net_handle_info;
-	else if (strcasecmp(tag, "PLAYERINFO") == 0)
-		process_func = _ggzcore_net_handle_playerinfo;
-	else if (strcasecmp(tag, "DESC") == 0)
-		process_func = _ggzcore_net_handle_desc;
-	else if (strcasecmp(tag, "PASSWORD") == 0)
-		process_func = _ggzcore_net_handle_password;
-	else if (strcasecmp(tag, "PING") == 0)
-		process_func = _ggzcore_net_handle_ping;
-	else if (strcasecmp(tag, "SESSION") == 0)
-		process_func = _ggzcore_net_handle_session;
-	else
-		process_func = NULL;
+	for (i = 0; i < ARRAY_SIZE(tags); i++) {
+		if (strcasecmp(tags[i].tag, tag) == 0) {
+			process_func = tags[i].process_func;
+			break;
+		}
+	}
 
-	return ggz_xmlelement_new(tag, attrs, process_func, NULL);
+	return ggz_xmlelement_new(tag, attrs, (ggzxmlfunc)process_func, NULL);
 }
 
 
@@ -2345,8 +2334,8 @@ static void _ggzcore_net_handle_seat(GGZNet * net, GGZXMLElement * element)
 }
 
 /* Functions for <SPECTATOR> tag */
-static void _ggzcore_net_handle_spectator_seat(GGZNet * net,
-					       GGZXMLElement * element)
+static void _ggzcore_net_handle_spectator(GGZNet * net,
+					  GGZXMLElement * element)
 {
 	GGZTableSeat seat_obj;
 	GGZXMLElement *parent;
