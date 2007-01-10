@@ -2565,10 +2565,11 @@
       <refsect2>
 	<title>Usage</title>
 	<para>
-	  A CHAT request is sent from the client to send a chat
-	  message. The server will respond with an appropriate
+	  An ADMIN request is sent from the client to do an administrative
+          action on a player in the current room.
+	  The server will respond with an appropriate
 	  <link linkend="rsp.result">RESULT</link> which embeds
-	  a <link linkend="rsp.chat">CHAT</link> tag.
+	  a <link linkend="rsp.chat">admin</link> tag.
 	</para>
       </refsect2>
     </refsect1>
@@ -2657,7 +2658,7 @@
 	    </listitem>
 	  </varlistentry>
 	  <varlistentry>
-	    <term><emphasis role="bold">Value</emphasis></term>
+	    <term><emphasis role="bold">VALUE</emphasis></term>
 	    <listitem>
 	      <para>
                 Whether to set or unset the permission.  Either 'true' or
@@ -2677,7 +2678,7 @@
           permission on a particular player.  The server will respond with an
           appropriate
 	  <link linkend="rsp.result">RESULT</link> which embeds
-	  a <link linkend="rsp.chat">PERMADMIN</link> tag.
+	  an <link linkend="rsp.chat">admin</link> tag.
 	</para>
       </refsect2>
     </refsect1>
