@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 8242 2006-06-22 01:53:59Z jdorje $
+ * $Id: transit.c 8887 2007-01-10 01:27:41Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -160,7 +160,7 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 		return GGZ_EVENT_OK;
 	}
 
-	if (seat->type == GGZ_SEAT_PLAYER && !spectating) {
+	if (!spectating && seat->type == GGZ_SEAT_PLAYER) {
 		int index = transit_find_required_seat(table, event->caller);
 
 		if (index >= 0) {
@@ -170,8 +170,8 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 	}
 
 	/* Try to find a seat if one isn't specified */
-	if ((seat->type == GGZ_SEAT_PLAYER || spectating)
-	    && seat->index == GGZ_SEATNUM_ANY) {
+	if (seat->index == GGZ_SEATNUM_ANY
+	    && (spectating || seat->type == GGZ_SEAT_PLAYER)) {
 		if (spectating)
 			seat->index = transit_find_available_spectator(table,
 						event->caller);
