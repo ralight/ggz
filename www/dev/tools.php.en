@@ -1,76 +1,62 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Tools used in the GGZ development process</b><br>
+<b>Tools used in the GGZ development process</b><br/>
 The GGZ build system depends on a number of tools. Many of these change
 over time, and it is often desired to keep an overview of what's going
-on.
-<br>
+on. By using the <i>ggzprep</i> tool, all the tools and dependencies for
+hacking on GGZ can be installed at once.
+<br/><br/>
 
-<table class="inner">
-<tr><td valign="top">
-
-<i>GCC (4.0)</i><br>
+<i>GCC (4.x)</i><br/>
 <a href="http://gcc.gnu.org">Website</a>,
 <a href="http://gcc.gnu.org/gcc-4.0/changes.html">Upgrading</a>
 
-</td></tr>
-<tr><td valign="top">
+<br/><br/>
 
-<i>Autoconf (2.59)</i><br>
+<i>Autoconf (2.59)</i><br/>
 <a href="http://www.gnu.org/software/autoconf/">Website</a>,
 <a href="http://www.gnu.org/software/autoconf/manual/autoconf-2.57/html_chapter/autoconf_toc.html">Manual</a> (outdated),
 <a href="http://www.gnu.org/software/autoconf/manual/autoconf-2.57/html_chapter/autoconf_3.html#SEC14">Upgrading</a>
 
-</td></tr>
-<tr><td valign="top">
+<br/><br/>
 
-<i>Automake (1.9.x)</i><br>
+<i>Automake (1.9.x)</i><br/>
 <a href="http://www.gnu.org/software/automake/">Website</a>,
 <a href="http://sources.redhat.com/automake/automake.html">Manual</a>,
 <a href="http://sources.redhat.com/cgi-bin/cvsweb.cgi/automake/NEWS?rev=1.290&content-type=text/x-cvsweb-markup&cvsroot=automake">Upgrading</a>
 
-</td></tr>
-<tr><td valign="top">
+<br/><br/>
 
-<i>Libtool (1.5.x)</i><br>
+<i>Libtool (1.5.x)</i><br/>
 <a href="http://www.gnu.org/software/libtool/">Website</a>,
 <a href="http://www.gnu.org/software/libtool/manual.html">Manual</a>
 
-</td></tr>
-<tr><td valign="top">
+<br/><br/>
 
-<i>Gettext (0.14.x)</i><br>
+<i>Gettext (0.14.x)</i><br/>
 <a href="http://www.gnu.org/software/gettext/">Website</a>,
 <a href="http://www.gnu.org/software/gettext/manual/gettext.html">Manual</a> (outdated)
 
-</td></tr>
-<tr><td valign="top">
+<br/><br/>
 
-<i>Subversion (1.2.x)</i><br>
+<i>Subversion (1.2.x)</i><br/>
 <a href="https://subversion.tigris.org/">Website</a>,
 <a href="https://subversion.red-bean.com/">Manual</a>
 
-</td></tr>
-<tr><td valign="top">
+<br/><br/>
 
-<i>Ant (1.3.6)</i><br>
+<i>Ant (1.3.6)</i><br/>
 <a href="http://ant.apache.org/">Website</a>,
 <a href="http://ant.apache.org/manual/">Manual</a>
 
-</td></tr>
-<tr><td valign="top">
+<br/><br/>
 
 <i>Some more: java compiler, jade, texinfo, texi2html etc.</i>
 
-</td></tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

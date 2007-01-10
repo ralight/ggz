@@ -1,53 +1,48 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZ Technology</b><br>
+<b>GGZ Technology</b><br/>
 Beside game development, a lot of extra sources happen to be created in a project
 such as GGZ. On this page the developer tools are presented.
 Other game projects can make use of them even when not having integrated GGZ!
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top" colspan="2">
-
-<i>Game development libraries</i><br>
+<i>Game development libraries</i><br/>
 
 Our <a href="/libraries/">libraries</a> are available in C, C++ and Python and cover
 general networking tasks, multiplayer support for other games and interfacing the
 login and player system which sits at the heart of GGZ.
-<br><br>
+<br/><br/>
 
-<i>Game frameworks</i><br>
+<i>Game frameworks</i><br/>
 
 Card games and board game development is a lot easier when using an existing framework
 to be able to concentrate on the game logic, protocol and AI players.
 GGZCards and GGZBoard are providing such a framework, respectively.
 For Java game development, GGZ-Java can integrate games of all genres.
-<br><br>
+<br/><br/>
 
-<i>Get Hot New Stuff integration</i><br>
+<i>Get Hot New Stuff integration</i><br/>
 
 Sharing levels, themes, savegames or avatars among players has never been easier.
 With client implementations for SDL and KDE, this framework allows to upload
 and download data of all kind, including ratings, a download counter and more.
 Have a look at the official <a href="http://ghns.freedesktop.org/">GHNS homepage</a>
 for more details.
-<br><br>
+<br/><br/>
 
-<i>Communication Protocol Compiler (ggzcommgen)</i><br>
+<i>Communication Protocol Compiler (ggzcommgen)</i><br/>
 
 Works like with an IDL compiler, albeit with extended functionality:
 From a single XML protocol specification, source code is generated automatically
 for client and/or server, using one out of several available programming languages
 and socket-level networking toolkits.
-<br><br>
+<br/><br/>
 
-<i>Command-line wrappers</i><br>
+<i>Command-line wrappers</i><br/>
 
 There is a wrapper for core client functionality, called ggz-wrapper, which allows
 external programs like IM clients to launch GGZ games of a certain type.
@@ -55,23 +50,14 @@ Another wrapper, ggzwrap, transparently forwards game client communication read
 on/written to stdout, making it suitable for games which communicate this way
 and enabling the usage of Java clients. For KDE, the graphical equivalent
 ShadowBridge exists.
-<br><br>
+<br/><br/>
 
-<i>Metaserver</i><br>
+<i>Metaserver</i><br/>
 
 The GGZ metaserver is a generic data server with both XML and URI protocol support.
 It allows for data storage, incremental synchronization, authentication and peer
 updates.
 
-</td>
-</tr>
-</table>
-
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

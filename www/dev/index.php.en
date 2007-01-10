@@ -1,19 +1,14 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>The GGZ Gaming Zone Project - Developer Area</b><br>
+<b>The GGZ Gaming Zone Project - Developer Area</b><br/>
 Information about developers resources and processes.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top" colspan="2">
-
-<i>Starters</i><br>
+<i>Starters</i><br/>
 If you are new to GGZ and want to know where you can contribute,
 consult the <a href="contribute.php">contributions page</a>.
 If you are a game developer who is not so much interested in GGZ itself but in
@@ -21,10 +16,9 @@ using the GGZ libraries for your game, consult the
 <a href="external.php">external games development page</a>.
 There's also a <a href="legal.php">legal stuff</a> page now.
 
-</td></tr>
-<tr><td valign="top">
+<br/><br/>
 
-<i>Resources</i><br>
+<i>Resources</i><br/>
 GGZ developers use mailing lists, a bug tracker and a SVN repository for their
 work. If there are any questions, the ggz-dev mailing list is the right place
 to ask.
@@ -34,57 +28,51 @@ For a SVN module overview, look <a href="svn.php">here</a>.
 To inform yourself about the used tools and dependencies, view the
 <a href="tools.php">tools</a> page.
 The following pages are organized as subsections of the developer area.
-<br><br>
+<br/><br/>
 
 <a href="i18n/">i18n: Internationalization</a>
-<br>
+<br/>
 <a href="art/">art: Artwork</a>
-<br>
+<br/>
 <a href="tech/">tech: Technologies from the GGZ project</a>
-<br>
+<br/>
 <a href="libraries/">libraries: Shared libraries provided by GGZ</a>
-<br>
+<br/>
 <a href="protocols/">protocols: Game protocol description files</a>
-<br>
+<br/>
 <a href="ai/">ai: Game AI routines and integration of AI players</a>
-<br>
 
-</td></tr>
-<tr><td valign="top">
+<br/><br/>
 
 <i>Documents</i><br>
 The developer section of the
 <a href="http://www.ggzgamingzone.org/docs.php">main documentation page</a>
 lists all important documentation, which is again listed here (HTML only):
-<br>
+<br/>
 
-<a href="http://www.ggzgamingzone.org/docs/design/html/">GGZ Design Document and Protocol Reference</a>
-<br>
+<a href="http://www.ggzgamingzone.org/docs/design/html/">GGZ Design Document</a>
+<br/>
 <a href="http://www.ggzgamingzone.org/docs/guides/gamedev/ggz-game-development-guide.html">Game Development Guide</a>
-<br>
+<br/>
 <a href="http://www.ggzgamingzone.org/docs/games.html">Game Protocol Comparison</a>
-<br>
+<br/>
 <a href="http://www.ggzgamingzone.org/docs/api/libggz/">Library API for libggz</a>
-<br>
+<br/>
 <a href="http://www.ggzgamingzone.org/docs/api/ggzcore/">Library API for ggzcore</a>
-<br>
+<br/>
 <a href="http://www.ggzgamingzone.org/docs/api/ggzmod/">Library API for ggzmod</a>,
 and <a href="http://www.ggzgamingzone.org/docs/api/pyggzmod/">pyggzmod</a>
-<br>
+and <a href="http://www.ggzgamingzone.org/docs/api/kggzmod/">kggzmod</a>
+<br/>
 <a href="http://www.ggzgamingzone.org/docs/api/ggzdmod/">Library API for ggzdmod</a>
-<br><br>
+and <a href="http://www.ggzgamingzone.org/docs/api/ggzdmod++/">ggzdmod++</a>
+<br/><br/>
 
-</td>
-</tr>
-</table>
-
-<b>Developers</b><br>
 <i>Gallery of GGZ developers</i><br>
 Who makes GGZ possible? Find out by taking a look at the
 <a href="gallery.php">developer gallery</a>.
-<br>
+<br/>
 
-</font>
 </td>
 </tr>
 </table>

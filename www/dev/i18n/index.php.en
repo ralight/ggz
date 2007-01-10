@@ -1,38 +1,36 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZ Internationalization</b><br>
+<b>GGZ Internationalization</b><br/>
 Both the software and the document files (web pages, man pages, HTML docs) adhere to high
 standards of internationalization. This includes the requirement of gettext as well as
 per-user languages in multi-user environments such as the web pages or the grubby output.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top" colspan="2">
-
-<i>Translatable texts</i><br>
+<i>Translatable texts</i><br/>
 A script automatically assembles all texts which are translatable into a catalog.
 Downloading the potfile catalog is a convenient way of starting a new translation.
 Webpage translations are easily done by checking out the 'www' module from
 <a href="http://svn.ggzgamingzone.org/">GGZ SVN</a> and adding files ending in .php.$lang.
-<br>
+<br/>
 <a href="ggzpots.tar.gz">Download the potfile catalog!</a>
 
-<br><br>
+<br/><br/>
 
-<i>Guidelines</i><br>
+<i>Guidelines</i><br/>
 The internationalization guidelines are available in the ggz-docs package.
-<br>
+<br/>
 <a href="http://svn.ggzgamingzone.org/websvn/filedetails.php?repname=GGZ+Gaming+Zone&path=%2Ftrunk%2Fdocs%2Fggz-project%2FInternationalization&rev=0&sc=0">Current version</a>
 
-<br><br>
+<br/><br/>
 
-<i>PO statistics</i><br>
+<i>PO statistics</i><br/>
+
+Statistics are generated daily from po files. No Java property files
+are currently taken into account.
 
 <?php
 
@@ -83,7 +81,7 @@ fclose($f);
 <tr>
 <td valign="top" colspan="2">
 
-<i>Module list</i><br>
+<i>Module list</i><br/>
 
 <table class="list">
 
@@ -135,9 +133,9 @@ foreach($modules as $module => $foo)
 </tr>
 </table>
 
-<br>
+<br/>
 
-<i>HTML statistics</i><br>
+<i>HTML statistics</i><br/>
 
 <table class="inner">
 <tr>
@@ -161,17 +159,12 @@ foreach($www as $lang => $number)
 </tr>
 </table>
 
-<br>
+<br/>
 
-<i>Manpage statistics</i><br>
+<i>Manpage statistics</i><br/>
 
-<br><br>
+<br/><br/>
 
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

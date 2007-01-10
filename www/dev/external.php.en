@@ -1,21 +1,16 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>External games development</b><br>
+<b>External games development</b><br/>
 For historic reasons, the term external game refers to a game which is not part of
 GGZ but does provide (conditional) GGZ support.
 This page serves as a central resource for adding GGZ support to existing games.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top" colspan="2">
-
-<i>Success stories ;)</i><br>
+<i>Success stories ;)</i><br/>
 There is a lot of effort being put into existing projects so that they can be played
 on GGZ. Before going into the details, the current list should be kept in mind:
 
@@ -31,6 +26,7 @@ on GGZ. Before going into the details, the current list should be kept in mind:
 <tr><td>GNOME Iagno (<a href="http://www.ggzgamingzone.org/engines/reversi/">Reversi</a> engine)</td><td>basic support</td><td><a href="http://www.ggzgamingzone.org/gameclients/iagno/">info page</a></td></tr>
 <tr><td>GNOME Gnect (<a href="http://www.ggzgamingzone.org/engines/connectx/">ConnectX</a> engine)</td><td>basic support</td><td><a href="http://www.ggzgamingzone.org/gameclients/gnect/">info page</a></td></tr>
 </table>
+<br/>
 
 Of note is that Widelands implements a whole client including game lobby, and CGoBan runs totally
 unmodified using a helper script binding it to GGZ. Freeciv can experimentally embed ggz-gtk
@@ -38,18 +34,18 @@ as a widget. The GNOME games (Gnibbles, Iagno, Gnect) all use ggz-gtk. Gnibbles 
 
 Do not hesitate to speak to GGZ developers to find out which of the above games
 (or a game from GGZ) is similar to yours.
-<br><br>
+<br/><br/>
 
-<i>Important files</i><br>
+<i>Important files</i><br/>
 As outlined in the GGZ game development guide, the files
 <a href="http://ftp.ggzgamingzone.org/pub/contrib/README.GGZ">README.GGZ</a>
 and
 <a href="http://ftp.ggzgamingzone.org/pub/contrib/ggz.m4">ggz.m4</a>
 are made available to game authors who wish to provide GGZ support.
 They might be updated over time.
-<br><br>
+<br/><br/>
 
-<i>Documentation</i><br>
+<i>Documentation</i><br/>
 For people who are totally unfamiliar with GGZ, the
 <a href="http://www.ggzgamingzone.org/docs/overview/">user intro</a>
 as well as the
@@ -61,7 +57,7 @@ If you're still not convinced that GGZ support is a plus for your game, read the
 Then, it is recommended to start with the conceptual documentation on how a
 <a href="http://www.ggzgamingzone.org/docs/games/modules/">GGZ game module</a>
 works.
-<br><br>
+<br/><br/>
 
 To make the implementation of this model very easy, the
 <a href="/libraries/ggzmod/">ggzmod</a>
@@ -79,13 +75,8 @@ check out the ggz-docs package, preferably using SVN, to read the old
 external games HOWTO and the documentation written for the GGZ games Hastings,
 GGZCards and Tic-Tac-Toe.
 
-<br><br>
+<br/><br/>
 
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

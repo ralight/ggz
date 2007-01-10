@@ -1,9 +1,8 @@
 <?php include_once("../../site/header.php"); ?>
 
-<table class="pane" width="100%">
+<table class="pane">
 <tr>
 <td>
-<font size="3">
 <a href="/libraries/">GGZ Libraries:</a>
 |
 <a href="/libraries/libggz/">libggz</a>
@@ -13,36 +12,28 @@
 ggzmod
 |
 <a href="/libraries/ggzdmod/">ggzdmod</a>
-</font>
 </td>
 </tr>
 </table>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZ Library ggzmod</b><br>
+<b>GGZ Library ggzmod</b><br/>
 The ggzmod library facilitates the messaging from and to a GGZ core client in a game client.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top" colspan="2">
-
-<i>Interfaces to ggzmod</i><br>
+<i>Interfaces to ggzmod</i><br/>
 
 <table class="list">
 <tr><td>ggzmod</td><td>Language: C</td><td>Location: ggz-client-libs/ggzmod/ggzmod.h</td></tr>
-<tr><td>ggzmod++</td><td>Language: C++</td><td>(Location: ggz-client-libs/ggzmod++/ggzmod++.h)</td></tr>
+<tr><td>kggzmod</td><td>Language: C++ (Qt)</td><td>Location: kde-games/lib/kggzmod</td></tr>
 <tr><td>pyggzmod</td><td>Language: Python</td><td>Location: python/pyggzmod</td></tr>
 </table>
+<br/>
 
-</td></tr>
-<tr><td valign="top">
-
-<i>Description</i><br>
+<i>Description</i><br/>
 
 With the help of ggzmod, game authors can use GGZ in their game clients. The library provides a state engine
 and an event dispatcher. The states can be for instance CREATED (right after game startup), PLAYING (in the
@@ -55,14 +46,14 @@ functions.
 Note that there is a counterpart to ggzmod which is called ggzmod-ggz. It is attached to the ggzcore library
 and used by GGZ core clients.
 The ggzmod library depends on libggz.
-<br><br>
+<br/><br/>
 
 As a special convenience for game client authors using the
 <a href="http://www.pygame.org/">Pygame</a> toolkit, pyggzmod provides a pygame overlay adapter which
 integrates perfectly with the pygame mainloop.
-<br><br>
+<br/><br/>
 
-<i>More information</i><br>
+<i>More information</i><br/>
 You might want to start with the API documentation for
 <a href="http://www.ggzgamingzone.org/docs/api/ggzmod/">ggzmod</a> (C games)
 or the one for
@@ -77,11 +68,6 @@ Recommended documentation includes the
 features that GGZ provides, in the <a href="http://www.ggzgamingzone.org/docs/games/ggzfeatures.html">GGZ Features</a>
 document.
 
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

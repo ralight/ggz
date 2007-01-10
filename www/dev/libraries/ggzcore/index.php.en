@@ -1,9 +1,8 @@
 <?php include_once("../../site/header.php"); ?>
 
-<table class="pane" width="100%">
+<table class="pane">
 <tr>
 <td>
-<font size="3">
 <a href="/libraries/">GGZ Libraries:</a>
 |
 <a href="/libraries/libggz/">libggz</a>
@@ -13,25 +12,19 @@ ggzcore
 <a href="/libraries/ggzmod/">ggzmod</a>
 |
 <a href="/libraries/ggzdmod/">ggzdmod</a>
-</font>
 </td>
 </tr>
 </table>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZ Library ggzcore</b><br>
+<b>GGZ Library ggzcore</b><br/>
 GGZ core clients and advanced games can use ggzcore to communicate with the GGZ server.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top" colspan="2">
-
-<i>Interfaces to ggzcore</i><br>
+<i>Interfaces to ggzcore</i><br/>
 
 <table class="list">
 <tr><td>ggzcore</td><td>Language: C</td><td>Location: ggz-client-libs/ggzcore/ggzcore.h</td></tr>
@@ -40,18 +33,16 @@ GGZ core clients and advanced games can use ggzcore to communicate with the GGZ 
 <tr><td>ggzcore-java</td><td>Language: Java</td><td>Location: java/src/ggz/client/core</td></tr>
 </table>
 
-<br>
+<br/>
 
-<i>Library configuration and dependencies</i><br>
+<i>Library configuration and dependencies</i><br/>
 
 <table class="list">
 <tr><td>Expat</td><td>required</td><td>to handle the XML network protocol</td></tr>
 </table>
+<br/>
 
-</td></tr>
-<tr><td valign="top">
-
-<i>Description</i><br>
+<i>Description</i><br/>
 
 The ggzcore library handles the connection of a client application to the GGZ server. It starts with
 offering a global configuration object for storing connection profiles, and then goes on to callback
@@ -68,9 +59,9 @@ players and spectators.
 The ggzcore library depends on libggz from the GGZ project and on expat for XML handling.
 The ggzcore-java library is not a wrapper but a reimplementation and as such does not have these
 dependencies directly, any Java XML parser is fine.
-<br><br>
+<br/><br/>
 
-<i>More information</i><br>
+<i>More information</i><br/>
 You might want to start with the <a href="http://www.ggzgamingzone.org/docs/api/ggzcore/">API documentation</a>.
 Examples of usage include ggz-gtk, ggz-txt and ggz-gnome for the C library, kggz for the C++ wrapper
 and víbora for the Python wrapper. As special core clients, also grubby and the Gaim and Kopete IM plugins
@@ -81,11 +72,6 @@ Recommended documentation includes the
 <a href="http://www.ggzgamingzone.org/docs/coreclients/coreclients.html">Core Clients</a> document,
 and to some extent the <a href="http://www.ggzgamingzone.org/docs/games/modules/">Game Modules</a> document.
 
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

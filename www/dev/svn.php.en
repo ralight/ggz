@@ -1,23 +1,18 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>SVN Repository Structure</b><br>
+<b>SVN Repository Structure</b><br/>
 GGZ development comprises work in a lot of SVN 'modules' (a terminology derived from the
 former CVS modules). Those are split due to either dependencies or reverse dependencies,
 i.e. other modules depending on them.
 Most of the modules are released as
 <a href="http://www.ggzgamingzone.org/packages/">packages</a>.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top" colspan="2">
-
-<i>Module list</i><br>
+<i>Module list</i><br/>
 
 <table class="list">
 <tr><td>libggz</td><td>Base library</td><td>C</td><td></td></tr>
@@ -39,20 +34,13 @@ Most of the modules are released as
 <tr><td>playground</td><td>Work in progress</td><td>C, C++, Ruby, Python, ...</td><td>unreleased</td></tr>
 <tr><td>www</td><td>Webpages</td><td>HTML, PHP</td><td>unreleased</td></tr>
 </table>
+<br/>
 
-</td></tr>
-<tr><td valign="top">
-
-<i>Access to the GGZ Repository</i><br>
+<i>Access to the GGZ Repository</i><br/>
 Everybody has read access to the repository by using anonymous SVN.
 Write access requires an account on the server, which is granted to
 anybody who wants to contribute actively.
 
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

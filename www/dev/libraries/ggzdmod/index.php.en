@@ -1,9 +1,8 @@
 <?php include_once("../../site/header.php"); ?>
 
-<table class="pane" width="100%">
+<table class="pane">
 <tr>
 <td>
-<font size="3">
 <a href="/libraries/">GGZ Libraries:</a>
 |
 <a href="/libraries/libggz/">libggz</a>
@@ -13,25 +12,19 @@
 <a href="/libraries/ggzmod/">ggzmod</a>
 |
 ggzdmod
-</font>
 </td>
 </tr>
 </table>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZ Library ggzdmod</b><br>
+<b>GGZ Library ggzdmod</b><br/>
 Game servers can use the ggzdmod library to communicate with the GGZ server.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top" colspan="2">
-
-<i>Interfaces to ggzdmod</i><br>
+<i>Interfaces to ggzdmod</i><br/>
 
 <table class="list">
 <tr><td>ggzdmod</td><td>Language: C</td><td>Location: ggzd/ggzdmod/ggzdmod.h</td><td></td></tr>
@@ -39,11 +32,9 @@ Game servers can use the ggzdmod library to communicate with the GGZ server.
 <tr><td>pyggzdmod</td><td>Language: Python</td><td>Location: python/pyggzdmod</td><td></td></tr>
 <tr><td>ruggzdmod</td><td>Language: Ruby</td><td>(Location: playground/ggz-ruby)</td><td></td></tr>
 </table>
+<br/>
 
-</td></tr>
-<tr><td valign="top">
-
-<i>Description</i><br>
+<i>Description</i><br/>
 
 Similar to how the ggzmod library works for game clients, the ggzdmod library provides a state machine
 and an event dispatcher. However neither of those are identical. The events include JOIN/LEAVE/SEAT
@@ -54,9 +45,9 @@ transmitting a game result with highscores, rankings or player ratings back to g
 game log (for game continuation) or savegame file, and request methods to change the number of seats,
 replace players with bots and vice-versa, or boot offending players.
 The ggzdmod library depends on libggz.
-<br><br>
+<br/><br/>
 
-<i>More information</i><br>
+<i>More information</i><br/>
 You might want to start with the <a href="http://www.ggzgamingzone.org/docs/api/ggzdmod/">API documentation</a>.
 Examples of usage include more or less all game servers which are part of the ggz-server package,
 but also those which are part of the python package.
@@ -67,11 +58,6 @@ Recommended documentation includes the
 features that GGZ provides, in the <a href="http://www.ggzgamingzone.org/docs/games/ggzfeatures.html">GGZ Features</a>
 document.
 
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

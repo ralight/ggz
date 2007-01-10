@@ -1,30 +1,25 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Legal stuff</b><br>
+<b>Legal stuff</b><br/>
 GGZ is quite a big project now. It is shipped as 16 or so source packages,
 most of them containing actual source code, but also some documentation,
 artwork and other creative works.
 This page informs about which part of GGZ is licenced which way.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top" colspan="2">
-
-<i>Base libraries</i><br>
+<i>Base libraries</i><br/>
 The four "base libraries" libggz, ggzcore, ggzmod and ggzdmod are licenced
 under LGPL, the GNU Lesser General Public License.
 They are released as part of the packages libggz, ggz-client-libs and
 ggz-server, the latter one being GPL as a whole.
 
-<br><br>
+<br/><br/>
 
-<i>Applications</i><br>
+<i>Applications</i><br/>
 Most if not all GGZ applications and games are simply GPL, being the
 GNU General Public License. The packages are ggz-server (except for
 ggzdmod), the KDE and Gtk+ clients and games, the SDL games, the text
@@ -33,42 +28,37 @@ ggz-utils. Also, ggz-community falls into this category.
 Some applications reuse source code parts of other projects, which are
 either under LGPL or BSD.
 
-<br><br>
+<br/><br/>
 
-<i>GGZ-Java</i><br>
+<i>GGZ-Java</i><br/>
 The GGZ-Java package, containing both a core client and several game
 clients, is licenced under LGPL.
 
-<br><br>
+<br/><br/>
 
-<i>Documentation</i><br>
+<i>Documentation</i><br/>
 The documentation package is currently GPL. However, licencing it under
 the FDL in the future, possibly as a dual option to GPL, might be possible,
 as parts of it already were FDL in the past.
 Similarly, the web pages, although not released, are GPL, and similar changes
 might be possible in the future.
 
-<br><br>
+<br/><br/>
 
-<i>Playground</i><br>
+<i>Playground</i><br/>
 Playground, which is not released, does not have a collective licence.
 Instead, each part of it stands on its own, and the licence files (if any)
 should be checked.
 
-<br><br>
+<br/><br/>
 
-<i>Credits and contributions</i><br>
+<i>Credits and contributions</i><br/>
 As part of the ggz-docs package, the file ggz-project/GGZ-contributions lists
 all source code and artwork contributions which are in use in GGZ. Refer to
 this file if in doubt. Also, each release of GGZ comes with a lot of
 information, including a credits page where to find past and present
 developers and contributors.
 
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

@@ -1,16 +1,14 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>CVS Modules</b><br>
+<b>CVS Modules</b><br/>
 GGZ has switched to Subversion to maintain its source repository.
 More information can be found on the <a href="svn.php">SVN page</a>.
-<br>
+<br/>
 
-</font>
 </td>
 </tr>
 </table>

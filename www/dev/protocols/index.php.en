@@ -1,59 +1,54 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZ Game Protocols</b><br>
+<b>GGZ Game Protocols</b><br/>
 Some GGZ games communicate using binary opcode protocols. There is a format called
 GGZComm which can be used to describe the protocol, build the networking source
 code from it automatically, and auto-generate some XHTML documentation for it.
 The ggzcommgen executable and the sample files can be found in the ggz-utils
 package.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top" colspan="2">
-
-<i>Protocol XML files</i><br>
+<i>Protocol XML files</i><br/>
 
 The following list of games does already have a formal
 protocol description by means of a ggzcommgen file.
-<br><br>
+<br/><br/>
 
 <a href="helloworld.protocol">Hello World</a> (for tests)
-<br>
+<br/>
 <a href="ccheckers.protocol">Chinese Checkers</a>
-<br>
+<br/>
 <a href="chess.protocol">Chess</a>
-<br>
+<br/>
 <a href="dots.protocol">Connect The Dots</a>
-<br>
+<br/>
 <a href="ggzcards.protocol">GGZCards</a> (for all GGZCards games)
-<br>
+<br/>
 <a href="hastings.protocol">Hastings</a>
-<br>
+<br/>
 <a href="muehle.protocol">Muehle</a>
-<br>
+<br/>
 <a href="tictactoe.protocol">TicTacToe</a>
-<br>
+<br/>
 <a href="bogaprot.protocol">Bogaprot</a> (for several GGZBoard games)
-<br>
+<br/>
 <a href="connectx.protocol">ConnectX (Four-in-a-row)</a>
-<br>
+<br/>
 
-<br>
+<br/>
 
-<i>XHTML versions</i><br>
+<i>XHTML versions</i><br/>
 
 The generated XHTML pages are available in the
 <a href="http://www.ggzgamingzone.org/docs/games/protocols/">documentation section</a>.
 
-<br><br>
+<br/><br/>
 
-<i>Standard protocols</i><br>
+<i>Standard protocols</i><br/>
 
 GGZ tries to use standard protocols whenever they are defined and in use
 somewhere. Please tell us if such a protocol should be used to make GGZ games
@@ -65,21 +60,12 @@ changed in the future. The chess server does however support logging in the
 <i>PGN</i> format (Portable Game Notation), and the chess savegame handler in
 GGZ Community supports loading <i>PGN</i> files.
 
-<br>
+<br/>
 
 The GGZBoard games Hnefatafl, Checkers, Ludo and Arimaa all use the same
 network protocol named <i>Bogaprot</i> (generic board game protocol), which
 might be adapted by other games, too.
 
-</td>
-</tr>
-</table>
-
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

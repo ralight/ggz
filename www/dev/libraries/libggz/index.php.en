@@ -1,9 +1,8 @@
 <?php include_once("../../site/header.php"); ?>
 
-<table class="pane" width="100%">
+<table class="pane">
 <tr>
 <td>
-<font size="3">
 <a href="/libraries/">GGZ Libraries:</a>
 |
 libggz
@@ -13,23 +12,17 @@ libggz
 <a href="/libraries/ggzmod/">ggzmod</a>
 |
 <a href="/libraries/ggzdmod/">ggzdmod</a>
-</font>
 </td>
 </tr>
 </table>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
 <b>GGZ Library libggz</b><br>
 The libggz library wraps many common low-level functions which are often used in C programming.
-<br>
-
-<table class="inner">
-<tr>
-<td valign="top" colspan="2">
+<br><br>
 
 <i>Interfaces to libggz</i><br>
 
@@ -46,9 +39,7 @@ The libggz library wraps many common low-level functions which are often used in
 <tr><td>GnuTLS</td><td>optional</td><td>for network functions with TLS</td></tr>
 <tr><td>GCrypt</td><td>optional</td><td>for hash creation and validation</td></tr>
 </table>
-
-</td></tr>
-<tr><td valign="top">
+<br>
 
 <i>Description</i><br>
 
@@ -72,11 +63,6 @@ network channels using either GnuPG or OpenSSL.
 You might want to start with the <a href="http://www.ggzgamingzone.org/docs/api/libggz/">API documentation</a>.
 Examples of usage can be found nearly anywhere in the GGZ sources.
 
-</td>
-</tr>
-</table>
-
-</font>
 </td>
 </tr>
 </table>
