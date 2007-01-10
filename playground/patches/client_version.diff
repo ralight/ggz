@@ -1,6 +1,156 @@
+Index: kde-client/ggz-kde/ggzcore++/src/GGZCoreServer.cpp
+===================================================================
+--- kde-client/ggz-kde/ggzcore++/src/GGZCoreServer.cpp	(revision 8890)
++++ kde-client/ggz-kde/ggzcore++/src/GGZCoreServer.cpp	(working copy)
+@@ -70,6 +70,11 @@
+ 		username, password, NULL);
+ }
+ 
++int GGZCoreServer::setVersion(const char* name, const char* version)
++{
++	return ggzcore_server_set_client_version(m_server, name, version);
++}
++
+ const char* GGZCoreServer::host()
+ {
+ 	return ggzcore_server_get_host(m_server);
+Index: kde-client/ggz-kde/ggzcore++/src/GGZCoreServer.h
+===================================================================
+--- kde-client/ggz-kde/ggzcore++/src/GGZCoreServer.h	(revision 8890)
++++ kde-client/ggz-kde/ggzcore++/src/GGZCoreServer.h	(working copy)
+@@ -90,6 +90,9 @@
+ 		/**
+ 		 * Specify the login information. */
+ 		int setLogin(const int type, const char* username, const char* password);
++		/**
++		 * Specify the client name and version. */
++		int setVersion(const char* name, const char* version);
+ 
+ 		/**
+ 		 * Return the hostname of this server. */
+Index: kde-client/ggz-kde/src/KGGZ.cpp
+===================================================================
+--- kde-client/ggz-kde/src/KGGZ.cpp	(revision 8890)
++++ kde-client/ggz-kde/src/KGGZ.cpp	(working copy)
+@@ -306,6 +306,7 @@
+ 	kggzserver->logSession(QString("%1/.ggz/kggz.xml-log").arg(QDir::homeDirPath()).utf8());
+ 
+ 	kggzserver->setHost(m_save_host, m_save_port, m_save_encryption);
++	kggzserver->setVersion("ggz-kde", VERSION);
+ 	result = kggzserver->connect();
+ 	/*if(result == -1)
+ 	{
+Index: kde-client/ggzap/ggzap_handler.cpp
+===================================================================
+--- kde-client/ggzap/ggzap_handler.cpp	(revision 8890)
++++ kde-client/ggzap/ggzap_handler.cpp	(working copy)
+@@ -86,6 +86,7 @@
+ 	attachServerCallbacks();
+ 
+ 	m_server->setHost(m_confserver.latin1(), 5688, 0);
++	m_server->setVersion("ggzap", VERSION);
+ 	result = m_server->connect();
+ 	//if(result == -1) emit signalState(connectfail);
+ 
+Index: java/src/ggz/client/core/Net.java
+===================================================================
+--- java/src/ggz/client/core/Net.java	(revision 8890)
++++ java/src/ggz/client/core/Net.java	(working copy)
+@@ -399,6 +399,19 @@
+ 
+     }
+ 
++	void send_client_version() throws IOException {
++
++		AttributesImpl attributes = new AttributesImpl();
++		Package pkg = getClass().getPackage();
++		String version = pkg.getSpecificationVersion() + " "
++						+ pkg.getImplementationVersion();
++
++		attributes.addAttribute("", "", "NAME", "CDATA", "ggz-java");
++		attributes.addAttribute("", "", "VERSION", "CDATA", version);
++		sendStartElement("CLIENT", attributes);
++		sendEndElement("CLIENT");
++	}
++
+     void send_channel(String id) throws IOException {
+         sendEmptyElement("CHANNEL", "ID", id);
+     }
+@@ -778,6 +791,8 @@
+             if ("yes".equals(tls) && get_tls())
+                 negotiate_tls();
+ 
++			send_client_version();
++
+             this.server.set_negotiate_status(this, ClientReqError.E_OK);
+         } else
+             this.server.set_negotiate_status(this, ClientReqError.E_UNKNOWN);
+Index: java/build.xml
+===================================================================
+--- java/build.xml	(revision 8890)
++++ java/build.xml	(working copy)
+@@ -75,6 +75,13 @@
+ Specification-Vendor: GGZ Gaming Zone
+ Implementation-Title: ggz-java
+ Implementation-Version: SVN Revision ${build.number}
++Implementation-Vendor: GGZ Gaming Zone
++Name: ggz/client/core/
++Specification-Title: GGZ Java Client
++Specification-Version: ${version.major}.${version.minor}.${version.revision}
++Specification-Vendor: GGZ Gaming Zone
++Implementation-Title: ggz-java
++Implementation-Version: SVN Revision ${build.number}
+ Implementation-Vendor: GGZ Gaming Zone</echo>
+ 
+ 		<echo>Building Version ${version.string}</echo>
+Index: gnome-client/src/login.c
+===================================================================
+--- gnome-client/src/login.c	(revision 8890)
++++ gnome-client/src/login.c	(working copy)
+@@ -37,6 +37,7 @@
+ 	server = ggzcore_server_new();
+ 	ggzcore_server_set_hostinfo(server, host, port, FALSE);
+ 	ggzcore_server_set_logininfo(server, type, username, password, NULL);
++	ggzcore_server_set_client_version(server, "ggz-gnome", VERSION);
+ 
+ 	/* Setup callbacks on server */
+ 	ggz_event_init(server);
+Index: python/pyggzcore/src/test.py
+===================================================================
+--- python/pyggzcore/src/test.py	(revision 8890)
++++ python/pyggzcore/src/test.py	(working copy)
+@@ -69,6 +69,7 @@
+ 
+ s.set_hostinfo("localhost", 5688, 1)
+ s.set_logininfo(ggzcoresimple.LOGIN_GUEST, "player", "")
++s.set_client_version("pyggzcoretest", "")
+ s.connect()
+ 
+ print ">> the current state"
+Index: python/pyggzcore/src/pyggzcoresimple_init.c
+===================================================================
+--- python/pyggzcore/src/pyggzcoresimple_init.c	(revision 8890)
++++ python/pyggzcore/src/pyggzcoresimple_init.c	(working copy)
+@@ -184,6 +184,16 @@
+ 	return Py_BuildValue("i", ret);
+ }
+ 
++static PyObject *pyggzcoresimple_server_set_client_version(PyObject *self, PyObject *args)
++{
++	char *name, *version;
++	int ret;
++
++	if(!PyArg_ParseTuple(args, "ss", &name, &version)) return NULL;
++	ret = ggzcore_server_set_client_version(ggzserver, name, version, NULL);
++	return Py_BuildValue("i", ret);
++}
++
+ static PyObject *pyggzcoresimple_server_get_state(PyObject *self, PyObject *args)
+ {
+ 	int ret;
 Index: docs/spec/dtd/ggz_client.dtd
 ===================================================================
---- docs/spec/dtd/ggz_client.dtd	(revision 8885)
+--- docs/spec/dtd/ggz_client.dtd	(revision 8890)
 +++ docs/spec/dtd/ggz_client.dtd	(working copy)
 @@ -1,8 +1,12 @@
  <!-- ggz_client.dtd -->
@@ -18,7 +168,7 @@ Index: docs/spec/dtd/ggz_client.dtd
  
 Index: ggz-client-libs/ggzcore/ggzcore.h
 ===================================================================
---- ggz-client-libs/ggzcore/ggzcore.h	(revision 8885)
+--- ggz-client-libs/ggzcore/ggzcore.h	(revision 8890)
 +++ ggz-client-libs/ggzcore/ggzcore.h	(working copy)
 @@ -685,6 +685,22 @@
   * Functions for setting GGZServer data
@@ -45,9 +195,9 @@ Index: ggz-client-libs/ggzcore/ggzcore.h
   *  Call this function to set host info for the GGZ server
 Index: ggz-client-libs/ggzcore/netxml.c
 ===================================================================
---- ggz-client-libs/ggzcore/netxml.c	(revision 8885)
+--- ggz-client-libs/ggzcore/netxml.c	(revision 8890)
 +++ ggz-client-libs/ggzcore/netxml.c	(working copy)
-@@ -373,13 +373,15 @@
+@@ -375,13 +375,15 @@
   * only for registered logins. */
  int _ggzcore_net_send_login(GGZNet * net, GGZLoginType login_type,
  			    const char *handle, const char *password, const char *email,
@@ -64,7 +214,7 @@ Index: ggz-client-libs/ggzcore/netxml.c
  
  	switch (login_type) {
  	case GGZ_LOGIN:
-@@ -401,6 +403,17 @@
+@@ -403,6 +405,17 @@
  		_ggzcore_net_send_line(net, "<LANGUAGE>%s</LANGUAGE>",
  				       language);
  	}
@@ -84,7 +234,7 @@ Index: ggz-client-libs/ggzcore/netxml.c
  
 Index: ggz-client-libs/ggzcore/server.c
 ===================================================================
---- ggz-client-libs/ggzcore/server.c	(revision 8885)
+--- ggz-client-libs/ggzcore/server.c	(revision 8890)
 +++ ggz-client-libs/ggzcore/server.c	(working copy)
 @@ -151,6 +151,10 @@
  	struct {
@@ -152,7 +302,7 @@ Index: ggz-client-libs/ggzcore/server.c
  
 Index: ggz-client-libs/ggzcore/net.h
 ===================================================================
---- ggz-client-libs/ggzcore/net.h	(revision 8885)
+--- ggz-client-libs/ggzcore/net.h	(revision 8890)
 +++ ggz-client-libs/ggzcore/net.h	(working copy)
 @@ -57,7 +57,7 @@
  /* Functions for sending data/requests to server */
@@ -163,22 +313,21 @@ Index: ggz-client-libs/ggzcore/net.h
  int _ggzcore_net_send_channel(GGZNet * net, const char *id);
  int _ggzcore_net_send_motd(GGZNet * net);
  int _ggzcore_net_send_list_types(GGZNet * net, const char verbose);
-Index: txt-client/ggz-txt/server.c
+Index: grubby/grubby/src/net.c
 ===================================================================
---- txt-client/ggz-txt/server.c	(revision 8885)
-+++ txt-client/ggz-txt/server.c	(working copy)
-@@ -80,6 +80,8 @@
- 	server = ggzcore_server_new();
+--- grubby/grubby/src/net.c	(revision 8890)
++++ grubby/grubby/src/net.c	(working copy)
+@@ -179,6 +179,7 @@
+ 	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_READY, net_hook_ready);
+ 
  	ggzcore_server_set_hostinfo(server, host, port, 0);
- 	ggzcore_server_set_logininfo(server, type, login, password, NULL);
-+	ggzcore_server_set_client_version(server, "ggz-txt", VERSION);
-+
- 	server_register(server);
- 	sessiondump =
- 	    ggzcore_conf_read_string("Debug", "SessionLog", NULL);
++	ggzcore_server_set_client_version(server, "grubby", VERSION);
+ 	ggzcore_server_connect(server);
+ }
+ 
 Index: ggzd/ggzd/net.c
 ===================================================================
---- ggzd/ggzd/net.c	(revision 8885)
+--- ggzd/ggzd/net.c	(revision 8890)
 +++ ggzd/ggzd/net.c	(working copy)
 @@ -118,6 +118,7 @@
  
@@ -230,3 +379,28 @@ Index: ggzd/ggzd/net.c
  /* Functions for <CHANNEL> tag */
  static void _net_handle_channel(GGZNetIO *net, GGZXMLElement *element)
  {
+Index: txt-client/ggz-txt/server.c
+===================================================================
+--- txt-client/ggz-txt/server.c	(revision 8890)
++++ txt-client/ggz-txt/server.c	(working copy)
+@@ -80,6 +80,8 @@
+ 	server = ggzcore_server_new();
+ 	ggzcore_server_set_hostinfo(server, host, port, 0);
+ 	ggzcore_server_set_logininfo(server, type, login, password, NULL);
++	ggzcore_server_set_client_version(server, "ggz-txt", VERSION);
++
+ 	server_register(server);
+ 	sessiondump =
+ 	    ggzcore_conf_read_string("Debug", "SessionLog", NULL);
+Index: gtk-client/ggz-gtk/login.c
+===================================================================
+--- gtk-client/ggz-gtk/login.c	(revision 8890)
++++ gtk-client/ggz-gtk/login.c	(working copy)
+@@ -360,6 +360,7 @@
+ 	server = ggzcore_server_new();
+ 	ggzcore_server_set_hostinfo(server, host, port, 0);
+ 	ggzcore_server_set_logininfo(server, type, login, password, email);
++	ggzcore_server_set_client_version(server, "ggz-gtk", VERSION);
+ 
+ 	/* Log server communications to file */
+ 	if (option_log) {
