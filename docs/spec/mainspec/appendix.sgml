@@ -927,7 +927,7 @@
 	    <term><emphasis role="bold">ACTION</emphasis></term>
 	    <listitem>
 	      <para>
-		Action to do. Can be 'add', 'delete', 'lag', or
+		Action to do. Can be 'add', 'delete', 'lag', 'perms', or
 		'stats' for players;
 		'add', 'delete', 'join', 'leave', 'status', 'desc', or 'seat'
 		for tables;
@@ -1710,7 +1710,8 @@
 	  <link linkend="req.table.join">JOIN</link>,
 	  <link linkend="req.table.leave">LEAVE</link>,
 	  <link linkend="req.chat">CHAT</link>,
-	  <link linkend="req.admin">ADMIN</link>, and
+	  <link linkend="req.admin">ADMIN</link>,
+	  <link linkend="req.permadmin">PERMADMIN</link>, and
 	  <link linkend="req.login">LOGIN</link> requests.  Note that in
 	  some of these cases (e.g. LIST) the response to the request will be
 	  contained within the RESULT, whereas in others it will not.  The
@@ -2482,7 +2483,7 @@
 
     <refnamediv>
       <refname>ADMIN</refname>
-      <refpurpose>Administrative actions</refpurpose>
+      <refpurpose>Room Administration</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv><title>Synopsis</title>
@@ -2526,7 +2527,7 @@
 
     <refsect1>
       <title>Description</title>
-      <para>Administrative actions</para>
+      <para>Room administration</para>
       <refsect2>
 	<title>Message Data</title>
 	<variablelist>
@@ -2568,6 +2569,115 @@
 	  message. The server will respond with an appropriate
 	  <link linkend="rsp.result">RESULT</link> which embeds
 	  a <link linkend="rsp.chat">CHAT</link> tag.
+	</para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+  <refentry id="req.permadmin"><?dbhtml filename="req_chat.html">
+    <refmeta>
+      <indexterm>
+	<primary>PERMADMIN</primary>
+      </indexterm>
+      <refentrytitle>PERMADMIN</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>PERMADMIN</refname>
+      <refpurpose>Permissions administration</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv><title>Synopsis</title>
+      <informaltable>
+	<tgroup cols="3">
+	  <colspec colnum="1" colname="C1" align="left">
+	    <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+		<tbody>
+
+		  <row rowsep="0">
+		    <entry namest="C1" nameend="C3">
+			  &lt;PERMADMIN PLAYER='player'
+                          PERM='perm' VALUE='value'/&gt;
+		    </entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry><emphasis role="bold">Data</emphasis></entry>
+		    <entry><emphasis role="bold">Type</emphasis></entry>
+		    <entry><emphasis role="bold">Example</emphasis></entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry>PLAYER</entry>
+		    <entry>string</entry>
+		    <entry>someplayer22</entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry>PERM</entry>
+		    <entry>string</entry>
+		    <entry>join_table</entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry>VALUE</entry>
+		    <entry>boolean</entry>
+		    <entry>true</entry>
+		  </row>
+
+		</tbody>
+	</tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>Permissions administration</para>
+      <refsect2>
+	<title>Message Data</title>
+	<variablelist>
+	  <varlistentry>
+	    <term><emphasis role="bold">PLAYER</emphasis></term>
+	    <listitem>
+	      <para>
+		Name of player who is affected by the action.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">PERM</emphasis></term>
+	    <listitem>
+	      <para>
+                Name of the permission being modified.  Current permissions
+                include 'join_table', 'launch_table', 'rooms_login',
+                'rooms_admin', 'chat_announce', 'chat_bot', 'no_stats',
+                'edit_tables', 'edit_privmsg'.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">Value</emphasis></term>
+	    <listitem>
+	      <para>
+                Whether to set or unset the permission.  Either 'true' or
+                'false'.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	</variablelist>
+      </refsect2>
+
+      <refsect2>
+	<title>Usage</title>
+	<para>
+          Administrators can change permissions of other players.  A
+          PERMADMIN request is sent from the client to change a particular
+          permission on a particular player.  The server will respond with an
+          appropriate
+	  <link linkend="rsp.result">RESULT</link> which embeds
+	  a <link linkend="rsp.chat">PERMADMIN</link> tag.
 	</para>
       </refsect2>
     </refsect1>
