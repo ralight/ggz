@@ -1,0 +1,32 @@
+GGZ Hacking Notes
+~~~~~~~~~~~~~~~~~
+
+For the apprentice and the master alike...
+
+Getting started
+---------------
+* checkout trunk
+* copy playground/maintenance/ggzbuild to trunk
+* copy ggzbuildrc.sample from same dir to ~/.ggzbuildrc (and modify as needed)
+* cd trunk; ./ggzbuild -> all of GGZ will be built and installed!
+
+Debugging
+---------
+* always compile without --disable-debug (check ggzbuildrc!)
+* for Gtk+, setup in in ~/.ggz/ggz-gtk.rc
+  [Debug]
+  Types = GGZCORE:CONF GGZCORE:GAME GGZCORE:HOOK GGZCORE:MODULE GGZCORE:NET
+          GGZCORE:POLL GGZCORE:ROOM GGZCORE:SERVER GGZCORE:STATE
+	  GGZCORE:TABLE GGZCORE:XML
+	  game modules connection servers
+  (must all be on one line!)
+* ggzd: always check --specs prior to anything else
+* kggzmod: switch on its debug area (none assigned yet)
+
+Coding in C
+-----------
+* C99 and POSIX.1-2001 are more or less a minimum requirement.
+  All GGZ apps and games should be unicode-enabled.
+  {platform,system}.m4 take care of all that (hopefully)
+* C sucks. Watch out for more issues like largefile support...
+
