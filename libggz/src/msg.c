@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 7885 2006-03-06 18:46:12Z josef $
+ * $Id: msg.c 8898 2007-01-12 09:40:44Z josef $
  *
  * Debug and error messages
  *
@@ -198,7 +198,7 @@ void ggz_error_sys(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(LOG_ERR, NULL, fmt, ap, 1);
+	err_doit(LOG_ERR, "<errorsys>", fmt, ap, 1);
 	va_end(ap);
 
 	dump_core();
@@ -210,7 +210,7 @@ void ggz_error_sys_exit(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(LOG_CRIT, NULL, fmt, ap, 1);
+	err_doit(LOG_CRIT, "<errorsysexit>", fmt, ap, 1);
 	va_end(ap);
 
 	abort();
@@ -222,7 +222,7 @@ void ggz_error_msg(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(LOG_ERR, NULL, fmt, ap, 0);
+	err_doit(LOG_ERR, "<errormsg>", fmt, ap, 0);
 	va_end(ap);
 
 	dump_core();
@@ -234,7 +234,7 @@ void ggz_error_msg_exit(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(LOG_CRIT, NULL, fmt, ap, 0);
+	err_doit(LOG_CRIT, "<errormsgexit>", fmt, ap, 0);
 	va_end(ap);
 
 	abort();
