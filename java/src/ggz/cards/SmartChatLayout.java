@@ -79,11 +79,19 @@ public class SmartChatLayout implements LayoutManager {
     }
 
     public Dimension minimumLayoutSize(Container parent) {
-        return new Dimension(640, 480);
+        return preferredLayoutSize(parent);
     }
 
     public Dimension preferredLayoutSize(Container parent) {
-        return new Dimension(800, 600);
+        int width = 0;
+        int height = Math.max(
+                chat == null ? 0 : chat.getPreferredSize().height,
+                table == null ? 0 : table.getPreferredSize().height);
+
+        width += chat == null ? 0 : chat.getPreferredSize().width;
+        width += table == null ? 0 : table.getPreferredSize().width;
+
+        return new Dimension(width, height);
     }
 
     public void removeLayoutComponent(Component comp) {

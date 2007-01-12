@@ -22,6 +22,7 @@ import ggz.client.mod.ModState;
 import ggz.games.GamePanel;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -79,6 +80,10 @@ public class TicTacToePanel extends GamePanel implements TicTacToeListener,
         this.mainAndStatusPanel.add(this.statusPanel, BorderLayout.SOUTH);
 
         add(this.mainAndStatusPanel, SmartChatLayout.TABLE);
+    }
+    
+    protected Dimension getPreferredWindowSize() {
+        return new Dimension(600, 300);
     }
 
     public void handleServer(Socket fd) throws IOException {

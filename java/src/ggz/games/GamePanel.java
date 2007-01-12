@@ -65,7 +65,6 @@ public class GamePanel extends JPanel implements ModEventHandler {
     protected GamePanel() {
         super(new SmartChatLayout());
         chatPanel = new ChatPanel(new TableChatAction());
-        chatPanel.setPreferredSize(new Dimension(200, 150));
         playerListPanel = new SpectatorListPanel();
         add(chatPanel, SmartChatLayout.CHAT);
         add(playerListPanel, SmartChatLayout.SPECTATOR_LIST);
@@ -85,7 +84,7 @@ public class GamePanel extends JPanel implements ModEventHandler {
             e.printStackTrace();
         }
     }
-    
+
     public ChatPanel getChatPanel() {
         return this.chatPanel;
     }
@@ -123,7 +122,7 @@ public class GamePanel extends JPanel implements ModEventHandler {
                     quit();
                 }
             });
-            frame.setSize(800, 600);
+            frame.setSize(getPreferredWindowSize());
             // frame.setLocationByPlatform(true);
             frame.setLocationRelativeTo(null);
             frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -133,6 +132,10 @@ public class GamePanel extends JPanel implements ModEventHandler {
             chatPanel.dispose();
             JOptionPane.getFrameForComponent(this).dispose();
         }
+    }
+
+    protected Dimension getPreferredWindowSize() {
+        return new Dimension(800, 600);
     }
 
     public void handlePlayer(String name, boolean is_spectator, int seat_num) {
