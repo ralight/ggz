@@ -24,6 +24,7 @@ import ggz.common.dio.DIOOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 public class Client {
 
@@ -89,22 +90,32 @@ public class Client {
 
     private TicTacToeListener listener;
 
+    private static final Logger log = Logger.getLogger(Client.class.getName());
+
     public Client(Socket s) throws IOException {
         this.socket = s;
         this.dio = new DIOInputStream(s.getInputStream());
         this.out = new DIOOutputStream(s.getOutputStream());
     }
 
-    public char getPlayerSymbol(int player) {
-        if (!(player >= -1 && player <= 1))
-            throw new IndexOutOfBoundsException("player must be 0 or 1");
+    public String getPlayerName(int seatNum) {
+        return this.names[seatNum];
+    }
 
-        if (player == 0)
+    public char getPlayerSymbol(int seatNum) {
+        if (!(seatNum >= -1 && seatNum <= 1))
+            throw new IndexOutOfBoundsException("seatNum must be 0 or 1");
+
+        if (seatNum == 0)
             return 'O';
-        else if (player == 1)
+        else if (seatNum == 1)
             return 'X';
         else
             return '-';
+    }
+
+    public int getMySeat() {
+        return this.num;
     }
 
     /** Starts listening for messages from the server. */
@@ -149,23 +160,20 @@ public class Client {
 
         case TTT_REQ_MOVE:
             this.state = STATE_MOVE;
-            // TODO enable the board to allow player input.
-            gameStatus("It's your move.");
+            fireMoveRequested();
+            fireGameStatus("It's your move.");
             break;
 
         case TTT_RSP_MOVE:
             receiveMoveStatus();
-            displayBoard();
             break;
 
         case TTT_MSG_MOVE:
             receiveMove();
-            displayBoard();
             break;
 
         case TTT_SND_SYNC:
             receiveSync();
-            displayBoard();
             break;
 
         case TTT_MSG_GAMEOVER:
@@ -176,24 +184,44 @@ public class Client {
     }
 
     private void receiveSeat() throws IOException {
-        gameStatus("Receiving your seat number...");
-
+        log.fine("Receiving my seat number...");
         this.num = this.dio.readInt();
-
-        gameStatus("Waiting for other player...");
     }
 
     private void receivePlayers() throws IOException {
-        gameStatus("Getting player names...");
+        log.fine("Getting player names...");
+        int numPlayersInGame = 0;
         for (int seatNum = 0; seatNum < 2; seatNum++) {
             int seat = this.dio.readInt();
+            String seatName = null;
+
             this.seats[seatNum] = SeatType.valueOf(seat);
 
-            if (this.seats[seatNum] != SeatType.GGZ_SEAT_OPEN) {
-                this.names[seatNum] = this.dio.readString();
-                gameStatus(this.names[seatNum] + " is "
-                        + getPlayerSymbol(seatNum) + ".");
+            if (this.seats[seatNum] == SeatType.GGZ_SEAT_NONE) {
+                throw new UnsupportedOperationException(
+                        "Seat type GGZ_SEAT_NONE not supported.");
+            } else if (this.seats[seatNum] == SeatType.GGZ_SEAT_OPEN) {
+                seatName = "Empty Seat";
+            } else if (this.seats[seatNum] == SeatType.GGZ_SEAT_RESERVED) {
+                seatName = "Reserved for " + this.dio.readString();
+            } else if (this.seats[seatNum] == SeatType.GGZ_SEAT_ABANDONED) {
+                seatName = this.dio.readString() + " has left the game";
+                if (this.state == STATE_MOVE) {
+                    fireCancelMove();
+                }
+            } else {
+                seatName = this.dio.readString();
+                numPlayersInGame++;
             }
+            this.names[seatNum] = seatName + " (" + getPlayerSymbol(seatNum)
+                    + ")";
+            fireSeatChanged(seatNum);
+        }
+
+        if (numPlayersInGame != 2) {
+            fireGameStatus("Waiting for a player to join...");
+        } else {
+            fireGameStatus("Opponent is thinking...");
         }
     }
 
@@ -210,42 +238,59 @@ public class Client {
         char symbol = getPlayerSymbol(seat);
 
         if (this.num < 0)
-            gameStatus(this.names[seat] + " (" + symbol + ") has moved.");
+            log.fine(this.names[seat] + " has moved.");
         else
-            gameStatus("Your opponent has moved.");
+            log.fine("Your opponent has moved.");
 
         this.board[move] = symbol;
+        fireBoardChanged();
     }
 
     private void receiveSync() throws IOException {
+        log.fine("Syncing with server...");
         byte turn = this.dio.readByte();
 
-        gameStatus("Syncing with server...");
-        gameStatus("It's " + this.names[turn] + " (" + getPlayerSymbol(turn)
-                + ")'s turn.");
+        if (this.num == -1) {
+            // We are a spectator.
+            switch (turn) {
+            case 0:
+            case 1:
+                fireGameStatus(getPlayerName(turn) + " is thinking...");
+                break;
+            default:
+                fireGameStatus("Waiting for a player to join...");
+                break;
+            }
+        } else if (turn == this.num) {
+            fireGameStatus("It's your move.");
+        } else if (turn == 1 % this.num) {
+            fireGameStatus("Opponent is thinking...");
+        } else {
+            fireGameStatus("Waiting for a player to join...");
+        }
 
         for (int i = 0; i < 9; i++) {
             byte space = this.dio.readByte();
             if (space >= 0)
-                this.board[i] = getPlayerSymbol(turn);
+                this.board[i] = getPlayerSymbol(space);
         }
 
-        gameStatus("Sync completed.");
+        fireBoardChanged();
+        log.fine("Sync completed.");
     }
 
     private void receiveGameOver() throws IOException {
         byte winner = this.dio.readByte();
 
-        gameStatus("Game over.");
+        log.fine("Game over.");
 
         switch (winner) {
         case 0:
         case 1:
-            gameStatus(this.names[winner] + " (" + getPlayerSymbol(winner)
-                    + ") won.");
+            fireGameStatus(this.names[winner] + " won!");
             break;
         case 2:
-            gameStatus("Tie game!");
+            fireGameStatus("Tie game!");
             break;
         default:
             throw new IllegalStateException(
@@ -258,20 +303,21 @@ public class Client {
 
         switch (status) {
         case TTT_ERR_STATE:
-            gameStatus("Server not ready!!");
+            fireGameStatus("Server not ready!!");
             break;
         case TTT_ERR_TURN:
-            gameStatus("Not your turn!");
+            fireGameStatus("Not your turn!");
             break;
         case TTT_ERR_BOUND:
-            gameStatus("Move out of bounds!");
+            fireGameStatus("Move out of bounds!");
             break;
         case TTT_ERR_FULL:
-            gameStatus("Space already occupied!");
+            fireGameStatus("Space already occupied!");
             break;
         case 0:
-            gameStatus("Move accepted.");
+            fireGameStatus("Opponent is thinking...");
             this.board[this.mostRecentMove] = getPlayerSymbol(this.num);
+            fireBoardChanged();
             break;
         }
     }
@@ -282,13 +328,13 @@ public class Client {
 
         if (this.state != STATE_MOVE) {
             if (this.num >= 0)
-                gameStatus("It's not your move yet.");
+                fireGameStatus("It's not your move yet.");
             else
-                gameStatus("You're just watching.");
+                fireGameStatus("You're just watching.");
             return;
         }
 
-        gameStatus("Sending move.");
+        fireGameStatus("Sending move.");
         this.mostRecentMove = cellIndex;
 
         out.writeInt(TTT_SND_MOVE);
@@ -299,23 +345,38 @@ public class Client {
     }
 
     private void gameInit() {
+        this.state = STATE_INIT;
+        this.num = -1;
+
         for (int i = 0; i < 9; i++)
             this.board[i] = ' ';
 
-        this.state = STATE_INIT;
-
-        this.num = -1;
-        displayBoard();
+        fireBoardChanged();
     }
 
-    private void gameStatus(String message) {
+    private void fireGameStatus(String message) {
         if (this.listener != null)
             this.listener.gameStatus(message);
     }
 
-    private void displayBoard() {
+    private void fireBoardChanged() {
         if (this.listener != null)
-            this.listener.boardUpdated(this.board);
+            this.listener.boardChanged(this.board);
+    }
+
+    private void fireSeatChanged(int seatNum) {
+        if (this.listener != null)
+            this.listener.seatChanged(seatNum);
+    }
+
+    private void fireMoveRequested() {
+        if (this.listener != null)
+            this.listener.moveRequested();
+    }
+    
+    private void fireCancelMove() {
+        if (this.listener != null)
+            this.listener.cancelMove();
     }
 
     public void addTicTacToeListener(TicTacToeListener l) {

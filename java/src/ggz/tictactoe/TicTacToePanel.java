@@ -17,18 +17,19 @@
  */
 package ggz.tictactoe;
 
-import java.awt.BorderLayout;
-import java.io.IOException;
-import java.net.Socket;
-
 import ggz.cards.SmartChatLayout;
 import ggz.client.mod.ModState;
 import ggz.games.GamePanel;
+
+import java.awt.BorderLayout;
+import java.io.IOException;
+import java.net.Socket;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 /**
@@ -40,29 +41,44 @@ import javax.swing.SwingUtilities;
 public class TicTacToePanel extends GamePanel implements TicTacToeListener,
         BoardListener {
 
-    private Client client;
+    protected Client client;
 
-    private JPanel boardAndStatusPanel;
+    private JPanel mainAndStatusPanel;
+
+    private JPanel boardAndNamesPanel;
 
     protected BoardPanel board;
 
     protected JLabel statusPanel;
 
+    protected JLabel[] seatLabel = new JLabel[2];
+
     public TicTacToePanel() {
-        this.boardAndStatusPanel = new JPanel(new BorderLayout());
-        this.boardAndStatusPanel.setBorder(BorderFactory.createEmptyBorder(10,
+        this.mainAndStatusPanel = new JPanel(new BorderLayout());
+        this.boardAndNamesPanel = new JPanel(new BorderLayout());
+        this.boardAndNamesPanel.setBorder(BorderFactory.createEmptyBorder(10,
                 10, 10, 10));
 
         // Create the game board and add it.
         this.board = new BoardPanel();
+        this.board.setEnabled(false);
         this.board.addBoardListener(this);
-        this.boardAndStatusPanel.add(this.board, BorderLayout.CENTER);
+        this.boardAndNamesPanel.add(this.board, BorderLayout.CENTER);
+
+        // Create the name labels. If we are playing we will be seat 0.
+        this.seatLabel[0] = new JLabel("Empty Seat", SwingConstants.CENTER);
+        this.boardAndNamesPanel.add(this.seatLabel[0], BorderLayout.SOUTH);
+        this.seatLabel[1] = new JLabel("Empty Seat", SwingConstants.CENTER);
+        this.boardAndNamesPanel.add(this.seatLabel[1], BorderLayout.NORTH);
+
+        this.mainAndStatusPanel.add(this.boardAndNamesPanel,
+                BorderLayout.CENTER);
 
         // Status panel for messages.
         this.statusPanel = new JLabel("Connecting...");
-        this.boardAndStatusPanel.add(this.statusPanel, BorderLayout.SOUTH);
+        this.mainAndStatusPanel.add(this.statusPanel, BorderLayout.SOUTH);
 
-        add(this.boardAndStatusPanel, SmartChatLayout.TABLE);
+        add(this.mainAndStatusPanel, SmartChatLayout.TABLE);
     }
 
     public void handleServer(Socket fd) throws IOException {
@@ -76,10 +92,40 @@ public class TicTacToePanel extends GamePanel implements TicTacToeListener,
         JOptionPane.getFrameForComponent(this).setTitle("Tic-Tac-Toe");
     }
 
-    public void boardUpdated(final char[] boardData) {
+    public void boardChanged(final char[] boardData) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 TicTacToePanel.this.board.refresh(boardData);
+            }
+        });
+    }
+
+    public void seatChanged(final int seatNum) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                seatLabel[seatNum].setText(client.getPlayerName(seatNum));
+            }
+        });
+    }
+
+    public void moveRequested() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                board.setUserSymbol(client.getPlayerSymbol(client.getMySeat()));
+                board.setEnabled(true);
+            }
+        });
+    }
+
+    /**
+     * Called when user input is not longer available because a player has left
+     * the game and the game has gone into a wait state and won't accept the
+     * move.
+     */
+    public void cancelMove() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                board.setEnabled(false);
             }
         });
     }
@@ -94,6 +140,8 @@ public class TicTacToePanel extends GamePanel implements TicTacToeListener,
     }
 
     public void cellClicked(int cellIndex) {
+        this.board.setEnabled(false);
+
         if (this.client == null)
             return;
 

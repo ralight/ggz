@@ -19,6 +19,9 @@ package ggz.tictactoe;
 
 public interface TicTacToeListener {
     /** Called when the board has changed and needs to be refreshed. */
-    public void boardUpdated(char[] board);
+    public void boardChanged(char[] board);
     public void gameStatus(String message);
+    public void seatChanged(int seatNum);
+    public void moveRequested();
+    public void cancelMove();
 }

@@ -47,6 +47,9 @@ import javax.swing.SwingConstants;
 public class BoardPanel extends JPanel {
     protected BoardListener listener;
 
+    /** The symbol representing the player that can interact with the board. */
+    protected String userSymbol;
+
     public BoardPanel() {
         super(new GridLayout(3, 3));
 
@@ -69,12 +72,17 @@ public class BoardPanel extends JPanel {
         enableEvents(AWTEvent.COMPONENT_EVENT_MASK);
     }
 
+    public void setUserSymbol(char symbol) {
+        this.userSymbol = String.valueOf(symbol);
+    }
+
     public void refresh(char[] boardData) {
         int cell = 0;
 
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 3; y++) {
                 JLabel label = (JLabel) this.getComponent(cell);
+                label.setForeground(Color.BLACK);
                 label.setText(String.valueOf(boardData[cell]));
                 cell++;
             }
@@ -140,7 +148,8 @@ public class BoardPanel extends JPanel {
      * for converting a mouse click on a cell component to an index in the
      * board.
      * 
-     * @param comp the component to test.
+     * @param comp
+     *            the component to test.
      * @return the index of the cell or -1 if the component is not a cell on the
      *         board.
      */
@@ -157,6 +166,23 @@ public class BoardPanel extends JPanel {
         return -1;
     }
 
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+
+        if (userSymbol == null)
+            return;
+
+        // Just in case we are in the middel of accepting user input.
+        for (int cell = 0, n = getComponentCount(); cell < n; cell++) {
+            JLabel label = (JLabel) getComponent(cell);
+            if (userSymbol.equals(label.getText())
+                    && Color.GRAY.equals(label.getForeground())) {
+                label.setForeground(Color.BLACK);
+                label.setText(" ");
+            }
+        }
+    }
+
     public void addBoardListener(BoardListener l) {
         if (this.listener != null && l != this.listener) {
             throw new UnsupportedOperationException(
@@ -167,8 +193,40 @@ public class BoardPanel extends JPanel {
 
     private MouseListener mouseListener = new MouseAdapter() {
         public void mouseClicked(MouseEvent event) {
-            int cellIndex = getCellIndex(event.getComponent());
-            BoardPanel.this.listener.cellClicked(cellIndex);
+            if (BoardPanel.this.isEnabled()) {
+                JLabel label = (JLabel) event.getComponent();
+                int cellIndex = getCellIndex(label);
+
+                // Put the symbol in the cell. The server will later send an
+                // update and overwrite this value but that's OK. This prevents
+                // the cell being blanked out when the board is disabled between
+                // the time the mouse is clicked and the server responds with
+                // the board update.
+                label.setForeground(Color.BLACK);
+
+                BoardPanel.this.listener.cellClicked(cellIndex);
+            }
+        }
+
+        public void mouseEntered(MouseEvent event) {
+            if (BoardPanel.this.isEnabled()) {
+                JLabel label = (JLabel) event.getComponent();
+                if (" ".equals(label.getText())) {
+                    label.setForeground(Color.GRAY);
+                    label.setText(userSymbol);
+                }
+            }
+        }
+
+        public void mouseExited(MouseEvent event) {
+            if (BoardPanel.this.isEnabled()) {
+                JLabel label = (JLabel) event.getComponent();
+                if (userSymbol.equals(label.getText())
+                        && Color.GRAY.equals(label.getForeground())) {
+                    label.setForeground(Color.BLACK);
+                    label.setText(" ");
+                }
+            }
         }
     };
 }
