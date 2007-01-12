@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -207,6 +208,7 @@ public class ClientApp {
             }
         });
         frame.setSize(800, 600);
+        frame.setIconImage(new ImageIcon(applet.getClass().getResource("/ggz/ui/images/ggz_logo_32x32.png")).getImage());
         applet.init();
         applet.start();
         applet.server_state_changed();
