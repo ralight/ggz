@@ -34,6 +34,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.datatransfer.DataFlavor;
@@ -635,7 +636,8 @@ public class RoomChatPanel extends JPanel implements RoomListener,
             Player player = players.getPlayer(selectedRow);
             if (player == null)
                 return;
-            PrivateChatDialog.showDialog(player.get_name());
+            PrivateChatDialog dialog = PrivateChatDialog.getOrCreateDialog(player.get_name(), Frame.NORMAL);
+            dialog.toFront();
         }
     }
 

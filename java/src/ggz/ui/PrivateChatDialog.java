@@ -16,14 +16,19 @@ import ggz.common.ChatType;
 
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.WindowConstants;
 
 public class PrivateChatDialog extends JFrame {
@@ -33,9 +38,15 @@ public class PrivateChatDialog extends JFrame {
 
     protected static ChatDialogManager dialogManager = new ChatDialogManager();
 
+    protected Timer iconBlinker;
+
     protected ChatPanel chatPanel;
 
     private String recipient;
+
+    protected Image normalIcon;
+
+    protected Image alertIcon;
 
     public static void setServer(Server s) {
         if (server != null) {
@@ -52,20 +63,28 @@ public class PrivateChatDialog extends JFrame {
         this.getContentPane().add(chatPanel, BorderLayout.CENTER);
         this.enableEvents(AWTEvent.WINDOW_EVENT_MASK);
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        this.normalIcon = new ImageIcon(this.getClass().getResource(
+                "/ggz/ui/images/private_chat.png")).getImage();
+        this.alertIcon = new ImageIcon(this.getClass().getResource(
+                "/ggz/ui/images/comments_add.png")).getImage();
+        this.setIconImage(this.normalIcon);
     }
 
     public void dispose() {
         this.chatPanel.dispose();
+        setBlinking(false);
         super.dispose();
     }
 
-    public static PrivateChatDialog showDialog(String otherPlayer) {
+    public static PrivateChatDialog getOrCreateDialog(String otherPlayer,
+            int initialState) {
         PrivateChatDialog dialog = (PrivateChatDialog) dialogs.get(otherPlayer);
         if (dialog == null) {
             // No private chat with this player yet.
             dialog = new PrivateChatDialog(otherPlayer);
             dialogs.put(otherPlayer, dialog);
             dialog.setSize(400, 350);
+            dialog.setExtendedState(initialState);
             dialog.setVisible(true);
             dialog.chatPanel.textField.requestFocus();
         }
@@ -75,8 +94,53 @@ public class PrivateChatDialog extends JFrame {
     protected void processWindowEvent(WindowEvent event) {
         if (event.getID() == WindowEvent.WINDOW_CLOSED) {
             dialogs.remove(this.recipient);
+        } else if (event.getID() == WindowEvent.WINDOW_ACTIVATED) {
+            // If a message is received while this is not the active window then
+            // the icon will have been changed to alert the user. Now that the
+            // window has received focus the user is aware of the message so we
+            // can change the icon back.
+            if (isBlinking()) {
+                setBlinking(false);
+            }
+
+            // Windows created as a result of new messages are initially
+            // iconified and for some reason the layout isn't quite right. This
+            // just forces the components to organise themsleves again. It's
+            // harmless to do it if it's not needed.
+            validate();
         }
         super.processWindowEvent(event);
+    }
+
+    public boolean isBlinking() {
+        return this.iconBlinker != null;
+    }
+
+    public void setBlinking(boolean blink) {
+        if (blink) {
+            if (iconBlinker == null) {
+                this.iconBlinker = new Timer(500, new ActionListener() {
+                    public void actionPerformed(ActionEvent event) {
+                        if (getIconImage() == normalIcon) {
+                            setIconImage(alertIcon);
+                        } else {
+                            setIconImage(normalIcon);
+                        }
+                    }
+                });
+                this.setIconImage(this.alertIcon);
+                this.iconBlinker.start();
+            }
+        } else {
+            if (this.iconBlinker != null) {
+                this.iconBlinker.stop();
+                this.iconBlinker = null;
+            }
+
+            if (getIconImage() != normalIcon) {
+                this.setIconImage(this.normalIcon);
+            }
+        }
     }
 
     protected class PrivateChatAction extends ChatAction {
@@ -228,10 +292,18 @@ public class PrivateChatDialog extends JFrame {
             // this crazy stuff.
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    PrivateChatDialog dialog = showDialog(data.sender);
+                    PrivateChatDialog dialog = getOrCreateDialog(data.sender,
+                            ICONIFIED);
                     dialog.chatPanel.appendChat(data.type, data.sender,
                             data.message, server.get_handle());
-                    dialog.toFront();
+
+                    // If the window is not the active window then let the user
+                    // know that a message has arrived. We used to bring the
+                    // window to the front but this was quite annoying if you
+                    // were currently typing in another window.
+                    if (!dialog.isActive()) {
+                        dialog.setBlinking(true);
+                    }
                 }
             });
         }
@@ -299,6 +371,5 @@ public class PrivateChatDialog extends JFrame {
         public void table_update(Table table) {
             // Ignore.
         }
-
     }
 }
