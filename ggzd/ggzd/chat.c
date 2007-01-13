@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 8746 2006-12-23 21:35:25Z jdorje $
+ * $Id: chat.c 8905 2007-01-13 12:18:47Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -164,11 +164,13 @@ GGZClientReqError chat_player_enqueue(const char* receiver, GGZChatType type,
 	rcvr_has_hostperm = ggz_perms_is_host(rcvr->perms);
 
 	/* Get information about the sender */
-	pthread_rwlock_rdlock(&sender->lock);
+	sender_is_rcvr = (sender == rcvr);
+	if(!sender_is_rcvr)
+		pthread_rwlock_rdlock(&sender->lock);
 	sender_at_table = (sender->table != -1);
 	sender_gagged = sender->gagged;
-	sender_is_rcvr = (sender == rcvr);
-	pthread_rwlock_unlock(&sender->lock);	
+	if(!sender_is_rcvr)
+		pthread_rwlock_unlock(&sender->lock);	
 
 	/* Don't allow personal chat to a player at a table. See below*/
 	rcvr_at_table = (rcvr->table != -1);
