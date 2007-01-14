@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: init.c 8679 2006-11-27 09:43:14Z josef $
+ * $Id: init.c 8907 2007-01-14 14:37:42Z oojah $
  *
  * Initialization code
  *
@@ -74,8 +74,10 @@ int ggzcore_init(GGZOptions options)
 	if (options.flags & GGZ_OPT_THREADED_IO)
 		_ggzcore_server_set_threaded_io();
 
+#ifndef __MINGW32__
 	/* Do not die if child process dies while we're communicating with it */
 	signal(SIGPIPE, SIG_IGN);
+#endif
 
 	return ret;
 }
