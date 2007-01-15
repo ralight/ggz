@@ -1,3 +1,5 @@
+[note: this document needs a rework; some 2007 notes are below]
+
 /* This is a first suggestion. Il faut que beaucoup des joueurs disent: d'accord :) */
 
 The required security and privacy rules for GGZ
@@ -83,4 +85,16 @@ Maybe someone has more ideas when reading the following:
 - privacy ignorance at Blizzard Online
 - Echelon and other intruding systems
 - Address sale from online entertainment systems
+
+------------------------------------------------------------------
+
+Added in 2007:
+* in future versions of the protocol, GGZ core clients might send an
+  identifier and version string (user agents); those should purely be used for
+  statistics, and easily be turned off by users
+  [see the mess this has caused in the web world]
+* default strings might reveal the user identity by means of their
+  translations; for example, the title of a launched table
+* how do we handle account deletions? we never want to delete them fully,
+  but all personal data should vanish if the user wants it
 
