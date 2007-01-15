@@ -27,6 +27,7 @@
 
 #include <ggz_common.h>
 #include <ggzmod.h>
+#include <ggz_dio.h>
 
 #define COLOR_WHITE     "\e[0m\e[37m"
 #define COLOR_BLUE      "\e[0m\e[34m"
@@ -41,6 +42,7 @@ static int refresh;
 
 static GGZMod *mod = NULL;
 static int gamefd = -1;
+static GGZDataIO *dio = NULL;
 
 static int gamenum = -1;
 static int gamemove = -1;
@@ -242,57 +244,53 @@ static unsigned char readkey(void)
 	return buf[0];
 }
 
-static void game_handle_io(void)
+static void game_handle_io(GGZDataIO *dio, void *userdata)
 {
 	int op, i;
 	int nummove, move;
 	char status, space, winner;
-	
-	if (ggz_read_int(gamefd, &op) < 0)
-	{
-		/* ... */
-		return;
-	}
+
+	ggz_dio_get_int(dio, &op);
 
 	switch(op)
 	{
 		case TTT_MSG_SEAT:
-			ggz_read_int(gamefd, &gamenum);
+			ggz_dio_get_int(dio, &gamenum);
 			break;
 		case TTT_MSG_PLAYERS:
 			for(i = 0; i < 2; i++)
 			{
-				ggz_read_int(gamefd, &seats[i]);
+				ggz_dio_get_int(dio, &seats[i]);
 				if(seats[i] != GGZ_SEAT_OPEN)
 				{
-					ggz_read_string(gamefd, names[i], 17);
+					ggz_dio_get_string(dio, names[i], 17);
 				}
 			}
 			break;
 		case TTT_REQ_MOVE:
 			break;
 		case TTT_RSP_MOVE:
-			ggz_read_char(gamefd, &status);
+			ggz_dio_get_char(dio, &status);
 			if(status == 0) board[gamemove] = (gamenum == 0 ? 'x' : 'o');
 			drawgameboard();
 			break;
 		case TTT_MSG_MOVE:
-			ggz_read_int(gamefd, &nummove);
-			ggz_read_int(gamefd, &move);
+			ggz_dio_get_int(dio, &nummove);
+			ggz_dio_get_int(dio, &move);
 			board[move] = (nummove == 0 ? 'x' : 'o');
 			drawgameboard();
 			break;
 		case TTT_SND_SYNC:
-			ggz_read_char(gamefd, &gameturn);
+			ggz_dio_get_char(dio, &gameturn);
 			for(i = 0; i < 9; i++)
 			{
-				ggz_read_char(gamefd, &space);
+				ggz_dio_get_char(dio, &space);
 				if(space < 0) board[i] = ' ';
 				else board[i] = (space == 0 ? 'x' : 'o');
 			}
 			break;
 		case TTT_MSG_GAMEOVER:
-			ggz_read_char(gamefd, &winner);
+			ggz_dio_get_char(dio, &winner);
 			gameturn = -1;
 			break;
 	}
@@ -310,6 +308,10 @@ static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e,
 
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 	gamefd = *fd;
+
+	dio = ggz_dio_new(gamefd);
+	ggz_dio_set_read_callback(dio, game_handle_io, NULL);
+	ggz_dio_set_auto_flush(dio, true);
 }
 
 static void ggz_init()
@@ -365,7 +367,7 @@ static void ggz_network(void)
 	{
 		if(gamefd >= 0)
 		{
-			if(FD_ISSET(gamefd, &set)) game_handle_io();
+			if(FD_ISSET(gamefd, &set)) ggz_dio_read_data(dio);
 		}
 		if(FD_ISSET(serverfd, &set)) handle_ggz();
 	}
@@ -425,8 +427,10 @@ int main(int argc, char *argv[])
 						case '8':
 						case '9':
 							gamemove = key - 49;
-							ggz_write_int(gamefd, TTT_SND_MOVE);
-							ggz_write_int(gamefd, gamemove);
+							ggz_dio_packet_start(dio);
+							ggz_dio_put_int(dio, TTT_SND_MOVE);
+							ggz_dio_put_int(dio, gamemove);
+							ggz_dio_packet_end(dio);
 							break;
 					}
 				}

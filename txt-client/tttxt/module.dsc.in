@@ -6,5 +6,5 @@ Frontend = console
 Environment = console
 Homepage = http://www.ggzgamingzone.org/gameclients/tttxt/
 ProtocolEngine = TicTacToe
-ProtocolVersion = 4
-Version = 0.0.1
+ProtocolVersion = 5
+Version = 0.0.2
