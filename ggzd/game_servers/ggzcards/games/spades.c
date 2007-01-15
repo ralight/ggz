@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8565 2006-08-31 22:42:10Z jdorje $
+ * $Id: spades.c 8911 2007-01-15 03:18:12Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -719,10 +719,14 @@ static void spades_end_hand(void)
 
 	for (p = 0; p < 2; p++) {
 		int tricks, bid, score = 0;
+		int bid1, bid2;
 
 		/* Count points for contract. */
-		bid = (game.players[p].bid.sbid.val
-		       + game.players[p + 2].bid.sbid.val);
+		bid1 = ((game.players[p].bid.sbid.spec == SPADES_BID)
+			? game.players[p].bid.sbid.val : 0);
+		bid2 = ((game.players[p + 2].bid.sbid.spec == SPADES_BID)
+			? game.players[p + 2].bid.sbid.val : 0);
+		bid = bid1 + bid2;
 		tricks = 0;
 		if (TRICKS_COUNT(p))
 			tricks += game.players[p].tricks;
