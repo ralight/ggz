@@ -1,8 +1,3 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8651 2006-11-09 06:47:54Z josef $
-
-SUBDIRS = .
-
 ggzexecmod_PROGRAMS = guru-chess
 
 guru_chess_SOURCES = main.c ai.c

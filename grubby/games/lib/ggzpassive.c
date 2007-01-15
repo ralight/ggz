@@ -1,6 +1,6 @@
 /*
  * Noninteractive game module support for Guru
- * Copyright (C) 2004 Josef Spillner, josef@ggzgamingzone.org
+ * Copyright (C) 2007 Josef Spillner <josef@ggzgamingzone.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,12 +27,20 @@
 
 static GGZMod *ggz_mod = NULL;
 static GGZGameFunction ggz_gamehandler = NULL;
+static bool ggz_enabledio = false;
+static bool ggz_done = false;
+
 int ggz_gamefd = -1;
-int ggz_done = 0;
+GGZDataIO *ggz_dio = NULL;
 
 static void ggz_handle_ggz()
 {
 	ggzmod_dispatch(ggz_mod);
+}
+
+static void ggz_handle_game(GGZDataIO *dio, void *userdata)
+{
+	(ggz_gamehandler)();
 }
 
 static void ggz_handle_server(GGZMod *ggzmod, GGZModEvent e, const void *data)
@@ -42,6 +50,13 @@ static void ggz_handle_server(GGZMod *ggzmod, GGZModEvent e, const void *data)
 	ggz_gamefd = *fd;
 
 	ggzmod_set_state(ggz_mod, GGZMOD_STATE_PLAYING);
+
+	if(ggz_enabledio)
+	{
+		ggz_dio = ggz_dio_new(ggz_gamefd);
+		ggz_dio_set_read_callback(ggz_dio, ggz_handle_game, NULL);
+		ggz_dio_set_auto_flush(ggz_dio, true);
+	}
 }
 
 static void ggz_init()
@@ -94,7 +109,17 @@ static void ggz_network()
 	{
 		if(ggz_gamefd >= 0)
 		{
-			if(FD_ISSET(ggz_gamefd, &set)) (ggz_gamehandler)();
+			if(FD_ISSET(ggz_gamefd, &set))
+			{
+				if(ggz_dio)
+				{
+					ggz_dio_read_data(ggz_dio);
+				}
+				else
+				{
+					(ggz_gamehandler)();
+				}
+			}
 		}
 		if(FD_ISSET(serverfd, &set)) ggz_handle_ggz();
 	}
@@ -103,6 +128,16 @@ static void ggz_network()
 void ggzpassive_sethandler(GGZGameFunction func)
 {
 	ggz_gamehandler = func;
+}
+
+void ggzpassive_enabledio()
+{
+	ggz_enabledio = true;
+}
+
+void ggzpassive_end()
+{
+	ggz_done = true;
 }
 
 void ggzpassive_start()

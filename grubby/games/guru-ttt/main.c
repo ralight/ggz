@@ -52,24 +52,20 @@ static void ttt_ai(void)
 	int nummove, move;
 	char status, space, winner;
 	
-	if (ggz_read_int(ggz_gamefd, &op) < 0)
-	{
-		/* ... */
-		return;
-	}
+	ggz_dio_get_int(ggz_dio, &op);
 
 	switch(op)
 	{
 		case TTT_MSG_SEAT:
-			ggz_read_int(ggz_gamefd, &gamenum);
+			ggz_dio_get_int(ggz_dio, &gamenum);
 			break;
 		case TTT_MSG_PLAYERS:
 			for(i = 0; i < 2; i++)
 			{
-				ggz_read_int(ggz_gamefd, &seats[i]);
+				ggz_dio_get_int(ggz_dio, &seats[i]);
 				if(seats[i] != GGZ_SEAT_OPEN)
 				{
-					ggz_read_string(ggz_gamefd, names[i], 17);
+					ggz_dio_get_string(ggz_dio, names[i], 17);
 				}
 			}
 			break;
@@ -85,35 +81,37 @@ static void ttt_ai(void)
 			}
 			break;
 		case TTT_RSP_MOVE:
-			ggz_read_char(ggz_gamefd, &status);
+			ggz_dio_get_char(ggz_dio, &status);
 			if(status == 0) board[gamemove] = (gamenum == 0 ? 'x' : 'o');
 			break;
 		case TTT_MSG_MOVE:
-			ggz_read_int(ggz_gamefd, &nummove);
-			ggz_read_int(ggz_gamefd, &move);
+			ggz_dio_get_int(ggz_dio, &nummove);
+			ggz_dio_get_int(ggz_dio, &move);
 			board[move] = (nummove == 0 ? 'x' : 'o');
 			break;
 		case TTT_SND_SYNC:
-			ggz_read_char(ggz_gamefd, &gameturn);
+			ggz_dio_get_char(ggz_dio, &gameturn);
 			for(i = 0; i < 9; i++)
 			{
-				ggz_read_char(ggz_gamefd, &space);
+				ggz_dio_get_char(ggz_dio, &space);
 				if(space < 0) board[i] = ' ';
 				else board[i] = (space == 0 ? 'x' : 'o');
 			}
 			break;
 		case TTT_MSG_GAMEOVER:
-			ggz_read_char(ggz_gamefd, &winner);
+			ggz_dio_get_char(ggz_dio, &winner);
 			gameturn = -1;
-			ggz_done = 1;
+			ggzpassive_end();
 			break;
 	}
 
 	if(movemove == 1)
 	{
 		sleep(2);
-		ggz_write_int(ggz_gamefd, TTT_SND_MOVE);
-		ggz_write_int(ggz_gamefd, gamemove);
+		ggz_dio_packet_start(ggz_dio);
+		ggz_dio_put_int(ggz_dio, TTT_SND_MOVE);
+		ggz_dio_put_int(ggz_dio, gamemove);
+		ggz_dio_packet_end(ggz_dio);
 		movemove = 0;
 	}
 }
@@ -131,6 +129,7 @@ int main(int argc, char *argv[])
 	ttt_init();
 
 	ggzpassive_sethandler(&ttt_ai);
+	ggzpassive_enabledio();
 	ggzpassive_start();
 
 	return 0;
