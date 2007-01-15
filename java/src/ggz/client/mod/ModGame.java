@@ -321,7 +321,7 @@ public class ModGame {
         // Invoke the handler.
         if (this.state != ModState.GGZMOD_STATE_CREATED)
             if (listener != null)
-                listener.handleSeat(oldSeat);
+                listener.handleSeat(oldSeat, seat);
     }
 
     private void setSpectatorSeat(SpectatorSeat seat) {

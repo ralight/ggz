@@ -147,11 +147,11 @@ public class GamePanel extends JPanel implements ModEventHandler {
     }
 
     /**
-     * This is invoked when a message arrives from the core client. We handle
-     * player messages in alert_player() above, which is invoked when a message
-     * arrives from the game client.
+     * This is invoked when a message arrives from the core client. In
+     * CardGamePanel, we handle player messages in alert_player() above, which
+     * is invoked when a message arrives from the game client.
      */
-    public void handleSeat(Seat oldSeat) {
+    public void handleSeat(Seat oldSeat, Seat newSeat) {
         // Do nothing here.
     }
 

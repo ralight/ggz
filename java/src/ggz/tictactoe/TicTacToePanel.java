@@ -19,6 +19,7 @@ package ggz.tictactoe;
 
 import ggz.cards.SmartChatLayout;
 import ggz.client.mod.ModState;
+import ggz.client.mod.Seat;
 import ggz.games.GamePanel;
 
 import java.awt.BorderLayout;
@@ -31,7 +32,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 /**
  * Player 0 = 0 Player 1 = X
@@ -81,7 +81,7 @@ public class TicTacToePanel extends GamePanel implements TicTacToeListener,
 
         add(this.mainAndStatusPanel, SmartChatLayout.TABLE);
     }
-    
+
     protected Dimension getPreferredWindowSize() {
         return new Dimension(600, 300);
     }
@@ -98,28 +98,16 @@ public class TicTacToePanel extends GamePanel implements TicTacToeListener,
     }
 
     public void boardChanged(final char[] boardData) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                TicTacToePanel.this.board.refresh(boardData);
-            }
-        });
+        TicTacToePanel.this.board.refresh(boardData);
     }
 
     public void seatChanged(final int seatNum) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                seatLabel[seatNum].setText(client.getPlayerName(seatNum));
-            }
-        });
+        seatLabel[seatNum].setText(client.getPlayerName(seatNum));
     }
 
     public void moveRequested() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                board.setUserSymbol(client.getPlayerSymbol(client.getMySeat()));
-                board.setEnabled(true);
-            }
-        });
+        board.setUserSymbol(client.getPlayerSymbol(client.getMySeat()));
+        board.setEnabled(true);
     }
 
     /**
@@ -128,20 +116,25 @@ public class TicTacToePanel extends GamePanel implements TicTacToeListener,
      * move.
      */
     public void cancelMove() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                board.setEnabled(false);
-            }
-        });
+        board.setEnabled(false);
     }
 
     public void gameStatus(final String message) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                TicTacToePanel.this.statusPanel.setText(message);
-                TicTacToePanel.this.revalidate();
-            }
-        });
+        TicTacToePanel.this.statusPanel.setText(message);
+        TicTacToePanel.this.revalidate();
+    }
+
+    /**
+     * This method is redundant but it's where seath information is received
+     * from ModGame. The idea is that game clients will receive information
+     * about players in the game via the Mod interface rather than from the
+     * game. I'm not sure this works so well at the moment, one of the reason is
+     * that seats for bots don't include the player name so if clients try and
+     * use their own name then it will differe amongst clients, possibly causing
+     * confusion for players and spectators.
+     */
+    public void handleSeat(Seat oldSeat, Seat newSeat) {
+        super.handleSeat(oldSeat, newSeat);
     }
 
     public void cellClicked(int cellIndex) {

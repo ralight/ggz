@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Logger;
 
+import javax.swing.SwingUtilities;
+
 public class Client {
 
     /* Tic-Tac-Toe protocol */
@@ -66,6 +68,17 @@ public class Client {
     private static final int STATE_MOVE = 2;
 
     private static final int STATE_DONE = 3;
+
+    /* Events that we can fire */
+    private static final int EVENT_BOARD_CHANGED = 0;
+
+    private static final int EVENT_CANCEL_MOVE = 1;
+
+    private static final int EVENT_GAME_STATUS = 2;
+
+    private static final int EVENT_MOVE_REQUESTED = 3;
+
+    private static final int EVENT_SEAT_CHANGED = 4;
 
     /* Basic info about connection */
 
@@ -160,8 +173,8 @@ public class Client {
 
         case TTT_REQ_MOVE:
             this.state = STATE_MOVE;
-            fireMoveRequested();
-            fireGameStatus("It's your move.");
+            fireEvent(EVENT_MOVE_REQUESTED, null);
+            fireEvent(EVENT_GAME_STATUS, "It's your move.");
             break;
 
         case TTT_RSP_MOVE:
@@ -207,7 +220,7 @@ public class Client {
             } else if (this.seats[seatNum] == SeatType.GGZ_SEAT_ABANDONED) {
                 seatName = this.dio.readString() + " has left the game";
                 if (this.state == STATE_MOVE) {
-                    fireCancelMove();
+                    fireEvent(EVENT_CANCEL_MOVE, null);
                 }
             } else {
                 seatName = this.dio.readString();
@@ -215,13 +228,13 @@ public class Client {
             }
             this.names[seatNum] = seatName + " (" + getPlayerSymbol(seatNum)
                     + ")";
-            fireSeatChanged(seatNum);
+            fireEvent(EVENT_SEAT_CHANGED, new Integer(seatNum));
         }
 
         if (numPlayersInGame != 2) {
-            fireGameStatus("Waiting for a player to join...");
+            fireEvent(EVENT_GAME_STATUS, "Waiting for a player to join...");
         } else {
-            fireGameStatus("Opponent is thinking...");
+            fireEvent(EVENT_GAME_STATUS, "Opponent is thinking...");
         }
     }
 
@@ -243,7 +256,7 @@ public class Client {
             log.fine("Your opponent has moved.");
 
         this.board[move] = symbol;
-        fireBoardChanged();
+        fireEvent(EVENT_BOARD_CHANGED, null);
     }
 
     private void receiveSync() throws IOException {
@@ -255,18 +268,19 @@ public class Client {
             switch (turn) {
             case 0:
             case 1:
-                fireGameStatus(getPlayerName(turn) + " is thinking...");
+                fireEvent(EVENT_GAME_STATUS, getPlayerName(turn)
+                        + " is thinking...");
                 break;
             default:
-                fireGameStatus("Waiting for a player to join...");
+                fireEvent(EVENT_GAME_STATUS, "Waiting for a player to join...");
                 break;
             }
         } else if (turn == this.num) {
-            fireGameStatus("It's your move.");
+            fireEvent(EVENT_GAME_STATUS, "It's your move.");
         } else if (turn == 1 % this.num) {
-            fireGameStatus("Opponent is thinking...");
+            fireEvent(EVENT_GAME_STATUS, "Opponent is thinking...");
         } else {
-            fireGameStatus("Waiting for a player to join...");
+            fireEvent(EVENT_GAME_STATUS, "Waiting for a player to join...");
         }
 
         for (int i = 0; i < 9; i++) {
@@ -275,7 +289,7 @@ public class Client {
                 this.board[i] = getPlayerSymbol(space);
         }
 
-        fireBoardChanged();
+        fireEvent(EVENT_BOARD_CHANGED, null);
         log.fine("Sync completed.");
     }
 
@@ -287,10 +301,10 @@ public class Client {
         switch (winner) {
         case 0:
         case 1:
-            fireGameStatus(this.names[winner] + " won!");
+            fireEvent(EVENT_GAME_STATUS, this.names[winner] + " won!");
             break;
         case 2:
-            fireGameStatus("Tie game!");
+            fireEvent(EVENT_GAME_STATUS, "Tie game!");
             break;
         default:
             throw new IllegalStateException(
@@ -303,21 +317,21 @@ public class Client {
 
         switch (status) {
         case TTT_ERR_STATE:
-            fireGameStatus("Server not ready!!");
+            fireEvent(EVENT_GAME_STATUS, "Server not ready!!");
             break;
         case TTT_ERR_TURN:
-            fireGameStatus("Not your turn!");
+            fireEvent(EVENT_GAME_STATUS, "Not your turn!");
             break;
         case TTT_ERR_BOUND:
-            fireGameStatus("Move out of bounds!");
+            fireEvent(EVENT_GAME_STATUS, "Move out of bounds!");
             break;
         case TTT_ERR_FULL:
-            fireGameStatus("Space already occupied!");
+            fireEvent(EVENT_GAME_STATUS, "Space already occupied!");
             break;
         case 0:
-            fireGameStatus("Opponent is thinking...");
+            fireEvent(EVENT_GAME_STATUS, "Opponent is thinking...");
             this.board[this.mostRecentMove] = getPlayerSymbol(this.num);
-            fireBoardChanged();
+            fireEvent(EVENT_BOARD_CHANGED, null);
             break;
         }
     }
@@ -328,13 +342,13 @@ public class Client {
 
         if (this.state != STATE_MOVE) {
             if (this.num >= 0)
-                fireGameStatus("It's not your move yet.");
+                fireEvent(EVENT_GAME_STATUS, "It's not your move yet.");
             else
-                fireGameStatus("You're just watching.");
+                fireEvent(EVENT_GAME_STATUS, "You're just watching.");
             return;
         }
 
-        fireGameStatus("Sending move.");
+        fireEvent(EVENT_GAME_STATUS, "Sending move.");
         this.mostRecentMove = cellIndex;
 
         out.writeInt(TTT_SND_MOVE);
@@ -351,30 +365,65 @@ public class Client {
         for (int i = 0; i < 9; i++)
             this.board[i] = ' ';
 
-        fireBoardChanged();
+        fireEvent(EVENT_BOARD_CHANGED, null);
     }
 
-    private void fireGameStatus(String message) {
+    /**
+     * Fires the event on the AWT event queue. This makes the UI a lot easier to
+     * program since event handlers are guaranteed to be invoked on the AWT
+     * event queue so no deadlocks can occur.
+     * 
+     * @param eventId
+     * @param eventData
+     */
+    private void fireEvent(final int eventId, final Object eventData) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                switch (eventId) {
+                case EVENT_GAME_STATUS:
+                    fireGameStatus((String) eventData);
+                    break;
+                case EVENT_BOARD_CHANGED:
+                    fireBoardChanged();
+                    break;
+                case EVENT_CANCEL_MOVE:
+                    fireCancelMove();
+                    break;
+                case EVENT_MOVE_REQUESTED:
+                    fireMoveRequested();
+                    break;
+                case EVENT_SEAT_CHANGED:
+                    fireSeatChanged(((Integer) eventData).intValue());
+                    break;
+                default:
+                    throw new UnsupportedOperationException(
+                            "Unsupported event type: " + eventId);
+                }
+            }
+        });
+    }
+
+    protected void fireGameStatus(String message) {
         if (this.listener != null)
             this.listener.gameStatus(message);
     }
 
-    private void fireBoardChanged() {
+    protected void fireBoardChanged() {
         if (this.listener != null)
             this.listener.boardChanged(this.board);
     }
 
-    private void fireSeatChanged(int seatNum) {
+    protected void fireSeatChanged(int seatNum) {
         if (this.listener != null)
             this.listener.seatChanged(seatNum);
     }
 
-    private void fireMoveRequested() {
+    protected void fireMoveRequested() {
         if (this.listener != null)
             this.listener.moveRequested();
     }
-    
-    private void fireCancelMove() {
+
+    protected void fireCancelMove() {
         if (this.listener != null)
             this.listener.cancelMove();
     }

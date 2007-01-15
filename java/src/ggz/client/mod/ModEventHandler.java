@@ -64,9 +64,11 @@ public interface ModEventHandler {
      * the event is invoked.
      * 
      * @param oldSeat
-     *            Seat information at that seat number.
+     *            Old seat information at that seat number.
+     * @param newSeat
+     *            New seat information at that seat number.
      */
-    public void handleSeat(Seat oldSeat);
+    public void handleSeat(Seat oldSeat, Seat newSeat);
 
     /**
      * Invoked when a spectator leaves or joins. The seat name will be null when
