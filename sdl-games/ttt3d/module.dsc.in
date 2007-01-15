@@ -5,7 +5,7 @@ CommandLine = @ggzexecmoddir@/ggz.ttt3d
 Frontend = sdl
 Homepage = http://www.ggzgamingzone.org/gameclients/tictactoe/
 ProtocolEngine = TicTacToe
-ProtocolVersion = 4
-Version = 0.0.1
+ProtocolVersion = 5
+Version = 0.0.2
 #SupportedGames = TicTacToe
 
