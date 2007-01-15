@@ -1,11 +1,11 @@
-# $Id: tictactoe.dsc 8880 2007-01-09 17:22:14Z josef $
+# $Id: tictactoe.dsc 8921 2007-01-15 15:13:14Z josef $
 
 [GameInfo]
 Author = Brent Hendricks
 Description = Simple GGZ game module for playing Tic-Tac-Toe
 Homepage = http://www.ggzgamingzone.org/gameservers/tictactoe/
 Name = TicTacToe
-Version = 0.0.9
+Version = 0.0.10
 
 [LaunchInfo]
 ExecutablePath = ggzd.tictactoe

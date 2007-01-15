@@ -1,11 +1,11 @@
-# $Id: reversi.dsc 8880 2007-01-09 17:22:14Z josef $
+# $Id: reversi.dsc 8921 2007-01-15 15:13:14Z josef $
 
 [GameInfo]
 Author = Ismael Orenstein
 Description = Simple GGZ game module for playing Reversi
 Homepage = http://www.ggzgamingzone.org/gameservers/reversi/
 Name = Reversi
-Version = 0.0.7
+Version = 0.0.8
 
 [LaunchInfo]
 ExecutablePath = ggzd.reversi
