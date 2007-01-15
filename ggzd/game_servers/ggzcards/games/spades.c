@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8911 2007-01-15 03:18:12Z jdorje $
+ * $Id: spades.c 8913 2007-01-15 03:37:56Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -526,7 +526,7 @@ static void spades_get_bid(void)
 		if (partner->bid_count == 0
 		    || pard >= GSPADES.minimum_team_bid
 		    || GSPADES.bid_variant == BID_DN_ONLY) {
-			add_sbid(NO_BID_VAL, NO_SUIT, SPADES_DNIL);
+			add_sbid(0, NO_SUIT, SPADES_DNIL);
 		}
 	} else {
 		/* A regular bid */
@@ -574,7 +574,7 @@ static void spades_get_bid(void)
 		if (GSPADES.nil_value > 0
 		    && (game.bid_count < 2
 			|| pard >= GSPADES.minimum_team_bid))
-			add_sbid(NO_BID_VAL, NO_SUIT, SPADES_NIL);
+			add_sbid(0, NO_SUIT, SPADES_NIL);
 	}
 
 	/* TODO: other specialty bids */
@@ -719,14 +719,10 @@ static void spades_end_hand(void)
 
 	for (p = 0; p < 2; p++) {
 		int tricks, bid, score = 0;
-		int bid1, bid2;
 
 		/* Count points for contract. */
-		bid1 = ((game.players[p].bid.sbid.spec == SPADES_BID)
-			? game.players[p].bid.sbid.val : 0);
-		bid2 = ((game.players[p + 2].bid.sbid.spec == SPADES_BID)
-			? game.players[p + 2].bid.sbid.val : 0);
-		bid = bid1 + bid2;
+		bid = (game.players[p].bid.sbid.val
+		       + game.players[p + 2].bid.sbid.val);
 		tricks = 0;
 		if (TRICKS_COUNT(p))
 			tricks += game.players[p].tricks;
