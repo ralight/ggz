@@ -94,6 +94,9 @@ As games are very different from applications, it is not easy to recommend for
 this or against that. Instead, a general collection of hints is presented,
 divided into the major differences on the client side (frontends) and the
 server side (programming languages).
+This guide covers the following platforms for GGZ game development:
+KDE/Qt, GNOME/Gtk+, Python (with Pygame), SDL and pure C/C++ without any
+toolkits.
 
 The more games provide GGZ support, the more fun it becomes. After reading
 this guide, all questions about how to provide GGZ support from a game
@@ -116,6 +119,12 @@ The other available seats can be left empty, filled up with bots or used by
 other players. The quantity of each type is determined by the game server, for
 example, some games might not support bots (AI players) at all, or it might
 support an unlimited number of players.
+
+GGZ games are available for basically all standard development platforms.
+This makes it convenient to take a look at one of the existing games in order
+to find out programming details. In particular, the Tic-Tac-Toe game is
+simple enough that it has been awarded the title of being the example game
+for all platforms.
 
 @section Games which want to use GGZ ("external")
 
@@ -261,6 +270,10 @@ via a callback, other such messages include seat changes, table chat or
 detailed player information.
 Please refer to the client-client specification for details.
 
+Note that using the game channel is entirely up to the game. GGZ provides some
+support for common protocols, however nobody is forced to use these.
+The choice of protocols will be covered in a later chapter.
+
 For three programming languages, the basic usage of ggzmod is now shown in the
 next subsections. This should cover the majority of game client development
 scenarios.
@@ -274,7 +287,19 @@ A basic ggzmod usage in the C programming language using the @command{glib}
 library, e.g. for Gtk+ games, may thus look like this:
 
 @verbatim
-/* Whenever the core client sends data, feed it into ggzmod */
+/* The ggzmod object */
+static GGZMod *ggzmod;
+
+/* The game server sent some data */
+static void handle_game(gpointer data, gint source, GdkInputCondition cond)
+{
+	int opcode;
+
+	/* Blocking read, for the sake of simplicity */
+	int ret = ggz_read_fd(ggzmod_get_fd(ggzmod), &opcode);
+}
+
+/* Whenever the core client sends data from ggzd, feed it into ggzmod */
 static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
 {
 	ggzmod_dispatch(ggzmod);
@@ -285,25 +310,30 @@ static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e, void *data)
 {
 	int fd = *(int*)data;
 	ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
-	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
+	gdk_input_add(fd, GDK_INPUT_READ, handle_game, NULL);
 }
 
-int main()
+static int initggz()
 {
-...
-	GGZMod *ggzmod;
-
 	ggzmod = ggzmod_new(GGZMOD_GAME);
 	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
-...
+	/* Other callbacks are available, see ggzmod API documentation */
+
 	ggzmod_connect(ggzmod);
 	gdk_input_add(ggzmod_get_fd(ggzmod), GDK_INPUT_READ, handle_ggz, NULL);
-...
-	/* game runs here */
-...
+}
+
+static void deinitggz()
+{
 	ggzmod_disconnect(ggzmod)
-	ggzmod_free(game.ggzmod);
-...
+	ggzmod_free(ggzmod);
+}
+
+void main()
+{
+	initggz();
+	/* game runs here */
+	deinitggz();
 }
 @end verbatim
 
@@ -311,6 +341,36 @@ Note again that the example above is for a Gtk+ game client written in C.
 Things will differ for other toolkits like Qt or Pygame, or other programming
 languages like C++ or Python. Also, return values should be checked and such.
 The API documentation is the authorative source of information on that matter.
+
+@subsection Example in C, using GGZPassive
+
+GGZPassive is a minimal main loop implementation which handles both quantized
+and non-quantized game protocols. It doesn't support any advanced ggzmod
+features and is therefore only intended to be used by non-interactive game
+clients.
+Right now, GGZPassive is used by Grubby, specifically by the games Guru-TTT
+(Tic-Tac-Toe) and Guru-Chess (Chess).
+
+@verbatim
+#include <ggzpassive.h>
+
+void handle_game()
+{
+	int opcode;
+	ggz_dio_get_int(ggz_dio, &opcode);
+	if(opcode == MSG_GAME_OVER) ggzpassive_end();
+}
+
+int initggz()
+{
+	/* whenever network data arrives, notify us... */
+	ggzpassive_sethandler(handle_game);
+	/* ...but only when full packets have been read */
+	ggzpassive_enabledio();
+	/* now connect to GGZ and enter main loop */
+	ggzpassive_start();
+}
+@end verbatim
 
 @subsection Example in Python
 
@@ -362,7 +422,14 @@ reimplementation of ggzmod, not a wrapper for it. It is highly
 object-oriented, providing a central module class and representations
 for players, their statistics, requests to GGZ and events from GGZ.
 
-The following few lines already suffice to get GGZ support going:
+In addition to kggzmod, the kggzgames library provides more comfort for
+game developers. It contains a ready-to-go dialog for player management
+and a network class to handle quantized binary protocols seamlessly.
+The networking class is called KGGZPacket and will be presented later on
+in the part about networking.
+
+The following few lines already suffice to get GGZ support going
+with pure kggzmod:
 
 @verbatim
 // Let those be global variables here, although they better be class members
@@ -788,6 +855,57 @@ implementation, which will come with a native game server interface.
 @node Programming Details
 @chapter Programming Details
 
+@section Introduction
+
+This chapter covers all the details which might or might not apply to games
+running on GGZ. It start with GGZ-specific feature implementations and
+game wrapper tools, and proceeds to general information about networking
+protocols, configuration files and data updates.
+In order to not leave the GGZ track, two game development frameworks named
+GGZCards and GGZBoard are presented, which might be more inviting to new
+game developers than a completely new game.
+
+@section Game features
+
+GGZ provides a lot of features for the games running on it. An overview on
+them is available in the separate document "GGZ Features for Game Developers".
+A few of them will be covered here.
+
+@subsection Statistics
+
+Depending on how the game presents itself to the GGZ server (see the
+description of the .dsc files), it is expected to report some statistics after
+the game has finished.
+This is done with a call to ggzdmod_report_game() in the ggzdmod library
+or an equivalent call in the wrapper libraries.
+
+@subsection Savegames
+
+In addition to statistics, a savegame can also be reported to the GGZ server.
+The ggzdmod_report_savegame() call should however not be performed after the
+game is over. Instead, calling this function as early as possible makes it
+possible to create a continuous savegame, which can be used for game
+continuation in case of a game server crash.
+
+@subsection Named bots
+
+If more than one AI player is available, e.g. for different difficulties or
+to distinguish an internal AI player from an external dedicated engine,
+the concept of named bots can be used to offer all of them to the user
+who launches a game.
+The bots will be registered in ggzd's database on startup. In order to
+do so, they must be registered with a game server's .dsc file:
+
+@verbatim
+[NamedBots]
+FirstBot = internal_ai
+Secondbot = external_ai
+@end verbatim
+
+The ggzdmod_get_bot_class() function is then called on the name of the
+bot (e.g. FirstBot) and returns the bot class, which the game server
+uses internally to activate the correct AI accordingly.
+
 @section General purpose wrappers
 
 GGZ from version 0.0.6 on has been providing two wrappers which make life
@@ -879,24 +997,33 @@ ggz_free(answer);
 
 The library supports IPv6, and offers an experimental feature to perform
 operations such as host name lookups asynchronously.
+Since easysock itself performs blocking operation, it should not be used in
+code which requires interactivity (such as GUI code), unless threading is
+used.
 
 @subsection DIO (C), in libggz
 
 As an alternative to the easysock functions in libggz, the Data I/O module
 (DIO) can be used. Its main difference is that all read and write operations
-are non-blocking. This is achieved by using a buffer.
+are non-blocking. This is achieved by using a buffer and a two-byte length
+marker at the beginning of every packet (so-called quantized packets).
 
 @verbatim
+/* Initialize DIO */
 GGZDataIO *dio;
 dio = ggz_dio_new(fd);
+ggz_dio_set_auto_flush(dio, true);
+ggz_dio_set_read_callback(dio, read_cb, NULL);
 ...
+/* Send a packet */
 ggz_dio_packet_start(dio);
 ggz_dio_put_int(dio, 0);
 ggz_dio_packet_end(dio);
 ...
-ggz_dio_set_read_callback(read_cb);
+/* When data has arrived, start reading */
 ggz_dio_read_data();
 ...
+/* This gets called for every packet */
 void read_cb(GGZDataIO *dio, void *user)
 {
 	ggz_dio_get_int(dio, &opcode);
@@ -904,7 +1031,8 @@ void read_cb(GGZDataIO *dio, void *user)
 @end verbatim
 
 DIO is not well-documented but not too hard to use. The GGZ game servers
-Tic-Tac-Toe and GGZCards make use of it.
+Tic-Tac-Toe and GGZCards and all of their respective clients make use of it.
+The KGGZPacket class in libkggzgames implements DIO for C++.
 
 @subsection Qt (C++)
 
@@ -924,6 +1052,30 @@ library named libkdegames.
 Documentation:
 @url{http://developer.kde.org/documentation/library/}
 
+In libkggzgames, the KGGZPacket interface has been added to handle quantized
+packets for KDE game clients. It integrates easily with kggzmod, but doesn't
+depend on it in any way. The way the integration works is that instead of
+letting kggzmod notify the game client for new data from the network, it
+will notify KGGZPacket about it. KGGZPacket in turn will silently perform
+its job until all data has been read, and then will notify the game client.
+This is demonstrated in the following example:
+
+@verbatim
+// Use KGGZPacket together with kggzmod library
+KGGZMod::Module *mod = new KGGZMod::Module("mygame");
+KGGZPacket *packet = new KGGZPacket();
+
+// Redirect network notifications from kggzmod into KGGZPacket
+connect(mod, SIGNAL(signalNetwork(int)), packet, SLOT(slotNetwork(int)));
+// In return, we get notifications from KGGZPacket
+connect(packet, SIGNAL(signalPacket()), mygame, SLOT(slotPacket()));
+// Error handling should not be forgotten
+connect(mod, SIGNAL(signalError()), mygame, SLOT(slotError()));
+
+// That's it! Game client is up and running and will receive packets
+// from the game server
+@end verbatim
+
 @subsection Net/MNet (C++), now ggzdmod++
 
 The game Kamikaze, which provides support for GGZ, introduced an own set of network
@@ -932,8 +1084,10 @@ experiences with the other toolkits. The classes are now available as
 part of the ggzdmod++ library.
 
 Net objects provide simple buffered input/output with host/network conversion
-equal to easysock. MNet objects are inherited and in addition provide
-multicasting.
+equal to libggz's DIO. However, the packets are not quantized and Net protocols
+are not compatible to DIO protocols; instead, they're compatible to easysock
+protocols.
+MNet objects are inherited and in addition provide multicasting.
 A sample networking session looks like this:
 
 @verbatim
