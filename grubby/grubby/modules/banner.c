@@ -90,7 +90,7 @@ Guru *gurumod_exec(Guru *message)
 	if(!info) info = (char*)ggz_malloc(1024);
 
 	if(conn && message && message->player){
-		snprintf(query, sizeof(query), "SELECT `perms` FROM `users` WHERE `username` = LOWER('%s')", message->player);
+		snprintf(query, sizeof(query), "SELECT `perms` FROM `users` WHERE `username` = LOWER('%s') LIMIT 1", message->player);
 		rc = mysql_query(conn, query);
 		if(!rc){
 			res = mysql_store_result(conn);
