@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 8481 2006-08-07 07:35:04Z jdorje $
+ * $Id: dlg_main.c 8922 2007-01-15 15:14:17Z josef $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -71,7 +71,8 @@ static GtkWidget *create_menus(GtkWidget * window)
 				   items,
 				   sizeof(items) / sizeof(items[0]));
 
-	set_menu_sensitive(_("<main>/Game/Start game"), FALSE);
+// FIXME: causes crashes with translations
+//	set_menu_sensitive(_("<main>/Game/Start game"), FALSE);
 	set_menu_sensitive(TABLE_CHAT_WINDOW, TRUE);
 
 	return menubar;

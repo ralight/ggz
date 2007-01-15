@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 8561 2006-08-31 08:00:24Z jdorje $
+ * $Id: game.c 8922 2007-01-15 15:14:17Z josef $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -191,7 +191,8 @@ void game_send_newgame(void)
 
 	client_send_newgame();
 
-	set_menu_sensitive(_("<main>/Game/Start game"), FALSE);
+// FIXME: causes crashes with translations
+//	set_menu_sensitive(_("<main>/Game/Start game"), FALSE);
 
 	statusbar_message(_("Waiting for the other players..."));
 }
@@ -233,7 +234,8 @@ void game_get_newgame(void)
 	if (preferences.autostart) {
 		(void)game_send_newgame();
 	} else {
-		set_menu_sensitive(_("<main>/Game/Start game"), TRUE);
+// FIXME: causes crashes with translations
+//		set_menu_sensitive(_("<main>/Game/Start game"), TRUE);
 
 		ggz_debug(DBG_MAIN,
 			  "Handling newgame request from server.");
