@@ -127,8 +127,14 @@ public class Sprite extends Component {
 
         if (orientation == SwingConstants.TOP) {
             // Flip the image.
-            flipOriginalImage();
+            rotate180();
             return;
+        }
+
+        if (orientation == SwingConstants.RIGHT) {
+            // We flip then rotate 90 rather than rotate 270 since the latter
+            // seems to lose pixels somehow.
+            rotate180();
         }
 
         double angle = Math.PI / 2;
@@ -147,19 +153,31 @@ public class Sprite extends Component {
                 AffineTransformOp.TYPE_BILINEAR);
         op.filter(originalImage, newImage);
         originalImage = newImage;
-
-        if (orientation == SwingConstants.RIGHT) {
-            // We rotate 90 then flip rather than rotate 270 since the latter
-            // seems to lose pixels somehow.
-            flipOriginalImage();
-        }
     }
 
-    private void flipOriginalImage() {
+    /**
+     * Efficient 180 degree rotation.
+     */
+    private void rotate180() {
+        int cardWidth = originalImage.getWidth();
+        int cardHeight = originalImage.getHeight();
+        int xIndex = 0;
+        int yIndex = 0;
+        Image source;
+
+        if (card.getSuit() == Suit.UNKNOWN_SUIT
+                || card.getFace() == Face.UNKNOWN_FACE) {
+            source = cardBacks;
+        } else {
+            xIndex = getCardFrontsXIndex();
+            yIndex = getCardFrontsYIndex();
+            source = cardFronts;
+        }
+
         Graphics2D g2d = originalImage.createGraphics();
-        g2d.drawImage(originalImage, originalImage.getWidth(), originalImage
-                .getHeight(), 0, 0, 0, 0, originalImage.getWidth(),
-                originalImage.getHeight(), this);
+        g2d.drawImage(source, cardWidth, cardHeight, 0, 0, xIndex * cardWidth,
+                yIndex * cardHeight, (xIndex * cardWidth) + cardWidth,
+                (yIndex * cardHeight) + cardHeight, this);
         g2d.dispose();
     }
 
@@ -337,9 +355,8 @@ public class Sprite extends Component {
         }
         int cardWidth = cardFronts.getWidth() / 4;
         int cardHeight = cardFronts.getHeight() / 13;
-        int xIndex = card.getSuit().ordinal() - Suit.CLUBS.ordinal();
-        int yIndex = card.getFace() == Face.ACE_HIGH ? 0 : card.getFace()
-                .ordinal() - 1;
+        int xIndex = getCardFrontsXIndex();
+        int yIndex = getCardFrontsYIndex();
         BufferedImage image = new BufferedImage(cardWidth, cardHeight,
                 BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = image.createGraphics();
@@ -348,6 +365,17 @@ public class Sprite extends Component {
                 + cardWidth, (yIndex * cardHeight) + cardHeight, this);
         g2d.dispose();
         return image;
+    }
+
+    /** Gets the horizontal index of this card in the card fronts image "array". */
+    private int getCardFrontsXIndex() {
+        return card.getSuit().ordinal() - Suit.CLUBS.ordinal();
+    }
+
+    /** Gets the vertical index of this card in the card fronts image "array". */
+    private int getCardFrontsYIndex() {
+        return card.getFace() == Face.ACE_HIGH ? 0
+                : card.getFace().ordinal() - 1;
     }
 
     public void processMouseEvent(MouseEvent e) {

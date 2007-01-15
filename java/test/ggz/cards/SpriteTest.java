@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import javax.swing.JFrame;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
 public class SpriteTest {
@@ -43,7 +44,7 @@ public class SpriteTest {
             for (int face = Face.ACE_LOW.ordinal(); face <= Face.ACE_HIGH
                     .ordinal(); face++) {
                 sprite = new Sprite(new Card(Face.values()[face],
-                        Suit.values()[suit]));
+                        Suit.values()[suit]), SwingConstants.RIGHT);
                 sprite.setEnabled(true);
                 sprite.setLocation(sprite.getWidth() * (face - 1), sprite
                         .getHeight()
