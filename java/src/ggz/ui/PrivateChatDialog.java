@@ -13,25 +13,36 @@ import ggz.client.core.Table;
 import ggz.client.core.TableLeaveEventData;
 import ggz.common.AdminType;
 import ggz.common.ChatType;
+import ggz.ui.preferences.GGZPreferences;
 
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
 
-public class PrivateChatDialog extends JFrame {
+public class PrivateChatDialog extends JFrame implements
+        PreferenceChangeListener {
+    private static final ResourceBundle messages = ResourceBundle
+            .getBundle("ggz.ui.messages");
+
     protected static final HashMap dialogs = new HashMap();
 
     protected static Server server;
@@ -41,6 +52,8 @@ public class PrivateChatDialog extends JFrame {
     protected Timer iconBlinker;
 
     protected ChatPanel chatPanel;
+
+    protected JCheckBox toFrontCheckBox;
 
     private String recipient;
 
@@ -68,11 +81,27 @@ public class PrivateChatDialog extends JFrame {
         this.alertIcon = new ImageIcon(this.getClass().getResource(
                 "/ggz/ui/images/comments_add.png")).getImage();
         this.setIconImage(this.normalIcon);
+
+        // Checkbox to disable toFront() being called when new message arrives.
+        this.toFrontCheckBox = new JCheckBox(messages
+                .getString("ChatPreferences.PrivateChatToFront"),
+                GGZPreferences.getBoolean(GGZPreferences.PRIVATE_CHAT_TO_FRONT,
+                        true));
+        this.toFrontCheckBox.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent event) {
+                GGZPreferences.putBoolean(GGZPreferences.PRIVATE_CHAT_TO_FRONT,
+                        event.getStateChange() == ItemEvent.SELECTED);
+            }
+        });
+        GGZPreferences.addPreferenceChangeListener(this);
+
+        this.getContentPane().add(toFrontCheckBox, BorderLayout.NORTH);
     }
 
     public void dispose() {
         this.chatPanel.dispose();
         setBlinking(false);
+        GGZPreferences.removePreferenceChangeListener(this);
         super.dispose();
     }
 
@@ -83,7 +112,7 @@ public class PrivateChatDialog extends JFrame {
             // No private chat with this player yet.
             dialog = new PrivateChatDialog(otherPlayer);
             dialogs.put(otherPlayer, dialog);
-            dialog.setSize(400, 350);
+            dialog.setSize(430, 350);
             dialog.setExtendedState(initialState);
             dialog.setVisible(true);
             dialog.chatPanel.textField.requestFocus();
@@ -140,6 +169,13 @@ public class PrivateChatDialog extends JFrame {
             if (getIconImage() != normalIcon) {
                 this.setIconImage(this.normalIcon);
             }
+        }
+    }
+
+    public void preferenceChange(PreferenceChangeEvent evt) {
+        if (GGZPreferences.PRIVATE_CHAT_TO_FRONT.equals(evt.getKey())) {
+            this.toFrontCheckBox.setSelected(GGZPreferences.getBoolean(evt
+                    .getKey(), true));
         }
     }
 
@@ -297,11 +333,13 @@ public class PrivateChatDialog extends JFrame {
                     dialog.chatPanel.appendChat(data.type, data.sender,
                             data.message, server.get_handle());
 
-                    // If the window is not the active window then let the user
-                    // know that a message has arrived. We used to bring the
-                    // window to the front but this was quite annoying if you
-                    // were currently typing in another window.
-                    if (!dialog.isActive()) {
+                    if (dialog.toFrontCheckBox.isSelected()) {
+                        dialog.toFront();
+                    } else if (!dialog.isActive()) {
+                        // If the window is not the active window then let the
+                        // user know that a message has arrived by blinking
+                        // instead of brining it to the front - which can be
+                        // pretty annoying at times.
                         dialog.setBlinking(true);
                     }
                 }

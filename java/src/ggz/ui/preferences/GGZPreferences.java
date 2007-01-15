@@ -52,6 +52,8 @@ public class GGZPreferences {
 
     public static String CHAT_STYLE_FRIEND = "Chat.Style.Friend";
 
+    public static String PRIVATE_CHAT_TO_FRONT = "Chat.ToFront";
+
     public static String IGNORE_LIST = "Chat.Ignore.List";
 
     public static String FRIENDS_LIST = "Chat.Friends.List";
