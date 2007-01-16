@@ -18,7 +18,7 @@ if INSTALL_GGZCORE
 libggzcore_la_LIBADD += $(LIB_GGZ)
 endif
 
-libggzcore_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 8:1:1
+libggzcore_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 9:0:0
 
 libggzcore_la_SOURCES =	conf.c \
 			conf.h \

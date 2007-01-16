@@ -9,7 +9,7 @@ else
 noinst_LTLIBRARIES = libggzdmod.la
 endif
 
-libggzdmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 5:0:1
+libggzdmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 6:0:0
 libggzdmod_la_LIBADD = $(LIB_GGZ)
 libggzdmod_la_SOURCES = ggzdmod.h ggzdmod-ggz.h \
 			ggzdmod.c \

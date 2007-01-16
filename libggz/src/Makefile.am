@@ -9,7 +9,7 @@ endif
 
 libggz_la_LIBADD = security/libggzsecurity.la $(LIB_ASYNC) $(LIB_PTHREADS)
 
-libggz_la_LDFLAGS = -version-info 4:0:2
+libggz_la_LDFLAGS = -version-info 5:0:3
 
 libggz_la_SOURCES = \
 	conf.c \

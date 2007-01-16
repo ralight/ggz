@@ -14,7 +14,7 @@ if INSTALL_GGZMOD
 libggzmod_la_LIBADD += $(LIB_GGZ)
 endif
 
-libggzmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 4:0:0
+libggzmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 5:0:1
 
 libggzmod_la_SOURCES = \
 	ggzmod.c \
