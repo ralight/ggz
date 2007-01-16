@@ -31,7 +31,7 @@
 #include <stdlib.h>
 
 /* TelGGZ version number */
-#define TELGGZ_VERSION "0.4"
+#define TELGGZ_VERSION "0.5"
 
 /* Compatible GGZ protocol number */
 /* FIXME: could be part of libggzmeta */

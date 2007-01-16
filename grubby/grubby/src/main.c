@@ -19,7 +19,7 @@
 #include <unistd.h>
 #include <getopt.h>
 
-#define GRUBBY_VERSION "0.9.1"
+#define GRUBBY_VERSION "0.9.2"
 
 static int running;
 
