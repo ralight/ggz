@@ -1,8 +1,8 @@
 dnl Configuration for the Gtk+ games collection
-# $Id: configure.ac 8526 2006-08-21 08:09:30Z josef $
+# $Id: configure.ac 8949 2007-01-16 18:23:42Z josef $
 dnl ===========================================
 
-AC_INIT([GGZ GTK games], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-games])
+AC_INIT([GGZ GTK games], [0.0.14], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-games])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE

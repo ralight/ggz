@@ -1,8 +1,8 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 8742 2006-12-22 06:06:05Z jdorje $
+# $Id: configure.ac 8949 2007-01-16 18:23:42Z josef $
 # ================================
 
-AC_INIT([GGZ server], [0.0.14pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
+AC_INIT([GGZ server], [0.0.14], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
