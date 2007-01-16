@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 8922 2007-01-15 15:14:17Z josef $
+ * $Id: dlg_main.c 8924 2007-01-16 00:30:23Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -51,7 +51,7 @@ static GtkWidget *create_menus(GtkWidget * window)
 	GtkItemFactoryEntry items[] = {
 		TABLE_MENU,
 		{_("/_Game"), NULL, NULL, 0, "<Branch>"},
-		{_("/Game/Start game"), "<ctrl>N",
+		{GAME_START_GAME, "<ctrl>N",
 		 on_mnu_startgame_activate, 0, NULL},
 #ifdef DEBUG
 		{_("/Game/Force _redraw"), "<ctrl>R",
@@ -71,8 +71,7 @@ static GtkWidget *create_menus(GtkWidget * window)
 				   items,
 				   sizeof(items) / sizeof(items[0]));
 
-// FIXME: causes crashes with translations
-//	set_menu_sensitive(_("<main>/Game/Start game"), FALSE);
+	set_menu_sensitive(GAME_START_GAME, FALSE);
 	set_menu_sensitive(TABLE_CHAT_WINDOW, TRUE);
 
 	return menubar;

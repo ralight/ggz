@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.h 5044 2002-10-26 04:43:47Z jdorje $
+ * $Id: dlg_main.h 8924 2007-01-16 00:30:23Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -24,5 +24,7 @@
  */
 
 #include <gtk/gtk.h>
+
+#define GAME_START_GAME _("/Game/Start game")
 
 GtkWidget *create_dlg_main(void);
