@@ -1,0 +1,39 @@
+GGZ Gaming Zone Server Infrastructure
+=====================================
+
+This file contains the human-readable version of the entries in the
+GGZ nameserver.
+
+Nameservers + Backups
+---------------------
+dns1.hostsharing.net
+dns1.hostsharing.net
+dns3.hostsharing.net
+backupmx.hostsharing.net (as backup only, doesn't have lists etc.)
+
+Main project server (GGZ HQ)
+----------------------------
+ggzgamingzone.org [65.98.24.111]
+- hosts www, wwwmirror, dev, svn, bugs
+- hosts cvs, rankings (which should both go away eventually)
+- hosts games.ggzcommunity.org (temporarily only!)
+
+GGZ Community server
+--------------------
+ggzcommunity.org [82.228.187.42 / 2001:6f8:372::2]
+- hosts {live,metacle}.ggzgamingzone.org
+- mirrors WWW/FTP on fr.ggzgamingzone.org
+- runs GGZ!
+
+GGZ Cards Community server
+--------------------------
+oojah.dyndns.org
+- aliases {gnome,freeciv,cards}.ggzgamingzone.org
+- runs GGZ!
+
+German server
+-------------
+de.ggzgamingzone.org [212.21.77.2]
+- hosts mail.ggzcommunity.org
+- mirrors WWW/FTP on de.ggzgamingzone.org
+
