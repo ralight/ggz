@@ -30,14 +30,19 @@ public class SpadesBidPanel extends BidPanel {
         if (bid == null) {
             return null;
         }
-        if (bid.getVal() == Bid.NO_VALUE) {
+        if (bid.getVal() == 0) {
             switch (bid.getSpec()) {
+            case 0:
+                return "0";
             case 1:
                 return "Nil";
             case 2:
                 return "Show cards";
             case 3:
                 return "Dnil";
+            default:
+                throw new UnsupportedOperationException("Unrecognised bid: "
+                        + bid);
             }
         }
         return String.valueOf(bid.getVal());
