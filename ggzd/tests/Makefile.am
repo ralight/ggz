@@ -8,5 +8,5 @@ TESTS = basic # ggzdtest
 check_PROGRAMS = $(TESTS) #logmod
 
 basic_SOURCES = basic.c
-ggzdtest_SOURCES = ggzdtest.c
-logmod_SOURCES = logmod.c
+#ggzdtest_SOURCES = ggzdtest.c
+#logmod_SOURCES = logmod.c
