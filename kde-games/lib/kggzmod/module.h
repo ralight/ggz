@@ -26,6 +26,22 @@
 
 #include <qobject.h>
 
+/**
+ * @mainpage
+ *
+ * The \b kggzmod library is a KDE/Qt game developer's interface to the
+ * GGZ Gaming Zone. It will connect the game with its corresponding game
+ * server, provide information about players and spectators, allow for
+ * chat and player management activities and a lot more.
+ *
+ * The main class to consider is \ref KGGZMod::Module. An object of
+ * this class will accompany a game client for its entire lifetime, and
+ * will offer signals for GGZ events and game server network events.
+ *
+ * Note: This is the KDE 3 version of kggzmod. There is also
+  a KDE 4 version available.
+ */
+
 namespace KGGZMod
 {
 

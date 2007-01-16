@@ -1,5 +1,5 @@
 PROJECT_NAME           = kggzmod
-PROJECT_NUMBER         = 0.0.14pre
+PROJECT_NUMBER         = 0.0.14
 EXTRACT_ALL            = YES
 HIDE_FRIEND_COMPOUNDS  = YES
 HIDE_SCOPE_NAMES       = NO
