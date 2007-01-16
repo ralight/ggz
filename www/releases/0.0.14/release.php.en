@@ -100,15 +100,17 @@ predefined in the client software. KGGZ users can choose to be connected
 automatically to the right server.<br/>
 
 <ul>
-<li>live.ggzgamingzone.org (0.0.13+ fast, France, run by GGZ developers)
-<li>openladders.net (0.0.13+ fast, USA, run by OpenLadders Partnership)
+<li>live.ggzgamingzone.org (0.0.13+ fast, France, run by GGZ developers)</i>
+<li>oojah.dyndns.org (0.0.13+ fast, England, run by GGZ developers)</i>
 </ul>
 
-The online ranking system can be found at
+The online ranking system for live.ggzgamingzone.org can be found at
 <a href="https://www.ggzcommunity.org/">GGZ Community</a>.
 It shows player and game statistics and currently running games.
 Players can found teams, organize tournaments, upload/download additional game data,
 write articles and blog entries.
+There are also some webpages for oojah.dyndns.org, accessible on
+<a href="http://games.ggzcommunity.org/">games.ggzcommunity.org</a>.
 <br/><br/>
 
 Developers can find additional resources in our developer area:
@@ -123,11 +125,11 @@ SVN access and much more.
 
 <i>Documentation</i><br/>
 Extensive documentation has been made available for this release.<br/>
-Please refer to the <a href="/docs.php">documentation overview page</a>.
+Please refer to the <a href="/documentation/">documentation overview page</a>.
 <br/><br/>
 
 Of course, our
-<a href="/software.php">game descriptions</a> and
+<a href="/games/">game descriptions</a> and
 other continuing efforts are also available.
 
 <br/><br/>
