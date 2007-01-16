@@ -143,10 +143,65 @@ void ModulePrivate::slotGGZEvent()
 	int _num;
 	char *_realname, *_photo;
 	QValueList<Player*>::Iterator it;
+	QByteArray buffer;
+	Q_LONG available, oldavailable, maxavailable;
+	QDataStream net(buffer, IO_ReadOnly);
+
+	available = 0;
 
 	kdDebug() << "[kggzmod] debug: input from GGZ has arrived" << endl;
-	*m_net >> opcode;
 
+	while((!available) || (!net.atEnd()))
+	{
+
+	while(true)
+	{
+		if(m_dev->bytesAvailable() > (Q_LONG)10000)
+		{
+			kdDebug() << "[kggzmod] error: network overflow" << endl;
+			emit signalError();
+			return;
+		}
+
+		kdDebug() << "[kggzmod] debug: bytesavailable=" << m_dev->bytesAvailable() << endl;
+		maxavailable = m_dev->bytesAvailable();
+
+		// FIXME: this dull hack is so we can handle msgserverfd correctly!
+		if(maxavailable == 5)
+		{
+			maxavailable = 4;
+		}
+
+		buffer.resize(buffer.size() + maxavailable);
+		oldavailable = m_dev->readBlock(buffer.data() + available, maxavailable);
+		if(oldavailable == -1)
+		{
+			kdDebug() << "[kggzmod] error: network error" << endl;
+			emit signalError();
+			return;
+		}
+		available += oldavailable;
+
+		// Part 2 of the dull msgserverfd hack
+		if(maxavailable == 4)
+		{
+			QDataStream testnet(buffer, IO_ReadOnly);
+			testnet >> opcode;
+			if(opcode == msgserverfd)
+			{
+				kdDebug() << "[kggzmod] debug: msgserverfd shortcut" << endl;
+				break;
+			}
+		}
+
+		m_dev->waitForMore(100);
+		if(m_dev->bytesAvailable() == 0) break;
+	}
+
+	buffer.truncate(available);
+	kdDebug() << "[kggzmod] debug: BUFFER = " << buffer << endl;
+
+	net >> opcode;
 	kdDebug() << "[kggzmod] info: got GGZ input " << opcode << endl;
 
 	if((opcode < msglaunch) || (opcode > msginfo))
@@ -171,9 +226,9 @@ void ModulePrivate::slotGGZEvent()
 	if(opcode == msgserver)
 	{
 		//Event e(Event::server);
-		*m_net >> _host;
-		*m_net >> _port;
-		*m_net >> _player;
+		net >> _host;
+		net >> _port;
+		net >> _player;
 		//e.data["host"] = QString(_host);
 		//e.data["player"] = QString(_player);
 		//e.data["port"] = QString::number(_port);
@@ -212,9 +267,9 @@ void ModulePrivate::slotGGZEvent()
 	if(opcode == msgplayer)
 	{
 		Event e(Event::self);
-		*m_net >> _player;
-		*m_net >> _isspectator;
-		*m_net >> _seat;
+		net >> _player;
+		net >> _isspectator;
+		net >> _seat;
 		e.data["player"] = QString(_player);
 		free(_player);
 
@@ -231,9 +286,9 @@ void ModulePrivate::slotGGZEvent()
 	if(opcode == msgseat)
 	{
 		Event e(Event::seat);
-		*m_net >> _seat;
-		*m_net >> _seattype;
-		*m_net >> _player;
+		net >> _seat;
+		net >> _seattype;
+		net >> _player;
 		e.data["player"] = QString(_player);
 		free(_player);
 
@@ -247,8 +302,8 @@ void ModulePrivate::slotGGZEvent()
 	if(opcode == msgspectatorseat)
 	{
 		Event e(Event::seat);
-		*m_net >> _seat;
-		*m_net >> _player;
+		net >> _seat;
+		net >> _player;
 		e.data["player"] = QString(_player);
 		free(_player);
 
@@ -262,8 +317,8 @@ void ModulePrivate::slotGGZEvent()
 	if(opcode == msgchat)
 	{
 		Event e(Event::chat);
-		*m_net >> _player;
-		*m_net >> _message;
+		net >> _player;
+		net >> _message;
 		e.data["player"] = QString(_player);
 		e.data["message"] = QString(_message);
 		free(_player);
@@ -279,17 +334,17 @@ void ModulePrivate::slotGGZEvent()
 
 		for(int i = 0; i < m_playerseats + m_spectatorseats; i++)
 		{
-			*m_net >> _hasrecord;
-			*m_net >> _hasrating;
-			*m_net >> _hasranking;
-			*m_net >> _hashighscore;
-			*m_net >> _wins;
-			*m_net >> _losses;
-			*m_net >> _ties;
-			*m_net >> _forfeits;
-			*m_net >> _rating;
-			*m_net >> _ranking;
-			*m_net >> _highscore;
+			net >> _hasrecord;
+			net >> _hasrating;
+			net >> _hasranking;
+			net >> _hashighscore;
+			net >> _wins;
+			net >> _losses;
+			net >> _ties;
+			net >> _forfeits;
+			net >> _rating;
+			net >> _ranking;
+			net >> _highscore;
 
 			Statistics *stat = new Statistics();
 			StatisticsPrivate *statpriv = new StatisticsPrivate();
@@ -335,14 +390,14 @@ void ModulePrivate::slotGGZEvent()
 	{
 		Event e(Event::info);
 
-		*m_net >> _num;
+		net >> _num;
 
 		for(int i = 0; i < _num; i++)
 		{
-			*m_net >> _seat;
-			*m_net >> _realname;
-			*m_net >> _photo;
-			*m_net >> _host;
+			net >> _seat;
+			net >> _realname;
+			net >> _photo;
+			net >> _host;
 			//e.data["realname"] = QString(_realname);
 			//e.data["photo"] = QString(_photo);
 			//e.data["host"] = QString(_host);
@@ -367,6 +422,8 @@ void ModulePrivate::slotGGZEvent()
 		}
 
 		emit signalEvent(e);
+	}
+
 	}
 }
 
