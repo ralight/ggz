@@ -1,307 +1,2601 @@
-2006-03-14 13:47:11  Rev 7905   josef
+------------------------------------------------------------------------
+r8928 | helg | 2007-01-16 02:23:49 +0100 (Di, 16 Jan 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/spades/SpadesBidPanel.java
+
+Second attempt at fixing rendering of special Spades bids.
+------------------------------------------------------------------------
+r8927 | helg | 2007-01-16 02:10:59 +0100 (Di, 16 Jan 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/PrivateChatDialog.java
+
+Bring to front should now work properly.
+------------------------------------------------------------------------
+r8926 | helg | 2007-01-16 02:00:57 +0100 (Di, 16 Jan 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/TableLayout.java
+
+Adjusted location of bid panel so that long nicknames don't 
+obscure the bid buttons, preventing players from bidding.
+------------------------------------------------------------------------
+r8925 | helg | 2007-01-16 01:36:17 +0100 (Di, 16 Jan 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/spades/SpadesBidPanel.java
+
+Fixed display of Spades bids that used to have a value of -1
+but now have a value of 0.
+------------------------------------------------------------------------
+r8914 | helg | 2007-01-15 07:52:31 +0100 (Mo, 15 Jan 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/Sprite.java
+   M /trunk/java/test/ggz/cards/SpriteTest.java
+
+Fix for bug 0000093. There is no longer image corruption under Java 6. You used to be
+able to "flip" an image in place (i.e. source = destination) but now you need to use
+two images.
+------------------------------------------------------------------------
+r8912 | helg | 2007-01-15 04:25:44 +0100 (Mo, 15 Jan 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/PrivateChatDialog.java
+   M /trunk/java/src/ggz/ui/messages.properties
+   M /trunk/java/src/ggz/ui/messages_de.properties
+   M /trunk/java/src/ggz/ui/messages_pt_BR.properties
+   M /trunk/java/src/ggz/ui/preferences/GGZPreferences.java
+
+Added checkbox to private chat window to toggle between "annoying in your face" and
+"woops, I didn't notice that message you sent 5 hours ago". Stupid Java doesn't 
+provide a mechanism to "flash" a window.
+------------------------------------------------------------------------
+r8910 | helg | 2007-01-15 03:41:02 +0100 (Mo, 15 Jan 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+
+Fixed layout of seats on tables for two players games.
+------------------------------------------------------------------------
+r8909 | helg | 2007-01-15 03:32:21 +0100 (Mo, 15 Jan 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/client/mod/ModEventHandler.java
+   M /trunk/java/src/ggz/client/mod/ModGame.java
+   M /trunk/java/src/ggz/games/GamePanel.java
+   M /trunk/java/src/ggz/tictactoe/Client.java
+   M /trunk/java/src/ggz/tictactoe/TicTacToePanel.java
+
+Modified TTT client to experiment with firing events on the AWT event queue rather
+than having the UI worry about which thread event handlers are called on.
+------------------------------------------------------------------------
+r8904 | helg | 2007-01-12 16:42:26 +0100 (Fr, 12 Jan 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/SmartChatLayout.java
+   M /trunk/java/src/ggz/games/GamePanel.java
+   M /trunk/java/src/ggz/tictactoe/TicTacToePanel.java
+
+Games can now specify their preferred window size. For example, TTT doesn't need 
+as big an initial window as GGZCards.
+------------------------------------------------------------------------
+r8903 | helg | 2007-01-12 15:38:37 +0100 (Fr, 12 Jan 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/tictactoe/BoardPanel.java
+   M /trunk/java/src/ggz/tictactoe/Client.java
+   M /trunk/java/src/ggz/tictactoe/TicTacToeListener.java
+   M /trunk/java/src/ggz/tictactoe/TicTacToePanel.java
+
+Improved the UI for TTT. The game is now more user friendly but I still have to add 
+support for booting etc. I also have to update the core client to better render
+tables for two player games.
+------------------------------------------------------------------------
+r8902 | helg | 2007-01-12 12:42:57 +0100 (Fr, 12 Jan 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/ClientApp.java
+   A /trunk/java/src/ggz/ui/images/ggz_logo_32x32.png
+
+Core client window now has GGZ logo.
+------------------------------------------------------------------------
+r8897 | helg | 2007-01-12 03:19:40 +0100 (Fr, 12 Jan 2007) | 1 line
+Geänderte Pfade:
+   D /trunk/java/src/ggz/ui/images/exclamation.png
+
+It's gone.
+------------------------------------------------------------------------
+r8896 | helg | 2007-01-12 03:07:37 +0100 (Fr, 12 Jan 2007) | 1 line
+Geänderte Pfade:
+   A /trunk/java/src/ggz/ui/images/comments_add.png
+
+Damn, checked in the wrong icon!
+------------------------------------------------------------------------
+r8895 | helg | 2007-01-12 03:06:07 +0100 (Fr, 12 Jan 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/PrivateChatDialog.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   A /trunk/java/src/ggz/ui/images/exclamation.png
+
+Improved private chat behaviour. New messages no longer result in the private chat window
+being brought to the front and stealing the focus. Instead, when the first message 
+arrives, the window is created iconified and the icon "blinks" in the task bar. This
+works in GNOME too but for some reason the window isn't created iconified so that the
+first message still results in the focus being stolen from the current window. Subsequent
+messages simply cause the icon to blink.
+------------------------------------------------------------------------
+r8894 | oojah | 2007-01-10 20:58:54 +0100 (Mi, 10 Jan 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+
+Default port should be 5688.
+
+------------------------------------------------------------------------
+r8878 | josef | 2007-01-09 15:57:50 +0100 (Di, 09 Jan 2007) | 9 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/messages_de.properties
+
+- a lot more translation improvements
+
+It seems that some strings are not yet translatable!
+It also seems that Java's properties format has an advantage: if one language
+changes, the others are not affected.
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8876 | josef | 2007-01-09 15:14:51 +0100 (Di, 09 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/messages_de.properties
 
-	* NEWS README.GGZ AUTHORS:
-	  - sync all common files from libggz (README.GGZ, AUTHORS)
-	  - updated NEWS file for the upcoming 0.0.13 release
+- update German translations (hopefully updated i18n tools didn't break anything)
 
+[commit from josef@nada]
 
-2006-03-14 13:46:20  Rev 7904   josef
 
-	* src/ggz/ui/AboutDialog.java:
-	  - bump to 0.0.13 here too
+------------------------------------------------------------------------
+r8873 | josef | 2007-01-09 12:51:28 +0100 (Di, 09 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/java/Makefile
+
+- update makefile to reflect JAR renaming
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8871 | helg | 2007-01-09 09:33:50 +0100 (Di, 09 Jan 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/common/GGZCardInputStream.java
+   M /trunk/java/src/ggz/cards/common/GGZCardOutputStream.java
+   M /trunk/java/src/ggz/client/core/Module.java
+   A /trunk/java/src/ggz/common/dio
+   A /trunk/java/src/ggz/common/dio/DIOInputStream.java
+   A /trunk/java/src/ggz/common/dio/DIOOutputStream.java
+   A /trunk/java/src/ggz/tictactoe
+   A /trunk/java/src/ggz/tictactoe/BoardListener.java
+   A /trunk/java/src/ggz/tictactoe/BoardPanel.java
+   A /trunk/java/src/ggz/tictactoe/Client.java
+   A /trunk/java/src/ggz/tictactoe/TicTacToeListener.java
+   A /trunk/java/src/ggz/tictactoe/TicTacToePanel.java
+   A /trunk/java/src/ggz/ui/images/tic_tac_toe.gif
 
+Basic Tic-Tac-Toe client based on the GTK one. In hindsight I should have probably
+used the KDE one as a reference but at least now Josef can sleep at night :)
 
-2006-03-08 01:31:17  Rev 7898   helg
+oh, and I know that it has bugs...
+------------------------------------------------------------------------
+r8863 | josef | 2007-01-08 14:49:44 +0100 (Mo, 08 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/Makefile
+   M /trunk/java/Makefile
 
-	* src/ggz/ui/ClientApplet.java src/ggz/ui/ClientApp.java README.txt:
-	  Updated README.txt and fixed applet parameter names for xmlin and 
-	  xmlout.
+- use svn-clean in 'make dist' (this is rather radical but works nicely)
 
+[commit from josef@nada]
 
-2006-03-07 13:28:01  Rev 7896   josef
 
-	* :
-	  - ignore 'bin' directory
+------------------------------------------------------------------------
+r8834 | helg | 2007-01-05 10:15:34 +0100 (Fr, 05 Jan 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
 
+Fixed bug where you could not single click to play a card if the mouse cursor was 
+already on the card. The card under the cursor should ideally "pop up" as well but 
+Java 1.4 does not provide a method to obtain the mouse cursor location (or the
+component under the mouse cursor).
+------------------------------------------------------------------------
+r8672 | helg | 2006-11-27 05:03:08 +0100 (Mo, 27 Nov 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/build.xml
 
-2006-03-07 13:26:19  Rev 7895   josef
+Build now only generates one JAR file that can be used both as an application and applet.
+The downside is that downloading the JAR for an applet will take slightly longer since 
+the JAR is now signed and hence larger.
+------------------------------------------------------------------------
+r8658 | josef | 2006-11-09 21:19:09 +0100 (Do, 09 Nov 2006) | 5 lines
+Geänderte Pfade:
+   M /trunk/java/Makefile
 
-	* :
-	  - move GGZ-Java to a module on its own
+- distribution tarball building and correct manpage section
 
+[commit from josef@armada]
 
-2006-03-07 02:06:13  Rev 7886   helg
 
-	* :
-	  Fixed bug in Bridge where bidding UI was not being removed once 
-	  play started.
+------------------------------------------------------------------------
+r8657 | josef | 2006-11-09 21:01:06 +0100 (Do, 09 Nov 2006) | 6 lines
+Geänderte Pfade:
+   M /trunk/java/Makefile
+   M /trunk/java/build.xml
+   D /trunk/java/nosvn-build.xml
 
+- improve the makefile
+- make it possible to conditionally exclude ant-svn
 
-2006-03-03 00:52:00  Rev 7882   helg
+[commit from josef@armada]
 
-	* :
-	  
 
+------------------------------------------------------------------------
+r8656 | josef | 2006-11-09 20:42:35 +0100 (Do, 09 Nov 2006) | 5 lines
+Geänderte Pfade:
+   A /trunk/java/integration
+   A /trunk/java/integration/ggz-java
+   A /trunk/java/integration/ggz-java.6
 
-2006-02-15 00:58:07  Rev 7871   helg
+- system integration files: wrapper script and man page
 
-	* :
-	  Improved default browser detection under Unix when clicking on a 
-	  hyperlink (e.g. How to play) when running as an app. It's still 
-	  not very good but it's better than it was.
+[commit from josef@armada]
 
 
-2006-02-15 00:16:01  Rev 7870   helg
+------------------------------------------------------------------------
+r8655 | helg | 2006-11-09 09:31:11 +0100 (Do, 09 Nov 2006) | 3 lines
+Geänderte Pfade:
+   A /trunk/java/help/emoticon_kiss.png
+   M /trunk/java/help/help.html
+   A /trunk/java/help/java_control_panel.png
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/Sprite.java
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   A /trunk/java/src/ggz/ui/images/emoticon_kiss.png
 
-	* :
-	  Made wholesale changes to enum classes to provide compatibility 
-	  with JDK1.4. Also removed generic collections for the same reason. 
-	  Added custom bid panel for Bridge so that you can more easily see 
-	  the other players bids and rather than having a large array of 
-	  buttons you now have specialised buttons just for bridge.
+Fixed bug when toggling between single and double clicking to play card.
+Added kiss emoticon.
+Checked in oojah's changes to help (downloaded from g.g.o).
+------------------------------------------------------------------------
+r8654 | josef | 2006-11-09 09:02:33 +0100 (Do, 09 Nov 2006) | 5 lines
+Geänderte Pfade:
+   M /trunk/java/src
 
+- ignore version.properties file
 
-2006-02-11 06:56:56  Rev 7858   helg
+[commit from josef@armada]
 
-	* :
-	  
-
-
-2006-02-10 12:56:12  Rev 7854   josef
-
-	* :
-	  - brazilian portuguese translation for the applet UI
-
-
-2006-02-10 10:24:50  Rev 7852   josef
-
-	* :
-	  - some corrections to the German translation
-
-
-2006-02-10 06:19:08  Rev 7851   helg
-
-	* :
-	  More localisation. Does it never end?
-
-
-2006-02-10 02:05:12  Rev 7850   helg
-
-	* :
-	  Changed the way Server XML is traced (yet again). Server XML is 
-	  not traced byte for byte rather than after XML parsing.
-
-
-2006-02-10 01:36:27  Rev 7849   helg
-
-	* :
-	  Added i18n support for Net and Server classes.
-
-
-2006-02-09 09:22:58  Rev 7847   helg
-
-	* :
-	  Added i18n support for core client. Current supported languages 
-	  are English and German.
-
-
-2006-02-07 06:23:07  Rev 7843   helg
-
-	* :
-	  
-
-
-2006-02-07 06:20:15  Rev 7842   helg
-
-	* :
-	  Added "bad username" result code.
-	  Renamed CardSeat to Player.
-
-
-2006-02-07 00:12:48  Rev 7841   helg
-
-	* :
-	  Modified Net to use SAX Transformer to generate XML instead of 
-	  concatenating strings. This guarantees that all XML sent to the 
-	  server by the Java client will be well formed.
-	  "Back to Lounge" button is not disabled while playing a game.
-
-
-2006-02-02 08:03:38  Rev 7835   helg
-
-	* :
-	  Forgot to update the TODO file.
-
-
-2006-02-02 07:55:17  Rev 7834   helg
-
-	* :
-	  Set socket keep alive to true so that games don't lose socket 
-	  connection if user doesn't do anything for a long time. There is 
-	  no application level heartbeat for GGZCards so hopefully this 
-	  fixes the "connection reset" problem.
-	  Added more SwingUtilities.invokeLater() to hopefully resolve some 
-	  Swing threading issues.
-	  Java clients can now spectate!
-
-
-2006-01-30 13:51:38  Rev 7833   helg
-
-	* :
-	  Minor size and color tweaks.
-
-
-2006-01-30 12:24:56  Rev 7830   helg
-
-	* :
-	  Created new layout for chat and card table.
-
-
-2006-01-30 09:28:01  Rev 7829   helg
-
-	* :
-	  Add tool tip to player list in game rooms that shows player stats. 
-	  Improved animation performance for deal and trick win.
-
-
-2006-01-30 06:48:15  Rev 7828   helg
-
-	* :
-	  Added LGPL terms to the top of each source file.
-
-
-2006-01-30 06:23:49  Rev 7827   helg
-
-	* :
-	  Added about box and new watermark. Added open source class that 
-	  launches platform browser when clicking game help when running as 
-	  application. Made a few other minor adjustments.
-
-
-2006-01-29 14:08:51  Rev 7826   helg
-
-	* :
-	  Add seat allocation dialog. Only thing is it doesn't ley you 
-	  allocate seats yet. The main reason I did it was to remove the 
-	  "play against computer" button since people were clicking on "new 
-	  game" instead and then couldn't work out how to play against the 
-	  computer. Seat allocation and named bot support is coming...
-
-
-2006-01-29 10:49:10  Rev 7825   helg
-
-	* :
-	  Removed rose from applet since it doesn't seem appropriate. I 
-	  haven't got a replacement at the moment but when I find something 
-	  I'll put a watermark back.
-
-
-2006-01-25 14:16:39  Rev 7822   helg
-
-	* :
-	  Added chat icon that I drew myself after some searching in free 
-	  icon libraries for inspiration.
-
-
-2006-01-25 13:32:33  Rev 7821   helg
-
-	* :
-	  
-
-
-2006-01-25 04:50:31  Rev 7820   helg
-
-	* :
-	  
-
-
-2006-01-25 04:19:09  Rev 7819   helg
-
-	* :
-	  
-
-
-2006-01-25 04:17:11  Rev 7818   helg
-
-	* :
-	  
-
-
-2006-01-24 06:01:25  Rev 7817   helg
-
-	* :
-	  
-
-
-2006-01-24 01:33:07  Rev 7816   helg
-
-	* :
-	  
-
-
-2006-01-20 11:08:29  Rev 7800   helg
-
-	* :
-	  
-
-
-2006-01-20 03:36:37  Rev 7797   helg
-
-	* :
-	  
-
-
-2006-01-20 00:19:19  Rev 7796   helg
-
-	* :
-	  Change made on laptop.
-
-
-2006-01-19 07:03:35  Rev 7794   helg
-
-	* :
-	  
-
-
-2006-01-13 06:50:01  Rev 7781   helg
-
-	* :
-	  Removed file/folder
-
-
-2006-01-13 06:45:37  Rev 7780   helg
-
-	* :
-	  Removed file/folder
-
-
-2006-01-13 06:31:44  Rev 7778   helg
-
-	* :
-	  Removed file/folder
-
-
-2006-01-13 06:26:27  Rev 7777   helg
-
-	* :
-	  
-
-
-2006-01-13 06:14:15  Rev 7776   helg
-
-	* :
-	  
-
-
-2006-01-10 02:49:28  Rev 7759   helg
-
-	* :
-	  Removed file/folder
-
-
-2006-01-10 02:42:42  Rev 7758   helg
-
-	* :
-	  
-
-
+
+------------------------------------------------------------------------
+r8653 | josef | 2006-11-09 08:53:29 +0100 (Do, 09 Nov 2006) | 5 lines
+Geänderte Pfade:
+   M /trunk/java
+
+- ignore all *.jar files in the top-level directory
+
+[commit from josef@armada]
+
+
+------------------------------------------------------------------------
+r8650 | josef | 2006-11-09 06:52:41 +0100 (Do, 09 Nov 2006) | 5 lines
+Geänderte Pfade:
+   M /trunk/java/nosvn-build.xml
+
+- explicitely set ${build.number} to "unspec" if svn info cannot be used
+
+[commit from josef@armada]
+
+
+------------------------------------------------------------------------
+r8645 | josef | 2006-11-08 02:24:53 +0100 (Mi, 08 Nov 2006) | 5 lines
+Geänderte Pfade:
+   M /trunk/java/Makefile
+
+- improved makefile for debian packaging
+
+[commit from josef@armada]
+
+
+------------------------------------------------------------------------
+r8644 | josef | 2006-11-08 01:13:08 +0100 (Mi, 08 Nov 2006) | 7 lines
+Geänderte Pfade:
+   A /trunk/java/MANIFEST.MF
+   A /trunk/java/Makefile
+   A /trunk/java/nosvn-build.xml
+
+- make it build even on less optimal systems
+
+This is a somewhat intermediate build system addition. I expect the makefile to stay but only for distro integration. However, ant just won't work right now and therefore it shouldn't stop me from achieving progress.
+
+[commit from josef@armada]
+
+
+------------------------------------------------------------------------
+r8627 | helg | 2006-10-25 08:37:04 +0200 (Mi, 25 Okt 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/GGZCardsPreferencesTab.java
+   M /trunk/java/src/ggz/cards/Sprite.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/common/Bid.java
+   M /trunk/java/src/ggz/cards/common/Card.java
+   M /trunk/java/src/ggz/cards/common/GGZCardOutputStream.java
+   M /trunk/java/src/ggz/client/core/Game.java
+   M /trunk/java/src/ggz/client/core/Module.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/LoungePanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+
+Added toggle for selecting between single and double-clicking to play a card. [needs more work]
+Modified Module handling to simplify it and remove baggage inherited from C port.
+Module support now only checks protocol engine and version and matches on the start of the game name to make it easier to add games on the server.
+
+------------------------------------------------------------------------
+r8624 | josef | 2006-10-12 15:44:43 +0200 (Do, 12 Okt 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/messages_de.properties
+
+- translation updates
+
+
+------------------------------------------------------------------------
+r8621 | helg | 2006-10-10 13:24:32 +0200 (Di, 10 Okt 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+
+Fixed bug where new game button sometimes remains disabled when entering a room.
+------------------------------------------------------------------------
+r8571 | helg | 2006-09-06 11:46:57 +0200 (Mi, 06 Sep 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/client/CardGameHandler.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/common/GGZCardInputStream.java
+   M /trunk/java/src/ggz/cards/common/ServerOpCode.java
+   M /trunk/java/src/ggz/client/core/Module.java
+
+Added support for version 17 of GGZCards protocol.
+------------------------------------------------------------------------
+r8566 | helg | 2006-09-01 14:11:23 +0200 (Fr, 01 Sep 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/Sprite.java
+   M /trunk/java/src/ggz/cards/TableLayout.java
+   M /trunk/java/src/ggz/cards/bridge/BridgeBidPanel.java
+   M /trunk/java/src/ggz/cards/common/Bid.java
+   M /trunk/java/src/ggz/cards/common/GGZCardInputStream.java
+   M /trunk/java/src/ggz/cards/common/GGZCardOutputStream.java
+   M /trunk/java/src/ggz/cards/common/Suit.java
+   M /trunk/java/test/ggz/cards/BidPanelTest.java
+
+Fixed Bridge bidding.
+------------------------------------------------------------------------
+r8562 | helg | 2006-08-31 11:35:08 +0200 (Do, 31 Aug 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/BidPanel.java
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/bridge/BridgeBidPanel.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/common/Bid.java
+   M /trunk/java/src/ggz/cards/common/GGZCardInputStream.java
+   M /trunk/java/src/ggz/cards/common/GGZCardOutputStream.java
+   M /trunk/java/src/ggz/cards/spades/SpadesBidPanel.java
+   M /trunk/java/test/ggz/cards/bridge/BridgeBidPanelTest.java
+
+Modified client to interpret NO_VALUE ane NO_SUIT properly.
+Updated client to sync state on MSG_PLAYERS_STATUS so bid panel doesn't appear when joining mid game.
+------------------------------------------------------------------------
+r8560 | helg | 2006-08-31 09:39:40 +0200 (Do, 31 Aug 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/common/ScoreData.java
+   M /trunk/java/src/ggz/cards/common/ServerOpCode.java
+   M /trunk/java/src/ggz/client/core/Module.java
+
+Add support for reading extra score information.
+
+------------------------------------------------------------------------
+r8557 | helg | 2006-08-31 08:28:43 +0200 (Do, 31 Aug 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/BidPanel.java
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/TableLayout.java
+   M /trunk/java/src/ggz/cards/TablePanel.java
+   M /trunk/java/src/ggz/cards/bridge/BridgeBidPanel.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/common/ServerOpCode.java
+   D /trunk/java/src/ggz/cards/spades/SpadesGamePanel.java
+   M /trunk/java/src/ggz/client/core/Module.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+
+Added support for GGZCards protocol version 15 - dealer notification on new hand.
+Removed custom Spades UI and folded custom logic into the generic UI based on 
+the game type notified by the server.
+Fixed/changed a few other bits and pieces.
+------------------------------------------------------------------------
+r8555 | helg | 2006-08-31 04:27:56 +0200 (Do, 31 Aug 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/client/core/Module.java
+
+Updated supported protocol version for GGZCards client.
+------------------------------------------------------------------------
+r8554 | oojah | 2006-08-31 01:54:49 +0200 (Do, 31 Aug 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/images/human.gif
+
+Removed brain from human.
+
+Now there's a good commit entry.
+------------------------------------------------------------------------
+r8553 | helg | 2006-08-30 09:41:11 +0200 (Mi, 30 Aug 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/TODO.txt
+   M /trunk/java/src/ggz/cards/BidPanel.java
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/OptionDialog.java
+   M /trunk/java/src/ggz/cards/PlayerLabel.java
+   M /trunk/java/src/ggz/cards/ScoresDialog.java
+   M /trunk/java/src/ggz/cards/client/CardGameHandler.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/client/Player.java
+   M /trunk/java/src/ggz/cards/client/Team.java
+   M /trunk/java/src/ggz/cards/common/ServerOpCode.java
+   M /trunk/java/src/ggz/cards/spades/SpadesGamePanel.java
+   M /trunk/java/src/ggz/client/core/Net.java
+   M /trunk/java/src/ggz/games/GamePanel.java
+   M /trunk/java/src/ggz/ui/ClientApp.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   A /trunk/java/src/ggz/ui/GGZDialog.java
+   M /trunk/java/src/ggz/ui/preferences/PreferencesDialog.java
+   M /trunk/java/test/ggz/cards/BidPanelTest.java
+
+Added support for latest GGZCards protocol changes. 
+Custom game message for Spades is ignored.
+------------------------------------------------------------------------
+r8517 | helg | 2006-08-16 16:21:49 +0200 (Mi, 16 Aug 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/TableLayout.java
+   M /trunk/java/src/ggz/cards/common/Card.java
+
+Improved layout of cards; hidden hands now have a small, fixed gap.
+------------------------------------------------------------------------
+r8516 | helg | 2006-08-16 14:50:11 +0200 (Mi, 16 Aug 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/spades/SpadesGamePanel.java
+
+Changed text from Bidding or Playing to just Thinking since the Spades client can't accurately determine the state the game is in.
+------------------------------------------------------------------------
+r8514 | helg | 2006-08-15 11:26:44 +0200 (Di, 15 Aug 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/client/core/Net.java
+   M /trunk/java/src/ggz/client/core/Server.java
+   M /trunk/java/src/ggz/client/core/ServerEvent.java
+   M /trunk/java/src/ggz/ui/ChatAction.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/ggz/ui/messages.properties
+   M /trunk/java/test/ggz/client/core/ServerTest.java
+
+Cleaned up handling of admin commands.
+Removed race condition when joining and then leaving a room 
+immediately. This can sometimes happen when server is on same machine as client.
+
+------------------------------------------------------------------------
+r8513 | helg | 2006-08-15 07:25:54 +0200 (Di, 15 Aug 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/build.xml
+   M /trunk/java/src/ggz/cards/spades/SpadesGamePanel.java
+   M /trunk/java/src/ggz/ui/preferences/StyleChooser.java
+
+Changed Build # to SVN Revision in about box (didn't I already do this?)
+Fixed layout bug in Chat Preferences when running on Blackdown JVM on Linux.
+Removed unused variable.
+------------------------------------------------------------------------
+r8512 | helg | 2006-08-14 13:15:12 +0200 (Mo, 14 Aug 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/GGZCardsPreferencesTab.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/games/GamePanel.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/HyperlinkLabel.java
+   M /trunk/java/src/ggz/ui/messages.properties
+
+Added option to beep on your turn.
+Moved links off the table area and into a "menu bar".
+Options are now shown in a dialog rather than a tooltip.
+------------------------------------------------------------------------
+r8509 | helg | 2006-08-14 09:19:32 +0200 (Mo, 14 Aug 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/build.xml
+   M /trunk/java/src/ggz/cards/GGZCardsPreferencesTab.java
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/preferences/ChatPreferencesTab.java
+   M /trunk/java/src/ggz/ui/preferences/PreferencesDialog.java
+   M /trunk/java/src/ggz/ui/preferences/PreferencesTab.java
+
+Fixed two few memory leaks.
+Minor build file edit.
+------------------------------------------------------------------------
+r8505 | helg | 2006-08-08 12:28:01 +0200 (Di, 08 Aug 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/client/CardGameHandler.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/client/Team.java
+   M /trunk/java/src/ggz/cards/common/ScoreData.java
+   M /trunk/java/src/ggz/client/core/Net.java
+   M /trunk/java/src/ggz/client/core/Room.java
+   M /trunk/java/src/ggz/client/core/Server.java
+   M /trunk/java/src/ggz/client/core/ServerAdapter.java
+   M /trunk/java/src/ggz/client/core/ServerEvent.java
+   M /trunk/java/src/ggz/client/core/ServerListener.java
+   M /trunk/java/src/ggz/games/GamePanel.java
+   M /trunk/java/src/ggz/ui/AboutDialog.java
+   M /trunk/java/src/ggz/ui/ClientApp.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/LoungePanel.java
+   M /trunk/java/src/ggz/ui/PrivateChatDialog.java
+   M /trunk/java/src/ggz/ui/preferences/StyleChooser.java
+   M /trunk/java/test/ggz/client/core/ServerTest.java
+
+Added support for dynamic room add and remove.
+Changed label from 'Build #' to 'SVN Revision' in the about box.
+Some incomplete stuff in card client.
+------------------------------------------------------------------------
+r8497 | helg | 2006-08-08 08:24:18 +0200 (Di, 08 Aug 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/build.xml
+   M /trunk/java/ggz-java.properties
+
+
+------------------------------------------------------------------------
+r8496 | helg | 2006-08-08 07:29:23 +0200 (Di, 08 Aug 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/README.txt
+   D /trunk/java/build.number
+   M /trunk/java/build.xml
+   D /trunk/java/src/version.properties
+
+More build shenanigans.
+------------------------------------------------------------------------
+r8495 | helg | 2006-08-08 06:30:52 +0200 (Di, 08 Aug 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/version.properties
+
+Test to see if the root java directory revision changes.
+------------------------------------------------------------------------
+r8494 | helg | 2006-08-08 05:03:16 +0200 (Di, 08 Aug 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/build.number
+
+Experimenting with $Revision$ build.number file.
+------------------------------------------------------------------------
+r8491 | jdorje | 2006-08-07 20:42:59 +0200 (Mo, 07 Aug 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java
+
+svn:ignore manifest directory.
+------------------------------------------------------------------------
+r8490 | jdorje | 2006-08-07 17:01:00 +0200 (Mo, 07 Aug 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/build.number
+
+Enable keyword substitution on build.number.
+------------------------------------------------------------------------
+r8489 | helg | 2006-08-07 16:20:00 +0200 (Mo, 07 Aug 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/client/CardGameHandler.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/client/Player.java
+   A /trunk/java/src/ggz/cards/client/Team.java
+   M /trunk/java/src/ggz/cards/common/GGZCardInputStream.java
+   M /trunk/java/src/ggz/cards/common/GGZCardOutputStream.java
+   A /trunk/java/src/ggz/cards/common/ScoreData.java
+   M /trunk/java/src/ggz/cards/common/ServerOpCode.java
+   M /trunk/java/src/ggz/cards/spades/SpadesGamePanel.java
+   M /trunk/java/src/ggz/client/core/Module.java
+   M /trunk/java/src/ggz/client/mod/ModGGZ.java
+
+Updated GGZCards client to support DIO and latest protocol changes.
+It doesn't do anything with the new information yet but at least it doesn't barf.
+------------------------------------------------------------------------
+r8484 | helg | 2006-08-07 11:14:58 +0200 (Mo, 07 Aug 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/client/core/Net.java
+   M /trunk/java/src/ggz/client/core/Room.java
+   A /trunk/java/src/ggz/common/AdminType.java
+   M /trunk/java/src/ggz/games/GamePanel.java
+   M /trunk/java/src/ggz/ui/ChatAction.java
+   M /trunk/java/src/ggz/ui/PrivateChatDialog.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/ggz/ui/messages.properties
+
+Initial admin command support.
+------------------------------------------------------------------------
+r8483 | helg | 2006-08-07 09:52:25 +0200 (Mo, 07 Aug 2006) | 1 line
+Geänderte Pfade:
+   A /trunk/java/src/ggz/client/mod/ModGGZ.java
+   A /trunk/java/src/ggz/client/mod/ModGame.java
+
+Missed two files.
+------------------------------------------------------------------------
+r8482 | helg | 2006-08-07 09:49:12 +0200 (Mo, 07 Aug 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/client/core/Game.java
+   M /trunk/java/src/ggz/client/core/Module.java
+   M /trunk/java/src/ggz/client/core/Net.java
+   M /trunk/java/src/ggz/client/core/Room.java
+   M /trunk/java/src/ggz/client/core/Server.java
+   A /trunk/java/src/ggz/client/core/ServerAdapter.java
+   M /trunk/java/src/ggz/client/core/messages.properties
+   A /trunk/java/src/ggz/client/mod/EmbeddedIO.java
+   A /trunk/java/src/ggz/client/mod/Launcher.java
+   D /trunk/java/src/ggz/client/mod/Mod.java
+   M /trunk/java/src/ggz/client/mod/ModEvent.java
+   M /trunk/java/src/ggz/client/mod/ModEventHandler.java
+   D /trunk/java/src/ggz/client/mod/ModGGZ.java
+   A /trunk/java/src/ggz/client/mod/ModGGZIO.java
+   A /trunk/java/src/ggz/client/mod/ModGGZSocketIO.java
+   D /trunk/java/src/ggz/client/mod/ModGame.java
+   A /trunk/java/src/ggz/client/mod/ModGameIO.java
+   A /trunk/java/src/ggz/client/mod/ModGameSocketIO.java
+   A /trunk/java/src/ggz/client/mod/ModIO.java
+   M /trunk/java/src/ggz/client/mod/ModState.java
+   D /trunk/java/src/ggz/client/mod/ModTransaction.java
+   M /trunk/java/src/ggz/client/mod/ModTransactionHandler.java
+   M /trunk/java/src/ggz/client/mod/Seat.java
+   M /trunk/java/src/ggz/client/mod/SpectatorSeat.java
+   A /trunk/java/src/ggz/client/mod/Stat.java
+   A /trunk/java/src/ggz/common/PlayerInfo.java
+   M /trunk/java/src/ggz/common/SeatType.java
+   M /trunk/java/src/ggz/games/GamePanel.java
+   M /trunk/java/src/ggz/games/SpectatorListPanel.java
+   M /trunk/java/src/ggz/ui/ClientApp.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/LoungePanel.java
+   M /trunk/java/src/ggz/ui/PrivateChatDialog.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/ggz/ui/SeatAllocationDialog.java
+   M /trunk/java/src/ggz/ui/TextPopupMenu.java
+   M /trunk/java/src/version.properties
+
+Loads of stuff, mainly to do with the Mod. The core client <-> game client interaction
+should be more robust and Java <-> non-java core client and game client launching 
+is about %90 compatible.
+------------------------------------------------------------------------
+r8397 | helg | 2006-07-23 12:18:35 +0200 (So, 23 Jul 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/version.properties
+
+Fixed ignore bug.
+------------------------------------------------------------------------
+r8387 | helg | 2006-07-22 12:12:28 +0200 (Sa, 22 Jul 2006) | 2 lines
+Geänderte Pfade:
+   A /trunk/java/help/emoticon_evilgrin.png
+   A /trunk/java/help/emoticon_grin.png
+   A /trunk/java/help/emoticon_smile.png
+   A /trunk/java/help/emoticon_surprised.png
+   A /trunk/java/help/emoticon_tongue.png
+   A /trunk/java/help/emoticon_unhappy.png
+   A /trunk/java/help/emoticon_wink.png
+   M /trunk/java/help/help.html
+   M /trunk/java/src/ggz/client/core/Game.java
+   M /trunk/java/src/ggz/client/core/Room.java
+   M /trunk/java/src/ggz/client/core/Server.java
+   M /trunk/java/src/ggz/client/mod/Mod.java
+   M /trunk/java/src/ggz/client/mod/ModState.java
+   M /trunk/java/src/ggz/games/GamePanel.java
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+
+Added emoticons to help file.
+Various code improvements.
+------------------------------------------------------------------------
+r8380 | helg | 2006-07-21 07:54:01 +0200 (Fr, 21 Jul 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/client/core/Game.java
+   M /trunk/java/src/ggz/client/core/Module.java
+   M /trunk/java/src/ggz/client/core/Net.java
+   M /trunk/java/src/ggz/client/core/Room.java
+   M /trunk/java/src/ggz/client/core/Server.java
+   M /trunk/java/src/ggz/client/core/TransID.java
+   M /trunk/java/src/ggz/ui/LoginPanel.java
+   M /trunk/java/src/ggz/ui/PrivateChatDialog.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/ggz/ui/preferences/GGZPreferences.java
+   M /trunk/java/src/version.properties
+   M /trunk/java/test/ggz/client/core/ServerTest.java
+
+Various code "improvements".
+------------------------------------------------------------------------
+r8364 | helg | 2006-07-17 07:25:44 +0200 (Mo, 17 Jul 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/build.xml
+   M /trunk/java/src/ggz/ui/AboutDialog.java
+   M /trunk/java/src/ggz/ui/SeatAllocationDialog.java
+   M /trunk/java/src/ggz/ui/preferences/PreferencesDialog.java
+
+Added Credits tab to About box.
+Escape key now closes dialogs.
+------------------------------------------------------------------------
+r8363 | helg | 2006-07-17 03:02:15 +0200 (Mo, 17 Jul 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/PrivateChatDialog.java
+
+Private chat window was still popping up when a PM was received from an ignored
+player. The chat didn't show the message but the window shouldn't have appeared.
+------------------------------------------------------------------------
+r8360 | helg | 2006-07-14 12:26:31 +0200 (Fr, 14 Jul 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/edu/stanford/ejalbert/BrowserLauncher.java
+   M /trunk/java/src/ggz/cards/BidPanel.java
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/PlayerLabel.java
+   M /trunk/java/src/ggz/cards/TableLayout.java
+   M /trunk/java/src/ggz/cards/TablePanel.java
+   M /trunk/java/src/ggz/cards/bridge/BridgeBidPanel.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/common/GGZCardInputStream.java
+   A /trunk/java/src/ggz/cards/images/empty-seat.gif
+   M /trunk/java/src/ggz/cards/spades/SpadesGamePanel.java
+   M /trunk/java/src/ggz/client/core/GameEvent.java
+   M /trunk/java/src/ggz/client/core/LoginType.java
+   M /trunk/java/src/ggz/client/core/ModuleEnvironment.java
+   M /trunk/java/src/ggz/client/core/Net.java
+   M /trunk/java/src/ggz/client/core/Player.java
+   M /trunk/java/src/ggz/client/core/ReseatType.java
+   M /trunk/java/src/ggz/client/core/Room.java
+   M /trunk/java/src/ggz/client/core/RoomEvent.java
+   M /trunk/java/src/ggz/client/core/ServerEvent.java
+   M /trunk/java/src/ggz/client/mod/ModEvent.java
+   M /trunk/java/src/ggz/client/mod/ModState.java
+   M /trunk/java/src/ggz/client/mod/ModTransaction.java
+   M /trunk/java/src/ggz/common/CSVParser.java
+   M /trunk/java/src/ggz/common/ChatType.java
+   M /trunk/java/src/ggz/common/ClientReqError.java
+   M /trunk/java/src/ggz/common/LeaveType.java
+   M /trunk/java/src/ggz/games/SpectatorListPanel.java
+   M /trunk/java/src/ggz/ui/AboutDialog.java
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/IconFactory.java
+   M /trunk/java/src/ggz/ui/LoginPanel.java
+   M /trunk/java/src/ggz/ui/LoungePanel.java
+   M /trunk/java/src/ggz/ui/PrivateChatDialog.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/ggz/ui/SeatAllocationDialog.java
+   M /trunk/java/src/ggz/ui/TextPopupMenu.java
+   A /trunk/java/src/ggz/ui/images/emoticon_evilgrin.png
+   A /trunk/java/src/ggz/ui/images/emoticon_grin.png
+   A /trunk/java/src/ggz/ui/images/emoticon_happy.png
+   A /trunk/java/src/ggz/ui/images/emoticon_smile.png
+   A /trunk/java/src/ggz/ui/images/emoticon_surprised.png
+   A /trunk/java/src/ggz/ui/images/emoticon_tongue.png
+   A /trunk/java/src/ggz/ui/images/emoticon_unhappy.png
+   A /trunk/java/src/ggz/ui/images/emoticon_waii.png
+   A /trunk/java/src/ggz/ui/images/emoticon_wink.png
+   M /trunk/java/src/ggz/ui/preferences/ChatPreferencesTab.java
+   M /trunk/java/src/ggz/ui/preferences/GGZPreferences.java
+   M /trunk/java/src/ggz/ui/preferences/PropertiesPreferences.java
+   A /trunk/java/src/ggz/ui/preferences/StyleChooser.java
+   M /trunk/java/src/version.properties
+   M /trunk/java/test/ggz/cards/AnimationTest.java
+   M /trunk/java/test/ggz/cards/SpriteTest.java
+   M /trunk/java/test/ggz/cards/TableLayoutTest.java
+   M /trunk/java/test/ggz/client/core/ServerTest.java
+   A /trunk/java/test/ggz/ui
+   A /trunk/java/test/ggz/ui/preferences
+   A /trunk/java/test/ggz/ui/preferences/StyleChooserTest.java
+
+Added support for smiley's.
+All chat fonts are now customisable.
+A few code cleanups based on Eclipse compiler warnings.
+Added empty seat icon.
+------------------------------------------------------------------------
+r8351 | helg | 2006-07-11 06:52:47 +0200 (Di, 11 Jul 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/messages.properties
+   M /trunk/java/src/ggz/ui/preferences/ChatPreferencesTab.java
+   M /trunk/java/src/ggz/ui/preferences/GGZPreferences.java
+   M /trunk/java/src/ggz/ui/preferences/PreferencesDialog.java
+   M /trunk/java/src/version.properties
+
+Added support for emoticons.
+Added more colour preferences but they're going to change.
+------------------------------------------------------------------------
+r8344 | helg | 2006-07-10 09:59:55 +0200 (Mo, 10 Jul 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/common/SeatType.java
+   M /trunk/java/src/version.properties
+
+Added icon for unoccupied seats.
+------------------------------------------------------------------------
+r8343 | helg | 2006-07-10 08:40:30 +0200 (Mo, 10 Jul 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/ui/LoginPanel.java
+   M /trunk/java/src/ggz/ui/messages.properties
+   M /trunk/java/src/ggz/ui/messages_de.properties
+   M /trunk/java/src/ggz/ui/messages_pt_BR.properties
+   M /trunk/java/src/ggz/ui/preferences/GGZPreferences.java
+
+Added "Remember nickname" checkbox to login.
+------------------------------------------------------------------------
+r8342 | helg | 2006-07-10 06:07:35 +0200 (Mo, 10 Jul 2006) | 10 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   A /trunk/java/help/beep.png
+   M /trunk/java/help/help.html
+   A /trunk/java/help/private_chat.png
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/TablePanel.java
+   A /trunk/java/src/ggz/cards/images/computer.gif
+   A /trunk/java/src/ggz/cards/images/ggzcards-logo.gif
+   A /trunk/java/src/ggz/cards/images/human.gif
+   D /trunk/java/src/ggz/cards/images/p15.gif
+   D /trunk/java/src/ggz/cards/images/p19-old.gif
+   D /trunk/java/src/ggz/cards/images/p19.gif
+   D /trunk/java/src/ggz/cards/images/p23.gif
+   D /trunk/java/src/ggz/cards/images/p27.gif
+   D /trunk/java/src/ggz/cards/images/p31.gif
+   M /trunk/java/src/ggz/client/core/Player.java
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/LoginPanel.java
+   M /trunk/java/src/ggz/ui/PrivateChatDialog.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/ggz/ui/images/spades.gif
+   M /trunk/java/src/ggz/ui/messages.properties
+   M /trunk/java/src/ggz/ui/messages_de.properties
+   M /trunk/java/src/ggz/ui/messages_pt_BR.properties
+   M /trunk/java/src/version.properties
+
+Updated the help.
+Modified copy on player list so that Ctrl-C just copies the nickname rather than
+the value of all cells in the selected row.
+New background image for GGZCards.
+Deleted some redundant images, somewhat reducing the JAR file size.
+Player equality check is now not case sensitive on the nickname.
+New spades icon.
+Added password confirm field when registering new player.
+Private chat window now comes to front when a new message is received.
+
+------------------------------------------------------------------------
+r8329 | helg | 2006-07-07 04:47:35 +0200 (Fr, 07 Jul 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/client/core/Room.java
+   M /trunk/java/src/ggz/client/core/Server.java
+   M /trunk/java/src/ggz/ui/LoungePanel.java
+
+Room list unit increment changed from 1 pixel to the height of the labels so clicking
+the scrollbar arrows scrolls a 'line' at at time.
+Server state is fully reset on logout. This should prevent state related errors
+after logging in again after an error has occurred.
+------------------------------------------------------------------------
+r8326 | helg | 2006-07-06 13:08:03 +0200 (Do, 06 Jul 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/TODO.txt
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/PlayerLabel.java
+   M /trunk/java/src/ggz/cards/TablePanel.java
+   D /trunk/java/src/ggz/cards/images/spades-logo.gif
+   M /trunk/java/src/ggz/cards/spades/SpadesGamePanel.java
+   M /trunk/java/src/ggz/client/core/Server.java
+   M /trunk/java/src/ggz/client/core/messages.properties
+   M /trunk/java/src/ggz/client/core/messages_de.properties
+   M /trunk/java/src/ggz/common/ClientReqError.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/ggz/ui/images/spades.gif
+   M /trunk/java/src/version.properties
+
+Changed colours back (Windows 3.1 seems to be the look they like)
+Added support for E_USR_TAKEN (untested)
+------------------------------------------------------------------------
+r8325 | helg | 2006-07-06 03:21:04 +0200 (Do, 06 Jul 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/java/TODO.txt
+   M /trunk/java/build.number
+   A /trunk/java/help
+   A /trunk/java/help/help.html (von /trunk/java/help.html:8301)
+   A /trunk/java/help/javapopupmenu.png
+   A /trunk/java/help/javasystemtrayicon.png
+   D /trunk/java/help.html
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   A /trunk/java/src/ggz/cards/GGZCardsPreferencesTab.java
+   M /trunk/java/src/ggz/cards/PlayerLabel.java
+   M /trunk/java/src/ggz/cards/TableConstraints.java
+   M /trunk/java/src/ggz/cards/TableLayout.java
+   M /trunk/java/src/ggz/cards/TablePanel.java
+   A /trunk/java/src/ggz/cards/images/spades-logo.gif
+   M /trunk/java/src/ggz/cards/spades/SpadesGamePanel.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/messages.properties
+   M /trunk/java/src/ggz/ui/preferences/GGZPreferences.java
+   M /trunk/java/src/version.properties
+
+Added user preferences to card games so that you can now configure whether 
+cards spin, the gap between cards and whether the slot is closed when cards are
+played.
+New colour scheme for card games.
+------------------------------------------------------------------------
+r8319 | helg | 2006-07-05 07:48:57 +0200 (Mi, 05 Jul 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/version.properties
+
+Chat font preferences are now also used for the chat input field.
+Labels along the bottom of the applet now use regular sized font.
+------------------------------------------------------------------------
+r8309 | helg | 2006-07-04 09:37:19 +0200 (Di, 04 Jul 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/cards/BidPanel.java
+   A /trunk/java/src/ggz/common/CSVParser.java
+   M /trunk/java/src/ggz/common/PlayerType.java
+   M /trunk/java/src/ggz/ui/ChatAction.java
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/CustomMetalTheme.java
+   M /trunk/java/src/ggz/ui/IconFactory.java
+   M /trunk/java/src/ggz/ui/PrivateChatDialog.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   A /trunk/java/src/ggz/ui/images/beep.png
+   A /trunk/java/src/ggz/ui/images/friend.png
+   A /trunk/java/src/ggz/ui/images/ignore.png
+   A /trunk/java/src/ggz/ui/images/player_host.png
+   A /trunk/java/src/ggz/ui/images/private_chat.png
+   M /trunk/java/src/ggz/ui/preferences/GGZPreferences.java
+   M /trunk/java/src/version.properties
+
+Added new Host player type.
+Added buttons below player list that make it easy to initiate private chat, beep, ignore and add to friends.
+
+------------------------------------------------------------------------
+r8307 | helg | 2006-07-04 01:54:13 +0200 (Di, 04 Jul 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/client/core/Server.java
+   M /trunk/java/src/ggz/client/core/messages.properties
+   M /trunk/java/src/ggz/client/core/messages_de.properties
+   M /trunk/java/src/ggz/common/ClientReqError.java
+   M /trunk/java/src/ggz/games/GamePanel.java
+   M /trunk/java/src/ggz/ui/ChatAction.java
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/IconFactory.java
+   M /trunk/java/src/ggz/ui/PrivateChatDialog.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   D /trunk/java/src/ggz/ui/images/p13.gif
+   D /trunk/java/src/ggz/ui/images/p17.gif
+   D /trunk/java/src/ggz/ui/images/p21.gif
+   D /trunk/java/src/ggz/ui/images/p25.gif
+   D /trunk/java/src/ggz/ui/images/p29.gif
+   A /trunk/java/src/ggz/ui/images/player_admin.gif
+   A /trunk/java/src/ggz/ui/images/player_bot.gif
+   A /trunk/java/src/ggz/ui/images/player_guest.png
+   A /trunk/java/src/ggz/ui/images/player_normal.png
+   A /trunk/java/src/ggz/ui/images/player_unknown.gif
+   M /trunk/java/src/ggz/ui/messages.properties
+   M /trunk/java/src/ggz/ui/messages_de.properties
+   M /trunk/java/src/ggz/ui/messages_pt_BR.properties
+   A /trunk/java/src/ggz/ui/preferences
+   A /trunk/java/src/ggz/ui/preferences/ChatPreferencesTab.java
+   A /trunk/java/src/ggz/ui/preferences/GGZPreferences.java
+   A /trunk/java/src/ggz/ui/preferences/PreferencesDialog.java
+   A /trunk/java/src/ggz/ui/preferences/PreferencesTab.java
+   A /trunk/java/src/ggz/ui/preferences/PropertiesPreferences.java
+   M /trunk/java/src/version.properties
+
+Added support for new login errors.
+Added preferences mechanism with initial support for customizable chat font.
+------------------------------------------------------------------------
+r8301 | oojah | 2006-07-03 12:34:08 +0200 (Mo, 03 Jul 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/images/spades.gif
+
+Centred the spades image.
+
+I am planning on making a nicer one in the future.
+------------------------------------------------------------------------
+r8293 | helg | 2006-06-30 06:53:12 +0200 (Fr, 30 Jun 2006) | 7 lines
+Geänderte Pfade:
+   M /trunk/java/TODO.txt
+   M /trunk/java/help.html
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/games/GamePanel.java
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/LoungePanel.java
+   M /trunk/java/src/ggz/ui/PrivateChatDialog.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/ggz/ui/messages.properties
+   M /trunk/java/src/ggz/ui/messages_de.properties
+   M /trunk/java/src/ggz/ui/messages_pt_BR.properties
+
+Disabled logout button while playing a game.
+Messages sent by self are now displayed in grey to distinguish them from other 
+messages.
+Added more help.
+Fixed minor layout problem with rooms.
+Changed "Back to Main Lobby" to say "Back to {room[0].name}" so that it always
+refelects the Entry Room name as specified on the server.
+------------------------------------------------------------------------
+r8292 | helg | 2006-06-29 07:55:46 +0200 (Do, 29 Jun 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/ui/LoungePanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/version.properties
+
+Added row highlighting to room list.
+Added splitter so you can resize chat area.
+------------------------------------------------------------------------
+r8290 | helg | 2006-06-29 03:07:27 +0200 (Do, 29 Jun 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/client/core/Server.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/version.properties
+   A /trunk/java/test/ggz/client
+   A /trunk/java/test/ggz/client/core
+   A /trunk/java/test/ggz/client/core/ServerTest.java
+
+Added text notification when other players leave or enter the room.
+Added message box that asks you if you want to join a table if a seat has been
+reserved for you.
+------------------------------------------------------------------------
+r8286 | helg | 2006-06-28 08:44:19 +0200 (Mi, 28 Jun 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/help.html
+   M /trunk/java/src/ggz/client/core/Net.java
+   M /trunk/java/src/ggz/client/core/Server.java
+   M /trunk/java/src/ggz/client/core/ServerEvent.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+
+Added total count of players. This count only shows the total of players in rooms for
+which a supported game is found so that the count of players in the rooms shown in
+the applet matches the total displayed.
+------------------------------------------------------------------------
+r8285 | helg | 2006-06-28 04:12:35 +0200 (Mi, 28 Jun 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/client/core/Net.java
+   M /trunk/java/src/ggz/client/core/Player.java
+   M /trunk/java/src/ggz/client/core/Room.java
+   M /trunk/java/src/ggz/client/core/RoomChangeEventData.java
+   M /trunk/java/src/ggz/client/core/RoomListener.java
+   M /trunk/java/src/ggz/ui/PrivateChatDialog.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/version.properties
+   A /trunk/java/test/ggz/common/SortedListTest.java
+
+Made some minor changes to the core client so that events pass the data that has 
+changed rather then room ids or players names.
+Tweaked the locking on the list of players maintained by the Room object.
+------------------------------------------------------------------------
+r8284 | helg | 2006-06-28 04:12:23 +0200 (Mi, 28 Jun 2006) | 3 lines
+Geänderte Pfade:
+   A /trunk/java/test/ggz/common
+
+Made some minor changes to the core client so that events pass the data that has 
+changed rather then room ids or players names.
+Tweaked the locking on the list of players maintained by the Room object.
+------------------------------------------------------------------------
+r8276 | helg | 2006-06-27 08:26:53 +0200 (Di, 27 Jun 2006) | 7 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/spades/SpadesGamePanel.java
+   M /trunk/java/src/ggz/client/core/Net.java
+   M /trunk/java/src/ggz/client/core/Player.java
+   M /trunk/java/src/ggz/client/core/Room.java
+   A /trunk/java/src/ggz/common/SortedList.java
+   M /trunk/java/src/ggz/ui/LoungePanel.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/ggz/ui/SeatAllocationDialog.java
+
+Player lists are now sorted.
+The current player is now highlighted.
+Net only reads one byte at a time when reading from a channel in a vain attempt
+to prevent the XML parser from reading any game bytes that are sent immediately 
+after the </SESSION> tag.
+Added locking to Room class so that one thread isn't iterating over players while
+another updates them.
+------------------------------------------------------------------------
+r8274 | helg | 2006-06-26 13:41:44 +0200 (Mo, 26 Jun 2006) | 5 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/client/core/Game.java
+   M /trunk/java/src/ggz/client/core/Module.java
+   M /trunk/java/src/ggz/client/mod/Mod.java
+   M /trunk/java/src/ggz/client/mod/ModGame.java
+   M /trunk/java/src/ggz/client/mod/ModTransactionHandler.java
+   M /trunk/java/src/ggz/games/GamePanel.java
+   M /trunk/java/src/ggz/ui/SeatAllocationDialog.java
+   M /trunk/java/src/version.properties
+
+Modifed the Mod interface to enable players to /msg and /wall while playing. If they
+don't have permission then the server will still return an error that is displayed
+by the applet.
+Fixed SeatAllocationDialog so that it doesn't throw exceptions when bots are not
+enabled for a game.
+------------------------------------------------------------------------
+r8272 | helg | 2006-06-26 10:47:13 +0200 (Mo, 26 Jun 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/version.properties
+
+Changed tooltip text for Last Trick and Previous Hand buttons.
+Removed Rating column from player list at Tina's request "people dont like to feel ike they suck".
+------------------------------------------------------------------------
+r8271 | helg | 2006-06-26 09:19:41 +0200 (Mo, 26 Jun 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/TableLayout.java
+   M /trunk/java/src/ggz/cards/client/CardGameHandler.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/client/Player.java
+   A /trunk/java/src/ggz/cards/images/hand.gif
+   M /trunk/java/src/ggz/cards/images/trick.gif
+   M /trunk/java/src/ggz/cards/spades/SpadesBidPanel.java
+   M /trunk/java/src/ggz/cards/spades/SpadesGamePanel.java
+
+Added view last hand to the GGZ Cards Java client.
+------------------------------------------------------------------------
+r8270 | helg | 2006-06-26 02:18:43 +0200 (Mo, 26 Jun 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/ggz-java.properties
+   M /trunk/java/help.html
+   D /trunk/java/src/ggz/client/core/PrivateChatDialog.java
+   M /trunk/java/src/ggz/client/core/Room.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   A /trunk/java/src/ggz/ui/PrivateChatDialog.java (von /trunk/java/src/ggz/client/core/PrivateChatDialog.java:8268)
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/version.properties
+
+Changed private chat window to a JFrame so that it can be minimised, is not always on top and appears on the task bar.
+The number of players in the room is now displayed.
+------------------------------------------------------------------------
+r8268 | helg | 2006-06-25 13:39:27 +0200 (So, 25 Jun 2006) | 7 lines
+Geänderte Pfade:
+   A /trunk/java/src/ggz/client/core/PrivateChatDialog.java
+   M /trunk/java/src/ggz/client/mod/ModEventHandler.java
+   M /trunk/java/src/ggz/games/GamePanel.java
+   M /trunk/java/src/ggz/ui/ChatAction.java
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+
+Added private chat dialog that is displayed when a private 
+message is received. Still need to improve it further but it's
+a start. The dialog stays open even when you or the other 
+player changes rooms and you can continue chatting.
+
+Removed /table command so that table chat can be echoed locally
+when playing a game. This was pretty redundant.
+------------------------------------------------------------------------
+r8266 | helg | 2006-06-24 11:53:10 +0200 (Sa, 24 Jun 2006) | 11 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/build.xml
+   M /trunk/java/signing/create_self_cert.cmd
+   M /trunk/java/signing/ggz_self.cer
+   M /trunk/java/signing/ggz_selfcert.keystore
+   M /trunk/java/src/ggz/cards/BidPanel.java
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/SmartChatLayout.java
+   M /trunk/java/src/ggz/client/core/Player.java
+   M /trunk/java/src/ggz/client/core/Room.java
+   M /trunk/java/src/ggz/client/core/TransID.java
+   M /trunk/java/src/ggz/client/mod/Mod.java
+   M /trunk/java/src/ggz/client/mod/Seat.java
+   M /trunk/java/src/ggz/client/mod/SpectatorSeat.java
+   M /trunk/java/src/ggz/games/GamePanel.java
+   A /trunk/java/src/ggz/games/SpectatorListPanel.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/ggz/ui/SeatAllocationDialog.java
+   M /trunk/java/src/ggz/ui/messages.properties
+   M /trunk/java/src/version.properties
+
+Added spectator list in game window - yeah, it's ugly.
+Now that you can actually click on spectators you can also
+boot them. It's via the obscure right-click method but something
+better is going to have to wait.
+Player list now shows rating.
+Created a new self-signed certificate so that the certificate 
+is now only unverified rather than unverified AND expired.
+Build number is included in the applet JAR file name to avoid
+cache problems.
+Bidding grid cells now use theme font.
+Changed a few labels in the seat allocation dialog.
+------------------------------------------------------------------------
+r8258 | helg | 2006-06-23 06:52:26 +0200 (Fr, 23 Jun 2006) | 6 lines
+Geänderte Pfade:
+   M /trunk/java/ggz-java.properties
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/OptionDialog.java
+   M /trunk/java/src/ggz/cards/TablePanel.java
+   M /trunk/java/src/ggz/cards/client/CardGameHandler.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/spades/SpadesBidPanel.java
+   M /trunk/java/src/ggz/client/core/Module.java
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/LoginPanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/version.properties
+
+Added support for new tabs in options dialog.
+Fixed table description to a fixed height and max width to 
+prevent tables from becoming too wide. You now get two lines
+text for the table description. I'm sure we'll have to revisit
+this again. We also have to find a better solution for
+displaying the spectators.
+------------------------------------------------------------------------
+r8253 | helg | 2006-06-22 10:44:17 +0200 (Do, 22 Jun 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/messages.properties
+   M /trunk/java/src/ggz/ui/messages_de.properties
+   M /trunk/java/src/ggz/ui/messages_pt_BR.properties
+
+Changed logind dialog (broken in a different way now)
+------------------------------------------------------------------------
+r8252 | helg | 2006-06-22 10:19:21 +0200 (Do, 22 Jun 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/ggz-java.properties
+   A /trunk/java/src/ggz/cards/PlayerLabel.java
+   A /trunk/java/src/ggz/cards/spades
+   A /trunk/java/src/ggz/cards/spades/SpadesBidPanel.java
+   A /trunk/java/src/ggz/cards/spades/SpadesGamePanel.java
+   A /trunk/java/src/ggz/common/StringUtil.java
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/LoginPanel.java
+   M /trunk/java/src/ggz/ui/LoungePanel.java
+   M /trunk/java/src/version.properties
+
+Forgot to check in some files.
+------------------------------------------------------------------------
+r8244 | helg | 2006-06-22 06:26:02 +0200 (Do, 22 Jun 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/ggz-java.properties
+   M /trunk/java/src/ggz/cards/BidPanel.java
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/OptionDialog.java
+   M /trunk/java/src/ggz/cards/TableConstraints.java
+   M /trunk/java/src/ggz/cards/TableLayout.java
+   M /trunk/java/src/ggz/cards/client/CardGameHandler.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/common/GGZCardInputStream.java
+   M /trunk/java/src/ggz/client/core/Module.java
+   M /trunk/java/src/ggz/client/core/TransID.java
+   M /trunk/java/src/ggz/games/GamePanel.java
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/LoungePanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/ggz/ui/messages.properties
+   M /trunk/java/src/version.properties
+
+Added Spades specific Game UI.
+Fixed a few odd bugs.
+------------------------------------------------------------------------
+r8229 | helg | 2006-06-20 15:14:11 +0200 (Di, 20 Jun 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/cards/BidPanel.java
+   M /trunk/java/src/ggz/cards/ScoresDialog.java
+   M /trunk/java/src/ggz/client/core/Net.java
+   M /trunk/java/src/ggz/client/core/Room.java
+   M /trunk/java/src/ggz/client/core/messages.properties
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/ClientApp.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   A /trunk/java/src/ggz/ui/DocumentSizeFilter.java
+   M /trunk/java/src/ggz/ui/LoginPanel.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/ggz/ui/messages.properties
+   M /trunk/java/src/ggz/ui/messages_de.properties
+   M /trunk/java/src/ggz/ui/messages_pt_BR.properties
+   M /trunk/java/src/version.properties
+   M /trunk/java/test/ggz/cards/BidPanelTest.java
+   M /trunk/java/test/ggz/cards/bridge/BridgeBidPanelTest.java
+
+You can now choose which seat you want to sit in when joining.
+Handle field limits entry to 16 characters.
+------------------------------------------------------------------------
+r8216 | helg | 2006-06-19 15:09:14 +0200 (Mo, 19 Jun 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/ui/SeatAllocationDialog.java
+   M /trunk/java/src/version.properties
+
+Fixed thread sleep bug for delay to show cards at end of trick.
+Removed filter so that any player can now be selected when
+reserving seats.
+------------------------------------------------------------------------
+r8215 | helg | 2006-06-19 14:22:02 +0200 (Mo, 19 Jun 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   D /trunk/java/src/ggz/ui/images/watermark.gif
+   A /trunk/java/src/ggz/ui/images/watermark.png
+
+Changed the clown watermark to the GGZ dice.
+------------------------------------------------------------------------
+r8213 | helg | 2006-06-19 13:27:07 +0200 (Mo, 19 Jun 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/bridge/BridgeBidPanel.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+
+Bridge bid buttons are now not displayed to spectators.
+Applet defaults back to live.ggzgamingzone.org again.
+------------------------------------------------------------------------
+r8212 | helg | 2006-06-19 12:12:23 +0200 (Mo, 19 Jun 2006) | 1 line
+Geänderte Pfade:
+   A /trunk/java/src/ggz/cards/BidPanel.java
+
+Forgot to add BidPanel.java
+------------------------------------------------------------------------
+r8211 | helg | 2006-06-19 11:51:54 +0200 (Mo, 19 Jun 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/client/core/Module.java
+   M /trunk/java/src/ggz/ui/LoungePanel.java
+   M /trunk/java/src/version.properties
+
+Added support for WebMOTD (affects login performance somewhat though).
+Added custom game type for oojah's server.
+
+------------------------------------------------------------------------
+r8210 | helg | 2006-06-19 09:40:24 +0200 (Mo, 19 Jun 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/ScoresDialog.java
+   M /trunk/java/src/ggz/cards/TableLayout.java
+   M /trunk/java/src/ggz/cards/bridge/BridgeBidPanel.java
+   M /trunk/java/src/ggz/cards/common/Bid.java
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/LoungePanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/version.properties
+   A /trunk/java/test/ggz/cards/BidPanelTest.java
+   A /trunk/java/test/ggz/cards/bridge
+   A /trunk/java/test/ggz/cards/bridge/BridgeBidPanelTest.java
+
+Added display of other player's bids during bidding.
+Removed "Stand" button.
+Applet now supports MOTD URL. The downside of this change is that it can take slightly longer to log in while the URL is loaded etc.
+------------------------------------------------------------------------
+r8204 | helg | 2006-06-16 16:36:01 +0200 (Fr, 16 Jun 2006) | 10 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/client/Player.java
+   M /trunk/java/src/ggz/client/core/Game.java
+   M /trunk/java/src/ggz/client/core/Net.java
+   M /trunk/java/src/ggz/client/core/Room.java
+   M /trunk/java/src/ggz/client/core/RoomEvent.java
+   M /trunk/java/src/ggz/client/core/RoomListener.java
+   M /trunk/java/src/ggz/client/core/Table.java
+   M /trunk/java/src/ggz/client/core/messages.properties
+   M /trunk/java/src/ggz/client/core/messages_de.properties
+   M /trunk/java/src/ggz/client/mod/Mod.java
+   M /trunk/java/src/ggz/client/mod/ModEventHandler.java
+   M /trunk/java/src/ggz/client/mod/ModGGZ.java
+   M /trunk/java/src/ggz/games/GamePanel.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/version.properties
+
+Modified core client to send table add and delete notifications
+rather than a table update. This allows the UI to be more efficient
+with its painting.
+Fixed bug in reseat right click menus in game. It allowed you
+to do actions that weren't supported by the server. It now
+also sends the correct seat number (the ggz one) which was the
+main cause of all the problems.
+Core client now sends errors to game via Mod so that the game
+can show a message dialog when a reseat operation is not permitted
+or fails for some other reason.
+------------------------------------------------------------------------
+r8203 | helg | 2006-06-16 11:39:27 +0200 (Fr, 16 Jun 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/version.properties
+
+Added right click popup menu to "south" seat.
+Join button is now disabled on tables if a seat is not reserved
+for you - it used to let you join any table with reserved seats.
+------------------------------------------------------------------------
+r8202 | helg | 2006-06-16 10:04:04 +0200 (Fr, 16 Jun 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/client/core/Game.java
+   M /trunk/java/src/ggz/client/core/Server.java
+   M /trunk/java/src/ggz/client/mod/Mod.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/version.properties
+
+Created a custom LayoutManager so that tables are not stretched
+when the window is resized.
+------------------------------------------------------------------------
+r8199 | helg | 2006-06-16 07:21:20 +0200 (Fr, 16 Jun 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/build.xml
+   M /trunk/java/src/ggz/cards/TablePanel.java
+   M /trunk/java/src/ggz/cards/common/GGZCardInputStream.java
+   M /trunk/java/src/ggz/cards/common/GGZCardOutputStream.java
+   M /trunk/java/src/ggz/client/core/Module.java
+   M /trunk/java/src/ggz/ui/ClientApp.java
+   M /trunk/java/src/ggz/ui/LoginPanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/version.properties
+
+Changed the way that tables are displayed. Doesn't use a grid
+anymore and instead has "buttons" for each table. This should
+make it easier for dummies to join and spectate. Looks nicer
+too but it of course needs more work to be truly great.
+------------------------------------------------------------------------
+r8194 | helg | 2006-06-14 18:23:47 +0200 (Mi, 14 Jun 2006) | 7 lines
+Geänderte Pfade:
+   M /trunk/java/TODO.txt
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/OptionDialog.java
+   M /trunk/java/src/ggz/cards/ScoresDialog.java
+   M /trunk/java/src/ggz/cards/TableConstraints.java
+   M /trunk/java/src/ggz/cards/TableLayout.java
+   M /trunk/java/src/ggz/cards/TablePanel.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/common/GGZCardInputStream.java
+   M /trunk/java/src/ggz/cards/common/GGZCardOutputStream.java
+   M /trunk/java/src/ggz/client/core/Table.java
+   M /trunk/java/src/ggz/client/mod/Mod.java
+   M /trunk/java/src/ggz/games/GamePanel.java
+   M /trunk/java/src/version.properties
+
+I think I've fixed the "join game after spectating" bug. The
+applet should be a lot more stable now.
+Fixed socket code that wasn't reading all bytes sent by the 
+game server.
+Added right click popup menu for moving seats while playing 
+a game.
+Some minor tweaks.
+------------------------------------------------------------------------
+r8187 | helg | 2006-06-13 16:09:53 +0200 (Di, 13 Jun 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   A /trunk/java/src/ggz/cards/ScoresDialog.java
+   M /trunk/java/src/ggz/cards/TableConstraints.java
+   M /trunk/java/src/ggz/cards/TableLayout.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   A /trunk/java/src/ggz/cards/images/scores.gif
+   M /trunk/java/src/ggz/cards/images/trick.gif
+   M /trunk/java/src/ggz/client/core/StateID.java
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/ggz/ui/TextPopupMenu.java
+   M /trunk/java/src/ggz/ui/messages.properties
+   M /trunk/java/src/ggz/ui/messages_de.properties
+   M /trunk/java/src/ggz/ui/messages_pt_BR.properties
+   M /trunk/java/src/version.properties
+
+You can now view the score sheet; click the icon in the bottom right. You can leave the score window open while you play.
+When reserving a seat, the player who the seat is reserved for is now shown in the table list.
+Chat now scrolls properly in all cases.
+You now get notified when you receive a private message. It's still not great but at least you can now know that it's a private message. In the long term, you'll get a private chat window.
+------------------------------------------------------------------------
+r8147 | helg | 2006-06-09 11:37:21 +0200 (Fr, 09 Jun 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/cards/TableLayout.java
+   M /trunk/java/src/version.properties
+
+Increased the card gap by 2 pixels.
+------------------------------------------------------------------------
+r8144 | helg | 2006-06-09 03:52:31 +0200 (Fr, 09 Jun 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/images/trick.gif
+   M /trunk/java/src/version.properties
+
+Fixed bug where deal animation was run when cards were shown 
+for Spades using DN.
+Moved last trick tracking out of CardPanel and into CardClient.
+Put rounded corners on last trick icon.
+------------------------------------------------------------------------
+r8135 | helg | 2006-06-08 13:51:11 +0200 (Do, 08 Jun 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/client/core/Player.java
+   A /trunk/java/src/ggz/ui/IconFactory.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/ggz/ui/SeatAllocationDialog.java
+
+Added icons to player combo in seat allocation dialog.
+Limited players in combo to bots, admins and registered players.
+
+------------------------------------------------------------------------
+r8132 | helg | 2006-06-08 04:42:06 +0200 (Do, 08 Jun 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/TODO.txt
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/ggz/ui/SeatAllocationDialog.java
+   M /trunk/java/src/ggz/ui/messages.properties
+   M /trunk/java/src/ggz/ui/messages_de.properties
+   M /trunk/java/src/ggz/ui/messages_pt_BR.properties
+   M /trunk/java/src/version.properties
+
+You can now view last trick in GGZ Cards games.
+Seat reservation dialog now allows you to reserve seats.
+Card sorting has been improved.
+------------------------------------------------------------------------
+r8124 | helg | 2006-06-07 15:11:08 +0200 (Mi, 07 Jun 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/TODO.txt
+   M /trunk/java/build.number
+   M /trunk/java/ggz-java.properties
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/OptionDialog.java
+   M /trunk/java/src/ggz/cards/TableConstraints.java
+   M /trunk/java/src/ggz/cards/TableLayout.java
+   A /trunk/java/src/ggz/cards/images/trick.gif
+   M /trunk/java/src/ggz/games/GamePanel.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/version.properties
+
+Added ability to view last trick in card games.
+------------------------------------------------------------------------
+r8098 | helg | 2006-06-05 15:37:13 +0200 (Mo, 05 Jun 2006) | 5 lines
+Geänderte Pfade:
+   A /trunk/java/src/ggz/cards/CardGamePanel.java (von /trunk/java/src/ggz/cards/GamePanel.java:8097)
+   D /trunk/java/src/ggz/cards/GamePanel.java
+   M /trunk/java/src/ggz/cards/client/CardGameHandler.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/common/Card.java
+   M /trunk/java/src/ggz/cards/common/Face.java
+   M /trunk/java/src/ggz/cards/common/Suit.java
+   M /trunk/java/src/ggz/client/core/Module.java
+   M /trunk/java/src/ggz/client/mod/Mod.java
+   M /trunk/java/src/ggz/client/mod/ModEventHandler.java
+   A /trunk/java/src/ggz/games
+   A /trunk/java/src/ggz/games/GamePanel.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+
+Fixed a few minor race condition bugs that appeared due to me 
+running on a LAN. Created a generic game window that handles
+all Mod messages and manages the chat window. This will come
+in useful when I get around to porting some board games. Made
+a few other minor tweaks.
+------------------------------------------------------------------------
+r8077 | helg | 2006-05-30 09:37:27 +0200 (Di, 30 Mai 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/README.txt
+   M /trunk/java/help.html
+
+Added to questions to the help page.
+------------------------------------------------------------------------
+r8076 | helg | 2006-05-30 09:02:46 +0200 (Di, 30 Mai 2006) | 6 lines
+Geänderte Pfade:
+   M /trunk/java/README.txt
+   D /trunk/java/appletparams.properties
+   M /trunk/java/build.number
+   M /trunk/java/build.xml
+   A /trunk/java/ggz-java.properties (von /trunk/java/appletparams.properties:8070)
+   A /trunk/java/help.html
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/ClientApp.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/HyperlinkLabel.java
+   M /trunk/java/src/ggz/ui/LoginPanel.java
+   M /trunk/java/src/ggz/ui/LoungePanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/ggz/ui/SeatAllocationDialog.java
+   A /trunk/java/src/ggz/ui/TextPopupMenu.java
+   M /trunk/java/src/ggz/ui/messages.properties
+   M /trunk/java/src/ggz/ui/messages_de.properties
+   M /trunk/java/src/ggz/ui/messages_pt_BR.properties
+   M /trunk/java/src/version.properties
+
+Added right-click popup menu to all text components to allow
+cut/copy/paste/select all.
+
+Added help link and help page.
+
+Documented theme properties.
+------------------------------------------------------------------------
+r8070 | helg | 2006-05-29 04:10:03 +0200 (Mo, 29 Mai 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/appletparams.properties
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   M /trunk/java/src/ggz/ui/CustomMetalTheme.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/version.properties
+
+Added options for disabling gradient painting and disabling
+the watermark image. Also improved theme handling.
+------------------------------------------------------------------------
+r8069 | helg | 2006-05-26 13:51:42 +0200 (Fr, 26 Mai 2006) | 7 lines
+Geänderte Pfade:
+   A /trunk/java/appletparams.properties
+   M /trunk/java/build.number
+   M /trunk/java/src/ggz/ui/ClientApp.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   A /trunk/java/src/ggz/ui/CustomMetalTheme.java
+   M /trunk/java/src/version.properties
+
+Added customisation options to the applet. You can now specify
+the image, colors and fonts for a lot of items via applet parameters.
+When running as an application, you can still override the look and
+feel by editing the appletparams.properties file in the current
+directory. I know this file should be in the home dir but it's
+alpha stuff at the moment and I don't see people running it as
+an app much. It was quick to knock up and works.
+------------------------------------------------------------------------
+r8065 | helg | 2006-05-25 12:10:52 +0200 (Do, 25 Mai 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/build.number
+   M /trunk/java/build.xml
+   M /trunk/java/src/version.properties
+
+Fixed build file so that it outputs the correct information
+to version.properties when compiling under Linux.
+------------------------------------------------------------------------
+r8064 | helg | 2006-05-25 10:39:46 +0200 (Do, 25 Mai 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/java/TODO.txt
+   M /trunk/java/build.number
+   M /trunk/java/build.xml
+   M /trunk/java/src/ggz/client/core/Game.java
+   M /trunk/java/src/ggz/client/core/Room.java
+   M /trunk/java/src/ggz/client/core/Table.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/version.properties
+
+Fixed a few bugs in the spectating code. Applet would crash with
+NullPointerException when a second spectator joined a game and 
+the list of spectators in the list of tables only showed the first
+spectator.
+------------------------------------------------------------------------
+r8063 | helg | 2006-05-25 06:36:49 +0200 (Do, 25 Mai 2006) | 1 line
+Geänderte Pfade:
+   A /trunk/java/build.number
+   M /trunk/java/build.xml
+   D /trunk/java/manifest
+   M /trunk/java/src/ggz/ui/AboutDialog.java
+   A /trunk/java/src/version.properties
+
+Added build number to Ant build file and a version.properties file is now updated as part of the build. This file contains version information as well as the host and user that did the build. The Manifest file is now generated by the Ant build and includes package version information for the ggz.ui package. This package version is read by the About dialog to display the version number - it was hard-coded before. Most importantly the About dialog now shows the build number so it is easier to distinguish between builds. After performing a build, the build.number and version.properties files should be committed to SVN so that build numbers are picked up by other developers.
+------------------------------------------------------------------------
+r8051 | helg | 2006-05-23 03:46:56 +0200 (Di, 23 Mai 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/bridge/BridgeBidPanel.java
+
+Fixed bug where Bridge bidding didn't work due to difference in behaviour when running as an applet vs an application.
+------------------------------------------------------------------------
+r8014 | helg | 2006-05-01 15:04:53 +0200 (Mo, 01 Mai 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/client/core/GameType.java
+   M /trunk/java/src/ggz/client/core/Net.java
+
+Fixed bug in code that parses received XML where it didn't properly manage arrays of named bots. Obviously this code had never been run before!
+------------------------------------------------------------------------
+r7943 | josef | 2006-03-16 16:17:26 +0100 (Do, 16 Mär 2006) | 7 lines
+Geänderte Pfade:
+   A /trunk/java/ChangeLog
+
+- ggz-java should get a changelog too
+
+Note that svn2cl is buggy in that it disregards the pathnames of all
+files before the move from playground. But this is not all that important
+right now.
+
+
+------------------------------------------------------------------------
+r7905 | josef | 2006-03-14 14:47:11 +0100 (Di, 14 Mär 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/docs/AUTHORS
+   M /trunk/docs/NEWS
+   M /trunk/docs/README.GGZ
+   M /trunk/ggz-client-libs/AUTHORS
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggzd/AUTHORS
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README.GGZ
+   M /trunk/gnome-client/AUTHORS
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/grubby/AUTHORS
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README.GGZ
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-games/AUTHORS
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README.GGZ
+   A /trunk/java/AUTHORS
+   A /trunk/java/NEWS
+   A /trunk/java/README.GGZ
+   M /trunk/kde-client/AUTHORS
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-games/AUTHORS
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/README.GGZ
+   M /trunk/libggz/NEWS
+   M /trunk/python/AUTHORS
+   M /trunk/python/NEWS
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/AUTHORS
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/txt-client/AUTHORS
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README.GGZ
+   M /trunk/utils/AUTHORS
+   M /trunk/utils/NEWS
+   M /trunk/utils/README.GGZ
+
+- sync all common files from libggz (README.GGZ, AUTHORS)
+- updated NEWS file for the upcoming 0.0.13 release
+
+
+------------------------------------------------------------------------
+r7904 | josef | 2006-03-14 14:46:20 +0100 (Di, 14 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/AboutDialog.java
+
+- bump to 0.0.13 here too
+
+
+------------------------------------------------------------------------
+r7898 | helg | 2006-03-08 02:31:17 +0100 (Mi, 08 Mär 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/java/README.txt
+   M /trunk/java/src/ggz/ui/ClientApp.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+
+Updated README.txt and fixed applet parameter names for xmlin and xmlout.
+------------------------------------------------------------------------
+r7896 | josef | 2006-03-07 14:28:01 +0100 (Di, 07 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/java
+
+- ignore 'bin' directory
+
+
+------------------------------------------------------------------------
+r7895 | josef | 2006-03-07 14:26:19 +0100 (Di, 07 Mär 2006) | 3 lines
+Geänderte Pfade:
+   A /trunk/java (von /trunk/playground/ggz-java5:7894)
+   D /trunk/playground/ggz-java5
+
+- move GGZ-Java to a module on its own
+
+
+------------------------------------------------------------------------
+r7886 | helg | 2006-03-07 03:06:13 +0100 (Di, 07 Mär 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/CardGameHandler.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/Client.java
+
+Fixed bug in Bridge where bidding UI was not being removed once play started.
+------------------------------------------------------------------------
+r7882 | helg | 2006-03-03 01:52:00 +0100 (Fr, 03 Mär 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+
+
+------------------------------------------------------------------------
+r7871 | helg | 2006-02-15 01:58:07 +0100 (Mi, 15 Feb 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/edu/stanford/ejalbert/BrowserLauncher.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/bridge/BridgeBidPanel.java
+
+Improved default browser detection under Unix when clicking on a hyperlink (e.g. How to play) when running as an app. It's still not very good but it's better than it was.
+------------------------------------------------------------------------
+r7870 | helg | 2006-02-15 01:16:01 +0100 (Mi, 15 Feb 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/build.xml
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/OptionDialog.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/Sprite.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TableConstraints.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TableLayout.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TablePanel.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/bridge
+   A /trunk/playground/ggz-java5/src/ggz/cards/bridge/BridgeBidPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/CardGameHandler.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/Client.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/Player.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/Card.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/CardSetType.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/ClientOpCode.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/Face.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/GGZCardInputStream.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/GGZCardOutputStream.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/GameMessage.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/ServerOpCode.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/Suit.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Game.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/GameEvent.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/LoginType.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Module.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/ModuleEnvironment.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Net.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/ReseatType.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Room.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/RoomEvent.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Server.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/ServerEvent.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/StateID.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Table.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/TransID.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/messages.properties
+   M /trunk/playground/ggz-java5/src/ggz/client/core/messages_de.properties
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/Mod.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/ModEvent.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/ModState.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/ModTransaction.java
+   M /trunk/playground/ggz-java5/src/ggz/common/ChatType.java
+   M /trunk/playground/ggz-java5/src/ggz/common/ClientReqError.java
+   M /trunk/playground/ggz-java5/src/ggz/common/LeaveType.java
+   M /trunk/playground/ggz-java5/src/ggz/common/PlayerType.java
+   M /trunk/playground/ggz-java5/src/ggz/common/SeatType.java
+   M /trunk/playground/ggz-java5/src/ggz/common/TableState.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/AboutDialog.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ChatAction.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ChatPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ClientApp.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ClientApplet.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/HyperlinkLabel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/LoungePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomChatPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/SeatAllocationDialog.java
+   M /trunk/playground/ggz-java5/test/ggz/cards/AnimationTest.java
+   M /trunk/playground/ggz-java5/test/ggz/cards/SpriteTest.java
+   M /trunk/playground/ggz-java5/test/ggz/cards/TableLayoutTest.java
+
+Made wholesale changes to enum classes to provide compatibility with JDK1.4. Also removed generic collections for the same reason. Added custom bid panel for Bridge so that you can more easily see the other players bids and rather than having a large array of buttons you now have specialised buttons just for bridge.
+------------------------------------------------------------------------
+r7858 | helg | 2006-02-11 07:56:56 +0100 (Sa, 11 Feb 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/ggz/ui/messages_de.properties
+
+
+------------------------------------------------------------------------
+r7854 | josef | 2006-02-10 13:56:12 +0100 (Fr, 10 Feb 2006) | 3 lines
+Geänderte Pfade:
+   A /trunk/playground/ggz-java5/src/ggz/ui/messages_pt_BR.properties
+
+- brazilian portuguese translation for the applet UI
+
+
+------------------------------------------------------------------------
+r7852 | josef | 2006-02-10 11:24:50 +0100 (Fr, 10 Feb 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/ggz/ui/messages_de.properties
+
+- some corrections to the German translation
+
+
+------------------------------------------------------------------------
+r7851 | helg | 2006-02-10 07:19:08 +0100 (Fr, 10 Feb 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Server.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/messages.properties
+   M /trunk/playground/ggz-java5/src/ggz/client/core/messages_de.properties
+   M /trunk/playground/ggz-java5/src/ggz/ui/ChatAction.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ChatPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ClientApp.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomChatPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/messages.properties
+   M /trunk/playground/ggz-java5/src/ggz/ui/messages_de.properties
+
+More localisation. Does it never end?
+------------------------------------------------------------------------
+r7850 | helg | 2006-02-10 03:05:12 +0100 (Fr, 10 Feb 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Net.java
+
+Changed the way Server XML is traced (yet again). Server XML is not traced byte for byte rather than after XML parsing.
+------------------------------------------------------------------------
+r7849 | helg | 2006-02-10 02:36:27 +0100 (Fr, 10 Feb 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/TODO.txt
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Net.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Server.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/messages.properties
+   A /trunk/playground/ggz-java5/src/ggz/client/core/messages_de.properties
+
+Added i18n support for Net and Server classes.
+------------------------------------------------------------------------
+r7847 | helg | 2006-02-09 10:22:58 +0100 (Do, 09 Feb 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Server.java
+   M /trunk/playground/ggz-java5/src/ggz/common/NumberList.java
+   M /trunk/playground/ggz-java5/src/ggz/common/TableState.java
+   M /trunk/playground/ggz-java5/src/ggz/common/XMLElement.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/AboutDialog.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ChatAction.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ChatPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ClientApplet.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/LoginPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/LoungePanel.java
+   D /trunk/playground/ggz-java5/src/ggz/ui/RoomButton.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomChatPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/SeatAllocationDialog.java
+   A /trunk/playground/ggz-java5/src/ggz/ui/messages.properties
+   A /trunk/playground/ggz-java5/src/ggz/ui/messages_de.properties
+
+Added i18n support for core client. Current supported languages are English and German.
+------------------------------------------------------------------------
+r7843 | helg | 2006-02-07 07:23:07 +0100 (Di, 07 Feb 2006) | 1 line
+Geänderte Pfade:
+   D /trunk/playground/ggz-java5/src/ggz/cards/SuaroPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TableLayout.java
+
+
+------------------------------------------------------------------------
+r7842 | helg | 2006-02-07 07:20:15 +0100 (Di, 07 Feb 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/README.txt
+   M /trunk/playground/ggz-java5/TODO.txt
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/SuaroPanel.java
+   D /trunk/playground/ggz-java5/src/ggz/cards/client/CardSeat.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/Client.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/client/Player.java (von /trunk/playground/ggz-java5/src/ggz/cards/client/CardSeat.java:7829)
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Server.java
+   M /trunk/playground/ggz-java5/src/ggz/common/ClientReqError.java
+
+Added "bad username" result code.
+
+Renamed CardSeat to Player.
+------------------------------------------------------------------------
+r7841 | helg | 2006-02-07 01:12:48 +0100 (Di, 07 Feb 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/SmartChatLayout.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/Bid.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/GGZCardOutputStream.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Module.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Net.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomPanel.java
+
+Modified Net to use SAX Transformer to generate XML instead of concatenating strings. This guarantees that all XML sent to the server by the Java client will be well formed.
+
+"Back to Lounge" button is not disabled while playing a game.
+------------------------------------------------------------------------
+r7835 | helg | 2006-02-02 09:03:38 +0100 (Do, 02 Feb 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/TODO.txt
+
+Forgot to update the TODO file.
+------------------------------------------------------------------------
+r7834 | helg | 2006-02-02 08:55:17 +0100 (Do, 02 Feb 2006) | 5 lines
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/TODO.txt
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TableConstraints.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TableLayout.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TablePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Net.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/Mod.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ChatAction.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ChatPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomChatPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomPanel.java
+
+Set socket keep alive to true so that games don't lose socket connection if user doesn't do anything for a long time. There is no application level heartbeat for GGZCards so hopefully this fixes the "connection reset" problem.
+
+Added more SwingUtilities.invokeLater() to hopefully resolve some Swing threading issues.
+
+Java clients can now spectate!
+------------------------------------------------------------------------
+r7833 | helg | 2006-01-30 14:51:38 +0100 (Mo, 30 Jan 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ChatPanel.java
+
+Minor size and color tweaks.
+------------------------------------------------------------------------
+r7830 | helg | 2006-01-30 13:24:56 +0100 (Mo, 30 Jan 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/SmartChatLayout.java
+
+Created new layout for chat and card table.
+------------------------------------------------------------------------
+r7829 | helg | 2006-01-30 10:28:01 +0100 (Mo, 30 Jan 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/TODO.txt
+   M /trunk/playground/ggz-java5/src/ggz/cards/TablePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Room.java
+   M /trunk/playground/ggz-java5/src/ggz/common/ChatType.java
+   M /trunk/playground/ggz-java5/src/ggz/common/ClientReqError.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomChatPanel.java
+
+Add tool tip to player list in game rooms that shows player stats. Improved animation performance for deal and trick win.
+------------------------------------------------------------------------
+r7828 | helg | 2006-01-30 07:48:15 +0100 (Mo, 30 Jan 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/GrayFilter.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/OptionDialog.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/Sprite.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/SuaroPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TableConstraints.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TableLayout.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TablePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/CardGameHandler.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/CardSeat.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/Client.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/Bid.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/Card.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/CardSetType.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/ClientOpCode.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/Face.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/GGZCardInputStream.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/GGZCardOutputStream.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/GameMessage.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/ServerOpCode.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/Suit.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/ChatEventData.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/ErrorEventData.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Game.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/GameEvent.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/GameEventListener.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/GameType.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/LoginType.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Module.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/ModuleEnvironment.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/MotdEventData.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Net.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Player.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/ReseatType.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Room.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/RoomChangeEventData.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/RoomEvent.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/RoomListener.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Server.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/ServerEvent.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/ServerListener.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/StateID.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Table.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/TableLeaveEventData.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/TableSeat.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/TransID.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/Mod.java
+   D /trunk/playground/ggz-java5/src/ggz/client/mod/Mod.java.old
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/ModEvent.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/ModEventHandler.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/ModGGZ.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/ModGame.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/ModState.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/ModTransaction.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/ModTransactionHandler.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/Seat.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/SpectatorSeat.java
+   M /trunk/playground/ggz-java5/src/ggz/common/ChatType.java
+   M /trunk/playground/ggz-java5/src/ggz/common/ClientReqError.java
+   M /trunk/playground/ggz-java5/src/ggz/common/LeaveType.java
+   M /trunk/playground/ggz-java5/src/ggz/common/NumberList.java
+   M /trunk/playground/ggz-java5/src/ggz/common/PlayerType.java
+   M /trunk/playground/ggz-java5/src/ggz/common/SeatType.java
+   M /trunk/playground/ggz-java5/src/ggz/common/TableState.java
+   M /trunk/playground/ggz-java5/src/ggz/common/XMLElement.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/AboutDialog.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ChatAction.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ChatPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ClientApp.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ClientApplet.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/HyperlinkLabel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/LoginPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/LoungePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomButton.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomChatPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/SeatAllocationDialog.java
+   M /trunk/playground/ggz-java5/test/ggz/cards/AnimationTest.java
+   M /trunk/playground/ggz-java5/test/ggz/cards/SpriteTest.java
+   M /trunk/playground/ggz-java5/test/ggz/cards/TableLayoutTest.java
+   M /trunk/playground/ggz-java5/test/ggz/lib/NumberListTest.java
+
+Added LGPL terms to the top of each source file.
+------------------------------------------------------------------------
+r7827 | helg | 2006-01-30 07:23:49 +0100 (Mo, 30 Jan 2006) | 1 line
+Geänderte Pfade:
+   A /trunk/playground/ggz-java5/COPYING.txt
+   M /trunk/playground/ggz-java5/TODO.txt
+   M /trunk/playground/ggz-java5/build.xml
+   A /trunk/playground/ggz-java5/src/edu
+   A /trunk/playground/ggz-java5/src/edu/stanford
+   A /trunk/playground/ggz-java5/src/edu/stanford/ejalbert
+   A /trunk/playground/ggz-java5/src/edu/stanford/ejalbert/BrowserLauncher.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Net.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Server.java
+   A /trunk/playground/ggz-java5/src/ggz/ui/AboutDialog.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ChatAction.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ClientApp.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ClientApplet.java
+   A /trunk/playground/ggz-java5/src/ggz/ui/LICENSE
+   M /trunk/playground/ggz-java5/src/ggz/ui/LoungePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomButton.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/SeatAllocationDialog.java
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/watermark.gif
+
+Added about box and new watermark. Added open source class that launches platform browser when clicking game help when running as application. Made a few other minor adjustments.
+------------------------------------------------------------------------
+r7826 | helg | 2006-01-29 15:08:51 +0100 (So, 29 Jan 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/TODO.txt
+   M /trunk/playground/ggz-java5/src/ggz/client/core/GameType.java
+   M /trunk/playground/ggz-java5/src/ggz/common/NumberList.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ChatPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ClientApplet.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomPanel.java
+   A /trunk/playground/ggz-java5/src/ggz/ui/SeatAllocationDialog.java
+   M /trunk/playground/ggz-java5/test/ggz/lib/NumberListTest.java
+
+Add seat allocation dialog. Only thing is it doesn't ley you allocate seats yet. The main reason I did it was to remove the "play against computer" button since people were clicking on "new game" instead and then couldn't work out how to play against the computer. Seat allocation and named bot support is coming...
+------------------------------------------------------------------------
+r7825 | helg | 2006-01-29 11:49:10 +0100 (So, 29 Jan 2006) | 1 line
+Geänderte Pfade:
+   D /trunk/playground/ggz-java5/src/ggz/ui/images/rose.gif
+
+Removed rose from applet since it doesn't seem appropriate. I haven't got a replacement at the moment but when I find something I'll put a watermark back.
+------------------------------------------------------------------------
+r7822 | helg | 2006-01-25 15:16:39 +0100 (Mi, 25 Jan 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/ggz/ui/ChatPanel.java
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/chat.gif
+
+Added chat icon that I drew myself after some searching in free icon libraries for inspiration.
+------------------------------------------------------------------------
+r7821 | helg | 2006-01-25 14:32:33 +0100 (Mi, 25 Jan 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/ggz/ui/ChatAction.java
+
+
+------------------------------------------------------------------------
+r7820 | helg | 2006-01-25 05:50:31 +0100 (Mi, 25 Jan 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/TODO.txt
+
+
+------------------------------------------------------------------------
+r7819 | helg | 2006-01-25 05:19:09 +0100 (Mi, 25 Jan 2006) | 1 line
+Geänderte Pfade:
+   D /trunk/playground/ggz-java5/.classpath
+   D /trunk/playground/ggz-java5/.project
+   D /trunk/playground/ggz-java5/.settings
+   D /trunk/playground/ggz-java5/GGZ.ois
+
+
+------------------------------------------------------------------------
+r7818 | helg | 2006-01-25 05:17:11 +0100 (Mi, 25 Jan 2006) | 1 line
+Geänderte Pfade:
+   A /trunk/playground/ggz-java5/README.txt
+   A /trunk/playground/ggz-java5/TODO.txt
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TableLayout.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/CardSeat.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Room.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomPanel.java
+
+
+------------------------------------------------------------------------
+r7817 | helg | 2006-01-24 07:01:25 +0100 (Di, 24 Jan 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/signing/create_self_cert.cmd
+   M /trunk/playground/ggz-java5/signing/ggz_self.cer
+   M /trunk/playground/ggz-java5/signing/ggz_selfcert.keystore
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/Sprite.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TableLayout.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TablePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/CardGameHandler.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/CardSeat.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/Client.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ClientApplet.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomChatPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomPanel.java
+   M /trunk/playground/ggz-java5/test/ggz/cards/TableLayoutTest.java
+
+
+------------------------------------------------------------------------
+r7816 | helg | 2006-01-24 02:33:07 +0100 (Di, 24 Jan 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/Sprite.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/SuaroPanel.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/TableConstraints.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/TableLayout.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TablePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/Client.java
+   A /trunk/playground/ggz-java5/test/ggz/cards/TableLayoutTest.java
+
+
+------------------------------------------------------------------------
+r7800 | helg | 2006-01-20 12:08:29 +0100 (Fr, 20 Jan 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/Sprite.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/Client.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Room.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Table.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/Mod.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/SpectatorSeat.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ClientApp.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ClientApplet.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/LoginPanel.java
+
+
+------------------------------------------------------------------------
+r7797 | helg | 2006-01-20 04:36:37 +0100 (Fr, 20 Jan 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TablePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomPanel.java
+
+
+------------------------------------------------------------------------
+r7796 | helg | 2006-01-20 01:19:19 +0100 (Fr, 20 Jan 2006) | 2 lines
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/.settings/org.eclipse.jdt.core.prefs
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TablePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/Client.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Game.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/TableLeaveEventData.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomPanel.java
+
+Change made on laptop.
+
+------------------------------------------------------------------------
+r7794 | helg | 2006-01-19 08:03:35 +0100 (Do, 19 Jan 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5
+   M /trunk/playground/ggz-java5/.settings/org.eclipse.jdt.core.prefs
+   M /trunk/playground/ggz-java5/GGZ.ois
+   M /trunk/playground/ggz-java5/build.xml
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/Sprite.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/SuaroPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TablePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/Client.java
+   D /trunk/playground/ggz-java5/src/ggz/cards/images/cards
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards-1.png
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards-b1.png
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/p19-old.gif
+   M /trunk/playground/ggz-java5/src/ggz/cards/images/p19.gif
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Module.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Net.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Player.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Room.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Server.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/Mod.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/Seat.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ClientApplet.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/LoungePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomChatPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/images
+   A /trunk/playground/ggz-java5/test/ggz/cards/AnimationTest.java
+   M /trunk/playground/ggz-java5/test/ggz/cards/SpriteTest.java
+
+
+------------------------------------------------------------------------
+r7781 | helg | 2006-01-13 07:50:01 +0100 (Fr, 13 Jan 2006) | 1 line
+Geänderte Pfade:
+   D /trunk/playground/ggz-java5/src/ggz/cards/images/cards/Thumbs.db
+
+Removed file/folder
+------------------------------------------------------------------------
+r7780 | helg | 2006-01-13 07:45:37 +0100 (Fr, 13 Jan 2006) | 1 line
+Geänderte Pfade:
+   D /trunk/playground/ggz-java5/src/ggz/cards/images/Thumbs.db
+
+Removed file/folder
+------------------------------------------------------------------------
+r7778 | helg | 2006-01-13 07:31:44 +0100 (Fr, 13 Jan 2006) | 1 line
+Geänderte Pfade:
+   D /trunk/playground/ggz-java5/src/ggz/ui/images/Thumbs.db
+
+Removed file/folder
+------------------------------------------------------------------------
+r7777 | helg | 2006-01-13 07:26:27 +0100 (Fr, 13 Jan 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/Sprite.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/SuaroPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/TablePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/CardGameHandler.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/CardSeat.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/client/Client.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/Bid.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/common/CardSetType.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/Face.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/GGZCardInputStream.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/common/GGZCardOutputStream.java
+   M /trunk/playground/ggz-java5/src/ggz/cards/images/Thumbs.db
+   M /trunk/playground/ggz-java5/src/ggz/cards/images/cards/Thumbs.db
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/p15.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/p19.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/p23.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/p27.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/p31.gif
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Game.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Module.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Net.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Server.java
+   M /trunk/playground/ggz-java5/src/ggz/client/core/Table.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/Mod.java
+   M /trunk/playground/ggz-java5/src/ggz/client/mod/ModGGZ.java
+   A /trunk/playground/ggz-java5/src/ggz/ui/ChatAction.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ChatPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ClientApp.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/ClientApplet.java
+   A /trunk/playground/ggz-java5/src/ggz/ui/HyperlinkLabel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/LoungePanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomButton.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomChatPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/RoomPanel.java
+   M /trunk/playground/ggz-java5/src/ggz/ui/images/Thumbs.db
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/p13.gif
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/p17.gif
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/p21.gif
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/p25.gif
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/p29.gif
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/rose.gif
+   M /trunk/playground/ggz-java5/test/ggz/cards/SpriteTest.java
+
+
+------------------------------------------------------------------------
+r7776 | helg | 2006-01-13 07:14:15 +0100 (Fr, 13 Jan 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/playground/ggz-java5/build.xml
+
+
+------------------------------------------------------------------------
+r7759 | helg | 2006-01-10 03:49:28 +0100 (Di, 10 Jan 2006) | 1 line
+Geänderte Pfade:
+   D /trunk/playground/ggz-java5/ggz-java.jar
+
+Removed file/folder
+------------------------------------------------------------------------
+r7758 | helg | 2006-01-10 03:42:42 +0100 (Di, 10 Jan 2006) | 1 line
+Geänderte Pfade:
+   A /trunk/playground/ggz-java5
+   A /trunk/playground/ggz-java5/.classpath
+   A /trunk/playground/ggz-java5/.project
+   A /trunk/playground/ggz-java5/.settings
+   A /trunk/playground/ggz-java5/.settings/org.eclipse.jdt.core.prefs
+   A /trunk/playground/ggz-java5/.settings/org.eclipse.jdt.ui.prefs
+   A /trunk/playground/ggz-java5/GGZ.ois
+   A /trunk/playground/ggz-java5/build.xml
+   A /trunk/playground/ggz-java5/ggz-java.jar
+   A /trunk/playground/ggz-java5/log.properties
+   A /trunk/playground/ggz-java5/manifest
+   A /trunk/playground/ggz-java5/manifest/manifest.txt
+   A /trunk/playground/ggz-java5/signing
+   A /trunk/playground/ggz-java5/signing/create_self_cert.cmd
+   A /trunk/playground/ggz-java5/signing/ggz_self.cer
+   A /trunk/playground/ggz-java5/signing/ggz_selfcert.keystore
+   A /trunk/playground/ggz-java5/signing/index.html
+   A /trunk/playground/ggz-java5/signing/sign_jar.cmd
+   A /trunk/playground/ggz-java5/src
+   A /trunk/playground/ggz-java5/src/ggz
+   A /trunk/playground/ggz-java5/src/ggz/cards
+   A /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/GrayFilter.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/OptionDialog.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/Sprite.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/TablePanel.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/client
+   A /trunk/playground/ggz-java5/src/ggz/cards/client/CardGameHandler.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/client/CardSeat.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/client/Client.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/common
+   A /trunk/playground/ggz-java5/src/ggz/cards/common/Bid.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/common/Card.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/common/ClientOpCode.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/common/Face.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/common/GGZCardInputStream.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/common/GGZCardOutputStream.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/common/GameMessage.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/common/ServerOpCode.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/common/Suit.java
+   A /trunk/playground/ggz-java5/src/ggz/cards/images
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/Thumbs.db
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/2c.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/2d.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/2h.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/2s.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/3c.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/3d.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/3h.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/3s.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/4c.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/4d.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/4h.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/4s.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/5c.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/5d.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/5h.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/5s.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/6c.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/6d.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/6h.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/6s.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/7c.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/7d.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/7h.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/7s.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/8c.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/8d.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/8h.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/8s.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/9c.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/9d.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/9h.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/9s.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/Thumbs.db
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/ac.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/ad.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/ah.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/as.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/b.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/j.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/jc.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/jd.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/jh.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/js.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/kc.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/kd.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/kh.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/ks.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/qc.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/qd.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/qh.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/qs.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/tc.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/td.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/th.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/cards/ts.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/club.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/diamond.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/heart.gif
+   A /trunk/playground/ggz-java5/src/ggz/cards/images/spade.gif
+   A /trunk/playground/ggz-java5/src/ggz/client
+   A /trunk/playground/ggz-java5/src/ggz/client/core
+   A /trunk/playground/ggz-java5/src/ggz/client/core/ChatEventData.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/ErrorEventData.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/Game.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/GameEvent.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/GameEventListener.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/GameType.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/LoginType.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/Module.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/ModuleEnvironment.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/MotdEventData.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/Net.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/Player.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/ReseatType.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/Room.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/RoomChangeEventData.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/RoomEvent.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/RoomListener.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/Server.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/ServerEvent.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/ServerListener.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/StateID.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/Table.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/TableLeaveEventData.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/TableSeat.java
+   A /trunk/playground/ggz-java5/src/ggz/client/core/TransID.java
+   A /trunk/playground/ggz-java5/src/ggz/client/mod
+   A /trunk/playground/ggz-java5/src/ggz/client/mod/Mod.java
+   A /trunk/playground/ggz-java5/src/ggz/client/mod/Mod.java.old
+   A /trunk/playground/ggz-java5/src/ggz/client/mod/ModEvent.java
+   A /trunk/playground/ggz-java5/src/ggz/client/mod/ModEventHandler.java
+   A /trunk/playground/ggz-java5/src/ggz/client/mod/ModGGZ.java
+   A /trunk/playground/ggz-java5/src/ggz/client/mod/ModGame.java
+   A /trunk/playground/ggz-java5/src/ggz/client/mod/ModState.java
+   A /trunk/playground/ggz-java5/src/ggz/client/mod/ModTransaction.java
+   A /trunk/playground/ggz-java5/src/ggz/client/mod/ModTransactionHandler.java
+   A /trunk/playground/ggz-java5/src/ggz/client/mod/Seat.java
+   A /trunk/playground/ggz-java5/src/ggz/client/mod/SpectatorSeat.java
+   A /trunk/playground/ggz-java5/src/ggz/common
+   A /trunk/playground/ggz-java5/src/ggz/common/ChatType.java
+   A /trunk/playground/ggz-java5/src/ggz/common/ClientReqError.java
+   A /trunk/playground/ggz-java5/src/ggz/common/LeaveType.java
+   A /trunk/playground/ggz-java5/src/ggz/common/NumberList.java
+   A /trunk/playground/ggz-java5/src/ggz/common/PlayerType.java
+   A /trunk/playground/ggz-java5/src/ggz/common/SeatType.java
+   A /trunk/playground/ggz-java5/src/ggz/common/TableState.java
+   A /trunk/playground/ggz-java5/src/ggz/common/XMLElement.java
+   A /trunk/playground/ggz-java5/src/ggz/ui
+   A /trunk/playground/ggz-java5/src/ggz/ui/ChatPanel.java
+   A /trunk/playground/ggz-java5/src/ggz/ui/ClientApp.java
+   A /trunk/playground/ggz-java5/src/ggz/ui/ClientApplet.java
+   A /trunk/playground/ggz-java5/src/ggz/ui/LoginPanel.java
+   A /trunk/playground/ggz-java5/src/ggz/ui/LoungePanel.java
+   A /trunk/playground/ggz-java5/src/ggz/ui/RoomButton.java
+   A /trunk/playground/ggz-java5/src/ggz/ui/RoomChatPanel.java
+   A /trunk/playground/ggz-java5/src/ggz/ui/RoomPanel.java
+   A /trunk/playground/ggz-java5/src/ggz/ui/images
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/42.gif
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/Thumbs.db
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/bridge.gif
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/euchre.gif
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/hearts.gif
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/pocha.gif
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/spades.gif
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/suaro.gif
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/sueca.gif
+   A /trunk/playground/ggz-java5/src/ggz/ui/images/whist.gif
+   A /trunk/playground/ggz-java5/test
+   A /trunk/playground/ggz-java5/test/ggz
+   A /trunk/playground/ggz-java5/test/ggz/cards
+   A /trunk/playground/ggz-java5/test/ggz/cards/SpriteTest.java
+   A /trunk/playground/ggz-java5/test/ggz/lib
+   A /trunk/playground/ggz-java5/test/ggz/lib/NumberListTest.java
+
+
+------------------------------------------------------------------------

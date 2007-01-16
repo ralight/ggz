@@ -1,1561 +1,3529 @@
-2006-03-16 14:31:58  Rev 7938   josef
-
-	* pyggzcore/src/pyggzcoresimple_init.c:
-	  char* -> const char*
-
-
-2006-03-16 14:31:35  Rev 7937   josef
-
-	* lib/sdlnewstuff.py lib/ggzsettings.py.in:
-	  - new GHNS format support in sdlnewstuff
-	  - in ggzsettings, fail hard for local invokations (./foo) because 
-	  only then the whole import fails
-
-
-2006-03-16 14:30:50  Rev 7936   josef
-
-	* po/de.po po/ggzpython.pot:
-	  - update of message catalog and German translation
-
-
-2006-03-16 14:30:26  Rev 7935   josef
-
-	* ggzboard/module_arimaa.py:
-	  - some initial figure placement cleanups for the release
-
-
-2006-03-16 14:30:00  Rev 7934   josef
-
-	* ggzboard/server_arimaa.py:
-	  - port Arimaa server to BogaProt core
-
-
-2006-03-16 14:29:35  Rev 7933   josef
-
-	* ggzboard/net_arimaa.py:
-	  - Arimaa needs network, too :)
-
-
-2006-03-16 14:29:21  Rev 7932   josef
-
-	* ggzboard/ggzboard:
-	  - ability to list games with --list
-	  - ability to load game modules from ~/.ggz/games/ggzboard
-	  - new sdlnewstuff API
-
-
-2006-03-14 14:00:17  Rev 7918   josef
-
-	* Makefile.in:
-	  - bump version
-	  - install arimaa SVN images
-
-
-2006-03-14 13:54:27  Rev 7912   josef
-
-	* README:
-	  - version bumping in the README files
-
-
-2006-03-14 13:53:58  Rev 7911   josef
-
-	* QuickStart.GGZ:
-	  - more synchronisation of common files (must be a boring day...)
-
-
-2006-03-14 13:47:11  Rev 7905   josef
-
-	* NEWS README.GGZ AUTHORS:
-	  - sync all common files from libggz (README.GGZ, AUTHORS)
-	  - updated NEWS file for the upcoming 0.0.13 release
-
-
-2006-03-14 13:44:59  Rev 7902   josef
-
-	* ggzboard/ggzboard:
-	  - honour game datapath if tile pixmap has been set
-
-
-2006-03-07 10:05:41  Rev 7893   josef
-
-	* ggzboard/module_reversi.py:
-	  - change turn after each turn (who'd had thought that!)
-
-
-2006-02-27 09:15:40  Rev 7874   josef
-
-	* ggzboard/ggzboard ggzboard/module_arimaa.py:
-	  A whole lot of Arimaa changes so this (complicated) game is nearly 
-	  working!
-	  - ability to skip first game phase (putting piece onto board) by 
-	  auto-init function
-	  - improved implementation of piece push and pull actions
-	  - rabbits mustn't move backwards
-	  - animals/pieces can get stuck if bordering a stronger animal
-	  - visual hints even when just clicking on a piece (ggzboard-wide 
-	  feature)
-	  - traps take away pieces, unless they border others of the same 
-	  colour
-	  So what is missing?
-	  - micro moves (1-4 moves per turn are possible)
-	  - extraordinary game over situations, like all rabbits are gone
-	  - not changing any pieces must lead to player losing after 3 turns
-
-
-2005-12-29 11:43:06  Rev 7697   josef
-
-	* README chess/ai.c Makefile.in configure.ac:
-	  - installation of the freshly added stuff
-
-
-2005-12-29 11:42:17  Rev 7696   josef
-
-	* ggzboard/module_connectx.py ggzboard/net_connectx.py 
-	  ggzboard/server_ludo.py ggzboard/connectx ggzboard/module_checkers.
-	  py ggzboard/net_checkers.py ggzboard/module_hnefatafl.py 
-	  ggzboard/module_arimaa.py ggzboard/module_chess.dsc.in 
-	  ggzboard/server_arimaa.dsc ggzboard/bogaprot.txt 
-	  ggzboard/module_go.py ggzboard/net_go.py ggzboard/net_chess.py 
-	  ggzboard/module_connectx.dsc.in ggzboard/bogaprot.py 
-	  ggzboard/server_hnefatafl.py ggzboard/module_checkers.dsc.in 
-	  ggzboard/module_hnefatafl.dsc.in ggzboard/module_madn.py 
-	  ggzboard/module_reversi.py ggzboard/module_arimaa.dsc.in 
-	  ggzboard/net_madn.py ggzboard/module_ludo.dsc.in 
-	  ggzboard/net_hnefatafl.py ggzboard/server_checkers.dsc 
-	  ggzboard/server_hnefatafl.dsc ggzboard/module_go.dsc.in 
-	  ggzboard/server_arimaa.room ggzboard/connectx/player1.svg 
-	  ggzboard/connectx/player2.svg ggzboard/ggzboard 
-	  ggzboard/server_ludo.dsc ggzboard/module_chess.py 
-	  ggzboard/module_reversi.dsc.in ggzboard/bogaprotclient.py 
-	  ggzboard/server_ludo.room ggzboard/server_checkers.py 
-	  ggzboard/server_arimaa.py ggzboard/net_reversi.py:
-	  - ConnectX client module for GGZBoard (includes network adapter 
-	  and pseudo-random AI)
-	  - Bogaprot client and server module for usage with board games 
-	  networking
-	  - Bogaprot design document
-	  - beginnings of networking support for Ludo and Arimaa
-	  - ability to restart finished game by pressing "a" ("again") in 
-	  ggzboard
-	  - display of name of winning player instead of just the seat number
-	  - local AI support for Go using the gnugo engine via popen()
-
-
-2005-12-29 11:31:27  Rev 7690   josef
-
-	* README.GGZ:
-	  - synchronisation of all globally used files
-	  - in the future, README.GGZ should be even more generic!
-
-
-2005-12-12 11:54:49  Rev 7660   josef
-
-	* escape-sdl/.cvsignore xadrez-chines po/.cvsignore pyggzchess/.
-	  cvsignore chess xadrez-chines/.cvsignore escape-sdl pyggzcore/.
-	  cvsignore pyrsvgsdl/.cvsignore .cvsignore go/.cvsignore lib 
-	  ggzboard/.cvsignore pyggzdmod/.cvsignore pyggzmod/.cvsignore 
-	  ggzboard:
-	  This week's XXL commit!
-	  - removal of all .cvsignore files
-	  - addition of *.a, *.os, ... to svn:ignore
-
-
-2005-12-12 11:44:08  Rev 7657   josef
-
-	* ggzboard/ggzboard dresden/dresden.py ggzboard/module_chess.py 
-	  ggzboard/module_go.py Makefile.in ggzboard/module_checkers.py 
-	  configure.ac ggzboard/module_hnefatafl.py INSTALL 
-	  xadrez-chines/xadrez-chines ggzboard/module_madn.py 
-	  ggzboard/module_reversi.py:
-	  - use ggzsettings everywhere
-	  - more overrideable variables in the Makefile
-	  - install manual pages
-	  - make all non-arimaa modules work again (quick fixes)
-
-
-2005-12-12 11:40:57  Rev 7656   josef
-
-	* po/de.po po/i18n.mk po/ggzpython.pot:
-	  - some translation updates
-	  - force 'all-local' to be the default rule in i18n.mk
-
-
-2005-12-12 11:38:18  Rev 7655   josef
-
-	* escape-sdl/escape-sdl.desktop:
-	  - do not keep desktop file in SVN (as *.desktop.in already is)
-
-
-2005-12-12 11:35:35  Rev 7654   josef
-
-	* pyrsvgsdl/src/pyrsvgsdl.c:
-	  - new method 'qtconversion' which handles the RGBA/ARGB conversion 
-	  on
-	  big/little endian arches so we don't have to care about that in 
-	  the games themselves
-
-
-2005-12-12 11:34:27  Rev 7653   josef
-
-	* lib/playertable.py lib/sdlnewstuff.py lib/ggzsettings.py.in:
-	  - ggzsettings: new configuration module to get the GGZ 
-	  installation paths right
-
-
-2005-11-29 17:48:54  Rev 7644   josef
-
-	* Makefile.in:
-	  - force 'make all-local' to be called instead of the default rule, 
-	  which could be something else
-
-
-2005-11-17 07:53:35  Rev 7626   josef
-
-	* ggzboard/ggzboard ggzboard/module_arimaa.py:
-	  - support for piece selection in GGZBoard
-	    (not only Arimaa should use this, but Chess also when exchanging 
-	  a pawn)
-	  - implementation of the first game phase of Arimaa
-	  Many of these changes will break the other games temporarily.
-
-
-2005-11-17 07:52:25  Rev 7625   josef
-
-	* ggzboard/arimaa/elephant_silver.png ggzboard/arimaa/horse_silver.
-	  png ggzboard/arimaa/camel_silver.png ggzboard/arimaa/elephant_gold.
-	  png ggzboard/arimaa/horse_gold.png ggzboard/arimaa/camel_gold.png 
-	  ggzboard/arimaa/celltrap.png ggzboard/arimaa/rabbit_silver.png 
-	  ggzboard/arimaa/rabbit_gold.png ggzboard/arimaa/cat_silver.png 
-	  ggzboard/arimaa/cat_gold.png ggzboard/arimaa/dog_silver.png 
-	  ggzboard/arimaa/dog_gold.png ggzboard/arimaa/cell.png:
-	  - hand-drawn animal pieces, now all 58x58 pixels large
-	  Hopefully some really nice ones will be contributed one day!
-
-
-2005-11-14 09:03:39  Rev 7622   josef
-
-	* ggzboard/arimaa/horse_silver.png ggzboard/arimaa/camel_silver.png 
-	  ggzboard/arimaa/elephant_gold.png ggzboard/arimaa/celltrap.png 
-	  ggzboard/arimaa/rabbit_gold.png ggzboard/arimaa/cat_gold.png 
-	  ggzboard/arimaa ggzboard/arimaa/dog_gold.png ggzboard/arimaa/cell.
-	  png ggzboard/ggzboard ggzboard/arimaa/elephant_silver.png 
-	  ggzboard/arimaa/horse_gold.png ggzboard/arimaa/camel_gold.png 
-	  ggzboard/arimaa/rabbit_silver.png ggzboard/arimaa/cat_silver.png 
-	  ggzboard/arimaa/dog_silver.png:
-	  - piece images for Arimaa - copyright unsure, might be replaced, 
-	  for now they're just modified a bit
-	  - GGZBoard support for tiles with background images (still a hack 
-	  though)
-
-
-2005-11-14 09:01:33  Rev 7621   josef
-
-	* ggzboard/module_arimaa.py escape-sdl/escape-sdl.desktop:
-	  Some random commits of what has been lurking around for some time:
-	  - update of the backend pages to reflect the rankings.g.o -> 
-	  ggzcommunity.org move
-	  - some desktop files for games that provide a single-player mode
-	  - beginnings of Arimaa game support for GGZBoard
-
-
-2005-11-01 13:34:10  Rev 7607   josef
-
-	* ggzboard/ggzboard ggzboard/module_chess.py ggzboard/module_go.py 
-	  ggzboard/module_checkers.py ggzboard/module_hnefatafl.py 
-	  ggzboard/DESIGN.ggzboard ggzboard/module_madn.py 
-	  ggzboard/module_reversi.py:
-	  - support for hints (used in Ludo only for now)
-	  - updated documentation
-	  Now all that is missing is piece animation support, and using
-	  all those nice new features in the other games beside Ludo.
-
-
-2005-11-01 13:32:40  Rev 7606   josef
-
-	* man/ggzboard.6 man/escape-sdl.6 man/vibora.6 man/xadrez-chines.6 
-	  man:
-	  - some man pages for the python apps and games (no installation yet)
-
-
-2005-09-25 18:25:14  Rev 7593   josef
-
-	* ChangeLog:
-	  - big changelog update (2.3 MB... due to new formatting)
-
-
-2005-09-25 17:27:41  Rev 7586   josef
-
-	* Makefile.in:
-	  - version bump to 0.0.12
-
-
-2005-09-25 10:11:25  Rev 7551   josef
-
-	* configure.ac:
-	  - more version string changes in the build system
-
-
-2005-09-25 09:54:30  Rev 7550   josef
-
-	* NEWS README.GGZ README:
-	  - version updates in common files
-	  - news and release-specific changes
-
-
-2005-09-23 21:54:25  Rev 7547   josef
-
-	* COPYING:
-	  - add copyright files for gnome-client and sdl-games to SVN
-	  - update all copyright files with current version, including the 
-	  new FSF address in Boston
-
-
-2005-08-21 14:19:36  Rev 7493   josef
-
-	* ggzboard/ggzboard_net.py:
-	  - exclude hash-bang line here as it is only an include
-
-
-2005-08-21 13:50:36  Rev 7490   josef
-
-	* chess/Makefile:
-	  - compile with -fPIC because it's only used in another library
-
-
-2005-08-21 13:03:33  Rev 7474   josef
-
-	* aclocal.m4:
-	  - update to support --enable-noregistry
-
-
-2005-08-20 22:16:09  Rev 7465   josef
-
-	* Makefile.in:
-	  - two more versions
-
-
-2005-08-20 21:41:45  Rev 7464   josef
-
-	* configure.ac:
-	  - bump version to 0.0.12pre to not create *-0.0.11.tar.gz files
-	  - remove the gtk-games override stuff
-
-
-2005-08-20 18:55:29  Rev 7461   josef
-
-	* Makefile.in configure.ac:
-	  - use destdir for ggz-config
-
-
-2005-08-14 15:04:26  Rev 7421   josef
-
-	* po/Makefile:
-	  - redirect 'make install' to 'make install-data-local'
-
-
-2005-08-14 15:00:31  Rev 7420   josef
-
-	* Makefile.in:
-	  - remove .svn dirs, not CVS dirs anymore in 'make dist'
-
-
-2005-08-05 14:19:22  Rev 7360   josef
-
-	* po/de.po po/ggzpython.pot:
-	  - updated translation
-
-
-2005-08-05 14:10:23  Rev 7359   josef
-
-	* po/i18n.mk po/de.po po/ggzpython.pot po/Makefile:
-	  - modify i18n.mk to be suitable for python as well (introducing 
-	  POFLAGS)
-	  - some dummy values as autoconf is not yet used here
-
-
-2005-08-03 10:14:19  Rev 7353   josef
-
-	* ggzboard/common/icon.png:
-	  - fixing all icons
-
-
-2005-06-18 09:37:26  Rev 7287   josef
-
-	* aclocal.m4 Makefile.in configure.ac:
-	  - updated GGZ macro file (minus iconv, which doesn't really belong 
-	  there)
-	  - do not fail if no GGZ is installed, simply do not compile 
-	  wrappers then
-	    (but is this good? no game can be played then)
-
-
-2005-06-10 12:44:34  Rev 7272   josef
-
-	* Makefile.in chess/Makefile:
-	  - a rule for 'make clean'
-
-
-2005-05-21 14:35:03  Rev 7240   josef
-
-	* Makefile.in:
-	  - version bump to 0.0.11
-
-
-2005-05-21 14:32:42  Rev 7239   josef
-
-	* pyggzdmod/src/pyggzdmod_init.c:
-	  - smaller fixes to the ggzdmod wrapper (const arguments and such)
-
-
-2005-05-21 14:12:19  Rev 7238   josef
-
-	* configure.ac:
-	  - s/python_found/pygame_found/
-
-
-2005-05-21 11:40:55  Rev 7225   josef
-
-	* ggzboard/ggzboard ggzboard/module_reversi.dsc.in 
-	  ggzboard/module_chess.dsc.in ggzboard/module_go.dsc.in 
-	  ggzboard/module_checkers.dsc.in ggzboard/module_hnefatafl.dsc.in:
-	  - ggzboard version gets bumped to 0.0.2 (addition of dice etc.)
-
-
-2005-05-21 11:13:11  Rev 7216   josef
-
-	* NEWS QuickStart.GGZ README.GGZ AUTHORS README:
-	  - common files synchronisation and README update for 0.0.11
-
-
-2005-05-21 10:46:02  Rev 7214   josef
-
-	* configure.ac:
-	  - LET version = 0.0.11
-
-
-2005-05-07 10:24:28  Rev 7183   josef
-
-	* ggzboard/ggzboard:
-	  - in GGZ mode, do not allow returning to the main menu
-
-
-2005-05-01 14:57:38  Rev 7167   josef
-
-	* lib/sdlnewstuff.py:
-	  - change GHNS providers URL to point to new load-balanced list
-
-
-2005-04-30 11:58:58  Rev 7159   josef
-
-	* pyggzmod/setup.py.in pyggzmod/src/pyggzmod_init.c:
-	  - fix ggzmod wrapper
-
-
-2005-04-30 11:51:55  Rev 7158   josef
-
-	* ggzboard/ggzboard:
-	  - do not offer games without network module in GGZ mode
-
-
-2005-04-30 11:36:05  Rev 7157   josef
-
-	* lib/playertable.py:
-	  - improved player list
-
-
-2005-04-30 11:20:39  Rev 7156   josef
-
-	* ggzboard/ggzboard ggzboard/module_chess.py ggzboard/module_go.py 
-	  ggzboard/module_checkers.py ggzboard/module_hnefatafl.py 
-	  ggzboard/module_madn.py ggzboard/module_reversi.py:
-	  - in-game help screen
-	  - in game menu buttons
-	  - about screen
-	  - after a game finishes or is cancelled, go back to intro screen
-
-
-2005-04-30 09:47:11  Rev 7155   josef
-
-	* ggzboard/ggzboard ggzboard/module_chess.py ggzboard/module_go.py 
-	  ggzboard/module_checkers.py ggzboard/module_hnefatafl.py 
-	  ggzboard/module_madn.py ggzboard/module_reversi.py:
-	  - implementation of Ludo AI and gameplay
-	  - improved visuals: coloured player names and display of the winner
-	  - addition of --fullscreen command line option
-
-
-2005-04-29 20:45:28  Rev 7154   josef
-
-	* ggzboard/ggzboard ggzboard/module_madn.py:
-	  - more or less finished dice (except for AI for ludo), including 
-	  skipping
-	  - new command line option --version
-	  - delays after showing dice
-
-
-2005-04-23 11:31:46  Rev 7123   josef
-
-	* pyggzcore/src/pyggzcoresimple_init.c:
-	  - protocol enhancement:
-	   * allow users to give initial password when registering
-	   * allow users to give email address
-
-
-2005-04-10 13:48:00  Rev 7106   josef
-
-	* ggzboard/ggzboard ggzboard/module_chess.py ggzboard/module_go.py 
-	  ggzboard/module_checkers.py ggzboard/module_hnefatafl.py 
-	  ggzboard/module_madn.py ggzboard/module_reversi.py:
-	  - display player names in single player mode also (using $USER and 
-	  AI #n)
-	  - improved implementation of dice
-	  - first try: tracking the currently active player (for games with 
-	  >2 players)
-
-
-2005-04-10 13:23:19  Rev 7105   josef
-
-	* po/de.po po/ggzpython.pot:
-	  - German translation update
-
-
-2005-04-08 13:18:08  Rev 7090   josef
-
-	* pyggzcore/src/pyggzcoresimple_init.c:
-	  - fix MOTD loading
-
-
-2005-03-18 01:20:06  Rev 7008   josef
-
-	* ggzboard/ggzboard:
-	  - fix rsvgsdl usage
-
-
-2005-03-18 01:16:51  Rev 7007   josef
-
-	* pyrsvgsdl/src/pyrsvgsdl.c:
-	  - transformation of raw pixmap data into a nice object
-	  - this provides the former data as data(), in addition to width() 
-	  and height()
-	  - this will break all current games, but not for long...
-
-
-2005-02-27 23:30:04  Rev 6953   josef
-
-	* pyggzcore/src/pyggzcoresimple_init.c:
-	  - fix 'const' madness
-
-
-2005-02-27 22:39:52  Rev 6950   josef
-
-	* escape-sdl/escape-sdl.desktop.in Makefile.in configure.ac 
-	  xadrez-chines/xadrez-chines.desktop.in ggzboard/ggzboard.desktop.in:
-	  - XDG menu entries for Escape/SDL, Xadrez Chin��s and GGZBoard
-
-
-2005-02-27 12:57:37  Rev 6939   josef
-
-	* ggzboard/ggzboard ggzboard/module_chess.py ggzboard/module_go.py 
-	  lib/sdlnewstuff.py Makefile.in ggzboard/module_checkers.py 
-	  ggzboard/module_hnefatafl.py po/de.po po/ggzpython.pot 
-	  ggzboard/module_madn.py ggzboard/module_reversi.py po/Makefile:
-	  - i18n: radically simplified initialization (had I known this 
-	  before...)
-	  - i18n: translate messages and game names of ggzboard
-	  - ggzboard: display real game names (instead of file names) in the 
-	  menu
-	  - install dice and ludo game module
-
-
-2005-02-26 20:59:55  Rev 6933   josef
-
-	* lib/test.py ggzboard/ggzboard Makefile.in ggzboard/common/icon.png 
-	  ggzboard/common:
-	  - install GGZBoard icon
-	  - use icon instead of pygame default
-
-
-2005-02-04 16:13:04  Rev 6920   josef
-
-	* configure.ac:
-	  - use new ggz-config modification
-
-
-2005-01-31 14:18:58  Rev 6913   josef
-
-	* ggzboard/ggzboard ggzboard/madn/dice-1.svg ggzboard/madn/dice-2.
-	  svg ggzboard/madn/dice-3.svg ggzboard/madn/dice-4.svg 
-	  ggzboard/madn/dice-5.svg ggzboard/madn/dice-6.svg 
-	  ggzboard/module_madn.py:
-	  - rule checking for Ludo
-	  - basic dice support for all games
-
-
-2005-01-23 22:09:05  Rev 6858   josef
-
-	* autogen.sh:
-	  - support NOCONFIGURE
-
-
-2005-01-23 21:23:07  Rev 6856   josef
-
-	* AUTHORS ChangeLog:
-	  - authors and changelog
-
-
-2005-01-23 13:20:29  Rev 6844   josef
-
-	* NEWS:
-	  - news update
-
-
-2005-01-23 13:12:48  Rev 6843   josef
-
-	* QuickStart.GGZ README.GGZ README:
-	  - updated common files
-
-
-2005-01-23 10:35:46  Rev 6831   josef
-
-	* configure.ac:
-	  - package version bump (this one was forgotten)
-
-
-2005-01-22 14:28:01  Rev 6810   josef
-
-	* lib/sdlnewstuff.py:
-	  - use real server instead of localhost test server
-
-
-2005-01-22 14:27:11  Rev 6809   josef
-
-	* xadrez-chines/xadrez-chines:
-	  - 'f' toggles fullscreen
-
-
-2005-01-21 21:49:00  Rev 6793   josef
-
-	* ggzboard/module_hnefatafl.py ggzboard/server_hnefatafl.py 
-	  ggzboard/server_hnefatafl.dsc:
-	  - now hnefatafl has records too (but this only works by disabling 
-	  the move
-	    validation)
-
-
-2005-01-21 21:16:20  Rev 6791   josef
-
-	* pyggzdmod/src/pyggzdmod_init.c:
-	  - implement game reporting
-
-
-2005-01-21 21:15:59  Rev 6790   josef
-
-	* ggzboard/server_checkers.py ggzboard/server_checkers.dsc:
-	  - statistics for GGZBoard-Checkers
-
-
-2005-01-21 20:59:31  Rev 6789   josef
-
-	* ggzboard/server_checkers.dsc ggzboard/server_hnefatafl.dsc:
-	  - only 2 player games are allowed (not 1-2)
-
-
-2005-01-21 20:29:17  Rev 6788   josef
-
-	* ggzboard/net_checkers.py ggzboard/ggzboard_net.py:
-	  - convert integers back to host order after reading them from the 
-	  network
-
-
-2005-01-21 20:18:40  Rev 6787   josef
-
-	* Makefile.in:
-	  - fix server installation for GGZBoard servers
-
-
-2005-01-21 20:10:52  Rev 6786   josef
-
-	* ggzboard/.cvsignore ggzboard/module_chess.dsc ggzboard/module_go.
-	  dsc Makefile.in ggzboard/ggzboard.py ggzboard/module_chess.dsc.in 
-	  ggzboard/module_go.dsc.in ggzboard/module_reversi.dsc 
-	  ggzboard/ggzboard ggzboard ggzboard/module_reversi.dsc.in 
-	  configure.ac ggzboard/module_checkers.dsc 
-	  ggzboard/module_hnefatafl.dsc ggzboard/DESIGN.ggzboard 
-	  ggzboard/module_checkers.dsc.in ggzboard/module_hnefatafl.dsc.in:
-	  - install module.dsc files with absolute paths
-	  - rename ggzboard.py to ggzboard (the .py shouldn't be visible)
-	  - install server files for all games
-
-
-2005-01-21 08:46:56  Rev 6779   josef
-
-	* autogen.sh:
-	  - convenience wrapper script
-
-
-2005-01-21 08:46:31  Rev 6778   josef
-
-	* configure.ac:
-	  - check for RSVG
-	  - check for Pygame (but do not abort since this is runtime-only)
-
-
-2005-01-20 23:44:14  Rev 6776   josef
-
-	* chess/ai.c:
-	  - disable rule exception: force pawns to capture if possible
-
-
-2005-01-20 18:48:05  Rev 6772   josef
-
-	* pyggzcore/src/pyggzcoresimple_init.c:
-	  - implement game launch code
-
-
-2005-01-20 18:47:48  Rev 6771   josef
-
-	* vibora/vibora:
-	  - support for launching games
-
-
-2005-01-20 18:09:25  Rev 6769   josef
-
-	* vibora/vibora:
-	  - more i18n()ification preparation
-	  - display server state correctly ("offline" was hardcoded)
-
-
-2005-01-20 17:14:46  Rev 6766   josef
-
-	* pyggzmod/.cvsignore pyggzmod pyggzdmod/.cvsignore pyggzdmod:
-	  - shut them up!
-
-
-2005-01-18 18:25:53  Rev 6730   josef
-
-	* ggzboard/ggzboard.py:
-	  - pressing 's' produces a screenshot (useful for fullscreen mode)
-
-
-2005-01-16 16:05:58  Rev 6708   josef
-
-	* README:
-	  - mucho new stuff in here
-
-
-2005-01-16 16:01:51  Rev 6707   josef
-
-	* pyggzchess/setup.py chess/ai.c Makefile.in chess/Makefile chess/ai.
-	  h chess:
-	  - fix ggzchess wrapper: include local copy of static library
-
-
-2005-01-16 15:50:49  Rev 6706   josef
-
-	* ggzboard/module_chess.py ggzboard/module_go.py 
-	  ggzboard/module_checkers.py ggzboard/module_hnefatafl.py 
-	  ggzboard/ggzboard.py ggzboard/module_reversi.py:
-	  - fix module and data paths in ggzboard
-
-
-2005-01-16 15:12:48  Rev 6705   josef
-
-	* Makefile.in INSTALL:
-	  - do not forget to install playertable class
-	  - fix remarks on PYTHONPATH
-
-
-2005-01-16 14:56:50  Rev 6704   josef
-
-	* .cvsignore:
-	  - ignore generated makefile
-
-
-2005-01-16 14:56:27  Rev 6703   josef
-
-	* Makefile.in:
-	  - install ggzboard (still without the ability to find itself)
-
-
-2005-01-16 14:44:03  Rev 6702   josef
-
-	* pyrsvgsdl pyggzchess/.cvsignore pyggzchess pyrsvgsdl/.cvsignore:
-	  - ignore python-generated build directories
-
-
-2005-01-16 14:40:57  Rev 6701   josef
-
-	* Makefile Makefile.in configure.ac:
-	  - improved usage of autoconf in building process
-
-
-2005-01-16 12:01:20  Rev 6698   josef
-
-	* ggzboard/module_go.py ggzboard/net_go.py ggzboard/ggzboard.py 
-	  ggzboard/ggzboard_net.py:
-	  - implement capturing algorithm for go
-	  - ability for all ggzboard network modules to indicate they're 
-	  "thinking"
-	  The problem with GMP is that it is basically a client-to-client 
-	  protocol,
-	  thus all clients must know the game rules.
-	  I think with GTP there would be some advantages (querying board, 
-	  last moves,
-	  scores) but it is a lot more complex by design.
-
-
-2005-01-16 01:25:26  Rev 6690   josef
-
-	* ggzboard/net_go.py:
-	  - make go game work for simple moves (we're white, AI is black)
-
-
-2005-01-15 23:58:58  Rev 6689   josef
-
-	* ggzboard/net_go.py:
-	  - fix notion of sequence bits
-	  - common reply method for moves, answers, acknowledgements
-	  - deal with 3 queries: board size, colour and handicap
-
-
-2005-01-15 20:11:56  Rev 6686   josef
-
-	* ggzboard/net_go.py:
-	  - basic go protocol handling (GMP), taken from goserver
-	  - ability to send moves, create checksum, re-shuffle bits etc.
-
-
-2005-01-15 18:02:19  Rev 6684   josef
-
-	* ggzboard/madn ggzboard/madn/poeppel-green.svg 
-	  ggzboard/module_chess.py ggzboard/module_go.py ggzboard/net_go.py 
-	  ggzboard/module_checkers.py ggzboard/module_hnefatafl.py 
-	  ggzboard/ggzboard.py ggzboard/madn/poeppel-blue.svg 
-	  ggzboard/madn/poeppel-red.svg ggzboard/madn/poeppel-yellow.svg 
-	  ggzboard/madn/poeppel-black.svg ggzboard/module_madn.py 
-	  ggzboard/module_reversi.py:
-	  - new ggzboard game stuf: M-A-D-N (ludo)
-	  - this will not be installed for the next release, but introduces:
-	    * coloured tokens
-	    * leaving out the drawing of fields that can never be entered
-	    * dice
-
-
-2004-12-29 20:46:15  Rev 6563   josef
-
-	* ggzboard/module_chess.py ggzboard/module_go.py ggzboard/net_go.py:
-	  - some chess and go stuff fixes hacked on during 21C3
-
-
-2004-12-22 23:59:03  Rev 6558   josef
-
-	* ggzboard/net_checkers.py ggzboard/server_checkers.py 
-	  ggzboard/net_hnefatafl.py ggzboard/server_hnefatafl.py:
-	  - basic implementation for checkers networking (includes new 
-	  protocol,
-	    similar to hnefatafl, both based on reversi)
-	  - end-of-game fixes
-
-
-2004-12-22 10:02:53  Rev 6554   josef
-
-	* ggzboard/net_hnefatafl.py ggzboard/server_hnefatafl.py:
-	  - nearly complete implementation of Hnefatafl game
-
-
-2004-12-22 01:02:41  Rev 6550   josef
-
-	* ggzboard/ggzboard_net.py:
-	  - networking fix: send int as one value of 4 bytes instead of 4 
-	  values of 1
-
-
-2004-12-21 20:31:56  Rev 6549   josef
-
-	* ggzboard/net_hnefatafl.py ggzboard/server_hnefatafl.py 
-	  ggzboard/ggzboard_net.py:
-	  - implementation of hnefatafl network handshake (no real gameplay 
-	  yet)
-	  There seems to be a nasty network bug, giving us non-deterministic
-	  network failures and wrong opcodes :(
-
-
-2004-12-21 20:30:58  Rev 6548   josef
-
-	* pyggzdmod/src/pyggzdmod_init.c:
-	  - new python methods to access seat information
-
-
-2004-12-20 19:39:28  Rev 6537   josef
-
-	* ggzboard/module_hnefatafl.py:
-	  - complete implementation of hnefatafl rules
-	  - it's only the AI which doesn't know about it yet :)
-
-
-2004-12-20 01:14:37  Rev 6535   josef
-
-	* ggzboard/module_chess.py ggzboard/module_go.py 
-	  ggzboard/module_checkers.py ggzboard/module_hnefatafl.py 
-	  ggzboard/ggzboard.py ggzboard/module_reversi.py:
-	  - support for board tile style (a RGB triplet containing the 
-	  difference)
-	    * is used for hnefatafl's throne (where king starts) and corners 
-	  (exit)
-	    * will be used for go's markers (and could be used for chinese 
-	  chess)
-	  - further implementation of hnefatafl move verification and 
-	  endgame check
-	    * only missing parts: crossing the throne, and playing on the edge
-
-
-2004-12-19 21:52:26  Rev 6532   josef
-
-	* ggzboard/net_chess.py ggzboard/net_checkers.py 
-	  ggzboard/net_hnefatafl.py ggzboard/ggzboard.py 
-	  ggzboard/net_reversi.py:
-	  - implementation of network chess games (save gameover and clock 
-	  options)
-	  - display of player names next to the board (if they exist)
-
-
-2004-12-18 23:16:52  Rev 6531   josef
-
-	* ggzboard/net_chess.py ggzboard/net_checkers.py 
-	  ggzboard/net_hnefatafl.py ggzboard/ggzboard.py 
-	  ggzboard/net_reversi.py:
-	  - make player menu available via 'p' key
-	  - use ggz_common constants in the games
-
-
-2004-12-18 23:14:36  Rev 6530   josef
-
-	* lib/playertable.py:
-	  - new common python class: implementation of player table view
-
-
-2004-12-18 23:13:34  Rev 6529   josef
-
-	* pyggzmod/src/pyggzmod_init.c:
-	  - include ggz_common constants (such as GGZ_SEAT_OPEN) like 
-	  ggzdmod does
-
-
-2004-12-18 22:49:51  Rev 6528   josef
-
-	* ggzboard/net_chess.py:
-	  - skeleton file for chess network support
-
-
-2004-12-16 01:28:02  Rev 6504   josef
-
-	* ggzboard/net_checkers.py ggzboard/server_checkers.py 
-	  ggzboard/net_hnefatafl.py ggzboard/server_checkers.dsc 
-	  ggzboard/server_hnefatafl.py ggzboard/server_hnefatafl.dsc 
-	  ggzboard/server_checkers.room ggzboard/server_hnefatafl.room 
-	  ggzboard/ggzboard_net.py ggzboard/net_reversi.py:
-	  - use shared network base class ggzboard_net
-	  - start of implementation of Checkers and Hnefatafl game servers
-	    (the other games (chess, reversi, go) use existing servers)
-
-
-2004-12-14 17:10:10  Rev 6467   josef
-
-	* po po/de.po po/ggzpython.pot po/.cvsignore po/Makefile:
-	  - translation infrastructure for ggz-python
-
-
-2004-12-14 17:09:23  Rev 6466   josef
-
-	* lib/test.py lib/sdlnewstuff.py:
-	  - test program for sdlnewstuff
-	  - use new 'ggzpython' message catalog
-
-
-2004-12-14 11:12:11  Rev 6463   josef
-
-	* vibora/vibora:
-	  - fix first-login issue
-	  - prepare translations
-
-
-2004-12-14 10:51:58  Rev 6462   josef
-
-	* ggzboard/module_chess.py ggzboard/module_go.py 
-	  ggzboard/module_checkers.py ggzboard/module_hnefatafl.py 
-	  ggzboard/ggzboard.py ggzboard/DESIGN.ggzboard:
-	  - docs update
-	  - unbreak other games
-	  - SDLNewStuff support for all ggzboard games (press 'u')
-
-
-2004-12-14 10:34:04  Rev 6461   josef
-
-	* ggzboard/ggzboard.py ggzboard/module_reversi.py 
-	  ggzboard/net_reversi.py:
-	  - full implementation of reversi game
-	  Now only the ggzboard client must use the provided information.
-	  Also, it breaks the other modules.
-
-
-2004-12-14 09:41:42  Rev 6460   josef
-
-	* ggzboard/ggzboard.py ggzboard/net_reversi.py:
-	  - handle GGZ initialization and network errors (darkening the 
-	  screen)
-	  - implement first part of reversi networking
-	  Unfortunately, after sending the move no response appears.
-
-
-2004-12-05 22:12:44  Rev 6441   josef
-
-	* ggzboard/net_reversi.py:
-	  - pseudo network handling for Reversi
-	  This is the code as used in Escape-SDL, Xadrez-Chines etc...
-	  but in a more object oriented manner, moving the common network 
-	  handling to
-	  two base classes (NetworkBase, NetworkInfo) and only leaving the 
-	  game-specific
-	  details to each game.
-	  These details must then be abstracted for GGZBoard to the lowest 
-	  common
-	  denominator: player names, state, sending and receiving moves...
-
-
-2004-12-05 21:16:20  Rev 6439   josef
-
-	* ggzboard/module_chess.dsc ggzboard/module_go.dsc 
-	  ggzboard/module_checkers.dsc ggzboard/module_hnefatafl.dsc 
-	  ggzboard/module_reversi.dsc:
-	  - module description files for GGZ mode
-	  To test them, the core client must be launched from this directory 
-	  until
-	  installations rules are implemented.
-	  Of course, networking doesn't work yet, but the game will start.
-
-
-2004-12-05 21:06:07  Rev 6438   josef
-
-	* ggzboard/DESIGN.ggzboard:
-	  - some documentation on how ggzboard is supposed to work
-	  - the obviously missing part is networking
-
-
-2004-12-05 20:31:20  Rev 6437   josef
-
-	* ggzboard/module_chess.py ggzboard/module_go.py 
-	  ggzboard/go/piece-black.svg ggzboard/module_checkers.py 
-	  ggzboard/module_hnefatafl.py ggzboard/go ggzboard/ggzboard.py 
-	  ggzboard/go/piece-white.svg ggzboard/module_reversi.py:
-	  - support for moving pieces on intersections
-	  - add go game (which needs intersections), without AI
-
-
-2004-12-05 20:00:42  Rev 6435   josef
-
-	* ggzboard/.cvsignore ggzboard:
-	  - ignore compiled python modules
-
-
-2004-12-05 20:00:09  Rev 6434   josef
-
-	* ggzboard/sunset.jpg ggzboard/module_chess.py 
-	  ggzboard/module_checkers.py ggzboard/module_hnefatafl.py 
-	  ggzboard/ggzboard.py ggzboard/module_reversi.py:
-	  - implement chess game (the existing file was only a checkers copy)
-	  - replace sunset background with a free one
-	  - ability to determine game board size automatically (needed for 
-	  reversi)
-	  - fullscreen/window mode switch with 'f' key, including scaled 
-	  background image
-	  - game over indicated by darkening the screen
-	  - help output (--help)
-
-
-2004-11-30 22:03:06  Rev 6433   josef
-
-	* ggzboard/module_chess.py ggzboard/module_checkers.py 
-	  ggzboard/module_hnefatafl.py ggzboard/ggzboard.py 
-	  ggzboard/module_reversi.py:
-	  - dynamic loading of games based on command line switch
-	  - turn main engine into an object too
-	  - graphical game selection screen if none has been selected 
-	  previously
-
-
-2004-11-30 20:05:13  Rev 6432   josef
-
-	* chess:
-	  - remove chess client because it's now moved to ggzboard
-
-
-2004-11-22 22:20:49  Rev 6423   josef
-
-	* ggzboard/module_hnefatafl.py ggzboard/hnefatafl/piece-black.svg 
-	  ggzboard/ggzboard.py ggzboard/hnefatafl 
-	  ggzboard/hnefatafl/piece-white.svg ggzboard/hnefatafl/king-white.
-	  svg:
-	  - new game component: Hnefatafl ("first on the table"), an 
-	  asymmetric board game
-
-
-2004-11-22 14:26:46  Rev 6422   josef
-
-	* ggzboard/module_reversi.py:
-	  - Reversi is now implemented for single-player mode
-
-
-2004-11-22 13:35:28  Rev 6421   josef
-
-	* ggzboard/reversi ggzboard/reversi/piece-white.svg 
-	  ggzboard/module_chess.py ggzboard/module_checkers.py 
-	  ggzboard/ggzboard.py ggzboard/module_reversi.py 
-	  ggzboard/reversi/piece-black.svg:
-	  - split out game module
-	  - preparation for Reversi module
-
-
-2004-11-21 23:38:14  Rev 6420   josef
-
-	* ggzboard/chess/bishop_w.svg ggzboard/chess/knight_w.svg 
-	  ggzboard/chess/rook_b.svg ggzboard/chess/king_w.svg 
-	  ggzboard/chess/queen_b.svg ggzboard/checkers/piece-black.svg 
-	  ggzboard/ggzboard.py ggzboard/checkers 
-	  ggzboard/checkers/king-black.svg ggzboard/checkers/piece-white.svg 
-	  ggzboard/chess/bishop_b.svg ggzboard/chess/knight_b.svg 
-	  ggzboard/checkers/king-white.svg ggzboard/chess/king_b.svg 
-	  ggzboard/chess/pawn_w.svg ggzboard ggzboard/sunset.jpg 
-	  ggzboard/chess/rook_w.svg ggzboard/chess ggzboard/chess/queen_w.
-	  svg ggzboard/chess/pawn_b.svg:
-	  - GGZBoard, the new game container for all sorts of board games
-	  - right now, comes with checkers hardcoded, but will support chess 
-	  and reversi too
-
-
-2004-11-19 23:23:50  Rev 6419   josef
-
-	* pyrsvgsdl pyrsvgsdl/src/pyrsvgsdl.c pyrsvgsdl/setup.py 
-	  pyrsvgsdl/src:
-	  - python wrapper for librsvg
-
-
-2004-11-09 13:58:41  Rev 6311   josef
-
-	* chess/chess.py:
-	  - initialize with 2 half moves instead of 1 (to make AI less 
-	  aggressive)
-	  - if checkmate, disable further gameplay
-
-
-2004-11-09 13:57:51  Rev 6310   josef
-
-	* pyggzchess/src/pyggzchess.c:
-	  - wrap the checkmate() function
-
-
-2004-11-09 13:02:15  Rev 6308   josef
-
-	* chess/chess.py:
-	  - left side rochade support (press shift+R)
-
-
-2004-11-09 13:01:52  Rev 6307   josef
-
-	* pyggzchess/src/pyggzchess.c:
-	  - left side rochade support
-
-
-2004-11-04 16:44:19  Rev 6252   josef
-
-	* xadrez-chines/themes/dark/bodyguard.png xadrez-chines/king.png 
-	  xadrez-chines/themes/dark/bishop.png 
-	  xadrez-chines/themes/dark/knight.png 
-	  xadrez-chines/themes/orig/pawn.png xadrez-chines/rock.png 
-	  xadrez-chines/themes/dark/king.png 
-	  xadrez-chines/themes/orig/cannon.png xadrez-chines/themes 
-	  xadrez-chines/themes/orig xadrez-chines/themes/dark/rock.png 
-	  xadrez-chines/pawn.png xadrez-chines/themes/orig/bodyguard.png 
-	  xadrez-chines/themes/orig/bishop.png 
-	  xadrez-chines/themes/orig/knight.png 
-	  xadrez-chines/themes/dark/pawn.png xadrez-chines/cannon.png 
-	  xadrez-chines/themes/orig/king.png xadrez-chines/bodyguard.png 
-	  xadrez-chines/xadrez-chines xadrez-chines/themes/dark/cannon.png 
-	  xadrez-chines/themes/dark xadrez-chines/themes/orig/rock.png 
-	  xadrez-chines/bishop.png xadrez-chines/knight.png:
-	  - theme support
-
-
-2004-11-01 14:30:24  Rev 6235   josef
-
-	* chess/img/king_b.xpm chess/img/bishop_w.xpm chess/img/knight_w.xpm 
-	  chess/img/pawn_w.xpm chess/img/rook_b.xpm chess/chess.py chess/img 
-	  chess/img/king_w.xpm chess/img/queen_b.xpm chess/img/rook_w.xpm 
-	  chess chess/img/queen_w.xpm chess/img/bishop_b.xpm 
-	  chess/img/knight_b.xpm chess/img/pawn_b.xpm:
-	  - python chess game (only single player for now)
-
-
-2004-11-01 14:29:25  Rev 6234   josef
-
-	* pyggzchess/setup.py pyggzchess/src pyggzchess/src/test.py 
-	  pyggzchess/src/pyggzchess.c pyggzchess:
-	  - python wrapper for the chess library
-
-
-2004-10-17 12:36:44  Rev 6200   josef
-
-	* xadrez-chines/xadrez-chines:
-	  - rough integration of sdlnewstuff (well, 3 lines... press 'n')
-
-
-2004-10-17 12:24:49  Rev 6199   josef
-
-	* Makefile:
-	  - install sdlnewstuff
-	  - version argument for 'make dist' is now a variable
-
-
-2004-10-17 12:16:09  Rev 6197   josef
-
-	* lib/sdlnewstuff.py lib:
-	  - move sdl newstuff class into the python module
-	  - support for mouse handling
-	  - support for game-based configuration files (colors, urls, 
-	  behaviour)
-	  - use .sdlnewstuff/* instead of .ggz/* for install status and 
-	  configs
-	  - improved fault tolerance
-
-
-2004-07-30 22:51:00  Rev 6160   josef
-
-	* Makefile:
-	  - create a zipped tar archive instead of an unzipped one carrying 
-	  the name .tar.gz
-	  Detected by oojah.
-
-
-2004-07-18 00:37:08  Rev 6153   josef
-
-	* ChangeLog:
-	  - changelog update
-
-
-2004-07-17 14:17:53  Rev 6140   josef
-
-	* Makefile:
-	  - a crude 'make dist' target
-
-
-2004-07-17 02:32:12  Rev 6134   josef
-
-	* xadrez-chines/xadrez-chines xadrez-chines/xadrez-chines-server.dsc.
-	  in:
-	  - use relative data path
-
-
-2004-07-13 17:29:53  Rev 6103   josef
-
-	* vibora/vibora:
-	  - use python's unicode() object to display the name correctly
-
-
-2004-07-13 14:41:41  Rev 6093   josef
-
-	* pyggzcore/src/pyggzcoresimple_init.c:
-	  - use select() to determine whether game data is available
-
-
-2004-07-13 14:41:16  Rev 6092   josef
-
-	* vibora/vibora:
-	  - restore fullscreen mode
-	  - mark bots as.. well, bots :)
-	  Some window managers like icewm don't handle fullscreen apps 
-	  launching
-	  windowed games very vell. But this is a minor issue for now.
-
-
-2004-07-12 21:45:13  Rev 6091   josef
-
-	* pyggzcore/src/pyggzcoresimple_init.c:
-	  - trying to fix game launching (without succeeding)
-
-
-2004-07-12 14:57:16  Rev 6088   josef
-
-	* vibora/vibora:
-	  - lots of fixes and some enhancements
-	  Chatting and viewing tables and players does now work.
-	  Playing is implemented, but still broken.
-	  Username/password is read from vibora.rc.
-
-
-2004-07-12 14:56:09  Rev 6087   josef
-
-	* pyggzcore/src/pyggzcoresimple_init.c:
-	  - support for joining tables (does not work yet)
-	  - more automatics functionality: table, player and gametype listings
-
-
-2004-07-11 17:20:48  Rev 6086   josef
-
-	* QuickStart.GGZ AUTHORS INSTALL:
-	  - more common files, which so far were missing from ggz-python
-	  - custom installation instructions
-
-
-2004-07-11 17:19:49  Rev 6085   josef
-
-	* NEWS pyggzmod/setup.py.in Makefile pyggzdmod/setup.py.in README.
-	  GGZ configure.ac pyggzcore/setup.py.in pyggzmod/setup.py 
-	  pyggzdmod/setup.py:
-	  - fix installation into a prefix
-	  - preliminary common files updates
-
-
-2004-07-10 20:01:43  Rev 6075   josef
-
-	* Makefile README pyggzcore/src/pyggzcore_init.c pyggzcore/README.
-	  pyggzcore pyggzcore/setup.py pyggzcore/doc/doc.txt configure.ac 
-	  vibora/vibora pyggzcore/setup.py.in pyggzcore/.cvsignore 
-	  pyggzcore/src/test.py pyggzcore/src/pyggzcoresimple_init.c 
-	  pyggzcore/README.pyggzcoresimple pyggzcore:
-	  - rename pyggzcore to pyggzcoresimple to allow a later 1:1 wrapper 
-	  carry
-	    the name pyggzcore
-	  - support for installation in a different prefix
-	    (which would require the user to set PYTHONPATH accordingly)
-
-
-2004-06-26 15:06:58  Rev 6057   josef
-
-	* xadrez-chines/.cvsignore xadrez-chines:
-	  - more files to be ignored
-
-
-2004-06-26 15:06:24  Rev 6056   josef
-
-	* xadrez-chines/xadrez-chines-server xadrez-chines/xadrezlib.py 
-	  xadrez-chines/xadrez-chines:
-	  - fix 'move not ok' to 'move invalid' in order to work with the 
-	  client
-	  - network transmission fixes (little/big endian issue)
-
-
-2004-06-26 15:05:06  Rev 6055   josef
-
-	* vibora/background.png vibora/vibora:
-	  - prerendered background image (if not installed, background is 
-	  still rendered
-	    in real time)
-	  - implementation of real room changes
-	  - parameter <hostname> accepted (e.g. localhost), while default is 
-	  live.g.o, while default is live.g.o
-
-
-2004-06-25 13:30:25  Rev 6052   josef
-
-	* go/goserver:
-	  - passive analyzer for the Go Modem Protocol
-
-
-2004-06-21 14:10:14  Rev 6044   josef
-
-	* go/goserver.room go/goserver.dsc.in go/goserver go/.cvsignore 
-	  go/Makefile go go/goclient.helper go/module.dsc.in go/goclient:
-	  - new external game support: GNU Go (server), CGoBan (client)
-
-
-2004-06-14 20:51:26  Rev 6034   josef
-
-	* pyggzdmod/src/pyggzdmod_init.c:
-	  - do not pass GGZSeat* object as pointer, but rather all its 
-	  components
-	    individually
-	  Unfortunately, python doesn't allow arbitrary pointers to be 
-	  wrapped as
-	  objects.
-	  In the PLAYER_DATA hook, we still get the player number though and 
-	  not the
-	  GGZSeat*, this seems to be an inconsistency.
-
-
-2004-06-14 20:49:39  Rev 6033   josef
-
-	* xadrez-chines/xadrez-chines-server xadrez-chines/xadrezlib.py 
-	  xadrez-chines/xadrez-chines:
-	  - completion of single player mode
-	  - ai improvement: detect blocked moves (such as knights or cannons)
-	  - implemented basic client-server interaction
-
-
-2004-06-13 17:18:33  Rev 6029   josef
-
-	* configure.ac:
-	  - create xadrez-chines-server config file
-
-
-2004-06-13 17:18:05  Rev 6028   josef
-
-	* xadrez-chines/xadrez-chines-server xadrez-chines/xadrez-protocol.
-	  txt xadrez-chines/Makefile xadrez-chines/xadrez-chines-server.dsc 
-	  xadrez-chines/xadrez-chines-server.room 
-	  xadrez-chines/xadrez-chines xadrez-chines/xadrez-chines-server.dsc.
-	  in:
-	  - implement basic GGZ handling
-	  - installation into /usr/local supported
-	  Unfortunately pyggzdmod is not up-to-date and will have to be 
-	  improved
-
-
-2004-06-11 17:16:35  Rev 6012   josef
-
-	* xadrez-chines/xadrez-chines-server xadrez-chines/xadrez-protocol.
-	  txt xadrez-chines/xadrezlib.py xadrez-chines/xadrez-chines-server.
-	  dsc xadrez-chines/xadrez-chines-server.room 
-	  xadrez-chines/xadrez-chines:
-	  - prepare server support for chinese chess
-	  - includes protocol handling using normal text messages and regexps
-	  - to not require yet another dependency, the server will stay in 
-	  ggz-python
-	    for the time being, and share a common library script with the 
-	  client
-
-
-2004-05-27 21:28:39  Rev 6009   josef
-
-	* pyggzcore/src/pyggzcore_init.c pyggzcore/src/test.py:
-	  - support for player listings
-	  - (currently empty) start game function
-
-
-2004-05-10 14:06:33  Rev 5995   josef
-
-	* Makefile vibora vibora/vibora vibora/logo.png:
-	  - new (simple) core client: vibora, using pyggzcore
-	  This can only be used for chatting atm
-
-
-2004-05-10 14:05:02  Rev 5994   josef
-
-	* pyggzcore/doc pyggzcore/doc/doc.txt:
-	  - pyggzcore docs
-
-
-2004-05-10 14:00:46  Rev 5993   josef
-
-	* pyggzcore/src/pyggzcore_init.c pyggzcore/src/test.py:
-	  - implementation of room object and simple chat
-
-
-2004-04-26 14:08:51  Rev 5990   josef
-
-	* pyggzcore/src/pyggzcore_init.c pyggzcore/src/test.py:
-	  - completion of the server wrapper
-	  - start of the room wrapper
-
-
-2004-04-24 17:42:01  Rev 5987   josef
-
-	* configure.ac:
-	  - create Chinese Chess module.dsc file
-
-
-2004-04-24 17:37:27  Rev 5985   josef
-
-	* xadrez-chines/pawn.png xadrez-chines/king.png xadrez-chines/.
-	  cvsignore xadrez-chines/Makefile xadrez-chines/cannon.png 
-	  xadrez-chines xadrez-chines/rock.png xadrez-chines/module.dsc.in 
-	  xadrez-chines/bodyguard.png xadrez-chines/xadrez-chines 
-	  xadrez-chines/bishop.png xadrez-chines/knight.png:
-	  - here comes the Chinese Chess game
-	  No multiplayer mode yet.
-
-
-2004-04-24 17:36:20  Rev 5984   josef
-
-	* pyggzcore/src/pyggzcore_init.c pyggzcore/src/test.py:
-	  - completion of all GGZServer functionality
-	  This uses some undocumented python wrapper functionality, I hope 
-	  it will work
-	  for the next versions too.
-
-
-2004-03-29 16:44:50  Rev 5977   josef
-
-	* pyggzcore/src/pyggzcore_init.c pyggzcore/src/test.py:
-	  - further pyggzcore implementation
-	  In theory it should now be possible to execute the test program.
-	  But some python internals prevent that. The object initialization 
-	  for
-	  the GGZServer* wrapper might have to be changed.
-
-
-2004-03-22 17:23:34  Rev 5976   josef
-
-	* pyggzcore/src/pyggzcore_init.c pyggzcore/README.pyggzcore 
-	  pyggzcore/setup.py pyggzcore/src pyggzcore/.cvsignore 
-	  pyggzcore/src/test.py pyggzcore:
-	  - skeleton for python wrapper around ggzcore
-	  This is intended to become a really simplyfying wrapper.
-	  It will hide many details like ggzcore_init() etc.
-	  The configuration include path is currently hardcoded.
-	  This must be changed to use the configure defaults, likewise for
-	  pyggzmod and pyggzdmod.
-
-
-2004-02-09 14:46:40  Rev 5869   josef
-
-	* escape-sdl/escape-sdl escape-sdl/module.dsc.in:
-	  - lots of fixes for the Escape/SDL game
-	    * in singleplayer mode, if a move ends on a non-empty point, let 
-	  move again
-	    * in singleplayer mode, get user's name from the operating system
-	    * in multiplayer mode, get user's and opponent's name from the 
-	  protocol
-	      (I think we need to rework all protocols to use ggzmod here)
-	    * at the end of the game, display winner correctly
-
-
-2004-02-09 09:30:47  Rev 5868   josef
-
-	* escape-sdl/escape-sdl:
-	  - display 'you' as a generic name
-	  To really fix this, pyggzmod should support the 
-	  ggzmod_get_player() function.
-	  In single player mode, the username should be used.
-
-
-2004-02-08 18:41:48  Rev 5849   josef
-
-	* COPYING:
-	  - clarify license
-
-
-2004-02-05 10:46:53  Rev 5790   josef
-
-	* ChangeLog configure.ac NEWS README.GGZ README:
-	  - synchronized NEWS, README.GGZ and QuickStart.GGZ from docs
-	  - updated README
-	    * new URLs for developers, bugs, website
-	    * no more per-package maintainer mention (it was never valid 
-	  anyway)
-	  - updated configure.ac to indicate final version 0.0.8
-	  - ChangeLog updates
-
-
-2004-01-27 20:49:50  Rev 5758   josef
-
-	* pyggzmod/.cvsignore .cvsignore Makefile aclocal.m4 dresden/saggse.
-	  png escape-sdl pyggzdmod/.cvsignore escape-sdl/module.dsc.in 
-	  dresden pyggzmod/src pyggzmod/setup.py pyggzmod/src/pyggzmod_init.
-	  c pyggzdmod/src pyggzdmod/setup.py pyggzmod/README.pyggzmod 
-	  escape-sdl/Makefile escape-sdl/.cvsignore README pyggzmod/src/test.
-	  py dresden/stone.png dresden/dresden.py escape-sdl/escape-sdl 
-	  pyggzmod pyggzdmod/src/test.py configure.ac 
-	  pyggzdmod/src/pyggzdmod_init.c dresden/README.dresden pyggzdmod 
-	  pyggzdmod/README.pyggzdmod:
-	  Initial revision
-
-
+------------------------------------------------------------------------
+r8942 | josef | 2007-01-16 17:22:43 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/setup/scripts/mundomap/map.png
+   M /trunk/community/web/db/ggzicons/misc/karma_bad.png
+   M /trunk/community/web/db/ggzicons/misc/karma_good.png
+   M /trunk/community/web/db/ggzicons/misc/karma_medium.png
+   M /trunk/community/web/db/ggzicons/players/guest.png
+   M /trunk/community/web/db/matches/chess/50.bishop_b.svg.png
+   M /trunk/community/web/db/matches/chess/50.bishop_w.svg.png
+   M /trunk/community/web/db/matches/chess/50.king_b.svg.png
+   M /trunk/community/web/db/matches/chess/50.king_w.svg.png
+   M /trunk/community/web/db/matches/chess/50.knight_b.svg.png
+   M /trunk/community/web/db/matches/chess/50.knight_w.svg.png
+   M /trunk/community/web/db/matches/chess/50.pawn_b.svg.png
+   M /trunk/community/web/db/matches/chess/50.pawn_w.svg.png
+   M /trunk/community/web/db/matches/chess/50.queen_b.svg.png
+   M /trunk/community/web/db/matches/chess/50.queen_w.svg.png
+   M /trunk/community/web/db/matches/chess/50.rook_b.svg.png
+   M /trunk/community/web/db/matches/chess/50.rook_w.svg.png
+   M /trunk/community/web/images/default/mundomap.png
+   M /trunk/community/web/images/default/pagehead.png
+   M /trunk/community/web/images/default/pagelogo.png
+   M /trunk/community/web/images/widelands/berg2_00.png
+   M /trunk/community/web/images/widelands/mundomap.png
+   M /trunk/community/web/images/widelands/pagelogo.png
+   M /trunk/community/web/images/widelands/strand_00.png
+   M /trunk/community/web/images/widelands/sumpf_00.png
+   M /trunk/community/web/images/widelands/wiese4_00.png
+   M /trunk/community/web/map/mundomap.large.png
+   M /trunk/docs/coreclients/ggzcore.flw
+   M /trunk/docs/coreclients/ggzcore_room.png
+   M /trunk/docs/coreclients/ggzcore_server.png
+   M /trunk/docs/coreclients/playing.flw
+   M /trunk/docs/coreclients/playing.png
+   M /trunk/docs/games/modules/seats.flw
+   M /trunk/docs/games/modules/seats.png
+   M /trunk/docs/games/modules/states.flw
+   M /trunk/docs/games/modules/states.png
+   M /trunk/docs/games/modules/transitions.flw
+   M /trunk/docs/games/modules/transitions.png
+   M /trunk/docs/grubby/grubby-arch.flw
+   M /trunk/docs/grubby/grubby-arch.png
+   M /trunk/docs/overview/architecture/client-server.flw
+   M /trunk/docs/overview/architecture/client-server.png
+   M /trunk/docs/overview/architecture/communication.flw
+   M /trunk/docs/overview/architecture/communication.png
+   M /trunk/docs/overview/architecture/dependencies.flw
+   M /trunk/docs/overview/architecture/dependencies.png
+   M /trunk/docs/overview/community.200.png
+   M /trunk/docs/overview/coreclient.200.png
+   M /trunk/docs/overview/fyrdman.200.png
+   M /trunk/docs/overview/tictactoe.200.png
+   M /trunk/docs/presentation/chemnitz2003/ggz-presentation.de.sxi
+   M /trunk/docs/presentation/chemnitz2003/ggz-presentation.en.sxi
+   M /trunk/docs/presentation/linuxtag2005/ggzboard.png
+   M /trunk/docs/presentation/linuxtag2005/ggzcards.png
+   M /trunk/docs/presentation/linuxtag2005/paper/ggzpaper-lt2k5.sxw
+   M /trunk/docs/presentation/linuxtag2005/splash1.png
+   M /trunk/docs/presentation/linuxtag2005/splash2.png
+   M /trunk/docs/presentation/linuxtag2005/splash3.png
+   M /trunk/docs/presentation/linuxtag2005/splash4.png
+   M /trunk/docs/presentation/linuxtag2005/splash5.png
+   M /trunk/docs/presentation/linuxtag2005/splash6.png
+   M /trunk/docs/presentation/linuxtag2005/splash7.png
+   M /trunk/docs/presentation/linuxtag2005/talklogo.png
+   M /trunk/docs/presentation/linuxtag2005/talktitle.png
+   M /trunk/docs/presentation/linuxtag2005/teg.png
+   M /trunk/docs/presentation/linuxtag2005/widelands.png
+   M /trunk/docs/server/ggzd/ggzd.flw
+   M /trunk/docs/server/ggzd/ggzd.png
+   M /trunk/gtk-client/doc/ggz-gtk-chat.png
+   M /trunk/gtk-client/doc/ggz-gtk-launch.png
+   M /trunk/gtk-client/doc/ggz-gtk-login.png
+   M /trunk/kde-games/keepalive/hi32-app-keepalive.png
+   M /trunk/python/ggzboard/common/icon.png
+   M /trunk/www/dev/pics/site/bar.png
+   M /trunk/www/dev/pics/site/bg.png
+   M /trunk/www/dev/pics/site/flags/flag-br.png
+   M /trunk/www/dev/pics/site/flags/flag-de.png
+   M /trunk/www/dev/pics/site/flags/flag-es.png
+   M /trunk/www/dev/pics/site/flags/flag-fr.png
+   M /trunk/www/dev/pics/site/flags/flag-gb.png
+   M /trunk/www/dev/pics/site/ggzlogo.png
+
+- mass-marking of binary files (now automatically found by fixup-svn-images.sh)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8880 | josef | 2007-01-09 18:22:14 +0100 (Di, 09 Jan 2007) | 7 lines
+Geänderte Pfade:
+   M /trunk/docs/spec/mainspec/appendix.sgml
+   M /trunk/ggzd/game_servers/chess/chess.dsc
+   M /trunk/ggzd/game_servers/chinese-checkers/ccheckers.dsc
+   M /trunk/ggzd/game_servers/combat/combat.dsc
+   M /trunk/ggzd/game_servers/connectx/connectx.dsc
+   M /trunk/ggzd/game_servers/dots/dots.dsc
+   M /trunk/ggzd/game_servers/escape/escape.dsc
+   M /trunk/ggzd/game_servers/geekgame/geekgame.dsc
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/games/lapocha.c
+   M /trunk/ggzd/game_servers/hastings/hastings.dsc
+   M /trunk/ggzd/game_servers/keepalive/keepalive.dsc
+   M /trunk/ggzd/game_servers/krosswater/krosswater.dsc
+   M /trunk/ggzd/game_servers/muehle/muehle.dsc
+   M /trunk/ggzd/game_servers/reversi/reversi.dsc
+   M /trunk/ggzd/game_servers/tictactoe/tictactoe.dsc
+   M /trunk/grubby/games/guru-chess/module.dsc.in
+   M /trunk/grubby/games/guru-ttt/module.dsc.in
+   M /trunk/gtk-games/chess/main.c
+   M /trunk/gtk-games/chess/module.dsc.in
+   M /trunk/gtk-games/chinese-checkers/main.c
+   M /trunk/gtk-games/chinese-checkers/module.dsc.in
+   M /trunk/gtk-games/combat/game.c
+   M /trunk/gtk-games/combat/module.dsc.in
+   M /trunk/gtk-games/dots/main.c
+   M /trunk/gtk-games/dots/module.dsc.in
+   M /trunk/gtk-games/ggzcards/main.c
+   M /trunk/gtk-games/ggzcards/module.dsc.in
+   M /trunk/gtk-games/hastings/main.c
+   M /trunk/gtk-games/hastings/module.dsc.in
+   M /trunk/gtk-games/po/chess/chess.pot
+   M /trunk/gtk-games/po/chess/de.po
+   M /trunk/gtk-games/po/chinese-checkers/chinese-checkers.pot
+   M /trunk/gtk-games/po/chinese-checkers/de.po
+   M /trunk/gtk-games/po/dots/de.po
+   M /trunk/gtk-games/po/dots/dots.pot
+   M /trunk/gtk-games/po/ggzcards/de.po
+   M /trunk/gtk-games/po/ggzcards/ggzcards.pot
+   M /trunk/gtk-games/po/hastings/de.po
+   M /trunk/gtk-games/po/hastings/hastings.pot
+   M /trunk/gtk-games/po/reversi/de.po
+   M /trunk/gtk-games/po/reversi/reversi.pot
+   M /trunk/gtk-games/po/tictactoe/de.po
+   M /trunk/gtk-games/po/tictactoe/tictactoe.pot
+   M /trunk/gtk-games/reversi/main.c
+   M /trunk/gtk-games/reversi/module.dsc.in
+   M /trunk/gtk-games/tictactoe/main.c
+   M /trunk/gtk-games/tictactoe/module.dsc.in
+   M /trunk/kde-client/ggz-kde/data/browser/help.html
+   M /trunk/kde-client/keepalivecontrol/src/main.cpp
+   M /trunk/kde-games/KReversi/module.dsc.in
+   M /trunk/kde-games/fyrdman/main.cpp
+   M /trunk/kde-games/fyrdman/module.dsc.in
+   M /trunk/kde-games/kcc/main.cpp
+   M /trunk/kde-games/kcc/module.dsc.in
+   M /trunk/kde-games/kconnectx/main.cpp
+   M /trunk/kde-games/kconnectx/module.dsc.in
+   M /trunk/kde-games/kdots/kdots_about.cpp
+   M /trunk/kde-games/kdots/kdots_replay.cpp
+   M /trunk/kde-games/kdots/kdots_replay.h
+   M /trunk/kde-games/kdots/main.cpp
+   M /trunk/kde-games/kdots/module.dsc.in
+   M /trunk/kde-games/keepalive/module.dsc.in
+   M /trunk/kde-games/keepalive/src/main.cpp
+   M /trunk/kde-games/koenig/main.cc
+   M /trunk/kde-games/koenig/module.dsc.in
+   M /trunk/kde-games/krosswater/dlg_about.cpp
+   M /trunk/kde-games/krosswater/main.cpp
+   M /trunk/kde-games/krosswater/module.dsc.in
+   M /trunk/kde-games/ktictactux/main.cpp
+   M /trunk/kde-games/ktictactux/module.dsc.in
+   M /trunk/kde-games/muehle/module.dsc.in
+   M /trunk/kde-games/muehle/src/main.cpp
+   M /trunk/playground/ggz-java/tictactoeclient/module.dsc
+   M /trunk/playground/ggz-kde4/kconnectx/main.cpp
+   M /trunk/playground/ggz-kde4/kconnectx/module.dsc.in
+   M /trunk/playground/ggz-python/arimaa/module_arimaa.dsc.in
+   M /trunk/playground/ggz-python/arimaa/server_arimaa.dsc
+   M /trunk/playground/ggz-python/go/goservergtp.dsc.in
+   M /trunk/playground/ggz-python/go/modulegtp.dsc.in
+   M /trunk/python/escape-sdl/module.dsc.in
+   M /trunk/python/ggzboard/ggzboard
+   M /trunk/python/ggzboard/module_checkers.dsc.in
+   M /trunk/python/ggzboard/module_chess.dsc.in
+   M /trunk/python/ggzboard/module_connectx.dsc.in
+   M /trunk/python/ggzboard/module_go.dsc.in
+   M /trunk/python/ggzboard/module_hnefatafl.dsc.in
+   M /trunk/python/ggzboard/module_ludo.dsc.in
+   M /trunk/python/ggzboard/module_reversi.dsc.in
+   M /trunk/python/go/goserver.dsc
+   M /trunk/python/go/module.dsc.in
+   M /trunk/python/po/de.po
+   M /trunk/python/po/ggzpython.pot
+   M /trunk/python/xadrez-chines/module.dsc.in
+   M /trunk/sdl-games/geekgame/module.dsc.in
+   M /trunk/sdl-games/ttt3d/module.dsc.in
+   M /trunk/txt-client/tttxt/main.c
+   M /trunk/txt-client/tttxt/module.dsc.in
+   M /trunk/www/dev/ai/index.php.en
+   M /trunk/www/dev/external.php.en
+
+- adapt to the split into /gameservers/ and /gameclients/
+
+This affects mainly game information files (*.dsc) but also some sources and translations.
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8862 | josef | 2007-01-08 14:48:54 +0100 (Mo, 08 Jan 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+   D /trunk/python/escape-sdl/Makefile
+   M /trunk/python/escape-sdl/escape-sdl
+   M /trunk/python/ggzboard/bogaprot.py
+   M /trunk/python/ggzboard/server_checkers.py
+   M /trunk/python/ggzboard/server_hnefatafl.py
+   M /trunk/python/ggzboard/server_ludo.py
+   D /trunk/python/go/Makefile
+   M /trunk/python/pyggzdmod/README.pyggzdmod
+   M /trunk/python/pyggzdmod/src/test.py
+   M /trunk/python/pyggzmod/pygame/test-pygame.py
+   M /trunk/python/pyggzmod/src/test.py
+   D /trunk/python/xadrez-chines/Makefile
+   M /trunk/python/xadrez-chines/module.dsc.in
+   M /trunk/python/xadrez-chines/xadrez-chines-server
+   M /trunk/python/xadrez-chines/xadrez-chines-server.dsc
+   M /trunk/python/xadrez-chines/xadrez-chines-server.room
+   M /trunk/python/xadrez-chines/xadrezlib.py
+
+- unbreak some python games: endianess, new ggzdmod and new installation layout
+- remove empty obsolete makefiles
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8844 | josef | 2007-01-05 13:55:26 +0100 (Fr, 05 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/module_connectx.py
+   M /trunk/python/ggzboard/net_connectx.py
+
+- use 7/7/4 as defaults for ConnectX since most ConnectX games do that
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8806 | josef | 2007-01-04 15:36:08 +0100 (Do, 04 Jan 2007) | 10 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+
+- workaround: try "safe resolutions" first to avoid hitting a falsely reported one
+
+When Pygame 1.8 is installed, ggzboard will automatically behave right.
+But Pygame 1.8 is not released yet.
+It's also still not clear why Xorg produces false video modes, but this is
+too hairy for me to debug today.
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8770 | josef | 2006-12-27 12:25:35 +0100 (Mi, 27 Dez 2006) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzmod/src/pyggzmod_init.c
+
+- minor pyggzmod cleanups
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8768 | josef | 2006-12-27 12:23:38 +0100 (Mi, 27 Dez 2006) | 6 lines
+Geänderte Pfade:
+   M /trunk/python/INSTALL
+   M /trunk/python/pyggzdmod/src/test.py
+
+- some minor cleanups in pyggzdmod
+- some minor additions to python installation instructions
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8686 | josef | 2006-12-04 10:44:08 +0100 (Mo, 04 Dez 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+   M /trunk/python/ggzboard/ggzboard_net.py
+
+- always give absolute filenames to rsvg (it won't find them if given as relative names only)
+- some crude workaround to disable host-to-network byte order conversion for little-endian machines
+
+
+------------------------------------------------------------------------
+r8669 | josef | 2006-11-23 09:59:16 +0100 (Do, 23 Nov 2006) | 7 lines
+Geänderte Pfade:
+   M /trunk/python/INSTALL
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/python/escape-sdl/Makefile
+   M /trunk/python/escape-sdl/escape-sdl
+   M /trunk/python/ggzboard/bogaprot.py
+   M /trunk/python/ggzboard/ggzboard
+   M /trunk/python/ggzboard/server_checkers.py
+   M /trunk/python/ggzboard/server_hnefatafl.py
+   M /trunk/python/go
+   M /trunk/python/go/Makefile
+   M /trunk/python/go/goclient
+   M /trunk/python/go/goserver
+   A /trunk/python/go/goserver.dsc
+   D /trunk/python/go/goserver.dsc.in
+   M /trunk/python/go/module.dsc.in
+   M /trunk/python/lib/ggzsettings.py.in
+   M /trunk/python/pyggzdmod/doc/API
+   M /trunk/python/vibora
+   M /trunk/python/vibora/vibora
+   A /trunk/python/vibora/vibora.desktop.in
+   M /trunk/python/xadrez-chines
+   M /trunk/python/xadrez-chines/Makefile
+   M /trunk/python/xadrez-chines/xadrez-chines
+   M /trunk/python/xadrez-chines/xadrez-chines-server
+   A /trunk/python/xadrez-chines/xadrez-chines-server.dsc
+   D /trunk/python/xadrez-chines/xadrez-chines-server.dsc.in
+   M /trunk/python/xadrez-chines/xadrezlib.py
+
+- reorganisation of the package installation layout: separate private and public python modules
+- use $(libdir)/ggz-python instead of the deprecated $(libdir)/site-python
+- do not install game servers and client helpers into $(bindir) anymore, use ggz module dirs
+- desktop integration for Víbora
+- do not install Dresden game anymore (but leave it in SVN for now)
+
+
+------------------------------------------------------------------------
+r8623 | josef | 2006-10-10 17:22:33 +0200 (Di, 10 Okt 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/po
+
+- ignore translation stamp
+
+
+------------------------------------------------------------------------
+r8604 | josef | 2006-09-25 12:31:33 +0200 (Mo, 25 Sep 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzcore/src/pyggzcoresimple_init.c
+
+- room join API change
+
+
+------------------------------------------------------------------------
+r8537 | josef | 2006-08-26 13:53:28 +0200 (Sa, 26 Aug 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+   A /trunk/python/dresden/dresden (von /trunk/python/dresden/dresden.py:8528)
+   D /trunk/python/dresden/dresden.py
+   M /trunk/python/ggzboard/bogaprot.py
+   M /trunk/python/ggzboard/bogaprotclient.py
+   M /trunk/python/ggzboard/module_backgammon.py
+   M /trunk/python/ggzboard/module_checkers.py
+   M /trunk/python/ggzboard/module_chess.py
+   M /trunk/python/ggzboard/module_connectx.py
+   M /trunk/python/ggzboard/module_go.py
+   M /trunk/python/ggzboard/module_hnefatafl.py
+   M /trunk/python/ggzboard/module_madn.py
+   M /trunk/python/ggzboard/module_reversi.py
+   M /trunk/python/ggzboard/module_shogi.py
+   M /trunk/python/ggzboard/module_sudoku.py
+   M /trunk/python/ggzboard/net_checkers.py
+   M /trunk/python/ggzboard/net_chess.py
+   M /trunk/python/ggzboard/net_connectx.py
+   M /trunk/python/ggzboard/net_go.py
+   M /trunk/python/ggzboard/net_hnefatafl.py
+   M /trunk/python/ggzboard/net_madn.py
+   M /trunk/python/ggzboard/net_reversi.py
+
+- drop .py filename extension from dresden game
+- remove all hash-bang paths from non-executable python scripts (modules)
+
+
+------------------------------------------------------------------------
+r8511 | josef | 2006-08-14 09:35:07 +0200 (Mo, 14 Aug 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/DESIGN.ggzboard
+   A /trunk/python/ggzboard/backgammon
+   A /trunk/python/ggzboard/backgammon/bg.svg
+   M /trunk/python/ggzboard/ggzboard
+   A /trunk/python/ggzboard/module_backgammon.py
+
+- backgammon board layout, no functional module yet
+- ggzboard improvement: can now load board-sized SVG background image
+
+
+------------------------------------------------------------------------
+r8399 | josef | 2006-07-24 13:07:39 +0200 (Mo, 24 Jul 2006) | 7 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+   M /trunk/python/aclocal.m4
+   M /trunk/python/ggzboard/TODO
+   A /trunk/python/ggzboard/background.png
+   M /trunk/python/ggzboard/ggzboard
+   D /trunk/python/ggzboard/sunset.jpg
+   M /trunk/python/pyggzdmod/src/pyggzdmod_init.c
+   M /trunk/python/pyrsvgsdl
+
+- implementation of 'make distclean'
+- install Shogi stuff
+- new (better) background picture for all of ggzboard
+- deprecate GGZDMOD_EVENT_LOG for GGZ >= 0.0.14
+- updated aclocal.m4, contains *experimental* ggz-config usage improvement
+
+
+------------------------------------------------------------------------
+r8354 | josef | 2006-07-12 17:25:19 +0200 (Mi, 12 Jul 2006) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/INSTALL
+   M /trunk/python/chess/Makefile
+   M /trunk/python/ggzboard/TODO
+
+- better (real) makefile for chess AI
+- prefix isn't needed anymore for 'make install' (for ages)
+- addition to TODO: maybe we should get our own private python module dir (or at least for ggzboard)
+
+
+------------------------------------------------------------------------
+r8353 | josef | 2006-07-12 17:15:22 +0200 (Mi, 12 Jul 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+
+- define py_moddir to be more flexible if /usr/lib/site-python goes away
+
+
+------------------------------------------------------------------------
+r8110 | josef | 2006-06-06 09:43:05 +0200 (Di, 06 Jun 2006) | 3 lines
+Geänderte Pfade:
+   A /trunk/python/ggzboard/TODO
+
+- too much free time at hand? ggzboard has a lot of tasks!
+
+
+------------------------------------------------------------------------
+r8048 | josef | 2006-05-22 08:54:10 +0200 (Mo, 22 Mai 2006) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   D /trunk/python/pyrsvgsdl/setup.py
+   A /trunk/python/pyrsvgsdl/setup.py.in
+
+[openSUSE]
+
+- make it possible to specify a search path for librsvg (or all of GNOME, actually)
+
+
+------------------------------------------------------------------------
+r7999 | josef | 2006-04-10 14:19:29 +0200 (Mo, 10 Apr 2006) | 3 lines
+Geänderte Pfade:
+   A /trunk/python/pyggzmod/pygame
+   A /trunk/python/pyggzmod/pygame/README.pygame
+   A /trunk/python/pyggzmod/pygame/ggzmodpygame.py
+   A /trunk/python/pyggzmod/pygame/test-pygame.py
+
+- pygame integration layer for ggzmod
+
+
+------------------------------------------------------------------------
+r7998 | josef | 2006-04-10 14:19:11 +0200 (Mo, 10 Apr 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzmod/src/test.py
+
+- whoa, typo
+
+
+------------------------------------------------------------------------
+r7988 | josef | 2006-04-03 14:28:57 +0200 (Mo, 03 Apr 2006) | 7 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+   M /trunk/python/ggzboard/ggzboard_net.py
+   A /trunk/python/ggzboard/module_sudoku.py
+
+- New GGZBoard game: Sudoku! (game #10, hurray, hurray...)
+- small changes to GGZBoard to allow game modules to create piece graphics dynamically
+
+Now the odd thing is that the intro menu of GGZBoard must be altered, or otherwise
+all the buttons don't fit onto it anymore :(
+
+
+------------------------------------------------------------------------
+r7987 | josef | 2006-04-03 14:27:10 +0200 (Mo, 03 Apr 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/module_madn.py
+
+- 1st ludo improvement: if dice shows 1, hint at start field
+- 2nd ludo improvement: invalidate all moves (and hints) which lets a pebble hit one of his kind
+
+
+------------------------------------------------------------------------
+r7986 | josef | 2006-04-03 14:25:17 +0200 (Mo, 03 Apr 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/escape-sdl/escape-sdl
+   M /trunk/python/escape-sdl/module.dsc.in
+
+- adapt to pyggzmod API changes
+- fix networking (should really move to a shared lib script)
+
+
+------------------------------------------------------------------------
+r7985 | josef | 2006-04-03 14:24:47 +0200 (Mo, 03 Apr 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/go/goclient
+
+- adapt to pyggzmod API changes
+
+
+------------------------------------------------------------------------
+r7984 | josef | 2006-04-03 14:24:38 +0200 (Mo, 03 Apr 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/xadrez-chines/xadrez-chines
+   M /trunk/python/xadrez-chines/xadrez-chines-server.dsc.in
+
+- adapt to pyggzmod API changes
+
+
+------------------------------------------------------------------------
+r7983 | josef | 2006-04-03 14:23:53 +0200 (Mo, 03 Apr 2006) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzmod/doc/pyggzmod.html
+   A /trunk/python/pyggzmod/src/moduletest.dsc
+   M /trunk/python/pyggzmod/src/pyggzmod_init.c
+   M /trunk/python/pyggzmod/src/test.py
+
+- more or less completion of the ggzmod wrapper for Python
+- enhanced documentation, should now also be complete
+- improved test script which acts well when being installed as a dummy TTT client
+
+
+------------------------------------------------------------------------
+r7982 | josef | 2006-04-03 14:22:43 +0200 (Mo, 03 Apr 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/po/Makefile
+   M /trunk/python/po/de.po
+   M /trunk/python/po/ggzpython.pot
+
+- updated message catalog and German translation
+
+
+------------------------------------------------------------------------
+r7981 | josef | 2006-04-03 14:22:21 +0200 (Mo, 03 Apr 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/lib/sdlnewstuff.py
+
+- handle errors more gracefully
+
+
+------------------------------------------------------------------------
+r7980 | josef | 2006-04-03 14:22:02 +0200 (Mo, 03 Apr 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/lib/playertable.py
+
+- much nicer display of seat assignments, including highlighting one's own seat
+- inclusion of spectator seats and game state information
+
+
+------------------------------------------------------------------------
+r7975 | josef | 2006-03-23 16:47:40 +0100 (Do, 23 Mär 2006) | 6 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+   M /trunk/python/ggzboard/module_shogi.py
+
+- finally, calling 'ggzboard <gamename>' works (shortcut for --game=<game>)
+- even if game.setonly is false, check if game provides piece selection
+- full move hints support for Shogi
+- proper support for piece promotion (except player cannot promote yet)
+
+
+------------------------------------------------------------------------
+r7974 | josef | 2006-03-22 12:26:44 +0100 (Mi, 22 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/man/ggzboard.6
+
+- documentation of additional GGZBoard games
+
+
+------------------------------------------------------------------------
+r7973 | josef | 2006-03-22 12:26:02 +0100 (Mi, 22 Mär 2006) | 9 lines
+Geänderte Pfade:
+   A /trunk/python/pyggzmod/doc
+   A /trunk/python/pyggzmod/doc/doxygen.css
+   A /trunk/python/pyggzmod/doc/pyggzmod.html
+   M /trunk/python/pyggzmod/setup.py.in
+   M /trunk/python/pyggzmod/src/pyggzmod_init.c
+   M /trunk/python/pyggzmod/src/test.py
+
+- complete overhaul of PyGGZMod library
+- full API documentation (except for some functions) based on ggzmod doxygen
+- much higher abstraction: no more ggzmod_dispatch(), usage of tuples as native return types
+
+The library also totally breaks ggz-python. But it is nearly ideal for game
+development right now. What is missing is gameloop integration with pygame.
+Until this is solved, active polling for GGZ events will still have to be done :(
+
+
+------------------------------------------------------------------------
+r7972 | josef | 2006-03-22 12:23:26 +0100 (Mi, 22 Mär 2006) | 6 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzdmod/README.pyggzdmod
+   A /trunk/python/pyggzdmod/doc
+   A /trunk/python/pyggzdmod/doc/API
+   M /trunk/python/pyggzdmod/setup.py.in
+   M /trunk/python/pyggzdmod/src/pyggzdmod_init.c
+
+- complete overhaul of PyGGZdMod library
+- some beginnings of API documentation
+
+Note that this totally breaks ggz-python.
+
+
+------------------------------------------------------------------------
+r7966 | josef | 2006-03-20 13:38:04 +0100 (Mo, 20 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/README
+
+- addition of shogi
+
+
+------------------------------------------------------------------------
+r7965 | josef | 2006-03-20 13:37:45 +0100 (Mo, 20 Mär 2006) | 10 lines
+Geänderte Pfade:
+   A /trunk/python/ggzboard/module_shogi.py
+   A /trunk/python/ggzboard/shogi
+   A /trunk/python/ggzboard/shogi/b-bishop.svg
+   A /trunk/python/ggzboard/shogi/b-gold-general.svg
+   A /trunk/python/ggzboard/shogi/b-king.svg
+   A /trunk/python/ggzboard/shogi/b-knight.svg
+   A /trunk/python/ggzboard/shogi/b-lance.svg
+   A /trunk/python/ggzboard/shogi/b-pawn.svg
+   A /trunk/python/ggzboard/shogi/b-rook.svg
+   A /trunk/python/ggzboard/shogi/b-silver-general.svg
+   A /trunk/python/ggzboard/shogi/bishop.svg
+   A /trunk/python/ggzboard/shogi/gold-general.svg
+   A /trunk/python/ggzboard/shogi/king.svg
+   A /trunk/python/ggzboard/shogi/knight.svg
+   A /trunk/python/ggzboard/shogi/lance.svg
+   A /trunk/python/ggzboard/shogi/pawn.svg
+   A /trunk/python/ggzboard/shogi/rook.svg
+   A /trunk/python/ggzboard/shogi/silver-general.svg
+
+- new game for GGZBoard: Shogi (Japanese chess)
+
+The game can already be played locally to some extent, it needs GNU Shogi.
+Still missing are:
+* ability to drop pieces back onto board (might use Arimaa piece selection code)
+* turn timeout handling
+* nice SVG graphics with Kanji characters, the current ones use Western names
+* killing of the gnushogi process after the game ends (eats up CPU invisibly!)
+
+
+------------------------------------------------------------------------
+r7956 | josef | 2006-03-16 18:50:32 +0100 (Do, 16 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+
+- last-minute fix: of course the real url should be used, not the local one
+
+
+------------------------------------------------------------------------
+r7954 | josef | 2006-03-16 17:13:46 +0100 (Do, 16 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+   M /trunk/python/README
+   M /trunk/python/configure.ac
+   D /trunk/python/ggzboard/arimaa
+   D /trunk/python/ggzboard/module_arimaa.dsc.in
+   D /trunk/python/ggzboard/module_arimaa.py
+   D /trunk/python/ggzboard/net_arimaa.py
+   D /trunk/python/ggzboard/server_arimaa.dsc
+   D /trunk/python/ggzboard/server_arimaa.py
+   D /trunk/python/ggzboard/server_arimaa.room
+
+- move Arimaa to playground for now
+
+
+------------------------------------------------------------------------
+r7942 | josef | 2006-03-16 16:15:01 +0100 (Do, 16 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- global changelog updates for 0.0.13 (boy have we been lazy this time!)
+
+
+------------------------------------------------------------------------
+r7938 | josef | 2006-03-16 15:31:58 +0100 (Do, 16 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzcore/src/pyggzcoresimple_init.c
+
+char* -> const char*
+
+
+------------------------------------------------------------------------
+r7937 | josef | 2006-03-16 15:31:35 +0100 (Do, 16 Mär 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/lib/ggzsettings.py.in
+   M /trunk/python/lib/sdlnewstuff.py
+
+- new GHNS format support in sdlnewstuff
+- in ggzsettings, fail hard for local invokations (./foo) because only then the whole import fails
+
+
+------------------------------------------------------------------------
+r7936 | josef | 2006-03-16 15:30:50 +0100 (Do, 16 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/po/de.po
+   M /trunk/python/po/ggzpython.pot
+
+- update of message catalog and German translation
+
+
+------------------------------------------------------------------------
+r7935 | josef | 2006-03-16 15:30:26 +0100 (Do, 16 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/module_arimaa.py
+
+- some initial figure placement cleanups for the release
+
+
+------------------------------------------------------------------------
+r7934 | josef | 2006-03-16 15:30:00 +0100 (Do, 16 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/server_arimaa.py
+
+- port Arimaa server to BogaProt core
+
+
+------------------------------------------------------------------------
+r7933 | josef | 2006-03-16 15:29:35 +0100 (Do, 16 Mär 2006) | 3 lines
+Geänderte Pfade:
+   A /trunk/python/ggzboard/net_arimaa.py
+
+- Arimaa needs network, too :)
+
+
+------------------------------------------------------------------------
+r7932 | josef | 2006-03-16 15:29:21 +0100 (Do, 16 Mär 2006) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+
+- ability to list games with --list
+- ability to load game modules from ~/.ggz/games/ggzboard
+- new sdlnewstuff API
+
+
+------------------------------------------------------------------------
+r7918 | josef | 2006-03-14 15:00:17 +0100 (Di, 14 Mär 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+
+- bump version
+- install arimaa SVN images
+
+
+------------------------------------------------------------------------
+r7912 | josef | 2006-03-14 14:54:27 +0100 (Di, 14 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/README
+   M /trunk/gnome-client/README
+   M /trunk/grubby/README
+   M /trunk/gtk-client/README
+   M /trunk/gtk-games/README
+   M /trunk/kde-client/README
+   M /trunk/kde-games/README
+   M /trunk/python/README
+   M /trunk/sdl-games/README
+   M /trunk/utils/README
+
+- version bumping in the README files
+
+
+------------------------------------------------------------------------
+r7911 | josef | 2006-03-14 14:53:58 +0100 (Di, 14 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/QuickStart.GGZ
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz-client-libs/QuickStart.GGZ
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/gnome-client/QuickStart.GGZ
+   M /trunk/gnome-client/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/QuickStart.GGZ
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/gtk-games/QuickStart.GGZ
+   M /trunk/gtk-games/autogen.sh
+   M /trunk/kde-client/QuickStart.GGZ
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/QuickStart.GGZ
+   M /trunk/kde-games/autogen.sh
+   M /trunk/python/QuickStart.GGZ
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/txt-client/QuickStart.GGZ
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+- more synchronisation of common files (must be a boring day...)
+
+
+------------------------------------------------------------------------
+r7905 | josef | 2006-03-14 14:47:11 +0100 (Di, 14 Mär 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/docs/AUTHORS
+   M /trunk/docs/NEWS
+   M /trunk/docs/README.GGZ
+   M /trunk/ggz-client-libs/AUTHORS
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggzd/AUTHORS
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README.GGZ
+   M /trunk/gnome-client/AUTHORS
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/grubby/AUTHORS
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README.GGZ
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-games/AUTHORS
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README.GGZ
+   A /trunk/java/AUTHORS
+   A /trunk/java/NEWS
+   A /trunk/java/README.GGZ
+   M /trunk/kde-client/AUTHORS
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-games/AUTHORS
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/README.GGZ
+   M /trunk/libggz/NEWS
+   M /trunk/python/AUTHORS
+   M /trunk/python/NEWS
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/AUTHORS
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/txt-client/AUTHORS
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README.GGZ
+   M /trunk/utils/AUTHORS
+   M /trunk/utils/NEWS
+   M /trunk/utils/README.GGZ
+
+- sync all common files from libggz (README.GGZ, AUTHORS)
+- updated NEWS file for the upcoming 0.0.13 release
+
+
+------------------------------------------------------------------------
+r7902 | josef | 2006-03-14 14:44:59 +0100 (Di, 14 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+
+- honour game datapath if tile pixmap has been set
+
+
+------------------------------------------------------------------------
+r7893 | josef | 2006-03-07 11:05:41 +0100 (Di, 07 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/module_reversi.py
+
+- change turn after each turn (who'd had thought that!)
+
+
+------------------------------------------------------------------------
+r7874 | josef | 2006-02-27 10:15:40 +0100 (Mo, 27 Feb 2006) | 15 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+   M /trunk/python/ggzboard/module_arimaa.py
+
+A whole lot of Arimaa changes so this (complicated) game is nearly working!
+
+- ability to skip first game phase (putting piece onto board) by auto-init function
+- improved implementation of piece push and pull actions
+- rabbits mustn't move backwards
+- animals/pieces can get stuck if bordering a stronger animal
+- visual hints even when just clicking on a piece (ggzboard-wide feature)
+- traps take away pieces, unless they border others of the same colour
+
+So what is missing?
+- micro moves (1-4 moves per turn are possible)
+- extraordinary game over situations, like all rabbits are gone
+- not changing any pieces must lead to player losing after 3 turns
+
+
+------------------------------------------------------------------------
+r7697 | josef | 2005-12-29 12:43:06 +0100 (Do, 29 Dez 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+   M /trunk/python/README
+   M /trunk/python/chess/ai.c
+   M /trunk/python/configure.ac
+
+- installation of the freshly added stuff
+
+
+------------------------------------------------------------------------
+r7696 | josef | 2005-12-29 12:42:17 +0100 (Do, 29 Dez 2005) | 9 lines
+Geänderte Pfade:
+   A /trunk/python/ggzboard/bogaprot.py
+   A /trunk/python/ggzboard/bogaprot.txt
+   A /trunk/python/ggzboard/bogaprotclient.py
+   A /trunk/python/ggzboard/connectx
+   A /trunk/python/ggzboard/connectx/player1.svg
+   A /trunk/python/ggzboard/connectx/player2.svg
+   M /trunk/python/ggzboard/ggzboard
+   A /trunk/python/ggzboard/module_arimaa.dsc.in
+   M /trunk/python/ggzboard/module_arimaa.py
+   M /trunk/python/ggzboard/module_checkers.dsc.in
+   M /trunk/python/ggzboard/module_checkers.py
+   M /trunk/python/ggzboard/module_chess.dsc.in
+   M /trunk/python/ggzboard/module_chess.py
+   A /trunk/python/ggzboard/module_connectx.dsc.in
+   A /trunk/python/ggzboard/module_connectx.py
+   M /trunk/python/ggzboard/module_go.dsc.in
+   M /trunk/python/ggzboard/module_go.py
+   M /trunk/python/ggzboard/module_hnefatafl.dsc.in
+   M /trunk/python/ggzboard/module_hnefatafl.py
+   A /trunk/python/ggzboard/module_ludo.dsc.in
+   M /trunk/python/ggzboard/module_madn.py
+   M /trunk/python/ggzboard/module_reversi.dsc.in
+   M /trunk/python/ggzboard/module_reversi.py
+   M /trunk/python/ggzboard/net_checkers.py
+   M /trunk/python/ggzboard/net_chess.py
+   A /trunk/python/ggzboard/net_connectx.py
+   M /trunk/python/ggzboard/net_go.py
+   M /trunk/python/ggzboard/net_hnefatafl.py
+   A /trunk/python/ggzboard/net_madn.py
+   M /trunk/python/ggzboard/net_reversi.py
+   A /trunk/python/ggzboard/server_arimaa.dsc
+   A /trunk/python/ggzboard/server_arimaa.py
+   A /trunk/python/ggzboard/server_arimaa.room
+   M /trunk/python/ggzboard/server_checkers.dsc
+   M /trunk/python/ggzboard/server_checkers.py
+   M /trunk/python/ggzboard/server_hnefatafl.dsc
+   M /trunk/python/ggzboard/server_hnefatafl.py
+   A /trunk/python/ggzboard/server_ludo.dsc
+   A /trunk/python/ggzboard/server_ludo.py
+   A /trunk/python/ggzboard/server_ludo.room
+
+- ConnectX client module for GGZBoard (includes network adapter and pseudo-random AI)
+- Bogaprot client and server module for usage with board games networking
+- Bogaprot design document
+- beginnings of networking support for Ludo and Arimaa
+- ability to restart finished game by pressing "a" ("again") in ggzboard
+- display of name of winning player instead of just the seat number
+- local AI support for Go using the gnugo engine via popen()
+
+
+------------------------------------------------------------------------
+r7690 | josef | 2005-12-29 12:31:27 +0100 (Do, 29 Dez 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/docs/README.GGZ
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggz-client-libs/m4/i18n.mk
+   M /trunk/ggzd/README.GGZ
+   M /trunk/ggzd/autogen.sh
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/gnome-client/autogen.sh
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/gnome-client/m4/i18n.mk
+   M /trunk/grubby/README.GGZ
+   M /trunk/grubby/autogen.sh
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/grubby/m4/i18n.mk
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/gtk-client/m4/i18n.mk
+   M /trunk/gtk-games/README.GGZ
+   M /trunk/gtk-games/autogen.sh
+   M /trunk/gtk-games/m4/ggz.m4
+   M /trunk/gtk-games/m4/i18n.mk
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/README.GGZ
+   M /trunk/kde-games/autogen.sh
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/README.GGZ
+   M /trunk/libggz/autogen.sh
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/txt-client/README.GGZ
+   M /trunk/txt-client/autogen.sh
+   M /trunk/txt-client/m4/ggz.m4
+   M /trunk/txt-client/m4/i18n.mk
+   M /trunk/utils/README.GGZ
+   M /trunk/utils/autogen.sh
+   M /trunk/utils/m4/ggz.m4
+
+- synchronisation of all globally used files
+- in the future, README.GGZ should be even more generic!
+
+
+------------------------------------------------------------------------
+r7660 | josef | 2005-12-12 12:54:49 +0100 (Mo, 12 Dez 2005) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/web/articles
+   M /trunk/community/web/common
+   M /trunk/community/web/map
+   D /trunk/docs/.cvsignore
+   D /trunk/docs/articles/.cvsignore
+   D /trunk/docs/coreclients/.cvsignore
+   D /trunk/docs/games/.cvsignore
+   D /trunk/docs/games/external-games/.cvsignore
+   D /trunk/docs/games/game-development/.cvsignore
+   D /trunk/docs/games/ggzcards/.cvsignore
+   D /trunk/docs/games/hastings/.cvsignore
+   D /trunk/docs/games/modules/.cvsignore
+   D /trunk/docs/ggz-project/.cvsignore
+   D /trunk/docs/grubby/.cvsignore
+   D /trunk/docs/overview/.cvsignore
+   D /trunk/docs/overview/architecture/.cvsignore
+   D /trunk/docs/server/.cvsignore
+   D /trunk/docs/server/hosting/.cvsignore
+   M /trunk/docs/spec
+   D /trunk/docs/spec/.cvsignore
+   D /trunk/docs/spec/clientspec/.cvsignore
+   D /trunk/docs/spec/serverspec/.cvsignore
+   M /trunk/ggz-client-libs
+   D /trunk/ggz-client-libs/.cvsignore
+   D /trunk/ggz-client-libs/desktop/.cvsignore
+   D /trunk/ggz-client-libs/ggz-config/.cvsignore
+   D /trunk/ggz-client-libs/ggz-wrapper/.cvsignore
+   D /trunk/ggz-client-libs/ggzcore/.cvsignore
+   D /trunk/ggz-client-libs/ggzmod/.cvsignore
+   D /trunk/ggz-client-libs/ggzmod-ggz/.cvsignore
+   D /trunk/ggz-client-libs/man/.cvsignore
+   D /trunk/ggz-client-libs/po/.cvsignore
+   D /trunk/ggz-client-libs/tests/.cvsignore
+   M /trunk/ggzd
+   D /trunk/ggzd/.cvsignore
+   D /trunk/ggzd/doc/.cvsignore
+   D /trunk/ggzd/game_servers/.cvsignore
+   D /trunk/ggzd/game_servers/chess/.cvsignore
+   M /trunk/ggzd/game_servers/chess/libcgc
+   D /trunk/ggzd/game_servers/chess/libcgc/.cvsignore
+   D /trunk/ggzd/game_servers/chinese-checkers/.cvsignore
+   D /trunk/ggzd/game_servers/combat/.cvsignore
+   D /trunk/ggzd/game_servers/connectx/.cvsignore
+   D /trunk/ggzd/game_servers/dots/.cvsignore
+   D /trunk/ggzd/game_servers/escape/.cvsignore
+   D /trunk/ggzd/game_servers/geekgame/.cvsignore
+   D /trunk/ggzd/game_servers/ggzcards/.cvsignore
+   M /trunk/ggzd/game_servers/ggzcards/ai
+   D /trunk/ggzd/game_servers/ggzcards/ai/.cvsignore
+   M /trunk/ggzd/game_servers/ggzcards/client
+   D /trunk/ggzd/game_servers/ggzcards/client/.cvsignore
+   M /trunk/ggzd/game_servers/ggzcards/common
+   D /trunk/ggzd/game_servers/ggzcards/common/.cvsignore
+   D /trunk/ggzd/game_servers/ggzcards/config/.cvsignore
+   M /trunk/ggzd/game_servers/ggzcards/games
+   D /trunk/ggzd/game_servers/ggzcards/games/.cvsignore
+   D /trunk/ggzd/game_servers/hastings/.cvsignore
+   D /trunk/ggzd/game_servers/hastings/maps/.cvsignore
+   D /trunk/ggzd/game_servers/keepalive/.cvsignore
+   D /trunk/ggzd/game_servers/keepalive/ggzsh/.cvsignore
+   D /trunk/ggzd/game_servers/keepalive/src/.cvsignore
+   D /trunk/ggzd/game_servers/krosswater/.cvsignore
+   D /trunk/ggzd/game_servers/krosswater/stackpath/.cvsignore
+   D /trunk/ggzd/game_servers/krosswater/zoneserver/.cvsignore
+   D /trunk/ggzd/game_servers/lapocha/.cvsignore
+   D /trunk/ggzd/game_servers/muehle/.cvsignore
+   D /trunk/ggzd/game_servers/muehle/qtserv/.cvsignore
+   D /trunk/ggzd/game_servers/muehle/variants/.cvsignore
+   D /trunk/ggzd/game_servers/reversi/.cvsignore
+   D /trunk/ggzd/game_servers/spades/.cvsignore
+   D /trunk/ggzd/game_servers/tuxman/.cvsignore
+   D /trunk/ggzd/game_servers/widelands/.cvsignore
+   D /trunk/ggzd/ggzd/.cvsignore
+   D /trunk/ggzd/ggzd/database/.cvsignore
+   D /trunk/ggzd/ggzdmod/.cvsignore
+   M /trunk/ggzd/ggzdmod++
+   D /trunk/ggzd/man/.cvsignore
+   D /trunk/ggzd/tests/.cvsignore
+   M /trunk/gnome-client
+   D /trunk/gnome-client/.cvsignore
+   A /trunk/gnome-client/INSTALL
+   M /trunk/gnome-client/man
+   D /trunk/gnome-client/motd-editor/.cvsignore
+   D /trunk/gnome-client/pixmaps/.cvsignore
+   D /trunk/gnome-client/po/.cvsignore
+   D /trunk/gnome-client/src/.cvsignore
+   D /trunk/gnome-client/src/.deps/.cvsignore
+   D /trunk/grubby/.cvsignore
+   D /trunk/grubby/games/.cvsignore
+   D /trunk/grubby/games/guru-chess/.cvsignore
+   D /trunk/grubby/games/guru-ttt/.cvsignore
+   D /trunk/grubby/games/lib/.cvsignore
+   D /trunk/grubby/grubby/.cvsignore
+   D /trunk/grubby/grubby/data/.cvsignore
+   D /trunk/grubby/grubby/modules/.cvsignore
+   D /trunk/grubby/grubby/po/.cvsignore
+   D /trunk/grubby/grubby/src/.cvsignore
+   D /trunk/grubby/man/.cvsignore
+   D /trunk/grubby/man/de/.cvsignore
+   M /trunk/gtk-client
+   D /trunk/gtk-client/.cvsignore
+   D /trunk/gtk-client/doc/.cvsignore
+   D /trunk/gtk-client/gaim-plugin/.cvsignore
+   D /trunk/gtk-client/ggz-gtk/.cvsignore
+   D /trunk/gtk-client/ggz-gtk/glade/.cvsignore
+   D /trunk/gtk-client/man/.cvsignore
+   D /trunk/gtk-client/po/.cvsignore
+   M /trunk/gtk-games
+   D /trunk/gtk-games/.cvsignore
+   D /trunk/gtk-games/chess/.cvsignore
+   D /trunk/gtk-games/chess/bitmaps/.cvsignore
+   D /trunk/gtk-games/chess/glade/.cvsignore
+   D /trunk/gtk-games/chess/libcgc/.cvsignore
+   D /trunk/gtk-games/chinese-checkers/.cvsignore
+   D /trunk/gtk-games/chinese-checkers/glade/.cvsignore
+   D /trunk/gtk-games/chinese-checkers/pixmaps/.cvsignore
+   D /trunk/gtk-games/combat/.cvsignore
+   D /trunk/gtk-games/combat/glade/.cvsignore
+   D /trunk/gtk-games/combat/maps/.cvsignore
+   D /trunk/gtk-games/combat/pixmaps/.cvsignore
+   D /trunk/gtk-games/combat/pixmaps/default/.cvsignore
+   D /trunk/gtk-games/common/.cvsignore
+   D /trunk/gtk-games/common/cardsets/.cvsignore
+   D /trunk/gtk-games/dots/.cvsignore
+   D /trunk/gtk-games/ggzcards/.cvsignore
+   D /trunk/gtk-games/ggzcards/client/.cvsignore
+   D /trunk/gtk-games/ggzcards/common/.cvsignore
+   D /trunk/gtk-games/hastings/.cvsignore
+   D /trunk/gtk-games/hastings/pixmaps/.cvsignore
+   D /trunk/gtk-games/po/.cvsignore
+   D /trunk/gtk-games/po/chess/.cvsignore
+   D /trunk/gtk-games/po/chinese-checkers/.cvsignore
+   D /trunk/gtk-games/po/combat/.cvsignore
+   D /trunk/gtk-games/po/common/.cvsignore
+   D /trunk/gtk-games/po/dots/.cvsignore
+   D /trunk/gtk-games/po/ggzcards/.cvsignore
+   D /trunk/gtk-games/po/hastings/.cvsignore
+   D /trunk/gtk-games/po/reversi/.cvsignore
+   D /trunk/gtk-games/po/spades/.cvsignore
+   D /trunk/gtk-games/po/tictactoe/.cvsignore
+   D /trunk/gtk-games/reversi/.cvsignore
+   D /trunk/gtk-games/reversi/glade/.cvsignore
+   D /trunk/gtk-games/spades/.cvsignore
+   D /trunk/gtk-games/tictactoe/.cvsignore
+   M /trunk/kde-client
+   D /trunk/kde-client/.cvsignore
+   D /trunk/kde-client/compcal/.cvsignore
+   D /trunk/kde-client/compcal/data/.cvsignore
+   D /trunk/kde-client/compcal/src/.cvsignore
+   D /trunk/kde-client/compcal/src/lib/.cvsignore
+   D /trunk/kde-client/ggz-kde/.cvsignore
+   D /trunk/kde-client/ggz-kde/data/.cvsignore
+   D /trunk/kde-client/ggz-kde/data/browser/.cvsignore
+   D /trunk/kde-client/ggz-kde/data/icons/.cvsignore
+   D /trunk/kde-client/ggz-kde/data/icons/games/.cvsignore
+   D /trunk/kde-client/ggz-kde/data/icons/players/.cvsignore
+   D /trunk/kde-client/ggz-kde/data/kde/.cvsignore
+   D /trunk/kde-client/ggz-kde/data/splash/.cvsignore
+   D /trunk/kde-client/ggz-kde/doc/.cvsignore
+   D /trunk/kde-client/ggz-kde/doc/de/.cvsignore
+   D /trunk/kde-client/ggz-kde/ggzcore++/.cvsignore
+   D /trunk/kde-client/ggz-kde/ggzcore++/doc/.cvsignore
+   D /trunk/kde-client/ggz-kde/ggzcore++/doc/html/.cvsignore
+   D /trunk/kde-client/ggz-kde/ggzcore++/src/.cvsignore
+   D /trunk/kde-client/ggz-kde/po/.cvsignore
+   D /trunk/kde-client/ggz-kde/src/.cvsignore
+   D /trunk/kde-client/ggz-kde/src/abstract/.cvsignore
+   D /trunk/kde-client/ggz-kde/src/widgets/.cvsignore
+   M /trunk/kde-client/ggz-kde/src/widgets/more
+   D /trunk/kde-client/ggz-kde/src/widgets/more/.cvsignore
+   D /trunk/kde-client/ggzap/.cvsignore
+   D /trunk/kde-client/kcm_ggz/.cvsignore
+   D /trunk/kde-client/kcm_ggz/modules/.cvsignore
+   D /trunk/kde-client/keepalivecontrol/.cvsignore
+   D /trunk/kde-client/keepalivecontrol/data/.cvsignore
+   D /trunk/kde-client/keepalivecontrol/src/.cvsignore
+   D /trunk/kde-client/kgrubby/.cvsignore
+   D /trunk/kde-client/kgrubby/data/.cvsignore
+   D /trunk/kde-client/kgrubby/src/.cvsignore
+   D /trunk/kde-client/kio_ggz/.cvsignore
+   D /trunk/kde-client/kio_ggz/kioslave/.cvsignore
+   D /trunk/kde-client/kio_ggzmeta/.cvsignore
+   D /trunk/kde-client/kio_ggzmeta/kioslave/.cvsignore
+   D /trunk/kde-client/man/.cvsignore
+   D /trunk/kde-client/po/.cvsignore
+   D /trunk/kde-client/po/compcal/.cvsignore
+   D /trunk/kde-client/po/ggzap/.cvsignore
+   D /trunk/kde-client/po/kcm_ggz/.cvsignore
+   D /trunk/kde-client/po/kgrubby/.cvsignore
+   D /trunk/kde-client/po/shadowbridge/.cvsignore
+   D /trunk/kde-client/shadowbridge/.cvsignore
+   D /trunk/kde-client/shadowbridge/pics/.cvsignore
+   M /trunk/kde-games
+   D /trunk/kde-games/.cvsignore
+   D /trunk/kde-games/KReversi/.cvsignore
+   D /trunk/kde-games/KReversi/pixmaps/.cvsignore
+   D /trunk/kde-games/KReversi/pixmaps/blend/.cvsignore
+   D /trunk/kde-games/KReversi/pixmaps/default/.cvsignore
+   D /trunk/kde-games/KReversi/pixmaps/gtk-client/.cvsignore
+   D /trunk/kde-games/fyrdman/.cvsignore
+   D /trunk/kde-games/fyrdman/data/.cvsignore
+   D /trunk/kde-games/kcc/.cvsignore
+   D /trunk/kde-games/kcc/themes/.cvsignore
+   D /trunk/kde-games/kcc/themes/default/.cvsignore
+   D /trunk/kde-games/kdots/.cvsignore
+   D /trunk/kde-games/kdots/Dot/.cvsignore
+   D /trunk/kde-games/keepalive/.cvsignore
+   D /trunk/kde-games/keepalive/pics/.cvsignore
+   D /trunk/kde-games/keepalive/src/.cvsignore
+   D /trunk/kde-games/koenig/.cvsignore
+   D /trunk/kde-games/koenig/libcgc/.cvsignore
+   D /trunk/kde-games/koenig/pics/.cvsignore
+   D /trunk/kde-games/koenig/pieces/.cvsignore
+   D /trunk/kde-games/krosswater/.cvsignore
+   D /trunk/kde-games/krosswater/gfx/.cvsignore
+   D /trunk/kde-games/krosswater/zoneclient/.cvsignore
+   D /trunk/kde-games/ktictactux/.cvsignore
+   D /trunk/kde-games/ktictactux/themes/.cvsignore
+   D /trunk/kde-games/lib/.cvsignore
+   D /trunk/kde-games/man/.cvsignore
+   D /trunk/kde-games/muehle/.cvsignore
+   D /trunk/kde-games/muehle/doc/.cvsignore
+   D /trunk/kde-games/muehle/pics/.cvsignore
+   D /trunk/kde-games/muehle/pics/alt/.cvsignore
+   D /trunk/kde-games/muehle/pics/standard/.cvsignore
+   D /trunk/kde-games/muehle/src/.cvsignore
+   D /trunk/kde-games/muehle/src/ai/.cvsignore
+   D /trunk/kde-games/muehle/src/ggzwrap/.cvsignore
+   D /trunk/kde-games/muehle/variants/.cvsignore
+   D /trunk/kde-games/po/.cvsignore
+   D /trunk/kde-games/po/KReversi/.cvsignore
+   D /trunk/kde-games/po/fyrdman/.cvsignore
+   D /trunk/kde-games/po/kdots/.cvsignore
+   D /trunk/kde-games/po/koenig/.cvsignore
+   D /trunk/kde-games/po/krosswater/.cvsignore
+   D /trunk/kde-games/po/ktictactux/.cvsignore
+   D /trunk/kde-games/po/muehle/.cvsignore
+   M /trunk/libggz
+   D /trunk/libggz/.cvsignore
+   D /trunk/libggz/man/.cvsignore
+   M /trunk/libggz/src
+   D /trunk/libggz/src/.cvsignore
+   D /trunk/libggz/src/security/.cvsignore
+   D /trunk/libggz/tests/.cvsignore
+   M /trunk/playground/README
+   D /trunk/playground/agrue/agrue/.cvsignore
+   D /trunk/playground/colorsniff/.cvsignore
+   D /trunk/playground/ggz-java/distributed-ggz/classes/.cvsignore
+   D /trunk/playground/ggz-java/tictactoe/classes/.cvsignore
+   D /trunk/playground/ggz-java/tictactoe/classes/GGZ/.cvsignore
+   D /trunk/playground/ggz-java/tictactoeclient/.cvsignore
+   M /trunk/playground/ggz-ruby/ai-ttt/ttt-ai.c
+   D /trunk/playground/ggz-ruby/ruggzdmod/.cvsignore
+   D /trunk/playground/kopete-ggz/.cvsignore
+   D /trunk/playground/sdl-games/tuxman-server/.cvsignore
+   D /trunk/playground/sdl-games/tuxman-server/lib/.cvsignore
+   D /trunk/python/.cvsignore
+   M /trunk/python/chess
+   M /trunk/python/escape-sdl
+   D /trunk/python/escape-sdl/.cvsignore
+   M /trunk/python/ggzboard
+   D /trunk/python/ggzboard/.cvsignore
+   D /trunk/python/go/.cvsignore
+   M /trunk/python/lib
+   D /trunk/python/po/.cvsignore
+   D /trunk/python/pyggzchess/.cvsignore
+   D /trunk/python/pyggzcore/.cvsignore
+   D /trunk/python/pyggzdmod/.cvsignore
+   D /trunk/python/pyggzmod/.cvsignore
+   D /trunk/python/pyrsvgsdl/.cvsignore
+   M /trunk/python/xadrez-chines
+   D /trunk/python/xadrez-chines/.cvsignore
+   M /trunk/sdl-games
+   D /trunk/sdl-games/.cvsignore
+   D /trunk/sdl-games/geekgame/.cvsignore
+   D /trunk/sdl-games/geekgame/graphics/.cvsignore
+   D /trunk/sdl-games/ttt3d/.cvsignore
+   M /trunk/txt-client
+   D /trunk/txt-client/.cvsignore
+   D /trunk/txt-client/ggz-txt/.cvsignore
+   D /trunk/txt-client/man/.cvsignore
+   D /trunk/txt-client/po/.cvsignore
+   D /trunk/txt-client/tttxt/.cvsignore
+   M /trunk/utils
+   D /trunk/utils/.cvsignore
+   D /trunk/utils/cmd-client/.cvsignore
+   D /trunk/utils/ggzcomm/.cvsignore
+   D /trunk/utils/man/.cvsignore
+   D /trunk/utils/metaserv/.cvsignore
+   D /trunk/utils/metaserv/gui-qt/.cvsignore
+   D /trunk/utils/metaserv/metaserv/.cvsignore
+   D /trunk/utils/metaserv/minidom/.cvsignore
+   D /trunk/utils/telggz/.cvsignore
+   D /trunk/www/docs/.cvsignore
+
+This week's XXL commit!
+- removal of all .cvsignore files
+- addition of *.a, *.os, ... to svn:ignore
+
+
+------------------------------------------------------------------------
+r7657 | josef | 2005-12-12 12:44:08 +0100 (Mo, 12 Dez 2005) | 6 lines
+Geänderte Pfade:
+   M /trunk/python/INSTALL
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/python/dresden/dresden.py
+   M /trunk/python/ggzboard/ggzboard
+   M /trunk/python/ggzboard/module_checkers.py
+   M /trunk/python/ggzboard/module_chess.py
+   M /trunk/python/ggzboard/module_go.py
+   M /trunk/python/ggzboard/module_hnefatafl.py
+   M /trunk/python/ggzboard/module_madn.py
+   M /trunk/python/ggzboard/module_reversi.py
+   M /trunk/python/xadrez-chines/xadrez-chines
+
+- use ggzsettings everywhere
+- more overrideable variables in the Makefile
+- install manual pages
+- make all non-arimaa modules work again (quick fixes)
+
+
+------------------------------------------------------------------------
+r7656 | josef | 2005-12-12 12:40:57 +0100 (Mo, 12 Dez 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/po/de.po
+   M /trunk/python/po/ggzpython.pot
+   M /trunk/python/po/i18n.mk
+
+- some translation updates
+- force 'all-local' to be the default rule in i18n.mk
+
+
+------------------------------------------------------------------------
+r7655 | josef | 2005-12-12 12:38:18 +0100 (Mo, 12 Dez 2005) | 3 lines
+Geänderte Pfade:
+   D /trunk/python/escape-sdl/escape-sdl.desktop
+
+- do not keep desktop file in SVN (as *.desktop.in already is)
+
+
+------------------------------------------------------------------------
+r7654 | josef | 2005-12-12 12:35:35 +0100 (Mo, 12 Dez 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/pyrsvgsdl/src/pyrsvgsdl.c
+
+- new method 'qtconversion' which handles the RGBA/ARGB conversion on
+big/little endian arches so we don't have to care about that in the games themselves
+
+
+------------------------------------------------------------------------
+r7653 | josef | 2005-12-12 12:34:27 +0100 (Mo, 12 Dez 2005) | 3 lines
+Geänderte Pfade:
+   A /trunk/python/lib/ggzsettings.py.in
+   M /trunk/python/lib/playertable.py
+   M /trunk/python/lib/sdlnewstuff.py
+
+- ggzsettings: new configuration module to get the GGZ installation paths right
+
+
+------------------------------------------------------------------------
+r7644 | josef | 2005-11-29 18:48:54 +0100 (Di, 29 Nov 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+
+- force 'make all-local' to be called instead of the default rule, which could be something else
+
+
+------------------------------------------------------------------------
+r7626 | josef | 2005-11-17 08:53:35 +0100 (Do, 17 Nov 2005) | 7 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+   M /trunk/python/ggzboard/module_arimaa.py
+
+- support for piece selection in GGZBoard
+  (not only Arimaa should use this, but Chess also when exchanging a pawn)
+- implementation of the first game phase of Arimaa
+
+Many of these changes will break the other games temporarily.
+
+
+------------------------------------------------------------------------
+r7625 | josef | 2005-11-17 08:52:25 +0100 (Do, 17 Nov 2005) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/arimaa/camel_gold.png
+   M /trunk/python/ggzboard/arimaa/camel_silver.png
+   M /trunk/python/ggzboard/arimaa/cat_gold.png
+   M /trunk/python/ggzboard/arimaa/cat_silver.png
+   M /trunk/python/ggzboard/arimaa/cell.png
+   M /trunk/python/ggzboard/arimaa/celltrap.png
+   M /trunk/python/ggzboard/arimaa/dog_gold.png
+   M /trunk/python/ggzboard/arimaa/dog_silver.png
+   M /trunk/python/ggzboard/arimaa/elephant_gold.png
+   M /trunk/python/ggzboard/arimaa/elephant_silver.png
+   M /trunk/python/ggzboard/arimaa/horse_gold.png
+   M /trunk/python/ggzboard/arimaa/horse_silver.png
+   M /trunk/python/ggzboard/arimaa/rabbit_gold.png
+   M /trunk/python/ggzboard/arimaa/rabbit_silver.png
+
+- hand-drawn animal pieces, now all 58x58 pixels large
+
+Hopefully some really nice ones will be contributed one day!
+
+
+------------------------------------------------------------------------
+r7622 | josef | 2005-11-14 10:03:39 +0100 (Mo, 14 Nov 2005) | 4 lines
+Geänderte Pfade:
+   A /trunk/python/ggzboard/arimaa
+   A /trunk/python/ggzboard/arimaa/camel_gold.png
+   A /trunk/python/ggzboard/arimaa/camel_silver.png
+   A /trunk/python/ggzboard/arimaa/cat_gold.png
+   A /trunk/python/ggzboard/arimaa/cat_silver.png
+   A /trunk/python/ggzboard/arimaa/cell.png
+   A /trunk/python/ggzboard/arimaa/celltrap.png
+   A /trunk/python/ggzboard/arimaa/dog_gold.png
+   A /trunk/python/ggzboard/arimaa/dog_silver.png
+   A /trunk/python/ggzboard/arimaa/elephant_gold.png
+   A /trunk/python/ggzboard/arimaa/elephant_silver.png
+   A /trunk/python/ggzboard/arimaa/horse_gold.png
+   A /trunk/python/ggzboard/arimaa/horse_silver.png
+   A /trunk/python/ggzboard/arimaa/rabbit_gold.png
+   A /trunk/python/ggzboard/arimaa/rabbit_silver.png
+   M /trunk/python/ggzboard/ggzboard
+
+- piece images for Arimaa - copyright unsure, might be replaced, for now they're just modified a bit
+- GGZBoard support for tiles with background images (still a hack though)
+
+
+------------------------------------------------------------------------
+r7621 | josef | 2005-11-14 10:01:33 +0100 (Mo, 14 Nov 2005) | 7 lines
+Geänderte Pfade:
+   M /trunk/docs/games/game-development/features.html
+   A /trunk/kde-games/keepalive/keepalive.desktop
+   A /trunk/kde-games/muehle/pics/muehle.desktop
+   A /trunk/python/escape-sdl/escape-sdl.desktop
+   A /trunk/python/ggzboard/module_arimaa.py
+   M /trunk/txt-client/ggz-txt/game.h
+   M /trunk/www/backend/index.php.en
+   M /trunk/www/backend/pics/db2web.png
+   M /trunk/www/backend/web.php.de
+   M /trunk/www/backend/web.php.en
+
+Some random commits of what has been lurking around for some time:
+
+- update of the backend pages to reflect the rankings.g.o -> ggzcommunity.org move
+- some desktop files for games that provide a single-player mode
+- beginnings of Arimaa game support for GGZBoard
+
+
+------------------------------------------------------------------------
+r7607 | josef | 2005-11-01 14:34:10 +0100 (Di, 01 Nov 2005) | 7 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/DESIGN.ggzboard
+   M /trunk/python/ggzboard/ggzboard
+   M /trunk/python/ggzboard/module_checkers.py
+   M /trunk/python/ggzboard/module_chess.py
+   M /trunk/python/ggzboard/module_go.py
+   M /trunk/python/ggzboard/module_hnefatafl.py
+   M /trunk/python/ggzboard/module_madn.py
+   M /trunk/python/ggzboard/module_reversi.py
+
+- support for hints (used in Ludo only for now)
+- updated documentation
+
+Now all that is missing is piece animation support, and using
+all those nice new features in the other games beside Ludo.
+
+
+------------------------------------------------------------------------
+r7606 | josef | 2005-11-01 14:32:40 +0100 (Di, 01 Nov 2005) | 3 lines
+Geänderte Pfade:
+   A /trunk/python/man
+   A /trunk/python/man/escape-sdl.6
+   A /trunk/python/man/ggzboard.6
+   A /trunk/python/man/vibora.6
+   A /trunk/python/man/xadrez-chines.6
+
+- some man pages for the python apps and games (no installation yet)
+
+
+------------------------------------------------------------------------
+r7593 | josef | 2005-09-25 20:25:14 +0200 (So, 25 Sep 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- big changelog update (2.3 MB... due to new formatting)
+
+
+------------------------------------------------------------------------
+r7586 | josef | 2005-09-25 19:27:41 +0200 (So, 25 Sep 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+
+- version bump to 0.0.12
+
+
+------------------------------------------------------------------------
+r7551 | josef | 2005-09-25 12:11:25 +0200 (So, 25 Sep 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/Makefile
+   M /trunk/community/web/common/htconf-dist
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- more version string changes in the build system
+
+
+------------------------------------------------------------------------
+r7550 | josef | 2005-09-25 11:54:30 +0200 (So, 25 Sep 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/NEWS
+   M /trunk/community/README.GGZ
+   M /trunk/docs/NEWS
+   M /trunk/docs/README.GGZ
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/README.GGZ
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/README
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/grubby/README.GGZ
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README
+   M /trunk/gtk-games/README.GGZ
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/README
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/README
+   M /trunk/kde-games/README.GGZ
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/README.GGZ
+   M /trunk/python/NEWS
+   M /trunk/python/README
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/README
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README.GGZ
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+   M /trunk/utils/README.GGZ
+
+- version updates in common files
+- news and release-specific changes
+
+
+------------------------------------------------------------------------
+r7547 | josef | 2005-09-23 23:54:25 +0200 (Fr, 23 Sep 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/COPYING
+   M /trunk/ggz-client-libs/COPYING
+   M /trunk/ggzd/COPYING
+   A /trunk/gnome-client/COPYING
+   M /trunk/grubby/COPYING
+   M /trunk/gtk-client/COPYING
+   M /trunk/gtk-games/COPYING
+   M /trunk/kde-client/COPYING
+   M /trunk/kde-games/COPYING
+   M /trunk/libggz/COPYING
+   M /trunk/playground/COPYING
+   M /trunk/python/COPYING
+   A /trunk/sdl-games/COPYING
+   M /trunk/txt-client/COPYING
+   M /trunk/utils/COPYING
+
+- add copyright files for gnome-client and sdl-games to SVN
+- update all copyright files with current version, including the new FSF address in Boston
+
+
+------------------------------------------------------------------------
+r7493 | josef | 2005-08-21 16:19:36 +0200 (So, 21 Aug 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard_net.py
+
+- exclude hash-bang line here as it is only an include
+
+
+------------------------------------------------------------------------
+r7490 | josef | 2005-08-21 15:50:36 +0200 (So, 21 Aug 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/chess/Makefile
+
+- compile with -fPIC because it's only used in another library
+
+
+------------------------------------------------------------------------
+r7474 | josef | 2005-08-21 15:03:33 +0200 (So, 21 Aug 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/aclocal.m4
+
+- update to support --enable-noregistry
+
+
+------------------------------------------------------------------------
+r7465 | josef | 2005-08-21 00:16:09 +0200 (So, 21 Aug 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/Makefile
+   M /trunk/python/Makefile.in
+
+- two more versions
+
+
+------------------------------------------------------------------------
+r7464 | josef | 2005-08-20 23:41:45 +0200 (Sa, 20 Aug 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/Makefile.am
+   M /trunk/gtk-games/configure.ac
+   D /trunk/gtk-games/package.in
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- bump version to 0.0.12pre to not create *-0.0.11.tar.gz files
+- remove the gtk-games override stuff
+
+
+------------------------------------------------------------------------
+r7461 | josef | 2005-08-20 20:55:29 +0200 (Sa, 20 Aug 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+
+- use destdir for ggz-config
+
+
+------------------------------------------------------------------------
+r7421 | josef | 2005-08-14 17:04:26 +0200 (So, 14 Aug 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/po/Makefile
+
+- redirect 'make install' to 'make install-data-local'
+
+
+------------------------------------------------------------------------
+r7420 | josef | 2005-08-14 17:00:31 +0200 (So, 14 Aug 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+
+- remove .svn dirs, not CVS dirs anymore in 'make dist'
+
+
+------------------------------------------------------------------------
+r7360 | josef | 2005-08-05 16:19:22 +0200 (Fr, 05 Aug 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/po/de.po
+   M /trunk/python/po/ggzpython.pot
+
+- updated translation
+
+
+------------------------------------------------------------------------
+r7359 | josef | 2005-08-05 16:10:23 +0200 (Fr, 05 Aug 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/po/Makefile
+   M /trunk/python/po/de.po
+   M /trunk/python/po/ggzpython.pot
+   A /trunk/python/po/i18n.mk
+
+- modify i18n.mk to be suitable for python as well (introducing POFLAGS)
+- some dummy values as autoconf is not yet used here
+
+
+------------------------------------------------------------------------
+r7353 | josef | 2005-08-03 12:14:19 +0200 (Mi, 03 Aug 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/common/icon.png
+
+- fixing all icons
+
+
+------------------------------------------------------------------------
+r7287 | josef | 2005-06-18 11:37:26 +0200 (Sa, 18 Jun 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+   M /trunk/python/aclocal.m4
+   M /trunk/python/configure.ac
+
+- updated GGZ macro file (minus iconv, which doesn't really belong there)
+- do not fail if no GGZ is installed, simply do not compile wrappers then
+  (but is this good? no game can be played then)
+
+------------------------------------------------------------------------
+r7272 | josef | 2005-06-10 14:44:34 +0200 (Fr, 10 Jun 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+   M /trunk/python/chess/Makefile
+
+- a rule for 'make clean'
+
+------------------------------------------------------------------------
+r7240 | josef | 2005-05-21 16:35:03 +0200 (Sa, 21 Mai 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+
+- version bump to 0.0.11
+
+------------------------------------------------------------------------
+r7239 | josef | 2005-05-21 16:32:42 +0200 (Sa, 21 Mai 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzdmod/src/pyggzdmod_init.c
+
+- smaller fixes to the ggzdmod wrapper (const arguments and such)
+
+------------------------------------------------------------------------
+r7238 | josef | 2005-05-21 16:12:19 +0200 (Sa, 21 Mai 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/configure.ac
+
+- s/python_found/pygame_found/
+
+------------------------------------------------------------------------
+r7225 | josef | 2005-05-21 13:40:55 +0200 (Sa, 21 Mai 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+   M /trunk/python/ggzboard/module_checkers.dsc.in
+   M /trunk/python/ggzboard/module_chess.dsc.in
+   M /trunk/python/ggzboard/module_go.dsc.in
+   M /trunk/python/ggzboard/module_hnefatafl.dsc.in
+   M /trunk/python/ggzboard/module_reversi.dsc.in
+
+- ggzboard version gets bumped to 0.0.2 (addition of dice etc.)
+
+------------------------------------------------------------------------
+r7216 | josef | 2005-05-21 13:13:11 +0200 (Sa, 21 Mai 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/docs/AUTHORS
+   M /trunk/docs/NEWS
+   M /trunk/docs/QuickStart.GGZ
+   M /trunk/docs/README.GGZ
+   M /trunk/ggz/game_clients/AUTHORS
+   M /trunk/ggz/game_clients/NEWS
+   M /trunk/ggz/game_clients/QuickStart.GGZ
+   M /trunk/ggz/game_clients/README
+   M /trunk/ggz/game_clients/README.GGZ
+   M /trunk/ggz-client-libs/AUTHORS
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/QuickStart.GGZ
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggz-txt-client/AUTHORS
+   M /trunk/ggz-txt-client/NEWS
+   M /trunk/ggz-txt-client/QuickStart.GGZ
+   M /trunk/ggz-txt-client/README.GGZ
+   M /trunk/ggzd/AUTHORS
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/README.GGZ
+   M /trunk/gnome-client/AUTHORS
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/QuickStart.GGZ
+   M /trunk/gnome-client/README
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/grubby/AUTHORS
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/grubby/README.GGZ
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/QuickStart.GGZ
+   M /trunk/gtk-client/README
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/kde-client/AUTHORS
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/QuickStart.GGZ
+   M /trunk/kde-client/README
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-games/AUTHORS
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/QuickStart.GGZ
+   M /trunk/kde-games/README
+   M /trunk/kde-games/README.GGZ
+   M /trunk/libggz/README
+   M /trunk/python/AUTHORS
+   M /trunk/python/NEWS
+   M /trunk/python/QuickStart.GGZ
+   M /trunk/python/README
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/AUTHORS
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/README
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/utils/AUTHORS
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+   M /trunk/utils/README.GGZ
+
+- common files synchronisation and README update for 0.0.11
+
+------------------------------------------------------------------------
+r7214 | josef | 2005-05-21 12:46:02 +0200 (Sa, 21 Mai 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz/game_clients/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggz-txt-client/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/utils/configure.ac
+
+- LET version = 0.0.11
+
+------------------------------------------------------------------------
+r7183 | josef | 2005-05-07 12:24:28 +0200 (Sa, 07 Mai 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+
+- in GGZ mode, do not allow returning to the main menu
+
+------------------------------------------------------------------------
+r7167 | josef | 2005-05-01 16:57:38 +0200 (So, 01 Mai 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/lib/sdlnewstuff.py
+
+- change GHNS providers URL to point to new load-balanced list
+
+------------------------------------------------------------------------
+r7159 | josef | 2005-04-30 13:58:58 +0200 (Sa, 30 Apr 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzmod/setup.py.in
+   M /trunk/python/pyggzmod/src/pyggzmod_init.c
+
+- fix ggzmod wrapper
+
+------------------------------------------------------------------------
+r7158 | josef | 2005-04-30 13:51:55 +0200 (Sa, 30 Apr 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+
+- do not offer games without network module in GGZ mode
+
+------------------------------------------------------------------------
+r7157 | josef | 2005-04-30 13:36:05 +0200 (Sa, 30 Apr 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/lib/playertable.py
+
+- improved player list
+
+------------------------------------------------------------------------
+r7156 | josef | 2005-04-30 13:20:39 +0200 (Sa, 30 Apr 2005) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+   M /trunk/python/ggzboard/module_checkers.py
+   M /trunk/python/ggzboard/module_chess.py
+   M /trunk/python/ggzboard/module_go.py
+   M /trunk/python/ggzboard/module_hnefatafl.py
+   M /trunk/python/ggzboard/module_madn.py
+   M /trunk/python/ggzboard/module_reversi.py
+
+- in-game help screen
+- in game menu buttons
+- about screen
+- after a game finishes or is cancelled, go back to intro screen
+
+------------------------------------------------------------------------
+r7155 | josef | 2005-04-30 11:47:11 +0200 (Sa, 30 Apr 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+   M /trunk/python/ggzboard/module_checkers.py
+   M /trunk/python/ggzboard/module_chess.py
+   M /trunk/python/ggzboard/module_go.py
+   M /trunk/python/ggzboard/module_hnefatafl.py
+   M /trunk/python/ggzboard/module_madn.py
+   M /trunk/python/ggzboard/module_reversi.py
+
+- implementation of Ludo AI and gameplay
+- improved visuals: coloured player names and display of the winner
+- addition of --fullscreen command line option
+
+------------------------------------------------------------------------
+r7154 | josef | 2005-04-29 22:45:28 +0200 (Fr, 29 Apr 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+   M /trunk/python/ggzboard/module_madn.py
+
+- more or less finished dice (except for AI for ludo), including skipping
+- new command line option --version
+- delays after showing dice
+
+------------------------------------------------------------------------
+r7123 | josef | 2005-04-23 13:31:46 +0200 (Sa, 23 Apr 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/ggz/src/frontend/gtk/login.c
+   M /trunk/ggz/src/frontend/kde/ggzcore++/src/GGZCoreServer.cpp
+   M /trunk/ggz/src/frontend/text/server.c
+   M /trunk/ggz/src/ggzcore/ggzcore.h
+   M /trunk/ggz/src/ggzcore/net.h
+   M /trunk/ggz/src/ggzcore/netxml.c
+   M /trunk/ggz/src/ggzcore/server.c
+   M /trunk/ggz/src/ggzcore/server.h
+   M /trunk/ggzd/ggzd/login.c
+   M /trunk/ggzd/ggzd/login.h
+   M /trunk/ggzd/ggzd/net.c
+   M /trunk/gnome-client/src/login.c
+   M /trunk/grubby/grubby/src/net.c
+   M /trunk/python/pyggzcore/src/pyggzcoresimple_init.c
+   M /trunk/utils/cmd-client/main.c
+   M /trunk/utils/telggz/net.c
+
+- protocol enhancement:
+ * allow users to give initial password when registering
+ * allow users to give email address
+
+------------------------------------------------------------------------
+r7106 | josef | 2005-04-10 15:48:00 +0200 (So, 10 Apr 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+   M /trunk/python/ggzboard/module_checkers.py
+   M /trunk/python/ggzboard/module_chess.py
+   M /trunk/python/ggzboard/module_go.py
+   M /trunk/python/ggzboard/module_hnefatafl.py
+   M /trunk/python/ggzboard/module_madn.py
+   M /trunk/python/ggzboard/module_reversi.py
+
+- display player names in single player mode also (using $USER and AI #n)
+- improved implementation of dice
+- first try: tracking the currently active player (for games with >2 players)
+
+------------------------------------------------------------------------
+r7105 | josef | 2005-04-10 15:23:19 +0200 (So, 10 Apr 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/po/de.po
+   M /trunk/python/po/ggzpython.pot
+
+- German translation update
+
+------------------------------------------------------------------------
+r7090 | josef | 2005-04-08 15:18:08 +0200 (Fr, 08 Apr 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz/src/frontend/gtk/ggzclient.c
+   M /trunk/gnome-client/src/ggzclient.c
+   M /trunk/python/pyggzcore/src/pyggzcoresimple_init.c
+   M /trunk/utils/telggz/net.c
+
+- fix MOTD loading
+
+------------------------------------------------------------------------
+r7008 | josef | 2005-03-18 02:20:06 +0100 (Fr, 18 Mär 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+
+- fix rsvgsdl usage
+
+------------------------------------------------------------------------
+r7007 | josef | 2005-03-18 02:16:51 +0100 (Fr, 18 Mär 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/pyrsvgsdl/src/pyrsvgsdl.c
+
+- transformation of raw pixmap data into a nice object
+- this provides the former data as data(), in addition to width() and height()
+- this will break all current games, but not for long...
+
+------------------------------------------------------------------------
+r6953 | josef | 2005-02-28 00:30:04 +0100 (Mo, 28 Feb 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzcore/src/pyggzcoresimple_init.c
+
+- fix 'const' madness
+
+------------------------------------------------------------------------
+r6950 | josef | 2005-02-27 23:39:52 +0100 (So, 27 Feb 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   A /trunk/python/escape-sdl/escape-sdl.desktop.in
+   A /trunk/python/ggzboard/ggzboard.desktop.in
+   A /trunk/python/xadrez-chines/xadrez-chines.desktop.in
+
+- XDG menu entries for Escape/SDL, Xadrez Chin��s and GGZBoard
+
+------------------------------------------------------------------------
+r6939 | josef | 2005-02-27 13:57:37 +0100 (So, 27 Feb 2005) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+   M /trunk/python/ggzboard/ggzboard
+   M /trunk/python/ggzboard/module_checkers.py
+   M /trunk/python/ggzboard/module_chess.py
+   M /trunk/python/ggzboard/module_go.py
+   M /trunk/python/ggzboard/module_hnefatafl.py
+   M /trunk/python/ggzboard/module_madn.py
+   M /trunk/python/ggzboard/module_reversi.py
+   M /trunk/python/lib/sdlnewstuff.py
+   M /trunk/python/po/Makefile
+   M /trunk/python/po/de.po
+   M /trunk/python/po/ggzpython.pot
+
+- i18n: radically simplified initialization (had I known this before...)
+- i18n: translate messages and game names of ggzboard
+- ggzboard: display real game names (instead of file names) in the menu
+- install dice and ludo game module
+
+------------------------------------------------------------------------
+r6933 | josef | 2005-02-26 21:59:55 +0100 (Sa, 26 Feb 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+   A /trunk/python/ggzboard/common
+   A /trunk/python/ggzboard/common/icon.png
+   M /trunk/python/ggzboard/ggzboard
+   M /trunk/python/lib/test.py
+
+- install GGZBoard icon
+- use icon instead of pygame default
+
+------------------------------------------------------------------------
+r6920 | josef | 2005-02-04 17:13:04 +0100 (Fr, 04 Feb 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz/game_clients/configure.ac
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+
+- use new ggz-config modification
+
+------------------------------------------------------------------------
+r6913 | josef | 2005-01-31 15:18:58 +0100 (Mo, 31 Jan 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+   A /trunk/python/ggzboard/madn/dice-1.svg
+   A /trunk/python/ggzboard/madn/dice-2.svg
+   A /trunk/python/ggzboard/madn/dice-3.svg
+   A /trunk/python/ggzboard/madn/dice-4.svg
+   A /trunk/python/ggzboard/madn/dice-5.svg
+   A /trunk/python/ggzboard/madn/dice-6.svg
+   M /trunk/python/ggzboard/module_madn.py
+
+- rule checking for Ludo
+- basic dice support for all games
+
+------------------------------------------------------------------------
+r6858 | josef | 2005-01-23 23:09:05 +0100 (So, 23 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/autogen.sh
+
+- support NOCONFIGURE
+
+------------------------------------------------------------------------
+r6856 | josef | 2005-01-23 22:23:07 +0100 (So, 23 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/docs/AUTHORS
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz/game_clients/AUTHORS
+   M /trunk/ggz/game_clients/ChangeLog
+   M /trunk/ggz-client-libs/AUTHORS
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggz-txt-client/AUTHORS
+   M /trunk/ggz-txt-client/ChangeLog
+   M /trunk/ggzd/AUTHORS
+   M /trunk/ggzd/ChangeLog
+   M /trunk/gnome-client/AUTHORS
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/grubby/AUTHORS
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/kde-client/AUTHORS
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/AUTHORS
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/AUTHORS
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/AUTHORS
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/AUTHORS
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/utils/AUTHORS
+   M /trunk/utils/ChangeLog
+
+- authors and changelog
+
+------------------------------------------------------------------------
+r6844 | josef | 2005-01-23 14:20:29 +0100 (So, 23 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/docs/NEWS
+   M /trunk/ggz/game_clients/NEWS
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-txt-client/NEWS
+   M /trunk/ggzd/NEWS
+   M /trunk/gnome-client/NEWS
+   M /trunk/grubby/NEWS
+   M /trunk/gtk-client/NEWS
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-games/NEWS
+   M /trunk/libggz/NEWS
+   M /trunk/python/NEWS
+   M /trunk/sdl-games/NEWS
+   M /trunk/utils/NEWS
+
+- news update
+
+------------------------------------------------------------------------
+r6843 | josef | 2005-01-23 14:12:48 +0100 (So, 23 Jan 2005) | 2 lines
+Geänderte Pfade:
+   A /trunk/community/NEWS
+   M /trunk/docs/QuickStart.GGZ
+   M /trunk/docs/README.GGZ
+   M /trunk/ggz/game_clients/QuickStart.GGZ
+   M /trunk/ggz/game_clients/README
+   M /trunk/ggz/game_clients/README.GGZ
+   M /trunk/ggz-client-libs/QuickStart.GGZ
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggz-txt-client/QuickStart.GGZ
+   M /trunk/ggz-txt-client/README.GGZ
+   M /trunk/ggzd/README.GGZ
+   M /trunk/gnome-client/QuickStart.GGZ
+   M /trunk/gnome-client/README
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/grubby/README
+   M /trunk/grubby/README.GGZ
+   M /trunk/gtk-client/QuickStart.GGZ
+   M /trunk/gtk-client/README
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/kde-client/QuickStart.GGZ
+   M /trunk/kde-client/README
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-games/QuickStart.GGZ
+   M /trunk/kde-games/README
+   M /trunk/kde-games/README.GGZ
+   M /trunk/libggz/QuickStart.GGZ
+   M /trunk/libggz/README.GGZ
+   M /trunk/python/QuickStart.GGZ
+   M /trunk/python/README
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/README
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/utils/README
+   M /trunk/utils/README.GGZ
+
+- updated common files
+
+------------------------------------------------------------------------
+r6831 | josef | 2005-01-23 11:35:46 +0100 (So, 23 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/configure.ac
+
+- package version bump (this one was forgotten)
+
+------------------------------------------------------------------------
+r6810 | josef | 2005-01-22 15:28:01 +0100 (Sa, 22 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/lib/sdlnewstuff.py
+
+- use real server instead of localhost test server
+
+------------------------------------------------------------------------
+r6809 | josef | 2005-01-22 15:27:11 +0100 (Sa, 22 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/xadrez-chines/xadrez-chines
+
+- 'f' toggles fullscreen
+
+------------------------------------------------------------------------
+r6793 | josef | 2005-01-21 22:49:00 +0100 (Fr, 21 Jan 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/module_hnefatafl.py
+   M /trunk/python/ggzboard/server_hnefatafl.dsc
+   M /trunk/python/ggzboard/server_hnefatafl.py
+
+- now hnefatafl has records too (but this only works by disabling the move
+  validation)
+
+------------------------------------------------------------------------
+r6791 | josef | 2005-01-21 22:16:20 +0100 (Fr, 21 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzdmod/src/pyggzdmod_init.c
+
+- implement game reporting
+
+------------------------------------------------------------------------
+r6790 | josef | 2005-01-21 22:15:59 +0100 (Fr, 21 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/server_checkers.dsc
+   M /trunk/python/ggzboard/server_checkers.py
+
+- statistics for GGZBoard-Checkers
+
+------------------------------------------------------------------------
+r6789 | josef | 2005-01-21 21:59:31 +0100 (Fr, 21 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/server_checkers.dsc
+   M /trunk/python/ggzboard/server_hnefatafl.dsc
+
+- only 2 player games are allowed (not 1-2)
+
+------------------------------------------------------------------------
+r6788 | josef | 2005-01-21 21:29:17 +0100 (Fr, 21 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard_net.py
+   M /trunk/python/ggzboard/net_checkers.py
+
+- convert integers back to host order after reading them from the network
+
+------------------------------------------------------------------------
+r6787 | josef | 2005-01-21 21:18:40 +0100 (Fr, 21 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+
+- fix server installation for GGZBoard servers
+
+------------------------------------------------------------------------
+r6786 | josef | 2005-01-21 21:10:52 +0100 (Fr, 21 Jan 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/python/ggzboard
+   M /trunk/python/ggzboard/.cvsignore
+   M /trunk/python/ggzboard/DESIGN.ggzboard
+   A /trunk/python/ggzboard/ggzboard
+   D /trunk/python/ggzboard/ggzboard.py
+   D /trunk/python/ggzboard/module_checkers.dsc
+   A /trunk/python/ggzboard/module_checkers.dsc.in
+   D /trunk/python/ggzboard/module_chess.dsc
+   A /trunk/python/ggzboard/module_chess.dsc.in
+   D /trunk/python/ggzboard/module_go.dsc
+   A /trunk/python/ggzboard/module_go.dsc.in
+   D /trunk/python/ggzboard/module_hnefatafl.dsc
+   A /trunk/python/ggzboard/module_hnefatafl.dsc.in
+   D /trunk/python/ggzboard/module_reversi.dsc
+   A /trunk/python/ggzboard/module_reversi.dsc.in
+
+- install module.dsc files with absolute paths
+- rename ggzboard.py to ggzboard (the .py shouldn't be visible)
+- install server files for all games
+
+------------------------------------------------------------------------
+r6779 | josef | 2005-01-21 09:46:56 +0100 (Fr, 21 Jan 2005) | 2 lines
+Geänderte Pfade:
+   A /trunk/python/autogen.sh
+
+- convenience wrapper script
+
+------------------------------------------------------------------------
+r6778 | josef | 2005-01-21 09:46:31 +0100 (Fr, 21 Jan 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/configure.ac
+
+- check for RSVG
+- check for Pygame (but do not abort since this is runtime-only)
+
+------------------------------------------------------------------------
+r6776 | josef | 2005-01-21 00:44:14 +0100 (Fr, 21 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/game_servers/chess/ai.c
+   M /trunk/grubby/games/guru-chess/ai.c
+   M /trunk/python/chess/ai.c
+
+- disable rule exception: force pawns to capture if possible
+
+------------------------------------------------------------------------
+r6772 | josef | 2005-01-20 19:48:05 +0100 (Do, 20 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzcore/src/pyggzcoresimple_init.c
+
+- implement game launch code
+
+------------------------------------------------------------------------
+r6771 | josef | 2005-01-20 19:47:48 +0100 (Do, 20 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/vibora/vibora
+
+- support for launching games
+
+------------------------------------------------------------------------
+r6769 | josef | 2005-01-20 19:09:25 +0100 (Do, 20 Jan 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/vibora/vibora
+
+- more i18n()ification preparation
+- display server state correctly ("offline" was hardcoded)
+
+------------------------------------------------------------------------
+r6766 | josef | 2005-01-20 18:14:46 +0100 (Do, 20 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzdmod
+   M /trunk/python/pyggzdmod/.cvsignore
+   M /trunk/python/pyggzmod
+   M /trunk/python/pyggzmod/.cvsignore
+
+- shut them up!
+
+------------------------------------------------------------------------
+r6730 | josef | 2005-01-18 19:25:53 +0100 (Di, 18 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard.py
+
+- pressing 's' produces a screenshot (useful for fullscreen mode)
+
+------------------------------------------------------------------------
+r6708 | josef | 2005-01-16 17:05:58 +0100 (So, 16 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/README
+
+- mucho new stuff in here
+
+------------------------------------------------------------------------
+r6707 | josef | 2005-01-16 17:01:51 +0100 (So, 16 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+   A /trunk/python/chess
+   A /trunk/python/chess/Makefile
+   A /trunk/python/chess/ai.c
+   A /trunk/python/chess/ai.h
+   M /trunk/python/pyggzchess/setup.py
+
+- fix ggzchess wrapper: include local copy of static library
+
+------------------------------------------------------------------------
+r6706 | josef | 2005-01-16 16:50:49 +0100 (So, 16 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard.py
+   M /trunk/python/ggzboard/module_checkers.py
+   M /trunk/python/ggzboard/module_chess.py
+   M /trunk/python/ggzboard/module_go.py
+   M /trunk/python/ggzboard/module_hnefatafl.py
+   M /trunk/python/ggzboard/module_reversi.py
+
+- fix module and data paths in ggzboard
+
+------------------------------------------------------------------------
+r6705 | josef | 2005-01-16 16:12:48 +0100 (So, 16 Jan 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/INSTALL
+   M /trunk/python/Makefile.in
+
+- do not forget to install playertable class
+- fix remarks on PYTHONPATH
+
+------------------------------------------------------------------------
+r6704 | josef | 2005-01-16 15:56:50 +0100 (So, 16 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python
+   M /trunk/python/.cvsignore
+
+- ignore generated makefile
+
+------------------------------------------------------------------------
+r6703 | josef | 2005-01-16 15:56:27 +0100 (So, 16 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+
+- install ggzboard (still without the ability to find itself)
+
+------------------------------------------------------------------------
+r6702 | josef | 2005-01-16 15:44:03 +0100 (So, 16 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzchess
+   A /trunk/python/pyggzchess/.cvsignore
+   M /trunk/python/pyrsvgsdl
+   A /trunk/python/pyrsvgsdl/.cvsignore
+
+- ignore python-generated build directories
+
+------------------------------------------------------------------------
+r6701 | josef | 2005-01-16 15:40:57 +0100 (So, 16 Jan 2005) | 2 lines
+Geänderte Pfade:
+   D /trunk/python/Makefile
+   A /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+
+- improved usage of autoconf in building process
+
+------------------------------------------------------------------------
+r6698 | josef | 2005-01-16 13:01:20 +0100 (So, 16 Jan 2005) | 8 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard.py
+   M /trunk/python/ggzboard/ggzboard_net.py
+   M /trunk/python/ggzboard/module_go.py
+   M /trunk/python/ggzboard/net_go.py
+
+- implement capturing algorithm for go
+- ability for all ggzboard network modules to indicate they're "thinking"
+
+The problem with GMP is that it is basically a client-to-client protocol,
+thus all clients must know the game rules.
+I think with GTP there would be some advantages (querying board, last moves,
+scores) but it is a lot more complex by design.
+
+------------------------------------------------------------------------
+r6690 | josef | 2005-01-16 02:25:26 +0100 (So, 16 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/net_go.py
+
+- make go game work for simple moves (we're white, AI is black)
+
+------------------------------------------------------------------------
+r6689 | josef | 2005-01-16 00:58:58 +0100 (So, 16 Jan 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/net_go.py
+
+- fix notion of sequence bits
+- common reply method for moves, answers, acknowledgements
+- deal with 3 queries: board size, colour and handicap
+
+------------------------------------------------------------------------
+r6686 | josef | 2005-01-15 21:11:56 +0100 (Sa, 15 Jan 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/net_go.py
+
+- basic go protocol handling (GMP), taken from goserver
+- ability to send moves, create checksum, re-shuffle bits etc.
+
+------------------------------------------------------------------------
+r6684 | josef | 2005-01-15 19:02:19 +0100 (Sa, 15 Jan 2005) | 6 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard.py
+   A /trunk/python/ggzboard/madn
+   A /trunk/python/ggzboard/madn/poeppel-black.svg
+   A /trunk/python/ggzboard/madn/poeppel-blue.svg
+   A /trunk/python/ggzboard/madn/poeppel-green.svg
+   A /trunk/python/ggzboard/madn/poeppel-red.svg
+   A /trunk/python/ggzboard/madn/poeppel-yellow.svg
+   M /trunk/python/ggzboard/module_checkers.py
+   M /trunk/python/ggzboard/module_chess.py
+   M /trunk/python/ggzboard/module_go.py
+   M /trunk/python/ggzboard/module_hnefatafl.py
+   A /trunk/python/ggzboard/module_madn.py
+   M /trunk/python/ggzboard/module_reversi.py
+   M /trunk/python/ggzboard/net_go.py
+
+- new ggzboard game stuf: M-A-D-N (ludo)
+- this will not be installed for the next release, but introduces:
+  * coloured tokens
+  * leaving out the drawing of fields that can never be entered
+  * dice
+
+------------------------------------------------------------------------
+r6563 | josef | 2004-12-29 21:46:15 +0100 (Mi, 29 Dez 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/module_chess.py
+   M /trunk/python/ggzboard/module_go.py
+   A /trunk/python/ggzboard/net_go.py
+
+- some chess and go stuff fixes hacked on during 21C3
+
+------------------------------------------------------------------------
+r6558 | josef | 2004-12-23 00:59:03 +0100 (Do, 23 Dez 2004) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/net_checkers.py
+   M /trunk/python/ggzboard/net_hnefatafl.py
+   M /trunk/python/ggzboard/server_checkers.py
+   M /trunk/python/ggzboard/server_hnefatafl.py
+
+- basic implementation for checkers networking (includes new protocol,
+  similar to hnefatafl, both based on reversi)
+- end-of-game fixes
+
+------------------------------------------------------------------------
+r6554 | josef | 2004-12-22 11:02:53 +0100 (Mi, 22 Dez 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/net_hnefatafl.py
+   M /trunk/python/ggzboard/server_hnefatafl.py
+
+- nearly complete implementation of Hnefatafl game
+
+------------------------------------------------------------------------
+r6550 | josef | 2004-12-22 02:02:41 +0100 (Mi, 22 Dez 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard_net.py
+
+- networking fix: send int as one value of 4 bytes instead of 4 values of 1
+
+------------------------------------------------------------------------
+r6549 | josef | 2004-12-21 21:31:56 +0100 (Di, 21 Dez 2004) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard_net.py
+   M /trunk/python/ggzboard/net_hnefatafl.py
+   M /trunk/python/ggzboard/server_hnefatafl.py
+
+- implementation of hnefatafl network handshake (no real gameplay yet)
+
+There seems to be a nasty network bug, giving us non-deterministic
+network failures and wrong opcodes :(
+
+------------------------------------------------------------------------
+r6548 | josef | 2004-12-21 21:30:58 +0100 (Di, 21 Dez 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzdmod/src/pyggzdmod_init.c
+
+- new python methods to access seat information
+
+------------------------------------------------------------------------
+r6537 | josef | 2004-12-20 20:39:28 +0100 (Mo, 20 Dez 2004) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/module_hnefatafl.py
+
+- complete implementation of hnefatafl rules
+- it's only the AI which doesn't know about it yet :)
+
+------------------------------------------------------------------------
+r6535 | josef | 2004-12-20 02:14:37 +0100 (Mo, 20 Dez 2004) | 6 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard.py
+   M /trunk/python/ggzboard/module_checkers.py
+   M /trunk/python/ggzboard/module_chess.py
+   M /trunk/python/ggzboard/module_go.py
+   M /trunk/python/ggzboard/module_hnefatafl.py
+   M /trunk/python/ggzboard/module_reversi.py
+
+- support for board tile style (a RGB triplet containing the difference)
+  * is used for hnefatafl's throne (where king starts) and corners (exit)
+  * will be used for go's markers (and could be used for chinese chess)
+- further implementation of hnefatafl move verification and endgame check
+  * only missing parts: crossing the throne, and playing on the edge
+
+------------------------------------------------------------------------
+r6532 | josef | 2004-12-19 22:52:26 +0100 (So, 19 Dez 2004) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard.py
+   M /trunk/python/ggzboard/net_checkers.py
+   M /trunk/python/ggzboard/net_chess.py
+   M /trunk/python/ggzboard/net_hnefatafl.py
+   M /trunk/python/ggzboard/net_reversi.py
+
+- implementation of network chess games (save gameover and clock options)
+- display of player names next to the board (if they exist)
+
+------------------------------------------------------------------------
+r6531 | josef | 2004-12-19 00:16:52 +0100 (So, 19 Dez 2004) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard.py
+   M /trunk/python/ggzboard/net_checkers.py
+   M /trunk/python/ggzboard/net_chess.py
+   M /trunk/python/ggzboard/net_hnefatafl.py
+   M /trunk/python/ggzboard/net_reversi.py
+
+- make player menu available via 'p' key
+- use ggz_common constants in the games
+
+------------------------------------------------------------------------
+r6530 | josef | 2004-12-19 00:14:36 +0100 (So, 19 Dez 2004) | 2 lines
+Geänderte Pfade:
+   A /trunk/python/lib/playertable.py
+
+- new common python class: implementation of player table view
+
+------------------------------------------------------------------------
+r6529 | josef | 2004-12-19 00:13:34 +0100 (So, 19 Dez 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzmod/src/pyggzmod_init.c
+
+- include ggz_common constants (such as GGZ_SEAT_OPEN) like ggzdmod does
+
+------------------------------------------------------------------------
+r6528 | josef | 2004-12-18 23:49:51 +0100 (Sa, 18 Dez 2004) | 2 lines
+Geänderte Pfade:
+   A /trunk/python/ggzboard/net_chess.py
+
+- skeleton file for chess network support
+
+------------------------------------------------------------------------
+r6504 | josef | 2004-12-16 02:28:02 +0100 (Do, 16 Dez 2004) | 4 lines
+Geänderte Pfade:
+   A /trunk/python/ggzboard/ggzboard_net.py
+   A /trunk/python/ggzboard/net_checkers.py
+   A /trunk/python/ggzboard/net_hnefatafl.py
+   M /trunk/python/ggzboard/net_reversi.py
+   A /trunk/python/ggzboard/server_checkers.dsc
+   A /trunk/python/ggzboard/server_checkers.py
+   A /trunk/python/ggzboard/server_checkers.room
+   A /trunk/python/ggzboard/server_hnefatafl.dsc
+   A /trunk/python/ggzboard/server_hnefatafl.py
+   A /trunk/python/ggzboard/server_hnefatafl.room
+
+- use shared network base class ggzboard_net
+- start of implementation of Checkers and Hnefatafl game servers
+  (the other games (chess, reversi, go) use existing servers)
+
+------------------------------------------------------------------------
+r6467 | josef | 2004-12-14 18:10:10 +0100 (Di, 14 Dez 2004) | 2 lines
+Geänderte Pfade:
+   A /trunk/python/po
+   A /trunk/python/po/.cvsignore
+   A /trunk/python/po/Makefile
+   A /trunk/python/po/de.po
+   A /trunk/python/po/ggzpython.pot
+
+- translation infrastructure for ggz-python
+
+------------------------------------------------------------------------
+r6466 | josef | 2004-12-14 18:09:23 +0100 (Di, 14 Dez 2004) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/lib/sdlnewstuff.py
+   A /trunk/python/lib/test.py
+
+- test program for sdlnewstuff
+- use new 'ggzpython' message catalog
+
+------------------------------------------------------------------------
+r6463 | josef | 2004-12-14 12:12:11 +0100 (Di, 14 Dez 2004) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/vibora/vibora
+
+- fix first-login issue
+- prepare translations
+
+------------------------------------------------------------------------
+r6462 | josef | 2004-12-14 11:51:58 +0100 (Di, 14 Dez 2004) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/DESIGN.ggzboard
+   M /trunk/python/ggzboard/ggzboard.py
+   M /trunk/python/ggzboard/module_checkers.py
+   M /trunk/python/ggzboard/module_chess.py
+   M /trunk/python/ggzboard/module_go.py
+   M /trunk/python/ggzboard/module_hnefatafl.py
+
+- docs update
+- unbreak other games
+- SDLNewStuff support for all ggzboard games (press 'u')
+
+------------------------------------------------------------------------
+r6461 | josef | 2004-12-14 11:34:04 +0100 (Di, 14 Dez 2004) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard.py
+   M /trunk/python/ggzboard/module_reversi.py
+   M /trunk/python/ggzboard/net_reversi.py
+
+- full implementation of reversi game
+
+Now only the ggzboard client must use the provided information.
+Also, it breaks the other modules.
+
+------------------------------------------------------------------------
+r6460 | josef | 2004-12-14 10:41:42 +0100 (Di, 14 Dez 2004) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard.py
+   M /trunk/python/ggzboard/net_reversi.py
+
+- handle GGZ initialization and network errors (darkening the screen)
+- implement first part of reversi networking
+
+Unfortunately, after sending the move no response appears.
+
+------------------------------------------------------------------------
+r6441 | josef | 2004-12-05 23:12:44 +0100 (So, 05 Dez 2004) | 9 lines
+Geänderte Pfade:
+   A /trunk/python/ggzboard/net_reversi.py
+
+- pseudo network handling for Reversi
+
+This is the code as used in Escape-SDL, Xadrez-Chines etc...
+but in a more object oriented manner, moving the common network handling to
+two base classes (NetworkBase, NetworkInfo) and only leaving the game-specific
+details to each game.
+These details must then be abstracted for GGZBoard to the lowest common
+denominator: player names, state, sending and receiving moves...
+
+------------------------------------------------------------------------
+r6439 | josef | 2004-12-05 22:16:20 +0100 (So, 05 Dez 2004) | 6 lines
+Geänderte Pfade:
+   A /trunk/python/ggzboard/module_checkers.dsc
+   A /trunk/python/ggzboard/module_chess.dsc
+   A /trunk/python/ggzboard/module_go.dsc
+   A /trunk/python/ggzboard/module_hnefatafl.dsc
+   A /trunk/python/ggzboard/module_reversi.dsc
+
+- module description files for GGZ mode
+
+To test them, the core client must be launched from this directory until
+installations rules are implemented.
+Of course, networking doesn't work yet, but the game will start.
+
+------------------------------------------------------------------------
+r6438 | josef | 2004-12-05 22:06:07 +0100 (So, 05 Dez 2004) | 3 lines
+Geänderte Pfade:
+   A /trunk/python/ggzboard/DESIGN.ggzboard
+
+- some documentation on how ggzboard is supposed to work
+- the obviously missing part is networking
+
+------------------------------------------------------------------------
+r6437 | josef | 2004-12-05 21:31:20 +0100 (So, 05 Dez 2004) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard.py
+   A /trunk/python/ggzboard/go
+   A /trunk/python/ggzboard/go/piece-black.svg
+   A /trunk/python/ggzboard/go/piece-white.svg
+   M /trunk/python/ggzboard/module_checkers.py
+   M /trunk/python/ggzboard/module_chess.py
+   A /trunk/python/ggzboard/module_go.py
+   M /trunk/python/ggzboard/module_hnefatafl.py
+   M /trunk/python/ggzboard/module_reversi.py
+
+- support for moving pieces on intersections
+- add go game (which needs intersections), without AI
+
+------------------------------------------------------------------------
+r6435 | josef | 2004-12-05 21:00:42 +0100 (So, 05 Dez 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard
+   A /trunk/python/ggzboard/.cvsignore
+
+- ignore compiled python modules
+
+------------------------------------------------------------------------
+r6434 | josef | 2004-12-05 21:00:09 +0100 (So, 05 Dez 2004) | 7 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard.py
+   M /trunk/python/ggzboard/module_checkers.py
+   M /trunk/python/ggzboard/module_chess.py
+   M /trunk/python/ggzboard/module_hnefatafl.py
+   M /trunk/python/ggzboard/module_reversi.py
+   M /trunk/python/ggzboard/sunset.jpg
+
+- implement chess game (the existing file was only a checkers copy)
+- replace sunset background with a free one
+- ability to determine game board size automatically (needed for reversi)
+- fullscreen/window mode switch with 'f' key, including scaled background image
+- game over indicated by darkening the screen
+- help output (--help)
+
+------------------------------------------------------------------------
+r6433 | josef | 2004-11-30 23:03:06 +0100 (Di, 30 Nov 2004) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard.py
+   M /trunk/python/ggzboard/module_checkers.py
+   M /trunk/python/ggzboard/module_chess.py
+   M /trunk/python/ggzboard/module_hnefatafl.py
+   M /trunk/python/ggzboard/module_reversi.py
+
+- dynamic loading of games based on command line switch
+- turn main engine into an object too
+- graphical game selection screen if none has been selected previously
+
+------------------------------------------------------------------------
+r6432 | josef | 2004-11-30 21:05:13 +0100 (Di, 30 Nov 2004) | 2 lines
+Geänderte Pfade:
+   D /trunk/python/chess
+
+- remove chess client because it's now moved to ggzboard
+
+------------------------------------------------------------------------
+r6423 | josef | 2004-11-22 23:20:49 +0100 (Mo, 22 Nov 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard.py
+   A /trunk/python/ggzboard/hnefatafl
+   A /trunk/python/ggzboard/hnefatafl/king-white.svg
+   A /trunk/python/ggzboard/hnefatafl/piece-black.svg
+   A /trunk/python/ggzboard/hnefatafl/piece-white.svg
+   A /trunk/python/ggzboard/module_hnefatafl.py
+
+- new game component: Hnefatafl ("first on the table"), an asymmetric board game
+
+------------------------------------------------------------------------
+r6422 | josef | 2004-11-22 15:26:46 +0100 (Mo, 22 Nov 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/module_reversi.py
+
+- Reversi is now implemented for single-player mode
+
+------------------------------------------------------------------------
+r6421 | josef | 2004-11-22 14:35:28 +0100 (Mo, 22 Nov 2004) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard.py
+   A /trunk/python/ggzboard/module_checkers.py
+   A /trunk/python/ggzboard/module_chess.py
+   A /trunk/python/ggzboard/module_reversi.py
+   A /trunk/python/ggzboard/reversi
+   A /trunk/python/ggzboard/reversi/piece-black.svg
+   A /trunk/python/ggzboard/reversi/piece-white.svg
+
+- split out game module
+- preparation for Reversi module
+
+------------------------------------------------------------------------
+r6420 | josef | 2004-11-22 00:38:14 +0100 (Mo, 22 Nov 2004) | 3 lines
+Geänderte Pfade:
+   A /trunk/python/ggzboard
+   A /trunk/python/ggzboard/checkers
+   A /trunk/python/ggzboard/checkers/king-black.svg
+   A /trunk/python/ggzboard/checkers/king-white.svg
+   A /trunk/python/ggzboard/checkers/piece-black.svg
+   A /trunk/python/ggzboard/checkers/piece-white.svg
+   A /trunk/python/ggzboard/chess
+   A /trunk/python/ggzboard/chess/bishop_b.svg
+   A /trunk/python/ggzboard/chess/bishop_w.svg
+   A /trunk/python/ggzboard/chess/king_b.svg
+   A /trunk/python/ggzboard/chess/king_w.svg
+   A /trunk/python/ggzboard/chess/knight_b.svg
+   A /trunk/python/ggzboard/chess/knight_w.svg
+   A /trunk/python/ggzboard/chess/pawn_b.svg
+   A /trunk/python/ggzboard/chess/pawn_w.svg
+   A /trunk/python/ggzboard/chess/queen_b.svg
+   A /trunk/python/ggzboard/chess/queen_w.svg
+   A /trunk/python/ggzboard/chess/rook_b.svg
+   A /trunk/python/ggzboard/chess/rook_w.svg
+   A /trunk/python/ggzboard/ggzboard.py
+   A /trunk/python/ggzboard/sunset.jpg
+
+- GGZBoard, the new game container for all sorts of board games
+- right now, comes with checkers hardcoded, but will support chess and reversi too
+
+------------------------------------------------------------------------
+r6419 | josef | 2004-11-20 00:23:50 +0100 (Sa, 20 Nov 2004) | 2 lines
+Geänderte Pfade:
+   A /trunk/python/pyrsvgsdl
+   A /trunk/python/pyrsvgsdl/setup.py
+   A /trunk/python/pyrsvgsdl/src
+   A /trunk/python/pyrsvgsdl/src/pyrsvgsdl.c
+
+- python wrapper for librsvg
+
+------------------------------------------------------------------------
+r6311 | josef | 2004-11-09 14:58:41 +0100 (Di, 09 Nov 2004) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/chess/chess.py
+
+- initialize with 2 half moves instead of 1 (to make AI less aggressive)
+- if checkmate, disable further gameplay
+
+------------------------------------------------------------------------
+r6310 | josef | 2004-11-09 14:57:51 +0100 (Di, 09 Nov 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzchess/src/pyggzchess.c
+
+- wrap the checkmate() function
+
+------------------------------------------------------------------------
+r6308 | josef | 2004-11-09 14:02:15 +0100 (Di, 09 Nov 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/chess/chess.py
+
+- left side rochade support (press shift+R)
+
+------------------------------------------------------------------------
+r6307 | josef | 2004-11-09 14:01:52 +0100 (Di, 09 Nov 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzchess/src/pyggzchess.c
+
+- left side rochade support
+
+------------------------------------------------------------------------
+r6252 | josef | 2004-11-04 17:44:19 +0100 (Do, 04 Nov 2004) | 2 lines
+Geänderte Pfade:
+   D /trunk/python/xadrez-chines/bishop.png
+   D /trunk/python/xadrez-chines/bodyguard.png
+   D /trunk/python/xadrez-chines/cannon.png
+   D /trunk/python/xadrez-chines/king.png
+   D /trunk/python/xadrez-chines/knight.png
+   D /trunk/python/xadrez-chines/pawn.png
+   D /trunk/python/xadrez-chines/rock.png
+   A /trunk/python/xadrez-chines/themes
+   A /trunk/python/xadrez-chines/themes/dark
+   A /trunk/python/xadrez-chines/themes/dark/bishop.png
+   A /trunk/python/xadrez-chines/themes/dark/bodyguard.png
+   A /trunk/python/xadrez-chines/themes/dark/cannon.png
+   A /trunk/python/xadrez-chines/themes/dark/king.png
+   A /trunk/python/xadrez-chines/themes/dark/knight.png
+   A /trunk/python/xadrez-chines/themes/dark/pawn.png
+   A /trunk/python/xadrez-chines/themes/dark/rock.png
+   A /trunk/python/xadrez-chines/themes/orig
+   A /trunk/python/xadrez-chines/themes/orig/bishop.png
+   A /trunk/python/xadrez-chines/themes/orig/bodyguard.png
+   A /trunk/python/xadrez-chines/themes/orig/cannon.png
+   A /trunk/python/xadrez-chines/themes/orig/king.png
+   A /trunk/python/xadrez-chines/themes/orig/knight.png
+   A /trunk/python/xadrez-chines/themes/orig/pawn.png
+   A /trunk/python/xadrez-chines/themes/orig/rock.png
+   M /trunk/python/xadrez-chines/xadrez-chines
+
+- theme support
+
+------------------------------------------------------------------------
+r6235 | josef | 2004-11-01 15:30:24 +0100 (Mo, 01 Nov 2004) | 2 lines
+Geänderte Pfade:
+   A /trunk/python/chess
+   A /trunk/python/chess/chess.py
+   A /trunk/python/chess/img
+   A /trunk/python/chess/img/bishop_b.xpm
+   A /trunk/python/chess/img/bishop_w.xpm
+   A /trunk/python/chess/img/king_b.xpm
+   A /trunk/python/chess/img/king_w.xpm
+   A /trunk/python/chess/img/knight_b.xpm
+   A /trunk/python/chess/img/knight_w.xpm
+   A /trunk/python/chess/img/pawn_b.xpm
+   A /trunk/python/chess/img/pawn_w.xpm
+   A /trunk/python/chess/img/queen_b.xpm
+   A /trunk/python/chess/img/queen_w.xpm
+   A /trunk/python/chess/img/rook_b.xpm
+   A /trunk/python/chess/img/rook_w.xpm
+
+- python chess game (only single player for now)
+
+------------------------------------------------------------------------
+r6234 | josef | 2004-11-01 15:29:25 +0100 (Mo, 01 Nov 2004) | 2 lines
+Geänderte Pfade:
+   A /trunk/python/pyggzchess
+   A /trunk/python/pyggzchess/setup.py
+   A /trunk/python/pyggzchess/src
+   A /trunk/python/pyggzchess/src/pyggzchess.c
+   A /trunk/python/pyggzchess/src/test.py
+
+- python wrapper for the chess library
+
+------------------------------------------------------------------------
+r6200 | josef | 2004-10-17 14:36:44 +0200 (So, 17 Okt 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/xadrez-chines/xadrez-chines
+
+- rough integration of sdlnewstuff (well, 3 lines... press 'n')
+
+------------------------------------------------------------------------
+r6199 | josef | 2004-10-17 14:24:49 +0200 (So, 17 Okt 2004) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile
+
+- install sdlnewstuff
+- version argument for 'make dist' is now a variable
+
+------------------------------------------------------------------------
+r6197 | josef | 2004-10-17 14:16:09 +0200 (So, 17 Okt 2004) | 6 lines
+Geänderte Pfade:
+   A /trunk/python/lib
+   A /trunk/python/lib/sdlnewstuff.py
+
+- move sdl newstuff class into the python module
+- support for mouse handling
+- support for game-based configuration files (colors, urls, behaviour)
+- use .sdlnewstuff/* instead of .ggz/* for install status and configs
+- improved fault tolerance
+
+------------------------------------------------------------------------
+r6160 | josef | 2004-07-31 00:51:00 +0200 (Sa, 31 Jul 2004) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile
+
+- create a zipped tar archive instead of an unzipped one carrying the name .tar.gz
+
+Detected by oojah.
+
+------------------------------------------------------------------------
+r6153 | josef | 2004-07-18 02:37:08 +0200 (So, 18 Jul 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz/game_clients/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggz-txt-client/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- changelog update
+
+------------------------------------------------------------------------
+r6140 | josef | 2004-07-17 16:17:53 +0200 (Sa, 17 Jul 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile
+
+- a crude 'make dist' target
+
+------------------------------------------------------------------------
+r6134 | josef | 2004-07-17 04:32:12 +0200 (Sa, 17 Jul 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/xadrez-chines/xadrez-chines
+   M /trunk/python/xadrez-chines/xadrez-chines-server.dsc.in
+
+- use relative data path
+
+------------------------------------------------------------------------
+r6103 | josef | 2004-07-13 19:29:53 +0200 (Di, 13 Jul 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/vibora/vibora
+
+- use python's unicode() object to display the name correctly
+
+------------------------------------------------------------------------
+r6093 | josef | 2004-07-13 16:41:41 +0200 (Di, 13 Jul 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzcore/src/pyggzcoresimple_init.c
+
+- use select() to determine whether game data is available
+
+------------------------------------------------------------------------
+r6092 | josef | 2004-07-13 16:41:16 +0200 (Di, 13 Jul 2004) | 6 lines
+Geänderte Pfade:
+   M /trunk/python/vibora/vibora
+
+- restore fullscreen mode
+- mark bots as.. well, bots :)
+
+Some window managers like icewm don't handle fullscreen apps launching
+windowed games very vell. But this is a minor issue for now.
+
+------------------------------------------------------------------------
+r6091 | josef | 2004-07-12 23:45:13 +0200 (Mo, 12 Jul 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzcore/src/pyggzcoresimple_init.c
+
+- trying to fix game launching (without succeeding)
+
+------------------------------------------------------------------------
+r6088 | josef | 2004-07-12 16:57:16 +0200 (Mo, 12 Jul 2004) | 6 lines
+Geänderte Pfade:
+   M /trunk/python/vibora/vibora
+
+- lots of fixes and some enhancements
+
+Chatting and viewing tables and players does now work.
+Playing is implemented, but still broken.
+Username/password is read from vibora.rc.
+
+------------------------------------------------------------------------
+r6087 | josef | 2004-07-12 16:56:09 +0200 (Mo, 12 Jul 2004) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzcore/src/pyggzcoresimple_init.c
+
+- support for joining tables (does not work yet)
+- more automatics functionality: table, player and gametype listings
+
+------------------------------------------------------------------------
+r6086 | josef | 2004-07-11 19:20:48 +0200 (So, 11 Jul 2004) | 3 lines
+Geänderte Pfade:
+   A /trunk/python/AUTHORS
+   A /trunk/python/INSTALL
+   A /trunk/python/QuickStart.GGZ
+
+- more common files, which so far were missing from ggz-python
+- custom installation instructions
+
+------------------------------------------------------------------------
+r6085 | josef | 2004-07-11 19:19:49 +0200 (So, 11 Jul 2004) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile
+   M /trunk/python/NEWS
+   M /trunk/python/README.GGZ
+   M /trunk/python/configure.ac
+   M /trunk/python/pyggzcore/setup.py.in
+   D /trunk/python/pyggzdmod/setup.py
+   A /trunk/python/pyggzdmod/setup.py.in
+   D /trunk/python/pyggzmod/setup.py
+   A /trunk/python/pyggzmod/setup.py.in
+
+- fix installation into a prefix
+- preliminary common files updates
+
+------------------------------------------------------------------------
+r6075 | josef | 2004-07-10 22:01:43 +0200 (Sa, 10 Jul 2004) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile
+   M /trunk/python/README
+   M /trunk/python/configure.ac
+   M /trunk/python/pyggzcore
+   M /trunk/python/pyggzcore/.cvsignore
+   D /trunk/python/pyggzcore/README.pyggzcore
+   A /trunk/python/pyggzcore/README.pyggzcoresimple
+   M /trunk/python/pyggzcore/doc/doc.txt
+   D /trunk/python/pyggzcore/setup.py
+   A /trunk/python/pyggzcore/setup.py.in
+   D /trunk/python/pyggzcore/src/pyggzcore_init.c
+   A /trunk/python/pyggzcore/src/pyggzcoresimple_init.c
+   M /trunk/python/pyggzcore/src/test.py
+   M /trunk/python/vibora/vibora
+
+- rename pyggzcore to pyggzcoresimple to allow a later 1:1 wrapper carry
+  the name pyggzcore
+- support for installation in a different prefix
+  (which would require the user to set PYTHONPATH accordingly)
+
+------------------------------------------------------------------------
+r6057 | josef | 2004-06-26 17:06:58 +0200 (Sa, 26 Jun 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/xadrez-chines
+   M /trunk/python/xadrez-chines/.cvsignore
+
+- more files to be ignored
+
+------------------------------------------------------------------------
+r6056 | josef | 2004-06-26 17:06:24 +0200 (Sa, 26 Jun 2004) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/xadrez-chines/xadrez-chines
+   M /trunk/python/xadrez-chines/xadrez-chines-server
+   M /trunk/python/xadrez-chines/xadrezlib.py
+
+- fix 'move not ok' to 'move invalid' in order to work with the client
+- network transmission fixes (little/big endian issue)
+
+------------------------------------------------------------------------
+r6055 | josef | 2004-06-26 17:05:06 +0200 (Sa, 26 Jun 2004) | 5 lines
+Geänderte Pfade:
+   A /trunk/python/vibora/background.png
+   M /trunk/python/vibora/vibora
+
+- prerendered background image (if not installed, background is still rendered
+  in real time)
+- implementation of real room changes
+- parameter <hostname> accepted (e.g. localhost), while default is live.g.o, while default is live.g.o
+
+------------------------------------------------------------------------
+r6052 | josef | 2004-06-25 15:30:25 +0200 (Fr, 25 Jun 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/go/goserver
+
+- passive analyzer for the Go Modem Protocol
+
+------------------------------------------------------------------------
+r6044 | josef | 2004-06-21 16:10:14 +0200 (Mo, 21 Jun 2004) | 2 lines
+Geänderte Pfade:
+   A /trunk/python/go
+   A /trunk/python/go/.cvsignore
+   A /trunk/python/go/Makefile
+   A /trunk/python/go/goclient
+   A /trunk/python/go/goclient.helper
+   A /trunk/python/go/goserver
+   A /trunk/python/go/goserver.dsc.in
+   A /trunk/python/go/goserver.room
+   A /trunk/python/go/module.dsc.in
+
+- new external game support: GNU Go (server), CGoBan (client)
+
+------------------------------------------------------------------------
+r6034 | josef | 2004-06-14 22:51:26 +0200 (Mo, 14 Jun 2004) | 8 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzdmod/src/pyggzdmod_init.c
+
+- do not pass GGZSeat* object as pointer, but rather all its components
+  individually
+
+Unfortunately, python doesn't allow arbitrary pointers to be wrapped as
+objects.
+In the PLAYER_DATA hook, we still get the player number though and not the
+GGZSeat*, this seems to be an inconsistency.
+
+------------------------------------------------------------------------
+r6033 | josef | 2004-06-14 22:49:39 +0200 (Mo, 14 Jun 2004) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/xadrez-chines/xadrez-chines
+   M /trunk/python/xadrez-chines/xadrez-chines-server
+   M /trunk/python/xadrez-chines/xadrezlib.py
+
+- completion of single player mode
+- ai improvement: detect blocked moves (such as knights or cannons)
+- implemented basic client-server interaction
+
+------------------------------------------------------------------------
+r6029 | josef | 2004-06-13 19:18:33 +0200 (So, 13 Jun 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/configure.ac
+
+- create xadrez-chines-server config file
+
+------------------------------------------------------------------------
+r6028 | josef | 2004-06-13 19:18:05 +0200 (So, 13 Jun 2004) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/xadrez-chines/Makefile
+   M /trunk/python/xadrez-chines/xadrez-chines
+   M /trunk/python/xadrez-chines/xadrez-chines-server
+   D /trunk/python/xadrez-chines/xadrez-chines-server.dsc
+   A /trunk/python/xadrez-chines/xadrez-chines-server.dsc.in
+   M /trunk/python/xadrez-chines/xadrez-chines-server.room
+   M /trunk/python/xadrez-chines/xadrez-protocol.txt
+
+- implement basic GGZ handling
+- installation into /usr/local supported
+
+Unfortunately pyggzdmod is not up-to-date and will have to be improved
+
+------------------------------------------------------------------------
+r6012 | josef | 2004-06-11 19:16:35 +0200 (Fr, 11 Jun 2004) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/xadrez-chines/xadrez-chines
+   A /trunk/python/xadrez-chines/xadrez-chines-server
+   A /trunk/python/xadrez-chines/xadrez-chines-server.dsc
+   A /trunk/python/xadrez-chines/xadrez-chines-server.room
+   A /trunk/python/xadrez-chines/xadrez-protocol.txt
+   A /trunk/python/xadrez-chines/xadrezlib.py
+
+- prepare server support for chinese chess
+- includes protocol handling using normal text messages and regexps
+- to not require yet another dependency, the server will stay in ggz-python
+  for the time being, and share a common library script with the client
+
+------------------------------------------------------------------------
+r6009 | josef | 2004-05-27 23:28:39 +0200 (Do, 27 Mai 2004) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzcore/src/pyggzcore_init.c
+   M /trunk/python/pyggzcore/src/test.py
+
+- support for player listings
+- (currently empty) start game function
+
+------------------------------------------------------------------------
+r5995 | josef | 2004-05-10 16:06:33 +0200 (Mo, 10 Mai 2004) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile
+   A /trunk/python/vibora
+   A /trunk/python/vibora/logo.png
+   A /trunk/python/vibora/vibora
+
+- new (simple) core client: vibora, using pyggzcore
+
+This can only be used for chatting atm
+
+------------------------------------------------------------------------
+r5994 | josef | 2004-05-10 16:05:02 +0200 (Mo, 10 Mai 2004) | 2 lines
+Geänderte Pfade:
+   A /trunk/python/pyggzcore/doc
+   A /trunk/python/pyggzcore/doc/doc.txt
+
+- pyggzcore docs
+
+------------------------------------------------------------------------
+r5993 | josef | 2004-05-10 16:00:46 +0200 (Mo, 10 Mai 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzcore/src/pyggzcore_init.c
+   M /trunk/python/pyggzcore/src/test.py
+
+- implementation of room object and simple chat
+
+------------------------------------------------------------------------
+r5990 | josef | 2004-04-26 16:08:51 +0200 (Mo, 26 Apr 2004) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzcore/src/pyggzcore_init.c
+   M /trunk/python/pyggzcore/src/test.py
+
+- completion of the server wrapper
+- start of the room wrapper
+
+------------------------------------------------------------------------
+r5987 | josef | 2004-04-24 19:42:01 +0200 (Sa, 24 Apr 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/python/configure.ac
+
+- create Chinese Chess module.dsc file
+
+------------------------------------------------------------------------
+r5985 | josef | 2004-04-24 19:37:27 +0200 (Sa, 24 Apr 2004) | 4 lines
+Geänderte Pfade:
+   A /trunk/python/xadrez-chines
+   A /trunk/python/xadrez-chines/.cvsignore
+   A /trunk/python/xadrez-chines/Makefile
+   A /trunk/python/xadrez-chines/bishop.png
+   A /trunk/python/xadrez-chines/bodyguard.png
+   A /trunk/python/xadrez-chines/cannon.png
+   A /trunk/python/xadrez-chines/king.png
+   A /trunk/python/xadrez-chines/knight.png
+   A /trunk/python/xadrez-chines/module.dsc.in
+   A /trunk/python/xadrez-chines/pawn.png
+   A /trunk/python/xadrez-chines/rock.png
+   A /trunk/python/xadrez-chines/xadrez-chines
+
+- here comes the Chinese Chess game
+
+No multiplayer mode yet.
+
+------------------------------------------------------------------------
+r5984 | josef | 2004-04-24 19:36:20 +0200 (Sa, 24 Apr 2004) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzcore/src/pyggzcore_init.c
+   M /trunk/python/pyggzcore/src/test.py
+
+- completion of all GGZServer functionality
+
+This uses some undocumented python wrapper functionality, I hope it will work
+for the next versions too.
+
+------------------------------------------------------------------------
+r5977 | josef | 2004-03-29 18:44:50 +0200 (Mo, 29 Mär 2004) | 6 lines
+Geänderte Pfade:
+   M /trunk/python/pyggzcore/src/pyggzcore_init.c
+   M /trunk/python/pyggzcore/src/test.py
+
+- further pyggzcore implementation
+
+In theory it should now be possible to execute the test program.
+But some python internals prevent that. The object initialization for
+the GGZServer* wrapper might have to be changed.
+
+------------------------------------------------------------------------
+r5976 | josef | 2004-03-22 18:23:34 +0100 (Mo, 22 Mär 2004) | 9 lines
+Geänderte Pfade:
+   A /trunk/python/pyggzcore
+   A /trunk/python/pyggzcore/.cvsignore
+   A /trunk/python/pyggzcore/README.pyggzcore
+   A /trunk/python/pyggzcore/setup.py
+   A /trunk/python/pyggzcore/src
+   A /trunk/python/pyggzcore/src/pyggzcore_init.c
+   A /trunk/python/pyggzcore/src/test.py
+
+- skeleton for python wrapper around ggzcore
+
+This is intended to become a really simplyfying wrapper.
+It will hide many details like ggzcore_init() etc.
+
+The configuration include path is currently hardcoded.
+This must be changed to use the configure defaults, likewise for
+pyggzmod and pyggzdmod.
+
+------------------------------------------------------------------------
+r5869 | josef | 2004-02-09 15:46:40 +0100 (Mo, 09 Feb 2004) | 7 lines
+Geänderte Pfade:
+   M /trunk/python/escape-sdl/escape-sdl
+   M /trunk/python/escape-sdl/module.dsc.in
+
+- lots of fixes for the Escape/SDL game
+  * in singleplayer mode, if a move ends on a non-empty point, let move again
+  * in singleplayer mode, get user's name from the operating system
+  * in multiplayer mode, get user's and opponent's name from the protocol
+    (I think we need to rework all protocols to use ggzmod here)
+  * at the end of the game, display winner correctly
+
+------------------------------------------------------------------------
+r5868 | josef | 2004-02-09 10:30:47 +0100 (Mo, 09 Feb 2004) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/escape-sdl/escape-sdl
+
+- display 'you' as a generic name
+
+To really fix this, pyggzmod should support the ggzmod_get_player() function.
+In single player mode, the username should be used.
+
+------------------------------------------------------------------------
+r5849 | josef | 2004-02-08 19:41:48 +0100 (So, 08 Feb 2004) | 2 lines
+Geänderte Pfade:
+   A /trunk/python/COPYING
+
+- clarify license
+
+------------------------------------------------------------------------
+r5790 | josef | 2004-02-05 11:46:53 +0100 (Do, 05 Feb 2004) | 7 lines
+Geänderte Pfade:
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz/game_clients/ChangeLog
+   M /trunk/ggz/game_clients/NEWS
+   M /trunk/ggz/game_clients/QuickStart.GGZ
+   M /trunk/ggz/game_clients/README
+   M /trunk/ggz/game_clients/README.GGZ
+   M /trunk/ggz/game_clients/configure.ac
+   M /trunk/ggz/src/frontend/kde/po/es.po
+   M /trunk/ggz/src/frontend/kde/po/fr.po
+   M /trunk/ggz/src/frontend/kde/po/pt_BR.po
+   M /trunk/ggz/src/ggzcore/ggz-config.c
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/QuickStart.GGZ
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggz-txt-client/ChangeLog
+   M /trunk/ggz-txt-client/NEWS
+   M /trunk/ggz-txt-client/QuickStart.GGZ
+   M /trunk/ggz-txt-client/README
+   M /trunk/ggz-txt-client/README.GGZ
+   M /trunk/ggz-txt-client/configure.ac
+   M /trunk/ggzd/ChangeLog
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/README.GGZ
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/QuickStart.GGZ
+   M /trunk/gnome-client/README
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/ChangeLog
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/grubby/README.GGZ
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/QuickStart.GGZ
+   M /trunk/gtk-client/README
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-client/configure.ac
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/QuickStart.GGZ
+   M /trunk/kde-client/README
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/ChangeLog
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/QuickStart.GGZ
+   M /trunk/kde-games/README
+   M /trunk/kde-games/README.GGZ
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/ChangeLog
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/QuickStart.GGZ
+   M /trunk/libggz/README
+   M /trunk/libggz/README.GGZ
+   M /trunk/libggz/configure.ac
+   A /trunk/python/ChangeLog
+   A /trunk/python/NEWS
+   M /trunk/python/README
+   A /trunk/python/README.GGZ
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/README
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/sdl-games/configure.ac
+   M /trunk/utils/ChangeLog
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+   M /trunk/utils/README.GGZ
+   M /trunk/utils/configure.ac
+
+- synchronized NEWS, README.GGZ and QuickStart.GGZ from docs
+- updated README
+  * new URLs for developers, bugs, website
+  * no more per-package maintainer mention (it was never valid anyway)
+- updated configure.ac to indicate final version 0.0.8
+- ChangeLog updates
+
+------------------------------------------------------------------------
+r5758 | josef | 2004-01-27 21:49:50 +0100 (Di, 27 Jan 2004) | 2 lines
+Geänderte Pfade:
+   A /trunk/python
+   A /trunk/python/.cvsignore
+   A /trunk/python/Makefile
+   A /trunk/python/README
+   A /trunk/python/aclocal.m4
+   A /trunk/python/configure.ac
+   A /trunk/python/dresden
+   A /trunk/python/dresden/README.dresden
+   A /trunk/python/dresden/dresden.py
+   A /trunk/python/dresden/saggse.png
+   A /trunk/python/dresden/stone.png
+   A /trunk/python/escape-sdl
+   A /trunk/python/escape-sdl/.cvsignore
+   A /trunk/python/escape-sdl/Makefile
+   A /trunk/python/escape-sdl/escape-sdl
+   A /trunk/python/escape-sdl/module.dsc.in
+   A /trunk/python/pyggzdmod
+   A /trunk/python/pyggzdmod/.cvsignore
+   A /trunk/python/pyggzdmod/README.pyggzdmod
+   A /trunk/python/pyggzdmod/setup.py
+   A /trunk/python/pyggzdmod/src
+   A /trunk/python/pyggzdmod/src/pyggzdmod_init.c
+   A /trunk/python/pyggzdmod/src/test.py
+   A /trunk/python/pyggzmod
+   A /trunk/python/pyggzmod/.cvsignore
+   A /trunk/python/pyggzmod/README.pyggzmod
+   A /trunk/python/pyggzmod/setup.py
+   A /trunk/python/pyggzmod/src
+   A /trunk/python/pyggzmod/src/pyggzmod_init.c
+   A /trunk/python/pyggzmod/src/test.py
+
+Initial revision
+
+------------------------------------------------------------------------

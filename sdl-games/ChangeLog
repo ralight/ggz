@@ -1,777 +1,2726 @@
-2006-03-14 13:54:27  Rev 7912   josef
-
-	* README:
-	  - version bumping in the README files
-
-
-2006-03-14 13:53:58  Rev 7911   josef
-
-	* autogen.sh QuickStart.GGZ:
-	  - more synchronisation of common files (must be a boring day...)
-
-
-2006-03-14 13:47:11  Rev 7905   josef
-
-	* AUTHORS NEWS README.GGZ:
-	  - sync all common files from libggz (README.GGZ, AUTHORS)
-	  - updated NEWS file for the upcoming 0.0.13 release
-
-
-2006-03-14 13:45:48  Rev 7903   josef
-
-	* configure.ac:
-	  - bump all package numbers to 0.0.13 already
-
-
-2006-01-14 05:29:03  Rev 7782   jdorje
-
-	* m4/ggz.m4:
-	  Fix AM_CONDITIONAL problem.
-
-
-2006-01-11 07:00:16  Rev 7762   jdorje
-
-	* m4/ggz.m4:
-	  ggz-gtk support in ggz.m4.
-
-
-2005-12-29 11:31:27  Rev 7690   josef
-
-	* autogen.sh README.GGZ m4/ggz.m4:
-	  - synchronisation of all globally used files
-	  - in the future, README.GGZ should be even more generic!
-
-
-2005-12-29 11:29:06  Rev 7688   josef
-
-	* ttt3d/module.dsc.in geekgame/module.dsc.in:
-	  - remove the "Game" field from module.dsc, which seems to be a 
-	  historic relict
-	    (but "SupportedGames" is parsed in ggzcore, so we keep it as it 
-	  could find a use!)
-
-
-2005-12-12 11:54:49  Rev 7660   josef
-
-	* geekgame/.cvsignore .cvsignore geekgame/graphics/.cvsignore ttt3d/.
-	  cvsignore:
-	  This week's XXL commit!
-	  - removal of all .cvsignore files
-	  - addition of *.a, *.os, ... to svn:ignore
-
-
-2005-09-27 23:37:04  Rev 7601   josef
-
-	* m4/ggz.m4:
-	  - move prefix sanitiser into AC_GGZ_INIT
-	  - remove all assumptions over prefix being NONE
-
-
-2005-09-25 18:25:14  Rev 7593   josef
-
-	* ChangeLog:
-	  - big changelog update (2.3 MB... due to new formatting)
-
-
-2005-09-25 10:11:25  Rev 7551   josef
-
-	* configure.ac:
-	  - more version string changes in the build system
-
-
-2005-09-25 09:54:30  Rev 7550   josef
-
-	* NEWS README.GGZ README:
-	  - version updates in common files
-	  - news and release-specific changes
-
-
-2005-09-23 21:54:25  Rev 7547   josef
-
-	* COPYING:
-	  - add copyright files for gnome-client and sdl-games to SVN
-	  - update all copyright files with current version, including the 
-	  new FSF address in Boston
-
-
-2005-09-17 23:16:23  Rev 7531   josef
-
-	* ttt3d/module.dsc.in:
-	  - add 3D to the name
-
-
-2005-09-15 18:00:53  Rev 7516   josef
-
-	* configure.ac autogen.sh:
-	  - synchronisation of all autogen.sh files
-	  - quick fixes in configure.ac's (but they really need a cleanup 
-	  also)
-
-
-2005-08-20 21:41:45  Rev 7464   josef
-
-	* configure.ac:
-	  - bump version to 0.0.12pre to not create *-0.0.11.tar.gz files
-	  - remove the gtk-games override stuff
-
-
-2005-08-15 09:47:11  Rev 7429   josef
-
-	* ttt3d/module.dsc.in:
-	  - homepage update
-
-
-2005-08-13 12:55:05  Rev 7379   josef
-
-	* configure.ac m4/ggz.m4:
-	  - add /usr/local/include and /usr/local/lib to default search 
-	  paths when using 'export'
-	  This is needed for FreeBSD's system libs like gettext. 
-	  Ultimatively, the same exported
-	  arguments for the GGZ prefix should go away as $(GGZ*_LDFLAGS) and 
-	  $(GGZ*_INCLUDES)
-	  should be used in any case.
-
-
-2005-08-13 10:44:47  Rev 7378   josef
-
-	* m4/ggz.m4:
-	  - 7 lines of checking for --enable-noregistry=/foo/bar...
-	  The ebuilds, debian packages and such should use this parameter to 
-	  avoid
-	  all the hacks (and maybe come up with a better name which does not 
-	  involve
-	  double-negation somehow)
-
-
-2005-08-06 08:32:26  Rev 7367   josef
-
-	* m4/ggz.m4:
-	  - global m4 file synchronisation (now that is fun with subversion)
-	  - also a test for the changed commit script which crops at 20 kB 
-	  diff size
-
-
-2005-06-10 12:43:29  Rev 7271   josef
-
-	* ChangeLog geekgame/main.c geekgame/wwwget.c:
-	  - GCC4 fixes
-	  - remove the crappy #ifdef FOO_H constructs (they don't make sense)
-	  - changelog
-
-
-2005-05-21 11:13:11  Rev 7216   josef
-
-	* AUTHORS NEWS QuickStart.GGZ README.GGZ README:
-	  - common files synchronisation and README update for 0.0.11
-
-
-2005-05-21 10:46:02  Rev 7214   josef
-
-	* configure.ac:
-	  - LET version = 0.0.11
-
-
-2005-05-06 21:19:56  Rev 7182   josef
-
-	* m4/ggz.m4:
-	  - synchronization of ggz.m4 files
-	  - fixes typo: use ggzdconfdir instead of ggzconfdir
-	  - fixes compiler problems: use -isystem X instead of -isystemX
-	  - fixes ggzcore linkage force in ggzmod problem
-
-
-2005-02-04 16:13:04  Rev 6920   josef
-
-	* configure.ac:
-	  - use new ggz-config modification
-
-
-2005-02-04 15:59:43  Rev 6918   josef
-
-	* m4/ggz.m4:
-	  - synchronize
-
-
-2005-01-25 18:57:38  Rev 6903   jdorje
-
-	* ttt3d/main.c geekgame/main.c:
-	  Change ggzmod event handler functions to take a const data 
-	  parameter.
-
-
-2005-01-24 01:39:48  Rev 6866   jdorje
-
-	* m4/ggz.m4:
-	  Change the way channels are created at the client side.  The GGZ 
-	  client
-	  does not create the channel.  Instead the channel connection data 
-	  is sent
-	  to the game which makes the connection itself.  This means ggzmod 
-	  needs
-	  to call the channel-creation function from within ggzcore, adding 
-	  a new
-	  library dependency.  This is solved by linking ggzcore in along with
-	  ggzmod inside AC_GGZ_GGZMOD.
-
-
-2005-01-23 21:23:07  Rev 6856   josef
-
-	* AUTHORS ChangeLog:
-	  - authors and changelog
-
-
-2005-01-23 13:20:29  Rev 6844   josef
-
-	* NEWS:
-	  - news update
-
-
-2005-01-23 13:12:48  Rev 6843   josef
-
-	* QuickStart.GGZ README.GGZ README:
-	  - updated common files
-
-
-2005-01-22 19:22:53  Rev 6824   jdorje
-
-	* m4/ggz.m4:
-	  Search for .la files instead of .so.
-
-
-2005-01-22 15:28:57  Rev 6812   josef
-
-	* configure.ac:
-	  - version number bump
-
-
-2005-01-20 05:17:31  Rev 6759   jdorje
-
-	* geekgame/intro.c configure.ac ttt3d/main.c ttt3d/display.c 
-	  geekgame/main.c geekgame/wwwget.c:
-	  Portability improvements.
-
-
-2005-01-20 05:04:45  Rev 6758   jdorje
-
-	* configure.ac:
-	  Autoconf cleanup.
-
-
-2005-01-20 04:48:05  Rev 6757   jdorje
-
-	* m4/sdl.m4 Makefile.am:
-	  Add sdl.m4.
-
-
-2005-01-14 07:01:43  Rev 6675   jdorje
-
-	* m4/iconv.m4 m4/ggz.m4 Makefile.am:
-	  Add support for libintl and libiconv to AC_GGZ_INTL.  This is 
-	  needed to
-	  compile at all on non-glibc systems.
-
-
-2005-01-13 02:23:59  Rev 6643   jdorje
-
-	* m4/ggz.m4:
-	  Fix a typo in checking for libintl.h and locale.h.
-
-
-2005-01-13 01:45:15  Rev 6641   jdorje
-
-	* m4/ggz.m4:
-	  Define ENABLE_NLS if NLS is present.  This is standard, even 
-	  though it's
-	  not helpful for most packages since NLS is manditory.
-
-
-2005-01-11 17:36:35  Rev 6638   jdorje
-
-	* m4/ggz.m4:
-	  Make AC_GGZ_INTL fail if the gettext functions are not available.  
-	  It also
-	  checks for the header files but doesn't fail if they're not present.
-
-
-2005-01-11 03:14:32  Rev 6636   jdorje
-
-	* ttt3d/Makefile.am geekgame/Makefile.am:
-	  Replace deprated INCLUDES directive with AM_CPPFLAGS.
-
-
-2004-11-28 17:22:45  Rev 6431   josef
-
-	* ttt3d/display.c ttt3d/display.h:
-	  - do not hardcode texture path anymore, use install prefix (oops)
-
-
-2004-11-28 16:58:55  Rev 6430   josef
-
-	* configure.ac:
-	  - create geekgame graphics directory
-
-
-2004-11-28 16:58:37  Rev 6429   josef
-
-	* geekgame/intro.c geekgame/graphics/.cvsignore geekgame/intro.h 
-	  geekgame/graphics/banner.bmp geekgame/tmp.png 
-	  geekgame/graphics/tmp.png geekgame/graphics/lines.bmp 
-	  geekgame/graphics geekgame/zero.png geekgame/graphics/zero.png 
-	  geekgame/one.png geekgame/graphics/board.bmp geekgame/graphics/one.
-	  png geekgame/main.c geekgame/graphics/bot.png 
-	  geekgame/graphics/default.png geekgame/bot.png geekgame/default.
-	  png geekgame/graphics/Makefile.am geekgame/Makefile.am 
-	  geekgame/graphics/icon.png geekgame/icon.png:
-	  - 3D intro screen for geekgame
-	  - move graphics into subdirectory
-
-
-2004-11-27 23:21:26  Rev 6426   josef
-
-	* m4/ggz.m4:
-	  - synchronize with other m4 files
-
-
-2004-07-18 00:37:08  Rev 6153   josef
-
-	* ChangeLog:
-	  - changelog update
-
-
-2004-07-17 02:29:24  Rev 6131   josef
-
-	* ttt3d/module.dsc.in:
-	  - TTT protocol bump
-
-
-2004-07-16 19:08:39  Rev 6117   josef
-
-	* AUTHORS README.GGZ README configure.ac NEWS QuickStart.GGZ:
-	  - 0.0.9 updates propagation
-
-
-2004-02-07 21:40:41  Rev 5832   jdorje
-
-	* geekgame/main.c geekgame/wwwget.c:
-	  Fix some mostly harmless compiler warnings:
-	    - Some functions should be static.
-	    - One header #include was missing.
-	    - One unused variable because of some #ifdefs.
-
-
-2004-02-05 10:46:53  Rev 5790   josef
-
-	* README.GGZ ChangeLog README configure.ac NEWS QuickStart.GGZ:
-	  - synchronized NEWS, README.GGZ and QuickStart.GGZ from docs
-	  - updated README
-	    * new URLs for developers, bugs, website
-	    * no more per-package maintainer mention (it was never valid 
-	  anyway)
-	  - updated configure.ac to indicate final version 0.0.8
-	  - ChangeLog updates
-
-
-2004-02-01 14:21:14  Rev 5777   josef
-
-	* geekgame/module.dsc.in geekgame/main.c:
-	  - bump protocol version
-	  - bump game client version
-
-
-2004-01-31 10:54:44  Rev 5770   josef
-
-	* autogen.sh:
-	  - sync common files
-
-
-2004-01-30 22:09:19  Rev 5766   josef
-
-	* geekgame/main.c:
-	  - fix reading the map and its dimensions
-
-
-2004-01-27 18:06:22  Rev 5753   josef
-
-	* configure.ac m4/ggz.m4:
-	  - when using Xcursor, use Xrender too
-	  - use new maintainer list address
-
-
-2004-01-17 18:46:28  Rev 5740   dr_maux
-
-	* autogen.sh:
-	  - sync
-
-
-2003-12-31 17:10:47  Rev 5729   dr_maux
-
-	* configure.ac:
-	  - use new-style AC_INIT
-	  - remove (unneeded?) AC_ARG_PROGRAM
-
-
-2003-12-06 10:00:33  Rev 5710   dr_maux
-
-	* geekgame/protocol-description:
-	  - more accurate protocol description
-
-
-2003-11-23 15:16:47  Rev 5686   dr_maux
-
-	* geekgame/main.c:
-	  - AI capabilities for the other 3 game modes
-	  - draw lines with a thickness of 2 pixel for better visibility
-	  - change Hax0r mode to something more difficult than previously
-	  Now the AI is more or less unbeatable in most modes.
-	  In the future, more randomization must thus be added.
-
-
-2003-11-23 13:25:01  Rev 5685   dr_maux
-
-	* configure.ac:
-	  - bump to 0.0.8 pre
-
-
-2003-11-23 13:24:47  Rev 5684   dr_maux
-
-	* geekgame/main.c:
-	  - command line argument --players to define the number of players 
-	  for single
-	    player games
-	  - smoother movements, slide if key is kept pressed
-	  - implement "real" AI for the easy mode
-
-
-2003-11-23 12:08:11  Rev 5683   dr_maux
-
-	* Makefile.am:
-	  - guru-ttt is part of grubby and not located here any longer
-
-
-2003-11-23 11:14:56  Rev 5682   dr_maux
-
-	* Makefile.am:
-	  - remove ggz.modules installation kludge
-
-
-2003-05-18 16:12:11  Rev 5599   dr_maux
-
-	* ttt3d/main.c:
-	  - fix a usability bug found out by a player:
-	    When it's a player's turn, set the selector not to the first
-	    tile, but to the first free one
-
-
-2003-05-17 08:10:42  Rev 5588   dr_maux
-
-	* ChangeLog:
-	  - update changelog
-
-
-2003-05-16 18:34:45  Rev 5583   dr_maux
-
-	* autogen.sh:
-	  - apply autogen.sh changes from libggz
-
-
-2003-05-11 11:30:12  Rev 5573   dr_maux
-
-	* geekgame/proto.h:
-	  - use smaller protocol numbers so they fit into a char value
-
-
-2003-05-10 23:54:28  Rev 5563   dr_maux
-
-	* configure.ac:
-	  - set the package version number (via configure.ac) to 0.0.7
-
-
-2003-05-10 23:19:03  Rev 5552   dr_maux
-
-	* README.GGZ ttt3d/module.dsc.in autogen.sh NEWS QuickStart.GGZ:
-	  - update common files for 0.0.7 in sdl-games
-	  - bump TTT3D's version number
-
-
-2003-05-10 14:38:57  Rev 5539   dr_maux
-
-	* autogen.sh:
-	  - sync autogen.sh
-
-
-2003-05-10 10:53:28  Rev 5531   dr_maux
-
-	* Makefile.am ttt3d/Makefile.am geekgame/Makefile.am:
-	  - fix 'make distcheck'
-	  We still have this hack for our game packages using DESTDIR,
-	  it'd probably be better to modify ggz-config a bit more.
-
-
-2003-05-05 13:03:41  Rev 5500   dr_maux
-
-	* m4/ggz.m4:
-	  - add -fsigned-char
-
-
-2003-03-29 10:36:34  Rev 5478   dr_maux
-
-	* configure.ac geekgame/main.c geekgame/Makefile.am:
-	  - add XCursor support to Geekgame (requires XFree86 >= 4.3.0, it's 
-	  disabled
-	    otherwise)
-	  - don't require SDL_mixer anymore, make audio optional as well
-	  - implement dumb but working AI for geekgame, so single player 
-	  mode should be
-	    ready now (at least for 0.0.7)
-
-
-2003-03-29 10:33:32  Rev 5476   dr_maux
-
-	* autogen.sh:
-	  - apply improverished autogen globally
-
-
-2003-03-29 10:27:44  Rev 5475   dr_maux
-
-	* m4/ggz.m4:
-	  - update GGZ macro file
-
-
-2003-02-28 02:35:19  Rev 5463   dr_maux
-
-	* geekgame/main.c geekgame/wwwget.c:
-	  - to make tempfiles more bulletproof, unlink() them before writing 
-	  to them
-	  - fix one of the previous fixes: for the 1st player, Uncle Sam 
-	  replaces the
-	    green grubby image
-
-
-2003-02-19 19:21:27  Rev 5431   dr_maux
-
-	* geekgame/main.c geekgame/wwwget.c geekgame/proto.h geekgame/wwwget.
-	  h:
-	  - handle sounds and music as well: look in local directory first, 
-	  fall back to
-	    global (installation) directory. Look for ogg, mp3 and wav files.
-	  - better player handling for GGZ mode: indicate whether players 
-	  are still
-	    missing, or the game can start already
-	  - send moves, rule selection etc. to the server
-	  - add copyright to the source files
-
-
-2003-02-16 13:02:09  Rev 5413   dr_maux
-
-	* autogen.sh:
-	  - new autogen.sh
-
-
-2003-02-14 19:02:59  Rev 5403   dr_maux
-
-	* geekgame/main.c geekgame/Makefile.am:
-	  - use correct library, using *_LDFLAGS
-	  - save and load configuration for soundpath, musicpath and fontpath
-	    This is stored in ~/.ggz/games/geekgame/config.
-
-
-2003-02-14 18:35:49  Rev 5402   dr_maux
-
-	* geekgame/1979rg__.ttf geekgame/dark2.ttf geekgame/main.c 
-	  geekgame/Makefile.am:
-	  - add full-screen toggling (using the F key), and a --fullscreen 
-	  command line
-	    argument
-	  - better path management using local_data() and global_data() 
-	  functions
-	  - remove font files
-	    This is an issue in itself. No game I know ships with own TTF 
-	  files, yet it
-	    would be handy to have some (and there's pfaedit to build some).
-	    For the time being, geekgame simply scans common font 
-	  directories until it
-	    finds a random font.
-	    That might be improved by using a font selection screen and/or 
-	  configuration
-	    file options.
-	    Same will apply for the sound and music files.
-
-
-2003-02-14 18:32:14  Rev 5401   dr_maux
-
-	* configure.ac:
-	  - use -Wall
-
-
-2003-02-04 16:23:17  Rev 5380   dr_maux
-
-	* geekgame/main.c geekgame/proto.h:
-	  - implemented the two remaining game modes
-
-
-2003-02-04 08:42:36  Rev 5366   jdorje
-
-	* configure.ac m4/ggz.m4 configure.in Makefile.am autogen.sh 
-	  acinclude.ggz m4:
-	  Step 1 of autoconf2.5x-only support: rename configure.in as 
-	  configure.ac.
-	  Also move acinclude.ggz to m4/ggz.m4.
-
-
-2003-01-29 22:48:46  Rev 5353   dr_maux
-
-	* geekgame/main.c geekgame/wwwget.c:
-	  - fix handling of command line options
-	  - handle local URIs via cp (wget doesn't understand /home/...)
-	  - add level descriptions to the main menu
-
-
-2002-11-18 23:06:51  Rev 5253   dr_maux
-
-	* geekgame/main.c geekgame/default.png geekgame/Makefile.am:
-	  - prevent segfault when no player photo can be loaded
-	  - default image is now a somewhat modified Mr. Sam (hopefully 
-	  politically
-	    correct)
-	  - mix down sound effects to 50% (an internal options menu should 
-	  later be
-	    added)
-
-
-2002-11-03 22:44:31  Rev 5191   dr_maux
-
-	* geekgame/main.c geekgame/Makefile.am geekgame/icon.png:
-	  - add support for sound effects
-	  - load sound and music from global data directory
-	  - add game icon
-
-
-2002-11-03 22:22:23  Rev 5189   dr_maux
-
-	* configure.in:
-	  - check for SDL_mixer
-
-
-2002-11-03 22:22:09  Rev 5188   dr_maux
-
-	* geekgame/main.c geekgame/Makefile.am:
-	  - add background music support to geekgame
-	  Currently, this is hardcoded, since we don't have any project music.
-	  This will eventually be configurable.
-	  But for the time being, the OpenBSD release song seems to be a 
-	  reasonable
-	  choice for a 'geek game' :)
-
-
-2002-11-02 22:25:58  Rev 5153   dr_maux
-
-	* geekgame/main.c geekgame/proto.h:
-	  - add game over screen
-	  - split game and intro screen out of main loop so if the game ends 
-	  the menu is
-	    called again
-	  - implement some game modes already
-
-
-2002-11-02 18:32:02  Rev 5152   dr_maux
-
-	* geekgame/protocol-description geekgame/main.c geekgame/proto.h:
-	  - update protocol description, and explain game modes
-	  - intro menu to select game mode
-
-
-2002-11-02 17:46:33  Rev 5151   dr_maux
-
-	* geekgame/proto.h:
-	  - network opcodes
-
-
-2002-11-02 17:46:09  Rev 5150   dr_maux
-
-	* geekgame/main.c:
-	  - calculate all rows and columns, not just the first column
-	  - draw player scores (levels) as green bars
-	  - better selection tool which will allow for more complex math 
-	  (when launching
-	    a 'havoc' or 'hax0r' game mode), including binary calculation
-
-
-2002-11-02 13:56:27  Rev 5149   dr_maux
-
-	* geekgame/.cvsignore geekgame geekgame/module.dsc.in geekgame/main.
-	  c geekgame/Makefile.am:
-	  - perform game start via GGZ correctly
-	  - and use player images as sent by the server
-	  - compare server greeting and version to see if it matches (might 
-	  add ruleset
-	    definitions later)
-
-
-2002-11-02 13:18:10  Rev 5147   dr_maux
-
-	* configure.in geekgame/module.dsc.in geekgame/Makefile.am:
-	  - add module description file for geekgame
-
-
-2002-10-26 00:26:14  Rev 5036   dr_maux
-
-	* geekgame/main.c geekgame/Makefile.am:
-	  - add ggzmod support
-
-
-2002-10-26 00:12:53  Rev 5035   dr_maux
-
-	* geekgame/main.c geekgame/Makefile.am:
-	  - use correct prefixes for both installed and local data files
-	  - read personalization file, don't use picture of my face for all 
-	  players :)
-	  - accept --ggz (although nothing is done upon that)
-
-
-2002-10-10 22:24:46  Rev 4862   dr_maux
-
-	* ttt3d/module.dsc.in ttt3d/Makefile.am:
-	  - s/bin/ggzexecmod/
-
-
-2002-10-10 21:36:13  Rev 4861   jdorje
-
-	* ttt3d/main.c:
-	  Label game_handle_io() as static.
-
-
-2002-10-10 21:20:23  Rev 4860   dr_maux
-
-	* ttt3d/module.dsc.in:
-	  - protocol version is 3, not 2
-
-
-2002-10-10 18:59:08  Rev 4854   dr_maux
-
-	* configure.in ttt3d/Makefile.am geekgame/Makefile.am:
-	  - add basic SDL and OpenGL checks
-	  - use SDL cflags and ldflags
-
-
-2002-10-10 11:20:57  Rev 4838   dr_maux
-
-	* ttt3d ttt3d/.cvsignore:
-	  - shut up cvs a bit more
-
-
-2002-10-08 19:59:39  Rev 4813   dr_maux
-
-	* geekgame/.cvsignore AUTHORS ttt3d/lines.bmp ttt3d/cursor.bmp 
-	  ttt3d/figure.bmp ttt3d geekgame/dark2.ttf ttt3d/board.bmp INSTALL 
-	  geekgame/zero.png ttt3d/main.c geekgame/main.c ttt3d/Makefile.am 
-	  autogen.sh geekgame/bot.png NEWS acinclude.ggz .cvsignore 
-	  QuickStart.GGZ README.GGZ configure.in ChangeLog 
-	  geekgame/protocol-description ttt3d/display.c geekgame/tmp.png 
-	  ttt3d/HOWTOPLAY ttt3d/display.h README geekgame/1979rg__.ttf 
-	  ttt3d/module.dsc.in geekgame geekgame/one.png Makefile.am 
-	  geekgame/wwwget.c geekgame/Makefile.am ttt3d/.cvsignore 
-	  geekgame/wwwget.h:
-	  Initial revision
-
-
+------------------------------------------------------------------------
+r8938 | josef | 2007-01-16 16:52:26 +0100 (Di, 16 Jan 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/graphics/banner.bmp
+   M /trunk/sdl-games/geekgame/graphics/board.bmp
+   M /trunk/sdl-games/geekgame/graphics/lines.bmp
+   M /trunk/sdl-games/ttt3d/board.bmp
+   M /trunk/sdl-games/ttt3d/cursor.bmp
+   M /trunk/sdl-games/ttt3d/figure.bmp
+   M /trunk/sdl-games/ttt3d/lines.bmp
+
+- none of the BMP files were marked as binary files!
+  (though thankfully there were also not marked as text files with svn:eol-style...)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8936 | josef | 2007-01-16 16:36:47 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/module.dsc.in
+
+- geekgame version bump
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8916 | josef | 2007-01-15 16:09:43 +0100 (Mo, 15 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/ttt3d/main.c
+   M /trunk/sdl-games/ttt3d/module.dsc.in
+
+- port to dio (mandated by corresponding game server)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8880 | josef | 2007-01-09 18:22:14 +0100 (Di, 09 Jan 2007) | 7 lines
+Geänderte Pfade:
+   M /trunk/docs/spec/mainspec/appendix.sgml
+   M /trunk/ggzd/game_servers/chess/chess.dsc
+   M /trunk/ggzd/game_servers/chinese-checkers/ccheckers.dsc
+   M /trunk/ggzd/game_servers/combat/combat.dsc
+   M /trunk/ggzd/game_servers/connectx/connectx.dsc
+   M /trunk/ggzd/game_servers/dots/dots.dsc
+   M /trunk/ggzd/game_servers/escape/escape.dsc
+   M /trunk/ggzd/game_servers/geekgame/geekgame.dsc
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/games/lapocha.c
+   M /trunk/ggzd/game_servers/hastings/hastings.dsc
+   M /trunk/ggzd/game_servers/keepalive/keepalive.dsc
+   M /trunk/ggzd/game_servers/krosswater/krosswater.dsc
+   M /trunk/ggzd/game_servers/muehle/muehle.dsc
+   M /trunk/ggzd/game_servers/reversi/reversi.dsc
+   M /trunk/ggzd/game_servers/tictactoe/tictactoe.dsc
+   M /trunk/grubby/games/guru-chess/module.dsc.in
+   M /trunk/grubby/games/guru-ttt/module.dsc.in
+   M /trunk/gtk-games/chess/main.c
+   M /trunk/gtk-games/chess/module.dsc.in
+   M /trunk/gtk-games/chinese-checkers/main.c
+   M /trunk/gtk-games/chinese-checkers/module.dsc.in
+   M /trunk/gtk-games/combat/game.c
+   M /trunk/gtk-games/combat/module.dsc.in
+   M /trunk/gtk-games/dots/main.c
+   M /trunk/gtk-games/dots/module.dsc.in
+   M /trunk/gtk-games/ggzcards/main.c
+   M /trunk/gtk-games/ggzcards/module.dsc.in
+   M /trunk/gtk-games/hastings/main.c
+   M /trunk/gtk-games/hastings/module.dsc.in
+   M /trunk/gtk-games/po/chess/chess.pot
+   M /trunk/gtk-games/po/chess/de.po
+   M /trunk/gtk-games/po/chinese-checkers/chinese-checkers.pot
+   M /trunk/gtk-games/po/chinese-checkers/de.po
+   M /trunk/gtk-games/po/dots/de.po
+   M /trunk/gtk-games/po/dots/dots.pot
+   M /trunk/gtk-games/po/ggzcards/de.po
+   M /trunk/gtk-games/po/ggzcards/ggzcards.pot
+   M /trunk/gtk-games/po/hastings/de.po
+   M /trunk/gtk-games/po/hastings/hastings.pot
+   M /trunk/gtk-games/po/reversi/de.po
+   M /trunk/gtk-games/po/reversi/reversi.pot
+   M /trunk/gtk-games/po/tictactoe/de.po
+   M /trunk/gtk-games/po/tictactoe/tictactoe.pot
+   M /trunk/gtk-games/reversi/main.c
+   M /trunk/gtk-games/reversi/module.dsc.in
+   M /trunk/gtk-games/tictactoe/main.c
+   M /trunk/gtk-games/tictactoe/module.dsc.in
+   M /trunk/kde-client/ggz-kde/data/browser/help.html
+   M /trunk/kde-client/keepalivecontrol/src/main.cpp
+   M /trunk/kde-games/KReversi/module.dsc.in
+   M /trunk/kde-games/fyrdman/main.cpp
+   M /trunk/kde-games/fyrdman/module.dsc.in
+   M /trunk/kde-games/kcc/main.cpp
+   M /trunk/kde-games/kcc/module.dsc.in
+   M /trunk/kde-games/kconnectx/main.cpp
+   M /trunk/kde-games/kconnectx/module.dsc.in
+   M /trunk/kde-games/kdots/kdots_about.cpp
+   M /trunk/kde-games/kdots/kdots_replay.cpp
+   M /trunk/kde-games/kdots/kdots_replay.h
+   M /trunk/kde-games/kdots/main.cpp
+   M /trunk/kde-games/kdots/module.dsc.in
+   M /trunk/kde-games/keepalive/module.dsc.in
+   M /trunk/kde-games/keepalive/src/main.cpp
+   M /trunk/kde-games/koenig/main.cc
+   M /trunk/kde-games/koenig/module.dsc.in
+   M /trunk/kde-games/krosswater/dlg_about.cpp
+   M /trunk/kde-games/krosswater/main.cpp
+   M /trunk/kde-games/krosswater/module.dsc.in
+   M /trunk/kde-games/ktictactux/main.cpp
+   M /trunk/kde-games/ktictactux/module.dsc.in
+   M /trunk/kde-games/muehle/module.dsc.in
+   M /trunk/kde-games/muehle/src/main.cpp
+   M /trunk/playground/ggz-java/tictactoeclient/module.dsc
+   M /trunk/playground/ggz-kde4/kconnectx/main.cpp
+   M /trunk/playground/ggz-kde4/kconnectx/module.dsc.in
+   M /trunk/playground/ggz-python/arimaa/module_arimaa.dsc.in
+   M /trunk/playground/ggz-python/arimaa/server_arimaa.dsc
+   M /trunk/playground/ggz-python/go/goservergtp.dsc.in
+   M /trunk/playground/ggz-python/go/modulegtp.dsc.in
+   M /trunk/python/escape-sdl/module.dsc.in
+   M /trunk/python/ggzboard/ggzboard
+   M /trunk/python/ggzboard/module_checkers.dsc.in
+   M /trunk/python/ggzboard/module_chess.dsc.in
+   M /trunk/python/ggzboard/module_connectx.dsc.in
+   M /trunk/python/ggzboard/module_go.dsc.in
+   M /trunk/python/ggzboard/module_hnefatafl.dsc.in
+   M /trunk/python/ggzboard/module_ludo.dsc.in
+   M /trunk/python/ggzboard/module_reversi.dsc.in
+   M /trunk/python/go/goserver.dsc
+   M /trunk/python/go/module.dsc.in
+   M /trunk/python/po/de.po
+   M /trunk/python/po/ggzpython.pot
+   M /trunk/python/xadrez-chines/module.dsc.in
+   M /trunk/sdl-games/geekgame/module.dsc.in
+   M /trunk/sdl-games/ttt3d/module.dsc.in
+   M /trunk/txt-client/tttxt/main.c
+   M /trunk/txt-client/tttxt/module.dsc.in
+   M /trunk/www/dev/ai/index.php.en
+   M /trunk/www/dev/external.php.en
+
+- adapt to the split into /gameservers/ and /gameclients/
+
+This affects mainly game information files (*.dsc) but also some sources and translations.
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8856 | josef | 2007-01-08 14:41:50 +0100 (Mo, 08 Jan 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/main.c
+
+- command line option to disable the intro animation
+- use shaded text rather than solid one (looks nicer, but also works around a bug in recent SDL!)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8855 | josef | 2007-01-08 14:41:00 +0100 (Mo, 08 Jan 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/graphics/banner.bmp
+   M /trunk/sdl-games/geekgame/graphics/board.bmp
+   M /trunk/sdl-games/geekgame/graphics/lines.bmp
+   D /trunk/sdl-games/geekgame/graphics/tmp.png
+   M /trunk/sdl-games/ttt3d/board.bmp
+   M /trunk/sdl-games/ttt3d/cursor.bmp
+   M /trunk/sdl-games/ttt3d/figure.bmp
+   M /trunk/sdl-games/ttt3d/lines.bmp
+
+- more restoring to CVS versions to disable svn:eol-style/svn:keywords on graphics files
+- delete photo of mine (why did it ever end up being in SVN anyway?)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8852 | josef | 2007-01-08 14:36:45 +0100 (Mo, 08 Jan 2007) | 9 lines
+Geänderte Pfade:
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/gnome-client/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/gtk-games/autogen.sh
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/autogen.sh
+   M /trunk/libggz/autogen.sh
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+- do not assume that there's always a m4 directory available (in docs and python, there aren't)
+- make it work for srcdir != builddir
+
+For the latter, we could simplify the script a lot by changing into srcdir first.
+But I'm sure we had a reason not to and I don't want to break it right now.
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8827 | jdorje | 2007-01-05 01:29:53 +0100 (Fr, 05 Jan 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/sdl-games/Makefile.am
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/sdl-games/m4
+   D /trunk/sdl-games/m4/ggz.m4
+   D /trunk/sdl-games/m4/system.m4
+
+Use externals for common GGZ m4 files.
+------------------------------------------------------------------------
+r8805 | josef | 2007-01-04 15:34:23 +0100 (Do, 04 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/main.c
+
+- be able to read out the current desktop resolution from SDL and use it for the fullscreen mode
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8802 | josef | 2007-01-04 13:41:51 +0100 (Do, 04 Jan 2007) | 7 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/gtk-games/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/txt-client/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+- take --with-ggz-dir into account when using AC_GGZ_VERSION
+- prepare ggz.m4 for aclocal installation (a new automake 1.10 feature)
+- in ggz-client-libs, remove all m4 files from EXTRA_DIST and use aclocal's -I feature instead
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8777 | josef | 2007-01-02 13:09:25 +0100 (Di, 02 Jan 2007) | 9 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/gtk-games/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/txt-client/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+- check if ggz-config ran correctly to avoid errors due to wrong LD_LIBRARY_PATH
+
+Note that I had to forcefully remove libggzcore.so to make that happen as the
+LD_LIBRARY_PATH setting is not needed on my system. So whoever came across it
+shall now be happy again.
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8725 | josef | 2006-12-13 16:42:32 +0100 (Mi, 13 Dez 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/gtk-games/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/txt-client/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+- sync forced ggz-config usage
+
+
+------------------------------------------------------------------------
+r8651 | josef | 2006-11-09 07:47:54 +0100 (Do, 09 Nov 2006) | 8 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggz-client-libs/ggzcore/Makefile.am
+   M /trunk/gnome-client/m4/system.m4
+   M /trunk/gnome-client/motd-editor/Makefile.am
+   M /trunk/gnome-client/src/Makefile.am
+   M /trunk/grubby/games/guru-chess/Makefile.am
+   M /trunk/grubby/grubby/src/Makefile.am
+   M /trunk/grubby/m4/system.m4
+   M /trunk/gtk-client/ggz-gtk/Makefile.am
+   M /trunk/gtk-client/m4/system.m4
+   M /trunk/gtk-client/src/Makefile.am
+   M /trunk/gtk-games/m4/system.m4
+   M /trunk/gtk-games/spades/Makefile.am
+   M /trunk/kde-client/m4/system.m4
+   M /trunk/kde-games/m4/system.m4
+   M /trunk/sdl-games/m4/system.m4
+   M /trunk/txt-client/ggz-txt/Makefile.am
+   M /trunk/txt-client/m4/system.m4
+   M /trunk/utils/m4/system.m4
+
+- propagate the LIB_* changes in system.m4 to all modules
+- always use LIB_GETTEXT if i18n functions are called
+
+Now there are both INTLLIBS and LIB_GETTEXT in the gtk+ modules. This seems to be odd.
+
+[commit from josef@armada]
+
+
+------------------------------------------------------------------------
+r8631 | josef | 2006-11-03 12:40:55 +0100 (Fr, 03 Nov 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/playground/maintenance/ggzbuildrc.sample
+   A /trunk/sdl-games/m4/system.m4
+
+- build with TLS support by default in ggzbuild
+- missing system.m4 in sdl-games
+
+
+------------------------------------------------------------------------
+r8607 | jdorje | 2006-10-02 23:36:27 +0200 (Mo, 02 Okt 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/gtk-games/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/txt-client/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+Josef forgot to propogate the ggz.m4 changes.
+------------------------------------------------------------------------
+r8587 | jdorje | 2006-09-20 04:15:08 +0200 (Mi, 20 Sep 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/gtk-games/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/txt-client/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+Add AC_GGZ_CHECK_SERVER macro.
+------------------------------------------------------------------------
+r8583 | jdorje | 2006-09-19 17:26:31 +0200 (Di, 19 Sep 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggz-config/Makefile.am
+   M /trunk/ggz-client-libs/ggzcore/Makefile.am
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/grubby/src/Makefile.am
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/gaim-plugin/Makefile.am
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/gtk-games/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/txt-client/ggz-txt/Makefile.am
+   M /trunk/txt-client/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+   M /trunk/utils/metaserv/metaserv/Makefile.am
+
+Don't define PREFIX in config.h, as this makes it impossible to change
+the prefix at compile time (as per GNU standards).
+
+------------------------------------------------------------------------
+r8567 | jdorje | 2006-09-03 07:35:12 +0200 (So, 03 Sep 2006) | 5 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/Makefile.am
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggz-client-libs/ggz-config/Makefile.am
+   M /trunk/ggz-client-libs/ggz-config/ggz-config.c
+   M /trunk/ggz-client-libs/ggzcore/Makefile.am
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   A /trunk/ggz-client-libs/m4/system.m4
+   M /trunk/ggzd/configure.ac
+   M /trunk/ggzd/game_servers/chess/game.c
+   M /trunk/ggzd/game_servers/dots/game.c
+   M /trunk/ggzd/game_servers/keepalive/src/player.cpp
+   M /trunk/ggzd/game_servers/keepalive/src/world.cpp
+   M /trunk/ggzd/game_servers/tictactoe/game.c
+   M /trunk/ggzd/ggzd/Makefile.am
+   M /trunk/ggzd/ggzd/ggzduedit.c
+   M /trunk/ggzd/ggzd/parse_opt.c
+   M /trunk/ggzd/ggzdmod/ggzdmod.c
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/gtk-games/Makefile.am
+   M /trunk/gtk-games/m4/ggz.m4
+   A /trunk/gtk-games/m4/system.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/txt-client/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+Fix problems with substitution of prefixes.  This also resynchronizes the
+ggz.m4 files and removes the obsolete AC_GGZ_UNQUOTEDPATH macro.  The new
+code conforms to GNU standards as the prefix may be changed at compile time;
+see the autoconf manual for details.
+
+------------------------------------------------------------------------
+r8412 | jdorje | 2006-07-28 02:48:14 +0200 (Fr, 28 Jul 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/gtk-games/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/txt-client/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+Extensions to AC_GGZ_VERSION.
+------------------------------------------------------------------------
+r8385 | josef | 2006-07-22 09:41:49 +0200 (Sa, 22 Jul 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/gnome-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+
+- make them all appear as 0.0.14pre now so we're consistent
+
+
+------------------------------------------------------------------------
+r8278 | josef | 2006-06-27 09:28:12 +0200 (Di, 27 Jun 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-games/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/txt-client/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+- sync all m4 files to get multiple-level unquoting of shell variables
+
+
+------------------------------------------------------------------------
+r8081 | josef | 2006-05-30 14:59:51 +0200 (Di, 30 Mai 2006) | 8 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/gtk-games/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/txt-client/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+- prefix searching fix: always un-expand the default variables before using them
+
+The core of the problem is that make resolves recursively defined variables just
+fine, e.g. libdir=${exec_prefix}/lib with exec_prefix=${prefix}, whereas shell
+code only substitutes once! Therefore, we trick with the evil eval command...
+and --libdir=/usr/lib64 doesn't break the prefix search anymore.
+
+
+------------------------------------------------------------------------
+r8046 | josef | 2006-05-22 08:51:28 +0200 (Mo, 22 Mai 2006) | 7 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/gtk-games/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/txt-client/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+[openSUSE]
+
+- attempt to let GGZ take advantage of pure 64-bit systems: support (/usr)/lib64
+- define a dummy GGZMODULECONFDIR even in the absence of ggz-config
+- synchronisation of ggz.m4
+
+
+------------------------------------------------------------------------
+r7942 | josef | 2006-03-16 16:15:01 +0100 (Do, 16 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- global changelog updates for 0.0.13 (boy have we been lazy this time!)
+
+
+------------------------------------------------------------------------
+r7912 | josef | 2006-03-14 14:54:27 +0100 (Di, 14 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/README
+   M /trunk/gnome-client/README
+   M /trunk/grubby/README
+   M /trunk/gtk-client/README
+   M /trunk/gtk-games/README
+   M /trunk/kde-client/README
+   M /trunk/kde-games/README
+   M /trunk/python/README
+   M /trunk/sdl-games/README
+   M /trunk/utils/README
+
+- version bumping in the README files
+
+
+------------------------------------------------------------------------
+r7911 | josef | 2006-03-14 14:53:58 +0100 (Di, 14 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/QuickStart.GGZ
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz-client-libs/QuickStart.GGZ
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/gnome-client/QuickStart.GGZ
+   M /trunk/gnome-client/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/QuickStart.GGZ
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/gtk-games/QuickStart.GGZ
+   M /trunk/gtk-games/autogen.sh
+   M /trunk/kde-client/QuickStart.GGZ
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/QuickStart.GGZ
+   M /trunk/kde-games/autogen.sh
+   M /trunk/python/QuickStart.GGZ
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/txt-client/QuickStart.GGZ
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+- more synchronisation of common files (must be a boring day...)
+
+
+------------------------------------------------------------------------
+r7905 | josef | 2006-03-14 14:47:11 +0100 (Di, 14 Mär 2006) | 4 lines
+Geänderte Pfade:
+   M /trunk/docs/AUTHORS
+   M /trunk/docs/NEWS
+   M /trunk/docs/README.GGZ
+   M /trunk/ggz-client-libs/AUTHORS
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggzd/AUTHORS
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README.GGZ
+   M /trunk/gnome-client/AUTHORS
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/grubby/AUTHORS
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README.GGZ
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-games/AUTHORS
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README.GGZ
+   A /trunk/java/AUTHORS
+   A /trunk/java/NEWS
+   A /trunk/java/README.GGZ
+   M /trunk/kde-client/AUTHORS
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-games/AUTHORS
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/README.GGZ
+   M /trunk/libggz/NEWS
+   M /trunk/python/AUTHORS
+   M /trunk/python/NEWS
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/AUTHORS
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/txt-client/AUTHORS
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README.GGZ
+   M /trunk/utils/AUTHORS
+   M /trunk/utils/NEWS
+   M /trunk/utils/README.GGZ
+
+- sync all common files from libggz (README.GGZ, AUTHORS)
+- updated NEWS file for the upcoming 0.0.13 release
+
+
+------------------------------------------------------------------------
+r7903 | josef | 2006-03-14 14:45:48 +0100 (Di, 14 Mär 2006) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- bump all package numbers to 0.0.13 already
+
+
+------------------------------------------------------------------------
+r7782 | jdorje | 2006-01-14 06:29:03 +0100 (Sa, 14 Jan 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/gtk-games/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/txt-client/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+Fix AM_CONDITIONAL problem.
+------------------------------------------------------------------------
+r7762 | jdorje | 2006-01-11 08:00:16 +0100 (Mi, 11 Jan 2006) | 1 line
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/gtk-games/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/txt-client/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+ggz-gtk support in ggz.m4.
+------------------------------------------------------------------------
+r7690 | josef | 2005-12-29 12:31:27 +0100 (Do, 29 Dez 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/docs/README.GGZ
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggz-client-libs/m4/i18n.mk
+   M /trunk/ggzd/README.GGZ
+   M /trunk/ggzd/autogen.sh
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/gnome-client/autogen.sh
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/gnome-client/m4/i18n.mk
+   M /trunk/grubby/README.GGZ
+   M /trunk/grubby/autogen.sh
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/grubby/m4/i18n.mk
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/gtk-client/m4/i18n.mk
+   M /trunk/gtk-games/README.GGZ
+   M /trunk/gtk-games/autogen.sh
+   M /trunk/gtk-games/m4/ggz.m4
+   M /trunk/gtk-games/m4/i18n.mk
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/README.GGZ
+   M /trunk/kde-games/autogen.sh
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/README.GGZ
+   M /trunk/libggz/autogen.sh
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/txt-client/README.GGZ
+   M /trunk/txt-client/autogen.sh
+   M /trunk/txt-client/m4/ggz.m4
+   M /trunk/txt-client/m4/i18n.mk
+   M /trunk/utils/README.GGZ
+   M /trunk/utils/autogen.sh
+   M /trunk/utils/m4/ggz.m4
+
+- synchronisation of all globally used files
+- in the future, README.GGZ should be even more generic!
+
+
+------------------------------------------------------------------------
+r7688 | josef | 2005-12-29 12:29:06 +0100 (Do, 29 Dez 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/module.dsc.in
+   M /trunk/sdl-games/ttt3d/module.dsc.in
+
+- remove the "Game" field from module.dsc, which seems to be a historic relict
+  (but "SupportedGames" is parsed in ggzcore, so we keep it as it could find a use!)
+
+
+------------------------------------------------------------------------
+r7660 | josef | 2005-12-12 12:54:49 +0100 (Mo, 12 Dez 2005) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/web/articles
+   M /trunk/community/web/common
+   M /trunk/community/web/map
+   D /trunk/docs/.cvsignore
+   D /trunk/docs/articles/.cvsignore
+   D /trunk/docs/coreclients/.cvsignore
+   D /trunk/docs/games/.cvsignore
+   D /trunk/docs/games/external-games/.cvsignore
+   D /trunk/docs/games/game-development/.cvsignore
+   D /trunk/docs/games/ggzcards/.cvsignore
+   D /trunk/docs/games/hastings/.cvsignore
+   D /trunk/docs/games/modules/.cvsignore
+   D /trunk/docs/ggz-project/.cvsignore
+   D /trunk/docs/grubby/.cvsignore
+   D /trunk/docs/overview/.cvsignore
+   D /trunk/docs/overview/architecture/.cvsignore
+   D /trunk/docs/server/.cvsignore
+   D /trunk/docs/server/hosting/.cvsignore
+   M /trunk/docs/spec
+   D /trunk/docs/spec/.cvsignore
+   D /trunk/docs/spec/clientspec/.cvsignore
+   D /trunk/docs/spec/serverspec/.cvsignore
+   M /trunk/ggz-client-libs
+   D /trunk/ggz-client-libs/.cvsignore
+   D /trunk/ggz-client-libs/desktop/.cvsignore
+   D /trunk/ggz-client-libs/ggz-config/.cvsignore
+   D /trunk/ggz-client-libs/ggz-wrapper/.cvsignore
+   D /trunk/ggz-client-libs/ggzcore/.cvsignore
+   D /trunk/ggz-client-libs/ggzmod/.cvsignore
+   D /trunk/ggz-client-libs/ggzmod-ggz/.cvsignore
+   D /trunk/ggz-client-libs/man/.cvsignore
+   D /trunk/ggz-client-libs/po/.cvsignore
+   D /trunk/ggz-client-libs/tests/.cvsignore
+   M /trunk/ggzd
+   D /trunk/ggzd/.cvsignore
+   D /trunk/ggzd/doc/.cvsignore
+   D /trunk/ggzd/game_servers/.cvsignore
+   D /trunk/ggzd/game_servers/chess/.cvsignore
+   M /trunk/ggzd/game_servers/chess/libcgc
+   D /trunk/ggzd/game_servers/chess/libcgc/.cvsignore
+   D /trunk/ggzd/game_servers/chinese-checkers/.cvsignore
+   D /trunk/ggzd/game_servers/combat/.cvsignore
+   D /trunk/ggzd/game_servers/connectx/.cvsignore
+   D /trunk/ggzd/game_servers/dots/.cvsignore
+   D /trunk/ggzd/game_servers/escape/.cvsignore
+   D /trunk/ggzd/game_servers/geekgame/.cvsignore
+   D /trunk/ggzd/game_servers/ggzcards/.cvsignore
+   M /trunk/ggzd/game_servers/ggzcards/ai
+   D /trunk/ggzd/game_servers/ggzcards/ai/.cvsignore
+   M /trunk/ggzd/game_servers/ggzcards/client
+   D /trunk/ggzd/game_servers/ggzcards/client/.cvsignore
+   M /trunk/ggzd/game_servers/ggzcards/common
+   D /trunk/ggzd/game_servers/ggzcards/common/.cvsignore
+   D /trunk/ggzd/game_servers/ggzcards/config/.cvsignore
+   M /trunk/ggzd/game_servers/ggzcards/games
+   D /trunk/ggzd/game_servers/ggzcards/games/.cvsignore
+   D /trunk/ggzd/game_servers/hastings/.cvsignore
+   D /trunk/ggzd/game_servers/hastings/maps/.cvsignore
+   D /trunk/ggzd/game_servers/keepalive/.cvsignore
+   D /trunk/ggzd/game_servers/keepalive/ggzsh/.cvsignore
+   D /trunk/ggzd/game_servers/keepalive/src/.cvsignore
+   D /trunk/ggzd/game_servers/krosswater/.cvsignore
+   D /trunk/ggzd/game_servers/krosswater/stackpath/.cvsignore
+   D /trunk/ggzd/game_servers/krosswater/zoneserver/.cvsignore
+   D /trunk/ggzd/game_servers/lapocha/.cvsignore
+   D /trunk/ggzd/game_servers/muehle/.cvsignore
+   D /trunk/ggzd/game_servers/muehle/qtserv/.cvsignore
+   D /trunk/ggzd/game_servers/muehle/variants/.cvsignore
+   D /trunk/ggzd/game_servers/reversi/.cvsignore
+   D /trunk/ggzd/game_servers/spades/.cvsignore
+   D /trunk/ggzd/game_servers/tuxman/.cvsignore
+   D /trunk/ggzd/game_servers/widelands/.cvsignore
+   D /trunk/ggzd/ggzd/.cvsignore
+   D /trunk/ggzd/ggzd/database/.cvsignore
+   D /trunk/ggzd/ggzdmod/.cvsignore
+   M /trunk/ggzd/ggzdmod++
+   D /trunk/ggzd/man/.cvsignore
+   D /trunk/ggzd/tests/.cvsignore
+   M /trunk/gnome-client
+   D /trunk/gnome-client/.cvsignore
+   A /trunk/gnome-client/INSTALL
+   M /trunk/gnome-client/man
+   D /trunk/gnome-client/motd-editor/.cvsignore
+   D /trunk/gnome-client/pixmaps/.cvsignore
+   D /trunk/gnome-client/po/.cvsignore
+   D /trunk/gnome-client/src/.cvsignore
+   D /trunk/gnome-client/src/.deps/.cvsignore
+   D /trunk/grubby/.cvsignore
+   D /trunk/grubby/games/.cvsignore
+   D /trunk/grubby/games/guru-chess/.cvsignore
+   D /trunk/grubby/games/guru-ttt/.cvsignore
+   D /trunk/grubby/games/lib/.cvsignore
+   D /trunk/grubby/grubby/.cvsignore
+   D /trunk/grubby/grubby/data/.cvsignore
+   D /trunk/grubby/grubby/modules/.cvsignore
+   D /trunk/grubby/grubby/po/.cvsignore
+   D /trunk/grubby/grubby/src/.cvsignore
+   D /trunk/grubby/man/.cvsignore
+   D /trunk/grubby/man/de/.cvsignore
+   M /trunk/gtk-client
+   D /trunk/gtk-client/.cvsignore
+   D /trunk/gtk-client/doc/.cvsignore
+   D /trunk/gtk-client/gaim-plugin/.cvsignore
+   D /trunk/gtk-client/ggz-gtk/.cvsignore
+   D /trunk/gtk-client/ggz-gtk/glade/.cvsignore
+   D /trunk/gtk-client/man/.cvsignore
+   D /trunk/gtk-client/po/.cvsignore
+   M /trunk/gtk-games
+   D /trunk/gtk-games/.cvsignore
+   D /trunk/gtk-games/chess/.cvsignore
+   D /trunk/gtk-games/chess/bitmaps/.cvsignore
+   D /trunk/gtk-games/chess/glade/.cvsignore
+   D /trunk/gtk-games/chess/libcgc/.cvsignore
+   D /trunk/gtk-games/chinese-checkers/.cvsignore
+   D /trunk/gtk-games/chinese-checkers/glade/.cvsignore
+   D /trunk/gtk-games/chinese-checkers/pixmaps/.cvsignore
+   D /trunk/gtk-games/combat/.cvsignore
+   D /trunk/gtk-games/combat/glade/.cvsignore
+   D /trunk/gtk-games/combat/maps/.cvsignore
+   D /trunk/gtk-games/combat/pixmaps/.cvsignore
+   D /trunk/gtk-games/combat/pixmaps/default/.cvsignore
+   D /trunk/gtk-games/common/.cvsignore
+   D /trunk/gtk-games/common/cardsets/.cvsignore
+   D /trunk/gtk-games/dots/.cvsignore
+   D /trunk/gtk-games/ggzcards/.cvsignore
+   D /trunk/gtk-games/ggzcards/client/.cvsignore
+   D /trunk/gtk-games/ggzcards/common/.cvsignore
+   D /trunk/gtk-games/hastings/.cvsignore
+   D /trunk/gtk-games/hastings/pixmaps/.cvsignore
+   D /trunk/gtk-games/po/.cvsignore
+   D /trunk/gtk-games/po/chess/.cvsignore
+   D /trunk/gtk-games/po/chinese-checkers/.cvsignore
+   D /trunk/gtk-games/po/combat/.cvsignore
+   D /trunk/gtk-games/po/common/.cvsignore
+   D /trunk/gtk-games/po/dots/.cvsignore
+   D /trunk/gtk-games/po/ggzcards/.cvsignore
+   D /trunk/gtk-games/po/hastings/.cvsignore
+   D /trunk/gtk-games/po/reversi/.cvsignore
+   D /trunk/gtk-games/po/spades/.cvsignore
+   D /trunk/gtk-games/po/tictactoe/.cvsignore
+   D /trunk/gtk-games/reversi/.cvsignore
+   D /trunk/gtk-games/reversi/glade/.cvsignore
+   D /trunk/gtk-games/spades/.cvsignore
+   D /trunk/gtk-games/tictactoe/.cvsignore
+   M /trunk/kde-client
+   D /trunk/kde-client/.cvsignore
+   D /trunk/kde-client/compcal/.cvsignore
+   D /trunk/kde-client/compcal/data/.cvsignore
+   D /trunk/kde-client/compcal/src/.cvsignore
+   D /trunk/kde-client/compcal/src/lib/.cvsignore
+   D /trunk/kde-client/ggz-kde/.cvsignore
+   D /trunk/kde-client/ggz-kde/data/.cvsignore
+   D /trunk/kde-client/ggz-kde/data/browser/.cvsignore
+   D /trunk/kde-client/ggz-kde/data/icons/.cvsignore
+   D /trunk/kde-client/ggz-kde/data/icons/games/.cvsignore
+   D /trunk/kde-client/ggz-kde/data/icons/players/.cvsignore
+   D /trunk/kde-client/ggz-kde/data/kde/.cvsignore
+   D /trunk/kde-client/ggz-kde/data/splash/.cvsignore
+   D /trunk/kde-client/ggz-kde/doc/.cvsignore
+   D /trunk/kde-client/ggz-kde/doc/de/.cvsignore
+   D /trunk/kde-client/ggz-kde/ggzcore++/.cvsignore
+   D /trunk/kde-client/ggz-kde/ggzcore++/doc/.cvsignore
+   D /trunk/kde-client/ggz-kde/ggzcore++/doc/html/.cvsignore
+   D /trunk/kde-client/ggz-kde/ggzcore++/src/.cvsignore
+   D /trunk/kde-client/ggz-kde/po/.cvsignore
+   D /trunk/kde-client/ggz-kde/src/.cvsignore
+   D /trunk/kde-client/ggz-kde/src/abstract/.cvsignore
+   D /trunk/kde-client/ggz-kde/src/widgets/.cvsignore
+   M /trunk/kde-client/ggz-kde/src/widgets/more
+   D /trunk/kde-client/ggz-kde/src/widgets/more/.cvsignore
+   D /trunk/kde-client/ggzap/.cvsignore
+   D /trunk/kde-client/kcm_ggz/.cvsignore
+   D /trunk/kde-client/kcm_ggz/modules/.cvsignore
+   D /trunk/kde-client/keepalivecontrol/.cvsignore
+   D /trunk/kde-client/keepalivecontrol/data/.cvsignore
+   D /trunk/kde-client/keepalivecontrol/src/.cvsignore
+   D /trunk/kde-client/kgrubby/.cvsignore
+   D /trunk/kde-client/kgrubby/data/.cvsignore
+   D /trunk/kde-client/kgrubby/src/.cvsignore
+   D /trunk/kde-client/kio_ggz/.cvsignore
+   D /trunk/kde-client/kio_ggz/kioslave/.cvsignore
+   D /trunk/kde-client/kio_ggzmeta/.cvsignore
+   D /trunk/kde-client/kio_ggzmeta/kioslave/.cvsignore
+   D /trunk/kde-client/man/.cvsignore
+   D /trunk/kde-client/po/.cvsignore
+   D /trunk/kde-client/po/compcal/.cvsignore
+   D /trunk/kde-client/po/ggzap/.cvsignore
+   D /trunk/kde-client/po/kcm_ggz/.cvsignore
+   D /trunk/kde-client/po/kgrubby/.cvsignore
+   D /trunk/kde-client/po/shadowbridge/.cvsignore
+   D /trunk/kde-client/shadowbridge/.cvsignore
+   D /trunk/kde-client/shadowbridge/pics/.cvsignore
+   M /trunk/kde-games
+   D /trunk/kde-games/.cvsignore
+   D /trunk/kde-games/KReversi/.cvsignore
+   D /trunk/kde-games/KReversi/pixmaps/.cvsignore
+   D /trunk/kde-games/KReversi/pixmaps/blend/.cvsignore
+   D /trunk/kde-games/KReversi/pixmaps/default/.cvsignore
+   D /trunk/kde-games/KReversi/pixmaps/gtk-client/.cvsignore
+   D /trunk/kde-games/fyrdman/.cvsignore
+   D /trunk/kde-games/fyrdman/data/.cvsignore
+   D /trunk/kde-games/kcc/.cvsignore
+   D /trunk/kde-games/kcc/themes/.cvsignore
+   D /trunk/kde-games/kcc/themes/default/.cvsignore
+   D /trunk/kde-games/kdots/.cvsignore
+   D /trunk/kde-games/kdots/Dot/.cvsignore
+   D /trunk/kde-games/keepalive/.cvsignore
+   D /trunk/kde-games/keepalive/pics/.cvsignore
+   D /trunk/kde-games/keepalive/src/.cvsignore
+   D /trunk/kde-games/koenig/.cvsignore
+   D /trunk/kde-games/koenig/libcgc/.cvsignore
+   D /trunk/kde-games/koenig/pics/.cvsignore
+   D /trunk/kde-games/koenig/pieces/.cvsignore
+   D /trunk/kde-games/krosswater/.cvsignore
+   D /trunk/kde-games/krosswater/gfx/.cvsignore
+   D /trunk/kde-games/krosswater/zoneclient/.cvsignore
+   D /trunk/kde-games/ktictactux/.cvsignore
+   D /trunk/kde-games/ktictactux/themes/.cvsignore
+   D /trunk/kde-games/lib/.cvsignore
+   D /trunk/kde-games/man/.cvsignore
+   D /trunk/kde-games/muehle/.cvsignore
+   D /trunk/kde-games/muehle/doc/.cvsignore
+   D /trunk/kde-games/muehle/pics/.cvsignore
+   D /trunk/kde-games/muehle/pics/alt/.cvsignore
+   D /trunk/kde-games/muehle/pics/standard/.cvsignore
+   D /trunk/kde-games/muehle/src/.cvsignore
+   D /trunk/kde-games/muehle/src/ai/.cvsignore
+   D /trunk/kde-games/muehle/src/ggzwrap/.cvsignore
+   D /trunk/kde-games/muehle/variants/.cvsignore
+   D /trunk/kde-games/po/.cvsignore
+   D /trunk/kde-games/po/KReversi/.cvsignore
+   D /trunk/kde-games/po/fyrdman/.cvsignore
+   D /trunk/kde-games/po/kdots/.cvsignore
+   D /trunk/kde-games/po/koenig/.cvsignore
+   D /trunk/kde-games/po/krosswater/.cvsignore
+   D /trunk/kde-games/po/ktictactux/.cvsignore
+   D /trunk/kde-games/po/muehle/.cvsignore
+   M /trunk/libggz
+   D /trunk/libggz/.cvsignore
+   D /trunk/libggz/man/.cvsignore
+   M /trunk/libggz/src
+   D /trunk/libggz/src/.cvsignore
+   D /trunk/libggz/src/security/.cvsignore
+   D /trunk/libggz/tests/.cvsignore
+   M /trunk/playground/README
+   D /trunk/playground/agrue/agrue/.cvsignore
+   D /trunk/playground/colorsniff/.cvsignore
+   D /trunk/playground/ggz-java/distributed-ggz/classes/.cvsignore
+   D /trunk/playground/ggz-java/tictactoe/classes/.cvsignore
+   D /trunk/playground/ggz-java/tictactoe/classes/GGZ/.cvsignore
+   D /trunk/playground/ggz-java/tictactoeclient/.cvsignore
+   M /trunk/playground/ggz-ruby/ai-ttt/ttt-ai.c
+   D /trunk/playground/ggz-ruby/ruggzdmod/.cvsignore
+   D /trunk/playground/kopete-ggz/.cvsignore
+   D /trunk/playground/sdl-games/tuxman-server/.cvsignore
+   D /trunk/playground/sdl-games/tuxman-server/lib/.cvsignore
+   D /trunk/python/.cvsignore
+   M /trunk/python/chess
+   M /trunk/python/escape-sdl
+   D /trunk/python/escape-sdl/.cvsignore
+   M /trunk/python/ggzboard
+   D /trunk/python/ggzboard/.cvsignore
+   D /trunk/python/go/.cvsignore
+   M /trunk/python/lib
+   D /trunk/python/po/.cvsignore
+   D /trunk/python/pyggzchess/.cvsignore
+   D /trunk/python/pyggzcore/.cvsignore
+   D /trunk/python/pyggzdmod/.cvsignore
+   D /trunk/python/pyggzmod/.cvsignore
+   D /trunk/python/pyrsvgsdl/.cvsignore
+   M /trunk/python/xadrez-chines
+   D /trunk/python/xadrez-chines/.cvsignore
+   M /trunk/sdl-games
+   D /trunk/sdl-games/.cvsignore
+   D /trunk/sdl-games/geekgame/.cvsignore
+   D /trunk/sdl-games/geekgame/graphics/.cvsignore
+   D /trunk/sdl-games/ttt3d/.cvsignore
+   M /trunk/txt-client
+   D /trunk/txt-client/.cvsignore
+   D /trunk/txt-client/ggz-txt/.cvsignore
+   D /trunk/txt-client/man/.cvsignore
+   D /trunk/txt-client/po/.cvsignore
+   D /trunk/txt-client/tttxt/.cvsignore
+   M /trunk/utils
+   D /trunk/utils/.cvsignore
+   D /trunk/utils/cmd-client/.cvsignore
+   D /trunk/utils/ggzcomm/.cvsignore
+   D /trunk/utils/man/.cvsignore
+   D /trunk/utils/metaserv/.cvsignore
+   D /trunk/utils/metaserv/gui-qt/.cvsignore
+   D /trunk/utils/metaserv/metaserv/.cvsignore
+   D /trunk/utils/metaserv/minidom/.cvsignore
+   D /trunk/utils/telggz/.cvsignore
+   D /trunk/www/docs/.cvsignore
+
+This week's XXL commit!
+- removal of all .cvsignore files
+- addition of *.a, *.os, ... to svn:ignore
+
+
+------------------------------------------------------------------------
+r7601 | josef | 2005-09-28 01:37:04 +0200 (Mi, 28 Sep 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggzd/configure.ac
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/configure.ac
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/configure.ac
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/gtk-games/configure.ac
+   M /trunk/gtk-games/m4/ggz.m4
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/txt-client/configure.ac
+   M /trunk/txt-client/m4/ggz.m4
+   M /trunk/utils/configure.ac
+   M /trunk/utils/m4/ggz.m4
+
+- move prefix sanitiser into AC_GGZ_INIT
+- remove all assumptions over prefix being NONE
+
+
+------------------------------------------------------------------------
+r7593 | josef | 2005-09-25 20:25:14 +0200 (So, 25 Sep 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- big changelog update (2.3 MB... due to new formatting)
+
+
+------------------------------------------------------------------------
+r7551 | josef | 2005-09-25 12:11:25 +0200 (So, 25 Sep 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/Makefile
+   M /trunk/community/web/common/htconf-dist
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- more version string changes in the build system
+
+
+------------------------------------------------------------------------
+r7550 | josef | 2005-09-25 11:54:30 +0200 (So, 25 Sep 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/NEWS
+   M /trunk/community/README.GGZ
+   M /trunk/docs/NEWS
+   M /trunk/docs/README.GGZ
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/README.GGZ
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/README
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/grubby/README.GGZ
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README
+   M /trunk/gtk-games/README.GGZ
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/README
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/README
+   M /trunk/kde-games/README.GGZ
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/README.GGZ
+   M /trunk/python/NEWS
+   M /trunk/python/README
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/README
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README.GGZ
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+   M /trunk/utils/README.GGZ
+
+- version updates in common files
+- news and release-specific changes
+
+
+------------------------------------------------------------------------
+r7547 | josef | 2005-09-23 23:54:25 +0200 (Fr, 23 Sep 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/COPYING
+   M /trunk/ggz-client-libs/COPYING
+   M /trunk/ggzd/COPYING
+   A /trunk/gnome-client/COPYING
+   M /trunk/grubby/COPYING
+   M /trunk/gtk-client/COPYING
+   M /trunk/gtk-games/COPYING
+   M /trunk/kde-client/COPYING
+   M /trunk/kde-games/COPYING
+   M /trunk/libggz/COPYING
+   M /trunk/playground/COPYING
+   M /trunk/python/COPYING
+   A /trunk/sdl-games/COPYING
+   M /trunk/txt-client/COPYING
+   M /trunk/utils/COPYING
+
+- add copyright files for gnome-client and sdl-games to SVN
+- update all copyright files with current version, including the new FSF address in Boston
+
+
+------------------------------------------------------------------------
+r7531 | josef | 2005-09-18 01:16:23 +0200 (So, 18 Sep 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/ttt3d/module.dsc.in
+
+- add 3D to the name
+
+
+------------------------------------------------------------------------
+r7516 | josef | 2005-09-15 20:00:53 +0200 (Do, 15 Sep 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/autogen.sh
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/autogen.sh
+   M /trunk/gtk-games/configure.ac
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/autogen.sh
+   M /trunk/kde-games/configure.ac
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/autogen.sh
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/autogen.sh
+   M /trunk/utils/configure.ac
+
+- synchronisation of all autogen.sh files
+- quick fixes in configure.ac's (but they really need a cleanup also)
+
+
+------------------------------------------------------------------------
+r7464 | josef | 2005-08-20 23:41:45 +0200 (Sa, 20 Aug 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/Makefile.am
+   M /trunk/gtk-games/configure.ac
+   D /trunk/gtk-games/package.in
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- bump version to 0.0.12pre to not create *-0.0.11.tar.gz files
+- remove the gtk-games override stuff
+
+
+------------------------------------------------------------------------
+r7429 | josef | 2005-08-15 11:47:11 +0200 (Mo, 15 Aug 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/ttt3d/module.dsc.in
+
+- homepage update
+
+
+------------------------------------------------------------------------
+r7379 | josef | 2005-08-13 14:55:05 +0200 (Sa, 13 Aug 2005) | 7 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/configure.ac
+   M /trunk/sdl-games/m4/ggz.m4
+
+- add /usr/local/include and /usr/local/lib to default search paths when using 'export'
+
+This is needed for FreeBSD's system libs like gettext. Ultimatively, the same exported
+arguments for the GGZ prefix should go away as $(GGZ*_LDFLAGS) and $(GGZ*_INCLUDES)
+should be used in any case.
+
+
+------------------------------------------------------------------------
+r7378 | josef | 2005-08-13 12:44:47 +0200 (Sa, 13 Aug 2005) | 7 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/m4/ggz.m4
+
+- 7 lines of checking for --enable-noregistry=/foo/bar...
+
+The ebuilds, debian packages and such should use this parameter to avoid
+all the hacks (and maybe come up with a better name which does not involve
+double-negation somehow)
+
+
+------------------------------------------------------------------------
+r7367 | josef | 2005-08-06 10:32:26 +0200 (Sa, 06 Aug 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/gtk-games/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/txt-client/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+- global m4 file synchronisation (now that is fun with subversion)
+- also a test for the changed commit script which crops at 20 kB diff size
+
+
+------------------------------------------------------------------------
+r7271 | josef | 2005-06-10 14:43:29 +0200 (Fr, 10 Jun 2005) | 4 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/sdl-games/geekgame/main.c
+   M /trunk/sdl-games/geekgame/wwwget.c
+
+- GCC4 fixes
+- remove the crappy #ifdef FOO_H constructs (they don't make sense)
+- changelog
+
+------------------------------------------------------------------------
+r7216 | josef | 2005-05-21 13:13:11 +0200 (Sa, 21 Mai 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/docs/AUTHORS
+   M /trunk/docs/NEWS
+   M /trunk/docs/QuickStart.GGZ
+   M /trunk/docs/README.GGZ
+   M /trunk/ggz/game_clients/AUTHORS
+   M /trunk/ggz/game_clients/NEWS
+   M /trunk/ggz/game_clients/QuickStart.GGZ
+   M /trunk/ggz/game_clients/README
+   M /trunk/ggz/game_clients/README.GGZ
+   M /trunk/ggz-client-libs/AUTHORS
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/QuickStart.GGZ
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggz-txt-client/AUTHORS
+   M /trunk/ggz-txt-client/NEWS
+   M /trunk/ggz-txt-client/QuickStart.GGZ
+   M /trunk/ggz-txt-client/README.GGZ
+   M /trunk/ggzd/AUTHORS
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/README.GGZ
+   M /trunk/gnome-client/AUTHORS
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/QuickStart.GGZ
+   M /trunk/gnome-client/README
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/grubby/AUTHORS
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/grubby/README.GGZ
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/QuickStart.GGZ
+   M /trunk/gtk-client/README
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/kde-client/AUTHORS
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/QuickStart.GGZ
+   M /trunk/kde-client/README
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-games/AUTHORS
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/QuickStart.GGZ
+   M /trunk/kde-games/README
+   M /trunk/kde-games/README.GGZ
+   M /trunk/libggz/README
+   M /trunk/python/AUTHORS
+   M /trunk/python/NEWS
+   M /trunk/python/QuickStart.GGZ
+   M /trunk/python/README
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/AUTHORS
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/README
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/utils/AUTHORS
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+   M /trunk/utils/README.GGZ
+
+- common files synchronisation and README update for 0.0.11
+
+------------------------------------------------------------------------
+r7214 | josef | 2005-05-21 12:46:02 +0200 (Sa, 21 Mai 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz/game_clients/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggz-txt-client/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/utils/configure.ac
+
+- LET version = 0.0.11
+
+------------------------------------------------------------------------
+r7182 | josef | 2005-05-06 23:19:56 +0200 (Fr, 06 Mai 2005) | 5 lines
+Geänderte Pfade:
+   M /trunk/ggz/game_clients/m4/ggz.m4
+   M /trunk/ggz-txt-client/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+- synchronization of ggz.m4 files
+- fixes typo: use ggzdconfdir instead of ggzconfdir
+- fixes compiler problems: use -isystem X instead of -isystemX
+- fixes ggzcore linkage force in ggzmod problem
+
+------------------------------------------------------------------------
+r6920 | josef | 2005-02-04 17:13:04 +0100 (Fr, 04 Feb 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz/game_clients/configure.ac
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+
+- use new ggz-config modification
+
+------------------------------------------------------------------------
+r6918 | josef | 2005-02-04 16:59:43 +0100 (Fr, 04 Feb 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz/game_clients/m4/ggz.m4
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggz-txt-client/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+- synchronize
+
+------------------------------------------------------------------------
+r6903 | jdorje | 2005-01-25 19:57:38 +0100 (Di, 25 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz/game_clients/chess/main.c
+   M /trunk/ggz/game_clients/chess/net.c
+   M /trunk/ggz/game_clients/chess/net.h
+   M /trunk/ggz/game_clients/common/dlg_chat.c
+   M /trunk/ggz/game_clients/common/dlg_players.c
+   M /trunk/ggz/game_clients/common/ggz_gtk.c
+   M /trunk/ggz/game_clients/ggzcards/client/client.c
+   M /trunk/ggz/game_clients/spades/client_func.c
+   M /trunk/ggz/src/ggzcore/game.c
+   M /trunk/ggz-client-libs/ggzmod/ggzmod-ggz.h
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.h
+   M /trunk/ggz-txt-client/tttxt/main.c
+   M /trunk/grubby/games/lib/ggzpassive.c
+   M /trunk/kde-games/KReversi/network.cpp
+   M /trunk/kde-games/KReversi/network.h
+   M /trunk/kde-games/fyrdman/network.cpp
+   M /trunk/kde-games/fyrdman/network.h
+   M /trunk/kde-games/kcc/kccproto.cpp
+   M /trunk/kde-games/kcc/kccproto.h
+   M /trunk/kde-games/kdots/kdots_proto.cpp
+   M /trunk/kde-games/kdots/kdots_proto.h
+   M /trunk/kde-games/keepalive/src/network.cpp
+   M /trunk/kde-games/keepalive/src/network.h
+   M /trunk/kde-games/koenig/ggz.cc
+   M /trunk/kde-games/koenig/ggz.h
+   M /trunk/kde-games/krosswater/zoneclient/ZoneGGZModUI.cpp
+   M /trunk/kde-games/krosswater/zoneclient/ZoneGGZModUI.h
+   M /trunk/kde-games/ktictactux/ktictactuxproto.cpp
+   M /trunk/kde-games/ktictactux/ktictactuxproto.h
+   M /trunk/kde-games/muehle/src/ggzwrap/ggzwrap.c
+   M /trunk/sdl-games/geekgame/main.c
+   M /trunk/sdl-games/ttt3d/main.c
+
+Change ggzmod event handler functions to take a const data parameter.
+
+------------------------------------------------------------------------
+r6866 | jdorje | 2005-01-24 02:39:48 +0100 (Mo, 24 Jan 2005) | 7 lines
+Geänderte Pfade:
+   M /trunk/ggz/game_clients/m4/ggz.m4
+   M /trunk/ggz/src/ggzcore/game.c
+   A /trunk/ggz/src/ggzcore/ggzcore-ggz.h
+   M /trunk/ggz/src/ggzcore/ggzcore.h
+   M /trunk/ggz/src/ggzcore/server.c
+   M /trunk/ggz-client-libs/ggzmod/Makefile.am
+   M /trunk/ggz-client-libs/ggzmod/ggzmod-ggz.h
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.c
+   M /trunk/ggz-client-libs/ggzmod/io.c
+   M /trunk/ggz-client-libs/ggzmod/io.h
+   M /trunk/ggz-client-libs/ggzmod/mod.h
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggz-txt-client/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+Change the way channels are created at the client side.  The GGZ client
+does not create the channel.  Instead the channel connection data is sent
+to the game which makes the connection itself.  This means ggzmod needs
+to call the channel-creation function from within ggzcore, adding a new
+library dependency.  This is solved by linking ggzcore in along with
+ggzmod inside AC_GGZ_GGZMOD.
+
+------------------------------------------------------------------------
+r6856 | josef | 2005-01-23 22:23:07 +0100 (So, 23 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/docs/AUTHORS
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz/game_clients/AUTHORS
+   M /trunk/ggz/game_clients/ChangeLog
+   M /trunk/ggz-client-libs/AUTHORS
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggz-txt-client/AUTHORS
+   M /trunk/ggz-txt-client/ChangeLog
+   M /trunk/ggzd/AUTHORS
+   M /trunk/ggzd/ChangeLog
+   M /trunk/gnome-client/AUTHORS
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/grubby/AUTHORS
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/kde-client/AUTHORS
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/AUTHORS
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/AUTHORS
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/AUTHORS
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/AUTHORS
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/utils/AUTHORS
+   M /trunk/utils/ChangeLog
+
+- authors and changelog
+
+------------------------------------------------------------------------
+r6844 | josef | 2005-01-23 14:20:29 +0100 (So, 23 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/docs/NEWS
+   M /trunk/ggz/game_clients/NEWS
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-txt-client/NEWS
+   M /trunk/ggzd/NEWS
+   M /trunk/gnome-client/NEWS
+   M /trunk/grubby/NEWS
+   M /trunk/gtk-client/NEWS
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-games/NEWS
+   M /trunk/libggz/NEWS
+   M /trunk/python/NEWS
+   M /trunk/sdl-games/NEWS
+   M /trunk/utils/NEWS
+
+- news update
+
+------------------------------------------------------------------------
+r6843 | josef | 2005-01-23 14:12:48 +0100 (So, 23 Jan 2005) | 2 lines
+Geänderte Pfade:
+   A /trunk/community/NEWS
+   M /trunk/docs/QuickStart.GGZ
+   M /trunk/docs/README.GGZ
+   M /trunk/ggz/game_clients/QuickStart.GGZ
+   M /trunk/ggz/game_clients/README
+   M /trunk/ggz/game_clients/README.GGZ
+   M /trunk/ggz-client-libs/QuickStart.GGZ
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggz-txt-client/QuickStart.GGZ
+   M /trunk/ggz-txt-client/README.GGZ
+   M /trunk/ggzd/README.GGZ
+   M /trunk/gnome-client/QuickStart.GGZ
+   M /trunk/gnome-client/README
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/grubby/README
+   M /trunk/grubby/README.GGZ
+   M /trunk/gtk-client/QuickStart.GGZ
+   M /trunk/gtk-client/README
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/kde-client/QuickStart.GGZ
+   M /trunk/kde-client/README
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-games/QuickStart.GGZ
+   M /trunk/kde-games/README
+   M /trunk/kde-games/README.GGZ
+   M /trunk/libggz/QuickStart.GGZ
+   M /trunk/libggz/README.GGZ
+   M /trunk/python/QuickStart.GGZ
+   M /trunk/python/README
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/README
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/utils/README
+   M /trunk/utils/README.GGZ
+
+- updated common files
+
+------------------------------------------------------------------------
+r6824 | jdorje | 2005-01-22 20:22:53 +0100 (Sa, 22 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz/game_clients/m4/ggz.m4
+   M /trunk/ggz-txt-client/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+Search for .la files instead of .so.
+
+------------------------------------------------------------------------
+r6812 | josef | 2005-01-22 16:28:57 +0100 (Sa, 22 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/docs/games/game-development/ggz-game-development-guide.texi
+   M /trunk/docs/ggz-project/GGZ-contributions
+   M /trunk/ggz/game_clients/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggz-txt-client/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/utils/configure.ac
+
+- version number bump
+
+------------------------------------------------------------------------
+r6759 | jdorje | 2005-01-20 06:17:31 +0100 (Do, 20 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/configure.ac
+   M /trunk/sdl-games/geekgame/intro.c
+   M /trunk/sdl-games/geekgame/main.c
+   M /trunk/sdl-games/geekgame/wwwget.c
+   M /trunk/sdl-games/ttt3d/display.c
+   M /trunk/sdl-games/ttt3d/main.c
+
+Portability improvements.
+
+------------------------------------------------------------------------
+r6758 | jdorje | 2005-01-20 06:04:45 +0100 (Do, 20 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/configure.ac
+
+Autoconf cleanup.
+
+------------------------------------------------------------------------
+r6757 | jdorje | 2005-01-20 05:48:05 +0100 (Do, 20 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/Makefile.am
+   A /trunk/sdl-games/m4/sdl.m4
+
+Add sdl.m4.
+
+------------------------------------------------------------------------
+r6675 | jdorje | 2005-01-14 08:01:43 +0100 (Fr, 14 Jan 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz/game_clients/m4/ggz.m4
+   M /trunk/ggz-client-libs/Makefile.am
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   A /trunk/ggz-client-libs/m4/iconv.m4
+   M /trunk/ggz-txt-client/Makefile.am
+   M /trunk/ggz-txt-client/m4/ggz.m4
+   A /trunk/ggz-txt-client/m4/iconv.m4
+   M /trunk/ggzd/Makefile.am
+   M /trunk/ggzd/m4/ggz.m4
+   A /trunk/ggzd/m4/iconv.m4
+   M /trunk/gnome-client/Makefile.am
+   M /trunk/gnome-client/m4/ggz.m4
+   A /trunk/gnome-client/m4/iconv.m4
+   M /trunk/grubby/Makefile.am
+   M /trunk/grubby/m4/ggz.m4
+   A /trunk/grubby/m4/iconv.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/kde-client/Makefile.am
+   M /trunk/kde-client/m4/ggz.m4
+   A /trunk/kde-client/m4/iconv.m4
+   M /trunk/kde-games/Makefile.am
+   M /trunk/kde-games/m4/ggz.m4
+   A /trunk/kde-games/m4/iconv.m4
+   M /trunk/libggz/Makefile.am
+   M /trunk/libggz/m4/ggz.m4
+   A /trunk/libggz/m4/iconv.m4
+   M /trunk/sdl-games/Makefile.am
+   M /trunk/sdl-games/m4/ggz.m4
+   A /trunk/sdl-games/m4/iconv.m4
+   M /trunk/utils/Makefile.am
+   M /trunk/utils/m4/ggz.m4
+   A /trunk/utils/m4/iconv.m4
+
+Add support for libintl and libiconv to AC_GGZ_INTL.  This is needed to
+compile at all on non-glibc systems.
+
+------------------------------------------------------------------------
+r6643 | jdorje | 2005-01-13 03:23:59 +0100 (Do, 13 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz/game_clients/m4/ggz.m4
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggz-txt-client/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+Fix a typo in checking for libintl.h and locale.h.
+
+------------------------------------------------------------------------
+r6641 | jdorje | 2005-01-13 02:45:15 +0100 (Do, 13 Jan 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz/game_clients/m4/ggz.m4
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggz-txt-client/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+Define ENABLE_NLS if NLS is present.  This is standard, even though it's
+not helpful for most packages since NLS is manditory.
+
+------------------------------------------------------------------------
+r6638 | jdorje | 2005-01-11 18:36:35 +0100 (Di, 11 Jan 2005) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz/game_clients/m4/ggz.m4
+   M /trunk/ggz-txt-client/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/libggz/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+Make AC_GGZ_INTL fail if the gettext functions are not available.  It also
+checks for the header files but doesn't fail if they're not present.
+
+------------------------------------------------------------------------
+r6636 | jdorje | 2005-01-11 04:14:32 +0100 (Di, 11 Jan 2005) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz/src/frontend/kde/ggzcore++/src/Makefile.am
+   M /trunk/ggz/src/frontend/kde/src/Makefile.am
+   M /trunk/ggz/src/frontend/kde/src/abstract/Makefile.am
+   M /trunk/ggz/src/frontend/kde/src/widgets/Makefile.am
+   M /trunk/ggz/src/frontend/kde/src/widgets/more/Makefile.am
+   M /trunk/ggz/src/frontend/text/Makefile.am
+   M /trunk/ggz-client-libs/ggz-wrapper/Makefile.am
+   M /trunk/ggz-txt-client/tttxt/Makefile.am
+   M /trunk/gnome-client/src/Makefile.am
+   M /trunk/grubby/games/guru-chess/Makefile.am
+   M /trunk/grubby/games/guru-ttt/Makefile.am
+   M /trunk/grubby/games/lib/Makefile.am
+   M /trunk/grubby/grubby/modules/Makefile.am
+   M /trunk/grubby/grubby/src/Makefile.am
+   M /trunk/gtk-client/gaim-plugin/Makefile.am
+   M /trunk/kde-client/compcal/src/Makefile.am
+   M /trunk/kde-client/compcal/src/lib/Makefile.am
+   M /trunk/kde-client/ggzap/Makefile.am
+   M /trunk/kde-client/kcm_ggz/Makefile.am
+   M /trunk/kde-client/kcm_ggz/modules/Makefile.am
+   M /trunk/kde-client/keepalivecontrol/src/Makefile.am
+   M /trunk/kde-client/kio_ggz/Makefile.am
+   M /trunk/kde-client/kio_ggzmeta/Makefile.am
+   M /trunk/kde-client/modsniff/Makefile.am
+   M /trunk/kde-client/shadowbridge/Makefile.am
+   M /trunk/kde-games/KReversi/Makefile.am
+   M /trunk/kde-games/fyrdman/Makefile.am
+   M /trunk/kde-games/kcc/Makefile.am
+   M /trunk/kde-games/kdots/Dot/Makefile.am
+   M /trunk/kde-games/kdots/Makefile.am
+   M /trunk/kde-games/keepalive/src/Makefile.am
+   M /trunk/kde-games/koenig/Makefile.am
+   M /trunk/kde-games/krosswater/Makefile.am
+   M /trunk/kde-games/krosswater/zoneclient/Makefile.am
+   M /trunk/kde-games/ktictactux/Makefile.am
+   M /trunk/kde-games/lib/Makefile.am
+   M /trunk/kde-games/muehle/src/Makefile.am
+   M /trunk/kde-games/muehle/src/ggzwrap/Makefile.am
+   M /trunk/sdl-games/geekgame/Makefile.am
+   M /trunk/sdl-games/ttt3d/Makefile.am
+
+Replace deprated INCLUDES directive with AM_CPPFLAGS.
+
+------------------------------------------------------------------------
+r6431 | josef | 2004-11-28 18:22:45 +0100 (So, 28 Nov 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/ttt3d/display.c
+   M /trunk/sdl-games/ttt3d/display.h
+
+- do not hardcode texture path anymore, use install prefix (oops)
+
+------------------------------------------------------------------------
+r6430 | josef | 2004-11-28 17:58:55 +0100 (So, 28 Nov 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/configure.ac
+
+- create geekgame graphics directory
+
+------------------------------------------------------------------------
+r6429 | josef | 2004-11-28 17:58:37 +0100 (So, 28 Nov 2004) | 3 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/Makefile.am
+   D /trunk/sdl-games/geekgame/bot.png
+   D /trunk/sdl-games/geekgame/default.png
+   A /trunk/sdl-games/geekgame/graphics
+   A /trunk/sdl-games/geekgame/graphics/.cvsignore
+   A /trunk/sdl-games/geekgame/graphics/Makefile.am
+   A /trunk/sdl-games/geekgame/graphics/banner.bmp
+   A /trunk/sdl-games/geekgame/graphics/board.bmp
+   A /trunk/sdl-games/geekgame/graphics/bot.png
+   A /trunk/sdl-games/geekgame/graphics/default.png
+   A /trunk/sdl-games/geekgame/graphics/icon.png
+   A /trunk/sdl-games/geekgame/graphics/lines.bmp
+   A /trunk/sdl-games/geekgame/graphics/one.png
+   A /trunk/sdl-games/geekgame/graphics/tmp.png
+   A /trunk/sdl-games/geekgame/graphics/zero.png
+   D /trunk/sdl-games/geekgame/icon.png
+   A /trunk/sdl-games/geekgame/intro.c
+   A /trunk/sdl-games/geekgame/intro.h
+   M /trunk/sdl-games/geekgame/main.c
+   D /trunk/sdl-games/geekgame/one.png
+   D /trunk/sdl-games/geekgame/tmp.png
+   D /trunk/sdl-games/geekgame/zero.png
+
+- 3D intro screen for geekgame
+- move graphics into subdirectory
+
+------------------------------------------------------------------------
+r6426 | josef | 2004-11-28 00:21:26 +0100 (So, 28 Nov 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/m4/ggz.m4
+
+- synchronize with other m4 files
+
+------------------------------------------------------------------------
+r6153 | josef | 2004-07-18 02:37:08 +0200 (So, 18 Jul 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz/game_clients/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggz-txt-client/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- changelog update
+
+------------------------------------------------------------------------
+r6131 | josef | 2004-07-17 04:29:24 +0200 (Sa, 17 Jul 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz-txt-client/tttxt/module.dsc.in
+   M /trunk/sdl-games/ttt3d/module.dsc.in
+
+- TTT protocol bump
+
+------------------------------------------------------------------------
+r6117 | josef | 2004-07-16 21:08:39 +0200 (Fr, 16 Jul 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/docs/AUTHORS
+   M /trunk/docs/NEWS
+   M /trunk/docs/QuickStart.GGZ
+   M /trunk/docs/README.GGZ
+   M /trunk/docs/configure.ac
+   M /trunk/ggz/game_clients/AUTHORS
+   M /trunk/ggz/game_clients/NEWS
+   M /trunk/ggz/game_clients/QuickStart.GGZ
+   M /trunk/ggz/game_clients/README
+   M /trunk/ggz/game_clients/README.GGZ
+   M /trunk/ggz/game_clients/configure.ac
+   M /trunk/ggz-client-libs/AUTHORS
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/QuickStart.GGZ
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggz-txt-client/AUTHORS
+   M /trunk/ggz-txt-client/NEWS
+   M /trunk/ggz-txt-client/QuickStart.GGZ
+   M /trunk/ggz-txt-client/README.GGZ
+   M /trunk/ggz-txt-client/configure.ac
+   M /trunk/ggzd/AUTHORS
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README.GGZ
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/AUTHORS
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/QuickStart.GGZ
+   M /trunk/gnome-client/README
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/AUTHORS
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/grubby/README.GGZ
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/QuickStart.GGZ
+   M /trunk/gtk-client/README
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-client/configure.ac
+   M /trunk/kde-client/AUTHORS
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/QuickStart.GGZ
+   M /trunk/kde-client/README
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/AUTHORS
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/QuickStart.GGZ
+   M /trunk/kde-games/README
+   M /trunk/kde-games/README.GGZ
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/AUTHORS
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/QuickStart.GGZ
+   M /trunk/libggz/README.GGZ
+   M /trunk/libggz/configure.ac
+   M /trunk/sdl-games/AUTHORS
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/README
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/sdl-games/configure.ac
+   M /trunk/utils/AUTHORS
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+   M /trunk/utils/README.GGZ
+   M /trunk/utils/configure.ac
+
+- 0.0.9 updates propagation
+
+------------------------------------------------------------------------
+r5832 | jdorje | 2004-02-07 22:40:41 +0100 (Sa, 07 Feb 2004) | 5 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/main.c
+   M /trunk/sdl-games/geekgame/wwwget.c
+
+Fix some mostly harmless compiler warnings:
+  - Some functions should be static.
+  - One header #include was missing.
+  - One unused variable because of some #ifdefs.
+
+------------------------------------------------------------------------
+r5790 | josef | 2004-02-05 11:46:53 +0100 (Do, 05 Feb 2004) | 7 lines
+Geänderte Pfade:
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz/game_clients/ChangeLog
+   M /trunk/ggz/game_clients/NEWS
+   M /trunk/ggz/game_clients/QuickStart.GGZ
+   M /trunk/ggz/game_clients/README
+   M /trunk/ggz/game_clients/README.GGZ
+   M /trunk/ggz/game_clients/configure.ac
+   M /trunk/ggz/src/frontend/kde/po/es.po
+   M /trunk/ggz/src/frontend/kde/po/fr.po
+   M /trunk/ggz/src/frontend/kde/po/pt_BR.po
+   M /trunk/ggz/src/ggzcore/ggz-config.c
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/QuickStart.GGZ
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggz-txt-client/ChangeLog
+   M /trunk/ggz-txt-client/NEWS
+   M /trunk/ggz-txt-client/QuickStart.GGZ
+   M /trunk/ggz-txt-client/README
+   M /trunk/ggz-txt-client/README.GGZ
+   M /trunk/ggz-txt-client/configure.ac
+   M /trunk/ggzd/ChangeLog
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/README.GGZ
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/QuickStart.GGZ
+   M /trunk/gnome-client/README
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/ChangeLog
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/grubby/README.GGZ
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/QuickStart.GGZ
+   M /trunk/gtk-client/README
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-client/configure.ac
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/QuickStart.GGZ
+   M /trunk/kde-client/README
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/ChangeLog
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/QuickStart.GGZ
+   M /trunk/kde-games/README
+   M /trunk/kde-games/README.GGZ
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/ChangeLog
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/QuickStart.GGZ
+   M /trunk/libggz/README
+   M /trunk/libggz/README.GGZ
+   M /trunk/libggz/configure.ac
+   A /trunk/python/ChangeLog
+   A /trunk/python/NEWS
+   M /trunk/python/README
+   A /trunk/python/README.GGZ
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/README
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/sdl-games/configure.ac
+   M /trunk/utils/ChangeLog
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+   M /trunk/utils/README.GGZ
+   M /trunk/utils/configure.ac
+
+- synchronized NEWS, README.GGZ and QuickStart.GGZ from docs
+- updated README
+  * new URLs for developers, bugs, website
+  * no more per-package maintainer mention (it was never valid anyway)
+- updated configure.ac to indicate final version 0.0.8
+- ChangeLog updates
+
+------------------------------------------------------------------------
+r5777 | josef | 2004-02-01 15:21:14 +0100 (So, 01 Feb 2004) | 3 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/main.c
+   M /trunk/sdl-games/geekgame/module.dsc.in
+
+- bump protocol version
+- bump game client version
+
+------------------------------------------------------------------------
+r5770 | josef | 2004-01-31 11:54:44 +0100 (Sa, 31 Jan 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz/game_clients/autogen.sh
+   M /trunk/ggz/game_clients/m4/ggz.m4
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggz-txt-client/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/gnome-client/autogen.sh
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/autogen.sh
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/autogen.sh
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/utils/autogen.sh
+   M /trunk/utils/m4/ggz.m4
+
+- sync common files
+
+------------------------------------------------------------------------
+r5766 | josef | 2004-01-30 23:09:19 +0100 (Fr, 30 Jan 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/main.c
+
+- fix reading the map and its dimensions
+
+------------------------------------------------------------------------
+r5753 | josef | 2004-01-27 19:06:22 +0100 (Di, 27 Jan 2004) | 3 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/configure.ac
+   M /trunk/sdl-games/m4/ggz.m4
+
+- when using Xcursor, use Xrender too
+- use new maintainer list address
+
+------------------------------------------------------------------------
+r5740 | dr_maux | 2004-01-17 19:46:28 +0100 (Sa, 17 Jan 2004) | 2 lines
+Geänderte Pfade:
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz/game_clients/autogen.sh
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggz-txt-client/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/gnome-client/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/autogen.sh
+   M /trunk/libggz/autogen.sh
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/utils/autogen.sh
+
+- sync
+
+------------------------------------------------------------------------
+r5729 | dr_maux | 2003-12-31 18:10:47 +0100 (Mi, 31 Dez 2003) | 3 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/configure.ac
+
+- use new-style AC_INIT
+- remove (unneeded?) AC_ARG_PROGRAM
+
+------------------------------------------------------------------------
+r5710 | dr_maux | 2003-12-06 11:00:33 +0100 (Sa, 06 Dez 2003) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/protocol-description
+
+- more accurate protocol description
+
+------------------------------------------------------------------------
+r5686 | dr_maux | 2003-11-23 16:16:47 +0100 (So, 23 Nov 2003) | 7 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/main.c
+
+- AI capabilities for the other 3 game modes
+- draw lines with a thickness of 2 pixel for better visibility
+- change Hax0r mode to something more difficult than previously
+
+Now the AI is more or less unbeatable in most modes.
+In the future, more randomization must thus be added.
+
+------------------------------------------------------------------------
+r5685 | dr_maux | 2003-11-23 14:25:01 +0100 (So, 23 Nov 2003) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/configure.ac
+
+- bump to 0.0.8 pre
+
+------------------------------------------------------------------------
+r5684 | dr_maux | 2003-11-23 14:24:47 +0100 (So, 23 Nov 2003) | 5 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/main.c
+
+- command line argument --players to define the number of players for single
+  player games
+- smoother movements, slide if key is kept pressed
+- implement "real" AI for the easy mode
+
+------------------------------------------------------------------------
+r5683 | dr_maux | 2003-11-23 13:08:11 +0100 (So, 23 Nov 2003) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/Makefile.am
+
+- guru-ttt is part of grubby and not located here any longer
+
+------------------------------------------------------------------------
+r5682 | dr_maux | 2003-11-23 12:14:56 +0100 (So, 23 Nov 2003) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz/game_clients/Makefile.am
+   M /trunk/kde-games/Makefile.am
+   M /trunk/sdl-games/Makefile.am
+
+- remove ggz.modules installation kludge
+
+------------------------------------------------------------------------
+r5599 | dr_maux | 2003-05-18 18:12:11 +0200 (So, 18 Mai 2003) | 4 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/ttt3d/main.c
+
+- fix a usability bug found out by a player:
+  When it's a player's turn, set the selector not to the first
+  tile, but to the first free one
+
+------------------------------------------------------------------------
+r5588 | dr_maux | 2003-05-17 10:10:42 +0200 (Sa, 17 Mai 2003) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz/game_clients/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggz-txt-client/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- update changelog
+
+------------------------------------------------------------------------
+r5583 | dr_maux | 2003-05-16 20:34:45 +0200 (Fr, 16 Mai 2003) | 2 lines
+Geänderte Pfade:
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz/game_clients/autogen.sh
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggz-txt-client/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/gnome-client/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/autogen.sh
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/utils/autogen.sh
+
+- apply autogen.sh changes from libggz
+
+------------------------------------------------------------------------
+r5573 | dr_maux | 2003-05-11 13:30:12 +0200 (So, 11 Mai 2003) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/proto.h
+
+- use smaller protocol numbers so they fit into a char value
+
+------------------------------------------------------------------------
+r5563 | dr_maux | 2003-05-11 01:54:28 +0200 (So, 11 Mai 2003) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz/game_clients/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggz-txt-client/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/utils/configure.ac
+
+- set the package version number (via configure.ac) to 0.0.7
+
+------------------------------------------------------------------------
+r5552 | dr_maux | 2003-05-11 01:19:03 +0200 (So, 11 Mai 2003) | 3 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/sdl-games/ttt3d/module.dsc.in
+
+- update common files for 0.0.7 in sdl-games
+- bump TTT3D's version number
+
+------------------------------------------------------------------------
+r5539 | dr_maux | 2003-05-10 16:38:57 +0200 (Sa, 10 Mai 2003) | 2 lines
+Geänderte Pfade:
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz/game_clients/autogen.sh
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggz-txt-client/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/gnome-client/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/autogen.sh
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/utils/autogen.sh
+
+- sync autogen.sh
+
+------------------------------------------------------------------------
+r5531 | dr_maux | 2003-05-10 12:53:28 +0200 (Sa, 10 Mai 2003) | 5 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/Makefile.am
+   M /trunk/sdl-games/geekgame/Makefile.am
+   M /trunk/sdl-games/ttt3d/Makefile.am
+
+- fix 'make distcheck'
+
+We still have this hack for our game packages using DESTDIR,
+it'd probably be better to modify ggz-config a bit more.
+
+------------------------------------------------------------------------
+r5500 | dr_maux | 2003-05-05 15:03:41 +0200 (Mo, 05 Mai 2003) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz/game_clients/m4/ggz.m4
+   M /trunk/ggz-txt-client/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+- add -fsigned-char
+
+------------------------------------------------------------------------
+r5478 | dr_maux | 2003-03-29 11:36:34 +0100 (Sa, 29 Mär 2003) | 6 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/configure.ac
+   M /trunk/sdl-games/geekgame/Makefile.am
+   M /trunk/sdl-games/geekgame/main.c
+
+- add XCursor support to Geekgame (requires XFree86 >= 4.3.0, it's disabled
+  otherwise)
+- don't require SDL_mixer anymore, make audio optional as well
+- implement dumb but working AI for geekgame, so single player mode should be
+  ready now (at least for 0.0.7)
+
+------------------------------------------------------------------------
+r5476 | dr_maux | 2003-03-29 11:33:32 +0100 (Sa, 29 Mär 2003) | 2 lines
+Geänderte Pfade:
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz/game_clients/autogen.sh
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggz-txt-client/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/gnome-client/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/autogen.sh
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/utils/autogen.sh
+
+- apply improverished autogen globally
+
+------------------------------------------------------------------------
+r5475 | dr_maux | 2003-03-29 11:27:44 +0100 (Sa, 29 Mär 2003) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz/game_clients/m4/ggz.m4
+   M /trunk/ggz-client-libs/m4/ggz.m4
+   M /trunk/ggz-txt-client/m4/ggz.m4
+   M /trunk/ggzd/m4/ggz.m4
+   M /trunk/gnome-client/m4/ggz.m4
+   M /trunk/grubby/m4/ggz.m4
+   M /trunk/gtk-client/m4/ggz.m4
+   M /trunk/kde-client/m4/ggz.m4
+   M /trunk/kde-games/m4/ggz.m4
+   M /trunk/sdl-games/m4/ggz.m4
+   M /trunk/utils/m4/ggz.m4
+
+- update GGZ macro file
+
+------------------------------------------------------------------------
+r5463 | dr_maux | 2003-02-28 03:35:19 +0100 (Fr, 28 Feb 2003) | 4 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/main.c
+   M /trunk/sdl-games/geekgame/wwwget.c
+
+- to make tempfiles more bulletproof, unlink() them before writing to them
+- fix one of the previous fixes: for the 1st player, Uncle Sam replaces the
+  green grubby image
+
+------------------------------------------------------------------------
+r5431 | dr_maux | 2003-02-19 20:21:27 +0100 (Mi, 19 Feb 2003) | 7 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/main.c
+   M /trunk/sdl-games/geekgame/proto.h
+   M /trunk/sdl-games/geekgame/wwwget.c
+   M /trunk/sdl-games/geekgame/wwwget.h
+
+- handle sounds and music as well: look in local directory first, fall back to
+  global (installation) directory. Look for ogg, mp3 and wav files.
+- better player handling for GGZ mode: indicate whether players are still
+  missing, or the game can start already
+- send moves, rule selection etc. to the server
+- add copyright to the source files
+
+------------------------------------------------------------------------
+r5413 | dr_maux | 2003-02-16 14:02:09 +0100 (So, 16 Feb 2003) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz/game_clients/autogen.sh
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggz-txt-client/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/gnome-client/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/autogen.sh
+   M /trunk/libggz/autogen.sh
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/utils/autogen.sh
+
+- new autogen.sh
+
+------------------------------------------------------------------------
+r5403 | dr_maux | 2003-02-14 20:02:59 +0100 (Fr, 14 Feb 2003) | 4 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/Makefile.am
+   M /trunk/sdl-games/geekgame/main.c
+
+- use correct library, using *_LDFLAGS
+- save and load configuration for soundpath, musicpath and fontpath
+  This is stored in ~/.ggz/games/geekgame/config.
+
+------------------------------------------------------------------------
+r5402 | dr_maux | 2003-02-14 19:35:49 +0100 (Fr, 14 Feb 2003) | 12 lines
+Geänderte Pfade:
+   D /trunk/sdl-games/geekgame/1979rg__.ttf
+   M /trunk/sdl-games/geekgame/Makefile.am
+   D /trunk/sdl-games/geekgame/dark2.ttf
+   M /trunk/sdl-games/geekgame/main.c
+
+- add full-screen toggling (using the F key), and a --fullscreen command line
+  argument
+- better path management using local_data() and global_data() functions
+- remove font files
+  This is an issue in itself. No game I know ships with own TTF files, yet it
+  would be handy to have some (and there's pfaedit to build some).
+  For the time being, geekgame simply scans common font directories until it
+  finds a random font.
+  That might be improved by using a font selection screen and/or configuration
+  file options.
+  Same will apply for the sound and music files.
+
+------------------------------------------------------------------------
+r5401 | dr_maux | 2003-02-14 19:32:14 +0100 (Fr, 14 Feb 2003) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/configure.ac
+
+- use -Wall
+
+------------------------------------------------------------------------
+r5380 | dr_maux | 2003-02-04 17:23:17 +0100 (Di, 04 Feb 2003) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/main.c
+   M /trunk/sdl-games/geekgame/proto.h
+
+- implemented the two remaining game modes
+
+------------------------------------------------------------------------
+r5366 | jdorje | 2003-02-04 09:42:36 +0100 (Di, 04 Feb 2003) | 4 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/Makefile.am
+   D /trunk/sdl-games/acinclude.ggz
+   M /trunk/sdl-games/autogen.sh
+   A /trunk/sdl-games/configure.ac
+   D /trunk/sdl-games/configure.in
+   A /trunk/sdl-games/m4
+   A /trunk/sdl-games/m4/ggz.m4
+
+Step 1 of autoconf2.5x-only support: rename configure.in as configure.ac.
+
+Also move acinclude.ggz to m4/ggz.m4.
+
+------------------------------------------------------------------------
+r5353 | dr_maux | 2003-01-29 23:48:46 +0100 (Mi, 29 Jan 2003) | 4 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/main.c
+   M /trunk/sdl-games/geekgame/wwwget.c
+
+- fix handling of command line options
+- handle local URIs via cp (wget doesn't understand /home/...)
+- add level descriptions to the main menu
+
+------------------------------------------------------------------------
+r5253 | dr_maux | 2002-11-19 00:06:51 +0100 (Di, 19 Nov 2002) | 6 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/Makefile.am
+   A /trunk/sdl-games/geekgame/default.png
+   M /trunk/sdl-games/geekgame/main.c
+
+- prevent segfault when no player photo can be loaded
+- default image is now a somewhat modified Mr. Sam (hopefully politically
+  correct)
+- mix down sound effects to 50% (an internal options menu should later be
+  added)
+
+------------------------------------------------------------------------
+r5191 | dr_maux | 2002-11-03 23:44:31 +0100 (So, 03 Nov 2002) | 4 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/Makefile.am
+   A /trunk/sdl-games/geekgame/icon.png
+   M /trunk/sdl-games/geekgame/main.c
+
+- add support for sound effects
+- load sound and music from global data directory
+- add game icon
+
+------------------------------------------------------------------------
+r5189 | dr_maux | 2002-11-03 23:22:23 +0100 (So, 03 Nov 2002) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/configure.in
+
+- check for SDL_mixer
+
+------------------------------------------------------------------------
+r5188 | dr_maux | 2002-11-03 23:22:09 +0100 (So, 03 Nov 2002) | 7 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/Makefile.am
+   M /trunk/sdl-games/geekgame/main.c
+
+- add background music support to geekgame
+
+Currently, this is hardcoded, since we don't have any project music.
+This will eventually be configurable.
+But for the time being, the OpenBSD release song seems to be a reasonable
+choice for a 'geek game' :)
+
+------------------------------------------------------------------------
+r5153 | dr_maux | 2002-11-02 23:25:58 +0100 (Sa, 02 Nov 2002) | 5 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/main.c
+   M /trunk/sdl-games/geekgame/proto.h
+
+- add game over screen
+- split game and intro screen out of main loop so if the game ends the menu is
+  called again
+- implement some game modes already
+
+------------------------------------------------------------------------
+r5152 | dr_maux | 2002-11-02 19:32:02 +0100 (Sa, 02 Nov 2002) | 3 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/main.c
+   M /trunk/sdl-games/geekgame/proto.h
+   M /trunk/sdl-games/geekgame/protocol-description
+
+- update protocol description, and explain game modes
+- intro menu to select game mode
+
+------------------------------------------------------------------------
+r5151 | dr_maux | 2002-11-02 18:46:33 +0100 (Sa, 02 Nov 2002) | 2 lines
+Geänderte Pfade:
+   A /trunk/sdl-games/geekgame/proto.h
+
+- network opcodes
+
+------------------------------------------------------------------------
+r5150 | dr_maux | 2002-11-02 18:46:09 +0100 (Sa, 02 Nov 2002) | 5 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/main.c
+
+- calculate all rows and columns, not just the first column
+- draw player scores (levels) as green bars
+- better selection tool which will allow for more complex math (when launching
+  a 'havoc' or 'hax0r' game mode), including binary calculation
+
+------------------------------------------------------------------------
+r5149 | dr_maux | 2002-11-02 14:56:27 +0100 (Sa, 02 Nov 2002) | 5 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame
+   M /trunk/sdl-games/geekgame/.cvsignore
+   M /trunk/sdl-games/geekgame/Makefile.am
+   M /trunk/sdl-games/geekgame/main.c
+   M /trunk/sdl-games/geekgame/module.dsc.in
+
+- perform game start via GGZ correctly
+- and use player images as sent by the server
+- compare server greeting and version to see if it matches (might add ruleset
+  definitions later)
+
+------------------------------------------------------------------------
+r5147 | dr_maux | 2002-11-02 14:18:10 +0100 (Sa, 02 Nov 2002) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/configure.in
+   M /trunk/sdl-games/geekgame/Makefile.am
+   A /trunk/sdl-games/geekgame/module.dsc.in
+
+- add module description file for geekgame
+
+------------------------------------------------------------------------
+r5036 | dr_maux | 2002-10-26 02:26:14 +0200 (Sa, 26 Okt 2002) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/Makefile.am
+   M /trunk/sdl-games/geekgame/main.c
+
+- add ggzmod support
+
+------------------------------------------------------------------------
+r5035 | dr_maux | 2002-10-26 02:12:53 +0200 (Sa, 26 Okt 2002) | 4 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/geekgame/Makefile.am
+   M /trunk/sdl-games/geekgame/main.c
+
+- use correct prefixes for both installed and local data files
+- read personalization file, don't use picture of my face for all players :)
+- accept --ggz (although nothing is done upon that)
+
+------------------------------------------------------------------------
+r4862 | dr_maux | 2002-10-11 00:24:46 +0200 (Fr, 11 Okt 2002) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/ttt3d/Makefile.am
+   M /trunk/sdl-games/ttt3d/module.dsc.in
+
+- s/bin/ggzexecmod/
+
+------------------------------------------------------------------------
+r4861 | jdorje | 2002-10-10 23:36:13 +0200 (Do, 10 Okt 2002) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/ttt3d/main.c
+
+Label game_handle_io() as static.
+
+------------------------------------------------------------------------
+r4860 | dr_maux | 2002-10-10 23:20:23 +0200 (Do, 10 Okt 2002) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/ttt3d/module.dsc.in
+
+- protocol version is 3, not 2
+
+------------------------------------------------------------------------
+r4854 | dr_maux | 2002-10-10 20:59:08 +0200 (Do, 10 Okt 2002) | 3 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/configure.in
+   M /trunk/sdl-games/geekgame/Makefile.am
+   M /trunk/sdl-games/ttt3d/Makefile.am
+
+- add basic SDL and OpenGL checks
+- use SDL cflags and ldflags
+
+------------------------------------------------------------------------
+r4838 | dr_maux | 2002-10-10 13:20:57 +0200 (Do, 10 Okt 2002) | 2 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/ttt3d
+   M /trunk/sdl-games/ttt3d/.cvsignore
+
+- shut up cvs a bit more
+
+------------------------------------------------------------------------
+r4813 | dr_maux | 2002-10-08 21:59:39 +0200 (Di, 08 Okt 2002) | 2 lines
+Geänderte Pfade:
+   A /trunk/sdl-games
+   A /trunk/sdl-games/.cvsignore
+   A /trunk/sdl-games/AUTHORS
+   A /trunk/sdl-games/ChangeLog
+   A /trunk/sdl-games/INSTALL
+   A /trunk/sdl-games/Makefile.am
+   A /trunk/sdl-games/NEWS
+   A /trunk/sdl-games/QuickStart.GGZ
+   A /trunk/sdl-games/README
+   A /trunk/sdl-games/README.GGZ
+   A /trunk/sdl-games/acinclude.ggz
+   A /trunk/sdl-games/autogen.sh
+   A /trunk/sdl-games/configure.in
+   A /trunk/sdl-games/geekgame
+   A /trunk/sdl-games/geekgame/.cvsignore
+   A /trunk/sdl-games/geekgame/1979rg__.ttf
+   A /trunk/sdl-games/geekgame/Makefile.am
+   A /trunk/sdl-games/geekgame/bot.png
+   A /trunk/sdl-games/geekgame/dark2.ttf
+   A /trunk/sdl-games/geekgame/main.c
+   A /trunk/sdl-games/geekgame/one.png
+   A /trunk/sdl-games/geekgame/protocol-description
+   A /trunk/sdl-games/geekgame/tmp.png
+   A /trunk/sdl-games/geekgame/wwwget.c
+   A /trunk/sdl-games/geekgame/wwwget.h
+   A /trunk/sdl-games/geekgame/zero.png
+   A /trunk/sdl-games/ttt3d
+   A /trunk/sdl-games/ttt3d/.cvsignore
+   A /trunk/sdl-games/ttt3d/HOWTOPLAY
+   A /trunk/sdl-games/ttt3d/Makefile.am
+   A /trunk/sdl-games/ttt3d/board.bmp
+   A /trunk/sdl-games/ttt3d/cursor.bmp
+   A /trunk/sdl-games/ttt3d/display.c
+   A /trunk/sdl-games/ttt3d/display.h
+   A /trunk/sdl-games/ttt3d/figure.bmp
+   A /trunk/sdl-games/ttt3d/lines.bmp
+   A /trunk/sdl-games/ttt3d/main.c
+   A /trunk/sdl-games/ttt3d/module.dsc.in
+
+Initial revision
+
+------------------------------------------------------------------------
