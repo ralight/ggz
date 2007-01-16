@@ -136,7 +136,9 @@ public class PrivateChatDialog extends JFrame implements
             // iconified and for some reason the layout isn't quite right. This
             // just forces the components to organise themsleves again. It's
             // harmless to do it if it's not needed.
-            validate();
+            if (!this.toFrontCheckBox.isSelected()) {
+                validate();
+            }
         }
         super.processWindowEvent(event);
     }
@@ -328,13 +330,17 @@ public class PrivateChatDialog extends JFrame implements
             // this crazy stuff.
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
+                    boolean bringToFront = GGZPreferences.getBoolean(
+                            GGZPreferences.PRIVATE_CHAT_TO_FRONT, true);
                     PrivateChatDialog dialog = getOrCreateDialog(data.sender,
-                            ICONIFIED);
+                            bringToFront ? NORMAL : ICONIFIED);
+
                     dialog.chatPanel.appendChat(data.type, data.sender,
                             data.message, server.get_handle());
 
-                    if (dialog.toFrontCheckBox.isSelected()) {
+                    if (bringToFront) {
                         dialog.toFront();
+                        dialog.chatPanel.textField.requestFocus();
                     } else if (!dialog.isActive()) {
                         // If the window is not the active window then let the
                         // user know that a message has arrived by blinking
