@@ -22,6 +22,15 @@ import ggz.cards.client.Client;
 import ggz.cards.common.Bid;
 
 public class SpadesBidPanel extends BidPanel {
+    /* Special bid values. */
+    private static final int NORMAL_BID = 0;
+
+    private static final int NIL = 1;
+
+    private static final int SHOW_CARDS = 2;
+
+    private static final int DOUBLE_NIL = 3;
+
     public SpadesBidPanel(int firstBidder, Client client) {
         super(firstBidder, client);
     }
@@ -30,21 +39,18 @@ public class SpadesBidPanel extends BidPanel {
         if (bid == null) {
             return null;
         }
-        if (bid.getVal() == 0) {
-            switch (bid.getSpec()) {
-            case 0:
-                return "0";
-            case 1:
-                return "Nil";
-            case 2:
-                return "Show cards";
-            case 3:
-                return "Dnil";
-            default:
-                throw new UnsupportedOperationException("Unrecognised bid: "
-                        + bid);
-            }
+
+        switch (bid.getSpec()) {
+        case NORMAL_BID:
+            return String.valueOf(bid.getVal());
+        case NIL:
+            return "Nil";
+        case SHOW_CARDS:
+            return "Show cards";
+        case DOUBLE_NIL:
+            return "Dnil";
+        default:
+            throw new UnsupportedOperationException("Unrecognised bid: " + bid);
         }
-        return String.valueOf(bid.getVal());
     }
 }
