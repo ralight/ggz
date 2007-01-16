@@ -6,6 +6,6 @@ Frontend = sdl
 Homepage = http://www.ggzgamingzone.org/gameclients/geekgame/
 ProtocolEngine = Geekgame
 ProtocolVersion = 2
-Version = 0.0.2
+Version = 0.0.3
 #SupportedGames = Geekgame
 
