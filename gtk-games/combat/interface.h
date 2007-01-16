@@ -4,7 +4,7 @@
  * Project: GGZ Combat Client
  * Date: 2001?
  * Desc: Interface code
- * $Id: interface.h 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: interface.h 8929 2007-01-16 02:18:40Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -22,5 +22,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#define GAME_SAVE_MAP _("/Game/Save current map")
+#define GAME_SHOW_OPTIONS _("/Game/Show game options")
 
 GtkWidget *create_main_window(void);

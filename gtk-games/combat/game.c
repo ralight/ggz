@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 8880 2007-01-09 17:22:14Z josef $
+ * $Id: game.c 8929 2007-01-16 02:18:40Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -46,6 +46,7 @@
 
 #include "combat.h"
 #include "game.h"
+#include "interface.h"
 #include "map.h"
 #include "dlg_options.h"
 
@@ -121,10 +122,8 @@ gboolean game_handle_io(GGZMod * mod)
 		game_init_board();
 		game_draw_board();
 		set_menu_sensitive(TABLE_SYNC, FALSE);
-		set_menu_sensitive(_("<main>/Game/Save current map"),
-				   FALSE);
-		set_menu_sensitive(_("<main>/Game/Show game options"),
-				   FALSE);
+		set_menu_sensitive(GAME_SAVE_MAP, FALSE);
+		set_menu_sensitive(GAME_SHOW_OPTIONS, FALSE);
 		break;
 	case CBT_MSG_PLAYERS:
 		game_get_players();
@@ -135,8 +134,8 @@ gboolean game_handle_io(GGZMod * mod)
 	case CBT_MSG_OPTIONS:
 		game_get_options();
 		game_draw_board();
-		set_menu_sensitive("<main>/Game/Save current map", TRUE);
-		set_menu_sensitive("<main>/Game/Show game options", TRUE);
+		set_menu_sensitive(GAME_SAVE_MAP, TRUE);
+		set_menu_sensitive(GAME_SHOW_OPTIONS, TRUE);
 		break;
 	case CBT_REQ_SETUP:
 		cbt_game.state = CBT_STATE_SETUP;

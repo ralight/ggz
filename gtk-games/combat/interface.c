@@ -4,7 +4,7 @@
  * Project: GGZ Combat Client
  * Date: 2001?
  * Desc: Interface code
- * $Id: interface.c 6342 2004-11-12 17:42:38Z jdorje $
+ * $Id: interface.c 8929 2007-01-16 02:18:40Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -46,11 +46,11 @@ static GtkWidget *create_menus(GtkWidget * window)
 	GtkItemFactoryEntry items[] = {
 		TABLE_MENU,
 		{_("/_Game"), NULL, NULL, 0, "<Branch>"},
-		{_("/Game/S_ave current map"), NULL,
+		{GAME_SAVE_MAP, NULL,
 		 on_save_map_menu_activate, 0, NULL},
 		{_("/Game/_Remember enemy units"), NULL,
 		 on_remember_enemy_units_toggled, 0, "<ToggleItem>"},
-		{_("/Game/_Show game options"), NULL,
+		{GAME_SHOW_OPTIONS, NULL,
 		 on_show_game_options_activate, 0, NULL},
 
 		HELP_MENU,
