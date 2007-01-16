@@ -1,7 +1,7 @@
 The GGZ Gaming Zone - General Information
 =========================================
 
-Welcome to the GGZ Gaming Zone, a multiuser networked gaming
+Welcome to the GGZ Gaming Zone, a free multiuser networked gaming
 environment. You're reading this file because it is either included in one
 of the packages of the GGZ Gaming Zone (or simply GGZ) or comes with
 a game which can be played on GGZ.
@@ -31,6 +31,10 @@ An online player ranking system with tournaments, browser game access
 and other community tools is available here:
 https://www.ggzcommunity.org/
 
+A second (stronger) server is currently hosting the Java applet and
+is being used a lot by the cards-playing community:
+http://games.ggzcommunity.org/
+
 Developers can find more information (SVN, mailing lists, i18n) at:
 http://dev.ggzgamingzone.org/
 
@@ -46,7 +50,8 @@ homepage at http://ggzgamingzone.org/, or for the absolute bleeding
 edge you can check out the sources via anonymous SVN (instructions are
 at the aforementioned homepage).  GGZ is comprised of several
 components, each of which is packaged separately for maximum
-flexibility.  The components are:
+flexibility.  The components are described on
+http://www.ggzgamingzone.org/packages/.  A short summary:
 
 - The libggz library
 
@@ -72,6 +77,8 @@ flexibility.  The components are:
   of kde, gtk, gnome, or txt, and X.X.X is the version number.
   The SDL client is part of the ggz-python-X.X.X.tar.gz package.
   Special client programs exist for IM clients and embedded into games.
+  We also have a Java client which runs both as an applet and as an
+  application. The Java package is described below.
 
 - GGZ game client modules
 
@@ -142,8 +149,12 @@ Running
 You must have access to a running server for the client to be of any
 use to you.  The server does not have to be running on your machine,
 however, if you have no (or slow!) network access, you may want to run
-both the client and the server locally.  If you choose to install the
-GGZ server, you may launch it simply by running the command 'ggzd -F'.
+both the client and the server locally.
+However, there are certainly permanent servers available and configured
+by default. See http://www.ggzgamingzone.org/community/.
+
+If you choose to install the GGZ server, you may launch it simply by
+running the command 'ggzd -F'.
 This will start the server listening on port of 5688 (ggz).
 You can find a list of GGZ servers on our homepage, or query to GGZ
 metaserver to get this information.
@@ -154,6 +165,7 @@ started by running 'ggz-gtk', whereas the KDE client is started by
 running 'kggz'.  Once the client is running you should be able to log
 into a running GGZ server and begin playing! (Provided you have
 installed some games as well).
+To launch any client whatsoever, simply type 'ggz'.
 
 
 Bugs

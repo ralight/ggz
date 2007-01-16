@@ -1,7 +1,7 @@
 The GGZ Gaming Zone - Client Setup
 ==================================
 
-Installation Requirements for the release 0.0.13
+Installation Requirements for the release 0.0.14
 ------------------------------------------------
 
 The GGZ Gaming Zone client is built from three separate packages
@@ -19,7 +19,7 @@ If you are missing a package, they are freely downloadable in source
 format (as well as precompiled or preconfigured packages for a number
 of GNU/Linux distributions and BSD systems) from:
 
-http://ggzgamingzone.org/
+http://ggzgamingzone.org/releases/latest/
 
 The packages have been tested on a variety of systems, including
 Linux, FreeBSD and Solaris.  It should work on pretty much any type of
@@ -248,8 +248,8 @@ Troubleshooting/Tips
    the compilations, make sure you have the correct version of each
    build tool. The following are known to cause problems:
      libtool < 1.4
-     automake 1.5d or 1.6
-   The recommended compiler is gcc 3.4, although many other versions
+     automake 1.5d or 1.6 or 1.7
+   The recommended compiler is gcc 4.x, although many other versions
    (including 2.95 or previous or later 3.x) should work as well
    (see point 9 below).
    On non-GNU systems, use gmake rather than make.

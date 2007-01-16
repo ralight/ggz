@@ -1,4 +1,4 @@
-Announcing the release of The GGZ Gaming Zone v0.0.13!
+Announcing the release of The GGZ Gaming Zone v0.0.14!
 
 The GGZ Gaming Zone (GGZ) is an open-sourced Internet gaming center.
 Similar to other online gaming sites, players login and sit at tables
@@ -12,18 +12,25 @@ and includes a karma and matchmaking system, and a GGZ applet to play
 some games directly in the browser.
 GGZ support can be added to existing multiplayer games easily.
 
+We're very pleased that a number of game projects have already
+chosen GGZ as their internet gaming platform. Let's work hard to
+bring as many multiplayer features into as many games as possible!
+
 Features in this release:
 
-- GGZ for Java: swing-based core client and GGZCards port
-- Embedded ggz-gtk for external Gtk+ games (like Freeciv)
-- More server options and higher protocol resiliency
-- Privileges system and more plugin scripts for Grubby
-- More GGZBoard games: Arimaa and ConnectX
-- and many more!
+- Player management, permissions and host players make playing on GGZ more fun
+- Support for GNU Chess and Velena in our Chess and ConnectX servers
+- Windows installer for the Gtk+ client
+- The Metacle, a metaserver aggregator for cross-project game server access
+- More GGZBoard games: Shogi and Sudoku
+- Overhauled APIs for developers, including Pygame integration of game clients
+- Dynamic room reconfiguration in the GGZ server
+- Better KDE support through kggzmod and kggzgames libraries
+- Improved GGZCards experience with player feedback for Gtk+ and Java clients
 
 See README.GGZ for an overview, or QuickStart.GGZ to get started with one
 of the GGZ core clients to be able to start playing.
 
 Additional information:
-http://www.ggzgamingzone.org/releases/0.0.13/
+http://www.ggzgamingzone.org/releases/0.0.14/
 

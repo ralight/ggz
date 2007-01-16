@@ -1,5 +1,5 @@
 =======================================================
-The GGZ Gaming Zone - KDE Game Modules - Release 0.0.13
+The GGZ Gaming Zone - KDE Game Modules - Release 0.0.14
 =======================================================
 
 We are proud to say that there are now some KDE games available
@@ -7,6 +7,9 @@ for the GGZ Gaming Zone. Some of them are just other frontends
 for existing games, others are completely new ones.
 
 Content of GGZ-KDE-Games:
+	- Libraries:
+		Both kggzmod and kggzgames make KDE game development for
+		GGZ easy.
 	- KReversi:
 		A two-player game which is compatible with its Gtk+ brother.
 	- Krosswater:
