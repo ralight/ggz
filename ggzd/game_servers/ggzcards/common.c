@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 8563 2006-08-31 18:32:41Z jdorje $
+ * $Id: common.c 8952 2007-01-17 00:33:14Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -610,7 +610,9 @@ void handle_ggz_spectator_seat_event(GGZdMod * ggz,
 
 		if (*dio) {
 			ggz_dio_flush(*dio);
+#if 0
 			assert(!ggz_dio_is_write_pending(*dio));
+#endif
 			ggz_dio_free(*dio);
 			*dio = NULL;
 		}
