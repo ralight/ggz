@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game header
- * $Id: map.h 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: map.h 8953 2007-01-17 00:39:28Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -23,7 +23,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-void map_load(combat_game *, char *name, int *changed);
+#include <gtk/gtk.h>
+
+void map_load(combat_game *, char *name, gboolean *changed);
 
 int map_save(combat_game * map);
 

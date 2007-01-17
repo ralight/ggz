@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: map.c 7273 2005-06-10 12:54:26Z josef $
+ * $Id: map.c 8953 2007-01-17 00:39:28Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -197,7 +197,8 @@ int map_search(combat_game * map)
 	}
 	return 0;
 }
-void map_load(combat_game * _game, char *filename, int *changed)
+
+void map_load(combat_game * _game, char *filename, gboolean *changed)
 {
 	int handle;
 	unsigned int hash;
@@ -206,6 +207,9 @@ void map_load(combat_game * _game, char *filename, int *changed)
 	char *options;
 	int a, b;
 	char *terrain_data;
+
+	if (changed) *changed = FALSE;
+
 	handle = ggz_conf_parse(filename, GGZ_CONF_RDONLY);
 	if (handle < 0) {
 		fprintf(stderr, "Couldn't load map %s.\n", filename);
@@ -284,9 +288,11 @@ void map_load(combat_game * _game, char *filename, int *changed)
 		strncpy(new_filename, filename, a);
 		new_filename[a] = 0;
 		strcat(new_filename, hash_str);
-		a = rename(filename, new_filename);
-		if (changed)
-			*changed = a;
+		if (rename(filename, new_filename) != 0) {
+			/* I have no idea why != 0 is used as the comparison
+			   here.  It seems quite wrong. */
+			if (changed) *changed = TRUE;
+		}
 	};
 }
 

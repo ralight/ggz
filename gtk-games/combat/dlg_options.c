@@ -4,7 +4,7 @@
  * Project: GGZ Combat Client
  * Date: 2001?
  * Desc: Options dialog
- * $Id: dlg_options.c 6354 2004-11-13 18:19:09Z jdorje $
+ * $Id: dlg_options.c 8953 2007-01-17 00:39:28Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -143,7 +143,7 @@ static void maps_list_selected(GtkTreeSelection * treeselection,
 	    = GTK_TEXT_VIEW(lookup_widget(dlg_options, "preview_options"));
 	char preview_string[256];
 	char *preview_options_string;
-	int changed;
+	gboolean changed;
 	int tot = 0, other = 0, a;
 
 	if (!get_current_map(tree, &map, &file))
