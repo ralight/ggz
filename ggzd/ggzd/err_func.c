@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 8779 2007-01-02 12:14:04Z josef $
+ * $Id: err_func.c 8957 2007-01-18 08:03:59Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -68,8 +68,8 @@ LogInfo log_info = {
 static struct {
 	pthread_mutex_t mut;
 	int update_interval;
-	time_t start_time;
-	time_t next_update;
+	ggztime_t start_time;
+	ggztime_t next_update;
 	int anon_users;
 	int regd_users;
 	int num_logins;
@@ -261,8 +261,8 @@ void logfile_initialize(void)
 	}
 
 	pthread_mutex_init(&update_info.mut, NULL);
-	update_info.next_update = time(NULL) + update_info.update_interval;
-	update_info.start_time = time(NULL);
+	update_info.next_update = get_current_time();
+	update_info.start_time = get_current_time();
 	update_info.anon_users = 0;
 	update_info.regd_users = 0;
 	update_info.num_logins = 0;
@@ -324,27 +324,35 @@ static FILE *log_open_logfile(char *fname)
 
 
 /* Return number of seconds until next update log entry */
-int log_next_update_sec(void)
+ggztime_t log_next_update_sec(void)
 {
-	int max_select_wait;
+	ggztime_t max_select_wait;
 
-	if((max_select_wait = update_info.next_update - time(NULL)) < 1)
-		max_select_wait = 0;
+	if (update_info.update_interval <= 0) {
+		return 10000.0;
+	}
 
-	return max_select_wait;
+	max_select_wait = update_info.next_update - get_current_time();
+
+	return MAX(max_select_wait, 0.0);
 }
 
 
 /* Generate an update log entry */
 void log_generate_update(void)
 {
-	int uptime;
+	ggztime_t uptime;
 	int anon, regd, login, logout;
 	int tables, tables_created, tables_closed;
 
+	if (update_info.update_interval <= 0
+	    || update_info.next_update > get_current_time()) {
+		return;
+	}
+
 	/* Not in critical section (only our thread uses these) */
-	uptime = time(NULL) - update_info.start_time;
-	update_info.next_update = time(NULL) + update_info.update_interval;
+	uptime = get_current_time() - update_info.start_time;
+	update_info.next_update = get_current_time() + update_info.update_interval;
 
 	pthread_mutex_lock(&update_info.mut);
 
@@ -371,7 +379,7 @@ void log_generate_update(void)
 
 #ifdef DEBUG
 	if(log_info.verbose_updates) {
-		log_msg(GGZ_LOG_UPDATE, "UPDATE Uptime=%d sec", uptime);
+		log_msg(GGZ_LOG_UPDATE, "UPDATE Uptime=%d sec", (int)uptime);
 		log_msg(GGZ_LOG_UPDATE, "UPDATE There are %d anonymous users and %d registered users online", anon, regd);
 		log_msg(GGZ_LOG_UPDATE, "UPDATE Since the last update, %d users have logged in, %d logged out", login, logout);
 		log_msg(GGZ_LOG_UPDATE, "UPDATE There are %d tables open", tables);

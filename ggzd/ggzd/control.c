@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8951 2007-01-16 23:41:49Z jdorje $
+ * $Id: control.c 8957 2007-01-18 08:03:59Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -559,7 +559,6 @@ int main(int argc, char *argv[])
 	struct sockaddr_in addr;
 	fd_set active_fd_set, read_fd_set;
 	struct timeval tv, *tvp;
-	int seconds;
 
 	logfile_preinitialize();
 
@@ -675,8 +674,7 @@ int main(int argc, char *argv[])
 		/* May be 0 seconds if the update interval has passed -
 		   in this case the select will likely terminate immediately
 		   and the update will be done. */
-		tv.tv_sec = log_next_update_sec();
-		tv.tv_usec = 0;
+		tv = ggztime_to_timeval(log_next_update_sec());
 		tvp = &tv;
 
 		status = select((select_max + 1), &read_fd_set, NULL, NULL, tvp);
