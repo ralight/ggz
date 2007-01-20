@@ -1,0 +1,5 @@
+Scripts for producing graphs on ggzd data.
+
+Player and table information obtained from the LogFile output.
+Bandwidth and memory data from ggzd-bw-stats.sh
+loginlen.sh, tablelen.sh, ggz_accts.sh and ggz_badpwd.sh process data from the LogFile to allow the appropriate graphs to be produced.
