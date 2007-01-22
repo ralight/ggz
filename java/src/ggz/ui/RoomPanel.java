@@ -579,13 +579,17 @@ public class RoomPanel extends JPanel implements RoomListener {
         }
 
         private String getTitleHTML() {
+            String description = table.get_desc();
             StringBuffer buffer = new StringBuffer("<HTML><B>");
             buffer.append(MessageFormat.format(messages
                     .getString("RoomPanel.TableLabel"),
                     new Object[] { new Integer(table.get_id()) }));
-            if (table.get_desc() != null) {
+            if (description != null) {
+                // Escape HTML to prevent DoS attacks by specially crafted HTML
+                // in table descriptions.
+                String disableHTML = description.replaceAll("<", "&lt;");
                 buffer.append("</B><BR><I>");
-                buffer.append(table.get_desc());
+                buffer.append(disableHTML);
             }
             buffer.append("</I></HTML>");
             return buffer.toString();
