@@ -2,26 +2,33 @@
 
 version=0.0.14
 base=$PWD
+log=makedist.log
 
 prefix=/tmp/ggz-dist-$version
-DISTCHECK_CONFIGURE_FLAGS=--prefix=$prefix
+export DISTCHECK_CONFIGURE_FLAGS=--prefix=$prefix
+
+modules="libggz ggz-client-libs ggzd docs txt-client utils grubby gtk-client gtk-games kde-client kde-games sdl-games gnome-client java python community"
 
 echo "GGZ $version Distribution"
-for i in *; do
+for i in $modules; do
 	if test -d $i && test -f $i/Makefile.am; then
 		echo $i...
 		cd $i
-		./autogen.sh --prefix=$prefix >/dev/null
-		make distcheck >/dev/null
+		./autogen.sh --prefix=$prefix >$log
+		make distcheck >$log
+		make >$log
+		make install >$log
 		cp *-$version.tar.gz ..
 		cd $base
-	elif test -d $i && test -f $i/Makefile; then
+	elif test -d $i && test -f $i/Makefile*; then
 		echo $i...
 		cd $i
 		if test -f autogen.sh; then
-			./autogen.sh --prefix=$prefix >/dev/null
+			./autogen.sh --prefix=$prefix >$log
+			make >$log
+			make install >$log
 		fi
-		make dist >/dev/null
+		make dist >$log
 		#cp ../*-$version.tar.gz ..
 		cd $base
 	fi

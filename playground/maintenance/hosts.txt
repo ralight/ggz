@@ -14,8 +14,8 @@ backupmx.hostsharing.net (as backup only, doesn't have lists etc.)
 Main project server (GGZ HQ)
 ----------------------------
 ggzgamingzone.org [65.98.24.111]
-- hosts www, wwwmirror, dev, svn, bugs
-- hosts cvs, rankings (which should both go away eventually)
+- hosts www, wwwmirror, dev, svn, bugs, ftp, mail
+- hosted cvs, rankings, live in the past
 - hosts games.ggzcommunity.org (temporarily only!)
 
 GGZ Community server
@@ -36,4 +36,8 @@ German server
 de.ggzgamingzone.org [212.21.77.2]
 - hosts mail.ggzcommunity.org
 - mirrors WWW/FTP on de.ggzgamingzone.org
+
+FTP mirrors
+-----------
+see projectserver/README
 
