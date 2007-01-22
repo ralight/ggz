@@ -6,12 +6,15 @@ body {
 
 a {
 	color: #000000;
+	text-decoration: underline;
 }
 a:active {
 	color: #000000;
+	text-decoration: underline;
 }
 a:visited {
 	color: #000000;
+	text-decoration: underline;
 }
 
 .pane {

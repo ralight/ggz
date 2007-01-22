@@ -1,5 +1,4 @@
-en 88
-de 49
+en 193
+de 32
 pt 7
 fr 3
-es 3
