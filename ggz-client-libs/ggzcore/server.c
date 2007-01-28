@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 8706 2006-12-06 02:44:50Z jdorje $
+ * $Id: server.c 8964 2007-01-28 02:05:51Z oojah $
  *
  * Code for handling server connection state and properties
  *
@@ -891,7 +891,7 @@ void _ggzcore_server_set_negotiate_status(GGZServer * server, GGZNet * net,
 					  GGZClientReqError status)
 {
 	if (net != server->net && net != server->channel) {
-		_ggzcore_server_net_error(server, _("Unknown negotation"));
+		_ggzcore_server_net_error(server, _("Unknown negotiation"));
 	} else if (server->is_channel == 0) {
 		if (net == server->channel) {
 			_ggzcore_server_channel_negotiate_status(server, status);
@@ -994,7 +994,7 @@ void _ggzcore_server_set_room_join_status(GGZServer * server,
 			break;
 		default:
 			snprintf(error.message, sizeof(error.message),
-				 _("Unknown room-joining error"));
+				 _("Unknown error joining room"));
 			break;
 		}
 
