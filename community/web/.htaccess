@@ -1,6 +1,6 @@
 # some sanity values
 AddDefaultCharset utf-8
-DirectoryIndex index.php
+DirectoryIndex index.php index.html
 Options +MultiViews
 php_value allow_url_fopen off
 
