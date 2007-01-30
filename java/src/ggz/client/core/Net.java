@@ -22,6 +22,8 @@ import ggz.common.ChatType;
 import ggz.common.ClientReqError;
 import ggz.common.LeaveType;
 import ggz.common.NumberList;
+import ggz.common.Perm;
+import ggz.common.PermSet;
 import ggz.common.PlayerInfo;
 import ggz.common.PlayerType;
 import ggz.common.SeatType;
@@ -319,7 +321,8 @@ public class Net implements Runnable {
         this.fd.setKeepAlive(true);
         this.streamIn = new SwappableInputStream(fd.getInputStream());
         this.streamOut = new SwappableOutputStream(fd.getOutputStream());
-        this.out = new BufferedWriter(new OutputStreamWriter(this.streamOut, "UTF-8"));
+        this.out = new BufferedWriter(new OutputStreamWriter(this.streamOut,
+                "UTF-8"));
         this.is_session_over = false;
 
         if (this.send_dump_file != null) {
@@ -529,6 +532,19 @@ public class Net implements Runnable {
         } else {
             // * Not yet in use.
         }
+    }
+
+    void send_perm_admin(String playername, Perm perm, boolean set)
+            throws IOException {
+        String permname = perm.toString();
+        String setname = String.valueOf(set);
+
+        AttributesImpl adminPermAtts = new AttributesImpl();
+        adminPermAtts.addAttribute("", "", "PLAYER", "CDATA", playername);
+        adminPermAtts.addAttribute("", "", "PERM", "CDATA", permname);
+        adminPermAtts.addAttribute("", "", "VALUE", "CDATA", setname);
+
+        sendEmptyElement("ADMINPERM", adminPermAtts);
     }
 
     void send_player_info(int seat_num) throws IOException {
@@ -1108,6 +1124,11 @@ public class Net implements Runnable {
             int lag = player.get_lag();
 
             room.set_player_lag(player_name, lag);
+        } else if ("perms".equals(action)) {
+            PermSet permset = player.get_perms();
+            PlayerType type = player.get_type();
+
+            room.set_player_perms(player_name, permset, type);
         } else if ("stats".equals(action)) {
             /* FIXME: Should be a player "class-based" event */
             room.set_player_stats(player);
@@ -1534,6 +1555,7 @@ public class Net implements Runnable {
         Room room;
         String name, str_type;
         int table, lag;
+        PermSet perms;
         XMLElement parent;
         String parent_tag, parent_type;
         int wins, losses, ties, forfeits, rating, ranking, highscore;
@@ -1548,12 +1570,13 @@ public class Net implements Runnable {
         name = element.get_attr("ID");
         table = str_to_int(element.get_attr("TABLE"), -1);
         lag = str_to_int(element.get_attr("LAG"), 0);
+        perms = new PermSet(str_to_int(element.get_attr("PERMS"), 0));
 
         /* Set player's type */
         type = PlayerType.valueOf(str_type);
 
         /* Set up GGZPlayer object */
-        ggz_player = new Player(name, room, table, type, lag);
+        ggz_player = new Player(name, room, table, type, perms, lag);
 
         /* FIXME: should these be initialized through an accessor function? */
         wins = str_to_int(element.get_attr("WINS"), Player.NO_RECORD);
@@ -1868,7 +1891,8 @@ public class Net implements Runnable {
         } catch (InterruptedException e) {
             // Ignore.
         }
-        SSLSocket ssl = (SSLSocket)ssf.createSocket(this.fd, this.host, this.port, true);
+        SSLSocket ssl = (SSLSocket) ssf.createSocket(this.fd, this.host,
+                this.port, true);
         ssl.setEnabledCipherSuites(ssl.getSupportedCipherSuites());
         ssl.startHandshake();
         this.streamIn.setInputStream(ssl.getInputStream());
@@ -1879,7 +1903,8 @@ public class Net implements Runnable {
             this.use_tls = false;
             log.warning("Failed to negotiate TLS: " + this.fd);
         } else {
-            log.info("TLS negotiated with cipher suite " + ssl.getSession().getCipherSuite());
+            log.info("TLS negotiated with cipher suite "
+                    + ssl.getSession().getCipherSuite());
         }
     }
 
@@ -1964,8 +1989,13 @@ public class Net implements Runnable {
 
         if (str == null)
             return dflt;
+
         try {
-            val = Integer.parseInt(str);
+            if (str.startsWith("0x")) {
+                val = Integer.parseInt(str.substring(2), 16);
+            } else {
+                val = Integer.parseInt(str);
+            }
         } catch (NumberFormatException e) {
             return dflt;
         }

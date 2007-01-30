@@ -26,7 +26,7 @@ import java.util.ArrayList;
  */
 public class PlayerType {
 
-    public static final ArrayList values = new ArrayList();
+    private static final ArrayList values = new ArrayList();
 
     /** A normal player is registered but has no special permission. */
     public static final PlayerType GGZ_PLAYER_NORMAL = new PlayerType();

@@ -203,6 +203,10 @@ public class RoomPanel extends JPanel implements RoomListener {
         // Handled by chat panel so do nothing.
     }
 
+    public void player_perms(Player player) {
+        // Handled by chat panel so do nothing.
+    }
+
     public void player_list(List players) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {

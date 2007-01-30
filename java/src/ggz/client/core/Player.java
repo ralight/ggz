@@ -17,8 +17,11 @@
  */
 package ggz.client.core;
 
+import ggz.common.Perm;
+import ggz.common.PermSet;
 import ggz.common.PlayerType;
 
+import java.io.IOException;
 import java.text.Collator;
 import java.util.Comparator;
 
@@ -40,6 +43,8 @@ public class Player {
 
     /* Type of player */
     private PlayerType type;
+
+    private PermSet perms;
 
     /* Pointer to room player is in */
     private Room room;
@@ -108,7 +113,8 @@ public class Player {
      * functions assume valid inputs!
      */
 
-    Player(String name, Room room, int table, PlayerType type, int lag) {
+    Player(String name, Room room, int table, PlayerType type, PermSet perms,
+            int lag) {
         this.wins = NO_RECORD;
         this.losses = NO_RECORD;
         this.forfeits = NO_RECORD;
@@ -120,6 +126,7 @@ public class Player {
         this.room = room;
         this.table = table;
         this.type = type;
+        this.perms = perms;
         this.lag = lag;
     }
 
@@ -146,6 +153,10 @@ public class Player {
         return this.type;
     }
 
+    public PermSet get_perms() {
+        return this.perms;
+    }
+
     public Room get_room() {
         return this.room;
     }
@@ -159,6 +170,37 @@ public class Player {
 
     public int get_lag() {
         return this.lag;
+    }
+
+    public boolean has_perm(Perm perm) {
+        return this.perms != null && this.perms.isSet(perm);
+    }
+
+    /**
+     * Sends a request to the server to set the permission. The permission is
+     * not set in this player object directly.
+     * 
+     * @param perm
+     * @param set
+     * @throws IOException
+     */
+    public void set_perm(Perm perm, boolean set) throws IOException {
+        Server server = get_room().get_server();
+        server.set_perm(get_name(), perm, set);
+    }
+
+    /**
+     * Sens a series of requests to the server to set the given permissions.
+     * 
+     * @param perms
+     * @throws IOException
+     */
+    protected void set_perms(PermSet perms) {
+        this.perms = perms;
+    }
+    
+    protected void set_type(PlayerType type) {
+        this.type = type;
     }
 
     public boolean equals(Object o) {

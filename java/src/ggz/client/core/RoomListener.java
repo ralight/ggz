@@ -175,4 +175,14 @@ public interface RoomListener extends EventListener {
      */
     public void player_count(int count);
 
+    /**
+     * A player's permissions have been updated.
+     * 
+     * @see Player#get_perms()
+     * @see Player#has_perm(ggz.common.Perm)
+     * @param data
+     *            The name of the player whose perms have changed.
+     */
+    public void player_perms(Player player);
+
 }

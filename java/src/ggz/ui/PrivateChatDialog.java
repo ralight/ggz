@@ -197,7 +197,7 @@ public class PrivateChatDialog extends JFrame implements
 
         protected boolean sendAdmin(AdminType type, String target, String reason)
                 throws IOException {
-            server.get_cur_room().admin(type, target, reason);
+            server.admin(type, target, reason);
             return true;
         }
 
@@ -357,6 +357,10 @@ public class PrivateChatDialog extends JFrame implements
         }
 
         public void player_lag(Player player) {
+            // Ignore.
+        }
+
+        public void player_perms(Player player) {
             // Ignore.
         }
 

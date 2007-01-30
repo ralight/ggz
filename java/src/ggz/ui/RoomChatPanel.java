@@ -93,6 +93,8 @@ public class RoomChatPanel extends JPanel implements RoomListener,
 
     protected JLabel playerCountLabel;
 
+    protected JPanel buttonPanel;
+
     private JButton privateChatButton;
 
     private JButton beepButton;
@@ -100,6 +102,8 @@ public class RoomChatPanel extends JPanel implements RoomListener,
     private JToggleButton friendToggleButton;
 
     private JToggleButton ignoreToggleButton;
+
+    protected JButton adminButton;
 
     public RoomChatPanel(boolean showTableNumber) {
         super(new BorderLayout());
@@ -187,7 +191,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
         beepButton.setToolTipText("Makes the selected player's computer beep.");
         CustomMetalTheme.removeInsideBorder(beepButton);
         JPanel bottomPanel = new JPanel(new BorderLayout(0, 0));
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 0, 0, 0));
+        buttonPanel = new JPanel(new GridLayout(1, 0, 0, 0));
         bottomPanel.setOpaque(false);
         bottomPanel.add(playerCountLabel, BorderLayout.CENTER);
         bottomPanel.add(buttonPanel, BorderLayout.EAST);
@@ -204,6 +208,12 @@ public class RoomChatPanel extends JPanel implements RoomListener,
         ignoreToggleButton.setFocusable(false);
         CustomMetalTheme.removeInsideBorder(ignoreToggleButton);
         buttonPanel.add(ignoreToggleButton);
+
+        adminButton = new JButton(new AdminAction());
+        adminButton.setOpaque(false);
+        adminButton.setFocusable(false);
+        CustomMetalTheme.removeInsideBorder(adminButton);
+
         westPanel = new JPanel(new BorderLayout());
         westPanel.setOpaque(false);
         westPanel.add(playerScrollPane, BorderLayout.CENTER);
@@ -239,6 +249,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
             beepButton.getAction().setEnabled(true);
             friendToggleButton.getAction().setEnabled(true);
             ignoreToggleButton.getAction().setEnabled(true);
+            adminButton.getAction().setEnabled(true);
 
             Player player = players.getPlayer(selectedRow);
             friendToggleButton.setSelected(ChatPanel
@@ -258,6 +269,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
             friendToggleButton.setSelected(false);
             ignoreToggleButton.getAction().setEnabled(false);
             ignoreToggleButton.setSelected(false);
+            adminButton.getAction().setEnabled(false);
         }
     }
 
@@ -298,9 +310,24 @@ public class RoomChatPanel extends JPanel implements RoomListener,
         players.fireLagCellUpdated(player);
     }
 
+    public void player_perms(Player player) {
+        players.firePlayerTypeCellUpdated(player);
+    }
+
     public void player_list(List new_players) {
         players.replaceAll(new_players);
         player_count(new_players.size());
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                Player me = room.get_player_by_name(handle);
+                if (me != null && me.get_type() == PlayerType.GGZ_PLAYER_ADMIN) {
+                    buttonPanel.add(adminButton);
+                } else {
+                    buttonPanel.remove(adminButton);
+                }
+            }
+        });
     }
 
     public void player_stats(Player player) {
@@ -468,6 +495,8 @@ public class RoomChatPanel extends JPanel implements RoomListener,
     protected class PlayersTableModel extends AbstractTableModel {
         private static final int LAG_COLUMN = 0;
 
+        private static final int PLAYER_TYPE_COLUMN = 1;
+
         private boolean showTableNumber;
 
         private SortedList data;
@@ -562,7 +591,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
             switch (columnIndex) {
             case LAG_COLUMN:
                 return new Integer(player.get_lag());
-            case 1:
+            case PLAYER_TYPE_COLUMN:
                 return player.get_type();
             case 2:
                 return player;
@@ -583,6 +612,17 @@ public class RoomChatPanel extends JPanel implements RoomListener,
                         + player);
             } else {
                 fireTableCellUpdated(row, LAG_COLUMN);
+            }
+        }
+
+        public void firePlayerTypeCellUpdated(Player player) {
+            int row = this.data.indexOf(player);
+            if (row < 0) {
+                log
+                        .warning("PlayerType not updated, could not find player in list: "
+                                + player);
+            } else {
+                fireTableCellUpdated(row, PLAYER_TYPE_COLUMN);
             }
         }
 
@@ -607,7 +647,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
 
         protected boolean sendAdmin(AdminType type, String player, String reason)
                 throws IOException {
-            room.admin(type, player, reason);
+            room.get_server().admin(type, player, reason);
             return true;
         }
 
@@ -636,7 +676,8 @@ public class RoomChatPanel extends JPanel implements RoomListener,
             Player player = players.getPlayer(selectedRow);
             if (player == null)
                 return;
-            PrivateChatDialog dialog = PrivateChatDialog.getOrCreateDialog(player.get_name(), Frame.NORMAL);
+            PrivateChatDialog dialog = PrivateChatDialog.getOrCreateDialog(
+                    player.get_name(), Frame.NORMAL);
             dialog.toFront();
         }
     }
@@ -705,6 +746,26 @@ public class RoomChatPanel extends JPanel implements RoomListener,
         }
     }
 
+    protected class AdminAction extends AbstractAction {
+        public AdminAction() {
+            super(null, IconFactory.getAdminIcon());
+            // Initially disabled until a selection is made in the list.
+            setEnabled(false);
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            int selectedRow = playerList.getSelectedRow();
+            if (selectedRow < 0)
+                return;
+
+            Player player = players.getPlayer(selectedRow);
+            if (player == null)
+                return;
+
+            PlayerAdminDialog.showDialog((Component) event.getSource(), player);
+        }
+    }
+
     protected class PlayerTypeCellRenderer extends DefaultTableCellRenderer {
         private PlayerType type;
 
@@ -725,15 +786,15 @@ public class RoomChatPanel extends JPanel implements RoomListener,
             if (type == null) {
                 return null;
             } else if (type == PlayerType.GGZ_PLAYER_NORMAL) {
-                return "Registered Player";
+                return messages.getString("PlayerType.Normal");
             } else if (type == PlayerType.GGZ_PLAYER_GUEST) {
-                return "Guest";
+                return messages.getString("PlayerType.Guest");
             } else if (type == PlayerType.GGZ_PLAYER_ADMIN) {
-                return "GGZ Administrator";
+                return messages.getString("PlayerType.Admin");
             } else if (type == PlayerType.GGZ_PLAYER_HOST) {
-                return "GGZ Host";
+                return messages.getString("PlayerType.Host");
             } else if (type == PlayerType.GGZ_PLAYER_BOT) {
-                return "Artificial Intelligence";
+                return messages.getString("PlayerType.Bot");
             }
             return type.toString();
         }

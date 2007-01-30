@@ -30,6 +30,8 @@ public class IconFactory {
 
     private static ImageIcon ignoreIcon;
 
+    private static ImageIcon adminIcon;
+
     private IconFactory() {
         // Private constructor to prevent access.
     }
@@ -78,5 +80,13 @@ public class IconFactory {
                     .getResource("images/ignore.png"));
         }
         return ignoreIcon;
+    }
+
+    public static Icon getAdminIcon() {
+        if (adminIcon == null) {
+            adminIcon = new ImageIcon(IconFactory.class
+                    .getResource("images/edit_permissions.png"));
+        }
+        return adminIcon;
     }
 }

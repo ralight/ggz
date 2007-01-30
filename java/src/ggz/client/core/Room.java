@@ -17,10 +17,11 @@
  */
 package ggz.client.core;
 
-import ggz.common.AdminType;
 import ggz.common.ChatType;
 import ggz.common.ClientReqError;
 import ggz.common.LeaveType;
+import ggz.common.PermSet;
+import ggz.common.PlayerType;
 
 import java.io.IOException;
 import java.text.Collator;
@@ -246,13 +247,6 @@ public class Room {
         // return -1;
     }
 
-    public void admin(AdminType type, String player, String reason)
-            throws IOException {
-        if (this.server != null) {
-            this.server.get_net().send_admin(type, player, reason);
-        }
-    }
-
     public void launch_table(Table table) throws IOException {
         if (this.server != null && table != null) {
             Net net;
@@ -396,6 +390,21 @@ public class Room {
         }
     }
 
+    void set_player_perms(String name, PermSet perms, PlayerType type) {
+        /* FIXME: This should be sending a player "class-based" event */
+        Player player;
+
+        log.fine("Setting perms  for " + name);
+
+        player = get_player_by_name(name);
+        /* make sure they're still in room */
+        if (player != null) {
+            player.set_perms(perms);
+            player.set_type(type);
+            event(RoomEvent.GGZ_PLAYER_PERMS, player);
+        }
+    }
+
     void set_player_stats(Player pdata) {
         /* FIXME: This should be sending a player "class-based" event */
         Player player;
@@ -451,7 +460,7 @@ public class Room {
 
         /* Default new people in room to no table (-1) */
         player = new Player(pdata.get_name(), pdata.get_room(), -1, pdata
-                .get_type(), pdata.get_lag());
+                .get_type(), pdata.get_perms(), pdata.get_lag());
         player.set_stats(pdata.get_wins(), pdata.get_losses(),
                 pdata.get_ties(), pdata.get_forfeits(), pdata.get_rating(),
                 pdata.get_ranking(), pdata.get_highscore());
@@ -795,6 +804,8 @@ public class Room {
             event_hooks.fire_player_stats((Player) data);
         } else if (event_id == RoomEvent.GGZ_PLAYER_COUNT) {
             event_hooks.fire_player_count(((Integer) data).intValue());
+        } else if (event_id == RoomEvent.GGZ_PLAYER_PERMS) {
+            event_hooks.fire_player_perms((Player) data);
         } else {
             throw new IllegalArgumentException("Unhandled RoomEvent: "
                     + event_id);
@@ -829,6 +840,15 @@ public class Room {
             for (int i = 0; i < listenerArray.length; i++) {
                 RoomListener listener = listenerArray[i];
                 listener.player_count(count);
+            }
+        }
+
+        public void fire_player_perms(Player player) {
+            RoomListener[] listenerArray = (RoomListener[]) listeners
+                    .getListeners(RoomListener.class);
+            for (int i = 0; i < listenerArray.length; i++) {
+                RoomListener listener = listenerArray[i];
+                listener.player_perms(player);
             }
         }
 

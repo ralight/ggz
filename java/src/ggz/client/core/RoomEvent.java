@@ -182,7 +182,17 @@ public class RoomEvent {
      *            The room id (int *)
      */
     public static final RoomEvent GGZ_PLAYER_COUNT = new RoomEvent();
-    
+
+    /**
+     * A player's permissions have been updated.
+     * 
+     * @see Player#get_perms()
+     * @see Player#has_perm(ggz.common.Perm)
+     * @param data
+     *            The name of the player whose perms have changed.
+     */
+    public static final RoomEvent GGZ_PLAYER_PERMS = new RoomEvent();
+
     private RoomEvent() {
         // Private constructor to prevent access.
     }

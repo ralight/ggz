@@ -17,10 +17,14 @@
  */
 package ggz.client.core;
 
+import ggz.common.AdminType;
 import ggz.common.ClientReqError;
+import ggz.common.Perm;
+import ggz.common.PlayerType;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.security.AccessControlException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -362,6 +366,40 @@ public class Server {
         log.fine("Logging out");
         change_state(TransID.GGZ_TRANS_LOGOUT_TRY);
         net.send_logout();
+    }
+
+    /**
+     * Executes an admin command on the server. E.g. kick, gag, ungag etc.
+     * 
+     * @param type
+     * @param player
+     * @param reason
+     * @throws IOException
+     */
+    public void admin(AdminType type, String player, String reason)
+            throws IOException {
+        get_net().send_admin(type, player, reason);
+    }
+
+    /**
+     * Send a request to set or unset a players permissions. The player does not
+     * have to be logged in.
+     * 
+     * @param player
+     * @param perm
+     * @param set
+     * @throws IOException
+     */
+    public void set_perm(String player, Perm perm, boolean set)
+            throws IOException {
+        String myHandle = get_handle();
+        Player me = get_cur_room().get_player_by_name(myHandle);
+
+        if (me.get_type() != PlayerType.GGZ_PLAYER_ADMIN) {
+            throw new AccessControlException(
+                    "You must be an admin in order to set permissions.");
+        }
+        get_net().send_perm_admin(player, perm, set);
     }
 
     void disconnect() {
