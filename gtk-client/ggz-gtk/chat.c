@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 8970 2007-02-01 23:09:19Z oojah $
+ * $Id: chat.c 8971 2007-02-01 23:15:47Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -45,6 +45,11 @@
 #endif
 #ifdef HAVE_WINSOCK_H
 #  include <winsock.h>
+#endif
+
+/* Supposedly not present on some systems (solaris). */
+#ifndef INADDR_NONE
+#  define INADDR_NONE ((unsigned long) -1)
 #endif
 
 #include <glib.h>
