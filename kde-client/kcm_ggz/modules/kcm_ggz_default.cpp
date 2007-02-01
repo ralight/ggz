@@ -43,14 +43,14 @@ KCMGGZDefault::KCMGGZDefault(QWidget *parent, const char *name)
 	label_username = new QLabel(i18n("Your login username"), box);
 	label_username->setEraseColor(QColor(255, 200, 0));
 
-	label_personalization = new QLabel(i18n("Load an image of yourself which is used in GGZ games."), mebox);
+	label_personalization = new QLabel(i18n("Upload an image of yourself to be used in GGZ games."), mebox);
 	label_personalization->setEraseColor(QColor(255, 200, 0));
 	m_button_personalization = new QPushButton(mebox);
 	m_button_personalization->setFixedSize(140, 140);
 
 	label_explanation = new QLabel(i18n("The GGZ Gaming Zone needs some information\n"
-		" to be configured properly. You can specify here what is needed as\n"
-		" default value for KGGZ, GGZap, the IO Slave and other applications.\n"),
+		" to be configured properly. The default values for KGGZ, GGZap\n"
+		" the IO Slave and other applications can be specified here.\n"),
 		this);
 	label_explanation->setEraseColor(QColor(255, 200, 0));
 

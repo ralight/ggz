@@ -125,7 +125,7 @@ void KCMGGZGames::information(QString name, QString frontend)
 						i18n("Protocol version: ") + protocol + "\n" +
 						i18n("Homepage: ") + homepage + "\n" +
 						i18n("Engine: ") + engine + "\n" +
-						i18n("Commandline: ") + commandline + "\n",
+						i18n("Command line: ") + commandline + "\n",
 						i18n("Detailed information"));
 					return;
 				}

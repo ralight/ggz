@@ -114,7 +114,7 @@ QString KCMGGZ::quickHelp()
 {
 	return i18n("<h1>GGZ Gaming Zone</h1> "
 		" is a common way for playing internet games. Although it"
-		" is possible to set all options from within the applications theirselves,"
+		" is possible to set all options from within the applications themselves,"
 		" some default data can be entered here which takes then precedence.<p>"
 		" Please take a look at <a href='http://www.ggzgamingzone.org/'>www.ggzgamingzone.org</a>"
 		" if you want to learn more.");

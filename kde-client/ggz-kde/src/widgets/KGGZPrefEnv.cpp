@@ -75,7 +75,7 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 	QTabWidget *tabwidget;
 	QWidget *tab1, *tab2, *tab3;
 
-	title = new KGGZCaption(i18n("Global Settings"), i18n("Please specify some environment variables here."), this);
+	title = new KGGZCaption(i18n("Global Settings"), i18n("Please specify environment variables here."), this);
 
 	tabwidget = new QTabWidget(this);
 	tab1 = new QWidget(tabwidget);

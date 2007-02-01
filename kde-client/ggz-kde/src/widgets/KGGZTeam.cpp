@@ -117,7 +117,7 @@ void KGGZTeam::slotAdd()
 	if(!input_member)
 	{
 		input_member = new KGGZInput(NULL, NULL,
-			i18n("New team member"), i18n("Name of the player who joins the team."));
+			i18n("New team member"), i18n("Name of the player who is joining the team."));
 		connect(input_member, SIGNAL(signalText(QString)), SLOT(slotAdded(QString)));
 	}
 	input_member->show();

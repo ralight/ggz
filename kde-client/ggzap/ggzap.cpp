@@ -139,7 +139,7 @@ void GGZap::slotState(int state)
 		case GGZapHandler::negotiatefail:
 			slotCancel();
 			KMessageBox::error(m_gui,
-				i18n("Wrong server version."), i18n("Error!"));
+				i18n("Incompatible server version."), i18n("Error!"));
 			emit signalMenu(GGZapTray::menucancel);
 			break;
 		case GGZapHandler::loggedin:
@@ -157,7 +157,7 @@ void GGZap::slotState(int state)
 		case GGZapHandler::joinroomfail:
 			slotCancel();
 			KMessageBox::error(m_gui,
-				i18n("Could not join the room!\nMaybe this game type isn't supported on the server?"), i18n("Error!"));
+				i18n("Could not join the room!\nThis game type may not be supported on the server."), i18n("Error!"));
 			emit signalMenu(GGZapTray::menucancel);
 			break;
 		case GGZapHandler::waiting:
@@ -175,7 +175,7 @@ void GGZap::slotState(int state)
 			break;
 		case GGZapHandler::error:
 			KMessageBox::error(m_gui,
-				i18n("An unknown error occured."), i18n("Error!"));
+				i18n("An unknown error occurred."), i18n("Error!"));
 			emit signalMenu(GGZapTray::menucancel);
 			break;
 		case GGZapHandler::finish:

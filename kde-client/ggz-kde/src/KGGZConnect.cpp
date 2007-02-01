@@ -438,7 +438,7 @@ void KGGZConnect::slotProfileNew()
 
 	// show input box and connect signal to slot
 	if(!m_input) m_input = new KGGZInput(NULL, "KGGZInput",
-		i18n("Profile identifier"), i18n("Chose a name for the new profile."));
+		i18n("Profile identifier"), i18n("Choose a name for the new profile."));
 
 	m_input->show();
 	connect(m_input, SIGNAL(signalText(QString)), SLOT(slotProfileProcess(QString)));

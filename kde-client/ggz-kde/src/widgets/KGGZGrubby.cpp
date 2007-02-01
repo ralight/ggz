@@ -116,7 +116,7 @@ KGGZGrubby::KGGZGrubby(QWidget *parent, const char *name)
 	connect(m_go, SIGNAL(clicked()), SLOT(slotInvoke()));
 	connect(m_combo, SIGNAL(activated(int)), SLOT(slotActivated(int)));
 
-	m_mle->setText(i18n("Please select who is grubby, and start a query!"));
+	m_mle->setText(i18n("Please select grubby and start a query!"));
 
 	setFixedSize(330, 290);
 	setCaption("GGZ Grubby");

@@ -312,7 +312,7 @@ void KGGZLaunch::setSeatType(int seat, int seattype)
 		if(!m_input)
 		{
 			m_input = new KGGZInput(NULL, NULL, i18n("Reservation"),
-				i18n("Name of the player whom the seat is reserved for"));
+				i18n("Name of the player that the seat is reserved for"));
 			connect(m_input, SIGNAL(signalText(QString)),
 				SLOT(slotReservation(QString)));
 		}

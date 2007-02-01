@@ -393,7 +393,7 @@ void KGGZ::menuServerKill()
 			KMessageBox::error(this, i18n("You don't have the privileges to stop the server."), i18n("Error!"));
 			break;
 		case -1:
-			KMessageBox::error(this, i18n("An unknown error occured."), i18n("Error!"));
+			KMessageBox::error(this, i18n("An unknown error occurred."), i18n("Error!"));
 			break;
 		case 0:
 			KMessageBox::error(this, i18n("Could only kill server via sigkill!"), i18n("Error!"));
@@ -1017,7 +1017,7 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 			m_sn_server = NULL;*/
 			/*m_killserver = 1;*/
 
-			KMessageBox::error(this, i18n("Could not connect, maybe the server version is incompatible."), i18n("Error!"));
+			KMessageBox::error(this, i18n("Could not connect, the server version may be incompatible."), i18n("Error!"));
 
 			menuConnect();
 			break;
@@ -1164,7 +1164,7 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Protocol error detected!"), KGGZChat::RECEIVE_ADMIN);
 			delete m_sn_server;
 			m_sn_server = NULL;
-			KMessageBox::error(this, i18n("A protocol error (GGZCoreServer::protoerror) occured!"), i18n("Error!"));
+			KMessageBox::error(this, i18n("A protocol error (GGZCoreServer::protoerror) occurred!"), i18n("Error!"));
 			m_killserver = 1;
 			menuConnect();
 			break;
@@ -1961,7 +1961,7 @@ void KGGZ::slotGrubby(QString grubby, QString argument, int id)
 			slotChat("do i have any messages", grubby, KGGZChat::RECEIVE_PERSONAL);
 			break;
 		case KGGZGrubby::actionbye:
-			KMessageBox::information(m_grubby, i18n("The pleasure has been on my side :)"), "Grubby");
+			KMessageBox::information(m_grubby, i18n("The pleasure was mine :)"), "Grubby");
 			break;
 		case KGGZGrubby::actionteach:
 			slotChat(QString("%1").arg(argument), grubby, KGGZChat::RECEIVE_PERSONAL);
