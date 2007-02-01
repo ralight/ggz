@@ -429,7 +429,7 @@ void MainWindow::slotData()
 					statusBar()->changeItem(i18n("Space occupied"), status_state);
 					break;
 				case Network::errdist:
-					statusBar()->changeItem(i18n("Distance too large"), status_state);
+					statusBar()->changeItem(i18n("Distance too great"), status_state);
 					break;
 				case Network::errmap:
 					statusBar()->changeItem(i18n("Disallowed by map"), status_state);

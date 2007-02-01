@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 	KAboutData *about;
 	KCmdLineArgs *args;
 	static const KCmdLineOptions op[] = {
-		{"ggz", I18N_NOOP("Request GGZ game explicitely"), 0},
+		{"ggz", I18N_NOOP("Request GGZ game explicitly"), 0},
 		{0, 0, 0}};
 
 	about = new KAboutData("kdots",

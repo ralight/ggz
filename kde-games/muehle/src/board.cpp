@@ -218,12 +218,12 @@ void Board::mousePressEvent(QMouseEvent *e)
 	if(!web) return;
 	if(m_color == colornone)
 	{
-		KMessageBox::sorry(this, i18n("The server doesn't have assigned a color to you yet."), i18n("Client message"));
+		KMessageBox::sorry(this, i18n("The server hasn't assigned a color to you yet."), i18n("Client message"));
 		return;
 	}
 	if(!m_turn)
 	{
-		KMessageBox::sorry(this, i18n("It's not your turn - please wait for the opponent."), i18n("Client message"));
+		KMessageBox::sorry(this, i18n("It's not your turn - please wait for your opponent."), i18n("Client message"));
 		return;
 	}
 	if(m_turn < 0)
@@ -623,7 +623,7 @@ void Board::slotInput()
 	else if((s == "white.") && (m_color == colornone))
 	{
 		m_color = colorwhite;
-		KMessageBox::information(this, i18n("Your turn, you play with the white stones."), i18n("Server message"));
+		KMessageBox::information(this, i18n("Your turn; you are playing with the white stones."), i18n("Server message"));
 		m_turn = 1;
 		m_phase = phaseset;
 		m_whitestones = 9;
@@ -634,7 +634,7 @@ void Board::slotInput()
 	else if((s == "black.") && (m_color == colornone))
 	{
 		m_color = colorblack;
-		KMessageBox::information(this, i18n("You play with the black stones, but wait for your opponent first."), i18n("Server message"));
+		KMessageBox::information(this, i18n("You are playing with the black stones."), i18n("Server message"));
 		m_turn = 0;
 		m_phase = phaseset;
 		m_whitestones = 9;

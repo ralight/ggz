@@ -32,7 +32,7 @@
 static const char *REV_VERSION = "0.0.2";
 
 static const char *description =
-	I18N_NOOP("KDE client for GGZ's Reversi game module");
+	I18N_NOOP("KDE client for the GGZ Reversi game module");
 	
 static KCmdLineOptions options[] =
 {

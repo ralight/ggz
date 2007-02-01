@@ -337,7 +337,7 @@ void Game::handleGameOver(int cval)
 			s += i18n("not enough material");
 			break;
 		case CHESS_GAMEOVER_DRAW_MOVECOUNT:
-			s += i18n("maximum movecount reached");
+			s += i18n("maximum move count reached");
 			break;
 		case CHESS_GAMEOVER_DRAW_TIMEMATERIAL:
 			s += i18n("time over and no material left");

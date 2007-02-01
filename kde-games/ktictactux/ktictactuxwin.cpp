@@ -233,7 +233,7 @@ void KTicTacTuxWin::slotNetworkScore(int wins, int losses, int ties)
 			comment = i18n("You're a TicTacTux expert!");
 
 		KMessageBox::information(this,
-			i18n("Human players have been beaten %1 times by you, you lost %2 times. "
+			i18n("Human players have been beaten %1 times by you; you lost %2 times. "
 				"%3 ties were achieved. "
 				"%4").arg(wins).arg(losses).arg(ties).arg(comment),
 			i18n("KTicTacTux network score"));
