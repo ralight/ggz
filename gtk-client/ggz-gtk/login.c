@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 8564 2006-08-31 19:05:43Z jdorje $
+ * $Id: login.c 8972 2007-02-01 23:16:55Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -609,7 +609,7 @@ GtkWidget *create_dlg_login(const char *default_profile)
 	gtk_entry_set_max_length(GTK_ENTRY(port_entry), 5);
 	gtk_box_pack_start(GTK_BOX(server_box), port_entry, FALSE, FALSE,
 			   0);
-	gtk_entry_set_text(GTK_ENTRY(port_entry), _("5688"));
+	gtk_entry_set_text(GTK_ENTRY(port_entry), "5688");
 
 	msg_label = gtk_label_new("");
 	g_object_set_data(G_OBJECT(dlg_login), "msg_label", msg_label);
