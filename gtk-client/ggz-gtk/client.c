@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 8589 2006-09-20 07:30:11Z jdorje $
+ * $Id: client.c 8970 2007-02-01 23:09:19Z oojah $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -690,7 +690,7 @@ client_realize                    (GtkWidget       *widget,
 		  "the client settings"));
 #ifdef STATS
 	tooltip("stats_button",
-		_("Show the game stats for the current room's game type"));
+		_("Show the game stats for the current room"));
 #endif
 	tooltip("exit_button",
 		_("Exit the GGZ client application."));
@@ -1118,7 +1118,7 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
   gtk_container_add (GTK_CONTAINER (help_menu), separator7);
   gtk_widget_set_sensitive (separator7, FALSE);
 
-  goto_web1 = gtk_menu_item_new_with_label(_("Goto Web"));
+  goto_web1 = gtk_menu_item_new_with_label(_("Go to Web"));
   g_object_set_data(G_OBJECT (win_main), "goto_web1", goto_web1);
   gtk_container_add (GTK_CONTAINER (help_menu), goto_web1);
 

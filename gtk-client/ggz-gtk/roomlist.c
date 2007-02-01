@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 8533 2006-08-26 01:26:29Z jdorje $
+ * $Id: roomlist.c 8970 2007-02-01 23:09:19Z oojah $
  * 
  * List of rooms in the server
  * 
@@ -74,7 +74,7 @@ static void client_join_room(GGZRoom *room)
 		break;
 	case GGZ_STATE_BETWEEN_ROOMS:
 	case GGZ_STATE_ENTERING_ROOM:
-		err_msg = _("You're already in between rooms");
+		err_msg = _("You're already inbetween rooms");
 		break;
 	case GGZ_STATE_JOINING_TABLE:
 	case GGZ_STATE_AT_TABLE:

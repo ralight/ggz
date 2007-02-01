@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 8543 2006-08-27 05:00:21Z jdorje $
+ * $Id: chat.c 8970 2007-02-01 23:09:19Z oojah $
  *
  * This file contains all functions that are chat related.
  *
@@ -86,11 +86,11 @@ static struct {
 	void (*func)(GGZServer *server, const gchar *message);
 	const char *help;
 } commands[] = { {"/msg", chat_send_prvmsg,
-		  N_("/msg <username> <message> . Private message a player")},
+		  N_("/msg <username> <message> . Send a player a private message")},
 		 {"/table", chat_send_tablemsg,
-		  N_("/table <message> .......... Message to your table")},
+		  N_("/table <message> .......... Send a message to your table")},
 		 {"/wall", chat_send_wall,
-		  N_("/wall <message> ........... Admin command")},
+		  N_("/wall <message> ........... Send a message to all rooms")},
 		 {"/beep", chat_send_beep,
 		  N_("/beep <username> .......... Beep a player")},
 		 {"/help", chat_help,

@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: props.c 8970 2007-02-01 23:09:19Z oojah $
  *
  * This is the main program body for the GGZ client
  *
@@ -1425,7 +1425,7 @@ GtkWidget* create_props_dlg(void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_box_pack_start (GTK_BOX (hbox15), info_country, TRUE, TRUE, 5);
 
-  label21 = gtk_label_new (_("Comments, Hobies, Etc."));
+  label21 = gtk_label_new (_("Comments, Hobbies, Etc."));
   gtk_widget_ref (label21);
   g_object_set_data_full(G_OBJECT (dlg_props), "label21", label21,
                             (GtkDestroyNotify) gtk_widget_unref);
