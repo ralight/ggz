@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 8971 2007-02-01 23:15:47Z jdorje $
+ * $Id: chat.c 8973 2007-02-02 00:29:51Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -89,34 +89,44 @@ static void chat_ban(GGZServer *server, const gchar *message);
 static struct {
 	const char *cmd;
 	void (*func)(GGZServer *server, const gchar *message);
-	const char *help;
-} commands[] = { {"/msg", chat_send_prvmsg,
-		  N_("/msg <username> <message> . Send a player a private message")},
-		 {"/table", chat_send_tablemsg,
-		  N_("/table <message> .......... Send a message to your table")},
-		 {"/wall", chat_send_wall,
-		  N_("/wall <message> ........... Send a message to all rooms")},
-		 {"/beep", chat_send_beep,
-		  N_("/beep <username> .......... Beep a player")},
-		 {"/help", chat_help,
-		  N_("/help ..................... Get help")},
-		 {"/friends", chat_list_friend,
-		  N_("/friends .................. List your friends")},
-		 {"/ignore", chat_list_ignore,
-		  N_("/ignore ................... List people "
-		     "you're ignoring")},
-		 {"/kick", chat_kick,
-		  N_("/kick <username> .......... Kick a player "
-		     "from the room")},
-		 {"/gag", chat_gag,
-		  N_("/gag <username> ........... Gag a player to prevent "
-		     "them from talking")},
-		 {"/ungag", chat_ungag,
-		  N_("/ungag <username> ......... Reverse the gag operation "
-		     "to allow a player to talk")},
-		 {"/ban", chat_ban,
-		  N_("/ban <username> ........... Ban a player from "
-		     "the server")}};
+	const char *params;
+	const char *desc;
+} commands[] = {
+	{ "/msg", chat_send_prvmsg,
+	  N_("<username> <message>"),
+	  N_("Send a player a private message") },
+	{ "/table", chat_send_tablemsg,
+	  N_("<message>"),
+	  N_("Send a message to your table") },
+	{ "/wall", chat_send_wall,
+	  N_("<message>"),
+	  N_("Send a message to all rooms") },
+	{ "/beep",
+	  chat_send_beep,
+	  N_("<username>"),
+	  N_("Beep a player") },
+	{ "/help", chat_help,
+	  NULL,
+	  N_("Get help") },
+	{ "/friends", chat_list_friend,
+	  NULL,
+	  N_("List your friends") },
+	{ "/ignore", chat_list_ignore,
+	  NULL,
+	  N_("List people you're ignoring") },
+	{ "/kick", chat_kick,
+	  N_("<username>"),
+	  N_("Kick a player from the room") },
+	{ "/gag", chat_gag,
+	  N_("<username>"),
+	  N_("Gag a player to prevent them from talking") },
+	{ "/ungag", chat_ungag,
+	  N_("<username>"),
+	  N_("Reverse the gag operation to allow a player to talk") },
+	{ "/ban", chat_ban,
+	  N_("<username>"),
+	  N_("Ban a player from the server") }
+};
 #define NUM_CHAT_COMMANDS (sizeof(commands) / sizeof(commands[0]))
 
 /* Aray of GdkColors currently used for chat and MOTD
@@ -596,9 +606,25 @@ static void chat_help(GGZServer *server, const gchar *message)
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL,
 			   _("/me <action> .............. Send an action"));
 
-	for (i = 0; i < NUM_CHAT_COMMANDS; i++)
-		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
-				   _(commands[i].help));
+	for (i = 0; i < NUM_CHAT_COMMANDS; i++) {
+		char text[1024];
+
+		if (commands[i].params) {
+			snprintf(text, sizeof(text),
+				 "%s %s ",
+				 commands[i].cmd, _(commands[i].params));
+		} else {
+			snprintf(text, sizeof(text),
+				 "%s ", commands[i].cmd);
+		}
+		while (strlen(text) < 27) {
+			sprintf(text + strlen(text), ".");
+		}
+		snprintf(text + strlen(text), sizeof(text) - strlen(text),
+			 " %s", _(commands[i].desc));
+		printf("%s\n", text);
+		chat_display_local(CHAT_LOCAL_NORMAL, NULL, text);
+	}
 }
 
 
