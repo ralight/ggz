@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 8973 2007-02-02 00:29:51Z jdorje $
+ * $Id: chat.c 8974 2007-02-02 05:05:32Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -86,6 +86,20 @@ static void chat_gag(GGZServer *server, const gchar *message);
 static void chat_ungag(GGZServer *server, const gchar *message);
 static void chat_ban(GGZServer *server, const gchar *message);
 
+/* Chat command emumeration and structure. These must match up. */
+typedef enum {
+	CCMD_MSG,
+	CCMD_TABLE,
+	CCMD_WALL,
+	CCMD_BEEP,
+	CCMD_HELP,
+	CCMD_FRIENDS,
+	CCMD_IGNORE,
+	CCMD_KICK,
+	CCMD_GAG,
+	CCMD_UNGAG,
+	CCMD_BAN
+} CCMDType;
 static struct {
 	const char *cmd;
 	void (*func)(GGZServer *server, const gchar *message);
@@ -417,6 +431,29 @@ static void chat_send_msg(GGZServer *server, const gchar *message)
 }
 
 
+/* chat_display_usage() - displays usage for a particular command
+ *
+ * Receives:
+ *     ccmd_type - the command to display usage for
+ */
+static void chat_display_usage(CCMDType ccmd_type)
+{
+	char text[1024];
+
+	snprintf(text, sizeof(text), "%s", _("Usage:"));
+	snprintf(text + strlen(text), sizeof(text) - strlen(text),
+		 " %s", commands[ccmd_type].cmd);
+	if (commands[ccmd_type].params) {
+		snprintf(text + strlen(text), sizeof(text) - strlen(text),
+			 " %s", _(commands[ccmd_type].params));
+	}
+	chat_display_local(CHAT_LOCAL_NORMAL, NULL, text);
+
+	snprintf(text, sizeof(text), "    %s", _(commands[ccmd_type].desc));
+	chat_display_local(CHAT_LOCAL_NORMAL, NULL, text);
+}
+
+
 /* chat_send_prvmsg() - Sends a chat to a user as private
  *
  * Recieves:
@@ -450,11 +487,7 @@ static void chat_send_prvmsg(GGZServer *server, const gchar *message)
 	ggz_free(line);
 
 	/* Could not parse it. */
-	chat_display_local(CHAT_LOCAL_NORMAL, NULL,
-			   _("Usage: /msg <username> <message>"));
-	chat_display_local(CHAT_LOCAL_NORMAL, NULL,
-			   _("    Sends a private message to a user "
-			     "on the network."));	
+	chat_display_usage(CCMD_MSG);
 }
 
 /* chat_send_prvmsg() - Sends a chat to a user as private
