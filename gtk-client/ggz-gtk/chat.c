@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 8977 2007-02-03 03:36:09Z jdorje $
+ * $Id: chat.c 8978 2007-02-03 03:40:58Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -630,6 +630,25 @@ void chat_part(const gchar *player, int room_known, GGZRoom *to_room)
 	}
 }
 
+static void chat_display_header(const char *text)
+{
+	char footer[strlen(text) + 1];
+	int i;
+
+	/* FIXME: this function and most that call it do text-based
+	   alignment assuming a fixed-width font.  But there is nothing
+	   to ensure that the xtext is using a fixed-width font (in fact,
+	   it's not). */
+
+	for (i = 0; i < sizeof(footer); i++) {
+		footer[i] = '-';
+	}
+	footer[i] = '\0';
+
+	chat_display_local(CHAT_LOCAL_NORMAL, NULL, text);
+	chat_display_local(CHAT_LOCAL_NORMAL, NULL, footer);
+}
+
 /* chat_help() - Displays help on all the chat commands
  *
  * Recieves:
@@ -646,13 +665,7 @@ static void chat_help(GGZServer *server, const gchar *message)
 	   fixed-width font.  But there is nothing to ensure that the
 	   xtext is using a fixed-width font (in fact, it's not). */
 
-	for (i = 0; i < sizeof(header2); i++) {
-		header2[i] = '-';
-	}
-	header2[i] = '\0';
-
-	chat_display_local(CHAT_LOCAL_NORMAL, NULL, header);
-	chat_display_local(CHAT_LOCAL_NORMAL, NULL, header2);
+	chat_display_header(_("Chat Commands"));
 
 	for (i = 0; i < NUM_CHAT_COMMANDS + 1; i++) {
 		char text[1024];
@@ -1020,10 +1033,7 @@ static void chat_list_friend(GGZServer *server, const gchar *message)
 {
 	int i;
 
-	chat_display_local(CHAT_LOCAL_NORMAL, NULL,
-			   _("People currently your friends"));
-	chat_display_local(CHAT_LOCAL_NORMAL, NULL,
-			   "-----------------------------");
+	chat_display_header(_("People currently your friends"));
 	for(i=0; i<friend_count; i++)
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
 				   g_array_index(chatinfo.friends, char *, i));
@@ -1034,10 +1044,7 @@ static void chat_list_ignore(GGZServer *server, const gchar *message)
 {
 	int i;
 
-	chat_display_local(CHAT_LOCAL_NORMAL, NULL,
-			   _("People you're currently ignoring"));
-	chat_display_local(CHAT_LOCAL_NORMAL, NULL,
-			   "------------------------------");
+	chat_display_header(_("People you're currently ignoring"));
 	for(i=0; i<ignore_count; i++)
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
 				   g_array_index(chatinfo.ignore, char *, i));
