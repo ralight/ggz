@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 8976 2007-02-03 03:14:16Z jdorje $
+ * $Id: chat.c 8977 2007-02-03 03:36:09Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -100,12 +100,15 @@ typedef enum {
 	CCMD_UNGAG,
 	CCMD_BAN
 } CCMDType;
-static struct {
+
+typedef struct {
 	const char *cmd;
 	void (*func)(GGZServer *server, const gchar *message);
 	const char *params;
 	const char *desc;
-} commands[] = {
+} GGZCommand;
+
+static GGZCommand commands[] = {
 	{ "/msg", chat_send_prvmsg,
 	  N_("<username> <message>"),
 	  N_("Send a player a private message") },
@@ -142,6 +145,11 @@ static struct {
 	  N_("Ban a player from the server") }
 };
 #define NUM_CHAT_COMMANDS (sizeof(commands) / sizeof(commands[0]))
+
+/* This one is hard-coded at the server end. */
+static GGZCommand me_command = {
+	"/me", NULL, N_("<action>"), N_("Send an action")
+};
 
 /* Aray of GdkColors currently used for chat and MOTD
  * They are all non-ditherable and as such should look the same everywhere
@@ -634,6 +642,10 @@ static void chat_help(GGZServer *server, const gchar *message)
 	char *header = _("Chat Commands");
 	char header2[strlen(header) + 1];
 
+	/* FIXME: this function does text-based alignment assuming a
+	   fixed-width font.  But there is nothing to ensure that the
+	   xtext is using a fixed-width font (in fact, it's not). */
+
 	for (i = 0; i < sizeof(header2); i++) {
 		header2[i] = '-';
 	}
@@ -642,26 +654,29 @@ static void chat_help(GGZServer *server, const gchar *message)
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL, header);
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL, header2);
 
-	/* This one is hard-coded at the server end. */
-	chat_display_local(CHAT_LOCAL_NORMAL, NULL,
-			   _("/me <action> .............. Send an action"));
-
-	for (i = 0; i < NUM_CHAT_COMMANDS; i++) {
+	for (i = 0; i < NUM_CHAT_COMMANDS + 1; i++) {
 		char text[1024];
+		GGZCommand *cmd;
 
-		if (commands[i].params) {
+		if (i == 0) {
+			cmd = &me_command;
+		} else {
+			cmd = commands + i - 1;
+		}
+
+		if (cmd->params) {
 			snprintf(text, sizeof(text),
 				 "%s %s ",
-				 commands[i].cmd, _(commands[i].params));
+				 cmd->cmd, _(cmd->params));
 		} else {
 			snprintf(text, sizeof(text),
-				 "%s ", commands[i].cmd);
+				 "%s ", cmd->cmd);
 		}
 		while (strlen(text) < 27) {
 			sprintf(text + strlen(text), ".");
 		}
 		snprintf(text + strlen(text), sizeof(text) - strlen(text),
-			 " %s", _(commands[i].desc));
+			 " %s", _(cmd->desc));
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL, text);
 	}
 }
