@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 8974 2007-02-02 05:05:32Z jdorje $
+ * $Id: chat.c 8976 2007-02-03 03:14:16Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -631,9 +631,16 @@ void chat_part(const gchar *player, int room_known, GGZRoom *to_room)
 static void chat_help(GGZServer *server, const gchar *message)
 {
 	unsigned int i;
+	char *header = _("Chat Commands");
+	char header2[strlen(header) + 1];
 
-	chat_display_local(CHAT_LOCAL_NORMAL, NULL, _("Chat Commands"));
-	chat_display_local(CHAT_LOCAL_NORMAL, NULL, _("-------------"));
+	for (i = 0; i < sizeof(header2); i++) {
+		header2[i] = '-';
+	}
+	header2[i] = '\0';
+
+	chat_display_local(CHAT_LOCAL_NORMAL, NULL, header);
+	chat_display_local(CHAT_LOCAL_NORMAL, NULL, header2);
 
 	/* This one is hard-coded at the server end. */
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL,
@@ -655,7 +662,6 @@ static void chat_help(GGZServer *server, const gchar *message)
 		}
 		snprintf(text + strlen(text), sizeof(text) - strlen(text),
 			 " %s", _(commands[i].desc));
-		printf("%s\n", text);
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL, text);
 	}
 }
