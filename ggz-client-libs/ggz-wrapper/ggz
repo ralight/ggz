@@ -1,13 +1,14 @@
 #!/bin/bash
 #
 # GGZ: Auto-selection of an appropriate GGZ Gaming Zone core client
-# Copyright (C) 2006 Josef Spillner <josef@ggzgamingzone.org>
+# Copyright (C) 2006, 2007 Josef Spillner <josef@ggzgamingzone.org>
 
 # Currently supported core clients:
 # kggz, ggz-gtk, ggz-java, ggz-txt
 
 # FIXME: Use 'erreur' in case no core client is found!
 # FIXME: add víbora etc.
+# FIXME: improve autoconf checks to make it clear that such scripts require bash
 
 app=""
 has_kggz=""
@@ -42,6 +43,17 @@ fi
 if [ ! -z $KDE_FULL_SESSION ]; then
 	if [ ! -z $has_kggz ]; then
 		app="kggz"
+	fi
+fi
+
+if [ ! -z $GNOME_SESSION ]; then
+	if [ ! -z $has_ggz_gtk ]; then
+		app="ggz_gtk"
+	fi
+fi
+if [ ! -z $GNOME_DESKTOP_SESSION_ID ]; then
+	if [ ! -z $has_ggz_gtk ]; then
+		app="ggz_gtk"
 	fi
 fi
 
