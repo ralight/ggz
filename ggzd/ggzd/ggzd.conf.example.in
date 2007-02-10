@@ -95,6 +95,7 @@ LogFile = stderr
 #                 Security
 #                 Update
 #                 Tables
+#                 Admin
 LogTypes = All
 
 # Debug logfile

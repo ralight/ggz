@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 8801 2007-01-02 20:52:54Z jdorje $
+ * $Id: players.c 8983 2007-02-10 00:23:32Z oojah $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -1460,7 +1460,7 @@ GGZPlayerHandlerStatus player_room_admin(GGZPlayer* player, GGZAdminType type,
 		/* Do nothing. Better safe than sorry. */
 		break;
 	case GGZ_ADMIN_GAG:
-		dbg_msg(GGZ_DBG_CHAT, "%s gags %s", player->name, target);
+		log_msg(GGZ_LOG_ADMIN, "ADMIN %s gags %s", player->name, target);
 		if (rcvr == NULL || rcvr == player) {
 			status = E_USR_LOOKUP;
 		} else {
@@ -1469,7 +1469,7 @@ GGZPlayerHandlerStatus player_room_admin(GGZPlayer* player, GGZAdminType type,
 		}
 		break;
 	case GGZ_ADMIN_UNGAG:
-		dbg_msg(GGZ_DBG_CHAT, "%s ungags %s again", player->name, target);
+		log_msg(GGZ_LOG_ADMIN, "ADMIN %s ungags %s again", player->name, target);
 		if (rcvr == NULL || rcvr == player) {
 			status = E_USR_LOOKUP;
 		} else {
@@ -1478,7 +1478,7 @@ GGZPlayerHandlerStatus player_room_admin(GGZPlayer* player, GGZAdminType type,
 		}
 		break;
 	case GGZ_ADMIN_KICK:
-		dbg_msg(GGZ_DBG_CHAT, "%s kicks %s, reason: %s", player->name, target, reason);
+		log_msg(GGZ_LOG_ADMIN, "ADMIN %s kicks %s, reason: %s", player->name, target, reason);
 		if (rcvr == NULL || rcvr == player) {
 			status = E_USR_LOOKUP;
 		} else if (reason == NULL) {
@@ -1496,7 +1496,7 @@ GGZPlayerHandlerStatus player_room_admin(GGZPlayer* player, GGZAdminType type,
 		}
 		break;
 	case GGZ_ADMIN_BAN:
-		dbg_msg(GGZ_DBG_CHAT, "%s bans %s", player->name, target);
+		log_msg(GGZ_LOG_ADMIN, "ADMIN %s bans %s", player->name, target);
 		/* This is not implemented/used yet. */
 		break;
 	}

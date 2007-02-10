@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error function prototypes
- * $Id: err_func.h 8957 2007-01-18 08:03:59Z jdorje $
+ * $Id: err_func.h 8983 2007-02-10 00:23:32Z oojah $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -36,6 +36,7 @@
 #define GGZ_LOG_SECURITY	(unsigned) 0x00000004
 #define GGZ_LOG_TABLES		(unsigned) 0x00000008
 #define GGZ_LOG_UPDATE		(unsigned) 0x00000010
+#define GGZ_LOG_ADMIN		(unsigned) 0x00000020
 #define GGZ_LOG_ALL		(unsigned) 0xFFFFFFFF
 
 /* Debug levels for dbg_msg.  If you add a new entry, make sure to
