@@ -6,6 +6,7 @@ AM_CPPFLAGS = $(GTK_CFLAGS) -I$(top_srcdir)/intl \
 dist_ggzgtkdata_DATA =	about_bg.png		\
 			ggz_gtk_admin.svg 	\
 			ggz_gtk_guest.svg 	\
+			ggz_gtk_host.svg	\
 			ggz_gtk_registered.svg	\
 			ggz_gtk_bot.svg		\
 			ggz_gtk_lag0.svg 	\

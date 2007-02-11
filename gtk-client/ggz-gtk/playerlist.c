@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 8771 2006-12-28 09:28:29Z jdorje $
+ * $Id: playerlist.c 8984 2007-02-11 06:32:46Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -313,7 +313,7 @@ void clear_player_list(void)
 
 #define LAG_CATEGORIES 6
 gboolean pixmaps_initted = FALSE;
-GdkPixbuf *lag[LAG_CATEGORIES], *guest, *registered, *admin, *bot;
+GdkPixbuf *lag[LAG_CATEGORIES], *guest, *registered, *admin, *host, *bot;
 
 void update_player_list(void)
 {
@@ -322,8 +322,6 @@ void update_player_list(void)
 	GGZPlayer *p;
 	GGZTable *table;
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
 	int wins, losses, ties, forfeits, rating, ranking, highscore;
 	char stats[512];
 
@@ -349,6 +347,7 @@ void update_player_list(void)
 		guest = load_svg_pixbuf("ggz_gtk_guest", 16, 24);
 		registered = load_svg_pixbuf("ggz_gtk_registered", 16, 24);
 		admin = load_svg_pixbuf("ggz_gtk_admin", 16, 24);
+		host = load_svg_pixbuf("ggz_gtk_host", 16, 24);
 		bot = load_svg_pixbuf("ggz_gtk_bot", 16, 24);
 		pixmaps_initted = TRUE;
 	}
@@ -420,6 +419,9 @@ void update_player_list(void)
 					   PLAYER_COLUMN_TYPE, registered, -1);
 			break;
 		case GGZ_PLAYER_HOST:
+			gtk_list_store_set(store, &iter,
+					   PLAYER_COLUMN_TYPE, host, -1);
+			break;
 		case GGZ_PLAYER_ADMIN:
 			gtk_list_store_set(store, &iter,
 					   PLAYER_COLUMN_TYPE, admin, -1);
@@ -429,7 +431,7 @@ void update_player_list(void)
 					   PLAYER_COLUMN_TYPE, bot, -1);
 			break;
 		case GGZ_PLAYER_UNKNOWN:
-			pixmap = mask = NULL;
+
 			break;
 		}
 
