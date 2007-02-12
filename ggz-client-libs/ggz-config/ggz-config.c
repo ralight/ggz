@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 8678 2006-11-27 09:41:30Z josef $
+ * $Id: ggz-config.c 8986 2007-02-12 23:51:13Z jdorje $
  *
  * Configuration query and module install program.
  *
@@ -424,7 +424,8 @@ static int remove_module(void)
 	engine_id = get_engine_id(global);
 
 	if(engine_id == NULL) {
-		fprintf(stderr, _("Warning: Tried to remove nonexistant module\n"));
+		fprintf(stderr,
+			_("Warning: Tried to remove nonexistent module.\n"));
 		ggz_conf_cleanup();
 		return -1;
 	}
