@@ -1,6 +1,24 @@
 <div id="main">
 	<h1>
 		<span class="itemleader">:: </span>
+		Server move (again)
+		<span class="itemleader"> :: </span>
+		<a name="servermove"></a>
+	</h1>
+	<div class="text">
+		Since a lot more players have come to play on our spades server
+		(games.ggzgamingzone.org), the main GGZ server (live.ggzgamingzone.org)
+		does now point to it. You can still enter ggzcommunity.org as the hostname
+		to play on and see your stats and all through the GGZ Community pages.
+		The meta server also continues to run on this host.
+		Stay tuned until we expand our server infrastructure to accomodate the
+		growth in players.
+		<br>
+		<a href="http://games.ggzcommunity.org/" title="GGZ Live">GGZ Live server information</a>
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
 		Article explaining GGZ
 		<span class="itemleader"> :: </span>
 		<a name="ggzonline"></a>
@@ -34,7 +52,7 @@
 		again. If you know of another card game that does it better let us know what 
 		we need to do to improve it so that you'll want to play more.
 		<br>
-		Check it out <a href="/games/applet.php">here</a>!
+		Check it out <a href="/games/">here</a>!
 	</div>
 
 	<h1>
