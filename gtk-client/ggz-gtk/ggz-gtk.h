@@ -2,7 +2,7 @@
  * File: ggz-gtk.h
  * Author: Jason Short
  * Project: GGZ GTK Client Library
- * $Id: ggz-gtk.h 8452 2006-08-01 19:53:36Z jdorje $
+ * $Id: ggz-gtk.h 8987 2007-02-19 02:50:30Z jdorje $
  *
  * This library provides interface functions so external programs can embed
  * GGZ via a GTK interface

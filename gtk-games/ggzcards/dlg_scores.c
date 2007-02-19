@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: August 7, 2006
  * Desc: Creates the scores dialog
- * $Id: dlg_scores.c 8493 2006-08-07 22:50:35Z jdorje $
+ * $Id: dlg_scores.c 8987 2007-02-19 02:50:30Z jdorje $
  *
  * Copyright (C) 2006 GGZ Dev Team.
  *

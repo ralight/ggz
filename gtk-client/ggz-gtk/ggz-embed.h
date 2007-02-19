@@ -2,7 +2,7 @@
  * File: ggz-embed.h
  * Author: Jason Short
  * Project: GGZ GTK Client Library
- * $Id: ggz-embed.h 8452 2006-08-01 19:53:36Z jdorje $
+ * $Id: ggz-embed.h 8987 2007-02-19 02:50:30Z jdorje $
  *
  * This library provides interface functions so external programs can embed
  * GGZ.  This is intended to be used with ggz-gtk.h, but it provides

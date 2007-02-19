@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 2006-05-29 
  * Desc: Tools for dynamic reconfiguration of the server
- * $Id: reconfiguration.h 8467 2006-08-04 01:58:46Z jdorje $
+ * $Id: reconfiguration.h 8987 2007-02-19 02:50:30Z jdorje $
  *
  * Copyright (C) 2006 GGZ Development Team
  *

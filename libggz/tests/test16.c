@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: libggz
  * Date: 
- * $Id: test16.c 8453 2006-08-01 20:05:03Z jdorje $
+ * $Id: test16.c 8987 2007-02-19 02:50:30Z jdorje $
  *
  * Copyright (C) 2006 GGZ Development Team
  *

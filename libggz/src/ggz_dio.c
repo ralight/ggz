@@ -10,7 +10,7 @@
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
-   $Id: ggz_dio.c 8452 2006-08-01 19:53:36Z jdorje $
+   $Id: ggz_dio.c 8987 2007-02-19 02:50:30Z jdorje $
 ***********************************************************************/
 
 /*
