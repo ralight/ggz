@@ -3,6 +3,7 @@ project(kggzmod)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
 
 set(kggzmod_LIB_SRCS
+    kggzraw.cpp
     event.cpp
     module.cpp
     player.cpp

@@ -4,8 +4,9 @@
 #include <kggzmod/statistics.h>
 #include "player_private.h"
 #include "statistics_private.h"
-
 #include "misc_private.h"
+
+#include "kggzraw.h"
 
 #include <kdebug.h>
 
@@ -30,7 +31,6 @@ Module::Module(QString name)
 
 	d->m_fd = -1;
 
-	d->m_dev = 0;
 	d->m_net = 0;
 	d->m_notifier = 0;
 	d->m_gnotifier = 0;
@@ -193,6 +193,7 @@ void ModulePrivate::slotGGZEvent()
 
 		Event e(Event::server);
 		// FIXME: this is a send_fd operation, might not be portable!
+		kDebug() << "[kggzmod] debug: go read fd with ancillary data" << endl;
 		ret = readfiledescriptor(m_fd, &_fd);
 		if(!ret)
 		{
@@ -368,6 +369,9 @@ void ModulePrivate::slotGGZEvent()
 
 		emit signalEvent(e);
 	}
+
+	// FIXME: shouldn't be necessary anymore with unbuffered raw socket
+	//if(m_raw->hasMore()) slotGGZEvent();
 }
 
 void ModulePrivate::connect()
@@ -394,21 +398,11 @@ void ModulePrivate::connect()
 	kDebug() << "[kggzmod] debug: use socket " << ggzsocket << endl;
 	kDebug() << "[kggzmod] debug: numeric socket " << m_fd << endl;
 
-	m_dev = new QAbstractSocket(QAbstractSocket::TcpSocket, this);
-	m_dev->setSocketDescriptor(m_fd);
-	m_net = new QDataStream(m_dev);
+	m_net = new KGGZRaw();
+	m_net->setNetwork(m_fd);
 
 	m_notifier = new QSocketNotifier(m_fd, QSocketNotifier::Read, this);
 	QObject::connect(m_notifier, SIGNAL(activated(int)), SLOT(slotGGZEvent()));
-
-	if(!m_dev->isValid())
-	{
-		disconnect();
-		kDebug() << "[kggzmod] error: socket is erroneous" << endl;
-		emit signalError();
-		// FIXME: signal is not propagated???
-		return;
-	}
 
 	kDebug() << "[kggzmod] debug: connect() is finished" << endl;
 }
@@ -416,12 +410,9 @@ void ModulePrivate::connect()
 void ModulePrivate::disconnect()
 {
 	delete m_gnotifier;
-
 	delete m_notifier;
 	delete m_net;
-	delete m_dev;
 
-	m_dev = 0;
 	m_net = 0;
 	m_notifier = 0;
 	m_gnotifier = 0;

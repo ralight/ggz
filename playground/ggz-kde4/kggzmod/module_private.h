@@ -5,9 +5,9 @@
 #include <kggzmod/player.h>
 
 #include <QSocketNotifier>
-#include <QAbstractSocket>
-#include <QDataStream>
 #include <QList>
+
+class KGGZRaw;
 
 namespace KGGZMod
 {
@@ -43,9 +43,8 @@ class ModulePrivate : public QObject
 		QList<Player*> m_spectators;
 
 		QSocketNotifier *m_notifier;
-		QAbstractSocket *m_dev;
-		QDataStream *m_net;
 		QSocketNotifier *m_gnotifier;
+		KGGZRaw *m_net;
 
 		int m_playerseats;
 		int m_spectatorseats;
