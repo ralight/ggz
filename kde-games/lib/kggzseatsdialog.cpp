@@ -282,7 +282,7 @@ void KGGZSeatsDialog::slotAction()
 		{
 			if(pself->type() == KGGZMod::Player::player)
 			{
-				pop->insertItem(i18n("Stand up"), sitdown);
+				pop->insertItem(i18n("Stand up"), standup);
 			}
 			pop->insertItem(i18n("Boot player and open seat"), bootplayer);
 		}
