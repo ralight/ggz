@@ -12,6 +12,12 @@ invitations, guest players and the surrounding chat system, it makes game module
 an easy task. Even more so since several game support libraries have been written.
 <br/><br/>
 
+Projects like <a href="http://www.gnome.org/projects/gnome-games/">GNOME Games</a> and
+<a href="http://games.kde.org/">KDE Games</a> and
+<a href="http://dev.ggzgamingzone.org/external.php">several other</a> game projects use
+GGZ to get a powerful multiplayer infrastructure.
+<br/><br/>
+
 <i>Some statistics</i><br/>
 <ul>
 <li><a href="/packages/">16 packages</a> (SVN modules) available, plus a Windows port</li>

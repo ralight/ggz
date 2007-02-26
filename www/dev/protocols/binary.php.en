@@ -1,0 +1,39 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content">
+<tr>
+<td>
+
+<b>Binary Protocols</b><br/>
+Two main flavours of binary protocols exist in the world of networking and thus
+also in the world of GGZ: raw protocols (unquantised) and packet protocols
+(quantised). The first ones are referred to as 'easysock-style', and the
+others as 'dio-style'. GGZComm can generate source code for all of the
+implementations of both flavours.
+<br/><br/>
+
+<i>Easysock</i><br/>
+The easysock format specifies that signed characters, signed integers and
+strings can be read and written over the network.
+This format is supported by the easysock functions of
+<a href="/libraries/libggz/">libggz</a> in C, by Qt's QDataStream class
+in C++ (and various scriping languages), by the KGGZRaw class of libkdegames
+in C++ and by the Net class of <a href="/libraries/ggzdmod/">ggzdmod++</a> in C++.
+It is also supported by GGZBoard's network class in Python.
+<br/><br/>
+
+<i>DIO</i><br/>
+The DataIO format (dio) is similar to the one of easysock, however write
+operations happen in packets with the size of the packet prepended to the
+packet data itself. This makes it possible to deterministically know if
+all data has arrived already, and thus guarantees non-blocking read operations.
+This format is supported by the dio functions of
+<a href="/libraries/libggz/">libggz</a> in C, and by the KGGZPacket class of
+libkdegames in C++.
+<br/><br/>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>

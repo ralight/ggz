@@ -1,53 +1,45 @@
 <?php include_once("site/header.php"); ?>
+<?php outdated(); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Contato com o projeto GGZ</b><br>
+<b>Contato com o projeto GGZ</b><br/>
 Há varios caminhos e possibilidades de nós contatar.
 Pois são:
-<br><br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Listas da discussão</i><br>
+<i>Listas da discussão</i><br/>
 Detalhes sobre o cadastramento e os arquivos estão escrito no nosso
 <a href="https://mail.ggzgamingzone.org">servidor de email</a>,
 ou mais facil ainda só envie um email para a
 <a href="mailto:ggz-dev@mail.ggzgamingzone.org">lista dos desenvolvidores</a>.
 Para assuntos de segurança, há mais informações <a href="security.php">aqui</a>.
-<br><br>
+<br/><br/>
 
-<i>GGZ ao vivo</i><br>
+<i>GGZ ao vivo</i><br/>
 Quem tem instalado o GGZ pode jogar direito no
 <a href="ggz://live.ggzgamingzone.org">servidor de jogos principal</a>,
 ou procurar outros servidores
 <a href="live.php">nesta página</a>.
-<br><br>
+<br/><br/>
 
-<i>IRC</i><br>
+<i>IRC</i><br/>
 As vezes a gente se encontra no canal
 <a href="irc://irc.freenode.net#ggz">#ggz</a>
 no irc.freenode.net para bater papo.
-<br><br>
+<br/><br/>
 
-<i>Webmaster</i><br>
+<i>Webmaster</i><br/>
 Perguntas ou propostas sobre estas páginas sejam bem vindos.
 <a href="mailto:webmaster@ggzgamingzone.org">Esta pessoa</a>
 é responsável pelo isto.
-<br>
+<br/>
 Tradução das páginas:
 <a href="mailto:josef@ggzgamingzone.org">Josef Spillner</a>
-<br><br>
+<br/><br/>
 
-</td>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

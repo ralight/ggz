@@ -1,53 +1,49 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Kontakt mit dem GGZ-Projekt</b><br>
+<b>Kontakt mit dem GGZ-Projekt</b><br/>
 Es gibt verschiedene Wege und Möglichkeiten, wie man uns kontaktieren kann,
 beispielsweise über:
-<br><br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Mailinglisten</i><br>
+<i>Mailinglisten</i><br/>
+Spiele-bezogene Angelegenheiten werden auf unserer GGZ Community-
+<a href="mailto:hosting@ggzcommunity.org">Hostingliste</a> besprochen.
+Dort befindet sich auch der Rat im Falle von Konflikten.
+Für Entwickler existieren jede Menge Listen, zu deren Benutzung
+man sich erst anmelden muss.
 Details zur Anmeldung sowie Archive findet man auf unserem
 <a href="https://mail.ggzgamingzone.org">Mailserver</a>,
-oder man sendet einfach eine Mail an die
+und anschließend sendet man einfach eine Mail an die
 <a href="mailto:ggz-dev@mail.ggzgamingzone.org">Entwickler-Liste</a>.
 Für sicherheitsrelevante Anfragen gibt es <a href="security.php">hier</a> Informationen.
-<br><br>
+<br/><br/>
 
-<i>GGZ Live</i><br>
+<i>GGZ Live</i><br/>
 Sofern man GGZ installiert hat, kann man natürlich auch unseren primären
-<a href="ggz://live.ggzgamingzone.org">Spieleserver</a> nutzen,
-oder nachschauen ob auch <a href="live.php">andere Spieleserver</a>
-bereit stehen.
-<br><br>
+nutzen und uns direkt im Chat auf <a href="/community/">GGZ Community</a>
+kontaktieren.
+Im Normalfall befinden sich wissende Personen im Lounge-Raum.
+<br/><br/>
 
-<i>IRC</i><br>
+<i>IRC</i><br/>
 Von Zeit zu Zeit trifft man in
 <a href="irc://irc.freenode.net#ggz">#ggz</a>
 auf irc.freenode.net auf Entwickler.
-<br><br>
+<br/><br/>
 
-<i>Webmaster</i><br>
+<i>Webmaster</i><br/>
 Für Fragen oder Vorschläge bezüglich dieser Webseiten ist
 <a href="mailto:webmaster@ggzgamingzone.org">diese Person</a>
 der richtige Ansprechpartner.
-<br>
+<br/>
 Übersetzung der Webseiten:
 <a href="mailto:josef@ggzgamingzone.org">Josef Spillner</a>
-<br><br>
+<br/><br/>
 
-</td>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

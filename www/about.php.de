@@ -1,11 +1,10 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>Über die GGZ Gaming Zone</b><br>
+<b>Über die GGZ Gaming Zone</b><br/>
 Das GGZ-Projekt, gegründet Anfang 2000, ist von einer simplen
 Netzwerkarchitektur zu einem vielseitigen Onlinespielezentrum gewachsen,
 komplett basierend auf Freier Software (Open Source).
@@ -13,13 +12,15 @@ Mit dem integrierten Spieler-Bewertungssystem und Merkmalen wie Spielzuschauern,
 Einladungen, Gastspielern und dem zugehörigen Chatsystem wird das Entwickeln
 von Spielen zu einer einfachen Aufgabe, insbesondere durch die Verwendung von
 den vorhandenen unterstützenden Bibliotheken.
-<br><br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
+Projekte wie <a href="http://www.gnome.org/projects/gnome-games/">GNOME Games</a> und
+<a href="http://games.kde.org/">KDE Games</a> und
+<a href="http://dev.ggzgamingzone.org/external.php">etliche weitere</a> Spieleprojekte
+nutzen GGZ, um eine mächtige Mehrspieler-Infrastruktur zu bekommen.
+<br/><br/>
 
-<i>Einige Statistiken</i><br>
+<i>Einige Statistiken</i><br/>
 <ul>
 <li><a href="/packages/">16 Pakete</a> (SVN-Module) verfügbar, plus einer Windows-Portierung
 <li>19 Spiele-Engines und 27 Spiele-Clients für endlosen Spielspaß
@@ -28,15 +29,11 @@ den vorhandenen unterstützenden Bibliotheken.
 <li>Mehr als 800 registrierte Spieler auf GGZ Community
 </ul>
 
-</td>
-</table>
-
 Der Artikel <a href="http://www.ggzcommunity.org/5years/">5 Jahre GGZ</a>
 enthält ein paar witzige Anekdoten aus der Geschichte von GGZ.
 Detaillierte Lizenzinformationen findet man auf der Seite
 <a href="http://dev.ggzgamingzone.org/legal.php">Lizenzierung</a>.
 
-</font>
 </td>
 </tr>
 </table>

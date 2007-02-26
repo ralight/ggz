@@ -1,11 +1,11 @@
 <?php include_once("site/header.php"); ?>
+<?php outdated(); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td>
-<font size="3">
 
-<b>GGZ Community-Portal</b><br>
+<b>GGZ Community-Portal</b><br/>
 <a href="/backend/community/">GGZ Community</a> ist ein Webportal, welches
 auf dem GGZ-Server läuft und von einigen GGZ-Entwicklern betrieben wird.
 Registrierte Spieler, die gegeneinander spielen, können langfristig
@@ -17,22 +17,14 @@ Spieler können im Forum diskutieren und ihre Blogeinträge im
 Portal publizieren.
 Sogar webbasierte Spiele sind für diejenigen, die es bevorzugen, integriert.
 Tritt der Community jetzt bei!
-<br><br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top">
-
-<i>Webseiten</i><br>
+<i>Webseiten</i><br/>
 <a href="http://www.ggzcommunity.org/">Zur GGZ Community</a>,
 Zugriff auch mit
 <a href="https://www.ggzcommunity.org/">abgesicherter Verbindung</a>
-möglich<br>
+möglich<br/>
 
-</td>
-</table>
-
-</font>
 </td>
 </tr>
 </table>

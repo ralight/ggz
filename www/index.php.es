@@ -1,54 +1,76 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
-<td>
-<font size="3">
+<td valign="top">
 
-<b>El proyecto GGZ Gaming Zone</b><br>
-Servicio libre de juegos en linea para todo el mundo.
-<br>
+<b>The GGZ Gaming Zone Project</b><br>
+Free online gaming for everyone.
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top" colspan="2">
+<i>What is GGZ?</i><br/>
+The GGZ project makes free online gaming possible.
+We develop games and work with other game projects to
+create a better environment for playing on the internet,
+and we showcase all that on the GGZ Community site, inviting
+everyone to join us there.
+<br/><br/>
 
-<i>¿Qué es GGZ?</i><br>
-GGZ (el acrónimo de GGZ Gaming Zone) es el desarrollo de bibliotecas, juegos y aplicaciones
-cliente servidor para juegos en linea. Clasificación de jugadores, Espectadores, Jugadores IA (Inteligencia Artificial)
-y robots de chat son parte de este esfuerzo.
-
-</td></tr>
-<tr><td valign="top">
-
-<a href="/docs.php">Lee la documentación</a><br>
-<a href="/screenshots/">Mira algunas capturas de pantalla</a>
-<br><br>
-
-<i>Descarga la versión actual</i><br>
-La versión 0.0.13 de GGZ Gaming Zone ha sido lanzada el 17 de Marzo del 2006.<br>
-<a href="/releases/0.0.13/release.php">Anuncios del lanzamiento</a><br>
-<a href="/releases/0.0.13/download.php">Ir a la página de descargas</a><br>
-<a href="/releases/0.0.13/installation.php">Notas de Instalación</a>
-
-</td><td valign="top">
+To play straight away in the web browser, click on the large picture below.
+This will take you to the GGZ Community, where many folks are
+hanging out to play, among them several Spades clubs and GNOME gamers.
+<br/><br/>
 
 <?php include_once("site/splash.php"); ?>
 
+<br/><br/>
+
+</td>
+<td valign="top" rowspan="3">
+
+<b>Find out</b><br/>
+what GGZ is!
+<br/>
+<a href="/about/"><img src="/pics/site/actions/messagebox_info.png"/></a>
+<br/><br/>
+<b>Download</b><br/>
+GGZ on your desktop!
+<br/>
+<a href="/releases/latest/"><img src="/pics/site/actions/compfile.png"/></a>
+<br/>
+<i>(Version 0.0.14 from Jan 16 2007)</i>
+<br/><br/>
+<b>Join</b><br/>
+the GGZ Community!
+<br/>
+<a href="/community/"><img src="/pics/site/actions/roll.png"/></a>
+<br/><br/>
+<b>Talk</b><br/>
+to people in the world of GGZ!
+<br/>
+<a href="/contact/"><img src="/pics/site/actions/ksmiletris.png"/></a>
+<br/><br/>
+
 </td>
 </tr>
-</table>
 
-<b>Noticias</b><br>
+<tr>
+<td>
+<b>News</b><br/>
+</td>
+</tr>
+
+<tr>
+<td valign="top">
 
 <?php include_once("site/newsparser.php"); ?>
 
-Leer noticias antiguas en el <a href="news.php">archivo</a>.
-<br>
+Read older news in the <a href="news.php">archive</a>.
+<br/>
 
-</font>
 </td>
 </tr>
+
 </table>
 
 <?php include_once("site/footer.php"); ?>

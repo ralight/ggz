@@ -1,55 +1,77 @@
 <?php include_once("site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
-<td>
-<font size="3">
+<td valign="top">
 
-<b>Das GGZ Gaming Zone Projekt</b><br>
+<b>The GGZ Gaming Zone Project</b><br>
 Freie Onlinespiele für jedermann.
-<br>
+<br/><br/>
 
-<table class="inner">
-<tr>
-<td valign="top" colspan="2">
+<i>Was ist GGZ?</i><br/>
+Das GGZ-Projekt macht freie Onlinespiele möglich.
+Wir entwickeln Spiele und arbeiten mit anderen Projekten
+zusammen, um eine bessere Spielumgebung im Internet zu schaffen,
+und wir stellen all diese Entwicklungen auf der GGZ-Community-Seite
+zur Schau, wobei wir alle einladen, uns dort zu treffen.
+<br/><br/>
 
-<i>Was ist GGZ?</i><br>
-GGZ (ein rekursives Akronym für GGZ Gaming Zone) entwickelt Bibliotheken, Spiele und Programme
-im Spieleumfeld für Netzwerk/Onlinespiele. Bewertungslisten (Rankings), Zuschauer,
-KI-Spieler und ein Chatbot gehören zu diesem Projekt dazu.
-
-</td></tr>
-<tr><td valign="top">
-
-<a href="/docs.php">Documentation lesen</a><br>
-<a href="/screenshots/">Screenshots ansehen</a>
-<br><br>
-
-<i>Download der aktuellen Version</i><br>
-Die GGZ Gaming Zone 0.0.13 wurde am 17. März 2006 veröffentlicht.<br>
-<a href="/releases/0.0.13/release.php">Release-Ankündigung</a><br>
-<a href="/releases/0.0.13/download.php">Downloadseite aufrufen</a><br>
-<a href="/releases/0.0.13/installation.php">Installationsanleitung</a>
-
-</td><td valign="top">
+Um direkt im Browser zu spielen, klicke auf das große Banner.
+Dieses führt zu GGZ Community, wo viele Leute herumhängen um zu
+spielen, unter ihnen etliche Spades-Clubs und GNOME-Spieler.
+<br/><br/>
 
 <?php include_once("site/splash.php"); ?>
 
+<br/><br/>
+
+</td>
+<td valign="top" rowspan="3">
+
+<b>Finde heraus</b><br/>
+was GGZ ist!
+<br/>
+<a href="/about/"><img src="/pics/site/actions/messagebox_info.png"/></a>
+<br/><br/>
+<b>Lade</b><br/>
+GGZ auf deinen Desktop herunter!
+<br/>
+<a href="/releases/latest/"><img src="/pics/site/actions/compfile.png"/></a>
+<br/>
+<i>(Version 0.0.14 vom 16. Jan 2007)</i>
+<br/><br/>
+<b>Willkommen</b><br/>
+bei der GGZ Community!
+<br/>
+<a href="/community/"><img src="/pics/site/actions/roll.png"/></a>
+<br/><br/>
+<b>Sprich</b><br/>
+zu Leuten in der Welt von GGZ!
+<br/>
+<a href="/contact/"><img src="/pics/site/actions/ksmiletris.png"/></a>
+<br/><br/>
+
 </td>
 </tr>
-</table>
 
-<b>Neuigkeiten</b><br>
+<tr>
+<td>
+<b>Neuigkeiten</b><br/>
+</td>
+</tr>
+
+<tr>
+<td valign="top">
 
 <?php include_once("site/newsparser.php"); ?>
 
 Ältere Ankündigungen kann man in den <a href="news.php">Nachrichtenarchiven</a>
 lesen.
-<br>
+<br/>
 
-</font>
 </td>
 </tr>
+
 </table>
 
 <?php include_once("site/footer.php"); ?>

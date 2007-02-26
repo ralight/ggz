@@ -10,6 +10,22 @@
 <language>fr-fr</language>
 
 <item>
+<title><i>16.01.2007: GGZ 0.0.14</i> (by josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+The GGZ Gaming Zone Project is proud to announce version 0.0.14 of its
+integrated platform for free online games.
+The webpages were improved, and we're getting more players now than we
+ever got before. GGZ is being adopted by more game developers.
+We will now focus on stability and new features in two separate lines
+of development in order to not break the existing game experience.
+Have fun and play online <a href="http://www.ggzcommunity.org/">here</a>
+or <a href="http://games.ggzcommunity.org/">here</a>
+or <a href="/releases/latest/">download</a> GGZ 0.0.14!
+</full>
+</item>
+
+<item>
 <title><i>25.10.2006: Development news</i> (by josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>
