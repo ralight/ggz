@@ -22,8 +22,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 7521 $</revnumber>
-	<date>$Date: 2005-09-16 14:43:09 -0700 (Fri, 16 Sep 2005) $</date>
+	<revnumber>$Revision: 8991 $</revnumber>
+	<date>$Date: 2007-02-26 00:23:27 -0800 (Mon, 26 Feb 2007) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -359,7 +359,7 @@
 
             <row rowsep="1">
               <entry>File descriptor</entry>
-              <entry>integer</entry>
+              <entry>character (with ancillary data)</entry>
               <entry>3</entry>
             </row>
           </tbody>
@@ -380,7 +380,9 @@
       <refsect2>
         <title>Message Data</title>
         <para>
-          None
+          A dummy byte is transmitted which carries with it the information
+          about the file descriptor as ancillary data. This is only supported
+          on Unix systems. Other systems need to use GAME_SERVER instead.
         </para>
       </refsect2>
       <refsect2>
