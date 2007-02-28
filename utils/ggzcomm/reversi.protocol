@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<ggzcomm engine="reversi" version="2" xmlns="urn:ggz:ggzcomm">
+	<definitions opcodetype="int">
+		<def name="msgseat" value="0"/>
+		<def name="msgplayers" value="1"/>
+		<def name="msgmove" value="2"/>
+		<def name="msggameover" value="3"/>
+		<def name="reqmove" value="4"/>
+		<def name="msgstart" value="5"/>
+		<def name="msgsync" value="6"/>
+		<def name="reqsync" value="7"/>
+		<def name="reqagain" value="8"/>
+	</definitions>
+	<client>
+		<event name="reqmove">
+			<data name="move" type="int" min="0" max="64"/>
+		</event>
+		<event name="reqagain"/>
+		<event name="reqsync"/>
+	</client>
+	<server>
+		<event name="msgseat">
+			<data name="seat" type="int" min="0" max="1"/>
+		</event>
+		<event name="msgplayers">
+			<sequence count="2">
+				<data name="seattype" type="int"/>
+				<eval>
+					<condition name="seattype" result="ggz:seat_open" type="unequal"/>
+					<data name="name" type="string"/>
+				</eval>
+			</sequence>
+		</event>
+		<event name="msgmove">
+			<data name="move" type="int" min="-3" max="64"/>
+		</event>
+		<event name="msgsync">
+			<data name="turn" type="byte" min="0" max="1"/>
+			<sequence count="64">
+				<data name="board" type="byte" min="-1" max="1"/>
+			</sequence>
+		</event>
+		<event name="msggameover">
+			<data name="winner" type="int" min="-1" max="1"/>
+		</event>
+		<event name="msgstart"/>
+	</server>
+</ggzcomm>
+
