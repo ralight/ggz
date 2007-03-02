@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 8996 2007-03-02 23:19:59Z jdorje $
+ * $Id: bridge.c 8997 2007-03-02 23:34:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -204,8 +204,6 @@ static void bridge_get_bid(void)
 
 	/* make "pass" bid */
 	add_sbid(game.next_bid, NO_BID_VAL, NO_SUIT, BRIDGE_PASS);
-
-	request_client_bids();
 }
 
 static void bridge_handle_bid(player_t p, bid_t bid)

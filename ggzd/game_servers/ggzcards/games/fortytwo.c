@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game functions for Forty-Two
- * $Id: fortytwo.c 8996 2007-03-02 23:19:59Z jdorje $
+ * $Id: fortytwo.c 8997 2007-03-02 23:34:35Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -240,8 +240,6 @@ static void fortytwo_get_bid(void)
 			add_sbid(game.next_bid,
 				 NO_BID_VAL, NO_SUIT, FORTYTWO_PASS);
 	}
-
-	request_client_bids();
 }
 
 static void set_trump(char suit)

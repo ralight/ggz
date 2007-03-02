@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 8996 2007-03-02 23:19:59Z jdorje $
+ * $Id: bid.c 8997 2007-03-02 23:34:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -101,7 +101,11 @@ void request_client_bids(void)
 		}
 	} players_iterate_end;
 
-	if (!is_bidding) return;
+	if (!is_bidding) {
+		ggz_error_msg("request_client_bids called but "
+			      "nobody is bidding.");
+		return;
+	}
 
 	set_game_state(STATE_WAIT_FOR_BID);
 

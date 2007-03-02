@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 8996 2007-03-02 23:19:59Z jdorje $
+ * $Id: euchre.c 8997 2007-03-02 23:34:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -223,13 +223,11 @@ static void euchre_get_bid(void)
 			}
 		}
 		EUCHRE.req_alone_bid = 1;
-		request_client_bids();
 	} else if (game.bid_count < 4) {
 		/* Tirst four bids are either "pass" or "take".  The suit of
 		   the up-card becomes trump. */
 		add_sbid(game.next_bid, NO_BID_VAL, NO_SUIT, EUCHRE_PASS);
 		add_sbid(game.next_bid, NO_BID_VAL, NO_SUIT, EUCHRE_TAKE);
-		request_client_bids();
 	} else {
 		/* After we've bid around, the bidding becomes either "pass"
 		   or "take" with a specific suit. */
@@ -244,7 +242,6 @@ static void euchre_get_bid(void)
 		for (suit = 0; suit < 4; suit++)
 			add_sbid(game.next_bid,
 				 NO_BID_VAL, suit, EUCHRE_TAKE_SUIT);
-		request_client_bids();
 	}
 }
 

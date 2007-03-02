@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 8954 2007-01-17 00:40:52Z oojah $
+ * $Id: common.c 8997 2007-03-02 23:34:35Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -312,6 +312,7 @@ void next_move(void)
 			  game.bid_count, game.bid_total, game.next_bid,
 			  get_player_name(game.next_bid));
 		game.data->get_bid();
+		request_client_bids();
 		break;
 	case STATE_NEXT_PLAY:
 		ggz_debug(DBG_MISC,
