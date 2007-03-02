@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 8530 2006-08-21 17:22:35Z jdorje $
+ * $Id: bid.c 8995 2007-03-02 22:29:39Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -68,6 +68,9 @@ void add_bid(bid_t bid)
 		    ggz_realloc(bid_data->bids,
 				bid_data->bid_size * sizeof(bid_t));
 	}
+	ggz_debug(DBG_BID,
+		  "  Adding bid %d / %d / %d | %d",
+		  bid.sbid.val, bid.sbid.suit, bid.sbid.spec, bid.bid);
 	bid_data->bids[bid_data->bid_count - 1] = bid;
 }
 
