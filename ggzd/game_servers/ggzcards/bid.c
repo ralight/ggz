@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 8995 2007-03-02 22:29:39Z jdorje $
+ * $Id: bid.c 8996 2007-03-02 23:19:59Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -57,9 +57,9 @@ void clear_bids(player_t p)
 
 /* add_bid adds the bid to the list of bid choices we're going to give the
    client */
-void add_bid(bid_t bid)
+void add_bid(player_t p, bid_t bid)
 {
-	bid_data_t *bid_data = &game.players[game.next_bid].bid_data;
+	bid_data_t *bid_data = &game.players[p].bid_data;
 
 	bid_data->bid_count++;
 	if (bid_data->bid_count > bid_data->bid_size) {
@@ -74,43 +74,21 @@ void add_bid(bid_t bid)
 	bid_data->bids[bid_data->bid_count - 1] = bid;
 }
 
-void add_sbid(char val, char suit, char spec)
+void add_sbid(player_t p, char val, char suit, char spec)
 {
 	bid_t bid;
 	bid.bid = 0;
 	bid.sbid.val = val;
 	bid.sbid.suit = suit;
 	bid.sbid.spec = spec;
-	add_bid(bid);
+	add_bid(p, bid);
 }
 
-/* Request bid from current bidder parameters are: player to get bid from,
-   number of possible bids, text entry for each bid */
-void request_client_bid(player_t p)
+/* Requests bids from all players that have a bid list. */
+void request_client_bids(void)
 {
-	bid_data_t *bid_data = &game.players[p].bid_data;
+	bool is_bidding = false;
 
-	ggz_debug(DBG_BID,
-		  "Requesting a bid from player %d/%s; %d choices", p,
-		  get_player_name(p), bid_data->bid_count);
-
-	assert(!bid_data->is_bidding);
-	bid_data->is_bidding = TRUE;
-
-	set_player_message(p);
-	set_game_state(STATE_WAIT_FOR_BID);
-
-	net_send_bid_request(p, bid_data->bid_count, bid_data->bids);
-	net_broadcast_players_status();
-}
-
-/* Requests bids from all players that have a bid list.  This function is
-   needed, rather than req_bid, because req_bid will not do actions in the
-   correct order for multiple bids.  In fact, this function _could_ replace
-   req_bid; the only drawback is that it's much slower. */
-/* FIXME: I don't think this is necessary anymore. */
-void request_all_client_bids(void)
-{
 	ggz_debug(DBG_BID, "Requesting bids from some/all players.");
 
 	/* Mark all players as bidding. */
@@ -119,9 +97,11 @@ void request_all_client_bids(void)
 			assert(!game.players[p].bid_data.is_bidding);
 			game.players[p].bid_data.is_bidding = TRUE;
 			set_player_message(p);
+			is_bidding = true;
 		}
-	}
-	players_iterate_end;
+	} players_iterate_end;
+
+	if (!is_bidding) return;
 
 	set_game_state(STATE_WAIT_FOR_BID);
 
@@ -134,8 +114,7 @@ void request_all_client_bids(void)
 					     game.players[p].bid_data.
 					     bids);
 		}
-	}
-	players_iterate_end;
+	} players_iterate_end;
 	net_broadcast_players_status();
 
 	/* There's still a potential problem because as

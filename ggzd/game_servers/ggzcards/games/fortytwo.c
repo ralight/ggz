@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game functions for Forty-Two
- * $Id: fortytwo.c 8561 2006-08-31 08:00:24Z jdorje $
+ * $Id: fortytwo.c 8996 2007-03-02 23:19:59Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -212,9 +212,10 @@ static void fortytwo_get_bid(void)
 
 		for (suit = 0; suit < 7; suit++)
 			if (suits[(int)suit])
-				add_sbid(NO_BID_VAL, suit, FORTYTWO_TRUMP);
+				add_sbid(game.next_bid,
+					 NO_BID_VAL, suit, FORTYTWO_TRUMP);
 		if (has_doubles)
-			add_sbid(NO_BID_VAL, DOUBLES_VALUE,
+			add_sbid(game.next_bid, NO_BID_VAL, DOUBLES_VALUE,
 				 FORTYTWO_TRUMP);
 	} else {
 		/* These two must be ints to avoid overflow,
@@ -226,20 +227,21 @@ static void fortytwo_get_bid(void)
 		if (FORTYTWO.declarer >= 0)
 			minbid = FORTYTWO.contract + 1;
 		for (val = minbid; val <= 42; val++)
-			add_sbid(val, NO_SUIT, FORTYTWO_BID);
+			add_sbid(game.next_bid, val, NO_SUIT, FORTYTWO_BID);
 
 		/* A higher bid: 84/126/168/210 */
 		val = 2;
 		while (val * 42 <= minbid)
 			val++;
-		add_sbid(val, NO_SUIT, FORTYTWO_DOUBLE);
+		add_sbid(game.next_bid, val, NO_SUIT, FORTYTWO_DOUBLE);
 
 		/* Or pass */
 		if (FORTYTWO.declarer >= 0 || game.next_bid != game.dealer)
-			add_sbid(NO_BID_VAL, NO_SUIT, FORTYTWO_PASS);
+			add_sbid(game.next_bid,
+				 NO_BID_VAL, NO_SUIT, FORTYTWO_PASS);
 	}
 
-	request_client_bid(game.next_bid);
+	request_client_bids();
 }
 
 static void set_trump(char suit)

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 8913 2007-01-15 03:37:56Z jdorje $
+ * $Id: spades.c 8996 2007-03-02 23:19:59Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -521,12 +521,13 @@ static void spades_get_bid(void)
 
 		/* TODO: make sure partner made minimum bid */
 		if (GSPADES.bid_variant != BID_DN_ONLY) {
-			add_sbid(NO_BID_VAL, NO_SUIT, SPADES_NO_BLIND);
+			add_sbid(game.next_bid,
+				 NO_BID_VAL, NO_SUIT, SPADES_NO_BLIND);
 		}
 		if (partner->bid_count == 0
 		    || pard >= GSPADES.minimum_team_bid
 		    || GSPADES.bid_variant == BID_DN_ONLY) {
-			add_sbid(0, NO_SUIT, SPADES_DNIL);
+			add_sbid(game.next_bid, 0, NO_SUIT, SPADES_DNIL);
 		}
 	} else {
 		/* A regular bid */
@@ -563,7 +564,7 @@ static void spades_get_bid(void)
 				   number of spades you are holding. */
 				continue;
 			}
-			add_sbid(i, NO_SUIT, SPADES_BID);
+			add_sbid(game.next_bid, i, NO_SUIT, SPADES_BID);
 		}
 
 		/* "Nil" bid */
@@ -574,11 +575,11 @@ static void spades_get_bid(void)
 		if (GSPADES.nil_value > 0
 		    && (game.bid_count < 2
 			|| pard >= GSPADES.minimum_team_bid))
-			add_sbid(0, NO_SUIT, SPADES_NIL);
+			add_sbid(game.next_bid, 0, NO_SUIT, SPADES_NIL);
 	}
 
 	/* TODO: other specialty bids */
-	request_client_bid(game.next_bid);
+	request_client_bids();
 	spd_broadcast_scoredata();
 }
 

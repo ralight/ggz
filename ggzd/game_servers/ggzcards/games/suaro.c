@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 8565 2006-08-31 22:42:10Z jdorje $
+ * $Id: suaro.c 8996 2007-03-02 23:19:59Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -256,11 +256,12 @@ static void suaro_get_bid(void)
 			    && suit <= SUARO.contract_suit)
 				continue;
 
-			add_sbid(val, suit, 0);
+			add_sbid(game.next_bid, val, suit, 0);
 			if (SUARO.shotgun)
 				/* in "shotgun" suaro, you are allowed to bid 
 				   on the kitty just like on your hand! */
-				add_sbid(val, suit, SUARO_KITTY);
+				add_sbid(game.next_bid,
+					 val, suit, SUARO_KITTY);
 		}
 	}
 
@@ -268,16 +269,16 @@ static void suaro_get_bid(void)
 	if (SUARO.contract > 0 && SUARO.bonus == 1)
 		/* unless unlimited doubling is specifically allowed, only
 		   double and redouble are possible */
-		add_sbid(NO_BID_VAL, NO_SUIT, SUARO_DOUBLE);
+		add_sbid(game.next_bid, NO_BID_VAL, NO_SUIT, SUARO_DOUBLE);
 	else if (SUARO.contract > 0 &&
 		 (SUARO.bonus < 4 || SUARO.unlimited_redoubling)) {
-		add_sbid(NO_BID_VAL, NO_SUIT, SUARO_REDOUBLE);
+		add_sbid(game.next_bid, NO_BID_VAL, NO_SUIT, SUARO_REDOUBLE);
 	}
 
 	/* make "pass" bid */
-	add_sbid(NO_BID_VAL, NO_SUIT, SUARO_PASS);
+	add_sbid(game.next_bid, NO_BID_VAL, NO_SUIT, SUARO_PASS);
 
-	request_client_bid(game.next_bid);
+	request_client_bids();
 }
 
 static void suaro_handle_bid(player_t p, bid_t bid)

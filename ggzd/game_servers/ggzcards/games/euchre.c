@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 8561 2006-08-31 08:00:24Z jdorje $
+ * $Id: euchre.c 8996 2007-03-02 23:19:59Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -216,21 +216,20 @@ static void euchre_get_bid(void)
 		   from everyone to see if they're going alone or not. */
 		for (p = 0; p < 4; p++) {
 			if ((p + 2) % 4 != EUCHRE.maker) {
-				game.next_bid = p;	/* hack */
-				add_sbid(NO_BID_VAL, NO_SUIT,
+				add_sbid(p, NO_BID_VAL, NO_SUIT,
 					 EUCHRE_GO_ALONE);
-				add_sbid(NO_BID_VAL, NO_SUIT,
+				add_sbid(p, NO_BID_VAL, NO_SUIT,
 					 EUCHRE_GO_TEAM);
 			}
 		}
 		EUCHRE.req_alone_bid = 1;
-		request_all_client_bids();
+		request_client_bids();
 	} else if (game.bid_count < 4) {
 		/* Tirst four bids are either "pass" or "take".  The suit of
 		   the up-card becomes trump. */
-		add_sbid(NO_BID_VAL, NO_SUIT, EUCHRE_PASS);
-		add_sbid(NO_BID_VAL, NO_SUIT, EUCHRE_TAKE);
-		request_client_bid(game.next_bid);
+		add_sbid(game.next_bid, NO_BID_VAL, NO_SUIT, EUCHRE_PASS);
+		add_sbid(game.next_bid, NO_BID_VAL, NO_SUIT, EUCHRE_TAKE);
+		request_client_bids();
 	} else {
 		/* After we've bid around, the bidding becomes either "pass"
 		   or "take" with a specific suit. */
@@ -240,10 +239,12 @@ static void euchre_get_bid(void)
 		   second time (if we're playing "screw the dealer", that is. 
 		 */
 		if (!EUCHRE.screw_the_dealer || game.bid_count != 7)
-			add_sbid(NO_BID_VAL, NO_SUIT, EUCHRE_PASS);
+			add_sbid(game.next_bid,
+				 NO_BID_VAL, NO_SUIT, EUCHRE_PASS);
 		for (suit = 0; suit < 4; suit++)
-			add_sbid(NO_BID_VAL, suit, EUCHRE_TAKE_SUIT);
-		request_client_bid(game.next_bid);
+			add_sbid(game.next_bid,
+				 NO_BID_VAL, suit, EUCHRE_TAKE_SUIT);
+		request_client_bids();
 	}
 }
 

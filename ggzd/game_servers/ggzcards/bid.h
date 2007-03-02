@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.h 4118 2002-04-30 04:30:28Z jdorje $
+ * $Id: bid.h 8996 2007-03-02 23:19:59Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -35,16 +35,12 @@ void clear_bids(player_t p);
 /* add_bid and add_sbid add another bid to the list of possible bids.
    add_sbid is just a convenience.  They add to the bid list for the player
    noted by game.next_bid - this makes things easier for most games. */
-void add_bid(bid_t bid);
-void add_sbid(char val, char suit, char spec);
-
-/* req_bid requests a bid from the client _or_ AI.
-   Return 0 on success; -1 on (communication) error */
-void request_client_bid(player_t p);
+void add_bid(player_t p, bid_t bid);
+void add_sbid(player_t p, char val, char suit, char spec);
 
 /* request_all_bids requests bids from all players whom have pending bid
-   lists.  Return 0 on success; -1 on (communication) error */
-void request_all_client_bids(void);
+   lists. */
+void request_client_bids(void);
 
 /* Called by network code when a player bid is received.  Calls
    handle_bid_event if bid is acceptable. */

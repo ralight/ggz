@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 8561 2006-08-31 08:00:24Z jdorje $
+ * $Id: bridge.c 8996 2007-03-02 23:19:59Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -186,7 +186,7 @@ static void bridge_get_bid(void)
 			    && suit <= BRIDGE.contract_suit)
 				continue;
 
-			add_sbid(val, suit, BRIDGE_BID);
+			add_sbid(game.next_bid, val, suit, BRIDGE_BID);
 		}
 	}
 
@@ -195,17 +195,17 @@ static void bridge_get_bid(void)
 	    BRIDGE.bonus == 1 &&
 	    (game.next_bid == (BRIDGE.declarer + 1) % 4
 	     || game.next_bid == (BRIDGE.declarer + 3) % 4))
-		add_sbid(NO_BID_VAL, NO_SUIT, BRIDGE_DOUBLE);
+		add_sbid(game.next_bid, NO_BID_VAL, NO_SUIT, BRIDGE_DOUBLE);
 	else if (BRIDGE.contract != 0 &&
 		 BRIDGE.bonus == 2 &&
 		 (game.next_bid == BRIDGE.declarer
 		  || game.next_bid == (BRIDGE.declarer + 2) % 4))
-		add_sbid(NO_BID_VAL, NO_SUIT, BRIDGE_REDOUBLE);
+		add_sbid(game.next_bid, NO_BID_VAL, NO_SUIT, BRIDGE_REDOUBLE);
 
 	/* make "pass" bid */
-	add_sbid(NO_BID_VAL, NO_SUIT, BRIDGE_PASS);
+	add_sbid(game.next_bid, NO_BID_VAL, NO_SUIT, BRIDGE_PASS);
 
-	request_client_bid(game.next_bid);
+	request_client_bids();
 }
 
 static void bridge_handle_bid(player_t p, bid_t bid)
