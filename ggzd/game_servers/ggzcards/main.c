@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 8427 2006-07-31 22:50:50Z jdorje $
+ * $Id: main.c 8994 2007-03-02 20:19:40Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -314,7 +314,9 @@ static void main_loop(GGZdMod * ggz)
 static void handle_debug_message(int priority, const char *msg)
 {
 	if (!game.ggz
+#ifdef DEBUG
 	    || 1
+#endif
 	    || ggzdmod_log(game.ggz, "%s", msg) < 0) {
 		fflush(stdout);
 		fputs(msg, stderr);
