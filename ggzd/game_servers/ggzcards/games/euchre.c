@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 8998 2007-03-03 03:13:09Z jdorje $
+ * $Id: euchre.c 8999 2007-03-03 05:21:32Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -198,6 +198,7 @@ static void euchre_start_bidding(void)
 {
 	int i;
 
+	EUCHRE.maker = -1;
 	game.bid_total = 8;	/* twice around, at most */
 	game.next_bid = (game.dealer + 1) % game.num_players;
 	EUCHRE.req_alone_bid = false;
@@ -253,13 +254,13 @@ static void euchre_handle_bid(player_t p, bid_t bid)
 	case EUCHRE_TAKE:
 		EUCHRE.maker = p;
 		set_trump_suit(EUCHRE.up_card.suit);
-		game.bid_total = game.bid_count + 4;	/* hack: 3 more bids
+		game.bid_total = game.bid_count + 1;	/* hack: 1 more bids
 							   after this one */
 		break;
 	case EUCHRE_TAKE_SUIT:
 		EUCHRE.maker = p;
 		set_trump_suit(bid.sbid.suit);
-		game.bid_total = game.bid_count + 4;	/* hack: 3 more bids
+		game.bid_total = game.bid_count + 1;	/* hack: 1 more bids
 							   after this one */
 		break;
 	case EUCHRE_GO_ALONE:

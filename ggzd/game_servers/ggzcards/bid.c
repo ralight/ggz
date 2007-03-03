@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 8997 2007-03-02 23:34:35Z jdorje $
+ * $Id: bid.c 8999 2007-03-03 05:21:32Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -165,6 +165,8 @@ void handle_client_bid(player_t p, int bid_choice)
 /* This handles the event of someone making a bid */
 void handle_bid_event(player_t p, bid_t bid)
 {
+	bool still_bidding;
+
 	/* If we send a bid request to a player when the game is on,
 	   and then a player leaves, the game is stopped.  But we
 	   still need to handle the bid response from that player,
@@ -174,6 +176,8 @@ void handle_bid_event(player_t p, bid_t bid)
 	assert(game.players[p].bid_data.is_bidding);
 	game.players[p].bid_data.is_bidding = FALSE;
 	clear_bids(p);
+
+	still_bidding = is_anyone_bidding();
 
 	net_broadcast_bid(p, bid);
 	net_broadcast_players_status();
@@ -189,7 +193,7 @@ void handle_bid_event(player_t p, bid_t bid)
 	   function is called; this may be illogical but changing it would
 	   break some things. */
 	game.players[p].bid_count++;
-	game.bid_count++;
+	if (!still_bidding) game.bid_count++;
 	game.data->handle_bid(p, bid);
 
 	set_player_message(p);
@@ -218,7 +222,7 @@ void handle_bid_event(player_t p, bid_t bid)
 	   safely access it. */
 	game.prev_bid = p;
 
-	if (is_anyone_bidding()) {
+	if (still_bidding) {
 		assert(game.state == STATE_WAIT_FOR_BID);
 		return;
 	}
