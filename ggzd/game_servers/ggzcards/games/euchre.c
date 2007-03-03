@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 8997 2007-03-02 23:34:35Z jdorje $
+ * $Id: euchre.c 8998 2007-03-03 03:13:09Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -47,16 +47,13 @@ typedef struct euchre_game_t {
 	player_t maker;		/* just like the declarer */
 	int dealer_gets_card;	/* does the dealer get the up-card? */
 	card_t up_card;		/* the "up-card" */
-	int alone;		/* is the dealer going alone? */
-	int suit;		/* the suit of trump (TODO: is this
-				   necessary?) */
-	int going_alone[4];	/* Is the player "going alone"? */
-	int req_alone_bid;	/* hack: have we already requested the
+	bool going_alone[4];	/* Is the player "going alone"? */
+	bool req_alone_bid;	/* hack: have we already requested the
 				   "alone" bids? */
 
 	/* options */
-	int screw_the_dealer;	/* Dealer must bid if it goes around twice */
-	int super_euchre;	/* Defenders taking all five tricks get a
+	bool screw_the_dealer;	/* Dealer must bid if it goes around twice */
+	bool super_euchre;	/* Defenders taking all five tricks get a
 				   "super euchre" bonus */
 } euchre_game_t;
 
@@ -169,9 +166,9 @@ static void euchre_get_options(void)
 static int euchre_handle_option(char *option, int value)
 {
 	if (!strcmp("screw_the_dealer", option))
-		EUCHRE.screw_the_dealer = value;
+		EUCHRE.screw_the_dealer = (value != 0);
 	else if (!strcmp("super_euchre", option))
-		EUCHRE.super_euchre = value;
+		EUCHRE.super_euchre = (value != 0);
 	else
 		return game_handle_option(option, value);
 	return 0;
@@ -199,10 +196,12 @@ static char *euchre_get_option_text(char *buf, int bufsz, char *option,
 
 static void euchre_start_bidding(void)
 {
+	int i;
+
 	game.bid_total = 8;	/* twice around, at most */
 	game.next_bid = (game.dealer + 1) % game.num_players;
-	EUCHRE.req_alone_bid = 0;
-	memset(EUCHRE.going_alone, 0, sizeof(*EUCHRE.going_alone) * 4);
+	EUCHRE.req_alone_bid = false;
+	for (i = 0; i < 4; i++) EUCHRE.going_alone[i] = false;
 }
 
 static void euchre_get_bid(void)
@@ -222,7 +221,7 @@ static void euchre_get_bid(void)
 					 EUCHRE_GO_TEAM);
 			}
 		}
-		EUCHRE.req_alone_bid = 1;
+		EUCHRE.req_alone_bid = true;
 	} else if (game.bid_count < 4) {
 		/* Tirst four bids are either "pass" or "take".  The suit of
 		   the up-card becomes trump. */
@@ -264,10 +263,10 @@ static void euchre_handle_bid(player_t p, bid_t bid)
 							   after this one */
 		break;
 	case EUCHRE_GO_ALONE:
-		EUCHRE.going_alone[p] = 1;
+		EUCHRE.going_alone[p] = true;
 		break;
 	case EUCHRE_GO_TEAM:
-		EUCHRE.going_alone[p] = 0;	/* redundant */
+		EUCHRE.going_alone[p] = false;	/* redundant */
 		break;
 	}
 }
@@ -297,7 +296,7 @@ static void euchre_start_playing(void)
 	/* Only one teammate can "go alone" */
 	for (p = 0; p < 2; p++)
 		if (EUCHRE.going_alone[p] && EUCHRE.going_alone[p + 2]) {
-			EUCHRE.going_alone[p + 2 * (random() % 2)] = 0;
+			EUCHRE.going_alone[p + 2 * (random() % 2)] = false;
 		}
 
 	/* Players "going alone" don't have a partner to play. */
@@ -410,9 +409,9 @@ static void euchre_end_hand(void)
 	int tricks =
 	    game.players[EUCHRE.maker].tricks +
 	    game.players[(EUCHRE.maker + 2) % 4].tricks;
-	int maker_made = (tricks >= 3);
-	int maker_alone = EUCHRE.going_alone[EUCHRE.maker];
-	int defender_alone = EUCHRE.going_alone[(EUCHRE.maker + 1) % 4]
+	bool maker_made = (tricks >= 3);
+	bool maker_alone = EUCHRE.going_alone[EUCHRE.maker];
+	bool defender_alone = EUCHRE.going_alone[(EUCHRE.maker + 1) % 4]
 	    || EUCHRE.going_alone[(EUCHRE.maker + 3) % 4];
 
 	if (maker_made) {
