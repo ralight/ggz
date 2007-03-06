@@ -1,11 +1,12 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8435 2006-08-01 04:06:45Z jdorje $
+# $Id: Makefile.am 9002 2007-03-06 10:18:25Z oojah $
 
 SUBDIRS = .
 
 # It is necessary to list these out in full, unfortunately.
 ggzdgame_DATA = ggzcards.dsc \
 		ggzcards-bridge.dsc \
+		ggzcards-euchre.dsc \
 		ggzcards-fortytwo.dsc \
 		ggzcards-hearts.dsc \
 		ggzcards-lapocha.dsc \
@@ -15,6 +16,7 @@ ggzdgame_DATA = ggzcards.dsc \
 		ggzcards-whist.dsc
 ggzdroom_DATA = ggzcards.room \
 		ggzcards-bridge.room \
+		ggzcards-euchre.room \
 		ggzcards-fortytwo.room \
 		ggzcards-hearts.room \
 		ggzcards-lapocha.room \
@@ -26,6 +28,7 @@ ggzdroom_DATA = ggzcards.room \
 EXTRA_DIST = $(ggzdroom_DATA) version.m4	\
 		ggzcards.dsc.in			\
 		ggzcards-bridge.dsc.in		\
+		ggzcards-euchre.dsc.in		\
 		ggzcards-fortytwo.dsc.in	\
 		ggzcards-hearts.dsc.in		\
 		ggzcards-lapocha.dsc.in		\

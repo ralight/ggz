@@ -1,0 +1,26 @@
+# $Id: ggzcards-whist.dsc 8427 2006-07-31 22:50:50Z jdorje $
+[GameInfo]
+Author = Jason Short
+Description = GGZ Cards game module for Euchre
+Homepage = http://www.ggzgamingzone.org/gameservers/ggzcards/
+Name = GGZCards-Euchre
+Version = @GGZCARDS_VERSION@
+
+[LaunchInfo]
+ExecutablePath = ggzd.ggzcards --game=euchre
+# Set ExecutableArgs in the room file
+
+[Protocol]
+Engine = @GGZCARDS_PROTOCOL_ENGINE@
+Version = @GGZCARDS_PROTOCOL_VERSION@
+
+[TableOptions]
+AllowLeave = 1
+BotsAllowed = 1..3
+PlayersAllowed = 4
+KillWhenEmpty = 0
+AllowSpectators = 1
+
+[Statistics]
+Records = 1
+Ratings = 1
