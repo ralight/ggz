@@ -12,6 +12,7 @@ the program by GGZ developers.
 <br/><br/>
 
 <i>Improving the GGZ-Java package</i>
+<br/>
 Core task: GGZ-Java is the primary GGZ package used as an applet by players 
 migrating from existing Windows-centric gaming sites. It is currently 
 offering several cards games which can be played against the corresponding 
@@ -34,6 +35,7 @@ Mentor: Helg Bredow, Roger Light<br/>
 <br/><br/>
 
 <i>Community portal extensions</i>
+<br/>
 Core task: GGZ-Community is the website which allows players to log into a 
 customised gaming portal, which contains access to the GGZ database, in 
 particular to the list of players, games and statistics. Furthermore, it can 
@@ -53,6 +55,7 @@ Mentor: Roger Light, Josef Spillner<br/>
 <br/><br/>
 
 <i>Desktop integration</i>
+<br/>
 Core task: GGZ is currently being integrated with the major free Linux/Unix 
 desktops (KDE and GNOME). A lot of games exist which currently do not have 
 any multiplayer capabilities, even though GGZ provides servers for their 
