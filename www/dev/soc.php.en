@@ -1,0 +1,78 @@
+<?php include_once("site/header.php"); ?>
+
+<table class="content">
+<tr>
+<td>
+
+<b>Google Summer of Code 2007</b><br/>
+GGZ will offer mentoring several tasks during the
+<a href="http://code.google.com/soc/">Google Summer of Code 2007</a> program.
+Several ideas have been discussed and proposed for inclusion into
+the program by GGZ developers.
+<br/><br/>
+
+<i>Improving the GGZ-Java package</i>
+Core task: GGZ-Java is the primary GGZ package used as an applet by players 
+migrating from existing Windows-centric gaming sites. It is currently 
+offering several cards games which can be played against the corresponding 
+desktop versions of the games, and against each other. Since GGZ-Java is a 
+new but promising package, some polishing is needed to establish it as the 
+premier free gaming applet. Requirements gathered from the players, such as 
+better administrative/hosting facilities, should be fulfilled together with 
+the other GGZ developers. More games are being requested constantly by the 
+players. A Texas Hold'em game could be implemented to demonstrate the power 
+of the GGZ platform for game development and the GGZ-Java framework in 
+particular.
+<br/>
+Optional subtasks (just notes):
+<ul>
+<li>help out Fink maintainer to integrate GGZ(-Java) on OSX better</li>
+<li>integration with existing GGZ core clients for cc-game interoperability</li>
+<li>even more games, in particular board games</li>
+</ul>
+Mentor: Helg Bredow, Roger Light<br/>
+<br/><br/>
+
+<i>Community portal extensions</i>
+Core task: GGZ-Community is the website which allows players to log into a 
+customised gaming portal, which contains access to the GGZ database, in 
+particular to the list of players, games and statistics. Furthermore, it can 
+be used to schedule tournaments, assign player karma and manage teams. 
+Especially the latter tasks are currently working insufficiently, and would 
+show a high potential of attracting new players on the internet when 
+implemented and integrated properly. New modules such as player and server 
+administration are needed as well, which are currently partly available as 
+external source code.
+<br/>
+Optional subtasks (just notes):
+<ul>
+<li>a good default theme (if artistic skills present)</li>
+<li>better integration with blogs, forums, news sites, CMS</li>
+</ul>
+Mentor: Roger Light, Josef Spillner<br/>
+<br/><br/>
+
+<i>Desktop integration</i>
+Core task: GGZ is currently being integrated with the major free Linux/Unix 
+desktops (KDE and GNOME). A lot of games exist which currently do not have 
+any multiplayer capabilities, even though GGZ provides servers for their 
+kind, or implement protocols which do not talk to each other. In order to 
+allow for a pervasive online gaming environment on any default Linux desktop 
+games installation, the task would be to integrate GGZ into more games and to 
+look at how to make network games easier to use for the average user.
+<br/>
+Optional subtasks (just notes):
+<ul>
+<li>better server connection dialogs</li>
+<li>a control panel for those who want to safely run ggzd without knowing what a 
+server is (as is known from Apache)</li>
+</ul>
+Mentor: Josef Spillner<br/>
+<br/><br/>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("site/footer.php"); ?>
+
