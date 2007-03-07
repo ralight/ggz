@@ -1,0 +1,840 @@
+Index: m4/unicode.m4
+===================================================================
+--- m4/unicode.m4	(Revision 0)
++++ m4/unicode.m4	(Revision 0)
+@@ -0,0 +1,63 @@
++dnl =================================
++dnl GGZ Gaming Zone - Unicode Macros
++dnl =================================
++dnl
++dnl Looks for unicode library implementations and
++dnl sets up the corresponding variables, that is,
++dnl $unicode for display purposes and LIB_ICU/
++dnl ICU_INCLUDES depending on the choice.
++dnl
++dnl ------------------------------------------------------------------------
++dnl Content of this file:
++dnl ------------------------------------------------------------------------
++dnl AC_GGZ_UNICODE - find a suitable unicode implementation
++dnl
++dnl ------------------------------------------------------------------------
++dnl Internal functions:
++dnl ------------------------------------------------------------------------
++dnl AC_GGZ_UNICODE_ICU - ICU library
++dnl
++
++dnl Unicode checks for ICU
++dnl ======================
++AC_DEFUN([AC_GGZ_UNICODE],
++[
++	if test "$unicode" = yes || test "$unicode" = icu; then
++		AC_GGZ_UNICODE_ICU
++	fi
++	if test "$unicode" = "icu"; then
++		AC_DEFINE(WITH_ICU, 1, [Use ICU for unicode mechanism])
++		ICU_INCLUDES=""
++		LIB_ICU="-licui18n"
++		AC_SUBST(ICU_INCLUDES)
++		AC_SUBST(LIB_ICU)
++	else
++		AC_MSG_WARN([Unicode disabled, ICU not found.])
++		unicode="(none)"
++	fi
++])
++
++dnl Check for unicode implementation ICU
++dnl ====================================
++AC_DEFUN([AC_GGZ_UNICODE_ICU],
++[
++	AC_CHECK_LIB(icui18n, u_strFromUTF8_3_6,
++	[
++		AC_CHECK_HEADERS([unicode/ustring.h],
++		[
++			unicode=icu
++		],
++		[
++			if test "$unicode" = "icu"; then
++				AC_MSG_ERROR([cannot configure ICU (headers needed)])
++			fi
++		])
++	],
++	[
++		if test "$unicode" = "icu"; then
++			AC_MSG_ERROR([cannot configure ICU (library needed)])
++		fi
++	],
++	[])
++])
++
+Index: ggzd/unicode.c
+===================================================================
+--- ggzd/unicode.c	(Revision 0)
++++ ggzd/unicode.c	(Revision 0)
+@@ -0,0 +1,258 @@
++#define WITH_ICU 1
++
++#ifdef HAVE_CONFIG_H
++# include <config.h>
++#endif
++
++#include <ggz.h>
++#ifdef WITH_ICU
++#include <unicode/ustring.h>
++#include <unicode/uchar.h>
++#endif
++#include <string.h>
++#include <stdio.h>
++#include <stdlib.h>
++
++#include "unicode.h"
++
++#ifdef WITH_ICU
++
++struct blockassignment_t
++{
++	char *name;
++	UBlockCode code;
++	bool enabled;
++};
++typedef struct blockassignment_t blockassignment;
++
++static bool policy_initialized = false;
++static blockassignment unicode_blocks[99] =
++{
++	{"armenian", UBLOCK_ARMENIAN},
++	{"coptic", UBLOCK_COPTIC},
++	{"cyrillic", UBLOCK_CYRILLIC},
++	{"cyrillic_supplement", UBLOCK_CYRILLIC_SUPPLEMENT},
++	{"georgian", UBLOCK_GEORGIAN},
++	{"georgian_supplement", UBLOCK_GEORGIAN_SUPPLEMENT},
++	{"greek", UBLOCK_GREEK},
++	{"greek_extended", UBLOCK_GREEK_EXTENDED},
++	{"basic_latin", UBLOCK_BASIC_LATIN},
++	{"latin_1_supplement", UBLOCK_LATIN_1_SUPPLEMENT},
++	{"latin_extended_a", UBLOCK_LATIN_EXTENDED_A},
++	{"latin_extended_b", UBLOCK_LATIN_EXTENDED_B},
++	{"latin_extended_c", UBLOCK_LATIN_EXTENDED_C},
++	{"latin_extended_d", UBLOCK_LATIN_EXTENDED_D},
++	{"latin_extended_additional", UBLOCK_LATIN_EXTENDED_ADDITIONAL},
++	{"ethiopic", UBLOCK_ETHIOPIC},
++	{"ethiopic_extended", UBLOCK_ETHIOPIC_EXTENDED},
++	{"ethiopic_supplement", UBLOCK_ETHIOPIC_SUPPLEMENT},
++	{"tifinagh", UBLOCK_TIFINAGH},
++	{"nko", UBLOCK_NKO},
++	{"cherokee", UBLOCK_CHEROKEE},
++	{"unified_canadian_aboriginal_syllabics", UBLOCK_UNIFIED_CANADIAN_ABORIGINAL_SYLLABICS},
++	{"deseret", UBLOCK_DESERET},
++	{"arabic", UBLOCK_ARABIC},
++	{"arabic_supplement", UBLOCK_ARABIC_SUPPLEMENT},
++	{"arabic_presentation_forms_a", UBLOCK_ARABIC_PRESENTATION_FORMS_A},
++	{"arabic_presentation_forms_b", UBLOCK_ARABIC_PRESENTATION_FORMS_B},
++	{"hebrew", UBLOCK_HEBREW},
++	{"alphabetic_presentation_forms", UBLOCK_ALPHABETIC_PRESENTATION_FORMS},
++	{"syriac", UBLOCK_SYRIAC},
++	{"thaana", UBLOCK_THAANA},
++	{"kharoshthi", UBLOCK_KHAROSHTHI},
++	{"mongolian", UBLOCK_MONGOLIAN},
++	{"phags_pa", UBLOCK_PHAGS_PA},
++	{"tibetan", UBLOCK_TIBETAN},
++	{"bengali", UBLOCK_BENGALI},
++	{"devanagari", UBLOCK_DEVANAGARI},
++	{"gujarati", UBLOCK_GUJARATI},
++	{"gurmukhi", UBLOCK_GURMUKHI},
++	{"kannada", UBLOCK_KANNADA},
++	{"limbu", UBLOCK_LIMBU},
++	{"malayalam", UBLOCK_MALAYALAM},
++	{"oriya", UBLOCK_ORIYA},
++	{"sinhala", UBLOCK_SINHALA},
++	{"syloti_nagri", UBLOCK_SYLOTI_NAGRI},
++	{"tamil", UBLOCK_TAMIL},
++	{"telugu", UBLOCK_TELUGU},
++	{"buhid", UBLOCK_BUHID},
++	{"hanunoo", UBLOCK_HANUNOO},
++	{"tagalog", UBLOCK_TAGALOG},
++	{"tagbanwa", UBLOCK_TAGBANWA},
++	{"balinese", UBLOCK_BALINESE},
++	{"buginese", UBLOCK_BUGINESE},
++	{"khmer", UBLOCK_KHMER},
++	{"khmer_symbols", UBLOCK_KHMER_SYMBOLS},
++	{"lao", UBLOCK_LAO},
++	{"myanmar", UBLOCK_MYANMAR},
++	{"thai", UBLOCK_THAI},
++	{"new_tai_lue", UBLOCK_NEW_TAI_LUE},
++	{"tai_le", UBLOCK_TAI_LE},
++	{"cjk_unified_ideographs", UBLOCK_CJK_UNIFIED_IDEOGRAPHS},
++	{"cjk_unified_ideographs_extension_a", UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A},
++	{"cjk_unified_ideographs_extension_b", UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B},
++	{"cjk_compatibility_ideographs", UBLOCK_CJK_COMPATIBILITY_IDEOGRAPHS},
++	{"cjk_compatibility_ideographs_supplement", UBLOCK_CJK_COMPATIBILITY_IDEOGRAPHS_SUPPLEMENT},
++	{"cjk_radicals_supplement", UBLOCK_CJK_RADICALS_SUPPLEMENT},
++	{"kangxi_radicals", UBLOCK_KANGXI_RADICALS},
++	{"cjk_strokes", UBLOCK_CJK_STROKES},
++	{"ideographic_description_characters", UBLOCK_IDEOGRAPHIC_DESCRIPTION_CHARACTERS},
++	{"bopomofo", UBLOCK_BOPOMOFO},
++	{"bopomofo_extended", UBLOCK_BOPOMOFO_EXTENDED},
++	{"hiragana", UBLOCK_HIRAGANA},
++	{"katakana", UBLOCK_KATAKANA},
++	{"katakana_phonetic_extensions", UBLOCK_KATAKANA_PHONETIC_EXTENSIONS},
++	{"hangul_syllables", UBLOCK_HANGUL_SYLLABLES},
++	{"hangul_jamo", UBLOCK_HANGUL_JAMO},
++	{"hangul_compatibility_jamo", UBLOCK_HANGUL_COMPATIBILITY_JAMO},
++	{"yi_syllables", UBLOCK_YI_SYLLABLES},
++	{"yi_radicals", UBLOCK_YI_RADICALS},
++	{"ancient_greek_numbers", UBLOCK_ANCIENT_GREEK_NUMBERS},
++	{"ancient_greek_musical_notation", UBLOCK_ANCIENT_GREEK_MUSICAL_NOTATION},
++	{"cuneiform", UBLOCK_CUNEIFORM},
++	{"cuneiform_numbers_and_punctuation", UBLOCK_CUNEIFORM_NUMBERS_AND_PUNCTUATION},
++	{"old_persian", UBLOCK_OLD_PERSIAN},
++	{"ugaritic", UBLOCK_UGARITIC},
++	{"linear_b_syllabary", UBLOCK_LINEAR_B_SYLLABARY},
++	{"linear_b_ideograms", UBLOCK_LINEAR_B_IDEOGRAMS},
++	{"aegean_numbers", UBLOCK_AEGEAN_NUMBERS},
++	{"counting_rod_numerals", UBLOCK_COUNTING_ROD_NUMERALS},
++	{"cypriot_syllabary", UBLOCK_CYPRIOT_SYLLABARY},
++	{"gothic", UBLOCK_GOTHIC},
++	{"old_italic", UBLOCK_OLD_ITALIC},
++	{"ogham", UBLOCK_OGHAM},
++	{"runic", UBLOCK_RUNIC},
++	{"phoenician", UBLOCK_PHOENICIAN},
++	{"shavian", UBLOCK_SHAVIAN},
++	{"glagolitic", UBLOCK_GLAGOLITIC},
++	{"osmanya", UBLOCK_OSMANYA},
++	{NULL, UBLOCK_NO_BLOCK}
++};
++
++bool block_enabled(UBlockCode code)
++{
++	int i;
++
++	for(i = 0; unicode_blocks[i].name; i++)
++	{
++		if(unicode_blocks[i].code == code)
++			return unicode_blocks[i].enabled;
++	}
++
++	return false;
++}
++
++bool username_allowed(const char *str)
++{
++	UChar *ustr = NULL;
++	UChar uc;
++	int32_t length = 0;
++	UErrorCode error = U_ZERO_ERROR;
++	int i;
++	bool allowed;
++
++	/* FIXME: the following two lines document a sucky IBM API bug */
++	/* FIXME: it's #5638 on bugs.icu-project.org */
++	ustr = (UChar*)malloc(strlen(str) * 4);
++	length = strlen(str) * 4;
++
++	ustr = u_strFromUTF8(ustr, length, &length, str, -1, &error);
++	if(U_FAILURE(error)) {
++		fprintf(stderr, "Error: conversion failure\n");
++		return false;
++	}
++	ustr = (UChar*)malloc(sizeof(UChar) * length);
++	if(!ustr) {
++		fprintf(stderr, "Error: malloc failure\n");
++		return false;
++	}
++	ustr = u_strFromUTF8(ustr, length, NULL, str, -1, &error);
++
++	/* iterate over the characters */
++	allowed = true;
++
++	for(i = 0; i < length; i++)
++	{
++		uc = ustr[i];
++
++		UBlockCode code = ublock_getCode(uc);
++
++		if((policy_initialized) && (!block_enabled(code)))
++		{
++			/* prohibited, return after free() */
++			/* no policy in use allows all blocks */
++			allowed = false;
++		}
++
++		if(u_isISOControl(uc))
++		{
++			/* those are always forbidden */
++			allowed = false;
++		}
++	}
++
++	free(ustr);
++
++	if(!allowed)
++	{
++		return false;
++	}
++
++	/* name is alright */
++	return true;
++}
++
++bool init_unicode(const char *policyfile)
++{
++	int rc, enabled;
++	int i;
++
++	rc = ggz_conf_parse(policyfile, GGZ_CONF_RDONLY);
++	if(rc == -1)
++	{
++		fprintf(stderr, "Error: unable to open policy file.\n");
++		return false;
++	}
++
++	for(i = 0; unicode_blocks[i].name; i++)
++	{
++		enabled = ggz_conf_read_int(rc, "UsernameCharacterSets",
++			unicode_blocks[i].name, 0);
++		printf(">> %s: %i\n", unicode_blocks[i].name, enabled);
++		unicode_blocks[i].enabled = enabled;
++	}
++
++	ggz_conf_close(rc);
++	policy_initialized = true;
++
++	return true;
++}
++
++#else /* WITH_ICU */
++
++bool username_allowed(const char *str)
++{
++	/* For compatibility, we'll have to assume ASCII */
++	/* Nothing less than a space and no extended ASCII */
++	/* & - can mess with M$ Windows labels, etc */
++	/* % - can screw up log and debug's printf()s */
++	/* \ - can screw up log and debug's printf()s */
++	for(p = name; *p != '\0'; p++)
++	{
++		if((*p < 33) || (*p > 126)
++		|| (*p == '%') || (*p == '&') || (*p == '\\'))
++		{
++			return false;
++		}
++	}
++
++	return true;
++}
++
++bool init_unicode(const char *policyfile)
++{
++	return false;
++}
++
++#endif
++
+Index: ggzd/unicode.h
+===================================================================
+--- ggzd/unicode.h	(Revision 0)
++++ ggzd/unicode.h	(Revision 0)
+@@ -0,0 +1,38 @@
++/*
++ * File: unicode.h
++ * Author: GGZ Development Team
++ * Project: GGZ Server
++ * Date: 2007-03-01
++ * Desc: Unicode handling such as policies on allowed usernames
++ * $Id: reconfiguration.h 8467 2006-08-04 01:58:46Z jdorje $
++ *
++ * Copyright (C) 2007 GGZ Development Team
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
++ */
++
++#ifdef HAVE_CONFIG_H
++# include <config.h>
++#endif
++
++#include "ggzd.h"
++
++#ifndef _GGZ_UNICODE_H
++#define _GGZ_UNICODE_H
++
++bool username_allowed(const char *str);
++bool init_unicode(const char *policyfile);
++
++#endif
+Index: ggzd/username.policy
+===================================================================
+--- ggzd/username.policy	(Revision 0)
++++ ggzd/username.policy	(Revision 0)
+@@ -0,0 +1,248 @@
++# Definitions for the validity of usernames for the GGZ Gaming Zone
++#
++# The following symbols match the character and symbol blocks of Unicode 5.0.
++# They are grouped according to likely usage scenarios. Registration of
++# usernames or usage of guest usernames is only possible if all characters
++# of the name are allowed according to this file. This file is however
++# only taken into account if UsernamePolicy in ggzd.conf refers to it.
++# Using it also requires ggzd to be compiled with ICU support.
++#
++# For cultural and technical considerations, please read the corresponding
++# sections in the GGZ Server Hosting Guide.
++
++[UsernameCharacterSets]
++
++# European alphabets ##########################################
++
++# Armenian
++armenian = 1
++
++# Coptic
++coptic = 1
++
++# Cyrillic
++cyrillic = 1
++cyrillic_supplement = 1
++
++# Georgian
++georgian = 1
++georgian_supplement = 1
++
++# Greek
++greek = 1
++greek_extended = 1
++
++# Latin
++basic_latin = 1
++latin_1_supplement = 1
++latin_extended_a = 1
++latin_extended_b = 1
++latin_extended_c = 1
++latin_extended_d = 1
++latin_extended_additional = 1
++
++# African scripts #############################################
++
++# Ethiopic scripts
++ethiopic = 1
++ethiopic_extended = 1
++ethiopic_supplement = 1
++
++# Other African scripts
++tifinagh = 1
++nko = 1
++
++# American scripts ############################################
++
++cherokee = 1
++unified_canadian_aboriginal_syllabics = 1
++deseret = 1
++
++# West/Central Asian scripts ##################################
++
++# Middle Eastern scripts
++arabic = 1
++arabic_supplement = 1
++arabic_presentation_forms_a = 1
++arabic_presentation_forms_b = 1
++hebrew = 1
++alphabetic_presentation_forms = 1
++syriac = 1
++thaana = 1
++
++# Central Asian scripts
++kharoshthi = 1
++mongolian = 1
++phags_pa = 1
++tibetan = 1
++
++# Indic scripts
++bengali = 1
++devanagari = 1
++gujarati = 1
++gurmukhi = 1
++kannada = 1
++limbu = 1
++malayalam = 1
++oriya = 1
++sinhala = 1
++syloti_nagri = 1
++tamil = 1
++telugu = 1
++
++# Philippine scripts
++buhid = 1
++hanunoo = 1
++tagalog = 1
++tagbanwa = 1
++
++# South East Asian scripts
++balinese = 1
++buginese = 1
++khmer = 1
++khmer_symbols = 1
++lao = 1
++myanmar = 1
++thai = 1
++new_tai_lue = 1
++tai_le = 1
++
++# East Asian scripts ##########################################
++
++# Han ideographs
++cjk_unified_ideographs = 1
++cjk_unified_ideographs_extension_a = 1
++cjk_unified_ideographs_extension_b = 1
++cjk_compatibility_ideographs = 1
++cjk_compatibility_ideographs_supplement = 1
++
++# Radicals and strokes
++cjk_radicals_supplement = 1
++kangxi_radicals = 1
++cjk_strokes = 1
++ideographic_description_characters = 1
++
++# Chinese-specific
++bopomofo = 1
++bopomofo_extended = 1
++
++# Japanese-specific
++hiragana = 1
++katakana = 1
++katakana_phonetic_extensions = 1
++
++# Korean-specific
++hangul_syllables = 1
++hangul_jamo = 1
++hangul_compatibility_jamo = 1
++
++# Yi
++yi_syllables = 1
++yi_radicals = 1
++
++# Ancient scripts #############################################
++
++ancient_greek_numbers = 1
++ancient_greek_musical_notation = 1
++cuneiform = 1
++cuneiform_numbers_and_punctuation = 1
++old_persian = 1
++ugaritic = 1
++linear_b_syllabary = 1
++linear_b_ideograms = 1
++aegean_numbers = 1
++counting_rod_numerals = 1
++cypriot_syllabary = 1
++gothic = 1
++old_italic = 1
++ogham = 1
++runic = 1
++phoenician = 1
++
++# Other scripts ###############################################
++
++shavian = 1
++glagolitic = 1
++osmanya = 1
++
++###############################################################
++###############################################################
++
++# Other character sets (yet to be classified)
++
++# Character symbols
++#general_punctuation = 1
++#superscripts_and_subscripts = 1
++#combining_marks_for_symbols = 1
++
++# Graphical symbols
++#currency_symbols = 1
++#letterlike_symbols = 1
++#number_forms = 1
++#control_pictures = 1
++#optical_character_recognition = 1
++#box_drawing = 1
++#block_elements = 1
++#geometric_shapes = 1
++#miscellaneous_symbols = 1
++#dingbats = 1
++#braille_patterns = 1
++#arrows = 1
++#supplemental_arrows_a = 1
++#supplemental_arrows_b = 1
++#miscellaneous_technical = 1
++#miscelanneous_symbols_and_arrays = 1
++
++# Mathematical symbols
++#mathematical_alphanumeric_symbols = 1
++#mathematical_operators = 1
++#supplemental_mathematical_operators = 1
++#miscellaneous_mathematical_symbols_a = 1
++#miscellaneous_mathematical_symbols_b = 1
++
++# Cultural symbols
++#musical_symbols = 1
++#byzantine_musical_symbols = 1
++
++# Unknown CJK
++#cjk_compatibility = 1
++#cjk_symbols_and_punctuation = 1
++#cjk_compatibility_forms = 1
++#enclosed_cjk_letters_and_months = 1
++#kanbun = 1
++#hangul_radicals = 1
++#tai_xuan_jing_symbols = 1
++
++# Other blocks (yet to be classified)
++#enclosed_alphanumerics = 1
++#high_surrogates = 1
++#high_private_use_surrogates = 1
++#low_surrogates = 1
++
++# Private use areas
++#private_use_area = 1
++#supplementary_private_use_area_a = 1
++#supplementary_private_use_area_b = 1
++
++# More other blocks (yet to be classified)
++#phonetic_extensions = 1
++#phonetic_extensions_supplement = 1
++#modifier_tone_letters = 1
++
++# All the rest
++#variation_selectors = 1
++#variation_selectors_supplement = 1
++#combining_half_marks = 1
++#combining_diacritical_marks_supplement = 1
++#supplemental_punctuation = 1
++#small_form_variants = 1
++#halfwidth_and_fullwidth_forms = 1
++#vertical_forms = 1
++#specials = 1
++#yijing_hexagram_symbols = 1
++#tags = 1
++#ipa_extensions = 1
++#spacing_modifier_letters = 1
++#combining_diacritical_marks = 1
++# ?? count = 1
++
+Index: ggzd/ggzd.conf.example.in
+===================================================================
+--- ggzd/ggzd.conf.example.in	(Revision 8966)
++++ ggzd/ggzd.conf.example.in	(Arbeitskopie)
+@@ -70,6 +70,9 @@
+ # Reconfiguration in case of room changes
+ #ReconfigureRooms = 1
+ 
++# Policy file on guest names and player registration
++#UsernamePolicy = @prefix@/etc/ggzd/username.policy
++
+ ############################################################################
+ # Logging Options
+ ############################################################################
+Index: ggzd/datatypes.h
+===================================================================
+--- ggzd/datatypes.h	(Revision 8966)
++++ ggzd/datatypes.h	(Arbeitskopie)
+@@ -77,6 +77,7 @@
+ 	const char *metausername;
+ 	const char *metapassword;
+ 	bool reconfigure_rooms;
++	const char *username_policy;
+ } Options;
+ 
+ 
+Index: ggzd/login.c
+===================================================================
+--- ggzd/login.c	(Revision 8966)
++++ ggzd/login.c	(Arbeitskopie)
+@@ -42,6 +42,7 @@
+ #include "protocols.h"
+ #include "perms.h"
+ #include "client.h"
++#include "unicode.h"
+ 
+ 
+ static void login_generate_password(char *pw);
+@@ -272,22 +273,13 @@
+ /* This routine validates the username request */
+ static bool is_valid_username(const char *name)
+ {
+-	const char *p;
+-
+ 	/* "<none>" is invalid */
+ 	if (strcasecmp(name, "<none>") == 0) {
+ 		return false;
+ 	}
+ 
+-	/* Nothing less than a space and no extended ASCII */
+-	/* & - can mess with M$ Windows labels, etc */
+-	/* % - can screw up log and debug's printf()s */
+-	/* \ - can screw up log and debug's printf()s */
+-	for (p = name; *p != '\0'; p++) {
+-		if (*p < 33 || *p == '%' || *p == '&' || *p == '\\'
+-		    || *p > 126) {
+-			return false;
+-		}
++	if (!username_allowed(name)) {
++		return false;
+ 	}
+ 
+ 	return true;
+Index: ggzd/Makefile.am
+===================================================================
+--- ggzd/Makefile.am	(Revision 8966)
++++ ggzd/Makefile.am	(Arbeitskopie)
+@@ -8,7 +8,7 @@
+ bin_PROGRAMS = ggzd ggzduedit
+ 
+ ggzdroom_DATA = entry.room
+-ggzdconf_DATA = ggzd.conf.example ggzd.motd
++ggzdconf_DATA = ggzd.conf.example ggzd.motd username.policy
+ 
+ ggzd_SOURCES = \
+ 	chat.c \
+@@ -53,6 +53,8 @@
+ 	login.h \
+ 	perms.h \
+ 	perms.c \
++	unicode.h \
++	unicode.c \
+ 	util.c \
+ 	util.h
+ 
+@@ -63,6 +65,7 @@
+ 	$(LIBGGZ_INCLUDES) \
+ 	$(HOWL_INCLUDES) \
+ 	$(AVAHI_INCLUDES) \
++	$(ICU_INCLUDES) \
+ 	-DGGZDCONFDIR=\"$(ggzdconfdir)\" \
+ 	-DGGZDEXECMODDIR=\"$(ggzdexecmoddir)\"
+ 
+@@ -77,7 +80,8 @@
+ 	$(LIB_HOWL) \
+ 	$(LIB_AVAHI) \
+ 	$(LIB_FAM) \
+-        $(LIB_PTHREADS)
++	$(LIB_PTHREADS) \
++	$(LIB_ICU)
+ 
+ ggzduedit_SOURCES =	datatypes.h	\
+ 			ggzduedit.c 				\
+Index: ggzd/parse_opt.c
+===================================================================
+--- ggzd/parse_opt.c	(Revision 8966)
++++ ggzd/parse_opt.c	(Arbeitskopie)
+@@ -47,6 +47,7 @@
+ #include "players.h"
+ #include "room.h"
+ #include "util.h"
++#include "unicode.h"
+ 
+ 
+ /* Private file parsing functions */
+@@ -166,6 +167,11 @@
+ #else
+ #define SPEC_FAM 0
+ #endif
++#ifdef WITH_ICU
++#define SPEC_ICU 1
++#else
++#define SPEC_ICU 0
++#endif
+ 
+ static void dump_specs(void)
+ {
+@@ -205,6 +211,7 @@
+ 	printf("Reconfiguration support: %s [%s]\n",
+ 		(SPEC_INOTIFY ? "yes (inotify)" : (SPEC_FAM ? "yes (fam)" : "no")),
+ 		(opt.conf_valid ? (opt.reconfigure_rooms ? "used" : "not used") : "unknown" ));
++	printf("Unicode support: %s\n", (SPEC_ICU ? "yes" : "no"));
+ }
+ 
+ /* Parse command-line options */
+@@ -239,7 +246,7 @@
+ 			case 'h':
+ 	 			printf("GGZD - The main server of the GGZ Gaming Zone\n"),
+ 	 			printf("Copyright (C) 1999 - 2002 Brent Hendricks\n"),
+-	 			printf("Copyright (C) 2003 - 2006 The GGZ Gaming Zone developers\n"),
++	 			printf("Copyright (C) 2003 - 2007 The GGZ Gaming Zone developers\n"),
+ 	 			printf("\n"),
+ 	 			printf("[-F | --foreground ] Tells ggzd to run in the foreground\n"),
+ 				printf("[-f | --file <file>] Configuration file\n"),
+@@ -266,6 +273,7 @@
+ }
+ 
+ 
++/* The IANA-assigned port number for the GGZ Gaming Zone */
+ #define DEFAULT_GGZD_PORT 5688
+ 
+ /* Parse options from conf file, but don't overwrite existing options*/
+@@ -386,6 +394,9 @@
+ 	/* Reconfiguration in [General] */
+ 	opt.reconfigure_rooms = ggz_conf_read_int(ch, "General", "ReconfigureRooms", 0);
+ 
++	/* Unicode settings in [General] */
++	opt.username_policy = ggz_conf_read_string(ch, "General", "UsernamePolicy", NULL);
++
+ 	/* [Games] */
+ 	ggz_conf_read_list(ch, "Games", "GameList", &g_count, &g_list);
+ 	if(g_count == 0) {
+@@ -463,6 +474,10 @@
+ 	opt.room_update_freq = ggz_conf_read_int(ch, "Miscellaneous",
+ 						 "RoomUpdateFrequency", 60);
+ 
++	if (opt.username_policy) {
++		init_unicode(opt.username_policy);
++	}
++
+ 	ggz_conf_cleanup();
+ }
+ 
+Index: configure.ac
+===================================================================
+--- configure.ac	(Revision 8966)
++++ configure.ac	(Arbeitskopie)
+@@ -2,7 +2,7 @@
+ # $Id$
+ # ================================
+ 
+-AC_INIT([GGZ server], [0.0.14], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
++AC_INIT([GGZ server], [0.0.15pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
+ AC_CONFIG_SRCDIR([configure.ac])
+ AC_CONFIG_HEADERS([config.h])
+ AM_INIT_AUTOMAKE
+@@ -39,6 +39,10 @@
+ 	AS_HELP_STRING([--with-reconfiguration=TYPE],
+ 	[type of library to use: inotify, fam]),
+ 	[reconfiguration=$withval], [reconfiguration=yes])
++AC_ARG_WITH([unicode],
++	AS_HELP_STRING([--with-unicode=TYPE],
++	[type of library to use: icu]),
++	[unicode=$withval], [unicode=yes])
+ 
+ 
+ # Check for GGZ Requirements
+@@ -134,6 +138,7 @@
+ dnl Check for zeroconf implementations
+ dnl ==================================
+ AC_GGZ_ZEROCONF
++AC_GGZ_UNICODE
+ 
+ dnl Check for reconfiguration support through file watchers
+ dnl =======================================================
+@@ -261,6 +266,7 @@
+ echo "    Database Type........$database" 
+ echo "    Zeroconf.............$zeroconf"
+ echo "    Reconfiguration......$reconfiguration"
++echo "    Unicode..............$unicode"
+ echo "Debugging options"
+ echo "    General Debuging.....$enable_debug" 
+ echo "    GDB Debugging........$enable_debug_gdb" 

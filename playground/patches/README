@@ -4,6 +4,9 @@ be merged with the sources.
 Current patches
 ---------------
 
+Unicode in GGZ usernames according to a certain policy:
+ ggzd+unicode.diff
+
 Widelands GGZ integration:
  widelands.netmenu.diff
 
