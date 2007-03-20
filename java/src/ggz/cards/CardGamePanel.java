@@ -27,6 +27,7 @@ import ggz.cards.common.Card;
 import ggz.cards.common.CardSetType;
 import ggz.cards.common.GGZCardInputStream;
 import ggz.cards.common.ScoreData;
+import ggz.cards.euchre.EuchreBidPanel;
 import ggz.cards.spades.SpadesBidPanel;
 import ggz.client.mod.ModGame;
 import ggz.client.mod.ModState;
@@ -219,6 +220,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 bidPanel = new BridgeBidPanel(firstBidder, cardClient);
             } else if ("spades".equals(gameType)) {
                 bidPanel = new SpadesBidPanel(firstBidder, cardClient);
+            } else if ("euchre".equals(gameType)) {
+                bidPanel = new EuchreBidPanel(firstBidder, cardClient);
             } else {
                 bidPanel = new BidPanel(firstBidder, cardClient);
             }
@@ -980,10 +983,10 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     public void get_bid(final Bid[] bid_choices, final String[] bid_texts,
             final String[] bid_descs) {
-        // for (int i = 0; i < bid_choices.length; i++) {
-        // System.out.println(bid_choices[i] + ", " + bid_texts[i] + ", "
-        // + bid_descs[i]);
-        // }
+//         for (int i = 0; i < bid_choices.length; i++) {
+//         System.out.println(bid_choices[i] + ", " + bid_texts[i] + ", "
+//         + bid_descs[i]);
+//         }
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createOrAddBidPanel(0);
@@ -1247,9 +1250,14 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     // TODO, show an icon to indicate trumps
                     getChatPanel().appendInfo(message);
                 } else if ("Up-Card".equals(mark)) {
+                   // Sent by Euchre and Whist.
                     getChatPanel().appendInfo(message);
                 } else if ("Hand Score".equals(mark)) {
                     getChatPanel().appendInfo(message);
+                } else if ("Scoring History".equals(mark)) {
+                    // Sent by Euchre but it's a repeat of a message sent
+                    // without a mark, which is handled below.
+                    //getChatPanel().appendInfo(message);
                 } else if ("Rules".equals(mark)) {
                     try {
                         setRulesURL(message);
