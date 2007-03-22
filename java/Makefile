@@ -32,7 +32,7 @@ clean:
 dist:
 	rm -rf ../ggz-java-$(version)
 	cp -r ../java ../ggz-java-$(version)
-	svn-clean ../ggz-java-$(version)
+	cd ../ggz-java-$(version) && svn-clean
 	find ../ggz-java-$(version) -name .svn | xargs rm -rf
 	cd .. && tar cvzf ggz-java-$(version).tar.gz ggz-java-$(version)
 

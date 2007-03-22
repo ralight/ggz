@@ -33,7 +33,7 @@ clean:
 dist:
 	rm -rf ../ggz-community-$(version)
 	cp -r ../community ../ggz-community-$(version)
-	svn-clean ../ggz-community-$(version)
+	cd ../ggz-community-$(version) && svn-clean
 	find ../ggz-community-$(version) -name .svn | xargs rm -rf
 	cd .. && tar cvzf ggz-community-$(version).tar.gz ggz-community-$(version)
 

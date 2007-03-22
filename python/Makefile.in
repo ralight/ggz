@@ -244,7 +244,7 @@ dist:
 	rm -rf ../ggz-python-$(version)
 	cp -r ../python ../ggz-python-$(version)
 	cp ../ggz-python-$(version)/configure /tmp/configure
-	svn-clean ../ggz-python-$(version)
+	cd ../ggz-python-$(version) && svn-clean
 	cp /tmp/configure ../ggz-python-$(version)
 	find ../ggz-python-$(version) -name .svn | xargs rm -rf
 	cd .. && tar cvzf ggz-python-$(version).tar.gz ggz-python-$(version)
