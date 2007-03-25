@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000 (as cards.c)
  * Desc: Various useful deck manipulation routines for card games
- * $Id: deck.c 4484 2002-09-09 04:09:04Z jdorje $
+ * $Id: deck.c 9007 2007-03-25 03:37:27Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -155,6 +155,21 @@ int get_deck_size(deck_t * deck)
 	return deck->size;
 }
 
+/* Returns a random number in the range 0..size-1. */
+static unsigned int myrand(unsigned int size)
+{
+	const unsigned int divisor = RAND_MAX / size;
+	const unsigned int max = size * divisor - 1;
+	unsigned int new_rand;
+
+	/* Avoid bias. */
+	do {
+		new_rand = random();
+	} while (new_rand > max);
+
+	return new_rand / divisor;
+}
+
 /* shuffle the deck */
 void shuffle_deck(deck_t * deck)
 {
@@ -163,12 +178,11 @@ void shuffle_deck(deck_t * deck)
 
 	ggz_debug(DBG_MISC, "Shuffling deck.");
 
-	/* Now we can randomize the deck order */
-	/* Go through the deck, card by card */
+	/* "Knuth shuffle" */
 	for (i = 0; i < deck->size; i++) {
 		/* Pick any position */
-		j = random() % deck->size;
-		
+		j = i + myrand(deck->size - i);
+
 		/* And swap positions */
 		temp = deck->cards[i];
 		deck->cards[i] = deck->cards[j];
