@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game data for La Pocha (for use by AI)
- * $Id: lapocha.h 8458 2006-08-02 06:50:51Z jdorje $
+ * $Id: lapocha.h 9006 2007-03-25 03:34:45Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -41,8 +41,7 @@ enum {
 	   seat. */
 	LAP_MSG_DEALER,
 
-	/* Tells what trump is.  Followed by a char for the trump suit. */
-	LAP_MSG_TRUMP,
+	LAP_UNUSED_1,
 
 	/* Tells of a player's bid.  Followed by an int for the player and an 
 	   int for the bid. */

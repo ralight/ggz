@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 8997 2007-03-02 23:34:35Z jdorje $
+ * $Id: lapocha.c 9006 2007-03-25 03:34:45Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -66,7 +66,6 @@ static void lapocha_end_hand(void);
 static void lap_send_trump_request(player_t p);
 static void lap_send_bid_request(player_t p);
 static void lap_send_dealer(void);
-static void lap_send_trump(void);
 static void lap_send_bid(player_t bidder, bid_t bid);
 static void lap_send_scores(void);
 
@@ -163,7 +162,6 @@ static void set_trump(char suit)
 {
 	set_trump_suit(suit);
 	set_global_message("", "Trump is %s.", get_suit_name(game.trump));
-	lap_send_trump();
 }
 
 static void lapocha_start_bidding(void)
@@ -337,21 +335,6 @@ static void lap_send_dealer(void)
 		write_opcode(dio, MSG_GAME_SPECIFIC);
 		ggz_dio_put_char(dio, LAP_MSG_DEALER);
 		ggz_dio_put_int(dio, CONVERT_SEAT(game.dealer, p));
-		ggz_dio_packet_end(dio);
-	}
-}
-
-static void lap_send_trump(void)
-{
-	int p;
-
-	for (p = 0; p < game.num_players; p++) {
-		GGZDataIO *dio = get_player_dio(p);
-
-		ggz_dio_packet_start(dio);
-		write_opcode(dio, MSG_GAME_SPECIFIC);
-		ggz_dio_put_char(dio, LAP_MSG_TRUMP);
-		ggz_dio_put_char(dio, game.trump);
 		ggz_dio_packet_end(dio);
 	}
 }
