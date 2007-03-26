@@ -11,4 +11,12 @@ Contents right now:
   Test file for asynchronous libggz hostname lookups
   FIXME: the global_req must go away, but it segfaults if the
   local gaicb param is used
+  This seems to be fixed in the latest glibc, but we need to
+  confirm this and see how we can find out in configure
+  (getconf GNU_LIBC_VERSION maybe? or run /lib/libc-***.so)
+  FIXME: find out revision number and check without global_req
+
+* passwords
+  Some checks so we can improve cracklib
+  a few issues are written in the source file
 

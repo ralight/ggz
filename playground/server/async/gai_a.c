@@ -1,6 +1,8 @@
 #define LOOKUP_ASYNC 1 /* SYNC otherwise */
 #define LOOKUP_THREAD 1 /* SIGNAL otherwise */
 
+#define TRIGGER_BUG 1 /* glibc gai_a bug before 2.3.7 */
+
 #define _GNU_SOURCE
 
 #include <stdio.h>
@@ -16,7 +18,15 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#if TRIGGER_BUG
+# if !LOOKUP_THREAD || !LOOKUP_ASYNC
+#  error Bug won't be triggered even though requested
+# endif
+#endif
+
+#if !TRIGGER_BUG
 static struct gaicb *global_req = NULL;
+#endif
 
 static void print_address(struct addrinfo *res)
 {
@@ -76,8 +86,11 @@ static void found_thread(sigval_t arg)
 
 	if(arg.sival_ptr)
 	{
-		/*req = (struct gaicb*)arg.sival_ptr;*/
+#if TRIGGER_BUG
+		req = (struct gaicb*)arg.sival_ptr;
+#else
 		req = global_req;
+#endif
 		check_error(req);
 		print_addresses(req->ar_result);
 
@@ -95,9 +108,13 @@ static void found_alarm(int signum)
 
 	struct gaicb *req;
 
+#if !TRIGGER_BUG
 	req = global_req;
 	check_error(req);
 	print_addresses(req->ar_result);
+#else
+# error Dunno how to get req here?!
+#endif
 }
 #endif
 
@@ -139,7 +156,10 @@ int main(int argc, char *argv[])
 	sigev.sigev_value.sival_ptr = req;
 	sigev.sigev_signo = SIGALRM;
 #endif
+
+#if !TRIGGER_BUG
 	global_req = req;
+#endif
 
 	printf("GAI test: mode=[%s] method=[%s]\n",
 		(LOOKUP_ASYNC ? "async" : "sync"),
