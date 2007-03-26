@@ -1,3 +1,71 @@
+Index: m4/passwordcheck.m4
+===================================================================
+--- m4/passwordcheck.m4	(Revision 0)
++++ m4/passwordcheck.m4	(Revision 0)
+@@ -0,0 +1,63 @@
++dnl =======================================
++dnl GGZ Gaming Zone - Password Check Macros
++dnl =======================================
++dnl
++dnl Looks for cracklib library implementations and
++dnl sets up the corresponding variables, that is,
++dnl $passwordcheck for display purposes and LIB_PASSWORDCHECK/
++dnl PASSWORDCHECK_INCLUDES depending on the choice.
++dnl
++dnl ------------------------------------------------------------------------
++dnl Content of this file:
++dnl ------------------------------------------------------------------------
++dnl AC_GGZ_PASSWORDCHECK - find a suitable password check implementation
++dnl
++dnl ------------------------------------------------------------------------
++dnl Internal functions:
++dnl ------------------------------------------------------------------------
++dnl AC_GGZ_PASSWORDCHECK_CRACKLIB - cracklib2 library
++dnl
++
++dnl Password check through cracklib
++dnl ===============================
++AC_DEFUN([AC_GGZ_PASSWORDCHECK],
++[
++	if test "$passwordcheck" = yes || test "$passwordcheck" = cracklib; then
++		AC_GGZ_PASSWORDCHECK_CRACKLIB
++	fi
++	if test "$passwordcheck" = "cracklib"; then
++		AC_DEFINE(WITH_CRACKLIB, 1, [Use cracklib for password checks])
++		CRACKLIB_INCLUDES=""
++		LIB_CRACKLIB="-lcrack"
++		AC_SUBST(CRACKLIB_INCLUDES)
++		AC_SUBST(LIB_CRACKLIB)
++	else
++		AC_MSG_WARN([Password checking disabled, cracklib not found.])
++		passwordcheck="(none)"
++	fi
++])
++
++dnl Check for password checker implementation cracklib
++dnl ==================================================
++AC_DEFUN([AC_GGZ_PASSWORDCHECK_CRACKLIB],
++[
++	AC_CHECK_LIB(crack, FascistCheck,
++	[
++		AC_CHECK_HEADERS([crack.h],
++		[
++			passwordcheck=cracklib
++		],
++		[
++			if test "$passwordcheck" = "cracklib"; then
++				AC_MSG_ERROR([cannot configure cracklib (headers needed)])
++			fi
++		])
++	],
++	[
++		if test "$passwordcheck" = "cracklib"; then
++			AC_MSG_ERROR([cannot configure cracklib (library needed)])
++		fi
++	],
++	[])
++])
++
 Index: m4/unicode.m4
 ===================================================================
 --- m4/unicode.m4	(Revision 0)
@@ -291,7 +359,7 @@ Index: ggzd/unicode.c
 +	{
 +		enabled = ggz_conf_read_int(rc, "UsernameCharacterSets",
 +			unicode_blocks[i].name, 0);
-+		printf(">> %s: %i\n", unicode_blocks[i].name, enabled);
++		/*printf(">> %s: %i\n", unicode_blocks[i].name, enabled);*/
 +		unicode_blocks[i].enabled = enabled;
 +	}
 +
@@ -655,21 +723,87 @@ Index: ggzd/login.c
 ===================================================================
 --- ggzd/login.c	(Revision 8966)
 +++ ggzd/login.c	(Arbeitskopie)
-@@ -42,6 +42,7 @@
+@@ -32,6 +32,10 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
++#ifdef WITH_CRACKLIB
++#include <crack.h>
++#endif
++
+ #include "err_func.h"
+ #include "ggzdb.h"
+ #include "hash.h"
+@@ -42,12 +46,16 @@
  #include "protocols.h"
  #include "perms.h"
  #include "client.h"
 +#include "unicode.h"
  
  
++#if 0
  static void login_generate_password(char *pw);
-@@ -272,22 +273,13 @@
++#endif
+ static GGZReturn login_add_user(ggzdbPlayerEntry *entry,
+ 				const char *name, char *password, const char *email);
+ static bool is_valid_username(const char *name);
++static bool is_valid_password(const char *password);
+ 
+ 
+ /*
+@@ -99,6 +107,18 @@
+ 		return GGZ_REQ_FAIL;
+ 	}
+ 
++	/* Validate the password */
++	if (type == GGZ_LOGIN || type == GGZ_LOGIN_NEW) {
++		if(!is_valid_password(new_pw)) {
++			dbg_msg(GGZ_DBG_CONNECTION, "Insecure password from %s",
++				name);
++			if (net_send_login(player->client->net, type,
++					   E_BAD_PASSWORD, NULL) < 0)
++				return GGZ_REQ_DISCONNECT;
++			return GGZ_REQ_FAIL;
++		}
++	}
++
+ 	/* Start off assuming name is good */
+ 	name_ok = true;
+ 	reason = E_NO_STATUS;
+@@ -226,6 +246,7 @@
+ 
+ 
+ 
++#if 0
+ static char *pw_words[] = { "apple", "horse", "turtle", "orange", "tree",
+ 			    "carrot", "dingo", "gnu", "bunny", "wombat" };
+ 
+@@ -239,14 +260,17 @@
+ 	d2 = random() % 10;
+ 	snprintf(pw, 17, "%s%d%d", pw_words[word], d1, d2);
+ }
++#endif
+ 
+ 
+ static GGZReturn login_add_user(ggzdbPlayerEntry *db_entry,
+ 				const char *name, char *password, const char *email)
+ {
+ 	/*  Initialize player entry */
++#if 0
+ 	if (!password[0])
+ 		login_generate_password(password);
++#endif
+ 	snprintf(db_entry->handle, sizeof(db_entry->handle), "%s", name);
+ 	snprintf(db_entry->password, sizeof(db_entry->password), "%s", password);
+ 	if (email)
+@@ -272,23 +296,29 @@
  /* This routine validates the username request */
  static bool is_valid_username(const char *name)
  {
 -	const char *p;
 -
  	/* "<none>" is invalid */
++	/* FIXME: why would this need special handling at all? */
  	if (strcasecmp(name, "<none>") == 0) {
  		return false;
  	}
@@ -688,6 +822,21 @@ Index: ggzd/login.c
  	}
  
  	return true;
+ }
++
++/* This routine validates the password request */
++static bool is_valid_password(const char *password)
++{
++#ifdef WITH_CRACKLIB
++	const char *res;
++
++	res = FascistCheck(password, CRACKLIB_DICTPATH);
++	if (res) {
++		return false;
++	}
++#endif
++	return true;
++}
 Index: ggzd/Makefile.am
 ===================================================================
 --- ggzd/Makefile.am	(Revision 8966)
@@ -710,21 +859,23 @@ Index: ggzd/Makefile.am
  	util.c \
  	util.h
  
-@@ -63,6 +65,7 @@
+@@ -63,6 +65,8 @@
  	$(LIBGGZ_INCLUDES) \
  	$(HOWL_INCLUDES) \
  	$(AVAHI_INCLUDES) \
 +	$(ICU_INCLUDES) \
++	$(CRACKLIB_INCLUDES) \
  	-DGGZDCONFDIR=\"$(ggzdconfdir)\" \
  	-DGGZDEXECMODDIR=\"$(ggzdexecmoddir)\"
  
-@@ -77,7 +80,8 @@
+@@ -77,7 +81,9 @@
  	$(LIB_HOWL) \
  	$(LIB_AVAHI) \
  	$(LIB_FAM) \
 -        $(LIB_PTHREADS)
 +	$(LIB_PTHREADS) \
-+	$(LIB_ICU)
++	$(LIB_ICU) \
++	$(LIB_CRACKLIB)
  
  ggzduedit_SOURCES =	datatypes.h	\
  			ggzduedit.c 				\
@@ -740,7 +891,7 @@ Index: ggzd/parse_opt.c
  
  
  /* Private file parsing functions */
-@@ -166,6 +167,11 @@
+@@ -166,6 +167,16 @@
  #else
  #define SPEC_FAM 0
  #endif
@@ -749,18 +900,24 @@ Index: ggzd/parse_opt.c
 +#else
 +#define SPEC_ICU 0
 +#endif
++#ifdef WITH_CRACKLIB
++#define SPEC_CRACKLIB 1
++#else
++#define SPEC_CRACKLIB 0
++#endif
  
  static void dump_specs(void)
  {
-@@ -205,6 +211,7 @@
+@@ -205,6 +216,8 @@
  	printf("Reconfiguration support: %s [%s]\n",
  		(SPEC_INOTIFY ? "yes (inotify)" : (SPEC_FAM ? "yes (fam)" : "no")),
  		(opt.conf_valid ? (opt.reconfigure_rooms ? "used" : "not used") : "unknown" ));
 +	printf("Unicode support: %s\n", (SPEC_ICU ? "yes" : "no"));
++	printf("Password checking support: %s\n", (SPEC_CRACKLIB ? "yes" : "no"));
  }
  
  /* Parse command-line options */
-@@ -239,7 +246,7 @@
+@@ -239,7 +252,7 @@
  			case 'h':
  	 			printf("GGZD - The main server of the GGZ Gaming Zone\n"),
  	 			printf("Copyright (C) 1999 - 2002 Brent Hendricks\n"),
@@ -769,7 +926,7 @@ Index: ggzd/parse_opt.c
  	 			printf("\n"),
  	 			printf("[-F | --foreground ] Tells ggzd to run in the foreground\n"),
  				printf("[-f | --file <file>] Configuration file\n"),
-@@ -266,6 +273,7 @@
+@@ -266,6 +279,7 @@
  }
  
  
@@ -777,7 +934,7 @@ Index: ggzd/parse_opt.c
  #define DEFAULT_GGZD_PORT 5688
  
  /* Parse options from conf file, but don't overwrite existing options*/
-@@ -386,6 +394,9 @@
+@@ -386,6 +400,9 @@
  	/* Reconfiguration in [General] */
  	opt.reconfigure_rooms = ggz_conf_read_int(ch, "General", "ReconfigureRooms", 0);
  
@@ -787,7 +944,7 @@ Index: ggzd/parse_opt.c
  	/* [Games] */
  	ggz_conf_read_list(ch, "Games", "GameList", &g_count, &g_list);
  	if(g_count == 0) {
-@@ -463,6 +474,10 @@
+@@ -463,6 +480,10 @@
  	opt.room_update_freq = ggz_conf_read_int(ch, "Miscellaneous",
  						 "RoomUpdateFrequency", 60);
  
@@ -811,7 +968,7 @@ Index: configure.ac
  AC_CONFIG_SRCDIR([configure.ac])
  AC_CONFIG_HEADERS([config.h])
  AM_INIT_AUTOMAKE
-@@ -39,6 +39,10 @@
+@@ -39,6 +39,14 @@
  	AS_HELP_STRING([--with-reconfiguration=TYPE],
  	[type of library to use: inotify, fam]),
  	[reconfiguration=$withval], [reconfiguration=yes])
@@ -819,22 +976,28 @@ Index: configure.ac
 +	AS_HELP_STRING([--with-unicode=TYPE],
 +	[type of library to use: icu]),
 +	[unicode=$withval], [unicode=yes])
++AC_ARG_WITH([passwordcheck],
++	AS_HELP_STRING([--with-passwordcheck=TYPE],
++	[type of library to use: cracklib]),
++	[passwordcheck=$withval], [passwordcheck=yes])
  
  
  # Check for GGZ Requirements
-@@ -134,6 +138,7 @@
+@@ -134,6 +142,8 @@
  dnl Check for zeroconf implementations
  dnl ==================================
  AC_GGZ_ZEROCONF
 +AC_GGZ_UNICODE
++AC_GGZ_PASSWORDCHECK
  
  dnl Check for reconfiguration support through file watchers
  dnl =======================================================
-@@ -261,6 +266,7 @@
+@@ -261,6 +271,8 @@
  echo "    Database Type........$database" 
  echo "    Zeroconf.............$zeroconf"
  echo "    Reconfiguration......$reconfiguration"
 +echo "    Unicode..............$unicode"
++echo "    Password checks......$passwordcheck"
  echo "Debugging options"
  echo "    General Debuging.....$enable_debug" 
  echo "    GDB Debugging........$enable_debug_gdb" 
