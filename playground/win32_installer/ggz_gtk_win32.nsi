@@ -37,8 +37,7 @@ Var STARTMENU_FOLDER
 ;--------------------------------
 ; Installer pages
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE "COPYING.gpl"
-!insertmacro MUI_PAGE_LICENSE "COPYING.lgpl"
+!insertmacro MUI_PAGE_LICENSE "COPYING.txt"
 ;!insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
  

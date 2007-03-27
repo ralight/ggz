@@ -1,0 +1,8 @@
+
+Parts of this software are licenced under the GNU GPL and GNU LGPL licences.
+You do not have to accept the licences to use this software but they do apply
+if you modify and redistribute it.
+
+The source code for the contents of this installer are available at
+http://www.ggzgamingzone.org/
+
