@@ -1,0 +1,33 @@
+omnicracklib - a better cracklib
+--------------------------------
+
+The original cracklib was developed to check for the strength of
+passwords. It resides at http://www.crypticide.org/alecm/.
+
+Cracklib has many issues:
+ * totally unaware of anything beyond ASCII
+   - you cannot strip the upper bit, no no no
+   - you cannot simply casefold
+   - you must rate usage of different code blocks higher
+ * not configurable at all
+   - sometimes reading /etc/passwd not desired
+   - features such as dictionaries and plural forms must be optional
+   - weighting of factors should be configurable
+ * only one function with a fugly name and behaviour
+   - returns result as a string, not usable in applications
+
+It hasn't been maintained for ages. There's a slight fork of it at
+http://sourceforge.net/projects/cracklib. The fork cleans up a bit
+but doesn't address the most compelling reasons for a change.
+
+Therefore, omnicrack is created. It won't do anything which the original
+cracklib did at the beginning, but given that so many things are wrong,
+this is probably a good decision. For example, plural forms inherently
+assumed English words (mistake 1), and they were tried on all words without
+a classification into nouns, verbs and others (mistake 2).
+
+To get real password checking, some amount of research is probably still
+needed. Therefore, omnicrack works towards becoming a usable alternative
+in version 0.1 without all those features.
+
+
