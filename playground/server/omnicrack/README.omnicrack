@@ -30,4 +30,23 @@ To get real password checking, some amount of research is probably still
 needed. Therefore, omnicrack works towards becoming a usable alternative
 in version 0.1 without all those features.
 
+Installation
+------------
+
+The omnicracklib can be configured with or without Unicode support. It is
+strongly recommended to include Unicode. The ICU library and its headers
+must be installed for this to work. If for whatever reason it doesn't
+work, then -DWITH_ICU must be removed from Makefile
+
+A second switch named -DDEBUG must be removed if debugging output is not
+wanted. Debugging will be disabled by default at some point.
+
+There are two components coming out after having typed 'make' - a shared
+library (omnicracklib) and a standalone executable called omnicrack. The
+latter one contains some tests and isn't installed. The library and its
+header file are copied to /usr/local by default when calling 'make install'.
+
+What is also created and installed is 'omnicrack_mkdict', which can be used
+to create hash-based dictionary databased which provide a very fast lookup
+of words.
 

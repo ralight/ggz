@@ -1,10 +1,10 @@
-#define WITH_ICU 1
+#include "omnicrack.h"
 
-//#include <ggz.h>
 #ifdef WITH_ICU
 #include <unicode/ustring.h>
 #include <unicode/uchar.h>
 #endif
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -229,6 +229,7 @@ int block_score(UChar *ustr, int length)
 
 	return score;
 }
+#endif
 
 int length_score(int length)
 {
@@ -238,21 +239,33 @@ int length_score(int length)
 	return 3;
 }
 
-int dict_score(const char *word)
+int dict_score(const char *password)
 {
 	/* FIXME: we don't have a dictionary yet */
 	return 0;
 }
 
-int password_analyse(const char *password)
+int passwd_score(const char *password)
 {
+	/* FIXME: we don't have a passwd lookup yet */
+	return 0;
+}
+
+int omnicrack_checkstrength(const char *password, int strategy, const char *dictpath)
+{
+#ifdef WITH_ICU
 	UChar *ustr = NULL;
+#if DEBUG
 	UChar uc;
 	UChar ucx[2];
 	char str[8];
+	int i;
+#endif
 	int32_t length = 0;
 	UErrorCode error = U_ZERO_ERROR;
-	int i;
+	int vs, bs, ls, ds, ps;
+	int score;
+	int ret;
 
 	/* FIXME: the following two lines document a sucky IBM API bug */
 	ustr = (UChar*)malloc(strlen(password) * 4);
@@ -261,17 +274,22 @@ int password_analyse(const char *password)
 	ustr = u_strFromUTF8(ustr, length, &length, password, -1, &error);
 	if(U_FAILURE(error))
 	{
+#if DEBUG
 		fprintf(stderr, "Error: conversion failure\n");
-		return 0;
+#endif
+		return OMNICRACK_RESULT_BADINPUT;
 	}
 	ustr = (UChar*)malloc(sizeof(UChar) * length);
 	if(!ustr)
 	{
+#if DEBUG
 		fprintf(stderr, "Error: malloc failure\n");
-		return 0;
+#endif
+		return OMNICRACK_RESULT_BADINPUT;
 	}
 	ustr = u_strFromUTF8(ustr, length, NULL, password, -1, &error);
 
+#if DEBUG
 	for(i = 0; i < length; i++)
 	{
 		uc = ustr[i];
@@ -289,52 +307,53 @@ int password_analyse(const char *password)
 
 		free(bt);
 	}
+#endif
 
-	int vs = variety_score(ustr, length);
-	int bs = block_score(ustr, length);
-	int ls = length_score(length);
-	int ds = dict_score(password);
-	int score = vs + bs + ls + ds;
+	if(strategy & OMNICRACK_STRATEGY_VARIETY)
+		vs = variety_score(ustr, length);
+	else
+		vs = 0;
+	if(strategy & OMNICRACK_STRATEGY_BLOCKS)
+		bs = block_score(ustr, length);
+	else
+		bs = 0;
+	if(strategy & OMNICRACK_STRATEGY_LENGTH)
+		ls = length_score(length);
+	else
+		ls = 0;
+	if(strategy & OMNICRACK_STRATEGY_DICT)
+		ds = dict_score(password);
+	else
+		ds = 0;
+	if(strategy & OMNICRACK_STRATEGY_PASSWD)
+		ps = passwd_score(password);
+	else
+		ps = 0;
 
+	score = vs + bs + ls + ds + ps;
+
+	ret = OMNICRACK_RESULT_OK;
+	if(score < 5)
+		ret = OMNICRACK_RESULT_BADSCORE;
+	if(ls < 2)
+		if(strategy & OMNICRACK_STRATEGY_LENGTH)
+			ret = OMNICRACK_RESULT_BADLENGTH;
+	/*if(ds == 0) ret = OMNICRACK_RESULT_BADDICT;*/
+
+#if DEBUG
 	printf("  => Variety score: %i\n", vs);
 	printf("  => Character block score: %i\n", bs);
 	printf("  => Length score: %i\n", ls);
 	printf("  => Dict score: %i\n", ds);
+	printf("  => Passwd score: %i\n", ps);
+	printf("  => Overall score: %i\n", score);
+#endif
 
 	free(ustr);
 
-	return score;
-}
-
+	return ret;
 #else /* WITH_ICU */
-
-int password_analyse(const char *password)
-{
 	return 0;
-}
-
 #endif
-
-static void check(const char *password)
-{
-	int ret;
-
-	printf("* Check %s...\n", password);
-	ret = password_analyse(password);
-	printf("  ** Result (overall score): %i\n", ret);
-}
-
-int main(int argc, char *argv[])
-{
-	check("dull");         // Short English
-	check("acquittance");  // Long English
-	check("mäh");          // German sheep
-	check("95 Klöße");     // German food (yummy), numbered
-	check("ðłđ");          // Nordic and Polish
-	check("_#§/X");        // ASCII
-	check("උකජණ");         // Sinhala
-	check("ЉЖЗ 朠朵末粍"); // Cyrillic and Chinese (Han) mixed
-
-	return 0;
 }
 
