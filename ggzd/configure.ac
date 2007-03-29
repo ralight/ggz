@@ -1,5 +1,5 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 8949 2007-01-16 18:23:42Z josef $
+# $Id: configure.ac 9015 2007-03-29 21:05:32Z jdorje $
 # ================================
 
 AC_INIT([GGZ server], [0.0.14], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
@@ -213,6 +213,7 @@ AC_CONFIG_FILES([Makefile
 	game_servers/ggzcards/ai/Makefile
 	game_servers/ggzcards/config/Makefile
 	game_servers/ggzcards/config/ggzcards-bridge.dsc
+	game_servers/ggzcards/config/ggzcards-euchre.dsc
 	game_servers/ggzcards/config/ggzcards-fortytwo.dsc
 	game_servers/ggzcards/config/ggzcards-hearts.dsc
 	game_servers/ggzcards/config/ggzcards-lapocha.dsc
