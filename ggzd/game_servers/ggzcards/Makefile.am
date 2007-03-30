@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8454 2006-08-02 01:47:14Z jdorje $
+# $Id: Makefile.am 9016 2007-03-30 00:09:05Z jdorje $
 
 SUBDIRS = common client config games ai .
 
@@ -34,7 +34,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/game_servers/ggzcards/common \
 	   -I$(top_srcdir)/ggzdmod \
 	   $(LIBGGZ_INCLUDES)
 
-ggzd_ggzcards_LDADD = $(LDADD) games/libgames.a \
+ggzd_ggzcards_LDADD = $(LDADD) $(LIB_GCRYPT) games/libgames.a \
 	common/libcommon.a \
 	$(top_builddir)/ggzdmod/libggzdmod.la
 

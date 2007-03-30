@@ -1,5 +1,5 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 9015 2007-03-29 21:05:32Z jdorje $
+# $Id: configure.ac 9016 2007-03-30 00:09:05Z jdorje $
 # ================================
 
 AC_INIT([GGZ server], [0.0.14], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
@@ -126,6 +126,14 @@ AC_CHECK_LIB([expat], [XML_ParserCreate], [LIB_EXPAT="-lexpat"],
 AC_CHECK_HEADER([expat.h], [],
                 [AC_MSG_ERROR([cannot find expat.h header])])
 AC_SUBST(LIB_EXPAT)
+
+dnl Check for gcrypt
+dnl ================
+AC_CHECK_LIB([gcrypt], [gcry_check_version], [LIB_GCRYPT="-lgcrypt"],
+             [AC_MSG_ERROR([cannot find gcrypt library])])
+AC_CHECK_HEADER([gcrypt.h], [],
+                [AC_MSG_ERROR([cannot find gcrypt.h header])])
+AC_SUBST(LIB_GCRYPT)
 
 dnl Check database libs
 dnl ===================

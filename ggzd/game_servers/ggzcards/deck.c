@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000 (as cards.c)
  * Desc: Various useful deck manipulation routines for card games
- * $Id: deck.c 9007 2007-03-25 03:37:27Z jdorje $
+ * $Id: deck.c 9016 2007-03-30 00:09:05Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -30,6 +30,8 @@
 #endif
 
 #include <stdlib.h>
+
+#include <gcrypt.h>
 
 #include "common.h"
 #include "deck.h"
@@ -156,18 +158,35 @@ int get_deck_size(deck_t * deck)
 }
 
 /* Returns a random number in the range 0..size-1. */
-static unsigned int myrand(unsigned int size)
+unsigned int myrand(unsigned int size)
 {
-	const unsigned int divisor = RAND_MAX / size;
-	const unsigned int max = size * divisor - 1;
-	unsigned int new_rand;
+	if (size == 1) {
+		return 0;
+	} else if (size <= 256) {
+		unsigned char new_rand;
+		const unsigned int divisor = 256 / size;
+		const unsigned int max = size * divisor - 1;
 
-	/* Avoid bias. */
-	do {
-		new_rand = random();
-	} while (new_rand > max);
+		do {
+			gcry_randomize(&new_rand, sizeof(new_rand),
+				       GCRY_STRONG_RANDOM);
+		} while (new_rand > max);
 
-	return new_rand / divisor;
+		return new_rand / divisor;
+	} else {
+		unsigned int new_rand;
+		const unsigned int rand_max = -1;
+		const unsigned int divisor = rand_max / size;
+		const unsigned int max = size * divisor - 1;
+
+		/* Avoid bias. */
+		do {
+			gcry_randomize(&new_rand, sizeof(new_rand),
+				       GCRY_STRONG_RANDOM);
+		} while (new_rand > max);
+
+		return new_rand / divisor;
+	}
 }
 
 /* shuffle the deck */

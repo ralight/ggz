@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 8997 2007-03-02 23:34:35Z jdorje $
+ * $Id: common.c 9016 2007-03-30 00:09:05Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -137,9 +137,6 @@ void handle_player_data_event(player_t p)
 /* Setup game state and board.  Also initializes the _type_ of game. */
 void init_ggzcards(GGZdMod * ggz, game_data_t * game_data)
 {
-	/* Seed the random number generator */
-	srandom((unsigned)time(NULL));
-
 	/* TODO: we should manually initialize pointers to NULL */
 	memset(&game, 0, sizeof(game_t));
 
@@ -205,7 +202,7 @@ static void newgame(void)
 
 	assert(get_cardset_type() != UNKNOWN_CARDSET);
 	net_broadcast_newgame();
-	game.dealer = random() % game.num_players;
+	game.dealer = myrand(game.num_players);
 	game.hand_num = 0;
 	set_game_state(STATE_NEXT_HAND);
 

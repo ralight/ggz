@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000 (as cards.h)
  * Desc: Various useful deck manipulation routines for card games
- * $Id: deck.h 4035 2002-04-21 07:03:47Z jdorje $
+ * $Id: deck.h 9016 2007-03-30 00:09:05Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -77,5 +77,7 @@ void cards_sort_hand(hand_t * hand);
 int cards_suit_in_hand(hand_t * hand, char suit);
 
 char cards_highest_in_suit(hand_t * hand, char suit);
+
+unsigned int myrand(unsigned int size);
 
 #endif /* __DECK_H__ */
