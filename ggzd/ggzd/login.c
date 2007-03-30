@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 8746 2006-12-23 21:35:25Z jdorje $
+ * $Id: login.c 9019 2007-03-30 05:35:54Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -44,7 +44,6 @@
 #include "client.h"
 
 
-static void login_generate_password(char *pw);
 static GGZReturn login_add_user(ggzdbPlayerEntry *entry,
 				const char *name, char *password, const char *email);
 static bool is_valid_username(const char *name);
@@ -166,6 +165,15 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 	else if (type == GGZ_LOGIN_NEW) {
 		/* At this point, we know the name is not currently in
                    use, so try adding it to the database*/
+
+		if (new_pw[0] == '\0') {
+			hash_player_delete(name);
+			if (net_send_login(player->client->net, type,
+					   E_BAD_PASSWORD, NULL) < 0)
+			  return GGZ_REQ_DISCONNECT;
+			return GGZ_REQ_FAIL;
+		}
+
 		db_pe.user_id = ggzdb_player_next_uid();
 		if(db_status != GGZDB_ERR_NOTFOUND
 		   || login_add_user(&db_pe, name, new_pw, email) < 0) {
@@ -225,28 +233,11 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 }
 
 
-
-static char *pw_words[] = { "apple", "horse", "turtle", "orange", "tree",
-			    "carrot", "dingo", "gnu", "bunny", "wombat" };
-
-/* This generates a password for the user */
-static void login_generate_password(char *pw)
-{
-	int word, d1, d2;
-
-	word = random() % 10;
-	d1 = random() % 10;
-	d2 = random() % 10;
-	snprintf(pw, 17, "%s%d%d", pw_words[word], d1, d2);
-}
-
-
 static GGZReturn login_add_user(ggzdbPlayerEntry *db_entry,
-				const char *name, char *password, const char *email)
+				const char *name, char *password,
+				const char *email)
 {
 	/*  Initialize player entry */
-	if (!password[0])
-		login_generate_password(password);
 	snprintf(db_entry->handle, sizeof(db_entry->handle), "%s", name);
 	snprintf(db_entry->password, sizeof(db_entry->password), "%s", password);
 	if (email)

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 8964 2007-01-28 02:05:51Z oojah $
+ * $Id: server.c 9019 2007-03-30 05:35:54Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -943,6 +943,10 @@ void _ggzcore_server_set_login_status(GGZServer * server,
 		case E_BAD_USERNAME:
 			snprintf(error.message, sizeof(error.message),
 				_("Name contains forbidden ASCII characters"));
+			break;
+		case E_BAD_PASSWORD:
+			snprintf(error.message, sizeof(error.message),
+				 _("You must enter a legitimate password"));
 			break;
 		case E_BAD_OPTIONS:
 			snprintf(error.message, sizeof(error.message),

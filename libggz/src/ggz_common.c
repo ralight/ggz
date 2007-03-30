@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 8762 2006-12-27 10:00:21Z jdorje $
+ * $Id: ggz_common.c 9019 2007-03-30 05:35:54Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -358,6 +358,8 @@ const char *ggz_error_to_string(GGZClientReqError err)
 		return "user not found";
 	case E_USR_TAKEN:
 		return "username already taken";
+	case E_BAD_PASSWORD:
+		return "bad password";
 	case E_NO_STATUS:
 	case E_UNKNOWN:
 		break;
@@ -427,6 +429,8 @@ GGZClientReqError ggz_string_to_error(const char *str)
 		return E_USR_FOUND;
 	if (!strcasecmp(str, "username already taken"))
 		return E_USR_TAKEN;
+	if (!strcasecmp(str, "bad password"))
+		return E_BAD_PASSWORD;
 
 	return E_UNKNOWN;
 }

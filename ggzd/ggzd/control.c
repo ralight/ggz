@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 8957 2007-01-18 08:03:59Z jdorje $
+ * $Id: control.c 9019 2007-03-30 05:35:54Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -135,9 +135,6 @@ static void init_data(void)
 		err_msg_exit("*** Database initialization failed");
 
 	hash_initialize();
-
-	/* Initialize random numbers for password generation */
-	srandom((unsigned)time(NULL));
 }
 
 static void cleanup_data(void)

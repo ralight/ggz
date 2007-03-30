@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 9018 2007-03-30 01:26:41Z jdorje $
+ * $Id: login.c 9019 2007-03-30 05:35:54Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -124,6 +124,9 @@ void login_failed(const GGZErrorEventData * error)
 		break;
 	case E_BAD_USERNAME:
 		snprintf(msg, sizeof(msg), _("Invalid username, do not use special characters!"));
+		break;
+	case E_BAD_PASSWORD:
+		snprintf(msg, sizeof(msg), _("Invalid password."));
 		break;
 	case E_USR_TYPE:
 	case E_USR_TAKEN:
