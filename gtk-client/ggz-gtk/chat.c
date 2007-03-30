@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 8978 2007-02-03 03:40:58Z jdorje $
+ * $Id: chat.c 9017 2007-03-30 01:19:49Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -658,8 +658,6 @@ static void chat_display_header(const char *text)
 static void chat_help(GGZServer *server, const gchar *message)
 {
 	unsigned int i;
-	char *header = _("Chat Commands");
-	char header2[strlen(header) + 1];
 
 	/* FIXME: this function does text-based alignment assuming a
 	   fixed-width font.  But there is nothing to ensure that the
