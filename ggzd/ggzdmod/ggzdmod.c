@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 8567 2006-09-03 05:35:12Z jdorje $
+ * $Id: ggzdmod.c 9020 2007-03-30 17:41:59Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -862,35 +862,6 @@ int ggzdmod_count_spectators(GGZdMod *ggzdmod)
 /* 
  * Event/Data handling
  */
-
-#if 0
-/* If anyone is left out or would prefer a different name, go right ahead and 
-   change it.  No longer than 13 characters.  --JDS */
-static char *bot_names[] = {
-	"bcox", "Crouton", "Boffo", "Bugg", "DJH", "Dobey",
-	"Dr. Maux", "jDorje", "Jzaun", "Oojah", "Perdig", "RGade",
-	"riq", "rpd"
-};
-
-/* This function randomizes the order of the names assigned to bots. It is
-   ENTIRELY UNNECESSARY but entertaining.  --JDS */
-static void randomize_names(char **names, char **randnames, int num)
-{
-	char *rnames2[num];
-	int i, choice;
-
-	/* copy names array to rnames2 array */
-	for (i = 0; i < num; i++)
-		rnames2[i] = names[i];
-
-	/* now pick names from rnames2 */
-	for (i = 0; i < num; i++) {
-		choice = random() % (num - i);
-		randnames[i] = rnames2[choice];
-		rnames2[choice] = rnames2[num - i - 1];
-	}
-}
-#endif
 
 /* FIXME: this assumes that ggzdmod-game is always deciding
    the state, and informing ggzdmod-ggz afterwards.  Once
