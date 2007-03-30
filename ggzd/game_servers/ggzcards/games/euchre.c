@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 8999 2007-03-03 05:21:32Z jdorje $
+ * $Id: euchre.c 9021 2007-03-30 17:46:59Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -297,7 +297,7 @@ static void euchre_start_playing(void)
 	/* Only one teammate can "go alone" */
 	for (p = 0; p < 2; p++)
 		if (EUCHRE.going_alone[p] && EUCHRE.going_alone[p + 2]) {
-			EUCHRE.going_alone[p + 2 * (random() % 2)] = false;
+			EUCHRE.going_alone[p + 2 * myrand(2)] = false;
 		}
 
 	/* Players "going alone" don't have a partner to play. */

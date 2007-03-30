@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Game-dependent game functions for Whist
- * $Id: whist.c 8561 2006-08-31 08:00:24Z jdorje $
+ * $Id: whist.c 9021 2007-03-30 17:46:59Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -113,8 +113,7 @@ static void whist_set_player_message(player_t p)
 
 static void whist_start_bidding(void)
 {
-	card_t trump_card =
-	    game.seats[game.dealer].hand.cards[random() % 13];
+	card_t trump_card = game.seats[game.dealer].hand.cards[myrand(13)];
 
 	/* TODO: send a cardlist message */
 	set_trump_suit(trump_card.suit);
