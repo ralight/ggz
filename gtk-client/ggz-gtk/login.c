@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 8972 2007-02-01 23:16:55Z jdorje $
+ * $Id: login.c 9018 2007-03-30 01:26:41Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -125,10 +125,14 @@ void login_failed(const GGZErrorEventData * error)
 	case E_BAD_USERNAME:
 		snprintf(msg, sizeof(msg), _("Invalid username, do not use special characters!"));
 		break;
+	case E_USR_TYPE:
+	case E_USR_TAKEN:
+		snprintf(msg, sizeof(msg), _("Username is already taken."));
+		break;
 	default:
 		snprintf(msg, sizeof(msg),
-			 _("Login failed for unknown reason: %s"),
-			 error->message);
+			 _("Login failed for unknown reason %d: %s"),
+			 error->status, error->message);
 		break;
 	}
 	gtk_label_set_text(GTK_LABEL(tmp), msg);
