@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 8924 2007-01-16 00:30:23Z jdorje $
+ * $Id: game.c 9022 2007-03-31 00:16:50Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -430,7 +430,7 @@ void game_get_bid(int possible_bids,
 		}
 
 		assert(0);
-		game_send_bid(rand() % possible_bids);
+		game_send_bid(random() % possible_bids);
 		return;
 	}
 #endif /* DEBUG */

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 8742 2006-12-22 06:06:05Z jdorje $
+ * $Id: client.c 9022 2007-03-31 00:16:50Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -120,7 +120,7 @@ int client_initialize(void)
 	   there should be no confusion there. And all of the
 	   ggz_dio-allocated variables are labelled. */
 
-	srand((unsigned)time(NULL));
+	srandom(time(NULL));
 
 	game_internal.max_hand_size = 0;
 
@@ -736,7 +736,7 @@ static int match_card(card_t card, hand_t * hand)
 		   are equally good it will be a random pick. */
 		if (tc_matches > matches
 		    || (tc_matches == matches
-			&& (rand() % (hand->hand_size + 1 - tc)) == 0)) {
+			&& (random() % (hand->hand_size + 1 - tc)) == 0)) {
 			matches = tc_matches;
 			match = tc;
 		}
