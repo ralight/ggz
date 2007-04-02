@@ -1,0 +1,21 @@
+How to setup the Web Services API
+---------------------------------
+
+This documentation assumes the use of the Apache web server with PHP 4.2 or
+later installed.
+
+<VirtualHost *>
+	ServerName api.ggzcommunity
+	DocumentRoot /path/to/api
+	AliasMatch ^/api/(.*)$ /path/to/api/api/index.php
+</VirtualHost>
+
+Hacker's note:
+Access to the virtual host context of Apache is needed so we can pretend
+virtual directories and files. The usual ErrorDocument hack only works with
+GET, not with POST, as the internal redirect always becomes a GET.
+
+Another hacker's note:
+In setup/script/api, there is a client-side test script (ggzapi_client.pl)
+which can be used to test the service.
+
