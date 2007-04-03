@@ -77,7 +77,7 @@ $autherror = 0;
 $input = "";
 $authenticated = 0;
 
-if ($method == "POST") :
+if (($method == "POST") || ($method == "PUT")) :
 	$input = file_get_contents("php://input");
 	$contenttype = $_SERVER["CONTENT_TYPE"];
 
@@ -93,8 +93,8 @@ if (isset($_SERVER["PHP_AUTH_USER"])) :
 	$user = $_SERVER["PHP_AUTH_USER"];
 	$password = $_SERVER["PHP_AUTH_PW"];
 
-	// FIXME: hardcoded
-	if (($user == "foo") and ($password == "bar")) :
+	$res = pg_exec($conn, "SELECT * FROM users WHERE handle = '$user' AND password = '$password'");
+	if (pg_numrows($res) == 1) :
 		$authenticated = 1;
 	endif;
 endif;
@@ -123,17 +123,72 @@ elseif ($topresource == "players") :
 		endif;
 	else :
 		$playername = $subresource;
-		if ($method == "GET") :
-			$res = pg_exec($conn, "SELECT * FROM users WHERE handle = '$playername'");
+		if ($playername != $user) :
+			$authenticated = 0;
+		endif;
 
-			if(pg_numrows($res) == 1) :
+		if ($method == "GET") :
+			$res = pg_exec($conn, "SELECT email, name FROM users WHERE handle = '$playername'");
+
+			if (pg_numrows($res) == 1) :
+				$email = pg_result($res, 0, 0);
+				$realname = pg_result($res, 0, 1);
+
+				$res = pg_exec($conn, "SELECT photo FROM userinfo WHERE handle = '$playername'");
+				if (pg_numrows($res) == 1) :
+					$photo = pg_result($res, 0, 0);
+				else :
+					$photo = "";
+				endif;
+
 				echo "<player name='$playername'>";
-				echo "<email>xxx@xxx.xxx</email>";
+				echo "<email>$email</email>";
+				echo "<realname>$realname</realname>";
+				if ($photo) :
+					echo "<photo>$photo</photo>";
+				endif;
 				echo "</player>";
 			else:
 				$error = 1;
 			endif;
 		elseif ($method == "POST") :
+			$doc = new DOMDocument();
+			$doc->loadXML($input);
+			$root = $doc->documentElement;
+			if ($root->tagName == "player") :
+				$nodes = $root->getElementsByTagName("*");
+				foreach ($nodes as $node)
+				{
+					#echo "++ ", $node->nodeName, "\n";
+					#echo "-- ", $node->nodeValue, "\n";
+
+					if ($node->nodeName == "password") :
+						$password = $node->nodeValue;
+					elseif ($node->nodeName == "email") :
+						$email = $node->nodeValue;
+					elseif ($node->nodeName == "realname") :
+						$realname = $node->nodeValue;
+					elseif ($node->nodeName == "photo") :
+						$photo = $node->nodeValue;
+					endif;
+				}
+
+				$stamp = time();
+				# jointable, launchtable, roomslogin
+				$perms = 0x07;
+
+				$res = pg_exec($conn,
+					"INSERT INTO users (handle, password, name, email, firstlogin, permissions) VALUES ('$playername', '$password', '$realname', '$email', $stamp, $perms)");
+
+				$res = pg_exec($conn,
+					"INSERT INTO userinfo (handle, photo) VALUES ('$playername', '$photo')");
+				# FIXME: check against malicious input
+				# FIXME: check database result
+				# FIXME: check duplicates, let db do it?
+			else :
+				$error = 1;
+			endif;
+		elseif ($method == "PUT") :
 			if ($authenticated) :
 				$doc = new DOMDocument();
 				$doc->loadXML($input);
@@ -142,9 +197,6 @@ elseif ($topresource == "players") :
 					$nodes = $root->getElementsByTagName("*");
 					foreach ($nodes as $node)
 					{
-						#echo "++ ", $node->nodeName, "\n";
-						#echo "-- ", $node->nodeValue, "\n";
-
 						if ($node->nodeName == "password") :
 							$password = $node->nodeValue;
 						elseif ($node->nodeName == "email") :
@@ -156,18 +208,29 @@ elseif ($topresource == "players") :
 						endif;
 					}
 
-					$stamp = time();
-					# jointable, launchtable, roomslogin
-					$perms = 0x07;
+					$res = pg_exec($conn,
+						"UPDATE users SET password = '$password', email = '$email', name = '$realname' " .
+						"WHERE handle = '$playername'");
 
 					$res = pg_exec($conn,
-						"INSERT INTO users (handle, password, name, email, firstlogin, permissions) VALUES ('$playername', '$password', '$realname', '$email', $stamp, $perms)");
+						"UPDATE userinfo SET photo = '$photo' WHERE handle = '$playername'");
 					# FIXME: check against malicious input
 					# FIXME: check database result
 					# FIXME: check duplicates, let db do it?
 				else :
 					$error = 1;
 				endif;
+			else :
+				$error = 1;
+				$autherror = 1;
+			endif;
+		elseif ($method == "DELETE") :
+			if ($authenticated) :
+					$res = pg_exec($conn, "DELETE FROM users WHERE handle = '$playername'");
+					$res = pg_exec($conn, "DELETE FROM userinfo WHERE handle = '$playername'");
+					# FIXME: check against malicious input
+					# FIXME: check database result
+					# FIXME: check presence etc.
 			else :
 				$error = 1;
 				$autherror = 1;

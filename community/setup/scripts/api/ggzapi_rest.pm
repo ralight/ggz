@@ -108,12 +108,8 @@ sub hash2xmlstr($){
 	my %hash = %{$hashref};
 
 	my $str = "";
-print "!!\n";
-print "??", keys(%hash), "\n";
 	for my $key(keys(%hash)){
-print "!# $key\n";
 		my $value = $hash{$key};
-print "># $value\n";
 		$str = $str . "<$key>$value</$key>";
 	}
 

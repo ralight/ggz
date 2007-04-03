@@ -44,13 +44,15 @@ sub run_player(){
 	}
 	my %playerinfo;
 	if($arg_method eq "GET"){
-			ggzapi_rest::call_player($arg_player, "GET", \%playerinfo);
-	}elsif($arg_method eq "POST"){
+			ggzapi_rest::call_player($arg_player, $arg_method, \%playerinfo);
+	}elsif(($arg_method eq "POST") or ($arg_method eq "PUT")){
 			$playerinfo{'password'} = $self->prompt("* Player password: ");
 			$playerinfo{'email'} = $self->prompt("* Player email: ");
 			$playerinfo{'realname'} = $self->prompt("* Player realname: ");
 			$playerinfo{'photo'} = $self->prompt("* Player photo: ");
-			ggzapi_rest::call_player($arg_player, "POST", \%playerinfo);
+			ggzapi_rest::call_player($arg_player, $arg_method, \%playerinfo);
+	}elsif($arg_method eq "DELETE"){
+			ggzapi_rest::call_player($arg_player, $arg_method, \%playerinfo);
 	}else{
 		print "Invalid method name!\n";
 	}
