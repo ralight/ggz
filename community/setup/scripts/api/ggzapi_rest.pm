@@ -44,7 +44,7 @@ sub call($){
 
 					my $shell = Term::Shell->new;
 					$user = $shell->prompt("Username [previous: $user]: ", $user);
-					$password = $shell->prompt("Password: ", $password);
+					$password = $shell->prompt("Password: ");
 
 					$authcache{'user'} = $user;
 					$authcache{'password'} = $password;
@@ -91,19 +91,49 @@ sub call_players(){
 	if($rootname eq "players"){
 		print "Received [players] message\n";
 
-		# FIXME: fake list
-		return ("player1", "player2");
+		my @list = ();
+		my @players = $root->getElementsByTagName("player");
+		for my $player(@players){
+			my $playername = $player->getAttribute("name");
+			push @list, $playername;
+		}
+		return @list;
 	}else{
 		print "Error: Unknown message\n";
 	}
 }
 
-sub call_player($){
-	my $player = shift(@_);
+sub hash2xmlstr($){
+	my $hashref = shift(@_);
+	my %hash = %{$hashref};
 
-	my $req = HTTP::Request->new(POST => "http://api.ggzcommunity/api/players/$player");
+	my $str = "";
+print "!!\n";
+print "??", keys(%hash), "\n";
+	for my $key(keys(%hash)){
+print "!# $key\n";
+		my $value = $hash{$key};
+print "># $value\n";
+		$str = $str . "<$key>$value</$key>";
+	}
+
+	return $str;
+}
+
+sub call_player($$$){
+	my $playername = shift(@_);
+	my $method = shift(@_);
+	my $playerinforef = shift(@_);
+	my %playerinfo = %{$playerinforef};
+
+	my $req = HTTP::Request->new($method, "http://api.ggzcommunity/api/players/$playername");
 	$req->content_type("application/ggzapi+xml");
-	$req->content("<foo/>");
+	if($method ne "GET"){
+		my $content = "<player name='$playername'>";
+		$content = $content . hash2xmlstr(\%playerinfo);
+		$content = $content . "</player>";
+		$req->content($content);
+	}
 	my $res = call($req);
 
 	if(!$res->is_success){

@@ -109,20 +109,65 @@ if ($resource == "") :
 elseif ($topresource == "players") :
 	if ($subresource == "") :
 		if ($method == "GET") :
+			$res = pg_exec($conn, "SELECT handle FROM users");
+
 			echo "<players>";
-			echo "<player name='josef'>";
-			echo "</player>";
+			for($i = 0; $i < pg_numrows($res); $i++)
+			{
+				$playername = pg_result($res, $i, 0);
+				echo "<player name='$playername'/>";
+			}
 			echo "</players>";
 		else :
 			$error = 1;
 		endif;
 	else :
+		$playername = $subresource;
 		if ($method == "GET") :
-			echo "<player name='josef'>";
-			echo "</player>";
+			$res = pg_exec($conn, "SELECT * FROM users WHERE handle = '$playername'");
+
+			if(pg_numrows($res) == 1) :
+				echo "<player name='$playername'>";
+				echo "<email>xxx@xxx.xxx</email>";
+				echo "</player>";
+			else:
+				$error = 1;
+			endif;
 		elseif ($method == "POST") :
 			if ($authenticated) :
-				echo "<post-goes-here/>";
+				$doc = new DOMDocument();
+				$doc->loadXML($input);
+				$root = $doc->documentElement;
+				if ($root->tagName == "player") :
+					$nodes = $root->getElementsByTagName("*");
+					foreach ($nodes as $node)
+					{
+						#echo "++ ", $node->nodeName, "\n";
+						#echo "-- ", $node->nodeValue, "\n";
+
+						if ($node->nodeName == "password") :
+							$password = $node->nodeValue;
+						elseif ($node->nodeName == "email") :
+							$email = $node->nodeValue;
+						elseif ($node->nodeName == "realname") :
+							$realname = $node->nodeValue;
+						elseif ($node->nodeName == "photo") :
+							$photo = $node->nodeValue;
+						endif;
+					}
+
+					$stamp = time();
+					# jointable, launchtable, roomslogin
+					$perms = 0x07;
+
+					$res = pg_exec($conn,
+						"INSERT INTO users (handle, password, name, email, firstlogin, permissions) VALUES ('$playername', '$password', '$realname', '$email', $stamp, $perms)");
+					# FIXME: check against malicious input
+					# FIXME: check database result
+					# FIXME: check duplicates, let db do it?
+				else :
+					$error = 1;
+				endif;
 			else :
 				$error = 1;
 				$autherror = 1;

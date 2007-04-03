@@ -1,0 +1,89 @@
+<html>
+<head>
+<title>
+GGZ Community API - Documentation
+</title>
+<style type="text/css">
+table
+{
+width: 100%;
+}
+.pane
+{
+background-color: #f0ffd0;
+border-style: solid;
+border-width: 1px;
+border-color: #777777;
+padding: 4px;
+vertical-align: top;
+}
+.sidepane
+{
+font-size: small;
+}
+</style>
+</head>
+<body>
+
+<table>
+<tr><td colspan="2">
+
+<center>
+<img src="/api.png">
+</center>
+
+</td></tr>
+<tr><td class="pane">
+
+<b>The Player resource</b>
+<br/><br/>
+Players represent registered players on GGZ. They can have different privilege
+levels, for example normal players, hosts and administrators, and they can be
+bots (chat bots and game AI players). Guest players, however, will not appear
+in the database.
+<br/><br/>
+
+<i>/players (GET)</i>
+<br/><br/>
+GET: List all players. The format is:
+<pre>
+&lt;players&gt;
+&lt;player name="$playername"/&gt;
+&lt;/players&gt;
+</pre>
+<br/>
+
+<i>/players/$playername (GET, POST, PUT, DELETE)</i>
+<br/><br/>
+GET: List a player. The format is:
+<pre>
+&lt;player name="$playername"&gt;
+&lt;email&gt;$emailaddress&lt;/email&gt;
+&lt;realname&gt;$realname&lt;/realname&gt;
+&lt;photo&gt;$photourl&lt;/photo&gt;
+&lt;/player&gt;
+</pre>
+<br/>
+POST: Create a player. The format is like the one for GET,
+with the addition of:
+<pre>
+&lt;password&gt;$password&lt;/password&gt;
+</pre>
+<br/>
+PUT: Update a player. The format is like the one for POST.
+This operation needs authentication: HTTP username is
+$playername, HTTP password is the old $password.
+<br/><br/>
+DELETE: Remove a player. The format is:
+<pre>
+&lt;player name="$playername"/&gt;
+<pre>
+This operation needs authentication: HTTP username is
+$playername, HTTP password is $password.
+<br/><br/>
+
+</td></tr>
+</table>
+
+</body>
+</html>
