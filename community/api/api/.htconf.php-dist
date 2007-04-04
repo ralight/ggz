@@ -6,6 +6,12 @@
 // Configuration file of ggzd
 $ggzconfigfile = "/path/to/etc/ggzd/ggzd.conf";
 
+// Direct database configuration, if no ggzd is installed
+//$dbhost = "localhost";
+//$dbname = "ggz";
+//$dbuser = "";
+$//dbpass = "";
+
 // If debugging is enabled, all output is text/plain
 // This is needed for viewing the output in browsers
 $debug = 0;

@@ -37,17 +37,19 @@ endif;
 // Parse the ggzd config file
 // Gives us all the db* variables so we can connect to the DB
 
-$ini = parseconfigfile($ggzconfigfile);
-if (!$ini) :
-	header("Content-type: text/plain");
-	header("HTTP/1.1 500 The ggzd config file is screwed");
-	echo "Error: File $ggzconfigfile not found";
-	exit;
+if ($ggzconfigfile) :
+	$ini = parseconfigfile($ggzconfigfile);
+	if (!$ini) :
+		header("Content-type: text/plain");
+		header("HTTP/1.1 500 The ggzd config file is screwed");
+		echo "Error: File $ggzconfigfile not found";
+		exit;
+	endif;
+	$dbhost = $ini["General"]["DatabaseHost"];
+	$dbname = $ini["General"]["DatabaseName"];
+	$dbuser = $ini["General"]["DatabaseUsername"];
+	$dbpass = $ini["General"]["DatabasePassword"];
 endif;
-$dbhost = $ini["General"]["DatabaseHost"];
-$dbname = $ini["General"]["DatabaseName"];
-$dbuser = $ini["General"]["DatabaseUsername"];
-$dbpass = $ini["General"]["DatabasePassword"];
 
 // -------------------------------------------------------------
 // Connect to the database
