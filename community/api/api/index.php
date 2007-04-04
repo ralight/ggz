@@ -70,6 +70,7 @@ $resource = str_replace("/api/", "", $uri);
 $resourceparts = explode("/", $resource);
 $topresource = $resourceparts[0];
 $subresource = $resourceparts[1];
+$subsubresource = $resourceparts[2];
 
 $error = 0;
 $autherror = 0;
@@ -226,11 +227,163 @@ elseif ($topresource == "players") :
 			endif;
 		elseif ($method == "DELETE") :
 			if ($authenticated) :
-					$res = pg_exec($conn, "DELETE FROM users WHERE handle = '$playername'");
-					$res = pg_exec($conn, "DELETE FROM userinfo WHERE handle = '$playername'");
+				$res = pg_exec($conn, "DELETE FROM users WHERE handle = '$playername'");
+				$res = pg_exec($conn, "DELETE FROM userinfo WHERE handle = '$playername'");
+				# FIXME: check against malicious input
+				# FIXME: check database result
+				# FIXME: check presence etc.
+			else :
+				$error = 1;
+				$autherror = 1;
+			endif;
+		else :
+			$error = 1;
+		endif;
+	endif;
+elseif ($topresource == "statistics") :
+	if ($subresource == "games") :
+		if ($subsubresource == "") :
+			if ($method == "GET") :
+				$res = pg_exec($conn, "SELECT DISTINCT game FROM stats");
+
+				echo "<games>";
+				for($i = 0; $i < pg_numrows($res); $i++)
+				{
+					$gamename = pg_result($res, $i, 0);
+					echo "<game name='$gamename'/>";
+				}
+				echo "</games>";
+			else :
+				$error = 1;
+			endif;
+		else :
+			if ($method == "GET") :
+				$gamename = $subsubresource;
+				$res = pg_exec($conn, "SELECT handle, rating, highscore FROM stats WHERE game = '$gamename' ORDER BY ranking");
+
+				echo "<statistics>";
+				for($i = 0; $i < pg_numrows($res); $i++)
+				{
+					$playername = pg_result($res, $i, 0);
+					$rating = pg_result($res, $i, 1);
+					$highscore = pg_result($res, $i, 2);
+					echo "<statsplayer name='$playername'>";
+					echo "<rating>$rating</rating>";
+					echo "</statsplayer>";
+				}
+				echo "</statistics>";
+			else :
+				$error = 1;
+			endif;
+		endif;
+	else :
+		$error = 1;
+	endif;
+elseif ($topresource == "teams") :
+	if ($subresource == "") :
+		if ($method == "GET") :
+			$res = pg_exec($conn, "SELECT teamname FROM teams");
+
+			echo "<teams>";
+			for($i = 0; $i < pg_numrows($res); $i++)
+			{
+				$teamname = pg_result($res, $i, 0);
+				echo "<team name='$teamname'/>";
+			}
+			echo "</teams>";
+		else :
+			$error = 1;
+		endif;
+	else :
+		$teamname = $subresource;
+		// FIXME: check against team founder
+
+		if ($method == "GET") :
+			$res = pg_exec($conn, "SELECT founder, foundingdate, fullname, homepage FROM teams WHERE teamname = '$teamname'");
+
+			if (pg_numrows($res) == 1) :
+				$founder = pg_result($res, 0, 0);
+				$foundingdate = pg_result($res, 0, 1);
+				$fullname = pg_result($res, 0, 1);
+				$homepage = pg_result($res, 0, 1);
+
+				echo "<team name='$teamname'>";
+				echo "<founder>$founder</founder>";
+				echo "<foundingdate>$foundingdate</foundingdate>";
+				echo "<fullname>$fullname</fullname>";
+				echo "<homepage>$homepage</homepage>";
+				echo "</team>";
+			else:
+				$error = 1;
+			endif;
+		elseif ($method == "POST") :
+			if ($authenticated) :
+				$doc = new DOMDocument();
+				$doc->loadXML($input);
+				$root = $doc->documentElement;
+				if ($root->tagName == "team") :
+					$nodes = $root->getElementsByTagName("*");
+					foreach ($nodes as $node)
+					{
+						if ($node->nodeName == "fullname") :
+							$fullname = $node->nodeValue;
+						elseif ($node->nodeName == "homepage") :
+							$homepage = $node->nodeValue;
+						endif;
+					}
+
+					$stamp = time();
+					$founder = $user;
+
+					$res = pg_exec($conn,
+						"INSERT INTO teams (teamname, fullname, homepage, founder, foundingdate) VALUES ('$teamname', '$fullname', '$homepage', '$founder', $stamp)");
+
 					# FIXME: check against malicious input
 					# FIXME: check database result
-					# FIXME: check presence etc.
+					# FIXME: check duplicates, let db do it?
+				else :
+					$error = 1;
+				endif;
+			else :
+				$error = 1;
+				$autherror = 1;
+			endif;
+		elseif ($method == "PUT") :
+			if ($authenticated) :
+				$doc = new DOMDocument();
+				$doc->loadXML($input);
+				$root = $doc->documentElement;
+				if ($root->tagName == "team") :
+					$nodes = $root->getElementsByTagName("*");
+					foreach ($nodes as $node)
+					{
+						if ($node->nodeName == "fullname") :
+							$fullname = $node->nodeValue;
+						elseif ($node->nodeName == "homepage") :
+							$homepage = $node->nodeValue;
+						endif;
+					}
+
+					$res = pg_exec($conn,
+						"UPDATE teams SET fullname = '$fullname', homepage = '$homepage' " .
+						"WHERE teamname = '$teamname'");
+
+					# FIXME: check against malicious input
+					# FIXME: check database result
+					# FIXME: check duplicates, let db do it?
+				else :
+					$error = 1;
+				endif;
+			else :
+				$error = 1;
+				$autherror = 1;
+			endif;
+		elseif ($method == "DELETE") :
+			if ($authenticated) :
+				$res = pg_exec($conn, "DELETE FROM teams WHERE teamname = '$teamname'");
+				# FIXME: check against malicious input
+				# FIXME: check database result
+				# FIXME: check presence etc.
 			else :
 				$error = 1;
 				$autherror = 1;

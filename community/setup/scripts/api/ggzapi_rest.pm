@@ -137,5 +137,112 @@ sub call_player($$$){
 	}
 }
 
+sub call_statistics_games(){
+	my $req = HTTP::Request->new(GET => "http://api.ggzcommunity/api/statistics/games");
+	my $res = call($req);
+
+	if(!$res->is_success){
+		return;
+	}
+
+	# FIXME: XML::Parser/XML::DOM::Parser die if document isn't not wellformed
+	my $parser = new XML::DOM::Parser;
+	my $doc = $parser->parse($res->content);
+	my $root = $doc->getDocumentElement;
+
+	my $rootname = $root->getTagName;
+
+	if($rootname eq "games"){
+		my @list = ();
+		my @games = $root->getElementsByTagName("game");
+		for my $game(@games){
+			my $gamename = $game->getAttribute("name");
+			push @list, $gamename;
+		}
+		return @list;
+	}else{
+		print "Error: Unknown message\n";
+	}
+}
+
+sub call_statistics_game($){
+	my $gamename = shift(@_);
+
+	my $req = HTTP::Request->new(GET => "http://api.ggzcommunity/api/statistics/games/$gamename");
+	my $res = call($req);
+
+	if(!$res->is_success){
+		return;
+	}
+
+	# FIXME: XML::Parser/XML::DOM::Parser die if document isn't not wellformed
+	my $parser = new XML::DOM::Parser;
+	my $doc = $parser->parse($res->content);
+	my $root = $doc->getDocumentElement;
+
+	my $rootname = $root->getTagName;
+
+	if($rootname eq "statistics"){
+		my @list = ();
+		my @players = $root->getElementsByTagName("statsplayer");
+		for my $player(@players){
+			my $playername = $player->getAttribute("name");
+			push @list, $playername;
+		}
+		return @list;
+	}else{
+		print "Error: Unknown message\n";
+	}
+}
+
+sub call_teams(){
+	my $req = HTTP::Request->new(GET => "http://api.ggzcommunity/api/teams");
+	my $res = call($req);
+
+	if(!$res->is_success){
+		return;
+	}
+
+	# FIXME: XML::Parser/XML::DOM::Parser die if document isn't not wellformed
+	my $parser = new XML::DOM::Parser;
+	my $doc = $parser->parse($res->content);
+	my $root = $doc->getDocumentElement;
+
+	my $rootname = $root->getTagName;
+
+	if($rootname eq "teams"){
+		my @list = ();
+		my @teams = $root->getElementsByTagName("team");
+		for my $team(@teams){
+			my $teamname = $team->getAttribute("name");
+			push @list, $teamname;
+		}
+		return @list;
+	}else{
+		print "Error: Unknown message\n";
+	}
+}
+
+sub call_team($$$){
+	my $teamname = shift(@_);
+	my $method = shift(@_);
+	my $teaminforef = shift(@_);
+	my %teaminfo = %{$teaminforef};
+
+	my $req = HTTP::Request->new($method, "http://api.ggzcommunity/api/teams/$teamname");
+	$req->content_type("application/ggzapi+xml");
+	if($method ne "GET"){
+		my $content = "<team name='$teamname'>";
+		$content = $content . hash2xmlstr(\%teaminfo);
+		$content = $content . "</team>";
+		$req->content($content);
+	}
+	my $res = call($req);
+
+	if(!$res->is_success){
+		return;
+	}
+}
+
 1;
 

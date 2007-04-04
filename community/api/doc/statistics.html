@@ -1,0 +1,75 @@
+<html>
+<head>
+<title>
+GGZ Community API - Documentation
+</title>
+<style type="text/css">
+table
+{
+width: 100%;
+}
+.pane
+{
+background-color: #f0ffd0;
+border-style: solid;
+border-width: 1px;
+border-color: #777777;
+padding: 4px;
+vertical-align: top;
+}
+.sidepane
+{
+font-size: small;
+}
+</style>
+</head>
+<body>
+
+<table>
+<tr><td colspan="2">
+
+<center>
+<img src="/api.png">
+</center>
+
+</td></tr>
+<tr><td class="pane">
+
+<b>The Statistics resource</b>
+<br/><br/>
+Statistics are accumulated over time by active players. This is a complex
+resource, because there are statistics for games, for players, for game
+types, for matches and for tournaments.
+The complexity is offset again by the fact that statistics are read-only
+resources, the Web Services API can only display their value, not modify
+them.
+<br/><br/>
+
+<i>/statistics/games (GET)</i>
+<br/><br/>
+GET: List the games for which statistics exist. The format is:
+<pre>
+&lt;games&gt;
+&lt;game name="$gamename"/&gt;
+&lt;/games&gt;
+</pre>
+<br/>
+
+<i>/statistics/games/$gamename (GET)</i>
+<br/><br/>
+GET: List statistics for a game. The format is:
+<pre>
+&lt;statistics game="$gamename"&gt;
+&lt;statsplayer name="$playername" ranking="$ranking"&gt;
+&lt;rating&gt;$rating&lt;/rating&gt;
+&lt;highscore&gt;$highscore&lt;/highscore&gt;
+&lt;/statsplayer&gt;
+&lt;/statistics&gt;
+</pre>
+<br/><br/>
+
+</td></tr>
+</table>
+
+</body>
+</html>

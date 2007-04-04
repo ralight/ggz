@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>
+GGZ Community API - Documentation
+</title>
+<style type="text/css">
+table
+{
+width: 100%;
+}
+.pane
+{
+background-color: #f0ffd0;
+border-style: solid;
+border-width: 1px;
+border-color: #777777;
+padding: 4px;
+vertical-align: top;
+}
+.sidepane
+{
+font-size: small;
+}
+</style>
+</head>
+<body>
+
+<table>
+<tr><td colspan="2">
+
+<center>
+<img src="/api.png">
+</center>
+
+</td></tr>
+<tr><td class="pane">
+
+<b>The Team resource</b>
+<br/><br/>
+Teams, or clans or clubs, are groups of players who play together against other teams,
+or individually against representatives of other teams.
+<br/><br/>
+
+<i>/teams (GET)</i>
+<br/><br/>
+GET: List all teams. The format is:
+<pre>
+&lt;teams&gt;
+&lt;team name="$teamname"/&gt;
+&lt;/teams&gt;
+</pre>
+<br/>
+
+<i>/teams/$teamname (GET, POST, PUT, DELETE)</i>
+<br/><br/>
+GET: List a team. The format is:
+<pre>
+&lt;team name="$teamname"&gt;
+&lt;founder&gt;$founder&lt;/founder&gt;
+&lt;foundingdate&gt;$foundingdate&lt;/foundingdate&gt;
+&lt;fullname&gt;$fullname&lt;/fullname&gt;
+&lt;homepage&gt;$homepage&lt;/homepage&gt;
+&lt;/team&gt;
+</pre>
+<br/>
+POST: Create a team. The format is like the one for GET,
+with the exception of foundingdate and founder not being
+present:
+<pre>
+&lt;team name="$teamname"&gt;
+&lt;fullname&gt;$fullname&lt;/fullname&gt;
+&lt;homepage&gt;$homepage&lt;/homepage&gt;
+&lt;/team&gt;
+</pre>
+This operation needs authentication: HTTP username is
+$playername, HTTP password is $password.
+<br/><br/>
+PUT: Update a team. The format is like the one for POST.
+This operation needs authentication: HTTP username is
+$playername, HTTP password is $password.
+<br/><br/>
+DELETE: Remove a team. The format is:
+<pre>
+&lt;team name="$teamname"/&gt;
+<pre>
+This operation needs authentication: HTTP username is
+$playername, HTTP password is $password.
+<br/><br/>
+
+</td></tr>
+</table>
+
+</body>
+</html>
