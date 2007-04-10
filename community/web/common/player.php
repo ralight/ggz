@@ -87,12 +87,15 @@ class Player
 
 		$res = $database->exec("SELECT * FROM permissionmasks WHERE handle = '%^'", array($ggzuser));
 		if (($res) && ($database->numrows($res) > 0)) :
-			$admin = $database->result($res, 0, "admin_mask");
+			$adminprivs = $database->result($res, 0, "admin_mask");
+			$hostprivs = $database->result($res, 0, "host_mask");
 			$anon = $database->result($res, 0, "anon_mask");
 			$normal = $database->result($res, 0, "normal_mask");
 
-			if ($admin == "t") :
+			if ($adminprivs == "t") :
 				$permission = "Administrator";
+			elseif ($hostprivs == "t") :
+				$permission = "Host";
 			elseif ($normal == "t") :
 				$permission = "Registered player";
 			else :
@@ -112,6 +115,7 @@ class Player
 			$chat_bot = $database->result($res, 0, "chat_bot");
 			$no_stats = $database->result($res, 0, "no_stats");
 			$edit_tables = $database->result($res, 0, "edit_tables");
+			$table_privmsg = $database->result($res, 0, "table_privmsg");
 		endif;
 
 		echo "<br>\n";
@@ -123,6 +127,7 @@ class Player
 		echo "Is a chatbot: $chat_bot<br>\n";
 		echo "Excluded from statistics: $no_stats<br>\n";
 		echo "Can edit tables: $edit_tables<br>\n";
+		echo "Can send private messages at table: $table_privmsg<br>\n";
 	}
 
 	function items($fullview = false)
@@ -208,28 +213,31 @@ class Player
 
 		$ggzuser = $this->handle;
 
-		$res = $database->exec("SELECT * FROM permissions WHERE handle = '%^'", array($ggzuser));
+		$res = $database->exec("SELECT * FROM permissionmasks WHERE handle = '%^'", array($ggzuser));
 		if (($res) && ($database->numrows($res) > 0)) :
-			$chat_bot = $database->result($res, 0, "chat_bot");
-			$rooms_admin = $database->result($res, 0, "rooms_admin");
+			$botstatus = $database->result($res, 0, "bot_mask");
+			$hostprivs = $database->result($res, 0, "host_mask");
+			$adminprivs = $database->result($res, 0, "admin_mask");
 		endif;
 
 		if (strpos($this->handle, "|AI")) :
-			$chat_bot = 1;
+			$botstatus = 1;
 		endif;
 
 		$desc = "Guest";
 		$pic = "guest.png";
-		if ($chat_bot) :
+		if ($botstatus == 't') :
 			$pic = "bot.png";
 			$desc = "AI/bot player";
-		endif;
-		if ($this->registered) :
+		elseif ($this->registered) :
 			$desc = "Player";
 			$pic = "player.png";
-			if ($rooms_admin) :
+			if ($adminprivs == 't') :
 				$pic = "admin.png";
 				$desc = "Administrator";
+			elseif ($hostprivs == 't') :
+				$pic = "host.png";
+				$desc = "Host";
 			endif;
 			if (($this->handle) && ($this->handle == Auth::username())) :
 				$pic = "you.png";

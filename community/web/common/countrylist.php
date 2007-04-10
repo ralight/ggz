@@ -18,6 +18,7 @@ class Country
 
 	function name($code)
 	{
+			$countryname = $code;
 			$f = @fopen("$this->flagdir/$code/entry.desktop", "r");
 			if ($f) :
 				while($a = fgets($f, 1024))

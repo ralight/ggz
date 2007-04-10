@@ -3,22 +3,25 @@
 include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
 
 include("top.inc");
-include("stats.php");
-
-include_once("statsclass.php");
-$global_rightbar = "index.rightbar";
 
 ?>
+
 <div id="main">
 	<h1>
 		<span class="itemleader">:: </span>
-		GGZ Community Database: Players
+		GGZ Community Forums
 		<span class="itemleader"> :: </span>
 		<a name="database"></a>
 	</h1>
 	<?php
 		if ($lookup) :
-			include("details.inc");
+			if ($thread) :
+				include("forum.inc");
+			else :
+				include("forumthreads.inc");
+			endif;
+		else :
+			include("forumslist.inc");
 		endif;
 	?>
 </div>

@@ -19,6 +19,10 @@ include("top.inc");
 	Proceed to the
 	<a href="phpBB2" target="_blank">GGZ Community Forum</a>.
 	</div>
+	<div class="text">
+	Alternatively, check out the integrated
+	<a href="ggzforum.php">GGZ Community Forum</a>.
+	</div>
 </div>
 
 <?php include("bottom.inc"); ?>

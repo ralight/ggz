@@ -36,47 +36,6 @@ $player->display();
 	</h2>
 	<div class="text">
 <?php
-include_once("auth.php");
-$ggzuser = $lookup;
-//$res = $database->exec("SELECT id FROM users WHERE handle = '%^'", array($lookup));
-//if ($database->numrows($res) == 1) :
-//	$playerid = database->result($res, 0, "id");
-//endif;
-$res = $database->exec("SELECT * FROM karma WHERE fromhandle = '%^'", array($ggzuser));
-for ($i = 0; $i < $database->numrows($res); $i++)
-{
-	$name = $database->result($res, $i, "tohandle");
-	$karma = $database->result($res, $i, "karma");
-
-	echo "<a href='/db/players/?lookup=$name'>$name</a> received $karma points from $ggzuser.<br>\n";
-}
-if ($database->numrows($res) == 0) :
-	echo "The player hasn't donated any karma points yet.<br>\n";
-endif;
-?>
-	</div>
-	<div class="text">
-<?php
-$res = $database->exec("SELECT * FROM karma WHERE tohandle = '%^'", array($ggzuser));
-for ($i = 0; $i < $database->numrows($res); $i++)
-{
-	$name = $database->result($res, $i, "fromhandle");
-	$karma = $database->result($res, $i, "karma");
-
-	if (!$karma) :
-		$bad_ratings += 1;
-	endif;
-	$overall_ratings += 1;
-
-	echo "<a href='/db/players/?lookup=$name'>$name</a> gave $karma points to $ggzuser.<br>\n";
-}
-if ($database->numrows($res) == 0) :
-	echo "The player hasn't received any karma points yet.<br>\n";
-endif;
-?>
-	</div>
-	<div class="text">
-<?php
 if ($overall_ratings == 0) :
 	$overall_ratings = 1;
 endif;
@@ -94,6 +53,8 @@ endif;
 if ($player->registered) :
 	echo "<img src='/db/ggzicons/misc/$karmapic.png' title='$karmatitle'>&nbsp;\n";
 	echo "The player's overall karma score is $karma out of 10.<br>\n";
+	echo "The <a href='karma.php?lookup=$lookup'>karma page</a>\n";
+	echo "contains the details.\n";
 else :
 	echo "Player not found.<br>\n";
 endif;
@@ -105,7 +66,7 @@ endif;
 $ggzuser = $lookup;
 $res = $database->exec("SELECT * FROM users WHERE handle = '%^'", array($ggzuser));
 if ($database->numrows($res) == 1) :
-	$firstlogin = $database->result($res, $i, "firstlogin");
+	$firstlogin = $database->result($res, 0, "firstlogin");
 	$veteran = (int)((time() - $firstlogin) / 86400);
 
 	$veteranpic = "veteran-level0";

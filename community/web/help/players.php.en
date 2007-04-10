@@ -20,6 +20,34 @@ include("top.inc");
 
 	<h1>
 		<span class="itemleader">:: </span>
+		Player privileges
+		<span class="itemleader"> ::</span>
+	</h1>
+	<div class="text">
+		In the games, all players are equal. Outside of the games,
+		there are a few who can host tournaments and ban others,
+		those are called hosts. And very few others, who run the site
+		and can add rooms, those are called administrators.
+		<br><br>
+		<img src="/db/ggzicons/players/guest.png">
+		Guest player, not registered
+		<br>
+		<img src="/db/ggzicons/players/player.png">
+		Registered player
+		<br>
+		<img src="/db/ggzicons/players/host.png">
+		Host player
+		<br>
+		<img src="/db/ggzicons/players/admin.png">
+		Admin player
+		<br>
+		<img src="/db/ggzicons/players/bot.png">
+		Bot player (chat bot or game bot)
+		<br>
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
 		Player trust: Karma and Veteran status
 		<span class="itemleader"> ::</span>
 	</h1>

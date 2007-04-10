@@ -4,7 +4,7 @@ include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
 
 include_once("match.php");
 
-$res = $database->exec("SELECT * FROM tournaments WHERE id = '$tid'", array($tid));
+$res = $database->exec("SELECT * FROM tournaments WHERE id = '%^'", array($tid));
 
 $name = $database->result($res, $i, "name");
 $game = $database->result($res, $i, "game");
@@ -19,9 +19,9 @@ echo "Organized by: <a href=\"/db/players/?lookup=$organizer\">$organizer</a><br
 echo "Starting: $datestr<br><br>\n";
 
 echo "Participants:<br><br>\n";
-$res = $database->exec("SELECT * FROM tournamentplayers WHERE id = '$tid'", array($tid));
+$res = $database->exec("SELECT * FROM tournamentplayers WHERE id = '%^'", array($tid));
 $num = 0;
-$match = new Match();
+$match = new Match($tid);
 $match->loadtournament();
 for($i = 0; $i < $database->numrows($res); $i++)
 {
@@ -43,7 +43,7 @@ function played($player1, $player2)
 	global $date;
 	global $matchid;
 
-	$res = $database->exec("SELECT match FROM matchplayers WHERE handle = '%^'",array($player1));
+	$res = $database->exec("SELECT match FROM matchplayers WHERE handle = '%^'", array($player1));
 	for($k = 0; $k < $database->numrows($res); $k++)
 	{
 		$x[$database->result($res, $k, "match")] = $database->result($res, $k, "match");
