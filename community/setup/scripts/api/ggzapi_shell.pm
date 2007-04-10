@@ -41,7 +41,7 @@ sub run_player(){
 	my $arg_method = shift(@_);
 	my $arg_player = shift(@_);
 	if(!$arg_player){
-		print "Syntax error!\n";
+		print "Syntax error (player <OP> <playername>)!\n";
 		return;
 	}
 	my %playerinfo;
@@ -105,7 +105,7 @@ sub run_statistics_game(){
 	my $arg_method = shift(@_);
 	my $arg_game = shift(@_);
 	if(!$arg_game){
-		print "Syntax error!\n";
+		print "Syntax error (statistics_game <OP> <gamename>)!\n";
 		return;
 	}
 	if($arg_method eq "GET"){
@@ -160,7 +160,7 @@ sub run_team(){
 	my $arg_method = shift(@_);
 	my $arg_team = shift(@_);
 	if(!$arg_team){
-		print "Syntax error!\n";
+		print "Syntax error (team <OP> <teamname>)!\n";
 		return;
 	}
 	my %teaminfo;
@@ -193,6 +193,59 @@ sub comp_team(){
 		@list = @players;
 		if($#list == -1){
 			push @list, "<teamname>";
+		}
+	}
+
+	return @list;
+}
+
+sub help_team_player(){}
+sub smry_team_player(){
+	"List members of a team (GET) or add/edit team players (POST/PUT/DELETE)";
+}
+sub run_team_player(){
+	my $self = shift(@_);
+	my $arg_method = shift(@_);
+	my $arg_team = shift(@_);
+	my $arg_teamplayer = shift(@_);
+	if((!$arg_team) || (!$arg_teamplayer)){
+		print "Syntax error (team_player <OP> <teamname> <teamplayername>)!\n";
+		return;
+	}
+	my %teamplayerinfo;
+	if($arg_method eq "GET"){
+			ggzapi_rest::call_team_player($arg_team, $arg_teamplayer, $arg_method, \%teamplayerinfo);
+	}elsif(($arg_method eq "POST") or ($arg_method eq "PUT")){
+			$teamplayerinfo{'role'} = $self->prompt("* Role of team player: ");
+			ggzapi_rest::call_team_player($arg_team, $arg_teamplayer, $arg_method, \%teamplayerinfo);
+	}elsif($arg_method eq "DELETE"){
+			ggzapi_rest::call_team_player($arg_team, $arg_teamplayer, $arg_method, \%teamplayerinfo);
+	}else{
+		print "Invalid method name!\n";
+	}
+}
+sub comp_team_player(){
+	shift(@_);
+	my $word = shift(@_);
+	my $line = shift(@_);
+	my @words = split(/ /, $line);
+	my $position = $#words;
+	if($word ne ""){
+		$position = $position - 1;
+	}
+
+	my @list;
+	if($position == 0){
+		@list = ("GET", "POST", "PUT", "DELETE");
+	}elsif($position == 1){
+		@list = @teams;
+		if($#list == -1){
+			push @list, "<teamname>";
+		}
+	}elsif($position == 2){
+		@list = @players;
+		if($#list == -1){
+			push @list, "<teamplayername>";
 		}
 	}
 

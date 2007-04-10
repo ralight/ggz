@@ -60,12 +60,13 @@ GET: List a team. The format is:
 &lt;foundingdate&gt;$foundingdate&lt;/foundingdate&gt;
 &lt;fullname&gt;$fullname&lt;/fullname&gt;
 &lt;homepage&gt;$homepage&lt;/homepage&gt;
+&lt;teamplayer&gt;$teamplayername&lt;/teamplayer&gt;
 &lt;/team&gt;
 </pre>
 <br/>
 POST: Create a team. The format is like the one for GET,
 with the exception of foundingdate and founder not being
-present:
+present, and team player assignments not yet done as well:
 <pre>
 &lt;team name="$teamname"&gt;
 &lt;fullname&gt;$fullname&lt;/fullname&gt;
@@ -79,10 +80,35 @@ PUT: Update a team. The format is like the one for POST.
 This operation needs authentication: HTTP username is
 $playername, HTTP password is $password.
 <br/><br/>
-DELETE: Remove a team. The format is:
+DELETE: Remove a team.
+This operation needs authentication: HTTP username is
+$playername, HTTP password is $password.
+<br/><br/>
+
+<i>/teams/$teamname/$teamplayername (GET, POST, PUT, DELETE)</i>
+<br/><br/>
+GET: List a team's player. The format is:
 <pre>
-&lt;team name="$teamname"/&gt;
-<pre>
+&lt;teamplayer name="$teamplayername"&gt;
+&lt;role&gt;$role&lt;/role&gt;
+&lt;entrydate&gt;$entrydate&lt;/entrydate&gt;
+&lt;/teamplayer&gt;
+</pre>
+The role can be one of 'leader', 'vice' or 'member'.
+<br/><br/>
+POST: Create a team member association. The format is like the one for GET,
+except for the entrydate (for which the current date is used).
+The player must already exist (see <a href="/doc/players">/players</a>).
+This operation needs authentication: HTTP username is
+$playername, HTTP password is $password.
+<br/><br/>
+PUT: Update a team member assocation. The format is like the one for POST.
+The player must already exist (see <a href="/doc/players">/players</a>).
+This operation needs authentication: HTTP username is
+$playername, HTTP password is $password.
+<br/><br/>
+DELETE: Remove a team member association.
+The player must already exist (see <a href="/doc/players">/players</a>).
 This operation needs authentication: HTTP username is
 $playername, HTTP password is $password.
 <br/><br/>

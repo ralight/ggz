@@ -298,100 +298,188 @@ elseif ($topresource == "teams") :
 		endif;
 	else :
 		$teamname = $subresource;
-		// FIXME: check against team founder
+		// FIXME: check against team founder, but only for subsubresource == ""
 
-		if ($method == "GET") :
-			$res = pg_exec($conn, "SELECT founder, foundingdate, fullname, homepage FROM teams WHERE teamname = '$teamname'");
+		if ($subsubresource == "") :
+			if ($method == "GET") :
+				$res = pg_exec($conn, "SELECT founder, foundingdate, fullname, homepage FROM teams WHERE teamname = '$teamname'");
 
-			if (pg_numrows($res) == 1) :
-				$founder = pg_result($res, 0, 0);
-				$foundingdate = pg_result($res, 0, 1);
-				$fullname = pg_result($res, 0, 1);
-				$homepage = pg_result($res, 0, 1);
+				if (pg_numrows($res) == 1) :
+					$founder = pg_result($res, 0, 0);
+					$foundingdate = pg_result($res, 0, 1);
+					$fullname = pg_result($res, 0, 1);
+					$homepage = pg_result($res, 0, 1);
 
-				echo "<team name='$teamname'>";
-				echo "<founder>$founder</founder>";
-				echo "<foundingdate>$foundingdate</foundingdate>";
-				echo "<fullname>$fullname</fullname>";
-				echo "<homepage>$homepage</homepage>";
-				echo "</team>";
-			else:
-				$error = 1;
-			endif;
-		elseif ($method == "POST") :
-			if ($authenticated) :
-				$doc = new DOMDocument();
-				$doc->loadXML($input);
-				$root = $doc->documentElement;
-				if ($root->tagName == "team") :
-					$nodes = $root->getElementsByTagName("*");
-					foreach ($nodes as $node)
-					{
-						if ($node->nodeName == "fullname") :
-							$fullname = $node->nodeValue;
-						elseif ($node->nodeName == "homepage") :
-							$homepage = $node->nodeValue;
-						endif;
-					}
+					echo "<team name='$teamname'>";
+					echo "<founder>$founder</founder>";
+					echo "<foundingdate>$foundingdate</foundingdate>";
+					echo "<fullname>$fullname</fullname>";
+					echo "<homepage>$homepage</homepage>";
+					echo "</team>";
+				else:
+					$error = 1;
+				endif;
+			elseif ($method == "POST") :
+				if ($authenticated) :
+					$doc = new DOMDocument();
+					$doc->loadXML($input);
+					$root = $doc->documentElement;
+					if ($root->tagName == "team") :
+						$nodes = $root->getElementsByTagName("*");
+						foreach ($nodes as $node)
+						{
+							if ($node->nodeName == "fullname") :
+								$fullname = $node->nodeValue;
+							elseif ($node->nodeName == "homepage") :
+								$homepage = $node->nodeValue;
+							endif;
+						}
 
-					$stamp = time();
-					$founder = $user;
+						$stamp = time();
+						$founder = $user;
 
-					$res = pg_exec($conn,
-						"INSERT INTO teams (teamname, fullname, homepage, founder, foundingdate) VALUES ('$teamname', '$fullname', '$homepage', '$founder', $stamp)");
+						$res = pg_exec($conn,
+							"INSERT INTO teams (teamname, fullname, homepage, founder, foundingdate) VALUES ('$teamname', '$fullname', '$homepage', '$founder', $stamp)");
 
-					# FIXME: check against malicious input
-					# FIXME: check database result
-					# FIXME: check duplicates, let db do it?
+						# FIXME: check against malicious input
+						# FIXME: check database result
+						# FIXME: check duplicates, let db do it?
+					else :
+						$error = 1;
+					endif;
 				else :
 					$error = 1;
+					$autherror = 1;
+				endif;
+			elseif ($method == "PUT") :
+				if ($authenticated) :
+					$doc = new DOMDocument();
+					$doc->loadXML($input);
+					$root = $doc->documentElement;
+					if ($root->tagName == "team") :
+						$nodes = $root->getElementsByTagName("*");
+						foreach ($nodes as $node)
+						{
+							if ($node->nodeName == "fullname") :
+								$fullname = $node->nodeValue;
+							elseif ($node->nodeName == "homepage") :
+								$homepage = $node->nodeValue;
+							endif;
+						}
+
+						$res = pg_exec($conn,
+							"UPDATE teams SET fullname = '$fullname', homepage = '$homepage' " .
+							"WHERE teamname = '$teamname'");
+
+						# FIXME: check against malicious input
+						# FIXME: check database result
+						# FIXME: check duplicates, let db do it?
+					else :
+						$error = 1;
+					endif;
+				else :
+					$error = 1;
+					$autherror = 1;
+				endif;
+			elseif ($method == "DELETE") :
+				if ($authenticated) :
+					$res = pg_exec($conn, "DELETE FROM teams WHERE teamname = '$teamname'");
+					# FIXME: check against malicious input
+					# FIXME: check database result
+					# FIXME: check presence etc.
+				else :
+					$error = 1;
+					$autherror = 1;
 				endif;
 			else :
 				$error = 1;
-				$autherror = 1;
-			endif;
-		elseif ($method == "PUT") :
-			if ($authenticated) :
-				$doc = new DOMDocument();
-				$doc->loadXML($input);
-				$root = $doc->documentElement;
-				if ($root->tagName == "team") :
-					$nodes = $root->getElementsByTagName("*");
-					foreach ($nodes as $node)
-					{
-						if ($node->nodeName == "fullname") :
-							$fullname = $node->nodeValue;
-						elseif ($node->nodeName == "homepage") :
-							$homepage = $node->nodeValue;
-						endif;
-					}
-
-					$res = pg_exec($conn,
-						"UPDATE teams SET fullname = '$fullname', homepage = '$homepage' " .
-						"WHERE teamname = '$teamname'");
-
-					# FIXME: check against malicious input
-					# FIXME: check database result
-					# FIXME: check duplicates, let db do it?
-				else :
-					$error = 1;
-				endif;
-			else :
-				$error = 1;
-				$autherror = 1;
-			endif;
-		elseif ($method == "DELETE") :
-			if ($authenticated) :
-				$res = pg_exec($conn, "DELETE FROM teams WHERE teamname = '$teamname'");
-				# FIXME: check against malicious input
-				# FIXME: check database result
-				# FIXME: check presence etc.
-			else :
-				$error = 1;
-				$autherror = 1;
 			endif;
 		else :
-			$error = 1;
+			$teamplayername = $subsubresource;
+			if ($method == "GET") :
+				$res = pg_exec($conn, "SELECT role, entrydate FROM teammembers WHERE teamname = '$teamname' AND handle = '$teamplayername'");
+
+				if (pg_numrows($res) == 1) :
+					$role = pg_result($res, 0, 0);
+					$entrydate = pg_result($res, 0, 1);
+
+					echo "<teamplayer name='$teamname'>";
+					echo "<role>$role</role>";
+					echo "<entrydate>$entrydate</entrydate>";
+					echo "</teamplayer>";
+				else:
+					$error = 1;
+				endif;
+			elseif ($method == "POST") :
+				if ($authenticated) :
+					$doc = new DOMDocument();
+					$doc->loadXML($input);
+					$root = $doc->documentElement;
+					if ($root->tagName == "teamplayer") :
+						$nodes = $root->getElementsByTagName("*");
+						foreach ($nodes as $node)
+						{
+							if ($node->nodeName == "role") :
+								$role = $node->nodeValue;
+							endif;
+						}
+
+						$stamp = time();
+
+						$res = pg_exec($conn,
+							"INSERT INTO teammembers (teamname, handle, role, entrydate) VALUES ('$teamname', '$teamplayername', '$role', $stamp)");
+
+						# FIXME: check against malicious input
+						# FIXME: check database result
+						# FIXME: check duplicates, let db do it?
+					else :
+						$error = 1;
+					endif;
+				else :
+					$error = 1;
+					$autherror = 1;
+				endif;
+			elseif ($method == "PUT") :
+				if ($authenticated) :
+					$doc = new DOMDocument();
+					$doc->loadXML($input);
+					$root = $doc->documentElement;
+					if ($root->tagName == "teamplayer") :
+						$nodes = $root->getElementsByTagName("*");
+						foreach ($nodes as $node)
+						{
+							if ($node->nodeName == "role") :
+								$role = $node->nodeValue;
+							endif;
+						}
+
+						$res = pg_exec($conn,
+							"UPDATE teammembers SET role = '$role' " .
+							"WHERE teamname = '$teamname' AND handle = '$teamplayername'");
+
+						# FIXME: check against malicious input
+						# FIXME: check database result
+						# FIXME: check duplicates, let db do it?
+					else :
+						$error = 1;
+					endif;
+				else :
+					$error = 1;
+					$autherror = 1;
+				endif;
+			elseif ($method == "DELETE") :
+				if ($authenticated) :
+					$res = pg_exec($conn, "DELETE FROM teammembers WHERE teamname = '$teamname' AND handle = '$teamplayername'");
+					# FIXME: check against malicious input
+					# FIXME: check database result
+					# FIXME: check presence etc.
+				else :
+					$error = 1;
+					$autherror = 1;
+				endif;
+			else :
+				$error = 1;
+			endif;
 		endif;
 	endif;
 else:

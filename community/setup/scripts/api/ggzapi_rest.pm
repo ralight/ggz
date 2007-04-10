@@ -17,7 +17,7 @@ sub call($){
 
 	my $ua = LWP::UserAgent->new;
 	if($authcache{'retry'}){
-		$ua->credentials("api.ggzcommunity:80", "'ggzapi'",
+		$ua->credentials("api.ggzcommunity:80", $authcache{'realm'},
 			$authcache{'user'}, $authcache{'password'});
 	}
 	$ua->agent('GGZ Community Test Client');
@@ -35,6 +35,15 @@ sub call($){
 		print $res->status_line, "\n";
 
 		if($res->code == 401){
+			my @authargs = split(/ /, $res->www_authenticate);
+			my $authmethod = $authargs[0];
+			my $authrealm = $authargs[1];
+			$authrealm =~ s/^realm=(.*)$/\1/g;
+			#print "|| $authmethod | $authrealm ||\n";
+			$authcache{'realm'} = $authrealm;
+			#print "||", $res->www_authenticate, "||\n";
+			# FIXME: check if authmethod == Basic!
+			# FIXME: don't hardcode the host/port either
 			if(!$authcache{'retry'}){
 				my $user = $authcache{'user'};
 				my $password = $authcache{'password'};
@@ -124,7 +133,7 @@ sub call_player($$$){
 
 	my $req = HTTP::Request->new($method, "http://api.ggzcommunity/api/players/$playername");
 	$req->content_type("application/ggzapi+xml");
-	if($method ne "GET"){
+	if(($method ne "GET") && ($method ne "DELETE")){
 		my $content = "<player name='$playername'>";
 		$content = $content . hash2xmlstr(\%playerinfo);
 		$content = $content . "</player>";
@@ -231,10 +240,32 @@ sub call_team($$$){
 
 	my $req = HTTP::Request->new($method, "http://api.ggzcommunity/api/teams/$teamname");
 	$req->content_type("application/ggzapi+xml");
-	if($method ne "GET"){
+	if(($method ne "GET") && ($method ne "DELETE")){
 		my $content = "<team name='$teamname'>";
 		$content = $content . hash2xmlstr(\%teaminfo);
 		$content = $content . "</team>";
+		$req->content($content);
+	}
+	my $res = call($req);
+
+	if(!$res->is_success){
+		return;
+	}
+}
+
+sub call_team_player($$$$){
+	my $teamname = shift(@_);
+	my $teamplayername = shift(@_);
+	my $method = shift(@_);
+	my $teamplayerinforef = shift(@_);
+	my %teamplayerinfo = %{$teamplayerinforef};
+
+	my $req = HTTP::Request->new($method, "http://api.ggzcommunity/api/teams/$teamname/$teamplayername");
+	$req->content_type("application/ggzapi+xml");
+	if(($method ne "GET") && ($method ne "DELETE")){
+		my $content = "<teamplayer name='$teamplayername'>";
+		$content = $content . hash2xmlstr(\%teamplayerinfo);
+		$content = $content . "</teamplayer>";
 		$req->content($content);
 	}
 	my $res = call($req);
