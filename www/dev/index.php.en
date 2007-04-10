@@ -57,15 +57,22 @@ lists all important documentation, which is again listed here (HTML only):
 <a href="http://www.ggzgamingzone.org/docs/games.html">Game Protocol Comparison</a>
 <br/>
 <a href="http://www.ggzgamingzone.org/docs/api/libggz/">Library API for libggz</a>
+(for C developers)
 <br/>
 <a href="http://www.ggzgamingzone.org/docs/api/ggzcore/">Library API for ggzcore</a>
+(GGZ core clients)
 <br/>
 <a href="http://www.ggzgamingzone.org/docs/api/ggzmod/">Library API for ggzmod</a>,
-and <a href="http://www.ggzgamingzone.org/docs/api/pyggzmod/">pyggzmod</a>
+<a href="http://www.ggzgamingzone.org/docs/api/pyggzmod/">pyggzmod</a>
 and <a href="http://www.ggzgamingzone.org/docs/api/kggzmod/">kggzmod</a>
+(GGZ game clients)
 <br/>
-<a href="http://www.ggzgamingzone.org/docs/api/ggzdmod/">Library API for ggzdmod</a>
-and <a href="http://www.ggzgamingzone.org/docs/api/ggzdmod++/">ggzdmod++</a>
+<a href="http://www.ggzgamingzone.org/docs/api/ggzdmod/">Library API for ggzdmod</a>,
+<a href="http://www.ggzgamingzone.org/docs/api/ggzdmod++/">ggzdmod++</a>
+and <a href="http://www.ggzgamingzone.org/docs/api/kggzdmod/">kggzdmod</a>
+(GGZ game servers)
+<br/>
+<a href="http://api.ggzgamingzone.org/">Web Services API for GGZ Community</a>
 <br/><br/>
 
 <i>Gallery of GGZ developers</i><br>
