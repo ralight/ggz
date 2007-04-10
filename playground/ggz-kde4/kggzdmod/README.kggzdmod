@@ -1,0 +1,17 @@
+The kggzdmod library
+====================
+
+With the help of the 'kggzdmod' library, game servers can interact with
+the GGZ server to be notified of player actions or to submit game results,
+scores and savegames.
+
+This library is a wrapper for the 'ggzdmod' library, suitable for
+Qt/KDE-based game servers. As opposed to 'kggzmod', a reimplementation
+of 'ggzdmod', this library requires 'ggzdmod'.
+It might also become a reimplementation in the future, but there doesn't
+seem to be a necessity at the moment, and installing 'libggzdmod-dev' or
+similar isn't too much of an issue.
+
+For more information on kggzdmod, have a look at its API documentation
+(make apidocs).
+
