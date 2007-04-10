@@ -12,17 +12,19 @@
 #define OMNICRACK_H
 
 /* Check if the password is long enough to be considered secure */
-#define OMNICRACK_STRATEGY_LENGTH  0x01
+#define OMNICRACK_STRATEGY_LENGTH    0x01
 /* Check if the password stretches across several unicode blocks */
-#define OMNICRACK_STRATEGY_BLOCKS  0x02
+#define OMNICRACK_STRATEGY_BLOCKS    0x02
 /* Check if letters, numbers, spaces etc. are all used */
-#define OMNICRACK_STRATEGY_VARIETY 0x04
+#define OMNICRACK_STRATEGY_VARIETY   0x04
 /* Check against usernames in the /etc/passwd file */
-#define OMNICRACK_STRATEGY_PASSWD  0x10
+#define OMNICRACK_STRATEGY_PASSWD    0x10
 /* Check against words from a dictionary - dictpath must not be NULL then */
-#define OMNICRACK_STRATEGY_DICT    0x20
+#define OMNICRACK_STRATEGY_DICT      0x20
+/* Check parts of a word against a dictionary - also needs dictpath */
+#define OMNICRACK_STRATEGY_DICTSLICE 0x40
 /* All of the above checks combined - this should be used by default */
-#define OMNICRACK_STRATEGY_ALL     0xFF
+#define OMNICRACK_STRATEGY_ALL       0xFF
 
 /* The password is a good one */
 #define OMNICRACK_RESULT_OK        0
@@ -41,7 +43,7 @@
  *  on the strategies a path to a hashfile containing dictionary words.
  *  Returns a result which indicates if the password is considered strong.
  */
-int omnicrack_checkstrength(const char *password, int strategy, const char *dictpath);
+int omnicrack_checkstrength(const char *password, int strategies, const char *dictpath);
 
 #endif
 

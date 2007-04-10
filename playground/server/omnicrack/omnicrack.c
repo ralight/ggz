@@ -1,5 +1,7 @@
 #include "omnicrack.h"
 
+#include "hasher.h"
+
 #ifdef WITH_ICU
 #include <unicode/ustring.h>
 #include <unicode/uchar.h>
@@ -121,7 +123,7 @@ static blockassignment unicode_blocks[99] =
 	{NULL, UBLOCK_NO_BLOCK}
 };
 
-const char *block_name(UBlockCode code)
+static const char *block_name(UBlockCode code)
 {
 	int i;
 
@@ -134,7 +136,7 @@ const char *block_name(UBlockCode code)
 	return NULL;
 }
 
-char *block_type(UBlockCode code)
+static char *block_type(UBlockCode code)
 {
 	UBool alphabetic = u_isUAlphabetic(code);
 	UBool alpha = u_isalpha(code);
@@ -153,7 +155,7 @@ char *block_type(UBlockCode code)
 	return ret;
 }
 
-int variety_score(UChar *ustr, int length)
+static int variety_score(UChar *ustr, int length)
 {
 	int score = 0;
 	int has_alpha = 0;
@@ -193,7 +195,7 @@ int variety_score(UChar *ustr, int length)
 	return score;
 }
 
-int block_score(UChar *ustr, int length)
+static int block_score(UChar *ustr, int length)
 {
 	int score = 0;
 	int i, j;
@@ -231,7 +233,7 @@ int block_score(UChar *ustr, int length)
 }
 #endif
 
-int length_score(int length)
+static int length_score(int length)
 {
 	if(length < 3) return 0;
 	if(length < 5) return 1;
@@ -239,19 +241,26 @@ int length_score(int length)
 	return 3;
 }
 
-int dict_score(const char *password)
+static int dict_score(const char *dictpath, const char *password)
 {
-	/* FIXME: we don't have a dictionary yet */
+	if(findword(dictpath, password))
+		return 0;
+	return 1;
+}
+
+static int dictslice_score(const char *dictpath, const char *password)
+{
+	/* FIXME: we don't have a (sliced) dictionary yet */
 	return 0;
 }
 
-int passwd_score(const char *password)
+static int passwd_score(const char *password)
 {
 	/* FIXME: we don't have a passwd lookup yet */
 	return 0;
 }
 
-int omnicrack_checkstrength(const char *password, int strategy, const char *dictpath)
+int omnicrack_checkstrength(const char *password, int strategies, const char *dictpath)
 {
 #ifdef WITH_ICU
 	UChar *ustr = NULL;
@@ -263,7 +272,7 @@ int omnicrack_checkstrength(const char *password, int strategy, const char *dict
 #endif
 	int32_t length = 0;
 	UErrorCode error = U_ZERO_ERROR;
-	int vs, bs, ls, ds, ps;
+	int vs, bs, ls, ds, ps, ss;
 	int score;
 	int ret;
 
@@ -309,42 +318,49 @@ int omnicrack_checkstrength(const char *password, int strategy, const char *dict
 	}
 #endif
 
-	if(strategy & OMNICRACK_STRATEGY_VARIETY)
+	if(strategies & OMNICRACK_STRATEGY_VARIETY)
 		vs = variety_score(ustr, length);
 	else
 		vs = 0;
-	if(strategy & OMNICRACK_STRATEGY_BLOCKS)
+	if(strategies & OMNICRACK_STRATEGY_BLOCKS)
 		bs = block_score(ustr, length);
 	else
 		bs = 0;
-	if(strategy & OMNICRACK_STRATEGY_LENGTH)
+	if(strategies & OMNICRACK_STRATEGY_LENGTH)
 		ls = length_score(length);
 	else
 		ls = 0;
-	if(strategy & OMNICRACK_STRATEGY_DICT)
-		ds = dict_score(password);
+	if(strategies & OMNICRACK_STRATEGY_DICT)
+		ds = dict_score(dictpath, password);
 	else
 		ds = 0;
-	if(strategy & OMNICRACK_STRATEGY_PASSWD)
+	if(strategies & OMNICRACK_STRATEGY_DICTSLICE)
+		ss = dictslice_score(dictpath, password);
+	else
+		ss = 0;
+	if(strategies & OMNICRACK_STRATEGY_PASSWD)
 		ps = passwd_score(password);
 	else
 		ps = 0;
 
-	score = vs + bs + ls + ds + ps;
+	score = vs + bs + ls + ds + ps + ss;
 
 	ret = OMNICRACK_RESULT_OK;
 	if(score < 5)
 		ret = OMNICRACK_RESULT_BADSCORE;
 	if(ls < 2)
-		if(strategy & OMNICRACK_STRATEGY_LENGTH)
+		if(strategies & OMNICRACK_STRATEGY_LENGTH)
 			ret = OMNICRACK_RESULT_BADLENGTH;
-	/*if(ds == 0) ret = OMNICRACK_RESULT_BADDICT;*/
+	if(ds == 0)
+		if(strategies & OMNICRACK_STRATEGY_DICT)
+			ret = OMNICRACK_RESULT_BADDICT;
 
 #if DEBUG
 	printf("  => Variety score: %i\n", vs);
 	printf("  => Character block score: %i\n", bs);
 	printf("  => Length score: %i\n", ls);
 	printf("  => Dict score: %i\n", ds);
+	printf("  => Dict slice score: %i\n", ss);
 	printf("  => Passwd score: %i\n", ps);
 	printf("  => Overall score: %i\n", score);
 #endif
