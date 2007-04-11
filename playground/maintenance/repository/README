@@ -1,4 +1,4 @@
-Operations executed on current CVS HEAD:
+Operations executed on current SVN trunk or specific branches:
 
 dynamic.sh:
  Script which calls create-ggzpots.sh and statistics-ggzpos.sh
@@ -15,6 +15,9 @@ statistics-ggzpos.sh:
 
 statistics-webpages.sh:
  How many webpages are translated?
+
+generate-branch-diffs.sh:
+ Generate diff files for modifications on a branch
 
 The generated files are then installed into the dev/ section of the
 webpage, and used by the PHP scripts to display some statistics.
