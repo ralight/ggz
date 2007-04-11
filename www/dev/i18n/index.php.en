@@ -19,6 +19,12 @@ Webpage translations are easily done by checking out the 'www' module from
 <a href="ggzpots.tar.gz">Download the potfile catalog!</a>
 
 <br/><br/>
+Note that translations for the modules ggz-client-libs and gtk-client are currently
+maintained by the <a href="http://www.gnome.org/projects/gnome-games/">GNOME Games</a>
+project. Other translations might appear through
+<a href="http://launchpad.net">Launchpad</a>. If you plan to translate GGZ, please
+contact us first to avoid extra work.
+<br/><br/>
 
 <i>Guidelines</i><br/>
 The internationalization guidelines are available in the ggz-docs package.
