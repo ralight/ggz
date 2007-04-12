@@ -1,133 +1,119 @@
 # This translation was merged from GNOME SVN
-# (http://svn.gnome.org/svn/gnome-games/trunk/po/de.po)
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/pa.po)
 
-# translation of de.po to German
-# German gnome-games translation
-# Copyright (C) 1998-2005 Free Software Foundation, Inc.
-# Carsten Schaar <nhadcasc@fs-maphy.uni-hannover.de>, 1998.
-# Matthias Warkus <mawa@iname.com>, 1999.
-# Karl Eichwalder <ke@suse.de>, 1999, 2000.
-# Christian Meyer <chrisime@gnome.org>, 2000, 2001.
-# Christian Neumair <chris@gnome-de.org>, 2002-2004.
-# Hendrik Richter <hendrikr@gnome.org>, 2004, 2005, 2006, 2007.
-# Frank Arnold <frank@scirocco-5v-turbo.de>, 2005, 2006.
-# Manuel Borchers <m.borchers@gnome-de.org>, 2006.
-# Jens <jenshamacher@gmx.de>, 2006
-# Benedikt Wicklein <benedikt.wicklein@googlemail.com>, 2007.
-# Philipp Kerling <k.philipp@gmail.com>, 2007
+# translation of gnome-games.HEAD.po to Punjabi
+# Punjabi translation of gnome-games.HEAD.
+# jaswindersinghra@yahoo.com
 #
-# TODO
-# - Check msgstrs for consistency (strings like 'Level')
-# Aisleriot-Spielenamen wegen Dokumentation nicht übersetzt
-# Besondere Ausdrücke
-# stock => Talon (Der Kartenstoß, der nach dem Geben übrig bleibt)
-# base card => Grundkarte
 #
+# Amanpreet Singh Alam <aalam@redhat.com>, 2004.
+# Amanpreet Singh Alam <amanpreetalam@yahoo.com>, 2005.
+# A S Alam <apbrar@gmail.com>, 2006.
+# A S Alam <aalam@users.sf.net>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-games\n"
+"Project-Id-Version: gnome-games.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-11-20 15:07+0100\n"
-"PO-Revision-Date: 2007-03-10 14:55+0100\n"
-"Last-Translator: Hendrik Richter <hendrikr@gnome.org>\n"
-"Language-Team: German <gnome-de@gnome.org>\n"
+"PO-Revision-Date: 2007-03-12 11:02+0530\n"
+"Last-Translator: A S Alam <aalam@users.sf.net>\n"
+"Language-Team: Punjabi <punjabi-l10n@lists.sf.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-Basepath: /home/shampoo/gnome-games\n"
-"X-Poedit-SearchPath-0: /home/shampoo/gnome-games\n"
+"\n"
+"\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: ../ggz-gtk/about.c:87 ../ggz-gtk/client.c:1089
 msgid "About"
-msgstr "Info"
+msgstr "ਇਸ ਬਾਰੇ"
 
 #: ../ggz-gtk/chat.c:89
 msgid "/msg <username> <message> . Private message a player"
-msgstr ""
-"/msg <Benutzername> <Nachricht> . Eine private Nachricht an den Spieler "
-"schicken"
+msgstr "/msg <username> <message> . Private message a player"
 
 #: ../ggz-gtk/chat.c:91
 msgid "/table <message> .......... Message to your table"
-msgstr "/table <Nachricht> ........ Eine Nachricht an den Tisch schicken"
+msgstr "/table <message> .......... Message to your table"
 
 #: ../ggz-gtk/chat.c:93
 msgid "/wall <message> ........... Admin command"
-msgstr "/wall <Befehl> ............ Administrationsbefehl"
+msgstr "/wall <message> ........... Admin command"
 
 #: ../ggz-gtk/chat.c:95
 msgid "/beep <username> .......... Beep a player"
-msgstr "/beep <Benutzername> ...... Einen Spieler anpiepen"
+msgstr "/beep <username> .......... Beep a player"
 
 #: ../ggz-gtk/chat.c:97
 msgid "/help ..................... Get help"
-msgstr "/help ..................... Hilfe anzeigen"
+msgstr "/help ..................... Get help"
 
 #: ../ggz-gtk/chat.c:99
 msgid "/friends .................. List your friends"
-msgstr "/friends .................. Freunde auflisten"
+msgstr "/friends .................. List your friends"
 
 #: ../ggz-gtk/chat.c:101
 msgid "/ignore ................... List people you're ignoring"
-msgstr "/ignore ................... Ignorierte Personen auflisten"
+msgstr "/ignore ................... List people you're ignoring"
 
 #: ../ggz-gtk/chat.c:104
 msgid "/kick <username> .......... Kick a player from the room"
-msgstr "/kick <Benutzername> ...... Einen Spieler aus dem Raum werfen"
+msgstr "/kick <username> .......... Kick a player from the room"
 
 #: ../ggz-gtk/chat.c:107
 msgid "/gag <username> ........... Gag a player to prevent them from talking"
-msgstr "/gag <Benutzername> ....... Einen Spieler am Sprechen hindern"
+msgstr "/gag <username> ........... Gag a player to prevent them from talking"
 
 #: ../ggz-gtk/chat.c:110
 msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
 msgstr ""
-"/ungag <Benutzername> ...... Die »Gag«-Operation rückgängig machen, so dass "
-"der Spieler wieder sprechen kann"
+"/ungag <username> ......... Reverse the gag operation to allow a player to "
+"talk"
 
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
-msgstr "/ban <Benutzername> ....... Einen Spieler vom Server bannen"
+msgstr "/ban <username> ........... Ban a player from the server"
 
 #: ../ggz-gtk/chat.c:254
 #, c-format
 msgid "You have received an unknown message from %s."
-msgstr "Sie haben eine unbekannte Nachricht von %s erhalten."
+msgstr "ਤੁਹਾਨੂੰ %s ਵਲੋਂ ਅਣਜਾਣ ਸੁਨੇਹਾ ਮਿਲਿਆ ਹੈ।"
 
 #: ../ggz-gtk/chat.c:318
 #, c-format
 msgid "You've been beeped by %s."
-msgstr "%s hat Sie angepiept."
+msgstr "ਤੁਹਾਨੂੰ %s ਵਲੋਂ ਆਵਾਜ਼ ਮਿਲੀ ਹੈ।"
 
 #: ../ggz-gtk/chat.c:439
 msgid "Usage: /msg <username> <message>"
-msgstr "Aufruf: /msg <Benutzername> <Nachricht>"
+msgstr "ਵਰਤੋਂ: /msg <username> <message>"
 
 #: ../ggz-gtk/chat.c:441
 msgid "    Sends a private message to a user on the network."
-msgstr "    Schickt eine private Nachricht zu einem Spieler im Netzwerk."
+msgstr "    ਨੈੱਟਵਰਕ ਉੱਤੇ ਉਪਭੋਗੀ ਨੂੰ ਇੱਕ ਪ੍ਰਾਈਵੇਟ ਸੁਨੇਹਾ ਭੇਜੋ।"
 
 #: ../ggz-gtk/chat.c:495
 #, c-format
 msgid "Beep sent to %s."
-msgstr "%s wurde angepiepst."
+msgstr "%s ਨੂੰ ਆਵਾਜ਼ ਦਿੱਤੀ ਗਈ।"
 
 #: ../ggz-gtk/chat.c:523
 #, c-format
 msgid "%s (logged on)"
-msgstr "%s (angemeldet)"
+msgstr "%s (ਦਾਖਲ ਹੋਇਆ)"
 
 #: ../ggz-gtk/chat.c:561
 #, c-format
 msgid "%s (logged off)"
-msgstr "%s (abgemeldet)"
+msgstr "%s (ਲਾਗਆਉਟ ਹੋਇਆ)"
 
 #: ../ggz-gtk/chat.c:587
 msgid "Chat Commands"
-msgstr "Chat Kommandos"
+msgstr "ਗੱਲਬਾਤ ਕਮਾਂਡਾਂ"
 
 #: ../ggz-gtk/chat.c:588
 msgid "-------------"
@@ -135,48 +121,47 @@ msgstr "-------------"
 
 #: ../ggz-gtk/chat.c:592
 msgid "/me <action> .............. Send an action"
-msgstr "/me <Aktion> ............... Eine Aktion senden"
+msgstr "/me <action> .............. Send an action"
 
 #: ../ggz-gtk/chat.c:783
 #, c-format
 msgid "Added %s to your friends list."
-msgstr "%s wurde Ihrer Freundesliste hinzugefügt."
+msgstr "%s ਨੇ ਤੁਹਾਨੂੰ ਦੋਸਤ ਲਿਸਟ 'ਚ ਜੋੜ ਲਿਆ ਹੈ।"
 
 #: ../ggz-gtk/chat.c:807
 #, c-format
 msgid "Removed %s from your friends list."
-msgstr "%s wurde von Ihrer Freundesliste entfernt."
+msgstr "ਤੁਹਾਡੀ ਦੋਸਤ ਲਿਸਟ 'ਚੋਂ %s ਨੂੰ ਹਟਾਇਆ।"
 
 #: ../ggz-gtk/chat.c:838
 #, c-format
 msgid "Added %s to your ignore list."
-msgstr "%s wurde Ihrer Ignorierliste hinzugefügt."
+msgstr "%s ਨੇ ਤੁਹਾਨੂੰ ਅਣਡਿੱਠਾ ਲਿਸਟ 'ਚ ਪਾ ਲਿਆ"
 
 #: ../ggz-gtk/chat.c:863
 #, c-format
 msgid "Removed %s from your ignore list."
-msgstr "%s wurde von Ihrer Ignorierliste entfernt."
+msgstr "%s ਨੂੰ ਤੁਹਾਨੂੰ ਅਣਡਿੱਠੀ ਲਿਸਟ 'ਚੋਂ ਹਟਾਇਆ।"
 
 #: ../ggz-gtk/chat.c:939
 msgid "People currently your friends"
-msgstr "Ihre Freunde"
+msgstr "ਲੋਕ ਤੁਹਾਡੇ ਇਸ ਵੇਲੇ ਦੋਸਤ ਹਨ"
 
 #: ../ggz-gtk/chat.c:953
 msgid "People you're currently ignoring"
-msgstr "Ignorierte Leute"
+msgstr "ਲੋਕ, ਜਿੰਨ੍ਹਾਂ ਨੂੰ ਤੁਸੀਂ ਇਸ ਸਮੇਂ ਅਣਡਿੱਠਾ ਕਰ ਰਹੇ ਹੋ"
 
-# CHECK
 #: ../ggz-gtk/chat.c:1029
 msgid "Multiple matches:"
-msgstr "Mehrere Übereinstimmungen:"
+msgstr "ਕਈ ਮੇਲ:"
 
 #: ../ggz-gtk/client.c:144
 msgid "Are you sure you want to quit?"
-msgstr "Sind Sie sicher, dass Sie das Programm beenden wollen?"
+msgstr "ਕੀ ਤੁਸੀਂ ਬੰਦ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?"
 
 #: ../ggz-gtk/client.c:144
 msgid "Quit?"
-msgstr "Beenden?"
+msgstr "ਕੀ ਬੰਦ ਕਰਨਾ ਹੈ?"
 
 #: ../ggz-gtk/client.c:237
 msgid ""
@@ -184,14 +169,14 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"Serverstatistiken sind noch nicht implementiert.\n"
-"Falls Sie helfen möchten, besuchen Sie bitte\n"
+"ਸਰਵਰ ਅੰਕੜੇ ਹਾਲੇ ਬਣਾਇਆ ਨਹੀਂ ਹੈ। ਜੇ ਤੁਸੀਂ\n"
+"ਮਦਦ ਕਰਨੀ ਚਾਹੁੰਦੇ ਹੋ ਤਾਂ ਵੇਖੋ।\n"
 "http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
 #: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
 msgid "Not Implemented"
-msgstr "Nicht implementiert"
+msgstr "ਹਾਲੇ ਬਣਾਇਆ ਨਹੀਂ"
 
 #: ../ggz-gtk/client.c:248 ../ggz-gtk/client.c:545
 msgid ""
@@ -199,8 +184,8 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"Spielerstatistiken sind noch nicht implementiert.\n"
-"Falls Sie helfen möchten, besuchen Sie bitte\n"
+"ਖਿਡਾਰੀ ਅੰਕੜੇ ਹਾਲੇ ਬਣਾਇਆ ਨਹੀਂ ਹੈ। ਜੇ ਤੁਸੀਂ\n"
+"ਮਦਦ ਕਰਨੀ ਚਾਹੁੰਦੇ ਹੋ ਤਾਂ ਵੇਖੋ।\n"
 "http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:294
@@ -208,10 +193,9 @@ msgid ""
 "GGZ Gaming Zone help needs a browser to be configured.\n"
 "The configuration dialog will be invoked now."
 msgstr ""
-"Für die GGZ-Gaming-Zone-Hilfe müssen Sie einen Browser auswählen.\n"
-"Der Konfigurationsdialog wird jetzt angezeigt."
+"GGZ ਖੇਡ ਜ਼ੋਨ ਸਹਾਇਤਾ ਲਈ ਇੱਕ ਝਲਕਾਰਾ ਸੰਰਚਿਤ ਕਰਨਾ ਲਾਜ਼ਮੀ ਹੈ।\n"
+"ਸੰਰਚਨਾ ਵਾਰਤਾਲਾਪ ਹੁਣ ਵੇਖਾਇਆ ਜਾਵੇਗਾ।"
 
-# CHECK
 #: ../ggz-gtk/client.c:308
 msgid ""
 "Inline game help is not implemented yet. Help\n"
@@ -219,96 +203,97 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"Spielhilfen sind noch nicht implementiert.\n"
-"Falls Sie helfen möchten, besuchen Sie bitte\n"
+"ਤੁਰੰਤ ਖੇਡ ਸਹਾਇਤਾ ਹਾਲੇ ਬਣਾਇਆ ਨਹੀਂ ਹੈ। ਸਹਾਇਤਾ ਹਾਲੇ\n"
+"ਸਾਡੀ ਵੈਬਸਾਇਟ ਉੱਤੇ ਹੀ ਹੈ।ਜੇ ਤੁਸੀਂ\n"
+"ਮਦਦ ਕਰਨੀ ਚਾਹੁੰਦੇ ਹੋ ਤਾਂ ਵੇਖੋ।\n"
 "http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:566
 msgid "You must highlight a table before you can join it."
-msgstr "Sie müssen einen Tisch auswählen, bevor Sie ihm beitreten können."
+msgstr "ਤੁਹਾਨੂੰ ਦਾਖਲ ਹੋਣ ਤੋਂ ਪਹਿਲਾਂ ਇੱਕ ਮੇਜ਼ ਨੂੰ ਉਭਾਰਨਾ ਚਾਹੀਦਾ ਹੈ।"
 
 #: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
 msgid "Error Joining"
-msgstr "Fehler beim Beitreten"
+msgstr "ਜੁੜਨ ਦੌਰਾਨ ਗਲਤੀ"
 
 #: ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:614
 msgid "That table is full."
-msgstr "Der Tisch ist voll."
+msgstr "ਉਹ ਮੇਜ਼ ਭਰਿਆ ਸੀ।"
 
 #: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:334
 msgid "Error launching game module."
-msgstr "Fehler beim Starten des Spielmoduls."
+msgstr "ਖੇਡ ਮੋਡੀਊਲ ਚਲਾਉਣ ਦੌਰਾਨ ਗਲਤੀ ਹੈ।"
 
 #: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
 #: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:335
 msgid "Game Error"
-msgstr "Spielfehler"
+msgstr "ਖੇਡ ਗਲਤੀ"
 
 #: ../ggz-gtk/client.c:600
 msgid "You must highlight a table before you can watch it."
-msgstr "Sie müssen einen Tisch auswählen, bevor Sie zuschauen können."
+msgstr "ਤੁਹਾਨੂੰ ਵੇਖਣ ਤੋਂ ਪਹਿਲਾਂ ਇੱਕ ਮੇਜ਼ ਨੂੰ ਉਭਾਰਨਾ ਚਾਹੀਦਾ ਹੈ।"
 
 #: ../ggz-gtk/client.c:602
 msgid "Error Spectating"
-msgstr "Fehler beim Zuschauen."
+msgstr "ਸਪੈਕਟਿੰਗ ਦੌਰਾਨ ਗਲਤੀ"
 
 #: ../ggz-gtk/client.c:647
 msgid ""
 "Failed to join table.\n"
 "Join aborted."
 msgstr ""
-"Fehler beim Betreten des Tisches.\n"
-"Beitritt abgebrochen."
+"ਮੇਜ਼ ਨਾਲ ਜੁੜਨ ਦੌਰਾਨ ਫੇਲ੍ਹ।\n"
+"ਜੁੜਨ ਛੱਡਿਆ।"
 
 #: ../ggz-gtk/client.c:648
 msgid "Join Error"
-msgstr "Beitrittsfehler"
+msgstr "ਦਾਖਲ ਹੋਣ ਦੌਰਾਨ ਗਲਤੀ"
 
 #: ../ggz-gtk/client.c:678
 msgid "Disconnect from the GGZ Gaming Zone server"
-msgstr "Die Verbindung mit dem GGZ-Gaming-Zone-Server beenden"
+msgstr "GGZ ਖੇਡ ਜ਼ੋਨ ਸਰਵਰ ਨਾਲ ਕੁਨੈਕਸ਼ਨ ਖਤਮ"
 
 #: ../ggz-gtk/client.c:680
 msgid "Start playing a game at a new table"
-msgstr "Ein Spiel an einem neuen Tisch starten"
+msgstr "ਇੱਕ ਨਵੇਂ ਮੇਜ਼ ਨਾਲ ਖੇਡ ਖੇਡਣੀ"
 
 #: ../ggz-gtk/client.c:682
 msgid "Join an existing game"
-msgstr "Einem laufenden Spiel beitreten"
+msgstr "ਇੱਕ ਚਾਲੂ ਖੇਡ 'ਚ ਸ਼ਾਮਿਲ"
 
 #: ../ggz-gtk/client.c:684
 msgid "Watch an existing game - become a spectator of the table"
-msgstr "Bei einem laufenden Spiel zuschauen"
+msgstr "ਇੱਕ ਮੌਜੂਦਾ ਖੇਡ ਵੇਖੋ - ਇੱਕ ਮੇਜ਼ ਦਾ ਸਪੈਕਟਰ ਬਣੋ"
 
 #: ../ggz-gtk/client.c:687
 msgid "Leave the game you're currently playing"
-msgstr "Das Spiel, das Sie gerade spielen, verlassen"
+msgstr "ਇਸ ਸਮੇਂ ਖੇਡ ਰਹੇ ਆਪਣੀ ਖੇਡ ਛੱਡੋ"
 
 #: ../ggz-gtk/client.c:689
 msgid "Show the properties dialog to change the client settings"
-msgstr "Den Einstellungsdialog anzeigen"
+msgstr "ਕਲਾਂਇਟ ਸੈਟਿੰਗ ਬਦਲਣ ਲਈ ਵਿਸ਼ੇਸ਼ਤਾ ਵਾਰਤਾਲਾਪ ਵੇਖਾਓ"
 
 #: ../ggz-gtk/client.c:693
 msgid "Show the game stats for the current room's game type"
-msgstr "Die Stastiken für den Spieltyp des aktuellen Raumes anzeigen"
+msgstr "ਮੌਜੂਦਾ ਰੂਮ ਦੀ ਖੇਡ ਕਿਸਮ ਲਈ ਖੇਡ ਅੰਕੜੇ ਵੇਖਾਓ"
 
 #: ../ggz-gtk/client.c:696
 msgid "Exit the GGZ client application."
-msgstr "Den GGZ-Client beenden."
+msgstr "GGZ ਕਲਾਂਇਟ ਕਾਰਜ ਬੰਦ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ।"
 
 #: ../ggz-gtk/client.c:726
 #, c-format
 msgid "Client Version:14 %s"
-msgstr "Client-Version:14 %s"
+msgstr "ਕਲਾਂਇਟ ਵਰਜਨ:14 %s"
 
 #: ../ggz-gtk/client.c:729
 #, c-format
 msgid "GTK+ Version:14 %d.%d.%d\n"
-msgstr "GTK+-Version:14 %d.%d.%d\n"
+msgstr "GTK+ ਵਰਜਨ:14 %d.%d.%d\n"
 
 #: ../ggz-gtk/client.c:736
 msgid "Compiled with debugging."
-msgstr "Kompiliert mit Fehlersuchinformationen."
+msgstr "ਡੀਬੱਗ ਨਾਲ ਕੰਪਾਇਲ ਕੀਤਾ।"
 
 #: ../ggz-gtk/client.c:934
 msgid "GGZ"
@@ -316,69 +301,68 @@ msgstr "GGZ"
 
 #: ../ggz-gtk/client.c:942 ../ggz-gtk/login.c:710
 msgid "Connect"
-msgstr "Verbinden"
+msgstr "ਜੁੜੋ"
 
 #: ../ggz-gtk/client.c:949 ../ggz-gtk/client.c:1180
 msgid "Disconnect"
-msgstr "Trennen"
+msgstr "ਕੁਨੈਕਸ਼ਨ ਬੰਦ"
 
 #: ../ggz-gtk/client.c:962
 msgid "Quit"
-msgstr "Beenden"
+msgstr "ਬਾਹਰ"
 
 #: ../ggz-gtk/client.c:969
 msgid "Game"
-msgstr "Spiel"
+msgstr "ਖੇਡ"
 
 #: ../ggz-gtk/client.c:978 ../ggz-gtk/client.c:1133 ../ggz-gtk/launch.c:693
 msgid "Launch"
-msgstr "Start"
+msgstr "ਚਲਾਓ"
 
 #: ../ggz-gtk/client.c:985 ../ggz-gtk/client.c:1141 ../ggz-gtk/roomlist.c:150
 #: ../ggz-gtk/tablelist.c:74
 msgid "Join"
-msgstr "Beitreten"
+msgstr "ਦਾਖਲ"
 
 #: ../ggz-gtk/client.c:992 ../ggz-gtk/client.c:1149
 msgid "Watch"
-msgstr "Zuschauen"
+msgstr "ਵਾਚ"
 
 #: ../ggz-gtk/client.c:1004 ../ggz-gtk/client.c:1157 ../ggz-gtk/tablelist.c:77
 msgid "Leave"
-msgstr "Verlassen"
+msgstr "ਛੱਡੋ"
 
 #: ../ggz-gtk/client.c:1011
 msgid "Edit"
-msgstr "Bearbeiten"
+msgstr "ਸੋਧ"
 
 #: ../ggz-gtk/client.c:1019
 msgid "Properties"
-msgstr "Einstellungen"
+msgstr "ਵਿਸ਼ੇਸ਼ਤਾ"
 
 #: ../ggz-gtk/client.c:1026
 msgid "View"
-msgstr "Ansicht"
+msgstr "ਵੇਖੋ"
 
 #: ../ggz-gtk/client.c:1035
 msgid "Room List"
-msgstr "Raumliste"
+msgstr "ਰੂਮ ਲਿਸਟ"
 
 #: ../ggz-gtk/client.c:1041
 msgid "Player List"
-msgstr "Spielerliste"
+msgstr "ਖਿਡਾਰੀ ਲਿਸਟ"
 
 #: ../ggz-gtk/client.c:1053
 msgid "Server Stats"
-msgstr "Serverstatistiken"
+msgstr "ਸਰਵਰ ਅੰਕੜੇ"
 
-# Was bedeutet "Stats"?
 #: ../ggz-gtk/client.c:1057
 msgid "Player Stats"
-msgstr "Spielerstatistik"
+msgstr "ਖਿਡਾਰੀ ਅੰਕੜੇ"
 
 #: ../ggz-gtk/client.c:1065 ../ggz-gtk/types.c:237
 msgid "Game Types"
-msgstr "Spieltypen"
+msgstr "ਖੇਡ ਕਿਸਮਾਂ"
 
 #: ../ggz-gtk/client.c:1074 ../ggz-gtk/props.c:1491
 msgid "MOTD"
@@ -386,140 +370,139 @@ msgstr "MOTD"
 
 #: ../ggz-gtk/client.c:1081
 msgid "Help"
-msgstr "Hilfe"
+msgstr "ਸਹਾਇਤਾ"
 
 #: ../ggz-gtk/client.c:1096
 msgid "Copyright"
-msgstr "Copyright"
+msgstr "ਕਾਪੀਰਾਈਟ"
 
 #: ../ggz-gtk/client.c:1105
 msgid "GGZ Help"
-msgstr "GGZ Hilfe"
+msgstr "GGZ ਸਹਾਇਤਾ"
 
 #: ../ggz-gtk/client.c:1112
 msgid "Game Help"
-msgstr "Spiel-Hilfe"
+msgstr "ਖੇਡ ਸਹਾਇਤਾ"
 
-# CHECK
 #: ../ggz-gtk/client.c:1121
 msgid "Goto Web"
-msgstr "Internet-Seite besuchen"
+msgstr "ਵੈੱਬ ਤੇ ਜਾਓ"
 
 #: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:356
 msgid "Stats"
-msgstr "Statistik"
+msgstr "ਅੰਕੜੇ"
 
 #: ../ggz-gtk/client.c:1196 ../ggz-gtk/ggzclient.c:718
 msgid "Current Room:"
-msgstr "Aktueller Raum:"
+msgstr "ਮੌਜੂਦਾ ਰੂਮ:"
 
 #: ../ggz-gtk/client.c:1277 ../ggz-gtk/playerinfo.c:259
 msgid "Message:"
-msgstr "Nachricht:"
+msgstr "ਸੁਨੇਹਾ:"
 
 #: ../ggz-gtk/client.c:1295
 msgid "Send"
-msgstr "Senden"
+msgstr "ਭੇਜੋ"
 
 #: ../ggz-gtk/client.c:1480 ../ggz-gtk/ggzclient.c:400
 msgid "GGZ Gaming Zone"
-msgstr "GGZ Gaming Zone"
+msgstr "GGZ ਖੇਡ ਜ਼ੋਨ"
 
 #: ../ggz-gtk/first.c:57
 msgid "Wizard"
-msgstr "Zauberer"
+msgstr "ਸਹਾਇਕ"
 
 #: ../ggz-gtk/first.c:57
 msgid "Deity"
-msgstr "Göttliches Wesen"
+msgstr "ਡੈਨਸੀ"
 
 #: ../ggz-gtk/first.c:57
 msgid "Sentinel"
-msgstr "Wächter"
+msgstr "ਸੇਨਾਟੀਨੀਲ"
 
 #: ../ggz-gtk/first.c:57
 msgid "Captain"
-msgstr "Kapitän"
+msgstr "ਕੈਪਟਨ"
 
 #: ../ggz-gtk/first.c:58
 msgid "Knight"
-msgstr "Ritter"
+msgstr "ਨਾਈਟ"
 
 #: ../ggz-gtk/first.c:58
 msgid "Angel"
-msgstr "Engel"
+msgstr "ਦੇਵਤਾ"
 
 #: ../ggz-gtk/first.c:58
 msgid "Silverlord"
-msgstr "Silberlord"
+msgstr "ਸਿਲਵਰ-ਲਾਡ"
 
 #: ../ggz-gtk/first.c:58
 msgid "Eagle"
-msgstr "Adler"
+msgstr "ਬਾਜ਼"
 
 #: ../ggz-gtk/first.c:59
 msgid "Vampire"
-msgstr "Vampir"
+msgstr "ਵਿੰਮਪਾਇਰ"
 
 #: ../ggz-gtk/first.c:59
 msgid "Chief"
-msgstr "Chef"
+msgstr "ਚੀਫ਼"
 
 #: ../ggz-gtk/first.c:59
 msgid "Colonel"
-msgstr "Oberst"
+msgstr "ਕੋਲੋਨੀਲ"
 
 #: ../ggz-gtk/first.c:59
 msgid "General"
-msgstr "Allgemein"
+msgstr "ਸਾਧਾਰਨ"
 
 #: ../ggz-gtk/first.c:60
 msgid "Major"
-msgstr "Major"
+msgstr "ਮੇਜਰ"
 
 #: ../ggz-gtk/first.c:60
 msgid "Scout"
-msgstr "Pfadfinder"
+msgstr "ਸਕਾਊਂਟ"
 
 #: ../ggz-gtk/first.c:60
 msgid "Lieutenant"
-msgstr "Lieutenant"
+msgstr "ਲੀਉਟੀਨੇਟ"
 
 #: ../ggz-gtk/first.c:60
 msgid "Stalker"
-msgstr "Anschleicher"
+msgstr "ਸਟਾਲਕੀਰ"
 
 #: ../ggz-gtk/first.c:61
 msgid "Scientist"
-msgstr "Forscher"
+msgstr "ਵਿਗਿਆਨੀ"
 
 #: ../ggz-gtk/first.c:61
 msgid "Scholar"
-msgstr "Gelehrter"
+msgstr "ਵਿਦਵਾਨ"
 
 #: ../ggz-gtk/first.c:61
 msgid "Entity"
-msgstr "Einheit"
+msgstr "ਇੰਟੇਟੀ"
 
 #: ../ggz-gtk/first.c:61
 msgid "Creator"
-msgstr "Ersteller"
+msgstr "ਨਿਰਮਾਤਾ"
 
 #: ../ggz-gtk/first.c:69
 msgid "GGZ Community (fast)"
-msgstr "GGZ Community (schnell)"
+msgstr "GGZ ਕਮਿਊਨਟੀ (ਤੇਜ਼)"
 
 #: ../ggz-gtk/first.c:70
 msgid "Local developer server"
-msgstr "Lokaler Entwickler-Server"
+msgstr "ਲੋਕਲ ਖੋਜੀ ਸਰਵਰ"
 
 #: ../ggz-gtk/first.c:190
 msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
-"Dies ist das erste Mal, dass Sie den GTK+ GGZ Gaming Zone-Client starten. "
-"Möchten Sie einige Standard-Server-Profile erstellen?"
+"ਇਹ ਪਹਿਲੀਂ ਵਾਰ ਹੈ, ਜਦੋਂ ਤੁਸੀਂ GTK+ GGZ ਖੇਡ ਜ਼ੋਨ ਕਲਾਇਟ ਵਰਤ ਰਹੇ ਹੋ। ਕੀ ਤੁਸੀਂ ਕੁਝ ਮੂਲ ਸਰਵਰ "
+"ਪ੍ਰੋਫਾਇਲ ਬਣਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?"
 
 #: ../ggz-gtk/game.c:72
 #, c-format
@@ -527,333 +510,325 @@ msgid ""
 "You don't have this game installed. You can download\n"
 "it from %s."
 msgstr ""
-"Dieses Spiel ist nicht installiert. Sie können es von\n"
-"%s herunterladen."
+"ਤੁਸੀਂ ਇਹ ਖੇਡ ਇੰਸਟਾਲ ਨਹੀਂ ਕੀਤੀ ਹੈ। ਤੁਸੀਂ ਇਸ ਨੂੰ %s\n"
+"ਤੋਂ ਡਾਊਨਲੋਡ ਕਰ ਸਕਦੇ ਹੋ।"
 
 #: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
 #: ../ggz-gtk/game.c:325 ../ggz-gtk/game.c:334 ../ggz-gtk/game.c:350
 #: ../ggz-gtk/launch.c:290
 msgid "Launch Error"
-msgstr "Fehler beim Starten"
+msgstr "ਸ਼ੁਰੂ ਕਰਨ ਦੌਰਾਨ ਗਲਤੀ"
 
 #: ../ggz-gtk/game.c:148
 msgid ""
 "Failed to execute game module.\n"
 " Launch aborted."
 msgstr ""
-"Fehler beim Starten des Spielmoduls.\n"
-" Start abgebrochen."
+"ਖੇਡ ਮੋਡੀਊਲ ਚਲਾਉਣ ਲਈ ਫੇਲ੍ਹ ਹੈ।\n"
+"  ਚਲਾਉਣ ਛੱਡਿਆ ਜਾ ਰਿਹਾ ਹੈ।"
 
 #: ../ggz-gtk/game.c:201
 msgid "Launched game"
-msgstr "Spiel gestartet"
+msgstr "ਖੇਡ ਚਾਲੂ ਹੋਈ"
 
 #: ../ggz-gtk/game.c:222
 msgid "Launch failed"
-msgstr "Starten des Spiels fehlgeschlagen"
+msgstr "ਚਾਲੂ ਕਰਨਾ ਫੇਲ੍ਹ"
 
 #: ../ggz-gtk/game.c:296
 msgid "You can only play one game at a time."
-msgstr "Sie können nur ein Spiel gleichzeitig spielen."
+msgstr "ਤੁਸੀਂ ਇੱਕ ਸਮੇਂ ਇੱਕ ਹੀ ਖੇਡ ਖੇਡ ਸਕਦੇ ਹੋ।"
 
 #: ../ggz-gtk/game.c:304
 msgid "You're still at a table."
-msgstr "Sie sind immer noch an einem Tisch."
+msgstr "ਤੁਸੀਂ ਹਾਲੇਂ ਵੀ ਮੇਜ਼ ਉੱਤੇ ਹੋ।"
 
 #: ../ggz-gtk/game.c:313
 msgid ""
 "You must be in a room to launch a game.\n"
 "Launch aborted"
-msgstr ""
-"Sie müssen einen Raum betreten haben, um ein Spiel zu starten.\n"
-"Start abgebrochen"
+msgstr "ਖੇਡ ਚਲਾਉਣ ਲਈ ਤੁਹਾਨੂੰ ਰੂਮ 'ਚ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ। ਖੇਡ ਛੱਡੀ ਜਾ ਰਹੀ ਹੈ"
 
 #: ../ggz-gtk/game.c:323
 msgid ""
 "No game types defined for this server.\n"
 "Launch aborted."
 msgstr ""
-"Auf diesem Server sind keine Spieltypen definiert.\n"
-"Start abgebrochen."
+"ਇਹ ਸਰਵਰ ਲਈ ਕੋਈ ਖੇਡ ਕਿਸਮ ਦਿੱਤੀ ਨਹੀਂ ਗਈ ਹੈ।\n"
+"ਖੇਡ ਅਧੂਰੀ ਛੱਡੀ ਜਾ ਰਹੀ ਹੈ।"
 
 #: ../ggz-gtk/game.c:333
 msgid "This game doesn't support spectators."
-msgstr "Dieses Spiel unterstützt keine Zuschauer."
+msgstr "ਇਹ ਖੇਡ ਸਪੈਕਟਰ ਲਈ ਸਹਿਯੋਗੀ ਨਹੀਂ ਹੈ।"
 
 #: ../ggz-gtk/game.c:348
 msgid ""
 "You need to launch the GGZ client directly\n"
 "to be able to play this game."
 msgstr ""
-"Sie müssen den GGZ-Klienten direkt starten,\n"
-"um dieses Spiel spielen zu können."
+"ਤੁਹਾਨੂੰ ਇਹ ਖੇਡ ਖੇਡਣ ਲਈ GGZ ਕਲਾਂਇਟ ਸਿੱਧਾ ਚਲਾਉਣਾ\n"
+"ਪਵੇਗਾ।"
 
 #: ../ggz-gtk/ggzclient.c:122
 #, c-format
 msgid "Error connecting to server: %s"
-msgstr "Fehler beim Verbinden zum Server: %s"
+msgstr "ਸਰਵਰ ਨਾਲ ਜੁੜ ਸਮੇਂ ਗਲਤੀ: %s"
 
 #: ../ggz-gtk/ggzclient.c:124 ../ggz-gtk/ggzclient.c:380
 #: ../ggz-gtk/ggzclient.c:561 ../ggz-gtk/ggzclient.c:596
 #: ../ggz-gtk/ggzclient.c:649 ../ggz-gtk/ggzclient.c:1079
 #: ../ggz-gtk/launch.c:325
 msgid "Error"
-msgstr "Fehler"
+msgstr "ਗਲਤੀ"
 
 #: ../ggz-gtk/ggzclient.c:237
 #, c-format
 msgid "Your new password is %s"
-msgstr "Ihr neues Passwort ist %s"
+msgstr "ਤੁਹਾਡਾ ਨਵਾਂ ਗੁਪਤ-ਕੋਡ %s ਹੈ"
 
 #: ../ggz-gtk/ggzclient.c:239
 msgid "New password"
-msgstr "Neues Passwort"
+msgstr "ਨਵਾਂ ਗੁਪਤ-ਕੋਡ"
 
 #: ../ggz-gtk/ggzclient.c:275
 #, c-format
 msgid "Players on server: %d"
-msgstr "Spieler auf dem Server: %d"
+msgstr "ਸਰਵਰ ਉੱਤੇ ਖਿਡਾਰੀ: %d"
 
 #: ../ggz-gtk/ggzclient.c:320
 #, c-format
 msgid "Current Room: %s"
-msgstr "Aktueller Raum: %s"
+msgstr "ਮੌਜੂਦਾ ਰੂਮ: %s"
 
 #: ../ggz-gtk/ggzclient.c:328
 #, c-format
 msgid "You've joined room \"%s\"."
-msgstr "Sie haben den Raum »%s« betreten."
+msgstr "ਤੁਸੀਂ \"%s\" ਰੂਮ 'ਚ ਆਏ।"
 
 #: ../ggz-gtk/ggzclient.c:378
 #, c-format
 msgid "Error joining room: %s"
-msgstr "Fehler beim Betreten des Raumes: %s"
+msgstr "ਰੂਮ 'ਚ ਦਾਖਲ ਹੋਣ ਸਮੇਂ ਗਲਤੀ: %s"
 
 #: ../ggz-gtk/ggzclient.c:429
 msgid "You can't chat while not in a room."
-msgstr ""
-"Sie können sich nicht unterhalten, solange Sie keinem Raum betreten haben."
+msgstr "ਜਦੋਂ ਤੁਸੀਂ ਰੂਮ 'ਚ ਨਹੀਂ ਹੋ ਤਾਂ ਗੱਲਬਾਤ ਨਹੀਂ ਕਰ ਸਕਦੇ।"
 
 #: ../ggz-gtk/ggzclient.c:434
 msgid "You don't have permission to chat here."
-msgstr ""
-"Sie haben nicht die erforderliche Berechtigung, um sich hier zu unterhalten."
+msgstr "ਤੁਹਾਨੂੰ ਇੱਥੇ ਗੱਲਬਾਤ ਕਰਨ ਦਾ ਅਧਿਕਾਰ ਨਹੀਂ ਹੈ।"
 
 #: ../ggz-gtk/ggzclient.c:438
 msgid "No private chatting at a table!"
-msgstr "Private Unterhaltungen am Tisch sind verboten!"
+msgstr "ਮੇਜ਼ ਉੱਤੇ ਕੋਈ ਪ੍ਰਾਈਵੇਟ ਗੱਲਬਾਤ ਨਹੀਂ!"
 
 #: ../ggz-gtk/ggzclient.c:442
 msgid "That player isn't in the room!"
-msgstr "Der Spieler ist nicht im Raum!"
+msgstr "ਉਹ ਖਿਡਾਰੀ ਰੂਮ 'ਚ ਨਹੀਂ ਹੈ!"
 
 #: ../ggz-gtk/ggzclient.c:447
 msgid "There was an error sending the chat."
-msgstr "Fehler beim Senden der Nachricht."
+msgstr "ਗੱਲਬਾਤ ਭੇਜਣ 'ਚ ਇੱਕ ਗਲਤੀ ਆਈ ਹੈ।"
 
 #: ../ggz-gtk/ggzclient.c:451
 msgid "You're not at a table."
-msgstr "Sie sind an keinem Tisch."
+msgstr "ਤੁਸੀਂ ਮੇਜ਼ ਉੱਤੇ ਨਹੀਂ ਹੋ।"
 
 #: ../ggz-gtk/ggzclient.c:455
 #, c-format
 msgid "Chat failed: %s."
-msgstr "Unterhaltung fehlgeschlagen: %s."
+msgstr "ਗੱਲਬਾਤ ਫੇਲ੍ਹ: %s"
 
 #: ../ggz-gtk/ggzclient.c:559
 #, c-format
 msgid "Error launching table: %s"
-msgstr "Fehler beim Erstellen des Tisches: %s"
+msgstr "ਮੇਜ਼ ਚਲਾਉਣ ਦੌਰਾਨ ਗਲਤੀ: %s"
 
 #: ../ggz-gtk/ggzclient.c:579
 #, c-format
 msgid "You have joined table %d."
-msgstr "Sie sind dem Tisch %d beigetreten."
+msgstr "ਤੁਸੀਂ ਮੇਜ਼ %d ਦਾਖਲ ਹੋਏ।"
 
 #: ../ggz-gtk/ggzclient.c:594
 #, c-format
 msgid "Error joining table: %s"
-msgstr "Fehler beim Betreten des Tisches: %s"
+msgstr "ਮੇਜ਼ ਉੱਤੇ ਬੈਠਣ ਦੌਰਾਨ ਗਲਤੀ: %s"
 
 #: ../ggz-gtk/ggzclient.c:616
 #, c-format
 msgid "You have been booted from the table by %s."
-msgstr "Sie wurden von %s des Tisches verwiesen."
+msgstr "ਤੁਸੀਂ ਮੇਜ਼ ਤੋਂ %s ਰਾਹੀਂ ਬੂਟ ਨਹੀਂ ਕਰ ਸਕਦੇ।"
 
 #: ../ggz-gtk/ggzclient.c:621
 #, c-format
 msgid "You have left the table."
-msgstr "Sie haben den Tisch verlassen."
+msgstr "ਤੁਸੀਂ ਮੇਜ਼ ਛੱਡ ਗਏ।"
 
 #: ../ggz-gtk/ggzclient.c:624
 #, c-format
 msgid "The game is over."
-msgstr "Das Spiel ist vorbei."
+msgstr "ਖੇਡ ਖਤਮ ਹੋਈ।"
 
 #: ../ggz-gtk/ggzclient.c:628
 #, c-format
 msgid "There was an error with the game server."
-msgstr "Es ist ein Fehler mit dem Spiel-Server aufgetreten."
+msgstr "ਖੇਡ ਸਰਵਰ ਨਾਲ ਗਲਤੀ ਹੈ।"
 
 #: ../ggz-gtk/ggzclient.c:647
 #, c-format
 msgid "Error leaving table: %s"
-msgstr "Fehler beim Verlassen des Tisches: %s"
+msgstr "ਮੇਜ਼ ਛੱਡਣ ਦੌਰਾਨ ਗਲਤੀ: %s"
 
 #: ../ggz-gtk/ggzclient.c:740
 msgid "**none**"
-msgstr "**keiner**"
+msgstr "**ਕੋਈ ਨਹੀਂ**"
 
 #: ../ggz-gtk/ggzclient.c:747
 msgid "Offline"
-msgstr "Nicht verbunden"
+msgstr "ਆਫਲਾਇਨ"
 
 #: ../ggz-gtk/ggzclient.c:750
 msgid "Connecting"
-msgstr "Verbinden"
+msgstr "ਜੁੜ ਰਿਹਾ ਹੈ"
 
 #: ../ggz-gtk/ggzclient.c:753
 msgid "Reconnecting"
-msgstr "Neu verbinden"
+msgstr "ਮੁੜ-ਜੁੜ ਰਿਹਾ ਹੈ"
 
 #: ../ggz-gtk/ggzclient.c:756
 msgid "Online"
-msgstr "Angemeldet"
+msgstr "ਆਨਲਾਇਨ"
 
 #: ../ggz-gtk/ggzclient.c:759
 msgid "Logging In"
-msgstr "Anmeldevorgang"
+msgstr "ਲਾਗਇਨ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 
 #: ../ggz-gtk/ggzclient.c:762
 msgid "Logged In"
-msgstr "Angemeldet"
+msgstr "ਲਾਗਇਨ"
 
 #: ../ggz-gtk/ggzclient.c:766
 msgid "--> Room"
-msgstr "--> Raum"
+msgstr "--> ਰੂਮ"
 
-# CHECK
 #: ../ggz-gtk/ggzclient.c:769
 msgid "Chatting"
-msgstr "Redend"
+msgstr "ਗੱਲਬਾਤ ਜਾਰੀ"
 
 #: ../ggz-gtk/ggzclient.c:773
 msgid "--> Table"
-msgstr "--> Tisch"
+msgstr "--> ਮੇਜ਼"
 
-# bezieht sich auf die Form der Steine!
 #: ../ggz-gtk/ggzclient.c:776
 msgid "Playing"
-msgstr "Spielend"
+msgstr "ਖੇਡ ਜਾਰੀ"
 
 #: ../ggz-gtk/ggzclient.c:779
 msgid "<-- Table"
-msgstr "<-- Tisch"
+msgstr "<-- ਮੇਜ਼"
 
 #: ../ggz-gtk/ggzclient.c:782
 msgid "Logging Out"
-msgstr "Abmeldevorgang"
+msgstr "ਲਾਗਆਉਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 
 #: ../ggz-gtk/ggzclient.c:1078
 #, c-format
 msgid "Server error: %s"
-msgstr "Server-Fehler: %s"
+msgstr "ਸਰਵਰ ਗਲਤੀ: %s"
 
 #: ../ggz-gtk/ggzclient.c:1166
 msgid "Disconnected from server."
-msgstr "Verbindung beendet."
+msgstr "ਸਰਵਰ ਤੋਂ ਕੁਨੈਕਸ਼ਨ ਖਤਮ ਹੋ ਗਿਆ ਹੈ।"
 
 #: ../ggz-gtk/launch.c:114
 #, c-format
 msgid "Game Type:  %s"
-msgstr "Spieltyp: %s"
+msgstr "ਖੇਡ ਕਿਸਮ:  %s"
 
 #: ../ggz-gtk/launch.c:120
 #, c-format
 msgid "Author:  %s"
-msgstr "Autor: %s"
+msgstr "ਲੇਖਕ:  %s"
 
 #: ../ggz-gtk/launch.c:127
 #, c-format
 msgid "Description:  %s"
-msgstr "Beschreibung: %s"
+msgstr "ਵੇਰਵਾ:  %s"
 
-# CHECK
 #: ../ggz-gtk/launch.c:133
 #, c-format
 msgid "Home Page:  %s"
-msgstr "Website: %s"
+msgstr "ਮੁੱਖ ਸਫ਼ਾ:  %s"
 
 #: ../ggz-gtk/launch.c:289
 msgid ""
 "Failed to launch table.\n"
 " Launch aborted."
 msgstr ""
-"Fehler beim Erstellen des Tisches.\n"
-" Erstellen abgebrochen."
+"ਮੇਜ਼ ਚਲਾਉਣ ਲਈ ਫੇਲ੍ਹ।\n"
+" ਚਲਾਉਣ ਛੱਡਿਆ।"
 
 #: ../ggz-gtk/launch.c:325
 msgid "Invalid number of bots specified"
-msgstr "Ungültige Anzahl an Computerspielern eingegeben"
+msgstr "ਬੋਟਾਂ ਦੀ ਗਲਤ ਗਿਣਤੀ ਦਿੱਤੀ ਹੈ"
 
 #: ../ggz-gtk/launch.c:420
 msgid "Seat Assignments"
-msgstr "Sitzzuordnungen"
+msgstr "ਸੀਟਾਂ ਲੈਣੀਆਂ"
 
 #: ../ggz-gtk/launch.c:443
 msgid "Game Type:"
-msgstr "Spieltyp:"
+msgstr "ਖੇਡ ਕਿਸਮ:"
 
 #: ../ggz-gtk/launch.c:479
 msgid "Number of seats"
-msgstr "Anzahl der Plätze"
+msgstr "ਸੀਟਾਂ ਦੀ ਗਿਣਤੀ"
 
 #: ../ggz-gtk/launch.c:495 ../ggz-gtk/roominfo.c:90
 msgid "Author:"
-msgstr "Autor:"
+msgstr "ਲੇਖਕ:"
 
 #: ../ggz-gtk/launch.c:513
 msgid "Description:"
-msgstr "Beschreibung:"
+msgstr "ਵੇਰਵਾ:"
 
-# Ist "Homepage" eingedeutscht "genug", um es als Übersetzung zu verwenden?
 #: ../ggz-gtk/launch.c:530 ../ggz-gtk/roominfo.c:100
 msgid "Homepage:"
-msgstr "Internetseite:"
+msgstr "ਮੁੱਖ ਸਫ਼ਾ:"
 
 #: ../ggz-gtk/launch.c:586
 #, c-format
 msgid "Seat %d:"
-msgstr "Sitz %d:"
+msgstr "ਸੀਟ %d:"
 
 #: ../ggz-gtk/launch.c:598
 msgid "Computer"
-msgstr "Rechner"
+msgstr "ਕੰਪਿਊਟਰ"
 
 #: ../ggz-gtk/launch.c:613
 msgid "Open"
-msgstr "Offen"
+msgstr "ਖੋਲ੍ਹੋ"
 
 #: ../ggz-gtk/launch.c:628
 msgid "Reserved for"
-msgstr "Reserviert für"
+msgstr "ਇਸ ਲਈ ਰਾਖਵਾਂ"
 
 #: ../ggz-gtk/launch.c:663
 msgid "Game Description   "
-msgstr "Spielbeschreibung"
+msgstr "ਖੇਡ ਵੇਰਵਾ  "
 
 #: ../ggz-gtk/login.c:101
 msgid "Login"
-msgstr "Anmeldung"
+msgstr "ਲਾਗਇਨ"
 
 #: ../ggz-gtk/login.c:108
 msgid "Sorry!"
-msgstr "Entschuldigung!"
+msgstr "ਅਫ਼ਸੋਸ ਹੈ!"
 
 #: ../ggz-gtk/login.c:115
 #, c-format
 msgid "That username is already in use."
-msgstr "Der Benutzername wird bereits verwendet."
+msgstr "ਉਪਭੋਗੀ ਨਾਂ ਪਹਿਲਾਂ ਹੀ ਵਰਤੋਂ ਅਧੀਨ ਹੈ।"
 
 #: ../ggz-gtk/login.c:119
 #, c-format
@@ -861,156 +836,156 @@ msgid ""
 "Authentication has failed.\n"
 "Please supply the correct password."
 msgstr ""
-"Die Authentifikation ist fehlgeschlagen.\n"
-"Bitte geben Sie das richtige Passwort ein."
+"ਪਰਮਾਣਕਿਤਾ ਫੇਲ੍ਹ ਹੋਈ ਹੈ।\n"
+"ਠੀਕ ਗੁਪਤ-ਕੋਡ ਦਿਓ ਜੀ।"
 
 #: ../ggz-gtk/login.c:123
 #, c-format
 msgid "The username is too long!"
-msgstr "Der Benutzername ist zu lang!"
+msgstr "ਉਪਭੋਗੀ ਨਾਂ ਬਹੁਤ ਲੰਮਾ ਹੈ!"
 
 #: ../ggz-gtk/login.c:126
 #, c-format
 msgid "Invalid username, do not use special characters!"
-msgstr "Ungültiger Benutzername, bitte benutzen Sie keine Sonderzeichen!"
+msgstr "ਗਲਤ ਉਪਭੋਗੀ ਨਾਂ ਹੈ, ਖਾਸ ਅੱਖਰ ਨਾ ਵਰਤੋਂ ਜੀ!"
 
 #: ../ggz-gtk/login.c:130
 #, c-format
 msgid "Login failed for unknown reason: %s"
-msgstr "Anmeldevorgang aus unbekanntem Grund fehlgeschlagen: %s"
+msgstr "ਅਣਜਾਣੇ ਕਾਰਨ ਕਰਕੇ ਲਾਗਇਨ ਕਰਨ ਫੇਲ੍ਹ: %s"
 
 #: ../ggz-gtk/login.c:538
 msgid "Server Profile"
-msgstr "Serverprofil"
+msgstr "ਸਰਵਰ ਪ੍ਰੋਫਾਇਲ"
 
 #: ../ggz-gtk/login.c:562 ../ggz-gtk/props.c:925
 msgid "Profile:"
-msgstr "Profil:"
+msgstr "ਪ੍ਰੋਫਾਇਲ:"
 
 #: ../ggz-gtk/login.c:582
 msgid "Edit Profiles..."
-msgstr "Profile bearbeiten …"
+msgstr "ਪ੍ਰੋਫਾਇਲ ਸੋਧ..."
 
 #: ../ggz-gtk/login.c:590 ../ggz-gtk/props.c:946
 msgid "Server:"
-msgstr "Server:"
+msgstr "ਸਰਵਰ:"
 
 #: ../ggz-gtk/login.c:600
 msgid "localhost"
-msgstr "localhost"
+msgstr ""
 
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
-msgstr "Port:"
+msgstr "ਪੋਰਟ:"
 
 #: ../ggz-gtk/login.c:612
 msgid "5688"
-msgstr "5688"
+msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
-msgstr "Benutzername:"
+msgstr "ਉਪਭੋਗੀ ਨਾਂ:"
 
 #: ../ggz-gtk/login.c:648 ../ggz-gtk/props.c:1014
 msgid "Password:"
-msgstr "Passwort:"
+msgstr "ਗੁਪਤ-ਕੋਡ:"
 
 #: ../ggz-gtk/login.c:664
 msgid "Email:"
-msgstr "E-Mail:"
+msgstr "ਈ-ਮੇਲ:"
 
 #: ../ggz-gtk/login.c:680 ../ggz-gtk/props.c:1057
 msgid "Normal Login"
-msgstr "Normale Anmeldung"
+msgstr "ਸਧਾਰਨ ਲਾਗਇਨ"
 
 #: ../ggz-gtk/login.c:691 ../ggz-gtk/props.c:1065
 msgid "Guest Login"
-msgstr "Gast-Anmeldung"
+msgstr "ਮਹਿਮਾਨ ਲਾਗਇਨ"
 
 #: ../ggz-gtk/login.c:699
 msgid "First-time Login"
-msgstr "Erstanmeldung"
+msgstr "ਪਹਿਲੀਂ ਵਾਰ ਲਾਗਇਨ"
 
 #: ../ggz-gtk/motd.c:161
 msgid "Message of the Day"
-msgstr "Nachricht des Tages"
+msgstr "ਦਿਨ ਦਾ ਸੁਨੇਹਾ"
 
 #: ../ggz-gtk/pick_module.c:89
 msgid "Which client would you like to use to play this game?"
-msgstr "Welches Programm möchten Sie benutzen, um dieses Spiel zu starten?"
+msgstr "ਇਹ ਖੇਡ ਖੇਡਣ ਲਈ ਤੁਸੀਂ ਕਿਹੜੇ ਕਲਾਂਇਟ ਦੀ ਵਰਤੋਂ ਕਰਨੀ ਚਾਹੋਗੇ?"
 
 #: ../ggz-gtk/pick_module.c:131
 msgid "Don't ask me again."
-msgstr "Nicht erneut nachfragen."
+msgstr "ਮੈਨੂੰ ਮੁੜ ਨਾ ਪੁੱਛੋ।"
 
 #: ../ggz-gtk/playerinfo.c:102
 msgid "Player Information"
-msgstr "Spielerinformationen"
+msgstr "ਖਿਡਾਰੀ ਜਾਣਕਾਰੀ"
 
 #: ../ggz-gtk/playerinfo.c:132
 msgid "Player Handle:"
-msgstr "Spieler-Spitzname:"
+msgstr "ਖਿਡਾਰੀ ਹੈਂਡਲ:"
 
 #: ../ggz-gtk/playerinfo.c:150
 msgid "Table:"
-msgstr "Tisch:"
+msgstr "ਮੇਜ਼:"
 
 #: ../ggz-gtk/playerinfo.c:168
 msgid "Account:"
-msgstr "Konto:"
+msgstr "ਖਾਤਾ:"
 
 #: ../ggz-gtk/playerinfo.c:187
 msgid "Record:"
-msgstr "Rekord:"
+msgstr "ਰਿਕਾਰਡ:"
 
 #: ../ggz-gtk/playerinfo.c:205
 msgid "Rating:"
-msgstr "Bewertung:"
+msgstr "ਰੇਟਿੰਗ:"
 
 #: ../ggz-gtk/playerinfo.c:223
 msgid "Rank:"
-msgstr "Rang:"
+msgstr "ਰੈਂਕ:"
 
 #: ../ggz-gtk/playerinfo.c:241
 msgid "Score:"
-msgstr "Punkte:"
+msgstr "ਸਕੋਰ:"
 
 #: ../ggz-gtk/playerinfo.c:302 ../ggz-gtk/playerinfo.c:334
 msgid "Unknown"
-msgstr "Unbekannt"
+msgstr "ਅਣਜਾਣ"
 
 #: ../ggz-gtk/playerinfo.c:337
 msgid "Registered"
-msgstr "Registriert"
+msgstr "ਰਜਿਸਟਰ"
 
 #: ../ggz-gtk/playerinfo.c:340
 msgid "Guest"
-msgstr "Gast"
+msgstr "ਮਹਿਮਾਨ"
 
 #: ../ggz-gtk/playerinfo.c:343
 msgid "Host"
-msgstr "Host"
+msgstr "ਮੇਜ਼ਬਾਨ"
 
 #: ../ggz-gtk/playerinfo.c:346
 msgid "Administrator"
-msgstr "Administrator"
+msgstr "ਪਰਸ਼ਾਸ਼ਕ"
 
 #: ../ggz-gtk/playerinfo.c:349
 msgid "Bot"
-msgstr "Computerspieler"
+msgstr "ਬੋਟ"
 
 #: ../ggz-gtk/playerlist.c:94 ../ggz-gtk/roomlist.c:144
 #: ../ggz-gtk/tablelist.c:84
 msgid "Info"
-msgstr "Info"
+msgstr "ਜਾਣਕਾਰੀ"
 
 #: ../ggz-gtk/playerlist.c:101
 msgid "Friends"
-msgstr "Freunde"
+msgstr "ਮਿੱਤਰ"
 
 #: ../ggz-gtk/playerlist.c:106
 msgid "Ignore"
-msgstr "Ignorieren"
+msgstr "ਅਣਡਿੱਠਾ"
 
 #: ../ggz-gtk/playerlist.c:246
 #, c-format
@@ -1027,147 +1002,144 @@ msgstr "T#"
 
 #: ../ggz-gtk/playerlist.c:362 ../ggz-gtk/types.c:176
 msgid "Name"
-msgstr "Name"
+msgstr "ਨਾਂ"
 
 #: ../ggz-gtk/props.c:249
 msgid "Properties Updated"
-msgstr "Einstellungen aktualisiert"
+msgstr "ਵਿਸ਼ੇਸ਼ਤਾ ਅੱਪਡੇਟ"
 
 #: ../ggz-gtk/props.c:1035
 msgid "Confirm:"
-msgstr "Bestätigen:"
+msgstr "ਪੁਸ਼ਟੀ:"
 
 #: ../ggz-gtk/props.c:1085
 msgid "Modify"
-msgstr "Übernehmen"
+msgstr "ਸੋਧ"
 
 #: ../ggz-gtk/props.c:1099
 msgid "Servers"
-msgstr "Server"
+msgstr "ਸਰਵਰ"
 
 #: ../ggz-gtk/props.c:1118
 msgid "Chat Font:"
-msgstr "Nachrichtenschriftart:"
+msgstr "ਗੱਲਬਾਤ ਫੋਂਟ:"
 
 #: ../ggz-gtk/props.c:1134
 msgid "Change"
-msgstr "Ändern"
+msgstr "ਬਦਲੋ"
 
 #: ../ggz-gtk/props.c:1147
 msgid "Ignore Join/Part Messages"
-msgstr "Betreten/Verlassen-Nachrichten verstecken"
+msgstr "ਦਾਖਲ/ਛੱਡਣ ਸੁਨੇਹੇ ਅਣਡਿੱਠੇ"
 
 #: ../ggz-gtk/props.c:1155
 msgid "Play Sounds"
-msgstr "Töne abspielen"
+msgstr "ਸਾਊਂਡ ਚਲਾਓ"
 
 #: ../ggz-gtk/props.c:1163
 msgid "Auto Indent"
-msgstr "Automatisch einrücken"
+msgstr "ਆਟੋ ਦੂਰੀ"
 
-# CHECK: Option hat keine Auswirkung
 #: ../ggz-gtk/props.c:1171
 msgid "Timestamp Chats"
-msgstr "Zeitstempel zu Nachrichten hinzufügen"
+msgstr "ਸਮਾਂ-ਮੋਹਰ ਗੱਲਬਾਤ"
 
-# CHECK: Option hat keine Auswirkung
 #: ../ggz-gtk/props.c:1179
 msgid "Word Wrap"
-msgstr "Zeilenumbrüche einfügen"
+msgstr "ਸ਼ਬਦ ਸਮੇਟਣ"
 
 #: ../ggz-gtk/props.c:1187
 msgid "Chat Color"
-msgstr "Nachrichten-Farbe"
+msgstr "ਗੱਲਬਾਤ ਰੰਗ"
 
 #: ../ggz-gtk/props.c:1236
 msgid "Default chat color assigned to your friends"
-msgstr "Standard-Nachrichtenfarbe Ihrer Freunde"
+msgstr "ਤੁਹਾਡੇ ਦੋਸਤਾਂ ਲਈ ਮੂਲ ਗੱਲਬਾਤ ਰੰਗ ਲਾਗੂ ਕੀਤੇ"
 
 #: ../ggz-gtk/props.c:1245
 msgid "Chat color used when your name is typed"
-msgstr "Nachrichten-Farbe wenn Ihr Name geannt wird"
+msgstr "ਜਦੋਂ ਤੁਹਾਡਾ ਨਾਂ ਲਿਖਿਆ ਜਾਵੇ ਤਾਂ ਗੱਲਬਾਤ ਲਈ ਵਰਤਿਆ ਰੰਗ"
 
 #: ../ggz-gtk/props.c:1254
 msgid "Chat color used for all other chats"
-msgstr "Nachrichten-Farbe für alle anderen Unterhaltungen"
+msgstr "ਹੋਰ ਸਭ ਗੱਲਾਂਬਾਤਾਂ ਲਈ ਵਰਤਣ ਵਾਸਤੇ ਰੰਗ"
 
 #: ../ggz-gtk/props.c:1263
 msgid "Normal Color"
-msgstr "Normale Farbe"
+msgstr "ਸਧਾਰਨ ਰੰਗ"
 
 #: ../ggz-gtk/props.c:1274
 msgid "Highlight Color"
-msgstr "Hervorhebungsfarbe"
+msgstr "ਉਭਾਰਨ ਰੰਗ"
 
 #: ../ggz-gtk/props.c:1285
 msgid "Friend Color"
-msgstr "Freund-Farbe"
+msgstr "ਦੋਸਤ ਰੰਗ"
 
 #: ../ggz-gtk/props.c:1296
 msgid "Black Background"
-msgstr "Schwarzer Hintergrund"
+msgstr "ਕਾਲੀ ਬੈਕਗਰਾਊਂਡ"
 
 #: ../ggz-gtk/props.c:1305
 msgid "White Background"
-msgstr "Weißer Hintergrund"
+msgstr "ਚਿੱਟੀ ਬੈਕਗਰਾਊਂਡ"
 
 #: ../ggz-gtk/props.c:1314
 msgid "Chat"
-msgstr "Unterhaltung"
+msgstr "ਗੱਲਬਾਤ"
 
 #: ../ggz-gtk/props.c:1326
 msgid "All of the following information is optional."
-msgstr "Alle Informationen sind freiwillig."
+msgstr "ਹੇਠ ਦਿੱਤੀ ਸਭ ਜਾਣਕਾਰੀ ਚੋਣਵੀਂ ਹੈ।"
 
 #: ../ggz-gtk/props.c:1344
 msgid "Name:"
-msgstr "Name:"
+msgstr "ਨਾਂ:"
 
 #: ../ggz-gtk/props.c:1371
 msgid "City:"
-msgstr "Stadt:"
+msgstr "ਸ਼ਹਿਰ: "
 
 #: ../ggz-gtk/props.c:1392
 msgid "State:"
-msgstr "Status:"
+msgstr "ਅੰਕੜੇ:"
 
 #: ../ggz-gtk/props.c:1413
 msgid "Country:"
-msgstr "Land:"
+msgstr "ਦੇਸ਼:"
 
 #: ../ggz-gtk/props.c:1428
 #, fuzzy
 msgid "Comments, Hobies, Etc."
-msgstr "Kommentare, Hobbies, etc."
+msgstr "ਟਿੱਪਣੀ, ਸ਼ੌਕ ਆਦਿ"
 
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
-msgstr "Benutzerinformationen"
+msgstr "ਉਪਭੋਗੀ ਜਾਣਕਾਰੀ"
 
 #: ../ggz-gtk/props.c:1459
 msgid "Browser to launch URLs with:"
-msgstr "Browser, mit dem URLs geöffnet werden:"
+msgstr "URL ਖੋਲ੍ਹਣ ਲਈ ਝਲਕਾਰਾ (ਬਰਾਊਜ਼ਰ):"
 
 #: ../ggz-gtk/props.c:1464 ../ggz-gtk/props.c:1484 ../ggz-gtk/support.c:139
 msgid "Galeon - New"
-msgstr "Galeon - Neues Fenster"
+msgstr "Galeon - ਨਵਾਂ"
 
 #: ../ggz-gtk/props.c:1465 ../ggz-gtk/support.c:142
 msgid "Galeon - Existing"
-msgstr "Galeon - Existierendes Fenster"
+msgstr "Galeon - ਮੌਜੂਦਾ"
 
-# CHECK
 #: ../ggz-gtk/props.c:1466 ../ggz-gtk/support.c:145
 msgid "Gnome URL Handler"
-msgstr "Gnome-URL-Handler"
+msgstr "ਗਨੋਮ URL ਹੈਂਡਲਰ"
 
 #: ../ggz-gtk/props.c:1467 ../ggz-gtk/support.c:148
 msgid "Konqueror - New"
-msgstr "Konqueror - Neues Fenster"
+msgstr "ਕੋਨਕਿਊਰੋਰ - ਨਵਾਂ"
 
 #: ../ggz-gtk/props.c:1468 ../ggz-gtk/support.c:151
 msgid "Konqueror - Existing"
-msgstr "Konqueror - Existierendes Fenster"
+msgstr "ਕੋਨਕਿਊਰੋਰ - ਮੌਜੂਦਾ"
 
 #: ../ggz-gtk/props.c:1469 ../ggz-gtk/support.c:163
 msgid "Lynx"
@@ -1175,132 +1147,131 @@ msgstr "Lynx"
 
 #: ../ggz-gtk/props.c:1470 ../ggz-gtk/support.c:169
 msgid "Mozilla - New"
-msgstr "Mozilla - Neues Fenster"
+msgstr "ਮੋਜ਼ੀਲਾ - ਨਵਾਂ"
 
 #: ../ggz-gtk/props.c:1471 ../ggz-gtk/support.c:172
 msgid "Mozilla - Existing"
-msgstr "Mozilla - Existierendes Fenster"
+msgstr "ਮੋਜ਼ੀਲਾ - ਮੌਜੂਦਾ"
 
 #: ../ggz-gtk/props.c:1472 ../ggz-gtk/support.c:176
 msgid "Netscape - New"
-msgstr "Netscape - Neues Fenster"
+msgstr "ਨੈਟਸਕੇਪ - ਨਵਾਂ"
 
 #: ../ggz-gtk/props.c:1473 ../ggz-gtk/support.c:179
 msgid "Netscape - Existing"
-msgstr "Netscape - Existierendes Fenster"
+msgstr "ਨੈਟਸਕੇਪ - ਮੌਜੂਦਾ"
 
 #: ../ggz-gtk/props.c:1474 ../ggz-gtk/support.c:183
 msgid "Opera - New"
-msgstr "Opera - Neues Fenster"
+msgstr "ਓਪੇਰਾ - ਨਵਾਂ"
 
 #: ../ggz-gtk/props.c:1475 ../ggz-gtk/support.c:186
 msgid "Opera - Existing"
-msgstr "Opera - Existierendes Fenster"
+msgstr "ਓਪੇਰਾ - ਮੌਜੂਦਾ"
 
 #: ../ggz-gtk/props.c:1476 ../ggz-gtk/support.c:191
 msgid "Firefox - New"
-msgstr "Firefox - Neues Fenster"
+msgstr "ਫਾਇਰਫਾਕਸ - ਨਵਾਂ"
 
 #: ../ggz-gtk/props.c:1477 ../ggz-gtk/support.c:194
 msgid "Firefox - Existing"
-msgstr "Firefox - Existierendes Fenster"
+msgstr "ਫਾਇਰਫਾਕਸ - ਮੌਜੂਦਾ"
 
 #: ../ggz-gtk/props.c:1486
 msgid "Single Click Room Entry"
-msgstr "Einfachen Klick zum Betreten eines Raumes benutzen"
+msgstr "ਇੱਕ ਵਾਰ ਦਬਾਉਣ ਲਈ ਰੂਮ ਇੰਦਰਾਜ਼"
 
 #: ../ggz-gtk/props.c:1500
 msgid "Display All"
-msgstr "Alle anzeigen"
+msgstr "ਸਭ ਵੇਖਾਓ"
 
 #: ../ggz-gtk/props.c:1509
 msgid "Display New"
-msgstr "Neue anzeigen"
+msgstr "ਨਵੇਂ ਵੇਖਾਓ"
 
 #: ../ggz-gtk/props.c:1518
 msgid "Display Important"
-msgstr "Wichtige anzeigen"
+msgstr "ਖਾਸ ਵੇਖਾਓ"
 
 #: ../ggz-gtk/props.c:1527
 msgid "Display None"
-msgstr "Keine anzeigen"
+msgstr "ਕੁਝ ਨਾ ਵੇਖਾਓ"
 
 #: ../ggz-gtk/props.c:1536
 msgid "Options"
-msgstr "Optionen"
+msgstr "ਚੋਣ"
 
 #: ../ggz-gtk/props.c:1625
 msgid "Select Font"
-msgstr "Schriftart wählen"
+msgstr "ਫੋਂਟ ਚੁਣੋ"
 
 #: ../ggz-gtk/roominfo.c:63
 msgid "Room Information"
-msgstr "Rauminformation"
+msgstr "ਰੂਮ ਜਾਣਕਾਰੀ"
 
 #: ../ggz-gtk/roominfo.c:80
 msgid "Game Name:"
-msgstr "Spielname:"
+msgstr "ਖੇਡ ਨਾਂ:"
 
 #: ../ggz-gtk/roominfo.c:110
 msgid "Room Description:"
-msgstr "Raumbeschreibung:"
+msgstr "ਰੂਮ ਵੇਰਵਾ:"
 
-# CHECK
 #: ../ggz-gtk/roominfo.c:155
 msgid "This room has no game"
-msgstr "Dieser Raum hat kein Spiel"
+msgstr "ਇਹ ਰੂਮ 'ਚ ਕੋਈ ਖੇਡ ਨਹੀਂ ਹੈ"
 
 #: ../ggz-gtk/roominfo.c:162 ../ggz-gtk/roominfo.c:169
 msgid "N/A"
-msgstr "N.v."
+msgstr "ਉਪਲੱਬਧ ਨਹੀਂ"
 
 #: ../ggz-gtk/roominfo.c:175
 msgid "Unknown room"
-msgstr "Unbekannter Raum"
+msgstr "ਅਣਜਾਣ ਰੂਮ"
 
 #: ../ggz-gtk/roomlist.c:73
 msgid "You can't join a room; you're not logged in"
-msgstr "Bitte melden Sie sich an, um einen Raum zu betreten"
+msgstr "ਤੁਸੀਂ ਰੂਮ 'ਚ ਦਾਖਲ ਨਹੀਂ ਹੋ ਸਕਦੇ, ਤੁਸੀਂ ਹਾਲੀਂ ਲਾਗਇਨ ਨਹੀਂ ਕੀਤਾ"
 
 #: ../ggz-gtk/roomlist.c:77
 msgid "You're already in between rooms"
-msgstr "Sie befinden sich bereits in der Lobby"
+msgstr "ਤੁਸੀਂ ਪਹਿਲਾਂ ਹੀ ਰੂਮਾਂ ਵਿੱਚ ਹੋ"
 
 #: ../ggz-gtk/roomlist.c:82
 msgid "You can't switch rooms while playing a game"
-msgstr "Sie können den Raum nicht wechseln, während Sie spielen"
+msgstr "ਤੁਸੀਂ ਖੇਡ ਖੇਡਣ ਦੌਰਾਨ ਰੂਮ ਬਦਲ ਨਹੀਂ ਸਕਦੇ"
 
 #: ../ggz-gtk/roomlist.c:89
 msgid "Unknown error"
-msgstr "Unbekannter Fehler"
+msgstr "ਅਣਜਾਣ ਗਲਤੀ"
 
 #: ../ggz-gtk/roomlist.c:109 ../ggz-gtk/roomlist.c:114
 msgid "Error joining room"
-msgstr "Fehler beim Betreten des Raumes"
+msgstr "ਰੂਮ 'ਚ ਜੁੜਨ ਦੌਰਾਨ ਗਲਤੀ"
 
 #: ../ggz-gtk/roomlist.c:350
 msgid "Other Rooms"
-msgstr "Andere Räume"
+msgstr "ਹੋਰ ਰੂਮ"
 
 #: ../ggz-gtk/roomlist.c:424
 msgid "Room"
-msgstr "Raum"
+msgstr "ਰੂਮ"
 
 #: ../ggz-gtk/tablelist.c:161
 msgid "No description available."
-msgstr "Keine Beschreibung verfügbar."
+msgstr "ਕੋਈ ਵੇਰਵਾ ਨਹੀਂ ਹੈ।"
 
 #: ../ggz-gtk/tablelist.c:196
 msgid "Seats"
-msgstr "Plätze"
+msgstr "ਸੀਟਾਂ"
 
 #: ../ggz-gtk/tablelist.c:201 ../ggz-gtk/types.c:183
 msgid "Description"
-msgstr "Beschreibung"
+msgstr "ਵੇਰਵਾ"
 
 #: ../ggz-gtk/types.c:113
 msgid "None"
-msgstr "Keine"
+msgstr "ਕੋਈ ਨਹੀਂ"
 
 #: ../ggz-gtk/types.c:148
 msgid ""
@@ -1308,42 +1279,40 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"Raumfilterung ist noch nicht implementiert.\n"
-"Falls Sie helfen möchten, besuchen Sie bitte\n"
+"ਰੂਮ ਫਿਲਟਰ ਕਰਨਾ ਹਾਲੇ ਸਹਾਇਕ ਨਹੀਂ ਹੈ। ਜੇ\n"
+"ਤੁਸੀਂ ਸਹਾਇਤਾ ਕਰਨੀ ਚਾਹੋ ਤਾਂ ਵੇਖੋ\n"
 "http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/types.c:191
 msgid "Web Address"
-msgstr "Internetadresse"
+msgstr "ਵੈੱਬ ਸਿਰਨਾਵਾਂ"
 
 #: ../ggz-gtk/types.c:199
 msgid "Author"
-msgstr "Autor"
+msgstr "ਲੇਖਕ"
 
 #: ../ggz-gtk/types.c:254
 msgid "Room List Filter:"
-msgstr "Raumlistenfilter:"
+msgstr "ਰੂਮ ਲਿਸਟ ਫਿਲਟਰ:"
 
-# Könnte auch setzen heißen, passt Gesetzt hier?
 #: ../ggz-gtk/types.c:266
 msgid "Set"
-msgstr "Gesetzt"
+msgstr "ਸੈੱਟ"
 
 #: ../ggz-gtk/types.c:306
 #, fuzzy
 msgid "Upgrage Game"
-msgstr "Bakers Game"
+msgstr "ਬੇਕਰਜ਼ ਖੇਡ"
 
-# CHECK
 #: ../ggz-gtk/types.c:309
 #, fuzzy
 msgid "Goto Web Site"
-msgstr "Internet-Seite besuchen"
+msgstr "ਵੈੱਬ ਤੇ ਜਾਓ"
 
 #: ../src/main.c:119
 #, fuzzy
 msgid "Enable session log"
-msgstr "Klang aktivieren"
+msgstr "ਆਵਾਜ਼ਾਂ ਯੋਗ ਕਰੋ"
 
 #: ../src/main.c:121
 msgid "URL for autoconnection"

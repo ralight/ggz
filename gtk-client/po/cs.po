@@ -1,133 +1,118 @@
 # This translation was merged from GNOME SVN
-# (http://svn.gnome.org/svn/gnome-games/trunk/po/de.po)
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/cs.po)
 
-# translation of de.po to German
-# German gnome-games translation
-# Copyright (C) 1998-2005 Free Software Foundation, Inc.
-# Carsten Schaar <nhadcasc@fs-maphy.uni-hannover.de>, 1998.
-# Matthias Warkus <mawa@iname.com>, 1999.
-# Karl Eichwalder <ke@suse.de>, 1999, 2000.
-# Christian Meyer <chrisime@gnome.org>, 2000, 2001.
-# Christian Neumair <chris@gnome-de.org>, 2002-2004.
-# Hendrik Richter <hendrikr@gnome.org>, 2004, 2005, 2006, 2007.
-# Frank Arnold <frank@scirocco-5v-turbo.de>, 2005, 2006.
-# Manuel Borchers <m.borchers@gnome-de.org>, 2006.
-# Jens <jenshamacher@gmx.de>, 2006
-# Benedikt Wicklein <benedikt.wicklein@googlemail.com>, 2007.
-# Philipp Kerling <k.philipp@gmail.com>, 2007
-#
-# TODO
-# - Check msgstrs for consistency (strings like 'Level')
-# Aisleriot-Spielenamen wegen Dokumentation nicht übersetzt
-# Besondere Ausdrücke
-# stock => Talon (Der Kartenstoß, der nach dem Geben übrig bleibt)
-# base card => Grundkarte
+# translation of cs.po to Czech
+# translation of cs.po to
+# Czech translation of gnome-games
+# Copyright (C) 2002, 2006, 2007 Free Software Foundation, Inc.
+# Copyright (C) 2004, 2005, 2006 Miloslav Trmac <mitr@volny.cz>
+# Copyright (C) 2006 Lukas Novotny <lukasnov@cvs.gnome.org>
+# Michal Bukovjan <bukm@centrum.cz>, 2002.
+# Miloslav Trmac <mitr@volny.cz>, 2003 - 2006.
+# Petr Tomeš <ptomes@gmail.com>, 2006.
+# Lukas Novotny <lukasnov@cvs.gnome.org>, 2006.
+# Jakub Friedl <jfriedl@suse.cz>, 2006.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-games\n"
+"Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-11-20 15:07+0100\n"
-"PO-Revision-Date: 2007-03-10 14:55+0100\n"
-"Last-Translator: Hendrik Richter <hendrikr@gnome.org>\n"
-"Language-Team: German <gnome-de@gnome.org>\n"
+"PO-Revision-Date: 2007-04-06 17:43+0200\n"
+"Last-Translator: \n"
+"Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-Basepath: /home/shampoo/gnome-games\n"
-"X-Poedit-SearchPath-0: /home/shampoo/gnome-games\n"
+"Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: ../ggz-gtk/about.c:87 ../ggz-gtk/client.c:1089
 msgid "About"
-msgstr "Info"
+msgstr "O aplikaci"
 
 #: ../ggz-gtk/chat.c:89
 msgid "/msg <username> <message> . Private message a player"
-msgstr ""
-"/msg <Benutzername> <Nachricht> . Eine private Nachricht an den Spieler "
-"schicken"
+msgstr "/msg <uživatel> <zpráva> . Soukromá zpráva hráči"
 
 #: ../ggz-gtk/chat.c:91
 msgid "/table <message> .......... Message to your table"
-msgstr "/table <Nachricht> ........ Eine Nachricht an den Tisch schicken"
+msgstr "/table <zpráva> .......... Zpráva pro váš stůl"
 
 #: ../ggz-gtk/chat.c:93
 msgid "/wall <message> ........... Admin command"
-msgstr "/wall <Befehl> ............ Administrationsbefehl"
+msgstr "/wall <message> ........... Administrátorský příkaz"
 
 #: ../ggz-gtk/chat.c:95
 msgid "/beep <username> .......... Beep a player"
-msgstr "/beep <Benutzername> ...... Einen Spieler anpiepen"
+msgstr ""
 
 #: ../ggz-gtk/chat.c:97
 msgid "/help ..................... Get help"
-msgstr "/help ..................... Hilfe anzeigen"
+msgstr "/help ..................... Získat nápovědu"
 
 #: ../ggz-gtk/chat.c:99
 msgid "/friends .................. List your friends"
-msgstr "/friends .................. Freunde auflisten"
+msgstr "/friends .................. Vypsat vaše přátele"
 
 #: ../ggz-gtk/chat.c:101
 msgid "/ignore ................... List people you're ignoring"
-msgstr "/ignore ................... Ignorierte Personen auflisten"
+msgstr "/ignore ................... Vypsat seznam lidí v ignoraci"
 
 #: ../ggz-gtk/chat.c:104
 msgid "/kick <username> .......... Kick a player from the room"
-msgstr "/kick <Benutzername> ...... Einen Spieler aus dem Raum werfen"
+msgstr "/kick <uživatel> .......... Vyhodit hráče z místnosti"
 
 #: ../ggz-gtk/chat.c:107
 msgid "/gag <username> ........... Gag a player to prevent them from talking"
-msgstr "/gag <Benutzername> ....... Einen Spieler am Sprechen hindern"
+msgstr "/gag <username> ........... Zacpat hráči ústa roubíkem"
 
 #: ../ggz-gtk/chat.c:110
 msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
-msgstr ""
-"/ungag <Benutzername> ...... Die »Gag«-Operation rückgängig machen, so dass "
-"der Spieler wieder sprechen kann"
+msgstr "/ungag <username> ......... Odebrat hráči roubík a umožnit mu hovořit"
 
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
-msgstr "/ban <Benutzername> ....... Einen Spieler vom Server bannen"
+msgstr "/ban <username> ........... Zakázat hráči vstup na server"
 
 #: ../ggz-gtk/chat.c:254
 #, c-format
 msgid "You have received an unknown message from %s."
-msgstr "Sie haben eine unbekannte Nachricht von %s erhalten."
+msgstr ""
 
 #: ../ggz-gtk/chat.c:318
 #, c-format
 msgid "You've been beeped by %s."
-msgstr "%s hat Sie angepiept."
+msgstr ""
 
 #: ../ggz-gtk/chat.c:439
 msgid "Usage: /msg <username> <message>"
-msgstr "Aufruf: /msg <Benutzername> <Nachricht>"
+msgstr "Použití: /msg <uživatel> <zpráva>"
 
 #: ../ggz-gtk/chat.c:441
 msgid "    Sends a private message to a user on the network."
-msgstr "    Schickt eine private Nachricht zu einem Spieler im Netzwerk."
+msgstr ""
 
 #: ../ggz-gtk/chat.c:495
-#, c-format
+#, fuzzy, c-format
 msgid "Beep sent to %s."
-msgstr "%s wurde angepiepst."
+msgstr "Přesunout %s na %s."
 
 #: ../ggz-gtk/chat.c:523
 #, c-format
 msgid "%s (logged on)"
-msgstr "%s (angemeldet)"
+msgstr ""
 
 #: ../ggz-gtk/chat.c:561
 #, c-format
 msgid "%s (logged off)"
-msgstr "%s (abgemeldet)"
+msgstr ""
 
 #: ../ggz-gtk/chat.c:587
 msgid "Chat Commands"
-msgstr "Chat Kommandos"
+msgstr "Příkazy chatu"
 
 #: ../ggz-gtk/chat.c:588
 msgid "-------------"
@@ -135,48 +120,47 @@ msgstr "-------------"
 
 #: ../ggz-gtk/chat.c:592
 msgid "/me <action> .............. Send an action"
-msgstr "/me <Aktion> ............... Eine Aktion senden"
+msgstr ""
 
 #: ../ggz-gtk/chat.c:783
 #, c-format
 msgid "Added %s to your friends list."
-msgstr "%s wurde Ihrer Freundesliste hinzugefügt."
+msgstr ""
 
 #: ../ggz-gtk/chat.c:807
 #, c-format
 msgid "Removed %s from your friends list."
-msgstr "%s wurde von Ihrer Freundesliste entfernt."
+msgstr "%s byl odstraněn z vašeho seznamu přátel"
 
 #: ../ggz-gtk/chat.c:838
 #, c-format
 msgid "Added %s to your ignore list."
-msgstr "%s wurde Ihrer Ignorierliste hinzugefügt."
+msgstr "%s byl přidán do vašeho ignoračního seznamu."
 
 #: ../ggz-gtk/chat.c:863
 #, c-format
 msgid "Removed %s from your ignore list."
-msgstr "%s wurde von Ihrer Ignorierliste entfernt."
+msgstr "%s byl odstraněn z vašeho ignoračního seznamu."
 
 #: ../ggz-gtk/chat.c:939
 msgid "People currently your friends"
-msgstr "Ihre Freunde"
+msgstr "Lidé, kteří jsou v současnosti vašemi přáteli"
 
 #: ../ggz-gtk/chat.c:953
 msgid "People you're currently ignoring"
-msgstr "Ignorierte Leute"
+msgstr "Lidé, které v současnosti ignorujete"
 
-# CHECK
 #: ../ggz-gtk/chat.c:1029
 msgid "Multiple matches:"
-msgstr "Mehrere Übereinstimmungen:"
+msgstr ""
 
 #: ../ggz-gtk/client.c:144
 msgid "Are you sure you want to quit?"
-msgstr "Sind Sie sicher, dass Sie das Programm beenden wollen?"
+msgstr "Opravdu chcete skončit?"
 
 #: ../ggz-gtk/client.c:144
 msgid "Quit?"
-msgstr "Beenden?"
+msgstr "Ukončit?"
 
 #: ../ggz-gtk/client.c:237
 msgid ""
@@ -184,14 +168,14 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"Serverstatistiken sind noch nicht implementiert.\n"
-"Falls Sie helfen möchten, besuchen Sie bitte\n"
+"Statistiky serveru nejsou dosud implementovány.\n"
+"Pokud chcete s implementací pomoci, navštivte\n"
 "http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
 #: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
 msgid "Not Implemented"
-msgstr "Nicht implementiert"
+msgstr "Neimplementováno"
 
 #: ../ggz-gtk/client.c:248 ../ggz-gtk/client.c:545
 msgid ""
@@ -199,8 +183,8 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"Spielerstatistiken sind noch nicht implementiert.\n"
-"Falls Sie helfen möchten, besuchen Sie bitte\n"
+"Statistiky hráčů nejsou dosud implementovány.\n"
+"Pokud chcete s implementací pomoci, navštivte\n"
 "http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:294
@@ -208,10 +192,7 @@ msgid ""
 "GGZ Gaming Zone help needs a browser to be configured.\n"
 "The configuration dialog will be invoked now."
 msgstr ""
-"Für die GGZ-Gaming-Zone-Hilfe müssen Sie einen Browser auswählen.\n"
-"Der Konfigurationsdialog wird jetzt angezeigt."
 
-# CHECK
 #: ../ggz-gtk/client.c:308
 msgid ""
 "Inline game help is not implemented yet. Help\n"
@@ -219,96 +200,91 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"Spielhilfen sind noch nicht implementiert.\n"
-"Falls Sie helfen möchten, besuchen Sie bitte\n"
-"http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:566
 msgid "You must highlight a table before you can join it."
-msgstr "Sie müssen einen Tisch auswählen, bevor Sie ihm beitreten können."
+msgstr ""
 
 #: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
 msgid "Error Joining"
-msgstr "Fehler beim Beitreten"
+msgstr ""
 
 #: ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:614
 msgid "That table is full."
-msgstr "Der Tisch ist voll."
+msgstr "Tento stůl je plný."
 
 #: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:334
 msgid "Error launching game module."
-msgstr "Fehler beim Starten des Spielmoduls."
+msgstr "Chyba spouštění herního modulu."
 
 #: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
 #: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:335
 msgid "Game Error"
-msgstr "Spielfehler"
+msgstr "Chyba hry"
 
 #: ../ggz-gtk/client.c:600
 msgid "You must highlight a table before you can watch it."
-msgstr "Sie müssen einen Tisch auswählen, bevor Sie zuschauen können."
+msgstr ""
 
 #: ../ggz-gtk/client.c:602
 msgid "Error Spectating"
-msgstr "Fehler beim Zuschauen."
+msgstr ""
 
 #: ../ggz-gtk/client.c:647
 msgid ""
 "Failed to join table.\n"
 "Join aborted."
 msgstr ""
-"Fehler beim Betreten des Tisches.\n"
-"Beitritt abgebrochen."
 
 #: ../ggz-gtk/client.c:648
 msgid "Join Error"
-msgstr "Beitrittsfehler"
+msgstr ""
 
 #: ../ggz-gtk/client.c:678
 msgid "Disconnect from the GGZ Gaming Zone server"
-msgstr "Die Verbindung mit dem GGZ-Gaming-Zone-Server beenden"
+msgstr ""
 
 #: ../ggz-gtk/client.c:680
 msgid "Start playing a game at a new table"
-msgstr "Ein Spiel an einem neuen Tisch starten"
+msgstr ""
 
 #: ../ggz-gtk/client.c:682
 msgid "Join an existing game"
-msgstr "Einem laufenden Spiel beitreten"
+msgstr "Připojit se k existující hře"
 
 #: ../ggz-gtk/client.c:684
 msgid "Watch an existing game - become a spectator of the table"
-msgstr "Bei einem laufenden Spiel zuschauen"
+msgstr "Sledovat existující hru - stát se divákem u stolu"
 
 #: ../ggz-gtk/client.c:687
 msgid "Leave the game you're currently playing"
-msgstr "Das Spiel, das Sie gerade spielen, verlassen"
+msgstr "Opustit hru, kterou právě hrajete"
 
 #: ../ggz-gtk/client.c:689
 msgid "Show the properties dialog to change the client settings"
-msgstr "Den Einstellungsdialog anzeigen"
+msgstr ""
 
 #: ../ggz-gtk/client.c:693
 msgid "Show the game stats for the current room's game type"
-msgstr "Die Stastiken für den Spieltyp des aktuellen Raumes anzeigen"
+msgstr ""
 
 #: ../ggz-gtk/client.c:696
 msgid "Exit the GGZ client application."
-msgstr "Den GGZ-Client beenden."
+msgstr "Ukončit klientskou aplikaci GGZ."
 
 #: ../ggz-gtk/client.c:726
 #, c-format
 msgid "Client Version:14 %s"
-msgstr "Client-Version:14 %s"
+msgstr ""
 
 #: ../ggz-gtk/client.c:729
 #, c-format
 msgid "GTK+ Version:14 %d.%d.%d\n"
-msgstr "GTK+-Version:14 %d.%d.%d\n"
+msgstr ""
 
 #: ../ggz-gtk/client.c:736
 msgid "Compiled with debugging."
-msgstr "Kompiliert mit Fehlersuchinformationen."
+msgstr ""
 
 #: ../ggz-gtk/client.c:934
 msgid "GGZ"
@@ -316,69 +292,72 @@ msgstr "GGZ"
 
 #: ../ggz-gtk/client.c:942 ../ggz-gtk/login.c:710
 msgid "Connect"
-msgstr "Verbinden"
+msgstr "Připojit"
 
 #: ../ggz-gtk/client.c:949 ../ggz-gtk/client.c:1180
 msgid "Disconnect"
-msgstr "Trennen"
+msgstr "Odpojit"
 
 #: ../ggz-gtk/client.c:962
 msgid "Quit"
-msgstr "Beenden"
+msgstr "Ukončit"
 
 #: ../ggz-gtk/client.c:969
 msgid "Game"
-msgstr "Spiel"
+msgstr "Hra"
 
 #: ../ggz-gtk/client.c:978 ../ggz-gtk/client.c:1133 ../ggz-gtk/launch.c:693
 msgid "Launch"
-msgstr "Start"
+msgstr ""
 
 #: ../ggz-gtk/client.c:985 ../ggz-gtk/client.c:1141 ../ggz-gtk/roomlist.c:150
 #: ../ggz-gtk/tablelist.c:74
+#, fuzzy
 msgid "Join"
-msgstr "Beitreten"
+msgstr "Spojené"
 
 #: ../ggz-gtk/client.c:992 ../ggz-gtk/client.c:1149
+#, fuzzy
 msgid "Watch"
-msgstr "Zuschauen"
+msgstr "_Čekat"
 
 #: ../ggz-gtk/client.c:1004 ../ggz-gtk/client.c:1157 ../ggz-gtk/tablelist.c:77
+#, fuzzy
 msgid "Leave"
-msgstr "Verlassen"
+msgstr "Úroveň:"
 
 #: ../ggz-gtk/client.c:1011
 msgid "Edit"
-msgstr "Bearbeiten"
+msgstr "Upravit"
 
 #: ../ggz-gtk/client.c:1019
 msgid "Properties"
-msgstr "Einstellungen"
+msgstr "Vlastnosti"
 
 #: ../ggz-gtk/client.c:1026
+#, fuzzy
 msgid "View"
-msgstr "Ansicht"
+msgstr "_Zobrazit"
 
 #: ../ggz-gtk/client.c:1035
 msgid "Room List"
-msgstr "Raumliste"
+msgstr "Seznam místností"
 
 #: ../ggz-gtk/client.c:1041
 msgid "Player List"
-msgstr "Spielerliste"
+msgstr "Seznam hráčů"
 
 #: ../ggz-gtk/client.c:1053
 msgid "Server Stats"
-msgstr "Serverstatistiken"
+msgstr "Statistiky serveru"
 
-# Was bedeutet "Stats"?
 #: ../ggz-gtk/client.c:1057
 msgid "Player Stats"
-msgstr "Spielerstatistik"
+msgstr "Statistiky hráčů"
 
 #: ../ggz-gtk/client.c:1065 ../ggz-gtk/types.c:237
 msgid "Game Types"
-msgstr "Spieltypen"
+msgstr "Typy her"
 
 #: ../ggz-gtk/client.c:1074 ../ggz-gtk/props.c:1491
 msgid "MOTD"
@@ -386,7 +365,7 @@ msgstr "MOTD"
 
 #: ../ggz-gtk/client.c:1081
 msgid "Help"
-msgstr "Hilfe"
+msgstr "Nápověda"
 
 #: ../ggz-gtk/client.c:1096
 msgid "Copyright"
@@ -394,132 +373,137 @@ msgstr "Copyright"
 
 #: ../ggz-gtk/client.c:1105
 msgid "GGZ Help"
-msgstr "GGZ Hilfe"
+msgstr "Nápověda GGZ"
 
 #: ../ggz-gtk/client.c:1112
 msgid "Game Help"
-msgstr "Spiel-Hilfe"
+msgstr "Nápověda hry"
 
-# CHECK
 #: ../ggz-gtk/client.c:1121
 msgid "Goto Web"
-msgstr "Internet-Seite besuchen"
+msgstr "Jít na web"
 
 #: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:356
 msgid "Stats"
-msgstr "Statistik"
+msgstr "Statistiky"
 
 #: ../ggz-gtk/client.c:1196 ../ggz-gtk/ggzclient.c:718
 msgid "Current Room:"
-msgstr "Aktueller Raum:"
+msgstr "Aktuální místnost: "
 
 #: ../ggz-gtk/client.c:1277 ../ggz-gtk/playerinfo.c:259
 msgid "Message:"
-msgstr "Nachricht:"
+msgstr "Zpráva:"
 
 #: ../ggz-gtk/client.c:1295
+#, fuzzy
 msgid "Send"
-msgstr "Senden"
+msgstr "Rychlost"
 
 #: ../ggz-gtk/client.c:1480 ../ggz-gtk/ggzclient.c:400
 msgid "GGZ Gaming Zone"
-msgstr "GGZ Gaming Zone"
+msgstr ""
 
 #: ../ggz-gtk/first.c:57
 msgid "Wizard"
-msgstr "Zauberer"
+msgstr "Průvodce"
 
 #: ../ggz-gtk/first.c:57
+#, fuzzy
 msgid "Deity"
-msgstr "Göttliches Wesen"
+msgstr "Sedmikráska"
 
 #: ../ggz-gtk/first.c:57
+#, fuzzy
 msgid "Sentinel"
-msgstr "Wächter"
+msgstr "Valentýna"
 
 #: ../ggz-gtk/first.c:57
 msgid "Captain"
-msgstr "Kapitän"
+msgstr "Kapitán"
 
 #: ../ggz-gtk/first.c:58
 msgid "Knight"
-msgstr "Ritter"
+msgstr "Rytíř"
 
 #: ../ggz-gtk/first.c:58
 msgid "Angel"
-msgstr "Engel"
+msgstr "Anděl"
 
 #: ../ggz-gtk/first.c:58
 msgid "Silverlord"
-msgstr "Silberlord"
+msgstr ""
 
 #: ../ggz-gtk/first.c:58
 msgid "Eagle"
-msgstr "Adler"
+msgstr "Orel"
 
 #: ../ggz-gtk/first.c:59
 msgid "Vampire"
-msgstr "Vampir"
+msgstr "Upír"
 
 #: ../ggz-gtk/first.c:59
 msgid "Chief"
-msgstr "Chef"
+msgstr ""
 
 #: ../ggz-gtk/first.c:59
+#, fuzzy
 msgid "Colonel"
-msgstr "Oberst"
+msgstr "Polonéza"
 
 #: ../ggz-gtk/first.c:59
 msgid "General"
-msgstr "Allgemein"
+msgstr "Obecné"
 
 #: ../ggz-gtk/first.c:60
+#, fuzzy
 msgid "Major"
-msgstr "Major"
+msgstr "Mahjongg"
 
 #: ../ggz-gtk/first.c:60
+#, fuzzy
 msgid "Scout"
-msgstr "Pfadfinder"
+msgstr "Soft"
 
 #: ../ggz-gtk/first.c:60
 msgid "Lieutenant"
-msgstr "Lieutenant"
+msgstr ""
 
 #: ../ggz-gtk/first.c:60
 msgid "Stalker"
-msgstr "Anschleicher"
+msgstr ""
 
 #: ../ggz-gtk/first.c:61
 msgid "Scientist"
-msgstr "Forscher"
+msgstr "Vědec"
 
 #: ../ggz-gtk/first.c:61
+#, fuzzy
 msgid "Scholar"
-msgstr "Gelehrter"
+msgstr "Skóre"
 
 #: ../ggz-gtk/first.c:61
 msgid "Entity"
-msgstr "Einheit"
+msgstr ""
 
 #: ../ggz-gtk/first.c:61
+#, fuzzy
 msgid "Creator"
-msgstr "Ersteller"
+msgstr "Výtah"
 
 #: ../ggz-gtk/first.c:69
 msgid "GGZ Community (fast)"
-msgstr "GGZ Community (schnell)"
+msgstr ""
 
 #: ../ggz-gtk/first.c:70
 msgid "Local developer server"
-msgstr "Lokaler Entwickler-Server"
+msgstr "Lokální vývojářský server"
 
 #: ../ggz-gtk/first.c:190
 msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
-"Dies ist das erste Mal, dass Sie den GTK+ GGZ Gaming Zone-Client starten. "
-"Möchten Sie einige Standard-Server-Profile erstellen?"
 
 #: ../ggz-gtk/game.c:72
 #, c-format
@@ -527,286 +511,280 @@ msgid ""
 "You don't have this game installed. You can download\n"
 "it from %s."
 msgstr ""
-"Dieses Spiel ist nicht installiert. Sie können es von\n"
-"%s herunterladen."
 
 #: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
 #: ../ggz-gtk/game.c:325 ../ggz-gtk/game.c:334 ../ggz-gtk/game.c:350
 #: ../ggz-gtk/launch.c:290
 msgid "Launch Error"
-msgstr "Fehler beim Starten"
+msgstr "Chyba spouštění"
 
 #: ../ggz-gtk/game.c:148
 msgid ""
 "Failed to execute game module.\n"
 " Launch aborted."
 msgstr ""
-"Fehler beim Starten des Spielmoduls.\n"
-" Start abgebrochen."
+"Selhalo vykonání herního modulu.\n"
+" Spouštění přerušeno."
 
 #: ../ggz-gtk/game.c:201
 msgid "Launched game"
-msgstr "Spiel gestartet"
+msgstr "Spuštěna hra"
 
 #: ../ggz-gtk/game.c:222
 msgid "Launch failed"
-msgstr "Starten des Spiels fehlgeschlagen"
+msgstr "Spuštění selhalo"
 
 #: ../ggz-gtk/game.c:296
 msgid "You can only play one game at a time."
-msgstr "Sie können nur ein Spiel gleichzeitig spielen."
+msgstr "Současně můžete hrát pouze jednu hru."
 
 #: ../ggz-gtk/game.c:304
 msgid "You're still at a table."
-msgstr "Sie sind immer noch an einem Tisch."
+msgstr "Jste stále u stolu."
 
 #: ../ggz-gtk/game.c:313
 msgid ""
 "You must be in a room to launch a game.\n"
 "Launch aborted"
 msgstr ""
-"Sie müssen einen Raum betreten haben, um ein Spiel zu starten.\n"
-"Start abgebrochen"
+"Pro spuštění hry musíte být v místnosti.\n"
+"Spouštění přerušeno."
 
 #: ../ggz-gtk/game.c:323
 msgid ""
 "No game types defined for this server.\n"
 "Launch aborted."
 msgstr ""
-"Auf diesem Server sind keine Spieltypen definiert.\n"
-"Start abgebrochen."
+"Pro tento server nebyly definovány typy her.\n"
+"Spouštění přerušeno."
 
 #: ../ggz-gtk/game.c:333
 msgid "This game doesn't support spectators."
-msgstr "Dieses Spiel unterstützt keine Zuschauer."
+msgstr "Tato hra nepodporuje diváky."
 
 #: ../ggz-gtk/game.c:348
 msgid ""
 "You need to launch the GGZ client directly\n"
 "to be able to play this game."
 msgstr ""
-"Sie müssen den GGZ-Klienten direkt starten,\n"
-"um dieses Spiel spielen zu können."
 
 #: ../ggz-gtk/ggzclient.c:122
 #, c-format
 msgid "Error connecting to server: %s"
-msgstr "Fehler beim Verbinden zum Server: %s"
+msgstr "Chyba připojování k serveru: %s"
 
 #: ../ggz-gtk/ggzclient.c:124 ../ggz-gtk/ggzclient.c:380
 #: ../ggz-gtk/ggzclient.c:561 ../ggz-gtk/ggzclient.c:596
 #: ../ggz-gtk/ggzclient.c:649 ../ggz-gtk/ggzclient.c:1079
 #: ../ggz-gtk/launch.c:325
 msgid "Error"
-msgstr "Fehler"
+msgstr "Chyba"
 
 #: ../ggz-gtk/ggzclient.c:237
 #, c-format
 msgid "Your new password is %s"
-msgstr "Ihr neues Passwort ist %s"
+msgstr "Vaše nové heslo jako %s"
 
 #: ../ggz-gtk/ggzclient.c:239
 msgid "New password"
-msgstr "Neues Passwort"
+msgstr "Nové heslo"
 
 #: ../ggz-gtk/ggzclient.c:275
 #, c-format
 msgid "Players on server: %d"
-msgstr "Spieler auf dem Server: %d"
+msgstr "Hráči na serveru: %d"
 
 #: ../ggz-gtk/ggzclient.c:320
 #, c-format
 msgid "Current Room: %s"
-msgstr "Aktueller Raum: %s"
+msgstr "Aktuální místnost: %s"
 
 #: ../ggz-gtk/ggzclient.c:328
 #, c-format
 msgid "You've joined room \"%s\"."
-msgstr "Sie haben den Raum »%s« betreten."
+msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:378
 #, c-format
 msgid "Error joining room: %s"
-msgstr "Fehler beim Betreten des Raumes: %s"
+msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:429
 msgid "You can't chat while not in a room."
 msgstr ""
-"Sie können sich nicht unterhalten, solange Sie keinem Raum betreten haben."
 
 #: ../ggz-gtk/ggzclient.c:434
 msgid "You don't have permission to chat here."
 msgstr ""
-"Sie haben nicht die erforderliche Berechtigung, um sich hier zu unterhalten."
 
 #: ../ggz-gtk/ggzclient.c:438
 msgid "No private chatting at a table!"
-msgstr "Private Unterhaltungen am Tisch sind verboten!"
+msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:442
 msgid "That player isn't in the room!"
-msgstr "Der Spieler ist nicht im Raum!"
+msgstr "Hráč není v místnosti!"
 
 #: ../ggz-gtk/ggzclient.c:447
+#, fuzzy
 msgid "There was an error sending the chat."
-msgstr "Fehler beim Senden der Nachricht."
+msgstr "Při přístupu k rozhraní GConf došlo k chybě: %s"
 
 #: ../ggz-gtk/ggzclient.c:451
 msgid "You're not at a table."
-msgstr "Sie sind an keinem Tisch."
+msgstr "Nejste u stolu."
 
 #: ../ggz-gtk/ggzclient.c:455
 #, c-format
 msgid "Chat failed: %s."
-msgstr "Unterhaltung fehlgeschlagen: %s."
+msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:559
 #, c-format
 msgid "Error launching table: %s"
-msgstr "Fehler beim Erstellen des Tisches: %s"
+msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:579
-#, c-format
+#, fuzzy, c-format
 msgid "You have joined table %d."
-msgstr "Sie sind dem Tisch %d beigetreten."
+msgstr "Vyhráli jste."
 
 #: ../ggz-gtk/ggzclient.c:594
 #, c-format
 msgid "Error joining table: %s"
-msgstr "Fehler beim Betreten des Tisches: %s"
+msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:616
 #, c-format
 msgid "You have been booted from the table by %s."
-msgstr "Sie wurden von %s des Tisches verwiesen."
+msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:621
 #, c-format
 msgid "You have left the table."
-msgstr "Sie haben den Tisch verlassen."
+msgstr "Opustili jste stůl."
 
 #: ../ggz-gtk/ggzclient.c:624
 #, c-format
 msgid "The game is over."
-msgstr "Das Spiel ist vorbei."
+msgstr "Hra skončila."
 
 #: ../ggz-gtk/ggzclient.c:628
 #, c-format
 msgid "There was an error with the game server."
-msgstr "Es ist ein Fehler mit dem Spiel-Server aufgetreten."
+msgstr "Došlo k chybě na straně herního serveru."
 
 #: ../ggz-gtk/ggzclient.c:647
 #, c-format
 msgid "Error leaving table: %s"
-msgstr "Fehler beim Verlassen des Tisches: %s"
+msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:740
 msgid "**none**"
-msgstr "**keiner**"
+msgstr "**žádný**"
 
 #: ../ggz-gtk/ggzclient.c:747
 msgid "Offline"
-msgstr "Nicht verbunden"
+msgstr "Offline"
 
 #: ../ggz-gtk/ggzclient.c:750
 msgid "Connecting"
-msgstr "Verbinden"
+msgstr "Probíhá připojování"
 
 #: ../ggz-gtk/ggzclient.c:753
+#, fuzzy
 msgid "Reconnecting"
-msgstr "Neu verbinden"
+msgstr "_Připojit"
 
 #: ../ggz-gtk/ggzclient.c:756
 msgid "Online"
-msgstr "Angemeldet"
+msgstr "Online"
 
 #: ../ggz-gtk/ggzclient.c:759
 msgid "Logging In"
-msgstr "Anmeldevorgang"
+msgstr "Probíhá přihlašování"
 
 #: ../ggz-gtk/ggzclient.c:762
 msgid "Logged In"
-msgstr "Angemeldet"
+msgstr "Přihlášeno"
 
 #: ../ggz-gtk/ggzclient.c:766
 msgid "--> Room"
-msgstr "--> Raum"
+msgstr "--> Místnost"
 
-# CHECK
 #: ../ggz-gtk/ggzclient.c:769
 msgid "Chatting"
-msgstr "Redend"
+msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:773
 msgid "--> Table"
-msgstr "--> Tisch"
+msgstr "--> Stůl"
 
-# bezieht sich auf die Form der Steine!
 #: ../ggz-gtk/ggzclient.c:776
+#, fuzzy
 msgid "Playing"
-msgstr "Spielend"
+msgstr "Jednoduché"
 
 #: ../ggz-gtk/ggzclient.c:779
 msgid "<-- Table"
-msgstr "<-- Tisch"
+msgstr "<-- Stůl"
 
 #: ../ggz-gtk/ggzclient.c:782
 msgid "Logging Out"
-msgstr "Abmeldevorgang"
+msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:1078
 #, c-format
 msgid "Server error: %s"
-msgstr "Server-Fehler: %s"
+msgstr "Chyba serveru: %s"
 
 #: ../ggz-gtk/ggzclient.c:1166
 msgid "Disconnected from server."
-msgstr "Verbindung beendet."
+msgstr ""
 
 #: ../ggz-gtk/launch.c:114
 #, c-format
 msgid "Game Type:  %s"
-msgstr "Spieltyp: %s"
+msgstr "Typ hry:  %s"
 
 #: ../ggz-gtk/launch.c:120
 #, c-format
 msgid "Author:  %s"
-msgstr "Autor: %s"
+msgstr "Autor:  %s"
 
 #: ../ggz-gtk/launch.c:127
 #, c-format
 msgid "Description:  %s"
-msgstr "Beschreibung: %s"
+msgstr "Popis:  %s"
 
-# CHECK
 #: ../ggz-gtk/launch.c:133
 #, c-format
 msgid "Home Page:  %s"
-msgstr "Website: %s"
+msgstr "Domovská stránka:  %s"
 
 #: ../ggz-gtk/launch.c:289
 msgid ""
 "Failed to launch table.\n"
 " Launch aborted."
 msgstr ""
-"Fehler beim Erstellen des Tisches.\n"
-" Erstellen abgebrochen."
+"Chyba spuštění stolu.\n"
+" Spouštění přerušeno."
 
 #: ../ggz-gtk/launch.c:325
 msgid "Invalid number of bots specified"
-msgstr "Ungültige Anzahl an Computerspielern eingegeben"
+msgstr "Zadán neplatný počet robotů"
 
 #: ../ggz-gtk/launch.c:420
 msgid "Seat Assignments"
-msgstr "Sitzzuordnungen"
+msgstr ""
 
 #: ../ggz-gtk/launch.c:443
 msgid "Game Type:"
-msgstr "Spieltyp:"
+msgstr "Typ hry:"
 
 #: ../ggz-gtk/launch.c:479
 msgid "Number of seats"
-msgstr "Anzahl der Plätze"
+msgstr "Počet míst"
 
 #: ../ggz-gtk/launch.c:495 ../ggz-gtk/roominfo.c:90
 msgid "Author:"
@@ -814,46 +792,45 @@ msgstr "Autor:"
 
 #: ../ggz-gtk/launch.c:513
 msgid "Description:"
-msgstr "Beschreibung:"
+msgstr "Popis:"
 
-# Ist "Homepage" eingedeutscht "genug", um es als Übersetzung zu verwenden?
 #: ../ggz-gtk/launch.c:530 ../ggz-gtk/roominfo.c:100
 msgid "Homepage:"
-msgstr "Internetseite:"
+msgstr "Domovská stránka:"
 
 #: ../ggz-gtk/launch.c:586
 #, c-format
 msgid "Seat %d:"
-msgstr "Sitz %d:"
+msgstr ""
 
 #: ../ggz-gtk/launch.c:598
 msgid "Computer"
-msgstr "Rechner"
+msgstr "Počítač"
 
 #: ../ggz-gtk/launch.c:613
 msgid "Open"
-msgstr "Offen"
+msgstr "Otevřít"
 
 #: ../ggz-gtk/launch.c:628
 msgid "Reserved for"
-msgstr "Reserviert für"
+msgstr "Rezervováno pro"
 
 #: ../ggz-gtk/launch.c:663
 msgid "Game Description   "
-msgstr "Spielbeschreibung"
+msgstr "Popis hry   "
 
 #: ../ggz-gtk/login.c:101
 msgid "Login"
-msgstr "Anmeldung"
+msgstr "Přihlášení"
 
 #: ../ggz-gtk/login.c:108
 msgid "Sorry!"
-msgstr "Entschuldigung!"
+msgstr "Omlouváme se!"
 
 #: ../ggz-gtk/login.c:115
 #, c-format
 msgid "That username is already in use."
-msgstr "Der Benutzername wird bereits verwendet."
+msgstr "Toto uživatelské jméno se již používá."
 
 #: ../ggz-gtk/login.c:119
 #, c-format
@@ -861,27 +838,27 @@ msgid ""
 "Authentication has failed.\n"
 "Please supply the correct password."
 msgstr ""
-"Die Authentifikation ist fehlgeschlagen.\n"
-"Bitte geben Sie das richtige Passwort ein."
+"Autentizace selhala.\n"
+"Zadejte prosím správné heslo."
 
 #: ../ggz-gtk/login.c:123
 #, c-format
 msgid "The username is too long!"
-msgstr "Der Benutzername ist zu lang!"
+msgstr "Uživatelské jméno je příliš dlouhé!"
 
 #: ../ggz-gtk/login.c:126
 #, c-format
 msgid "Invalid username, do not use special characters!"
-msgstr "Ungültiger Benutzername, bitte benutzen Sie keine Sonderzeichen!"
+msgstr "Neplatné uživatelské jméno, nepoužívejte zvláštní znaky!"
 
 #: ../ggz-gtk/login.c:130
 #, c-format
 msgid "Login failed for unknown reason: %s"
-msgstr "Anmeldevorgang aus unbekanntem Grund fehlgeschlagen: %s"
+msgstr "Přihlášení z neznámého důvodu selhalo: %s"
 
 #: ../ggz-gtk/login.c:538
 msgid "Server Profile"
-msgstr "Serverprofil"
+msgstr "Profil serveru:"
 
 #: ../ggz-gtk/login.c:562 ../ggz-gtk/props.c:925
 msgid "Profile:"
@@ -889,7 +866,7 @@ msgstr "Profil:"
 
 #: ../ggz-gtk/login.c:582
 msgid "Edit Profiles..."
-msgstr "Profile bearbeiten …"
+msgstr "Upravit profily..."
 
 #: ../ggz-gtk/login.c:590 ../ggz-gtk/props.c:946
 msgid "Server:"
@@ -897,7 +874,7 @@ msgstr "Server:"
 
 #: ../ggz-gtk/login.c:600
 msgid "localhost"
-msgstr "localhost"
+msgstr ""
 
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
@@ -905,59 +882,59 @@ msgstr "Port:"
 
 #: ../ggz-gtk/login.c:612
 msgid "5688"
-msgstr "5688"
+msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
-msgstr "Benutzername:"
+msgstr "Uživatelské jméno:"
 
 #: ../ggz-gtk/login.c:648 ../ggz-gtk/props.c:1014
 msgid "Password:"
-msgstr "Passwort:"
+msgstr "Heslo:"
 
 #: ../ggz-gtk/login.c:664
 msgid "Email:"
-msgstr "E-Mail:"
+msgstr "E-mail:"
 
 #: ../ggz-gtk/login.c:680 ../ggz-gtk/props.c:1057
 msgid "Normal Login"
-msgstr "Normale Anmeldung"
+msgstr "Normální přihlášení"
 
 #: ../ggz-gtk/login.c:691 ../ggz-gtk/props.c:1065
 msgid "Guest Login"
-msgstr "Gast-Anmeldung"
+msgstr "Přihlášení hosta"
 
 #: ../ggz-gtk/login.c:699
 msgid "First-time Login"
-msgstr "Erstanmeldung"
+msgstr "První přihlášení"
 
 #: ../ggz-gtk/motd.c:161
 msgid "Message of the Day"
-msgstr "Nachricht des Tages"
+msgstr "Zpráva dne"
 
 #: ../ggz-gtk/pick_module.c:89
 msgid "Which client would you like to use to play this game?"
-msgstr "Welches Programm möchten Sie benutzen, um dieses Spiel zu starten?"
+msgstr "Jakého klienta chcete pro tuto hru použít?"
 
 #: ../ggz-gtk/pick_module.c:131
 msgid "Don't ask me again."
-msgstr "Nicht erneut nachfragen."
+msgstr "Již se neptat."
 
 #: ../ggz-gtk/playerinfo.c:102
 msgid "Player Information"
-msgstr "Spielerinformationen"
+msgstr "Informace o hráči"
 
 #: ../ggz-gtk/playerinfo.c:132
 msgid "Player Handle:"
-msgstr "Spieler-Spitzname:"
+msgstr "Přezdívka hráče:"
 
 #: ../ggz-gtk/playerinfo.c:150
 msgid "Table:"
-msgstr "Tisch:"
+msgstr "Stůl:"
 
 #: ../ggz-gtk/playerinfo.c:168
 msgid "Account:"
-msgstr "Konto:"
+msgstr "Účet:"
 
 #: ../ggz-gtk/playerinfo.c:187
 msgid "Record:"
@@ -965,52 +942,53 @@ msgstr "Rekord:"
 
 #: ../ggz-gtk/playerinfo.c:205
 msgid "Rating:"
-msgstr "Bewertung:"
+msgstr "Hodnocení:"
 
 #: ../ggz-gtk/playerinfo.c:223
+#, fuzzy
 msgid "Rank:"
-msgstr "Rang:"
+msgstr "Černý:"
 
 #: ../ggz-gtk/playerinfo.c:241
 msgid "Score:"
-msgstr "Punkte:"
+msgstr "Skóre:"
 
 #: ../ggz-gtk/playerinfo.c:302 ../ggz-gtk/playerinfo.c:334
 msgid "Unknown"
-msgstr "Unbekannt"
+msgstr "Neznámý"
 
 #: ../ggz-gtk/playerinfo.c:337
 msgid "Registered"
-msgstr "Registriert"
+msgstr "Registrovaný"
 
 #: ../ggz-gtk/playerinfo.c:340
 msgid "Guest"
-msgstr "Gast"
+msgstr "Host"
 
 #: ../ggz-gtk/playerinfo.c:343
 msgid "Host"
-msgstr "Host"
+msgstr "Hostitel"
 
 #: ../ggz-gtk/playerinfo.c:346
 msgid "Administrator"
-msgstr "Administrator"
+msgstr "Administrátor"
 
 #: ../ggz-gtk/playerinfo.c:349
 msgid "Bot"
-msgstr "Computerspieler"
+msgstr "Robot"
 
 #: ../ggz-gtk/playerlist.c:94 ../ggz-gtk/roomlist.c:144
 #: ../ggz-gtk/tablelist.c:84
 msgid "Info"
-msgstr "Info"
+msgstr "Informace"
 
 #: ../ggz-gtk/playerlist.c:101
 msgid "Friends"
-msgstr "Freunde"
+msgstr "Přátelé"
 
 #: ../ggz-gtk/playerlist.c:106
 msgid "Ignore"
-msgstr "Ignorieren"
+msgstr "Ignorovat"
 
 #: ../ggz-gtk/playerlist.c:246
 #, c-format
@@ -1019,155 +997,153 @@ msgstr "#%d"
 
 #: ../ggz-gtk/playerlist.c:346
 msgid "L"
-msgstr "L"
+msgstr ""
 
 #: ../ggz-gtk/playerlist.c:351 ../ggz-gtk/tablelist.c:191
 msgid "T#"
-msgstr "T#"
+msgstr ""
 
 #: ../ggz-gtk/playerlist.c:362 ../ggz-gtk/types.c:176
 msgid "Name"
-msgstr "Name"
+msgstr "Název"
 
 #: ../ggz-gtk/props.c:249
 msgid "Properties Updated"
-msgstr "Einstellungen aktualisiert"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1035
 msgid "Confirm:"
-msgstr "Bestätigen:"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1085
 msgid "Modify"
-msgstr "Übernehmen"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1099
 msgid "Servers"
-msgstr "Server"
+msgstr "Servery"
 
 #: ../ggz-gtk/props.c:1118
 msgid "Chat Font:"
-msgstr "Nachrichtenschriftart:"
+msgstr "Písmo chatu"
 
 #: ../ggz-gtk/props.c:1134
 msgid "Change"
-msgstr "Ändern"
+msgstr "Změnit"
 
 #: ../ggz-gtk/props.c:1147
 msgid "Ignore Join/Part Messages"
-msgstr "Betreten/Verlassen-Nachrichten verstecken"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1155
 msgid "Play Sounds"
-msgstr "Töne abspielen"
+msgstr "Přehrávat zvuky"
 
 #: ../ggz-gtk/props.c:1163
 msgid "Auto Indent"
-msgstr "Automatisch einrücken"
+msgstr "Automatické odsazování"
 
-# CHECK: Option hat keine Auswirkung
 #: ../ggz-gtk/props.c:1171
 msgid "Timestamp Chats"
-msgstr "Zeitstempel zu Nachrichten hinzufügen"
+msgstr ""
 
-# CHECK: Option hat keine Auswirkung
 #: ../ggz-gtk/props.c:1179
 msgid "Word Wrap"
-msgstr "Zeilenumbrüche einfügen"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1187
+#, fuzzy
 msgid "Chat Color"
-msgstr "Nachrichten-Farbe"
+msgstr "Barvy"
 
 #: ../ggz-gtk/props.c:1236
 msgid "Default chat color assigned to your friends"
-msgstr "Standard-Nachrichtenfarbe Ihrer Freunde"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1245
 msgid "Chat color used when your name is typed"
-msgstr "Nachrichten-Farbe wenn Ihr Name geannt wird"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1254
 msgid "Chat color used for all other chats"
-msgstr "Nachrichten-Farbe für alle anderen Unterhaltungen"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1263
 msgid "Normal Color"
-msgstr "Normale Farbe"
+msgstr "Normální barva"
 
 #: ../ggz-gtk/props.c:1274
 msgid "Highlight Color"
-msgstr "Hervorhebungsfarbe"
+msgstr "Barva zvýraznění"
 
 #: ../ggz-gtk/props.c:1285
 msgid "Friend Color"
-msgstr "Freund-Farbe"
+msgstr "Barva přátel"
 
 #: ../ggz-gtk/props.c:1296
 msgid "Black Background"
-msgstr "Schwarzer Hintergrund"
+msgstr "Černé pozadí"
 
 #: ../ggz-gtk/props.c:1305
 msgid "White Background"
-msgstr "Weißer Hintergrund"
+msgstr "Bílé pozadí"
 
 #: ../ggz-gtk/props.c:1314
 msgid "Chat"
-msgstr "Unterhaltung"
+msgstr "Chat"
 
 #: ../ggz-gtk/props.c:1326
 msgid "All of the following information is optional."
-msgstr "Alle Informationen sind freiwillig."
+msgstr "Veškeré následující informace jsou nepovinné."
 
 #: ../ggz-gtk/props.c:1344
 msgid "Name:"
-msgstr "Name:"
+msgstr "Jméno:"
 
 #: ../ggz-gtk/props.c:1371
 msgid "City:"
-msgstr "Stadt:"
+msgstr "Město:"
 
 #: ../ggz-gtk/props.c:1392
 msgid "State:"
-msgstr "Status:"
+msgstr "Stát:"
 
 #: ../ggz-gtk/props.c:1413
 msgid "Country:"
-msgstr "Land:"
+msgstr "Země:"
 
 #: ../ggz-gtk/props.c:1428
 #, fuzzy
 msgid "Comments, Hobies, Etc."
-msgstr "Kommentare, Hobbies, etc."
+msgstr "Poznámky, zájmy atd."
 
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
-msgstr "Benutzerinformationen"
+msgstr "Informace o uživateli"
 
 #: ../ggz-gtk/props.c:1459
 msgid "Browser to launch URLs with:"
-msgstr "Browser, mit dem URLs geöffnet werden:"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1464 ../ggz-gtk/props.c:1484 ../ggz-gtk/support.c:139
 msgid "Galeon - New"
-msgstr "Galeon - Neues Fenster"
+msgstr "Galeon - nový"
 
 #: ../ggz-gtk/props.c:1465 ../ggz-gtk/support.c:142
 msgid "Galeon - Existing"
-msgstr "Galeon - Existierendes Fenster"
+msgstr "Galeon - existující"
 
-# CHECK
 #: ../ggz-gtk/props.c:1466 ../ggz-gtk/support.c:145
 msgid "Gnome URL Handler"
-msgstr "Gnome-URL-Handler"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1467 ../ggz-gtk/support.c:148
 msgid "Konqueror - New"
-msgstr "Konqueror - Neues Fenster"
+msgstr "Konqueror - nový"
 
 #: ../ggz-gtk/props.c:1468 ../ggz-gtk/support.c:151
 msgid "Konqueror - Existing"
-msgstr "Konqueror - Existierendes Fenster"
+msgstr "Konqueror - existující"
 
 #: ../ggz-gtk/props.c:1469 ../ggz-gtk/support.c:163
 msgid "Lynx"
@@ -1175,132 +1151,134 @@ msgstr "Lynx"
 
 #: ../ggz-gtk/props.c:1470 ../ggz-gtk/support.c:169
 msgid "Mozilla - New"
-msgstr "Mozilla - Neues Fenster"
+msgstr "Mozilla - nová"
 
 #: ../ggz-gtk/props.c:1471 ../ggz-gtk/support.c:172
 msgid "Mozilla - Existing"
-msgstr "Mozilla - Existierendes Fenster"
+msgstr "Mozilla - existující"
 
 #: ../ggz-gtk/props.c:1472 ../ggz-gtk/support.c:176
 msgid "Netscape - New"
-msgstr "Netscape - Neues Fenster"
+msgstr "Netscape - nový"
 
 #: ../ggz-gtk/props.c:1473 ../ggz-gtk/support.c:179
 msgid "Netscape - Existing"
-msgstr "Netscape - Existierendes Fenster"
+msgstr "Netscape - existující"
 
 #: ../ggz-gtk/props.c:1474 ../ggz-gtk/support.c:183
 msgid "Opera - New"
-msgstr "Opera - Neues Fenster"
+msgstr "Opera - nová"
 
 #: ../ggz-gtk/props.c:1475 ../ggz-gtk/support.c:186
 msgid "Opera - Existing"
-msgstr "Opera - Existierendes Fenster"
+msgstr "Opera - existující"
 
 #: ../ggz-gtk/props.c:1476 ../ggz-gtk/support.c:191
 msgid "Firefox - New"
-msgstr "Firefox - Neues Fenster"
+msgstr "Firefox - nový"
 
 #: ../ggz-gtk/props.c:1477 ../ggz-gtk/support.c:194
 msgid "Firefox - Existing"
-msgstr "Firefox - Existierendes Fenster"
+msgstr "Firefox - existující"
 
 #: ../ggz-gtk/props.c:1486
 msgid "Single Click Room Entry"
-msgstr "Einfachen Klick zum Betreten eines Raumes benutzen"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1500
 msgid "Display All"
-msgstr "Alle anzeigen"
+msgstr "Zobrazit vše"
 
 #: ../ggz-gtk/props.c:1509
 msgid "Display New"
-msgstr "Neue anzeigen"
+msgstr "Zobrazit nové"
 
 #: ../ggz-gtk/props.c:1518
 msgid "Display Important"
-msgstr "Wichtige anzeigen"
+msgstr "Zobrazit důležité"
 
 #: ../ggz-gtk/props.c:1527
+#, fuzzy
 msgid "Display None"
-msgstr "Keine anzeigen"
+msgstr "Zobrazovat pravděpodobnosti"
 
 #: ../ggz-gtk/props.c:1536
 msgid "Options"
-msgstr "Optionen"
+msgstr "Nastavení"
 
 #: ../ggz-gtk/props.c:1625
 msgid "Select Font"
-msgstr "Schriftart wählen"
+msgstr "Vybrat písmo"
 
 #: ../ggz-gtk/roominfo.c:63
 msgid "Room Information"
-msgstr "Rauminformation"
+msgstr "Informace o místnosti"
 
 #: ../ggz-gtk/roominfo.c:80
 msgid "Game Name:"
-msgstr "Spielname:"
+msgstr "Název hry:"
 
 #: ../ggz-gtk/roominfo.c:110
 msgid "Room Description:"
-msgstr "Raumbeschreibung:"
+msgstr "Popis místnosti:"
 
-# CHECK
 #: ../ggz-gtk/roominfo.c:155
 msgid "This room has no game"
-msgstr "Dieser Raum hat kein Spiel"
+msgstr "Tato místnost neobsahuje žádnou hru"
 
 #: ../ggz-gtk/roominfo.c:162 ../ggz-gtk/roominfo.c:169
 msgid "N/A"
-msgstr "N.v."
+msgstr "N/A"
 
 #: ../ggz-gtk/roominfo.c:175
 msgid "Unknown room"
-msgstr "Unbekannter Raum"
+msgstr "Neznámá místnost"
 
 #: ../ggz-gtk/roomlist.c:73
 msgid "You can't join a room; you're not logged in"
-msgstr "Bitte melden Sie sich an, um einen Raum zu betreten"
+msgstr "Nemůžete vstoupit do místnosti, nejste přihlášeni"
 
 #: ../ggz-gtk/roomlist.c:77
+#, fuzzy
 msgid "You're already in between rooms"
-msgstr "Sie befinden sich bereits in der Lobby"
+msgstr "Prodleva mezi hody"
 
 #: ../ggz-gtk/roomlist.c:82
 msgid "You can't switch rooms while playing a game"
-msgstr "Sie können den Raum nicht wechseln, während Sie spielen"
+msgstr "Během hraní hry nelze měnit místnosti"
 
 #: ../ggz-gtk/roomlist.c:89
 msgid "Unknown error"
-msgstr "Unbekannter Fehler"
+msgstr "Neznámá chyba"
 
 #: ../ggz-gtk/roomlist.c:109 ../ggz-gtk/roomlist.c:114
 msgid "Error joining room"
-msgstr "Fehler beim Betreten des Raumes"
+msgstr "Chyba vstupování do místnosti"
 
 #: ../ggz-gtk/roomlist.c:350
 msgid "Other Rooms"
-msgstr "Andere Räume"
+msgstr "Ostatní místnosti"
 
 #: ../ggz-gtk/roomlist.c:424
 msgid "Room"
-msgstr "Raum"
+msgstr "Místnost"
 
 #: ../ggz-gtk/tablelist.c:161
 msgid "No description available."
-msgstr "Keine Beschreibung verfügbar."
+msgstr "Žádný popis není k dispozici."
 
 #: ../ggz-gtk/tablelist.c:196
+#, fuzzy
 msgid "Seats"
-msgstr "Plätze"
+msgstr "srdce"
 
 #: ../ggz-gtk/tablelist.c:201 ../ggz-gtk/types.c:183
 msgid "Description"
-msgstr "Beschreibung"
+msgstr "Popis"
 
 #: ../ggz-gtk/types.c:113
 msgid "None"
-msgstr "Keine"
+msgstr "Žádná"
 
 #: ../ggz-gtk/types.c:148
 msgid ""
@@ -1308,13 +1286,10 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"Raumfilterung ist noch nicht implementiert.\n"
-"Falls Sie helfen möchten, besuchen Sie bitte\n"
-"http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/types.c:191
 msgid "Web Address"
-msgstr "Internetadresse"
+msgstr "Webová adresa"
 
 #: ../ggz-gtk/types.c:199
 msgid "Author"
@@ -1322,28 +1297,27 @@ msgstr "Autor"
 
 #: ../ggz-gtk/types.c:254
 msgid "Room List Filter:"
-msgstr "Raumlistenfilter:"
+msgstr "Filtr seznamu místností:"
 
-# Könnte auch setzen heißen, passt Gesetzt hier?
 #: ../ggz-gtk/types.c:266
+#, fuzzy
 msgid "Set"
-msgstr "Gesetzt"
+msgstr "Nastavení"
 
 #: ../ggz-gtk/types.c:306
 #, fuzzy
 msgid "Upgrage Game"
-msgstr "Bakers Game"
+msgstr "Pekařova hra"
 
-# CHECK
 #: ../ggz-gtk/types.c:309
 #, fuzzy
 msgid "Goto Web Site"
-msgstr "Internet-Seite besuchen"
+msgstr "Jít na web"
 
 #: ../src/main.c:119
 #, fuzzy
 msgid "Enable session log"
-msgstr "Klang aktivieren"
+msgstr "Povolit zvuky"
 
 #: ../src/main.c:121
 msgid "URL for autoconnection"

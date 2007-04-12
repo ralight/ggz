@@ -1,42 +1,48 @@
-# translation of sv_SE.po to Swedish
-# translation of sv_SE.po to
-# translation of sv_SE.po to
-# This file is distributed under the same license as the PACKAGE package.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER, 2004.
-# kettil <kettil@linux.se>, 2004.
+# This translation was merged from GNOME SVN
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/sv.po)
+
+# Swedish messages for gnome-games.
+# Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
+# Daniel Nylander <po@danielnylander.se>, 2006, 2007.
+# Andreas Persenius <ndap@swipnet.se>, 1999.
+# Andreas Hyden <a.hyden@cyberpoint.se>
+# Martin Norbäck <d95mback@dtek.chalmers.se>, 2000.
+# Christian Rose <menthos@menthos.com>, 2000, 2001, 2002, 2003, 2004, 2005.
+#
+# $Id: sv.po 9037 2007-04-12 08:05:09Z josef $
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: sv_SE\n"
+"Project-Id-Version: gnome-games\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-11-20 15:07+0100\n"
-"PO-Revision-Date: 2004-11-14 22:11+0100\n"
-"Last-Translator: kettil <kettil@linux.se>\n"
-"Language-Team: Swedish <sv@li.org>\n"
+"PO-Revision-Date: 2007-02-13 19:15+0100\n"
+"Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
+"Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.9.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../ggz-gtk/about.c:87 ../ggz-gtk/client.c:1089
 msgid "About"
-msgstr "Om GGZ"
+msgstr "Om"
 
 #: ../ggz-gtk/chat.c:89
 msgid "/msg <username> <message> . Private message a player"
-msgstr "/msg <användarnamn> <meddelande> . Skicka ett privat meddelande"
+msgstr "/msg <användare> <meddelande> . Privat meddelande till spelare"
 
 #: ../ggz-gtk/chat.c:91
 msgid "/table <message> .......... Message to your table"
-msgstr "/table <meddelande> ......... Meddelande till dit bord"
+msgstr "/table <meddelande> ....... Meddelande till ditt bord"
 
 #: ../ggz-gtk/chat.c:93
 msgid "/wall <message> ........... Admin command"
-msgstr "/wall <meddelande> ........... Admin kommando"
+msgstr "/wall <meddelande> ........ Administrationskommando"
 
 #: ../ggz-gtk/chat.c:95
 msgid "/beep <username> .......... Beep a player"
-msgstr "/beep <användarnamn> .......... \"Beepa\" en spelare"
+msgstr "/beep <användarnamn> ...... Skicka signal till spelare"
 
 #: ../ggz-gtk/chat.c:97
 msgid "/help ..................... Get help"
@@ -44,42 +50,40 @@ msgstr "/help ..................... Få hjälp"
 
 #: ../ggz-gtk/chat.c:99
 msgid "/friends .................. List your friends"
-msgstr "/friends .................. Visa vänner"
+msgstr "/friends .................. Lista din vänner"
 
 #: ../ggz-gtk/chat.c:101
 msgid "/ignore ................... List people you're ignoring"
-msgstr "/ignore ................... Visa människor som du ignorerar"
+msgstr "/ignore ................... Lista personer som du ignorerar"
 
 #: ../ggz-gtk/chat.c:104
-#, fuzzy
 msgid "/kick <username> .......... Kick a player from the room"
-msgstr "/beep <användarnamn> .......... \"Beepa\" en spelare"
+msgstr "/kick <användare> .......... Sparka ut en spelare från rummet"
 
 #: ../ggz-gtk/chat.c:107
-#, fuzzy
 msgid "/gag <username> ........... Gag a player to prevent them from talking"
-msgstr "/beep <användarnamn> .......... \"Beepa\" en spelare"
+msgstr "/gag <användare> .......... Förhindra en spelare från att prata"
 
 #: ../ggz-gtk/chat.c:110
 msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
 msgstr ""
+"/ungag <användare> ........ Tillåt en spelare att prata (motsats till /gag)"
 
 #: ../ggz-gtk/chat.c:113
-#, fuzzy
 msgid "/ban <username> ........... Ban a player from the server"
-msgstr "/beep <användarnamn> .......... \"Beepa\" en spelare"
+msgstr "/ban <användarnamn> ....... Bannlys en spelare från servern"
 
 #: ../ggz-gtk/chat.c:254
 #, c-format
 msgid "You have received an unknown message from %s."
-msgstr "Du har fått ett okännt meddelande från %s."
+msgstr "Du har mottagit ett okänt meddelande från %s."
 
 #: ../ggz-gtk/chat.c:318
 #, c-format
 msgid "You've been beeped by %s."
-msgstr "Du har blivit \"beepad\" av %s."
+msgstr "Du har fått en signal från %s."
 
 #: ../ggz-gtk/chat.c:439
 msgid "Usage: /msg <username> <message>"
@@ -87,12 +91,12 @@ msgstr "Användning: /msg <användarnamn> <meddelande>"
 
 #: ../ggz-gtk/chat.c:441
 msgid "    Sends a private message to a user on the network."
-msgstr "    Skickar ett privat meddelande till en användare."
+msgstr "    Skickar ett privat meddelande till en användare på nätverket."
 
 #: ../ggz-gtk/chat.c:495
 #, c-format
 msgid "Beep sent to %s."
-msgstr "\"Beep\" skickat till %s."
+msgstr "Signal skickad till %s."
 
 #: ../ggz-gtk/chat.c:523
 #, c-format
@@ -102,51 +106,51 @@ msgstr "%s (loggade in)"
 #: ../ggz-gtk/chat.c:561
 #, c-format
 msgid "%s (logged off)"
-msgstr "%s (loggade ut)"
+msgstr "%s (loggade av)"
 
 #: ../ggz-gtk/chat.c:587
 msgid "Chat Commands"
-msgstr "Chatt Kommandon"
+msgstr "Chattkommandon"
 
 #: ../ggz-gtk/chat.c:588
 msgid "-------------"
-msgstr "-------------"
+msgstr "--------------"
 
 #: ../ggz-gtk/chat.c:592
 msgid "/me <action> .............. Send an action"
-msgstr "/me <handling> .............. Skicka en handling"
+msgstr "/me <åtgärd> .............. Skicka en åtgärd"
 
 #: ../ggz-gtk/chat.c:783
 #, c-format
 msgid "Added %s to your friends list."
-msgstr "%s är en vän."
+msgstr "Lade till %s till din lista över vänner."
 
 #: ../ggz-gtk/chat.c:807
 #, c-format
 msgid "Removed %s from your friends list."
-msgstr "%s är inte längre en vän."
+msgstr "Tog bort %s från din lista över vänner."
 
 #: ../ggz-gtk/chat.c:838
 #, c-format
 msgid "Added %s to your ignore list."
-msgstr "Du ignorerar %s."
+msgstr "Lade till %s till din ignoreringslista."
 
 #: ../ggz-gtk/chat.c:863
 #, c-format
 msgid "Removed %s from your ignore list."
-msgstr "Du ignorerar inte längre %s."
+msgstr "Tog bort %s från din ignoreringslista."
 
 #: ../ggz-gtk/chat.c:939
 msgid "People currently your friends"
-msgstr "Människor på din vän-lista"
+msgstr "Personer "
 
 #: ../ggz-gtk/chat.c:953
 msgid "People you're currently ignoring"
-msgstr "Människor som du ignorerar"
+msgstr "Personer som du för närvarande ignorerar"
 
 #: ../ggz-gtk/chat.c:1029
 msgid "Multiple matches:"
-msgstr "Multipla träffar:"
+msgstr "Flera sökträffar:"
 
 #: ../ggz-gtk/client.c:144
 msgid "Are you sure you want to quit?"
@@ -162,11 +166,14 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
+"Serverstatistik har ännu inte implementerats. Om\n"
+"du vill hjälpa oss med att göra det kan du besöka\n"
+"http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
 #: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
 msgid "Not Implemented"
-msgstr ""
+msgstr "Inte implementerat"
 
 #: ../ggz-gtk/client.c:248 ../ggz-gtk/client.c:545
 msgid ""
@@ -174,12 +181,17 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
+"Spelarstatistik har ännu inte implementerats. Om\n"
+"du vill hjälpa oss med att göra det kan du besöka\n"
+"http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:294
 msgid ""
 "GGZ Gaming Zone help needs a browser to be configured.\n"
 "The configuration dialog will be invoked now."
 msgstr ""
+"Hjälp för GGZ Gaming Zone behöver ha en konfigurerad webbläsare.\n"
+"Konfigurationsdialogrutan kommer nu att anropas."
 
 #: ../ggz-gtk/client.c:308
 msgid ""
@@ -188,24 +200,26 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
+"Hjälp inne i spelen är ännu inte implementerat.\n"
+"Hjälp finns på vår webbplats. Om\n"
+"du vill hjälpa till ska du bege dig till\n"
+"http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:566
-#, fuzzy
 msgid "You must highlight a table before you can join it."
-msgstr "Du måste markera ett bord innan du kan titta på."
+msgstr "Du måste markera ett bord innan du kan sitta ner vid det."
 
 #: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
-#, fuzzy
 msgid "Error Joining"
-msgstr "Kan inte \"joina\" rum"
+msgstr "Fel vid ingång"
 
 #: ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:614
 msgid "That table is full."
-msgstr ""
+msgstr "Det bordet är fullt."
 
 #: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:334
 msgid "Error launching game module."
-msgstr "Kan inte starta spelmodul."
+msgstr "Fel vid start av spelmodul."
 
 #: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
 #: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:335
@@ -214,69 +228,69 @@ msgstr "Spelfel"
 
 #: ../ggz-gtk/client.c:600
 msgid "You must highlight a table before you can watch it."
-msgstr "Du måste markera ett bord innan du kan titta på."
+msgstr "Du måste markera ett bord innan du kan se det."
 
 #: ../ggz-gtk/client.c:602
 msgid "Error Spectating"
-msgstr "Åskådningsfel :)"
+msgstr "Fel vid åskådning"
 
 #: ../ggz-gtk/client.c:647
-#, fuzzy
 msgid ""
 "Failed to join table.\n"
 "Join aborted."
-msgstr "Lyckades inte \"joina\" bordet."
+msgstr ""
+"Misslyckades med att gå med i bord.\n"
+"Ingång avbröts."
 
 #: ../ggz-gtk/client.c:648
 msgid "Join Error"
-msgstr "\"Join\" Fel"
+msgstr "Ingångsfel"
 
 #: ../ggz-gtk/client.c:678
 msgid "Disconnect from the GGZ Gaming Zone server"
-msgstr "Koppla ner från \"GGZ Gaming Zone\"-servern"
+msgstr "Koppla från GGZ Gaming Zone-servern"
 
 #: ../ggz-gtk/client.c:680
 msgid "Start playing a game at a new table"
-msgstr "Starta ett nytt spel på ett nytt bord"
+msgstr "Börja spela ett spel på ett nytt bord"
 
 #: ../ggz-gtk/client.c:682
 msgid "Join an existing game"
-msgstr "\"Joina\" ett befintligt spel"
+msgstr "Gå med i ett befintligt spel"
 
 #: ../ggz-gtk/client.c:684
 msgid "Watch an existing game - become a spectator of the table"
-msgstr "Se på ett befintligt spel - bli en åskådare av bordet"
+msgstr "Beskåda ett befintligt spel - bli en åskådare vid bordet"
 
 #: ../ggz-gtk/client.c:687
 msgid "Leave the game you're currently playing"
-msgstr "Lämna spelet som du spelar"
+msgstr "Lämna spelet som du för närvarande spelar"
 
 #: ../ggz-gtk/client.c:689
 msgid "Show the properties dialog to change the client settings"
-msgstr "Visa inställningar för klienten"
+msgstr "Visa egenskapsdialogen för att ändra klientinställningar"
 
 #: ../ggz-gtk/client.c:693
 msgid "Show the game stats for the current room's game type"
-msgstr "Visa spelstatistik för det aktiva rummets speltyp"
+msgstr "Visa spelstatistik för det aktuella rummets speltyp"
 
 #: ../ggz-gtk/client.c:696
-#, fuzzy
 msgid "Exit the GGZ client application."
-msgstr "Stäng programmet."
+msgstr "Avsluta GGZ-klientprogrammet."
 
 #: ../ggz-gtk/client.c:726
 #, c-format
 msgid "Client Version:14 %s"
-msgstr "Klientversion:14 %s"
+msgstr "Client version:14 %s"
 
 #: ../ggz-gtk/client.c:729
 #, c-format
 msgid "GTK+ Version:14 %d.%d.%d\n"
-msgstr "GTK+ Version:14 %d.%d.%d\n"
+msgstr "GTK+ version:14 %d.%d.%d\n"
 
 #: ../ggz-gtk/client.c:736
 msgid "Compiled with debugging."
-msgstr "Kompilerad med \"debugg\"-symboler."
+msgstr "Byggd för felsökning."
 
 #: ../ggz-gtk/client.c:934
 msgid "GGZ"
@@ -288,12 +302,11 @@ msgstr "Anslut"
 
 #: ../ggz-gtk/client.c:949 ../ggz-gtk/client.c:1180
 msgid "Disconnect"
-msgstr "Koppla ner"
+msgstr "Koppla från"
 
 #: ../ggz-gtk/client.c:962
-#, fuzzy
 msgid "Quit"
-msgstr "Avsluta?"
+msgstr "Avsluta"
 
 #: ../ggz-gtk/client.c:969
 msgid "Game"
@@ -301,16 +314,16 @@ msgstr "Spel"
 
 #: ../ggz-gtk/client.c:978 ../ggz-gtk/client.c:1133 ../ggz-gtk/launch.c:693
 msgid "Launch"
-msgstr "Nytt"
+msgstr "Starta"
 
 #: ../ggz-gtk/client.c:985 ../ggz-gtk/client.c:1141 ../ggz-gtk/roomlist.c:150
 #: ../ggz-gtk/tablelist.c:74
 msgid "Join"
-msgstr "\"Joina\""
+msgstr "Gå med i"
 
 #: ../ggz-gtk/client.c:992 ../ggz-gtk/client.c:1149
 msgid "Watch"
-msgstr "Åskåda"
+msgstr "Beskåda"
 
 #: ../ggz-gtk/client.c:1004 ../ggz-gtk/client.c:1157 ../ggz-gtk/tablelist.c:77
 msgid "Leave"
@@ -322,7 +335,7 @@ msgstr "Redigera"
 
 #: ../ggz-gtk/client.c:1019
 msgid "Properties"
-msgstr "Inställningar"
+msgstr "Egenskaper"
 
 #: ../ggz-gtk/client.c:1026
 msgid "View"
@@ -330,11 +343,11 @@ msgstr "Visa"
 
 #: ../ggz-gtk/client.c:1035
 msgid "Room List"
-msgstr "Rumlista"
+msgstr "Rumslista"
 
 #: ../ggz-gtk/client.c:1041
 msgid "Player List"
-msgstr "Användare"
+msgstr "Spelarlista"
 
 #: ../ggz-gtk/client.c:1053
 msgid "Server Stats"
@@ -342,7 +355,7 @@ msgstr "Serverstatistik"
 
 #: ../ggz-gtk/client.c:1057
 msgid "Player Stats"
-msgstr "Användarstatistik"
+msgstr "Spelarstatistik"
 
 #: ../ggz-gtk/client.c:1065 ../ggz-gtk/types.c:237
 msgid "Game Types"
@@ -350,7 +363,7 @@ msgstr "Speltyper"
 
 #: ../ggz-gtk/client.c:1074 ../ggz-gtk/props.c:1491
 msgid "MOTD"
-msgstr "MOTD (dagens meddelande)"
+msgstr "Dagens meddelande"
 
 #: ../ggz-gtk/client.c:1081
 msgid "Help"
@@ -362,15 +375,15 @@ msgstr "Copyright"
 
 #: ../ggz-gtk/client.c:1105
 msgid "GGZ Help"
-msgstr "GGZ-Hjälp"
+msgstr "GGZ-hjälp"
 
 #: ../ggz-gtk/client.c:1112
 msgid "Game Help"
-msgstr "Spel-Hjälp"
+msgstr "Spelhjälp"
 
 #: ../ggz-gtk/client.c:1121
 msgid "Goto Web"
-msgstr "Besök hemsidan"
+msgstr "Gå till webb"
 
 #: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:356
 msgid "Stats"
@@ -378,7 +391,7 @@ msgstr "Statistik"
 
 #: ../ggz-gtk/client.c:1196 ../ggz-gtk/ggzclient.c:718
 msgid "Current Room:"
-msgstr "Aktivt rum:"
+msgstr "Nuvarande rum:"
 
 #: ../ggz-gtk/client.c:1277 ../ggz-gtk/playerinfo.c:259
 msgid "Message:"
@@ -396,14 +409,18 @@ msgstr "GGZ Gaming Zone"
 msgid "Wizard"
 msgstr "Trollkarl"
 
+# Kvinnonamn.
+#
 #: ../ggz-gtk/first.c:57
 msgid "Deity"
-msgstr "Gudomlighet"
+msgstr "Gudinna"
 
+# I brist på annat...
 #: ../ggz-gtk/first.c:57
 msgid "Sentinel"
-msgstr "Väktare"
+msgstr "Vakt"
 
+# Osäker.
 #: ../ggz-gtk/first.c:57
 msgid "Captain"
 msgstr "Kapten"
@@ -420,6 +437,7 @@ msgstr "Ängel"
 msgid "Silverlord"
 msgstr "Silverlord"
 
+# I brist på annat...
 #: ../ggz-gtk/first.c:58
 msgid "Eagle"
 msgstr "Örn"
@@ -430,7 +448,7 @@ msgstr "Vampyr"
 
 #: ../ggz-gtk/first.c:59
 msgid "Chief"
-msgstr "Boss"
+msgstr "Chef"
 
 #: ../ggz-gtk/first.c:59
 msgid "Colonel"
@@ -438,7 +456,7 @@ msgstr "Överste"
 
 #: ../ggz-gtk/first.c:59
 msgid "General"
-msgstr "General"
+msgstr "Allmänt"
 
 #: ../ggz-gtk/first.c:60
 msgid "Major"
@@ -446,7 +464,7 @@ msgstr "Major"
 
 #: ../ggz-gtk/first.c:60
 msgid "Scout"
-msgstr "Scout"
+msgstr "Spejare"
 
 #: ../ggz-gtk/first.c:60
 msgid "Lieutenant"
@@ -454,19 +472,19 @@ msgstr "Löjtnant"
 
 #: ../ggz-gtk/first.c:60
 msgid "Stalker"
-msgstr ""
+msgstr "Förföljare"
 
 #: ../ggz-gtk/first.c:61
 msgid "Scientist"
-msgstr "Vetenskapsman"
+msgstr "Forskare"
 
 #: ../ggz-gtk/first.c:61
 msgid "Scholar"
-msgstr "vetenskapsman"
+msgstr "Vetenskapsman"
 
 #: ../ggz-gtk/first.c:61
 msgid "Entity"
-msgstr ""
+msgstr "Enhet"
 
 #: ../ggz-gtk/first.c:61
 msgid "Creator"
@@ -474,19 +492,19 @@ msgstr "Skapare"
 
 #: ../ggz-gtk/first.c:69
 msgid "GGZ Community (fast)"
-msgstr ""
+msgstr "GGZ Community (snabb)"
 
 #: ../ggz-gtk/first.c:70
 msgid "Local developer server"
-msgstr ""
+msgstr "Lokal utvecklingsserver"
 
 #: ../ggz-gtk/first.c:190
 msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
-"Det här är första gången du kör GTK+ GGZ Gaming Zone klienten.Vill du skapa "
-"standardinställningar för servrar?"
+"Det här är första gången du kör GTK+ GGZ Gaming Zone-klienten. Vill du att "
+"jag skapar några standardserverprofiler?"
 
 #: ../ggz-gtk/game.c:72
 #, c-format
@@ -494,34 +512,34 @@ msgid ""
 "You don't have this game installed. You can download\n"
 "it from %s."
 msgstr ""
-"Du har inte installerat det här spelet. Du kan ladda\n"
-"ner det från %s."
+"Du har inte det här spelet installerat. Du kan hämta\n"
+"det från %s."
 
 #: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
 #: ../ggz-gtk/game.c:325 ../ggz-gtk/game.c:334 ../ggz-gtk/game.c:350
 #: ../ggz-gtk/launch.c:290
 msgid "Launch Error"
-msgstr "Fel vid spelstart"
+msgstr "Startfel"
 
 #: ../ggz-gtk/game.c:148
 msgid ""
 "Failed to execute game module.\n"
 " Launch aborted."
 msgstr ""
-"Kan inte starta spel modulen.\n"
-"Avbryter."
+"Misslyckades med att starta spelmodulen.\n"
+"Starten avbröts"
 
 #: ../ggz-gtk/game.c:201
 msgid "Launched game"
-msgstr "Spel startat"
+msgstr "Startade spel"
 
 #: ../ggz-gtk/game.c:222
 msgid "Launch failed"
-msgstr "Spelstart misslyckades"
+msgstr "Starten misslyckades"
 
 #: ../ggz-gtk/game.c:296
 msgid "You can only play one game at a time."
-msgstr "Du kan bara spela ett spel i taget."
+msgstr "Du kan endast spela ett spel åt gången."
 
 #: ../ggz-gtk/game.c:304
 msgid "You're still at a table."
@@ -531,35 +549,41 @@ msgstr "Du är fortfarande vid ett bord."
 msgid ""
 "You must be in a room to launch a game.\n"
 "Launch aborted"
-msgstr "Du måste vara i ett rum för att starta ett spel."
+msgstr ""
+"Du måste vara i ett rum för att starta ett spel.\n"
+"Starten avbröts"
 
 #: ../ggz-gtk/game.c:323
 msgid ""
 "No game types defined for this server.\n"
 "Launch aborted."
-msgstr "Inga speltyper definierade på servern."
+msgstr ""
+"Inga speltyper har definierats för den här servern.\n"
+"Starten avbröts"
 
 #: ../ggz-gtk/game.c:333
 msgid "This game doesn't support spectators."
-msgstr "Det här spelet stödjer inte åskådare."
+msgstr "Det här spelet har inte stöd för åskådare."
 
 #: ../ggz-gtk/game.c:348
 msgid ""
 "You need to launch the GGZ client directly\n"
 "to be able to play this game."
 msgstr ""
+"Du behöver starta GGZ-klienten direkt\n"
+"för att kunna spela det här spelet."
 
 #: ../ggz-gtk/ggzclient.c:122
 #, c-format
 msgid "Error connecting to server: %s"
-msgstr "Kan inte ansluta till: %s"
+msgstr "Fel vid anslutning till server: %s"
 
 #: ../ggz-gtk/ggzclient.c:124 ../ggz-gtk/ggzclient.c:380
 #: ../ggz-gtk/ggzclient.c:561 ../ggz-gtk/ggzclient.c:596
 #: ../ggz-gtk/ggzclient.c:649 ../ggz-gtk/ggzclient.c:1079
 #: ../ggz-gtk/launch.c:325
 msgid "Error"
-msgstr "Error"
+msgstr "Fel"
 
 #: ../ggz-gtk/ggzclient.c:237
 #, c-format
@@ -573,43 +597,42 @@ msgstr "Nytt lösenord"
 #: ../ggz-gtk/ggzclient.c:275
 #, c-format
 msgid "Players on server: %d"
-msgstr ""
+msgstr "Spelare på servern: %d"
 
 #: ../ggz-gtk/ggzclient.c:320
 #, c-format
 msgid "Current Room: %s"
-msgstr "Aktivt Rum: %s"
+msgstr "Nuvarande rum: %s"
 
 #: ../ggz-gtk/ggzclient.c:328
 #, c-format
 msgid "You've joined room \"%s\"."
-msgstr "Du har \"joinat\" \"%s\"."
+msgstr "Du har gått in i rummet \"%s\"."
 
 #: ../ggz-gtk/ggzclient.c:378
 #, c-format
 msgid "Error joining room: %s"
-msgstr "Kan inte \"joina\" rum: %s"
+msgstr "Fel vid ingång till rum: %s"
 
 #: ../ggz-gtk/ggzclient.c:429
 msgid "You can't chat while not in a room."
-msgstr "Du kan inte chatta när du inte är i rummet."
+msgstr "Du kan inte chatta när du inte är i ett rum."
 
 #: ../ggz-gtk/ggzclient.c:434
 msgid "You don't have permission to chat here."
-msgstr "Du har inte tillåtelse att chatta här."
+msgstr "Du har inte behörighet att chatta här."
 
 #: ../ggz-gtk/ggzclient.c:438
-#, fuzzy
 msgid "No private chatting at a table!"
-msgstr "Inga privata meddelanden vid ett bord!"
+msgstr "Ingen privatchatt vid ett bord!"
 
 #: ../ggz-gtk/ggzclient.c:442
 msgid "That player isn't in the room!"
-msgstr "Den användaren finns inte i rummet!"
+msgstr "Den spelaren är inte i rummet!"
 
 #: ../ggz-gtk/ggzclient.c:447
 msgid "There was an error sending the chat."
-msgstr "Kan inte skicka meddelandet."
+msgstr "Ett fel uppstod vid sändning av chatt."
 
 #: ../ggz-gtk/ggzclient.c:451
 msgid "You're not at a table."
@@ -618,27 +641,27 @@ msgstr "Du är inte vid ett bord."
 #: ../ggz-gtk/ggzclient.c:455
 #, c-format
 msgid "Chat failed: %s."
-msgstr "Chatt ofunka: %s."
+msgstr "Chatt misslyckades: %s."
 
 #: ../ggz-gtk/ggzclient.c:559
 #, c-format
 msgid "Error launching table: %s"
-msgstr "Kan inte skapa bord: %s"
+msgstr "Fel vid start av bord: %s"
 
 #: ../ggz-gtk/ggzclient.c:579
 #, c-format
 msgid "You have joined table %d."
-msgstr "Du har \"joinat\" bord %d."
+msgstr "Du har satt dig vid bord %d."
 
 #: ../ggz-gtk/ggzclient.c:594
 #, c-format
 msgid "Error joining table: %s"
-msgstr "Kan inte \"joina\" bord: %s"
+msgstr "Fel vid ingång till bord: %s"
 
 #: ../ggz-gtk/ggzclient.c:616
 #, c-format
 msgid "You have been booted from the table by %s."
-msgstr "Du har blivit \"bottad\" från bordet av %s."
+msgstr "Du har blivit utsparkad från bordet av %s."
 
 #: ../ggz-gtk/ggzclient.c:621
 #, c-format
@@ -648,17 +671,17 @@ msgstr "Du har lämnat bordet."
 #: ../ggz-gtk/ggzclient.c:624
 #, c-format
 msgid "The game is over."
-msgstr "Spelet är slut."
+msgstr "Spelet är över."
 
 #: ../ggz-gtk/ggzclient.c:628
 #, c-format
 msgid "There was an error with the game server."
-msgstr "Det inträffade ett fel i spelservern."
+msgstr "Det inträffade ett fel med spelservern."
 
 #: ../ggz-gtk/ggzclient.c:647
 #, c-format
 msgid "Error leaving table: %s"
-msgstr "Ett fel inträffade när du lämnade bordet: %s"
+msgstr "Fel vid lämnandet av bord: %s"
 
 #: ../ggz-gtk/ggzclient.c:740
 msgid "**none**"
@@ -666,20 +689,19 @@ msgstr "**ingen**"
 
 #: ../ggz-gtk/ggzclient.c:747
 msgid "Offline"
-msgstr "Offline"
+msgstr "Frånkopplad"
 
 #: ../ggz-gtk/ggzclient.c:750
 msgid "Connecting"
 msgstr "Ansluter"
 
 #: ../ggz-gtk/ggzclient.c:753
-#, fuzzy
 msgid "Reconnecting"
-msgstr "Ansluter"
+msgstr "Återansluter"
 
 #: ../ggz-gtk/ggzclient.c:756
 msgid "Online"
-msgstr "Online"
+msgstr "Ansluten"
 
 #: ../ggz-gtk/ggzclient.c:759
 msgid "Logging In"
@@ -711,7 +733,7 @@ msgstr "<-- Bord"
 
 #: ../ggz-gtk/ggzclient.c:782
 msgid "Logging Out"
-msgstr "Loggar Ut"
+msgstr "Loggar ut"
 
 #: ../ggz-gtk/ggzclient.c:1078
 #, c-format
@@ -720,7 +742,7 @@ msgstr "Serverfel: %s"
 
 #: ../ggz-gtk/ggzclient.c:1166
 msgid "Disconnected from server."
-msgstr "Nerkopplad från server."
+msgstr "Frånkopplad från servern."
 
 #: ../ggz-gtk/launch.c:114
 #, c-format
@@ -730,33 +752,33 @@ msgstr "Speltyp: %s"
 #: ../ggz-gtk/launch.c:120
 #, c-format
 msgid "Author:  %s"
-msgstr "Författare: %s"
+msgstr "Upphovsman:  %s"
 
 #: ../ggz-gtk/launch.c:127
 #, c-format
 msgid "Description:  %s"
-msgstr "Beskrivning: %s"
+msgstr "Beskrivning:  %s"
 
 #: ../ggz-gtk/launch.c:133
 #, c-format
 msgid "Home Page:  %s"
-msgstr "Hemsida: %s"
+msgstr "Webbplats:  %s"
 
 #: ../ggz-gtk/launch.c:289
 msgid ""
 "Failed to launch table.\n"
 " Launch aborted."
 msgstr ""
-"Kan inte skapa bord.\n"
-"Avbryter."
+"Misslyckades med att starta bordet.\n"
+"Starten avbröts."
 
 #: ../ggz-gtk/launch.c:325
 msgid "Invalid number of bots specified"
-msgstr "Ogiltigt antal \"bottar\""
+msgstr "Ogiltigt antal botar angivna"
 
 #: ../ggz-gtk/launch.c:420
 msgid "Seat Assignments"
-msgstr ""
+msgstr "Platstilldelningar"
 
 #: ../ggz-gtk/launch.c:443
 msgid "Game Type:"
@@ -764,11 +786,11 @@ msgstr "Speltyp:"
 
 #: ../ggz-gtk/launch.c:479
 msgid "Number of seats"
-msgstr "Antal stolar"
+msgstr "Antal platser"
 
 #: ../ggz-gtk/launch.c:495 ../ggz-gtk/roominfo.c:90
 msgid "Author:"
-msgstr "Författare:"
+msgstr "Upphovsman:"
 
 #: ../ggz-gtk/launch.c:513
 msgid "Description:"
@@ -776,12 +798,12 @@ msgstr "Beskrivning:"
 
 #: ../ggz-gtk/launch.c:530 ../ggz-gtk/roominfo.c:100
 msgid "Homepage:"
-msgstr "Hemsida:"
+msgstr "Webbsida:"
 
 #: ../ggz-gtk/launch.c:586
 #, c-format
 msgid "Seat %d:"
-msgstr "Stol %d:"
+msgstr "Plats %d:"
 
 #: ../ggz-gtk/launch.c:598
 msgid "Computer"
@@ -789,28 +811,29 @@ msgstr "Dator"
 
 #: ../ggz-gtk/launch.c:613
 msgid "Open"
-msgstr "Öppen"
+msgstr "Öppna"
 
 #: ../ggz-gtk/launch.c:628
 msgid "Reserved for"
-msgstr "Reserverad för"
+msgstr "Reserverat för"
 
 #: ../ggz-gtk/launch.c:663
 msgid "Game Description   "
 msgstr "Spelbeskrivning   "
 
+# Logga in eller Inloggning?
 #: ../ggz-gtk/login.c:101
 msgid "Login"
-msgstr "Logga in"
+msgstr "Inloggning"
 
 #: ../ggz-gtk/login.c:108
 msgid "Sorry!"
-msgstr "Förlåt!"
+msgstr "Tyvärr!"
 
 #: ../ggz-gtk/login.c:115
-#, fuzzy, c-format
+#, c-format
 msgid "That username is already in use."
-msgstr "Det användarnamnet är redan upptaget."
+msgstr "Det användarnamnet används redan."
 
 #: ../ggz-gtk/login.c:119
 #, c-format
@@ -818,21 +841,23 @@ msgid ""
 "Authentication has failed.\n"
 "Please supply the correct password."
 msgstr ""
+"Autentiseringen misslyckades.\n"
+"Ange rätt lösenord."
 
 #: ../ggz-gtk/login.c:123
 #, c-format
 msgid "The username is too long!"
-msgstr "Det användarnamnet är för långt!"
+msgstr "Användarnamnet är för långt!"
 
 #: ../ggz-gtk/login.c:126
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid username, do not use special characters!"
-msgstr "Ogiltigt antal \"bottar\""
+msgstr "Ogiltigt användarnamn, använd inte specialtecken!"
 
 #: ../ggz-gtk/login.c:130
 #, c-format
 msgid "Login failed for unknown reason: %s"
-msgstr "Inloggning misslyckades av okännt skäl: %s"
+msgstr "Inloggning misslyckades av okänd anledning: %s"
 
 #: ../ggz-gtk/login.c:538
 msgid "Server Profile"
@@ -844,7 +869,7 @@ msgstr "Profil:"
 
 #: ../ggz-gtk/login.c:582
 msgid "Edit Profiles..."
-msgstr "Ändra Profiler..."
+msgstr "Redigera profiler..."
 
 #: ../ggz-gtk/login.c:590 ../ggz-gtk/props.c:946
 msgid "Server:"
@@ -872,39 +897,39 @@ msgstr "Lösenord:"
 
 #: ../ggz-gtk/login.c:664
 msgid "Email:"
-msgstr ""
+msgstr "E-post:"
 
 #: ../ggz-gtk/login.c:680 ../ggz-gtk/props.c:1057
 msgid "Normal Login"
-msgstr "Normal Inloggning"
+msgstr "Normalt konto"
 
 #: ../ggz-gtk/login.c:691 ../ggz-gtk/props.c:1065
 msgid "Guest Login"
-msgstr "Gästloggin"
+msgstr "Gästkonto"
 
 #: ../ggz-gtk/login.c:699
 msgid "First-time Login"
-msgstr "Ny Inloggning"
+msgstr "Förstagångskonto"
 
 #: ../ggz-gtk/motd.c:161
 msgid "Message of the Day"
-msgstr ""
+msgstr "Dagens meddelande"
 
 #: ../ggz-gtk/pick_module.c:89
 msgid "Which client would you like to use to play this game?"
-msgstr "Vilken klient vill du använda till det här spelet?"
+msgstr "Vilken klient vill du använda för att spela det här spelet?"
 
 #: ../ggz-gtk/pick_module.c:131
 msgid "Don't ask me again."
-msgstr "Fråga mej inte igen."
+msgstr "Fråga inte igen."
 
 #: ../ggz-gtk/playerinfo.c:102
 msgid "Player Information"
-msgstr "Användarinformation"
+msgstr "Spelarinformation"
 
 #: ../ggz-gtk/playerinfo.c:132
 msgid "Player Handle:"
-msgstr "Användarnamn:"
+msgstr "Spelaralias:"
 
 #: ../ggz-gtk/playerinfo.c:150
 msgid "Table:"
@@ -912,7 +937,7 @@ msgstr "Bord:"
 
 #: ../ggz-gtk/playerinfo.c:168
 msgid "Account:"
-msgstr "Användarnamn:"
+msgstr "Konto:"
 
 #: ../ggz-gtk/playerinfo.c:187
 msgid "Record:"
@@ -920,7 +945,7 @@ msgstr "Rekord:"
 
 #: ../ggz-gtk/playerinfo.c:205
 msgid "Rating:"
-msgstr "ELO:"
+msgstr "Betyg:"
 
 #: ../ggz-gtk/playerinfo.c:223
 msgid "Rank:"
@@ -944,7 +969,7 @@ msgstr "Gäst"
 
 #: ../ggz-gtk/playerinfo.c:343
 msgid "Host"
-msgstr ""
+msgstr "Värd"
 
 #: ../ggz-gtk/playerinfo.c:346
 msgid "Administrator"
@@ -952,7 +977,7 @@ msgstr "Administratör"
 
 #: ../ggz-gtk/playerinfo.c:349
 msgid "Bot"
-msgstr "\"Bot\""
+msgstr "Robot"
 
 #: ../ggz-gtk/playerlist.c:94 ../ggz-gtk/roomlist.c:144
 #: ../ggz-gtk/tablelist.c:84
@@ -970,7 +995,7 @@ msgstr "Ignorera"
 #: ../ggz-gtk/playerlist.c:246
 #, c-format
 msgid "#%d"
-msgstr "#%d"
+msgstr "nr %d"
 
 #: ../ggz-gtk/playerlist.c:346
 msgid "L"
@@ -978,7 +1003,7 @@ msgstr "L"
 
 #: ../ggz-gtk/playerlist.c:351 ../ggz-gtk/tablelist.c:191
 msgid "T#"
-msgstr "Bord"
+msgstr "T#"
 
 #: ../ggz-gtk/playerlist.c:362 ../ggz-gtk/types.c:176
 msgid "Name"
@@ -986,11 +1011,11 @@ msgstr "Namn"
 
 #: ../ggz-gtk/props.c:249
 msgid "Properties Updated"
-msgstr "Inställningar Uppdaterade"
+msgstr "Egenskaper uppdaterade"
 
 #: ../ggz-gtk/props.c:1035
 msgid "Confirm:"
-msgstr "Upprepa:"
+msgstr "Bekräfta:"
 
 #: ../ggz-gtk/props.c:1085
 msgid "Modify"
@@ -1001,9 +1026,8 @@ msgid "Servers"
 msgstr "Servrar"
 
 #: ../ggz-gtk/props.c:1118
-#, fuzzy
 msgid "Chat Font:"
-msgstr "Chattypsnitt:"
+msgstr "Typsnitt för chatt:"
 
 #: ../ggz-gtk/props.c:1134
 msgid "Change"
@@ -1011,23 +1035,23 @@ msgstr "Ändra"
 
 #: ../ggz-gtk/props.c:1147
 msgid "Ignore Join/Part Messages"
-msgstr "Visa inte inloggnings/utloggnings-meddelanden"
+msgstr "Ignorera meddelanden för gå in/lämna"
 
 #: ../ggz-gtk/props.c:1155
 msgid "Play Sounds"
-msgstr "Spela Ljud"
+msgstr "Spela upp ljud"
 
 #: ../ggz-gtk/props.c:1163
 msgid "Auto Indent"
-msgstr "Automatisk Indragning"
+msgstr "Dra automatiskt in"
 
 #: ../ggz-gtk/props.c:1171
 msgid "Timestamp Chats"
-msgstr "Visa tid på meddelanden"
+msgstr "Tidsstämpla chattar"
 
 #: ../ggz-gtk/props.c:1179
 msgid "Word Wrap"
-msgstr ""
+msgstr "Ordbrytning"
 
 #: ../ggz-gtk/props.c:1187
 msgid "Chat Color"
@@ -1035,27 +1059,27 @@ msgstr "Chattfärg"
 
 #: ../ggz-gtk/props.c:1236
 msgid "Default chat color assigned to your friends"
-msgstr "Färg för dina vänner"
+msgstr "Standardchattfärg tilldelad till dina vänner"
 
 #: ../ggz-gtk/props.c:1245
 msgid "Chat color used when your name is typed"
-msgstr "Färg för meddelanden som innehåller ditt namn"
+msgstr "Chattfärg som används när ditt namn skrivs"
 
 #: ../ggz-gtk/props.c:1254
 msgid "Chat color used for all other chats"
-msgstr "Färg för alla andra meddelanden"
+msgstr "Chattfärg som används för alla andra chattar"
 
 #: ../ggz-gtk/props.c:1263
 msgid "Normal Color"
-msgstr "Standardfärg"
+msgstr "Normal färg"
 
 #: ../ggz-gtk/props.c:1274
 msgid "Highlight Color"
-msgstr "Markeringsfärg"
+msgstr "Färg för färgmarkering"
 
 #: ../ggz-gtk/props.c:1285
 msgid "Friend Color"
-msgstr "Vänfärg"
+msgstr "Färg för vänner"
 
 #: ../ggz-gtk/props.c:1296
 msgid "Black Background"
@@ -1065,13 +1089,14 @@ msgstr "Svart bakgrund"
 msgid "White Background"
 msgstr "Vit bakgrund"
 
+# Osäker.
 #: ../ggz-gtk/props.c:1314
 msgid "Chat"
 msgstr "Chatt"
 
 #: ../ggz-gtk/props.c:1326
 msgid "All of the following information is optional."
-msgstr "Följande information är inte obligatorisk."
+msgstr "All följande information är valfri."
 
 #: ../ggz-gtk/props.c:1344
 msgid "Name:"
@@ -1083,15 +1108,16 @@ msgstr "Stad:"
 
 #: ../ggz-gtk/props.c:1392
 msgid "State:"
-msgstr "Stat:"
+msgstr "Län/Region:"
 
 #: ../ggz-gtk/props.c:1413
 msgid "Country:"
 msgstr "Land:"
 
 #: ../ggz-gtk/props.c:1428
+#, fuzzy
 msgid "Comments, Hobies, Etc."
-msgstr "Kommentarer , Intressen, mm."
+msgstr "Kommentarer, hobby, etc."
 
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
@@ -1099,27 +1125,27 @@ msgstr "Användarinformation"
 
 #: ../ggz-gtk/props.c:1459
 msgid "Browser to launch URLs with:"
-msgstr "Webläsare:"
+msgstr "Webbläsare att start url:er med:"
 
 #: ../ggz-gtk/props.c:1464 ../ggz-gtk/props.c:1484 ../ggz-gtk/support.c:139
 msgid "Galeon - New"
-msgstr "Galeon - Ny"
+msgstr "Galeon - Nytt"
 
 #: ../ggz-gtk/props.c:1465 ../ggz-gtk/support.c:142
 msgid "Galeon - Existing"
-msgstr "Galeon - Befintlig"
+msgstr "Galeon - Existerande"
 
 #: ../ggz-gtk/props.c:1466 ../ggz-gtk/support.c:145
 msgid "Gnome URL Handler"
-msgstr "Gnome URL-Hanterare"
+msgstr "Gnome url-hanterare"
 
 #: ../ggz-gtk/props.c:1467 ../ggz-gtk/support.c:148
 msgid "Konqueror - New"
-msgstr "Konqueror - Ny"
+msgstr "Konqueror - Nytt"
 
 #: ../ggz-gtk/props.c:1468 ../ggz-gtk/support.c:151
 msgid "Konqueror - Existing"
-msgstr "Konqueror - Befintlig"
+msgstr "Konqueror - Existerande"
 
 #: ../ggz-gtk/props.c:1469 ../ggz-gtk/support.c:163
 msgid "Lynx"
@@ -1127,69 +1153,67 @@ msgstr "Lynx"
 
 #: ../ggz-gtk/props.c:1470 ../ggz-gtk/support.c:169
 msgid "Mozilla - New"
-msgstr "Mozilla - Ny"
+msgstr "Mozilla - Nytt"
 
 #: ../ggz-gtk/props.c:1471 ../ggz-gtk/support.c:172
 msgid "Mozilla - Existing"
-msgstr "Mozilla - Befintlig"
+msgstr "Mozilla - Existerande"
 
 #: ../ggz-gtk/props.c:1472 ../ggz-gtk/support.c:176
 msgid "Netscape - New"
-msgstr "Netscape - Ny"
+msgstr "Netscape - Nytt"
 
 #: ../ggz-gtk/props.c:1473 ../ggz-gtk/support.c:179
 msgid "Netscape - Existing"
-msgstr "Netscape - Befintlig"
+msgstr "Netscape - Existerande"
 
 #: ../ggz-gtk/props.c:1474 ../ggz-gtk/support.c:183
 msgid "Opera - New"
-msgstr "Opera - Ny"
+msgstr "Opera - Nytt"
 
 #: ../ggz-gtk/props.c:1475 ../ggz-gtk/support.c:186
 msgid "Opera - Existing"
-msgstr "Opera - Befintlig"
+msgstr "Opera - Existerande"
 
 #: ../ggz-gtk/props.c:1476 ../ggz-gtk/support.c:191
-#, fuzzy
 msgid "Firefox - New"
-msgstr "Galeon - Ny"
+msgstr "Firefox - Nytt"
 
 #: ../ggz-gtk/props.c:1477 ../ggz-gtk/support.c:194
-#, fuzzy
 msgid "Firefox - Existing"
-msgstr "Galeon - Befintlig"
+msgstr "Firefox - Existerande"
 
 #: ../ggz-gtk/props.c:1486
 msgid "Single Click Room Entry"
-msgstr "\"Joina\" rum med ett klick"
+msgstr "Gå in i rum med ett enda klick"
 
 #: ../ggz-gtk/props.c:1500
 msgid "Display All"
-msgstr "Visa Alla"
+msgstr "Visa alla"
 
 #: ../ggz-gtk/props.c:1509
 msgid "Display New"
-msgstr "Visa Nya"
+msgstr "Visa nya"
 
 #: ../ggz-gtk/props.c:1518
 msgid "Display Important"
-msgstr "Visa Viktiga"
+msgstr "Visa viktig"
 
 #: ../ggz-gtk/props.c:1527
 msgid "Display None"
-msgstr "Visa Inga"
+msgstr "Visa ingen"
 
 #: ../ggz-gtk/props.c:1536
 msgid "Options"
-msgstr "Allmänt"
+msgstr "Alternativ"
 
 #: ../ggz-gtk/props.c:1625
 msgid "Select Font"
-msgstr "Välj Typsnitt"
+msgstr "Välj typsnitt"
 
 #: ../ggz-gtk/roominfo.c:63
 msgid "Room Information"
-msgstr "Ruminformation"
+msgstr "Rumsinformation"
 
 #: ../ggz-gtk/roominfo.c:80
 msgid "Game Name:"
@@ -1197,45 +1221,43 @@ msgstr "Spelnamn:"
 
 #: ../ggz-gtk/roominfo.c:110
 msgid "Room Description:"
-msgstr "Rumbeskrivning:"
+msgstr "Rumsbeskrivning:"
 
 #: ../ggz-gtk/roominfo.c:155
 msgid "This room has no game"
-msgstr "Det här rummet har inga spel"
+msgstr "Det här rummet har inget spel"
 
 #: ../ggz-gtk/roominfo.c:162 ../ggz-gtk/roominfo.c:169
 msgid "N/A"
-msgstr "N/A"
+msgstr "-"
 
 #: ../ggz-gtk/roominfo.c:175
 msgid "Unknown room"
-msgstr "Okännt rum"
+msgstr "Okänt rum"
 
-# ##
 #: ../ggz-gtk/roomlist.c:73
-#, fuzzy
 msgid "You can't join a room; you're not logged in"
-msgstr "Du kan inte \"joina\" ett rum, du r inte inloggad"
+msgstr "Du kan inte gå in i ett rum; du är inte inloggad"
 
 #: ../ggz-gtk/roomlist.c:77
 msgid "You're already in between rooms"
-msgstr "Du är redan mellan rum"
+msgstr "Du är redan mellan olika rum"
 
 #: ../ggz-gtk/roomlist.c:82
 msgid "You can't switch rooms while playing a game"
-msgstr "Du kan inte byta rum nr du spelar ett spel"
+msgstr "Du kan inte byta rum när du spelar ett spel"
 
 #: ../ggz-gtk/roomlist.c:89
 msgid "Unknown error"
-msgstr "Okännt fel"
+msgstr "Okänt fel"
 
 #: ../ggz-gtk/roomlist.c:109 ../ggz-gtk/roomlist.c:114
 msgid "Error joining room"
-msgstr "Kan inte \"joina\" rum"
+msgstr "Fel vid ingång till rum"
 
 #: ../ggz-gtk/roomlist.c:350
 msgid "Other Rooms"
-msgstr ""
+msgstr "Övriga rum"
 
 #: ../ggz-gtk/roomlist.c:424
 msgid "Room"
@@ -1243,11 +1265,11 @@ msgstr "Rum"
 
 #: ../ggz-gtk/tablelist.c:161
 msgid "No description available."
-msgstr "Det finns ingen beskrivning."
+msgstr "Ingen beskrivning tillgänglig."
 
 #: ../ggz-gtk/tablelist.c:196
 msgid "Seats"
-msgstr "Stolar"
+msgstr "Platser"
 
 #: ../ggz-gtk/tablelist.c:201 ../ggz-gtk/types.c:183
 msgid "Description"
@@ -1255,7 +1277,7 @@ msgstr "Beskrivning"
 
 #: ../ggz-gtk/types.c:113
 msgid "None"
-msgstr "Ingen"
+msgstr "Inga"
 
 #: ../ggz-gtk/types.c:148
 msgid ""
@@ -1263,34 +1285,40 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
+"Rumsfiltrering är ännu inte implementerat. Om\n"
+"du vill hjälpa oss med det kan du besöka\n"
+"http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/types.c:191
 msgid "Web Address"
-msgstr "Webadress"
+msgstr "Webbadress"
 
 #: ../ggz-gtk/types.c:199
 msgid "Author"
-msgstr "Författare"
+msgstr "Upphovsman"
 
 #: ../ggz-gtk/types.c:254
 msgid "Room List Filter:"
-msgstr "Rumfilter:"
+msgstr "Filter för rumslista:"
 
 #: ../ggz-gtk/types.c:266
 msgid "Set"
-msgstr ""
+msgstr "Ställ in"
 
+# I brist på annat...
 #: ../ggz-gtk/types.c:306
+#, fuzzy
 msgid "Upgrage Game"
-msgstr "Uppgradera Spelet"
+msgstr "Bagarspel"
 
 #: ../ggz-gtk/types.c:309
 msgid "Goto Web Site"
-msgstr "Gå till hemsidan"
+msgstr "Gå till webbplats"
 
 #: ../src/main.c:119
+#, fuzzy
 msgid "Enable session log"
-msgstr ""
+msgstr "Aktivera ljud"
 
 #: ../src/main.c:121
 msgid "URL for autoconnection"
@@ -1305,73 +1333,3 @@ msgstr ""
 msgid "Wrong arguments, try %s --help.\n"
 msgstr ""
 
-#~ msgid "Connect to a GGZ Gaming Zone server"
-#~ msgstr "Anslut till en \"GGZ Gaming Zone\" server."
-
-#~ msgid ""
-#~ "That username is already in usage,\n"
-#~ "or not permitted on this server.\n"
-#~ "\n"
-#~ "Please choose a different name"
-#~ msgstr ""
-#~ "Det användarnamnet är upptaget,\n"
-#~ "eller inte tillåtet på den här servern.\n"
-#~ "\n"
-#~ "Var snäll och välj ett annat namn"
-
-#~ msgid "Connect and Login"
-#~ msgstr "Anslut och Logga in"
-
-#~ msgid "Connect to a server"
-#~ msgstr "Anslut till en server"
-
-#~ msgid "Disconnect from server"
-#~ msgstr "Koppla ner från server"
-
-#~ msgid "Launch a new game"
-#~ msgstr "Starta ett nytt spel"
-
-#~ msgid "Join a game"
-#~ msgstr "\"Joina\" ett spel."
-
-#~ msgid "Watch (spectate) a game"
-#~ msgstr "Se på ett spel"
-
-#~ msgid "Leave a game"
-#~ msgstr "Lämna ett spel"
-
-#~ msgid "Show properties dialog"
-#~ msgstr "Visa inställnigar"
-
-#~ msgid "Show game stats"
-#~ msgstr "Visa spelstatistik"
-
-#~ msgid "Exit the client"
-#~ msgstr "Stäng klienten"
-
-#~ msgid "Exit"
-#~ msgstr "Stäng"
-
-#~ msgid "Props"
-#~ msgstr "Inställningar"
-
-#~ msgid "Profile: "
-#~ msgstr "Profil:"
-
-#~ msgid "Server: "
-#~ msgstr "Server:"
-
-#~ msgid "Port: "
-#~ msgstr "Port: "
-
-#~ msgid "Username: "
-#~ msgstr "Användarnamn:"
-
-#~ msgid "Password: "
-#~ msgstr "Lösenord:"
-
-#~ msgid "Couldn't find pixmap file: %s"
-#~ msgstr "Kunde inte hitta filen: %s"
-
-#~ msgid "Error loading pixmap file: %s"
-#~ msgstr "Kan inte ladda filen: %s"
