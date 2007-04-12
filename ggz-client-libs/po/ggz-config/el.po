@@ -1,42 +1,45 @@
 # This translation was merged from GNOME SVN
-# (http://svn.gnome.org/svn/gnome-games/trunk/po/de.po)
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/el.po)
 
-# translation of de.po to German
-# German gnome-games translation
-# Copyright (C) 1998-2005 Free Software Foundation, Inc.
-# Carsten Schaar <nhadcasc@fs-maphy.uni-hannover.de>, 1998.
-# Matthias Warkus <mawa@iname.com>, 1999.
-# Karl Eichwalder <ke@suse.de>, 1999, 2000.
-# Christian Meyer <chrisime@gnome.org>, 2000, 2001.
-# Christian Neumair <chris@gnome-de.org>, 2002-2004.
-# Hendrik Richter <hendrikr@gnome.org>, 2004, 2005, 2006, 2007.
-# Frank Arnold <frank@scirocco-5v-turbo.de>, 2005, 2006.
-# Manuel Borchers <m.borchers@gnome-de.org>, 2006.
-# Jens <jenshamacher@gmx.de>, 2006
-# Benedikt Wicklein <benedikt.wicklein@googlemail.com>, 2007.
-# Philipp Kerling <k.philipp@gmail.com>, 2007
+# translation of el.po to
+# translation of el.po to
+# translation of el.po to Greek
+# gnome-games Greek translation.
+# Copyright (C) 2000, 2001, 2002,2003, 2004, 2005, 2006 Free Software Foundation, Inc.
 #
-# TODO
-# - Check msgstrs for consistency (strings like 'Level')
-# Aisleriot-Spielenamen wegen Dokumentation nicht übersetzt
-# Besondere Ausdrücke
-# stock => Talon (Der Kartenstoß, der nach dem Geben übrig bleibt)
-# base card => Grundkarte
+# spyros:
+#   The translation for gtali (dice game: Yahtzee) incomplete, since
+#   I did not know some terms (kanenas expert sto mparmpouti paides? ;-)
+#   spyros did 600 messages
+# simos:
+# kostas: 28Oct2003, update for Gnome 2.6
+# kostas: 12Nov2003, fixes
+# kostas: 26Jan2004, update
 #
+#  just updates, 20 messages.
+# simos: 642 messages, 12Feb2001.
+# kostas: 828 messages, 06Nov2002, completed translation.
+# kostas: 879 messages, 07Jan2003, updated translation.
+# kostas: 906 messages,29May2003, update for Gnome 2.4.
+# kostas: 1013 messages,04Sep2003, update for Gnome 2.4.
+# kostas: 25Dec2003, xmas fixes,1020 messages.
+# kostas:13Feb2004,1058 messages.
+# Spiros Papadimitriou <spapadim+@cs.cmu.edu>, 2000.
+# Simos Xenitellis <simos74@gmx.net>, 2000, 2001, 2002.
+# Kostas Papadimas <pkst@gnome.org>, 2002,2003, 2004, 2005, 2006.
+# Athanasios Lefteris <alefteris@gmail.com>, 2006
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-games\n"
+"Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-02-03 23:13+0100\n"
-"PO-Revision-Date: 2007-03-10 14:55+0100\n"
-"Last-Translator: Hendrik Richter <hendrikr@gnome.org>\n"
-"Language-Team: German <gnome-de@gnome.org>\n"
+"PO-Revision-Date: 2006-07-19 13:09+0300\n"
+"Last-Translator: Athanasios Lefteris <alefteris@gmail.com>\n"
+"Language-Team: Greek <team@gnome.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-Basepath: /home/shampoo/gnome-games\n"
-"X-Poedit-SearchPath-0: /home/shampoo/gnome-games\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: ../../ggz-config/ggz-config.c:97
 msgid "Query GGZCONFDIR - location of configuration directory"
@@ -65,7 +68,7 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:103
 #, fuzzy
 msgid "Remove a module"
-msgstr "Entfernen Sie die Vieren"
+msgstr "Απομάκρυνση των τεσσαριών"
 
 #: ../../ggz-config/ggz-config.c:104
 msgid "Check/repair module installation file"
@@ -86,7 +89,7 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:108
 #, fuzzy
 msgid "Install over an existing module"
-msgstr "Einem laufenden Spiel beitreten"
+msgstr "Συμμετοχή σε τοπικό παιχνίδι"
 
 #: ../../ggz-config/ggz-config.c:109
 msgid "Use $DESTDIR as offset to ggz.modules file"
@@ -95,12 +98,12 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:110
 #, fuzzy
 msgid "Display help"
-msgstr "Alle anzeigen"
+msgstr "Εμφάνιση πιθανοτήτων"
 
 #: ../../ggz-config/ggz-config.c:111
 #, fuzzy
 msgid "Display usage"
-msgstr "Neue anzeigen"
+msgstr "Εμφάνιση πιθανοτήτων"
 
 #: ../../ggz-config/ggz-config.c:126
 #, c-format
@@ -145,12 +148,12 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:332
 #, fuzzy, c-format
 msgid "Setting up GGZ game modules configuration in %s\n"
-msgstr "Spielkonfiguration einstellen"
+msgstr "Καθορισμός παραμέτρων"
 
 #: ../../ggz-config/ggz-config.c:336
-#, fuzzy, c-format
+#, c-format
 msgid "Insufficient permission to install modules\n"
-msgstr "Zugriff verweigert, da der Raumzugriff eingeschränkt ist."
+msgstr ""
 
 #: ../../ggz-config/ggz-config.c:357
 #, c-format
@@ -185,7 +188,7 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:478
 #, fuzzy, c-format
 msgid "Preserving %s as %s...\n"
-msgstr "Sie suchen nach einem %s."
+msgstr "Ψάνχετε για ένα %s."
 
 #: ../../ggz-config/ggz-config.c:497
 #, c-format
@@ -221,7 +224,7 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:673 ../../ggz-config/ggz-config.c:738
 #, fuzzy, c-format
 msgid "May be an empty config file?\n"
-msgstr "einen leeren Fundamentstapel"
+msgstr "ένας άδειος σωρός βάσης"
 
 #: ../../ggz-config/ggz-config.c:681
 #, c-format
@@ -272,7 +275,7 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:829
 #, fuzzy, c-format
 msgid "*** Checking back references\n"
-msgstr "Blackjack-Einstellungen"
+msgstr "Προτιμήσεις Blackjack"
 
 #: ../../ggz-config/ggz-config.c:851
 #, c-format
@@ -340,14 +343,14 @@ msgid "Published under GNU GPL conditions\n"
 msgstr ""
 
 #: ../../ggz-config/ggz-config.c:1014
-#, fuzzy, c-format
+#, c-format
 msgid "Recognized options:\n"
-msgstr "%s: Unbekannte Option »--%s«\n"
+msgstr ""
 
 #: ../../ggz-config/ggz-config.c:1025
 #, fuzzy, c-format
 msgid "Usage:\n"
-msgstr "Nachricht:"
+msgstr "Όνομα _συστήματος:"
 
 #: ../../ggz-config/ggz-config.c:1084
 #, c-format

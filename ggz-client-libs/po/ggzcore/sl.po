@@ -1,0 +1,110 @@
+# This translation was merged from GNOME SVN
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/sl.po)
+
+# Slovenian translation of gnome-games.
+# Copyright (C) 2002-2006 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnome-games package.
+#
+# Matej Erman <matej.erman@guest.arnes.si>, 2002.
+# Tadej Janež <tadej_janez@email.si>, 2003.
+# Matic Žgur <mr.zgur@gmail.com>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gnome-games\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-07-03 18:35+0200\n"
+"PO-Revision-Date: 2006-12-11 19:06+0100\n"
+"Last-Translator: Matic Žgur <mr.zgur@gmail.com>\n"
+"Language-Team: slovenian <sl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%"
+"100==4 ? 2 : 3\n"
+"X-Poedit-Language: Slovenian\n"
+
+#: ../../ggzcore/server.c:872
+#, fuzzy
+msgid "Unknown negotation"
+msgstr "Neznan ukaz"
+
+#: ../../ggzcore/server.c:899
+#, c-format
+msgid "Already logged in"
+msgstr ""
+
+#: ../../ggzcore/server.c:903
+#, c-format
+msgid "Name taken or wrong password"
+msgstr ""
+
+#: ../../ggzcore/server.c:907
+#, c-format
+msgid "This name is already registered so cannot be used by a guest"
+msgstr ""
+
+#: ../../ggzcore/server.c:911
+#, fuzzy, c-format
+msgid "No such name was found"
+msgstr "Nobenih podatkov za temo ni bilo najdenih."
+
+#: ../../ggzcore/server.c:915
+#, fuzzy, c-format
+msgid "Name too long"
+msgstr "Igra za igranje"
+
+#: ../../ggzcore/server.c:919
+#, c-format
+msgid "Name contains forbidden ASCII characters"
+msgstr ""
+
+#: ../../ggzcore/server.c:923
+#, c-format
+msgid "Missing password or other bad options."
+msgstr ""
+
+#: ../../ggzcore/server.c:927
+#, fuzzy, c-format
+msgid "Unknown login error"
+msgstr "Neznana barva"
+
+#: ../../ggzcore/server.c:950
+#, fuzzy, c-format
+msgid "Room full"
+msgstr " Vrzi ! "
+
+#: ../../ggzcore/server.c:954
+#, c-format
+msgid "Can't change rooms while at a table"
+msgstr ""
+
+#: ../../ggzcore/server.c:958
+#, c-format
+msgid "Can't change rooms while joining/leaving a table"
+msgstr ""
+
+#: ../../ggzcore/server.c:963
+#, c-format
+msgid "Bad room number"
+msgstr ""
+
+#: ../../ggzcore/server.c:967
+#, c-format
+msgid "Insufficient permissions, room access is restricted"
+msgstr ""
+
+#: ../../ggzcore/server.c:971
+#, c-format
+msgid "Unknown room-joining error"
+msgstr ""
+
+#: ../../ggzcore/server.c:1162
+msgid "Unable to connect"
+msgstr ""
+
+#: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
+msgid "Protocol mismatch"
+msgstr ""
+
+#, fuzzy

@@ -1,0 +1,102 @@
+# This translation was merged from GNOME SVN
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/ko.po)
+
+# ko.po -- Korean messages for GNOME games
+# GwanSun Back <backiss@kornet.net>, 2001
+# Changwoo Ryu <cwryu@debian.org>, 1998, 2002-2006, 2007.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-games\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-07-03 18:35+0200\n"
+"PO-Revision-Date: 2007-02-17 21:13+0900\n"
+"Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
+"Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../../ggzcore/server.c:872
+msgid "Unknown negotation"
+msgstr "알 수 없는 상호 통신"
+
+#: ../../ggzcore/server.c:899
+#, c-format
+msgid "Already logged in"
+msgstr "이미 로그인되어 있습니다"
+
+#: ../../ggzcore/server.c:903
+#, fuzzy, c-format
+msgid "Name taken or wrong password"
+msgstr "새 열쇠글"
+
+#: ../../ggzcore/server.c:907
+#, c-format
+msgid "This name is already registered so cannot be used by a guest"
+msgstr "이 이름은 이미 등록되어 있어서 손님이 사용할 수 없습니다"
+
+#: ../../ggzcore/server.c:911
+#, c-format
+msgid "No such name was found"
+msgstr "그런 이름이 없습니다"
+
+#: ../../ggzcore/server.c:915
+#, c-format
+msgid "Name too long"
+msgstr "이름이 너무 깁니다"
+
+#: ../../ggzcore/server.c:919
+#, c-format
+msgid "Name contains forbidden ASCII characters"
+msgstr "이름에 사용할 수 없는 ASCII 문자가 들어 있습니다"
+
+#: ../../ggzcore/server.c:923
+#, c-format
+msgid "Missing password or other bad options."
+msgstr "열쇠글이 없거나 다른 옵션이 잘못되었습니다."
+
+#: ../../ggzcore/server.c:927
+#, c-format
+msgid "Unknown login error"
+msgstr "알 수 없는 로그인 오류"
+
+#: ../../ggzcore/server.c:950
+#, c-format
+msgid "Room full"
+msgstr "방이 꽉 차 있습니다"
+
+#: ../../ggzcore/server.c:954
+#, c-format
+msgid "Can't change rooms while at a table"
+msgstr "테이블에 있을 때는 방을 바꿀 수 없습니다"
+
+#: ../../ggzcore/server.c:958
+#, c-format
+msgid "Can't change rooms while joining/leaving a table"
+msgstr "테이블에 참여하거나 떠나는 도중에는 방을 바꿀 수 없습니다"
+
+#: ../../ggzcore/server.c:963
+#, c-format
+msgid "Bad room number"
+msgstr "방 번호가 잘못되었습니다"
+
+#: ../../ggzcore/server.c:967
+#, c-format
+msgid "Insufficient permissions, room access is restricted"
+msgstr "권한이 부족해 방 접근이 제한됩니다."
+
+#: ../../ggzcore/server.c:971
+#, c-format
+msgid "Unknown room-joining error"
+msgstr "알 수 없는 방 참여 오류가 발생했습니다"
+
+#: ../../ggzcore/server.c:1162
+msgid "Unable to connect"
+msgstr "연결할 수 없습니다"
+
+#: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
+msgid "Protocol mismatch"
+msgstr "프로토콜이 맞지 않습니다"
+

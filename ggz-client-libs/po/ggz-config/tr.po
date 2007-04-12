@@ -1,42 +1,31 @@
 # This translation was merged from GNOME SVN
-# (http://svn.gnome.org/svn/gnome-games/trunk/po/de.po)
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/tr.po)
 
-# translation of de.po to German
-# German gnome-games translation
-# Copyright (C) 1998-2005 Free Software Foundation, Inc.
-# Carsten Schaar <nhadcasc@fs-maphy.uni-hannover.de>, 1998.
-# Matthias Warkus <mawa@iname.com>, 1999.
-# Karl Eichwalder <ke@suse.de>, 1999, 2000.
-# Christian Meyer <chrisime@gnome.org>, 2000, 2001.
-# Christian Neumair <chris@gnome-de.org>, 2002-2004.
-# Hendrik Richter <hendrikr@gnome.org>, 2004, 2005, 2006, 2007.
-# Frank Arnold <frank@scirocco-5v-turbo.de>, 2005, 2006.
-# Manuel Borchers <m.borchers@gnome-de.org>, 2006.
-# Jens <jenshamacher@gmx.de>, 2006
-# Benedikt Wicklein <benedikt.wicklein@googlemail.com>, 2007.
-# Philipp Kerling <k.philipp@gmail.com>, 2007
+# Turkish translation of gnome-games.
+# Copyright (C) 2000-2002, 2004, 2005 Free Software Foundation, Inc.
 #
-# TODO
-# - Check msgstrs for consistency (strings like 'Level')
-# Aisleriot-Spielenamen wegen Dokumentation nicht übersetzt
-# Besondere Ausdrücke
-# stock => Talon (Der Kartenstoß, der nach dem Geben übrig bleibt)
-# base card => Grundkarte
-#
+# foundation: sıralama
+# Tableau: orta sıra
+# reserve: yedek
+# waste: kullanılamayan
+# stock : eldeki kartlar
+# Onur Kucuk, <okucuk@yahoo.com>, 2000.
+# Ömer Fadıl USTA <omer_fad@hotmail.com>,2002.
+# Baris Cicek <baris@teamforce.name.tr>, 2004, 2005.
+# Hakan Bekdas <hakanbekdas@yahoo.com>, 2006.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-games\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-02-03 23:13+0100\n"
-"PO-Revision-Date: 2007-03-10 14:55+0100\n"
-"Last-Translator: Hendrik Richter <hendrikr@gnome.org>\n"
-"Language-Team: German <gnome-de@gnome.org>\n"
+"PO-Revision-Date: 2005-09-01 10:15+0200\n"
+"Last-Translator: Hakan Bekdas <hakanbekdas@yahoo.com>\n"
+"Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-Basepath: /home/shampoo/gnome-games\n"
-"X-Poedit-SearchPath-0: /home/shampoo/gnome-games\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.9.1\n"
 
 #: ../../ggz-config/ggz-config.c:97
 msgid "Query GGZCONFDIR - location of configuration directory"
@@ -65,7 +54,7 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:103
 #, fuzzy
 msgid "Remove a module"
-msgstr "Entfernen Sie die Vieren"
+msgstr "Dörtlüleri çıkart"
 
 #: ../../ggz-config/ggz-config.c:104
 msgid "Check/repair module installation file"
@@ -86,7 +75,7 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:108
 #, fuzzy
 msgid "Install over an existing module"
-msgstr "Einem laufenden Spiel beitreten"
+msgstr "Varolan bir oyuna katıl"
 
 #: ../../ggz-config/ggz-config.c:109
 msgid "Use $DESTDIR as offset to ggz.modules file"
@@ -95,12 +84,12 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:110
 #, fuzzy
 msgid "Display help"
-msgstr "Alle anzeigen"
+msgstr "Olasılıkları göster"
 
 #: ../../ggz-config/ggz-config.c:111
 #, fuzzy
 msgid "Display usage"
-msgstr "Neue anzeigen"
+msgstr "Olasılıkları göster"
 
 #: ../../ggz-config/ggz-config.c:126
 #, c-format
@@ -145,12 +134,12 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:332
 #, fuzzy, c-format
 msgid "Setting up GGZ game modules configuration in %s\n"
-msgstr "Spielkonfiguration einstellen"
+msgstr "Oyun ayarlarını belirle"
 
 #: ../../ggz-config/ggz-config.c:336
-#, fuzzy, c-format
+#, c-format
 msgid "Insufficient permission to install modules\n"
-msgstr "Zugriff verweigert, da der Raumzugriff eingeschränkt ist."
+msgstr ""
 
 #: ../../ggz-config/ggz-config.c:357
 #, c-format
@@ -185,7 +174,7 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:478
 #, fuzzy, c-format
 msgid "Preserving %s as %s...\n"
-msgstr "Sie suchen nach einem %s."
+msgstr "Aradığınız şey bir %s."
 
 #: ../../ggz-config/ggz-config.c:497
 #, c-format
@@ -221,7 +210,7 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:673 ../../ggz-config/ggz-config.c:738
 #, fuzzy, c-format
 msgid "May be an empty config file?\n"
-msgstr "einen leeren Fundamentstapel"
+msgstr "boş sıralama yığını"
 
 #: ../../ggz-config/ggz-config.c:681
 #, c-format
@@ -272,7 +261,7 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:829
 #, fuzzy, c-format
 msgid "*** Checking back references\n"
-msgstr "Blackjack-Einstellungen"
+msgstr "Blackjack Tercihleri"
 
 #: ../../ggz-config/ggz-config.c:851
 #, c-format
@@ -340,14 +329,14 @@ msgid "Published under GNU GPL conditions\n"
 msgstr ""
 
 #: ../../ggz-config/ggz-config.c:1014
-#, fuzzy, c-format
+#, c-format
 msgid "Recognized options:\n"
-msgstr "%s: Unbekannte Option »--%s«\n"
+msgstr ""
 
 #: ../../ggz-config/ggz-config.c:1025
 #, fuzzy, c-format
 msgid "Usage:\n"
-msgstr "Nachricht:"
+msgstr "_Makine adı:"
 
 #: ../../ggz-config/ggz-config.c:1084
 #, c-format

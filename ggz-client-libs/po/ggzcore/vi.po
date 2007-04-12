@@ -1,0 +1,104 @@
+# This translation was merged from GNOME SVN
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/vi.po)
+
+# Vietnamese translation for Gnome Games.
+# Copyright © 2007 Free Software Foundation, Inc.
+# T.M.Thanh <tmthanh@yahoo.com>, 2002.
+# Clytie Siddall <clytie@riverland.net.au>, 2005-2007.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Gnome-games for Gnome HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-07-03 18:35+0200\n"
+"PO-Revision-Date: 2007-02-23 21:36+0700\n"
+"Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
+"Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: LocFactoryEditor 1.6fc1\n"
+
+#: ../../ggzcore/server.c:872
+msgid "Unknown negotation"
+msgstr "Dàn xếp không rõ"
+
+#: ../../ggzcore/server.c:899
+#, c-format
+msgid "Already logged in"
+msgstr "Đã đăng nhập"
+
+#: ../../ggzcore/server.c:903
+#, fuzzy, c-format
+msgid "Name taken or wrong password"
+msgstr "Mật khẩu mới"
+
+#: ../../ggzcore/server.c:907
+#, c-format
+msgid "This name is already registered so cannot be used by a guest"
+msgstr "Tên này đã được đăng ký nên không thể được dùng bởi người khách"
+
+#: ../../ggzcore/server.c:911
+#, c-format
+msgid "No such name was found"
+msgstr "Không tìm thấy tên như vậy"
+
+#: ../../ggzcore/server.c:915
+#, c-format
+msgid "Name too long"
+msgstr "Tên quá dài"
+
+#: ../../ggzcore/server.c:919
+#, c-format
+msgid "Name contains forbidden ASCII characters"
+msgstr "Tên chứa ký tự ASCII bị cấm"
+
+#: ../../ggzcore/server.c:923
+#, c-format
+msgid "Missing password or other bad options."
+msgstr "Mật khẩu bị thiếu hay tùy chọn sai khác."
+
+#: ../../ggzcore/server.c:927
+#, c-format
+msgid "Unknown login error"
+msgstr "Lỗi đăng nhập không rõ"
+
+#: ../../ggzcore/server.c:950
+#, c-format
+msgid "Room full"
+msgstr "Phòng đầy"
+
+#: ../../ggzcore/server.c:954
+#, c-format
+msgid "Can't change rooms while at a table"
+msgstr "Không thể chuyển đổi phòng trong khi ở bảng"
+
+#: ../../ggzcore/server.c:958
+#, c-format
+msgid "Can't change rooms while joining/leaving a table"
+msgstr "Không thể chuyển đổi phòng trong khi vào/ra bảng"
+
+#: ../../ggzcore/server.c:963
+#, c-format
+msgid "Bad room number"
+msgstr "Số hiệu phòng sai"
+
+#: ../../ggzcore/server.c:967
+#, c-format
+msgid "Insufficient permissions, room access is restricted"
+msgstr "Không đủ quyền: truy cập phòng bị hạn chế"
+
+#: ../../ggzcore/server.c:971
+#, c-format
+msgid "Unknown room-joining error"
+msgstr "Lỗi vào phòng không rõ"
+
+#: ../../ggzcore/server.c:1162
+msgid "Unable to connect"
+msgstr "Không thể kết nối"
+
+#: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
+msgid "Protocol mismatch"
+msgstr "Giao thức khớp sai"
+

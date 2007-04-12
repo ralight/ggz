@@ -1,0 +1,104 @@
+# This translation was merged from GNOME SVN
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/uk.po)
+
+# Ukranian translation of the gnome-games module.
+# Copyright (C) 1999,2000 Free Software Foundation, Inc.
+# Yuri Syrota <rasta@renome.rovno.ua>, 1999-2000.
+# Maxim Dziumanenko <dziumanenko@gmail.com>, 2004,3005
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-games 1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-07-03 18:35+0200\n"
+"PO-Revision-Date: 2006-08-31 23:57+0300\n"
+"Last-Translator: Maxim V. Dziumanenko <dziumanenko@gmail.com>\n"
+"Language-Team: Ukrainian <uk@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: ../../ggzcore/server.c:872
+msgid "Unknown negotation"
+msgstr "Невідоме повідомлення"
+
+#: ../../ggzcore/server.c:899
+#, c-format
+msgid "Already logged in"
+msgstr "Вже зареєстрований"
+
+#: ../../ggzcore/server.c:903
+#, fuzzy, c-format
+msgid "Name taken or wrong password"
+msgstr "Новий пароль"
+
+#: ../../ggzcore/server.c:907
+#, c-format
+msgid "This name is already registered so cannot be used by a guest"
+msgstr "Це ім'я вже зареєстровано й не може використовуватись гостем"
+
+#: ../../ggzcore/server.c:911
+#, c-format
+msgid "No such name was found"
+msgstr "Така назва не знайдена"
+
+#: ../../ggzcore/server.c:915
+#, c-format
+msgid "Name too long"
+msgstr "Назва надто довга"
+
+#: ../../ggzcore/server.c:919
+#, c-format
+msgid "Name contains forbidden ASCII characters"
+msgstr "Назва містить некоректні символи ASCII"
+
+#: ../../ggzcore/server.c:923
+#, c-format
+msgid "Missing password or other bad options."
+msgstr "Відсутній пароль чи деякі параметри."
+
+#: ../../ggzcore/server.c:927
+#, c-format
+msgid "Unknown login error"
+msgstr "Невідома помилка реєстрації"
+
+#: ../../ggzcore/server.c:950
+#, c-format
+msgid "Room full"
+msgstr "Кімната заповнена"
+
+#: ../../ggzcore/server.c:954
+#, c-format
+msgid "Can't change rooms while at a table"
+msgstr "Неможливо міняти кімнату доки ви знаходитесь за столом"
+
+#: ../../ggzcore/server.c:958
+#, c-format
+msgid "Can't change rooms while joining/leaving a table"
+msgstr "Не вдається змінити кімнату під час входу або виходу з-за стола"
+
+#: ../../ggzcore/server.c:963
+#, c-format
+msgid "Bad room number"
+msgstr "Некоректний номер кімнати"
+
+#: ../../ggzcore/server.c:967
+#, c-format
+msgid "Insufficient permissions, room access is restricted"
+msgstr "Недостатньо прав, доступ у кімнату обмежений"
+
+#: ../../ggzcore/server.c:971
+#, c-format
+msgid "Unknown room-joining error"
+msgstr "Невідома помилка входу у кімнату"
+
+#: ../../ggzcore/server.c:1162
+msgid "Unable to connect"
+msgstr "Не вдається з'єднатись"
+
+#: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
+msgid "Protocol mismatch"
+msgstr "Протокол не збігається"
+

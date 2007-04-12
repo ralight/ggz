@@ -1,0 +1,106 @@
+# This translation was merged from GNOME SVN
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/th.po)
+
+# translation of gnome-games.HEAD.po to Thai
+# Thai translation of gnome-games.
+# Copyright (C) 2004-2007 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnome-games package.
+#
+# Theppitak Karoonboonyanan <thep@linux.thai.net>, 2004-2007.
+# Supranee Thirawatthanasuk <supranee@opentle.org>, 2005, 2006, 2007.
+# Kitt Tientanopajai <kitty@kitty.in.th>, 2006.
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-games.HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-07-03 18:35+0200\n"
+"PO-Revision-Date: 2007-02-04 13:02+0700\n"
+"Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
+"Language-Team: Thai <l10n.opentle.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../../ggzcore/server.c:872
+msgid "Unknown negotation"
+msgstr ""
+
+#: ../../ggzcore/server.c:899
+#, c-format
+msgid "Already logged in"
+msgstr "เข้าระบบเรียบร้อย"
+
+#: ../../ggzcore/server.c:903
+#, fuzzy, c-format
+msgid "Name taken or wrong password"
+msgstr "รหัสผ่านใหม่"
+
+#: ../../ggzcore/server.c:907
+#, c-format
+msgid "This name is already registered so cannot be used by a guest"
+msgstr "ชื่อนี้ถูกลงทะเบียนไว้แล้ว และไม่สามารถใช้โดยผู้มาเยือนได้"
+
+#: ../../ggzcore/server.c:911
+#, c-format
+msgid "No such name was found"
+msgstr "ไม่พบชื่อดังกล่าว"
+
+#: ../../ggzcore/server.c:915
+#, c-format
+msgid "Name too long"
+msgstr "ชื่อยาวเกินไป"
+
+#: ../../ggzcore/server.c:919
+#, c-format
+msgid "Name contains forbidden ASCII characters"
+msgstr "ชื่อมีอักขระ ASCII ต้องห้าม "
+
+#: ../../ggzcore/server.c:923
+#, c-format
+msgid "Missing password or other bad options."
+msgstr "ไม่มีรหัสผ่าน หรือตัวเลือกไม่ถูกต้อง"
+
+#: ../../ggzcore/server.c:927
+#, c-format
+msgid "Unknown login error"
+msgstr "ข้อผิดพลาดในการเข้าระบบที่ไม่ทราบสาเหตุ"
+
+#: ../../ggzcore/server.c:950
+#, c-format
+msgid "Room full"
+msgstr "ห้องเต็มแล้ว"
+
+#: ../../ggzcore/server.c:954
+#, c-format
+msgid "Can't change rooms while at a table"
+msgstr "ไม่สามารถย้ายห้องขณะอยู่ที่โต๊ะได้"
+
+#: ../../ggzcore/server.c:958
+#, c-format
+msgid "Can't change rooms while joining/leaving a table"
+msgstr "ไม่สามารถย้ายห้องขณะกำลังเข้าร่วมหรือออกจากโต๊ะได้"
+
+#: ../../ggzcore/server.c:963
+#, c-format
+msgid "Bad room number"
+msgstr "หมายเลขห้องไม่ถูกต้อง"
+
+#: ../../ggzcore/server.c:967
+#, c-format
+msgid "Insufficient permissions, room access is restricted"
+msgstr "สิทธิ์อนุญาตไม่เพียงพอ การเข้าใช้ห้องจะถูกจำกัด"
+
+#: ../../ggzcore/server.c:971
+#, c-format
+msgid "Unknown room-joining error"
+msgstr "ข้อผิดพลาดในการเข้าห้องที่ไม่ทราบสาเหตุ"
+
+#: ../../ggzcore/server.c:1162
+msgid "Unable to connect"
+msgstr "ไม่สามารถเชื่อมต่อ"
+
+#: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
+msgid "Protocol mismatch"
+msgstr "โพรโทคอลไม่ตรงกัน"
+

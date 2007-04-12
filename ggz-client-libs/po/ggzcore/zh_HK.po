@@ -1,0 +1,104 @@
+# This translation was merged from GNOME SVN
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/zh_HK.po)
+
+# Chinese (Hong Kong) translation of gnome-games.
+# Copyright (C) 1999-2006 Free Software Foundation, Inc.
+# (http://vegas.wcn.com.tw/21.shtml for blackjack terms)
+# Fernando <bv1al@journalist.com.tw>, 1999.
+# Abel Cheung <abel@oaka.org>, 2001-2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-games 2.16.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-07-03 18:35+0200\n"
+"PO-Revision-Date: 2007-03-12 14:18+0800\n"
+"Last-Translator: Abel Cheung <abel@oaka.org>\n"
+"Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../../ggzcore/server.c:872
+msgid "Unknown negotation"
+msgstr ""
+
+#: ../../ggzcore/server.c:899
+#, c-format
+msgid "Already logged in"
+msgstr "已經登入"
+
+#: ../../ggzcore/server.c:903
+#, fuzzy, c-format
+msgid "Name taken or wrong password"
+msgstr "新密碼"
+
+#: ../../ggzcore/server.c:907
+#, c-format
+msgid "This name is already registered so cannot be used by a guest"
+msgstr "這個名稱已經有人登記了，過客不可以用"
+
+#: ../../ggzcore/server.c:911
+#, c-format
+msgid "No such name was found"
+msgstr "找不到這個名稱"
+
+#: ../../ggzcore/server.c:915
+#, c-format
+msgid "Name too long"
+msgstr "名稱太長"
+
+#: ../../ggzcore/server.c:919
+#, c-format
+msgid "Name contains forbidden ASCII characters"
+msgstr "名稱中含有禁用的 ASCII 字符"
+
+#: ../../ggzcore/server.c:923
+#, c-format
+msgid "Missing password or other bad options."
+msgstr "缺少了密碼，或使用了其它錯誤選項。"
+
+#: ../../ggzcore/server.c:927
+#, c-format
+msgid "Unknown login error"
+msgstr "原因不明的登入錯誤"
+
+#: ../../ggzcore/server.c:950
+#, c-format
+msgid "Room full"
+msgstr "遊戲區已滿"
+
+#: ../../ggzcore/server.c:954
+#, c-format
+msgid "Can't change rooms while at a table"
+msgstr "在遊戲桌時不可以轉換遊戲區"
+
+#: ../../ggzcore/server.c:958
+#, c-format
+msgid "Can't change rooms while joining/leaving a table"
+msgstr "當進入或離開遊戲桌時不可以轉換遊戲區"
+
+#: ../../ggzcore/server.c:963
+#, c-format
+msgid "Bad room number"
+msgstr "遊戲區編號錯誤"
+
+#: ../../ggzcore/server.c:967
+#, c-format
+msgid "Insufficient permissions, room access is restricted"
+msgstr "權限不足，進入此遊戲區功能將受限制"
+
+#: ../../ggzcore/server.c:971
+#, c-format
+msgid "Unknown room-joining error"
+msgstr "不明遊戲區，加入時發生錯誤"
+
+#: ../../ggzcore/server.c:1162
+msgid "Unable to connect"
+msgstr "無法連線"
+
+#: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
+msgid "Protocol mismatch"
+msgstr "協定版本不符"
+
