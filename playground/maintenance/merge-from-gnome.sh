@@ -16,7 +16,7 @@ for i in $gnomepolocation/*.po; do
 
 	:> $filename
 	echo "# This translation was merged from GNOME SVN" >> $filename
-	echo "# (http://svn.gnome.org/svn/gnome-games/trunk/po/$i)" >> $filename
+	echo "# (http://svn.gnome.org/svn/gnome-games/trunk/po/$filename)" >> $filename
 	echo "" >> $filename
 	#grep -v "#~" $filename.tmp >> $filename
 	csplit $filename.tmp /#~/
