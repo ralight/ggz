@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 8983 2007-02-10 00:23:32Z oojah $
+ * $Id: parse_opt.c 9045 2007-04-13 14:26:04Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -47,6 +47,7 @@
 #include "players.h"
 #include "room.h"
 #include "util.h"
+#include "unicode.h"
 
 
 /* Private file parsing functions */
@@ -167,6 +168,16 @@ static char **_ggz_string_to_list(const char *s, const char *sep)
 #else
 #define SPEC_FAM 0
 #endif
+#ifdef WITH_ICU
+#define SPEC_ICU 1
+#else
+#define SPEC_ICU 0
+#endif
+#ifdef WITH_CRACKLIB
+#define SPEC_CRACKLIB 1
+#else
+#define SPEC_CRACKLIB 0
+#endif
 
 static void dump_specs(void)
 {
@@ -206,6 +217,8 @@ static void dump_specs(void)
 	printf("Reconfiguration support: %s [%s]\n",
 		(SPEC_INOTIFY ? "yes (inotify)" : (SPEC_FAM ? "yes (fam)" : "no")),
 		(opt.conf_valid ? (opt.reconfigure_rooms ? "used" : "not used") : "unknown" ));
+	printf("Unicode support: %s\n", (SPEC_ICU ? "yes" : "no"));
+	printf("Password checking support: %s\n", (SPEC_CRACKLIB ? "yes" : "no"));
 }
 
 /* Parse command-line options */
@@ -240,7 +253,7 @@ void parse_args(int argc, char *argv[])
 			case 'h':
 	 			printf("GGZD - The main server of the GGZ Gaming Zone\n"),
 	 			printf("Copyright (C) 1999 - 2002 Brent Hendricks\n"),
-	 			printf("Copyright (C) 2003 - 2006 The GGZ Gaming Zone developers\n"),
+	 			printf("Copyright (C) 2003 - 2007 The GGZ Gaming Zone developers\n"),
 	 			printf("\n"),
 	 			printf("[-F | --foreground ] Tells ggzd to run in the foreground\n"),
 				printf("[-f | --file <file>] Configuration file\n"),
@@ -267,6 +280,7 @@ void parse_args(int argc, char *argv[])
 }
 
 
+/* The IANA-assigned port number for the GGZ Gaming Zone */
 #define DEFAULT_GGZD_PORT 5688
 
 /* Parse options from conf file, but don't overwrite existing options*/
@@ -387,6 +401,9 @@ static void get_config_options(int ch)
 	/* Reconfiguration in [General] */
 	opt.reconfigure_rooms = ggz_conf_read_int(ch, "General", "ReconfigureRooms", 0);
 
+	/* Unicode settings in [General] */
+	opt.username_policy = ggz_conf_read_string(ch, "General", "UsernamePolicy", NULL);
+
 	/* [Games] */
 	ggz_conf_read_list(ch, "Games", "GameList", &g_count, &g_list);
 	if(g_count == 0) {
@@ -463,6 +480,10 @@ static void get_config_options(int ch)
 	}
 	opt.room_update_freq = ggz_conf_read_int(ch, "Miscellaneous",
 						 "RoomUpdateFrequency", 60);
+
+	if (opt.username_policy) {
+		init_unicode(opt.username_policy);
+	}
 
 	ggz_conf_cleanup();
 }

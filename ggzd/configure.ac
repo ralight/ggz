@@ -1,8 +1,8 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 9016 2007-03-30 00:09:05Z jdorje $
+# $Id: configure.ac 9045 2007-04-13 14:26:04Z josef $
 # ================================
 
-AC_INIT([GGZ server], [0.0.14], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
+AC_INIT([GGZ server], [0.0.15pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -39,6 +39,14 @@ AC_ARG_WITH([reconfiguration],
 	AS_HELP_STRING([--with-reconfiguration=TYPE],
 	[type of library to use: inotify, fam]),
 	[reconfiguration=$withval], [reconfiguration=yes])
+AC_ARG_WITH([unicode],
+	AS_HELP_STRING([--with-unicode=TYPE],
+	[type of library to use: icu]),
+	[unicode=$withval], [unicode=yes])
+AC_ARG_WITH([passwordcheck],
+	AS_HELP_STRING([--with-passwordcheck=TYPE],
+	[type of library to use: cracklib, omnicracklib]),
+	[passwordcheck=$withval], [passwordcheck=yes])
 
 
 # Check for GGZ Requirements
@@ -142,6 +150,8 @@ AC_GGZ_DATABASE
 dnl Check for zeroconf implementations
 dnl ==================================
 AC_GGZ_ZEROCONF
+AC_GGZ_UNICODE
+AC_GGZ_PASSWORDCHECK
 
 dnl Check for reconfiguration support through file watchers
 dnl =======================================================
@@ -270,6 +280,8 @@ echo "Configuration options"
 echo "    Database Type........$database" 
 echo "    Zeroconf.............$zeroconf"
 echo "    Reconfiguration......$reconfiguration"
+echo "    Unicode..............$unicode"
+echo "    Password checks......$passwordcheck"
 echo "Debugging options"
 echo "    General Debuging.....$enable_debug" 
 echo "    GDB Debugging........$enable_debug_gdb" 

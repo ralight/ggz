@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8835 2007-01-05 10:32:57Z jdorje $
+# $Id: Makefile.am 9045 2007-04-13 14:26:04Z josef $
 
 SUBDIRS = database meta
 
@@ -8,7 +8,7 @@ EXTRA_DIST = ggzd.conf.example.in ggzd.test.in ggzd.motd entry.room
 bin_PROGRAMS = ggzd ggzduedit
 
 ggzdroom_DATA = entry.room
-ggzdconf_DATA = ggzd.conf.example ggzd.motd
+ggzdconf_DATA = ggzd.conf.example ggzd.motd username.policy
 
 ggzd_SOURCES = \
 	chat.c \
@@ -53,6 +53,8 @@ ggzd_SOURCES = \
 	login.h \
 	perms.h \
 	perms.c \
+	unicode.h \
+	unicode.c \
 	util.c \
 	util.h
 
@@ -63,6 +65,9 @@ ggzd_CPPFLAGS = \
 	$(LIBGGZ_INCLUDES) \
 	$(HOWL_INCLUDES) \
 	$(AVAHI_INCLUDES) \
+	$(ICU_INCLUDES) \
+	$(CRACKLIB_INCLUDES) \
+	$(OMNICRACKLIB_INCLUDES) \
 	-DGGZDCONFDIR=\"$(ggzdconfdir)\" \
 	-DGGZDEXECMODDIR=\"$(ggzdexecmoddir)\"
 
@@ -77,7 +82,10 @@ ggzd_LDADD = \
 	$(LIB_HOWL) \
 	$(LIB_AVAHI) \
 	$(LIB_FAM) \
-        $(LIB_PTHREADS)
+	$(LIB_PTHREADS) \
+	$(LIB_ICU) \
+	$(LIB_CRACKLIB) \
+	$(LIB_OMNICRACKLIB)
 
 ggzduedit_SOURCES =	datatypes.h	\
 			ggzduedit.c 				\

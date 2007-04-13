@@ -1,0 +1,248 @@
+# Definitions for the validity of usernames for the GGZ Gaming Zone
+#
+# The following symbols match the character and symbol blocks of Unicode 5.0.
+# They are grouped according to likely usage scenarios. Registration of
+# usernames or usage of guest usernames is only possible if all characters
+# of the name are allowed according to this file. This file is however
+# only taken into account if UsernamePolicy in ggzd.conf refers to it.
+# Using it also requires ggzd to be compiled with ICU support.
+#
+# For cultural and technical considerations, please read the corresponding
+# sections in the GGZ Server Hosting Guide.
+
+[UsernameCharacterSets]
+
+# European alphabets ##########################################
+
+# Armenian
+armenian = 1
+
+# Coptic
+coptic = 1
+
+# Cyrillic
+cyrillic = 1
+cyrillic_supplement = 1
+
+# Georgian
+georgian = 1
+georgian_supplement = 1
+
+# Greek
+greek = 1
+greek_extended = 1
+
+# Latin
+basic_latin = 1
+latin_1_supplement = 1
+latin_extended_a = 1
+latin_extended_b = 1
+latin_extended_c = 1
+latin_extended_d = 1
+latin_extended_additional = 1
+
+# African scripts #############################################
+
+# Ethiopic scripts
+ethiopic = 1
+ethiopic_extended = 1
+ethiopic_supplement = 1
+
+# Other African scripts
+tifinagh = 1
+nko = 1
+
+# American scripts ############################################
+
+cherokee = 1
+unified_canadian_aboriginal_syllabics = 1
+deseret = 1
+
+# West/Central Asian scripts ##################################
+
+# Middle Eastern scripts
+arabic = 1
+arabic_supplement = 1
+arabic_presentation_forms_a = 1
+arabic_presentation_forms_b = 1
+hebrew = 1
+alphabetic_presentation_forms = 1
+syriac = 1
+thaana = 1
+
+# Central Asian scripts
+kharoshthi = 1
+mongolian = 1
+phags_pa = 1
+tibetan = 1
+
+# Indic scripts
+bengali = 1
+devanagari = 1
+gujarati = 1
+gurmukhi = 1
+kannada = 1
+limbu = 1
+malayalam = 1
+oriya = 1
+sinhala = 1
+syloti_nagri = 1
+tamil = 1
+telugu = 1
+
+# Philippine scripts
+buhid = 1
+hanunoo = 1
+tagalog = 1
+tagbanwa = 1
+
+# South East Asian scripts
+balinese = 1
+buginese = 1
+khmer = 1
+khmer_symbols = 1
+lao = 1
+myanmar = 1
+thai = 1
+new_tai_lue = 1
+tai_le = 1
+
+# East Asian scripts ##########################################
+
+# Han ideographs
+cjk_unified_ideographs = 1
+cjk_unified_ideographs_extension_a = 1
+cjk_unified_ideographs_extension_b = 1
+cjk_compatibility_ideographs = 1
+cjk_compatibility_ideographs_supplement = 1
+
+# Radicals and strokes
+cjk_radicals_supplement = 1
+kangxi_radicals = 1
+cjk_strokes = 1
+ideographic_description_characters = 1
+
+# Chinese-specific
+bopomofo = 1
+bopomofo_extended = 1
+
+# Japanese-specific
+hiragana = 1
+katakana = 1
+katakana_phonetic_extensions = 1
+
+# Korean-specific
+hangul_syllables = 1
+hangul_jamo = 1
+hangul_compatibility_jamo = 1
+
+# Yi
+yi_syllables = 1
+yi_radicals = 1
+
+# Ancient scripts #############################################
+
+ancient_greek_numbers = 1
+ancient_greek_musical_notation = 1
+cuneiform = 1
+cuneiform_numbers_and_punctuation = 1
+old_persian = 1
+ugaritic = 1
+linear_b_syllabary = 1
+linear_b_ideograms = 1
+aegean_numbers = 1
+counting_rod_numerals = 1
+cypriot_syllabary = 1
+gothic = 1
+old_italic = 1
+ogham = 1
+runic = 1
+phoenician = 1
+
+# Other scripts ###############################################
+
+shavian = 1
+glagolitic = 1
+osmanya = 1
+
+###############################################################
+###############################################################
+
+# Other character sets (yet to be classified)
+
+# Character symbols
+#general_punctuation = 1
+#superscripts_and_subscripts = 1
+#combining_marks_for_symbols = 1
+
+# Graphical symbols
+#currency_symbols = 1
+#letterlike_symbols = 1
+#number_forms = 1
+#control_pictures = 1
+#optical_character_recognition = 1
+#box_drawing = 1
+#block_elements = 1
+#geometric_shapes = 1
+#miscellaneous_symbols = 1
+#dingbats = 1
+#braille_patterns = 1
+#arrows = 1
+#supplemental_arrows_a = 1
+#supplemental_arrows_b = 1
+#miscellaneous_technical = 1
+#miscelanneous_symbols_and_arrays = 1
+
+# Mathematical symbols
+#mathematical_alphanumeric_symbols = 1
+#mathematical_operators = 1
+#supplemental_mathematical_operators = 1
+#miscellaneous_mathematical_symbols_a = 1
+#miscellaneous_mathematical_symbols_b = 1
+
+# Cultural symbols
+#musical_symbols = 1
+#byzantine_musical_symbols = 1
+
+# Unknown CJK
+#cjk_compatibility = 1
+#cjk_symbols_and_punctuation = 1
+#cjk_compatibility_forms = 1
+#enclosed_cjk_letters_and_months = 1
+#kanbun = 1
+#hangul_radicals = 1
+#tai_xuan_jing_symbols = 1
+
+# Other blocks (yet to be classified)
+#enclosed_alphanumerics = 1
+#high_surrogates = 1
+#high_private_use_surrogates = 1
+#low_surrogates = 1
+
+# Private use areas
+#private_use_area = 1
+#supplementary_private_use_area_a = 1
+#supplementary_private_use_area_b = 1
+
+# More other blocks (yet to be classified)
+#phonetic_extensions = 1
+#phonetic_extensions_supplement = 1
+#modifier_tone_letters = 1
+
+# All the rest
+#variation_selectors = 1
+#variation_selectors_supplement = 1
+#combining_half_marks = 1
+#combining_diacritical_marks_supplement = 1
+#supplemental_punctuation = 1
+#small_form_variants = 1
+#halfwidth_and_fullwidth_forms = 1
+#vertical_forms = 1
+#specials = 1
+#yijing_hexagram_symbols = 1
+#tags = 1
+#ipa_extensions = 1
+#spacing_modifier_letters = 1
+#combining_diacritical_marks = 1
+# ?? count = 1
+

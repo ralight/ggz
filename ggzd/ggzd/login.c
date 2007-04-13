@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 9019 2007-03-30 05:35:54Z jdorje $
+ * $Id: login.c 9045 2007-04-13 14:26:04Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -32,6 +32,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef WITH_CRACKLIB
+#include <crack.h>
+#endif
+#ifdef WITH_OMNICRACKLIB
+#include <omnicrack.h>
+#endif
+
 #include "err_func.h"
 #include "ggzdb.h"
 #include "hash.h"
@@ -42,11 +49,16 @@
 #include "protocols.h"
 #include "perms.h"
 #include "client.h"
+#include "unicode.h"
 
 
+#if 0
+static void login_generate_password(char *pw);
+#endif
 static GGZReturn login_add_user(ggzdbPlayerEntry *entry,
 				const char *name, char *password, const char *email);
 static bool is_valid_username(const char *name);
+static bool is_valid_password(const char *password);
 
 
 /*
@@ -96,6 +108,18 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 				   E_BAD_USERNAME, NULL) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
+	}
+
+	/* Validate the password */
+	if (type == GGZ_LOGIN || type == GGZ_LOGIN_NEW) {
+		if(!is_valid_password(new_pw)) {
+			dbg_msg(GGZ_DBG_CONNECTION, "Insecure password from %s",
+				name);
+			if (net_send_login(player->client->net, type,
+					   E_BAD_PASSWORD, NULL) < 0)
+				return GGZ_REQ_DISCONNECT;
+			return GGZ_REQ_FAIL;
+		}
 	}
 
 	/* Start off assuming name is good */
@@ -233,11 +257,31 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 }
 
 
+#if 0
+static char *pw_words[] = { "apple", "horse", "turtle", "orange", "tree",
+			    "carrot", "dingo", "gnu", "bunny", "wombat" };
+
+/* This generates a password for the user */
+static void login_generate_password(char *pw)
+{
+	int word, d1, d2;
+
+	word = random() % 10;
+	d1 = random() % 10;
+	d2 = random() % 10;
+	snprintf(pw, 17, "%s%d%d", pw_words[word], d1, d2);
+}
+#endif
+
 static GGZReturn login_add_user(ggzdbPlayerEntry *db_entry,
 				const char *name, char *password,
 				const char *email)
 {
 	/*  Initialize player entry */
+#if 0
+	if (!password[0])
+		login_generate_password(password);
+#endif
 	snprintf(db_entry->handle, sizeof(db_entry->handle), "%s", name);
 	snprintf(db_entry->password, sizeof(db_entry->password), "%s", password);
 	if (email)
@@ -263,23 +307,37 @@ static GGZReturn login_add_user(ggzdbPlayerEntry *db_entry,
 /* This routine validates the username request */
 static bool is_valid_username(const char *name)
 {
-	const char *p;
-
 	/* "<none>" is invalid */
+	/* FIXME: why would this need special handling at all? */
 	if (strcasecmp(name, "<none>") == 0) {
 		return false;
 	}
 
-	/* Nothing less than a space and no extended ASCII */
-	/* & - can mess with M$ Windows labels, etc */
-	/* % - can screw up log and debug's printf()s */
-	/* \ - can screw up log and debug's printf()s */
-	for (p = name; *p != '\0'; p++) {
-		if (*p < 33 || *p == '%' || *p == '&' || *p == '\\'
-		    || *p > 126) {
-			return false;
-		}
+	if (!username_allowed(name)) {
+		return false;
 	}
 
+	return true;
+}
+
+/* This routine validates the password request */
+static bool is_valid_password(const char *password)
+{
+#ifdef WITH_CRACKLIB
+	const char *res;
+
+	res = FascistCheck(password, CRACKLIB_DICTPATH);
+	if (res) {
+		return false;
+	}
+#endif
+#ifdef WITH_OMNICRACKLIB
+	int res;
+
+	res = omnicrack_checkstrength(password, OMNICRACK_STRATEGY_ALL, NULL);
+	if (res != OMNICRACK_RESULT_OK) {
+		return false;
+	}
+#endif
 	return true;
 }

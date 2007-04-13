@@ -70,6 +70,9 @@
 # Reconfiguration in case of room changes
 #ReconfigureRooms = 1
 
+# Policy file on guest names and player registration
+#UsernamePolicy = @prefix@/etc/ggzd/username.policy
+
 ############################################################################
 # Logging Options
 ############################################################################
