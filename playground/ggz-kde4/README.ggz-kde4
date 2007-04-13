@@ -1,30 +1,33 @@
 GGZ Gaming Zone for KDE 4
 =========================
 
-This directory contains the first bits of what shall become a
-decent GGZ support for KDE 4 games.
+This directory contains some bits of what shall become a
+decent GGZ support for KDE 4 games. Note that it used to contain
+more libraries, which have since however been moved to libkdegames
+already.
 
-Right now it contains a port of the 'kggzmod' library.
-To compile it, change the include paths to kdecore in kggzmod-kde4.pro,
+Right now it contains the 'kggzdmod' library, which is a Qt-based version
+of ggzdmod.
+To compile it, change the include paths to kdecore in kggzdmod-kde4.pro,
 run qmake-qt4 and finally make.
 
 It also contains a port of the 'kconnectx' example game.
-Compilation works similar to kggzmod.
-
-At a later point in time we'll add the 'kggzgames' library which
-includes the common game dialogs. It also contains a Qt wrapper for
-RSVG but I think we can use Qt4's SVG loader instead.
-KConnectX will then have the seats dialog functionality again.
+Compilation works similar to kggzdmod.
 
 We also need CMake files :)
 A first attempt at supporting GGZ in CMake can be found in
 playground/buildsystem/cmake.
 
-Summary of GGZ-in-KDE4-efforts as of late December 2006:
- - kggzmod   [||||||||| ] - core GGZ game module library
- - kggzgames [          ] - common seats dialogs and player management
+Summary of GGZ-in-KDE4-efforts as of April 2007:
+* In this directory
+ - kconnectx [||||||    ] - KConnectX demo game for kggzmod
+ - kggzdmod  [||        ] - core GGZ game server module library
+ - conndlg   [|         ] - connection dialog for GGZ core client in KDE 4
+* In (lib)kdegames (KDE SVN)
  - cmake     [|||||     ] - CMake files for GGZ library checks
- - kconnectx [||||      ] - KConnectX demo game for kggzmod
- - kreversi  [||        ] - GGZ support for KDE's KReversi game
+ - kggzmod   [||||||||| ] - core GGZ game module library
+ - kggznet   [||||||||  ] - network protocols for easysock/dio compatibility
+ - kggzgames [|||       ] - common seats dialogs and player management
+ - kreversi  [||||      ] - GGZ support for KDE's KReversi game
  - kgameggz  [          ] - integration of kggzmod into KGame library
 
