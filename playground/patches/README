@@ -4,9 +4,6 @@ be merged with the sources.
 Current patches
 ---------------
 
-Unicode in GGZ usernames according to a certain policy:
- ggzd+unicode.diff
-
 Widelands GGZ integration:
  widelands.netmenu.diff
 
@@ -22,6 +19,9 @@ Log client versions in ggzd
 
 Old patches (just to keep it in memory)
 ---------------------------------------
+
+Unicode in GGZ usernames according to a certain policy:
+ ggzd+unicode.diff
 
 Embedding ggzcore into game clients:
  ggz-client-libs.embedded.diff
