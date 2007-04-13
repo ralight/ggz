@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 9045 2007-04-13 14:26:04Z josef $
+ * $Id: login.c 9047 2007-04-13 14:37:38Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -89,6 +89,17 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Player %p attempting login as %d",
 	        player, type);
+
+	/* If we disallow new registrations, we ignore logins straight away */
+	if(type == GGZ_LOGIN_NEW && !opt.registration_policy) {
+		dbg_msg(GGZ_DBG_CONNECTION,
+		        "Registration attempt of name %s while registration is prohibited.",
+		        name);
+		if (net_send_login(player->client->net, type,
+				   E_USR_TYPE, NULL) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
 
 	/* A too-long username gives an error.  We used to just truncate it
 	   but that would probably just confuse the user. */

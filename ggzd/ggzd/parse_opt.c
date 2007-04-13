@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9045 2007-04-13 14:26:04Z josef $
+ * $Id: parse_opt.c 9047 2007-04-13 14:37:38Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -401,8 +401,9 @@ static void get_config_options(int ch)
 	/* Reconfiguration in [General] */
 	opt.reconfigure_rooms = ggz_conf_read_int(ch, "General", "ReconfigureRooms", 0);
 
-	/* Unicode settings in [General] */
+	/* Unicode/policy settings in [General] */
 	opt.username_policy = ggz_conf_read_string(ch, "General", "UsernamePolicy", NULL);
+	opt.registration_policy = ggz_conf_read_int(ch, "General", "RegistrationPolicy", 1);
 
 	/* [Games] */
 	ggz_conf_read_list(ch, "Games", "GameList", &g_count, &g_list);
