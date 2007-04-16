@@ -2,7 +2,7 @@
 # Makefile.in for use with autoconf (but not automake)
 
 # Release version number
-version = 0.0.14pre
+version = 0.0.15pre
 
 # prefix: All-purpose prefix (/usr)
 prefix = @prefix@
@@ -24,8 +24,8 @@ py_moddir = ${prefix}/lib/python@PYVERSION@/site-packages
 ggz-config = @GGZ_CONFIG@ -D
 
 # some default autoconf variables
-exec_prefix = ${prefix}
-sysconfdir = ${prefix}/etc
+exec_prefix = @exec_prefix@
+sysconfdir = @sysconfdir@
 
 ggzd_execmoddir = ${prefix}/lib/ggzd
 ggz_execmoddir = ${prefix}/lib/ggz
