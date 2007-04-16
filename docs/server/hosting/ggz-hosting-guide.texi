@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-hosting-guide.info
-@settitle The GGZ Gaming Zone 0.0.14 - Hosting Guide
+@settitle The GGZ Gaming Zone 0.0.15pre - Hosting Guide
 @c %**end of header
 
 @c Do not remove the comments above - they're needed for TeX!
@@ -27,7 +27,7 @@ gaming portals using GGZ Community are covered as well.
 
 @copying
 This manual is about game development for the GGZ Gaming Zone environment.
-Copyright @copyright{} 2001 - 2006 Josef Spillner
+Copyright @copyright{} 2001 - 2007 Josef Spillner
 @quotation
 Published under the GNU General Public License.
 @end quotation
@@ -37,13 +37,13 @@ Published under the GNU General Public License.
 @c Frontpage ===================================================
 
 @titlepage
-@title The GGZ Gaming Zone 0.0.14 - Hosting Guide
+@title The GGZ Gaming Zone 0.0.15pre - Hosting Guide
 @subtitle Instructions and Recommendations for Server Hosters
 @author GGZ Development Team
 
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2001 - 2006 Josef Spillner.
+Copyright @copyright{} 2001 - 2007 Josef Spillner.
 Published under the GNU General Public License.
 @end titlepage
 
@@ -1155,6 +1155,28 @@ For anonymous TLS, as done by the GnuTLS variant, setting EncryptionUse to 1 is
 already sufficient. However, when dealing with certificates, the key and
 certificate file must be specified (both might be inside the same PEM file),
 and the password for the key must be given in the clear.
+
+@subsection Policies for registration and login
+
+Starting in GGZ 0.0.15pre, it is possible to control whether users are allowed
+to register at all and which characters the usernames can contain. Note that
+the latter settings also affect guest names!
+
+The RegistrationPolicy configuration option can be set to 0 to prohibit new
+registrations. Administrators can still add players by running the
+@command{ggzduedit} command.
+
+The UsernamePolicy setting points to a file which contains a detailed
+configuration of what character sets are allowed. If not given, all characters
+can be used in usernames. Even if given, ggzd must be compiled with support
+for the ICU library to take it into account.
+
+An additional compiled-in library will effect the registration process:
+If either cracklib or omnicracklib have been enabled, passwords are checked
+for their strength when registering. Some tools like @command{omnicrackdict}
+might have to be used to set up effective databases of words to match against.
+Again, password strength checking profits from the ICU library, if
+omnicracklib has been compiled with it and is used by ggzd.
 
 @section Privacy
 
