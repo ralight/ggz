@@ -15,8 +15,9 @@
 
 #include "unicode.h"
 
-#ifdef WITH_ICU
+#include "err_func.h"
 
+#ifdef WITH_ICU
 struct blockassignment_t
 {
 	char *name;
@@ -129,7 +130,7 @@ static blockassignment unicode_blocks[99] =
 	{NULL, UBLOCK_NO_BLOCK}
 };
 
-bool block_enabled(UBlockCode code)
+static bool block_enabled(UBlockCode code)
 {
 	int i;
 
@@ -141,9 +142,11 @@ bool block_enabled(UBlockCode code)
 
 	return false;
 }
+#endif
 
 bool username_allowed(const char *str)
 {
+#ifdef WITH_ICU
 	UChar *ustr = NULL;
 	UChar uc;
 	int32_t length = 0;
@@ -158,12 +161,12 @@ bool username_allowed(const char *str)
 
 	ustr = u_strFromUTF8(ustr, length, &length, str, -1, &error);
 	if(U_FAILURE(error)) {
-		fprintf(stderr, "Error: conversion failure\n");
+		err_msg("Error: conversion failure");
 		return false;
 	}
 	ustr = (UChar*)malloc(sizeof(UChar) * length);
 	if(!ustr) {
-		fprintf(stderr, "Error: malloc failure\n");
+		err_msg("Error: malloc failure");
 		return false;
 	}
 	ustr = u_strFromUTF8(ustr, length, NULL, str, -1, &error);
@@ -200,38 +203,7 @@ bool username_allowed(const char *str)
 
 	/* name is alright */
 	return true;
-}
-
-bool init_unicode(const char *policyfile)
-{
-	int rc, enabled;
-	int i;
-
-	rc = ggz_conf_parse(policyfile, GGZ_CONF_RDONLY);
-	if(rc == -1)
-	{
-		fprintf(stderr, "Error: unable to open policy file.\n");
-		return false;
-	}
-
-	for(i = 0; unicode_blocks[i].name; i++)
-	{
-		enabled = ggz_conf_read_int(rc, "UsernameCharacterSets",
-			unicode_blocks[i].name, 0);
-		/*printf(">> %s: %i\n", unicode_blocks[i].name, enabled);*/
-		unicode_blocks[i].enabled = enabled;
-	}
-
-	ggz_conf_close(rc);
-	policy_initialized = true;
-
-	return true;
-}
-
-#else /* WITH_ICU */
-
-bool username_allowed(const char *str)
-{
+#else
 	/* For compatibility, we'll have to assume ASCII */
 	/* Nothing less than a space and no extended ASCII */
 	/* & - can mess with M$ Windows labels, etc */
@@ -247,12 +219,35 @@ bool username_allowed(const char *str)
 	}
 
 	return true;
+#endif
 }
 
 bool init_unicode(const char *policyfile)
 {
-	return false;
-}
+#ifdef WITH_ICU
+	int rc, enabled;
+	int i;
 
+	rc = ggz_conf_parse(policyfile, GGZ_CONF_RDONLY);
+	if(rc == -1)
+	{
+		err_msg("Error: unable to open policy file.");
+		return false;
+	}
+
+	for(i = 0; unicode_blocks[i].name; i++)
+	{
+		enabled = ggz_conf_read_int(rc, "UsernameCharacterSets",
+			unicode_blocks[i].name, 0);
+		unicode_blocks[i].enabled = enabled;
+	}
+
+	ggz_conf_close(rc);
+	policy_initialized = true;
+
+	return true;
+#else
+	return false;
 #endif
+}
 

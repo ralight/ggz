@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9047 2007-04-13 14:37:38Z josef $
+ * $Id: parse_opt.c 9050 2007-04-16 07:17:03Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -178,6 +178,11 @@ static char **_ggz_string_to_list(const char *s, const char *sep)
 #else
 #define SPEC_CRACKLIB 0
 #endif
+#ifdef WITH_OMNICRACKLIB
+#define SPEC_OMNICRACKLIB 1
+#else
+#define SPEC_OMNICRACKLIB 0
+#endif
 
 static void dump_specs(void)
 {
@@ -218,7 +223,8 @@ static void dump_specs(void)
 		(SPEC_INOTIFY ? "yes (inotify)" : (SPEC_FAM ? "yes (fam)" : "no")),
 		(opt.conf_valid ? (opt.reconfigure_rooms ? "used" : "not used") : "unknown" ));
 	printf("Unicode support: %s\n", (SPEC_ICU ? "yes" : "no"));
-	printf("Password checking support: %s\n", (SPEC_CRACKLIB ? "yes" : "no"));
+	printf("Password checking support: %s\n",
+		(SPEC_CRACKLIB ? "yes (cracklib)" : (SPEC_OMNICRACKLIB ? "yes (omnicracklib)" : "no")));
 }
 
 /* Parse command-line options */
