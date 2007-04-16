@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-game-development-guide.info
-@settitle The GGZ Gaming Zone 0.0.14 - Game Development Guide
+@settitle The GGZ Gaming Zone 0.0.14+ - Game Development Guide
 @c %**end of header
 
 @c Do not remove the comments above - they're needed for TeX!
@@ -27,7 +27,7 @@ and integrate game packages.
 
 @copying
 This manual is about game development for the GGZ Gaming Zone environment.
-Copyright @copyright{} 2002 - 2006 Josef Spillner
+Copyright @copyright{} 2002 - 2007 Josef Spillner
 @quotation
 Published under the GNU General Public License.
 @end quotation
@@ -38,7 +38,7 @@ Published under the GNU General Public License.
 
 @titlepage
 @title The GGZ Game Development Guide
-@subtitle Development of games for the GGZ Gaming Zone 0.0.14
+@subtitle Development of games for the GGZ Gaming Zone 0.0.14+
 @author GGZ Development Team
 
 @page
@@ -424,9 +424,14 @@ for players, their statistics, requests to GGZ and events from GGZ.
 
 In addition to kggzmod, the kggzgames library provides more comfort for
 game developers. It contains a ready-to-go dialog for player management
-and a network class to handle quantized binary protocols seamlessly.
-The networking class is called KGGZPacket and will be presented later on
-in the part about networking.
+and other dialogs. There is also the kggznet library which contains
+network classes to handle raw and quantized binary protocols seamlessly.
+The networking classes are called KGGZPacket and KGGZRaw and will be presented
+later on in the part about networking.
+
+Starting from KDE 4.0, the libraries kggzmod, kggzgames and kggznet are
+part of libkdegames. As such, they will be available everywhere for KDE
+game development for the GGZ Gaming Zone.
 
 The following few lines already suffice to get GGZ support going
 with pure kggzmod:
@@ -434,8 +439,7 @@ with pure kggzmod:
 @verbatim
 // Let those be global variables here, although they better be class members
 KGGZMod::Module *mod;
-QSocketDevice *dev = 0;
-QDataStream *net = 0;
+KGGZRaw *m_net = 0;
 
 // Setup
 void Proto::init()
@@ -449,15 +453,16 @@ void Proto::init()
 void Proto::slotNetwork(int fd)
 {
 	// set up network stream if not done yet
-	if(!dev)
+	if(!m_net)
 	{
-		QSocketDevice *dev = new QSocketDevice(fd, QSocketDevice::Stream);
-		QDataStream *net = new QDataStream(dev);
+		m_net = new KGGZRaw();
+		m_net->setNetwork(fd);
+		connect(m_net, SIGNAL(signalError()), SLOT(slotError()));
 	}
 
 	// read message from game server
 	int message;
-	*net >> message;
+	*m_net >> message;
 
 	// send back an answer
 	if(message = 12)
@@ -470,6 +475,7 @@ void Proto::slotNetwork(int fd)
 // Callback for errors
 void Proto::slotError()
 {
+	delete m_net;
 	mod->disconnect();
 	// report error and do something
 }
@@ -617,10 +623,14 @@ development framework, in the C++ programming language.
 The GGZBoard variant Kuobe, which currently lives in GGZ Playground,
 is a KDE game written in Python.
 
-Starting from version 0.0.14, the KDE GGZ Games library (libkggzgames)
+As of version 0.0.14, the GGZ KDE Games library (libkggzgames)
 is used in GGZ. It contains a dialog for player management, system
 integration code and at its core the kggzmod library which was already
 introduced earlier.
+
+After GGZ version 0.0.14, the GGZ KDE clients and games will use KDE 4
+and as such automatically get access to the port of the former GGZ KDE
+Games library which is then part of libkdegames.
 
 @subsection Gtk+, GNOME (C)
 
@@ -634,8 +644,11 @@ described in a later chapter.
 Examples of Gtk+ GGZ games are Tic-Tac-Toe, NetSpades, Connect the Dots,
 Hastings1066, Reversi, Combat, Chinese Checkers, Chess and GGZCards.
 T.E.G. is an example for a GNOME game which provides GGZ support.
+
 Starting from version 2.18, the GNOME-Games package itself supports GGZ
 in several games, including the use of embedded core clients.
+Therefore, GGZ game development for GNOME is possible whereever GNOME
+runs!
 
 @subsection SDL (C, C++, Python)
 
@@ -1001,6 +1014,12 @@ Since easysock itself performs blocking operation, it should not be used in
 code which requires interactivity (such as GUI code), unless threading is
 used.
 
+The 'easysock' protocol is also supported by Qt's QDataStream class,
+and by the KGGZRaw class which is part of the KDE Games library starting
+from KDE 4.0.
+It is also supported by the Net class which is part of ggzdmod++ so that
+C++ game servers can use the same protocol mechanism.
+
 @subsection DIO (C), in libggz
 
 As an alternative to the easysock functions in libggz, the Data I/O module
@@ -1032,7 +1051,9 @@ void read_cb(GGZDataIO *dio, void *user)
 
 DIO is not well-documented but not too hard to use. The GGZ game servers
 Tic-Tac-Toe and GGZCards and all of their respective clients make use of it.
-The KGGZPacket class in libkggzgames implements DIO for C++.
+
+The 'dio' protocol is also implemented by the KGGZPacket class
+which is part of the KDE Games library starting from KDE 4.0.
 
 @subsection Qt (C++)
 
@@ -1052,9 +1073,10 @@ library named libkdegames.
 Documentation:
 @url{http://developer.kde.org/documentation/library/}
 
-In libkggzgames, the KGGZPacket interface has been added to handle quantized
-packets for KDE game clients. It integrates easily with kggzmod, but doesn't
-depend on it in any way. The way the integration works is that instead of
+In libkdegames, the KGGZPacket interface has been added to handle quantized
+packets ('dio' protocol) for KDE game clients. It integrates easily with kggzmod,
+but doesn't depend on it in any way.
+The way the integration works is that instead of
 letting kggzmod notify the game client for new data from the network, it
 will notify KGGZPacket about it. KGGZPacket in turn will silently perform
 its job until all data has been read, and then will notify the game client.
@@ -1075,6 +1097,11 @@ connect(mod, SIGNAL(signalError()), mygame, SLOT(slotError()));
 // That's it! Game client is up and running and will receive packets
 // from the game server
 @end verbatim
+
+Similarly, the KGGZRaw interface can handle raw binary communication, and
+is also part of libkdegames. KGGZRaw is made available to game servers, but
+is also used internally in kggzmod. Both classes, KGGZRaw and KGGZPacket,
+provide full API documentation.
 
 @subsection Net/MNet (C++), now ggzdmod++
 
