@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/27/02
  * Desc: GGZ game module functions, GGZ-side only
- * $Id: ggzdmod-ggz.h 8001 2006-04-24 07:17:07Z josef $
+ * $Id: ggzdmod-ggz.h 9057 2007-04-17 22:12:51Z jdorje $
  *
  * This file contains the GGZ-only interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -76,7 +76,7 @@ int ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat * seat);
  *  @param spectator The new spectator structure (which includes spectator number).
  *  @return 0 on success, negative on failure.
  */
-int ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator * spectator);
+int ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSeat * spectator);
 
 
 /** @brief Change a player's seat.

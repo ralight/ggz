@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 8945 2007-01-16 17:42:57Z josef $
+ * $Id: ggzdmod.h 9057 2007-04-17 22:12:51Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -277,19 +277,19 @@ typedef enum {
 	GGZDMOD_EVENT_SEAT,
 
 	/** @brief A spectator joins the game.
-	 *  The data of the old spectator (GGZSpectator*) is passed as the
+	 *  The data of the old spectator (GGZSeat*) is passed as the
 	 *  data for the event.  It can be assumed that the spectator seat
 	 *  was previously empty, so the name and socket given will be
 	 *  invalid (NULL/-1). */
 	GGZDMOD_EVENT_SPECTATOR_JOIN,
 
 	/** @brief A spectator left the game
-	 *  The old spectator data can be obtained via the (GGZSpectator*)
+	 *  The old spectator data can be obtained via the (GGZSeat*)
 	 *  which is passed as the event data. */
 	GGZDMOD_EVENT_SPECTATOR_LEAVE,
 
 	/** @brief A spectator seat changed.
-	 *  The old spectator data can be obtained via the (GGZSpectator*)
+	 *  The old spectator data can be obtained via the (GGZSeat*)
 	 *  which is passed as the event data.  This may someday replace
 	 *  both SPECTATOR_JOIN and SPECTATOR_LEAVE. */
 	GGZDMOD_EVENT_SPECTATOR_SEAT,
@@ -345,8 +345,8 @@ typedef struct GGZdMod GGZdMod;
  *    - GGZDMOD_EVENT_JOIN: The old seat (GGZSeat*)
  *    - GGZDMOD_EVENT_LEAVE: The old seat (GGZSeat*)
  *    - GGZDMOD_EVENT_SEAT: The old seat (GGZSeat*)
- *    - GGZDMOD_EVENT_SPECTATOR_JOIN: The old spectator's data (GGZSpectator*)
- *    - GGZDMOD_EVENT_SPECTATOR_LEAVE: The old spectator's data (GGZSpectator*)
+ *    - GGZDMOD_EVENT_SPECTATOR_JOIN: The old spectator's data (GGZSeat*)
+ *    - GGZDMOD_EVENT_SPECTATOR_LEAVE: The old spectator's data (GGZSeat*)
  *    - GGZDMOD_EVENT_LOG: The message string (char*)
  *    - GGZDMOD_EVENT_PLAYER_DATA: The player number (int*)
  *    - GGZDMOD_EVENT_SPECTATOR_DATA: The spectator number (int*)
@@ -365,7 +365,7 @@ typedef struct {
 	const char *name;	/**< Name of player occupying seat. */
 	int fd;			/**< fd to communicate with seat occupant. */
 } GGZSeat;
-typedef GGZSeat GGZSpectator;
+#define GGZSpectator GGZSeat
 
 /** @brief Is the program running in GGZ mode?
  *
@@ -473,9 +473,9 @@ int ggzdmod_get_max_num_spectators(GGZdMod *ggzdmod);
 /** @brief Get a spectator's data.
  *  @param ggzdmod The GGZdMod object.
  *  @param spectator The number, between 0 and (number of spectators - 1).
- *  @return A valid GGZSpectator structure, if arguments are valid.
+ *  @return A valid GGZSeat structure, if arguments are valid.
  */
-GGZSpectator ggzdmod_get_spectator(GGZdMod * ggzdmod, int spectator);
+GGZSeat ggzdmod_get_spectator(GGZdMod * ggzdmod, int spectator);
 
 /** @brief Set a handler for the given event.
  *

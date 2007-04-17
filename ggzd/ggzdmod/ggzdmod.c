@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 9020 2007-03-30 17:41:59Z jdorje $
+ * $Id: ggzdmod.c 9057 2007-04-17 22:12:51Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -85,9 +85,9 @@ static int seat_compare(GGZSeat *a, GGZSeat *b);
 static void seat_free(GGZSeat *seat);
 
 /* Functions for manipulating spectators */
-static GGZSpectator* spectator_copy(GGZSpectator *orig);
-static int spectator_compare(GGZSpectator *a, GGZSpectator *b);
-static void spectator_free(GGZSpectator *spectator);
+static GGZSeat* spectator_copy(GGZSeat *orig);
+static int spectator_compare(GGZSeat *a, GGZSeat *b);
+static void spectator_free(GGZSeat *spectator);
 
 /* Debugging function (see also ggzdmod_check) */
 static void seat_print(GGZdMod * ggzdmod, GGZSeat *seat);
@@ -142,7 +142,7 @@ static int get_fd_max(GGZdMod * ggzdmod)
 	int max = ggzdmod->fd;
 	GGZListEntry *entry;
 	GGZSeat *seat;
-	GGZSpectator *spectator;
+	GGZSeat *spectator;
 
 	/* If we don't have a player data handler set
 	   up, we won't monitor the player data sockets. */
@@ -176,7 +176,7 @@ static fd_set get_active_fd_set(GGZdMod * ggzdmod)
 	fd_set active_fd_set;
 	GGZListEntry *entry;
 	GGZSeat *seat;
-	GGZSpectator *spectator;
+	GGZSeat *spectator;
 	
 	FD_ZERO(&active_fd_set);
 	if (ggzdmod->fd != -1)
@@ -366,16 +366,16 @@ GGZSeat ggzdmod_get_seat(GGZdMod * ggzdmod, int num)
 }
 
 
-GGZSpectator ggzdmod_get_spectator(GGZdMod * ggzdmod, int num)
+GGZSeat ggzdmod_get_spectator(GGZdMod * ggzdmod, int num)
 {
-	GGZSpectator spectator = {.num = num, .name = NULL, .fd = -1};
+	GGZSeat spectator = {.num = num, .name = NULL, .fd = -1};
 	GGZListEntry *entry;
 
 	if (CHECK_GGZDMOD(ggzdmod)
 	    && num >= 0
 	    && num < ggzdmod->max_num_spectators) {
 		if ((entry = ggz_list_search(ggzdmod->spectators, &spectator)))
-			spectator = *(GGZSpectator*)ggz_list_get_data(entry);
+			spectator = *(GGZSeat*)ggz_list_get_data(entry);
 	}
 
 	return spectator;
@@ -459,7 +459,7 @@ char* ggzdmod_get_bot_class(GGZdMod *ggzdmod, const char *name)
 static void _ggzdmod_set_max_num_spectators(GGZdMod *ggzdmod,
 					    int num_spectators)
 {
-	GGZSpectator spectator;
+	GGZSeat spectator;
 	int i, old_num;
 
 	old_num = ggzdmod->max_num_spectators;
@@ -631,7 +631,7 @@ int ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 	return _ggzdmod_set_seat(ggzdmod, seat);
 }
 
-static int _ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator *spectator)
+static int _ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSeat *spectator)
 {
 	ggz_debug("GGZDMOD", "Spectator %d set to type 'spectator' (%s)",
 		  spectator->num, spectator->name);
@@ -651,9 +651,9 @@ static int _ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator *spectator)
 }
 
 
-int ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator *spectator)
+int ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSeat *spectator)
 {
-	GGZSpectator oldspectator;
+	GGZSeat oldspectator;
 
 	if (!CHECK_GGZDMOD(ggzdmod) || !spectator) {
 		return -1;		
@@ -755,7 +755,7 @@ int ggzdmod_reseat(GGZdMod * ggzdmod,
 	name = ggz_strdup(name);
 
 	if (was_spectator) {
-		GGZSpectator s = {.num = old_seat,
+		GGZSeat s = {.num = old_seat,
 				  .name = NULL,
 				  .fd = -1};
 		if (_ggzdmod_set_spectator(ggzdmod, &s) < 0)
@@ -785,7 +785,7 @@ int ggzdmod_reseat(GGZdMod * ggzdmod,
 	}
 
 	if (is_spectator) {
-		GGZSpectator s = {.num = new_seat,
+		GGZSeat s = {.num = new_seat,
 				  .name = name,
 				  .fd = -1};
 		if (_ggzdmod_set_spectator(ggzdmod, &s) < 0)
@@ -847,7 +847,7 @@ int ggzdmod_count_seats(GGZdMod *ggzdmod, GGZSeatType seat_type)
 int ggzdmod_count_spectators(GGZdMod *ggzdmod)
 {
 	int i, ret = 0;
-	GGZSpectator spectator;
+	GGZSeat spectator;
 
 	if (!ggzdmod) return ret;
 	for (i = 0; i < ggzdmod->max_num_spectators; i++) {
@@ -896,7 +896,7 @@ static int handle_event(GGZdMod * ggzdmod, fd_set read_fds)
 	int status, count = 0;
 	GGZListEntry *entry;
 	GGZSeat *seat;
-	GGZSpectator *spectator;
+	GGZSeat *spectator;
 
 	if (FD_ISSET(ggzdmod->fd, &read_fds)) {
 		status = _io_read_data(ggzdmod);
@@ -1520,10 +1520,10 @@ void _ggzdmod_handle_reseat(GGZdMod * ggzdmod,
 
 	/* Change the old seat, and dup the previous value */
 	if (was_spectator) {
-		GGZSpectator s = {.num = old_seat,
+		GGZSeat s = {.num = old_seat,
 				  .name = NULL,
 				  .fd = -1};
-		GGZSpectator *old;
+		GGZSeat *old;
 
 		/* We have to manually pull off the FD to prevent it
 		   from being closed */
@@ -1570,10 +1570,10 @@ void _ggzdmod_handle_reseat(GGZdMod * ggzdmod,
 
 	/* Change the new seat, and dup the preevious value */
 	if (is_spectator) {
-		GGZSpectator s = {.num = new_seat,
+		GGZSeat s = {.num = new_seat,
 				  .name = name,
 				  .fd = fd};
-		GGZSpectator old = ggzdmod_get_spectator(ggzdmod, new_seat);
+		GGZSeat old = ggzdmod_get_spectator(ggzdmod, new_seat);
 
 		new_old = spectator_copy(&old);
 		_ggzdmod_set_spectator(ggzdmod, &s);
@@ -1611,10 +1611,10 @@ void _ggzdmod_handle_reseat(GGZdMod * ggzdmod,
 }
 
 /* game-side event: spectator change event received from ggzd.  */
-void _ggzdmod_handle_spectator_seat(GGZdMod * ggzdmod, GGZSpectator *seat)
+void _ggzdmod_handle_spectator_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 {
-	GGZSpectator old = ggzdmod_get_spectator(ggzdmod, seat->num);
-	GGZSpectator *old_seat = spectator_copy(&old);
+	GGZSeat old = ggzdmod_get_spectator(ggzdmod, seat->num);
+	GGZSeat *old_seat = spectator_copy(&old);
 	GGZdModEvent event;
 
 	/* Increase max_num_spectators, if necessary. */
@@ -1687,11 +1687,11 @@ static void seat_print(GGZdMod * ggzdmod, GGZSeat * seat)
 
 
 /* Create a new copy of a spectator object */
-static GGZSpectator* spectator_copy(GGZSpectator *orig)
+static GGZSeat* spectator_copy(GGZSeat *orig)
 {
-	GGZSpectator *spectator;
+	GGZSeat *spectator;
 
-	spectator = ggz_malloc(sizeof(GGZSpectator));
+	spectator = ggz_malloc(sizeof(GGZSeat));
 
 	spectator->type = GGZ_SEAT_NONE;
 	spectator->num = orig->num;
@@ -1704,13 +1704,13 @@ static GGZSpectator* spectator_copy(GGZSpectator *orig)
 }
 
 
-static int spectator_compare(GGZSpectator *a, GGZSpectator *b)
+static int spectator_compare(GGZSeat *a, GGZSeat *b)
 {
 	return a->num - b->num;
 }
 
 
-static void spectator_free(GGZSpectator *spectator)
+static void spectator_free(GGZSeat *spectator)
 {
 	if (spectator->fd != -1)
 		close(spectator->fd);
