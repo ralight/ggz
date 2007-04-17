@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 9022 2007-03-31 00:16:50Z jdorje $
+ * $Id: client.c 9052 2007-04-17 00:47:37Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -468,9 +468,7 @@ static void handle_msg_scores(void)
 
 	/* HACK: The scores are being received before the hand number is
 	   known... */
-	if (hand_num > ggzcards.hand_num) {
-		set_hand_num(hand_num);
-	}
+	set_hand_num(hand_num);
 
 	for (t = 0; t < ggzcards.num_teams; t++) {
 		score_data_t *score = &ggzcards.teams[t].scores[hand_num];
