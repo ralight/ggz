@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 8749 2006-12-25 02:07:57Z jdorje $
+ * $Id: ggzduedit.c 9054 2007-04-17 06:01:21Z josef $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -471,6 +471,7 @@ int main(int argc, char **argv)
 					fgets(password, sizeof(password), stdin);
 					echomode(1);
 					printf("\n");
+					password[strlen(password) - 1] = '\0';
 					optarg = password;
 				}
 				conn.password = optarg;
