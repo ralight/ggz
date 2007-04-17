@@ -202,7 +202,7 @@ bool username_allowed(const char *str)
 	/* name is alright */
 	return true;
 #else
-	char *p;
+	const char *p;
 
 	/* For compatibility, we'll have to assume ASCII */
 	/* Nothing less than a space and no extended ASCII */
