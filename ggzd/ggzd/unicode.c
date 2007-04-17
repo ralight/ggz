@@ -1,5 +1,3 @@
-#define WITH_ICU 1
-
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -204,12 +202,14 @@ bool username_allowed(const char *str)
 	/* name is alright */
 	return true;
 #else
+	char *p;
+
 	/* For compatibility, we'll have to assume ASCII */
 	/* Nothing less than a space and no extended ASCII */
 	/* & - can mess with M$ Windows labels, etc */
 	/* % - can screw up log and debug's printf()s */
 	/* \ - can screw up log and debug's printf()s */
-	for(p = name; *p != '\0'; p++)
+	for(p = str; *p != '\0'; p++)
 	{
 		if((*p < 33) || (*p > 126)
 		|| (*p == '%') || (*p == '&') || (*p == '\\'))
