@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 8561 2006-08-31 08:00:24Z jdorje $
+ * $Id: protocol.h 9053 2007-04-17 03:16:36Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -220,7 +220,12 @@ typedef enum {
 
 	/* A sync request.  The server will send out all data again to sync
 	   the client. */
-	REQ_SYNC
+	REQ_SYNC,
+
+	/* Requests that the hand be opened (this player's cards are revealed
+	   to everyone).  One additional parameter is included, an 8-byte
+	   boolean indicating whether the hand is open or closed. */
+	REQ_OPEN_HAND
 } client_msg_t;
 
 /** @brief Return a string description of the opcode. */

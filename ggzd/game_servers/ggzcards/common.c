@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 9016 2007-03-30 00:09:05Z jdorje $
+ * $Id: common.c 9053 2007-04-17 03:16:36Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -253,6 +253,10 @@ void next_move(void)
 			game.data->handle_gameover();
 			next_move();	/* start a new game */
 			return;
+		}
+
+		for (s = 0; s < game.num_seats; s++) {
+			game.seats[s].open_hand = false;
 		}
 
 		net_broadcast_newhand();
@@ -826,6 +830,17 @@ void handle_client_sync(player_t p)
 	send_sync(p);
 }
 
+void handle_client_open_hand(player_t p, bool is_open)
+{
+	seat_t s = game.players[p].seat;
+
+	game.seats[s].open_hand = is_open;
+
+	allplayers_iterate(p) {
+		game.data->send_hand(p, s);
+	} allplayers_iterate_end;
+}
+
 void send_hand(const player_t p, const seat_t s,
 	       bool show_fronts, bool show_backs)
 {
@@ -838,7 +853,8 @@ void send_hand(const player_t p, const seat_t s,
 
 	/* The open_hands option causes everyone's hand to always be
 	   revealed. */
-	if (game.open_hands || (p < 0 && !game.blind_spectators))
+	if (game.open_hands || game.seats[s].open_hand
+	    || (p < 0 && !game.blind_spectators))
 		show_fronts = show_backs = TRUE;
 
 	net_send_hand(p, s, show_fronts, show_backs);

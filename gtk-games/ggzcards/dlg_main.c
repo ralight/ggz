@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 8924 2007-01-16 00:30:23Z jdorje $
+ * $Id: dlg_main.c 9053 2007-04-17 03:16:36Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -63,6 +63,8 @@ static GtkWidget *create_menus(GtkWidget * window)
 		{_("/_Options"), NULL, NULL, 0, "<Branch>"},
 		{_("/Options/_Preferences"), "<ctrl>P",
 		 on_mnu_preferences_activate, 0, NULL},
+		{_("/Options/_Reveal hand"), NULL,
+		 on_mnu_revealhand_activate, 0, NULL},
 		HELP_MENU,
 	};
 	GtkWidget *menubar;

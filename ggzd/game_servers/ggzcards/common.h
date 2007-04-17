@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 8561 2006-08-31 08:00:24Z jdorje $
+ * $Id: common.h 9053 2007-04-17 03:16:36Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -193,6 +193,7 @@ void handle_neterror_event(player_t p);
 void handle_client_language(player_t p, const char *lang);
 void handle_client_newgame(player_t p);
 void handle_client_sync(player_t p);
+void handle_client_open_hand(player_t p, bool is_open);
 
 /* General high-level functions */
 void init_ggzcards(GGZdMod * ggz, game_data_t * game_data);

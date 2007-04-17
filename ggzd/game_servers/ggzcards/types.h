@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 8465 2006-08-03 07:29:12Z jdorje $
+ * $Id: types.h 9053 2007-04-17 03:16:36Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -57,6 +57,7 @@ typedef int team_t;
 struct game_seat_t {
 	hand_t hand;
 	card_t table;
+	bool open_hand;		/* True if the seat's hand is seen by all */
 	const char *name;	/* the name of the player at this seat, or
 				   seat label */
 	player_t player;	/* the number of the seat's player (-1 for

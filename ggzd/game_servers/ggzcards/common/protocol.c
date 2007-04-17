@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.c 8561 2006-08-31 08:00:24Z jdorje $
+ * $Id: protocol.c 9053 2007-04-17 03:16:36Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -107,6 +107,8 @@ const char *get_client_opcode_name(client_msg_t opcode)
 		return "RSP_BID";
 	case REQ_SYNC:
 		return "REQ_SYNC";
+	case REQ_OPEN_HAND:
+		return "REQ_OPEN_HAND";
 	}
 	return "[unknown]";
 }

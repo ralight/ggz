@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 9052 2007-04-17 00:47:37Z jdorje $
+ * $Id: client.c 9053 2007-04-17 03:16:36Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -1031,6 +1031,18 @@ void client_send_sync_request(void)
 
 	ggz_dio_packet_start(game_internal.dio);
 	write_opcode(game_internal.dio, REQ_SYNC);
+	ggz_dio_packet_end(game_internal.dio);
+}
+
+/* Sends a request for the seat to open/close the hand. */
+void client_send_open_hand(bool is_open)
+{
+	ggz_debug(DBG_CLIENT, "Sending open hand request %d to server.",
+		  is_open);
+
+	ggz_dio_packet_start(game_internal.dio);
+	write_opcode(game_internal.dio, REQ_OPEN_HAND);
+	ggz_dio_put_bool8(game_internal.dio, is_open);
 	ggz_dio_packet_end(game_internal.dio);
 }
 

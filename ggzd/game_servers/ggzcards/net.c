@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 8561 2006-08-31 08:00:24Z jdorje $
+ * $Id: net.c 9053 2007-04-17 03:16:36Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -717,6 +717,15 @@ static void net_rec_options(player_t p)
 	}
 }
 
+static void net_rec_open_hand(player_t p)
+{
+	bool is_open;
+	GGZDataIO *dio = get_player_dio(p);
+
+	ggz_dio_get_bool8(dio, &is_open);
+	handle_client_open_hand(p, is_open);
+}
+
 
 static void net_read_player_data_cb(GGZDataIO * dio, void *userdata)
 {
@@ -748,6 +757,9 @@ static void net_read_player_data_cb(GGZDataIO * dio, void *userdata)
 		return;
 	case REQ_SYNC:
 		handle_client_sync(*p);
+		return;
+	case REQ_OPEN_HAND:
+		net_rec_open_hand(*p);
 		return;
 	}
 

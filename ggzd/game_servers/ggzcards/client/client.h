@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 8561 2006-08-31 08:00:24Z jdorje $
+ * $Id: client.h 9053 2007-04-17 03:16:36Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -387,6 +387,9 @@ void client_send_play(card_t card);
 
 /** Sends a request for a sync. */
 void client_send_sync_request(void);
+
+/** Sends a request for the seat to open/close the hand. */
+void client_send_open_hand(bool is_open);
 
 /** @} end of Responses */
 
