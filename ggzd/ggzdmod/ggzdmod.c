@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 9057 2007-04-17 22:12:51Z jdorje $
+ * $Id: ggzdmod.c 9058 2007-04-18 02:41:09Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -83,11 +83,6 @@ static int game_fork(GGZdMod * ggzdmod);
 static GGZSeat* seat_copy(GGZSeat *orig);
 static int seat_compare(GGZSeat *a, GGZSeat *b);
 static void seat_free(GGZSeat *seat);
-
-/* Functions for manipulating spectators */
-static GGZSeat* spectator_copy(GGZSeat *orig);
-static int spectator_compare(GGZSeat *a, GGZSeat *b);
-static void spectator_free(GGZSeat *spectator);
 
 /* Debugging function (see also ggzdmod_check) */
 static void seat_print(GGZdMod * ggzdmod, GGZSeat *seat);
@@ -237,9 +232,9 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 					 (ggzEntryCreate)seat_copy,
 					 (ggzEntryDestroy)seat_free,
 					 GGZ_LIST_REPLACE_DUPS);
-	ggzdmod->spectators = ggz_list_create((ggzEntryCompare)spectator_compare,
-					(ggzEntryCreate)spectator_copy,
-					(ggzEntryDestroy)spectator_free,
+	ggzdmod->spectators = ggz_list_create((ggzEntryCompare)seat_compare,
+					(ggzEntryCreate)seat_copy,
+					(ggzEntryDestroy)seat_free,
 					GGZ_LIST_REPLACE_DUPS);
 	ggzdmod->num_seats = 0;
 	ggzdmod->max_num_spectators = 0;
@@ -1534,7 +1529,7 @@ void _ggzdmod_handle_reseat(GGZdMod * ggzdmod,
 
 		name = ggz_strdup(old->name);
 
-		old_old = spectator_copy(old);
+		old_old = seat_copy(old);
 		_ggzdmod_set_spectator(ggzdmod, &s);
 		old_event = GGZDMOD_EVENT_SPECTATOR_LEAVE;
 	} else {
@@ -1575,7 +1570,7 @@ void _ggzdmod_handle_reseat(GGZdMod * ggzdmod,
 				  .fd = fd};
 		GGZSeat old = ggzdmod_get_spectator(ggzdmod, new_seat);
 
-		new_old = spectator_copy(&old);
+		new_old = seat_copy(&old);
 		_ggzdmod_set_spectator(ggzdmod, &s);
 		new_event = GGZDMOD_EVENT_SPECTATOR_JOIN;
 	} else {
@@ -1597,24 +1592,15 @@ void _ggzdmod_handle_reseat(GGZdMod * ggzdmod,
 
 	ggz_free(name);
 
-	if (was_spectator) {
-		spectator_free(old_old);
-	} else {
-		seat_free(old_old);
-	}
-
-	if (is_spectator) {
-		spectator_free(new_old);
-	} else {
-		seat_free(new_old);
-	}
+	seat_free(old_old);
+	seat_free(new_old);
 }
 
 /* game-side event: spectator change event received from ggzd.  */
 void _ggzdmod_handle_spectator_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 {
 	GGZSeat old = ggzdmod_get_spectator(ggzdmod, seat->num);
-	GGZSeat *old_seat = spectator_copy(&old);
+	GGZSeat *old_seat = seat_copy(&old);
 	GGZdModEvent event;
 
 	/* Increase max_num_spectators, if necessary. */
@@ -1633,7 +1619,7 @@ void _ggzdmod_handle_spectator_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 	call_handler(ggzdmod, event, old_seat);
 
 	/* Free old_seat */
-	spectator_free(old_seat);
+	seat_free(old_seat);
 }
 
 
@@ -1649,15 +1635,13 @@ static GGZSeat* seat_copy(GGZSeat *orig)
 {
 	GGZSeat *seat;
 
-	seat = ggz_malloc(sizeof(GGZSeat));
+	seat = ggz_malloc(sizeof(*seat));
 
-	seat->num = orig->num;
-	seat->type = orig->type;
-	seat->fd = orig->fd;
-	
+	*seat = *orig;
+
 	/* The name may be NULL if unknown. */
-	seat->name = orig->name ? ggz_strdup(orig->name) : NULL;
-	
+	seat->name = ggz_strdup(seat->name);
+
 	return seat;
 }
 
@@ -1670,6 +1654,11 @@ static int seat_compare(GGZSeat *a, GGZSeat *b)
 
 static void seat_free(GGZSeat *seat)
 {
+	/* FIXME: The seat should NOT be closed here, that should be handled
+	   independently.  The reason is that seats can be copied: this
+	   duplicates the FD number but does not create any additional
+	   sockets.  If you copy a seat then free the copy, you'll find your
+	   socket is closed out from under you. */
 	if (seat->fd != -1)
 		close(seat->fd);
 	if (seat->name)
@@ -1683,41 +1672,6 @@ static void seat_print(GGZdMod * ggzdmod, GGZSeat * seat)
 	const char *type = ggz_seattype_to_string(seat->type);
 	ggzdmod_log(ggzdmod, "GGZDMOD: Seat %d is %s (%s) on %d",
 		    seat->num, type, seat->name, seat->fd);
-}
-
-
-/* Create a new copy of a spectator object */
-static GGZSeat* spectator_copy(GGZSeat *orig)
-{
-	GGZSeat *spectator;
-
-	spectator = ggz_malloc(sizeof(GGZSeat));
-
-	spectator->type = GGZ_SEAT_NONE;
-	spectator->num = orig->num;
-	spectator->fd = orig->fd;
-	
-	/* The name may be NULL if unknown. */
-	spectator->name = orig->name ? ggz_strdup(orig->name) : NULL;
-	
-	return spectator;
-}
-
-
-static int spectator_compare(GGZSeat *a, GGZSeat *b)
-{
-	return a->num - b->num;
-}
-
-
-static void spectator_free(GGZSeat *spectator)
-{
-	if (spectator->fd != -1)
-		close(spectator->fd);
-	if (spectator->name)
-		ggz_free(spectator->name);
-
-	ggz_free(spectator);
 }
 
 
