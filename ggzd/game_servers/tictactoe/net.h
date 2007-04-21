@@ -33,9 +33,6 @@ struct variables_t
 	char turn;
 	char space[9];
 	char winner;
-
-	GGZDataIO *seat_dio[2];
-	GGZDataIO **spectator_dio;
 };
 
 struct variables_t variables;

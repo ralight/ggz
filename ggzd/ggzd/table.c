@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 8776 2006-12-30 10:14:45Z oojah $
+ * $Id: table.c 9062 2007-04-21 03:51:10Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -468,11 +468,14 @@ static GGZReturn table_start_game(GGZTable *table)
 	for (i = 0; i < num_seats; i++) {
 		seat.num = i;
 		seat.type = seats_type(table, i);
-		if (seat.type == GGZ_SEAT_RESERVED || seat.type == GGZ_SEAT_BOT)
+		seat.playerdata = NULL;
+		if (seat.type == GGZ_SEAT_RESERVED
+		    || seat.type == GGZ_SEAT_BOT) {
 			seat.name = table->seat_names[i];
-		else
+		} else {
 			seat.name = NULL;
-			seat.fd = -1;
+		}
+		seat.fd = -1;
 		if (ggzdmod_set_seat(table->ggzdmod, &seat) < 0)
 			status = GGZ_ERROR;
 	}
@@ -1055,7 +1058,9 @@ static void table_game_req_boot(GGZdMod *ggzdmod,
 	} else if (is_spectator) {
 		GGZSpectator seat = {.num = seat_num,
 				     .name = NULL,
-				     .fd = -1};
+				     .type = GGZ_SEAT_NONE,
+				     .fd = -1,
+				     .playerdata = NULL};
 		dbg_msg(GGZ_DBG_TABLE,
 			"Table %d/%d: server is booting spectator %s.",
 			table->index, table->room, name);
@@ -1066,7 +1071,8 @@ static void table_game_req_boot(GGZdMod *ggzdmod,
 		GGZSeat seat = {.num = seat_num,
 				.name = NULL,
 				.type = GGZ_SEAT_OPEN,
-				.fd = -1};
+				.fd = -1,
+				.playerdata = NULL};
 		dbg_msg(GGZ_DBG_TABLE,
 			"Table %d/%d: server is booting seat %s.",
 			table->index, table->room, name);
@@ -1121,6 +1127,7 @@ static void table_game_req_bot(GGZdMod *ggzdmod,
 	seat.type = GGZ_SEAT_BOT;
 	seat.name = NULL;
 	seat.fd = -1;
+	seat.playerdata = NULL;
 	ggzdmod_set_seat(ggzdmod, &seat);
 
 	pthread_rwlock_wrlock(&table->lock);
@@ -1160,6 +1167,7 @@ static void table_game_req_open(GGZdMod *ggzdmod,
 	seat.type = GGZ_SEAT_OPEN;
 	seat.name = NULL;
 	seat.fd = -1;
+	seat.playerdata = NULL;
 	ggzdmod_set_seat(ggzdmod, &seat);
 
 	pthread_rwlock_wrlock(&table->lock);

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 9057 2007-04-17 22:12:51Z jdorje $
+ * $Id: ggzdmod.h 9062 2007-04-21 03:51:10Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -249,31 +249,28 @@ typedef enum {
 	 *  This event occurs when a player joins the table.  The
 	 *  old seat (a GGZSeat*) is passed as the event's data.
 	 *  The seat information will be updated before the event
-	 *  is invoked.
-	 *  @note This event is deprecated.
-	 *  @see GGZDMOD_EVENT_SEAT. */
+	 *  is invoked. */
 	GGZDMOD_EVENT_JOIN,
 
 	/** @brief Player left
 	 *  This event occurs when a player leaves the table.  The
 	 *  old seat (a GGZSeat*) is passed as the event's data.
 	 *  The seat information will be updated before the event
-	 *  is invoked.
-	 *  @note This event is deprecated.
-	 *  @see GGZDMOD_EVENT_SEAT. */
+	 *  is invoked. */
 	GGZDMOD_EVENT_LEAVE,
 
 	/** @brief General seat change
 	 *  This event occurs when a seat change other than a player
 	 *  leave/join happens.  The old seat (a GGZSeat*) is passed as the
 	 *  event's data.  The seat information will be updated before the
-	 *  event is invoked. This event will replace the JOIN and LEAVE
-	 *  events.  Games are advised to register the same handler for all
-	 *  three and to check the seat event by comparing the new and old
-	 *  seats.  Possible operations include open|reserved->player,
-	 *  player->open, open->bot, bot->open, reserved->open,
-	 *  open->reserved, and bot->bot.  Name changes are allowed but
-	 *  there is no player->player (i.e., player swap) seat event. */
+	 *  event is invoked.  Operations include changing of reserved
+	 *  or abandoned seats to open, swapping bot players in and out,
+	 *  making a reservation on an open seat, or even an open seat
+	 *  changing to a player seat if a player changes seats.  Note that
+	 *  no new connections are provided nor are connections removed in a
+	 *  SEAT event; thus, if a player is removed via this event you can
+	 *  be sure another SEAT or SPECTATOR_SEAT event will be provided
+	 *  shortly to re-add him to a new location. */
 	GGZDMOD_EVENT_SEAT,
 
 	/** @brief A spectator joins the game.
@@ -290,8 +287,9 @@ typedef enum {
 
 	/** @brief A spectator seat changed.
 	 *  The old spectator data can be obtained via the (GGZSeat*)
-	 *  which is passed as the event data.  This may someday replace
-	 *  both SPECTATOR_JOIN and SPECTATOR_LEAVE. */
+	 *  which is passed as the event data.  The same caveats apply as
+	 *  to GGZDMOD_EVENT_SEAT.
+	 *  @see GGZDMOD_EVENT_SEAT */
 	GGZDMOD_EVENT_SPECTATOR_SEAT,
 
 	/** @brief Data available from player
@@ -364,6 +362,7 @@ typedef struct {
 	GGZSeatType type;	/**< Type of seat (undefined for spectators). */
 	const char *name;	/**< Name of player occupying seat. */
 	int fd;			/**< fd to communicate with seat occupant. */
+	void *playerdata;	/**< Arbitrary pointer holding seat state data */
 } GGZSeat;
 #define GGZSpectator GGZSeat
 
@@ -441,6 +440,21 @@ GGZSeat ggzdmod_get_seat(GGZdMod * ggzdmod, int seat);
  *  @return The bot's class, or NULL for anonymous bots.
  */
 char * ggzdmod_get_bot_class(GGZdMod * ggzdmod, const char * name);
+
+/** @brief Set a playerdata pointer
+ *
+ *  Each GGZ seat (regular or spectator) can be given a "playerdata" pointer
+ *  that is available through ggzdmod_get_seat.  This is useful for preserving
+ *  state data when a particular player changes seat, as the playerdata will
+ *  be preserved across the seat change.
+ *
+ *  @param ggzdmod The GGZdMod object.
+ *  @param is_spectator true iff it is a spectator seat
+ *  @param seat_num The number of the seat
+ *  @param playerdata An arbitrary pointer to be set as the playerdata
+ */
+void ggzdmod_set_playerdata(GGZdMod * ggzdmod, bool is_spectator, int seat_num,
+			    void *playerdata);
 
 /** @brief Return gamedata pointer
  *
