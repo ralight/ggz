@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 9062 2007-04-21 03:51:10Z jdorje $
+ * $Id: io.c 9063 2007-04-22 03:16:29Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -525,6 +525,7 @@ static int _io_read_msg_spectator_seat_change(GGZdMod * ggzdmod)
 	    || ggz_read_string_alloc(ggzdmod->fd, &name) < 0)
 		return -1;
 	seat.name = name;
+	seat.playerdata = NULL;
 
 	if (seat.name[0] == '\0') {
 		ggz_free(seat.name);
