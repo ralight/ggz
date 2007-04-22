@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 9062 2007-04-21 03:51:10Z jdorje $
+ * $Id: game.c 9064 2007-04-22 03:23:47Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -241,29 +241,26 @@ static void game_handle_ggz_spectator_seat(GGZdMod *ggz, GGZdModEvent event,
 {
 	const GGZSpectator *old_spectator = data;
 	GGZSpectator spectator;
-	GGZDataIO *dio;
 
 	spectator = ggzdmod_get_spectator(ggz, old_spectator->num);
 
 	if (event == GGZDMOD_EVENT_SPECTATOR_JOIN) {
+		GGZDataIO *dio = ggz_dio_new(spectator.fd);
+
 		assert(spectator.playerdata == NULL);
-		dio = ggz_dio_new(spectator.fd);
-		ggz_dio_set_auto_flush(dio, true);
 
 		ggzdmod_set_playerdata(ggz, true, spectator.num, dio);
 		spectator = ggzdmod_get_spectator(ggz, old_spectator->num);
 		assert(spectator.playerdata == dio);
 	}
 
-	dio = spectator.playerdata;
-
 	if (spectator.name) {
-		ggzcomm_msgplayers(dio);
-		game_send_sync(dio);
+		ggzcomm_msgplayers(spectator.playerdata);
+		game_send_sync(spectator.playerdata);
 	}
 
 	if (event == GGZDMOD_EVENT_SPECTATOR_LEAVE) {
-		ggz_dio_free(dio);
+		ggz_dio_free(old_spectator->playerdata);
 	}
 
 	if (seats_empty())
@@ -296,7 +293,6 @@ static void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event,
 		GGZDataIO *dio = ggz_dio_new(new_seat.fd);
 
 		assert(new_seat.playerdata == NULL);
-		ggz_dio_set_auto_flush(dio, true);
 		ggzdmod_set_playerdata(ggz, false, new_seat.num, dio);
 		new_seat = ggzdmod_get_seat(ggz, old_seat->num);
 		assert(new_seat.playerdata == dio);
