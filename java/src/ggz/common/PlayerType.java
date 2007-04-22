@@ -18,6 +18,7 @@
 package ggz.common;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * A player type.
@@ -105,4 +106,38 @@ public class PlayerType {
 
         return GGZ_PLAYER_UNKNOWN; /* ? */
     }
+
+    public static final Comparator SORT_BY_PRIVILEGE = new Comparator() {
+
+        public int compare(Object o1, Object o2) {
+            PlayerType type1 = (PlayerType) o1;
+            PlayerType type2 = (PlayerType) o2;
+
+            if (type1 == type2) {
+                return 0;
+            } else if (type1 == GGZ_PLAYER_ADMIN) {
+                return -1;
+            } else if (type2 == GGZ_PLAYER_ADMIN) {
+                return 1;
+            } else if (type1 == GGZ_PLAYER_HOST) {
+                return -1;
+            } else if (type2 == GGZ_PLAYER_HOST) {
+                return 1;
+            } else if (type1 == GGZ_PLAYER_BOT) {
+                return -1;
+            } else if (type2 == GGZ_PLAYER_BOT) {
+                return 1;
+            } else if (type1 == GGZ_PLAYER_NORMAL) {
+                return -1;
+            } else if (type2 == GGZ_PLAYER_NORMAL) {
+                return 1;
+            } else if (type1 == GGZ_PLAYER_GUEST) {
+                return -1;
+            } else if (type2 == GGZ_PLAYER_GUEST) {
+                return 1;
+            }
+            // This handles the GGZ_PLAYER_UNKNOWN case but should never happen.
+            return 0;
+        }
+    };
 }

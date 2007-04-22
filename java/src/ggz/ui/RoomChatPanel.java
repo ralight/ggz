@@ -503,7 +503,8 @@ public class RoomChatPanel extends JPanel implements RoomListener,
 
         public PlayersTableModel(boolean showTableNumber) {
             this.showTableNumber = showTableNumber;
-            this.data = new SortedList(Player.SORT_BY_NAME);
+//            this.data = new SortedList(Player.SORT_BY_NAME);
+            this.data = new SortedList(Player.SORT_BY_TYPE);
         }
 
         public void replaceAll(List l) {

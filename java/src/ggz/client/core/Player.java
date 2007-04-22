@@ -198,7 +198,7 @@ public class Player {
     protected void set_perms(PermSet perms) {
         this.perms = perms;
     }
-    
+
     protected void set_type(PlayerType type) {
         this.type = type;
     }
@@ -235,6 +235,29 @@ public class Player {
                 return 1;
             } else {
                 return collator.compare(p1.get_name(), p2.get_name());
+            }
+        }
+    };
+
+    public static final Comparator SORT_BY_TYPE = new Comparator() {
+
+        public int compare(Object o1, Object o2) {
+            Player p1 = (Player) o1;
+            Player p2 = (Player) o2;
+            if (p1 == null && p2 == null) {
+                return 0;
+            } else if (p1 == null) {
+                return -1;
+            } else if (p2 == null) {
+                return 1;
+            } else {
+                PlayerType type1 = p1.get_type();
+                PlayerType type2 = p2.get_type();
+                int result = PlayerType.SORT_BY_PRIVILEGE.compare(type1, type2);
+                if (result == 0) {
+                    return SORT_BY_NAME.compare(p1, p2);
+                }
+                return result;
             }
         }
     };
