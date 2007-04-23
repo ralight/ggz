@@ -1,9 +1,9 @@
 #!/bin/sh
 # Performs a local GGZ installation
-# Copyright (C) 2004, 2005 Josef Spillner <josef@ggzgamingzone.org>
+# Copyright (C) 2004 - 2007 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
-version=0.0.12
+version=0.0.14
 tmp=$HOME/.ggz/getggz-$version
 log=$tmp/getggz.log
 prefix=$HOME/ggz
@@ -21,23 +21,19 @@ fi
 echo "*** Note: Log file will be written to $log"
 
 echo "Please select a download mirror:"
-#echo "Germany, via KGT new media (1)"
-echo "USA, via ibiblio           (2)"
-echo "Denmark, via dotsrc        (3)"
-echo "Belgium, via Belnet        (4)"
+echo "USA, via ibiblio           (1)"
+echo "Denmark, via dotsrc        (2)"
+echo "Belgium, via Belnet        (3)"
 read -p "? " mirror
 
 case $mirror in
-#	1)
-#	mirror="ftp://ftp2.kgt.org/pub/ggzgamingzone.org"
-#	;;
-	2)
+	1)
 	mirror="ftp://ftp.ibiblio.org/pub/mirrors/ggzgamingzone"
 	;;
-	3)
+	2)
 	mirror="ftp://ftp.dotsrc.org/mirrors/ggzgamingzone"
 	;;
-	4)
+	3)
 	mirror="ftp://ftp.belnet.be/mirrors/ftp.ggzgamingzone.org"
 	;;
 	*)
@@ -179,7 +175,7 @@ for p in $pkg; do
 		wget $tarball >>$log 2>&1
 	fi
 	if test $? -ne 0; then
-		echo "*** Downloading $tarball failed!"
+		echo "*** Downloading $tarball failed! (See $log)"
 		exit
 	fi
 done
@@ -192,7 +188,7 @@ for p in $pkg; do
 		echo "+ $p (decompression)"
 		tar xzvf $p-$version.tar.gz >>$log 2>&1
 		if test $? -ne 0; then
-			echo "*** Decompressing $p-$version.tar.gz failed!"
+			echo "*** Decompressing $p-$version.tar.gz failed! (See $log)"
 			exit
 		fi
 	fi
@@ -200,6 +196,7 @@ done
 
 echo "Configuration and compilation of all packages"
 echo "Packages will be installed into $prefix"
+export LD_LIBRARY_PATH=$prefix/lib:$LD_LIBRARY_PATH
 for p in $pkg; do
 	if test $cache = y && test -f $p-$version/.installed; then
 		echo "- $p (configuration/compilation/installation cached)"
@@ -208,19 +205,19 @@ for p in $pkg; do
 		cd $p-$version
 		./configure --prefix=$prefix >>$log 2>&1
 		if test $? -ne 0; then
-			echo "*** Configuration of $p-$version failed!"
+			echo "*** Configuration of $p-$version failed! (See $log)"
 			exit
 		fi
 		echo "+ $p (compilation)"
 		$makeprog >>$log 2>&1
 		if test $? -ne 0; then
-			echo "*** Compilation of $p failed!"
+			echo "*** Compilation of $p failed! (See $log)"
 			exit
 		fi
 		echo "+ $p (installation)"
 		$makeprog install >>$log 2>&1
 		if test $? -ne 0; then
-			echo "*** Installation of $p failed!"
+			echo "*** Installation of $p failed! (See $log)"
 			exit
 		fi
 		touch .installed
@@ -232,4 +229,22 @@ echo "Finished! GGZ $version is now installed."
 echo "Do not forget to set up the following paths:"
 echo "export PATH=$prefix/bin:\$PATH"
 echo "export LD_LIBRARY_PATH=$prefix/lib:\$LD_LIBRARY_PATH"
+
+if test "x$method" = "xc"; then
+	launcher=$prefix/bin/launchggzclient.sh
+else
+	launcher=$prefix/bin/launchggzserver.sh
+fi
+:> $launcher
+echo "export PATH=$prefix/bin:\$PATH" >> $launcher
+echo "export LD_LIBRARY_PATH=$prefix/lib:\$LD_LIBRARY_PATH" >> $launcher
+if test "x$method" = "xc"; then
+	echo "ggz" >> $launcher
+else
+	echo "ggzd -F" >> $launcher
+fi
+chmod +x $launcher
+
+echo ""
+echo "Or simply run the following script: $launcher"
 
