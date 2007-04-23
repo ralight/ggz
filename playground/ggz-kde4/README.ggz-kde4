@@ -23,6 +23,7 @@ Summary of GGZ-in-KDE4-efforts as of April 2007:
  - kconnectx [||||||    ] - KConnectX demo game for kggzmod
  - kggzdmod  [||        ] - core GGZ game server module library
  - conndlg   [|         ] - connection dialog for GGZ core client in KDE 4
+ - playerlst [|         ] - player list for GGZ core clients in KDE 4
 * In (lib)kdegames (KDE SVN)
  - cmake     [|||||     ] - CMake files for GGZ library checks
  - kggzmod   [||||||||| ] - core GGZ game module library

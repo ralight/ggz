@@ -20,3 +20,12 @@ Contents right now:
   Some checks so we can improve cracklib
   a few issues are written in the source file
 
+* games
+  A tiny wrapper for the Velena AI engine
+
+* omnicrack
+  Next-generation password strength checker (see also 'passwords')
+
+* events
+  High-resolution timer for multiple reoccurring events
+
