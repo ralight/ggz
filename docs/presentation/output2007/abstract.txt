@@ -1,0 +1,30 @@
+Die wundersame Welt der Onlinespiele 
+
+Ein paar verrückte Linuxhacker, darunter der Vortragende, arbeiten seit
+einiger Zeit an einer freien Onlinespieleplattform. Das Angebot an Spielen
+ist bereits recht groß, und der Server rund um die Uhr gut besucht. Weltweit
+gibt es Helfer, die sich der Idee angeschlossen haben und Verbesserungen
+beitragen. 
+Mit welcher Architektur war es möglich, Spieler von dunklen Spielezentren
+wie dem von Microsoft abzuwerben und in die gute Welt von Open Source zu
+führen? Wieviele Stunden kostbarer Arbeitszeit wurden bereits verspielt?
+Und was passiert, wenn man zwei Chatbots bei einer Partie Schach
+gegeneinander antreten lässt? 
+
+Diese und weitere Fragen werden in einer kurzen Einführung beantwortet.
+Anschließend wird die praktische Seite beleuchtet - mit einem Spiel, ist ja
+klar. 
+Im zweiten Teil des Workshops wird es technisch. Die grundlegenden Protokolle
+werden erläutert, ebenso wie ein paar ausgewählte Spiele. Auf Seiten des
+Servers wird der zentrale Spieledienst und ein darauf aufbauendes
+Community-Portal erklärt. Auch das Management eines solchen Projektes, das
+ja in ein Ökosystem anderer Projekte eingebunden und teilweise daran
+gekoppelt ist, wird angesprochen werden. Sowohl die Desktopintegration als
+auch die Nutzung der Serverinfrastruktur für kommerzielle Spieledienste sind
+dabei heiße Themen. Für Studenten sicherlich interessant ist der hohe Grad
+der Überlappung von Themen in dem Projekt mit Vorlesungsinhalten. So lassen
+sich öde Vorlesungen mit spielerischen Aspekten neutralisieren.
+
+Weitere Informationen findet man auf der Webseite unter
+http://www.ggzgamingzone.org/.
+
