@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 8888 2007-01-10 02:28:31Z jdorje $
+ * $Id: netxml.c 9070 2007-04-24 19:00:13Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -1228,43 +1228,30 @@ static void _ggzcore_net_handle_result(GGZNet * net,
 		_ggzcore_room_set_table_leave_status(room, code);
 	else if (strcasecmp(action, "chat") == 0) {
 		if (code != E_OK) {
-			GGZErrorEventData error = { .status = code };
+			GGZErrorEventData error = { .status = code,
+						    .message = NULL};
 
 			switch (code) {
 			case E_NOT_IN_ROOM:
-				snprintf(error.message,
-					 sizeof(error.message),
-					 "Not in a room");
+				error.message = _("Not in a room");
 				break;
 			case E_BAD_OPTIONS:
-				snprintf(error.message,
-					 sizeof(error.message),
-					 "Bad options");
+				error.message = _("Bad options");
 				break;
 			case E_NO_PERMISSION:
-				snprintf(error.message,
-					 sizeof(error.message),
-					 "Prohibited");
+				error.message = _("Prohibited");
 				break;
 			case E_USR_LOOKUP:
-				snprintf(error.message,
-					 sizeof(error.message),
-					 "No such player");
+				error.message = _("No such player");
 				break;
 			case E_AT_TABLE:
-				snprintf(error.message,
-					 sizeof(error.message),
-					 "Can't chat at table");
+				error.message = _("Can't chat at table");
 				break;
 			case E_NO_TABLE:
-				snprintf(error.message,
-					 sizeof(error.message),
-					 "Must be at table");
+				error.message = _("Must be at table");
 				break;
 			default:
-				snprintf(error.message,
-					 sizeof(error.message),
-					 "Unknown error");
+				error.message = _("Unknown error");
 				break;
 			}
 			_ggzcore_server_event(net->server, GGZ_CHAT_FAIL,
@@ -1274,9 +1261,8 @@ static void _ggzcore_net_handle_result(GGZNet * net,
 	else if (strcasecmp(action, "admin") == 0) {
 		if (code != E_OK) {
 			GGZErrorEventData error = { .status = code };
-			snprintf(error.message,
-				 sizeof(error.message),
-				 "Admin action error");
+
+			error.message = _("Admin action error");
 			_ggzcore_server_event(net->server, GGZ_CHAT_FAIL,
 					      &error);
 		}
@@ -1284,14 +1270,14 @@ static void _ggzcore_net_handle_result(GGZNet * net,
 		/* These are always errors */
 		switch (code) {
 		case E_BAD_OPTIONS:
-			message =
-			    "Server didn't recognize one of our commands";
+			message =  _("Server didn't recognize one "
+				     "of our commands");
 			break;
 		case E_BAD_XML:
-			message = "Server didn't like our XML";
+			message = _("Server didn't like our XML");
 			break;
 		default:
-			message = "Unknown protocol error";
+			message = _("Unknown protocol error");
 		}
 
 		_ggzcore_server_protocol_error(net->server, message);

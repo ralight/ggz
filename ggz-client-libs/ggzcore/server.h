@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.h 8533 2006-08-26 01:26:29Z jdorje $
+ * $Id: server.h 9070 2007-04-24 19:00:13Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -32,6 +32,12 @@
 #include "room.h"
 #include "state.h"
 #include "net.h"
+
+/* Why in this file? No reason. */
+#include <locale.h>
+#include <libintl.h>
+#define N_(x) (x)
+#define _(x) dgettext("ggzcore", x)
 
 GGZServer *_ggzcore_server_new(void);
 

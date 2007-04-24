@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 8945 2007-01-16 17:42:57Z josef $
+ * $Id: ggzcore.h 9070 2007-04-24 19:00:13Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -194,15 +194,14 @@ typedef enum {
  *  passed as the event data.
  */
 typedef struct {
-	/** @brief A default error message.
-	 *  @note This also provides backward-compatability.
-	 */
-	char message[128];
-
 	/** @brief The type of error that occurred.
 	 *  @note Not all errors are possible with all events.
 	 */
 	GGZClientReqError status;
+
+	/** @brief A default error message.
+	 */
+	const char *message;
 } GGZErrorEventData;
 
 /** @brief The data associated with a GGZ_MOTD_LOADED server event. */

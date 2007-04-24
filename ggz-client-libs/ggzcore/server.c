@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 9019 2007-03-30 05:35:54Z jdorje $
+ * $Id: server.c 9070 2007-04-24 19:00:13Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -55,12 +55,6 @@
 #include "protocol.h"
 #include "state.h"
 #include "server.h"
-
-#include <locale.h>
-#include <libintl.h>
-
-#define N_(x) (x)
-#define _(x) dgettext("ggzcore", x)
 
 #if 0
 /* Array of GGZServerEvent messages.  This is now unused, but could be used
@@ -913,48 +907,43 @@ void _ggzcore_server_set_login_status(GGZServer * server,
 		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_OK);
 		_ggzcore_server_event(server, GGZ_LOGGED_IN, NULL);
 	} else {
-		GGZErrorEventData error = {.status = status };
+		GGZErrorEventData error = {.status = status,
+					   .message = NULL};
 
 		switch (status) {
 		case E_ALREADY_LOGGED_IN:
-			snprintf(error.message, sizeof(error.message),
-				_("Already logged in"));
+			error.message = _("Already logged in");
 			break;
 		case E_USR_LOOKUP:
-			snprintf(error.message, sizeof(error.message),
-				_("The password was incorrect"));
+			error.message = _("The password was incorrect");
 			break;
 		case E_USR_TAKEN:
-			snprintf(error.message, sizeof(error.message),
-				_("Name is already taken"));
+			error.message = _("Name is already taken");
 			break;
 		case E_USR_TYPE:
-			snprintf(error.message, sizeof(error.message),
-				_("This name is already registered so cannot be used by a guest"));
+			error.message = _("This name is already registered "
+					  "so cannot be used by a guest");
 			break;
 		case E_USR_FOUND:
-			snprintf(error.message, sizeof(error.message),
-				_("No such name was found"));
+			error.message = _("No such name was found");
 			break;
 		case E_TOO_LONG:
-			snprintf(error.message, sizeof(error.message),
-				_("Name too long"));
+			error.message = _("Name too long");
 			break;
 		case E_BAD_USERNAME:
-			snprintf(error.message, sizeof(error.message),
-				_("Name contains forbidden ASCII characters"));
+			error.message = _("Name contains forbidden "
+					  "characters");
 			break;
 		case E_BAD_PASSWORD:
-			snprintf(error.message, sizeof(error.message),
-				 _("You must enter a legitimate password"));
+			error.message = _("You must enter a legitimate "
+					  "password");
 			break;
 		case E_BAD_OPTIONS:
-			snprintf(error.message, sizeof(error.message),
-				_("Missing password or other bad options."));
+			error.message = _("Missing password or other bad "
+					  "options.");
 			break;
 		default:
-			snprintf(error.message, sizeof(error.message),
-				_("Unknown login error"));
+			error.message = _("Unknown login error");
 			break;
 		}
 		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_FAIL);
@@ -976,29 +965,25 @@ void _ggzcore_server_set_room_join_status(GGZServer * server,
 
 		switch (status) {
 		case E_ROOM_FULL:
-			snprintf(error.message, sizeof(error.message),
-				_("Room full"));
+			error.message = _("Room full");
 			break;
 		case E_AT_TABLE:
-			snprintf(error.message, sizeof(error.message),
-				_("Can't change rooms while at a table"));
+			error.message = _("Can't change rooms "
+					  "while at a table");
 			break;
 		case E_IN_TRANSIT:
-			snprintf(error.message, sizeof(error.message),
-				_("Can't change rooms while "
-				"joining/leaving a table"));
+			error.message = _("Can't change rooms while "
+					  "joining/leaving a table");
 			break;
 		case E_BAD_OPTIONS:
-			snprintf(error.message, sizeof(error.message),
-				_("Bad room number"));
+			error.message = _("Bad room number");
 			break;
 		case E_NO_PERMISSION:
-			snprintf(error.message, sizeof(error.message),
-				_("Insufficient permissions, room access is restricted"));
+			error.message = _("Insufficient permissions; "
+					  "room access is restricted");
 			break;
 		default:
-			snprintf(error.message, sizeof(error.message),
-				 _("Unknown error joining room"));
+			error.message = _("Unknown error joining room");
 			break;
 		}
 

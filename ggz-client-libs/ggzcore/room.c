@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 9069 2007-04-24 18:24:40Z jdorje $
+ * $Id: room.c 9070 2007-04-24 19:00:13Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -892,40 +892,34 @@ void _ggzcore_room_set_table_launch_status(GGZRoom * room, int status)
 	if (status == E_OK) {
 		_ggzcore_room_event(room, GGZ_TABLE_LAUNCHED, NULL);
 	} else {
-		GGZErrorEventData error = { .status = status };
+		GGZErrorEventData error = { .status = status,
+					    .message = NULL};
 
 		switch (status) {
 		case E_BAD_OPTIONS:
-			snprintf(error.message, sizeof(error.message),
-				 "Bad option");
+			error.message = _("Bad option");
 			break;
 		case E_ROOM_FULL:
-			snprintf(error.message, sizeof(error.message),
-				 "The room has reached its table limit.");
+			error.message = _("The room has reached its "
+					  "table limit.");
 			break;
 		case E_LAUNCH_FAIL:
-			snprintf(error.message, sizeof(error.message),
-				 "Launch failed on server");
+			error.message = _("Launch failed on server");
 			break;
 		case E_NOT_IN_ROOM:
-			snprintf(error.message, sizeof(error.message),
-				 "Not in a room");
+			error.message = _("Not in a room");
 			break;
 		case E_AT_TABLE:
-			snprintf(error.message, sizeof(error.message),
-				 "Already at a table");
+			error.message = _("Already at a table");
 			break;
 		case E_IN_TRANSIT:
-			snprintf(error.message, sizeof(error.message),
-				 "Already joining/leaving a table");
+			error.message = _("Already joining/leaving a table");
 			break;
 		case E_NO_PERMISSION:
-			snprintf(error.message, sizeof(error.message),
-				 "Insufficient permissions");
+			error.message = _("Insufficient permissions");
 			break;
 		default:
-			snprintf(error.message, sizeof(error.message),
-				 "Unknown launch failure");
+			error.message = _("Unknown launch failure");
 			break;
 		}
 		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL, &error);
