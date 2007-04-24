@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 8763 2006-12-27 10:02:33Z jdorje $
+ * $Id: room.c 9069 2007-04-24 18:24:40Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -892,7 +892,7 @@ void _ggzcore_room_set_table_launch_status(GGZRoom * room, int status)
 	if (status == E_OK) {
 		_ggzcore_room_event(room, GGZ_TABLE_LAUNCHED, NULL);
 	} else {
-	      GGZErrorEventData error = { status:status };
+		GGZErrorEventData error = { .status = status };
 
 		switch (status) {
 		case E_BAD_OPTIONS:
