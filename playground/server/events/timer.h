@@ -1,8 +1,8 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-/* Maximum number of timer events (0..MAX_TIMER-1) */
-#define MAX_TIMER 10
+/* Maximum number of timer events (0..MAX_TIMERS-1) */
+#define MAX_TIMERS 10
 
 /* User-defined callback function (unneeded???) */
 typedef void (*timercallback)(int);
@@ -11,7 +11,7 @@ typedef void (*timercallback)(int);
 struct nexttimer_t
 {
 	int timer;
-	int milliseconds;
+	float seconds;
 };
 typedef struct nexttimer_t nexttimer;
 
@@ -19,7 +19,7 @@ typedef struct nexttimer_t nexttimer;
 void timer_init(timercallback cb);
 
 /* Set a timer - if milliseconds is zero, deactivate it */
-void timer_set(int timer, int milliseconds);
+void timer_set(int timer, float seconds);
 
 /* Reports the run of the next timer */
 nexttimer timer_next(void);

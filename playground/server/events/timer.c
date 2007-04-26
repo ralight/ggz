@@ -6,69 +6,69 @@
 
 #define DEBUG 0
 
-static int timers[MAX_TIMER];
-static struct timeval timerstarts[MAX_TIMER];
+static float timers[MAX_TIMERS];
+static struct timeval timerstarts[MAX_TIMERS];
 static timercallback callback = NULL;
 
 void timer_init(timercallback cb)
 {
 	int i;
 
-	for(i = 0; i < MAX_TIMER; i++)
-		timers[i] = 0;
+	for(i = 0; i < MAX_TIMERS; i++)
+		timers[i] = 0.0;
 
 	callback = cb;
 }
 
-void timer_set(int timer, int milliseconds)
+void timer_set(int timer, float seconds)
 {
-	if((timer < 0) || (timer >= MAX_TIMER))
+	if((timer < 0) || (timer >= MAX_TIMERS))
 		return;
-	if(milliseconds < 0)
+	if(seconds < 0.0)
 		return;
 
-	timers[timer] = milliseconds;
+	timers[timer] = seconds;
 	gettimeofday(&timerstarts[timer], NULL);
 }
 
 nexttimer timer_next(void)
 {
-	int milliseconds = 0;
+	float seconds = 0.0;
 	int timer = -1;
 	int i;
 	struct timeval now, timerstart;
-	int remaining, done;
+	float remaining, done;
 	nexttimer next;
 
 	gettimeofday(&now, NULL);
 
-	for(i = 0; i < MAX_TIMER; i++)
+	for(i = 0; i < MAX_TIMERS; i++)
 	{
-		if(timers[i] != 0)
+		if(timers[i] != 0.0)
 		{
 			timerstart = timerstarts[i];
-			done = (now.tv_sec - timerstart.tv_sec) * 1000;
-			done += (now.tv_usec - timerstart.tv_usec) / 1000;
+			done = (float)(now.tv_sec - timerstart.tv_sec);
+			done += (float)(now.tv_usec - timerstart.tv_usec) / 1000000.0;
 			remaining = timers[i] - done;
 #if DEBUG
-			printf("=> %i: %i milliseconds, %i to go\n", i, timers[i], remaining);
+			printf("=> %i: %3.2f seconds, %3.2f to go\n", i, timers[i], remaining);
 #endif
 
-			if((milliseconds == 0) || (remaining < milliseconds))
+			if((seconds == 0.0) || (remaining < seconds))
 			{
-				milliseconds = remaining;
+				seconds = remaining;
 				timer = i;
 			}
 		}
 	}
 
 	/* If this happens, we missed an event */
-	if(milliseconds < 0) milliseconds = 0;
+	if(seconds < 0.0) seconds = 0;
 
-	timerstarts[timer].tv_sec += timers[timer] / 1000;
-	timerstarts[timer].tv_usec += (timers[timer] % 1000) * 1000000;
+	timerstarts[timer].tv_sec += (int)timers[timer];
+	timerstarts[timer].tv_usec += (int)(timers[timer] - (int)timers[timer]) * 1000000;
 
-	next.milliseconds = milliseconds;
+	next.seconds = seconds;
 	next.timer = timer;
 
 	return next;
