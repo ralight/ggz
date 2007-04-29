@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.h 9070 2007-04-24 19:00:13Z jdorje $
+ * $Id: server.h 9073 2007-04-29 01:09:54Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -115,7 +115,8 @@ int _ggzcore_server_join_room(GGZServer * server, GGZRoom *room);
 int _ggzcore_server_logout(GGZServer * server);
 int _ggzcore_server_disconnect(GGZServer * server);
 void _ggzcore_server_net_error(GGZServer * server, char *message);
-void _ggzcore_server_protocol_error(GGZServer * server, char *message);
+void _ggzcore_server_protocol_error(GGZServer * server,
+				    GGZClientReqError status);
 
 void _ggzcore_server_clear(GGZServer * server);
 void _ggzcore_server_clear_reconnect(GGZServer * server);

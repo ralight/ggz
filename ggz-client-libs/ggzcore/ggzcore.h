@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 9070 2007-04-24 19:00:13Z jdorje $
+ * $Id: ggzcore.h 9073 2007-04-29 01:09:54Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -332,7 +332,8 @@ typedef enum {
 	/** Error: a communication protocol error occured.  This can happen
 	 *  in a variety of situations when the server sends us something
 	 *  we can't handle.  The server will be automatically disconnected.
-	 *  @param data A technical error string.
+	 *  @param data A pointer to a GGZErrorEventData.
+	 *  @see GGZErrorEventData
 	 *  @see ggzcore_server_read_data */
 	GGZ_PROTOCOL_ERROR,
 

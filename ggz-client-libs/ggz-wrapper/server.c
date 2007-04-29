@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 8534 2006-08-26 01:28:34Z jdorje $
+ * $Id: server.c 9073 2007-04-29 01:09:54Z jdorje $
  *
  * Functions for handling server events
  *
@@ -312,9 +312,9 @@ static GGZHookReturn server_protocol_error(GGZServerEvent id,
 					   const void *event_data,
 					   const void *user_data)
 {
-	const char *msg = event_data;
+	const GGZErrorEventData *event = event_data;
 
-	fprintf(stderr, _("Server error: %s disconnected\n"), msg);
+	fprintf(stderr, _("Server error: %s disconnected\n"), event->message);
 	exit(0);
 
 	return GGZ_HOOK_OK;

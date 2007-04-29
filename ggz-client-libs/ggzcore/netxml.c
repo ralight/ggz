@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 9070 2007-04-24 19:00:13Z jdorje $
+ * $Id: netxml.c 9073 2007-04-29 01:09:54Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -958,8 +958,7 @@ int _ggzcore_net_read_data(GGZNet * net)
 	/* If len == 0 then we've reached EOF */
 	done = (len == 0);
 	if (done) {
-		_ggzcore_server_protocol_error(net->server,
-					       "Server disconnected");
+		_ggzcore_server_protocol_error(net->server, E_BAD_XML);
 		_ggzcore_net_disconnect(net);
 		_ggzcore_server_session_over(net->server, net);
 	} else if (!XML_ParseBuffer(net->parser, len, done)) {
@@ -968,8 +967,7 @@ int _ggzcore_net_read_data(GGZNet * net)
 			  XML_GetCurrentLineNumber(net->parser),
 			  XML_GetCurrentColumnNumber(net->parser),
 			  XML_ErrorString(XML_GetErrorCode(net->parser)));
-		_ggzcore_server_protocol_error(net->server,
-					       "Bad XML from server");
+		_ggzcore_server_protocol_error(net->server, E_BAD_XML);
 	}
 
 	/* Clear the flag now that we're done */
@@ -1202,7 +1200,6 @@ static void _ggzcore_net_handle_result(GGZNet * net,
 	const char *action;
 	GGZClientReqError code;
 	void *data;
-	char *message;
 
 	if (!element)
 		return;
@@ -1267,20 +1264,7 @@ static void _ggzcore_net_handle_result(GGZNet * net,
 					      &error);
 		}
 	} else if (strcasecmp(action, "protocol") == 0) {
-		/* These are always errors */
-		switch (code) {
-		case E_BAD_OPTIONS:
-			message =  _("Server didn't recognize one "
-				     "of our commands");
-			break;
-		case E_BAD_XML:
-			message = _("Server didn't like our XML");
-			break;
-		default:
-			message = _("Unknown protocol error");
-		}
-
-		_ggzcore_server_protocol_error(net->server, message);
+		_ggzcore_server_protocol_error(net->server, code);
 	}
 
 	/* FIXME: memory leak on tag data */
@@ -1564,13 +1548,7 @@ static void _ggzcore_net_table_update(GGZNet * net, GGZXMLElement * update,
 
 	room = _ggzcore_server_get_room_by_id(net->server, room_num);
 	if (!room) {
-		/* We could use the current room in this case too, but
-		   that would be more dangerous. */
-		char msg[256];
-		snprintf(msg, sizeof(msg),
-			 "Server specified non-existent room '%s'",
-			 room_str);
-		_ggzcore_server_protocol_error(net->server, msg);
+		_ggzcore_server_protocol_error(net->server, E_NOT_IN_ROOM);
 		return;
 	}
 
@@ -1580,11 +1558,7 @@ static void _ggzcore_net_table_update(GGZNet * net, GGZXMLElement * update,
 
 	/* Table can only be NULL if we're adding it */
 	if (!table && strcasecmp(action, "add") != 0) {
-		char msg[256];
-		snprintf(msg, sizeof(msg),
-			 "Server specified non-existent table %d",
-			 table_id);
-		_ggzcore_server_protocol_error(net->server, msg);
+		_ggzcore_server_protocol_error(net->server, E_NO_TABLE);
 		return;
 	}
 

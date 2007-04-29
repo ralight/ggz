@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 9070 2007-04-24 19:00:13Z jdorje $
+ * $Id: server.c 9073 2007-04-29 01:09:54Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -1636,12 +1636,36 @@ void _ggzcore_server_net_error(GGZServer * server, char *message)
 }
 
 
-void _ggzcore_server_protocol_error(GGZServer * server, char *message)
+void _ggzcore_server_protocol_error(GGZServer * server,
+				    GGZClientReqError status)
 {
+	GGZErrorEventData event = { .status = status,
+				    .message = NULL};
+
+	switch (status) {
+	case E_BAD_OPTIONS:
+		event.message =  _("Server didn't recognize one "
+				   "of our commands");
+		break;
+	case E_BAD_XML:
+		event.message = _("Bad XML in server connection");
+		break;
+	case E_NOT_IN_ROOM:
+		/* FIXME: should really be E_NO_ROOM */
+		event.message = _("Server specified nonexistent room");
+		break;
+	case E_NO_TABLE:
+		event.message = _("Server specified nonexistent table");
+		break;
+	default:
+		event.message = _("Unknown protocol error");
+		break;
+	}
+
 	ggz_debug(GGZCORE_DBG_SERVER, "Protocol error: disconnecting");
 	_ggzcore_net_disconnect(server->net);
 	_ggzcore_server_change_state(server, GGZ_TRANS_PROTO_ERROR);
-	_ggzcore_server_event(server, GGZ_PROTOCOL_ERROR, message);
+	_ggzcore_server_event(server, GGZ_PROTOCOL_ERROR, &event);
 	if (server->is_channel) {
 		server->channel_failed = 1;
 	}

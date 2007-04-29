@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 8763 2006-12-27 10:02:33Z jdorje $
+ * $Id: ggzclient.c 9073 2007-04-29 01:09:54Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -1063,7 +1063,7 @@ static GGZHookReturn ggz_server_error(GGZServerEvent id,
 				      const void *user_data)
 {
 	gchar *msg;
-	const char *event_message = event_data;
+	const GGZErrorEventData *event = event_data;
 
 	ggz_debug("connection", "Server error.");
 
@@ -1077,7 +1077,8 @@ static GGZHookReturn ggz_server_error(GGZServerEvent id,
 	/* Should we clear the list of rooms/players/tables? */
 
 	if (ggzcore_server_get_state(server) != GGZ_STATE_RECONNECTING) {
-		msg = g_strdup_printf(_("Server error: %s"), event_message);
+		msg = g_strdup_printf(_("Server error: %s"),
+				      event->message);
 		msgbox(msg, _("Error"),
 		       MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 		g_free(msg);
