@@ -1,5 +1,5 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 9045 2007-04-13 14:26:04Z josef $
+# $Id: configure.ac 9077 2007-04-30 07:59:40Z josef $
 # ================================
 
 AC_INIT([GGZ server], [0.0.15pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
@@ -99,11 +99,14 @@ AC_EGREP_CPP(PF_LOCAL,
 
 # Check for library functions
 # ===========================
+save_cflags=$CFLAGS
+CFLAGS="$CFLAGS -fno-builtin"
 AC_CHECK_FUNCS([strchr strdup strerror strtoul uname bzero dup2 \
                 gethostname gethostbyname gettimeofday localtime_r memset \
                 mkdir rmdir select socket strcasecmp \
                 closedir fork malloc realloc select stat strftime], [],
                [AC_MSG_ERROR([cannot find required function])])
+CFLAGS=$save_cflags
 AC_CHECK_FUNCS([sqrt]) # FIXME: for some reason this test fails !!!
 AC_FUNC_CLOSEDIR_VOID
 AC_FUNC_FORK
