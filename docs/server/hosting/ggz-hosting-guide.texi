@@ -499,12 +499,13 @@ in detail.
 
 @section MySQL configuration
 
-If ggzd uses MySQL as its database, the data structures are initialized
-automatically, but a database user and the database itself must be created
-prior to starting the server.
+If ggzd uses MySQL as its database, most of the necessary data structures are
+initialized automatically, but a database user and the database itself must be
+created prior to starting the server.
 To accomplish this, the tool @command{mysql_setpermission} should be used.
 When running this program as the database superuser, selecting the second menu
-entry leads straightforward to a ready-to-use database.
+entry (user/database creation) followed by the fifth entry (extended privileges)
+leads straightforward to a ready-to-use database.
 
 If the MySQL server runs on a different host than the ggzd server, the
 skip-networking option in @file{my.cnf} must be disabled.
@@ -523,49 +524,15 @@ From PostgreSQL 7.3 on, the following commands should be used:
 	CREATE DATABASE ggz OWNER ggzd ENCODING 'UNICODE';
 @end verbatim
 
-For versions below 7.3, things are more difficult, especially since the
-table cannot be created automatically. Thus, the following applies:
+Once the database is created, its tables must be set up. Starting from GGZ
+0.0.15pre, the PostgreSQL database backend will do this automatically. It will
+read the SQL schema file installed in @command{ggzd}'s data directory and
+execute all of its statements.
 
-@verbatim
-	psql template1
-	CREATE USER ggzd;
-	CREATE DATABASE ggz;
-	\q
-	psql ggz
-	CREATE TABLE users (
-		id serial NOT NULL,
-		handle varchar(256) NOT NULL,
-		password varchar(256),
-		name varchar(256),
-		email varchar(256),
-		lastlogin int8,
-		permissions int8
-	);
-	CREATE TABLE stats (
-		id serial NOT NULL,
-		handle varchar(256) NOT NULL,
-		game varchar(256) NOT NULL,
-		wins int8,
-		losses int8,
-		ties int8,
-		forfeits int8,
-		rating double,
-		ranking int8,
-		highscore int8
-	);
-	CREATE TABLE control (
-		key varchar(256),
-		value varchar(256)
-	);
-	GRANT ALL ON users TO ggzd;
-	GRANT ALL ON users_id_seq TO ggzd;
-	GRANT ALL ON stats TO ggzd;
-	GRANT ALL ON stats_id_seq TO ggzd;
-	GRANT ALL ON control TO ggzd;
-@end verbatim
-
+One of the created tables is the control table.
 The control table is used internally by ggzd to detect upgrades.
-You can speed up the table with an index, like:
+
+You can speed up the user table with an index, like:
 
 @verbatim
 	CREATE index xhandle ON users (handle);
