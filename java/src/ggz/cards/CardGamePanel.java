@@ -41,6 +41,7 @@ import ggz.ui.preferences.PreferencesDialog;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -127,6 +128,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     protected HyperlinkLabel previousHandLabel;
 
     protected HyperlinkLabel preferencesLabel;
+    
+    protected HyperlinkLabel showHandsLabel;
 
     protected HyperlinkLabel howToPlayLabel;
 
@@ -156,12 +159,14 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         this.scoresLabel = new HyperlinkLabel(new ViewScoresAction());
         this.optionsLabel = new HyperlinkLabel(new ViewOptionsAction());
         this.preferencesLabel = new HyperlinkLabel(new PreferencesAction());
+        this.showHandsLabel = new HyperlinkLabel(new ShowHandsAction());
         this.howToPlayLabel = new HyperlinkLabel("How to play", null);
         this.quitLabel.setForeground(Color.WHITE);
         this.previousHandLabel.setForeground(Color.WHITE);
         this.scoresLabel.setForeground(Color.WHITE);
         this.optionsLabel.setForeground(Color.WHITE);
         this.preferencesLabel.setForeground(Color.WHITE);
+        this.showHandsLabel.setForeground(Color.WHITE);
         this.howToPlayLabel.setForeground(Color.WHITE);
         this.previousHandLabel.setEnabled(false);
         this.scoresLabel.setEnabled(false);
@@ -170,6 +175,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         menuPanel.add(quitLabel);
         menuPanel.add(previousHandLabel);
         menuPanel.add(scoresLabel);
+        menuPanel.add(showHandsLabel);
         menuPanel.add(optionsLabel);
         menuPanel.add(preferencesLabel);
         menuPanel.add(howToPlayLabel);
@@ -983,10 +989,10 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     public void get_bid(final Bid[] bid_choices, final String[] bid_texts,
             final String[] bid_descs) {
-//         for (int i = 0; i < bid_choices.length; i++) {
-//         System.out.println(bid_choices[i] + ", " + bid_texts[i] + ", "
-//         + bid_descs[i]);
-//         }
+        // for (int i = 0; i < bid_choices.length; i++) {
+        // System.out.println(bid_choices[i] + ", " + bid_texts[i] + ", "
+        // + bid_descs[i]);
+        // }
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createOrAddBidPanel(0);
@@ -1116,6 +1122,10 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             isSingleClickToPlayCardEnabled = GGZPreferences.getBoolean(event
                     .getKey(), true);
         }
+    }
+
+    protected Dimension getPreferredWindowSize() {
+        return new Dimension(600, 750);
     }
 
     /**
@@ -1250,14 +1260,14 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                     // TODO, show an icon to indicate trumps
                     getChatPanel().appendInfo(message);
                 } else if ("Up-Card".equals(mark)) {
-                   // Sent by Euchre and Whist.
+                    // Sent by Euchre and Whist.
                     getChatPanel().appendInfo(message);
                 } else if ("Hand Score".equals(mark)) {
                     getChatPanel().appendInfo(message);
                 } else if ("Scoring History".equals(mark)) {
                     // Sent by Euchre but it's a repeat of a message sent
                     // without a mark, which is handled below.
-                    //getChatPanel().appendInfo(message);
+                    // getChatPanel().appendInfo(message);
                 } else if ("Rules".equals(mark)) {
                     try {
                         setRulesURL(message);
@@ -1417,6 +1427,25 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
                 showPreviousHand();
             } catch (IOException ex) {
                 ex.printStackTrace();
+            }
+        }
+    }
+
+    protected class ShowHandsAction extends AbstractAction {
+        public ShowHandsAction() {
+            super("Show Hands");
+        }
+
+        public void actionPerformed(ActionEvent event) {
+            if (JOptionPane.showConfirmDialog(CardGamePanel.this,
+                    "This will show all players hands to everyone, "
+                            + "are you sure you want to do this?",
+                    "Show Hands", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                try {
+                    cardClient.send_open_hand(true);
+                } catch (IOException e) {
+                    handleException(e);
+                }
             }
         }
     }
