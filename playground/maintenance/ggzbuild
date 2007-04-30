@@ -19,10 +19,12 @@ Then run ggzbuild in the current GGZ SVN module directory
 It will run autogen.sh, configure etc. automatically
 """
 
-def readconfig():
+def readconfig(configfile):
+	if not configfile:
+		configfile = os.getenv("HOME") + "/.ggzbuildrc"
 	conf = None
 	try:
-		conf = open(os.getenv("HOME") + "/.ggzbuildrc")
+		conf = open(configfile)
 	except:
 		print "Create ~/.ggzbuildrc first (might be empty)!"
 		sys.exit(1)
@@ -72,7 +74,13 @@ def build(module, config, install):
 			print "GGZBUILD: make install error"
 			sys.exit(ec)
 
-config = readconfig()
+configfile = None
+if len(sys.argv) == 2:
+	if sys.argv[1] == "--help":
+		print "Syntax: ggzbuild [<~/.ggzbuildrc>]"
+		sys.exit(0)
+	configfile = sys.argv[1]
+config = readconfig(configfile)
 
 if os.path.exists("libggz") and os.path.exists("ggz-client-libs"):
 	print "GGZBUILD: global invocation"
