@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 8374 2006-07-20 12:44:03Z josef $
+ * $Id: ggzdb_pgsql.c 9074 2007-04-30 07:52:41Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -162,6 +162,64 @@ static void releaseconnection(PGconn *conn)
 	pthread_mutex_unlock(&mutex);
 }
 
+/* Initialize the database tables from an external SQL schema file */
+static int setupschema(PGconn *conn, const char *filename)
+{
+	char buffer[1024];
+	PGresult *res;
+	char *completebuffer = NULL;
+	int len;
+	int i;
+	int rc = 1;
+
+	FILE *f = fopen(filename, "r");
+	if(!f)
+	{
+		err_msg("Schema read error from %s.", filename);
+		return 0;
+	}
+
+	while(fgets(buffer, sizeof(buffer), f))
+	{
+		if(strlen(buffer) == 1)
+		{
+			res = PQexec(conn, completebuffer);
+			if((PQresultStatus(res) != PGRES_EMPTY_QUERY)
+			&& (PQresultStatus(res) != PGRES_COMMAND_OK))
+			{
+				err_msg("Table creation error %i.\n",
+					PQresultStatus(res));
+				rc = 0;
+			}
+			PQclear(res);
+
+			free(completebuffer);
+			completebuffer = NULL;
+			continue;
+		}
+
+		buffer[strlen(buffer) - 1] = '\0';
+		for(i = 0; i < strlen(buffer); i++)
+		{
+			if(buffer[i] == '\t') buffer[i] = ' ';
+		}
+
+		len = (completebuffer ? strlen(completebuffer) : 0);
+		completebuffer = (char*)realloc(completebuffer,
+			len + strlen(buffer) + 1);
+		if(len)
+			strncat(completebuffer, buffer, strlen(buffer) + 1);
+		else
+			strncpy(completebuffer, buffer, strlen(buffer) + 1);
+	}
+
+	if(completebuffer) free(completebuffer);
+
+	fclose(f);
+
+	return rc;
+}
+
 /* Exported functions */
 
 /* Function to initialize the pgsql database system */
@@ -170,9 +228,10 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	PGconn *conn;
 	PGresult *res;
 	char query[4096];
-	int rc;
+	int rc, ret;
 	int init;
 	char *version;
+	char schemafile[1024];
 
 	dbhost = connection.host;
 	dbname = connection.database;
@@ -208,50 +267,12 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	}
 
 	/* Initialize the database if needed */
-	/* FIXME: this should be read from external schema file with copy-in */
 	if(init)
 	{
-		snprintf(query, sizeof(query), "CREATE TABLE users "
-			"(id serial, handle varchar(256), password varchar(256), name varchar(256), email varchar(256), "
-			"lastlogin int8, permissions int8, firstlogin int8)");
+		snprintf(schemafile, sizeof(schemafile), "%s/ggz.sql", GGZDDATADIR);
 
-		res = PQexec(conn, query);
-
-		if(PQresultStatus(res) != PGRES_COMMAND_OK) rc = GGZDB_ERR_DB;
-		PQclear(res);
-
-		snprintf(query, sizeof(query), "CREATE TABLE stats "
-			"(id serial, handle varchar(256), game varchar(256), wins int8, losses int8, ties int8, forfeits int8, "
-			"rating float, ranking int8, highscore int8)");
-
-		res = PQexec(conn, query);
-
-		if(PQresultStatus(res) != PGRES_COMMAND_OK) rc = GGZDB_ERR_DB;
-		PQclear(res);
-
-		snprintf(query, sizeof(query), "CREATE TABLE matches "
-			"(id serial, date int8, game varchar(256), winner varchar(256))");
-
-		res = PQexec(conn, query);
-
-		if(PQresultStatus(res) != PGRES_COMMAND_OK) rc = GGZDB_ERR_DB;
-		PQclear(res);
-
-		snprintf(query, sizeof(query), "CREATE TABLE matchplayers "
-			"(id serial, match int8, handle varchar(256), playertype varchar(256))");
-
-		res = PQexec(conn, query);
-
-		if(PQresultStatus(res) != PGRES_COMMAND_OK) rc = GGZDB_ERR_DB;
-		PQclear(res);
-
-		snprintf(query, sizeof(query), "CREATE TABLE control "
-			"(key varchar(256), value varchar(256))");
-
-		res = PQexec(conn, query);
-
-		if(PQresultStatus(res) != PGRES_COMMAND_OK) rc = GGZDB_ERR_DB;
-		PQclear(res);
+		ret = setupschema(conn, schemafile);
+		if(!ret) rc = GGZDB_ERR_DB;
 
 		snprintf(query, sizeof(query), "INSERT INTO control "
 			"(key, value) VALUES ('version', '%s')", GGZDB_VERSION_ID);
@@ -262,7 +283,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 		PQclear(res);
 
 		if(rc == GGZDB_ERR_DB)
-			err_msg_exit("Could not initialize the database.\n");
+			err_msg_exit("Could not initialize the database (with %s).\n", schemafile);
 	}
 
 	releaseconnection(conn);

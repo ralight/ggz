@@ -28,3 +28,5 @@ endif
 
 libggzdb_a_CPPFLAGS = -I$(top_srcdir)/ggzd $(LIBGGZ_INCLUDES) $(DATABASE_INCLUDES)
 
+dist_ggzddata_DATA = ggz.sql
+
