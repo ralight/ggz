@@ -108,8 +108,11 @@ AM_ICONV
 AC_CHECK_LIB(intl, gettext, [LIB_GETTEXT="-lintl $LIBICONV"])
 save_libs=$LIBS
 LIBS="$LIB_GETTEXT"
+save_cflags=$CFLAGS
+CFLAGS="$CFLAGS -fno-builtin"
 AC_CHECK_FUNCS([gettext ngettext], [], [intl=0])
 LIBS=$save_libs
+CFLAGS=$save_cflags
 AC_CHECK_HEADERS([libintl.h locale.h])
 if test "$intl" = 0; then
   if test "x$2" = "xignore"; then

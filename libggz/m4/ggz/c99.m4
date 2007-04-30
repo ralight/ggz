@@ -11,7 +11,7 @@
 
 # Originally written by Jason Short for Freeciv.  Imported and updated for
 # GGZ.  The canonical copy of this resides in the libggz module.
-# $Id: c99.m4 8809 2007-01-04 20:38:26Z jdorje $
+# $Id: c99.m4 9076 2007-04-30 07:55:48Z josef $
 
 # Check C99-style variadic macros (required):
 #
@@ -83,7 +83,8 @@ AC_DEFUN([AC_C99_INITIALIZERS],
         [struct foo bar = {.an_array = {0, [3] = 2, [2] = 1, [4] = 3},
                            .an_integer = 999,
                            .a_string = "does it work?",
-                           .a_union = {.y = 243}};],
+                           .a_union = {.y = 243}};
+         bar.an_integer = 998;],
         [ac_cv_c99_initializers=yes],
         [ac_cv_c99_initializers=no])])
   if test "${ac_cv_c99_initializers}" != "yes"; then
