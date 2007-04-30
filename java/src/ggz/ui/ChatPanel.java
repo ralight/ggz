@@ -123,6 +123,10 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         emoticon = emoticons.addStyle("emoticon-kiss", null);
         StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
                 .getResource("/ggz/ui/images/emoticon_kiss.png")));
+
+        emoticon = emoticons.addStyle("emoticon-star", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_star.png")));
     }
 
     /**
@@ -285,8 +289,8 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
 
     protected void insertWithEmotes(StyledDocument doc, String text,
             AttributeSet style) throws BadLocationException {
-        // Look for the start of a smiley.
-        StringTokenizer parser = new StringTokenizer(text, ":;", true);
+        // Look for the start of a smiley or special "emote".
+        StringTokenizer parser = new StringTokenizer(text, ":;(", true);
         if (!parser.hasMoreElements())
             return;
 
@@ -346,6 +350,14 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
                         tok += ch;
                         break;
                     }
+                } else if ("(".equals(tok)) {
+                    if (nextTok.startsWith("*)")) {
+                        emoticon = doc.getStyle("emoticon-star");
+                        tok = "(*)";
+                    }/* else if (nextTok.startsWith("my emote)")) {
+                        emoticon = doc.getStyle("my emote");
+                        tok = "(my emote)";
+                    }*/
                 }
             }
 
@@ -360,8 +372,8 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
                 }
             } else {
                 doc.insertString(doc.getLength(), tok, emoticon);
-                if (nextTok != null && nextTok.length() > 1) {
-                    tok = nextTok.substring(1);
+                if (nextTok != null && nextTok.length() > tok.length() - 1) {
+                    tok = nextTok.substring(tok.length() - 1);
                 } else if (parser.hasMoreTokens()) {
                     tok = parser.nextToken();
                 } else {
