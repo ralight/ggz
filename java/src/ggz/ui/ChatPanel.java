@@ -127,6 +127,22 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         emoticon = emoticons.addStyle("emoticon-star", null);
         StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
                 .getResource("/ggz/ui/images/emoticon_star.png")));
+
+        emoticon = emoticons.addStyle("emoticon-rainbow", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_rainbow.png")));
+
+        emoticon = emoticons.addStyle("emoticon-lightbulb", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_lightbulb.png")));
+
+        emoticon = emoticons.addStyle("emoticon-bomb", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_bomb.png")));
+
+        emoticon = emoticons.addStyle("emoticon-flag", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_flag.png")));
     }
 
     /**
@@ -354,6 +370,18 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
                     if (nextTok.startsWith("*)")) {
                         emoticon = doc.getStyle("emoticon-star");
                         tok = "(*)";
+					} else if (nextTok.startsWith("R)") || nextTok.startsWith("r)")) {
+						emoticon = doc.getStyle("emoticon-rainbow");
+						tok = "(R)";
+					} else if (nextTok.startsWith("I)") || nextTok.startsWith("i)")) {
+						emoticon = doc.getStyle("emoticon-lightbulb");
+						tok = "(I)";
+					} else if (nextTok.startsWith("!)")) {
+						emoticon = doc.getStyle("emoticon-bomb");
+						tok = "(!)";
+					} else if (nextTok.startsWith("/)")) {
+						emoticon = doc.getStyle("emoticon-flag");
+						tok = "(/)";
                     }/* else if (nextTok.startsWith("my emote)")) {
                         emoticon = doc.getStyle("my emote");
                         tok = "(my emote)";
