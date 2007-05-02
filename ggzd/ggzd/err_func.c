@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 8957 2007-01-18 08:03:59Z jdorje $
+ * $Id: err_func.c 9088 2007-05-02 07:44:08Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -388,7 +388,7 @@ void log_generate_update(void)
 	} else
 #endif
 		log_msg(GGZ_LOG_UPDATE, "UPDATE %d %d %d %d %d %d %d %d",
-			uptime, anon, regd, login, logout, tables, tables_created, tables_closed);
+			(int)uptime, anon, regd, login, logout, tables, tables_created, tables_closed);
 }
 
 

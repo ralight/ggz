@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error function prototypes
- * $Id: err_func.h 8983 2007-02-10 00:23:32Z oojah $
+ * $Id: err_func.h 9088 2007-05-02 07:44:08Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -100,7 +100,8 @@ void logfile_preinitialize(void);
 void logfile_initialize(void);
 
 /* Log a normal message */
-void log_msg(const unsigned, const char *, ...);
+void log_msg(const unsigned, const char *, ...)
+             ggz__attribute((format(printf, 2, 3)));
 
 /* Update log handlers */
 ggztime_t log_next_update_sec(void);
