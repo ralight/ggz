@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 9047 2007-04-13 14:37:38Z josef $
+ * $Id: login.c 9092 2007-05-02 13:23:22Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -91,9 +91,9 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 	        player, type);
 
 	/* If we disallow new registrations, we ignore logins straight away */
-	if(type == GGZ_LOGIN_NEW && !opt.registration_policy) {
+	if(type != GGZ_LOGIN && !opt.registration_policy) {
 		dbg_msg(GGZ_DBG_CONNECTION,
-		        "Registration attempt of name %s while registration is prohibited.",
+		        "Registration/guest login attempt of name %s while it is prohibited.",
 		        name);
 		if (net_send_login(player->client->net, type,
 				   E_USR_TYPE, NULL) < 0)
