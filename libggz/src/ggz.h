@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 8945 2007-01-16 17:42:57Z josef $
+ * $Id: ggz.h 9087 2007-05-02 07:42:56Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -150,7 +150,8 @@ void * _ggz_malloc(const size_t size, const char * tag, int line);
  * @return pointer to allocated memory
 */
 void * _ggz_realloc(const void * ptr, const size_t size,
-                    const char * tag, int line);
+                    const char * tag, int line)
+                    ggz__attribute((warn_unused_result));
 
 /** 
  * Function to free allocated memory.  Don't call this
@@ -176,7 +177,8 @@ int _ggz_free(const void * ptr, const char * tag, int line);
  *
  * @note It is safe to pass a NULL string.
  */
-char * _ggz_strdup(const char * ptr, const char * tag, int line);
+char * _ggz_strdup(const char * ptr, const char * tag, int line)
+                   ggz__attribute((warn_unused_result));
 
 
 /** 
