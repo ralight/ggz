@@ -74,6 +74,21 @@ languages, preferably in HTML format, which tells all about the main
 focus of GGZ, e.g. the games, the chat and so on. This could then placed
 as a link on the various international news sites.
 
+Notes on gettext
+----------------
+
+In order to make gettext work, the following must be done: bindtextdomain()
+to load a catalogue, textdomain() to select a catalogue, and
+setlocale(LC_ALL, "") to enable translations at all, according to POSIX.
+
+Sometimes multiple catalogues are used - e.g. gtk-games also load the
+common messages, and gtk-client loads ggzcore.
+
+In graphical applications, bind_textdomain_codeset() should be called
+to force all output to be in UTF-8. For text-based applications, this should
+not be called as it will render the output unusable on legacy systems with
+terminal encodings of latin1 or similar.
+
 Translation table
 -----------------
 
@@ -89,7 +104,7 @@ gtk-games:    src: en de es
               man: en
 kde-games:    src: en de es
               man: en
-gtk-client:   src: en de es
+gtk-client:   src: en [+ many others through gnome-games]
               man: en
 kde-client:   src: en de es (fr)
               man: en
@@ -105,6 +120,7 @@ python:       src: en (de)
               man: -
 community:    src: en (de) (sv)
 java:         src: en de
+client-libs:  src: en [+ many others through gnome-games]
 
 Need advice?
 ------------
@@ -120,4 +136,5 @@ updated: 2003-04-28
 updated: 2005-01-22
 updated: 2005-05-21
 updated: 2006-03-06
+updated: 2007-05-01
 

@@ -32,6 +32,9 @@ This is really just a draft. Due to discussion of all of the items, changes
 may occur over time, and the schedule might become more clear or more vague
 accordingly.
 
+Have a look at branches.png to find out about where development is really
+taking place.
+
 The changes directly related to 1.0 will take about half a year to one year
 alone. It is suggested to bump the version number from 0.0.x to 0.99.x
 in advance, with 0.99.0 being a first try and further releases mostly
@@ -56,7 +59,7 @@ The goals to achieve before being able to declare GGZ to be 1.0 shall include:
 External circumstances
 ----------------------
 
-KDE 4 will be released in early 2007, it seems. This will affect both
+KDE 4 will be released in late 2007, it seems. This will affect both
 ggz-kde-client and ggz-kde-games. Porting work will require many many hours.
 
 The open-sourcing process of Java might make it useful to add system
@@ -72,6 +75,7 @@ reduced a bit. The following changes appear to make sense:
 - merging libggz, ggz-client-libs and several of the static libraries into
   a common ggz-libraries package
 - moving ggz-txt-client into the ggz-utils package
+  (or alternatively dissolving utils into txt-client and server)
 - dropping ggz-gnome-client, unless development proceeds
   (effectively moving ggz-gnome and motd_editor into playground)
 This will result in 13 packages overall.
