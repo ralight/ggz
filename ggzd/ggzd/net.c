@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 9094 2007-05-04 01:06:26Z jdorje $
+ * $Id: net.c 9095 2007-05-04 01:09:07Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -236,7 +236,7 @@ GGZReturn net_set_dump_file(GGZNetIO *net, const char* filename)
 	}
 	
 	if (strcasecmp(filename, "stderr") == 0)
-		net->dump_file = STDERR_FILENO;
+		net->dump_file = opt.foreground ? STDERR_FILENO : -1;
 	else
 		net->dump_file = open(filename,
 				      O_WRONLY|O_CREAT|O_TRUNC, S_IRWXU);

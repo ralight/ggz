@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 9093 2007-05-04 00:42:59Z jdorje $
+ * $Id: err_func.c 9095 2007-05-04 01:09:07Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -309,9 +309,9 @@ static FILE *log_open_logfile(char *fname)
 	char pidname[strlen(fname) + 9];
 
 	if(!strcasecmp("stderr", fname)) {
-			return stderr;
+		return opt.foreground ? stderr : NULL;
 	} else if(!strcasecmp("stdout", fname)) {
-			return stdout;
+		return opt.foreground ? stdout : NULL;
 	}
 
 	if(log_info.options & GGZ_LOGOPT_THREAD_LOGS) {
