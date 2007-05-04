@@ -1,0 +1,54 @@
+--- ggzd/ggzd.conf.example.in	2007-01-16 19:50:57.000000000 +0100
++++ ggzd/ggzd.conf.example.in	2007-04-13 16:33:26.000000000 +0200
+@@ -70,6 +70,9 @@
+ # Reconfiguration in case of room changes
+ #ReconfigureRooms = 1
+ 
++# Policy file on guest names and player registration
++#RegistrationPolicy = 0
++
+ ############################################################################
+ # Logging Options
+ ############################################################################
+--- ggzd/login.c	2007-01-16 19:50:57.000000000 +0100
++++ ggzd/login.c	2007-04-13 16:37:56.000000000 +0200
+@@ -79,6 +90,17 @@
+ 	dbg_msg(GGZ_DBG_CONNECTION, "Player %p attempting login as %d",
+ 	        player, type);
+ 
++	/* If we disallow new registrations, we ignore logins straight away */
++	if(type != GGZ_LOGIN && !opt.registration_policy) {
++		dbg_msg(GGZ_DBG_CONNECTION,
++		        "Registration attempt of name %s while registration is prohibited.",
++		        name);
++		if (net_send_login(player->client->net, type,
++				   E_USR_TYPE, NULL) < 0)
++			return GGZ_REQ_DISCONNECT;
++		return GGZ_REQ_FAIL;
++	}
++
+ 	/* A too-long username gives an error.  We used to just truncate it
+ 	   but that would probably just confuse the user. */
+ 	if (strlen(name) > MAX_USER_NAME_LEN) {
+--- ggzd/parse_opt.c	2007-01-16 19:50:57.000000000 +0100
++++ ggzd/parse_opt.c	2007-04-16 09:17:15.000000000 +0200
+@@ -386,6 +407,9 @@
+ 	/* Reconfiguration in [General] */
+ 	opt.reconfigure_rooms = ggz_conf_read_int(ch, "General", "ReconfigureRooms", 0);
+ 
++	/* Unicode/policy settings in [General] */
++	opt.registration_policy = ggz_conf_read_int(ch, "General", "RegistrationPolicy", 1);
++
+ 	/* [Games] */
+ 	ggz_conf_read_list(ch, "Games", "GameList", &g_count, &g_list);
+ 	if(g_count == 0) {
+--- ggzd/datatypes.h	2007-01-16 19:50:57.000000000 +0100
++++ ggzd/datatypes.h	2007-04-16 21:33:08.000000000 +0200
+@@ -77,6 +77,7 @@
+ 	const char *metausername;
+ 	const char *metapassword;
+ 	bool reconfigure_rooms;
++	bool registration_policy;
+ } Options;
+ 
+ 

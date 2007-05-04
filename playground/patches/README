@@ -4,6 +4,9 @@ be merged with the sources.
 Current patches
 ---------------
 
+Game server in "scuola in hospedale" (on top of 0.0.14-branch diff)
+ italy.diff
+
 Widelands GGZ integration:
  widelands.netmenu.diff
 
