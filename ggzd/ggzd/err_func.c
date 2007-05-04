@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 9088 2007-05-02 07:44:08Z josef $
+ * $Id: err_func.c 9093 2007-05-04 00:42:59Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -242,7 +242,7 @@ void logfile_initialize(void)
 	ggz_debug_set_func(debug_handler);
 
 	if(log_info.log_fname) {
-		if(strcmp("syslogd", log_info.log_fname)) {
+		if(strcasecmp("syslogd", log_info.log_fname)) {
 			log_info.logfile = log_open_logfile(log_info.log_fname);
 			if(log_info.logfile == NULL)
 				err_msg("Cannot open logfile for writing");
@@ -278,7 +278,7 @@ void logfile_initialize(void)
 #ifdef DEBUG
 	/* Setup the debug logfile */
 	if(log_info.dbg_fname) {
-		if(strcmp("syslogd", log_info.dbg_fname)) {
+		if(strcasecmp("syslogd", log_info.dbg_fname)) {
 			log_info.dbgfile = log_open_logfile(log_info.dbg_fname);
 			if(log_info.dbgfile == NULL)
 				err_msg("Cannot open dbgfile for writing");
@@ -308,9 +308,9 @@ static FILE *log_open_logfile(char *fname)
 	char *f = fname;
 	char pidname[strlen(fname) + 9];
 
-	if(!strcmp("stderr", fname)) {
+	if(!strcasecmp("stderr", fname)) {
 			return stderr;
-	} else if(!strcmp("stdout", fname)) {
+	} else if(!strcasecmp("stdout", fname)) {
 			return stdout;
 	}
 
