@@ -129,7 +129,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     protected HyperlinkLabel preferencesLabel;
     
-    protected HyperlinkLabel showHandsLabel;
+//    protected HyperlinkLabel showHandsLabel;
 
     protected HyperlinkLabel howToPlayLabel;
 
@@ -159,14 +159,14 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         this.scoresLabel = new HyperlinkLabel(new ViewScoresAction());
         this.optionsLabel = new HyperlinkLabel(new ViewOptionsAction());
         this.preferencesLabel = new HyperlinkLabel(new PreferencesAction());
-        this.showHandsLabel = new HyperlinkLabel(new ShowHandsAction());
+        //this.showHandsLabel = new HyperlinkLabel(new ShowHandsAction());
         this.howToPlayLabel = new HyperlinkLabel("How to play", null);
         this.quitLabel.setForeground(Color.WHITE);
         this.previousHandLabel.setForeground(Color.WHITE);
         this.scoresLabel.setForeground(Color.WHITE);
         this.optionsLabel.setForeground(Color.WHITE);
         this.preferencesLabel.setForeground(Color.WHITE);
-        this.showHandsLabel.setForeground(Color.WHITE);
+//        this.showHandsLabel.setForeground(Color.WHITE);
         this.howToPlayLabel.setForeground(Color.WHITE);
         this.previousHandLabel.setEnabled(false);
         this.scoresLabel.setEnabled(false);
@@ -175,7 +175,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         menuPanel.add(quitLabel);
         menuPanel.add(previousHandLabel);
         menuPanel.add(scoresLabel);
-        menuPanel.add(showHandsLabel);
+//        menuPanel.add(showHandsLabel);
         menuPanel.add(optionsLabel);
         menuPanel.add(preferencesLabel);
         menuPanel.add(howToPlayLabel);
@@ -1431,6 +1431,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         }
     }
 
+    /* Put back in when we are ready.
     protected class ShowHandsAction extends AbstractAction {
         public ShowHandsAction() {
             super("Show Hands");
@@ -1449,4 +1450,5 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             }
         }
     }
+    */
 }
