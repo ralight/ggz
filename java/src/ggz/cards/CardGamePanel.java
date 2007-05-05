@@ -1125,7 +1125,7 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     }
 
     protected Dimension getPreferredWindowSize() {
-        return new Dimension(600, 750);
+        return new Dimension(550, 700);
     }
 
     /**
