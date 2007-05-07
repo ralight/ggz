@@ -144,10 +144,6 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
                 .getResource("/ggz/ui/images/emoticon_flag.png")));
 
-        emoticon = emoticons.addStyle("emoticon-flag", null);
-        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
-                .getResource("/ggz/ui/images/emoticon_flag.png")));
-
         emoticon = emoticons.addStyle("emoticon-cup", null);
         StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
                 .getResource("/ggz/ui/images/emoticon_cup.png")));
@@ -158,7 +154,7 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
 
         emoticon = emoticons.addStyle("emoticon-cake", null);
         StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
-                .getResource("/ggz/ui/images/emoticon_cake.png")));
+                .getResource("/ggz/ui/images/player_host.png")));
 
         emoticon = emoticons.addStyle("emoticon-rosette", null);
         StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
