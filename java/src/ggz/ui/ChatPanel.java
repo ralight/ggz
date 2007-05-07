@@ -143,6 +143,26 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
         emoticon = emoticons.addStyle("emoticon-flag", null);
         StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
                 .getResource("/ggz/ui/images/emoticon_flag.png")));
+
+        emoticon = emoticons.addStyle("emoticon-flag", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_flag.png")));
+
+        emoticon = emoticons.addStyle("emoticon-cup", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_cup.png")));
+
+        emoticon = emoticons.addStyle("emoticon-drink", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_drink.png")));
+
+        emoticon = emoticons.addStyle("emoticon-cake", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_cake.png")));
+
+        emoticon = emoticons.addStyle("emoticon-rosette", null);
+        StyleConstants.setIcon(emoticon, new ImageIcon(ChatPanel.class
+                .getResource("/ggz/ui/images/emoticon_rosette.png")));
     }
 
     /**
@@ -382,6 +402,18 @@ public class ChatPanel extends JPanel implements PreferenceChangeListener {
 					} else if (nextTok.startsWith("/)")) {
 						emoticon = doc.getStyle("emoticon-flag");
 						tok = "(/)";
+					} else if (nextTok.startsWith("C)")) {
+						emoticon = doc.getStyle("emoticon-cup");
+						tok = "(C)";
+					} else if (nextTok.startsWith("D)")) {
+						emoticon = doc.getStyle("emoticon-drink");
+						tok = "(D)";
+					} else if (nextTok.startsWith("^)")) {
+						emoticon = doc.getStyle("emoticon-cake");
+						tok = "(^)";
+					} else if (nextTok.startsWith("%)")) {
+						emoticon = doc.getStyle("emoticon-rosette");
+						tok = "(%)";
                     }/* else if (nextTok.startsWith("my emote)")) {
                         emoticon = doc.getStyle("my emote");
                         tok = "(my emote)";
