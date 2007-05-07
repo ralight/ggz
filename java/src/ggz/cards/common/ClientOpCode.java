@@ -57,6 +57,13 @@ public class ClientOpCode {
 	 */
 	public static final ClientOpCode REQ_SYNC = new ClientOpCode();
 
+    /*
+     * Requests that the hand be opened (this player's cards are revealed to
+     * everyone). One additional parameter is included, an 8-byte boolean
+     * indicating whether the hand is open or closed.
+     */
+    public static final ClientOpCode REQ_OPEN_HAND = new ClientOpCode();
+
 	private static int nextOrdinal = 0;
 
 	private int ordinal;

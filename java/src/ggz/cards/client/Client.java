@@ -837,6 +837,14 @@ public class Client {
         fd_out.write_opcode(ClientOpCode.REQ_SYNC);
         fd_out.endPacket();
     }
+    
+    /** Sends a request for the seat to open/close the hand. */
+    public void send_open_hand(boolean is_open) throws IOException {
+        log.fine("Sending open hand request to server.");
+        fd_out.write_opcode(ClientOpCode.REQ_OPEN_HAND);
+        fd_out.writeBoolean(is_open);
+        fd_out.endPacket();
+    }
 
     /* This function handles any input from the server. */
     protected void handle_server_input() throws IOException {
