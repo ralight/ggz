@@ -19,7 +19,7 @@ gaming portals using GGZ Community are covered as well.
 
 @dircategory GGZ Gaming Zone
 @direntry
-* ggz-hosting: (ggz). The GGZ Gaming Zone Hosting Guide
+* ggz-hosting: (ggz-hosting). The GGZ Gaming Zone Hosting Guide
 @end direntry
 
 @c End of header ===============================================

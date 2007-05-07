@@ -19,7 +19,7 @@ and integrate game packages.
 
 @dircategory GGZ Gaming Zone
 @direntry
-* ggz-gamedev: (ggz). The GGZ Gaming Zone Game Development Guide
+* ggz-gamedev: (ggz-gamedev). The GGZ Gaming Zone Game Development Guide
 @end direntry
 
 @c End of header ===============================================
