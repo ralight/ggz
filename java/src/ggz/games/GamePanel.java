@@ -28,10 +28,15 @@ import ggz.common.ChatType;
 import ggz.common.PlayerInfo;
 import ggz.ui.ChatAction;
 import ggz.ui.ChatPanel;
+import ggz.ui.preferences.GGZPreferences;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -61,6 +66,9 @@ public class GamePanel extends JPanel implements ModEventHandler {
     protected ChatPanel chatPanel;
 
     protected SpectatorListPanel playerListPanel;
+
+    // Stores the non-maximised bounds of the frame.
+    protected Rectangle frameBounds;
 
     protected GamePanel() {
         super(new SmartChatLayout());
@@ -115,18 +123,78 @@ public class GamePanel extends JPanel implements ModEventHandler {
 
     public void handleState(ModState oldState) {
         if (ggzMod.getState() == ModState.GGZMOD_STATE_CONNECTED) {
-            JFrame frame = new JFrame();
+            final String prefix = getClass().getName();
+            final JFrame frame = new JFrame();
             frame.getContentPane().add(this, BorderLayout.CENTER);
             frame.addWindowListener(new WindowAdapter() {
                 public void windowClosing(WindowEvent e) {
+                    // Store window state so we can restore it next time the
+                    // same game is played.
+                    int extendedState = frame.getExtendedState();
+
+                    if (frameBounds != null) {
+                        GGZPreferences.putInt(prefix + ".location.x",
+                                frameBounds.x);
+                        GGZPreferences.putInt(prefix + ".location.y",
+                                frameBounds.y);
+                        GGZPreferences.putInt(prefix + ".size.width",
+                                frameBounds.width);
+                        GGZPreferences.putInt(prefix + ".size.height",
+                                frameBounds.height);
+                    }
+
+                    // Don't store an iconified state since it's likely to
+                    // cause players to wonder why the window has not appeared.
+                    if (extendedState == Frame.ICONIFIED) {
+                        extendedState = Frame.NORMAL;
+                    }
+
+                    GGZPreferences.putInt(prefix + ".extendedState",
+                            extendedState);
                     quit();
                 }
             });
-            frame.setSize(getPreferredWindowSize());
-            // frame.setLocationByPlatform(true);
-            frame.setLocationRelativeTo(null);
+
+            frame.addComponentListener(new ComponentAdapter() {
+                public void componentResized(ComponentEvent e) {
+                    if ((frame.getExtendedState() & Frame.MAXIMIZED_BOTH) == 0) {
+                        frameBounds = frame.getBounds();
+                    }
+                }
+            });
+
+            // Restore window to same size and location it was last time.
+            int x = GGZPreferences.getInt(prefix + ".location.x",
+                    Integer.MIN_VALUE);
+            int y = GGZPreferences.getInt(prefix + ".location.y",
+                    Integer.MIN_VALUE);
+            int width = GGZPreferences.getInt(prefix + ".size.width",
+                    Integer.MIN_VALUE);
+            int height = GGZPreferences.getInt(prefix + ".size.height",
+                    Integer.MIN_VALUE);
+
+            if (width == Integer.MIN_VALUE || height == Integer.MIN_VALUE) {
+                frame.setSize(getPreferredWindowSize());
+            } else {
+                frame.setSize(width, height);
+            }
+
+            if (x == Integer.MIN_VALUE || y == Integer.MIN_VALUE) {
+                // frame.setLocationByPlatform(true);
+                frame.setLocationRelativeTo(null);
+            } else {
+                frame.setLocation(x, y);
+            }
+
             frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             frame.setVisible(true);
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    int extendedState = GGZPreferences.getInt(prefix
+                            + ".extendedState", frame.getExtendedState());
+                    frame.setExtendedState(extendedState);
+                }
+            });
         } else if (ggzMod.getState() == ModState.GGZMOD_STATE_DONE) {
             // Prevent memory leaks.
             chatPanel.dispose();

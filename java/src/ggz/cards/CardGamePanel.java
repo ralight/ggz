@@ -41,7 +41,6 @@ import ggz.ui.preferences.PreferencesDialog;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -1122,10 +1121,6 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             isSingleClickToPlayCardEnabled = GGZPreferences.getBoolean(event
                     .getKey(), true);
         }
-    }
-
-    protected Dimension getPreferredWindowSize() {
-        return new Dimension(550, 700);
     }
 
     /**
