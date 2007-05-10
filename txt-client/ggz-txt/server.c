@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 9073 2007-04-29 01:09:54Z jdorje $
+ * $Id: server.c 9108 2007-05-10 10:11:38Z oojah $
  *
  * Functions for handling server events
  *
@@ -175,7 +175,7 @@ static GGZHookReturn server_login_ok(GGZServerEvent id,
 {
 	server_workinprogress(COMMAND_CONNECT, 0);
 
-	output_text(_("--- Logged into to %s."),
+	output_text(_("--- Logged into %s."),
 		    ggzcore_server_get_host(server));
 
 	first_room_list = 1;
