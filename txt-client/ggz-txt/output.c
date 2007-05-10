@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 8845 2007-01-06 23:50:21Z oojah $
+ * $Id: output.c 9109 2007-05-10 17:12:09Z oojah $
  *
  * Functions for display text/messages
  *
@@ -107,23 +107,23 @@ void output_display_help(void)
 	output_text(_("---"));
 	output_text(_("--- /connect [<server>[:<port>]] [<nick>] [<password>]"));
 	output_text(_("---    Connect to a GGZ server"));
-	output_text(_("--- /disconnect                             Disconnect from server"));
-	output_text(_("--- /exit                                   Quit GGZ Gaming Zone"));
-	output_text(_("--- /desc <room>                            Get description of room <room>"));
-	output_text(_("--- /join room|table <num>                  Join room or table <num>"));
-	output_text(_("--- /list players|rooms|tables|types        List the requested information."));
-	output_text(_("--- /msg <player> <msg>                     Send a msg to a player"));
-	output_text(_("--- /table <msg>                            Send a msg to your table"));
-	output_text(_("--- /beep <player>                          Beep player <player>"));
-	output_text(_("--- /launch                                 Launch a game if possible"));
-	output_text(_("--- /version                                Display the client version"));
-	output_text(_("--- /who                                    List current player in the room"));
-	output_text(_("--- /wall <msg>                             Admin only command, broadcast to all rooms"));
-	output_text(_("--- /log <logfile>                          Log conversation into logfile"));
-	output_text(_("--- /admin ...                              Administrative commands"));
-	output_text(_("---    ... gag <player>                     Global ignore on messages from <player>"));
-	output_text(_("---    ... ungag <player>                   Revert gagging"));
-	output_text(_("---    ... kick <player> <reason>           Kick <player> from server"));
+	output_text(_("--- /disconnect                                  Disconnect from server"));
+	output_text(_("--- /exit                                        Quit GGZ Gaming Zone"));
+	output_text(_("--- /desc <room>                                 Get description of room <room>"));
+	output_text(_("--- /join room|table <num>                       Join room or table <num>"));
+	output_text(_("--- /list allrooms|players|rooms|tables|types    List the requested information."));
+	output_text(_("--- /msg <player> <msg>                          Send a msg to a player"));
+	output_text(_("--- /table <msg>                                 Send a msg to your table"));
+	output_text(_("--- /beep <player>                               Beep player <player>"));
+	output_text(_("--- /launch                                      Launch a game if possible"));
+	output_text(_("--- /version                                     Display the client version"));
+	output_text(_("--- /who                                         List current player in the room"));
+	output_text(_("--- /wall <msg>                                  Admin only command, broadcast to all rooms"));
+	output_text(_("--- /log <logfile>                               Log conversation into logfile"));
+	output_text(_("--- /admin ...                                   Administrative commands"));
+	output_text(_("---    ... gag <player>                          Global ignore on messages from <player>"));
+	output_text(_("---    ... ungag <player>                        Revert gagging"));
+	output_text(_("---    ... kick <player> <reason>                Kick <player> from server"));
 }
 
 void output_banner(void)
@@ -261,10 +261,10 @@ void output_chat(GGZChatType type, const char *player, const char *message)
 	}
 }
 
-
-void output_rooms(void)
+/* If allrooms is false, only the rooms with players in are displayed */
+void output_rooms(int allrooms)
 {
-	int i, num;
+	int i, num, players;
 	GGZRoom *room;
 	GGZGameType *type;
 
@@ -275,15 +275,18 @@ void output_rooms(void)
 	for (i = 0; i < num; i++) {
 		room = ggzcore_server_get_nth_room(server, i);
 		type = ggzcore_room_get_gametype(room);
-		if (type)
-			output_text(_("-- Room %d : %s (%s) (Players: %d)"), i,
-					ggzcore_room_get_name(room),
-					ggzcore_gametype_get_name(type),
-					ggzcore_room_get_num_players(room));
-		else
-			output_text(_("-- Room %d : %s (Players: %d)"), i,
-					ggzcore_room_get_name(room),
-					ggzcore_room_get_num_players(room));
+		players = ggzcore_room_get_num_players(room);
+		if(players || allrooms){
+			if (type)
+				output_text(_("-- Room %d : %s (%s) (Players: %d)"), i,
+						ggzcore_room_get_name(room),
+						ggzcore_gametype_get_name(type),
+						players);
+			else
+				output_text(_("-- Room %d : %s (Players: %d)"), i,
+						ggzcore_room_get_name(room),
+						players);
+		}
 	}
 }
 

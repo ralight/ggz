@@ -46,7 +46,7 @@ void output_players(void);
 
 void output_tables(void);
 
-void output_rooms(void);
+void output_rooms(int allrooms);
 
 void output_types(void);
 

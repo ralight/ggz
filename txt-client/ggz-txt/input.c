@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 8535 2006-08-26 01:40:11Z jdorje $
+ * $Id: input.c 9109 2007-05-10 17:12:09Z oojah $
  *
  * Functions for inputing commands from the user
  *
@@ -265,7 +265,16 @@ static void input_handle_list(char* line)
 	}
 	else if (line && strcmp(line, "rooms") == 0) {
 		if (ggzcore_server_get_num_rooms(server) > 0)
-			output_rooms();
+			output_rooms(0);
+		else { /* Get list from server */
+			server_progresswait();
+			server_workinprogress(COMMAND_LIST, 1);
+			ggzcore_server_list_rooms(server, -1, 1);
+		}
+	}
+	else if (line && strcmp(line, "allrooms") == 0) {
+		if (ggzcore_server_get_num_rooms(server) > 0)
+			output_rooms(1);
 		else { /* Get list from server */
 			server_progresswait();
 			server_workinprogress(COMMAND_LIST, 1);

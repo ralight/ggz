@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 9108 2007-05-10 10:11:38Z oojah $
+ * $Id: server.c 9109 2007-05-10 17:12:09Z oojah $
  *
  * Functions for handling server events
  *
@@ -475,7 +475,7 @@ static GGZHookReturn server_list_rooms(GGZServerEvent id,
 	if (first_room_list == 1)
 		first_room_list = 0;
 	else
-		output_rooms();
+		output_rooms(1); // display all rooms
 
 	/* Register callbacks for all rooms */
 	num = ggzcore_server_get_num_rooms(server);
