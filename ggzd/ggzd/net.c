@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 9095 2007-05-04 01:09:07Z jdorje $
+ * $Id: net.c 9115 2007-05-14 22:16:14Z oojah $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1062,7 +1062,7 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 			return GGZ_REQ_OK;
 		}
 
-		dbg_msg(GGZ_DBG_CONNECTION, "Network error reading data");
+		dbg_msg(GGZ_DBG_CONNECTION, "Network error reading data (%d)", errno);
 		return GGZ_REQ_DISCONNECT;
 	}
 
