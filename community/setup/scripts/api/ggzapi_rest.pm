@@ -75,6 +75,8 @@ sub call($){
 					return call($req);
 				}
 			}
+		}else{
+			print $res->content, "\n";
 		}
 	}
 
