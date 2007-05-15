@@ -112,7 +112,7 @@ public class ClientApplet extends JApplet implements ServerListener,
         try {
             // Parse URI parameter and set up server.
             URI uri = new URI(getParameter("uri",
-                    "ggz://oojah.dyndns.org:5688/Entry%20Room"));
+                    "ggz://live.ggzgamingzone.org:5688/Entry%20Room"));
             String host = uri.getHost();
             int port = uri.getPort() == -1 ? DEFAULT_PORT : uri.getPort();
             uriPath = uri.getPath();
