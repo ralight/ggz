@@ -3,15 +3,18 @@ OpenID authentication for GGZ Community
 
 OpenID (http://www.openid.net/) is a web-centric single sign-on authentication
 scheme. Users will have a personal URL which they carry around. Instead of
-having accounts with many sites, they only need a "home site". Assuming that
-other sites trust the "home site", the user can decide to reveal his identity
-to the other sites. The concept works whenever the user is currently logged
-into the "home site".
+having accounts with many sites, they only need a "home site" (or "identity
+provider" as it is called). Assuming that other sites (called "consumers")
+trust the "home site", the user can decide to reveal his identity to the
+other sites. The concept works whenever the user is currently logged into the
+"home site".
 Therefore, OpenID has both a client component and a server component. Usually
 OpenID sites will provide both for maximum flexibility, however smaller sites
 using just the OpenID client interface are fine.
 
 In the case of GGZ, the "home site" is http://api.ggzcommunity.org/openid/.
+The consumer part is at http://www.ggzcommunity.org/login/, and potentially
+other pages.
 The personal URL is http://www.ggzcommunity.org/players/foo.
 
 GGZ Community as OpenID client:
@@ -20,14 +23,26 @@ GGZ Community as OpenID client:
   has been set up to trust this site, it'll redirect the user to it so the
   user can confirm to use the site's knowledge about the user to log into
   community.
+  (Note that it won't make sense to specify the personal URL at Community,
+  as it will point to the Community OpenID server where the user isn't
+  logged in when in fact the login procedure is still to happen!)
 
 GGZ Community as OpenID server:
   The community site itself will verify that a user is linked to the personal
-  URL http://www.ggzcommunity.org/players/foo whenever foo is linked in. The
+  URL http://www.ggzcommunity.org/players/foo whenever foo is logged in. The
   API URL is referenced in the personal URL as an OpenID meta link. Other
   OpenID client sites will read this information and make use of it.
 
 OpenID doesn't specify an authentication scheme. Since GGZ Community uses
 cookies for authentication, the presence of such a cookie will determine
 whether or not a user owns the given personal URL.
+(Note that RFC2964 heavily discourages cookies as an authentication scheme.
+Reality looks different however. This might still need to be solved.)
+
+The OpenID server part is based on phpMyID, while the client part is a
+custom development.
+
+One final word about trust: It is the site owner's decision which OpenID
+providers can be trusted. Community users should always be able to view
+the list of those providers before logging in.
 
