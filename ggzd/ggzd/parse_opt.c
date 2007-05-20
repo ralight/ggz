@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9113 2007-05-14 05:53:28Z josef $
+ * $Id: parse_opt.c 9123 2007-05-20 14:56:24Z oojah $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -608,6 +608,7 @@ static void parse_game(char *name, char *dir)
 	if (strlen(tmp) > MAX_GAME_NAME_LEN) {
 		err_msg("Game name '%s' too long: max length %d.",
 			tmp, MAX_GAME_NAME_LEN);
+		ggz_free(tmp);
 		return;
 	}
 	strcpy(game_info.name, tmp);
@@ -684,7 +685,7 @@ static void parse_game(char *name, char *dir)
 		game_info.named_bots = (char***)ggz_malloc((argcp + 1) * sizeof(char**));
 		for (i = 0; i < argcp; i++) {
 			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"Found amed bot <%s>.",
+				"Found named bot <%s>.",
 				argvp[i]);
 			tmp = ggz_conf_read_string(ch, "NamedBots", argvp[i], NULL);
 			game_info.named_bots[i] = (char**)ggz_malloc(2 * sizeof(char*));
