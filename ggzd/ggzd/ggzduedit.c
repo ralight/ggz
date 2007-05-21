@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 9054 2007-04-17 06:01:21Z josef $
+ * $Id: ggzduedit.c 9125 2007-05-21 10:51:51Z josef $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -22,6 +22,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+/* FIXME: get this from international-branch once merged */
+#define ggz_strncpy(x, y, s) strncpy(x, y, s); x[s] = '\0'
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>		/* Site specific config */
@@ -47,8 +50,9 @@
  * but isn't actually used here */
 Options opt;
 
-char lb[1024];
-ggzdbPlayerEntry pe;
+static char lb[1024];
+static ggzdbPlayerEntry pe;
+static int needs_id;
 
 
 static void getnextline(void);
@@ -100,6 +104,13 @@ static void list_players(void)
 		fprintf(stderr, "_ggzdb_player_get_next() rc=%d\n", rc);
 
 	_ggzdb_player_drop_cursor();
+}
+
+
+static void show_roles(void)
+{
+	printf("Available roles:\n");
+	printf(" [admin][host][registered][guest][chatbot]\n");
 }
 
 
@@ -165,9 +176,13 @@ static void add_player(void)
 	char time_asc[128];
 
 	printf("Adding new user\n");
-	printf("UserID Number: ");
-	getnextline();
-	pe.user_id = strtoul(lb, NULL, 10);
+	if(needs_id) {
+		printf("UserID Number: ");
+		getnextline();
+		pe.user_id = strtoul(lb, NULL, 10);
+	} else {
+		pe.user_id = -1;
+	}
 
 	printf("User handle:   ");
 	getnextline();
@@ -181,18 +196,46 @@ static void add_player(void)
 
 	printf("Real name:     ");
 	getnextline();
-	strncpy(pe.name, lb, 32);
-	pe.name[32] = '\0';
+	ggz_strncpy(pe.name, lb, 32);
 
 	printf("Email address: ");
 	getnextline();
-	strncpy(pe.email, lb, 32);
-	pe.email[32] = '\0';
+	ggz_strncpy(pe.email, lb, 32);
 
 	printf("Password:      ");
 	getnextline();
-	strncpy(pe.password, lb, 16);
-	pe.password[16] = '\0';
+	ggz_strncpy(pe.password, lb, 16);
+
+	show_roles();
+	printf("Roles:         ");
+	getnextline();
+
+	pe.perms = 0;
+	pe.perms |= 1 << GGZ_PERM_JOIN_TABLE;
+	pe.perms |= 1 << GGZ_PERM_LAUNCH_TABLE;
+	if(strstr(lb, "registered")) {
+		pe.perms |= 1 << GGZ_PERM_ROOMS_LOGIN;
+	}
+	if(strstr(lb, "chatbot")) {
+		pe.perms |= 1 << GGZ_PERM_CHAT_BOT;
+	}
+	if(strstr(lb, "guest")) {
+		pe.perms |= 1 << GGZ_PERM_NO_STATS;
+	}
+	if(strstr(lb, "host")) {
+		pe.perms |= 1 << GGZ_PERM_ROOMS_LOGIN;
+		pe.perms |= 1 << GGZ_PERM_EDIT_TABLES;
+		pe.perms |= 1 << GGZ_PERM_TABLE_PRIVMSG;
+	}
+	if(strstr(lb, "admin")) {
+		pe.perms |= 1 << GGZ_PERM_ROOMS_LOGIN;
+		pe.perms |= 1 << GGZ_PERM_ROOMS_ADMIN;
+		pe.perms |= 1 << GGZ_PERM_CHAT_ANNOUNCE;
+		pe.perms |= 1 << GGZ_PERM_EDIT_TABLES;
+		pe.perms |= 1 << GGZ_PERM_TABLE_PRIVMSG;
+	}
+
+	printf("Preselected permissions: [0x%08X]\n", pe.perms);
 
 	show_all_perms();
 	printf("Permissions:   0x");
@@ -295,8 +338,7 @@ static void edit_player(int edit)
 				getnextline();
 				if(!lb[0])
 					break;
-				strncpy(pe.name, lb, 32);
-				pe.name[32] = '\0';
+				ggz_strncpy(pe.name, lb, 32);
 				printf("Real name:     [%s]\n", pe.name);
 				break;
 			case '3':
@@ -304,8 +346,7 @@ static void edit_player(int edit)
 				getnextline();
 				if(!lb[0])
 					break;
-				strncpy(pe.email, lb, 32);
-				pe.email[32] = '\0';
+				ggz_strncpy(pe.email, lb, 32);
 				printf("Email address: [%s]\n", pe.email);
 				break;
 			case '4':
@@ -313,8 +354,7 @@ static void edit_player(int edit)
 				getnextline();
 				if(!lb[0])
 					break;
-				strncpy(pe.password, lb, 16);
-				pe.password[16] = '\0';
+				ggz_strncpy(pe.password, lb, 16);
 				printf("Password:      [%s]\n", pe.password);
 				break;
 			case '5':
@@ -519,9 +559,13 @@ int main(int argc, char **argv)
 		}
 	}
 
+	needs_id = 0;
+
 	if((!strcmp(DATABASE_TYPE, "db2"))
 	|| (!strcmp(DATABASE_TYPE, "db3"))
 	|| (!strcmp(DATABASE_TYPE, "db4"))) {
+		needs_id = 1;
+
 		if(!conn.datadir) {
 			fprintf(stderr, "Database type '%s' needs data directory\n",
 				DATABASE_TYPE);
