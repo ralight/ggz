@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
 			case 'h':
 				printf(_("Grubby - the GGZ Gaming Zone Chat Bot\n"));
 				printf(_("Copyright (C) 2001 - 2006 Josef Spillner, josef@ggzgamingzone.org\n"));
-				printf(_("Published under GNU GPL conditions\n\n"));
+				printf(_("Published under the terms of the GNU GPL\n\n"));
 				printf(_("Recognized options:\n"));
 				printf(_("[-h | --help]:    Show this help screen\n"));
 				printf(_("[-H | --host]:    Connect to this host\n"));

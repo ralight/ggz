@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 8986 2007-02-12 23:51:13Z jdorje $
+ * $Id: ggz-config.c 9129 2007-05-21 21:30:31Z oojah $
  *
  * Configuration query and module install program.
  *
@@ -104,7 +104,7 @@ static char *options_help[] = {
 	 N_("Check/repair module installation file"),
 	 N_("Specifies module installation file (needs argument)"),
 	 N_("Specifies icon file to use for the game (needs argument)"),
-	 N_("Use auxiliary directory instead of ggz.modules (needs argument)"),
+	 N_("Use auxiliary directory for configuration data instead of the ggz.modules file (needs argument)"),
 	 N_("Install over an existing module"),
 	 N_("Use $DESTDIR as offset to ggz.modules file"),
 	 N_("Display help"),
@@ -611,7 +611,7 @@ static int noregister_all()
 		ggz_free(modfile);
 		modfile = NULL;
 		if(ret != 0) {
-			fprintf(stderr, _("An error occured, which is ignored.\n"));
+			fprintf(stderr, _("An error occurred, continuing anyway.\n"));
 		}
 	}
 	closedir(d);
@@ -671,7 +671,7 @@ static int check_module_file(void)
 	if((rc = ggz_conf_get_sections(global, &s_count, &s_list)) <0
 	   || s_count == 0) {
 		printf(_("Error getting config file sections list\n"));
-		printf(_("May be an empty config file?\n"));
+		printf(_("Is this an empty config file?\n"));
 		return rc;
 	}
 	for(i=0; i<s_count; i++) {
@@ -736,7 +736,7 @@ phase_two:
 	if((rc = ggz_conf_get_keys(global, "Games", &k_count, &k_list)) <0
 	   || k_count == 0) {
 		printf(_("Error getting config file [Games]:keys list\n"));
-		printf(_("May be an empty config file?\n"));
+		printf(_("Is this an empty config file?\n"));
 		return rc;
 	}
 	printf(_("*** Computing section cross references\n"));
@@ -888,7 +888,7 @@ phase_two:
 			if(!str)
 			{
 				errs++;
-				printf(_("ERR Section %s doesn't exist in %s, removed reference\n"),
+				printf(_("ERR Section %s doesn't exist in %s, reference removed\n"),
 					g_list[k], k_list[i]);
 				ggz_free(g_list[k]);
 				n_count -= 1;
@@ -1010,8 +1010,8 @@ int main(int argc, char *argv[])
 			case 'h':
 				printf(_("GGZ-Config - the GGZ Gaming Zone Configuration Utility\n"));
 				printf(_("Copyright (C) 2001 Rich Gade, rgade@users.sourceforge.net\n"));
-				printf(_("Copyright (C) 2002 - 2005 The GGZ Gaming Zone developers\n"));
-				printf(_("Published under GNU GPL conditions\n"));
+				printf(_("Copyright (C) 2002 - 2007 The GGZ Gaming Zone developers\n"));
+				printf(_("Published under the terms of the GNU GPL\n"));
 				printf("\n");
 				printf(_("Recognized options:\n"));
 
