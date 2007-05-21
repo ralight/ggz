@@ -1,4 +1,13 @@
-<Limit GET>
+# Remove the following two lines to enable (password-protected) administration
 order deny,allow
-deny from all
-</Limit>
+#deny from all
+
+# Authentication for the administrator(s)?
+#AuthType digest
+#AuthName "GGZ Community Administration"
+##AuthBasicProvider file
+#AuthUserFile .htpasswd
+#Require valid-user
+
+ErrorDocument 403 /admin/forbidden.php
+

@@ -44,4 +44,22 @@
 				<a href="/help/" class="menuitem">_(Help)</a>
 			</div>
 		</div>
+<?php
+// FIXME: better integration
+//if ($_SERVER['PHP_AUTH_DIGEST']) :
+include_once("player.php");
+if (Auth::username()) :
+	$p = new Player(Auth::username());
+	if ($p->admin()) :
+?>
+		<div class="menu">
+			<a href="/admin/" class="menuitem" style="background-color:#ff0000" title="Community Administration">Admin</a>
+			<div class="menu">
+				<a href="/admin/" class="menuitem">Admin Main</a>
+			</div>
+		</div>
+<?php
+	endif;
+endif;
+?>
 	</div>

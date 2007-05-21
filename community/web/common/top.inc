@@ -1,6 +1,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
 
+include_once("accessadmin.php");
 include_once("config.php");
 include_once("locale.php");
 include_once("negotiation.php");

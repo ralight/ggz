@@ -41,4 +41,11 @@ if (!$database->id) :
 	exit;
 endif;
 
+if (!extension_loaded("gd")) :
+	// FIXME: make this optional, e.g. only for map generation?
+	echo "Site error: Missing PHP module 'gd'.";
+	include("bottom.inc");
+	exit;
+endif;
+
 ?>

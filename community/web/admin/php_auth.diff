@@ -1,0 +1,26 @@
+--- login.php.ORIG	2007-05-19 23:28:43.000000000 +0200
++++ login.php	2007-05-19 23:32:48.000000000 +0200
+@@ -18,7 +19,13 @@
+ // analyze the PHP_AUTH_DIGEST variable
+ if (!($data = http_digest_parse($_SERVER['PHP_AUTH_DIGEST'])) ||
+     !isset($users[$data['username']]))
++:
++    // FIXME: these headers seem to be necessary for konqueror/firefox - RFC compliance?
++    header('HTTP/1.1 401 Unauthorized');
++    header('WWW-Authenticate: Digest realm="'.$realm.
++           '",qop="auth",nonce="'.uniqid().'",opaque="'.md5($realm).'"');
+     die('Wrong Credentials!');
++endif;
+ 
+ 
+ // generate the valid response
+@@ -40,7 +47,8 @@
+     $needed_parts = array('nonce'=>1, 'nc'=>1, 'cnonce'=>1, 'qop'=>1, 'username'=>1, 'uri'=>1, 'response'=>1);
+     $data = array();
+ 
+-    preg_match_all('@(\w+)=(?:([\'"])([^\2]+)\2|([^\s,]+))@', $txt, $matches, PREG_SET_ORDER);
++    // FIXME: original PHP (from features.http-auth.php) had [^\2] instead of .+? which doesn't work
++    preg_match_all('@(\w+)=(?:([\'"])(.+?)\2|([^\s,]+))@', $txt, $matches, PREG_SET_ORDER);
+ 
+     foreach ($matches as $m) {
+         $data[$m[1]] = $m[3] ? $m[3] : $m[4];

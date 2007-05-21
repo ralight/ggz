@@ -43,7 +43,8 @@ body.banner #pagehead .adblock
 
 #pagehead .menubar
 	{
-		width:390px;
+		width:450px;
+		/*width:390px;*/ /* FIXME: clashes with admin menu, i18n etc. */
 		background-color:#71DC81;
 		border-top: 1px #EEFAFF solid;
 		border-left: 1px #EEFAFF solid;
@@ -786,3 +787,35 @@ table.leather
 		background-repeat : no-repeat;
 	}
 
+/* additions after 0.0.14 - FIXME: needs proper integration! */
+
+#main .errortext
+/*< .text???*/
+	{
+		background-color:#FF0000;
+		border-top: 1px #7E95A0 solid;
+		border-left: 1px #7E95A0 solid;
+		border-right: 1px #FFFFFF solid;
+		border-bottom: 1px #FFFFFF solid;
+		padding:2px;
+		margin:4px;
+		font-family:serif;
+		font-size:11pt;
+		font-weight:normal;
+		font-style:normal;
+		color:black;
+		background-repeat : no-repeat;
+	}
+
+#adminmenu
+	{
+		/*position:absolute;*/
+		top:6px;
+		left:6px;
+		padding:2px;
+		background-color:#FF0000;
+		border-top: 1px #EEFAFF solid;
+		border-left: 1px #EEFAFF solid;
+		border-right: 1px #5E7683 solid;
+		border-bottom: 1px #5E7683 solid;
+	}
