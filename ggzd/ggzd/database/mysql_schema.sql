@@ -104,7 +104,6 @@ CREATE TABLE `userinfo` (
   `latitude` double NOT NULL default '0',
   `alterpass` text NOT NULL,
   PRIMARY KEY  (`id`),
-  KEY `username` (`username`(30)),
   CONSTRAINT `userid` FOREIGN KEY (`userid`) REFERENCES `users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -114,8 +113,8 @@ CREATE TABLE `users` (
   `username` varchar(25) NOT NULL default '',
   `password` varchar(32) NOT NULL default '',
   `email` varchar(255) NOT NULL default '',
-  `lastvisit` int(11) NOT NULL default '0',
-  `regdate` int(11) NOT NULL default '0',
+  `lastvisit` timestamp NOT NULL default '0',
+  `regdate` timestamp NOT NULL default '0',
   `perms` int(11) NOT NULL default '7',
   `realname` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),

@@ -72,7 +72,7 @@
 
 # Policy file on guest names and player registration
 #UsernamePolicy = @prefix@/etc/ggzd/username.policy
-#RegistrationPolicy = 0
+#RegistrationPolicy = 1
 
 ############################################################################
 # Logging Options
