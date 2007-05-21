@@ -1,0 +1,218 @@
+# Complete dependency graph, more detailed than debian-depgraph.dot
+# Transformation: 'dot -Tps -o ggz-depgraph.ps ggz-depgraph.dot'
+# (graph based on kdepim's dependency-graph.dot)
+
+# FIXME: graph is far from complete!
+
+/* LEGEND */
+# lightyellow: C
+# orange: perl
+# lightcyan: C++
+# magenta: python
+
+# box: library
+# ellipse: tool
+# trapezium: static library
+# triangle: external dependency
+
+strict digraph "GGZ Gaming Zone interdependencies" {
+	/* COMPONENTS */
+
+	/* libggz */
+	"libggz" [style=filled, fillcolor=lightyellow, shape=box];
+
+	/* ggz-client-libs */
+	"ggzcore" [style=filled, fillcolor=lightyellow, shape=box];
+	"ggzmod" [style=filled, fillcolor=lightyellow, shape=box];
+	"ggz-config" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"ggz-wrapper" [style=filled, fillcolor=lightyellow, shape=ellipse];
+
+        /* grubby */
+        "grubby" [style=filled, fillcolor=lightyellow, shape=ellipse];
+        "grubby-config" [style=filled, fillcolor=orange, shape=ellipse];
+
+	/* gtk-client */
+	"ggzgtkembed" [style=filled, fillcolor=lightyellow, shape=box];
+	"ggz-gtk" [style=filled, fillcolor=lightyellow, shape=ellipse];
+
+	/* gtk-games */
+	"common" [style=filled, fillcolor=lightyellow, shape=trapezium];
+	"hastings" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"dots" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"tictactoe" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"chess" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"combat" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"ccheckers" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"ggzcards" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"reversi" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"spades" [style=filled, fillcolor=lightyellow, shape=ellipse];
+
+	/* ggzd */
+	"ggzd" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"ggzduedit" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"ggzdmod" [style=filled, fillcolor=lightyellow, shape=box];
+	"ggzdmod++" [style=filled, fillcolor=lightcyan, shape=box];
+	"tictactoe_s" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"widelands_s" [style=filled, fillcolor=lightcyan, shape=ellipse];
+	"chess_s" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"ccheckers_s" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"combat_s" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"connectx_s" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"dots_s" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"escape_s" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"geekgame_s" [style=filled, fillcolor=lightcyan, shape=ellipse];
+	"ggzcards_s" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"hastings_s" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"keepalive_s" [style=filled, fillcolor=lightcyan, shape=ellipse];
+	"krosswater_s" [style=filled, fillcolor=lightcyan, shape=ellipse];
+	"muehle_s" [style=filled, fillcolor=lightcyan, shape=ellipse];
+	"reversi_s" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"spades_s" [style=filled, fillcolor=lightyellow, shape=ellipse];
+	"tuxman_s" [style=filled, fillcolor=lightcyan, shape=ellipse];
+
+	/* python */
+	"pyggzmod" [style=filled, fillcolor=lightyellow, shape=box];
+	"pyggzdmod" [style=filled, fillcolor=lightyellow, shape=box];
+	"pyggzcoresimple" [style=filled, fillcolor=lightyellow, shape=box];
+	"ggzboard" [style=filled, fillcolor=magenta, shape=ellipse];
+	"xadrez-chinês" [style=filled, fillcolor=magenta, shape=ellipse];
+	"escape/sdl" [style=filled, fillcolor=magenta, shape=ellipse];
+	"víbora" [style=filled, fillcolor=magenta, shape=ellipse];
+
+	/* kde-games */
+	"ktictactux" [style=filled, fillcolor=lightcyan, shape=ellipse];
+	"kconnectx" [style=filled, fillcolor=lightcyan, shape=ellipse];
+	"kdots" [style=filled, fillcolor=lightcyan, shape=ellipse];
+	"kcc" [style=filled, fillcolor=lightcyan, shape=ellipse];
+	"fyrdman" [style=filled, fillcolor=lightcyan, shape=ellipse];
+	"keepalive" [style=filled, fillcolor=lightcyan, shape=ellipse];
+	"koenig" [style=filled, fillcolor=lightcyan, shape=ellipse];
+	"kreversi" [style=filled, fillcolor=lightcyan, shape=ellipse];
+	"krosswater" [style=filled, fillcolor=lightcyan, shape=ellipse];
+	"muehle" [style=filled, fillcolor=lightcyan, shape=ellipse];
+	"kggzmod" [style=filled, fillcolor=lightcyan, shape=box];
+	"kggznet" [style=filled, fillcolor=lightcyan, shape=box];
+	"kggzgames" [style=filled, fillcolor=lightcyan, shape=box];
+
+	/* external dependencies */
+	"gtk+" [style=filled, fillcolor=lightyellow, shape=triangle];
+	"kde" [style=filled, fillcolor=lightcyan, shape=triangle];
+
+	/* DEPENDENCIES */
+
+	/* ggz-client-libs */
+	"ggzcore" -> "libggz";
+	"ggzmod" -> "libggz";
+	"ggzmod" -> "ggzcore";
+	"ggz-config" -> "ggzcore";
+	"ggz-wrapper" -> "ggzcore";
+
+	/* grubby */
+	"grubby" -> "ggzcore";
+	"grubby" -> "libggz";
+
+	/* gtk-client */
+	"ggz-gtk" -> "ggzgtkembed";
+	"ggz-gtk" -> "gtk+";
+	"ggzgtkembed" -> "ggzcore";
+	"ggzgtkembed" -> "libggz";
+	"ggzgtkembed" -> "gtk+";
+
+	/* gtk-games */
+	"common" -> "gtk+";
+	"hastings" -> "ggzmod";
+	"hastings" -> "common";
+	"hastings" -> "gtk+";
+	"tictactoe" -> "ggzmod";
+	"tictactoe" -> "common";
+	"tictactoe" -> "gtk+";
+	"dots" -> "ggzmod";
+	"dots" -> "common";
+	"dots" -> "gtk+";
+	"chess" -> "ggzmod";
+	"chess" -> "common";
+	"chess" -> "gtk+";
+	"combat" -> "ggzmod";
+	"combat" -> "common";
+	"combat" -> "gtk+";
+	"ccheckers" -> "ggzmod";
+	"ccheckers" -> "common";
+	"ccheckers" -> "gtk+";
+	"ggzcards" -> "ggzmod";
+	"ggzcards" -> "common";
+	"ggzcards" -> "gtk+";
+	"reversi" -> "ggzmod";
+	"reversi" -> "common";
+	"reversi" -> "gtk+";
+	"spades" -> "ggzmod";
+	"spades" -> "common";
+	"spades" -> "gtk+";
+
+	/* ggzd */
+	"ggzdmod++" -> "ggzdmod";
+
+	"ggzd" -> "libggz";
+	"ggzd" -> "ggzdmod";
+	"ggzduedit" -> "libggz";
+	"tictactoe_s" -> "ggzdmod";
+	"widelands_s" -> "ggzdmod++";
+	"chess_s" -> "ggzdmod";
+	"ccheckers_s" -> "ggzdmod";
+	"combat_s" -> "ggzdmod";
+	"connectx_s" -> "ggzdmod";
+	"dots_s" -> "ggzdmod";
+	"escape_s" -> "ggzdmod";
+	"geekgame_s" -> "ggzdmod++";
+	"ggzcards_s" -> "ggzdmod";
+	"hastings_s" -> "ggzdmod";
+	"keepalive_s" -> "ggzdmod++";
+	"krosswater_s" -> "ggzdmod";
+	"muehle_s" -> "ggzdmod++";
+	"reversi_s" -> "ggzdmod";
+	"spades_s" -> "ggzdmod";
+	"tuxman_s" -> "ggzdmod++";
+
+	/* python */
+	"pyggzmod" -> "ggzmod";
+	"pyggzdmod" -> "ggzdmod";
+	"pyggzcoresimple" -> "ggzcore";
+
+	"ggzboard" -> "pyggzmod";
+	"ggzboard" -> "pyggzdmod";
+	"xadrez-chinês" -> "pyggzmod";
+	"xadrez-chinês" -> "pyggzdmod";
+	"escape/sdl" -> "pyggzmod";
+	"escape/sdl" -> "pyggzdmod";
+	"víbora" -> "pyggzcoresimple";
+
+	/* kde-games */
+	"kggzmod" -> "ggzmod";
+	"kggzmod" -> "kggznet";
+	"kggzgames" -> "kggzmod";
+
+	"ktictactux" -> "kggzmod";
+	"ktictactux" -> "kggznet";
+	"ktictactux" -> "kggzgames";
+	"ktictactux" -> "kde";
+	"kconnectx" -> "kggzmod";
+	"kconnectx" -> "kggznet";
+	"kconnectx" -> "kggzgames";
+	"kconnectx" -> "kde";
+	"kdots" -> "ggzmod";
+	"kdots" -> "kde";
+	"kcc" -> "ggzmod";
+	"kcc" -> "kde";
+	"fyrdman" -> "ggzmod";
+	"fyrdman" -> "kde";
+	"keepalive" -> "ggzmod";
+	"keepalive" -> "kde";
+	"koenig" -> "ggzmod";
+	"koenig" -> "kde";
+	"kreversi" -> "ggzmod";
+	"kreversi" -> "kde";
+	"krosswater" -> "ggzmod";
+	"krosswater" -> "kde";
+	"muehle" -> "ggzmod";
+	"muehle" -> "kde";
+}
+
