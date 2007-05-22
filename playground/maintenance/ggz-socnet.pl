@@ -50,12 +50,12 @@ my ($match, $handle, $playertype);
 my ($res, $res2);
 my (%relation, %allplayers);
 
-$res = $ggz_conn->prepare("SELECT DISTINCT match FROM matchplayers");
+$res = $ggz_conn->prepare("SELECT DISTINCT `match` FROM `matchplayers`");
 $res->execute();
 $res->bind_columns(undef, \$match);
 
 while($res->fetch()){
-	$res2 = $ggz_conn->prepare("SELECT handle, playertype FROM matchplayers WHERE match = $match");
+	$res2 = $ggz_conn->prepare("SELECT `handle`, `playertype` FROM `matchplayers` WHERE `match` = $match");
 	$res2->execute();
 	$res2->bind_columns(undef, \$handle, \$playertype);
 	my @players = ();
