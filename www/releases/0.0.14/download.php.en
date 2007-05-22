@@ -140,6 +140,9 @@ Other distributors with (unfortunately) partial or outdated GGZ packages include
 <a href="http://www.archlinux.org/packages.php?s_repo=all&s_category=all&s_keyword=ggz&s_lastupdate=&pp=50">ArchLinux</a> (only libs, and outdated)
 </li>
 -->
+<li>
+<a href="http://pkgsrc.se/search.php?so=ggz">NetBSD</a> (0.0.14)
+</li>
 </ul>
 
 Distributors and packagers are encouraged to subscribe to the
