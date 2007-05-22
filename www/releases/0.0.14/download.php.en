@@ -42,6 +42,7 @@ A number of distributors provide GGZ packages, either in the base
 distribution, or as contributions. These packages will certainly be updated
 in the near future. Please always use the latest version; bug the distributor
 if necessary.
+<i>The links below were updated on 22.05.2007.</i>
 <br/><br/>
 The following distributors are known to have up-to-date and rather complete
 GGZ support:
@@ -50,58 +51,63 @@ GGZ support:
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/slackware.png">
 </div>
-<a href="http://www.slacky.it/index.php?option=com_remository&Itemid=29&func=fileinfo&id=665">Slackware</a> (0.0.14 already!)
+<a href="http://www.slacky.eu/repository/slackware-11.0/games/ggz/">Slackware</a> (0.0.14)
 </li>
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/opensuse.png">
 </div>
-<a href="http://repos.opensuse.org/ggz/">openSUSE</a> (new since 0.0.13!)
+<a href="http://repos.opensuse.org/ggz/">openSUSE</a> (0.0.14)
 </li>
 <li>
-<div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
+<div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/debian.png">
 </div>
 <a href="http://packages.debian.org/cgi-bin/search_packages.pl?keywords=GGZ&searchon=all&version=all&release=all">Debian</a>
-and
-<a href="http://packages.ubuntu.com/cgi-bin/search_packages.pl?keywords=ggz">Ubuntu</a>
+(0.0.14)
 (see also <a href="http://alioth.debian.org/projects/pkg-ggz/">Alioth</a> packaging page)
+</li>
+<li>
+<div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
+<img src="/pics/distros/ubuntu.png">
+</div>
+<a href="http://packages.ubuntu.com/cgi-bin/search_packages.pl?keywords=ggz">Ubuntu</a> (0.0.13)
 </li>
 <li>
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/freebsd.png">
 </div>
-<a href="http://www.freshports.org/search.php?query=ggz&search=go&num=10&stype=name&method=match&deleted=excludedeleted&start=1&casesensitivity=caseinsensitive">FreeBSD</a>
+<a href="http://www.freshports.org/search.php?query=ggz&search=go&num=10&stype=name&method=match&deleted=excludedeleted&start=1&casesensitivity=caseinsensitive">FreeBSD</a> (0.0.14)
 </li>
 <li>
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/sorcerer.png">
 </div>
-<a href="http://sorcerer.aakin.net/grimoire/grimoire.html">Sorcerer</a>
+<a href="http://sorcerer.aakin.net/grimoire/grimoire.html">Sorcerer</a> (0.0.13)
 </li>
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/fnux.png">
 </div>
-<a href="http://www.fnux.org/">Fnux</a>
+<a href="http://www.fnux.org/">Fnux</a> (0.0.13)
 </li>
 <li>
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/sourcemage.png">
 </div>
-<a href="http://codex.sourcemage.org/listing.html">SourceMage</a>
+<a href="http://codex.sourcemage.org/listing.html">SourceMage</a> (0.0.14)
 </li>
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/gentoo.png">
 </div>
-<a href="http://packages.gentoo.org/search/?sstring=ggz">Gentoo</a> (redone since 0.0.13!)
+<a href="http://packages.gentoo.org/search/?sstring=ggz">Gentoo</a> (0.0.14)
 </li>
 <li>
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/mandriva.png">
 </div>
-<a href="http://rpms.mandrivaclub.com/search.php?query=ggz&submit=Search">Mandriva</a>
+<a href="http://rpms.mandrivaclub.com/search.php?query=ggz&submit=Search">Mandriva</a> (0.0.13)
 </li>
 </ul>
 
@@ -112,19 +118,19 @@ Other distributors with (unfortunately) partial or outdated GGZ packages include
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/fink.png">
 </div>
-<a href="http://pdb.finkproject.org/pdb/search.php?summary=ggz">Fink</a> (slightly outdated, but rather complete)
+<a href="http://pdb.finkproject.org/pdb/search.php?summary=ggz">Fink</a> (0.0.11)
 </li>
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/lunar.png">
 </div>
-<a href="http://modules.lunar-linux.org/index.php?option=moonbase&section=games">Lunar Linux</a>
+<a href="http://modules.lunar-linux.org/index.php?option=moonbase&section=games">Lunar Linux</a> (0.0.12)
 </li>
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/fedora.png">
 </div>
-<a href="http://dag.wieers.com/packages/libggz/">Fedora Core/Red Hat</a> (only libs)
+<a href="http://dag.wieers.com/packages/libggz/">Fedora Core/Red Hat</a> (0.0.12)
 </li>
 <!--
 <li>
