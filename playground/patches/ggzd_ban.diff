@@ -1,0 +1,236 @@
+Index: java/src/ggz/client/core/Net.java
+===================================================================
+--- java/src/ggz/client/core/Net.java	(revision 9135)
++++ java/src/ggz/client/core/Net.java	(working copy)
+@@ -529,6 +529,9 @@
+             sendStartElement("ADMIN", attributes);
+             sendTextElement("REASON", reason);
+             sendEndElement("ADMIN");
++        } else if (type == AdminType.GGZ_ADMIN_BAN) {
++            attributes.addAttribute("", "", "ACTION", "CDATA", "ban");
++            sendEmptyElement("ADMIN", attributes);
+         } else {
+             // * Not yet in use.
+         }
+Index: ggzd/ggzd/client.c
+===================================================================
+--- ggzd/ggzd/client.c	(revision 9135)
++++ ggzd/ggzd/client.c	(working copy)
+@@ -126,6 +126,16 @@
+ 		client_free(client);
+ 		pthread_exit(NULL);
+ 	}
++
++	/* Check whether ip is banned */
++	if(is_banned(client->addr)){
++		net_send_player_banned(client->net, opt.server_name);
++		log_msg(GGZ_LOG_NOTICE,
++			"BANNED - Rejected connection from %s",
++			client->addr);
++		client_free(client);
++		pthread_exit(NULL);
++	}
+ 	
+ 	pthread_rwlock_wrlock(&state.lock);
+ 	if (state.players == MAX_USERS) {
+Index: ggzd/ggzd/control.c
+===================================================================
+--- ggzd/ggzd/control.c	(revision 9135)
++++ ggzd/ggzd/control.c	(working copy)
+@@ -85,6 +85,19 @@
+ struct GameInfo game_types[MAX_GAME_TYPES];
+ struct GGZState state;
+ 
++/* Ban data */
++typedef struct BanList {
++	pthread_rwlock_t lock;
++	GGZList *list;
++} BanList;
++typedef struct BanItem {
++	char addr[64];
++	time_t expires;
++} BanItem;
++
++static BanList bans;
++
++
+ /* Termination signal */
+ static sig_atomic_t hup_signal;
+ static sig_atomic_t term_signal;
+@@ -135,6 +148,7 @@
+ 		err_msg_exit("*** Database initialization failed");
+ 
+ 	hash_initialize();
++	bans_initialize();
+ }
+ 
+ static void cleanup_data(void)
+@@ -741,3 +755,70 @@
+ 
+ 	return 0;
+ }
++
++
++void bans_initialize(void)
++{
++	pthread_rwlock_init(&bans.lock, NULL);
++	bans.list = ggz_list_create(NULL, NULL, NULL, GGZ_LIST_ALLOW_DUPS);
++}
++
++
++void bans_add(const char *addr)
++{
++	BanItem *ban;
++	time_t t;
++
++	if(!addr) return;
++
++	ban = ggz_malloc(sizeof(BanItem));
++	if(!ban) return;
++
++	strncpy(ban->addr, addr, 64);
++	t = time(NULL);
++	if(t == -1){
++		ggz_free(ban);
++		return;
++	}
++
++	ban->expires = t + 900; /* Current time plus 15 minutes */
++	
++	pthread_rwlock_wrlock(&bans.lock);	
++	ggz_list_insert(bans.list, ban);
++	pthread_rwlock_unlock(&bans.lock);	
++}
++
++
++int is_banned(const char *addr)
++{
++	GGZListEntry *entry;
++	BanItem *ban;
++	int rc = 0;
++
++	pthread_rwlock_rdlock(&bans.lock);
++	entry = ggz_list_head(bans.list);
++	while(entry){
++		ban = ggz_list_get_data(entry);
++#ifdef DEBUG
++		dbg_msg(GGZ_DBG_CONNECTION, "Banned IP: %s (%s)", ban->addr, addr);
++#endif
++		if(!strncmp(ban->addr, addr, 64)){
++			if(ban->expires >= time(NULL)){
++				rc = 1;
++				break;
++			}else{
++				pthread_rwlock_unlock(&bans.lock);
++				pthread_rwlock_wrlock(&bans.lock);
++				ggz_list_delete_entry(bans.list, entry);
++				ggz_free(ban);
++				pthread_rwlock_unlock(&bans.lock);
++			}
++		}
++		entry = ggz_list_next(entry);
++	}
++	pthread_rwlock_unlock(&bans.lock);
++
++	return rc;
++}
++
++
+Index: ggzd/ggzd/hash.h
+===================================================================
+--- ggzd/ggzd/hash.h	(revision 9135)
++++ ggzd/ggzd/hash.h	(working copy)
+@@ -27,6 +27,10 @@
+ #include "players.h"
+ 
+ /* Exported functions */
++void bans_initialize(void);
++void bans_add(const char *addr);
++int is_banned(const char *addr);
++
+ void hash_initialize(void);
+ int hash_player_add(const char *name, GGZPlayer* player);
+ 
+Index: ggzd/ggzd/players.c
+===================================================================
+--- ggzd/ggzd/players.c	(revision 9135)
++++ ggzd/ggzd/players.c	(working copy)
+@@ -1423,7 +1423,6 @@
+ 	return GGZ_REQ_OK;
+ }
+ 
+-
+ GGZPlayerHandlerStatus player_room_admin(GGZPlayer* player, GGZAdminType type,
+ 					 const char *target,
+ 					 const char *reason)
+@@ -1497,6 +1496,20 @@
+ 		break;
+ 	case GGZ_ADMIN_BAN:
+ 		log_msg(GGZ_LOG_ADMIN, "ADMIN %s bans %s", player->name, target);
++		if (rcvr == NULL || rcvr == player) {
++			status = E_USR_LOOKUP;
++		} else {
++			bans_add(player->client->addr);
++			/* FIXME 1: session_over should be bool, not char */
++			/* FIXME: We temporarily take away the wr-lock since player_enqueue needs it */
++			pthread_rwlock_unlock(&rcvr->lock);	
++			chat_player_enqueue(target, GGZ_CHAT_PERSONAL, player, "You have been banned");
++
++			/* Recover the rcvr player - a new lookup is needed */
++			rcvr = hash_player_lookup(target);
++			if (rcvr) rcvr->client->session_over = 1;
++			status = E_OK;
++		}
+ 		/* This is not implemented/used yet. */
+ 		break;
+ 	}
+Index: ggzd/ggzd/net.c
+===================================================================
+--- ggzd/ggzd/net.c	(revision 9135)
++++ ggzd/ggzd/net.c	(working copy)
+@@ -321,6 +321,24 @@
+ }
+  
+ 
++GGZReturn net_send_player_banned(GGZNetIO *net, const char *srv_name)
++{
++	char *xml_srv_name;
++	GGZReturn status;
++
++	xml_srv_name = ggz_xml_escape(srv_name);
++
++	_net_send_line(net, "<SESSION>");
++	status = _net_send_line(net, "<SERVER ID='GGZ-%s' NAME='%s' "
++				"VERSION='%d' STATUS='banned'/>",
++				VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION);
++
++	ggz_free(xml_srv_name);
++
++	return status;
++}
++
++
+ GGZReturn net_send_server_full(GGZNetIO *net, const char *srv_name)
+ {
+ 	char *xml_srv_name;
+@@ -1644,6 +1662,8 @@
+ 	action_str = ggz_xmlelement_get_attr(element, "ACTION");
+ 	player = ggz_xmlelement_get_attr(element, "PLAYER");
+ 
++	printf("ACTION: %s, PLAYER: %s\n", action_str, player);
++
+ 	reason = ggz_xmlelement_get_data(element);
+ 
+ 	if (!action_str) {
+Index: ggzd/ggzd/net.h
+===================================================================
+--- ggzd/ggzd/net.h	(revision 9135)
++++ ggzd/ggzd/net.h	(working copy)
+@@ -56,6 +56,7 @@
+ /* Functions to send data to the client */
+ GGZReturn net_send_serverid(GGZNetIO *net, const char *srv_name, bool use_tls);
+ GGZReturn net_send_server_full(GGZNetIO *net, const char *srv_name);
++GGZReturn net_send_player_banned(GGZNetIO *net, const char *srv_name);
+ GGZReturn net_send_login(GGZNetIO *net, GGZLoginType type,
+ 			 GGZClientReqError status, const char *password);
+ GGZReturn net_send_motd(GGZNetIO *net);
