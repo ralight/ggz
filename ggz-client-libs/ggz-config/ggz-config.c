@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 9129 2007-05-21 21:30:31Z oojah $
+ * $Id: ggz-config.c 9135 2007-05-23 05:50:18Z josef $
  *
  * Configuration query and module install program.
  *
@@ -641,6 +641,66 @@ static int query(char *name, char *text, int def)
 #endif
 
 
+/* This function works like the which(2) program. An application
+ * is searched in the search path ($PATH). Absolute paths
+ * are returned as-are.
+ * However, the return codes are more fine grained:
+ * 0 - executable not found in $PATH
+ * 1 - found but not executable
+ * 2 - found and executable
+ * 3 - invalid arguments
+ */
+static int which(const char *executable)
+{
+	char execpath[2048];
+	int ret = 0;
+	struct stat st;
+
+	if(!executable) return 3;
+
+	if(executable[0] == '/')
+	{
+		if(!stat(executable, &st))
+		{
+			ret = (ret < 1 ? 1 : ret);
+			if(!access(executable, X_OK))
+			{
+				ret = (ret < 2 ? 2 : ret);
+			}
+		}
+		return ret;
+	}
+
+	char *path = getenv("PATH");
+	if(!path)
+	{
+		path = "/bin:/usr/bin:.";
+	}
+
+	char *copy = strdup(path);
+	char *token = strtok(copy, ":");
+	while(token)
+	{
+		snprintf(execpath, sizeof(execpath), "%s/%s", token, executable);
+
+		if(!stat(execpath, &st))
+		{
+			ret = (ret < 1 ? 1 : ret);
+			if(!access(execpath, X_OK))
+			{
+				ret = (ret < 2 ? 2 : ret);
+			}
+		}
+
+		token = strtok(NULL, ":");
+	}
+
+	free(copy);
+
+	return ret;
+}
+
+
 static int check_module_file(void)
 {
 	int	global;
@@ -700,13 +760,12 @@ static int check_module_file(void)
 				str2 = str;
 				while(*str2 && *str2 != ' ') str2++;
 				*str2 = '\0';
-				if(access(str, X_OK))
-					kill=1;
+				/* Be more tolerant - as we support $PATH now */
+				rc = which(str);
+				if(rc != 2) {
+					printf(_("WARN: missing or invalid executable '%s'\n"), str);
+				}
 				ggz_free(str);
-			}
-			if(kill) {
-				errs++;
-				printf(_("ERR: missing or invalid executable\n"));
 			}
 		}
 		if(kill) {
