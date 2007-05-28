@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 9138 2007-05-28 06:11:26Z jdorje $
+ * $Id: launch.c 9139 2007-05-28 07:13:58Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -103,7 +103,6 @@ static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 	gchar *text;
 	GGZRoom *room;
 	GGZGameType *gt;
-	GList *items = NULL;
 	gint maxplayers, maxbots, x;
 
 	room = ggzcore_server_get_cur_room(server);
@@ -138,13 +137,16 @@ static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 
 	/* Set the number of players combo */
 	maxplayers = ggzcore_gametype_get_max_players(gt);
-	for (x = 1; x <= maxplayers; x++) {
-		if (ggzcore_gametype_num_players_is_valid(gt, x))
-			items = g_list_append(items,
-					      g_strdup_printf("%d", x));
-	}
 	tmp = g_object_get_data(G_OBJECT(launch_dialog), "seats_combo");
-	gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);
+	for (x = 1; x <= maxplayers; x++) {
+		if (ggzcore_gametype_num_players_is_valid(gt, x)) {
+			char text[128];
+
+			snprintf(text, sizeof(text), "%d", x);
+			gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), text);
+		}
+	}
+	gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), 0);
 
 	/* Show seats that should be shown (i.e. all of them). */
 	for (x = 1; x <= maxplayers; x++)
@@ -193,7 +195,7 @@ static void launch_seats_changed(GtkWidget * widget, gpointer data)
 	GGZGameType *gt;
 	GGZRoom *room;
 
-	seats = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
+	seats = atoi(gtk_combo_box_get_active_text(GTK_COMBO_BOX(widget)));
 	room = ggzcore_server_get_cur_room(server);
 	gt = ggzcore_room_get_gametype(room);
 	max = ggzcore_gametype_get_max_players(gt);
@@ -246,7 +248,7 @@ void launch_table(void)
 		ggz_error_msg("Trying to launch table when "
 			      "there is no launch dialog.");
 	tmp = ggz_lookup_widget(launch_dialog, "seats_combo");
-	seats = atoi(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(tmp)->entry)));
+	seats = atoi(gtk_combo_box_get_active_text(GTK_COMBO_BOX(tmp)));
 
 	/* Create a table for sending to the server */
 	table = ggzcore_table_new();
@@ -306,7 +308,7 @@ static void launch_start_game(GtkWidget * widget, gpointer data)
 
 	/* Grab the number of seats */
 	tmp = ggz_lookup_widget(launch_dialog, "seats_combo");
-	seats = atoi(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(tmp)->entry)));
+	seats = atoi(gtk_combo_box_get_active_text(GTK_COMBO_BOX(tmp)));
 
 	/* Let's go bot counting.... */
 	bots = 0;
@@ -374,8 +376,6 @@ GtkWidget *create_dlg_launch(void)
 	GtkWidget *type_label;
 	GtkWidget *game_label;
 	GtkWidget *seats_combo;
-	GList *seats_combo_items = NULL;
-	GtkWidget *seats_entry;
 	GtkWidget *players_label;
 	GtkWidget *author_box;
 	GtkWidget *author_label;
@@ -441,17 +441,9 @@ GtkWidget *create_dlg_launch(void)
 	g_object_set_data(G_OBJECT(dlg_launch), "game_label", game_label);
 	gtk_box_pack_start(GTK_BOX(game_box), game_label, FALSE, FALSE, 0);
 
-	seats_combo = gtk_combo_new();
+	seats_combo = gtk_combo_box_new_text();
 	g_object_set_data(G_OBJECT(dlg_launch), "seats_combo", seats_combo);
 	gtk_box_pack_end(GTK_BOX(game_box), seats_combo, FALSE, TRUE, 0);
-	gtk_combo_set_value_in_list(GTK_COMBO(seats_combo), TRUE, FALSE);
-	seats_combo_items = g_list_append(seats_combo_items, (gpointer) "");
-	gtk_combo_set_popdown_strings(GTK_COMBO(seats_combo),
-				      seats_combo_items);
-	g_list_free(seats_combo_items);
-
-	seats_entry = GTK_COMBO(seats_combo)->entry;
-	g_object_set_data(G_OBJECT(dlg_launch), "seats_entry", seats_entry);
 
 	players_label = gtk_label_new(_("Number of seats"));
 	g_object_set_data(G_OBJECT(dlg_launch), "players_label",
@@ -618,7 +610,7 @@ GtkWidget *create_dlg_launch(void)
 			   &launch_dialog);
 	g_signal_connect(GTK_OBJECT(dlg_launch), "realize",
 			   GTK_SIGNAL_FUNC(launch_fill_defaults), NULL);
-	g_signal_connect(GTK_OBJECT(seats_entry), "changed",
+	g_signal_connect(GTK_OBJECT(seats_combo), "changed",
 			   GTK_SIGNAL_FUNC(launch_seats_changed), NULL);
 	for (i = 0; i < num_seats; i++) {
 		g_signal_connect(GTK_OBJECT(seats[i].resv), "toggled",
