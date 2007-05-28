@@ -50,6 +50,7 @@
 #include <gtk/gtkversion.h>
 #include <gtk/gtkwindow.h>
 
+#include "xtext.h"
 #include "xtext-ggz.h"
 
 #ifdef USE_XLIB
@@ -62,7 +63,6 @@
 #include "mmx_cmod.h"
 #endif
 
-#include "xtext.h"
 
 #define charlen(str) g_utf8_skip[*(guchar *)(str)]
 
@@ -138,7 +138,9 @@ static int gtk_xtext_render_ents (GtkXText * xtext, textentry *, textentry *);
 static void gtk_xtext_recalc_widths (xtext_buffer *buf, int);
 static void gtk_xtext_fix_indent (xtext_buffer *buf);
 static int gtk_xtext_find_subline (GtkXText *xtext, textentry *ent, int line);
+#if 0
 static char *gtk_xtext_conv_color (unsigned char *text, int len, int *newlen);
+#endif
 static unsigned char *
 gtk_xtext_strip_color (unsigned char *text, int len, unsigned char *outbuf,
 							  int *newlen, int *mb_ret);
@@ -527,7 +529,7 @@ backend_get_text_width (GtkXText *xtext, guchar *str, int len, int is_mb)
 	if (*str == 0)
 		return 0;
 
-	pango_layout_set_text (xtext->layout, str, len);
+	pango_layout_set_text (xtext->layout, (gchar *)str, len);
 	pango_layout_get_pixel_size (xtext->layout, &width, NULL);
 
 	return width;
@@ -545,7 +547,7 @@ backend_get_char_width (GtkXText *xtext, unsigned char *str, int *mbl_ret)
 	}
 
 	*mbl_ret = charlen (str);
-	pango_layout_set_text (xtext->layout, str, *mbl_ret);
+	pango_layout_set_text (xtext->layout, (gchar *)str, *mbl_ret);
 	pango_layout_get_pixel_size (xtext->layout, &width, NULL);
 
 	return width;
@@ -1827,7 +1829,7 @@ gtk_xtext_get_word (GtkXText * xtext, int x, int y, textentry ** ret_ent,
 	if (ret_len)
 		*ret_len = str - word;
 
-	return gtk_xtext_strip_color (word, len, xtext->scratch_buffer, NULL, NULL);
+	return (char *)gtk_xtext_strip_color (word, len, xtext->scratch_buffer, NULL, NULL);
 }
 
 #ifdef MOTION_MONITOR
@@ -1943,10 +1945,10 @@ gtk_xtext_motion_notify (GtkWidget * widget, GdkEventMotion * event)
 	if (xtext->urlcheck_function == NULL)
 		return FALSE;
 
-	word = gtk_xtext_get_word (xtext, x, y, &word_ent, &offset, &len);
+	word = (unsigned char *)gtk_xtext_get_word (xtext, x, y, &word_ent, &offset, &len);
 	if (word)
 	{
-		if (xtext->urlcheck_function (GTK_WIDGET (xtext), word, len) > 0)
+		if (xtext->urlcheck_function (GTK_WIDGET (xtext), (char *)word, len) > 0)
 		{
 			if (!xtext->cursor_hand ||
 				 xtext->hilight_ent != word_ent ||
@@ -2098,7 +2100,7 @@ gtk_xtext_button_release (GtkWidget * widget, GdkEventButton * event)
 
 		if (!xtext->hilighting)
 		{
-			word = gtk_xtext_get_word (xtext, event->x, event->y, 0, 0, 0);
+			word = (unsigned char *)gtk_xtext_get_word (xtext, event->x, event->y, 0, 0, 0);
 			g_signal_emit (G_OBJECT (xtext), xtext_signals[WORD_CLICK], 0, word ? word : NULL, event);
 		} else
 		{
@@ -2122,7 +2124,7 @@ gtk_xtext_button_press (GtkWidget * widget, GdkEventButton * event)
 
 	if (event->button == 3 || event->button == 2) /* right/middle click */
 	{
-		word = gtk_xtext_get_word (xtext, x, y, 0, 0, 0);
+		word = (unsigned char *)gtk_xtext_get_word (xtext, x, y, 0, 0, 0);
 		if (word)
 		{
 			g_signal_emit (G_OBJECT (xtext), xtext_signals[WORD_CLICK], 0,
@@ -2269,7 +2271,7 @@ gtk_xtext_selection_get_text (GtkXText *xtext, int *len_ret)
 		len = strlen (txt);
 	} else
 	{
-		stripped = gtk_xtext_strip_color (txt, strlen (txt), NULL, &len, 0);
+		stripped = (char *)gtk_xtext_strip_color ((unsigned char *)txt, strlen (txt), NULL, &len, 0);
 		free (txt);
 	}
 
@@ -2321,7 +2323,7 @@ gtk_xtext_selection_get (GtkWidget * widget,
 		}
 		break;
 	default:
-		new_text = g_locale_from_utf8 (stripped, len, NULL, &glen, NULL);
+		new_text = (unsigned char *)g_locale_from_utf8 (stripped, len, NULL, &glen, NULL);
 		gtk_selection_data_set (selection_data_ptr, GDK_SELECTION_TYPE_STRING,
 										8, new_text, glen);
 		g_free (new_text);
@@ -2489,6 +2491,7 @@ gtk_xtext_strip_color (unsigned char *text, int len, unsigned char *outbuf,
 
 /* GeEkMaN: converts mIRC control codes to literal control codes */
 
+#if 0
 static char *
 gtk_xtext_conv_color (unsigned char *text, int len, int *newlen)
 {
@@ -2575,6 +2578,7 @@ gtk_xtext_conv_color (unsigned char *text, int len, int *newlen)
 
 	return new_str;
 }
+#endif
 
 /* gives width of a string, excluding the mIRC codes */
 
@@ -2662,7 +2666,7 @@ gtk_xtext_render_flush (GtkXText * xtext, int x, int y, unsigned char *str,
 		dofill = FALSE;	/* already drawn the background */
 	}
 
-	backend_draw_text (xtext, dofill, gc, x, y, str, len, str_width, is_mb);
+	backend_draw_text (xtext, dofill, gc, x, y, (char *)str, len, str_width, is_mb);
 
 #ifdef USE_DB
 	if (pix)
@@ -3432,6 +3436,7 @@ static GdkPixmap *
 shade_pixmap (GtkXText * xtext, Pixmap p, int x, int y, int w, int h)
 {
 	unsigned int dummy, width, height, depth;
+	int dummy2;
 	GdkPixmap *shaded_pix;
 	Window root;
 	Pixmap tmp;
@@ -3440,7 +3445,7 @@ shade_pixmap (GtkXText * xtext, Pixmap p, int x, int y, int w, int h)
 	GC tgc;
 	Display *xdisplay = GDK_WINDOW_XDISPLAY (xtext->draw_buf);
 
-	XGetGeometry (xdisplay, p, &root, &dummy, &dummy, &width, &height,
+	XGetGeometry (xdisplay, p, &root, &dummy2, &dummy2, &width, &height,
 					  &dummy, &depth);
 
 	if (width < x + w || height < y + h || x < 0 || y < 0)
@@ -4168,7 +4173,7 @@ gtk_xtext_save (GtkXText * xtext, int fh)
 	ent = xtext->buffer->text_first;
 	while (ent)
 	{
-		buf = gtk_xtext_strip_color (ent->str, ent->str_len, NULL,
+		buf = (char *)gtk_xtext_strip_color (ent->str, ent->str_len, NULL,
 											  &newlen, NULL);
 		write (fh, buf, newlen);
 		write (fh, "\n", 1);
@@ -4629,10 +4634,10 @@ gtk_xtext_search (GtkXText * xtext, const unsigned char *text, void *start)
 		ent = xtext->buffer->text_first;
 	while (ent)
 	{
-		if ((str = nocasestrstr (ent->str, text)))
+		if ((str = (unsigned char *)nocasestrstr ((char *)ent->str, (char *)text)))
 		{
 			ent->mark_start = str - ent->str;
-			ent->mark_end = ent->mark_start + strlen (text);
+			ent->mark_end = ent->mark_start + strlen ((char *)text);
 			break;
 		}
 		ent = ent->next;
@@ -4727,7 +4732,7 @@ gtk_xtext_check_marker_visibility(GtkXText * xtext)
 static void
 gtk_xtext_append_entry (xtext_buffer *buf, textentry * ent)
 {
-	unsigned int mb;
+	int mb;
 	int i;
 
 	/* we don't like tabs */
@@ -4814,20 +4819,22 @@ gtk_xtext_append_entry (xtext_buffer *buf, textentry * ent)
 
 void
 gtk_xtext_append_indent (xtext_buffer *buf,
-								 unsigned char *left_text, int left_len,
-								 unsigned char *right_text, int right_len)
+								 char *left_text_, int left_len,
+								 char *right_text_, int right_len)
 {
 	textentry *ent;
 	unsigned char *str;
 	int space;
 	int tempindent;
 	int left_width;
+	unsigned char *left_text = (unsigned char *)left_text_;
+	unsigned char *right_text = (unsigned char *)right_text_;
 
 	if (left_len == -1)
-		left_len = strlen (left_text);
+		left_len = strlen ((char *)left_text);
 
 	if (right_len == -1)
-		right_len = strlen (right_text);
+		right_len = strlen ((char *)right_text);
 
 	if (right_len >= sizeof (buf->xtext->scratch_buffer))
 		right_len = sizeof (buf->xtext->scratch_buffer) - 1;
@@ -4882,7 +4889,7 @@ gtk_xtext_append (xtext_buffer *buf, unsigned char *text, int len)
 	textentry *ent;
 
 	if (len == -1)
-		len = strlen (text);
+		len = strlen ((char *)text);
 
 	if (text[len-1] == '\n')
 		len--;
