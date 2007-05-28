@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 9039 2007-04-12 08:34:50Z josef $
+ * $Id: login.c 9140 2007-05-28 19:31:35Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -61,7 +61,7 @@ gchar *option_log = NULL;
 
 /* Callbacks login dialog box */
 static void login_fill_defaults(GtkWidget * widget, gpointer data);
-static void login_profile_changed(GtkEditable * editable, gpointer data);
+static void login_profile_changed(GtkWidget * widget, gpointer data);
 static void login_edit_profiles(GtkButton * button, gpointer data);
 static void login_entry_changed(GtkEditable * editable, gpointer data);
 static void login_normal_toggled(GtkToggleButton * togglebutton,
@@ -164,17 +164,12 @@ void login_goto_server(const gchar * server_url)
 static void login_fill_defaults(GtkWidget * widget, gpointer user_data)
 {
 	GtkWidget *tmp;
-	GList *items;
+	GList *items, *item;
 	char *last;
 	char *profile = user_data;
+	int i = 0;
 
 	tmp = ggz_lookup_widget(login_dialog, "profile_combo");
-
-	/* Fill profile combo box if there are any profiles */
-	if ((items = server_get_name_list())) {
-		gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);
-	} else
-		gtk_widget_set_sensitive(tmp, FALSE);
 
 	/* Set to last server connected to */
 	if (profile) {
@@ -183,10 +178,23 @@ static void login_fill_defaults(GtkWidget * widget, gpointer user_data)
 		last = ggzcore_conf_read_string("OPTIONS", "LASTPROFILE",
 						"NONE");
 	}
-	if (strcmp(last, "NONE")) {
-		tmp = ggz_lookup_widget(login_dialog, "profile_entry");
-		gtk_entry_set_text(GTK_ENTRY(tmp), last);
-	}
+
+	/* Fill profile combo box if there are any profiles */
+	if ((items = server_get_name_list())) {
+		for (item = g_list_first(items); item;
+		     item = g_list_next(item)) {
+			char *text = g_list_nth_data(item, 0);
+
+			gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), text);
+			if (strcmp(last, text) == 0 || i == 0) {
+				gtk_combo_box_set_active(GTK_COMBO_BOX(tmp),
+							 i);
+			}
+			i++;
+		}
+	} else
+		gtk_widget_set_sensitive(tmp, FALSE);
+
 	if (profile) {
 		ggz_free(profile);
 	} else {
@@ -195,14 +203,15 @@ static void login_fill_defaults(GtkWidget * widget, gpointer user_data)
 }
 
 
-static void
-login_profile_changed(GtkEditable * editable, gpointer user_data)
+static void login_profile_changed(GtkWidget *widget, gpointer user_data)
 {
-	GtkWidget *tmp;
 	Server *server = NULL;
+	char *servername;
 
-	tmp = ggz_lookup_widget(login_dialog, "profile_entry");
-	server = server_get(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	servername = gtk_combo_box_get_active_text(GTK_COMBO_BOX(widget));
+	if (servername) {
+		server = server_get(servername);
+	}
 
 	if (!server) {
 		/* Profile Not Found */
@@ -320,6 +329,7 @@ static void login_start_session(void)
 	GtkWidget *tmp;
 	const char *host = NULL, *login = NULL, *password = NULL, *email = NULL;
 	char *sessiondump;
+	char *profile;
 	int port;
 	GGZLoginType type = GGZ_LOGIN_GUEST;
 
@@ -380,11 +390,11 @@ static void login_start_session(void)
 	}
 
 	/* Save as last profile */
-	tmp = ggz_lookup_widget(login_dialog, "profile_entry");
-	if (strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)), "")) {
+	tmp = ggz_lookup_widget(login_dialog, "profile_combo");
+	profile = gtk_combo_box_get_active_text(GTK_COMBO_BOX(tmp));
+	if (strcmp(profile, "")) {
 		ggzcore_conf_write_string("OPTIONS", "LASTPROFILE",
-					  gtk_entry_get_text(GTK_ENTRY
-							     (tmp)));
+					  profile);
 		ggzcore_conf_commit();
 	}
 
@@ -507,7 +517,6 @@ GtkWidget *create_dlg_login(const char *default_profile)
 	GtkWidget *profile_box;
 	GtkWidget *profile_label;
 	GtkWidget *profile_combo;
-	GtkWidget *profile_entry;
 	GtkWidget *profile_button_box;
 	GtkWidget *edit_profiles_button;
 	GtkWidget *server_box;
@@ -571,15 +580,10 @@ GtkWidget *create_dlg_login(const char *default_profile)
 			   TRUE, 0);
 	gtk_misc_set_alignment(GTK_MISC(profile_label), 1, 0.5);
 
-	profile_combo = gtk_combo_new();
+	profile_combo = gtk_combo_box_new_text();
 	g_object_set_data(G_OBJECT(dlg_login), "profile_combo", profile_combo);
 	gtk_box_pack_start(GTK_BOX(profile_box), profile_combo, FALSE,
 			   TRUE, 5);
-	gtk_combo_set_value_in_list(GTK_COMBO(profile_combo), TRUE, FALSE);
-
-	profile_entry = GTK_COMBO(profile_combo)->entry;
-	g_object_set_data(G_OBJECT(dlg_login), "profile_entry", profile_entry);
-	gtk_editable_set_editable(GTK_EDITABLE(profile_entry), FALSE);
 
 	profile_button_box = gtk_hbutton_box_new();
 	gtk_box_pack_start(GTK_BOX(profile_box), profile_button_box, FALSE,
@@ -734,7 +738,7 @@ GtkWidget *create_dlg_login(const char *default_profile)
 	g_signal_connect(GTK_OBJECT(dlg_login), "destroy",
 			 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
 			 &login_dialog);
-	g_signal_connect(GTK_OBJECT(profile_entry), "changed",
+	g_signal_connect(GTK_OBJECT(profile_combo), "changed",
 			 GTK_SIGNAL_FUNC(login_profile_changed),
 			 dlg_login);
 	g_signal_connect(GTK_OBJECT(edit_profiles_button), "clicked",
