@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 9095 2007-05-04 01:09:07Z jdorje $
+ * $Id: err_func.c 9141 2007-06-04 12:02:14Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -244,9 +244,10 @@ void logfile_initialize(void)
 	if(log_info.log_fname) {
 		if(strcasecmp("syslogd", log_info.log_fname)) {
 			log_info.logfile = log_open_logfile(log_info.log_fname);
-			if(log_info.logfile == NULL)
-				err_msg("Cannot open logfile for writing");
-			else {
+			if(log_info.logfile == NULL) {
+				if(opt.foreground)
+					err_msg("Cannot open logfile for writing");
+			} else {
 				log_info.options &= ~GGZ_LOGOPT_USE_SYSLOG;
 				if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
 					fclose(log_info.logfile);
