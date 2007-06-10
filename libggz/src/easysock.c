@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 8506 2006-08-08 20:34:08Z jdorje $
+ * $Id: easysock.c 9142 2007-06-10 21:21:12Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -550,7 +550,14 @@ void ggz_read_int_or_die(const int sock, int *data)
  */
 int ggz_write_string(const int sock, const char *message)
 {
-	unsigned int size = strlen(message) * sizeof(char) + 1;
+	unsigned int size;
+
+	if (!message) {
+		/* Instead of crashing we just send an empty string. */
+		message = "";
+	}
+
+	size = strlen(message) * sizeof(char) + 1;
 	
 	if (ggz_write_int(sock, size) < 0)
 		return -1;
@@ -591,6 +598,8 @@ void ggz_va_write_string_or_die(const int sock, const char *fmt, ...)
 {
 	char buf[4096];
 	va_list ap;
+
+	/* A NULL fmt will likely cause a crash. */
 
 	va_start(ap, fmt);
 	vsnprintf(buf, sizeof(buf), fmt, ap);
