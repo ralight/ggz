@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 8970 2007-02-01 23:09:19Z oojah $
+ * $Id: props.c 9143 2007-06-11 02:54:07Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -54,6 +54,8 @@ enum {
 	PROFILE_COLUMNS
 };
 
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
+
 static void props_update(void);
 static void dlg_props_realize(GtkWidget *widget, gpointer user_data);
 static void props_profile_box_realized(GtkWidget *widget, gpointer user_data);
@@ -93,7 +95,6 @@ static void props_update(void)
 {
 	GtkWidget *tmp;
 	GtkXText *xtext = GTK_XTEXT(ggz_lookup_widget(win_main, "xtext_custom"));
-	GList *items;
 	const char *text;
 
 	/* Save Changes */
@@ -171,8 +172,9 @@ static void props_update(void)
 	ggzcore_conf_write_int("OPTIONS", "ROOMENTRY", GTK_TOGGLE_BUTTON(tmp)->active);
 
 	/* Browser */
-	tmp = ggz_lookup_widget((props_dialog), "browser_entry");
-	ggzcore_conf_write_string("OPTIONS", "BROWSER", gtk_entry_get_text(GTK_ENTRY(tmp)));
+	tmp = ggz_lookup_widget((props_dialog), "browser_combo");
+	ggzcore_conf_write_string("OPTIONS", "BROWSER",
+			gtk_combo_box_get_active_text(GTK_COMBO_BOX(tmp)));
 
 	/* MOTD */
 	tmp = ggz_lookup_widget((props_dialog), "motd_all_radio");
@@ -250,10 +252,7 @@ static void props_update(void)
 
 	/* If the login dialog is open refill the combo box */
 	if(login_dialog != NULL) {
-		tmp = ggz_lookup_widget(login_dialog, "profile_combo");
-		items = server_get_name_list();
-		if (tmp && items)
-			gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);
+		login_fill_defaults(NULL);
 	}
 }
 
@@ -262,6 +261,20 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 {
 	GtkWidget *tmp;
 	char *old;
+	const char *browsers[] = {_("Galeon - New"),
+				  _("Galeon - Existing"),
+				  _("Gnome URL Handler"),
+				  _("Konqueror - New"),
+				  _("Konqueror - Existing"),
+				  _("Lynx"),
+				  _("Mozilla - New"),
+				  _("Mozilla - Existing"),
+				  _("Netscape - New"),
+				  _("Opera - New"),
+				  _("Opera - Existing"),
+				  _("Firefox - New"),
+				  _("Firefox - Existing")};
+	int i;
 
 	/* Set XText font */
 	tmp = ggz_lookup_widget((props_dialog), "chat_font");
@@ -343,12 +356,15 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE));
 
 	/* Browser */
-	tmp = ggz_lookup_widget((props_dialog), "browser_entry");
-	gtk_editable_set_editable(GTK_EDITABLE(tmp), TRUE);
+	tmp = ggz_lookup_widget((props_dialog), "browser_combo");
 	old = ggzcore_conf_read_string("OPTIONS", "BROWSER", "None");
-	gtk_entry_set_text(GTK_ENTRY(tmp), old);
+	for (i = 0; i < ARRAY_SIZE(browsers); i++) {
+		gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), browsers[i]);
+		if (strcmp(browsers[i], old) == 0) {
+			gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), i);
+		}
+	}
 	ggz_free(old);
-	gtk_editable_set_editable(GTK_EDITABLE(tmp), FALSE);
 
 	/* MOTD */
 	old = ggzcore_conf_read_string("OPTIONS", "MOTD", "ALL");
@@ -862,8 +878,6 @@ GtkWidget* create_props_dlg(void)
   GtkWidget *table1;
   GtkWidget *label70;
   GtkWidget *browser_combo;
-  GList *browser_combo_items = NULL;
-  GtkWidget *browser_entry;
   GtkWidget *click_checkbutton;
   GtkWidget *frame2;
   GtkWidget *table2;
@@ -1459,29 +1473,9 @@ GtkWidget* create_props_dlg(void)
   label70 = gtk_label_new (_("Browser to launch URLs with:"));
   gtk_table_attach_defaults(GTK_TABLE(table1), label70, 0, 1, 0, 1);
 
-  browser_combo = gtk_combo_new ();
+  browser_combo = gtk_combo_box_new_text();
+  g_object_set_data(G_OBJECT(dlg_props), "browser_combo", browser_combo);
   gtk_table_attach_defaults(GTK_TABLE(table1), browser_combo, 1, 2, 0, 1);
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Galeon - New"));
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Galeon - Existing"));
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Gnome URL Handler"));
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Konqueror - New"));
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Konqueror - Existing"));
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Lynx"));
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Mozilla - New"));
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Mozilla - Existing"));
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Netscape - New"));
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Netscape - Existing"));
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Opera - New"));
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Opera - Existing"));
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Firefox - New"));
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Firefox - Existing"));
-  gtk_combo_set_popdown_strings (GTK_COMBO (browser_combo), browser_combo_items);
-  g_list_free (browser_combo_items);
-
-  browser_entry = GTK_COMBO (browser_combo)->entry;
-  g_object_set_data(G_OBJECT (dlg_props), "browser_entry", browser_entry);
-  gtk_editable_set_editable(GTK_EDITABLE(browser_entry), FALSE);
-  gtk_entry_set_text (GTK_ENTRY (browser_entry), _("Galeon - New"));
 
   click_checkbutton = gtk_check_button_new_with_label (_("Single Click Room Entry"));
   g_object_set_data(G_OBJECT (dlg_props),
