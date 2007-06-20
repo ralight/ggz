@@ -1,21 +1,23 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/es.po)
 
+# translation of gnome-games.HEAD.es.po to Español
 # translation of es.po to
 # translation of gnome-games.HEAD.po to
+#
+#
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2004, 2005, 2006.
 # Lucas Vieites <lucas@asixinformatica.com>, 2004, 2005.
-# Lucas Vieites Fariña <lucas@asixinformatica.com>, 2005, 2006.
-#
-#
+# Lucas Vieites Fariña <lucas@asixinformatica.com>, 2005, 2006, 2007.
+# Jorge González <jorgegonz@svn.gnome.org>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: es\n"
+"Project-Id-Version: gnome-games.HEAD.es\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-11-20 15:07+0100\n"
-"PO-Revision-Date: 2006-12-23 20:00+0100\n"
-"Last-Translator: \n"
-"Language-Team:  <en@li.org>\n"
+"PO-Revision-Date: 2007-06-19 22:09+0200\n"
+"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
+"Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -190,20 +192,18 @@ msgid ""
 "GGZ Gaming Zone help needs a browser to be configured.\n"
 "The configuration dialog will be invoked now."
 msgstr ""
-"GGZ Gaming Zone necesita un navegador configurado.\n"
-"El diálogo de configuración se invocará ahora."
 
 #: ../ggz-gtk/client.c:308
+#, fuzzy
 msgid ""
 "Inline game help is not implemented yet. Help\n"
 "is on our website. If\n"
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"La ayuda dentro del juego no se ha\n"
-"implementado aún. La ayuda está en nuestro\n"
-"sitio web. Si quiere ayudar con ello vaya a\n"
-"http://www.ggzgamingzone.org"
+"El filtro de salas aún no está implementado\n"
+"quiere ir a\n"
+"http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:566
 msgid "You must highlight a table before you can join it."
@@ -282,12 +282,12 @@ msgstr "Salir de la aplicación cliente GGZ"
 #: ../ggz-gtk/client.c:726
 #, c-format
 msgid "Client Version:14 %s"
-msgstr "Versión del cliente:  14 %s"
+msgstr ""
 
 #: ../ggz-gtk/client.c:729
 #, c-format
 msgid "GTK+ Version:14 %d.%d.%d\n"
-msgstr "Versión GTK+ %d.%d.%d\n"
+msgstr ""
 
 #: ../ggz-gtk/client.c:736
 msgid "Compiled with debugging."
@@ -371,20 +371,23 @@ msgid "Help"
 msgstr "Ayuda"
 
 #: ../ggz-gtk/client.c:1096
+#, fuzzy
 msgid "Copyright"
-msgstr "Copyright"
+msgstr "Mover derecha"
 
 #: ../ggz-gtk/client.c:1105
+#, fuzzy
 msgid "GGZ Help"
-msgstr "Ayuda GGZ"
+msgstr "Ayuda"
 
 #: ../ggz-gtk/client.c:1112
+#, fuzzy
 msgid "Game Help"
-msgstr "Ayuda del juego"
+msgstr "Campo de juego"
 
 #: ../ggz-gtk/client.c:1121
 msgid "Goto Web"
-msgstr "Ir a web"
+msgstr ""
 
 #: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:356
 msgid "Stats"
@@ -424,7 +427,7 @@ msgstr "Capitán"
 
 #: ../ggz-gtk/first.c:58
 msgid "Knight"
-msgstr "Caballero"
+msgstr "Caballo"
 
 #: ../ggz-gtk/first.c:58
 msgid "Angel"
@@ -488,7 +491,7 @@ msgstr "Creador"
 
 #: ../ggz-gtk/first.c:69
 msgid "GGZ Community (fast)"
-msgstr "GGZ Community (fast)"
+msgstr "GGZ Community (rápido)"
 
 #: ../ggz-gtk/first.c:70
 msgid "Local developer server"
@@ -499,7 +502,7 @@ msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
-"Esta es la primera vez que está ejecutanto el cliente GTK+ GGZ Gaming Zone. "
+"Esta es la primera vez que está ejecutando el cliente GTK+ GGZ Gaming Zone. "
 "¿Quiere crear algunos perfiles predeterminados de servidor?"
 
 #: ../ggz-gtk/game.c:72
@@ -821,7 +824,7 @@ msgstr "Entrada"
 
 #: ../ggz-gtk/login.c:108
 msgid "Sorry!"
-msgstr "Lo siento"
+msgstr ""
 
 #: ../ggz-gtk/login.c:115
 #, c-format
@@ -861,8 +864,9 @@ msgid "Profile:"
 msgstr "Perfil:"
 
 #: ../ggz-gtk/login.c:582
+#, fuzzy
 msgid "Edit Profiles..."
-msgstr "Editar perfiles..."
+msgstr "Editar perfiles"
 
 #: ../ggz-gtk/login.c:590 ../ggz-gtk/props.c:946
 msgid "Server:"
@@ -870,7 +874,7 @@ msgstr "Servidor:"
 
 #: ../ggz-gtk/login.c:600
 msgid "localhost"
-msgstr "localhost"
+msgstr ""
 
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
@@ -878,7 +882,7 @@ msgstr "Puerto:"
 
 #: ../ggz-gtk/login.c:612
 msgid "5688"
-msgstr "5688"
+msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -1107,8 +1111,9 @@ msgid "Country:"
 msgstr "País:"
 
 #: ../ggz-gtk/props.c:1428
+#, fuzzy
 msgid "Comments, Hobies, Etc."
-msgstr "Comentarios, Hobies, Etc."
+msgstr "Comentarios, aficiones, etc."
 
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
@@ -1116,67 +1121,68 @@ msgstr "Información del usuario"
 
 #: ../ggz-gtk/props.c:1459
 msgid "Browser to launch URLs with:"
-msgstr "Navegador con el que lanzar URLs:"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1464 ../ggz-gtk/props.c:1484 ../ggz-gtk/support.c:139
 msgid "Galeon - New"
-msgstr "Galeon: nuevo"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1465 ../ggz-gtk/support.c:142
 msgid "Galeon - Existing"
-msgstr "Galeon: existente"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1466 ../ggz-gtk/support.c:145
 msgid "Gnome URL Handler"
-msgstr "Manipulador de URL de GNOME"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1467 ../ggz-gtk/support.c:148
 msgid "Konqueror - New"
-msgstr "Konqueror: nuevo"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1468 ../ggz-gtk/support.c:151
 msgid "Konqueror - Existing"
-msgstr "Konqueror: existente"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1469 ../ggz-gtk/support.c:163
 msgid "Lynx"
-msgstr "Lynx"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1470 ../ggz-gtk/support.c:169
 msgid "Mozilla - New"
-msgstr "Mozilla: nuevo"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1471 ../ggz-gtk/support.c:172
 msgid "Mozilla - Existing"
-msgstr "Mozilla: existente"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1472 ../ggz-gtk/support.c:176
 msgid "Netscape - New"
-msgstr "Netscape: nuevo"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1473 ../ggz-gtk/support.c:179
 msgid "Netscape - Existing"
-msgstr "Netscape: existente"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1474 ../ggz-gtk/support.c:183
 msgid "Opera - New"
-msgstr "Opera: nuevo"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1475 ../ggz-gtk/support.c:186
+#, fuzzy
 msgid "Opera - Existing"
-msgstr "Opera: existente"
+msgstr "Operación"
 
 #: ../ggz-gtk/props.c:1476 ../ggz-gtk/support.c:191
 msgid "Firefox - New"
-msgstr "Firefox: nuevo"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1477 ../ggz-gtk/support.c:194
 msgid "Firefox - Existing"
-msgstr "Firefox: existente"
+msgstr ""
 
 #: ../ggz-gtk/props.c:1486
 msgid "Single Click Room Entry"
-msgstr "Entrada con un solo clic a la sala"
+msgstr "Entrada pulsando una vez en la sala"
 
 #: ../ggz-gtk/props.c:1500
 msgid "Display All"
@@ -1297,12 +1303,13 @@ msgid "Set"
 msgstr "Ajuste"
 
 #: ../ggz-gtk/types.c:306
+#, fuzzy
 msgid "Upgrage Game"
-msgstr "Actualizar juego"
+msgstr "Juego de panaderos"
 
 #: ../ggz-gtk/types.c:309
 msgid "Goto Web Site"
-msgstr "Ir a sitio web"
+msgstr ""
 
 #: ../src/main.c:119
 #, fuzzy

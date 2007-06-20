@@ -144,7 +144,7 @@ msgstr "%s įtrauktas į Jūsų ignoruojamų žmonių sąrašą."
 #: ../ggz-gtk/chat.c:863
 #, c-format
 msgid "Removed %s from your ignore list."
-msgstr "%s pašalintas iš Jūsų ignoruojamų žmonių sąrašo."
+msgstr "%s pašalintas iš ignoruojamų žmonių sąrašo."
 
 #: ../ggz-gtk/chat.c:939
 msgid "People currently your friends"

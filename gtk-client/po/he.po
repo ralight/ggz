@@ -900,11 +900,11 @@ msgstr "_שם מארח:"
 
 #: ../ggz-gtk/login.c:648 ../ggz-gtk/props.c:1014
 msgid "Password:"
-msgstr ""
+msgstr "סיסמה:"
 
 #: ../ggz-gtk/login.c:664
 msgid "Email:"
-msgstr ""
+msgstr "דוא\"ל:"
 
 #: ../ggz-gtk/login.c:680 ../ggz-gtk/props.c:1057
 msgid "Normal Login"
@@ -1161,8 +1161,9 @@ msgid "Galeon - New"
 msgstr ""
 
 #: ../ggz-gtk/props.c:1465 ../ggz-gtk/support.c:142
+#, fuzzy
 msgid "Galeon - Existing"
-msgstr ""
+msgstr "פעולה"
 
 #: ../ggz-gtk/props.c:1466 ../ggz-gtk/support.c:145
 msgid "Gnome URL Handler"
@@ -1173,8 +1174,9 @@ msgid "Konqueror - New"
 msgstr ""
 
 #: ../ggz-gtk/props.c:1468 ../ggz-gtk/support.c:151
+#, fuzzy
 msgid "Konqueror - Existing"
-msgstr ""
+msgstr "פעולה"
 
 #: ../ggz-gtk/props.c:1469 ../ggz-gtk/support.c:163
 msgid "Lynx"
@@ -1185,16 +1187,18 @@ msgid "Mozilla - New"
 msgstr ""
 
 #: ../ggz-gtk/props.c:1471 ../ggz-gtk/support.c:172
+#, fuzzy
 msgid "Mozilla - Existing"
-msgstr ""
+msgstr "פעולה"
 
 #: ../ggz-gtk/props.c:1472 ../ggz-gtk/support.c:176
 msgid "Netscape - New"
 msgstr ""
 
 #: ../ggz-gtk/props.c:1473 ../ggz-gtk/support.c:179
+#, fuzzy
 msgid "Netscape - Existing"
-msgstr ""
+msgstr "פעולה"
 
 #: ../ggz-gtk/props.c:1474 ../ggz-gtk/support.c:183
 msgid "Opera - New"
@@ -1210,8 +1214,9 @@ msgid "Firefox - New"
 msgstr ""
 
 #: ../ggz-gtk/props.c:1477 ../ggz-gtk/support.c:194
+#, fuzzy
 msgid "Firefox - Existing"
-msgstr ""
+msgstr "פעולה"
 
 #: ../ggz-gtk/props.c:1486
 msgid "Single Click Room Entry"

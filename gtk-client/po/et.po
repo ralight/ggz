@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: gnome-games HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-11-20 15:07+0100\n"
-"PO-Revision-Date: 2007-03-26 19:46+0300\n"
+"PO-Revision-Date: 2007-05-31 12:16+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -208,7 +208,7 @@ msgstr ""
 
 #: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:334
 msgid "Error launching game module."
-msgstr ""
+msgstr "Viga mängumooduli käivitamisel."
 
 #: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
 #: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:335
@@ -330,7 +330,7 @@ msgstr "Vaade"
 
 #: ../ggz-gtk/client.c:1035
 msgid "Room List"
-msgstr ""
+msgstr "Tubade nimekiri"
 
 #: ../ggz-gtk/client.c:1041
 msgid "Player List"
@@ -378,7 +378,7 @@ msgstr ""
 
 #: ../ggz-gtk/client.c:1196 ../ggz-gtk/ggzclient.c:718
 msgid "Current Room:"
-msgstr ""
+msgstr "Praegune tuba:"
 
 #: ../ggz-gtk/client.c:1277 ../ggz-gtk/playerinfo.c:259
 msgid "Message:"
@@ -394,15 +394,15 @@ msgstr ""
 
 #: ../ggz-gtk/first.c:57
 msgid "Wizard"
-msgstr ""
+msgstr "Võlur"
 
 #: ../ggz-gtk/first.c:57
 msgid "Deity"
-msgstr ""
+msgstr "Jumalus"
 
 #: ../ggz-gtk/first.c:57
 msgid "Sentinel"
-msgstr ""
+msgstr "Vahimees"
 
 #: ../ggz-gtk/first.c:57
 msgid "Captain"
@@ -422,7 +422,7 @@ msgstr ""
 
 #: ../ggz-gtk/first.c:58
 msgid "Eagle"
-msgstr ""
+msgstr "Kotkas"
 
 #: ../ggz-gtk/first.c:59
 msgid "Vampire"
@@ -430,11 +430,11 @@ msgstr "Vampiir"
 
 #: ../ggz-gtk/first.c:59
 msgid "Chief"
-msgstr ""
+msgstr "Pealik"
 
 #: ../ggz-gtk/first.c:59
 msgid "Colonel"
-msgstr ""
+msgstr "Kolonel"
 
 #: ../ggz-gtk/first.c:59
 msgid "General"
@@ -462,7 +462,7 @@ msgstr "Teadlane"
 
 #: ../ggz-gtk/first.c:61
 msgid "Scholar"
-msgstr ""
+msgstr "Õpetlane"
 
 #: ../ggz-gtk/first.c:61
 msgid "Entity"
@@ -470,7 +470,7 @@ msgstr ""
 
 #: ../ggz-gtk/first.c:61
 msgid "Creator"
-msgstr ""
+msgstr "Looja"
 
 #: ../ggz-gtk/first.c:69
 msgid "GGZ Community (fast)"
@@ -526,12 +526,16 @@ msgid ""
 "You must be in a room to launch a game.\n"
 "Launch aborted"
 msgstr ""
+"Mängu alustamiseks pead sa toas olema.\n"
+"Mängu alustamine katkestati"
 
 #: ../ggz-gtk/game.c:323
 msgid ""
 "No game types defined for this server.\n"
 "Launch aborted."
 msgstr ""
+"Selles serveris pole mängu liike kirjeldatud.\n"
+"Mängu alustamine katkestati"
 
 #: ../ggz-gtk/game.c:333
 msgid "This game doesn't support spectators."
@@ -598,7 +602,7 @@ msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:442
 msgid "That player isn't in the room!"
-msgstr ""
+msgstr "Mängija pole toas!"
 
 #: ../ggz-gtk/ggzclient.c:447
 msgid "There was an error sending the chat."
@@ -655,7 +659,7 @@ msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:740
 msgid "**none**"
-msgstr ""
+msgstr "**puudub**"
 
 #: ../ggz-gtk/ggzclient.c:747
 msgid "Offline"
@@ -683,7 +687,7 @@ msgstr "Sisselogitud"
 
 #: ../ggz-gtk/ggzclient.c:766
 msgid "--> Room"
-msgstr ""
+msgstr "--> Tuba"
 
 #: ../ggz-gtk/ggzclient.c:769
 msgid "Chatting"
@@ -691,7 +695,7 @@ msgstr "Vestlus"
 
 #: ../ggz-gtk/ggzclient.c:773
 msgid "--> Table"
-msgstr ""
+msgstr "--> Laud"
 
 #: ../ggz-gtk/ggzclient.c:776
 msgid "Playing"
@@ -699,7 +703,7 @@ msgstr "Mängimine"
 
 #: ../ggz-gtk/ggzclient.c:779
 msgid "<-- Table"
-msgstr ""
+msgstr "<-- Laud"
 
 #: ../ggz-gtk/ggzclient.c:782
 msgid "Logging Out"
@@ -824,11 +828,11 @@ msgstr "Vigane kasutajanimi, palun ära kasuta erimärke!"
 #: ../ggz-gtk/login.c:130
 #, c-format
 msgid "Login failed for unknown reason: %s"
-msgstr ""
+msgstr "Tõrge sisselogimisel, põhjus teadmata: %s"
 
 #: ../ggz-gtk/login.c:538
 msgid "Server Profile"
-msgstr ""
+msgstr "Serveri profiil"
 
 #: ../ggz-gtk/login.c:562 ../ggz-gtk/props.c:925
 msgid "Profile:"
@@ -978,7 +982,7 @@ msgstr "Nimi"
 
 #: ../ggz-gtk/props.c:249
 msgid "Properties Updated"
-msgstr ""
+msgstr "Omadused on uuendatud"
 
 #: ../ggz-gtk/props.c:1035
 msgid "Confirm:"
@@ -1187,7 +1191,7 @@ msgstr "Mängu nimi:"
 
 #: ../ggz-gtk/roominfo.c:110
 msgid "Room Description:"
-msgstr ""
+msgstr "Toa kirjeldus:"
 
 #: ../ggz-gtk/roominfo.c:155
 msgid "This room has no game"
@@ -1199,11 +1203,11 @@ msgstr "Pole"
 
 #: ../ggz-gtk/roominfo.c:175
 msgid "Unknown room"
-msgstr ""
+msgstr "Tundmatu tuba"
 
 #: ../ggz-gtk/roomlist.c:73
 msgid "You can't join a room; you're not logged in"
-msgstr ""
+msgstr "Sul pole võimalik tuppa siseneda, sa pole sisse logitud"
 
 #: ../ggz-gtk/roomlist.c:77
 msgid "You're already in between rooms"
@@ -1211,7 +1215,7 @@ msgstr ""
 
 #: ../ggz-gtk/roomlist.c:82
 msgid "You can't switch rooms while playing a game"
-msgstr ""
+msgstr "Mängimise ajal pole võimalik tuba vahetada"
 
 #: ../ggz-gtk/roomlist.c:89
 msgid "Unknown error"
@@ -1262,7 +1266,7 @@ msgstr "Autor"
 
 #: ../ggz-gtk/types.c:254
 msgid "Room List Filter:"
-msgstr ""
+msgstr "Tubade nimekirja filter:"
 
 #: ../ggz-gtk/types.c:266
 msgid "Set"

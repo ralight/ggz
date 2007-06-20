@@ -5,17 +5,15 @@
 # Copyright © 1998-2002 Free Software Foundation, Inc.
 # Kjartan Maraas <kmaraas@gnome.org>, 1998-2006.
 # Terance Edward Sola <terance@lyse.net>, 2005.
-# Kjartan Maraas <kmaraas@gnome.org>, 2007.
-# 
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-games 2.15.x\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-11-20 15:07+0100\n"
-"PO-Revision-Date: 2007-03-19 16:24+0100\n"
+"PO-Revision-Date: 2007-04-28 21:34+0200\n"
 "Last-Translator: Espen Stefansen <espenas@gmail.com>\n"
-"Language-Team: Norwegian/Bokmaal <i18n-nb@lister.ping.uio.no>\n"
+"Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -27,7 +25,7 @@ msgstr "Om"
 
 #: ../ggz-gtk/chat.c:89
 msgid "/msg <username> <message> . Private message a player"
-msgstr "/msg <brukernavn> <beskjed> . Privat beskjed til en bruker"
+msgstr "/msg <brukernavn> <beskjed> . Privat beskjed til en spiller"
 
 #: ../ggz-gtk/chat.c:91
 msgid "/table <message> .......... Message to your table"
@@ -39,7 +37,7 @@ msgstr ""
 
 #: ../ggz-gtk/chat.c:95
 msgid "/beep <username> .......... Beep a player"
-msgstr "/beep <brukernavn> .......... Send signal til en spiller"
+msgstr ""
 
 #: ../ggz-gtk/chat.c:97
 msgid "/help ..................... Get help"
@@ -47,31 +45,29 @@ msgstr "/help ..................... Få hjelp"
 
 #: ../ggz-gtk/chat.c:99
 msgid "/friends .................. List your friends"
-msgstr ""
+msgstr "/friends .................. Vis vennene dine"
 
 #: ../ggz-gtk/chat.c:101
 msgid "/ignore ................... List people you're ignoring"
-msgstr ""
+msgstr "/ignore ................... Vis personer du ignorerer"
 
 #: ../ggz-gtk/chat.c:104
 msgid "/kick <username> .......... Kick a player from the room"
-msgstr "/kick <brukernavn> .......... Kast ut en spiller fra rommet"
+msgstr ""
 
 #: ../ggz-gtk/chat.c:107
 msgid "/gag <username> ........... Gag a player to prevent them from talking"
-msgstr "/gag <brukernavn> ........... Hindre en spiller fra å snakke"
+msgstr ""
 
 #: ../ggz-gtk/chat.c:110
 msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
 msgstr ""
-"/ungag <brukernavn> ......... Tillat en spiller å prate (det motsatte av /"
-"gag)"
 
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
-msgstr "/ban <brukernavn> ........... Bannlys en spiller fra tjeneren"
+msgstr ""
 
 #: ../ggz-gtk/chat.c:254
 #, c-format
@@ -81,7 +77,7 @@ msgstr "Du har mottatt en ukjent beskjed fra %s."
 #: ../ggz-gtk/chat.c:318
 #, c-format
 msgid "You've been beeped by %s."
-msgstr "Du har fått et signal fra %s."
+msgstr ""
 
 #: ../ggz-gtk/chat.c:439
 msgid "Usage: /msg <username> <message>"
@@ -89,7 +85,7 @@ msgstr "Bruk: /msg <brukernavn> <beskjed>"
 
 #: ../ggz-gtk/chat.c:441
 msgid "    Sends a private message to a user on the network."
-msgstr "    Sender en privat beskjed til en bruker på nettverket."
+msgstr "    Send en privat beskjed til en bruker på nettverket."
 
 #: ../ggz-gtk/chat.c:495
 #, c-format
@@ -164,9 +160,6 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"Tjener-statistikker er ikke implementert enda.\n"
-"Hvis du vil hjelpe til, så besøk oss på\n"
-"http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
 #: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
@@ -204,7 +197,7 @@ msgstr ""
 
 #: ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:614
 msgid "That table is full."
-msgstr "Det bordet er fullt."
+msgstr "Bordet er fullt."
 
 #: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:334
 msgid "Error launching game module."
@@ -235,11 +228,11 @@ msgstr ""
 
 #: ../ggz-gtk/client.c:678
 msgid "Disconnect from the GGZ Gaming Zone server"
-msgstr "Koble fra GGZ Gaming Zone-tjeneren."
+msgstr ""
 
 #: ../ggz-gtk/client.c:680
 msgid "Start playing a game at a new table"
-msgstr ""
+msgstr "Start å spille et nytt spill på et nytt bord."
 
 #: ../ggz-gtk/client.c:682
 msgid "Join an existing game"
@@ -251,7 +244,7 @@ msgstr ""
 
 #: ../ggz-gtk/client.c:687
 msgid "Leave the game you're currently playing"
-msgstr "Forlat spillet du holder på å spille"
+msgstr "Forlat spillet du spiller for øyeblikket"
 
 #: ../ggz-gtk/client.c:689
 msgid "Show the properties dialog to change the client settings"
@@ -268,12 +261,12 @@ msgstr ""
 #: ../ggz-gtk/client.c:726
 #, c-format
 msgid "Client Version:14 %s"
-msgstr "Klient versjon:14 %s"
+msgstr "Klientversjon:14 %s"
 
 #: ../ggz-gtk/client.c:729
 #, c-format
 msgid "GTK+ Version:14 %d.%d.%d\n"
-msgstr "GTK+ versjon:14 %d.%d.%d\n"
+msgstr "GTK+-versjon:14 %d.%d.%d\n"
 
 #: ../ggz-gtk/client.c:736
 msgid "Compiled with debugging."
@@ -338,7 +331,7 @@ msgstr "Spillerliste"
 
 #: ../ggz-gtk/client.c:1053
 msgid "Server Stats"
-msgstr "Tjener-statistikk"
+msgstr "Tjenerstatistikker"
 
 #: ../ggz-gtk/client.c:1057
 msgid "Player Stats"
@@ -474,7 +467,7 @@ msgstr "Skaper"
 
 #: ../ggz-gtk/first.c:69
 msgid "GGZ Community (fast)"
-msgstr "GGZ Community (hurtig)"
+msgstr ""
 
 #: ../ggz-gtk/first.c:70
 msgid "Local developer server"
@@ -485,8 +478,6 @@ msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
-"Dette er første gangen du kjører GTK+ GGZ Gaming zone-klienten. Vil du "
-"opprette noen forvalgte tjener-profiler?"
 
 #: ../ggz-gtk/game.c:72
 #, c-format
@@ -494,8 +485,8 @@ msgid ""
 "You don't have this game installed. You can download\n"
 "it from %s."
 msgstr ""
-"Du har ikke installert dette spillet. Du kan laste\n"
-"det ned herfra %s."
+"Du har ikke dette spillet installert. Du kan laste det ned\n"
+"fra %s."
 
 #: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
 #: ../ggz-gtk/game.c:325 ../ggz-gtk/game.c:334 ../ggz-gtk/game.c:350
@@ -588,7 +579,7 @@ msgstr "Du har blitt med i rommet «%s»."
 #: ../ggz-gtk/ggzclient.c:378
 #, c-format
 msgid "Error joining room: %s"
-msgstr "Feil oppsto med å bli med i rom: %s"
+msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:429
 msgid "You can't chat while not in a room."
@@ -600,7 +591,7 @@ msgstr "Du har ikke tillatelse til å snakke her."
 
 #: ../ggz-gtk/ggzclient.c:438
 msgid "No private chatting at a table!"
-msgstr "Ingen privat snakking tillatt ved bordet."
+msgstr "Ingen privat snakking ved et bord!"
 
 #: ../ggz-gtk/ggzclient.c:442
 msgid "That player isn't in the room!"

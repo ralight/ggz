@@ -9,6 +9,7 @@
 # Keld Simonsen <keld@dkuug.dk>, 2000-2002.
 # Ole Laursen <olau@hardworking.dk>, 2001, 02, 03, 04.
 # Martin Willemoes Hansen <mwh@sysrq.dk>, 2004, 05.
+# Ask Hjorth Larsen <asklarsen@gmail.com>, 2007
 #
 # RETMIG: en eller anden med forstand på kabaler skal have oversat
 # navnene på spillene. Der er en kommentar til hver af dem der
@@ -20,18 +21,24 @@
 #   cave -> grotte
 #   hint -> fif
 #   GNOME Robots II -> Robotter
-#   Same Gnome (parodi på Same Game i KDE) -> Samspil 
+#   Same Gnome (parodi på Same Game i KDE) -> Samspil
+#   Gnibbles, Nibbles -> Orme
+#   score slot -> pointfelt
+#   tracker (gnome-sudoku) -> spor
+#
 #
 # Generelt er de fleste spilnavne oversat nådesløst til dansk.
 # Husk at tilføje dig i credit-listen (besked id "translator-credits")
+#
+# Der er en række strenge hvor der står f.eks. "glines|Medium". Så vidt jeg ved kommer der problemer når man oversætter teksten til venstre for |, så lad dette blive stående.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-games\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-11-20 15:07+0100\n"
-"PO-Revision-Date: 2005-06-15 12:22+0200\n"
-"Last-Translator: Martin Willemoes Hansen <mwh@sysrq.dk>\n"
+"PO-Revision-Date: 2007-04-10 23:29+0100\n"
+"Last-Translator: Peter Bach <bach.peter@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -40,139 +47,141 @@ msgstr ""
 
 #: ../ggz-gtk/about.c:87 ../ggz-gtk/client.c:1089
 msgid "About"
-msgstr ""
+msgstr "Om"
 
 #: ../ggz-gtk/chat.c:89
 msgid "/msg <username> <message> . Private message a player"
-msgstr ""
+msgstr "/msg <brugernavn> <meddelelse> . Send privat besked til en spiller"
 
 #: ../ggz-gtk/chat.c:91
 msgid "/table <message> .......... Message to your table"
-msgstr ""
+msgstr "/table <meddelelse> ....... Meddelelse til dit bord"
 
 #: ../ggz-gtk/chat.c:93
 msgid "/wall <message> ........... Admin command"
-msgstr ""
+msgstr "/wall <meddelelse> ........ Administratorkommando"
 
 #: ../ggz-gtk/chat.c:95
 msgid "/beep <username> .......... Beep a player"
-msgstr ""
+msgstr "/beep <brugernavn> ........ Send bip til spiller"
 
 #: ../ggz-gtk/chat.c:97
 msgid "/help ..................... Get help"
-msgstr ""
+msgstr "/help ..................... Få hjælp"
 
 #: ../ggz-gtk/chat.c:99
 msgid "/friends .................. List your friends"
-msgstr ""
+msgstr "/friends .................. Oprems dine venner"
 
 #: ../ggz-gtk/chat.c:101
 msgid "/ignore ................... List people you're ignoring"
-msgstr ""
+msgstr "/ignore ................... Oprems de personer du ignorerer"
 
 #: ../ggz-gtk/chat.c:104
 msgid "/kick <username> .......... Kick a player from the room"
-msgstr ""
+msgstr "/kick <brugernavn> ........ Smid en spiller ud fra rummet"
 
 #: ../ggz-gtk/chat.c:107
 msgid "/gag <username> ........... Gag a player to prevent them from talking"
-msgstr ""
+msgstr "/gag <brugernavn> ......... Forhindr en spiller i at tale"
 
 #: ../ggz-gtk/chat.c:110
 msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
 msgstr ""
+"/ungag <brugernavn> ....... Annullér gag-operationen så spilleren kan tale"
 
+# Det er måske ikke det friskeste, mest nutidige sprog, men computerkyndige vil nemmere kunne se forskel på kick/ban når der bruges glosen bandlys
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
-msgstr ""
+msgstr "/ban <brugernavn> ......... Bandlys en spiller fra serveren"
 
 #: ../ggz-gtk/chat.c:254
 #, c-format
 msgid "You have received an unknown message from %s."
-msgstr ""
+msgstr "Du har modtaget en ukendt meddelelse fra %s."
 
 #: ../ggz-gtk/chat.c:318
 #, c-format
 msgid "You've been beeped by %s."
-msgstr ""
+msgstr "Du er blevet bippet af %s."
 
 #: ../ggz-gtk/chat.c:439
 msgid "Usage: /msg <username> <message>"
-msgstr ""
+msgstr "Brug: /msg <brugernavn> <meddelelse>"
 
 #: ../ggz-gtk/chat.c:441
 msgid "    Sends a private message to a user on the network."
-msgstr ""
+msgstr "    Sender en private meddelelse til en bruger på netværket."
 
 #: ../ggz-gtk/chat.c:495
-#, fuzzy, c-format
+#, c-format
 msgid "Beep sent to %s."
-msgstr "Brikker der skal bruges"
+msgstr "Bip sendt til %s."
 
 #: ../ggz-gtk/chat.c:523
 #, c-format
 msgid "%s (logged on)"
-msgstr ""
+msgstr "%s (logget på)"
 
 #: ../ggz-gtk/chat.c:561
 #, c-format
 msgid "%s (logged off)"
-msgstr ""
+msgstr "%s (logget af)"
 
 #: ../ggz-gtk/chat.c:587
 msgid "Chat Commands"
-msgstr ""
+msgstr "Chatkommandoer"
 
+# Længden af denne streng er velsagtens bestemmende for antallet af prikker der bruges til udfyldning af linjerne der dokumenterer kommandoer
 #: ../ggz-gtk/chat.c:588
 msgid "-------------"
-msgstr ""
+msgstr "-------------"
 
 #: ../ggz-gtk/chat.c:592
 msgid "/me <action> .............. Send an action"
-msgstr ""
+msgstr "/me <handling> ............ Send en handling"
 
 #: ../ggz-gtk/chat.c:783
 #, c-format
 msgid "Added %s to your friends list."
-msgstr ""
+msgstr "Føjede %s til din venneliste."
 
 #: ../ggz-gtk/chat.c:807
-#, fuzzy, c-format
+#, c-format
 msgid "Removed %s from your friends list."
-msgstr "Fjern farvede kugler fra brættet ved at danne linjer"
+msgstr "Fjernede %s fra din venneliste."
 
 #: ../ggz-gtk/chat.c:838
 #, c-format
 msgid "Added %s to your ignore list."
-msgstr ""
+msgstr "Føjede %s til din ignoreringsliste."
 
 #: ../ggz-gtk/chat.c:863
 #, c-format
 msgid "Removed %s from your ignore list."
-msgstr ""
+msgstr "Fjernede %s fra din ignoreringsliste."
 
 #: ../ggz-gtk/chat.c:939
 msgid "People currently your friends"
-msgstr ""
+msgstr "Dine nuværende venner"
 
 #: ../ggz-gtk/chat.c:953
 msgid "People you're currently ignoring"
-msgstr ""
+msgstr "Personer du i øjeblikket ignorerer"
 
 #: ../ggz-gtk/chat.c:1029
 msgid "Multiple matches:"
-msgstr ""
+msgstr "Flere træfninger:"
 
 #: ../ggz-gtk/client.c:144
-#, fuzzy
 msgid "Are you sure you want to quit?"
-msgstr "Allerede brugt! Hvor ønsker du at lægge det?"
+msgstr "Er du sikker på at du vil afslutte?"
 
 #: ../ggz-gtk/client.c:144
 msgid "Quit?"
-msgstr ""
+msgstr "Afslut?"
 
 #: ../ggz-gtk/client.c:237
 msgid ""
@@ -180,12 +189,14 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
+"Serverstatistik er ikke implementeret\n"
+"endnu. Hvis du vil hjælpe, så kig forbi\n"
+"http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
 #: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
-#, fuzzy
 msgid "Not Implemented"
-msgstr "Fuld"
+msgstr "Ikke implementeret"
 
 #: ../ggz-gtk/client.c:248 ../ggz-gtk/client.c:545
 msgid ""
@@ -193,12 +204,17 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
+"Spillerstatistik er ikke implementeret\n"
+"endnu. Hvis du vil hjælpe, så kig forbi\n"
+"http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:294
 msgid ""
 "GGZ Gaming Zone help needs a browser to be configured.\n"
 "The configuration dialog will be invoked now."
 msgstr ""
+"GGZ-spilzonehjælp kræver indstilling af en browser.\n"
+"Konfigurationsvinduet vil blive åbnet nu."
 
 #: ../ggz-gtk/client.c:308
 msgid ""
@@ -207,111 +223,113 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
+"Integreret spilhjælp er ikke implementeret endnu.\n"
+"Hjælp findes på vores hjemmeside. Hvis du vil\n"
+"hjælpe så kig forbi\n"
+"http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:566
 msgid "You must highlight a table before you can join it."
-msgstr ""
+msgstr "Du skal markere et bord før du kan slutte dig til det."
 
 #: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
 msgid "Error Joining"
-msgstr ""
+msgstr "Fejl ved tilslutning"
 
 #: ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:614
 msgid "That table is full."
-msgstr ""
+msgstr "Det bord er fuldt."
 
 #: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:334
 msgid "Error launching game module."
-msgstr ""
+msgstr "Fejl ved opstart af spilmodul."
 
 #: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
 #: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:335
-#, fuzzy
 msgid "Game Error"
-msgstr "Spillet er slut"
+msgstr "Spilfejl"
 
 #: ../ggz-gtk/client.c:600
 msgid "You must highlight a table before you can watch it."
-msgstr ""
+msgstr "Du skal markere et bord før du kan observere det."
 
 #: ../ggz-gtk/client.c:602
 msgid "Error Spectating"
-msgstr ""
+msgstr "Fejl ved observation"
 
 #: ../ggz-gtk/client.c:647
 msgid ""
 "Failed to join table.\n"
 "Join aborted."
 msgstr ""
+"Kunne ikke sluttes til bordet.\n"
+"Tilslutning afbrudt."
 
 #: ../ggz-gtk/client.c:648
 msgid "Join Error"
-msgstr ""
+msgstr "Fejl ved tilslutning"
 
 #: ../ggz-gtk/client.c:678
 msgid "Disconnect from the GGZ Gaming Zone server"
-msgstr ""
+msgstr "Kobl fra GGZ-spilzoneserveren"
 
 #: ../ggz-gtk/client.c:680
 msgid "Start playing a game at a new table"
-msgstr ""
+msgstr "Påbegyndt et spil ved et nyt bord"
 
 #: ../ggz-gtk/client.c:682
-#, fuzzy
 msgid "Join an existing game"
-msgstr "Deltag i lokalt spil"
+msgstr "Deltag i et eksisterende spil"
 
 #: ../ggz-gtk/client.c:684
 msgid "Watch an existing game - become a spectator of the table"
-msgstr ""
+msgstr "Observér et eksisterende spil - blev tilskuer ved bordet"
 
 #: ../ggz-gtk/client.c:687
 msgid "Leave the game you're currently playing"
-msgstr ""
+msgstr "Forlad spillet du er i gang med"
 
 #: ../ggz-gtk/client.c:689
 msgid "Show the properties dialog to change the client settings"
-msgstr ""
+msgstr "Vis egenskabsvinduet for at ændre klientindstillinger"
 
 #: ../ggz-gtk/client.c:693
 msgid "Show the game stats for the current room's game type"
-msgstr ""
+msgstr "Vis spilstatistikken for det nuværende rums spiltype"
 
 #: ../ggz-gtk/client.c:696
 msgid "Exit the GGZ client application."
-msgstr ""
+msgstr "Afslut GGZ-klientprogrammet."
 
 #: ../ggz-gtk/client.c:726
 #, c-format
 msgid "Client Version:14 %s"
-msgstr ""
+msgstr "Klientversion:^C14 %s"
 
 #: ../ggz-gtk/client.c:729
 #, c-format
 msgid "GTK+ Version:14 %d.%d.%d\n"
-msgstr ""
+msgstr "GTK+ version:^C14 %d.%d.%d\n"
 
 #: ../ggz-gtk/client.c:736
 msgid "Compiled with debugging."
-msgstr ""
+msgstr "Kompileret med fejlfinding."
 
 #: ../ggz-gtk/client.c:934
 msgid "GGZ"
-msgstr ""
+msgstr "GGZ"
 
 #: ../ggz-gtk/client.c:942 ../ggz-gtk/login.c:710
-#, fuzzy
 msgid "Connect"
-msgstr "_Tilslut"
+msgstr "Tilslut"
 
 #: ../ggz-gtk/client.c:949 ../ggz-gtk/client.c:1180
-#, fuzzy
 msgid "Disconnect"
-msgstr "_Tilslut"
+msgstr "Kobl af"
 
 #: ../ggz-gtk/client.c:962
 msgid "Quit"
-msgstr ""
+msgstr "Afslut"
 
 #: ../ggz-gtk/client.c:969
 msgid "Game"
@@ -319,215 +337,196 @@ msgstr "Spil"
 
 #: ../ggz-gtk/client.c:978 ../ggz-gtk/client.c:1133 ../ggz-gtk/launch.c:693
 msgid "Launch"
-msgstr ""
+msgstr "Start"
 
 #: ../ggz-gtk/client.c:985 ../ggz-gtk/client.c:1141 ../ggz-gtk/roomlist.c:150
 #: ../ggz-gtk/tablelist.c:74
 msgid "Join"
-msgstr ""
+msgstr "Tilslut"
 
 #: ../ggz-gtk/client.c:992 ../ggz-gtk/client.c:1149
-#, fuzzy
 msgid "Watch"
-msgstr "_Vent"
+msgstr "Observér"
 
 #: ../ggz-gtk/client.c:1004 ../ggz-gtk/client.c:1157 ../ggz-gtk/tablelist.c:77
-#, fuzzy
 msgid "Leave"
-msgstr "Bane:"
+msgstr "Forlad"
 
 #: ../ggz-gtk/client.c:1011
 msgid "Edit"
-msgstr ""
+msgstr "Redigér"
 
 #: ../ggz-gtk/client.c:1019
 msgid "Properties"
-msgstr ""
+msgstr "Egenskaber"
 
 #: ../ggz-gtk/client.c:1026
-#, fuzzy
 msgid "View"
-msgstr "_Vis"
+msgstr "Vis"
 
 #: ../ggz-gtk/client.c:1035
 msgid "Room List"
-msgstr ""
+msgstr "Rumliste"
 
 #: ../ggz-gtk/client.c:1041
-#, fuzzy
 msgid "Player List"
-msgstr "Spillere"
+msgstr "Spillerliste"
 
 #: ../ggz-gtk/client.c:1053
 msgid "Server Stats"
-msgstr ""
+msgstr "Serverstatistik"
 
 #: ../ggz-gtk/client.c:1057
-#, fuzzy
 msgid "Player Stats"
-msgstr "Spillernavne"
+msgstr "Spillerstatistik"
 
 #: ../ggz-gtk/client.c:1065 ../ggz-gtk/types.c:237
-#, fuzzy
 msgid "Game Types"
-msgstr "Spiltype"
+msgstr "Spiltyper"
 
+# Jeg er ikke klar over om der findes en standardiseret dansk oversættelse
 #: ../ggz-gtk/client.c:1074 ../ggz-gtk/props.c:1491
 msgid "MOTD"
-msgstr ""
+msgstr "Dagens meddelelse"
 
 #: ../ggz-gtk/client.c:1081
-#, fuzzy
 msgid "Help"
-msgstr "_Hjælp"
+msgstr "Hjælp"
 
 #: ../ggz-gtk/client.c:1096
-#, fuzzy
 msgid "Copyright"
-msgstr "Træk til højre"
+msgstr "Ophavsret"
 
 #: ../ggz-gtk/client.c:1105
-#, fuzzy
 msgid "GGZ Help"
-msgstr "_Hjælp"
+msgstr "GGZ-hjælp"
 
 #: ../ggz-gtk/client.c:1112
-#, fuzzy
 msgid "Game Help"
-msgstr "Spillefelt"
+msgstr "Spilhjælp"
 
 #: ../ggz-gtk/client.c:1121
 msgid "Goto Web"
-msgstr ""
+msgstr "Gå til nettet"
 
 #: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:356
-#, fuzzy
 msgid "Stats"
-msgstr "Status"
+msgstr "Statistik"
 
 #: ../ggz-gtk/client.c:1196 ../ggz-gtk/ggzclient.c:718
 msgid "Current Room:"
-msgstr ""
+msgstr "Nuværende rum:"
 
 #: ../ggz-gtk/client.c:1277 ../ggz-gtk/playerinfo.c:259
 msgid "Message:"
-msgstr ""
+msgstr "Meddelelse:"
 
 #: ../ggz-gtk/client.c:1295
-#, fuzzy
 msgid "Send"
-msgstr "Hastighed"
+msgstr "Send"
 
 #: ../ggz-gtk/client.c:1480 ../ggz-gtk/ggzclient.c:400
 msgid "GGZ Gaming Zone"
-msgstr ""
+msgstr "GGZ-spillezone"
 
 #: ../ggz-gtk/first.c:57
-#, fuzzy
 msgid "Wizard"
-msgstr "Svær"
+msgstr "Troldmand"
 
 #: ../ggz-gtk/first.c:57
-#, fuzzy
 msgid "Deity"
-msgstr "Tusindfryd"
+msgstr "Guddom"
 
+# Eller vagtpost. Men det lyder lidt kedeligt
 #: ../ggz-gtk/first.c:57
-#, fuzzy
 msgid "Sentinel"
-msgstr "Valentin"
+msgstr "Vogter"
 
 #: ../ggz-gtk/first.c:57
-#, fuzzy
 msgid "Captain"
-msgstr "Camelot"
+msgstr "Kaptajn"
 
 #: ../ggz-gtk/first.c:58
-#, fuzzy
 msgid "Knight"
-msgstr "otte"
+msgstr "Ridder"
 
 # UKENDTE KORTSPIL BEGYNDER HER
+# Ovenstående passer da vist ikke helt længere, strengene synes at høre til et bestemt spil
 #: ../ggz-gtk/first.c:58
-#, fuzzy
 msgid "Angel"
-msgstr "Agnes"
+msgstr "Engel"
 
 #: ../ggz-gtk/first.c:58
 msgid "Silverlord"
-msgstr ""
+msgstr "Sølvherre"
 
 #: ../ggz-gtk/first.c:58
-#, fuzzy
 msgid "Eagle"
-msgstr "Ørnevinge"
+msgstr "Ørn"
 
 #: ../ggz-gtk/first.c:59
 msgid "Vampire"
-msgstr ""
+msgstr "Vampyr"
 
 #: ../ggz-gtk/first.c:59
 msgid "Chief"
-msgstr ""
+msgstr "Høvding"
 
 #: ../ggz-gtk/first.c:59
-#, fuzzy
 msgid "Colonel"
-msgstr "Polonaise"
+msgstr "Oberst"
 
 #: ../ggz-gtk/first.c:59
 msgid "General"
-msgstr "Generelt"
+msgstr "General"
 
 #: ../ggz-gtk/first.c:60
-#, fuzzy
 msgid "Major"
-msgstr "Mahjongg"
+msgstr "Major"
 
 #: ../ggz-gtk/first.c:60
-#, fuzzy
 msgid "Scout"
-msgstr "Blød"
+msgstr "Spejder"
 
 #: ../ggz-gtk/first.c:60
 msgid "Lieutenant"
-msgstr ""
+msgstr "Løjtnant"
 
 #: ../ggz-gtk/first.c:60
 msgid "Stalker"
-msgstr ""
+msgstr "Sniger"
 
 #: ../ggz-gtk/first.c:61
 msgid "Scientist"
-msgstr ""
+msgstr "Videnskabsmand"
 
 #: ../ggz-gtk/first.c:61
-#, fuzzy
 msgid "Scholar"
-msgstr "Stillinger"
+msgstr "Lærd"
 
 #: ../ggz-gtk/first.c:61
 msgid "Entity"
-msgstr ""
+msgstr "Legeme"
 
 #: ../ggz-gtk/first.c:61
-#, fuzzy
 msgid "Creator"
-msgstr "Elevator"
+msgstr "Skaber"
 
 #: ../ggz-gtk/first.c:69
 msgid "GGZ Community (fast)"
-msgstr ""
+msgstr "GGZ-samfund (hurtigt)"
 
 #: ../ggz-gtk/first.c:70
 msgid "Local developer server"
-msgstr ""
+msgstr "Lokal udviklerserver"
 
 #: ../ggz-gtk/first.c:190
 msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
+"Dette er første gang du kører GTK+ GGZ-spilzoneklienten. Vil du oprette "
+"nogle standard-serverprofiler?"
 
 #: ../ggz-gtk/game.c:72
 #, c-format
@@ -535,334 +534,329 @@ msgid ""
 "You don't have this game installed. You can download\n"
 "it from %s."
 msgstr ""
+"Du har ikke dette spil installeret. Du kan hente det\n"
+"fra %s."
 
 #: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
 #: ../ggz-gtk/game.c:325 ../ggz-gtk/game.c:334 ../ggz-gtk/game.c:350
 #: ../ggz-gtk/launch.c:290
 msgid "Launch Error"
-msgstr ""
+msgstr "Opstartsfejl"
 
 #: ../ggz-gtk/game.c:148
 msgid ""
 "Failed to execute game module.\n"
 " Launch aborted."
 msgstr ""
+"Kunne ikke eksekvere spilmodul.\n"
+" Opstart afbrudt."
 
 #: ../ggz-gtk/game.c:201
-#, fuzzy
 msgid "Launched game"
-msgstr "Sæt spillet på pause"
+msgstr "Spillet startet op"
 
 #: ../ggz-gtk/game.c:222
-#, fuzzy
 msgid "Launch failed"
-msgstr "Tilkobling mislykkedes"
+msgstr "Opstart mislykkedes"
 
 #: ../ggz-gtk/game.c:296
 msgid "You can only play one game at a time."
-msgstr ""
+msgstr "Du kan kun spille ét spil ad gangen."
 
 #: ../ggz-gtk/game.c:304
 msgid "You're still at a table."
-msgstr ""
+msgstr "Du er stadig ved et bord."
 
 #: ../ggz-gtk/game.c:313
 msgid ""
 "You must be in a room to launch a game.\n"
 "Launch aborted"
 msgstr ""
+"Du skal være i et rum for at starte et spil.\n"
+"Opstart afbrudt"
 
 #: ../ggz-gtk/game.c:323
 msgid ""
 "No game types defined for this server.\n"
 "Launch aborted."
 msgstr ""
+"Ingen spiltyper er defineret for denne server.\n"
+"Opstart afbrudt."
 
 #: ../ggz-gtk/game.c:333
-#, fuzzy
 msgid "This game doesn't support spectators."
-msgstr "Dette spil kan ikke give fif endnu."
+msgstr "Dette spil understøtter ikke tilskuere."
 
 #: ../ggz-gtk/game.c:348
 msgid ""
 "You need to launch the GGZ client directly\n"
 "to be able to play this game."
 msgstr ""
+"GGZ-klienten skal startes direkte for at\n"
+"dette spil kan spilles."
 
 #: ../ggz-gtk/ggzclient.c:122
 #, c-format
 msgid "Error connecting to server: %s"
-msgstr ""
+msgstr "Fejl ved tilslutning til server: %s"
 
 #: ../ggz-gtk/ggzclient.c:124 ../ggz-gtk/ggzclient.c:380
 #: ../ggz-gtk/ggzclient.c:561 ../ggz-gtk/ggzclient.c:596
 #: ../ggz-gtk/ggzclient.c:649 ../ggz-gtk/ggzclient.c:1079
 #: ../ggz-gtk/launch.c:325
 msgid "Error"
-msgstr ""
+msgstr "Fejl"
 
 #: ../ggz-gtk/ggzclient.c:237
 #, c-format
 msgid "Your new password is %s"
-msgstr ""
+msgstr "Din nye adgangskode er %s"
 
 #: ../ggz-gtk/ggzclient.c:239
 msgid "New password"
-msgstr ""
+msgstr "Ny adgangskode"
 
 #: ../ggz-gtk/ggzclient.c:275
-#, fuzzy, c-format
+#, c-format
 msgid "Players on server: %d"
-msgstr ""
-"Første spiller:\n"
-"%s"
+msgstr "Spillere på server: %d"
 
 #: ../ggz-gtk/ggzclient.c:320
 #, c-format
 msgid "Current Room: %s"
-msgstr ""
+msgstr "Nuværende rum: %s"
 
 #: ../ggz-gtk/ggzclient.c:328
 #, c-format
 msgid "You've joined room \"%s\"."
-msgstr ""
+msgstr "Du er nu i rummet \"%s\"."
 
 #: ../ggz-gtk/ggzclient.c:378
 #, c-format
 msgid "Error joining room: %s"
-msgstr ""
+msgstr "Fejl under forbindelse til rummet: %s"
 
 #: ../ggz-gtk/ggzclient.c:429
 msgid "You can't chat while not in a room."
-msgstr ""
+msgstr "Du kan ikke chatte når du ikke er i et rum."
 
 #: ../ggz-gtk/ggzclient.c:434
 msgid "You don't have permission to chat here."
-msgstr ""
+msgstr "Du har ikke rettigheder til at chatte her."
 
 #: ../ggz-gtk/ggzclient.c:438
 msgid "No private chatting at a table!"
-msgstr ""
+msgstr "Ingen privat snak ved et bord!"
 
 #: ../ggz-gtk/ggzclient.c:442
-#, fuzzy
 msgid "That player isn't in the room!"
-msgstr "Spilleren %s kom med i spillet."
+msgstr "Den spiller er ikke i rummet!"
 
 #: ../ggz-gtk/ggzclient.c:447
-#, fuzzy
 msgid "There was an error sending the chat."
-msgstr "Der opstod en fejl under tilgang til GConf: %s"
+msgstr "Der opstod en fejl under forsendelse af beskeden."
 
 #: ../ggz-gtk/ggzclient.c:451
-#, fuzzy
 msgid "You're not at a table."
-msgstr "Ingen fif tilgængelige"
+msgstr "Du er ikke ved et bord."
 
 #: ../ggz-gtk/ggzclient.c:455
 #, c-format
 msgid "Chat failed: %s."
-msgstr ""
+msgstr "Chat fejlede: %s."
 
 #: ../ggz-gtk/ggzclient.c:559
 #, c-format
 msgid "Error launching table: %s"
-msgstr ""
+msgstr "Fejl ved opstart af bord: %s"
 
 #: ../ggz-gtk/ggzclient.c:579
 #, c-format
 msgid "You have joined table %d."
-msgstr ""
+msgstr "Du er nu ved bordet %d."
 
 #: ../ggz-gtk/ggzclient.c:594
 #, c-format
 msgid "Error joining table: %s"
-msgstr ""
+msgstr "Fejl ved forbindelse til bord: %s"
 
 #: ../ggz-gtk/ggzclient.c:616
 #, c-format
 msgid "You have been booted from the table by %s."
-msgstr ""
+msgstr "Du er blevet bortvist fra bordet af %s."
 
 #: ../ggz-gtk/ggzclient.c:621
 #, c-format
 msgid "You have left the table."
-msgstr ""
+msgstr "Du har forladt bordet."
 
 #: ../ggz-gtk/ggzclient.c:624
-#, fuzzy, c-format
+#, c-format
 msgid "The game is over."
-msgstr "Spilserveren"
+msgstr "Spillet er slut."
 
 #: ../ggz-gtk/ggzclient.c:628
 #, c-format
 msgid "There was an error with the game server."
-msgstr ""
+msgstr "Der opstod en fejl med spilserveren."
 
 #: ../ggz-gtk/ggzclient.c:647
 #, c-format
 msgid "Error leaving table: %s"
-msgstr ""
+msgstr "Fejl idet bordet forlades: %s"
 
 #: ../ggz-gtk/ggzclient.c:740
 msgid "**none**"
-msgstr ""
+msgstr "**ingen**"
 
 #: ../ggz-gtk/ggzclient.c:747
 msgid "Offline"
-msgstr ""
+msgstr "Afkoblet"
 
 #: ../ggz-gtk/ggzclient.c:750
-#, fuzzy
 msgid "Connecting"
-msgstr "_Tilslut"
+msgstr "Forbinder"
 
 #: ../ggz-gtk/ggzclient.c:753
-#, fuzzy
 msgid "Reconnecting"
-msgstr "_Tilslut"
+msgstr "Genforbinder"
 
 #: ../ggz-gtk/ggzclient.c:756
-#, fuzzy
 msgid "Online"
-msgstr "ni"
+msgstr "Opkoblet"
 
 #: ../ggz-gtk/ggzclient.c:759
 msgid "Logging In"
-msgstr ""
+msgstr "Logger ind"
 
 #: ../ggz-gtk/ggzclient.c:762
 msgid "Logged In"
-msgstr ""
+msgstr "Logget ind"
 
 #: ../ggz-gtk/ggzclient.c:766
 msgid "--> Room"
-msgstr ""
+msgstr "--> Rum"
 
 #: ../ggz-gtk/ggzclient.c:769
 msgid "Chatting"
-msgstr ""
+msgstr "Chatter"
 
 #: ../ggz-gtk/ggzclient.c:773
 msgid "--> Table"
-msgstr ""
+msgstr "--> Bord"
 
 #: ../ggz-gtk/ggzclient.c:776
-#, fuzzy
 msgid "Playing"
-msgstr "Fletning"
+msgstr "Spiller"
 
 #: ../ggz-gtk/ggzclient.c:779
 msgid "<-- Table"
-msgstr ""
+msgstr "<-- Bord"
 
 #: ../ggz-gtk/ggzclient.c:782
 msgid "Logging Out"
-msgstr ""
+msgstr "Logger af"
 
 #: ../ggz-gtk/ggzclient.c:1078
 #, c-format
 msgid "Server error: %s"
-msgstr ""
+msgstr "Serverfejl: %s"
 
 #: ../ggz-gtk/ggzclient.c:1166
 msgid "Disconnected from server."
-msgstr ""
+msgstr "Koblet fra server."
 
 #: ../ggz-gtk/launch.c:114
-#, fuzzy, c-format
+#, c-format
 msgid "Game Type:  %s"
-msgstr "Spiltype"
+msgstr "Spiltype:  %s"
 
 #: ../ggz-gtk/launch.c:120
 #, c-format
 msgid "Author:  %s"
-msgstr ""
+msgstr "Forfatter:  %s"
 
 #: ../ggz-gtk/launch.c:127
 #, c-format
 msgid "Description:  %s"
-msgstr ""
+msgstr "Beskrivelse:  %s"
 
 #: ../ggz-gtk/launch.c:133
 #, c-format
 msgid "Home Page:  %s"
-msgstr ""
+msgstr "Hjemmeside:  %s"
 
 #: ../ggz-gtk/launch.c:289
 msgid ""
 "Failed to launch table.\n"
 " Launch aborted."
 msgstr ""
+"Kunne ikke starte bordet op.\n"
+" Opstart afbrudt."
 
 #: ../ggz-gtk/launch.c:325
 msgid "Invalid number of bots specified"
-msgstr ""
+msgstr "Ugyldigt antal computerspillere angivet"
 
 #: ../ggz-gtk/launch.c:420
 msgid "Seat Assignments"
-msgstr ""
+msgstr "Sædetildeling"
 
 #: ../ggz-gtk/launch.c:443
-#, fuzzy
 msgid "Game Type:"
-msgstr "Spiltype"
+msgstr "Spiltype:"
 
 #: ../ggz-gtk/launch.c:479
-#, fuzzy
 msgid "Number of seats"
-msgstr "Antal miner"
+msgstr "Antal sæder"
 
 #: ../ggz-gtk/launch.c:495 ../ggz-gtk/roominfo.c:90
 msgid "Author:"
-msgstr ""
+msgstr "Forfatter:"
 
 #: ../ggz-gtk/launch.c:513
-#, fuzzy
 msgid "Description:"
-msgstr "Skorpion"
+msgstr "Beskrivelse:"
 
 #: ../ggz-gtk/launch.c:530 ../ggz-gtk/roominfo.c:100
-#, fuzzy
 msgid "Homepage:"
-msgstr "_Billede:"
+msgstr "Hjemmeside:"
 
 #: ../ggz-gtk/launch.c:586
 #, c-format
 msgid "Seat %d:"
-msgstr ""
+msgstr "Sæde %d:"
 
 #: ../ggz-gtk/launch.c:598
-#, fuzzy
 msgid "Computer"
-msgstr "Fuld"
+msgstr "Computer"
 
+# Vi gætter på at det er et verbum eftersom de ligger i noget der hedder launch.c
 #: ../ggz-gtk/launch.c:613
-#, fuzzy
 msgid "Open"
-msgstr "Operation"
+msgstr "Åbn"
 
 #: ../ggz-gtk/launch.c:628
-#, fuzzy
 msgid "Reserved for"
-msgstr "Reserve tilbage:"
+msgstr "Reserveret til"
 
+# Det er velsagtens vigtigt at der er det rigtige antal mellemrum bagefter, hvorved forstås at strengen nok skal have en ganske bestemt længde
 #: ../ggz-gtk/launch.c:663
 msgid "Game Description   "
-msgstr ""
+msgstr "Spilbeskrivelse    "
 
 #: ../ggz-gtk/login.c:101
 msgid "Login"
-msgstr ""
+msgstr "Logind"
 
 #: ../ggz-gtk/login.c:108
 msgid "Sorry!"
-msgstr ""
+msgstr "Undskyld!"
 
 #: ../ggz-gtk/login.c:115
 #, c-format
 msgid "That username is already in use."
-msgstr ""
+msgstr "Det brugernavn er allerede i brug."
 
 #: ../ggz-gtk/login.c:119
 #, c-format
@@ -870,182 +864,173 @@ msgid ""
 "Authentication has failed.\n"
 "Please supply the correct password."
 msgstr ""
+"Fejl ved godkendelse.\n"
+"Skriv venligst den korrekte adgangskode."
 
 #: ../ggz-gtk/login.c:123
 #, c-format
 msgid "The username is too long!"
-msgstr ""
+msgstr "Det brugernavn er for langt!"
 
 #: ../ggz-gtk/login.c:126
 #, c-format
 msgid "Invalid username, do not use special characters!"
-msgstr ""
+msgstr "Ugyldigt brugernavn, brug ikke specialtegn!"
 
 #: ../ggz-gtk/login.c:130
 #, c-format
 msgid "Login failed for unknown reason: %s"
-msgstr ""
+msgstr "Indlogning fejlede af ukendt årsag: %s"
 
 #: ../ggz-gtk/login.c:538
 msgid "Server Profile"
-msgstr ""
+msgstr "Serverprofil"
 
 #: ../ggz-gtk/login.c:562 ../ggz-gtk/props.c:925
 msgid "Profile:"
-msgstr ""
+msgstr "Profil:"
 
 #: ../ggz-gtk/login.c:582
+#, fuzzy
 msgid "Edit Profiles..."
-msgstr ""
+msgstr "Redigér profiler..."
 
 #: ../ggz-gtk/login.c:590 ../ggz-gtk/props.c:946
-#, fuzzy
 msgid "Server:"
-msgstr "Stilling:"
+msgstr "Server:"
 
 #: ../ggz-gtk/login.c:600
 msgid "localhost"
 msgstr ""
 
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
-#, fuzzy
 msgid "Port:"
-msgstr "Dårligste:"
+msgstr "Port:"
 
 #: ../ggz-gtk/login.c:612
 msgid "5688"
 msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
-#, fuzzy
 msgid "Username:"
-msgstr "_Værtsnavn:"
+msgstr "Brugernavn:"
 
 #: ../ggz-gtk/login.c:648 ../ggz-gtk/props.c:1014
 msgid "Password:"
-msgstr ""
+msgstr "Adgangskode:"
 
 #: ../ggz-gtk/login.c:664
 msgid "Email:"
-msgstr ""
+msgstr "E-post:"
 
 #: ../ggz-gtk/login.c:680 ../ggz-gtk/props.c:1057
 msgid "Normal Login"
-msgstr ""
+msgstr "Normal indlogning"
 
 #: ../ggz-gtk/login.c:691 ../ggz-gtk/props.c:1065
 msgid "Guest Login"
-msgstr ""
+msgstr "Gæsteindlogning"
 
 #: ../ggz-gtk/login.c:699
 msgid "First-time Login"
-msgstr ""
+msgstr "Førstegangs-indlogning"
 
 #: ../ggz-gtk/motd.c:161
-#, fuzzy
 msgid "Message of the Day"
-msgstr "Flyt ~a væk fra bordet"
+msgstr "Dagens meddelelse"
 
 #: ../ggz-gtk/pick_module.c:89
 msgid "Which client would you like to use to play this game?"
-msgstr ""
+msgstr "Hvilken klient vil du bruge til at spille dette spil?"
 
 #: ../ggz-gtk/pick_module.c:131
 msgid "Don't ask me again."
-msgstr ""
+msgstr "Spørg mig ikke igen."
 
 #: ../ggz-gtk/playerinfo.c:102
-#, fuzzy
 msgid "Player Information"
-msgstr "Spillerteleportering"
+msgstr "Spillerinformation"
 
 #: ../ggz-gtk/playerinfo.c:132
-#, fuzzy
 msgid "Player Handle:"
-msgstr "Spiller død"
+msgstr "Spillerhåndtag:"
 
 #: ../ggz-gtk/playerinfo.c:150
-#, fuzzy
 msgid "Table:"
-msgstr "Brikker:"
+msgstr "Bord:"
 
 #: ../ggz-gtk/playerinfo.c:168
 msgid "Account:"
-msgstr ""
+msgstr "Konto:"
 
 #: ../ggz-gtk/playerinfo.c:187
-#, fuzzy
 msgid "Record:"
-msgstr "Stilling:"
+msgstr "Rekord:"
 
+# Evt. bedømmelse. Men i skakhenseende bruger man også ordet rating på dansk (i hvertfald den af mine venner der har forstand på det)
 #: ../ggz-gtk/playerinfo.c:205
-#, fuzzy
 msgid "Rating:"
-msgstr "Tilbage:"
+msgstr "Rating:"
 
 #: ../ggz-gtk/playerinfo.c:223
-#, fuzzy
 msgid "Rank:"
-msgstr "Sort:"
+msgstr "Rang:"
 
 #: ../ggz-gtk/playerinfo.c:241
 msgid "Score:"
-msgstr "Stilling:"
+msgstr "Resultater:"
 
 #: ../ggz-gtk/playerinfo.c:302 ../ggz-gtk/playerinfo.c:334
-#, fuzzy
 msgid "Unknown"
-msgstr "Ukendt rækkefølge"
+msgstr "Ukendt"
 
 #: ../ggz-gtk/playerinfo.c:337
 msgid "Registered"
-msgstr ""
+msgstr "Registreret"
 
 #: ../ggz-gtk/playerinfo.c:340
-#, fuzzy
 msgid "Guest"
-msgstr "Flad"
+msgstr "Gæst"
 
 #: ../ggz-gtk/playerinfo.c:343
-#, fuzzy
 msgid "Host"
-msgstr "Hinkesten"
+msgstr "Vært"
 
 #: ../ggz-gtk/playerinfo.c:346
 msgid "Administrator"
-msgstr ""
+msgstr "Administrator"
 
 #: ../ggz-gtk/playerinfo.c:349
 msgid "Bot"
-msgstr ""
+msgstr "Computerspiller"
 
 #: ../ggz-gtk/playerlist.c:94 ../ggz-gtk/roomlist.c:144
 #: ../ggz-gtk/tablelist.c:84
-#, fuzzy
 msgid "Info"
-msgstr "Iagno"
+msgstr "Info"
 
 #: ../ggz-gtk/playerlist.c:101
 msgid "Friends"
-msgstr ""
+msgstr "Venner"
 
 #: ../ggz-gtk/playerlist.c:106
-#, fuzzy
 msgid "Ignore"
-msgstr "Iagno"
+msgstr "Ignorér"
 
+# Tusind tak, programmører
 #: ../ggz-gtk/playerlist.c:246
 #, c-format
 msgid "#%d"
-msgstr ""
+msgstr "#%d"
 
+# Hvad sker der for dem?
 #: ../ggz-gtk/playerlist.c:346
 msgid "L"
-msgstr ""
+msgstr "L"
 
 #: ../ggz-gtk/playerlist.c:351 ../ggz-gtk/tablelist.c:191
 msgid "T#"
-msgstr ""
+msgstr "T#"
 
 #: ../ggz-gtk/playerlist.c:362 ../ggz-gtk/types.c:176
 msgid "Name"
@@ -1053,291 +1038,270 @@ msgstr "Navn"
 
 #: ../ggz-gtk/props.c:249
 msgid "Properties Updated"
-msgstr ""
+msgstr "Egenskaber opdateret"
 
 #: ../ggz-gtk/props.c:1035
 msgid "Confirm:"
-msgstr ""
+msgstr "Bekræft:"
 
 #: ../ggz-gtk/props.c:1085
 msgid "Modify"
-msgstr ""
+msgstr "Ændr"
 
 #: ../ggz-gtk/props.c:1099
-#, fuzzy
 msgid "Servers"
-msgstr "Stillinger"
+msgstr "Servere"
 
 #: ../ggz-gtk/props.c:1118
 msgid "Chat Font:"
-msgstr ""
+msgstr "Skrifttype i chat:"
 
 #: ../ggz-gtk/props.c:1134
-#, fuzzy
 msgid "Change"
-msgstr "Orange"
+msgstr "Ændr"
 
 #: ../ggz-gtk/props.c:1147
 msgid "Ignore Join/Part Messages"
-msgstr ""
+msgstr "Ignorér tilslutning-/frakoblingsbeskeder"
 
 #: ../ggz-gtk/props.c:1155
-#, fuzzy
 msgid "Play Sounds"
-msgstr "Lyd"
+msgstr "Afspil lyde"
 
 #: ../ggz-gtk/props.c:1163
 msgid "Auto Indent"
-msgstr ""
+msgstr "Automatisk indrykning"
 
 #: ../ggz-gtk/props.c:1171
 msgid "Timestamp Chats"
-msgstr ""
+msgstr "Tidsstempler på chat"
 
 #: ../ggz-gtk/props.c:1179
 msgid "Word Wrap"
-msgstr ""
+msgstr "Ordombrydning"
 
 #: ../ggz-gtk/props.c:1187
-#, fuzzy
 msgid "Chat Color"
-msgstr "Farver"
+msgstr "Chatfarve"
 
 #: ../ggz-gtk/props.c:1236
 msgid "Default chat color assigned to your friends"
-msgstr ""
+msgstr "Standardfarve til dine venner på chatten"
 
 #: ../ggz-gtk/props.c:1245
 msgid "Chat color used when your name is typed"
-msgstr ""
+msgstr "Chatfarve der benyttes når dit navn skrives"
 
 #: ../ggz-gtk/props.c:1254
 msgid "Chat color used for all other chats"
-msgstr ""
+msgstr "Chatfarve der benyttes til alle andre meddelelser"
 
 #: ../ggz-gtk/props.c:1263
-#, fuzzy
 msgid "Normal Color"
-msgstr "_Ormefarve:"
+msgstr "Normal farve"
 
 #: ../ggz-gtk/props.c:1274
 msgid "Highlight Color"
-msgstr ""
+msgstr "Markeringsfarve"
 
 #: ../ggz-gtk/props.c:1285
 msgid "Friend Color"
-msgstr ""
+msgstr "Vennefarve"
 
 #: ../ggz-gtk/props.c:1296
-#, fuzzy
 msgid "Black Background"
-msgstr "Blackjack"
+msgstr "Sort baggrund"
 
 #: ../ggz-gtk/props.c:1305
-#, fuzzy
 msgid "White Background"
-msgstr "Baggrundsfarven"
+msgstr "Hvid baggrund"
 
 #: ../ggz-gtk/props.c:1314
-#, fuzzy
 msgid "Chat"
-msgstr "Camelot"
+msgstr "Chat"
 
 #: ../ggz-gtk/props.c:1326
 msgid "All of the following information is optional."
-msgstr ""
+msgstr "Al den følgende information er valgfri."
 
 #: ../ggz-gtk/props.c:1344
-#, fuzzy
 msgid "Name:"
-msgstr "Navn"
+msgstr "Navn:"
 
 #: ../ggz-gtk/props.c:1371
 msgid "City:"
-msgstr ""
+msgstr "By:"
 
 #: ../ggz-gtk/props.c:1392
-#, fuzzy
 msgid "State:"
-msgstr "Status"
+msgstr "Stat:"
 
 #: ../ggz-gtk/props.c:1413
-#, fuzzy
 msgid "Country:"
-msgstr "_Kontrol"
+msgstr "Land:"
 
 #: ../ggz-gtk/props.c:1428
+#, fuzzy
 msgid "Comments, Hobies, Etc."
-msgstr ""
+msgstr "Kommentarer, hobbyer osv."
 
 #: ../ggz-gtk/props.c:1450
-#, fuzzy
 msgid "User Information"
-msgstr "Benyt hurtig animation"
+msgstr "Brugerinformation"
 
 #: ../ggz-gtk/props.c:1459
 msgid "Browser to launch URLs with:"
-msgstr ""
+msgstr "Browser der benyttes til URL'er:"
 
+# Browser
 #: ../ggz-gtk/props.c:1464 ../ggz-gtk/props.c:1484 ../ggz-gtk/support.c:139
 msgid "Galeon - New"
-msgstr ""
+msgstr "Galeon - Ny"
 
 #: ../ggz-gtk/props.c:1465 ../ggz-gtk/support.c:142
 msgid "Galeon - Existing"
-msgstr ""
+msgstr "Galeon - Eksisterende"
 
 #: ../ggz-gtk/props.c:1466 ../ggz-gtk/support.c:145
 msgid "Gnome URL Handler"
-msgstr ""
+msgstr "Gnome URL-håndtering"
 
 #: ../ggz-gtk/props.c:1467 ../ggz-gtk/support.c:148
 msgid "Konqueror - New"
-msgstr ""
+msgstr "Konqueror - Ny"
 
 #: ../ggz-gtk/props.c:1468 ../ggz-gtk/support.c:151
 msgid "Konqueror - Existing"
-msgstr ""
+msgstr "Konqueror - Eksisterende"
 
 #: ../ggz-gtk/props.c:1469 ../ggz-gtk/support.c:163
 msgid "Lynx"
-msgstr ""
+msgstr "Lynx"
 
 #: ../ggz-gtk/props.c:1470 ../ggz-gtk/support.c:169
 msgid "Mozilla - New"
-msgstr ""
+msgstr "Mozilla - Ny"
 
 #: ../ggz-gtk/props.c:1471 ../ggz-gtk/support.c:172
 msgid "Mozilla - Existing"
-msgstr ""
+msgstr "Mozilla - Eksisterende"
 
 #: ../ggz-gtk/props.c:1472 ../ggz-gtk/support.c:176
 msgid "Netscape - New"
-msgstr ""
+msgstr "Netscape - Ny"
 
 #: ../ggz-gtk/props.c:1473 ../ggz-gtk/support.c:179
 msgid "Netscape - Existing"
-msgstr ""
+msgstr "Netscape - Eksisterende"
 
 #: ../ggz-gtk/props.c:1474 ../ggz-gtk/support.c:183
 msgid "Opera - New"
-msgstr ""
+msgstr "Opera - Ny"
 
 #: ../ggz-gtk/props.c:1475 ../ggz-gtk/support.c:186
-#, fuzzy
 msgid "Opera - Existing"
-msgstr "Operation"
+msgstr "Opera - Eksisterende"
 
 #: ../ggz-gtk/props.c:1476 ../ggz-gtk/support.c:191
 msgid "Firefox - New"
-msgstr ""
+msgstr "Firefox - Ny"
 
 #: ../ggz-gtk/props.c:1477 ../ggz-gtk/support.c:194
 msgid "Firefox - Existing"
-msgstr ""
+msgstr "Firefox - Eksisterende"
 
 #: ../ggz-gtk/props.c:1486
 msgid "Single Click Room Entry"
-msgstr ""
+msgstr "Rumtilgang ved enkeltklik"
 
 #: ../ggz-gtk/props.c:1500
 msgid "Display All"
-msgstr ""
+msgstr "Vis alle"
 
 #: ../ggz-gtk/props.c:1509
 msgid "Display New"
-msgstr ""
+msgstr "Vis nye"
 
 #: ../ggz-gtk/props.c:1518
-#, fuzzy
 msgid "Display Important"
-msgstr "Vis sandsynligheder"
+msgstr "Vis vigtige"
 
 #: ../ggz-gtk/props.c:1527
-#, fuzzy
 msgid "Display None"
-msgstr "Vis sandsynligheder"
+msgstr "Vis ingen"
 
 #: ../ggz-gtk/props.c:1536
 msgid "Options"
 msgstr "Indstillinger"
 
 #: ../ggz-gtk/props.c:1625
-#, fuzzy
 msgid "Select Font"
-msgstr "Vælg kabale"
+msgstr "Vælg skrifttype"
 
 #: ../ggz-gtk/roominfo.c:63
 msgid "Room Information"
-msgstr ""
+msgstr "Ruminformation"
 
 #: ../ggz-gtk/roominfo.c:80
-#, fuzzy
 msgid "Game Name:"
-msgstr "_Spilnavn:"
+msgstr "Spilnavn:"
 
 #: ../ggz-gtk/roominfo.c:110
 msgid "Room Description:"
-msgstr ""
+msgstr "Rumbeskrivelse:"
 
 #: ../ggz-gtk/roominfo.c:155
 msgid "This room has no game"
-msgstr ""
+msgstr "Dette rum har intet spil"
 
 #: ../ggz-gtk/roominfo.c:162 ../ggz-gtk/roominfo.c:169
 msgid "N/A"
 msgstr "-"
 
 #: ../ggz-gtk/roominfo.c:175
-#, fuzzy
 msgid "Unknown room"
-msgstr "Ukendt farve"
+msgstr "Ukendt rum"
 
 #: ../ggz-gtk/roomlist.c:73
 msgid "You can't join a room; you're not logged in"
-msgstr ""
+msgstr "Du kan ikke gå ind i et rum; du er ikke logget ind"
 
+# "in between" betyder jo også at man er udenfor det (in between jobs = arbejdsløs), men afhængigt af hvad de mener kan det oversættes forskelligt
 #: ../ggz-gtk/roomlist.c:77
-#, fuzzy
 msgid "You're already in between rooms"
-msgstr "Pause mellem kast"
+msgstr "Du er allerede mellem forskellige rum"
 
 #: ../ggz-gtk/roomlist.c:82
 msgid "You can't switch rooms while playing a game"
-msgstr ""
+msgstr "Du kan ikke skifte rum mens du spiller et spil"
 
 #: ../ggz-gtk/roomlist.c:89
-#, fuzzy
 msgid "Unknown error"
-msgstr "Ukendt farve"
+msgstr "Ukendt fejl"
 
 #: ../ggz-gtk/roomlist.c:109 ../ggz-gtk/roomlist.c:114
 msgid "Error joining room"
-msgstr ""
+msgstr "Fejl ved tilslutning til rum"
 
 #: ../ggz-gtk/roomlist.c:350
 msgid "Other Rooms"
-msgstr ""
+msgstr "Andre rum"
 
 #: ../ggz-gtk/roomlist.c:424
-#, fuzzy
 msgid "Room"
-msgstr "Rom"
+msgstr "Rum"
 
 #: ../ggz-gtk/tablelist.c:161
-#, fuzzy
 msgid "No description available."
-msgstr "Ingen fif tilgængelige"
+msgstr "Ingen beskrivelse tilgængelig."
 
 #: ../ggz-gtk/tablelist.c:196
-#, fuzzy
 msgid "Seats"
-msgstr "hjerter"
+msgstr "Sæder"
 
 #: ../ggz-gtk/tablelist.c:201 ../ggz-gtk/types.c:183
-#, fuzzy
 msgid "Description"
-msgstr "Skorpion"
+msgstr "Beskrivelse"
 
 #: ../ggz-gtk/types.c:113
 msgid "None"
@@ -1349,23 +1313,25 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
+"Rumfiltrering er ikke implementeret endnu.\n"
+"Hvis du vil hjælpe, så kig forbi\n"
+"http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/types.c:191
 msgid "Web Address"
-msgstr ""
+msgstr "Webadresse"
 
 #: ../ggz-gtk/types.c:199
 msgid "Author"
-msgstr ""
+msgstr "Forfatter"
 
 #: ../ggz-gtk/types.c:254
 msgid "Room List Filter:"
-msgstr ""
+msgstr "Filter til rumliste:"
 
 #: ../ggz-gtk/types.c:266
-#, fuzzy
 msgid "Set"
-msgstr "Opsætning"
+msgstr "Indstil"
 
 #: ../ggz-gtk/types.c:306
 #, fuzzy
@@ -1373,13 +1339,14 @@ msgid "Upgrage Game"
 msgstr "Bagerspil"
 
 #: ../ggz-gtk/types.c:309
+#, fuzzy
 msgid "Goto Web Site"
-msgstr ""
+msgstr "Gå til nettet"
 
 #: ../src/main.c:119
 #, fuzzy
 msgid "Enable session log"
-msgstr "Aktivér lyd"
+msgstr "Aktivér lyde"
 
 #: ../src/main.c:121
 msgid "URL for autoconnection"
