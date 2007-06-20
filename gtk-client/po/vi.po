@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/vi.po)
-
 # Vietnamese translation for Gnome Games.
 # Copyright © 2007 Free Software Foundation, Inc.
 # T.M.Thanh <tmthanh@yahoo.com>, 2002.
@@ -27,11 +26,14 @@ msgstr "Giới thiệu"
 #: ../ggz-gtk/chat.c:89
 msgid "/msg <username> <message> . Private message a player"
 msgstr ""
-"/msg <tên_người_dùng> <thông_điệp> . Gửi thông điệp riêng cho người chơi khác"
+"/msg <tên_người_dùng> <thông_điệp> . Gửi thông điệp riêng "
+"cho người chơi khác"
 
 #: ../ggz-gtk/chat.c:91
 msgid "/table <message> .......... Message to your table"
-msgstr "/table <thông_điệp> .......... Gửi thông điệp cho bảng của bạn"
+msgstr ""
+"/table <thông_điệp> .......... Gửi thông điệp cho bảng của "
+"bạn"
 
 #: ../ggz-gtk/chat.c:93
 msgid "/wall <message> ........... Admin command"
@@ -39,7 +41,8 @@ msgstr "/wall <thông_điệp> ........... Lệnh quản trị"
 
 #: ../ggz-gtk/chat.c:95
 msgid "/beep <username> .......... Beep a player"
-msgstr "/beep <tên_người_dùng> .......... Kêu bíp tới người dùng khác"
+msgstr ""
+"/beep <tên_người_dùng> .......... Kêu bíp tới người dùng khác"
 
 #: ../ggz-gtk/chat.c:97
 msgid "/help ..................... Get help"
@@ -55,25 +58,29 @@ msgstr "/ignore ................... Liệt kê các người bạn lờ đi"
 
 #: ../ggz-gtk/chat.c:104
 msgid "/kick <username> .......... Kick a player from the room"
-msgstr "/kick <tên_người_dùng> .......... Đá người chơi khác ra phòng này"
+msgstr ""
+"/kick <tên_người_dùng> .......... Đá người chơi khác ra phòng "
+"này"
 
 #: ../ggz-gtk/chat.c:107
 msgid "/gag <username> ........... Gag a player to prevent them from talking"
 msgstr ""
-"/gag <tên_người_dùng> ........... Câm người dùng khác để ngăn cản họ nói gì"
+"/gag <tên_người_dùng> ........... Câm người dùng khác để ngăn "
+"cản họ nói gì"
 
 #: ../ggz-gtk/chat.c:110
 msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
 msgstr ""
-"/ungag <tên_người_dùng> ......... Hủy thao tác câm để cho phép người dùng "
-"khác nói lại"
+"/ungag <tên_người_dùng> ......... Hủy thao tác câm để cho phép "
+"người dùng khác nói lại"
 
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
 msgstr ""
-"/ban <tên_người_dùng> ........... Cấm người dùng khác ra máy phục vụ này"
+"/ban <tên_người_dùng> ........... Cấm người dùng khác ra máy "
+"phục vụ này"
 
 #: ../ggz-gtk/chat.c:254
 #, c-format
@@ -91,7 +98,9 @@ msgstr "Usage: /msg <tên_người_dùng> <thông_điệp>"
 
 #: ../ggz-gtk/chat.c:441
 msgid "    Sends a private message to a user on the network."
-msgstr "    Gửi một tin nhẳn riêng cho người dùng khác trên cùng mạng."
+msgstr ""
+"    Gửi một tin nhẳn riêng cho người dùng khác trên cùng "
+"mạng."
 
 #: ../ggz-gtk/chat.c:495
 #, c-format
@@ -190,7 +199,8 @@ msgid ""
 "GGZ Gaming Zone help needs a browser to be configured.\n"
 "The configuration dialog will be invoked now."
 msgstr ""
-"Trợ giúp Vùng Chơi GGZ cần thiết trình duyẹt Mạng được cấu hình.\n"
+"Trợ giúp Vùng Chơi GGZ cần thiết trình duyẹt Mạng được "
+"cấu hình.\n"
 "Hộp thoại cấu hình sẽ được gọi ngay bây giờ."
 
 #: ../ggz-gtk/client.c:308
@@ -260,7 +270,8 @@ msgstr "Vào lượt chơi tồn tại"
 
 #: ../ggz-gtk/client.c:684
 msgid "Watch an existing game - become a spectator of the table"
-msgstr "Khán lượt chơi tồn tại — trở thành khán giả ở bảng"
+msgstr ""
+"Khán lượt chơi tồn tại — trở thành khán giả ở bảng"
 
 #: ../ggz-gtk/client.c:687
 msgid "Leave the game you're currently playing"
@@ -268,11 +279,15 @@ msgstr "Ra lượt bạn hiện thời đạng chơi"
 
 #: ../ggz-gtk/client.c:689
 msgid "Show the properties dialog to change the client settings"
-msgstr "Hiện hộp thoại thuộc tính để thay đổi thiết lập ứng dụng khách"
+msgstr ""
+"Hiện hộp thoại thuộc tính để thay đổi thiết lập ứng "
+"dụng khách"
 
 #: ../ggz-gtk/client.c:693
 msgid "Show the game stats for the current room's game type"
-msgstr "Hiện thống kê trò chơi cho kiểu trò chơi của phòng hiện thời"
+msgstr ""
+"Hiện thống kê trò chơi cho kiểu trò chơi của phòng hiện "
+"thời"
 
 #: ../ggz-gtk/client.c:696
 msgid "Exit the GGZ client application."
@@ -500,15 +515,17 @@ msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
-"Đây là lần đầu tiên bạn chạy ứng dụng khách Vùng Chơi GGZ GTK+. Bạn có muốn "
-"tạo một số hồ sơ máy phục vụ mặc định không?"
+"Đây là lần đầu tiên bạn chạy ứng dụng khách Vùng Chơi "
+"GGZ GTK+. Bạn có muốn tạo một số hồ sơ máy phục vụ mặc "
+"định không?"
 
 #: ../ggz-gtk/game.c:72
 #, c-format
 msgid ""
 "You don't have this game installed. You can download\n"
 "it from %s."
-msgstr "Bạn chưa cài đặt trò chơi này. Có thể tải nó xuống %s."
+msgstr ""
+"Bạn chưa cài đặt trò chơi này. Có thể tải nó xuống %s."
 
 #: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
 #: ../ggz-gtk/game.c:325 ../ggz-gtk/game.c:334 ../ggz-gtk/game.c:350
@@ -846,7 +863,8 @@ msgstr "Tên người dùng quá dài."
 #: ../ggz-gtk/login.c:126
 #, c-format
 msgid "Invalid username, do not use special characters!"
-msgstr "Tên người dùng không hợp lệ: đừng dùng ký tự đặc biệt."
+msgstr ""
+"Tên người dùng không hợp lệ: đừng dùng ký tự đặc biệt."
 
 #: ../ggz-gtk/login.c:130
 #, c-format
@@ -913,7 +931,8 @@ msgstr "Thông điệp của Hôm nay"
 
 #: ../ggz-gtk/pick_module.c:89
 msgid "Which client would you like to use to play this game?"
-msgstr "Để chơi trò này, bạn muốn sử dụng ứng dụng khách nào?"
+msgstr ""
+"Để chơi trò này, bạn muốn sử dụng ứng dụng khách nào?"
 
 #: ../ggz-gtk/pick_module.c:131
 msgid "Don't ask me again."
@@ -1109,11 +1128,6 @@ msgstr "Tỉnh:"
 msgid "Country:"
 msgstr "Quốc gia:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Bình luận, sở thích..."
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "Thông tin người dùng"
@@ -1308,22 +1322,3 @@ msgstr "Nâng cấp trò chơi"
 #: ../ggz-gtk/types.c:309
 msgid "Goto Web Site"
 msgstr "Tới nơi Mạng"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Bật âm thanh"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

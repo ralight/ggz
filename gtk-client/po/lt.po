@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/lt.po)
-
 # translation of gnome-games.HEAD.lt.po to Lithuanian
 # Translation of gnome-games to Lithuanian.
 # Copyright (C) 2000-2007 Free Software Foundation, Inc.
@@ -24,8 +23,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
-"100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"(n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #: ../ggz-gtk/about.c:87 ../ggz-gtk/client.c:1089
@@ -66,7 +65,8 @@ msgstr "/kick <naudotojas> .......... Išspirti žaidėją iš kambario"
 
 #: ../ggz-gtk/chat.c:107
 msgid "/gag <username> ........... Gag a player to prevent them from talking"
-msgstr "/gag <naudotojas> ........... Užčiaupti žaidėją, kad jis nešnekėtų"
+msgstr ""
+"/gag <naudotojas> ........... Užčiaupti žaidėją, kad jis nešnekėtų"
 
 #: ../ggz-gtk/chat.c:110
 msgid ""
@@ -504,8 +504,8 @@ msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
-"Pirmą kartą paleidote GTK+ GGZ Gaming Zone programą. Ar norėtumėte sukurti "
-"standartiniu serverio profilių?"
+"Pirmą kartą paleidote GTK+ GGZ Gaming Zone programą. Ar norėtumėte "
+"sukurti standartiniu serverio profilių?"
 
 #: ../ggz-gtk/game.c:72
 #, c-format
@@ -875,17 +875,9 @@ msgstr "Keisti profilius..."
 msgid "Server:"
 msgstr "Serveris:"
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "Prievadas:"
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -1113,11 +1105,6 @@ msgstr "Būsena:"
 msgid "Country:"
 msgstr "Šalis:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Komentarai, pomėgiai, ir t.t."
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "Naudotojo informacija"
@@ -1303,32 +1290,3 @@ msgstr "Kambarių sąrašo filtras:"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "Nustatyti"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Bakers Game"
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "Atverti tinklalapį"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Įjungti garsus"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

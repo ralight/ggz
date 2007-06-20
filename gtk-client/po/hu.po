@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/hu.po)
-
 # translation of gnome-games.HEAD.po to Hungarian
 # Hungarian translation of gnome-games.
 # Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
@@ -67,18 +66,21 @@ msgstr "/kick <felhasználónév> .......... Játékos kirúgása a szobából"
 #: ../ggz-gtk/chat.c:107
 msgid "/gag <username> ........... Gag a player to prevent them from talking"
 msgstr ""
-"/gag <felhasználónév> ........... Játékos megszólalási jogának elvétele"
+"/gag <felhasználónév> ........... Játékos megszólalási jogának "
+"elvétele"
 
 #: ../ggz-gtk/chat.c:110
 msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
 msgstr ""
-"/ungag <felhasználónév> ......... Játékos megszólalási jogának visszaadása"
+"/ungag <felhasználónév> ......... Játékos megszólalási jogának "
+"visszaadása"
 
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
-msgstr "/ban <felahsználónév> ........... Játékos kitiltása a kiszolgálóról"
+msgstr ""
+"/ban <felahsználónév> ........... Játékos kitiltása a kiszolgálóról"
 
 #: ../ggz-gtk/chat.c:254
 #, c-format
@@ -171,8 +173,8 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"A kiszolgálóstatisztika még nincs megvalósítva. Ha segíteni szeretne, akkor "
-"keresse fel a http://www.ggzgamingzone.org/ címet."
+"A kiszolgálóstatisztika még nincs megvalósítva. Ha segíteni szeretne, "
+"akkor keresse fel a http://www.ggzgamingzone.org/ címet."
 
 #: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
 #: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
@@ -185,8 +187,8 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"A játékosstatisztika még nincs megvalósítva. Ha segíteni szeretne, akkor "
-"keresse fel a http://www.ggzgamingzone.org/ címet."
+"A játékosstatisztika még nincs megvalósítva. Ha segíteni szeretne, "
+"akkor keresse fel a http://www.ggzgamingzone.org/ címet."
 
 #: ../ggz-gtk/client.c:294
 msgid ""
@@ -203,9 +205,9 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"A beépített súgó még nincs megvalósítva. A súgó a webhelyünkön található "
-"(angolul). Ha segíteni szeretne, akkor keresse fel a http://www."
-"ggzgamingzone.org/ címet."
+"A beépített súgó még nincs megvalósítva. A súgó a webhelyünkön "
+"található (angolul). Ha segíteni szeretne, akkor keresse fel a "
+"http://www.ggzgamingzone.org/ címet."
 
 #: ../ggz-gtk/client.c:566
 msgid "You must highlight a table before you can join it."
@@ -271,13 +273,14 @@ msgstr "A jelenlegi játék elhagyása"
 #: ../ggz-gtk/client.c:689
 msgid "Show the properties dialog to change the client settings"
 msgstr ""
-"A tulajdonságok párbeszédablak megjelenítése és a kliens beállításainak "
-"módosítása"
+"A tulajdonságok párbeszédablak megjelenítése és a kliens "
+"beállításainak módosítása"
 
 #: ../ggz-gtk/client.c:693
 msgid "Show the game stats for the current room's game type"
 msgstr ""
-"A jelenlegi szoba játéktípusához tartozó játékstatisztika megjelenítése"
+"A jelenlegi szoba játéktípusához tartozó játékstatisztika "
+"megjelenítése"
 
 #: ../ggz-gtk/client.c:696
 msgid "Exit the GGZ client application."
@@ -504,8 +507,8 @@ msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
-"Első alkalommal futtatja a GTK+ GGZ játékzónaklienst. Létre kíván hozni "
-"néhány alapértelmezett kiszolgálóprofilt?"
+"Első alkalommal futtatja a GTK+ GGZ játékzónaklienst. Létre kíván "
+"hozni néhány alapértelmezett kiszolgálóprofilt?"
 
 #: ../ggz-gtk/game.c:72
 #, c-format
@@ -852,7 +855,8 @@ msgstr "A felhasználónév túl hosszú!"
 #: ../ggz-gtk/login.c:126
 #, c-format
 msgid "Invalid username, do not use special characters!"
-msgstr "Érvénytelen felhasználónév, ne használjon különleges karaktereket!"
+msgstr ""
+"Érvénytelen felhasználónév, ne használjon különleges karaktereket!"
 
 #: ../ggz-gtk/login.c:130
 #, c-format
@@ -875,17 +879,9 @@ msgstr "Profilok szerkesztése..."
 msgid "Server:"
 msgstr "Kiszolgáló:"
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "Port:"
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -1113,11 +1109,6 @@ msgstr "Állam:"
 msgid "Country:"
 msgstr "Ország:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Megjegyzés, hobbik, stb."
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "Felhasználói információk"
@@ -1284,8 +1275,8 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"A szobaszűrés még nincs megvalósítva. Ha segíteni szeretne, akkor keresse "
-"fel a http://www.ggzgamingzone.org/ címet."
+"A szobaszűrés még nincs megvalósítva. Ha segíteni szeretne, akkor "
+"keresse fel a http://www.ggzgamingzone.org/ címet."
 
 #: ../ggz-gtk/types.c:191
 msgid "Web Address"
@@ -1302,32 +1293,3 @@ msgstr "Szobalistaszűrő:"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "Beállítás"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Bakers Game"
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "Weboldal"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Hangok bekapcsolása"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

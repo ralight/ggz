@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/uk.po)
-
 # Ukranian translation of the gnome-games module.
 # Copyright (C) 1999,2000 Free Software Foundation, Inc.
 # Yuri Syrota <rasta@renome.rovno.ua>, 1999-2000.
@@ -17,8 +16,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../ggz-gtk/about.c:87 ../ggz-gtk/client.c:1089
 msgid "About"
@@ -27,19 +26,26 @@ msgstr "Про програму"
 #: ../ggz-gtk/chat.c:89
 msgid "/msg <username> <message> . Private message a player"
 msgstr ""
-"/msg <ім'я користувача> <повідомлення> .... приватне повідомлення гравцю"
+"/msg <ім'я користувача> <повідомлення> .... "
+"приватне повідомлення гравцю"
 
 #: ../ggz-gtk/chat.c:91
 msgid "/table <message> .......... Message to your table"
-msgstr "/table <повідомлення1> ....... Повідомлення вашому столу"
+msgstr ""
+"/table <повідомлення1> ....... Повідомлення "
+"вашому столу"
 
 #: ../ggz-gtk/chat.c:93
 msgid "/wall <message> ........... Admin command"
-msgstr "/wall <повідомлення> .......... команда адміністратора"
+msgstr ""
+"/wall <повідомлення> .......... команда "
+"адміністратора"
 
 #: ../ggz-gtk/chat.c:95
 msgid "/beep <username> .......... Beep a player"
-msgstr "/beep <ім'я користувача> ....... надіслати гравцю сигнал"
+msgstr ""
+"/beep <ім'я користувача> ....... надіслати "
+"гравцю сигнал"
 
 #: ../ggz-gtk/chat.c:97
 msgid "/help ..................... Get help"
@@ -51,26 +57,35 @@ msgstr "/friends .................. список ваших друзів"
 
 #: ../ggz-gtk/chat.c:101
 msgid "/ignore ................... List people you're ignoring"
-msgstr "/ignore ................... список ігнорованих гравців"
+msgstr ""
+"/ignore ................... список ігнорованих "
+"гравців"
 
 #: ../ggz-gtk/chat.c:104
 msgid "/kick <username> .......... Kick a player from the room"
-msgstr "/kick <ім'я користувача> ........ викинути гравця з кімнати"
+msgstr ""
+"/kick <ім'я користувача> ........ викинути "
+"гравця з кімнати"
 
 #: ../ggz-gtk/chat.c:107
 msgid "/gag <username> ........... Gag a player to prevent them from talking"
-msgstr "/gag <ім'я користувача> .......... змусити користувача замовкнути"
+msgstr ""
+"/gag <ім'я користувача> .......... змусити "
+"користувача замовкнути"
 
 #: ../ggz-gtk/chat.c:110
 msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
-msgstr "/ungag <ім'я користувача> ......... дозволити користувачу розмовляти"
+msgstr ""
+"/ungag <ім'я користувача> ......... дозволити "
+"користувачу розмовляти"
 
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
 msgstr ""
-"/ban <ім'я користувача> ............ заборонити користувачу вхід на сервер"
+"/ban <ім'я користувача> ............ заборонити "
+"користувачу вхід на сервер"
 
 #: ../ggz-gtk/chat.c:254
 #, c-format
@@ -84,11 +99,15 @@ msgstr "Надіслано сигнал від %s."
 
 #: ../ggz-gtk/chat.c:439
 msgid "Usage: /msg <username> <message>"
-msgstr "Використання: /msg <ім'я користувача> <повідомлення>"
+msgstr ""
+"Використання: /msg <ім'я користувача> "
+"<повідомлення>"
 
 #: ../ggz-gtk/chat.c:441
 msgid "    Sends a private message to a user on the network."
-msgstr "    Надсилає повідомлення користувачу через мережу."
+msgstr ""
+"    Надсилає повідомлення користувачу "
+"через мережу."
 
 #: ../ggz-gtk/chat.c:495
 #, c-format
@@ -187,7 +206,8 @@ msgid ""
 "GGZ Gaming Zone help needs a browser to be configured.\n"
 "The configuration dialog will be invoked now."
 msgstr ""
-"GGZ вимагає налаштовування запуску веб-переглядача.\n"
+"GGZ вимагає налаштовування запуску "
+"веб-переглядача.\n"
 "Зараз з'явиться діалог налаштовування."
 
 #: ../ggz-gtk/client.c:308
@@ -197,14 +217,18 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"Вбудована довідка до гри ще не реалізована.\n"
-"Довідка знаходиться на нашому веб-сайті. Якщо\n"
+"Вбудована довідка до гри ще не "
+"реалізована.\n"
+"Довідка знаходиться на нашому веб-сайті. "
+"Якщо\n"
 "хочете допомогти, відвідайте\n"
 "http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:566
 msgid "You must highlight a table before you can join it."
-msgstr "Ви повинні виділити стіл перш ніж приєднуватись до нього."
+msgstr ""
+"Ви повинні виділити стіл перш ніж "
+"приєднуватись до нього."
 
 #: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
 msgid "Error Joining"
@@ -216,7 +240,9 @@ msgstr "Стіл заповнений."
 
 #: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:334
 msgid "Error launching game module."
-msgstr "Після запуску ігрового модуля виникла помилка."
+msgstr ""
+"Після запуску ігрового модуля виникла "
+"помилка."
 
 #: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
 #: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:335
@@ -225,7 +251,9 @@ msgstr "Помилка гри"
 
 #: ../ggz-gtk/client.c:600
 msgid "You must highlight a table before you can watch it."
-msgstr "Ви повинні виділити стіл, щоб почати спостерігати за ним."
+msgstr ""
+"Ви повинні виділити стіл, щоб почати "
+"спостерігати за ним."
 
 #: ../ggz-gtk/client.c:602
 msgid "Error Spectating"
@@ -257,7 +285,9 @@ msgstr "Приєднатись до існуючої игри"
 
 #: ../ggz-gtk/client.c:684
 msgid "Watch an existing game - become a spectator of the table"
-msgstr "Дивитись за існуючою грою - стати глядачем за столом"
+msgstr ""
+"Дивитись за існуючою грою - стати "
+"глядачем за столом"
 
 #: ../ggz-gtk/client.c:687
 msgid "Leave the game you're currently playing"
@@ -269,7 +299,9 @@ msgstr "Показати діалог параметрів клієнта"
 
 #: ../ggz-gtk/client.c:693
 msgid "Show the game stats for the current room's game type"
-msgstr "Показати статистику гри для поточної кімнати"
+msgstr ""
+"Показати статистику гри для поточної "
+"кімнати"
 
 #: ../ggz-gtk/client.c:696
 msgid "Exit the GGZ client application."
@@ -287,7 +319,8 @@ msgstr "Версія GTK+: %d.%d.%d\n"
 
 #: ../ggz-gtk/client.c:736
 msgid "Compiled with debugging."
-msgstr "Зібрано з налагоджувальною інформацією"
+msgstr ""
+"Зібрано з налагоджувальною інформацією"
 
 #: ../ggz-gtk/client.c:934
 msgid "GGZ"
@@ -495,8 +528,9 @@ msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
-"Ви вперше запустили клієнта ігрової зони GGZ. Хочете створити декілька "
-"профілів на типовому сервері?"
+"Ви вперше запустили клієнта ігрової зони "
+"GGZ. Хочете створити декілька профілів на "
+"типовому сервері?"
 
 #: ../ggz-gtk/game.c:72
 #, c-format
@@ -504,7 +538,8 @@ msgid ""
 "You don't have this game installed. You can download\n"
 "it from %s."
 msgstr ""
-"Ця гра не встановлена. Її можна завантажити з\n"
+"Ця гра не встановлена. Її можна "
+"завантажити з\n"
 "%s"
 
 #: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
@@ -542,7 +577,8 @@ msgid ""
 "You must be in a room to launch a game.\n"
 "Launch aborted"
 msgstr ""
-"Ви повинні увійти у кімнату для початку гри.\n"
+"Ви повинні увійти у кімнату для початку "
+"гри.\n"
 "Запуск прервано"
 
 #: ../ggz-gtk/game.c:323
@@ -550,7 +586,8 @@ msgid ""
 "No game types defined for this server.\n"
 "Launch aborted."
 msgstr ""
-"Для цього сервера не визначений список ігор.\n"
+"Для цього сервера не визначений список "
+"ігор.\n"
 "Запуск прервано."
 
 #: ../ggz-gtk/game.c:333
@@ -608,7 +645,9 @@ msgstr "Не вдається увійти у кімнату: %s"
 
 #: ../ggz-gtk/ggzclient.c:429
 msgid "You can't chat while not in a room."
-msgstr "Щоб почати спілкування, треба увійти у кімнату."
+msgstr ""
+"Щоб почати спілкування, треба увійти у "
+"кімнату."
 
 #: ../ggz-gtk/ggzclient.c:434
 msgid "You don't have permission to chat here."
@@ -616,7 +655,8 @@ msgstr "Немає прав для початку спілкування."
 
 #: ../ggz-gtk/ggzclient.c:438
 msgid "No private chatting at a table!"
-msgstr "Спілкування за столом не дозволяється!"
+msgstr ""
+"Спілкування за столом не дозволяється!"
 
 #: ../ggz-gtk/ggzclient.c:442
 msgid "That player isn't in the room!"
@@ -624,7 +664,9 @@ msgstr "У кімнаті немає такого гравця!"
 
 #: ../ggz-gtk/ggzclient.c:447
 msgid "There was an error sending the chat."
-msgstr "При надсиланні повідомлення виникла помилка."
+msgstr ""
+"При надсиланні повідомлення виникла "
+"помилка."
 
 #: ../ggz-gtk/ggzclient.c:451
 msgid "You're not at a table."
@@ -648,7 +690,8 @@ msgstr "Ви приєднались до столу %d."
 #: ../ggz-gtk/ggzclient.c:594
 #, c-format
 msgid "Error joining table: %s"
-msgstr "При приєднанні до столу виникла помилка: %s"
+msgstr ""
+"При приєднанні до столу виникла помилка: %s"
 
 #: ../ggz-gtk/ggzclient.c:616
 #, c-format
@@ -673,7 +716,9 @@ msgstr "На ігровому сервері виникла помилка."
 #: ../ggz-gtk/ggzclient.c:647
 #, c-format
 msgid "Error leaving table: %s"
-msgstr "Під час виходу з-за столу виникла помилка: %s"
+msgstr ""
+"Під час виходу з-за столу виникла помилка: "
+"%s"
 
 #: ../ggz-gtk/ggzclient.c:740
 msgid "**none**"
@@ -766,7 +811,9 @@ msgstr ""
 
 #: ../ggz-gtk/launch.c:325
 msgid "Invalid number of bots specified"
-msgstr "Задано некоректне число комп'ютерних гравців"
+msgstr ""
+"Задано некоректне число комп'ютерних "
+"гравців"
 
 #: ../ggz-gtk/launch.c:420
 msgid "Seat Assignments"
@@ -843,12 +890,16 @@ msgstr "Ім'я користувача надто довге!"
 #: ../ggz-gtk/login.c:126
 #, c-format
 msgid "Invalid username, do not use special characters!"
-msgstr "Некоректне ім'я користувача, не використовуйте спеціальні символи!"
+msgstr ""
+"Некоректне ім'я користувача, не "
+"використовуйте спеціальні символи!"
 
 #: ../ggz-gtk/login.c:130
 #, c-format
 msgid "Login failed for unknown reason: %s"
-msgstr "Вхід у систему не вдався з невідомої причини: %s"
+msgstr ""
+"Вхід у систему не вдався з невідомої "
+"причини: %s"
 
 #: ../ggz-gtk/login.c:538
 msgid "Server Profile"
@@ -866,17 +917,9 @@ msgstr "Правка профілів..."
 msgid "Server:"
 msgstr "Сервер:"
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "Порт:"
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -908,7 +951,9 @@ msgstr "Повідомлення дня"
 
 #: ../ggz-gtk/pick_module.c:89
 msgid "Which client would you like to use to play this game?"
-msgstr "Який клієнт ви хочете використовувати для цієї гри?"
+msgstr ""
+"Який клієнт ви хочете використовувати "
+"для цієї гри?"
 
 #: ../ggz-gtk/pick_module.c:131
 msgid "Don't ask me again."
@@ -1026,7 +1071,9 @@ msgstr "Змінити"
 
 #: ../ggz-gtk/props.c:1147
 msgid "Ignore Join/Part Messages"
-msgstr "Ігнорувати повідомлення про приєднання/від'єднання"
+msgstr ""
+"Ігнорувати повідомлення про "
+"приєднання/від'єднання"
 
 #: ../ggz-gtk/props.c:1155
 msgid "Play Sounds"
@@ -1086,7 +1133,8 @@ msgstr "Бесіда"
 
 #: ../ggz-gtk/props.c:1326
 msgid "All of the following information is optional."
-msgstr "Вся інформація нижче не є обов'язковою."
+msgstr ""
+"Вся інформація нижче не є обов'язковою."
 
 #: ../ggz-gtk/props.c:1344
 msgid "Name:"
@@ -1104,18 +1152,14 @@ msgstr "Регіон:"
 msgid "Country:"
 msgstr "Країна:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Коментарі, хобі та т.і."
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "Інформація про користувача"
 
 #: ../ggz-gtk/props.c:1459
 msgid "Browser to launch URLs with:"
-msgstr "Веб-переглядач для відкривання ресурсів:"
+msgstr ""
+"Веб-переглядач для відкривання ресурсів:"
 
 #: ../ggz-gtk/props.c:1464 ../ggz-gtk/props.c:1484 ../ggz-gtk/support.c:139
 msgid "Galeon - New"
@@ -1227,7 +1271,8 @@ msgstr "Невідома кімната"
 
 #: ../ggz-gtk/roomlist.c:73
 msgid "You can't join a room; you're not logged in"
-msgstr "Не можна заходити у кімнату до реєстрації"
+msgstr ""
+"Не можна заходити у кімнату до реєстрації"
 
 #: ../ggz-gtk/roomlist.c:77
 msgid "You're already in between rooms"
@@ -1275,7 +1320,8 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"Фільтрація за кімнатами поки не реалізована. \n"
+"Фільтрація за кімнатами поки не "
+"реалізована. \n"
 "Якщо ви хочете допомогти, відвідайте\n"
 "http://www.ggzgamingzone.org/"
 
@@ -1294,32 +1340,3 @@ msgstr "Фільтр списку кімнат:"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "Набір"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Пекарська гра"
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "Перейти на веб-сторінку"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Увімкнути звуки"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

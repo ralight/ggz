@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/ar.po)
-
 # translation of gnome-games.HEAD.ar.po to
 # Sayed Jaffer Al-Mosawi <mosawi@arabeyes.org>, 2002.
 # Arafat Medini <lumina@silverpen.de>, 2003.
@@ -54,7 +53,9 @@ msgstr "/friends .................. قائمة بأصدقائك"
 
 #: ../ggz-gtk/chat.c:101
 msgid "/ignore ................... List people you're ignoring"
-msgstr "/ignore....................اعرض قائمة بالأشخاص الذين تتجاهلهم"
+msgstr ""
+"/ignore....................اعرض قائمة بالأشخاص الذين "
+"تتجاهلهم"
 
 #: ../ggz-gtk/chat.c:104
 msgid "/kick <username> .......... Kick a player from the room"
@@ -62,13 +63,16 @@ msgstr "/kick <username> ..........طرد لاعب من الحجرة"
 
 #: ../ggz-gtk/chat.c:107
 msgid "/gag <username> ........... Gag a player to prevent them from talking"
-msgstr "/gag <username> ...........تنبيه لاعب لمنعه من الكلام"
+msgstr ""
+"/gag <username> ...........تنبيه لاعب لمنعه من الكلام"
 
 #: ../ggz-gtk/chat.c:110
 msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
-msgstr "/ungag <username> .........عكس العملية لكي تسمح للاعب بالكلام"
+msgstr ""
+"/ungag <username> .........عكس العملية لكي تسمح للاعب "
+"بالكلام"
 
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
@@ -189,7 +193,8 @@ msgid ""
 "GGZ Gaming Zone help needs a browser to be configured.\n"
 "The configuration dialog will be invoked now."
 msgstr ""
-"مساعدة منطقة ألعاب ج ج ز تحتاج متصفحا لكي يتم تأكيدها.\n"
+"مساعدة منطقة ألعاب ج ج ز تحتاج متصفحا لكي "
+"يتم تأكيدها.\n"
 " التأكيد سيتم عرضه الآن."
 
 #: ../ggz-gtk/client.c:308
@@ -199,14 +204,17 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"المساعدة المحلية لم يتم تضمينها. المساعدة\n"
+"المساعدة المحلية لم يتم تضمينها. "
+"المساعدة\n"
 " في موقعنا. لو\n"
 " كنت تريد المساعدة توجه إلى\n"
 "http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:566
 msgid "You must highlight a table before you can join it."
-msgstr "لا بد من أن تقوم بتظليل مائدة قبل أن تنضم لها."
+msgstr ""
+"لا بد من أن تقوم بتظليل مائدة قبل أن تنضم "
+"لها."
 
 #: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
 msgid "Error Joining"
@@ -218,7 +226,9 @@ msgstr "هذه الطاولة ممتلئة."
 
 #: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:334
 msgid "Error launching game module."
-msgstr "حدث خطأ أثناء محاولة إطلاق وحدة اللعبة النمطية."
+msgstr ""
+"حدث خطأ أثناء محاولة إطلاق وحدة اللعبة "
+"النمطية."
 
 #: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
 #: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:335
@@ -227,7 +237,9 @@ msgstr "خطأ في اللعبة"
 
 #: ../ggz-gtk/client.c:600
 msgid "You must highlight a table before you can watch it."
-msgstr "لابد من أن تقوم بتظليل مائدة قبل أن تشاهدها."
+msgstr ""
+"لابد من أن تقوم بتظليل مائدة قبل أن "
+"تشاهدها."
 
 #: ../ggz-gtk/client.c:602
 msgid "Error Spectating"
@@ -267,7 +279,8 @@ msgstr "اترك اللعبة التي تلعبها حاليا"
 
 #: ../ggz-gtk/client.c:689
 msgid "Show the properties dialog to change the client settings"
-msgstr "اظهر حوار الخصائص لتغيير إعدادات العميل"
+msgstr ""
+"اظهر حوار الخصائص لتغيير إعدادات العميل"
 
 #: ../ggz-gtk/client.c:693
 msgid "Show the game stats for the current room's game type"
@@ -498,8 +511,9 @@ msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
-"هذه هي المرة الأولى التي تقوم فيها بتشغيل عميل منطقة ألعاب GTK+ GGZ. هل تود "
-"إنشاء بعض ملفات الخادم الافتراضية؟"
+"هذه هي المرة الأولى التي تقوم فيها بتشغيل "
+"عميل منطقة ألعاب GTK+ GGZ. هل تود إنشاء بعض "
+"ملفات الخادم الافتراضية؟"
 
 #: ../ggz-gtk/game.c:72
 #, c-format
@@ -507,7 +521,8 @@ msgid ""
 "You don't have this game installed. You can download\n"
 "it from %s."
 msgstr ""
-"لا توجد لديك هذه اللعبة منصبة. يمكنك تحميلها\n"
+"لا توجد لديك هذه اللعبة منصبة. يمكنك "
+"تحميلها\n"
 " من %s."
 
 #: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
@@ -846,7 +861,9 @@ msgstr "اسم المستخدم طويل جدا!"
 #: ../ggz-gtk/login.c:126
 #, c-format
 msgid "Invalid username, do not use special characters!"
-msgstr "اسم مستخدم غير مسموح به، لا تستخدم حروفا خاصة!"
+msgstr ""
+"اسم مستخدم غير مسموح به، لا تستخدم حروفا "
+"خاصة!"
 
 #: ../ggz-gtk/login.c:130
 #, c-format
@@ -869,17 +886,9 @@ msgstr "_تحرير الأطوار..."
 msgid "Server:"
 msgstr "الخادم:"
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "منفذ:"
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -911,7 +920,8 @@ msgstr "رسالة اليوم"
 
 #: ../ggz-gtk/pick_module.c:89
 msgid "Which client would you like to use to play this game?"
-msgstr "أي زبون تود استخدامه كي تلعب هذه اللعبة؟"
+msgstr ""
+"أي زبون تود استخدامه كي تلعب هذه اللعبة؟"
 
 #: ../ggz-gtk/pick_module.c:131
 msgid "Don't ask me again."
@@ -1107,11 +1117,6 @@ msgstr "الولاية:"
 msgid "Country:"
 msgstr "الدولة:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "تعليقات، هوايات، الخ."
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "معلومات المستخدم"
@@ -1230,7 +1235,8 @@ msgstr "غرفة مجهولة"
 
 #: ../ggz-gtk/roomlist.c:73
 msgid "You can't join a room; you're not logged in"
-msgstr "لا يمكنك النضمام للغرفة؛ لم تقم بالولوج"
+msgstr ""
+"لا يمكنك النضمام للغرفة؛ لم تقم بالولوج"
 
 #: ../ggz-gtk/roomlist.c:77
 msgid "You're already in between rooms"
@@ -1297,32 +1303,3 @@ msgstr "مرشح قائمة الغرف:"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "ضبط"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "gufm hgofh."
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "اذهب لوِب"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "تفعيل الأ_صوات"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

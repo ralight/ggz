@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/mk.po)
-
 # translation of gnome-games.HEAD.po to Macedonian
 # translation of gnome-games.HEAD.mk.po to
 # This file is distributed under the same license as the gnome-games.HEAD.mk package.
@@ -38,7 +37,8 @@ msgstr "За"
 
 #: ../ggz-gtk/chat.c:89
 msgid "/msg <username> <message> . Private message a player"
-msgstr "/msg <username> <message> . Приватна порака до играч"
+msgstr ""
+"/msg <username> <message> . Приватна порака до играч"
 
 #: ../ggz-gtk/chat.c:91
 msgid "/table <message> .......... Message to your table"
@@ -46,7 +46,8 @@ msgstr "/table <message> .......... Порака до Вашата табла"
 
 #: ../ggz-gtk/chat.c:93
 msgid "/wall <message> ........... Admin command"
-msgstr "/wall <message> ........... Администраторска команда"
+msgstr ""
+"/wall <message> ........... Администраторска команда"
 
 #: ../ggz-gtk/chat.c:95
 msgid "/beep <username> .......... Beep a player"
@@ -58,11 +59,14 @@ msgstr "/help ..................... Добијте помош"
 
 #: ../ggz-gtk/chat.c:99
 msgid "/friends .................. List your friends"
-msgstr "/friends .................. Листа со Вашите пријатели"
+msgstr ""
+"/friends .................. Листа со Вашите пријатели"
 
 #: ../ggz-gtk/chat.c:101
 msgid "/ignore ................... List people you're ignoring"
-msgstr "/ignore ................... Листа со луѓето кои ги игнорирате"
+msgstr ""
+"/ignore ................... Листа со луѓето кои ги "
+"игнорирате"
 
 #: ../ggz-gtk/chat.c:104
 msgid "/kick <username> .......... Kick a player from the room"
@@ -77,12 +81,13 @@ msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
 msgstr ""
-"/ungag <username> ......... Врати го замолчувањето на корисник, за да му "
-"дозволите да зборува"
+"/ungag <username> ......... Врати го замолчувањето на "
+"корисник, за да му дозволите да зборува"
 
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
-msgstr "/ban <username> ........... Забрани играч од серверот"
+msgstr ""
+"/ban <username> ........... Забрани играч од серверот"
 
 #: ../ggz-gtk/chat.c:254
 #, c-format
@@ -100,7 +105,9 @@ msgstr "Користење: /msg <username> <message>"
 
 #: ../ggz-gtk/chat.c:441
 msgid "    Sends a private message to a user on the network."
-msgstr "    Испраќа приватна порака до корисник на мрежата."
+msgstr ""
+"    Испраќа приватна порака до корисник на "
+"мрежата."
 
 #: ../ggz-gtk/chat.c:495
 #, c-format
@@ -132,22 +139,29 @@ msgstr "/me <action> .............. Испрати дејство"
 #: ../ggz-gtk/chat.c:783
 #, c-format
 msgid "Added %s to your friends list."
-msgstr "Го додадов %s во Вашата листа со пријатели."
+msgstr ""
+"Го додадов %s во Вашата листа со пријатели."
 
 #: ../ggz-gtk/chat.c:807
 #, c-format
 msgid "Removed %s from your friends list."
-msgstr "Отстранет е %s од Вашата листа со пријатели."
+msgstr ""
+"Отстранет е %s од Вашата листа со "
+"пријатели."
 
 #: ../ggz-gtk/chat.c:838
 #, c-format
 msgid "Added %s to your ignore list."
-msgstr "Го додадов %s во Вашата листа со игнорирани."
+msgstr ""
+"Го додадов %s во Вашата листа со "
+"игнорирани."
 
 #: ../ggz-gtk/chat.c:863
 #, c-format
 msgid "Removed %s from your ignore list."
-msgstr "Го отстранив %s од Вашата листа со игнорирани."
+msgstr ""
+"Го отстранив %s од Вашата листа со "
+"игнорирани."
 
 #: ../ggz-gtk/chat.c:939
 msgid "People currently your friends"
@@ -175,7 +189,8 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"Статистиките за серверот сѐ уште не се имплементирани. Ако\n"
+"Статистиките за серверот сѐ уште не се "
+"имплементирани. Ако\n"
 "сакате да помогнете околу тоа, дојдете на\n"
 "http://www.ggzgamingzone.org/"
 
@@ -190,7 +205,8 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"Статистиките за играч сѐ уште не се имплементирани. Ако\n"
+"Статистиките за играч сѐ уште не се "
+"имплементирани. Ако\n"
 "сакате да помогнете околу тоа, дојдете на\n"
 "http://www.ggzgamingzone.org/"
 
@@ -199,8 +215,10 @@ msgid ""
 "GGZ Gaming Zone help needs a browser to be configured.\n"
 "The configuration dialog will be invoked now."
 msgstr ""
-"На GGZ зоната за играње ѝ треба прелистувач да се конфигурира.\n"
-"Дијалогот за конфигурирање ќе биде повикан сега."
+"На GGZ зоната за играње ѝ треба прелистувач "
+"да се конфигурира.\n"
+"Дијалогот за конфигурирање ќе биде "
+"повикан сега."
 
 #: ../ggz-gtk/client.c:308
 msgid ""
@@ -216,7 +234,9 @@ msgstr ""
 
 #: ../ggz-gtk/client.c:566
 msgid "You must highlight a table before you can join it."
-msgstr "Мора да обележите табела пред да се придружите."
+msgstr ""
+"Мора да обележите табела пред да се "
+"придружите."
 
 #: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
 msgid "Error Joining"
@@ -228,7 +248,8 @@ msgstr "Таблата е полна."
 
 #: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:334
 msgid "Error launching game module."
-msgstr "Грешка во пуштањето на модулот на играта."
+msgstr ""
+"Грешка во пуштањето на модулот на играта."
 
 #: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
 #: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:335
@@ -237,7 +258,9 @@ msgstr "Грешка со играта"
 
 #: ../ggz-gtk/client.c:600
 msgid "You must highlight a table before you can watch it."
-msgstr "Мора да обележите табла пред да се придружите."
+msgstr ""
+"Мора да обележите табла пред да се "
+"придружите."
 
 #: ../ggz-gtk/client.c:602
 msgid "Error Spectating"
@@ -257,7 +280,9 @@ msgstr "Грешка во придружувањето"
 
 #: ../ggz-gtk/client.c:678
 msgid "Disconnect from the GGZ Gaming Zone server"
-msgstr "Исклучи се од серверот на GGZ зоната за играње"
+msgstr ""
+"Исклучи се од серверот на GGZ зоната за "
+"играње"
 
 #: ../ggz-gtk/client.c:680
 msgid "Start playing a game at a new table"
@@ -269,7 +294,9 @@ msgstr "Придружи се кон постоечка игра"
 
 #: ../ggz-gtk/client.c:684
 msgid "Watch an existing game - become a spectator of the table"
-msgstr "Гледај постоечка игра - стани гледач на таблата"
+msgstr ""
+"Гледај постоечка игра - стани гледач на "
+"таблата"
 
 #: ../ggz-gtk/client.c:687
 msgid "Leave the game you're currently playing"
@@ -278,12 +305,14 @@ msgstr "Напушти ја играта која тековно се игра"
 #: ../ggz-gtk/client.c:689
 msgid "Show the properties dialog to change the client settings"
 msgstr ""
-"Покажи го дијалог прозорецот со својства за промена на поставувањата на "
-"клиентот"
+"Покажи го дијалог прозорецот со својства "
+"за промена на поставувањата на клиентот"
 
 #: ../ggz-gtk/client.c:693
 msgid "Show the game stats for the current room's game type"
-msgstr "Покажи ги статистиките за типот на игри од тековната соба"
+msgstr ""
+"Покажи ги статистиките за типот на игри "
+"од тековната соба"
 
 #: ../ggz-gtk/client.c:696
 msgid "Exit the GGZ client application."
@@ -509,8 +538,10 @@ msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
-"Ова е прв пат кој го извршувате GTK+ клиентот за Gaming Zone. Дали сакате да "
-"креирате некои стандардни профили на сервер?"
+"Ова е прв пат кој го извршувате GTK+ "
+"клиентот за Gaming Zone. Дали сакате да "
+"креирате некои стандардни профили на "
+"сервер?"
 
 #: ../ggz-gtk/game.c:72
 #, c-format
@@ -518,7 +549,8 @@ msgid ""
 "You don't have this game installed. You can download\n"
 "it from %s."
 msgstr ""
-"Ја немате инсталирано оваа игра. Можете да ја симнете\n"
+"Ја немате инсталирано оваа игра. Можете "
+"да ја симнете\n"
 "од %s."
 
 #: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
@@ -532,7 +564,8 @@ msgid ""
 "Failed to execute game module.\n"
 " Launch aborted."
 msgstr ""
-"Не успеав да го извршам модулот од играта.\n"
+"Не успеав да го извршам модулот од "
+"играта.\n"
 " Пуштањето не успеа."
 
 #: ../ggz-gtk/game.c:201
@@ -545,7 +578,9 @@ msgstr "Пуштањето не успеа"
 
 #: ../ggz-gtk/game.c:296
 msgid "You can only play one game at a time."
-msgstr "Можете да играте само една игра истовремено."
+msgstr ""
+"Можете да играте само една игра "
+"истовремено."
 
 #: ../ggz-gtk/game.c:304
 msgid "You're still at a table."
@@ -564,7 +599,8 @@ msgid ""
 "No game types defined for this server.\n"
 "Launch aborted."
 msgstr ""
-"Не се дефинирани типови на игра за овој сервер.\n"
+"Не се дефинирани типови на игра за овој "
+"сервер.\n"
 "Пуштањето е прекинатно."
 
 #: ../ggz-gtk/game.c:333
@@ -622,7 +658,9 @@ msgstr "Грешка во придружувањето кон собата: %s"
 
 #: ../ggz-gtk/ggzclient.c:429
 msgid "You can't chat while not in a room."
-msgstr "Не можите да разговарате додека сте во соба."
+msgstr ""
+"Не можите да разговарате додека сте во "
+"соба."
 
 #: ../ggz-gtk/ggzclient.c:434
 msgid "You don't have permission to chat here."
@@ -638,7 +676,9 @@ msgstr "Тој играч не е во собата!"
 
 #: ../ggz-gtk/ggzclient.c:447
 msgid "There was an error sending the chat."
-msgstr "Имаше грешка при испраќањето кон разговорот."
+msgstr ""
+"Имаше грешка при испраќањето кон "
+"разговорот."
 
 #: ../ggz-gtk/ggzclient.c:451
 msgid "You're not at a table."
@@ -662,7 +702,8 @@ msgstr "Се придруживте кон таблата %d."
 #: ../ggz-gtk/ggzclient.c:594
 #, c-format
 msgid "Error joining table: %s"
-msgstr "Грешка во придружувањето кон таблата: %s"
+msgstr ""
+"Грешка во придружувањето кон таблата: %s"
 
 #: ../ggz-gtk/ggzclient.c:616
 #, c-format
@@ -857,12 +898,16 @@ msgstr "Корисничкото име е предолго!"
 #: ../ggz-gtk/login.c:126
 #, c-format
 msgid "Invalid username, do not use special characters!"
-msgstr "Невалидно корисничко име. Не користете специјални знаци!"
+msgstr ""
+"Невалидно корисничко име. Не користете "
+"специјални знаци!"
 
 #: ../ggz-gtk/login.c:130
 #, c-format
 msgid "Login failed for unknown reason: %s"
-msgstr "Најавата не успеа поради непознати причини: %s"
+msgstr ""
+"Најавата не успеа поради непознати "
+"причини: %s"
 
 #: ../ggz-gtk/login.c:538
 msgid "Server Profile"
@@ -880,17 +925,9 @@ msgstr "Уреди ги профилите..."
 msgid "Server:"
 msgstr "Сервер:"
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "Порта:"
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -922,7 +959,9 @@ msgstr "Порака на денот"
 
 #: ../ggz-gtk/pick_module.c:89
 msgid "Which client would you like to use to play this game?"
-msgstr "Кој клиент сакате да го користите за играње на оваа игра?"
+msgstr ""
+"Кој клиент сакате да го користите за "
+"играње на оваа игра?"
 
 #: ../ggz-gtk/pick_module.c:131
 msgid "Don't ask me again."
@@ -1040,7 +1079,9 @@ msgstr "Промена"
 
 #: ../ggz-gtk/props.c:1147
 msgid "Ignore Join/Part Messages"
-msgstr "Игнорирај ги пораките за придружување/разделување"
+msgstr ""
+"Игнорирај ги пораките за "
+"придружување/разделување"
 
 #: ../ggz-gtk/props.c:1155
 msgid "Play Sounds"
@@ -1064,15 +1105,21 @@ msgstr "Боја на разговор"
 
 #: ../ggz-gtk/props.c:1236
 msgid "Default chat color assigned to your friends"
-msgstr "Стандардна боја на разговорот назначена на Вашите пријатели"
+msgstr ""
+"Стандардна боја на разговорот назначена "
+"на Вашите пријатели"
 
 #: ../ggz-gtk/props.c:1245
 msgid "Chat color used when your name is typed"
-msgstr "Боја на разговорот која ќе се користи кога е напишано Вашето име"
+msgstr ""
+"Боја на разговорот која ќе се користи "
+"кога е напишано Вашето име"
 
 #: ../ggz-gtk/props.c:1254
 msgid "Chat color used for all other chats"
-msgstr "Боја на разговорот која ќе се користи во сите други разговори"
+msgstr ""
+"Боја на разговорот која ќе се користи во "
+"сите други разговори"
 
 #: ../ggz-gtk/props.c:1263
 msgid "Normal Color"
@@ -1100,7 +1147,9 @@ msgstr "Разговор"
 
 #: ../ggz-gtk/props.c:1326
 msgid "All of the following information is optional."
-msgstr "Сите наредни информации се незадолжителни."
+msgstr ""
+"Сите наредни информации се "
+"незадолжителни."
 
 #: ../ggz-gtk/props.c:1344
 msgid "Name:"
@@ -1117,11 +1166,6 @@ msgstr "Држава:"
 #: ../ggz-gtk/props.c:1413
 msgid "Country:"
 msgstr "Држава:"
-
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Коментари, хобија, итн."
 
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
@@ -1241,7 +1285,9 @@ msgstr "Непозната соба"
 
 #: ../ggz-gtk/roomlist.c:73
 msgid "You can't join a room; you're not logged in"
-msgstr "Не можите да се придружите кон соба; не сте најавени"
+msgstr ""
+"Не можите да се придружите кон соба; не "
+"сте најавени"
 
 #: ../ggz-gtk/roomlist.c:77
 msgid "You're already in between rooms"
@@ -1249,7 +1295,9 @@ msgstr "Веќе сте измеѓу собите"
 
 #: ../ggz-gtk/roomlist.c:82
 msgid "You can't switch rooms while playing a game"
-msgstr "Не можете да ги смените собите додека играте"
+msgstr ""
+"Не можете да ги смените собите додека "
+"играте"
 
 #: ../ggz-gtk/roomlist.c:89
 msgid "Unknown error"
@@ -1289,7 +1337,8 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"Филтрирањето на соби сѐ уште не е имплементирано. Ако\n"
+"Филтрирањето на соби сѐ уште не е "
+"имплементирано. Ако\n"
 "сакате да помогнете околу тоа, дојдете на\n"
 "http://www.ggzgamingzone.org/"
 
@@ -1308,32 +1357,3 @@ msgstr "Филтер на листата со соби:"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "Постави"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Bakers Game"
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "Оди на веб"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Вклучи _звук"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/lv.po)
-
 # translation of lv.po to Latvian
 # gnome-games for Latvian.
 # Copyright (C) 2002, 2006, 2007 Free Software Foundation, Inc.
@@ -63,15 +62,16 @@ msgstr "/kick <lietotajvārds> .......... Patriekt spēlētaju no istabas"
 #: ../ggz-gtk/chat.c:107
 msgid "/gag <username> ........... Gag a player to prevent them from talking"
 msgstr ""
-"/gag <lietotājvārds> ........... Aizbāzt spēlētajam muti, lai tas nerunātu"
+"/gag <lietotājvārds> ........... Aizbāzt spēlētajam muti, lai tas "
+"nerunātu"
 
 #: ../ggz-gtk/chat.c:110
 msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
 msgstr ""
-"/ungag <lietotajvārds> ......... Atceļ mutes aizbāsanu un ļauj spēlētājam "
-"runāt"
+"/ungag <lietotajvārds> ......... Atceļ mutes aizbāsanu un ļauj "
+"spēlētājam runāt"
 
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
@@ -870,17 +870,9 @@ msgstr "Redigēt profilus..."
 msgid "Server:"
 msgstr "Serveris:"
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "Ports:"
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -1108,11 +1100,6 @@ msgstr "Štats:"
 msgid "Country:"
 msgstr "Valsts:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Komentāri, hobiji, utt."
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "Lietotāja informācija"
@@ -1298,32 +1285,3 @@ msgstr "Istabu saraksta filtrs:"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "Uzstādīt"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Banķiera spēle"
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "Iet uz tīmekli"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Aktivizēt skaņu"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

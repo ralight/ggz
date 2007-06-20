@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/ja.po)
-
 # gnome-games ja.po.
 # Copyright (C) 1998-2007 Free Software Foundation, Inc.
 # Yukihiro Nakai <Nakai@technologist.com>, 1998
@@ -30,11 +29,14 @@ msgstr "情報"
 
 #: ../ggz-gtk/chat.c:89
 msgid "/msg <username> <message> . Private message a player"
-msgstr "/msg <ユーザ名> <メッセージ> . 個人的なメッセージを送る"
+msgstr ""
+"/msg <ユーザ名> <メッセージ> . 個人的なメッセージを送る"
 
 #: ../ggz-gtk/chat.c:91
 msgid "/table <message> .......... Message to your table"
-msgstr "/table <メッセージ> .......... テーブルの皆にメッセージに送る"
+msgstr ""
+"/table <メッセージ> .......... "
+"テーブルの皆にメッセージに送る"
 
 #: ../ggz-gtk/chat.c:93
 msgid "/wall <message> ........... Admin command"
@@ -54,25 +56,33 @@ msgstr "/friends .................. 仲間の一覧を表示する"
 
 #: ../ggz-gtk/chat.c:101
 msgid "/ignore ................... List people you're ignoring"
-msgstr "/ignore ................... 無視するプレイヤーの一覧を表示する"
+msgstr ""
+"/ignore ................... "
+"無視するプレイヤーの一覧を表示する"
 
 #: ../ggz-gtk/chat.c:104
 msgid "/kick <username> .......... Kick a player from the room"
-msgstr "/kick <ユーザ名> .......... 部屋からプレイヤーを追い出す"
+msgstr ""
+"/kick <ユーザ名> .......... 部屋からプレイヤーを追い出す"
 
 #: ../ggz-gtk/chat.c:107
 msgid "/gag <username> ........... Gag a player to prevent them from talking"
-msgstr "/gag <ユーザ名> ........... メッセージを送信できないようにする"
+msgstr ""
+"/gag <ユーザ名> ........... "
+"メッセージを送信できないようにする"
 
 #: ../ggz-gtk/chat.c:110
 msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
-msgstr "/ungag <ユーザ名> ......... メッセージを送信できるようにする"
+msgstr ""
+"/ungag <ユーザ名> ......... "
+"メッセージを送信できるようにする"
 
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
-msgstr "/ban <ユーザ名> ........... サーバからプレイヤーを追い出す"
+msgstr ""
+"/ban <ユーザ名> ........... サーバからプレイヤーを追い出す"
 
 #: ../ggz-gtk/chat.c:254
 #, c-format
@@ -90,7 +100,9 @@ msgstr "用法: /msg <ユーザ名> <メッセージ>"
 
 #: ../ggz-gtk/chat.c:441
 msgid "    Sends a private message to a user on the network."
-msgstr "    ネットワーク上のユーザに個人的なメッセージを送信する"
+msgstr ""
+"    "
+"ネットワーク上のユーザに個人的なメッセージを送信する"
 
 #: ../ggz-gtk/chat.c:495
 #, c-format
@@ -166,7 +178,8 @@ msgid ""
 "http://www.ggzgamingzone.org/"
 msgstr ""
 "サーバ状態の取得は未だ実装されていません。\n"
-"(お手伝いを希望される方は http://www.ggzgamingzone.org/ をご覧下さい)"
+"(お手伝いを希望される方は http://www.ggzgamingzone.org/ "
+"をご覧下さい)"
 
 #: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
 #: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
@@ -180,14 +193,17 @@ msgid ""
 "http://www.ggzgamingzone.org/"
 msgstr ""
 "プレイヤー状態の取得は未だ実装されていません\n"
-"(お手伝いを希望される方は http://www.ggzgamingzone.org/ をご覧下さい)"
+"(お手伝いを希望される方は http://www.ggzgamingzone.org/ "
+"をご覧下さい)"
 
 #: ../ggz-gtk/client.c:294
 msgid ""
 "GGZ Gaming Zone help needs a browser to be configured.\n"
 "The configuration dialog will be invoked now."
 msgstr ""
-"GGZ ゲーム・ゾーンのヘルプを表示するには設定済みのブラウザが必要です。\n"
+"GGZ "
+"ゲーム・ゾーンのヘルプを表示するには設定済みのブラウザが必要です。"
+"\n"
 "(現在、設定ダイアログを起動しています...)"
 
 #: ../ggz-gtk/client.c:308
@@ -198,11 +214,14 @@ msgid ""
 "http://www.ggzgamingzone.org/"
 msgstr ""
 "インライン・ゲームのヘルプは未だ実装されていません\n"
-"(お手伝いを希望される方は http://www.ggzgamingzone.org/ をご覧下さい)"
+"(お手伝いを希望される方は http://www.ggzgamingzone.org/ "
+"をご覧下さい)"
 
 #: ../ggz-gtk/client.c:566
 msgid "You must highlight a table before you can join it."
-msgstr "テーブルにつく前にそのテーブルをクリックして強調表示にして下さい"
+msgstr ""
+""
+"テーブルにつく前にそのテーブルをクリックして強調表示にして下さい"
 
 #: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
 msgid "Error Joining"
@@ -223,7 +242,9 @@ msgstr "ゲーム・エラー"
 
 #: ../ggz-gtk/client.c:600
 msgid "You must highlight a table before you can watch it."
-msgstr "テーブルを監視する前にそのテーブルをクリックして強調表示にして下さい"
+msgstr ""
+""
+"テーブルを監視する前にそのテーブルをクリックして強調表示にして下さい"
 
 #: ../ggz-gtk/client.c:602
 msgid "Error Spectating"
@@ -263,7 +284,9 @@ msgstr "現在プレイ中のゲームを離れます"
 
 #: ../ggz-gtk/client.c:689
 msgid "Show the properties dialog to change the client settings"
-msgstr "クライアントの設定を変更するためのプロパティダイアログを表示します"
+msgstr ""
+""
+"クライアントの設定を変更するためのプロパティダイアログを表示します"
 
 #: ../ggz-gtk/client.c:693
 msgid "Show the game stats for the current room's game type"
@@ -493,8 +516,8 @@ msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
-"初めて GTK+ 版の GGZ ゲーム・ゾーン・クライアントを起動したようです。デフォル"
-"トで使用するサーバのプロファイルを作成しますか？"
+"初めて GTK+ 版の GGZ "
+"ゲーム・ゾーン・クライアントを起動したようです。デフォルトで使用するサーバのプロファイルを作成しますか？"
 
 #: ../ggz-gtk/game.c:72
 #, c-format
@@ -622,7 +645,9 @@ msgstr "そのプレイヤーは部屋に居ません！"
 
 #: ../ggz-gtk/ggzclient.c:447
 msgid "There was an error sending the chat."
-msgstr "チャットのメッセージを送信する際にエラーが発生しました"
+msgstr ""
+""
+"チャットのメッセージを送信する際にエラーが発生しました"
 
 #: ../ggz-gtk/ggzclient.c:451
 msgid "You're not at a table."
@@ -841,7 +866,9 @@ msgstr "そのユーザ名は長すぎます！"
 #: ../ggz-gtk/login.c:126
 #, c-format
 msgid "Invalid username, do not use special characters!"
-msgstr "ユーザ名が間違っています (特殊な文字を使用しないこと！)"
+msgstr ""
+"ユーザ名が間違っています "
+"(特殊な文字を使用しないこと！)"
 
 #: ../ggz-gtk/login.c:130
 #, c-format
@@ -864,17 +891,9 @@ msgstr "編集..."
 msgid "Server:"
 msgstr "サーバ:"
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "ポート:"
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -906,7 +925,9 @@ msgstr "今日の一言"
 
 #: ../ggz-gtk/pick_module.c:89
 msgid "Which client would you like to use to play this game?"
-msgstr "このゲームをプレイする際に使用するクライアントはどれですか？"
+msgstr ""
+""
+"このゲームをプレイする際に使用するクライアントはどれですか？"
 
 #: ../ggz-gtk/pick_module.c:131
 msgid "Don't ask me again."
@@ -1102,11 +1123,6 @@ msgstr "状態:"
 msgid "Country:"
 msgstr "国:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "コメントや趣味など"
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "ユーザの情報"
@@ -1274,7 +1290,8 @@ msgid ""
 "http://www.ggzgamingzone.org/"
 msgstr ""
 "部屋のフィルタリングは未だ実装されていません\n"
-"(お手伝いを希望される方は http://www.ggzgamingzone.org/ をご覧下さい)"
+"(お手伝いを希望される方は http://www.ggzgamingzone.org/ "
+"をご覧下さい)"
 
 #: ../ggz-gtk/types.c:191
 msgid "Web Address"
@@ -1291,32 +1308,3 @@ msgstr "部屋の一覧のフィルタ:"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "セット"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "パン屋のゲーム"
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "ウェブへジャンプ"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "サウンドを有効にする"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

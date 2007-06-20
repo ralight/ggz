@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/sv.po)
-
 # Swedish messages for gnome-games.
 # Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
 # Daniel Nylander <po@danielnylander.se>, 2006, 2007.
@@ -9,7 +8,7 @@
 # Martin Norbäck <d95mback@dtek.chalmers.se>, 2000.
 # Christian Rose <menthos@menthos.com>, 2000, 2001, 2002, 2003, 2004, 2005.
 #
-# $Id: sv.po 9146 2007-06-20 15:50:56Z josef $
+# $Id: sv.po 9156 2007-06-20 17:56:44Z josef $
 #
 msgid ""
 msgstr ""
@@ -503,8 +502,8 @@ msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
-"Det här är första gången du kör GTK+ GGZ Gaming Zone-klienten. Vill du att "
-"jag skapar några standardserverprofiler?"
+"Det här är första gången du kör GTK+ GGZ Gaming Zone-klienten. Vill du "
+"att jag skapar några standardserverprofiler?"
 
 #: ../ggz-gtk/game.c:72
 #, c-format
@@ -867,11 +866,6 @@ msgstr "Serverprofil"
 msgid "Profile:"
 msgstr "Profil:"
 
-#: ../ggz-gtk/login.c:582
-#, fuzzy
-msgid "Edit Profiles..."
-msgstr "Redigera profiler"
-
 #: ../ggz-gtk/login.c:590 ../ggz-gtk/props.c:946
 msgid "Server:"
 msgstr "Server:"
@@ -1115,11 +1109,6 @@ msgstr "Län/Region:"
 msgid "Country:"
 msgstr "Land:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Kommentarer, hobby, etc."
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "Användarinformation"
@@ -1306,31 +1295,6 @@ msgstr "Filter för rumslista:"
 msgid "Set"
 msgstr "Ställ in"
 
-# I brist på annat...
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Bagarspel"
-
 #: ../ggz-gtk/types.c:309
 msgid "Goto Web Site"
 msgstr "Gå till webbplats"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Aktivera ljud"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/da.po)
-
 # Danish translation of gnome-games.
 # Copyright (C) 1998, 2001, 02, 03, 04 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-games package.
@@ -890,26 +889,13 @@ msgstr "Serverprofil"
 msgid "Profile:"
 msgstr "Profil:"
 
-#: ../ggz-gtk/login.c:582
-#, fuzzy
-msgid "Edit Profiles..."
-msgstr "Redigér profiler..."
-
 #: ../ggz-gtk/login.c:590 ../ggz-gtk/props.c:946
 msgid "Server:"
 msgstr "Server:"
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "Port:"
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -1140,11 +1126,6 @@ msgstr "Stat:"
 msgid "Country:"
 msgstr "Land:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Kommentarer, hobbyer osv."
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "Brugerinformation"
@@ -1332,32 +1313,3 @@ msgstr "Filter til rumliste:"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "Indstil"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Bagerspil"
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "Gå til nettet"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Aktivér lyde"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

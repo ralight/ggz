@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/nb.po)
-
 # Norwegian translation of the gnome-games module (bokmål dialect).
 # Copyright © 1998-2002 Free Software Foundation, Inc.
 # Kjartan Maraas <kmaraas@gnome.org>, 1998-2006.
@@ -31,14 +30,6 @@ msgstr "/msg <brukernavn> <beskjed> . Privat beskjed til en spiller"
 msgid "/table <message> .......... Message to your table"
 msgstr "/table <beskjed> .......... Beskjed til ditt bord"
 
-#: ../ggz-gtk/chat.c:93
-msgid "/wall <message> ........... Admin command"
-msgstr ""
-
-#: ../ggz-gtk/chat.c:95
-msgid "/beep <username> .......... Beep a player"
-msgstr ""
-
 #: ../ggz-gtk/chat.c:97
 msgid "/help ..................... Get help"
 msgstr "/help ..................... Få hjelp"
@@ -51,33 +42,10 @@ msgstr "/friends .................. Vis vennene dine"
 msgid "/ignore ................... List people you're ignoring"
 msgstr "/ignore ................... Vis personer du ignorerer"
 
-#: ../ggz-gtk/chat.c:104
-msgid "/kick <username> .......... Kick a player from the room"
-msgstr ""
-
-#: ../ggz-gtk/chat.c:107
-msgid "/gag <username> ........... Gag a player to prevent them from talking"
-msgstr ""
-
-#: ../ggz-gtk/chat.c:110
-msgid ""
-"/ungag <username> ......... Reverse the gag operation to allow a player to "
-"talk"
-msgstr ""
-
-#: ../ggz-gtk/chat.c:113
-msgid "/ban <username> ........... Ban a player from the server"
-msgstr ""
-
 #: ../ggz-gtk/chat.c:254
 #, c-format
 msgid "You have received an unknown message from %s."
 msgstr "Du har mottatt en ukjent beskjed fra %s."
-
-#: ../ggz-gtk/chat.c:318
-#, c-format
-msgid "You've been beeped by %s."
-msgstr ""
 
 #: ../ggz-gtk/chat.c:439
 msgid "Usage: /msg <username> <message>"
@@ -109,10 +77,6 @@ msgstr "Samtalekommandoer"
 #: ../ggz-gtk/chat.c:588
 msgid "-------------"
 msgstr "-------------"
-
-#: ../ggz-gtk/chat.c:592
-msgid "/me <action> .............. Send an action"
-msgstr ""
 
 #: ../ggz-gtk/chat.c:783
 #, c-format
@@ -154,81 +118,19 @@ msgstr "Er du sikker på at du vil avslutte?"
 msgid "Quit?"
 msgstr "Avslutt?"
 
-#: ../ggz-gtk/client.c:237
-msgid ""
-"Server stats are not implemented yet. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-
 #: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
 #: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
 msgid "Not Implemented"
 msgstr "Ikke implementert"
 
-#: ../ggz-gtk/client.c:248 ../ggz-gtk/client.c:545
-msgid ""
-"Player stats are not implemented yet. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-
-#: ../ggz-gtk/client.c:294
-msgid ""
-"GGZ Gaming Zone help needs a browser to be configured.\n"
-"The configuration dialog will be invoked now."
-msgstr ""
-
-#: ../ggz-gtk/client.c:308
-msgid ""
-"Inline game help is not implemented yet. Help\n"
-"is on our website. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-
-#: ../ggz-gtk/client.c:566
-msgid "You must highlight a table before you can join it."
-msgstr ""
-
-#: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
-msgid "Error Joining"
-msgstr ""
-
 #: ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:614
 msgid "That table is full."
 msgstr "Bordet er fullt."
-
-#: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:334
-msgid "Error launching game module."
-msgstr ""
 
 #: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
 #: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:335
 msgid "Game Error"
 msgstr "Feil med spillet"
-
-#: ../ggz-gtk/client.c:600
-msgid "You must highlight a table before you can watch it."
-msgstr ""
-
-#: ../ggz-gtk/client.c:602
-msgid "Error Spectating"
-msgstr ""
-
-#: ../ggz-gtk/client.c:647
-msgid ""
-"Failed to join table.\n"
-"Join aborted."
-msgstr ""
-
-#: ../ggz-gtk/client.c:648
-msgid "Join Error"
-msgstr ""
-
-#: ../ggz-gtk/client.c:678
-msgid "Disconnect from the GGZ Gaming Zone server"
-msgstr ""
 
 #: ../ggz-gtk/client.c:680
 msgid "Start playing a game at a new table"
@@ -238,25 +140,9 @@ msgstr "Start å spille et nytt spill på et nytt bord."
 msgid "Join an existing game"
 msgstr "Bli med i et eksisterende spill"
 
-#: ../ggz-gtk/client.c:684
-msgid "Watch an existing game - become a spectator of the table"
-msgstr ""
-
 #: ../ggz-gtk/client.c:687
 msgid "Leave the game you're currently playing"
 msgstr "Forlat spillet du spiller for øyeblikket"
-
-#: ../ggz-gtk/client.c:689
-msgid "Show the properties dialog to change the client settings"
-msgstr ""
-
-#: ../ggz-gtk/client.c:693
-msgid "Show the game stats for the current room's game type"
-msgstr ""
-
-#: ../ggz-gtk/client.c:696
-msgid "Exit the GGZ client application."
-msgstr ""
 
 #: ../ggz-gtk/client.c:726
 #, c-format
@@ -267,10 +153,6 @@ msgstr "Klientversjon:14 %s"
 #, c-format
 msgid "GTK+ Version:14 %d.%d.%d\n"
 msgstr "GTK+-versjon:14 %d.%d.%d\n"
-
-#: ../ggz-gtk/client.c:736
-msgid "Compiled with debugging."
-msgstr ""
 
 #: ../ggz-gtk/client.c:934
 msgid "GGZ"
@@ -445,10 +327,6 @@ msgstr "Speider"
 msgid "Lieutenant"
 msgstr "Løytnant"
 
-#: ../ggz-gtk/first.c:60
-msgid "Stalker"
-msgstr ""
-
 #: ../ggz-gtk/first.c:61
 msgid "Scientist"
 msgstr "Vitenskapsmann"
@@ -465,19 +343,9 @@ msgstr "Entitet"
 msgid "Creator"
 msgstr "Skaper"
 
-#: ../ggz-gtk/first.c:69
-msgid "GGZ Community (fast)"
-msgstr ""
-
 #: ../ggz-gtk/first.c:70
 msgid "Local developer server"
 msgstr "Lokal utviklingstjener"
-
-#: ../ggz-gtk/first.c:190
-msgid ""
-"This is the first time you are running the GTK+ GGZ Gaming Zone client. "
-"Would you like to create some default server profiles?"
-msgstr ""
 
 #: ../ggz-gtk/game.c:72
 #, c-format
@@ -493,12 +361,6 @@ msgstr ""
 #: ../ggz-gtk/launch.c:290
 msgid "Launch Error"
 msgstr "Feil ved oppstart"
-
-#: ../ggz-gtk/game.c:148
-msgid ""
-"Failed to execute game module.\n"
-" Launch aborted."
-msgstr ""
 
 #: ../ggz-gtk/game.c:201
 msgid "Launched game"
@@ -524,21 +386,9 @@ msgstr ""
 "Du må være i et rom for å starte et spill.\n"
 "Oppstart avbrutt"
 
-#: ../ggz-gtk/game.c:323
-msgid ""
-"No game types defined for this server.\n"
-"Launch aborted."
-msgstr ""
-
 #: ../ggz-gtk/game.c:333
 msgid "This game doesn't support spectators."
 msgstr "Dette spillet støtter ikke tilskuere."
-
-#: ../ggz-gtk/game.c:348
-msgid ""
-"You need to launch the GGZ client directly\n"
-"to be able to play this game."
-msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:122
 #, c-format
@@ -575,11 +425,6 @@ msgstr "Aktivt rom: %s"
 #, c-format
 msgid "You've joined room \"%s\"."
 msgstr "Du har blitt med i rommet «%s»."
-
-#: ../ggz-gtk/ggzclient.c:378
-#, c-format
-msgid "Error joining room: %s"
-msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:429
 msgid "You can't chat while not in a room."
@@ -731,20 +576,6 @@ msgstr "Beskrivelse:  %s"
 msgid "Home Page:  %s"
 msgstr "Hjemmeside:  %s"
 
-#: ../ggz-gtk/launch.c:289
-msgid ""
-"Failed to launch table.\n"
-" Launch aborted."
-msgstr ""
-
-#: ../ggz-gtk/launch.c:325
-msgid "Invalid number of bots specified"
-msgstr ""
-
-#: ../ggz-gtk/launch.c:420
-msgid "Seat Assignments"
-msgstr ""
-
 #: ../ggz-gtk/launch.c:443
 msgid "Game Type:"
 msgstr "Spilltype:"
@@ -839,17 +670,9 @@ msgstr "Rediger profiler..."
 msgid "Server:"
 msgstr "Tjener:"
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "Port:"
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -989,29 +812,13 @@ msgstr "Endre"
 msgid "Servers"
 msgstr "Tjenere"
 
-#: ../ggz-gtk/props.c:1118
-msgid "Chat Font:"
-msgstr ""
-
 #: ../ggz-gtk/props.c:1134
 msgid "Change"
 msgstr "Endre"
 
-#: ../ggz-gtk/props.c:1147
-msgid "Ignore Join/Part Messages"
-msgstr ""
-
 #: ../ggz-gtk/props.c:1155
 msgid "Play Sounds"
 msgstr "Spill av lyder"
-
-#: ../ggz-gtk/props.c:1163
-msgid "Auto Indent"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1171
-msgid "Timestamp Chats"
-msgstr ""
 
 #: ../ggz-gtk/props.c:1179
 msgid "Word Wrap"
@@ -1021,29 +828,9 @@ msgstr "Ordbryting"
 msgid "Chat Color"
 msgstr "Farge på samtale"
 
-#: ../ggz-gtk/props.c:1236
-msgid "Default chat color assigned to your friends"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1245
-msgid "Chat color used when your name is typed"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1254
-msgid "Chat color used for all other chats"
-msgstr ""
-
 #: ../ggz-gtk/props.c:1263
 msgid "Normal Color"
 msgstr "Vanlig farge"
-
-#: ../ggz-gtk/props.c:1274
-msgid "Highlight Color"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1285
-msgid "Friend Color"
-msgstr ""
 
 #: ../ggz-gtk/props.c:1296
 msgid "Black Background"
@@ -1056,10 +843,6 @@ msgstr "Hvit bakgrunn"
 #: ../ggz-gtk/props.c:1314
 msgid "Chat"
 msgstr "Prat"
-
-#: ../ggz-gtk/props.c:1326
-msgid "All of the following information is optional."
-msgstr ""
 
 #: ../ggz-gtk/props.c:1344
 msgid "Name:"
@@ -1076,11 +859,6 @@ msgstr "Tilstand:"
 #: ../ggz-gtk/props.c:1413
 msgid "Country:"
 msgstr "Land"
-
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Kommentarer, hobbier, osv."
 
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
@@ -1242,13 +1020,6 @@ msgstr "Beskrivelse"
 msgid "None"
 msgstr "Ingen"
 
-#: ../ggz-gtk/types.c:148
-msgid ""
-"Room filtering is not implemented yet. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-
 #: ../ggz-gtk/types.c:191
 msgid "Web Address"
 msgstr "Nettadresse"
@@ -1264,32 +1035,3 @@ msgstr "Filter for romliste:"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "Sett"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Bakers Game"
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "Gå til nettside"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Aktiver lyder"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

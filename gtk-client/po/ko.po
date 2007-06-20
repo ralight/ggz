@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/ko.po)
-
 # ko.po -- Korean messages for GNOME games
 # GwanSun Back <backiss@kornet.net>, 2001
 # Changwoo Ryu <cwryu@debian.org>, 1998, 2002-2006, 2007.
@@ -24,7 +23,8 @@ msgstr "정보"
 
 #: ../ggz-gtk/chat.c:89
 msgid "/msg <username> <message> . Private message a player"
-msgstr "/msg <사용자이름> <메세지> . 플레이어에게 개인 메세지"
+msgstr ""
+"/msg <사용자이름> <메세지> . 플레이어에게 개인 메세지"
 
 #: ../ggz-gtk/chat.c:91
 msgid "/table <message> .......... Message to your table"
@@ -56,18 +56,22 @@ msgstr "/kick <사용자이름> ......... 방에서 플레이어 쫓아내기"
 
 #: ../ggz-gtk/chat.c:107
 msgid "/gag <username> ........... Gag a player to prevent them from talking"
-msgstr "/gag <사용자이름> .......... 플레이어가 말하지 못하게 막기"
+msgstr ""
+"/gag <사용자이름> .......... 플레이어가 말하지 못하게 막기"
 
 #: ../ggz-gtk/chat.c:110
 msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
 msgstr ""
-"/ungag <사용자이름> ........ 막은 것을 풀어서 플레이어가 말할 수 있게 하기"
+"/ungag <사용자이름> ........ 막은 것을 풀어서 플레이어가 "
+"말할 수 있게 하기"
 
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
-msgstr "/ban <사용자이름> .......... 플레이어를 서버에 입장 금지시키기"
+msgstr ""
+"/ban <사용자이름> .......... 플레이어를 서버에 입장 "
+"금지시키기"
 
 #: ../ggz-gtk/chat.c:254
 #, c-format
@@ -184,7 +188,8 @@ msgid ""
 "GGZ Gaming Zone help needs a browser to be configured.\n"
 "The configuration dialog will be invoked now."
 msgstr ""
-"GGZ 게임존 도움말은 브라우저를 설정해야 볼 수 있습니다.\n"
+"GGZ 게임존 도움말은 브라우저를 설정해야 볼 수 "
+"있습니다.\n"
 "지금 설정 창을 실행합니다."
 
 #: ../ggz-gtk/client.c:308
@@ -262,7 +267,8 @@ msgstr "현재 플레이하는 게임을 떠납니다"
 
 #: ../ggz-gtk/client.c:689
 msgid "Show the properties dialog to change the client settings"
-msgstr "클라이언트 설정을 바꾸는 등록정보 창을 표시합니다"
+msgstr ""
+"클라이언트 설정을 바꾸는 등록정보 창을 표시합니다"
 
 #: ../ggz-gtk/client.c:693
 msgid "Show the game stats for the current room's game type"
@@ -512,8 +518,8 @@ msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
-"GTK+ GGZ 게임존 클라이언트를 처음 실행하고 있습니다. 기본 서버 프로파일을 만"
-"드시겠습니까?"
+"GTK+ GGZ 게임존 클라이언트를 처음 실행하고 있습니다. "
+"기본 서버 프로파일을 만드시겠습니까?"
 
 #: ../ggz-gtk/game.c:72
 #, c-format
@@ -861,7 +867,9 @@ msgstr "사용자 이름이 너무 깁니다!"
 #: ../ggz-gtk/login.c:126
 #, c-format
 msgid "Invalid username, do not use special characters!"
-msgstr "사용자 이름이 잘못되었습니다. 특수 문자를 사용하지 마십시오!"
+msgstr ""
+"사용자 이름이 잘못되었습니다. 특수 문자를 사용하지 "
+"마십시오!"
 
 #: ../ggz-gtk/login.c:130
 #, c-format
@@ -884,17 +892,9 @@ msgstr "프로파일 편집..."
 msgid "Server:"
 msgstr "서버:"
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "포트:"
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -1122,11 +1122,6 @@ msgstr "지역:"
 msgid "Country:"
 msgstr "국가:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "하고 싶은 말, 취미 등등"
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "사용자 정보"
@@ -1312,32 +1307,3 @@ msgstr "방 목록 필터:"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "설정"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "베이커즈 게임"
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "웹페이지로"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "사운드 사용"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

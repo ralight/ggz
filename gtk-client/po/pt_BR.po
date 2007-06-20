@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/pt_BR.po)
-
 # Brazilian Portuguese translation of gnome-games.
 # Copyright (C) 1999-2006 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-games package.
@@ -878,17 +877,9 @@ msgstr "Editar Perfis..."
 msgid "Server:"
 msgstr "Servidor:"
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "Porta:"
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -1116,11 +1107,6 @@ msgstr "Estado:"
 msgid "Country:"
 msgstr "País:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Comentários, Hobbies, Etc."
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "Informações do Usuário"
@@ -1306,32 +1292,3 @@ msgstr "Filtro da Lista de Salas:"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "Configurações"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Jogo do Padeiro"
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "Ir para Web"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Ativar som"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

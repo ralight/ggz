@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/zh_HK.po)
-
 # Chinese (Hong Kong) translation of gnome-games.
 # Copyright (C) 1999-2006 Free Software Foundation, Inc.
 # (http://vegas.wcn.com.tw/21.shtml for blackjack terms)
@@ -58,40 +57,23 @@ msgstr "/kick <玩家名稱> …… 將某玩家趕出遊戲區之外"
 
 #: ../ggz-gtk/chat.c:107
 msgid "/gag <username> ........... Gag a player to prevent them from talking"
-msgstr "/gag <玩家名稱> …… 下禁制令，令玩家不可以和別人交談"
+msgstr ""
+"/gag <玩家名稱> …… 下禁制令，令玩家不可以和別人交談"
 
 #: ../ggz-gtk/chat.c:110
 msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
-msgstr "/ungag <玩家名稱> …… 解除禁制令，令玩家可以和別人交談"
+msgstr ""
+"/ungag <玩家名稱> …… 解除禁制令，令玩家可以和別人交談"
 
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
 msgstr "/ban <玩家名稱> ........... 禁止玩家進入伺服器"
 
-#: ../ggz-gtk/chat.c:254
-#, c-format
-msgid "You have received an unknown message from %s."
-msgstr ""
-
-#: ../ggz-gtk/chat.c:318
-#, c-format
-msgid "You've been beeped by %s."
-msgstr ""
-
 #: ../ggz-gtk/chat.c:439
 msgid "Usage: /msg <username> <message>"
 msgstr "用法： /msg <玩家名稱> <訊息>"
-
-#: ../ggz-gtk/chat.c:441
-msgid "    Sends a private message to a user on the network."
-msgstr ""
-
-#: ../ggz-gtk/chat.c:495
-#, c-format
-msgid "Beep sent to %s."
-msgstr ""
 
 #: ../ggz-gtk/chat.c:523
 #, c-format
@@ -110,10 +92,6 @@ msgstr "交談指令"
 #: ../ggz-gtk/chat.c:588
 msgid "-------------"
 msgstr "-------------"
-
-#: ../ggz-gtk/chat.c:592
-msgid "/me <action> .............. Send an action"
-msgstr ""
 
 #: ../ggz-gtk/chat.c:783
 #, c-format
@@ -135,17 +113,9 @@ msgstr "將 %s 加入你的黑名單中。"
 msgid "Removed %s from your ignore list."
 msgstr "從你的黑名單中移除 %s。"
 
-#: ../ggz-gtk/chat.c:939
-msgid "People currently your friends"
-msgstr ""
-
 #: ../ggz-gtk/chat.c:953
 msgid "People you're currently ignoring"
 msgstr "在黑名單中的玩家"
-
-#: ../ggz-gtk/chat.c:1029
-msgid "Multiple matches:"
-msgstr ""
 
 #: ../ggz-gtk/client.c:144
 msgid "Are you sure you want to quit?"
@@ -352,10 +322,6 @@ msgstr "玩家統計數字"
 msgid "Game Types"
 msgstr "遊戲形式"
 
-#: ../ggz-gtk/client.c:1074 ../ggz-gtk/props.c:1491
-msgid "MOTD"
-msgstr ""
-
 #: ../ggz-gtk/client.c:1081
 msgid "Help"
 msgstr "求助"
@@ -371,14 +337,6 @@ msgstr "GGZ 說明文件"
 #: ../ggz-gtk/client.c:1112
 msgid "Game Help"
 msgstr "遊戲說明文件"
-
-#: ../ggz-gtk/client.c:1121
-msgid "Goto Web"
-msgstr ""
-
-#: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:356
-msgid "Stats"
-msgstr ""
 
 #: ../ggz-gtk/client.c:1196 ../ggz-gtk/ggzclient.c:718
 msgid "Current Room:"
@@ -397,85 +355,9 @@ msgstr "送出"
 msgid "GGZ Gaming Zone"
 msgstr "GGZ 遊戲網"
 
-#: ../ggz-gtk/first.c:57
-msgid "Wizard"
-msgstr ""
-
-#: ../ggz-gtk/first.c:57
-msgid "Deity"
-msgstr ""
-
-#: ../ggz-gtk/first.c:57
-msgid "Sentinel"
-msgstr ""
-
-#: ../ggz-gtk/first.c:57
-msgid "Captain"
-msgstr ""
-
-#: ../ggz-gtk/first.c:58
-msgid "Knight"
-msgstr ""
-
-#: ../ggz-gtk/first.c:58
-msgid "Angel"
-msgstr ""
-
-#: ../ggz-gtk/first.c:58
-msgid "Silverlord"
-msgstr ""
-
-#: ../ggz-gtk/first.c:58
-msgid "Eagle"
-msgstr ""
-
-#: ../ggz-gtk/first.c:59
-msgid "Vampire"
-msgstr ""
-
-#: ../ggz-gtk/first.c:59
-msgid "Chief"
-msgstr ""
-
-#: ../ggz-gtk/first.c:59
-msgid "Colonel"
-msgstr ""
-
 #: ../ggz-gtk/first.c:59
 msgid "General"
 msgstr "一般"
-
-#: ../ggz-gtk/first.c:60
-msgid "Major"
-msgstr ""
-
-#: ../ggz-gtk/first.c:60
-msgid "Scout"
-msgstr ""
-
-#: ../ggz-gtk/first.c:60
-msgid "Lieutenant"
-msgstr ""
-
-#: ../ggz-gtk/first.c:60
-msgid "Stalker"
-msgstr ""
-
-#: ../ggz-gtk/first.c:61
-msgid "Scientist"
-msgstr ""
-
-#: ../ggz-gtk/first.c:61
-msgid "Scholar"
-msgstr ""
-
-#: ../ggz-gtk/first.c:61
-msgid "Entity"
-msgstr ""
-
-#: ../ggz-gtk/first.c:61
-msgid "Creator"
-msgstr ""
 
 #: ../ggz-gtk/first.c:69
 msgid "GGZ Community (fast)"
@@ -490,7 +372,9 @@ msgstr "你自己的電腦"
 msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
-msgstr "這是你第一次執行 GGZ 遊戲網的程式。你想不想先創建預設的伺服器設定？"
+msgstr ""
+"這是你第一次執行 GGZ "
+"遊戲網的程式。你想不想先創建預設的伺服器設定？"
 
 #: ../ggz-gtk/game.c:72
 #, c-format
@@ -603,10 +487,6 @@ msgstr "未進入遊戲區不可聊天。"
 #: ../ggz-gtk/ggzclient.c:434
 msgid "You don't have permission to chat here."
 msgstr "你沒有權限在這裏聊天。"
-
-#: ../ggz-gtk/ggzclient.c:438
-msgid "No private chatting at a table!"
-msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:442
 msgid "That player isn't in the room!"
@@ -856,17 +736,9 @@ msgstr "編輯設定…"
 msgid "Server:"
 msgstr "伺服器："
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "埠號："
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 # (Abel) username in GGZ == player name
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
@@ -893,14 +765,6 @@ msgstr "以過客身分登入"
 msgid "First-time Login"
 msgstr "第一次登入"
 
-#: ../ggz-gtk/motd.c:161
-msgid "Message of the Day"
-msgstr ""
-
-#: ../ggz-gtk/pick_module.c:89
-msgid "Which client would you like to use to play this game?"
-msgstr ""
-
 #: ../ggz-gtk/pick_module.c:131
 msgid "Don't ask me again."
 msgstr "不要再問我。"
@@ -909,10 +773,6 @@ msgstr "不要再問我。"
 msgid "Player Information"
 msgstr "玩家資訊"
 
-#: ../ggz-gtk/playerinfo.c:132
-msgid "Player Handle:"
-msgstr ""
-
 #: ../ggz-gtk/playerinfo.c:150
 msgid "Table:"
 msgstr "遊戲桌："
@@ -920,14 +780,6 @@ msgstr "遊戲桌："
 #: ../ggz-gtk/playerinfo.c:168
 msgid "Account:"
 msgstr "帳號："
-
-#: ../ggz-gtk/playerinfo.c:187
-msgid "Record:"
-msgstr ""
-
-#: ../ggz-gtk/playerinfo.c:205
-msgid "Rating:"
-msgstr ""
 
 #: ../ggz-gtk/playerinfo.c:223
 msgid "Rank:"
@@ -949,10 +801,6 @@ msgstr "已登記"
 msgid "Guest"
 msgstr "過客"
 
-#: ../ggz-gtk/playerinfo.c:343
-msgid "Host"
-msgstr ""
-
 #: ../ggz-gtk/playerinfo.c:346
 msgid "Administrator"
 msgstr "管理員"
@@ -969,10 +817,6 @@ msgstr "資訊"
 #: ../ggz-gtk/playerlist.c:101
 msgid "Friends"
 msgstr "好友"
-
-#: ../ggz-gtk/playerlist.c:106
-msgid "Ignore"
-msgstr ""
 
 #: ../ggz-gtk/playerlist.c:246
 #, c-format
@@ -1095,11 +939,6 @@ msgstr "省："
 msgid "Country:"
 msgstr "國家/地區："
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "備註、興趣等等"
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "玩家資訊"
@@ -1172,14 +1011,6 @@ msgstr "單按一下滑鼠即可進入遊戲區"
 msgid "Display All"
 msgstr "全部顯示"
 
-#: ../ggz-gtk/props.c:1509
-msgid "Display New"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1518
-msgid "Display Important"
-msgstr ""
-
 #: ../ggz-gtk/props.c:1527
 msgid "Display None"
 msgstr "不顯示"
@@ -1212,17 +1043,9 @@ msgstr "這個遊戲區沒有遊戲可以玩"
 msgid "N/A"
 msgstr "N/A"
 
-#: ../ggz-gtk/roominfo.c:175
-msgid "Unknown room"
-msgstr ""
-
 #: ../ggz-gtk/roomlist.c:73
 msgid "You can't join a room; you're not logged in"
 msgstr "你未登入，不可以進入遊戲區"
-
-#: ../ggz-gtk/roomlist.c:77
-msgid "You're already in between rooms"
-msgstr ""
 
 #: ../ggz-gtk/roomlist.c:82
 msgid "You can't switch rooms while playing a game"
@@ -1248,10 +1071,6 @@ msgstr "遊戲區"
 msgid "No description available."
 msgstr "沒有任何描述。"
 
-#: ../ggz-gtk/tablelist.c:196
-msgid "Seats"
-msgstr ""
-
 #: ../ggz-gtk/tablelist.c:201 ../ggz-gtk/types.c:183
 msgid "Description"
 msgstr "描述"
@@ -1260,53 +1079,6 @@ msgstr "描述"
 msgid "None"
 msgstr "沒有"
 
-#: ../ggz-gtk/types.c:148
-msgid ""
-"Room filtering is not implemented yet. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-
-#: ../ggz-gtk/types.c:191
-msgid "Web Address"
-msgstr ""
-
 #: ../ggz-gtk/types.c:199
 msgid "Author"
 msgstr "作者"
-
-#: ../ggz-gtk/types.c:254
-msgid "Room List Filter:"
-msgstr ""
-
-#: ../ggz-gtk/types.c:266
-msgid "Set"
-msgstr ""
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Bakers Game"
-
-#: ../ggz-gtk/types.c:309
-msgid "Goto Web Site"
-msgstr ""
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "開啟音效"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

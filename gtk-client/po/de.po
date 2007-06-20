@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/de.po)
-
 # translation of de.po to German
 # German gnome-games translation
 # Copyright (C) 1998-2005 Free Software Foundation, Inc.
@@ -85,8 +84,8 @@ msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
 msgstr ""
-"/ungag <Benutzername> ...... Die »Gag«-Operation rückgängig machen, so dass "
-"der Spieler wieder sprechen kann"
+"/ungag <Benutzername> ...... Die »Gag«-Operation rückgängig machen, so "
+"dass der Spieler wieder sprechen kann"
 
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
@@ -1135,11 +1134,6 @@ msgstr "Status:"
 msgid "Country:"
 msgstr "Land:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Kommentare, Hobbies, etc."
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "Benutzerinformationen"
@@ -1328,33 +1322,3 @@ msgstr "Raumlistenfilter:"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "Gesetzt"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Bakers Game"
-
-# CHECK
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "Internet-Seite besuchen"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Klang aktivieren"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

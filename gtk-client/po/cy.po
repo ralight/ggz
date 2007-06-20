@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/cy.po)
-
 # gnome-games yn Gymraeg.
 # This file is distributed under the same license as the gnome-games package.
 #
@@ -305,16 +304,6 @@ msgstr ""
 #: ../ggz-gtk/client.c:696
 msgid "Exit the GGZ client application."
 msgstr "Gadael y rhaglen gleient GGZ."
-
-#: ../ggz-gtk/client.c:726
-#, c-format
-msgid "Client Version:14 %s"
-msgstr ""
-
-#: ../ggz-gtk/client.c:729
-#, c-format
-msgid "GTK+ Version:14 %d.%d.%d\n"
-msgstr ""
 
 #: ../ggz-gtk/client.c:736
 msgid "Compiled with debugging."
@@ -897,17 +886,9 @@ msgstr "Golygu Proffil..."
 msgid "Server:"
 msgstr "Gweinydd:"
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "Porth:"
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -1135,11 +1116,6 @@ msgstr "Talaith/Ardal:"
 msgid "Country:"
 msgstr "Gwlad:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Sylwadau, Hobïau, a.y.b."
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "Gwybodaeth Defnyddiwr"
@@ -1325,32 +1301,3 @@ msgstr "Hidl Rhestr Stafelloedd:"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "Set"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Gêm y Pobydd"
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "Mynd ar y We"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Galluogi synau"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

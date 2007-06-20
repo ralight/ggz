@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/nl.po)
-
 # Dutch Translation for Gnome Games
 # Copyright (C) 1999 Free Software Foundation, Inc.
 # Hein-Jan Leliveld <h.j.leliveld@student.tn.tudelft.nl>
@@ -185,120 +184,15 @@ msgstr "Weet u zeker dat u wilt stoppen?"
 msgid "Quit?"
 msgstr "Afsluiten"
 
-#: ../ggz-gtk/client.c:237
-msgid ""
-"Server stats are not implemented yet. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-
 #: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
 #: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
 msgid "Not Implemented"
 msgstr "Niet geïmplementeerd"
 
-#: ../ggz-gtk/client.c:248 ../ggz-gtk/client.c:545
-msgid ""
-"Player stats are not implemented yet. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-
-#: ../ggz-gtk/client.c:294
-msgid ""
-"GGZ Gaming Zone help needs a browser to be configured.\n"
-"The configuration dialog will be invoked now."
-msgstr ""
-
-#: ../ggz-gtk/client.c:308
-msgid ""
-"Inline game help is not implemented yet. Help\n"
-"is on our website. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-
-#: ../ggz-gtk/client.c:566
-msgid "You must highlight a table before you can join it."
-msgstr ""
-
-#: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
-#, fuzzy
-msgid "Error Joining"
-msgstr "Fout bij laden thema"
-
 # vol/bezet
 #: ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:614
 msgid "That table is full."
 msgstr "Deze tafel is vol."
-
-#: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:334
-#, fuzzy
-msgid "Error launching game module."
-msgstr "Fout bij laden thema"
-
-#: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
-#: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:335
-#, fuzzy
-msgid "Game Error"
-msgstr "Spel voorbij"
-
-#: ../ggz-gtk/client.c:600
-msgid "You must highlight a table before you can watch it."
-msgstr ""
-
-#: ../ggz-gtk/client.c:602
-msgid "Error Spectating"
-msgstr ""
-
-#: ../ggz-gtk/client.c:647
-msgid ""
-"Failed to join table.\n"
-"Join aborted."
-msgstr ""
-
-#: ../ggz-gtk/client.c:648
-msgid "Join Error"
-msgstr ""
-
-#: ../ggz-gtk/client.c:678
-msgid "Disconnect from the GGZ Gaming Zone server"
-msgstr ""
-
-#: ../ggz-gtk/client.c:680
-msgid "Start playing a game at a new table"
-msgstr ""
-
-#: ../ggz-gtk/client.c:682
-#, fuzzy
-msgid "Join an existing game"
-msgstr "Meedoen met lokaal spel"
-
-#: ../ggz-gtk/client.c:684
-msgid "Watch an existing game - become a spectator of the table"
-msgstr ""
-
-#: ../ggz-gtk/client.c:687
-msgid "Leave the game you're currently playing"
-msgstr ""
-
-#: ../ggz-gtk/client.c:689
-msgid "Show the properties dialog to change the client settings"
-msgstr ""
-
-#: ../ggz-gtk/client.c:693
-#, fuzzy
-msgid "Show the game stats for the current room's game type"
-msgstr "Statistieken voor het huidige spel berekenen"
-
-#: ../ggz-gtk/client.c:696
-msgid "Exit the GGZ client application."
-msgstr ""
-
-#: ../ggz-gtk/client.c:726
-#, c-format
-msgid "Client Version:14 %s"
-msgstr ""
 
 #: ../ggz-gtk/client.c:729
 #, c-format
@@ -539,52 +433,9 @@ msgstr ""
 msgid "Launch Error"
 msgstr "Opstartfout"
 
-#: ../ggz-gtk/game.c:148
-msgid ""
-"Failed to execute game module.\n"
-" Launch aborted."
-msgstr ""
-
-#: ../ggz-gtk/game.c:201
-#, fuzzy
-msgid "Launched game"
-msgstr "Het spel pauzeren"
-
-#: ../ggz-gtk/game.c:222
-#, fuzzy
-msgid "Launch failed"
-msgstr "Verbinding mislukt"
-
-#: ../ggz-gtk/game.c:296
-#, fuzzy
-msgid "You can only play one game at a time."
-msgstr "De kaarten één voor één verplaatsen"
-
-#: ../ggz-gtk/game.c:304
-msgid "You're still at a table."
-msgstr ""
-
-#: ../ggz-gtk/game.c:313
-msgid ""
-"You must be in a room to launch a game.\n"
-"Launch aborted"
-msgstr ""
-
-#: ../ggz-gtk/game.c:323
-msgid ""
-"No game types defined for this server.\n"
-"Launch aborted."
-msgstr ""
-
 #: ../ggz-gtk/game.c:333
 msgid "This game doesn't support spectators."
 msgstr "Bij dit spel kunnen geen toeschouwers aanwezig zijn."
-
-#: ../ggz-gtk/game.c:348
-msgid ""
-"You need to launch the GGZ client directly\n"
-"to be able to play this game."
-msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:122
 #, c-format
@@ -782,17 +633,6 @@ msgstr "Omschrijving:  %s"
 msgid "Home Page:  %s"
 msgstr "Homepagina:  %s"
 
-#: ../ggz-gtk/launch.c:289
-msgid ""
-"Failed to launch table.\n"
-" Launch aborted."
-msgstr ""
-
-#: ../ggz-gtk/launch.c:325
-#, fuzzy
-msgid "Invalid number of bots specified"
-msgstr "Begin-aantal Robots"
-
 # plaatsverdeling/stoeltoewijzing
 #: ../ggz-gtk/launch.c:420
 msgid "Seat Assignments"
@@ -946,28 +786,9 @@ msgstr "Niet opnieuw vragen."
 msgid "Player Information"
 msgstr "Informatie over speler"
 
-#: ../ggz-gtk/playerinfo.c:132
-#, fuzzy
-msgid "Player Handle:"
-msgstr "_Naam speler:"
-
-#: ../ggz-gtk/playerinfo.c:150
-#, fuzzy
-msgid "Table:"
-msgstr "Stenen:"
-
 #: ../ggz-gtk/playerinfo.c:168
 msgid "Account:"
 msgstr "Account:"
-
-#: ../ggz-gtk/playerinfo.c:187
-#, fuzzy
-msgid "Record:"
-msgstr "Score:"
-
-#: ../ggz-gtk/playerinfo.c:205
-msgid "Rating:"
-msgstr ""
 
 #: ../ggz-gtk/playerinfo.c:223
 msgid "Rank:"
@@ -994,11 +815,6 @@ msgstr "Gast"
 #: ../ggz-gtk/playerinfo.c:343
 msgid "Host"
 msgstr "Gastheer"
-
-# administratie
-#: ../ggz-gtk/playerinfo.c:346
-msgid "Administrator"
-msgstr ""
 
 #: ../ggz-gtk/playerinfo.c:349
 msgid "Bot"
@@ -1058,22 +874,9 @@ msgstr "Chat-font:"
 msgid "Change"
 msgstr "Wijzigen"
 
-#: ../ggz-gtk/props.c:1147
-msgid "Ignore Join/Part Messages"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1155
-#, fuzzy
-msgid "Play Sounds"
-msgstr "Geluiden"
-
 #: ../ggz-gtk/props.c:1163
 msgid "Auto Indent"
 msgstr "Automatisch inspringen"
-
-#: ../ggz-gtk/props.c:1171
-msgid "Timestamp Chats"
-msgstr ""
 
 #: ../ggz-gtk/props.c:1179
 msgid "Word Wrap"
@@ -1083,30 +886,9 @@ msgstr "Woorddoorloop"
 msgid "Chat Color"
 msgstr "Chat-kleur"
 
-#: ../ggz-gtk/props.c:1236
-msgid "Default chat color assigned to your friends"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1245
-msgid "Chat color used when your name is typed"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1254
-msgid "Chat color used for all other chats"
-msgstr ""
-
 #: ../ggz-gtk/props.c:1263
 msgid "Normal Color"
 msgstr "Normale kleur"
-
-#: ../ggz-gtk/props.c:1274
-msgid "Highlight Color"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1285
-#, fuzzy
-msgid "Friend Color"
-msgstr "Achtergrondkleur"
 
 #: ../ggz-gtk/props.c:1296
 msgid "Black Background"
@@ -1140,11 +922,6 @@ msgstr "Staat:"
 #: ../ggz-gtk/props.c:1413
 msgid "Country:"
 msgstr "Land:"
-
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Opmerkingen, hobbies, enz."
 
 # snelle zetten/animatie
 #: ../ggz-gtk/props.c:1450
@@ -1267,22 +1044,9 @@ msgstr "Onbekende kamer"
 msgid "You can't join a room; you're not logged in"
 msgstr "U kunt geen kamer binnengaan; u bent niet aangemeld"
 
-#: ../ggz-gtk/roomlist.c:77
-msgid "You're already in between rooms"
-msgstr ""
-
-#: ../ggz-gtk/roomlist.c:82
-msgid "You can't switch rooms while playing a game"
-msgstr ""
-
 #: ../ggz-gtk/roomlist.c:89
 msgid "Unknown error"
 msgstr "Onbekende fout"
-
-#: ../ggz-gtk/roomlist.c:109 ../ggz-gtk/roomlist.c:114
-#, fuzzy
-msgid "Error joining room"
-msgstr "Fout bij laden thema"
 
 #: ../ggz-gtk/roomlist.c:350
 msgid "Other Rooms"
@@ -1309,13 +1073,6 @@ msgstr "Omschrijving"
 msgid "None"
 msgstr "Geen"
 
-#: ../ggz-gtk/types.c:148
-msgid ""
-"Room filtering is not implemented yet. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-
 #: ../ggz-gtk/types.c:191
 msgid "Web Address"
 msgstr "Web-adres"
@@ -1323,41 +1080,3 @@ msgstr "Web-adres"
 #: ../ggz-gtk/types.c:199
 msgid "Author"
 msgstr "Auteur"
-
-#: ../ggz-gtk/types.c:254
-msgid "Room List Filter:"
-msgstr ""
-
-#: ../ggz-gtk/types.c:266
-#, fuzzy
-msgid "Set"
-msgstr "Instellen"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Bakers spel"
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "Ga naar web"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Geluid aanzetten"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

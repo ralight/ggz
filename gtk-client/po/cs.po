@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/cs.po)
-
 # translation of cs.po to
 # Czech translation of gnome-games
 # Copyright (C) 2002, 2006, 2007 Free Software Foundation, Inc.
@@ -42,10 +41,6 @@ msgstr "/table <zpráva> .......... Zpráva pro váš stůl"
 msgid "/wall <message> ........... Admin command"
 msgstr "/wall <message> ........... Administrátorský příkaz"
 
-#: ../ggz-gtk/chat.c:95
-msgid "/beep <username> .......... Beep a player"
-msgstr ""
-
 #: ../ggz-gtk/chat.c:97
 msgid "/help ..................... Get help"
 msgstr "/help ..................... Získat nápovědu"
@@ -70,44 +65,16 @@ msgstr "/gag <username> ........... Zacpat hráči ústa roubíkem"
 msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
-msgstr "/ungag <username> ......... Odebrat hráči roubík a umožnit mu hovořit"
+msgstr ""
+"/ungag <username> ......... Odebrat hráči roubík a umožnit mu hovořit"
 
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
 msgstr "/ban <username> ........... Zakázat hráči vstup na server"
 
-#: ../ggz-gtk/chat.c:254
-#, c-format
-msgid "You have received an unknown message from %s."
-msgstr ""
-
-#: ../ggz-gtk/chat.c:318
-#, c-format
-msgid "You've been beeped by %s."
-msgstr ""
-
 #: ../ggz-gtk/chat.c:439
 msgid "Usage: /msg <username> <message>"
 msgstr "Použití: /msg <uživatel> <zpráva>"
-
-#: ../ggz-gtk/chat.c:441
-msgid "    Sends a private message to a user on the network."
-msgstr ""
-
-#: ../ggz-gtk/chat.c:495
-#, fuzzy, c-format
-msgid "Beep sent to %s."
-msgstr "Přesunout %s na %s."
-
-#: ../ggz-gtk/chat.c:523
-#, c-format
-msgid "%s (logged on)"
-msgstr ""
-
-#: ../ggz-gtk/chat.c:561
-#, c-format
-msgid "%s (logged off)"
-msgstr ""
 
 #: ../ggz-gtk/chat.c:587
 msgid "Chat Commands"
@@ -116,10 +83,6 @@ msgstr "Příkazy chatu"
 #: ../ggz-gtk/chat.c:588
 msgid "-------------"
 msgstr "-------------"
-
-#: ../ggz-gtk/chat.c:592
-msgid "/me <action> .............. Send an action"
-msgstr ""
 
 #: ../ggz-gtk/chat.c:783
 #, c-format
@@ -148,10 +111,6 @@ msgstr "Lidé, kteří jsou v současnosti vašemi přáteli"
 #: ../ggz-gtk/chat.c:953
 msgid "People you're currently ignoring"
 msgstr "Lidé, které v současnosti ignorujete"
-
-#: ../ggz-gtk/chat.c:1029
-msgid "Multiple matches:"
-msgstr ""
 
 #: ../ggz-gtk/client.c:144
 msgid "Are you sure you want to quit?"
@@ -186,28 +145,6 @@ msgstr ""
 "Pokud chcete s implementací pomoci, navštivte\n"
 "http://www.ggzgamingzone.org/"
 
-#: ../ggz-gtk/client.c:294
-msgid ""
-"GGZ Gaming Zone help needs a browser to be configured.\n"
-"The configuration dialog will be invoked now."
-msgstr ""
-
-#: ../ggz-gtk/client.c:308
-msgid ""
-"Inline game help is not implemented yet. Help\n"
-"is on our website. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-
-#: ../ggz-gtk/client.c:566
-msgid "You must highlight a table before you can join it."
-msgstr ""
-
-#: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
-msgid "Error Joining"
-msgstr ""
-
 #: ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:614
 msgid "That table is full."
 msgstr "Tento stůl je plný."
@@ -221,32 +158,6 @@ msgstr "Chyba spouštění herního modulu."
 msgid "Game Error"
 msgstr "Chyba hry"
 
-#: ../ggz-gtk/client.c:600
-msgid "You must highlight a table before you can watch it."
-msgstr ""
-
-#: ../ggz-gtk/client.c:602
-msgid "Error Spectating"
-msgstr ""
-
-#: ../ggz-gtk/client.c:647
-msgid ""
-"Failed to join table.\n"
-"Join aborted."
-msgstr ""
-
-#: ../ggz-gtk/client.c:648
-msgid "Join Error"
-msgstr ""
-
-#: ../ggz-gtk/client.c:678
-msgid "Disconnect from the GGZ Gaming Zone server"
-msgstr ""
-
-#: ../ggz-gtk/client.c:680
-msgid "Start playing a game at a new table"
-msgstr ""
-
 #: ../ggz-gtk/client.c:682
 msgid "Join an existing game"
 msgstr "Připojit se k existující hře"
@@ -258,14 +169,6 @@ msgstr "Sledovat existující hru - stát se divákem u stolu"
 #: ../ggz-gtk/client.c:687
 msgid "Leave the game you're currently playing"
 msgstr "Opustit hru, kterou právě hrajete"
-
-#: ../ggz-gtk/client.c:689
-msgid "Show the properties dialog to change the client settings"
-msgstr ""
-
-#: ../ggz-gtk/client.c:693
-msgid "Show the game stats for the current room's game type"
-msgstr ""
 
 #: ../ggz-gtk/client.c:696
 msgid "Exit the GGZ client application."
@@ -280,10 +183,6 @@ msgstr "Verze klienta: %s"
 #, c-format
 msgid "GTK+ Version:14 %d.%d.%d\n"
 msgstr "Verze GTK+: %d.%d.%d\n"
-
-#: ../ggz-gtk/client.c:736
-msgid "Compiled with debugging."
-msgstr ""
 
 #: ../ggz-gtk/client.c:934
 msgid "GGZ"
@@ -305,26 +204,6 @@ msgstr "Ukončit"
 msgid "Game"
 msgstr "Hra"
 
-#: ../ggz-gtk/client.c:978 ../ggz-gtk/client.c:1133 ../ggz-gtk/launch.c:693
-msgid "Launch"
-msgstr ""
-
-#: ../ggz-gtk/client.c:985 ../ggz-gtk/client.c:1141 ../ggz-gtk/roomlist.c:150
-#: ../ggz-gtk/tablelist.c:74
-#, fuzzy
-msgid "Join"
-msgstr "Spojené"
-
-#: ../ggz-gtk/client.c:992 ../ggz-gtk/client.c:1149
-#, fuzzy
-msgid "Watch"
-msgstr "_Čekat"
-
-#: ../ggz-gtk/client.c:1004 ../ggz-gtk/client.c:1157 ../ggz-gtk/tablelist.c:77
-#, fuzzy
-msgid "Leave"
-msgstr "Úroveň:"
-
 #: ../ggz-gtk/client.c:1011
 msgid "Edit"
 msgstr "Upravit"
@@ -332,11 +211,6 @@ msgstr "Upravit"
 #: ../ggz-gtk/client.c:1019
 msgid "Properties"
 msgstr "Vlastnosti"
-
-#: ../ggz-gtk/client.c:1026
-#, fuzzy
-msgid "View"
-msgstr "_Zobrazit"
 
 #: ../ggz-gtk/client.c:1035
 msgid "Room List"
@@ -394,11 +268,6 @@ msgstr "Aktuální místnost: "
 msgid "Message:"
 msgstr "Zpráva:"
 
-#: ../ggz-gtk/client.c:1295
-#, fuzzy
-msgid "Send"
-msgstr "Rychlost"
-
 #: ../ggz-gtk/client.c:1480 ../ggz-gtk/ggzclient.c:400
 msgid "GGZ Gaming Zone"
 msgstr "Herní zóna GGZ"
@@ -406,16 +275,6 @@ msgstr "Herní zóna GGZ"
 #: ../ggz-gtk/first.c:57
 msgid "Wizard"
 msgstr "Průvodce"
-
-#: ../ggz-gtk/first.c:57
-#, fuzzy
-msgid "Deity"
-msgstr "Sedmikráska"
-
-#: ../ggz-gtk/first.c:57
-#, fuzzy
-msgid "Sentinel"
-msgstr "Valentýna"
 
 #: ../ggz-gtk/first.c:57
 msgid "Captain"
@@ -430,10 +289,6 @@ msgid "Angel"
 msgstr "Anděl"
 
 #: ../ggz-gtk/first.c:58
-msgid "Silverlord"
-msgstr ""
-
-#: ../ggz-gtk/first.c:58
 msgid "Eagle"
 msgstr "Orel"
 
@@ -442,67 +297,16 @@ msgid "Vampire"
 msgstr "Upír"
 
 #: ../ggz-gtk/first.c:59
-msgid "Chief"
-msgstr ""
-
-#: ../ggz-gtk/first.c:59
-#, fuzzy
-msgid "Colonel"
-msgstr "Polonéza"
-
-#: ../ggz-gtk/first.c:59
 msgid "General"
 msgstr "Obecné"
-
-#: ../ggz-gtk/first.c:60
-#, fuzzy
-msgid "Major"
-msgstr "Mahjongg"
-
-#: ../ggz-gtk/first.c:60
-#, fuzzy
-msgid "Scout"
-msgstr "Soft"
-
-#: ../ggz-gtk/first.c:60
-msgid "Lieutenant"
-msgstr ""
-
-#: ../ggz-gtk/first.c:60
-msgid "Stalker"
-msgstr ""
 
 #: ../ggz-gtk/first.c:61
 msgid "Scientist"
 msgstr "Vědec"
 
-#: ../ggz-gtk/first.c:61
-#, fuzzy
-msgid "Scholar"
-msgstr "Skóre"
-
-#: ../ggz-gtk/first.c:61
-msgid "Entity"
-msgstr ""
-
-#: ../ggz-gtk/first.c:61
-#, fuzzy
-msgid "Creator"
-msgstr "Výtah"
-
-#: ../ggz-gtk/first.c:69
-msgid "GGZ Community (fast)"
-msgstr ""
-
 #: ../ggz-gtk/first.c:70
 msgid "Local developer server"
 msgstr "Lokální vývojářský server"
-
-#: ../ggz-gtk/first.c:190
-msgid ""
-"This is the first time you are running the GTK+ GGZ Gaming Zone client. "
-"Would you like to create some default server profiles?"
-msgstr ""
 
 #: ../ggz-gtk/game.c:72
 #, c-format
@@ -563,12 +367,6 @@ msgstr ""
 msgid "This game doesn't support spectators."
 msgstr "Tato hra nepodporuje diváky."
 
-#: ../ggz-gtk/game.c:348
-msgid ""
-"You need to launch the GGZ client directly\n"
-"to be able to play this game."
-msgstr ""
-
 #: ../ggz-gtk/ggzclient.c:122
 #, c-format
 msgid "Error connecting to server: %s"
@@ -600,16 +398,6 @@ msgstr "Hráči na serveru: %d"
 msgid "Current Room: %s"
 msgstr "Aktuální místnost: %s"
 
-#: ../ggz-gtk/ggzclient.c:328
-#, c-format
-msgid "You've joined room \"%s\"."
-msgstr ""
-
-#: ../ggz-gtk/ggzclient.c:378
-#, c-format
-msgid "Error joining room: %s"
-msgstr ""
-
 #: ../ggz-gtk/ggzclient.c:429
 msgid "You can't chat while not in a room."
 msgstr "Pokud nejste v místnosti, nemůžete chatovat."
@@ -639,26 +427,6 @@ msgstr "Nejste u stolu."
 msgid "Chat failed: %s."
 msgstr "Chat selhal: %s."
 
-#: ../ggz-gtk/ggzclient.c:559
-#, c-format
-msgid "Error launching table: %s"
-msgstr ""
-
-#: ../ggz-gtk/ggzclient.c:579
-#, fuzzy, c-format
-msgid "You have joined table %d."
-msgstr "Vyhráli jste."
-
-#: ../ggz-gtk/ggzclient.c:594
-#, c-format
-msgid "Error joining table: %s"
-msgstr ""
-
-#: ../ggz-gtk/ggzclient.c:616
-#, c-format
-msgid "You have been booted from the table by %s."
-msgstr ""
-
 #: ../ggz-gtk/ggzclient.c:621
 #, c-format
 msgid "You have left the table."
@@ -674,11 +442,6 @@ msgstr "Hra skončila."
 msgid "There was an error with the game server."
 msgstr "Došlo k chybě na straně herního serveru."
 
-#: ../ggz-gtk/ggzclient.c:647
-#, c-format
-msgid "Error leaving table: %s"
-msgstr ""
-
 #: ../ggz-gtk/ggzclient.c:740
 msgid "**none**"
 msgstr "**žádný**"
@@ -690,11 +453,6 @@ msgstr "Offline"
 #: ../ggz-gtk/ggzclient.c:750
 msgid "Connecting"
 msgstr "Probíhá připojování"
-
-#: ../ggz-gtk/ggzclient.c:753
-#, fuzzy
-msgid "Reconnecting"
-msgstr "_Připojit"
 
 #: ../ggz-gtk/ggzclient.c:756
 msgid "Online"
@@ -712,26 +470,13 @@ msgstr "Přihlášeno"
 msgid "--> Room"
 msgstr "--> Místnost"
 
-#: ../ggz-gtk/ggzclient.c:769
-msgid "Chatting"
-msgstr ""
-
 #: ../ggz-gtk/ggzclient.c:773
 msgid "--> Table"
 msgstr "--> Stůl"
 
-#: ../ggz-gtk/ggzclient.c:776
-#, fuzzy
-msgid "Playing"
-msgstr "Jednoduché"
-
 #: ../ggz-gtk/ggzclient.c:779
 msgid "<-- Table"
 msgstr "<-- Stůl"
-
-#: ../ggz-gtk/ggzclient.c:782
-msgid "Logging Out"
-msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:1078
 #, c-format
@@ -774,10 +519,6 @@ msgstr ""
 msgid "Invalid number of bots specified"
 msgstr "Zadán neplatný počet robotů"
 
-#: ../ggz-gtk/launch.c:420
-msgid "Seat Assignments"
-msgstr ""
-
 #: ../ggz-gtk/launch.c:443
 msgid "Game Type:"
 msgstr "Typ hry:"
@@ -797,11 +538,6 @@ msgstr "Popis:"
 #: ../ggz-gtk/launch.c:530 ../ggz-gtk/roominfo.c:100
 msgid "Homepage:"
 msgstr "Domovská stránka:"
-
-#: ../ggz-gtk/launch.c:586
-#, c-format
-msgid "Seat %d:"
-msgstr ""
 
 #: ../ggz-gtk/launch.c:598
 msgid "Computer"
@@ -872,17 +608,9 @@ msgstr "Upravit profily..."
 msgid "Server:"
 msgstr "Server:"
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "Port:"
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -944,11 +672,6 @@ msgstr "Rekord:"
 msgid "Rating:"
 msgstr "Hodnocení:"
 
-#: ../ggz-gtk/playerinfo.c:223
-#, fuzzy
-msgid "Rank:"
-msgstr "Černý:"
-
 #: ../ggz-gtk/playerinfo.c:241
 msgid "Score:"
 msgstr "Skóre:"
@@ -995,14 +718,6 @@ msgstr "Ignorovat"
 msgid "#%d"
 msgstr "#%d"
 
-#: ../ggz-gtk/playerlist.c:346
-msgid "L"
-msgstr ""
-
-#: ../ggz-gtk/playerlist.c:351 ../ggz-gtk/tablelist.c:191
-msgid "T#"
-msgstr ""
-
 #: ../ggz-gtk/playerlist.c:362 ../ggz-gtk/types.c:176
 msgid "Name"
 msgstr "Název"
@@ -1031,10 +746,6 @@ msgstr "Písmo chatu"
 msgid "Change"
 msgstr "Změnit"
 
-#: ../ggz-gtk/props.c:1147
-msgid "Ignore Join/Part Messages"
-msgstr ""
-
 #: ../ggz-gtk/props.c:1155
 msgid "Play Sounds"
 msgstr "Přehrávat zvuky"
@@ -1042,14 +753,6 @@ msgstr "Přehrávat zvuky"
 #: ../ggz-gtk/props.c:1163
 msgid "Auto Indent"
 msgstr "Automatické odsazování"
-
-#: ../ggz-gtk/props.c:1171
-msgid "Timestamp Chats"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1179
-msgid "Word Wrap"
-msgstr ""
 
 #: ../ggz-gtk/props.c:1187
 msgid "Chat Color"
@@ -1111,11 +814,6 @@ msgstr "Stát:"
 msgid "Country:"
 msgstr "Země:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Poznámky, zájmy atd."
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "Informace o uživateli"
@@ -1131,10 +829,6 @@ msgstr "Galeon - nový"
 #: ../ggz-gtk/props.c:1465 ../ggz-gtk/support.c:142
 msgid "Galeon - Existing"
 msgstr "Galeon - existující"
-
-#: ../ggz-gtk/props.c:1466 ../ggz-gtk/support.c:145
-msgid "Gnome URL Handler"
-msgstr ""
 
 #: ../ggz-gtk/props.c:1467 ../ggz-gtk/support.c:148
 msgid "Konqueror - New"
@@ -1196,11 +890,6 @@ msgstr "Zobrazit nové"
 msgid "Display Important"
 msgstr "Zobrazit důležité"
 
-#: ../ggz-gtk/props.c:1527
-#, fuzzy
-msgid "Display None"
-msgstr "Zobrazovat pravděpodobnosti"
-
 #: ../ggz-gtk/props.c:1536
 msgid "Options"
 msgstr "Nastavení"
@@ -1237,11 +926,6 @@ msgstr "Neznámá místnost"
 msgid "You can't join a room; you're not logged in"
 msgstr "Nemůžete vstoupit do místnosti, nejste přihlášeni"
 
-#: ../ggz-gtk/roomlist.c:77
-#, fuzzy
-msgid "You're already in between rooms"
-msgstr "Prodleva mezi hody"
-
 #: ../ggz-gtk/roomlist.c:82
 msgid "You can't switch rooms while playing a game"
 msgstr "Během hraní hry nelze měnit místnosti"
@@ -1266,11 +950,6 @@ msgstr "Místnost"
 msgid "No description available."
 msgstr "Žádný popis není k dispozici."
 
-#: ../ggz-gtk/tablelist.c:196
-#, fuzzy
-msgid "Seats"
-msgstr "srdce"
-
 #: ../ggz-gtk/tablelist.c:201 ../ggz-gtk/types.c:183
 msgid "Description"
 msgstr "Popis"
@@ -1278,13 +957,6 @@ msgstr "Popis"
 #: ../ggz-gtk/types.c:113
 msgid "None"
 msgstr "Žádná"
-
-#: ../ggz-gtk/types.c:148
-msgid ""
-"Room filtering is not implemented yet. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
 
 #: ../ggz-gtk/types.c:191
 msgid "Web Address"
@@ -1297,37 +969,3 @@ msgstr "Autor"
 #: ../ggz-gtk/types.c:254
 msgid "Room List Filter:"
 msgstr "Filtr seznamu místností:"
-
-#: ../ggz-gtk/types.c:266
-#, fuzzy
-msgid "Set"
-msgstr "Nastavení"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Pekařova hra"
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "Jít na web"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Povolit zvuky"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/es.po)
-
 # translation of gnome-games.HEAD.es.po to Español
 # translation of es.po to
 # translation of gnome-games.HEAD.po to
@@ -187,24 +186,6 @@ msgstr ""
 "implementado aún. Si quiere ayudar a\n"
 "ello, vaya a http://www.ggzgamingzone.org"
 
-#: ../ggz-gtk/client.c:294
-msgid ""
-"GGZ Gaming Zone help needs a browser to be configured.\n"
-"The configuration dialog will be invoked now."
-msgstr ""
-
-#: ../ggz-gtk/client.c:308
-#, fuzzy
-msgid ""
-"Inline game help is not implemented yet. Help\n"
-"is on our website. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-"El filtro de salas aún no está implementado\n"
-"quiere ir a\n"
-"http://www.ggzgamingzone.org/"
-
 #: ../ggz-gtk/client.c:566
 msgid "You must highlight a table before you can join it."
 msgstr "Debe resaltar una mesa antes de que pueda unirse a ella."
@@ -268,7 +249,8 @@ msgstr "Abandonar el juego que está jugando"
 
 #: ../ggz-gtk/client.c:689
 msgid "Show the properties dialog to change the client settings"
-msgstr "Mostrar el diálogo de propiedades para cambiar los ajustes del cliente"
+msgstr ""
+"Mostrar el diálogo de propiedades para cambiar los ajustes del cliente"
 
 #: ../ggz-gtk/client.c:693
 msgid "Show the game stats for the current room's game type"
@@ -278,16 +260,6 @@ msgstr ""
 #: ../ggz-gtk/client.c:696
 msgid "Exit the GGZ client application."
 msgstr "Salir de la aplicación cliente GGZ"
-
-#: ../ggz-gtk/client.c:726
-#, c-format
-msgid "Client Version:14 %s"
-msgstr ""
-
-#: ../ggz-gtk/client.c:729
-#, c-format
-msgid "GTK+ Version:14 %d.%d.%d\n"
-msgstr ""
 
 #: ../ggz-gtk/client.c:736
 msgid "Compiled with debugging."
@@ -369,25 +341,6 @@ msgstr "MDD"
 #: ../ggz-gtk/client.c:1081
 msgid "Help"
 msgstr "Ayuda"
-
-#: ../ggz-gtk/client.c:1096
-#, fuzzy
-msgid "Copyright"
-msgstr "Mover derecha"
-
-#: ../ggz-gtk/client.c:1105
-#, fuzzy
-msgid "GGZ Help"
-msgstr "Ayuda"
-
-#: ../ggz-gtk/client.c:1112
-#, fuzzy
-msgid "Game Help"
-msgstr "Campo de juego"
-
-#: ../ggz-gtk/client.c:1121
-msgid "Goto Web"
-msgstr ""
 
 #: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:356
 msgid "Stats"
@@ -822,10 +775,6 @@ msgstr "Descripción del juego   "
 msgid "Login"
 msgstr "Entrada"
 
-#: ../ggz-gtk/login.c:108
-msgid "Sorry!"
-msgstr ""
-
 #: ../ggz-gtk/login.c:115
 #, c-format
 msgid "That username is already in use."
@@ -863,26 +812,13 @@ msgstr "Perfil del servidor"
 msgid "Profile:"
 msgstr "Perfil:"
 
-#: ../ggz-gtk/login.c:582
-#, fuzzy
-msgid "Edit Profiles..."
-msgstr "Editar perfiles"
-
 #: ../ggz-gtk/login.c:590 ../ggz-gtk/props.c:946
 msgid "Server:"
 msgstr "Servidor:"
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "Puerto:"
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -1110,75 +1046,9 @@ msgstr "Estado:"
 msgid "Country:"
 msgstr "País:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Comentarios, aficiones, etc."
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "Información del usuario"
-
-#: ../ggz-gtk/props.c:1459
-msgid "Browser to launch URLs with:"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1464 ../ggz-gtk/props.c:1484 ../ggz-gtk/support.c:139
-msgid "Galeon - New"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1465 ../ggz-gtk/support.c:142
-msgid "Galeon - Existing"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1466 ../ggz-gtk/support.c:145
-msgid "Gnome URL Handler"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1467 ../ggz-gtk/support.c:148
-msgid "Konqueror - New"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1468 ../ggz-gtk/support.c:151
-msgid "Konqueror - Existing"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1469 ../ggz-gtk/support.c:163
-msgid "Lynx"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1470 ../ggz-gtk/support.c:169
-msgid "Mozilla - New"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1471 ../ggz-gtk/support.c:172
-msgid "Mozilla - Existing"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1472 ../ggz-gtk/support.c:176
-msgid "Netscape - New"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1473 ../ggz-gtk/support.c:179
-msgid "Netscape - Existing"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1474 ../ggz-gtk/support.c:183
-msgid "Opera - New"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1475 ../ggz-gtk/support.c:186
-#, fuzzy
-msgid "Opera - Existing"
-msgstr "Operación"
-
-#: ../ggz-gtk/props.c:1476 ../ggz-gtk/support.c:191
-msgid "Firefox - New"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1477 ../ggz-gtk/support.c:194
-msgid "Firefox - Existing"
-msgstr ""
 
 #: ../ggz-gtk/props.c:1486
 msgid "Single Click Room Entry"
@@ -1301,31 +1171,3 @@ msgstr "Filtro de lista de salas:"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "Ajuste"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Juego de panaderos"
-
-#: ../ggz-gtk/types.c:309
-msgid "Goto Web Site"
-msgstr ""
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Activar sonidos"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

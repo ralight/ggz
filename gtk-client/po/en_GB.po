@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/en_GB.po)
-
 # English (British)
 # Copyright (C) 1999 Free Software Foundation, Inc.
 # Robert Brady <rwb197@ecs.soton.ac.uk>, 1999.
@@ -1103,11 +1102,6 @@ msgstr "State:"
 msgid "Country:"
 msgstr "Country:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Comments, Hobbies, Etc."
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "User Information"
@@ -1301,22 +1295,3 @@ msgstr "Upgrage Game"
 #: ../ggz-gtk/types.c:309
 msgid "Goto Web Site"
 msgstr "Goto Web Site"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Enable sound"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

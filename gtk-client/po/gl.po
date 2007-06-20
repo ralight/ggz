@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/gl.po)
-
 # translation of gl.po to Galego
 # Galician translation of gnome-games.
 # Copyright (C) 2000 Jesús Bravo Álvarez.
@@ -86,12 +85,6 @@ msgid ""
 msgstr ""
 "/ungag <nome de usuario> ......... Quita a mordaza a un xogador para "
 "permitirlle falar"
-
-# (pofilter) untranslated: checks whether a string has been translated at all
-#: ../ggz-gtk/chat.c:113
-#, fuzzy
-msgid "/ban <username> ........... Ban a player from the server"
-msgstr "/ban <nome de usuario> ........... un xogador dun servidor"
 
 # (pofilter) untranslated: checks whether a string has been translated at all
 #: ../ggz-gtk/chat.c:254
@@ -225,25 +218,6 @@ msgstr ""
 "implementadas. Se quere pode axudar en\n"
 "http://www.ggzgamingzone.org/"
 
-#: ../ggz-gtk/client.c:294
-msgid ""
-"GGZ Gaming Zone help needs a browser to be configured.\n"
-"The configuration dialog will be invoked now."
-msgstr ""
-
-# (pofilter) untranslated: checks whether a string has been translated at all
-#: ../ggz-gtk/client.c:308
-#, fuzzy
-msgid ""
-"Inline game help is not implemented yet. Help\n"
-"is on our website. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-"O filtro de salas aínda non está implementado. \n"
-"Se quere axudar pode facelo en\n"
-"http://www.ggzgamingzone.org/"
-
 # (pofilter) untranslated: checks whether a string has been translated at all
 #: ../ggz-gtk/client.c:566
 msgid "You must highlight a table before you can join it."
@@ -333,16 +307,6 @@ msgstr "Mostra as estatísticas do xogo para o tipo de xogo da sala actual"
 #: ../ggz-gtk/client.c:696
 msgid "Exit the GGZ client application."
 msgstr "Saír da aplicación cliente GGZ."
-
-#: ../ggz-gtk/client.c:726
-#, c-format
-msgid "Client Version:14 %s"
-msgstr ""
-
-#: ../ggz-gtk/client.c:729
-#, c-format
-msgid "GTK+ Version:14 %d.%d.%d\n"
-msgstr ""
 
 # (pofilter) untranslated: checks whether a string has been translated at all
 #: ../ggz-gtk/client.c:736
@@ -444,26 +408,6 @@ msgstr "MOTD"
 msgid "Help"
 msgstr "Axuda"
 
-#: ../ggz-gtk/client.c:1096
-#, fuzzy
-msgid "Copyright"
-msgstr "Mover á dereita"
-
-# (pofilter) isfuzzy: check if the po element has been marked fuzzy
-#: ../ggz-gtk/client.c:1105
-#, fuzzy
-msgid "GGZ Help"
-msgstr "Axuda"
-
-#: ../ggz-gtk/client.c:1112
-#, fuzzy
-msgid "Game Help"
-msgstr "Taboleiro de xogo"
-
-#: ../ggz-gtk/client.c:1121
-msgid "Goto Web"
-msgstr ""
-
 # (pofilter) isfuzzy: check if the po element has been marked fuzzy
 #: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:356
 msgid "Stats"
@@ -511,20 +455,8 @@ msgstr "Capitán"
 
 # (pofilter) isfuzzy: check if the po element has been marked fuzzy
 #: ../ggz-gtk/first.c:58
-#, fuzzy
-msgid "Knight"
-msgstr "Cabaleiro"
-
-# (pofilter) isfuzzy: check if the po element has been marked fuzzy
-#: ../ggz-gtk/first.c:58
 msgid "Angel"
 msgstr "Anxo"
-
-# (pofilter) untranslated: checks whether a string has been translated at all
-#: ../ggz-gtk/first.c:58
-#, fuzzy
-msgid "Silverlord"
-msgstr "Señor"
 
 # (pofilter) isfuzzy: check if the po element has been marked fuzzy
 #: ../ggz-gtk/first.c:58
@@ -535,12 +467,6 @@ msgstr "Águia"
 #: ../ggz-gtk/first.c:59
 msgid "Vampire"
 msgstr "Vampiro"
-
-# (pofilter) untranslated: checks whether a string has been translated at all
-#: ../ggz-gtk/first.c:59
-#, fuzzy
-msgid "Chief"
-msgstr "Xefe"
 
 # (pofilter) isfuzzy: check if the po element has been marked fuzzy
 #: ../ggz-gtk/first.c:59
@@ -553,11 +479,6 @@ msgstr "Xeral"
 
 # (pofilter) isfuzzy: check if the po element has been marked fuzzy
 #: ../ggz-gtk/first.c:60
-msgid "Major"
-msgstr ""
-
-# (pofilter) isfuzzy: check if the po element has been marked fuzzy
-#: ../ggz-gtk/first.c:60
 msgid "Scout"
 msgstr "Explorador"
 
@@ -565,11 +486,6 @@ msgstr "Explorador"
 #: ../ggz-gtk/first.c:60
 msgid "Lieutenant"
 msgstr "Tenente"
-
-# (pofilter) untranslated: checks whether a string has been translated at all
-#: ../ggz-gtk/first.c:60
-msgid "Stalker"
-msgstr ""
 
 # (pofilter) untranslated: checks whether a string has been translated at all
 #: ../ggz-gtk/first.c:61
@@ -996,10 +912,6 @@ msgstr "Descrición do xogo   "
 msgid "Login"
 msgstr "Conectar"
 
-#: ../ggz-gtk/login.c:108
-msgid "Sorry!"
-msgstr ""
-
 # (pofilter) untranslated: checks whether a string has been translated at all
 #: ../ggz-gtk/login.c:115
 #, c-format
@@ -1044,29 +956,15 @@ msgstr "Perfil do servidor"
 msgid "Profile:"
 msgstr "Perfil:"
 
-# (pofilter) untranslated: checks whether a string has been translated at all
-#: ../ggz-gtk/login.c:582
-#, fuzzy
-msgid "Edit Profiles..."
-msgstr "Editar perfiles"
-
 # (pofilter) isfuzzy: check if the po element has been marked fuzzy
 #: ../ggz-gtk/login.c:590 ../ggz-gtk/props.c:946
 msgid "Server:"
 msgstr "Servidor:"
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 # (pofilter) isfuzzy: check if the po element has been marked fuzzy
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "Porto:"
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 # (pofilter) isfuzzy: check if the po element has been marked fuzzy
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
@@ -1348,77 +1246,10 @@ msgstr "Estado:"
 msgid "Country:"
 msgstr "País:"
 
-# (pofilter) untranslated: checks whether a string has been translated at all
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Comentarios, , Etc."
-
 # (pofilter) isfuzzy: check if the po element has been marked fuzzy
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "Información de usuario"
-
-#: ../ggz-gtk/props.c:1459
-msgid "Browser to launch URLs with:"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1464 ../ggz-gtk/props.c:1484 ../ggz-gtk/support.c:139
-msgid "Galeon - New"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1465 ../ggz-gtk/support.c:142
-msgid "Galeon - Existing"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1466 ../ggz-gtk/support.c:145
-msgid "Gnome URL Handler"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1467 ../ggz-gtk/support.c:148
-msgid "Konqueror - New"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1468 ../ggz-gtk/support.c:151
-msgid "Konqueror - Existing"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1469 ../ggz-gtk/support.c:163
-msgid "Lynx"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1470 ../ggz-gtk/support.c:169
-msgid "Mozilla - New"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1471 ../ggz-gtk/support.c:172
-msgid "Mozilla - Existing"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1472 ../ggz-gtk/support.c:176
-msgid "Netscape - New"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1473 ../ggz-gtk/support.c:179
-msgid "Netscape - Existing"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1474 ../ggz-gtk/support.c:183
-msgid "Opera - New"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1475 ../ggz-gtk/support.c:186
-#, fuzzy
-msgid "Opera - Existing"
-msgstr "Operación"
-
-#: ../ggz-gtk/props.c:1476 ../ggz-gtk/support.c:191
-msgid "Firefox - New"
-msgstr ""
-
-#: ../ggz-gtk/props.c:1477 ../ggz-gtk/support.c:194
-msgid "Firefox - Existing"
-msgstr ""
 
 # (pofilter) untranslated: checks whether a string has been translated at all
 #: ../ggz-gtk/props.c:1486
@@ -1567,31 +1398,3 @@ msgstr "Filtro de lista de salas:"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "Establecer"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Xogo de panadeiros"
-
-#: ../ggz-gtk/types.c:309
-msgid "Goto Web Site"
-msgstr ""
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Activar os sons"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

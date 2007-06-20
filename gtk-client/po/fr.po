@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/fr.po)
-
 # French translation of gnome-games.
 # Copyright (C) 1998-2007 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-games package.
@@ -79,7 +78,8 @@ msgstr "/gag <utilisateur> ........... Empêche un joueur de parler"
 msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
-msgstr "/ungag <utilisateur> ......... Permet à un joueur de parler à nouveau"
+msgstr ""
+"/ungag <utilisateur> ......... Permet à un joueur de parler à nouveau"
 
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
@@ -279,8 +279,8 @@ msgstr "Quitter le jeu auquel vous êtes en train de jouer"
 #: ../ggz-gtk/client.c:689
 msgid "Show the properties dialog to change the client settings"
 msgstr ""
-"Afficher la boîte de dialogue des propriétés pour modifier les paramètres du "
-"client"
+"Afficher la boîte de dialogue des propriétés pour modifier les "
+"paramètres du client"
 
 #: ../ggz-gtk/client.c:693
 msgid "Show the game stats for the current room's game type"
@@ -858,7 +858,8 @@ msgstr "Le nom d'utilisateur est trop long !"
 #: ../ggz-gtk/login.c:126
 #, c-format
 msgid "Invalid username, do not use special characters!"
-msgstr "Nom d'utilisateur non valide ; n'utilisez pas de caractères spéciaux."
+msgstr ""
+"Nom d'utilisateur non valide ; n'utilisez pas de caractères spéciaux."
 
 #: ../ggz-gtk/login.c:130
 #, c-format
@@ -881,17 +882,9 @@ msgstr "Éditer les profils..."
 msgid "Server:"
 msgstr "Serveur :"
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "Port :"
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -1119,11 +1112,6 @@ msgstr "État :"
 msgid "Country:"
 msgstr "Pays :"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Commentaires, loisirs, etc."
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "Informations sur l'utilisateur"
@@ -1309,32 +1297,3 @@ msgstr "Filtre de salons :"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "Définir"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Le jeu des boulangers (Bakers game)"
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "Aller sur le Web"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Activer les sons"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

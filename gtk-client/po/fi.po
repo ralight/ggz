@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/fi.po)
-
 # gnome-games Finnish Translation
 # Suomennos: http://www.gnome.fi/
 # Copyright (C) 2004 Free Software Foundation, Inc.
@@ -865,17 +864,9 @@ msgstr "Muokkaa profiileja..."
 msgid "Server:"
 msgstr "Palvelin:"
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "Portti:"
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -1103,11 +1094,6 @@ msgstr "Osavaltio:"
 msgid "Country:"
 msgstr "Maa:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "Kommentit, harrastukset jne."
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "Tietoja käyttäjästä"
@@ -1293,32 +1279,3 @@ msgstr "Huonelistan suodatin:"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "Aseta"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "Leipurien peli"
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "Siirry WWW-sivulle"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "Äänet päälle"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

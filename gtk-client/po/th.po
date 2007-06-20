@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/th.po)
-
 # translation of gnome-games.HEAD.po to Thai
 # Thai translation of gnome-games.
 # Copyright (C) 2004-2007 Free Software Foundation, Inc.
@@ -28,19 +27,27 @@ msgstr "เกี่ยวกับ"
 
 #: ../ggz-gtk/chat.c:89
 msgid "/msg <username> <message> . Private message a player"
-msgstr "/msg <username> <message> . ส่งข้อความส่วนตัวถึงผู้เล่น"
+msgstr ""
+"/msg <username> <message> . "
+"ส่งข้อความส่วนตัวถึงผู้เล่น"
 
 #: ../ggz-gtk/chat.c:91
 msgid "/table <message> .......... Message to your table"
-msgstr "/table <message> .......... ส่งข้อความไปที่โต๊ะของคุณ"
+msgstr ""
+"/table <message> .......... "
+"ส่งข้อความไปที่โต๊ะของคุณ"
 
 #: ../ggz-gtk/chat.c:93
 msgid "/wall <message> ........... Admin command"
-msgstr "/wall <message> ........... คำสั่งผู้ดูแลระบบ"
+msgstr ""
+"/wall <message> ........... "
+"คำสั่งผู้ดูแลระบบ"
 
 #: ../ggz-gtk/chat.c:95
 msgid "/beep <username> .......... Beep a player"
-msgstr "/beep <username> .......... ส่งเสียงบี๊ปไปยังผู้เล่น"
+msgstr ""
+"/beep <username> .......... "
+"ส่งเสียงบี๊ปไปยังผู้เล่น"
 
 #: ../ggz-gtk/chat.c:97
 msgid "/help ..................... Get help"
@@ -48,34 +55,35 @@ msgstr "/help ..................... อ่านวิธีใช้"
 
 #: ../ggz-gtk/chat.c:99
 msgid "/friends .................. List your friends"
-msgstr "/friends .................. แสดงรายชื่อเพื่อนของคุณ"
+msgstr ""
+"/friends .................. "
+"แสดงรายชื่อเพื่อนของคุณ"
 
 #: ../ggz-gtk/chat.c:101
 msgid "/ignore ................... List people you're ignoring"
-msgstr "/ignore ................... แสดงรายชื่อคนที่คุณละเลยข้อความอยู่"
+msgstr ""
+"/ignore ................... "
+"แสดงรายชื่อคนที่คุณละเลยข้อความอยู่"
 
 #: ../ggz-gtk/chat.c:104
 msgid "/kick <username> .......... Kick a player from the room"
-msgstr "/kick <username> .......... เตะผู้เล่นออกจากห้อง"
-
-#: ../ggz-gtk/chat.c:107
-msgid "/gag <username> ........... Gag a player to prevent them from talking"
 msgstr ""
-
-#: ../ggz-gtk/chat.c:110
-msgid ""
-"/ungag <username> ......... Reverse the gag operation to allow a player to "
-"talk"
-msgstr ""
+"/kick <username> .......... "
+"เตะผู้เล่นออกจากห้อง"
 
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
-msgstr "/ban <username> ........... ห้ามผู้เล่นเข้าเซิร์ฟเวอร์"
+msgstr ""
+"/ban <username> ........... "
+"ห้ามผู้เล่นเข้าเซิร์ฟเวอร์"
 
 #: ../ggz-gtk/chat.c:254
 #, c-format
 msgid "You have received an unknown message from %s."
-msgstr "คุณได้รับข้อความที่ไม่รู้จักจาก %s"
+msgstr ""
+""
+"คุณได้รับข้อความที่ไม่รู้จักจาก "
+"%s"
 
 #: ../ggz-gtk/chat.c:318
 #, c-format
@@ -88,7 +96,9 @@ msgstr "วิธีใช้: /msg <username> <message>"
 
 #: ../ggz-gtk/chat.c:441
 msgid "    Sends a private message to a user on the network."
-msgstr "    ส่งข้อความส่วนตัวไปยังผู้ใช้ในเครือข่าย"
+msgstr ""
+"    "
+"ส่งข้อความส่วนตัวไปยังผู้ใช้ในเครือข่าย"
 
 #: ../ggz-gtk/chat.c:495
 #, c-format
@@ -120,26 +130,35 @@ msgstr "/me <action> .............. บอกการกระทำ"
 #: ../ggz-gtk/chat.c:783
 #, c-format
 msgid "Added %s to your friends list."
-msgstr "เพิ่ม %s เข้าในรายชื่อเพื่อนของคุณแล้ว"
+msgstr ""
+"เพิ่ม %s "
+"เข้าในรายชื่อเพื่อนของคุณแล้ว"
 
 #: ../ggz-gtk/chat.c:807
 #, c-format
 msgid "Removed %s from your friends list."
-msgstr "ลบ %s ออกจากรายชื่อเพื่อนของคุณ"
+msgstr ""
+"ลบ %s "
+"ออกจากรายชื่อเพื่อนของคุณ"
 
 #: ../ggz-gtk/chat.c:838
 #, c-format
 msgid "Added %s to your ignore list."
-msgstr "เพิ่ม %s เข้าในรายการละเลยของคุณแล้ว"
+msgstr ""
+"เพิ่ม %s "
+"เข้าในรายการละเลยของคุณแล้ว"
 
 #: ../ggz-gtk/chat.c:863
 #, c-format
 msgid "Removed %s from your ignore list."
-msgstr "ลบ %s ออกจากรายการละเลยของคุณแล้ว"
+msgstr ""
+"ลบ %s "
+"ออกจากรายการละเลยของคุณแล้ว"
 
 #: ../ggz-gtk/chat.c:939
 msgid "People currently your friends"
-msgstr "ผู้คนที่เป็นเพื่อนของคุณ"
+msgstr ""
+"ผู้คนที่เป็นเพื่อนของคุณ"
 
 #: ../ggz-gtk/chat.c:953
 msgid "People you're currently ignoring"
@@ -151,52 +170,25 @@ msgstr "ตรงกับหลายชื่อ:"
 
 #: ../ggz-gtk/client.c:144
 msgid "Are you sure you want to quit?"
-msgstr "คุณแน่ใจหรือไม่ว่าต้องการออกจากโปรแกรม?"
+msgstr ""
+""
+"คุณแน่ใจหรือไม่ว่าต้องการออกจากโปรแกรม?"
 
 #: ../ggz-gtk/client.c:144
 msgid "Quit?"
 msgstr "ออกจากโปรแกรมหรือไม่?"
 
-#: ../ggz-gtk/client.c:237
-msgid ""
-"Server stats are not implemented yet. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-
-#: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
-#: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
-msgid "Not Implemented"
-msgstr ""
-
-#: ../ggz-gtk/client.c:248 ../ggz-gtk/client.c:545
-msgid ""
-"Player stats are not implemented yet. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-
-#: ../ggz-gtk/client.c:294
-msgid ""
-"GGZ Gaming Zone help needs a browser to be configured.\n"
-"The configuration dialog will be invoked now."
-msgstr ""
-
-#: ../ggz-gtk/client.c:308
-msgid ""
-"Inline game help is not implemented yet. Help\n"
-"is on our website. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-
 #: ../ggz-gtk/client.c:566
 msgid "You must highlight a table before you can join it."
-msgstr "คุณต้องเลือกโต๊ะก่อนที่จะร่วมเล่นเกมได้"
+msgstr ""
+""
+"คุณต้องเลือกโต๊ะก่อนที่จะร่วมเล่นเกมได้"
 
 #: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
 msgid "Error Joining"
-msgstr "เกิดข้อผิดพลาดขณะเข้าร่วมเล่นเกม"
+msgstr ""
+""
+"เกิดข้อผิดพลาดขณะเข้าร่วมเล่นเกม"
 
 #: ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:614
 msgid "That table is full."
@@ -204,7 +196,9 @@ msgstr "โต๊ะเต็มแล้ว"
 
 #: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:334
 msgid "Error launching game module."
-msgstr "เกิดข้อผิดพลาดขณะเรียกมอดูลเกม"
+msgstr ""
+""
+"เกิดข้อผิดพลาดขณะเรียกมอดูลเกม"
 
 #: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
 #: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:335
@@ -213,11 +207,15 @@ msgstr "เกมเกิดข้อผิดพลาด"
 
 #: ../ggz-gtk/client.c:600
 msgid "You must highlight a table before you can watch it."
-msgstr "คุณต้องเลือกโต๊ะก่อนที่จะดูเกมได้"
+msgstr ""
+""
+"คุณต้องเลือกโต๊ะก่อนที่จะดูเกมได้"
 
 #: ../ggz-gtk/client.c:602
 msgid "Error Spectating"
-msgstr "เกิดข้อผิดพลาดขณะเข้าร่วมสังเกตการณ์"
+msgstr ""
+""
+"เกิดข้อผิดพลาดขณะเข้าร่วมสังเกตการณ์"
 
 #: ../ggz-gtk/client.c:647
 msgid ""
@@ -229,15 +227,21 @@ msgstr ""
 
 #: ../ggz-gtk/client.c:648
 msgid "Join Error"
-msgstr "ข้อผิดพลาดของการเข้าร่วม"
+msgstr ""
+"ข้อผิดพลาดของการเข้าร่วม"
 
 #: ../ggz-gtk/client.c:678
 msgid "Disconnect from the GGZ Gaming Zone server"
-msgstr "ตัดการเชื่อมต่อกับเซิร์ฟเวอร์เขตเล่นเกม GGZ"
+msgstr ""
+""
+"ตัดการเชื่อมต่อกับเซิร์ฟเวอร์เขตเล่นเกม "
+"GGZ"
 
 #: ../ggz-gtk/client.c:680
 msgid "Start playing a game at a new table"
-msgstr "เริ่มเล่นเกมโดยตั้งโต๊ะใหม่"
+msgstr ""
+""
+"เริ่มเล่นเกมโดยตั้งโต๊ะใหม่"
 
 #: ../ggz-gtk/client.c:682
 msgid "Join an existing game"
@@ -245,19 +249,26 @@ msgstr "ร่วมเล่นเกมที่เปิดอยู่"
 
 #: ../ggz-gtk/client.c:684
 msgid "Watch an existing game - become a spectator of the table"
-msgstr "ดูเกมที่เปิดอยู่ - เป็นผู้สังเกตการณ์ในโต๊ะ"
+msgstr ""
+"ดูเกมที่เปิดอยู่ - "
+"เป็นผู้สังเกตการณ์ในโต๊ะ"
 
 #: ../ggz-gtk/client.c:687
 msgid "Leave the game you're currently playing"
-msgstr "ออกจากเกมที่คุณกำลังเล่น"
+msgstr ""
+"ออกจากเกมที่คุณกำลังเล่น"
 
 #: ../ggz-gtk/client.c:689
 msgid "Show the properties dialog to change the client settings"
-msgstr "แสดงกล่องโต้ตอบคุณสมบัติเพื่อเปลี่ยนค่าตั้งของไคลเอนต์"
+msgstr ""
+""
+"แสดงกล่องโต้ตอบคุณสมบัติเพื่อเปลี่ยนค่าตั้งของไคลเอนต์"
 
 #: ../ggz-gtk/client.c:693
 msgid "Show the game stats for the current room's game type"
-msgstr "แสดงสถิติของเกมสำหรับชนิดเกมของห้องปัจจุบัน"
+msgstr ""
+""
+"แสดงสถิติของเกมสำหรับชนิดเกมของห้องปัจจุบัน"
 
 #: ../ggz-gtk/client.c:696
 msgid "Exit the GGZ client application."
@@ -275,7 +286,8 @@ msgstr "รุ่น GTK+:14 %d.%d.%d\n"
 
 #: ../ggz-gtk/client.c:736
 msgid "Compiled with debugging."
-msgstr "คอมไพล์พร้อมข้อมูลดีบั๊ก"
+msgstr ""
+"คอมไพล์พร้อมข้อมูลดีบั๊ก"
 
 #: ../ggz-gtk/client.c:934
 msgid "GGZ"
@@ -390,103 +402,24 @@ msgstr "ส่ง"
 msgid "GGZ Gaming Zone"
 msgstr "เขตเล่นเกม GGZ"
 
-#: ../ggz-gtk/first.c:57
-msgid "Wizard"
-msgstr ""
-
-#: ../ggz-gtk/first.c:57
-msgid "Deity"
-msgstr ""
-
-#: ../ggz-gtk/first.c:57
-msgid "Sentinel"
-msgstr ""
-
-#: ../ggz-gtk/first.c:57
-msgid "Captain"
-msgstr ""
-
-#: ../ggz-gtk/first.c:58
-msgid "Knight"
-msgstr ""
-
-#: ../ggz-gtk/first.c:58
-msgid "Angel"
-msgstr ""
-
-#: ../ggz-gtk/first.c:58
-msgid "Silverlord"
-msgstr ""
-
-#: ../ggz-gtk/first.c:58
-msgid "Eagle"
-msgstr ""
-
-#: ../ggz-gtk/first.c:59
-msgid "Vampire"
-msgstr ""
-
-#: ../ggz-gtk/first.c:59
-msgid "Chief"
-msgstr ""
-
-# บทเพลงเต้นรำของชาวโปแลนด์
-#   http://e-muzic.net/p.html
-# นายพัน
-#: ../ggz-gtk/first.c:59
-msgid "Colonel"
-msgstr ""
-
-#: ../ggz-gtk/first.c:59
-msgid "General"
-msgstr ""
-
-#: ../ggz-gtk/first.c:60
-msgid "Major"
-msgstr ""
-
-#: ../ggz-gtk/first.c:60
-msgid "Scout"
-msgstr ""
-
-#: ../ggz-gtk/first.c:60
-msgid "Lieutenant"
-msgstr ""
-
-#: ../ggz-gtk/first.c:60
-msgid "Stalker"
-msgstr ""
-
-#: ../ggz-gtk/first.c:61
-msgid "Scientist"
-msgstr ""
-
-#: ../ggz-gtk/first.c:61
-msgid "Scholar"
-msgstr ""
-
-#: ../ggz-gtk/first.c:61
-msgid "Entity"
-msgstr ""
-
-#: ../ggz-gtk/first.c:61
-msgid "Creator"
-msgstr ""
-
 #: ../ggz-gtk/first.c:69
 msgid "GGZ Community (fast)"
 msgstr "ชุมชน GGZ (เร็ว)"
 
 #: ../ggz-gtk/first.c:70
 msgid "Local developer server"
-msgstr "เซิร์ฟเวอร์ภายในของนักพัฒนา"
+msgstr ""
+""
+"เซิร์ฟเวอร์ภายในของนักพัฒนา"
 
 #: ../ggz-gtk/first.c:190
 msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
-"นี่เป็นครั้งแรกที่คุณเรียกใช้ไคลเอนต์เขตเล่นเกม GGZ  "
+""
+"นี่เป็นครั้งแรกที่คุณเรียกใช้ไคลเอนต์เขตเล่นเกม "
+"GGZ  "
 "คุณต้องการจะสร้างโพรไฟล์เซิร์ฟเวอร์ปริยายหรือไม่?"
 
 #: ../ggz-gtk/game.c:72
@@ -494,13 +427,16 @@ msgstr ""
 msgid ""
 "You don't have this game installed. You can download\n"
 "it from %s."
-msgstr "คุณยังไม่ได้ติดตั้งเกมนี้ คุณสามารถดาวน์โหลดได้จาก %s"
+msgstr ""
+"คุณยังไม่ได้ติดตั้งเกมนี้ "
+"คุณสามารถดาวน์โหลดได้จาก %s"
 
 #: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
 #: ../ggz-gtk/game.c:325 ../ggz-gtk/game.c:334 ../ggz-gtk/game.c:350
 #: ../ggz-gtk/launch.c:290
 msgid "Launch Error"
-msgstr "เกิดข้อผิดพลาดขณะตั้งโต๊ะ"
+msgstr ""
+"เกิดข้อผิดพลาดขณะตั้งโต๊ะ"
 
 #: ../ggz-gtk/game.c:148
 msgid ""
@@ -520,7 +456,9 @@ msgstr "เปิดเกมไม่สำเร็จ"
 
 #: ../ggz-gtk/game.c:296
 msgid "You can only play one game at a time."
-msgstr "คุณสามารถเล่นได้ทีละเกมเท่านั้น"
+msgstr ""
+""
+"คุณสามารถเล่นได้ทีละเกมเท่านั้น"
 
 #: ../ggz-gtk/game.c:304
 msgid "You're still at a table."
@@ -531,7 +469,9 @@ msgid ""
 "You must be in a room to launch a game.\n"
 "Launch aborted"
 msgstr ""
-"คุณต้องอยู่ในห้องก่อนที่จะเปิดเกม\n"
+""
+"คุณต้องอยู่ในห้องก่อนที่จะเปิดเกม"
+"\n"
 "ยกเลิกการเปิดเกม"
 
 #: ../ggz-gtk/game.c:323
@@ -539,23 +479,32 @@ msgid ""
 "No game types defined for this server.\n"
 "Launch aborted."
 msgstr ""
-"ไม่มีการกำหนดชนิดเกมใดไว้ในเซิร์ฟเวอร์นี้\n"
+""
+"ไม่มีการกำหนดชนิดเกมใดไว้ในเซิร์ฟเวอร์นี้"
+"\n"
 "ยกเลิกการเปิดเกม"
 
 #: ../ggz-gtk/game.c:333
 msgid "This game doesn't support spectators."
-msgstr "เกมนี้ไม่สนับสนุนผู้สังเกตการณ์"
+msgstr ""
+""
+"เกมนี้ไม่สนับสนุนผู้สังเกตการณ์"
 
 #: ../ggz-gtk/game.c:348
 msgid ""
 "You need to launch the GGZ client directly\n"
 "to be able to play this game."
-msgstr "คุณต้องเรียกไคลเอนต์ GGZ โดยตรง เพื่อจะเล่นเกมนี้"
+msgstr ""
+"คุณต้องเรียกไคลเอนต์ GGZ "
+"โดยตรง เพื่อจะเล่นเกมนี้"
 
 #: ../ggz-gtk/ggzclient.c:122
 #, c-format
 msgid "Error connecting to server: %s"
-msgstr "เกิดข้อผิดพลาดขณะเชื่อมต่อไปยังเซิร์ฟเวอร์: %s"
+msgstr ""
+""
+"เกิดข้อผิดพลาดขณะเชื่อมต่อไปยังเซิร์ฟเวอร์: "
+"%s"
 
 #: ../ggz-gtk/ggzclient.c:124 ../ggz-gtk/ggzclient.c:380
 #: ../ggz-gtk/ggzclient.c:561 ../ggz-gtk/ggzclient.c:596
@@ -591,27 +540,39 @@ msgstr "คุณได้เข้าห้อง \"%s\" แล้ว"
 #: ../ggz-gtk/ggzclient.c:378
 #, c-format
 msgid "Error joining room: %s"
-msgstr "เกิดข้อผิดพลาดขณะเข้าห้อง: %s"
+msgstr ""
+"เกิดข้อผิดพลาดขณะเข้าห้อง: "
+"%s"
 
 #: ../ggz-gtk/ggzclient.c:429
 msgid "You can't chat while not in a room."
-msgstr "คุณไม่สามารถสนทนาขณะที่ไม่ได้อยู่ในห้องได้"
+msgstr ""
+""
+"คุณไม่สามารถสนทนาขณะที่ไม่ได้อยู่ในห้องได้"
 
 #: ../ggz-gtk/ggzclient.c:434
 msgid "You don't have permission to chat here."
-msgstr "คุณไม่ได้รับอนุญาตให้สนทนาที่นี่"
+msgstr ""
+""
+"คุณไม่ได้รับอนุญาตให้สนทนาที่นี่"
 
 #: ../ggz-gtk/ggzclient.c:438
 msgid "No private chatting at a table!"
-msgstr "ไม่มีการสนทนาส่วนตัวที่โต๊ะ!"
+msgstr ""
+""
+"ไม่มีการสนทนาส่วนตัวที่โต๊ะ!"
 
 #: ../ggz-gtk/ggzclient.c:442
 msgid "That player isn't in the room!"
-msgstr "ผู้เล่นนั้นไม่ได้อยู่ในห้อง!"
+msgstr ""
+""
+"ผู้เล่นนั้นไม่ได้อยู่ในห้อง!"
 
 #: ../ggz-gtk/ggzclient.c:447
 msgid "There was an error sending the chat."
-msgstr "เกิดข้อผิดพลาดขณะส่งคำสนทนา"
+msgstr ""
+""
+"เกิดข้อผิดพลาดขณะส่งคำสนทนา"
 
 #: ../ggz-gtk/ggzclient.c:451
 msgid "You're not at a table."
@@ -625,7 +586,9 @@ msgstr "สนทนาไม่สำเร็จ: %s"
 #: ../ggz-gtk/ggzclient.c:559
 #, c-format
 msgid "Error launching table: %s"
-msgstr "เกิดข้อผิดพลาดขณะตั้งโต๊ะ: %s"
+msgstr ""
+"เกิดข้อผิดพลาดขณะตั้งโต๊ะ: "
+"%s"
 
 #: ../ggz-gtk/ggzclient.c:579
 #, c-format
@@ -635,12 +598,10 @@ msgstr "คุณได้เข้าร่วมโต๊ะ %d แล้ว"
 #: ../ggz-gtk/ggzclient.c:594
 #, c-format
 msgid "Error joining table: %s"
-msgstr "เกิดข้อผิดพลาดขณะเข้าร่วมโต๊ะ: %s"
-
-#: ../ggz-gtk/ggzclient.c:616
-#, c-format
-msgid "You have been booted from the table by %s."
 msgstr ""
+""
+"เกิดข้อผิดพลาดขณะเข้าร่วมโต๊ะ: "
+"%s"
 
 #: ../ggz-gtk/ggzclient.c:621
 #, c-format
@@ -655,12 +616,17 @@ msgstr "เกมอวสาน"
 #: ../ggz-gtk/ggzclient.c:628
 #, c-format
 msgid "There was an error with the game server."
-msgstr "เกิดข้อผิดพลาดกับเซิร์ฟเวอร์เกม"
+msgstr ""
+""
+"เกิดข้อผิดพลาดกับเซิร์ฟเวอร์เกม"
 
 #: ../ggz-gtk/ggzclient.c:647
 #, c-format
 msgid "Error leaving table: %s"
-msgstr "เกิดข้อผิดพลาดขณะออกจากโต๊ะ: %s"
+msgstr ""
+""
+"เกิดข้อผิดพลาดขณะออกจากโต๊ะ: "
+"%s"
 
 #: ../ggz-gtk/ggzclient.c:740
 msgid "**none**"
@@ -717,11 +683,15 @@ msgstr "กำลังออกจากระบบ"
 #: ../ggz-gtk/ggzclient.c:1078
 #, c-format
 msgid "Server error: %s"
-msgstr "เซิร์ฟเวอร์เกิดข้อผิดพลาด: %s"
+msgstr ""
+"เซิร์ฟเวอร์เกิดข้อผิดพลาด: "
+"%s"
 
 #: ../ggz-gtk/ggzclient.c:1166
 msgid "Disconnected from server."
-msgstr "ตัดการเชื่อมต่อจากเซิร์ฟเวอร์แล้ว"
+msgstr ""
+""
+"ตัดการเชื่อมต่อจากเซิร์ฟเวอร์แล้ว"
 
 #: ../ggz-gtk/launch.c:114
 #, c-format
@@ -753,7 +723,9 @@ msgstr ""
 
 #: ../ggz-gtk/launch.c:325
 msgid "Invalid number of bots specified"
-msgstr "จำนวนของหุ่นที่ระบุไม่ถูกต้อง"
+msgstr ""
+""
+"จำนวนของหุ่นที่ระบุไม่ถูกต้อง"
 
 #: ../ggz-gtk/launch.c:420
 msgid "Seat Assignments"
@@ -811,7 +783,8 @@ msgstr "เสียใจ!"
 #: ../ggz-gtk/login.c:115
 #, c-format
 msgid "That username is already in use."
-msgstr "ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว"
+msgstr ""
+"ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว"
 
 #: ../ggz-gtk/login.c:119
 #, c-format
@@ -820,6 +793,7 @@ msgid ""
 "Please supply the correct password."
 msgstr ""
 "การยืนยันตัวบุคคลล้มเหลว\n"
+""
 "กรุณาป้อนรหัสผ่านที่ถูกต้อง"
 
 #: ../ggz-gtk/login.c:123
@@ -830,12 +804,17 @@ msgstr "ชื่อผู้ใช้ยาวเกินไป"
 #: ../ggz-gtk/login.c:126
 #, c-format
 msgid "Invalid username, do not use special characters!"
-msgstr "ชื่อผู้ใช้ไม่ถูกต้อง อย่าใช้อักขระพิเศษ"
+msgstr ""
+"ชื่อผู้ใช้ไม่ถูกต้อง "
+"อย่าใช้อักขระพิเศษ"
 
 #: ../ggz-gtk/login.c:130
 #, c-format
 msgid "Login failed for unknown reason: %s"
-msgstr "การเข้าระบบล้มเหลวไม่ทราบสาเหตุ: %s"
+msgstr ""
+""
+"การเข้าระบบล้มเหลวไม่ทราบสาเหตุ: "
+"%s"
 
 #: ../ggz-gtk/login.c:538
 msgid "Server Profile"
@@ -844,11 +823,6 @@ msgstr "โพรไฟล์ของเซิร์ฟเวอร์"
 #: ../ggz-gtk/login.c:562 ../ggz-gtk/props.c:925
 msgid "Profile:"
 msgstr "โพรไฟล์:"
-
-#: ../ggz-gtk/login.c:582
-#, fuzzy
-msgid "Edit Profiles..."
-msgstr "แก้ไขโพรไฟล์"
 
 #: ../ggz-gtk/login.c:590 ../ggz-gtk/props.c:946
 msgid "Server:"
@@ -896,7 +870,9 @@ msgstr "ข้อความประจำวัน"
 
 #: ../ggz-gtk/pick_module.c:89
 msgid "Which client would you like to use to play this game?"
-msgstr "คุณต้องการใช้ไคลเอนต์ไหนเล่นเกมนี้?"
+msgstr ""
+""
+"คุณต้องการใช้ไคลเอนต์ไหนเล่นเกมนี้?"
 
 #: ../ggz-gtk/pick_module.c:131
 msgid "Don't ask me again."
@@ -905,30 +881,6 @@ msgstr "ไม่ต้องถามอีก"
 #: ../ggz-gtk/playerinfo.c:102
 msgid "Player Information"
 msgstr "ข้อมูลผู้เล่น"
-
-#: ../ggz-gtk/playerinfo.c:132
-msgid "Player Handle:"
-msgstr ""
-
-#: ../ggz-gtk/playerinfo.c:150
-msgid "Table:"
-msgstr ""
-
-#: ../ggz-gtk/playerinfo.c:168
-msgid "Account:"
-msgstr ""
-
-#: ../ggz-gtk/playerinfo.c:187
-msgid "Record:"
-msgstr ""
-
-#: ../ggz-gtk/playerinfo.c:205
-msgid "Rating:"
-msgstr ""
-
-#: ../ggz-gtk/playerinfo.c:223
-msgid "Rank:"
-msgstr ""
 
 #: ../ggz-gtk/playerinfo.c:241
 msgid "Score:"
@@ -1012,10 +964,6 @@ msgstr "แบบอักษรการสนทนา:"
 msgid "Change"
 msgstr "เปลี่ยน"
 
-#: ../ggz-gtk/props.c:1147
-msgid "Ignore Join/Part Messages"
-msgstr ""
-
 #: ../ggz-gtk/props.c:1155
 msgid "Play Sounds"
 msgstr "เล่นเสียง"
@@ -1038,15 +986,21 @@ msgstr "สีการสนทนา"
 
 #: ../ggz-gtk/props.c:1236
 msgid "Default chat color assigned to your friends"
-msgstr "สีการสนทนาปริยายที่จะใช้กับเพื่อนของคุณ"
+msgstr ""
+""
+"สีการสนทนาปริยายที่จะใช้กับเพื่อนของคุณ"
 
 #: ../ggz-gtk/props.c:1245
 msgid "Chat color used when your name is typed"
-msgstr "สีการสนทนาเมื่อมีการพิมพ์ชื่อของคุณ"
+msgstr ""
+""
+"สีการสนทนาเมื่อมีการพิมพ์ชื่อของคุณ"
 
 #: ../ggz-gtk/props.c:1254
 msgid "Chat color used for all other chats"
-msgstr "สีการสนทนาสำหรับการสนทนาอื่นๆ"
+msgstr ""
+""
+"สีการสนทนาสำหรับการสนทนาอื่นๆ"
 
 #: ../ggz-gtk/props.c:1263
 msgid "Normal Color"
@@ -1074,7 +1028,9 @@ msgstr "สนทนา"
 
 #: ../ggz-gtk/props.c:1326
 msgid "All of the following information is optional."
-msgstr "ข้อมูลทั้งหมดต่อไปนี้จะมีหรือไม่ก็ได้"
+msgstr ""
+""
+"ข้อมูลทั้งหมดต่อไปนี้จะมีหรือไม่ก็ได้"
 
 #: ../ggz-gtk/props.c:1344
 msgid "Name:"
@@ -1092,18 +1048,14 @@ msgstr "รัฐ:"
 msgid "Country:"
 msgstr "ประเทศ:"
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "หมายเหตุ, งานอดิเรก ฯลฯ"
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "ข้อมูลผู้ใช้"
 
 #: ../ggz-gtk/props.c:1459
 msgid "Browser to launch URLs with:"
-msgstr "เบราว์เซอร์ที่จะใช้เปิด URL:"
+msgstr ""
+"เบราว์เซอร์ที่จะใช้เปิด URL:"
 
 #: ../ggz-gtk/props.c:1464 ../ggz-gtk/props.c:1484 ../ggz-gtk/support.c:139
 msgid "Galeon - New"
@@ -1215,15 +1167,21 @@ msgstr "ห้องไม่รู้จัก"
 
 #: ../ggz-gtk/roomlist.c:73
 msgid "You can't join a room; you're not logged in"
-msgstr "คุณยังเข้าห้องไม่ได้ เพราะคุณยังไม่ได้เข้าระบบ"
+msgstr ""
+"คุณยังเข้าห้องไม่ได้ "
+"เพราะคุณยังไม่ได้เข้าระบบ"
 
 #: ../ggz-gtk/roomlist.c:77
 msgid "You're already in between rooms"
-msgstr "คุณอยู่ระหว่างห้องอยู่แล้ว"
+msgstr ""
+""
+"คุณอยู่ระหว่างห้องอยู่แล้ว"
 
 #: ../ggz-gtk/roomlist.c:82
 msgid "You can't switch rooms while playing a game"
-msgstr "คุณไม่สามารถย้ายห้องระหว่างที่เล่นเกมอยู่ได้"
+msgstr ""
+""
+"คุณไม่สามารถย้ายห้องระหว่างที่เล่นเกมอยู่ได้"
 
 #: ../ggz-gtk/roomlist.c:89
 msgid "Unknown error"
@@ -1231,7 +1189,8 @@ msgstr "ข้อผิดพลาดไม่ทราบสาเหตุ"
 
 #: ../ggz-gtk/roomlist.c:109 ../ggz-gtk/roomlist.c:114
 msgid "Error joining room"
-msgstr "เกิดข้อผิดพลาดขณะเข้าห้อง"
+msgstr ""
+"เกิดข้อผิดพลาดขณะเข้าห้อง"
 
 #: ../ggz-gtk/roomlist.c:350
 msgid "Other Rooms"
@@ -1257,13 +1216,6 @@ msgstr "คำอธิบาย"
 msgid "None"
 msgstr "ไม่มี"
 
-#: ../ggz-gtk/types.c:148
-msgid ""
-"Room filtering is not implemented yet. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-
 #: ../ggz-gtk/types.c:191
 msgid "Web Address"
 msgstr "ที่อยู่เว็บ"
@@ -1279,32 +1231,3 @@ msgstr "ตัวกรองรายการห้อง"
 #: ../ggz-gtk/types.c:266
 msgid "Set"
 msgstr "ตั้งค่า"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "เกมร้านขนมอบ"
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "ไปยังเว็บ"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "เปิดเสียง"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-

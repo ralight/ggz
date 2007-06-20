@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/zh_CN.po)
-
 # gnome-games translation
 # Dillion Chen, 2000
 #   Updated by Wang Li <charles@linux.net.cn>, 2002
@@ -57,13 +56,15 @@ msgstr "/kick <用户名> .......... 将玩家踢出房间"
 
 #: ../ggz-gtk/chat.c:107
 msgid "/gag <username> ........... Gag a player to prevent them from talking"
-msgstr "/gag <用户名> ........... 将玩家禁言以阻止他与别人交谈"
+msgstr ""
+"/gag <用户名> ........... 将玩家禁言以阻止他与别人交谈"
 
 #: ../ggz-gtk/chat.c:110
 msgid ""
 "/ungag <username> ......... Reverse the gag operation to allow a player to "
 "talk"
-msgstr "/ungag <用户名> ......... 解除禁言操作以允许玩家与别人交谈"
+msgstr ""
+"/ungag <用户名> ......... 解除禁言操作以允许玩家与别人交谈"
 
 #: ../ggz-gtk/chat.c:113
 msgid "/ban <username> ........... Ban a player from the server"
@@ -399,101 +400,6 @@ msgstr "GGZ 游戏网"
 msgid "Wizard"
 msgstr "向导"
 
-#: ../ggz-gtk/first.c:57
-#, fuzzy
-msgid "Deity"
-msgstr "Deity"
-
-#: ../ggz-gtk/first.c:57
-#, fuzzy
-msgid "Sentinel"
-msgstr "Sentinel"
-
-#: ../ggz-gtk/first.c:57
-#, fuzzy
-msgid "Captain"
-msgstr "Captain"
-
-#: ../ggz-gtk/first.c:58
-#, fuzzy
-msgid "Knight"
-msgstr "Knight"
-
-#: ../ggz-gtk/first.c:58
-#, fuzzy
-msgid "Angel"
-msgstr "Angel"
-
-#: ../ggz-gtk/first.c:58
-#, fuzzy
-msgid "Silverlord"
-msgstr "Silverlord"
-
-#: ../ggz-gtk/first.c:58
-#, fuzzy
-msgid "Eagle"
-msgstr "Eagle"
-
-#: ../ggz-gtk/first.c:59
-#, fuzzy
-msgid "Vampire"
-msgstr "Vampire"
-
-#: ../ggz-gtk/first.c:59
-#, fuzzy
-msgid "Chief"
-msgstr "Chief"
-
-#: ../ggz-gtk/first.c:59
-#, fuzzy
-msgid "Colonel"
-msgstr "Colonel"
-
-#: ../ggz-gtk/first.c:59
-#, fuzzy
-msgid "General"
-msgstr "General"
-
-#: ../ggz-gtk/first.c:60
-#, fuzzy
-msgid "Major"
-msgstr "Major"
-
-#: ../ggz-gtk/first.c:60
-#, fuzzy
-msgid "Scout"
-msgstr "Scout"
-
-#: ../ggz-gtk/first.c:60
-#, fuzzy
-msgid "Lieutenant"
-msgstr "Lieutenant"
-
-#: ../ggz-gtk/first.c:60
-#, fuzzy
-msgid "Stalker"
-msgstr "Stalker"
-
-#: ../ggz-gtk/first.c:61
-#, fuzzy
-msgid "Scientist"
-msgstr "Scientist"
-
-#: ../ggz-gtk/first.c:61
-#, fuzzy
-msgid "Scholar"
-msgstr "Scholar"
-
-#: ../ggz-gtk/first.c:61
-#, fuzzy
-msgid "Entity"
-msgstr "Entity"
-
-#: ../ggz-gtk/first.c:61
-#, fuzzy
-msgid "Creator"
-msgstr "Creator"
-
 #: ../ggz-gtk/first.c:69
 msgid "GGZ Community (fast)"
 msgstr "GGZ 社区 (快速)"
@@ -507,7 +413,8 @@ msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
-"这是您第一次运行 GTK+ GGZ 游戏网客户端。您想创建一些默认的服务器配置文件吗？"
+"这是您第一次运行 GTK+ GGZ "
+"游戏网客户端。您想创建一些默认的服务器配置文件吗？"
 
 #: ../ggz-gtk/game.c:72
 #, c-format
@@ -873,17 +780,9 @@ msgstr "编辑配置文件..."
 msgid "Server:"
 msgstr "服务器："
 
-#: ../ggz-gtk/login.c:600
-msgid "localhost"
-msgstr ""
-
 #: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
 msgid "Port:"
 msgstr "端口："
-
-#: ../ggz-gtk/login.c:612
-msgid "5688"
-msgstr ""
 
 #: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
 msgid "Username:"
@@ -924,11 +823,6 @@ msgstr "不要再询问我。"
 #: ../ggz-gtk/playerinfo.c:102
 msgid "Player Information"
 msgstr "玩家信息"
-
-#: ../ggz-gtk/playerinfo.c:132
-#, fuzzy
-msgid "Player Handle:"
-msgstr "玩家处理器："
 
 #: ../ggz-gtk/playerinfo.c:150
 msgid "Table:"
@@ -1112,11 +1006,6 @@ msgstr "州："
 msgid "Country:"
 msgstr "国家："
 
-#: ../ggz-gtk/props.c:1428
-#, fuzzy
-msgid "Comments, Hobies, Etc."
-msgstr "备注，业余爱好等。"
-
 #: ../ggz-gtk/props.c:1450
 msgid "User Information"
 msgstr "用户信息"
@@ -1237,11 +1126,6 @@ msgstr "未知房间"
 msgid "You can't join a room; you're not logged in"
 msgstr "您不能加入房间；您还没有登入"
 
-#: ../ggz-gtk/roomlist.c:77
-#, fuzzy
-msgid "You're already in between rooms"
-msgstr "您已经在房间中"
-
 #: ../ggz-gtk/roomlist.c:82
 msgid "You can't switch rooms while playing a game"
 msgstr "您在游戏时不能切换房间"
@@ -1298,37 +1182,3 @@ msgstr "作者"
 #: ../ggz-gtk/types.c:254
 msgid "Room List Filter:"
 msgstr "房间列表过滤器："
-
-#: ../ggz-gtk/types.c:266
-#, fuzzy
-msgid "Set"
-msgstr "设置"
-
-#: ../ggz-gtk/types.c:306
-#, fuzzy
-msgid "Upgrage Game"
-msgstr "暂停游戏"
-
-#: ../ggz-gtk/types.c:309
-#, fuzzy
-msgid "Goto Web Site"
-msgstr "转到网页"
-
-#: ../src/main.c:119
-#, fuzzy
-msgid "Enable session log"
-msgstr "启用声音"
-
-#: ../src/main.c:121
-msgid "URL for autoconnection"
-msgstr ""
-
-#: ../src/main.c:126
-msgid "GGZ Core Client for Gtk+"
-msgstr ""
-
-#: ../src/main.c:131
-#, c-format
-msgid "Wrong arguments, try %s --help.\n"
-msgstr ""
-
