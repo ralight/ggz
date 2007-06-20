@@ -41,7 +41,6 @@ pofiles = \
 	ja.po \
 	ka.po \
 	ko.po \
-	ku.po \
 	lt.po \
 	lv.po \
 	mk.po \
@@ -53,6 +52,7 @@ pofiles = \
 	ne.po \
 	nl.po \
 	nn.po \
+	oc.po \
 	or.po \
 	pa.po \
 	pl.po \
