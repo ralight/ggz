@@ -17,14 +17,14 @@ msgstr ""
 "Project-Id-Version: gl\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-02-03 23:13+0100\n"
-"PO-Revision-Date: 2006-05-21 11:15+0200\n"
+"PO-Revision-Date: 2006-10-10 13:12+0200\n"
 "Last-Translator: Ignacio Casal Quinteiro <nacho.resa@gmail.com>\n"
 "Language-Team: Galego <trasno@ceu.fi.udc.es>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
-"X-Generator: KBabel 1.11.2\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: ../../ggz-config/ggz-config.c:97
 msgid "Query GGZCONFDIR - location of configuration directory"
@@ -71,24 +71,27 @@ msgstr ""
 msgid "Use auxiliary directory instead of ggz.modules (needs argument)"
 msgstr ""
 
+# (pofilter) isfuzzy: check if the po element has been marked fuzzy
 #: ../../ggz-config/ggz-config.c:108
 #, fuzzy
 msgid "Install over an existing module"
-msgstr "Unirse a un xogo local"
+msgstr "Unirse a un xogo existente"
 
 #: ../../ggz-config/ggz-config.c:109
 msgid "Use $DESTDIR as offset to ggz.modules file"
 msgstr ""
 
+# (pofilter) untranslated: checks whether a string has been translated at all
 #: ../../ggz-config/ggz-config.c:110
 #, fuzzy
 msgid "Display help"
-msgstr "Amosar posibilidades"
+msgstr "Mostrar todo"
 
+# (pofilter) untranslated: checks whether a string has been translated at all
 #: ../../ggz-config/ggz-config.c:111
 #, fuzzy
 msgid "Display usage"
-msgstr "Amosar posibilidades"
+msgstr "Mostrar novo"
 
 #: ../../ggz-config/ggz-config.c:126
 #, c-format
@@ -133,12 +136,13 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:332
 #, fuzzy, c-format
 msgid "Setting up GGZ game modules configuration in %s\n"
-msgstr "Axustar a configuración do xogo"
+msgstr "Definir a configuración do xogo"
 
+# (pofilter) untranslated: checks whether a string has been translated at all
 #: ../../ggz-config/ggz-config.c:336
-#, c-format
+#, fuzzy, c-format
 msgid "Insufficient permission to install modules\n"
-msgstr ""
+msgstr "Permisos insuficientes, o acceso á sala está restrinxido"
 
 #: ../../ggz-config/ggz-config.c:357
 #, c-format
@@ -209,7 +213,7 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:673 ../../ggz-config/ggz-config.c:738
 #, fuzzy, c-format
 msgid "May be an empty config file?\n"
-msgstr "unha pila de función baleira"
+msgstr "un montón de fundación baleiro"
 
 #: ../../ggz-config/ggz-config.c:681
 #, c-format
@@ -260,7 +264,7 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:829
 #, fuzzy, c-format
 msgid "*** Checking back references\n"
-msgstr "Preferencias de Blackjack"
+msgstr "Preferencias do Blackjack"
 
 #: ../../ggz-config/ggz-config.c:851
 #, c-format
@@ -327,15 +331,17 @@ msgstr ""
 msgid "Published under GNU GPL conditions\n"
 msgstr ""
 
+# (pofilter) untranslated: checks whether a string has been translated at all
 #: ../../ggz-config/ggz-config.c:1014
-#, c-format
+#, fuzzy, c-format
 msgid "Recognized options:\n"
-msgstr ""
+msgstr "%s: opción non recoñecida `--%s'\n"
 
+# (pofilter) untranslated: checks whether a string has been translated at all
 #: ../../ggz-config/ggz-config.c:1025
 #, fuzzy, c-format
 msgid "Usage:\n"
-msgstr "_Nome do servidor:"
+msgstr "Mensaxe:"
 
 #: ../../ggz-config/ggz-config.c:1084
 #, c-format
@@ -357,3 +363,5 @@ msgstr ""
 msgid "Required installation file entries missing\n"
 msgstr ""
 
+# (pofilter) isfuzzy: check if the po element has been marked fuzzy
+#, fuzzy

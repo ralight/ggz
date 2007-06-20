@@ -1,21 +1,23 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/es.po)
 
+# translation of gnome-games.HEAD.es.po to Español
 # translation of es.po to
 # translation of gnome-games.HEAD.po to
+#
+#
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2004, 2005, 2006.
 # Lucas Vieites <lucas@asixinformatica.com>, 2004, 2005.
-# Lucas Vieites Fariña <lucas@asixinformatica.com>, 2005, 2006.
-#
-#
+# Lucas Vieites Fariña <lucas@asixinformatica.com>, 2005, 2006, 2007.
+# Jorge González <jorgegonz@svn.gnome.org>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: es\n"
+"Project-Id-Version: gnome-games.HEAD.es\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-02-03 23:13+0100\n"
-"PO-Revision-Date: 2006-12-23 20:00+0100\n"
-"Last-Translator: \n"
-"Language-Team:  <en@li.org>\n"
+"PO-Revision-Date: 2007-06-19 22:09+0200\n"
+"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
+"Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"

@@ -9,6 +9,7 @@
 # Keld Simonsen <keld@dkuug.dk>, 2000-2002.
 # Ole Laursen <olau@hardworking.dk>, 2001, 02, 03, 04.
 # Martin Willemoes Hansen <mwh@sysrq.dk>, 2004, 05.
+# Ask Hjorth Larsen <asklarsen@gmail.com>, 2007
 #
 # RETMIG: en eller anden med forstand på kabaler skal have oversat
 # navnene på spillene. Der er en kommentar til hver af dem der
@@ -20,18 +21,24 @@
 #   cave -> grotte
 #   hint -> fif
 #   GNOME Robots II -> Robotter
-#   Same Gnome (parodi på Same Game i KDE) -> Samspil 
+#   Same Gnome (parodi på Same Game i KDE) -> Samspil
+#   Gnibbles, Nibbles -> Orme
+#   score slot -> pointfelt
+#   tracker (gnome-sudoku) -> spor
+#
 #
 # Generelt er de fleste spilnavne oversat nådesløst til dansk.
 # Husk at tilføje dig i credit-listen (besked id "translator-credits")
+#
+# Der er en række strenge hvor der står f.eks. "glines|Medium". Så vidt jeg ved kommer der problemer når man oversætter teksten til venstre for |, så lad dette blive stående.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-games\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-02-03 23:13+0100\n"
-"PO-Revision-Date: 2005-06-15 12:22+0200\n"
-"Last-Translator: Martin Willemoes Hansen <mwh@sysrq.dk>\n"
+"PO-Revision-Date: 2007-04-10 23:29+0100\n"
+"Last-Translator: Peter Bach <bach.peter@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -86,7 +93,7 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:108
 #, fuzzy
 msgid "Install over an existing module"
-msgstr "Deltag i lokalt spil"
+msgstr "Deltag i et eksisterende spil"
 
 #: ../../ggz-config/ggz-config.c:109
 msgid "Use $DESTDIR as offset to ggz.modules file"
@@ -95,12 +102,12 @@ msgstr ""
 #: ../../ggz-config/ggz-config.c:110
 #, fuzzy
 msgid "Display help"
-msgstr "Vis sandsynligheder"
+msgstr "Vis alle"
 
 #: ../../ggz-config/ggz-config.c:111
 #, fuzzy
 msgid "Display usage"
-msgstr "Vis sandsynligheder"
+msgstr "Vis nye"
 
 #: ../../ggz-config/ggz-config.c:126
 #, c-format
@@ -148,9 +155,9 @@ msgid "Setting up GGZ game modules configuration in %s\n"
 msgstr "Konfigurér spilindstillinger"
 
 #: ../../ggz-config/ggz-config.c:336
-#, c-format
+#, fuzzy, c-format
 msgid "Insufficient permission to install modules\n"
-msgstr ""
+msgstr "Utilstrækkelige rettigheder, rumadgang er begrænset"
 
 #: ../../ggz-config/ggz-config.c:357
 #, c-format
@@ -340,14 +347,14 @@ msgid "Published under GNU GPL conditions\n"
 msgstr ""
 
 #: ../../ggz-config/ggz-config.c:1014
-#, c-format
+#, fuzzy, c-format
 msgid "Recognized options:\n"
-msgstr ""
+msgstr "%s: ukendt tilvalg \"--%s\"\n"
 
 #: ../../ggz-config/ggz-config.c:1025
 #, fuzzy, c-format
 msgid "Usage:\n"
-msgstr "_Værtsnavn:"
+msgstr "Meddelelse:"
 
 #: ../../ggz-config/ggz-config.c:1084
 #, c-format
