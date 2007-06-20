@@ -1596,4 +1596,3 @@ msgid "Wrong arguments, try %s --help.\n"
 msgstr ""
 
 # (pofilter) isfuzzy: check if the po element has been marked fuzzy
-#, fuzzy

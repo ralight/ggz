@@ -1352,4 +1352,3 @@ msgstr ""
 msgid "Wrong arguments, try %s --help.\n"
 msgstr ""
 
-#, fuzzy
