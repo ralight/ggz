@@ -102,4 +102,3 @@ msgstr ""
 msgid "Protocol mismatch"
 msgstr ""
 
-# FIXME

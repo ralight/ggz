@@ -127,4 +127,3 @@ msgid "Protocol mismatch"
 msgstr "Incorcondancia de protocolo"
 
 # (pofilter) isfuzzy: check if the po element has been marked fuzzy
-#, fuzzy

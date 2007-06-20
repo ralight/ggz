@@ -364,4 +364,3 @@ msgid "Required installation file entries missing\n"
 msgstr ""
 
 # (pofilter) isfuzzy: check if the po element has been marked fuzzy
-#, fuzzy
