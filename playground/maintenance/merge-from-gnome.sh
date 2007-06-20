@@ -38,6 +38,9 @@ for i in $gnomepolocation/*.po; do
 	if [ $numtranslated -lt "2" ]; then
 		rm -f $filename
 		svn remove $filename >/dev/null
+	else
+		potool -ft -fnf $filename > $filename.tmp
+		mv $filename.tmp $filename
 	fi
 done
 
