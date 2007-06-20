@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/pt_BR.po)
-
 # Brazilian Portuguese translation of gnome-games.
 # Copyright (C) 1999-2006 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-games package.
@@ -38,11 +37,6 @@ msgstr "Negociação desconhecida"
 #, c-format
 msgid "Already logged in"
 msgstr "Já identificado"
-
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "Nova senha"
 
 #: ../../ggzcore/server.c:907
 #, c-format
@@ -112,4 +106,3 @@ msgstr "Não é possível conectar"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "Erro de protocolo"
-

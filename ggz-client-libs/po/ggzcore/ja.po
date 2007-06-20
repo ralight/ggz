@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/ja.po)
-
 # gnome-games ja.po.
 # Copyright (C) 1998-2007 Free Software Foundation, Inc.
 # Yukihiro Nakai <Nakai@technologist.com>, 1998
@@ -33,11 +32,6 @@ msgstr "不明なネゴシエーション"
 msgid "Already logged in"
 msgstr "既にログイン済みです"
 
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "新しいパスワード"
-
 #: ../../ggzcore/server.c:907
 #, c-format
 msgid "This name is already registered so cannot be used by a guest"
@@ -56,12 +50,14 @@ msgstr "名前が長すぎます"
 #: ../../ggzcore/server.c:919
 #, c-format
 msgid "Name contains forbidden ASCII characters"
-msgstr "指定した名前には使用禁止の ASCII 文字が含まれています"
+msgstr ""
+"指定した名前には使用禁止の ASCII 文字が含まれています"
 
 #: ../../ggzcore/server.c:923
 #, c-format
 msgid "Missing password or other bad options."
-msgstr "パスワードがない、またはオプションが間違っています"
+msgstr ""
+"パスワードがない、またはオプションが間違っています"
 
 #: ../../ggzcore/server.c:927
 #, c-format
@@ -81,7 +77,9 @@ msgstr "テーブルについている間は部屋を変更できません"
 #: ../../ggzcore/server.c:958
 #, c-format
 msgid "Can't change rooms while joining/leaving a table"
-msgstr "テーブルについている/抜けている間は部屋を変更できません"
+msgstr ""
+""
+"テーブルについている/抜けている間は部屋を変更できません"
 
 #: ../../ggzcore/server.c:963
 #, c-format
@@ -91,7 +89,8 @@ msgstr "部屋の番号が間違っています"
 #: ../../ggzcore/server.c:967
 #, c-format
 msgid "Insufficient permissions, room access is restricted"
-msgstr "権限が不適切です (部屋へのアクセスが拒否されました)"
+msgstr ""
+"権限が不適切です (部屋へのアクセスが拒否されました)"
 
 #: ../../ggzcore/server.c:971
 #, c-format
@@ -105,4 +104,3 @@ msgstr "接続できません"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "プロトコルが一致しません"
-

@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/gl.po)
-
 # translation of gl.po to Galego
 # Galician translation of gnome-games.
 # Copyright (C) 2000 Jesús Bravo Álvarez.
@@ -26,23 +25,11 @@ msgstr ""
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
-# (pofilter) isfuzzy: check if the po element has been marked fuzzy
-#: ../../ggzcore/server.c:872
-#, fuzzy
-msgid "Unknown negotation"
-msgstr "Negociación descoñecida"
-
 # (pofilter) untranslated: checks whether a string has been translated at all
 #: ../../ggzcore/server.c:899
 #, c-format
 msgid "Already logged in"
 msgstr "Xa está conectado"
-
-# (pofilter) untranslated: checks whether a string has been translated at all
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "Novo contrasinal"
 
 # (pofilter) untranslated: checks whether a string has been translated at all
 #: ../../ggzcore/server.c:907
@@ -125,4 +112,3 @@ msgstr "Imposible conectar"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "Incorcondancia de protocolo"
-

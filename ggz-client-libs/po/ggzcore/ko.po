@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/ko.po)
-
 # ko.po -- Korean messages for GNOME games
 # GwanSun Back <backiss@kornet.net>, 2001
 # Changwoo Ryu <cwryu@debian.org>, 1998, 2002-2006, 2007.
@@ -27,15 +26,12 @@ msgstr "알 수 없는 상호 통신"
 msgid "Already logged in"
 msgstr "이미 로그인되어 있습니다"
 
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "새 열쇠글"
-
 #: ../../ggzcore/server.c:907
 #, c-format
 msgid "This name is already registered so cannot be used by a guest"
-msgstr "이 이름은 이미 등록되어 있어서 손님이 사용할 수 없습니다"
+msgstr ""
+"이 이름은 이미 등록되어 있어서 손님이 사용할 수 "
+"없습니다"
 
 #: ../../ggzcore/server.c:911
 #, c-format
@@ -75,7 +71,9 @@ msgstr "테이블에 있을 때는 방을 바꿀 수 없습니다"
 #: ../../ggzcore/server.c:958
 #, c-format
 msgid "Can't change rooms while joining/leaving a table"
-msgstr "테이블에 참여하거나 떠나는 도중에는 방을 바꿀 수 없습니다"
+msgstr ""
+"테이블에 참여하거나 떠나는 도중에는 방을 바꿀 수 "
+"없습니다"
 
 #: ../../ggzcore/server.c:963
 #, c-format
@@ -99,4 +97,3 @@ msgstr "연결할 수 없습니다"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "프로토콜이 맞지 않습니다"
-

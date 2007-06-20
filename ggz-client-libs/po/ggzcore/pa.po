@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/pa.po)
-
 # translation of gnome-games.HEAD.po to Punjabi
 # Punjabi translation of gnome-games.HEAD.
 # jaswindersinghra@yahoo.com
@@ -35,15 +34,13 @@ msgstr "ਅਣਜਾਣ ਸੌਦਾ"
 msgid "Already logged in"
 msgstr "ਪਹਿਲਾਂ ਹੀ ਲਾਗਇਨ"
 
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "ਨਵਾਂ ਗੁਪਤ-ਕੋਡ"
-
 #: ../../ggzcore/server.c:907
 #, c-format
 msgid "This name is already registered so cannot be used by a guest"
-msgstr "ਇਹ ਨਾਂ ਪਹਿਲਾਂ ਹੀ ਰਜਿਸਟਰ ਹੈ, ਇਸਕਰਕੇ ਮਹਿਮਾਨ ਲਈ ਨਹੀਂ ਵਰਤਿਆ ਜਾ ਸਕਦਾ।"
+msgstr ""
+"ਇਹ ਨਾਂ ਪਹਿਲਾਂ ਹੀ ਰਜਿਸਟਰ ਹੈ, "
+"ਇਸਕਰਕੇ ਮਹਿਮਾਨ ਲਈ ਨਹੀਂ ਵਰਤਿਆ "
+"ਜਾ ਸਕਦਾ।"
 
 #: ../../ggzcore/server.c:911
 #, c-format
@@ -63,7 +60,9 @@ msgstr "ਨਾਂ ਵਿੱਚ ਲੁਕਵੇਂ ASCII ਅੱਖਰ ਹਨ"
 #: ../../ggzcore/server.c:923
 #, c-format
 msgid "Missing password or other bad options."
-msgstr "ਗੁਪਤ-ਕੋਡ ਗੁੰਮ ਹੈ ਜਾਂ ਹੋਰ ਗਲਤ ਚੋਣਾਂ ਹਨ।"
+msgstr ""
+"ਗੁਪਤ-ਕੋਡ ਗੁੰਮ ਹੈ ਜਾਂ ਹੋਰ ਗਲਤ "
+"ਚੋਣਾਂ ਹਨ।"
 
 #: ../../ggzcore/server.c:927
 #, c-format
@@ -78,12 +77,17 @@ msgstr "ਰੂਮ ਭਰਿਆ ਹੈ"
 #: ../../ggzcore/server.c:954
 #, c-format
 msgid "Can't change rooms while at a table"
-msgstr "ਰੂਮ ਬਦਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ, ਜਦੋਂ ਮੇਜ਼ 'ਤੇ ਹੋ।"
+msgstr ""
+"ਰੂਮ ਬਦਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ ਹੈ, "
+"ਜਦੋਂ ਮੇਜ਼ 'ਤੇ ਹੋ।"
 
 #: ../../ggzcore/server.c:958
 #, c-format
 msgid "Can't change rooms while joining/leaving a table"
-msgstr "ਰੂਮ ਬਦਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ, ਜਦੋਂ ਇੱਕ ਮੇਜ਼ 'ਚ ਦਾਖਲ/ਛੱਡਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ"
+msgstr ""
+"ਰੂਮ ਬਦਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ, ਜਦੋਂ "
+"ਇੱਕ ਮੇਜ਼ 'ਚ ਦਾਖਲ/ਛੱਡਿਆ ਨਹੀਂ ਜਾ "
+"ਸਕਦਾ"
 
 #: ../../ggzcore/server.c:963
 #, c-format
@@ -93,7 +97,9 @@ msgstr "ਗਲਤ ਰੂਮ ਨੰਬਰ"
 #: ../../ggzcore/server.c:967
 #, c-format
 msgid "Insufficient permissions, room access is restricted"
-msgstr "ਅਧੂਰਾ ਅਧਿਕਾਰ, ਰੂਮ ਵਰਤੋਂ ਉੱਤੇ ਪਾਬੰਦੀ ਹੈ"
+msgstr ""
+"ਅਧੂਰਾ ਅਧਿਕਾਰ, ਰੂਮ ਵਰਤੋਂ ਉੱਤੇ "
+"ਪਾਬੰਦੀ ਹੈ"
 
 #: ../../ggzcore/server.c:971
 #, c-format
@@ -107,4 +113,3 @@ msgstr "ਜੁੜਨ ਲਈ ਅਸਫ਼ਲ"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "ਪ੍ਰੋਟੋਕਾਲ ਨਹੀਂ ਮਿਲਦਾ"
-

@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/hu.po)
-
 # translation of gnome-games.HEAD.po to Hungarian
 # Hungarian translation of gnome-games.
 # Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
@@ -35,11 +34,6 @@ msgstr "Ismeretlen megállapodás"
 #, c-format
 msgid "Already logged in"
 msgstr "Már be van jelentkezve"
-
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "Új jelszó"
 
 #: ../../ggzcore/server.c:907
 #, c-format
@@ -109,4 +103,3 @@ msgstr "Nem lehet csatlakozni"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "Protokolleltérés"
-

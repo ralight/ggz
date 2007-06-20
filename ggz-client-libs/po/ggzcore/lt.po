@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/lt.po)
-
 # translation of gnome-games.HEAD.lt.po to Lithuanian
 # Translation of gnome-games to Lithuanian.
 # Copyright (C) 2000-2007 Free Software Foundation, Inc.
@@ -24,8 +23,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
-"100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"(n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #: ../../ggzcore/server.c:872
@@ -36,11 +35,6 @@ msgstr "Nežinomas bandymas prisijungti"
 #, c-format
 msgid "Already logged in"
 msgstr "Jau prisijungęs"
-
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "Naujas slaptažodis"
 
 #: ../../ggzcore/server.c:907
 #, c-format
@@ -109,4 +103,3 @@ msgstr "Nepavyko prisijungti"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "Protokolo neatitikimas"
-

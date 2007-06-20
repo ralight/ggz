@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/bg.po)
-
 # Bulgarian translation for gnome-games.
 # Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
 # Evgeni Boevski <linkej@yahoo.com>, 2002, 2003.
@@ -29,15 +28,12 @@ msgstr "Непознат преговор за връзка"
 msgid "Already logged in"
 msgstr "Вече сте влезли"
 
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "Нова парола"
-
 #: ../../ggzcore/server.c:907
 #, c-format
 msgid "This name is already registered so cannot be used by a guest"
-msgstr "Името вече е регистрирано и не може да се ползва от гост"
+msgstr ""
+"Името вече е регистрирано и не може да се "
+"ползва от гост"
 
 #: ../../ggzcore/server.c:911
 #, c-format
@@ -57,7 +53,9 @@ msgstr "Името съдържа невалидни знаци"
 #: ../../ggzcore/server.c:923
 #, c-format
 msgid "Missing password or other bad options."
-msgstr "Паролата липсва или има проблем с другите настройки."
+msgstr ""
+"Паролата липсва или има проблем с другите "
+"настройки."
 
 #: ../../ggzcore/server.c:927
 #, c-format
@@ -72,13 +70,16 @@ msgstr "Стаята е пълна"
 #: ../../ggzcore/server.c:954
 #, c-format
 msgid "Can't change rooms while at a table"
-msgstr "Докато сте на маса не можете да сменяте стаите"
+msgstr ""
+"Докато сте на маса не можете да сменяте "
+"стаите"
 
 #: ../../ggzcore/server.c:958
 #, c-format
 msgid "Can't change rooms while joining/leaving a table"
 msgstr ""
-"Не можете да сменяте стаите докато се присъединявате или напускате маса"
+"Не можете да сменяте стаите докато се "
+"присъединявате или напускате маса"
 
 #: ../../ggzcore/server.c:963
 #, c-format
@@ -88,12 +89,16 @@ msgstr "Неправилен номер на стая"
 #: ../../ggzcore/server.c:967
 #, c-format
 msgid "Insufficient permissions, room access is restricted"
-msgstr "Недостатъчни права, достъпът до стаята е ограничен"
+msgstr ""
+"Недостатъчни права, достъпът до стаята е "
+"ограничен"
 
 #: ../../ggzcore/server.c:971
 #, c-format
 msgid "Unknown room-joining error"
-msgstr "Непозната грешка при присъединяване към стая"
+msgstr ""
+"Непозната грешка при присъединяване към "
+"стая"
 
 #: ../../ggzcore/server.c:1162
 msgid "Unable to connect"
@@ -102,4 +107,3 @@ msgstr "Неуспех при свързването"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "Несъответствие на протоколите"
-

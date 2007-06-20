@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/zh_HK.po)
-
 # Chinese (Hong Kong) translation of gnome-games.
 # Copyright (C) 1999-2006 Free Software Foundation, Inc.
 # (http://vegas.wcn.com.tw/21.shtml for blackjack terms)
@@ -20,19 +19,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../../ggzcore/server.c:872
-msgid "Unknown negotation"
-msgstr ""
-
 #: ../../ggzcore/server.c:899
 #, c-format
 msgid "Already logged in"
 msgstr "已經登入"
-
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "新密碼"
 
 #: ../../ggzcore/server.c:907
 #, c-format
@@ -101,4 +91,3 @@ msgstr "無法連線"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "協定版本不符"
-

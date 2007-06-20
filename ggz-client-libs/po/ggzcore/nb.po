@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/nb.po)
-
 # Norwegian translation of the gnome-games module (bokmål dialect).
 # Copyright © 1998-2002 Free Software Foundation, Inc.
 # Kjartan Maraas <kmaraas@gnome.org>, 1998-2006.
@@ -28,15 +27,11 @@ msgstr "Ukjent forhandling"
 msgid "Already logged in"
 msgstr "Allerede logget inn"
 
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "Nytt passord"
-
 #: ../../ggzcore/server.c:907
 #, c-format
 msgid "This name is already registered so cannot be used by a guest"
-msgstr "Dette navnet er allerede registrert så det kan ikke brukes av en gjest"
+msgstr ""
+"Dette navnet er allerede registrert så det kan ikke brukes av en gjest"
 
 #: ../../ggzcore/server.c:911
 #, c-format
@@ -73,20 +68,10 @@ msgstr "Rommet er fullt"
 msgid "Can't change rooms while at a table"
 msgstr "Kan ikke bytte rom mens du sitter ved bordet"
 
-#: ../../ggzcore/server.c:958
-#, c-format
-msgid "Can't change rooms while joining/leaving a table"
-msgstr ""
-
 #: ../../ggzcore/server.c:963
 #, c-format
 msgid "Bad room number"
 msgstr "Feil romnummer"
-
-#: ../../ggzcore/server.c:967
-#, c-format
-msgid "Insufficient permissions, room access is restricted"
-msgstr ""
 
 #: ../../ggzcore/server.c:971
 #, c-format
@@ -100,4 +85,3 @@ msgstr "Kan ikke koble til"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "Feil med protokoll"
-

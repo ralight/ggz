@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/es.po)
-
 # translation of gnome-games.HEAD.es.po to Español
 # translation of es.po to
 # translation of gnome-games.HEAD.po to
@@ -24,20 +23,10 @@ msgstr ""
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../../ggzcore/server.c:872
-#, fuzzy
-msgid "Unknown negotation"
-msgstr "Negociación desconocida"
-
 #: ../../ggzcore/server.c:899
 #, c-format
 msgid "Already logged in"
 msgstr "Ya ha entrado"
-
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "Contraseña nueva"
 
 #: ../../ggzcore/server.c:907
 #, c-format
@@ -106,4 +95,3 @@ msgstr "No es posible conectar"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "Incoherencia de protocolo"
-

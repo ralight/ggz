@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/ar.po)
-
 # translation of gnome-games.HEAD.ar.po to
 # Sayed Jaffer Al-Mosawi <mosawi@arabeyes.org>, 2002.
 # Arafat Medini <lumina@silverpen.de>, 2003.
@@ -33,15 +32,12 @@ msgstr "مفاوضة غير معروفة"
 msgid "Already logged in"
 msgstr "ولج بالفعل"
 
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "كلمة السر الجديدة"
-
 #: ../../ggzcore/server.c:907
 #, c-format
 msgid "This name is already registered so cannot be used by a guest"
-msgstr "هذا الاسم مسجل بالفعل لذا لا يمكن استخدامه من قبل ضيف"
+msgstr ""
+"هذا الاسم مسجل بالفعل لذا لا يمكن "
+"استخدامه من قبل ضيف"
 
 #: ../../ggzcore/server.c:911
 #, c-format
@@ -76,12 +72,15 @@ msgstr "الغرفة ممتلئة"
 #: ../../ggzcore/server.c:954
 #, c-format
 msgid "Can't change rooms while at a table"
-msgstr "لا يمكن تغيير الغرف عند الوجود على مائدة"
+msgstr ""
+"لا يمكن تغيير الغرف عند الوجود على مائدة"
 
 #: ../../ggzcore/server.c:958
 #, c-format
 msgid "Can't change rooms while joining/leaving a table"
-msgstr "لا يمكن تغيير الغرف أثناء الانضمام إلى/الرحيل من مائدة"
+msgstr ""
+"لا يمكن تغيير الغرف أثناء الانضمام "
+"إلى/الرحيل من مائدة"
 
 #: ../../ggzcore/server.c:963
 #, c-format
@@ -105,4 +104,3 @@ msgstr "عاجز عن الاتصال"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "بروتوكول غير متوافق"
-

@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/dz.po)
-
 # Dzongkha translation of gnome-games
 # Copyright @ 2006 Free Software Foundation, Inc.
 # Mindu Dorji
@@ -28,17 +27,17 @@ msgstr "མ་ཤེས་པའི་བདེ་སྒྲིག་"
 #: ../../ggzcore/server.c:899
 #, c-format
 msgid "Already logged in"
-msgstr "ཧེ་མ་ལས་རང་ནང་བསྐྱོད་འབད་ཡོད་"
-
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "ཆོག་ཡིག་གསརཔ་"
+msgstr ""
+""
+"ཧེ་མ་ལས་རང་ནང་བསྐྱོད་འབད་ཡོད་"
 
 #: ../../ggzcore/server.c:907
 #, c-format
 msgid "This name is already registered so cannot be used by a guest"
-msgstr "མིང་འདི་ཧེ་མ་ལས་རང་ ཐོ་བཀོད་འབད་ཡོདཔ་ལས་ མགྱོནམ་ཅིག་གིས་ལག་ལེན་འཐབ་མི་བཏུབ་"
+msgstr ""
+"མིང་འདི་ཧེ་མ་ལས་རང་ "
+"ཐོ་བཀོད་འབད་ཡོདཔ་ལས་ "
+"མགྱོནམ་ཅིག་གིས་ལག་ལེན་འཐབ་མི་བཏུབ་"
 
 #: ../../ggzcore/server.c:911
 #, c-format
@@ -53,17 +52,25 @@ msgstr "མིང་རིང་དྲགས་པས་"
 #: ../../ggzcore/server.c:919
 #, c-format
 msgid "Name contains forbidden ASCII characters"
-msgstr "མིང་གི་ནང་ན་ མ་ཆོག་པའི་ཨེ་ཨེསི་སི་ཨའི་ཨའི་ཡིག་འབྲུ་ཚུ་ཡོད་"
+msgstr ""
+"མིང་གི་ནང་ན་ "
+"མ་ཆོག་པའི་ཨེ་ཨེསི་སི་ཨའི་ཨའི་ཡིག་འབྲུ་ཚུ་ཡོད་"
 
 #: ../../ggzcore/server.c:923
 #, c-format
 msgid "Missing password or other bad options."
-msgstr "བརླག་སྟོར་ཞུགས་ཡོད་པའི་ཆོག་ཡིག་ ཡང་ན་ གཞན་མི་བྱང་ཉེས་གདམ་ཁ་ཚུ།"
+msgstr ""
+""
+"བརླག་སྟོར་ཞུགས་ཡོད་པའི་ཆོག་ཡིག་ "
+"ཡང་ན་ "
+"གཞན་མི་བྱང་ཉེས་གདམ་ཁ་ཚུ།"
 
 #: ../../ggzcore/server.c:927
 #, c-format
 msgid "Unknown login error"
-msgstr "མ་ཤེས་པའི་ནང་བསྐྱོད་འཛོལ་བ་"
+msgstr ""
+""
+"མ་ཤེས་པའི་ནང་བསྐྱོད་འཛོལ་བ་"
 
 #: ../../ggzcore/server.c:950
 #, c-format
@@ -73,12 +80,18 @@ msgstr "ཁང་མིག་གང་"
 #: ../../ggzcore/server.c:954
 #, c-format
 msgid "Can't change rooms while at a table"
-msgstr "ཐིག་ཁྲམ་ཅིག་ལུ་ཨིན་པའི་སྐབས་ ཁང་མིག་ཚུ་བསྒྱུར་བཅོས་འབད་མི་ཚུགས་"
+msgstr ""
+""
+"ཐིག་ཁྲམ་ཅིག་ལུ་ཨིན་པའི་སྐབས་ "
+"ཁང་མིག་ཚུ་བསྒྱུར་བཅོས་འབད་མི་ཚུགས་"
 
 #: ../../ggzcore/server.c:958
 #, c-format
 msgid "Can't change rooms while joining/leaving a table"
-msgstr "ཐིག་ཁྲམ་ཅིག་ མཐུད་/བཞག་པའི་སྐབས་ ཁང་མིག་ཚུ་བསྒྱུར་བཅོས་འབད་མི་ཚུགས"
+msgstr ""
+"ཐིག་ཁྲམ་ཅིག་ "
+"མཐུད་/བཞག་པའི་སྐབས་ "
+"ཁང་མིག་ཚུ་བསྒྱུར་བཅོས་འབད་མི་ཚུགས"
 
 #: ../../ggzcore/server.c:963
 #, c-format
@@ -88,12 +101,17 @@ msgstr "བྱང་ཉེས་ཁང་མིག་ཨང་"
 #: ../../ggzcore/server.c:967
 #, c-format
 msgid "Insufficient permissions, room access is restricted"
-msgstr "གནང་བ་མ་ལངམ་  ཁང་མིག་ནང་འཛུལ་སྤྱོད་འབད་ནི་འདི་ བཀད་དམ་འབད་ཡོད་"
+msgstr ""
+"གནང་བ་མ་ལངམ་  "
+"ཁང་མིག་ནང་འཛུལ་སྤྱོད་འབད་ནི་འདི་ "
+"བཀད་དམ་འབད་ཡོད་"
 
 #: ../../ggzcore/server.c:971
 #, c-format
 msgid "Unknown room-joining error"
-msgstr "མ་ཤེས་པའི་ ཁང་མིག་ནང་འཛུལ་བའི་འཛོལ་བ་"
+msgstr ""
+"མ་ཤེས་པའི་ "
+"ཁང་མིག་ནང་འཛུལ་བའི་འཛོལ་བ་"
 
 #: ../../ggzcore/server.c:1162
 msgid "Unable to connect"
@@ -101,5 +119,5 @@ msgstr "ཚཐུད་མ་ཚུགས་"
 
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
-msgstr "གནད་སྤེལ་ལམ་ལུགས་མ་ཐུནམ་"
-
+msgstr ""
+"གནད་སྤེལ་ལམ་ལུགས་མ་ཐུནམ་"

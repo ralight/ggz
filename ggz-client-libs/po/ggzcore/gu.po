@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/gu.po)
-
 # translation of gnome-games.HEAD.gu.po to Gujarati
 # Ankit Patel <ankit644@yahoo.com>, 2005, 2006.
 # Ankit Patel <ankit@redhat.com>, 2005, 2007.
@@ -44,15 +43,13 @@ msgstr "અજ્ઞાત ભાવતાલ"
 msgid "Already logged in"
 msgstr "પહેલાથી જ પ્રવેશેલ છે"
 
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "નવો પાસવર્ડ"
-
 #: ../../ggzcore/server.c:907
 #, c-format
 msgid "This name is already registered so cannot be used by a guest"
-msgstr "નામ પહેલાથી જ રજીસ્ટર થયેલ છે તેથી મહેમાન દ્વારા વાપરી શકાશે નહિં"
+msgstr ""
+"નામ પહેલાથી જ રજીસ્ટર થયેલ "
+"છે તેથી મહેમાન દ્વારા વાપરી "
+"શકાશે નહિં"
 
 #: ../../ggzcore/server.c:911
 #, c-format
@@ -72,7 +69,9 @@ msgstr "નામ જૂના ASCII અક્ષરો સમાવે છે"
 #: ../../ggzcore/server.c:923
 #, c-format
 msgid "Missing password or other bad options."
-msgstr "ગુમ પાસવર્ડ અથવા અન્ય ખરાબ વિકલ્પો."
+msgstr ""
+"ગુમ પાસવર્ડ અથવા અન્ય ખરાબ "
+"વિકલ્પો."
 
 # libgnomevfs/gnome-vfs-result.c:137
 #: ../../ggzcore/server.c:927
@@ -88,12 +87,16 @@ msgstr "કક્ષ ભરેલ"
 #: ../../ggzcore/server.c:954
 #, c-format
 msgid "Can't change rooms while at a table"
-msgstr "જ્યારે કોષ્ટક આગળ હોય ત્યારે કક્ષો બદલી શકતા નથી"
+msgstr ""
+"જ્યારે કોષ્ટક આગળ હોય ત્યારે "
+"કક્ષો બદલી શકતા નથી"
 
 #: ../../ggzcore/server.c:958
 #, c-format
 msgid "Can't change rooms while joining/leaving a table"
-msgstr "કોષ્ટકમાં જોડાતી વખતે/છોડતી વખતે કક્ષો બદલી શકતા નથી"
+msgstr ""
+"કોષ્ટકમાં જોડાતી વખતે/છોડતી "
+"વખતે કક્ષો બદલી શકતા નથી"
 
 #: ../../ggzcore/server.c:963
 #, c-format
@@ -103,7 +106,9 @@ msgstr "ખરાબ કક્ષ નંબર"
 #: ../../ggzcore/server.c:967
 #, c-format
 msgid "Insufficient permissions, room access is restricted"
-msgstr "અપૂરતી પરવાનગીઓ, કક્ષ પરવાનગી પ્રતિબંધિત છે"
+msgstr ""
+"અપૂરતી પરવાનગીઓ, કક્ષ "
+"પરવાનગી પ્રતિબંધિત છે"
 
 # libgnomevfs/gnome-vfs-result.c:137
 #: ../../ggzcore/server.c:971
@@ -118,4 +123,3 @@ msgstr "જોડાવામાં અસમર્થ"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "પ્રોટોકોલ ખોટી જોડણી"
-

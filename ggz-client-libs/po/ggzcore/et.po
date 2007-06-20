@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/et.po)
-
 # GNOME mängude eesti keele tõlge.
 # Estonian translation of GNOME games.
 #
@@ -26,20 +25,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../../ggzcore/server.c:872
-msgid "Unknown negotation"
-msgstr ""
-
-#: ../../ggzcore/server.c:899
-#, c-format
-msgid "Already logged in"
-msgstr ""
-
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "Uus parool"
-
 #: ../../ggzcore/server.c:907
 #, c-format
 msgid "This name is already registered so cannot be used by a guest"
@@ -60,11 +45,6 @@ msgstr "Nimi on liiga pikk"
 msgid "Name contains forbidden ASCII characters"
 msgstr "Nimi sisaldab keelatud ASCII-märke"
 
-#: ../../ggzcore/server.c:923
-#, c-format
-msgid "Missing password or other bad options."
-msgstr ""
-
 #: ../../ggzcore/server.c:927
 #, c-format
 msgid "Unknown login error"
@@ -75,36 +55,7 @@ msgstr "Tundmatu viga sisselogimisel"
 msgid "Room full"
 msgstr "Tuba on täis"
 
-#: ../../ggzcore/server.c:954
-#, c-format
-msgid "Can't change rooms while at a table"
-msgstr ""
-
-#: ../../ggzcore/server.c:958
-#, c-format
-msgid "Can't change rooms while joining/leaving a table"
-msgstr ""
-
-#: ../../ggzcore/server.c:963
-#, c-format
-msgid "Bad room number"
-msgstr ""
-
-#: ../../ggzcore/server.c:967
-#, c-format
-msgid "Insufficient permissions, room access is restricted"
-msgstr ""
-
 #: ../../ggzcore/server.c:971
 #, c-format
 msgid "Unknown room-joining error"
 msgstr "Tundmatu viga tuppa sisenemisel"
-
-#: ../../ggzcore/server.c:1162
-msgid "Unable to connect"
-msgstr ""
-
-#: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
-msgid "Protocol mismatch"
-msgstr ""
-

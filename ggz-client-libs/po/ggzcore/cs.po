@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/cs.po)
-
 # translation of cs.po to
 # Czech translation of gnome-games
 # Copyright (C) 2002, 2006, 2007 Free Software Foundation, Inc.
@@ -26,30 +25,10 @@ msgstr ""
 "Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../../ggzcore/server.c:872
-#, fuzzy
-msgid "Unknown negotation"
-msgstr "Neznámá barva"
-
-#: ../../ggzcore/server.c:899
-#, c-format
-msgid "Already logged in"
-msgstr ""
-
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "Nové heslo"
-
 #: ../../ggzcore/server.c:907
 #, c-format
 msgid "This name is already registered so cannot be used by a guest"
 msgstr "Toto jméno je již zaregistrováno, nelze jej proto použít hostem"
-
-#: ../../ggzcore/server.c:911
-#, fuzzy, c-format
-msgid "No such name was found"
-msgstr "Nebyla nalezena data motivu."
 
 #: ../../ggzcore/server.c:915
 #, c-format
@@ -76,16 +55,6 @@ msgstr "Neznámá chyba přihlášení"
 msgid "Room full"
 msgstr "Místnost je plná"
 
-#: ../../ggzcore/server.c:954
-#, c-format
-msgid "Can't change rooms while at a table"
-msgstr ""
-
-#: ../../ggzcore/server.c:958
-#, c-format
-msgid "Can't change rooms while joining/leaving a table"
-msgstr ""
-
 #: ../../ggzcore/server.c:963
 #, c-format
 msgid "Bad room number"
@@ -96,16 +65,6 @@ msgstr "Nesprávné číslo místnosti"
 msgid "Insufficient permissions, room access is restricted"
 msgstr "Nedostatečná oprávnění, přístup do místnosti je omezen"
 
-#: ../../ggzcore/server.c:971
-#, fuzzy, c-format
-msgid "Unknown room-joining error"
-msgstr "Neznámá barva"
-
 #: ../../ggzcore/server.c:1162
 msgid "Unable to connect"
 msgstr "Nelze se připojit"
-
-#: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
-msgid "Protocol mismatch"
-msgstr ""
-

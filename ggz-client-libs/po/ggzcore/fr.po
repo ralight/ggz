@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/fr.po)
-
 # French translation of gnome-games.
 # Copyright (C) 1998-2007 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-games package.
@@ -44,16 +43,12 @@ msgstr "État des négociations inconnu"
 msgid "Already logged in"
 msgstr "Déjà connecté"
 
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "Nouveau mot de passe"
-
 #: ../../ggzcore/server.c:907
 #, c-format
 msgid "This name is already registered so cannot be used by a guest"
 msgstr ""
-"Ce nom est déjà enregistré et ne peut donc pas être utilisé par un invité"
+"Ce nom est déjà enregistré et ne peut donc pas être utilisé par un "
+"invité"
 
 #: ../../ggzcore/server.c:911
 #, c-format
@@ -117,4 +112,3 @@ msgstr "Impossible de se connecter"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "Protocole inadéquat"
-

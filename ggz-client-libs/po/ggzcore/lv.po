@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/lv.po)
-
 # translation of lv.po to Latvian
 # gnome-games for Latvian.
 # Copyright (C) 2002, 2006, 2007 Free Software Foundation, Inc.
@@ -32,11 +31,6 @@ msgstr "Nezināma vienošanās"
 #, c-format
 msgid "Already logged in"
 msgstr "Jau ir pieslēdzies"
-
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "Jaunā parole"
 
 #: ../../ggzcore/server.c:907
 #, c-format
@@ -105,4 +99,3 @@ msgstr "Nevar pieslegties"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "Protokola kļūda"
-

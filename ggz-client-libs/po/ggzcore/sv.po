@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/sv.po)
-
 # Swedish messages for gnome-games.
 # Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
 # Daniel Nylander <po@danielnylander.se>, 2006, 2007.
@@ -24,20 +23,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../../ggzcore/server.c:872
-#, fuzzy
-msgid "Unknown negotation"
-msgstr "Okänd negation"
-
 #: ../../ggzcore/server.c:899
 #, c-format
 msgid "Already logged in"
 msgstr "Redan inloggad"
-
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "Nytt lösenord"
 
 #: ../../ggzcore/server.c:907
 #, c-format
@@ -107,4 +96,3 @@ msgstr "Kunde inte ansluta"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "Protokollet stämmer inte"
-

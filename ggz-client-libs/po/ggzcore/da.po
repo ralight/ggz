@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/da.po)
-
 # Danish translation of gnome-games.
 # Copyright (C) 1998, 2001, 02, 03, 04 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-games package.
@@ -45,20 +44,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../../ggzcore/server.c:872
-#, fuzzy
-msgid "Unknown negotation"
-msgstr "Ukendt forhandling"
-
 #: ../../ggzcore/server.c:899
 #, c-format
 msgid "Already logged in"
 msgstr "Allerede logget på"
-
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "Ny adgangskode"
 
 #: ../../ggzcore/server.c:907
 #, c-format
@@ -129,4 +118,3 @@ msgstr "Kunne ikke tilslutte"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "Protokolkonflikt"
-

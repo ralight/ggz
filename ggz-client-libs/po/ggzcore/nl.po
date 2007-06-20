@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/nl.po)
-
 # Dutch Translation for Gnome Games
 # Copyright (C) 1999 Free Software Foundation, Inc.
 # Hein-Jan Leliveld <h.j.leliveld@student.tn.tudelft.nl>
@@ -47,20 +46,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-# BUG Engels: negotation?
-#: ../../ggzcore/server.c:872
-msgid "Unknown negotation"
-msgstr ""
-
 #: ../../ggzcore/server.c:899
 #, c-format
 msgid "Already logged in"
 msgstr "Al aangemeld"
-
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "Nieuw wachtwoord"
 
 # geregistreerd/vergeven
 #: ../../ggzcore/server.c:907
@@ -88,46 +77,11 @@ msgstr "Naam bevat verboden ASCII-tekens"
 msgid "Missing password or other bad options."
 msgstr "Ontbrekend wachtwoord of andere onjuiste opties."
 
-#: ../../ggzcore/server.c:927
-#, fuzzy, c-format
-msgid "Unknown login error"
-msgstr "Onbekende kleur"
-
 #: ../../ggzcore/server.c:950
 #, c-format
 msgid "Room full"
 msgstr "Kamer is vol"
 
-#: ../../ggzcore/server.c:954
-#, c-format
-msgid "Can't change rooms while at a table"
-msgstr ""
-
-#: ../../ggzcore/server.c:958
-#, c-format
-msgid "Can't change rooms while joining/leaving a table"
-msgstr ""
-
-#: ../../ggzcore/server.c:963
-#, fuzzy, c-format
-msgid "Bad room number"
-msgstr "Willekeurig getal"
-
-#: ../../ggzcore/server.c:967
-#, c-format
-msgid "Insufficient permissions, room access is restricted"
-msgstr ""
-
-#: ../../ggzcore/server.c:971
-#, fuzzy, c-format
-msgid "Unknown room-joining error"
-msgstr "Onbekende kleur"
-
 #: ../../ggzcore/server.c:1162
 msgid "Unable to connect"
 msgstr "Kon geen verbinding maken"
-
-#: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
-msgid "Protocol mismatch"
-msgstr ""
-

@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/ca.po)
-
 # gnome-games Catalan translation.
 # Copyright © 2002-2007 Free Software Foundation, Inc.
 # Jordi Vila <gnome@softcatala.net>, 2002.
@@ -31,11 +30,6 @@ msgstr "Negociació desconeguda"
 #, c-format
 msgid "Already logged in"
 msgstr "Ja esteu connectat"
-
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "Contrasenya nova"
 
 #: ../../ggzcore/server.c:907
 #, c-format
@@ -105,4 +99,3 @@ msgstr "No s'ha pogut connectar"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "Els protocols no coincideixen"
-

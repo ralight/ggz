@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/cy.po)
-
 # gnome-games yn Gymraeg.
 # This file is distributed under the same license as the gnome-games package.
 #
@@ -52,11 +51,6 @@ msgstr "Trafodaeth anhysbys"
 #, c-format
 msgid "Already logged in"
 msgstr "Eisoes wedi mewngofnodi"
-
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "Cyfrinair newydd"
 
 #: ../../ggzcore/server.c:907
 #, c-format
@@ -126,4 +120,3 @@ msgstr "Methu â chysylltu"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "Protocol ddim yn cydweddu"
-

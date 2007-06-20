@@ -1,6 +1,5 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/zh_CN.po)
-
 # gnome-games translation
 # Dillion Chen, 2000
 #   Updated by Wang Li <charles@linux.net.cn>, 2002
@@ -27,11 +26,6 @@ msgstr "未知会话"
 #, c-format
 msgid "Already logged in"
 msgstr "已登录"
-
-#: ../../ggzcore/server.c:903
-#, fuzzy, c-format
-msgid "Name taken or wrong password"
-msgstr "新密码"
 
 #: ../../ggzcore/server.c:907
 #, c-format
@@ -100,4 +94,3 @@ msgstr "无法连接"
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"
 msgstr "协议不匹配"
-
