@@ -1,30 +1,23 @@
 # This translation was merged from GNOME SVN
-# (http://svn.gnome.org/svn/gnome-games/trunk/po/et.po)
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/oc.po)
 
-# GNOME mängude eesti keele tõlge.
-# Estonian translation of GNOME games.
-#
-# Copyright (C) 1999, 2002, 2005, 2006 Free Software Foundation, Inc.
-# Copyright (C) 2007 The GNOME Project.
+# Occitan gnome-games translation
+# Copyright (C) 2002 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-games package.
-#
-# Lauris Kaplinski <lauris@ariman.ee>, 1999.
-# Tõivo Leedjärv <toivo@linux.ee>, 2002.
-# Ilmar Kerm <ikerm@hot.ee>, 2002.
-# Ivar Smolin <okul@linue.ee>, 2005-2007.
+# Yannig MARCHEGAY (yannig@marchegay.org) - 2006-2007
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-games HEAD\n"
+"Project-Id-Version: gnome-games\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-07-03 18:35+0200\n"
-"PO-Revision-Date: 2007-05-31 12:16+0300\n"
-"Last-Translator: Ivar Smolin <okul@linux.ee>\n"
-"Language-Team: Estonian <gnome-et@linux.ee>\n"
+"PO-Revision-Date: 2007-05-23 10:08+0200\n"
+"Last-Translator: Yannig MARCHEGAY <yannig@marchegay.org>\n"
+"Language-Team: Occitan (post 1500) <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../../ggzcore/server.c:872
 msgid "Unknown negotation"
@@ -33,32 +26,32 @@ msgstr ""
 #: ../../ggzcore/server.c:899
 #, c-format
 msgid "Already logged in"
-msgstr ""
+msgstr "Ja connectat"
 
 #: ../../ggzcore/server.c:903
 #, fuzzy, c-format
 msgid "Name taken or wrong password"
-msgstr "Uus parool"
+msgstr "Novèl mot de pas"
 
 #: ../../ggzcore/server.c:907
 #, c-format
 msgid "This name is already registered so cannot be used by a guest"
-msgstr "See nimi on juba kasutusel, sestap ei saa külalised seda kasutada"
+msgstr ""
 
 #: ../../ggzcore/server.c:911
 #, c-format
 msgid "No such name was found"
-msgstr "Sellist nime ei leitud"
+msgstr ""
 
 #: ../../ggzcore/server.c:915
 #, c-format
 msgid "Name too long"
-msgstr "Nimi on liiga pikk"
+msgstr "Nom tròp long"
 
 #: ../../ggzcore/server.c:919
 #, c-format
 msgid "Name contains forbidden ASCII characters"
-msgstr "Nimi sisaldab keelatud ASCII-märke"
+msgstr ""
 
 #: ../../ggzcore/server.c:923
 #, c-format
@@ -68,12 +61,12 @@ msgstr ""
 #: ../../ggzcore/server.c:927
 #, c-format
 msgid "Unknown login error"
-msgstr "Tundmatu viga sisselogimisel"
+msgstr ""
 
 #: ../../ggzcore/server.c:950
 #, c-format
 msgid "Room full"
-msgstr "Tuba on täis"
+msgstr ""
 
 #: ../../ggzcore/server.c:954
 #, c-format
@@ -98,11 +91,11 @@ msgstr ""
 #: ../../ggzcore/server.c:971
 #, c-format
 msgid "Unknown room-joining error"
-msgstr "Tundmatu viga tuppa sisenemisel"
+msgstr ""
 
 #: ../../ggzcore/server.c:1162
 msgid "Unable to connect"
-msgstr ""
+msgstr "Impossible de se connectar"
 
 #: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
 msgid "Protocol mismatch"

@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: gnome-games CVS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-07-03 18:35+0200\n"
-"PO-Revision-Date: 2007-02-11 10:01-0000\n"
+"PO-Revision-Date: 2007-05-15 22:38-0000\n"
 "Last-Translator: David Lodge <dave@cirt.net>\n"
 "Language-Team: British English\n"
 "MIME-Version: 1.0\n"
@@ -20,8 +20,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../../ggzcore/server.c:872
+#, fuzzy
 msgid "Unknown negotation"
-msgstr "Unknown negotation"
+msgstr "Unknown negotiation"
 
 #: ../../ggzcore/server.c:899
 #, c-format
