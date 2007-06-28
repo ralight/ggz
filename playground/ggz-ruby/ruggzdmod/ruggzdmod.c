@@ -47,7 +47,6 @@ void init_ggz ()
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN, cb_handler );
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, cb_handler );
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_SPECTATOR_SEAT, cb_handler );
-	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_LOG, cb_handler );
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, cb_handler );
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_SPECTATOR_DATA, cb_handler );
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_ERROR, cb_handler );
@@ -155,7 +154,6 @@ void init_constants ( VALUE self )
 	rb_define_const ( self, "EVENTSPECTATORLEAVE", INT2FIX ( GGZDMOD_EVENT_SPECTATOR_LEAVE ) );
 	rb_define_const ( self, "EVENTSPECTATORSEAT", INT2FIX ( GGZDMOD_EVENT_SPECTATOR_SEAT ) );
 	rb_define_const ( self, "EVENTSPECTATORDATA", INT2FIX ( GGZDMOD_EVENT_SPECTATOR_DATA ) );
-	rb_define_const ( self, "EVENTLOG", INT2FIX ( GGZDMOD_EVENT_LOG ) );
 	rb_define_const ( self, "EVENTERROR", INT2FIX ( GGZDMOD_EVENT_ERROR ) );
 }
 

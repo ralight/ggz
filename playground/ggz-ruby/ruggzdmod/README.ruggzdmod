@@ -10,11 +10,16 @@ isn't supported anymore. The statistics/rankings functionality will be
 added later.
 
 To compile, just do the following:
-	% ruby extconf.rb
+	% ruby extconf.rb [--with-opt-dir=/path/to/ggz-install]
 	% make
 This should build a GGZDMod.so shared library for you, which gets installed as
 a ruby extension if you type in the following as root:
 	% make install
+
+To install the RubyToe example game, do the following:
+	% cp rubytoe /path/to/ggz-install/lib/ggzd
+	% cp rubytoe.dsc /path/to/ggz-install/etc/ggzd/games
+	% cp rubytoe.room /path/to/ggz-install/etc/ggzd/rooms
 
 ATTENTION! The ruby bindings don't work yet, because:
  (fixed) - name error on constants definition

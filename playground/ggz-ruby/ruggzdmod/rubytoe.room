@@ -1,0 +1,7 @@
+[RoomInfo]
+Name = RubyToe
+Description = Example RubyToe Room
+GameType = RubyToe
+
+MaxPlayers = 150
+MaxTables = 45
