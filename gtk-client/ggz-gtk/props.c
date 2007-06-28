@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 9143 2007-06-11 02:54:07Z jdorje $
+ * $Id: props.c 9161 2007-06-28 14:15:32Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -252,7 +252,10 @@ static void props_update(void)
 
 	/* If the login dialog is open refill the combo box */
 	if(login_dialog != NULL) {
+#if 0
+		/* FIXME: either remove or make this function non-static */
 		login_fill_defaults(NULL);
+#endif
 	}
 }
 
