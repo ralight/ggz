@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 9115 2007-05-14 22:16:14Z oojah $
+ * $Id: net.c 9162 2007-07-01 10:36:29Z oojah $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -320,6 +320,24 @@ GGZReturn net_send_serverid(GGZNetIO *net, const char *srv_name, bool use_tls)
 	return status;
 }
  
+
+GGZReturn net_send_player_banned(GGZNetIO *net, const char *srv_name)
+{
+	char *xml_srv_name;
+	GGZReturn status;
+
+	xml_srv_name = ggz_xml_escape(srv_name);
+
+	_net_send_line(net, "<SESSION>");
+	status = _net_send_line(net, "<SERVER ID='GGZ-%s' NAME='%s' "
+				"VERSION='%d' STATUS='banned'/>",
+				VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION);
+
+	ggz_free(xml_srv_name);
+
+	return status;
+}
+
 
 GGZReturn net_send_server_full(GGZNetIO *net, const char *srv_name)
 {
@@ -1643,6 +1661,8 @@ static void _net_handle_admin(GGZNetIO *net, GGZXMLElement *element)
 	/* Grab admin data from tag */
 	action_str = ggz_xmlelement_get_attr(element, "ACTION");
 	player = ggz_xmlelement_get_attr(element, "PLAYER");
+
+	printf("ACTION: %s, PLAYER: %s\n", action_str, player);
 
 	reason = ggz_xmlelement_get_data(element);
 

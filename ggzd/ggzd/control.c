@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 9019 2007-03-30 05:35:54Z jdorje $
+ * $Id: control.c 9162 2007-07-01 10:36:29Z oojah $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -41,9 +41,6 @@
 
 #include <ggz.h>
 
-#ifdef WITH_HOWL
-#include <howl.h>
-#endif
 #ifdef WITH_AVAHI
 #include <avahi-common/thread-watch.h>
 #include <avahi-client/publish.h>
@@ -248,33 +245,6 @@ static void callback(AvahiEntryGroup *g, AvahiEntryGroupState state, void* userd
 
 static int zeroconf_publish(const char *name, const char *protocol, int port)
 {
-#ifdef WITH_HOWL
-	sw_discovery session;
-	sw_discovery_oid oid;
-	int ret;
-
-	ret = sw_discovery_init(&session);
-	if(ret != SW_OKAY)
-	{
-		fprintf(stderr, "Zeroconf: Error: could not initialize\n");
-		return -1;
-	}
-
-	ret = sw_discovery_publish(session, 0, name, protocol, NULL, NULL,
-		port, NULL, 0, NULL, NULL, &oid);
-	if(ret != SW_OKAY)
-	{
-		fprintf(stderr, "Zeroconf: Error: could not publish\n");
-		return -1;
-	}
-	else
-	{
-		log_msg(GGZ_LOG_NOTICE,
-			"Zeroconf: GGZ server is now known to the LAN");
-	}
-
-	return 0;
-#else
 #if WITH_AVAHI
 	AvahiClient *client;
 	AvahiEntryGroup *group;
@@ -320,7 +290,6 @@ static int zeroconf_publish(const char *name, const char *protocol, int port)
 #else
 	fprintf(stderr, "Zeroconf: Error: server does not support zeroconf\n");
 	return -1;
-#endif
 #endif
 }
 

@@ -1,5 +1,5 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 9077 2007-04-30 07:59:40Z josef $
+# $Id: configure.ac 9162 2007-07-01 10:36:29Z oojah $
 # ================================
 
 AC_INIT([GGZ server], [0.0.15pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
@@ -33,7 +33,7 @@ AC_ARG_WITH([database],
 	[database=$withval], [database=yes])
 AC_ARG_WITH([zeroconf],
 	AS_HELP_STRING([--with-zeroconf=TYPE],
-	[type of library to use: howl, avahi]),
+	[type of library to use: avahi]),
 	[zeroconf=$withval], [zeroconf=yes])
 AC_ARG_WITH([reconfiguration],
 	AS_HELP_STRING([--with-reconfiguration=TYPE],

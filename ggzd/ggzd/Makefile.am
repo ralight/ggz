@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 9045 2007-04-13 14:26:04Z josef $
+# $Id: Makefile.am 9162 2007-07-01 10:36:29Z oojah $
 
 SUBDIRS = database meta
 
@@ -63,7 +63,6 @@ ggzd_CPPFLAGS = \
 	-I$(top_srcdir)/ggzd/meta \
 	-I$(top_srcdir)/ggzdmod \
 	$(LIBGGZ_INCLUDES) \
-	$(HOWL_INCLUDES) \
 	$(AVAHI_INCLUDES) \
 	$(ICU_INCLUDES) \
 	$(CRACKLIB_INCLUDES) \
@@ -79,7 +78,6 @@ ggzd_LDADD = \
 	$(LIB_EXPAT) \
 	$(LIB_GGZ) \
 	$(LIB_DATABASE) \
-	$(LIB_HOWL) \
 	$(LIB_AVAHI) \
 	$(LIB_FAM) \
 	$(LIB_PTHREADS) \
