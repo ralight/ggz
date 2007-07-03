@@ -1,0 +1,8 @@
+ggzdir=/home/josef/ggz/installation
+
+install:
+	#cp submarine $(ggzdir)/bin
+	cp submarine $(ggzdir)/lib/ggzd/
+	cp submarine.room $(ggzdir)/etc/ggzd/rooms
+	cp submarine.dsc $(ggzdir)/etc/ggzd/games
+

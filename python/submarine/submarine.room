@@ -1,0 +1,7 @@
+[RoomInfo]
+Name = Battleship
+Description = Battleship playing room
+GameType = Submarine
+MaxPlayers = 500
+MaxTables = 100
+

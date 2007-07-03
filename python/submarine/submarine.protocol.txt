@@ -1,0 +1,93 @@
+54321 -> 46791
+
+<!DOCTYPE kmessage>
+<kmessage>
+  <msgtype>0</msgtype>
+  <protocolVersion>0.1.0</protocolVersion>
+  <clientName>KBattleship</clientName>
+  <clientVersion>4.0</clientVersion>
+  <clientDescription>The KDE Battleship clone</clientDescription>
+</kmessage>
+<!DOCTYPE kmessage>
+<kmessage>
+  <msgtype>2</msgtype>
+  <nickname>josef</nickname>
+</kmessage>
+
+46791 -> 54321
+
+<!DOCTYPE kmessage>
+<kmessage>
+  <msgtype>0</msgtype>
+  <protocolVersion>0.1.0</protocolVersion>
+  <clientName>KBattleship</clientName>
+  <clientVersion>4.0</clientVersion>
+  <clientDescription>The KDE Battleship clone</clientDescription>
+</kmessage>..
+<!DOCTYPE kmessage>
+<kmessage>
+  <msgtype>2</msgtype>
+  <nickname>josef2</nickname>
+</kmessage>
+
+(msgtype 1 wäre Version-Mismatch etc.)
+
+----- (all ships set)
+
+<!DOCTYPE kmessage>
+<kmessage>
+  <msgtype>3</msgtype>
+</kmessage>
+
+----- (explosion)
+
+<!DOCTYPE kmessage>
+<kmessage>
+  <msgtype>4</msgtype>
+  <fieldx>5</fieldx>
+  <fieldy>6</fieldy>
+</kmessage>.
+
+<!DOCTYPE kmessage>
+<kmessage>
+  <msgtype>5</msgtype>
+  <fieldx>5</fieldx>
+  <fieldy>6</fieldy>
+  <fieldstate>1</fieldstate>
+</kmessage>
+
+(1 = getroffen, 99 = nur Wasser)
+
+Schiff versunken:
+
+<!DOCTYPE kmessage>
+<kmessage>
+  <msgtype>5</msgtype>
+  <fieldx>8</fieldx>
+  <fieldy>7</fieldy>
+  <xstart>7</xstart>
+  <xstop>8</xstop>
+  <ystart>7</ystart>
+  <ystop>7</ystop>
+  <death>true</death>
+  <fieldstate>1</fieldstate>
+</kmessage>
+
+Spielende:
+
+<!DOCTYPE kmessage>
+<kmessage>
+  <msgtype>6</msgtype>
+  <ship1>1 4 1</ship1>
+  <ship2>2 7 1</ship2>
+  <ship0>3 1 1</ship0>
+  <ship3>4 4 1</ship3>
+</kmessage>
+
+Noch ein Spiel:
+
+<!DOCTYPE kmessage>
+<kmessage>
+  <msgtype>7</msgtype>
+</kmessage>
+

@@ -1,0 +1,125 @@
+#!/usr/bin/env python
+# Submarine - a server for the battleship game
+# Copyright (C) 2007 Josef Spillner <josef@ggzgamingzone.org>
+# Published under GNU GPL conditions
+
+from Numeric import *
+import sys
+import time
+#import random
+#import os, pwd
+#import re
+
+import xml.dom.minidom
+import socket
+
+print "###-submarine-###"
+
+import ggzdmod
+
+try:
+	import ggzsettings
+	DATAPATH = ggzsettings.DATAPATH + "/submarine/"
+	sys.path = [ggzsettings.MODULEPATH + "/submarine/"] + sys.path
+	sys.path = [ggzsettings.MODULEPATH + "/common/"] + sys.path
+except:
+	DATAPATH = "./"
+	sys.path = ["../lib/"] + sys.path
+
+#from xadrezlib import *
+
+#class FileSocket:
+#	def __init__(self, sock):
+#		self.sock = sock
+#
+#	def read(self, size):
+#		return self.sock.recv(size)
+
+class Network:
+	def __init__(self):
+		#self.fd = None
+		self.sock = None
+
+	def init(self, fd):
+		#self.fd = fd
+		self.sock = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)
+		#self.sock = FileSocket(self.sock)
+
+	def sendxml(self, str):
+		pass
+
+	def getxml(self):
+		str = self.sock.recv(1024)
+		print "XMLSTR", str
+		element = xml.dom.minidom.parseString(str)
+		print "ELEMENT", element
+		return element
+
+class Submarine:
+	def __init__(self):
+		pass
+
+	def work(self, message):
+		print "MESSAGE", message
+		#net.sendxml("<kmessage><msgtype>0</msgtype></kmessage>")
+
+def hook_state (state):
+	print "* state:", str(state)
+
+def hook_join (num, type, name, fd):
+	print "* join:", num, type, name, fd
+	print "fd =", fd
+	net.init(fd)
+
+def hook_leave (num, type, name, fd):
+	print "* leave:", num, type, name, fd
+
+def hook_data (num, type, name, fd):
+	global submarine
+
+	print "* data:", num, type, name, fd
+	print "fd =", fd
+	net.init(fd)
+
+	message = net.getxml()
+	submarine.work(message)
+
+def hook_error (arg):
+	print "* error:", arg
+	sys.exit(-1)
+
+def initggz():
+	ggzdmod.setHandler(ggzdmod.EVENT_STATE, hook_state)
+	ggzdmod.setHandler(ggzdmod.EVENT_JOIN, hook_join)
+	ggzdmod.setHandler(ggzdmod.EVENT_LEAVE, hook_leave)
+	ggzdmod.setHandler(ggzdmod.EVENT_DATA, hook_data)
+	ggzdmod.setHandler(ggzdmod.EVENT_ERROR, hook_error)
+
+def main():
+	global net
+	global submarine
+
+	print "### launched"
+
+	""" Setup """
+
+	submarine = Submarine()
+
+	print "### go init ggz"
+
+	initggz()
+	net = Network()
+
+	print "### now go loop"
+
+	ggzdmod.connect()
+	ggzdmod.mainLoop()
+
+	""" Main loop """
+
+	while 1:
+		pass
+
+if __name__ == "__main__":
+	main()
+
