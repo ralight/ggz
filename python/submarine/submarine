@@ -26,27 +26,16 @@ except:
 	DATAPATH = "./"
 	sys.path = ["../lib/"] + sys.path
 
-#from xadrezlib import *
-
-#class FileSocket:
-#	def __init__(self, sock):
-#		self.sock = sock
-#
-#	def read(self, size):
-#		return self.sock.recv(size)
-
 class Network:
 	def __init__(self):
-		#self.fd = None
 		self.sock = None
 
 	def init(self, fd):
-		#self.fd = fd
 		self.sock = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)
-		#self.sock = FileSocket(self.sock)
 
-	def sendxml(self, str):
-		pass
+	def sendxml(self, element):
+		str = element.toxml()
+		self.sock.send(str)
 
 	def getxml(self):
 		str = self.sock.recv(1024)
@@ -57,11 +46,20 @@ class Network:
 
 class Submarine:
 	def __init__(self):
-		pass
+		self.net = None
 
-	def work(self, message):
+	def setNet(self, net):
+		self.net = net
+
+	def work(self, num, message):
 		print "MESSAGE", message
-		#net.sendxml("<kmessage><msgtype>0</msgtype></kmessage>")
+
+		openseats = ggzdmod.countSeats(ggzdmod.SEAT_OPEN)
+		if openseats == 0:
+			oppseat = ggzdmod.getSeat(1 - num)
+			print "=> send message to fd", oppseat
+			self.net.init(oppseat[3])
+			self.net.sendxml(message)
 
 def hook_state (state):
 	print "* state:", str(state)
@@ -82,7 +80,8 @@ def hook_data (num, type, name, fd):
 	net.init(fd)
 
 	message = net.getxml()
-	submarine.work(message)
+	submarine.setNet(net)
+	submarine.work(num, message)
 
 def hook_error (arg):
 	print "* error:", arg
