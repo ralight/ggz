@@ -34,6 +34,8 @@
 
 ----- (all ships set)
 
+in beide Richtungen:
+
 <!DOCTYPE kmessage>
 <kmessage>
   <msgtype>3</msgtype>
@@ -41,12 +43,16 @@
 
 ----- (explosion)
 
+Anfrage:
+
 <!DOCTYPE kmessage>
 <kmessage>
   <msgtype>4</msgtype>
   <fieldx>5</fieldx>
   <fieldy>6</fieldy>
-</kmessage>.
+</kmessage>
+
+Antwort:
 
 <!DOCTYPE kmessage>
 <kmessage>
@@ -58,7 +64,7 @@
 
 (1 = getroffen, 99 = nur Wasser)
 
-Schiff versunken:
+Schiff versunken, Antwort:
 
 <!DOCTYPE kmessage>
 <kmessage>

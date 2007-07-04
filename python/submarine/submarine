@@ -49,6 +49,7 @@ class Network:
 class Submarine:
 	def __init__(self):
 		self.net = None
+		self.messagequeues = [[], []]
 
 	def setNet(self, net):
 		self.net = net
@@ -107,17 +108,34 @@ class Submarine:
 		openseats = ggzdmod.countSeats(ggzdmod.SEAT_OPEN)
 		if openseats == 0:
 			oppseat = ggzdmod.getSeat(1 - num)
-			print "=> send message to", oppseat
 			self.net.init(oppseat[3])
+			print "=> send message to", oppseat
 			self.net.sendxml(message)
+		else:
+			print "** freeze for later send"
+			self.messagequeues[num].append(message)
+
+	def workPending(self, num):
+		if len(self.messagequeues[1 - num]) > 0:
+			print "** thaw queued messages"
+			oppseat = ggzdmod.getSeat(num)
+			self.net.init(oppseat[3])
+			for message in self.messagequeues[1 - num]:
+				#message = self.messagequeues[1 - num][i]
+				self.net.sendxml(message)
+			self.messagequeues[1 - num] = []
 
 def hook_state (state):
 	print "* state:", str(state)
 
 def hook_join (num, type, name, fd):
+	global submarine
+
 	print "* join:", num, type, name, fd
 	print "fd =", fd
-	net.init(fd)
+	#net.init(fd)
+
+	submarine.workPending(num)
 
 def hook_leave (num, type, name, fd):
 	print "* leave:", num, type, name, fd
