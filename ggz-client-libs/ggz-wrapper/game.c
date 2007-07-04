@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 6907 2005-01-28 04:23:51Z jdorje $
+ * $Id: game.c 9165 2007-07-04 13:58:17Z josef $
  *
  * Functions for handling game events
  *
@@ -144,7 +144,6 @@ void game_register(GGZGame * game)
 static GGZHookReturn game_launched(GGZGameEvent id, const void *event_data,
 				   const void *user_data)
 {
-
 	fd = ggzcore_game_get_control_fd(game);
 	loop_add_fd(fd, game_process, game_destroy);
 

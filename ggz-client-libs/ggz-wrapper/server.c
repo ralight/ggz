@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 9073 2007-04-29 01:09:54Z jdorje $
+ * $Id: server.c 9165 2007-07-04 13:58:17Z josef $
  *
  * Functions for handling server events
  *
@@ -45,6 +45,7 @@
 
 extern char *dst_nick;
 extern char *game_name;
+extern char *frontend;
 
 static void server_register(GGZServer * server);
 static void server_process(void);
@@ -254,7 +255,9 @@ static GGZModule *pick_module(GGZGameType * gt)
 	const char *name = ggzcore_gametype_get_name(gt);
 	const char *engine = ggzcore_gametype_get_prot_engine(gt);
 	const char *version = ggzcore_gametype_get_prot_version(gt);
-	int num;
+	const char *fe;
+	int num, n, i;
+	GGZModule *tmpmod;
 
 	num = ggzcore_module_get_num_by_type(name, engine, version);
 
@@ -263,7 +266,16 @@ static GGZModule *pick_module(GGZGameType * gt)
 		return NULL;
 	}
 
-	return ggzcore_module_get_nth_by_type(name, engine, version, 0);
+	n = 0;
+	if (frontend) {
+		for (i = 0; i < num; i++) {
+			tmpmod = ggzcore_module_get_nth_by_type(name, engine, version, i);
+			fe = ggzcore_module_get_frontend(tmpmod);
+			if(!strcmp(frontend, fe))
+				n = i;
+		}
+	}
+	return ggzcore_module_get_nth_by_type(name, engine, version, n);
 }
 
 static GGZHookReturn server_enter_ok(GGZServerEvent id,

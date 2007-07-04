@@ -3,7 +3,7 @@
  * Author: Josef Spillner
  * Project: GGZ Client libs
  * Date: 2004
- * $Id: ggz-wrapper.c 8283 2006-06-27 07:45:52Z josef $
+ * $Id: ggz-wrapper.c 9165 2007-07-04 13:58:17Z josef $
  *
  * Code for a wrapper for GGZ games
  *
@@ -49,6 +49,7 @@
 
 char *game_name;
 char *dst_nick;
+char *frontend;
 
 static void usage(void) {
 	printf(_("ggz-wrapper: Dummy core client for the GGZ Gaming Zone\n"));
@@ -60,6 +61,7 @@ static void usage(void) {
 	printf(_("[-s <server>  ] Server hostname\n"));
 	printf(_("[-P <port>    ] Server port\n"));
 	printf(_("[-d <destnick>] Nickname of opponent\n"));
+	printf(_("[-f <frontend>] Preferred game client frontend\n"));
 	exit(0);
 }
 
@@ -73,9 +75,10 @@ int main(int argc, char **argv) {
 		{"server", required_argument, 0, 's'},
 		{"port", required_argument, 0, 'P'},
 		{"destnick", required_argument, 0, 'd'},
+		{"frontend", required_argument, 0, 'f'},
 		{0, 0, 0, 0}
 	};
-	char optstring[] = "g:u:p:s:d:P:h";
+	char optstring[] = "g:u:p:s:d:P:f:h";
 	char randomuser[64];
 
 	int optch;
@@ -88,6 +91,7 @@ int main(int argc, char **argv) {
 
 	game_name = DEFAULT_GAMENAME;
 	dst_nick = DEFAULT_DESTNICK;
+	frontend = NULL;
 
 	while((optch = getopt_long(argc, argv, optstring, options, &optindex)) != -1) {
 		switch(optch) {
@@ -108,6 +112,9 @@ int main(int argc, char **argv) {
 				break;
 			case 'P':
 				port = atoi(optarg);
+				break;
+			case 'f':
+				frontend = optarg;
 				break;
 			case 'h':
 				usage();

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.h 6873 2005-01-24 04:18:31Z jdorje $
+ * $Id: server.h 9165 2007-07-04 13:58:17Z josef $
  *
  * Functions for handling server events
  *
@@ -25,6 +25,9 @@
  */
 
 #include "ggzcore.h"
+
+/* FIXME: why are game channels marked as deprecated at all? */
+#define GGZ_ENABLE_DEPRECATED 1
 
 int server_init(char *host, int port, GGZLoginType type, char *login,
 		char *password);

@@ -7,6 +7,7 @@ and games.
 The 'ggz-wrapper' executable is a non-interactive command line client which
 currently can only be used to automate the launching of 2-player games.
 It is used by the ggz-gaim and ggz-kopete IM integration plugins.
+But it can also be used by developers, see the man page for examples.
 
 The 'ggz' script is a cross-desktop shortcut for launching an appropriate
 GGZ core client. For example, it would run kggz in KDE, but if it is not

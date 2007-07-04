@@ -1,13 +1,13 @@
 .TH "ggz-wrapper" "6" "0.0.14" "The GGZ Development Team" "GGZ Gaming Zone"
 .SH "NAME"
-.LP 
+.LP
 ggz\-wrapper \- GGZ Gaming Zone command line core client
 .SH "SYNOPSIS"
-.LP 
+.LP
 \fBggz\-wrapper\fR [\fB\-\-gametype\fR \fIGAMENAME\fP] [\fB\-\-user\fR \fINAME\fP]
 [\fB\-\-destnick\fR \fINAME\fP] [\fIOPTION\fR...]
 .SH "DESCRIPTION"
-.LP 
+.LP
 The GGZ Gaming Zone allows people to play many games online using so-called
 GGZ core clients which are chat clients with integrated game launchers.
 .LP
@@ -16,24 +16,24 @@ line. It does not support chat or display of rooms, tables and players,
 but instead is useful for fast launching of online games.
 Therefore, its main purpose is to be invoked from instant messengers such
 as \fBgaim\fR or \fBkopete\fR.
-.LP 
+.LP
 It currently supports all two-player games, as human against human or
 human against bot. If no options are given, \fBggz-wrapper\fR will invoke a
 Tic-Tac-Toe game client on the default GGZ server, \fIlive.ggzgamingzone.org\fR,
 logging in as guest user.
 .SH "OPTIONS"
-.TP 
+.TP
 \fB\-\-gametype=\fR\fIGAMENAME\fP
 The name of the game to play, e.g. TicTacToe or Chess.
 This option expects a case-sensitive argument which must match one of the
 available game modules in \fIggz.modules\fR. If the game type is not supported
 by the specified GGZ server, the invocation will fail.
-.TP 
+.TP
 \fB\-\-user=\fR\fINAME\fP
 The name of the player who is running the client. The default is to run with
 an automatically generated guest user name. In order to use a registered name,
 the option --password is implied.
-.TP 
+.TP
 \fB\-\-destnick=\fR\fINAME\fP
 The name of the other player. If omitted or empty, the player running the client
 will launch the table (game host). If empty, other player will be the bot.
@@ -50,9 +50,13 @@ The server to play on. If not specified, the default server is
 \fB\-\-port=\fR\fIPORT\fP
 The port to use to connect to the GGZ server. \fIPORT\fR is almost always
 5688, so this option is rarely needed.
-.LP 
+.LP
+.SH "EXAMPLES"
+.LP
+To play Reversi against a bot, the invocation should be of the form
+\fIggz-wrapper -s localhost -g Reversi -u P1 -f gtk -d ""\fR.
 .SH "AUTHORS"
-.LP 
+.LP
 The GGZ Development Team
 <ggz\-dev@mail.ggzgamingzone.org>
 .SH "SEE ALSO"
