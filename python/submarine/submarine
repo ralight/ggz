@@ -52,12 +52,13 @@ class Submarine:
 		self.net = net
 
 	def work(self, num, message):
+		print "<= message from", num
 		print "MESSAGE", message
 
 		openseats = ggzdmod.countSeats(ggzdmod.SEAT_OPEN)
 		if openseats == 0:
 			oppseat = ggzdmod.getSeat(1 - num)
-			print "=> send message to fd", oppseat
+			print "=> send message to", oppseat
 			self.net.init(oppseat[3])
 			self.net.sendxml(message)
 
