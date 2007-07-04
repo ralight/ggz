@@ -31,7 +31,8 @@ SVN commit notifications are sent to the
 <a href="https://mail.ggzgamingzone.org/cgi-bin/mailman/listinfo/ggz-svn">ggz-svn</a>
 mailing list.
 <br>
-They are also tracked by the <a href="http://cia.navi.cx/stats/project/ggz">CIA bot</a>.
+They are also tracked by the <a href="http://cia.navi.cx/stats/project/ggz">CIA bot</a>
+which reports into our IRC channel. Joining development is as easy as lurking there!
 <br><br>
 
 </body>
