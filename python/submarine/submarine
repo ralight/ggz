@@ -10,7 +10,9 @@ import time
 #import os, pwd
 #import re
 
+# FIXME: This game needs 4XPath from 4suite.org (python-xml package)
 import xml.dom.minidom
+import xml.xpath
 import socket
 
 print "###-submarine-###"
@@ -54,6 +56,53 @@ class Submarine:
 	def work(self, num, message):
 		print "<= message from", num
 		print "MESSAGE", message
+
+		type = xml.xpath.Evaluate('string(/kmessage/msgtype)', message)
+		print "TYPE", type
+		if type == "0":
+			# Client module information, handled by GGZ
+			pass
+		elif type == "1":
+			# ???
+			pass
+		elif type == "2":
+			# Nickname, handled by GGZ
+			pass
+		elif type == "3":
+			# All ships set
+			pass
+		elif type == "4":
+			# Explosion attempt
+			fieldx = xml.xpath.Evaluate('string(/kmessage/fieldx)', message)
+			fieldy = xml.xpath.Evaluate('string(/kmessage/fieldy)', message)
+		elif type == "5":
+			# Explosion answer
+			fieldx = xml.xpath.Evaluate('string(/kmessage/fieldx)', message)
+			fieldy = xml.xpath.Evaluate('string(/kmessage/fieldy)', message)
+			fieldstate = xml.xpath.Evaluate('string(/kmessage/fieldstate)', message)
+			xstart = xml.xpath.Evaluate('string(/kmessage/xstart)', message)
+			ystart = xml.xpath.Evaluate('string(/kmessage/ystart)', message)
+			xstop = xml.xpath.Evaluate('string(/kmessage/xstop)', message)
+			ystop = xml.xpath.Evaluate('string(/kmessage/ystop)', message)
+			death = xml.xpath.Evaluate('string(/kmessage/death)', message)
+			if fieldstate == "1":
+				# hit
+				if death:
+					pass
+				else:
+					pass
+			elif fieldstate == "99":
+				# miss
+				pass
+		elif type == "6":
+			# Game over
+			ship0 = xml.xpath.Evaluate('string(/kmessage/ship0)', message)
+			ship1 = xml.xpath.Evaluate('string(/kmessage/ship1)', message)
+			ship2 = xml.xpath.Evaluate('string(/kmessage/ship2)', message)
+			ship3 = xml.xpath.Evaluate('string(/kmessage/ship3)', message)
+		elif type == "7":
+			# Play-again
+			pass
 
 		openseats = ggzdmod.countSeats(ggzdmod.SEAT_OPEN)
 		if openseats == 0:
