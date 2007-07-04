@@ -46,6 +46,20 @@ class Network:
 		print "ELEMENT", element
 		return element
 
+def nickmessage(name):
+	impl = xml.dom.minidom.getDOMImplementation()
+	doc = impl.createDocument(None, "kmessage", None)
+	message = doc.documentElement
+	msgtype = doc.createElement("msgtype")
+	message.appendChild(msgtype)
+	msgtype_text = doc.createTextNode("2")
+	msgtype.appendChild(msgtype_text)
+	nickname = doc.createElement("nickname")
+	message.appendChild(nickname)
+	nickname_text = doc.createTextNode(name)
+	nickname.appendChild(nickname_text)
+	return message
+
 class Submarine:
 	def __init__(self):
 		self.net = None
@@ -58,25 +72,30 @@ class Submarine:
 		print "<= message from", num
 		print "MESSAGE", message
 
-		type = xml.xpath.Evaluate('string(/kmessage/msgtype)', message)
-		print "TYPE", type
-		if type == "0":
+		mtype = xml.xpath.Evaluate('string(/kmessage/msgtype)', message)
+		print "TYPE", mtype
+		if mtype == "0":
 			# Client module information, handled by GGZ
-			pass
-		elif type == "1":
+			# We drop in the nickname message here
+			seat = ggzdmod.getSeat(num)
+			name = seat[2]
+			message = nickmessage(name)
+			self.messagequeues[num].append(message)
+			print "*STORE*", name, "for", num
+		elif mtype == "1":
 			# ???
 			pass
-		elif type == "2":
+		elif mtype == "2":
 			# Nickname, handled by GGZ
 			pass
-		elif type == "3":
+		elif mtype == "3":
 			# All ships set
 			pass
-		elif type == "4":
+		elif mtype == "4":
 			# Explosion attempt
 			fieldx = xml.xpath.Evaluate('string(/kmessage/fieldx)', message)
 			fieldy = xml.xpath.Evaluate('string(/kmessage/fieldy)', message)
-		elif type == "5":
+		elif mtype == "5":
 			# Explosion answer
 			fieldx = xml.xpath.Evaluate('string(/kmessage/fieldx)', message)
 			fieldy = xml.xpath.Evaluate('string(/kmessage/fieldy)', message)
@@ -95,18 +114,19 @@ class Submarine:
 			elif fieldstate == "99":
 				# miss
 				pass
-		elif type == "6":
+		elif mtype == "6":
 			# Game over
 			ship0 = xml.xpath.Evaluate('string(/kmessage/ship0)', message)
 			ship1 = xml.xpath.Evaluate('string(/kmessage/ship1)', message)
 			ship2 = xml.xpath.Evaluate('string(/kmessage/ship2)', message)
 			ship3 = xml.xpath.Evaluate('string(/kmessage/ship3)', message)
-		elif type == "7":
+		elif mtype == "7":
 			# Play-again
 			pass
 
 		openseats = ggzdmod.countSeats(ggzdmod.SEAT_OPEN)
 		if openseats == 0:
+			self.workPending(num)
 			oppseat = ggzdmod.getSeat(1 - num)
 			self.net.init(oppseat[3])
 			print "=> send message to", oppseat
