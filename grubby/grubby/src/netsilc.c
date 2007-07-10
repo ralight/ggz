@@ -7,8 +7,16 @@
 *
 ********************************************************************/
 
+/* Definition to switch between 1.0 and 1.1 API of SILC */
+/*#define SILC_COMPAT 1*/
+#undef SILC_COMPAT
+
 #include "net.h"
+#ifdef SILC_COMPAT
 #include <silcincludes.h>
+#else
+#include <silc.h>
+#endif
 #include <silcclient.h>
 
 /* Prototypes */
@@ -19,11 +27,19 @@ static void silc_channel_message(SilcClient client, SilcClientConnection conn, S
 static void silc_private_message(SilcClient client, SilcClientConnection conn, SilcClientEntry sender,
 	SilcMessagePayload payload, SilcMessageFlags flags, const unsigned char *message, SilcUInt32 message_len);
 static void silc_notify(SilcClient client, SilcClientConnection conn, SilcNotifyType type, ...);
+
+#ifdef SILC_COMPAT
 static void silc_connected(SilcClient client, SilcClientConnection conn, SilcClientConnectionStatus status);
 static void silc_disconnected(SilcClient client, SilcClientConnection conn, SilcStatus status, const char *message);
 static void silc_failure(SilcClient client, SilcClientConnection conn, SilcProtocol protocol, void *failure);
+#else
+static void silc_connected(SilcClient client, SilcClientConnection conn, SilcClientConnectionStatus status,
+	SilcStatus error, const char *message, void *context);
+static void silc_running(SilcClient client, void *application);
+#endif
 
 /* Unused prototypes */
+#ifdef SILC_COMPAT
 static void no_silc_command(SilcClient client, SilcClientConnection conn, SilcClientCommandContext cmd_context,
 	bool success, SilcCommand command, SilcStatus status);
 static void no_silc_command_reply(SilcClient client, SilcClientConnection conn, SilcCommandPayload cmd_payload,
@@ -32,14 +48,30 @@ static void no_silc_get_auth_method(SilcClient client, SilcClientConnection conn
 	SilcGetAuthMeth completion, void *context);
 static void no_silc_verify_public_key(SilcClient client, SilcClientConnection conn, SilcSocketType conn_type,
 	unsigned char *pk, SilcUInt32 pk_len, SilcSKEPKType pk_type, SilcVerifyPublicKey completion, void *context);
-static void no_silc_ask_passphrase(SilcClient client, SilcClientConnection conn, SilcAskPassphrase completion,
-	void *context);
 static bool no_silc_key_agreement(SilcClient client, SilcClientConnection conn, SilcClientEntry client_entry,
 	const char *hostname, SilcUInt16 port, SilcKeyAgreementCallback *completion, void **context);
+#else
+static void no_silc_command_reply(SilcClient client, SilcClientConnection conn, SilcCommand command,
+	SilcStatus status, SilcStatus error, va_list ap);
+static void no_silc_command(SilcClient client, SilcClientConnection conn,
+	bool success, SilcCommand command, SilcStatus status, SilcUInt32 argc, unsigned char **argv);
+static void no_silc_get_auth_method(SilcClient client, SilcClientConnection conn, char *hostname, SilcUInt16 port,
+	SilcAuthMethod method, SilcGetAuthMeth completion, void *context);
+static void no_silc_verify_public_key(SilcClient client, SilcClientConnection conn, SilcConnectionType conn_type,
+	SilcPublicKey public_key, SilcVerifyPublicKey completion, void *context);
+static void no_silc_key_agreement(SilcClient client, SilcClientConnection conn, SilcClientEntry client_entry,
+	const char *hostname, SilcUInt16 protocol, SilcUInt16 port);
+#endif
+
+static void no_silc_ask_passphrase(SilcClient client, SilcClientConnection conn, SilcAskPassphrase completion,
+	void *context);
 static void no_silc_ftp(SilcClient client, SilcClientConnection conn, SilcClientEntry client_entry,
 	SilcUInt32 session_id, const char *hostname, SilcUInt16 port);
+
+#ifdef SILC_COMPAT
 static void no_silc_detach(SilcClient client, SilcClientConnection conn, const unsigned char *detach_data,
 	SilcUInt32 detach_data_len);
+#endif
 
 /* Globals */
 int status = NET_NOOP;
@@ -52,7 +84,9 @@ FILE *logstream = NULL;
 
 static SilcClient client;
 static SilcClientConnection connection;
+#ifdef SILC_COMPAT
 static SilcPKCS pkcs;
+#endif
 static SilcPublicKey pubkey;
 static SilcPrivateKey privkey;
 static SilcChannelEntry lastchannel;
@@ -65,15 +99,21 @@ static SilcClientOperations ops =
 	silc_notify,
 	no_silc_command,
 	no_silc_command_reply,
+#ifdef SILC_COMPAT
 	silc_connected,
 	silc_disconnected,
+#endif
 	no_silc_get_auth_method,
 	no_silc_verify_public_key,
 	no_silc_ask_passphrase,
+#ifdef SILC_COMPAT
 	silc_failure,
+#endif
 	no_silc_key_agreement,
 	no_silc_ftp,
+#ifdef SILC_COMPAT
 	no_silc_detach
+#endif
 };
 
 /* Set up the logfile or close it again */
@@ -209,7 +249,11 @@ void net_connect(const char *host, int port, const char *name, const char *passw
 	fprintf(stderr, "(SILC) >> silc_hmac_register_default returns %i\n", ret);
 	if(!ret) status = NET_ERROR;
 
+#ifdef SILC_COMPAT
 	ret = silc_create_key_pair(NULL, 0, NULL, NULL, NULL, NULL, &pkcs, &pubkey, &privkey, FALSE);
+#else
+	ret = silc_create_key_pair(NULL, 0, NULL, NULL, NULL, NULL, &pubkey, &privkey, FALSE);
+#endif
 	fprintf(stderr, "(SILC) >> silc_create_key_pair returns %i\n", ret);
 	if(!ret) status = NET_ERROR;
 
@@ -217,15 +261,31 @@ void net_connect(const char *host, int port, const char *name, const char *passw
 	fprintf(stderr, "(SILC) >> silc_pkcs_alloc returns %i\n", ret);
 	if(!ret) status = NET_ERROR;*/
 
+#ifdef SILC_COMPAT
 	client->pkcs = pkcs;
 	client->public_key = pubkey;
 	client->private_key = privkey;
+#endif
 
+#ifdef SILC_COMPAT
 	ret = silc_client_init(client);
+#else
+	ret = silc_client_init(client, client->username, client->hostname, client->realname, silc_running, NULL);
+#endif
 	fprintf(stderr, "(SILC) >> silc_client_init returns %i\n", ret);
 	if(!ret) status = NET_ERROR;
 
+#ifdef SILC_INIT
 	silc_client_connect_to_server(client, NULL, 706, strdup(host), NULL);
+#else
+	ret = silc_load_key_pair(NULL, NULL, NULL, &pubkey, &privkey);
+	fprintf(stderr, "(SILC) >> silc_load_key_pair returns %i\n", ret);
+	if(!ret) status = NET_ERROR;
+
+	silc_client_run(client);
+
+	silc_client_free(client);
+#endif
 
 	/*status = NET_GOTREADY;*/
 }
@@ -278,13 +338,23 @@ void net_output(Guru *output)
 		{
 			case GURU_CHAT:
 				printf("> %s\n", token);
+#ifdef SILC_COMPAT
 				silc_client_send_channel_message(client, connection,
 					lastchannel, NULL, 0, (unsigned char*)token, strlen(token), TRUE);
+#else
+				silc_client_send_channel_message(client, connection,
+					lastchannel, NULL, 0, NULL, (unsigned char*)token, strlen(token));
+#endif
 				break;
 			case GURU_PRIVMSG:
 				printf("-> %s: %s\n", output->player, token);
+#ifdef SILC_COMPAT
 				silc_client_send_channel_message(client, connection,
 					lastchannel, NULL, 0, (unsigned char*)token, strlen(token), TRUE);
+#else
+				silc_client_send_channel_message(client, connection,
+					lastchannel, NULL, 0, NULL, (unsigned char*)token, strlen(token));
+#endif
 				break;
 			case GURU_ADMIN:
 				printf(">> %s\n", token);
@@ -393,7 +463,12 @@ static void silc_notify(SilcClient client, SilcClientConnection conn, SilcNotify
 	va_end(ap);
 }
 
+#ifdef SILC_COMPAT
 static void silc_connected(SilcClient client, SilcClientConnection conn, SilcClientConnectionStatus status)
+#else
+static void silc_connected(SilcClient client, SilcClientConnection conn, SilcClientConnectionStatus status,
+	SilcStatus error, const char *message, void *context)
+#endif
 {
 	char *statusstr;
 
@@ -421,6 +496,7 @@ static void silc_connected(SilcClient client, SilcClientConnection conn, SilcCli
 	/*status = NET_LOGIN;*/
 }
 
+#ifdef SILC_COMPAT
 static void silc_disconnected(SilcClient client, SilcClientConnection conn, SilcStatus status, const char *message)
 {
 	fprintf(stderr, "(SILC) disconnected\n");
@@ -434,21 +510,37 @@ static void silc_failure(SilcClient client, SilcClientConnection conn, SilcProto
 
 	status = NET_ERROR;
 }
+#endif
 
+#ifdef SILC_COMPAT
 static void no_silc_command(SilcClient client, SilcClientConnection conn, SilcClientCommandContext cmd_context,
 	bool success, SilcCommand command, SilcStatus status)
+#else
+static void no_silc_command(SilcClient client, SilcClientConnection conn,
+	bool success, SilcCommand command, SilcStatus status, SilcUInt32 argc, unsigned char **argv)
+#endif
 {
 	fprintf(stderr, "(SILC) (NO) command\n");
 }
 
+#ifdef SILC_COMPAT
 static void no_silc_command_reply(SilcClient client, SilcClientConnection conn, SilcCommandPayload cmd_payload,
 	bool success, SilcCommand command, SilcStatus status, ...)
+#else
+static void no_silc_command_reply(SilcClient client, SilcClientConnection conn, SilcCommand command,
+	SilcStatus status, SilcStatus error, va_list ap)
+#endif
 {
 	fprintf(stderr, "(SILC) (NO) command reply\n");
 }
 
+#ifdef SILC_COMPAT
 static void no_silc_get_auth_method(SilcClient client, SilcClientConnection conn, char *hostname, SilcUInt16 port,
 	SilcGetAuthMeth completion, void *context)
+#else
+static void no_silc_get_auth_method(SilcClient client, SilcClientConnection conn, char *hostname, SilcUInt16 port,
+	SilcAuthMethod method, SilcGetAuthMeth completion, void *context)
+#endif
 {
 	/*InternalGetAuthMethod internal;*/
 
@@ -463,12 +555,21 @@ static void no_silc_get_auth_method(SilcClient client, SilcClientConnection conn
 
 	silc_client_request_authentication_method(client, conn,
 		silc_get_auth_method_callback, internal);*/
-	
+
+#ifdef SILC_COMPAT
 	(completion)(TRUE, SILC_AUTH_NONE, NULL, 0, context);
+#else
+	(completion)(SILC_AUTH_NONE, NULL, 0, context);
+#endif
 }
 
+#ifdef SILC_COMPAT
 static void no_silc_verify_public_key(SilcClient client, SilcClientConnection conn, SilcSocketType conn_type,
 	unsigned char *pk, SilcUInt32 pk_len, SilcSKEPKType pk_type, SilcVerifyPublicKey completion, void *context)
+#else
+static void no_silc_verify_public_key(SilcClient client, SilcClientConnection conn, SilcConnectionType conn_type,
+	SilcPublicKey public_key, SilcVerifyPublicKey completion, void *context)
+#endif
 {
 	fprintf(stderr, "(SILC) (NO) verify public key\n");
 
@@ -481,12 +582,15 @@ static void no_silc_ask_passphrase(SilcClient client, SilcClientConnection conn,
 	fprintf(stderr, "(SILC) (NO) ask passphrase\n");
 }
 
+#ifdef SILC_COMPAT
 static bool no_silc_key_agreement(SilcClient client, SilcClientConnection conn, SilcClientEntry client_entry,
 	const char *hostname, SilcUInt16 port, SilcKeyAgreementCallback *completion, void **context)
+#else
+static void no_silc_key_agreement(SilcClient client, SilcClientConnection conn, SilcClientEntry client_entry,
+	const char *hostname, SilcUInt16 protocol, SilcUInt16 port)
+#endif
 {
 	fprintf(stderr, "(SILC) (NO) key agreement\n");
-
-	return TRUE;
 }
 
 static void no_silc_ftp(SilcClient client, SilcClientConnection conn, SilcClientEntry client_entry,
@@ -495,9 +599,19 @@ static void no_silc_ftp(SilcClient client, SilcClientConnection conn, SilcClient
 	fprintf(stderr, "(SILC) (NO) ftp\n");
 }
 
+#ifdef SILC_COMPAT
 static void no_silc_detach(SilcClient client, SilcClientConnection conn, const unsigned char *detach_data,
 	SilcUInt32 detach_data_len)
 {
 	fprintf(stderr, "(SILC) (NO) detach\n");
 }
+#endif
+
+#ifndef SILC_COMPAT
+static void silc_running(SilcClient client, void *application)
+{
+	silc_client_connect_to_server(client, NULL, pubkey, privkey,
+		client->hostname, 706, silc_connected, NULL);
+}
+#endif
 
