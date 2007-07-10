@@ -4,6 +4,15 @@
 # Calls the real $EDITOR but appends some stuff to the log message
 # See http://svn.haxx.se/users/archive-2006-08/1261.shtml
 
+# This script now needs sourceable configuration files at
+# ~/.ggzcommit/* with the following entries:
+#
+# repo=svn://root/url/of/repository
+# whois=1
+# signature=0
+
+# -------------------------------------------------------------------
+
 # Checking the environment
 
 [ $# -eq 1 ] || {
@@ -16,19 +25,49 @@ ed=$VISUAL
 [ -z $ed ] && ed=$EDITOR
 [ -z $ed ] && ed=vi
 
+# Load configuration file
+
+if [ ! -d ~/.ggzcommit ]; then
+	echo "Error: no configuration directory ~/.ggzcommit found"
+	exit 1
+fi
+
+svnrepo=`LANG=C svn info | grep ^"Repository Root" | cut -d " " -f 3-`
+for conf in ~/.ggzcommit/*; do
+	. $conf
+	if [ "$repo" = "$svnrepo" ]; then
+		conf_repo=$repo
+		conf_whois=$whois
+		conf_signature=$signature
+	fi
+done
+
+if [ "$svnrepo" != "$conf_repo" ]; then
+	echo "Error: no configuration file found for $svnrepo"
+	exit 1
+fi
+
+:> $file.$$
+
 # Modification: Appending a whois-like signature
+
+if [ $conf_whois ]; then
 
 stem=`echo $file | cut -c 1-12`
 if test $stem != "svn-prop.tmp"; then
 HOSTNAME=`hostname`
-cat <<ENDTEMPLATE >$file.$$
+cat << ENDTEMPLATE > $file.$$
 
 
 [commit from $USER@$HOSTNAME]
 ENDTEMPLATE
 fi
 
+fi
+
 # Modification: Digital signature
+
+if [ $conf_signature ]; then
 
 :> $file.list.$$
 
@@ -68,6 +107,8 @@ if [ ! -f $file.diff.$$.asc ]; then
 fi
 cat $file.diff.$$.asc >> $file.$$
 rm -f $file.diff.$$.asc
+
+fi
 
 # The original log message from SVN
 
