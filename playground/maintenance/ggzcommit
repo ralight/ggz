@@ -3,18 +3,21 @@
 # Subversion variant for $SVN_EDITOR
 # Calls the real $EDITOR but appends some stuff to the log message
 # See http://svn.haxx.se/users/archive-2006-08/1261.shtml
-#
- 
+
+# Checking the environment
+
 [ $# -eq 1 ] || {
 	echo "usage: $0 file"
 	exit 1
 } 
 file=$1
- 
+
 ed=$VISUAL
 [ -z $ed ] && ed=$EDITOR
 [ -z $ed ] && ed=vi
- 
+
+# Modification: Appending a whois-like signature
+
 stem=`echo $file | cut -c 1-12`
 if test $stem != "svn-prop.tmp"; then
 HOSTNAME=`hostname`
@@ -24,9 +27,54 @@ cat <<ENDTEMPLATE >$file.$$
 [commit from $USER@$HOSTNAME]
 ENDTEMPLATE
 fi
- 
+
+# Modification: Digital signature
+
+:> $file.list.$$
+
+lines=`cat $file`
+#IFS_NEWLINE=$'\n'
+IFS_NEWLINE='
+'
+IFS_OLD=$IFS
+IFS=$IFS_NEWLINE
+for line in $lines; do
+	op=`echo $line | cut -d " " -f 1`
+	path=`echo $line | cut -d " " -f 5-`
+	if [ -f $path ]; then
+		echo $path >> $file.list.$$
+	elif [ -d $path ]; then
+		echo $path >> $file.list.$$
+	elif [ $op = "--" ]; then
+		true
+	else
+		echo "Error: Requested file or directory $path not found."
+		rm -f $file.list.$$
+		exit 1
+	fi
+done
+IFS=$IFS_OLD
+
+IFS=$IFS_NEWLINE
+svn diff `cat $file.list.$$` > $file.diff.$$
+IFS=$IFS_OLD
+
+gpg --detach-sign --armor $file.diff.$$
+rm -f $file.list.$$
+rm -f $file.diff.$$
+if [ ! -f $file.diff.$$.asc ]; then
+	echo "Error: Signature was not granted."
+	exit 1
+fi
+cat $file.diff.$$.asc >> $file.$$
+rm -f $file.diff.$$.asc
+
+# The original log message from SVN
+
 cat $file >> $file.$$
- 
+
+# Finally, invoking the editor
+
 sum=`cksum $file.$$` 
 if $ed $file.$$; then 
 	newsum=`cksum $file.$$` 
