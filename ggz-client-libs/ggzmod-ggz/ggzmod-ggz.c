@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 8810 2007-01-04 21:11:55Z jdorje $
+ * $Id: ggzmod-ggz.c 9179 2007-07-11 06:25:03Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -175,7 +175,7 @@ void ggzmod_ggz_free(GGZMod * ggzmod)
 	if (!ggzmod) {
 		return;
 	}
-	
+
 	if (ggzmod->fd != -1)
 		(void)ggzmod_ggz_disconnect(ggzmod);
 	
@@ -206,7 +206,7 @@ void ggzmod_ggz_free(GGZMod * ggzmod)
  * Accesor functions for GGZMod
  */
 
-/* The ggzmod FD is the main ggz<->game server communications socket. */
+/* The ggzmod FD is the main ggz<->game client communications socket. */
 int ggzmod_ggz_get_fd(GGZMod * ggzmod)
 {
 	if (!ggzmod) {
@@ -601,10 +601,10 @@ int ggzmod_ggz_disconnect(GGZMod * ggzmod)
 	}
 
 	if (ggzmod->type == GGZMOD_GGZ) {
-		/* For the ggz side, we kill the game server and close the socket */
+		/* For the ggz side, we kill the game client and close the socket */
 		
 #ifdef HAVE_KILL
-		/* Make sure game server is dead */
+		/* Make sure game client is dead */
 		if (ggzmod->pid > 0) {
 			kill(ggzmod->pid, SIGINT);
 			/* This will block waiting for the child to exit.
