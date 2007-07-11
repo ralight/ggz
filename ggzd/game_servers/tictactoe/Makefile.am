@@ -1,9 +1,4 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 7658 2005-12-12 11:47:24Z josef $
-
 EXTRA_DIST = tictactoe.dsc tictactoe.room
-
-SUBDIRS = .
 
 ggzdexecmod_PROGRAMS = ggzd.tictactoe
 ggzdgame_DATA = tictactoe.dsc
@@ -20,4 +15,8 @@ ggzd_tictactoe_SOURCES = \
 
 AM_CPPFLAGS = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
 ggzd_tictactoe_LDADD = $(LDADD) $(top_builddir)/ggzdmod/libggzdmod.la
+
+PROTOCOL = tictactoe
+SOURCEFILE = net
+include $(top_srcdir)/m4/protocol.mk
 
