@@ -30,3 +30,23 @@ Coding in C
   {platform,system}.m4 take care of all that (hopefully)
 * C sucks. Watch out for more issues like largefile support...
 
+Coding style in C/C++
+---------------------
+Coding style discussions were held on ggz-dev already, but no final decision
+was made yet. Where coding style comes into place already is formatting
+auto-generated source code, such as network protocol handlers from GGZComm.
+
+In order to match the unique GGZComm code production style as much as possible,
+the following flags can be given to GNU indent:
+-kr -i8 -nsai -nsaf -cli8 -bl -bli0
+
+This still causes some differences which would need a better indent:
+- calls of function pointers still have space between pointer and args
+  (func) (arg) instead of (func)(arg)
+- if statements without else and without braces still have a line break
+  if(foo)\nbar(); instead of if(foo) bar();
+- switch statements still have a space between switch and opening parens
+  switch (foo) instead of switch(foo)
+Of course, these flags would be different when formatting for the GGZ style
+once such formatting is due.
+
