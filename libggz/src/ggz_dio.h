@@ -10,12 +10,13 @@
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
-   $Id: ggz_dio.h 8987 2007-02-19 02:50:30Z jdorje $
+   $Id: ggz_dio.h 9180 2007-07-11 06:25:57Z josef $
 ***********************************************************************/
 #ifndef __GGZ_DIO_H__
 #define __GGZ_DIO_H__
 
 #include <stdbool.h>
+#include <stddef.h>
 
 typedef struct GGZDataIO GGZDataIO;
 
