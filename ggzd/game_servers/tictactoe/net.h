@@ -16,6 +16,9 @@
 #define msgmove 2
 #define sndsync 6
 #define msggameover 3
+typedef struct ggzcommio_t {
+	GGZDataIO *dio;
+} GGZCommIO;
 
 struct variables_t {
 	int move_c;
@@ -31,20 +34,23 @@ struct variables_t {
 };
 struct variables_t variables;
 
-void ggzcomm_network_main(GGZDataIO * dio);
+void ggzcomm_network_main(GGZCommIO * io);
 
-void ggzcomm_msgseat(GGZDataIO * dio);
-void ggzcomm_msgplayers(GGZDataIO * dio);
-void ggzcomm_reqmove(GGZDataIO * dio);
-void ggzcomm_rspmove(GGZDataIO * dio);
-void ggzcomm_msgmove(GGZDataIO * dio);
-void ggzcomm_sndsync(GGZDataIO * dio);
-void ggzcomm_msggameover(GGZDataIO * dio);
+void ggzcomm_msgseat(GGZCommIO * io);
+void ggzcomm_msgplayers(GGZCommIO * io);
+void ggzcomm_reqmove(GGZCommIO * io);
+void ggzcomm_rspmove(GGZCommIO * io);
+void ggzcomm_msgmove(GGZCommIO * io);
+void ggzcomm_sndsync(GGZCommIO * io);
+void ggzcomm_msggameover(GGZCommIO * io);
 
 typedef void (*notifier_func_type) (int opcode);
 typedef void (*error_func_type) (void);
 
 void ggzcomm_set_notifier_callback(notifier_func_type f);
 void ggzcomm_set_error_callback(error_func_type f);
+
+GGZCommIO *ggzcomm_io_allocate(int fd);
+void ggzcomm_io_free(GGZCommIO * io);
 
 #endif

@@ -16,95 +16,96 @@ static int nextlink;
 
 static void ggzcomm_error(void);
 
-static void ggzcomm_sndmove(GGZDataIO * dio)
+static void ggzcomm_sndmove(GGZCommIO * io)
 {
-	ggz_dio_get_int(dio, &variables.move_c);
+	ggz_dio_get_int(io->dio, &variables.move_c);
 	if(notifier_func)
 		(notifier_func) (sndmove);
 }
 
-static void ggzcomm_reqsync(GGZDataIO * dio)
+static void ggzcomm_reqsync(GGZCommIO * io)
 {
 	if(notifier_func)
 		(notifier_func) (reqsync);
 }
 
-void ggzcomm_msgseat(GGZDataIO * dio)
+void ggzcomm_msgseat(GGZCommIO * io)
 {
-	ggz_dio_packet_start(dio);
-	ggz_dio_put_int(dio, msgseat);
-	ggz_dio_put_int(dio, variables.num);
-	ggz_dio_packet_end(dio);
+	ggz_dio_packet_start(io->dio);
+	ggz_dio_put_int(io->dio, msgseat);
+	ggz_dio_put_int(io->dio, variables.num);
+	ggz_dio_packet_end(io->dio);
 }
 
-void ggzcomm_msgplayers(GGZDataIO * dio)
+void ggzcomm_msgplayers(GGZCommIO * io)
 {
 	int i1;
 
-	ggz_dio_packet_start(dio);
-	ggz_dio_put_int(dio, msgplayers);
+	ggz_dio_packet_start(io->dio);
+	ggz_dio_put_int(io->dio, msgplayers);
 	for(i1 = 0; i1 < 2; i1++)
 	{
-		ggz_dio_put_int(dio, variables.seat[i1]);
+		ggz_dio_put_int(io->dio, variables.seat[i1]);
 		if((variables.seat[i1] != ggz__seat_open))
 		{
-			ggz_dio_put_string(dio, variables.name[i1]);
+			ggz_dio_put_string(io->dio, variables.name[i1]);
 		}
 	}
-	ggz_dio_packet_end(dio);
+	ggz_dio_packet_end(io->dio);
 }
 
-void ggzcomm_reqmove(GGZDataIO * dio)
+void ggzcomm_reqmove(GGZCommIO * io)
 {
-	ggz_dio_packet_start(dio);
-	ggz_dio_put_int(dio, reqmove);
-	ggz_dio_packet_end(dio);
+	ggz_dio_packet_start(io->dio);
+	ggz_dio_put_int(io->dio, reqmove);
+	ggz_dio_packet_end(io->dio);
 }
 
-void ggzcomm_rspmove(GGZDataIO * dio)
+void ggzcomm_rspmove(GGZCommIO * io)
 {
-	ggz_dio_packet_start(dio);
-	ggz_dio_put_int(dio, rspmove);
-	ggz_dio_put_char(dio, variables.status);
-	ggz_dio_packet_end(dio);
+	ggz_dio_packet_start(io->dio);
+	ggz_dio_put_int(io->dio, rspmove);
+	ggz_dio_put_char(io->dio, variables.status);
+	ggz_dio_packet_end(io->dio);
 }
 
-void ggzcomm_msgmove(GGZDataIO * dio)
+void ggzcomm_msgmove(GGZCommIO * io)
 {
-	ggz_dio_packet_start(dio);
-	ggz_dio_put_int(dio, msgmove);
-	ggz_dio_put_int(dio, variables.player);
-	ggz_dio_put_int(dio, variables.move);
-	ggz_dio_packet_end(dio);
+	ggz_dio_packet_start(io->dio);
+	ggz_dio_put_int(io->dio, msgmove);
+	ggz_dio_put_int(io->dio, variables.player);
+	ggz_dio_put_int(io->dio, variables.move);
+	ggz_dio_packet_end(io->dio);
 }
 
-void ggzcomm_sndsync(GGZDataIO * dio)
+void ggzcomm_sndsync(GGZCommIO * io)
 {
 	int i1;
 
-	ggz_dio_packet_start(dio);
-	ggz_dio_put_int(dio, sndsync);
-	ggz_dio_put_char(dio, variables.turn);
+	ggz_dio_packet_start(io->dio);
+	ggz_dio_put_int(io->dio, sndsync);
+	ggz_dio_put_char(io->dio, variables.turn);
 	for(i1 = 0; i1 < 9; i1++)
 	{
-		ggz_dio_put_char(dio, variables.space[i1]);
+		ggz_dio_put_char(io->dio, variables.space[i1]);
 	}
-	ggz_dio_packet_end(dio);
+	ggz_dio_packet_end(io->dio);
 }
 
-void ggzcomm_msggameover(GGZDataIO * dio)
+void ggzcomm_msggameover(GGZCommIO * io)
 {
-	ggz_dio_packet_start(dio);
-	ggz_dio_put_int(dio, msggameover);
-	ggz_dio_put_char(dio, variables.winner);
-	ggz_dio_packet_end(dio);
+	ggz_dio_packet_start(io->dio);
+	ggz_dio_put_int(io->dio, msggameover);
+	ggz_dio_put_char(io->dio, variables.winner);
+	ggz_dio_packet_end(io->dio);
 }
 
 static void ggzcomm_network_main_cb(GGZDataIO * dio, void *userdata)
 {
 	int opcode;
 
-	ggz_dio_get_int(dio, &opcode);
+	GGZCommIO *io = userdata;
+	ggz_dio_get_int(io->dio, &opcode);
 
 	if(requirelink)
 	{
@@ -116,18 +117,18 @@ static void ggzcomm_network_main_cb(GGZDataIO * dio, void *userdata)
 	switch (opcode)
 	{
 		case sndmove:
-			ggzcomm_sndmove(dio);
+			ggzcomm_sndmove(io);
 			break;
 		case reqsync:
-			ggzcomm_reqsync(dio);
+			ggzcomm_reqsync(io);
 			break;
 	}
 }
 
-void ggzcomm_network_main(GGZDataIO * dio)
+void ggzcomm_network_main(GGZCommIO * io)
 {
-	ggz_dio_set_read_callback(dio, ggzcomm_network_main_cb, NULL);
-	if(ggz_dio_read_data(dio) < 0)
+	ggz_dio_set_read_callback(io->dio, ggzcomm_network_main_cb, io);
+	if(ggz_dio_read_data(io->dio) < 0)
 		ggzcomm_error();
 }
 
@@ -139,6 +140,19 @@ void ggzcomm_set_notifier_callback(notifier_func_type f)
 void ggzcomm_set_error_callback(error_func_type f)
 {
 	error_func = f;
+}
+
+GGZCommIO *ggzcomm_io_allocate(int fd)
+{
+	GGZCommIO *io = malloc(sizeof(GGZCommIO));
+	io->dio = ggz_dio_new(fd);
+	return io;
+}
+
+void ggzcomm_io_free(GGZCommIO * io)
+{
+	ggz_dio_free(io->dio);
+	ggz_free(io);
 }
 
 static void ggzcomm_error(void)

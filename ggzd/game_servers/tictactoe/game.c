@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 9064 2007-04-22 03:23:47Z jdorje $
+ * $Id: game.c 9181 2007-07-12 10:01:54Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -121,7 +121,7 @@ static void game_network_error(void);
 static int game_send_seat(int seat);
 static int game_send_players(void);
 static int game_send_move(int num, int move);
-static int game_send_sync(GGZDataIO *dio);
+static int game_send_sync(GGZCommIO *io);
 static int game_send_gameover(int winner);
 static int game_read_move(int num, int* move);
 
@@ -338,7 +338,7 @@ static void game_network_data(int opcode)
 {
 	int num;
 	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, save_num);
-	GGZDataIO *dio = seat.playerdata;
+	GGZCommIO *io = seat.playerdata;
 
 	ggzdmod_log(ttt_game.ggz, "Network data: opcode=%i", opcode);
 
@@ -351,7 +351,7 @@ static void game_network_data(int opcode)
 			game_do_move(variables.move_c);
 		break;
 	case reqsync:
-		game_send_sync(dio);
+		game_send_sync(io);
 		break;
 	}
 }
@@ -370,13 +370,13 @@ static void game_handle_ggz_spectator_data(GGZdMod *ggz, GGZdModEvent event,
 	const int num = *num_ptr;
 	int op;
 	GGZSpectator spectator = ggzdmod_get_spectator(ggz, num);
-	GGZDataIO *dio = spectator.playerdata;
+	GGZCommIO *io = spectator.playerdata;
 
-	ggz_dio_get_int(dio, &op);
+	ggz_dio_get_int(io->dio, &op);
 
 	switch (op) {
 	case TTT_REQ_SYNC:
-		game_send_sync(dio);
+		game_send_sync(io);
 		break;
 	default:
 		ggzdmod_log(ggz, "Unrecognized spectator opcode %d.", op);
@@ -444,12 +444,12 @@ static int game_send_move(int num, int move)
 
 
 /* Send out board layout */
-static int game_send_sync(GGZDataIO *dio)
+static int game_send_sync(GGZCommIO *io)
 {	
 	ggzdmod_log(ttt_game.ggz, "Handling sync for fd %d",
-		    ggz_dio_get_socket(dio));
+		    ggz_dio_get_socket(io->dio));
 
-	ggzcomm_sndsync(dio);
+	ggzcomm_sndsync(io);
 
 	return 0;
 }
