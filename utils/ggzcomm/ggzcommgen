@@ -1160,7 +1160,7 @@ class GGZComm
 			end
 
 			f.puts ""
-			if library == "easysock" or role == "client"
+			if role == "client"
 				arg = "void"
 			else
 				arg = "GGZCommIO *io"
@@ -1222,10 +1222,10 @@ class GGZComm
 			f.puts ""
 			f.puts "static notifier_func_type notifier_func = NULL;"
 			f.puts "static error_func_type error_func = NULL;"
-			#if library != "dio" and role != "server"
+			if library == "easysock"
 			#	f.puts "static int fd = -1;"
-			#	f.puts "static int ret;"
-			#end
+				f.puts "static int ret;"
+			end
 			f.puts "static int requirelink = 0;"
 			f.puts "static int nextlink;"
 			if library == "dio" then
@@ -1264,9 +1264,12 @@ class GGZComm
 				f.puts ""
 			end
 			if library == "easysock"
-				f.puts "void ggzcomm_network_main(void)"
+				if role == "client"
+					f.puts "void ggzcomm_network_main(void)"
+				else
+					f.puts "void ggzcomm_network_main(GGZCommIO *io)"
+				end
 			else
-				#f.puts "static void ggzcomm_network_main_cb(GGZDataIO *dio, void *userdata)"
 				f.puts "static void ggzcomm_network_main_cb(GGZDataIO *dio, void *userdata)"
 			end
 			f.puts "{"
@@ -1286,8 +1289,8 @@ class GGZComm
 				else
 					f.puts "GGZCommIO *io = userdata;"
 				end
-			else
-				f.puts "int fd = io->fd;"
+			#else
+			#	f.puts "int fd = io->fd;"
 			end
 			if mode == "debug":
 				f.puts "#ifdef GGZCOMM_DEBUG"
@@ -1374,10 +1377,10 @@ class GGZComm
 			f.puts ""
 			f.puts "void ggzcomm_io_free(GGZCommIO *io)"
 			f.puts "{"
-			f.puts "\tggz_dio_free(io->dio);"
 			if library == "dio"
-				f.puts "\tggz_free(io);"
+				f.puts "\tggz_dio_free(io->dio);"
 			end
+			f.puts "\tggz_free(io);"
 			f.puts "}"
 			f.puts ""
 			#if library == "easysock" or role == "client"
