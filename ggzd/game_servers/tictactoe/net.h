@@ -5,8 +5,6 @@
 #ifndef GGZCOMM_TICTACTOE_H
 #define GGZCOMM_TICTACTOE_H
 
-#include <ggz_dio.h>
-
 #define sndmove 0
 #define reqsync 1
 #define msgseat 0
@@ -17,7 +15,7 @@
 #define sndsync 6
 #define msggameover 3
 typedef struct ggzcommio_t {
-	GGZDataIO *dio;
+	int fd;
 } GGZCommIO;
 
 struct variables_t {

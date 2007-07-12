@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 9181 2007-07-12 10:01:54Z josef $
+ * $Id: game.c 9184 2007-07-12 10:59:15Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -82,6 +82,9 @@
 #define TTT_ERR_TURN    -2
 #define TTT_ERR_BOUND   -3
 #define TTT_ERR_FULL    -4
+
+/* Whether or not DIO is used */
+#define TTT_USE_DIO      0
 
 /* === Variables, types and functions === */
 
@@ -245,13 +248,13 @@ static void game_handle_ggz_spectator_seat(GGZdMod *ggz, GGZdModEvent event,
 	spectator = ggzdmod_get_spectator(ggz, old_spectator->num);
 
 	if (event == GGZDMOD_EVENT_SPECTATOR_JOIN) {
-		GGZDataIO *dio = ggz_dio_new(spectator.fd);
+		GGZCommIO *io = ggzcomm_io_allocate(spectator.fd);
 
 		assert(spectator.playerdata == NULL);
 
-		ggzdmod_set_playerdata(ggz, true, spectator.num, dio);
+		ggzdmod_set_playerdata(ggz, true, spectator.num, io);
 		spectator = ggzdmod_get_spectator(ggz, old_spectator->num);
-		assert(spectator.playerdata == dio);
+		assert(spectator.playerdata == io);
 	}
 
 	if (spectator.name) {
@@ -260,7 +263,7 @@ static void game_handle_ggz_spectator_seat(GGZdMod *ggz, GGZdModEvent event,
 	}
 
 	if (event == GGZDMOD_EVENT_SPECTATOR_LEAVE) {
-		ggz_dio_free(old_spectator->playerdata);
+		ggzcomm_io_free(old_spectator->playerdata);
 	}
 
 	if (seats_empty())
@@ -288,14 +291,14 @@ static void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event,
 	}
 
 	if (event == GGZDMOD_EVENT_LEAVE) {
-		ggz_dio_free(old_seat->playerdata);
+		ggzcomm_io_free(old_seat->playerdata);
 	} else if (event == GGZDMOD_EVENT_JOIN) {
-		GGZDataIO *dio = ggz_dio_new(new_seat.fd);
+		GGZCommIO *io = ggzcomm_io_allocate(new_seat.fd);
 
 		assert(new_seat.playerdata == NULL);
-		ggzdmod_set_playerdata(ggz, false, new_seat.num, dio);
+		ggzdmod_set_playerdata(ggz, false, new_seat.num, io);
 		new_seat = ggzdmod_get_seat(ggz, old_seat->num);
-		assert(new_seat.playerdata == dio);
+		assert(new_seat.playerdata == io);
 	}
 
 	game_send_players();
@@ -372,7 +375,11 @@ static void game_handle_ggz_spectator_data(GGZdMod *ggz, GGZdModEvent event,
 	GGZSpectator spectator = ggzdmod_get_spectator(ggz, num);
 	GGZCommIO *io = spectator.playerdata;
 
+#if TTT_USE_DIO
 	ggz_dio_get_int(io->dio, &op);
+#else
+	ggz_read_int(io->fd, &op);
+#endif
 
 	switch (op) {
 	case TTT_REQ_SYNC:
@@ -446,8 +453,13 @@ static int game_send_move(int num, int move)
 /* Send out board layout */
 static int game_send_sync(GGZCommIO *io)
 {	
+#if TTT_USE_DIO
 	ggzdmod_log(ttt_game.ggz, "Handling sync for fd %d",
 		    ggz_dio_get_socket(io->dio));
+#else
+	ggzdmod_log(ttt_game.ggz, "Handling sync for fd %d",
+		    io->fd);
+#endif
 
 	ggzcomm_sndsync(io);
 
