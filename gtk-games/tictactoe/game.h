@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 4/11/00
  * Desc: TTT game functions
- * $Id: game.h 8333 2006-07-08 00:51:56Z jdorje $
+ * $Id: game.h 9190 2007-07-13 05:32:37Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,19 +23,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef TTT_GAME_H
+#define TTT_GAME_H
+
 #include <ggz_dio.h>
 
 #include <ggzmod.h>
 
 /* Tic-Tac-Toe protocol */
-/* Messages from server */
-#define TTT_MSG_SEAT     0
-#define TTT_MSG_PLAYERS  1
-#define TTT_MSG_MOVE     2
-#define TTT_MSG_GAMEOVER 3
-#define TTT_REQ_MOVE     4
-#define TTT_RSP_MOVE     5
-#define TTT_SND_SYNC     6
+/* Messages from server now in net.h */
 
 /* Move errors */
 #define TTT_ERR_STATE   -1
@@ -57,7 +53,6 @@
 struct game_state_t {
 	/* Basic info about connection */
 	GGZMod *ggzmod;
-	GGZDataIO *dio;
 	int num;
 	int seats[2];
 	char names[2][17];
@@ -76,11 +71,13 @@ void game_init(void);
 /* Functions to handle incoming data from server*/
 void receive_seat(void);
 void receive_players(void);
-void receive_move_status(void);
-void receive_move(void);
-void receive_sync(void);
-void receive_gameover(void);
+void receive_move_status(char status);
+void receive_move(int move, int player);
+void receive_sync(int turn, char spaces[9]);
+void receive_gameover(char winner);
 
 /* Functions to send data to server */
 int send_options(void);
 int send_my_move(void);
+
+#endif

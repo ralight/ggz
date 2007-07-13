@@ -22,7 +22,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef TTT_MAINWIN_H
+#define TTT_MAINWIN_H
 
 GtkWidget *create_main_win(void);
 void game_status(const char *format, ...);
 void display_board(void);
+
+#endif

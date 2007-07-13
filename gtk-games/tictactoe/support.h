@@ -4,7 +4,7 @@
  * Project: GTK Games clients
  * Date: 11/05/2004
  * Desc: Provides miscellaneous support code
- * $Id: support.h 6356 2004-11-13 18:26:50Z jdorje $
+ * $Id: support.h 9190 2007-07-13 05:32:37Z josef $
  *
  * Copyright (C) 2004 GGZ Development Team
  *
@@ -22,6 +22,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifndef TTT_SUPPORT_H
+#define TTT_SUPPORT_H
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -64,3 +67,5 @@
  * you want returned.
  */
 GtkWidget *lookup_widget(GtkWidget * widget, const gchar * widget_name);
+
+#endif

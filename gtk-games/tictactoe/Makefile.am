@@ -15,7 +15,8 @@ ggz_ttt_SOURCES =			\
 	game.h				\
 	main.c				\
 	main_win.c	main_win.h	\
-	support.c	support.h
+	support.c	support.h	\
+	net.c		net.h
 
 ggz_ttt_LDADD =	$(top_builddir)/common/libgtk-games.a			\
 		$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
@@ -27,3 +28,6 @@ dist_pixmap_DATA = o.svg x.svg
 
 include $(top_srcdir)/m4/modversion.mk
 
+PROTOCOL = tictactoe
+SOURCEFILE = net
+include $(top_srcdir)/m4/protocol.mk
