@@ -1,11 +1,7 @@
 /*
- * File: game.h
- * Author: Brent Hendricks
- * Project: GGZ Tic-Tac-Toe game module
- * Date: 3/31/00
- * Desc: Game functions
- *
+ * GGZ Tic-Tac-Toe Server
  * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2001 - 2007 GGZ Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

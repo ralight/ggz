@@ -1,12 +1,7 @@
 /*
- * File: game.c
- * Author: Brent Hendricks
- * Project: GGZ Tic-Tac-Toe game module
- * Date: 3/31/00
- * Desc: Game functions
- * $Id: game.c 9186 2007-07-13 05:31:30Z josef $
- *
+ * GGZ Tic-Tac-Toe Server
  * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2001 - 2007 GGZ Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,15 +18,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-/*
- * The Tic-Tac-Toe game server has been designed to let starters easily
- * get to know the features that GGZ provides to game authors.
- * Thus, a lot of #ifdefs are used which are not intended to be undefined,
- * but rather to localize the special features.
- * A simple game can do without them, but their usage is strongly encouraged.
- * The features correspond to those advertised on the GGZ webpages and in the
- * game feature comparison document.
- */
+/* Please read README.tictactoe first! */
 
 /* === Include files === */
 
@@ -91,11 +78,9 @@
 /* === Variables, types and functions === */
 
 /* Data structure for Tic-Tac-Toe-Game */
+/* The game board and the turn are managed by the network protocol */
 struct ttt_game_t {
 	GGZdMod *ggz;		/* Pointer to global ggzdmod object */
-	/*char board[9];*/	/* Single-dimension representation of game board (unused) */
-	/*char state;*/		/* Unused */
-	/*char turn;*/		/* Player turn (-1 before start, 0/1 for players) */
 	char move_count;	/* Number of moves already executed */
 	FILE *savegame;		/* Continuous game logfile */
 };

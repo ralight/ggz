@@ -1,0 +1,31 @@
+The GGZ Tic-Tac-Toe Server
+==========================
+
+This file contains some development information about the GGZ Tic-Tac-Toe
+server. Especially C programmers who look for a simple example, but
+also everyone else who wants to study GGZ, should consult the source of
+this server first.
+
+The Tic-Tac-Toe game server has been designed to let starters easily get to
+know the features that GGZ provides to game authors.
+Thus, a lot of #ifdefs are used which are not intended to be undefined,
+but rather to localize the special features.
+A simple game can do without them, but their usage is strongly encouraged.
+The features correspond to those advertised on the GGZ webpages and in the
+game feature comparison document.
+
+The TTT server uses the 'ggzdmod' library to handle player management,
+connections, statistics, spectators and savegames. The server is implemented
+in the files game.[ch].
+
+The artificial intelligence (AI) for bot players is designed to be re-used
+in other game servers, e.g. in RubyToe, the TTT server written in Ruby.
+Therefore, the files ttt-ai.[ch] are designed to be completely stateless
+and independent of the server to make it easy to re-use them.
+
+The source code for the networking protocol is generated automatically
+using the GGZComm protocol code generator. It is stored in net.[ch] and
+can be updated easily to switch to other protocol modes.
+
+Finally, the file main.c contains all the startup code for the server.
+
