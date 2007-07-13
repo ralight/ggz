@@ -1133,14 +1133,17 @@ class GGZComm
 				@constants[event.name] = nil
 			end
 
-			f.puts "typedef struct ggzcommio_t"
-			f.puts "{"
-			if library == "dio":
-				f.puts "\tGGZDataIO *dio;"
-			else
-				f.puts "\tint fd;"
+			if role == "server"
+				f.puts ""
+				f.puts "typedef struct ggzcommio_t"
+				f.puts "{"
+				if library == "dio":
+					f.puts "\tGGZDataIO *dio;"
+				else
+					f.puts "\tint fd;"
+				end
+				f.puts "} GGZCommIO;"
 			end
-			f.puts "} GGZCommIO;"
 
 			i = 0
 			@eventlist.each do |event|
@@ -1161,7 +1164,7 @@ class GGZComm
 
 			f.puts ""
 			if role == "client"
-				arg = "void"
+				arg = "int fd"
 			else
 				arg = "GGZCommIO *io"
 			end
@@ -1169,13 +1172,10 @@ class GGZComm
 			f.puts ""
 			@eventlist.each do |event|
 				if event.section == role then
-					#arg = "void"
-					arg = "GGZCommIO *io"
-					#if library == "dio"
-					#	if role == "server"
-					#		arg = "GGZDataIO *dio"
-					#	end
-					#end
+					arg = "void"
+					if role == "server"
+						arg = "GGZCommIO *io"
+					end
 					f.puts "void ggzcomm_" + event.name + "(" + arg + ");"
 				end
 			end
@@ -1189,9 +1189,11 @@ class GGZComm
 			#end
 			f.puts "void ggzcomm_set_notifier_callback(notifier_func_type f);"
 			f.puts "void ggzcomm_set_error_callback(error_func_type f);"
-			f.puts ""
-			f.puts "GGZCommIO *ggzcomm_io_allocate(int fd);"
-			f.puts "void ggzcomm_io_free(GGZCommIO *io);"
+			if role == "server"
+				f.puts ""
+				f.puts "GGZCommIO *ggzcomm_io_allocate(int fd);"
+				f.puts "void ggzcomm_io_free(GGZCommIO *io);"
+			end
 			f.puts ""
 			f.puts "#endif"
 			f.puts ""
@@ -1219,39 +1221,48 @@ class GGZComm
 					f.puts "#define " + varname(name) + " " + value
 				end
 			end
+
+			if role == "client"
+				f.puts ""
+				f.puts "typedef struct ggzcommio_t"
+				f.puts "{"
+				if library == "dio":
+					f.puts "\tGGZDataIO *dio;"
+				else
+					f.puts "\tint fd;"
+				end
+				f.puts "} GGZCommIO;"
+			end
+
 			f.puts ""
 			f.puts "static notifier_func_type notifier_func = NULL;"
 			f.puts "static error_func_type error_func = NULL;"
 			if library == "easysock"
-			#	f.puts "static int fd = -1;"
 				f.puts "static int ret;"
 			end
 			f.puts "static int requirelink = 0;"
 			f.puts "static int nextlink;"
-			if library == "dio" then
-				if role == "client"
-					#f.puts "static GGZDataIO *dio = NULL;"
-					f.puts "static GGZCommIO *io = NULL;"
-				end
+			if role == "client"
+				f.puts "static GGZCommIO *io = NULL;"
 			end
 			f.puts ""
 			f.puts "static void ggzcomm_error(void);"
+			if role == "client"
+				f.puts ""
+				f.puts "GGZCommIO *ggzcomm_io_allocate(int fd);"
+				f.puts "void ggzcomm_io_free(GGZCommIO *io);"
+			end
 			f.puts ""
 			@eventlist.each do |event|
 				if event.section != role then
 					f.print "static "
 				end
 				f.print "void ggzcomm_" + event.name + "("
-				#if library == "easysock"
-				#	f.print "void"
-				#else
-				#	if role == "server"
-				#		f.print "GGZDataIO *dio"
-				#	else
-				#		f.print "void"
-				#	end
-				#end
-				f.print "GGZCommIO *io"
+				if role == "server"
+					f.print "GGZCommIO *dio"
+				else
+					f.print "void"
+				end
 				f.puts ")"
 				f.puts "{"
 				f.puts event.network(role, mode, library)
@@ -1265,7 +1276,7 @@ class GGZComm
 			end
 			if library == "easysock"
 				if role == "client"
-					f.puts "void ggzcomm_network_main(void)"
+					f.puts "void ggzcomm_network_main(int fd)"
 				else
 					f.puts "void ggzcomm_network_main(GGZCommIO *io)"
 				end
@@ -1279,18 +1290,16 @@ class GGZComm
 				f.puts "\tchar opcode;"
 			end
 			f.puts ""
-			if library == "dio" then
-				if role == "client"
-					f.puts "\tif(!io)"
-					f.puts "\t{"
-					f.puts "\t\tio = ggzcomm_io_allocate(fd);"
-					f.puts "\t}"
-					f.puts ""
-				else
+			if role == "client"
+				f.puts "\tif(!io)"
+				f.puts "\t{"
+				f.puts "\t\tio = ggzcomm_io_allocate(fd);"
+				f.puts "\t}"
+				f.puts ""
+			else
+				if library == "dio" then
 					f.puts "GGZCommIO *io = userdata;"
 				end
-			#else
-			#	f.puts "int fd = io->fd;"
 			end
 			if mode == "debug":
 				f.puts "#ifdef GGZCOMM_DEBUG"
@@ -1324,15 +1333,12 @@ class GGZComm
 			f.puts "\t{"
 			@eventlist.each do |event|
 				if event.section != role
-					f.puts "\t\tcase " + event.name + ":\n"
+					f.puts "\t\tcase " + event.name + ":"
 					f.print "\t\t\tggzcomm_" + event.name() + "("
-					#if library == "dio"
-					#	if role == "server"
-					#		f.print "dio"
-					#	end
-					#end
-					f.print "io"
-					f.puts ");\n"
+					if role == "server"
+						f.print "io"
+					end
+					f.puts ");"
 					f.puts "\t\t\tbreak;"
 				end
 			end
