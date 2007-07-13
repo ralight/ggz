@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 9184 2007-07-12 10:59:15Z josef $
+ * $Id: game.c 9186 2007-07-13 05:31:30Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -59,6 +59,8 @@
 
 /* === Configuration of features === */
 
+/* The game supports people not on the table watching the game */
+#define GGZSPECTATORS /* do not undefine! */
 /* The game supports statistics (e.g. records, ratings, highscores) */
 #define GGZSTATISTICS /* do not undefine! */
 /* The game supports leave/rejoin of players */
@@ -107,12 +109,14 @@ static void game_handle_ggz_state(GGZdMod *ggz,
                                   GGZdModEvent event, const void *data);
 static void game_handle_ggz_seat(GGZdMod *ggz,
                                   GGZdModEvent event, const void *data);
+#ifdef GGZSPECTATORS
 static void game_handle_ggz_spectator_data(GGZdMod *ggz,
 					   GGZdModEvent event,
 					   const void *data);
 static void game_handle_ggz_spectator_seat(GGZdMod *ggz,
 					   GGZdModEvent event,
 					   const void *data);
+#endif
 static void game_handle_ggz_player(GGZdMod *ggz,
                                    GGZdModEvent event, const void *data);
 
@@ -169,6 +173,7 @@ void game_init(GGZdMod *ggzdmod)
 	                    &game_handle_ggz_seat);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA,
 	                    &game_handle_ggz_player);
+#ifdef GGZSPECTATORS
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_DATA,
 	                    &game_handle_ggz_spectator_data);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN,
@@ -177,6 +182,7 @@ void game_init(GGZdMod *ggzdmod)
 	                    &game_handle_ggz_spectator_seat);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_SEAT,
 	                    &game_handle_ggz_spectator_seat);
+#endif
 
 	ggzcomm_set_notifier_callback(game_network_data);
 	ggzcomm_set_error_callback(game_network_error);
@@ -238,6 +244,7 @@ static int seats_empty(void)
 }
 
 
+#ifdef GGZSPECTATORS
 /* Callback for joining spectators */
 static void game_handle_ggz_spectator_seat(GGZdMod *ggz, GGZdModEvent event,
 					   const void *data)
@@ -269,6 +276,7 @@ static void game_handle_ggz_spectator_seat(GGZdMod *ggz, GGZdModEvent event,
 	if (seats_empty())
 		ggzdmod_set_state(ttt_game.ggz, GGZDMOD_STATE_DONE);
 }
+#endif
 
 /* Callback for ggzdmod JOIN, LEAVE, and SEAT events */
 static void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event,
@@ -365,6 +373,7 @@ static void game_network_error(void)
 	ggzdmod_log(ttt_game.ggz, "Network error!");
 }
 
+#ifdef GGZSPECTATORS
 /* Handle message from spectator */
 static void game_handle_ggz_spectator_data(GGZdMod *ggz, GGZdModEvent event,
 					   const void *data)
@@ -389,6 +398,7 @@ static void game_handle_ggz_spectator_data(GGZdMod *ggz, GGZdModEvent event,
 		ggzdmod_log(ggz, "Unrecognized spectator opcode %d.", op);
 	}
 }
+#endif
 
 /* Send out seat assignment */
 static int game_send_seat(int num)
@@ -472,7 +482,9 @@ static int game_send_gameover(int winner)
 {
 	int i;
 	GGZSeat seat;
+#ifdef GGZSPECTATORS
 	GGZSpectator spectator;
+#endif
 
 #ifdef GGZSTATISTICS
 	GGZGameResult results[2];
@@ -497,6 +509,7 @@ static int game_send_gameover(int winner)
 		}
 	}
 
+#ifdef GGZSPECTATORS
 	for (i = 0; i < ggzdmod_get_max_num_spectators(ttt_game.ggz); i++)
 	{
 		spectator = ggzdmod_get_spectator(ttt_game.ggz, i);
@@ -506,6 +519,7 @@ static int game_send_gameover(int winner)
 
 		ggzcomm_msggameover(spectator.playerdata);
 	}
+#endif
 
 #ifdef GGZSAVEDGAMES
 	game_save("%s %s %i",
@@ -601,7 +615,9 @@ static int game_req_move(int num)
 static int game_do_move(int move)
 {
 	char victor;
+#ifdef GGZSPECTATORS
 	int i;
+#endif
 
 	/* FIXME: we should not return on a network error within this
 	   function - that will fubar the whole game since the turn won't
@@ -615,6 +631,7 @@ static int game_do_move(int move)
 	ttt_game.move_count++;
 	game_send_move(variables.turn, move);
 
+#ifdef GGZSPECTATORS
 	for(i = 0; i < ggzdmod_get_max_num_spectators(ttt_game.ggz); i++) {
 		GGZSpectator spectator
 		  = ggzdmod_get_spectator(ttt_game.ggz, i);
@@ -626,6 +643,7 @@ static int game_do_move(int move)
 
 		ggzcomm_msgmove(spectator.playerdata);
 	}
+#endif
 
 #ifdef GGZSAVEDGAMES
 	game_save("player%i move %i %i", variables.turn + 1, move / 3, move % 3);
