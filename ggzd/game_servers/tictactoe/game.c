@@ -38,10 +38,10 @@
 /* GGZ utility functions */
 #include <ggz.h>
 
-/* Header including ggzdmod.h */
+/* TTT header including ggzdmod.h */
 #include "game.h"
 
-/* Auto-generated networking layer */
+/* TTT auto-generated networking layer */
 #include "net.h"
 
 /* === Configuration of features === */
@@ -60,6 +60,11 @@
 #define GGZBOTHASNAME /* do not undefine */
 /* The game supports to play one more time; FIXME: not used yet */
 #define GGZAGAINQUERY /* do not undefine */
+
+/* TTT artificial intelligence */
+#ifdef GGZBOTPLAYERS
+#include "ttt-ai.h"
+#endif
 
 /* === Tic-Tac-Toe protocol (otherwise now defined in net.h) === */
 
@@ -121,9 +126,6 @@ static int game_read_move(int num, int* move);
 static int game_next_move(void);
 static int game_req_move(int num);
 static int game_do_move(int move);
-#ifdef GGZBOTPLAYERS
-#include "ttt-ai.h"
-#endif
 
 /* Local utility function prototypes */
 static char game_check_move(int num, int move);
@@ -138,16 +140,17 @@ static void game_save(char *fmt, ...);
 void game_init(GGZdMod *ggzdmod)
 {
 	int i;
-	
+
+	/* Initialize all variables */
 	variables.turn = -1;
 	for (i = 0; i < 9; i++)
 		variables.space[i] = -1;
 
 	ttt_game.move_count = 0;
 	ttt_game.savegame = NULL;
-		
-	/* Setup GGZ game module */
 	ttt_game.ggz = ggzdmod;
+
+	/* Setup GGZ game module callbacks */
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_STATE,
 	                    &game_handle_ggz_state);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_JOIN,
@@ -169,6 +172,7 @@ void game_init(GGZdMod *ggzdmod)
 	                    &game_handle_ggz_spectator_seat);
 #endif
 
+	/* Setup the network callbacks for GGZComm */
 	ggzcomm_set_notifier_callback(game_network_data);
 	ggzcomm_set_error_callback(game_network_error);
 }
@@ -181,8 +185,20 @@ static void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event,
 	int i;
 
 	switch(ggzdmod_get_state(ggz)) {
+	case GGZDMOD_STATE_CREATED:
+		/* Game server just started without any connections yet */
+		for (i = 0; i < 2; i++) {
+			assert(ggzdmod_get_seat(ggz, i).playerdata == NULL);
+			assert(ggzdmod_get_seat(ggz, i).name == NULL);
+			assert(ggzdmod_get_seat(ggz, i).fd == -1);
+		}
+		break;
+	case GGZDMOD_STATE_WAITING:
+		/* Game server is connected to GGZ */
+		/* Alternatively (later on) not playing anymore */
+		break;
 	case GGZDMOD_STATE_PLAYING:
-		/* If we're just starting, set for first players turn*/
+		/* If we're starting to play, set for first players turn */
 		if (variables.turn == -1)
 			variables.turn = 0;
 		
@@ -196,15 +212,8 @@ static void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event,
 #endif
 		game_next_move();
 		break;
-	case GGZDMOD_STATE_CREATED:
-		for (i = 0; i < 2; i++) {
-			assert(ggzdmod_get_seat(ggz, i).playerdata == NULL);
-			assert(ggzdmod_get_seat(ggz, i).name == NULL);
-			assert(ggzdmod_get_seat(ggz, i).fd == -1);
-		}
-		break;
-	case GGZDMOD_STATE_WAITING:
 	case GGZDMOD_STATE_DONE:
+		/* The game is over and will be destroyed */
 		break;
 	}
 }
@@ -230,7 +239,7 @@ static int seats_empty(void)
 
 
 #ifdef GGZSPECTATORS
-/* Callback for joining spectators */
+/* Callback for joining and leaving spectators */
 static void game_handle_ggz_spectator_seat(GGZdMod *ggz, GGZdModEvent event,
 					   const void *data)
 {
@@ -258,8 +267,10 @@ static void game_handle_ggz_spectator_seat(GGZdMod *ggz, GGZdModEvent event,
 		ggzcomm_io_free(old_spectator->playerdata);
 	}
 
+#if 0
 	if (seats_empty())
 		ggzdmod_set_state(ttt_game.ggz, GGZDMOD_STATE_DONE);
+#endif
 }
 #endif
 
@@ -360,6 +371,7 @@ static void game_network_error(void)
 
 #ifdef GGZSPECTATORS
 /* Handle message from spectator */
+/* FIXME: doesn't use ggzcomm yet */
 static void game_handle_ggz_spectator_data(GGZdMod *ggz, GGZdModEvent event,
 					   const void *data)
 {
