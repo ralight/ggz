@@ -1,6 +1,6 @@
 protocolhandler:
 	$(top_srcdir)/../utils/ggzcomm/ggzcommgen \
-		--language c --interface dio --role server \
+		--language c --interface easysock --role server \
 		$(top_srcdir)/../utils/ggzcomm/$(PROTOCOL)
 	mv $(PROTOCOL)_server.c $(SOURCEFILE).c
 	mv $(PROTOCOL)_server.h $(SOURCEFILE).h
