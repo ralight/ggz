@@ -72,10 +72,14 @@
 #define TTT_REQ_SYNC     1
 
 /* Move errors */
+#define TTT_OK           0
 #define TTT_ERR_STATE   -1
 #define TTT_ERR_TURN    -2
 #define TTT_ERR_BOUND   -3
 #define TTT_ERR_FULL    -4
+
+/* Unoccupied square on the board */
+#define TTT_EMPTY       -1
 
 /* Whether or not DIO is used */
 #define TTT_USE_DIO      0
@@ -144,7 +148,7 @@ void game_init(GGZdMod *ggzdmod)
 	/* Initialize all variables */
 	variables.turn = -1;
 	for (i = 0; i < 9; i++)
-		variables.space[i] = -1;
+		variables.space[i] = TTT_EMPTY;
 
 	ttt_game.move_count = 0;
 	ttt_game.savegame = NULL;
@@ -535,22 +539,23 @@ int game_read_move(int num, int* move)
 	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, num);
 	char status;
 	
-	ggzdmod_log(ttt_game.ggz, "Handling move for player %d", num);
+	ggzdmod_log(ttt_game.ggz, "Handling move for player %d: %i", num, *move);
 
 	/* Check validity of move */
 	status = game_check_move(num, *move);
 
 	/* Send back move status */
-	variables.status = status;
+	ggzdmod_log(ttt_game.ggz, "Send back result: %i", status);
 
+	variables.status = status;
 	ggzcomm_rspmove(seat.playerdata);
 
 	/* If move simply invalid, ask for resubmit */
-	if ( (status == -3 || status == -4)
+	if ( (status == TTT_ERR_BOUND || status == TTT_ERR_FULL)
 	     && game_req_move(num) < 0)
 		return -1;
 
-	if (status != 0)
+	if (status != TTT_OK)
 		return 1;
 	
 	return 0;
@@ -600,7 +605,7 @@ static int game_req_move(int num)
 {
 	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, num);
 
-	ggzdmod_log(ttt_game.ggz, "Requesting move from player %d on %d", num, seat.fd);
+	ggzdmod_log(ttt_game.ggz, "Requesting move from player %d on fd %d", num, seat.fd);
 
 	ggzcomm_reqmove(seat.playerdata);
 
@@ -679,7 +684,7 @@ static char game_check_move(int num, int move)
 		return TTT_ERR_BOUND;
 
 	/* Check for duplicated move */
-	if (variables.space[move] != -1)
+	if (variables.space[move] != TTT_EMPTY)
 		return TTT_ERR_FULL;
 
 	return 0;
@@ -692,44 +697,44 @@ static char game_check_win(void)
 	/* Check horizontals */
 	if (variables.space[0] == variables.space[1]
 	    && variables.space[1] == variables.space[2]
-	    && variables.space[2] != -1)
+	    && variables.space[2] != TTT_EMPTY)
 		return variables.space[0];
 
 	if (variables.space[3] == variables.space[4]
 	    && variables.space[4] == variables.space[5]
-	    && variables.space[5] != -1)
+	    && variables.space[5] != TTT_EMPTY)
 		return variables.space[3];
 			
 	if (variables.space[6] == variables.space[7]
 	    && variables.space[7] == variables.space[8]
-	    && variables.space[8] != -1)
+	    && variables.space[8] != TTT_EMPTY)
 		return variables.space[6];
 
 	/* Check verticals */
 	if (variables.space[0] == variables.space[3]
 	    && variables.space[3] == variables.space[6]
-	    && variables.space[6] != -1)
+	    && variables.space[6] != TTT_EMPTY)
 		return variables.space[0];
 
 	if (variables.space[1] == variables.space[4]
 	    && variables.space[4] == variables.space[7]
-	    && variables.space[7] != -1)
+	    && variables.space[7] != TTT_EMPTY)
 		return variables.space[1];
 
 	if (variables.space[2] == variables.space[5]
 	    && variables.space[5] == variables.space[8]
-	    && variables.space[8] != -1)
+	    && variables.space[8] != TTT_EMPTY)
 		return variables.space[2];
 	
 	/* Check diagonals */
 	if (variables.space[0] == variables.space[4]
 	    && variables.space[4] == variables.space[8]
-	    && variables.space[8] != -1)
+	    && variables.space[8] != TTT_EMPTY)
 		return variables.space[0];
 
 	if (variables.space[2] == variables.space[4]
 	    && variables.space[4] == variables.space[6]
-	    && variables.space[6] != -1)
+	    && variables.space[6] != TTT_EMPTY)
 		return variables.space[2];
 
 	/* No one won yet */

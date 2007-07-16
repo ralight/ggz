@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 9190 2007-07-13 05:32:37Z josef $
+ * $Id: main.c 9192 2007-07-16 13:30:40Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -265,6 +265,7 @@ int send_my_move(void)
 		return -1;
 	game_status(_("Sending move."));
 
+	variables.move_c = game.move;
 	ggzcomm_sndmove();
 
 	game.state = STATE_WAIT;
