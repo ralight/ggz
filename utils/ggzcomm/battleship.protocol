@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<ggzcomm engine="battleship" version="1" xmlns="urn:ggz:ggzcomm">
+	<definitions opcodetype="int">
+		<def name="shipsready" value="100"/>
+		<def name="shoot" value="101"/>
+		<def name="answershoot" value="102"/>
+		<def name="won" value="103"/>
+		<def name="replay" value="104"/>
+	</definitions>
+	<client>
+		<event name="answershoot">
+			<data name="fieldx" type="int"/>
+			<data name="fieldy" type="int"/>
+			<data name="fieldstate" type="int"/>
+		</event>
+		<event name="answershoot2">
+			<data name="xstart" type="int"/>
+			<data name="xstop" type="int"/>
+			<data name="ystart" type="int"/>
+			<data name="ystop" type="int"/>
+			<data name="death" type="string"/><!-- fixed="true" -->
+			<data name="fieldx" type="int"/>
+			<data name="fieldy" type="int"/>
+			<!-- ... too confusing -->
+		</event>
+	</client>
+	<server>
+	</server>
+	<protocol>
+	</protocol>
+</ggzcomm>
+

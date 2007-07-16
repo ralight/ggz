@@ -1,0 +1,20 @@
+Integrated forum in GGZ Community
+=================================
+
+* Private message box
+  - write access: registered users
+  - read access: owner
+* Club forums
+  - one for each club
+  - write access: club members
+  - read access: club members
+* Public forums
+  - one for games
+  - one for general things
+  - write access: registered users
+  - read access: everyone
+
+Administration?
+- deletion of entries
+- addition of public forums
+
