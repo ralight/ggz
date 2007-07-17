@@ -11,15 +11,15 @@
 
 /* Global Variables */
 
-VALUE cTEST;
-int ret;
-const char *rets;
-VALUE retv;
-GGZdMod *ggzdmod;
+static VALUE cTEST;
+static int ret;
+static const char *rets;
+static VALUE retv;
+static GGZdMod *ggzdmod;
 
 /* Callback handlers */
 
-void cb_handler ( GGZdMod *mod, GGZdModEvent event, const void *data )
+static void cb_handler ( GGZdMod *mod, GGZdModEvent event, const void *data )
 {
 	VALUE dataval = Qnil;
 
@@ -38,7 +38,7 @@ void cb_handler ( GGZdMod *mod, GGZdModEvent event, const void *data )
 	rb_funcall( cTEST, rb_intern("ggzdmod_handler"), 2, INT2FIX ( event ), dataval );
 }
 
-void init_ggz ()
+static void init_ggz ()
 {
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_STATE, cb_handler );
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_JOIN, cb_handler );
@@ -56,7 +56,7 @@ void init_ggz ()
 
 static VALUE t_init ( VALUE self )
 {
-	ggzdmod = ggzdmod_new( GGZDMOD_GAME );
+	ggzdmod = ggzdmod_new ( GGZDMOD_GAME );
 
 	return self;
 }
@@ -131,7 +131,7 @@ static VALUE t_get_seat_fd ( VALUE self, VALUE seat )
 
 /* Module initialization */
 
-void init_constants ( VALUE self )
+static void init_constants ( VALUE self )
 {
 	rb_define_const ( self, "SEATNONE", INT2NUM ( GGZ_SEAT_NONE ) );
 	rb_define_const ( self, "SEATOPEN", INT2NUM ( GGZ_SEAT_OPEN ) );
@@ -157,23 +157,27 @@ void init_constants ( VALUE self )
 	rb_define_const ( self, "EVENTERROR", INT2FIX ( GGZDMOD_EVENT_ERROR ) );
 }
 
+static void init_methods ( VALUE self )
+{
+	rb_define_method ( self, "initialize", t_init, 0 );
+	rb_define_method ( self, "connect", t_connect, 0 );
+	rb_define_method ( self, "disconnect", t_disconnect, 0 );
+
+	rb_define_method ( self, "get_state", t_get_state, 0 );
+	rb_define_method ( self, "get_num_seats", t_get_num_seats, 0 );
+
+	rb_define_method ( self, "get_seat_name", t_get_seat_name, 1 );
+	rb_define_method ( self, "get_seat_type", t_get_seat_type, 1 );
+	rb_define_method ( self, "get_seat_fd", t_get_seat_fd, 1 );
+
+	rb_define_method ( self, "loop", t_loop, 0 );
+}
+
 void Init_GGZDMod ()
 {
 	cTEST = rb_define_class ( "GGZDMod", rb_cObject );
 
-	rb_define_method ( cTEST, "initialize", t_init, 0 );
-	rb_define_method ( cTEST, "connect", t_connect, 0 );
-	rb_define_method ( cTEST, "disconnect", t_disconnect, 0 );
-
-	rb_define_method ( cTEST, "get_state", t_get_state, 0 );
-	rb_define_method ( cTEST, "get_num_seats", t_get_num_seats, 0 );
-
-	rb_define_method ( cTEST, "get_seat_name", t_get_seat_name, 1 );
-	rb_define_method ( cTEST, "get_seat_type", t_get_seat_type, 1 );
-	rb_define_method ( cTEST, "get_seat_fd", t_get_seat_fd, 1 );
-
-	rb_define_method ( cTEST, "loop", t_loop, 0 );
-
+	init_methods ( cTEST );
 	init_constants ( cTEST );
 }
 

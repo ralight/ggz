@@ -5,26 +5,27 @@ It is now possible for game developers to let Ruby games run over GGZ.
 The ggzdmod functions are representated by a GGZDMod object, which does all
 the necessary work.
 
-You need now the 'new' ggzdmod (the one which provides ggzdmod.h), the old API
-isn't supported anymore. The statistics/rankings functionality will be
-added later.
+You need the 'ggzdmod' library installed from the 'ggz-server' package
+The statistics/rankings functionality will be added later, but at least
+basic game servers are supported now.
 
 To compile, just do the following:
 	% ruby extconf.rb [--with-opt-dir=/path/to/ggz-install]
 	% make
 This should build a GGZDMod.so shared library for you, which gets installed as
 a ruby extension if you type in the following as root:
-	% make install
+	$ make install
 
 To install the RubyToe example game, do the following:
 	% cp rubytoe /path/to/ggz-install/lib/ggzd
 	% cp rubytoe.dsc /path/to/ggz-install/etc/ggzd/games
 	% cp rubytoe.room /path/to/ggz-install/etc/ggzd/rooms
+The network handler must be installed as a Ruby extension as root.
+	$ sitelibdir=`ruby -r rbconfig -e 'puts(Config::CONFIG["sitelibdir"])'`
+	$ cp rubytoenet.rb $sitelibdir
 
-ATTENTION! The ruby bindings don't work yet, because:
- (fixed) - name error on constants definition
- (fixed) - no callbacks implemented yet (ruby can do it better, but this
-           requires some more work)
-
-Josef
+Note that the TTT AI written in pure Ruby is very weak. This is intentional -
+please do not spend time on improving it! What can instead be done is to
+compile and install the 'ttt-ai' extension, which re-uses the AI from the
+tictactoe server written in C through Ruby bindings.
 

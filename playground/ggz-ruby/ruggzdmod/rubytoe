@@ -8,159 +8,17 @@ puts "## RubyToe ##"
 begin
 	require "TTTAI"
 	$ai = TTTAI.new
+	puts "## Info: Using TTT-AI plugin for higher intelligence ##"
 rescue LoadError
-	puts "## Warning: TTT-AI not found, using internal random AI ##"
 	$ai = nil
+	puts "## Warning: TTT-AI not found, using internal random AI ##"
 end
 
-class GGZSocket < Socket
-	def puti(n)
-		n1 = (n >> 24) & 0xff
-		n2 = (n >> 16) & 0xff
-		n3 = (n >> 8) & 0xff
-		n4 = (n >> 0) & 0xff
-		self.putc(n1)
-		self.putc(n2)
-		self.putc(n3)
-		self.putc(n4)
-	end
-
-	def geti()
-		n1 = self.getc
-		n2 = self.getc
-		n3 = self.getc
-		n4 = self.getc
-		n = (n1 << 24) + (n2 << 16) + (n3 << 8) + n4
-		return n
-	end
-
-	def putb(n)
-		self.putc(n)
-	end
-
-	def getb()
-		n = self.getc
-		return n
-	end
-
-	def puts(s)
-		self.puti(s.length)
-		self.write(s)
-	end
-
-	def gets()
-		length = self.geti()
-		s = self.read(length)
-		return s
-	end
-end
-
-class TTTProto
-	::SND_MOVE = 0
-	::REQ_SYNC = 1
-	::MSG_SEAT = 0
-	::MSG_PLAYERS = 1
-	::MSG_MOVE = 2
-	::MSG_GAMEOVER = 3
-	::REQ_MOVE = 4
-	::RSP_MOVE = 5
-	::SND_SYNC = 6
-
-	::MOVE_OK = 0
-	::MOVE_ERR_STATE = -1
-	::MOVE_ERR_TURN = -2
-	::MOVE_ERR_BOUND = -3
-	::MOVE_ERR_FULL = -4
-
-	def send_seat(p)
-		s = GGZSocket.for_fd($server.get_seat_fd(p))
-		s.puti(::MSG_SEAT)
-		s.puti(p)
-	end
-
-	def send_players(p)
-		s = GGZSocket.for_fd($server.get_seat_fd(p))
-		s.puti(::MSG_PLAYERS)
-		num = $server.get_num_seats
-		for i in 0..num - 1
-			type = $server.get_seat_type(i)
-			s.puti(type)
-			if type != GGZDMod::SEATOPEN then
-				name = $server.get_seat_name(i)
-				s.puts(name)
-			end
-		end
-	end
-
-	def send_movestatus(p, status)
-		fd = $server.get_seat_fd(p)
-		if fd != -1 then
-			s = GGZSocket.for_fd($server.get_seat_fd(p))
-			s.puti(::RSP_MOVE)
-			s.putb(status)
-		end
-	end
-
-	def send_move(p, move)
-		s = GGZSocket.for_fd($server.get_seat_fd(p))
-		s.puti(::MSG_MOVE)
-		s.puti(1 - p)
-		s.puti(move)
-	end
-
-	def broadcast_players
-		num = $server.get_num_seats
-		for i in 0..num - 1
-			fd = $server.get_seat_fd(i)
-			if fd != -1 then
-				send_players(i)
-			end
-		end
-	end
-
-	def send_gameover(p, winner)
-		s = GGZSocket.for_fd($server.get_seat_fd(p))
-		s.puti(::MSG_GAMEOVER)
-		s.putb(winner)
-	end
-
-	def broadcast_gameover(winner)
-		num = $server.get_num_seats
-		for i in 0..num - 1
-			fd = $server.get_seat_fd(i)
-			if fd != -1 then
-				send_gameover(i, winner)
-			end
-		end
-	end
-
-	def request_move(p)
-		s = GGZSocket.for_fd($server.get_seat_fd(p))
-		s.puti(::REQ_MOVE)
-	end
-
-	def event(id, data)
-		if id == GGZDMod::EVENTSTATE then
-			puts "# state event"
-		elsif id == GGZDMod::EVENTJOIN then
-			puts "# join event"
-			num = data
-			puts "# Seat: " + num.to_s
-			puts "# Name: " + $server.get_seat_name(num)
-		elsif id == GGZDMod::EVENTLEAVE then
-			puts "# leave event"
-		elsif id == GGZDMod::EVENTSEAT then
-			puts "# seat event"
-		elsif id == GGZDMod::EVENTDATA then
-			puts "# data event"
-		elsif id == GGZDMod::EVENTLOG then
-			puts "# log event"
-		elsif id == GGZDMod::EVENTERROR then
-			puts "# error event"
-		else
-			puts "# unknown event"
-		end
-	end
+begin
+	require "rubytoenet.rb"
+rescue LoadError
+	puts "## Error: TTT-Network not found, aborting now ##"
+	Thread.exit
 end
 
 class TTT < TTTProto
@@ -170,30 +28,33 @@ class TTT < TTTProto
 	end
 
 	def input(p)
-		s = GGZSocket.for_fd($server.get_seat_fd(p))
+		s = GGZRawSocket.for_fd($server.get_seat_fd(p))
 
 		op = s.geti()
 
 		if op == ::SND_MOVE then
-			puts "* move"
+			puts "   * Received: move"
 			moveval = s.geti()
-			puts "MOVE TO " + moveval.to_s
+			puts "     Move to " + moveval.to_s
 			if handle_move(p, moveval) then
 				handle_next_move()
 			else
 				request_move(@turn)
 			end
 		elsif op == ::REQ_SYNC then
-			puts "* sync"
+			puts "   * Received: sync"
 			# discard for now (would result in snd_sync)
 		else
-			puts "* unknown opcode"
+			puts "   * Received: unknown opcode"
+			puts "**PROTOCOL ERROR** - aborting now"
+			Thread.exit
 		end
 	end
 
 	def handle_move(p, moveval)
-		puts "MOVE OF TURN " + @turn.to_s + " IS " + moveval.to_s
+		puts "     Evaluate move of turn " + @turn.to_s + " being " + moveval.to_s
 		status = evaluate_move(p, moveval)
+		puts "     Status is " + status.to_s
 		send_movestatus(p, status)
 		if status != ::MOVE_OK then
 			return false
@@ -216,7 +77,7 @@ class TTT < TTTProto
 		end
 
 		if $server.get_seat_type(@turn) == GGZDMod::SEATBOT then
-			puts "# ROBOT"
+			puts "   > Perform ROBOT move"
 			moveval = find_move(@turn)
 			if moveval >= 0 then
 				if handle_move(@turn, moveval) then
@@ -293,31 +154,25 @@ class TTT < TTTProto
 
 	def do_move(p, moveval)
 		@board[moveval] = p
-		puts "--- set " + moveval.to_s + " to " + p.to_s
+		puts "   > Set square " + moveval.to_s + " to " + p.to_s
 	end
 
 	def event(id, data)
 		super(id, data)
 
-		if id == GGZDMod::EVENTSTATE then
-			puts ""
-		elsif id == GGZDMod::EVENTJOIN then
+		if id == GGZDMod::EVENTJOIN then
 			num = data
 			broadcast_players
 			send_seat(num)
 			trystart
 		elsif id == GGZDMod::EVENTLEAVE then
 			broadcast_players
-		elsif id == GGZDMod::EVENTSEAT then
-			puts ""
 		elsif id == GGZDMod::EVENTDATA then
 			num = data
 			input(num)
-		#elsif id == GGZDMod::EVENTLOG then
-		#	puts ""
 		elsif id == GGZDMod::EVENTERROR then
-			puts ""
-			#exit...
+			puts "**GGZ ERROR** - aborting now"
+			Thread.exit
 		end
 	end
 
@@ -330,17 +185,20 @@ class TTT < TTTProto
 			end
 		end
 
-		puts "empty seats: " + empty.to_s
-		puts "i: " + i.to_s
+		puts "   > Check start conditions (both seats must be filled)"
+		puts "     Empty seats: " + empty.to_s
 
 		if empty == 0 then
+			puts "     Start now!"
 			request_move(@turn)
+		else
+			puts "     Waiting for more players to join..."
 		end
 	end
 end
 
 def ggzdmod_handler(id, data)
-	puts "** Callback called!"
+	puts "## Callback called!"
 	$ttt.event(id, data)
 end
 
