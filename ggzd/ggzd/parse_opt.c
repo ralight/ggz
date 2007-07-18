@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9162 2007-07-01 10:36:29Z oojah $
+ * $Id: parse_opt.c 9194 2007-07-18 07:15:22Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -1012,6 +1012,10 @@ static unsigned parse_log_types(int num, char **entry)
 {
 	unsigned types=0;
 	int i, j;
+
+	if(!entry) {
+		return types;
+	}
 
 	for(i=0; i<num; i++) {
 		for(j=0; j<num_log_types; j++)

@@ -594,10 +594,12 @@ class GGZCommEvent
 		x = ""
 		seq = 0
 
+		x += "\t\ts = GGZRawSocket.for_fd($server.get_seat_fd(num))\n"
+
 		data = @name
 		if @section == role then
 			x += "\t\t# assign fd??\n"
-			x += "\t\tsendbyte(@" + data + ")\n"
+			x += "\t\ts.sendbyte(::" + data.upcase + ")\n"
 		end
 
 		myvars = Hash.new
@@ -660,21 +662,21 @@ class GGZCommEvent
 						x += indent + "\t# assign fd???\n"
 						case type
 							when "string"
-								x += indent + "\tsendstring(@" + data + index + ")\n"
+								x += indent + "\ts.sendstring(@" + data + index + ")\n"
 							when "byte"
-								x += indent + "\tsendchar(@" + data + index + ")\n"
+								x += indent + "\ts.sendchar(@" + data + index + ")\n"
 							when "int"
-								x += indent + "\tsendbyte(@" + data + index + ")\n"
+								x += indent + "\ts.sendbyte(@" + data + index + ")\n"
 						end
 					else
 						x += indent + "\t# assign fd???\n"
 						case type
 							when "string"
-								x += indent + "\t@" + data + index + " = getstring()\n"
+								x += indent + "\t@" + data + index + " = s.getstring()\n"
 							when "byte"
-								x += indent + "\t@" + data + index + " = getbyte()\n"
+								x += indent + "\t@" + data + index + " = s.getbyte()\n"
 							when "int"
-								x += indent + "\t@" + data + index + " = getint()\n"
+								x += indent + "\t@" + data + index + " = s.getint()\n"
 						end
 					end
 			end
@@ -682,7 +684,7 @@ class GGZCommEvent
 
 		if @section != role then
 			x += "\t\tif @notifier\n"
-			x += "\t\t\t@notifier.call(@" + name + ")\n"
+			x += "\t\t\t@notifier.call(::" + name.upcase + ")\n"
 			x += "\t\tend\n"
 		end
 
@@ -2281,15 +2283,62 @@ class GGZComm
 			f.puts ""
 			f.puts "require 'socket'"
 			f.puts ""
-			f.puts "class " + @engine.capitalize
+			f.puts "class GGZRawSocket < Socket"
+			f.puts "\tdef putint(n)"
+			f.puts "\t\tn1 = (n >> 24) & 0xff"
+			f.puts "\t\tn2 = (n >> 16) & 0xff"
+			f.puts "\t\tn3 = (n >> 8) & 0xff"
+			f.puts "\t\tn4 = (n >> 0) & 0xff"
+			f.puts "\t\tself.putc(n1)"
+			f.puts "\t\tself.putc(n2)"
+			f.puts "\t\tself.putc(n3)"
+			f.puts "\t\tself.putc(n4)"
+			f.puts "\tend"
+			f.puts ""
+			f.puts "\tdef getint()"
+			f.puts "\t\tn1 = self.getc"
+			f.puts "\t\tn2 = self.getc"
+			f.puts "\t\tn3 = self.getc"
+			f.puts "\t\tn4 = self.getc"
+			f.puts "\t\tn = (n1 << 24) + (n2 << 16) + (n3 << 8) + n4"
+			f.puts "\t\treturn n"
+			f.puts "\tend"
+			f.puts ""
+			f.puts "\tdef putbyte(n)"
+			f.puts "\t\tself.putc(n)"
+			f.puts "\tend"
+			f.puts ""
+			f.puts "\tdef getbyte()"
+			f.puts "\t\tn = self.getc"
+			f.puts "\t\treturn n"
+			f.puts "\tend"
+			f.puts ""
+			f.puts "\tdef putstring(s)"
+			f.puts "\t\tself.putint(s.length)"
+			f.puts "\t\tself.write(s)"
+			f.puts "\tend"
+			f.puts ""
+			f.puts "\tdef getstring()"
+			f.puts "\t\tlength = self.getint()"
+			f.puts "\t\ts = self.read(length)"
+			f.puts "\t\treturn s"
+			f.puts "\tend"
+			f.puts ""
+			f.puts "#\t\tif opstr.len < 4"
+			f.puts "#\t\t\traise 'ggzcommerror'"
+			f.puts "#\t\tend"
+			f.puts "end"
+			f.puts ""
+			f.puts "class " + @engine.capitalize + "Proto"
 			if @constants.length > 0 then
-				f.puts "\tdef initialize"
 				@constants.each do |name, value|
 					next if not value
-					f.puts "\t\t@" + varname(name) + " = " + value
+					constname = varname(name).upcase
+					f.puts "\t::" + constname + " = " + value
 				end
 			end
 			f.puts ""
+			f.puts "\tdef initialize"
 			@eventlist.each do |event|
 				event.datalist.each do |data, type, option|
 					next if data == '%SEQ'
@@ -2312,39 +2361,16 @@ class GGZComm
 				if event.section != role then
 					#f.print "static "
 				end
-				f.puts "\tdef ggzcomm_" + event.name
+				f.puts "\tdef ggzcomm_" + event.name + "(player)"
 				f.puts event.network_ruby(role)
 				if links[event.name] then
 					f.puts ""
 					f.puts "\t\t@requirelink = 1"
-					f.puts "\t\t@nextlink = @" + links[event.name]
+					f.puts "\t\t@nextlink = @" + links[event.name].upcase
 				end
 				f.puts "\tend"
 				f.puts ""
 			end
-			f.puts "\tdef getint"
-			f.puts "\t\topstr = @socket.recv(4)"
-			f.puts "\t\tif opstr.len < 4"
-			f.puts "\t\t\traise 'ggzcommerror'"
-			f.puts "\t\tend"
-			f.puts "\t\tc1 = opstr[0].to_i"
-			f.puts "\t\tc2 = opstr[1].to_i"
-			f.puts "\t\tc3 = opstr[2].to_i"
-			f.puts "\t\tc4 = opstr[3].to_i"
-			f.puts "\t\top = c1 * 256 * 256 * 256 + c2 * 256 * 256 + c3 * 256 + c4"
-			f.puts "\t\t# FIXME: ntohl()"
-			f.puts "\t\treturn op"
-			f.puts "\tend"
-			f.puts ""
-			f.puts "\tdef getstring"
-			f.puts "\t\tlength = getint()"
-			f.puts "\t\topstr = @socket.recv(length)"
-			f.puts "\t\tif opstr.len < length"
-			f.puts "\t\t\traise 'ggzcommerror'"
-			f.puts "\t\tend"
-			f.puts "\t\treturn opstr"
-			f.puts "\tend"
-			f.puts ""
 			f.puts "\tdef ggzcomm_network_main"
 			if @opcodetype == "int"
 				f.puts "\t\topcode = getint()"
@@ -2361,7 +2387,7 @@ class GGZComm
 			f.puts ""
 			@eventlist.each do |event|
 				if event.section != role
-					f.puts "\t\tif opcode == " + event.name + "\n"
+					f.puts "\t\tif opcode == ::" + event.name.upcase + "\n"
 					f.puts "\t\t\tggzcomm_" + event.name() + "\n"
 					f.puts "\t\tend"
 				end

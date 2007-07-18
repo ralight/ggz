@@ -5,6 +5,7 @@ ggz                (redirect to www)
   +-www            (from www)
   |   +-games
   |   +-gameclients
+  |   +-gameservers
   |   +-engines
   |   +-backend
   |   +-clients
@@ -24,13 +25,13 @@ ggz                (redirect to www)
   | +-art
   | +-...
   +-mail
-    +-pipermail    (current archives, generated)
-	+-hypermail    (old archives, generated)
+  | +-pipermail    (current archives, generated)
+  | +-hypermail    (old archives, generated)
   +-svn
-    +-viewsvn      (external)
-	+-trac         (includes svn cache)
+  | +-viewsvn      (external)
+  | +-trac         (includes svn cache)
   +-bugs
-    +-mantis       (external, only conf)
+  | +-mantis       (external, only conf)
   +-live
   +-ftp
     +-pub
@@ -67,20 +68,22 @@ Redundancy:
 Mirroring via rsync -avz ggzgamingzone.org::
 
 http: redundancy through mirrors, via anonymous rsync:
-      * de.ggzgamingzone.org (www, ftp)
-      * fr.ggzgamingzone.org (www, ftp)
-	  * wwwmirror.ggzgamingzone.org (www)
+      * de.ggzgamingzone.org (www, ftp) [currently defunct]
+      * fr.ggzgamingzone.org (www, ftp) [manually]
+      * wwwmirror.ggzgamingzone.org (www)
       goal: trusted (dynamic) or untrusted (static) mirror
       possible for mantis and rankings, not for websvn and mailman interface
 ftp:  redundancy through download mirrors, via anonymous rsync:
-      * ftp://ftp.belnet.be/mirrors/ftp.ggzgamingzone.org (Belgium)
-	    http://ftp.belnet.be/mirror/ftp.ggzgamingzone.org/
-	  * ftp://ftp.dotsrc.org/mirrors/ggzgamingzone (Denmark)
-	    http://mirrors.dotsrc.org/ggzgamingzone/
-	  * ftp://ftp.ibiblio.org/pub/mirrors/ggzgamingzone (USA)
-	    http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/
-	  * ftp://ftp2.kgt.org/pub/ggzgamingzone.org (Germany)
-	    http://ftp2.kgt.org/pub/ggzgamingzone.org/
+      * ftp://ftp.belnet.be/mirrors/ftp.ggzgamingzone.org (Belgium, daily)
+        http://ftp.belnet.be/mirror/ftp.ggzgamingzone.org/
+      * ftp://ftp.dotsrc.org/mirrors/ggzgamingzone (Denmark, daily)
+        http://mirrors.dotsrc.org/ggzgamingzone/
+      * ftp://ftp.ibiblio.org/pub/mirrors/ggzgamingzone (USA, daily)
+        http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/
+svn:  redundancy through mirrors, via anonymous rsync:
+      * abracurcix (private server, weekly)
+      FIXME: svn:externals not supported, thus no anonsvn possible
+
 mail: is supported by fail-over mx (mail.hostsharing.net)
       mailing lists are write-only!
 live: provides no redundancy
@@ -88,17 +91,16 @@ live: provides no redundancy
       would use another database!
 bugs: provices no redundancy
       goal: not needed
-svn:  provides no redundancy
-      goal: wait for distributed rcs
 
 Backups:
 
 http: none, maintained via svn
 mail: user-defined for address forwards
       mailing lists: tarball (/var/lib/mailman)
-live: database: tarball (/var/lib/postgres)
 bugs: database: tarball (/var/lib/mysql)
-svn:  repository: tarball (/svn)
-      unscheduled rsync backups
-system: tarballs (/etc, /home/ggz)
+svn: weekly rsync backups
+ftp: ??? should also get rsync backups
+system: tarballs (/etc)
+
+live/ggzcommunity: ???
 
