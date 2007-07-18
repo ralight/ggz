@@ -74,33 +74,37 @@ http: redundancy through mirrors, via anonymous rsync:
       goal: trusted (dynamic) or untrusted (static) mirror
       possible for mantis and rankings, not for websvn and mailman interface
 ftp:  redundancy through download mirrors, via anonymous rsync:
-      * ftp://ftp.belnet.be/mirrors/ftp.ggzgamingzone.org (Belgium, daily)
+      * niue.belnet.be (Belgium, twice daily)
+        ftp://ftp.belnet.be/mirrors/ftp.ggzgamingzone.org
         http://ftp.belnet.be/mirror/ftp.ggzgamingzone.org/
-      * ftp://ftp.dotsrc.org/mirrors/ggzgamingzone (Denmark, daily)
+      * munin.dotsrc.org (Denmark, daily)
+        ftp://ftp.dotsrc.org/mirrors/ggzgamingzone
         http://mirrors.dotsrc.org/ggzgamingzone/
-      * ftp://ftp.ibiblio.org/pub/mirrors/ggzgamingzone (USA, daily)
+      * login.ibiblio.org (USA, daily)
+        ftp://ftp.ibiblio.org/pub/mirrors/ggzgamingzone
         http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/
 svn:  redundancy through mirrors, via anonymous rsync:
       * abracurcix (private server, weekly)
       FIXME: svn:externals not supported, thus no anonsvn possible
 
-mail: is supported by fail-over mx (mail.hostsharing.net)
+mail: is supported by fail-over mx (mail.hostsharing.net) [deactivated]
       mailing lists are write-only!
+      using mail-archive.com is an option
 live: provides no redundancy
       could be supported by alternative server (...)
       would use another database!
-bugs: provices no redundancy
+bugs: provides no redundancy
       goal: not needed
 
 Backups:
 
 http: none, maintained via svn
 mail: user-defined for address forwards
-      mailing lists: tarball (/var/lib/mailman)
+      mailing lists: tarball (/var/lib/mailman) and weekly rsync backups
 bugs: database: tarball (/var/lib/mysql)
 svn: weekly rsync backups
-ftp: ??? should also get rsync backups
+ftp: weekly rsync backups
 system: tarballs (/etc)
 
-live/ggzcommunity: ???
+live/ggzcommunity: daily+weekly rsync backups planned
 
