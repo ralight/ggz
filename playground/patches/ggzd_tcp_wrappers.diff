@@ -1,0 +1,62 @@
+Index: ggzd/control.c
+===================================================================
+--- ggzd/control.c	(revision 9195)
++++ ggzd/control.c	(working copy)
+@@ -70,6 +70,12 @@
+ #include <fam.h>
+ #endif
+ 
++#ifdef WITH_LIBWRAP
++#include <tcpd.h>
++int allow_severity = 0; // Needed by tcp-wrappers to
++int deny_severity = 0; // to determine logging level.
++#endif
++
+ /* FIXME: this is in motd.c also - and we could probably use pathconf */
+ #ifndef HOST_NAME_MAX
+ #define HOST_NAME_MAX 256
+@@ -525,6 +531,9 @@
+ 	struct sockaddr_in addr;
+ 	fd_set active_fd_set, read_fd_set;
+ 	struct timeval tv, *tvp;
++#ifdef WITH_LIBWRAP
++	struct request_info wrap_request;
++#endif
+ 
+ 	logfile_preinitialize();
+ 
+@@ -680,7 +689,34 @@
+ 				}
+ 			} else {
+ 				/* This is where to test for ignored IP addresses */
++#ifdef WITH_LIBWRAP
++				/* 
++				 * Start a tcp_wrappers request to see whether this connection should
++				 * be ignored. The documentation is pretty minimal, but looking at the
++				 * code and the man page suggests that passing as much information as
++				 * we have easily available about the connection is the best plan.
++				 */
++				request_init(&wrap_request, RQ_FILE, new_sock, RQ_CLIENT_SIN, (struct sockaddr_in*)&addr, RQ_DAEMON, "ggzd", 0);
++
++				/* 
++				 * fromhost() takes the information we've passed to request_init() and
++				 * fills in the gaps. So host name lookups and what not.
++				 */
++				fromhost(&wrap_request);
++
++				/*
++				 * Do the actual lookup/comparison with /etc/hosts.allow and /etc/hosts.deny
++				 * and deny the access if need be.
++				 */
++				if(hosts_access(&wrap_request)){
++					client_handler_launch(new_sock);
++				}else{
++					close(new_sock);
++					new_sock = -1;
++				}
++#else /* WITH_LIBWRAP */
+ 				client_handler_launch(new_sock);
++#endif /* WITH_LIBWRAP */
+ 			}
+ 		} else if(reconfigure_fd > 0) {
+ 			if(FD_ISSET(reconfigure_fd, &read_fd_set)) {
