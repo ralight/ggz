@@ -60,6 +60,8 @@ if (extension_loaded("curl")) :
 	endif;
 
 	fclose($tmphandle);
+else :
+	echo "PHP error: curl extension not installed.";
 endif;
 
 ?>
