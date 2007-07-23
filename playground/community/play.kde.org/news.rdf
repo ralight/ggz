@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91">
+  <channel>
+    <title>play.kde.org: K Desktop Environment Games Server</title>
+    <link>http://play.kde.org/</link>
+    <description>Landing page for online gaming</description>
+    <language>en-us</language>
+    <webMaster>info@ggzcommunity.org</webMaster>
+    <copyright>Copyright (c) 2007, play.kde.org Webmaster</copyright>
+
+<item>
+<title>KDE Games Server launched</title>
+<date>21-July-2007</date>
+<fullstory>
+Piggybacked on the GGZ Community server, play.kde.org is destined to become the
+central entry point for KDE online gaming, without all the maintenance burden which
+a dedicated server would bring along.
+</fullstory>
+</item>
+
+</channel>
+</rss>
