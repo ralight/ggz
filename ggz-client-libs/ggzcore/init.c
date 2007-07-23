@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: init.c 8907 2007-01-14 14:37:42Z oojah $
+ * $Id: init.c 9203 2007-07-23 07:31:09Z josef $
  *
  * Initialization code
  *
@@ -43,6 +43,10 @@
 #include <libintl.h>
 #include <signal.h>
 
+#define catversion2(x, y, z) catversion(x, y, z)
+#define catversion(x, y, z) #x "." #y "." #z
+#define CATALOG_VERSION catversion2(GGZCORE_VERSION_MAJOR, GGZCORE_VERSION_MINOR, GGZCORE_VERSION_MICRO)
+
 int ggzcore_init(GGZOptions options)
 {
 	int ret = 0;
@@ -59,7 +63,7 @@ int ggzcore_init(GGZOptions options)
 #endif
 
 	/* This catalog must be preloaded by applications */
-	bindtextdomain("ggzcore", PREFIX "/share/locale");
+	bindtextdomain("ggzcore_" CATALOG_VERSION, PREFIX "/share/locale");
 
 	/* Initialize various systems */
 	if (options.flags & GGZ_OPT_MODULES)

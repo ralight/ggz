@@ -1,6 +1,6 @@
 EXTRA_DIST = ggzcore.pot $(pofiles)
 
-CATALOG = ggzcore
+CATALOG = ggzcore_$(PACKAGE_VERSION)
 POSOURCES = $(top_srcdir)/ggzcore/*.c
 
 include $(top_srcdir)/m4/i18n.mk
