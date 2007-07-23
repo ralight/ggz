@@ -10,7 +10,7 @@ $ggzconfigfile = "/path/to/etc/ggzd/ggzd.conf";
 //$dbhost = "localhost";
 //$dbname = "ggz";
 //$dbuser = "";
-$//dbpass = "";
+//$dbpass = "";
 
 // If debugging is enabled, all output is text/plain
 // This is needed for viewing the output in browsers
