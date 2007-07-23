@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 9073 2007-04-29 01:09:54Z jdorje $
+ * $Id: netxml.c 9202 2007-07-23 07:31:02Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -528,7 +528,7 @@ int _ggzcore_net_send_chat(GGZNet * net, const GGZChatType type,
 	const char *chat_text;
 	char *chat_text_quoted;
 	char *my_text = NULL;
-	int result;
+	int result = 0;
 
 	ggz_debug(GGZCORE_DBG_NET, "Sending chat");
 
