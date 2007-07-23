@@ -170,7 +170,7 @@ Index: ggzd/ggzd/players.c
 +		if (rcvr == NULL || rcvr == player) {
 +			status = E_USR_LOOKUP;
 +		} else {
-+			bans_add(player->client->addr);
++			bans_add(rcvr->client->addr);
 +			/* FIXME 1: session_over should be bool, not char */
 +			/* FIXME: We temporarily take away the wr-lock since player_enqueue needs it */
 +			pthread_rwlock_unlock(&rcvr->lock);	
