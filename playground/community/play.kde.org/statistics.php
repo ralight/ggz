@@ -7,6 +7,12 @@
 
 <h3>Live statistics - The top 10 in TicTacToe</h3>
 
+The statistics are fetched in real time using the
+<a href="http://api.ggzcommunity.org/">GGZ Community Web Services API</a>.
+<br/>
+
+<br/>
+
 <?php
 //$url = "http://api.ggzcommunity/api/statistics/games/Reversi";
 $url = "http://api.ggzcommunity/api/statistics/games/TicTacToe";
