@@ -6,6 +6,7 @@ $section->appendLink("Home","");
 
 $section->appendLink("News","news.php");
 $section->appendLink("How to play","howto.php");
+$section->appendLink("Statistics","statistics.php");
 
 $section =& $this->appendSection("Links");
 $section->appendLink("KDE Games Home","http://games.kde.org/",false);
