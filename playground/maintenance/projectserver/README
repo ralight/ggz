@@ -106,5 +106,5 @@ svn: weekly rsync backups
 ftp: weekly rsync backups
 system: tarballs (/etc)
 
-live/ggzcommunity: daily+weekly rsync backups planned
+live/ggzcommunity: daily database dumps maintained in svn repo
 
