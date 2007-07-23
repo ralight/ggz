@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 9162 2007-07-01 10:36:29Z oojah $
+# $Id: Makefile.am 9197 2007-07-23 07:30:18Z josef $
 
 SUBDIRS = database meta
 
@@ -68,6 +68,7 @@ ggzd_CPPFLAGS = \
 	$(CRACKLIB_INCLUDES) \
 	$(OMNICRACKLIB_INCLUDES) \
 	-DGGZDCONFDIR=\"$(ggzdconfdir)\" \
+	-DGGZDSTATEDIR=\"$(ggzdstatedir)\" \
 	-DGGZDEXECMODDIR=\"$(ggzdexecmoddir)\"
 
 ggzd_LDFLAGS = $(LIBGGZ_LDFLAGS)
@@ -93,6 +94,7 @@ ggzduedit_CPPFLAGS = \
 	-I$(top_srcdir)/ggzd/database \
 	-I$(top_srcdir)/ggzdmod \
 	-DGGZDCONFDIR=\"$(ggzdconfdir)\" \
+	-DGGZDSTATEDIR=\"$(ggzdstatedir)\" \
 	$(LIBGGZ_INCLUDES)
 
 ggzduedit_LDFLAGS = $(LIBGGZ_LDFLAGS)

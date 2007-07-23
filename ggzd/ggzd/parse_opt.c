@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9194 2007-07-18 07:15:22Z josef $
+ * $Id: parse_opt.c 9197 2007-07-23 07:30:18Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -329,9 +329,9 @@ void parse_conf_file(void)
 	if(!opt.conf_dir)
 		opt.conf_dir = ggz_strdup(GGZDCONFDIR);
 
-	/* If no data_dir, default it to DATADIR */
+	/* If no data_dir, default it to STATEDIR */
 	if(!opt.data_dir)
-		opt.data_dir = ggz_strdup(GGZDDATADIR);
+		opt.data_dir = ggz_strdup(GGZDSTATEDIR);
 
 	/* If no main_port, default it to 5688 (or whatever) */
 	if(!opt.main_port)
