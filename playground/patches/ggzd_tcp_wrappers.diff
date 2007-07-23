@@ -1,21 +1,75 @@
+Index: m4/tcp-wrappers.m4
+===================================================================
+--- m4/tcp-wrappers.m4	(revision 0)
++++ m4/tcp-wrappers.m4	(revision 0)
+@@ -0,0 +1,48 @@
++dnl =====================================
++dnl GGZ Gaming Zone - tcp-wrappers Macros
++dnl =====================================
++dnl
++dnl Looks for tcp-wrappers library (libwrap) 
++dnl implementations and sets up the 
++dnl corresponding variables, that is, $libwrap
++dnl for display purposes and LIB_LIBWRAP/
++dnl LIBWRAP_INCLUDES.
++dnl
++dnl ------------------------------------------------------------------------
++dnl Content of this file:
++dnl ------------------------------------------------------------------------
++dnl AC_GGZ_LIBWRAP
++
++AC_DEFUN([AC_GGZ_LIBWRAP],
++[
++	if test "$libwrap" = yes; then
++		AC_CHECK_HEADERS([tcpd.h],
++		[
++			AC_TRY_COMPILE([
++#include <syslog.h>
++#include <tcpd.h>
++int allow_severity = LOG_INFO;
++int deny_severity = LOG_WARNING;
++				], [
++struct request_info wrap_request;
++request_init(&wrap_request, RQ_CLIENT_ADDR, "127.0.0.1", RQ_DAEMON, "ggzd", 0);
++				], libwrap="yes", libwrap="no")
++
++			if test "$libwrap" = "yes"; then
++				AC_DEFINE(WITH_LIBWRAP, 1, [Use tcp_wrappers])
++				LIBWRAP_INCLUDES="-I/usr/include"
++				LIB_WRAP="-lwrap"
++				AC_SUBST(LIBWRAP_INCLUDES)
++				AC_SUBST(LIB_WRAP)
++				libwrap="yes"
++			else
++				AC_MSG_ERROR([cannot configure tcp_wrappers (library needed)])
++				libwrap="no"
++			fi
++		],
++		[
++			AC_MSG_ERROR([cannot configure tcp_wrappers (headers needed)])
++		])
++	fi
++])
++
 Index: ggzd/control.c
 ===================================================================
 --- ggzd/control.c	(revision 9195)
 +++ ggzd/control.c	(working copy)
-@@ -70,6 +70,12 @@
+@@ -70,6 +70,13 @@
  #include <fam.h>
  #endif
  
 +#ifdef WITH_LIBWRAP
++#include <syslog.h>
 +#include <tcpd.h>
-+int allow_severity = 0; // Needed by tcp-wrappers to
-+int deny_severity = 0; // to determine logging level.
++int allow_severity = LOG_INFO;		// Needed by tcp-wrappers to
++int deny_severity = LOG_WARNING;	// to determine logging level.
 +#endif
 +
  /* FIXME: this is in motd.c also - and we could probably use pathconf */
  #ifndef HOST_NAME_MAX
  #define HOST_NAME_MAX 256
-@@ -525,6 +531,9 @@
+@@ -525,6 +532,9 @@
  	struct sockaddr_in addr;
  	fd_set active_fd_set, read_fd_set;
  	struct timeval tv, *tvp;
@@ -25,7 +79,7 @@ Index: ggzd/control.c
  
  	logfile_preinitialize();
  
-@@ -680,7 +689,34 @@
+@@ -680,7 +690,34 @@
  				}
  			} else {
  				/* This is where to test for ignored IP addresses */
@@ -60,3 +114,58 @@ Index: ggzd/control.c
  			}
  		} else if(reconfigure_fd > 0) {
  			if(FD_ISSET(reconfigure_fd, &read_fd_set)) {
+Index: ggzd/Makefile.am
+===================================================================
+--- ggzd/Makefile.am	(revision 9195)
++++ ggzd/Makefile.am	(working copy)
+@@ -67,6 +67,7 @@
+ 	$(ICU_INCLUDES) \
+ 	$(CRACKLIB_INCLUDES) \
+ 	$(OMNICRACKLIB_INCLUDES) \
++	$(LIBWRAP_INCLUDES) \
+ 	-DGGZDCONFDIR=\"$(ggzdconfdir)\" \
+ 	-DGGZDEXECMODDIR=\"$(ggzdexecmoddir)\"
+ 
+@@ -83,7 +84,8 @@
+ 	$(LIB_PTHREADS) \
+ 	$(LIB_ICU) \
+ 	$(LIB_CRACKLIB) \
+-	$(LIB_OMNICRACKLIB)
++	$(LIB_OMNICRACKLIB) \
++	$(LIB_WRAP)
+ 
+ ggzduedit_SOURCES =	datatypes.h	\
+ 			ggzduedit.c 				\
+Index: configure.ac
+===================================================================
+--- configure.ac	(revision 9195)
++++ configure.ac	(working copy)
+@@ -47,6 +47,9 @@
+ 	AS_HELP_STRING([--with-passwordcheck=TYPE],
+ 	[type of library to use: cracklib, omnicracklib]),
+ 	[passwordcheck=$withval], [passwordcheck=yes])
++AC_ARG_WITH([libwrap],
++	AS_HELP_STRING([--enable-tcp-wrappers], [Build with tcp-wrappers support]),
++	[libwrap=no], [libwrap=yes])
+ 
+ 
+ # Check for GGZ Requirements
+@@ -160,6 +163,10 @@
+ dnl =======================================================
+ AC_GGZ_RECONFIGURATION
+ 
++dnl Check for tcp-wrappers support
++dnl ==============================
++AC_GGZ_LIBWRAP
++
+ dnl Debug modes
+ dnl ===========
+ AC_GGZ_DEBUG
+@@ -285,6 +292,7 @@
+ echo "    Reconfiguration......$reconfiguration"
+ echo "    Unicode..............$unicode"
+ echo "    Password checks......$passwordcheck"
++echo "    Tcp wrappers.........$libwrap"
+ echo "Debugging options"
+ echo "    General Debuging.....$enable_debug" 
+ echo "    GDB Debugging........$enable_debug_gdb" 
