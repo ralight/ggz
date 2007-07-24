@@ -1,0 +1,48 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="pane">
+<tr>
+<td>
+GGZ Programming Languages:
+|
+<a href="/lang/c/">C</a>
+|
+<a href="/lang/c++/">C++</a>
+|
+<a href="/lang/python/">Python</a>
+|
+Ruby
+|
+<a href="/lang/php/">PHP</a>
+|
+<a href="/lang/java/">Java</a>
+|
+<a href="/lang/others/">Others</a>
+</td>
+</tr>
+</table>
+
+<table class="content">
+<tr>
+<td>
+
+<b>Programming in Ruby</b><br/>
+Ruby isn't used much in GGZ yet, but it definitely has its place. In fact,
+there are only a couple of Grubby modules available with GGZ proper. The
+potential candidates are waiting in the playground.
+<br/><br/>
+
+<i>Largest applications written in Ruby</i><br/>
+
+<table class="list">
+<tr><td>rubytoe</td><td>SLOC: 300</td><td>Location: playground/ggz-ruby/ruggzdmod</td></tr>
+<tr><td>grubby modules</td><td>SLOC: 200</td><td>Location: grubby/grubby/data</td></tr>
+</table>
+<br/>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("../../site/footer.php"); ?>
+

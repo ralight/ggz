@@ -1,0 +1,46 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="pane">
+<tr>
+<td>
+GGZ Programming Languages:
+|
+<a href="/lang/c/">C</a>
+|
+<a href="/lang/c++/">C++</a>
+|
+<a href="/lang/python/">Python</a>
+|
+<a href="/lang/ruby/">Ruby</a>
+|
+<a href="/lang/php/">PHP</a>
+|
+<a href="/lang/java/">Java</a>
+|
+Others
+</td>
+</tr>
+</table>
+
+<table class="content">
+<tr>
+<td>
+
+<b>Oh no, more programming languages!</b><br/>
+There certainly is a practical limit on how many languages a project can take.
+Maintenance of all of them might prove to be difficult. However, sometimes
+the usual languages are not enough. For example, GGZ uses the M4 macro language
+for a lot of its configuration. The Make syntax, which can be considered a
+partially declarative language, is similarly present in many packages.
+Some Haskell code exists as a proof of concept Sudoku implementation.
+<br/><br/>
+
+It's the mix which makes it interesting!
+<br/><br/>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("../../site/footer.php"); ?>
+

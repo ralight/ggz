@@ -1,0 +1,51 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="pane">
+<tr>
+<td>
+GGZ Programming Languages:
+|
+<a href="/lang/c/">C</a>
+|
+<a href="/lang/c++/">C++</a>
+|
+<a href="/lang/python/">Python</a>
+|
+<a href="/lang/ruby/">Ruby</a>
+|
+<a href="/lang/php/">PHP</a>
+|
+Java
+|
+<a href="/lang/others/">Others</a>
+</td>
+</tr>
+</table>
+
+<table class="content">
+<tr>
+<td>
+
+<b>Programming in Java</b><br/>
+One of the most recent additions to GGZ is Java. With the pending open-source
+process and general improvement of alternative implementations, this choice
+brought a number of players to GGZ due to the pervasive installation base.
+There is a ggz-java module which contains both the Java core client
+and the games.
+<br/><br/>
+
+<i>Largest applications written in Java</i><br/>
+
+<table class="list">
+<tr><td>ggzjava</td><td>SLOC: 11700</td><td>Location: java/src/ggz/client (+ ui)</td></tr>
+<tr><td>ggzcards-java</td><td>SLOC: 4300</td><td>Location: java/src/ggz/cards</td></tr>
+<tr><td>tictactoe-java</td><td>SLOC: 600</td><td>Location: java/src/ggz/tictactoe</td></tr>
+</table>
+<br/>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("../../site/footer.php"); ?>
+

@@ -1,0 +1,61 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="pane">
+<tr>
+<td>
+GGZ Programming Languages:
+|
+<a href="/lang/c/">C</a>
+|
+C++
+|
+<a href="/lang/python/">Python</a>
+|
+<a href="/lang/ruby/">Ruby</a>
+|
+<a href="/lang/php/">PHP</a>
+|
+<a href="/lang/java/">Java</a>
+|
+<a href="/lang/others/">Others</a>
+</td>
+</tr>
+</table>
+
+<table class="content">
+<tr>
+<td>
+
+<b>Programming in C++</b><br/>
+C++ has been the second language which was introduced in GGZ.
+Its major use can be seen in the KDE games and client packages. In particular,
+some libraries made it into the official kdegames package.
+There are however also a couple of game servers written in this language.
+<br/><br/>
+
+<i>Largest shared libraries written in C++</i><br/>
+
+<table class="list">
+<tr><td>kggzmod/games/net</td><td>SLOC: 1900</td><td>Location: kdegames/libkdegames (external)</td></tr>
+<tr><td>ggzdmod++</td><td>SLOC: 700</td><td>Location: ggzd/ggzdmod++</td></tr>
+</table>
+
+<br/>
+
+<i>Largest applications written in C++</i><br/>
+
+<table class="list">
+<tr><td>kggz</td><td>SLOC: 6600</td><td>Location: kde-client/ggz-kde/src</td></tr>
+<tr><td>koenig</td><td>SLOC: 3400</td><td>Location: kde-games/koenig (C/C++ mix)</td></tr>
+<tr><td>ggzap</td><td>SLOC: 1300</td><td>Location: kde-client/ggzap</td></tr>
+<tr><td>fyrdman</td><td>SLOC: 1700</td><td>Location: kde-games/fyrdman</td></tr>
+<tr><td>kdots</td><td>SLOC: 1700</td><td>Location: kde-games/kdots</td></tr>
+</table>
+<br/>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("../../site/footer.php"); ?>
+

@@ -1,0 +1,48 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="pane">
+<tr>
+<td>
+GGZ Programming Languages:
+|
+<a href="/lang/c/">C</a>
+|
+<a href="/lang/c++/">C++</a>
+|
+<a href="/lang/python/">Python</a>
+|
+<a href="/lang/ruby/">Ruby</a>
+|
+<a href="/lang/php/">PHP</a>
+|
+<a href="/lang/java/">Java</a>
+|
+<a href="/lang/others/">Others</a>
+</td>
+</tr>
+</table>
+
+<table class="content">
+<tr>
+<td>
+
+<b>GGZ for the language enthusiasts</b><br/>
+Over time, the development within GGZ changed from pure C programming towards
+a more versatile model where each domain is covered by a specific programming
+language. Nowadays six main languages are being used in significant parts
+of the project, with a few others being present but not used much.
+These top languages appear to be C (60%), C++ (20%), Java (10%),
+Python (6%), PHP (3%) and Ruby (&lt; 1 %). Remember that those numbes are
+hard to compare with each other.
+<br/><br/>
+
+The links above will lead straight to the programming language information
+pages.
+<br/><br/>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

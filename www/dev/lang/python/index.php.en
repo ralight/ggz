@@ -1,0 +1,50 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="pane">
+<tr>
+<td>
+GGZ Programming Languages:
+|
+<a href="/lang/c/">C</a>
+|
+<a href="/lang/c++/">C++</a>
+|
+Python
+|
+<a href="/lang/ruby/">Ruby</a>
+|
+<a href="/lang/php/">PHP</a>
+|
+<a href="/lang/java/">Java</a>
+|
+<a href="/lang/others/">Others</a>
+</td>
+</tr>
+</table>
+
+<table class="content">
+<tr>
+<td>
+
+<b>Programming in Python</b><br/>
+Python bindings were added to GGZ around the beginning of 2004, as the third
+major language within the repository.
+There is a ggz-python module which contains more or less all of the
+Python-related code.
+<br/><br/>
+
+<i>Largest applications written in Python</i><br/>
+
+<table class="list">
+<tr><td>ggzboard</td><td>SLOC: 4700</td><td>Location: python/ggzboard</td></tr>
+<tr><td>víbora</td><td>SLOC: 700</td><td>Location: python/vibora</td></tr>
+<tr><td>xadrez-chines</td><td>SLOC: 700</td><td>Location: python/xadrez-chines</td></tr>
+</table>
+<br/>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("../../site/footer.php"); ?>
+

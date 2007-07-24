@@ -1,0 +1,49 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="pane">
+<tr>
+<td>
+GGZ Programming Languages:
+|
+<a href="/lang/c/">C</a>
+|
+<a href="/lang/c++/">C++</a>
+|
+<a href="/lang/python/">Python</a>
+|
+<a href="/lang/ruby/">Ruby</a>
+|
+PHP
+|
+<a href="/lang/java/">Java</a>
+|
+<a href="/lang/others/">Others</a>
+</td>
+</tr>
+</table>
+
+<table class="content">
+<tr>
+<td>
+
+<b>Programming in PHP</b><br/>
+PHP is a popular language for web applications. Within GGZ, it is used for the
+development of the GGZ Community and a related remote API. The metacle's web
+frontend is also written in PHP.
+<br/><br/>
+
+<i>Largest applications written in PHP</i><br/>
+
+<table class="list">
+<tr><td>community</td><td>SLOC: 4500</td><td>Location: community/web</td></tr>
+<tr><td>ws-api</td><td>SLOC: 400</td><td>Location: community/api</td></tr>
+<tr><td>metacle</td><td>SLOC: 200</td><td>Location: playground/meta/web</td></tr>
+</table>
+<br/>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("../../site/footer.php"); ?>
+
