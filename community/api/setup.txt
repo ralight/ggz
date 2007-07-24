@@ -1,14 +1,61 @@
+About the GGZ Community Web Services API
+----------------------------------------
+
+GGZ Community is a web portal software which can be used to build online
+gaming communities on top of GGZ Gaming Zone installations. While the
+web interface is made for humans, the Web Services API can be considered
+a remote API for programmers, who can query and modify the GGZ database.
+
+There is an online version of the Web Services API always running at
+http://api.ggzcommunity.org, but of course you can run your own, if you
+already run a GGZ server on your own. This document describes how to
+set up such a system.
+
 How to setup the Web Services API
 ---------------------------------
 
 This documentation assumes the use of the Apache web server with PHP 4.2 or
-later installed.
+later installed. The "or later" part should be taken with a grain of salt
+as especially the XML handling functions of PHP seem to vary with the phase
+of the moon.
+The following configuration directive is needed in the global Apache virtual
+host section (e.g. in /etc/apache2/sites-available/api) in order to make the
+Web Services API work.
 
 <VirtualHost *>
 	ServerName api.ggzcommunity
 	DocumentRoot /path/to/api
 	AliasMatch ^/api/(.*)$ /path/to/api/api/index.php
 </VirtualHost>
+
+You also need to have GGZ Community installed and configured. It does not
+mean that it has to be accessible from the outside - but the API re-uses
+several of its PHP classes and its configuration mechanisms. That way, you
+can have either the web interface or the API - or even both, depending on
+what the installation is supposed to do.
+
+Security considerations
+-----------------------
+
+The API roughly presents the user with the same possibilities like the
+web frontend. The implication is that every anonymous user can create
+accounts, and every registered user can create, modify and delete everything
+else, including accounts and teams. Queries can be performed independent
+of the registration status, e.g. to get statistics information.
+Detailed parameter information is available on the API web pages.
+
+It is advisable to run both Community and the API over HTTPS. Unfortunately
+this requires a dedicated IP address or support for RFC 2817, which some
+browsers provide but Apache doesn't.
+
+The OpenID API
+--------------
+
+This is work in progress. Please read openid/README.openid to see how
+this way of user identification and authentication can be used in GGZ.
+
+Some random notes
+-----------------
 
 Hacker's note:
 Access to the virtual host context of Apache is needed so we can pretend
@@ -18,4 +65,11 @@ GET, not with POST, as the internal redirect always becomes a GET.
 Another hacker's note:
 In setup/script/api, there is a client-side test script (ggzapi_client.pl)
 which can be used to test the service.
+
+Performance note:
+One might think about adding API support to GGZ Community itself so that it
+doesn't have to run on the same host as the database anymore. However, this
+will increase the communication needs and therefore will decrease the
+performance. Unless this can be proven to be unfounded scepticism, it will
+not be implemented.
 
