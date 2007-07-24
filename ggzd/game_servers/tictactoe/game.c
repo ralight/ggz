@@ -80,6 +80,7 @@
 
 /* Unoccupied square on the board */
 #define TTT_EMPTY       -1
+#define TTT_NO_WINNER    2
 
 /* Whether or not DIO is used */
 #define TTT_USE_DIO      0
@@ -739,9 +740,9 @@ static char game_check_win(void)
 
 	/* No one won yet */
 	if (ttt_game.move_count == 9)
-		return 2;  /* Cat's game */
+		return TTT_NO_WINNER;  /* Cat's game */
 
-	return -1;
+	return -1; /* Error */
 }
 
 #ifdef GGZSAVEDGAMES

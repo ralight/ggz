@@ -61,6 +61,9 @@ class TTTProto
 	::MOVE_ERR_BOUND = -3
 	::MOVE_ERR_FULL = -4
 
+	::EMPTY_SQUARE = -1
+	::NO_WINNER = 2
+
 	def send_seat(p)
 		puts "   * Send: seat number to seat " + p.to_s
 		puts "     Seat: " + p.to_s

@@ -84,7 +84,7 @@ class TTT < TTTProto
 					handle_next_move()
 				end
 			else
-				broadcast_gameover(-1)
+				broadcast_gameover(::NO_WINNER)
 			end
 		else
 			request_move(@turn)
