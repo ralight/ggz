@@ -1,0 +1,12 @@
+<?php
+
+// Fill out the values, and rename this file to .htconf.php
+
+// Installation directory of the GGZ Community web portal
+$ggzcommunitydir = "../../web";
+
+// If debugging is enabled, all output is text/plain
+// This is needed for viewing the output in browsers
+$debug = 0;
+
+?>

@@ -19,6 +19,7 @@ function resourcequote($s)
 	return addslashes($s);
 }
 
+// FIXME: this might need folding into common/database.php
 function quote($s)
 {
 	if (!get_magic_quotes_gpc()) :
@@ -28,43 +29,9 @@ function quote($s)
 	endif;
 }
 
-// Database helper functions
-
-function db_exec($conn, $query, $args)
-{
-	global $internalerror;
-
-	// This is stolen from common/database.php
-	$argcount = substr_count($query, "%^");
-	if ($argcount > 0) :
-		if ((!is_array($args)) || (count($args) != $argcount)) :
-			return null;
-		endif;
-		for ($i = 0; $i < $argcount; $i++)
-		{
-			$query = substr_replace($query,
-				quote($args[$i]),
-				strpos($query, "%^"),
-				2);
-		}
-	endif;
-
-	$res = @pg_exec($conn, $query);
-	if (!$res) :
-		$internalerror = 1;
-	endif;
-
-	return $res;
-}
-
-function db_numrows($res)
-{
-	return @pg_numrows($res);
-}
-
 // -------------------------------------------------------------
 // Read the configuration file
-// This will give us $ggzincludefile and $debug
+// This will give us $ggzcommunitydir and $debug
 
 $ret = @include_once(".htconf.php");
 if (!$ret) :
@@ -74,41 +41,14 @@ if (!$ret) :
 	exit;
 endif;
 
-// -------------------------------------------------------------
-// Read the include file
-// Defines the 'parseconfigfile' function
-
-$ret = @include_once(".htinclude.php");
-if (!$ret) :
-	header("Content-type: text/plain");
-	header("HTTP/1.1 500 Totally misinstalled");
-	echo "Error: File .htinclude.php not found";
-	exit;
-endif;
-
-// -------------------------------------------------------------
-// Parse the ggzd config file
-// Gives us all the db* variables so we can connect to the DB
-
-if ($ggzconfigfile) :
-	$ini = parseconfigfile($ggzconfigfile);
-	if (!$ini) :
-		header("Content-type: text/plain");
-		header("HTTP/1.1 500 The ggzd config file is screwed");
-		echo "Error: File $ggzconfigfile not found";
-		exit;
-	endif;
-	$dbhost = $ini["General"]["DatabaseHost"];
-	$dbname = $ini["General"]["DatabaseName"];
-	$dbuser = $ini["General"]["DatabaseUsername"];
-	$dbpass = $ini["General"]["DatabasePassword"];
-endif;
+ini_set("include_path", ini_get("include_path") . ":$ggzcommunitydir/common");
 
 // -------------------------------------------------------------
 // Connect to the database
 
-$conn = @pg_connect("host=$dbhost dbname=$dbname user=$dbuser password=$dbpass");
-if (!$conn) :
+include_once("database.php");
+
+if (!$database) :
 	header("Content-type: text/plain");
 	header("HTTP/1.1 500 We lost the database");
 	echo "Error: Could not connect to the database";
@@ -157,10 +97,10 @@ if (isset($_SERVER["PHP_AUTH_USER"])) :
 	$user = $_SERVER["PHP_AUTH_USER"];
 	$password = $_SERVER["PHP_AUTH_PW"];
 
-	$res = db_exec($conn,
+	$res = $database->exec($conn,
 		"SELECT * FROM users WHERE handle = '%^' AND password = '%^'",
 		array($user, $password));
-	if (pg_numrows($res) == 1) :
+	if ($database->numrows($res) == 1) :
 		$authenticated = 1;
 	endif;
 endif;
@@ -175,12 +115,12 @@ if ($resource == "") :
 elseif ($topresource == "players") :
 	if ($subresource == "") :
 		if ($method == "GET") :
-			$res = db_exec($conn, "SELECT handle FROM users", null);
+			$res = $database->exec($conn, "SELECT handle FROM users", null);
 
 			echo "<players>";
-			for($i = 0; $i < pg_numrows($res); $i++)
+			for($i = 0; $i < $database->numrows($res); $i++)
 			{
-				$playername = pg_result($res, $i, 0);
+				$playername = $database->result($res, $i, 0);
 				echo "<player name='$playername'/>";
 			}
 			echo "</players>";
@@ -194,19 +134,19 @@ elseif ($topresource == "players") :
 		endif;
 
 		if ($method == "GET") :
-			$res = db_exec($conn,
+			$res = $database->exec($conn,
 				"SELECT email, name FROM users WHERE handle = '%^'",
 				array($playername));
 
-			if (pg_numrows($res) == 1) :
-				$email = pg_result($res, 0, 0);
-				$realname = pg_result($res, 0, 1);
+			if ($database->numrows($res) == 1) :
+				$email = $database->result($res, 0, 0);
+				$realname = $database->result($res, 0, 1);
 
-				$res = db_exec($conn,
+				$res = $database->exec($conn,
 					"SELECT photo FROM userinfo WHERE handle = '%^'",
 					array($playername));
-				if (db_numrows($res) == 1) :
-					$photo = pg_result($res, 0, 0);
+				if ($database->numrows($res) == 1) :
+					$photo = $database->result($res, 0, 0);
 				else :
 					$photo = "";
 				endif;
@@ -245,12 +185,12 @@ elseif ($topresource == "players") :
 				define("PERM_ROOMS_LOGIN", 4);
 				$perms = PERM_JOIN_TABLE + PERM_LAUNCH_TABLE + PERM_ROOMS_LOGIN;
 
-				db_exec($conn,
+				$database->exec($conn,
 					"INSERT INTO users (handle, password, name, email, firstlogin, permissions) " .
 					"VALUES ('%^', '%^', '%^', '%^', %^, %^)",
 					array($playername, $password, $realname, $email, $stamp, $perms));
 
-				db_exec($conn,
+				$database->exec($conn,
 					"INSERT INTO userinfo (handle, photo) VALUES ('%^', '%^')",
 					array($playername, $photo));
 				# FIXME: check duplicates, let db do it?
@@ -274,12 +214,12 @@ elseif ($topresource == "players") :
 						endif;
 					}
 
-					db_exec($conn,
+					$database->exec($conn,
 						"UPDATE users SET password = '%^', email = '%^', name = '%^' " .
 						"WHERE handle = '%^'",
 						array($password, $email, $realname, $playername));
 
-					db_exec($conn,
+					$database->exec($conn,
 						"UPDATE userinfo SET photo = '%^' WHERE handle = '%^'",
 						array($photo, $playername));
 					# FIXME: check duplicates, let db do it?
@@ -291,10 +231,10 @@ elseif ($topresource == "players") :
 			endif;
 		elseif ($method == "DELETE") :
 			if ($authenticated) :
-				db_exec($conn,
+				$database->exec($conn,
 					"DELETE FROM users WHERE handle = '%^'",
 					array($playername));
-				db_exec($conn,
+				$database->exec($conn,
 					"DELETE FROM userinfo WHERE handle = '%^'",
 					array($playername));
 				# FIXME: check presence etc.
@@ -309,12 +249,12 @@ elseif ($topresource == "statistics") :
 	if ($subresource == "games") :
 		if ($subsubresource == "") :
 			if ($method == "GET") :
-				$res = db_exec($conn, "SELECT DISTINCT game FROM stats", null);
+				$res = $database->exec($conn, "SELECT DISTINCT game FROM stats", null);
 
 				echo "<games>";
-				for($i = 0; $i < pg_numrows($res); $i++)
+				for($i = 0; $i < $database->numrows($res); $i++)
 				{
-					$gamename = pg_result($res, $i, 0);
+					$gamename = $database->result($res, $i, 0);
 					echo "<game name='$gamename'/>";
 				}
 				echo "</games>";
@@ -324,16 +264,16 @@ elseif ($topresource == "statistics") :
 		else :
 			if ($method == "GET") :
 				$gamename = $subsubresource;
-				$res = db_exec($conn, "SELECT handle, rating, highscore FROM stats " .
+				$res = $database->exec($conn, "SELECT handle, rating, highscore FROM stats " .
 					"WHERE game = '%^' ORDER BY ranking",
 					array($gamename));
 
 				echo "<statistics>";
-				for($i = 0; $i < pg_numrows($res); $i++)
+				for($i = 0; $i < $database->numrows($res); $i++)
 				{
-					$playername = pg_result($res, $i, 0);
-					$rating = pg_result($res, $i, 1);
-					$highscore = pg_result($res, $i, 2);
+					$playername = $database->result($res, $i, 0);
+					$rating = $database->result($res, $i, 1);
+					$highscore = $database->result($res, $i, 2);
 					echo "<statsplayer name='$playername'>";
 					echo "<rating>$rating</rating>";
 					echo "</statsplayer>";
@@ -349,12 +289,12 @@ elseif ($topresource == "statistics") :
 elseif ($topresource == "teams") :
 	if ($subresource == "") :
 		if ($method == "GET") :
-			$res = db_exec($conn, "SELECT teamname FROM teams", null);
+			$res = $database->exec($conn, "SELECT teamname FROM teams", null);
 
 			echo "<teams>";
-			for($i = 0; $i < pg_numrows($res); $i++)
+			for($i = 0; $i < $database->numrows($res); $i++)
 			{
-				$teamname = pg_result($res, $i, 0);
+				$teamname = $database->result($res, $i, 0);
 				echo "<team name='$teamname'/>";
 			}
 			echo "</teams>";
@@ -367,16 +307,16 @@ elseif ($topresource == "teams") :
 
 		if ($subsubresource == "") :
 			if ($method == "GET") :
-				$res = db_exec($conn,
+				$res = $database->exec($conn,
 					"SELECT founder, foundingdate, fullname, homepage FROM teams " .
 					"WHERE teamname = '%^'",
 					array($teamname));
 
-				if (pg_numrows($res) == 1) :
-					$founder = pg_result($res, 0, 0);
-					$foundingdate = pg_result($res, 0, 1);
-					$fullname = pg_result($res, 0, 1);
-					$homepage = pg_result($res, 0, 1);
+				if ($database->numrows($res) == 1) :
+					$founder = $database->result($res, 0, 0);
+					$foundingdate = $database->result($res, 0, 1);
+					$fullname = $database->result($res, 0, 1);
+					$homepage = $database->result($res, 0, 1);
 
 					echo "<team name='$teamname'>";
 					echo "<founder>$founder</founder>";
@@ -403,7 +343,7 @@ elseif ($topresource == "teams") :
 						$stamp = time();
 						$founder = $user;
 
-						db_exec($conn,
+						$database->exec($conn,
 							"INSERT INTO teams (teamname, fullname, homepage, founder, foundingdate) " .
 							"VALUES ('%^', '%^', '%^', '%^', %^)",
 							array($teamname, $fullname, $homepage, $founder, $stamp));
@@ -428,7 +368,7 @@ elseif ($topresource == "teams") :
 							endif;
 						}
 
-						db_exec($conn,
+						$database->exec($conn,
 							"UPDATE teams SET fullname = '%^', homepage = '%^' " .
 							"WHERE teamname = '%^'",
 							array($fullname, $homepage, $teamname));
@@ -442,7 +382,7 @@ elseif ($topresource == "teams") :
 				endif;
 			elseif ($method == "DELETE") :
 				if ($authenticated) :
-					db_exec($conn,
+					$database->exec($conn,
 						"DELETE FROM teams WHERE teamname = '%^'",
 						array($teamname));
 					# FIXME: check presence etc.
@@ -455,14 +395,14 @@ elseif ($topresource == "teams") :
 		else :
 			$teamplayername = $subsubresource;
 			if ($method == "GET") :
-				$res = db_exec($conn,
+				$res = $database->exec($conn,
 					"SELECT role, entrydate FROM teammembers " .
 					"WHERE teamname = '%^' AND handle = '%^'",
 					array($teamname, $teamplayername));
 
-				if (pg_numrows($res) == 1) :
-					$role = pg_result($res, 0, 0);
-					$entrydate = pg_result($res, 0, 1);
+				if ($database->numrows($res) == 1) :
+					$role = $database->result($res, 0, 0);
+					$entrydate = $database->result($res, 0, 1);
 
 					echo "<teamplayer name='$teamname'>";
 					echo "<role>$role</role>";
@@ -484,7 +424,7 @@ elseif ($topresource == "teams") :
 
 						$stamp = time();
 
-						db_exec($conn,
+						$database->exec($conn,
 							"INSERT INTO teammembers (teamname, handle, role, entrydate) " .
 							"VALUES ('%^', '%^', '%^', %^)",
 							array($teamname, $teamplayername, $role, $stamp));
@@ -507,7 +447,7 @@ elseif ($topresource == "teams") :
 							endif;
 						}
 
-						db_exec($conn,
+						$database->exec($conn,
 							"UPDATE teammembers SET role = '%^' " .
 							"WHERE teamname = '%^' AND handle = '%^'",
 							array($role, $teamname, $teamplayername));
@@ -521,7 +461,7 @@ elseif ($topresource == "teams") :
 				endif;
 			elseif ($method == "DELETE") :
 				if ($authenticated) :
-					db_exec($conn,
+					$database->exec($conn,
 						"DELETE FROM teammembers WHERE teamname = '%^' AND handle = '%^'",
 						array($teamname, $teamplayername));
 					# FIXME: check presence etc.
