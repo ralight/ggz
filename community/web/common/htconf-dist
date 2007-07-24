@@ -14,7 +14,7 @@ $ggzconfigfile = "/...../etc/ggzd/ggzd.conf";
 $ggzurl = "ggz://localhost:5688";
 #$ggzhost = "localhost";
 #$ggzname = "Local Zone";
-#$ggzversion = "0.0.12";
+#$ggzversion = "0.0.14+";
 
 $ggzgamedir = "/...../var/ggzd/gamedata/";
 

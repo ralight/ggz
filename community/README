@@ -1,20 +1,33 @@
-GGZ Community - a web-based GGZ community platform
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================================================
+The GGZ Gaming Zone - GGZ Community Web Portal - Release 0.0.14+
+================================================================
 
-Copy the 'web' directory into the document root of your web server,
-and point your browser to the pages.
+GGZ Community bundles a number of web applications which really
+turn a GGZ server into a community of online gamers. It will
+serve as a customizable platform which attracts more players
+due to the high integration with GGZ.
 
-Read setup/setup.txt in order to install the SQL schmema files
-and so on.
+Content of GGZ-Community:
+	- GGZ Community Portal:
+		Everything in 'web'. The portal offers player registration,
+		statistics, tournament registration, site news and more.
+		It can also integrate the GGZ Java core client, blogs and
+		player forums.
+	- GGZ Community API:
+		Everything in 'api'. Allows access to the GGZ database from
+		remote application through Web Services.
+		In addition, this part contains the GGZ OpenID provider.
 
-All the icons are from kggz, they need improvement.
+More features are listed in doc/Community.features.
 
-What has improved compared to the old rankings pages?
------------------------------------------------------
-* flexible shared OOP-style PHP engine
-* internationalization
-* clean HTML and CSS design
-* security: HTTPS and login procedures
-* logical partitioning of the modules
-* independency of SQL database system
+Installing GGZ Community is a bit different from the usual GGZ installation
+procedure. Therefore, please read setup/setup.txt in order to install the
+SQL schema files and other important configuration.
+The file README.GGZ does give you additional information.
 
+If you encounter any bugs, please send them to the mailing list,
+	<ggz-dev@mail.ggzgamingzone.org>.
+Or use the bug tracker at http://bugs.ggzgamingzone.org/.
+
+Have fun!
+	The GGZ Gaming Zone Development Team

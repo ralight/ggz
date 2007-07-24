@@ -1,5 +1,57 @@
-Install External software
+Installation instructions for GGZ Community
+-------------------------------------------
+
+A word of advice at the beginning: Installing GGZ Community is not just a
+matter of running two commands and be done with it, a comfort that one
+usually has with other GGZ packages.
+Instead, Community integrates with both the GGZ server and with the
+web server, and optionally with a lot of additional content.
+
+This document describes the installation of the GGZ Community web portal.
+The addition of the API functionality is covered by api/setup.txt.
+A reference instance of the web portal is running live at
+http://www.ggzcommunity.org. It is using the stock Community installation
+together with content which is available from GGZ Playground. Every
+instance will require its own modifications, although none are strictly
+necessary.
+
+A note for the impacient: There is also a shell script named setup.sh
+available. It hasn't been tested thoroughly up until now, and will likely
+only work on certain systems. If in doubt, follow this text and work
+through everything step by step.
+
+Install the web interface
 -------------------------
+
+Copy the 'web' directory into a dedicated directory accessible to your web
+server. Some parts of Community might work without a dedicated virtual host,
+but there are no guarantees.
+
+In the web server configuration, create a virtual host entry for a site name
+of your choice. For example, the following section will work with Apache
+when pasted into /etc/apache2/sites-available/ggzcommunity:
+
+<VirtualHost *>
+	ServerName ggzcommunity
+	DocumentRoot /path/to/web
+	<Directory />
+		AllowOverride All
+	</Directory>
+</VirtualHost>
+
+The web server integration is assuming Apache 2.x. There is a template
+for the sites-available directory in webserver/ggz-apache2.conf.in.
+The script setup.sh, when used, will fill out the template.
+
+Finally, point your browser to the host. You should see a GGZ Community
+instance which will recognize by itself that it hasn't been configured yet.
+
+Install external software
+-------------------------
+
+Depending on what additional software should be made available within
+Community, the following pieces must be installed and configured
+separately.
 
 www/forums/phpBB2: phpBB2 (Forum software)
  from http://www.phpbb.com/
@@ -17,20 +69,32 @@ www/db/ggzicons/flags/:
 Create GGZ database
 -------------------
 
+In order to make Community work, it needs to know which SQL database the
+GGZ server operates on. In the average case, telling Community the path
+to ggzd's configuration file (ggzd.conf) will suffice already, although
+different parameters can be configured manually in case no GGZ server
+is running locally.
+Before the configuration can start, a few SQL tables need to be created
+which might or might not be present already on a vanilla GGZ server.
+
 SQL setup
  from setup/sql
 
 Configuration
 -------------
+
 All htconf-dist files must be copied to .htconf and be modified.
+In particular, web/common/.htconf contains the main configuration.
 
-The web server integration is assuming Apache 2.x. There is a template
-for the sites-available directory in webserver/ggz-apache2.conf.
-
-The script setup.sh can now do most of the work.
+The file 'custom.txt' further explains on how to customize a GGZ Community
+installation.
 
 Scripts
 -------
+
+A couple of scripts are available which should be run regularly (via cron)
+or manually by hand. Their usage depends on how Community is configured.
+
 * calcrankings
   - calculates the player rankings for those games that support it
 * ggz2phpbb.pl
@@ -42,6 +106,7 @@ Scripts
 
 Savegames
 ---------
+
 db/matches/teg:
  should contain an unpacked TEG theme
 

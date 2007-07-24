@@ -1,0 +1,51 @@
+Features of GGZ Community
+-------------------------
+
+GGZ Community provides a framework in which several content modules can be
+used. Although the code probably isn't as modular as it should be, the
+following modules exist already:
+
+- start (start page, login, registration, news etc.)
+- rankings (includes player ratings and records)
+- teams (clan/club pages)
+- tournaments
+
+In addition, more software can be integrated:
+
+- forums
+- contribution & download area
+- web games
+
+Implementation notes
+--------------------
+
+The modularity should be high enough to allow using an already-existing
+framework such as eGroupWare, NukedClan, Typo3 or similar.
+It should follow modern HTML standards so the appearance can be adapted
+to the needs of different gaming communities.
+Since no framework fit the requirements, an own custom framework has
+been developed based on the old db2web code in GGZ Playground.
+
+The forum might be phpBB, as it allows styles and high customization,
+and is released under GPL. However, the integration is tedious, and
+therefore a lightweight forum is now in development which will directly
+be available within Community.
+
+The download area provides space for game contents created by players.
+It could be moderated, and is based on the GHNS framework
+(http://ghns.freedesktop.org/).
+
+About web games: There are many PHP games etc. out there, those could
+surely be integrated to make the pages even more attractive.
+However, the GGZ Java core client can already be integrated. A lot of
+players access GGZ solely through the browser.
+
+Implementation-wise, GGZ Community offers the following:
+
+* flexible shared OOP-style PHP engine
+* internationalization
+* clean HTML and CSS design
+* security: HTTPS and login procedures
+* logical partitioning of the modules
+* independency of SQL database system
+
