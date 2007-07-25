@@ -71,7 +71,7 @@
 /* Messages from client */
 #define TTT_REQ_SYNC     1
 
-/* Move errors */
+/* Move results */
 #define TTT_OK           0
 #define TTT_ERR_STATE   -1
 #define TTT_ERR_TURN    -2
@@ -80,9 +80,11 @@
 
 /* Unoccupied square on the board */
 #define TTT_EMPTY       -1
+
+/* Value for a tie game */
 #define TTT_NO_WINNER    2
 
-/* Whether or not DIO is used */
+/* Whether or not DIO is used (FIXME: until ggzcomm supports spectators) */
 #define TTT_USE_DIO      0
 
 /* === Variables, types and functions === */
