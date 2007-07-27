@@ -158,6 +158,7 @@ bool username_allowed(const char *str)
 	length = strlen(str) * 4;
 
 	ustr = u_strFromUTF8(ustr, length, &length, str, -1, &error);
+	free(ustr);
 	if(U_FAILURE(error)) {
 		err_msg("Error: conversion failure");
 		return false;
