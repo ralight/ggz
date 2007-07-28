@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 9162 2007-07-01 10:36:29Z oojah $
+ * $Id: net.c 9218 2007-07-28 11:44:11Z oojah $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1661,9 +1661,6 @@ static void _net_handle_admin(GGZNetIO *net, GGZXMLElement *element)
 	/* Grab admin data from tag */
 	action_str = ggz_xmlelement_get_attr(element, "ACTION");
 	player = ggz_xmlelement_get_attr(element, "PLAYER");
-
-	printf("ACTION: %s, PLAYER: %s\n", action_str, player);
-
 	reason = ggz_xmlelement_get_data(element);
 
 	if (!action_str) {
