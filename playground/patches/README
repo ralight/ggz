@@ -14,11 +14,34 @@ Game-side channels (for running GGZ in windows):
  ggz-client-libs.channels.diff
 
 GGZD Mysql phpbb - change the column names to match those used in phpbb
- mysql_phpbb.diff
+ mysql_phpbb.diff (oojah)
 
-Log client versions in ggzd
- client_version.diff
+Log client versions in ggzd. The intent here is to allow better debugging and
+trouble shooting when a player has a problem since it will be easy to see what
+client and more importantly version they are running. It also potentially 
+leads to the ability to suggest to the player through the server that a newer 
+version of their client is available.
+ client_version.diff (oojah)
  
+Support for tcp_wrappers in ggzd. This patch work fine but could do with some 
+more work. Specifically, ggzd doesn't log any denied accesses and the clients
+(at least ggz-java) don't react very well to a denial since the connection is
+closed without any communication taking place (or a new thread being created).
+ ggzd_tcp_wrappers.diff (oojah)
+
+Support for time-limited bans in ggzd. This patch gives players with the 
+appropriate permission the ability to ban players for a time period based on 
+their ip address. Nobody sees any ip addresses. The bans do not persist across
+restarts of ggzd .This patch is in use on o.d.o and seems to be working ok. It
+needs rework as it is a mess. Perhaps a new source file is the best solution.
+More importantly, the general concept of bans needs to be better considered. 
+This patch allows for some respite in the face of an annoying player, but 
+something more permanent or tunable would be good as well. The ban duration is
+hard coded to 15 minutes at the moment. At the very least this should either 
+be a configuration option or be able to be chosen by the player making the 
+ban.
+ ggzd_ban.diff (oojah)
+
 
 Old patches (just to keep it in memory)
 ---------------------------------------
