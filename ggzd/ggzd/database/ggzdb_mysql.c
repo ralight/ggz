@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 8848 2007-01-07 22:55:06Z oojah $
+ * $Id: ggzdb_mysql.c 9221 2007-07-29 17:03:40Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -55,10 +55,18 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 {
 	int rc;
 	char query[4096];
+	my_bool reconnect = true;
 
 	if(conn) return GGZ_OK;
 
+	mysql_library_init(0, NULL, NULL);
 	conn = mysql_init(conn);
+	/*
+	 * MYSQL_OPT_RECONNECT set to true here enables automatic reconnections to the
+	 * server if the connection is lost. This has been disabled by default since 
+	 * mysql 5.0.3. This option requires 5.0.13.
+	 */
+	mysql_options(conn, MYSQL_OPT_RECONNECT, &reconnect);
 	conn = mysql_real_connect(conn, connection.host, connection.username,
 		connection.password, connection.database, 0, NULL, 0);
 
@@ -82,8 +90,9 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 /* Function to deinitialize the mysql database system */
 void _ggzdb_close(void)
 {
-	/*mysql_close(conn);
-	conn = NULL;*/
+	mysql_close(conn);
+	mysql_library_end();
+	conn = NULL;
 }
 
 
