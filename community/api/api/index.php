@@ -88,7 +88,13 @@ if (($method == "POST") || ($method == "PUT")) :
 
 	if ($input) :
 		$doc = new DOMDocument();
-		$doc->loadXML($input);
+		$ret = @$doc->loadXML($input);
+		if (!$ret) :
+			header("Content-type: text/plain");
+			header("HTTP/1.1 500 It's all ggzapi+xml, man");
+			echo "Error: Wrongly formatted post contents";
+			exit;
+		endif;
 		$xmlroot = $doc->documentElement;
 	endif;
 endif;
