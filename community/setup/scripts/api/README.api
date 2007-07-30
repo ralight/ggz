@@ -1,3 +1,14 @@
 This is a client-side script to the GGZ Community Web Services API.
-Its intended use is to list, add, edit and remove players.
+Its intended use is to list, add, edit and remove players, teams and
+statistics.
+
+In addition to the script, the following test procedures might help
+for debugging (if $debug is turned on in API's .htconf):
+
+echo "<xml/>" | \
+  lwp-request -m PUT -c "application/ggzapi+xml" \
+  -f http://api/api/path
+
+curl -H "Content-type: application/ggzapi+xml" \
+  -d "<xml/>" http://api.ggzcommunity/api/path
 
