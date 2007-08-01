@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 9141 2007-06-04 12:02:14Z josef $
+ * $Id: err_func.c 9225 2007-08-01 13:50:25Z oojah $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -145,7 +145,7 @@ static void debug_handler(int priority, const char *msg)
 	int kill_me = 0;
 
 	if((log_info.options & GGZ_LOGOPT_INC_PID) || priority == LOG_DEBUG)
-		snprintf(hdr, sizeof(hdr), "[%d]: ", getpid());
+		snprintf(hdr, sizeof(hdr), "[%lu]: ", pthread_self());
 	else
 		hdr[0] = '\0';
 
@@ -316,7 +316,7 @@ static FILE *log_open_logfile(char *fname)
 	}
 
 	if(log_info.options & GGZ_LOGOPT_THREAD_LOGS) {
-		snprintf(pidname, sizeof(pidname), "%s_%u", fname, getpid());
+		snprintf(pidname, sizeof(pidname), "%s_%lu", fname, pthread_self());
 		f = pidname;
 	}
 
