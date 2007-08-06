@@ -328,7 +328,7 @@ int main(int argc, char *argv[])
 		{"dscpath", 1, 0, 'd'},
 		{"types", 1, 0, 't'},
 		{"help", 0, 0, 'h'},
-		{"config", 0, 0, 'c'},
+		{"config", 1, 0, 'c'},
 		{0, 0, 0, 0}
 	};
 
