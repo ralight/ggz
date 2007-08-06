@@ -211,7 +211,8 @@ int findword(const char *hashfilename, const char *word)
 				found = 1;
 			}
 			free(str);
-			if(found);
+			//if(found);
+			// FIXME: ???
 		}
 
 		i += len + sizeof(int);

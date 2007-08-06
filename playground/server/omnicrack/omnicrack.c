@@ -243,7 +243,9 @@ static int length_score(int length)
 
 static int dict_score(const char *dictpath, const char *password)
 {
-	if(findword(dictpath, password))
+	if(!dictpath)
+		return 0;
+	if(findword(dictpath, password) != 0)
 		return 0;
 	return 1;
 }
