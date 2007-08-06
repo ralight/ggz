@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 9092 2007-05-02 13:23:22Z josef $
+ * $Id: login.c 9229 2007-08-06 06:12:38Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -345,7 +345,7 @@ static bool is_valid_password(const char *password)
 #ifdef WITH_OMNICRACKLIB
 	int res;
 
-	res = omnicrack_checkstrength(password, OMNICRACK_STRATEGY_ALL, NULL);
+	res = omnicrack_checkstrength(password, OMNICRACK_STRATEGY_ALL - OMNICRACK_STRATEGY_DICT, NULL);
 	if (res != OMNICRACK_RESULT_OK) {
 		return false;
 	}
