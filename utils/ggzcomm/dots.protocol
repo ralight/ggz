@@ -1,9 +1,31 @@
 <?xml version="1.0"?>
-<ggzcomm engine="Dots" version="0.2">
+<ggzcomm engine="dots" version="4">
+	<definitions>
+		<def name="msgseat" value="0"/>
+		<def name="msgplayers" value="1"/>
+		<def name="msgmoveh" value="2"/>
+		<def name="msgmovev" value="3"/>
+		<def name="msggameover" value="4"/>
+		<def name="reqmove" value="5"/>
+		<def name="rspmove" value="6"/>
+		<def name="sndsync" value="7"/>
+		<def name="msgoptions" value="8"/>
+		<def name="reqoptions" value="9"/>
+
+		<def name="sndmoveh" value="0"/>
+		<def name="sndmovev" value="1"/>
+		<def name="reqsync" value="3"/>
+		<def name="sndoptions" value="4"/>
+		<def name="reqnewgame" value="5"/>
+	</definitions>
 	<client>
 		<event name="reqsync"/>
 		<event name="reqnewgame"/>
-		<event name="msgmove">
+		<event name="sndmoveh">
+			<data name="x" type="byte"/>
+			<data name="y" type="byte"/>
+		</event>
+		<event name="sndmovev">
 			<data name="x" type="byte"/>
 			<data name="y" type="byte"/>
 		</event>
@@ -13,33 +35,41 @@
 		</event>
 	</client>
 	<server>
-		<event name="msgstatus">
-			<data name="status" type="byte"/>
-		</event>
-		<event name="msgsyncmove">
-			<data name="move" type="byte"/>
-		</event>
-		<event name="msgsyncscore">
-			<data name="score" type="int"/>
-		</event>
 		<event name="msgseat">
 			<data name="seat" type="int"/>
 		</event>
 		<event name="msgplayers">
 			<sequence count="2">
-				<data name="seattmp" type="int"/>
+				<data name="seat" type="int"/>
 				<eval>
-					<condition name="seat" result="ggz:seat_player"/>
-					<condition name="seat" result="ggz:seat_bot"/>
+					<condition name="seat" result="ggz:seat_open" type="unequal"/>
 					<data name="player" type="string"/>
 				</eval>
 			</sequence>
 		</event>
-		<event name="msgoptions">
-			<data name="width" type="byte"/>
-			<data name="height" type="byte"/>
+		<event name="msgmoveh">
+			<data name="nx" type="byte"/>
+			<data name="ny" type="byte"/>
+			<data name="s" type="byte"/>
+			<sequence count="s">
+				<data name="x" type="byte"/>
+				<data name="y" type="byte"/>
+			</sequence>
 		</event>
-		<event name="msgmove">
+		<event name="msgmovev">
+			<data name="nx" type="byte"/>
+			<data name="ny" type="byte"/>
+			<data name="s" type="byte"/>
+			<sequence count="s">
+				<data name="x" type="byte"/>
+				<data name="y" type="byte"/>
+			</sequence>
+		</event>
+		<event name="msggameover">
+			<data name="winner" type="byte"/>
+		</event>
+		<event name="reqmove"/>
+		<event name="rspmove">
 			<data name="status" type="byte"/>
 			<data name="s" type="byte"/>
 			<sequence count="s">
@@ -47,15 +77,21 @@
 				<data name="y" type="byte"/>
 			</sequence>
 		</event>
-		<event name="oppmove">
-			<date name="nx" type="byte"/>
-			<date name="ny" type="byte"/>
-			<date name="s" type="byte"/>
-			<sequence count="s">
-				<data name="x" type="byte"/>
-				<data name="y" type="byte"/>
+		<event name="sndsync">
+			<data name="turn" type="byte"/>
+			<data name="score0" type="int"/>
+			<data name="score1" type="int"/>
+			<!--
+			<sequence count="???">
 			</sequence>
+			-->
+			<!-- FIXME: sync not implemented -->
 		</event>
+		<event name="msgoptions">
+			<data name="width" type="byte"/>
+			<data name="height" type="byte"/>
+		</event>
+		<event name="reqoptions"/>
 	</server>
 </ggzcomm>
 

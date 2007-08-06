@@ -39,6 +39,8 @@ C++      | qt       | in use (kconnectx)?
          | mnet     | experimental
          | easysock | -- (only in C)
          | dio      | -- (only in C)
+         | qt4      | experimental
+         | kggzraw  | experimental
 ---------+----------+-------------
 Python   | socket   | in use (examples)
 ---------+----------+-------------
