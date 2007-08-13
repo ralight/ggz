@@ -97,6 +97,7 @@ or manually by hand. Their usage depends on how Community is configured.
 
 * calcrankings
   - calculates the player rankings for those games that support it
+  - as of GGZ 0.0.15, this functionality has been integrated into ggzd
 * ggz2phpbb.pl
   - synchronizes phpBB user database from GGZ user database
 * tracker.pl

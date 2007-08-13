@@ -49,9 +49,9 @@ sed -i -e "s/\@PHPBBNAME\@/$phpbbdbname_quoted/" scripts/ggz2phpbb.conf
 sed -i -e "s/\@PHPBBUSER\@/$phpbbdbuser_quoted/" scripts/ggz2phpbb.conf
 sed -i -e "s/\@PHPBBPASS\@/$phpbbdbpass_quoted/" scripts/ggz2phpbb.conf
 
-echo ""
-echo "Compilation..."
-(cd scripts/calcrankings && make)
+#echo ""
+#echo "Compilation..."
+#(cd scripts/calcrankings && make)
 
 #echo ""
 #echo "Downloading external software..."
