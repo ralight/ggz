@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 9245 2007-08-13 07:01:38Z josef $
+ * $Id: stats.c 9248 2007-08-13 07:02:11Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -408,7 +408,7 @@ void report_savegame(int gametype, const char *owner, const char *savegame)
 	ggzdb_stats_savegame(game_name, owner, savegame);
 }
 
-/* This function allocates a list which must be ggz_free()d. */
+/* This function allocates a list which must be ggz_list_free()d. */
 GGZList *toprankings(int gametype)
 {
 	char game_name[MAX_GAME_NAME_LEN + 1];

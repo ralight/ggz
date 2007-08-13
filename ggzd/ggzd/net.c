@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 9245 2007-08-13 07:01:38Z josef $
+ * $Id: net.c 9248 2007-08-13 07:02:11Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -138,6 +138,7 @@ static void _net_handle_motd(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_ping(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_info(GGZNetIO *net, GGZXMLElement *element);
+static void _net_handle_rankings(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_admin(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_adminperm(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_reason(GGZNetIO *net, GGZXMLElement *element);
@@ -1217,6 +1218,7 @@ static GGZXMLElement* _net_new_element(const char *tag,
 		TAG(adminperm),
 		TAG(reason),
 		TAG(info),
+		TAG(rankings),
 		TAG(join),
 		TAG(leave),
 		TAG(reseat),
@@ -1739,6 +1741,13 @@ static void _net_handle_info(GGZNetIO *net, GGZXMLElement *element)
 	seat_num = str_to_int(ggz_xmlelement_get_attr(element, "SEAT"), -1);
 
 	player_table_info(net->client->data, seat_num);
+}
+
+
+/* Functions for <RANKINGS> tag */
+static void _net_handle_rankings(GGZNetIO *net, GGZXMLElement *element)
+{
+	player_table_rankings(net->client->data);
 }
 
 
