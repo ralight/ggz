@@ -4,14 +4,18 @@ libggzdb_a_SOURCES = \
 	ggzdb.h \
 	ggzdb_proto.h
 
+libggzdb_a_CPPFLAGS = -I$(top_srcdir)/ggzd $(LIBGGZ_INCLUDES) $(DATABASE_INCLUDES)
+
 if GGZDB_SQLITE
 libggzdb_a_SOURCES += ggzdb_sqlite.c
 endif
 if GGZDB_MYSQL
-libggzdb_a_SOURCES += ggzdb_mysql.c
+libggzdb_a_SOURCES += ggzdb_mysql.c rankings.c rankings.h
+libggzdb_a_CPPFLAGS += -DGGZDCONFDIR=\"$(ggzdconfdir)\"
 endif
 if GGZDB_PGSQL
-libggzdb_a_SOURCES += ggzdb_pgsql.c
+libggzdb_a_SOURCES += ggzdb_pgsql.c rankings.c rankings.h
+libggzdb_a_CPPFLAGS += -DGGZDCONFDIR=\"$(ggzdconfdir)\"
 endif
 if GGZDB_DB2
 libggzdb_a_SOURCES += ggzdb_db2.c
@@ -26,7 +30,14 @@ if GGZDB_DBI
 libggzdb_a_SOURCES += ggzdb_dbi.c
 endif
 
-libggzdb_a_CPPFLAGS = -I$(top_srcdir)/ggzd $(LIBGGZ_INCLUDES) $(DATABASE_INCLUDES)
+if GGZDB_PGSQL
+noinst_PROGRAMS = calcrankings
+calcrankings_CPPFLAGS = $(LIBGGZ_INCLUDES) \
+	-DGGZDCONFDIR=\"$(ggzdconfdir)\"
+calcrankings_SOURCES = calcrankings.c rankings.c rankings.h
+calcrankings_LDFLAGS = $(LIBGGZ_LDFLAGS)
+calcrankings_LDADD = $(LIB_GGZ) $(LIB_DATABASE)
+endif
 
 dist_ggzddata_DATA = ggz.sql
 
