@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 9247 2007-08-13 07:02:04Z josef $
+ * $Id: ggzmod-ggz.c 9249 2007-08-13 07:02:41Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -1030,6 +1030,11 @@ void _ggzmod_ggz_handle_chat_request(GGZMod *ggzmod, char *chat_msg)
 void _ggzmod_ggz_handle_info_request(GGZMod *ggzmod, int seat_num)
 {
 	call_transaction(ggzmod, GGZMOD_TRANSACTION_INFO, &seat_num);
+}
+
+void _ggzmod_ggz_handle_rankings_request(GGZMod *ggzmod)
+{
+	call_transaction(ggzmod, GGZMOD_TRANSACTION_RANKINGS, NULL);
 }
 
 int ggzmod_ggz_set_stats(GGZMod *ggzmod, GGZStat *player_stats,

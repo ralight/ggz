@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules, GGZ side
- * $Id: io-ggz.c 9247 2007-08-13 07:02:04Z josef $
+ * $Id: io-ggz.c 9249 2007-08-13 07:02:41Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -52,6 +52,7 @@ static int _io_ggz_read_req_bot(GGZMod *ggzmod);
 static int _io_ggz_read_req_open(GGZMod *ggzmod);
 static int _io_ggz_read_req_chat(GGZMod *ggzmod);
 static int _io_ggz_read_req_info(GGZMod *ggzmod);
+static int _io_ggz_read_req_rankings(GGZMod *ggzmod);
 
 /* Functions for sending IO messages */
 int _io_ggz_send_launch(int fd)
@@ -244,6 +245,8 @@ int _io_ggz_read_data(GGZMod *ggzmod)
 			return _io_ggz_read_req_chat(ggzmod);
 		case REQ_INFO:
 			return _io_ggz_read_req_info(ggzmod);
+		case REQ_RANKINGS:
+			return _io_ggz_read_req_rankings(ggzmod);
 		}
 	}
 
@@ -328,6 +331,12 @@ static int _io_ggz_read_req_info(GGZMod *ggzmod)
 	if (ggz_read_int(ggzmod->fd, &seat_num) < 0)
 		return -1;
 	_ggzmod_ggz_handle_info_request(ggzmod, seat_num);
+	return 0;
+}
+
+static int _io_ggz_read_req_rankings(GGZMod *ggzmod)
+{
+	_ggzmod_ggz_handle_rankings_request(ggzmod);
 	return 0;
 }
 

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 9247 2007-08-13 07:02:04Z josef $
+ * $Id: netxml.c 9249 2007-08-13 07:02:41Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -700,6 +700,18 @@ int _ggzcore_net_send_player_info(GGZNet * net, int seat_num)
 			"<INFO SEAT='%d'/>",
 			seat_num);
 	}
+
+	return result;
+}
+
+
+int _ggzcore_net_send_player_rankings(GGZNet * net)
+{
+	int result;
+
+	ggz_debug(GGZCORE_DBG_NET, "Sending rankings request");
+
+	result = _ggzcore_net_send_line(net, "<RANKINGS/>");
 
 	return result;
 }

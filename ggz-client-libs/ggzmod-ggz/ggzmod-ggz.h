@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/20/02
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.h 9247 2007-08-13 07:02:04Z josef $
+ * $Id: ggzmod-ggz.h 9249 2007-08-13 07:02:41Z josef $
  *
  * This file contains the GGZ-only interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -155,7 +155,11 @@ typedef enum {
 
 	/* A chat originating from the game client.
 	 * Data: message (const char*) */
-	GGZMOD_TRANSACTION_CHAT
+	GGZMOD_TRANSACTION_CHAT,
+
+	/* Rankings for this game
+	 * Data: NULL */
+	GGZMOD_TRANSACTION_RANKINGS,
 } GGZModTransaction;
 
 typedef void (*GGZModTransactionHandler) (GGZMod * mod, GGZModTransaction t,

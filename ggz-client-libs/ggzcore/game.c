@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 9247 2007-08-13 07:02:04Z josef $
+ * $Id: game.c 9249 2007-08-13 07:02:41Z josef $
  *
  * This fils contains functions for handling games being played
  *
@@ -131,6 +131,8 @@ static void _ggzcore_game_handle_seatchange(GGZMod * mod,
 static void _ggzcore_game_handle_chat(GGZMod * mod, GGZModTransaction t,
 				      const void *data);
 static void _ggzcore_game_handle_info(GGZMod * mod, GGZModTransaction t,
+				      const void *data);
+static void _ggzcore_game_handle_rankings(GGZMod * mod, GGZModTransaction t,
 				      const void *data);
 
 
@@ -330,6 +332,9 @@ void _ggzcore_game_init(struct _GGZGame *game,
 	ggzmod_ggz_set_transaction_handler(game->client,
 				       GGZMOD_TRANSACTION_INFO,
 				       _ggzcore_game_handle_info);
+	ggzmod_ggz_set_transaction_handler(game->client,
+				       GGZMOD_TRANSACTION_RANKINGS,
+				       _ggzcore_game_handle_rankings);
 	ggzmod_ggz_set_player(game->client,
 			  _ggzcore_server_get_handle(server), 0, -1);
 
@@ -579,6 +584,15 @@ static void _ggzcore_game_handle_info(GGZMod * mod, GGZModTransaction t,
 	const int *seat_num = data;
 
 	_ggzcore_net_send_player_info(net, *seat_num);
+}
+
+static void _ggzcore_game_handle_rankings(GGZMod * mod, GGZModTransaction t,
+				      const void *data)
+{
+	GGZGame *game = ggzmod_ggz_get_gamedata(mod);
+	GGZNet *net = _ggzcore_server_get_net(game->server);
+
+	_ggzcore_net_send_player_rankings(net);
 }
 
 void _ggzcore_game_free(struct _GGZGame *game)
