@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 9197 2007-07-23 07:30:18Z josef $
+ * $Id: ggzduedit.c 9246 2007-08-13 07:01:56Z josef $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -186,6 +186,7 @@ static void add_player(void)
 
 	printf("User handle:   ");
 	getnextline();
+	/* FIXME: tolower() is evil. Must use unicode canonicalization. */
 	for(i=0; i<MAX_USER_NAME_LEN; i++) {
 		if(lb[i] == '\0')
 			break;
@@ -281,6 +282,7 @@ static void edit_player(int edit)
 
 	printf("Player handle: ");
 	getnextline();
+	/* FIXME: tolower() is evil. Must use unicode canonicalization. */
 	for(i=0; i<MAX_USER_NAME_LEN; i++) {
 		if(lb[i] == '\0')
 			break;

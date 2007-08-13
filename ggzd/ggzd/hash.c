@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/08/2000
  * Desc: Functions for handling the player name hash tables
- * $Id: hash.c 5928 2004-02-15 02:43:16Z jdorje $
+ * $Id: hash.c 9246 2007-08-13 07:01:56Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -262,6 +262,7 @@ static void hash_player_lowercase(const char *src, char *dst)
 	int i;
 
 	/* Convert name to lowercase for comparisons */
+	/* FIXME: tolower() is evil. Must use unicode canonicalization. */
 	for(i = 0; src[i] != '\0'; i++)
 		dst[i] = tolower(src[i]);
 	dst[i] = '\0';
