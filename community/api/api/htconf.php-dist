@@ -5,6 +5,12 @@
 // Installation directory of the GGZ Community web portal
 $ggzcommunitydir = "../../web";
 
+// Resource limits, 0 = unlimited
+$limitrows = 0;
+
+// Refuse all write operations, usefor for read-only APIs
+$readonly = 0;
+
 // If debugging is enabled, all output is text/plain
 // This is needed for viewing the output in browsers
 $debug = 0;

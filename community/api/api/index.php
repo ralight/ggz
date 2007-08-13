@@ -31,7 +31,7 @@ function quote($s)
 
 // -------------------------------------------------------------
 // Read the configuration file
-// This will give us $ggzcommunitydir and $debug
+// This will give us $ggzcommunitydir, $limitrows, $readonly and $debug
 
 $ret = @include_once(".htconf.php");
 if (!$ret) :
@@ -42,6 +42,15 @@ if (!$ret) :
 endif;
 
 ini_set("include_path", ini_get("include_path") . ":$ggzcommunitydir/common");
+
+$limit = "";
+if ($limitrows > 0) :
+	$offset = 0;
+	if ($_GET['offset']) :
+		$offset = quote($_GET['offset']);
+	endif;
+	$limit = "LIMIT '$limitrows' OFFSET '$offset'";
+endif;
 
 // -------------------------------------------------------------
 // Connect to the database
@@ -58,7 +67,7 @@ endif;
 // -------------------------------------------------------------
 // So far so good... start working on the input here
 
-$uri = $_SERVER["REQUEST_URI"];
+$uri = $_SERVER["SCRIPT_NAME"];
 $method = $_SERVER["REQUEST_METHOD"];
 $resource = str_replace("/api/", "", $uri);
 
@@ -74,6 +83,15 @@ $internalerror = 0;
 
 $xmlroot = "";
 $authenticated = 0;
+
+if (($method == "POST") || ($method == "PUT") || ($method == "DELETE")) :
+	if ($readonly) :
+		header("Content-type: text/plain");
+		header("HTTP/1.1 500 Ain't got no chmod+w here");
+		echo "Error: Write access is forbidden at this site";
+		exit;
+	endif;
+endif;
 
 if (($method == "POST") || ($method == "PUT")) :
 	$input = file_get_contents("php://input");
@@ -120,7 +138,7 @@ if ($resource == "") :
 elseif ($topresource == "players") :
 	if ($subresource == "") :
 		if ($method == "GET") :
-			$res = $database->exec("SELECT handle FROM users", null);
+			$res = $database->exec("SELECT handle FROM users ORDER BY id $limit", null);
 
 			echo "<players>";
 			for($i = 0; $i < $database->numrows($res); $i++)
@@ -246,7 +264,7 @@ elseif ($topresource == "statistics") :
 	if ($subresource == "games") :
 		if ($subsubresource == "") :
 			if ($method == "GET") :
-				$res = $database->exec("SELECT DISTINCT game FROM stats", null);
+				$res = $database->exec("SELECT DISTINCT game FROM stats ORDER BY game $limit", null);
 
 				echo "<games>";
 				for($i = 0; $i < $database->numrows($res); $i++)
@@ -262,7 +280,7 @@ elseif ($topresource == "statistics") :
 			if ($method == "GET") :
 				$gamename = $subsubresource;
 				$res = $database->exec("SELECT handle, rating, highscore FROM stats " .
-					"WHERE game = '%^' ORDER BY ranking",
+					"WHERE game = '%^' ORDER BY ranking $limit",
 					array($gamename));
 
 				echo "<statistics>";
@@ -286,7 +304,7 @@ elseif ($topresource == "statistics") :
 elseif ($topresource == "teams") :
 	if ($subresource == "") :
 		if ($method == "GET") :
-			$res = $database->exec("SELECT teamname FROM teams", null);
+			$res = $database->exec("SELECT teamname FROM teams $limit", null);
 
 			echo "<teams>";
 			for($i = 0; $i < $database->numrows($res); $i++)
