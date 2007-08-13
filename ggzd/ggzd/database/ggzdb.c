@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 9241 2007-08-13 07:00:54Z josef $
+ * $Id: ggzdb.c 9245 2007-08-13 07:01:38Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -324,7 +324,7 @@ GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char
 }
 
 
-GGZDBResult ggzdb_stats_toprankings(const char *game, int number)
+GGZDBResult ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGameStats **rankings)
 {
 	GGZDBResult rc = GGZDB_NO_ERROR;
 
@@ -334,7 +334,7 @@ GGZDBResult ggzdb_stats_toprankings(const char *game, int number)
 		rc = ggzdb_stats_init();
 
 	if (rc == GGZDB_NO_ERROR)
-		rc = _ggzdb_stats_toprankings(game, number);
+		rc = _ggzdb_stats_toprankings(game, number, rankings);
 
 	_ggzdb_exit();
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 9239 2007-08-13 07:00:17Z josef $
+ * $Id: ggzdb_mysql.c 9245 2007-08-13 07:01:38Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -572,14 +572,13 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 	}
 }
 
-GGZDBResult _ggzdb_stats_toprankings(const char *game, int number)
+GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGameStats **rankings)
 {
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char query[4096];
 	int rc = GGZDB_ERR_DB;
-	ggzdbPlayerGameStats statsx;
-	ggzdbPlayerGameStats *stats = &statsx;
+	ggzdbPlayerGameStats *stats;
 	int i;
 
 	snprintf(query, sizeof(query),
@@ -598,6 +597,7 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number)
 		for(i = 0; i < mysql_num_rows(res); i++) {
 			row = mysql_fetch_row(res);
 
+			stats = rankings[i];
 			stats->wins = atoi(row[0]);
 			stats->losses = atoi(row[1]);
 			stats->ties = atoi(row[2]);

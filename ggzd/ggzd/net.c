@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 9218 2007-07-28 11:44:11Z oojah $
+ * $Id: net.c 9245 2007-08-13 07:01:38Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -2325,6 +2325,24 @@ GGZReturn net_send_info(GGZNetIO *net, int num, const char *realname,
 GGZReturn net_send_info_list_end(GGZNetIO *net)
 {
 	return _net_send_line(net, "</INFO>");
+}
+
+
+/* Send <RANKINGS> tag. */
+GGZReturn net_send_rankings_list_begin(GGZNetIO *net)
+{
+	return _net_send_line(net, "<RANKINGS>");
+}
+
+GGZReturn net_send_rankings(GGZNetIO *net, int num, const char *name, int score)
+{
+	return _net_send_line(net, "<RANKING POSITION='%d' PLAYER='%s' SCORE='%d'/>",
+		num, name, score);
+}
+
+GGZReturn net_send_rankings_list_end(GGZNetIO *net)
+{
+	return _net_send_line(net, "</RANKINGS>");
 }
 
 

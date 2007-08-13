@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 8983 2007-02-10 00:23:32Z oojah $
+ * $Id: players.c 9245 2007-08-13 07:01:38Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -63,6 +63,7 @@
 #include "seats.h"
 #include "table.h"
 #include "transit.h"
+#include "stats.h"
 
 
 pthread_key_t player_key;
@@ -1019,6 +1020,37 @@ GGZPlayerHandlerStatus player_table_info(GGZPlayer *player, int seat_num)
 	}
 	
 	net_send_info_list_end(player->client->net);
+
+	pthread_rwlock_unlock(&table->lock);
+
+	return GGZ_REQ_OK;
+}
+
+
+GGZPlayerHandlerStatus player_table_rankings(GGZPlayer *player)
+{
+	GGZTable *table;
+	GGZListEntry *entry;
+
+	table = table_lookup(player->room, player->table);
+	if (!table) {
+		dbg_msg(GGZ_DBG_TABLE,
+			"%s tried to get player rankings on non-existing table %d:%d.",
+			player->name, player->room, player->table);
+		return GGZ_REQ_FAIL;
+	}
+
+	net_send_rankings_list_begin(player->client->net);
+
+	GGZList *rankings = toprankings(table->type);
+        for (entry = ggz_list_head(rankings); entry; entry = ggz_list_next(entry)) {
+		GGZRanking *ranking = ggz_list_get_data(entry);
+		net_send_rankings(player->client->net, ranking->position, ranking->name, ranking->score);
+		ggz_free(ranking->name);
+	}
+	ggz_free(rankings);
+
+	net_send_rankings_list_end(player->client->net);
 
 	pthread_rwlock_unlock(&table->lock);
 

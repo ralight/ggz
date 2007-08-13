@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 7407 2005-08-14 10:16:49Z josef $
+ * $Id: stats.c 9245 2007-08-13 07:01:38Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -357,6 +357,9 @@ void report_statistics(int room, int gametype,
 		ggzdb_stats_update(&stats[i]);
 	}
 
+	/* Perform game-wide rankings recalculation */
+	ggzdb_stats_calcrankings(game_name);
+
 	/* Queue updates for people in the room. */
 	for (i = 0; i < report->num_players; i++) {
 		const char *name = report->names[i];
@@ -403,5 +406,47 @@ void report_savegame(int gametype, const char *owner, const char *savegame)
 	pthread_rwlock_unlock(&game_types[gametype].lock);
 
 	ggzdb_stats_savegame(game_name, owner, savegame);
+}
+
+/* This function allocates a list which must be ggz_free()d. */
+GGZList *toprankings(int gametype)
+{
+	char game_name[MAX_GAME_NAME_LEN + 1];
+	ggzdbPlayerGameStats **rankings;
+	int number = 10;
+	int i;
+	GGZList *rankingslist;
+
+	rankings = ggz_malloc(sizeof(ggzdbPlayerGameStats) * number);
+	for(i = 0; i < number; i++)
+	{
+		rankings[i] = ggz_malloc(sizeof(ggzdbPlayerGameStats));
+		rankings[i]->ranking = -1;
+	}
+
+	pthread_rwlock_rdlock(&game_types[gametype].lock);
+	strcpy(game_name, game_types[gametype].name);
+	pthread_rwlock_unlock(&game_types[gametype].lock);
+
+	ggzdb_stats_toprankings(game_name, number, rankings);
+
+	rankingslist = ggz_list_create(NULL, NULL, NULL, GGZ_LIST_ALLOW_DUPS);
+	for(i = 0; i < number; i++)
+	{
+		if(rankings[i]->ranking != -1)
+		{
+			GGZRanking *ranking = ggz_malloc(sizeof(GGZRanking));
+			ranking->position = rankings[i]->ranking;
+			ranking->score = rankings[i]->highest_score;
+			ranking->name = ggz_strdup(rankings[i]->player);
+			ggz_list_insert(rankingslist, ranking);
+		}
+
+		ggz_free(rankings[i]);
+	}
+
+	ggz_free(rankings);
+
+	return rankingslist;
 }
 

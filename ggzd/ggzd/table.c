@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 9062 2007-04-21 03:51:10Z jdorje $
+ * $Id: table.c 9245 2007-08-13 07:01:38Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -928,6 +928,8 @@ static void table_game_report(GGZdMod *ggzdmod,
 	const GGZdModGameReportData *report = data;
 
 	report_statistics(table->room, table->type, report, table->savegame);
+
+	/* FIXME: we might want to auto-send the updated rankings here? */
 }
 
 

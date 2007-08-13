@@ -289,7 +289,7 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 	return GGZDB_ERR_DB;
 }
 
-GGZDBResult _ggzdb_stats_toprankings(const char *game, int number)
+GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGameStats **rankings)
 {
 	/* Not implemented, but do not return error */
 	return GGZDB_NO_ERROR;

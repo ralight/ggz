@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 9241 2007-08-13 07:00:54Z josef $
+ * $Id: ggzdb.h 9245 2007-08-13 07:01:38Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -80,7 +80,6 @@ typedef struct {
 	long highest_score;
 } ggzdbPlayerGameStats;
 
-
 /* Error codes */
 typedef enum {
 	GGZDB_NO_ERROR,		/* All's well */
@@ -120,7 +119,7 @@ GGZDBResult ggzdb_stats_newmatch(const char *game, const char *winner, const cha
 GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame);
 
 /* Report the top-N players for a certain game type */
-GGZDBResult ggzdb_stats_toprankings(const char *game, int number);
+GGZDBResult ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGameStats **rankings);
 
 /* Recalculate statistics for a certain game type */
 GGZDBResult ggzdb_stats_calcrankings(const char *game);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 9239 2007-08-13 07:00:17Z josef $
+ * $Id: ggzdb_pgsql.c 9245 2007-08-13 07:01:38Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -913,14 +913,13 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 	return rc;
 }
 
-GGZDBResult _ggzdb_stats_toprankings(const char *game, int number)
+GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGameStats **rankings)
 {
 	PGconn *conn;
 	PGresult *res;
 	char query[4096];
 	int rc = GGZDB_ERR_DB;
-	ggzdbPlayerGameStats statsx;
-	ggzdbPlayerGameStats *stats = &statsx;
+	ggzdbPlayerGameStats *stats;
 	int i;
 
 	conn = claimconnection();
@@ -941,6 +940,7 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number)
 	} else {
 		rc = GGZDB_NO_ERROR;
 		for(i = 0; i < PQntuples(res); i++) {
+			stats = rankings[i];
 			stats->wins = atoi(PQgetvalue(res, i, 0));
 			stats->losses = atoi(PQgetvalue(res, i, 1));
 			stats->ties = atoi(PQgetvalue(res, i, 2));
