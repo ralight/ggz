@@ -103,8 +103,7 @@ if (isset($_SERVER["PHP_AUTH_USER"])) :
 	$user = $_SERVER["PHP_AUTH_USER"];
 	$password = $_SERVER["PHP_AUTH_PW"];
 
-	$res = $database->exec($conn,
-		"SELECT * FROM users WHERE handle = '%^' AND password = '%^'",
+	$res = $database->exec("SELECT * FROM users WHERE handle = '%^' AND password = '%^'",
 		array($user, $password));
 	if ($database->numrows($res) == 1) :
 		$authenticated = 1;
@@ -121,7 +120,7 @@ if ($resource == "") :
 elseif ($topresource == "players") :
 	if ($subresource == "") :
 		if ($method == "GET") :
-			$res = $database->exec($conn, "SELECT handle FROM users", null);
+			$res = $database->exec("SELECT handle FROM users", null);
 
 			echo "<players>";
 			for($i = 0; $i < $database->numrows($res); $i++)
@@ -140,16 +139,14 @@ elseif ($topresource == "players") :
 		endif;
 
 		if ($method == "GET") :
-			$res = $database->exec($conn,
-				"SELECT email, name FROM users WHERE handle = '%^'",
+			$res = $database->exec("SELECT email, name FROM users WHERE handle = '%^'",
 				array($playername));
 
 			if ($database->numrows($res) == 1) :
 				$email = $database->result($res, 0, 0);
 				$realname = $database->result($res, 0, 1);
 
-				$res = $database->exec($conn,
-					"SELECT photo FROM userinfo WHERE handle = '%^'",
+				$res = $database->exec("SELECT photo FROM userinfo WHERE handle = '%^'",
 					array($playername));
 				if ($database->numrows($res) == 1) :
 					$photo = $database->result($res, 0, 0);
@@ -191,13 +188,11 @@ elseif ($topresource == "players") :
 				define("PERM_ROOMS_LOGIN", 4);
 				$perms = PERM_JOIN_TABLE + PERM_LAUNCH_TABLE + PERM_ROOMS_LOGIN;
 
-				$database->exec($conn,
-					"INSERT INTO users (handle, password, name, email, firstlogin, permissions) " .
+				$database->exec("INSERT INTO users (handle, password, name, email, firstlogin, permissions) " .
 					"VALUES ('%^', '%^', '%^', '%^', %^, %^)",
 					array($playername, $password, $realname, $email, $stamp, $perms));
 
-				$database->exec($conn,
-					"INSERT INTO userinfo (handle, photo) VALUES ('%^', '%^')",
+				$database->exec("INSERT INTO userinfo (handle, photo) VALUES ('%^', '%^')",
 					array($playername, $photo));
 				# FIXME: check duplicates, let db do it?
 			else :
@@ -220,13 +215,11 @@ elseif ($topresource == "players") :
 						endif;
 					}
 
-					$database->exec($conn,
-						"UPDATE users SET password = '%^', email = '%^', name = '%^' " .
+					$database->exec("UPDATE users SET password = '%^', email = '%^', name = '%^' " .
 						"WHERE handle = '%^'",
 						array($password, $email, $realname, $playername));
 
-					$database->exec($conn,
-						"UPDATE userinfo SET photo = '%^' WHERE handle = '%^'",
+					$database->exec("UPDATE userinfo SET photo = '%^' WHERE handle = '%^'",
 						array($photo, $playername));
 					# FIXME: check duplicates, let db do it?
 				else :
@@ -237,11 +230,9 @@ elseif ($topresource == "players") :
 			endif;
 		elseif ($method == "DELETE") :
 			if ($authenticated) :
-				$database->exec($conn,
-					"DELETE FROM users WHERE handle = '%^'",
+				$database->exec("DELETE FROM users WHERE handle = '%^'",
 					array($playername));
-				$database->exec($conn,
-					"DELETE FROM userinfo WHERE handle = '%^'",
+				$database->exec("DELETE FROM userinfo WHERE handle = '%^'",
 					array($playername));
 				# FIXME: check presence etc.
 			else :
@@ -255,7 +246,7 @@ elseif ($topresource == "statistics") :
 	if ($subresource == "games") :
 		if ($subsubresource == "") :
 			if ($method == "GET") :
-				$res = $database->exec($conn, "SELECT DISTINCT game FROM stats", null);
+				$res = $database->exec("SELECT DISTINCT game FROM stats", null);
 
 				echo "<games>";
 				for($i = 0; $i < $database->numrows($res); $i++)
@@ -270,7 +261,7 @@ elseif ($topresource == "statistics") :
 		else :
 			if ($method == "GET") :
 				$gamename = $subsubresource;
-				$res = $database->exec($conn, "SELECT handle, rating, highscore FROM stats " .
+				$res = $database->exec("SELECT handle, rating, highscore FROM stats " .
 					"WHERE game = '%^' ORDER BY ranking",
 					array($gamename));
 
@@ -295,7 +286,7 @@ elseif ($topresource == "statistics") :
 elseif ($topresource == "teams") :
 	if ($subresource == "") :
 		if ($method == "GET") :
-			$res = $database->exec($conn, "SELECT teamname FROM teams", null);
+			$res = $database->exec("SELECT teamname FROM teams", null);
 
 			echo "<teams>";
 			for($i = 0; $i < $database->numrows($res); $i++)
@@ -313,8 +304,7 @@ elseif ($topresource == "teams") :
 
 		if ($subsubresource == "") :
 			if ($method == "GET") :
-				$res = $database->exec($conn,
-					"SELECT founder, foundingdate, fullname, homepage FROM teams " .
+				$res = $database->exec("SELECT founder, foundingdate, fullname, homepage FROM teams " .
 					"WHERE teamname = '%^'",
 					array($teamname));
 
@@ -349,8 +339,7 @@ elseif ($topresource == "teams") :
 						$stamp = time();
 						$founder = $user;
 
-						$database->exec($conn,
-							"INSERT INTO teams (teamname, fullname, homepage, founder, foundingdate) " .
+						$database->exec("INSERT INTO teams (teamname, fullname, homepage, founder, foundingdate) " .
 							"VALUES ('%^', '%^', '%^', '%^', %^)",
 							array($teamname, $fullname, $homepage, $founder, $stamp));
 
@@ -374,8 +363,7 @@ elseif ($topresource == "teams") :
 							endif;
 						}
 
-						$database->exec($conn,
-							"UPDATE teams SET fullname = '%^', homepage = '%^' " .
+						$database->exec("UPDATE teams SET fullname = '%^', homepage = '%^' " .
 							"WHERE teamname = '%^'",
 							array($fullname, $homepage, $teamname));
 
@@ -388,8 +376,7 @@ elseif ($topresource == "teams") :
 				endif;
 			elseif ($method == "DELETE") :
 				if ($authenticated) :
-					$database->exec($conn,
-						"DELETE FROM teams WHERE teamname = '%^'",
+					$database->exec("DELETE FROM teams WHERE teamname = '%^'",
 						array($teamname));
 					# FIXME: check presence etc.
 				else :
@@ -401,8 +388,7 @@ elseif ($topresource == "teams") :
 		else :
 			$teamplayername = $subsubresource;
 			if ($method == "GET") :
-				$res = $database->exec($conn,
-					"SELECT role, entrydate FROM teammembers " .
+				$res = $database->exec("SELECT role, entrydate FROM teammembers " .
 					"WHERE teamname = '%^' AND handle = '%^'",
 					array($teamname, $teamplayername));
 
@@ -430,8 +416,7 @@ elseif ($topresource == "teams") :
 
 						$stamp = time();
 
-						$database->exec($conn,
-							"INSERT INTO teammembers (teamname, handle, role, entrydate) " .
+						$database->exec("INSERT INTO teammembers (teamname, handle, role, entrydate) " .
 							"VALUES ('%^', '%^', '%^', %^)",
 							array($teamname, $teamplayername, $role, $stamp));
 
@@ -453,8 +438,7 @@ elseif ($topresource == "teams") :
 							endif;
 						}
 
-						$database->exec($conn,
-							"UPDATE teammembers SET role = '%^' " .
+						$database->exec("UPDATE teammembers SET role = '%^' " .
 							"WHERE teamname = '%^' AND handle = '%^'",
 							array($role, $teamname, $teamplayername));
 
@@ -467,8 +451,7 @@ elseif ($topresource == "teams") :
 				endif;
 			elseif ($method == "DELETE") :
 				if ($authenticated) :
-					$database->exec($conn,
-						"DELETE FROM teammembers WHERE teamname = '%^' AND handle = '%^'",
+					$database->exec("DELETE FROM teammembers WHERE teamname = '%^' AND handle = '%^'",
 						array($teamname, $teamplayername));
 					# FIXME: check presence etc.
 				else :
