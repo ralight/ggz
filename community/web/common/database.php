@@ -92,7 +92,10 @@ class Database
 include_once("config.php");
 
 $database = new Database(Config::getvalue("dbtype"));
-$database->connect(Config::getvalue("dbhost"), Config::getvalue("dbname"),
+$id = $database->connect(Config::getvalue("dbhost"), Config::getvalue("dbname"),
 	Config::getvalue("dbuser"), Config::getvalue("dbpass"));
+if (!$id) :
+	unset($database);
+endif;
 
 ?>
