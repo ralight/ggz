@@ -1,7 +1,7 @@
 GGZCONF = $(shell ggz-config -c)
 
-PG_CPPFLAGS = -I /home/spillner/ggz/installation/include -DGGZCONF=\"$(GGZCONF)\"
-SHLIB_LINK = -L/home/spillner/ggz/installation/lib -lggz -lpq
+PG_CPPFLAGS = -I $(HOME)/ggz/installation/include -DGGZCONF=\"$(GGZCONF)\"
+SHLIB_LINK = -L$(HOME)/ggz/installation/lib -lggz -lpq
 
 MODULE_big = ggzsync_trigger
 OBJS = ggzsync_trigger.o
