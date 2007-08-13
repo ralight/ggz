@@ -491,6 +491,12 @@ if test "$database" = yes; then
 	AC_MSG_ERROR([no usable database library found.  See above messages for more.])
 else
 	AC_DEFINE_UNQUOTED([DATABASE_TYPE], "${database}", [Database backend type])
+
+	if test "$database" = "mysql"; then
+		AC_DEFINE([WITH_MYSQL], 1, [MySQL is used, needed for statistics])
+	elif test "$database" = "pgsql"; then
+		AC_DEFINE([WITH_PGSQL], 1, [PostgreSQL is used, needed for statistics])
+	fi
 fi
 
 AC_SUBST(LIB_DATABASE)
