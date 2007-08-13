@@ -1,6 +1,9 @@
 --- SQL database format for the GGZ Gaming Zone
 --- Add indices etc. as you like :)
 
+-- FIXME: this schema needs to be improved based on mysql_schema.sql
+-- FIXME: (and vice-versa)
+
 CREATE TABLE "users" (
 	"id" serial NOT NULL,
 	"handle" character varying(256) NOT NULL,

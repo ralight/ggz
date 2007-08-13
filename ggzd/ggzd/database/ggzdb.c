@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 8504 2006-08-08 09:07:31Z josef $
+ * $Id: ggzdb.c 9241 2007-08-13 07:00:54Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -324,6 +324,42 @@ GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char
 }
 
 
+GGZDBResult ggzdb_stats_toprankings(const char *game, int number)
+{
+	GGZDBResult rc = GGZDB_NO_ERROR;
+
+	_ggzdb_enter();
+
+	if (stats_needs_init)
+		rc = ggzdb_stats_init();
+
+	if (rc == GGZDB_NO_ERROR)
+		rc = _ggzdb_stats_toprankings(game, number);
+
+	_ggzdb_exit();
+
+	return rc;
+}
+
+
+GGZDBResult ggzdb_stats_calcrankings(const char *game)
+{
+	GGZDBResult rc = GGZDB_NO_ERROR;
+
+	_ggzdb_enter();
+
+	if (stats_needs_init)
+		rc = ggzdb_stats_init();
+
+	if (rc == GGZDB_NO_ERROR)
+		rc = _ggzdb_stats_calcrankings(game);
+
+	_ggzdb_exit();
+
+	return rc;
+}
+
+
 /*** INTERNAL FUNCTIONS ***/
 
 /* Function to initialize player tables if necessary */
@@ -371,8 +407,9 @@ static void ggzdb_player_lowercase(ggzdbPlayerEntry *pe, char *buf)
 
 	/* Save original name in caller provided buffer */
 	strcpy(buf, pe->handle);
-	
+
 	/* Convert name to lowercase for comparisons */
+	/* FIXME: tolower() is evil. Must use unicode canonicalization. */
 	for(src=buf, dest=pe->handle; *src!='\0'; src++, dest++)
 		*dest = tolower(*src);
 	*dest = '\0';
