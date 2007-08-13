@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 9202 2007-07-23 07:31:02Z josef $
+ * $Id: netxml.c 9247 2007-08-13 07:02:04Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -130,6 +130,16 @@ typedef struct {
 	GGZList *infos;
 } GGZPlayerInfoData;
 
+/* Rankings structure */
+typedef struct {
+	char *name;
+	int position;
+	int score;
+} GGZRanking;
+typedef struct {
+	GGZList *rankings;
+} GGZRankingsData;
+
 /* Table data structure */
 typedef struct {
 	const char *desc;
@@ -168,6 +178,8 @@ static void _ggzcore_net_handle_spectator(GGZNet * net,
 					  GGZXMLElement * seat);
 static void _ggzcore_net_handle_chat(GGZNet *, GGZXMLElement *);
 static void _ggzcore_net_handle_info(GGZNet *, GGZXMLElement *);
+static void _ggzcore_net_handle_rankings(GGZNet *, GGZXMLElement *);
+static void _ggzcore_net_handle_ranking(GGZNet *, GGZXMLElement *);
 static void _ggzcore_net_handle_playerinfo(GGZNet *, GGZXMLElement *);
 static void _ggzcore_net_handle_leave(GGZNet * net,
 				      GGZXMLElement * element);
@@ -209,6 +221,8 @@ static void _ggzcore_net_seat_free(GGZTableSeat *);
 static GGZPlayerInfoData *_ggzcore_net_playerinfo_get_data(GGZXMLElement * game);
 static void _ggzcore_net_playerinfo_add_seat(GGZXMLElement *, int,
 				       const char *, const char *, const char *);
+static GGZRankingsData *_ggzcore_net_rankings_get_data(GGZXMLElement * game);
+static void _ggzcore_net_rankings_add_ranking(GGZXMLElement *, int, int, const char *);
 
 /* Trigger network error event */
 static void _ggzcore_net_error(GGZNet * net, char *message);
@@ -1072,6 +1086,8 @@ static GGZXMLElement *_ggzcore_net_new_element(const char *tag,
 	  TAG(chat),
 	  TAG(info),
 	  TAG(playerinfo),
+	  TAG(rankings),
+	  TAG(ranking),
 	  TAG(desc),
 	  TAG(password),
 	  TAG(ping),
@@ -1765,6 +1781,27 @@ static GGZGameData *_ggzcore_net_game_get_data(GGZXMLElement * game)
 }
 
 
+static GGZRankingsData *_ggzcore_net_rankings_get_data(GGZXMLElement * rankings)
+{
+	GGZRankingsData *data = ggz_xmlelement_get_data(rankings);
+
+	/* If data doesn't already exist, create it */
+	if (!data) {
+		data = ggz_malloc(sizeof(GGZRankingsData));
+		ggz_xmlelement_set_data(rankings, data);
+
+		data->rankings = ggz_list_create(NULL,
+			/*(ggzEntryCreate)_ggzcore_net_seat_copy*/
+			NULL,
+			/*(ggzEntryDestroy)_ggzcore_net_seat_free*/
+			NULL,
+			GGZ_LIST_ALLOW_DUPS);
+	}
+
+	return data;
+}
+
+
 static GGZPlayerInfoData *_ggzcore_net_playerinfo_get_data(GGZXMLElement * info)
 {
 	GGZPlayerInfoData *data = ggz_xmlelement_get_data(info);
@@ -1855,6 +1892,19 @@ static void _ggzcore_net_playerinfo_add_seat(GGZXMLElement * info, int num,
 	tmp->host = ggz_strdup(host);
 
 	ggz_list_insert(data->infos, tmp);
+}
+
+
+static void _ggzcore_net_rankings_add_ranking(GGZXMLElement * rankings, int position, int score, const char *name)
+{
+	GGZRankingsData *data = _ggzcore_net_rankings_get_data(rankings);
+	GGZRanking *tmp = (GGZRanking*)ggz_malloc(sizeof(GGZRanking));
+
+	tmp->position = position;
+	tmp->score = score;
+	tmp->name = ggz_strdup(name);
+
+	ggz_list_insert(data->rankings, tmp);
 }
 
 
@@ -2421,6 +2471,50 @@ static void _ggzcore_net_handle_info(GGZNet * net, GGZXMLElement * element)
 
 	GGZGame *game = ggzcore_server_get_cur_game(net->server);
 	_ggzcore_game_set_info(game, ggz_list_count(data->infos), data->infos);
+}
+
+
+/* Functions for <RANKING> tag */
+static void _ggzcore_net_handle_ranking(GGZNet * net, GGZXMLElement * element)
+{
+	GGZXMLElement *parent;
+	const char *parent_tag;
+
+	if (!element)
+		return;
+
+	/* Get parent off top of stack */
+	parent = ggz_stack_top(net->stack);
+	if (!parent)
+		return;
+
+	parent_tag = ggz_xmlelement_get_tag(parent);
+	if (strcasecmp(parent_tag, "RANKINGS") != 0)
+		return;
+
+	_ggzcore_net_rankings_add_ranking(parent,
+				  str_to_int(ATTR(element, "POSITION"), -1),
+				  str_to_int(ATTR(element, "SCORE"), -1),
+				  ATTR(element, "PLAYER"));
+}
+
+
+/* Functions for <RANKINGS> tag */
+static void _ggzcore_net_handle_rankings(GGZNet * net, GGZXMLElement * element)
+{
+	GGZRankingsData *data = _ggzcore_net_rankings_get_data(element);
+
+	GGZGame *game = ggzcore_server_get_cur_game(net->server);
+	_ggzcore_game_set_rankings(game, ggz_list_count(data->rankings), data->rankings);
+
+	/* FIXME: all entries must be ggz_free()'d properly; maybe specify destructor function */
+#if 0
+	for (entry = ggz_list_head(data->rankings); entry; entry = ggz_list_next(entry)) {
+		ggz_free(entry);
+	}
+#endif
+	ggz_list_free(data->rankings);
+	ggz_free(data);
 }
 
 

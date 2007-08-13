@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/20/02
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.h 8300 2006-07-03 07:45:15Z josef $
+ * $Id: ggzmod-ggz.h 9247 2007-08-13 07:02:04Z josef $
  *
  * This file contains the GGZ-only interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -232,5 +232,6 @@ int ggzmod_ggz_set_stats(GGZMod *ggzmod, GGZStat *player_stats,
 		     GGZStat *spectator_stats);
 
 int ggzmod_ggz_set_info(GGZMod *ggzmod, int num, GGZList *infos);
+int ggzmod_ggz_set_rankings(GGZMod *ggzmod, int num, GGZList *rankings);
 
 #endif /* __GGZMOD_GGZ_H__ */

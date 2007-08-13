@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 7519 2005-09-16 19:44:09Z josef $
+ * $Id: protocol.h 9247 2007-08-13 07:02:04Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -64,7 +64,8 @@ typedef enum {
 
 	MSG_GAME_STATS,
 
-	MSG_GAME_INFO
+	MSG_GAME_INFO,
+	MSG_GAME_RANKINGS
 } ControlToTable;
 
 #endif /* __GGZ_CLIENT_PROTOCOL_H */

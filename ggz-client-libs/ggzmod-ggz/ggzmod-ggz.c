@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 9179 2007-07-11 06:25:03Z josef $
+ * $Id: ggzmod-ggz.c 9247 2007-08-13 07:02:04Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -1055,5 +1055,15 @@ int ggzmod_ggz_set_info(GGZMod *ggzmod, int num,
 	}
 
 	return _io_ggz_send_msg_info(ggzmod->fd, num, infos);
+}
+
+int ggzmod_ggz_set_rankings(GGZMod *ggzmod, int num,
+		        GGZList *rankings)
+{
+	if (!ggzmod) {
+		return -1;
+	}
+
+	return _io_ggz_send_msg_rankings(ggzmod->fd, num, rankings);
 }
 

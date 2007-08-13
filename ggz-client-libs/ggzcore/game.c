@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 8533 2006-08-26 01:26:29Z jdorje $
+ * $Id: game.c 9247 2007-08-13 07:02:04Z josef $
  *
  * This fils contains functions for handling games being played
  *
@@ -672,6 +672,11 @@ void _ggzcore_game_set_player(GGZGame * game, int is_spectator,
 void _ggzcore_game_set_info(GGZGame * game, int num, GGZList *infos)
 {
 	ggzmod_ggz_set_info(game->client, num, infos);
+}
+
+void _ggzcore_game_set_rankings(GGZGame * game, int num, GGZList *rankings)
+{
+	ggzmod_ggz_set_rankings(game->client, num, rankings);
 }
 
 void _ggzcore_game_inform_chat(GGZGame * game,

@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules, GGZ side
- * $Id: io-ggz.c 7527 2005-09-17 19:31:46Z josef $
+ * $Id: io-ggz.c 9247 2007-08-13 07:02:04Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -184,6 +184,33 @@ int _io_ggz_send_msg_info(int fd, int num, GGZList *infos)
 		    || ggz_write_string(fd, info->realname) < 0
 		    || ggz_write_string(fd, info->photo) < 0
 		    || ggz_write_string(fd, info->host) < 0)
+			return -1;
+	}
+
+	return 0;
+}
+
+typedef struct {
+	char *name;
+	int position;
+	int score;
+} GGZRanking;
+
+int _io_ggz_send_msg_rankings(int fd, int num, GGZList *rankings)
+{
+	GGZListEntry *entry;
+
+	if (ggz_write_int(fd, MSG_GAME_RANKINGS) < 0
+	    || ggz_write_int(fd, num) < 0)
+		return -1;
+
+	for (entry = ggz_list_head(rankings); entry; entry = ggz_list_next(entry)) {
+		GGZRanking *ranking = ggz_list_get_data(entry);
+		if (ggz_write_string(fd, ranking->name) < 0)
+			return -1;
+		if (ggz_write_int(fd, ranking->position) < 0)
+			return -1;
+		if (ggz_write_int(fd, ranking->score) < 0)
 			return -1;
 	}
 
