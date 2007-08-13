@@ -338,3 +338,16 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 	/* Do return error here so we can clear out the values! */
 	return GGZDB_ERR_DB;
 }
+
+GGZDBResult _ggzdb_stats_toprankings(const char *game, int number)
+{
+	/* Not implemented, but do not return error */
+	return GGZDB_NO_ERROR;
+}
+
+GGZDBResult _ggzdb_stats_calcrankings(const char *game)
+{
+	/* Not implemented, but do not return error */
+	return GGZDB_NO_ERROR;
+}
+

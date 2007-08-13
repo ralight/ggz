@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db4 sytle database
- * $Id: ggzdb_db4.c 8460 2006-08-02 14:29:54Z josef $
+ * $Id: ggzdb_db4.c 9239 2007-08-13 07:00:17Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -429,3 +429,16 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 	/* Do return error here so we can clear out the values! */
 	return GGZDB_ERR_DB;
 }
+
+GGZDBResult _ggzdb_stats_toprankings(const char *game, int number)
+{
+	/* Not implemented, but do not return error */
+	return GGZDB_NO_ERROR;
+}
+
+GGZDBResult _ggzdb_stats_calcrankings(const char *game)
+{
+	/* Not implemented, but do not return error */
+	return GGZDB_NO_ERROR;
+}
+

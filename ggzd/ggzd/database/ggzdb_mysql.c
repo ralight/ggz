@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 9221 2007-07-29 17:03:40Z oojah $
+ * $Id: ggzdb_mysql.c 9239 2007-08-13 07:00:17Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -39,6 +39,7 @@
 #include "ggzd.h"
 #include "ggzdb.h"
 #include "ggzdb_proto.h"
+#include "rankings.h"
 
 
 /* Internal variables */
@@ -565,8 +566,70 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 			return GGZDB_ERR_NOTFOUND;
 		}
 	} else {
+		/* FIXME: shouldn't we unlock the mutex here? */
 		err_msg("Couldn't lookup player.");
 		return GGZDB_ERR_DB;
 	}
+}
+
+GGZDBResult _ggzdb_stats_toprankings(const char *game, int number)
+{
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	char query[4096];
+	int rc = GGZDB_ERR_DB;
+	ggzdbPlayerGameStats statsx;
+	ggzdbPlayerGameStats *stats = &statsx;
+	int i;
+
+	snprintf(query, sizeof(query),
+		"SELECT `wins`, `losses`, `ties`, `forfeits`, `rating`, `ranking`, `highscore`, `handle` FROM `stats` "
+		"WHERE `game` = '%s' AND `ranking` <> 0 ORDER BY `ranking` ASC LIMIT %i",
+		game, number);
+
+	rc = mysql_query(conn, query);
+
+	if (rc) {
+		err_msg("couldn't read rankings");
+	} else {
+		rc = GGZDB_NO_ERROR;
+
+		res = mysql_store_result(conn);
+		for(i = 0; i < mysql_num_rows(res); i++) {
+			row = mysql_fetch_row(res);
+
+			stats->wins = atoi(row[0]);
+			stats->losses = atoi(row[1]);
+			stats->ties = atoi(row[2]);
+			stats->forfeits = atoi(row[3]);
+			stats->rating = atof(row[4]);
+			stats->ranking = atol(row[5]);
+			stats->highest_score = atol(row[6]);
+			snprintf(stats->player, MAX_USER_NAME_LEN, row[7]);
+		}
+
+		mysql_free_result(res);
+	}
+
+	return rc;
+}
+
+GGZDBResult _ggzdb_stats_calcrankings(const char *game)
+{
+	char dscpath[1024];
+
+	snprintf(dscpath, sizeof(dscpath), "%s/games", GGZDCONFDIR);
+
+	pthread_mutex_lock(&mutex);
+
+	GGZRankings *rankings = rankings_init();
+	rankings_loadmodels(rankings, dscpath);
+	rankings_setconnection(rankings, conn);
+	rankings_recalculate_game(rankings, game);
+	rankings_destroy(rankings);
+
+	pthread_mutex_unlock(&mutex);
+
+	return GGZDB_NO_ERROR;
 }
 
