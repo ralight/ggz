@@ -75,8 +75,7 @@ dnl ================================================
 AC_DEFUN([AC_GGZ_RECONFIGURATION_INOTIFY],
 [
 	AC_MSG_CHECKING([for inotify])
-	#AC_EGREP_HEADER([__NR_inotify_init], [/usr/include/bits/syscall.h],
-	AC_EGREP_HEADER([inotify_event], [/usr/include/linux/inotify.h],
+	AC_EGREP_HEADER([inotify_event], [/usr/include/sys/inotify.h],
 		[
 			AC_MSG_RESULT(yes)
 			reconfiguration=inotify

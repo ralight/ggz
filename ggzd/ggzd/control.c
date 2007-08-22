@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 9162 2007-07-01 10:36:29Z oojah $
+ * $Id: control.c 9251 2007-08-22 08:26:57Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -57,13 +57,13 @@
 #include "motd.h"
 #include "parse_opt.h"
 #include "players.h"
-#include "reconfiguration.h"
 #include "room.h"
 #include "table.h"
 #include "util.h"
 #include "meta.h"
 
 #ifdef HAVE_INOTIFY
+#include <sys/inotify.h>
 #include <sys/ioctl.h>
 #endif
 #ifdef WITH_FAM
@@ -73,6 +73,10 @@
 /* FIXME: this is in motd.c also - and we could probably use pathconf */
 #ifndef HOST_NAME_MAX
 #define HOST_NAME_MAX 256
+#endif
+
+#ifdef HAVE_INOTIFY
+#define INOTIFY_EVENTSIZE sizeof(struct inotify_event)
 #endif
 
 /* Server options */

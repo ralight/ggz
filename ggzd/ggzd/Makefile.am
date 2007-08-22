@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 9197 2007-07-23 07:30:18Z josef $
+# $Id: Makefile.am 9251 2007-08-22 08:26:57Z josef $
 
 SUBDIRS = database meta
 
@@ -39,7 +39,6 @@ ggzd_SOURCES = \
 	motd.h \
 	net.c \
 	net.h \
-	reconfiguration.h \
 	room.c \
 	room.h \
 	stats.c \
