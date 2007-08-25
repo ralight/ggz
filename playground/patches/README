@@ -42,6 +42,11 @@ be a configuration option or be able to be chosen by the player making the
 ban.
  ggzd_ban.diff (oojah)
 
+Support for run-time configurable table prefixes as are commonly employed by web
+applications, so instead of using `users` as the table name, it could be `ggz_users`.
+Only for pgsql and mysql.
+ ggzd_table_prefixes.diff (oojah, 25/8/2007)
+
 
 Old patches (just to keep it in memory)
 ---------------------------------------

@@ -1,0 +1,463 @@
+Index: control.c
+===================================================================
+--- control.c	(revision 9251)
++++ control.c	(working copy)
+@@ -173,6 +173,7 @@
+ 	if (opt.dbpassword) data_free(opt.dbpassword);
+ 	if (opt.dbhashing) data_free(opt.dbhashing);
+ 	if (opt.dbhashencoding) data_free(opt.dbhashencoding);
++	if (opt.dbtableprefix) data_free(opt.dbtableprefix);
+ 
+ 	if (opt.tls_key) data_free(opt.tls_key);
+ 	if (opt.tls_cert) data_free(opt.tls_cert);
+Index: database/ggzdb_pgsql.c
+===================================================================
+--- database/ggzdb_pgsql.c	(revision 9251)
++++ database/ggzdb_pgsql.c	(working copy)
+@@ -51,6 +51,9 @@
+ #define SQL_MAXCONNECTIONS 10
+ #define SQL_TIMEOUT 3
+ 
++/* Server-wide variables */
++extern Options opt;
++
+ /* Internal variables */
+ static PGresult *iterres = NULL;
+ static int itercount;
+@@ -251,7 +254,9 @@
+ 
+ 	/* Check whether the database is ok */
+ 	init = 1;
+-	res = PQexec(conn, "SELECT value FROM control WHERE key = 'version'");
++	snprintf(query, sizeof(query), "SELECT value FROM %scontrol WHERE key = 'version'",
++			opt.dbtableprefix);
++	res = PQexec(conn, query);
+ 	if(PQresultStatus(res) == PGRES_TUPLES_OK)
+ 	{
+ 		if(PQntuples(res) == 1)
+@@ -275,8 +280,10 @@
+ 		ret = setupschema(conn, schemafile);
+ 		if(!ret) rc = GGZDB_ERR_DB;
+ 
+-		snprintf(query, sizeof(query), "INSERT INTO control "
+-			"(key, value) VALUES ('version', '%s')", GGZDB_VERSION_ID);
++		snprintf(query, sizeof(query), "INSERT INTO %scontrol "
++			"(key, value) VALUES ('version', '%s')", 
++			opt.dbtableprefix,
++			GGZDB_VERSION_ID);
+ 
+ 		res = PQexec(conn, query);
+ 
+@@ -355,9 +362,10 @@
+ 	name_quoted = _ggz_sql_escape(pe->name);
+ 	email_quoted = _ggz_sql_escape(pe->email);
+ 
+-	snprintf(query, sizeof(query), "INSERT INTO users "
++	snprintf(query, sizeof(query), "INSERT INTO %susers "
+ 		 "(handle, password, name, email, lastlogin, permissions, firstlogin) "
+ 		 "VALUES ('%s', '%s', '%s', '%s', %li, %u, %li)",
++		 opt.dbtableprefix,
+ 		 handle_quoted, password_quoted, name_quoted, email_quoted,
+ 		 pe->last_login, pe->perms, time(NULL));
+ 
+@@ -376,8 +384,9 @@
+ 
+ 	/* FIXME: provide server-side function for Unicode-safe stringprep */
+ 	/* FIXME: here and elsewhere (e.g. for ggzdb_mysql.c) */
+-	snprintf(query, sizeof(query), "DELETE FROM stats "
++	snprintf(query, sizeof(query), "DELETE FROM %sstats "
+ 		 "WHERE lower(handle) = lower('%s')",
++		 opt.dbtableprefix,
+ 		 handle_quoted);
+ 
+ 	if (handle_quoted)
+@@ -417,7 +426,8 @@
+ 	snprintf(query, sizeof(query),
+ 		 "SELECT "
+ 		 "password, name, email, lastlogin, permissions "
+-		 "FROM users WHERE lower(handle) = lower('%s')",
++		 "FROM %susers WHERE lower(handle) = lower('%s')",
++		 opt.dbtableprefix,
+ 		 handle_quoted);
+ 
+ 	ggz_free(handle_quoted);
+@@ -473,10 +483,11 @@
+ 	email_quoted = _ggz_sql_escape(pe->email);
+ 
+ 	snprintf(query, sizeof(query),
+-		 "UPDATE users SET "
++		 "UPDATE %susers SET "
+ 		 "password = '%s', name = '%s', email = '%s', "
+ 		 "lastlogin = %li, permissions = %u WHERE "
+ 		 "lower(handle) = lower('%s')",
++		 opt.dbtableprefix,
+ 		 password_quoted, name_quoted, email_quoted,
+ 		 pe->last_login, pe->perms,
+ 		 handle_quoted);
+@@ -523,7 +534,8 @@
+ 	snprintf(query, sizeof(query),
+ 		 "SELECT "
+ 		 "id, photo "
+-		 "FROM userinfo WHERE lower(handle) = lower('%s')",
++		 "FROM %suserinfo WHERE lower(handle) = lower('%s')",
++		 opt.dbtableprefix,
+ 		 handle_quoted);
+ 
+ 	ggz_free(handle_quoted);
+@@ -575,7 +587,8 @@
+ 	snprintf(query, sizeof(query),
+ 		 "SELECT "
+ 		 "id, handle, password, name, email, lastlogin, permissions "
+-		 "FROM users");
++		 "FROM %susers",
++		 opt.dbtableprefix);
+ 	iterres = PQexec(conn, query);
+ 
+ 	if (PQresultStatus(iterres) == PGRES_TUPLES_OK) {
+@@ -683,7 +696,8 @@
+ 	snprintf(query, sizeof(query),
+ 		"SELECT "
+ 		"wins, losses, ties, forfeits, rating, ranking, highscore "
+-		"FROM stats WHERE lower(handle) = lower('%s') AND game = '%s'",
++		"FROM %sstats WHERE lower(handle) = lower('%s') AND game = '%s'",
++		opt.dbtableprefix,
+ 		player_quoted, stats->game);
+ 
+ 	ggz_free(player_quoted);
+@@ -728,10 +742,11 @@
+ 	player_quoted = _ggz_sql_escape(stats->player);
+ 
+ 	snprintf(query, sizeof(query),
+-		"UPDATE stats "
++		"UPDATE %sstats "
+ 		"SET wins = %i, losses = %i, ties = %i, forfeits = %i, "
+ 		"rating = %f, ranking = %u, highscore = %li "
+ 		"WHERE lower(handle) = lower('%s') AND game = '%s'",
++		opt.dbtableprefix,
+ 		stats->wins, stats->losses, stats->ties, stats->forfeits,
+ 		stats->rating, stats->ranking, stats->highest_score,
+ 		player_quoted, stats->game);
+@@ -747,9 +762,10 @@
+ 			player_quoted = _ggz_sql_escape(stats->player);
+ 
+ 			snprintf(query, sizeof(query),
+-				"INSERT INTO stats "
++				"INSERT INTO %sstats "
+ 				"(handle, game, wins, losses, ties, forfeits, rating, ranking, highscore) VALUES "
+ 				"('%s', '%s', %i, %i, %i, %i, %f, %u, %li)",
++				opt.dbtableprefix,
+ 				player_quoted, stats->game,
+ 				stats->wins, stats->losses, stats->ties, stats->forfeits,
+ 				stats->rating, stats->ranking, stats->highest_score);
+@@ -791,7 +807,8 @@
+ 	}
+ 
+ 	snprintf(query, sizeof(query),
+-		"SELECT MAX(id) FROM matches");
++		"SELECT MAX(id) FROM %smatches",
++		opt.dbtableprefix);
+ 
+ 	res = PQexec(conn, query);
+ 
+@@ -811,9 +828,10 @@
+ 	player_quoted = _ggz_sql_escape(stats->player);
+ 
+ 	snprintf(query, sizeof(query),
+-		"INSERT INTO matchplayers "
++		"INSERT INTO %smatchplayers "
+ 		"(match, handle, playertype) VALUES "
+ 		"(%s, '%s', '%s')",
++		opt.dbtableprefix,
+ 		number, player_quoted, playertype);
+ 
+ 	ggz_free(player_quoted);
+@@ -847,8 +865,9 @@
+ 	}
+ 
+ 	snprintf(query, sizeof(query),
+-		"DELETE FROM savegames "
++		"DELETE FROM %ssavegames "
+ 		"WHERE game = '%s' AND savegame = '%s'",
++		opt.dbtableprefix,
+ 		game, savegame);
+ 
+ 	res = PQexec(conn, query);
+@@ -856,9 +875,10 @@
+ 	winner_quoted = _ggz_sql_escape(winner);
+ 
+ 	snprintf(query, sizeof(query),
+-		"INSERT INTO matches "
++		"INSERT INTO %smatches "
+ 		"(date, game, winner, savegame) VALUES "
+ 		"(%li, '%s', '%s', '%s')",
++		opt.dbtableprefix,
+ 		time(NULL), game, winner_quoted, savegame);
+ 
+ 	ggz_free(winner_quoted);
+@@ -893,9 +913,10 @@
+ 	owner_quoted = _ggz_sql_escape(owner);
+ 
+ 	snprintf(query, sizeof(query),
+-		"INSERT INTO savegames"
++		"INSERT INTO %ssavegames"
+ 		"(date, game, owner, savegame) VALUES "
+ 		"(%li, '%s', '%s', '%s')",
++		opt.dbtableprefix,
+ 		time(NULL), game, owner, savegame);
+ 
+ 	ggz_free(owner_quoted);
+@@ -929,8 +950,9 @@
+ 	}
+ 
+ 	snprintf(query, sizeof(query),
+-		"SELECT wins, losses, ties, forfeits, rating, ranking, highscore, handle FROM stats "
++		"SELECT wins, losses, ties, forfeits, rating, ranking, highscore, handle FROM %sstats "
+ 		"WHERE game = '%s' AND ranking <> 0 ORDER BY ranking ASC LIMIT %i",
++		opt.dbtableprefix,
+ 		game, number);
+ 
+ 	res = PQexec(conn, query);
+Index: database/ggzdb_mysql.c
+===================================================================
+--- database/ggzdb_mysql.c	(revision 9251)
++++ database/ggzdb_mysql.c	(working copy)
+@@ -42,6 +42,9 @@
+ #include "rankings.h"
+ 
+ 
++/* Server-wide variables */
++extern Options opt;
++
+ /* Internal variables */
+ static MYSQL *conn = NULL;
+ static MYSQL_RES *iterres = NULL;
+@@ -77,9 +80,10 @@
+ 		return GGZ_ERROR;
+ 	}
+ 
+-	snprintf(query, sizeof(query), "CREATE TABLE `users` "
++	snprintf(query, sizeof(query), "CREATE TABLE `%susers` "
+ 		"(`id` int4 AUTO_INCREMENT PRIMARY KEY, `handle` varchar(255), `password` varchar(255), "
+-		"`name` varchar(255), `email` varchar(255), `lastlogin` int8, `perms` int8, `firstlogin` int8)");
++		"`name` varchar(255), `email` varchar(255), `lastlogin` int8, `perms` int8, `firstlogin` int8)",
++		opt.dbtableprefix);
+ 
+ 	rc = mysql_query(conn, query);
+ 
+@@ -124,9 +128,10 @@
+ 	int rc;
+ 	char query[4096];
+ 
+-	snprintf(query, sizeof(query), "INSERT INTO `users` "
++	snprintf(query, sizeof(query), "INSERT INTO `%susers` "
+ 		"(`handle`, `password`, `name`, `email`, `lastlogin`, `perms`, `firstlogin`) VALUES "
+ 		"('%s', '%s', '%s', '%s', %li, %u, %li)",
++		opt.dbtableprefix,
+ 		pe->handle, pe->password, pe->name, pe->email, pe->last_login, pe->perms, time(NULL));
+ 
+ 	pthread_mutex_lock(&mutex);
+@@ -152,8 +157,9 @@
+ 	char query[4096];
+ 
+ 	snprintf(query, sizeof(query), "SELECT "
+-		"`password`,`name`,`email`,`lastlogin`,`perms` FROM `users` WHERE "
++		"`password`,`name`,`email`,`lastlogin`,`perms` FROM `%susers` WHERE "
+ 		"`handle` = LOWER('%s')",
++		opt.dbtableprefix,
+ 		pe->handle);
+ 
+ 	pthread_mutex_lock(&mutex);
+@@ -192,9 +198,10 @@
+ 	int rc;
+ 	char query[4096];
+ 
+-	snprintf(query, sizeof(query), "UPDATE `users` SET "
++	snprintf(query, sizeof(query), "UPDATE `%susers` SET "
+ 		"`password`='%s',`name`='%s',`email`='%s',`lastlogin`=%li,`perms`=%u WHERE "
+ 		"`handle`=LOWER('%s')",
++		opt.dbtableprefix,
+ 		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
+ 
+ 	pthread_mutex_lock(&mutex);
+@@ -226,7 +233,8 @@
+ 	}
+ 
+ 	snprintf(query, sizeof(query), "SELECT "
+-		"`id`,`handle`,`password`,`name`,`email`,`lastlogin`,`perms` FROM `users`");
++		"`id`,`handle`,`password`,`name`,`email`,`lastlogin`,`perms` FROM `%susers`",
++		opt.dbtableprefix);
+ 	result = mysql_query(conn, query);
+ 
+ 	if (!result) {
+@@ -319,10 +327,11 @@
+ 	player_quoted = _ggz_sql_escape(stats->player);
+ 
+ 	snprintf(query, sizeof(query),
+-		"UPDATE `stats` "
++		"UPDATE `%sstats` "
+ 		"SET `wins`=%i,`losses`=%i,`ties`=%i,`forfeits`=%i,"
+ 		"`rating`=%f,`ranking`=%u,`highscore`=%li "
+ 		"WHERE `handle` = LOWER('%s') AND `game`='%s'",
++		opt.dbtableprefix,
+ 		stats->wins, stats->losses, stats->ties, stats->forfeits,
+ 		stats->rating, stats->ranking, stats->highest_score,
+ 		player_quoted, stats->game);
+@@ -332,9 +341,10 @@
+ 	if(!rc){
+ 		if (!mysql_affected_rows(conn)) {
+ 			snprintf(query, sizeof(query),
+-				"INSERT INTO `stats` "
++				"INSERT INTO `%sstats` "
+ 				"(`handle`,`game`,`wins`,`losses`,`ties`,`forfeits`,`rating`,`ranking`,`highscore`) VALUES "
+ 				"('%s', '%s', %i, %i, %i, %i, %f, %u, %li)",
++				opt.dbtableprefix,
+ 				player_quoted, stats->game,
+ 				stats->wins, stats->losses, stats->ties, stats->forfeits,
+ 				stats->rating, stats->ranking, stats->highest_score);
+@@ -375,7 +385,8 @@
+ 	snprintf(query, sizeof(query),
+ 			"SELECT "
+ 			"`wins`,`losses`,`ties`,`forfeits`,`rating`,`ranking`,`highscore` "
+-			"FROM `stats` WHERE `handle`=LOWER('%s') AND `game`='%s'",
++			"FROM `%sstats` WHERE `handle`=LOWER('%s') AND `game`='%s'",
++			opt.dbtableprefix,
+ 			player_quoted, stats->game);
+ 	ggz_free(player_quoted);
+ 
+@@ -419,7 +430,8 @@
+ 	char *player_quoted;
+ 
+ 	snprintf(query, sizeof(query),
+-		"SELECT MAX(`id`) FROM `matches`");
++		"SELECT MAX(`id`) FROM `%smatches`",
++		opt.dbtableprefix);
+ 
+ 	pthread_mutex_lock(&mutex);
+ 	rc = mysql_query(conn, query);
+@@ -450,9 +462,10 @@
+ 	player_quoted = _ggz_sql_escape(stats->player);
+ 
+ 	snprintf(query, sizeof(query),
+-		"INSERT INTO `matchplayers` "
++		"INSERT INTO `%smatchplayers` "
+ 		"(`match`,`handle`,`playertype`) VALUES "
+ 		"(%s, '%s', '%s')",
++		opt.dbtableprefix,
+ 		number, player_quoted, playertype);
+ 
+ 	ggz_free(player_quoted);
+@@ -475,8 +488,9 @@
+ 	int rc;
+ 
+ 	snprintf(query, sizeof(query),
+-		"DELETE FROM `savegames` "
++		"DELETE FROM `%ssavegames` "
+ 		"WHERE `game`='%s' AND `savegame`='%s'",
++		opt.dbtableprefix,
+ 		game, savegame);
+ 
+ 	pthread_mutex_lock(&mutex);
+@@ -484,9 +498,10 @@
+ 
+ 	winner_quoted = _ggz_sql_escape(winner);
+ 	snprintf(query, sizeof(query),
+-		"INSERT INTO `matches` "
++		"INSERT INTO `%smatches` "
+ 		"(`date`,`game`,`winner`,`savegame`) VALUES "
+ 		"(%li,'%s','%s','%s')",
++		opt.dbtableprefix,
+ 		time(NULL), game, winner_quoted, savegame);
+ 
+ 	ggz_free(winner_quoted);
+@@ -510,9 +525,10 @@
+ 	owner_quoted = _ggz_sql_escape(owner);
+ 
+ 	snprintf(query, sizeof(query),
+-		"INSERT INTO `savegames`"
++		"INSERT INTO `%ssavegames`"
+ 		"(`date`,`game`,`owner`,`savegame`) VALUES "
+ 		"(%li, '%s', '%s', '%s')",
++		opt.dbtableprefix,
+ 		time(NULL), game, owner, savegame);
+ 
+ 	ggz_free(owner_quoted);
+@@ -542,7 +558,8 @@
+ 	snprintf(query, sizeof(query),
+ 		 "SELECT "
+ 		 "`id`,`photo` "
+-		 "FROM `userinfo` WHERE `handle`=LOWER('%s')",
++		 "FROM `%suserinfo` WHERE `handle`=LOWER('%s')",
++		 opt.dbtableprefix,
+ 		 handle_quoted);
+ 
+ 	ggz_free(handle_quoted);
+@@ -582,8 +599,9 @@
+ 	int i;
+ 
+ 	snprintf(query, sizeof(query),
+-		"SELECT `wins`, `losses`, `ties`, `forfeits`, `rating`, `ranking`, `highscore`, `handle` FROM `stats` "
++		"SELECT `wins`, `losses`, `ties`, `forfeits`, `rating`, `ranking`, `highscore`, `handle` FROM `%sstats` "
+ 		"WHERE `game` = '%s' AND `ranking` <> 0 ORDER BY `ranking` ASC LIMIT %i",
++		opt.dbtableprefix,
+ 		game, number);
+ 
+ 	rc = mysql_query(conn, query);
+Index: ggzd.conf.example.in
+===================================================================
+--- ggzd.conf.example.in	(revision 9251)
++++ ggzd.conf.example.in	(working copy)
+@@ -54,6 +54,10 @@
+ #DatabaseHashing = plain
+ #   Database hash encoding: base64 or base16 (defaults to base64)
+ #DatabaseHashEncoding = base64
++#	Table name prefix. If your tables require a particular prefix,
++#	set it here. If no prefix is required, keep the option commented out.
++#	This option is only valid when using pgsql or mysql.
++#DatabaseTablePrefix = ggz_
+ 
+ # Transport Layer Security options
+ #EncryptionUse = 0
+Index: datatypes.h
+===================================================================
+--- datatypes.h	(revision 9251)
++++ datatypes.h	(working copy)
+@@ -67,6 +67,7 @@
+ 	const char *dbpassword;
+ 	const char *dbhashing;
+ 	const char *dbhashencoding;
++	const char *dbtableprefix;
+ 	bool tls_use;
+ 	const char *tls_key;
+ 	const char *tls_cert;
+Index: parse_opt.c
+===================================================================
+--- parse_opt.c	(revision 9251)
++++ parse_opt.c	(working copy)
+@@ -350,6 +350,9 @@
+ 	if(!opt.dbhashencoding)
+ 		opt.dbhashencoding = ggz_strdup("base64");
+ 
++	if(!opt.dbtableprefix)
++		opt.dbtableprefix = ggz_strdup("");
++
+ 	if(!opt.motd_file)
+ 		opt.motd_file = ggz_strdup("ggzd.motd");
+ }
+@@ -362,6 +365,7 @@
+ 	char *strval;
+ 	char **t_list;
+ 	int t_count = 0, i;
++	char *tmpstr;
+ 
+ 	/* [General] */
+ 	if(opt.main_port == 0)
+@@ -395,6 +399,9 @@
+ 	opt.dbpassword = ggz_conf_read_string(ch, "General", "DatabasePassword", NULL);
+ 	opt.dbhashing = ggz_conf_read_string(ch, "General", "DatabaseHashing", NULL);
+ 	opt.dbhashencoding = ggz_conf_read_string(ch, "General", "DatabaseHashEncoding", NULL);
++	tmpstr = ggz_conf_read_string(ch, "General", "DatabaseTablePrefix", NULL);
++	opt.dbtableprefix = _ggzdb_sql_escape(tmpstr);
++	if(tmpstr) ggz_free(tmpstr);
+ 
+ 	/* Announcements in [General] */
+ 	opt.announce_lan = ggz_conf_read_int(ch, "General", "AnnounceLAN", 0);
