@@ -1,6 +1,6 @@
 Index: java/src/ggz/client/core/Net.java
 ===================================================================
---- java/src/ggz/client/core/Net.java	(revision 9217)
+--- java/src/ggz/client/core/Net.java	(revision 9253)
 +++ java/src/ggz/client/core/Net.java	(working copy)
 @@ -529,6 +529,9 @@
              sendStartElement("ADMIN", attributes);
@@ -14,9 +14,17 @@ Index: java/src/ggz/client/core/Net.java
          }
 Index: ggzd/ggzd/client.c
 ===================================================================
---- ggzd/ggzd/client.c	(revision 9217)
+--- ggzd/ggzd/client.c	(revision 9253)
 +++ ggzd/ggzd/client.c	(working copy)
-@@ -126,6 +126,16 @@
+@@ -41,6 +41,7 @@
+ #include <string.h>
+ #include <sys/socket.h>
+ 
++#include "admin.h"
+ #include "client.h"
+ #include "err_func.h"
+ #include "hash.h"
+@@ -126,6 +127,16 @@
  		client_free(client);
  		pthread_exit(NULL);
  	}
@@ -35,29 +43,17 @@ Index: ggzd/ggzd/client.c
  	if (state.players == MAX_USERS) {
 Index: ggzd/ggzd/control.c
 ===================================================================
---- ggzd/ggzd/control.c	(revision 9217)
+--- ggzd/ggzd/control.c	(revision 9253)
 +++ ggzd/ggzd/control.c	(working copy)
-@@ -82,6 +82,19 @@
- struct GameInfo game_types[MAX_GAME_TYPES];
- struct GGZState state;
+@@ -46,6 +46,7 @@
+ #include <avahi-client/publish.h>
+ #endif
  
-+/* Ban data */
-+typedef struct BanList {
-+	pthread_rwlock_t lock;
-+	GGZList *list;
-+} BanList;
-+typedef struct BanItem {
-+	char addr[64];
-+	time_t expires;
-+} BanItem;
-+
-+static BanList bans;
-+
-+
- /* Termination signal */
- static sig_atomic_t hup_signal;
- static sig_atomic_t term_signal;
-@@ -132,6 +145,7 @@
++#include "admin.h"
+ #include "client.h"
+ #include "chat.h"
+ #include "daemon.h"
+@@ -136,6 +137,7 @@
  		err_msg_exit("*** Database initialization failed");
  
  	hash_initialize();
@@ -65,10 +61,98 @@ Index: ggzd/ggzd/control.c
  }
  
  static void cleanup_data(void)
-@@ -710,3 +724,73 @@
+@@ -714,3 +716,5 @@
  
  	return 0;
  }
++
++
+Index: ggzd/ggzd/players.c
+===================================================================
+--- ggzd/ggzd/players.c	(revision 9253)
++++ ggzd/ggzd/players.c	(working copy)
+@@ -1529,6 +1529,20 @@
+ 		break;
+ 	case GGZ_ADMIN_BAN:
+ 		log_msg(GGZ_LOG_ADMIN, "ADMIN %s bans %s", player->name, target);
++		if (rcvr == NULL || rcvr == player) {
++			status = E_USR_LOOKUP;
++		} else {
++			bans_add(rcvr->client->addr);
++			/* FIXME 1: session_over should be bool, not char */
++			/* FIXME: We temporarily take away the wr-lock since player_enqueue needs it */
++			pthread_rwlock_unlock(&rcvr->lock);	
++			chat_player_enqueue(target, GGZ_CHAT_PERSONAL, player, "You have been banned");
++
++			/* Recover the rcvr player - a new lookup is needed */
++			rcvr = hash_player_lookup(target);
++			if (rcvr) rcvr->client->session_over = 1;
++			status = E_OK;
++		}
+ 		/* This is not implemented/used yet. */
+ 		break;
+ 	}
+Index: ggzd/ggzd/Makefile.am
+===================================================================
+--- ggzd/ggzd/Makefile.am	(revision 9253)
++++ ggzd/ggzd/Makefile.am	(working copy)
+@@ -11,6 +11,8 @@
+ ggzdconf_DATA = ggzd.conf.example ggzd.motd username.policy
+ 
+ ggzd_SOURCES = \
++	admin.c \
++	admin.h \
+ 	chat.c \
+ 	chat.h \
+ 	client.c \
+Index: ggzd/ggzd/admin.c
+===================================================================
+--- ggzd/ggzd/admin.c	(revision 0)
++++ ggzd/ggzd/admin.c	(revision 0)
+@@ -0,0 +1,114 @@
++/*
++ * File: admin.c
++ * Author: Roger Light
++ * Project: GGZ Server
++ * Date: 25/08/2007
++ * Desc: Functions for handling admin actions.
++ * $Id$
++ *
++ * Copyright (C) 2007 Roger Light.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
++ */
++
++#ifdef HAVE_CONFIG_H
++# include <config.h>		/* Site specific config */
++#endif
++
++/*#include <ctype.h>
++#include <stdlib.h>
++*/
++
++#include <pthread.h>
++#include <string.h>
++#include <ggz.h>
++
++#include "admin.h"
++#include "err_func.h"
++
++
++/* Internal variables */
++static BanList bans;
 +
 +
 +void bans_initialize(void)
@@ -105,7 +189,7 @@ Index: ggzd/ggzd/control.c
 +
 +int is_banned(const char *addr)
 +{
-+	GGZListEntry *entry;
++	GGZListEntry *entry, *next;
 +	BanItem *ban;
 +	int rc = 0;
 +
@@ -121,6 +205,7 @@ Index: ggzd/ggzd/control.c
 +		/* Grab next entry here in case current entry is expired. */
 +		next = ggz_list_next(entry);
 +		ban = ggz_list_get_data(entry);
++
 +#ifdef DEBUG
 +		dbg_msg(GGZ_DBG_CONNECTION, "Banned IP: %s (%s)", ban->addr, addr);
 +#endif
@@ -139,49 +224,9 @@ Index: ggzd/ggzd/control.c
 +
 +	return rc;
 +}
-Index: ggzd/ggzd/hash.h
-===================================================================
---- ggzd/ggzd/hash.h	(revision 9217)
-+++ ggzd/ggzd/hash.h	(working copy)
-@@ -27,6 +27,10 @@
- #include "players.h"
- 
- /* Exported functions */
-+void bans_initialize(void);
-+void bans_add(const char *addr);
-+int is_banned(const char *addr);
-+
- void hash_initialize(void);
- int hash_player_add(const char *name, GGZPlayer* player);
- 
-Index: ggzd/ggzd/players.c
-===================================================================
---- ggzd/ggzd/players.c	(revision 9217)
-+++ ggzd/ggzd/players.c	(working copy)
-@@ -1497,6 +1496,20 @@
- 		break;
- 	case GGZ_ADMIN_BAN:
- 		log_msg(GGZ_LOG_ADMIN, "ADMIN %s bans %s", player->name, target);
-+		if (rcvr == NULL || rcvr == player) {
-+			status = E_USR_LOOKUP;
-+		} else {
-+			bans_add(rcvr->client->addr);
-+			/* FIXME 1: session_over should be bool, not char */
-+			/* FIXME: We temporarily take away the wr-lock since player_enqueue needs it */
-+			pthread_rwlock_unlock(&rcvr->lock);	
-+			chat_player_enqueue(target, GGZ_CHAT_PERSONAL, player, "You have been banned");
-+
-+			/* Recover the rcvr player - a new lookup is needed */
-+			rcvr = hash_player_lookup(target);
-+			if (rcvr) rcvr->client->session_over = 1;
-+			status = E_OK;
-+		}
- 		/* This is not implemented/used yet. */
- 		break;
- 	}
 Index: ggzd/ggzd/net.h
 ===================================================================
---- ggzd/ggzd/net.h	(revision 9217)
+--- ggzd/ggzd/net.h	(revision 9253)
 +++ ggzd/ggzd/net.h	(working copy)
 @@ -56,6 +56,7 @@
  /* Functions to send data to the client */
@@ -191,3 +236,52 @@ Index: ggzd/ggzd/net.h
  GGZReturn net_send_login(GGZNetIO *net, GGZLoginType type,
  			 GGZClientReqError status, const char *password);
  GGZReturn net_send_motd(GGZNetIO *net);
+Index: ggzd/ggzd/admin.h
+===================================================================
+--- ggzd/ggzd/admin.h	(revision 0)
++++ ggzd/ggzd/admin.h	(revision 0)
+@@ -0,0 +1,44 @@
++/*
++ * File: admin.h
++ * Author: Roger Light
++ * Project: GGZ Server
++ * Date: 25/08/2007
++ * Desc: Functions for handling admin actions.
++ * $Id$
++ *
++ * Copyright (C) 2007 Roger Light.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
++ */
++
++#include <pthread.h>
++#include <ggz.h>
++
++/* Ban data */
++typedef struct BanList {
++	pthread_rwlock_t lock;
++	GGZList *list;
++} BanList;
++typedef struct BanItem {
++	char addr[64];
++	time_t expires;
++} BanItem;
++
++
++/* Exported functions */
++void bans_initialize(void);
++void bans_add(const char *addr);
++int is_banned(const char *addr);
++
