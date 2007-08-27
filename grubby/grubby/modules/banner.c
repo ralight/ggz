@@ -61,7 +61,14 @@ void gurumod_init(const char *datadir)
 	sql_password = ggz_conf_read_string(handle, "banner", "sql_password", NULL);
 	sql_database = ggz_conf_read_string(handle, "banner", "sql_database", "localhost");
 
+	mysql_library_init();
 	conn = mysql_init(NULL);
+	/*
+	 * MYSQL_OPT_RECONNECT set to true here enables automatic reconnections to the
+	 * server if the connection is lost. This has been disabled by default since
+	 * mysql 5.0.3. This option requires 5.0.13.
+	 */
+	mysql_options(conn, MYSQL_OPT_RECONNECT, &reconnect);
 	mysql_real_connect(conn, sql_host, sql_user, sql_password, sql_database, 0, NULL, 0);
 
 	ggz_free(sql_host);
@@ -180,6 +187,7 @@ void gurumod_finish()
 	}
 	if(conn){
 		mysql_close(conn);
+		mysql_library_end();
 		conn = NULL;
 	}
 }
