@@ -585,6 +585,8 @@ server tools.
 
 @section Integration and synchronization
 
+@subsection GGZ Community
+
 Having GGZ Community installed almost always means offering web-based
 forums to the players. The forum software used by GGZ Community is
 phpBB2 which uses its own database.
@@ -599,6 +601,17 @@ the GGZ database.
 
 More information is available in the file @file{setup/sql/trigger}
 within the GGZ Community sources.
+
+@subsection Internationalisation
+
+The GGZ server is eager to please all the needs of international player
+crowds. Unicode support includes the stringprep functionality which can be
+considered a superset of casefolding for the purpose of comparing strings.
+The PostgreSQL database will attempt to detect the stringprep stored function
+on startup and use it if available. It is not installed by default. In order
+to have it installed, go to the directory @file{database/proc} within the
+GGZ server sources, and call @command{make}. For installation requirements,
+have a look at the enclosed README file.
 
 @node Internal Games
 @chapter Internal Games
