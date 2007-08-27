@@ -1,0 +1,40 @@
+The 'canonicalstr' stored procedure (function) for the GGZ database
+===================================================================
+
+GGZ usernames are by default case-preserving, but not case-sensitive.
+This means that a user logging into GGZ will see the name exactly like
+it was entered into the core client login window, but the database will
+store a normalized version of it.
+
+Traditionally, the normalization process simply included lowercasing
+the name. However, for internationalization purposes, this is not
+suitable. Instead, the "stringprep" mechanism (RFC 3454) and others were
+invented to deal with the issue.
+
+It is safe to assume that such stringprep-enabled string functions will
+be supported by the databases in the future. Until then, we install our
+own extension function which re-uses the stringprep code already found
+in other places inside ggzd.
+
+Just like what applies to the 'ggzsync' trigger also applies here:
+The stored procedure only works with PostgreSQL.
+
+For compilation, PostgreSQL 8.2 is recommended, although any 8.x should work.
+The 'pg_config' utility must be installed.
+
+Call 'make', followed by 'make install', to copy the extension module into
+the database server.
+
+The following function must be called within the GGZ database,
+assuming the USAGE privilege is available (which usually resides with
+the superuser only):
+
+CREATE FUNCTION canonicalstr(text) RETURNS text
+  AS '$libdir/canonicalstr_proc', 'canonicalstr'
+  LANGUAGE C STRICT;
+
+To test the function, call canonicalstr('heiß¹²³') as the GGZ database user.
+The 'ß' will be altered to 'ss' and the '¹²³' to '123'. Note that the default
+ICU stringprep profile does not alter umlauts ('äöüÄÖÜ') or accented vowels
+by default, even though this would be appreciated.
+
