@@ -33,8 +33,9 @@ CREATE FUNCTION canonicalstr(text) RETURNS text
   AS '$libdir/canonicalstr_proc', 'canonicalstr'
   LANGUAGE C STRICT;
 
-To test the function, call canonicalstr('heiß¹²³') as the GGZ database user.
-The 'ß' will be altered to 'ss' and the '¹²³' to '123'. Note that the default
-ICU stringprep profile does not alter umlauts ('äöüÄÖÜ') or accented vowels
-by default, even though this would be appreciated.
+To test the function, call canonicalstr('Heiß¹²³') as the GGZ database user.
+The 'ß' will be altered to 'ss' and the '¹²³' to '123'. The capital 'H' will
+become lowercase. Therefore, the resulting string will be 'heiss123'.
+Note that the default ICU stringprep profile does not alter umlauts ('äöüÄÖÜ')
+or accented vowels by default, even though this would be appreciated.
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 9245 2007-08-13 07:01:38Z josef $
+ * $Id: ggzdb_pgsql.c 9256 2007-08-27 06:44:54Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -54,6 +54,7 @@
 /* Internal variables */
 static PGresult *iterres = NULL;
 static int itercount;
+static int pg_canonicalstr;
 
 static pthread_mutex_t mutex;
 static GGZList *list;
@@ -221,6 +222,14 @@ static int setupschema(PGconn *conn, const char *filename)
 	return rc;
 }
 
+/* String canonicalization for comparison */
+static const char *lower(void)
+{
+	if(pg_canonicalstr)
+		return "canonicalstr";
+	return "lower";
+}
+
 /* Exported functions */
 
 /* Function to initialize the pgsql database system */
@@ -263,6 +272,18 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 				err_msg_exit("Wrong database version: %s present, %s needed.\n", version, GGZDB_VERSION_ID);
 				rc = GGZDB_ERR_DB;
 			}
+		}
+		PQclear(res);
+	}
+
+	/* Check if we have canonicalstr() available */
+	pg_canonicalstr = 0;
+	res = PQexec(conn, "SELECT COUNT(*) FROM pg_proc WHERE proname = 'canonicalstr'");
+	if(PQresultStatus(res) == PGRES_TUPLES_OK)
+	{
+		if(PQntuples(res) == 1)
+		{
+			pg_canonicalstr = 1;
 		}
 		PQclear(res);
 	}
@@ -377,8 +398,8 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	/* FIXME: provide server-side function for Unicode-safe stringprep */
 	/* FIXME: here and elsewhere (e.g. for ggzdb_mysql.c) */
 	snprintf(query, sizeof(query), "DELETE FROM stats "
-		 "WHERE lower(handle) = lower('%s')",
-		 handle_quoted);
+		 "WHERE %s(handle) = %s('%s')",
+		 lower(), lower(), handle_quoted);
 
 	if (handle_quoted)
 		ggz_free(handle_quoted);
@@ -417,8 +438,8 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	snprintf(query, sizeof(query),
 		 "SELECT "
 		 "password, name, email, lastlogin, permissions "
-		 "FROM users WHERE lower(handle) = lower('%s')",
-		 handle_quoted);
+		 "FROM users WHERE %s(handle) = %s('%s')",
+		 lower(), lower(), handle_quoted);
 
 	ggz_free(handle_quoted);
 
@@ -476,10 +497,10 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 		 "UPDATE users SET "
 		 "password = '%s', name = '%s', email = '%s', "
 		 "lastlogin = %li, permissions = %u WHERE "
-		 "lower(handle) = lower('%s')",
+		 "%s(handle) = %s('%s')",
 		 password_quoted, name_quoted, email_quoted,
 		 pe->last_login, pe->perms,
-		 handle_quoted);
+		 lower(), lower(), handle_quoted);
 
 	if (handle_quoted)
 		ggz_free(handle_quoted);
@@ -523,8 +544,8 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 	snprintf(query, sizeof(query),
 		 "SELECT "
 		 "id, photo "
-		 "FROM userinfo WHERE lower(handle) = lower('%s')",
-		 handle_quoted);
+		 "FROM userinfo WHERE %s(handle) = %s('%s')",
+		 lower(), lower(), handle_quoted);
 
 	ggz_free(handle_quoted);
 
@@ -683,8 +704,8 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 	snprintf(query, sizeof(query),
 		"SELECT "
 		"wins, losses, ties, forfeits, rating, ranking, highscore "
-		"FROM stats WHERE lower(handle) = lower('%s') AND game = '%s'",
-		player_quoted, stats->game);
+		"FROM stats WHERE %s(handle) = %s('%s') AND game = '%s'",
+		lower(), lower(), player_quoted, stats->game);
 
 	ggz_free(player_quoted);
 
@@ -731,10 +752,10 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 		"UPDATE stats "
 		"SET wins = %i, losses = %i, ties = %i, forfeits = %i, "
 		"rating = %f, ranking = %u, highscore = %li "
-		"WHERE lower(handle) = lower('%s') AND game = '%s'",
+		"WHERE %s(handle) = %s('%s') AND game = '%s'",
 		stats->wins, stats->losses, stats->ties, stats->forfeits,
 		stats->rating, stats->ranking, stats->highest_score,
-		player_quoted, stats->game);
+		lower(), lower(), player_quoted, stats->game);
 
 	ggz_free(player_quoted);
 
