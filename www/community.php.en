@@ -5,7 +5,7 @@
 <td>
 
 <b>GGZ Community Portal</b><br>
-GGZ Community is a web portal running on a
+<a href="/backend/web/">GGZ Community</a> is a web portal running on a
 GGZ server and is operated by some GGZ developers.
 Registered players who play against each other can compete long-term by keeping
 track of themselves in the rankings and statistics database.
@@ -17,14 +17,20 @@ Join the community now!
 <br/><br/>
 
 <i>Web sites</i><br/>
+<!--
 <a href="http://www.ggzcommunity.org/">http://www.ggzcommunity.org/</a>
+-->
+<a href="http://games.ggzcommunity.org/">http://games.ggzcommunity.org/</a>
 <br/>
 To play a game in the Java applet or to watch statistics and organise tournaments,
 visit the GGZ Community website.
 <br/><br/>
 
 <i>Direct GGZ login</i><br/>
+<!--
 <a href="ggz://ggzcommunity.org">ggz://ggzcommunity.org</a>
+-->
+<a href="ggz://live.ggzgamingzone.org">ggz://live.ggzgamingzone.org</a>
 <br/>
 To play a game on GGZ with a native client (and not the applet),
 open this link with any GGZ core client.

@@ -10,6 +10,24 @@
 <language>fr-fr</language>
 
 <item>
+<title><i>27.08.2007: Development news</i> (by josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+There are many interesting things going on in GGZ land: our cards players
+<a href="http://games.ggzcommunity.org/">keep on rocking</a>, a TOC had
+been organised in the meantime, and a host privilege tool (cake bakery) is
+in the making. The loom of KDE 4 brings us <a href="/gameclients/kreversi/">three</a>
+<a href="/gameclients/kbattleship/">new</a> <a href="/gameclients/ksquares/">games</a>,
+hooray! The server goes international, with many pending Unicode improvements.
+The Community platform is being extended with a Web Services API and OpenID support.
+Andrea O.K. Wright gave a talk in Raleigh, NC, USA about Ruby game development
+which included several slides on GGZ and protocol source code generation with
+<a href="http://dev.ggzgamingzone.org/protocols/">GGZComm</a> in particular.
+Finally, lots of small changes which will at some point bring a new release of GGZ!
+</full>
+</item>
+
+<item>
 <title><i>16.01.2007: GGZ 0.0.14</i> (by josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>

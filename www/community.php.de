@@ -1,12 +1,11 @@
 <?php include_once("site/header.php"); ?>
-<?php outdated(); ?>
 
 <table class="content">
 <tr>
 <td>
 
 <b>GGZ Community-Portal</b><br/>
-<a href="/backend/community/">GGZ Community</a> ist ein Webportal, welches
+<a href="/backend/web/">GGZ Community</a> ist ein Webportal, welches
 auf dem GGZ-Server läuft und von einigen GGZ-Entwicklern betrieben wird.
 Registrierte Spieler, die gegeneinander spielen, können langfristig
 gegeneinander antreten, indem sie ihre Position in der Spieler-Tabelle
@@ -20,10 +19,31 @@ Tritt der Community jetzt bei!
 <br/><br/>
 
 <i>Webseiten</i><br/>
-<a href="http://www.ggzcommunity.org/">Zur GGZ Community</a>,
-Zugriff auch mit
-<a href="https://www.ggzcommunity.org/">abgesicherter Verbindung</a>
-möglich<br/>
+<!--
+<a href="http://www.ggzcommunity.org/">http://www.ggzcommunity.org/</a>
+-->
+<a href="http://games.ggzcommunity.org/">http://games.ggzcommunity.org/</a>
+<br/>
+Um ein Spiel mit dem Java-Applet zu spielen oder die Statistiken anzusehen
+und Wettbewerbe zu organisieren, besuche die GGZ-Community-Webseite.
+<br/><br/>
+
+<i>Direktes GGZ-Login</i><br/>
+<!--
+<a href="ggz://ggzcommunity.org">ggz://ggzcommunity.org</a>
+-->
+<a href="ggz://live.ggzgamingzone.org">ggz://live.ggzgamingzone.org</a>
+<br/>
+Um ein Spiel mit einem nativen Client (anstelle des Applets) auf
+GGZ zu spielen, öffne diesen Link mit einem beliebigen GGZ-Core-Client.
+<br/><br/>
+
+<i>Metacle-Dienst</i><br/>
+Das <a href="http://metacle.ggzgamingzone.org/">Metacle</a> ist immer
+darüber informiert, welche Spiele gerade weltweit gespielt werden, sowohl für
+GGZ als auch für andere Spiele!
+Es enthält auch eine Liste zusätzlicher GGZ-Server, falls jemand sie darin
+registriert hat.
 
 </td>
 </tr>
