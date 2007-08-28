@@ -1,8 +1,0 @@
-[RoomInfo]
-Name = Keepalive
-Description = Keep alive now!
-GameType = Keepalive
-# Any additional game arguments specific to this room
-#ExecutableArgs = 
-MaxPlayers = 100
-MaxTables = 1
