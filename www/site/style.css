@@ -140,3 +140,6 @@ a:visited {
 	border-style: solid;
 	width: 16;
 }
+img {
+	border: 0;
+}
