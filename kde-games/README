@@ -27,9 +27,6 @@ Content of GGZ-KDE-Games:
 	- Muehle:
 		Implements the good old Muehle (Nine men's morris) game.
 		Can also be run standalone.
-	- Keepalive:
-		An experimental game client which implements some newer features.
-		May or may not work for you.
 	- Fyrdman:
 		Colourful client for the Hastings1066 game.
 		Works also in standalone mode.
