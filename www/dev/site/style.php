@@ -65,4 +65,16 @@
 	border-style: solid;
 	width: 16;
 }
+a {
+	color: #000000;
+	text-decoration: underline;
+}
+a:active {
+	color: #000000;
+	text-decoration: underline;
+}
+a:visited {
+	color: #000000;
+	text-decoration: underline;
+}
 </style>
