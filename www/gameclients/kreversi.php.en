@@ -4,10 +4,10 @@
 <tr>
 <td>
 
-<img src="/pics/icons/game_gnome.png" alt="GNOME Games project">
-<img src="/pics/icons/gnome-iagno.png" alt="Logo of the game">
+<img src="/pics/icons/game_kde.png" alt="KDE Games project">
+<img src="/pics/icons/kde-kreversi.png" alt="Logo of the game">
 <br/>
-<b>Iagno</b><br/>
+<b>KReversi</b><br/>
 Board game for 2 players.
 <br/><br/>
 
@@ -16,32 +16,31 @@ Board game for 2 players.
 This game client is not a GGZ project but it does provide GGZ support.
 The project homepage is:
 <br/>
-<a href="http://www.gnome.org/projects/gnome-games/">gnome.org</a>.
+<a href="http://games.kde.org/">games.kde.org</a>.
 </td></tr>
 </table>
 <br/>
 
 <i>Screenshot</i><br/>
-<img src="/gameclients/pics/iagno.png">
+<img src="/gameclients/pics/kreversi.png">
 <br clear="all">
 <br/>
 
 <i>Fact sheet</i><br/>
 <ul>
-<li>Single player mode
-<li>GGZ support is optional
+<li>KDE 4 client for Reversi
+<li>Demo mode
+<li>Difficulty level selection
 </ul>
+<br/>
 
-Iagno is the Reversi-style game of the GNOME Games package.
-The client can be compiled with GGZ support in order to allow for games
-on GGZ servers. It uses the Reversi protocol already present in GGZ's
-Reversi games.
+This is the KDE 4 client for the Reversi board game.
 
 <br/><br/>
 
 <i>GGZ game client support</i><br/>
 <table class="listnorm">
-<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
 <tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Chat</i></td><td><img src="/pics/icons/no.png">no</td></tr>
@@ -50,17 +49,17 @@ Reversi games.
 
 <br/>
 
-<i>Homepage of Iagno</i><br/>
-<a href="http://www.gnome.org/projects/gnome-games/" target="blank">http://www.gnome.org/projects/gnome-games/</a>
+<i>Homepage of KReversi</i><br/>
+<a href="http://games.kde.org/" target="blank">http://games.kde.org/</a>
 
 </td><td>
 
 <b>Related pages</b>
 <br/><br/>
 
-<img src="/pics/icons/game_kde.png">
-<i>KDE client: KReversi</i><br/>
-<a href="/gameclients/kreversi/"><img src="/gameclients/thumbs/kreversi.png"></a>
+<img src="/pics/icons/game_gnome.png">
+<i>GNOME client: Iagno</i><br/>
+<a href="/gameclients/iagno/"><img src="/gameclients/thumbs/iagno.png"></a>
 <br/><br/>
 
 <img src="/pics/icons/game_gnome.png">

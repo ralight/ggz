@@ -45,19 +45,24 @@ Some options can be configured from within the game client.
 <b>Related pages</b>
 <br/><br/>
 
+<img src="/pics/icons/game_gnome.png">
+<i>GNOME client: Iagno</i><br/>
+<a href="/gameclients/iagno/"><img src="/gameclients/thumbs/iagno.png"></a>
+<br/><br/>
+
 <img src="/pics/icons/game_kde.png">
 <i>KDE client: KReversi</i><br/>
 <a href="/gameclients/kreversi/"><img src="/gameclients/thumbs/kreversi.png"></a>
 <br/><br/>
 
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: KGGZReversi</i><br/>
+<a href="/gameclients/kggzreversi/"><img src="/gameclients/thumbs/kggzreversi.png"></a>
+<br/><br/>
+
 <img src="/pics/icons/game_sdl.png">
 <i>SDL client: GGZBoard</i><br/>
 <a href="/gameclients/ggzboard/"><img src="/gameclients/thumbs/ggzboard.png"></a>
-<br/><br/>
-
-<img src="/pics/icons/game_gnome.png">
-<i>GNOME client: Iagno</i><br/>
-<a href="/gameclients/iagno/"><img src="/gameclients/thumbs/iagno.png"></a>
 <br/><br/>
 
 <a href="/engines/reversi/"><i>Engine: Reversi</i></a>

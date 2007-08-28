@@ -1,5 +1,16 @@
 <?php include_once("../site/header.php"); ?>
 
+<table class='pane'>
+<tr>
+<td>
+<font color='#ff0000'>Warning:</font>
+This application is not maintained anymore.
+Visit the <a href="http://dev.ggzgamingzone.org/graveyard/">graveyard</a>
+for more information.
+</td>
+</tr>
+</table>
+
 <table class="content">
 <tr>
 <td>

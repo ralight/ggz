@@ -1,0 +1,80 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content">
+<tr>
+<td>
+
+<img src="/pics/icons/game_kde.png" alt="KDE Games project">
+<img src="/pics/icons/kde-ksquares.png" alt="Logo of the game">
+<br/>
+<b>KSquares</b><br/>
+Board game for 2 players.
+<br/><br/>
+
+<table class="listnorm">
+<tr><td>
+This game client is not a GGZ project but it does provide GGZ support.
+The project homepage is:
+<br/>
+<a href="http://games.kde.org/">games.kde.org</a>.
+</td></tr>
+</table>
+<br/>
+
+<i>Screenshot</i><br/>
+<img src="/gameclients/pics/ksquares.png">
+<br clear="all">
+<br/>
+
+<i>Fact sheet</i><br/>
+<ul>
+<li>KDE 4 client for Dots
+<li>Configurable board size
+</ul>
+<br/>
+
+This is the KDE 4 client for the Dots board game.
+
+<br/><br/>
+
+<i>GGZ game client support</i><br/>
+<table class="listnorm">
+<tr><td><i>Seats dialog</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Statistics dialog</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Level/theme sharing</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Chat</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Local games</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+</table>
+
+<br/>
+
+<i>Homepage of KSquares</i><br/>
+<a href="http://games.kde.org/" target="blank">http://games.kde.org/</a>
+
+</td><td>
+
+<b>Related pages</b>
+<br/><br/>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: KDots</i><br/>
+<a href="/gameclients/kdots/"><img src="/gameclients/thumbs/kdots.png"></a>
+<br/><br/>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: Dots</i><br/>
+<a href="/gameclients/dots/"><img src="/gameclients/thumbs/dots.png"></a>
+<br/><br/>
+
+<a href="/engines/dots/"><i>Engine: Dots</i></a>
+<br/><br/>
+
+<a href="/gameservers/dots/"><i>Server: Dots</i></a>
+<br/><br/>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

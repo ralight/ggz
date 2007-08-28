@@ -36,6 +36,11 @@ The Dots server is a simple implementation of the Connect The Dots game.
 <b>Related pages</b>
 <br/><br/>
 
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: KSquares</i><br/>
+<a href="/gameclients/ksquares/"><img src="/gameclients/thumbs/ksquares.png"></a>
+<br/><br/>
+
 <img src="/pics/icons/game_gnome.png">
 <i>Gtk+ client: Dots</i><br/>
 <a href="/gameclients/dots/"><img src="/gameclients/thumbs/dots.png"></a>

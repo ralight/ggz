@@ -1,0 +1,54 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content">
+<tr>
+<td>
+
+<b>Battleship</b><br/>
+Board game for 2 players.
+<br/><br/>
+
+<table class="listnorm">
+<tr><td>
+The game client is not a GGZ project but it does provide GGZ support.
+The project homepage is:
+<a href="http://games.kde.org/">games.kde.org</a>.
+</td></tr>
+</table>
+<br/>
+
+<i>Battleship features</i><br/>
+<ul>
+<li>KDE client
+<li>Re-uses the old KBattleship protocol for compatibility
+</ul>
+<br/>
+
+<i>Battleship rules</i><br/>
+The game is well-documented in the handbook which is part of the
+KBattleship game client.
+
+<br/><br/>
+
+<i>Protocol and documentation</i><br/>
+No further information present.
+
+</td><td>
+
+<b>Related pages</b>
+<br/><br/>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: KBattleship</i><br/>
+<a href="/gameclients/kbattleship/"><img src="/gameclients/thumbs/kbattleship.png"></a>
+<br/><br/>
+
+<a href="/gameservers/submarine/"><i>Server: Submarine</i></a>
+<br/><br/>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

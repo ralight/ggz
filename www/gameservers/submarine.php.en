@@ -1,0 +1,52 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content">
+<tr>
+<td>
+
+<b>Submarine Server</b><br/>
+Board game for 2 players.
+<br/><br/>
+
+<i>Fact sheet</i><br/>
+<ul>
+<li>Supports the <a href="/engines/battleship/">Battleship</a> engine
+<li>Implemented in Python
+<li>GGZ is required (no standalone operation)
+</ul>
+
+This server, which is part of the GGZ Python package, allows KBattleship
+players to meet each other on GGZ.
+
+<br/><br/>
+
+<i>GGZ game server support</i><br/>
+<table class="listnorm">
+<tr><td><i>Play-again</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Bot players</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Named Bots</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Savegames</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+</table>
+
+</td><td>
+
+<b>Related pages</b>
+<br/><br/>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: KBattleship</i><br/>
+<a href="/gameclients/kbattleship/"><img src="/gameclients/thumbs/kbattleship.png"></a>
+<br/><br/>
+
+<a href="/engines/battleship/"><i>Engine: Battleship</i></a>
+<br/><br/>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+

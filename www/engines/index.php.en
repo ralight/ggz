@@ -67,6 +67,8 @@ The following game engines are currently playable on GGZ:
 <tr>
 <td><a href="/engines/dots/">Connect The Dots</a></td>
 <td>
+<img src="/pics/icons/game_kde.png">
+<a href="/gameclients/ksquares/">KSquares (KDE)</a><br/>
 <img src="/pics/icons/game_gnome.png">
 <a href="/gameclients/dots/">Dots (Gtk+)</a><br/>
 <img src="/pics/icons/game_kde.png">
@@ -90,13 +92,15 @@ The following game engines are currently playable on GGZ:
 <td><a href="/engines/reversi/">Reversi</a></td>
 <td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/gameclients/reversi/">Reversi (Gtk+)</a><br/>
+<a href="/gameclients/iagno/">Iagno (GNOME)</a><br/>
 <img src="/pics/icons/game_kde.png">
 <a href="/gameclients/kreversi/">KReversi (KDE)</a><br/>
+<img src="/pics/icons/game_gnome.png">
+<a href="/gameclients/reversi/">Reversi (Gtk+)</a><br/>
+<img src="/pics/icons/game_kde.png">
+<a href="/gameclients/kggzreversi/">KGGZReversi (KDE)</a><br/>
 <img src="/pics/icons/game_sdl.png">
 <a href="/gameclients/ggzboard/">GGZBoard (SDL)</a><br/>
-<img src="/pics/icons/game_gnome.png">
-<a href="/gameclients/iagno/">Iagno (GNOME)</a><br/>
 </td>
 <td><a href="/gameservers/reversi/">Reversi server</a></td>
 </tr>
@@ -257,6 +261,15 @@ The following game engines are currently playable on GGZ:
 <td>---</td>
 </tr>
 
+<tr>
+<td><a href="/engines/battleship/">Battleship</a></td>
+<td>
+<img src="/pics/icons/game_kde.png">
+<a href="/gameclients/kbattleship/">KBattleship (KDE)</a><br/>
+</td>
+<td><a href="/gameservers/submarine/">Submarine server</a></td>
+</tr>
+
 <!--
 <tr>
 <td>
@@ -397,12 +410,19 @@ LaPocha (Gtk+) - R.I.P.<br/>
 </tr>
 
 <tr>
-<td><a href="/engines/keepalive/">Keepalive</a></td>
+<td>
+<a href="/engines/keepalive/">Keepalive</a>
+<img src="/pics/icons/game_rip.png">
+</td>
 <td>
 <img src="/pics/icons/game_kde.png">
-<a href="/gameclients/keepalive/">Keepalive (KDE)</a><br/>
+<a href="/gameclients/keepalive/">Keepalive (KDE)</a>
+<img src="/pics/icons/game_rip.png">
 </td>
-<td><a href="/gameservers/keepalive/">Keepalive server</a></td>
+<td>
+<a href="/gameservers/keepalive/">Keepalive server</a>
+<img src="/pics/icons/game_rip.png">
+</td>
 </tr>
 
 <tr>
@@ -445,12 +465,17 @@ LaPocha (Gtk+) - R.I.P.<br/>
 <td>
 <img src="/pics/icons/tuxman.png">
 <a href="/engines/tuxman/">Tuxman</a>
+<img src="/pics/icons/game_rip.png">
 </td>
 <td>
 <img src="/pics/icons/game_sdl.png">
-<a href="/gameclients/tuxman/">Tuxman (SDL)</a><br/>
+<a href="/gameclients/tuxman/">Tuxman (SDL)</a>
+<img src="/pics/icons/game_rip.png">
 </td>
-<td><a href="/gameservers/tuxman/">Tuxman server</a></td>
+<td>
+<a href="/gameservers/tuxman/">Tuxman server</a>
+<img src="/pics/icons/game_rip.png">
+</td>
 </tr>
 
 <!--

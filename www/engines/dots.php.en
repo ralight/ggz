@@ -10,7 +10,7 @@ Board game for 2 players.
 
 <i>Connect The Dots features</i><br/>
 <ul>
-<li>2 game clients available: Dots (Gtk+) and KDots (KDE)
+<li>3 game clients available: KSquares (KDE), Dots (Gtk+) and KDots (KDE)
 <li>AI opponents available
 <li>supports statistics
 <li>supports game spectators
@@ -36,6 +36,11 @@ No further information present.
 </td><td>
 
 <b>Related pages</b>
+<br/><br/>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: KSquares</i><br/>
+<a href="/gameclients/ksquares/"><img src="/gameclients/thumbs/ksquares.png"></a>
 <br/><br/>
 
 <img src="/pics/icons/game_gnome.png">

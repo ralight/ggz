@@ -70,7 +70,7 @@ the appropriate <a href="/packages/">package</a> page.
 
 <tr><td>
 <img src="/pics/icons/game_kde.png">
-<a href="/gameclients/kreversi/">KReversi</a>
+<a href="/gameclients/kggzreversi/">KGGZReversi</a>
 </td><td>
 <a href="/engines/reversi/">Reversi</a>
 </td></tr>
@@ -101,13 +101,6 @@ the appropriate <a href="/packages/">package</a> page.
 <a href="/gameclients/muehle/">Mühle</a>
 </td><td>
 <a href="/engines/muehle/">Mühle</a>
-</td></tr>
-
-<tr><td>
-<img src="/pics/icons/game_kde.png">
-<a href="/gameclients/keepalive/">Keepalive</a>
-</td><td>
-<a href="/engines/keepalive/">Keepalive</a>
 </td></tr>
 
 <tr><td>
@@ -290,7 +283,7 @@ the appropriate <a href="/packages/">package</a> page.
 <br/>
 
 <i>Java games collection:</i><br/>
-While not really a collection as it only contains 1 game,
+While not really a collection as it only contains two games,
 this game supports nearly all of the GGZCards games.
 It is implemented using <a href="http://dev.java.net/">Java</a>
 and is extremely popular with Spades players who use the applet
@@ -401,6 +394,44 @@ project.
 <a href="/gameclients/iagno/">Iagno</a>
 </td><td>
 <a href="/engines/reversi/">Reversi</a>
+</td></tr>
+</table>
+
+<br/>
+
+<i>KDE game clients:</i><br/>
+These clients are developed as part of the <a href="http://games.kde.org/">KDE Games</a> project.
+Note that they will only be available starting from KDE 4!
+<br/><br/>
+
+<table class="listnorm3">
+<tr>
+<td><i>Client</i></td>
+<td><i>Supported engines</i></td>
+</tr>
+
+<tr><td>
+<img src="/pics/icons/game_kde.png">
+<img src="/pics/icons/kde-kreversi.png">
+<a href="/gameclients/kreversi/">KReversi</a>
+</td><td>
+<a href="/engines/reversi/">Reversi</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_kde.png">
+<img src="/pics/icons/kde-kbattleship.png">
+<a href="/gameclients/kbattleship/">KBattleship</a>
+</td><td>
+<a href="/engines/battleship/">Battleship</a>
+</td></tr>
+
+<tr><td>
+<img src="/pics/icons/game_kde.png">
+<img src="/pics/icons/kde-ksquares.png">
+<a href="/gameclients/ksquares/">KSquares</a>
+</td><td>
+<a href="/engines/dots/">Dots</a>
 </td></tr>
 </table>
 

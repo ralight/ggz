@@ -38,13 +38,23 @@ An integrated AI is available, as is support for recording statistics.
 <br/><br/>
 
 <img src="/pics/icons/game_gnome.png">
-<i>Gtk+ client: Reversi</i><br/>
-<a href="/gameclients/reversi/"><img src="/gameclients/thumbs/reversi.png"></a>
+<i>GNOME client: Iagno</i><br/>
+<a href="/gameclients/iagno/"><img src="/gameclients/thumbs/iagno.png"></a>
 <br/><br/>
 
 <img src="/pics/icons/game_kde.png">
 <i>KDE client: KReversi</i><br/>
 <a href="/gameclients/kreversi/"><img src="/gameclients/thumbs/kreversi.png"></a>
+<br/><br/>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: Reversi</i><br/>
+<a href="/gameclients/reversi/"><img src="/gameclients/thumbs/reversi.png"></a>
+<br/><br/>
+
+<img src="/pics/icons/game_kde.png">
+<i>KDE client: KGGZReversi</i><br/>
+<a href="/gameclients/kggzreversi/"><img src="/gameclients/thumbs/kggzreversi.png"></a>
 <br/><br/>
 
 <img src="/pics/icons/game_sdl.png">
