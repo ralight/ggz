@@ -25,6 +25,9 @@ on GGZ. Before going into the details, the current list should be kept in mind:
 <tr><td>GNOME Gnibbles</td><td>basic support</td><td><a href="http://www.ggzgamingzone.org/gameclients/gnibbles/">info page</a></td></tr>
 <tr><td>GNOME Iagno (<a href="http://www.ggzgamingzone.org/engines/reversi/">Reversi</a> engine)</td><td>basic support</td><td><a href="http://www.ggzgamingzone.org/gameclients/iagno/">info page</a></td></tr>
 <tr><td>GNOME Gnect (<a href="http://www.ggzgamingzone.org/engines/connectx/">ConnectX</a> engine)</td><td>basic support</td><td><a href="http://www.ggzgamingzone.org/gameclients/gnect/">info page</a></td></tr>
+<tr><td>KDE KReversi (<a href="http://www.ggzgamingzone.org/engines/reversi/">Reversi</a> engine)</td><td>basic support</td><td><a href="http://www.ggzgamingzone.org/gameclients/kreversi/">info page</a></td></tr>
+<tr><td>KDE KBattleship </td><td>basic support</td><td><a href="http://www.ggzgamingzone.org/gameclients/kbattleship/">info page</a></td></tr>
+<tr><td>KDE KSquares (<a href="http://www.ggzgamingzone.org/engines/dots/">Dots</a> engine)</td><td>basic support</td><td><a href="http://www.ggzgamingzone.org/gameclients/ksquares/">info page</a></td></tr>
 </table>
 <br/>
 
