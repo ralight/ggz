@@ -1,0 +1,75 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content">
+<tr>
+<td>
+
+<b>Target platforms for GGZ</b><br/>
+Over time, four major platforms (and a few minor ones) were defined which
+should all be enhanced with GGZ technologies. The platforms are the KDE and
+GNOME desktops, SDL for embedded games and Java for browser games.
+<br/><br/>
+
+<i>KDE platform</i><br/>
+The KDE platform <a href="http://www.ggzgamingzone.org/packages/">packages</a>
+encompass ggz-kde-client and ggz-kde-games. The
+<a href="http://www.kde.org/">KDE project</a> provides GGZ support from KDE 4
+on.
+KDE uses the <a href="http://mdcc.cx/pub/autobook/">GNU Autotools</a> for
+building software in KDE 3, but will switch to
+<a href="http://www.cmake.org">CMake</a> in KDE 4.
+Programming is done in C++.
+Relevant libraries for games are <a href="/libraries/ggzmod/">kggzmod</a>
+(client) and <a href="/libraries/ggzdmod/">kggzdmod/ggzdmod++</a>
+(server).
+
+<br/><br/>
+
+<i>GNOME platform</i><br/>
+The GNOME platform <a href="http://www.ggzgamingzone.org/packages/">packages</a>
+encompass ggz-gtk-client and ggz-gtk-games. The
+<a href="http://www.gnome.org/">GNOME project</a> also has been providing GGZ
+support from version 2.18.
+GNOME uses the <a href="http://mdcc.cx/pub/autobook/">GNU Autotools</a> for
+the build process.
+Programming is done in C.
+Relevant libraries for games are <a href="/libraries/ggzmod/">ggzmod</a>
+(client) and <a href="/libraries/ggzdmod/">ggzdmod</a> (server).
+
+<br/><br/>
+
+<i>SDL platform</i><br/>
+The SDL platform <a href="http://www.ggzgamingzone.org/packages/">packages</a>
+encompass ggz-sdl-games and ggz-python.
+SDL uses <a href="http://www.gnu.org/software/autoconf/autoconf.html">GNU autoconf</a>
+for the build process. For SDL/Python, the Python distutils shall be used
+instead in the future.
+Programming is done in C and Python.
+Relevant libraries for games are <a href="/libraries/ggzmod/">ggzmod/pyggzmod</a>
+(client) and <a href="/libraries/ggzdmod/">ggzdmod/pyggzdmod</a> (server).
+
+<br/><br/>
+
+<i>Java platform</i><br/>
+The Java platform <a href="http://www.ggzgamingzone.org/packages/">package</a>
+is simply ggz-java.
+Java uses <a href="http://ant.apache.org">Apache Ant</a> for its build process.
+Programming is done in Java.
+All libraries are part of ggz-java and are not installed separately for the
+time being.
+
+<br/><br/>
+
+<i>Other platforms</i><br/>
+GGZ applications also run on terminals (command-line applications, e.g.
+ggz-grubby, ggz-utils, ggz-txt-client and ggz-server) and on the web (web
+applications, e.g. ggz-community).
+However, while these platforms are very suitable for infrastructure work,
+little to none game development happens on them.
+
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+
