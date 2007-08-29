@@ -33,7 +33,8 @@ language. Nowadays six main languages are being used in significant parts
 of the project, with a few others being present but not used much.
 These top languages appear to be C (60%), C++ (20%), Java (10%),
 Python (6%), PHP (3%) and Ruby (&lt; 1 %). Remember that those numbes are
-hard to compare with each other.
+hard to compare with each other. A <a href="ggz-sloc-lin.png">comparison graph</a>
+for the SLOC has been produced.
 <br/><br/>
 
 The links above will lead straight to the programming language information
