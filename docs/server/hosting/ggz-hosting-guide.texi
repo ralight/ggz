@@ -749,6 +749,9 @@ Keepalive is the only C++ game server in GGZ which uses the pure ggzdmod
 library instead of ggzdmod++ or another wrapper.
 No advanced features are offered.
 
+Keepalive is now available only through GGZ's graveyard. Information is
+available on @url{http://dev.ggzgamingzone.org/graveyard/}.
+
 @subsection Krosswater
 
 Krosswater is written in C++ and uses its own library libzoneserver, which
@@ -773,6 +776,9 @@ for Muehle (Nine men's morris), and passes the game data between the clients.
 A card game server for the NetSpades game which has been derived from the
 former non-GGZ NetSpades.
 It is the only GGZ game server which does not use the ggzdmod library.
+
+NetSpades is now available only through GGZ's graveyard. Information is
+available on @url{http://dev.ggzgamingzone.org/graveyard/}.
 
 @subsection Reversi
 
@@ -803,6 +809,9 @@ which is available at @url{http://dak0r.de/~badwolf/ftpnet/badwolf/tuxman/}.
 At the moment, the Tuxman game seems to be dead. Therefore, the Tuxman
 server will probably be discontinued in the future. It is one of the very
 few ones of the real-time game genre (together with Keepalive).
+
+Tuxman is now available only through GGZ's graveyard. Information is
+available on @url{http://dev.ggzgamingzone.org/graveyard/}.
 
 @subsection Checkers
 
