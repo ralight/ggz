@@ -1,3 +1,9 @@
+if COND_DBPROC
+DBPROC_DIR = proc
+endif
+
+SUBDIRS = $(DBPROC_DIR)
+
 noinst_LIBRARIES = libggzdb.a
 libggzdb_a_SOURCES = \
 	ggzdb.c \

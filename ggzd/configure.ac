@@ -1,5 +1,5 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 9162 2007-07-01 10:36:29Z oojah $
+# $Id: configure.ac 9283 2007-08-29 07:00:45Z josef $
 # ================================
 
 AC_INIT([GGZ server], [0.0.15pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
@@ -47,6 +47,9 @@ AC_ARG_WITH([passwordcheck],
 	AS_HELP_STRING([--with-passwordcheck=TYPE],
 	[type of library to use: cracklib, omnicracklib]),
 	[passwordcheck=$withval], [passwordcheck=yes])
+AC_ARG_ENABLE([dbproc],
+	AS_HELP_STRING([--enable-dbproc],[Build stored procedures]),
+	[enable_dbproc=yes], [enable_dbproc=no])
 
 
 # Check for GGZ Requirements
@@ -207,6 +210,8 @@ if test "$enable_games" = yes; then
     COMPILE_SUBDIRS="$COMPILE_SUBDIRS game_servers"
 fi
 
+AM_CONDITIONAL([COND_DBPROC], [test "$enable_dbproc" = yes])
+
 dnl Compile the test code
 COMPILE_SUBDIRS="$COMPILE_SUBDIRS tests"
 
@@ -226,7 +231,6 @@ AC_CONFIG_FILES([Makefile
 	ggzd/ggzd.conf.example
 	ggzd/ggzd.test
 	game_servers/Makefile
-	game_servers/spades/Makefile
 	game_servers/tictactoe/Makefile
 	game_servers/dots/Makefile
 	game_servers/ggzcards/Makefile
@@ -259,11 +263,8 @@ AC_CONFIG_FILES([Makefile
 	game_servers/muehle/qtserv/Makefile
 	game_servers/muehle/variants/Makefile
 	game_servers/escape/Makefile
-	game_servers/keepalive/Makefile
-	game_servers/keepalive/src/Makefile
 	game_servers/geekgame/Makefile
 	game_servers/connectx/Makefile
-	game_servers/tuxman/Makefile
 	game_servers/widelands/Makefile
 	man/Makefile
 	tests/Makefile
@@ -277,20 +278,21 @@ dnl =============
 
 echo ""
 echo "Build options"  
-echo "    Build Server.........$enable_server" 
-echo "    Build Game Servers...$enable_games" 
+echo "    Build Server.........$enable_server"
+echo "    Build Game Servers...$enable_games"
+echo "    Build Procedures.....$enable_dbproc"
 echo "Configuration options"
-echo "    Database Type........$database" 
+echo "    Database Type........$database"
 echo "    Zeroconf.............$zeroconf"
 echo "    Reconfiguration......$reconfiguration"
 echo "    Unicode..............$unicode"
 echo "    Password checks......$passwordcheck"
 echo "Debugging options"
-echo "    General Debuging.....$enable_debug" 
-echo "    GDB Debugging........$enable_debug_gdb" 
-echo "    Memory Debugging.....$enable_debug_mem" 
-echo " " 
-echo "To compile and install server:" 
-echo "    'make install'" 
-echo "To compile and test server locally without installing:" 
+echo "    General Debuging.....$enable_debug"
+echo "    GDB Debugging........$enable_debug_gdb"
+echo "    Memory Debugging.....$enable_debug_mem"
+echo " "
+echo "To compile and install server:"
+echo "    'make install'"
+echo "To compile and test server locally without installing:"
 echo "    'make test && ./ggzd/ggzd -F -f ./ggzd/ggzd.test'"
