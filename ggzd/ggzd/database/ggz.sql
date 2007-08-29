@@ -4,7 +4,7 @@
 -- FIXME: this schema needs to be improved based on mysql_schema.sql
 -- FIXME: (and vice-versa)
 
-CREATE TABLE "users" (
+CREATE TABLE "%PREFIX%users" (
 	"id" serial NOT NULL,
 	"handle" character varying(256) NOT NULL,
 	"password" character varying(256),
@@ -15,7 +15,7 @@ CREATE TABLE "users" (
 	"firstlogin" bigint
 );
 
-CREATE TABLE "stats" (
+CREATE TABLE "%PREFIX%stats" (
 	"id" serial NOT NULL,
 	"handle" character varying(256),
 	"game" character varying(256),
@@ -28,12 +28,12 @@ CREATE TABLE "stats" (
 	"highscore" bigint
 );
 
-CREATE TABLE "control" (
+CREATE TABLE "%PREFIX%control" (
 	"key" character varying(256),
 	"value" character varying(256)
 );
 
-CREATE TABLE matches (
+CREATE TABLE "%PREFIX%matches" (
 	"id" serial NOT NULL,
 	"date" bigint,
 	"game" character varying(256),
@@ -41,14 +41,14 @@ CREATE TABLE matches (
 	"savegame" character varying(256)
 );
 
-CREATE TABLE matchplayers (
+CREATE TABLE "%PREFIX%matchplayers" (
 	"id" serial NOT NULL,
 	"match" bigint,
 	"handle" character varying(256),
 	"playertype" character varying(256)
 );
 
-CREATE TABLE savegames (
+CREATE TABLE "%PREFIX%savegames" (
 	"id" serial NOT NULL,
 	"date" bigint,
 	"game" character varying(256),

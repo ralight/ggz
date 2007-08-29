@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 9256 2007-08-27 06:44:54Z josef $
+ * $Id: ggzdb_pgsql.c 9284 2007-08-29 07:00:52Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -164,12 +164,34 @@ static void releaseconnection(PGconn *conn)
 	pthread_mutex_unlock(&mutex);
 }
 
+/* Helper function: replace all patterns in a string */
+static char *strreplace(const char *str, const char *pattern, const char *subst)
+{
+	char *ss, *sstmp;
+	char *ptr;
+
+	ss = ggz_strdup(str);
+
+	while((ptr = strstr(ss, pattern)))
+	{
+		sstmp = ggz_strdup(ss);
+		memcpy(sstmp, ss, ptr - ss);
+		memcpy(sstmp + (ptr - ss), subst, strlen(subst));
+		memcpy(sstmp + (ptr - ss) + strlen(subst), ptr + strlen(pattern), strlen(str) - strlen(pattern) - (ptr - ss) + 1);
+		ggz_free(ss);
+		ss = sstmp;
+	}
+
+	return ss;
+}
+
 /* Initialize the database tables from an external SQL schema file */
 static int setupschema(PGconn *conn, const char *filename)
 {
 	char buffer[1024];
 	PGresult *res;
 	char *completebuffer = NULL;
+	char *substbuffer;
 	int len;
 	int i;
 	int rc = 1;
@@ -185,17 +207,19 @@ static int setupschema(PGconn *conn, const char *filename)
 	{
 		if(strlen(buffer) == 1)
 		{
-			res = PQexec(conn, completebuffer);
+			substbuffer = strreplace(completebuffer, "%PREFIX%", "");
+			res = PQexec(conn, substbuffer);
 			if((PQresultStatus(res) != PGRES_EMPTY_QUERY)
 			&& (PQresultStatus(res) != PGRES_COMMAND_OK))
 			{
-				err_msg("Table creation error %i.\n",
+				err_msg("Table creation error %i.",
 					PQresultStatus(res));
 				rc = 0;
 			}
 			PQclear(res);
 
-			free(completebuffer);
+			ggz_free(substbuffer);
+			ggz_free(completebuffer);
 			completebuffer = NULL;
 			continue;
 		}
@@ -207,7 +231,7 @@ static int setupschema(PGconn *conn, const char *filename)
 		}
 
 		len = (completebuffer ? strlen(completebuffer) : 0);
-		completebuffer = (char*)realloc(completebuffer,
+		completebuffer = (char*)ggz_realloc(completebuffer,
 			len + strlen(buffer) + 1);
 		if(len)
 			strncat(completebuffer, buffer, strlen(buffer) + 1);
@@ -215,7 +239,7 @@ static int setupschema(PGconn *conn, const char *filename)
 			strncpy(completebuffer, buffer, strlen(buffer) + 1);
 	}
 
-	if(completebuffer) free(completebuffer);
+	if(completebuffer) ggz_free(completebuffer);
 
 	fclose(f);
 
