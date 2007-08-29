@@ -76,11 +76,6 @@ AC_CONFIG_FILES([
 	muehle/pics/alt/Makefile
 	muehle/variants/Makefile
 	muehle/doc/Makefile
-	keepalive/Makefile
-	keepalive/module.dsc
-	keepalive/keepalive.desktop
-	keepalive/src/Makefile
-	keepalive/pics/Makefile
 	man/Makefile
 	po/Makefile
 	po/KReversi/Makefile
