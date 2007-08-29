@@ -1,5 +1,16 @@
 <?php include_once("../site/header.php"); ?>
 
+<table class='pane'>
+<tr>
+<td>
+<font color='#ff0000'>Warning:</font>
+This application is not maintained anymore.
+Visit the <a href="http://dev.ggzgamingzone.org/graveyard/">graveyard</a>
+for more information.
+</td>
+</tr>
+</table>
+
 <table class="content">
 <tr>
 <td>
@@ -41,6 +52,11 @@ even though no real GGZ features are being used.
 <img src="/pics/icons/game_gnome.png">
 <i>Gtk+ client: NetSpades</i><br/>
 <a href="/gameclients/spades/"><img src="/gameclients/thumbs/netspades.png"></a>
+<br/><br/>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: GGZCards</i><br/>
+<a href="/gameclients/ggzcards/"><img src="/gameclients/thumbs/ggzcards.png"></a>
 <br/><br/>
 
 <img src="/pics/icons/game_java.png">

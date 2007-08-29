@@ -298,12 +298,19 @@ Batalla Naval (GNOME) - R.I.P.<br/>
 </tr>
 
 <tr>
-<td><a href="/engines/spades/">NetSpades</a></td>
+<td>
+<a href="/engines/spades/">NetSpades</a>
+<img src="/pics/icons/game_rip.png">
+</td>
 <td>
 <img src="/pics/icons/game_gnome.png">
 <a href="/gameclients/spades/">NetSpades (Gtk+)</a><br/>
+<img src="/pics/icons/game_rip.png">
 </td>
-<td><a href="/gameservers/spades/">NetSpades server</a></td>
+<td>
+<a href="/gameservers/spades/">NetSpades server</a>
+<img src="/pics/icons/game_rip.png">
+</td>
 </tr>
 
 <tr>

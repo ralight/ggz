@@ -1,5 +1,16 @@
 <?php include_once("../site/header.php"); ?>
 
+<table class='pane'>
+<tr>
+<td>
+<font color='#ff0000'>Warning:</font>
+This application is not maintained anymore.
+Visit the <a href="http://dev.ggzgamingzone.org/graveyard/">graveyard</a>
+for more information.
+</td>
+</tr>
+</table>
+
 <table class="content">
 <tr>
 <td>
@@ -44,6 +55,16 @@ port to GGZ.
 </td><td>
 
 <b>Related pages</b>
+<br/><br/>
+
+<img src="/pics/icons/game_gnome.png">
+<i>Gtk+ client: GGZCards</i><br/>
+<a href="/gameclients/ggzcards/"><img src="/gameclients/thumbs/ggzcards.png"></a>
+<br/><br/>
+
+<img src="/pics/icons/game_java.png">
+<i>Java client: GGZ-Java</i><br/>
+<a href="/gameclients/ggzjava/"><img src="/gameclients/thumbs/ggzjava.png"></a>
 <br/><br/>
 
 <a href="/engines/spades/"><i>Engine: Spades</i></a>

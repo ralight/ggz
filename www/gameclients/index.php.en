@@ -180,13 +180,6 @@ the appropriate <a href="/packages/">package</a> page.
 
 <tr><td>
 <img src="/pics/icons/game_gnome.png">
-<a href="/gameclients/spades/">NetSpades</a>
-</td><td>
-<a href="/engines/spades/">NetSpades</a>
-</td></tr>
-
-<tr><td>
-<img src="/pics/icons/game_gnome.png">
 <a href="/gameclients/ggzcards/">GGZCards</a>
 </td><td>
 <a href="/engines/bridge/">Bridge</a><br/>
@@ -300,7 +293,7 @@ the appropriate <a href="/packages/">package</a> page.
 
 <tr><td>
 <img src="/pics/icons/game_java.png">
-<a href="/gameclients/ggzjava/">GGZCards</a>
+<a href="/gameclients/ggzjava/">GGZJava-Cards</a>
 </td><td>
 <a href="/engines/bridge/">Bridge</a><br/>
 <a href="/engines/hearts/">Hearts</a><br/>
