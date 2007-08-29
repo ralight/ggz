@@ -20,7 +20,9 @@ users about which packages are essential to have for a GGZ installation.
 <i>Packages for desktop users</i><br/>
 GGZ targets four primary desktop platforms: KDE/Qt and GNOME/Gtk+ as Linux
 standard desktops, SDL as an embedded gaming platform and Java/Swing as
-browser-integrated platform.
+browser-integrated platform. Our
+<a href="http://dev.ggzgamingzone.org/platforms/">developer page</a> contains
+more information about them.
 <br/><br/>
 </td>
 </tr>
@@ -56,7 +58,7 @@ In addition, a module for the KDE Control Center is provided.
 Several <a href="/gameclients/">game clients</a> are available for KDE users.
 The game clients include KTicTacTux (for tic-tac-toe), KDots (connect the
 dots), KReversi, Fyrdman (hastings1066), KCC (chinese checkers),
-Koenig (chess), Keepalive, Krosswater and Mühle (nine men's morris).
+Koenig (chess), Krosswater and Mühle (nine men's morris).
 </td>
 </tr>
 
@@ -86,7 +88,7 @@ games using the Gaim multi-protocol IM client.
 The classic GGZ <a href="/gameclients/">game clients</a> are all implemented
 using the Gtk+ toolkit. This includes Chess, Chinese Checkers, Combat,
 Connect the Dots, GGZCards (for multiple cards games), Hastings1066,
-Reversi, NetSpades, and Tic-Tac-Toe.
+Reversi, and Tic-Tac-Toe.
 </td>
 </tr>
 
@@ -101,6 +103,9 @@ Reversi, NetSpades, and Tic-Tac-Toe.
 Contains an easy-to-use <a href="/clients/gnome/">GNOME core client</a>
 for GGZ, plus an <a href="/utils/motdeditor/">editor</a> for the creation
 and modification of MOTD files.
+Note: This package was removed after GGZ 0.0.14. However, the ongoing
+integration of GGZ features into GNOME proper will at some point bring
+up a new ggz-gnome application and maybe some additional tools.
 </td>
 </tr>
 
@@ -235,6 +240,8 @@ The client is scriptable, and supports chatting and playing games.
 provides a convenient interface to player registration, rankings, game results
 and much more. Server hosters can use the package to provide customized
 installations. Themes and translations are supported.
+In addition to the web portal, a Web Services API is provided, as well as some
+administrative tools.
 </td>
 </tr>
 
