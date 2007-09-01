@@ -45,6 +45,7 @@ void gurumod_init(const char *datadir)
 	char *sql_user;
 	char *sql_password;
 	char *sql_database;
+	my_bool reconnect = 1;
 
 	if(conn) return;
 
