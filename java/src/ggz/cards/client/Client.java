@@ -263,7 +263,17 @@ public class Client {
         CardSetType cardset_type = fd_in.read_cardset_type();
 
         /* HACK: reset hand number to zero. */
-        set_hand_num(0);
+        /*
+         * The game server sends the hand number and the scores
+         * in a single packet. The hand number refers to the hand
+         * of the scores being sent and starts at zero. We want to 
+         * display the *current* hand, so this means that when it is
+         * displayed in CardGamePanel.java we add two onto the value
+         * passed. This also means that setting the hand number to 
+         * "zero" (meaning hand one) must actually be -1.
+         */
+        set_hand_num(-1);
+        game.alert_scores(this.hand_num);
 
         set_game_state(STATE_WAIT);
         game.alert_newgame(cardset_type);

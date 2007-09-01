@@ -113,6 +113,8 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     // Score panel
     protected JPanel scorePanel;
 
+    protected JLabel handNumberLabel;
+
     protected JLabel usScoreLabel;
 
     protected JLabel themScoreLabel;
@@ -477,6 +479,11 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
 
     protected void initScorePanel() {
         // Create a custom Spades score panel in the NE corner.
+        handNumberLabel = new JLabel();
+        handNumberLabel.setBackground(SystemColor.text);
+        handNumberLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        handNumberLabel.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
+        handNumberLabel.setOpaque(true);
         usScoreLabel = new JLabel();
         usScoreLabel.setBackground(SystemColor.text);
         usScoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -487,6 +494,9 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         themScoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
         themScoreLabel.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
         themScoreLabel.setOpaque(true);
+        JLabel handHeader = new JLabel("Hand");
+        handHeader.setHorizontalAlignment(SwingConstants.CENTER);
+        handHeader.setOpaque(true);
         JLabel usHeader = new JLabel("Us");
         usHeader.setHorizontalAlignment(SwingConstants.CENTER);
         usHeader.setOpaque(true);
@@ -496,8 +506,10 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
         scorePanel = new JPanel(new GridLayout(2, 2, 1, 0));
         scorePanel.setOpaque(true);
         scorePanel.setBackground(Color.black);
+        scorePanel.add(handHeader);
         scorePanel.add(usHeader);
         scorePanel.add(themHeader);
+        scorePanel.add(handNumberLabel);
         scorePanel.add(usScoreLabel);
         scorePanel.add(themScoreLabel);
         table.add(scorePanel, new TableConstraints(
@@ -886,7 +898,6 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
     }
 
     public void alert_scores(int hand_num) {
-        // TODO put hand number in "hand" icon next to scores.
         // TODO consider putting Scores near score summary
         if (this.cardClient.hasTeams()) {
             if (this.cardClient.get_num_teams() != 2)
@@ -898,6 +909,9 @@ public class CardGamePanel extends GamePanel implements CardGameHandler,
             int themTeam = (usTeam + 1) % 2;
             usScoreLabel.setText(formatTeamScore(usTeam));
             themScoreLabel.setText(formatTeamScore(themTeam));
+
+            /* See Client.java/handle_msg_newgame() for why this is +2 */
+            handNumberLabel.setText(String.valueOf(hand_num+2));
         } else {
             repaint_player_labels();
         }
