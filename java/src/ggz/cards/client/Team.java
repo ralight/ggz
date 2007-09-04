@@ -1,12 +1,10 @@
 package ggz.cards.client;
 
-import java.util.ArrayList;
-
 import ggz.cards.common.ScoreData;
 
-public class Team {
-    private ScoreData score;
+import java.util.ArrayList;
 
+public class Team {
     private ArrayList scores = new ArrayList();
 
     /**
@@ -27,11 +25,7 @@ public class Team {
             this.scores.add(s);
     }
 
-    public void setScore(ScoreData s) {
-        this.score = s;
-    }
-
     public ScoreData getScore() {
-        return this.score;
+        return (ScoreData) this.scores.get(this.scores.size() - 1);
     }
 }
