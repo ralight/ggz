@@ -21,13 +21,14 @@ game clients. In addition, the KDE <a href="http://games.kde.org/">kdegames</a> 
 is increasingly adding GGZ support. Therefore, the following KDE games can be played
 on the server:
 <br/>
-KReversi, KBattleship (KDE 4)
+KReversi, KBattleship, KSquares (KDE 4)
 <br/>
 Fyrdman, KCC, KConnectX, KDots, Koenig, KGGZReversi, Krosswater, KTicTacTux, Muehle (KDE 3)
 <br/>
 
 <a href="images/kbattleship.png"><img src="images/thumb.kbattleship.png"></a>
 <a href="images/kreversi.png"><img src="images/thumb.kreversi.png"></a>
+<a href="images/ksquares.png"><img src="images/thumb.ksquares.png"></a>
 
 <?php
   kde_general_news("news.rdf", 4, true);
