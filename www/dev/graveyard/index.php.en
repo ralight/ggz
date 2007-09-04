@@ -27,17 +27,26 @@ is now supported by GGZCards and GGZ-Java<br/>
 <a href="http://ggzgamingzone.org/gameclients/tuxman/">Client</a>
 from external, seems to be unmaintained<br/>
 <a href="http://ggzgamingzone.org/gameservers/tuxman/">Server</a>
-from GGZ, has been removed in r???? (27.08.2007) from ggzd.<br/>
+from GGZ, has been removed in r9261 (28.08.2007) from ggzd.<br/>
 <a href="http://ggzgamingzone.org/engines/tuxman/">Engine</a>
 is not supported in GGZ anymore<br/>
 <br/>
 
 <i>Keepalive:</i><br/>
 <a href="http://ggzgamingzone.org/gameclients/keepalive/">Client</a>
-from GGZ, has been removed in r???? (27.08.2007) from kde-games.<br/>
+from GGZ, has been removed in r9262 (28.08.2007) from kde-games.<br/>
 <a href="http://ggzgamingzone.org/gameservers/keepalive/">Server</a>
-from GGZ, has been removed in r???? (27.08.2007) from ggzd.<br/>
+from GGZ, has been removed in r9261 (28.08.2007) from ggzd.<br/>
 <a href="http://ggzgamingzone.org/engines/keepalive/">Engine</a>
+is not supported in GGZ anymore<br/>
+<br/>
+
+<i>NetSpades:</i><br/>
+<a href="http://ggzgamingzone.org/gameclients/spades/">Client</a>
+from GGZ, has been removed in r9274 (29.08.2007) from gtk-games.<br/>
+<a href="http://ggzgamingzone.org/gameservers/spades/">Server</a>
+from GGZ, has been removed in r9274 (29.08.2007) from ggzd.<br/>
+<a href="http://ggzgamingzone.org/engines/spades/">Engine</a>
 is not supported in GGZ anymore<br/>
 <br/>
 
@@ -57,10 +66,19 @@ Engine is not supported in GGZ anymore<br/>
 Utility from GGZ, has been removed in r6876 (28.02.2005) from kde-client.<br/>
 <br/>
 
-<i>Several libraries...</i><br/>
+<i>MOTD-Editor</i><br/>
+Utility from GGZ, has been removed in r9275 (29.08.2007) from gnome-client.<br/>
+<br/>
+
+<i>GNOME-Client</i><br/>
+Core client from GGZ, has been removed in r9275 (29.08.2007) from gnome-client.<br/>
+<br/>
+
+<i>Several libraries and small tools...</i><br/>
 The former 'libgensecure' library is now part of libggz.<br/>
 The former 'easysock' library is now part of libggz.<br/>
 The former 'minidom' library is now part of libggzmeta.<br/>
+The former 'calcrankings' utility is now part of ggzd.<br/>
 <br/>
 
 </td>
