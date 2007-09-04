@@ -321,7 +321,9 @@ public class RoomChatPanel extends JPanel implements RoomListener,
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 Player me = room.get_player_by_name(handle);
-                if (me != null && me.get_type() == PlayerType.GGZ_PLAYER_ADMIN) {
+                if (me != null
+                        && (me.get_type() == PlayerType.GGZ_PLAYER_ADMIN || me
+                                .get_type() == PlayerType.GGZ_PLAYER_HOST)) {
                     buttonPanel.add(adminButton);
                 } else {
                     buttonPanel.remove(adminButton);
