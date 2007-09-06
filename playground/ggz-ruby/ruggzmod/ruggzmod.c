@@ -105,7 +105,7 @@ static VALUE t_get_state ( VALUE self )
 
 static VALUE t_get_control_fd ( VALUE self )
 {
-	retv = INT2FIX ( ggzmod_get_control_fd ( ggzmod ) );
+	retv = INT2FIX ( ggzmod_get_fd ( ggzmod ) );
 
 	return retv;
 }

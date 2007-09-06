@@ -1,7 +1,7 @@
 require 'mkmf'
 
 ggzbase = `ggz-config -c 2>/dev/null`.chomp
-$CFLAGS = "-I #{ggzbase}/../include"
+$CFLAGS = "-I #{ggzbase}/../include -Wall -Werror"
 $LDFLAGS = "-L #{ggzbase}/../lib"
 
 have_h = have_header('ggzmod.h')

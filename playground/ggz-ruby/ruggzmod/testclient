@@ -4,15 +4,14 @@ require "RGGZMod"
 
 class TestClient < RGGZMod
 	def event(id, data)
-		print "TestClient: event!"
+		puts "TestClient: event!"
 	end
 end
 
 puts "## RGGZMod Test Client ##"
 
-x = RGGZMod.new
-
-sleep 20
+client = TestClient.new
+client.loop
 
 puts "## Bye ##"
 

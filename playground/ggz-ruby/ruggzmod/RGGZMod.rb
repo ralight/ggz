@@ -19,16 +19,33 @@ class RGGZMod
 		if not ret
 			raise "Error: could not connect to GGZ core client"
 		end
-		#ret = $server.dispatch
 		$singleton = self
 	end
 
 	def event(id, data)
+		puts "== Event handler called! id = " + id.to_s
+	end
+
+	def loop
+		fd = @server.get_control_fd
+		controlchannel = IO.new(fd, "w+")
+		while true
+			puts "=> select"
+			ret = IO.select([controlchannel], nil, nil, nil)
+			if ret
+				puts "** dispatch"
+				ret = @server.dispatch
+				if ret
+					## ?
+				end
+			end
+			puts "<= select"
+		end
 	end
 end
 
 def ggzmod_handler(id, data)
-	puts "## Callback called!"
+	puts "## Callback called! id = " + id.to_s
 	$singleton.event(id, data)
 end
 
