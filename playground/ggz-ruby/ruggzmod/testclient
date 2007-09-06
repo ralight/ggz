@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+require "RGGZMod"
+
+class TestClient < RGGZMod
+	def event(id, data)
+		print "TestClient: event!"
+	end
+end
+
+puts "## RGGZMod Test Client ##"
+
+x = RGGZMod.new
+
+sleep 20
+
+puts "## Bye ##"
+

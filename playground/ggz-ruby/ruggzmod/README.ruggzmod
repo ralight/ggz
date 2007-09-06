@@ -15,3 +15,7 @@ This should build a GGZMod.so shared library for you, which gets installed as
 a ruby extension if you type in the following as root:
 	$ make install
 
+To install the test client:
+	$ ggz-config --install --modfile=module.dsc --force
+	% ./testclient-launch.sh
+
