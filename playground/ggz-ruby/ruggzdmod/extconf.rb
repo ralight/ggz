@@ -1,7 +1,8 @@
 require 'mkmf'
 
-$CFLAGS = '-I /home/ggznew/BUILD/include'
-$LDFLAGS = ' -L /home/ggznew/BUILD/lib'
+ggzbase = `ggz-config -c 2>/dev/null`.chomp
+$CFLAGS = "-I #{ggzbase}/../include"
+$LDFLAGS = "-L #{ggzbase}/../lib"
 
 have_h = have_header('ggzdmod.h')
 have_l = have_library('ggzdmod', 'ggzdmod_new')
