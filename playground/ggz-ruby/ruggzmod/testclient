@@ -5,6 +5,11 @@ require "RGGZMod"
 class TestClient < RGGZMod
 	def event(id, data)
 		puts "TestClient: event!"
+
+		if id == GGZMod::EVENTSTATE
+			state = @server.get_state
+			puts "State is now " + state.to_s
+		end
 	end
 end
 
