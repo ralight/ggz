@@ -1,0 +1,17 @@
+Ruby bindings for libggzmod
+===========================
+
+After ruggzdmod for game servers, game client development for GGZ is now
+possible for Ruby developers as well.
+With ruggzmod, a GGZMod object presents the complete functionality as known
+from the ggzmod and kggzmod libraries.
+
+You need the 'ggzmod' library installed from the 'ggz-client-libs' package
+
+To compile, just do the following:
+	% ruby extconf.rb [--with-opt-dir=/path/to/ggz-install]
+	% make
+This should build a GGZMod.so shared library for you, which gets installed as
+a ruby extension if you type in the following as root:
+	$ make install
+
