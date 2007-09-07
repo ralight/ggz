@@ -2,13 +2,69 @@
 
 require "RGGZMod"
 
+begin
+	require "Qt4"
+	$gui = Qt::Application.new(ARGV)
+	puts "## Info: Qt found, providing a full-fledged TTT client ##"
+rescue LoadError
+	$gui = nil
+	puts "## Warning: Qt not found, running in text mode only ##"
+end
+
+class TestApp < Qt::Widget
+	slots "trigger(int)"
+
+	def initialize
+		super
+
+		grid = Qt::GridLayout.new
+		for i in 0..8
+			hello = Qt::PushButton.new("")
+			hello.resize(30, 30)
+			grid.addWidget(hello, i % 3, i / 3)
+		end
+		setLayout(grid)
+		setWindowTitle("RGGZMod TicTacToe client")
+		resize(300, 300)
+		show()
+	end
+
+	def setclient(client)
+		@client = client
+	end
+
+	def trigger(fd)
+		@client.dispatch
+	end
+end
+
 class TestClient < RGGZMod
+	def initialize
+		super
+
+		if $gui
+			@app = TestApp.new
+			@app.setclient(@client)
+		end
+	end
+
 	def event(id, data)
 		puts "TestClient: event!"
 
 		if id == GGZMod::EVENTSTATE
-			state = @server.get_state
+			state = @client.get_state
 			puts "State is now " + state.to_s
+		end
+	end
+
+	def loop
+		if $gui
+			fd = @client.get_control_fd
+			sn = Qt::SocketNotifier.new(fd, Qt::SocketNotifier::Read)
+			Qt::Object.connect(sn, SIGNAL("activated(int)"), @app, SLOT("trigger(int)"))
+			$gui.exec()
+		else
+			super
 		end
 	end
 end

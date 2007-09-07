@@ -10,12 +10,13 @@ $singleton = nil
 
 class RGGZMod
 	def initialize
+		puts "== Initialisation"
 		if not ENV['GGZMODE']
 			# FIXME: we silently go over this in ggzmod (legacy relict?)
 			raise "Error: not in GGZ mode"
 		end
-		@server = GGZMod.new
-		ret = @server.connect
+		@client = GGZMod.new
+		ret = @client.connect
 		if not ret
 			raise "Error: could not connect to GGZ core client"
 		end
@@ -27,14 +28,14 @@ class RGGZMod
 	end
 
 	def loop
-		fd = @server.get_control_fd
+		fd = @client.get_control_fd
 		controlchannel = IO.new(fd, "w+")
 		while true
 			puts "=> select"
 			ret = IO.select([controlchannel], nil, nil, nil)
 			if ret
 				puts "** dispatch"
-				ret = @server.dispatch
+				ret = @client.dispatch
 				if ret
 					## ?
 				end
