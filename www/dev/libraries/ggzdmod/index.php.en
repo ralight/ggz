@@ -31,7 +31,7 @@ Game servers can use the ggzdmod library to communicate with the GGZ server.
 <tr><td>ggzdmod++</td><td>Language: C++</td><td>Location: ggzd/ggzdmod++/ggzdmod++.h</td><td></td></tr>
 <tr><td>kggzdmod</td><td>Language: C++ (Qt)</td><td>Location: kde-games/lib/kggzdmod</td><td></td></tr>
 <tr><td>pyggzdmod</td><td>Language: Python</td><td>Location: python/pyggzdmod</td><td></td></tr>
-<tr><td>ruggzdmod</td><td>Language: Ruby</td><td>(Location: playground/ggz-ruby)</td><td></td></tr>
+<tr><td>ruggzdmod</td><td>Language: Ruby</td><td>(Location: playground/ggz-ruby/ruggzdmod)</td><td></td></tr>
 </table>
 <br/>
 

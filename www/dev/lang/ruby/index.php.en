@@ -30,6 +30,8 @@ Ruby
 Ruby isn't used much in GGZ yet, but it definitely has its place. In fact,
 there are only a couple of Grubby modules available with GGZ proper. The
 potential candidates are waiting in the playground.
+The addition of ggz(d)mod wrappers for game client and server development
+is currently pending.
 <br/><br/>
 
 <i>Largest applications written in Ruby</i><br/>

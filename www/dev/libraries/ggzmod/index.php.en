@@ -30,6 +30,7 @@ The ggzmod library facilitates the messaging from and to a GGZ core client in a 
 <tr><td>ggzmod</td><td>Language: C</td><td>Location: ggz-client-libs/ggzmod/ggzmod.h</td></tr>
 <tr><td>kggzmod</td><td>Language: C++ (Qt)</td><td>Location: kde-games/lib/kggzmod</td></tr>
 <tr><td>pyggzmod</td><td>Language: Python</td><td>Location: python/pyggzmod</td></tr>
+<tr><td>ruggzmod</td><td>Language: Ruby</td><td>(Location: playground/ggz-ruby/ruggzmod)</td></tr>
 </table>
 <br/>
 
