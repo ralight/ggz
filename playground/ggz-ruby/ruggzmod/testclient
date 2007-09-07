@@ -12,7 +12,7 @@ rescue LoadError
 end
 
 class TestApp < Qt::Widget
-	slots "trigger(int)"
+	slots "trigger(int)", "data(int)"
 
 	def initialize
 		super
@@ -36,6 +36,32 @@ class TestApp < Qt::Widget
 	def trigger(fd)
 		@client.dispatch
 	end
+
+	def data(fd)
+		puts "Data from server!"
+
+		if $gui
+			# FIXME: this doesn't work at all!
+			sock = Qt::TcpSocket.new(self)
+			sock.setSocketDescriptor(fd)
+			bytes = sock.bytesAvailable
+			ret = sock.read(bytes)
+			puts ret.to_s
+			puts "Read " + bytes.to_s + " bytes"
+			#[1..bytes].each do |i|
+			#	byte = sock.getChar()
+			#	print "[" + byte + "]"
+			#end
+			#puts
+		else
+			sock = IO.new(fd, "w+")
+			# FIXME: sock.eof? doesn't work but we still need to read all data here
+			#while not sock.eof?
+			byte = sock.getc
+			puts byte
+			#end
+		end
+	end
 end
 
 class TestClient < RGGZMod
@@ -54,6 +80,17 @@ class TestClient < RGGZMod
 		if id == GGZMod::EVENTSTATE
 			state = @client.get_state
 			puts "State is now " + state.to_s
+		elsif id == GGZMod::EVENTSERVER
+			fd = data
+			puts "Socket to server is " + fd.to_s
+
+			if $gui
+				sn = Qt::SocketNotifier.new(fd, Qt::SocketNotifier::Read)
+				Qt::Object::connect(sn, SIGNAL("activated(int)"), @app, SLOT("data(int)"))
+			else
+				sock = IO.new(fd, "w+")
+				# FIXME: use select() but mainloop is in RGGZMod
+			end
 		end
 	end
 
