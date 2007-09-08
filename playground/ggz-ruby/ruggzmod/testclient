@@ -231,6 +231,28 @@ class TestClient < RGGZMod
 		end
 	end
 
+	def displayseats
+		for i in 0..@client.get_num_seats - 1
+			name = @client.get_seat_name(i)
+			type = @client.get_seat_type(i)
+			typenames = {
+				GGZMod::SEATNONE => nil,
+				GGZMod::SEATOPEN => "open",
+				GGZMod::SEATBOT => "bot",
+				GGZMod::SEATPLAYER => "player",
+				GGZMod::SEATRESERVED => "reserved",
+				GGZMod::SEATABANDONED => "abandoned"
+			}
+			typename = typenames[type]
+			puts "Seat #{i}: #{name} (#{typename})"
+		end
+
+		for i in 0..@client.get_num_spectators - 1
+			name = @client.get_spectator_name(i)
+			puts "Spectator #{i}: #{name}"
+		end
+	end
+
 	def event(id, data)
 		super
 
@@ -250,6 +272,8 @@ class TestClient < RGGZMod
 				sock = IO.new(fd, "w+")
 				# FIXME: use select() but mainloop is in RGGZMod
 			end
+		elsif id == GGZMod::EVENTSEAT
+			displayseats
 		end
 	end
 

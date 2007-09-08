@@ -187,6 +187,117 @@ static VALUE t_get_player_is_spectator ( VALUE self )
 		return Qnil;
 }
 
+static VALUE t_request_stand ( VALUE self )
+{
+	ggzmod_request_stand ( ggzmod );
+	return Qnil;
+}
+
+static VALUE t_request_sit ( VALUE self, VALUE seat )
+{
+	ggzmod_request_sit ( ggzmod, FIX2INT ( seat ) );
+	return Qnil;
+}
+
+static VALUE t_request_boot ( VALUE self, VALUE seat )
+{
+	ggzmod_request_boot ( ggzmod, STR2CSTR ( seat ) );
+	return Qnil;
+}
+
+static VALUE t_request_bot ( VALUE self, VALUE seat )
+{
+	ggzmod_request_bot ( ggzmod, FIX2INT ( seat ) );
+	return Qnil;
+}
+
+static VALUE t_request_open ( VALUE self, VALUE seat )
+{
+	ggzmod_request_open ( ggzmod, FIX2INT ( seat ) );
+	return Qnil;
+}
+
+static VALUE t_chat ( VALUE self, VALUE message )
+{
+	ggzmod_request_chat ( ggzmod, STR2CSTR ( message ) );
+	return Qnil;
+}
+
+static VALUE t_get_record ( VALUE self, VALUE seat )
+{
+	int wins, losses, ties, forfeits;
+	VALUE array;
+	GGZSeat ggzseat = ggzmod_get_seat ( ggzmod, FIX2INT ( seat ) );
+	ret = ggzmod_player_get_record ( ggzmod, &ggzseat, &wins, &losses, &ties, &forfeits );
+	if ( ret )
+	{
+		array = rb_ary_new();
+		rb_ary_push(array, FIX2INT ( wins ) );
+		rb_ary_push(array, FIX2INT ( losses ) );
+		rb_ary_push(array, FIX2INT ( ties ) );
+		rb_ary_push(array, FIX2INT ( forfeits ) );
+		return array;
+	}
+	else
+		return Qnil;
+}
+
+static VALUE t_get_rating ( VALUE self, VALUE seat )
+{
+	int rating;
+	GGZSeat ggzseat = ggzmod_get_seat ( ggzmod, FIX2INT ( seat ) );
+	ret = ggzmod_player_get_rating ( ggzmod, &ggzseat, &rating );
+	if ( ret )
+		return INT2FIX ( rating );
+	else
+		return Qnil;
+}
+
+static VALUE t_get_ranking ( VALUE self, VALUE seat )
+{
+	int ranking;
+	GGZSeat ggzseat = ggzmod_get_seat ( ggzmod, FIX2INT ( seat ) );
+	ret = ggzmod_player_get_ranking ( ggzmod, &ggzseat, &ranking );
+	if ( ret )
+		return INT2FIX ( ranking );
+	else
+		return Qnil;
+}
+
+static VALUE t_get_highscore ( VALUE self, VALUE seat )
+{
+	int highscore;
+	GGZSeat ggzseat = ggzmod_get_seat ( ggzmod, FIX2INT ( seat ) );
+	ret = ggzmod_player_get_highscore ( ggzmod, &ggzseat, &highscore );
+	if ( ret )
+		return INT2FIX ( highscore );
+	else
+		return Qnil;
+}
+
+static VALUE t_request_info ( VALUE self, VALUE seat )
+{
+	ret = ggzmod_player_request_info ( ggzmod, FIX2INT ( seat ) );
+	if ( ret )
+		return Qtrue;
+	else
+		return Qfalse;
+}
+
+static VALUE t_get_info ( VALUE self, VALUE seat )
+{
+	GGZPlayerInfo *info;
+	VALUE array;
+	info = ggzmod_player_get_info ( ggzmod, FIX2INT ( seat ) );
+	if ( !info )
+		return Qnil;
+	array = rb_ary_new();
+	rb_ary_push( array, rb_str_new2 ( info->realname ) );
+	rb_ary_push( array, rb_str_new2 ( info->photo ) );
+	rb_ary_push( array, rb_str_new2 ( info->host ) );
+	return array;
+}
+
 /* Module initialization */
 
 static void init_constants ( VALUE self )
@@ -239,7 +350,21 @@ static void init_methods ( VALUE self )
 	rb_define_method ( self, "get_player_seat_number", t_get_player_seat_number, 0 );
 	rb_define_method ( self, "get_player_is_spectator", t_get_player_is_spectator, 0 );
 
-	/* missing: request_XXX, table-rankings, infos, (top-rankings) */
+	rb_define_method ( self, "request_stand", t_request_stand, 0 );
+	rb_define_method ( self, "request_sit", t_request_sit, 1 );
+	rb_define_method ( self, "request_boot", t_request_boot, 1 );
+	rb_define_method ( self, "request_bot", t_request_bot, 1 );
+	rb_define_method ( self, "request_open", t_request_open, 1 );
+
+	rb_define_method ( self, "chat", t_chat, 1 );
+
+	rb_define_method ( self, "get_record", t_get_record, 1 );
+	rb_define_method ( self, "get_rating", t_get_rating, 1 );
+	rb_define_method ( self, "get_ranking", t_get_ranking, 1 );
+	rb_define_method ( self, "get_highscore", t_get_highscore, 1 );
+
+	rb_define_method ( self, "request_info", t_request_info, 1 );
+	rb_define_method ( self, "get_info", t_get_info, 1 );
 }
 
 void Init_GGZMod ()
