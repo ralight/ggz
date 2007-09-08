@@ -24,7 +24,19 @@ class RGGZMod
 	end
 
 	def event(id, data)
-		puts "== Event handler called! id = " + id.to_s
+		names = {
+			GGZMod::EVENTSTATE => "state",
+			GGZMod::EVENTSERVER => "server",
+			GGZMod::EVENTPLAYER => "player",
+			GGZMod::EVENTSEAT => "seat",
+			GGZMod::EVENTSPECTATOR => "spectator",
+			GGZMod::EVENTCHAT => "chat",
+			GGZMod::EVENTSTATS => "stats",
+			GGZMod::EVENTINFO => "info",
+			GGZMod::EVENTERROR => "error"
+		}
+		name = names[id]
+		puts "== Event handler called! id = " + id.to_s + ", name = " + name.to_s
 	end
 
 	def loop

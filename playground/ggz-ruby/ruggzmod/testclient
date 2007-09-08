@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require "RGGZMod"
+require "socket"
 
 begin
 	require "Qt4"
@@ -11,26 +12,126 @@ rescue LoadError
 	puts "## Warning: Qt not found, running in text mode only ##"
 end
 
-class TestApp < Qt::Widget
-	slots "trigger(int)", "data(int)"
+class GGZRawSocket < Socket
+	FIONREAD = 0x541B
+
+	def getc
+		@remaining -= 1
+		return super
+	end
+
+	def puti(n)
+		n1 = (n >> 24) & 0xff
+		n2 = (n >> 16) & 0xff
+		n3 = (n >> 8) & 0xff
+		n4 = (n >> 0) & 0xff
+		self.putc(n1)
+		self.putc(n2)
+		self.putc(n3)
+		self.putc(n4)
+	end
+
+	def geti()
+		n1 = self.getc
+		n2 = self.getc
+		n3 = self.getc
+		n4 = self.getc
+		n = (n1 << 24) + (n2 << 16) + (n3 << 8) + n4
+		return n
+	end
+
+	def putb(n)
+		self.putc(n)
+	end
+
+	def getb()
+		n = self.getc
+		return n
+	end
+
+	def puts(s)
+		self.puti(s.length)
+		self.write(s)
+	end
+
+	def gets()
+		length = self.geti()
+		s = self.read(length)
+		@remaining -= length
+		return s
+	end
+
+	def sync
+		x = [0].pack("L")
+		y = self.ioctl(FIONREAD, x)
+		@remaining = x[0..3].unpack("L").join("").to_i
+	end
+
+	def remaining
+		return @remaining
+	end
+end
+
+class TTTProto
+	SND_MOVE = 0
+	REQ_SYNC = 1
+	MSG_SEAT = 0
+	MSG_PLAYERS = 1
+	MSG_MOVE = 2
+	MSG_GAMEOVER = 3
+	REQ_MOVE = 4
+	RSP_MOVE = 5
+	SND_SYNC = 6
+
+	MOVE_OK = 0
+	MOVE_ERR_STATE = -1
+	MOVE_ERR_TURN = -2
+	MOVE_ERR_BOUND = -3
+	MOVE_ERR_FULL = -4
+
+	EMPTY_SQUARE = -1
+	NO_WINNER = 2
+end
+
+class TestApp < Qt::MainWindow
+	slots "trigger(int)", "data(int)", "move()"
 
 	def initialize
 		super
 
+		@buttons = {}
+		widget = Qt::Widget.new
+		setCentralWidget(widget)
 		grid = Qt::GridLayout.new
 		for i in 0..8
-			hello = Qt::PushButton.new("")
-			hello.resize(30, 30)
-			grid.addWidget(hello, i % 3, i / 3)
+			button = Qt::PushButton.new("")
+			button.setObjectName(i.to_s)
+			button.resize(30, 30)
+			grid.addWidget(button, i % 3, i / 3)
+			Qt::Object::connect(button, SIGNAL("clicked()"), self, SLOT("move()"))
+			@buttons[i] = button
 		end
-		setLayout(grid)
+		widget.setLayout(grid)
 		setWindowTitle("RGGZMod TicTacToe client")
 		resize(300, 300)
 		show()
+
+		statusBar.showMessage("Game started")
 	end
 
 	def setclient(client)
 		@client = client
+	end
+
+	def move()
+		puts "==> Move!"
+
+		move = sender.objectName.to_i
+		s = GGZRawSocket.for_fd(@client.get_server_fd)
+		s.puti(TTTProto::SND_MOVE)
+		s.puti(move)
+
+		@movebutton = @buttons[move]
 	end
 
 	def trigger(fd)
@@ -38,28 +139,84 @@ class TestApp < Qt::Widget
 	end
 
 	def data(fd)
-		puts "Data from server!"
+		puts "==> Data from server!"
 
-		if $gui
+		if $gui and 0 == 1
 			# FIXME: this doesn't work at all!
 			sock = Qt::TcpSocket.new(self)
 			sock.setSocketDescriptor(fd)
+			sock.waitForReadyRead(-1)
 			bytes = sock.bytesAvailable
-			ret = sock.read(bytes)
-			puts ret.to_s
 			puts "Read " + bytes.to_s + " bytes"
-			#[1..bytes].each do |i|
-			#	byte = sock.getChar()
-			#	print "[" + byte + "]"
-			#end
-			#puts
+
+			#opcode = Qt::Integer.new(0)
+			#opcode = 0
+			opcode = nil
+			stream = Qt::DataStream.new(sock)
+			stream >> opcode
+			puts "Opcode", opcode.to_s
+			puts "Type", opcode.class
 		else
-			sock = IO.new(fd, "w+")
-			# FIXME: sock.eof? doesn't work but we still need to read all data here
-			#while not sock.eof?
-			byte = sock.getc
-			puts byte
-			#end
+			s = GGZRawSocket.for_fd(fd)
+			s.sync
+			while s.remaining > 0
+				handleevent(s)
+			end
+		end
+	end
+
+	def handleevent(s)
+		opcode = s.geti()
+		puts "Opcode " + opcode.to_s
+
+		if opcode == TTTProto::MSG_SEAT
+			seat = s.geti()
+			puts "- seat " + seat.to_s
+		elsif opcode == TTTProto::MSG_PLAYERS
+			for i in 0..1
+				type = s.geti()
+				if type != GGZMod::SEATOPEN
+					name = s.gets()
+				else
+					name = nil
+				end
+				puts "- player " + type.to_s + " " + name
+			end
+		elsif opcode == TTTProto::REQ_MOVE
+			puts "- request move!"
+			statusBar.showMessage("Place your move")
+		elsif opcode == TTTProto::MSG_MOVE
+			player = s.geti()
+			move = s.geti()
+			puts "- move " + move.to_s + " by " + player.to_s
+			statusBar.showMessage("Opponent move")
+
+			#button = findChild(move.to_s)
+			button = @buttons[move]
+			button.setText("O")
+		elsif opcode == TTTProto::RSP_MOVE
+			status = s.getb()
+			puts "- move status", status.to_s
+			if status == 0
+				statusBar.showMessage("Move accepted")
+				@movebutton.setText("X")
+			else
+				statusBar.showMessage("Something's wrong with the move")
+			end
+		elsif opcode == TTTProto::MSG_GAMEOVER
+			winner = s.getb()
+			puts "- winner " + winner.to_s
+			if winner == 0
+				statusBar.showMessage("The game is over, you have won")
+			else
+				statusBar.showMessage("The game is over, the opponent has won")
+			end
+			for i in 0..8
+				@buttons[i].setEnabled(false)
+			end
+		else
+			# FIXME: abort here
+			puts "## ERROR: protocol error"
 		end
 	end
 end
@@ -75,6 +232,8 @@ class TestClient < RGGZMod
 	end
 
 	def event(id, data)
+		super
+
 		puts "TestClient: event!"
 
 		if id == GGZMod::EVENTSTATE
