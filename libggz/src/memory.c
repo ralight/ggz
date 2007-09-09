@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/15/01
- * $Id: memory.c 7885 2006-03-06 18:46:12Z josef $
+ * $Id: memory.c 9303 2007-09-09 07:24:04Z josef $
  *
  * This is the code for handling memory allocation for ggzcore
  *
@@ -280,3 +280,20 @@ char * _ggz_strdup(const char *src, const char *tag, int line)
 
 	return new;
 }
+
+
+char * ggz_strncpy(char * dst, const char * src, size_t n)
+{
+	if(!src) {
+		dst[0] = '\0';
+		return dst;
+	}
+
+	strncpy(dst, src, n);
+	if(strlen(src) >= n) {
+		dst[n - 1] = '\0';
+	}
+
+	return dst;
+}
+

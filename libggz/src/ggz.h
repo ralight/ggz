@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 9087 2007-05-02 07:42:56Z josef $
+ * $Id: ggz.h 9303 2007-09-09 07:24:04Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -179,6 +179,22 @@ int _ggz_free(const void * ptr, const char * tag, int line);
  */
 char * _ggz_strdup(const char * ptr, const char * tag, int line)
                    ggz__attribute((warn_unused_result));
+
+/**
+ * Safe version of strncpy. This function will behave like
+ * strncpy(), except that the result string is always guaranteed
+ * to be NULL-terminated. This matches the behaviour of
+ * snprintf() and leads to generally safer code.
+ *
+ * @param dst destination string buffer
+ * @param src source string
+ * @param n number of bytes to copy, should be less than buffer size
+ *
+ * @return destination buffer
+ *
+ * @note Passing a NULL string will result in an empty string
+ */
+char * ggz_strncpy(char * dst, const char * src, size_t n);
 
 
 /** 
