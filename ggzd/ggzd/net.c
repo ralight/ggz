@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 9258 2007-08-27 06:45:12Z josef $
+ * $Id: net.c 9304 2007-09-09 07:24:14Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -664,7 +664,7 @@ GGZReturn net_send_table(GGZNetIO *net, GGZTable *table)
 	for (i = 0; i < seats_num(table); i++) {
 		GGZTableSeat seat = {.index = i,
 				     .type =  table->seat_types[i]};
-		strncpy(seat.name, table->seat_names[i], MAX_USER_NAME_LEN+1);
+		ggz_strncpy(seat.name, table->seat_names[i], MAX_USER_NAME_LEN+1);
 		_net_send_seat(net, &seat);
 	}
 

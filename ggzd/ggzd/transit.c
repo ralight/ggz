@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 9062 2007-04-21 03:51:10Z jdorje $
+ * $Id: transit.c 9304 2007-09-09 07:24:14Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -192,7 +192,7 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 	    && event->reason == GGZ_LEAVE_NORMAL
 	    && table->state == GGZ_TABLE_PLAYING) {
 		/* The seat becomes abandoned not open. */
-		strncpy(event->seat.name, table->seat_names[seat->index],
+		ggz_strncpy(event->seat.name, table->seat_names[seat->index],
 			sizeof(event->seat.name));
 		event->seat.type = GGZ_SEAT_ABANDONED;
 	}

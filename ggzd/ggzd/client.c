@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 8765 2006-12-27 11:20:31Z josef $
+ * $Id: client.c 9304 2007-09-09 07:24:14Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -110,11 +110,7 @@ static void* client_thread_init(void *arg_ptr)
 
 	/* Find out where the client comes from */
 	tmp = ggz_getpeername(sock, opt.perform_lookups);
-	if (!tmp) {
-		client->addr[0] = '\0';
-	} else {
-		strncpy(client->addr, tmp, sizeof(client->addr));
-	}
+	ggz_strncpy(client->addr, tmp, sizeof(client->addr));
 	ggz_free(tmp);
 
 	/* FIXME: use a new file for each client */

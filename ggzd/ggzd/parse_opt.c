@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9197 2007-07-23 07:30:18Z josef $
+ * $Id: parse_opt.c 9304 2007-09-09 07:24:14Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -713,9 +713,9 @@ static void parse_game(char *name, char *dir)
 			db_pe.last_login = time(NULL);
 			snprintf(db_pe.handle, sizeof(db_pe.handle), "%s",
 				game_info.named_bots[i][0]);
-			strncpy(db_pe.password, "", sizeof(db_pe.password));
-			strncpy(db_pe.email, "", sizeof(db_pe.email));
-			strncpy(db_pe.name, "", sizeof(db_pe.name));
+			ggz_strncpy(db_pe.password, "", sizeof(db_pe.password));
+			ggz_strncpy(db_pe.email, "", sizeof(db_pe.email));
+			ggz_strncpy(db_pe.name, "", sizeof(db_pe.name));
 
 			if (ggzdb_player_add(&db_pe) == GGZDB_ERR_DUPKEY) {
 				err_msg("Could not register named bot <%s>.",

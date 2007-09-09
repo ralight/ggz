@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 9246 2007-08-13 07:01:56Z josef $
+ * $Id: ggzduedit.c 9304 2007-09-09 07:24:14Z josef $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -22,9 +22,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
-
-/* FIXME: get this from international-branch once merged */
-#define ggz_strncpy(x, y, s) strncpy(x, y, s); x[s] = '\0'
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>		/* Site specific config */

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 6906 2005-01-26 03:24:27Z jdorje $
+ * $Id: motd.c 9304 2007-09-09 07:24:14Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -179,7 +179,7 @@ void motd_read_file(const char *file)
 
 	/* Get the hostname */
 	if(gethostname(hostname, HOST_NAME_MAX) != 0)
-		strncpy(hostname, "hostname.toolong.fixme", HOST_NAME_MAX);
+		ggz_strncpy(hostname, "hostname.toolong.fixme", HOST_NAME_MAX);
 	motd_info.hostname = ggz_strdup(hostname);
 
 	/* Get the OS and CPU Type */
