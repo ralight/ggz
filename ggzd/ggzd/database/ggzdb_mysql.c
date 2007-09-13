@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 9245 2007-08-13 07:01:38Z josef $
+ * $Id: ggzdb_mysql.c 9308 2007-09-13 21:52:39Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -434,7 +434,7 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 		if (res && mysql_num_rows(res) == 1){
 			row = mysql_fetch_row(res);
 			number = row[0];
-			mysql_free_result(res);
+			/* mysql_free_result() occurs further down */
 		} else {
 			pthread_mutex_unlock(&mutex);
 			mysql_free_result(res);
@@ -455,6 +455,11 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 		"(%s, '%s', '%s')",
 		number, player_quoted, playertype);
 
+	/*
+	 * res must not be freed any earlier than this because 
+	 * it will make "number" point to freed memory.
+	 */
+	mysql_free_result(res);
 	ggz_free(player_quoted);
 
 	rc = mysql_query(conn, query);
