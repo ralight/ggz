@@ -94,7 +94,7 @@ class TTTProto
 end
 
 class TestApp < Qt::MainWindow
-	slots "trigger(int)", "data(int)", "move()"
+	slots "trigger(int)", "data(int)", "move()", "showplayers()"
 
 	def initialize
 		super
@@ -114,6 +114,18 @@ class TestApp < Qt::MainWindow
 		widget.setLayout(grid)
 		setWindowTitle("RGGZMod TicTacToe client")
 		resize(300, 300)
+
+		action_players = Qt::Action.new("Show players", self)
+		Qt::Object::connect(action_players, SIGNAL("triggered()"), self, SLOT("showplayers()"))
+
+		action_quit = Qt::Action.new("Quit", self)
+		Qt::Object::connect(action_quit, SIGNAL("triggered()"), self, SLOT("close()"))
+
+		menu = menuBar.addMenu("GGZ")
+		menu.addAction(action_players)
+		menu.addSeparator
+		menu.addAction(action_quit)
+
 		show()
 
 		statusBar.showMessage("Game started")
@@ -121,6 +133,33 @@ class TestApp < Qt::MainWindow
 
 	def setclient(client)
 		@client = client
+	end
+
+	def showplayers()
+		tw = Qt::TreeWidget.new
+		tw.setColumnCount(3)
+		tw.setWindowTitle("Player list")
+		labels = ["#", "Name", "Type"]
+		tw.setHeaderLabels(labels)
+		0.upto(@client.get_num_seats - 1) do |seatnum|
+			type = @client.get_seat_type(seatnum)
+			name = @client.get_seat_name(seatnum)
+			typenames = {
+				GGZMod::SEATNONE => nil,
+				GGZMod::SEATOPEN => "open",
+				GGZMod::SEATBOT => "bot",
+				GGZMod::SEATPLAYER => "player",
+				GGZMod::SEATRESERVED => "reserved",
+				GGZMod::SEATABANDONED => "abandoned"
+			}
+			typename = typenames[type]
+			strings = []
+			strings << seatnum.to_s
+			strings << name
+			strings << typename
+			twi = Qt::TreeWidgetItem.new(tw, strings)
+		end
+		tw.show
 	end
 
 	def move()
@@ -193,7 +232,11 @@ class TestApp < Qt::MainWindow
 
 			#button = findChild(move.to_s)
 			button = @buttons[move]
-			button.setText("O")
+			if button
+				button.setText("O")
+			else
+				puts "## ERROR: logic error"
+			end
 		elsif opcode == TTTProto::RSP_MOVE
 			status = s.getb()
 			puts "- move status", status.to_s
@@ -244,12 +287,12 @@ class TestClient < RGGZMod
 				GGZMod::SEATABANDONED => "abandoned"
 			}
 			typename = typenames[type]
-			puts "Seat #{i}: #{name} (#{typename})"
+			puts "/ Seat #{i}: #{name} (#{typename})"
 		end
 
 		for i in 0..@client.get_num_spectators - 1
 			name = @client.get_spectator_name(i)
-			puts "Spectator #{i}: #{name}"
+			puts "/ Spectator #{i}: #{name}"
 		end
 	end
 
