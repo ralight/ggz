@@ -131,6 +131,8 @@ void KGGZMeta::load()
 
 void KGGZMeta::slotError(int code)
 {
+	Q_UNUSED(code);
+
 	KMessageBox::error(this,
 		i18n("The GGZ metaserver could not be contacted."),
 		i18n("Connection"));

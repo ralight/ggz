@@ -25,8 +25,7 @@ noinst_HEADERS = \
 AM_CPPFLAGS = -I $(top_srcdir)/ggz-kde/src/abstract \
 	-I $(top_srcdir)/ggz-kde/src/widgets \
 	-I $(top_srcdir)/ggz-kde/src/widgets/more \
-	$(ggzcorepp_includes) $(all_includes) \
-	$(HOWL_INCLUDES)
+	$(ggzcorepp_includes) $(all_includes)
 
 kggz_METASOURCES = AUTO
 
@@ -36,7 +35,7 @@ kggz_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLFAGS)
 kggz_LDADD = $(top_builddir)/ggz-kde/src/widgets/libkggzui.a \
 	$(top_builddir)/ggz-kde/src/abstract/libkggzabstract.a \
 	$(all_libraries) $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_KDNSSD) $(LIB_QT) \
-	$(ggz_libraries) $(LIB_HOWL)
+	$(ggz_libraries)
 
 if COMPILE_BROWSER
 kggz_LDADD += $(top_builddir)/ggz-kde/src/widgets/more/libkggzuimore.a $(LIB_KHTML)

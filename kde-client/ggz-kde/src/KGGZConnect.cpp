@@ -44,6 +44,7 @@
 #include <klocale.h>
 #include <kapplication.h>
 #include <kurl.h>
+#include <dnssd/query.h>
 
 // Qt classes
 #include <qlayout.h>
@@ -62,14 +63,6 @@
 // System includes
 #include <stdlib.h>
 
-#ifdef WITH_HOWL
-#include <sys/types.h>
-#include <howl.h>
-//#else
-#endif
-// FIXME: always included even if not used (due to moc's #ifndef handling)
-#include <dnssd/query.h>
-
 // GGZCore++ includes
 #include "GGZCoreConfio.h"
 
@@ -77,9 +70,6 @@
 // FIXME: use kcm_ggz settings and/or libmeta cache (~/.ggz/metaserver.cache)
 #define PRIMARY_METASERVER "live.ggzgamingzone.org"
 
-#ifdef WITH_HOWL
-static KGGZConnect *connectobj = NULL;
-#endif
 static QString connectstr;
 
 /* Constructor: set up a small dialog for connections; provide server profile list */
@@ -293,11 +283,9 @@ void KGGZConnect::slotLoadProfile(int profile)
 		profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/metaserver.png"), i18n("GGZ Meta Server"));
 		if(defaultserver == i18n("GGZ Meta Server"))
 			profile_select->setCurrentItem(0);
-//#ifdef WITH_HOWL
 		profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/langame.png"), i18n("LAN Game"));
 		if(defaultserver == i18n("LAN Game"))
 			profile_select->setCurrentItem(1);
-//#endif
 		if(defaultserver.isNull())
 		{
 			modifyServerList(i18n("Default Stable Server"), 1);
@@ -615,89 +603,23 @@ void KGGZConnect::showEvent(QShowEvent *e)
 	button_ok->setEnabled(true);
 }
 
-#ifdef WITH_HOWL
-static sw_result reply(sw_discovery session, sw_discovery_oid oid,
-	sw_uint32 interface,
-	sw_const_string name, sw_const_string type, sw_const_string domain,
-	sw_ipv4_address address, sw_port port, sw_octets tx, sw_ulong txl,
-	sw_opaque extra)
-{
-	sw_string str;
-
-	str = (char*)malloc(100);
-	str = sw_ipv4_address_name(address, str, 100);
-
-	connectstr = QString("ggz://%1:%2").arg(str).arg(port);
-	return SW_OKAY;
-}
-
-static sw_result breply(sw_discovery session, sw_discovery_oid oid,
-	sw_discovery_browse_status status, sw_uint32 interface,
-	sw_const_string name, sw_const_string type, sw_const_string domain,
-	sw_opaque extra)
-{
-	int ret;
-
-	if(status == SW_DISCOVERY_BROWSE_ADD_SERVICE)
-	{
-		ret = sw_discovery_resolve(session, interface, name, type, domain, reply, NULL, &oid);
-		if(ret)
-		{
-			KMessageBox::error(connectobj, i18n("Resolving failed."), i18n("Zeroconf error"));
-			//connectobj->button_ok->setEnabled(true);
-			connectobj->showEvent(NULL);
-			connectstr = "";
-			return -1;
-		}
-	}
-
-	return SW_OKAY;
-}
-#endif
-
 void KGGZConnect::slotService(DNSSD::RemoteService::Ptr ptr)
 {
-#ifndef WITH_HOWL
 	ptr->resolve();
 	connectstr = QString("ggz://%1:%2").arg(ptr->hostName()).arg(ptr->port());
-#endif
 }
 
 void KGGZConnect::slotServiceFinished()
 {
-#ifndef WITH_HOWL
 	KMessageBox::error(this, i18n("Resolving failed."), i18n("Zeroconf error"));
 	button_ok->setEnabled(true);
 	connectstr = "";
-#endif
 }
 
 void KGGZConnect::zeroconfQuery()
 {
 	connectstr = QString::null;
 
-#ifdef WITH_HOWL
-	int ret;
-	sw_discovery session;
-	sw_discovery_oid oid;
-
-	connectobj = this;
-
-	ret = sw_discovery_init(&session);
-	if(ret != SW_OKAY)
-	{
-		KMessageBox::error(this, i18n("Zeroconf could not be initialized."), i18n("Zeroconf error"));
-		return;
-	}
-
-	ret = sw_discovery_browse(session, 0, "_ggz._tcp", NULL, breply, NULL, &oid);
-
-	while(connectstr.isNull())
-	{
-		sw_discovery_read_socket(session);
-		kapp->eventLoop()->processEvents(QEventLoop::AllEvents);
-	}
-#else
 	DNSSD::Query *query = new DNSSD::Query("_ggz._tcp", QString::null/*"local."*/);
 	connect(query,
 		SIGNAL(serviceAdded(DNSSD::RemoteService::Ptr)),
@@ -711,7 +633,6 @@ void KGGZConnect::zeroconfQuery()
 	}
 
 	delete query;
-#endif
 
 	if(connectstr.isEmpty()) return;
 
@@ -727,6 +648,8 @@ void KGGZConnect::zeroconfQuery()
 
 void KGGZConnect::slotError(int code)
 {
+	Q_UNUSED(code);
+
 	KMessageBox::error(this,
 		i18n("The GGZ metaserver could not be contacted."),
 		i18n("Connection"));
