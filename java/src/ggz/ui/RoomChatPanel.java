@@ -230,6 +230,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
             handle = room.get_server().get_handle();
             room.add_event_hook(this);
             chatPanel.clearChat();
+            chatPanel.setRoom(room);
         }
         room.list_players();
     }
@@ -505,7 +506,7 @@ public class RoomChatPanel extends JPanel implements RoomListener,
 
         public PlayersTableModel(boolean showTableNumber) {
             this.showTableNumber = showTableNumber;
-//            this.data = new SortedList(Player.SORT_BY_NAME);
+            // this.data = new SortedList(Player.SORT_BY_NAME);
             this.data = new SortedList(Player.SORT_BY_TYPE);
         }
 

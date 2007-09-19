@@ -37,20 +37,21 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
 public class GGZPreferences {
+    private static String CHAT_STYLE_PREFIX = "Chat.Style.";
 
-    public static String CHAT_STYLE_NORMAL = "Chat.Style.Normal";
+    public static String CHAT_STYLE_NORMAL = CHAT_STYLE_PREFIX + "Normal";
 
-    public static String CHAT_STYLE_ANNOUNCE = "Chat.Style.Announce";
+    public static String CHAT_STYLE_ANNOUNCE = CHAT_STYLE_PREFIX + "Announce";
 
-    public static String CHAT_STYLE_SENDER = "Chat.Style.Sender";
+    public static String CHAT_STYLE_SENDER = CHAT_STYLE_PREFIX + "Sender";
 
-    public static String CHAT_STYLE_ME = "Chat.Style.Me";
+    public static String CHAT_STYLE_ME = CHAT_STYLE_PREFIX + "Me";
 
-    public static String CHAT_STYLE_INFO = "Chat.Style.Info";
+    public static String CHAT_STYLE_INFO = CHAT_STYLE_PREFIX + "Info";
 
-    public static String CHAT_STYLE_COMMAND = "Chat.Style.Command";
+    public static String CHAT_STYLE_COMMAND = CHAT_STYLE_PREFIX + "Command";
 
-    public static String CHAT_STYLE_FRIEND = "Chat.Style.Friend";
+    public static String CHAT_STYLE_FRIEND = CHAT_STYLE_PREFIX + "Friend";
 
     public static String PRIVATE_CHAT_TO_FRONT = "Chat.ToFront";
 
@@ -79,6 +80,15 @@ public class GGZPreferences {
 
         // Set up styles.
         styles = new StyleContext();
+
+        // Force caching of defaults/overrides.
+        getChatStyleAnnounce();
+        getChatStyleCommand();
+        getChatStyleFriend();
+        getChatStyleInfo();
+        getChatStyleMe();
+        getChatStyleNormal();
+        getChatStyleSender();
     }
 
     public static Font getFont(String key, Font defaultValue) {
@@ -187,12 +197,24 @@ public class GGZPreferences {
             Style newStyle = styles.addStyle(key, null);
             newStyle.addAttributes(style.copyAttributes());
         } else if (style != oldStyle) {
-            // Copy just the attributes but keep the parent.
-            AttributeSet oldParent = oldStyle.getResolveParent();
-            oldStyle.addAttributes(style.copyAttributes());
-            oldStyle.setResolveParent(oldParent);
+            copyAttributes(style, oldStyle);
         }
         put(key, encodeStyle(style));
+    }
+
+    public static void copyAttributes(String key, Style target) {
+        // Supply defaults but they should never be needed.
+        Style source = getStyle(key, null, -1, Color.BLACK);
+        if (source != null) {
+            copyAttributes(source, target);
+        }
+    }
+
+    private static void copyAttributes(Style source, Style target) {
+        // Copy just the attributes but keep the parent.
+        AttributeSet oldParent = target.getResolveParent();
+        target.addAttributes(source.copyAttributes());
+        target.setResolveParent(oldParent);
     }
 
     public static Style getChatStyleAnnounce() {
@@ -360,5 +382,9 @@ public class GGZPreferences {
             }
         }
         return result.toString();
+    }
+
+    public static boolean isChatStyle(String key) {
+        return (key == null) ? false : key.startsWith(CHAT_STYLE_PREFIX);
     }
 }

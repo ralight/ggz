@@ -45,14 +45,12 @@ public class HyperlinkLabel extends JLabel {
 
     private Action action;
 
-    private static HyperlinkListener globalListener;
-
     public HyperlinkLabel() {
         super();
         enableEvents(AWTEvent.MOUSE_EVENT_MASK);
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        if (globalListener != null) {
-            addHyperlinkListener(globalListener);
+        if (GlobalHyperlinkListener.get() != null) {
+            addHyperlinkListener(GlobalHyperlinkListener.get());
         }
     }
 
@@ -184,17 +182,5 @@ public class HyperlinkLabel extends JLabel {
                 ((HyperlinkListener) listeners[i + 1]).hyperlinkUpdate(e);
             }
         }
-    }
-
-    /**
-     * Set the global hyplink listener that will be notified when any
-     * HyperlinkButton in the application is clicked. This allows all hyperlink
-     * activations to be handled in one place, usually an Applet so that it can
-     * invoke showDocument with the URL.
-     * 
-     * @param listener
-     */
-    public static void setGlobalHyperlinkListener(HyperlinkListener listener) {
-        globalListener = listener;
     }
 }

@@ -101,9 +101,8 @@ public class ClientApplet extends JApplet implements ServerListener,
     }
 
     public void init() {
-        // Register ourselves as the global hyperlink handler for our
-        // hyperlink label.
-        HyperlinkLabel.setGlobalHyperlinkListener(this);
+        // Register ourselves as the global hyperlink handler.
+        GlobalHyperlinkListener.set(this);
 
         if (getBooleanParameter("theme.enabled", false)) {
             installCustomTheme();
