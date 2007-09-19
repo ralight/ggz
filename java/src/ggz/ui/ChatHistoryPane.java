@@ -30,13 +30,9 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
-import javax.swing.text.Element;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
-import javax.swing.text.View;
-import javax.swing.text.ViewFactory;
 import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.ImageView;
 import javax.swing.text.html.StyleSheet;
 
 public class ChatHistoryPane extends JEditorPane implements
@@ -47,7 +43,7 @@ public class ChatHistoryPane extends JEditorPane implements
     private boolean isDisposed = false;
 
     public ChatHistoryPane() {
-        HTMLEditorKit htmlkit = new ChatEditorKit();
+        HTMLEditorKit htmlkit = new HTMLEditorKit();
         StyleSheet styles = htmlkit.getStyleSheet();
         StyleSheet ss = new StyleSheet();
 
@@ -172,33 +168,6 @@ public class ChatHistoryPane extends JEditorPane implements
         if (!isDisposed) {
             GGZPreferences.removePreferenceChangeListener(this);
             ToolTipManager.sharedInstance().unregisterComponent(this);
-        }
-    }
-
-    protected static class ChatEditorKit extends HTMLEditorKit {
-        private static final ViewFactory viewFactory = new ChatViewFactory();
-
-        /**
-         * Returns the ViewFactory that is used to make sure the Views don't
-         * load in the background.
-         */
-        public ViewFactory getViewFactory() {
-            return viewFactory;
-        }
-    }
-
-    /**
-     * BasicHTMLViewFactory extends HTMLFactory to force images to be loaded
-     * synchronously.
-     */
-    protected static class ChatViewFactory extends HTMLEditorKit.HTMLFactory {
-        public View create(Element elem) {
-            View view = super.create(elem);
-
-            if (view instanceof ImageView) {
-                ((ImageView) view).setLoadsSynchronously(true);
-            }
-            return view;
         }
     }
 

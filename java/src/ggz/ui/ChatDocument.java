@@ -17,15 +17,20 @@
  */
 package ggz.ui;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.ImageIcon;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 import javax.swing.text.SimpleAttributeSet;
@@ -37,6 +42,8 @@ import javax.swing.text.html.parser.ParserDelegator;
 public class ChatDocument extends HTMLDocument {
 
     private static final Properties emoticons = new Properties();
+
+    private static final Hashtable imageCache = new Hashtable();
 
     private static final Pattern emoticonRegexp;
 
@@ -54,14 +61,27 @@ public class ChatDocument extends HTMLDocument {
         }
 
         // Update each emoticon, replacing the resource with its URL.
+        // Also cache the image and store the cache in the document.
         for (Enumeration i = emoticons.keys(); i.hasMoreElements();) {
             String emoticon = (String) i.nextElement();
             String resource = emoticons.getProperty(emoticon);
-            String url = HTMLDocument.class.getResource(resource).toString();
+            URL url = HTMLDocument.class.getResource(resource);
             String imgTag = MessageFormat.format(
-                    "<img src=\"{1}\" alt=\"{0}\">", new String[] { emoticon,
+                    "<img src=\"{1}\" alt=\"{0}\">", new Object[] { emoticon,
                             url });
             emoticons.put(emoticon, imgTag);
+
+            // Check if this emote is a duplicate to prevent reloading the
+            // image.
+            if (!imageCache.contains(url)) {
+                Image newImage = Toolkit.getDefaultToolkit().createImage(url);
+                if (newImage != null) {
+                    // Force the image to be loaded by using an ImageIcon.
+                    ImageIcon ii = new ImageIcon();
+                    ii.setImage(newImage);
+                    imageCache.put(url, newImage);
+                }
+            }
         }
 
         emoticonRegexp = compileEmoticonsAsRegexp();
@@ -72,6 +92,9 @@ public class ChatDocument extends HTMLDocument {
         setAsynchronousLoadPriority(4);
         setTokenThreshold(100);
         setParser(new ParserDelegator());
+
+        // This is only done for performance but may affect JDK compatibility.
+        putProperty("imageCache", imageCache);
     }
 
     public void insertString(int offs, String str, String styleName,
