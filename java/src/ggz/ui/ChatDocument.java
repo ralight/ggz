@@ -53,7 +53,7 @@ public class ChatDocument extends HTMLDocument {
     static {
         // Load emoticon icons.
         try {
-            InputStream is = HTMLDocument.class
+            InputStream is = ChatDocument.class
                     .getResourceAsStream("/ggz/ui/emoticons.properties");
             emoticons.load(is);
         } catch (IOException e) {
@@ -65,21 +65,26 @@ public class ChatDocument extends HTMLDocument {
         for (Enumeration i = emoticons.keys(); i.hasMoreElements();) {
             String emoticon = (String) i.nextElement();
             String resource = emoticons.getProperty(emoticon);
-            URL url = HTMLDocument.class.getResource(resource);
-            String imgTag = MessageFormat.format(
-                    "<img src=\"{1}\" alt=\"{0}\">", new Object[] { emoticon,
-                            url });
-            emoticons.put(emoticon, imgTag);
+            URL url = ChatDocument.class.getResource(resource);
 
-            // Check if this emote is a duplicate to prevent reloading the
-            // image.
-            if (!imageCache.contains(url)) {
-                Image newImage = Toolkit.getDefaultToolkit().createImage(url);
-                if (newImage != null) {
-                    // Force the image to be loaded by using an ImageIcon.
-                    ImageIcon ii = new ImageIcon();
-                    ii.setImage(newImage);
-                    imageCache.put(url, newImage);
+            // If we can't find the image for the emoticon then ignore it.
+            if (url != null) {
+                String imgTag = MessageFormat.format(
+                        "<img src=\"{1}\" alt=\"{0}\">", new Object[] {
+                                emoticon, url });
+                emoticons.put(emoticon, imgTag);
+
+                // Check if this emote is a duplicate to prevent reloading the
+                // image.
+                if (!imageCache.contains(url)) {
+                    Image newImage = Toolkit.getDefaultToolkit().createImage(
+                            url);
+                    if (newImage != null) {
+                        // Force the image to be loaded by using an ImageIcon.
+                        ImageIcon ii = new ImageIcon();
+                        ii.setImage(newImage);
+                        imageCache.put(url, newImage);
+                    }
                 }
             }
         }

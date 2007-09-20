@@ -32,6 +32,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
+import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
@@ -168,6 +169,9 @@ public class ChatHistoryPane extends JEditorPane implements
         if (!isDisposed) {
             GGZPreferences.removePreferenceChangeListener(this);
             ToolTipManager.sharedInstance().unregisterComponent(this);
+            // This is needed to prevent memory leaks due to us using our own
+            // static StyleContext, it might be a bug in JDK1.4.
+            this.setDocument(new HTMLDocument());
         }
     }
 
