@@ -7,6 +7,8 @@ $LDFLAGS = "-L #{ggzbase}/../lib"
 have_h = have_header('ggzdmod.h')
 have_l = have_library('ggzdmod', 'ggzdmod_new')
 
+$CFLAGS += " -Wall -Werror"
+
 if have_h and have_l then
 	create_makefile('GGZDMod')
 else
