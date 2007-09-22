@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 9165 2007-07-04 13:58:17Z josef $
+ * $Id: server.c 9318 2007-09-22 06:43:36Z josef $
  *
  * Functions for handling server events
  *
@@ -240,9 +240,9 @@ static GGZHookReturn server_login_fail(GGZServerEvent id,
 				       const void *event_data,
 				       const void *user_data)
 {
-	const char *msg = event_data;
+	const GGZErrorEventData *event = event_data;
 
-	fprintf(stderr, _("Login failed: %s\n"), msg);
+	fprintf(stderr, _("Login failed: %s\n"), event->message);
 
 	/* For the time being disconnect at not to confuse us */
 	ggzcore_server_logout(server);
@@ -297,9 +297,9 @@ static GGZHookReturn server_enter_fail(GGZServerEvent id,
 				       const void *event_data,
 				       const void *user_data)
 {
-	const char *msg = event_data;
+	const GGZErrorEventData *event = event_data;
 
-	fprintf(stderr, _("Enter failed: %s\n"), msg);
+	fprintf(stderr, _("Enter failed: %s\n"), event->message);
 
 	return GGZ_HOOK_OK;
 }
@@ -448,9 +448,9 @@ static GGZHookReturn room_table_launch_fail(GGZRoomEvent id,
 					    const void *event_data,
 					    const void *user_data)
 {
-	const char *err_msg = event_data;
+	const GGZErrorEventData *event = event_data;
 
-	fprintf(stderr, _("Table launch failed: %s\n"), err_msg);
+	fprintf(stderr, _("Table launch failed: %s\n"), event->message);
 	game_quit();
 
 	return GGZ_HOOK_OK;

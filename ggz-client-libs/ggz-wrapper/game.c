@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 9165 2007-07-04 13:58:17Z josef $
+ * $Id: game.c 9318 2007-09-22 06:43:36Z josef $
  *
  * Functions for handling game events
  *
@@ -83,6 +83,8 @@ void game_init(GGZModule * module, GGZGameType * type, int index,
 
 void game_quit(void)
 {
+	game_destroy();
+	exit(-1);
 }
 
 
