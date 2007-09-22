@@ -27,6 +27,7 @@ clean-local:
 	rm -rf design-html
 	rm -f design.txt tmp.html
 	rm -f design.aux design.jtex design.log design.out design.pdf
+	rm -f jadetex.cfg server_arch.jpg
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(GGZDOCDIR)/design
