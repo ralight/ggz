@@ -14,8 +14,12 @@ To compile, just do the following:
 This should build a GGZMod.so shared library for you, which gets installed as
 a ruby extension if you type in the following as root:
 	$ make install
+Note: for testing the client locally (i.e. with testclient-launch.sh), no such
+installation as root is needed.
 
-To install the test client:
-	$ ggz-config --install --modfile=module.dsc --force
+To install the test client (might need root for system-wide GGZ install):
+	% ggz-config --install --modfile=module.dsc --force
+
+Finally, test by running:
 	% ./testclient-launch.sh
 

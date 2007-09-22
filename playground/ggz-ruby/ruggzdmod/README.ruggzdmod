@@ -15,14 +15,21 @@ To compile, just do the following:
 This should build a GGZDMod.so shared library for you, which gets installed as
 a ruby extension if you type in the following as root:
 	$ make install
+Note: for testing the server locally (i.e. with testserver-launch.sh), no such
+installation as root is needed.
 
-To install the RubyToe example game, do the following:
+To install the RubyToe example game, do the following (might need root for
+system-wide GGZ install):
 	% cp rubytoe /path/to/ggz-install/lib/ggzd
 	% cp rubytoe.dsc /path/to/ggz-install/etc/ggzd/games
 	% cp rubytoe.room /path/to/ggz-install/etc/ggzd/rooms
-The network handler must be installed as a Ruby extension as root.
+The network handler must be installed as a Ruby extension as root (unless
+testing locally).
 	$ sitelibdir=`ruby -r rbconfig -e 'puts(Config::CONFIG["sitelibdir"])'`
 	$ cp rubytoenet.rb $sitelibdir
+
+Finally, test by running:
+	% ./testserver-launch.sh
 
 Note that the TTT AI written in pure Ruby is very weak. This is intentional -
 please do not spend time on improving it! What can instead be done is to
