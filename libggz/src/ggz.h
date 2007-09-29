@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 9303 2007-09-09 07:24:04Z josef $
+ * $Id: ggz.h 9322 2007-09-29 12:27:20Z oojah $
  * 
  * Header file for ggz components lib
  *
@@ -53,6 +53,8 @@ extern "C" {
 #endif
 
 #if defined __GNUC__ && (__GNUC__ >= 3)
+#  define _GGZFUNCTION_ ""
+#elif defined(__sun)
 #  define _GGZFUNCTION_ ""
 #else
 #  ifndef __cplusplus
