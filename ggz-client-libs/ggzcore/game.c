@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 9249 2007-08-13 07:02:41Z josef $
+ * $Id: game.c 9323 2007-09-29 13:21:16Z oojah $
  *
  * This fils contains functions for handling games being played
  *
@@ -242,7 +242,7 @@ int ggzcore_game_read_data(GGZGame * game)
 void ggzcore_game_set_server_fd(GGZGame *game, unsigned int fd)
 {
 	if (game)
-		return _ggzcore_game_set_server_fd(game, fd);
+		_ggzcore_game_set_server_fd(game, fd);
 }
 
 
