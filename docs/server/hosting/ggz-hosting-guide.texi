@@ -445,8 +445,8 @@ support to prepare an extended installation including GGZ Community.
 @section Database choices
 
 The GGZ server is able to store its data in various database formats.
-Currently, not only the traditional libdb format is supported (db2, db3 and
-db4), but also SQlite, MySQL and PostgreSQL. The latter ones are more difficult
+Currently, not only the traditional Berkeley DB format is supported (called db4),
+but also SQlite, MySQL and PostgreSQL. The latter ones are more difficult
 to set up, but provide greater flexibility because there exist a lot of
 standard tools to use the data in them.
 In addition, a DBI backend exists which can in turn talk to a variety
