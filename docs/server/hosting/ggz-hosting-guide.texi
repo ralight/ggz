@@ -970,7 +970,7 @@ and category) which are explicitely marked as such.
 It runs on port 15689 by default, but any other port can be used of course.
 You can get ggzmetaserv as part of the GGZ utils package.
 
-The webpage of grubby is @url{http://www.ggzgamingzone.org/backend/metaserver/}.
+The webpage of the metaserver is @url{http://www.ggzgamingzone.org/backend/metaserver/}.
 
 @section The GGZ Telnet Wrapper (telggz)
 
@@ -981,7 +981,7 @@ available on the same host, but the metaserver.cache file must be available
 TelGGZ should be invoked over (x)inetd on port 15688. This allows to connect to
 any GGZ server from all over the world, whereever one finds a telnet client.
 
-The webpage of grubby is @url{http://www.ggzgamingzone.org/clients/telnet/}.
+The webpage of telggz is @url{http://www.ggzgamingzone.org/clients/telnet/}.
 
 @section The GGZ Chat Bot (grubby)
 
@@ -1091,7 +1091,8 @@ applies to ordinary hosts and to administrators.
 Generally, it is recommended to create at least one admin (with both
 PERMS_ROOM_ADMIN and PERMS_CHAT_ANNOUNCE set), a login for the ggz-cmd utility
 (with only PERMS_CHAT_ANNOUNCE set), and a login for the chatbot grubby (with
-PERMS_CHAT_BOT set).
+PERMS_CHAT_BOT set). Using the simplified privilege roles, that would be one
+admin user and two bot users.
 
 @section Network traffic tool: colorsniff
 
