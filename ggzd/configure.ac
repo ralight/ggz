@@ -1,5 +1,5 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 9283 2007-08-29 07:00:45Z josef $
+# $Id: configure.ac 9326 2007-10-20 08:09:03Z josef $
 # ================================
 
 AC_INIT([GGZ server], [0.0.15pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
@@ -29,7 +29,7 @@ AC_ARG_ENABLE([games],
 	[enable_games=no], [enable_games=yes])
 AC_ARG_WITH([database],
 	AS_HELP_STRING([--with-database=DB],
-	[type of database to use: db2, db3, db4, pgsql, mysql, sqlite]),
+	[type of database to use: db4, pgsql, mysql, sqlite, dbi]),
 	[database=$withval], [database=yes])
 AC_ARG_WITH([zeroconf],
 	AS_HELP_STRING([--with-zeroconf=TYPE],

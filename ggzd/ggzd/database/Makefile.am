@@ -23,12 +23,6 @@ if GGZDB_PGSQL
 libggzdb_a_SOURCES += ggzdb_pgsql.c rankings.c rankings.h
 libggzdb_a_CPPFLAGS += -DGGZDCONFDIR=\"$(ggzdconfdir)\"
 endif
-if GGZDB_DB2
-libggzdb_a_SOURCES += ggzdb_db2.c
-endif
-if GGZDB_DB3
-libggzdb_a_SOURCES += ggzdb_db3.c
-endif
 if GGZDB_DB4
 libggzdb_a_SOURCES += ggzdb_db4.c
 endif

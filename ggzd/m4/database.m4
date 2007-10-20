@@ -13,81 +13,12 @@ dnl
 dnl ------------------------------------------------------------------------
 dnl Internal functions:
 dnl ------------------------------------------------------------------------
-dnl AC_GGZ_DATABASE_DB2 - Sleepycat DB2.x
-dnl AC_GGZ_DATABASE_DB3 - Sleepycat DB3.x
-dnl AC_GGZ_DATABASE_DB4 - Sleepycat DB4.x
+dnl AC_GGZ_DATABASE_DB4 - Sleepycat/Oracle DB4.x
 dnl AC_GGZ_DATABASE_MYSQL - MySQL 3.x/4.x
 dnl AC_GGZ_DATABASE_PGSQL - PostgreSQL 7.x/8.x
 dnl AC_GGZ_DATABASE_SQLITE - SQLite embedded database
 dnl AC_GGZ_DATABASE_DBI - DB-independent abstraction library
 dnl
-
-AC_DEFUN([AC_GGZ_DATABASE_DB3],
-[
-	db3lib=""
-	db3inc=""
-
-	dnl Check for db3 libraries
-	dnl Version priority: db3.3, db3.2, db3
-
-	if test "$db3lib" = ""; then
-		AC_CHECK_LIB(db-3.3, db_env_create,
-		[
-			db3lib="-ldb-3.3"
-			database=db3
-		],
-		[])
-	fi
-
-	if test "$db3lib" = ""; then
-		AC_CHECK_LIB(db-3.2, db_env_create,
-		[
-			db3lib="-ldb-3.2"
-			database=db3
-		],
-		[])
-	fi
-
-	if test "$db3lib" = ""; then
-		AC_CHECK_LIB(db3, db_env_create,
-		[
-			db3lib="-ldb3"
-			database=db3
-		],
-		[])
-	fi
-
-	if test "$database" = "db3" && test "$db3lib" = ""; then
-		AC_MSG_ERROR([cannot configure db3 (libdb3 needed)])
-	fi
-
-	dnl Check for include files
-
-	AC_CHECK_HEADER(db.h,
-	[
-		db3inc="db.h"
-		database=db3
-	],
-	[
-		AC_CHECK_HEADER(db3/db.h,
-		[
-			db3inc="db3/db.h"
-			database=db3
-			AC_DEFINE([DB3_IN_DIR], 1, [Define if the db3 libs and headers are under db3/])
-		],
-		[])
-	])
-
-	if test "$database" = "db3" && test "$db3inc" = ""; then
-		AC_MSG_ERROR([cannot configure db3 (db3-dev needed)])
-	fi
-
-	dnl Setup variables
-
-	if test "$database" = "db3"; then
-		LIB_DATABASE="$db3lib"
-	fi
-])
 
 AC_DEFUN([AC_GGZ_DATABASE_DB4],
 [
@@ -265,64 +196,6 @@ AC_DEFUN([AC_GGZ_DATABASE_DB4],
 	fi
 ])
 
-AC_DEFUN([AC_GGZ_DATABASE_DB2],
-[
-	db2lib=""
-	db2inc=""
-
-	dnl Check for db2 libraries
-	dnl Version priority: db2, db
-
-	if test "$db2lib" = ""; then
-		AC_CHECK_LIB(db2, db_appinit,
-		[
-			db2lib="-ldb2"
-			database=db2
-		],
-		[])
-	fi
-
-	if test "$db2lib" = ""; then
-		AC_CHECK_LIB(db, db_appinit,
-		[
-			db2lib="-ldb"
-			database=db2
-		],
-		[])
-	fi
-
-	if test "$database" = "db2" && test "$db2lib" = ""; then
-		AC_MSG_ERROR([cannot configure db2 (libdb2 needed)])
-	fi
-
-	dnl Check for include files
-
-	AC_CHECK_HEADER(db.h,
-	[
-		db2inc="db.h"
-		database=db2
-	],
-	[
-		AC_CHECK_HEADER(db2/db.h,
-		[
-			db2inc="db2/db.h"
-			database=db2
-			AC_DEFINE([DB2_IN_DIR], 1, [Define if the db2 libs and headers are under db2/])
-		],
-		[])
-	])
-
-	if test "$database" = "db2" && test "$db2inc" = ""; then
-		AC_MSG_ERROR([cannot configure db2 (db2-dev needed)])
-	fi
-
-	dnl Setup variables
-
-	if test "$database" = "db2"; then
-		LIB_DATABASE="$db2lib"
-	fi
-])
-
 AC_DEFUN([AC_GGZ_DATABASE_PGSQL],
 [
 	AC_CHECK_LIB(pq, PQconnectdb,
@@ -426,8 +299,6 @@ AC_DEFUN([AC_GGZ_DATABASE],
 [
 case "$database" in
 	db4)    database=db4 ;;
-	db3)    database=db3 ;;
-	db2)    database=db2 ;;
 	pgsql)  database=pgsql ;;
 	mysql)  database=mysql ;;
 	sqlite) database=sqlite ;;
@@ -446,7 +317,7 @@ if test "$database" = "no"; then
 	AC_MSG_ERROR([ggzd doesn't work without a database backend, see --help for a list])
 fi
 
-dnl Order of preference: db4, db3, db2, PgSQL, MySQL.  This is determined
+dnl Order of preference: db4, PgSQL, MySQL, SQlite, DBI.  This is determined
 dnl solely by the order of the checks below.  Since a correct db will be
 dnl auto-detected, we should order these solely based on how good they are
 dnl (in terms of stability and performance).
@@ -454,16 +325,6 @@ dnl (in terms of stability and performance).
 dnl Check for db4 database
 if test "$database" = db4 || test "$database" = yes; then
 	AC_GGZ_DATABASE_DB4
-fi
-
-dnl Check for db3 database
-if test "$database" = db3 || test "$database" = yes; then
-	AC_GGZ_DATABASE_DB3
-fi
-
-dnl Check for db2 database
-if test "$database" = db2 || test "$database" = yes; then
-	AC_GGZ_DATABASE_DB2
 fi
 
 dnl Check for PgSQL database
@@ -501,8 +362,6 @@ fi
 
 AC_SUBST(LIB_DATABASE)
 AC_SUBST(DATABASE_INCLUDES)
-AM_CONDITIONAL([GGZDB_DB2], [test "$database" = "db2"])
-AM_CONDITIONAL([GGZDB_DB3], [test "$database" = "db3"])
 AM_CONDITIONAL([GGZDB_DB4], [test "$database" = "db4"])
 AM_CONDITIONAL([GGZDB_MYSQL], [test "$database" = "mysql"])
 AM_CONDITIONAL([GGZDB_PGSQL], [test "$database" = "pgsql"])
