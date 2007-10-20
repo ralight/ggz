@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 7123 2005-04-23 11:31:46Z josef $
+ * $Id: main.c 9324 2007-10-20 08:08:46Z josef $
  *
  * Main program code for ggz-cmd program.
  *
@@ -218,7 +218,9 @@ static int parse_arguments(int argc, char **argv, GGZCommand * cmd)
 	} else if (!strcasecmp(cmd_name, GGZ_CMD_CHECKNAGIOS_CMD)){
 		cmd->command = GGZ_CMD_CHECKNAGIOS;
 		cmd->data = NULL;
-		cmd->login_type = GGZ_LOGIN_GUEST;
+		if(!strcmp(cmd->passwd, "")) {
+			cmd->login_type = GGZ_LOGIN_GUEST;
+		}
 		nagiosexit = 1;
 	} else {
 		print_help(argv[0]);
@@ -253,11 +255,11 @@ static GGZHookReturn server_failure(GGZServerEvent id,
 				    const void *event_data,
 				    const void *user_data)
 {
-	const char *msg = event_data;
+	const GGZErrorEventData *msg = event_data;
 
 	ggz_debug(DBG_MAIN, "GGZ failure: event %d.", id);
 	fprintf(errorstream(stderr),
-		"ggz-cmd: Could not connect to server: %s\n", msg);
+		"ggz-cmd: Could not connect to server: %s\n", msg->message);
 	exit(exitcode(STATUS_CRITICAL));
 }
 
