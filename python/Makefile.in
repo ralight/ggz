@@ -132,12 +132,6 @@ man-install:
 	cp man/*.6 $(DESTDIR)$(prefix)/share/man/man6
 
 install-rest:
-	#@echo Installing game Dresden
-	#mkdir -p $(DESTDIR)$(bindir)
-	#cp dresden/dresden $(DESTDIR)$(bindir)
-	#mkdir -p $(DESTDIR)$(datadir)/ggz/dresden/
-	#cp dresden/*.png $(DESTDIR)$(datadir)/ggz/dresden
-
 	@echo Installing game Escape/SDL
 	mkdir -p $(DESTDIR)$(bindir)
 	cp escape-sdl/escape-sdl $(DESTDIR)$(bindir)

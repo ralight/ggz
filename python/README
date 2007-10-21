@@ -17,7 +17,6 @@ Content of GGZ-Python:
 
 	- SDLNewStuff and PlayerTable, useful libraries for games
 
-	- Dresden, a simple single-player pygame-based game
 	- Escape/SDL, port of the Windows game Escape to pygame + ggz-python,
 	  which also works in single-player mode against the AI
 	- Xadrez Chinês, a chinese chess game client, server and AI module
