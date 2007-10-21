@@ -59,7 +59,53 @@ AC_DEFUN([AC_GGZ_DATABASE_DB4],
 	minor=$(grep DB_VERSION_MINOR /usr/include/$db4inc 2>/dev/null | cut -f 3)
 
 	dnl Check for db4 libraries
-	dnl Version priority: db4.4, db4.3, db4.2, db4.1, db4.0, db (unversioned)
+	dnl Version priority: db4.6, db4.5, db4.4, db4.3, db4.2, db4.1, db4.0, db (unversioned)
+
+	if test "$db4lib" = "" || test "$minor" = "6"; then
+		AC_CHECK_LIB(db-4.6, db_env_create_4006,
+		[
+			db4lib="-ldb-4.6"
+			database=db4
+		],
+		[
+			AC_CHECK_LIB(db-4.6, db_env_create,
+			[
+				db4lib="-ldb-4.6"
+				database=db4
+			],
+			[
+				AC_CHECK_LIB(db, db_env_create_4006,
+				[
+					db4lib="-ldb"
+					database=db4
+				],
+				[])
+			])
+		])
+	fi
+
+	if test "$db4lib" = "" || test "$minor" = "5"; then
+		AC_CHECK_LIB(db-4.5, db_env_create_4005,
+		[
+			db4lib="-ldb-4.5"
+			database=db4
+		],
+		[
+			AC_CHECK_LIB(db-4.5, db_env_create,
+			[
+				db4lib="-ldb-4.5"
+				database=db4
+			],
+			[
+				AC_CHECK_LIB(db, db_env_create_4005,
+				[
+					db4lib="-ldb"
+					database=db4
+				],
+				[])
+			])
+		])
+	fi
 
 	if test "$db4lib" = "" || test "$minor" = "4"; then
 		AC_CHECK_LIB(db-4.4, db_env_create_4004,
