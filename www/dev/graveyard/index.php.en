@@ -74,6 +74,10 @@ Utility from GGZ, has been removed in r9275 (29.08.2007) from gnome-client.<br/>
 Core client from GGZ, has been removed in r9275 (29.08.2007) from gnome-client.<br/>
 <br/>
 
+<i>Dresden</i><br/>
+Single-player game mockup from GGZ, has been removed in r9329 (21.10.2007) from python.<br/>
+<br/>
+
 <i>Several libraries and small tools...</i><br/>
 The former 'libgensecure' library is now part of libggz.<br/>
 The former 'easysock' library is now part of libggz.<br/>
