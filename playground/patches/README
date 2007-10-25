@@ -47,6 +47,11 @@ applications, so instead of using `users` as the table name, it could be `ggz_us
 Only for pgsql and mysql.
  ggzd_table_prefixes.diff (oojah, 25/8/2007)
 
+Addition of NSS backend for SSL/TLS for libggz. This seems to be required
+for future RedHat versions. It is based on Mozilla's NSPR and NSS libraries
+which are surprisingly old and unpopular.
+ libggz+nss.diff
+
 
 Old patches (just to keep it in memory)
 ---------------------------------------

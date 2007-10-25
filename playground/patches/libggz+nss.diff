@@ -1,0 +1,199 @@
+=== m4/tls.m4
+==================================================================
+--- m4/tls.m4	(revision 10249)
++++ m4/tls.m4	(local)
+@@ -18,6 +18,7 @@
+ dnl 2002-02-24: default to GnuTLS; create conditional compile vars
+ dnl 2005-09-14: several cleanups due to newer autotools
+ dnl 2006-08-06: now includes gcrypt checks
++dnl 2007-10-24: addition of Netscape Network Security (NSS) checks
+ 
+ dnl ------------------------------------------------------------------------
+ dnl Content of this file:
+@@ -29,6 +30,7 @@
+ dnl Private macros:
+ dnl AC_PATH_SSL - OpenSSL implementation backend (code from kdelibs)
+ dnl AC_GGZ_GNUTLS - GNUTLS implementation backend
++dnl AC_GGZ_NSS - use TLS implementation from the NSS libraries
+ dnl
+ 
+ dnl ------------------------------------------------------------------------
+@@ -297,7 +299,7 @@
+ AC_MSG_CHECKING([for GGZ TLS implementation])
+ 
+ AC_ARG_WITH([tls],
+-  AC_HELP_STRING([--with-tls@<:@=ARG@:>@], [GnuTLS or OpenSSL - auto if no ARG]),
++  AC_HELP_STRING([--with-tls@<:@=ARG@:>@], [GnuTLS or OpenSSL or NSS - auto if no ARG]),
+   [tls_type=$withval],
+   [tls_type=no])
+ 
+@@ -336,6 +338,21 @@
+   fi
+ fi
+ 
++if test \( "$tls_type" = yes -a "$have_gnutls" = no -a "$have_ssl" = no \) -o "$tls_type" = NSS
++then
++  dnl NSS check
++  AC_GGZ_NSS
++  if test "$have_nss" = yes; then
++    GGZTLS_INCLUDES="-I $nss_includes"
++    GGZTLS_LDFLAGS="-L $nss_libraries"
++    LIB_GGZTLS=$nss_lib
++    AC_MSG_RESULT([using NSS])
++    AC_DEFINE_UNQUOTED([GGZ_TLS_NSS], 1,
++		      [Define if NSS is to be used])
++    TLS_TYPE="NSS"
++  fi
++fi
++
+ if test "$TLS_TYPE" = no; then
+   if test "$tls_type" = no; then
+     AC_MSG_RESULT([no])
+@@ -398,3 +415,25 @@
+ AC_SUBST(LIB_GCRYPT)
+ ])
+ 
++dnl ------------------------------------------------------------------------
++dnl Try to find the NSS headers and libraries.
++dnl Exported are $(nss_includes), $(nss_libraries) and $(nss_lib).
++dnl ------------------------------------------------------------------------
++dnl
++AC_DEFUN([AC_GGZ_NSS],
++[
++ac_nss_includes=NO ac_nss_libraries=NO
++nss_libraries=""
++nss_includes=""
++nss_lib=""
++
++inc=`pkg-config --cflags nss 2>/dev/null`
++lib=`pkg-config --libs nss 2>/dev/null`
++if test "$inc" != "" -a "$lib" != ""; then
++	have_nss=yes
++	nss_includes=$inc
++	nss_libraries=""
++	nss_lib=$lib
++fi
++])
++
+=== src/security/Makefile.am
+==================================================================
+--- src/security/Makefile.am	(revision 10249)
++++ src/security/Makefile.am	(local)
+@@ -6,6 +6,7 @@
+ 	base64.c base64.h \
+ 	ggz_tls_gnutls.c \
+ 	ggz_tls_openssl.c \
++	ggz_tls_nss.c \
+ 	ggz_tls_none.c
+ 
+ libggzsecurity_la_LDFLAGS = $(GGZTLS_LDFLAGS)
+=== src/security/ggz_tls_none.c
+==================================================================
+--- src/security/ggz_tls_none.c	(revision 10249)
++++ src/security/ggz_tls_none.c	(local)
+@@ -4,7 +4,7 @@
+  * Project: GGZ Core Client Lib
+  * Date: 10/21/02
+  *
+- * Routines to enable easysock to utilize TLS using gnutls
++ * Fake routines pretending to enable easysock to utilize TLS
+  *
+  * Copyright (C) 2002 Brent Hendricks.
+  *
+=== src/security/ggz_tls_nss.c
+==================================================================
+--- src/security/ggz_tls_nss.c	(revision 10249)
++++ src/security/ggz_tls_nss.c	(local)
+@@ -0,0 +1,92 @@
++/*
++ * Routines to enable easysock to utilize TLS using NSS
++ *
++ * Copyright (C) 2007 Josef Spillner <josef@ggzgamingzone.org>
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ * 
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ * 
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++#ifdef HAVE_CONFIG_H
++#  include <config.h>
++#endif
++#ifdef GGZ_TLS_NSS
++
++#include <unistd.h>
++
++#include <prinit.h>
++#include <nss/nss.h> // FIXME: evil path override!
++#include <nss/ssl.h>
++
++#include "ggz.h"
++
++void ggz_tls_init(const char *certfile, const char *keyfile, const char *password)
++{
++	/*PR_Init();*/
++//	PK11_SetPasswordFunc();
++	NSS_Init("/tmp");
++	NSS_SetDomesticPolicy();
++
++	NSS_Shutdown();
++	PR_Cleanup();
++}
++
++int ggz_tls_support_query(void)
++{
++	return 1;
++}
++
++const char *ggz_tls_support_name(void)
++{
++	return "NSS";
++}
++
++int ggz_tls_enable_fd(int fdes, GGZTLSType whoami, GGZTLSVerificationType verify)
++{
++	PRFileDesc fdpr, *fdtls;
++
++	// FIXME: import fdes into fdpr somehow
++
++	fdtls = SSL_ImportFD(NULL, &fdpr);
++	if(!fdtls) return 0;
++
++	if(whoami == GGZ_TLS_CLIENT)
++	{
++		// SSL_SetURL
++	}
++	else
++	{
++		// SSL_ConfigSecureServer
++	}
++
++	return 1;
++}
++
++int ggz_tls_disable_fd(int fdes)
++{
++	return 0;
++}
++
++size_t ggz_tls_write(int fd, void *ptr, size_t n)
++{
++	return write(fd, ptr, n);
++}
++
++size_t ggz_tls_read(int fd, void *ptr, size_t n)
++{
++	return read(fd, ptr, n);
++}
++
++#endif
++
