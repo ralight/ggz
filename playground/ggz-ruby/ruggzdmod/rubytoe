@@ -15,16 +15,38 @@ rescue LoadError
 end
 
 begin
-	require "rubytoenet.rb"
+	require "tictactoe_server.rb"
 rescue LoadError
 	puts "## Error: TTT-Network not found, aborting now ##"
 	Thread.exit
 end
 
-class TTT < TTTProto
+class TTT < TictactoeProto
 	def initialize
 		@turn = 0
 		@board = Array.new(9)
+	end
+
+	def broadcast_players
+		puts "#  Broadcast player list."
+		num = $server.get_num_seats
+		for i in 0..num - 1
+			fd = $server.get_seat_fd(i)
+			if fd != -1 then
+				send_players(i)
+			end
+		end
+	end
+
+	def broadcast_gameover(winner)
+		puts "#  Broadcast gameover event."
+		num = $server.get_num_seats
+		for i in 0..num - 1
+			fd = $server.get_seat_fd(i)
+			if fd != -1 then
+				send_gameover(i, winner)
+			end
+		end
 	end
 
 	def input(p)
