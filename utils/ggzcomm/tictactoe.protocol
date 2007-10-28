@@ -10,6 +10,15 @@
 		<def name="sndsync" value="6"/>
 		<def name="sndmove" value="0"/>
 		<def name="reqsync" value="1"/>
+
+		<def name="move_ok" value="0"/>
+		<def name="move_err_state" value="-1"/>
+		<def name="move_err_state" value="-2"/>
+		<def name="move_err_state" value="-3"/>
+		<def name="move_err_state" value="-4"/>
+
+		<def name="empty_square" value="-1"/>
+		<def name="no_winner" value="2"/>
 	</definitions>
 	<client>
 		<event name="sndmove">

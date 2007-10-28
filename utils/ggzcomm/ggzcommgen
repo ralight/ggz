@@ -603,11 +603,10 @@ class GGZCommEvent
 		x = ""
 		seq = 0
 
-		x += "\t\ts = GGZRawSocket.for_fd($server.get_seat_fd(num))\n"
+		x += "\t\ts = GGZRawSocket.for_fd($server.get_seat_fd(player))\n"
 
 		data = @name
 		if @section == role then
-			x += "\t\t# assign fd??\n"
 			x += "\t\ts.sendbyte(::" + data.upcase + ")\n"
 		end
 
@@ -668,7 +667,6 @@ class GGZCommEvent
 					myvars[data] = 1
 					#esname = type
 					if @section == role then
-						x += indent + "\t# assign fd???\n"
 						case type
 							when "string"
 								x += indent + "\ts.sendstring(@" + data + index + ")\n"
@@ -678,7 +676,6 @@ class GGZCommEvent
 								x += indent + "\ts.sendbyte(@" + data + index + ")\n"
 						end
 					else
-						x += indent + "\t# assign fd???\n"
 						case type
 							when "string"
 								x += indent + "\t@" + data + index + " = s.getstring()\n"
@@ -2358,13 +2355,12 @@ class GGZComm
 			f.puts ""
 			f.puts "\tdef getstring()"
 			f.puts "\t\tlength = self.getint()"
+			f.puts "#\t\tif length < 0"
+			f.puts "#\t\t\traise 'ggzcommerror'"
+			f.puts "#\t\tend"
 			f.puts "\t\ts = self.read(length)"
 			f.puts "\t\treturn s"
 			f.puts "\tend"
-			f.puts ""
-			f.puts "#\t\tif opstr.len < 4"
-			f.puts "#\t\t\traise 'ggzcommerror'"
-			f.puts "#\t\tend"
 			f.puts "end"
 			f.puts ""
 			f.puts "class " + @engine.capitalize + "Proto"
