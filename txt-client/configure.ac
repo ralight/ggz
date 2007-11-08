@@ -81,12 +81,10 @@ fi
 dnl Readline support
 dnl ================
 
-LIB_CURSES="-lncurses"
 LIB_READLINE=""
 AC_CHECK_HEADERS(readline/readline.h, [LIB_READLINE="-lreadline"], [], [])
 AC_CHECK_HEADERS(readline/history.h, [], [], [])
 
-AC_SUBST(LIB_CURSES)
 AC_SUBST(LIB_READLINE)
 
 if test "x$LIB_READLINE" = "x"; then
