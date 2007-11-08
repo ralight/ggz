@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 9304 2007-09-09 07:24:14Z josef $
+ * $Id: net.c 9336 2007-11-08 19:02:32Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -321,7 +321,7 @@ GGZReturn net_send_serverid(GGZNetIO *net, const char *srv_name, bool use_tls)
 	return status;
 }
  
-
+#if 0
 GGZReturn net_send_player_banned(GGZNetIO *net, const char *srv_name)
 {
 	char *xml_srv_name;
@@ -338,6 +338,7 @@ GGZReturn net_send_player_banned(GGZNetIO *net, const char *srv_name)
 
 	return status;
 }
+#endif
 
 
 GGZReturn net_send_server_full(GGZNetIO *net, const char *srv_name)

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 9248 2007-08-13 07:02:11Z josef $
+ * $Id: stats.c 9336 2007-11-08 19:02:32Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -150,7 +150,7 @@ static void calculate_ratings(ggzdbPlayerGameStats *stats,
 	}
 	for (i = 0; i < num_teams; i++) {
 		/* The team rating is the average of the individual ratings. */
-		if (team_sizes == 0) {
+		if (team_sizes[i] == 0) {
 			err_msg("Empty team %d!", i);
 			return;
 		}
