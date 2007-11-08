@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Graphical functions handling the game board and filters for user input
  * (sending the events to game.c)
- * $Id: board.c 8143 2006-06-08 21:22:27Z jdorje $
+ * $Id: board.c 9338 2007-11-08 19:38:21Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -315,7 +315,7 @@ void board_draw_outline(int x, int y, GdkGC * gc)
 void board_draw_bg(void)
 {
 	int i, j;
-	if (!pieces)
+	if (!pieces[0])
 		board_init();
 	if (!board_buf)
 		return;
