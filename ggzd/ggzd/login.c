@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 9304 2007-09-09 07:24:14Z josef $
+ * $Id: login.c 9335 2007-11-08 15:30:09Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -34,6 +34,9 @@
 
 #ifdef WITH_CRACKLIB
 #include <crack.h>
+#ifndef CRACKLIB_DICTPATH
+#define CRACKLIB_DICTPATH "/var/cache/cracklib/cracklib_dict"
+#endif
 #endif
 #ifdef WITH_OMNICRACKLIB
 #include <omnicrack.h>
