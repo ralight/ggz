@@ -1,7 +1,7 @@
 # Configuration for the GGZ client libraries
 # ==========================================
 
-AC_INIT([GGZ client libraries], [0.0.14], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
+AC_INIT([GGZ client libraries], [0.0.15pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -11,6 +11,7 @@ AM_MAINTAINER_MODE
 # Check for standard build environment
 # ====================================
 AC_PROG_CC
+AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PROG_CPP
 
