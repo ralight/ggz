@@ -11,7 +11,6 @@ AM_MAINTAINER_MODE
 # Check for standard build environment
 # ====================================
 AC_PROG_CC
-AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_CPP
 
