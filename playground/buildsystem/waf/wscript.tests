@@ -1,0 +1,13 @@
+#! /usr/bin/env python
+# encoding: utf-8
+# Copyright (C) 2007 Josef Spillner <josef@ggzgamingzone.org>
+
+def build(bld):
+	obj = bld.create_obj('cc', 'program')
+	obj.source='''
+	strcmp.c
+	'''
+	obj.includes='. ../src /usr/include'
+	obj.target='test_c_program'
+	obj.uselib_local='libggz'
+
