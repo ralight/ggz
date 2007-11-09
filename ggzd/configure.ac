@@ -1,5 +1,5 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 9326 2007-10-20 08:09:03Z josef $
+# $Id: configure.ac 9342 2007-11-09 04:17:29Z jdorje $
 # ================================
 
 AC_INIT([GGZ server], [0.0.15pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
@@ -12,6 +12,7 @@ AM_MAINTAINER_MODE
 # ====================================
 AC_PROG_CC
 AC_PROG_CXX
+AC_PROG_CXXCPP
 AC_PROG_INSTALL
 AC_PROG_CPP
 AC_PROG_LIBTOOL
