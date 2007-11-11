@@ -7,6 +7,7 @@ POSOURCES = $(top_srcdir)/ggzcore/*.c
 include $(top_srcdir)/m4/i18n.mk
 
 pofiles = \
+	af.po \
 	ar.po \
 	bg.po \
 	ca.po \
@@ -16,28 +17,39 @@ pofiles = \
 	de.po \
 	dz.po \
 	en_GB.po \
+	el.po \
 	es.po \
 	et.po \
 	fi.po \
 	fr.po \
 	gl.po \
 	gu.po \
+	hi.po \
 	hu.po \
 	id.po \
+	it.po \
 	ja.po \
 	ko.po \
 	lt.po \
 	lv.po \
+	ml.po \
 	mk.po \
 	nb.po \
 	nl.po \
 	oc.po \
 	pa.po \
+	pl.po \
 	pt_BR.po \
 	pt.po \
 	ru.po \
+	si.po \
+	sr.po \
+	sr@Latn.po \
 	sv.po \
+	ta.po \
+	te.po \
 	th.po \
+	tr.po \
 	uk.po \
 	vi.po \
 	zh_CN.po \
