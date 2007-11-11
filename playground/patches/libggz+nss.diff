@@ -1,6 +1,6 @@
 === m4/tls.m4
 ==================================================================
---- m4/tls.m4	(revision 10249)
+--- m4/tls.m4	(revision 10279)
 +++ m4/tls.m4	(local)
 @@ -18,6 +18,7 @@
  dnl 2002-02-24: default to GnuTLS; create conditional compile vars
@@ -75,9 +75,26 @@
 +fi
 +])
 +
+=== src/ggz.h
+==================================================================
+--- src/ggz.h	(revision 10279)
++++ src/ggz.h	(local)
+@@ -1773,8 +1773,10 @@
+ 
+ /** @brief Initialize TLS support on the server side.
+  *
+- *  This function ought only be used on the server side.
+- *  It sets up the necessary initialization values.
++ *  This function sets up the necessary initialization values.
++ *  It must be called by both the client and the server before any other TLS
++ *  operations can take place. The client can pass NULL values for all
++ *  parameters.
+  *
+  *  @param certfile File containing the certificate, or NULL
+  *  @param keyfile File containing the private key, or NULL
 === src/security/Makefile.am
 ==================================================================
---- src/security/Makefile.am	(revision 10249)
+--- src/security/Makefile.am	(revision 10279)
 +++ src/security/Makefile.am	(local)
 @@ -6,6 +6,7 @@
  	base64.c base64.h \
@@ -89,7 +106,7 @@
  libggzsecurity_la_LDFLAGS = $(GGZTLS_LDFLAGS)
 === src/security/ggz_tls_none.c
 ==================================================================
---- src/security/ggz_tls_none.c	(revision 10249)
+--- src/security/ggz_tls_none.c	(revision 10279)
 +++ src/security/ggz_tls_none.c	(local)
 @@ -4,7 +4,7 @@
   * Project: GGZ Core Client Lib
@@ -100,11 +117,24 @@
   *
   * Copyright (C) 2002 Brent Hendricks.
   *
+=== src/security/ggz_tls_openssl.c
+==================================================================
+--- src/security/ggz_tls_openssl.c	(revision 10279)
++++ src/security/ggz_tls_openssl.c	(local)
+@@ -295,7 +295,7 @@
+ }
+ 
+ /* Compare function */
+-static int list_entry_compare(void *a, void *b)
++static int list_entry_compare(const void *a, const void *b)
+ {
+ 	struct list_entry x, y;
+ 	x = *(struct list_entry*)a;
 === src/security/ggz_tls_nss.c
 ==================================================================
---- src/security/ggz_tls_nss.c	(revision 10249)
+--- src/security/ggz_tls_nss.c	(revision 10279)
 +++ src/security/ggz_tls_nss.c	(local)
-@@ -0,0 +1,92 @@
+@@ -0,0 +1,174 @@
 +/*
 + * Routines to enable easysock to utilize TLS using NSS
 + *
@@ -138,6 +168,24 @@
 +
 +#include "ggz.h"
 +
++/* List entries */
++struct list_entry
++{
++	PRFileDesc *fdtls;
++	int fd;
++	int active;
++};
++static GGZList *nsslist;
++
++/* Utility comparison function for list entries */
++static int list_entry_compare(const void *a, const void *b)
++{
++	struct list_entry x, y;
++	x = *(struct list_entry*)a;
++	y = *(struct list_entry*)b;
++	return (x.fd == y.fd ? 0 : 1);
++}
++
 +void ggz_tls_init(const char *certfile, const char *keyfile, const char *password)
 +{
 +	/*PR_Init();*/
@@ -145,9 +193,16 @@
 +	NSS_Init("/tmp");
 +	NSS_SetDomesticPolicy();
 +
++	nsslist = ggz_list_create(NULL, NULL, NULL, 0);
++}
++
++#if 0
++void ggz_tls_finish(void)
++{
 +	NSS_Shutdown();
 +	PR_Cleanup();
 +}
++#endif
 +
 +int ggz_tls_support_query(void)
 +{
@@ -161,39 +216,169 @@
 +
 +int ggz_tls_enable_fd(int fdes, GGZTLSType whoami, GGZTLSVerificationType verify)
 +{
-+	PRFileDesc fdpr, *fdtls;
++	PRFileDesc *fdpr, *fdtls;
++	struct list_entry *entry;
++
++	fdpr = PR_NewTCPSocket();
 +
 +	// FIXME: import fdes into fdpr somehow
 +
-+	fdtls = SSL_ImportFD(NULL, &fdpr);
++	fdtls = SSL_ImportFD(NULL, fdpr);
 +	if(!fdtls) return 0;
 +
 +	if(whoami == GGZ_TLS_CLIENT)
 +	{
-+		// SSL_SetURL
++		/* FIXME: use real domain */
++		SSL_SetURL(fdtls, "localhost");
 +	}
 +	else
 +	{
-+		// SSL_ConfigSecureServer
++		/* FIXME: use values from ggz_tls_init instead of NULL */
++		SSL_ConfigSecureServer(fdtls, NULL, NULL, kt_dh);
 +	}
++
++	entry = (struct list_entry*)ggz_malloc(sizeof(struct list_entry));
++	entry->fdtls = fdtls;
++	entry->fd = fdes;
++	entry->active = 1;
++	ggz_list_insert(nsslist, &entry);
 +
 +	return 1;
 +}
 +
 +int ggz_tls_disable_fd(int fdes)
 +{
++	struct list_entry *entry;
++	struct list_entry entry2;
++	PRFileDesc *fdtls;
++
++	entry2.fd = fdes;
++	entry = (struct list_entry*)ggz_list_search_alt(nsslist, &entry2, list_entry_compare);
++
++	if(entry)
++	{
++		fdtls = entry->fdtls;
++		PR_Shutdown(fdtls, PR_SHUTDOWN_BOTH);
++		PR_Close(fdtls);
++		ggz_list_delete_entry(nsslist, (GGZListEntry*)entry);
++		return 1;
++	}
++
 +	return 0;
 +}
 +
 +size_t ggz_tls_write(int fd, void *ptr, size_t n)
 +{
-+	return write(fd, ptr, n);
++	struct list_entry *entry;
++	struct list_entry entry2;
++	PRFileDesc *fdtls;
++
++	entry2.fd = fd;
++	entry = (struct list_entry*)ggz_list_search_alt(nsslist, &entry2, list_entry_compare);
++
++	if(entry)
++	{
++		fdtls = entry->fdtls;
++		return PR_Write(fdtls, ptr, n);
++	}
++	else
++	{
++		return write(fd, ptr, n);
++	}
 +}
 +
 +size_t ggz_tls_read(int fd, void *ptr, size_t n)
 +{
-+	return read(fd, ptr, n);
++	struct list_entry *entry;
++	struct list_entry entry2;
++	PRFileDesc *fdtls;
++
++	entry2.fd = fd;
++	entry = (struct list_entry*)ggz_list_search_alt(nsslist, &entry2, list_entry_compare);
++
++	if(entry)
++	{
++		fdtls = entry->fdtls;
++		return PR_Read(fdtls, ptr, n);
++	}
++	else
++	{
++		return read(fd, ptr, n);
++	}
 +}
 +
 +#endif
 +
+=== tests/tls.c
+==================================================================
+--- tests/tls.c	(revision 10279)
++++ tests/tls.c	(local)
+@@ -29,17 +29,6 @@
+ 
+ #define HAVE_ALARM 1
+ 
+-#ifdef GGZ_TLS_NONE
+-
+-/* Don't bother with the test. */
+-int main(int argc, char *argv[])
+-{
+-	printf("Cannot run test on this platform.\n");
+-	return 0;
+-}
+-
+-#else
+-
+ /* This test needs more autoconf help. */
+ 
+ static char buffer[1024], buffer2[1024];
+@@ -52,6 +41,7 @@
+ 	char *shm;
+ 
+ 	printf("Enable TLS for the server...\n");
++	ggz_tls_init(NULL, NULL, NULL);
+ 	ret = ggz_tls_enable_fd(fd, GGZ_TLS_SERVER, GGZ_TLS_VERIFY_NONE);
+ 	/*if(!ret) return NULL;*/
+ 	printf("Read a message...\n");
+@@ -70,6 +60,7 @@
+ 	int ret;
+ 
+ 	printf("Enable TLS for the client...\n");
++	ggz_tls_init(NULL, NULL, NULL);
+ 	ret = ggz_tls_enable_fd(fd, GGZ_TLS_CLIENT, GGZ_TLS_VERIFY_NONE);
+ 	/*if(!ret) return NULL;*/
+ 	printf("Write a message...\n");
+@@ -87,10 +78,19 @@
+ {
+ 	int fd[2];
+ 	/*pthread_t id_read, id_write;*/
++	/* FIXME: using threads would be better but doesn't seem to be possible? */
+ 	pid_t pid;
+ 	char *shm;
+ 
+-	printf("Preparation...\n");
++	if(!ggz_tls_support_query())
++	{
++		/* Don't bother with the test. */
++		printf("Cannot run test on this platform.\n");
++		return 0;
++	}
++	printf("Info: using TLS backend %s.\n", ggz_tls_support_name());
++
++	printf("Preparation for TLS handshake...\n");
+ 	/*ret = shm_open("Physical", O_RDWR, 0777);
+ 	if(ret < 0)
+ 	{
+@@ -104,7 +104,7 @@
+ 		fprintf(stderr, "SHM failed (errno = %i (%s))!\n", errno, strerror(errno));
+ 		exit(-1);
+ 	}
+-	printf("SHM: size=%i\n", getpagesize());
++	printf("SHM succeeded (size=%i)\n", getpagesize());
+ 
+ 	strcpy(buffer, "This is a test.");
+ 	socketpair(AF_UNIX, SOCK_STREAM, 0, fd);
+@@ -161,4 +161,3 @@
+ 	return 0;
+ }
+ 
+-#endif
