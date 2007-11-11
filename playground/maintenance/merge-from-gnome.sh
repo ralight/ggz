@@ -8,6 +8,11 @@ if [ -z $catalog ]; then
 	exit 1
 fi
 
+if [ ! -f $catalog ]; then
+	echo "File error: $0 does not exist"
+	exit 1
+fi
+
 for i in $gnomepolocation/*.po; do
 	echo "- merge $i"
 	filename=$(basename $i)
