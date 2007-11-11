@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 9073 2007-04-29 01:09:54Z jdorje $
+ * $Id: server.c 9350 2007-11-11 21:41:35Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -979,7 +979,7 @@ void _ggzcore_server_set_room_join_status(GGZServer * server,
 			error.message = _("Bad room number");
 			break;
 		case E_NO_PERMISSION:
-			error.message = _("Insufficient permissions; "
+			error.message = _("Insufficient permissions, "
 					  "room access is restricted");
 			break;
 		default:
