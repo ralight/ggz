@@ -156,7 +156,7 @@ int main()
 		result = 1;
 	}
 
-#define E_LOWEST (E_USR_TAKEN - 1)
+#define E_LOWEST (E_BAD_PASSWORD - 1)
 	for (i = 0; i > E_LOWEST; i--) {
 		const char *str = ggz_error_to_string(i);
 
