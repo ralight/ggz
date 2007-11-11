@@ -13,6 +13,8 @@ def set_options(opt):
 
 def configure(conf):
 	conf.check_tool('compiler_cc')
+	conf.check_header('arpa/inet.h', 'HAVE_ARPA_INET_H')
+	conf.write_config_header('config.h')
 
 def build(bld):
 	bld.add_subdirs('src')
