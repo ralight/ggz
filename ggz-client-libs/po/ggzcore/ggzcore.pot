@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-03 18:35+0200\n"
+"POT-Creation-Date: 2007-11-11 22:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,84 +16,158 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../../ggzcore/server.c:872
-msgid "Unknown negotation"
+#: ../../ggzcore/netxml.c:1261 ../../ggzcore/room.c:910
+msgid "Not in a room"
 msgstr ""
 
-#: ../../ggzcore/server.c:899
-#, c-format
-msgid "Already logged in"
+#: ../../ggzcore/netxml.c:1264
+msgid "Bad options"
 msgstr ""
 
-#: ../../ggzcore/server.c:903
-#, c-format
-msgid "Name taken or wrong password"
+#: ../../ggzcore/netxml.c:1267
+msgid "Prohibited"
 msgstr ""
 
-#: ../../ggzcore/server.c:907
-#, c-format
-msgid "This name is already registered so cannot be used by a guest"
+#: ../../ggzcore/netxml.c:1270
+msgid "No such player"
 msgstr ""
 
-#: ../../ggzcore/server.c:911
-#, c-format
-msgid "No such name was found"
+#: ../../ggzcore/netxml.c:1273
+msgid "Can't chat at table"
+msgstr ""
+
+#: ../../ggzcore/netxml.c:1276
+msgid "Must be at table"
+msgstr ""
+
+#: ../../ggzcore/netxml.c:1279
+msgid "Unknown error"
+msgstr ""
+
+#: ../../ggzcore/netxml.c:1290
+msgid "Admin action error"
+msgstr ""
+
+#: ../../ggzcore/room.c:900
+msgid "Bad option"
+msgstr ""
+
+#: ../../ggzcore/room.c:903
+msgid "The room has reached its table limit."
+msgstr ""
+
+#: ../../ggzcore/room.c:907
+msgid "Launch failed on server"
+msgstr ""
+
+#: ../../ggzcore/room.c:913
+msgid "Already at a table"
+msgstr ""
+
+#: ../../ggzcore/room.c:916
+msgid "Already joining/leaving a table"
+msgstr ""
+
+#: ../../ggzcore/room.c:919
+msgid "Insufficient permissions"
+msgstr ""
+
+#: ../../ggzcore/room.c:922
+msgid "Unknown launch failure"
+msgstr ""
+
+#: ../../ggzcore/server.c:888
+msgid "Unknown negotiation"
 msgstr ""
 
 #: ../../ggzcore/server.c:915
-#, c-format
+msgid "Already logged in"
+msgstr ""
+
+#: ../../ggzcore/server.c:918
+msgid "The password was incorrect"
+msgstr ""
+
+#: ../../ggzcore/server.c:921
+msgid "Name is already taken"
+msgstr ""
+
+#: ../../ggzcore/server.c:924
+msgid "This name is already registered so cannot be used by a guest"
+msgstr ""
+
+#: ../../ggzcore/server.c:928
+msgid "No such name was found"
+msgstr ""
+
+#: ../../ggzcore/server.c:931
 msgid "Name too long"
 msgstr ""
 
-#: ../../ggzcore/server.c:919
-#, c-format
-msgid "Name contains forbidden ASCII characters"
+#: ../../ggzcore/server.c:934
+msgid "Name contains forbidden characters"
 msgstr ""
 
-#: ../../ggzcore/server.c:923
-#, c-format
+#: ../../ggzcore/server.c:938
+msgid "You must enter a legitimate password"
+msgstr ""
+
+#: ../../ggzcore/server.c:942
 msgid "Missing password or other bad options."
 msgstr ""
 
-#: ../../ggzcore/server.c:927
-#, c-format
+#: ../../ggzcore/server.c:946
 msgid "Unknown login error"
 msgstr ""
 
-#: ../../ggzcore/server.c:950
-#, c-format
+#: ../../ggzcore/server.c:968
 msgid "Room full"
 msgstr ""
 
-#: ../../ggzcore/server.c:954
-#, c-format
+#: ../../ggzcore/server.c:971
 msgid "Can't change rooms while at a table"
 msgstr ""
 
-#: ../../ggzcore/server.c:958
-#, c-format
+#: ../../ggzcore/server.c:975
 msgid "Can't change rooms while joining/leaving a table"
 msgstr ""
 
-#: ../../ggzcore/server.c:963
-#, c-format
+#: ../../ggzcore/server.c:979
 msgid "Bad room number"
 msgstr ""
 
-#: ../../ggzcore/server.c:967
-#, c-format
+#: ../../ggzcore/server.c:982
 msgid "Insufficient permissions, room access is restricted"
 msgstr ""
 
-#: ../../ggzcore/server.c:971
-#, c-format
-msgid "Unknown room-joining error"
+#: ../../ggzcore/server.c:986
+msgid "Unknown error joining room"
 msgstr ""
 
-#: ../../ggzcore/server.c:1162
+#: ../../ggzcore/server.c:1177
 msgid "Unable to connect"
 msgstr ""
 
-#: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
+#: ../../ggzcore/server.c:1421 ../../ggzcore/server.c:1438
 msgid "Protocol mismatch"
+msgstr ""
+
+#: ../../ggzcore/server.c:1647
+msgid "Server didn't recognize one of our commands"
+msgstr ""
+
+#: ../../ggzcore/server.c:1651
+msgid "Bad XML in server connection"
+msgstr ""
+
+#: ../../ggzcore/server.c:1655
+msgid "Server specified nonexistent room"
+msgstr ""
+
+#: ../../ggzcore/server.c:1658
+msgid "Server specified nonexistent table"
+msgstr ""
+
+#: ../../ggzcore/server.c:1661
+msgid "Unknown protocol error"
 msgstr ""

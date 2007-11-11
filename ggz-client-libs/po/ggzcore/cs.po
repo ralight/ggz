@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-03 18:35+0200\n"
+"POT-Creation-Date: 2007-11-11 22:00+0100\n"
 "PO-Revision-Date: 2007-04-11 11:42+0200\n"
 "Last-Translator: Jakub Friedl <jfriedl@suse.cz>\n"
 "Language-Team:  <cs@li.org>\n"
@@ -25,46 +25,46 @@ msgstr ""
 "Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../../ggzcore/server.c:907
-#, c-format
+#: ../../ggzcore/netxml.c:1279
+msgid "Unknown error"
+msgstr "Neznámá chyba"
+
+#: ../../ggzcore/server.c:918
+msgid "The password was incorrect"
+msgstr "Heslo bylo nesprávné"
+
+#: ../../ggzcore/server.c:921
+msgid "Name is already taken"
+msgstr "Jméno je již používáno"
+
+#: ../../ggzcore/server.c:924
 msgid "This name is already registered so cannot be used by a guest"
 msgstr "Toto jméno je již zaregistrováno, nelze jej proto použít hostem"
 
-#: ../../ggzcore/server.c:915
-#, c-format
+#: ../../ggzcore/server.c:931
 msgid "Name too long"
 msgstr "Jméno je příliš dlouhé"
 
-#: ../../ggzcore/server.c:919
-#, c-format
-msgid "Name contains forbidden ASCII characters"
-msgstr "Jméno obsahuje zakázané ASCII znaky"
-
-#: ../../ggzcore/server.c:923
-#, c-format
+#: ../../ggzcore/server.c:942
 msgid "Missing password or other bad options."
 msgstr "Chybějící heslo nebo špatné volby."
 
-#: ../../ggzcore/server.c:927
-#, c-format
+#: ../../ggzcore/server.c:946
 msgid "Unknown login error"
 msgstr "Neznámá chyba přihlášení"
 
-#: ../../ggzcore/server.c:950
-#, c-format
+#: ../../ggzcore/server.c:968
 msgid "Room full"
 msgstr "Místnost je plná"
 
-#: ../../ggzcore/server.c:963
-#, c-format
+#: ../../ggzcore/server.c:979
 msgid "Bad room number"
 msgstr "Nesprávné číslo místnosti"
 
-#: ../../ggzcore/server.c:967
-#, c-format
+#: ../../ggzcore/server.c:982
 msgid "Insufficient permissions, room access is restricted"
 msgstr "Nedostatečná oprávnění, přístup do místnosti je omezen"
 
-#: ../../ggzcore/server.c:1162
+#: ../../ggzcore/server.c:1177
 msgid "Unable to connect"
 msgstr "Nelze se připojit"

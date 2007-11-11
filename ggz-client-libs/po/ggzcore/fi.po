@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-games\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-03 18:35+0200\n"
+"POT-Creation-Date: 2007-11-11 22:00+0100\n"
 "PO-Revision-Date: 2007-02-19 21:15+0300\n"
 "Last-Translator: Ilkka Tuohela <hile@iki.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
@@ -20,81 +20,72 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../../ggzcore/server.c:872
-msgid "Unknown negotation"
+#: ../../ggzcore/netxml.c:1279
+msgid "Unknown error"
+msgstr "Tuntematon virhe"
+
+#: ../../ggzcore/server.c:888
+msgid "Unknown negotiation"
 msgstr "Tuntematon neuvottelu"
 
-#: ../../ggzcore/server.c:899
-#, c-format
+#: ../../ggzcore/server.c:915
 msgid "Already logged in"
 msgstr "Kirjauduit jo sisään"
 
-#: ../../ggzcore/server.c:907
-#, c-format
+#: ../../ggzcore/server.c:918
+msgid "The password was incorrect"
+msgstr "Salasasana oli väärä"
+
+#: ../../ggzcore/server.c:921
+msgid "Name is already taken"
+msgstr "Nimi on jo käytössä"
+
+#: ../../ggzcore/server.c:924
 msgid "This name is already registered so cannot be used by a guest"
 msgstr ""
 "Tämä nimi on jo rekisteröity eikä sitä voi käyttää vierailtaessa"
 
-#: ../../ggzcore/server.c:911
-#, c-format
+#: ../../ggzcore/server.c:928
 msgid "No such name was found"
 msgstr "Nimeä ei löytynyt"
 
-#: ../../ggzcore/server.c:915
-#, c-format
+#: ../../ggzcore/server.c:931
 msgid "Name too long"
 msgstr "Nimi on liian pitkä"
 
-#: ../../ggzcore/server.c:919
-#, c-format
-msgid "Name contains forbidden ASCII characters"
-msgstr "Nimi sisältää kiellettyjä ASCII-merkkejä"
-
-#: ../../ggzcore/server.c:923
-#, c-format
+#: ../../ggzcore/server.c:942
 msgid "Missing password or other bad options."
 msgstr "Salasana puuttuu, tai muuta valitsimet ovat väärin."
 
-#: ../../ggzcore/server.c:927
-#, c-format
+#: ../../ggzcore/server.c:946
 msgid "Unknown login error"
 msgstr "Tuntematon virhe kirjautumisessa"
 
-#: ../../ggzcore/server.c:950
-#, c-format
+#: ../../ggzcore/server.c:968
 msgid "Room full"
 msgstr "Huone on täynnä"
 
-#: ../../ggzcore/server.c:954
-#, c-format
+#: ../../ggzcore/server.c:971
 msgid "Can't change rooms while at a table"
 msgstr "Huonetta ei voi vaihtaa ollessasi pöydässä"
 
-#: ../../ggzcore/server.c:958
-#, c-format
+#: ../../ggzcore/server.c:975
 msgid "Can't change rooms while joining/leaving a table"
 msgstr ""
 "Et voi vaihtaa huonetta pöytään liittymisen tai siitä poistumisen aikana"
 
-#: ../../ggzcore/server.c:963
-#, c-format
+#: ../../ggzcore/server.c:979
 msgid "Bad room number"
 msgstr "Virheellinen huoneen numero"
 
-#: ../../ggzcore/server.c:967
-#, c-format
+#: ../../ggzcore/server.c:982
 msgid "Insufficient permissions, room access is restricted"
 msgstr "Oikeudet eivät riitä, pääsy huoneeseen on rajattu"
 
-#: ../../ggzcore/server.c:971
-#, c-format
-msgid "Unknown room-joining error"
-msgstr "Tuntematon virhe-virhe liityttäessä"
-
-#: ../../ggzcore/server.c:1162
+#: ../../ggzcore/server.c:1177
 msgid "Unable to connect"
 msgstr "Ei voida yhdistää"
 
-#: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
+#: ../../ggzcore/server.c:1421 ../../ggzcore/server.c:1438
 msgid "Protocol mismatch"
 msgstr "Protokolla ei täsmää"

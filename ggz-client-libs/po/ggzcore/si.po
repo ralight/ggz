@@ -1,0 +1,40 @@
+# This translation was merged from GNOME SVN
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/si.po)
+# translation of si.po to Sinhala
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Danishka Navin <snavin@redhat.com>, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: si\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-11-11 22:00+0100\n"
+"PO-Revision-Date: 2007-09-17 12:46+0530\n"
+"Last-Translator: Danishka Navin <snavin@redhat.com>\n"
+"Language-Team: Sinhala <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#: ../../ggzcore/netxml.c:1279
+msgid "Unknown error"
+msgstr "නොදන්නා දෝෂයක්"
+
+#: ../../ggzcore/server.c:915
+msgid "Already logged in"
+msgstr "දැනටම පිවිසි ඇත"
+
+#: ../../ggzcore/server.c:931
+msgid "Name too long"
+msgstr "නම දිග වැඩියි"
+
+#: ../../ggzcore/server.c:946
+msgid "Unknown login error"
+msgstr "නොදන්නා පිවිසුම් දෝෂය"
+
+#: ../../ggzcore/server.c:968
+msgid "Room full"
+msgstr "කාමාරය පිරී ඇත"

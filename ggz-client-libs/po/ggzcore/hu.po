@@ -1,9 +1,10 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/hu.po)
-# translation of gnome-games.HEAD.po to Hungarian
 # Hungarian translation of gnome-games.
 # Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-games package.
+#
+# sakk szakkifejezés-ügyi kisokos: http://mek.oszk.hu/00000/00056/html/141.htm
 #
 # Szabolcs Ban <shooby@gnome.hu>, 1999, 2000, 2001.
 # Gergely Nagy <greg@gnome.hu>, 2001.
@@ -16,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-games.HEAD.hu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-03 18:35+0200\n"
-"PO-Revision-Date: 2007-03-09 12:20+0100\n"
+"POT-Creation-Date: 2007-11-11 22:00+0100\n"
+"PO-Revision-Date: 2007-09-16 11:26+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -26,80 +27,71 @@ msgstr ""
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../../ggzcore/server.c:872
-msgid "Unknown negotation"
+#: ../../ggzcore/netxml.c:1279
+msgid "Unknown error"
+msgstr "Ismeretlen hiba"
+
+#: ../../ggzcore/server.c:888
+msgid "Unknown negotiation"
 msgstr "Ismeretlen megállapodás"
 
-#: ../../ggzcore/server.c:899
-#, c-format
+#: ../../ggzcore/server.c:915
 msgid "Already logged in"
 msgstr "Már be van jelentkezve"
 
-#: ../../ggzcore/server.c:907
-#, c-format
+#: ../../ggzcore/server.c:918
+msgid "The password was incorrect"
+msgstr "A jelszó helytelen volt"
+
+#: ../../ggzcore/server.c:921
+msgid "Name is already taken"
+msgstr "A név már foglalt"
+
+#: ../../ggzcore/server.c:924
 msgid "This name is already registered so cannot be used by a guest"
 msgstr "Ez a név már regisztrálva van, így vendégként nem használhatja"
 
-#: ../../ggzcore/server.c:911
-#, c-format
+#: ../../ggzcore/server.c:928
 msgid "No such name was found"
 msgstr "Nem található ilyen név"
 
-#: ../../ggzcore/server.c:915
-#, c-format
+#: ../../ggzcore/server.c:931
 msgid "Name too long"
 msgstr "A név túl hosszú"
 
-#: ../../ggzcore/server.c:919
-#, c-format
-msgid "Name contains forbidden ASCII characters"
-msgstr "A név tiltott ASCII karaktereket tartalmaz"
-
-#: ../../ggzcore/server.c:923
-#, c-format
+#: ../../ggzcore/server.c:942
 msgid "Missing password or other bad options."
 msgstr "Hiányzó jelszó vagy más hibás beállítás."
 
-#: ../../ggzcore/server.c:927
-#, c-format
+#: ../../ggzcore/server.c:946
 msgid "Unknown login error"
 msgstr "Ismeretlen bejelentkezési hiba"
 
-#: ../../ggzcore/server.c:950
-#, c-format
+#: ../../ggzcore/server.c:968
 msgid "Room full"
 msgstr "A szoba tele"
 
-#: ../../ggzcore/server.c:954
-#, c-format
+#: ../../ggzcore/server.c:971
 msgid "Can't change rooms while at a table"
 msgstr "Nem lehet szobát váltani amíg táblán van"
 
-#: ../../ggzcore/server.c:958
-#, c-format
+#: ../../ggzcore/server.c:975
 msgid "Can't change rooms while joining/leaving a table"
 msgstr ""
 "Nem lehet szobát váltani mialatt csatlakozik a táblához vagy kilép róla"
 
-#: ../../ggzcore/server.c:963
-#, c-format
+#: ../../ggzcore/server.c:979
 msgid "Bad room number"
 msgstr "Hibás szobaszám"
 
-#: ../../ggzcore/server.c:967
-#, c-format
+#: ../../ggzcore/server.c:982
 msgid "Insufficient permissions, room access is restricted"
 msgstr "Elégtelen jogosultság, a szobába korlátozott a belépés"
 
-#: ../../ggzcore/server.c:971
-#, c-format
-msgid "Unknown room-joining error"
-msgstr "Ismeretlen hiba a szobához csatlakozás közben"
-
-#: ../../ggzcore/server.c:1162
+#: ../../ggzcore/server.c:1177
 msgid "Unable to connect"
 msgstr "Nem lehet csatlakozni"
 
-#: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
+#: ../../ggzcore/server.c:1421 ../../ggzcore/server.c:1438
 msgid "Protocol mismatch"
 msgstr "Protokolleltérés"

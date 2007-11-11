@@ -1,0 +1,113 @@
+# This translation was merged from GNOME SVN
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/el.po)
+# translation of el.po to Greek
+# gnome-games Greek translation.
+# Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
+#
+# spyros:
+#   The translation for gtali (dice game: Yahtzee) incomplete, since
+#   I did not know some terms (kanenas expert sto mparmpouti paides? ;-)
+#   spyros did 600 messages
+# simos:
+# kostas: 28Oct2003, update for Gnome 2.6
+# kostas: 12Nov2003, fixes
+# kostas: 26Jan2004, update
+#
+#  just updates, 20 messages.
+# simos: 642 messages, 12Feb2001.
+# kostas: 828 messages, 06Nov2002, completed translation.
+# kostas: 879 messages, 07Jan2003, updated translation.
+# kostas: 906 messages,29May2003, update for Gnome 2.4.
+# kostas: 1013 messages,04Sep2003, update for Gnome 2.4.
+# kostas: 25Dec2003, xmas fixes,1020 messages.
+# kostas:13Feb2004,1058 messages.
+# Spiros Papadimitriou <spapadim+@cs.cmu.edu>, 2000.
+# Simos Xenitellis <simos74@gmx.net>, 2000, 2001, 2002.
+# Kostas Papadimas <pkst@gnome.org>, 2002,2003, 2004, 2005, 2006.
+# Athanasios Lefteris <alefteris@gmail.com>, 2006.
+# Yannis Evangelou <zephyrous1979@yahoo.com>, 2007.
+# Simos Xenitellis <simos@gnome.org>, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: el\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-11-11 22:00+0100\n"
+"PO-Revision-Date: 2007-09-05 00:31+0200\n"
+"Last-Translator: NikosCharonitakis <nikosx@gmail.com>\n"
+"Language-Team: Greek <team@gnome.gr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#: ../../ggzcore/netxml.c:1279
+msgid "Unknown error"
+msgstr "Άγνωστο σφάλμα"
+
+#: ../../ggzcore/server.c:888
+msgid "Unknown negotiation"
+msgstr "Άγνωστη διαπραγμάτευση"
+
+#: ../../ggzcore/server.c:915
+msgid "Already logged in"
+msgstr "Συνδεδεμένος"
+
+#: ../../ggzcore/server.c:918
+msgid "The password was incorrect"
+msgstr "Ο κωδικός πρόσβασης ήταν λανθασμένος"
+
+#: ../../ggzcore/server.c:921
+msgid "Name is already taken"
+msgstr "Το όνομα χρησιμοποιείται ήδη"
+
+#: ../../ggzcore/server.c:924
+msgid "This name is already registered so cannot be used by a guest"
+msgstr ""
+"Το όνομα αυτό είναι ήδη εγγεγραμμένο και "
+"δεν μπορεί να χρησιμοποιηθεί από "
+"επισκέπτες"
+
+#: ../../ggzcore/server.c:931
+msgid "Name too long"
+msgstr "Υπερβολικά μεγάλο όνομα"
+
+#: ../../ggzcore/server.c:942
+msgid "Missing password or other bad options."
+msgstr ""
+"Λείπει ο κωδικός πρόσβασης ή έχει γίνει "
+"άλλη κακή επιλογή."
+
+#: ../../ggzcore/server.c:968
+msgid "Room full"
+msgstr "Πλήρες δωμάτιο"
+
+#: ../../ggzcore/server.c:971
+msgid "Can't change rooms while at a table"
+msgstr ""
+"Δεν μπορείτε να αλλάξετε δωμάτιο όταν "
+"βρίσκεστε σε τραπέζι"
+
+#: ../../ggzcore/server.c:975
+msgid "Can't change rooms while joining/leaving a table"
+msgstr ""
+"Δεν μπορείτε να αλλάξετε δωμάτιο όταν "
+"κάθεστε σε/αποχωρείτε από τραπέζι"
+
+#: ../../ggzcore/server.c:979
+msgid "Bad room number"
+msgstr "Λάθος αριθμός δωματίου"
+
+#: ../../ggzcore/server.c:982
+msgid "Insufficient permissions, room access is restricted"
+msgstr ""
+"Ανεπαρκέίς άδειες. Απαγορεύεται η "
+"πρόσβαση σε δωμάτιο"
+
+#: ../../ggzcore/server.c:1177
+msgid "Unable to connect"
+msgstr "Αδυναμία σύνδεσης"
+
+#: ../../ggzcore/server.c:1421 ../../ggzcore/server.c:1438
+msgid "Protocol mismatch"
+msgstr "Αναντιστοιχία προτοκόλλων"

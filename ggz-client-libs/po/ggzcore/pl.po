@@ -1,87 +1,85 @@
 # This translation was merged from GNOME SVN
-# (http://svn.gnome.org/svn/gnome-games/trunk/po/zh_CN.po)
-# gnome-games translation
-# Dillion Chen, 2000
-#   Updated by Wang Li <charles@linux.net.cn>, 2002
-# Funda Wang <fundawang@linux.net.cn>, 2003-2005
-#
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/pl.po)
+# Polish translation of gnome-games.
+# Copyright (C) 2007 AviaryPL/GNOME-PL <gnome-l10n@aviary.pl> 
+# Andrzej Polatyński <andrzej@datatel.net.pl>, 2006.
+# Bartosz Kosiorek <gang65@poczta.onet.pl>, 2005.
+# This file is distributed under the same license as the gnome-games package.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-games\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-11-11 22:00+0100\n"
-"PO-Revision-Date: 2007-10-16 12:58+0800\n"
-"Last-Translator: Deng Xiyue <manphiz@gmail.com>\n"
-"Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
+"PO-Revision-Date: 2007-09-04 23:34+0100\n"
+"Last-Translator: Artur Flinta <aflinta@gmail.com>\n"
+"Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-
-#: ../../ggzcore/netxml.c:1279
-msgid "Unknown error"
-msgstr "未知错误"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
 
 #: ../../ggzcore/server.c:888
 msgid "Unknown negotiation"
-msgstr "未知会话"
+msgstr "Nieznane nawiązanie połączenia"
 
 #: ../../ggzcore/server.c:915
 msgid "Already logged in"
-msgstr "已登录"
+msgstr "Już zalogowano"
 
 #: ../../ggzcore/server.c:918
 msgid "The password was incorrect"
-msgstr "密码不正确"
+msgstr "Błędne hasło"
 
 #: ../../ggzcore/server.c:921
 msgid "Name is already taken"
-msgstr "名字已被占用"
+msgstr "Nazwa jest już użyta"
 
 #: ../../ggzcore/server.c:924
 msgid "This name is already registered so cannot be used by a guest"
-msgstr "此名字已被占用所以不能被 guest 使用"
+msgstr ""
+"Nazwa jest już zarejestrowana i nie może zostać użyta przez gościa"
 
 #: ../../ggzcore/server.c:928
 msgid "No such name was found"
-msgstr "没有找到此类游戏。"
+msgstr "Nie znaleziono takiej nazwy"
 
 #: ../../ggzcore/server.c:931
 msgid "Name too long"
-msgstr "名字太长"
+msgstr "Nazwa jest za długa"
 
 #: ../../ggzcore/server.c:942
 msgid "Missing password or other bad options."
-msgstr "缺少密码或出现其它错误选项。"
+msgstr "Brak hasła lub inne złe opcje."
 
 #: ../../ggzcore/server.c:946
 msgid "Unknown login error"
-msgstr "未知登录错误"
+msgstr "Nieznany błąd logowania"
 
 #: ../../ggzcore/server.c:968
 msgid "Room full"
-msgstr "房间已满"
+msgstr "Pokój jest pełny"
 
 #: ../../ggzcore/server.c:971
 msgid "Can't change rooms while at a table"
-msgstr "在游戏桌时不能变更房间"
+msgstr "Nie można zmieniać pokoi podczas pobytu przy stole"
 
 #: ../../ggzcore/server.c:975
 msgid "Can't change rooms while joining/leaving a table"
-msgstr "在加入/离开游戏桌时不能变更房间"
+msgstr "Nie można zmieniać pokoi podczas przyłączania/opuszczania stołu"
 
 #: ../../ggzcore/server.c:979
 msgid "Bad room number"
-msgstr "错误的房间号码"
+msgstr "Zły numer pokoju"
 
 #: ../../ggzcore/server.c:982
 msgid "Insufficient permissions, room access is restricted"
-msgstr "权限不足，房间访问受限"
+msgstr "Niewystarczające uprawnienia, dostęp do pokoju jest ograniczony"
 
 #: ../../ggzcore/server.c:1177
 msgid "Unable to connect"
-msgstr "无法连接"
+msgstr "Nie można nawiązać połączenia"
 
 #: ../../ggzcore/server.c:1421 ../../ggzcore/server.c:1438
 msgid "Protocol mismatch"
-msgstr "协议不匹配"
+msgstr "Niezgodność protokołu"

@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-games trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-03 18:35+0200\n"
-"PO-Revision-Date: 2007-02-18 14:41+0900\n"
+"POT-Creation-Date: 2007-11-11 22:00+0100\n"
+"PO-Revision-Date: 2007-09-13 20:16+0900\n"
 "Last-Translator: Takeshi AIHANA <takeshi.aihana@gmail.com>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -23,84 +23,75 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../../ggzcore/server.c:872
-msgid "Unknown negotation"
-msgstr "不明なネゴシエーション"
+#: ../../ggzcore/netxml.c:1279
+msgid "Unknown error"
+msgstr "原因不明のエラー"
 
-#: ../../ggzcore/server.c:899
-#, c-format
+#: ../../ggzcore/server.c:888
+msgid "Unknown negotiation"
+msgstr "不明なネゴシエーションです"
+
+#: ../../ggzcore/server.c:915
 msgid "Already logged in"
 msgstr "既にログイン済みです"
 
-#: ../../ggzcore/server.c:907
-#, c-format
+#: ../../ggzcore/server.c:918
+msgid "The password was incorrect"
+msgstr "パスワードが間違っていました"
+
+#: ../../ggzcore/server.c:921
+msgid "Name is already taken"
+msgstr "名前は既に取得済みです"
+
+#: ../../ggzcore/server.c:924
 msgid "This name is already registered so cannot be used by a guest"
 msgstr "その名前は既に登録済みなので利用できません"
 
-#: ../../ggzcore/server.c:911
-#, c-format
+#: ../../ggzcore/server.c:928
 msgid "No such name was found"
 msgstr "そのような名前が見つかりませんでした"
 
-#: ../../ggzcore/server.c:915
-#, c-format
+#: ../../ggzcore/server.c:931
 msgid "Name too long"
 msgstr "名前が長すぎます"
 
-#: ../../ggzcore/server.c:919
-#, c-format
-msgid "Name contains forbidden ASCII characters"
-msgstr ""
-"指定した名前には使用禁止の ASCII 文字が含まれています"
-
-#: ../../ggzcore/server.c:923
-#, c-format
+#: ../../ggzcore/server.c:942
 msgid "Missing password or other bad options."
 msgstr ""
-"パスワードがない、またはオプションが間違っています"
+""
+"パスワードが存在しない、またはオプションが間違っています"
 
-#: ../../ggzcore/server.c:927
-#, c-format
+#: ../../ggzcore/server.c:946
 msgid "Unknown login error"
-msgstr "原因不明のログイン・エラー"
+msgstr "原因不明のログイン・エラーです"
 
-#: ../../ggzcore/server.c:950
-#, c-format
+#: ../../ggzcore/server.c:968
 msgid "Room full"
 msgstr "満員です"
 
-#: ../../ggzcore/server.c:954
-#, c-format
+#: ../../ggzcore/server.c:971
 msgid "Can't change rooms while at a table"
 msgstr "テーブルについている間は部屋を変更できません"
 
-#: ../../ggzcore/server.c:958
-#, c-format
+#: ../../ggzcore/server.c:975
 msgid "Can't change rooms while joining/leaving a table"
 msgstr ""
 ""
 "テーブルについている/抜けている間は部屋を変更できません"
 
-#: ../../ggzcore/server.c:963
-#, c-format
+#: ../../ggzcore/server.c:979
 msgid "Bad room number"
 msgstr "部屋の番号が間違っています"
 
-#: ../../ggzcore/server.c:967
-#, c-format
+#: ../../ggzcore/server.c:982
 msgid "Insufficient permissions, room access is restricted"
 msgstr ""
 "権限が不適切です (部屋へのアクセスが拒否されました)"
 
-#: ../../ggzcore/server.c:971
-#, c-format
-msgid "Unknown room-joining error"
-msgstr "部屋に入る際に原因不明のエラー"
-
-#: ../../ggzcore/server.c:1162
+#: ../../ggzcore/server.c:1177
 msgid "Unable to connect"
 msgstr "接続できません"
 
-#: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
+#: ../../ggzcore/server.c:1421 ../../ggzcore/server.c:1438
 msgid "Protocol mismatch"
 msgstr "プロトコルが一致しません"

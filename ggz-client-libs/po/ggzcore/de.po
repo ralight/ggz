@@ -14,6 +14,7 @@
 # Jens <jenshamacher@gmx.de>, 2006
 # Benedikt Wicklein <benedikt.wicklein@googlemail.com>, 2007.
 # Philipp Kerling <k.philipp@gmail.com>, 2007
+# Björn Deiseroth <service@dual-creators.de>, 2007
 #
 # TODO
 # - Check msgstrs for consistency (strings like 'Level')
@@ -26,9 +27,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-games\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-03 18:35+0200\n"
-"PO-Revision-Date: 2007-03-10 14:55+0100\n"
-"Last-Translator: Hendrik Richter <hendrikr@gnome.org>\n"
+"POT-Creation-Date: 2007-11-11 22:00+0100\n"
+"PO-Revision-Date: 2007-09-08 13:12+0200\n"
+"Last-Translator: Björn Deiseroth <service@dual-creators.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -37,86 +38,76 @@ msgstr ""
 "X-Poedit-Basepath: /home/shampoo/gnome-games\n"
 "X-Poedit-SearchPath-0: /home/shampoo/gnome-games\n"
 
-# Fehler in msgid: muss "negotiation" heißen
-#: ../../ggzcore/server.c:872
-msgid "Unknown negotation"
-msgstr "Unbekannte Übertragung"
+#: ../../ggzcore/netxml.c:1279
+msgid "Unknown error"
+msgstr "Unbekannter Fehler"
 
-#: ../../ggzcore/server.c:899
-#, c-format
+#: ../../ggzcore/server.c:888
+msgid "Unknown negotiation"
+msgstr "Unbekannte Übertragungsart"
+
+#: ../../ggzcore/server.c:915
 msgid "Already logged in"
 msgstr "Bereits angemeldet"
 
-#: ../../ggzcore/server.c:907
-#, c-format
+#: ../../ggzcore/server.c:918
+msgid "The password was incorrect"
+msgstr "Falsches Passwort"
+
+#: ../../ggzcore/server.c:921
+msgid "Name is already taken"
+msgstr "Der gewählte Benutzername existiert bereits"
+
+#: ../../ggzcore/server.c:924
 msgid "This name is already registered so cannot be used by a guest"
 msgstr ""
 "Der gewählte Benutzername ist bereits registriert und kann nicht von "
 "Gästen benutzt werden"
 
-#: ../../ggzcore/server.c:911
-#, c-format
+#: ../../ggzcore/server.c:928
 msgid "No such name was found"
 msgstr "Der Name wurde nicht gefunden"
 
-#: ../../ggzcore/server.c:915
-#, c-format
+#: ../../ggzcore/server.c:931
 msgid "Name too long"
 msgstr "Der Name ist zu lang"
 
-#: ../../ggzcore/server.c:919
-#, c-format
-msgid "Name contains forbidden ASCII characters"
-msgstr "Der Name enthält verbotene ASCII-Zeichen"
-
-#: ../../ggzcore/server.c:923
-#, c-format
+#: ../../ggzcore/server.c:942
 msgid "Missing password or other bad options."
 msgstr "Kein Passwort angegeben oder andere Parameter sind falsch."
 
-#: ../../ggzcore/server.c:927
-#, c-format
+#: ../../ggzcore/server.c:946
 msgid "Unknown login error"
 msgstr "Unbekannter Anmelde-Fehler"
 
-#: ../../ggzcore/server.c:950
-#, c-format
+#: ../../ggzcore/server.c:968
 msgid "Room full"
 msgstr "Der Raum ist voll"
 
-#: ../../ggzcore/server.c:954
-#, c-format
+#: ../../ggzcore/server.c:971
 msgid "Can't change rooms while at a table"
 msgstr ""
 "Sie können den Raum nicht wechseln, während Sie sich an einem Tisch "
 "befinden"
 
-#: ../../ggzcore/server.c:958
-#, c-format
+#: ../../ggzcore/server.c:975
 msgid "Can't change rooms while joining/leaving a table"
 msgstr ""
 "Sie können den Raum nicht wechseln, während Sie einen Tisch betreten oder "
 "verlassen"
 
-#: ../../ggzcore/server.c:963
-#, c-format
+#: ../../ggzcore/server.c:979
 msgid "Bad room number"
 msgstr "Ungültige Raumnummer"
 
-#: ../../ggzcore/server.c:967
-#, c-format
+#: ../../ggzcore/server.c:982
 msgid "Insufficient permissions, room access is restricted"
 msgstr "Zugriff verweigert, da der Raumzugriff eingeschränkt ist."
 
-#: ../../ggzcore/server.c:971
-#, c-format
-msgid "Unknown room-joining error"
-msgstr "Unbekannter Fehler beim Betreten des Raums"
-
-#: ../../ggzcore/server.c:1162
+#: ../../ggzcore/server.c:1177
 msgid "Unable to connect"
 msgstr "Verbindung fehlgeschlagen"
 
-#: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
+#: ../../ggzcore/server.c:1421 ../../ggzcore/server.c:1438
 msgid "Protocol mismatch"
 msgstr "Protokollfehler"

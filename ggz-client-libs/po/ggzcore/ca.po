@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  gnome-games 2.9.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-03 18:35+0200\n"
-"PO-Revision-Date: 2007-02-25 16:21+0100\n"
+"POT-Creation-Date: 2007-11-11 22:00+0100\n"
+"PO-Revision-Date: 2007-10-09 22:09+0200\n"
 "Last-Translator: Josep Puigdemont <josep.puigdemont@gmail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,80 +22,71 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n!=1;\n"
 
-#: ../../ggzcore/server.c:872
-msgid "Unknown negotation"
+#: ../../ggzcore/netxml.c:1279
+msgid "Unknown error"
+msgstr "Error desconegut"
+
+#: ../../ggzcore/server.c:888
+msgid "Unknown negotiation"
 msgstr "Negociació desconeguda"
 
-#: ../../ggzcore/server.c:899
-#, c-format
+#: ../../ggzcore/server.c:915
 msgid "Already logged in"
 msgstr "Ja esteu connectat"
 
-#: ../../ggzcore/server.c:907
-#, c-format
+#: ../../ggzcore/server.c:918
+msgid "The password was incorrect"
+msgstr "La contrasenya no era correcta"
+
+#: ../../ggzcore/server.c:921
+msgid "Name is already taken"
+msgstr "Aquest nom ja està assignat"
+
+#: ../../ggzcore/server.c:924
 msgid "This name is already registered so cannot be used by a guest"
 msgstr "Aquest nom ja està registrat, i no el pot fer servir un convidat"
 
-#: ../../ggzcore/server.c:911
-#, c-format
+#: ../../ggzcore/server.c:928
 msgid "No such name was found"
 msgstr "No s'han trobat aquest nom"
 
-#: ../../ggzcore/server.c:915
-#, c-format
+#: ../../ggzcore/server.c:931
 msgid "Name too long"
 msgstr "El nom és massa llarg"
 
-#: ../../ggzcore/server.c:919
-#, c-format
-msgid "Name contains forbidden ASCII characters"
-msgstr "El nom conté caràcters ASCII prohibits"
-
-#: ../../ggzcore/server.c:923
-#, c-format
+#: ../../ggzcore/server.c:942
 msgid "Missing password or other bad options."
 msgstr "Manca una contrasenya, o d'altres opcions equivocades."
 
-#: ../../ggzcore/server.c:927
-#, c-format
+#: ../../ggzcore/server.c:946
 msgid "Unknown login error"
 msgstr "Error d'entrada desconegut"
 
-#: ../../ggzcore/server.c:950
-#, c-format
+#: ../../ggzcore/server.c:968
 msgid "Room full"
 msgstr "La sala és plena"
 
 # FIXME
-#: ../../ggzcore/server.c:954
-#, c-format
+#: ../../ggzcore/server.c:971
 msgid "Can't change rooms while at a table"
 msgstr "No es pot canviar de sala quan esteu en una taula"
 
-#: ../../ggzcore/server.c:958
-#, c-format
+#: ../../ggzcore/server.c:975
 msgid "Can't change rooms while joining/leaving a table"
 msgstr "No es pot canviar de sala mentre s'està entrant o sortint d'una taula"
 
-#: ../../ggzcore/server.c:963
-#, c-format
+#: ../../ggzcore/server.c:979
 msgid "Bad room number"
 msgstr "El número de la sala no és correcte"
 
-#: ../../ggzcore/server.c:967
-#, c-format
+#: ../../ggzcore/server.c:982
 msgid "Insufficient permissions, room access is restricted"
 msgstr "No hi teniu permís, l'accés a la sala és restringit"
 
-#: ../../ggzcore/server.c:971
-#, c-format
-msgid "Unknown room-joining error"
-msgstr "Error desconegut en entrar a una sala"
-
-#: ../../ggzcore/server.c:1162
+#: ../../ggzcore/server.c:1177
 msgid "Unable to connect"
 msgstr "No s'ha pogut connectar"
 
-#: ../../ggzcore/server.c:1412 ../../ggzcore/server.c:1429
+#: ../../ggzcore/server.c:1421 ../../ggzcore/server.c:1438
 msgid "Protocol mismatch"
 msgstr "Els protocols no coincideixen"

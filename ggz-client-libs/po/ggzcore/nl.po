@@ -37,8 +37,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-games CVS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-03 18:35+0200\n"
-"PO-Revision-Date: 2007-03-07 02:27+0100\n"
+"POT-Creation-Date: 2007-11-11 22:00+0100\n"
+"PO-Revision-Date: 2007-09-10 05:17+0200\n"
 "Last-Translator: Tino Meinen <a.t.meinen@chello.nl>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
 "MIME-Version: 1.0\n"
@@ -46,42 +46,55 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../../ggzcore/server.c:899
-#, c-format
+#: ../../ggzcore/netxml.c:1279
+msgid "Unknown error"
+msgstr "Onbekende fout"
+
+#: ../../ggzcore/server.c:888
+msgid "Unknown negotiation"
+msgstr "Onbekende onderhandeling"
+
+#: ../../ggzcore/server.c:915
 msgid "Already logged in"
 msgstr "Al aangemeld"
 
+#: ../../ggzcore/server.c:918
+msgid "The password was incorrect"
+msgstr "Het wachtwoord was onjuist"
+
+#: ../../ggzcore/server.c:921
+msgid "Name is already taken"
+msgstr "Naam bestaat al"
+
 # geregistreerd/vergeven
-#: ../../ggzcore/server.c:907
-#, c-format
+#: ../../ggzcore/server.c:924
 msgid "This name is already registered so cannot be used by a guest"
 msgstr "Deze naam is al vergeven en kan dus niet aan een gast worden gegeven"
 
-#: ../../ggzcore/server.c:911
-#, c-format
+#: ../../ggzcore/server.c:928
 msgid "No such name was found"
 msgstr "Naam is niet gevonden"
 
-#: ../../ggzcore/server.c:915
-#, c-format
+#: ../../ggzcore/server.c:931
 msgid "Name too long"
 msgstr "Naam is te lang"
 
-#: ../../ggzcore/server.c:919
-#, c-format
-msgid "Name contains forbidden ASCII characters"
-msgstr "Naam bevat verboden ASCII-tekens"
-
-#: ../../ggzcore/server.c:923
-#, c-format
+#: ../../ggzcore/server.c:942
 msgid "Missing password or other bad options."
 msgstr "Ontbrekend wachtwoord of andere onjuiste opties."
 
-#: ../../ggzcore/server.c:950
-#, c-format
+#: ../../ggzcore/server.c:946
+msgid "Unknown login error"
+msgstr "Onbekende aanmeldfout"
+
+#: ../../ggzcore/server.c:968
 msgid "Room full"
 msgstr "Kamer is vol"
 
-#: ../../ggzcore/server.c:1162
+#: ../../ggzcore/server.c:979
+msgid "Bad room number"
+msgstr "Foutief kamernummer"
+
+#: ../../ggzcore/server.c:1177
 msgid "Unable to connect"
 msgstr "Kon geen verbinding maken"
