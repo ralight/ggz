@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-games.gnome-2-2.be\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-20 15:07+0100\n"
+"POT-Creation-Date: 2007-11-11 22:11+0100\n"
 "PO-Revision-Date: 2003-03-08 19:49+0200\n"
 "Last-Translator: Ales Nyakhaychyk <nab@mail.by>\n"
 "Language-Team: Belarusian <i18n@tut.by>\n"
@@ -20,11 +20,11 @@ msgstr ""
 msgid "Game"
 msgstr "Гульня"
 
-#: ../ggz-gtk/playerinfo.c:241
+#: ../ggz-gtk/playerinfo.c:256
 msgid "Score:"
 msgstr "Лік:"
 
-#: ../ggz-gtk/props.c:1536
+#: ../ggz-gtk/props.c:1533
 msgid "Options"
 msgstr "Параметры"
 

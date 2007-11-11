@@ -14,10 +14,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-games HEAD\n"
+"Project-Id-Version: gnome-games 2.20\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-20 15:07+0100\n"
-"PO-Revision-Date: 2007-05-31 12:16+0300\n"
+"POT-Creation-Date: 2007-11-11 22:11+0100\n"
+"PO-Revision-Date: 2007-11-10 13:34+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -25,82 +25,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../ggz-gtk/chat.c:89
-msgid "/msg <username> <message> . Private message a player"
-msgstr "/msg <kasutaja> <sõnum> ... Privaatsõnum mängijale"
+#: ../ggz-gtk/about.c:87 ../ggz-gtk/client.c:1089
+msgid "About"
+msgstr "Programmist lähemalt"
 
-#: ../ggz-gtk/chat.c:91
-msgid "/table <message> .......... Message to your table"
-msgstr "/table <sõnum> ............ Sõnum sinu lauale"
-
-#: ../ggz-gtk/chat.c:93
-msgid "/wall <message> ........... Admin command"
-msgstr "/wall <sõnum> ............. Halduri käsk"
-
-#: ../ggz-gtk/chat.c:95
-msgid "/beep <username> .......... Beep a player"
-msgstr "/beep <kasutaja> .......... Piiksu saatmine kasutajale"
-
-#: ../ggz-gtk/chat.c:97
-msgid "/help ..................... Get help"
-msgstr "/help ..................... Abiteabe hankimine"
-
-#: ../ggz-gtk/chat.c:99
-msgid "/friends .................. List your friends"
-msgstr "/friends .................. Sinu sõprade nimekiri"
-
-#: ../ggz-gtk/chat.c:101
-msgid "/ignore ................... List people you're ignoring"
-msgstr "/ignore ................... Sinu poole eiratavate isikute nimekiri"
-
-#: ../ggz-gtk/chat.c:104
-msgid "/kick <username> .......... Kick a player from the room"
-msgstr "/kick <kasutaja> .......... Kasutaja toast väljalöömine"
-
-#: ../ggz-gtk/chat.c:318
+#: ../ggz-gtk/chat.c:355
 #, c-format
 msgid "You've been beeped by %s."
 msgstr "%s saatis sulle piiksu."
 
-#: ../ggz-gtk/chat.c:439
-msgid "Usage: /msg <username> <message>"
-msgstr "Kasutamine: /msg <kasutaja> <sõnum>"
-
-#: ../ggz-gtk/chat.c:441
-msgid "    Sends a private message to a user on the network."
-msgstr "    Privaatsõnumi saatmine võrgus olevale kasutajale."
-
-#: ../ggz-gtk/chat.c:495
+#: ../ggz-gtk/chat.c:551
 #, c-format
 msgid "Beep sent to %s."
 msgstr "Piiks saadetud kasutajale %s."
 
-#: ../ggz-gtk/chat.c:523
+#: ../ggz-gtk/chat.c:579
 #, c-format
 msgid "%s (logged on)"
 msgstr "%s (sisselogitud)"
 
-#: ../ggz-gtk/chat.c:561
+#: ../ggz-gtk/chat.c:617
 #, c-format
 msgid "%s (logged off)"
 msgstr "%s (sisselogimata)"
 
-#: ../ggz-gtk/chat.c:807
+#: ../ggz-gtk/chat.c:879
+#, c-format
+msgid "Added %s to your friends list."
+msgstr "%s lisati sinu sõprade nimekirja."
+
+#: ../ggz-gtk/chat.c:903
 #, c-format
 msgid "Removed %s from your friends list."
 msgstr "%s eemaldati sinu sõprade nimekirjast"
 
-#: ../ggz-gtk/chat.c:838
+#: ../ggz-gtk/chat.c:934
 #, c-format
 msgid "Added %s to your ignore list."
 msgstr "%s lisati sinu poolt eiratavate nimekirja."
 
-#: ../ggz-gtk/chat.c:863
+#: ../ggz-gtk/chat.c:959
 #, c-format
 msgid "Removed %s from your ignore list."
 msgstr "%s eemaldati sinu poolt eiratavate nimekirjast."
 
-#: ../ggz-gtk/chat.c:1029
+#: ../ggz-gtk/chat.c:1034
+msgid "People currently your friends"
+msgstr "Sinu praegused sõbrad"
+
+#: ../ggz-gtk/chat.c:1045
+msgid "People you're currently ignoring"
+msgstr "Keda sa käesolevaga eirad"
+
+#: ../ggz-gtk/chat.c:1119
 msgid "Multiple matches:"
 msgstr "Mitu vastavust:"
 
@@ -112,14 +89,35 @@ msgstr "Kas sa soovid lõpetada?"
 msgid "Quit?"
 msgstr "Lõpetada?"
 
-#: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:334
+#: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
+#: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
+msgid "Not Implemented"
+msgstr "Pole teostatud"
+
+#: ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:614
+msgid "That table is full."
+msgstr "Lauas pole enam vabu kohti."
+
+#: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:336
 msgid "Error launching game module."
 msgstr "Viga mängumooduli käivitamisel."
 
 #: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
-#: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:335
+#: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:337
 msgid "Game Error"
 msgstr "Mängu viga"
+
+#: ../ggz-gtk/client.c:647
+msgid ""
+"Failed to join table.\n"
+"Join aborted."
+msgstr ""
+"Tõrge lauaga ühinemisel.\n"
+"Ühinemine tühistati."
+
+#: ../ggz-gtk/client.c:678
+msgid "Disconnect from the GGZ Gaming Zone server"
+msgstr "GGZ mängutsooni serveriga ühenduse katkestamine"
 
 #: ../ggz-gtk/client.c:680
 msgid "Start playing a game at a new table"
@@ -129,19 +127,17 @@ msgstr "Mängu alustamine uuel laual"
 msgid "Join an existing game"
 msgstr "Käimasoleva mänguga ühinemine"
 
+#: ../ggz-gtk/client.c:687
+msgid "Leave the game you're currently playing"
+msgstr "Käesolevast mängust lahkumine"
+
+#: ../ggz-gtk/client.c:689
+msgid "Show the properties dialog to change the client settings"
+msgstr "Kliendi sätete muutmise dialoogi näitamine"
+
 #: ../ggz-gtk/client.c:696
 msgid "Exit the GGZ client application."
 msgstr "GGZ-i kliendirakendusest väljumine."
-
-#: ../ggz-gtk/client.c:726
-#, c-format
-msgid "Client Version:14 %s"
-msgstr "Kliendi versioon:14 %s"
-
-#: ../ggz-gtk/client.c:729
-#, c-format
-msgid "GTK+ Version:14 %d.%d.%d\n"
-msgstr "GTK+ versioon:14 %d.%d.%d\n"
 
 #: ../ggz-gtk/client.c:736
 msgid "Compiled with debugging."
@@ -151,13 +147,13 @@ msgstr "Kompileeritud koos silumisega."
 msgid "GGZ"
 msgstr "GGZ"
 
-#: ../ggz-gtk/client.c:942 ../ggz-gtk/login.c:710
+#: ../ggz-gtk/client.c:942 ../ggz-gtk/login.c:729
 msgid "Connect"
 msgstr "Ühendu"
 
 #: ../ggz-gtk/client.c:949 ../ggz-gtk/client.c:1180
 msgid "Disconnect"
-msgstr "Ühenduse katkestamine"
+msgstr "Katkesta ühendus"
 
 #: ../ggz-gtk/client.c:962
 msgid "Quit"
@@ -167,7 +163,7 @@ msgstr "Lõpeta"
 msgid "Game"
 msgstr "Mäng"
 
-#: ../ggz-gtk/client.c:978 ../ggz-gtk/client.c:1133 ../ggz-gtk/launch.c:693
+#: ../ggz-gtk/client.c:978 ../ggz-gtk/client.c:1133 ../ggz-gtk/launch.c:596
 msgid "Launch"
 msgstr "Alusta"
 
@@ -216,7 +212,7 @@ msgstr "Mängija statistika"
 msgid "Game Types"
 msgstr "Mängu liigid"
 
-#: ../ggz-gtk/client.c:1074 ../ggz-gtk/props.c:1491
+#: ../ggz-gtk/client.c:1074 ../ggz-gtk/props.c:1488
 msgid "MOTD"
 msgstr "Päevasõnum"
 
@@ -224,29 +220,29 @@ msgstr "Päevasõnum"
 msgid "Help"
 msgstr "Abi"
 
-#: ../ggz-gtk/client.c:1096
-msgid "Copyright"
-msgstr "Autoriõigused"
-
-#: ../ggz-gtk/client.c:1105
-msgid "GGZ Help"
-msgstr "GGZ-i abi"
-
 #: ../ggz-gtk/client.c:1112
 msgid "Game Help"
 msgstr "Mängu abi"
 
-#: ../ggz-gtk/client.c:1196 ../ggz-gtk/ggzclient.c:718
+#: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:493
+msgid "Stats"
+msgstr "Statistika"
+
+#: ../ggz-gtk/client.c:1196 ../ggz-gtk/ggzclient.c:721
 msgid "Current Room:"
 msgstr "Praegune tuba:"
 
-#: ../ggz-gtk/client.c:1277 ../ggz-gtk/playerinfo.c:259
+#: ../ggz-gtk/client.c:1277 ../ggz-gtk/playerinfo.c:274
 msgid "Message:"
 msgstr "Sõnum:"
 
 #: ../ggz-gtk/client.c:1295
 msgid "Send"
 msgstr "Saada"
+
+#: ../ggz-gtk/client.c:1480 ../ggz-gtk/ggzclient.c:400
+msgid "GGZ Gaming Zone"
+msgstr "GGZ mängutsoon"
 
 #: ../ggz-gtk/first.c:57
 msgid "Wizard"
@@ -320,9 +316,35 @@ msgstr "Looja"
 msgid "GGZ Community (fast)"
 msgstr "GGZ kogukond (kiire)"
 
+#: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
+#: ../ggz-gtk/game.c:325 ../ggz-gtk/game.c:334 ../ggz-gtk/game.c:350
+#: ../ggz-gtk/launch.c:292
+msgid "Launch Error"
+msgstr "Käivitusviga"
+
+#: ../ggz-gtk/game.c:148
+msgid ""
+"Failed to execute game module.\n"
+" Launch aborted."
+msgstr ""
+"Tõrge mängumooduli käivitamisel.\n"
+" Käivitamine tühistati."
+
+#: ../ggz-gtk/game.c:201
+msgid "Launched game"
+msgstr "Käivitatud mäng"
+
+#: ../ggz-gtk/game.c:222
+msgid "Launch failed"
+msgstr "Tõrge käivitamisel"
+
 #: ../ggz-gtk/game.c:296
 msgid "You can only play one game at a time."
 msgstr "Sa saad korraga mängida ainult ühte mängu."
+
+#: ../ggz-gtk/game.c:304
+msgid "You're still at a table."
+msgstr "Sa oled veel laua taga."
 
 #: ../ggz-gtk/game.c:313
 msgid ""
@@ -330,7 +352,7 @@ msgid ""
 "Launch aborted"
 msgstr ""
 "Mängu alustamiseks pead sa toas olema.\n"
-"Mängu alustamine katkestati"
+"Mängu alustamine tühistati"
 
 #: ../ggz-gtk/game.c:323
 msgid ""
@@ -338,7 +360,19 @@ msgid ""
 "Launch aborted."
 msgstr ""
 "Selles serveris pole mängu liike kirjeldatud.\n"
-"Mängu alustamine katkestati"
+"Mängu alustamine tühistati"
+
+#: ../ggz-gtk/game.c:333
+msgid "This game doesn't support spectators."
+msgstr "See mäng ei toeta vaatlejaid."
+
+#: ../ggz-gtk/game.c:348
+msgid ""
+"You need to launch the GGZ client directly\n"
+"to be able to play this game."
+msgstr ""
+"Selle mängu mängimiseks pead sa\n"
+"GGZ-kliendi käivitama otse."
 
 #: ../ggz-gtk/ggzclient.c:122
 #, c-format
@@ -346,9 +380,9 @@ msgid "Error connecting to server: %s"
 msgstr "Viga serverisse ühendumisel: %s"
 
 #: ../ggz-gtk/ggzclient.c:124 ../ggz-gtk/ggzclient.c:380
-#: ../ggz-gtk/ggzclient.c:561 ../ggz-gtk/ggzclient.c:596
-#: ../ggz-gtk/ggzclient.c:649 ../ggz-gtk/ggzclient.c:1079
-#: ../ggz-gtk/launch.c:325
+#: ../ggz-gtk/ggzclient.c:562 ../ggz-gtk/ggzclient.c:597
+#: ../ggz-gtk/ggzclient.c:650 ../ggz-gtk/ggzclient.c:1083
+#: ../ggz-gtk/launch.c:327
 msgid "Error"
 msgstr "Viga"
 
@@ -381,145 +415,195 @@ msgstr "Sa sisenesid tuppa \"%s\"."
 msgid "Error joining room: %s"
 msgstr "Viga tuppa sisenemisel: %s"
 
+#: ../ggz-gtk/ggzclient.c:429
+msgid "You can't chat while not in a room."
+msgstr "Ilma toas olemata pole võimalik vestelda."
+
+#: ../ggz-gtk/ggzclient.c:434
+msgid "You don't have permission to chat here."
+msgstr "Sul pole õigust siin sõna võtta."
+
+#: ../ggz-gtk/ggzclient.c:438
+msgid "No private chatting at a table!"
+msgstr "Laua taga ei tohi eravestlust pidada!"
+
 #: ../ggz-gtk/ggzclient.c:442
 msgid "That player isn't in the room!"
 msgstr "Mängija pole toas!"
 
-#: ../ggz-gtk/ggzclient.c:624
+#: ../ggz-gtk/ggzclient.c:451
+msgid "You're not at a table."
+msgstr "Sa pole laua taga."
+
+#: ../ggz-gtk/ggzclient.c:455
+#, c-format
+msgid "Chat failed: %s."
+msgstr "Tõrge vestluses: %s."
+
+#: ../ggz-gtk/ggzclient.c:560
+#, c-format
+msgid "Error launching table: %s"
+msgstr "Viga mängulaua ülesseadmisel: %s"
+
+#: ../ggz-gtk/ggzclient.c:580
+#, c-format
+msgid "You have joined table %d."
+msgstr "Sa ühinesid lauaga %d."
+
+#: ../ggz-gtk/ggzclient.c:595
+#, c-format
+msgid "Error joining table: %s"
+msgstr "Viga lauaga ühinemisel: %s"
+
+#: ../ggz-gtk/ggzclient.c:622
+#, c-format
+msgid "You have left the table."
+msgstr "Sa lahkusid lauast."
+
+#: ../ggz-gtk/ggzclient.c:625
 #, c-format
 msgid "The game is over."
 msgstr "Mäng on läbi."
 
-#: ../ggz-gtk/ggzclient.c:628
+#: ../ggz-gtk/ggzclient.c:629
 #, c-format
 msgid "There was an error with the game server."
 msgstr "Mänguserveris tekkis viga."
 
-#: ../ggz-gtk/ggzclient.c:740
+#: ../ggz-gtk/ggzclient.c:648
+#, c-format
+msgid "Error leaving table: %s"
+msgstr "Viga lauast lahkumisel: %s"
+
+#: ../ggz-gtk/ggzclient.c:743
 msgid "**none**"
 msgstr "**puudub**"
 
-#: ../ggz-gtk/ggzclient.c:747
+#: ../ggz-gtk/ggzclient.c:750
 msgid "Offline"
 msgstr "Ühendamata"
 
-#: ../ggz-gtk/ggzclient.c:750
+#: ../ggz-gtk/ggzclient.c:753
 msgid "Connecting"
 msgstr "Ühendumine"
 
-#: ../ggz-gtk/ggzclient.c:753
+#: ../ggz-gtk/ggzclient.c:756
 msgid "Reconnecting"
 msgstr "Taasühendumine"
 
-#: ../ggz-gtk/ggzclient.c:756
+#: ../ggz-gtk/ggzclient.c:759
 msgid "Online"
 msgstr "Ühendatud"
 
-#: ../ggz-gtk/ggzclient.c:759
+#: ../ggz-gtk/ggzclient.c:762
 msgid "Logging In"
 msgstr "Sisselogimine"
 
-#: ../ggz-gtk/ggzclient.c:762
+#: ../ggz-gtk/ggzclient.c:765
 msgid "Logged In"
 msgstr "Sisselogitud"
 
-#: ../ggz-gtk/ggzclient.c:766
+#: ../ggz-gtk/ggzclient.c:769
 msgid "--> Room"
 msgstr "--> Tuba"
 
-#: ../ggz-gtk/ggzclient.c:769
+#: ../ggz-gtk/ggzclient.c:772
 msgid "Chatting"
 msgstr "Vestlus"
 
-#: ../ggz-gtk/ggzclient.c:773
+#: ../ggz-gtk/ggzclient.c:776
 msgid "--> Table"
 msgstr "--> Laud"
 
-#: ../ggz-gtk/ggzclient.c:776
+#: ../ggz-gtk/ggzclient.c:779
 msgid "Playing"
 msgstr "Mängimine"
 
-#: ../ggz-gtk/ggzclient.c:779
+#: ../ggz-gtk/ggzclient.c:782
 msgid "<-- Table"
 msgstr "<-- Laud"
 
-#: ../ggz-gtk/ggzclient.c:782
+#: ../ggz-gtk/ggzclient.c:785
 msgid "Logging Out"
 msgstr "Väljalogimine"
 
-#: ../ggz-gtk/ggzclient.c:1078
+#: ../ggz-gtk/ggzclient.c:1081
 #, c-format
 msgid "Server error: %s"
 msgstr "Serveri viga: %s"
 
-#: ../ggz-gtk/ggzclient.c:1166
+#: ../ggz-gtk/ggzclient.c:1170
 msgid "Disconnected from server."
 msgstr "Ühendus serveriga katkestatud."
 
-#: ../ggz-gtk/launch.c:114
+#: ../ggz-gtk/launch.c:113
 #, c-format
 msgid "Game Type:  %s"
 msgstr "Mängu liik:  %s"
 
-#: ../ggz-gtk/launch.c:120
+#: ../ggz-gtk/launch.c:119
 #, c-format
 msgid "Author:  %s"
 msgstr "Autor:  %s"
 
-#: ../ggz-gtk/launch.c:127
+#: ../ggz-gtk/launch.c:126
 #, c-format
 msgid "Description:  %s"
 msgstr "Kirjeldus:  %s"
 
-#: ../ggz-gtk/launch.c:133
+#: ../ggz-gtk/launch.c:132
 #, c-format
 msgid "Home Page:  %s"
 msgstr "Koduleht:  %s"
 
-#: ../ggz-gtk/launch.c:443
+#: ../ggz-gtk/launch.c:291
+msgid ""
+"Failed to launch table.\n"
+" Launch aborted."
+msgstr ""
+"Tõrge laua käivitamisel.\n"
+" Käivitamine tühistati."
+
+#: ../ggz-gtk/launch.c:436
 msgid "Game Type:"
 msgstr "Mängu liik:"
 
-#: ../ggz-gtk/launch.c:479
+#: ../ggz-gtk/launch.c:448
 msgid "Number of seats"
 msgstr "Kohtade arv"
 
-#: ../ggz-gtk/launch.c:495 ../ggz-gtk/roominfo.c:90
+#: ../ggz-gtk/launch.c:457 ../ggz-gtk/roominfo.c:90
 msgid "Author:"
 msgstr "Autor:"
 
-#: ../ggz-gtk/launch.c:513
+#: ../ggz-gtk/launch.c:469
 msgid "Description:"
 msgstr "Kirjeldus:"
 
-#: ../ggz-gtk/launch.c:530 ../ggz-gtk/roominfo.c:100
+#: ../ggz-gtk/launch.c:480 ../ggz-gtk/roominfo.c:100
 msgid "Homepage:"
 msgstr "Koduleht:"
 
-#: ../ggz-gtk/launch.c:586
+#: ../ggz-gtk/launch.c:518
 #, c-format
 msgid "Seat %d:"
 msgstr "Koht %d:"
 
-#: ../ggz-gtk/launch.c:598
+#: ../ggz-gtk/launch.c:527
 msgid "Computer"
 msgstr "Arvuti"
 
-#: ../ggz-gtk/launch.c:613
+#: ../ggz-gtk/launch.c:538
 msgid "Open"
 msgstr "Vaba"
 
-#: ../ggz-gtk/launch.c:628
+#: ../ggz-gtk/launch.c:550
 msgid "Reserved for"
 msgstr "Reserveeritud:"
 
-#: ../ggz-gtk/launch.c:663
+#: ../ggz-gtk/launch.c:576
 msgid "Game Description   "
 msgstr "Mängu kirjeldus   "
-
-#: ../ggz-gtk/login.c:108
-msgid "Sorry!"
-msgstr "Vabandust!"
 
 #: ../ggz-gtk/login.c:115
 #, c-format
@@ -545,52 +629,43 @@ msgstr "Kasutajanimi on liiga pikk!"
 msgid "Invalid username, do not use special characters!"
 msgstr "Vigane kasutajanimi, palun ära kasuta erimärke!"
 
-#: ../ggz-gtk/login.c:130
-#, c-format
-msgid "Login failed for unknown reason: %s"
-msgstr "Tõrge sisselogimisel, põhjus teadmata: %s"
-
-#: ../ggz-gtk/login.c:538
+#: ../ggz-gtk/login.c:554
 msgid "Server Profile"
 msgstr "Serveri profiil"
 
-#: ../ggz-gtk/login.c:562 ../ggz-gtk/props.c:925
+#: ../ggz-gtk/login.c:578 ../ggz-gtk/props.c:942
 msgid "Profile:"
 msgstr "Profiil:"
 
-#: ../ggz-gtk/login.c:582
-msgid "Edit Profiles..."
-msgstr "Redigeeri profiile..."
-
-#: ../ggz-gtk/login.c:590 ../ggz-gtk/props.c:946
+#: ../ggz-gtk/login.c:601 ../ggz-gtk/props.c:963
 msgid "Server:"
 msgstr "Server:"
 
-#: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
+#: ../ggz-gtk/login.c:613 ../ggz-gtk/props.c:978
 msgid "Port:"
 msgstr "Port:"
 
-#: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
+#: ../ggz-gtk/login.c:644 ../ggz-gtk/props.c:1010
 msgid "Username:"
 msgstr "Kasutajanimi:"
 
-#: ../ggz-gtk/login.c:648 ../ggz-gtk/props.c:1014
+#: ../ggz-gtk/login.c:659 ../ggz-gtk/props.c:1031
 msgid "Password:"
 msgstr "Parool:"
 
-#: ../ggz-gtk/login.c:664
+#: ../ggz-gtk/login.c:675
 msgid "Email:"
 msgstr "E-post:"
 
-#: ../ggz-gtk/login.c:680 ../ggz-gtk/props.c:1057
+#: ../ggz-gtk/login.c:691 ../ggz-gtk/props.c:1074
 msgid "Normal Login"
 msgstr "Tavaline sisselogimine"
 
-#: ../ggz-gtk/login.c:691 ../ggz-gtk/props.c:1065
+#: ../ggz-gtk/login.c:702 ../ggz-gtk/props.c:1082
 msgid "Guest Login"
 msgstr "Sisselogimine külalisena"
 
-#: ../ggz-gtk/login.c:699
+#: ../ggz-gtk/login.c:710
 msgid "First-time Login"
 msgstr "Esmakordne sisselogimine"
 
@@ -598,228 +673,184 @@ msgstr "Esmakordne sisselogimine"
 msgid "Message of the Day"
 msgstr "Päevasõnum"
 
-#: ../ggz-gtk/playerinfo.c:102
+#: ../ggz-gtk/pick_module.c:131
+msgid "Don't ask me again."
+msgstr "Seda küsimust rohkem ei küsita"
+
+#: ../ggz-gtk/playerinfo.c:105
 msgid "Player Information"
 msgstr "Mängija andmed"
 
-#: ../ggz-gtk/playerinfo.c:168
+#: ../ggz-gtk/playerinfo.c:153
+msgid "Table:"
+msgstr "Laud:"
+
+#: ../ggz-gtk/playerinfo.c:171
 msgid "Account:"
 msgstr "Konto:"
 
-#: ../ggz-gtk/playerinfo.c:241
+#: ../ggz-gtk/playerinfo.c:256
 msgid "Score:"
 msgstr "Tulemus:"
 
-#: ../ggz-gtk/playerinfo.c:302 ../ggz-gtk/playerinfo.c:334
+#: ../ggz-gtk/playerinfo.c:317 ../ggz-gtk/playerinfo.c:350
 msgid "Unknown"
 msgstr "Tundmatu"
 
-#: ../ggz-gtk/playerinfo.c:337
+#: ../ggz-gtk/playerinfo.c:353
 msgid "Registered"
 msgstr "Registreeritud"
 
-#: ../ggz-gtk/playerinfo.c:340
+#: ../ggz-gtk/playerinfo.c:356
 msgid "Guest"
 msgstr "Külaline"
 
-#: ../ggz-gtk/playerinfo.c:343
+#: ../ggz-gtk/playerinfo.c:359
 msgid "Host"
 msgstr "Host"
 
-#: ../ggz-gtk/playerinfo.c:346
+#: ../ggz-gtk/playerinfo.c:362
 msgid "Administrator"
 msgstr "Haldur"
 
-#: ../ggz-gtk/playerlist.c:94 ../ggz-gtk/roomlist.c:144
+#: ../ggz-gtk/playerlist.c:171 ../ggz-gtk/roomlist.c:144
 #: ../ggz-gtk/tablelist.c:84
 msgid "Info"
 msgstr "Teave"
 
-#: ../ggz-gtk/playerlist.c:101
+#: ../ggz-gtk/playerlist.c:178
 msgid "Friends"
 msgstr "Sõbrad"
 
-#: ../ggz-gtk/playerlist.c:362 ../ggz-gtk/types.c:176
+#: ../ggz-gtk/playerlist.c:499 ../ggz-gtk/types.c:176
 msgid "Name"
 msgstr "Nimi"
 
-#: ../ggz-gtk/props.c:249
+#: ../ggz-gtk/props.c:251
 msgid "Properties Updated"
 msgstr "Omadused on uuendatud"
 
-#: ../ggz-gtk/props.c:1035
+#: ../ggz-gtk/props.c:1052
 msgid "Confirm:"
 msgstr "Kinnitus:"
 
-#: ../ggz-gtk/props.c:1085
+#: ../ggz-gtk/props.c:1102
 msgid "Modify"
 msgstr "Redigeeri"
 
-#: ../ggz-gtk/props.c:1099
+#: ../ggz-gtk/props.c:1116
 msgid "Servers"
 msgstr "Serverid"
 
-#: ../ggz-gtk/props.c:1118
+#: ../ggz-gtk/props.c:1135
 msgid "Chat Font:"
 msgstr "Vestluse kirjatüüp:"
 
-#: ../ggz-gtk/props.c:1155
+#: ../ggz-gtk/props.c:1172
 msgid "Play Sounds"
 msgstr "Helide esitamine"
 
-#: ../ggz-gtk/props.c:1163
+#: ../ggz-gtk/props.c:1180
 msgid "Auto Indent"
 msgstr "Automaatne joondamine"
 
-#: ../ggz-gtk/props.c:1171
+#: ../ggz-gtk/props.c:1188
 msgid "Timestamp Chats"
 msgstr "Vestlustel on ajatemplid"
 
-#: ../ggz-gtk/props.c:1179
+#: ../ggz-gtk/props.c:1196
 msgid "Word Wrap"
 msgstr "Sõnu murtakse"
 
-#: ../ggz-gtk/props.c:1187
+#: ../ggz-gtk/props.c:1204
 msgid "Chat Color"
-msgstr "Vestluse värvid"
+msgstr "Vestluse värvused"
 
-#: ../ggz-gtk/props.c:1236
+#: ../ggz-gtk/props.c:1253
 msgid "Default chat color assigned to your friends"
 msgstr "Sinu sõpradele vaikimisi määratav värvus"
 
-#: ../ggz-gtk/props.c:1245
+#: ../ggz-gtk/props.c:1262
 msgid "Chat color used when your name is typed"
 msgstr "Sinu nime esinemisel kasutatav värvus"
 
-#: ../ggz-gtk/props.c:1254
+#: ../ggz-gtk/props.c:1271
 msgid "Chat color used for all other chats"
 msgstr "Kõikide vestluste jaoks kasutatav värvus"
 
-#: ../ggz-gtk/props.c:1263
+#: ../ggz-gtk/props.c:1280
 msgid "Normal Color"
-msgstr "Tavaline värv"
+msgstr "Tavaline värvus"
 
-#: ../ggz-gtk/props.c:1274
+#: ../ggz-gtk/props.c:1291
 msgid "Highlight Color"
 msgstr "Esiletõstmise värvus"
 
-#: ../ggz-gtk/props.c:1285
+#: ../ggz-gtk/props.c:1302
 msgid "Friend Color"
 msgstr "Sõbra värvus"
 
-#: ../ggz-gtk/props.c:1296
+#: ../ggz-gtk/props.c:1313
 msgid "Black Background"
 msgstr "Must taust"
 
-#: ../ggz-gtk/props.c:1305
+#: ../ggz-gtk/props.c:1322
 msgid "White Background"
 msgstr "Valge taust"
 
-#: ../ggz-gtk/props.c:1314
+#: ../ggz-gtk/props.c:1331
 msgid "Chat"
 msgstr "Vestlus"
 
-#: ../ggz-gtk/props.c:1326
+#: ../ggz-gtk/props.c:1343
 msgid "All of the following information is optional."
 msgstr "Kõik järgnevad andmed on valikulised."
 
-#: ../ggz-gtk/props.c:1344
+#: ../ggz-gtk/props.c:1361
 msgid "Name:"
 msgstr "Nimi:"
 
-#: ../ggz-gtk/props.c:1371
+#: ../ggz-gtk/props.c:1388
 msgid "City:"
 msgstr "Linn:"
 
-#: ../ggz-gtk/props.c:1413
+#: ../ggz-gtk/props.c:1430
 msgid "Country:"
 msgstr "Riik:"
 
-#: ../ggz-gtk/props.c:1450
+#: ../ggz-gtk/props.c:1445
+msgid "Comments, Hobbies, Etc."
+msgstr "Kommentaarid, hobid jms."
+
+#: ../ggz-gtk/props.c:1467
 msgid "User Information"
 msgstr "Kasutaja andmed"
 
-#: ../ggz-gtk/props.c:1459
+#: ../ggz-gtk/props.c:1476
 msgid "Browser to launch URLs with:"
 msgstr "URL-ide käivitamiseks kasutatav veebisirvija:"
 
-#: ../ggz-gtk/props.c:1464 ../ggz-gtk/props.c:1484 ../ggz-gtk/support.c:139
-msgid "Galeon - New"
-msgstr "Galeon - uus"
-
-#: ../ggz-gtk/props.c:1465 ../ggz-gtk/support.c:142
-msgid "Galeon - Existing"
-msgstr "Galeon - olemasolev"
-
-#: ../ggz-gtk/props.c:1466 ../ggz-gtk/support.c:145
-msgid "Gnome URL Handler"
-msgstr "GNOME URL-ikäsitleja"
-
-#: ../ggz-gtk/props.c:1467 ../ggz-gtk/support.c:148
-msgid "Konqueror - New"
-msgstr "Konqueror - uus"
-
-#: ../ggz-gtk/props.c:1468 ../ggz-gtk/support.c:151
-msgid "Konqueror - Existing"
-msgstr "Konqueror - olemasolev"
-
-#: ../ggz-gtk/props.c:1469 ../ggz-gtk/support.c:163
-msgid "Lynx"
-msgstr "Lynx"
-
-#: ../ggz-gtk/props.c:1470 ../ggz-gtk/support.c:169
-msgid "Mozilla - New"
-msgstr "Mozilla - uus"
-
-#: ../ggz-gtk/props.c:1471 ../ggz-gtk/support.c:172
-msgid "Mozilla - Existing"
-msgstr "Mozilla - olemasolev"
-
-#: ../ggz-gtk/props.c:1472 ../ggz-gtk/support.c:176
-msgid "Netscape - New"
-msgstr "Netscape - uus"
-
-#: ../ggz-gtk/props.c:1473 ../ggz-gtk/support.c:179
-msgid "Netscape - Existing"
-msgstr "Netscape - olemasolev"
-
-#: ../ggz-gtk/props.c:1474 ../ggz-gtk/support.c:183
-msgid "Opera - New"
-msgstr "Opera - uus"
-
-#: ../ggz-gtk/props.c:1475 ../ggz-gtk/support.c:186
-msgid "Opera - Existing"
-msgstr "Opera - olemasolev"
-
-#: ../ggz-gtk/props.c:1476 ../ggz-gtk/support.c:191
-msgid "Firefox - New"
-msgstr "Firefox - uus"
-
-#: ../ggz-gtk/props.c:1477 ../ggz-gtk/support.c:194
-msgid "Firefox - Existing"
-msgstr "Firefox - olemasolev"
-
-#: ../ggz-gtk/props.c:1500
+#: ../ggz-gtk/props.c:1497
 msgid "Display All"
 msgstr "Kuvatakse kõiki"
 
-#: ../ggz-gtk/props.c:1509
+#: ../ggz-gtk/props.c:1506
 msgid "Display New"
 msgstr "Kuvatakse uusi"
 
-#: ../ggz-gtk/props.c:1518
+#: ../ggz-gtk/props.c:1515
 msgid "Display Important"
 msgstr "Kuvatakse tähtsaid"
 
-#: ../ggz-gtk/props.c:1527
+#: ../ggz-gtk/props.c:1524
 msgid "Display None"
 msgstr "Midagi ei kuvata"
 
-#: ../ggz-gtk/props.c:1536
+#: ../ggz-gtk/props.c:1533
 msgid "Options"
 msgstr "Valikud"
 
-#: ../ggz-gtk/props.c:1625
+#: ../ggz-gtk/props.c:1622
 msgid "Select Font"
 msgstr "Kirjatüübi valimine"
 
@@ -834,6 +865,10 @@ msgstr "Mängu nimi:"
 #: ../ggz-gtk/roominfo.c:110
 msgid "Room Description:"
 msgstr "Toa kirjeldus:"
+
+#: ../ggz-gtk/roominfo.c:155
+msgid "This room has no game"
+msgstr "Selles toas ei toimu mängu"
 
 #: ../ggz-gtk/roominfo.c:162 ../ggz-gtk/roominfo.c:169
 msgid "N/A"

@@ -1,6 +1,8 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/ru.po)
+# Translation of gnome-games to Russian
 # Copyright (C) 1999-2002,2003, 2004, 2005 Free Software Foundation, Inc.
+#
 # Valek Filippov <frob@df.ru> 2000-2002
 # Nickolay V. Shmyrev <nshmyrev@yandex.ru>
 # Sergey Panov <sipan@mit.edu>, 1999.
@@ -10,10 +12,10 @@
 # Leonid Kanter <leon@asplinux.ru>, 2004, 2005.
 msgid ""
 msgstr ""
-"Project-Id-Version: 1\n"
+"Project-Id-Version: gnome-games trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-20 15:07+0100\n"
-"PO-Revision-Date: 2007-02-11 23:54+0400\n"
+"POT-Creation-Date: 2007-11-11 22:11+0100\n"
+"PO-Revision-Date: 2007-09-15 23:54+0400\n"
 "Last-Translator: Nickolay V. Shmyrev <nshmyrev@yandex.ru>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -26,148 +28,64 @@ msgstr ""
 msgid "About"
 msgstr "О программе"
 
-#: ../ggz-gtk/chat.c:89
-msgid "/msg <username> <message> . Private message a player"
-msgstr ""
-"/msg <имя пользователя> <сообщение> .... "
-"приватное сообщение игроку"
-
-#: ../ggz-gtk/chat.c:91
-msgid "/table <message> .......... Message to your table"
-msgstr ""
-"/table <сообщение1> ....... Сообщение вашему "
-"столу"
-
-#: ../ggz-gtk/chat.c:93
-msgid "/wall <message> ........... Admin command"
-msgstr ""
-"/wall <сообщение> .......... команда "
-"администратора"
-
-#: ../ggz-gtk/chat.c:95
-msgid "/beep <username> .......... Beep a player"
-msgstr ""
-"/beep <имя пользователя> ....... послать игроку "
-"сигнал"
-
-#: ../ggz-gtk/chat.c:97
-msgid "/help ..................... Get help"
-msgstr "/help ..................... получить справку"
-
-#: ../ggz-gtk/chat.c:99
-msgid "/friends .................. List your friends"
-msgstr "/friends .................. список ваших друзей"
-
-#: ../ggz-gtk/chat.c:101
-msgid "/ignore ................... List people you're ignoring"
-msgstr ""
-"/ignore ................... список игнорируемых "
-"игроков"
-
-#: ../ggz-gtk/chat.c:104
-msgid "/kick <username> .......... Kick a player from the room"
-msgstr ""
-"/kick <имя пользователя> ........ выкинуть "
-"игрока из комнаты"
-
-#: ../ggz-gtk/chat.c:107
-msgid "/gag <username> ........... Gag a player to prevent them from talking"
-msgstr ""
-"/gag <имя пользователя> .......... заставить "
-"пользователя замолчать"
-
-#: ../ggz-gtk/chat.c:110
-msgid ""
-"/ungag <username> ......... Reverse the gag operation to allow a player to "
-"talk"
-msgstr ""
-"/ungag <username> ......... разрешить пользователю "
-"разговаривать"
-
-#: ../ggz-gtk/chat.c:113
-msgid "/ban <username> ........... Ban a player from the server"
-msgstr ""
-"/ban <имя пользователя> ............ запретить "
-"пользователю вход на сервер"
-
-#: ../ggz-gtk/chat.c:254
+#: ../ggz-gtk/chat.c:291
 #, c-format
 msgid "You have received an unknown message from %s."
 msgstr "Получено неизвестное сообщение от %s."
 
-#: ../ggz-gtk/chat.c:318
+#: ../ggz-gtk/chat.c:355
 #, c-format
 msgid "You've been beeped by %s."
 msgstr "Послан сигнал от %s."
 
-#: ../ggz-gtk/chat.c:439
-msgid "Usage: /msg <username> <message>"
-msgstr ""
-"Использование: /msg <имя пользователя> "
-"<сообщение>"
-
-#: ../ggz-gtk/chat.c:441
-msgid "    Sends a private message to a user on the network."
-msgstr ""
-"    Отсылает сообщение пользователю по "
-"сети."
-
-#: ../ggz-gtk/chat.c:495
+#: ../ggz-gtk/chat.c:551
 #, c-format
 msgid "Beep sent to %s."
 msgstr "Сигнал послан %s."
 
-#: ../ggz-gtk/chat.c:523
+#: ../ggz-gtk/chat.c:579
 #, c-format
 msgid "%s (logged on)"
 msgstr "%s (зарегистрирован)"
 
-#: ../ggz-gtk/chat.c:561
+#: ../ggz-gtk/chat.c:617
 #, c-format
 msgid "%s (logged off)"
 msgstr "%s (не зарегистрирован)"
 
-#: ../ggz-gtk/chat.c:587
+#: ../ggz-gtk/chat.c:666
 msgid "Chat Commands"
 msgstr "Команды беседы"
 
-#: ../ggz-gtk/chat.c:588
-msgid "-------------"
-msgstr "-------------"
-
-#: ../ggz-gtk/chat.c:592
-msgid "/me <action> .............. Send an action"
-msgstr "/me <действие> ............ Послать действие"
-
-#: ../ggz-gtk/chat.c:783
+#: ../ggz-gtk/chat.c:879
 #, c-format
 msgid "Added %s to your friends list."
 msgstr "%s добавлен в список друзей."
 
-#: ../ggz-gtk/chat.c:807
+#: ../ggz-gtk/chat.c:903
 #, c-format
 msgid "Removed %s from your friends list."
 msgstr "%sудалён из списка друзей."
 
-#: ../ggz-gtk/chat.c:838
+#: ../ggz-gtk/chat.c:934
 #, c-format
 msgid "Added %s to your ignore list."
 msgstr "%s добавлен в список игнорируемых."
 
-#: ../ggz-gtk/chat.c:863
+#: ../ggz-gtk/chat.c:959
 #, c-format
 msgid "Removed %s from your ignore list."
 msgstr "%s удалён из списка игнорируемых."
 
-#: ../ggz-gtk/chat.c:939
+#: ../ggz-gtk/chat.c:1034
 msgid "People currently your friends"
 msgstr "Друзья"
 
-#: ../ggz-gtk/chat.c:953
+#: ../ggz-gtk/chat.c:1045
 msgid "People you're currently ignoring"
 msgstr "Игнорируемые игроки"
 
-#: ../ggz-gtk/chat.c:1029
+#: ../ggz-gtk/chat.c:1119
 msgid "Multiple matches:"
 msgstr "Несколько совпадений:"
 
@@ -204,28 +122,6 @@ msgstr ""
 "Если вы хотите помочь, посетите\n"
 "http://www.ggzgamingzone.org/"
 
-#: ../ggz-gtk/client.c:294
-msgid ""
-"GGZ Gaming Zone help needs a browser to be configured.\n"
-"The configuration dialog will be invoked now."
-msgstr ""
-"GGZ требует настройки запуска браузера.\n"
-"Сейчас появится диалог конфигурации."
-
-#: ../ggz-gtk/client.c:308
-msgid ""
-"Inline game help is not implemented yet. Help\n"
-"is on our website. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-"Встроенная справка по игре пока не "
-"реализована.\n"
-"Справка находится на нашем веб-сайте. "
-"Если\n"
-"вы хотите помощь, посетите\n"
-"http://www.ggzgamingzone.org/"
-
 #: ../ggz-gtk/client.c:566
 msgid "You must highlight a table before you can join it."
 msgstr ""
@@ -240,14 +136,14 @@ msgstr "Ошибка при входе"
 msgid "That table is full."
 msgstr "Стол заполнен."
 
-#: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:334
+#: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:336
 msgid "Error launching game module."
 msgstr ""
 "При запуске игрового модуля возникла "
 "ошибка."
 
 #: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
-#: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:335
+#: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:337
 msgid "Game Error"
 msgstr "Ошибка игры"
 
@@ -299,25 +195,9 @@ msgstr "Покинуть игру в которую вы играете"
 msgid "Show the properties dialog to change the client settings"
 msgstr "Показать диалог параметров клиента"
 
-#: ../ggz-gtk/client.c:693
-msgid "Show the game stats for the current room's game type"
-msgstr ""
-"Показать статистику игры для текущей "
-"комнаты"
-
 #: ../ggz-gtk/client.c:696
 msgid "Exit the GGZ client application."
 msgstr "Выйти из клиента GGZ."
-
-#: ../ggz-gtk/client.c:726
-#, c-format
-msgid "Client Version:14 %s"
-msgstr "Версия клиента: %s"
-
-#: ../ggz-gtk/client.c:729
-#, c-format
-msgid "GTK+ Version:14 %d.%d.%d\n"
-msgstr "Версия GTK+: %d.%d.%d\n"
 
 #: ../ggz-gtk/client.c:736
 msgid "Compiled with debugging."
@@ -327,7 +207,7 @@ msgstr "Собрано с отладочной информацией"
 msgid "GGZ"
 msgstr "GGZ"
 
-#: ../ggz-gtk/client.c:942 ../ggz-gtk/login.c:710
+#: ../ggz-gtk/client.c:942 ../ggz-gtk/login.c:729
 msgid "Connect"
 msgstr "Соединиться"
 
@@ -343,7 +223,7 @@ msgstr "Выйти"
 msgid "Game"
 msgstr "Игра"
 
-#: ../ggz-gtk/client.c:978 ../ggz-gtk/client.c:1133 ../ggz-gtk/launch.c:693
+#: ../ggz-gtk/client.c:978 ../ggz-gtk/client.c:1133 ../ggz-gtk/launch.c:596
 msgid "Launch"
 msgstr "Запуск"
 
@@ -392,7 +272,7 @@ msgstr "Статистика игроков"
 msgid "Game Types"
 msgstr "Типы игр"
 
-#: ../ggz-gtk/client.c:1074 ../ggz-gtk/props.c:1491
+#: ../ggz-gtk/client.c:1074 ../ggz-gtk/props.c:1488
 msgid "MOTD"
 msgstr "Сообщение дня"
 
@@ -400,31 +280,15 @@ msgstr "Сообщение дня"
 msgid "Help"
 msgstr "Справка"
 
-#: ../ggz-gtk/client.c:1096
-msgid "Copyright"
-msgstr "Авторское право"
-
-#: ../ggz-gtk/client.c:1105
-msgid "GGZ Help"
-msgstr "Справка по GGZ"
-
-#: ../ggz-gtk/client.c:1112
-msgid "Game Help"
-msgstr "Справка по игре"
-
-#: ../ggz-gtk/client.c:1121
-msgid "Goto Web"
-msgstr "Перейти на веб-страницу"
-
-#: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:356
+#: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:493
 msgid "Stats"
 msgstr "Статистика"
 
-#: ../ggz-gtk/client.c:1196 ../ggz-gtk/ggzclient.c:718
+#: ../ggz-gtk/client.c:1196 ../ggz-gtk/ggzclient.c:721
 msgid "Current Room:"
 msgstr "Текущая комната:"
 
-#: ../ggz-gtk/client.c:1277 ../ggz-gtk/playerinfo.c:259
+#: ../ggz-gtk/client.c:1277 ../ggz-gtk/playerinfo.c:274
 msgid "Message:"
 msgstr "Сообщение:"
 
@@ -545,7 +409,7 @@ msgstr ""
 
 #: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
 #: ../ggz-gtk/game.c:325 ../ggz-gtk/game.c:334 ../ggz-gtk/game.c:350
-#: ../ggz-gtk/launch.c:290
+#: ../ggz-gtk/launch.c:292
 msgid "Launch Error"
 msgstr "Ошибка запуска"
 
@@ -609,9 +473,9 @@ msgid "Error connecting to server: %s"
 msgstr "Не удалось соединиться с сервером: %s"
 
 #: ../ggz-gtk/ggzclient.c:124 ../ggz-gtk/ggzclient.c:380
-#: ../ggz-gtk/ggzclient.c:561 ../ggz-gtk/ggzclient.c:596
-#: ../ggz-gtk/ggzclient.c:649 ../ggz-gtk/ggzclient.c:1079
-#: ../ggz-gtk/launch.c:325
+#: ../ggz-gtk/ggzclient.c:562 ../ggz-gtk/ggzclient.c:597
+#: ../ggz-gtk/ggzclient.c:650 ../ggz-gtk/ggzclient.c:1083
+#: ../ggz-gtk/launch.c:327
 msgid "Error"
 msgstr "Ошибка"
 
@@ -677,132 +541,132 @@ msgstr "Вы не за столом.."
 msgid "Chat failed: %s."
 msgstr "Беседа неожиданно завершилась: %s"
 
-#: ../ggz-gtk/ggzclient.c:559
+#: ../ggz-gtk/ggzclient.c:560
 #, c-format
 msgid "Error launching table: %s"
 msgstr "При создании стола возникла ошибка: %s"
 
-#: ../ggz-gtk/ggzclient.c:579
+#: ../ggz-gtk/ggzclient.c:580
 #, c-format
 msgid "You have joined table %d."
 msgstr "Вы присоединились к столу %d."
 
-#: ../ggz-gtk/ggzclient.c:594
+#: ../ggz-gtk/ggzclient.c:595
 #, c-format
 msgid "Error joining table: %s"
 msgstr ""
 "При присоединении к столу возникла "
 "ошибка: %s"
 
-#: ../ggz-gtk/ggzclient.c:616
+#: ../ggz-gtk/ggzclient.c:617
 #, c-format
 msgid "You have been booted from the table by %s."
 msgstr "%s выгнал вас из-за стола."
 
-#: ../ggz-gtk/ggzclient.c:621
+#: ../ggz-gtk/ggzclient.c:622
 #, c-format
 msgid "You have left the table."
 msgstr "Вы покинули стол."
 
-#: ../ggz-gtk/ggzclient.c:624
+#: ../ggz-gtk/ggzclient.c:625
 #, c-format
 msgid "The game is over."
 msgstr "Игра закончена."
 
-#: ../ggz-gtk/ggzclient.c:628
+#: ../ggz-gtk/ggzclient.c:629
 #, c-format
 msgid "There was an error with the game server."
 msgstr "На игровом сервере произошла ошибка."
 
-#: ../ggz-gtk/ggzclient.c:647
+#: ../ggz-gtk/ggzclient.c:648
 #, c-format
 msgid "Error leaving table: %s"
 msgstr ""
 "Во время выхода из-за стола возникла "
 "ошибка: %s"
 
-#: ../ggz-gtk/ggzclient.c:740
+#: ../ggz-gtk/ggzclient.c:743
 msgid "**none**"
 msgstr "**нет**"
 
-#: ../ggz-gtk/ggzclient.c:747
+#: ../ggz-gtk/ggzclient.c:750
 msgid "Offline"
 msgstr "Не в сети"
 
-#: ../ggz-gtk/ggzclient.c:750
+#: ../ggz-gtk/ggzclient.c:753
 msgid "Connecting"
 msgstr "Соединение"
 
-#: ../ggz-gtk/ggzclient.c:753
+#: ../ggz-gtk/ggzclient.c:756
 msgid "Reconnecting"
 msgstr "Пересоединение"
 
-#: ../ggz-gtk/ggzclient.c:756
+#: ../ggz-gtk/ggzclient.c:759
 msgid "Online"
 msgstr "В сети"
 
-#: ../ggz-gtk/ggzclient.c:759
+#: ../ggz-gtk/ggzclient.c:762
 msgid "Logging In"
 msgstr "Авторизация"
 
-#: ../ggz-gtk/ggzclient.c:762
+#: ../ggz-gtk/ggzclient.c:765
 msgid "Logged In"
 msgstr "Авторизован"
 
-#: ../ggz-gtk/ggzclient.c:766
+#: ../ggz-gtk/ggzclient.c:769
 msgid "--> Room"
 msgstr "--> Комната"
 
-#: ../ggz-gtk/ggzclient.c:769
+#: ../ggz-gtk/ggzclient.c:772
 msgid "Chatting"
 msgstr "Беседа"
 
-#: ../ggz-gtk/ggzclient.c:773
+#: ../ggz-gtk/ggzclient.c:776
 msgid "--> Table"
 msgstr "--> Стол"
 
-#: ../ggz-gtk/ggzclient.c:776
+#: ../ggz-gtk/ggzclient.c:779
 msgid "Playing"
 msgstr "Игра"
 
-#: ../ggz-gtk/ggzclient.c:779
+#: ../ggz-gtk/ggzclient.c:782
 msgid "<-- Table"
 msgstr "<-- Стол"
 
-#: ../ggz-gtk/ggzclient.c:782
+#: ../ggz-gtk/ggzclient.c:785
 msgid "Logging Out"
 msgstr "Завершение"
 
-#: ../ggz-gtk/ggzclient.c:1078
+#: ../ggz-gtk/ggzclient.c:1081
 #, c-format
 msgid "Server error: %s"
 msgstr "Ошибка сервера: %s"
 
-#: ../ggz-gtk/ggzclient.c:1166
+#: ../ggz-gtk/ggzclient.c:1170
 msgid "Disconnected from server."
 msgstr "Отсоединение от сервера."
 
-#: ../ggz-gtk/launch.c:114
+#: ../ggz-gtk/launch.c:113
 #, c-format
 msgid "Game Type:  %s"
 msgstr "Тип игры:  %s"
 
-#: ../ggz-gtk/launch.c:120
+#: ../ggz-gtk/launch.c:119
 #, c-format
 msgid "Author:  %s"
 msgstr "Автор:  %s"
 
-#: ../ggz-gtk/launch.c:127
+#: ../ggz-gtk/launch.c:126
 #, c-format
 msgid "Description:  %s"
 msgstr "Описание:  %s"
 
-#: ../ggz-gtk/launch.c:133
+#: ../ggz-gtk/launch.c:132
 #, c-format
 msgid "Home Page:  %s"
 msgstr "Домашняя страница:  %s"
 
-#: ../ggz-gtk/launch.c:289
+#: ../ggz-gtk/launch.c:291
 msgid ""
 "Failed to launch table.\n"
 " Launch aborted."
@@ -810,7 +674,7 @@ msgstr ""
 "При подходе к столу возникла ошибка.\n"
 " Неудачное завершение."
 
-#: ../ggz-gtk/launch.c:325
+#: ../ggz-gtk/launch.c:327
 msgid "Invalid number of bots specified"
 msgstr ""
 "Задано некорректное число компьютерных "
@@ -820,54 +684,50 @@ msgstr ""
 msgid "Seat Assignments"
 msgstr "Расстановка мест"
 
-#: ../ggz-gtk/launch.c:443
+#: ../ggz-gtk/launch.c:436
 msgid "Game Type:"
 msgstr "Тип игры:"
 
-#: ../ggz-gtk/launch.c:479
+#: ../ggz-gtk/launch.c:448
 msgid "Number of seats"
 msgstr "Число мест"
 
-#: ../ggz-gtk/launch.c:495 ../ggz-gtk/roominfo.c:90
+#: ../ggz-gtk/launch.c:457 ../ggz-gtk/roominfo.c:90
 msgid "Author:"
 msgstr "Автор"
 
-#: ../ggz-gtk/launch.c:513
+#: ../ggz-gtk/launch.c:469
 msgid "Description:"
 msgstr "Описание:"
 
-#: ../ggz-gtk/launch.c:530 ../ggz-gtk/roominfo.c:100
+#: ../ggz-gtk/launch.c:480 ../ggz-gtk/roominfo.c:100
 msgid "Homepage:"
 msgstr "Домашняя страница:"
 
-#: ../ggz-gtk/launch.c:586
+#: ../ggz-gtk/launch.c:518
 #, c-format
 msgid "Seat %d:"
 msgstr "Место %d:"
 
-#: ../ggz-gtk/launch.c:598
+#: ../ggz-gtk/launch.c:527
 msgid "Computer"
 msgstr "Компьютер"
 
-#: ../ggz-gtk/launch.c:613
+#: ../ggz-gtk/launch.c:538
 msgid "Open"
 msgstr "Свободно"
 
-#: ../ggz-gtk/launch.c:628
+#: ../ggz-gtk/launch.c:550
 msgid "Reserved for"
 msgstr "Занято для"
 
-#: ../ggz-gtk/launch.c:663
+#: ../ggz-gtk/launch.c:576
 msgid "Game Description   "
 msgstr "Описание игры   "
 
 #: ../ggz-gtk/login.c:101
 msgid "Login"
 msgstr "Учётная запись"
-
-#: ../ggz-gtk/login.c:108
-msgid "Sorry!"
-msgstr "Извините!"
 
 #: ../ggz-gtk/login.c:115
 #, c-format
@@ -895,54 +755,43 @@ msgstr ""
 "Некорректное имя пользователя, не "
 "используйте специальные символы!"
 
-#: ../ggz-gtk/login.c:130
-#, c-format
-msgid "Login failed for unknown reason: %s"
-msgstr ""
-"Вход в систему не удался по неизвестной "
-"причине: %s"
-
-#: ../ggz-gtk/login.c:538
+#: ../ggz-gtk/login.c:554
 msgid "Server Profile"
 msgstr "Профиль сервера"
 
-#: ../ggz-gtk/login.c:562 ../ggz-gtk/props.c:925
+#: ../ggz-gtk/login.c:578 ../ggz-gtk/props.c:942
 msgid "Profile:"
 msgstr "Профиль:"
 
-#: ../ggz-gtk/login.c:582
-msgid "Edit Profiles..."
-msgstr "Правка профилей..."
-
-#: ../ggz-gtk/login.c:590 ../ggz-gtk/props.c:946
+#: ../ggz-gtk/login.c:601 ../ggz-gtk/props.c:963
 msgid "Server:"
 msgstr "Сервер:"
 
-#: ../ggz-gtk/login.c:602 ../ggz-gtk/props.c:961
+#: ../ggz-gtk/login.c:613 ../ggz-gtk/props.c:978
 msgid "Port:"
 msgstr "Порт:"
 
-#: ../ggz-gtk/login.c:633 ../ggz-gtk/props.c:993
+#: ../ggz-gtk/login.c:644 ../ggz-gtk/props.c:1010
 msgid "Username:"
 msgstr "Имя пользователя:"
 
-#: ../ggz-gtk/login.c:648 ../ggz-gtk/props.c:1014
+#: ../ggz-gtk/login.c:659 ../ggz-gtk/props.c:1031
 msgid "Password:"
 msgstr "Пароль:"
 
-#: ../ggz-gtk/login.c:664
+#: ../ggz-gtk/login.c:675
 msgid "Email:"
 msgstr "Эл. почта:"
 
-#: ../ggz-gtk/login.c:680 ../ggz-gtk/props.c:1057
+#: ../ggz-gtk/login.c:691 ../ggz-gtk/props.c:1074
 msgid "Normal Login"
 msgstr "Обычный"
 
-#: ../ggz-gtk/login.c:691 ../ggz-gtk/props.c:1065
+#: ../ggz-gtk/login.c:702 ../ggz-gtk/props.c:1082
 msgid "Guest Login"
 msgstr "Гостевой"
 
-#: ../ggz-gtk/login.c:699
+#: ../ggz-gtk/login.c:710
 msgid "First-time Login"
 msgstr "Первый раз"
 
@@ -960,287 +809,231 @@ msgstr ""
 msgid "Don't ask me again."
 msgstr "Не спрашивать ещё раз."
 
-#: ../ggz-gtk/playerinfo.c:102
+#: ../ggz-gtk/playerinfo.c:105
 msgid "Player Information"
 msgstr "Информация об игроке"
 
-#: ../ggz-gtk/playerinfo.c:132
+#: ../ggz-gtk/playerinfo.c:135
 msgid "Player Handle:"
 msgstr "Метка игрока:"
 
-#: ../ggz-gtk/playerinfo.c:150
+#: ../ggz-gtk/playerinfo.c:153
 msgid "Table:"
 msgstr "Стол:"
 
-#: ../ggz-gtk/playerinfo.c:168
+#: ../ggz-gtk/playerinfo.c:171
 msgid "Account:"
 msgstr "Учётная запись:"
 
-#: ../ggz-gtk/playerinfo.c:187
+#: ../ggz-gtk/playerinfo.c:202
 msgid "Record:"
 msgstr "Запись:"
 
-#: ../ggz-gtk/playerinfo.c:205
+#: ../ggz-gtk/playerinfo.c:220
 msgid "Rating:"
 msgstr "Рейтинг:"
 
-#: ../ggz-gtk/playerinfo.c:223
+#: ../ggz-gtk/playerinfo.c:238
 msgid "Rank:"
 msgstr "Ранг:"
 
-#: ../ggz-gtk/playerinfo.c:241
+#: ../ggz-gtk/playerinfo.c:256
 msgid "Score:"
 msgstr "Счёт:"
 
-#: ../ggz-gtk/playerinfo.c:302 ../ggz-gtk/playerinfo.c:334
+#: ../ggz-gtk/playerinfo.c:317 ../ggz-gtk/playerinfo.c:350
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: ../ggz-gtk/playerinfo.c:337
+#: ../ggz-gtk/playerinfo.c:353
 msgid "Registered"
 msgstr "Зарегистрирован"
 
-#: ../ggz-gtk/playerinfo.c:340
+#: ../ggz-gtk/playerinfo.c:356
 msgid "Guest"
 msgstr "Гость"
 
-#: ../ggz-gtk/playerinfo.c:343
+#: ../ggz-gtk/playerinfo.c:359
 msgid "Host"
 msgstr "Узел"
 
-#: ../ggz-gtk/playerinfo.c:346
+#: ../ggz-gtk/playerinfo.c:362
 msgid "Administrator"
 msgstr "Администратор"
 
-#: ../ggz-gtk/playerinfo.c:349
+#: ../ggz-gtk/playerinfo.c:365
 msgid "Bot"
 msgstr "Компьютерный игрок"
 
-#: ../ggz-gtk/playerlist.c:94 ../ggz-gtk/roomlist.c:144
+#: ../ggz-gtk/playerlist.c:171 ../ggz-gtk/roomlist.c:144
 #: ../ggz-gtk/tablelist.c:84
 msgid "Info"
 msgstr "Информация"
 
-#: ../ggz-gtk/playerlist.c:101
+#: ../ggz-gtk/playerlist.c:178
 msgid "Friends"
 msgstr "Друзья"
 
-#: ../ggz-gtk/playerlist.c:106
+#: ../ggz-gtk/playerlist.c:183
 msgid "Ignore"
 msgstr "Игнорировать"
 
-#: ../ggz-gtk/playerlist.c:246
+#: ../ggz-gtk/playerlist.c:380
 #, c-format
 msgid "#%d"
 msgstr "№%d"
 
-#: ../ggz-gtk/playerlist.c:346
+#: ../ggz-gtk/playerlist.c:483
 msgid "L"
 msgstr "L"
 
-#: ../ggz-gtk/playerlist.c:351 ../ggz-gtk/tablelist.c:191
+#: ../ggz-gtk/playerlist.c:488 ../ggz-gtk/tablelist.c:191
 msgid "T#"
 msgstr "T#"
 
-#: ../ggz-gtk/playerlist.c:362 ../ggz-gtk/types.c:176
+#: ../ggz-gtk/playerlist.c:499 ../ggz-gtk/types.c:176
 msgid "Name"
 msgstr "Имя"
 
-#: ../ggz-gtk/props.c:249
+#: ../ggz-gtk/props.c:251
 msgid "Properties Updated"
 msgstr "Параметры обновлены"
 
-#: ../ggz-gtk/props.c:1035
+#: ../ggz-gtk/props.c:1052
 msgid "Confirm:"
 msgstr "Подтвердить:"
 
-#: ../ggz-gtk/props.c:1085
+#: ../ggz-gtk/props.c:1102
 msgid "Modify"
 msgstr "Изменить"
 
-#: ../ggz-gtk/props.c:1099
+#: ../ggz-gtk/props.c:1116
 msgid "Servers"
 msgstr "Сервера"
 
-#: ../ggz-gtk/props.c:1118
+#: ../ggz-gtk/props.c:1135
 msgid "Chat Font:"
 msgstr "Шрифт беседы:"
 
-#: ../ggz-gtk/props.c:1134
+#: ../ggz-gtk/props.c:1151
 msgid "Change"
 msgstr "Изменить"
 
-#: ../ggz-gtk/props.c:1147
+#: ../ggz-gtk/props.c:1164
 msgid "Ignore Join/Part Messages"
 msgstr ""
 "Игнорировать сообщения о "
 "присоединении/разделении"
 
-#: ../ggz-gtk/props.c:1155
+#: ../ggz-gtk/props.c:1172
 msgid "Play Sounds"
 msgstr "Играть звуки"
 
-#: ../ggz-gtk/props.c:1163
+#: ../ggz-gtk/props.c:1180
 msgid "Auto Indent"
 msgstr "Автовыравнивание"
 
-#: ../ggz-gtk/props.c:1171
+#: ../ggz-gtk/props.c:1188
 msgid "Timestamp Chats"
 msgstr "Показывать отметки времени"
 
-#: ../ggz-gtk/props.c:1179
+#: ../ggz-gtk/props.c:1196
 msgid "Word Wrap"
 msgstr "Переносить слова"
 
-#: ../ggz-gtk/props.c:1187
+#: ../ggz-gtk/props.c:1204
 msgid "Chat Color"
 msgstr "Цвет беседы"
 
-#: ../ggz-gtk/props.c:1236
+#: ../ggz-gtk/props.c:1253
 msgid "Default chat color assigned to your friends"
 msgstr "Цвет по умолчанию для ваших друзей"
 
-#: ../ggz-gtk/props.c:1245
+#: ../ggz-gtk/props.c:1262
 msgid "Chat color used when your name is typed"
 msgstr "Цвет по умолчанию для вашего имени"
 
-#: ../ggz-gtk/props.c:1254
+#: ../ggz-gtk/props.c:1271
 msgid "Chat color used for all other chats"
 msgstr "Цвет для других собеседников"
 
-#: ../ggz-gtk/props.c:1263
+#: ../ggz-gtk/props.c:1280
 msgid "Normal Color"
 msgstr "Обычный цвет"
 
-#: ../ggz-gtk/props.c:1274
+#: ../ggz-gtk/props.c:1291
 msgid "Highlight Color"
 msgstr "Цвет подсветки"
 
-#: ../ggz-gtk/props.c:1285
+#: ../ggz-gtk/props.c:1302
 msgid "Friend Color"
 msgstr "Цвет друзей"
 
-#: ../ggz-gtk/props.c:1296
+#: ../ggz-gtk/props.c:1313
 msgid "Black Background"
 msgstr "Чёрный фон"
 
-#: ../ggz-gtk/props.c:1305
+#: ../ggz-gtk/props.c:1322
 msgid "White Background"
 msgstr "Белый фон"
 
-#: ../ggz-gtk/props.c:1314
+#: ../ggz-gtk/props.c:1331
 msgid "Chat"
 msgstr "Беседа"
 
-#: ../ggz-gtk/props.c:1326
+#: ../ggz-gtk/props.c:1343
 msgid "All of the following information is optional."
 msgstr "Вся информация ниже не обязательна."
 
-#: ../ggz-gtk/props.c:1344
+#: ../ggz-gtk/props.c:1361
 msgid "Name:"
 msgstr "Имя:"
 
-#: ../ggz-gtk/props.c:1371
+#: ../ggz-gtk/props.c:1388
 msgid "City:"
 msgstr "Город:"
 
-#: ../ggz-gtk/props.c:1392
+#: ../ggz-gtk/props.c:1409
 msgid "State:"
 msgstr "Регион:"
 
-#: ../ggz-gtk/props.c:1413
+#: ../ggz-gtk/props.c:1430
 msgid "Country:"
 msgstr "Страна:"
 
-#: ../ggz-gtk/props.c:1450
+#: ../ggz-gtk/props.c:1445
+msgid "Comments, Hobbies, Etc."
+msgstr "Комментарии, хобби и т.д."
+
+#: ../ggz-gtk/props.c:1467
 msgid "User Information"
 msgstr "Информация о пользователе"
 
-#: ../ggz-gtk/props.c:1459
-msgid "Browser to launch URLs with:"
-msgstr "Браузер для открытия ресурсов:"
-
-#: ../ggz-gtk/props.c:1464 ../ggz-gtk/props.c:1484 ../ggz-gtk/support.c:139
-msgid "Galeon - New"
-msgstr "Galeon - новое окно"
-
-#: ../ggz-gtk/props.c:1465 ../ggz-gtk/support.c:142
-msgid "Galeon - Existing"
-msgstr "Galeon - существующее окно"
-
-#: ../ggz-gtk/props.c:1466 ../ggz-gtk/support.c:145
-msgid "Gnome URL Handler"
-msgstr "Обработчик URL из настроек среды"
-
-#: ../ggz-gtk/props.c:1467 ../ggz-gtk/support.c:148
-msgid "Konqueror - New"
-msgstr "Konqueror - новое окно"
-
-#: ../ggz-gtk/props.c:1468 ../ggz-gtk/support.c:151
-msgid "Konqueror - Existing"
-msgstr "Konqueror - существующее окно"
-
-#: ../ggz-gtk/props.c:1469 ../ggz-gtk/support.c:163
-msgid "Lynx"
-msgstr "Lynx"
-
-#: ../ggz-gtk/props.c:1470 ../ggz-gtk/support.c:169
-msgid "Mozilla - New"
-msgstr "Mozilla - новое окно"
-
-#: ../ggz-gtk/props.c:1471 ../ggz-gtk/support.c:172
-msgid "Mozilla - Existing"
-msgstr "Mozilla - существующее окно"
-
-#: ../ggz-gtk/props.c:1472 ../ggz-gtk/support.c:176
-msgid "Netscape - New"
-msgstr "Netscape - новое окно"
-
-#: ../ggz-gtk/props.c:1473 ../ggz-gtk/support.c:179
-msgid "Netscape - Existing"
-msgstr "Netscape - существующее окно"
-
-#: ../ggz-gtk/props.c:1474 ../ggz-gtk/support.c:183
-msgid "Opera - New"
-msgstr "Opera - новое окно"
-
-#: ../ggz-gtk/props.c:1475 ../ggz-gtk/support.c:186
-msgid "Opera - Existing"
-msgstr "Opera - существующее окно"
-
-#: ../ggz-gtk/props.c:1476 ../ggz-gtk/support.c:191
-msgid "Firefox - New"
-msgstr "Firefox - новое окно"
-
-#: ../ggz-gtk/props.c:1477 ../ggz-gtk/support.c:194
-msgid "Firefox - Existing"
-msgstr "Firefox - существующее окно"
-
-#: ../ggz-gtk/props.c:1486
+#: ../ggz-gtk/props.c:1483
 msgid "Single Click Room Entry"
 msgstr "Вход в комнату по одному щелчку"
 
-#: ../ggz-gtk/props.c:1500
+#: ../ggz-gtk/props.c:1497
 msgid "Display All"
 msgstr "Показать всё"
 
-#: ../ggz-gtk/props.c:1509
+#: ../ggz-gtk/props.c:1506
 msgid "Display New"
 msgstr "Показать новые"
 
-#: ../ggz-gtk/props.c:1518
+#: ../ggz-gtk/props.c:1515
 msgid "Display Important"
 msgstr "Показать важное"
 
-#: ../ggz-gtk/props.c:1527
+#: ../ggz-gtk/props.c:1524
 msgid "Display None"
 msgstr "Не показывать ничего"
 
-#: ../ggz-gtk/props.c:1536
+#: ../ggz-gtk/props.c:1533
 msgid "Options"
 msgstr "Параметры"
 
-#: ../ggz-gtk/props.c:1625
+#: ../ggz-gtk/props.c:1622
 msgid "Select Font"
 msgstr "Выборать шрифт"
 
@@ -1272,10 +1065,6 @@ msgstr "Неизвестная комната"
 msgid "You can't join a room; you're not logged in"
 msgstr ""
 "Нельзя заходить в комнат у до регистрации."
-
-#: ../ggz-gtk/roomlist.c:77
-msgid "You're already in between rooms"
-msgstr "Вы уже между комнатами"
 
 #: ../ggz-gtk/roomlist.c:82
 msgid "You can't switch rooms while playing a game"

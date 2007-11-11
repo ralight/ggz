@@ -6,6 +6,7 @@ POSOURCES = $(top_srcdir)/ggz-gtk/*.c $(top_srcdir)/src/*.c
 include $(top_srcdir)/m4/i18n.mk
 
 pofiles = \
+	af.po \
 	am.po \
 	ar.po \
 	az.po \
@@ -62,12 +63,14 @@ pofiles = \
 	ru.po \
 	rw.po \
 	sk.po \
+	si.po \
 	sl.po \
 	sq.po \
 	sr@Latn.po \
 	sr.po \
 	sv.po \
 	ta.po \
+	te.po \
 	th.po \
 	tr.po \
 	uk.po \

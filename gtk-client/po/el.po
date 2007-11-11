@@ -1,10 +1,8 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/el.po)
-# translation of el.po to
-# translation of el.po to
 # translation of el.po to Greek
 # gnome-games Greek translation.
-# Copyright (C) 2000, 2001, 2002,2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+# Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
 #
 # spyros:
 #   The translation for gtali (dice game: Yahtzee) incomplete, since
@@ -26,44 +24,1174 @@
 # Spiros Papadimitriou <spapadim+@cs.cmu.edu>, 2000.
 # Simos Xenitellis <simos74@gmx.net>, 2000, 2001, 2002.
 # Kostas Papadimas <pkst@gnome.org>, 2002,2003, 2004, 2005, 2006.
-# Athanasios Lefteris <alefteris@gmail.com>, 2006
+# Athanasios Lefteris <alefteris@gmail.com>, 2006.
+# Yannis Evangelou <zephyrous1979@yahoo.com>, 2007.
+# Simos Xenitellis <simos@gnome.org>, 2007.
 msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-20 15:07+0100\n"
-"PO-Revision-Date: 2006-07-19 13:09+0300\n"
-"Last-Translator: Athanasios Lefteris <alefteris@gmail.com>\n"
+"POT-Creation-Date: 2007-11-11 22:11+0100\n"
+"PO-Revision-Date: 2007-09-05 00:31+0200\n"
+"Last-Translator: NikosCharonitakis <nikosx@gmail.com>\n"
 "Language-Team: Greek <team@gnome.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#: ../ggz-gtk/about.c:87 ../ggz-gtk/client.c:1089
+msgid "About"
+msgstr "Σχετικά"
+
+#: ../ggz-gtk/chat.c:291
+#, c-format
+msgid "You have received an unknown message from %s."
+msgstr "Λήψη αγνώστου μηνύματος από %s."
+
+#: ../ggz-gtk/chat.c:355
+#, c-format
+msgid "You've been beeped by %s."
+msgstr "Λήψη ηχητικής ειδοποίησης από %s."
+
+#: ../ggz-gtk/chat.c:551
+#, c-format
+msgid "Beep sent to %s."
+msgstr "Ηχητική ειδοποίηση στον %s."
+
+#: ../ggz-gtk/chat.c:579
+#, c-format
+msgid "%s (logged on)"
+msgstr "%s (συνδεδεμένος)"
+
+#: ../ggz-gtk/chat.c:617
+#, c-format
+msgid "%s (logged off)"
+msgstr "%s (αποσυνδεδεμένος)"
+
+#: ../ggz-gtk/chat.c:666
+msgid "Chat Commands"
+msgstr "Εντολές συνομιλίας"
+
+#: ../ggz-gtk/chat.c:879
+#, c-format
+msgid "Added %s to your friends list."
+msgstr "Προσθήκη %s στη λίστα των φίλων σας."
+
+#: ../ggz-gtk/chat.c:903
+#, c-format
+msgid "Removed %s from your friends list."
+msgstr ""
+"Απομάκρυνση %s από τη λίστα των φίλων σας."
+
+#: ../ggz-gtk/chat.c:934
+#, c-format
+msgid "Added %s to your ignore list."
+msgstr "Προσθήκη %s στη λίστα παράβλεψης"
+
+#: ../ggz-gtk/chat.c:959
+#, c-format
+msgid "Removed %s from your ignore list."
+msgstr "Απομάκρυνση %s από τη λίστα παράβλεψης."
+
+#: ../ggz-gtk/chat.c:1034
+msgid "People currently your friends"
+msgstr "Άτομα στη λίστα φίλων σας"
+
+#: ../ggz-gtk/chat.c:1045
+msgid "People you're currently ignoring"
+msgstr "Άτομα στη λίστα παράβλεψης"
+
+#: ../ggz-gtk/chat.c:1119
+msgid "Multiple matches:"
+msgstr "Πολλαπλοί συνδυασμοί:"
+
+#: ../ggz-gtk/client.c:144
+msgid "Quit?"
+msgstr "Εγκαταλείπετε;"
+
+#: ../ggz-gtk/client.c:237
+msgid ""
+"Server stats are not implemented yet. If\n"
+"you would like to help head over to\n"
+"http://www.ggzgamingzone.org/"
+msgstr ""
+"Δεν έχουν τεθεί ακόμη σε λειτουργία τα "
+"στατιστικά στοιχεία του εξυπηρετητή. Αν\n"
+"θέλετε να βοηθήσετε, πηγαίνετε στον "
+"ιστότοπο\n"
+"http://www.ggzgamingzone.org/"
+
+#: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
+#: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
+msgid "Not Implemented"
+msgstr "Δεν έχει υλοποιηθεί"
+
+#: ../ggz-gtk/client.c:248 ../ggz-gtk/client.c:545
+msgid ""
+"Player stats are not implemented yet. If\n"
+"you would like to help head over to\n"
+"http://www.ggzgamingzone.org/"
+msgstr ""
+"Δεν έχουν τεθεί ακόμη σε λειτουργία τα "
+"στατιστικά στοιχεία των παιχτών. Αν\n"
+"θέλετε να βοηθήσετε, πηγαίνετε στον "
+"ιστότοπο\n"
+"http://www.ggzgamingzone.org/"
+
+#: ../ggz-gtk/client.c:294
+msgid ""
+"GGZ Gaming Zone help needs a browser to be configured.\n"
+"The configuration dialog will be invoked now."
+msgstr ""
+"Πρέπει να παραμετροποιηθεί ένα πρόγραμμα "
+"περιήγησης για τη Βοήθεια στη ζώνη "
+"παιχνιδιού GGZ.\n"
+"Θα γίνει κλήση του διαλόγου "
+"παραμετροποίησης τώρα."
+
+#: ../ggz-gtk/client.c:308
+msgid ""
+"Inline game help is not implemented yet. Help\n"
+"is on our website. If\n"
+"you would like to help head over to\n"
+"http://www.ggzgamingzone.org/"
+msgstr ""
+"Δεν έχει τεθεί ακόμη σε λειτουργία η "
+"ενσωματωμένη βοήθεια παιχνιδιού. Αν\n"
+"θέλετε να βοηθήσετε, πηγαίνετε στον "
+"ιστότοπο\n"
+"http://www.ggzgamingzone.org/"
+
+#: ../ggz-gtk/client.c:566
+msgid "You must highlight a table before you can join it."
+msgstr ""
+"Για να εισέλθετε σ' ένα τραπέζι, πρέπει να "
+"το επισημάνετε."
+
+#: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
+msgid "Error Joining"
+msgstr "Σφάλμα κατά την είσοδο"
+
+#: ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:614
+msgid "That table is full."
+msgstr "Το τραπέζι είναι πλήρες"
+
+#: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:336
+msgid "Error launching game module."
+msgstr "Σφάλμα κατά την έναρξη παιχνιδιού."
+
+#: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
+#: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:337
+msgid "Game Error"
+msgstr "Σφάλμα παιχνιδιού"
+
+#: ../ggz-gtk/client.c:600
+msgid "You must highlight a table before you can watch it."
+msgstr ""
+"Για να παρακολουθήσετε ένα τραπέζι, "
+"πρέπει να το επισημάνετε."
+
+#: ../ggz-gtk/client.c:602
+msgid "Error Spectating"
+msgstr "Σφάλμα κατά την παρακολούθηση"
+
+#: ../ggz-gtk/client.c:647
+msgid ""
+"Failed to join table.\n"
+"Join aborted."
+msgstr ""
+"Αποτυχία εισόδου στο τραπέζι.\n"
+"Ματαίωση εισόδου."
+
+#: ../ggz-gtk/client.c:648
+msgid "Join Error"
+msgstr "Σφάλμα εισόδου"
+
+#: ../ggz-gtk/client.c:678
+msgid "Disconnect from the GGZ Gaming Zone server"
+msgstr ""
+"Αποσύνδεση από τον εξυπηρετητή της ζώνης "
+"παιχνιδιού GGZ"
+
+#: ../ggz-gtk/client.c:680
+msgid "Start playing a game at a new table"
+msgstr "Έναρξη παιχνιδιού σε νέο τραπέζι"
+
+#: ../ggz-gtk/client.c:684
+msgid "Watch an existing game - become a spectator of the table"
+msgstr ""
+"Παρακολουθήστε ένα τρέχον παιχνίδι - "
+"γίνετε θεατής του τραπεζιού"
+
+#: ../ggz-gtk/client.c:687
+msgid "Leave the game you're currently playing"
+msgstr ""
+"Αποχωρήστε από το παιχνίδι που παίζετε "
+"αυτή τη στιγμή"
+
+#: ../ggz-gtk/client.c:689
+msgid "Show the properties dialog to change the client settings"
+msgstr ""
+"Εμφάνιση του παραθύρου διαλόγου "
+"ρυθμίσεων για να αλλάξετε τις ρυθμίσεις "
+"του προγράμματος-πελάτη"
+
+#: ../ggz-gtk/client.c:696
+msgid "Exit the GGZ client application."
+msgstr ""
+"Έξοδος από την εφαρμογή του "
+"προγράμματος-πελάτη GGZ"
+
+#: ../ggz-gtk/client.c:726
+#, c-format
+msgid "Client Version:14 %s"
+msgstr "Έκδοση προγράμματος-πελάτη:14 %s"
+
+#: ../ggz-gtk/client.c:729
+#, c-format
+msgid "GTK+ Version:14 %d.%d.%d\n"
+msgstr "Έκδοση GTK+:14 %d.%d.%d\n"
+
+#: ../ggz-gtk/client.c:736
+msgid "Compiled with debugging."
+msgstr ""
+"Μεταγλωττισμένο με πληροφορίες "
+"εκσφαλμάτωσης."
+
+#: ../ggz-gtk/client.c:934
+msgid "GGZ"
+msgstr "GGZ"
+
+#: ../ggz-gtk/client.c:942 ../ggz-gtk/login.c:729
+msgid "Connect"
+msgstr "Σύνδεση"
+
+#: ../ggz-gtk/client.c:949 ../ggz-gtk/client.c:1180
+msgid "Disconnect"
+msgstr "Αποσύνδεση"
+
+#: ../ggz-gtk/client.c:962
+msgid "Quit"
+msgstr "Εγκατάλειψη"
 
 #: ../ggz-gtk/client.c:969
 msgid "Game"
 msgstr "Παιχνίδι"
 
+#: ../ggz-gtk/client.c:978 ../ggz-gtk/client.c:1133 ../ggz-gtk/launch.c:596
+msgid "Launch"
+msgstr "Εκκίνηση"
+
+#: ../ggz-gtk/client.c:985 ../ggz-gtk/client.c:1141 ../ggz-gtk/roomlist.c:150
+#: ../ggz-gtk/tablelist.c:74
+msgid "Join"
+msgstr "Συμμετοχή"
+
+#: ../ggz-gtk/client.c:992 ../ggz-gtk/client.c:1149
+msgid "Watch"
+msgstr "Παρακολούθηση"
+
+#: ../ggz-gtk/client.c:1004 ../ggz-gtk/client.c:1157 ../ggz-gtk/tablelist.c:77
+msgid "Leave"
+msgstr "Αποχώρηση"
+
+#: ../ggz-gtk/client.c:1011
+msgid "Edit"
+msgstr "Επεξεργασία"
+
+#: ../ggz-gtk/client.c:1019
+msgid "Properties"
+msgstr "Ιδιότητες"
+
+#: ../ggz-gtk/client.c:1026
+msgid "View"
+msgstr "Προβολή"
+
+#: ../ggz-gtk/client.c:1035
+msgid "Room List"
+msgstr "Λίστα δωματίων"
+
+#: ../ggz-gtk/client.c:1053
+msgid "Server Stats"
+msgstr "Στατιστικά εξυπηρετητή"
+
+#: ../ggz-gtk/client.c:1065 ../ggz-gtk/types.c:237
+msgid "Game Types"
+msgstr "Είδη παιχνιδιού"
+
+#: ../ggz-gtk/client.c:1074 ../ggz-gtk/props.c:1488
+msgid "MOTD"
+msgstr "MOTD"
+
+#: ../ggz-gtk/client.c:1081
+msgid "Help"
+msgstr "Βοήθεια"
+
+#: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:493
+msgid "Stats"
+msgstr "Στατιστικά"
+
+#: ../ggz-gtk/client.c:1196 ../ggz-gtk/ggzclient.c:721
+msgid "Current Room:"
+msgstr "Τρέχον δωμάτιο"
+
+#: ../ggz-gtk/client.c:1277 ../ggz-gtk/playerinfo.c:274
+msgid "Message:"
+msgstr "Μήνυμα"
+
+#: ../ggz-gtk/client.c:1295
+msgid "Send"
+msgstr "Αποστολή"
+
+#: ../ggz-gtk/client.c:1480 ../ggz-gtk/ggzclient.c:400
+msgid "GGZ Gaming Zone"
+msgstr "Ζώνη παιχνιδιού GGZ"
+
+#: ../ggz-gtk/first.c:57
+msgid "Wizard"
+msgstr "Οδηγός"
+
+#: ../ggz-gtk/first.c:57
+msgid "Deity"
+msgstr "Θεότητα"
+
+#: ../ggz-gtk/first.c:57
+msgid "Sentinel"
+msgstr "Φρουρός"
+
+#: ../ggz-gtk/first.c:57
+msgid "Captain"
+msgstr "Αξιωματικός"
+
+#: ../ggz-gtk/first.c:58
+msgid "Knight"
+msgstr "Ιππότης"
+
+#: ../ggz-gtk/first.c:58
+msgid "Angel"
+msgstr "Άγγελος"
+
+#: ../ggz-gtk/first.c:58
+msgid "Silverlord"
+msgstr "Ασημένιος άρχοντας"
+
+#: ../ggz-gtk/first.c:58
+msgid "Eagle"
+msgstr "Αετός"
+
+#: ../ggz-gtk/first.c:59
+msgid "Vampire"
+msgstr "Βρυκόλακας"
+
+#: ../ggz-gtk/first.c:59
+msgid "Chief"
+msgstr "Αρχηγός"
+
+#: ../ggz-gtk/first.c:59
+msgid "Colonel"
+msgstr "Συνταγματάρχης"
+
 #: ../ggz-gtk/first.c:59
 msgid "General"
-msgstr "Γενικά"
+msgstr "Στρατηγός"
 
-#: ../ggz-gtk/playerinfo.c:241
+#: ../ggz-gtk/first.c:60
+msgid "Major"
+msgstr "Ταγματάρχης"
+
+#: ../ggz-gtk/first.c:60
+msgid "Scout"
+msgstr "Ανιχνευτής"
+
+#: ../ggz-gtk/first.c:60
+msgid "Lieutenant"
+msgstr "Υπολοχαγός"
+
+#: ../ggz-gtk/first.c:60
+msgid "Stalker"
+msgstr "Κυνηγός"
+
+#: ../ggz-gtk/first.c:61
+msgid "Scientist"
+msgstr "Επιστήμονας"
+
+#: ../ggz-gtk/first.c:61
+msgid "Scholar"
+msgstr "Ακαδημαϊκός"
+
+#: ../ggz-gtk/first.c:61
+msgid "Entity"
+msgstr "Πρόσωπο"
+
+#: ../ggz-gtk/first.c:61
+msgid "Creator"
+msgstr "Δημιουργός"
+
+#: ../ggz-gtk/first.c:69
+msgid "GGZ Community (fast)"
+msgstr "Κοινότητα GGZ (γρήγορη)"
+
+#: ../ggz-gtk/first.c:70
+msgid "Local developer server"
+msgstr "Εξυπηρετητής τοπικού προγραμματισμού"
+
+#: ../ggz-gtk/first.c:190
+msgid ""
+"This is the first time you are running the GTK+ GGZ Gaming Zone client. "
+"Would you like to create some default server profiles?"
+msgstr ""
+"Είναι η πρώτη φορά που χρησιμοποιείτε τη "
+"ζώνη παιχνιδιού GTK+ GGZ. Θέλετε να "
+"δημιουργήσετε κάποια προεπιλεγμένα "
+"προφίλ εξυπηρετητή;"
+
+#: ../ggz-gtk/game.c:72
+#, c-format
+msgid ""
+"You don't have this game installed. You can download\n"
+"it from %s."
+msgstr ""
+"Αυτό το παιχνίδι δεν είναι εγκατεστημένο. "
+"Μπορείτε να το κατεβάσετε από %s."
+
+#: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
+#: ../ggz-gtk/game.c:325 ../ggz-gtk/game.c:334 ../ggz-gtk/game.c:350
+#: ../ggz-gtk/launch.c:292
+msgid "Launch Error"
+msgstr "Σφάλμα κατά την έναρξη"
+
+#: ../ggz-gtk/game.c:148
+msgid ""
+"Failed to execute game module.\n"
+" Launch aborted."
+msgstr ""
+"Αποτυχία κατά την εκτέλεση του "
+"παιχνιδιού.\n"
+"Ματαίωση έναρξης."
+
+#: ../ggz-gtk/game.c:201
+msgid "Launched game"
+msgstr "Έγινε έναρξη παιχνιδιού"
+
+#: ../ggz-gtk/game.c:222
+msgid "Launch failed"
+msgstr "Αποτυχία έναρξης"
+
+#: ../ggz-gtk/game.c:296
+msgid "You can only play one game at a time."
+msgstr ""
+"Μπορείτε να παίζετε μόνο ένα παιχνίδι "
+"κάθε φορά."
+
+#: ../ggz-gtk/game.c:304
+msgid "You're still at a table."
+msgstr "Βρίσκεστε ακόμη σε τραπέζι."
+
+#: ../ggz-gtk/game.c:313
+msgid ""
+"You must be in a room to launch a game.\n"
+"Launch aborted"
+msgstr ""
+"Πρέπει να βρίσκεστε σε δωμάτιο για να "
+"αρχίσετε ένα παιχνίδι.\n"
+"Ματαίωση έναρξης"
+
+#: ../ggz-gtk/game.c:323
+msgid ""
+"No game types defined for this server.\n"
+"Launch aborted."
+msgstr ""
+"Δεν έχουν οριστεί είδη παιχνιδιού γι' "
+"αυτόν τον εξυπηρετητή.\n"
+"Ματαίωση έναρξης"
+
+#: ../ggz-gtk/game.c:333
+msgid "This game doesn't support spectators."
+msgstr ""
+"Το παιχνίδι αυτό δεν υποστηρίζει κοινό."
+
+#: ../ggz-gtk/game.c:348
+msgid ""
+"You need to launch the GGZ client directly\n"
+"to be able to play this game."
+msgstr ""
+"Για να μπορέσετε να παίξετε αυτό το "
+"παιχνίδι, πρέπει να εκκινήσετε απευθείας "
+"το πρόγραμμα-πελάτη GGZ."
+
+#: ../ggz-gtk/ggzclient.c:122
+#, c-format
+msgid "Error connecting to server: %s"
+msgstr ""
+"Σφάλμα κατά τη σύνδεση με τον "
+"εξυπηρετητή: %s"
+
+#: ../ggz-gtk/ggzclient.c:124 ../ggz-gtk/ggzclient.c:380
+#: ../ggz-gtk/ggzclient.c:562 ../ggz-gtk/ggzclient.c:597
+#: ../ggz-gtk/ggzclient.c:650 ../ggz-gtk/ggzclient.c:1083
+#: ../ggz-gtk/launch.c:327
+msgid "Error"
+msgstr "Σφάλμα"
+
+#: ../ggz-gtk/ggzclient.c:237
+#, c-format
+msgid "Your new password is %s"
+msgstr "Ο νέος σας κωδικός πρόσβασης είναι %s"
+
+#: ../ggz-gtk/ggzclient.c:239
+msgid "New password"
+msgstr "Νέος κωδικός πρόσβασης"
+
+#: ../ggz-gtk/ggzclient.c:275
+#, c-format
+msgid "Players on server: %d"
+msgstr "Παίκτες στον εξυπηρετητή: %d"
+
+#: ../ggz-gtk/ggzclient.c:320
+#, c-format
+msgid "Current Room: %s"
+msgstr "Τρέχον δωμάτιο: %s"
+
+#: ../ggz-gtk/ggzclient.c:328
+#, c-format
+msgid "You've joined room \"%s\"."
+msgstr "Έισήλθατε στο δωμάτιο \"%s\"."
+
+#: ../ggz-gtk/ggzclient.c:378
+#, c-format
+msgid "Error joining room: %s"
+msgstr "Λάθος κατά την είσοδο στο δωμάτιο: %s"
+
+#: ../ggz-gtk/ggzclient.c:429
+msgid "You can't chat while not in a room."
+msgstr ""
+"Δεν μπορείτε να συνομιλήσετε αν δεν είστε "
+"σε δωμάτιο."
+
+#: ../ggz-gtk/ggzclient.c:434
+msgid "You don't have permission to chat here."
+msgstr "Δεν έχετε άδεια να συνομιλήσετε εδώ."
+
+#: ../ggz-gtk/ggzclient.c:438
+msgid "No private chatting at a table!"
+msgstr "Απαγορεύεται η συνομιλία στο τραπέζι!"
+
+#: ../ggz-gtk/ggzclient.c:442
+msgid "That player isn't in the room!"
+msgstr "Αυτός ο παίκτης δεν είναι στο δωμάτιο!"
+
+#: ../ggz-gtk/ggzclient.c:447
+msgid "There was an error sending the chat."
+msgstr ""
+"Παρουσιάστηκε σφάλμα κατά την έναρξη της "
+"συνομιλίας."
+
+#: ../ggz-gtk/ggzclient.c:451
+msgid "You're not at a table."
+msgstr "Δεν βρίσκεστε σε τραπέζι."
+
+#: ../ggz-gtk/ggzclient.c:455
+#, c-format
+msgid "Chat failed: %s."
+msgstr "Η προσπάθεια συνομιλίας απέτυχε: %s."
+
+#: ../ggz-gtk/ggzclient.c:560
+#, c-format
+msgid "Error launching table: %s"
+msgstr ""
+"Σφάλμα κατά την εκκίνηση του τραπεζιού: %s."
+
+#: ../ggz-gtk/ggzclient.c:580
+#, c-format
+msgid "You have joined table %d."
+msgstr "Συμμετέχετε στο τραπέζι %d."
+
+#: ../ggz-gtk/ggzclient.c:595
+#, c-format
+msgid "Error joining table: %s"
+msgstr "Σφάλμα κατά την είσοδο στο τραπέζι: %s"
+
+#: ../ggz-gtk/ggzclient.c:617
+#, c-format
+msgid "You have been booted from the table by %s."
+msgstr "Ξεκινήσατε στο τραπέζι από %s."
+
+#: ../ggz-gtk/ggzclient.c:622
+#, c-format
+msgid "You have left the table."
+msgstr "Αποχωρήσατε από το τραπέζι."
+
+#: ../ggz-gtk/ggzclient.c:625
+#, c-format
+msgid "The game is over."
+msgstr "Το παιχνίδι τερματίστηκε."
+
+#: ../ggz-gtk/ggzclient.c:629
+#, c-format
+msgid "There was an error with the game server."
+msgstr ""
+"Παρουσιάστηκε σφάλμα στον εξυπηρετητή "
+"του παιχνιδιού."
+
+#: ../ggz-gtk/ggzclient.c:648
+#, c-format
+msgid "Error leaving table: %s"
+msgstr ""
+"Σφάλμα κατά την αποχώρηση από το τραπέζι: "
+"%s"
+
+#: ../ggz-gtk/ggzclient.c:743
+msgid "**none**"
+msgstr "**κανένα**"
+
+#: ../ggz-gtk/ggzclient.c:750
+msgid "Offline"
+msgstr "Εκτός σύνδεσης"
+
+#: ../ggz-gtk/ggzclient.c:753
+msgid "Connecting"
+msgstr "Γίνεται σύνδεση"
+
+#: ../ggz-gtk/ggzclient.c:756
+msgid "Reconnecting"
+msgstr "Γίνεται επανασύνδεση"
+
+#: ../ggz-gtk/ggzclient.c:759
+msgid "Online"
+msgstr "Συνδεδεμένος"
+
+#: ../ggz-gtk/ggzclient.c:762
+msgid "Logging In"
+msgstr "Έναρξη σύνδεσης"
+
+#: ../ggz-gtk/ggzclient.c:765
+msgid "Logged In"
+msgstr "Συνδεδεμένος"
+
+#: ../ggz-gtk/ggzclient.c:769
+msgid "--> Room"
+msgstr "--> Δωμάτιο"
+
+#: ../ggz-gtk/ggzclient.c:772
+msgid "Chatting"
+msgstr "Σε συνομιλία"
+
+#: ../ggz-gtk/ggzclient.c:776
+msgid "--> Table"
+msgstr "--> Τραπέζι"
+
+#: ../ggz-gtk/ggzclient.c:779
+msgid "Playing"
+msgstr "Σε παιχνίδι"
+
+#: ../ggz-gtk/ggzclient.c:782
+msgid "<-- Table"
+msgstr "<-- Τραπέζι"
+
+#: ../ggz-gtk/ggzclient.c:785
+msgid "Logging Out"
+msgstr "Αποσύνδεση"
+
+#: ../ggz-gtk/ggzclient.c:1081
+#, c-format
+msgid "Server error: %s"
+msgstr "Σφάλμα του εξυπηρετητή: %s"
+
+#: ../ggz-gtk/ggzclient.c:1170
+msgid "Disconnected from server."
+msgstr "Αποσυνδεδεμένος από τον εξυπηρετητή."
+
+#: ../ggz-gtk/launch.c:119
+#, c-format
+msgid "Author:  %s"
+msgstr "Συντάκτης:  %s"
+
+#: ../ggz-gtk/launch.c:126
+#, c-format
+msgid "Description:  %s"
+msgstr "Περιγραφή:  %s"
+
+#: ../ggz-gtk/launch.c:132
+#, c-format
+msgid "Home Page:  %s"
+msgstr "Αρχική σελίδα:  %s"
+
+#: ../ggz-gtk/launch.c:291
+msgid ""
+"Failed to launch table.\n"
+" Launch aborted."
+msgstr ""
+"Αποτυχία εκκίνησης τραπεζιού.\n"
+"Ματαίωση εκκίνησης."
+
+#: ../ggz-gtk/launch.c:327
+msgid "Invalid number of bots specified"
+msgstr "Άγνωστος αριθμός bot"
+
+#: ../ggz-gtk/launch.c:420
+msgid "Seat Assignments"
+msgstr "Κατανομή θέσεων"
+
+#: ../ggz-gtk/launch.c:436
+msgid "Game Type:"
+msgstr "Είδος παιχνιδιού:"
+
+#: ../ggz-gtk/launch.c:448
+msgid "Number of seats"
+msgstr "Αριθμός θέσεων"
+
+#: ../ggz-gtk/launch.c:457 ../ggz-gtk/roominfo.c:90
+msgid "Author:"
+msgstr "Συντάκτης:"
+
+#: ../ggz-gtk/launch.c:469
+msgid "Description:"
+msgstr "Περιγραφή:"
+
+#: ../ggz-gtk/launch.c:518
+#, c-format
+msgid "Seat %d:"
+msgstr "Θέση %d:"
+
+#: ../ggz-gtk/launch.c:527
+msgid "Computer"
+msgstr "Υπολογιστής"
+
+#: ../ggz-gtk/launch.c:538
+msgid "Open"
+msgstr "Άνοιγμα"
+
+#: ../ggz-gtk/launch.c:576
+msgid "Game Description   "
+msgstr "Περιγραφή παιχνιδιού"
+
+#: ../ggz-gtk/login.c:101
+msgid "Login"
+msgstr " "
+
+#: ../ggz-gtk/login.c:108
+msgid "Sorry!"
+msgstr "Συγγνώμη"
+
+#: ../ggz-gtk/login.c:115
+#, c-format
+msgid "That username is already in use."
+msgstr ""
+"Αυτό το όνομα χρήστη χρησιμοποιείται ήδη."
+
+#: ../ggz-gtk/login.c:119
+#, c-format
+msgid ""
+"Authentication has failed.\n"
+"Please supply the correct password."
+msgstr ""
+"Απέτυχε η επαλήθευση του κωδικού.\n"
+"Δώστε τον σωστό κωδικό πρόσβασης."
+
+#: ../ggz-gtk/login.c:123
+#, c-format
+msgid "The username is too long!"
+msgstr "Το όνομα χρήστη έχει υπερβολικό μήκος!"
+
+#: ../ggz-gtk/login.c:126
+#, c-format
+msgid "Invalid username, do not use special characters!"
+msgstr ""
+"Άκυρο όνομα χρήστη, μην χρησιμοποιείτε "
+"ειδικούς χαρακτήρες!"
+
+#: ../ggz-gtk/login.c:554
+msgid "Server Profile"
+msgstr "Προφίλ εξυπηρετητή"
+
+#: ../ggz-gtk/login.c:578 ../ggz-gtk/props.c:942
+msgid "Profile:"
+msgstr "Προφίλ:"
+
+#: ../ggz-gtk/login.c:601 ../ggz-gtk/props.c:963
+msgid "Server:"
+msgstr "Εξυπηρετητής:"
+
+#: ../ggz-gtk/login.c:613 ../ggz-gtk/props.c:978
+msgid "Port:"
+msgstr "Θύρα:"
+
+#: ../ggz-gtk/login.c:644 ../ggz-gtk/props.c:1010
+msgid "Username:"
+msgstr "Όνομα χρήστη:"
+
+#: ../ggz-gtk/login.c:659 ../ggz-gtk/props.c:1031
+msgid "Password:"
+msgstr "Κωδικός πρόσβασης"
+
+#: ../ggz-gtk/login.c:675
+msgid "Email:"
+msgstr "Email:"
+
+#: ../ggz-gtk/login.c:691 ../ggz-gtk/props.c:1074
+msgid "Normal Login"
+msgstr "Κανονική σύνδεση"
+
+#: ../ggz-gtk/login.c:702 ../ggz-gtk/props.c:1082
+msgid "Guest Login"
+msgstr "Σύνδεση επισκέπτη"
+
+#: ../ggz-gtk/login.c:710
+msgid "First-time Login"
+msgstr "Σύνδεση για πρώτη φορά"
+
+#: ../ggz-gtk/motd.c:161
+msgid "Message of the Day"
+msgstr "Μήνυμα της ημέρας"
+
+#: ../ggz-gtk/pick_module.c:89
+msgid "Which client would you like to use to play this game?"
+msgstr ""
+"Ποιο πρόγραμμα-πελάτη θέλετε να "
+"χρησιμοποιήσετε γι' αυτό το παιχνίδι;"
+
+#: ../ggz-gtk/pick_module.c:131
+msgid "Don't ask me again."
+msgstr "Να μην ρωτηθώ ξανά."
+
+#: ../ggz-gtk/playerinfo.c:105
+msgid "Player Information"
+msgstr "Πληροφορίες παίχτη"
+
+#: ../ggz-gtk/playerinfo.c:135
+msgid "Player Handle:"
+msgstr "Ψευδώνυμο παίχτη:"
+
+#: ../ggz-gtk/playerinfo.c:153
+msgid "Table:"
+msgstr "Τραπέζι:"
+
+#: ../ggz-gtk/playerinfo.c:171
+msgid "Account:"
+msgstr "Λογαριασμός"
+
+#: ../ggz-gtk/playerinfo.c:202
+msgid "Record:"
+msgstr "Ρεκόρ:"
+
+#: ../ggz-gtk/playerinfo.c:220
+msgid "Rating:"
+msgstr "Αξιολόγηση:"
+
+#: ../ggz-gtk/playerinfo.c:256
 msgid "Score:"
 msgstr "Βαθμοί:"
 
-#: ../ggz-gtk/playerlist.c:362 ../ggz-gtk/types.c:176
+#: ../ggz-gtk/playerinfo.c:317 ../ggz-gtk/playerinfo.c:350
+msgid "Unknown"
+msgstr "Άγνωστο"
+
+#: ../ggz-gtk/playerinfo.c:353
+msgid "Registered"
+msgstr "Εγγεγραμμένος"
+
+#: ../ggz-gtk/playerinfo.c:356
+msgid "Guest"
+msgstr "Επισκέπτης"
+
+#: ../ggz-gtk/playerinfo.c:362
+msgid "Administrator"
+msgstr "Διαχειριστής"
+
+#: ../ggz-gtk/playerinfo.c:365
+msgid "Bot"
+msgstr "Bot"
+
+#: ../ggz-gtk/playerlist.c:178
+msgid "Friends"
+msgstr "Φίλοι"
+
+#: ../ggz-gtk/playerlist.c:380
+#, c-format
+msgid "#%d"
+msgstr "#%d"
+
+#: ../ggz-gtk/playerlist.c:483
+msgid "L"
+msgstr "L"
+
+#: ../ggz-gtk/playerlist.c:488 ../ggz-gtk/tablelist.c:191
+msgid "T#"
+msgstr "T#"
+
+#: ../ggz-gtk/playerlist.c:499 ../ggz-gtk/types.c:176
 msgid "Name"
 msgstr "Όνομα"
 
-#: ../ggz-gtk/props.c:1536
+#: ../ggz-gtk/props.c:251
+msgid "Properties Updated"
+msgstr "Ενημέρωση ιδιοτήτων"
+
+#: ../ggz-gtk/props.c:267 ../ggz-gtk/support.c:139
+msgid "Galeon - New"
+msgstr "Galeon - Νέο"
+
+#: ../ggz-gtk/props.c:268 ../ggz-gtk/support.c:142
+msgid "Galeon - Existing"
+msgstr "Galeon - Τρέχον"
+
+#: ../ggz-gtk/props.c:269 ../ggz-gtk/support.c:145
+msgid "Gnome URL Handler"
+msgstr "Διαχείριση URL του Gnome"
+
+#: ../ggz-gtk/props.c:270 ../ggz-gtk/support.c:148
+msgid "Konqueror - New"
+msgstr "Konqueror - Νέο"
+
+#: ../ggz-gtk/props.c:271 ../ggz-gtk/support.c:151
+msgid "Konqueror - Existing"
+msgstr "Konqueror - Τρέχον"
+
+#: ../ggz-gtk/props.c:272 ../ggz-gtk/support.c:163
+msgid "Lynx"
+msgstr "Lynx"
+
+#: ../ggz-gtk/props.c:273 ../ggz-gtk/support.c:169
+msgid "Mozilla - New"
+msgstr "Mozilla - Νέο"
+
+#: ../ggz-gtk/props.c:274 ../ggz-gtk/support.c:172
+msgid "Mozilla - Existing"
+msgstr "Mozilla - Τρέχον"
+
+#: ../ggz-gtk/props.c:275 ../ggz-gtk/support.c:176
+msgid "Netscape - New"
+msgstr "Netscape - Νέο"
+
+#: ../ggz-gtk/props.c:276 ../ggz-gtk/support.c:183
+msgid "Opera - New"
+msgstr "Opera - Νέο"
+
+#: ../ggz-gtk/props.c:277 ../ggz-gtk/support.c:186
+msgid "Opera - Existing"
+msgstr "Opera - Τρέχον"
+
+#: ../ggz-gtk/props.c:278 ../ggz-gtk/support.c:191
+msgid "Firefox - New"
+msgstr "Firefox - Νέο"
+
+#: ../ggz-gtk/props.c:279 ../ggz-gtk/support.c:194
+msgid "Firefox - Existing"
+msgstr "Firefox - Τρέχον"
+
+#: ../ggz-gtk/props.c:1052
+msgid "Confirm:"
+msgstr "Επικύρωση:"
+
+#: ../ggz-gtk/props.c:1102
+msgid "Modify"
+msgstr "Τροποποίηση"
+
+#: ../ggz-gtk/props.c:1116
+msgid "Servers"
+msgstr "Εξυπηρετητές"
+
+#: ../ggz-gtk/props.c:1135
+msgid "Chat Font:"
+msgstr "Γραμματοσειρά συνομιλίας:"
+
+#: ../ggz-gtk/props.c:1164
+msgid "Ignore Join/Part Messages"
+msgstr ""
+"Παράβλεψη μηνυμάτων "
+"συμμετοχής/αποχώρησης"
+
+#: ../ggz-gtk/props.c:1180
+msgid "Auto Indent"
+msgstr "Αυτόματη εσοχή"
+
+#: ../ggz-gtk/props.c:1188
+msgid "Timestamp Chats"
+msgstr "Χρονοσήμανση συνομιλίας"
+
+#: ../ggz-gtk/props.c:1196
+msgid "Word Wrap"
+msgstr "Αναδίπλωση λέξης"
+
+#: ../ggz-gtk/props.c:1204
+msgid "Chat Color"
+msgstr "Χρώματα συνομιλίας"
+
+#: ../ggz-gtk/props.c:1253
+msgid "Default chat color assigned to your friends"
+msgstr ""
+"Προεπιλεγμένο χρώμα συνομιλίας για τους "
+"φίλους σας"
+
+#: ../ggz-gtk/props.c:1262
+msgid "Chat color used when your name is typed"
+msgstr ""
+"Χρώμα που χρησιμοποιείτε στη συνομιλία "
+"κατά την πληκτρολόγηση του ονόματός σας"
+
+#: ../ggz-gtk/props.c:1271
+msgid "Chat color used for all other chats"
+msgstr ""
+"Χρώμα που χρησιμοποιείτε για όλες τις "
+"υπόλοιπες συνομιλίες"
+
+#: ../ggz-gtk/props.c:1280
+msgid "Normal Color"
+msgstr "Κανονικό χρώμα"
+
+#: ../ggz-gtk/props.c:1291
+msgid "Highlight Color"
+msgstr "Χρώμα επισήμανσης"
+
+#: ../ggz-gtk/props.c:1302
+msgid "Friend Color"
+msgstr "Χρώμα φίλων"
+
+#: ../ggz-gtk/props.c:1331
+msgid "Chat"
+msgstr "Συνομιλία"
+
+#: ../ggz-gtk/props.c:1343
+msgid "All of the following information is optional."
+msgstr ""
+"Όλες οι παρακάτω πληροφορίες είναι "
+"προαιρετικές."
+
+#: ../ggz-gtk/props.c:1361
+msgid "Name:"
+msgstr "Όνομα:"
+
+#: ../ggz-gtk/props.c:1388
+msgid "City:"
+msgstr "Πόλη:"
+
+#: ../ggz-gtk/props.c:1430
+msgid "Country:"
+msgstr "Χώρα:"
+
+#: ../ggz-gtk/props.c:1445
+msgid "Comments, Hobbies, Etc."
+msgstr "Σχόλια, χόμπυ κ.ά."
+
+#: ../ggz-gtk/props.c:1467
+msgid "User Information"
+msgstr "Πληροφορίες χρήστη"
+
+#: ../ggz-gtk/props.c:1476
+msgid "Browser to launch URLs with:"
+msgstr "Πρόγραμμα περιήγησης στο διαδίκτυο"
+
+#: ../ggz-gtk/props.c:1483
+msgid "Single Click Room Entry"
+msgstr "Είσοδος σε δωμάτιο με ένα κλικ"
+
+#: ../ggz-gtk/props.c:1497
+msgid "Display All"
+msgstr "Προβολή όλων"
+
+#: ../ggz-gtk/props.c:1506
+msgid "Display New"
+msgstr "Πορβολή νέου"
+
+#: ../ggz-gtk/props.c:1533
 msgid "Options"
 msgstr "Επιλογές"
+
+#: ../ggz-gtk/props.c:1622
+msgid "Select Font"
+msgstr "Επιλογή γραμματοσειράς"
+
+#: ../ggz-gtk/roominfo.c:63
+msgid "Room Information"
+msgstr "Πληροφορίες δωματίου"
+
+#: ../ggz-gtk/roominfo.c:80
+msgid "Game Name:"
+msgstr "Όνομα παιχνιδιού:"
+
+#: ../ggz-gtk/roominfo.c:110
+msgid "Room Description:"
+msgstr "Περιγραφή δωματίου:"
+
+#: ../ggz-gtk/roominfo.c:155
+msgid "This room has no game"
+msgstr ""
+"Δεν υπάρχει παιχνίδι σ' αυτό το δωμάτιο"
 
 #: ../ggz-gtk/roominfo.c:162 ../ggz-gtk/roominfo.c:169
 msgid "N/A"
 msgstr "N/A"
 
+#: ../ggz-gtk/roominfo.c:175
+msgid "Unknown room"
+msgstr "Άγνωστο δωμάτιο"
+
+#: ../ggz-gtk/roomlist.c:73
+msgid "You can't join a room; you're not logged in"
+msgstr ""
+"Η είσοδός σας σε δωμάτιο είναι αδύνατη. "
+"Δεν είστε συνδεδεμένος"
+
+#: ../ggz-gtk/roomlist.c:82
+msgid "You can't switch rooms while playing a game"
+msgstr ""
+"Δεν μπορείτε να αλλάζετε δωμάτια κατά τη "
+"διάρκεια του παιχνιδιού"
+
+#: ../ggz-gtk/roomlist.c:89
+msgid "Unknown error"
+msgstr "Άγνωστο σφάλμα"
+
+#: ../ggz-gtk/roomlist.c:109 ../ggz-gtk/roomlist.c:114
+msgid "Error joining room"
+msgstr "Σφάλμα κατά την είσοδο σε δωμάτιο"
+
+#: ../ggz-gtk/roomlist.c:350
+msgid "Other Rooms"
+msgstr "Άλλα δωμάτια"
+
+#: ../ggz-gtk/roomlist.c:424
+msgid "Room"
+msgstr "Δωμάτιο"
+
+#: ../ggz-gtk/support.c:179
+msgid "Netscape - Existing"
+msgstr "Netscape - Τρέχον"
+
+#: ../ggz-gtk/tablelist.c:196
+msgid "Seats"
+msgstr "Θέσεις"
+
+#: ../ggz-gtk/tablelist.c:201 ../ggz-gtk/types.c:183
+msgid "Description"
+msgstr "Περιγραφή"
+
 #: ../ggz-gtk/types.c:113
 msgid "None"
-msgstr "Καμμία"
+msgstr "Κανένα"
+
+#: ../ggz-gtk/types.c:148
+msgid ""
+"Room filtering is not implemented yet. If\n"
+"you would like to help head over to\n"
+"http://www.ggzgamingzone.org/"
+msgstr ""
+"Δεν έχει τεθεί ακόμη σε λειτουργία το "
+"φιλτράρισμα των δωματίων. Αν\n"
+"θέλετε να βοηθήσετε, πηγαίνετε στον "
+"ιστότοπο\n"
+"http://www.ggzgamingzone.org/"
+
+#: ../ggz-gtk/types.c:191
+msgid "Web Address"
+msgstr "Διεύθυνση Web"
+
+#: ../ggz-gtk/types.c:199
+msgid "Author"
+msgstr "Συντάκτης"
+
+#: ../ggz-gtk/types.c:254
+msgid "Room List Filter:"
+msgstr "Φίλτρο λίστας δωματίων:"

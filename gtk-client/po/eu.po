@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-20 15:07+0100\n"
+"POT-Creation-Date: 2007-11-11 22:11+0100\n"
 "PO-Revision-Date: 2006-08-07 16:09+0000\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -30,16 +30,16 @@ msgstr "Jokoa"
 msgid "General"
 msgstr "Orokorra"
 
-#: ../ggz-gtk/playerinfo.c:241
+#: ../ggz-gtk/playerinfo.c:256
 msgid "Score:"
 msgstr "Puntuazioa:"
 
 #
-#: ../ggz-gtk/playerlist.c:362 ../ggz-gtk/types.c:176
+#: ../ggz-gtk/playerlist.c:499 ../ggz-gtk/types.c:176
 msgid "Name"
 msgstr "Izena"
 
-#: ../ggz-gtk/props.c:1536
+#: ../ggz-gtk/props.c:1533
 msgid "Options"
 msgstr "Aukerak"
 

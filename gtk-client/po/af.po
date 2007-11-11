@@ -1,73 +1,95 @@
 # This translation was merged from GNOME SVN
-# (http://svn.gnome.org/svn/gnome-games/trunk/po/zh_HK.po)
-# Chinese (Hong Kong) translation of gnome-games.
-# Copyright (C) 1999-2006 Free Software Foundation, Inc.
-# (http://vegas.wcn.com.tw/21.shtml for blackjack terms)
-# Fernando <bv1al@journalist.com.tw>, 1999.
-# Abel Cheung <abel@oaka.org>, 2001-2006.
-#
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/af.po)
+# Gnome-games in Afrikaans.
+# Copyright (C) 2007 Samuel Murray
+# This file is distributed under the same license as the Gnome-games package.
+# Samuel Murray <afrikaans@gmail.com>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-games 2.16.0\n"
+"Project-Id-Version: Gnome-games GNOME TRUNK\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-11-11 22:11+0100\n"
-"PO-Revision-Date: 2007-03-12 14:18+0800\n"
-"Last-Translator: Abel Cheung <abel@oaka.org>\n"
-"Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
+"PO-Revision-Date: 2007-09-06 12:44+0200\n"
+"Last-Translator: Samuel Murray <afrikaans@gmail.com>\n"
+"Language-Team: Afrikaans <translate-discuss-af@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=n!=1\n"
+"X-Generator: Translate Toolkit 1.0.1\n"
 
 #: ../ggz-gtk/about.c:87 ../ggz-gtk/client.c:1089
 msgid "About"
-msgstr "關於"
+msgstr "Aangaande"
+
+#: ../ggz-gtk/chat.c:291
+#, c-format
+msgid "You have received an unknown message from %s."
+msgstr "Jy het 'n onbekende boodskap van %s ontvang."
+
+#: ../ggz-gtk/chat.c:355
+#, c-format
+msgid "You've been beeped by %s."
+msgstr "Jy is deur %s gebiep."
+
+#: ../ggz-gtk/chat.c:551
+#, c-format
+msgid "Beep sent to %s."
+msgstr "Biep gestuur aan %s."
 
 #: ../ggz-gtk/chat.c:579
 #, c-format
 msgid "%s (logged on)"
-msgstr "%s (已登入)"
+msgstr "%s (aangemeld)"
 
 #: ../ggz-gtk/chat.c:617
 #, c-format
 msgid "%s (logged off)"
-msgstr "%s (已登出)"
+msgstr "%s (afgemeld)"
 
 #: ../ggz-gtk/chat.c:666
 msgid "Chat Commands"
-msgstr "交談指令"
+msgstr "Geselsiebevele"
 
 #: ../ggz-gtk/chat.c:879
 #, c-format
 msgid "Added %s to your friends list."
-msgstr "將 %s 加入你的好友清單中。"
+msgstr "Het %s by jou vriendelys gevoeg."
 
 #: ../ggz-gtk/chat.c:903
 #, c-format
 msgid "Removed %s from your friends list."
-msgstr "從你的好友清單中移除 %s。"
+msgstr "Het %s van jou vriendelys verwyder."
 
 #: ../ggz-gtk/chat.c:934
 #, c-format
 msgid "Added %s to your ignore list."
-msgstr "將 %s 加入你的黑名單中。"
+msgstr "Het %s by jou ignoreerlys gevoeg."
 
 #: ../ggz-gtk/chat.c:959
 #, c-format
 msgid "Removed %s from your ignore list."
-msgstr "從你的黑名單中移除 %s。"
+msgstr "Het %s van jou ignoreerlys verwyder."
+
+#: ../ggz-gtk/chat.c:1034
+msgid "People currently your friends"
+msgstr "Mense wat tans jou vriende is"
 
 #: ../ggz-gtk/chat.c:1045
 msgid "People you're currently ignoring"
-msgstr "在黑名單中的玩家"
+msgstr "Mense wat jy tans ignoreer"
+
+#: ../ggz-gtk/chat.c:1119
+msgid "Multiple matches:"
+msgstr "Meer as een passing:"
 
 #: ../ggz-gtk/client.c:144
 msgid "Are you sure you want to quit?"
-msgstr "是否確定要結束？"
+msgstr "Is jy seker jy wil afsluit?"
 
 #: ../ggz-gtk/client.c:144
 msgid "Quit?"
-msgstr "是否結束？"
+msgstr "Afsluit?"
 
 #: ../ggz-gtk/client.c:237
 msgid ""
@@ -75,13 +97,14 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"未實作伺服器統計資料。如果想協助編寫的話請前往\n"
+"Bedienerstatistiek werk nog nie. Indien\n"
+"jy wil help, roer jou riete na\n"
 "http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
 #: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
 msgid "Not Implemented"
-msgstr "未實作"
+msgstr "Werk nog nie"
 
 #: ../ggz-gtk/client.c:248 ../ggz-gtk/client.c:545
 msgid ""
@@ -89,109 +112,82 @@ msgid ""
 "you would like to help head over to\n"
 "http://www.ggzgamingzone.org/"
 msgstr ""
-"未實作玩家統計資料。如果想協助編寫的話請前往\n"
-"http://www.ggzgamingzone.org/"
-
-#: ../ggz-gtk/client.c:294
-msgid ""
-"GGZ Gaming Zone help needs a browser to be configured.\n"
-"The configuration dialog will be invoked now."
-msgstr ""
-"GGZ 遊戲網說明文件需要一個能夠使用的瀏覽器。\n"
-"現在會啟動設定對話框。"
-
-#: ../ggz-gtk/client.c:308
-msgid ""
-"Inline game help is not implemented yet. Help\n"
-"is on our website. If\n"
-"you would like to help head over to\n"
-"http://www.ggzgamingzone.org/"
-msgstr ""
-"未實作遊戲說明文件。如果想協助編寫的話請前往\n"
+"Spelerstatistiek werk nog nie. Indien\n"
+"jy wil help, roer jou riete na\n"
 "http://www.ggzgamingzone.org/"
 
 #: ../ggz-gtk/client.c:566
 msgid "You must highlight a table before you can join it."
-msgstr "你必須先點選遊戲桌方可進入。"
+msgstr "Jy moet 'n tafel merk voor jy daarby kan aansluit."
 
 #: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
 msgid "Error Joining"
-msgstr "加入錯誤"
+msgstr "Kon nie aansluit nie"
 
 #: ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:614
 msgid "That table is full."
-msgstr "該遊戲桌已滿人了。"
+msgstr "Daardie tafel is vol."
 
 #: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:336
 msgid "Error launching game module."
-msgstr "啟動遊戲模組時發生錯誤。"
+msgstr "Kon nie spelmodule laat loop nie."
 
 #: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
 #: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:337
 msgid "Game Error"
-msgstr "遊戲錯誤"
+msgstr "Spelfout"
 
 #: ../ggz-gtk/client.c:600
 msgid "You must highlight a table before you can watch it."
-msgstr "你必須先點選遊戲桌方可觀局。"
+msgstr "Jy moet 'n tafel merk voor jy dit kan dophou."
 
 #: ../ggz-gtk/client.c:602
 msgid "Error Spectating"
-msgstr "觀局錯誤"
+msgstr "Kon nie toekyk nie"
 
 #: ../ggz-gtk/client.c:647
 msgid ""
 "Failed to join table.\n"
 "Join aborted."
 msgstr ""
-"無法加入遊戲桌。\n"
-"中止加入。"
+"Kon nie by tafel aansluit nie.\n"
+"Aansluit gestaak."
 
 #: ../ggz-gtk/client.c:648
 msgid "Join Error"
-msgstr "加入錯誤"
+msgstr "Aansluitfout"
 
 #: ../ggz-gtk/client.c:678
 msgid "Disconnect from the GGZ Gaming Zone server"
-msgstr "和 GGZ 遊戲網伺服器中斷連線"
+msgstr "Ontkoppel van die GGZ Gaming Zone-bediener"
 
 #: ../ggz-gtk/client.c:680
 msgid "Start playing a game at a new table"
-msgstr "開一張新的遊戲桌玩遊戲"
+msgstr "Begin 'n nuwe speletjie by 'n nuwe tafel speel"
 
 #: ../ggz-gtk/client.c:682
 msgid "Join an existing game"
-msgstr "加入現有的遊戲"
+msgstr "Sluit aan by 'n bestaande speletjie"
 
 #: ../ggz-gtk/client.c:684
 msgid "Watch an existing game - become a spectator of the table"
-msgstr "加入現有的遊戲桌成為觀局者"
+msgstr "Hou 'n bestaande speletjie dop - word 'n toekyker by die tafel"
 
 #: ../ggz-gtk/client.c:687
 msgid "Leave the game you're currently playing"
-msgstr "離開正在玩的遊戲"
+msgstr "Verlaat die speletjie wat jy tans speel"
 
 #: ../ggz-gtk/client.c:689
 msgid "Show the properties dialog to change the client settings"
-msgstr "顯示對話窗來更改程式設定"
+msgstr "Wys die eienskappedialoog om die kliëntinstellings te verander"
 
 #: ../ggz-gtk/client.c:696
 msgid "Exit the GGZ client application."
-msgstr "結束 GGZ 遊戲網程式。"
-
-#: ../ggz-gtk/client.c:726
-#, c-format
-msgid "Client Version:14 %s"
-msgstr "客戶端程式版本:14 %s"
-
-#: ../ggz-gtk/client.c:729
-#, c-format
-msgid "GTK+ Version:14 %d.%d.%d\n"
-msgstr "GTK+ 版本:14 %d.%d.%d\n"
+msgstr "Sluit die GGZ-kliënt af."
 
 #: ../ggz-gtk/client.c:736
 msgid "Compiled with debugging."
-msgstr "編譯時加入了除錯資訊。"
+msgstr "Saamgestel met ontfouting."
 
 #: ../ggz-gtk/client.c:934
 msgid "GGZ"
@@ -199,442 +195,512 @@ msgstr "GGZ"
 
 #: ../ggz-gtk/client.c:942 ../ggz-gtk/login.c:729
 msgid "Connect"
-msgstr "連線"
+msgstr "Koppel"
 
 #: ../ggz-gtk/client.c:949 ../ggz-gtk/client.c:1180
 msgid "Disconnect"
-msgstr "斷線"
+msgstr "Ontkoppel"
 
 #: ../ggz-gtk/client.c:962
 msgid "Quit"
-msgstr "結束"
-
-#: ../ggz-gtk/client.c:969
-msgid "Game"
-msgstr "遊戲"
+msgstr "Afsluit"
 
 #: ../ggz-gtk/client.c:978 ../ggz-gtk/client.c:1133 ../ggz-gtk/launch.c:596
 msgid "Launch"
-msgstr "啟動"
+msgstr "Laat loop"
 
 #: ../ggz-gtk/client.c:985 ../ggz-gtk/client.c:1141 ../ggz-gtk/roomlist.c:150
 #: ../ggz-gtk/tablelist.c:74
 msgid "Join"
-msgstr "加入"
+msgstr "Sluit aan"
 
 #: ../ggz-gtk/client.c:992 ../ggz-gtk/client.c:1149
 msgid "Watch"
-msgstr "觀局"
+msgstr "Dophou"
 
 #: ../ggz-gtk/client.c:1004 ../ggz-gtk/client.c:1157 ../ggz-gtk/tablelist.c:77
 msgid "Leave"
-msgstr "離開"
+msgstr "Verlaat"
 
 #: ../ggz-gtk/client.c:1011
 msgid "Edit"
-msgstr "編輯"
+msgstr "Redigeer"
 
 #: ../ggz-gtk/client.c:1019
 msgid "Properties"
-msgstr "屬性"
+msgstr "Eienskappe"
 
 #: ../ggz-gtk/client.c:1026
 msgid "View"
-msgstr "顯示"
+msgstr "Bekyk"
 
 #: ../ggz-gtk/client.c:1035
 msgid "Room List"
-msgstr "遊戲區清單"
+msgstr "Kamerlys"
 
 #: ../ggz-gtk/client.c:1041
 msgid "Player List"
-msgstr "玩家名單"
+msgstr "Spelerlys"
 
 #: ../ggz-gtk/client.c:1053
 msgid "Server Stats"
-msgstr "伺服器統計數字"
+msgstr "Bedienerstatistiek"
 
 #: ../ggz-gtk/client.c:1057
 msgid "Player Stats"
-msgstr "玩家統計數字"
+msgstr "Spelerstatistiek"
 
 #: ../ggz-gtk/client.c:1065 ../ggz-gtk/types.c:237
 msgid "Game Types"
-msgstr "遊戲形式"
+msgstr "Speletjiestipes"
+
+#: ../ggz-gtk/client.c:1074 ../ggz-gtk/props.c:1488
+msgid "MOTD"
+msgstr "MOTD"
 
 #: ../ggz-gtk/client.c:1081
 msgid "Help"
-msgstr "求助"
+msgstr "Hulp"
 
-#: ../ggz-gtk/client.c:1096
-msgid "Copyright"
-msgstr "版權"
-
-#: ../ggz-gtk/client.c:1105
-msgid "GGZ Help"
-msgstr "GGZ 說明文件"
-
-#: ../ggz-gtk/client.c:1112
-msgid "Game Help"
-msgstr "遊戲說明文件"
+#: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:493
+msgid "Stats"
+msgstr "Statistiek"
 
 #: ../ggz-gtk/client.c:1196 ../ggz-gtk/ggzclient.c:721
 msgid "Current Room:"
-msgstr "目前的遊戲區："
+msgstr "Huidige kamer:"
 
 #: ../ggz-gtk/client.c:1277 ../ggz-gtk/playerinfo.c:274
 msgid "Message:"
-msgstr "訊息："
+msgstr "Boodskap:"
 
 #: ../ggz-gtk/client.c:1295
 msgid "Send"
-msgstr "送出"
+msgstr "Stuur"
 
-# (Abel) 暫時只能想到這個名字
 #: ../ggz-gtk/client.c:1480 ../ggz-gtk/ggzclient.c:400
 msgid "GGZ Gaming Zone"
-msgstr "GGZ 遊戲網"
+msgstr "GGZ Gaming Zone"
+
+#: ../ggz-gtk/first.c:57
+msgid "Wizard"
+msgstr "Slimmerd"
+
+#: ../ggz-gtk/first.c:57
+msgid "Deity"
+msgstr "Allesweet"
+
+#: ../ggz-gtk/first.c:57
+msgid "Sentinel"
+msgstr "Brandwag"
+
+#: ../ggz-gtk/first.c:57
+msgid "Captain"
+msgstr "Kaptein"
+
+#: ../ggz-gtk/first.c:58
+msgid "Knight"
+msgstr "Ridder"
+
+#: ../ggz-gtk/first.c:58
+msgid "Angel"
+msgstr "Engel"
+
+#: ../ggz-gtk/first.c:58
+msgid "Silverlord"
+msgstr "Silwerheer"
+
+#: ../ggz-gtk/first.c:58
+msgid "Eagle"
+msgstr "Arend"
+
+#: ../ggz-gtk/first.c:59
+msgid "Vampire"
+msgstr "Vampier"
+
+#: ../ggz-gtk/first.c:59
+msgid "Chief"
+msgstr "Stamhoof"
+
+#: ../ggz-gtk/first.c:59
+msgid "Colonel"
+msgstr "Kolonel"
 
 #: ../ggz-gtk/first.c:59
 msgid "General"
-msgstr "一般"
+msgstr "Generaal"
+
+#: ../ggz-gtk/first.c:60
+msgid "Major"
+msgstr "Majoor"
+
+#: ../ggz-gtk/first.c:60
+msgid "Scout"
+msgstr "Skout"
+
+#: ../ggz-gtk/first.c:60
+msgid "Lieutenant"
+msgstr "Luitenant"
+
+#: ../ggz-gtk/first.c:60
+msgid "Stalker"
+msgstr "Bekruiper"
+
+#: ../ggz-gtk/first.c:61
+msgid "Scientist"
+msgstr "Wetenskaplike"
+
+#: ../ggz-gtk/first.c:61
+msgid "Scholar"
+msgstr "Slimkop"
+
+#: ../ggz-gtk/first.c:61
+msgid "Entity"
+msgstr "Entiteit"
+
+#: ../ggz-gtk/first.c:61
+msgid "Creator"
+msgstr "Skepper"
 
 #: ../ggz-gtk/first.c:69
 msgid "GGZ Community (fast)"
-msgstr "GGZ 公眾伺服器"
+msgstr "GGZ-gemeenskap (vinnig)"
 
-# (Abel) Local developer server == localhost :-(
 #: ../ggz-gtk/first.c:70
 msgid "Local developer server"
-msgstr "你自己的電腦"
+msgstr "Plaaslike ontwikkelaarbediener"
 
 #: ../ggz-gtk/first.c:190
 msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
 msgstr ""
-"這是你第一次執行 GGZ "
-"遊戲網的程式。你想不想先創建預設的伺服器設定？"
+"Dit is die eerste keer wat jy die GTK+ GGZ Gaming Zone-kliënt laat loop. "
+"Wil jy graag 'n paar verstek-bedienerprofiele skep?"
 
 #: ../ggz-gtk/game.c:72
 #, c-format
 msgid ""
 "You don't have this game installed. You can download\n"
 "it from %s."
-msgstr "你未安裝這款遊戲，請在 %s 下載。"
+msgstr ""
+"Jy het nie hierdie speletjie nie. Jy kan dit aflaai\n"
+"van %s af."
 
 #: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
 #: ../ggz-gtk/game.c:325 ../ggz-gtk/game.c:334 ../ggz-gtk/game.c:350
 #: ../ggz-gtk/launch.c:292
 msgid "Launch Error"
-msgstr "啟動錯誤"
+msgstr "Kon nie laat loop nie"
 
 #: ../ggz-gtk/game.c:148
 msgid ""
 "Failed to execute game module.\n"
 " Launch aborted."
 msgstr ""
-"啟動遊戲模組失敗。\n"
-"中止啟動。"
+"Kon nie speletjiemodule uitvoer nie.\n"
+" Laatloop gestaak."
 
 #: ../ggz-gtk/game.c:201
 msgid "Launched game"
-msgstr "啟動遊戲"
+msgstr "Het speletjie laat loop"
 
 #: ../ggz-gtk/game.c:222
 msgid "Launch failed"
-msgstr "啟動失敗"
+msgstr "Kon nie laat loop nie"
 
 #: ../ggz-gtk/game.c:296
 msgid "You can only play one game at a time."
-msgstr "你每次只可以玩一個遊戲。"
+msgstr "Jy kan net een speletjie op 'n slag speel."
 
 #: ../ggz-gtk/game.c:304
 msgid "You're still at a table."
-msgstr "你仍在遊戲桌上。"
+msgstr "Jy is steeds by 'n tafel nie."
 
 #: ../ggz-gtk/game.c:313
 msgid ""
 "You must be in a room to launch a game.\n"
 "Launch aborted"
 msgstr ""
-"你必須進入遊戲區方可啟動遊戲。\n"
-"啟動中止。"
+"Jy moet in 'n kamer wees om 'n speletjie te laat loop.\n"
+"Laatloop gestaak"
 
 #: ../ggz-gtk/game.c:323
 msgid ""
 "No game types defined for this server.\n"
 "Launch aborted."
 msgstr ""
-"這部伺服器未有定義任何遊戲。\n"
-"啟動中止。"
+"Geen tipes speletjies vir hierdie bediener gedefinieer nie.\n"
+"Laatloop gestaak."
 
 #: ../ggz-gtk/game.c:333
 msgid "This game doesn't support spectators."
-msgstr "這款遊戲不支援觀局。"
+msgstr "Hierdie speletjie werk nie met toekyker nie."
 
 #: ../ggz-gtk/game.c:348
 msgid ""
 "You need to launch the GGZ client directly\n"
 "to be able to play this game."
-msgstr "你必須直接啟動 GGZ 程式方可玩這款遊戲。"
+msgstr ""
+"Jy moet die GGZ-kliënt direk laat loop om\n"
+"hierdie speletjie te kan speel."
 
 #: ../ggz-gtk/ggzclient.c:122
 #, c-format
 msgid "Error connecting to server: %s"
-msgstr "連線至伺服器時發生錯誤：%s"
+msgstr "Kon nie aan bediener koppel nie: %s"
 
 #: ../ggz-gtk/ggzclient.c:124 ../ggz-gtk/ggzclient.c:380
 #: ../ggz-gtk/ggzclient.c:562 ../ggz-gtk/ggzclient.c:597
 #: ../ggz-gtk/ggzclient.c:650 ../ggz-gtk/ggzclient.c:1083
 #: ../ggz-gtk/launch.c:327
 msgid "Error"
-msgstr "錯誤"
+msgstr "Fout"
 
 #: ../ggz-gtk/ggzclient.c:237
 #, c-format
 msgid "Your new password is %s"
-msgstr "你的新密碼為 %s"
+msgstr "Jou nuwe wagwoord is %s"
 
 #: ../ggz-gtk/ggzclient.c:239
 msgid "New password"
-msgstr "新密碼"
+msgstr "Nuwe wagwoord"
 
 #: ../ggz-gtk/ggzclient.c:275
 #, c-format
 msgid "Players on server: %d"
-msgstr "伺服器上有 %d 個玩家"
+msgstr "Spelers op bediener: %d"
 
 #: ../ggz-gtk/ggzclient.c:320
 #, c-format
 msgid "Current Room: %s"
-msgstr "目前的遊戲區：%s"
+msgstr "Huidige kamer: %s"
 
 #: ../ggz-gtk/ggzclient.c:328
 #, c-format
 msgid "You've joined room \"%s\"."
-msgstr "你加入了遊戲區「%s」。"
+msgstr "Jy't aangesluit by kamer \"%s\"."
 
 #: ../ggz-gtk/ggzclient.c:378
 #, c-format
 msgid "Error joining room: %s"
-msgstr "加入遊戲區時發生錯誤：%s"
+msgstr "Kon nie by kamer aansluit nie: %s"
 
 #: ../ggz-gtk/ggzclient.c:429
 msgid "You can't chat while not in a room."
-msgstr "未進入遊戲區不可聊天。"
+msgstr "Jy kan nie gesels as jy nie in 'n kamer is nie."
 
 #: ../ggz-gtk/ggzclient.c:434
 msgid "You don't have permission to chat here."
-msgstr "你沒有權限在這裏聊天。"
+msgstr "Jy het nie toestemming om hier te gesels nie."
+
+#: ../ggz-gtk/ggzclient.c:438
+msgid "No private chatting at a table!"
+msgstr "Geen private geselsies by die tafel nie!"
 
 #: ../ggz-gtk/ggzclient.c:442
 msgid "That player isn't in the room!"
-msgstr "該玩家不在遊戲區內！"
+msgstr "Daardie speler is nie in die kamer nie!"
 
 #: ../ggz-gtk/ggzclient.c:447
 msgid "There was an error sending the chat."
-msgstr "進出聊天訊息時發生錯誤。"
+msgstr "Kon nie die geselsie stuur nie."
 
 #: ../ggz-gtk/ggzclient.c:451
 msgid "You're not at a table."
-msgstr "你未進入遊戲桌。"
+msgstr "Jy is nie by 'n tafel nie."
 
 #: ../ggz-gtk/ggzclient.c:455
 #, c-format
 msgid "Chat failed: %s."
-msgstr "聊天失敗：%s"
+msgstr "Geselsie het misluk: %s."
 
 #: ../ggz-gtk/ggzclient.c:560
 #, c-format
 msgid "Error launching table: %s"
-msgstr "開設遊戲桌失敗：%s"
+msgstr "Kon nie tafel laat loop nie: %s"
 
 #: ../ggz-gtk/ggzclient.c:580
 #, c-format
 msgid "You have joined table %d."
-msgstr "你加入了第 %d 張遊戲桌。"
+msgstr "Jy het by die tafel %d aangesluit."
 
 #: ../ggz-gtk/ggzclient.c:595
 #, c-format
 msgid "Error joining table: %s"
-msgstr "加入遊戲桌時發生錯誤：%s"
+msgstr "Kon nie by tafel aansluit nie: %s"
 
 #: ../ggz-gtk/ggzclient.c:617
 #, c-format
 msgid "You have been booted from the table by %s."
-msgstr "你被 %s 從遊戲桌中趕走。"
+msgstr "Jy is deur %s van die tafel geskop."
 
 #: ../ggz-gtk/ggzclient.c:622
 #, c-format
 msgid "You have left the table."
-msgstr "你已經離開了遊戲桌。"
+msgstr "Jy het die tafel verlaat."
 
 #: ../ggz-gtk/ggzclient.c:625
 #, c-format
 msgid "The game is over."
-msgstr "遊戲完畢。"
+msgstr "Die speletjie is verby."
 
 #: ../ggz-gtk/ggzclient.c:629
 #, c-format
 msgid "There was an error with the game server."
-msgstr "遊戲伺服器發生錯誤。"
+msgstr "Daar was fout met die speletjiesbediener."
 
 #: ../ggz-gtk/ggzclient.c:648
 #, c-format
 msgid "Error leaving table: %s"
-msgstr "離開遊戲桌時發生錯誤：%s"
+msgstr "Kon nie tafel verlaat nie: %s"
 
 #: ../ggz-gtk/ggzclient.c:743
 msgid "**none**"
-msgstr "＊無＊"
+msgstr "**geen**"
 
 #: ../ggz-gtk/ggzclient.c:750
 msgid "Offline"
-msgstr "離線"
+msgstr "Aflyn"
 
 #: ../ggz-gtk/ggzclient.c:753
 msgid "Connecting"
-msgstr "連線中"
+msgstr "Koppel tans"
 
 #: ../ggz-gtk/ggzclient.c:756
 msgid "Reconnecting"
-msgstr "重新連線中"
+msgstr "Herkoppel tans"
 
 #: ../ggz-gtk/ggzclient.c:759
 msgid "Online"
-msgstr "上線"
+msgstr "Aanlyn"
 
 #: ../ggz-gtk/ggzclient.c:762
 msgid "Logging In"
-msgstr "登入中"
+msgstr "Meld tans aan"
 
 #: ../ggz-gtk/ggzclient.c:765
 msgid "Logged In"
-msgstr "已登入"
+msgstr "Aangemeld"
 
 #: ../ggz-gtk/ggzclient.c:769
 msgid "--> Room"
-msgstr "─→ 遊戲區"
+msgstr "--> Kamer"
 
 #: ../ggz-gtk/ggzclient.c:772
 msgid "Chatting"
-msgstr "聊天中"
+msgstr "Gesels tans"
 
 #: ../ggz-gtk/ggzclient.c:776
 msgid "--> Table"
-msgstr "─→ 遊戲桌"
+msgstr "--> Tafel"
 
 #: ../ggz-gtk/ggzclient.c:779
 msgid "Playing"
-msgstr "正在玩遊戲"
+msgstr "Speel tans"
 
 #: ../ggz-gtk/ggzclient.c:782
 msgid "<-- Table"
-msgstr "←─ 遊戲桌"
+msgstr "<-- Tafel"
 
 #: ../ggz-gtk/ggzclient.c:785
 msgid "Logging Out"
-msgstr "正在登出"
+msgstr "Meld tans af"
 
 #: ../ggz-gtk/ggzclient.c:1081
 #, c-format
 msgid "Server error: %s"
-msgstr "伺服器錯誤：%s"
+msgstr "Bedienerfout: %s"
 
 #: ../ggz-gtk/ggzclient.c:1170
 msgid "Disconnected from server."
-msgstr "已中斷和伺服器的連線。"
+msgstr "Van bediener ontkoppel."
 
 #: ../ggz-gtk/launch.c:113
 #, c-format
 msgid "Game Type:  %s"
-msgstr "遊戲形式： %s"
+msgstr "Tipe speletjie:  %s"
 
 #: ../ggz-gtk/launch.c:119
 #, c-format
 msgid "Author:  %s"
-msgstr "作者：%s"
+msgstr "Outeur:  %s"
 
 #: ../ggz-gtk/launch.c:126
 #, c-format
 msgid "Description:  %s"
-msgstr "描述：%s"
+msgstr "Beskrywing:  %s"
 
 #: ../ggz-gtk/launch.c:132
 #, c-format
 msgid "Home Page:  %s"
-msgstr "官方網頁：%s"
+msgstr "Tuisblad:  %s"
 
 #: ../ggz-gtk/launch.c:291
 msgid ""
 "Failed to launch table.\n"
 " Launch aborted."
 msgstr ""
-"啟動遊戲桌失敗。\n"
-"啟動中止。"
+"Kon nie tafel laat loop nie.\n"
+" Laatloop gestaak."
 
 #: ../ggz-gtk/launch.c:327
 msgid "Invalid number of bots specified"
-msgstr "電腦玩家數目不正確"
+msgstr "Ongeldige getal botte gespesifiseer"
 
 #: ../ggz-gtk/launch.c:420
 msgid "Seat Assignments"
-msgstr "座位分配"
+msgstr "Sitplektoewysing"
 
 #: ../ggz-gtk/launch.c:436
 msgid "Game Type:"
-msgstr "遊戲形式："
+msgstr "Tipe speletjie:"
 
 #: ../ggz-gtk/launch.c:448
 msgid "Number of seats"
-msgstr "座位數目"
+msgstr "Getal sitplekke"
 
 #: ../ggz-gtk/launch.c:457 ../ggz-gtk/roominfo.c:90
 msgid "Author:"
-msgstr "作者："
+msgstr "Outeur:"
 
 #: ../ggz-gtk/launch.c:469
 msgid "Description:"
-msgstr "描述："
+msgstr "Beskrywing:"
 
 #: ../ggz-gtk/launch.c:480 ../ggz-gtk/roominfo.c:100
 msgid "Homepage:"
-msgstr "官方網頁："
+msgstr "Tuisblad:"
 
 #: ../ggz-gtk/launch.c:518
 #, c-format
 msgid "Seat %d:"
-msgstr "第 %d 個位："
+msgstr "Sitplek %d:"
 
 #: ../ggz-gtk/launch.c:527
 msgid "Computer"
-msgstr "電腦"
+msgstr "Rekenaar"
 
 #: ../ggz-gtk/launch.c:538
 msgid "Open"
-msgstr "公開"
+msgstr "Onbeset"
 
 #: ../ggz-gtk/launch.c:550
 msgid "Reserved for"
-msgstr "留位給"
+msgstr "Gereserveer vir"
 
 #: ../ggz-gtk/launch.c:576
 msgid "Game Description   "
-msgstr "遊戲描述"
+msgstr "Spelbeskrywing   "
 
 #: ../ggz-gtk/login.c:101
 msgid "Login"
-msgstr "登入"
-
-#: ../ggz-gtk/login.c:108
-msgid "Sorry!"
-msgstr "抱歉！"
+msgstr "Aanmeld"
 
 #: ../ggz-gtk/login.c:115
 #, c-format
 msgid "That username is already in use."
-msgstr "該名稱已有玩家使用了。"
+msgstr "Daardie gebruikernaam word reeds gebruik."
 
 #: ../ggz-gtk/login.c:119
 #, c-format
@@ -642,116 +708,139 @@ msgid ""
 "Authentication has failed.\n"
 "Please supply the correct password."
 msgstr ""
-"認證失敗。\n"
-"請輸入正確的密碼。"
+"Stawing het misluk.\n"
+"Gee seblief die regte wagwoord."
 
 #: ../ggz-gtk/login.c:123
 #, c-format
 msgid "The username is too long!"
-msgstr "玩家名稱太長了！"
+msgstr "Die gebruikernaam is te lank!"
 
 #: ../ggz-gtk/login.c:126
 #, c-format
 msgid "Invalid username, do not use special characters!"
-msgstr "玩家名稱無效，請不要使用特殊符號！"
+msgstr "Ongeldige gebruikernaam, moenie spesiale karakters gebruik nie!"
 
 #: ../ggz-gtk/login.c:554
 msgid "Server Profile"
-msgstr "伺服器設定"
+msgstr "Bedienerprofiel"
 
 #: ../ggz-gtk/login.c:578 ../ggz-gtk/props.c:942
 msgid "Profile:"
-msgstr "設定："
-
-#: ../ggz-gtk/login.c:593
-msgid "Edit Profiles..."
-msgstr "編輯設定…"
+msgstr "Profiel:"
 
 #: ../ggz-gtk/login.c:601 ../ggz-gtk/props.c:963
 msgid "Server:"
-msgstr "伺服器："
+msgstr "Bediener:"
 
 #: ../ggz-gtk/login.c:613 ../ggz-gtk/props.c:978
 msgid "Port:"
-msgstr "埠號："
+msgstr "Poort:"
 
-# (Abel) username in GGZ == player name
 #: ../ggz-gtk/login.c:644 ../ggz-gtk/props.c:1010
 msgid "Username:"
-msgstr "玩家名稱："
+msgstr "Gebruikernaam:"
 
 #: ../ggz-gtk/login.c:659 ../ggz-gtk/props.c:1031
 msgid "Password:"
-msgstr "密碼："
+msgstr "Wagwoord:"
 
 #: ../ggz-gtk/login.c:675
 msgid "Email:"
-msgstr "電子郵件地址："
+msgstr "E-pos:"
 
 #: ../ggz-gtk/login.c:691 ../ggz-gtk/props.c:1074
 msgid "Normal Login"
-msgstr "一般登入"
+msgstr "Gewone aanmelding"
 
 #: ../ggz-gtk/login.c:702 ../ggz-gtk/props.c:1082
 msgid "Guest Login"
-msgstr "以過客身分登入"
+msgstr "Gasteaanmelding"
 
 #: ../ggz-gtk/login.c:710
 msgid "First-time Login"
-msgstr "第一次登入"
+msgstr "Toetreeaanmelding"
+
+#: ../ggz-gtk/motd.c:161
+msgid "Message of the Day"
+msgstr "Boodskap van die dag"
+
+#: ../ggz-gtk/pick_module.c:89
+msgid "Which client would you like to use to play this game?"
+msgstr "Met watter kliënt wil jy graag hierdie speletjie speel?"
 
 #: ../ggz-gtk/pick_module.c:131
 msgid "Don't ask me again."
-msgstr "不要再問我。"
+msgstr "Moenie weer vra nie."
 
 #: ../ggz-gtk/playerinfo.c:105
 msgid "Player Information"
-msgstr "玩家資訊"
+msgstr "Spelerinligting"
+
+#: ../ggz-gtk/playerinfo.c:135
+msgid "Player Handle:"
+msgstr "Spelervatsel:"
 
 #: ../ggz-gtk/playerinfo.c:153
 msgid "Table:"
-msgstr "遊戲桌："
+msgstr "Tafel:"
 
 #: ../ggz-gtk/playerinfo.c:171
 msgid "Account:"
-msgstr "帳號："
+msgstr "Rekening:"
+
+#: ../ggz-gtk/playerinfo.c:202
+msgid "Record:"
+msgstr "Rekord:"
+
+#: ../ggz-gtk/playerinfo.c:220
+msgid "Rating:"
+msgstr "Gradering:"
 
 #: ../ggz-gtk/playerinfo.c:238
 msgid "Rank:"
-msgstr "等級："
+msgstr "Rang:"
 
 #: ../ggz-gtk/playerinfo.c:256
 msgid "Score:"
-msgstr "得分："
+msgstr "Telling:"
 
 #: ../ggz-gtk/playerinfo.c:317 ../ggz-gtk/playerinfo.c:350
 msgid "Unknown"
-msgstr "未知"
+msgstr "Onbekend"
 
 #: ../ggz-gtk/playerinfo.c:353
 msgid "Registered"
-msgstr "已登記"
+msgstr "Geregistreer"
 
 #: ../ggz-gtk/playerinfo.c:356
 msgid "Guest"
-msgstr "過客"
+msgstr "Gas"
+
+#: ../ggz-gtk/playerinfo.c:359
+msgid "Host"
+msgstr "Gasheer"
 
 #: ../ggz-gtk/playerinfo.c:362
 msgid "Administrator"
-msgstr "管理員"
+msgstr "Administrateur"
 
 #: ../ggz-gtk/playerinfo.c:365
 msgid "Bot"
-msgstr "機器"
+msgstr "Bot"
 
 #: ../ggz-gtk/playerlist.c:171 ../ggz-gtk/roomlist.c:144
 #: ../ggz-gtk/tablelist.c:84
 msgid "Info"
-msgstr "資訊"
+msgstr "Info"
 
 #: ../ggz-gtk/playerlist.c:178
 msgid "Friends"
-msgstr "好友"
+msgstr "Vriende"
+
+#: ../ggz-gtk/playerlist.c:183
+msgid "Ignore"
+msgstr "Ignoreer"
 
 #: ../ggz-gtk/playerlist.c:380
 #, c-format
@@ -764,260 +853,238 @@ msgstr "L"
 
 #: ../ggz-gtk/playerlist.c:488 ../ggz-gtk/tablelist.c:191
 msgid "T#"
-msgstr "桌號"
+msgstr "T#"
 
 #: ../ggz-gtk/playerlist.c:499 ../ggz-gtk/types.c:176
 msgid "Name"
-msgstr "名稱"
+msgstr "Naam"
 
 #: ../ggz-gtk/props.c:251
 msgid "Properties Updated"
-msgstr "已更新屬性"
-
-#: ../ggz-gtk/props.c:267 ../ggz-gtk/support.c:139
-msgid "Galeon - New"
-msgstr "Galeon - 新增視窗"
-
-#: ../ggz-gtk/props.c:268 ../ggz-gtk/support.c:142
-msgid "Galeon - Existing"
-msgstr "Galeon - 使用原有視窗"
-
-#: ../ggz-gtk/props.c:269 ../ggz-gtk/support.c:145
-msgid "Gnome URL Handler"
-msgstr "GNOME URL 處理程式"
-
-#: ../ggz-gtk/props.c:270 ../ggz-gtk/support.c:148
-msgid "Konqueror - New"
-msgstr "Konqueror - 新增視窗"
-
-#: ../ggz-gtk/props.c:271 ../ggz-gtk/support.c:151
-msgid "Konqueror - Existing"
-msgstr "Konqueror - 使用原有視窗"
-
-#: ../ggz-gtk/props.c:272 ../ggz-gtk/support.c:163
-msgid "Lynx"
-msgstr "Lynx"
-
-#: ../ggz-gtk/props.c:273 ../ggz-gtk/support.c:169
-msgid "Mozilla - New"
-msgstr "Mozilla - 新增視窗"
-
-#: ../ggz-gtk/props.c:274 ../ggz-gtk/support.c:172
-msgid "Mozilla - Existing"
-msgstr "Mozilla - 使用原有視窗"
-
-#: ../ggz-gtk/props.c:275 ../ggz-gtk/support.c:176
-msgid "Netscape - New"
-msgstr "Netscape - 新增視窗"
-
-#: ../ggz-gtk/props.c:276 ../ggz-gtk/support.c:183
-msgid "Opera - New"
-msgstr "Opera - 新增視窗"
-
-#: ../ggz-gtk/props.c:277 ../ggz-gtk/support.c:186
-msgid "Opera - Existing"
-msgstr "Opera - 使用原有視窗"
-
-#: ../ggz-gtk/props.c:278 ../ggz-gtk/support.c:191
-msgid "Firefox - New"
-msgstr "Firefox - 新增視窗"
-
-#: ../ggz-gtk/props.c:279 ../ggz-gtk/support.c:194
-msgid "Firefox - Existing"
-msgstr "Firefox - 使用原有視窗"
+msgstr "Eienskappe bygewerk"
 
 #: ../ggz-gtk/props.c:1052
 msgid "Confirm:"
-msgstr "確認："
+msgstr "Bevestig:"
 
 #: ../ggz-gtk/props.c:1102
 msgid "Modify"
-msgstr "修改"
+msgstr "Wysig"
 
 #: ../ggz-gtk/props.c:1116
 msgid "Servers"
-msgstr "伺服器"
+msgstr "Bediener"
 
 #: ../ggz-gtk/props.c:1135
 msgid "Chat Font:"
-msgstr "交談所用的字型："
+msgstr "Geselsiefont:"
 
 #: ../ggz-gtk/props.c:1151
 msgid "Change"
-msgstr "更改"
+msgstr "Verander"
 
 #: ../ggz-gtk/props.c:1164
 msgid "Ignore Join/Part Messages"
-msgstr "不理會玩家加入或離開的訊息"
+msgstr "Ignoreer aansluit/weggaan-boodskappe"
 
 #: ../ggz-gtk/props.c:1172
 msgid "Play Sounds"
-msgstr "播放音效"
+msgstr "Spletjieklanke"
 
 #: ../ggz-gtk/props.c:1180
 msgid "Auto Indent"
-msgstr "自動縮排"
+msgstr "Outo-inkeep"
 
 #: ../ggz-gtk/props.c:1188
 msgid "Timestamp Chats"
-msgstr "交談訊息加上時間戳記"
+msgstr "Tydstempel geselsies"
 
 #: ../ggz-gtk/props.c:1196
 msgid "Word Wrap"
-msgstr "自動換行"
+msgstr "Reëlvou"
 
 #: ../ggz-gtk/props.c:1204
 msgid "Chat Color"
-msgstr "交談所用的字體顏色"
+msgstr "Geselsiekleur"
 
 #: ../ggz-gtk/props.c:1253
 msgid "Default chat color assigned to your friends"
-msgstr "顯示你的朋友時所用的預設顏色"
+msgstr "Verstekgeselsiekleur vir aan jou vriende"
 
 #: ../ggz-gtk/props.c:1262
 msgid "Chat color used when your name is typed"
-msgstr "當有人輸入你的名字時所用的顏色"
+msgstr "Geselsiekleur vir wanneer jou naam getik word"
 
 #: ../ggz-gtk/props.c:1271
 msgid "Chat color used for all other chats"
-msgstr "所有別的訊息所用的顏色"
+msgstr "Geselsiekleur vir alle ander geselsies"
 
 #: ../ggz-gtk/props.c:1280
 msgid "Normal Color"
-msgstr "一般顏色"
+msgstr "Gewone kleur"
 
 #: ../ggz-gtk/props.c:1291
 msgid "Highlight Color"
-msgstr "強調顏色"
+msgstr "Merkkleur"
 
 #: ../ggz-gtk/props.c:1302
 msgid "Friend Color"
-msgstr "好友顏色"
+msgstr "Vriendkleur"
 
 #: ../ggz-gtk/props.c:1313
 msgid "Black Background"
-msgstr "黑色背景"
+msgstr "Swart agtergrond"
 
 #: ../ggz-gtk/props.c:1322
 msgid "White Background"
-msgstr "白色背景"
+msgstr "Wit agtergrond"
 
 #: ../ggz-gtk/props.c:1331
 msgid "Chat"
-msgstr "交談"
+msgstr "Gesels"
 
 #: ../ggz-gtk/props.c:1343
 msgid "All of the following information is optional."
-msgstr "所有以下的資訊都不是必須填上的。"
+msgstr "Al die volgende inligting is opsioneel."
 
 #: ../ggz-gtk/props.c:1361
 msgid "Name:"
-msgstr "名稱："
+msgstr "Naam:"
 
 #: ../ggz-gtk/props.c:1388
 msgid "City:"
-msgstr "城市："
+msgstr "Stad:"
 
 #: ../ggz-gtk/props.c:1409
 msgid "State:"
-msgstr "省："
+msgstr "Provinsie:"
 
 #: ../ggz-gtk/props.c:1430
 msgid "Country:"
-msgstr "國家/地區："
+msgstr "Land:"
 
 #: ../ggz-gtk/props.c:1445
 msgid "Comments, Hobbies, Etc."
-msgstr "備註、興趣等等"
+msgstr "Kommentaar, stokperdjies, ens."
 
 #: ../ggz-gtk/props.c:1467
 msgid "User Information"
-msgstr "玩家資訊"
-
-#: ../ggz-gtk/props.c:1476
-msgid "Browser to launch URLs with:"
-msgstr "啟動 URL 時使用的瀏覽器："
+msgstr "Gebruikerinligting"
 
 #: ../ggz-gtk/props.c:1483
 msgid "Single Click Room Entry"
-msgstr "單按一下滑鼠即可進入遊戲區"
+msgstr "Enkelkliek-kamerbinnekom"
 
 #: ../ggz-gtk/props.c:1497
 msgid "Display All"
-msgstr "全部顯示"
+msgstr "Wys alles"
+
+#: ../ggz-gtk/props.c:1506
+msgid "Display New"
+msgstr "Wys nuwes"
+
+#: ../ggz-gtk/props.c:1515
+msgid "Display Important"
+msgstr "Wys belangrikes"
 
 #: ../ggz-gtk/props.c:1524
 msgid "Display None"
-msgstr "不顯示"
+msgstr "Wys geen"
 
 #: ../ggz-gtk/props.c:1533
 msgid "Options"
-msgstr "選項"
+msgstr "Opsies"
 
 #: ../ggz-gtk/props.c:1622
 msgid "Select Font"
-msgstr "選擇字型"
+msgstr "Kies font"
 
 #: ../ggz-gtk/roominfo.c:63
 msgid "Room Information"
-msgstr "遊戲區資訊"
+msgstr "Kamerinligting"
 
 #: ../ggz-gtk/roominfo.c:80
 msgid "Game Name:"
-msgstr "遊戲名稱："
+msgstr "Speletjienaam:"
 
 #: ../ggz-gtk/roominfo.c:110
 msgid "Room Description:"
-msgstr "遊戲區描述："
+msgstr "Kamerbeskrywing:"
 
 #: ../ggz-gtk/roominfo.c:155
 msgid "This room has no game"
-msgstr "這個遊戲區沒有遊戲可以玩"
+msgstr "Hierdie kamer het geen speletjie nie"
 
 #: ../ggz-gtk/roominfo.c:162 ../ggz-gtk/roominfo.c:169
 msgid "N/A"
-msgstr "N/A"
+msgstr "NVT"
+
+#: ../ggz-gtk/roominfo.c:175
+msgid "Unknown room"
+msgstr "Onbekende kamer"
 
 #: ../ggz-gtk/roomlist.c:73
 msgid "You can't join a room; you're not logged in"
-msgstr "你未登入，不可以進入遊戲區"
+msgstr "Jy kan nie by 'n kamer aansluit nie; jy's nie aangemeld nie"
 
 #: ../ggz-gtk/roomlist.c:82
 msgid "You can't switch rooms while playing a game"
-msgstr "正在玩遊戲時不可以進入另一個遊戲區"
+msgstr "Jy kan nie van kamer verwissel terwyl jy 'n speletjie speel nie"
 
 #: ../ggz-gtk/roomlist.c:89
 msgid "Unknown error"
-msgstr "出現原因不明的錯誤"
+msgstr "Onbekende fout"
 
 #: ../ggz-gtk/roomlist.c:109 ../ggz-gtk/roomlist.c:114
 msgid "Error joining room"
-msgstr "進入遊戲區時發生錯誤"
+msgstr "Kon nie by kamer aansluit nie"
 
 #: ../ggz-gtk/roomlist.c:350
 msgid "Other Rooms"
-msgstr "其它遊戲區"
+msgstr "Ander kamers"
 
 #: ../ggz-gtk/roomlist.c:424
 msgid "Room"
-msgstr "遊戲區"
-
-#: ../ggz-gtk/support.c:179
-msgid "Netscape - Existing"
-msgstr "Netscape - 使用原有視窗"
+msgstr "Kamer"
 
 #: ../ggz-gtk/tablelist.c:161
 msgid "No description available."
-msgstr "沒有任何描述。"
+msgstr "Geen beskrywing beskikbaar nie."
+
+#: ../ggz-gtk/tablelist.c:196
+msgid "Seats"
+msgstr "Sitplekke"
 
 #: ../ggz-gtk/tablelist.c:201 ../ggz-gtk/types.c:183
 msgid "Description"
-msgstr "描述"
+msgstr "Beskrywing"
 
 #: ../ggz-gtk/types.c:113
 msgid "None"
-msgstr "沒有"
+msgstr "Geen"
+
+#: ../ggz-gtk/types.c:148
+msgid ""
+"Room filtering is not implemented yet. If\n"
+"you would like to help head over to\n"
+"http://www.ggzgamingzone.org/"
+msgstr ""
+"Kamerfiltering werk nog nie. Indien\n"
+"jy hulp verlang, roer jou riete na\n"
+"http://www.ggzgamingzone.org/"
+
+#: ../ggz-gtk/types.c:191
+msgid "Web Address"
+msgstr "Webadres"
 
 #: ../ggz-gtk/types.c:199
 msgid "Author"
-msgstr "作者"
+msgstr "Outeur"
+
+#: ../ggz-gtk/types.c:254
+msgid "Room List Filter:"
+msgstr "Kamerlys-filter:"
+
+#: ../ggz-gtk/types.c:266
+msgid "Set"
+msgstr "Stel"

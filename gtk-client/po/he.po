@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-games.HEAD.he\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-20 15:07+0100\n"
+"POT-Creation-Date: 2007-11-11 22:11+0100\n"
 "PO-Revision-Date: 2005-08-30 12:41+0300\n"
 "Last-Translator: Yair Hershkovitz <>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -28,23 +28,23 @@ msgstr "משחק"
 msgid "General"
 msgstr "כללי"
 
-#: ../ggz-gtk/login.c:648 ../ggz-gtk/props.c:1014
+#: ../ggz-gtk/login.c:659 ../ggz-gtk/props.c:1031
 msgid "Password:"
 msgstr "סיסמה:"
 
-#: ../ggz-gtk/login.c:664
+#: ../ggz-gtk/login.c:675
 msgid "Email:"
 msgstr "דוא\"ל:"
 
-#: ../ggz-gtk/playerinfo.c:241
+#: ../ggz-gtk/playerinfo.c:256
 msgid "Score:"
 msgstr "תוצאה:"
 
-#: ../ggz-gtk/playerlist.c:362 ../ggz-gtk/types.c:176
+#: ../ggz-gtk/playerlist.c:499 ../ggz-gtk/types.c:176
 msgid "Name"
 msgstr "שם"
 
-#: ../ggz-gtk/props.c:1536
+#: ../ggz-gtk/props.c:1533
 msgid "Options"
 msgstr "אפשרויות"
 

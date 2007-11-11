@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-games.HEAD.mr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-20 15:07+0100\n"
+"POT-Creation-Date: 2007-11-11 22:11+0100\n"
 "PO-Revision-Date: 2006-08-28 20:45+0530\n"
 "Last-Translator: Sameer N. Ingole<strike@proscrutiny.com>\n"
 "Language-Team: Marathi\n"
@@ -27,15 +27,15 @@ msgstr "खेळ"
 msgid "General"
 msgstr "सामान्य"
 
-#: ../ggz-gtk/playerinfo.c:241
+#: ../ggz-gtk/playerinfo.c:256
 msgid "Score:"
 msgstr "गुण:"
 
-#: ../ggz-gtk/playerlist.c:362 ../ggz-gtk/types.c:176
+#: ../ggz-gtk/playerlist.c:499 ../ggz-gtk/types.c:176
 msgid "Name"
 msgstr "नाव"
 
-#: ../ggz-gtk/props.c:1536
+#: ../ggz-gtk/props.c:1533
 msgid "Options"
 msgstr "पर्याय"
 

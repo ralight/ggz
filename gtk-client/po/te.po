@@ -1,0 +1,859 @@
+# This translation was merged from GNOME SVN
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/te.po)
+# Telugu translation of gnome-games.
+# Copyright (C) 2007 Swecha Telugu Localisation Team <localisation@swecha.org>
+# This file is distributed under the same license as the gnome-games package.
+# Bharat Kumar Jonnalagadda <bharath@swecha.net>, 2007.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Swecha  VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-11-11 22:11+0100\n"
+"PO-Revision-Date: 2007-08-04 16:18+0530\n"
+"Last-Translator: Bharat Kumar Jonnalagadda <bharath@swecha.net>\n"
+"Language-Team: Swecha Telugu Localisation Team <localisation@swecha.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#: ../ggz-gtk/about.c:87 ../ggz-gtk/client.c:1089
+msgid "About"
+msgstr "గురించి"
+
+#: ../ggz-gtk/chat.c:291
+#, c-format
+msgid "You have received an unknown message from %s."
+msgstr ""
+"మీరు %s నుండి ఒక అపరిచిత "
+"సందేశము వచ్చినది."
+
+#: ../ggz-gtk/chat.c:579
+#, c-format
+msgid "%s (logged on)"
+msgstr "%s (ప్రవేశించివున్నది"
+
+#: ../ggz-gtk/chat.c:617
+#, c-format
+msgid "%s (logged off)"
+msgstr "%s (నిష్క్రమించివున్నది)"
+
+#: ../ggz-gtk/chat.c:666
+msgid "Chat Commands"
+msgstr "మాటామంతి వ్యాఖ్యలు"
+
+#: ../ggz-gtk/chat.c:879
+#, c-format
+msgid "Added %s to your friends list."
+msgstr ""
+"%s ను మీ స్నేహితుల జాబితాకు "
+"జతపర్చినది."
+
+#: ../ggz-gtk/chat.c:903
+#, c-format
+msgid "Removed %s from your friends list."
+msgstr ""
+"%s ను మీ స్నేహితుల "
+"జాబితానుండి తొలగించబడినది."
+
+#: ../ggz-gtk/chat.c:1034
+msgid "People currently your friends"
+msgstr ""
+"ప్రస్తుత్తం మీకున్న "
+"స్నేహితులు"
+
+#: ../ggz-gtk/client.c:144
+msgid "Are you sure you want to quit?"
+msgstr ""
+"మీరు నిజంగా "
+"త్యజించదల్చుకున్నారా?"
+
+#: ../ggz-gtk/client.c:144
+msgid "Quit?"
+msgstr "త్యజించు?"
+
+#: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
+#: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
+msgid "Not Implemented"
+msgstr "అమలు చేయలేదు"
+
+#: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
+msgid "Error Joining"
+msgstr "చేరుటలో దోషము"
+
+#: ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:614
+msgid "That table is full."
+msgstr "టేబుల్ నిండిపోయింది."
+
+#: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
+#: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:337
+msgid "Game Error"
+msgstr "ఆట దోషము"
+
+#: ../ggz-gtk/client.c:647
+msgid ""
+"Failed to join table.\n"
+"Join aborted."
+msgstr ""
+"టేబుల్ లో చేరుట విఫలమైనది.\n"
+"చేరుట నిలిపివెయడమైనది."
+
+#: ../ggz-gtk/client.c:648
+msgid "Join Error"
+msgstr "చేరుటలో దోషము"
+
+#: ../ggz-gtk/client.c:680
+msgid "Start playing a game at a new table"
+msgstr ""
+"కొత్త టేబుల్ పన ఆడటం మొదలు "
+"పెట్టండి"
+
+#: ../ggz-gtk/client.c:682
+msgid "Join an existing game"
+msgstr "ఉన్న ఆటలో చేరండి"
+
+#: ../ggz-gtk/client.c:687
+msgid "Leave the game you're currently playing"
+msgstr ""
+"మీరు ప్రస్తుత్తం ఆడుతున్న "
+"ఆటను విడిచిపెట్టండి"
+
+#: ../ggz-gtk/client.c:934
+msgid "GGZ"
+msgstr "GGZ"
+
+#: ../ggz-gtk/client.c:962
+msgid "Quit"
+msgstr "త్యజించు"
+
+#: ../ggz-gtk/client.c:969
+msgid "Game"
+msgstr "ఆట"
+
+#: ../ggz-gtk/client.c:978 ../ggz-gtk/client.c:1133 ../ggz-gtk/launch.c:596
+msgid "Launch"
+msgstr "ప్రయోగము"
+
+#: ../ggz-gtk/client.c:985 ../ggz-gtk/client.c:1141 ../ggz-gtk/roomlist.c:150
+#: ../ggz-gtk/tablelist.c:74
+msgid "Join"
+msgstr "చేరుము"
+
+#: ../ggz-gtk/client.c:992 ../ggz-gtk/client.c:1149
+msgid "Watch"
+msgstr "చూడుము"
+
+#: ../ggz-gtk/client.c:1004 ../ggz-gtk/client.c:1157 ../ggz-gtk/tablelist.c:77
+msgid "Leave"
+msgstr "వదిలిపెట్టుము"
+
+#: ../ggz-gtk/client.c:1011
+msgid "Edit"
+msgstr "సరిచేయు"
+
+#: ../ggz-gtk/client.c:1019
+msgid "Properties"
+msgstr "లక్షణాలు"
+
+#: ../ggz-gtk/client.c:1026
+msgid "View"
+msgstr "దర్శనం"
+
+#: ../ggz-gtk/client.c:1035
+msgid "Room List"
+msgstr "గది జాబితా"
+
+#: ../ggz-gtk/client.c:1041
+msgid "Player List"
+msgstr "ఆటగాళ్ళ జాబితా"
+
+#: ../ggz-gtk/client.c:1053
+msgid "Server Stats"
+msgstr "సేవిక గణాంకాలు"
+
+#: ../ggz-gtk/client.c:1057
+msgid "Player Stats"
+msgstr "ఆటగాడి గణాంకాలు"
+
+#: ../ggz-gtk/client.c:1065 ../ggz-gtk/types.c:237
+msgid "Game Types"
+msgstr "ఆట రకాలు"
+
+#: ../ggz-gtk/client.c:1074 ../ggz-gtk/props.c:1488
+msgid "MOTD"
+msgstr "MOTD"
+
+#: ../ggz-gtk/client.c:1081
+msgid "Help"
+msgstr "సహాయం"
+
+#: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:493
+msgid "Stats"
+msgstr "గణాంకాలు"
+
+#: ../ggz-gtk/client.c:1196 ../ggz-gtk/ggzclient.c:721
+msgid "Current Room:"
+msgstr "ప్రస్తుత గది:"
+
+#: ../ggz-gtk/client.c:1277 ../ggz-gtk/playerinfo.c:274
+msgid "Message:"
+msgstr "సందేశం:"
+
+#: ../ggz-gtk/client.c:1295
+msgid "Send"
+msgstr "పంపుము"
+
+#: ../ggz-gtk/first.c:57
+msgid "Wizard"
+msgstr "విజార్డ్"
+
+#: ../ggz-gtk/first.c:57
+msgid "Deity"
+msgstr "డైటీ"
+
+#: ../ggz-gtk/first.c:57
+msgid "Sentinel"
+msgstr "సెంటినెల్"
+
+#: ../ggz-gtk/first.c:57
+msgid "Captain"
+msgstr "కెప్టెన్"
+
+#: ../ggz-gtk/first.c:58
+msgid "Knight"
+msgstr "గుర్రం"
+
+#: ../ggz-gtk/first.c:58
+msgid "Angel"
+msgstr "ఏంజల్"
+
+#: ../ggz-gtk/first.c:58
+msgid "Silverlord"
+msgstr "సిల్వర్ లార్డ్"
+
+#: ../ggz-gtk/first.c:58
+msgid "Eagle"
+msgstr "ఈగల్"
+
+#: ../ggz-gtk/first.c:59
+msgid "Vampire"
+msgstr "వాంపైర్"
+
+#: ../ggz-gtk/first.c:59
+msgid "Chief"
+msgstr "చీఫ్"
+
+#: ../ggz-gtk/first.c:59
+msgid "Colonel"
+msgstr "కలనల్"
+
+#: ../ggz-gtk/first.c:59
+msgid "General"
+msgstr "జెనెరల్"
+
+#: ../ggz-gtk/first.c:60
+msgid "Major"
+msgstr "మేజర్"
+
+#: ../ggz-gtk/first.c:60
+msgid "Scout"
+msgstr "స్కౌట్"
+
+#: ../ggz-gtk/first.c:60
+msgid "Lieutenant"
+msgstr "లెఫటనంట్"
+
+#: ../ggz-gtk/first.c:60
+msgid "Stalker"
+msgstr "స్టాల్కర్"
+
+#: ../ggz-gtk/first.c:61
+msgid "Scientist"
+msgstr "శాస్త్రవేత"
+
+#: ../ggz-gtk/first.c:61
+msgid "Creator"
+msgstr "సృష్టికర్త"
+
+#: ../ggz-gtk/first.c:70
+msgid "Local developer server"
+msgstr ""
+"స్థానికంగా అభివృధ్ధిపర్చు "
+"సేవిక"
+
+#: ../ggz-gtk/game.c:72
+#, c-format
+msgid ""
+"You don't have this game installed. You can download\n"
+"it from %s."
+msgstr ""
+"మీకు ఈ ఆట ప్రతిష్టించి లేదు. "
+"మీరు దీన్ని %s నుండి దిగుమతి "
+"చేసుకోవచ్చు."
+
+#: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
+#: ../ggz-gtk/game.c:325 ../ggz-gtk/game.c:334 ../ggz-gtk/game.c:350
+#: ../ggz-gtk/launch.c:292
+msgid "Launch Error"
+msgstr "ప్రయోగ దోషము"
+
+#: ../ggz-gtk/game.c:201
+msgid "Launched game"
+msgstr "ప్రయోగించబడిన ఆట"
+
+#: ../ggz-gtk/game.c:222
+msgid "Launch failed"
+msgstr "ప్రయోగము విఫలమయినది"
+
+#: ../ggz-gtk/game.c:296
+msgid "You can only play one game at a time."
+msgstr ""
+"మీరు ఒక్క సమయములో ఒకే ఆటను "
+"ఆడగలతారు"
+
+#: ../ggz-gtk/game.c:304
+msgid "You're still at a table."
+msgstr ""
+"మీరు ఇంకా టేబుల్ దగ్గరే "
+"ఉన్నారు"
+
+#: ../ggz-gtk/game.c:323
+msgid ""
+"No game types defined for this server.\n"
+"Launch aborted."
+msgstr ""
+"ఏ ఆట రకాలు ఈ సేవికకు "
+"నిర్వచించబడలేదు.\n"
+"ప్రయోగము నిలిపివేయడమైనది."
+
+#: ../ggz-gtk/ggzclient.c:122
+#, c-format
+msgid "Error connecting to server: %s"
+msgstr ""
+"%s సేవికకు బంధము ఏర్పడుటలో "
+"దోషము"
+
+#: ../ggz-gtk/ggzclient.c:124 ../ggz-gtk/ggzclient.c:380
+#: ../ggz-gtk/ggzclient.c:562 ../ggz-gtk/ggzclient.c:597
+#: ../ggz-gtk/ggzclient.c:650 ../ggz-gtk/ggzclient.c:1083
+#: ../ggz-gtk/launch.c:327
+msgid "Error"
+msgstr "దోషము"
+
+#: ../ggz-gtk/ggzclient.c:237
+#, c-format
+msgid "Your new password is %s"
+msgstr "మీ కొత్త రహస్యపదము %s"
+
+#: ../ggz-gtk/ggzclient.c:239
+msgid "New password"
+msgstr "కొత్త రహస్యపదం"
+
+#: ../ggz-gtk/ggzclient.c:275
+#, c-format
+msgid "Players on server: %d"
+msgstr "%d సేవిక పైన ఆటగాళ్ళు"
+
+#: ../ggz-gtk/ggzclient.c:320
+#, c-format
+msgid "Current Room: %s"
+msgstr "ప్రస్తుత గది: %s"
+
+#: ../ggz-gtk/ggzclient.c:328
+#, c-format
+msgid "You've joined room \"%s\"."
+msgstr "మీరు \"%s\".గదిలో చేరారు."
+
+#: ../ggz-gtk/ggzclient.c:378
+#, c-format
+msgid "Error joining room: %s"
+msgstr "%s గదిలోకి చేరుటలో దోషము"
+
+#: ../ggz-gtk/ggzclient.c:429
+msgid "You can't chat while not in a room."
+msgstr ""
+"మీరు గది లో లేనప్పుడు "
+"మాటామంతి చేయుటకు కుదరదు"
+
+#: ../ggz-gtk/ggzclient.c:434
+msgid "You don't have permission to chat here."
+msgstr ""
+"మీకు ఇక్కడ మాటామంతి "
+"చేయడానికి అనుమతి లేదు."
+
+#: ../ggz-gtk/ggzclient.c:442
+msgid "That player isn't in the room!"
+msgstr "ఆ ఆటగాడు గదిలో లేడు!"
+
+#: ../ggz-gtk/ggzclient.c:447
+msgid "There was an error sending the chat."
+msgstr ""
+"మాటామంతిని పంపించుటలో "
+"దోషము వుంది."
+
+#: ../ggz-gtk/ggzclient.c:451
+msgid "You're not at a table."
+msgstr "మీరు పట్టిక దగ్గర లేరు."
+
+#: ../ggz-gtk/ggzclient.c:455
+#, c-format
+msgid "Chat failed: %s."
+msgstr "మాటామంతి విఫలమైనది: %s"
+
+#: ../ggz-gtk/ggzclient.c:560
+#, c-format
+msgid "Error launching table: %s"
+msgstr ""
+"పట్టికను ప్రయోగించుటలో "
+"దోషము: %s"
+
+#: ../ggz-gtk/ggzclient.c:580
+#, c-format
+msgid "You have joined table %d."
+msgstr "మీరు %d పట్టికలో చేరారు."
+
+#: ../ggz-gtk/ggzclient.c:595
+#, c-format
+msgid "Error joining table: %s"
+msgstr "పట్టికను చేరుటలో దోషము: %s"
+
+#: ../ggz-gtk/ggzclient.c:622
+#, c-format
+msgid "You have left the table."
+msgstr ""
+"మీరు పట్టిక ను "
+"విడిచిపెట్టారు"
+
+#: ../ggz-gtk/ggzclient.c:625
+#, c-format
+msgid "The game is over."
+msgstr "ఆట అయిపోయింది."
+
+#: ../ggz-gtk/ggzclient.c:629
+#, c-format
+msgid "There was an error with the game server."
+msgstr ""
+"ఆట సేవిక తో ఒక దోషము ఉన్నది."
+
+#: ../ggz-gtk/ggzclient.c:648
+#, c-format
+msgid "Error leaving table: %s"
+msgstr ""
+"పట్టికను విడిచిపెట్టుటలో "
+"దోషము: %s"
+
+#: ../ggz-gtk/ggzclient.c:750
+msgid "Offline"
+msgstr "లైనువెలుపల"
+
+#: ../ggz-gtk/ggzclient.c:753
+msgid "Connecting"
+msgstr "అనుసంధానమవుతున్నది"
+
+#: ../ggz-gtk/ggzclient.c:756
+msgid "Reconnecting"
+msgstr "మళ్ళీ అనుసంధానమవుతున్నది"
+
+#: ../ggz-gtk/ggzclient.c:759
+msgid "Online"
+msgstr "లైనులోపల"
+
+#: ../ggz-gtk/ggzclient.c:762
+msgid "Logging In"
+msgstr "లోపలికి ప్రవేశిస్తున్నది"
+
+#: ../ggz-gtk/ggzclient.c:765
+msgid "Logged In"
+msgstr "లోపలికి ప్రవేశించినది"
+
+#: ../ggz-gtk/ggzclient.c:769
+msgid "--> Room"
+msgstr "--> గది"
+
+#: ../ggz-gtk/ggzclient.c:776
+msgid "--> Table"
+msgstr "--> పట్టిక"
+
+#: ../ggz-gtk/ggzclient.c:779
+msgid "Playing"
+msgstr "ఆడుతున్నది"
+
+#: ../ggz-gtk/ggzclient.c:782
+msgid "<-- Table"
+msgstr "<-- పట్టిక"
+
+#: ../ggz-gtk/ggzclient.c:785
+msgid "Logging Out"
+msgstr "నిష్క్రమిస్తున్నది"
+
+#: ../ggz-gtk/ggzclient.c:1081
+#, c-format
+msgid "Server error: %s"
+msgstr "సేవిక దోషము: %s"
+
+#: ../ggz-gtk/ggzclient.c:1170
+msgid "Disconnected from server."
+msgstr ""
+"సేవిక నుండి బంధం తెంచబడినది."
+
+#: ../ggz-gtk/launch.c:113
+#, c-format
+msgid "Game Type:  %s"
+msgstr "ఆట రకం: %s"
+
+#: ../ggz-gtk/launch.c:119
+#, c-format
+msgid "Author:  %s"
+msgstr "మూలకర్త: %s"
+
+#: ../ggz-gtk/launch.c:126
+#, c-format
+msgid "Description:  %s"
+msgstr "వివరణ: %s"
+
+#: ../ggz-gtk/launch.c:132
+#, c-format
+msgid "Home Page:  %s"
+msgstr "నివాస పుట: %s"
+
+#: ../ggz-gtk/launch.c:291
+msgid ""
+"Failed to launch table.\n"
+" Launch aborted."
+msgstr ""
+"టేబుల్ ను ప్రయోగించుట "
+"విఫలమైనది.\n"
+"ప్రయోగము నిలిపివేయబడినది."
+
+#: ../ggz-gtk/launch.c:436
+msgid "Game Type:"
+msgstr "ఆట రకం:"
+
+#: ../ggz-gtk/launch.c:457 ../ggz-gtk/roominfo.c:90
+msgid "Author:"
+msgstr "మూలకర్త:"
+
+#: ../ggz-gtk/launch.c:469
+msgid "Description:"
+msgstr "వివరణ:"
+
+#: ../ggz-gtk/launch.c:480 ../ggz-gtk/roominfo.c:100
+msgid "Homepage:"
+msgstr "నివాసపుట"
+
+#: ../ggz-gtk/launch.c:527
+msgid "Computer"
+msgstr "కంప్యూటర్"
+
+#: ../ggz-gtk/launch.c:538
+msgid "Open"
+msgstr "తెరువుము"
+
+#: ../ggz-gtk/launch.c:576
+msgid "Game Description   "
+msgstr "ఆట వివరణ..."
+
+#: ../ggz-gtk/login.c:101
+msgid "Login"
+msgstr "ప్రవేశించు"
+
+#: ../ggz-gtk/login.c:115
+#, c-format
+msgid "That username is already in use."
+msgstr ""
+"ఆ వినియోగదారునిపేరు ఇంతకు "
+"ముందే ఉపయోగములో ఉంది."
+
+#: ../ggz-gtk/login.c:119
+#, c-format
+msgid ""
+"Authentication has failed.\n"
+"Please supply the correct password."
+msgstr ""
+"ప్రామాణీకరణ విఫలమయినది.\n"
+"సరయిన రహస్యపదాన్ని ఇవ్వండి."
+
+#: ../ggz-gtk/login.c:123
+#, c-format
+msgid "The username is too long!"
+msgstr ""
+"వినియోగదారుని నామము చాలా "
+"పెద్దగా వుంది!"
+
+#: ../ggz-gtk/login.c:126
+#, c-format
+msgid "Invalid username, do not use special characters!"
+msgstr ""
+"నిస్సారమైన వినియోగదారుని "
+"నామము, ప్రత్యేక అక్షరాలను "
+"ఉపయోగించకండి!"
+
+#: ../ggz-gtk/login.c:554
+msgid "Server Profile"
+msgstr "సేవిక స్థూలవివరం"
+
+#: ../ggz-gtk/login.c:578 ../ggz-gtk/props.c:942
+msgid "Profile:"
+msgstr "స్థూల వివరం:"
+
+#: ../ggz-gtk/login.c:601 ../ggz-gtk/props.c:963
+msgid "Server:"
+msgstr "సేవిక:"
+
+#: ../ggz-gtk/login.c:644 ../ggz-gtk/props.c:1010
+msgid "Username:"
+msgstr "వినియోగదారుడి నామము:"
+
+#: ../ggz-gtk/login.c:659 ../ggz-gtk/props.c:1031
+msgid "Password:"
+msgstr "రహస్యపదం:"
+
+#: ../ggz-gtk/login.c:675
+msgid "Email:"
+msgstr "ఈ మెయిల్:"
+
+#: ../ggz-gtk/login.c:691 ../ggz-gtk/props.c:1074
+msgid "Normal Login"
+msgstr "సాధారణ ప్రవేశము"
+
+#: ../ggz-gtk/login.c:702 ../ggz-gtk/props.c:1082
+msgid "Guest Login"
+msgstr "అతిధి ప్రవేశము"
+
+#: ../ggz-gtk/login.c:710
+msgid "First-time Login"
+msgstr "మొదటిసారి ప్రవేశము"
+
+#: ../ggz-gtk/motd.c:161
+msgid "Message of the Day"
+msgstr "ఈ రోజు సందేశము"
+
+#: ../ggz-gtk/pick_module.c:131
+msgid "Don't ask me again."
+msgstr "నన్ను మళ్ళీ అడగవద్దు"
+
+#: ../ggz-gtk/playerinfo.c:105
+msgid "Player Information"
+msgstr "ఆటగాడి సమాచారము"
+
+#: ../ggz-gtk/playerinfo.c:153
+msgid "Table:"
+msgstr "పట్టిక:"
+
+#: ../ggz-gtk/playerinfo.c:171
+msgid "Account:"
+msgstr "ఖాతా:"
+
+#: ../ggz-gtk/playerinfo.c:202
+msgid "Record:"
+msgstr "రికార్డు:"
+
+#: ../ggz-gtk/playerinfo.c:220
+msgid "Rating:"
+msgstr "విలువకట్టు:"
+
+#: ../ggz-gtk/playerinfo.c:238
+msgid "Rank:"
+msgstr "విశిష్ట స్థానం:"
+
+#: ../ggz-gtk/playerinfo.c:256
+msgid "Score:"
+msgstr "స్కోర్:"
+
+#: ../ggz-gtk/playerinfo.c:317 ../ggz-gtk/playerinfo.c:350
+msgid "Unknown"
+msgstr "అపరిచిత"
+
+#: ../ggz-gtk/playerinfo.c:353
+msgid "Registered"
+msgstr "నమోదైన"
+
+#: ../ggz-gtk/playerinfo.c:356
+msgid "Guest"
+msgstr "అతిధి"
+
+#: ../ggz-gtk/playerinfo.c:359
+msgid "Host"
+msgstr "ఆతిధ్య"
+
+#: ../ggz-gtk/playerinfo.c:362
+msgid "Administrator"
+msgstr "నిర్వాహకి"
+
+#: ../ggz-gtk/playerlist.c:171 ../ggz-gtk/roomlist.c:144
+#: ../ggz-gtk/tablelist.c:84
+msgid "Info"
+msgstr "సమాచారం"
+
+#: ../ggz-gtk/playerlist.c:178
+msgid "Friends"
+msgstr "స్నేహితులు"
+
+#: ../ggz-gtk/playerlist.c:183
+msgid "Ignore"
+msgstr "తొలగించు"
+
+#: ../ggz-gtk/playerlist.c:380
+#, c-format
+msgid "#%d"
+msgstr "#%d"
+
+#: ../ggz-gtk/playerlist.c:483
+msgid "L"
+msgstr "L"
+
+#: ../ggz-gtk/playerlist.c:488 ../ggz-gtk/tablelist.c:191
+msgid "T#"
+msgstr "T#"
+
+#: ../ggz-gtk/playerlist.c:499 ../ggz-gtk/types.c:176
+msgid "Name"
+msgstr "నామం"
+
+#: ../ggz-gtk/props.c:251
+msgid "Properties Updated"
+msgstr "లక్షణాలు తాజాపర్చబడినవి"
+
+#: ../ggz-gtk/props.c:1052
+msgid "Confirm:"
+msgstr "ధృవేకరించు:"
+
+#: ../ggz-gtk/props.c:1102
+msgid "Modify"
+msgstr "మర్చు"
+
+#: ../ggz-gtk/props.c:1116
+msgid "Servers"
+msgstr "సేవికలు"
+
+#: ../ggz-gtk/props.c:1135
+msgid "Chat Font:"
+msgstr "మాటామంతి యొక్క అక్షరశైలి:"
+
+#: ../ggz-gtk/props.c:1151
+msgid "Change"
+msgstr "మార్చుము"
+
+#: ../ggz-gtk/props.c:1172
+msgid "Play Sounds"
+msgstr "ధ్వనులను ఆడించుము"
+
+#: ../ggz-gtk/props.c:1313
+msgid "Black Background"
+msgstr "నలుపు పూర్వరంగం"
+
+#: ../ggz-gtk/props.c:1322
+msgid "White Background"
+msgstr "తెలుపు పూర్వరంగం"
+
+#: ../ggz-gtk/props.c:1331
+msgid "Chat"
+msgstr "మాటామంతి"
+
+#: ../ggz-gtk/props.c:1361
+msgid "Name:"
+msgstr "పేరు:"
+
+#: ../ggz-gtk/props.c:1388
+msgid "City:"
+msgstr "నగరం:"
+
+#: ../ggz-gtk/props.c:1409
+msgid "State:"
+msgstr "రాష్టం:"
+
+#: ../ggz-gtk/props.c:1430
+msgid "Country:"
+msgstr "దేశం:"
+
+#: ../ggz-gtk/props.c:1467
+msgid "User Information"
+msgstr "వినియోగదారుని సమాచారము"
+
+#: ../ggz-gtk/props.c:1497
+msgid "Display All"
+msgstr "అన్నింటిని ప్రదర్శించు"
+
+#: ../ggz-gtk/props.c:1506
+msgid "Display New"
+msgstr "కొత్త వాటిని ప్రదర్శించు"
+
+#: ../ggz-gtk/props.c:1515
+msgid "Display Important"
+msgstr ""
+"ముఖ్యమైనవాటిని ప్రదర్శించు"
+
+#: ../ggz-gtk/props.c:1524
+msgid "Display None"
+msgstr "వేటిని ప్రదర్శించవద్దు"
+
+#: ../ggz-gtk/props.c:1533
+msgid "Options"
+msgstr "ఇచ్ఛాపూర్వకాలు"
+
+#: ../ggz-gtk/props.c:1622
+msgid "Select Font"
+msgstr "అక్షర శైలిని ఎంచుకొనుము"
+
+#: ../ggz-gtk/roominfo.c:63
+msgid "Room Information"
+msgstr "గది సమాచారం"
+
+#: ../ggz-gtk/roominfo.c:80
+msgid "Game Name:"
+msgstr "ఆట నామము:"
+
+#: ../ggz-gtk/roominfo.c:110
+msgid "Room Description:"
+msgstr "గది వివరణ:"
+
+#: ../ggz-gtk/roominfo.c:155
+msgid "This room has no game"
+msgstr "ఈ గదిలో ఏ ఆట లేదు"
+
+#: ../ggz-gtk/roominfo.c:175
+msgid "Unknown room"
+msgstr "అపరిచిత గది"
+
+#: ../ggz-gtk/roomlist.c:73
+msgid "You can't join a room; you're not logged in"
+msgstr ""
+"మీరు గదిలో చేరలేరు; మీరు "
+"ప్రవేశించి లేరు"
+
+#: ../ggz-gtk/roomlist.c:89
+msgid "Unknown error"
+msgstr "అపరిచిత దోషము"
+
+#: ../ggz-gtk/roomlist.c:109 ../ggz-gtk/roomlist.c:114
+msgid "Error joining room"
+msgstr "గదులలో చేరుటలో దోషము"
+
+#: ../ggz-gtk/roomlist.c:350
+msgid "Other Rooms"
+msgstr "ఇతర గదులు"
+
+#: ../ggz-gtk/roomlist.c:424
+msgid "Room"
+msgstr "గది"
+
+#: ../ggz-gtk/tablelist.c:161
+msgid "No description available."
+msgstr "ఏ వివరణ అందుబాటులో లేదు"
+
+#: ../ggz-gtk/tablelist.c:201 ../ggz-gtk/types.c:183
+msgid "Description"
+msgstr "వివరణ"
+
+#: ../ggz-gtk/types.c:191
+msgid "Web Address"
+msgstr "మహాతల చిరునామా"
+
+#: ../ggz-gtk/types.c:199
+msgid "Author"
+msgstr "మూలకర్త"
+
+#: ../ggz-gtk/types.c:266
+msgid "Set"
+msgstr "అమర్చు"

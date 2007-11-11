@@ -1,26 +1,25 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/hi.po)
 # translation of gnome-games.HEAD.hi.po to Hindi
-# translation of gnome-games-2.4.hi.po to Hindi
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+#
+#
 # G Karunakar <karunakar@freedomink.org>, 2003.
 # Ravishankar Shrivastava <raviratlami@yahoo.com>, 2004.
-# Rajesh Ranjan <rranjan@redhat.com>, 2005, 2006.
-#
-#
+# Rajesh Ranjan <rranjan@redhat.com>, 2005, 2006, 2007.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-games.HEAD.hi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-20 15:07+0100\n"
-"PO-Revision-Date: 2006-08-31 16:07+0530\n"
+"POT-Creation-Date: 2007-11-11 22:11+0100\n"
+"PO-Revision-Date: 2007-09-10 15:37+0530\n"
 "Last-Translator: Rajesh Ranjan <rranjan@redhat.com>\n"
-"Language-Team: Hindi <fedora-trans-hi@redhat.com>\n"
+"Language-Team: Hindi <hindi.sf.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.9.1\n"
+"X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "\n"
 "\n"
@@ -29,6 +28,233 @@ msgstr ""
 "\n"
 "\n"
 "\n"
+"\n"
+"\n"
+"\n"
+"\n"
+
+#: ../ggz-gtk/about.c:87 ../ggz-gtk/client.c:1089
+msgid "About"
+msgstr "के बारे में"
+
+#: ../ggz-gtk/chat.c:291
+#, c-format
+msgid "You have received an unknown message from %s."
+msgstr ""
+"आपने %s से एक अनजान संदेश "
+"प्राप्त किया है."
+
+#: ../ggz-gtk/chat.c:355
+#, c-format
+msgid "You've been beeped by %s."
+msgstr ""
+"आप %s के द्वारा बीप किए गए हैं."
+
+#: ../ggz-gtk/chat.c:551
+#, c-format
+msgid "Beep sent to %s."
+msgstr "बीप %s को भेजा गया."
+
+#: ../ggz-gtk/chat.c:579
+#, c-format
+msgid "%s (logged on)"
+msgstr "%s (लॉग्ड आन)"
+
+#: ../ggz-gtk/chat.c:617
+#, c-format
+msgid "%s (logged off)"
+msgstr "%s (लॉग्ड ऑफ)"
+
+#: ../ggz-gtk/chat.c:666
+msgid "Chat Commands"
+msgstr "चैट कमांड"
+
+#: ../ggz-gtk/chat.c:879
+#, c-format
+msgid "Added %s to your friends list."
+msgstr ""
+"%s को आपकी मित्र सूची में "
+"जोड़ा."
+
+#: ../ggz-gtk/chat.c:903
+#, c-format
+msgid "Removed %s from your friends list."
+msgstr ""
+"%s को आपकी मित्र सूची से हटाया."
+
+#: ../ggz-gtk/chat.c:934
+#, c-format
+msgid "Added %s to your ignore list."
+msgstr ""
+"%s को आपके नजरअंदाज सूची में "
+"जोड़ा."
+
+#: ../ggz-gtk/chat.c:959
+#, c-format
+msgid "Removed %s from your ignore list."
+msgstr ""
+"%s को अपने नजरअंदाज सूची से "
+"हटाया."
+
+#: ../ggz-gtk/chat.c:1034
+msgid "People currently your friends"
+msgstr "लोग जो अभी आपके मित्र हैं"
+
+#: ../ggz-gtk/chat.c:1045
+msgid "People you're currently ignoring"
+msgstr ""
+"लोग जिसे आप अभी नजरअंदाज कर "
+"रहे हैं"
+
+#: ../ggz-gtk/chat.c:1119
+msgid "Multiple matches:"
+msgstr "बहुल मिलान:"
+
+#: ../ggz-gtk/client.c:144
+msgid "Are you sure you want to quit?"
+msgstr ""
+"क्या आप निश्चित हैं कि आप "
+"छोड़ना चाहते हैं?"
+
+#: ../ggz-gtk/client.c:144
+msgid "Quit?"
+msgstr "छोड़ें?"
+
+#: ../ggz-gtk/client.c:237
+msgid ""
+"Server stats are not implemented yet. If\n"
+"you would like to help head over to\n"
+"http://www.ggzgamingzone.org/"
+msgstr ""
+"सर्वर आंकड़ा अबतक लागू नहीं "
+"है. क्या\n"
+"आप मदद करना चाहेंगे यहां\n"
+"http://www.ggzgamingzone.org/"
+
+# libgnomeprintui/gnome-print-copies.c:250
+#: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
+#: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
+msgid "Not Implemented"
+msgstr "लागू नहीं"
+
+#: ../ggz-gtk/client.c:248 ../ggz-gtk/client.c:545
+msgid ""
+"Player stats are not implemented yet. If\n"
+"you would like to help head over to\n"
+"http://www.ggzgamingzone.org/"
+msgstr ""
+"खिलाड़ी आंकड़ा अबतक लागू "
+"नहीं है. क्या\n"
+"आप मदद करना चाहेंगे यहां\n"
+"http://www.ggzgamingzone.org/"
+
+#: ../ggz-gtk/client.c:566
+msgid "You must highlight a table before you can join it."
+msgstr ""
+"आप जरूर एक टेबल हाइलाइट करें "
+"इसे शामिल होने के पहले."
+
+#: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
+msgid "Error Joining"
+msgstr "शामिल होने में त्रुटि"
+
+#: ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:614
+msgid "That table is full."
+msgstr "वह टेबल भरा है."
+
+#: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:336
+msgid "Error launching game module."
+msgstr ""
+"खेल मॉड्यूल के लांच में "
+"त्रुटि."
+
+#: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
+#: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:337
+msgid "Game Error"
+msgstr "खेल त्रुटि"
+
+#: ../ggz-gtk/client.c:600
+msgid "You must highlight a table before you can watch it."
+msgstr ""
+"आप जरूर एक टेबल को हाइलाइट "
+"करें इसके निरीक्षण से पहले."
+
+#: ../ggz-gtk/client.c:602
+msgid "Error Spectating"
+msgstr "देखने में त्रुटि"
+
+#: ../ggz-gtk/client.c:647
+msgid ""
+"Failed to join table.\n"
+"Join aborted."
+msgstr ""
+"टेबल में शामिल होने में विफल.\n"
+"शामिल होना छोड़ा गया."
+
+#: ../ggz-gtk/client.c:648
+msgid "Join Error"
+msgstr "शामिल होने में त्रुटि"
+
+#: ../ggz-gtk/client.c:678
+msgid "Disconnect from the GGZ Gaming Zone server"
+msgstr ""
+"GGZ गेमिंग जोन सर्वर से "
+"डिसकनेक्ट करें"
+
+#: ../ggz-gtk/client.c:680
+msgid "Start playing a game at a new table"
+msgstr ""
+"नये टेबल पर एक खेल खेलना आरंभ "
+"करें"
+
+#: ../ggz-gtk/client.c:682
+msgid "Join an existing game"
+msgstr ""
+"एक मौजूदा खेल में शामिल हों"
+
+#: ../ggz-gtk/client.c:684
+msgid "Watch an existing game - become a spectator of the table"
+msgstr ""
+"मौजूदा खेल देखें - टेबल के "
+"दर्शक बनें"
+
+#: ../ggz-gtk/client.c:687
+msgid "Leave the game you're currently playing"
+msgstr ""
+"खेल छोड़ें जिसे आप अभी खेल "
+"रहे हैं"
+
+#: ../ggz-gtk/client.c:689
+msgid "Show the properties dialog to change the client settings"
+msgstr ""
+"क्लाइंट सेटिंग बदलने के लिए "
+"गुण संवाद दिखाएं"
+
+#: ../ggz-gtk/client.c:696
+msgid "Exit the GGZ client application."
+msgstr ""
+"GGZ क्लाइंट अनुप्रयोग से बाहर "
+"निकलें."
+
+#: ../ggz-gtk/client.c:736
+msgid "Compiled with debugging."
+msgstr "डिबगिंग के साथ कंपाइल."
+
+#: ../ggz-gtk/client.c:934
+msgid "GGZ"
+msgstr "GGZ"
+
+#: ../ggz-gtk/client.c:942 ../ggz-gtk/login.c:729
+msgid "Connect"
+msgstr "कनेक्ट करें"
+
+#: ../ggz-gtk/client.c:949 ../ggz-gtk/client.c:1180
+msgid "Disconnect"
+msgstr "डिसकनेक्ट"
+
+#: ../ggz-gtk/client.c:962
+msgid "Quit"
+msgstr "बाहर"
 
 # #-#-#-#-#  libgnomeui.gnome-2-2.hi.po (libgnomeui HEAD)  #-#-#-#-#
 # libgnomeui/gnome-app-helper.c:95 libgnomeui/gnome-app-helper.h:534
@@ -36,19 +262,529 @@ msgstr ""
 msgid "Game"
 msgstr "खेल"
 
+#: ../ggz-gtk/client.c:978 ../ggz-gtk/client.c:1133 ../ggz-gtk/launch.c:596
+msgid "Launch"
+msgstr "लांच करें"
+
+#: ../ggz-gtk/client.c:985 ../ggz-gtk/client.c:1141 ../ggz-gtk/roomlist.c:150
+#: ../ggz-gtk/tablelist.c:74
+msgid "Join"
+msgstr "शामिल हों"
+
+#: ../ggz-gtk/client.c:992 ../ggz-gtk/client.c:1149
+msgid "Watch"
+msgstr "निरीक्षण करें"
+
+#: ../ggz-gtk/client.c:1004 ../ggz-gtk/client.c:1157 ../ggz-gtk/tablelist.c:77
+msgid "Leave"
+msgstr "छोड़ें"
+
+#: ../ggz-gtk/client.c:1011
+msgid "Edit"
+msgstr "संपादन"
+
+#: ../ggz-gtk/client.c:1019
+msgid "Properties"
+msgstr "गुण"
+
+#: ../ggz-gtk/client.c:1026
+msgid "View"
+msgstr "दृश्य"
+
+#: ../ggz-gtk/client.c:1035
+msgid "Room List"
+msgstr "कमरा सूची"
+
+#  Players tab
+#  FIXME mnemonic doesn't seem to work
+#: ../ggz-gtk/client.c:1041
+msgid "Player List"
+msgstr "खिलाड़ी सूची"
+
+#: ../ggz-gtk/client.c:1053
+msgid "Server Stats"
+msgstr "सर्वर स्थिति"
+
+#  --- PLAYER NAMES FRAME ----
+#: ../ggz-gtk/client.c:1057
+msgid "Player Stats"
+msgstr "खिलाड़ी स्थिति"
+
+# libgnome-desktop/gnome-ditem-edit.c:260
+# libgnome-desktop/gnome-ditem-edit.c:351
+#: ../ggz-gtk/client.c:1065 ../ggz-gtk/types.c:237
+msgid "Game Types"
+msgstr "खेल प्रकार"
+
+#: ../ggz-gtk/client.c:1074 ../ggz-gtk/props.c:1488
+msgid "MOTD"
+msgstr "MOTD"
+
+#: ../ggz-gtk/client.c:1081
+msgid "Help"
+msgstr "मदद"
+
+#: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:493
+msgid "Stats"
+msgstr "स्थिति"
+
+#: ../ggz-gtk/client.c:1196 ../ggz-gtk/ggzclient.c:721
+msgid "Current Room:"
+msgstr "मौजूदा कक्ष:"
+
+#: ../ggz-gtk/client.c:1277 ../ggz-gtk/playerinfo.c:274
+msgid "Message:"
+msgstr "संदेश:"
+
+#: ../ggz-gtk/client.c:1295
+msgid "Send"
+msgstr "भेजें"
+
+#: ../ggz-gtk/client.c:1480 ../ggz-gtk/ggzclient.c:400
+msgid "GGZ Gaming Zone"
+msgstr "GGZ गेमिंग जोन"
+
+#: ../ggz-gtk/first.c:57
+msgid "Wizard"
+msgstr "विजार्ड"
+
+#: ../ggz-gtk/first.c:57
+msgid "Deity"
+msgstr "देवता"
+
+#: ../ggz-gtk/first.c:57
+msgid "Sentinel"
+msgstr "सेंटीनेल"
+
+# #-#-#-#-#  gnome-icon-theme.gnome-2-2.hi.po (gnome-icon theme 2.2)  #-#-#-#-#
+# 48x48/emblems/emblem-camera.icon.in.h:1
+# 48x48/emblems/emblem-camera.icon.in.h:1
+#: ../ggz-gtk/first.c:57
+msgid "Captain"
+msgstr "कैप्टन"
+
+#: ../ggz-gtk/first.c:58
+msgid "Knight"
+msgstr "नाइट"
+
+#: ../ggz-gtk/first.c:58
+msgid "Angel"
+msgstr "एंजेल"
+
+#: ../ggz-gtk/first.c:58
+msgid "Silverlord"
+msgstr "सिल्वरलॉर्ड"
+
+#: ../ggz-gtk/first.c:58
+msgid "Eagle"
+msgstr "ईगल"
+
+#: ../ggz-gtk/first.c:59
+msgid "Vampire"
+msgstr "वैंपाइर"
+
+#: ../ggz-gtk/first.c:59
+msgid "Chief"
+msgstr "चीफ"
+
+#: ../ggz-gtk/first.c:59
+msgid "Colonel"
+msgstr "कर्नल"
+
 #: ../ggz-gtk/first.c:59
 msgid "General"
 msgstr "सामान्य"
 
-#: ../ggz-gtk/playerinfo.c:241
-msgid "Score:"
-msgstr "अंक:"
+#: ../ggz-gtk/first.c:60
+msgid "Major"
+msgstr "मैजर"
 
-# libgnome-desktop/gnome-ditem-edit.c:616
-# libgnome-desktop/gnome-ditem-edit.c:718
-#: ../ggz-gtk/playerlist.c:362 ../ggz-gtk/types.c:176
-msgid "Name"
-msgstr "नाम"
+#: ../ggz-gtk/first.c:60
+msgid "Scout"
+msgstr "स्कॉउट"
+
+#: ../ggz-gtk/first.c:60
+msgid "Lieutenant"
+msgstr "लेफ्टिनेंट"
+
+#: ../ggz-gtk/first.c:60
+msgid "Stalker"
+msgstr "स्टॉकर"
+
+#: ../ggz-gtk/first.c:61
+msgid "Scientist"
+msgstr "वैज्ञानिक"
+
+# libgnomeui/gnome-scores.c:94
+#: ../ggz-gtk/first.c:61
+msgid "Scholar"
+msgstr "विद्वान"
+
+#: ../ggz-gtk/first.c:61
+msgid "Entity"
+msgstr "एंटिटी"
+
+#: ../ggz-gtk/first.c:61
+msgid "Creator"
+msgstr "निर्माता"
+
+#: ../ggz-gtk/first.c:69
+msgid "GGZ Community (fast)"
+msgstr "GGZ समुदाय (तेज)"
+
+#: ../ggz-gtk/first.c:70
+msgid "Local developer server"
+msgstr "स्थानीय डेवलेपर सर्वर"
+
+#: ../ggz-gtk/first.c:190
+msgid ""
+"This is the first time you are running the GTK+ GGZ Gaming Zone client. "
+"Would you like to create some default server profiles?"
+msgstr ""
+"यह पहली बार है जब आप GTK+ GGZ "
+"गेमिंग जोन क्लाइंट चला रहे "
+"हैं. क्या आप कुछ मूलभूत सर्वर "
+"प्रोफाइल बना रहे हैं?"
+
+#: ../ggz-gtk/game.c:72
+#, c-format
+msgid ""
+"You don't have this game installed. You can download\n"
+"it from %s."
+msgstr ""
+"आपके पास यह खेल अधिष्ठापित "
+"नहीं है. आप इसे\n"
+"%s से डाउनलोड कर सकते हैं."
+
+#: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
+#: ../ggz-gtk/game.c:325 ../ggz-gtk/game.c:334 ../ggz-gtk/game.c:350
+#: ../ggz-gtk/launch.c:292
+msgid "Launch Error"
+msgstr "लांच त्रुटि"
+
+#: ../ggz-gtk/game.c:148
+msgid ""
+"Failed to execute game module.\n"
+" Launch aborted."
+msgstr ""
+"खेल मॉड्यूल निष्पादन में "
+"विफल.\n"
+" लांच छोड़ा गया."
+
+# libgnomeui/gnome-app-helper.c:254
+#: ../ggz-gtk/game.c:201
+msgid "Launched game"
+msgstr "खेल लांच किया"
+
+#: ../ggz-gtk/game.c:222
+msgid "Launch failed"
+msgstr "लांच विफल"
+
+#: ../ggz-gtk/game.c:296
+msgid "You can only play one game at a time."
+msgstr ""
+"आप एक समय में एक खेल खेल सकते "
+"हैं."
+
+#: ../ggz-gtk/game.c:304
+msgid "You're still at a table."
+msgstr "आप अभी भी टेबल पर हैं."
+
+#: ../ggz-gtk/game.c:313
+msgid ""
+"You must be in a room to launch a game.\n"
+"Launch aborted"
+msgstr ""
+"आपको खेल लांच करने के लिए "
+"कक्ष में जरूर होना चाहिए.\n"
+"लांच रोका गया"
+
+#: ../ggz-gtk/game.c:323
+msgid ""
+"No game types defined for this server.\n"
+"Launch aborted."
+msgstr ""
+"इस सर्वर के लिए कोई खेल "
+"प्रकार नहीं परिभाषित है.\n"
+"लांच छोड़ा गया."
+
+# libgnomeprintui/gnome-font-dialog.c:793
+#: ../ggz-gtk/game.c:333
+msgid "This game doesn't support spectators."
+msgstr ""
+"यह खेल देखने वालों का समर्थन "
+"नहीं करता है."
+
+#: ../ggz-gtk/game.c:348
+msgid ""
+"You need to launch the GGZ client directly\n"
+"to be able to play this game."
+msgstr ""
+"आपको GGZ क्लाइंट को सीधे लांच "
+"करने की जरूरत है\n"
+"इस खेल को खेलने के लिए समर्थ "
+"होने के लिए."
+
+#: ../ggz-gtk/ggzclient.c:122
+#, c-format
+msgid "Error connecting to server: %s"
+msgstr ""
+"सर्वर में जुड़ने में त्रुटि: %s"
+
+#: ../ggz-gtk/ggzclient.c:124 ../ggz-gtk/ggzclient.c:380
+#: ../ggz-gtk/ggzclient.c:562 ../ggz-gtk/ggzclient.c:597
+#: ../ggz-gtk/ggzclient.c:650 ../ggz-gtk/ggzclient.c:1083
+#: ../ggz-gtk/launch.c:327
+msgid "Error"
+msgstr "त्रुटि"
+
+#: ../ggz-gtk/ggzclient.c:237
+#, c-format
+msgid "Your new password is %s"
+msgstr "आपका नया शब्दकूट है %s"
+
+#: ../ggz-gtk/ggzclient.c:239
+msgid "New password"
+msgstr "नया शब्दकूट"
+
+#: ../ggz-gtk/ggzclient.c:275
+#, c-format
+msgid "Players on server: %d"
+msgstr "सर्वर पर खिलाड़ी: %d"
+
+#: ../ggz-gtk/ggzclient.c:320
+#, c-format
+msgid "Current Room: %s"
+msgstr "नौजूदा कमरा: %s"
+
+#: ../ggz-gtk/ggzclient.c:328
+#, c-format
+msgid "You've joined room \"%s\"."
+msgstr ""
+"आपने \"%s\" कक्ष को ज्वाइन किया "
+"है."
+
+#: ../ggz-gtk/ggzclient.c:378
+#, c-format
+msgid "Error joining room: %s"
+msgstr ""
+"कक्ष में जुड़ने में त्रुटि: %s"
+
+#: ../ggz-gtk/ggzclient.c:429
+msgid "You can't chat while not in a room."
+msgstr ""
+"आप चैट नहीं कर सकते हैं जब आप "
+"कक्ष में नहीं हैं."
+
+#: ../ggz-gtk/ggzclient.c:434
+msgid "You don't have permission to chat here."
+msgstr ""
+"आपके पास यहां चैट करने की "
+"अनुमति नहीं है."
+
+#: ../ggz-gtk/ggzclient.c:438
+msgid "No private chatting at a table!"
+msgstr ""
+"टेबल पर कोई निजी चैटिंग नहीं!"
+
+#: ../ggz-gtk/ggzclient.c:442
+msgid "That player isn't in the room!"
+msgstr ""
+"वह खिलाड़ी कक्ष में नहीं है!"
+
+#: ../ggz-gtk/ggzclient.c:447
+msgid "There was an error sending the chat."
+msgstr "चैट भेजने में त्रुटि थी."
+
+# libgnomeprintui/gpaui/settings-selector.c:207
+#: ../ggz-gtk/ggzclient.c:451
+msgid "You're not at a table."
+msgstr "आप टेबल पर नहीं हैं."
+
+#: ../ggz-gtk/ggzclient.c:455
+#, c-format
+msgid "Chat failed: %s."
+msgstr "चैट विफल: %s."
+
+#: ../ggz-gtk/ggzclient.c:560
+#, c-format
+msgid "Error launching table: %s"
+msgstr "टेबल के लांच में त्रुटि: %s"
+
+#: ../ggz-gtk/ggzclient.c:580
+#, c-format
+msgid "You have joined table %d."
+msgstr "आप %d टेबल में शामिल हुए हैं."
+
+#: ../ggz-gtk/ggzclient.c:595
+#, c-format
+msgid "Error joining table: %s"
+msgstr ""
+"टेबल में शामिल होने में "
+"त्रुटि: %s"
+
+#: ../ggz-gtk/ggzclient.c:617
+#, c-format
+msgid "You have been booted from the table by %s."
+msgstr ""
+"आप %s के द्वारा टेबल से बूट "
+"किये गए हैं."
+
+#: ../ggz-gtk/ggzclient.c:622
+#, c-format
+msgid "You have left the table."
+msgstr "आपने टेबल छोड़ दिया है."
+
+# libgnomeprintui/gnome-print-paper-selector.c:1453
+#: ../ggz-gtk/ggzclient.c:625
+#, c-format
+msgid "The game is over."
+msgstr "खेल खत्म."
+
+#: ../ggz-gtk/ggzclient.c:629
+#, c-format
+msgid "There was an error with the game server."
+msgstr ""
+"खेल सर्वर के साथ एक त्रुटि थी."
+
+#: ../ggz-gtk/ggzclient.c:648
+#, c-format
+msgid "Error leaving table: %s"
+msgstr "टेबल छोड़ने में त्रुटि: %s"
+
+#: ../ggz-gtk/ggzclient.c:743
+msgid "**none**"
+msgstr "**none**"
+
+#: ../ggz-gtk/ggzclient.c:750
+msgid "Offline"
+msgstr "ऑफलाइन"
+
+#: ../ggz-gtk/ggzclient.c:753
+msgid "Connecting"
+msgstr "जोड़ रहा है"
+
+#: ../ggz-gtk/ggzclient.c:756
+msgid "Reconnecting"
+msgstr "फिर कनेक्ट कर रहा है"
+
+#: ../ggz-gtk/ggzclient.c:759
+msgid "Online"
+msgstr "ऑनलाइन"
+
+#: ../ggz-gtk/ggzclient.c:762
+msgid "Logging In"
+msgstr "लॉगिंग इन"
+
+#: ../ggz-gtk/ggzclient.c:765
+msgid "Logged In"
+msgstr "लॉग्ड इन"
+
+#: ../ggz-gtk/ggzclient.c:769
+msgid "--> Room"
+msgstr "--> कक्ष"
+
+#: ../ggz-gtk/ggzclient.c:772
+msgid "Chatting"
+msgstr "चैटिंग"
+
+#: ../ggz-gtk/ggzclient.c:776
+msgid "--> Table"
+msgstr "--> टेबल"
+
+# #-#-#-#-#  libgnomeprint.gnome-2-2.hi.po (libgnomeprint VERSION)  #-#-#-#-#
+# libgnomeprint/gpa/gpa-media.c:343
+#: ../ggz-gtk/ggzclient.c:779
+msgid "Playing"
+msgstr "खेल रहा है"
+
+#: ../ggz-gtk/ggzclient.c:782
+msgid "<-- Table"
+msgstr "<-- टेबल"
+
+#: ../ggz-gtk/ggzclient.c:785
+msgid "Logging Out"
+msgstr "लॉगिंग आउट"
+
+#: ../ggz-gtk/ggzclient.c:1081
+#, c-format
+msgid "Server error: %s"
+msgstr "सर्वर त्रुटि: %s"
+
+#: ../ggz-gtk/ggzclient.c:1170
+msgid "Disconnected from server."
+msgstr "सर्वर से विसंबंधित."
+
+# libgnome-desktop/gnome-ditem-edit.c:260
+# libgnome-desktop/gnome-ditem-edit.c:351
+#: ../ggz-gtk/launch.c:113
+#, c-format
+msgid "Game Type:  %s"
+msgstr "खेल प्रकार:  %s"
+
+#: ../ggz-gtk/launch.c:119
+#, c-format
+msgid "Author:  %s"
+msgstr "लेखक:  %s"
+
+#: ../ggz-gtk/launch.c:126
+#, c-format
+msgid "Description:  %s"
+msgstr "वर्णन:  %s"
+
+#: ../ggz-gtk/launch.c:132
+#, c-format
+msgid "Home Page:  %s"
+msgstr "होम पेज:  %s"
+
+#: ../ggz-gtk/launch.c:291
+msgid ""
+"Failed to launch table.\n"
+" Launch aborted."
+msgstr ""
+"टेबल लांच करने में विफल.\n"
+" लांच रोका गया."
+
+#: ../ggz-gtk/launch.c:327
+msgid "Invalid number of bots specified"
+msgstr ""
+"निर्दिष्ट बोट का अवैध संख्या"
+
+#: ../ggz-gtk/launch.c:420
+msgid "Seat Assignments"
+msgstr "सीट नियतन"
+
+# libgnome-desktop/gnome-ditem-edit.c:260
+# libgnome-desktop/gnome-ditem-edit.c:351
+#: ../ggz-gtk/launch.c:436
+msgid "Game Type:"
+msgstr "खेल प्रकार:"
+
+#: ../ggz-gtk/launch.c:448
+msgid "Number of seats"
+msgstr "सीट की संख्या"
+
+#: ../ggz-gtk/launch.c:457 ../ggz-gtk/roominfo.c:90
+msgid "Author:"
+msgstr "लेखक:"
+
+#: ../ggz-gtk/launch.c:469
+msgid "Description:"
+msgstr "विवरणः"
+
+#: ../ggz-gtk/launch.c:480 ../ggz-gtk/roominfo.c:100
+msgid "Homepage:"
+msgstr "होमपेज:"
+
+#: ../ggz-gtk/launch.c:518
+#, c-format
+msgid "Seat %d:"
+msgstr "सीट %d:"
+
+# libgnomeprintui/gnome-print-copies.c:250
+#: ../ggz-gtk/launch.c:527
+msgid "Computer"
+msgstr "कम्प्यूटर"
 
 # #-#-#-#-#  anjuta.ANJUTA_1_2_0.hi.po (anjuta2 VERSION)  #-#-#-#-#
 # #-#-#-#-#  gnome-applets.gnome-2-2.hi.po (gnome-applets 2.x)  #-#-#-#-#
@@ -57,9 +793,381 @@ msgstr "नाम"
 # gnome-session/session-properties-capplet.c:217
 # #-#-#-#-#  gnome-applets.gnome-2-2.hi.po (gnome-applets 2.x)  #-#-#-#-#
 # gnome-session/session-properties-capplet.c:217
-#: ../ggz-gtk/props.c:1536
+#: ../ggz-gtk/launch.c:538
+msgid "Open"
+msgstr "खोलें"
+
+#: ../ggz-gtk/launch.c:550
+msgid "Reserved for"
+msgstr "के लिये आरक्षित"
+
+#: ../ggz-gtk/launch.c:576
+msgid "Game Description   "
+msgstr "खेल वर्णन    "
+
+#: ../ggz-gtk/login.c:101
+msgid "Login"
+msgstr "लागिन"
+
+#: ../ggz-gtk/login.c:115
+#, c-format
+msgid "That username is already in use."
+msgstr ""
+"उपयोक्तानाम पहले से प्रयोग "
+"में है."
+
+#: ../ggz-gtk/login.c:119
+#, c-format
+msgid ""
+"Authentication has failed.\n"
+"Please supply the correct password."
+msgstr ""
+"सत्यापन विफल रहा है.\n"
+"सही शब्दकूट दें."
+
+#: ../ggz-gtk/login.c:123
+#, c-format
+msgid "The username is too long!"
+msgstr "उपयोक्ता नाम बहुत लंबा है!"
+
+#: ../ggz-gtk/login.c:126
+#, c-format
+msgid "Invalid username, do not use special characters!"
+msgstr ""
+"अवैध उपयोक्ता नाम, विशेष "
+"संप्रतीक का प्रयोग मत करें!"
+
+#: ../ggz-gtk/login.c:554
+msgid "Server Profile"
+msgstr "सर्वर प्रोफाइल"
+
+#: ../ggz-gtk/login.c:578 ../ggz-gtk/props.c:942
+msgid "Profile:"
+msgstr "प्रोफाइल:"
+
+#: ../ggz-gtk/login.c:601 ../ggz-gtk/props.c:963
+msgid "Server:"
+msgstr "सर्वर:"
+
+#: ../ggz-gtk/login.c:613 ../ggz-gtk/props.c:978
+msgid "Port:"
+msgstr "पोर्टः"
+
+#: ../ggz-gtk/login.c:644 ../ggz-gtk/props.c:1010
+msgid "Username:"
+msgstr "उपयोक्ता नाम:"
+
+#: ../ggz-gtk/login.c:659 ../ggz-gtk/props.c:1031
+msgid "Password:"
+msgstr "पासवर्ड: "
+
+#: ../ggz-gtk/login.c:675
+msgid "Email:"
+msgstr "ईमेलः"
+
+#: ../ggz-gtk/login.c:691 ../ggz-gtk/props.c:1074
+msgid "Normal Login"
+msgstr "सामान्य लॉगिन"
+
+#: ../ggz-gtk/login.c:702 ../ggz-gtk/props.c:1082
+msgid "Guest Login"
+msgstr "अतिथि लॉगिन"
+
+#: ../ggz-gtk/login.c:710
+msgid "First-time Login"
+msgstr "पहली बार लॉगिन"
+
+#: ../ggz-gtk/motd.c:161
+msgid "Message of the Day"
+msgstr "दिवस का संदेश"
+
+#: ../ggz-gtk/pick_module.c:89
+msgid "Which client would you like to use to play this game?"
+msgstr ""
+"किस क्लाइंट को आप इस खेल को "
+"खेलने के लिए प्रयोग करना "
+"चाहेंगे?"
+
+#: ../ggz-gtk/pick_module.c:131
+msgid "Don't ask me again."
+msgstr "मुझे फिर मत पूछें."
+
+#: ../ggz-gtk/playerinfo.c:105
+msgid "Player Information"
+msgstr "खिलाड़ी सूचना"
+
+#: ../ggz-gtk/playerinfo.c:135
+msgid "Player Handle:"
+msgstr "खिलाड़ी नियंत्रण:"
+
+#: ../ggz-gtk/playerinfo.c:153
+msgid "Table:"
+msgstr "टेबल:"
+
+#: ../ggz-gtk/playerinfo.c:171
+msgid "Account:"
+msgstr "खाता:"
+
+#: ../ggz-gtk/playerinfo.c:202
+msgid "Record:"
+msgstr "रिकार्ड:"
+
+# #-#-#-#-#  libgnomeui.HEAD.hi.po (libgnomeui HEAD)  #-#-#-#-#
+# libgnomeui/gnome-messagebox.c:115
+#: ../ggz-gtk/playerinfo.c:220
+msgid "Rating:"
+msgstr "रेटिंग:"
+
+#: ../ggz-gtk/playerinfo.c:238
+msgid "Rank:"
+msgstr "रैंक:"
+
+#: ../ggz-gtk/playerinfo.c:256
+msgid "Score:"
+msgstr "अंक:"
+
+#: ../ggz-gtk/playerinfo.c:317 ../ggz-gtk/playerinfo.c:350
+msgid "Unknown"
+msgstr "अज्ञात"
+
+#: ../ggz-gtk/playerinfo.c:353
+msgid "Registered"
+msgstr "पंजीकृत"
+
+#: ../ggz-gtk/playerinfo.c:356
+msgid "Guest"
+msgstr "अतिथि"
+
+#: ../ggz-gtk/playerinfo.c:359
+msgid "Host"
+msgstr "होस्ट"
+
+#: ../ggz-gtk/playerinfo.c:362
+msgid "Administrator"
+msgstr "प्रशासक"
+
+#: ../ggz-gtk/playerinfo.c:365
+msgid "Bot"
+msgstr "बोट"
+
+#: ../ggz-gtk/playerlist.c:171 ../ggz-gtk/roomlist.c:144
+#: ../ggz-gtk/tablelist.c:84
+msgid "Info"
+msgstr "सूचना"
+
+#: ../ggz-gtk/playerlist.c:178
+msgid "Friends"
+msgstr "मित्र"
+
+#: ../ggz-gtk/playerlist.c:183
+msgid "Ignore"
+msgstr "नजरअंदाज करें"
+
+#: ../ggz-gtk/playerlist.c:380
+#, c-format
+msgid "#%d"
+msgstr "#%d"
+
+#: ../ggz-gtk/playerlist.c:483
+msgid "L"
+msgstr "एल"
+
+#: ../ggz-gtk/playerlist.c:488 ../ggz-gtk/tablelist.c:191
+msgid "T#"
+msgstr "T#"
+
+# libgnome-desktop/gnome-ditem-edit.c:616
+# libgnome-desktop/gnome-ditem-edit.c:718
+#: ../ggz-gtk/playerlist.c:499 ../ggz-gtk/types.c:176
+msgid "Name"
+msgstr "नाम"
+
+#: ../ggz-gtk/props.c:251
+msgid "Properties Updated"
+msgstr "गुण अद्यतनीकृत"
+
+#: ../ggz-gtk/props.c:1052
+msgid "Confirm:"
+msgstr "संपुष्ट करें:"
+
+#: ../ggz-gtk/props.c:1102
+msgid "Modify"
+msgstr "बदलें"
+
+# libgnomeui/gnome-scores.c:94
+#: ../ggz-gtk/props.c:1116
+msgid "Servers"
+msgstr "सर्वर"
+
+#: ../ggz-gtk/props.c:1135
+msgid "Chat Font:"
+msgstr "चैट फ़ॉन्ट:"
+
+#: ../ggz-gtk/props.c:1151
+msgid "Change"
+msgstr "बदलें"
+
+#: ../ggz-gtk/props.c:1164
+msgid "Ignore Join/Part Messages"
+msgstr ""
+"शामिल/अलग होने के संदेश को "
+"नजरअंदाज करें"
+
+# #-#-#-#-#  gnome-icon-theme.gnome-2-2.hi.po (gnome-icon theme 2.2)  #-#-#-#-#
+# 48x48/emblems/emblem-sound.icon.in.h:1
+# 48x48/emblems/emblem-sound.icon.in.h:1
+#: ../ggz-gtk/props.c:1172
+msgid "Play Sounds"
+msgstr "बजाएँ आवाज"
+
+#: ../ggz-gtk/props.c:1180
+msgid "Auto Indent"
+msgstr "स्वचालित हाशिया"
+
+#: ../ggz-gtk/props.c:1188
+msgid "Timestamp Chats"
+msgstr "टाइमस्टैंप चैट"
+
+#: ../ggz-gtk/props.c:1196
+msgid "Word Wrap"
+msgstr "शब्द व्रैप"
+
+#: ../ggz-gtk/props.c:1204
+msgid "Chat Color"
+msgstr "चैट रंग"
+
+#: ../ggz-gtk/props.c:1253
+msgid "Default chat color assigned to your friends"
+msgstr ""
+"आपके मित्र को नियत मूलभूत "
+"चैट रंग"
+
+#: ../ggz-gtk/props.c:1262
+msgid "Chat color used when your name is typed"
+msgstr ""
+"प्रयुक्त चैट रंग जब आपका नाम "
+"टाइप किया जाता है"
+
+#: ../ggz-gtk/props.c:1271
+msgid "Chat color used for all other chats"
+msgstr ""
+"सभी अन्य चैट के लिए चैट रंग "
+"प्रयुक्त"
+
+#: ../ggz-gtk/props.c:1280
+msgid "Normal Color"
+msgstr "सामान्य रंग"
+
+#: ../ggz-gtk/props.c:1291
+msgid "Highlight Color"
+msgstr "उभारें रंग"
+
+#: ../ggz-gtk/props.c:1302
+msgid "Friend Color"
+msgstr "मित्र रंग"
+
+#: ../ggz-gtk/props.c:1313
+msgid "Black Background"
+msgstr "काली पृष्ठभूमि"
+
+# #-#-#-#-#  libgnomeui.gnome-2-2.hi.po (libgnomeui HEAD)  #-#-#-#-#
+# libgnomeui/gnome-druid-page-standard.c:170
+#: ../ggz-gtk/props.c:1322
+msgid "White Background"
+msgstr "सफेद पृष्ठभूमि"
+
+# #-#-#-#-#  gnome-icon-theme.gnome-2-2.hi.po (gnome-icon theme 2.2)  #-#-#-#-#
+# 48x48/emblems/emblem-camera.icon.in.h:1
+# 48x48/emblems/emblem-camera.icon.in.h:1
+#: ../ggz-gtk/props.c:1331
+msgid "Chat"
+msgstr "चैट"
+
+#: ../ggz-gtk/props.c:1343
+msgid "All of the following information is optional."
+msgstr ""
+"निम्नलिखित सभी सूचना "
+"वैकल्पिक हैं."
+
+# libgnome-desktop/gnome-ditem-edit.c:616
+# libgnome-desktop/gnome-ditem-edit.c:718
+#: ../ggz-gtk/props.c:1361
+msgid "Name:"
+msgstr "नाम:"
+
+#: ../ggz-gtk/props.c:1388
+msgid "City:"
+msgstr "शहर:"
+
+#: ../ggz-gtk/props.c:1409
+msgid "State:"
+msgstr "स्थिति:"
+
+#: ../ggz-gtk/props.c:1430
+msgid "Country:"
+msgstr "देश:"
+
+#: ../ggz-gtk/props.c:1445
+msgid "Comments, Hobbies, Etc."
+msgstr "टिप्पणी, आदत, आदि."
+
+# #-#-#-#-#  libgnomeui.gnome-2-2.hi.po (libgnomeui HEAD)  #-#-#-#-#
+# libgnomeui/gnome-app-helper.c:264
+#: ../ggz-gtk/props.c:1467
+msgid "User Information"
+msgstr "उपयोक्ता सूचना"
+
+#: ../ggz-gtk/props.c:1483
+msgid "Single Click Room Entry"
+msgstr "एकल क्लिक कमरा प्रवेश"
+
+#: ../ggz-gtk/props.c:1497
+msgid "Display All"
+msgstr "सभी दिखाएं"
+
+#: ../ggz-gtk/props.c:1506
+msgid "Display New"
+msgstr "नया दिखाएं"
+
+#: ../ggz-gtk/props.c:1515
+msgid "Display Important"
+msgstr "महत्वपूर्ण दिखाएं"
+
+#: ../ggz-gtk/props.c:1524
+msgid "Display None"
+msgstr "कुछ नहीं दिखाएं"
+
+# #-#-#-#-#  anjuta.ANJUTA_1_2_0.hi.po (anjuta2 VERSION)  #-#-#-#-#
+# #-#-#-#-#  gnome-applets.gnome-2-2.hi.po (gnome-applets 2.x)  #-#-#-#-#
+# gnome-session/session-properties-capplet.c:217
+# #-#-#-#-#  gnome-session.HEAD.hi.po (gnome-session VERSION)  #-#-#-#-#
+# gnome-session/session-properties-capplet.c:217
+# #-#-#-#-#  gnome-applets.gnome-2-2.hi.po (gnome-applets 2.x)  #-#-#-#-#
+# gnome-session/session-properties-capplet.c:217
+#: ../ggz-gtk/props.c:1533
 msgid "Options"
 msgstr "विकल्प"
+
+# libgnomeui/gnome-file-entry.c:418
+#: ../ggz-gtk/props.c:1622
+msgid "Select Font"
+msgstr "फोंट चुनें"
+
+#: ../ggz-gtk/roominfo.c:63
+msgid "Room Information"
+msgstr "कक्ष सूचना"
+
+#: ../ggz-gtk/roominfo.c:80
+msgid "Game Name:"
+msgstr "खेल नाम:"
+
+#: ../ggz-gtk/roominfo.c:110
+msgid "Room Description:"
+msgstr "कमरा वर्णन:"
+
+#: ../ggz-gtk/roominfo.c:155
+msgid "This room has no game"
+msgstr "इस कमरे में कोई खेल नहीं है"
 
 #  For translators: N/A means "Not Applicable", use whatever
 #  * abbreviation you have for a value that has no meaning.
@@ -67,6 +1175,81 @@ msgstr "विकल्प"
 msgid "N/A"
 msgstr "लागू नहीं"
 
+# libgnomevfs/gnome-vfs-result.c:137
+#: ../ggz-gtk/roominfo.c:175
+msgid "Unknown room"
+msgstr "अज्ञात कमरा"
+
+#: ../ggz-gtk/roomlist.c:73
+msgid "You can't join a room; you're not logged in"
+msgstr ""
+"आप इस कमरा में शामिल नहीं हो "
+"सकते हैं, आप लॉग इन नहीं हैं"
+
+#: ../ggz-gtk/roomlist.c:82
+msgid "You can't switch rooms while playing a game"
+msgstr ""
+"खेल खेलने के दौरान आप कमरे को "
+"बदल नहीं सकते हैं"
+
+# libgnomevfs/gnome-vfs-result.c:137
+#: ../ggz-gtk/roomlist.c:89
+msgid "Unknown error"
+msgstr "अज्ञात त्रुटि"
+
+#: ../ggz-gtk/roomlist.c:109 ../ggz-gtk/roomlist.c:114
+msgid "Error joining room"
+msgstr ""
+"कमरे को शामिल होने में त्रुटि"
+
+#: ../ggz-gtk/roomlist.c:350
+msgid "Other Rooms"
+msgstr "अन्य कमरा"
+
+#: ../ggz-gtk/roomlist.c:424
+msgid "Room"
+msgstr "कमरा"
+
+# libgnomeprintui/gpaui/settings-selector.c:207
+#: ../ggz-gtk/tablelist.c:161
+msgid "No description available."
+msgstr "कोई विवरण उपलब्ध नहीं है."
+
+#: ../ggz-gtk/tablelist.c:196
+msgid "Seats"
+msgstr "सीट"
+
+#: ../ggz-gtk/tablelist.c:201 ../ggz-gtk/types.c:183
+msgid "Description"
+msgstr "विवरण"
+
 #: ../ggz-gtk/types.c:113
 msgid "None"
 msgstr "कोई नहीं"
+
+#: ../ggz-gtk/types.c:148
+msgid ""
+"Room filtering is not implemented yet. If\n"
+"you would like to help head over to\n"
+"http://www.ggzgamingzone.org/"
+msgstr ""
+"अबतक कमरा फिल्टरिंग लागू "
+"नहीं हुआ है. क्या\n"
+"आप इस पर मदद करना चाहेंगे\n"
+"http://www.ggzgamingzone.org/"
+
+#: ../ggz-gtk/types.c:191
+msgid "Web Address"
+msgstr "वेब पता"
+
+#: ../ggz-gtk/types.c:199
+msgid "Author"
+msgstr "लेखक"
+
+#: ../ggz-gtk/types.c:254
+msgid "Room List Filter:"
+msgstr "कक्ष सूची फिल्टर:"
+
+#: ../ggz-gtk/types.c:266
+msgid "Set"
+msgstr "सेट"

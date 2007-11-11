@@ -1,55 +1,1252 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/ta.po)
-# translation of ta.po to 
-# translation of gnome-games.HEAD.ta.po to tamil
+# translation of gnome-games.HEAD.po to TAMIL
+# translation of ta.po to
 # Tamil Translation of Gnome Games
 # Zhakanini (c) 2004
 # This file is distributed under the same license as the PACKAGE package.
+#
 # Zhakanini <tamilpc@ambalam.com>, 2004.
 # Jayaradha N <jaya@pune.redhat.com>, 2004.
 # Felix <ifelix@redhat.com>, 2006.
 # drtvasudevan <agnihot3@gmail.com>, 2006.
-#
+# Dr.T.Vasudevan <agnihot3@gmail.com>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: ta\n"
+"Project-Id-Version: gnome-games.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-20 15:07+0100\n"
-"PO-Revision-Date: 2006-08-18 22:29-0700\n"
-"Last-Translator: \n"
-"Language-Team:  <en@li.org>\n"
+"POT-Creation-Date: 2007-11-11 22:11+0100\n"
+"PO-Revision-Date: 2007-08-13 21:04+0530\n"
+"Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
+"Language-Team: TAMIL <ubuntu-l10n-tam@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.9.1\n"
+"X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "\n"
 "\n"
+
+#: ../ggz-gtk/about.c:87 ../ggz-gtk/client.c:1089
+msgid "About"
+msgstr "பற்றி"
+
+#: ../ggz-gtk/chat.c:291
+#, c-format
+msgid "You have received an unknown message from %s."
+msgstr ""
+"நீங்கள் %s இடமிருந்து "
+"தெரியாத செய்தி "
+"பெற்றுள்ளீர்கள்."
+
+#: ../ggz-gtk/chat.c:355
+#, c-format
+msgid "You've been beeped by %s."
+msgstr ""
+"நீங்கள் %s. ஆல் "
+"அழைக்கப்படுள்ளீர்கள்"
+
+#: ../ggz-gtk/chat.c:551
+#, c-format
+msgid "Beep sent to %s."
+msgstr ""
+"%s க்கு பீப் அனுப்பப்பட்டது."
+
+#: ../ggz-gtk/chat.c:579
+#, c-format
+msgid "%s (logged on)"
+msgstr "%s (உள் நுழைந்துள்ளது)"
+
+#: ../ggz-gtk/chat.c:617
+#, c-format
+msgid "%s (logged off)"
+msgstr "%s (வெளியேறியுள்ளது)"
+
+#: ../ggz-gtk/chat.c:666
+msgid "Chat Commands"
+msgstr "அரட்டை கட்டளைகள்"
+
+#: ../ggz-gtk/chat.c:879
+#, c-format
+msgid "Added %s to your friends list."
+msgstr ""
+"%s உங்கள் நண்பர்கள் "
+"பட்டியலில் சேர்க்கப்பட்டது."
+
+#: ../ggz-gtk/chat.c:903
+#, c-format
+msgid "Removed %s from your friends list."
+msgstr ""
+"நண்பர்கள் பட்டியலில் "
+"இருந்து %s நீக்கப்பட்டார்."
+
+#: ../ggz-gtk/chat.c:934
+#, c-format
+msgid "Added %s to your ignore list."
+msgstr ""
+"%s உங்கள் உதாசீனப்படுத்து "
+"பட்டியலில் சேர்க்கப்பட்டது."
+
+#: ../ggz-gtk/chat.c:959
+#, c-format
+msgid "Removed %s from your ignore list."
+msgstr ""
+"%s உங்கள் உதாசீனப்படுத்து "
+"பட்டியலில் இருந்து "
+"நீக்கப்பட்டது."
+
+#: ../ggz-gtk/chat.c:1034
+msgid "People currently your friends"
+msgstr ""
+"இப்போது உங்கள் நண்பர்களாக "
+"உள்ள மக்கள்"
+
+#: ../ggz-gtk/chat.c:1045
+msgid "People you're currently ignoring"
+msgstr ""
+"இப்போது நீங்கள் "
+"உதாசீனப்படுத்தும் மக்கள்"
+
+#: ../ggz-gtk/chat.c:1119
+msgid "Multiple matches:"
+msgstr "பல ஒப்புமைகள்:"
+
+#: ../ggz-gtk/client.c:144
+msgid "Are you sure you want to quit?"
+msgstr ""
+"நீங்கள் நிச்சயம் வெளியேற "
+"வேண்டுமா?"
+
+#: ../ggz-gtk/client.c:144
+msgid "Quit?"
+msgstr "வெளிச்செல்லவா?"
+
+#: ../ggz-gtk/client.c:237
+msgid ""
+"Server stats are not implemented yet. If\n"
+"you would like to help head over to\n"
+"http://www.ggzgamingzone.org/"
+msgstr ""
+"சேவையக புள்ளிவிவரங்கள் "
+"இன்னும் "
+"நடைமுறைப்படுத்தவில்லை.\n"
+"உதவி செய்ய இங்கு செல்க\n"
+"http://www.ggzgamingzone.org/"
+
+#: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
+#: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
+msgid "Not Implemented"
+msgstr "அமுல் படுத்தவில்லை"
+
+#: ../ggz-gtk/client.c:248 ../ggz-gtk/client.c:545
+msgid ""
+"Player stats are not implemented yet. If\n"
+"you would like to help head over to\n"
+"http://www.ggzgamingzone.org/"
+msgstr ""
+"விளையாடுபவர் "
+"புள்ளிவிவரங்கள் இன்னும் "
+"நடைமுறைப்படுத்தவில்லை.\n"
+"உதவி செய்ய இங்கு செல்க\n"
+"http://www.ggzgamingzone.org/"
+
+#: ../ggz-gtk/client.c:566
+msgid "You must highlight a table before you can join it."
+msgstr ""
+"நீங்கள் சேரும் முன் ஒரு "
+"மேசையை சிறப்பு சுட்ட "
+"வேண்டும்."
+
+#: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
+msgid "Error Joining"
+msgstr "சேர்வதில் பிழை"
+
+#: ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:614
+msgid "That table is full."
+msgstr "அந்த மேசை நிறைந்தது."
+
+#: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:336
+msgid "Error launching game module."
+msgstr ""
+"விளையாட்டின் கூறை "
+"துவக்குவதில் பிழை "
+
+#: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
+#: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:337
+msgid "Game Error"
+msgstr "விளையாட்டு பிழை"
+
+#: ../ggz-gtk/client.c:600
+msgid "You must highlight a table before you can watch it."
+msgstr ""
+"நீங்கள் கண்காணிக்கும் முன் "
+"ஒரு மேசையை சிறப்பு சுட்ட "
+"வேண்டும்.."
+
+#: ../ggz-gtk/client.c:602
+msgid "Error Spectating"
+msgstr "பார்வையிடலில் பிழை"
+
+#: ../ggz-gtk/client.c:647
+msgid ""
+"Failed to join table.\n"
+"Join aborted."
+msgstr ""
+"மேசையில் சேர்வது "
+"தோல்வியுற்றது.\n"
+"சேர்தல் கைவிடப்பட்டது."
+
+#: ../ggz-gtk/client.c:648
+msgid "Join Error"
+msgstr "சேர்வதில் பிழை"
+
+#: ../ggz-gtk/client.c:678
+msgid "Disconnect from the GGZ Gaming Zone server"
+msgstr ""
+"ஜிஜிஃஜி விளையாட்டு மண்டல "
+"வழங்கன் இலிருந்து இணைப்பை "
+"துண்டிக்க"
+
+#: ../ggz-gtk/client.c:680
+msgid "Start playing a game at a new table"
+msgstr ""
+"புதிய மேசையில் ஒரு ஆட்டம் ஆட "
+"ஆரம்பிக்கவும்"
+
+#: ../ggz-gtk/client.c:682
+msgid "Join an existing game"
+msgstr ""
+"இருப்பில் உள்ள ஆட்டத்தில் "
+"சேருங்கள்"
+
+#: ../ggz-gtk/client.c:684
+msgid "Watch an existing game - become a spectator of the table"
+msgstr ""
+"நடக்கும் ஒரு விளையாட்டை "
+"கவனிக்கவும் - மேசையில் ஒரு "
+"பார்வையாளர் ஆகுக"
+
+#: ../ggz-gtk/client.c:687
+msgid "Leave the game you're currently playing"
+msgstr ""
+"இப்போது விளயாடும் ஆட்டத்தை "
+"விட்டு விலகுக"
+
+#: ../ggz-gtk/client.c:689
+msgid "Show the properties dialog to change the client settings"
+msgstr ""
+"சார்ந்தோன் அமைப்புகளை "
+"மாற்ற பண்புகள் உரையாடலை "
+"காட்டுக"
+
+#: ../ggz-gtk/client.c:696
+msgid "Exit the GGZ client application."
+msgstr ""
+"ஜிஜிஃஜி சார்ந்தோன் "
+"செயல்பாட்டிலிருந்து "
+"வெளியேறுக"
+
+#: ../ggz-gtk/client.c:736
+msgid "Compiled with debugging."
+msgstr ""
+"பிழை நீக்கத்துடன் "
+"தொகுக்கப்பட்டது"
+
+#: ../ggz-gtk/client.c:934
+msgid "GGZ"
+msgstr "ஜிஜிஃஜி"
+
+#: ../ggz-gtk/client.c:942 ../ggz-gtk/login.c:729
+msgid "Connect"
+msgstr "இணை"
+
+#: ../ggz-gtk/client.c:949 ../ggz-gtk/client.c:1180
+msgid "Disconnect"
+msgstr "துண்டிப்பு"
+
+#: ../ggz-gtk/client.c:962
+msgid "Quit"
+msgstr "வெளிச்செல்"
 
 #: ../ggz-gtk/client.c:969
 msgid "Game"
 msgstr "விளையாட்டு"
 
+#: ../ggz-gtk/client.c:978 ../ggz-gtk/client.c:1133 ../ggz-gtk/launch.c:596
+msgid "Launch"
+msgstr "ஆரம்பி"
+
+#: ../ggz-gtk/client.c:985 ../ggz-gtk/client.c:1141 ../ggz-gtk/roomlist.c:150
+#: ../ggz-gtk/tablelist.c:74
+msgid "Join"
+msgstr "சேர்"
+
+#: ../ggz-gtk/client.c:992 ../ggz-gtk/client.c:1149
+msgid "Watch"
+msgstr "கவனி"
+
+#: ../ggz-gtk/client.c:1004 ../ggz-gtk/client.c:1157 ../ggz-gtk/tablelist.c:77
+msgid "Leave"
+msgstr "விடு"
+
+#: ../ggz-gtk/client.c:1011
+msgid "Edit"
+msgstr "திருத்து"
+
+#: ../ggz-gtk/client.c:1019
+msgid "Properties"
+msgstr "பண்புகள்"
+
+#: ../ggz-gtk/client.c:1026
+msgid "View"
+msgstr "காட்சி"
+
+#: ../ggz-gtk/client.c:1035
+msgid "Room List"
+msgstr "அறை பட்டியல்"
+
+#: ../ggz-gtk/client.c:1041
+msgid "Player List"
+msgstr "போட்டியாளர் பட்டியல்"
+
+#: ../ggz-gtk/client.c:1053
+msgid "Server Stats"
+msgstr "சேவையக புள்ளி விவரங்கள்"
+
+#: ../ggz-gtk/client.c:1057
+msgid "Player Stats"
+msgstr ""
+"விளையாடுபவரின் புள்ளி "
+"விவரங்கள்"
+
+#: ../ggz-gtk/client.c:1065 ../ggz-gtk/types.c:237
+msgid "Game Types"
+msgstr "ஆட்ட வகைகள்"
+
+#: ../ggz-gtk/client.c:1074 ../ggz-gtk/props.c:1488
+msgid "MOTD"
+msgstr "MOTD"
+
+#: ../ggz-gtk/client.c:1081
+msgid "Help"
+msgstr "உதவி"
+
+#: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:493
+msgid "Stats"
+msgstr "புள்ளிவிவரங்கள்"
+
+#: ../ggz-gtk/client.c:1196 ../ggz-gtk/ggzclient.c:721
+msgid "Current Room:"
+msgstr "இப்போதைய அறை:"
+
+#: ../ggz-gtk/client.c:1277 ../ggz-gtk/playerinfo.c:274
+msgid "Message:"
+msgstr "செய்தி:"
+
+#: ../ggz-gtk/client.c:1295
+msgid "Send"
+msgstr "அனுப்பு"
+
+#: ../ggz-gtk/client.c:1480 ../ggz-gtk/ggzclient.c:400
+msgid "GGZ Gaming Zone"
+msgstr ""
+"ஜிஜிஃஜி விளையாட்டு அரங்கம்"
+
+#: ../ggz-gtk/first.c:57
+msgid "Wizard"
+msgstr "வழிகாட்டி"
+
+#: ../ggz-gtk/first.c:57
+msgid "Deity"
+msgstr "கடவுள்"
+
+#: ../ggz-gtk/first.c:57
+msgid "Sentinel"
+msgstr "காவலாளி"
+
+#: ../ggz-gtk/first.c:57
+msgid "Captain"
+msgstr "காப்டன்"
+
+#: ../ggz-gtk/first.c:58
+msgid "Knight"
+msgstr "பிரபு"
+
+#: ../ggz-gtk/first.c:58
+msgid "Angel"
+msgstr "தேவதை"
+
+#: ../ggz-gtk/first.c:58
+msgid "Silverlord"
+msgstr "சில்வர் லார்ட்"
+
+#: ../ggz-gtk/first.c:58
+msgid "Eagle"
+msgstr "கழுகு"
+
+#: ../ggz-gtk/first.c:59
+msgid "Vampire"
+msgstr "பிணம் திண்ணி வௌவால்"
+
+#: ../ggz-gtk/first.c:59
+msgid "Chief"
+msgstr "தலைவன்"
+
+#: ../ggz-gtk/first.c:59
+msgid "Colonel"
+msgstr "கர்னல்"
+
 #: ../ggz-gtk/first.c:59
 msgid "General"
 msgstr "பொதுவான"
 
-#: ../ggz-gtk/playerinfo.c:241
+#: ../ggz-gtk/first.c:60
+msgid "Major"
+msgstr "மேஜர்"
+
+#: ../ggz-gtk/first.c:60
+msgid "Scout"
+msgstr "சாரணர்"
+
+#: ../ggz-gtk/first.c:60
+msgid "Lieutenant"
+msgstr "லெப்டிணன்ட்"
+
+#: ../ggz-gtk/first.c:60
+msgid "Stalker"
+msgstr "வழிகாட்டி"
+
+#: ../ggz-gtk/first.c:61
+msgid "Scientist"
+msgstr "விக்ஞானி"
+
+#: ../ggz-gtk/first.c:61
+msgid "Scholar"
+msgstr "மேதை"
+
+#: ../ggz-gtk/first.c:61
+msgid "Entity"
+msgstr "நிலைபொருள்"
+
+#: ../ggz-gtk/first.c:61
+msgid "Creator"
+msgstr "உருவாக்குபவர்"
+
+#: ../ggz-gtk/first.c:69
+msgid "GGZ Community (fast)"
+msgstr "ஜிஜிஃஜி சமுதாயம் (வேக)"
+
+#: ../ggz-gtk/first.c:70
+msgid "Local developer server"
+msgstr ""
+"உள்ளிருப்பு உருவாக்குபவர் "
+"வழங்கன்"
+
+#: ../ggz-gtk/first.c:190
+msgid ""
+"This is the first time you are running the GTK+ GGZ Gaming Zone client. "
+"Would you like to create some default server profiles?"
+msgstr ""
+"GTK+ GGZ விளையாட்டு மண்டல "
+"சார்ந்தோனை நீங்கள் "
+"இயக்குவது இதுவே முதல் முறை. "
+"சில முன்னிருப்பு வழங்கன் "
+"வரிவுருக்களை உருவாக்க "
+"விருப்பமா?"
+
+#: ../ggz-gtk/game.c:72
+#, c-format
+msgid ""
+"You don't have this game installed. You can download\n"
+"it from %s."
+msgstr ""
+"நீங்கள் இந்த விளையாட்டை "
+"நிறுவியில்லை.\n"
+"%s இலிருந்து அதை நீங்கள் "
+"தரவிறக்கலாம்."
+
+#: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
+#: ../ggz-gtk/game.c:325 ../ggz-gtk/game.c:334 ../ggz-gtk/game.c:350
+#: ../ggz-gtk/launch.c:292
+msgid "Launch Error"
+msgstr "துவக்க பிழை"
+
+#: ../ggz-gtk/game.c:148
+msgid ""
+"Failed to execute game module.\n"
+" Launch aborted."
+msgstr ""
+"விளையாட்டு கூறை "
+"செயல்படுத்துவது "
+"தோல்வியுற்றது.\n"
+"துவக்கம் கைவிடப்பட்டது"
+
+#: ../ggz-gtk/game.c:201
+msgid "Launched game"
+msgstr ""
+"விளையாட்டு துவக்கப்பட்டது"
+
+#: ../ggz-gtk/game.c:222
+msgid "Launch failed"
+msgstr "துவக்கம் தோல்வியுற்றது."
+
+#: ../ggz-gtk/game.c:296
+msgid "You can only play one game at a time."
+msgstr ""
+"நீங்கள் ஒரு நேரத்தில் ஒரு "
+"விளையாட்டைதான் விளையாடலாம்."
+
+#: ../ggz-gtk/game.c:304
+msgid "You're still at a table."
+msgstr ""
+"நீங்கள் இன்னமும் "
+"மேசையில்தான் "
+"இருக்கிறீர்கள்."
+
+#: ../ggz-gtk/game.c:313
+msgid ""
+"You must be in a room to launch a game.\n"
+"Launch aborted"
+msgstr ""
+"நீங்கள் ஒரு விளையாட்டை "
+"துவக்க ஒரு அறையில்\n"
+"இருக்க வேண்டும். துவக்கம் "
+"கைவிடப்பட்டது"
+
+#: ../ggz-gtk/game.c:323
+msgid ""
+"No game types defined for this server.\n"
+"Launch aborted."
+msgstr ""
+"இந்த வழங்கனுக்கு "
+"விளையாட்டு வகைகள் \n"
+"வரையறுக்கப்படவில்லை. "
+"துவக்கம் கைவிடப்பட்டது."
+
+#: ../ggz-gtk/game.c:333
+msgid "This game doesn't support spectators."
+msgstr ""
+"விளையாட்டு பார்வையாளர்களை "
+"ஆதரிக்கவில்லை"
+
+#: ../ggz-gtk/game.c:348
+msgid ""
+"You need to launch the GGZ client directly\n"
+"to be able to play this game."
+msgstr ""
+"பெறுவது பெறுவது இயக்கு இந்த "
+"விளையாட்டை நேரடியாக\n"
+" விளையாட நீங்கள் ஜிஜிஃஜி "
+"சார்ந்தோனை துவக்க வேண்டும்."
+
+#: ../ggz-gtk/ggzclient.c:122
+#, c-format
+msgid "Error connecting to server: %s"
+msgstr ""
+"சேவையகத்துடன் இணைப்பதில் "
+"பிழை:%s"
+
+#: ../ggz-gtk/ggzclient.c:124 ../ggz-gtk/ggzclient.c:380
+#: ../ggz-gtk/ggzclient.c:562 ../ggz-gtk/ggzclient.c:597
+#: ../ggz-gtk/ggzclient.c:650 ../ggz-gtk/ggzclient.c:1083
+#: ../ggz-gtk/launch.c:327
+msgid "Error"
+msgstr "பிழை"
+
+#: ../ggz-gtk/ggzclient.c:237
+#, c-format
+msgid "Your new password is %s"
+msgstr "உங்கள் புதிய கடவுச்சொல் %s"
+
+#: ../ggz-gtk/ggzclient.c:239
+msgid "New password"
+msgstr "புதிய கடவுச்சொல்"
+
+#: ../ggz-gtk/ggzclient.c:275
+#, c-format
+msgid "Players on server: %d"
+msgstr ""
+"சேவையகத்தில் "
+"விளையாடுபவர்கள்: %d"
+
+#: ../ggz-gtk/ggzclient.c:320
+#, c-format
+msgid "Current Room: %s"
+msgstr "இப்போதைய அறை:%s"
+
+#: ../ggz-gtk/ggzclient.c:328
+#, c-format
+msgid "You've joined room \"%s\"."
+msgstr ""
+"நீங்கள் அறை \"%s\" இல் "
+"சேர்ந்துள்ளீர்கள்"
+
+#: ../ggz-gtk/ggzclient.c:378
+#, c-format
+msgid "Error joining room: %s"
+msgstr "அறையில் சேர்வதில் பிழை: %s"
+
+#: ../ggz-gtk/ggzclient.c:429
+msgid "You can't chat while not in a room."
+msgstr ""
+"அறையில் இல்லாத போது அரட்டை "
+"அடிக்க முடியாது"
+
+#: ../ggz-gtk/ggzclient.c:434
+msgid "You don't have permission to chat here."
+msgstr ""
+"நீங்கள் இங்கு அரட்டை அடிக்க "
+"அனுமதி இல்லை"
+
+#: ../ggz-gtk/ggzclient.c:438
+msgid "No private chatting at a table!"
+msgstr ""
+"மேசையில் அந்தரங்க அரட்டை "
+"இல்லை!"
+
+#: ../ggz-gtk/ggzclient.c:442
+msgid "That player isn't in the room!"
+msgstr ""
+"போட்டியாளர் அறையில் இல்லை!"
+
+#: ../ggz-gtk/ggzclient.c:447
+msgid "There was an error sending the chat."
+msgstr ""
+"அரட்டையை அனுப்புவதில் பிழை "
+"ஏற்பட்டது"
+
+#: ../ggz-gtk/ggzclient.c:451
+msgid "You're not at a table."
+msgstr "நீங்கள் மேசையில் இல்லை"
+
+#: ../ggz-gtk/ggzclient.c:455
+#, c-format
+msgid "Chat failed: %s."
+msgstr "அரட்டை தோல்வியுற்றது: %s."
+
+#: ../ggz-gtk/ggzclient.c:560
+#, c-format
+msgid "Error launching table: %s"
+msgstr ""
+"மேசையை துவக்குவதில் பிழை:%s"
+
+#: ../ggz-gtk/ggzclient.c:580
+#, c-format
+msgid "You have joined table %d."
+msgstr ""
+"மேசை %d இல் சேர்ந்து "
+"விட்டீர்கள்"
+
+#: ../ggz-gtk/ggzclient.c:595
+#, c-format
+msgid "Error joining table: %s"
+msgstr "மேசையில் சேர்வதில் பிழை:%s"
+
+#: ../ggz-gtk/ggzclient.c:617
+#, c-format
+msgid "You have been booted from the table by %s."
+msgstr ""
+"%s ஆல் மேசையை விட்டு "
+"துரத்தப்பட்டீர்கள்."
+
+#: ../ggz-gtk/ggzclient.c:622
+#, c-format
+msgid "You have left the table."
+msgstr ""
+"மேசையை விட்டு விலகி "
+"விட்டீர்கள்."
+
+#: ../ggz-gtk/ggzclient.c:625
+#, c-format
+msgid "The game is over."
+msgstr "விளையாட்டு முடிந்தது."
+
+#: ../ggz-gtk/ggzclient.c:629
+#, c-format
+msgid "There was an error with the game server."
+msgstr ""
+"விளையாட்டு சேவயகத்தில் ஒரு "
+"பிழை இருந்தது."
+
+#: ../ggz-gtk/ggzclient.c:648
+#, c-format
+msgid "Error leaving table: %s"
+msgstr ""
+"மேசையை விட்டு விலகுவதில் "
+"பிழை:%s"
+
+#: ../ggz-gtk/ggzclient.c:743
+msgid "**none**"
+msgstr "**ஏதுமில்லை**"
+
+#: ../ggz-gtk/ggzclient.c:750
+msgid "Offline"
+msgstr "இணைப்பு விலகி"
+
+#: ../ggz-gtk/ggzclient.c:753
+msgid "Connecting"
+msgstr "இணைக்கிறது"
+
+#: ../ggz-gtk/ggzclient.c:756
+msgid "Reconnecting"
+msgstr "மீட்டு _இணைக்கிறது"
+
+#: ../ggz-gtk/ggzclient.c:759
+msgid "Online"
+msgstr "இணைப்பில்"
+
+#: ../ggz-gtk/ggzclient.c:762
+msgid "Logging In"
+msgstr "உள்நுழைகிறது"
+
+#: ../ggz-gtk/ggzclient.c:765
+msgid "Logged In"
+msgstr "உள்நுழைந்தது"
+
+#: ../ggz-gtk/ggzclient.c:769
+msgid "--> Room"
+msgstr "--> அறை"
+
+#: ../ggz-gtk/ggzclient.c:772
+msgid "Chatting"
+msgstr "அரட்டை"
+
+#: ../ggz-gtk/ggzclient.c:776
+msgid "--> Table"
+msgstr "--> மேசை"
+
+#: ../ggz-gtk/ggzclient.c:779
+msgid "Playing"
+msgstr "விளையாடுகிறது"
+
+#: ../ggz-gtk/ggzclient.c:782
+msgid "<-- Table"
+msgstr "<-- மேசை"
+
+#: ../ggz-gtk/ggzclient.c:785
+msgid "Logging Out"
+msgstr "வெளியேறுகிறது"
+
+#: ../ggz-gtk/ggzclient.c:1081
+#, c-format
+msgid "Server error: %s"
+msgstr "சேவையக பிழை: %s"
+
+#: ../ggz-gtk/ggzclient.c:1170
+msgid "Disconnected from server."
+msgstr ""
+"சேவையகத்துக்கு இணைப்பு அறு "
+"பட்டது."
+
+#: ../ggz-gtk/launch.c:113
+#, c-format
+msgid "Game Type:  %s"
+msgstr "ஆட்ட வகை:  %s"
+
+#: ../ggz-gtk/launch.c:119
+#, c-format
+msgid "Author:  %s"
+msgstr "ஆசிரியர்:  %s"
+
+#: ../ggz-gtk/launch.c:126
+#, c-format
+msgid "Description:  %s"
+msgstr "விவரம்:  %s"
+
+#: ../ggz-gtk/launch.c:132
+#, c-format
+msgid "Home Page:  %s"
+msgstr "இல்ல பக்கம்:  %s"
+
+#: ../ggz-gtk/launch.c:291
+msgid ""
+"Failed to launch table.\n"
+" Launch aborted."
+msgstr ""
+"மேசையை துவக்குவது "
+"தோல்வியுற்றது\n"
+"துவக்கம் கைவிடப்பட்டது"
+
+#: ../ggz-gtk/launch.c:327
+msgid "Invalid number of bots specified"
+msgstr ""
+"செல்லாத எண் பாட்டுகள் "
+"குறிப்பிடப்பட்டது"
+
+#: ../ggz-gtk/launch.c:420
+msgid "Seat Assignments"
+msgstr "இருக்கை ஒதுக்கீடு"
+
+#: ../ggz-gtk/launch.c:436
+msgid "Game Type:"
+msgstr "ஆட்ட வகை:"
+
+#: ../ggz-gtk/launch.c:448
+msgid "Number of seats"
+msgstr "இருக்கைகளின் எண்ணிக்கை"
+
+#: ../ggz-gtk/launch.c:457 ../ggz-gtk/roominfo.c:90
+msgid "Author:"
+msgstr "ஆசிரியர்:"
+
+#: ../ggz-gtk/launch.c:469
+msgid "Description:"
+msgstr "விவரம்:"
+
+#: ../ggz-gtk/launch.c:480 ../ggz-gtk/roominfo.c:100
+msgid "Homepage:"
+msgstr "ஆரம்ப பக்கம்"
+
+#: ../ggz-gtk/launch.c:518
+#, c-format
+msgid "Seat %d:"
+msgstr "இருக்கை %d:"
+
+#: ../ggz-gtk/launch.c:527
+msgid "Computer"
+msgstr "கணினி"
+
+#: ../ggz-gtk/launch.c:538
+msgid "Open"
+msgstr "திற"
+
+#: ../ggz-gtk/launch.c:550
+msgid "Reserved for"
+msgstr "இதற்கு ஒதுக்கப்பட்டது"
+
+#: ../ggz-gtk/launch.c:576
+msgid "Game Description   "
+msgstr "விளையாட்டு விவரம்   "
+
+#: ../ggz-gtk/login.c:101
+msgid "Login"
+msgstr "உள்நுழை"
+
+#: ../ggz-gtk/login.c:115
+#, c-format
+msgid "That username is already in use."
+msgstr ""
+"இந்த பயனர் பெயர் ஏற்கெனவே "
+"பயன்படுகிறது."
+
+#: ../ggz-gtk/login.c:119
+#, c-format
+msgid ""
+"Authentication has failed.\n"
+"Please supply the correct password."
+msgstr ""
+"உறுதிப்படுத்தல் "
+"தோவியுற்றது.\n"
+"சரியான கடவுச்சொல்லை "
+"உள்ளிடவும்"
+
+#: ../ggz-gtk/login.c:123
+#, c-format
+msgid "The username is too long!"
+msgstr ""
+"பயனர் பெயர் மிக நீளமாக "
+"உள்ளது!"
+
+#: ../ggz-gtk/login.c:126
+#, c-format
+msgid "Invalid username, do not use special characters!"
+msgstr ""
+"செல்லாத பயனர் பெயர். சிறப்பு "
+"எண் எழுத்து குறியீடுகளை "
+"பயன்படுத்தாதீர்கள்!"
+
+#: ../ggz-gtk/login.c:554
+msgid "Server Profile"
+msgstr "சேவையகம் விவரகுறிப்பு"
+
+#: ../ggz-gtk/login.c:578 ../ggz-gtk/props.c:942
+msgid "Profile:"
+msgstr "விவரகுறிப்பு:"
+
+#: ../ggz-gtk/login.c:601 ../ggz-gtk/props.c:963
+msgid "Server:"
+msgstr "சேவையகம்:"
+
+#: ../ggz-gtk/login.c:613 ../ggz-gtk/props.c:978
+msgid "Port:"
+msgstr "துறை:"
+
+#: ../ggz-gtk/login.c:644 ../ggz-gtk/props.c:1010
+msgid "Username:"
+msgstr "பயனர் பெயர்:"
+
+#: ../ggz-gtk/login.c:659 ../ggz-gtk/props.c:1031
+msgid "Password:"
+msgstr "கடவுச்சொல்:"
+
+#: ../ggz-gtk/login.c:675
+msgid "Email:"
+msgstr "மின்னஞ்சல்:"
+
+#: ../ggz-gtk/login.c:691 ../ggz-gtk/props.c:1074
+msgid "Normal Login"
+msgstr "இயல்பான உள்நுழைவு"
+
+#: ../ggz-gtk/login.c:702 ../ggz-gtk/props.c:1082
+msgid "Guest Login"
+msgstr "விருந்தினன் உள்நுழைவு"
+
+#: ../ggz-gtk/login.c:710
+msgid "First-time Login"
+msgstr "முதல் நேர உள்நுழைவு"
+
+#: ../ggz-gtk/motd.c:161
+msgid "Message of the Day"
+msgstr "இன்று ஒரு தகவல்"
+
+#: ../ggz-gtk/pick_module.c:89
+msgid "Which client would you like to use to play this game?"
+msgstr ""
+"இந்த விளையாட்டை ஆட எந்த "
+"சார்ந்தோனை பயன்படுத் போல "
+"பெறுவது பெறுவது இயக்கு இந்த?"
+
+#: ../ggz-gtk/pick_module.c:131
+msgid "Don't ask me again."
+msgstr "மீண்டும் என்னை கேட்காதே"
+
+#: ../ggz-gtk/playerinfo.c:105
+msgid "Player Information"
+msgstr "வீரர் தகவல்"
+
+#: ../ggz-gtk/playerinfo.c:135
+msgid "Player Handle:"
+msgstr "வீரர் செல்லப்பெயர்:"
+
+#: ../ggz-gtk/playerinfo.c:153
+msgid "Table:"
+msgstr "அட்டவணை:"
+
+#: ../ggz-gtk/playerinfo.c:171
+msgid "Account:"
+msgstr "கணக்கு:"
+
+#: ../ggz-gtk/playerinfo.c:202
+msgid "Record:"
+msgstr "பதிவு:"
+
+#: ../ggz-gtk/playerinfo.c:220
+msgid "Rating:"
+msgstr "மதிப்பீடு:"
+
+#: ../ggz-gtk/playerinfo.c:238
+msgid "Rank:"
+msgstr "உயர்நிலை:"
+
+#: ../ggz-gtk/playerinfo.c:256
 msgid "Score:"
 msgstr "மதிப்பெண்:"
 
-#: ../ggz-gtk/playerlist.c:362 ../ggz-gtk/types.c:176
+#: ../ggz-gtk/playerinfo.c:317 ../ggz-gtk/playerinfo.c:350
+msgid "Unknown"
+msgstr "தெரியாத"
+
+#: ../ggz-gtk/playerinfo.c:353
+msgid "Registered"
+msgstr "பதிவு செய்யப்பட்டது"
+
+#: ../ggz-gtk/playerinfo.c:356
+msgid "Guest"
+msgstr "விருந்தினன்"
+
+#: ../ggz-gtk/playerinfo.c:359
+msgid "Host"
+msgstr "புரவலன்"
+
+#: ../ggz-gtk/playerinfo.c:362
+msgid "Administrator"
+msgstr "நிர்வாகி"
+
+#: ../ggz-gtk/playerinfo.c:365
+msgid "Bot"
+msgstr "பாட்"
+
+#: ../ggz-gtk/playerlist.c:171 ../ggz-gtk/roomlist.c:144
+#: ../ggz-gtk/tablelist.c:84
+msgid "Info"
+msgstr "தகவல்"
+
+#: ../ggz-gtk/playerlist.c:178
+msgid "Friends"
+msgstr "நண்பர்கள்"
+
+#: ../ggz-gtk/playerlist.c:183
+msgid "Ignore"
+msgstr "உதாசீனம் செய்க"
+
+#: ../ggz-gtk/playerlist.c:380
+#, c-format
+msgid "#%d"
+msgstr "#%d"
+
+#: ../ggz-gtk/playerlist.c:483
+msgid "L"
+msgstr "L"
+
+#: ../ggz-gtk/playerlist.c:488 ../ggz-gtk/tablelist.c:191
+msgid "T#"
+msgstr "T#"
+
+#: ../ggz-gtk/playerlist.c:499 ../ggz-gtk/types.c:176
 msgid "Name"
 msgstr "பெயர்"
 
-#: ../ggz-gtk/props.c:1536
+#: ../ggz-gtk/props.c:251
+msgid "Properties Updated"
+msgstr ""
+"பண்புகள் "
+"புதுப்பிக்கப்பட்டது"
+
+#: ../ggz-gtk/props.c:1052
+msgid "Confirm:"
+msgstr "உறுதியாக்கம்:"
+
+#: ../ggz-gtk/props.c:1102
+msgid "Modify"
+msgstr "மாற்றியமை"
+
+#: ../ggz-gtk/props.c:1116
+msgid "Servers"
+msgstr "சேவையகங்கள்"
+
+#: ../ggz-gtk/props.c:1135
+msgid "Chat Font:"
+msgstr "அரட்டை எழுத்துரு:"
+
+#: ../ggz-gtk/props.c:1151
+msgid "Change"
+msgstr "மாற்று"
+
+#: ../ggz-gtk/props.c:1164
+msgid "Ignore Join/Part Messages"
+msgstr ""
+"சேர்/விலகு செய்திகளை "
+"உதாசீனப்படுத்து"
+
+#: ../ggz-gtk/props.c:1172
+msgid "Play Sounds"
+msgstr "ஒலி"
+
+#: ../ggz-gtk/props.c:1180
+msgid "Auto Indent"
+msgstr "தானாகவே உள்தள்"
+
+#: ../ggz-gtk/props.c:1188
+msgid "Timestamp Chats"
+msgstr "காலச்சுவடு அரட்டைகள்"
+
+#: ../ggz-gtk/props.c:1196
+msgid "Word Wrap"
+msgstr "சொல் மடிப்பு"
+
+#: ../ggz-gtk/props.c:1204
+msgid "Chat Color"
+msgstr "அரட்டை நிறம்"
+
+#: ../ggz-gtk/props.c:1253
+msgid "Default chat color assigned to your friends"
+msgstr ""
+"உங்கள் நண்பர்களுக்கு "
+"ஒதுக்கிய அரட்டை "
+"முன்னிருப்பு நிறம்"
+
+#: ../ggz-gtk/props.c:1262
+msgid "Chat color used when your name is typed"
+msgstr ""
+"உங்கள் பெயர் உள்ளிட்ட போது "
+"பயன்படும் அரட்டை நிறம்"
+
+#: ../ggz-gtk/props.c:1271
+msgid "Chat color used for all other chats"
+msgstr ""
+"மற்ற அனைத்துக்குமான அரட்டை "
+"நிறம்"
+
+#: ../ggz-gtk/props.c:1280
+msgid "Normal Color"
+msgstr "இயல்பான நிறம்"
+
+#: ../ggz-gtk/props.c:1291
+msgid "Highlight Color"
+msgstr "வண்ணத்தை தனிப்படுத்து"
+
+#: ../ggz-gtk/props.c:1302
+msgid "Friend Color"
+msgstr "நண்பர் வண்ணம்"
+
+#: ../ggz-gtk/props.c:1313
+msgid "Black Background"
+msgstr "கருப்பு பின்னணி"
+
+#: ../ggz-gtk/props.c:1322
+msgid "White Background"
+msgstr "வெள்ளை பின்னணி"
+
+#: ../ggz-gtk/props.c:1331
+msgid "Chat"
+msgstr "அரட்டை"
+
+#: ../ggz-gtk/props.c:1343
+msgid "All of the following information is optional."
+msgstr ""
+"பின்வரும் அனைத்து "
+"தகவல்களும் விருப்ப "
+"தேர்வாகும்."
+
+#: ../ggz-gtk/props.c:1361
+msgid "Name:"
+msgstr "பெயர்:"
+
+#: ../ggz-gtk/props.c:1388
+msgid "City:"
+msgstr "நகரம்:"
+
+#: ../ggz-gtk/props.c:1409
+msgid "State:"
+msgstr "மாநிலம்:"
+
+#: ../ggz-gtk/props.c:1430
+msgid "Country:"
+msgstr "நாடு:"
+
+#: ../ggz-gtk/props.c:1445
+msgid "Comments, Hobbies, Etc."
+msgstr ""
+"குறிப்புகள் "
+"பொழுதுபோக்குகள் முதலியன"
+
+#: ../ggz-gtk/props.c:1467
+msgid "User Information"
+msgstr "பயனரின் தகவல்"
+
+#: ../ggz-gtk/props.c:1483
+msgid "Single Click Room Entry"
+msgstr "ஒற்றை சொடுக்கு அறை நுழைவு"
+
+#: ../ggz-gtk/props.c:1497
+msgid "Display All"
+msgstr "அனைத்தையும் காட்டு"
+
+#: ../ggz-gtk/props.c:1506
+msgid "Display New"
+msgstr "புதியன காட்டு"
+
+#: ../ggz-gtk/props.c:1515
+msgid "Display Important"
+msgstr "முக்கியமானதை காட்டு"
+
+#: ../ggz-gtk/props.c:1524
+msgid "Display None"
+msgstr "எதையும் காட்டாதே"
+
+#: ../ggz-gtk/props.c:1533
 msgid "Options"
 msgstr "தேர்வுகள்"
+
+#: ../ggz-gtk/props.c:1622
+msgid "Select Font"
+msgstr "எழுத்துருவை தேர்வுசெய்"
+
+#: ../ggz-gtk/roominfo.c:63
+msgid "Room Information"
+msgstr "அறை தகவல்"
+
+#: ../ggz-gtk/roominfo.c:80
+msgid "Game Name:"
+msgstr "_ஆட்ட பெயர்:"
+
+#: ../ggz-gtk/roominfo.c:110
+msgid "Room Description:"
+msgstr "அறை விவரம்:"
+
+#: ../ggz-gtk/roominfo.c:155
+msgid "This room has no game"
+msgstr ""
+"இந்த அறையில் விளையாட்டு "
+"ஏதும் இல்லை"
 
 #: ../ggz-gtk/roominfo.c:162 ../ggz-gtk/roominfo.c:169
 msgid "N/A"
 msgstr "N/A"
 
+#: ../ggz-gtk/roominfo.c:175
+msgid "Unknown room"
+msgstr "தெரியாத அறை"
+
+#: ../ggz-gtk/roomlist.c:73
+msgid "You can't join a room; you're not logged in"
+msgstr ""
+"நீங்கள் உள்நுழையவில்லை. "
+"ஆகவே எந்த அறையிலும் சேர "
+"இயலாது"
+
+#: ../ggz-gtk/roomlist.c:82
+msgid "You can't switch rooms while playing a game"
+msgstr ""
+"நீங்கள் விளையாடும் போது "
+"அறைகளை மாற்ற இயலாது."
+
+#: ../ggz-gtk/roomlist.c:89
+msgid "Unknown error"
+msgstr "தெரியாத பிழை"
+
+#: ../ggz-gtk/roomlist.c:109 ../ggz-gtk/roomlist.c:114
+msgid "Error joining room"
+msgstr "அறையில் சேர்கையில் பிழை"
+
+#: ../ggz-gtk/roomlist.c:350
+msgid "Other Rooms"
+msgstr "மற்ற அறைகள்"
+
+#: ../ggz-gtk/roomlist.c:424
+msgid "Room"
+msgstr "அறை"
+
+#: ../ggz-gtk/tablelist.c:161
+msgid "No description available."
+msgstr "விளக்கம் இல்லை"
+
+#: ../ggz-gtk/tablelist.c:196
+msgid "Seats"
+msgstr "இருக்கைகள்"
+
+#: ../ggz-gtk/tablelist.c:201 ../ggz-gtk/types.c:183
+msgid "Description"
+msgstr "விவரணம்"
+
 #: ../ggz-gtk/types.c:113
 msgid "None"
 msgstr "எதுவுமில்லை"
+
+#: ../ggz-gtk/types.c:148
+msgid ""
+"Room filtering is not implemented yet. If\n"
+"you would like to help head over to\n"
+"http://www.ggzgamingzone.org/"
+msgstr ""
+"இதுவரை அறை வடிகட்டல் "
+"செயலாக்கவில்லை\n"
+"நீங்கள் உதவி செய்ய "
+"நினைத்தால் இங்கு செல்க\n"
+"http://www.ggzgamingzone.org/"
+
+#: ../ggz-gtk/types.c:191
+msgid "Web Address"
+msgstr "வலை முகவரி"
+
+#: ../ggz-gtk/types.c:199
+msgid "Author"
+msgstr "ஆசிரியர்"
+
+#: ../ggz-gtk/types.c:254
+msgid "Room List Filter:"
+msgstr "அறை பட்டியல் வடிகட்டி:"
+
+#: ../ggz-gtk/types.c:266
+msgid "Set"
+msgstr "அமை"

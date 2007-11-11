@@ -1,7 +1,7 @@
 # This translation was merged from GNOME SVN
 # (http://svn.gnome.org/svn/gnome-games/trunk/po/sr.po)
 # Serbian translation of gnome-games
-# Courtesy of Prevod.org team (http://prevod.org/) -- 2003, 2004, 2005, 2006.
+# Courtesy of Prevod.org team (http://prevod.org/) -- 2003, 2004, 2005, 2006, 2007.
 #
 # This file is distributed under the same license as the gnome-games package.
 #
@@ -10,43 +10,1125 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-games\n"
+"Project-Id-Version: Гномове игре\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-20 15:07+0100\n"
-"PO-Revision-Date: 2006-02-19 03:17+0100\n"
-"Last-Translator: Слободан Д. Средојевић <slobo@akrep.be>\n"
+"POT-Creation-Date: 2007-11-11 22:11+0100\n"
+"PO-Revision-Date: 2007-09-09 01:55+0100\n"
+"Last-Translator: Милош Поповић <gpopac@gmail.com>\n"
 "Language-Team: Serbian (sr) <gnom@prevod.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3;    plural=n%10==1 && n%100!=11 ? 0 :    n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 :    "
+"n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+
+#: ../ggz-gtk/about.c:87 ../ggz-gtk/client.c:1089
+msgid "About"
+msgstr "_О програму"
+
+#: ../ggz-gtk/chat.c:291
+#, c-format
+msgid "You have received an unknown message from %s."
+msgstr "Примили сте ову непознату поруку од %s"
+
+#: ../ggz-gtk/chat.c:355
+#, c-format
+msgid "You've been beeped by %s."
+msgstr "Упозорени сте од стране %s."
+
+#: ../ggz-gtk/chat.c:551
+#, c-format
+msgid "Beep sent to %s."
+msgstr "Писак послат %s."
+
+#: ../ggz-gtk/chat.c:579
+#, c-format
+msgid "%s (logged on)"
+msgstr "%s (пријављен)"
+
+#: ../ggz-gtk/chat.c:617
+#, c-format
+msgid "%s (logged off)"
+msgstr "%s (одјављен)"
+
+#: ../ggz-gtk/chat.c:666
+msgid "Chat Commands"
+msgstr "Наредбе разговора"
+
+#: ../ggz-gtk/chat.c:879
+#, c-format
+msgid "Added %s to your friends list."
+msgstr "%s додат у Вашу листу пријатеља."
+
+#: ../ggz-gtk/chat.c:903
+#, c-format
+msgid "Removed %s from your friends list."
+msgstr "%s уклоњен из Ваше листе пријатеља"
+
+#: ../ggz-gtk/chat.c:934
+#, c-format
+msgid "Added %s to your ignore list."
+msgstr "%s додат у Вашу листу за игнорисање"
+
+#: ../ggz-gtk/chat.c:959
+#, c-format
+msgid "Removed %s from your ignore list."
+msgstr "%s уклоњен из Ваше листе за игнорисање."
+
+#: ../ggz-gtk/chat.c:1034
+msgid "People currently your friends"
+msgstr "Људи који су вам пријатељи"
+
+#: ../ggz-gtk/chat.c:1045
+msgid "People you're currently ignoring"
+msgstr "Људи које игноришете"
+
+#: ../ggz-gtk/chat.c:1119
+msgid "Multiple matches:"
+msgstr "Више поклапања:"
+
+#: ../ggz-gtk/client.c:144
+msgid "Are you sure you want to quit?"
+msgstr "Да ли сте сигурни да желите да изађете?"
+
+#: ../ggz-gtk/client.c:144
+msgid "Quit?"
+msgstr "Изађи?"
+
+#: ../ggz-gtk/client.c:237
+msgid ""
+"Server stats are not implemented yet. If\n"
+"you would like to help head over to\n"
+"http://www.ggzgamingzone.org/"
+msgstr ""
+"Статистике сервера још увек нису "
+"уграђене.\n"
+"Уколико желите да помогнете баците "
+"поглед\n"
+"на http://www.ggzgamingzone.org"
+
+#: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
+#: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
+msgid "Not Implemented"
+msgstr "Није уграђено"
+
+#: ../ggz-gtk/client.c:248 ../ggz-gtk/client.c:545
+msgid ""
+"Player stats are not implemented yet. If\n"
+"you would like to help head over to\n"
+"http://www.ggzgamingzone.org/"
+msgstr ""
+"Статистике играча још увек нису "
+"уграђене.\n"
+"Уколико желите да помогнете баците "
+"поглед\n"
+"на http://www.ggzgamingzone.org"
+
+#: ../ggz-gtk/client.c:566
+msgid "You must highlight a table before you can join it."
+msgstr ""
+"Морате означити сто пре него што се "
+"прикључите."
+
+#: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
+msgid "Error Joining"
+msgstr "Грешка у придруживању"
+
+#: ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:614
+msgid "That table is full."
+msgstr "Тај сто је пун"
+
+#: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:336
+msgid "Error launching game module."
+msgstr "Грешка при покретању модула игре."
+
+#: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
+#: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:337
+msgid "Game Error"
+msgstr "Грешка у игри"
+
+#: ../ggz-gtk/client.c:600
+msgid "You must highlight a table before you can watch it."
+msgstr ""
+"Прво морате означити сто да бисте гледали."
+
+#: ../ggz-gtk/client.c:602
+msgid "Error Spectating"
+msgstr "Грешка у гледању"
+
+#: ../ggz-gtk/client.c:647
+msgid ""
+"Failed to join table.\n"
+"Join aborted."
+msgstr ""
+"Неуспело прикључивање столу.\n"
+"Прикључивање прекинуто."
+
+#: ../ggz-gtk/client.c:648
+msgid "Join Error"
+msgstr "Придруживање неуспело"
+
+#: ../ggz-gtk/client.c:678
+msgid "Disconnect from the GGZ Gaming Zone server"
+msgstr "Откачен сте са ГГЗ Зоне игре сервера"
+
+#: ../ggz-gtk/client.c:680
+msgid "Start playing a game at a new table"
+msgstr "Започни игру за новим столом"
+
+#: ../ggz-gtk/client.c:682
+msgid "Join an existing game"
+msgstr "Прикључи се постојећој игри"
+
+#: ../ggz-gtk/client.c:684
+msgid "Watch an existing game - become a spectator of the table"
+msgstr ""
+"Гледајте постојећу игру - постаните "
+"гледалац за столом"
+
+#: ../ggz-gtk/client.c:687
+msgid "Leave the game you're currently playing"
+msgstr "Напусти игру коју тренутно играм"
+
+#: ../ggz-gtk/client.c:689
+msgid "Show the properties dialog to change the client settings"
+msgstr ""
+"Прикажи прозор са поставкама за измену "
+"подешавања клијента"
+
+#: ../ggz-gtk/client.c:696
+msgid "Exit the GGZ client application."
+msgstr "Изађи из ГГЗ клијент програма."
+
+#: ../ggz-gtk/client.c:736
+msgid "Compiled with debugging."
+msgstr ""
+"Компајлирано са подршком тражења грешака."
+
+#: ../ggz-gtk/client.c:934
+msgid "GGZ"
+msgstr "ГГЗ"
+
+#: ../ggz-gtk/client.c:942 ../ggz-gtk/login.c:729
+msgid "Connect"
+msgstr "Повежи се"
+
+#: ../ggz-gtk/client.c:949 ../ggz-gtk/client.c:1180
+msgid "Disconnect"
+msgstr "Прекини везу"
+
+#: ../ggz-gtk/client.c:962
+msgid "Quit"
+msgstr "Изађи"
 
 #: ../ggz-gtk/client.c:969
 msgid "Game"
 msgstr "Игра"
 
+#: ../ggz-gtk/client.c:978 ../ggz-gtk/client.c:1133 ../ggz-gtk/launch.c:596
+msgid "Launch"
+msgstr "Покрени"
+
+#: ../ggz-gtk/client.c:985 ../ggz-gtk/client.c:1141 ../ggz-gtk/roomlist.c:150
+#: ../ggz-gtk/tablelist.c:74
+msgid "Join"
+msgstr "Придружи се"
+
+#: ../ggz-gtk/client.c:992 ../ggz-gtk/client.c:1149
+msgid "Watch"
+msgstr "Надгледај"
+
+#: ../ggz-gtk/client.c:1004 ../ggz-gtk/client.c:1157 ../ggz-gtk/tablelist.c:77
+msgid "Leave"
+msgstr "Напусти"
+
+#: ../ggz-gtk/client.c:1011
+msgid "Edit"
+msgstr "Уређивање"
+
+#: ../ggz-gtk/client.c:1019
+msgid "Properties"
+msgstr "Поставке"
+
+#: ../ggz-gtk/client.c:1026
+msgid "View"
+msgstr "Преглед"
+
+#: ../ggz-gtk/client.c:1035
+msgid "Room List"
+msgstr "Листа соба"
+
+#: ../ggz-gtk/client.c:1041
+msgid "Player List"
+msgstr "Листа играча"
+
+#: ../ggz-gtk/client.c:1053
+msgid "Server Stats"
+msgstr "Статуси сервера"
+
+#: ../ggz-gtk/client.c:1057
+msgid "Player Stats"
+msgstr "Статус играча"
+
+#: ../ggz-gtk/client.c:1065 ../ggz-gtk/types.c:237
+msgid "Game Types"
+msgstr "Тип игре"
+
+#: ../ggz-gtk/client.c:1074 ../ggz-gtk/props.c:1488
+msgid "MOTD"
+msgstr "МОТД"
+
+#: ../ggz-gtk/client.c:1081
+msgid "Help"
+msgstr "Помоћ"
+
+#: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:493
+msgid "Stats"
+msgstr "Статус"
+
+#: ../ggz-gtk/client.c:1196 ../ggz-gtk/ggzclient.c:721
+msgid "Current Room:"
+msgstr "Тренутна соба:"
+
+#: ../ggz-gtk/client.c:1277 ../ggz-gtk/playerinfo.c:274
+msgid "Message:"
+msgstr "Порука:"
+
+#: ../ggz-gtk/client.c:1295
+msgid "Send"
+msgstr "Пошаљи"
+
+#: ../ggz-gtk/client.c:1480 ../ggz-gtk/ggzclient.c:400
+msgid "GGZ Gaming Zone"
+msgstr "ГГЗ Зона игре"
+
+#: ../ggz-gtk/first.c:57
+msgid "Wizard"
+msgstr "Чаробњак"
+
+#: ../ggz-gtk/first.c:57
+msgid "Deity"
+msgstr "Божанство"
+
+#: ../ggz-gtk/first.c:57
+msgid "Sentinel"
+msgstr "Стражар"
+
+#: ../ggz-gtk/first.c:57
+msgid "Captain"
+msgstr "Капитен"
+
+#: ../ggz-gtk/first.c:58
+msgid "Knight"
+msgstr "Витез"
+
+#: ../ggz-gtk/first.c:58
+msgid "Angel"
+msgstr "Анђео"
+
+#: ../ggz-gtk/first.c:58
+msgid "Silverlord"
+msgstr "Сребрни лорд"
+
+#: ../ggz-gtk/first.c:58
+msgid "Eagle"
+msgstr "Орао"
+
+#: ../ggz-gtk/first.c:59
+msgid "Vampire"
+msgstr "Вампир"
+
+#: ../ggz-gtk/first.c:59
+msgid "Chief"
+msgstr "Вођа"
+
+#: ../ggz-gtk/first.c:59
+msgid "Colonel"
+msgstr "Освајач"
+
 #: ../ggz-gtk/first.c:59
 msgid "General"
 msgstr "Основно"
 
-#: ../ggz-gtk/playerinfo.c:241
+#: ../ggz-gtk/first.c:60
+msgid "Major"
+msgstr "Мајор"
+
+#: ../ggz-gtk/first.c:60
+msgid "Scout"
+msgstr "Извиђач"
+
+#: ../ggz-gtk/first.c:60
+msgid "Lieutenant"
+msgstr "Поручник"
+
+#: ../ggz-gtk/first.c:60
+msgid "Stalker"
+msgstr "Шуњало"
+
+#: ../ggz-gtk/first.c:61
+msgid "Scientist"
+msgstr "Научник"
+
+#: ../ggz-gtk/first.c:61
+msgid "Scholar"
+msgstr "Ученик"
+
+#: ../ggz-gtk/first.c:61
+msgid "Entity"
+msgstr "Суштина"
+
+#: ../ggz-gtk/first.c:61
+msgid "Creator"
+msgstr "Радник"
+
+#: ../ggz-gtk/first.c:69
+msgid "GGZ Community (fast)"
+msgstr "ГГЗ заједница (брзо)"
+
+#: ../ggz-gtk/first.c:70
+msgid "Local developer server"
+msgstr "Локални развојни сервер"
+
+#: ../ggz-gtk/first.c:190
+msgid ""
+"This is the first time you are running the GTK+ GGZ Gaming Zone client. "
+"Would you like to create some default server profiles?"
+msgstr ""
+"Ово је први пут да сте покренули ГТК+ "
+"клијент ГГЗ Зона игре. Желите ли да "
+"направите неки подразумевани серверски "
+"профил?"
+
+#: ../ggz-gtk/game.c:72
+#, c-format
+msgid ""
+"You don't have this game installed. You can download\n"
+"it from %s."
+msgstr ""
+"Ова игра није инсталирана. Можете је "
+"скинути\n"
+"са %s."
+
+#: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
+#: ../ggz-gtk/game.c:325 ../ggz-gtk/game.c:334 ../ggz-gtk/game.c:350
+#: ../ggz-gtk/launch.c:292
+msgid "Launch Error"
+msgstr "Грешка у покретању"
+
+#: ../ggz-gtk/game.c:148
+msgid ""
+"Failed to execute game module.\n"
+" Launch aborted."
+msgstr ""
+"Неуспело покретање модула игре.\n"
+" Покретање прекинуто."
+
+#: ../ggz-gtk/game.c:201
+msgid "Launched game"
+msgstr "Игра је покренута"
+
+#: ../ggz-gtk/game.c:222
+msgid "Launch failed"
+msgstr "Покретање није успело"
+
+#: ../ggz-gtk/game.c:296
+msgid "You can only play one game at a time."
+msgstr ""
+"Можете играти само једну игру у исто "
+"време."
+
+#: ../ggz-gtk/game.c:304
+msgid "You're still at a table."
+msgstr "Још увек сте за столом."
+
+#: ../ggz-gtk/game.c:313
+msgid ""
+"You must be in a room to launch a game.\n"
+"Launch aborted"
+msgstr ""
+"Морате бити у соби да би покренули игру.\n"
+"Покретање прекинуто."
+
+#: ../ggz-gtk/game.c:323
+msgid ""
+"No game types defined for this server.\n"
+"Launch aborted."
+msgstr ""
+"Нису одређени типови игре за овај сервер.\n"
+"Покретање прекинуто."
+
+#: ../ggz-gtk/game.c:333
+msgid "This game doesn't support spectators."
+msgstr ""
+"Ова игра још увек нема подршку за "
+"гледаоце."
+
+#: ../ggz-gtk/game.c:348
+msgid ""
+"You need to launch the GGZ client directly\n"
+"to be able to play this game."
+msgstr ""
+"Потребно је да покренете ГГЗ клијент "
+"директно\n"
+"како бисте могли да играте ову игру."
+
+#: ../ggz-gtk/ggzclient.c:122
+#, c-format
+msgid "Error connecting to server: %s"
+msgstr "Грешка при повезивању на сервер: %s"
+
+#: ../ggz-gtk/ggzclient.c:124 ../ggz-gtk/ggzclient.c:380
+#: ../ggz-gtk/ggzclient.c:562 ../ggz-gtk/ggzclient.c:597
+#: ../ggz-gtk/ggzclient.c:650 ../ggz-gtk/ggzclient.c:1083
+#: ../ggz-gtk/launch.c:327
+msgid "Error"
+msgstr "Грешка"
+
+#: ../ggz-gtk/ggzclient.c:237
+#, c-format
+msgid "Your new password is %s"
+msgstr "Ваша нова лозинка је %s"
+
+#: ../ggz-gtk/ggzclient.c:239
+msgid "New password"
+msgstr "Нова лозинка"
+
+#: ../ggz-gtk/ggzclient.c:275
+#, c-format
+msgid "Players on server: %d"
+msgstr "Играча на серверу: %d"
+
+#: ../ggz-gtk/ggzclient.c:320
+#, c-format
+msgid "Current Room: %s"
+msgstr "Тренутна соба: %s"
+
+#: ../ggz-gtk/ggzclient.c:328
+#, c-format
+msgid "You've joined room \"%s\"."
+msgstr "Придружили сте се соби „%s“"
+
+#: ../ggz-gtk/ggzclient.c:378
+#, c-format
+msgid "Error joining room: %s"
+msgstr "Грешка у придруживању соби: %s"
+
+#: ../ggz-gtk/ggzclient.c:429
+msgid "You can't chat while not in a room."
+msgstr ""
+"Не можете да разговарате док нисте у соби."
+
+#: ../ggz-gtk/ggzclient.c:434
+msgid "You don't have permission to chat here."
+msgstr "Немате овлашћења да разговарате овде."
+
+#: ../ggz-gtk/ggzclient.c:438
+msgid "No private chatting at a table!"
+msgstr "Нема приватних разговора за столом!"
+
+#: ../ggz-gtk/ggzclient.c:442
+msgid "That player isn't in the room!"
+msgstr "Тај играч није у соби!"
+
+#: ../ggz-gtk/ggzclient.c:447
+msgid "There was an error sending the chat."
+msgstr "Јавила се грешка слању разговора."
+
+#: ../ggz-gtk/ggzclient.c:451
+msgid "You're not at a table."
+msgstr "Нисте за столом."
+
+#: ../ggz-gtk/ggzclient.c:455
+#, c-format
+msgid "Chat failed: %s."
+msgstr "Разговор неуспео: %s"
+
+#: ../ggz-gtk/ggzclient.c:560
+#, c-format
+msgid "Error launching table: %s"
+msgstr "Грешка у стварању стола: %s"
+
+#: ../ggz-gtk/ggzclient.c:580
+#, c-format
+msgid "You have joined table %d."
+msgstr "Придружили сте се столу %d."
+
+#: ../ggz-gtk/ggzclient.c:595
+#, c-format
+msgid "Error joining table: %s"
+msgstr "Грешка при прикључивању столу: %s"
+
+#: ../ggz-gtk/ggzclient.c:617
+#, c-format
+msgid "You have been booted from the table by %s."
+msgstr "%s Вас је избацио са стола"
+
+#: ../ggz-gtk/ggzclient.c:622
+#, c-format
+msgid "You have left the table."
+msgstr "Напустили сте сто."
+
+#: ../ggz-gtk/ggzclient.c:625
+#, c-format
+msgid "The game is over."
+msgstr "Игра је завршена."
+
+#: ../ggz-gtk/ggzclient.c:629
+#, c-format
+msgid "There was an error with the game server."
+msgstr "Јавила се грешка са сервером за игру."
+
+#: ../ggz-gtk/ggzclient.c:648
+#, c-format
+msgid "Error leaving table: %s"
+msgstr "Грешка у напуштању стола: %s"
+
+#: ../ggz-gtk/ggzclient.c:743
+msgid "**none**"
+msgstr "**ништа**"
+
+#: ../ggz-gtk/ggzclient.c:750
+msgid "Offline"
+msgstr "Ван мреже"
+
+#: ../ggz-gtk/ggzclient.c:753
+msgid "Connecting"
+msgstr "Повезујем се"
+
+#: ../ggz-gtk/ggzclient.c:756
+msgid "Reconnecting"
+msgstr "Поново се повезујем"
+
+#: ../ggz-gtk/ggzclient.c:759
+msgid "Online"
+msgstr "У мрежи"
+
+#: ../ggz-gtk/ggzclient.c:762
+msgid "Logging In"
+msgstr "Пријављујем се"
+
+#: ../ggz-gtk/ggzclient.c:765
+msgid "Logged In"
+msgstr "Пријављен"
+
+#: ../ggz-gtk/ggzclient.c:769
+msgid "--> Room"
+msgstr "--> Соба"
+
+#: ../ggz-gtk/ggzclient.c:772
+msgid "Chatting"
+msgstr "Разговарање"
+
+#: ../ggz-gtk/ggzclient.c:776
+msgid "--> Table"
+msgstr "--> Сто"
+
+#: ../ggz-gtk/ggzclient.c:779
+msgid "Playing"
+msgstr "Игра у току"
+
+#: ../ggz-gtk/ggzclient.c:782
+msgid "<-- Table"
+msgstr "<--Сто"
+
+#: ../ggz-gtk/ggzclient.c:785
+msgid "Logging Out"
+msgstr "Одјављујем се"
+
+#: ../ggz-gtk/ggzclient.c:1081
+#, c-format
+msgid "Server error: %s"
+msgstr "Серверска грешка: %s"
+
+#: ../ggz-gtk/ggzclient.c:1170
+msgid "Disconnected from server."
+msgstr "Откачени сте са сервера."
+
+#: ../ggz-gtk/launch.c:113
+#, c-format
+msgid "Game Type:  %s"
+msgstr "Тип игре:  %s"
+
+#: ../ggz-gtk/launch.c:119
+#, c-format
+msgid "Author:  %s"
+msgstr "Аутор: %s"
+
+#: ../ggz-gtk/launch.c:126
+#, c-format
+msgid "Description:  %s"
+msgstr "Опис: %s"
+
+#: ../ggz-gtk/launch.c:132
+#, c-format
+msgid "Home Page:  %s"
+msgstr "Веб адреса:  %s"
+
+#: ../ggz-gtk/launch.c:291
+msgid ""
+"Failed to launch table.\n"
+" Launch aborted."
+msgstr ""
+"Неуспело покретање стола.\n"
+"  Покретање прекинуто."
+
+#: ../ggz-gtk/launch.c:327
+msgid "Invalid number of bots specified"
+msgstr ""
+"Унесен је недозвољен број рачунарских "
+"играча."
+
+#: ../ggz-gtk/launch.c:420
+msgid "Seat Assignments"
+msgstr "Навођење мине"
+
+#: ../ggz-gtk/launch.c:436
+msgid "Game Type:"
+msgstr "Тип игре:"
+
+#: ../ggz-gtk/launch.c:448
+msgid "Number of seats"
+msgstr "Број мина"
+
+#: ../ggz-gtk/launch.c:457 ../ggz-gtk/roominfo.c:90
+msgid "Author:"
+msgstr "Аутор:"
+
+#: ../ggz-gtk/launch.c:469
+msgid "Description:"
+msgstr "Опис:"
+
+#: ../ggz-gtk/launch.c:480 ../ggz-gtk/roominfo.c:100
+msgid "Homepage:"
+msgstr "Веб адреса:"
+
+#: ../ggz-gtk/launch.c:518
+#, c-format
+msgid "Seat %d:"
+msgstr "Мина %d:"
+
+#: ../ggz-gtk/launch.c:527
+msgid "Computer"
+msgstr "Рачунар"
+
+#: ../ggz-gtk/launch.c:538
+msgid "Open"
+msgstr "Отворено"
+
+#: ../ggz-gtk/launch.c:550
+msgid "Reserved for"
+msgstr "Резервисан за"
+
+#: ../ggz-gtk/launch.c:576
+msgid "Game Description   "
+msgstr "Опис игре"
+
+#: ../ggz-gtk/login.c:101
+msgid "Login"
+msgstr "Пријава"
+
+#: ../ggz-gtk/login.c:115
+#, c-format
+msgid "That username is already in use."
+msgstr "Корисничко име је већ у употреби."
+
+#: ../ggz-gtk/login.c:119
+#, c-format
+msgid ""
+"Authentication has failed.\n"
+"Please supply the correct password."
+msgstr ""
+"Пријава неуспела.\n"
+"Унесите исправну лозинку."
+
+#: ../ggz-gtk/login.c:123
+#, c-format
+msgid "The username is too long!"
+msgstr "Корисничко име је сувише дугачко"
+
+#: ../ggz-gtk/login.c:126
+#, c-format
+msgid "Invalid username, do not use special characters!"
+msgstr ""
+"Погрешно корисничко име, немојте "
+"користити специјалне знакове!"
+
+#: ../ggz-gtk/login.c:554
+msgid "Server Profile"
+msgstr "Профил сервера"
+
+#: ../ggz-gtk/login.c:578 ../ggz-gtk/props.c:942
+msgid "Profile:"
+msgstr "Профил:"
+
+#: ../ggz-gtk/login.c:601 ../ggz-gtk/props.c:963
+msgid "Server:"
+msgstr "Сервер:"
+
+#: ../ggz-gtk/login.c:613 ../ggz-gtk/props.c:978
+msgid "Port:"
+msgstr "Порт:"
+
+#: ../ggz-gtk/login.c:644 ../ggz-gtk/props.c:1010
+msgid "Username:"
+msgstr "Корисничко име:"
+
+#: ../ggz-gtk/login.c:659 ../ggz-gtk/props.c:1031
+msgid "Password:"
+msgstr "Лозинка:"
+
+#: ../ggz-gtk/login.c:675
+msgid "Email:"
+msgstr "Е-пошта:"
+
+#: ../ggz-gtk/login.c:691 ../ggz-gtk/props.c:1074
+msgid "Normal Login"
+msgstr "Нормална пријава"
+
+#: ../ggz-gtk/login.c:702 ../ggz-gtk/props.c:1082
+msgid "Guest Login"
+msgstr "Пријава као гост"
+
+#: ../ggz-gtk/login.c:710
+msgid "First-time Login"
+msgstr "Прва пријава"
+
+#: ../ggz-gtk/motd.c:161
+msgid "Message of the Day"
+msgstr "Порука дана"
+
+#: ../ggz-gtk/pick_module.c:89
+msgid "Which client would you like to use to play this game?"
+msgstr ""
+"Који клијент желите да користите за "
+"играње ове игре?"
+
+#: ../ggz-gtk/pick_module.c:131
+msgid "Don't ask me again."
+msgstr "Не питај ме поново."
+
+#: ../ggz-gtk/playerinfo.c:105
+msgid "Player Information"
+msgstr "Подаци о играчу"
+
+#: ../ggz-gtk/playerinfo.c:135
+msgid "Player Handle:"
+msgstr "Руководилац играчем:"
+
+#: ../ggz-gtk/playerinfo.c:153
+msgid "Table:"
+msgstr "Сто:"
+
+#: ../ggz-gtk/playerinfo.c:171
+msgid "Account:"
+msgstr "Налог:"
+
+#: ../ggz-gtk/playerinfo.c:202
+msgid "Record:"
+msgstr "Рекорди:"
+
+#: ../ggz-gtk/playerinfo.c:220
+msgid "Rating:"
+msgstr "Репутација:"
+
+#: ../ggz-gtk/playerinfo.c:238
+msgid "Rank:"
+msgstr "Оцена:"
+
+#: ../ggz-gtk/playerinfo.c:256
 msgid "Score:"
 msgstr "Разултат:"
 
-#: ../ggz-gtk/playerlist.c:362 ../ggz-gtk/types.c:176
+#: ../ggz-gtk/playerinfo.c:317 ../ggz-gtk/playerinfo.c:350
+msgid "Unknown"
+msgstr "Непознато"
+
+#: ../ggz-gtk/playerinfo.c:353
+msgid "Registered"
+msgstr "Регистрован"
+
+#: ../ggz-gtk/playerinfo.c:356
+msgid "Guest"
+msgstr "Гост"
+
+#: ../ggz-gtk/playerinfo.c:359
+msgid "Host"
+msgstr "Хост"
+
+#: ../ggz-gtk/playerinfo.c:362
+msgid "Administrator"
+msgstr "Администратор"
+
+#: ../ggz-gtk/playerinfo.c:365
+msgid "Bot"
+msgstr "Рачунарски играч"
+
+#: ../ggz-gtk/playerlist.c:171 ../ggz-gtk/roomlist.c:144
+#: ../ggz-gtk/tablelist.c:84
+msgid "Info"
+msgstr "Подаци"
+
+#: ../ggz-gtk/playerlist.c:178
+msgid "Friends"
+msgstr "Пријатељи"
+
+#: ../ggz-gtk/playerlist.c:183
+msgid "Ignore"
+msgstr "Игнориши"
+
+#: ../ggz-gtk/playerlist.c:380
+#, c-format
+msgid "#%d"
+msgstr "#%d"
+
+#: ../ggz-gtk/playerlist.c:483
+msgid "L"
+msgstr "Л"
+
+#: ../ggz-gtk/playerlist.c:488 ../ggz-gtk/tablelist.c:191
+msgid "T#"
+msgstr "Т#"
+
+#: ../ggz-gtk/playerlist.c:499 ../ggz-gtk/types.c:176
 msgid "Name"
 msgstr "Име"
 
-#: ../ggz-gtk/props.c:1536
+#: ../ggz-gtk/props.c:251
+msgid "Properties Updated"
+msgstr "Поставке сачуване"
+
+#: ../ggz-gtk/props.c:1052
+msgid "Confirm:"
+msgstr "Потврди:"
+
+#: ../ggz-gtk/props.c:1102
+msgid "Modify"
+msgstr "Измени"
+
+#: ../ggz-gtk/props.c:1116
+msgid "Servers"
+msgstr "Сервери"
+
+#: ../ggz-gtk/props.c:1135
+msgid "Chat Font:"
+msgstr "Словни лик разговора:"
+
+#: ../ggz-gtk/props.c:1151
+msgid "Change"
+msgstr "Измене"
+
+#: ../ggz-gtk/props.c:1164
+msgid "Ignore Join/Part Messages"
+msgstr "Игнориши спајање/део порука"
+
+#: ../ggz-gtk/props.c:1172
+msgid "Play Sounds"
+msgstr "Пусти звук"
+
+#: ../ggz-gtk/props.c:1180
+msgid "Auto Indent"
+msgstr "Аутоматски увуци"
+
+#: ../ggz-gtk/props.c:1188
+msgid "Timestamp Chats"
+msgstr "Разговори са временским ознакама"
+
+#: ../ggz-gtk/props.c:1196
+msgid "Word Wrap"
+msgstr "Прелом текста"
+
+#: ../ggz-gtk/props.c:1204
+msgid "Chat Color"
+msgstr "Боје razgovora"
+
+#: ../ggz-gtk/props.c:1253
+msgid "Default chat color assigned to your friends"
+msgstr ""
+"Боја за разговор коју ће користити Ваши "
+"другови"
+
+#: ../ggz-gtk/props.c:1262
+msgid "Chat color used when your name is typed"
+msgstr ""
+"Боја вашег имена када се помене у "
+"разговору"
+
+#: ../ggz-gtk/props.c:1271
+msgid "Chat color used for all other chats"
+msgstr ""
+"Боја за разговор за све остале разговоре"
+
+#: ../ggz-gtk/props.c:1280
+msgid "Normal Color"
+msgstr "Нормална боја"
+
+#: ../ggz-gtk/props.c:1291
+msgid "Highlight Color"
+msgstr "Боја за истицање"
+
+#: ../ggz-gtk/props.c:1302
+msgid "Friend Color"
+msgstr "Боја другова"
+
+#: ../ggz-gtk/props.c:1313
+msgid "Black Background"
+msgstr "Црна позадина"
+
+#: ../ggz-gtk/props.c:1322
+msgid "White Background"
+msgstr "Бела позадина"
+
+#: ../ggz-gtk/props.c:1331
+msgid "Chat"
+msgstr "Разговор"
+
+#: ../ggz-gtk/props.c:1343
+msgid "All of the following information is optional."
+msgstr "Сви приложени подаци су опциони."
+
+#: ../ggz-gtk/props.c:1361
+msgid "Name:"
+msgstr "Име:"
+
+#: ../ggz-gtk/props.c:1388
+msgid "City:"
+msgstr "Град:"
+
+#: ../ggz-gtk/props.c:1409
+msgid "State:"
+msgstr "Статус:"
+
+#: ../ggz-gtk/props.c:1430
+msgid "Country:"
+msgstr "Земља:"
+
+#: ../ggz-gtk/props.c:1445
+msgid "Comments, Hobbies, Etc."
+msgstr "Коментари, хоби, остало"
+
+#: ../ggz-gtk/props.c:1467
+msgid "User Information"
+msgstr "Кориснички подаци"
+
+#: ../ggz-gtk/props.c:1483
+msgid "Single Click Room Entry"
+msgstr "Један клик отвара собу"
+
+#: ../ggz-gtk/props.c:1497
+msgid "Display All"
+msgstr "Прикажи све"
+
+#: ../ggz-gtk/props.c:1506
+msgid "Display New"
+msgstr "Прикажи ново"
+
+#: ../ggz-gtk/props.c:1515
+msgid "Display Important"
+msgstr "Прикажи важно"
+
+#: ../ggz-gtk/props.c:1524
+msgid "Display None"
+msgstr "Не приказуј ништа"
+
+#: ../ggz-gtk/props.c:1533
 msgid "Options"
 msgstr "Поставке"
+
+#: ../ggz-gtk/props.c:1622
+msgid "Select Font"
+msgstr "Изаберите словни лик"
+
+#: ../ggz-gtk/roominfo.c:63
+msgid "Room Information"
+msgstr "Подаци о соби"
+
+#: ../ggz-gtk/roominfo.c:80
+msgid "Game Name:"
+msgstr "Име игре:"
+
+#: ../ggz-gtk/roominfo.c:110
+msgid "Room Description:"
+msgstr "Опис собе:"
+
+#: ../ggz-gtk/roominfo.c:155
+msgid "This room has no game"
+msgstr "Ова соба нема игара"
 
 # Не Важи?
 #: ../ggz-gtk/roominfo.c:162 ../ggz-gtk/roominfo.c:169
 msgid "N/A"
 msgstr "Н/В"
 
+#: ../ggz-gtk/roominfo.c:175
+msgid "Unknown room"
+msgstr "Непозната соба"
+
+#: ../ggz-gtk/roomlist.c:73
+msgid "You can't join a room; you're not logged in"
+msgstr ""
+"Можете се придружити соби; нисте "
+"пријављени"
+
+#: ../ggz-gtk/roomlist.c:82
+msgid "You can't switch rooms while playing a game"
+msgstr "Можете променити собу у току игре"
+
+#: ../ggz-gtk/roomlist.c:89
+msgid "Unknown error"
+msgstr "Непозната грешка"
+
+#: ../ggz-gtk/roomlist.c:109 ../ggz-gtk/roomlist.c:114
+msgid "Error joining room"
+msgstr "Грешка у придруживању соби"
+
+#: ../ggz-gtk/roomlist.c:350
+msgid "Other Rooms"
+msgstr "Остале собе"
+
+#: ../ggz-gtk/roomlist.c:424
+msgid "Room"
+msgstr "Соба"
+
+#: ../ggz-gtk/tablelist.c:161
+msgid "No description available."
+msgstr "Опис није доступан."
+
+#: ../ggz-gtk/tablelist.c:196
+msgid "Seats"
+msgstr "Мине"
+
+#: ../ggz-gtk/tablelist.c:201 ../ggz-gtk/types.c:183
+msgid "Description"
+msgstr "Опис"
+
 #: ../ggz-gtk/types.c:113
 msgid "None"
 msgstr "Никаква"
+
+#: ../ggz-gtk/types.c:148
+msgid ""
+"Room filtering is not implemented yet. If\n"
+"you would like to help head over to\n"
+"http://www.ggzgamingzone.org/"
+msgstr ""
+"Филтрирање соба још није уграђено.\n"
+"Уколико желите да помогнете баците "
+"поглед\n"
+"на http://www.ggzgamingzone.org"
+
+#: ../ggz-gtk/types.c:191
+msgid "Web Address"
+msgstr "Веб адреса"
+
+#: ../ggz-gtk/types.c:199
+msgid "Author"
+msgstr "Аутор"
+
+#: ../ggz-gtk/types.c:254
+msgid "Room List Filter:"
+msgstr "Филтер списка соба:"
+
+#: ../ggz-gtk/types.c:266
+msgid "Set"
+msgstr "Подешавање"

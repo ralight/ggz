@@ -1,0 +1,436 @@
+# This translation was merged from GNOME SVN
+# (http://svn.gnome.org/svn/gnome-games/trunk/po/si.po)
+# translation of si.po to Sinhala
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Danishka Navin <snavin@redhat.com>, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: si\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-11-11 22:11+0100\n"
+"PO-Revision-Date: 2007-09-17 12:46+0530\n"
+"Last-Translator: Danishka Navin <snavin@redhat.com>\n"
+"Language-Team: Sinhala <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#: ../ggz-gtk/about.c:87 ../ggz-gtk/client.c:1089
+msgid "About"
+msgstr "සම්බන්ධව"
+
+#: ../ggz-gtk/chat.c:579
+#, c-format
+msgid "%s (logged on)"
+msgstr "%s (පිවිසි ඇත)"
+
+#: ../ggz-gtk/chat.c:617
+#, c-format
+msgid "%s (logged off)"
+msgstr "%s (ඉවත් විය)"
+
+#: ../ggz-gtk/chat.c:666
+msgid "Chat Commands"
+msgstr "පිළිසඳර සඳහා විධාන"
+
+#: ../ggz-gtk/client.c:144
+msgid "Are you sure you want to quit?"
+msgstr ""
+"ඔබට විශ්වාසද ඔබට ඉවත් විමට "
+"අවශ්‍යද?"
+
+#: ../ggz-gtk/client.c:144
+msgid "Quit?"
+msgstr "ඉවත් වනවාද?"
+
+#: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
+#: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:337
+msgid "Game Error"
+msgstr "තරග දෝෂය"
+
+#: ../ggz-gtk/client.c:934
+msgid "GGZ"
+msgstr "GGZ"
+
+#: ../ggz-gtk/client.c:949 ../ggz-gtk/client.c:1180
+msgid "Disconnect"
+msgstr "විසංදි කරන්න"
+
+#: ../ggz-gtk/client.c:962
+msgid "Quit"
+msgstr "පිටවීම"
+
+#: ../ggz-gtk/client.c:969
+msgid "Game"
+msgstr "Game"
+
+#: ../ggz-gtk/client.c:978 ../ggz-gtk/client.c:1133 ../ggz-gtk/launch.c:596
+msgid "Launch"
+msgstr "ආරම්ඹය"
+
+#: ../ggz-gtk/client.c:985 ../ggz-gtk/client.c:1141 ../ggz-gtk/roomlist.c:150
+#: ../ggz-gtk/tablelist.c:74
+msgid "Join"
+msgstr "එක් වන්න"
+
+#: ../ggz-gtk/client.c:1004 ../ggz-gtk/client.c:1157 ../ggz-gtk/tablelist.c:77
+msgid "Leave"
+msgstr "පිට වන්න"
+
+#: ../ggz-gtk/client.c:1011
+msgid "Edit"
+msgstr "සැකසුම්"
+
+#: ../ggz-gtk/client.c:1019
+msgid "Properties"
+msgstr "වත්කම්"
+
+#: ../ggz-gtk/client.c:1026
+msgid "View"
+msgstr "දසුන"
+
+#: ../ggz-gtk/client.c:1065 ../ggz-gtk/types.c:237
+msgid "Game Types"
+msgstr "තරග වර්‍ගය"
+
+#: ../ggz-gtk/client.c:1074 ../ggz-gtk/props.c:1488
+msgid "MOTD"
+msgstr "MOTD"
+
+#: ../ggz-gtk/client.c:1081
+msgid "Help"
+msgstr "උදව්"
+
+#: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:493
+msgid "Stats"
+msgstr "සංඛ්‍යාන"
+
+#: ../ggz-gtk/client.c:1277 ../ggz-gtk/playerinfo.c:274
+msgid "Message:"
+msgstr "පණිවිඩය:"
+
+#: ../ggz-gtk/client.c:1295
+msgid "Send"
+msgstr "යවන්න"
+
+#: ../ggz-gtk/first.c:57
+msgid "Wizard"
+msgstr "විශාරධ"
+
+#: ../ggz-gtk/first.c:58
+msgid "Eagle"
+msgstr "ඊගල්"
+
+#: ../ggz-gtk/first.c:59
+msgid "General"
+msgstr "සාමාන්‍ය"
+
+#: ../ggz-gtk/ggzclient.c:124 ../ggz-gtk/ggzclient.c:380
+#: ../ggz-gtk/ggzclient.c:562 ../ggz-gtk/ggzclient.c:597
+#: ../ggz-gtk/ggzclient.c:650 ../ggz-gtk/ggzclient.c:1083
+#: ../ggz-gtk/launch.c:327
+msgid "Error"
+msgstr "දෝෂය"
+
+#: ../ggz-gtk/ggzclient.c:779
+msgid "Playing"
+msgstr "වාදනය කරමින්"
+
+#: ../ggz-gtk/launch.c:113
+#, c-format
+msgid "Game Type:  %s"
+msgstr "තරග වර්‍ගය:  %s"
+
+#: ../ggz-gtk/launch.c:119
+#, c-format
+msgid "Author:  %s"
+msgstr "කතෘ:  %s"
+
+#: ../ggz-gtk/launch.c:126
+#, c-format
+msgid "Description:  %s"
+msgstr "විස්තරය:  %s"
+
+#: ../ggz-gtk/launch.c:132
+#, c-format
+msgid "Home Page:  %s"
+msgstr "නිවාස පිටුව:  %s"
+
+#: ../ggz-gtk/launch.c:436
+msgid "Game Type:"
+msgstr "තරග වර්‍ගය:"
+
+#: ../ggz-gtk/launch.c:457 ../ggz-gtk/roominfo.c:90
+msgid "Author:"
+msgstr "කතෘ:"
+
+#: ../ggz-gtk/launch.c:469
+msgid "Description:"
+msgstr "විස්තරය:"
+
+#: ../ggz-gtk/launch.c:480 ../ggz-gtk/roominfo.c:100
+msgid "Homepage:"
+msgstr "නිවාස පිටුව:"
+
+#: ../ggz-gtk/launch.c:518
+#, c-format
+msgid "Seat %d:"
+msgstr "අසනය %d:"
+
+#: ../ggz-gtk/launch.c:527
+msgid "Computer"
+msgstr "පරිගණකය"
+
+#: ../ggz-gtk/launch.c:538
+msgid "Open"
+msgstr "විවෘත කරන්න"
+
+#: ../ggz-gtk/launch.c:550
+msgid "Reserved for"
+msgstr "සඳහා වෙන්කර ඇත"
+
+#: ../ggz-gtk/launch.c:576
+msgid "Game Description   "
+msgstr "තරග විස්තරය   "
+
+#: ../ggz-gtk/login.c:554
+msgid "Server Profile"
+msgstr "සේවාදායකයේ පැතිකඩ"
+
+#: ../ggz-gtk/login.c:578 ../ggz-gtk/props.c:942
+msgid "Profile:"
+msgstr "පැතිකඩ:"
+
+#: ../ggz-gtk/login.c:601 ../ggz-gtk/props.c:963
+msgid "Server:"
+msgstr "සේවාදායකය:"
+
+#: ../ggz-gtk/login.c:613 ../ggz-gtk/props.c:978
+msgid "Port:"
+msgstr "කෙවනිය:"
+
+#: ../ggz-gtk/login.c:644 ../ggz-gtk/props.c:1010
+msgid "Username:"
+msgstr "පරිශිලක නම:"
+
+#: ../ggz-gtk/login.c:659 ../ggz-gtk/props.c:1031
+msgid "Password:"
+msgstr "රහස්පදය:"
+
+#: ../ggz-gtk/login.c:675
+msgid "Email:"
+msgstr "විද්‍යුත් තැපැල:"
+
+#: ../ggz-gtk/login.c:691 ../ggz-gtk/props.c:1074
+msgid "Normal Login"
+msgstr "සාමාන්‍ය පිවිසීම"
+
+#: ../ggz-gtk/login.c:710
+msgid "First-time Login"
+msgstr "ප්‍රථම පිවිසීම"
+
+#: ../ggz-gtk/playerinfo.c:105
+msgid "Player Information"
+msgstr "තරගකරුගේ තොරතුරු"
+
+#: ../ggz-gtk/playerinfo.c:153
+msgid "Table:"
+msgstr "වගු:"
+
+#: ../ggz-gtk/playerinfo.c:171
+msgid "Account:"
+msgstr "ගිණුම:"
+
+#: ../ggz-gtk/playerinfo.c:202
+msgid "Record:"
+msgstr "වාර්ථාව:"
+
+#: ../ggz-gtk/playerinfo.c:220
+msgid "Rating:"
+msgstr "වර්ගිකරණය:"
+
+#: ../ggz-gtk/playerinfo.c:256
+msgid "Score:"
+msgstr "ලකුණු:"
+
+#: ../ggz-gtk/playerinfo.c:317 ../ggz-gtk/playerinfo.c:350
+msgid "Unknown"
+msgstr "නොදන්නා"
+
+#: ../ggz-gtk/playerinfo.c:353
+msgid "Registered"
+msgstr "ලියාපදිංචිවු"
+
+#: ../ggz-gtk/playerinfo.c:359
+msgid "Host"
+msgstr "ධාරකය"
+
+#: ../ggz-gtk/playerlist.c:171 ../ggz-gtk/roomlist.c:144
+#: ../ggz-gtk/tablelist.c:84
+msgid "Info"
+msgstr "තොරතුරු"
+
+#: ../ggz-gtk/playerlist.c:178
+msgid "Friends"
+msgstr "මිතුරන්"
+
+#: ../ggz-gtk/playerlist.c:183
+msgid "Ignore"
+msgstr "දාවක මට්ටම"
+
+#: ../ggz-gtk/playerlist.c:380
+#, c-format
+msgid "#%d"
+msgstr "#%d"
+
+#: ../ggz-gtk/playerlist.c:483
+msgid "L"
+msgstr "L"
+
+#: ../ggz-gtk/playerlist.c:488 ../ggz-gtk/tablelist.c:191
+msgid "T#"
+msgstr "T#"
+
+#: ../ggz-gtk/playerlist.c:499 ../ggz-gtk/types.c:176
+msgid "Name"
+msgstr "නම"
+
+#: ../ggz-gtk/props.c:251
+msgid "Properties Updated"
+msgstr "වත්කම් යාවත්කාලීන විය"
+
+#: ../ggz-gtk/props.c:1052
+msgid "Confirm:"
+msgstr "ස්තිර කිරීම:"
+
+#: ../ggz-gtk/props.c:1102
+msgid "Modify"
+msgstr "සකසන්න"
+
+#: ../ggz-gtk/props.c:1116
+msgid "Servers"
+msgstr "සේවාදායක"
+
+#: ../ggz-gtk/props.c:1135
+msgid "Chat Font:"
+msgstr "පිළිසඳර සඳහා අක්‍ෂර:"
+
+#: ../ggz-gtk/props.c:1151
+msgid "Change"
+msgstr "වෙනස්කම්"
+
+#: ../ggz-gtk/props.c:1280
+msgid "Normal Color"
+msgstr "සාමාන්‍ය වර්‍ණ"
+
+#: ../ggz-gtk/props.c:1291
+msgid "Highlight Color"
+msgstr "උද්දීපන වර්‍ණය"
+
+#: ../ggz-gtk/props.c:1302
+msgid "Friend Color"
+msgstr "මිතුරු වර්‍ණය"
+
+#: ../ggz-gtk/props.c:1313
+msgid "Black Background"
+msgstr "කලු පසුබිම"
+
+#: ../ggz-gtk/props.c:1322
+msgid "White Background"
+msgstr "සුදු පසුබිම"
+
+#: ../ggz-gtk/props.c:1331
+msgid "Chat"
+msgstr "පිළි සඳර"
+
+#: ../ggz-gtk/props.c:1361
+msgid "Name:"
+msgstr "නම:"
+
+#: ../ggz-gtk/props.c:1388
+msgid "City:"
+msgstr "නගරය:"
+
+#: ../ggz-gtk/props.c:1409
+msgid "State:"
+msgstr "ප්‍රාන්තය:"
+
+#: ../ggz-gtk/props.c:1430
+msgid "Country:"
+msgstr "රට:"
+
+#: ../ggz-gtk/props.c:1467
+msgid "User Information"
+msgstr "පරිශීලක තොරතුරු"
+
+#: ../ggz-gtk/props.c:1497
+msgid "Display All"
+msgstr "සියල්ල සංදර්ශනය"
+
+#: ../ggz-gtk/props.c:1533
+msgid "Options"
+msgstr "විකල්ප"
+
+#: ../ggz-gtk/props.c:1622
+msgid "Select Font"
+msgstr "අක්‍ෂර තෝරන්න"
+
+#: ../ggz-gtk/roominfo.c:63
+msgid "Room Information"
+msgstr "කාමර තොරතුරු"
+
+#: ../ggz-gtk/roominfo.c:80
+msgid "Game Name:"
+msgstr "තරගයේ නම:"
+
+#: ../ggz-gtk/roominfo.c:110
+msgid "Room Description:"
+msgstr "කාමර විස්තරය:"
+
+#: ../ggz-gtk/roominfo.c:162 ../ggz-gtk/roominfo.c:169
+msgid "N/A"
+msgstr "අදාල නොවේ"
+
+#: ../ggz-gtk/roominfo.c:175
+msgid "Unknown room"
+msgstr "නොදන්නා කාමරයක්"
+
+#: ../ggz-gtk/roomlist.c:89
+msgid "Unknown error"
+msgstr "නොදන්නා දෝෂයක්"
+
+#: ../ggz-gtk/roomlist.c:109 ../ggz-gtk/roomlist.c:114
+msgid "Error joining room"
+msgstr "කාමරයට එක් වීමෙ දෝෂය"
+
+#: ../ggz-gtk/roomlist.c:350
+msgid "Other Rooms"
+msgstr "වෙනත් කාමර"
+
+#: ../ggz-gtk/roomlist.c:424
+msgid "Room"
+msgstr "කාමරය"
+
+#: ../ggz-gtk/tablelist.c:161
+msgid "No description available."
+msgstr "විස්තරයක් භාවිතයට නැත."
+
+#: ../ggz-gtk/tablelist.c:201 ../ggz-gtk/types.c:183
+msgid "Description"
+msgstr "විස්තරය"
+
+#: ../ggz-gtk/types.c:113
+msgid "None"
+msgstr "කිසිවක් නැත"
+
+#: ../ggz-gtk/types.c:191
+msgid "Web Address"
+msgstr "වෙබ් ලිපිනය"
+
+#: ../ggz-gtk/types.c:199
+msgid "Author"
+msgstr "කතෘ"

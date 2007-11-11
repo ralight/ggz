@@ -16,9 +16,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-games\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-20 15:07+0100\n"
-"PO-Revision-Date: 2005-09-01 10:15+0200\n"
-"Last-Translator: Hakan Bekdas <hakanbekdas@yahoo.com>\n"
+"POT-Creation-Date: 2007-11-11 22:11+0100\n"
+"PO-Revision-Date: 2007-09-16 13:12+0200\n"
+"Last-Translator: Deniz Koçak <deniz.kocak@linux.org.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,34 +26,1074 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: KBabel 1.9.1\n"
 
+#: ../ggz-gtk/about.c:87 ../ggz-gtk/client.c:1089
+msgid "About"
+msgstr "Hakkında"
+
+#: ../ggz-gtk/chat.c:291
+#, c-format
+msgid "You have received an unknown message from %s."
+msgstr "%s oyuncusundan bilinmeyen bir mesaj aldınız."
+
+#: ../ggz-gtk/chat.c:355
+#, c-format
+msgid "You've been beeped by %s."
+msgstr "%s tarafından biplendiniz."
+
+#: ../ggz-gtk/chat.c:551
+#, c-format
+msgid "Beep sent to %s."
+msgstr "Bip %s'e gönderildi."
+
+#: ../ggz-gtk/chat.c:579
+#, c-format
+msgid "%s (logged on)"
+msgstr "%s (giriş yapmış)"
+
+#: ../ggz-gtk/chat.c:617
+#, c-format
+msgid "%s (logged off)"
+msgstr "%s (çıkış yapmış)"
+
+#: ../ggz-gtk/chat.c:666
+msgid "Chat Commands"
+msgstr "Sohbet Komutları"
+
+#: ../ggz-gtk/chat.c:879
+#, c-format
+msgid "Added %s to your friends list."
+msgstr "%s arkadaş listenize eklendi."
+
+#: ../ggz-gtk/chat.c:903
+#, c-format
+msgid "Removed %s from your friends list."
+msgstr "%s arkadaş listenizden çıkarıldı."
+
+#: ../ggz-gtk/chat.c:934
+#, c-format
+msgid "Added %s to your ignore list."
+msgstr "%s yoksayma listenize eklendi."
+
+#: ../ggz-gtk/chat.c:959
+#, c-format
+msgid "Removed %s from your ignore list."
+msgstr "%s yoksayma listenizden çıkarıldı."
+
+#: ../ggz-gtk/chat.c:1034
+msgid "People currently your friends"
+msgstr "Şu an arkadaşınız olan insanlar"
+
+#: ../ggz-gtk/chat.c:1045
+msgid "People you're currently ignoring"
+msgstr "Şu an yoksaydığınız insanlar"
+
+#: ../ggz-gtk/chat.c:1119
+msgid "Multiple matches:"
+msgstr "Çoklu eşleşme:"
+
+#: ../ggz-gtk/client.c:144
+msgid "Are you sure you want to quit?"
+msgstr "Çıkmak istediğinizden emin misiniz?"
+
+#: ../ggz-gtk/client.c:144
+msgid "Quit?"
+msgstr "Çık?"
+
+#: ../ggz-gtk/client.c:237
+msgid ""
+"Server stats are not implemented yet. If\n"
+"you would like to help head over to\n"
+"http://www.ggzgamingzone.org/"
+msgstr ""
+"Sunucu bilgileri henüz gerçeklenmedi. Eğer\n"
+"yardım etmek isterseniz\n"
+"http://www.ggzgamingzone.org/ adresine başvurun."
+
+#: ../ggz-gtk/client.c:239 ../ggz-gtk/client.c:251 ../ggz-gtk/client.c:311
+#: ../ggz-gtk/client.c:547 ../ggz-gtk/types.c:151
+msgid "Not Implemented"
+msgstr "Gerçeklenmemiş"
+
+#: ../ggz-gtk/client.c:248 ../ggz-gtk/client.c:545
+msgid ""
+"Player stats are not implemented yet. If\n"
+"you would like to help head over to\n"
+"http://www.ggzgamingzone.org/"
+msgstr ""
+"Oyuncu bilgileri henüz gerçeklenmedi. Eğer\n"
+"yardım etmek isterseniz\n"
+"http://www.ggzgamingzone.org/ adresine başvurun. "
+
+#: ../ggz-gtk/client.c:566
+msgid "You must highlight a table before you can join it."
+msgstr "Katılabilmeniz için önce bir masa belirtmelisiniz."
+
+#: ../ggz-gtk/client.c:567 ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:615
+msgid "Error Joining"
+msgstr "Katılımda hata"
+
+#: ../ggz-gtk/client.c:576 ../ggz-gtk/client.c:614
+msgid "That table is full."
+msgstr "Bu masa dolu."
+
+#: ../ggz-gtk/client.c:585 ../ggz-gtk/client.c:626 ../ggz-gtk/launch.c:336
+msgid "Error launching game module."
+msgstr "Oyun modulü başlatılırken hata."
+
+#: ../ggz-gtk/client.c:586 ../ggz-gtk/client.c:627 ../ggz-gtk/game.c:297
+#: ../ggz-gtk/game.c:305 ../ggz-gtk/launch.c:337
+msgid "Game Error"
+msgstr "Oyun Hatası"
+
+#: ../ggz-gtk/client.c:600
+msgid "You must highlight a table before you can watch it."
+msgstr "İzleyebilmeniz için önce bir masa belirtmelisiniz."
+
+#: ../ggz-gtk/client.c:602
+msgid "Error Spectating"
+msgstr "İzlemede Hata"
+
+#: ../ggz-gtk/client.c:647
+msgid ""
+"Failed to join table.\n"
+"Join aborted."
+msgstr "Ta"
+
+#: ../ggz-gtk/client.c:648
+msgid "Join Error"
+msgstr "Katılım Hatası"
+
+#: ../ggz-gtk/client.c:678
+msgid "Disconnect from the GGZ Gaming Zone server"
+msgstr "GGZ Oyun Alanı sunucuna olan bağlantıyı kopar"
+
+#: ../ggz-gtk/client.c:680
+msgid "Start playing a game at a new table"
+msgstr "Yeni bir masada yeni bir oyun başlat"
+
 #: ../ggz-gtk/client.c:682
 msgid "Join an existing game"
 msgstr "Varolan bir oyuna katıl"
+
+#: ../ggz-gtk/client.c:684
+msgid "Watch an existing game - become a spectator of the table"
+msgstr "Var olan bir oyunu izle - masanın bir izleyicisi ol"
+
+#: ../ggz-gtk/client.c:687
+msgid "Leave the game you're currently playing"
+msgstr "Oynamakta olduğunuz oyundan ayrılır"
+
+#: ../ggz-gtk/client.c:689
+msgid "Show the properties dialog to change the client settings"
+msgstr ""
+"İstemci ayarlarını değiştirmek için özellikler penceresini göster"
+
+#: ../ggz-gtk/client.c:696
+msgid "Exit the GGZ client application."
+msgstr "GGZ istemci uygulamasından çık."
+
+#: ../ggz-gtk/client.c:736
+msgid "Compiled with debugging."
+msgstr "Hata ayıklama desteği ile derlenmiş"
+
+#: ../ggz-gtk/client.c:934
+msgid "GGZ"
+msgstr "GGZ"
+
+#: ../ggz-gtk/client.c:942 ../ggz-gtk/login.c:729
+msgid "Connect"
+msgstr "Bağlan"
+
+#: ../ggz-gtk/client.c:949 ../ggz-gtk/client.c:1180
+msgid "Disconnect"
+msgstr "Bağlantıyı kes"
+
+#: ../ggz-gtk/client.c:962
+msgid "Quit"
+msgstr "Çık"
 
 #: ../ggz-gtk/client.c:969
 msgid "Game"
 msgstr "Oyun"
 
+#: ../ggz-gtk/client.c:978 ../ggz-gtk/client.c:1133 ../ggz-gtk/launch.c:596
+msgid "Launch"
+msgstr "Başlat"
+
+#: ../ggz-gtk/client.c:985 ../ggz-gtk/client.c:1141 ../ggz-gtk/roomlist.c:150
+#: ../ggz-gtk/tablelist.c:74
+msgid "Join"
+msgstr "Katıl"
+
+#: ../ggz-gtk/client.c:992 ../ggz-gtk/client.c:1149
+msgid "Watch"
+msgstr "İzle"
+
+#: ../ggz-gtk/client.c:1004 ../ggz-gtk/client.c:1157 ../ggz-gtk/tablelist.c:77
+msgid "Leave"
+msgstr "Ayrıl"
+
+#: ../ggz-gtk/client.c:1011
+msgid "Edit"
+msgstr "Düzenle"
+
+#: ../ggz-gtk/client.c:1019
+msgid "Properties"
+msgstr "Özellikler"
+
+#: ../ggz-gtk/client.c:1026
+msgid "View"
+msgstr "Görünüm"
+
+#: ../ggz-gtk/client.c:1035
+msgid "Room List"
+msgstr "Oda Listesi"
+
+#: ../ggz-gtk/client.c:1041
+msgid "Player List"
+msgstr "Oyuncu Listesi"
+
+#: ../ggz-gtk/client.c:1053
+msgid "Server Stats"
+msgstr "Sunucu Bilgileri"
+
+#: ../ggz-gtk/client.c:1057
+msgid "Player Stats"
+msgstr "Oyuncu Bilgileri"
+
+#: ../ggz-gtk/client.c:1065 ../ggz-gtk/types.c:237
+msgid "Game Types"
+msgstr "Oyun Türleri"
+
+#: ../ggz-gtk/client.c:1074 ../ggz-gtk/props.c:1488
+msgid "MOTD"
+msgstr "MOTD"
+
+#: ../ggz-gtk/client.c:1081
+msgid "Help"
+msgstr "Yardım"
+
+#: ../ggz-gtk/client.c:1171 ../ggz-gtk/playerlist.c:493
+msgid "Stats"
+msgstr "Bilgiler"
+
+#: ../ggz-gtk/client.c:1196 ../ggz-gtk/ggzclient.c:721
+msgid "Current Room:"
+msgstr "Şimdiki Oda:"
+
+#: ../ggz-gtk/client.c:1277 ../ggz-gtk/playerinfo.c:274
+msgid "Message:"
+msgstr "Mesaj:"
+
+#: ../ggz-gtk/client.c:1295
+msgid "Send"
+msgstr "Gönder"
+
+#: ../ggz-gtk/client.c:1480 ../ggz-gtk/ggzclient.c:400
+msgid "GGZ Gaming Zone"
+msgstr "GGZ Oyun Alanı"
+
+#: ../ggz-gtk/first.c:57
+msgid "Wizard"
+msgstr "Büyücü"
+
+#: ../ggz-gtk/first.c:57
+msgid "Deity"
+msgstr "İlah"
+
+#: ../ggz-gtk/first.c:57
+msgid "Sentinel"
+msgstr "Gözcü"
+
+#: ../ggz-gtk/first.c:57
+msgid "Captain"
+msgstr "Kaptan"
+
+#: ../ggz-gtk/first.c:58
+msgid "Knight"
+msgstr "Şövalye"
+
+#: ../ggz-gtk/first.c:58
+msgid "Angel"
+msgstr "Melek"
+
+#: ../ggz-gtk/first.c:58
+msgid "Silverlord"
+msgstr "Gümüş Lord"
+
+#: ../ggz-gtk/first.c:58
+msgid "Eagle"
+msgstr "Kartal"
+
+#: ../ggz-gtk/first.c:59
+msgid "Vampire"
+msgstr "Vampir"
+
+#: ../ggz-gtk/first.c:59
+msgid "Chief"
+msgstr "Şef"
+
+#: ../ggz-gtk/first.c:59
+msgid "Colonel"
+msgstr "Albay"
+
 #: ../ggz-gtk/first.c:59
 msgid "General"
 msgstr "Genel"
 
-#: ../ggz-gtk/playerinfo.c:241
+#: ../ggz-gtk/first.c:60
+msgid "Major"
+msgstr "Binbaşı"
+
+#: ../ggz-gtk/first.c:60
+msgid "Scout"
+msgstr "İzci"
+
+#: ../ggz-gtk/first.c:60
+msgid "Lieutenant"
+msgstr "Teğmen"
+
+#: ../ggz-gtk/first.c:60
+msgid "Stalker"
+msgstr "Avcı"
+
+#: ../ggz-gtk/first.c:61
+msgid "Scientist"
+msgstr "Bilim adamı"
+
+#: ../ggz-gtk/first.c:61
+msgid "Scholar"
+msgstr "Bilgin"
+
+#: ../ggz-gtk/first.c:61
+msgid "Entity"
+msgstr "Kişi"
+
+#: ../ggz-gtk/first.c:61
+msgid "Creator"
+msgstr "Yaratıcı"
+
+#: ../ggz-gtk/first.c:69
+msgid "GGZ Community (fast)"
+msgstr "GGZ Topluluğu (hızlı)"
+
+#: ../ggz-gtk/first.c:70
+msgid "Local developer server"
+msgstr "Yerel geliştirici sunucusu"
+
+#: ../ggz-gtk/first.c:190
+msgid ""
+"This is the first time you are running the GTK+ GGZ Gaming Zone client. "
+"Would you like to create some default server profiles?"
+msgstr ""
+"Bu GTK+ GGZ Oyun Alanı istemcisini ilk çalıştırmanız. Bazı "
+"öntanımlı sunucu profillerini oluşturmak ister misiniz? "
+
+#: ../ggz-gtk/game.c:72
+#, c-format
+msgid ""
+"You don't have this game installed. You can download\n"
+"it from %s."
+msgstr "Bu oyunu yüklememişsiniz. %s adresinden indirebilirsiniz."
+
+#: ../ggz-gtk/game.c:76 ../ggz-gtk/game.c:149 ../ggz-gtk/game.c:315
+#: ../ggz-gtk/game.c:325 ../ggz-gtk/game.c:334 ../ggz-gtk/game.c:350
+#: ../ggz-gtk/launch.c:292
+msgid "Launch Error"
+msgstr "Başlatma Hatası"
+
+#: ../ggz-gtk/game.c:148
+msgid ""
+"Failed to execute game module.\n"
+" Launch aborted."
+msgstr ""
+"Oyun modülü çalıştırma başarısız.\n"
+" Başlatma iptal edildi."
+
+#: ../ggz-gtk/game.c:201
+msgid "Launched game"
+msgstr "Başlatılan oyun"
+
+#: ../ggz-gtk/game.c:222
+msgid "Launch failed"
+msgstr "Başlatma başarısız"
+
+#: ../ggz-gtk/game.c:296
+msgid "You can only play one game at a time."
+msgstr "Aynı anda sadece bir oyun oynayabilirsiniz."
+
+#: ../ggz-gtk/game.c:304
+msgid "You're still at a table."
+msgstr "Hala bir masadasınız."
+
+#: ../ggz-gtk/game.c:313
+msgid ""
+"You must be in a room to launch a game.\n"
+"Launch aborted"
+msgstr ""
+"Bir oyun başlatmak için bir odada olmalısınız.\n"
+"Başlatma iptal edildi."
+
+#: ../ggz-gtk/game.c:323
+msgid ""
+"No game types defined for this server.\n"
+"Launch aborted."
+msgstr ""
+"Bu sunucu için oyun tipi tanımlanmamış.\n"
+"Başlatma iptal edildi."
+
+#: ../ggz-gtk/game.c:333
+msgid "This game doesn't support spectators."
+msgstr "Bu oyun izleyicileri desteklemiyor."
+
+#: ../ggz-gtk/game.c:348
+msgid ""
+"You need to launch the GGZ client directly\n"
+"to be able to play this game."
+msgstr ""
+"Bu oyunu oynayabilmek için GGZ istemcisini\n"
+"doğrudan başlatmanız gerekmekte."
+
+#: ../ggz-gtk/ggzclient.c:122
+#, c-format
+msgid "Error connecting to server: %s"
+msgstr "Sunucuya bağlanırken hata: %s"
+
+#: ../ggz-gtk/ggzclient.c:124 ../ggz-gtk/ggzclient.c:380
+#: ../ggz-gtk/ggzclient.c:562 ../ggz-gtk/ggzclient.c:597
+#: ../ggz-gtk/ggzclient.c:650 ../ggz-gtk/ggzclient.c:1083
+#: ../ggz-gtk/launch.c:327
+msgid "Error"
+msgstr "Hata"
+
+#: ../ggz-gtk/ggzclient.c:237
+#, c-format
+msgid "Your new password is %s"
+msgstr "Yeni parolanız %s"
+
+#: ../ggz-gtk/ggzclient.c:239
+msgid "New password"
+msgstr "Yeni parola"
+
+#: ../ggz-gtk/ggzclient.c:275
+#, c-format
+msgid "Players on server: %d"
+msgstr "Sunucudaki kullanıcılar: %d"
+
+#: ../ggz-gtk/ggzclient.c:320
+#, c-format
+msgid "Current Room: %s"
+msgstr "Şimdiki Oda: %s"
+
+#: ../ggz-gtk/ggzclient.c:328
+#, c-format
+msgid "You've joined room \"%s\"."
+msgstr "\"%s\" odasına katıldınız."
+
+#: ../ggz-gtk/ggzclient.c:378
+#, c-format
+msgid "Error joining room: %s"
+msgstr "Odaya katılırken hata: %s"
+
+#: ../ggz-gtk/ggzclient.c:429
+msgid "You can't chat while not in a room."
+msgstr "Bir odada değilken sohbet edemezsiniz."
+
+#: ../ggz-gtk/ggzclient.c:434
+msgid "You don't have permission to chat here."
+msgstr "Burada sohbet etmek için yetkiniz yok."
+
+#: ../ggz-gtk/ggzclient.c:438
+msgid "No private chatting at a table!"
+msgstr "Bir masada özel sohbet yok!"
+
+#: ../ggz-gtk/ggzclient.c:442
+msgid "That player isn't in the room!"
+msgstr "Kullanıcı odada değil!"
+
+#: ../ggz-gtk/ggzclient.c:447
+msgid "There was an error sending the chat."
+msgstr "Sohbet gönderirken bir hata oluştu."
+
+#: ../ggz-gtk/ggzclient.c:451
+msgid "You're not at a table."
+msgstr "Bir masada değilsiniz."
+
+#: ../ggz-gtk/ggzclient.c:455
+#, c-format
+msgid "Chat failed: %s."
+msgstr "Sohbet başarısız: %s."
+
+#: ../ggz-gtk/ggzclient.c:560
+#, c-format
+msgid "Error launching table: %s"
+msgstr "Masa başlatılırken hata: %s"
+
+#: ../ggz-gtk/ggzclient.c:580
+#, c-format
+msgid "You have joined table %d."
+msgstr "%d masasına katıldınız."
+
+#: ../ggz-gtk/ggzclient.c:595
+#, c-format
+msgid "Error joining table: %s"
+msgstr "Masaya katılırken hata: %s"
+
+#: ../ggz-gtk/ggzclient.c:617
+#, c-format
+msgid "You have been booted from the table by %s."
+msgstr "%s tarafından masadan uzaklaştırıldınız."
+
+#: ../ggz-gtk/ggzclient.c:622
+#, c-format
+msgid "You have left the table."
+msgstr "Masayı terk ettiniz."
+
+#: ../ggz-gtk/ggzclient.c:625
+#, c-format
+msgid "The game is over."
+msgstr "Oyun bitti."
+
+#: ../ggz-gtk/ggzclient.c:629
+#, c-format
+msgid "There was an error with the game server."
+msgstr "Oyun sunucusu ile ilgili bir hata oluştu."
+
+#: ../ggz-gtk/ggzclient.c:648
+#, c-format
+msgid "Error leaving table: %s"
+msgstr "Masadan ayrılırken hata: %s"
+
+#: ../ggz-gtk/ggzclient.c:743
+msgid "**none**"
+msgstr "**hiçbiri**"
+
+#: ../ggz-gtk/ggzclient.c:750
+msgid "Offline"
+msgstr "Çevrimdışı"
+
+#: ../ggz-gtk/ggzclient.c:753
+msgid "Connecting"
+msgstr "Bağlanıyor"
+
+#: ../ggz-gtk/ggzclient.c:756
+msgid "Reconnecting"
+msgstr "Tekrar bağlanılıyor"
+
+#: ../ggz-gtk/ggzclient.c:759
+msgid "Online"
+msgstr "Çevrimiçi"
+
+#: ../ggz-gtk/ggzclient.c:762
+msgid "Logging In"
+msgstr "Giriş Yapıyor"
+
+#: ../ggz-gtk/ggzclient.c:765
+msgid "Logged In"
+msgstr "Giriş Yapmış"
+
+#: ../ggz-gtk/ggzclient.c:769
+msgid "--> Room"
+msgstr "--> Oda"
+
+#: ../ggz-gtk/ggzclient.c:772
+msgid "Chatting"
+msgstr "Sohbet ediyor"
+
+#: ../ggz-gtk/ggzclient.c:776
+msgid "--> Table"
+msgstr "--> Masa"
+
+#: ../ggz-gtk/ggzclient.c:779
+msgid "Playing"
+msgstr "Oynuyor"
+
+#: ../ggz-gtk/ggzclient.c:782
+msgid "<-- Table"
+msgstr "<-- Masa"
+
+#: ../ggz-gtk/ggzclient.c:785
+msgid "Logging Out"
+msgstr "Çıkış Yapıyor"
+
+#: ../ggz-gtk/ggzclient.c:1081
+#, c-format
+msgid "Server error: %s"
+msgstr "Sunucu hatası: %s"
+
+#: ../ggz-gtk/ggzclient.c:1170
+msgid "Disconnected from server."
+msgstr "Sunucudan bağlantı kesildi."
+
+#: ../ggz-gtk/launch.c:113
+#, c-format
+msgid "Game Type:  %s"
+msgstr "Oyun Türü:  %s"
+
+#: ../ggz-gtk/launch.c:119
+#, c-format
+msgid "Author:  %s"
+msgstr "Yazar:  %s"
+
+#: ../ggz-gtk/launch.c:126
+#, c-format
+msgid "Description:  %s"
+msgstr "Tanım:  %s"
+
+#: ../ggz-gtk/launch.c:132
+#, c-format
+msgid "Home Page:  %s"
+msgstr "Ev Sayfası:  %s"
+
+#: ../ggz-gtk/launch.c:291
+msgid ""
+"Failed to launch table.\n"
+" Launch aborted."
+msgstr ""
+"Masa başlatma başarısız.\n"
+" Başlatma iptal edildi."
+
+#: ../ggz-gtk/launch.c:327
+msgid "Invalid number of bots specified"
+msgstr "Geçersiz bot sayısı belirtildi"
+
+#: ../ggz-gtk/launch.c:420
+msgid "Seat Assignments"
+msgstr "Koltuk Dağılımı"
+
+#: ../ggz-gtk/launch.c:436
+msgid "Game Type:"
+msgstr "Oyun Türü:"
+
+#: ../ggz-gtk/launch.c:448
+msgid "Number of seats"
+msgstr "Koltuk sayısı"
+
+#: ../ggz-gtk/launch.c:457 ../ggz-gtk/roominfo.c:90
+msgid "Author:"
+msgstr "Yazar:"
+
+#: ../ggz-gtk/launch.c:469
+msgid "Description:"
+msgstr "Tanım:"
+
+#: ../ggz-gtk/launch.c:480 ../ggz-gtk/roominfo.c:100
+msgid "Homepage:"
+msgstr "Ev sayfası:"
+
+#: ../ggz-gtk/launch.c:518
+#, c-format
+msgid "Seat %d:"
+msgstr "Koltuk %d:"
+
+#: ../ggz-gtk/launch.c:527
+msgid "Computer"
+msgstr "Bilgisayar"
+
+#: ../ggz-gtk/launch.c:538
+msgid "Open"
+msgstr "Aç"
+
+#: ../ggz-gtk/launch.c:550
+msgid "Reserved for"
+msgstr "Rezerve dilen"
+
+#: ../ggz-gtk/launch.c:576
+msgid "Game Description   "
+msgstr "Oyun Tanımı"
+
+#: ../ggz-gtk/login.c:101
+msgid "Login"
+msgstr "Giriş"
+
+#: ../ggz-gtk/login.c:115
+#, c-format
+msgid "That username is already in use."
+msgstr "Bu kullanıcı adı halen kullanımda."
+
+#: ../ggz-gtk/login.c:119
+#, c-format
+msgid ""
+"Authentication has failed.\n"
+"Please supply the correct password."
+msgstr ""
+"Kimlik doğrulama başarısız.\n"
+"Lütfen doğru parolayı girin."
+
+#: ../ggz-gtk/login.c:123
+#, c-format
+msgid "The username is too long!"
+msgstr "Kullanıcı adı çok uzun!"
+
+#: ../ggz-gtk/login.c:126
+#, c-format
+msgid "Invalid username, do not use special characters!"
+msgstr "Geçersiz kullanıcı adı, özel karakterler kullanmayın!"
+
+#: ../ggz-gtk/login.c:554
+msgid "Server Profile"
+msgstr "Sunucu Profili"
+
+#: ../ggz-gtk/login.c:578 ../ggz-gtk/props.c:942
+msgid "Profile:"
+msgstr "Profil:"
+
+#: ../ggz-gtk/login.c:601 ../ggz-gtk/props.c:963
+msgid "Server:"
+msgstr "Sunucu:"
+
+#: ../ggz-gtk/login.c:613 ../ggz-gtk/props.c:978
+msgid "Port:"
+msgstr "Port:"
+
+#: ../ggz-gtk/login.c:644 ../ggz-gtk/props.c:1010
+msgid "Username:"
+msgstr "Kullanıcı Adı:"
+
+#: ../ggz-gtk/login.c:659 ../ggz-gtk/props.c:1031
+msgid "Password:"
+msgstr "Parola:"
+
+#: ../ggz-gtk/login.c:675
+msgid "Email:"
+msgstr "E-posta:"
+
+#: ../ggz-gtk/login.c:691 ../ggz-gtk/props.c:1074
+msgid "Normal Login"
+msgstr "Normal Giriş"
+
+#: ../ggz-gtk/login.c:702 ../ggz-gtk/props.c:1082
+msgid "Guest Login"
+msgstr "Misafir Girişi"
+
+#: ../ggz-gtk/login.c:710
+msgid "First-time Login"
+msgstr "İlk kez girişi"
+
+#: ../ggz-gtk/motd.c:161
+msgid "Message of the Day"
+msgstr "Günün Mesajı"
+
+#: ../ggz-gtk/pick_module.c:89
+msgid "Which client would you like to use to play this game?"
+msgstr "Bu oyunu oynamak için hangi istemciyi kullanmak istersiniz?"
+
+#: ../ggz-gtk/pick_module.c:131
+msgid "Don't ask me again."
+msgstr "Bana tekrar sorma."
+
+#: ../ggz-gtk/playerinfo.c:105
+msgid "Player Information"
+msgstr "Oyuncu Bilgisi"
+
+#: ../ggz-gtk/playerinfo.c:135
+msgid "Player Handle:"
+msgstr "Oyuncu Kimliği:"
+
+#: ../ggz-gtk/playerinfo.c:153
+msgid "Table:"
+msgstr "Masa:"
+
+#: ../ggz-gtk/playerinfo.c:171
+msgid "Account:"
+msgstr "Hesap:"
+
+#: ../ggz-gtk/playerinfo.c:202
+msgid "Record:"
+msgstr "Kayıt:"
+
+#: ../ggz-gtk/playerinfo.c:220
+msgid "Rating:"
+msgstr "Derece:"
+
+#: ../ggz-gtk/playerinfo.c:238
+msgid "Rank:"
+msgstr "Sıralama:"
+
+#: ../ggz-gtk/playerinfo.c:256
 msgid "Score:"
 msgstr "Puan:"
 
-#: ../ggz-gtk/playerlist.c:362 ../ggz-gtk/types.c:176
+#: ../ggz-gtk/playerinfo.c:317 ../ggz-gtk/playerinfo.c:350
+msgid "Unknown"
+msgstr "Bilinmiyor"
+
+#: ../ggz-gtk/playerinfo.c:353
+msgid "Registered"
+msgstr "Kayıtlı"
+
+#: ../ggz-gtk/playerinfo.c:356
+msgid "Guest"
+msgstr "Misafir"
+
+#: ../ggz-gtk/playerinfo.c:359
+msgid "Host"
+msgstr "Ev sahibi"
+
+#: ../ggz-gtk/playerinfo.c:362
+msgid "Administrator"
+msgstr "Yönetici"
+
+#: ../ggz-gtk/playerinfo.c:365
+msgid "Bot"
+msgstr "Bot"
+
+#: ../ggz-gtk/playerlist.c:171 ../ggz-gtk/roomlist.c:144
+#: ../ggz-gtk/tablelist.c:84
+msgid "Info"
+msgstr "Bilgi"
+
+#: ../ggz-gtk/playerlist.c:178
+msgid "Friends"
+msgstr "Arkadaşlar"
+
+#: ../ggz-gtk/playerlist.c:183
+msgid "Ignore"
+msgstr "Yoksay"
+
+#: ../ggz-gtk/playerlist.c:380
+#, c-format
+msgid "#%d"
+msgstr "#%d"
+
+#: ../ggz-gtk/playerlist.c:483
+msgid "L"
+msgstr "L"
+
+#: ../ggz-gtk/playerlist.c:488 ../ggz-gtk/tablelist.c:191
+msgid "T#"
+msgstr "T#"
+
+#: ../ggz-gtk/playerlist.c:499 ../ggz-gtk/types.c:176
 msgid "Name"
 msgstr "İsim"
 
-#: ../ggz-gtk/props.c:1536
+#: ../ggz-gtk/props.c:251
+msgid "Properties Updated"
+msgstr "Özellikler Güncellendi"
+
+#: ../ggz-gtk/props.c:1052
+msgid "Confirm:"
+msgstr "Onayla:"
+
+#: ../ggz-gtk/props.c:1102
+msgid "Modify"
+msgstr "Değiştir"
+
+#: ../ggz-gtk/props.c:1116
+msgid "Servers"
+msgstr "Sunucular"
+
+#: ../ggz-gtk/props.c:1135
+msgid "Chat Font:"
+msgstr "Sohbet Yazıtipi:"
+
+#: ../ggz-gtk/props.c:1151
+msgid "Change"
+msgstr "Değiştir"
+
+#: ../ggz-gtk/props.c:1164
+msgid "Ignore Join/Part Messages"
+msgstr "Katılma/Ayrılma Mesajlarını Yoksay"
+
+#: ../ggz-gtk/props.c:1172
+msgid "Play Sounds"
+msgstr "Sesleri Çal"
+
+#: ../ggz-gtk/props.c:1180
+msgid "Auto Indent"
+msgstr "Otomatik Girintile"
+
+#: ../ggz-gtk/props.c:1188
+msgid "Timestamp Chats"
+msgstr "Sohbetlerde zaman damgası"
+
+#: ../ggz-gtk/props.c:1196
+msgid "Word Wrap"
+msgstr "Kelime Sarmalama"
+
+#: ../ggz-gtk/props.c:1204
+msgid "Chat Color"
+msgstr "Sohbet Rengi"
+
+#: ../ggz-gtk/props.c:1253
+msgid "Default chat color assigned to your friends"
+msgstr "Arkadaşlarınıza atanan öntanımlı sohbet rengi"
+
+#: ../ggz-gtk/props.c:1262
+msgid "Chat color used when your name is typed"
+msgstr "İsminiz yazıldığında kullanılacak sohbet rengi"
+
+#: ../ggz-gtk/props.c:1271
+msgid "Chat color used for all other chats"
+msgstr "Diğer tüm sohbetler için kullanılacak renk"
+
+#: ../ggz-gtk/props.c:1280
+msgid "Normal Color"
+msgstr "Normal Renk"
+
+#: ../ggz-gtk/props.c:1291
+msgid "Highlight Color"
+msgstr "Vurgulama Rengi"
+
+#: ../ggz-gtk/props.c:1302
+msgid "Friend Color"
+msgstr "Arkadaş Rengi"
+
+#: ../ggz-gtk/props.c:1313
+msgid "Black Background"
+msgstr "Siyah Arkaplan"
+
+#: ../ggz-gtk/props.c:1322
+msgid "White Background"
+msgstr "Beyaz Arkaplan"
+
+#: ../ggz-gtk/props.c:1331
+msgid "Chat"
+msgstr "Sohbet"
+
+#: ../ggz-gtk/props.c:1343
+msgid "All of the following information is optional."
+msgstr "Aşağıdaki tüm bilgiler seçimliktir."
+
+#: ../ggz-gtk/props.c:1361
+msgid "Name:"
+msgstr "İsim:"
+
+#: ../ggz-gtk/props.c:1388
+msgid "City:"
+msgstr "Şehir:"
+
+#: ../ggz-gtk/props.c:1409
+msgid "State:"
+msgstr "Durum:"
+
+#: ../ggz-gtk/props.c:1430
+msgid "Country:"
+msgstr "Ülke:"
+
+#: ../ggz-gtk/props.c:1445
+msgid "Comments, Hobbies, Etc."
+msgstr "Yorumlar, Hobiler, Vs."
+
+#: ../ggz-gtk/props.c:1467
+msgid "User Information"
+msgstr "Kullanıcı Bilgisi"
+
+#: ../ggz-gtk/props.c:1483
+msgid "Single Click Room Entry"
+msgstr "Tek tıklamayla Oda Girişi"
+
+#: ../ggz-gtk/props.c:1497
+msgid "Display All"
+msgstr "Hepsini Göster"
+
+#: ../ggz-gtk/props.c:1506
+msgid "Display New"
+msgstr "Yeni Göster"
+
+#: ../ggz-gtk/props.c:1515
+msgid "Display Important"
+msgstr "Önemliyi Göster"
+
+#: ../ggz-gtk/props.c:1524
+msgid "Display None"
+msgstr "Hiçbirini Gösterme"
+
+#: ../ggz-gtk/props.c:1533
 msgid "Options"
 msgstr "Seçenekler"
+
+#: ../ggz-gtk/props.c:1622
+msgid "Select Font"
+msgstr "Yazıtipi Seç"
+
+#: ../ggz-gtk/roominfo.c:63
+msgid "Room Information"
+msgstr "Oda Bilgisi"
+
+#: ../ggz-gtk/roominfo.c:80
+msgid "Game Name:"
+msgstr "Oyun Adı:"
+
+#: ../ggz-gtk/roominfo.c:110
+msgid "Room Description:"
+msgstr "Oda Tanımı:"
+
+#: ../ggz-gtk/roominfo.c:155
+msgid "This room has no game"
+msgstr "Bu odada oyun yok"
 
 #: ../ggz-gtk/roominfo.c:162 ../ggz-gtk/roominfo.c:169
 msgid "N/A"
 msgstr "Yok"
 
+#: ../ggz-gtk/roominfo.c:175
+msgid "Unknown room"
+msgstr "Bilinmeyen oda"
+
+#: ../ggz-gtk/roomlist.c:73
+msgid "You can't join a room; you're not logged in"
+msgstr "Bir odaya katılamazsınız; giriş yapmamışsınız"
+
+#: ../ggz-gtk/roomlist.c:82
+msgid "You can't switch rooms while playing a game"
+msgstr "Oyun oynarken oda değiştiremezsiniz"
+
+#: ../ggz-gtk/roomlist.c:89
+msgid "Unknown error"
+msgstr "Bilinmeyen hata"
+
+#: ../ggz-gtk/roomlist.c:109 ../ggz-gtk/roomlist.c:114
+msgid "Error joining room"
+msgstr "Odaya katılırken hata"
+
+#: ../ggz-gtk/roomlist.c:350
+msgid "Other Rooms"
+msgstr "Diğer Odalar"
+
+#: ../ggz-gtk/roomlist.c:424
+msgid "Room"
+msgstr "Oda"
+
+#: ../ggz-gtk/tablelist.c:161
+msgid "No description available."
+msgstr "Bir tanım yok."
+
+#: ../ggz-gtk/tablelist.c:196
+msgid "Seats"
+msgstr "Koltuklar"
+
+#: ../ggz-gtk/tablelist.c:201 ../ggz-gtk/types.c:183
+msgid "Description"
+msgstr "Tanım"
+
 #: ../ggz-gtk/types.c:113
 msgid "None"
 msgstr "Hiçbiri"
+
+#: ../ggz-gtk/types.c:148
+msgid ""
+"Room filtering is not implemented yet. If\n"
+"you would like to help head over to\n"
+"http://www.ggzgamingzone.org/"
+msgstr ""
+"Oda filtreleme henüz gerçeklenmedi. Eğer\n"
+"yardım etmek isterseniz\n"
+"http://www.ggzgamingzone.org/ adresine başvurun"
+
+#: ../ggz-gtk/types.c:191
+msgid "Web Address"
+msgstr "Web Adresi"
+
+#: ../ggz-gtk/types.c:199
+msgid "Author"
+msgstr "Yazar"
+
+#: ../ggz-gtk/types.c:254
+msgid "Room List Filter:"
+msgstr "Oda Listesi Filtresi:"
+
+#: ../ggz-gtk/types.c:266
+msgid "Set"
+msgstr "Ayarla"
