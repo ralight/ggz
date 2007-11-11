@@ -1,5 +1,5 @@
---- commit-email.pl.orig.etch	2007-04-18 06:37:41.000000000 +0100
-+++ commit-email.pl	2007-04-18 06:44:06.000000000 +0100
+--- commit-email.pl.orig.etch	2007-11-11 22:52:11.000000000 +0100
++++ commit-email.pl	2007-11-11 23:22:31.000000000 +0100
 @@ -47,8 +47,8 @@
  # You should define exactly one of these two configuration variables,
  # leaving the other commented out, to select which method of sending
@@ -29,7 +29,15 @@
    }
  elsif ($mode eq 'revprop-change')
    {
-@@ -773,3 +777,50 @@
+@@ -581,6 +585,7 @@
+                                         '-r', $rev, @no_diff_deleted,
+                                         @no_diff_added);
+         @difflines = map { /[\r\n]+$/ ? $_ : "$_\n" } @difflines;
++        &check_truncate (\@difflines, $max_email_body_size);
+       }
+ 
+     if (defined $sendmail and @email_addresses)
+@@ -773,3 +778,50 @@
        return @output;
      }
  }
