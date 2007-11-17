@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 9109 2007-05-10 17:12:09Z oojah $
+ * $Id: input.c 9358 2007-11-17 15:33:21Z josef $
  *
  * Functions for inputing commands from the user
  *
@@ -202,21 +202,31 @@ static int input_is_command(char *line)
 static void input_handle_connect(char* line)
 {
 	int portnum;
-	char *arg, *host, *port, *login, *pwd;
+	char *arg, *host, *port, *login, *pwd, *tls;
+	int usetls;
 	GGZLoginType type;
 
 	server_workinprogress(COMMAND_CONNECT, 1);
 
+	usetls = 0;
+
 	arg = strsep(&line, delim);
 	host = strsep(&arg, ":\n");
-	if (host && strcmp(host, "") != 0)
-	{
+	if (host && strcmp(host, "") != 0) {
 		/* Check for port */
 		port = strsep(&arg, ":\n");
-		if (port && strcmp(port, "") != 0)
-			portnum = atoi(port);
-		else 
+		if (port && !strcmp(port, "tls")) {
 			portnum = 5688;
+			usetls = 1;
+		} else if (port && strcmp(port, "") != 0) {
+			portnum = atoi(port);
+		} else {
+			portnum = 5688;
+		}
+		tls = strsep(&arg, ":\n");
+		if(tls && !strcmp(tls, "tls")) {
+			usetls = 1;
+		}
 	} else {
 		host = ggz_strdup("localhost");
 		portnum = 5688;
@@ -235,9 +245,9 @@ static void input_handle_connect(char* line)
 	{
 		type = GGZ_LOGIN;
 		pwd = ggz_strdup(arg);
-		server_init(host, portnum, type, login, pwd);
+		server_init(host, portnum, type, login, pwd, usetls);
 	}else{
-		server_init(host, portnum, type, login, NULL);
+		server_init(host, portnum, type, login, NULL, usetls);
 	}
 }
 

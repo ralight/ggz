@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 9109 2007-05-10 17:12:09Z oojah $
+ * $Id: output.c 9358 2007-11-17 15:33:21Z josef $
  *
  * Functions for display text/messages
  *
@@ -105,8 +105,8 @@ void output_display_help(void)
 	output_text(_("--- GGZ Gaming Zone -- Help"));
 	output_text(_("--- -----------------------"));
 	output_text(_("---"));
-	output_text(_("--- /connect [<server>[:<port>]] [<nick>] [<password>]"));
-	output_text(_("---    Connect to a GGZ server"));
+	output_text(_("--- /connect [<server>[:<port>][:tls]] [<nick>] [<password>]"));
+	output_text(_("---    Connect to a GGZ server and log in"));
 	output_text(_("--- /disconnect                                  Disconnect from server"));
 	output_text(_("--- /exit                                        Quit GGZ Gaming Zone"));
 	output_text(_("--- /desc <room>                                 Get description of room <room>"));

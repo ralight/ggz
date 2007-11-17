@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.h 6586 2005-01-02 15:30:59Z josef $
+ * $Id: server.h 9358 2007-11-17 15:33:21Z josef $
  *
  * Functions for handling server events
  *
@@ -30,7 +30,7 @@
 #define COMMAND_LIST 1
 #define COMMAND_JOIN 2
 
-void server_init(char *host, int port, GGZLoginType type, char* login, char* password);
+void server_init(char *host, int port, GGZLoginType type, char* login, char* password, int usetls);
 
 void server_logout(void);
 void server_disconnect(void);
