@@ -18,6 +18,7 @@ dnl 2002-02-10: lookup TLS libraries; taken code from acinclude.ggz
 dnl 2002-02-24: default to GnuTLS; create conditional compile vars
 dnl 2005-09-14: several cleanups due to newer autotools
 dnl 2006-08-06: now includes gcrypt checks
+dnl 2007-10-24: addition of Netscape Network Security (NSS) checks
 
 dnl ------------------------------------------------------------------------
 dnl Content of this file:
@@ -29,6 +30,7 @@ dnl
 dnl Private macros:
 dnl AC_PATH_SSL - OpenSSL implementation backend (code from kdelibs)
 dnl AC_GGZ_GNUTLS - GNUTLS implementation backend
+dnl AC_GGZ_NSS - use TLS implementation from the NSS libraries
 dnl
 
 dnl ------------------------------------------------------------------------
@@ -297,7 +299,7 @@ AC_DEFUN([AC_GGZ_TLS],
 AC_MSG_CHECKING([for GGZ TLS implementation])
 
 AC_ARG_WITH([tls],
-  AC_HELP_STRING([--with-tls@<:@=ARG@:>@], [GnuTLS or OpenSSL - auto if no ARG]),
+  AC_HELP_STRING([--with-tls@<:@=ARG@:>@], [GnuTLS or OpenSSL or NSS - auto if no ARG]),
   [tls_type=$withval],
   [tls_type=no])
 
@@ -333,6 +335,21 @@ then
     AC_DEFINE_UNQUOTED([GGZ_TLS_OPENSSL], 1,
 		      [Define if OpenSSL is to be used])
     TLS_TYPE="OpenSSL"
+  fi
+fi
+
+if test \( "$tls_type" = yes -a "$have_gnutls" = no -a "$have_ssl" = no \) -o "$tls_type" = NSS
+then
+  dnl NSS check
+  AC_GGZ_NSS
+  if test "$have_nss" = yes; then
+    GGZTLS_INCLUDES="-I $nss_includes"
+    GGZTLS_LDFLAGS="-L $nss_libraries"
+    LIB_GGZTLS=$nss_lib
+    AC_MSG_RESULT([using NSS])
+    AC_DEFINE_UNQUOTED([GGZ_TLS_NSS], 1,
+		      [Define if NSS is to be used])
+    TLS_TYPE="NSS"
   fi
 fi
 
@@ -396,5 +413,27 @@ if test "$enable_gcrypt" != "no"; then
 fi
 
 AC_SUBST(LIB_GCRYPT)
+])
+
+dnl ------------------------------------------------------------------------
+dnl Try to find the NSS headers and libraries.
+dnl Exported are $(nss_includes), $(nss_libraries) and $(nss_lib).
+dnl ------------------------------------------------------------------------
+dnl
+AC_DEFUN([AC_GGZ_NSS],
+[
+ac_nss_includes=NO ac_nss_libraries=NO
+nss_libraries=""
+nss_includes=""
+nss_lib=""
+
+inc=`pkg-config --cflags nss 2>/dev/null`
+lib=`pkg-config --libs nss 2>/dev/null`
+if test "$inc" != "" -a "$lib" != ""; then
+	have_nss=yes
+	nss_includes=$inc
+	nss_libraries=""
+	nss_lib=$lib
+fi
 ])
 

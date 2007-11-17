@@ -6,6 +6,7 @@ libggzsecurity_la_SOURCES = \
 	base64.c base64.h \
 	ggz_tls_gnutls.c \
 	ggz_tls_openssl.c \
+	ggz_tls_nss.c \
 	ggz_tls_none.c
 
 libggzsecurity_la_LDFLAGS = $(GGZTLS_LDFLAGS)

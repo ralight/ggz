@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  * Date: 10/21/02
  *
- * Routines to enable easysock to utilize TLS using gnutls
+ * Fake routines pretending to enable easysock to utilize TLS
  *
  * Copyright (C) 2002 Brent Hendricks.
  *

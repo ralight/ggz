@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 9322 2007-09-29 12:27:20Z oojah $
+ * $Id: ggz.h 9362 2007-11-17 15:33:52Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -1773,8 +1773,10 @@ typedef enum {
 
 /** @brief Initialize TLS support on the server side.
  *
- *  This function ought only be used on the server side.
- *  It sets up the necessary initialization values.
+ *  This function sets up the necessary initialization values.
+ *  It must be called by both the client and the server before any other TLS
+ *  operations can take place. The client can pass NULL values for all
+ *  parameters.
  *
  *  @param certfile File containing the certificate, or NULL
  *  @param keyfile File containing the private key, or NULL

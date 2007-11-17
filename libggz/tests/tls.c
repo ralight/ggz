@@ -29,17 +29,6 @@
 
 #define HAVE_ALARM 1
 
-#ifdef GGZ_TLS_NONE
-
-/* Don't bother with the test. */
-int main(int argc, char *argv[])
-{
-	printf("Cannot run test on this platform.\n");
-	return 0;
-}
-
-#else
-
 /* This test needs more autoconf help. */
 
 static char buffer[1024], buffer2[1024];
@@ -52,6 +41,7 @@ static void *reader(void *arg)
 	char *shm;
 
 	printf("Enable TLS for the server...\n");
+	ggz_tls_init(NULL, NULL, NULL);
 	ret = ggz_tls_enable_fd(fd, GGZ_TLS_SERVER, GGZ_TLS_VERIFY_NONE);
 	/*if(!ret) return NULL;*/
 	printf("Read a message...\n");
@@ -70,6 +60,7 @@ static void *writer(void *arg)
 	int ret;
 
 	printf("Enable TLS for the client...\n");
+	ggz_tls_init(NULL, NULL, NULL);
 	ret = ggz_tls_enable_fd(fd, GGZ_TLS_CLIENT, GGZ_TLS_VERIFY_NONE);
 	/*if(!ret) return NULL;*/
 	printf("Write a message...\n");
@@ -87,10 +78,19 @@ int main(int argc, char *argv[])
 {
 	int fd[2];
 	/*pthread_t id_read, id_write;*/
+	/* FIXME: using threads would be better but doesn't seem to be possible? */
 	pid_t pid;
 	char *shm;
 
-	printf("Preparation...\n");
+	if(!ggz_tls_support_query())
+	{
+		/* Don't bother with the test. */
+		printf("Cannot run test on this platform.\n");
+		return 0;
+	}
+	printf("Info: using TLS backend %s.\n", ggz_tls_support_name());
+
+	printf("Preparation for TLS handshake...\n");
 	/*ret = shm_open("Physical", O_RDWR, 0777);
 	if(ret < 0)
 	{
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "SHM failed (errno = %i (%s))!\n", errno, strerror(errno));
 		exit(-1);
 	}
-	printf("SHM: size=%i\n", getpagesize());
+	printf("SHM succeeded (size=%i)\n", getpagesize());
 
 	strcpy(buffer, "This is a test.");
 	socketpair(AF_UNIX, SOCK_STREAM, 0, fd);
@@ -161,4 +161,3 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-#endif
