@@ -5,23 +5,36 @@ For the apprentice and the master alike...
 
 Getting started
 ---------------
+It is recommended to use 'ggzbuild', which will build all modules in the
+correct order. If you're on a new system, calling 'ggzprep' will install
+all requirements beforehand if the system is recognised.
+
 * checkout trunk
+* cd trunk
+* run playground/maintenance/ggzprep (on Debian, Ubuntu and maybe others)
 * copy playground/maintenance/ggzbuild to trunk
 * copy ggzbuildrc.sample from same dir to ~/.ggzbuildrc (and modify as needed)
-* cd trunk; ./ggzbuild -> all of GGZ will be built and installed!
+* ./ggzbuild -> all of GGZ will be built and installed!
 
 Debugging
 ---------
 * always compile without --disable-debug (check ggzbuildrc!)
-* for Gtk+, setup in in ~/.ggz/ggz-gtk.rc
+* for Gtk+, setup in ~/.ggz/ggz-gtk.rc
   [Debug]
+  Types = game modules connection servers
+* for ggz-txt, setup in ~/.ggz/ggz-text.rc
+  [Debug]
+  Types = client
+* for medium-level ggzcore debugging, append the following debug types
   Types = GGZCORE:CONF GGZCORE:GAME GGZCORE:HOOK GGZCORE:MODULE GGZCORE:NET
           GGZCORE:POLL GGZCORE:ROOM GGZCORE:SERVER GGZCORE:STATE
 	  GGZCORE:TABLE GGZCORE:XML
-	  game modules connection servers
   (must all be on one line!)
+* for low-level libggz debugging, append the following debug types
+  Types = socket ggz_mem ggz_conf
 * ggzd: always check --specs prior to anything else
-* kggzmod: switch on its debug area (none assigned yet)
+* kggzmod/kggznet/kggzgames (now part of kdegames):
+  switch on its debug areas (11003-11005)
 
 Coding in C
 -----------
