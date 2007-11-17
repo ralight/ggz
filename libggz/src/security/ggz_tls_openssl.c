@@ -137,7 +137,7 @@ static void tls_init(int verify)
 		else SSL_CTX_set_verify(_tlsctx, SSL_VERIFY_NONE, NULL);
 	}
 
-	openssllist = ggz_list_create(NULL, NULL, NULL, 0);
+	openssllist = ggz_list_create(NULL, NULL, NULL, GGZ_LIST_ALLOW_DUPS);
 }
 
 /* Load certificate and private key */
@@ -287,7 +287,7 @@ int ggz_tls_enable_fd(int fd, GGZTLSType mode, GGZTLSVerificationType verify)
 			entry->tls = _tls;
 			entry->fd = fd;
 			entry->active = _tls_active;
-			ggz_list_insert(openssllist, &entry);
+			ggz_list_insert(openssllist, entry);
 			return 1;
 		}
 	}
@@ -295,7 +295,7 @@ int ggz_tls_enable_fd(int fd, GGZTLSType mode, GGZTLSVerificationType verify)
 }
 
 /* Compare function */
-static int list_entry_compare(void *a, void *b)
+static int list_entry_compare(const void *a, const void *b)
 {
 	struct list_entry x, y;
 	x = *(struct list_entry*)a;
@@ -308,13 +308,14 @@ size_t ggz_tls_read(int fd, void *buffer, size_t size)
 {
 	SSL *handler;
 	struct list_entry *entry;
-	struct list_entry entry2;
+	struct list_entry entrycmp;
 	int ret;
+	GGZListEntry *listentry;
 
-	entry2.fd = fd;
-	entry = (struct list_entry*)ggz_list_search_alt(openssllist, &entry2, list_entry_compare);
+	entrycmp.fd = fd;
+	listentry = ggz_list_search_alt(openssllist, &entrycmp, list_entry_compare);
 
-	if(!entry)
+	if(!listentry)
 	{
 		/*TLSERROR("Given fd is not secure.");*/
 #ifdef HAVE_WINSOCK2_H
@@ -323,6 +324,7 @@ size_t ggz_tls_read(int fd, void *buffer, size_t size)
 		return read(fd, buffer, size);
 #endif
 	}
+	entry = ggz_list_get_data(listentry);
 	handler = entry->tls;
 	ret = SSL_read(handler, buffer, size);
 	if(ret <= 0)
@@ -356,14 +358,15 @@ size_t ggz_tls_read(int fd, void *buffer, size_t size)
 size_t ggz_tls_write(int fd, void *s, size_t size)
 {
 	struct list_entry *entry;
-	struct list_entry entry2;
+	struct list_entry entrycmp;
 	SSL *handler;
 	int ret;
+	GGZListEntry *listentry;
 
-	entry2.fd = fd;
-	entry = (struct list_entry*)ggz_list_search_alt(openssllist, &entry2, list_entry_compare);
+	entrycmp.fd = fd;
+	listentry = ggz_list_search_alt(openssllist, &entrycmp, list_entry_compare);
 
-	if(!entry)
+	if(!listentry)
 	{
 		/*TLSERROR("Given fd is not secure.");*/
 #ifdef HAVE_WINSOCK2_H
@@ -372,6 +375,7 @@ size_t ggz_tls_write(int fd, void *s, size_t size)
 		return write(fd, s, size);
 #endif
 	}
+	entry = ggz_list_get_data(listentry);
 	handler = entry->tls;
 	ret = SSL_write(handler, s, size);
 	if(ret <= 0)
@@ -405,18 +409,20 @@ size_t ggz_tls_write(int fd, void *s, size_t size)
 int ggz_tls_disable_fd(int fd)
 {
 	struct list_entry *entry;
-	struct list_entry entry2;
+	struct list_entry entrycmp;
 	SSL *handler;
+	GGZListEntry *listentry;
 
-	entry2.fd = fd;
-	entry = (struct list_entry*)ggz_list_search_alt(openssllist, &entry2, list_entry_compare);
+	entrycmp.fd = fd;
+	listentry = ggz_list_search_alt(openssllist, &entrycmp, list_entry_compare);
 
-	if(entry)
+	if(listentry)
 	{
+		entry = ggz_list_get_data(listentry);
 		handler = entry->tls;
 		SSL_shutdown(handler);
 		SSL_free(handler);
-		ggz_list_delete_entry(openssllist, (GGZListEntry*)entry);
+		ggz_list_delete_entry(openssllist, listentry);
 		return 1;
 	}
 	return 0;
