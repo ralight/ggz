@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 9359 2007-11-17 15:33:29Z josef $
+ * $Id: output.c 9361 2007-11-17 15:33:44Z josef $
  *
  * Functions for display text/messages
  *
@@ -138,6 +138,8 @@ void output_banner(void)
 	output_text(_("--Written by Brent Hendricks & Justin Zaun (C) 2000"));
 	output_text(_("--Maintained by the GGZ Gaming Zone developers (C) 2001 - 2005"));
 	output_text(_("--Type /help to see a list of possible commands."));
+
+	output_debug("using tls handler: %s", ggz_tls_support_name());
 }
 
 void output_prompt(void)
@@ -206,6 +208,7 @@ static void output_text_write(const char *message)
 void output_debug(char* fmt, ...)
 {
 	char message[1024];	/* FIXME: Make me dynamic */
+	char messagecol[1024];
 	va_list ap;
 
 	va_start(ap, fmt);
@@ -215,8 +218,8 @@ void output_debug(char* fmt, ...)
 #ifdef DEBUG
 	ggz_debug(DEBUG_CLIENT, message);
 	if(!output_enabled) return;
-	snprintf(message, sizeof(message), "%s%s%s", COLOR_ORANGE, message, COLOR_GREY);
-	output_text_write(message);
+	snprintf(messagecol, sizeof(messagecol), "%s%s%s", COLOR_ORANGE, message, COLOR_GREY);
+	output_text_write(messagecol);
 #endif
 }
 

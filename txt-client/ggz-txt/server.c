@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 9359 2007-11-17 15:33:29Z josef $
+ * $Id: server.c 9361 2007-11-17 15:33:44Z josef $
  *
  * Functions for handling server events
  *
@@ -77,6 +77,7 @@ void server_init(char *host, int port, GGZLoginType type, char *login,
 {
 	char *sessiondump;
 
+	output_debug("connection info: host=%s port=%i tls=%i", host, port, usetls);
 	server = ggzcore_server_new();
 	ggzcore_server_set_hostinfo(server, host, port, usetls);
 	ggzcore_server_set_logininfo(server, type, login, password, NULL);
@@ -163,7 +164,7 @@ static GGZHookReturn server_negotiated(GGZServerEvent id,
 				       const void *event_data,
 				       const void *user_data)
 {
-	output_debug(_("--- Negotiated"));
+	output_debug("--- Negotiated");
 	ggzcore_server_login(server);
 
 	return GGZ_HOOK_OK;

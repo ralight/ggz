@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 9359 2007-11-17 15:33:29Z josef $
+ * $Id: main.c 9361 2007-11-17 15:33:44Z josef $
  *
  * Main loop
  *
@@ -160,11 +160,6 @@ int main(int argc, char *argv[])
 		autouri = argv[optind];
 	}
 
-	output_init(opt_reverse);
-	signal(SIGTERM, term_handle);
-	signal(SIGINT, term_handle);
-	output_banner();
-
 	/* Use local config file */
 	/*g_path = string_cat(GGZCONFDIR, "/ggz-text.rc");*/
 	u_path = string_cat(getenv("HOME"), "/.ggz/ggz-text.rc");
@@ -175,10 +170,16 @@ int main(int argc, char *argv[])
 	init_debug();
 #endif
 
+	output_init(opt_reverse);
+	signal(SIGTERM, term_handle);
+	signal(SIGINT, term_handle);
+	output_banner();
+
 	/* Setup options and initialize ggzcore lib */
 	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES;
 	ggzcore_init(opt);
-	
+	ggz_tls_init(NULL, NULL, NULL);
+
 	output_status();
 	output_prompt();
 
