@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 9358 2007-11-17 15:33:21Z josef $
+ * $Id: output.c 9359 2007-11-17 15:33:29Z josef $
  *
  * Functions for display text/messages
  *
@@ -71,6 +71,9 @@
 /* Highest line number in the message buffer */
 #define MAX_LINES 100
 
+/* Debug area for the core client */
+#define DEBUG_CLIENT "client"
+
 static struct winsize window;
 static int tty_des;
 static char **chat;
@@ -81,6 +84,7 @@ static FILE *loghandle = NULL;
 
 /* Private functions */
 static void output_table_info(GGZTable *table);
+static void output_text_write(const char *message);
 
 
 void output_draw_text(void);		/* Draws the chat que to screen		*/
@@ -156,15 +160,21 @@ void output_prompt(void)
 void output_text(char* fmt, ...)
 {
 	char message[1024];	/* FIXME: Make me dynamic */
-	int x;
-	char *token, *messagedup, *orig;
-
-	if(!output_enabled) return;
-
 	va_list ap;
+
 	va_start(ap, fmt);
 	vsnprintf(message, sizeof(message), fmt, ap);
 	va_end(ap);
+
+	ggz_debug(DEBUG_CLIENT, message);
+	if(!output_enabled) return;
+	output_text_write(message);
+}
+
+static void output_text_write(const char *message)
+{
+	int x;
+	char *token, *messagedup, *orig;
 
 	messagedup = ggz_strdup(message);
 	orig = messagedup;
@@ -203,7 +213,10 @@ void output_debug(char* fmt, ...)
 	va_end(ap);
 
 #ifdef DEBUG
-	output_text("%s%s%s", COLOR_ORANGE, message, COLOR_GREY);
+	ggz_debug(DEBUG_CLIENT, message);
+	if(!output_enabled) return;
+	snprintf(message, sizeof(message), "%s%s%s", COLOR_ORANGE, message, COLOR_GREY);
+	output_text_write(message);
 #endif
 }
 

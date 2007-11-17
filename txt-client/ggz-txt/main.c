@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 9358 2007-11-17 15:33:21Z josef $
+ * $Id: main.c 9359 2007-11-17 15:33:29Z josef $
  *
  * Main loop
  *
@@ -92,7 +92,7 @@ static void init_debug(void)
 	int num_types, i;
 
 	/* Inititialze debugging */
-	default_file = string_cat(getenv("HOME"),"/.ggz/ggz-text.debug");
+	default_file = string_cat(getenv("HOME"), "/.ggz/ggz-text.debug");
 	debug_file = ggzcore_conf_read_string("Debug", "File", default_file);
 	ggzcore_conf_read_list("Debug", "Types", &num_types, (char***)&debug_types);
 	ggz_debug_init(debug_types, debug_file);
