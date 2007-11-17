@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 9251 2007-08-22 08:26:57Z josef $
+ * $Id: control.c 9357 2007-11-17 15:33:12Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -537,6 +537,8 @@ int main(int argc, char *argv[])
 	parse_conf_file();
 	motd_read_file(opt.motd_file);
 
+	logfile_initialize();
+
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Conf file: %s", opt.local_conf);
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Log level: %0X", log_info.log_types);
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Main Port: %d", opt.main_port);
@@ -546,8 +548,6 @@ int main(int argc, char *argv[])
 	init_data();
 	parse_game_files();
 	parse_room_files();
-
-	logfile_initialize();
 
 	if (!opt.foreground)
 		daemon_init();
