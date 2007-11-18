@@ -1,12 +1,12 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8817 2007-01-04 23:33:33Z jdorje $
+# $Id: Makefile.am 9365 2007-11-18 11:00:46Z josef $
 
-if COND_GAIM
-GAIM_DIR = gaim-plugin
+if COND_PIDGIN
+PIDGIN_DIR = pidgin-plugin
 endif
 
-SUBDIRS = ggz-gtk src $(COND_GAIM) man po doc
-DIST_SUBDIRS = ggz-gtk src gaim-plugin man po doc
+SUBDIRS = ggz-gtk src $(COND_PIDGIN) man po doc
+DIST_SUBDIRS = ggz-gtk src pidgin-plugin man po doc
 
 EXTRA_DIST = TODO README.GGZ QuickStart.GGZ ggz-gtk.desktop
 

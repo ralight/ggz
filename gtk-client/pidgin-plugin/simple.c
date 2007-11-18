@@ -1,35 +1,27 @@
 #include "config.h"
 
-#include <gaim/version.h>
-
-#define GAIM_PLUGINS 1
-
 #include <gdk/gdk.h>
 #include <gtk/gtkplug.h>
 
-#include <gaim/debug.h>
-#include <gaim/gaim.h>
-#include <gaim/core.h>
-#include <gaim/gtkutils.h>
-#include <gaim/gtkplugin.h>
-#include <gaim/gtkconv.h>
-#include <gaim/prefs.h>
-#include <gaim/blist.h>
-#include <gaim/gtkblist.h>
-#include <gaim/signals.h>
-#include <gaim/util.h>
-#include <gaim/cmds.h>
-#include <gaim/debug.h>
-#include <gaim/plugin.h>
+#define PURPLE_PLUGINS 1
 
-#if GAIM_MAJOR_VERSION < 2
-/* 1.5.0 only */
-#include <gaim/config.h>
-#include <gaim/internal.h>
-#else
-/* 2.0.0 only */
-#include <gaim/conversation.h>
-#endif
+#include <libpurple/version.h>
+
+#include <libpurple/debug.h>
+#include <libpurple/core.h>
+#include <libpurple/prefs.h>
+#include <libpurple/blist.h>
+#include <libpurple/signals.h>
+#include <libpurple/util.h>
+#include <libpurple/cmds.h>
+#include <libpurple/debug.h>
+#include <libpurple/plugin.h>
+#include <libpurple/conversation.h>
+
+#include <pidgin/gtkutils.h>
+#include <pidgin/gtkplugin.h>
+#include <pidgin/gtkconv.h>
+#include <pidgin/gtkblist.h>
 
 #include <ggz.h>
 
@@ -40,7 +32,7 @@
 
 #include "ggz.xpm"
 
-#define HEADER "*** Command from the gaim-ggz plugin:"
+#define HEADER "*** Command from the purple-ggz plugin:"
 #define FOOTER "***"
 #define GGZWRAPPER "ggz-wrapper"
 #define GGZMODULECONFIG PREFIX "/etc/ggz.modules"
@@ -49,7 +41,7 @@
 GtkWidget *pTable, *pLogin, *pPassword, *pCheckBox, *pServer;
 int LastGamePID;
 
-GaimCmdRet commande(GaimConversation *conv, const gchar *cmd, gchar **args, gchar **error, void *data) {
+PurpleCmdRet commande(PurpleConversation *conv, const gchar *cmd, gchar **args, gchar **error, void *data) {
 	int argc,pid;
 	char *joueur;
 	char *jeu;
@@ -58,24 +50,24 @@ GaimCmdRet commande(GaimConversation *conv, const gchar *cmd, gchar **args, gcha
 	if(argc==0) {
 		if(error)
 			*error=g_strdup("Il faut spécifier un jeu, les jeux possibles sont(respectez la casse):\n-TicTacToe\n-Reversi\n-Chess");
-		return GAIM_CMD_RET_FAILED;
+		return PURPLE_CMD_RET_FAILED;
 	}
 	jeu=args[0];
 	pid=fork();
 	if(pid==0) {
 		char **parms=malloc(4*sizeof(char *));
 		char *sys_parm;
-		if(gaim_prefs_get_bool("/plugins/gtk/ggzgaim/guest"))
+		if(purple_prefs_get_bool("/plugins/gtk/ggzpurple/guest"))
 		 {
 			parms[0]=joueur;
 			parms[1]=jeu;
-			sys_parm=g_strdup_printf("%s -u %s -g %s -s %s", GGZWRAPPER, parms[0], parms[1], gaim_prefs_get_string("/plugins/gtk/ggzgaim/server"));
+			sys_parm=g_strdup_printf("%s -u %s -g %s -s %s", GGZWRAPPER, parms[0], parms[1], purple_prefs_get_string("/plugins/gtk/ggzpurple/server"));
 		 }
 		else
 		 {
-			parms[0]=(char*)gaim_prefs_get_string("/plugins/gtk/ggzgaim/login");
+			parms[0]=(char*)purple_prefs_get_string("/plugins/gtk/ggzpurple/login");
 			parms[1]=jeu;
-			sys_parm=g_strdup_printf("%s -u %s -g %s -p %s -s %s", GGZWRAPPER, parms[0], parms[1], gaim_prefs_get_string("/plugins/gtk/ggzgaim/password"), gaim_prefs_get_string("/plugins/gtk/ggzgaim/server"));
+			sys_parm=g_strdup_printf("%s -u %s -g %s -p %s -s %s", GGZWRAPPER, parms[0], parms[1], purple_prefs_get_string("/plugins/gtk/ggzpurple/password"), purple_prefs_get_string("/plugins/gtk/ggzpurple/server"));
 		 }
 		parms[0]="sh";
 		parms[1]="-c";
@@ -85,22 +77,22 @@ GaimCmdRet commande(GaimConversation *conv, const gchar *cmd, gchar **args, gcha
 		execv("/bin/sh", parms);
 		exit(0);
 	} else if(pid>0) {
-		if(gaim_prefs_get_bool("/plugins/gtk/ggzgaim/guest")) gaim_conv_im_send(GAIM_CONV_IM(conv), g_strdup_printf("%s%s %s %s", HEADER, jeu,joueur, FOOTER));
-		else gaim_conv_im_send(GAIM_CONV_IM(conv), g_strdup_printf("%s%s %s %s", HEADER, jeu,gaim_prefs_get_string("/plugins/gtk/ggzgaim/login"), FOOTER));
+		if(purple_prefs_get_bool("/plugins/gtk/ggzpurple/guest")) purple_conv_im_send(PURPLE_CONV_IM(conv), g_strdup_printf("%s%s %s %s", HEADER, jeu,joueur, FOOTER));
+		else purple_conv_im_send(PURPLE_CONV_IM(conv), g_strdup_printf("%s%s %s %s", HEADER, jeu,purple_prefs_get_string("/plugins/gtk/ggzpurple/login"), FOOTER));
 
 		LastGamePID = pid;
 
-		return GAIM_CMD_RET_OK;
+		return PURPLE_CMD_RET_OK;
 	} else {
 		if(error)
 		*error=strdup("Probleme de fork()");
-		return GAIM_CMD_RET_FAILED;
+		return PURPLE_CMD_RET_FAILED;
 	}
 }
 
 gboolean icon_clicked(void **arg, GdkEvent *ev) {
 	if(ev->type==GDK_BUTTON_PRESS) {
-	GaimConversation *conv=arg[0];
+	PurpleConversation *conv=arg[0];
 	char **args=malloc(2*sizeof(char*));
 	args[0]=arg[1];
 	args[1]=NULL;
@@ -119,14 +111,10 @@ gboolean PopMenu(GtkMenu *menu, GdkEvent *ev) {
 	return FALSE;
 }
 
-static void nouvelle_convers(GaimConversation *conv, void *data) {
-//	printf("Une nouvelle conversation:%s!!\n", gaim_conversation_get_name(conv));
-	GaimGtkConversation *gtkconv = GAIM_GTK_CONVERSATION(conv);
-#if GAIM_MAJOR_VERSION < 2
-	GtkWidget *bbox=gtkconv->bbox;
-#else
+static void nouvelle_convers(PurpleConversation *conv, void *data) {
+//	printf("Une nouvelle conversation:%s!!\n", purple_conversation_get_name(conv));
+	PidginConversation *gtkconv = PIDGIN_CONVERSATION(conv);
 	GtkWidget *bbox=gtkconv->lower_hbox;
-#endif
 	GtkWidget *icon;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
@@ -152,8 +140,8 @@ static void nouvelle_convers(GaimConversation *conv, void *data) {
 
 	sg = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 
-#if GAIM_MAJOR_VERSION < 2
-	icon = gaim_gtkconv_button_new("ggzicon", "Jouer", "Pfff", gtkconv->tooltips, GTK_SIGNAL_FUNC(PopMenu), NULL);
+#if PURPLE_MAJOR_VERSION < 2
+	icon = purple_gtkconv_button_new("ggzicon", "Jouer", "Pfff", gtkconv->tooltips, GTK_SIGNAL_FUNC(PopMenu), NULL);
 #else
 	icon = NULL; /* FIXME! */
 #endif
@@ -197,7 +185,7 @@ static void nouvelle_convers(GaimConversation *conv, void *data) {
 }
 
 
-static void message_recu2(GaimAccount *acct,char **sender, char **buffer,int flags,  GaimConversation *conv,void *data) {
+static void message_recu2(PurpleAccount *acct,char **sender, char **buffer,int flags,  PurpleConversation *conv,void *data) {
 
 	GtkWidget *pDialog;
 
@@ -252,11 +240,7 @@ static void message_recu2(GaimAccount *acct,char **sender, char **buffer,int fla
 	{
 		gtk_widget_destroy(pDialog);
 
-#if GAIM_MAJOR_VERSION < 2
-		gaim_conv_im_send(GAIM_CONV_IM(gaim_conversation_new(GAIM_CONV_IM,acct,*sender)), g_strdup_printf("%srefuse_game %s", HEADER, FOOTER));
-#else
-		gaim_conv_im_send(GAIM_CONV_IM(gaim_conversation_new(GAIM_CONV_TYPE_IM,acct,*sender)), g_strdup_printf("%srefuse_game %s", HEADER, FOOTER));
-#endif
+		purple_conv_im_send(PURPLE_CONV_IM(purple_conversation_new(PURPLE_CONV_TYPE_IM,acct,*sender)), g_strdup_printf("%srefuse_game %s", HEADER, FOOTER));
 		*buffer=NULL;
 		return;
 	}
@@ -269,17 +253,17 @@ static void message_recu2(GaimAccount *acct,char **sender, char **buffer,int fla
 		//L'enfant trop fort hein :)
 		char **parms=malloc(4*sizeof(char *));
 		char *sys_parm;
-		if(gaim_prefs_get_bool("/plugins/gtk/ggzgaim/guest"))
+		if(purple_prefs_get_bool("/plugins/gtk/ggzpurple/guest"))
 		 {
 			parms[1]=g_strdup_printf("guest%d", (int) (999.0*rand()/(RAND_MAX+1.0)));
 			parms[2]=joueur;
-			sys_parm=g_strdup_printf("%s -u %s -d %s -g %s -s %s", GGZWRAPPER, parms[1], parms[2], jeu, gaim_prefs_get_string("/plugins/gtk/ggzgaim/server"));
+			sys_parm=g_strdup_printf("%s -u %s -d %s -g %s -s %s", GGZWRAPPER, parms[1], parms[2], jeu, purple_prefs_get_string("/plugins/gtk/ggzpurple/server"));
 		 }
 		else
 		 {
-			parms[1]=(char*)gaim_prefs_get_string("/plugins/gtk/ggzgaim/login");
+			parms[1]=(char*)purple_prefs_get_string("/plugins/gtk/ggzpurple/login");
 			parms[2]=joueur;
-			sys_parm=g_strdup_printf("%s -u %s -d %s -g %s -p %s -s %s", GGZWRAPPER, parms[1], parms[2], jeu, gaim_prefs_get_string("/plugins/gtk/ggzgaim/password"), gaim_prefs_get_string("/plugins/gtk/ggzgaim/server"));
+			sys_parm=g_strdup_printf("%s -u %s -d %s -g %s -p %s -s %s", GGZWRAPPER, parms[1], parms[2], jeu, purple_prefs_get_string("/plugins/gtk/ggzpurple/password"), purple_prefs_get_string("/plugins/gtk/ggzpurple/server"));
 		 }
 		parms[0]="sh";
 		parms[1]="-c";
@@ -299,43 +283,43 @@ static void message_recu2(GaimAccount *acct,char **sender, char **buffer,int fla
 }
 
 static gboolean
-plugin_load(GaimPlugin *plugin)
+plugin_load(PurplePlugin *plugin)
 {
-//	gaim_debug(GAIM_DEBUG_INFO, "simple", "simple plugin loaded.\n");
+//	purple_debug(PURPLE_DEBUG_INFO, "simple", "simple plugin loaded.\n");
 
-	void *conv_handle = gaim_conversations_get_handle();
-	gaim_signal_connect(conv_handle, "conversation-created",
-		plugin, GAIM_CALLBACK(nouvelle_convers), NULL);
-        /*gaim_signal_connect(conv_handle, "receiving-chat-msg",
-		plugin, GAIM_CALLBACK(message_recu), NULL);*/
-        gaim_signal_connect(conv_handle, "receiving-im-msg",
-		plugin, GAIM_CALLBACK(message_recu2), NULL);
-	gaim_cmd_register("jeu", "w", GAIM_CMD_P_PLUGIN, GAIM_CMD_FLAG_IM|GAIM_CMD_FLAG_ALLOW_WRONG_ARGS, NULL, GAIM_CMD_FUNC(commande), "jeu nom_du_jeu",NULL);
+	void *conv_handle = purple_conversations_get_handle();
+	purple_signal_connect(conv_handle, "conversation-created",
+		plugin, PURPLE_CALLBACK(nouvelle_convers), NULL);
+        /*purple_signal_connect(conv_handle, "receiving-chat-msg",
+		plugin, PURPLE_CALLBACK(message_recu), NULL);*/
+        purple_signal_connect(conv_handle, "receiving-im-msg",
+		plugin, PURPLE_CALLBACK(message_recu2), NULL);
+	purple_cmd_register("jeu", "w", PURPLE_CMD_P_PLUGIN, PURPLE_CMD_FLAG_IM|PURPLE_CMD_FLAG_ALLOW_WRONG_ARGS, NULL, PURPLE_CMD_FUNC(commande), "jeu nom_du_jeu",NULL);
 	return TRUE;
 }
 
 static gboolean
-plugin_unload(GaimPlugin *plugin)
+plugin_unload(PurplePlugin *plugin)
 {
-//	gaim_debug(GAIM_DEBUG_INFO, "simple", "simple plugin unloaded.\n");
+//	purple_debug(PURPLE_DEBUG_INFO, "simple", "simple plugin unloaded.\n");
 
 	return TRUE;
 }
 
 static void
-ggzgaim_entry_change_cb(GtkObject *obj, gchar *pref)
+ggzpurple_entry_change_cb(GtkObject *obj, gchar *pref)
 {
-	gaim_prefs_set_string(pref,gtk_entry_get_text(GTK_ENTRY(obj)));
+	purple_prefs_set_string(pref,gtk_entry_get_text(GTK_ENTRY(obj)));
 }
 
 static void
-ggzgaim_checkbox_change_cb(GtkObject *obj, gchar *pref)
+ggzpurple_checkbox_change_cb(GtkObject *obj, gchar *pref)
 {
-	gaim_prefs_set_bool(pref,gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(obj)));
+	purple_prefs_set_bool(pref,gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(obj)));
 }
 
 GtkWidget *
-ggzgaim_preferences_get_frame(GaimPlugin *plugin) {
+ggzpurple_preferences_get_frame(PurplePlugin *plugin) {
 
 	pTable = gtk_table_new(5,5,TRUE);
 
@@ -347,10 +331,10 @@ ggzgaim_preferences_get_frame(GaimPlugin *plugin) {
 	gtk_entry_set_visibility(GTK_ENTRY(pPassword), FALSE);
 
 
-	gtk_entry_set_text(GTK_ENTRY(pLogin),gaim_prefs_get_string("/plugins/gtk/ggzgaim/login"));
-	gtk_entry_set_text(GTK_ENTRY(pPassword),gaim_prefs_get_string("/plugins/gtk/ggzgaim/password"));
-	gtk_entry_set_text(GTK_ENTRY(pServer),gaim_prefs_get_string("/plugins/gtk/ggzgaim/server"));
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pCheckBox), gaim_prefs_get_bool("/plugins/gtk/ggzgaim/guest"));
+	gtk_entry_set_text(GTK_ENTRY(pLogin),purple_prefs_get_string("/plugins/gtk/ggzpurple/login"));
+	gtk_entry_set_text(GTK_ENTRY(pPassword),purple_prefs_get_string("/plugins/gtk/ggzpurple/password"));
+	gtk_entry_set_text(GTK_ENTRY(pServer),purple_prefs_get_string("/plugins/gtk/ggzpurple/server"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pCheckBox), purple_prefs_get_bool("/plugins/gtk/ggzpurple/guest"));
 
 
 	gtk_table_attach_defaults(GTK_TABLE(pTable),gtk_label_new("Identification en 'guest' :"),0,2,1,2);
@@ -363,78 +347,75 @@ ggzgaim_preferences_get_frame(GaimPlugin *plugin) {
 	gtk_table_attach_defaults(GTK_TABLE(pTable),pPassword,3,5,3,4);
 	gtk_table_attach_defaults(GTK_TABLE(pTable),pServer,3,5,4,5);
 
-	//gaim_prefs_set_int(pref_url, int);
+	//purple_prefs_set_int(pref_url, int);
 
-	//gaim_prefs_add_string(const char *name, const char *value);
-	//gaim_prefs_add_bool(const char *name, gboolean value);
-	//gaim_prefs_add_int(const char *name, int value);
-
-
-	//gboolean gaim_prefs_get_bool(const char *name);
-	//int gaim_prefs_get_int(const char *name);
-
-	//const char *gaim_prefs_get_string(const char *name);
+	//purple_prefs_add_string(const char *name, const char *value);
+	//purple_prefs_add_bool(const char *name, gboolean value);
+	//purple_prefs_add_int(const char *name, int value);
 
 
-	g_signal_connect(GTK_OBJECT(pLogin), "changed", G_CALLBACK(ggzgaim_entry_change_cb), "/plugins/gtk/ggzgaim/login");
+	//gboolean purple_prefs_get_bool(const char *name);
+	//int purple_prefs_get_int(const char *name);
 
-	g_signal_connect(GTK_OBJECT(pPassword), "changed", G_CALLBACK(ggzgaim_entry_change_cb), "/plugins/gtk/ggzgaim/password");
+	//const char *purple_prefs_get_string(const char *name);
 
-	g_signal_connect(GTK_OBJECT(pServer), "changed", G_CALLBACK(ggzgaim_entry_change_cb), "/plugins/gtk/ggzgaim/server");
 
-	g_signal_connect(GTK_OBJECT(pCheckBox), "clicked", G_CALLBACK(ggzgaim_checkbox_change_cb), "/plugins/gtk/ggzgaim/guest");
+	g_signal_connect(GTK_OBJECT(pLogin), "changed", G_CALLBACK(ggzpurple_entry_change_cb), "/plugins/gtk/ggzpurple/login");
+
+	g_signal_connect(GTK_OBJECT(pPassword), "changed", G_CALLBACK(ggzpurple_entry_change_cb), "/plugins/gtk/ggzpurple/password");
+
+	g_signal_connect(GTK_OBJECT(pServer), "changed", G_CALLBACK(ggzpurple_entry_change_cb), "/plugins/gtk/ggzpurple/server");
+
+	g_signal_connect(GTK_OBJECT(pCheckBox), "clicked", G_CALLBACK(ggzpurple_checkbox_change_cb), "/plugins/gtk/ggzpurple/guest");
 
 	gtk_widget_show_all(pTable);
 	return pTable;
 }
 
-void ggzgaim_preferences_add()
+void ggzpurple_preferences_add()
 {
- gaim_prefs_add_none("/plugins/gtk/ggzgaim");
- gaim_prefs_add_string("/plugins/gtk/ggzgaim/login", "");
- gaim_prefs_add_string("/plugins/gtk/ggzgaim/password", "");
- gaim_prefs_add_string("/plugins/gtk/ggzgaim/server", SERVER);
- gaim_prefs_add_bool("/plugins/gtk/ggzgaim/guest", TRUE);
+ purple_prefs_add_none("/plugins/gtk/ggzpurple");
+ purple_prefs_add_string("/plugins/gtk/ggzpurple/login", "");
+ purple_prefs_add_string("/plugins/gtk/ggzpurple/password", "");
+ purple_prefs_add_string("/plugins/gtk/ggzpurple/server", SERVER);
+ purple_prefs_add_bool("/plugins/gtk/ggzpurple/guest", TRUE);
 }
 
-static GaimGtkPluginUiInfo ui_info = { ggzgaim_preferences_get_frame };
+static PidginPluginUiInfo ui_info = { ggzpurple_preferences_get_frame };
 
-static GaimPluginInfo info =
+static PurplePluginInfo info =
 {
-	//GAIM_PLUGIN_API_VERSION,                          /**< api_version    */
-	GAIM_PLUGIN_MAGIC,
-	GAIM_MAJOR_VERSION,
-	GAIM_MINOR_VERSION,
-	GAIM_PLUGIN_STANDARD,                             /**< type           */
-	GAIM_GTK_PLUGIN_TYPE,                                             /**< ui_requirement */
+	PURPLE_PLUGIN_MAGIC,
+	PURPLE_MAJOR_VERSION,
+	PURPLE_MINOR_VERSION,
+	PURPLE_PLUGIN_STANDARD,                           /**< type           */
+	PIDGIN_PLUGIN_TYPE,                               /**< ui_requirement */
 	0,                                                /**< flags          */
 	NULL,                                             /**< dependencies   */
-	GAIM_PRIORITY_DEFAULT,                            /**< priority       */
+	PURPLE_PRIORITY_DEFAULT,                          /**< priority       */
 
 	NULL,                                             /**< id             */
-	"GGZ for gaim",                              /**< name           */
+	"GGZ for purple",                                 /**< name           */
 	VERSION,                                          /**< version        */
 	                                                  /**  summary        */
-	"To have ggz in gaim.",
+	"To have ggz in purple.",
 	                                                  /**  description    */
 	"Tests to see that most things are working.",
-	"Husson Pierre-Hugues <phh@www.phh.sceen.net>",        /**< author         */
-	"http://www.phh.sceen.net",                                          /**< homepage       */
+	"Husson Pierre-Hugues <phh@www.phh.sceen.net>",   /**< author         */
+	"http://www.phh.sceen.net",                       /**< homepage       */
 
 	plugin_load,                                      /**< load           */
 	plugin_unload,                                    /**< unload         */
 	NULL,                                             /**< destroy        */
 
-	&ui_info,                                             /**< ui_info        */
-	NULL                                             /**< extra_info     */
-//	NULL,
-//	NULL
+	&ui_info,                                         /**< ui_info        */
+	NULL                                              /**< extra_info     */
 };
 
 static void
-init_plugin(GaimPlugin *plugin)
+init_plugin(PurplePlugin *plugin)
 {
-	ggzgaim_preferences_add();
+	ggzpurple_preferences_add();
 }
 
-GAIM_INIT_PLUGIN(ggz4gaim, init_plugin, info)
+PURPLE_INIT_PLUGIN(ggz4purple, init_plugin, info)

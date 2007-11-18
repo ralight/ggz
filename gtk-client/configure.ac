@@ -1,5 +1,5 @@
 dnl Configuration for the Gtk+ core client
-# $Id: configure.ac 8949 2007-01-16 18:23:42Z josef $
+# $Id: configure.ac 9365 2007-11-18 11:00:46Z josef $
 dnl ======================================
 
 AC_INIT([GGZ Gtk+ client], [0.0.14], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
@@ -27,9 +27,9 @@ AC_GGZ_GGZCORE
 AC_GGZ_INTL
 
 
-dnl Gaim plugin check
+dnl Pidgin plugin check
 dnl =================
-AC_GAIM(1, 5, 0)
+AC_PIDGIN(2, 2, 0)
 
 dnl Temporary: Check for windows resource compiler
 #AC_PATH_PROG([WINDRES], [i586-mingw32msvc-windres], [])
@@ -91,7 +91,7 @@ fi
 # Library settings
 # ================
 AM_CONDITIONAL(INSTALL_GGZ_GTK, true)
-AM_CONDITIONAL([COND_GAIM], [test "$have_gaim" = yes])
+AM_CONDITIONAL([COND_PIDGIN], [test "$have_pidgin" = yes])
 
 dnl Various dirs
 dnl ============
@@ -100,7 +100,7 @@ AC_SUBST(LDADD)
 AC_CONFIG_FILES([Makefile 
 	   ggz-gtk/Makefile
 	   src/Makefile
-	   gaim-plugin/Makefile
+	   pidgin-plugin/Makefile
 	   po/Makefile
 	   doc/Makefile
 	   man/Makefile
@@ -116,7 +116,7 @@ echo "    General Debugging..$enable_debug"
 echo "    GDB Debugging......$enable_debug_gdb"
 echo "    Dmalloc Debugging..$enable_debug_mem"
 echo ""
-echo "    Gaim plugin........$have_gaim"
+echo "    Pidgin plugin......$have_pidgin"
 echo ""
 echo "At the prompt type \"make\" to compile the GGZ gtk client"
 echo ""
