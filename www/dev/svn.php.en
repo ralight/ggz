@@ -21,7 +21,7 @@ Most of the modules are released as
 <tr><td>utils</td><td>Utilities: ggzcomm, metaserver, ...</td><td>C, Ruby</td><td></td></tr>
 <tr><td>grubby</td><td>Chatbot</td><td>C, Perl, ...</td><td></td></tr>
 <tr><td>txt-client</td><td>Text core client</td><td>C</td><td></td></tr>
-<tr><td>gtk-client</td><td>Gtk+ core client, Gaim plugin</td><td>C</td><td></td></tr>
+<tr><td>gtk-client</td><td>Gtk+ core client, Pidgin plugin</td><td>C</td><td></td></tr>
 <tr><td>gtk-games</td><td>Gtk+ game clients</td><td>C</td><td></td></tr>
 <tr><td>kde-client</td><td>KDE core client and tools</td><td>C++</td><td></td></tr>
 <tr><td>kde-games</td><td>KDE game clients</td><td>C++</td><td></td></tr>

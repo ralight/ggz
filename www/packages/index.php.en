@@ -72,8 +72,8 @@ Koenig (chess), Krosswater and Mühle (nine men's morris).
 <br/><br/>
 This package contains <a href="/clients/gtk/">ggz-gtk</a>, a Gtk+-based
 core client. Additionally, the
-<a href="/utils/ggz-gaim/">GGZ plugin for Gaim</a> can be used to play
-games using the Gaim multi-protocol IM client.
+<a href="/utils/ggz-pidgin/">GGZ plugin for Pidgin</a> can be used to play
+games using the Pidgin multi-protocol IM client.
 </td>
 </tr>
 

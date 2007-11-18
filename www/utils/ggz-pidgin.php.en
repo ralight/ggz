@@ -4,8 +4,8 @@
 <tr>
 <td>
 
-<b>GGZ-Gaim</b><br/>
-Online gaming integration into the Gaim instant messenger
+<b>GGZ-Pidgin</b><br/>
+Online gaming integration into the Pidgin instant messenger
 <br/><br/>
 
 <table class="twoside">
@@ -14,13 +14,13 @@ Online gaming integration into the Gaim instant messenger
 
 <i>The main features</i><br/>
 <ul>
-<li>Gaim plugin for playing games while chatting
+<li>Pidgin plugin for playing games while chatting
 <li>Currently supports all two-player games
 </ul>
 
 <i>Detailed information</i><br/>
 As an alternative to using a GGZ core client for launching games, those
-who prefer a multi-protocol chat client can use Gaim, while still being
+who prefer a multi-protocol chat client can use Pidgin, while still being
 able to connect to a GGZ server to launch games from it.
 
 </td><td>
