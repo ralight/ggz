@@ -183,6 +183,12 @@ install-rest:
 	mkdir -p $(DESTDIR)$(py_privmoddir)/common
 	cp lib/playertable.py $(DESTDIR)$(py_privmoddir)/common
 
+	@echo Installing game server Submarine
+	mkdir -p $(DESTDIR)$(ggzd_execmoddir)
+	cp submarine/submarine $(DESTDIR)$(ggzd_execmoddir)
+	cp submarine/submarine.dsc $(DESTDIR)$(ggzd_confdir)/games
+	cp submarine/submarine.room $(DESTDIR)$(ggzd_confdir)/rooms
+
 install-ggzboard:
 	@echo Installing GGZBoard framework and games
 	mkdir -p $(DESTDIR)$(bindir)
