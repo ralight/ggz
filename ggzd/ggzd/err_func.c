@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 9225 2007-08-01 13:50:25Z oojah $
+ * $Id: err_func.c 9371 2007-11-21 16:10:22Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -93,15 +93,28 @@ static void send_debug_output(int priority,
                               const char *msg)
 {
 	FILE *f;
+	bool force_console = false;
+
+	if((opt.foreground)
+	&& (ggz_strcmp(log_info.log_fname, "stderr"))
+	&& (ggz_strcmp(log_info.log_fname, "stdout"))) {
+		if(priority == LOG_CRIT)
+			force_console = true;
+	}
 
 	/* If logs not yet initialized, send to stderr */
-	if(!log_info.log_initialized) {
+	if((!log_info.log_initialized) || (force_console)) {
 		fflush(stdout);
 		fputs(header, stderr);
 		fputs(msg, stderr);
 		fputs("\n", stderr);
 		fflush(NULL);
-	} else if(priority != LOG_DEBUG) {
+
+		if(!log_info.log_initialized)
+			return;
+	}
+
+	if(priority != LOG_DEBUG) {
 		if(log_info.options & GGZ_LOGOPT_USE_SYSLOG) {
 			syslog(priority, "%s%s\n", header, msg);
 		} else {
