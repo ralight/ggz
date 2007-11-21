@@ -1,6 +1,6 @@
 === ggzd/control.c
 ==================================================================
---- ggzd/control.c	(revision 10327)
+--- ggzd/control.c	(revision 10344)
 +++ ggzd/control.c	(local)
 @@ -563,6 +563,13 @@
  	signal(TABLE_EVENT_SIGNAL, table_handle_event_signal);
@@ -18,7 +18,7 @@
  
 === ggzd/database/ggzdb.h
 ==================================================================
---- ggzd/database/ggzdb.h	(revision 10327)
+--- ggzd/database/ggzdb.h	(revision 10344)
 +++ ggzd/database/ggzdb.h	(local)
 @@ -80,6 +80,11 @@
  	long highest_score;
@@ -56,7 +56,7 @@
 +ggzdb_find_first_savegame(const char *game, const char *owner);
 +
 +GGZDBResult
-+ggzddb_find_next_savegame_alloc(GGZDBResultData *data, char **savegame);
++ggzdb_find_next_savegame_alloc(GGZDBResultData *data, char **savegame);
 +
 +/* Loading owners 
 + *
@@ -77,7 +77,7 @@
  
 === ggzd/database/ggzdb_pgsql.c
 ==================================================================
---- ggzd/database/ggzdb_pgsql.c	(revision 10327)
+--- ggzd/database/ggzdb_pgsql.c	(revision 10344)
 +++ ggzd/database/ggzdb_pgsql.c	(local)
 @@ -72,6 +72,14 @@
  }
@@ -193,7 +193,7 @@
 +
 === ggzd/datatypes.h
 ==================================================================
---- ggzd/datatypes.h	(revision 10327)
+--- ggzd/datatypes.h	(revision 10344)
 +++ ggzd/datatypes.h	(local)
 @@ -143,6 +143,10 @@
  
@@ -208,7 +208,7 @@
  
 === ggzd/parse_opt.c
 ==================================================================
---- ggzd/parse_opt.c	(revision 10327)
+--- ggzd/parse_opt.c	(revision 10344)
 +++ ggzd/parse_opt.c	(local)
 @@ -672,6 +672,9 @@
  	game_info.allow_peers = ggz_conf_read_int(ch, "TableOptions", 
@@ -222,7 +222,7 @@
  
 === ggzd/room.c
 ==================================================================
---- ggzd/room.c	(revision 10327)
+--- ggzd/room.c	(revision 10344)
 +++ ggzd/room.c	(local)
 @@ -621,3 +621,60 @@
  	return removed;
@@ -287,7 +287,7 @@
 +}
 === ggzd/room.h
 ==================================================================
---- ggzd/room.h	(revision 10327)
+--- ggzd/room.h	(revision 10344)
 +++ ggzd/room.h	(local)
 @@ -123,6 +123,7 @@
  int room_get_count_rooms(void);
@@ -299,7 +299,7 @@
  			    GGZPlayerUpdateType update,
 === ggzd/stats.c
 ==================================================================
---- ggzd/stats.c	(revision 10327)
+--- ggzd/stats.c	(revision 10344)
 +++ ggzd/stats.c	(local)
 @@ -449,4 +449,3 @@
  
@@ -308,7 +308,7 @@
 -
 === ggzd/table.c
 ==================================================================
---- ggzd/table.c	(revision 10327)
+--- ggzd/table.c	(revision 10344)
 +++ ggzd/table.c	(local)
 @@ -86,6 +86,8 @@
  			      const void *data);
@@ -398,7 +398,7 @@
 +	ggz_free(roomname);
 +
 +	char *savegame;
-+	while(ggzdb_find_next_savegame_alloc(dbRes, &savegame) != GGZDB_ERR_NOTFOUND) {
++	while (ggzdb_find_next_savegame_alloc(dbRes, &savegame) != GGZDB_ERR_NOTFOUND) {
 +		ggzdmod_send_savedgame(table->ggzdmod, savegame);
 +		ggz_free(savegame);
 +	}
@@ -455,9 +455,9 @@
 +static void table_game_req_abandoned(GGZdMod *ggzdmod, GGZdModEvent event,
 +				     const void *data)
 +{
-+	GGZSeat *seat = data;
++	const GGZSeat *seat = data;
 +
-+	table_game_change_seat(ggzdmod, event, seat->num, 
++	_table_game_change_seat(ggzdmod, event, seat->num, 
 +		GGZ_SEAT_ABANDONED, seat->name);
 +}
 +
@@ -467,7 +467,7 @@
  {
 === ggzdmod/ggzdmod-ggz.h
 ==================================================================
---- ggzdmod/ggzdmod-ggz.h	(revision 10327)
+--- ggzdmod/ggzdmod-ggz.h	(revision 10344)
 +++ ggzdmod/ggzdmod-ggz.h	(local)
 @@ -108,6 +108,10 @@
  	int *scores;
@@ -501,7 +501,7 @@
  } GGZdModEventInternal;
 === ggzdmod/ggzdmod.c
 ==================================================================
---- ggzdmod/ggzdmod.c	(revision 10327)
+--- ggzdmod/ggzdmod.c	(revision 10344)
 +++ ggzdmod/ggzdmod.c	(local)
 @@ -844,7 +844,14 @@
  	return 0;
@@ -544,7 +544,7 @@
  }
  
  /* Returns -1 on error, the number of events handled on success. */
-@@ -1105,14 +1117,21 @@
+@@ -1105,14 +1117,22 @@
  		else
  			return -1;
  	} else {
@@ -565,12 +565,13 @@
 +int _ggzdmod_set_state(GGZdMod *ggzdmod, GGZdModState state)
 +{
 +	ggzdmod->state = state;
++	return 0;
 +}
 +
  /* 
   * ggzd specific actions
   */
-@@ -1410,6 +1429,7 @@
+@@ -1410,6 +1430,7 @@
  		/* Is this right? has the gameover happened yet? */   
  		return;
  	case GGZDMOD_STATE_CREATED:
@@ -578,7 +579,7 @@
  		break;
  	}
  
-@@ -1827,7 +1847,14 @@
+@@ -1827,7 +1848,14 @@
  	}
  }
  
@@ -593,7 +594,7 @@
  void ggzdmod_request_num_seats(GGZdMod * ggzdmod, int num_seats)
  {
  	_io_send_req_num_seats(ggzdmod->fd, num_seats);
-@@ -1851,7 +1878,12 @@
+@@ -1851,7 +1879,12 @@
  	_io_send_req_open(ggzdmod->fd, seat_num);
  }
  
@@ -606,7 +607,7 @@
  void _ggzdmod_handle_report(GGZdMod * ggzdmod,
  			    int num_players, char **names, GGZSeatType *types,
  			    int *teams, GGZGameResult *results, int *scores)
-@@ -1871,7 +1903,12 @@
+@@ -1871,7 +1904,12 @@
  	call_handler(ggzdmod, GGZDMOD_EVENT_SAVEGAMEREPORT, savegame);
  }
  
@@ -619,7 +620,7 @@
  void _ggzdmod_handle_num_seats_request(GGZdMod * ggzdmod, int num_seats)
  {
  	call_handler(ggzdmod, GGZDMOD_EVENT_REQ_NUM_SEATS, &num_seats);
-@@ -1894,3 +1931,29 @@
+@@ -1894,3 +1932,29 @@
  {
  	call_handler(ggzdmod, GGZDMOD_EVENT_REQ_OPEN, &seat_num);
  }
@@ -651,7 +652,7 @@
 +}
 === ggzdmod/ggzdmod.h
 ==================================================================
---- ggzdmod/ggzdmod.h	(revision 10327)
+--- ggzdmod/ggzdmod.h	(revision 10344)
 +++ ggzdmod/ggzdmod.h	(local)
 @@ -225,6 +225,8 @@
   */
@@ -711,7 +712,7 @@
  #endif
 === ggzdmod/io.c
 ==================================================================
---- ggzdmod/io.c	(revision 10327)
+--- ggzdmod/io.c	(revision 10344)
 +++ ggzdmod/io.c	(local)
 @@ -51,13 +51,15 @@
  static int _io_read_req_boot(GGZdMod *ggzdmod);
@@ -846,7 +847,27 @@
  static int _io_read_req_launch(GGZdMod * ggzdmod)
  {
  	int seats, spectators, i;
-@@ -543,3 +597,35 @@
+@@ -433,15 +487,18 @@
+ 
+ 	for (i = 0; i < seats; i++) {
+ 		char *name = NULL;
++		int type;
+ 
+ 		/* Reset seat */
+ 		seat.num = i;
+ 		seat.fd = -1;
+ 		seat.playerdata = NULL;
+ 		
+-		if (ggz_read_int(ggzdmod->fd, (int*)&seat.type) < 0)
++		if (ggz_read_int(ggzdmod->fd, &type) < 0)
+ 			return -1;
+ 
++		seat.type = type;
++
+ 		if (seat.type == GGZ_SEAT_RESERVED || seat.type == GGZ_SEAT_BOT) {
+ 			if (ggz_read_string_alloc(ggzdmod->fd, &name) < 0)
+ 				return -1;
+@@ -543,3 +600,35 @@
  
  	return 0;
  }
@@ -884,7 +905,7 @@
 +}
 === ggzdmod/io.h
 ==================================================================
---- ggzdmod/io.h	(revision 10327)
+--- ggzdmod/io.h	(revision 10344)
 +++ ggzdmod/io.h	(local)
 @@ -37,10 +37,12 @@
  int _io_send_seat_change(int fd, const GGZSeat *seat);
@@ -915,7 +936,7 @@
  int _io_read_data(GGZdMod * ggzdmod);
 === ggzdmod/mod.h
 ==================================================================
---- ggzdmod/mod.h	(revision 10327)
+--- ggzdmod/mod.h	(revision 10344)
 +++ ggzdmod/mod.h	(local)
 @@ -42,6 +42,12 @@
  #define GGZDMOD_NUM_EVENTS (GGZDMOD_EVENT_ERROR_INTERNAL + 1)
@@ -950,13 +971,13 @@
  void _ggzdmod_handle_spectator_seat(GGZdMod * ggzdmod, GGZSeat *seat);
  void _ggzdmod_handle_state_response(GGZdMod * ggzdmod);
 +void _ggzdmod_handle_savedgame(GGZdMod *ggzdmod, const char *savedgame);
-+void _ggzdmod_handle_state_changed(ggzdmod, state);
++void _ggzdmod_handle_state_changed(GGZdMod *ggzdmod, GGZdModState state);
  
 -
  #endif /* __GGZ_MOD_H__ */
 === ggzdmod/protocol.h
 ==================================================================
---- ggzdmod/protocol.h	(revision 10327)
+--- ggzdmod/protocol.h	(revision 10344)
 +++ ggzdmod/protocol.h	(local)
 @@ -54,13 +54,29 @@
  	 */
@@ -1017,7 +1038,7 @@
  #endif /* __GGZ_SERVER_PROTOCOL_H */
 === ggzdmod++/ggzgameserver.cpp
 ==================================================================
---- ggzdmod++/ggzgameserver.cpp	(revision 10327)
+--- ggzdmod++/ggzgameserver.cpp	(revision 10344)
 +++ ggzdmod++/ggzgameserver.cpp	(local)
 @@ -59,6 +59,10 @@
  				GGZdModEvent event, const void *data);
@@ -1080,7 +1101,7 @@
 +}
 === ggzdmod++/ggzgameserver.h
 ==================================================================
---- ggzdmod++/ggzgameserver.h	(revision 10327)
+--- ggzdmod++/ggzgameserver.h	(revision 10344)
 +++ ggzdmod++/ggzgameserver.h	(local)
 @@ -65,6 +65,16 @@
  		SeatType type;
