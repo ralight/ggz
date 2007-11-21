@@ -1,5 +1,4 @@
 # Configuration for the GGZ server
-# $Id: configure.ac 9342 2007-11-09 04:17:29Z jdorje $
 # ================================
 
 AC_INIT([GGZ server], [0.0.15pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
@@ -26,7 +25,7 @@ AC_ARG_ENABLE([server],
 	AS_HELP_STRING([--disable-server], [Don't build ggzd server]),
 	[enable_server=no], [enable_server=yes])
 AC_ARG_ENABLE([games],
-	AS_HELP_STRING([--disable-games], [Don't build ggzd games]),
+	AS_HELP_STRING([--disable-games], [Don't build game servers]),
 	[enable_games=no], [enable_games=yes])
 AC_ARG_WITH([database],
 	AS_HELP_STRING([--with-database=DB],
