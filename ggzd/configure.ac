@@ -152,6 +152,7 @@ AC_SUBST(LIB_GCRYPT)
 dnl Check database libs
 dnl ===================
 AC_GGZ_DATABASE
+AC_SUBST(database)
 
 dnl Check for zeroconf implementations
 dnl ==================================
@@ -200,23 +201,9 @@ AC_DEFINE([GGZ_SERVER], 1, [Tell preprocessor we're compiling server code])
 dnl Which progs to compile
 dnl ======================
 
-COMPILE_SUBDIRS="man ggzdmod ggzdmod++"
-
-if test "$enable_server" = yes; then
-    COMPILE_SUBDIRS="$COMPILE_SUBDIRS ggzd"
-fi
-
-if test "$enable_games" = yes; then
-    COMPILE_SUBDIRS="$COMPILE_SUBDIRS game_servers"
-fi
-
 AM_CONDITIONAL([COND_DBPROC], [test "$enable_dbproc" = yes])
-
-dnl Compile the test code
-COMPILE_SUBDIRS="$COMPILE_SUBDIRS tests"
-
-AC_SUBST(COMPILE_SUBDIRS)
-AC_SUBST(database)
+AM_CONDITIONAL([COND_COMPILE_SERVER], [test "$enable_server" = yes])
+AM_CONDITIONAL([COND_COMPILE_GAMES], [test "$enable_games" = yes])
 
 dnl Attempt to use as much as we can on systems with glibc
 AC_DEFINE([_GNU_SOURCE], 1,

@@ -1,12 +1,15 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8816 2007-01-04 23:31:54Z jdorje $
+if COND_COMPILE_GAMES
+GAMES = game_servers
+endif
+if COND_COMPILE_SERVER
+SERVER = ggzd
+endif
 
-DIST_SUBDIRS = ggzdmod ggzdmod++ ggzd game_servers man tests
+SUBDIRS = ggzdmod ggzdmod++ $(SERVER) $(GAMES) man tests
+
 CLEAN_FILES = ggzd.debug ggzd.log
-SUBDIRS = $(COMPILE_SUBDIRS)
 
-EXTRA_DIST = README.GGZ \
-		m4/test.mk
+EXTRA_DIST = README.GGZ m4/test.mk
 
 include $(top_srcdir)/m4/test.mk
 
