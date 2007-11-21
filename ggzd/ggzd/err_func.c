@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 9371 2007-11-21 16:10:22Z josef $
+ * $Id: err_func.c 9372 2007-11-21 16:10:35Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -98,7 +98,7 @@ static void send_debug_output(int priority,
 	if((opt.foreground)
 	&& (ggz_strcmp(log_info.log_fname, "stderr"))
 	&& (ggz_strcmp(log_info.log_fname, "stdout"))) {
-		if(priority == LOG_CRIT)
+		if((priority == LOG_CRIT) || (priority == LOG_ERR))
 			force_console = true;
 	}
 
