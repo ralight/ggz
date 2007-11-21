@@ -36,6 +36,25 @@ Debugging
 * kggzmod/kggznet/kggzgames (now part of kdegames):
   switch on its debug areas (11003-11005)
 
+Server logging
+--------------
+The server is a bit more complicated than the other applications. It contains
+four different levels of logging: debugging (which might not even be compiled
+into the server), logging and error messages, as well as a dump of its
+network communication.
+* Error messages always go somewhere - e.g. to syslog by default. When running
+  ggzd in the foreground, they will always be replicated at stderr.
+* Log messages are divided into types (such as security or connections). They
+  are not logged by default, unless configured otherwise in ggzd.conf. Once
+  configured, they are sent to syslog or to whatever is configured (files,
+  stdout, stderr).
+  When running ggzd in the foreground, using --log always replicates to
+  stdout.
+* Debug messages are just like log messages. However, in non-debug mode, they
+  will not appear anywhere no matter what is configured.
+* Network dump isn't logged by default, but a file can be specified in
+  ggzd.conf (including stdout/stderr).
+
 Coding in C
 -----------
 * C99 and POSIX.1-2001 are more or less a minimum requirement.
