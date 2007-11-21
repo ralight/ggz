@@ -1,0 +1,1129 @@
+=== ggzd/control.c
+==================================================================
+--- ggzd/control.c	(revision 10327)
++++ ggzd/control.c	(local)
+@@ -563,6 +563,13 @@
+ 	signal(TABLE_EVENT_SIGNAL, table_handle_event_signal);
+ 	pthread_key_create(&table_key, NULL);
+ 
++	/* Restoring saved games for games with flag AutoRestoreGame */
++	int rooms = room_get_count_rooms();
++	while (!term_signal && --rooms)
++		room_restore(rooms);
++
++	// TODO: Need made cleanup and exit if signal arrived
++
+ 	/* Setup TLS */
+ 	ggz_tls_init(opt.tls_cert, opt.tls_key, opt.tls_password);
+ 
+=== ggzd/database/ggzdb.h
+==================================================================
+--- ggzd/database/ggzdb.h	(revision 10327)
++++ ggzd/database/ggzdb.h	(local)
+@@ -80,6 +80,11 @@
+ 	long highest_score;
+ } ggzdbPlayerGameStats;
+ 
++/* Containe data returned by SQL query */
++typedef struct _GGZDBResultData GGZDBResultData;
++  
++typedef GGZDBResultData *GGZDBResultDataPtr;
++
+ /* Error codes */
+ typedef enum {
+ 	GGZDB_NO_ERROR,		/* All's well */
+@@ -89,7 +94,6 @@
+ 	GGZDB_ERR_DB		/* Uh oh.  A database error. */
+ } GGZDBResult;
+ 
+-
+ /* Exported functions */
+ GGZReturn ggzdb_init(void);
+ void ggzdb_close(void);
+@@ -124,6 +128,34 @@
+ /* Recalculate statistics for a certain game type */
+ GGZDBResult ggzdb_stats_calcrankings(const char *game);
+ 
++/* Loading saved games
++ *
++ * Must be iterated all returned data, becose GGZDBResultData don't freed
++ * while ggzdb_find_next_owner function not return GGZDB_ERR_NOTFOUND
++ *
++ * WARNING !!!
++ * PS: don't user GGZDBResultData* when ggzdb_find_owner function
++ *     return GGZDB_ERR_NOTFOUND status. It is deleted */
++GGZDBResultDataPtr
++ggzdb_find_first_savegame(const char *game, const char *owner);
++
++GGZDBResult
++ggzddb_find_next_savegame_alloc(GGZDBResultData *data, char **savegame);
++
++/* Loading owners 
++ *
++ * Must be iterated all returned data, becose GGZDBResultData don't freed
++ * while ggzdb_find_next_owner function not return GGZDB_ERR_NOTFOUND
++ *
++ * WARNING !!!
++ * PS: don't user GGZDBResultData* when ggzdb_find_owner function
++ *     return GGZDB_ERR_NOTFOUND status. It is deleted */
++GGZDBResultDataPtr
++ggzdb_find_first_owner(const char *game);
++
++GGZDBResult
++ggzdb_find_next_owner_alloc(GGZDBResultData *data, char **owner);
++
+ /* Escape a string for SQL */
+ char *_ggz_sql_escape(const char *str);
+ 
+=== ggzd/database/ggzdb_pgsql.c
+==================================================================
+--- ggzd/database/ggzdb_pgsql.c	(revision 10327)
++++ ggzd/database/ggzdb_pgsql.c	(local)
+@@ -72,6 +72,14 @@
+ }
+ connection_t;
+ 
++struct _GGZDBResultData
++{
++	PGconn *conn;
++	PGresult *res;
++	int i;
++	int count;
++};
++
+ /* Internal functions */
+ 
+ /* Take a connection from the pool */
+@@ -1027,3 +1035,96 @@
+ 	return GGZDB_NO_ERROR;
+ }
+ 
++GGZDBResultDataPtr create_resultData(PGconn *conn, PGresult *result)
++{
++	if (PQresultStatus(result) != PGRES_TUPLES_OK) {
++		PQclear(result);
++		releaseconnection(conn);
++		return NULL;
++	} else {
++		GGZDBResultData *res = ggz_malloc(sizeof(GGZDBResultData));
++		res->conn = conn;
++		res->res = result;
++		res->count = PQntuples(result);
++		res->i = 0;
++		return res;
++	}
++}
++
++GGZDBResultDataPtr ggzdb_find_first_owner(const char *game)
++{
++	PGconn *conn = claimconnection();
++	if (!conn) {
++		err_msg("ggzdb_find_first_owner: couldn't claim connection");
++		return NULL;
++	} else {
++		char query[4096];
++		char *game_quoted;
++
++		game_quoted = _ggz_sql_escape(game);
++		snprintf(query, sizeof(query),
++			"SELECT owner FROM savegames WHERE game='%s'",
++			game_quoted);
++		ggz_free(game_quoted);
++
++		return create_resultData(conn, PQexec(conn, query));
++	}
++}
++
++GGZDBResult
++ggzdb_find_next_owner_alloc(GGZDBResultData* data, char **owner)
++{
++	if (data->i < data->count) {
++		*owner = strdup(PQgetvalue(data->res, data->i++, 0));
++		return GGZDB_NO_ERROR;
++	} else {
++		PQclear(data->res);
++		releaseconnection(data->conn);
++
++		ggz_free(data);
++
++		return GGZDB_ERR_NOTFOUND;
++	}
++}
++
++GGZDBResultDataPtr
++ggzdb_find_first_savegame(const char *game, const char *owner)
++{
++	PGconn *conn = claimconnection();
++	if (!conn) {
++		err_msg("ggzdb_find_first_savegame: couldn't claim connection");
++		return NULL;
++	} else {
++		char query[4096];
++		char *game_quoted;
++		char *owner_quoted;
++
++		game_quoted = _ggz_sql_escape(game);
++		owner_quoted = _ggz_sql_escape(owner);
++		snprintf(query, sizeof(query),
++			"SELECT savegame FROM savegames "
++			"WHERE game='%s' AND owner='%s'",
++			game_quoted, owner_quoted);
++		ggz_free(game_quoted);
++		ggz_free(owner_quoted);
++
++		return create_resultData(conn, PQexec(conn, query));
++	}
++}
++
++GGZDBResult
++ggzdb_find_next_savegame_alloc(GGZDBResultData *data, char **savedgame)
++{
++	if (data->i < data->count) {
++		*savedgame = strdup(PQgetvalue(data->res, data->i++, 0));
++		return GGZDB_NO_ERROR;
++	} else {
++		PQclear(data->res);
++		releaseconnection(data->conn);
++
++		ggz_free(data);
++
++		return GGZDB_ERR_NOTFOUND;
++	}
++}
++
+=== ggzd/datatypes.h
+==================================================================
+--- ggzd/datatypes.h	(revision 10327)
++++ ggzd/datatypes.h	(local)
+@@ -143,6 +143,10 @@
+ 
+ 	/* Can players request each other's hostnames? */
+ 	bool allow_peers;
++
++	/* Games should be automatically restored if they're saved when
++	   server runs */
++	bool restore_allow;
+ } GameInfo;
+ 
+ 
+=== ggzd/parse_opt.c
+==================================================================
+--- ggzd/parse_opt.c	(revision 10327)
++++ ggzd/parse_opt.c	(local)
+@@ -672,6 +672,9 @@
+ 	game_info.allow_peers = ggz_conf_read_int(ch, "TableOptions", 
+ 						  "AllowPeers", 0);
+ 
++	game_info.restore_allow = ggz_conf_read_int(ch, "TableOptions",
++						    "AllowRestore", 0);
++
+ 	/* Named bots */
+ 	game_info.named_bots = NULL;
+ 
+=== ggzd/room.c
+==================================================================
+--- ggzd/room.c	(revision 10327)
++++ ggzd/room.c	(local)
+@@ -621,3 +621,60 @@
+ 	return removed;
+ }
+ 
++
++/* This function is used for restore tables in room after crash
++*/
++void room_restore(int room)
++{
++	pthread_rwlock_rdlock(&rooms[room].lock);
++	int game_type = rooms[room].game_type;
++	pthread_rwlock_unlock(&rooms[room].lock);
++    
++	pthread_rwlock_rdlock(&game_types[game_type].lock);
++	int restore_allow = game_types[game_type].restore_allow;
++	pthread_rwlock_unlock(&game_types[game_type].lock);
++    
++	if (restore_allow) {
++		pthread_rwlock_rdlock(&rooms[room].lock);
++		char *room_name = strdup(rooms[room].name);
++		pthread_rwlock_unlock(&rooms[room].lock);
++
++		GGZDBResultData *data = ggzdb_find_first_owner(room_name);
++		char *owner;
++
++		ggz_free(room_name);
++
++		if (data != NULL) {
++			while(ggzdb_find_next_owner_alloc(data, &owner) != GGZDB_ERR_NOTFOUND) {
++				GGZTable *table = table_new();
++				table->type = game_type;
++				table->room = room;
++				table->state = GGZDMOD_STATE_RESTORED;
++
++				// Make open all seats. Game using save game
++				// must be not used seats close.
++				pthread_rwlock_rdlock(&game_types[game_type].lock);
++				int seats = ggz_numberlist_get_max(&game_types[game_type].player_allow_list);
++				pthread_rwlock_unlock(&game_types[game_type].lock);
++
++				table->num_seats = seats;
++				if (seats > 0) {
++					table->seat_types = ggz_malloc(seats * sizeof(*table->seat_types));
++					table->seat_names = ggz_malloc(seats * sizeof(*table->seat_names));
++					int i;
++					for(i = 0; i < seats; ++i) {
++						table->seat_types[i] = GGZ_SEAT_OPEN;
++						table->seat_names[i][0] = '\0';
++					}
++				}
++
++				if (table_launch(table, owner) != E_OK)
++					ggz_free(table);
++
++				ggz_free(owner);
++			}
++		}
++	}
++
++	return;
++}
+=== ggzd/room.h
+==================================================================
+--- ggzd/room.h	(revision 10327)
++++ ggzd/room.h	(local)
+@@ -123,6 +123,7 @@
+ int room_get_count_rooms(void);
+ int room_is_removed(int room);
+ int room_will_be_removed(int room);
++void room_restore(int room);
+ 
+ GGZReturn room_update_event(const char *player,
+ 			    GGZPlayerUpdateType update,
+=== ggzd/stats.c
+==================================================================
+--- ggzd/stats.c	(revision 10327)
++++ ggzd/stats.c	(local)
+@@ -449,4 +449,3 @@
+ 
+ 	return rankingslist;
+ }
+-
+=== ggzd/table.c
+==================================================================
+--- ggzd/table.c	(revision 10327)
++++ ggzd/table.c	(local)
+@@ -86,6 +86,8 @@
+ 			      const void *data);
+ static void table_game_savegame(GGZdMod *ggzdmod, GGZdModEvent event,
+ 			      const void *data);
++static void table_game_savedgamesreq(GGZdMod *ggzdmod, GGZdModEvent event,
++				     const void *data);
+ static void table_game_req_num_seats(GGZdMod *ggzdmod, GGZdModEvent event,
+ 				     const void *data);
+ static void table_game_req_boot(GGZdMod *ggzdmod, GGZdModEvent event,
+@@ -94,6 +96,8 @@
+ 			       const void *data);
+ static void table_game_req_open(GGZdMod *ggzdmod, GGZdModEvent event,
+ 				const void *data);
++static void table_game_req_abandoned(GGZdMod *ggzdmod, GGZdModEvent event,
++				     const void *data);
+ static void table_error(GGZdMod *ggzdmod, GGZdModEvent event,
+ 			const void *data);
+ 
+@@ -452,6 +456,8 @@
+ 			    &table_game_report);
+ 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_SAVEGAMEREPORT,
+ 			    &table_game_savegame);
++	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_SAVEDGAMESREQ,
++			    &table_game_savedgamesreq);
+ 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_NUM_SEATS,
+ 			    &table_game_req_num_seats);
+ 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_BOOT,
+@@ -460,6 +466,8 @@
+ 			    &table_game_req_bot);
+ 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_OPEN,
+ 			    &table_game_req_open);
++	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_ABANDONED,
++			    &table_game_req_abandoned);
+ 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_ERROR, &table_error);
+ 	
+ 	/* Setup seats for game table */
+@@ -486,6 +494,12 @@
+ 	if (ggzdmod_connect(table->ggzdmod) < 0)
+ 		status = GGZ_ERROR;
+ 
++	if (table->state == GGZDMOD_STATE_RESTORED) {
++		log_msg(GGZ_LOG_TABLES,"Server change game state to %d",
++			table->state);
++		ggzdmod_set_state(table->ggzdmod, table->state);
++	}
++
+ 	return status;
+ }
+ 
+@@ -884,6 +898,7 @@
+ 			table_event_enqueue(table, GGZ_TABLE_UPDATE_STATE);
+ 		return;
+ 
++	case GGZDMOD_STATE_RESTORED:
+ 	case GGZDMOD_STATE_CREATED:
+ 		break;
+ 	}
+@@ -932,7 +947,6 @@
+ 	/* FIXME: we might want to auto-send the updated rankings here? */
+ }
+ 
+-
+ static void table_game_savegame(GGZdMod *ggzdmod,
+ 			      GGZdModEvent event, const void *data)
+ {
+@@ -945,7 +959,31 @@
+ 	report_savegame(table->type, table->owner, table->savegame);
+ }
+ 
++static void table_game_savedgamesreq(GGZdMod *ggzdmod, GGZdModEvent event,
++				     const void *data)
++{
++	GGZTable *table = ggzdmod_get_gamedata(ggzdmod);
+ 
++	pthread_rwlock_rdlock(&table->lock);
++	int room = table->room;
++	char *owner = strdup(table->owner);
++	pthread_rwlock_unlock(&table->lock);
++
++	pthread_rwlock_rdlock(&rooms[room].lock);
++	char *roomname = strdup(rooms[room].name);
++	pthread_rwlock_unlock(&rooms[room].lock);
++
++	GGZDBResultData *dbRes = ggzdb_find_first_savegame(roomname, owner);
++	ggz_free(owner);
++	ggz_free(roomname);
++
++	char *savegame;
++	while(ggzdb_find_next_savegame_alloc(dbRes, &savegame) != GGZDB_ERR_NOTFOUND) {
++		ggzdmod_send_savedgame(table->ggzdmod, savegame);
++		ggz_free(savegame);
++	}
++}
++
+ /* Must be called with a write-lock on the table. */
+ static void table_change_num_seats(GGZTable *table, int num_seats)
+ {
+@@ -1144,12 +1182,11 @@
+ }
+ 
+ 
+-static void table_game_req_open(GGZdMod *ggzdmod,
+-				GGZdModEvent event, const void *data)
++static void _table_game_change_seat(GGZdMod *ggzdmod,
++				    GGZdModEvent event, int seat_num, GGZSeatType seat_type,
++				    const char *name)
+ {
+ 	GGZTable *table = ggzdmod_get_gamedata(ggzdmod);
+-	const int *seat_num_ptr = data;
+-	const int seat_num = *seat_num_ptr;
+ 	GGZSeat seat;
+ 
+ 	/* FIXME: this code overlaps with the leaving code in transit.c */
+@@ -1167,13 +1204,13 @@
+ 
+ 	seat.num = seat_num;
+ 	seat.type = GGZ_SEAT_OPEN;
+-	seat.name = NULL;
++	seat.name = name;
+ 	seat.fd = -1;
+ 	seat.playerdata = NULL;
+ 	ggzdmod_set_seat(ggzdmod, &seat);
+ 
+ 	pthread_rwlock_wrlock(&table->lock);
+-	table->seat_types[seat_num] = GGZ_SEAT_OPEN;
++	table->seat_types[seat_num] = seat_type;
+ 	table->seat_names[seat_num][0] = '\0';
+ 	pthread_rwlock_unlock(&table->lock);
+ 
+@@ -1184,7 +1221,25 @@
+ 				   "", seat_num);
+ }
+ 
++static void table_game_req_open(GGZdMod *ggzdmod,
++				GGZdModEvent event, const void *data)
++{
++	const int *seat_num_ptr = data;
++	const int seat_num = *seat_num_ptr;
+ 
++	_table_game_change_seat(ggzdmod, event, seat_num, GGZ_SEAT_OPEN, NULL);
++}
++
++static void table_game_req_abandoned(GGZdMod *ggzdmod, GGZdModEvent event,
++				     const void *data)
++{
++	GGZSeat *seat = data;
++
++	table_game_change_seat(ggzdmod, event, seat->num, 
++		GGZ_SEAT_ABANDONED, seat->name);
++}
++
++
+ static void table_error(GGZdMod *ggzdmod,
+ 			GGZdModEvent event, const void *data)
+ {
+=== ggzdmod/ggzdmod-ggz.h
+==================================================================
+--- ggzdmod/ggzdmod-ggz.h	(revision 10327)
++++ ggzdmod/ggzdmod-ggz.h	(local)
+@@ -108,6 +108,10 @@
+ 	int *scores;
+ } GGZdModGameReportData;
+ 
++/** @brief Send saved game to game module
++ */
++int ggzdmod_send_savedgame(GGZdMod *ggzdmod, const char *savedgame);
++
+ /** @brief Callback events (GGZ-side additions).
+  *
+  *  These events are triggered by the game server and delivered
+@@ -121,6 +125,7 @@
+ 
+ 	/** @brief For GGZ only.  Reports a savegame. */
+ 	GGZDMOD_EVENT_SAVEGAMEREPORT,
++	GGZDMOD_EVENT_SAVEDGAMESREQ,
+ 
+ 	/** @brief Module log request
+ 	 *  This event occurs when a log request happens.  This will
+@@ -140,6 +145,10 @@
+ 	/* @brief GGZ-side only.  Requests to open up a seat. */
+ 	GGZDMOD_EVENT_REQ_OPEN,
+ 
++	/* @brief GGZ-size only. Request to abandoned up a seat */
++	GGZDMOD_EVENT_REQ_ABANDONED,
++	GGZDMOD_EVENT_GAME_STATE_CHANGED,
++
+ 	GGZDMOD_EVENT_ERROR_INTERNAL
+ 	/* GGZDMOD_EVENT_ERROR_INTERNAL must be the last one! */
+ } GGZdModEventInternal;
+=== ggzdmod/ggzdmod.c
+==================================================================
+--- ggzdmod/ggzdmod.c	(revision 10327)
++++ ggzdmod/ggzdmod.c	(local)
+@@ -844,7 +844,14 @@
+ 	return 0;
+ }
+ 
++int ggzdmod_send_savedgame(GGZdMod *ggzdmod, const char *savedgame)
++{
++	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->type != GGZDMOD_GGZ)
++		return -1;
++	return _io_send_savedgame(ggzdmod->fd, savedgame);            
++}
+ 
++
+ /* This information could be tracked every time  a player
+    leaves/joins, but that's not really necessary at this point. */
+ /* Note also that this function doesn't directly access any
+@@ -918,16 +925,21 @@
+ 	/* The callback function retrieves the state from ggzdmod_get_state.
+ 	   It could instead be passed as an argument. */
+ 	ggzdmod->state = state;
+-	call_handler(ggzdmod, GGZDMOD_EVENT_STATE, &old_state);
+ 
+-	/* If we are the game module, send the new state to GGZ */
+ 	if (ggzdmod->type == GGZDMOD_GAME) {
++		call_handler(ggzdmod, GGZDMOD_EVENT_STATE, &old_state);
++
++		/* If we are the game module, send the new state to GGZ */
+ 		ggzdmod_log(ggzdmod, "GGZDMOD: Game setting state to %d", 
+ 			    state);
+ 		if (_io_send_state(ggzdmod->fd, state) < 0)
++			return;
++		/* FIXME: do some sort of error handling? */
++	} else {
++		if (_io_send_state_changed(ggzdmod->fd, state) < 0)
++			return;
+ 			/* FIXME: do some sort of error handling? */
+-			return;
+-	}
++    }
+ }
+ 
+ /* Returns -1 on error, the number of events handled on success. */
+@@ -1105,14 +1117,21 @@
+ 		else
+ 			return -1;
+ 	} else {
+-		/* TODO: an extension to the communications protocol will be
+-		   needed for this to work ggz-side.  Let's get the rest
+-		   of it working first... */
+-		return -1;
++		if (ggzdmod->state != GGZDMOD_STATE_CREATED)
++			return -1;
++		if (state == GGZDMOD_STATE_RESTORED)
++			set_state(ggzdmod, state);
++		else
++			return -1;
+ 	}
+ 	return 0;
+ }
+ 
++int _ggzdmod_set_state(GGZdMod *ggzdmod, GGZdModState state)
++{
++	ggzdmod->state = state;
++}
++
+ /* 
+  * ggzd specific actions
+  */
+@@ -1410,6 +1429,7 @@
+ 		/* Is this right? has the gameover happened yet? */   
+ 		return;
+ 	case GGZDMOD_STATE_CREATED:
++	case GGZDMOD_STATE_RESTORED:
+ 		break;
+ 	}
+ 
+@@ -1827,7 +1847,14 @@
+ 	}
+ }
+ 
++void ggzdmod_request_savedgames(GGZdMod *ggzdmod )
++{
++	if (ggzdmod && ggzdmod->type == GGZDMOD_GAME) {
++		_io_send_savedgames_request(ggzdmod->fd);
++	}
++}
+ 
++
+ void ggzdmod_request_num_seats(GGZdMod * ggzdmod, int num_seats)
+ {
+ 	_io_send_req_num_seats(ggzdmod->fd, num_seats);
+@@ -1851,7 +1878,12 @@
+ 	_io_send_req_open(ggzdmod->fd, seat_num);
+ }
+ 
++void ggzdmod_request_abandoned(GGZdMod *ggzdmod, int seat_num, const char *name)
++{
++	_io_send_req_abandoned(ggzdmod->fd, seat_num, name);
++}
+ 
++
+ void _ggzdmod_handle_report(GGZdMod * ggzdmod,
+ 			    int num_players, char **names, GGZSeatType *types,
+ 			    int *teams, GGZGameResult *results, int *scores)
+@@ -1871,7 +1903,12 @@
+ 	call_handler(ggzdmod, GGZDMOD_EVENT_SAVEGAMEREPORT, savegame);
+ }
+ 
++void _ggzdmod_handle_req_savedgames(GGZdMod *ggzdmod)
++{
++	call_handler(ggzdmod, GGZDMOD_EVENT_SAVEDGAMESREQ, 0);
++}
+ 
++
+ void _ggzdmod_handle_num_seats_request(GGZdMod * ggzdmod, int num_seats)
+ {
+ 	call_handler(ggzdmod, GGZDMOD_EVENT_REQ_NUM_SEATS, &num_seats);
+@@ -1894,3 +1931,29 @@
+ {
+ 	call_handler(ggzdmod, GGZDMOD_EVENT_REQ_OPEN, &seat_num);
+ }
++
++void _ggzdmod_handle_savedgame(GGZdMod *ggzdmod, const char *savedgame)
++{
++	call_handler(ggzdmod, GGZDMOD_EVENT_SAVEDGAME, (char *)savedgame);
++}
++
++void _ggzdmod_handle_abandoned_request(GGZdMod *ggzdmod, int seat_num,
++				       const char *name)
++{
++	GGZSeat data = {
++		.num = seat_num,
++		.name = name
++	};
++	call_handler(ggzdmod, GGZDMOD_EVENT_REQ_ABANDONED, &data);
++}
++
++void _ggzdmod_handle_state_changed(GGZdMod *ggzdmod, GGZdModState state)
++{
++	call_handler(ggzdmod, GGZDMOD_EVENT_MSG_GAME_STATE_CHANGED, &state);
++	_io_send_state_changed_response(ggzdmod->fd);
++}
++
++void _ggzdmod_handle_stage_change_response(GGZdMod *ggzdmod)
++{
++	call_handler(ggzdmod, GGZDMOD_EVENT_GAME_STATE_CHANGED, NULL);
++}
+=== ggzdmod/ggzdmod.h
+==================================================================
+--- ggzdmod/ggzdmod.h	(revision 10327)
++++ ggzdmod/ggzdmod.h	(local)
+@@ -225,6 +225,8 @@
+  */
+ typedef enum {
+ 	GGZDMOD_STATE_CREATED,	/**< Pre-launch; waiting for ggzdmod */
++	GGZDMOD_STATE_RESTORED, /**< Pre-launch if server restore all saved games
++	                             ; waiting for ggzdmod */
+ 	GGZDMOD_STATE_WAITING,	/**< Ready and waiting to play. */
+ 	GGZDMOD_STATE_PLAYING,	/**< Currently playing a game. */
+ 	GGZDMOD_STATE_DONE	/**< Table halted, prepping to exit. */
+@@ -303,6 +305,12 @@
+ 	 *  sent some data to the game server. */
+ 	GGZDMOD_EVENT_SPECTATOR_DATA,
+ 
++	/** @brief Data about saved games avaiable from ggzd
++         *  This message is answer to saved games request.
++	 */
++	GGZDMOD_EVENT_SAVEDGAME,
++	GGZDMOD_EVENT_MSG_GAME_STATE_CHANGED,
++
+ 	/** @brief An error has occurred
+ 	 *  This event occurs when a GGZdMod error has occurred.  An
+ 	 *  error message (a char*) will be passed as the event's data.
+@@ -577,6 +585,14 @@
+  */
+ int ggzdmod_set_state(GGZdMod * ggzdmod, GGZdModState state);
+ 
++/** @brief Change the table's state value
++ *
++ *  This function used for set state velue and don't
++ *  send message to ggzd server. It used when ggzd
++ *  server send new state.
++ */
++int _ggzdmod_set_state(GGZdMod *ggzdmod, GGZdModState state);
++
+ /** @brief Connect to ggz.
+  *
+  *  Call this function to make an initial GGZ <-> game connection.
+@@ -670,6 +686,8 @@
+  */
+ void ggzdmod_report_savegame(GGZdMod *ggzdmod, const char *savegame);
+ 
++void ggzdmod_request_savedgames(GGZdMod *ggzdmod);
++
+ /** @brief Tell GGZ to change the number of seats at this table.
+  *  @note This functionality is incomplete, and should not yet be used. */
+ void ggzdmod_request_num_seats(GGZdMod * ggzdmod, int num_seats);
+@@ -683,6 +701,9 @@
+ /** @brief Tell GGZ to change the given seat from BOT/RESERVED to OPEN. */
+ void ggzdmod_request_open(GGZdMod * ggzdmod, int seat_num);
+ 
++/** @brief Tell GGZ to change the given seat to ABANDONED. */
++void ggzdmod_request_abandoned(GGZdMod *ggzdmo, int seat_num, const char *name);
++
+ #ifdef __cplusplus
+ }
+ #endif
+=== ggzdmod/io.c
+==================================================================
+--- ggzdmod/io.c	(revision 10327)
++++ ggzdmod/io.c	(local)
+@@ -51,13 +51,15 @@
+ static int _io_read_req_boot(GGZdMod *ggzdmod);
+ static int _io_read_req_bot(GGZdMod *ggzdmod);
+ static int _io_read_req_open(GGZdMod *ggzdmod);
++static int _io_read_req_abandoned(GGZdMod *ggzdmod);
+ 
+ static int _io_read_req_launch(GGZdMod *ggzdmod);
+ static int _io_read_msg_seat_change(GGZdMod * ggzdmod);
+ static int _io_read_msg_reseat(GGZdMod * ggzdmod);
+ static int _io_read_msg_spectator_seat_change(GGZdMod *ggzdmod);
++static int _io_read_msg_game_state_changed(GGZdMod *ggzdmod);
++static int _io_read_msg_savedgames(GGZdMod *ggzdmod);
+ 
+-
+ /* Functions for sending IO messages */
+ int _io_send_launch(int fd, const char *name, int seats, int spectators)
+ {
+@@ -131,7 +133,16 @@
+ 		return 0;
+ }
+ 
++int _io_send_state_changed(int fd, GGZdModState state)
++{
++	if (ggz_write_int(fd, MSG_GAME_STATE_CHANGED) < 0
++	    || ggz_write_char(fd, state) < 0)
++		return -1;
++	else
++		return 0;
++}
+ 
++
+ int _io_send_seat(int fd, const GGZSeat *seat)
+ {
+ 	if (ggz_write_int(fd, seat->type) < 0)
+@@ -197,6 +208,11 @@
+ 	return 0;
+ }
+ 
++int _io_send_savedgames_request(int fd )
++{
++	return ggz_write_int(fd, REQ_SAVEDGAMES);
++}
++
+ int _io_send_req_num_seats(int fd, int num_seats)
+ {
+ 	if (ggz_write_int(fd, REQ_NUM_SEATS) < 0
+@@ -229,13 +245,26 @@
+ 	return 0;
+ }
+ 
++int _io_send_req_abandoned(int fd, int seat_num, const char *name)
++{
++	if (ggz_write_int(fd, REQ_ABANDONED) < 0
++	    || ggz_write_int(fd, seat_num) < 0
++	    || ggz_write_string(fd, name) < 0)
++		return -1;
++	return 0;
++}
+ 
+ int _io_respond_state(int fd)
+ {
+ 	return ggz_write_int(fd, RSP_GAME_STATE);
+ }
+ 
++int _io_send_state_changed_response(int fd)
++{
++	return ggz_write_int(fd, RSP_GAME_STATE_CHANGED);
++}
+ 
++
+ /* Functions for reading messages */
+ int _io_read_data(GGZdMod * ggzdmod)
+ {
+@@ -257,6 +286,10 @@
+ 		case RSP_GAME_STATE:
+ 			_ggzdmod_handle_state_response(ggzdmod);
+ 			return 0;
++		case MSG_GAME_STATE_CHANGED:
++			return _io_read_msg_game_state_changed(ggzdmod);
++		case MSG_SAVEDGAMES:
++			return _io_read_msg_savedgames(ggzdmod);
+ 		}
+ 	} else {
+ 		switch ((TableToControl)op) {
+@@ -268,6 +301,9 @@
+ 			return _io_read_msg_report(ggzdmod);
+ 		case MSG_SAVEGAME_REPORT:
+ 			return _io_read_msg_savegame(ggzdmod);
++		case REQ_SAVEDGAMES:
++			_ggzdmod_handle_req_savedgames(ggzdmod);
++			return 0;
+ 		case REQ_NUM_SEATS:
+ 			return _io_read_req_num_seats(ggzdmod);
+ 		case REQ_BOOT:
+@@ -276,6 +312,11 @@
+ 			return _io_read_req_bot(ggzdmod);
+ 		case REQ_OPEN:
+ 			return _io_read_req_open(ggzdmod);
++		case REQ_ABANDONED:
++			return _io_read_req_abandoned(ggzdmod);
++		case RSP_GAME_STATE_CHANGED:
++			_ggzdmod_handle_stage_change_response(ggzdmod);
++			return 0;
+ 		}
+ 	}
+ 
+@@ -409,13 +450,26 @@
+ static int _io_read_req_open(GGZdMod *ggzdmod)
+ {
+ 	int seat_num;
++
+ 	if (ggz_read_int(ggzdmod->fd, &seat_num) < 0)
+ 		return -1;
+ 	_ggzdmod_handle_open_request(ggzdmod, seat_num);
+ 	return 0;
+ }
+ 
++static int _io_read_req_abandoned(GGZdMod *ggzdmod)
++{
++	int seat_num;
++	char *name;
+ 
++	if (ggz_read_int(ggzdmod->fd, &seat_num)
++	    || ggz_read_string_alloc(ggzdmod->fd, &name))
++		return -1;
++	_ggzdmod_handle_abandoned_request(ggzdmod, seat_num, name);
++	ggz_free(name);
++	return 0;
++}
++
+ static int _io_read_req_launch(GGZdMod * ggzdmod)
+ {
+ 	int seats, spectators, i;
+@@ -543,3 +597,35 @@
+ 
+ 	return 0;
+ }
++
++static int _io_read_msg_game_state_changed(GGZdMod *ggzdmod)
++{
++	char state;
++
++	if (ggz_read_char(ggzdmod->fd, &state) < 0)
++		return -1;
++        
++	_ggzdmod_handle_state_changed(ggzdmod, state);
++	return 0;
++}
++
++int _io_send_savedgame(int fd, const char *savedgame)
++{
++	if (ggz_write_int(fd, MSG_SAVEDGAMES) < 0
++	    || (!savedgame
++	    || (savedgame && ggz_write_string(fd, savedgame) < 0)))
++		return -1;
++	return 0;
++}
++
++static int _io_read_msg_savedgames(GGZdMod *ggzdmod)
++{
++	char *savedgame;
++
++	if (ggz_read_string_alloc(ggzdmod->fd, &savedgame) < 0)
++		return -1;
++    
++	_ggzdmod_handle_savedgame(ggzdmod, savedgame);
++	ggz_free(savedgame);
++	return 0;
++}
+=== ggzdmod/io.h
+==================================================================
+--- ggzdmod/io.h	(revision 10327)
++++ ggzdmod/io.h	(local)
+@@ -37,10 +37,12 @@
+ int _io_send_seat_change(int fd, const GGZSeat *seat);
+ int _io_send_spectator_change(int fd, const GGZSeat *spectator);
+ int _io_send_state(int fd, GGZdModState state);
++int _io_send_state_changed(int fd, GGZdModState state);
+ int _io_send_seat(int fd, const GGZSeat *seat);
+ int _io_send_reseat(int fd,
+ 		    int old_seat, int was_spectator,
+ 		    int new_seat, int is_spectator);
++int _io_send_savedgame(int fd, const char *savedgame);
+ 
+ int _io_send_log(int fd, const char *msg);
+ int _io_send_game_report(int fd, int num_players,
+@@ -48,10 +50,13 @@
+ 			 const int *teams, const GGZGameResult *results,
+ 			 const int *scores);
+ int _io_send_savegame_report(int fd, const char *savegame);
++int _io_send_savedgames_request(int fd);
+ int _io_send_req_num_seats(int fd, int num_seats);
+ int _io_send_req_boot(int fd, const char *name);
+ int _io_send_req_bot(int fd, int seat_num);
+ int _io_send_req_open(int fd, int seat_num);
++int _io_send_req_abandoned(int fd, int seat_num, const char *name);
++int _io_send_state_changed_response(int fd);
+ 
+ /* Read and dispatch message */
+ int _io_read_data(GGZdMod * ggzdmod);
+=== ggzdmod/mod.h
+==================================================================
+--- ggzdmod/mod.h	(revision 10327)
++++ ggzdmod/mod.h	(local)
+@@ -42,6 +42,12 @@
+ #define GGZDMOD_NUM_EVENTS (GGZDMOD_EVENT_ERROR_INTERNAL + 1)
+ 
+ /* This is the actual structure, but it's only visible internally. */
++struct GGZdModSave {
++	long date;
++	char *name;
++	char *owner;
++};
++
+ struct GGZdMod {
+ 	GGZdModType type;	/* ggz-end or game-end */
+ 	GGZdModState state;	/* the state of the game */
+@@ -72,10 +78,14 @@
+ 			    int num_players, char **names, GGZSeatType *types,
+ 			    int *teams, GGZGameResult *results, int *scores);
+ void _ggzdmod_handle_savegame(GGZdMod * ggzdmod, char *savegame);
++void _ggzdmod_handle_req_savedgames(GGZdMod *ggzdmod);
+ void _ggzdmod_handle_num_seats_request(GGZdMod *ggzdmod, int num_seats);
+ void _ggzdmod_handle_boot_request(GGZdMod *ggzdmod, char *name);
+ void _ggzdmod_handle_bot_request(GGZdMod *ggzdmod, int seat_num);
+ void _ggzdmod_handle_open_request(GGZdMod *ggzdmod, int seat_num);
++void _ggzdmod_handle_abandoned_request(GGZdMod *ggzdmod, int seat_num,
++				       const char *name);
++void _ggzdmod_handle_stage_change_response(GGZdMod *ggzdmod);
+ 
+ /* Game side functions for handling various messages */
+ void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, const char *game, int num_seats, int num_spectators);
+@@ -87,6 +97,7 @@
+ 			    int new_seat, int is_spectator);
+ void _ggzdmod_handle_spectator_seat(GGZdMod * ggzdmod, GGZSeat *seat);
+ void _ggzdmod_handle_state_response(GGZdMod * ggzdmod);
++void _ggzdmod_handle_savedgame(GGZdMod *ggzdmod, const char *savedgame);
++void _ggzdmod_handle_state_changed(ggzdmod, state);
+ 
+-
+ #endif /* __GGZ_MOD_H__ */
+=== ggzdmod/protocol.h
+==================================================================
+--- ggzdmod/protocol.h	(revision 10327)
++++ ggzdmod/protocol.h	(local)
+@@ -54,13 +54,29 @@
+ 	 */
+ 	REQ_GAME_STATE,
+ 
++	/** @brief Signals the start of RSP_GAME_STATE_CHANGED
++	 *
++	 *  The packet is composed of:
++	 *    - An integer containing RPS_GAME_STATE_CHANGED.
++	 *  This packet is sent in response to a MSG_GAME_STATE_CHANGED.
++	 *  It's only effect is to let the table know the information
++	 *  has been received.
++	 */
++	RSP_GAME_STATE_CHANGED,
++
+ 	REQ_NUM_SEATS,
+ 	REQ_BOOT,
+ 	REQ_BOT,
+ 	REQ_OPEN,
++	REQ_ABANDONED,
+ 
+ 	MSG_GAME_REPORT,
+-	MSG_SAVEGAME_REPORT
++	MSG_SAVEGAME_REPORT,
++
++	/** @brief Signals the start of a REQ_SAVEDGAMES packet.
++	 *  This packet request saved games status data.
++	 */
++	REQ_SAVEDGAMES
+ } TableToControl;
+ 
+ /** Messages sent from the ggz server to the game server. */
+@@ -133,6 +149,25 @@
+ 	 *  been received.
+ 	 */
+ 	RSP_GAME_STATE,
++
++	/** @brief Signals the start of MSG_GAME_STATE_CHANGED packet.
++	 *
++	 * The packet is composed of:
++	 *    - An integer containing MSG_GAME_STATE_CHANGED.
++	 *    - A single byte (char) containing the new game state.
++	 *      The state is a GGZdModState enumerated value.
++	 * This packet is send when server change game state. Used for
++	 * sending GGZMOD_STATE_RESTORED state status.
++	 */
++	MSG_GAME_STATE_CHANGED,
++
++	/** @brief Signals the start of a MSG_SAVEDGAMES packet.
++	 *
++	 *  The packed is composed of:
++	 *    - An integer containing the saved games names count.
++	 *    - An easysock-formated strings for each saved game.
++	 */
++	MSG_SAVEDGAMES
+ } ControlToTable;
+ 
+ #endif /* __GGZ_SERVER_PROTOCOL_H */
+=== ggzdmod++/ggzgameserver.cpp
+==================================================================
+--- ggzdmod++/ggzgameserver.cpp	(revision 10327)
++++ ggzdmod++/ggzgameserver.cpp	(local)
+@@ -59,6 +59,10 @@
+ 				GGZdModEvent event, const void *data);
+ 			static void handle_spectator_seat(GGZdMod* ggzdmod,
+ 				GGZdModEvent event, const void *data);
++			static void handle_savedgame(GGZdMod* ggzdmod,
++				GGZdModEvent, const void *data);
++			static void handle_state_changed(GGZdMod *ggzdmod,
++				GGZdModEvent, const void *data);
+ 			void selfcheck();
+ 			// Parent object (which is a singleton in 'self')
+ 			static GGZGameServer *m_parent;
+@@ -240,6 +244,11 @@
+ 	ggzdmod_set_state(m_private->ggzdmod(), (GGZdModState)state);
+ }
+ 
++void GGZGameServer::requestSavedGames()
++{
++	ggzdmod_request_savedgames(m_private->ggzdmod());
++}
++
+ // Implementation of the internal class
+ GGZGameServerPrivate::GGZGameServerPrivate(GGZGameServer *parent)
+ {
+@@ -259,6 +268,8 @@
+ 	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, &handle_spectator_leave);
+ 	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SPECTATOR_DATA, &handle_spectator_data);
+ 	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SPECTATOR_SEAT, &handle_spectator_seat);
++	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SAVEDGAME, &handle_savedgame);
++	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_MSG_GAME_STATE_CHANGED, &handle_state_changed);
+ 
+ 	selfcheck();
+ }
+@@ -282,6 +293,7 @@
+ 	if((int)Seat::abandoned != (int)GGZ_SEAT_ABANDONED) error = true;
+ 
+ 	if((int)GGZGameServer::created != (int)GGZDMOD_STATE_CREATED) error = true;
++	if((int)GGZGameServer::restored != (int)GGZDMOD_STATE_RESTORED) error = true;
+ 	if((int)GGZGameServer::waiting != (int)GGZDMOD_STATE_WAITING) error = true;
+ 	if((int)GGZGameServer::playing != (int)GGZDMOD_STATE_PLAYING) error = true;
+ 	if((int)GGZGameServer::done != (int)GGZDMOD_STATE_DONE) error = true;
+@@ -378,3 +390,18 @@
+ 	m_parent->spectatorEvent(spectator);
+ }
+ 
++void GGZGameServerPrivate::handle_savedgame(GGZdMod *ggzdmod, GGZdModEvent event, const void *data)
++{
++	std::cout << "GGZGameServer: savedgame event." << std::endl;
++	SavedGame savedGame(static_cast<const char *>(data));
++	m_parent->savedgameEvent(&savedGame);
++}
++
++void GGZGameServerPrivate::handle_state_changed(GGZdMod *ggzdmod, GGZdModEvent, const void *data)
++{
++	char st = *(char *)data;
++	_ggzdmod_set_state(m_parent->m_private->m_ggzdmod, (GGZdModState)st);
++	std::cout << "GGZGameServer: state changed to: ";
++	std::cout << (int)m_parent->state() << std::endl;
++	m_parent->stateEvent();
++}
+=== ggzdmod++/ggzgameserver.h
+==================================================================
+--- ggzdmod++/ggzgameserver.h	(revision 10327)
++++ ggzdmod++/ggzgameserver.h	(local)
+@@ -65,6 +65,16 @@
+ 		SeatType type;
+ };
+ 
++class SavedGame
++{
++	public:
++		SavedGame(const char *_savedgame) : savedgame(_savedgame) {}
++		const std::string& getName() const { return savedgame; };
++
++	private:
++		const std::string savedgame;
++};
++
+ /* Class representing a game server module.
+  * It is used by reimplementing the virtual methods, and then calling
+  * connect().
+@@ -89,6 +99,7 @@
+ 		enum State
+ 		{
+ 			created,
++			restored,
+ 			waiting,
+ 			playing,
+ 			done
+@@ -113,6 +124,9 @@
+ 		/* A spectator seat change happened */
+ 		virtual void spectatorEvent(Spectator *spectator);
+ 
++		/* Got saved game name. This event occurred for each saved game name */
++		virtual void savedgameEvent(SavedGame *savedGames) {};
++
+ 		/* Current game state */
+ 		State state();
+ 		/* Announce a state transition */
+@@ -148,6 +162,9 @@
+ 			return s->client->fd;
+ 		}
+ 
++		void requestSavedGames();
++		void reportSave(const char *);
++
+ 	private:
+ 		GGZGameServerPrivate *m_private;
+ 		int m_connected;
