@@ -1,2 +1,2 @@
-SUBDIRS = common chess chinese-checkers combat dots ggzcards hastings reversi spades tictactoe
+SUBDIRS = common chess chinese-checkers combat dots ggzcards hastings reversi tictactoe
 

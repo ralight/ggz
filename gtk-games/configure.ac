@@ -1,5 +1,5 @@
 dnl Configuration for the Gtk+ games collection
-# $Id: configure.ac 9282 2007-08-29 07:00:38Z josef $
+# $Id: configure.ac 9376 2007-11-21 19:21:45Z josef $
 dnl ===========================================
 
 AC_INIT([GGZ GTK games], [0.0.14], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-games])
@@ -167,7 +167,6 @@ AC_CONFIG_FILES([Makefile
 	   po/ggzcards/Makefile
 	   po/hastings/Makefile
 	   po/reversi/Makefile
-	   po/spades/Makefile
 	   po/tictactoe/Makefile
 	   ])
 AC_OUTPUT
