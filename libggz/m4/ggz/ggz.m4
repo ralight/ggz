@@ -1024,7 +1024,7 @@ dnl ------------------------------------------------------------------------
 dnl
 AC_DEFUN([AC_GGZ_CHECK],
 [
-  AC_GGZ_INIT
+  AC_GGZ_INIT([defaults])
   AC_GGZ_LIBGGZ([try_ggz="yes"], [try_ggz="no"])
 
   if test "$try_ggz" = "yes"; then
