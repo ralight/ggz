@@ -10,14 +10,18 @@
 The first set of graphs is about our players online at live.ggzgamingzone.org.
 One can see the daily spikes and the use of both registered and anonymous
 logins, but also resource requirements such as bandwidth and memory.
+Finally, a social network of GGZ players playing against each other has
+been created.
 <br/><br/>
 
 <img src="players-month.png"/>
 <img src="bw-day.png"/>
+<img src="soc_small.png"/>
 <br/><br/>
 
 The second set of graphs relates to GGZ development.
-There's a nice graph showing the mean developer engagement which is probably hard to understand.
+There's a nice graph showing the mean developer engagement which is probably hard to understand,
+and another one showing the growth of our code repository.
 GGZ developer count at the development channel #ggz is tracked
 <a href="http://atchoo.org/irssi/show.php?what=users&amp;type=channel&amp;value=ggz">here</a>
 (see one-year graph below). Finally, our
@@ -26,6 +30,7 @@ about the volume of sent mails to our lists.
 <br/><br/>
 
 <img src="ggz-mde.png"/>
+<img src="rev.png"/>
 <img src="ggz-year.png"/>
 <br/><br/>
 
