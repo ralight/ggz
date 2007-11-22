@@ -4,6 +4,7 @@
 <title>
 GGZ Gaming Zone Bug Tracker (bugs.ggzgamingzone.org)
 </title>
+<style type="text/css">a{text-decoration:underline}</style>
 </head>
 <body bgcolor="#ffffff" text="#000000" link="#000000" alink="#ffffff" vlink="#999999">
 
@@ -27,10 +28,21 @@ Our bug tracking system is implemented using Mantis, where you can report bugs o
 <a href="/mantis/">Mantis</a><br>
 <br><br>
 
+For bug reports related to security, <a href="http://www.ggzgamingzone.org/security.php">go here</a>.
+<br><br>
+
 Bug reports are forwarded by Mantis to the
 <a href="https://mail.ggzgamingzone.org/cgi-bin/mailman/listinfo/ggz-bugs">ggz-bugs</a>
 mailing list, which is a read-only list
 for developers to keep track of new bugs and status changes.
+<br><br>
+
+We also try to track bugs of projects using GGZ.
+<ul>
+<li>The <a href="http://bugzilla.gnome.org/buglist.cgi?product=gnome-games&component=ggz">GNOME Bugzilla</a>
+lists all gnome-games bugs which affect GGZ (such mails are also forwarded to ggz-bugs).
+<li>The <a href="http://bugs.freeciv.org/SelfService/Display.html?id=39877">Freeciv RT</a> contains a
+meta ticket which links to all GGZ-related freeciv bugs.
 <br><br>
 
 </body>

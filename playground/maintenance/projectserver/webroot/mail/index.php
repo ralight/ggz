@@ -28,9 +28,11 @@ This is the GGZ Gaming Zone mail server.<br>
 <a href="/hypermail/">Mailing list archives</a> (requires authorization: nospam:nospam)<br>
 <br><br>
 
-Activity graphs for ggz-dev and ggz-cvs:<br>
+Activity graphs for ggz-dev and ggz-cvs/ggz-svn:<br>
 <a href="graphs/ggz-dev.stats.png"><img src="graphs/preview.ggz-dev.stats.png"></a>
+<br>
 <a href="graphs/ggz-cvs.stats.png"><img src="graphs/preview.ggz-cvs.stats.png"></a>
+<a href="graphs/ggz-svn.stats.png"><img src="graphs/preview.ggz-svn.stats.png"></a>
 <br><br>
 
 </body>
