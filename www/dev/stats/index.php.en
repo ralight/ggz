@@ -1,0 +1,37 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content">
+<tr>
+<td>
+
+<b>Statistics about GGZ</b><br/>
+<br/><br/>
+
+The first set of graphs is about our players online at live.ggzgamingzone.org.
+One can see the daily spikes and the use of both registered and anonymous
+logins, but also resource requirements such as bandwidth and memory.
+<br/><br/>
+
+<img src="players-month.png"/>
+<img src="bw-day.png"/>
+<br/><br/>
+
+The second set of graphs relates to GGZ development.
+There's a nice graph showing the mean developer engagement which is probably hard to understand.
+GGZ developer count at the development channel #ggz is tracked
+<a href="http://atchoo.org/irssi/show.php?what=users&amp;type=channel&amp;value=ggz">here</a>
+(see one-year graph below). Finally, our
+<a href="http://mail.ggzgamingzone.org/">mail server</a> also provides some graphs
+about the volume of sent mails to our lists.
+<br/><br/>
+
+<img src="ggz-mde.png"/>
+<img src="ggz-year.png"/>
+<br/><br/>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+
