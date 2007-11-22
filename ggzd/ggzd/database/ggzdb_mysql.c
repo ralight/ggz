@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 9308 2007-09-13 21:52:39Z oojah $
+ * $Id: ggzdb_mysql.c 9383 2007-11-22 19:28:37Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -427,6 +427,9 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	if(rc) {
 		err_msg("couldn't read match");
 		number = NULL;
+
+		pthread_mutex_unlock(&mutex);
+		return GGZDB_ERR_DB;
 	}
 	else {
 		res = mysql_store_result(conn);
@@ -437,7 +440,9 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 			/* mysql_free_result() occurs further down */
 		} else {
 			pthread_mutex_unlock(&mutex);
-			mysql_free_result(res);
+			if(res) {
+				mysql_free_result(res);
+			}
 			return GGZDB_ERR_DB;
 		}
 	}
