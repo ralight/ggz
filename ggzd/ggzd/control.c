@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 9357 2007-11-17 15:33:12Z josef $
+ * $Id: control.c 9382 2007-11-22 14:41:28Z oojah $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -529,6 +529,11 @@ int main(int argc, char *argv[])
 	struct sockaddr_in addr;
 	fd_set active_fd_set, read_fd_set;
 	struct timeval tv, *tvp;
+
+	/* Refuse to run as root */
+	if(geteuid() == 0) {
+		err_msg_exit("The GGZ server should not be run as root.");
+	}
 
 	logfile_preinitialize();
 
