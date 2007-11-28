@@ -186,12 +186,24 @@ fi
 
 save_cflags=$CFLAGS
 save_cxxflags=$CXXFLAGS
-CFLAGS="-Wall -Werror"
-AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
-	[[void signedness(void){char c;if(c==-1)c=0;}]])],
-	[],
-	[save_cflags="$save_cflags -fsigned-char"
-	 save_cxxflags="$save_cxxflags -fsigned-char"])
+if test "x$GCC" = xyes; then
+	CFLAGS="-Wall -Werror"
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+		[[void signedness(void){char c;if(c==-1)c=0;}]])],
+		[],
+		[save_cflags="$save_cflags -fsigned-char"
+		 save_cxxflags="$save_cxxflags -fsigned-char"])
+else
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+		[[#if defined(__SUNPRO_C) || (__SUNPRO_C >= 0x550)
+		#else
+		# include "Error: Only GCC and Sun Studio are supported compilers."
+		#endif]], [[]])],
+		[save_cflags="$save_cflags -xchar=signed"
+		 save_cxxflags="$save_cxxflags -xchar=signed"],
+		[])
+
+fi
 CFLAGS=$save_cflags
 CXXFLAGS=$save_cxxflags
 ])
