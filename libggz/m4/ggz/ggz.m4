@@ -233,9 +233,11 @@ AC_DEFUN([AC_GGZ_VERSION],
 	save_libs=$LIBS
 	save_ldflags=$LDFLAGS
 	save_cppflags=$CPPFLAGS
+	save_ldlibrary_path=$LD_LIBRARY_PATH
 	LDFLAGS=$LIBGGZ_LDFLAGS
 	LIBS=$LIB_GGZ
 	CPPFLAGS=$LIBGGZ_INCLUDES
+	export LD_LIBRARY_PATH=$save_ldlibrary_path:$libggz_libraries
 
 	AC_MSG_CHECKING([for GGZ library version: $major.$minor.$micro])
 	AC_RUN_IFELSE(
@@ -257,6 +259,7 @@ AC_DEFUN([AC_GGZ_VERSION],
 	LIBS=$save_libs
 	LDFLAGS=$save_ldflags
 	CPPFLAGS=$save_cppflags
+	LD_LIBRARY_PATH=$save_ldlibrary_path
 ])
 
 dnl ------------------------------------------------------------------------
