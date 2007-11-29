@@ -63,7 +63,7 @@ GGZ support:
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/debian.png">
 </div>
-<a href="http://packages.debian.org/cgi-bin/search_packages.pl?keywords=GGZ&searchon=all&version=all&release=all">Debian</a>
+<a href="http://packages.debian.org/search?keywords=GGZ&searchon=all">Debian</a>
 (0.0.14)
 (see also <a href="http://alioth.debian.org/projects/pkg-ggz/">Alioth</a> packaging page)
 </li>
@@ -71,7 +71,7 @@ GGZ support:
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/ubuntu.png">
 </div>
-<a href="http://packages.ubuntu.com/cgi-bin/search_packages.pl?keywords=ggz">Ubuntu</a> (0.0.13)
+<a href="http://packages.ubuntu.com/cgi-bin/search_packages.pl?keywords=ggz">Ubuntu</a> (0.0.14)
 </li>
 <li>
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
@@ -85,12 +85,14 @@ GGZ support:
 </div>
 <a href="http://sorcerer.aakin.net/grimoire/grimoire.html">Sorcerer</a> (0.0.13)
 </li>
+<!--
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/fnux.png">
 </div>
 <a href="http://www.fnux.org/">Fnux</a> (0.0.13)
 </li>
+-->
 <li>
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/sourcemage.png">
@@ -118,19 +120,22 @@ Other distributors with (unfortunately) partial or outdated GGZ packages include
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/fink.png">
 </div>
-<a href="http://pdb.finkproject.org/pdb/search.php?summary=ggz">Fink</a> (0.0.11)
+<a href="http://pdb.finkproject.org/pdb/search.php?summary=ggz">Fink</a> (0.0.11, search is broken)
 </li>
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/lunar.png">
 </div>
+Lunar Linux (0.0.12, search broken)
+<!--
 <a href="http://modules.lunar-linux.org/index.php?option=moonbase&section=games">Lunar Linux</a> (0.0.12)
+-->
 </li>
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/fedora.png">
 </div>
-<a href="http://dag.wieers.com/packages/libggz/">Fedora Core/Red Hat</a> (0.0.12)
+<a href="http://koji.fedoraproject.org/koji/search?match=glob&type=package&terms=*ggz*">Fedora Core/Red Hat</a> (0.0.14, updates are coming in)
 </li>
 <!--
 <li>
