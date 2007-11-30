@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: about.c 9391 2007-11-30 23:59:18Z jdorje $
  *
  * About dialog: Displays information about the authors and the application.
  *
@@ -61,7 +61,7 @@ void about_create_or_raise(void)
 	if (!about_dialog) {
 		Yloc = 320;
 		about_dialog = create_dlg_about();
-		gtk_widget_show(about_dialog);
+		gtk_widget_show_all(about_dialog);
 	} else {
 		gdk_window_show(about_dialog->window);
 		gdk_window_raise(about_dialog->window);
@@ -78,7 +78,7 @@ static void about_response(GtkDialog * dialog, gint response,
 	about_tag = 0;
 }
 
-GtkWidget *create_dlg_about(void)
+static GtkWidget *create_dlg_about(void)
 {
 	GtkWidget *dlg_about;
 	GtkWidget *dialog_vbox1;
@@ -88,22 +88,13 @@ GtkWidget *create_dlg_about(void)
 						GTK_WINDOW(main_window), 0,
 						GTK_STOCK_CLOSE,
 						GTK_RESPONSE_CLOSE, NULL);
-
-	g_object_set_data(G_OBJECT(dlg_about), "dlg_about", dlg_about);
 	gtk_window_set_resizable(GTK_WINDOW(dlg_about), FALSE);
 
 	dialog_vbox1 = GTK_DIALOG(dlg_about)->vbox;
-	g_object_set_data(G_OBJECT(dlg_about), "dialog_vbox1",
-			  dialog_vbox1);
-	gtk_widget_show(dialog_vbox1);
 
 	background = gtk_drawing_area_new();
 	gtk_widget_set_name(GTK_WIDGET(background), "background");
-	gtk_widget_ref(background);
-	g_object_set_data_full(G_OBJECT(dlg_about), "background",
-			       background,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(background);
+	g_object_set_data(G_OBJECT(dlg_about), "background", background);
 	gtk_box_pack_start(GTK_BOX(dialog_vbox1), background, FALSE, FALSE,
 			   0);
 	gtk_widget_set_size_request(background, 250, 300);
