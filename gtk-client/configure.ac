@@ -1,5 +1,5 @@
 dnl Configuration for the Gtk+ core client
-# $Id: configure.ac 9365 2007-11-18 11:00:46Z josef $
+# $Id: configure.ac 9394 2007-12-01 00:30:32Z jdorje $
 dnl ======================================
 
 AC_INIT([GGZ Gtk+ client], [0.0.14], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
@@ -83,8 +83,6 @@ AC_GGZ_DEBUG
 if test "$enable_debug" = yes; then
   AC_DEFINE([G_DISABLE_DEPRECATED], 1, [Disable deprecated glib functions])
   AC_DEFINE([GDK_DISABLE_DEPRACATED], 1, [Disable deprecated GDK functions])
-fi
-if test "yes" = "no"; then
   AC_DEFINE([GTK_DISABLE_DEPRECATED], 1, [Disable deprecated GTK functions])
 fi
 
