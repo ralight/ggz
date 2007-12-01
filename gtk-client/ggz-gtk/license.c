@@ -2,7 +2,7 @@
  * File: license.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: license.c 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: license.c 9393 2007-12-01 00:29:32Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -91,17 +91,14 @@ create_dlg_license (void)
   gtk_widget_show (dialog_vbox1);
 
   vbox1 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox1);
-  g_object_set_data_full(G_OBJECT (dlg_license), "vbox1", vbox1,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (dlg_license), "vbox1", vbox1);
   gtk_widget_show (vbox1);
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), vbox1, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (vbox1), 10);
 
   scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_ref (scrolledwindow1);
-  g_object_set_data_full(G_OBJECT (dlg_license), "scrolledwindow1", scrolledwindow1,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT (dlg_license), "scrolledwindow1",
+		    scrolledwindow1);
   gtk_widget_show (scrolledwindow1);
   gtk_box_pack_start (GTK_BOX (vbox1), scrolledwindow1, TRUE, TRUE, 0);
   gtk_widget_set_size_request(scrolledwindow1, 440, 350);
@@ -110,9 +107,7 @@ create_dlg_license (void)
   license_text = gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
   gtk_text_view_set_editable(GTK_TEXT_VIEW(license_text), FALSE);
   gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(license_text), FALSE);
-  gtk_widget_ref (license_text);
-  g_object_set_data_full(G_OBJECT (dlg_license), "license_text", license_text,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT(dlg_license), "license_text", license_text);
   gtk_widget_show (license_text);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), license_text);
   gtk_text_buffer_insert_at_cursor(gtk_text_view_get_buffer(
@@ -125,17 +120,12 @@ create_dlg_license (void)
   gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area1), 10);
 
   button_box = gtk_hbutton_box_new ();
-  gtk_widget_ref (button_box);
-  g_object_set_data_full(G_OBJECT (dlg_license), "button_box", button_box,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT(dlg_license), "button_box", button_box);
   gtk_widget_show (button_box);
   gtk_box_pack_start (GTK_BOX (dialog_action_area1), button_box, TRUE, TRUE, 0);
 
   close_button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-  gtk_widget_ref (close_button);
-  g_object_set_data_full(G_OBJECT (dlg_license),
-			    "close_button", close_button,
-                            (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data(G_OBJECT(dlg_license), "close_button", close_button);
   gtk_widget_show (close_button);
   gtk_container_add (GTK_CONTAINER (button_box), close_button);
   GTK_WIDGET_SET_FLAGS (close_button, GTK_CAN_DEFAULT);

@@ -2,7 +2,7 @@
  * File: motd.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: motd.c 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: motd.c 9393 2007-12-01 00:29:32Z jdorje $
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -172,10 +172,8 @@ static GtkWidget *create_dlg_motd(void)
 	gtk_widget_show(dialog_vbox1);
 
 	motd_scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
-	gtk_widget_ref(motd_scrolledwindow);
-	g_object_set_data_full(G_OBJECT(dlg_motd), "motd_scrolledwindow",
-			       motd_scrolledwindow,
-			       (GtkDestroyNotify) gtk_widget_unref);
+	g_object_set_data(G_OBJECT(dlg_motd), "motd_scrolledwindow",
+			       motd_scrolledwindow);
 	gtk_widget_show(motd_scrolledwindow);
 	gtk_box_pack_start(GTK_BOX(dialog_vbox1), motd_scrolledwindow,
 			   TRUE, TRUE, 0);
@@ -188,9 +186,7 @@ static GtkWidget *create_dlg_motd(void)
 	    gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(motd_text), FALSE);
 	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(motd_text), FALSE);
-	gtk_widget_ref(motd_text);
-	g_object_set_data_full(G_OBJECT(dlg_motd), "motd_text", motd_text,
-			       (GtkDestroyNotify) gtk_widget_unref);
+	g_object_set_data(G_OBJECT(dlg_motd), "motd_text", motd_text);
 	gtk_widget_show(motd_text);
 	gtk_container_add(GTK_CONTAINER(motd_scrolledwindow), motd_text);
 
