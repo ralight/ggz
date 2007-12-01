@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 8970 2007-02-01 23:09:19Z oojah $
+ * $Id: client.c 9392 2007-12-01 00:28:59Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -656,22 +656,28 @@ static void
 client_realize                    (GtkWidget       *widget,
 				   gpointer         data)
 {
+#if !GTK_CHECK_VERSION(2, 12, 0)
 	GtkTooltips *client_window_tips;
+#define gtk_widget_set_tooltip_text(widget, text)			\
+	gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(widget),		\
+				  client_window_tips,			\
+				  (text), NULL)
+#endif
 	GtkXText *tmp, *tmp2;
 	char *buf;
 	char *font_str;
 
 	chat_init();
 
+#if !GTK_CHECK_VERSION(2, 12, 0)
 	/* setup Tooltips */
 	client_window_tips = gtk_tooltips_new();
+#endif
 
 #define tooltip(widget, tip)						\
 	do {								\
 		GtkWidget *tmp = ggz_lookup_widget(win_main, widget);	\
-		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(tmp),		\
-					  GTK_TOOLTIPS(client_window_tips), \
-					  tip, NULL);			\
+		gtk_widget_set_tooltip_text(tmp, tip);			\
 	} while (0)
 
 	tooltip("disconnect_button",
