@@ -1,7 +1,8 @@
-docdirs = games ggz-project coreclients grubby overview server articles intro
+if COND_SPEC
+SPEC_DIR = spec
+endif
 
-SUBDIRS = $(docdirs) @EXTRA_SUBDIRS@
-DIST_SUBDIRS = $(docdirs) spec
+SUBDIRS = games ggz-project coreclients grubby overview server articles intro $(SPEC_DIR)
 
 EXTRA_DIST = README.GGZ QuickStart.GGZ texi2text.pl
 

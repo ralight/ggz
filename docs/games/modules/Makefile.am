@@ -1,5 +1,3 @@
-SUBDIRS = .
-
 docdir = $(GGZDOCDIR)/games/modules
 doc_DATA = index.html \
 	seats.png \

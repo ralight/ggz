@@ -1,5 +1,3 @@
-SUBDIRS = .
-
 docdir = $(GGZDOCDIR)
 doc_DATA = index.html
 

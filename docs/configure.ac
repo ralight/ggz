@@ -1,7 +1,7 @@
 dnl Configuration for the GGZ Documentation
 dnl =======================================
 
-AC_INIT([GGZ documentation], [0.0.14], [ggz-dev@mail.ggzgamingzone.org], [ggz-docs])
+AC_INIT([GGZ documentation], [0.0.15pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-docs])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -29,7 +29,8 @@ ggzhostingguide="ggz-hosting-guide.txt"
 
 if test "$enable_guides" = yes; then
 	AC_PATH_PROG([DVIPS], [dvips])
-	if test "x$DVIPS" = "x"; then
+	AC_PATH_PROG([TEXI2HTML], [texi2html])
+	if test "x$DVIPS" = "x" || test "x$TEXI2HTML" = "x"; then
 		AC_MSG_ERROR([The tools necessary to build the guides have not been found.])
 	fi
 
@@ -51,18 +52,17 @@ if test "$enable_spec" = yes; then
 	AC_PATH_PROG([JADE], [jade])
 	AC_PATH_PROG([LYNX], [lynx])
 	AC_PATH_PROG([FIG2DEV], [fig2dev])
-	if test "x$SGML2HTML" = "x" || test "x$JADE" = "x" || test "x$LYNX" = "x"; then
+	AC_PATH_PROG([GS], [gs])
+	if test "x$SGML2HTML" = "x" || test "x$JADE" = "x" || test "x$LYNX" = "x" \
+	|| test "x$GS" = "x" || test "x$SGML2PDF" = "x" || test "x$FIG2DEV" = "x"; then
+		AC_MSG_ERROR([The tools necessary to build the specification have not been found.])
 		AC_MSG_ERROR([The tools necessary to build the specification have not been found.])
 	fi
-	if test "x$SGML2PDF" = "x" || test "x$FIG2DEV" = "x"; then
-		AC_MSG_ERROR([The tools necessary to build the specification have not been found.])
-	fi
-	#AC_SUBST()
 
 	EXTRA_SUBDIRS="$EXTRA_SUBDIRS spec"
 fi
 
-AC_SUBST(EXTRA_SUBDIRS)
+AM_CONDITIONAL([COND_SPEC], [test "$enable_spec" = yes])
 
 dnl Create the Makefiles
 dnl ====================

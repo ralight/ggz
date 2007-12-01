@@ -1,5 +1,3 @@
-SUBDIRS = .
-
 docdir = $(GGZDOCDIR)/overview/architecture
 doc_DATA = index.html \
 	client-server.png \

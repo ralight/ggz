@@ -1,5 +1,3 @@
-SUBDIRS = .
-
 SGML_FILES = serverspec.sgml
 
 EXTRA_DIST = $(SGML_FILES) design-txt.dsl

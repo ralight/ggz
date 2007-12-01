@@ -1,5 +1,3 @@
-SUBDIRS = .
-
 docdir = $(GGZDOCDIR)/server/database
 doc_DATA = index.html \
 	ggzdb.png \

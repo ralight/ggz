@@ -3,7 +3,6 @@
 <!ENTITY overview SYSTEM "overview.sgml">
 
 <!ENTITY ggz "GGZ Gaming Zone">
-<!ENTITY protonum "7">
 ]>
 
 <book id="index">
@@ -24,20 +23,21 @@
       <holder>Brent Hendricks</holder>
     </copyright>
     <copyright>
-      <year>2001 - 2005</year>
+      <year>2001 - 2007</year>
       <holder>The GGZ Gaming Zone developers</holder>
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 8345 $</revnumber>
-	<date>$Date: 2006-07-10 01:00:10 -0700 (Mon, 10 Jul 2006) $</date>
+	<revnumber>$Revision: 9400 $</revnumber>
+	<date>$Date: 2007-12-01 04:11:35 -0800 (Sat, 01 Dec 2007) $</date>
       </revision>
     </revhistory>
     <abstract>
       <para>
         Design specification for the &ggz;. This document
-        covers the internal server architecture and the client/server
-        communication protocols.
+        covers the internal server architecture and the
+        overall design of GGZ. Protocols are specified
+        in separate documents.
       </para>
     </abstract>
   </bookinfo>
