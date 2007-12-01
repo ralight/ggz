@@ -4,9 +4,9 @@
 # Must be able to access a SVN checkout of GGZ (see $svnroot) and an
 # installation of ggz-docs (see $instroot)
 
-svnroot=/home/ggznew/svn-version/
-instroot=/home/ggznew/BUILD/
-webroot=..
+svnroot=~/localcheckout/
+instroot=~/localinstallation
+webroot=/var/www/ggz/www
 
 # No need to change anything from here on
 
@@ -65,7 +65,8 @@ if [ ! -d $docroot/design ]; then
 	mkdir -p $docroot/design/serverspec
 	mkdir -p $docroot/design/clientspec
 	cp $sysdocroot/spec/design.{pdf,txt} $docroot/design
-	cp -r $sysdocroot/spec/design-html $docroot/design/html
+	#cp -r $sysdocroot/spec/design-html $docroot/design/html
+	cp -r $sysdocroot/spec/mainspec* $docroot/design
 	cp -r $sysdocroot/spec/clientspec/* $docroot/design/clientspec
 	cp -r $sysdocroot/spec/serverspec/* $docroot/design/serverspec
 else
@@ -124,6 +125,8 @@ echo "Non-installed docs =>"
 
 if [ ! -f $docroot/ggz-debian-depgraph.png ]; then
 	echo " (install) depgraph"
+	cd $svnroot/playground/maintenance
+	./debian-depgraph.sh
 	cp $svnroot/playground/maintenance/ggz-debian-depgraph.{ps,png} $docroot
 else
 	echo " (ok) depgraph"
