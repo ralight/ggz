@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 8837 2007-01-05 12:49:29Z josef $
+ * $Id: ggzmod.c 9396 2007-12-01 09:43:29Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -142,15 +142,18 @@ static void infos_free(void *pstat)
 }
 
 
+static char *ggz_getenv(const char *name)
+{
+#ifdef HAVE_GETENV
+	return getenv(name);
+#else
+	return GetEnvironmentVariable(name);
+#endif
+}
+
 int ggzmod_is_ggz_mode(void)
 {
-	char *ggzmode;
-
-#ifdef HAVE_GETENV
-	ggzmode = getenv("GGZMODE");
-#else
-	ggzmode = GetEnvironmentVariable("GGZMODE");
-#endif
+	char *ggzmode = ggz_getenv("GGZMODE");	  
 	return (ggzmode && strcmp(ggzmode, "true") == 0);
 }
 
@@ -671,11 +674,7 @@ int ggzmod_connect(GGZMod * ggzmod)
 
 	if (ggzmod->type == GGZMOD_GAME) {
 		ggzsocket = 0;
-#ifdef HAVE_GETENV
-		ggzsocketstr = getenv("GGZSOCKET");
-#else
-		GetEnvironmentVariable("GGZSOCKET", buf, sizeof(buf));
-#endif
+		ggzsocketstr = ggz_getenv("GGZSOCKET");
 		if(ggzsocketstr) {
 			items = sscanf(ggzsocketstr, "%d", &ggzsocket);
 			if (items == 0) {
