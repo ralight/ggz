@@ -1,0 +1,6 @@
+[Jabber]
+JID = xxx
+Password = xxx
+
+# FIME: TLS certificate settings for automatic acceptance/matching
+
