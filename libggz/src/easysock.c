@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 9142 2007-06-10 21:21:12Z jdorje $
+ * $Id: easysock.c 9397 2007-12-01 09:55:46Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -164,10 +164,6 @@ static int es_bind(const char *host, int port)
 {
 	int sockfd;
 	const int on = 1;
-	/* FIXME: better test on getaddrinfo() directly */
-	int n;
-	struct addrinfo hints, *res, *ressave;
-	char serv[30];
 #ifdef HAVE_WINSOCK2_H
 	struct sockaddr_in name;
 
@@ -188,7 +184,7 @@ static int es_bind(const char *host, int port)
 	name.sin_port = htons(port);
 	name.sin_addr.s_addr = htonl(INADDR_ANY);
 
-	if (bind(sockfd, &name, sizeof(name)) != 0) {
+	if (bind(sockfd, (struct sockaddr *)&name, sizeof(name)) != 0) {
 		if (_err_func) {
 			const char *msg = strerror(errno);
 			(*_err_func) (msg, GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
@@ -197,6 +193,10 @@ static int es_bind(const char *host, int port)
 		sockfd = -1;
 	}
 #else
+	/* FIXME: better test on getaddrinfo() directly */
+	int n;
+	struct addrinfo hints, *res, *ressave;
+	char serv[30];
 
 	snprintf(serv, sizeof(serv), "%d", (unsigned int)port);
 
@@ -268,7 +268,7 @@ static int es_connect(const char *host, int port)
 	name.sin_port = htons(port);
 	memcpy(&name.sin_addr, h->h_addr, h->h_length);
 
-	if (connect(sockfd, &name, sizeof(name)) != 0) {
+	if (connect(sockfd, (struct sockaddr *)&name, sizeof(name)) != 0) {
 		if (_err_func) {
 			const char *msg = strerror(errno);
 			(*_err_func) (msg, GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
