@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 9249 2007-08-13 07:02:41Z josef $
+ * $Id: ggzmod-ggz.c 9395 2007-12-01 09:41:27Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -725,6 +725,15 @@ static int send_game_launch(GGZMod * ggzmod)
 	return 0;
 }
 
+/* Sets an environment variable (always overwrites) */
+static void ggz_setenv(const char *name, const char *value)
+{
+#ifdef HAVE_SETENV
+	setenv(name, value, 1);
+#else
+	SetEnvironmentVariable(name, value);
+#endif
+}
 
 /* Common setup for normal mode and embedded mode */
 static int game_prepare(int fd_pair[2], int *sock)
@@ -735,8 +744,8 @@ static int game_prepare(int fd_pair[2], int *sock)
 	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0)
 		ggz_error_sys_exit("socketpair failed");
 	snprintf(buf, sizeof(buf), "%d", GGZMOD_DEFAULT_FD);
-	setenv("GGZSOCKET", buf, 1);
-	setenv("GGZMODE", "true", 1);
+	ggz_setenv("GGZSOCKET", buf);
+	ggz_setenv("GGZMODE", "true");
 #else
 	int port;
 
@@ -755,13 +764,8 @@ static int game_prepare(int fd_pair[2], int *sock)
 		return -1;
 	}
 	snprintf(buf, sizeof(buf), "%d", port);
-#ifdef HAVE_SETENV
-	setenv("GGZSOCKET", buf, 1);
-	setenv("GGZMODE", "true", 1);
-#else
-	SetEnvironmentVariable("GGZSOCKET", buf);
-	SetEnvironmentVariable("GGZMODE", "true");
-#endif
+	ggz_setenv("GGZSOCKET", buf);
+	ggz_setenv("GGZMODE", "true");
 #endif
 
 	return 0;
