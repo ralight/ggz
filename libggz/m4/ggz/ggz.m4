@@ -243,17 +243,18 @@ AC_DEFUN([AC_GGZ_VERSION],
 	AC_RUN_IFELSE(
 		[AC_LANG_PROGRAM([[$testprologue]], [[$testbody]])],
 		[ac_ggz_version_check=yes],
-		[ac_ggz_version_check=no]
+		[ac_ggz_version_check=no],
+		[ac_ggz_version_check="skipped due to cross-compiling"]
 	)
-	if test "x$ac_ggz_version_check" = "xyes"; then
-		AC_MSG_RESULT([yes])
-		$4
-	else
+	if test "$ac_ggz_version_check" = "no"; then
 		AC_MSG_RESULT([no])
 		if test "x$5" = "x"; then
 			AC_MSG_ERROR([The GGZ version is too old. Version $major.$minor.$micro is required.])
 		fi
 		$5
+	else
+		AC_MSG_RESULT($ac_ggz_version_check)
+		$4
 	fi
 
 	LIBS=$save_libs
