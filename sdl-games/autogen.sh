@@ -61,12 +61,12 @@ need_libtool=0
 (grep "\bAC_PROG_LIBTOOL" $srcdir/configure.ac >/dev/null) && need_libtool=1
 (grep "\bAC_GGZ_PLATFORM" $srcdir/configure.ac >/dev/null) && need_libtool=1
 
-version_check "autoconf" "2.57"
-version_check "automake" "1.7"
+version_check "autoconf" "2.60"
+version_check "automake" "1.9"
 if test "x$need_libtool" = "x1"; then
-	version_check "libtool" "1.4.4"
+	version_check "libtool" "1.5.20"
 fi
-version_check "gettext" "0.10.40"
+version_check "gettext" "0.15"
 
 if test "x$bailout" = "x1"; then
   echo
