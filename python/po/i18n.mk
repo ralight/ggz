@@ -3,6 +3,7 @@
 # CATALOG = <name> (for <name>.mo)
 # POSOURCES = <filelist> (like ($top_srcdir)/*.c)
 # optional: POFLAGS = ... (like -LPython)
+# optional: CATALOG_VERSION = _... (for i18n'd libraries)
 
 builddir = $(top_builddir)/$(subdir)
 POFILES = $(srcdir)/*.po
@@ -40,9 +41,9 @@ install-data-local:
 		k=$$(basename $$j); \
 		country=`echo $$k | cut -d "." -f 1`; \
 		dir=${DESTDIR}$(prefix)/share/locale/$$country/LC_MESSAGES; \
-		echo "installing $$dir/$(CATALOG).mo ($$k)"; \
+		echo "installing $$dir/$(CATALOG)$(CATALOG_VERSION).mo ($$k)"; \
 		install -d $$dir; \
-		cp $$j $$dir/$(CATALOG).mo; \
+		cp $$j $$dir/$(CATALOG)$(CATALOG_VERSION).mo; \
 	done
 
 uninstall-local:
@@ -50,6 +51,6 @@ uninstall-local:
 		k=$$(basename $$j); \
 		country=`echo $$k | cut -d "." -f 1`; \
 		dir=${DESTDIR}$(prefix)/share/locale/$$country/LC_MESSAGES; \
-		rm -f $$dir/$(CATALOG).mo; \
+		rm -f $$dir/$(CATALOG)$(CATALOG_VERSION).mo; \
 	done
 
