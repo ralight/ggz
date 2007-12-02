@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 9396 2007-12-01 09:43:29Z jdorje $
+ * $Id: ggzmod.c 9408 2007-12-02 08:24:45Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -147,6 +147,10 @@ static char *ggz_getenv(const char *name)
 #ifdef HAVE_GETENV
 	return getenv(name);
 #else
+	/* This is NOT the correct way to call this function. But,
+	   it seems getenv is available on windows so this bit of code is
+	   never reached.  It is left here to trigger a compile error if that
+	   case ever comes up. */
 	return GetEnvironmentVariable(name);
 #endif
 }
