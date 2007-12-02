@@ -217,15 +217,10 @@ class GGZHandler
 					break;
 				case GGZ_LOGGED_IN:
 					std::cout << "ggz: logged in" << std::endl;
-					if(m_control)
-					{
-						ggzcore_server_list_rooms(m_server, -1, 0);
-					}
-					else
-					{
-						// FIXME: go to m_roomname
-						std::cout << "Would go to " << m_roomname << std::endl;
-					}
+					// FIXME: we don't need the whole room list
+					// unless we're the control connection
+					// but the ggzcore API forces us to load all rooms
+					ggzcore_server_list_rooms(m_server, -1, 0);
 					break;
 				case GGZ_LOGIN_FAIL:
 					data = (const GGZErrorEventData*)event_data;
@@ -250,6 +245,25 @@ class GGZHandler
 							roomlist.push_back(ggzcore_room_get_name(room));
 						}
 						pthread_mutex_unlock(&roomlist_lock);
+					}
+					else
+					{
+						pthread_mutex_lock(&roomlist_lock);
+						int num = -1;
+						std::list<std::string>::const_iterator it;
+						for(it = roomlist.begin(); it != roomlist.end(); it++)
+						{
+							std::string room = (*it);
+							num++;
+							if(m_roomname == room)
+							{
+								break;
+							}
+						}
+						pthread_mutex_unlock(&roomlist_lock);
+						GGZRoom *room = ggzcore_server_get_nth_room(m_server, num);
+						std::cout << "* going to room number " << num << std::endl;
+						ggzcore_server_join_room(m_server, room);
 					}
 					break;
 				case GGZ_TYPE_LIST:
@@ -454,6 +468,12 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 		{
 			std::cout << "Connection thread for " << jid << std::endl;
 
+			// FIXME: HACK to not run against ggzd's username length limit
+			if(jid != m_ggzlogin)
+			{
+				jid = "masked-jid";
+			}
+
 			ConnInfo *info = new ConnInfo(m_client, m_server, jid, roomname);
 
 			// if JID is the GGZ login, this becomes main connection
@@ -522,6 +542,14 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 
 			if(stanza->body().substr(0, 4) == "play")
 			{
+				if(stanza->body().length() < 6)
+				{
+					gloox::Stanza *stanzareply = gloox::Stanza::createMessageStanza(
+						stanza->from().bare(), "room must be given");
+					m_client->send(stanzareply);
+					return;
+				}
+
 				std::string roomname = stanza->body().substr(5);
 
 				bool found = false;
