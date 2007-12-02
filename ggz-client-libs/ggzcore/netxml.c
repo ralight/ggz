@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 9249 2007-08-13 07:02:41Z josef $
+ * $Id: netxml.c 9407 2007-12-02 08:19:20Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -990,8 +990,8 @@ int _ggzcore_net_read_data(GGZNet * net)
 	} else if (!XML_ParseBuffer(net->parser, len, done)) {
 		ggz_debug(GGZCORE_DBG_XML,
 			  "Parse error at line %d, col %d:%s",
-			  XML_GetCurrentLineNumber(net->parser),
-			  XML_GetCurrentColumnNumber(net->parser),
+			  (int)XML_GetCurrentLineNumber(net->parser),
+			  (int)XML_GetCurrentColumnNumber(net->parser),
 			  XML_ErrorString(XML_GetErrorCode(net->parser)));
 		_ggzcore_server_protocol_error(net->server, E_BAD_XML);
 	}
