@@ -203,6 +203,11 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 			}
 
 			ggzcore_server_free(server);
+
+			// Now send GGZ location to the user
+			gloox::Stanza *stanza = gloox::Stanza::createMessageStanza(
+				jid, "ggz on " + m_server);
+			m_client->send(stanza);
 		}
 
 		void onConnect()

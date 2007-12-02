@@ -185,8 +185,9 @@ class GGZJabber : public gloox::ConnectionListener, gloox::PresenceHandler, gloo
 		}
 
 	private:
-		void run_ggz(std::string jid)
+		void run_ggz(std::string server)
 		{
+			std::cout << "Connect to GGZ server: " << server << std::endl;
 		}
 
 		void onConnect()
@@ -241,8 +242,8 @@ class GGZJabber : public gloox::ConnectionListener, gloox::PresenceHandler, gloo
 				std::cout << "|| extension: " << extensionname(ext->type()) << std::endl;
 			}
 
-			//if(stanza->body() == "play")
-			//	run_ggz(stanza->from().bare());
+			if(stanza->body().substr(0, 6) == "ggz on")
+				run_ggz(stanza->body().substr(7));
 		}
 
 		gloox::Client *m_client;
