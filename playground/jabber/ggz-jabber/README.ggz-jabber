@@ -1,0 +1,14 @@
+GGZ core client wrapper with Jabber support
+===========================================
+
+This application is a tool similar to ggz-client-libs/ggz-wrapper. It uses
+the gloox library so it can connect to Jabber servers, and it uses ggzcore
+for playing GGZ over Jabber.
+
+It is only a proof-of-concept client. In the future, the conventional
+GGZ core clients should add support for Jabber, and the conventional
+Jabber clients should get GGZ plugins.
+The latter could be based on the current plugins for the Pidgin and Kopete
+IM applications, but extended to support a yet-to-be-written XEP which tells
+how to put the GGZ protocol into XMPP stanzas.
+
