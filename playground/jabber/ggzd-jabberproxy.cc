@@ -8,6 +8,8 @@
 
 #include <iostream>
 
+#include <pthread.h>
+
 #include <ggz.h>
 #include <ggzcore.h>
 
@@ -135,6 +137,196 @@ std::string statusname(int status)
 	return res;
 }
 
+class ConnInfo
+{
+	public:
+		ConnInfo(gloox::Client *client, std::string server, std::string jid)
+		{
+			this->client = client;
+			this->server = server;
+			this->jid = jid;
+		}
+
+		gloox::Client *client;
+		std::string server;
+		std::string jid;
+};
+
+// This class does not take ownership of the server objects
+class GGZHandler
+{
+	public:
+		GGZHandler(GGZServer *server)
+		{
+			m_active = true;
+			m_server = server;
+		}
+
+		bool active()
+		{
+			return m_active;
+		}
+
+		void serverevent(unsigned int id, const void *event_data)
+		{
+			GGZServerEvent event = (GGZServerEvent)id;
+			std::string error;
+			const GGZErrorEventData *data;
+
+			switch(event)
+			{
+				case GGZ_CONNECTED:
+					std::cout << "ggz: connected" << std::endl;
+					break;
+				case GGZ_CONNECT_FAIL:
+					error = (char*)event_data;
+					std::cerr << "ggz: connection failed: " << error << std::endl;
+					m_active = false;
+					break;
+				case GGZ_NEGOTIATED:
+					std::cout << "ggz: negotiated" << std::endl;
+					ggzcore_server_login(m_server);
+					break;
+				case GGZ_NEGOTIATE_FAIL:
+					error = (char*)event_data;
+					std::cerr << "ggz: negotiation failed: " << error << std::endl;
+					m_active = false;
+					break;
+				case GGZ_LOGGED_IN:
+					std::cout << "ggz: logged in" << std::endl;
+					break;
+				case GGZ_LOGIN_FAIL:
+					data = (const GGZErrorEventData*)event_data;
+					error = data->message;
+					std::cerr << "ggz: login failed: " << error << std::endl;
+					m_active = false;
+					break;
+				case GGZ_MOTD_LOADED:
+					// event_data: complex/motdeventdata
+					// this event is not of interest
+					break;
+				case GGZ_ROOM_LIST:
+					std::cout << "ggz: room list arrived" << std::endl;
+					break;
+				case GGZ_TYPE_LIST:
+					std::cout << "ggz: type list arrived" << std::endl;
+					break;
+				case GGZ_SERVER_PLAYERS_CHANGED:
+					// event_data is unused
+					// this event is not of interest
+					break;
+				case GGZ_ENTERED:
+					std::cout << "ggz: entered a room" << std::endl;
+					break;
+				case GGZ_ENTER_FAIL:
+					data = (const GGZErrorEventData*)event_data;
+					error = data->message;
+					std::cerr << "ggz: entering room failed: " << error << std::endl;
+					m_active = false;
+					break;
+				case GGZ_LOGOUT:
+					std::cout << "ggz: logged out" << std::endl;
+					break;
+				case GGZ_NET_ERROR:
+					error = (char*)event_data;
+					std::cerr << "ggz: network error: " << error << std::endl;
+					m_active = false;
+					break;
+				case GGZ_PROTOCOL_ERROR:
+					data = (const GGZErrorEventData*)event_data;
+					error = data->message;
+					std::cerr << "ggz: protocol error: " << error << std::endl;
+					m_active = false;
+					break;
+				case GGZ_CHAT_FAIL:
+					// event_data: complex/erroreventdata
+					// this event is not of interest
+					break;
+				case GGZ_STATE_CHANGE:
+					// event_data is unused
+					break;
+				case GGZ_CHANNEL_CONNECTED:
+					// event_data is unused
+					break;
+				case GGZ_CHANNEL_READY:
+					// event_data is unused
+					break;
+				case GGZ_CHANNEL_FAIL:
+					// event_data: error string/const char*
+					break;
+				case GGZ_SERVER_ROOMS_CHANGED:
+					// event_data is unused
+					break;
+			}
+		}
+
+	private:
+		bool m_active;
+		GGZServer *m_server;
+};
+
+static GGZHookReturn hook_server(unsigned int id, const void *event_data, const void *user_data)
+{
+	const GGZHandler *handler_const = static_cast<const GGZHandler*>(user_data);
+	GGZHandler *handler = const_cast<GGZHandler*>(handler_const);
+	handler->serverevent(id, event_data);
+}
+
+// This function takes ownership of its argument 'info'
+// ... but not of the contents of info!
+static void *ggzthread(void *arg)
+{
+	std::cout << "-thread- started #" << pthread_self() << std::endl;
+
+	ConnInfo *info = static_cast<ConnInfo*>(arg);
+
+	GGZServer *server = ggzcore_server_new();
+	GGZHandler *handler = new GGZHandler(server);
+
+	ggzcore_server_add_event_hook_full(server, GGZ_CONNECTED, hook_server, handler);
+	ggzcore_server_add_event_hook_full(server, GGZ_CONNECT_FAIL, hook_server, handler);
+	ggzcore_server_add_event_hook_full(server, GGZ_NEGOTIATED, hook_server, handler);
+	ggzcore_server_add_event_hook_full(server, GGZ_NEGOTIATE_FAIL, hook_server, handler);
+	ggzcore_server_add_event_hook_full(server, GGZ_LOGGED_IN, hook_server, handler);
+	ggzcore_server_add_event_hook_full(server, GGZ_LOGIN_FAIL, hook_server, handler);
+	ggzcore_server_add_event_hook_full(server, GGZ_ROOM_LIST, hook_server, handler);
+	ggzcore_server_add_event_hook_full(server, GGZ_TYPE_LIST, hook_server, handler);
+	ggzcore_server_add_event_hook_full(server, GGZ_ENTERED, hook_server, handler);
+	ggzcore_server_add_event_hook_full(server, GGZ_ENTER_FAIL, hook_server, handler);
+	ggzcore_server_add_event_hook_full(server, GGZ_LOGOUT, hook_server, handler);
+	ggzcore_server_add_event_hook_full(server, GGZ_NET_ERROR, hook_server, handler);
+	ggzcore_server_add_event_hook_full(server, GGZ_PROTOCOL_ERROR, hook_server, handler);
+
+	ggzcore_server_set_hostinfo(server, info->server.c_str(), 5688, 0);
+	ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST, "jabberproxy", NULL, NULL);
+
+	int success = ggzcore_server_connect(server);
+	if(success == -1)
+	{
+		std::cerr << "Error: couldn't connect to GGZ server" << std::endl;
+		return NULL;
+	}
+
+	// FIXME: main loop goes here
+	while(handler->active())
+		if(ggzcore_server_data_is_pending(server))
+			ggzcore_server_read_data(server, ggzcore_server_get_fd(server));
+
+	ggzcore_server_free(server);
+
+	// Now send GGZ location to the user
+	// FIXME: this requires 'client' to be thread-safe, but we could make it so easily
+	gloox::Stanza *stanza = gloox::Stanza::createMessageStanza(
+		info->jid, "ggz on " + info->server);
+	info->client->send(stanza);
+
+	delete info;
+
+	std::cout << "-thread- ended #" << pthread_self() << std::endl;
+
+	return NULL;
+}
+
 class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler, gloox::MessageHandler
 {
 	public:
@@ -191,23 +383,17 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 	private:
 		void run_ggz(std::string jid)
 		{
-			GGZServer *server = ggzcore_server_new();
-			//ggzcore_server_add_event_hook(server, ...);
-			ggzcore_server_set_hostinfo(server, m_server.c_str(), 5688, 0);
-			ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST, "jabberproxy", NULL, NULL);
-			int success = ggzcore_server_connect(server);
-			if(success == -1)
+			std::cout << "Connection thread for " << jid << std::endl;
+
+			ConnInfo *info = new ConnInfo(m_client, m_server, jid);
+
+			pthread_t thread;
+			int success = pthread_create(&thread, NULL, ggzthread, info);
+			if(success != 0)
 			{
-				std::cerr << "Error: couldn't connect to GGZ server" << std::endl;
+				std::cerr << "Error: couldn't spawn a thread." << std::endl;
 				return;
 			}
-
-			ggzcore_server_free(server);
-
-			// Now send GGZ location to the user
-			gloox::Stanza *stanza = gloox::Stanza::createMessageStanza(
-				jid, "ggz on " + m_server);
-			m_client->send(stanza);
 		}
 
 		void onConnect()
