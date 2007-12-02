@@ -48,12 +48,17 @@ fi
 
 if [ ! -z $GNOME_SESSION ]; then
 	if [ ! -z $has_ggz_gtk ]; then
-		app="ggz_gtk"
+		app="ggz-gtk"
 	fi
 fi
 if [ ! -z $GNOME_DESKTOP_SESSION_ID ]; then
 	if [ ! -z $has_ggz_gtk ]; then
-		app="ggz_gtk"
+		app="ggz-gtk"
+	fi
+fi
+if [ ! -z $TWDISPLAY ]; then
+	if [ ! -z $has_ggz_txt ]; then
+		app="ggz-txt"
 	fi
 fi
 
