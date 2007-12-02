@@ -2,11 +2,26 @@ ggzd-jabberproxy: A Jabber integration gateway for the GGZ Gaming Zone
 ======================================================================
 
 With ggzd-jabberproxy and capable Jabber clients, it is possible to play GGZ
-games on any Jabber network! The proxy acts as a GGZ core client towards
-the GGZ server (ggzd), and as a Jabber client towards a Jabber server.
+games on any Jabber network! The proxy acts as as a collection of GGZ core
+clients towards the GGZ server (ggzd), and as a single Jabber client (with
+group communication capabilities) towards a Jabber server which has several
+game-loving users attached (directly or through other Jabber servers).
+The following ASCII art depicts the simplified topology:
+
+                          _ _ _ _ _ _
++------------+ - - - - -<+-----------+         +--------+ - - - [user 1]
+| GGZ server | - - - - -<| ggzd-jabb |*= = = = | Jabber | - - - [user 2]
+| (ggzd)     | - - - - -<| erproxy   |         | server |
++------------+           +-----------+         +--------+ - - - [user 3]
+                         \_____________________________________________/
+\___________________________________/  | jabber network (star topology)
+ | ggz network (star topology)         | (1 server : n users + 1 proxy)
+ | (1 server : n core clients)
 
 In order to compile ggzd-jabberproxy, edit the Makefile so that the GGZ
-base libraries (libggz, ggzcore) can be found. Then simply type 'make'.
+base libraries (libggz, ggzcore) can be found. You will also need the gloox
+library (C++) which implements the Jabber functionality. Then simply type
+'make' to build the proxy.
 
 To get started, copy ggzd-jabberproxy.rc.dist to ggzd-jabberproxy.rc and
 fill out the values of a Jabber account to be used for the proxy. The account

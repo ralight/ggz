@@ -4,3 +4,6 @@ Password = xxx
 
 # FIME: TLS certificate settings for automatic acceptance/matching
 
+[GGZ]
+Server = xxx
+

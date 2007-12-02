@@ -4,11 +4,33 @@
 #include <gloox/connectionlistener.h>
 #include <gloox/presencehandler.h>
 #include <gloox/messagehandler.h>
+#include <gloox/stanzaextension.h>
 
 #include <iostream>
 
 #include <ggz.h>
 #include <ggzcore.h>
+
+std::string extensionname(gloox::StanzaExtensionType type)
+{
+	switch(type)
+	{
+		case gloox::ExtNone:
+			return "none";
+		case gloox::ExtVCardUpdate:
+			return "vcard-update";
+		case gloox::ExtOOB:
+			return "oob";
+		case gloox::ExtGPGSigned:
+			return "gpg-signed";
+		case gloox::ExtGPGEncrypted:
+			return "gpg-encrypted";
+		case gloox::ExtXDelay:
+			return "xdelay";
+		case gloox::ExtDelay:
+			return "delay";
+	}
+}
 
 std::string statename(gloox::ConnectionState state)
 {
@@ -89,6 +111,29 @@ std::string reasonname(gloox::ConnectionError reason)
 	}
 }
 
+std::string statusname(int status)
+{
+	std::string res = "";
+
+	if(status & gloox::CertOk)
+		res += "+ok";
+	if(status & gloox::CertInvalid)
+		res += "+invalid";
+	if(status & gloox::CertSignerUnknown)
+		res += "+signer_unknown";
+	if(status & gloox::CertRevoked)
+		res += "+revoked";
+	if(status & gloox::CertExpired)
+		res += "+expired";
+	if(status & gloox::CertNotActive)
+		res += "+not_active";
+	if(status & gloox::CertWrongPeer)
+		res += "+wrong_peer";
+	if(status & gloox::CertSignerNotCa)
+		res += "+signer_not_ca";
+
+	return res;
+}
 
 class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler, gloox::MessageHandler
 {
@@ -103,10 +148,15 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 			delete m_client;
 		}
 
-		void config(std::string jid, std::string password)
+		void config_jabber(std::string jid, std::string password)
 		{
 			m_jid = jid;
 			m_password = password;
+		}
+
+		void config_ggz(std::string server)
+		{
+			m_server = server;
 		}
 
 		bool run()
@@ -116,7 +166,10 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 			opt.flags = GGZ_OPT_PARSER;
 			int success = ggzcore_init(opt);
 			if(success == -1)
+			{
+				std::cerr << "Error: couldn't initialize ggzcore." << std::endl;
 				return false;
+			}
 
 			gloox::JID jid(m_jid);
 
@@ -125,30 +178,49 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 			m_client->registerPresenceHandler(this);
 			m_client->registerMessageHandler(this);
 
+			// FIXME: gloox should extend CertInfo to inform about CAs
+			//gloox::StringList calist;
+			//calist.push_back("/etc/ssl/certs/ca.pem");
+			//m_client->setCACerts(calist);
+
 			// FIXME: set to false once ggzd connection works?
 			bool ret = m_client->connect(/*false*/);
 			std::cout << "Connection: " << ret << std::endl;
 		}
 
-		void runggz()
+	private:
+		void run_ggz(std::string jid)
 		{
 			GGZServer *server = ggzcore_server_new();
 			//ggzcore_server_add_event_hook(server, ...);
-			ggzcore_server_set_hostinfo(server, "localhost", 5688, 0);
+			ggzcore_server_set_hostinfo(server, m_server.c_str(), 5688, 0);
 			ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST, "jabberproxy", NULL, NULL);
-			ggzcore_server_connect(server);
+			int success = ggzcore_server_connect(server);
+			if(success == -1)
+			{
+				std::cerr << "Error: couldn't connect to GGZ server" << std::endl;
+				return;
+			}
 
 			ggzcore_server_free(server);
 		}
 
 		void onConnect()
 		{
-			std::cout << "-client- connect" << std::endl;
+			std::cout << "-client- connected" << std::endl;
 		}
 
 		bool onTLSConnect(const gloox::CertInfo& info)
 		{
 			std::cout << "-client- tls connect" << std::endl;
+
+			std::cout << "|| tls status:   " << statusname(info.status) << std::endl;
+			std::cout << "|| tls chain:    " << info.chain << std::endl;
+			std::cout << "|| tls issuer:   " << info.issuer << std::endl;
+			std::cout << "|| tls server:   " << info.server << std::endl;
+			std::cout << "|| tls protocol: " << info.protocol << std::endl;
+			std::cout << "|| tls cipher:   " << info.cipher << std::endl;
+
 			return true;
 			// FIXME: This is very evil!
 			//return false;
@@ -156,48 +228,76 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 
 		void onDisconnect(gloox::ConnectionError error)
 		{
-			std::cout << "-client- disconnect: " << reasonname(error) << std::endl;
+			std::cout << "-client- disconnected: " << reasonname(error) << std::endl;
 		}
 
 		void handlePresence(gloox::Stanza *stanza)
 		{
-			std::cout << "-client- presence: " << presencename(stanza->presence()) << std::endl;
+			std::cout << "-client- presence: " << std::endl;
+			std::cout << "|| sender:   " << stanza->from().full() << std::endl;
+			std::cout << "|| presence: " << presencename(stanza->presence()) << std::endl;
 		}
 
 		void handleMessage(gloox::Stanza *stanza, gloox::MessageSession *session)
 		{
-			std::cout << "-client- message: " << stanza->body() << std::endl;
+			std::cout << "-client- message: " << std::endl;
+			std::cout << "|| sender:    " << stanza->from().full() << std::endl;
+			std::cout << "|| header:    " << stanza->subject() << std::endl;
+			std::cout << "|| body:      " << stanza->body() << std::endl;
+
+			gloox::StanzaExtensionList exts = stanza->extensions();
+			gloox::StanzaExtensionList::const_iterator it;
+			for(it = exts.begin(); it != exts.end(); it++)
+			{
+				gloox::StanzaExtension *ext = (*it);
+				std::cout << "|| extension: " << extensionname(ext->type()) << std::endl;
+			}
+
+			if(stanza->body() == "play")
+				run_ggz(stanza->from().bare());
 		}
 
-	private:
 		gloox::Client *m_client;
-		std::string m_jid, m_password;
+		std::string m_jid, m_password, m_server;
 };
 
 int main(int argc, char **argv)
 {
-	std::string jid, password;
-	char *jidstr, *passwordstr;
+	std::string jid, password, server;
+	char *jidstr, *passwordstr, *serverstr;
 
 	int rc = ggz_conf_parse("ggzd-jabberproxy.rc", GGZ_CONF_RDONLY);
 	if(rc == -1)
+	{
+		std::cerr << "Error: couldn't load config file ggzd-jabberproxy.rc." << std::endl;
 		return -1;
+	}
 	jidstr = ggz_conf_read_string(rc, "Jabber", "JID", NULL);
 	passwordstr = ggz_conf_read_string(rc, "Jabber", "Password", NULL);
+	serverstr = ggz_conf_read_string(rc, "GGZ", "Server", NULL);
 	ggz_conf_close(rc);
 
 	jid = jidstr;
 	password = passwordstr;
+	server = serverstr;
 	ggz_free(jidstr);
 	ggz_free(passwordstr);
+	ggz_free(serverstr);
 
-	std::cout << "Configuration: " << jid << ":" << password << std::endl;
+	std::cout << "Configuration loaded." << std::endl;
+	std::cout << "|| jid=" << jid << std::endl;
+	std::cout << "|| password=(hidden)" << std::endl;
+	std::cout << "|| ggzserver=" << server << std::endl;
 
 	GGZDJabberProxy proxy;
-	proxy.config(jid, password);
+	proxy.config_jabber(jid, password);
+	proxy.config_ggz(server);
 	bool ret = proxy.run();
 	if(!ret)
+	{
+		std::cerr << "Error: the proxy was aborted unexpectedly." << std::endl;
 		return -1;
+	}
 
 	return 0;
 }
