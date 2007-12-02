@@ -147,9 +147,15 @@ class ConnInfo
 			this->jid = jid;
 		}
 
+		void setcontrolinfo(std::string password)
+		{
+			this->password = password;
+		}
+
 		gloox::Client *client;
 		std::string server;
 		std::string jid;
+		std::string password;
 };
 
 // This class does not take ownership of the server objects
@@ -160,11 +166,22 @@ class GGZHandler
 		{
 			m_active = true;
 			m_server = server;
+			m_control = false;
 		}
 
 		bool active()
 		{
 			return m_active;
+		}
+
+		void setcontrol(bool control)
+		{
+			m_control = control;
+		}
+
+		bool iscontrol()
+		{
+			return m_control;
 		}
 
 		void serverevent(unsigned int id, const void *event_data)
@@ -194,6 +211,10 @@ class GGZHandler
 					break;
 				case GGZ_LOGGED_IN:
 					std::cout << "ggz: logged in" << std::endl;
+					if(m_control)
+					{
+						ggzcore_server_list_rooms(m_server, -1, 0);
+					}
 					break;
 				case GGZ_LOGIN_FAIL:
 					data = (const GGZErrorEventData*)event_data;
@@ -207,6 +228,15 @@ class GGZHandler
 					break;
 				case GGZ_ROOM_LIST:
 					std::cout << "ggz: room list arrived" << std::endl;
+					if(m_control)
+					{
+						int num = ggzcore_server_get_num_rooms(m_server);
+						for(int i = 0; i < num; i++)
+						{
+							GGZRoom *room = ggzcore_server_get_nth_room(m_server, i);
+							std::cout << "* room: " << ggzcore_room_get_name(room) << std::endl;
+						}
+					}
 					break;
 				case GGZ_TYPE_LIST:
 					std::cout << "ggz: type list arrived" << std::endl;
@@ -262,6 +292,7 @@ class GGZHandler
 
 	private:
 		bool m_active;
+		bool m_control;
 		GGZServer *m_server;
 };
 
@@ -297,8 +328,20 @@ static void *ggzthread(void *arg)
 	ggzcore_server_add_event_hook_full(server, GGZ_NET_ERROR, hook_server, handler);
 	ggzcore_server_add_event_hook_full(server, GGZ_PROTOCOL_ERROR, hook_server, handler);
 
+	GGZLoginType mode;
+	if(!info->password.empty())
+	{
+		mode = GGZ_LOGIN;
+		handler->setcontrol(true);
+	}
+	else
+	{
+		mode = GGZ_LOGIN_GUEST;
+	}
+
+	// FIXME: jid might not always be valid as GGZ username
 	ggzcore_server_set_hostinfo(server, info->server.c_str(), 5688, 0);
-	ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST, "jabberproxy", NULL, NULL);
+	ggzcore_server_set_logininfo(server, mode, info->jid.c_str(), info->password.c_str(), NULL);
 
 	int success = ggzcore_server_connect(server);
 	if(success == -1)
@@ -316,11 +359,14 @@ static void *ggzthread(void *arg)
 
 	// Now send GGZ location to the user
 	// FIXME: this requires 'client' to be thread-safe, but we could make it so easily
-	gloox::Stanza *stanza = gloox::Stanza::createMessageStanza(
-		info->jid, "ggz on " + info->server);
-	info->client->send(stanza);
+	if(!handler->iscontrol())
+	{
+		gloox::Stanza *stanza = gloox::Stanza::createMessageStanza(
+			info->jid, "ggz on " + info->server);
+		info->client->send(stanza);
 
-	delete info;
+		delete info;
+	}
 
 	std::cout << "-thread- ended #" << pthread_self() << std::endl;
 
@@ -346,9 +392,11 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 			m_password = password;
 		}
 
-		void config_ggz(std::string server)
+		void config_ggz(std::string server, std::string login, std::string password)
 		{
 			m_server = server;
+			m_ggzlogin = login;
+			m_ggzpassword = password;
 		}
 
 		bool run()
@@ -375,6 +423,8 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 			//calist.push_back("/etc/ssl/certs/ca.pem");
 			//m_client->setCACerts(calist);
 
+			run_ggz(m_ggzlogin);
+
 			// FIXME: set to false once ggzd connection works?
 			bool ret = m_client->connect(/*false*/);
 			std::cout << "Connection: " << ret << std::endl;
@@ -386,6 +436,13 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 			std::cout << "Connection thread for " << jid << std::endl;
 
 			ConnInfo *info = new ConnInfo(m_client, m_server, jid);
+
+			// if JID is the GGZ login, this becomes main connection
+			if(jid == m_ggzlogin)
+			{
+				std::cout << "- is control thread!" << std::endl;
+				info->setcontrolinfo(m_ggzpassword);
+			}
 
 			pthread_t thread;
 			int success = pthread_create(&thread, NULL, ggzthread, info);
@@ -450,12 +507,13 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 
 		gloox::Client *m_client;
 		std::string m_jid, m_password, m_server;
+		std::string m_ggzlogin, m_ggzpassword;
 };
 
 int main(int argc, char **argv)
 {
-	std::string jid, password, server;
-	char *jidstr, *passwordstr, *serverstr;
+	std::string jid, password, server, ggzlogin, ggzpassword;
+	char *jidstr, *passwordstr, *serverstr, *ggzloginstr, *ggzpasswordstr;
 
 	int rc = ggz_conf_parse("ggzd-jabberproxy.rc", GGZ_CONF_RDONLY);
 	if(rc == -1)
@@ -466,23 +524,31 @@ int main(int argc, char **argv)
 	jidstr = ggz_conf_read_string(rc, "Jabber", "JID", NULL);
 	passwordstr = ggz_conf_read_string(rc, "Jabber", "Password", NULL);
 	serverstr = ggz_conf_read_string(rc, "GGZ", "Server", NULL);
+	ggzloginstr = ggz_conf_read_string(rc, "GGZ", "Username", NULL);
+	ggzpasswordstr = ggz_conf_read_string(rc, "GGZ", "Password", NULL);
 	ggz_conf_close(rc);
 
 	jid = jidstr;
 	password = passwordstr;
 	server = serverstr;
+	ggzlogin = ggzloginstr;
+	ggzpassword = ggzpasswordstr;
 	ggz_free(jidstr);
 	ggz_free(passwordstr);
 	ggz_free(serverstr);
+	ggz_free(ggzloginstr);
+	ggz_free(ggzpasswordstr);
 
 	std::cout << "Configuration loaded." << std::endl;
 	std::cout << "|| jid=" << jid << std::endl;
 	std::cout << "|| password=(hidden)" << std::endl;
 	std::cout << "|| ggzserver=" << server << std::endl;
+	std::cout << "|| ggzlogin=(hidden)" << ggzlogin << std::endl;
+	std::cout << "|| ggzpassword=(hidden)" << std::endl;
 
 	GGZDJabberProxy proxy;
 	proxy.config_jabber(jid, password);
-	proxy.config_ggz(server);
+	proxy.config_ggz(server, ggzlogin, ggzpassword);
 	bool ret = proxy.run();
 	if(!ret)
 	{
