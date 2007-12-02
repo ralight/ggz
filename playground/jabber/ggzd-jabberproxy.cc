@@ -13,6 +13,9 @@
 #include <ggz.h>
 #include <ggzcore.h>
 
+static std::list<std::string> roomlist;
+static pthread_mutex_t roomlist_lock;
+
 std::string extensionname(gloox::StanzaExtensionType type)
 {
 	switch(type)
@@ -140,11 +143,12 @@ std::string statusname(int status)
 class ConnInfo
 {
 	public:
-		ConnInfo(gloox::Client *client, std::string server, std::string jid)
+		ConnInfo(gloox::Client *client, std::string server, std::string jid, std::string roomname)
 		{
 			this->client = client;
 			this->server = server;
 			this->jid = jid;
+			this->roomname = roomname;
 		}
 
 		void setcontrolinfo(std::string password)
@@ -156,16 +160,18 @@ class ConnInfo
 		std::string server;
 		std::string jid;
 		std::string password;
+		std::string roomname;
 };
 
 // This class does not take ownership of the server objects
 class GGZHandler
 {
 	public:
-		GGZHandler(GGZServer *server)
+		GGZHandler(GGZServer *server, std::string roomname)
 		{
 			m_active = true;
 			m_server = server;
+			m_roomname = roomname;
 			m_control = false;
 		}
 
@@ -215,6 +221,11 @@ class GGZHandler
 					{
 						ggzcore_server_list_rooms(m_server, -1, 0);
 					}
+					else
+					{
+						// FIXME: go to m_roomname
+						std::cout << "Would go to " << m_roomname << std::endl;
+					}
 					break;
 				case GGZ_LOGIN_FAIL:
 					data = (const GGZErrorEventData*)event_data;
@@ -230,12 +241,15 @@ class GGZHandler
 					std::cout << "ggz: room list arrived" << std::endl;
 					if(m_control)
 					{
+						pthread_mutex_lock(&roomlist_lock);
 						int num = ggzcore_server_get_num_rooms(m_server);
 						for(int i = 0; i < num; i++)
 						{
 							GGZRoom *room = ggzcore_server_get_nth_room(m_server, i);
 							std::cout << "* room: " << ggzcore_room_get_name(room) << std::endl;
+							roomlist.push_back(ggzcore_room_get_name(room));
 						}
+						pthread_mutex_unlock(&roomlist_lock);
 					}
 					break;
 				case GGZ_TYPE_LIST:
@@ -294,6 +308,7 @@ class GGZHandler
 		bool m_active;
 		bool m_control;
 		GGZServer *m_server;
+		std::string m_roomname;
 };
 
 static GGZHookReturn hook_server(unsigned int id, const void *event_data, const void *user_data)
@@ -312,7 +327,7 @@ static void *ggzthread(void *arg)
 	ConnInfo *info = static_cast<ConnInfo*>(arg);
 
 	GGZServer *server = ggzcore_server_new();
-	GGZHandler *handler = new GGZHandler(server);
+	GGZHandler *handler = new GGZHandler(server, info->roomname);
 
 	ggzcore_server_add_event_hook_full(server, GGZ_CONNECTED, hook_server, handler);
 	ggzcore_server_add_event_hook_full(server, GGZ_CONNECT_FAIL, hook_server, handler);
@@ -364,9 +379,9 @@ static void *ggzthread(void *arg)
 		gloox::Stanza *stanza = gloox::Stanza::createMessageStanza(
 			info->jid, "ggz on " + info->server);
 		info->client->send(stanza);
-
-		delete info;
 	}
+
+	delete info;
 
 	std::cout << "-thread- ended #" << pthread_self() << std::endl;
 
@@ -411,6 +426,8 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 				return false;
 			}
 
+			pthread_mutex_init(&roomlist_lock, NULL);
+
 			gloox::JID jid(m_jid);
 
 			m_client = new gloox::Client(jid, m_password);
@@ -423,19 +440,21 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 			//calist.push_back("/etc/ssl/certs/ca.pem");
 			//m_client->setCACerts(calist);
 
-			run_ggz(m_ggzlogin);
+			run_ggz(m_ggzlogin, std::string());
 
 			// FIXME: set to false once ggzd connection works?
 			bool ret = m_client->connect(/*false*/);
 			std::cout << "Connection: " << ret << std::endl;
+
+			pthread_mutex_destroy(&roomlist_lock);
 		}
 
 	private:
-		void run_ggz(std::string jid)
+		void run_ggz(std::string jid, std::string roomname)
 		{
 			std::cout << "Connection thread for " << jid << std::endl;
 
-			ConnInfo *info = new ConnInfo(m_client, m_server, jid);
+			ConnInfo *info = new ConnInfo(m_client, m_server, jid, roomname);
 
 			// if JID is the GGZ login, this becomes main connection
 			if(jid == m_ggzlogin)
@@ -501,8 +520,35 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 				std::cout << "|| extension: " << extensionname(ext->type()) << std::endl;
 			}
 
-			if(stanza->body() == "play")
-				run_ggz(stanza->from().bare());
+			if(stanza->body().substr(0, 4) == "play")
+			{
+				std::string roomname = stanza->body().substr(5);
+
+				bool found = false;
+				std::list<std::string>::const_iterator it;
+				pthread_mutex_lock(&roomlist_lock);
+				for(it = roomlist.begin(); it != roomlist.end(); it++)
+				{
+					std::string room = (*it);
+					if(roomname == room)
+					{
+						found = true;
+						break;
+					}
+				}
+				pthread_mutex_unlock(&roomlist_lock);
+
+				if(found)
+				{
+					run_ggz(stanza->from().bare(), roomname);
+				}
+				else
+				{
+					gloox::Stanza *stanzareply = gloox::Stanza::createMessageStanza(
+						stanza->from().bare(), "room not found");
+					m_client->send(stanzareply);
+				}
+			}
 		}
 
 		gloox::Client *m_client;
