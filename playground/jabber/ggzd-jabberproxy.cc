@@ -13,8 +13,89 @@
 #include <ggz.h>
 #include <ggzcore.h>
 
-static std::list<std::string> roomlist;
-static pthread_mutex_t roomlist_lock;
+class Roomlist;
+static Roomlist *roomlistobj = NULL;
+
+class Roomlist
+{
+	public:
+		Roomlist()
+		{
+			std::cout << "[mutex] init" << std::endl;
+			pthread_mutex_init(&roomlist_lock, NULL);
+		}
+
+		~Roomlist()
+		{
+			std::cout << "[mutex] deinit" << std::endl;
+			pthread_mutex_destroy(&roomlist_lock);
+			roomlistobj = NULL;
+		}
+
+		static Roomlist *self()
+		{
+			std::cout << "[mutex] self()" << std::endl;
+			if(!roomlistobj)
+				roomlistobj = new Roomlist();
+			return roomlistobj;
+		}
+
+		void fill(GGZServer *server)
+		{
+			std::cout << "[mutex] use" << std::endl;
+			pthread_mutex_lock(&roomlist_lock);
+			int num = ggzcore_server_get_num_rooms(server);
+			for(int i = 0; i < num; i++)
+			{
+				GGZRoom *room = ggzcore_server_get_nth_room(server, i);
+				std::cout << "* room: " << ggzcore_room_get_name(room) << std::endl;
+				roomlist.push_back(ggzcore_room_get_name(room));
+			}
+			pthread_mutex_unlock(&roomlist_lock);
+		}
+
+		int findpos(std::string roomname)
+		{
+			std::cout << "[mutex] use" << std::endl;
+			pthread_mutex_lock(&roomlist_lock);
+			int num = -1;
+			std::list<std::string>::const_iterator it;
+			for(it = roomlist.begin(); it != roomlist.end(); it++)
+			{
+				std::string room = (*it);
+				num++;
+				if(roomname == room)
+				{
+					break;
+				}
+			}
+			pthread_mutex_unlock(&roomlist_lock);
+			return num;
+		}
+
+		bool contains(std::string roomname)
+		{
+			std::cout << "[mutex] use" << std::endl;
+			bool found = false;
+			std::list<std::string>::const_iterator it;
+			pthread_mutex_lock(&roomlist_lock);
+			for(it = roomlist.begin(); it != roomlist.end(); it++)
+			{
+				std::string room = (*it);
+				if(roomname == room)
+				{
+					found = true;
+					break;
+				}
+			}
+			pthread_mutex_unlock(&roomlist_lock);
+			return found;
+		}
+
+	private:
+		std::list<std::string> roomlist;
+		pthread_mutex_t roomlist_lock;
+};
 
 std::string extensionname(gloox::StanzaExtensionType type)
 {
@@ -35,6 +116,8 @@ std::string extensionname(gloox::StanzaExtensionType type)
 		case gloox::ExtDelay:
 			return "delay";
 	}
+
+	return std::string();
 }
 
 std::string statename(gloox::ConnectionState state)
@@ -48,6 +131,8 @@ std::string statename(gloox::ConnectionState state)
 		case gloox::StateConnected:
 			return "connected";
 	}
+
+	return std::string();
 }
 
 std::string presencename(gloox::Presence presence)
@@ -69,6 +154,8 @@ std::string presencename(gloox::Presence presence)
 		case gloox::PresenceUnavailable:
 			return "offline";
 	}
+
+	return std::string();
 }
 
 std::string reasonname(gloox::ConnectionError reason)
@@ -114,6 +201,8 @@ std::string reasonname(gloox::ConnectionError reason)
 		case gloox::ConnNotConnected:
 			return "not connected";
 	}
+
+	return std::string();
 }
 
 std::string statusname(int status)
@@ -236,31 +325,11 @@ class GGZHandler
 					std::cout << "ggz: room list arrived" << std::endl;
 					if(m_control)
 					{
-						pthread_mutex_lock(&roomlist_lock);
-						int num = ggzcore_server_get_num_rooms(m_server);
-						for(int i = 0; i < num; i++)
-						{
-							GGZRoom *room = ggzcore_server_get_nth_room(m_server, i);
-							std::cout << "* room: " << ggzcore_room_get_name(room) << std::endl;
-							roomlist.push_back(ggzcore_room_get_name(room));
-						}
-						pthread_mutex_unlock(&roomlist_lock);
+						Roomlist::self()->fill(m_server);
 					}
 					else
 					{
-						pthread_mutex_lock(&roomlist_lock);
-						int num = -1;
-						std::list<std::string>::const_iterator it;
-						for(it = roomlist.begin(); it != roomlist.end(); it++)
-						{
-							std::string room = (*it);
-							num++;
-							if(m_roomname == room)
-							{
-								break;
-							}
-						}
-						pthread_mutex_unlock(&roomlist_lock);
+						int num = Roomlist::self()->findpos(m_roomname);
 						GGZRoom *room = ggzcore_server_get_nth_room(m_server, num);
 						std::cout << "* going to room number " << num << std::endl;
 						ggzcore_server_join_room(m_server, room);
@@ -315,6 +384,9 @@ class GGZHandler
 				case GGZ_SERVER_ROOMS_CHANGED:
 					// event_data is unused
 					break;
+				case GGZ_NUM_SERVER_EVENTS:
+					// internal
+					break;
 			}
 		}
 
@@ -330,6 +402,7 @@ static GGZHookReturn hook_server(unsigned int id, const void *event_data, const 
 	const GGZHandler *handler_const = static_cast<const GGZHandler*>(user_data);
 	GGZHandler *handler = const_cast<GGZHandler*>(handler_const);
 	handler->serverevent(id, event_data);
+	return GGZ_HOOK_OK;
 }
 
 // This function takes ownership of its argument 'info'
@@ -440,8 +513,6 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 				return false;
 			}
 
-			pthread_mutex_init(&roomlist_lock, NULL);
-
 			gloox::JID jid(m_jid);
 
 			m_client = new gloox::Client(jid, m_password);
@@ -460,7 +531,9 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 			bool ret = m_client->connect(/*false*/);
 			std::cout << "Connection: " << ret << std::endl;
 
-			pthread_mutex_destroy(&roomlist_lock);
+			delete Roomlist::self();
+
+			return true;
 		}
 
 	private:
@@ -552,20 +625,7 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 
 				std::string roomname = stanza->body().substr(5);
 
-				bool found = false;
-				std::list<std::string>::const_iterator it;
-				pthread_mutex_lock(&roomlist_lock);
-				for(it = roomlist.begin(); it != roomlist.end(); it++)
-				{
-					std::string room = (*it);
-					if(roomname == room)
-					{
-						found = true;
-						break;
-					}
-				}
-				pthread_mutex_unlock(&roomlist_lock);
-
+				bool found = Roomlist::self()->contains(roomname);
 				if(found)
 				{
 					run_ggz(stanza->from().bare(), roomname);
@@ -584,45 +644,64 @@ class GGZDJabberProxy : public gloox::ConnectionListener, gloox::PresenceHandler
 		std::string m_ggzlogin, m_ggzpassword;
 };
 
+class Config
+{
+	public:
+		Config(){}
+
+		bool load(std::string configfile)
+		{
+			char *jidstr, *passwordstr, *serverstr, *ggzloginstr, *ggzpasswordstr;
+
+			int rc = ggz_conf_parse(configfile.c_str(), GGZ_CONF_RDONLY);
+			if(rc == -1)
+			{
+				return false;
+			}
+
+			jidstr = ggz_conf_read_string(rc, "Jabber", "JID", NULL);
+			passwordstr = ggz_conf_read_string(rc, "Jabber", "Password", NULL);
+			serverstr = ggz_conf_read_string(rc, "GGZ", "Server", NULL);
+			ggzloginstr = ggz_conf_read_string(rc, "GGZ", "Username", NULL);
+			ggzpasswordstr = ggz_conf_read_string(rc, "GGZ", "Password", NULL);
+			ggz_conf_close(rc);
+
+			jid = jidstr;
+			password = passwordstr;
+			server = serverstr;
+			ggzlogin = ggzloginstr;
+			ggzpassword = ggzpasswordstr;
+			ggz_free(jidstr);
+			ggz_free(passwordstr);
+			ggz_free(serverstr);
+			ggz_free(ggzloginstr);
+			ggz_free(ggzpasswordstr);
+
+			return true;
+		}
+
+		std::string jid, password, server, ggzlogin, ggzpassword;
+};
+
 int main(int argc, char **argv)
 {
-	std::string jid, password, server, ggzlogin, ggzpassword;
-	char *jidstr, *passwordstr, *serverstr, *ggzloginstr, *ggzpasswordstr;
-
-	int rc = ggz_conf_parse("ggzd-jabberproxy.rc", GGZ_CONF_RDONLY);
-	if(rc == -1)
+	Config conf;
+	if(!conf.load("ggzd-jabberproxy.rc"))
 	{
 		std::cerr << "Error: couldn't load config file ggzd-jabberproxy.rc." << std::endl;
 		return -1;
 	}
-	jidstr = ggz_conf_read_string(rc, "Jabber", "JID", NULL);
-	passwordstr = ggz_conf_read_string(rc, "Jabber", "Password", NULL);
-	serverstr = ggz_conf_read_string(rc, "GGZ", "Server", NULL);
-	ggzloginstr = ggz_conf_read_string(rc, "GGZ", "Username", NULL);
-	ggzpasswordstr = ggz_conf_read_string(rc, "GGZ", "Password", NULL);
-	ggz_conf_close(rc);
-
-	jid = jidstr;
-	password = passwordstr;
-	server = serverstr;
-	ggzlogin = ggzloginstr;
-	ggzpassword = ggzpasswordstr;
-	ggz_free(jidstr);
-	ggz_free(passwordstr);
-	ggz_free(serverstr);
-	ggz_free(ggzloginstr);
-	ggz_free(ggzpasswordstr);
 
 	std::cout << "Configuration loaded." << std::endl;
-	std::cout << "|| jid=" << jid << std::endl;
+	std::cout << "|| jid=" << conf.jid << std::endl;
 	std::cout << "|| password=(hidden)" << std::endl;
-	std::cout << "|| ggzserver=" << server << std::endl;
-	std::cout << "|| ggzlogin=(hidden)" << ggzlogin << std::endl;
+	std::cout << "|| ggzserver=" << conf.server << std::endl;
+	std::cout << "|| ggzlogin=(hidden)" << conf.ggzlogin << std::endl;
 	std::cout << "|| ggzpassword=(hidden)" << std::endl;
 
 	GGZDJabberProxy proxy;
-	proxy.config_jabber(jid, password);
-	proxy.config_ggz(server, ggzlogin, ggzpassword);
+	proxy.config_jabber(conf.jid, conf.password);
+	proxy.config_ggz(conf.server, conf.ggzlogin, conf.ggzpassword);
 	bool ret = proxy.run();
 	if(!ret)
 	{
