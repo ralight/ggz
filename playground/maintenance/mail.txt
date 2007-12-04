@@ -14,6 +14,10 @@ This is meant as a slight defense against spammers.
 Sending mail to hosting@community is used to coordinate tournament hosting
 requests. This is forwarded transparently to the hosting@mail.ggz list.
 
+For administrative purposes, ggznagios@community is set up to refer to
+the 'ggznagios' account at twitter.com. Nagios running at hq sends monitoring
+incidences to that account.
+
 The address info@community exists for general inquiries.
 Actually all <foo>@community is redirected there but this might stop somewhen.
 
