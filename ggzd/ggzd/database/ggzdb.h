@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 9245 2007-08-13 07:01:38Z josef $
+ * $Id: ggzdb.h 9421 2007-12-08 11:26:18Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -123,12 +123,6 @@ GGZDBResult ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGam
 
 /* Recalculate statistics for a certain game type */
 GGZDBResult ggzdb_stats_calcrankings(const char *game);
-
-/* Escape a string for SQL */
-char *_ggz_sql_escape(const char *str);
-
-/* Unescape a string from SQL */
-/*char *_ggz_sql_unescape(const char *str); */
 
 #endif
 

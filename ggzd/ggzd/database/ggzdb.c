@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 9245 2007-08-13 07:01:38Z josef $
+ * $Id: ggzdb.c 9421 2007-12-08 11:26:18Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -32,12 +32,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <dlfcn.h>
 
 #include "datatypes.h"
 #include "err_func.h"
 #include "ggzd.h"
 #include "ggzdb.h"
-#include "ggzdb_proto.h"
+#include "ggzdb_functions.h"
 
 
 /* Server-wide variables */
@@ -47,6 +48,7 @@ extern Options opt;
 static char db_needs_init = 1;
 static char player_needs_init = 1;
 static char stats_needs_init = 1;
+static void *handle = NULL;
 
 /* Internal functions */
 static GGZDBResult ggzdb_player_init(void);
@@ -69,7 +71,7 @@ int ggzdb_init(void)
 		snprintf(fname, sizeof(fname), "%s%s", opt.data_dir, suffix);
 
 		if((vfile = fopen(fname, "r")) == NULL) {
-		/* File not found, so we can create it */
+			/* File not found, so we can create it */
 			if((vfile = fopen(fname, "w")) == NULL)
 				err_sys_exit("fopen(w) failed in ggzdb_init()");
 			fprintf(vfile, "%s", GGZDB_VERSION_ID);
@@ -85,10 +87,56 @@ int ggzdb_init(void)
 		if (!version_ok) {
 			printf("Bad db version id, remove or convert db files.\n"
 			       "Most likely this means you must upgrade your\n"
-		    	   "database.  It may be possible to automate this;\n"
+			       "database.  It may be possible to automate this;\n"
 			       "see http://ggzgamingzone.org.\n");
 			exit(-1);
 		}
+	}
+
+	/* Load the database backend plugin */
+	const char *backend = opt.dbtype;
+	if(!backend){
+		/* get from DATABASE_TYPE */
+		char *backendlist = ggz_strdup(DATABASE_TYPE);
+		char *backendlistptr = backendlist;
+		backend = ggz_strdup(strtok(backendlist, ","));
+		ggz_free(backendlistptr);
+	}
+
+	char backendmodule[128];
+	snprintf(backendmodule, sizeof(backendmodule),
+		"%s/database/libggzdb_%s.so",
+		GGZDEXECMODDIR, backend);
+	handle = dlopen(backendmodule, RTLD_NOW);
+	if(!handle) {
+		err_sys_exit("%s (%s) is not a suitable database module (%s)",
+			backend, backendmodule, dlerror());
+	}
+
+	if(((_ggzdb_init = dlsym(handle, "_ggzdb_init")) == NULL)
+	|| ((_ggzdb_close = dlsym(handle, "_ggzdb_close")) == NULL)
+	|| ((_ggzdb_enter = dlsym(handle, "_ggzdb_enter")) == NULL)
+	|| ((_ggzdb_exit = dlsym(handle, "_ggzdb_exit")) == NULL)
+	|| ((_ggzdb_init_player = dlsym(handle, "_ggzdb_init_player")) == NULL)
+	|| ((_ggzdb_player_add = dlsym(handle, "_ggzdb_player_add")) == NULL)
+	|| ((_ggzdb_player_get = dlsym(handle, "_ggzdb_player_get")) == NULL)
+	|| ((_ggzdb_player_update = dlsym(handle, "_ggzdb_player_update")) == NULL)
+	|| ((_ggzdb_player_get_first = dlsym(handle, "_ggzdb_player_get_first")) == NULL)
+	|| ((_ggzdb_player_get_next = dlsym(handle, "_ggzdb_player_get_next")) == NULL)
+	|| ((_ggzdb_player_get_extended = dlsym(handle, "_ggzdb_player_get_extended")) == NULL)
+	|| ((_ggzdb_player_next_uid = dlsym(handle, "_ggzdb_player_next_uid")) == NULL)
+	|| ((_ggzdb_player_drop_cursor = dlsym(handle, "_ggzdb_player_drop_cursor")) == NULL)
+	|| ((_ggzdb_init_stats = dlsym(handle, "_ggzdb_init_stats")) == NULL)
+	|| ((_ggzdb_stats_lookup = dlsym(handle, "_ggzdb_stats_lookup")) == NULL)
+	|| ((_ggzdb_stats_update = dlsym(handle, "_ggzdb_stats_update")) == NULL)
+	|| ((_ggzdb_stats_newmatch = dlsym(handle, "_ggzdb_stats_newmatch")) == NULL)
+	|| ((_ggzdb_stats_savegame = dlsym(handle, "_ggzdb_stats_savegame")) == NULL)
+	|| ((_ggzdb_stats_match = dlsym(handle, "_ggzdb_stats_match")) == NULL)
+	|| ((_ggzdb_stats_toprankings = dlsym(handle, "_ggzdb_stats_toprankings")) == NULL)
+	|| ((_ggzdb_stats_calcrankings = dlsym(handle, "_ggzdb_stats_calcrankings")) == NULL))
+	{
+		err_sys_exit("%s is an invalid database module (%s)",
+			backend, dlerror());
 	}
 
 	/* Call backend's initialization */
@@ -111,6 +159,7 @@ int ggzdb_init(void)
 void ggzdb_close(void)
 {
 	_ggzdb_close();
+	dlclose(handle);
 }
 
 
@@ -453,80 +502,4 @@ int ggzdb_compare_password(const char *input, const char *password)
 	
 	return -1;
 }
-
-/* Helper function, might go into libggz*/
-char *_ggz_sql_escape(const char *str)
-{
-	char *newstr, *q;
-	const char *p;
-	size_t len = 0;
-
-	if(str == NULL)
-		return NULL;
-
-	len = strlen(str);
-
-	for(p = str; *p != '\0'; p++) {
-		if(*p == '\'') {
-			len += 1;
-		}
-	}
-
-	if(len == strlen(str))
-		return ggz_strdup(str);
-
-	newstr = ggz_malloc(len + 1);
-	q = newstr;
-
-	for(p = str; *p != '\0'; p++) {
-		if(*p == '\'') {
-			*q++ = '\\';
-			*q = *p;
-		} else {
-			*q = *p;
-		}
-		q++;
-	}
-	*q = '\0';
-
-	return newstr;
-}
-
-/* Helper function, might go into libggz*/
-/*char *_ggz_sql_unescape(const char *str)
-{
-	char *new, *q;
-	const char *p;
-	size_t len = 0;
-
-	if(str == NULL)
-		return NULL;
-
-	len = strlen(str);
-
-	for(p = str; *p != '\0'; p++) {
-		if(!strncmp(p, "\\'", 2)) {
-			p += 1;
-		}
-		len++;
-	}
-
-	if(len == strlen(str))
-		return ggz_strdup(str);
-
-	q = new = ggz_malloc(len + 1);
-	for(p = str; *p != '\0'; p++) {
-		if(!strncmp(p, "\\'", 2)) {
-			*q = '\'';
-			q++;
-			p += 1;
-		} else {
-			*q = *p;
-			q++;
-		}
-	}
-	*q = '\0';
-
-	return new;
-}*/
 

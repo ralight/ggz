@@ -22,16 +22,12 @@
 
 #include "config.h"
 
-#ifdef WITH_PGSQL
-# ifdef PGSQL_IN_PGSQLDIR
-#  include <pgsql/libpq-fe.h>
-# else
-#  include <postgresql/libpq-fe.h>
-# endif
-#elif WITH_MYSQL
-#  include <mysql/mysql.h>
-#endif
-
+/* Global types */
+struct GGZRankings
+{
+	void *conn;
+	char ***rankingmodels;
+};
 typedef struct GGZRankings GGZRankings;
 
 /* Entry point */
@@ -41,11 +37,7 @@ GGZRankings *rankings_init(void);
 int rankings_loadmodels(GGZRankings *rankings, const char *path);
 
 /* Database initialization */
-#ifdef WITH_PGSQL
-void rankings_setconnection(GGZRankings *rankings, PGconn *connection);
-#elif WITH_MYSQL
-void rankings_setconnection(GGZRankings *rankings, MYSQL *connection);
-#endif
+void rankings_setconnection(GGZRankings *rankings, void *connection);
 
 /* Calculate rankings per game and write them back */
 void rankings_recalculate_game(GGZRankings *rankings, const char *game);
@@ -55,5 +47,8 @@ void rankings_recalculate_all(GGZRankings *rankings, const char *types);
 
 /* Exit point */
 void rankings_destroy(GGZRankings *rankings);
+
+/* Helper function */
+const char *rankings_model(GGZRankings *rankings, const char *game);
 
 #endif

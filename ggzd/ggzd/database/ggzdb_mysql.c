@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 9383 2007-11-22 19:28:37Z oojah $
+ * $Id: ggzdb_mysql.c 9421 2007-12-08 11:26:18Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -39,6 +39,7 @@
 #include "ggzd.h"
 #include "ggzdb.h"
 #include "ggzdb_proto.h"
+#include "ggzdb_util.h"
 #include "rankings.h"
 
 

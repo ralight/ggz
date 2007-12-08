@@ -3,7 +3,10 @@ dnl GGZ Gaming Zone - Database Macros
 dnl =================================
 dnl
 dnl Checks for a suitable ggzd backend database
-dnl and sets $database as well as LIB_DATABASE appropriately
+dnl and sets $database as well as LIB_DATABASE/DATABASE_INCLUDES appropriately
+dnl Note: $database is set from configure.ac initially and might also contain
+dnl a comma-separated list of database backends. All of those will be compiled
+dnl and made available as dynamically-loadable backends (plugins).
 dnl
 dnl ------------------------------------------------------------------------
 dnl Content of this file:
@@ -18,6 +21,9 @@ dnl AC_GGZ_DATABASE_MYSQL - MySQL 3.x/4.x
 dnl AC_GGZ_DATABASE_PGSQL - PostgreSQL 7.x/8.x
 dnl AC_GGZ_DATABASE_SQLITE - SQLite embedded database
 dnl AC_GGZ_DATABASE_DBI - DB-independent abstraction library
+dnl
+dnl AC_GGZ_CONTAINS_DEFINITION - helper function str_contains() for string lists
+dnl AC_GGZ_CONTAINS - wrapper function for str_contains()
 dnl
 
 AC_DEFUN([AC_GGZ_DATABASE_DB4],
@@ -37,14 +43,14 @@ AC_DEFUN([AC_GGZ_DATABASE_DB4],
 		[
 			db4inc="db4/db.h"
 			database=db4
-			DATABASE_INCLUDES="-I /usr/include/db4"
+			DATABASE_INCLUDES="$DATABASE_INCLUDES -I /usr/include/db4"
 		],
 		[
 			AC_CHECK_HEADER(db42/db.h,
 			[
 				db4inc="db42/db.h"
 				database=db4
-				DATABASE_INCLUDES="-I /usr/include/db42"
+				DATABASE_INCLUDES="$DATABASE_INCLUDES -I /usr/include/db42"
 			],
 			[])
 		])
@@ -238,7 +244,7 @@ AC_DEFUN([AC_GGZ_DATABASE_DB4],
 	dnl Setup variables
 
 	if test "$database" = "db4"; then
-		LIB_DATABASE="$db4lib"
+		LIB_DATABASE="$LIB_DATABASE $db4lib"
 	fi
 ])
 
@@ -249,13 +255,13 @@ AC_DEFUN([AC_GGZ_DATABASE_PGSQL],
 		AC_CHECK_HEADER([postgresql/libpq-fe.h],
 		[
 			database=pgsql
-			LIB_DATABASE="-lpq"
+			LIB_DATABASE="$LIB_DATABASE -lpq"
 		],
 		[
 			AC_CHECK_HEADER([pgsql/libpq-fe.h],
 			[
 				database=pgsql
-				LIB_DATABASE="-lpq"
+				LIB_DATABASE="$LIB_DATABASE -lpq"
 				AC_DEFINE([PGSQL_IN_PGSQLDIR], 1, [Define if the pgsql headers are under pgsql/])
 			],
 			[
@@ -281,7 +287,7 @@ AC_DEFUN([AC_GGZ_DATABASE_MYSQL],
 		AC_CHECK_HEADER(mysql/mysql.h,
 		[
 			database=mysql
-			LIB_DATABASE="-L/usr/lib/mysql -lmysqlclient_r"
+			LIB_DATABASE="$LIB_DATABASE -L/usr/lib/mysql -lmysqlclient_r"
 		],
 		[
 			if test "$database" = mysql; then
@@ -304,7 +310,7 @@ AC_DEFUN([AC_GGZ_DATABASE_SQLITE],
 		AC_CHECK_HEADER(sqlite3.h,
 		[
 			database=sqlite
-			LIB_DATABASE="-lsqlite3"
+			LIB_DATABASE="$LIB_DATABASE -lsqlite3"
 		],
 		[
 			if test "$database" = sqlite; then
@@ -326,7 +332,7 @@ AC_DEFUN([AC_GGZ_DATABASE_DBI],
 		AC_CHECK_HEADER(dbi/dbi.h,
 		[
 			database=dbi
-			LIB_DATABASE="-ldbi"
+			LIB_DATABASE="$LIB_DATABASE -ldbi"
 		],
 		[
 			if test "$database" = dbi; then
@@ -341,8 +347,40 @@ AC_DEFUN([AC_GGZ_DATABASE_DBI],
 	])
 ])
 
+AC_DEFUN([AC_GGZ_CONTAINS_DEFINITION],
+[
+str_contains(){
+list=[$][1]
+entry=[$][2]
+for i in `seq 1 9`; do
+	tmp=`echo $list | cut -d "," -f $i`
+	if test -z $tmp; then
+		break
+	fi
+	if test $entry = $tmp; then
+		return 0
+	fi
+done
+return 1
+}
+])
+
+AC_DEFUN([AC_GGZ_CONTAINS], [str_contains $1 $2])
+
 AC_DEFUN([AC_GGZ_DATABASE],
 [
+dnl Initialisation
+DATABASE_INCLUDES=""
+LIB_DATABASE=""
+
+dnl Loop over possible list of database choices
+databaselist=$database
+for i in `seq 1 9`; do
+	database=`echo $databaselist | cut -d "," -f $i`
+	if test -z $database; then
+		break
+	fi
+
 case "$database" in
 	db4)    database=db4 ;;
 	pgsql)  database=pgsql ;;
@@ -397,8 +435,6 @@ dnl Make sure a database was configured
 if test "$database" = yes; then
 	AC_MSG_ERROR([no usable database library found.  See above messages for more.])
 else
-	AC_DEFINE_UNQUOTED([DATABASE_TYPE], "${database}", [Database backend type])
-
 	if test "$database" = "mysql"; then
 		AC_DEFINE([WITH_MYSQL], 1, [MySQL is used, needed for statistics])
 	elif test "$database" = "pgsql"; then
@@ -406,12 +442,20 @@ else
 	fi
 fi
 
+dnl Finish loop over possible list
+done
+
+database=$databaselist
+
+AC_DEFINE_UNQUOTED([DATABASE_TYPE], "${database}", [Database backend type])
 AC_SUBST(LIB_DATABASE)
 AC_SUBST(DATABASE_INCLUDES)
-AM_CONDITIONAL([GGZDB_DB4], [test "$database" = "db4"])
-AM_CONDITIONAL([GGZDB_MYSQL], [test "$database" = "mysql"])
-AM_CONDITIONAL([GGZDB_PGSQL], [test "$database" = "pgsql"])
-AM_CONDITIONAL([GGZDB_SQLITE], [test "$database" = "sqlite"])
-AM_CONDITIONAL([GGZDB_DBI], [test "$database" = "dbi"])
+
+AC_GGZ_CONTAINS_DEFINITION
+AM_CONDITIONAL([GGZDB_DB4],    [AC_GGZ_CONTAINS([$database], ["db4"])])
+AM_CONDITIONAL([GGZDB_MYSQL],  [AC_GGZ_CONTAINS([$database], ["mysql"])])
+AM_CONDITIONAL([GGZDB_PGSQL],  [AC_GGZ_CONTAINS([$database], ["pgsql"])])
+AM_CONDITIONAL([GGZDB_SQLITE], [AC_GGZ_CONTAINS([$database], ["sqlite"])])
+AM_CONDITIONAL([GGZDB_DBI],    [AC_GGZ_CONTAINS([$database], ["dbi"])])
 ])
 

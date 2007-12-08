@@ -29,7 +29,7 @@ AC_ARG_ENABLE([games],
 	[enable_games=no], [enable_games=yes])
 AC_ARG_WITH([database],
 	AS_HELP_STRING([--with-database=DB],
-	[type of database to use: db4, pgsql, mysql, sqlite, dbi]),
+	[type of database(s) to use: db4, pgsql, mysql, sqlite, dbi]),
 	[database=$withval], [database=yes])
 AC_ARG_WITH([zeroconf],
 	AS_HELP_STRING([--with-zeroconf=TYPE],
