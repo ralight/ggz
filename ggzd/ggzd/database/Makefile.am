@@ -12,36 +12,36 @@ libggzdb_a_SOURCES = \
 	ggzdb_proto.h
 
 ggzdbdir = $(libdir)/ggzd/database
-ggzdb_LTLIBRARIES = \
-	libggzdb_sqlite.la \
-	libggzdb_mysql.la \
-	libggzdb_pgsql.la \
-	libggzdb_db4.la \
-	libggzdb_dbi.la
+ggzdb_LTLIBRARIES =
 
 AM_CPPFLAGS = $(DATABASE_INCLUDES) -I$(top_srcdir)/ggzd $(LIBGGZ_INCLUDES)
 
 if GGZDB_SQLITE
 libggzdb_sqlite_la_SOURCES = ggzdb_sqlite.c
 libggzdb_sqlite_la_LDFLAGS = -module -avoid-version
+ggzdb_LTLIBRARIES += libggzdb_sqlite.la
 endif
 if GGZDB_MYSQL
 libggzdb_mysql_la_SOURCES = ggzdb_mysql.c rankings.c rankings_mysql.c rankings.h ggzdb_util.c ggzdb_util.h
 libggzdb_mysql_la_CPPFLAGS = $(AM_CPPFLAGS) -DGGZDCONFDIR=\"$(ggzdconfdir)\"
 libggzdb_mysql_la_LDFLAGS = -module -avoid-version
+ggzdb_LTLIBRARIES += libggzdb_mysql.la
 endif
 if GGZDB_PGSQL
 libggzdb_pgsql_la_SOURCES = ggzdb_pgsql.c rankings.c rankings_mysql.c rankings.h ggzdb_util.c ggzdb_util.h
 libggzdb_pgsql_la_CPPFLAGS = $(AM_CPPFLAGS) -DGGZDCONFDIR=\"$(ggzdconfdir)\"
 libggzdb_pgsql_la_LDFLAGS = -module -avoid-version
+ggzdb_LTLIBRARIES += libggzdb_pgsql.la
 endif
 if GGZDB_DB4
 libggzdb_db4_la_SOURCES = ggzdb_db4.c
 libggzdb_db4_la_LDFLAGS = -module -avoid-version
+ggzdb_LTLIBRARIES += libggzdb_db4.la
 endif
 if GGZDB_DBI
 libggzdb_dbi_la_SOURCES = ggzdb_dbi.c
 libggzdb_dbi_la_LDFLAGS = -module -avoid-version
+ggzdb_LTLIBRARIES += libggzdb_dbi.la
 endif
 
 if GGZDB_PGSQL
