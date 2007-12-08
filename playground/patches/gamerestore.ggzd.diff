@@ -1,8 +1,8 @@
 === ggzd/control.c
 ==================================================================
---- ggzd/control.c	(revision 10344)
+--- ggzd/control.c	(revision 10502)
 +++ ggzd/control.c	(local)
-@@ -563,6 +563,13 @@
+@@ -568,6 +568,13 @@
  	signal(TABLE_EVENT_SIGNAL, table_handle_event_signal);
  	pthread_key_create(&table_key, NULL);
  
@@ -16,9 +16,103 @@
  	/* Setup TLS */
  	ggz_tls_init(opt.tls_cert, opt.tls_key, opt.tls_password);
  
+=== ggzd/database/ggzdb.c
+==================================================================
+--- ggzd/database/ggzdb.c	(revision 10502)
++++ ggzd/database/ggzdb.c	(local)
+@@ -133,7 +133,12 @@
+ 	|| ((_ggzdb_stats_savegame = dlsym(handle, "_ggzdb_stats_savegame")) == NULL)
+ 	|| ((_ggzdb_stats_match = dlsym(handle, "_ggzdb_stats_match")) == NULL)
+ 	|| ((_ggzdb_stats_toprankings = dlsym(handle, "_ggzdb_stats_toprankings")) == NULL)
+-	|| ((_ggzdb_stats_calcrankings = dlsym(handle, "_ggzdb_stats_calcrankings")) == NULL))
++	|| ((_ggzdb_stats_calcrankings = dlsym(handle, "_ggzdb_stats_calcrankings")) == NULL)
++	|| ((_ggzdb_find_first_savegame = dlsym(handle, "_ggzdb_find_first_savegame")) == NULL)
++	|| ((_ggzdb_find_next_savegame_alloc = dlsym(handle, "_ggzdb_find_next_savegame_alloc")) == NULL)
++	|| ((_ggzdb_find_first_owner = dlsym(handle, "_ggzdb_find_first_owner")) == NULL)
++	|| ((_ggzdb_find_next_owner_alloc = dlsym(handle, "_ggzdb_find_next_owner_alloc")) == NULL)
++	)
+ 	{
+ 		err_sys_exit("%s is an invalid database module (%s)",
+ 			backend, dlerror());
+@@ -408,7 +413,75 @@
+ 	return rc;
+ }
+ 
++GGZDBResultDataPtr ggzdb_find_first_savegame(const char *game, const char *owner)
++{
++	GGZDBResultDataPtr rc = NULL;
+ 
++	_ggzdb_enter();
++
++	if (stats_needs_init)
++		(void)ggzdb_stats_init();
++
++	if (rc == GGZDB_NO_ERROR)
++		rc = _ggzdb_find_first_savegame(game, owner);
++
++	_ggzdb_exit();
++
++	return rc;
++}
++
++GGZDBResult ggzdb_find_next_savegame_alloc(GGZDBResultData *data, char **savegame)
++{
++	GGZDBResult rc = GGZDB_NO_ERROR;
++
++	_ggzdb_enter();
++
++	if (stats_needs_init)
++		rc = ggzdb_stats_init();
++
++	if (rc == GGZDB_NO_ERROR)
++		rc = _ggzdb_find_next_savegame_alloc(data, savegame);
++
++	_ggzdb_exit();
++
++	return rc;
++}
++
++GGZDBResultDataPtr ggzdb_find_first_owner(const char *game)
++{
++	GGZDBResultDataPtr rc = NULL;
++
++	_ggzdb_enter();
++
++	if (stats_needs_init)
++		(void)ggzdb_stats_init();
++
++	if (rc == GGZDB_NO_ERROR)
++		rc = _ggzdb_find_first_owner(game);
++
++	_ggzdb_exit();
++
++	return rc;
++}
++
++GGZDBResult ggzdb_find_next_owner_alloc(GGZDBResultData *data, char **owner)
++{
++	GGZDBResult rc = GGZDB_NO_ERROR;
++
++	_ggzdb_enter();
++
++	if (stats_needs_init)
++		rc = ggzdb_stats_init();
++
++	if (rc == GGZDB_NO_ERROR)
++		rc = _ggzdb_find_next_owner_alloc(data, owner);
++
++	_ggzdb_exit();
++
++	return rc;
++}
++
++
+ /*** INTERNAL FUNCTIONS ***/
+ 
+ /* Function to initialize player tables if necessary */
 === ggzd/database/ggzdb.h
 ==================================================================
---- ggzd/database/ggzdb.h	(revision 10344)
+--- ggzd/database/ggzdb.h	(revision 10502)
 +++ ggzd/database/ggzdb.h	(local)
 @@ -80,6 +80,11 @@
  	long highest_score;
@@ -40,7 +134,7 @@
  /* Exported functions */
  GGZReturn ggzdb_init(void);
  void ggzdb_close(void);
-@@ -124,6 +128,34 @@
+@@ -124,5 +128,29 @@
  /* Recalculate statistics for a certain game type */
  GGZDBResult ggzdb_stats_calcrankings(const char *game);
  
@@ -52,11 +146,9 @@
 + * WARNING !!!
 + * PS: don't user GGZDBResultData* when ggzdb_find_owner function
 + *     return GGZDB_ERR_NOTFOUND status. It is deleted */
-+GGZDBResultDataPtr
-+ggzdb_find_first_savegame(const char *game, const char *owner);
++GGZDBResultDataPtr ggzdb_find_first_savegame(const char *game, const char *owner);
 +
-+GGZDBResult
-+ggzdb_find_next_savegame_alloc(GGZDBResultData *data, char **savegame);
++GGZDBResult ggzdb_find_next_savegame_alloc(GGZDBResultData *data, char **savegame);
 +
 +/* Loading owners 
 + *
@@ -66,20 +158,30 @@
 + * WARNING !!!
 + * PS: don't user GGZDBResultData* when ggzdb_find_owner function
 + *     return GGZDB_ERR_NOTFOUND status. It is deleted */
-+GGZDBResultDataPtr
-+ggzdb_find_first_owner(const char *game);
++GGZDBResultDataPtr ggzdb_find_first_owner(const char *game);
 +
-+GGZDBResult
-+ggzdb_find_next_owner_alloc(GGZDBResultData *data, char **owner);
++GGZDBResult ggzdb_find_next_owner_alloc(GGZDBResultData *data, char **owner);
 +
- /* Escape a string for SQL */
- char *_ggz_sql_escape(const char *str);
+ #endif
  
+=== ggzd/database/ggzdb_functions.h
+==================================================================
+--- ggzd/database/ggzdb_functions.h	(revision 10502)
++++ ggzd/database/ggzdb_functions.h	(local)
+@@ -44,3 +44,8 @@
+ GGZDBResult (*_ggzdb_stats_toprankings)(const char *game, int number, ggzdbPlayerGameStats **rankings);
+ GGZDBResult (*_ggzdb_stats_calcrankings)(const char *game);
+ 
++GGZDBResultDataPtr (*_ggzdb_find_first_savegame)(const char *game, const char *owner);
++GGZDBResult (*_ggzdb_find_next_savegame_alloc)(GGZDBResultData *data, char **savegame);
++GGZDBResultDataPtr (*_ggzdb_find_first_owner)(const char *game);
++GGZDBResult (*_ggzdb_find_next_owner_alloc)(GGZDBResultData *data, char **owner);
++
 === ggzd/database/ggzdb_pgsql.c
 ==================================================================
---- ggzd/database/ggzdb_pgsql.c	(revision 10344)
+--- ggzd/database/ggzdb_pgsql.c	(revision 10502)
 +++ ggzd/database/ggzdb_pgsql.c	(local)
-@@ -72,6 +72,14 @@
+@@ -73,6 +73,14 @@
  }
  connection_t;
  
@@ -94,11 +196,11 @@
  /* Internal functions */
  
  /* Take a connection from the pool */
-@@ -1027,3 +1035,96 @@
+@@ -1028,3 +1036,93 @@
  	return GGZDB_NO_ERROR;
  }
  
-+GGZDBResultDataPtr create_resultData(PGconn *conn, PGresult *result)
++static GGZDBResultDataPtr create_resultData(PGconn *conn, PGresult *result)
 +{
 +	if (PQresultStatus(result) != PGRES_TUPLES_OK) {
 +		PQclear(result);
@@ -114,7 +216,7 @@
 +	}
 +}
 +
-+GGZDBResultDataPtr ggzdb_find_first_owner(const char *game)
++GGZDBResultDataPtr _ggzdb_find_first_owner(const char *game)
 +{
 +	PGconn *conn = claimconnection();
 +	if (!conn) {
@@ -134,8 +236,7 @@
 +	}
 +}
 +
-+GGZDBResult
-+ggzdb_find_next_owner_alloc(GGZDBResultData* data, char **owner)
++GGZDBResult _ggzdb_find_next_owner_alloc(GGZDBResultData* data, char **owner)
 +{
 +	if (data->i < data->count) {
 +		*owner = strdup(PQgetvalue(data->res, data->i++, 0));
@@ -150,8 +251,7 @@
 +	}
 +}
 +
-+GGZDBResultDataPtr
-+ggzdb_find_first_savegame(const char *game, const char *owner)
++GGZDBResultDataPtr _ggzdb_find_first_savegame(const char *game, const char *owner)
 +{
 +	PGconn *conn = claimconnection();
 +	if (!conn) {
@@ -175,8 +275,7 @@
 +	}
 +}
 +
-+GGZDBResult
-+ggzdb_find_next_savegame_alloc(GGZDBResultData *data, char **savedgame)
++GGZDBResult _ggzdb_find_next_savegame_alloc(GGZDBResultData *data, char **savedgame)
 +{
 +	if (data->i < data->count) {
 +		*savedgame = strdup(PQgetvalue(data->res, data->i++, 0));
@@ -191,9 +290,23 @@
 +	}
 +}
 +
+=== ggzd/database/ggzdb_proto.h
+==================================================================
+--- ggzd/database/ggzdb_proto.h	(revision 10502)
++++ ggzd/database/ggzdb_proto.h	(local)
+@@ -135,3 +135,9 @@
+ GGZDBResult _ggzdb_stats_calcrankings(const char *game);
+ 
+ unsigned int _ggzdb_player_next_uid(void);
++
++GGZDBResultDataPtr _ggzdb_find_first_savegame(const char *game, const char *owner);
++GGZDBResult _ggzdb_find_next_savegame_alloc(GGZDBResultData *data, char **savegame);
++GGZDBResultDataPtr _ggzdb_find_first_owner(const char *game);
++GGZDBResult _ggzdb_find_next_owner_alloc(GGZDBResultData *data, char **owner);
++
 === ggzd/datatypes.h
 ==================================================================
---- ggzd/datatypes.h	(revision 10344)
+--- ggzd/datatypes.h	(revision 10502)
 +++ ggzd/datatypes.h	(local)
 @@ -143,6 +143,10 @@
  
@@ -208,7 +321,7 @@
  
 === ggzd/parse_opt.c
 ==================================================================
---- ggzd/parse_opt.c	(revision 10344)
+--- ggzd/parse_opt.c	(revision 10502)
 +++ ggzd/parse_opt.c	(local)
 @@ -672,6 +672,9 @@
  	game_info.allow_peers = ggz_conf_read_int(ch, "TableOptions", 
@@ -222,7 +335,7 @@
  
 === ggzd/room.c
 ==================================================================
---- ggzd/room.c	(revision 10344)
+--- ggzd/room.c	(revision 10502)
 +++ ggzd/room.c	(local)
 @@ -621,3 +621,60 @@
  	return removed;
@@ -287,7 +400,7 @@
 +}
 === ggzd/room.h
 ==================================================================
---- ggzd/room.h	(revision 10344)
+--- ggzd/room.h	(revision 10502)
 +++ ggzd/room.h	(local)
 @@ -123,6 +123,7 @@
  int room_get_count_rooms(void);
@@ -299,7 +412,7 @@
  			    GGZPlayerUpdateType update,
 === ggzd/stats.c
 ==================================================================
---- ggzd/stats.c	(revision 10344)
+--- ggzd/stats.c	(revision 10502)
 +++ ggzd/stats.c	(local)
 @@ -449,4 +449,3 @@
  
@@ -308,7 +421,7 @@
 -
 === ggzd/table.c
 ==================================================================
---- ggzd/table.c	(revision 10344)
+--- ggzd/table.c	(revision 10502)
 +++ ggzd/table.c	(local)
 @@ -86,6 +86,8 @@
  			      const void *data);
@@ -467,7 +580,7 @@
  {
 === ggzdmod/ggzdmod-ggz.h
 ==================================================================
---- ggzdmod/ggzdmod-ggz.h	(revision 10344)
+--- ggzdmod/ggzdmod-ggz.h	(revision 10502)
 +++ ggzdmod/ggzdmod-ggz.h	(local)
 @@ -108,6 +108,10 @@
  	int *scores;
@@ -501,7 +614,7 @@
  } GGZdModEventInternal;
 === ggzdmod/ggzdmod.c
 ==================================================================
---- ggzdmod/ggzdmod.c	(revision 10344)
+--- ggzdmod/ggzdmod.c	(revision 10502)
 +++ ggzdmod/ggzdmod.c	(local)
 @@ -844,7 +844,14 @@
  	return 0;
@@ -583,7 +696,7 @@
  	}
  }
  
-+void ggzdmod_request_savedgames(GGZdMod *ggzdmod )
++void ggzdmod_request_savedgames(GGZdMod *ggzdmod)
 +{
 +	if (ggzdmod && ggzdmod->type == GGZDMOD_GAME) {
 +		_io_send_savedgames_request(ggzdmod->fd);
@@ -652,7 +765,7 @@
 +}
 === ggzdmod/ggzdmod.h
 ==================================================================
---- ggzdmod/ggzdmod.h	(revision 10344)
+--- ggzdmod/ggzdmod.h	(revision 10502)
 +++ ggzdmod/ggzdmod.h	(local)
 @@ -225,6 +225,8 @@
   */
@@ -712,7 +825,7 @@
  #endif
 === ggzdmod/io.c
 ==================================================================
---- ggzdmod/io.c	(revision 10344)
+--- ggzdmod/io.c	(revision 10502)
 +++ ggzdmod/io.c	(local)
 @@ -51,13 +51,15 @@
  static int _io_read_req_boot(GGZdMod *ggzdmod);
@@ -905,7 +1018,7 @@
 +}
 === ggzdmod/io.h
 ==================================================================
---- ggzdmod/io.h	(revision 10344)
+--- ggzdmod/io.h	(revision 10502)
 +++ ggzdmod/io.h	(local)
 @@ -37,10 +37,12 @@
  int _io_send_seat_change(int fd, const GGZSeat *seat);
@@ -936,7 +1049,7 @@
  int _io_read_data(GGZdMod * ggzdmod);
 === ggzdmod/mod.h
 ==================================================================
---- ggzdmod/mod.h	(revision 10344)
+--- ggzdmod/mod.h	(revision 10502)
 +++ ggzdmod/mod.h	(local)
 @@ -42,6 +42,12 @@
  #define GGZDMOD_NUM_EVENTS (GGZDMOD_EVENT_ERROR_INTERNAL + 1)
@@ -977,7 +1090,7 @@
  #endif /* __GGZ_MOD_H__ */
 === ggzdmod/protocol.h
 ==================================================================
---- ggzdmod/protocol.h	(revision 10344)
+--- ggzdmod/protocol.h	(revision 10502)
 +++ ggzdmod/protocol.h	(local)
 @@ -54,13 +54,29 @@
  	 */
@@ -1038,7 +1151,7 @@
  #endif /* __GGZ_SERVER_PROTOCOL_H */
 === ggzdmod++/ggzgameserver.cpp
 ==================================================================
---- ggzdmod++/ggzgameserver.cpp	(revision 10344)
+--- ggzdmod++/ggzgameserver.cpp	(revision 10502)
 +++ ggzdmod++/ggzgameserver.cpp	(local)
 @@ -59,6 +59,10 @@
  				GGZdModEvent event, const void *data);
@@ -1101,7 +1214,7 @@
 +}
 === ggzdmod++/ggzgameserver.h
 ==================================================================
---- ggzdmod++/ggzgameserver.h	(revision 10344)
+--- ggzdmod++/ggzgameserver.h	(revision 10502)
 +++ ggzdmod++/ggzgameserver.h	(local)
 @@ -65,6 +65,16 @@
  		SeatType type;
