@@ -1,6 +1,147 @@
+Index: dependency-graph.dot
+===================================================================
+--- dependency-graph.dot	(Revision 0)
++++ dependency-graph.dot	(Revision 0)
+@@ -0,0 +1,107 @@
++# This file is used to get a visual representation of dependencies within kdegames.
++# It should be synced with kdepim/dependency-graph.dot (its origin) from time to time.
++#
++# To create a PostScript file, run 'dot -Tps -o dependency-graph.ps dependency-graph.dot'
++# (dot it part of the graphviz package).
++
++/* FIXME: find static libraries */
++/* FIXME: report on usage of phonon, knewstuff etc. */
++
++strict digraph "Inter-dependency graph for KDE Games" {
++        /*
++           Node definitions
++           Put all components of this package here.
++
++           Color coding:
++           shared libs: lightyellow
++           static libs: pink
++           plugins or other non-standalone modules: palegreen
++           applications: lightcyan
++           code generators or other development tools: orange
++           disabled: lightgray
++
++           Shapes:
++           external sources: box
++           kdegames: ellipse (default)
++         */
++
++        /* Libraries (a.k.a. libkdegames and its sub-libraries) */
++        "libkdegames"[style=filled, fillcolor=lightyellow, URL="libkdegames/html/index.html"];
++        "libkdegames (KGame)"[style=filled, fillcolor=lightyellow, URL="libkdegames/kgame/html/index.html"];
++        "libkdegames (Highscore)"[style=filled, fillcolor=lightyellow, URL="libkdegames/highscore/html/index.html"];
++        "libkggzmod"[style=filled, fillcolor=lightyellow, URL="libkdegames/kggzmod/html/index.html"];
++        "libkggznet"[style=filled, fillcolor=lightyellow, URL="libkdegames/kggznet/html/index.html"];
++        "libkggzgames"[style=filled, fillcolor=lightyellow, URL="libkdegames/kggzgames/html/index.html"];
++        "libkmahjongg"[style=filled, fillcolor=lightyellow, URL="libkmahjongg/html/index.html"];
++
++        /* Build tools */
++        "ggz-config"[shape=box ,style=filled, fillcolor=palegreen];
++
++        /* Games */
++        "bovo"[style=filled, fillcolor=lightcyan];
++        "katomic"[style=filled, fillcolor=lightcyan];
++        "kbattleship"[style=filled, fillcolor=lightcyan];
++        "kblackbox"[style=filled, fillcolor=lightcyan];
++        "kbounce"[style=filled, fillcolor=lightcyan];
++        "kgoldrunner"[style=filled, fillcolor=lightcyan];
++        "kiriki"[style=filled, fillcolor=lightcyan];
++        "kjumpingcube"[style=filled, fillcolor=lightcyan];
++        "klines"[style=filled, fillcolor=lightcyan];
++        "kmahjongg"[style=filled, fillcolor=lightcyan];
++        "kmines"[style=filled, fillcolor=lightcyan];
++        "knetwalk"[style=filled, fillcolor=lightcyan];
++        "kolf"[style=filled, fillcolor=lightcyan];
++        "konquest"[style=filled, fillcolor=lightcyan];
++        "kpat"[style=filled, fillcolor=lightcyan];
++        "kreversi"[style=filled, fillcolor=lightcyan];
++        "ksame"[style=filled, fillcolor=lightcyan];
++        "kshisen"[style=filled, fillcolor=lightcyan];
++        "kspaceduel"[style=filled, fillcolor=lightcyan];
++        "ksquares"[style=filled, fillcolor=lightcyan];
++        "ksudoku"[style=filled, fillcolor=lightcyan];
++        "ktuberling"[style=filled, fillcolor=lightcyan];
++        "kwin4"[style=filled, fillcolor=lightcyan];
++
++        /*
++           Edge definitions
++           Put all compile-time dependencies here.
++        */
++        "libkggzgames" -> "libkggzmod";
++        "libkggzgames" -> "libkdegames";
++        "libkggzmod" -> "libkggznet";
++        "libkdegames" -> "libkdegames (KGame)";
++        "libkdegames" -> "libkdegames (Highscore)";
++
++        "bovo" -> "libkdegames";
++        "katomic" -> "libkdegames";
++        "kbattleship" -> "libkggzgames";
++        "kbattleship" -> "libkggznet";
++        "kbattleship" -> "libkdegames";
++        "kbattleship" -> "ggz-config";
++        "kblackbox" -> "libkdegames";
++        "kbounce" -> "libkdegames";
++        "kgoldrunner" -> "libkdegames";
++        "kiriki" -> "libkdegames";
++        "kjumpingcube" -> "libkdegames";
++        "klines" -> "libkdegames";
++        "kmahjongg" -> "libkdegames";
++        "kmahjongg" -> "libkmahjongg";
++        "kmines" -> "libkdegames";
++        "knetwalk" -> "libkdegames";
++        "kolf" -> "libkdegames";
++        "konquest" -> "libkdegames";
++        "kpat" -> "libkdegames";
++        "kreversi" -> "libkggzgames";
++        "kreversi" -> "libkggznet";
++        "kreversi" -> "libkdegames";
++        "kreversi" -> "ggz-config";
++        "ksame" -> "libkdegames";
++        "kshisen" -> "libkdegames";
++        "kshisen" -> "libkmahjongg";
++        "kspaceduel" -> "libkdegames";
++        "ksquares" -> "libkdegames";
++        "ksudoku" -> "libkdegames";
++        "ktuberling" -> "libkdegames";
++        "kwin4" -> "libkdegames";
++}
++
+Index: libkdegames/Mainpage.dox
+===================================================================
+--- libkdegames/Mainpage.dox	(Revision 739645)
++++ libkdegames/Mainpage.dox	(Arbeitskopie)
+@@ -7,6 +7,9 @@
+  * - <a href="../kgame/html"><b>KGame Framework</b></a> 
+  *   (<a href="../kgame/html/classes.html">classes</a>)\n
+  *   <i>A game framework</i>
++ * - <a href="../highscore/html"><b>Highscore Framework</b></a> 
++ *   (<a href="../highscore/html/classes.html">classes</a>)\n
++ *   <i>Consistent highscore handling in KDE games</i>
+  * - <a href="../kggzmod/html"><b>KGGZMod</b></a> 
+  *   (<a href="../kggzmod/html/classes.html">classes</a>)\n
+  *   <i>Developing online games for KDE</i>
+Index: libkdegames/kggzgames/kggzseatsdialog.cpp
+===================================================================
+--- libkdegames/kggzgames/kggzseatsdialog.cpp	(Revision 739645)
++++ libkdegames/kggzgames/kggzseatsdialog.cpp	(Arbeitskopie)
+@@ -89,8 +89,9 @@
+ };
+ 
+ KGGZSeatsDialog::KGGZSeatsDialog(QWidget *parent)
+-: QWidget(parent), d(new KGGZSeatsDialogPrivate(this))
++: QWidget(parent)
+ {
++	d = new KGGZSeatsDialogPrivate(this);
+ }
+ 
+ KGGZSeatsDialogPrivate::KGGZSeatsDialogPrivate(KGGZSeatsDialog* qq)
 Index: kbattleship/src/mainwindow.cpp
 ===================================================================
---- kbattleship/src/mainwindow.cpp	(Revision 727045)
+--- kbattleship/src/mainwindow.cpp	(Revision 739645)
 +++ kbattleship/src/mainwindow.cpp	(Arbeitskopie)
 @@ -24,14 +24,13 @@
  
@@ -20,7 +161,7 @@ Index: kbattleship/src/mainwindow.cpp
      
 Index: kbattleship/src/mainwindow.h
 ===================================================================
---- kbattleship/src/mainwindow.h	(Revision 727045)
+--- kbattleship/src/mainwindow.h	(Revision 739645)
 +++ kbattleship/src/mainwindow.h	(Arbeitskopie)
 @@ -21,8 +21,6 @@
      class Event;
@@ -41,7 +182,7 @@ Index: kbattleship/src/mainwindow.h
  };
 Index: ksquares/src/gameboardscene.h
 ===================================================================
---- ksquares/src/gameboardscene.h	(Revision 727045)
+--- ksquares/src/gameboardscene.h	(Revision 739645)
 +++ ksquares/src/gameboardscene.h	(Arbeitskopie)
 @@ -13,6 +13,7 @@
  #include <QGraphicsScene>
@@ -272,7 +413,7 @@ Index: ksquares/src/dots_client.cpp
 +
 Index: ksquares/src/newgamedialog.h
 ===================================================================
---- ksquares/src/newgamedialog.h	(Revision 727045)
+--- ksquares/src/newgamedialog.h	(Revision 739645)
 +++ ksquares/src/newgamedialog.h	(Arbeitskopie)
 @@ -22,6 +22,7 @@
  	
@@ -284,7 +425,7 @@ Index: ksquares/src/newgamedialog.h
  #endif // NEWGAMEDIALOG_H
 Index: ksquares/src/ksquaresui.rc
 ===================================================================
---- ksquares/src/ksquaresui.rc	(Revision 727045)
+--- ksquares/src/ksquaresui.rc	(Revision 739645)
 +++ ksquares/src/ksquaresui.rc	(Arbeitskopie)
 @@ -7,4 +7,11 @@
  		<Action name="game_restart" />
@@ -300,7 +441,7 @@ Index: ksquares/src/ksquaresui.rc
  </gui>
 Index: ksquares/src/ksquareswindow.h
 ===================================================================
---- ksquares/src/ksquareswindow.h	(Revision 727045)
+--- ksquares/src/ksquareswindow.h	(Revision 739645)
 +++ ksquares/src/ksquareswindow.h	(Arbeitskopie)
 @@ -15,6 +15,7 @@
  #include "ksquaresgame.h"
@@ -333,7 +474,7 @@ Index: ksquares/src/ksquareswindow.h
  		//KToggleAction *m_statusbarAction;
 Index: ksquares/src/CMakeLists.txt
 ===================================================================
---- ksquares/src/CMakeLists.txt	(Revision 727045)
+--- ksquares/src/CMakeLists.txt	(Revision 739645)
 +++ ksquares/src/CMakeLists.txt	(Arbeitskopie)
 @@ -9,6 +9,7 @@
  	newgamedialog.cpp
@@ -360,7 +501,7 @@ Index: ksquares/src/CMakeLists.txt
 +register_ggz_module(module.dsc)
 Index: ksquares/src/gameboardscene.cpp
 ===================================================================
---- ksquares/src/gameboardscene.cpp	(Revision 727045)
+--- ksquares/src/gameboardscene.cpp	(Revision 739645)
 +++ ksquares/src/gameboardscene.cpp	(Arbeitskopie)
 @@ -9,12 +9,15 @@
  
@@ -400,7 +541,7 @@ Index: ksquares/src/gameboardscene.cpp
  	
 Index: ksquares/src/newgamedialog.cpp
 ===================================================================
---- ksquares/src/newgamedialog.cpp	(Revision 727045)
+--- ksquares/src/newgamedialog.cpp	(Revision 739645)
 +++ ksquares/src/newgamedialog.cpp	(Arbeitskopie)
 @@ -10,6 +10,9 @@
  #include "newgamedialog.h"
@@ -700,7 +841,7 @@ Index: ksquares/src/module.dsc
 +
 Index: ksquares/src/ksquareswindow.cpp
 ===================================================================
---- ksquares/src/ksquareswindow.cpp	(Revision 727045)
+--- ksquares/src/ksquareswindow.cpp	(Revision 739645)
 +++ ksquares/src/ksquareswindow.cpp	(Arbeitskopie)
 @@ -27,6 +27,10 @@
  #include <KStandardGameAction>
