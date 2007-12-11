@@ -1,6 +1,3 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 9251 2007-08-22 08:26:57Z josef $
-
 SUBDIRS = database meta
 
 EXTRA_DIST = ggzd.conf.example.in ggzd.test.in ggzd.motd entry.room
@@ -83,7 +80,8 @@ ggzd_LDADD = \
 	$(LIB_PTHREADS) \
 	$(LIB_ICU) \
 	$(LIB_CRACKLIB) \
-	$(LIB_OMNICRACKLIB)
+	$(LIB_OMNICRACKLIB) \
+	-ldl
 
 ggzduedit_SOURCES =	datatypes.h	\
 			ggzduedit.c 				\
