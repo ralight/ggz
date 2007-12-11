@@ -24,21 +24,13 @@ ggzdocdir=`eval "echo $GGZDOCDIR"`
 dnl Apply options
 dnl =============
 
-ggzgamedevelopmentguide="ggz-game-development-guide.txt"
-ggzhostingguide="ggz-hosting-guide.txt"
-
 if test "$enable_guides" = yes; then
 	AC_PATH_PROG([DVIPS], [dvips])
 	AC_PATH_PROG([TEXI2HTML], [texi2html])
 	if test "x$DVIPS" = "x" || test "x$TEXI2HTML" = "x"; then
 		AC_MSG_ERROR([The tools necessary to build the guides have not been found.])
 	fi
-
-	ggzgamedevelopmentguide="ggz-game-development-guide.ps ggz-game-development-guide_toc.html"
-	ggzhostingguide="ggz-hosting-guide.ps ggz-hosting-guide_toc.html"
 fi
-AC_SUBST(ggzgamedevelopmentguide)
-AC_SUBST(ggzhostingguide)
 
 if test "$enable_spec" = yes; then
 	AC_PATH_PROG([SGML2HTML], [docbook-2-html])
@@ -62,6 +54,7 @@ if test "$enable_spec" = yes; then
 	EXTRA_SUBDIRS="$EXTRA_SUBDIRS spec"
 fi
 
+AM_CONDITIONAL([COND_GUIDES], [test "$enable_guides" = yes])
 AM_CONDITIONAL([COND_SPEC], [test "$enable_spec" = yes])
 
 dnl Create the Makefiles

@@ -1,23 +1,21 @@
-info_TEXINFOS = ggz-game-development-guide.texi
+if COND_GUIDES
+allguides = ggz-game-development-guide.ps ggz-game-development-guide.html ggz-game-development-guide.txt
+sourceguide = ggz-game-development-guide.texi
+endif
 
-guidedir = $(GGZDOCDIR)/guides
-guide_DATA = $(ggzgamedevelopmentguide) ggz-game-development-guide.sxw
+info_TEXINFOS = $(sourceguide)
+
+guidedir = $(GGZDOCDIR)/guides/game-development
+guide_DATA = $(allguides) ggz-game-development-guide.sxw
 
 EXTRA_DIST = ggz-game-development-guide.sxw
 
-%_toc.html: %.texi
-	texi2html -split chapter $<
-	-mv ggz-game-development-guide/*.html $(top_builddir)/games/game-development/
+%.html: %.texi
+	texi2html $<
 
 %.txt: %.texi
 	$(top_srcdir)/texi2text.pl $< > $@
 
 clean-local:
-	-rm -f ggz-*.html
-	-rm -f $(ggzgamedevelopmentguide)
-	-rm -f ggz-game-development-guide.info
-	-rm -rf ggz-game-development-guide
-
-install-data-local:
-	-cp ggz-*.html $(guidedir)
+	-rm -f $(allguides)
 

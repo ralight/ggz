@@ -1,21 +1,19 @@
-info_TEXINFOS = ggz-hosting-guide.texi
+if COND_GUIDES
+allguides = ggz-hosting-guide.ps ggz-hosting-guide.html ggz-hosting-guide.txt
+sourceguide = ggz-hosting-guide.texi
+endif
 
-guidedir = $(GGZDOCDIR)/guides
-guide_DATA = $(ggzhostingguide)
+info_TEXINFOS = $(sourceguide)
 
-%_toc.html: %.texi
-	texi2html -split_node $<
-	-mv ggz-hosting-guide/*.html $(top_builddir)/server/hosting/
+guidedir = $(GGZDOCDIR)/guides/hosting
+guide_DATA = $(allguides)
+
+%.html: %.texi
+	texi2html $<
 
 %.txt: %.texi
 	$(top_srcdir)/texi2text.pl $< > $@
 
 clean-local:
-	-rm -f ggz-*.html
-	-rm -f $(ggzhostingguide)
-	-rm -f ggz-hosting-guide.info
-	-rm -rf ggz-hosting-guide
-
-install-data-local:
-	-cp ggz-*.html $(guidedir)
+	-rm -f $(allguides)
 
