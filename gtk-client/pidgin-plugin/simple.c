@@ -1,5 +1,8 @@
 #include "config.h"
 
+/* FIXME: this is a temporary hack */
+#undef GTK_DISABLE_DEPRECATED
+
 #include <gdk/gdk.h>
 #include <gtk/gtkplug.h>
 
