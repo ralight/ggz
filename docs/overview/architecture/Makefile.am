@@ -1,8 +1,9 @@
 docdir = $(GGZDOCDIR)/overview/architecture
-doc_DATA = index.html \
+dist_doc_DATA = \
+	index.html \
 	client-server.png \
 	dependencies.png \
 	communication.png
 
-EXTRA_DIST = $(doc_DATA) client-server.flw dependencies.flw communication.flw
+EXTRA_DIST = client-server.flw dependencies.flw communication.flw
 

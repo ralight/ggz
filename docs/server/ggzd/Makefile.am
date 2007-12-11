@@ -1,6 +1,7 @@
 docdir = $(GGZDOCDIR)/server/ggzd
-doc_DATA = index.html \
+dist_doc_DATA = \
+	index.html \
 	ggzd.png
 
-EXTRA_DIST = $(doc_DATA) ggzd.flw
+EXTRA_DIST = ggzd.flw
 

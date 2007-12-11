@@ -1,7 +1,8 @@
 docdir = $(GGZDOCDIR)/server/database
-doc_DATA = index.html \
+dist_doc_DATA = \
+	index.html \
 	ggzdb.png \
 	ggzdb-modular.png
 
-EXTRA_DIST = $(doc_DATA) ggzdb.xmi ggzdb-modular.xmi
+EXTRA_DIST = ggzdb.xmi ggzdb-modular.xmi
 

@@ -1,7 +1,9 @@
 docdir = $(GGZDOCDIR)/games/modules
-doc_DATA = index.html \
+dist_doc_DATA = \
+	index.html \
 	seats.png \
 	states.png \
 	transitions.png
 
-EXTRA_DIST = $(doc_DATA) states.flw seats.flw transitions.flw
+EXTRA_DIST = states.flw seats.flw transitions.flw
+
