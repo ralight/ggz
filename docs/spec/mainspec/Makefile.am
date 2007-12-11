@@ -8,7 +8,7 @@ mainspec-html: $(SGML_FILES)
 	$(SGML2HTML) $(srcdir)/mainspec.sgml
 	mkdir -p mainspec-html
 	-mv *.html mainspec-html
-	-cp /usr/share/gtk-doc/data/*.png mainspec-html
+	#-cp /usr/share/gtk-doc/data/*.png mainspec-html
 	-cp mainspec-html/book1.htm mainspec-html/index.html
 
 mainspec.pdf: $(SGML_FILES)

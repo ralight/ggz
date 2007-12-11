@@ -10,7 +10,7 @@ design-html: $(SGML_FILES)
 	$(SGML2HTML) $(srcdir)/design.sgml
 	mkdir -p design-html
 	-mv *.html design-html
-	-cp /usr/share/gtk-doc/data/*.png design-html
+	#-cp /usr/share/gtk-doc/data/*.png design-html
 	-cp design-html/book1.htm design-html/index.html
 	$(FIG2DEV) -Ljpeg $(srcdir)/server_arch.fig > design-html/server_arch.jpg
 
