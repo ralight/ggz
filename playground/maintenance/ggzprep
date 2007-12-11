@@ -1,6 +1,6 @@
 # Preparation for GGZ development:
 # Fetches all needed packages from the distribution
-# Supported distributions: (K)Ubuntu 6.06/Debian etch, (K)Ubuntu 5.04
+# Supported distributions: Debian sid, (K)Ubuntu 6.06/Debian etch, (K)Ubuntu 5.04
 # Only (K)Ubuntu 6.06 is fully tested (based on pkg-ggz debian packages)
 
 # Test for Linux distro compatibility, unless explicitly given
@@ -27,6 +27,7 @@ if [ -z "$1" ]; then
 else
 	echo "*** Warning: Proceeding without compatibility check."
 	distro=$1
+	echo "*** Chosen distro: $distro"
 fi
 
 # Assign a temporary file name
@@ -34,6 +35,65 @@ fi
 tmpfile=`tempfile`
 
 # Fill temporary file with packages depending on the distribution
+
+if test $distro = "sid"; then
+
+cat > $tmpfile << ENDOFPACKAGESLIST
+
+gnuchess
+gnubg
+gnugo
+gnushogi
+libxml-parser-ruby1.8
+
+ant
+make
+autoconf
+automake
+libtool
+g++
+java-gcj-compat-dev
+
+ngrep
+sloccount
+netcat
+vim
+
+libavahi-compat-howl-dev
+libdb4.4-dev
+libexpat1-dev
+libgnomeui-dev
+libgnutls-dev
+libgtk2.0-dev
+libperl-dev
+libreadline5-dev
+librsvg2-dev
+libsdl1.2-dev
+libsdl-image1.2-dev
+libsdl-ttf2.0-dev
+libsdl-mixer1.2-dev
+libsilc-dev
+docbook-dsssl
+docbook
+gs
+pidgin-dev
+gettext
+jade
+kdelibs4-dev
+lynx
+python-all-dev
+python-pygame
+ruby1.9-dev
+ruby
+sgml2x
+tetex-bin
+texi2html
+texinfo
+transfig
+
+ENDOFPACKAGESLIST
+
+fi
 
 if test $distro = "dapper" || test $distro = "etch"; then
 
