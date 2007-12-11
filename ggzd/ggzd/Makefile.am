@@ -83,9 +83,10 @@ ggzd_LDADD = \
 	$(LIB_OMNICRACKLIB) \
 	-ldl
 
-ggzduedit_SOURCES =	datatypes.h	\
-			ggzduedit.c 				\
-			perms.h perms.c
+ggzduedit_SOURCES = \
+	datatypes.h \
+	ggzduedit.c \
+	perms.h perms.c
 
 ggzduedit_CPPFLAGS = \
 	-I$(top_srcdir)/ggzd/database \
@@ -99,5 +100,6 @@ ggzduedit_LDADD = \
 	$(top_builddir)/ggzd/database/libggzdb.a \
 	$(ggzd_LIBS) \
 	$(LIB_GGZ) \
-	$(LIB_DATABASE)
+	$(LIB_DATABASE) \
+	-ldl
 
