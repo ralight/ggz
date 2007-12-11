@@ -1,13 +1,18 @@
-SUBDIRS = .
-
 gurudatadir = $(prefix)/share/grubby
-gurudata_SCRIPTS = dict.pl rdf.pl meeting.rb messages.rb embedtest.rb
+dist_gurudata_SCRIPTS = \
+	dict.pl \
+	rdf.pl \
+	meeting.rb \
+	messages.rb \
+	embedtest.rb \
+	fortune.py \
+	phrasecatcher.py \
+	statistics.py
 
 guruconfigdir = $(prefix)/bin
-guruconfig_SCRIPTS = grubby-config
+dist_guruconfig_SCRIPTS = grubby-config
 
-EXTRA_DIST = dict.pl rdf.pl meeting.rb messages.rb grubby-config.in webtranslator.sh \
-	embedtest.rb test.tcl fortune.py phrasecatcher.py statistics.py
+EXTRA_DIST = grubby-config.in webtranslator.sh embedtest.rb test.tcl
 
 messages:
 	touch guru.pot

@@ -1,5 +1,3 @@
-SUBDIRS = .
-
 EXTRA_DIST = grubby.pot de.po pt_BR.po
 
 CATALOG = grubby

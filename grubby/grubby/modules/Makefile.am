@@ -1,8 +1,3 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8830 2007-01-05 00:35:55Z jdorje $
-
-SUBDIRS = .
-
 grubbydir = $(libdir)/grubby/modules
 grubby_LTLIBRARIES = \
 	libgurumod_badword.la \

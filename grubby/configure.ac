@@ -254,6 +254,7 @@ AC_CONFIG_FILES([Makefile
 		grubby/data/Makefile
 		grubby/data/grubby-config
 		grubby/po/Makefile
+		grubby/doc/Makefile
 		games/Makefile
 		games/lib/Makefile
 		games/guru-ttt/Makefile
