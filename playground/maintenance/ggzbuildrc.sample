@@ -15,7 +15,7 @@ docs = --enable-spec --enable-guides
 # Use this for running 'ggzbuild' from the top-level directory
 # This is handy for first-time installations directly from SVN!
 
-MODULES = libggz ggzd ggz-client-libs txt-client utils grubby docs python sdl-games kde-games kde-client gtk-games gtk-client gnome-client
+MODULES = libggz ggzd ggz-client-libs txt-client utils grubby docs python sdl-games kde-games kde-client gtk-games gtk-client
 
 # Server layout:
 # Use the following to get an off-the-shelf server setup with
