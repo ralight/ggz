@@ -1,4 +1,4 @@
-bin_SCRIPTS = ggzcommgen
+dist_bin_SCRIPTS = ggzcommgen
 
 EXTRA_DIST = \
 	DESIGN \
@@ -10,6 +10,5 @@ EXTRA_DIST = \
 	dots.protocol \
 	ggzcards.protocol \
 	hastings.protocol \
-	muehle.protocol \
-	ggzcommgen
+	muehle.protocol
 
