@@ -81,7 +81,7 @@ ggzd_LDADD = \
 	$(LIB_ICU) \
 	$(LIB_CRACKLIB) \
 	$(LIB_OMNICRACKLIB) \
-	-ldl
+	$(LIB_DL)
 
 ggzduedit_SOURCES = \
 	datatypes.h \
@@ -101,5 +101,5 @@ ggzduedit_LDADD = \
 	$(ggzd_LIBS) \
 	$(LIB_GGZ) \
 	$(LIB_DATABASE) \
-	-ldl
+	$(LIB_DL)
 

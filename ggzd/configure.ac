@@ -133,6 +133,11 @@ dnl ====================
 AC_GGZ_PTHREADS
 
 
+dnl Check for dynamic linker library
+dnl ================================
+AC_CHECK_LIB([dl], [dlopen], [LIB_DL="-ldl"], [LIB_DL=""])
+AC_SUBST(LIB_DL)
+
 dnl Check for expat
 dnl ===============
 AC_CHECK_LIB([expat], [XML_ParserCreate], [LIB_EXPAT="-lexpat"],
