@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6239 2004-11-03 19:00:41Z jdorje $
+#  $Id: Makefile.am 9440 2007-12-12 03:29:03Z jdorje $
 
 SUBDIRS = .
 
@@ -17,3 +17,5 @@ dist_pixmap_DATA = 		\
 		queen_w.svg	\
 		rook_b.svg	\
 		rook_w.svg
+
+EXTRA_DIST = Credits

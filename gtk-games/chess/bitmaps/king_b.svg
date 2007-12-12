@@ -1,9 +1,100 @@
-<?xml version="1.0" standalone="yes"?>
-<svg width="129" height="129">
-<path style="fill:#000000; stroke:none;" d="M63 10L62 16L55 17L55 19L62 20L52 49C37.7996 39.635 10.4043 38.8007 9.10802 62C8.36931 75.2203 20.5592 79.374 25.9722 89.1698C29.6675 95.857 23.6662 106.256 28.858 112.351C32.2356 116.317 40.1754 117.264 45 118.195C60.1879 121.126 83.083 122.45 96.8519 113.722C103.148 109.731 99.0503 96.4441 101.6 90.0394C105.465 80.3266 117.466 76.9344 118.811 65C121.648 39.815 90.6255 39.3546 76 49L66 20L73 19L73 17L66 16L65 10L63 10z"/>
-<path style="fill:#ffffff; stroke:none;" d="M64 66C67.9071 60.1917 79.9317 34.2963 64 34.2963C48.0683 34.2963 60.0929 60.1917 64 66z"/>
-<path style="fill:#000000; stroke:none;" d="M63 56L65 56C66.2111 52.8551 71.5107 38.6358 64 38.6358C56.4893 38.6358 61.7889 52.8551 63 56z"/>
-<path style="fill:#ffffff; stroke:none;" d="M66 80L62 80C61.9646 67.1668 55.914 54.3351 44 48.3781C33.5245 43.1403 16.63 46.087 13.419 59C10.6125 70.2862 22.5712 84.2564 33 87.3719C40.1775 89.5161 52.373 84.6118 60 84.0895C80.8277 82.6632 100.408 95.052 113.08 71C121.118 55.7457 104.982 44.4393 91 46.1852C75.0036 48.1827 66.0402 65.4189 66 80z"/>
-<path style="fill:#000000; stroke:none;" d="M58 80C57.5541 74.3968 56.3009 69.0297 53.7261 64C51.8372 60.3103 49.3838 57.0811 45.9961 54.6381C27.8738 41.5694 7.24468 61.0648 26.0039 77.4236C28.328 79.4504 30.8395 82.3273 34 82.9329C41.0373 84.2813 50.6374 80.152 58 80M70 80C77.3626 80.152 86.9627 84.2813 94 82.9329C97.1605 82.3273 99.672 79.4504 101.996 77.4236C120.755 61.0648 100.126 41.5694 82.0039 54.6381C78.6162 57.0811 76.1628 60.3103 74.2739 64C71.6991 69.0297 70.4459 74.3968 70 80z"/>
-<path style="fill:#ffffff; stroke:none;" d="M33 98L33 100L64 97.0077L95 100L95 98C78.8136 89.8746 49.1865 89.8746 33 98M33 110L64 106.008L95 110C88.5687 98.0508 58.1753 101.175 47 103.261C41.6936 104.251 35.7197 104.947 33 110z"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="45"
+   height="45"
+   id="svg3128"
+   sodipodi:version="0.32"
+   inkscape:version="0.44.1"
+   version="1.0"
+   sodipodi:docbase="/home/cburnett/wikipedia/images/chess"
+   sodipodi:docname="Chess kdt45.svg">
+  <defs
+     id="defs3130" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="11.313708"
+     inkscape:cx="50.19508"
+     inkscape:cy="20.61116"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     height="45px"
+     width="45px"
+     inkscape:grid-points="true"
+     showgrid="true"
+     inkscape:window-width="1272"
+     inkscape:window-height="965"
+     inkscape:window-x="0"
+     inkscape:window-y="31"
+     gridspacingx="0.5px"
+     gridspacingy="0.5px" />
+  <metadata
+     id="metadata3133">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:black;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 22.5,11.625 L 22.5,6"
+       id="path6570" />
+    <path
+       style="fill:black;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 22.5,25 C 22.5,25 27,17.5 25.5,14.5 C 25.5,14.5 24.5,12 22.5,12 C 20.5,12 19.5,14.5 19.5,14.5 C 18,17.5 22.5,25 22.5,25"
+       id="path5683"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:black;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 11.5,37 C 17,40.5 27,40.5 32.5,37 L 32.5,30 C 32.5,30 41.5,25.5 38.5,19.5 C 34.5,13 25,16 22.5,23.5 L 22.5,27 L 22.5,23.5 C 19,16 9.5,13 6.5,19.5 C 3.5,25.5 11.5,29.5 11.5,29.5 L 11.5,37 z "
+       id="path5681"
+       sodipodi:nodetypes="cccccccccc" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:black;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 20,8 L 25,8"
+       id="path6572" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:white;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 11.5,29.5 C 17,27 27,27 32.5,30"
+       id="path6574"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:white;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 11.5,37 C 17,34.5 27,34.5 32.5,37"
+       id="path6576"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:white;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 11.5,33.5 C 17,31.5 27,31.5 32.5,33.5"
+       id="path6578"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:white;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 32,29.5 C 32,29.5 40.5,25.5 38.025969,19.846552 C 34.147406,13.996552 25,18 22.5,24.5 L 22.511718,26.596552 L 22.5,24.5 C 20,18 9.9063892,13.996552 6.9974672,19.846552 C 4.5,25.5 11.845671,28.846552 11.845671,28.846552"
+       id="path5638"
+       sodipodi:nodetypes="ccccccc" />
+  </g>
 </svg>
