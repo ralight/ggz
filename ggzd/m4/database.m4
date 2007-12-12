@@ -353,7 +353,7 @@ str_contains(){
 list=[$][1]
 entry=[$][2]
 for i in `seq 1 9`; do
-	tmp=`echo $list | cut -d "," -f $i`
+	tmp=`echo "$list," | cut -d "," -f $i`
 	if test -z $tmp; then
 		break
 	fi
@@ -376,10 +376,11 @@ LIB_DATABASE=""
 dnl Loop over possible list of database choices
 databaselist=$database
 for i in `seq 1 9`; do
-	database=`echo $databaselist | cut -d "," -f $i`
-	if test -z $database; then
+	xdatabase=`echo "$databaselist," | cut -d "," -f $i`
+	if test -z $xdatabase; then
 		break
 	fi
+	database=$xdatabase
 
 case "$database" in
 	db4)    database=db4 ;;
@@ -445,7 +446,9 @@ fi
 dnl Finish loop over possible list
 done
 
-database=$databaselist
+if test $databaselist != yes; then
+	database=$databaselist
+fi
 
 AC_DEFINE_UNQUOTED([DATABASE_TYPE], "${database}", [Database backend type])
 AC_SUBST(LIB_DATABASE)
