@@ -1,7 +1,7 @@
 bin_PROGRAMS = grubby
 
 grubby_SOURCES = guru.c main.c module.c
-grubby_LDADD = -ldl $(LIB_GGZCORE) $(LIB_GETTEXT)
+grubby_LDADD = $(LIB_GGZCORE) $(LIB_GETTEXT) $(LIB_DL)
 grubby_LDFLAGS = $(GGZCORE_LDFLAGS)
 
 grubbydir = $(libdir)/grubby/coremodules
