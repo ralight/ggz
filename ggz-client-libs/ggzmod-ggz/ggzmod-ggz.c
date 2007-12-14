@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 9447 2007-12-14 07:15:14Z jdorje $
+ * $Id: ggzmod-ggz.c 9448 2007-12-14 09:44:57Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -70,7 +70,6 @@
 static void call_handler(GGZMod *ggzmod, GGZModEvent event, void *data);
 static void call_transaction(GGZMod * ggzmod, GGZModTransaction t, void *data);
 static int send_game_launch(GGZMod * ggzmod);
-static int game_prepare(int fd_pair[2], int *sock);
 static int game_fork(GGZMod * ggzmod);
 static int game_embedded(GGZMod * ggzmod);
 
@@ -731,19 +730,50 @@ static void ggz_setenv(const char *name, const char *value)
 #endif
 }
 
-/* Common setup for normal mode and embedded mode */
+/* Common setup for normal mode and embedded mode.  This does partial
+   prep work for the GGZ socket connection between game client and GGZ
+   client.
+   
+   There are two possible results of this function:
+
+   1. The GGZ end of the socket goes into fd_pair[0] and the game end
+   into fd_pair[1].  *sock is set to -1.  No further work is needed
+   although GGZ should close unused sockets if a fork is done.  The
+   game end socket number is put into the GGZSOCKET environment variable
+   and GGZPORT is left unset or set at -1.
+
+   2. The GGZ end of the socket is created as a local socket and listened
+   to.  The game end is not created, but the GGZPORT environment variable
+   contains the port number that must be connected to to create it.  The
+   game end must be finalized later by connecting to this socket while
+   the GGZ end is found by calling accept() later.  fd_pair values are
+   both set to -1.
+
+   Currently which is done depends on the presence of socketpair which
+   is required for the first method - but this should not be assumed and
+   the later steps should instead check the values of the GGZSOCKET and
+   GGZPORT environment variables and the values of fd_pair and sock.
+
+   The function returns 0 on success, -1 on error (which is fatal to
+   the launch process). */
 static int game_prepare(int fd_pair[2], int *sock)
 {
 	char buf[100];
+#ifndef HAVE_SOCKETPAIR
+	int port;
+#endif
+
+	fd_pair[0] = fd_pair[1] = *sock = -1;
 
 #ifdef HAVE_SOCKETPAIR
-	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0)
-		ggz_error_sys_exit("socketpair failed");
+	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0) {
+		ggz_error_sys("socketpair failed");
+		return -1;
+	}
 	snprintf(buf, sizeof(buf), "%d", fd_pair[1]);
 	ggz_setenv("GGZSOCKET", buf);
-	ggz_setenv("GGZMODE", "true");
+	ggz_setenv("GGZPORT", "-1");
 #else
-	int port;
 
 	/* Winsock implementation: see ggzmod_ggz_connect. */
 	port = 5898;
@@ -756,14 +786,16 @@ static int game_prepare(int fd_pair[2], int *sock)
 		return -1;
 	}
 	if (listen(*sock, 1) < 0) {
+		ggz_close_socket(*sock);
 		ggz_error_msg("Could not listen on socket.");
 		return -1;
 	}
+	ggz_setenv("GGZSOCKET", "-1");
 	snprintf(buf, sizeof(buf), "%d", port);
-	ggz_setenv("GGZSOCKET", buf);
-	ggz_setenv("GGZMODE", "true");
+	ggz_setenv("GGZPORT", buf);
 #endif
 
+	ggz_setenv("GGZMODE", "true");
 	return 0;
 }
 
@@ -771,11 +803,7 @@ static int game_prepare(int fd_pair[2], int *sock)
 /* No locking should be necessary within this function. */
 static int game_fork(GGZMod * ggzmod)
 {
-	int sock;
-	int fd_pair[2];		/* socketpair, always needs to be declared */
-#ifndef HAVE_SOCKETPAIR
-	int sock2;
-#endif
+	int fd_pair[2], sock, sock2;
 #ifdef HAVE_FORK
 	int pid;
 #else
@@ -799,13 +827,9 @@ static int game_fork(GGZMod * ggzmod)
 		ggz_error_sys_exit("fork failed");
 	else if (pid == 0) {
 		/* child */
-#ifdef HAVE_SOCKETPAIR
-		ggz_close_socket(fd_pair[0]);
 
-		/* debugging message??? */
-#else
-		ggz_close_socket(sock);
-#endif
+		if (fd_pair[0] >= 0) ggz_close_socket(fd_pair[0]);
+		if (sock >= 0) ggz_close_socket(sock);
 
 		/* FIXME: Close all other fd's? */
 		/* FIXME: Not necessary to close other fd's if we use
@@ -819,9 +843,11 @@ static int game_fork(GGZMod * ggzmod)
 
 		/* FIXME: can we call ggzmod_ggz_log() from here? */
 		if (ggzmod->argv[0][0] == '/') {
-			execv(ggzmod->argv[0], ggzmod->argv);	/* run specified executable */
+			/* run specified executable */
+			execv(ggzmod->argv[0], ggzmod->argv);
 		} else {
-			execvp(ggzmod->argv[0], ggzmod->argv);	/* run game in PATH */
+			/* run game in PATH */
+			execvp(ggzmod->argv[0], ggzmod->argv);
 		}
 
 		/* We should never get here.  If we do, it's an eror */
@@ -829,11 +855,8 @@ static int game_fork(GGZMod * ggzmod)
 		ggz_error_sys_exit("exec of %s failed", ggzmod->argv[0]);
 	} else {
 		/* parent */
-#ifdef HAVE_SOCKETPAIR
-		ggz_close_socket(fd_pair[1]);
+		if (fd_pair[1] >= 0) ggz_close_socket(fd_pair[1]);
 
-		ggzmod->fd = fd_pair[0];
-#endif
 		ggzmod->pid = pid;
 		
 		/* FIXME: should we delete the argv arguments? */
@@ -856,48 +879,99 @@ static int game_fork(GGZMod * ggzmod)
 	CloseHandle(pi.hThread);
 	ggzmod->process = pi.hProcess;
 #endif
-#ifndef HAVE_SOCKETPAIR
-	/* FIXME: we need to select, with a maximum timeout. */
-	/* FIXME: this is insecure; it should be restricted to local
-	 * connections. */
-	sock2 = accept(sock, NULL, NULL);
-	if (sock2 < 0) {
-		ggz_error_sys("Listening to socket failed.");
-		return -1;
+
+	/* Finalize socket */
+	if (fd_pair[0] >= 0) {
+		ggzmod->fd = fd_pair[0];
+	} else {
+		/* FIXME: we need to select, with a maximum timeout. */
+		/* FIXME: this is insecure; it should be restricted
+		   to local connections. */
+		sock2 = accept(sock, NULL, NULL);
+		if (sock2 < 0) {
+			/* FIXME: need to close child in the FORK case */
+			ggz_error_sys("Listening to socket failed.");
+			return -1;
+		}
+		ggz_debug("GGZMOD", "Socket accepted as %d.\n", sock2);
+		ggz_close_socket(sock);
+		ggzmod->fd = sock2;
 	}
-	ggz_close_socket(sock);
-	ggzmod->fd = sock2;
-#endif
+
 	return 0;
+}
+
+
+static char *ggz_getenv(const char *name)
+{
+#ifdef HAVE_GETENV
+	return getenv(name);
+#else
+	/* This is NOT the correct way to call this function. But,
+	   it seems getenv is available on windows so this bit of code is
+	   never reached.  It is left here to trigger a compile error if that
+	   case ever comes up. */
+	return GetEnvironmentVariable(name);
+#endif
+}
+
+
+/* If the socket is not provided but a port is provided, connect
+   to that port.  Used for windows OS by default. */
+static int ggzmod_connect_port(void)
+{
+	int sock, port;
+	char *ggzportstr = ggz_getenv("GGZPORT");
+	char buf[100];
+
+	ggz_debug("GGZMOD", "GGZPORT '%s'\n", ggzportstr);
+
+	if (!ggzportstr
+	    || sscanf(ggzportstr, "%d", &port) == 0
+	    || port < 0) {
+		ggz_error_msg_exit("Could not determine port.");
+	}
+
+	sock = ggz_make_socket(GGZ_SOCK_CLIENT, port, "localhost");
+	if (sock < 0) {
+		ggz_error_msg_exit("Could not connect to port.");
+	}
+
+	snprintf(buf, sizeof(buf), "%d", sock);
+	ggz_setenv("GGZSOCKET", buf);
+
+	return sock;
 }
 
 
 /* Similar to game_fork(), but runs the game embedded */
 static int game_embedded(GGZMod * ggzmod)
 {
-	int sock;
-	int fd_pair[2];		/* socketpair, always needs to be declared */
-#ifndef HAVE_SOCKETPAIR
-	int sock2;
-#endif
+	int fd_pair[2], sock, sock2;
 
 	if(game_prepare(fd_pair, &sock) < 0)
 		return -1;
 
-#ifdef HAVE_SOCKETPAIR
-	ggzmod->fd = fd_pair[0];
-#else
-	/* FIXME: we need to select, with a maximum timeout. */
-	/* FIXME: this is insecure; it should be restricted to local
-	 * connections. */
-	sock2 = accept(sock, NULL, NULL);
-	if (sock2 < 0) {
-		ggz_error_sys("Listening to socket failed.");
-		return -1;
+	if (fd_pair[0] >= 0) {
+		ggzmod->fd = fd_pair[0];
+	} else {
+		(void) ggzmod_connect_port();
+
+		/* FIXME: we need to select, with a maximum timeout. */
+		/* FIXME: this is insecure; it should be restricted
+		   to local connections. */
+		sock2 = accept(sock, NULL, NULL);
+		if (sock2 < 0) {
+			ggz_error_sys("Listening to socket failed.");
+			return -1;
+		}
+		ggz_close_socket(sock);
+		ggzmod->fd = sock2;
 	}
-	ggz_close_socket(sock);
-	ggzmod->fd = sock2;
-#endif
+
+	ggz_debug("GGZMOD", "pair %d/%d sock %d fd %d\n",
+		  fd_pair[0], fd_pair[1], sock, ggzmod->fd);
+
 #ifdef HAVE_FORK
 	ggzmod->pid = -1; /* FIXME: use -1 for embedded ggzcore? getpid()? */
 #else

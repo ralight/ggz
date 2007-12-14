@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 9447 2007-12-14 07:15:14Z jdorje $
+ * $Id: ggzmod.c 9448 2007-12-14 09:44:57Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -151,6 +151,18 @@ static char *ggz_getenv(const char *name)
 	return GetEnvironmentVariable(name);
 #endif
 }
+
+
+/* Sets an environment variable (always overwrites) */
+static void ggz_setenv(const char *name, const char *value)
+{
+#ifdef HAVE_SETENV
+	setenv(name, value, 1);
+#else
+	SetEnvironmentVariable(name, value);
+#endif
+}
+
 
 int ggzmod_is_ggz_mode(void)
 {
@@ -659,6 +671,33 @@ void _ggzmod_handle_info(GGZMod * ggzmod, int seat_num, const char *realname,
 	}
 }
 
+/* If the socket is not provided but a port is provided, connect
+   to that port.  Used for windows OS by default. */
+static int ggzmod_connect_port(void)
+{
+	int sock, port;
+	char *ggzportstr = ggz_getenv("GGZPORT");
+	char buf[100];
+
+	ggz_debug("GGZMOD", "GGZPORT '%s'\n", ggzportstr);
+
+	if (!ggzportstr
+	    || sscanf(ggzportstr, "%d", &port) == 0
+	    || port < 0) {
+		ggz_error_msg_exit("Could not determine port.");
+	}
+
+	sock = ggz_make_socket(GGZ_SOCK_CLIENT, port, "localhost");
+	if (sock < 0) {
+		ggz_error_msg_exit("Could not connect to port.");
+	}
+
+	snprintf(buf, sizeof(buf), "%d", sock);
+	ggz_setenv("GGZSOCKET", buf);
+
+	return sock;
+}
+
 
 /* 
  * GGZmod actions
@@ -672,30 +711,19 @@ int ggzmod_connect(GGZMod * ggzmod)
 	if (!ggzmod)
 		return -1;
 
-	if (ggzmod->type == GGZMOD_GAME) {
-		ggzsocket = 0;
-		ggzsocketstr = ggz_getenv("GGZSOCKET");
-		if (!ggzsocketstr
-		    || sscanf(ggzsocketstr, "%d", &ggzsocket) == 0) {
-			ggz_error_msg_exit("Could not determine socket.");
-		}
+	if (ggzmod->type == GGZMOD_GGZ) return 0;
 
-#ifdef HAVE_SOCKETPAIR
-		ggzmod->fd = ggzsocket;
-#else /* Winsock implementation: see game_fork(). */
-		int sock;
-
-		if (ggzsocket == 0) {
-			ggz_error_msg_exit("Could not determine port.");
-		}
-
-		sock = ggz_make_socket(GGZ_SOCK_CLIENT, ggzsocket, "localhost");
-		if (sock < 0) {
-			ggz_error_msg_exit("Could not connect to port.");
-		}
-		ggzmod->fd = sock;
-#endif
+	/* If the socket is given, use that.  Otherwise if the
+	   port is given, use that.  If neither is given, exit. */
+	ggzsocketstr = ggz_getenv("GGZSOCKET");
+	ggz_debug("GGZMOD", "Socket string '%s'.\n", ggzsocketstr);
+	if (!ggzsocketstr
+	    || sscanf(ggzsocketstr, "%d", &ggzsocket) == 0
+	    || ggzsocket < 0) {
+		ggzsocket = ggzmod_connect_port();
 	}
+	ggzmod->fd = ggzsocket;
+	ggz_debug("GGZMOD", "Connected with socket %d.\n", ggzmod->fd);
 	
 	return 0;
 }
