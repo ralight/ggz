@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 9304 2007-09-09 07:24:14Z josef $
+ * $Id: client.c 9444 2007-12-14 00:05:49Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -118,7 +118,9 @@ static void* client_thread_init(void *arg_ptr)
 	net_set_dump_file(client->net, opt.dump_file);
 
 	/* Send server ID */
-	if (net_send_serverid(client->net, opt.server_name, opt.tls_use) < 0) {
+	if (net_send_serverid(client->net,
+			      opt.conf_valid ? opt.server_name : "none",
+			      opt.tls_use) < 0) {
 		client_free(client);
 		pthread_exit(NULL);
 	}
