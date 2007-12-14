@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 9350 2007-11-11 21:41:35Z josef $
+ * $Id: server.c 9446 2007-12-14 06:49:09Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -55,6 +55,10 @@
 #include "protocol.h"
 #include "state.h"
 #include "server.h"
+
+#ifndef HAVE_WINSOCK2_H
+#  define SUPPORT_RECONNECT
+#endif
 
 #if 0
 /* Array of GGZServerEvent messages.  This is now unused, but could be used
@@ -147,7 +151,7 @@ struct _GGZServer {
 	} queued_events;
 };
 
-#ifndef HAVE_WINSOCK2_H
+#ifdef SUPPORT_RECONNECT
 static int reconnect_policy = 0;
 #endif
 static int thread_policy = 0;
@@ -1556,7 +1560,7 @@ void _ggzcore_server_add_type(GGZServer * server, GGZGameType * type)
 	}
 }
 
-#ifndef HAVE_WINSOCK2_H
+#ifdef SUPPORT_RECONNECT
 static void reconnect_alarm(int signal)
 {
 	if (_ggzcore_net_connect(reconnect_server->net) < 0) {
@@ -1572,7 +1576,7 @@ static void reconnect_alarm(int signal)
 void _ggzcore_server_change_state(GGZServer * server, GGZTransID trans)
 {
 	if (trans == GGZ_TRANS_NET_ERROR || trans == GGZ_TRANS_PROTO_ERROR) {
-#ifndef HAVE_WINSOCK2_H
+#ifdef SUPPORT_RECONNECT
 		if (reconnect_policy) {
 			char *host;
 			int port, use_tls;
@@ -1673,7 +1677,7 @@ void _ggzcore_server_protocol_error(GGZServer * server,
 
 void _ggzcore_server_set_reconnect(void)
 {
-#ifndef HAVE_WINSOCK2_H
+#ifdef SUPPORT_RECONNECT
 	reconnect_policy = 1;
 #endif
 }
