@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 9362 2007-11-17 15:33:52Z josef $
+ * $Id: ggz.h 9447 2007-12-14 07:15:14Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -1663,6 +1663,16 @@ int ggz_writen(const int sock, const void *vdata, size_t n);
  *  @note You must know how much data you want BEFORE calling this function.
  */
 int ggz_readn(const int sock, void *data, size_t n);
+
+/** @brief Close a socket - equivalent to close() on unix.
+ *
+ * @see ggz_close_socket
+ *
+ * @param sock The socket to close.
+ * @return 0 on success, negative on failure
+ * @note On failure, errno/WGALastError is set.
+ */
+int ggz_close_socket(const int sock);
 
 /** @} */
 

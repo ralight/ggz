@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 9445 2007-12-14 04:21:21Z jdorje $
+ * $Id: ggzmod.c 9447 2007-12-14 07:15:14Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -758,11 +758,7 @@ int ggzmod_disconnect(GGZMod * ggzmod)
 
 	/* Clean up the ggzmod object.  In theory it could now reconnect for
 	   a new game. */
-#ifdef HAVE_WINSOCK2_H
-	closesocket(ggzmod->fd);
-#else
-	close(ggzmod->fd);
-#endif
+	ggz_close_socket(ggzmod->fd);
 	ggzmod->fd = -1;
 
 	return 0;

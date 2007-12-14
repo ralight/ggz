@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 9397 2007-12-01 09:55:46Z jdorje $
+ * $Id: easysock.c 9447 2007-12-14 07:15:14Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -189,7 +189,7 @@ static int es_bind(const char *host, int port)
 			const char *msg = strerror(errno);
 			(*_err_func) (msg, GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
 		}
-		close(sockfd);
+		ggz_close_socket(sockfd);
 		sockfd = -1;
 	}
 #else
@@ -225,7 +225,7 @@ static int es_bind(const char *host, int port)
 		if (bind(sockfd, res->ai_addr, res->ai_addrlen) == 0)
 			break;
 
-		close(sockfd);
+		ggz_close_socket(sockfd);
 		sockfd = -1;
 
 	} while ( (res = res->ai_next) != NULL);
@@ -273,7 +273,7 @@ static int es_connect(const char *host, int port)
 			const char *msg = strerror(errno);
 			(*_err_func) (msg, GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
 		}
-		close(sockfd);
+		ggz_close_socket(sockfd);
 		sockfd = -1;
 	}
 #else
@@ -305,7 +305,7 @@ static int es_connect(const char *host, int port)
 		if (connect(sockfd, res->ai_addr, res->ai_addrlen) == 0)
 			break;
 
-		close(sockfd);
+		ggz_close_socket(sockfd);
 		sockfd = -1;
 
 	} while ( (res = res->ai_next) != NULL);
@@ -1074,3 +1074,11 @@ const char *ggz_getpeername(int fd, int resolve)
 	return ip;
 }
 
+int ggz_close_socket(const int sock)
+{
+#ifdef HAVE_WINSOCK2_H
+	return closesocket(sock);
+#else
+	return close(sock);
+#endif
+}

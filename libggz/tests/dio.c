@@ -76,7 +76,7 @@ int main(int argc, char **argv)
 
 	ggz_dio_flush(dio[0]);
 	ggz_dio_free(dio[0]);
-	close(sockets[0]);
+	ggz_close_socket(sockets[0]);
 
 	ggz_dio_set_read_callback(dio[1], read_callback, NULL);
 	do {

@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 9445 2007-12-14 04:21:21Z jdorje $
+ * $Id: ggzmod-ggz.c 9447 2007-12-14 07:15:14Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -632,11 +632,7 @@ int ggzmod_ggz_disconnect(GGZMod * ggzmod)
 
 	/* Clean up the ggzmod object.  In theory it could now reconnect for
 	   a new game. */
-#ifdef HAVE_WINSOCK2_H
-	closesocket(ggzmod->fd);
-#else
-	close(ggzmod->fd);
-#endif
+	ggz_close_socket(ggzmod->fd);
 	ggzmod->fd = -1;
 
 	return 0;
@@ -804,11 +800,11 @@ static int game_fork(GGZMod * ggzmod)
 	else if (pid == 0) {
 		/* child */
 #ifdef HAVE_SOCKETPAIR
-		close(fd_pair[0]);
+		ggz_close_socket(fd_pair[0]);
 
 		/* debugging message??? */
 #else
-		close(sock);
+		ggz_close_socket(sock);
 #endif
 
 		/* FIXME: Close all other fd's? */
@@ -834,7 +830,7 @@ static int game_fork(GGZMod * ggzmod)
 	} else {
 		/* parent */
 #ifdef HAVE_SOCKETPAIR
-		close(fd_pair[1]);
+		ggz_close_socket(fd_pair[1]);
 
 		ggzmod->fd = fd_pair[0];
 #endif
@@ -869,11 +865,7 @@ static int game_fork(GGZMod * ggzmod)
 		ggz_error_sys("Listening to socket failed.");
 		return -1;
 	}
-#ifdef HAVE_WINSOCK2_H
-	closesocket(sock);
-#else
-	close(sock);
-#endif
+	ggz_close_socket(sock);
 	ggzmod->fd = sock2;
 #endif
 	return 0;
@@ -903,11 +895,7 @@ static int game_embedded(GGZMod * ggzmod)
 		ggz_error_sys("Listening to socket failed.");
 		return -1;
 	}
-#ifdef HAVE_WINSOCK2_H
-	closesocket(sock);
-#else
-	close(sock);
-#endif
+	ggz_close_socket(sock);
 	ggzmod->fd = sock2;
 #endif
 #ifdef HAVE_FORK
