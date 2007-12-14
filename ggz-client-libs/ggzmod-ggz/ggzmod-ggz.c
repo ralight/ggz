@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 9395 2007-12-01 09:41:27Z jdorje $
+ * $Id: ggzmod-ggz.c 9445 2007-12-14 04:21:21Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -743,7 +743,7 @@ static int game_prepare(int fd_pair[2], int *sock)
 #ifdef HAVE_SOCKETPAIR
 	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0)
 		ggz_error_sys_exit("socketpair failed");
-	snprintf(buf, sizeof(buf), "%d", GGZMOD_DEFAULT_FD);
+	snprintf(buf, sizeof(buf), "%d", fd_pair[1]);
 	ggz_setenv("GGZSOCKET", buf);
 	ggz_setenv("GGZMODE", "true");
 #else
@@ -807,15 +807,6 @@ static int game_fork(GGZMod * ggzmod)
 		close(fd_pair[0]);
 
 		/* debugging message??? */
-
-		/* Now we copy one end of the socketpair to GGZMOD_DEFAULT_FD */
-		if (fd_pair[1] != GGZMOD_DEFAULT_FD) {
-			/* We'd like to send an error message if either of
-			   these fail, but we can't.  --JDS */
-			if (dup2(fd_pair[1], GGZMOD_DEFAULT_FD) != GGZMOD_DEFAULT_FD
-			|| close(fd_pair[1]) < 0)
-				ggz_error_sys_exit("dup failed");
-		}
 #else
 		close(sock);
 #endif
@@ -902,14 +893,6 @@ static int game_embedded(GGZMod * ggzmod)
 		return -1;
 
 #ifdef HAVE_SOCKETPAIR
-	if (fd_pair[1] != GGZMOD_DEFAULT_FD) {
-		/* We'd like to send an error message if either of
-		   these fail, but we can't.  --JDS */
-		if (dup2(fd_pair[1], GGZMOD_DEFAULT_FD) != GGZMOD_DEFAULT_FD
-		|| close(fd_pair[1]) < 0)
-			ggz_error_sys_exit("dup failed");
-	}
-
 	ggzmod->fd = fd_pair[0];
 #else
 	/* FIXME: we need to select, with a maximum timeout. */
