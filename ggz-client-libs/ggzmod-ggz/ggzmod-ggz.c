@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 9448 2007-12-14 09:44:57Z jdorje $
+ * $Id: ggzmod-ggz.c 9450 2007-12-15 10:57:13Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -759,13 +759,13 @@ static void ggz_setenv(const char *name, const char *value)
 static int game_prepare(int fd_pair[2], int *sock)
 {
 	char buf[100];
-#ifndef HAVE_SOCKETPAIR
+#ifndef USE_SOCKETPAIR
 	int port;
 #endif
 
 	fd_pair[0] = fd_pair[1] = *sock = -1;
 
-#ifdef HAVE_SOCKETPAIR
+#ifdef USE_SOCKETPAIR
 	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0) {
 		ggz_error_sys("socketpair failed");
 		return -1;

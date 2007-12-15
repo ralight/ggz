@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 9323 2007-09-29 13:21:16Z oojah $
+ * $Id: game.c 9450 2007-12-15 10:57:13Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -303,7 +303,7 @@ void _ggzcore_game_init(struct _GGZGame *game,
 	/* Setup client module connection */
 	game->client = ggzmod_ggz_new(GGZMOD_GGZ);
 	ggzmod_ggz_set_gamedata(game->client, game);
-#ifdef HAVE_WINSOCK2_H
+#ifndef USE_SOCKETFD
 	ggzmod_ggz_set_server_host(game->client,
 			       ggzcore_server_get_host(server),
 			       ggzcore_server_get_port(server),

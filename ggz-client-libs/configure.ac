@@ -58,6 +58,17 @@ AC_C_CONST
 AC_TYPE_SIZE_T
 AC_TYPE_SIGNAL
 
+AC_GGZ_PLATFORM_POSIX_NET
+AH_BOTTOM(
+[/* Controls whether socketpair or local sockets are used for ggzmod connection */
+#if defined HAVE_FORK && defined HAVE_SOCKETPAIR
+#  define USE_SOCKETPAIR
+#endif
+
+/* Controls whether ggzmod-ggz or ggzmod-game makes the channel connection */
+#if defined GGZ_HAVE_SENDMSG && defined USE_SOCKETPAIR
+#  define USE_SOCKETFD
+#endif])
 
 # Check for PF_LOCAL/PF_UNIX
 # ==========================
