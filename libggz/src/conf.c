@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 8433 2006-08-01 00:10:41Z oojah $
+ * $Id: conf.c 9449 2007-12-15 06:23:11Z jdorje $
  *
  * Internal functions for handling configuration files
  *
@@ -812,6 +812,10 @@ static void parse_line(char *p, char **varname, char **varvalue)
 			p--;
 		} while(p >= sol && (*p == ' ' || *p == '\t' || *p == '\n'));
 		p++;
+
+		/* HACK: If there's an = then there's a value: it may be empty
+		   but shouldn't be NULL. */
+		*varvalue = "";
 	}
 	*p = '\0';
 	p = psave;
