@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 9421 2007-12-08 11:26:18Z josef $
+ * $Id: ggzdb_pgsql.c 9454 2007-12-17 22:40:08Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -308,7 +308,11 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	{
 		if(PQntuples(res) == 1)
 		{
-			pg_canonicalstr = 1;
+			const char *value = PQgetvalue(res, 0, 0);
+			if(strcmp(value, "0"))
+			{
+				pg_canonicalstr = 1;
+			}
 		}
 		PQclear(res);
 	}
