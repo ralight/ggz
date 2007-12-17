@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 9335 2007-11-08 15:30:09Z josef $
+ * $Id: login.c 9453 2007-12-17 22:34:07Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -33,13 +33,16 @@
 #include <string.h>
 
 #ifdef WITH_CRACKLIB
-#include <crack.h>
-#ifndef CRACKLIB_DICTPATH
-#define CRACKLIB_DICTPATH "/var/cache/cracklib/cracklib_dict"
-#endif
+# include <crack.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <unistd.h>
+# ifndef CRACKLIB_DICTPATH
+#  define CRACKLIB_DICTPATH "/var/cache/cracklib/cracklib_dict"
+# endif
 #endif
 #ifdef WITH_OMNICRACKLIB
-#include <omnicrack.h>
+# include <omnicrack.h>
 #endif
 
 #include "err_func.h"
@@ -336,9 +339,31 @@ static bool is_valid_password(const char *password)
 {
 #ifdef WITH_CRACKLIB
 	const char *res;
+	const char *dicts[] = {
+		CRACKLIB_DICTPATH,
+		"/usr/lib/cracklib_dict.pw",
+		NULL
+	}
+	const char *dict = NULL;
+	struct stat st;
+	int ret;
 
-	res = FascistCheck(password, CRACKLIB_DICTPATH);
-	if (res) {
+	for (int i = 0; dicts[i]; i++)
+	{
+		ret = stat(dicts[i], &st);
+		if (ret == 0) {
+			dict = dicts[i];
+			break;
+		}
+	}
+
+	if (dict) {
+		res = FascistCheck(password, dict);
+		if (res) {
+			return false;
+		}
+	} else {
+		err_msg("Cracklib password database not found.");
 		return false;
 	}
 #endif
