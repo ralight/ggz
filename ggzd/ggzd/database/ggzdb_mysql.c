@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 9421 2007-12-08 11:26:18Z josef $
+ * $Id: ggzdb_mysql.c 9451 2007-12-17 21:11:04Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -61,6 +61,8 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 
 	if(conn) return GGZ_OK;
 
+	pthread_mutex_init(&mutex, NULL);
+
 	mysql_library_init(0, NULL, NULL);
 	conn = mysql_init(conn);
 	/*
@@ -92,9 +94,20 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 /* Function to deinitialize the mysql database system */
 void _ggzdb_close(void)
 {
+	/*
+	 * Since _ggzdb_close() is called by the main thread on exit
+	 * it is not really necessary to get a lock here, but it does
+	 * keep the locking consistent and so keeps valgrind/helgrind 
+	 * happy.
+	 */
+	pthread_mutex_lock(&mutex);
 	mysql_close(conn);
+
 	mysql_library_end();
 	conn = NULL;
+	pthread_mutex_unlock(&mutex);
+
+	pthread_mutex_destroy(&mutex);
 }
 
 
