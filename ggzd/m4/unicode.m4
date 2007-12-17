@@ -41,8 +41,15 @@ dnl Check for unicode implementation ICU
 dnl ====================================
 AC_DEFUN([AC_GGZ_UNICODE_ICU],
 [
+	universion=""
+
 	AC_CHECK_LIB(icui18n, u_strFromUTF8_3_6,
-	[
+		[universion="3.6"], [], [])
+
+	AC_CHECK_LIB(icui18n, u_strFromUTF8_3_8,
+		[universion="3.8"], [], [])
+
+	if test "$universion" != ""; then
 		AC_CHECK_HEADERS([unicode/ustring.h],
 		[
 			unicode=icu
@@ -52,12 +59,10 @@ AC_DEFUN([AC_GGZ_UNICODE_ICU],
 				AC_MSG_ERROR([cannot configure ICU (headers needed)])
 			fi
 		])
-	],
-	[
+	else
 		if test "$unicode" = "icu"; then
 			AC_MSG_ERROR([cannot configure ICU (library needed)])
 		fi
-	],
-	[])
+	fi
 ])
 

@@ -352,7 +352,7 @@ AC_DEFUN([AC_GGZ_CONTAINS_DEFINITION],
 str_contains(){
 list=[$][1]
 entry=[$][2]
-for i in `seq 1 9`; do
+for i in 1 2 3 4 5 6 7 8 9; do
 	tmp=`echo "$list," | cut -d "," -f $i`
 	if test -z $tmp; then
 		break
@@ -375,7 +375,7 @@ LIB_DATABASE=""
 
 dnl Loop over possible list of database choices
 databaselist=$database
-for i in `seq 1 9`; do
+for i in 1 2 3 4 5 6 7 8 9; do
 	xdatabase=`echo "$databaselist," | cut -d "," -f $i`
 	if test -z $xdatabase; then
 		break
