@@ -7,21 +7,43 @@ The slides sources can then be stored here while the exported versions
 
 Past talks:
 
-** Output 20.04.2007
+** RubyConf 02.11.2007 in Charlotte, NC, USA:
+   "High Art on Top of Low-Level APIs: Building Games with Ruby" (by Andrea O. K. Wright)
+   http://rubyconf2007.confreaks.com/
+   (talk in English with section on GGZ)
+
+   - videos available online: 
+   http://rubyconf2007.confreaks.com/d1t2p2_building_games_with_ruby.html
+
+** Ruby East 28.09.2007 in Pittsburgh, PA, USA:
+   "High Art on Top of Low-Level APIs: Building Games with Ruby"
+   http://www.ruby-east.com/rubyeast/abstracts.php#wright
+   (talk in English with section on GGZ)
+
+** Ruby Hoedown 11.08.2007 in Raleigh, NC, USA:
+   "Building Games with Ruby"
+   http://rubyhoedown2007.confreaks.com/
+   (talk in English with section on GGZ)
+
+   - videos available online:
+   http://rubyhoedown2007.confreaks.com/session05.html
+
+** Output 20.04.2007 in Dresden, Germany:
    "Linux-Spieletechnologien" (by Josef Spillner)
    http://output.inf.tu-dresden.de/
    (talk in German, slides also in German)
 
    - slides done with OpenOffice.org
 
-** Chemnitzer Linux-Tage 05.03.2006:
+** Chemnitzer Linux-Tage 05.03.2006 in Chemnitz, Germany:
    "Freiheit für Onlinespieler" (by Josef Spillner)
-   http://chemnitzer.linux-tage.de/2006/vortraege/detail.html?idx=310#folien
+   http://chemnitzer.linux-tage.de/2006/vortraege/detail.html?idx=310
    (talk in German, slides also German only for now)
 
    - slides done with Pyntor
+   - slides and audio available online at URL above
 
-** LinuxTag Karlsruhe 25.06.2005:
+** LinuxTag Karlsruhe 25.06.2005 in Karlsruhe, Germany:
    "GGZ Gaming Zone" (by Josef Spillner)
    http://www.linuxtag.org/typo3site/freecongress-details.html?&L=0&talkid=174
    (talk in German, slides available in German and English)
@@ -30,10 +52,11 @@ Past talks:
    - paper done with OpenOffice.org templates
    (the paper was included on the conference DVD)
 
-** Chemnitzer LinuxTag 02.03.2003:
+** Chemnitzer LinuxTag 02.03.2003 in Chemnitz, Germany:
    "GGZ Gaming Zone - Freie Onlinespiele" (by Josef Spillner)
-   http://www.tu-chemnitz.de/linux/tag/lt5/vortraege/detail.html?index=38
+   http://chemnitzer.linux-tage.de/2003/vortraege/detail.html?index=38
    (talk in German, slides available in German and English)
 
    - slides done with OpenOffice.org
+   - slides and audio available online at URL above
 
