@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 9336 2007-11-08 19:02:32Z jdorje $
+ * $Id: net.c 9459 2007-12-20 23:21:11Z oojah $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -855,7 +855,7 @@ GGZReturn net_send_player_update(GGZNetIO *net, GGZPlayerUpdateType opcode,
 		pthread_rwlock_unlock(&player->lock);
 		_net_send_line(net, "<UPDATE TYPE='player' ACTION='stats' "
 			       "ROOM='%d'>", room_id);
-		_net_send_player_stats(net, player);
+		_net_send_player_stats(net, &p2);
 		return _net_send_line(net, "</UPDATE>");
 	case GGZ_PLAYER_UPDATE_PERMS:
 		player = hash_player_lookup(name);
