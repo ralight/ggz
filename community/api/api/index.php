@@ -76,13 +76,13 @@ $topresource = resourcequote($resourceparts[0]);
 $subresource = resourcequote($resourceparts[1]);
 $subsubresource = resourcequote($resourceparts[2]);
 
-$error = 0;
-$autherror = 0;
-$inputerror = 0;
-$internalerror = 0;
+$error = false;
+$autherror = false;
+$inputerror = false;
+$internalerror = false;
 
 $xmlroot = "";
-$authenticated = 0;
+$authenticated = false;
 
 if (($method == "POST") || ($method == "PUT") || ($method == "DELETE")) :
 	if ($readonly) :
@@ -124,7 +124,7 @@ if (isset($_SERVER["PHP_AUTH_USER"])) :
 	$res = $database->exec("SELECT * FROM users WHERE handle = '%^' AND password = '%^'",
 		array($user, $password));
 	if ($database->numrows($res) == 1) :
-		$authenticated = 1;
+		$authenticated = true;
 	endif;
 endif;
 
@@ -148,12 +148,12 @@ elseif ($topresource == "players") :
 			}
 			echo "</players>";
 		else :
-			$error = 1;
+			$error = true;
 		endif;
 	else :
 		$playername = $subresource;
 		if ($playername != $user) :
-			$authenticated = 0;
+			$authenticated = false;
 		endif;
 
 		if ($method == "GET") :
@@ -182,7 +182,7 @@ elseif ($topresource == "players") :
 					echo "</player>";
 				endif;
 			else:
-				$error = 1;
+				$error = true;
 			endif;
 		elseif ($method == "POST") :
 			if (($xmlroot) && ($xmlroot->tagName == "player")) :
@@ -214,7 +214,7 @@ elseif ($topresource == "players") :
 					array($playername, $photo));
 				# FIXME: check duplicates, let db do it?
 			else :
-				$inputerror = 1;
+				$inputerror = true;
 			endif;
 		elseif ($method == "PUT") :
 			if ($authenticated) :
@@ -241,10 +241,10 @@ elseif ($topresource == "players") :
 						array($photo, $playername));
 					# FIXME: check duplicates, let db do it?
 				else :
-					$inputerror = 1;
+					$inputerror = true;
 				endif;
 			else :
-				$autherror = 1;
+				$autherror = true;
 			endif;
 		elseif ($method == "DELETE") :
 			if ($authenticated) :
@@ -254,10 +254,10 @@ elseif ($topresource == "players") :
 					array($playername));
 				# FIXME: check presence etc.
 			else :
-				$autherror = 1;
+				$autherror = true;
 			endif;
 		else :
-			$error = 1;
+			$error = true;
 		endif;
 	endif;
 elseif ($topresource == "statistics") :
@@ -274,7 +274,7 @@ elseif ($topresource == "statistics") :
 				}
 				echo "</games>";
 			else :
-				$error = 1;
+				$error = true;
 			endif;
 		else :
 			if ($method == "GET") :
@@ -295,11 +295,11 @@ elseif ($topresource == "statistics") :
 				}
 				echo "</statistics>";
 			else :
-				$error = 1;
+				$error = true;
 			endif;
 		endif;
 	else :
-		$error = 1;
+		$error = true;
 	endif;
 elseif ($topresource == "teams") :
 	if ($subresource == "") :
@@ -314,7 +314,7 @@ elseif ($topresource == "teams") :
 			}
 			echo "</teams>";
 		else :
-			$error = 1;
+			$error = true;
 		endif;
 	else :
 		$teamname = $subresource;
@@ -339,7 +339,7 @@ elseif ($topresource == "teams") :
 					echo "<homepage>$homepage</homepage>";
 					echo "</team>";
 				else:
-					$error = 1;
+					$error = true;
 				endif;
 			elseif ($method == "POST") :
 				if ($authenticated) :
@@ -363,10 +363,10 @@ elseif ($topresource == "teams") :
 
 						# FIXME: check duplicates, let db do it?
 					else :
-						$inputerror = 1;
+						$inputerror = true;
 					endif;
 				else :
-					$autherror = 1;
+					$autherror = true;
 				endif;
 			elseif ($method == "PUT") :
 				if ($authenticated) :
@@ -387,10 +387,10 @@ elseif ($topresource == "teams") :
 
 						# FIXME: check duplicates, let db do it?
 					else :
-						$inputerror = 1;
+						$inputerror = true;
 					endif;
 				else :
-					$autherror = 1;
+					$autherror = true;
 				endif;
 			elseif ($method == "DELETE") :
 				if ($authenticated) :
@@ -398,10 +398,10 @@ elseif ($topresource == "teams") :
 						array($teamname));
 					# FIXME: check presence etc.
 				else :
-					$autherror = 1;
+					$autherror = true;
 				endif;
 			else :
-				$error = 1;
+				$error = true;
 			endif;
 		else :
 			$teamplayername = $subsubresource;
@@ -419,7 +419,7 @@ elseif ($topresource == "teams") :
 					echo "<entrydate>$entrydate</entrydate>";
 					echo "</teamplayer>";
 				else:
-					$error = 1;
+					$error = true;
 				endif;
 			elseif ($method == "POST") :
 				if ($authenticated) :
@@ -440,10 +440,10 @@ elseif ($topresource == "teams") :
 
 						# FIXME: check duplicates, let db do it?
 					else :
-						$inputerror = 1;
+						$inputerror = true;
 					endif;
 				else :
-					$autherror = 1;
+					$autherror = true;
 				endif;
 			elseif ($method == "PUT") :
 				if ($authenticated) :
@@ -462,10 +462,10 @@ elseif ($topresource == "teams") :
 
 						# FIXME: check duplicates, let db do it?
 					else :
-						$inputerror = 1;
+						$inputerror = true;
 					endif;
 				else :
-					$autherror = 1;
+					$autherror = true;
 				endif;
 			elseif ($method == "DELETE") :
 				if ($authenticated) :
@@ -473,28 +473,28 @@ elseif ($topresource == "teams") :
 						array($teamname, $teamplayername));
 					# FIXME: check presence etc.
 				else :
-					$autherror = 1;
+					$autherror = true;
 				endif;
 			else :
-				$error = 1;
+				$error = true;
 			endif;
 		endif;
 	endif;
 else:
-	$error = 1;
+	$error = true;
 endif;
 
 // -------------------------------------------------------------
 // Finish the script
 
 if ($autherror) :
-	$error = 1;
+	$error = true;
 endif;
 if ($internalerror) :
-	$error = 1;
+	$error = true;
 endif;
 if ($inputerror) :
-	$error = 1;
+	$error = true;
 endif;
 
 if (!$error) :
