@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 9073 2007-04-29 01:09:54Z jdorje $
+ * $Id: ggzcore.h 9460 2007-12-24 12:18:40Z oojah $
  *
  * Interface file to be included by client frontends
  *
@@ -101,7 +101,7 @@ typedef struct _GGZOptions {
 } GGZOptions;
 
 
-/** ggzcore_init() - Initializtion function for ggzcore lib.
+/** ggzcore_init() - Initialization function for ggzcore lib.
  *
  * @param options options structure
  *
@@ -158,7 +158,7 @@ typedef enum {
 	GGZ_HOOK_CRISIS /**< A major error; stop processing the event. */
 } GGZHookReturn;
 
-/** GGZ Event hook function type, used as a vallback for events */
+/** GGZ Event hook function type, used as a callback for events */
 typedef GGZHookReturn (*GGZHookFunc)(unsigned int id, 
 				     const void* event_data, 
 				     const void* user_data);
@@ -190,7 +190,7 @@ typedef enum {
 
 /** @brief The data describing an error.
  *
- *  When an error occurrs, a pointer to a struct of this type will be
+ *  When an error occurs, a pointer to a struct of this type will be
  *  passed as the event data.
  */
 typedef struct {
@@ -1022,7 +1022,7 @@ int ggzcore_room_get_closed(const GGZRoom *room);
  *  A room event will happen when data is received from the server.  To make
  *  updates to the frontend, the client will need to register a hook function
  *  to handle the event.  This hook function will be called each time the
- *  room event occurrs.  More than one hook function may be specified, in
+ *  room event occurs.  More than one hook function may be specified, in
  *  which case they will all be called (in FIFO order).
  *  @param room The room object to associate the hook with.
  *  @param event The event the handler is going to be "hooked" onto.
