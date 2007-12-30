@@ -24,7 +24,7 @@ Index: stats.c
  
  GGZReturn stats_lookup(ggzdbPlayerGameStats *stats)
  {
-@@ -450,3 +457,56 @@
+@@ -450,3 +457,58 @@
  	return rankingslist;
  }
  
@@ -50,6 +50,8 @@ Index: stats.c
 +	}
 +	dbg_msg(GGZ_DBG_STATS, "RT Stats: size=%i bytes, segment=%i bytes",
 +		sizeof(stats_rt), ds.shm_segsz);
++
++	stats_rt_report();
 +}
 +
 +void stats_rt_report(void)
@@ -123,6 +125,28 @@ Index: err_func.h
  void log_close_table(void);
 +
 +ggztime_t uptime(void);
+Index: client.c
+===================================================================
+--- client.c	(Revision 9450)
++++ client.c	(Arbeitskopie)
+@@ -47,6 +47,8 @@
+ #include "net.h"
+ #include "table.h"
+ #include "util.h"
++#include "ggzdb.h"
++#include "stats.h"
+ 
+ 
+ static void* client_thread_init(void *arg_ptr);
+@@ -149,6 +151,8 @@
+ 	state.players--;
+ 	pthread_rwlock_unlock(&state.lock);
+ 
++	stats_rt_report();
++
+ 	return (NULL);
+ }
+ 
 Index: control.c
 ===================================================================
 --- control.c	(Revision 9450)
@@ -135,18 +159,17 @@ Index: control.c
  
  #ifdef HAVE_INOTIFY
  #include <sys/inotify.h>
-@@ -584,6 +585,10 @@
+@@ -584,6 +585,9 @@
  	else
  		reconfigure_fd = -1;
  
 +	/* Add real-time statistics */
 +	stats_rt_init();
-+	stats_rt_report();
 +
  	/* Create SERVER socket on main_port */
  	main_sock = ggz_make_socket(GGZ_SOCK_SERVER, opt.main_port, opt.interface);
  	if (main_sock < 0) {
-@@ -717,5 +722,7 @@
+@@ -717,5 +721,7 @@
  
  	cleanup_data(); /* FIXME: must destroy all threads first */
  
@@ -154,25 +177,76 @@ Index: control.c
 +
  	return 0;
  }
-Index: event.c
+Index: login.c
 ===================================================================
---- event.c	(Revision 9450)
-+++ event.c	(Arbeitskopie)
-@@ -41,6 +41,8 @@
- #include "event.h"
+--- login.c	(Revision 9453)
++++ login.c	(Arbeitskopie)
+@@ -56,6 +56,7 @@
+ #include "perms.h"
+ #include "client.h"
+ #include "unicode.h"
++#include "stats.h"
+ 
+ 
+ #if 0
+@@ -270,6 +271,8 @@
+ 	log_msg(GGZ_LOG_CONNECTION_INFO, "LOGIN %s from %s as a%s", name,
+ 		ip_addr, login_type);
+ 
++	stats_rt_report();
++
+ 	return GGZ_REQ_OK;
+ }
+ 
+Index: statsrt.h
+===================================================================
+--- statsrt.h	(Revision 0)
++++ statsrt.h	(Revision 0)
+@@ -0,0 +1,25 @@
++#ifndef GGZ_STATS_RT_H
++#define GGZ_STATS_RT_H
++
++#define STATS_RT_SHMID            0x5688
++#define STATS_RT_VERSION          1
++
++#define STATS_RT_MAX_ROOMS        100
++#define STATS_RT_MAX_ROOMNAME_LEN 32
++
++struct stats_rt_t
++{
++	int version;
++	int magicversion;
++
++	int uptime;
++	int num_rooms;
++	int num_players;
++	int num_tables;
++	char rooms[STATS_RT_MAX_ROOMS][STATS_RT_MAX_ROOMNAME_LEN];
++	int players[STATS_RT_MAX_ROOMS];
++	int tables[STATS_RT_MAX_ROOMS];
++};
++typedef struct stats_rt_t stats_rt;
++
++#endif
+Index: room.c
+===================================================================
+--- room.c	(Revision 9450)
++++ room.c	(Arbeitskopie)
+@@ -42,6 +42,8 @@
+ #include "protocols.h"
  #include "room.h"
- #include "table.h"
+ #include "stats.h"
 +#include "ggzdb.h"
 +#include "stats.h"
  
  
- /* 
-@@ -178,6 +180,8 @@
- 	GGZEvent *event, *rm_list = NULL;
- 	int room;
+ typedef struct {
+@@ -482,6 +484,8 @@
+ 		dbg_msg(GGZ_DBG_ROOM, "Room %d player count = %d", room, count);
+ 	}
  
 +	stats_rt_report();
 +
- 	/* 
- 	 * We don't need player lock here, since our room can't change 
- 	 * unless we change it 
+ 	/* Finally we can release the other chat room lock */
+ 	if(room != -1)
+ 		pthread_rwlock_unlock(&rooms[room].lock);
