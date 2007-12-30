@@ -1,0 +1,14 @@
+Frontend:
+
+- use getopt
+- force update with space bar
+- use select on stdin instead of sleep
+- sorting by columns
+
+Server:
+
+- mutex locking!!!
+- handle player leaves (those aren't transits for some reason)
+- export chat activity?
+- more frequent/periodic updates?
+
