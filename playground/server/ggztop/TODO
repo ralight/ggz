@@ -1,8 +1,6 @@
 Frontend:
 
 - use getopt
-- force update with space bar
-- use select on stdin instead of sleep
 - sorting by columns
 
 Server:

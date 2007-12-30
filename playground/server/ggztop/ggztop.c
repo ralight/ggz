@@ -2,6 +2,8 @@
 #include <string.h>
 
 #include <ncurses.h>
+#include <sys/time.h>
+#include <sys/types.h>
 
 #include <sys/shm.h>
 #include <sys/stat.h>
@@ -70,31 +72,77 @@ void ggztop_display_top_screen(stats_rt *rt)
 			line++;
 		}
 	}
+
+	wrefresh(stdscr);
 }
 
-void ggztop_display_top(stats_rt *rt)
+void ggztop_display_top(stats_rt *rt, int rawmode)
 {
-	printf("\033[2J");
-	initscr();
-	cbreak();
-	noecho();
-	nodelay(stdscr, TRUE);
-	start_color();
-	use_default_colors();
-	init_pair(COL_RED, COLOR_RED, -1);
-	init_pair(COL_WHITE, COLOR_WHITE, -1);
+	fd_set fds;
+	struct timeval timeout;
+	int ret;
+	int redraw;
+
+	if(!rawmode)
+	{
+		printf("\033[2J");
+		initscr();
+		cbreak();
+		noecho();
+		nodelay(stdscr, TRUE);
+		start_color();
+		use_default_colors();
+		init_pair(COL_RED, COLOR_RED, -1);
+		init_pair(COL_WHITE, COLOR_WHITE, -1);
+	}
+
+	redraw = 1;
 
 	while(1)
 	{
-		ggztop_display_top_screen(rt);
-		int input = getch();
-		if(input != -1)
+		if(redraw)
+		{
+			if(!rawmode)
+				ggztop_display_top_screen(rt);
+			redraw = 0;
+		}
+
+		timeout.tv_sec = 1;
+		timeout.tv_usec = 0;
+
+		FD_ZERO(&fds);
+		FD_SET(STDIN_FILENO, &fds);
+
+		ret = select(STDIN_FILENO + 1, &fds, NULL, NULL, &timeout);
+		if(ret > 0)
+		{
+			int input = getch();
+			if(input != -1)
+			{
+				if(input == 'q')
+				{
+					break;
+				}
+				else if(input == ' ')
+				{
+					redraw = 1;
+				}
+			}
+		}
+		else if(ret < 0)
+		{
+			/* FIXME: error? */
 			break;
-		sleep(1);
+		}
+		else
+			redraw = 1;
 	}
 
-	curs_set(1);
-	endwin();
+	if(!rawmode)
+	{
+		curs_set(1);
+		endwin();
+	}
 }
 
 void ggztop_display_text(stats_rt *rt)
@@ -128,7 +176,7 @@ void ggztop_read(int textonly)
 	if(textonly)
 		ggztop_display_text(rt);
 	else
-		ggztop_display_top(rt);
+		ggztop_display_top(rt, 0);
 
 	shmdt(rt);
 }
