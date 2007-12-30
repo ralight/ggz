@@ -4,6 +4,7 @@
 #include <ncurses.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include <time.h>
 
 #include <sys/shm.h>
 #include <sys/stat.h>
@@ -16,10 +17,12 @@
 #define COL_WHITE 2
 
 static int stats_rt_shmid = 0;
+static time_t lastupdate = 0;
+static int lastuptime = 0;
 
 int ggztop_init(void)
 {
-	stats_rt_shmid = shmget(STATS_RT_SHMID, sizeof(stats_rt), S_IRUSR | S_IWUSR);
+	stats_rt_shmid = shmget(STATS_RT_SHMID, sizeof(stats_rt), S_IRUSR);
 	if(stats_rt_shmid < 0)
 	{
 		fprintf(stderr, "ggztop: shared memory setup failure (%s)\n",
@@ -44,6 +47,7 @@ void ggztop_display_top_screen(stats_rt *rt)
 
 	move(1, 0);
 	printw("Uptime: %i secs", rt->uptime);
+	printw(" (%i in arrears)", time(NULL) - lastupdate);
 	printw(", Rooms: %i", rt->num_rooms);
 	printw(", Players: %i", rt->num_players);
 	printw(", Tables: %i", rt->num_tables);
@@ -97,9 +101,16 @@ void ggztop_display_top(stats_rt *rt, int rawmode)
 	}
 
 	redraw = 1;
+	lastuptime = rt->uptime;
 
 	while(1)
 	{
+		if(rt->uptime > lastuptime)
+		{
+			lastuptime = rt->uptime;
+			lastupdate = time(NULL);
+		}
+
 		if(redraw)
 		{
 			if(!rawmode)

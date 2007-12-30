@@ -6,7 +6,7 @@ Frontend:
 Server:
 
 - mutex locking!!!
-- handle player leaves (those aren't transits for some reason)
+- export tables
 - export chat activity?
 - more frequent/periodic updates?
 
