@@ -6,7 +6,5 @@ Frontend:
 Server:
 
 - mutex locking!!!
-- export tables
-- export chat activity?
 - more frequent/periodic updates?
 
