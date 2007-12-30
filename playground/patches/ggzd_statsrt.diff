@@ -1,0 +1,178 @@
+Index: stats.c
+===================================================================
+--- stats.c	(Revision 9450)
++++ stats.c	(Arbeitskopie)
+@@ -31,6 +31,11 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
++#include <sys/shm.h>
++#include <sys/stat.h>
++#include <unistd.h>
++#include <errno.h>
++
+ #include "ggzdmod.h"
+ #include "ggzdmod-ggz.h"
+ 
+@@ -43,7 +48,9 @@
+ #include "protocols.h"
+ #include "room.h"
+ #include "stats.h"
++#include "statsrt.h"
+ 
++static int stats_rt_shmid = 0;
+ 
+ GGZReturn stats_lookup(ggzdbPlayerGameStats *stats)
+ {
+@@ -450,3 +457,56 @@
+ 	return rankingslist;
+ }
+ 
++void stats_rt_init(void)
++{
++	struct shmid_ds ds;
++	int ret;
++
++	dbg_msg(GGZ_DBG_STATS, "RT Stats: init");
++	stats_rt_shmid = shmget(STATS_RT_SHMID, sizeof(stats_rt), IPC_CREAT | S_IRUSR | S_IWUSR);
++	if(stats_rt_shmid < 0)
++	{
++		err_msg("RT Stats: shared memory setup failure (%s)",
++			strerror(errno));
++		return;
++	}
++	ret = shmctl(stats_rt_shmid, IPC_STAT, &ds);
++	if(ret < 0)
++	{
++		err_msg("RT Stats: shared memory stats failure (%s)",
++			strerror(errno));
++		return;
++	}
++	dbg_msg(GGZ_DBG_STATS, "RT Stats: size=%i bytes, segment=%i bytes",
++		sizeof(stats_rt), ds.shm_segsz);
++}
++
++void stats_rt_report(void)
++{
++	stats_rt *rt;
++	int i;
++
++	rt = (stats_rt*)shmat(stats_rt_shmid, 0, 0);
++
++	rt->version = STATS_RT_VERSION;
++	rt->magicversion = sizeof(stats_rt);
++
++	rt->uptime = uptime();
++	rt->num_players = state.players;
++	rt->num_tables = state.tables;
++	rt->num_rooms = room_info.num_rooms;
++	for(i = 0; i < rt->num_rooms; i++)
++	{
++		snprintf(rt->rooms[i], STATS_RT_MAX_ROOMNAME_LEN, rooms[i].name);
++		rt->players[i] = rooms[i].player_count;
++		rt->tables[i] = rooms[i].table_count;
++	}
++
++	shmdt(rt);
++}
++
++void stats_rt_shutdown(void)
++{
++	shmctl(stats_rt_shmid, IPC_RMID, NULL);
++}
++
+Index: err_func.c
+===================================================================
+--- err_func.c	(Revision 9450)
++++ err_func.c	(Arbeitskopie)
+@@ -469,3 +469,13 @@
+ 	 * initialized.  The easiest solution was just to remove it. */
+ 	update_info.update_interval = sec;
+ }
++
++ggztime_t uptime(void)
++{
++	ggztime_t t;
++
++	t = get_current_time() - update_info.start_time;
++
++	return t;
++}
++
+Index: stats.h
+===================================================================
+--- stats.h	(Revision 9450)
++++ stats.h	(Arbeitskopie)
+@@ -46,4 +46,9 @@
+ /* Returns (allocated) list with GGZRanking entries */
+ GGZList *toprankings(int gametype);
+ 
++/* Real-time server statistics */
++void stats_rt_init(void);
++void stats_rt_report(void);
++void stats_rt_shutdown(void);
++
+ #endif /* _GGZ_STATS_H */
+Index: err_func.h
+===================================================================
+--- err_func.h	(Revision 9450)
++++ err_func.h	(Arbeitskopie)
+@@ -113,3 +113,5 @@
+ void log_update_set_interval(int);
+ void log_create_table(void);
+ void log_close_table(void);
++
++ggztime_t uptime(void);
+Index: control.c
+===================================================================
+--- control.c	(Revision 9450)
++++ control.c	(Arbeitskopie)
+@@ -61,6 +61,7 @@
+ #include "table.h"
+ #include "util.h"
+ #include "meta.h"
++#include "stats.h"
+ 
+ #ifdef HAVE_INOTIFY
+ #include <sys/inotify.h>
+@@ -584,6 +585,10 @@
+ 	else
+ 		reconfigure_fd = -1;
+ 
++	/* Add real-time statistics */
++	stats_rt_init();
++	stats_rt_report();
++
+ 	/* Create SERVER socket on main_port */
+ 	main_sock = ggz_make_socket(GGZ_SOCK_SERVER, opt.main_port, opt.interface);
+ 	if (main_sock < 0) {
+@@ -717,5 +722,7 @@
+ 
+ 	cleanup_data(); /* FIXME: must destroy all threads first */
+ 
++	stats_rt_shutdown();
++
+ 	return 0;
+ }
+Index: event.c
+===================================================================
+--- event.c	(Revision 9450)
++++ event.c	(Arbeitskopie)
+@@ -41,6 +41,8 @@
+ #include "event.h"
+ #include "room.h"
+ #include "table.h"
++#include "ggzdb.h"
++#include "stats.h"
+ 
+ 
+ /* 
+@@ -178,6 +180,8 @@
+ 	GGZEvent *event, *rm_list = NULL;
+ 	int room;
+ 
++	stats_rt_report();
++
+ 	/* 
+ 	 * We don't need player lock here, since our room can't change 
+ 	 * unless we change it 

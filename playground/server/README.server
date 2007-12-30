@@ -29,3 +29,6 @@ Contents right now:
 * events
   High-resolution timer for multiple reoccurring events
 
+* ggztop
+  Frontend for the real-time statistics feature
+
