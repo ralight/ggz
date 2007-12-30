@@ -19,9 +19,12 @@
 static int stats_rt_shmid = 0;
 static time_t lastupdate = 0;
 static int lastuptime = 0;
+static int lastchats[STATS_RT_MAX_ROOMS][10];
 
 int ggztop_init(void)
 {
+	int i, j;
+
 	stats_rt_shmid = shmget(STATS_RT_SHMID, sizeof(stats_rt), S_IRUSR);
 	if(stats_rt_shmid < 0)
 	{
@@ -30,12 +33,16 @@ int ggztop_init(void)
 		return 0;
 	}
 
+	for(i = 0; i < STATS_RT_MAX_ROOMS; i++)
+		for(j = 0; j < 10; j++)
+			lastchats[i][j] = 0;
+
 	return 1;
 }
 
 void ggztop_display_top_screen(stats_rt *rt)
 {
-	int i;
+	int i, j;
 	int line = 4;
 
 	clear();
@@ -58,9 +65,17 @@ void ggztop_display_top_screen(stats_rt *rt)
 	printw("Players");
 	move(3, 40);
 	printw("Tables");
+	move(3, 50);
+	printw("Chat%%");
 
 	for(i = 0; i < rt->num_rooms; i++)
 	{
+		for(j = 1; j < 10; j++)
+		{
+			lastchats[i][j - 1] = lastchats[i][j];
+		}
+		lastchats[i][9] = rt->chat[i];
+
 		if(rt->players[i] > 0)
 		{
 			move(line, 0);
@@ -72,6 +87,8 @@ void ggztop_display_top_screen(stats_rt *rt)
 			printw("%i", rt->players[i]);
 			move(line, 40);
 			printw("%i", rt->tables[i]);
+			move(line, 50);
+			printw("%i", lastchats[i][9] - lastchats[i][0]);
 
 			line++;
 		}

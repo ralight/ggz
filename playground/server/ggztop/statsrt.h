@@ -19,6 +19,7 @@ struct stats_rt_t
 	char rooms[STATS_RT_MAX_ROOMS][STATS_RT_MAX_ROOMNAME_LEN];
 	int players[STATS_RT_MAX_ROOMS];
 	int tables[STATS_RT_MAX_ROOMS];
+	int chat[STATS_RT_MAX_ROOMS];
 };
 typedef struct stats_rt_t stats_rt;
 
