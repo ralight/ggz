@@ -15,6 +15,7 @@
 
 #define COL_RED 1
 #define COL_WHITE 2
+#define COL_YELLOW 3
 
 static int stats_rt_shmid = 0;
 static time_t lastupdate = 0;
@@ -40,10 +41,11 @@ int ggztop_init(void)
 	return 1;
 }
 
-void ggztop_display_top_screen(stats_rt *rt)
+void ggztop_display_top_screen(stats_rt *rt, int showallrooms)
 {
 	int i, j;
 	int line = 4;
+	int col;
 
 	clear();
 
@@ -76,12 +78,15 @@ void ggztop_display_top_screen(stats_rt *rt)
 		}
 		lastchats[i][9] = rt->chat[i];
 
-		if(rt->players[i] > 0)
+		if((rt->players[i] > 0) || (showallrooms))
 		{
 			move(line, 0);
-			attron(COLOR_PAIR(COL_RED));
+			col = COL_RED;
+			if((rt->players[i] == 0) && (showallrooms))
+				col = COL_YELLOW;
+			attron(COLOR_PAIR(col));
 			printw(rt->rooms[i]);
-			attroff(COLOR_PAIR(COL_RED));
+			attroff(COLOR_PAIR(col));
 
 			move(line, 30);
 			printw("%i", rt->players[i]);
@@ -103,6 +108,7 @@ void ggztop_display_top(stats_rt *rt, int rawmode)
 	struct timeval timeout;
 	int ret;
 	int redraw;
+	int showallrooms;
 
 	if(!rawmode)
 	{
@@ -115,10 +121,12 @@ void ggztop_display_top(stats_rt *rt, int rawmode)
 		use_default_colors();
 		init_pair(COL_RED, COLOR_RED, -1);
 		init_pair(COL_WHITE, COLOR_WHITE, -1);
+		init_pair(COL_YELLOW, COLOR_YELLOW, -1);
 	}
 
 	redraw = 1;
 	lastuptime = rt->uptime;
+	showallrooms = 0;
 
 	while(1)
 	{
@@ -131,7 +139,7 @@ void ggztop_display_top(stats_rt *rt, int rawmode)
 		if(redraw)
 		{
 			if(!rawmode)
-				ggztop_display_top_screen(rt);
+				ggztop_display_top_screen(rt, showallrooms);
 			redraw = 0;
 		}
 
@@ -153,6 +161,11 @@ void ggztop_display_top(stats_rt *rt, int rawmode)
 				}
 				else if(input == ' ')
 				{
+					redraw = 1;
+				}
+				else if(input == '\t')
+				{
+					showallrooms = !showallrooms;
 					redraw = 1;
 				}
 			}
