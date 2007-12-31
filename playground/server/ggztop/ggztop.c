@@ -16,6 +16,7 @@
 #define COL_RED 1
 #define COL_WHITE 2
 #define COL_YELLOW 3
+#define COL_GREEN 4
 
 static int stats_rt_shmid = 0;
 static time_t lastupdate = 0;
@@ -41,11 +42,91 @@ int ggztop_init(void)
 	return 1;
 }
 
-void ggztop_display_top_screen(stats_rt *rt, int showallrooms)
+void swap(stats_rt *rt, int row1, int row2)
+{
+	char tmproom[STATS_RT_MAX_ROOMNAME_LEN];
+	int tmpplayer, tmptable, tmpchat;
+
+	strcpy(tmproom, rt->rooms[row1]);
+	strcpy(rt->rooms[row1], rt->rooms[row2]);
+	strcpy(rt->rooms[row2], tmproom);
+
+	tmpplayer = rt->players[row1];
+	rt->players[row1] = rt->players[row2];
+	rt->players[row2] = tmpplayer;
+
+	tmptable = rt->tables[row1];
+	rt->tables[row1] = rt->tables[row2];
+	rt->tables[row2] = tmptable;
+
+	tmpchat = rt->chat[row1];
+	rt->chat[row1] = rt->chat[row2];
+	rt->chat[row2] = tmpchat;
+}
+
+void sort(stats_rt *rt, int sortcolumn)
+{
+	int i, j;
+	int swapped;
+
+	do
+	{
+		swapped = 0;
+		for(i = 0; i < rt->num_rooms; i++)
+		{
+			for(j = i + 1; j < rt->num_rooms; j++)
+			{
+				if(i == j)
+					continue;
+
+				if(sortcolumn == 1)
+				{
+					if(strcmp(rt->rooms[i], rt->rooms[j]) > 0)
+					{
+						swap(rt, i, j);
+						swapped = 1;
+					}
+				}
+				else if(sortcolumn == 2)
+				{
+					if(rt->players[i] < rt->players[j])
+					{
+						swap(rt, i, j);
+						swapped = 1;
+					}
+				}
+				else if(sortcolumn == 3)
+				{
+					if(rt->tables[i] < rt->tables[j])
+					{
+						swap(rt, i, j);
+						swapped = 1;
+					}
+				}
+				else if(sortcolumn == 4)
+				{
+					if(rt->chat[i] < rt->chat[j])
+					{
+						swap(rt, i, j);
+						swapped = 1;
+					}
+				}
+			}
+		}
+	}
+	while(swapped);
+}
+
+void ggztop_display_top_screen(stats_rt *rt, int showallrooms, int sortcolumn)
 {
 	int i, j;
 	int line = 4;
 	int col;
+	stats_rt rtcopy;
+
+	memcpy(&rtcopy, rt, sizeof(rtcopy));
+	sort(&rtcopy, sortcolumn);
+	rt = &rtcopy;
 
 	clear();
 
@@ -62,13 +143,29 @@ void ggztop_display_top_screen(stats_rt *rt, int showallrooms)
 	printw(", Tables: %i", rt->num_tables);
 
 	move(3, 0);
+	if(sortcolumn == 1)
+		attron(COLOR_PAIR(COL_GREEN));
 	printw("Room");
+	if(sortcolumn == 1)
+		attroff(COLOR_PAIR(COL_GREEN));
 	move(3, 30);
+	if(sortcolumn == 2)
+		attron(COLOR_PAIR(COL_GREEN));
 	printw("Players");
+	if(sortcolumn == 2)
+		attroff(COLOR_PAIR(COL_GREEN));
 	move(3, 40);
+	if(sortcolumn == 3)
+		attron(COLOR_PAIR(COL_GREEN));
 	printw("Tables");
+	if(sortcolumn == 3)
+		attroff(COLOR_PAIR(COL_GREEN));
 	move(3, 50);
+	if(sortcolumn == 4)
+		attron(COLOR_PAIR(COL_GREEN));
 	printw("Chat%%");
+	if(sortcolumn == 4)
+		attroff(COLOR_PAIR(COL_GREEN));
 
 	for(i = 0; i < rt->num_rooms; i++)
 	{
@@ -109,6 +206,7 @@ void ggztop_display_top(stats_rt *rt, int rawmode)
 	int ret;
 	int redraw;
 	int showallrooms;
+	int sortcolumn;
 
 	if(!rawmode)
 	{
@@ -122,11 +220,13 @@ void ggztop_display_top(stats_rt *rt, int rawmode)
 		init_pair(COL_RED, COLOR_RED, -1);
 		init_pair(COL_WHITE, COLOR_WHITE, -1);
 		init_pair(COL_YELLOW, COLOR_YELLOW, -1);
+		init_pair(COL_GREEN, COLOR_GREEN, -1);
 	}
 
 	redraw = 1;
 	lastuptime = rt->uptime;
 	showallrooms = 0;
+	sortcolumn = 0;
 
 	while(1)
 	{
@@ -139,7 +239,7 @@ void ggztop_display_top(stats_rt *rt, int rawmode)
 		if(redraw)
 		{
 			if(!rawmode)
-				ggztop_display_top_screen(rt, showallrooms);
+				ggztop_display_top_screen(rt, showallrooms, sortcolumn);
 			redraw = 0;
 		}
 
@@ -166,6 +266,11 @@ void ggztop_display_top(stats_rt *rt, int rawmode)
 				else if(input == '\t')
 				{
 					showallrooms = !showallrooms;
+					redraw = 1;
+				}
+				else if((input >= '0') && (input <= '4'))
+				{
+					sortcolumn = input - '0';
 					redraw = 1;
 				}
 			}
