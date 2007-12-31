@@ -1,0 +1,35 @@
+.TH "ggztop" "1" "0.0.14+" "The GGZ Development Team" "GGZ Gaming Zone"
+.SH "NAME"
+.LP
+ggztop \- real-time statistics from ggzd
+.SH "DESCRIPTION"
+.LP
+Server administrators who run a GGZ Gaming Zone server (\fBggzd\fR) can
+monitor the activities on the server in real-time with \fBggztop\fR.
+Similar to other such tools, activities are displayed as rows and their
+properties in several columns which can be sorted. In this case,
+each GGZ room represents a row, and the associated players, tables and
+chat frequencies are the properties.
+.LP
+When running with the option -t, a plaintext dump is written. This shall
+be extended to include a HTML output option so that \fBggztop\fR can be
+run as a CGI script for web-based statistics. For the time being, only the
+interactive monitoring mode is supported.
+.LP
+This tool only works if ggzd has been compiled with real-time statistics
+support and exports the statistics as a shared-memory segment.
+.LP
+.SH "COMMANDS"
+.LP
+Pressing \fIq\fR quits the application. The \fIspace space\fR updates the
+display immediately, while normally an update is due every second.
+With \fItab\fR the display of non-significant rooms can be toggled.
+Finally, a number between \fI0\fR and \fI4\fR selects a column for sorting
+(0 means no sorting is done).
+.SH "SEE ALSO"
+.LP
+ggzd(6)
+.SH "AUTHORS"
+.LP
+The GGZ Development Team
+<ggz\-dev@mail.ggzgamingzone.org>
