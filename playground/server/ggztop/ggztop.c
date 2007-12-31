@@ -125,8 +125,19 @@ void ggztop_display_top_screen(stats_rt *rt, int showallrooms, int sortcolumn)
 	stats_rt rtcopy;
 
 	memcpy(&rtcopy, rt, sizeof(rtcopy));
-	sort(&rtcopy, sortcolumn);
 	rt = &rtcopy;
+
+	for(i = 0; i < rt->num_rooms; i++)
+	{
+		for(j = 1; j < 10; j++)
+		{
+			lastchats[i][j - 1] = lastchats[i][j];
+		}
+		lastchats[i][9] = rt->chat[i];
+		rt->chat[i] = lastchats[i][9] - lastchats[i][0];
+	}
+
+	sort(&rtcopy, sortcolumn);
 
 	clear();
 
@@ -169,12 +180,6 @@ void ggztop_display_top_screen(stats_rt *rt, int showallrooms, int sortcolumn)
 
 	for(i = 0; i < rt->num_rooms; i++)
 	{
-		for(j = 1; j < 10; j++)
-		{
-			lastchats[i][j - 1] = lastchats[i][j];
-		}
-		lastchats[i][9] = rt->chat[i];
-
 		if((rt->players[i] > 0) || (showallrooms))
 		{
 			move(line, 0);
@@ -190,7 +195,7 @@ void ggztop_display_top_screen(stats_rt *rt, int showallrooms, int sortcolumn)
 			move(line, 40);
 			printw("%i", rt->tables[i]);
 			move(line, 50);
-			printw("%i", lastchats[i][9] - lastchats[i][0]);
+			printw("%i", rt->chat[i]);
 
 			line++;
 		}
