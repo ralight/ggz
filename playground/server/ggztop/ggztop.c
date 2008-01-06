@@ -18,6 +18,10 @@
 #define COL_YELLOW 3
 #define COL_GREEN 4
 
+#define RUNMODE_TEXTONLY 1
+#define RUNMODE_XMLONLY 2
+#define RUNMODE_INTERACTIVE 3
+
 static int stats_rt_shmid = 0;
 static time_t lastupdate = 0;
 static int lastuptime = 0;
@@ -307,7 +311,24 @@ void ggztop_display_text(stats_rt *rt)
 	}
 }
 
-void ggztop_read(int textonly)
+void ggztop_display_xml(stats_rt *rt)
+{
+	int i;
+
+	printf("<ggzstats>\n");
+
+	for(i = 0; i < rt->num_rooms; i++)
+	{
+		printf("<room name='%s'>\n", rt->rooms[i]);
+		printf("<players>%i</players>\n", rt->players[i]);
+		printf("<tables>%i</tables>\n", rt->tables[i]);
+		printf("</room>\n");
+	}
+
+	printf("</ggzstats>\n");
+}
+
+void ggztop_read(int runmode)
 {
 	stats_rt *rt;
 
@@ -324,8 +345,10 @@ void ggztop_read(int textonly)
 		return;
 	}
 
-	if(textonly)
+	if(runmode == RUNMODE_TEXTONLY)
 		ggztop_display_text(rt);
+	else if(runmode == RUNMODE_XMLONLY)
+		ggztop_display_xml(rt);
 	else
 		ggztop_display_top(rt, 0);
 
@@ -335,23 +358,27 @@ void ggztop_read(int textonly)
 int main(int argc, char *argv[])
 {
 	int ret;
-	int textonly = 0;
+	int runmode = RUNMODE_INTERACTIVE;
 
 	if((argc == 2) && (!strcmp(argv[1], "-h")))
 	{
-		printf("ggztop [-t]\n");
+		printf("ggztop [-t/-x]\n");
 		printf(" -t: bare text output, no loop\n");
+		printf(" -x: xml output, no loop\n");
 		return 0;
 	}
 
 	if((argc == 2) && (!strcmp(argv[1], "-t")))
-		textonly = 1;
+		runmode = RUNMODE_TEXTONLY;
+
+	if((argc == 2) && (!strcmp(argv[1], "-x")))
+		runmode = RUNMODE_XMLONLY;
 
 	ret = ggztop_init();
 	if(!ret)
 		return -1;
 
-	ggztop_read(textonly);
+	ggztop_read(runmode);
 
 	return 0;
 }
