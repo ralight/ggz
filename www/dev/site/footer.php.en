@@ -3,7 +3,6 @@
 <table class="pane">
 <tr>
 <td>
-<font size="3">
 International
 <?php
 include("international.php");
@@ -24,7 +23,6 @@ include("international.php");
 <a href="https://api.ggzcommunity.org/">WS API</a>
 |
 <a href="http://metacle.ggzgamingzone.org/">Metacle</a>
-</font>
 </td>
 </tr>
 </table>
