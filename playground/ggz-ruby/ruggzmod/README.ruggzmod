@@ -23,3 +23,6 @@ To install the test client (might need root for system-wide GGZ install):
 Finally, test by running:
 	% ./testclient-launch.sh
 
+To generate the documentation, type:
+	% rdoc RGGZMod.rb
+

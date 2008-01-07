@@ -9,7 +9,7 @@
 #include <ggzmod.h>
 #include <ruby.h>
 
-/* Global Variables */
+/* Global variables */
 
 static VALUE cTEST;
 static int ret;
