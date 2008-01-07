@@ -13,22 +13,22 @@ backupmx.hostsharing.net (as backup only, doesn't have lists etc.)
 
 Main project server (GGZ HQ)
 ----------------------------
-ggzgamingzone.org [65.98.24.111]
-- hosts www, wwwmirror, dev, svn, bugs, ftp, mail
+ggzgamingzone.org [89.110.147.230]
+- hosts www, wwwmirror, dev, svn, bugs, ftp, mail, hq
 - hosted cvs, rankings, live in the past
 - hosts games.ggzcommunity.org (temporarily only!)
 
 GGZ Community server
 --------------------
 ggzcommunity.org [82.228.187.42 / 2001:6f8:372::2]
-- hosts {live,metacle}.ggzgamingzone.org
+- hosts metacle.ggzgamingzone.org
 - mirrors WWW/FTP on fr.ggzgamingzone.org
 - runs GGZ!
 
 GGZ Cards Community server
 --------------------------
 oojah.dyndns.org
-- aliases {gnome,freeciv,cards}.ggzgamingzone.org
+- aliases {gnome,freeciv,cards,live}.ggzgamingzone.org
 - runs GGZ!
 
 German server
@@ -36,6 +36,11 @@ German server
 de.ggzgamingzone.org [212.21.77.2]
 - hosts mail.ggzcommunity.org
 - mirrors WWW/FTP on de.ggzgamingzone.org
+
+USA server
+----------
+us.ggzgamingzone.org [65.98.24.111]
+- hosts nothing of interest at the moment
 
 FTP mirrors
 -----------
