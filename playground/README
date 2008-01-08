@@ -75,6 +75,7 @@
 		Note that GGZ-Python is already a package on its own, and only some
 		experimental extensions are here in playground.
 		Likewise, GGZ-Java5 is rather complete, whereas GGZ-Java is quite old.
+		GGZ-Ruby has recently been made usable.
 
 	Haskell:
 		Some Sudoku creation and solver software written in the functional
