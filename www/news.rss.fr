@@ -4,35 +4,27 @@
 <rss version="0.91">
 <channel>
 
-<title>Nouvelles GGZ</title>
+<title>Informations GGZ</title>
 <link>http://www.ggzgamingzone.org/changes.rss</link>
-<description>Nouvelles GGZ</description>
+<description>Informations GGZ</description>
 <language>fr-fr</language>
 
 <item>
-<title><i>10.01.2008: GGZ turns 8 years old</i> (by josef)</title>
+<title><i>10 janvier 2008: GGZ fête ses 8 ans</i> (by josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>
-The GGZ project has just turned 8 years old today. And there's indeed a reason
-or two to celebrate the event. Just recently, our new
-<a href="http://hq.ggzgamingzone.org/">project server</a> has been inaugurated,
-complete with <a href="http://hq.ggzgamingzone.org:8010/">buildbot</a> and
-<a href="http://mail.ggzgamingzone.org/">searchable mail archives</a>.
-Before that, the
-<a href="http://www.oreillynet.com/pub/a/ruby/2007/12/18/creating-games-in-ruby-part-2.html?page=last">second part</a>
-of an article on Ruby game development was published which mentions GGZ.
-The GGZ libraries have been
-<a href="http://live.gnome.org/TwoPointTwentyone/ExternalDependencies">accepted</a>
-as a build dependency for <a href="http://live.gnome.org/GnomeGames/">gnome-games</a>
-2.21 which means wider availability of the libraries for us and more consistent
-network gaming for them!
-Likewise, KDE 4.0 will be released tomorrow and contains 2 games with GGZ support.
-And soon, there will be another cool news, from what we've heard already... :-)
+Le projet GGZ a fêté sa 8° année d'existance aujourd'hui. Et il y a en fait une raison ou deux de célébrer cet evenement.
+Tout recemment, notre nouveau <a href="http://hq.ggzgamingzone.org/">serveur de projet</a> a été inauguré, completé par <a href="http://hq.ggzgamingzone.org:8010/">buildbot</a> et
+<a href="http://mail.ggzgamingzone.org/">les archives de la mailing list</a>
+Avant cela, la <a href="http://www.oreillynet.com/pub/a/ruby/2007/12/18/creating-games-in-ruby-part-2.html?page=last">seconde partie</a> d'un article sur le développement de jeux en Ruby a été publié, et mentionne GGZ.
+Les bibliothèques GGZ ont été <a href="http://live.gnome.org/TwoPointTwentyone/ExternalDependencies">acceptées</a> comme dépendance de compilation pour <a href="http://live.gnome.org/GnomeGames/">gnome-games</a> 2.21, ce qui signifie une disponibilité accrue des bibliothèques pour nous, et une meilleure consistance de jeu réseau.
+De même, KDE 4.0 sortira demain et contient 2 jeux avec support GGZ.
+Et bientot, il y aurait d'autre bonnes nouvelles, de ce qu'on a pu entendre ... :-)
 </full>
 </item>
 
 <item>
-<title><i>27.08.2007: Development news</i> (by josef)</title>
+<title><i>27 août 2007: Informations sur le développement</i> (by josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>
 There are many interesting things going on in GGZ land: our cards players
