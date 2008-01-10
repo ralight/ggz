@@ -10,6 +10,30 @@
 <language>de-de</language>
 
 <item>
+<title><i>10.01.2008: GGZ wird 8 Jahre alt</i> (von josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+Das GGZ-Projekt ist heute 8 Jahre alt geworden. Und es gibt durchaus einigen
+Grund zum Feiern dieses Ereignisses. Erst kürzlich ist unser neuer
+<a href="http://hq.ggzgamingzone.org/">Projektserver</a> eingeweiht worden,
+mitsamt einem <a href="http://hq.ggzgamingzone.org:8010/">Buildbot</a> und
+<a href="http://mail.ggzgamingzone.org/">durchsuchbaren Mailarchiven</a>.
+Davor wurde der
+<a href="http://www.oreillynet.com/pub/a/ruby/2007/12/18/creating-games-in-ruby-part-2.html?page=last">zweite Teil</a>
+eines Artikels zur Spieleentwicklung mit Ruby veröffentlicht, welcher GGZ erwähnte.
+Die GGZ-Bibliotheken wurden als Abhängigkeit zur Erstellung von
+<a href="http://live.gnome.org/GnomeGames/">gnome-games</a> 2.21
+<a href="http://live.gnome.org/TwoPointTwentyone/ExternalDependencies">akzeptiert</a>,
+was für uns eine größere Verbreitung der Bibliotheken und für sie eine konsistentere
+Unterstützung von Mehrspielermode bedeutet!
+In ähnlicher Form wird morgen KDE 4.0 veröffentlicht werden und enthält dabei
+zwei Spiele mit GGZ-Unterstützung.
+Bald darauf wird es noch eine weitere coole Neuigkeit geben, nach dem was man darüber
+bisher schon weiß... :-)
+</full>
+</item>
+
+<item>
 <title><i>27.08.2007: Development news</i> (by josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>

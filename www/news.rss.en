@@ -10,6 +10,28 @@
 <language>en-us</language>
 
 <item>
+<title><i>10.01.2008: GGZ turns 8 years old</i> (by josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+The GGZ project has just turned 8 years old today. And there's indeed a reason
+or two to celebrate the event. Just recently, our new
+<a href="http://hq.ggzgamingzone.org/">project server</a> has been inaugurated,
+complete with <a href="http://hq.ggzgamingzone.org:8010/">buildbot</a> and
+<a href="http://mail.ggzgamingzone.org/">searchable mail archives</a>.
+Before that, the
+<a href="http://www.oreillynet.com/pub/a/ruby/2007/12/18/creating-games-in-ruby-part-2.html?page=last">second part</a>
+of an article on Ruby game development was published which mentions GGZ.
+The GGZ libraries have been
+<a href="http://live.gnome.org/TwoPointTwentyone/ExternalDependencies">accepted</a>
+as a build dependency for <a href="http://live.gnome.org/GnomeGames/">gnome-games</a>
+2.21 which means wider availability of the libraries for us and more consistent
+network gaming for them!
+Likewise, KDE 4.0 will be released tomorrow and contains 2 games with GGZ support.
+And soon, there will be another cool news, from what we've heard already... :-)
+</full>
+</item>
+
+<item>
 <title><i>27.08.2007: Development news</i> (by josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>
