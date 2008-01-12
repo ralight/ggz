@@ -139,6 +139,8 @@ int ggz_tls_enable_fd(int fdes, GGZTLSType whoami, GGZTLSVerificationType verify
 		return 0;
 	}
 
+	/* FIXME: Compiler warnings here are probably unavoidable, see
+	   http://www.mail-archive.com/help-gnutls@gnu.org/msg00286.html */
 	gnutls_transport_set_ptr(session, (gnutls_transport_ptr)fdes);
 	do {
 		ret = gnutls_handshake(session);

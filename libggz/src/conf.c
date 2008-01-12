@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 9449 2007-12-15 06:23:11Z jdorje $
+ * $Id: conf.c 9524 2008-01-12 21:55:18Z josef $
  *
  * Internal functions for handling configuration files
  *
@@ -1063,3 +1063,175 @@ int ggz_conf_get_keys(int handle, const char *section, int *argcp, char ***argvp
 
 	return 0;
 }
+
+ggz_intlstring *ggz_intlstring_new(void)
+{
+	ggz_intlstring *intl = (ggz_intlstring*)ggz_malloc(sizeof(ggz_intlstring));
+	intl->number = 0;
+	intl->languages = NULL;
+	intl->translations = NULL;
+
+	return intl;
+}
+
+ggz_intlstring *ggz_intlstring_fromstring(const char *str)
+{
+	ggz_intlstring *intl = (ggz_intlstring*)ggz_malloc(sizeof(ggz_intlstring));
+	intl->number = 1;
+	intl->languages = (char**)malloc(sizeof(char*));
+	intl->translations = (char**)malloc(sizeof(char*));
+
+	intl->languages[0] = NULL;
+	intl->translations[0] = ggz_strdup(str);
+
+	return intl;
+}
+
+ggz_intlstring *ggz_intlstring_fromintlstring(const ggz_intlstring* string)
+{
+	int i;
+
+	ggz_intlstring *intl = ggz_intlstring_new();
+	intl->number = string->number;
+	intl->languages = (char**)malloc(sizeof(char*) * intl->number);
+	intl->translations = (char**)malloc(sizeof(char*) * intl->number);
+
+	for(i = 0; i < string->number; i++)
+	{
+		intl->languages[i] = ggz_strdup(string->languages[i]);
+		intl->translations[i] = ggz_strdup(string->translations[i]);
+	}
+
+	return intl;
+}
+
+void ggz_intlstring_free(ggz_intlstring *string)
+{
+	int i;
+
+	if(!string) return;
+
+	for(i = 0; i < string->number; i++)
+	{
+		if(string->languages[i])
+			ggz_free(string->languages[i]);
+		ggz_free(string->translations[i]);
+	}
+
+	ggz_free(string);
+}
+
+/* Internal helper function to ggz_intlstring_translated() */
+static char *ggz_intlstring_lookup(const ggz_intlstring *string, const char *langpart)
+{
+	int i;
+
+	for(i = 0; i < string->number; i++)
+	{
+		/*printf("// %s:%s\n", string->languages[i], langpart);*/
+		if(!ggz_strcmp(string->languages[i], langpart))
+		{
+			return string->translations[i];
+		}
+	}
+
+	return NULL;
+}
+
+char *ggz_intlstring_translated(const ggz_intlstring *string, const char *lang)
+{
+	int i;
+	char *str;
+	char *langpart;
+
+	if(!string) return NULL;
+
+	if(lang)
+	{
+		langpart = ggz_strdup(lang);
+
+		for(i = 0; langpart[i]; i++)
+			if(langpart[i] == '.')
+				langpart[i] = '\0';
+	}
+	else
+	{
+		langpart = NULL;
+	}
+
+	str = ggz_intlstring_lookup(string, langpart);
+
+	if(lang)
+	{
+		if(!str)
+		{
+			for(i = 0; langpart[i]; i++)
+				if(langpart[i] == '_')
+					langpart[i] = '\0';
+
+			str = ggz_intlstring_lookup(string, langpart);
+		}
+
+		if(!str)
+		{
+			str = ggz_intlstring_lookup(string, NULL);
+		}
+
+		ggz_free(langpart);
+	}
+
+	return str;
+}
+
+ggz_intlstring *ggz_conf_read_intlstring(int handle,
+	const char *section, const char *key)
+{
+	int argcp;
+	char **argvp;
+	int i;
+	int rc;
+	char *lang, *value;
+
+	rc = ggz_conf_get_keys(handle, section, &argcp, &argvp);
+	if(rc != 0)
+	{		
+		return NULL;
+	}
+
+	ggz_intlstring *intl = ggz_intlstring_new();
+
+	for(i = 0; i < argcp; i++)
+	{
+		/*printf("## %s\n", argvp[i]);*/
+
+		if(strstr(argvp[i], key) == argvp[i])
+		{
+			lang = argvp[i] + strlen(key);
+			/*printf("=> yup, push (%s)\n", lang);*/
+
+			intl->number++;
+			intl->languages= (char**)ggz_realloc(intl->languages,
+				intl->number * sizeof(char*));
+			intl->translations = (char**)ggz_realloc(intl->translations,
+				intl->number * sizeof(char*));
+
+			value = ggz_conf_read_string(handle, section, argvp[i], NULL);
+			/*printf("=> value is %s\n", value);*/
+
+			intl->translations[intl->number - 1] = value;
+			if(strlen(lang) >= 2)
+			{
+				intl->languages[intl->number - 1] = (char*)ggz_malloc(strlen(lang));
+				strncpy(intl->languages[intl->number - 1], lang + 1, strlen(lang) - 2);
+				intl->languages[intl->number - 1][strlen(lang)] = '\0';
+			}
+			else intl->languages[intl->number - 1] = NULL;
+		}
+
+		ggz_free(argvp[i]);
+	}
+	ggz_free(argvp);
+
+	return intl;
+}
+

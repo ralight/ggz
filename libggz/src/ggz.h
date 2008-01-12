@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 9491 2008-01-12 16:56:03Z josef $
+ * $Id: ggz.h 9524 2008-01-12 21:55:18Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -261,6 +261,76 @@ int ggz_memory_check(void);
  * @{
  */
 
+/** @brief Internationalized string
+ *
+ *  Each object of type ggz_intlstring can carry strings in multiple
+ *  translations at the same time. This makes it possible to read out
+ *  internationalised configuration files without much effort.
+ *  Do not access the structure directly, instead use the associated
+ *  functions and ggz_conf_read_intlstring for creating the structures.
+ */
+typedef struct
+{
+	int number;		/**< Number of strings */
+	char **languages;	/**< List of languages, one for each string */
+	char **translations;	/**< List of strings */
+} ggz_intlstring;
+
+/** @brief Create a new internationalized string.
+ *
+ *  Usually this function might be called first to construct an empty
+ *  internationalized string. However, there are two useful alternative
+ *  initializers available: \ref ggz_intlstring_fromstring, \ref
+ *  ggz_intlstring_fromintlstring.
+ *
+ *  @return Empty internationalized string
+ */
+ggz_intlstring *ggz_intlstring_new(void);
+
+/** @brief Create an internationalized string from an ordinary string.
+ *
+ *  @param str A null-terminated string
+ *  @return Internationalized string object with only one string in it
+ */
+ggz_intlstring *ggz_intlstring_fromstring(const char *str);
+
+/** @brief Copy an internationalized string.
+ *
+ *  Use this function to create a copy which must then be freed with \ref
+ *  ggz_intlstring_free.
+ *
+ *  @param string Already constructed internationalized string
+ *  @return Copy of the origin internationalized string
+ */
+ggz_intlstring *ggz_intlstring_fromintlstring(const ggz_intlstring* string);
+
+/** @brief Free an internationalized string
+ *
+ *  Only use this for strings which were created with \ref
+ *  ggz_intlstring_fromstring or read with \ref ggz_conf_read_intlstring. 
+ *
+ *  @param string The internationalized string to be destroyed
+ */
+void ggz_intlstring_free(ggz_intlstring *string);
+
+/** @brief Return the most appropriate of the contained strings.
+ *
+ *  This function tries to return the string which matches the requested
+ *  language. The language might be fully qualified, such as 'de_DE', or
+ *  a simple language code such as 'de', with the former always trying to
+ *  fall back to the latter if no translation is found.
+ *  If no such translation is found, the default translation is returned.
+ *
+ *  The returned string must be freed with \ref ggz_free.
+ *
+ *  @param string The internationalized string object to translate
+ *  @param lang The language in which the string should be represented
+ *  @return Translated internationalized string, or the default translation
+ *
+ *  @see ggz_conf_read_intlstring
+ */
+char *ggz_intlstring_translated(const ggz_intlstring *string, const char *lang);
+
 /** @brief Debugging type for config-file debugging.
  *  @see ggz_debug_enable
  */
@@ -466,6 +536,28 @@ int ggz_conf_get_keys (int handle,
 			 const char *section,
 			 int	*argcp,
 			 char	***argvp);
+
+
+/**
+ * Reads a potentially translated string value from an open configuration file.
+ * If the section/key combination is not found, NULL is returned.
+ * @param handle A valid handle returned by ggz_conf_parse()
+ * @param section A string section name to read from
+ * @param key A string variable key name to read from
+ * @return A dynamically allocated ggz_intlstring structure
+ *
+ * @note The string is allocated via ggz_intlstring_new() and the caller
+ * is expected to free it again with ggz_intlstring_free().
+ * The translation is retrieved with ggz_intlstring_translated().
+ *
+ * Translations are added as follows:
+ * Name = default string
+ * Name[de] = translated string
+ * Name[de_AT] = translated and localized string
+ */
+ggz_intlstring *ggz_conf_read_intlstring(int handle,
+			const char *section,
+			const char *key);
 
 /** @} */
 
