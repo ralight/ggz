@@ -1,34 +1,34 @@
 /*
- * GGZ Metaserver access library (libggzmeta)
- * URI handling functions
- * Copyright (C) 2006 Josef Spillner <josef@ggzgamingzone.org>
+ * GGZ convenience C programming library (libggz)
+ * URI handling functions, originally in libggzmeta
+ * Copyright (C) 2006, 2007 Josef Spillner <josef@ggzgamingzone.org>
 
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
-
- * This program is distributed in the hope that it will be useful,
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
-
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 /* Header files */
-#include "uri.h"
+#include "ggz.h"
 
 /* System includes */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-URI uri_from_string(const char *uristring)
+ggz_uri_t uri_from_string(const char *uristring)
 {
-	URI uri;
+	ggz_uri_t uri;
 	char *ptr;
 	char *uricopy;
 	char *base;
@@ -42,7 +42,7 @@ URI uri_from_string(const char *uristring)
 
 	if(!uristring) return uri;
 
-	uricopy = strdup(uristring);
+	uricopy = ggz_strdup(uristring);
 	base = uricopy;
 	port = NULL;
 
@@ -50,7 +50,7 @@ URI uri_from_string(const char *uristring)
 	if(ptr)
 	{
 		*ptr = '\0';
-		uri.protocol = strdup(base);
+		uri.protocol = ggz_strdup(base);
 		base = ptr + 3;
 	}
 
@@ -58,7 +58,7 @@ URI uri_from_string(const char *uristring)
 	if(ptr)
 	{
 		*ptr = '\0';
-		uri.user = strdup(base);
+		uri.user = ggz_strdup(base);
 		base = ptr + 1;
 	}
 
@@ -66,7 +66,7 @@ URI uri_from_string(const char *uristring)
 	if(ptr)
 	{
 		*ptr = '\0';
-		uri.host = strdup(base);
+		uri.host = ggz_strdup(base);
 		base = ptr + 1;
 	}
 	else
@@ -78,29 +78,29 @@ URI uri_from_string(const char *uristring)
 	if(ptr)
 	{
 		*ptr = '\0';
-		if(!port) port = strdup(base);
-		else uri.host = strdup(base);
+		if(!port) port = ggz_strdup(base);
+		else uri.host = ggz_strdup(base);
 		base = ptr + 1;
-		uri.path = strdup(base);
+		uri.path = ggz_strdup(base);
 	}
 	else
 	{
-		if(!uri.host) uri.host = strdup(base);
-		else port = strdup(base);
+		if(!uri.host) uri.host = ggz_strdup(base);
+		else port = ggz_strdup(base);
 	}
 
 	if(port)
 	{
 		uri.port = atoi(port);
-		free(port);
+		ggz_free(port);
 	}
 
-	free(uricopy);
+	ggz_free(uricopy);
 
 	return uri;
 }
 
-char *uri_to_string(URI uri)
+char *uri_to_string(ggz_uri_t uri)
 {
 	char protocol[32];
 	char user[128];
@@ -130,12 +130,16 @@ char *uri_to_string(URI uri)
 	return s;
 }
 
-void uri_free(URI uri)
+void uri_free(ggz_uri_t uri)
 {
-	if(uri.protocol) free(uri.protocol);
-	if(uri.user) free(uri.user);
-	if(uri.host) free(uri.host);
-	if(uri.path) free(uri.path);
+	if(uri.protocol)
+		ggz_free(uri.protocol);
+	if(uri.user)
+		ggz_free(uri.user);
+	if(uri.host)
+		ggz_free(uri.host);
+	if(uri.path)
+		ggz_free(uri.path);
 
 	uri.protocol = NULL;
 	uri.user = NULL;

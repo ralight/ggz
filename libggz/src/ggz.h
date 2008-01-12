@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 9447 2007-12-14 07:15:14Z jdorje $
+ * $Id: ggz.h 9489 2008-01-12 16:37:27Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -1859,6 +1859,59 @@ size_t ggz_tls_write(int fd, void *ptr, size_t n);
  *  @return Actually read number of bytes
  */
 size_t ggz_tls_read(int fd, void *ptr, size_t n);
+
+/** @} */
+
+/**
+ * @defgroup uri URI functions
+ *
+ * These function handle GGZ connection parameters in URI/IRI format.
+ *
+ * @{
+ */
+
+/** @brief Data type describing a generic URI.
+ *
+ *  URIs can describe GGZ connections, but also other arbitrary
+ *  network resources. URIs are of the form
+ *  [protocol://][user@]host[:port][/path].
+ */
+typedef struct
+{
+	char *protocol; /**< The protocol part, such as ggz */
+	char *user;	/**< The user part */
+	char *host;	/**< The host part */
+	int port;	/**< The port part */
+	char *path;	/**< The path part */
+} ggz_uri_t;
+
+/** @brief Create a new URI object from a string describing an URI.
+ *
+ *  The returned URI object must be free'd with uri_free() after use.
+ *  Its member variables can be read directly, but should not be written to.
+ *
+ *  @param uristring: String representation of an URI
+ *  @return URI object with any of its parts directly accessible
+ */
+ggz_uri_t uri_from_string(const char *uristring);
+
+/** @brief Convert an URI object back into a string.
+ *
+ *  The string must be free'd with ggz_free() after use.
+ *
+ *  @param uri: URI object
+ *  @return String representation of the object
+ */
+char *uri_to_string(ggz_uri_t uri);
+
+/** @brief Free an URI object (or rather, its contents).
+ *
+ *  Frees up all allocated memory taken up by an URI object. The object
+ *  should not be used afterwards.
+ *
+ *  @param uri An URI object which was created with \ref uri_from_string
+ */
+void uri_free(ggz_uri_t uri);
 
 /** @} */
 

@@ -45,7 +45,7 @@ ServerEntry **meta_network_load()
 	FILE *f;
 	char cachefile[1024];
 	char buf[1024];
-	URI uri;
+	ggz_uri_t uri;
 	ServerEntry *server;
 	ServerEntry **metaservers = NULL;
 
@@ -111,7 +111,7 @@ int meta_add(ServerEntry *server, const char *classname, const char *category,
 	DOM *dom;
 	ELE *root;
 	ELE *el;
-	URI uri;
+	ggz_uri_t uri;
 	char *serveruri;
 	int accepted;
 	int i;
@@ -182,7 +182,7 @@ int meta_add(ServerEntry *server, const char *classname, const char *category,
 	return accepted;
 }
 
-ServerEntry *meta_server_new(URI uri)
+ServerEntry *meta_server_new(ggz_uri_t uri)
 {
 	ServerEntry *server;
 
@@ -267,7 +267,7 @@ ServerEntry **meta_query(const char *metaserveruri, const char *classname,
 	ELE **el;
 	int i, j;
 
-	URI uri;
+	ggz_uri_t uri;
 	char options[512];
 	char oldoptions[512];
 	ServerEntry *server;
@@ -435,7 +435,7 @@ ServerEntry **meta_network_sync(ServerEntry **servers)
 	const char *classname = "ggz";
 	const char *category = "meta";
 	const char *version = "0.5";
-	URI uri;
+	ggz_uri_t uri;
 	int i;
 
 	if(!servers) return NULL;
@@ -464,7 +464,7 @@ ServerEntry **meta_queryallggz(ServerEntry **servers, const char *protocol)
 	ServerEntry *restriction;
 	const char *classname = "ggz";
 	const char *category = "connection";
-	URI uri;
+	ggz_uri_t uri;
 
 	restriction = meta_server_new(uri);
 	meta_server_attribute(restriction, "protocol", protocol);

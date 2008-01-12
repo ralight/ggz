@@ -23,6 +23,7 @@ libggz_la_SOURCES = \
 	numberlist.c \
 	stack.c \
 	support.h \
+	uri.c \
 	xmlelement.c \
 	\
 	ggz_common.h \

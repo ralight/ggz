@@ -2,7 +2,7 @@ SUBDIRS = serverspec clientspec mainspec
 
 SGML_FILES = design.sgml overview.sgml requirements.sgml
 
-EXTRA_DIST = $(SGML_FILES) design.dsl design-txt.dsl server_arch.fig
+EXTRA_DIST = $(SGML_FILES) design.dsl design-txt.dsl server_arch.fig Uri-spec.txt
 
 all-local: design-html design.pdf design.txt
 

@@ -22,7 +22,7 @@
 #define GGZ_META_H
 
 /* Header files */
-#include "uri.h"
+#include <ggz.h>
 
 /* Data type describing a server property */
 /* In queries, those are used as restrictions for refined search */
@@ -38,7 +38,7 @@ typedef struct serverattribute_t ServerAttribute;
 /* The set of attributes depends on the server type */
 struct serverentry_t
 {
-	URI uri;
+	ggz_uri_t uri;
 	ServerAttribute *attributes;
 };
 typedef struct serverentry_t ServerEntry;
@@ -48,7 +48,7 @@ typedef struct serverentry_t ServerEntry;
 
 /* Create a new server object */
 /* Ownership of URI remains with the caller */
-ServerEntry *meta_server_new(URI uri);
+ServerEntry *meta_server_new(ggz_uri_t uri);
 
 /* Addition of attribute to a server object */
 void meta_server_attribute(ServerEntry *server,
