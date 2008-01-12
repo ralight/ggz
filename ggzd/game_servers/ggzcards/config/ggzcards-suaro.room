@@ -1,11 +1,12 @@
-# $Id: ggzcards-suaro.room 8254 2006-06-22 09:30:47Z oojah $
 [RoomInfo]
 
 # This is the short name for the room
 Name = Suaro
+Name[de] = Suaro
 
 # This is the long descriptive name for the room
 Description = GGZ Cards - Suaro room
+Description[de] = GGZ Cards - Suaro-Raum
 
 # The gametype should match up to the Name of an added game
 GameType = GGZCards-Suaro

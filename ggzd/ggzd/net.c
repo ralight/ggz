@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 9459 2007-12-20 23:21:11Z oojah $
+ * $Id: net.c 9525 2008-01-12 22:03:18Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -120,6 +120,7 @@ static GGZXMLElement* _net_new_element(const char *tag,
 static void _net_handle_session(GGZNetIO *net, GGZXMLElement *session);
 static void _net_handle_channel(GGZNetIO *net, GGZXMLElement *channel);
 static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login);
+static void _net_handle_language(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_name(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_password(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_email(GGZNetIO *net, GGZXMLElement *element);
@@ -421,11 +422,14 @@ GGZReturn net_send_room_list_count(GGZNetIO *net, int count)
 GGZReturn net_send_room(GGZNetIO *net, int index,
 			RoomStruct *room, bool verbose)
 {
+	const char *language = net->client->language;
+
 	_net_send_line(net, "<ROOM ID='%d' NAME='%s' GAME='%d' PLAYERS='%d'>",
-		       index, room->name, room->game_type,
+		       index, ggz_intlstring_translated(room->name, language), room->game_type,
 		       room->player_count);
 	if (verbose && room->description)
-		_net_send_line(net, "<DESC>%s</DESC>", room->description);
+		_net_send_line(net, "<DESC>%s</DESC>",
+			ggz_intlstring_translated(room->description, language));
 	return _net_send_line(net, "</ROOM>");
 }
 
@@ -460,8 +464,10 @@ GGZReturn net_send_type(GGZNetIO *net, int index,
 	char *spectators = bool_to_str(type->allow_spectators);
 	char *peers = bool_to_str(type->allow_peers);
 
+	const char *language = net->client->language;
+
 	_net_send_line(net, "<GAME ID='%d' NAME='%s' VERSION='%s'>",
-		       index, type->name, type->version);
+		       index, ggz_intlstring_translated(type->name, language), type->version);
 	_net_send_line(net, "<PROTOCOL ENGINE='%s' VERSION='%s'/>",
 		       type->p_engine, type->p_version);
 	_net_send_line(net, "<ALLOW PLAYERS='%s' BOTS='%s' SPECTATORS='%s' PEERS='%s'/>",
@@ -481,7 +487,8 @@ GGZReturn net_send_type(GGZNetIO *net, int index,
 	if (verbose) {
 		_net_send_line(net, "<ABOUT AUTHOR='%s' URL='%s'/>",
 			       type->author, type->homepage);
-		_net_send_line(net, "<DESC>%s</DESC>", type->desc);
+		_net_send_line(net, "<DESC>%s</DESC>",
+			ggz_intlstring_translated(type->desc, language));
 	}
 	return _net_send_line(net, "</GAME>");
 }
@@ -1207,6 +1214,7 @@ static GGZXMLElement* _net_new_element(const char *tag,
 #define TAG(t) {#t, _net_handle_ ## t}
 		TAG(session),
 		TAG(login),
+		TAG(language),
 		TAG(channel),
 		TAG(name),
 		TAG(password),
@@ -1276,6 +1284,19 @@ static void _net_handle_channel(GGZNetIO *net, GGZXMLElement *element)
 
 	client_set_type(net->client, GGZ_CLIENT_CHANNEL);
 	net->client->data = ggz_strdup(id);
+}
+
+
+/* Functions for <LANGUAGE> tag */
+static void _net_handle_language(GGZNetIO *net, GGZXMLElement *element)
+{
+	const char *language;
+
+	if (!element) return;
+
+	language = ggz_strdup(ggz_xmlelement_get_text(element));
+
+	client_set_language(net->client, language);
 }
 
 

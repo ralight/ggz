@@ -1,8 +1,10 @@
 [RoomInfo]
 # This is the short name for the room
 Name = Escape
+Name[de] = Flucht
 # This is the long descriptive name for the room
 Description = Escape from the room!
+Description[de] = Fliehe aus dem Raum!
 # The gametype should match up to the Name of an added game
 GameType = Escape
 # Any additional game arguments specific to this room

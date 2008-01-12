@@ -1,10 +1,9 @@
-# $Id: chess.dsc 8921 2007-01-15 15:13:14Z josef $
-
 [GameInfo]
-Author = Ismael Orenstein
-Description = GGZ game module for playing Chess
-Homepage = http://www.ggzgamingzone.org/gameservers/chess/
 Name = Chess
+Description = GGZ game module for playing Chess
+Description[de] = GGZ-Spielmodul für Schach
+Author = Ismael Orenstein
+Homepage = http://www.ggzgamingzone.org/gameservers/chess/
 Version = 0.0.11
 
 [LaunchInfo]

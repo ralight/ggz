@@ -1,8 +1,10 @@
 [RoomInfo]
 # This is the short name for the room
 Name = Reversi
+Name[de] = Reversi
 # This is the long descriptive name for the room
 Description = Example Reversi Room
+Description[de] = Beispielraum für Reversi
 # The gametype should match up to the Name of an added game
 GameType = Reversi
 # Any additional game arguments specific to this room

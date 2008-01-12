@@ -1,10 +1,9 @@
-# $Id: escape.dsc 8880 2007-01-09 17:22:14Z josef $
-
 [GameInfo]
-Author = Roger Light
-Description = Escape from the Room!
-Homepage = http://www.ggzgamingzone.org/gameservers/escape/
 Name = Escape
+Description = Escape from the Room!
+Description[de] = Fliehe aus dem Raum!
+Author = Roger Light
+Homepage = http://www.ggzgamingzone.org/gameservers/escape/
 Version = 0.0.1
 
 [LaunchInfo]

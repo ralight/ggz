@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 8763 2006-12-27 10:02:33Z jdorje $
+ * $Id: room.c 9525 2008-01-12 22:03:18Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -300,7 +300,7 @@ void room_remove_really(int old_room)
 GGZPlayerHandlerStatus room_handle_join(GGZPlayer* player, int room)
 {
 	int result;
-	char *rname;
+	ggz_intlstring *rname;
 
 	/* Check for silliness from the user */
 	if (player->table != -1 || player->launching) {
@@ -333,12 +333,12 @@ GGZPlayerHandlerStatus room_handle_join(GGZPlayer* player, int room)
 	/* Generate a log entry if room was full */
 	if(result == E_ROOM_FULL) {
 		pthread_rwlock_rdlock(&rooms[room].lock);
-		rname = ggz_strdup(rooms[room].name);
+		rname = ggz_intlstring_fromintlstring(rooms[room].name);
 		pthread_rwlock_unlock(&rooms[room].lock);
 		log_msg(GGZ_LOG_NOTICE,
 			"ROOM_FULL - %s rejected entry to %s",
-			player->name, rname);
-		ggz_free(rname);
+			player->name, ggz_intlstring_translated(rname, NULL));
+		ggz_intlstring_free(rname);
 	}
 
 	if (net_send_room_join(player->client->net, result) < 0)
@@ -359,7 +359,9 @@ static void update_room_stats(GGZPlayer *player, int game_type)
 	if (!perms_check(player, GGZ_PERM_NO_STATS)
 	    && game_type >= 0) {
 		pthread_rwlock_rdlock(&game_types[game_type].lock);
-		strcpy(stats.game, game_types[game_type].name);
+		ggz_strncpy(stats.game,
+			ggz_intlstring_translated(game_types[game_type].name, NULL),
+			sizeof(stats.game));
 		records = game_types[game_type].stats_records;
 		ratings = game_types[game_type].stats_ratings;
 		highscores = game_types[game_type].stats_highscores;

@@ -1,11 +1,12 @@
-# $Id: ggzcards-bridge.room 8254 2006-06-22 09:30:47Z oojah $
 [RoomInfo]
 
 # This is the short name for the room
 Name = Bridge
+Name[de] = Bridgeraum
 
 # This is the long descriptive name for the room
 Description = GGZ Cards - Bridge room
+Description[de] = GGZ-Cards - Bridgeraum
 
 # The gametype should match up to the Name of an added game
 GameType = GGZCards-Bridge

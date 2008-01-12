@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 9490 2008-01-12 16:41:08Z josef $
+ * $Id: control.c 9525 2008-01-12 22:03:18Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -145,6 +145,11 @@ static void cleanup_data(void)
 		ggz_free(ptr);     \
 		ptr = NULL;        \
 	} while(0)
+#define data_intlfree(ptr)		   \
+  	do {			   \
+		ggz_intlstring_free(ptr);     \
+		ptr = NULL;        \
+	} while(0)
 
 	int i;
 	char **args;
@@ -186,9 +191,9 @@ static void cleanup_data(void)
 
 	/* We don't bother with locking anything... */
 	for (i = 0; i < room_info.num_rooms; i++) {
+		data_intlfree(rooms[i].name);
+		data_intlfree(rooms[i].description);
 		data_free(rooms[i].room);
-		data_free(rooms[i].name);
-		data_free(rooms[i].description);
 		data_free(rooms[i].players);
 		if (rooms[i].max_tables > 0)
 			data_free(rooms[i].tables);
@@ -201,13 +206,14 @@ static void cleanup_data(void)
 	data_free(rooms);
 
 	for (i = 0; game_types[i].exec_args && i < MAX_GAME_TYPES; i++) {
+		data_intlfree(game_types[i].name);
+		data_intlfree(game_types[i].desc);
 		data_free(game_types[i].version);
 		data_free(game_types[i].p_engine);
 		data_free(game_types[i].p_version);
 		data_free(game_types[i].homepage);
 		data_free(game_types[i].game);
 		data_free(game_types[i].data_dir);
-		data_free(game_types[i].desc);
 		data_free(game_types[i].author);
 		for (args = game_types[i].exec_args; *args; args++)
 			data_free(*args);
@@ -340,7 +346,7 @@ static void meta_announce(const char *metaserveruri, const char *username, const
 		if(type != -1)
 		{
 			GameInfo gametype = game_types[type];
-			game = gametype.name;
+			game = ggz_intlstring_translated(gametype.name, NULL);
 			gameversion = gametype.version;
 		}
 		else
@@ -349,7 +355,8 @@ static void meta_announce(const char *metaserveruri, const char *username, const
 			gameversion = VERSION;
 		}
 
-		snprintf(roomname, sizeof(roomname), "/#%s", room.name);
+		snprintf(roomname, sizeof(roomname), "/#%s",
+			ggz_intlstring_translated(room.name, NULL));
 
 		uri.protocol = "ggz";
 		uri.host = hostname;
@@ -359,13 +366,15 @@ static void meta_announce(const char *metaserveruri, const char *username, const
 
 		server = meta_server_new(uri);
 
-		meta_server_attribute(server, "description", room.description);
+		meta_server_attribute(server, "description",
+			ggz_intlstring_translated(room.description, NULL));
 		meta_server_attribute(server, "version", gameversion);
 
 		ret = meta_add(server, game, "gameroom",
 			metaserveruri, username, password);
 		if(!ret) fprintf(stderr,
-			"Metaserver: Error: publishing failed for room %s\n", room.name);
+			"Metaserver: Error: publishing failed for room %s\n",
+			ggz_intlstring_translated(room.name, NULL));
 
 		meta_server_free(server);
 	}
@@ -587,8 +596,8 @@ int main(int argc, char *argv[])
 	/* Create SERVER socket on main_port */
 	main_sock = ggz_make_socket(GGZ_SOCK_SERVER, opt.main_port, opt.interface);
 	if (main_sock < 0) {
-		fprintf(stderr, "Could not bind to port\n");
-		err_msg_exit("Could not bind to port");
+		fprintf(stderr, "Could not bind to port %i\n", opt.main_port);
+		err_msg_exit("Could not bind to port %i", opt.main_port);
 	}
 
 	/* Make socket non-blocking */

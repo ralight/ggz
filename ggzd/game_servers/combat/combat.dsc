@@ -1,10 +1,9 @@
-# $Id: combat.dsc 8880 2007-01-09 17:22:14Z josef $
-
 [GameInfo]
-Author = Ismael Orenstein
-Description = Stratego(tm) like game for GGZ
-Homepage = http://www.ggzgamingzone.org/gameservers/combat/
 Name = Combat
+Description = Stratego-like game for GGZ
+Description[de] = Stratego-ähnliches Spiel für GGZ
+Author = Ismael Orenstein
+Homepage = http://www.ggzgamingzone.org/gameservers/combat/
 Version = 1.1
 
 [LaunchInfo]

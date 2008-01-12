@@ -1,8 +1,10 @@
 [RoomInfo]
 # This is the short name for the room
 Name = Combat
+Name[de] = Kampfgetümmel
 # This is the long descriptive name for the room
 Description = Example Combat Room
+Description[de] = Beispielraum für Combat
 # The gametype should match up to the Name of an added game
 GameType = Combat
 # Any additional game arguments specific to this room

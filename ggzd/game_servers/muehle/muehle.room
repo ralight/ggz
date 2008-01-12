@@ -1,6 +1,8 @@
 [RoomInfo]
-Name = Muehle
+Name = Nine men's morris
+Name[de] = Mühleraum
 Description = Digital Muehle (Nine men's morris) game
+Description[de] = Ein Raum für Mühlespieler
 GameType = Muehle
 # Any additional game arguments specific to this room
 #ExecutableArgs = 

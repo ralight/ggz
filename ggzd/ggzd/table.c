@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 9245 2007-08-13 07:01:38Z josef $
+ * $Id: table.c 9525 2008-01-12 22:03:18Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -246,7 +246,7 @@ static GGZReturn table_check(GGZTable* table)
 	dbg_msg(GGZ_DBG_TABLE, "Open Seats : %d", seats_count(table, GGZ_SEAT_OPEN));
 	dbg_msg(GGZ_DBG_TABLE, "Resv.Seats : %d", seats_count(table, GGZ_SEAT_RESERVED));
 	dbg_msg(GGZ_DBG_TABLE, "State      : %d", table->state);
-	dbg_msg(GGZ_DBG_TABLE, "GGZdMod    : %x", (unsigned int)table->ggzdmod);
+	dbg_msg(GGZ_DBG_TABLE, "GGZdMod    : %p", table->ggzdmod);
 	
 	/* FIXME: this correctly logs everything about the GGZdMod object, but it
 	   will incorrectly be labeled as coming from the table itself instead of
@@ -317,7 +317,8 @@ static void* table_new_thread(void *index_ptr)
 {
 	GGZTable* table;
 	int i, status, count;
-	char *rname, *gname;
+	ggz_intlstring *rname;
+	char *gname;
 
 	table = *((GGZTable**)index_ptr);
 	ggz_free(index_ptr);
@@ -350,13 +351,13 @@ static void* table_new_thread(void *index_ptr)
 
 	/* Setup an entry in the rooms */
 	pthread_rwlock_wrlock(&rooms[table->room].lock);
-	rname = ggz_strdup(rooms[table->room].name);
+	rname = ggz_intlstring_fromintlstring(rooms[table->room].name);
 	if (rooms[table->room].table_count == rooms[table->room].max_tables) {
 		pthread_rwlock_unlock(&rooms[table->room].lock);
 		log_msg(GGZ_LOG_NOTICE,
 			"ROOM_FULL - %s could not create table in %s",
-			table->owner, rname);
-		ggz_free(rname);
+			table->owner, ggz_intlstring_translated(rname, NULL));
+		ggz_intlstring_free(rname);
 		table_launch_event(table->owner, E_ROOM_FULL, 0);
 		return NULL;
 	}
@@ -380,15 +381,15 @@ static void* table_new_thread(void *index_ptr)
 
 	/* Get the name of this game type */
 	pthread_rwlock_rdlock(&game_types[table->type].lock);
-	gname = ggz_strdup(game_types[table->type].name);
+	gname = ggz_strdup(ggz_intlstring_translated(game_types[table->type].name, NULL));
 	pthread_rwlock_unlock(&game_types[table->type].lock);
 
 	/* Let the game begin...*/
 	if (table_start_game(table) == GGZ_OK) {
 		log_msg(GGZ_LOG_TABLES,
 			"TABLE_START - %s started a new game of %s in %s",
-			table->owner, gname, rname);
-		ggz_free(rname);
+			table->owner, gname, ggz_intlstring_translated(rname, NULL));
+		ggz_intlstring_free(rname);
 
 		table_loop(table);
 
@@ -595,8 +596,9 @@ void table_game_join(GGZTable *table, const char *name,
 #endif
 	log_msg(GGZ_LOG_TABLES,
 		"TABLE_JOIN - %s joined seat %d at table %d of room %s in game of %s",
-		name, num, table->index, rooms[table->room].name,
-		game_types[rooms[table->room].game_type].name);
+		name, num, table->index,
+		ggz_intlstring_translated(rooms[table->room].name, NULL),
+		ggz_intlstring_translated(game_types[rooms[table->room].game_type].name, NULL));
 }
 
 
@@ -616,8 +618,9 @@ void table_game_leave(GGZTable *table, const char *caller,
 	/* Vacate seat */
 	log_msg(GGZ_LOG_TABLES,
 		"TABLE_LEAVE - %s left seat %d at table %d of room %s in game of %s",
-		player, num, table->index, rooms[table->room].name,
-		game_types[rooms[table->room].game_type].name);
+		player, num, table->index,
+		ggz_intlstring_translated(rooms[table->room].name, NULL),
+		ggz_intlstring_translated(game_types[rooms[table->room].game_type].name, NULL));
 	
 	pthread_rwlock_wrlock(&table->lock);
 	table->seat_types[num] = GGZ_SEAT_OPEN;
@@ -906,7 +909,7 @@ static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, const void *data)
 		pthread_rwlock_unlock(&table->lock);
 		
 		pthread_rwlock_rdlock(&game_types[type].lock);
-		game_name = ggz_strdup(game_types[type].name);
+		game_name = ggz_strdup(ggz_intlstring_translated(game_types[type].name, NULL));
 		pthread_rwlock_unlock(&game_types[type].lock);
 		
 		dbg_msg(GGZ_DBG_GAME_MSG, "(%s) %s", game_name, msg);

@@ -1,8 +1,10 @@
 [RoomInfo]
 # This is the short name for the room
 Name = Krosswater
+Name[de] = Krosswater
 # This is the long descriptive name for the room
 Description = "Cross the water!" for KDE
+Description[de] = "Wasser überqueren" für KDE
 # The gametype should match up to the Name of an added game
 GameType = Krosswater
 # Any additional game arguments specific to this room

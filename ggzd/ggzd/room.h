@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with the room and chat facility
- * $Id: room.h 8279 2006-06-27 07:29:39Z josef $
+ * $Id: room.h 9525 2008-01-12 22:03:18Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -42,13 +42,13 @@ typedef struct {
 	pthread_rwlock_t lock;
 
 	/* Room name */
-	char *name;			/* cleanup() */
+	ggz_intlstring *name;			/* cleanup() */
 
 	/* Room file name (internal) */
 	char *room;			/* cleanup() */
 
 	/* Room description */
-	char *description;		/* cleanup() */
+	ggz_intlstring *description;		/* cleanup() */
 
 	/* Number of players curently in room */
 	int player_count;

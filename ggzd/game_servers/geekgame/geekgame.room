@@ -1,6 +1,8 @@
 [RoomInfo]
 Name = Geekgame
+Name[de] = Geekspiel
 Description = A game only for true geeks and nerds
+Description[de] = Ein Spiel nur für echte Geeks und Nerds
 GameType = Geekgame
 # Any additional game arguments specific to this room
 #ExecutableArgs = 

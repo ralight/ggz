@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 9444 2007-12-14 00:05:49Z jdorje $
+ * $Id: client.c 9525 2008-01-12 22:03:18Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -172,6 +172,7 @@ GGZClient* client_new(int fd)
 	client->thread = pthread_self();
 	client->data = NULL;
 	client->session_over = 0;
+	client->language = NULL;
 
 	return client;
 }
@@ -345,6 +346,12 @@ void client_set_type(GGZClient *client, GGZClientType type)
 
 	/* If we get here, it's an error. */
 	err_msg("client_set_type: illegal type %d.", type);
+}
+
+
+void client_set_language(GGZClient *client, const char *language)
+{
+	client->language = language;
 }
 
 

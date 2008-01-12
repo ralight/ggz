@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.h 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: client.h 9525 2008-01-12 22:03:18Z josef $
  *
  * Copyright (C) 2002 Brent Hendricks.
  *
@@ -52,11 +52,17 @@ struct GGZClient {
 
 	/* Flag to stop client session */
 	char session_over;
+
+	/* Preferred language to communicate with the client */
+	const char *language;
 };
 
 void client_handler_launch(int sock);
+#if 0
 void client_set_ip_ban_list(int count, char **list);
+#endif
 void client_set_type(GGZClient *client, GGZClientType type);
+void client_set_language(GGZClient *client, const char *language);
 void client_end_session(GGZClient *client);
 
 #endif /*_GGZ_CLIENT_H*/

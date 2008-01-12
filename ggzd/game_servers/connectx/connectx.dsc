@@ -1,10 +1,9 @@
-# $Id: connectx.dsc 8921 2007-01-15 15:13:14Z josef $
-
 [GameInfo]
-Author = Roger Light
-Description = Place X tiles in a row.
-Homepage = http://www.ggzgamingzone.org/gameservers/connectx/
 Name = ConnectX
+Description = Place X tiles in a row.
+Description[de] = Platziere X Steine in einer Reihe.
+Author = Roger Light
+Homepage = http://www.ggzgamingzone.org/gameservers/connectx/
 Version = 0.0.2
 
 [LaunchInfo]

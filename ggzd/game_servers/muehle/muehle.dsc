@@ -1,10 +1,9 @@
-# $Id: muehle.dsc 8880 2007-01-09 17:22:14Z josef $
-
 [GameInfo]
-Author = Josef Spillner
-Description = Muehle game for GGZ
-Homepage = http://www.ggzgamingzone.org/gameservers/muehle/
 Name = Muehle
+Description = Nine men's morris game for GGZ
+Description[de] = Mühlespiel für GGZ
+Author = Josef Spillner
+Homepage = http://www.ggzgamingzone.org/gameservers/muehle/
 Version = 0.3
 
 [LaunchInfo]

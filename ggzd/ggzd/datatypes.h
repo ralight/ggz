@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 9047 2007-04-13 14:37:38Z josef $
+ * $Id: datatypes.h 9525 2008-01-12 22:03:18Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -31,6 +31,7 @@
 #include <pthread.h>
 
 #include <ggz_common.h>
+#include <ggz.h>
 
 #include "ggzd.h"
 #include "util.h"
@@ -95,10 +96,10 @@ typedef struct GGZState {
 /* Info about a particular type of game*/
 typedef struct GameInfo {
 	pthread_rwlock_t lock; /* This lock is used though not needed. */
-	char name[MAX_GAME_NAME_LEN + 1];    /* Game name */
+	ggz_intlstring *name;    /* Game name */
 	char *version; /* Game version; cleanup() */
 	char *game; /* Internal game name as per its .dsc file; cleanup() */
-	
+
 	/* Protocol data - the protocol engine is the name of the
 	   protocol, and the version is the protocol version.  These
 	   need not match up with the gametype. */
@@ -107,7 +108,7 @@ typedef struct GameInfo {
 
 	char *data_dir;	/* The game's working directory; cleanup() */
 
-	char *desc;     /* Game description string; cleanup() */
+	ggz_intlstring *desc;     /* Game description string; cleanup() */
 	char *author;   /* String containing name(s) of author(s); cleanup() */
 	char *homepage; /* Contains a web address for the game; cleanup() */
 	
@@ -116,11 +117,11 @@ typedef struct GameInfo {
 	GGZNumberList player_allow_list;
 	GGZNumberList bot_allow_list;
 	unsigned char allow_spectators;
-	
+
 	/* Are players allowed to leave mid-game?  (i.e. does the
 	   game support this?) */
 	bool allow_leave;
-	
+
 	/* Should we automatically kill the game server (table) when the
 	   last player leaves? */
 	bool kill_when_empty;
@@ -132,7 +133,7 @@ typedef struct GameInfo {
 	bool stats_rankings;
 #endif
 	bool stats_highscores;
-	
+
 	/* Executable information: a NULL-terminated list of
 	   command-line arguments for the program.  The first argument
 	   is the executable itself. */

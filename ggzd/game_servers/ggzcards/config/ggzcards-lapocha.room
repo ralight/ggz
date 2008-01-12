@@ -1,11 +1,12 @@
-# $Id: ggzcards-lapocha.room 8254 2006-06-22 09:30:47Z oojah $
 [RoomInfo]
 
 # This is the short name for the room
 Name = La Pocha
+Name[de] = La Pocha
 
 # This is the long descriptive name for the room
 Description = GGZ Cards - La Pocha room
+Description[de] = GGZ Cards - La Pocha-Raum
 
 # The gametype should match up to the Name of an added game
 GameType = GGZCards-LaPocha

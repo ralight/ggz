@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 9336 2007-11-08 19:02:32Z jdorje $
+ * $Id: stats.c 9525 2008-01-12 22:03:18Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -234,7 +234,9 @@ void report_statistics(int room, int gametype,
 	int bot_stats, guest_stats;
 
 	pthread_rwlock_rdlock(&game_types[gametype].lock);
-	strcpy(game_name, game_types[gametype].name);
+	ggz_strncpy(game_name,
+		ggz_intlstring_translated(game_types[gametype].name, NULL),
+		sizeof(game_name));
 	records = game_types[gametype].stats_records;
 	ratings = game_types[gametype].stats_ratings;
 	highscores = game_types[gametype].stats_highscores;
@@ -402,7 +404,9 @@ void report_savegame(int gametype, const char *owner, const char *savegame)
 	char game_name[MAX_GAME_NAME_LEN + 1];
 
 	pthread_rwlock_rdlock(&game_types[gametype].lock);
-	strcpy(game_name, game_types[gametype].name);
+	ggz_strncpy(game_name,
+		ggz_intlstring_translated(game_types[gametype].name, NULL),
+		sizeof(game_name));
 	pthread_rwlock_unlock(&game_types[gametype].lock);
 
 	ggzdb_stats_savegame(game_name, owner, savegame);

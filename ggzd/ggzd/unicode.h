@@ -32,7 +32,20 @@
 #ifndef _GGZ_UNICODE_H
 #define _GGZ_UNICODE_H
 
-bool username_allowed(const char *str);
+/* Initialize all unicode-dependent settings from a policy file */
+/* The default file is 'username.poliy' */
+/* Returns true if file could be loaded, false otherwise */
 bool init_unicode(const char *policyfile);
+
+/* Check if the given username is allowed according to the policy */
+/* True means it's allowed, false means it's prohibited */
+bool username_allowed(const char *str);
+
+/* Return a canonicalized version of a username */
+/* Implements RFC 3454 ("stringprep") for ambiguity elimination */
+/* Does not yet specifically address RFC 4013 ("SASLprep") */
+/* This function should be called before username_allowed */
+/* NULL is returned if the name could not be canonicalized */
+char *username_canonical(const char *username);
 
 #endif

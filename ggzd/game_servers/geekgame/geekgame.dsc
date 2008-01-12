@@ -1,8 +1,9 @@
 [GameInfo]
-Author = Josef Spillner
-Description = The Geek Game
-Homepage = http://www.ggzgamingzone.org/gameservers/geekgame/
 Name = Geekgame
+Description = The Geek Game
+Description[de] = Das ultimative Geekspiel
+Author = Josef Spillner
+Homepage = http://www.ggzgamingzone.org/gameservers/geekgame/
 Version = 0.2
 
 [LaunchInfo]

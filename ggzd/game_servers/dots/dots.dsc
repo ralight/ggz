@@ -1,10 +1,9 @@
-# $Id: dots.dsc 8880 2007-01-09 17:22:14Z josef $
-
 [GameInfo]
-Author = Rich Gade
-Description = Simple GGZ game module for playing Connect The Dots
-Homepage = http://www.ggzgamingzone.org/gameservers/dots/
 Name = Dots
+Description = Simple GGZ game module for playing Connect The Dots
+Description[de] = Einfaches GGZ-Spielmodul für Punkte Verbinden
+Author = Rich Gade
+Homepage = http://www.ggzgamingzone.org/gameservers/dots/
 Version = 0.0.4
 
 [LaunchInfo]

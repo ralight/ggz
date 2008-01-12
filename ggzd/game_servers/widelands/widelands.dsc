@@ -1,8 +1,9 @@
 [GameInfo]
-Author = Josef Spillner
-Description = Widelands server!
-Homepage = http://widelands.sourceforge.net/
 Name = Widelands
+Description = Widelands server!
+Description[de] = Ein Server für Widelands!
+Author = Josef Spillner
+Homepage = http://widelands.sourceforge.net/
 Version = build-9
 
 [LaunchInfo]

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9304 2007-09-09 07:24:14Z josef $
+ * $Id: parse_opt.c 9525 2008-01-12 22:03:18Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -567,6 +567,7 @@ static void parse_game(char *name, char *dir)
 	GameInfo game_info;
 	int len, num_args;
 	char *tmp;
+	ggz_intlstring *intltmp;
 	int argcp;
 	char **argvp;
 	int ret, i;
@@ -596,22 +597,24 @@ static void parse_game(char *name, char *dir)
 	game_info.game = ggz_strdup(name);
 
 	/* [GameInfo] */
-	/* FIXME: this data is never free'd.  This isn't really a problem,
-	   but... */
-	tmp = ggz_conf_read_string(ch, "GameInfo",
-				   "Name", "<Unnamed Game>");
+	intltmp = ggz_conf_read_intlstring(ch, "GameInfo", "Name");
+	tmp = ggz_intlstring_translated(intltmp, NULL);
+	if (!tmp) {
+		err_msg("Game name missing for '%s'.", name);
+		ggz_intlstring_free(intltmp);
+		return;
+	}
 	if (strlen(tmp) > MAX_GAME_NAME_LEN) {
 		err_msg("Game name '%s' too long: max length %d.",
 			tmp, MAX_GAME_NAME_LEN);
-		ggz_free(tmp);
+		ggz_intlstring_free(intltmp);
 		return;
 	}
-	strcpy(game_info.name, tmp);
-	ggz_free(tmp);
+	game_info.name = intltmp;
 	game_info.version = ggz_conf_read_string(ch, "GameInfo",
 						 "Version", "");
-	game_info.desc = ggz_conf_read_string(ch, "GameInfo",
-					      "Description", "");
+	game_info.desc = ggz_conf_read_intlstring(ch, "GameInfo",
+					      "Description");
 	game_info.author = ggz_conf_read_string(ch, "GameInfo",
 						"Author", "");
 	game_info.homepage = ggz_conf_read_string(ch, "GameInfo",
@@ -622,7 +625,7 @@ static void parse_game(char *name, char *dir)
 			   &num_args, &game_info.exec_args);
 	if (!game_info.exec_args || !game_info.exec_args[0]) {
 		err_msg("Missing ExecutablePath for game %s.",
-			game_info.name);
+			ggz_intlstring_translated(game_info.name, NULL));
 		/* This leaves some memory leak, but it's acceptable under
 		   the circumstances. */
 		return;
@@ -729,10 +732,10 @@ static void parse_game(char *name, char *dir)
 
 	/* Set up data_dir. */
 	len = strlen(opt.data_dir) + strlen("/gamedata/")
-              + strlen(game_info.name) + 1;
+              + strlen(ggz_intlstring_translated(game_info.name, NULL)) + 1;
 	game_info.data_dir = ggz_malloc(len);
 	snprintf(game_info.data_dir, len, "%s/gamedata/%s",
-	         opt.data_dir, game_info.name);
+	         opt.data_dir, ggz_intlstring_translated(game_info.name, NULL));
 	check_path(game_info.data_dir);
 
 	game_types[state.types] = game_info;
@@ -843,9 +846,9 @@ static void parse_room(char *name, char *dir, int announce)
 	rooms[num].room = ggz_strdup(name);
 
 	/* [RoomInfo] */
-	rooms[num].name = ggz_conf_read_string(ch, "RoomInfo", "Name", NULL);
-	rooms[num].description = ggz_conf_read_string(ch, "RoomInfo",
-						      "Description", NULL);
+	rooms[num].name = ggz_conf_read_intlstring(ch, "RoomInfo", "Name");
+	rooms[num].description = ggz_conf_read_intlstring(ch, "RoomInfo",
+						      "Description");
 	rooms[num].max_players = ggz_conf_read_int(ch, "RoomInfo",
 						   "MaxPlayers", 0);
 	rooms[num].max_tables = ggz_conf_read_int(ch, "RoomInfo",
@@ -854,7 +857,7 @@ static void parse_room(char *name, char *dir, int announce)
 	if(strval) {
 		unsigned int i;
 		for(i=0; i<state.types; i++)
-			if(!strcmp(strval, game_types[i].name))
+			if(!strcmp(strval, ggz_intlstring_translated(game_types[i].name, NULL)))
 				break;
 		if(i != state.types)
 			rooms[num].game_type = i;
@@ -880,11 +883,11 @@ static void parse_room(char *name, char *dir, int announce)
 
 	if(rooms[num].name == NULL) {
 		err_msg("No Name given for room %s", name);
-		rooms[num].name = ggz_strdup("none");
+		rooms[num].name = ggz_intlstring_fromstring("none");
 	}
 	if(rooms[num].description == NULL) {
 		err_msg("No Description given for room %s", name);
-		rooms[num].description = ggz_strdup("none");
+		rooms[num].description = ggz_intlstring_fromstring("none");
 	}
 	if(rooms[num].max_players <= 0) {
 		if(rooms[num].max_players < 0)

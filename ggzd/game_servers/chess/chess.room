@@ -1,8 +1,10 @@
 [RoomInfo]
 # This is the short name for the room
 Name = Chess
+Name[de] = Schach
 # This is the long descriptive name for the room
 Description = Example Chess Room
+Description[de] = Beispielschachraum
 # The gametype should match up to the Name of an added game
 GameType = Chess
 # Any additional game arguments specific to this room
