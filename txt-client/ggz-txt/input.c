@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 9488 2008-01-12 16:00:48Z josef $
+ * $Id: input.c 9494 2008-01-12 17:26:10Z josef $
  *
  * Functions for inputing commands from the user
  *
@@ -509,11 +509,12 @@ static void input_handle_wall(char* line)
 }
 
 
-static GGZModule *input_get_module(void)
+static GGZModule *input_get_module(const char *modnamepref)
 {
 	const char * name;
 	const char * engine;
 	const char * version;
+	const char * modname;
 	GGZRoom *room;
 	GGZGameType *type;
 	GGZModule *module, *tmp;
@@ -543,9 +544,12 @@ static GGZModule *input_get_module(void)
 	for (i = 0; i < num; i++) {
 		tmp = ggzcore_module_get_nth_by_type(name, engine, version, i);
 		env = ggzcore_module_get_environment(tmp);
+		modname = ggzcore_module_get_name(tmp);
 		if (env == GGZ_ENVIRONMENT_CONSOLE) module = tmp;
 		if ((getenv("DISPLAY")) && ((env == GGZ_ENVIRONMENT_XWINDOW) ||
 			(env == GGZ_ENVIRONMENT_XFULLSCREEN))) module = tmp;
+		if((module == tmp) && (modnamepref) && (!ggz_strcmp(modnamepref, modname)))
+			break;
 	}
 
 	if (!module) {
@@ -569,7 +573,7 @@ static void input_handle_launch(char *line)
 
 	server_progresswait();
 
-	module = input_get_module();
+	module = input_get_module(line);
 	if(!module) return;
 
 	room = ggzcore_server_get_cur_room(server);
@@ -600,7 +604,7 @@ static void input_handle_join_table(char *line)
 
 	server_progresswait();
 
-	module = input_get_module();
+	module = input_get_module(NULL);
 	if(!module) return;
 
 	room = ggzcore_server_get_cur_room(server);

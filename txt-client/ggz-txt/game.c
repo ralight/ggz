@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 7010 2005-03-18 10:20:41Z josef $
+ * $Id: game.c 9494 2008-01-12 17:26:10Z josef $
  *
  * Functions for handling game events
  *
@@ -71,6 +71,7 @@ void game_quit(void)
 
 void game_destroy(void)
 {
+	/* FIXME: this leads to a crash? XXX */
 	if (game)
 		ggzcore_game_free(game);
 	game = NULL;
