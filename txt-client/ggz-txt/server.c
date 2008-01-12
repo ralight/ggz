@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 9361 2007-11-17 15:33:44Z josef $
+ * $Id: server.c 9488 2008-01-12 16:00:48Z josef $
  *
  * Functions for handling server events
  *
@@ -58,10 +58,26 @@ static int tableleft_once = 0;
 
 extern GGZGame *game;
 
+static const char *commandstr(int command)
+{
+	switch(command)
+	{
+		case COMMAND_CONNECT:
+			return "connect";
+		case COMMAND_LIST:
+			return "list";
+		case COMMAND_JOIN:
+			return "join";
+	}
+
+	return NULL;
+}
+
 void server_workinprogress(int command, int progress)
 {
 	workinprogress = progress;
-	output_debug("queue: workinprogress: %i=%i", command, progress);
+	output_debug("queue: workinprogress: %s=%i",
+		commandstr(command), progress);
 }
 
 void server_progresswait(void)

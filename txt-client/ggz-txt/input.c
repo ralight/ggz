@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 9358 2007-11-17 15:33:21Z josef $
+ * $Id: input.c 9488 2008-01-12 16:00:48Z josef $
  *
  * Functions for inputing commands from the user
  *
@@ -293,23 +293,33 @@ static void input_handle_list(char* line)
 	}
 	else if (line && strcmp(line, "tables") == 0) {
 		room = ggzcore_server_get_cur_room(server);
-		if (ggzcore_room_get_num_tables(room) > 0)
-			output_tables();
-		else { /* Get list from server */
-			server_progresswait();
-			server_workinprogress(COMMAND_LIST, 1);
-			ggzcore_room_list_tables(room, -1, 0);
+		if(!room) {
+			output_text(_("You must join a room first."));
+			return;
+		} else {
+			if (ggzcore_room_get_num_tables(room) > 0)
+				output_tables();
+			else { /* Get list from server */
+				server_progresswait();
+				server_workinprogress(COMMAND_LIST, 1);
+				ggzcore_room_list_tables(room, -1, 0);
+			}
 		}
 	}
 	else if (line && strcmp(line, "players") == 0) {
 		room = ggzcore_server_get_cur_room(server);
-		if (ggzcore_room_get_num_players(room) > 0) {
-			output_players();
-		}
-		else { /* Get list from server */
-			server_progresswait();
-			server_workinprogress(COMMAND_LIST, 1);
-			ggzcore_room_list_players(room);
+		if(!room) {
+			output_text(_("You must join a room first."));
+			return;
+		} else {
+			if (ggzcore_room_get_num_players(room) > 0) {
+				output_players();
+			}
+			else { /* Get list from server */
+				server_progresswait();
+				server_workinprogress(COMMAND_LIST, 1);
+				ggzcore_room_list_players(room);
+			}
 		}
 	}
 	else
@@ -353,6 +363,7 @@ static GGZRoom *input_room(const char *line)
 		}
 	}
 
+	/* FIXME: we should return an error if a room name was given but not found */
 	return ggzcore_server_get_nth_room(server, atoi(line));
 }
 
@@ -595,6 +606,8 @@ static void input_handle_join_table(char *line)
 	room = ggzcore_server_get_cur_room(server);
 	type = ggzcore_room_get_gametype(room);
 
+	/* FIXME: we should allow names to be given for tables if they're unique */
+	/* an return an error if a table name was given but not found */
 	table_index = atoi(line);
 	if (!ggzcore_room_get_table_by_id(room, table_index)) {
 		output_text(_("That table doesn't exist! "
