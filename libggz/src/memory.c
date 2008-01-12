@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/15/01
- * $Id: memory.c 9303 2007-09-09 07:24:04Z josef $
+ * $Id: memory.c 9491 2008-01-12 16:56:03Z josef $
  *
  * This is the code for handling memory allocation for ggzcore
  *
@@ -173,6 +173,8 @@ void * _ggz_realloc(const void *ptr, const size_t size,
 	ggz_debug(GGZ_MEM_DEBUG,
 		  "Reallocated %d bytes at %p to %d bytes from %s/%d",
 		  targetmem->size, targetmem->ptr, size, tag, line);
+		  /* FIXME: size is of type size_t which might exceed %d
+		     on some architectures */
 
 	/* And free the old chunk */
 	_ggz_free(targetmem->ptr, tag, line);

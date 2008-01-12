@@ -29,13 +29,14 @@
 ggz_uri_t ggz_uri_from_string(const char *uristring)
 {
 	ggz_uri_t uri;
-	char *ptr;
+	char *ptr, *pwdptr;
 	char *uricopy;
 	char *base;
 	char *port;
 
 	uri.protocol = NULL;
 	uri.user = NULL;
+	uri.password = NULL;
 	uri.host = NULL;
 	uri.port = 0;
 	uri.path = NULL;
@@ -58,7 +59,17 @@ ggz_uri_t ggz_uri_from_string(const char *uristring)
 	if(ptr)
 	{
 		*ptr = '\0';
-		uri.user = ggz_strdup(base);
+		pwdptr = strstr(base, ":");
+		if(pwdptr)
+		{
+			*pwdptr = '\0';
+			uri.user = ggz_strdup(base);
+			uri.password = ggz_strdup(pwdptr + 1);
+		}
+		else
+		{
+			uri.user = ggz_strdup(base);
+		}
 		base = ptr + 1;
 	}
 
@@ -104,12 +115,14 @@ char *ggz_uri_to_string(ggz_uri_t uri)
 {
 	char protocol[32];
 	char user[128];
+	char password[128];
 	char host[128];
 	char port[32];
 	char path[128];
 
 	protocol[0] = '\0';
 	user[0] = '\0';
+	password[0] = '\0';
 	host[0] = '\0';
 	port[0] = '\0';
 	path[0] = '\0';
@@ -117,7 +130,12 @@ char *ggz_uri_to_string(ggz_uri_t uri)
 	if(uri.protocol)
 		snprintf(protocol, sizeof(protocol), "%s://", uri.protocol);
 	if(uri.user)
-		snprintf(user, sizeof(user), "%s@", uri.user);
+	{
+		if(uri.password)
+			snprintf(user, sizeof(user), "%s:*****@", uri.user);
+		else
+			snprintf(user, sizeof(user), "%s@", uri.user);
+	}
 	if(uri.host)
 		snprintf(host, sizeof(host), "%s", uri.host);
 	if(uri.port > 0)
@@ -136,6 +154,8 @@ void ggz_uri_free(ggz_uri_t uri)
 		ggz_free(uri.protocol);
 	if(uri.user)
 		ggz_free(uri.user);
+	if(uri.password)
+		ggz_free(uri.password);
 	if(uri.host)
 		ggz_free(uri.host);
 	if(uri.path)
@@ -143,6 +163,7 @@ void ggz_uri_free(ggz_uri_t uri)
 
 	uri.protocol = NULL;
 	uri.user = NULL;
+	uri.password = NULL;
 	uri.host = NULL;
 	uri.port = 0;
 	uri.path = NULL;

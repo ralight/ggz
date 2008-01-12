@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 9490 2008-01-12 16:41:08Z josef $
+ * $Id: ggz.h 9491 2008-01-12 16:56:03Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -1880,6 +1880,7 @@ typedef struct
 {
 	char *protocol; /**< The protocol part, such as ggz */
 	char *user;	/**< The user part */
+	char *password;	/**< The password part */
 	char *host;	/**< The host part */
 	int port;	/**< The port part */
 	char *path;	/**< The path part */
@@ -1898,6 +1899,8 @@ ggz_uri_t ggz_uri_from_string(const char *uristring);
 /** @brief Convert an URI object back into a string.
  *
  *  The string must be free'd with ggz_free() after use.
+ *  Passwords will not be shown, but their existence will be marked with
+ *  asterisks.
  *
  *  @param uri: URI object
  *  @return String representation of the object
