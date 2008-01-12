@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 9361 2007-11-17 15:33:44Z josef $
+ * $Id: main.c 9492 2008-01-12 16:57:43Z josef $
  *
  * Main loop
  *
@@ -111,7 +111,6 @@ int main(int argc, char *argv[])
 {
 	char *u_path, *startup_path;
 	char *autouri = NULL;
-	char *host, *port, *user, *password;
 	GGZOptions opt;
 	struct option options[] =
 	{
@@ -199,33 +198,12 @@ int main(int argc, char *argv[])
 
 	/* Auto connection? */
 	if (autouri) {
-		if(strstr(autouri, "ggz://")) {
-			autouri += 6;
-		}
-		if(strchr(autouri, '@')) {
-			user = strsep(&autouri, "@");
-			if(strchr(user, ':')) {
-				password = user;
-				user = strsep(&password, ":");
-			} else {
-				password = NULL;
-			}
-		} else {
-			user = NULL;
-			password = NULL;
-		}
-		if(strchr(autouri, ':')) {
-			host = strsep(&autouri, ":");
-			port = strsep(&autouri, ":");
-		} else {
-			host = autouri;
-			port = NULL;
-		}
-		server_init(host,
-			(port ? atoi(port) : 5688),
-			(password ? GGZ_LOGIN : GGZ_LOGIN_GUEST),
-			(user ? user : getenv("LOGNAME")),
-			password, 0);
+		ggz_uri_t uri = ggz_uri_from_string(autouri);
+		server_init(uri.host,
+			(uri.port ? uri.port : 5688),
+			(uri.password ? GGZ_LOGIN : GGZ_LOGIN_GUEST),
+			(uri.user ? uri.user : getenv("LOGNAME")),
+			uri.password, 0);
 	}
 
 	/* Startup script? */
