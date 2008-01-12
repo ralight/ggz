@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 8882 2007-01-09 17:46:35Z josef $
+ * $Id: main.c 9493 2008-01-12 17:02:50Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -152,39 +152,21 @@ int main (int argc, char *argv[])
 
 	/* Auto-connect to GGZ URI */
 	if (option_url) {
-		char *uri, *uribase;
-		char *host = NULL, *user = NULL, *port = NULL;
+		ggz_uri_t uri;
 
-		uribase = ggz_strdup(option_url);
-		uri = uribase;
-		if (strstr(uri, "ggz://"))
-			uri += 6;
-		if (strchr(uri, '@'))
-			user = strsep(&uri, "@");
-		if (strchr(uri, ':')) {
-			host = strsep(&uri, ":");
-			port = strsep(&uri, ":");
-		} else {
-			host = uri;
-		}
+		uri = ggz_uri_from_string(option_url);
 
 		Server serv;
 		serv.name = NULL;
-		serv.host = host;
-		serv.port = (port ? atoi(port) : 5688);
-		serv.type = GGZ_LOGIN_GUEST;
-		serv.login = user;
-		serv.password = NULL;
+		serv.host = uri.host;
+		serv.port = (uri.port ? uri.port : 5688);
+		serv.type = (uri.password ? GGZ_LOGIN : GGZ_LOGIN_GUEST);
+		serv.login = uri.user;
+		serv.password = uri.password;
 
 		login_set_entries(serv);
 
-		if(host)
-			ggz_free(host);
-		if(port)
-			ggz_free(port);
-		if(user)
-			ggz_free(user);
-		ggz_free(uribase);
+		ggz_uri_free(uri);
 	}
 	ggz_free(init_version);
 
