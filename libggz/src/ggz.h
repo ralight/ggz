@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 9489 2008-01-12 16:37:27Z josef $
+ * $Id: ggz.h 9490 2008-01-12 16:41:08Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -1893,7 +1893,7 @@ typedef struct
  *  @param uristring: String representation of an URI
  *  @return URI object with any of its parts directly accessible
  */
-ggz_uri_t uri_from_string(const char *uristring);
+ggz_uri_t ggz_uri_from_string(const char *uristring);
 
 /** @brief Convert an URI object back into a string.
  *
@@ -1902,7 +1902,7 @@ ggz_uri_t uri_from_string(const char *uristring);
  *  @param uri: URI object
  *  @return String representation of the object
  */
-char *uri_to_string(ggz_uri_t uri);
+char *ggz_uri_to_string(ggz_uri_t uri);
 
 /** @brief Free an URI object (or rather, its contents).
  *
@@ -1911,7 +1911,7 @@ char *uri_to_string(ggz_uri_t uri);
  *
  *  @param uri An URI object which was created with \ref uri_from_string
  */
-void uri_free(ggz_uri_t uri);
+void ggz_uri_free(ggz_uri_t uri);
 
 /** @} */
 

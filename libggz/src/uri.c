@@ -26,7 +26,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-ggz_uri_t uri_from_string(const char *uristring)
+ggz_uri_t ggz_uri_from_string(const char *uristring)
 {
 	ggz_uri_t uri;
 	char *ptr;
@@ -100,7 +100,7 @@ ggz_uri_t uri_from_string(const char *uristring)
 	return uri;
 }
 
-char *uri_to_string(ggz_uri_t uri)
+char *ggz_uri_to_string(ggz_uri_t uri)
 {
 	char protocol[32];
 	char user[128];
@@ -130,7 +130,7 @@ char *uri_to_string(ggz_uri_t uri)
 	return s;
 }
 
-void uri_free(ggz_uri_t uri)
+void ggz_uri_free(ggz_uri_t uri)
 {
 	if(uri.protocol)
 		ggz_free(uri.protocol);
