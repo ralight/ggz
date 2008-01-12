@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 9361 2007-11-17 15:33:44Z josef $
+ * $Id: output.c 9486 2008-01-12 15:11:49Z josef $
  *
  * Functions for display text/messages
  *
@@ -218,7 +218,7 @@ void output_debug(char* fmt, ...)
 #ifdef DEBUG
 	ggz_debug(DEBUG_CLIENT, message);
 	if(!output_enabled) return;
-	snprintf(messagecol, sizeof(messagecol), "%s%s%s", COLOR_ORANGE, message, COLOR_GREY);
+	snprintf(messagecol, sizeof(messagecol), "%s%s%s", COLOR_ORANGE, message, COLOR_WHITE);
 	output_text_write(messagecol);
 #endif
 }
