@@ -1,101 +1,127 @@
 # Deutsche Übersetzung von ggz-txt
-# Copyright (C) 2003 - 2005 Josef Spillner
+# Copyright (C) 2003 - 2008 Josef Spillner
 # This file is distributed under the same license as the ggz-txt-client package.
-# Josef Spillner <josef@ggzgamingzone.org>, 2003 - 2005.
+# Josef Spillner <josef@ggzgamingzone.org>
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ggz-txt 0.0.10\n"
+"Project-Id-Version: ggz-txt 0.0.14+\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-18 11:01+0100\n"
-"PO-Revision-Date: 2005-03-18 11:01+0100\n"
+"POT-Creation-Date: 2008-01-12 16:13+0100\n"
+"PO-Revision-Date: 2008-01-12 16:03+0100\n"
 "Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../ggz-txt/input.c:131
+#: ../ggz-txt/input.c:139
 #, c-format
 msgid "--- Client version: %s"
 msgstr "--- Client-Version: %s"
 
-#: ../ggz-txt/input.c:134
+#: ../ggz-txt/input.c:142
 #, c-format
 msgid "--- Unknown command, try %chelp."
 msgstr "--- Unbekannter Befehl, propiere %chelp."
 
-#: ../ggz-txt/input.c:244 ../ggz-txt/input.c:322 ../ggz-txt/input.c:361
+#: ../ggz-txt/input.c:262 ../ggz-txt/input.c:368 ../ggz-txt/input.c:411
+#: ../ggz-txt/input.c:457 ../ggz-txt/input.c:634
 msgid "You must connect to a server first."
 msgstr "Du mußt zu einem Server verbunden sein."
 
-#: ../ggz-txt/input.c:289
+#: ../ggz-txt/input.c:316
 msgid "List what?"
 msgstr "Was auflisten?"
 
-#: ../ggz-txt/input.c:299 ../ggz-txt/input.c:311
+#: ../ggz-txt/input.c:326 ../ggz-txt/input.c:338
 msgid "Join what?"
 msgstr "Was betreten?"
 
-#: ../ggz-txt/input.c:303
+#: ../ggz-txt/input.c:330
 #, c-format
 msgid "Joining a %s"
 msgstr "Betrete einen %s"
 
-#: ../ggz-txt/input.c:332
+#: ../ggz-txt/input.c:379
+#, c-format
+msgid "Room %s does not exist."
+msgstr "Der Raum %s existiert nicht."
+
+#: ../ggz-txt/input.c:382
 msgid "Join which room?"
 msgstr "Welchen Raum betreten?"
 
-#: ../ggz-txt/input.c:347
+#: ../ggz-txt/input.c:397
 msgid "Describe which room?"
 msgstr "Welchen Raum beschreiben?"
 
-#: ../ggz-txt/input.c:365
+#: ../ggz-txt/input.c:415 ../ggz-txt/input.c:461
 msgid "You must join a room first."
 msgstr "Du mußt zuerst einen Raum betreten."
 
-#: ../ggz-txt/input.c:412
+#: ../ggz-txt/input.c:449
+msgid "Error: Missing player name."
+msgstr "Fehler: Der Spielername muss angegeben werden."
+
+#: ../ggz-txt/input.c:450 ../ggz-txt/input.c:471
+msgid "Syntax: /msg <player> <msg>"
+msgstr "Syntax: /msg <spieler> <nachricht>"
+
+#: ../ggz-txt/input.c:470
+msgid "Error: Missing message."
+msgstr "Fehler: Fehlende Nachricht."
+
+#: ../ggz-txt/input.c:481
 msgid "Send message to which table?"
 msgstr "Nachricht an welchem Tisch senden?"
 
-#: ../ggz-txt/input.c:445
+#: ../ggz-txt/input.c:514
 msgid "You must be in a room to launch a game."
 msgstr "Du mußt in einem Raum sein um ein Spiel starten zu können."
 
-#: ../ggz-txt/input.c:451
+#: ../ggz-txt/input.c:520
 msgid "No game types defined for this room. Maybe try 'list types'?"
 msgstr ""
 "Es sind keine Spieltypen für diesen Raum definiert. Probiere mal 'list "
 "types'."
 
-#: ../ggz-txt/input.c:459
+#: ../ggz-txt/input.c:528
 #, c-format
 msgid "Launching game of %s, (%s-%s)"
 msgstr "Starte Spiel %s (%s-%s)"
 
-#: ../ggz-txt/input.c:472
+#: ../ggz-txt/input.c:541
 #, c-format
 msgid "No suitable game modules (out of %i) defined for that game."
 msgstr ""
 "Es sind keine Spielmodule (von %i verfügbaren) für dieses Spiel geeignet."
 
-#: ../ggz-txt/input.c:473
+#: ../ggz-txt/input.c:542
 #, c-format
 msgid "Download one from %s."
 msgstr "Lade eines von %s herunter."
 
-#: ../ggz-txt/input.c:478
+#: ../ggz-txt/input.c:547
 #, c-format
 msgid "Found %i game modules, using frontend '%s'."
 msgstr "%i Spielmodule gefunden, nutze Frontend '%s'."
 
-#: ../ggz-txt/input.c:517
+#: ../ggz-txt/input.c:586
 msgid "Join which table?"
 msgstr "An welchem Tisch teilnehmen?"
 
-#: ../ggz-txt/input.c:531
+#: ../ggz-txt/input.c:600
 msgid "That table doesn't exist! Maybe try '/list tables'?"
 msgstr "Dieser Tisch existiert nicht. Probiere mal 'list tables'."
+
+#: ../ggz-txt/input.c:663
+msgid "Kicking a player requires a reason."
+msgstr "Die Aussperrung eines Spielers benötigt die Angabe eines Grundes."
+
+#: ../ggz-txt/input.c:667
+msgid "Unknown admin command."
+msgstr "Unbekanntes Admin-Kommando."
 
 #: ../ggz-txt/main.c:141
 #, c-format
@@ -131,304 +157,350 @@ msgstr "-h / --help: Zeigt diese Hilfe an\n"
 msgid "-v / --version: Display version information\n"
 msgstr "-v / --version: Zeigt Versionsinformationen\n"
 
-#: ../ggz-txt/main.c:226
+#: ../ggz-txt/main.c:240
 #, c-format
 msgid "Startup command: %s"
 msgstr "Startkommando: %s"
 
-#: ../ggz-txt/output.c:104
+#: ../ggz-txt/output.c:109
 msgid "--- GGZ Gaming Zone -- Help"
 msgstr "--- GGZ Gaming Zone -- Hilfe"
 
-#: ../ggz-txt/output.c:105
+#: ../ggz-txt/output.c:110
 msgid "--- -----------------------"
 msgstr "--- -----------------------"
 
-#: ../ggz-txt/output.c:106
+#: ../ggz-txt/output.c:111
 msgid "---"
 msgstr "---"
 
-#: ../ggz-txt/output.c:107
-msgid "--- /connect [<server>[:<port>]] [<nick>] [<password>]"
-msgstr "--- /connect [<server>[:<port>]] [<nick>] [<passwort>]"
-
-#: ../ggz-txt/output.c:108
-msgid "---    Connect to a GGZ server"
-msgstr "---    Verbindet zu einem GGZ-Server"
-
-#: ../ggz-txt/output.c:109
-msgid "--- /disconnect                             Disconnect from server"
-msgstr "--- /disconnect                             Trennt Verbindung"
-
-#: ../ggz-txt/output.c:110
-msgid "--- /exit                                   Quit GGZ Gaming Zone"
-msgstr "--- /exit                                   GGZ Gaming Zone verlassen"
-
-#: ../ggz-txt/output.c:111
-msgid ""
-"--- /desc <room>                            Get description of room <room>"
-msgstr ""
-"--- /desc <raum>                            Beschreibung von <raum> bekommen"
-
 #: ../ggz-txt/output.c:112
-msgid "--- /join room|table <num>                  Join room or table <num>"
-msgstr ""
-"--- /join room|table <num>                  Raum oder Tisch <num> betreten"
+msgid "--- /connect [<server>[:<port>][:tls]] [<nick>] [<password>]"
+msgstr "--- /connect [<server>[:<port>][:tls]] [<nick>] [<passwort>]"
 
 #: ../ggz-txt/output.c:113
-msgid ""
-"--- /list players|rooms|tables|types        List the requested information."
-msgstr ""
-"--- /list players|rooms|tables|types        Listet die gewünschten "
-"Informationen auf"
+msgid "---    Connect to a GGZ server and log in"
+msgstr "---    Verbindet zu einem GGZ-Server und loggt ein"
 
 #: ../ggz-txt/output.c:114
-msgid "--- /msg <player> <msg>                     Send a msg to a player"
-msgstr ""
-"--- /msg <spieler> <nachricht>              Sendet eine Nachricht zu einem "
-"Spieler"
+msgid "--- /disconnect                                  Disconnect from server"
+msgstr "--- /disconnect                         Trennt die Verbindung"
 
 #: ../ggz-txt/output.c:115
-msgid "--- /table <msg>                            Send a msg to your table"
-msgstr ""
-"--- /table <nachricht>                      Sendet eine Nachricht an deinen "
-"Tisch"
+msgid "--- /exit                                        Quit GGZ Gaming Zone"
+msgstr "--- /exit                               GGZ Gaming Zone verlassen"
 
 #: ../ggz-txt/output.c:116
-msgid "--- /beep <player>                          Beep player <player>"
+msgid ""
+"--- /desc <room>                                 Get description of room "
+"<room>"
 msgstr ""
-"--- /beep <spieler>                         Sendet einen Piepton an einen "
-"Spieler"
+"--- /desc <raum>                        Beschreibung von Raum <raum> bekommen"
 
 #: ../ggz-txt/output.c:117
-msgid "--- /launch                                 Launch a game if possible"
+msgid ""
+"--- /join room|table <num>                       Join room or table <num>"
 msgstr ""
-"--- /launch                                 Startet (falls möglich) ein Spiel"
+"--- /join room|table <num>              Raum oder Tisch <num> betreten"
 
 #: ../ggz-txt/output.c:118
-msgid "--- /version                                Display the client version"
+msgid ""
+"--- /list allrooms|players|rooms|tables|types    List the requested "
+"information."
 msgstr ""
-"--- /version                                Zeigt die Client-Versionsnummer "
-"an"
+"--- /list allrooms|players|rooms|tables|types Listet die gewünschten "
+"Informationen auf"
 
 #: ../ggz-txt/output.c:119
-msgid ""
-"--- /who                                    List current player in the room"
+msgid "--- /msg <player> <msg>                          Send a msg to a player"
 msgstr ""
-"--- /who                                    Listet die derzeitigen Spieler "
-"im Raum auf"
+"--- /msg <spieler> <nachricht>          Sendet eine Nachricht zu einem "
+"Spieler"
 
 #: ../ggz-txt/output.c:120
 msgid ""
-"--- /wall <msg>                             Admin only command, broadcast to "
-"all rooms"
+"--- /table <msg>                                 Send a msg to your table"
 msgstr ""
-"--- /wall <nachricht>                       Adminbefehl: Broadcast zu allen "
+"--- /table <nachricht>                  Sendet eine Nachricht an deinen "
+"Tisch"
+
+#: ../ggz-txt/output.c:121
+msgid "--- /beep <player>                               Beep player <player>"
+msgstr ""
+"--- /beep <spieler>                     Sendet einen Piepton an einen "
+"Spieler"
+
+#: ../ggz-txt/output.c:122
+msgid ""
+"--- /launch                                      Launch a game if possible"
+msgstr ""
+"--- /launch                             Startet (falls möglich) ein Spiel"
+
+#: ../ggz-txt/output.c:123
+msgid ""
+"--- /version                                     Display the client version"
+msgstr ""
+"--- /version                            Zeigt die Client-Versionsnummer "
+"an"
+
+#: ../ggz-txt/output.c:124
+msgid ""
+"--- /who                                         List current player in the "
+"room"
+msgstr ""
+"--- /who                                Listet die derzeitigen Spieler "
+"im Raum auf"
+
+#: ../ggz-txt/output.c:125
+msgid ""
+"--- /wall <msg>                                  Admin only command, "
+"broadcast to all rooms"
+msgstr ""
+"--- /wall <nachricht>                   Adminbefehl: Broadcast zu allen "
 "Räumen"
 
+#: ../ggz-txt/output.c:126
+msgid ""
+"--- /log <logfile>                               Log conversation into "
+"logfile"
+msgstr ""
+"--- /log <logdatei>                     Zeichnet die Gespräche in einer "
+"Datei auf"
+
 #: ../ggz-txt/output.c:127
+msgid ""
+"--- /admin ...                                   Administrative commands"
+msgstr ""
+"--- /admin ...                          Administrative Kommandos"
+
+#: ../ggz-txt/output.c:128
+msgid ""
+"---    ... gag <player>                          Global ignore on messages "
+"from <player>"
+msgstr ""
+"---    ... gag <spieler>                Ingnoriert alle Nachrichten "
+"von <spieler>"
+
+#: ../ggz-txt/output.c:129
+msgid "---    ... ungag <player>                        Revert gagging"
+msgstr "---    ... ungag <spieler>              Zeigt die ignorierten "
+"Nachrichten wieder an"
+
+#: ../ggz-txt/output.c:130
+msgid ""
+"---    ... kick <player> <reason>                Kick <player> from server"
+msgstr ""
+"---    ... kick <spieler> <grund>       Wirft <spieler> vom Server"
+
+#: ../ggz-txt/output.c:137
 msgid "Welcome to the text-only GGZ client!"
 msgstr "Willkommen im textbasierten GGZ-Client!"
 
-#: ../ggz-txt/output.c:128
+#: ../ggz-txt/output.c:138
 msgid "--Written by Brent Hendricks & Justin Zaun (C) 2000"
 msgstr "--Geschrieben von Brent Hendricks & Justin Zaun (C) 2000"
 
-#: ../ggz-txt/output.c:129
+#: ../ggz-txt/output.c:139
 msgid "--Maintained by the GGZ Gaming Zone developers (C) 2001 - 2005"
 msgstr "--Betreut von den Entwicklern der GGZ Gaming Zone (C) 2001 - 2005"
 
-#: ../ggz-txt/output.c:130
+#: ../ggz-txt/output.c:140
 msgid "--Type /help to see a list of possible commands."
 msgstr "--Gib /help ein, um eine Liste der möglichen Befehle zu sehen."
 
-#: ../ggz-txt/output.c:236
+#: ../ggz-txt/output.c:260
 #, c-format
 msgid "%s--- You've been beeped by %s."
 msgstr "%s--- Du hast von %s einen Piepton erhalten."
 
-#: ../ggz-txt/output.c:270
-#, c-format
-msgid "-- Room %d : %s (%s)"
-msgstr "-- Raum %d: %s (%s)"
+#: ../ggz-txt/output.c:297
+msgid "-- Room %d : %s (%s) (Players: %d)"
+msgstr "-- Raum %d: %s (%s) (Spieler: %d)"
 
-#: ../ggz-txt/output.c:274
-#, c-format
-msgid "-- Room %d : %s"
-msgstr "-- Raum %d: %s"
+#: ../ggz-txt/output.c:302
+msgid "-- Room %d : %s (Players: %d)"
+msgstr "-- Raum %d: %s (Spieler: %d)"
 
-#: ../ggz-txt/output.c:291
+#: ../ggz-txt/output.c:321
 #, c-format
 msgid "-- Gametype %d : %s"
-msgstr "-- Spieltyp %d : %s"
+msgstr "-- Spieltyp %d: %s"
 
-#: ../ggz-txt/output.c:310
+#: ../ggz-txt/output.c:340
 msgid "Players in current room"
 msgstr "Spieler im aktuellen Raum"
 
-#: ../ggz-txt/output.c:316
+#: ../ggz-txt/output.c:346
 #, c-format
 msgid "-- %s %s %s"
 msgstr "-- %s %s %s"
 
-#: ../ggz-txt/output.c:318
+#: ../ggz-txt/output.c:348
 #, c-format
 msgid "at table %d"
 msgstr "an Tisch %d"
 
-#: ../ggz-txt/output.c:319
+#: ../ggz-txt/output.c:349
 msgid "(Administrator)"
 msgstr "(Administrator)"
 
-#: ../ggz-txt/output.c:320
+#: ../ggz-txt/output.c:350
+msgid "(Host)"
+msgstr "(Spielführer)"
+
+#: ../ggz-txt/output.c:351
 msgid "(Bot)"
 msgstr "(Computerspieler)"
 
-#: ../ggz-txt/output.c:321
+#: ../ggz-txt/output.c:352
 msgid "(Guest)"
 msgstr "(Gast)"
 
-#: ../ggz-txt/output.c:339
+#: ../ggz-txt/output.c:370
 msgid "Tables in current room:"
 msgstr "Tische im aktuellen Raum:"
 
-#: ../ggz-txt/output.c:346
+#: ../ggz-txt/output.c:377
 msgid "No tables"
 msgstr "Keine Tische"
 
-#: ../ggz-txt/output.c:384 ../ggz-txt/output.c:388
+#: ../ggz-txt/output.c:411 ../ggz-txt/output.c:415
 msgid "Username"
 msgstr "Nutzername"
 
-#: ../ggz-txt/output.c:395 ../ggz-txt/output.c:401
+#: ../ggz-txt/output.c:422 ../ggz-txt/output.c:428
 msgid "Server"
 msgstr "Server"
 
-#: ../ggz-txt/output.c:398 ../ggz-txt/output.c:416
+#: ../ggz-txt/output.c:425 ../ggz-txt/output.c:443
 #, c-format
 msgid " (%i players)"
 msgstr " (%i Spieler)"
 
-#: ../ggz-txt/output.c:406
+#: ../ggz-txt/output.c:433
 msgid "Status"
 msgstr "Status"
 
-#: ../ggz-txt/output.c:412 ../ggz-txt/output.c:420
+#: ../ggz-txt/output.c:439 ../ggz-txt/output.c:447
 msgid "Room"
 msgstr "Raum"
 
-#: ../ggz-txt/output.c:438
+#: ../ggz-txt/output.c:465
 msgid "Time"
 msgstr "Zeit"
 
-#: ../ggz-txt/output.c:530
+#: ../ggz-txt/output.c:557
 #, c-format
 msgid "Table %d : %s"
 msgstr "Tisch %d : %s"
 
-#: ../ggz-txt/output.c:537
+#: ../ggz-txt/output.c:564
 #, c-format
 msgid "-- Seat %d: %s"
 msgstr "-- Sitz %d: %s"
 
-#: ../ggz-txt/output.c:541
+#: ../ggz-txt/output.c:568
 #, c-format
 msgid "-- Seat %d: Reserved for %s"
 msgstr "-- Sitz %d: Reserviert für %s"
 
-#: ../ggz-txt/output.c:545
+#: ../ggz-txt/output.c:572
 #, c-format
 msgid "-- Seat %d: -Bot-"
 msgstr "-- Sitz %d: -Bot-"
 
-#: ../ggz-txt/output.c:548
+#: ../ggz-txt/output.c:575
 #, c-format
 msgid "-- Seat %d: -Open-"
 msgstr "-- Sitz %d: -Offen-"
 
-#: ../ggz-txt/output.c:551
+#: ../ggz-txt/output.c:578
 msgid "-- Not a seat"
 msgstr "-- Kein Sitz"
 
-#: ../ggz-txt/output.c:554
+#: ../ggz-txt/output.c:581
 msgid "Internal error"
 msgstr "Interner Fehler"
 
-#: ../ggz-txt/server.c:109 ../ggz-txt/server.c:258
+#: ../ggz-txt/server.c:110 ../ggz-txt/server.c:261
 msgid "--- Disconnected"
 msgstr "--- Getrennt"
 
-#: ../ggz-txt/server.c:136
+#: ../ggz-txt/server.c:137
 #, c-format
 msgid "--- Connected to %s."
 msgstr "--- Verbunden zu %s."
 
-#: ../ggz-txt/server.c:154
+#: ../ggz-txt/server.c:155
 #, c-format
 msgid "--- Connection failed: %s"
 msgstr "--- Verbindung fehlgeschlagen: %s"
 
-#: ../ggz-txt/server.c:178
-#, c-format
-msgid "--- Logged into to %s."
+#: ../ggz-txt/server.c:179
+msgid "--- Logged into %s."
 msgstr "--- Eingeloggt in %s."
 
-#: ../ggz-txt/server.c:197
+#: ../ggz-txt/server.c:198
 #, c-format
 msgid "--- Login failed: %s"
 msgstr "--- Login fehlgeschlagen: %s"
 
-#: ../ggz-txt/server.c:214
+#: ../ggz-txt/server.c:215
 #, c-format
 msgid "--- Entered room %s."
 msgstr "--- Raum %s betreten."
 
-#: ../ggz-txt/server.c:238
+#: ../ggz-txt/server.c:241
 #, c-format
 msgid "--- Enter failed: %s"
 msgstr "--- Betreten fehlgeschlagen: %s"
 
-#: ../ggz-txt/server.c:289
+#: ../ggz-txt/server.c:292
 msgid "--- Network error: disconnected"
 msgstr "--- Netzwerkfehler: getrennt"
 
-#: ../ggz-txt/server.c:301
+#: ../ggz-txt/server.c:305
 #, c-format
 msgid "--- Server error: %s disconnected"
 msgstr "--- Serverfehler: %s getrennt"
 
-#: ../ggz-txt/server.c:363
+#: ../ggz-txt/server.c:318
+msgid "--- Chat failed: %s"
+msgstr "--- Chat fehlgeschlagen: %s"
+
+#: ../ggz-txt/server.c:380
 #, c-format
 msgid "--> %s entered the room."
 msgstr "--> %s hat den Raum betreten."
 
-#: ../ggz-txt/server.c:373
+#: ../ggz-txt/server.c:391
 #, c-format
 msgid "<-- %s left the room."
 msgstr "<--- %s hat den Raum verlassen."
 
-#: ../ggz-txt/server.c:383
+#: ../ggz-txt/server.c:401
 msgid "-- Table launched"
 msgstr "-- Tisch gestartet"
 
-#: ../ggz-txt/server.c:393
+#: ../ggz-txt/server.c:411
 #, c-format
 msgid "-- Table launch failed: %s"
 msgstr "-- Tischstart fehlgeschlagen: %s"
 
-#: ../ggz-txt/server.c:407
+#: ../ggz-txt/server.c:425
 msgid "-- Table joined"
 msgstr "-- Tisch beigetreten"
 
-#: ../ggz-txt/server.c:417
+#: ../ggz-txt/server.c:435
 #, c-format
 msgid "-- Table join failed: %s"
 msgstr "-- Beitreten fehlgeschlagen: %s"
 
-#: ../ggz-txt/server.c:435
+#: ../ggz-txt/server.c:453
 msgid "-- Left table"
 msgstr "-- Tisch verlassen"
 
-#: ../ggz-txt/server.c:447
+#: ../ggz-txt/server.c:465
 msgid "-- Table leave failed"
 msgstr "-- Verlassen des Tisches fehlgeschlagen"
+
