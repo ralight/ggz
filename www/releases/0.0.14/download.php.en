@@ -51,7 +51,7 @@ GGZ support:
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/slackware.png">
 </div>
-<a href="http://www.slacky.eu/repository/slackware-11.0/games/ggz/">Slackware</a> (0.0.14)
+<a href="http://www.slacky.eu/index.php?option=com_content&task=view&id=2376&Itemid=56">Slackware</a> (0.0.14)
 </li>
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
@@ -103,13 +103,13 @@ GGZ support:
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/gentoo.png">
 </div>
-<a href="http://packages.gentoo.org/search/?sstring=ggz">Gentoo</a> (0.0.14)
+<a href="http://packages.gentoo.org/category/dev-games">Gentoo</a> (0.0.14)
 </li>
 <li>
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/mandriva.png">
 </div>
-<a href="http://rpms.mandrivaclub.com/search.php?query=ggz&submit=Search">Mandriva</a> (0.0.13)
+<a href="http://club.mandriva.com/xwiki/bin/view/rpms/Category/Games/Other">Mandriva</a> (0.0.14)
 </li>
 </ul>
 
@@ -120,13 +120,13 @@ Other distributors with (unfortunately) partial or outdated GGZ packages include
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/fink.png">
 </div>
-<a href="http://pdb.finkproject.org/pdb/search.php?summary=ggz">Fink</a> (0.0.11, search is broken)
+<a href="http://pdb.finkproject.org/pdb/search.php?summary=ggz">Fink</a> (0.0.11?, search is broken)
 </li>
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/lunar.png">
 </div>
-Lunar Linux (0.0.12, search broken)
+Lunar Linux (0.0.12?, search broken)
 <!--
 <a href="http://modules.lunar-linux.org/index.php?option=moonbase&section=games">Lunar Linux</a> (0.0.12)
 -->
