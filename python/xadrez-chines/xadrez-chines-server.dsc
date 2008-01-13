@@ -1,8 +1,10 @@
 [GameInfo]
-Author = Josef Spillner
-Description = Chinese Chess Server
-Homepage = http://www.ggzgamingzone.org/gameservers/xadrezchines/
 Name = Xadrez Chinês
+Description = Chinese Chess (Xiangqi) Server
+Description[de] = Server für chinesisches Schach (Xiangqi)
+Description[zh] = 象棋
+Author = Josef Spillner
+Homepage = http://www.ggzgamingzone.org/gameservers/xadrezchines/
 Version = 0.0.1
 
 [LaunchInfo]

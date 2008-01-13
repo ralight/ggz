@@ -1,8 +1,9 @@
 [GameInfo]
-Author = Josef Spillner
-Description = Ludo Server
-Homepage = http://www.ggzgamingzone.org/games/ludo/
 Name = Ludo
+Description = Ludo Server
+Description[de] = Server für Mensch ärgere dich nicht
+Author = Josef Spillner
+Homepage = http://www.ggzgamingzone.org/games/ludo/
 Version = 0.0.1
 
 [LaunchInfo]

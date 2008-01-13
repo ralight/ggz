@@ -1,6 +1,8 @@
 [RoomInfo]
-Name = GNU Go (CGoBan Client)
+Name = Go room (GNU Go, playable with CGoBan Client)
+Name[de] = Go-Raum (GNU Go, spielbar mit dem CGoBan-Client)
 Description = The Japanese Go game
+Description[de] = Das japanische Go-Spiel
 GameType = GNU Go
 MaxPlayers = 500
 MaxTables = 100

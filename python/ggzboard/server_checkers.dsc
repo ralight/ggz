@@ -1,8 +1,9 @@
 [GameInfo]
-Author = Josef Spillner
-Description = Checkers Server
-Homepage = http://www.ggzgamingzone.org/games/checkers/
 Name = Checkers
+Description = Checkers Server
+Description[de] = Server für das Damespiel
+Author = Josef Spillner
+Homepage = http://www.ggzgamingzone.org/games/checkers/
 Version = 0.0.2
 
 [LaunchInfo]

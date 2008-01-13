@@ -1,8 +1,9 @@
 [GameInfo]
-Author = Josef Spillner
-Description = Hnefatafl Server
-Homepage = http://www.ggzgamingzone.org/games/hnefatafl/
 Name = Hnefatafl
+Description = Hnefatafl Server
+Description[de] = Server für Hnefatafl
+Author = Josef Spillner
+Homepage = http://www.ggzgamingzone.org/games/hnefatafl/
 Version = 0.0.2
 
 [LaunchInfo]

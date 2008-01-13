@@ -1,7 +1,10 @@
 [RoomInfo]
 Name = Entry Room
+Name[de] = Eingangsbereich
+Name[pt] = Entrada
 Description = A place to meet and choose a game room
+Description[de] = Ein Treffpunkt zur Auswahl eines Spielraumes
+Description[pt] = Uma área para dar bate-papo e escolher uma sala para jogar
 GameType = None
 MaxPlayers = 100
 MaxTables = 0
-#ExecutableArgs = 

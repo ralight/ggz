@@ -1,6 +1,9 @@
 [RoomInfo]
-Name = Chinese Chess
+Name = Chinese Chess (Xiangqi)
+Name[de] = Chinesisches Schach (Xiangqi)
+Name[zh] = 象棋
 Description = Chinese version of chess
+Description[de] = Standardraum für die chinesische Variante von Schach
 GameType = Xadrez Chinês
 MaxPlayers = 500
 MaxTables = 100

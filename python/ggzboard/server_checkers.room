@@ -1,6 +1,8 @@
 [RoomInfo]
 Name = Checkers
-Description = Checkers
+Name[de] = Dame
+Description = Checkers room
+Description[de] = Spielraum für Dame
 GameType = Checkers
 MaxPlayers = 500
 MaxTables = 100

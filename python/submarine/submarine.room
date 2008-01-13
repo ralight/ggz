@@ -1,6 +1,8 @@
 [RoomInfo]
 Name = Battleship
+Name[de] = Schiffe versenken
 Description = Battleship playing room
+Description[de] = Standardraum für das Spiel Schiffe versenken
 GameType = Submarine
 MaxPlayers = 500
 MaxTables = 100

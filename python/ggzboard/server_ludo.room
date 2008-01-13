@@ -1,6 +1,8 @@
 [RoomInfo]
 Name = Ludo
+Name[de] = Mensch ärgere dich nicht
 Description = Traditional four-player game with dice
+Description[de] = Traditionelles Würfelspiel für vier Personen
 GameType = Ludo
 MaxPlayers = 50
 MaxTables = 10

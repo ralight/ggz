@@ -1,8 +1,9 @@
 [GameInfo]
-Author = Josef Spillner
-Description = Battleship server for GGZ
-Homepage = http://www.ggzgamingzone.org/gameservers/battleship/
 Name = Submarine
+Description = Battleship server for GGZ
+Description[de] = Schiffe Versenken für GGZ
+Author = Josef Spillner
+Homepage = http://www.ggzgamingzone.org/gameservers/battleship/
 Version = 0.0.1
 
 [LaunchInfo]
