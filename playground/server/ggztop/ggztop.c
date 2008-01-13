@@ -128,7 +128,9 @@ void ggztop_display_top_screen(stats_rt *rt, int showallrooms, int sortcolumn)
 	int col;
 	stats_rt rtcopy;
 
+	sem_wait(&rt->semlock);
 	memcpy(&rtcopy, rt, sizeof(rtcopy));
+	sem_post(&rt->semlock);
 	rt = &rtcopy;
 
 	for(i = 0; i < rt->num_rooms; i++)
@@ -233,17 +235,22 @@ void ggztop_display_top(stats_rt *rt, int rawmode)
 	}
 
 	redraw = 1;
-	lastuptime = rt->uptime;
 	showallrooms = 0;
 	sortcolumn = 0;
 
+	sem_wait(&rt->semlock);
+	lastuptime = rt->uptime;
+	sem_post(&rt->semlock);
+
 	while(1)
 	{
+		sem_wait(&rt->semlock);
 		if(rt->uptime > lastuptime)
 		{
 			lastuptime = rt->uptime;
 			lastupdate = time(NULL);
 		}
+		sem_post(&rt->semlock);
 
 		if(redraw)
 		{
@@ -304,11 +311,15 @@ void ggztop_display_text(stats_rt *rt)
 {
 	int i;
 
+	sem_wait(&rt->semlock);
+
 	for(i = 0; i < rt->num_rooms; i++)
 	{
 		printf("ROOM %i: %s\n", i, rt->rooms[i]);
 		printf(" - %i players, %i tables\n", rt->players[i], rt->tables[i]);
 	}
+
+	sem_post(&rt->semlock);
 }
 
 void ggztop_display_xml(stats_rt *rt)
@@ -316,6 +327,8 @@ void ggztop_display_xml(stats_rt *rt)
 	int i;
 
 	printf("<ggzstats>\n");
+
+	sem_wait(&rt->semlock);
 
 	for(i = 0; i < rt->num_rooms; i++)
 	{
@@ -325,6 +338,8 @@ void ggztop_display_xml(stats_rt *rt)
 		printf("</room>\n");
 	}
 
+	sem_post(&rt->semlock);
+
 	printf("</ggzstats>\n");
 }
 
@@ -333,6 +348,8 @@ void ggztop_read(int runmode)
 	stats_rt *rt;
 
 	rt = (stats_rt*)shmat(stats_rt_shmid, 0, 0);
+
+	sem_wait(&rt->semlock);
 
 	if(rt->version != STATS_RT_VERSION)
 	{
@@ -344,6 +361,8 @@ void ggztop_read(int runmode)
 		fprintf(stderr, "ggztop: wrong stats_rt size\n");
 		return;
 	}
+
+	sem_post(&rt->semlock);
 
 	if(runmode == RUNMODE_TEXTONLY)
 		ggztop_display_text(rt);

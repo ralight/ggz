@@ -1,6 +1,8 @@
 #ifndef GGZ_STATS_RT_H
 #define GGZ_STATS_RT_H
 
+#include <semaphore.h>
+
 #define STATS_RT_SHMID            0x5688
 #define STATS_RT_VERSION          1
 
@@ -11,6 +13,7 @@ struct stats_rt_t
 {
 	int version;
 	int magicversion;
+	sem_t semlock;
 
 	int uptime;
 	int num_rooms;
