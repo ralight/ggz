@@ -1,6 +1,6 @@
 Index: stats.c
 ===================================================================
---- stats.c	(Revision 9450)
+--- stats.c	(Revision 9529)
 +++ stats.c	(Arbeitskopie)
 @@ -31,6 +31,11 @@
  #include <stdlib.h>
@@ -14,17 +14,18 @@ Index: stats.c
  #include "ggzdmod.h"
  #include "ggzdmod-ggz.h"
  
-@@ -43,7 +48,9 @@
+@@ -43,7 +48,10 @@
  #include "protocols.h"
  #include "room.h"
  #include "stats.h"
 +#include "statsrt.h"
  
 +static int stats_rt_shmid = 0;
++static stats_rt *rt;
  
  GGZReturn stats_lookup(ggzdbPlayerGameStats *stats)
  {
-@@ -450,3 +457,72 @@
+@@ -456,3 +464,97 @@
  	return rankingslist;
  }
  
@@ -48,21 +49,38 @@ Index: stats.c
 +			strerror(errno));
 +		return;
 +	}
-+	dbg_msg(GGZ_DBG_STATS, "RT Stats: size=%i bytes, segment=%i bytes",
++	dbg_msg(GGZ_DBG_STATS, "RT Stats: size=%zi bytes, segment=%zi bytes",
 +		sizeof(stats_rt), ds.shm_segsz);
++
++	rt = (stats_rt*)shmat(stats_rt_shmid, 0, 0);
++
++	rt->version = STATS_RT_VERSION;
++	rt->magicversion = sizeof(stats_rt);
++
++	ret = sem_init(&rt->semlock, 1, 1);
++	if(ret < 0)
++	{
++		err_msg("RT Stats: semaphore initialization failure (%s)",
++			strerror(errno));
++		return;
++	}
 +
 +	stats_rt_report();
 +}
 +
 +void stats_rt_report(void)
 +{
-+	stats_rt *rt;
 +	int i;
++	int ret;
 +
-+	rt = (stats_rt*)shmat(stats_rt_shmid, 0, 0);
-+
-+	rt->version = STATS_RT_VERSION;
-+	rt->magicversion = sizeof(stats_rt);
++	/* FIXME: error handling in case of signal arrival */
++	ret = sem_wait(&rt->semlock);
++	if(ret < 0)
++	{
++		err_msg("RT Stats: semaphore lock failure (%s)",
++			strerror(errno));
++		return;
++	}
 +
 +	rt->uptime = uptime();
 +
@@ -71,12 +89,19 @@ Index: stats.c
 +	rt->num_rooms = room_info.num_rooms;
 +	for(i = 0; i < rt->num_rooms; i++)
 +	{
-+		snprintf(rt->rooms[i], STATS_RT_MAX_ROOMNAME_LEN, rooms[i].name);
++		snprintf(rt->rooms[i], STATS_RT_MAX_ROOMNAME_LEN,
++			ggz_intlstring_translated(rooms[i].name, NULL));
 +		rt->players[i] = rooms[i].player_count;
 +		rt->tables[i] = rooms[i].table_count;
 +	}
 +
-+	shmdt(rt);
++	ret = sem_post(&rt->semlock);
++	if(ret < 0)
++	{
++		err_msg("RT Stats: semaphore unlock failure (%s)",
++			strerror(errno));
++		return;
++	}
 +}
 +
 +void stats_rt_report_chat(int room)
@@ -94,12 +119,13 @@ Index: stats.c
 +
 +void stats_rt_shutdown(void)
 +{
++	shmdt(rt);
 +	shmctl(stats_rt_shmid, IPC_RMID, NULL);
 +}
 +
 Index: err_func.c
 ===================================================================
---- err_func.c	(Revision 9450)
+--- err_func.c	(Revision 9526)
 +++ err_func.c	(Arbeitskopie)
 @@ -469,3 +469,13 @@
  	 * initialized.  The easiest solution was just to remove it. */
@@ -117,7 +143,7 @@ Index: err_func.c
 +
 Index: stats.h
 ===================================================================
---- stats.h	(Revision 9450)
+--- stats.h	(Revision 9526)
 +++ stats.h	(Arbeitskopie)
 @@ -46,4 +46,10 @@
  /* Returns (allocated) list with GGZRanking entries */
@@ -132,7 +158,7 @@ Index: stats.h
  #endif /* _GGZ_STATS_H */
 Index: err_func.h
 ===================================================================
---- err_func.h	(Revision 9450)
+--- err_func.h	(Revision 9526)
 +++ err_func.h	(Arbeitskopie)
 @@ -113,3 +113,5 @@
  void log_update_set_interval(int);
@@ -142,7 +168,7 @@ Index: err_func.h
 +ggztime_t uptime(void);
 Index: client.c
 ===================================================================
---- client.c	(Revision 9450)
+--- client.c	(Revision 9526)
 +++ client.c	(Arbeitskopie)
 @@ -47,6 +47,8 @@
  #include "net.h"
@@ -164,7 +190,7 @@ Index: client.c
  
 Index: control.c
 ===================================================================
---- control.c	(Revision 9450)
+--- control.c	(Revision 9526)
 +++ control.c	(Arbeitskopie)
 @@ -61,6 +61,7 @@
  #include "table.h"
@@ -174,7 +200,7 @@ Index: control.c
  
  #ifdef HAVE_INOTIFY
  #include <sys/inotify.h>
-@@ -584,6 +585,9 @@
+@@ -593,6 +594,9 @@
  	else
  		reconfigure_fd = -1;
  
@@ -184,7 +210,7 @@ Index: control.c
  	/* Create SERVER socket on main_port */
  	main_sock = ggz_make_socket(GGZ_SOCK_SERVER, opt.main_port, opt.interface);
  	if (main_sock < 0) {
-@@ -717,5 +721,7 @@
+@@ -726,5 +730,7 @@
  
  	cleanup_data(); /* FIXME: must destroy all threads first */
  
@@ -194,7 +220,7 @@ Index: control.c
  }
 Index: login.c
 ===================================================================
---- login.c	(Revision 9453)
+--- login.c	(Revision 9526)
 +++ login.c	(Arbeitskopie)
 @@ -56,6 +56,7 @@
  #include "perms.h"
@@ -217,9 +243,11 @@ Index: statsrt.h
 ===================================================================
 --- statsrt.h	(Revision 0)
 +++ statsrt.h	(Revision 0)
-@@ -0,0 +1,26 @@
+@@ -0,0 +1,29 @@
 +#ifndef GGZ_STATS_RT_H
 +#define GGZ_STATS_RT_H
++
++#include <semaphore.h>
 +
 +#define STATS_RT_SHMID            0x5688
 +#define STATS_RT_VERSION          1
@@ -231,6 +259,7 @@ Index: statsrt.h
 +{
 +	int version;
 +	int magicversion;
++	sem_t semlock;
 +
 +	int uptime;
 +	int num_rooms;
@@ -246,7 +275,7 @@ Index: statsrt.h
 +#endif
 Index: room.c
 ===================================================================
---- room.c	(Revision 9450)
+--- room.c	(Revision 9526)
 +++ room.c	(Arbeitskopie)
 @@ -42,6 +42,8 @@
  #include "protocols.h"
@@ -257,7 +286,7 @@ Index: room.c
  
  
  typedef struct {
-@@ -482,6 +484,8 @@
+@@ -484,6 +486,8 @@
  		dbg_msg(GGZ_DBG_ROOM, "Room %d player count = %d", room, count);
  	}
  
@@ -268,7 +297,7 @@ Index: room.c
  		pthread_rwlock_unlock(&rooms[room].lock);
 Index: chat.c
 ===================================================================
---- chat.c	(Revision 9450)
+--- chat.c	(Revision 9526)
 +++ chat.c	(Arbeitskopie)
 @@ -43,6 +43,7 @@
  #include "protocols.h"
