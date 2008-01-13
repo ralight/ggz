@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 9524 2008-01-12 21:55:18Z josef $
+ * $Id: ggz.h 9533 2008-01-13 20:32:41Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -320,8 +320,6 @@ void ggz_intlstring_free(ggz_intlstring *string);
  *  a simple language code such as 'de', with the former always trying to
  *  fall back to the latter if no translation is found.
  *  If no such translation is found, the default translation is returned.
- *
- *  The returned string must be freed with \ref ggz_free.
  *
  *  @param string The internationalized string object to translate
  *  @param lang The language in which the string should be represented
