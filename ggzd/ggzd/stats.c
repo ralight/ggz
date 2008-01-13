@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 9525 2008-01-12 22:03:18Z josef $
+ * $Id: stats.c 9529 2008-01-13 07:54:51Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -429,7 +429,9 @@ GGZList *toprankings(int gametype)
 	}
 
 	pthread_rwlock_rdlock(&game_types[gametype].lock);
-	strcpy(game_name, game_types[gametype].name);
+	ggz_strncpy(game_name,
+		ggz_intlstring_translated(game_types[gametype].name, NULL),
+		sizeof(game_name));
 	pthread_rwlock_unlock(&game_types[gametype].lock);
 
 	ggzdb_stats_toprankings(game_name, number, rankings);
