@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 9525 2008-01-12 22:03:18Z josef $
+ * $Id: net.c 9532 2008-01-13 08:32:52Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -302,7 +302,7 @@ void net_free(GGZNetIO *net)
 
 GGZReturn net_send_serverid(GGZNetIO *net, const char *srv_name, bool use_tls)
 {
-	char *xml_srv_name = ggz_xml_escape(srv_name);
+	const char *xml_srv_name = ggz_xml_escape(srv_name);
 	GGZReturn status;
 
 	/* This could go into a separate function, net_send_header, along
@@ -325,7 +325,7 @@ GGZReturn net_send_serverid(GGZNetIO *net, const char *srv_name, bool use_tls)
 #if 0
 GGZReturn net_send_player_banned(GGZNetIO *net, const char *srv_name)
 {
-	char *xml_srv_name;
+	const char *xml_srv_name;
 	GGZReturn status;
 
 	xml_srv_name = ggz_xml_escape(srv_name);
@@ -344,7 +344,7 @@ GGZReturn net_send_player_banned(GGZNetIO *net, const char *srv_name)
 
 GGZReturn net_send_server_full(GGZNetIO *net, const char *srv_name)
 {
-	char *xml_srv_name;
+	const char *xml_srv_name;
 	GGZReturn status;
 
 	xml_srv_name = ggz_xml_escape(srv_name);
@@ -423,13 +423,21 @@ GGZReturn net_send_room(GGZNetIO *net, int index,
 			RoomStruct *room, bool verbose)
 {
 	const char *language = net->client->language;
+	const char *roomname = ggz_intlstring_translated(room->name, language);
+	const char *roomdesc = ggz_intlstring_translated(room->description, language);
+
+	const char *roomname_quoted = ggz_xml_escape(roomname);
+	const char *roomdesc_quoted = ggz_xml_escape(roomdesc);
 
 	_net_send_line(net, "<ROOM ID='%d' NAME='%s' GAME='%d' PLAYERS='%d'>",
-		       index, ggz_intlstring_translated(room->name, language), room->game_type,
+		       index, roomname_quoted, room->game_type,
 		       room->player_count);
 	if (verbose && room->description)
-		_net_send_line(net, "<DESC>%s</DESC>",
-			ggz_intlstring_translated(room->description, language));
+		_net_send_line(net, "<DESC>%s</DESC>", roomdesc_quoted);
+
+	ggz_free(roomname_quoted);
+	ggz_free(roomdesc_quoted);
+
 	return _net_send_line(net, "</ROOM>");
 }
 
@@ -466,29 +474,47 @@ GGZReturn net_send_type(GGZNetIO *net, int index,
 
 	const char *language = net->client->language;
 
+	const char *gamename = ggz_intlstring_translated(type->name, language);
+	const char *gamename_quoted = ggz_xml_escape(gamename);
+
 	_net_send_line(net, "<GAME ID='%d' NAME='%s' VERSION='%s'>",
-		       index, ggz_intlstring_translated(type->name, language), type->version);
+		       index, gamename_quoted, type->version);
 	_net_send_line(net, "<PROTOCOL ENGINE='%s' VERSION='%s'/>",
 		       type->p_engine, type->p_version);
 	_net_send_line(net, "<ALLOW PLAYERS='%s' BOTS='%s' SPECTATORS='%s' PEERS='%s'/>",
 		       players, bots, spectators, peers);
 
+	ggz_free(gamename_quoted);
 	ggz_free(players);
 	ggz_free(bots);
 
 	if (type->named_bots) {
 		for (i = 0; type->named_bots[i]; i++) {
+			const char *botname_quoted = ggz_xml_escape(type->named_bots[i][0]);
+			const char *botclass_quoted = ggz_xml_escape(type->named_bots[i][1]);
+
 			_net_send_line(net, "<BOT NAME='%s' CLASS='%s'/>",
-				type->named_bots[i][0],
-				type->named_bots[i][1]);
+				botname_quoted, botclass_quoted);
+
+			ggz_free(botname_quoted);
+			ggz_free(botclass_quoted);
 		}
 	}
 	
 	if (verbose) {
+		const char *author_quoted = ggz_xml_escape(type->author);
+		const char *homepage_quoted = ggz_xml_escape(type->homepage);
+		const char *desc = ggz_intlstring_translated(type->desc, language);
+		const char *desc_quoted = ggz_xml_escape(desc);
+
 		_net_send_line(net, "<ABOUT AUTHOR='%s' URL='%s'/>",
-			       type->author, type->homepage);
+			author_quoted, homepage_quoted);
 		_net_send_line(net, "<DESC>%s</DESC>",
-			ggz_intlstring_translated(type->desc, language));
+			desc_quoted);
+
+		ggz_free(desc_quoted);
+		ggz_free(author_quoted);
+		ggz_free(homepage_quoted);
 	}
 	return _net_send_line(net, "</GAME>");
 }
@@ -554,7 +580,7 @@ GGZReturn net_send_player(GGZNetIO *net, GGZPlayer *player)
 	GGZPlayerType type = player_get_type(player);
 	const char *type_desc = ggz_playertype_to_string(type);
 	char stats[512];
-	char *player_name_quoted;
+	const char *player_name_quoted;
 	GGZReturn ret;
 
 	_net_get_player_stats_string(player, stats, sizeof(stats));
@@ -577,7 +603,7 @@ GGZReturn net_send_player(GGZNetIO *net, GGZPlayer *player)
 
 static GGZReturn _net_send_player_lag(GGZNetIO *net, GGZPlayer *player)
 {
-	char *player_name_quoted;
+	const char *player_name_quoted;
 	GGZReturn ret;
 
 	player_name_quoted = ggz_xml_escape(player->name);
@@ -597,7 +623,7 @@ static GGZReturn _net_send_player_perms(GGZNetIO *net, GGZPlayer *player)
 {
 	GGZPlayerType type = player_get_type(player);
 	const char *type_desc = ggz_playertype_to_string(type);
-	char *player_name_quoted;
+	const char *player_name_quoted;
 	GGZReturn ret;
 
 	player_name_quoted = ggz_xml_escape(player->name);
@@ -616,7 +642,7 @@ static GGZReturn _net_send_player_perms(GGZNetIO *net, GGZPlayer *player)
 static GGZReturn _net_send_player_stats(GGZNetIO *net, GGZPlayer *player)
 {
 	char stats[512];
-	char *player_name_quoted;
+	const char *player_name_quoted;
 	GGZReturn ret;
 
 	_net_get_player_stats_string(player, stats, sizeof(stats));
@@ -657,7 +683,7 @@ GGZReturn net_send_table_list_count(GGZNetIO *net, int room_id, int count)
 GGZReturn net_send_table(GGZNetIO *net, GGZTable *table)
 {
 	int i;
-	char *description_quoted;
+	const char *description_quoted;
 
 	_net_send_line(net, "<TABLE ID='%d' GAME='%d' STATUS='%d' SEATS='%d'>",
 		       table->index, table->type, table->state, 
@@ -704,7 +730,7 @@ GGZReturn net_send_chat(GGZNetIO *net, GGZChatType type,
 			const char *sender, const char *msg)
 {
 	const char *type_str = ggz_chattype_to_string(type);
-	char *sender_quoted;
+	const char *sender_quoted;
 	GGZReturn ret;
 
 	if (type == GGZ_CHAT_BEEP) {
@@ -724,7 +750,7 @@ GGZReturn net_send_chat(GGZNetIO *net, GGZChatType type,
 	sender_quoted = ggz_xml_escape(sender);
 
 	if (msg) {
-		char *msg_quoted = ggz_xml_escape(msg);
+		const char *msg_quoted = ggz_xml_escape(msg);
 		ret = _net_send_line(net, "<CHAT TYPE='%s' FROM='%s'>"
 				      "%s</CHAT>", 
 				      type_str, sender_quoted, msg_quoted);
@@ -807,7 +833,7 @@ GGZReturn net_send_player_update(GGZNetIO *net, GGZPlayerUpdateType opcode,
 {
 	GGZPlayer *player;
 	GGZPlayer p2;
-	char *name_quoted;
+	const char *name_quoted;
 	
 	switch (opcode) {
 	case GGZ_PLAYER_UPDATE_DELETE:
@@ -2231,7 +2257,7 @@ static GGZReturn _net_send_table_spectator(GGZNetIO *net, GGZTable *table,
 
 static GGZReturn _net_send_table_desc(GGZNetIO *net, GGZTable *table)
 {
-	char *description_quoted;
+	const char *description_quoted;
 
 	_net_send_line(net, "<TABLE ID='%d'>", table->index);
 	description_quoted = ggz_xml_escape(table->desc);
@@ -2271,13 +2297,13 @@ static GGZReturn _net_send_seat(GGZNetIO *net, GGZTableSeat *seat)
 		name = seat->name;
 	
 	if (name) {
-		const char *name_unquoted = ggz_xml_escape(name);
+		const char *name_quoted = ggz_xml_escape(name);
 
 		ret = _net_send_line(net,
 				      "<SEAT NUM='%d' TYPE='%s'>%s</SEAT>",
-				      seat->index, type_str, name_unquoted);
+				      seat->index, type_str, name_quoted);
 
-		ggz_free(name_unquoted);
+		ggz_free(name_quoted);
 		return ret;
 	} else
 		return _net_send_line(net, "<SEAT NUM='%d' TYPE='%s'/>", 
@@ -2288,8 +2314,14 @@ static GGZReturn _net_send_seat(GGZNetIO *net, GGZTableSeat *seat)
 static GGZReturn _net_send_spectator(GGZNetIO *net,
 				     GGZTableSpectator *spectator)
 {
-	return _net_send_line(net, "<SPECTATOR NUM='%d'>%s</SPECTATOR>",
-			      spectator->index, spectator->name);
+	const char *name_quoted = ggz_xml_escape(spectator->name);
+	GGZReturn ret;
+
+	ret = _net_send_line(net, "<SPECTATOR NUM='%d'>%s</SPECTATOR>",
+		spectator->index, name_quoted);
+	ggz_free(name_quoted);
+
+	return ret;
 }
 
 static GGZReturn _net_send_result(GGZNetIO *net, const char *action,
@@ -2323,8 +2355,11 @@ static GGZReturn _net_send_login_new_status(GGZNetIO *net,
 		       ggz_error_to_string(status));
 
 	/* Try to send checksum if successful */
-	if (status == E_OK)
-		_net_send_line(net, "<PASSWORD>%s</PASSWORD>", password);
+	if (status == E_OK) {
+		const char *password_quoted = ggz_xml_escape(password);
+		_net_send_line(net, "<PASSWORD>%s</PASSWORD>", password_quoted);
+		ggz_free(password_quoted);
+	}
 	
 	return _net_send_line(net, "</RESULT>");
 }
@@ -2349,8 +2384,18 @@ GGZReturn net_send_info_list_begin(GGZNetIO *net)
 GGZReturn net_send_info(GGZNetIO *net, int num, const char *realname,
 			const char *photo, const char *host)
 {
+	GGZReturn ret;
+	const char *realname_quoted = ggz_xml_escape(realname);
+	const char *photo_quoted = ggz_xml_escape(photo);
+
 	return _net_send_line(net, "<PLAYERINFO SEAT='%d' REALNAME='%s' PHOTO='%s' HOST='%s'/>",
-		num, (realname ? realname : ""), (photo ? photo : ""), (host ? host : ""));
+		num, (realname_quoted ? realname_quoted : ""),
+		(photo_quoted ? photo_quoted : ""), (host ? host : ""));
+
+	ggz_free(realname_quoted);
+	ggz_free(photo_quoted);
+
+	return ret;
 }
 
 GGZReturn net_send_info_list_end(GGZNetIO *net)
@@ -2367,7 +2412,7 @@ GGZReturn net_send_rankings_list_begin(GGZNetIO *net)
 
 GGZReturn net_send_rankings(GGZNetIO *net, int num, const char *name, int score)
 {
-	char *player_name_quoted;
+	const char *player_name_quoted;
 	GGZReturn ret;
 
 	player_name_quoted = ggz_xml_escape(name);
