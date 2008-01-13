@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9525 2008-01-12 22:03:18Z josef $
+ * $Id: parse_opt.c 9531 2008-01-13 07:58:33Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -193,6 +193,7 @@ static void dump_specs(void)
 	}
 	if(!strcmp(DATABASE_TYPE, "dbi"))
 	{
+		/* FIXME: dbi is broken now, since dbi itself is the backend? */
 		snprintf(dbstring, sizeof(dbstring), " [using dbd::%s]", opt.dbtype);
 	}
 	else
@@ -207,7 +208,7 @@ static void dump_specs(void)
 		GGZDCONFDIR,
 		(opt.conf_valid ? "ok" : "not ok"));
 	printf("Debugging: %s\n", (SPEC_DEBUG ? "yes" : "no"));
-	printf("Database backend: %s%s\n", SPEC_DB, dbstring);
+	printf("Database backend(s): %s%s\n", SPEC_DB, dbstring);
 	printf("Zeroconf support: %s [%s]\n",
 		(SPEC_AVAHI ? "yes (avahi)" : "no"),
 		(opt.conf_valid ? (opt.announce_lan ? "used" : "not used") : "unknown"));
