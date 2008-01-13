@@ -264,7 +264,7 @@ void ZoneGGZModServer::game_send_rules()
 }
 
 // Register a game with name and player count
-void ZoneGGZModServer::ZoneRegister(char* gamename, int gamemode, int maxplayers)
+void ZoneGGZModServer::ZoneRegister(const char* gamename, int gamemode, int maxplayers)
 {
 	ZONEDEBUG("registering...\n");
 	if(m_gamename)

@@ -29,7 +29,7 @@ class ZoneGGZModServer
 		virtual int slotZoneInput(int fd, int i);
 		virtual void slotZoneAI();
 		int zoneMainLoop();
-		void ZoneRegister(char* gamename, int gamemode, int maxplayers);
+		void ZoneRegister(const char* gamename, int gamemode, int maxplayers);
 		void zoneNextTurn(bool advance);
 
 		int zoneTurn();
@@ -56,7 +56,7 @@ class ZoneGGZModServer
 		int* m_players;
 		int m_turn;
 		int m_state;
-		char* m_gamename;
+		const char* m_gamename;
 		int ggz_sock;
 		int m_ready;
 };
