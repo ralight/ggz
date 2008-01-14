@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 9533 2008-01-13 20:32:41Z josef $
+ * $Id: ggz.h 9536 2008-01-14 17:22:14Z oojah $
  * 
  * Header file for ggz components lib
  *
@@ -52,6 +52,20 @@ extern "C" {
 #  define ggz__attribute(att)
 #endif
 
+/*
+ * Use __FUNCTION__ for extra debugging where available. __FUNCTION__ is a
+ * string literal under C for gcc 3.3 and earlier.  gcc 3.4 and later treats it
+ * as a variable and C++ always treats it as a variable. It is not available
+ * with the Sun Forte compiler.  This means that __FUNCTION__ (as a string
+ * literal) is only available for gcc < 3 when compiling C.
+ *
+ * This could be replaced with __func__, which is the variable that is defined
+ * for this purpose in the C99 standard. This would mean changes so that
+ * _GGZFUNCTION_ isn't taken as being a string literal.
+ *
+ * See http://gcc.gnu.org/onlinedocs/gcc/Function-Names.html for more
+ * information.
+ */
 #if defined __GNUC__ && (__GNUC__ >= 3)
 #  define _GGZFUNCTION_ ""
 #elif defined(__sun)
