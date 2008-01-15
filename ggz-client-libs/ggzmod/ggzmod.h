@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 8945 2007-01-16 17:42:57Z josef $
+ * $Id: ggzmod.h 9543 2008-01-15 19:13:38Z josef $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -194,7 +194,15 @@ typedef enum {
 	 *  it has now arrived. The event data is a GGZPlayerInfo*
 	 *  structure or NULL if info about all players was requested. */
 	GGZMOD_EVENT_INFO,
-	
+
+	/** @brief Game rankings for this room has arrived.
+	 *
+	 *  Contains information about the top players in this room,
+	 *  based on previously played games. The event data is a
+	 *  GGZList* which contains GGZRanking entries.
+	 */
+	GGZMOD_EVENT_RANKINGS,
+
 	/** @brief An error has occurred
 	 *  This event occurs when a GGZMod error has occurred.  An
 	 *  error message (a char*) will be passed as the event's data.
@@ -245,6 +253,12 @@ typedef struct {
 	const char *photo;	/**< Photo URL (NULL => no photo). */
 	const char *host;	/**< Hostname or IP address (NULL for C/S games). */
 } GGZPlayerInfo;
+
+typedef struct {
+	char *name;		/**< Player's name */
+	int position;		/**< Player's position in the ranking list */
+	int score;		/**< Player's score */
+} GGZRanking;
 
 /** @brief A GGZmod object, used for tracking a ggz<->table connection.
  *
@@ -546,6 +560,12 @@ int ggzmod_player_request_info(GGZMod *ggzmod, int seat_num);
  *  @return A valid GGZPlayerInfo structure, if seat is valid and has info.
  */
 GGZPlayerInfo* ggzmod_player_get_info(GGZMod *ggzmod, int seat);
+
+/** @brief Request rankings information for the current room.
+ *  @param ggzmod The GGZMod object.
+ *  @return TRUE if successful, FALSE if there's any error
+ */
+int ggzmod_player_request_rankings(GGZMod *ggzmod);
 
 #ifdef __cplusplus
 }

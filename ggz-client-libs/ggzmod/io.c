@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 7888 2006-03-07 09:57:17Z josef $
+ * $Id: io.c 9543 2008-01-15 19:13:38Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -53,6 +53,7 @@ static int _io_read_msg_spectator_seat(GGZMod *ggzmod);
 static int _io_read_msg_chat(GGZMod *ggzmod);
 static int _io_read_stats(GGZMod *ggzmod);
 static int _io_read_info(GGZMod *ggzmod);
+static int _io_read_rankings(GGZMod *ggzmod);
 
 /* Functions for sending IO messages */
 int _io_send_state(int fd, GGZModState state)
@@ -120,6 +121,13 @@ int _io_send_req_info(int fd, int seat_num)
 	return 0;
 }
 
+int _io_send_req_rankings(int fd)
+{
+	if (ggz_write_int(fd, REQ_RANKINGS) < 0)
+		return -1;
+	return 0;
+}
+
 
 /* Functions for reading messages */
 int _io_read_data(GGZMod *ggzmod)
@@ -149,6 +157,8 @@ int _io_read_data(GGZMod *ggzmod)
 			return _io_read_stats(ggzmod);
 		case MSG_GAME_INFO:
 			return _io_read_info(ggzmod);
+		case MSG_GAME_RANKINGS:
+			return _io_read_rankings(ggzmod);
 		}
 	}
 
@@ -348,6 +358,42 @@ static int _io_read_info(GGZMod *ggzmod)
 	{
 		_ggzmod_handle_info(ggzmod, -1, NULL, NULL, NULL, 1);
 	}
+
+	return 0;
+}
+
+static int _io_read_rankings(GGZMod *ggzmod)
+{
+	int i, num;
+	char *name;
+	int position, score;
+	GGZList *rankings;
+
+	if (ggz_read_int(ggzmod->fd, &num) < 0)
+		return -1;
+
+	rankings = ggz_list_create(NULL, NULL, NULL, GGZ_LIST_ALLOW_DUPS);
+
+	for (i = 0; i < num; i++) {
+		if (ggz_read_string_alloc(ggzmod->fd, &name) < 0
+		    || ggz_read_int(ggzmod->fd, &position) < 0
+		    || ggz_read_int(ggzmod->fd, &score) < 0) {
+			return -1;
+
+			GGZRanking *rank = (GGZRanking*)ggz_malloc(sizeof(GGZRanking));
+			rank->position = position;
+			rank->score = score;
+			rank->name = name;
+			ggz_list_insert(rankings, rank);
+		}
+	}
+
+	_ggzmod_handle_rankings(ggzmod, rankings);
+
+	ggz_list_free(rankings);
+
+	// FIXME: destroy function which does:
+	//ggz_free(rank->name);
 
 	return 0;
 }

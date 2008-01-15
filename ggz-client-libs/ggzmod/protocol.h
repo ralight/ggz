@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 7888 2006-03-07 09:57:17Z josef $
+ * $Id: protocol.h 9543 2008-01-15 19:13:38Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -43,7 +43,8 @@ typedef enum {
 	REQ_OPEN,
 	REQ_CHAT,
 
-	REQ_INFO
+	REQ_INFO,
+	REQ_RANKINGS
 } TableToControl;
 
 /** Messages sent from the ggz core client to the game client. */
@@ -64,7 +65,8 @@ typedef enum {
 
 	MSG_GAME_STATS,
 
-	MSG_GAME_INFO
+	MSG_GAME_INFO,
+	MSG_GAME_RANKINGS
 } ControlToTable;
 
 #endif /* __GGZ_CLIENT_PROTOCOL_H */

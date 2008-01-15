@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: mod.h 7888 2006-03-07 09:57:17Z josef $
+ * $Id: mod.h 9543 2008-01-15 19:13:38Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -101,5 +101,6 @@ void _ggzmod_handle_stats(GGZMod *ggzmod, GGZStat *player_stats,
 void _ggzmod_handle_info(GGZMod * ggzmod, int seat_num,
 			 const char *realname, const char *photo,
 			 const char *host, int finish);
+void _ggzmod_handle_rankings(GGZMod * ggzmod, GGZList *rankings);
 
 #endif /* __GGZ_MOD_H__ */

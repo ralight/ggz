@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.h 7888 2006-03-07 09:57:17Z josef $
+ * $Id: io.h 9543 2008-01-15 19:13:38Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -46,6 +46,7 @@ int _io_send_request_open(int fd, int seat_num);
 int _io_send_request_chat(int fd, const char *chat_msg);
 
 int _io_send_req_info(int fd, int seat_num);
+int _io_send_req_rankings(int fd);
 
 /* Read and dispatch message */
 int _io_read_data(GGZMod * ggzmod);

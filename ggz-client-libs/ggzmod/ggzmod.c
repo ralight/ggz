@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 9540 2008-01-15 17:01:52Z josef $
+ * $Id: ggzmod.c 9543 2008-01-15 19:13:38Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -680,6 +680,17 @@ void _ggzmod_handle_info(GGZMod * ggzmod, int seat_num, const char *realname,
 	}
 }
 
+void _ggzmod_handle_rankings(GGZMod * ggzmod, GGZList *rankings)
+{
+	// FIXME: cache rankings just like player infos?
+	//if(seat_num != -1) {
+	//	ggz_list_insert(ggzmod->infos, &info);
+	//}
+
+	call_handler(ggzmod, GGZMOD_EVENT_RANKINGS, rankings);
+}
+
+
 /* If the socket is not provided but a port is provided, connect
    to that port.  Used for windows OS by default. */
 static int ggzmod_connect_port(void)
@@ -1085,5 +1096,12 @@ GGZPlayerInfo* ggzmod_player_get_info(GGZMod *ggzmod, int seat)
 	GGZPlayerInfo search_info = {.num = seat};
 	GGZListEntry *entry = ggz_list_search(ggzmod->infos, &search_info);
 
-	return entry ?  ggz_list_get_data(entry) : NULL;
+	return entry ? ggz_list_get_data(entry) : NULL;
+}
+
+int ggzmod_player_request_rankings(GGZMod *ggzmod)
+{
+	_io_send_req_rankings(ggzmod->fd);
+
+	return 1;
 }
