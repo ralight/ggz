@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 9450 2007-12-15 10:57:13Z jdorje $
+ * $Id: ggzmod-ggz.c 9540 2008-01-15 17:01:52Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -416,9 +416,11 @@ static void _ggzmod_ggz_set_seat(GGZMod *ggzmod, GGZSeat *seat)
 
 static GGZSeat _ggzmod_ggz_get_seat(GGZMod *ggzmod, int num)
 {
-	GGZSeat seat = {num: num,
-			type: GGZ_SEAT_NONE,
-			name: NULL};
+	GGZSeat seat = {
+		.num = num,
+		.type = GGZ_SEAT_NONE,
+		.name = NULL
+	};
 
 	if (num >= 0 && num < ggzmod->num_seats) {
 		GGZListEntry *entry;
@@ -478,7 +480,10 @@ static void _ggzmod_ggz_set_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat *se
 
 static GGZSpectatorSeat _ggzmod_ggz_get_spectator_seat(GGZMod * ggzmod, int num)
 {
-	GGZSpectatorSeat seat = {num: num, name: NULL};
+	GGZSpectatorSeat seat = {
+		.num = num,
+		.name = NULL
+	};
 
 	if (num >= 0 && num < ggzmod->num_spectator_seats) {
 		GGZListEntry *entry;

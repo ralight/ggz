@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 9448 2007-12-14 09:44:57Z jdorje $
+ * $Id: ggzmod.c 9540 2008-01-15 17:01:52Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -501,9 +501,11 @@ int ggzmod_get_num_spectator_seats(GGZMod * ggzmod)
 
 GGZSeat ggzmod_get_seat(GGZMod *ggzmod, int num)
 {
-	GGZSeat seat = {num: num,
-			type: GGZ_SEAT_NONE,
-			name: NULL};
+	GGZSeat seat = {
+		.num = num,
+		.type = GGZ_SEAT_NONE,
+		.name = NULL
+	};
 
 	if (num >= 0 && num < ggzmod->num_seats) {
 		GGZListEntry *entry;
@@ -517,7 +519,10 @@ GGZSeat ggzmod_get_seat(GGZMod *ggzmod, int num)
 
 GGZSpectatorSeat ggzmod_get_spectator_seat(GGZMod * ggzmod, int num)
 {
-	GGZSpectatorSeat seat = {num: num, name: NULL};
+	GGZSpectatorSeat seat = {
+		.num = num,
+		.name = NULL
+	};
 
 	if (num >= 0 && num < ggzmod->num_spectator_seats) {
 		GGZListEntry *entry;
@@ -544,9 +549,11 @@ void _ggzmod_handle_seat(GGZMod * ggzmod, GGZSeat *seat)
 	/* Copy current seat to old_seat */
 	entry = ggz_list_search(ggzmod->seats, &seat);
 	if (!entry) {
-		GGZSeat myseat = {num:seat->num,
-				  type:GGZ_SEAT_NONE,
-				  name: NULL};
+		GGZSeat myseat = {
+			.num = seat->num,
+			.type = GGZ_SEAT_NONE,
+			.name = NULL
+		};
 		old_seat = seat_copy(&myseat);
 	} else {
 		old_seat = ggz_list_get_data(entry);
@@ -588,8 +595,10 @@ void _ggzmod_handle_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat * seat)
 	/* Copy current seat to old_seat */
 	entry = ggz_list_search(ggzmod->spectator_seats, seat);
 	if (!entry) {
-		GGZSpectatorSeat myseat = {num:seat->num,
-					   name: NULL};
+		GGZSpectatorSeat myseat = {
+			.num = seat->num,
+			.name = NULL
+		};
 
 		old_seat = spectator_seat_copy(&myseat);
 	} else {

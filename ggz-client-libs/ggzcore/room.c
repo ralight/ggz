@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 9070 2007-04-24 19:00:13Z jdorje $
+ * $Id: room.c 9540 2008-01-15 17:01:52Z josef $
  *
  * This fils contains functions for handling rooms
  *
@@ -868,9 +868,10 @@ int _ggzcore_room_admin(GGZRoom *room, GGZAdminType type,
 void _ggzcore_room_add_chat(GGZRoom * room, GGZChatType type,
 			    const char *name, const char *msg)
 {
-      GGZChatEventData data = { type:type,
-	      sender:name,
-	      message:msg
+	GGZChatEventData data = {
+		.type = type,
+		.sender = name,
+		.message = msg
 	};
 
 	ggz_debug(GGZCORE_DBG_ROOM, "Chat (%s) from %s",
@@ -892,8 +893,10 @@ void _ggzcore_room_set_table_launch_status(GGZRoom * room, int status)
 	if (status == E_OK) {
 		_ggzcore_room_event(room, GGZ_TABLE_LAUNCHED, NULL);
 	} else {
-		GGZErrorEventData error = { .status = status,
-					    .message = NULL};
+		GGZErrorEventData error = {
+			.status = status,
+			.message = NULL
+		};
 
 		switch (status) {
 		case E_BAD_OPTIONS:
@@ -1011,8 +1014,9 @@ void _ggzcore_room_set_table_join_status(GGZRoom * room,
 void _ggzcore_room_set_table_leave(GGZRoom * room,
 				   GGZLeaveType reason, const char *player)
 {
-      GGZTableLeaveEventData event_data = { reason:reason,
-	      player:player
+	GGZTableLeaveEventData event_data = {
+		.reason = reason,
+		.player = player
 	};
 	ggz_debug(GGZCORE_DBG_ROOM, "Player left table: %s (%s).",
 		  ggz_leavetype_to_string(reason), player);

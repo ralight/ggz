@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 9450 2007-12-15 10:57:13Z jdorje $
+ * $Id: game.c 9540 2008-01-15 17:01:52Z josef $
  *
  * This fils contains functions for handling games being played
  *
@@ -552,7 +552,10 @@ static void _ggzcore_game_handle_seatchange(GGZMod * mod,
 	GGZGame *game = ggzmod_ggz_get_gamedata(mod);
 	GGZNet *net = _ggzcore_server_get_net(game->server);
 	const int *seat_num = data;
-	GGZTableSeat seat = { .index = *seat_num, .name = NULL };
+	GGZTableSeat seat = {
+		.index = *seat_num,
+		.name = NULL
+	};
 	GGZRoom *room = _ggzcore_server_get_nth_room(game->server,
 						     game->room_id);
 	GGZTable *table =
@@ -763,8 +766,9 @@ int _ggzcore_game_get_control_fd(struct _GGZGame *game)
  */
 static void abort_game(struct _GGZGame *game)
 {
-      GGZTableLeaveEventData event_data = { reason:GGZ_LEAVE_NORMAL,
-	      player:NULL
+	GGZTableLeaveEventData event_data = {
+		.reason = GGZ_LEAVE_NORMAL,
+		.player = NULL
 	};
 	GGZServer *server = game->server;
 	GGZRoom *room = _ggzcore_server_get_cur_room(server);
