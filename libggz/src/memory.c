@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/15/01
- * $Id: memory.c 9524 2008-01-12 21:55:18Z josef $
+ * $Id: memory.c 9541 2008-01-15 17:21:26Z josef $
  *
  * This is the code for handling memory allocation for ggzcore
  *
@@ -42,6 +42,7 @@
  * pairs are somewhat close together, so keep recent mallocs near the top */
 typedef struct _memptr {
 	struct _memptr	*next;
+	const char	*funcname;
 	const char	*tag;
 	int		line;
 	void		*ptr;
@@ -67,6 +68,7 @@ static pthread_mutex_t	mut = PTHREAD_MUTEX_INITIALIZER;
 #endif
 
 static void * _ggz_allocate(const unsigned int size,
+                            const char *funcname,
                             const char *tag, int line,
 			    enum lock_status lock)
 {
@@ -75,11 +77,12 @@ static void * _ggz_allocate(const unsigned int size,
 	/* Try to allocate our memory */
 	newmem = malloc(sizeof(_memptr) + size); /* should be only "malloc" call. */
 	if(newmem == NULL)
-		ggz_error_sys_exit("Memory allocation failure: %s/%d", tag, 
-				    line);
+		ggz_error_sys_exit("Memory allocation failure: %s%s/%d",
+				   funcname, tag, line);
 
 	/* We've got the memory, so set it up */
 	newmem->tag = tag;
+	newmem->funcname = funcname;
 	newmem->line = line;
 	newmem->ptr = newmem + 1;	/* Add one sizeof(_memptr) */
 	newmem->size = size;
@@ -94,14 +97,14 @@ static void * _ggz_allocate(const unsigned int size,
 		UNLOCK();
 	}
 
-	ggz_debug(GGZ_MEM_DEBUG, "%d bytes allocated at %p from %s/%d",
-		  size, newmem->ptr, tag, line);
+	ggz_debug(GGZ_MEM_DEBUG, "%d bytes allocated at %p from %s%s/%d",
+		  size, newmem->ptr, funcname, tag, line);
 
 	return newmem->ptr;
 }
 
 
-void * _ggz_malloc(const size_t size, const char *tag, int line)
+void * _ggz_malloc(const size_t size, const char *funcname, const char *tag, int line)
 {
 	void *new;
 
@@ -109,13 +112,13 @@ void * _ggz_malloc(const size_t size, const char *tag, int line)
 	if(!tag)
 		tag = "<unknown>";
 	if(!size) {
-		ggz_error_msg("ggz_malloc: 0 byte malloc requested from %s/%d",
-			      tag, line);
+		ggz_error_msg("ggz_malloc: 0 byte malloc requested from %s%s/%d",
+			      funcname, tag, line);
 		return NULL;
 	}
 
 	/* Get a chunk of memory */
-	new = _ggz_allocate(size, tag, line, NEED_LOCK);
+	new = _ggz_allocate(size, funcname, tag, line, NEED_LOCK);
 
 	/* Clear the memory to zilcho */
 	memset(new, 0, size);
@@ -125,7 +128,7 @@ void * _ggz_malloc(const size_t size, const char *tag, int line)
 
 
 void * _ggz_realloc(const void *ptr, const size_t size,
-                    const char *tag, int line)
+                    const char *funcname, const char *tag, int line)
 {
 	struct _memptr *targetmem;
 	void *new;
@@ -134,13 +137,13 @@ void * _ggz_realloc(const void *ptr, const size_t size,
 	if(!tag)
 		tag = "<unknown>";
 	if(!size) {
-		_ggz_free(ptr, tag, line);
+		_ggz_free(ptr, funcname, tag, line);
 		return NULL;
 	}
 
 	/* If ptr is NULL, treat this like a call to malloc */
 	if (ptr == NULL)
-		return _ggz_malloc(size, tag, line);
+		return _ggz_malloc(size, funcname, tag, line);
 
 	/* Search through allocated memory for this chunk */
 	LOCK();
@@ -152,13 +155,13 @@ void * _ggz_realloc(const void *ptr, const size_t size,
 	/* This memory was never allocated via ggz */
 	if(targetmem == NULL) {
 		UNLOCK();
-		ggz_error_msg("Memory reallocation <%p> failure: %s/%d",
-			       ptr, tag, line);
+		ggz_error_msg("Memory reallocation <%p> failure: %s%s/%d",
+			       ptr, funcname, tag, line);
 		return NULL;
 	}
 
 	/* Try to allocate our memory */
-	new = _ggz_allocate(size, tag, line, HAVE_LOCK);
+	new = _ggz_allocate(size, funcname, tag, line, HAVE_LOCK);
 
 	/* Copy the old to the new */
 	if(size > targetmem->size) {
@@ -171,17 +174,17 @@ void * _ggz_realloc(const void *ptr, const size_t size,
 	UNLOCK();
 
 	ggz_debug(GGZ_MEM_DEBUG,
-		  "Reallocated %d bytes at %p to %zd bytes from %s/%d",
-		  targetmem->size, targetmem->ptr, size, tag, line);
+		  "Reallocated %d bytes at %p to %zd bytes from %s%s/%d",
+		  targetmem->size, targetmem->ptr, size, funcname, tag, line);
 
 	/* And free the old chunk */
-	_ggz_free(targetmem->ptr, tag, line);
+	_ggz_free(targetmem->ptr, funcname, tag, line);
 
 	return new;
 }
 
 
-int _ggz_free(const void *ptr, const char *tag, int line)
+int _ggz_free(const void *ptr, const char *funcname, const char *tag, int line)
 {
 	struct _memptr *prev, *targetmem;
 	unsigned int oldsize;
@@ -202,8 +205,8 @@ int _ggz_free(const void *ptr, const char *tag, int line)
 	/* This memory was never allocated via ggz */
 	if(targetmem == NULL) {
 		UNLOCK();
-		ggz_error_msg("Memory deallocation <%p> failure: %s/%d",
-			       ptr, tag, line);
+		ggz_error_msg("Memory deallocation <%p> failure: %s%s/%d",
+			       ptr, funcname, tag, line);
 		return -1;
 	}
 
@@ -215,8 +218,8 @@ int _ggz_free(const void *ptr, const char *tag, int line)
 	oldsize = targetmem->size;
 	UNLOCK();
 
-	ggz_debug(GGZ_MEM_DEBUG, "%d bytes deallocated at %p from %s/%d",
-		  oldsize, ptr, tag, line);
+	ggz_debug(GGZ_MEM_DEBUG, "%d bytes deallocated at %p from %s%s/%d",
+		  oldsize, ptr, funcname, tag, line);
 
 	free(targetmem); /* should be the only "free" call */
 
@@ -236,9 +239,9 @@ int ggz_memory_check(void)
 		memptr = alloc;
 		while(memptr != NULL) {
 			ggz_log(GGZ_MEM_DEBUG,
-				"%d bytes left allocated at %p by %s/%d",
+				"%d bytes left allocated at %p by %s%s/%d",
 				memptr->size, memptr->ptr,
-				memptr->tag, memptr->line);
+				memptr->funcname, memptr->tag, memptr->line);
 			memptr = memptr->next;
 		}
 		
@@ -254,7 +257,7 @@ int ggz_memory_check(void)
 }
 
 
-char * _ggz_strdup(const char *src, const char *tag, int line)
+char * _ggz_strdup(const char *src, const char *funcname, const char *tag, int line)
 {
 	unsigned len;
 	char *new;
@@ -267,14 +270,13 @@ char * _ggz_strdup(const char *src, const char *tag, int line)
 	if(!tag)
 		tag = "<unknown>";
 
-
 	len = strlen(src);
 
 	ggz_debug(GGZ_MEM_DEBUG,
-		  "Allocating memory for length %d string from %s/%d",
-		  len+1, tag, line);
+		  "Allocating memory for length %d string from %s%s/%d",
+		  len+1, funcname, tag, line);
 
-	new = _ggz_allocate(len+1, tag, line, NEED_LOCK);
+	new = _ggz_allocate(len+1, funcname, tag, line, NEED_LOCK);
 
 	memcpy(new, src, len+1);
 

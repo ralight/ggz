@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 9536 2008-01-14 17:22:14Z oojah $
+ * $Id: ggz.h 9541 2008-01-15 17:21:26Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -67,12 +67,12 @@ extern "C" {
  * information.
  */
 #if defined __GNUC__ && (__GNUC__ >= 3)
-#  define _GGZFUNCTION_ ""
+#  define _GGZFUNCTION_ __func__
 #elif defined(__sun)
-#  define _GGZFUNCTION_ ""
+#  define _GGZFUNCTION_ __func__
 #else
 #  ifndef __cplusplus
-#    define _GGZFUNCTION_ __FUNCTION__
+#    define _GGZFUNCTION_ __func__
 #  else
 #    define _GGZFUNCTION_ ""
 #  endif
@@ -105,7 +105,7 @@ extern "C" {
  * 
  * @return a pointer to the newly allocated and zeroed memory
  */
-#define ggz_malloc(size) _ggz_malloc(size, _GGZFUNCTION_ " in " __FILE__, __LINE__)
+#define ggz_malloc(size) _ggz_malloc(size, _GGZFUNCTION_, " in " __FILE__, __LINE__)
 						   
 
 /** 
@@ -116,7 +116,7 @@ extern "C" {
  * 
  * @return pointer to allocated memory
  */
-#define ggz_realloc(mem, size) _ggz_realloc(mem, size, _GGZFUNCTION_ " in " __FILE__, __LINE__)
+#define ggz_realloc(mem, size) _ggz_realloc(mem, size, _GGZFUNCTION_, " in " __FILE__, __LINE__)
 						       
 
 /** 
@@ -126,7 +126,7 @@ extern "C" {
  * 
  * @return failure code
  */
-#define ggz_free(mem) _ggz_free(mem, _GGZFUNCTION_ " in " __FILE__,  __LINE__)
+#define ggz_free(mem) _ggz_free(mem, _GGZFUNCTION_, " in " __FILE__,  __LINE__)
 						 
 
 /** 
@@ -138,7 +138,7 @@ extern "C" {
  *
  * @note It is safe to pass a NULL string.
  */
-#define ggz_strdup(string) _ggz_strdup(string, _GGZFUNCTION_ " in " __FILE__,  __LINE__)
+#define ggz_strdup(string) _ggz_strdup(string, _GGZFUNCTION_, " in " __FILE__,  __LINE__)
 						 
 
 
@@ -152,7 +152,8 @@ extern "C" {
  * 
  * @return pointer to newly allocated, zeroed memory
 */
-void * _ggz_malloc(const size_t size, const char * tag, int line);
+void * _ggz_malloc(const size_t size, const char *funcname,
+                   const char * tag, int line);
 
 /** 
  * Function to perform memory reallocation.  Don't call this
@@ -166,7 +167,7 @@ void * _ggz_malloc(const size_t size, const char * tag, int line);
  * @return pointer to allocated memory
 */
 void * _ggz_realloc(const void * ptr, const size_t size,
-                    const char * tag, int line)
+                    const char *funcname, const char * tag, int line)
                     ggz__attribute((warn_unused_result));
 
 /** 
@@ -179,7 +180,8 @@ void * _ggz_realloc(const void * ptr, const size_t size,
  * 
  * @return 0 on success, -1 on error
 */
-int _ggz_free(const void * ptr, const char * tag, int line);
+int _ggz_free(const void * ptr, const char *funcname,
+              const char * tag, int line);
 
 /** 
  * Function to copy a string.  Don't call this
@@ -193,7 +195,8 @@ int _ggz_free(const void * ptr, const char * tag, int line);
  *
  * @note It is safe to pass a NULL string.
  */
-char * _ggz_strdup(const char * ptr, const char * tag, int line)
+char * _ggz_strdup(const char * ptr, const char *funcname,
+                   const char * tag, int line)
                    ggz__attribute((warn_unused_result));
 
 /**
