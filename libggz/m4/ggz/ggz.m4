@@ -180,7 +180,7 @@ if test "x$1" = "xdefaults" || test "x$2" = "xdefaults"; then
   ac_ggz_stdetc="$ac_ggz_stdetc /usr/local/etc/ggzd /etc/ggzd"
 fi
 if test "x$1" = "xexport" || test "x$2" = "xexport"; then
-  CPPFLAGS="$CPPFLAGS -isystem ${ac_ggz_prefix_incdir} -isystem /usr/local/include"
+  CPPFLAGS="$CPPFLAGS -I ${ac_ggz_prefix_incdir} -I /usr/local/include"
   LDFLAGS="$LDFLAGS -L${ac_ggz_prefix_libdir} -L/usr/local/lib"
 fi
 
@@ -345,7 +345,7 @@ else
   AC_SUBST(libggz_libraries)
   AC_SUBST(libggz_includes)
 
-  LIBGGZ_INCLUDES="-isystem $libggz_includes"
+  LIBGGZ_INCLUDES="-I $libggz_includes"
   LIBGGZ_LDFLAGS="-L$libggz_libraries"
 
   AC_SUBST(LIBGGZ_INCLUDES)
@@ -443,7 +443,7 @@ else
   AC_SUBST(ggzcore_libraries)
   AC_SUBST(ggzcore_includes)
 
-  GGZCORE_INCLUDES="-isystem $ggzcore_includes"
+  GGZCORE_INCLUDES="-I $ggzcore_includes"
   GGZCORE_LDFLAGS="-L$ggzcore_libraries"
 
   AC_SUBST(GGZCORE_INCLUDES)
@@ -661,7 +661,7 @@ else
   AC_SUBST(ggzmod_libraries)
   AC_SUBST(ggzmod_includes)
 
-  GGZMOD_INCLUDES="-isystem $ggzmod_includes"
+  GGZMOD_INCLUDES="-I $ggzmod_includes"
   GGZMOD_LDFLAGS="-L$ggzmod_libraries"
 
   AC_SUBST(GGZMOD_INCLUDES)
@@ -759,7 +759,7 @@ else
   AC_SUBST(ggzdmod_libraries)
   AC_SUBST(ggzdmod_includes)
 
-  GGZDMOD_INCLUDES="-isystem $ggzdmod_includes"
+  GGZDMOD_INCLUDES="-I $ggzdmod_includes"
   GGZDMOD_LDFLAGS="-L$ggzdmod_libraries"
 
   AC_SUBST(GGZDMOD_INCLUDES)
@@ -857,7 +857,7 @@ else
   AC_SUBST(ggz_gtk_libraries)
   AC_SUBST(ggz_gtk_includes)
 
-  GGZ_GTK_INCLUDES="-isystem $ggz_gtk_includes"
+  GGZ_GTK_INCLUDES="-I $ggz_gtk_includes"
   GGZ_GTK_LDFLAGS="-L$ggz_gtk_libraries"
 
   AC_SUBST(GGZ_GTK_INCLUDES)
