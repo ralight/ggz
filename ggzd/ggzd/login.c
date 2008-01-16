@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 9453 2007-12-17 22:34:07Z josef $
+ * $Id: login.c 9546 2008-01-16 13:27:42Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -343,7 +343,7 @@ static bool is_valid_password(const char *password)
 		CRACKLIB_DICTPATH,
 		"/usr/lib/cracklib_dict.pw",
 		NULL
-	}
+	};
 	const char *dict = NULL;
 	struct stat st;
 	int ret;
