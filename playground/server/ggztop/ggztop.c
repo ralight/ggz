@@ -346,16 +346,8 @@ void ggztop_display_xml(stats_rt *rt)
 void ggztop_read(int runmode)
 {
 	stats_rt *rt;
-	int ret;
 
 	rt = (stats_rt*)shmat(stats_rt_shmid, 0, 0);
-
-	ret = sem_init(&rt->semlock, 1, 1);
-	if(ret < 0)
-	{
-		fprintf(stderr, "ggztop: semaphore initialization failure\n");
-		return;
-	}
 
 	sem_wait(&rt->semlock);
 
