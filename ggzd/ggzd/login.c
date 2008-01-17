@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 9546 2008-01-16 13:27:42Z oojah $
+ * $Id: login.c 9547 2008-01-17 20:26:33Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -347,8 +347,9 @@ static bool is_valid_password(const char *password)
 	const char *dict = NULL;
 	struct stat st;
 	int ret;
+	int i;
 
-	for (int i = 0; dicts[i]; i++)
+	for (i = 0; dicts[i]; i++)
 	{
 		ret = stat(dicts[i], &st);
 		if (ret == 0) {
