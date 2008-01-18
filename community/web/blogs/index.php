@@ -6,7 +6,17 @@ $global_rightbar = "disabled";
 include("top.inc");
 
 ?>
+<?php
+if(@stat("planet.inc")) :
+?>
 <div id="main">
-<?php include("planet.inc"); ?>
+<?php
+	include("planet.inc");
+?>
 </div>
+<?php
+else :
+	echo "Blog aggregation not configured.";
+endif;
+?>
 <?php include("bottom.inc"); ?>
