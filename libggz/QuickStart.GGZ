@@ -1,8 +1,13 @@
 The GGZ Gaming Zone - Client Setup
 ==================================
 
-Installation Requirements for the release 0.0.14
-------------------------------------------------
+This file documents the quick and easy installation procedure
+of all GGZ components available from the GGZ project. For additional
+GGZ components, find a list in README.GGZ. If the quick instructions
+below don't work, please contact the developers.
+
+Installation Requirements for the release 0.0.14+
+-------------------------------------------------
 
 The GGZ Gaming Zone client is built from three separate packages
 (these may be available as an integrated package in the future), upon
@@ -166,24 +171,6 @@ also need to run ldconfig as root on some systems.
 Make sure to use the same configuration prefix as KDE does, otherwise
 no menu entries will show up, and programs might not work as expected.
 Advanced users can use the KDEDIRS environment variable.
-
-
-GNOME Client Installation
--------------------------
-
-The GNOME client requires that the GNOME libraries 2.X be installed.
-You can get them from http://www.gnome.org. The recommended version
-is GNOME 2.8.0.
-
-Unpack the ggz-gnome-client sources.  They should extract into a
-directory named ggz-gnome-client-X.X.X.  Enter tjat directory and run
-the following commands:
-
-./configure
-make
-make install (as root)
-
-You will then find the GNOME client under /usr/local.
 
 
 Gtk/KDE/SDL Games Installation

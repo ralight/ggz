@@ -1,12 +1,8 @@
 /**
- * @file   ggz.h
- * @author Brent M. Hendricks
- * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 9541 2008-01-15 17:21:26Z josef $
- * 
- * Header file for ggz components lib
+ * Header file for the GGZ base library libggz
  *
- * Copyright (C) 2001 Brent Hendricks.
+ * Copyright (C) 2001 Brent Hendricks
+ * Copyright (C) 2002-2007 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,7 +18,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 
 #ifndef __GGZ_H__
 #define __GGZ_H__
@@ -106,7 +101,6 @@ extern "C" {
  * @return a pointer to the newly allocated and zeroed memory
  */
 #define ggz_malloc(size) _ggz_malloc(size, _GGZFUNCTION_, " in " __FILE__, __LINE__)
-						   
 
 /** 
  * Macro for resizing previously allocated memory
@@ -117,7 +111,6 @@ extern "C" {
  * @return pointer to allocated memory
  */
 #define ggz_realloc(mem, size) _ggz_realloc(mem, size, _GGZFUNCTION_, " in " __FILE__, __LINE__)
-						       
 
 /** 
  * Macro for freeing memory previously allocated 
@@ -127,7 +120,6 @@ extern "C" {
  * @return failure code
  */
 #define ggz_free(mem) _ggz_free(mem, _GGZFUNCTION_, " in " __FILE__,  __LINE__)
-						 
 
 /** 
  * Macro for duplicating string
@@ -139,7 +131,6 @@ extern "C" {
  * @note It is safe to pass a NULL string.
  */
 #define ggz_strdup(string) _ggz_strdup(string, _GGZFUNCTION_, " in " __FILE__,  __LINE__)
-						 
 
 
 /** 
