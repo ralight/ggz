@@ -28,7 +28,7 @@ libggzdb_mysql_la_LDFLAGS = -module -avoid-version
 ggzdb_LTLIBRARIES += libggzdb_mysql.la
 endif
 if GGZDB_PGSQL
-libggzdb_pgsql_la_SOURCES = ggzdb_pgsql.c rankings.c rankings_mysql.c rankings.h ggzdb_util.c ggzdb_util.h
+libggzdb_pgsql_la_SOURCES = ggzdb_pgsql.c rankings.c rankings_pgsql.c rankings.h ggzdb_util.c ggzdb_util.h
 libggzdb_pgsql_la_CPPFLAGS = $(AM_CPPFLAGS) -DGGZDCONFDIR=\"$(ggzdconfdir)\"
 libggzdb_pgsql_la_LDFLAGS = -module -avoid-version
 ggzdb_LTLIBRARIES += libggzdb_pgsql.la
