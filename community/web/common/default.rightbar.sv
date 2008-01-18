@@ -33,13 +33,8 @@ latest_forumposts();
 ?>
 	</div>
 
-	<hr class="leather">
-
-	<div class="menubar">
-		<h1>Players worldwide</h1>
 <?php
-include_once(Config::theme("mundomap.map"));
+include_once("worldmap.php");
 ?>
-		<a href="/map/"><img src="<?php Config::theme("mundomap.png"); ?>" usemap="#ggzmap" border="0" alt="world map"></a>
-	</div>
+
 </div>
