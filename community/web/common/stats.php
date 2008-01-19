@@ -7,7 +7,8 @@ include_once("match.php");
 
 function stats_players($lookup)
 {
-global $database;
+	global $database;
+
 	if (!$lookup) return;
 
 	$player = new Player($lookup);
@@ -104,7 +105,7 @@ function stats_teamheader($lookup)
 
 function stats_games($lookup)
 {
-global $database;
+	global $database;
 	global $ggzuser;
 
 	if (!$lookup) return;
@@ -183,7 +184,8 @@ global $database;
 
 function stats_team($lookup)
 {
-global $database;
+	global $database;
+
 	if (!$lookup) return;
 
 	$res = $database->exec("SELECT * FROM teams WHERE teamname = '%^'", array($lookup));
@@ -284,8 +286,9 @@ function stats_match($lookup)
 
 function stats_tournament($lookup)
 {
-global $database;
-global $date;
+	global $database;
+	global $date;
+
 	if (!$lookup) return;
 
 	$tid = $lookup;

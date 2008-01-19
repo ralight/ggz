@@ -14,6 +14,8 @@ function games_intro()
 		echo "The most popular game is ";
 		echo "<a href='/db/games/?lookup=$game'>$game</a> ";
 		echo "with $count finished matches.";
+	else :
+		echo "No game has ever been played on this server.";
 	endif;
 }
 
@@ -34,6 +36,8 @@ function match_intro()
 		echo "The most successful player is ";
 		echo "<a href='/db/players/?lookup=$player'>$player</a> ";
 		echo "who won $count matches.";
+	else :
+		echo "No match has ever happened on this server.";
 	endif;
 }
 
@@ -51,6 +55,8 @@ function tournament_intro()
 		echo "The most popular game in tournaments is ";
 		echo "<a href='/db/games/?lookup=$game'>$game</a> ";
 		echo "with $count occurrences.";
+	else :
+		echo "No tournament has ever been organized on this server.";
 	endif;
 }
 
@@ -71,6 +77,8 @@ function player_intro()
 		echo "The most active player is ";
 		echo "<a href='/db/players/?lookup=$player'>$player</a> ";
 		echo "with $count games played.";
+	else :
+		echo "The players just seem to chat instead of playing games.";
 	endif;
 }
 
@@ -87,6 +95,8 @@ function team_intro()
 		echo "The largest team is ";
 		echo "<a href='/db/teams/?lookup=$team'>$team</a> ";
 		echo "with $count members.";
+	else :
+		echo "No teams were founded as of yet.";
 	endif;
 }
 

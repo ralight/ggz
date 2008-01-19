@@ -84,6 +84,10 @@ class Statistics
 				echo "\t<a href=\"/db/teams/?lookup=$team\" class=\"menuitem\" title=\"$team\">$team</a>\n";
 			endif;
 		}
+
+		if ($i == 0) :
+			echo "No teams found.";
+		endif;
 	}
 
 	function listPlayers($max = 999, $random = false, $latest = false)
@@ -111,6 +115,10 @@ class Statistics
 				echo "\t<a href=\"/db/players/?lookup=$handle\" class=\"menuitem\" title=\"$handle\">$handle</a>\n";
 			endif;
 		}
+
+		if ($i == 0) :
+			echo "No players found.";
+		endif;
 	}
 
 	function listGames($max = 999, $random = false)
@@ -135,6 +143,10 @@ class Statistics
 				echo "\t<a href=\"/db/games/?lookup=$game\" class=\"menuitem\" title=\"$game\">$game</a>\n";
 			endif;
 		}
+
+		if ($i == 0) :
+			echo "No games found.";
+		endif;
 	}
 
 	function listMatches($max = 999)
@@ -150,6 +162,10 @@ class Statistics
 
 			echo "\t<a href=\"/db/matches/?lookup=$tid\" class=\"menuitem\" title=\"$game\">$game ($winner)</a>\n";
 		}
+
+		if ($i == 0) :
+			echo "No matches found.";
+		endif;
 	}
 
 	function listTournaments($max = 999)
@@ -165,6 +181,10 @@ class Statistics
 
 			echo "\t<a href=\"/db/tournaments/?lookup=$tid\" class=\"menuitem\" title=\"$game\">$name ($game)</a>\n";
 		}
+
+		if ($i == 0) :
+			echo "No tournaments found.";
+		endif;
 	}
 }
 

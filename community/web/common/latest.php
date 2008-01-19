@@ -14,6 +14,9 @@ function latest_matches()
 		echo "<a href='/db/matches/?lookup=$mid' class='menuitem' title='$game'>$game #$mid</a>\n";
 		echo "</div>\n";
 	}
+	if ($i == 0) :
+		echo "No matches found.<br>\n";
+	endif;
 }
 
 function latest_tournaments()
@@ -30,6 +33,9 @@ function latest_tournaments()
 		echo "<a href='/db/tournaments/?lookup=$tid' class='menuitem' title='$game'>$game #$tid (Tournament)</a>\n";
 		echo "</div>\n";
 	}
+	if ($i == 0) :
+		echo "No tournaments found.<br>\n";
+	endif;
 }
 
 function latest_forumposts()
