@@ -21,6 +21,7 @@
 #include <kggzcore/coreclient.h>
 
 #include <kggzcore/coreclientbase.h>
+#include <kggzcore/room.h>
 
 #include <QUrl>
 
@@ -29,6 +30,8 @@ using namespace KGGZCore;
 CoreClient::CoreClient(QObject *parent)
 : QObject(parent)
 {
+	m_room = NULL;
+
 	m_base = new CoreClientBase();
 
 	m_port = 5688;
@@ -105,7 +108,7 @@ void CoreClient::initiateLogin()
 
 void CoreClient::initiateRoomChange(QString roomname)
 {
-	Q_UNUSED(roomname);
+	m_base->switchRoom(roomname.toUtf8().data());
 }
 
 void CoreClient::initiateLogout()
@@ -114,7 +117,12 @@ void CoreClient::initiateLogout()
 
 QStringList CoreClient::roomnames()
 {
-	return QStringList();
+	return m_roomnames;
+}
+
+Room *CoreClient::room()
+{
+	return m_room;
 }
 
 void CoreClient::slotBaseError()
@@ -156,6 +164,8 @@ void CoreClient::slotBaseServer(int id, int code)
 			emit signalFeedback(login, errorcode);
 			break;
 		case GGZ_ENTERED:
+			delete m_room;
+			m_room = new Room();
 			emit signalFeedback(roomenter, errorcode);
 			break;
 		case GGZ_ENTER_FAIL:
@@ -180,6 +190,7 @@ void CoreClient::slotBaseServer(int id, int code)
 			emit signalAnswer(motd);
 			break;
 		case GGZ_ROOM_LIST:
+			m_roomnames = m_base->roomnames();
 			emit signalAnswer(roomlist);
 			break;
 		case GGZ_TYPE_LIST:

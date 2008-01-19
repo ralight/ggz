@@ -20,7 +20,10 @@
 
 #include <kggzcore/coreclientbase.h>
 
+#include <kggzcore/misc.h>
+
 #include <QSocketNotifier>
+#include <QStringList>
 
 using namespace KGGZCore;
 
@@ -97,9 +100,35 @@ void CoreClientBase::startConnection()
 	}
 }
 
+void CoreClientBase::switchRoom(const char *name)
+{
+	for(int i = 0; i < ggzcore_server_get_num_rooms(m_server); i++)
+	{
+		GGZRoom *room = ggzcore_server_get_nth_room(m_server, i);
+		if(QString(name) == QString(ggzcore_room_get_name(room)))
+		{
+			ggzcore_server_join_room(m_server, room);
+			break;
+		}
+	}
+}
+
+QStringList CoreClientBase::roomnames()
+{
+	QStringList names;
+
+	for(int i = 0; i < ggzcore_server_get_num_rooms(m_server); i++)
+	{
+		GGZRoom *room = ggzcore_server_get_nth_room(m_server, i);
+		names << ggzcore_room_get_name(room);
+	}
+
+	return names;
+}
+
 void CoreClientBase::callback_server(unsigned int id, const void *event_data) const
 {
-	qDebug("cb_server! id=%i", id);
+	qDebug("cb_server! id=%i event=%s", id, Misc::messagename(id).toUtf8().data());
 
 	int errorcode = E_OK;
 
@@ -127,6 +156,12 @@ void CoreClientBase::handle_server(unsigned int id)
 	if(id == GGZ_NEGOTIATED)
 	{
 		ggzcore_server_login(m_server);
+	}
+
+	if(id == GGZ_LOGGED_IN)
+	{
+		ggzcore_server_list_rooms(m_server, 0, 1);
+		ggzcore_server_list_gametypes(m_server, 1);
 	}
 
 	if(id == GGZ_LOGOUT)

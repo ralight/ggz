@@ -18,48 +18,18 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef KGGZCORE_CORECLIENT_BASE_H
-#define KGGZCORE_CORECLIENT_BASE_H
+#ifndef KGGZCORE_MISC_H
+#define KGGZCORE_MISC_H
 
-#include <QObject>
-
-#include <ggzcore.h>
-
-class QSocketNotifier;
+#include <QString>
 
 namespace KGGZCore
 {
 
-class CoreClientBase : public QObject
+class Misc
 {
-	Q_OBJECT
 	public:
-		CoreClientBase(QObject *parent = NULL);
-		~CoreClientBase();
-
-		void setConnectionInfo(const char *host, int port, const char *username, const char *password, const char *email, GGZLoginType mode, int tls);
-		void startConnection();
-		void switchRoom(const char *name);
-
-		QStringList roomnames();
-
-	signals:
-		void signalBaseError();
-		void signalBaseServer(int id, int code) const;
-
-	private slots:
-		void slotSocket(int socket);
-
-	private:
-		void init();
-
-		void callback_server(unsigned int id, const void *event_data) const;
-		void handle_server(unsigned int id);
-
-		static GGZHookReturn cb_server(unsigned int id, const void *event_data, const void *user_data);
-
-		GGZServer *m_server;
-		QSocketNotifier *m_sn;
+		static QString messagename(int id);
 };
 
 }

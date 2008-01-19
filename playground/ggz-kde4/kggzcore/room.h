@@ -18,48 +18,63 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef KGGZCORE_CORECLIENT_BASE_H
-#define KGGZCORE_CORECLIENT_BASE_H
+#ifndef KGGZCORE_ROOM_H
+#define KGGZCORE_ROOM_H
 
-#include <QObject>
-
-#include <ggzcore.h>
-
-class QSocketNotifier;
+#include <QString>
 
 namespace KGGZCore
 {
 
-class CoreClientBase : public QObject
+class Room
 {
-	Q_OBJECT
 	public:
-		CoreClientBase(QObject *parent = NULL);
-		~CoreClientBase();
+		Room();
+		~Room();
 
-		void setConnectionInfo(const char *host, int port, const char *username, const char *password, const char *email, GGZLoginType mode, int tls);
-		void startConnection();
-		void switchRoom(const char *name);
+		enum Event
+		{
+			playerlist,
+			tablelist,
+			chatevent,
+			enter,
+			leave,
+			tableupdate,
+			tablelaunched,
+			tablelaunchfail,
+			tablejoined,
+			tablejoinfail,
+			tableleft,
+			tableleavefail,
+			playerlag,
+			stats,
+			count,
+			perms
+		};
 
-		QStringList roomnames();
+		enum ChatType
+		{
+			chatnormal,
+			chatannounce,
+			chatprivate,
+			chatbeep,
+			chattable,
+			chatunknown
+		};
 
-	signals:
-		void signalBaseError();
-		void signalBaseServer(int id, int code) const;
+		enum AdminType
+		{
+			admingag,
+			adminungag,
+			adminkick
+		};
 
-	private slots:
-		void slotSocket(int socket);
+		QString name();
+		int players();
 
 	private:
-		void init();
-
-		void callback_server(unsigned int id, const void *event_data) const;
-		void handle_server(unsigned int id);
-
-		static GGZHookReturn cb_server(unsigned int id, const void *event_data, const void *user_data);
-
-		GGZServer *m_server;
-		QSocketNotifier *m_sn;
+		QString m_name;
+		int m_players;
 };
 
 }

@@ -11,9 +11,13 @@ LIBS += -lggzcore
 HEADERS = \
 	coreclient.h \
 	coreclientbase.h \
-	error.h
+	error.h \
+	misc.h \
+	room.h
 
 SOURCES = \
 	coreclient.cpp \
 	coreclientbase.cpp \
-	error.cpp
+	error.cpp \
+	misc.cpp \
+	room.cpp

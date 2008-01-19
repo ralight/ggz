@@ -31,6 +31,7 @@ namespace KGGZCore
 {
 
 class CoreClientBase;
+class Room;
 
 class CoreClient : public QObject
 {
@@ -75,9 +76,9 @@ class CoreClient : public QObject
 		};
 
 	signals:
-		void signalFeedback(FeedbackMessage message, KGGZCore::Error::ErrorCode error);
-		void signalAnswer(AnswerMessage message);
-		void signalEvent(EventMessage message);
+		void signalFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
+		void signalAnswer(KGGZCore::CoreClient::AnswerMessage message);
+		void signalEvent(KGGZCore::CoreClient::EventMessage message);
 
 	public:
 		void setUrl(QString url);
@@ -94,6 +95,7 @@ class CoreClient : public QObject
 		void initiateLogout();
 
 		QStringList roomnames();
+		Room *room();
 
 	private slots:
 		void slotBaseError();
@@ -105,6 +107,8 @@ class CoreClient : public QObject
 		bool m_tls;
 		LoginType m_mode;
 		CoreClientBase *m_base;
+		QStringList m_roomnames;
+		Room *m_room;
 };
 
 }
