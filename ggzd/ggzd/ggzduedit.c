@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 9557 2008-01-19 08:38:08Z josef $
+ * $Id: ggzduedit.c 9558 2008-01-19 08:46:32Z josef $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -469,11 +469,13 @@ int main(int argc, char **argv)
 		{"username", required_argument, 0, 'u'},
 		{"password", optional_argument, 0, 'p'},
 		{"type", required_argument, 0, 't'},
+		{"file", required_argument, 0, 'f'},
 		{"help", no_argument, 0, 'h'},
 		{"version", no_argument, 0, 'v'},
 		{0, 0, 0, 0}
 	};
 	const char *primarybackend = NULL;
+	const char *configfile = NULL;
 
 	conn.type = NULL;
 	conn.datadir = NULL;
@@ -486,7 +488,7 @@ int main(int argc, char **argv)
 
 	while(1)
 	{
-		opt = getopt_long(argc, argv, "vhd:H:D:u:t:p::", options, &optindex);
+		opt = getopt_long(argc, argv, "vhf:d:H:D:u:t:p::", options, &optindex);
 		if(opt == -1) break;
 		switch(opt)
 		{
@@ -519,6 +521,9 @@ int main(int argc, char **argv)
 				}
 				conn.password = optarg;
 				break;
+			case 'f':
+				configfile = optarg;
+				break;
 			case 'v':
 				printf("%s\n", VERSION);
 				exit(0);
@@ -531,18 +536,26 @@ int main(int argc, char **argv)
 				printf("[-u | --username <username>] Database user\n");
 				printf("[-p | --password=[password]] Database password\n");
 				printf("[-t | --type     <dbtype>  ] Type of database (for DBI or to override default)\n");
+				printf("[-f | --file     <file>    ] Alternative configuration file\n");
 				printf("[-h | --help               ] Display this help\n");
 				printf("[-v | --version            ] Display version number only\n");
 				exit(0);
 				break;
 			default:
 				fprintf(stderr, "Usage: %s [options]\n", argv[0]);
+				exit(-1);
 				break;
 		}
 	}
 
 	if((!conn.database) || (!conn.host) || (!conn.username) || (!conn.password)) {
-		rc = ggz_conf_parse(GGZDCONFDIR "/ggzd.conf", GGZ_CONF_RDONLY);
+		char ggzdconfigfile[128];
+		if(configfile)
+			ggz_strncpy(ggzdconfigfile, configfile, sizeof(ggzdconfigfile));
+		else
+			snprintf(ggzdconfigfile, sizeof(ggzdconfigfile), "%s/ggzd.conf", GGZDCONFDIR);
+		printf("Loading settings from configuration file '%s'\n", ggzdconfigfile);
+		rc = ggz_conf_parse(ggzdconfigfile, GGZ_CONF_RDONLY);
 		if(rc != -1) {
 			if(!conn.database)
 				conn.database = ggz_conf_read_string(rc, "General", "DatabaseName", NULL);
