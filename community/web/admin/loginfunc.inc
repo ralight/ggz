@@ -51,14 +51,18 @@ function checkauthentication($realm)
 	// FIXME: manual query on rooms_admin
 	$res = $database->exec("SELECT handle, password FROM users WHERE (permissions & 8) = 8", array());
 
-	if (($res) && ($database->numrows($res) > 0)) :
-		for ($i = 0; $i < $database->numrows($res); $i++)
-		{
-			$handle = $database->result($res, $i, "handle");
-			$password = $database->result($res, $i, "password");
+	if ($res) :
+		if ($database->numrows($res) > 0) :
+			for ($i = 0; $i < $database->numrows($res); $i++)
+			{
+				$handle = $database->result($res, $i, "handle");
+				$password = $database->result($res, $i, "password");
 
-			$users[$handle] = $password;
-		}
+				$users[$handle] = $password;
+			}
+		else :
+			$errorstr = "No administrators found in the database";
+		endif;
 	else :
 		$errorstr = "Failed connection to the database";
 	endif;
