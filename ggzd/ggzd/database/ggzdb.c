@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 9554 2008-01-19 08:02:54Z josef $
+ * $Id: ggzdb.c 9555 2008-01-19 08:18:21Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -284,8 +284,17 @@ GGZDBResult ggzdb_player_update(ggzdbPlayerEntry *pe)
 /* Function to get the next valid user id to assign */
 unsigned int ggzdb_player_next_uid(void)
 {
-	/* Just link to the db specific code */
-	return _ggzdb_player_next_uid();
+	GGZDBResult rc = GGZDB_NO_ERROR;
+	int ret = -1;
+	_ggzdb_enter();
+	if(player_needs_init)
+		rc = ggzdb_player_init();
+
+	if(rc == GGZDB_NO_ERROR)
+		ret = _ggzdb_player_next_uid();
+
+	_ggzdb_exit();
+	return ret;
 }
 
 

@@ -114,7 +114,7 @@ void _ggzdb_exit(void)
 
 
 /* Function to initialize the player table */
-GGZDBResult _ggzdb_init_player(const char *datadir)
+GGZDBResult _ggzdb_init_player(void)
 {
 	return GGZDB_NO_ERROR;
 }
@@ -297,7 +297,7 @@ unsigned int _ggzdb_player_next_uid(void)
 	return 0;
 }
 
-GGZDBResult _ggzdb_init_stats(ggzdbConnection connection)
+GGZDBResult _ggzdb_init_stats(void)
 {
 	/* Not implemented, but do not return error */
 	return GGZDB_NO_ERROR;

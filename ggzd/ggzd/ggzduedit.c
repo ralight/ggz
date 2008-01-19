@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 9554 2008-01-19 08:02:54Z josef $
+ * $Id: ggzduedit.c 9555 2008-01-19 08:18:21Z josef $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -173,10 +173,12 @@ static void add_player(void)
 
 	printf("Adding new user\n");
 	if(needs_id) {
-		/* FIXME: use ggzdb_player_next_uid()? */
+#if 0
 		printf("UserID Number: ");
 		getnextline();
 		pe.user_id = strtoul(lb, NULL, 10);
+#endif
+		pe.user_id = ggzdb_player_next_uid();
 	} else {
 		pe.user_id = -1;
 	}
