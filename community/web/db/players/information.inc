@@ -44,16 +44,20 @@ $karma = 10 * (1 - ($bad_ratings / $overall_ratings));
 if ($karma >= 8) :
 	$karmapic = "karma_good";
 	$karmatitle = "Good karma";
+	$karmameaning = "This makes $lookup a most-wanted opponent and team mate.";
 elseif ($karma >= 4) :
 	$karmapic = "karma_medium";
 	$karmatitle = "Medium karma";
+	$karmameaning = "Feel free to play against $lookup and don't forget to give out karma points.";
 else :
 	$karmapic = "karma_bad";
 	$karmatitle = "Bad karma";
+	$karmameaning = "It's probably a good idea not wanting to play against $lookup.";
 endif;
 if ($player->registered) :
 	echo "<img src='/db/ggzicons/misc/$karmapic.png' title='$karmatitle'>&nbsp;\n";
-	echo "The player's overall karma score is $karma out of 10.<br>\n";
+	echo "The player's overall karma score is $karma out of 10.!<br>\n";
+	echo $karmameaning;
 	echo "The <a href='karma.php?lookup=$lookup'>karma page</a>\n";
 	echo "contains the details.\n";
 else :
@@ -71,27 +75,35 @@ if ($database->numrows($res) == 1) :
 	$firstlogin = $database->result($res, 0, "firstlogin");
 	$veteran = (int)((time() - $firstlogin) / 86400);
 
-	$veteranpic = "veteran-level0";
-	$veterantitle = "Newbie";
-	if ($veteran > 365):
+	if ($veteran > 730):
 		$veteranpic = "veteran-level5";
 		$veterantitle = "Veteran with honours";
-	elseif ($veteran > 180) :
+		$veteranmeaning = "Only the best ever get thus far. A member of the council of elders.";
+	elseif ($veteran > 365) :
 		$veteranpic = "veteran-level4";
 		$veterantitle = "Veteran";
-	elseif ($veteran > 60) :
+		$veteranmeaning = "Candidate for the council of elders and overall long-time player.";
+	elseif ($veteran > 180) :
 		$veteranpic = "veteran-level3";
 		$veterantitle = "Long-time player";
-	elseif ($veteran > 30) :
+		$veteranmeaning = "The player has been here for many months already.";
+	elseif ($veteran > 60) :
 		$veteranpic = "veteran-level2";
 		$veterantitle = "Known player";
-	elseif ($veteran > 14) :
+		$veteranmeaning = "Plenty of time for the player to try out some games.";
+	elseif ($veteran > 30) :
 		$veteranpic = "veteran-level1";
 		$veterantitle = "Amateur";
+		$veteranmeaning = "The player has been around for a couple of days.";
+	else :
+		$veteranpic = "veteran-level0";
+		$veterantitle = "Newbie";
+		$veteranmeaning = "The player hasn't even known this site for a month or so.";
 	endif;
 
 	echo "<img src='/db/ggzicons/misc/$veteranpic.png' title='$veterantitle'>&nbsp;\n";
-	echo "Registered member for $veteran days.<br>\n";
+	echo "Registered member for $veteran days. This makes the player a $veterantitle!<br>\n";
+	echo $veteranmeaning;
 else :
 	echo "Oops, user not found.<br>\n";
 endif;
@@ -125,6 +137,9 @@ for ($i = 0; $i < $database->numrows($res); $i++)
 
 	echo "<a href='/db/tournaments/?lookup=$tid'>$name</a><br>\n";
 }
+if ($i == 0) :
+	echo "The player hasn't participated in any tournament so far.";
+endif;
 ?>
 	</div>
 	<h2>
@@ -145,6 +160,9 @@ for ($i = 0; $i < $database->numrows($res); $i++)
 
 	echo "<a href='/db/teams/?lookup=$teamname'>$teamname</a> ($role)<br>\n";
 }
+if ($i == 0) :
+	echo "The player is not a member of any team.";
+endif;
 ?>
 	</div>
 	<h2>

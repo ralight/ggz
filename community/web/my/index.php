@@ -36,7 +36,9 @@ $player->display();
 
 	</div>
 <?php
+if (Config::feature("datarepo")) :
 $player->items(true);
+endif;
 ?>
 
 </div>
