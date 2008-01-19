@@ -54,7 +54,7 @@ endif;
 <tr><td>Gender:</td><td>
 	<select name='user_gender'>
 <?php
-include("genderlist.php");
+include_once("genderlist.php");
 $g = new Gender();
 $g->load($gender);
 $g->listall();
@@ -64,7 +64,7 @@ $g->listall();
 <tr><td>Country:</td><td>
 	<select name='user_country'>
 <?php
-include("countrylist.php");
+include_once("countrylist.php");
 $c = new Country();
 $c->load($country);
 $c->listall();
