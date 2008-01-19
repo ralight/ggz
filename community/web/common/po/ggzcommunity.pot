@@ -1,258 +1,369 @@
+# Pseudo-entry to force the correct encoding
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
-msgid "Site design based on Steel-n-Leather"
-msgstr ""
-
-msgid "Portal engine powered by GGZ Community"
-msgstr ""
-
-msgid "Login to Community"
-msgstr ""
-
-msgid "Username"
-msgstr ""
-
-msgid "Password"
-msgstr ""
-
-msgid "Login"
-msgstr ""
-
-msgid "Register as new user"
-msgstr ""
-
-msgid "Resend password"
-msgstr ""
-
-msgid "Need help?"
-msgstr ""
-
-msgid "Administrator mail"
-msgstr ""
-
-msgid "Send an email"
-msgstr ""
-
-msgid "to the Community administrators..."
-msgstr ""
-
-msgid "Latest changes"
-msgstr ""
-
-msgid "Matches/Tournaments"
-msgstr ""
-
-msgid "Individual blogs)(rightbar"
-msgstr ""
-
-msgid "Forum posts"
-msgstr ""
-
-msgid "Players worldwide"
-msgstr ""
-
-msgid "$x"
-msgstr ""
-
-msgid "$s"
-msgstr ""
-
-msgid "Front page"
-msgstr ""
-
-msgid "Main"
-msgstr ""
-
-msgid "Game statistics and rankings"
-msgstr ""
-
-msgid "Database"
-msgstr ""
-
-msgid "Overview"
-msgstr ""
-
-msgid "Games"
-msgstr ""
-
-msgid "Matches"
-msgstr ""
-
-msgid "Tournaments"
-msgstr ""
-
-msgid "Players"
-msgstr ""
-
-msgid "Teams"
-msgstr ""
-
-msgid "Some online fun"
-msgstr ""
-
-msgid "Play!"
-msgstr ""
-
-msgid "GGZ games"
-msgstr ""
-
-msgid "Web games"
-msgstr ""
-
-msgid "Player contributions"
-msgstr ""
-
-msgid "Manage!"
-msgstr ""
-
-msgid "Game contents"
-msgstr ""
-
-msgid "Karma"
-msgstr ""
-
-msgid "Forums"
-msgstr ""
-
-msgid "Community forum"
-msgstr ""
-
-msgid "Individual blogs"
-msgstr ""
-
-msgid "Articles"
-msgstr ""
-
-msgid "About GGZ Community"
-msgstr ""
-
-msgid "About"
-msgstr ""
-
-msgid "Contact"
-msgstr ""
-
-msgid "Database: Games"
-msgstr ""
-
-msgid "Live games"
-msgstr ""
-
-msgid "View games"
-msgstr ""
-
-msgid "Database: Matches"
-msgstr ""
-
-msgid "Database: Players"
-msgstr ""
-
-msgid "Database: Teams"
-msgstr ""
-
-msgid "Database: Tournaments"
-msgstr ""
-
+# Template: ../../my/leftbar.inc:3
 msgid "Personal sidebar"
 msgstr ""
 
+# Template: ../../my/leftbar.inc:4
 msgid "You are logged in as"
 msgstr ""
 
+# Template: ../../my/leftbar.inc:12
 msgid "Personal page"
 msgstr ""
 
+# Template: ../../my/leftbar.inc:13
 msgid "Visit"
 msgstr ""
 
+# Template: ../../my/leftbar.inc:13
 msgid "My Community"
 msgstr ""
 
+# Template: ../../my/leftbar.inc:14
 msgid "Change my"
 msgstr ""
 
+# Template: ../../my/leftbar.inc:14
 msgid "settings"
 msgstr ""
 
+# Template: ../../my/leftbar.inc:15
 msgid "Visit my"
 msgstr ""
 
+# Template: ../../my/leftbar.inc:15
 msgid "public page"
 msgstr ""
 
+# Template: ../../my/leftbar.inc:21
 msgid "My Community items"
 msgstr ""
 
+# Template: ../../common/worldmap.php:4
+msgid "Players worldwide"
+msgstr ""
+
+# Template: ../../common/worldmap.php:13
+msgid "World map not available."
+msgstr ""
+
+# Template: ../../common/default.leftbar:3
+msgid "Login to Community"
+msgstr ""
+
+# Template: ../../common/default.leftbar:4
+msgid "Username"
+msgstr ""
+
+# Template: ../../common/default.leftbar:6
+msgid "Password"
+msgstr ""
+
+# Template: ../../common/default.leftbar:9
+msgid "Login"
+msgstr ""
+
+# Template: ../../common/default.leftbar:13
+msgid "Register as new user"
+msgstr ""
+
+# Template: ../../common/default.leftbar:15
+msgid "Resend password"
+msgstr ""
+
+# Template: ../../common/default.leftbar:20
+msgid "Need help?"
+msgstr ""
+
+# Template: ../../common/default.leftbar:21
+msgid "Administrator mail"
+msgstr ""
+
+# Template: ../../common/default.leftbar:21
+msgid "Send an email"
+msgstr ""
+
+# Template: ../../common/default.leftbar:22
+msgid "to the Community administrators..."
+msgstr ""
+
+# Template: ../../common/locale.php:7
+msgid "$x"
+msgstr ""
+
+# Template: ../../common/locale.php:56
+msgid "$s"
+msgstr ""
+
+# Template: ../../common/default.rightbar:2
+msgid "Latest changes"
+msgstr ""
+
+# Template: ../../common/default.rightbar:7
+msgid "Matches/Tournaments"
+msgstr ""
+
+# Template: ../../common/default.rightbar:21
+# word: Individual blogs, tag: rightbar
+msgid "Individual blogs(rightbar)"
+msgstr ""
+
+# Template: ../../common/default.rightbar:30
+msgid "Forum posts"
+msgstr ""
+
+# Template: ../../common/navbar.inc:3
+msgid "Front page"
+msgstr ""
+
+# Template: ../../common/navbar.inc:3
+msgid "Main"
+msgstr ""
+
+# Template: ../../common/navbar.inc:6
+msgid "Game statistics and rankings"
+msgstr ""
+
+# Template: ../../common/navbar.inc:6
+msgid "Database"
+msgstr ""
+
+# Template: ../../common/navbar.inc:8
+msgid "Overview"
+msgstr ""
+
+# Template: ../../common/navbar.inc:9
+msgid "Games"
+msgstr ""
+
+# Template: ../../common/navbar.inc:10
+msgid "Matches"
+msgstr ""
+
+# Template: ../../common/navbar.inc:11
+msgid "Tournaments"
+msgstr ""
+
+# Template: ../../common/navbar.inc:12
+msgid "Players"
+msgstr ""
+
+# Template: ../../common/navbar.inc:13
+msgid "Teams"
+msgstr ""
+
+# Template: ../../common/navbar.inc:17
+msgid "Some online fun"
+msgstr ""
+
+# Template: ../../common/navbar.inc:17
+msgid "Play!"
+msgstr ""
+
+# Template: ../../common/navbar.inc:19
+msgid "GGZ games"
+msgstr ""
+
+# Template: ../../common/navbar.inc:20
+msgid "Web games"
+msgstr ""
+
+# Template: ../../common/navbar.inc:24
+msgid "Player contributions"
+msgstr ""
+
+# Template: ../../common/navbar.inc:24
+msgid "Manage!"
+msgstr ""
+
+# Template: ../../common/navbar.inc:26
+msgid "Game contents"
+msgstr ""
+
+# Template: ../../common/navbar.inc:29
+msgid "Karma"
+msgstr ""
+
+# Template: ../../common/navbar.inc:33
+msgid "Forums"
+msgstr ""
+
+# Template: ../../common/navbar.inc:35
+msgid "Community forum"
+msgstr ""
+
+# Template: ../../common/navbar.inc:36
+msgid "Individual blogs"
+msgstr ""
+
+# Template: ../../common/navbar.inc:37
+msgid "Articles"
+msgstr ""
+
+# Template: ../../common/navbar.inc:41
+msgid "About GGZ Community"
+msgstr ""
+
+# Template: ../../common/navbar.inc:41
+msgid "About"
+msgstr ""
+
+# Template: ../../common/navbar.inc:43
+msgid "Contact"
+msgstr ""
+
+# Template: ../../common/navbar.inc:44
+msgid "Help"
+msgstr ""
+
+# Template: ../../common/navbar.inc:56
+msgid "Community Administration"
+msgstr ""
+
+# Template: ../../common/navbar.inc:56
+msgid "Admin"
+msgstr ""
+
+# Template: ../../common/navbar.inc:58
+msgid "Admin Main"
+msgstr ""
+
+# Template: ../../common/acknowledgements.inc:6
+msgid "Site design based on Steel-n-Leather"
+msgstr ""
+
+# Template: ../../common/acknowledgements.inc:9
+msgid "Portal engine powered by GGZ Community"
+msgstr ""
+
+# Template: ../../db/teams/index.rightbar:3
+msgid "Database: Teams"
+msgstr ""
+
+# Template: ../../db/tournaments/index.rightbar:3
+msgid "Database: Tournaments"
+msgstr ""
+
+# Template: ../../db/games/index.rightbar:3
+msgid "Database: Games"
+msgstr ""
+
+# Template: ../../db/matches/index.rightbar:3
+msgid "Database: Matches"
+msgstr ""
+
+# Template: ../../db/players/index.rightbar:3
+msgid "Database: Players"
+msgstr ""
+
+# Template: ../../db/players/index.rightbar:8
+msgid "Players (newest 50)"
+msgstr ""
+
+# Template: ../../db/index.rightbar:8
+msgid "Live games"
+msgstr ""
+
+# Template: ../../db/index.rightbar:10
+msgid "View games"
+msgstr ""
+
+# PHP: ../access.php:24
 msgid "You must be logged in to access this area."
 msgstr ""
 
+# PHP: ../auth.php:74
 msgid "Error:"
 msgstr ""
 
+# PHP: ../auth.php:75
 msgid "Notice:"
 msgstr ""
 
+# PHP: ../auth.php:79
 msgid "Login failed!"
 msgstr ""
 
+# PHP: ../auth.php:84
 msgid "Need to allow cookies!"
 msgstr ""
 
+# PHP: ../auth.php:88
 msgid "Resent authentication credentials."
 msgstr ""
 
+# PHP: ../auth.php:91
 msgid "Could not authentication credentials."
 msgstr ""
 
+# PHP: ../auth.php:94
 msgid "Registration failed!"
 msgstr ""
 
+# PHP: ../auth.php:97
 msgid "You have been registered."
 msgstr ""
 
+# PHP: ../auth.php:100
 msgid "Activation failed!"
 msgstr ""
 
+# PHP: ../auth.php:103
 msgid "The new password has been activated."
 msgstr ""
 
+# PHP: ../auth.php:121
 msgid "Username:"
 msgstr ""
 
+# PHP: ../auth.php:122
 msgid "New password:"
 msgstr ""
 
+# PHP: ../auth.php:123
 msgid "The password should be changed immediately after login!"
 msgstr ""
 
+# PHP: ../auth.php:126
 msgid "Activate"
 msgstr ""
 
+# PHP: ../auth.php:128
 msgid "No such token $token found."
 msgstr ""
 
+# PHP: ../auth.php:201
 msgid "$user: regenerated, activate on $link\n"
 msgstr ""
 
+# PHP: ../auth.php:241
 msgid "The $name Administrators"
 msgstr ""
 
+# PHP: ../locale.php:97
 msgid "Deutsch"
 msgstr ""
 
+# PHP: ../locale.php:98
 msgid "English"
 msgstr ""
 
+# PHP: ../locale.php:99
 msgid "Svenska"
 msgstr ""
 
+# PHP: ../locale.php:100
 msgid "Français"
 msgstr ""
 
+# PHP: ../locale.php:101
 msgid "Español"
 msgstr ""
 
+# PHP: ../locale.php:123
 msgid "Available languages: "
 msgstr ""
 

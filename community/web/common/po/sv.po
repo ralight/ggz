@@ -1,0 +1,278 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Personal sidebar"
+msgstr ""
+
+msgid "You are logged in as"
+msgstr ""
+
+msgid "Personal page"
+msgstr ""
+
+msgid "Visit"
+msgstr ""
+
+msgid "My Community"
+msgstr ""
+
+msgid "Change my"
+msgstr ""
+
+msgid "settings"
+msgstr ""
+
+msgid "Visit my"
+msgstr ""
+
+msgid "public page"
+msgstr ""
+
+msgid "My Community items"
+msgstr ""
+
+msgid "Players worldwide"
+msgstr ""
+
+msgid "World map not available."
+msgstr ""
+
+msgid "Login to Community"
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
+msgid "Register as new user"
+msgstr ""
+
+msgid "Resend password"
+msgstr ""
+
+msgid "Need help?"
+msgstr ""
+
+msgid "Administrator mail"
+msgstr ""
+
+msgid "Send an email"
+msgstr ""
+
+msgid "to the Community administrators..."
+msgstr ""
+
+msgid "$x"
+msgstr ""
+
+msgid "$s"
+msgstr ""
+
+msgid "Latest changes"
+msgstr ""
+
+msgid "Matches/Tournaments"
+msgstr ""
+
+msgid "Individual blogs(rightbar)"
+msgstr "Invididuelle bloggar"
+
+msgid "Forum posts"
+msgstr ""
+
+msgid "Front page"
+msgstr "Startsida"
+
+msgid "Main"
+msgstr "Start"
+
+msgid "Game statistics and rankings"
+msgstr "Spelstatistik och rank"
+
+msgid "Database"
+msgstr "Database"
+
+msgid "Overview"
+msgstr "Överblick"
+
+msgid "Games"
+msgstr "Spel"
+
+msgid "Matches"
+msgstr "Matcher"
+
+msgid "Tournaments"
+msgstr "Turneringar"
+
+msgid "Players"
+msgstr "Spelare"
+
+msgid "Teams"
+msgstr "Teams/Klaner"
+
+msgid "Some online fun"
+msgstr "Lite online-kul"
+
+msgid "Play!"
+msgstr "Spela!"
+
+msgid "GGZ games"
+msgstr "GGZ-spel"
+
+msgid "Web games"
+msgstr "Web-spel"
+
+msgid "Player contributions"
+msgstr "Använderbidrag"
+
+msgid "Manage!"
+msgstr "Organisera!"
+
+msgid "Game contents"
+msgstr "Spel-innehål"
+
+msgid "Karma"
+msgstr "Karma"
+
+msgid "Forums"
+msgstr "Forum"
+
+msgid "Community forum"
+msgstr "Kommunity-forum"
+
+msgid "Individual blogs"
+msgstr "Invididuelle bloggar"
+
+msgid "Articles"
+msgstr "Artiklar"
+
+msgid "About GGZ Community"
+msgstr "Om GGZ-Kommunity"
+
+msgid "About"
+msgstr "Om"
+
+msgid "Contact"
+msgstr "Kontakt"
+
+msgid "Help"
+msgstr ""
+
+msgid "Community Administration"
+msgstr ""
+
+msgid "Admin"
+msgstr ""
+
+msgid "Admin Main"
+msgstr ""
+
+msgid "Site design based on Steel-n-Leather"
+msgstr ""
+
+msgid "Portal engine powered by GGZ Community"
+msgstr ""
+
+msgid "Database: Teams"
+msgstr ""
+
+msgid "Database: Tournaments"
+msgstr ""
+
+msgid "Database: Games"
+msgstr ""
+
+msgid "Database: Matches"
+msgstr ""
+
+msgid "Database: Players"
+msgstr ""
+
+# Template: ../../db/players/index.rightbar:8
+msgid "Players (newest 50)"
+msgstr ""
+
+msgid "Live games"
+msgstr ""
+
+msgid "View games"
+msgstr ""
+
+msgid "You must be logged in to access this area."
+msgstr ""
+
+msgid "Error:"
+msgstr ""
+
+msgid "Notice:"
+msgstr ""
+
+msgid "Login failed!"
+msgstr ""
+
+msgid "Need to allow cookies!"
+msgstr ""
+
+msgid "Resent authentication credentials."
+msgstr ""
+
+msgid "Could not authentication credentials."
+msgstr ""
+
+msgid "Registration failed!"
+msgstr ""
+
+msgid "You have been registered."
+msgstr ""
+
+msgid "Activation failed!"
+msgstr ""
+
+msgid "The new password has been activated."
+msgstr ""
+
+msgid "Username:"
+msgstr ""
+
+msgid "New password:"
+msgstr ""
+
+msgid "The password should be changed immediately after login!"
+msgstr ""
+
+msgid "Activate"
+msgstr ""
+
+msgid "No such token $token found."
+msgstr ""
+
+msgid "$user: regenerated, activate on $link\n"
+msgstr ""
+
+msgid "The $name Administrators"
+msgstr ""
+
+msgid "Deutsch"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "Svenska"
+msgstr ""
+
+# PHP: ../locale.php:100
+msgid "Français"
+msgstr ""
+
+# PHP: ../locale.php:101
+msgid "Español"
+msgstr ""
+
+msgid "Available languages: "
+msgstr ""

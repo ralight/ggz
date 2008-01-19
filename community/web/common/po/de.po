@@ -1,11 +1,41 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
-msgid "Site design based on Steel-n-Leather"
-msgstr "Design basierend auf Steel-n-Leather"
+msgid "Personal sidebar"
+msgstr "Seitenmen"
 
-msgid "Portal engine powered by GGZ Community"
-msgstr "Portalimplementierung mit GGZ Community"
+msgid "You are logged in as"
+msgstr "Du bist eingeloggt als"
+
+msgid "Personal page"
+msgstr "Eigene Seite"
+
+msgid "Visit"
+msgstr "Besuche"
+
+msgid "My Community"
+msgstr "Meine Community"
+
+msgid "Change my"
+msgstr "ndere deine"
+
+msgid "settings"
+msgstr "Einstellungen"
+
+msgid "Visit my"
+msgstr "Besuche deine"
+
+msgid "public page"
+msgstr "ffentliche Seite"
+
+msgid "My Community items"
+msgstr "Eigene Beitrge"
+
+msgid "Players worldwide"
+msgstr "Spieler weltweit"
+
+msgid "World map not available."
+msgstr "Die Weltkarte ist nicht verfgbar."
 
 msgid "Login to Community"
 msgstr "Login zur Community"
@@ -37,26 +67,23 @@ msgstr "Sende eine Mail"
 msgid "to the Community administrators..."
 msgstr "zu den Administratoren..."
 
+msgid "$x"
+msgstr "XXXXX"
+
+msgid "$s"
+msgstr "XXXXX"
+
 msgid "Latest changes"
 msgstr "Neuigkeiten..."
 
 msgid "Matches/Tournaments"
 msgstr "Spiele/Tournaments"
 
-msgid "Individual blogs)(rightbar"
-msgstr "Spielerblogs"
+msgid "Individual blogs(rightbar)"
+msgstr "Individuelle Blogs"
 
 msgid "Forum posts"
-msgstr "Foreneinträge"
-
-msgid "Players worldwide"
-msgstr "Spieler weltweit"
-
-msgid "$x"
-msgstr "XXXXX"
-
-msgid "$s"
-msgstr "XXXXX"
+msgstr "Foreneintrge"
 
 msgid "Front page"
 msgstr "Startseite"
@@ -71,7 +98,7 @@ msgid "Database"
 msgstr "Datenbank"
 
 msgid "Overview"
-msgstr "Überblick"
+msgstr "berblick"
 
 msgid "Games"
 msgstr "Spieleangebot"
@@ -125,7 +152,7 @@ msgid "Articles"
 msgstr "Artikel"
 
 msgid "About GGZ Community"
-msgstr "Über GGZ Community"
+msgstr "ber GGZ Community"
 
 msgid "About"
 msgstr "Über..."
@@ -133,20 +160,23 @@ msgstr "Über..."
 msgid "Contact"
 msgstr "Kontakt"
 
-msgid "Database: Games"
-msgstr "Datenbank: Spiele"
+msgid "Help"
+msgstr "Hilfe"
 
-msgid "Live games"
-msgstr "Livespiele"
+msgid "Community Administration"
+msgstr "Community-Administration"
 
-msgid "View games"
-msgstr "Spiele ansehen"
+msgid "Admin"
+msgstr "Administration"
 
-msgid "Database: Matches"
-msgstr "Datenbank: Spiele"
+msgid "Admin Main"
+msgstr "Administrationsmen"
 
-msgid "Database: Players"
-msgstr "Datenbank: Spieler"
+msgid "Site design based on Steel-n-Leather"
+msgstr "Design basierend auf Steel-n-Leather"
+
+msgid "Portal engine powered by GGZ Community"
+msgstr "Portalimplementierung mit GGZ Community"
 
 msgid "Database: Teams"
 msgstr "Datenbank: Teams"
@@ -154,38 +184,26 @@ msgstr "Datenbank: Teams"
 msgid "Database: Tournaments"
 msgstr "Datenbank: Tournaments"
 
-msgid "Personal sidebar"
-msgstr "Seitenmenü"
+msgid "Database: Games"
+msgstr "Datenbank: Spiele"
 
-msgid "You are logged in as"
-msgstr "Du bist eingeloggt als"
+msgid "Database: Matches"
+msgstr "Datenbank: Spiele"
 
-msgid "Personal page"
-msgstr "Eigene Seite"
+msgid "Database: Players"
+msgstr "Datenbank: Spieler"
 
-msgid "Visit"
-msgstr "Besuche"
+msgid "Players (newest 50)"
+msgstr "Spieler (die neuesten 50)"
 
-msgid "My Community"
-msgstr "Meine Community"
+msgid "Live games"
+msgstr "Livespiele"
 
-msgid "Change my"
-msgstr "Ändere deine"
-
-msgid "settings"
-msgstr "Einstellungen"
-
-msgid "Visit my"
-msgstr "Besuche deine"
-
-msgid "public page"
-msgstr "öffentliche Seite"
-
-msgid "My Community items"
-msgstr "Eigene Beiträge"
+msgid "View games"
+msgstr "Spiele ansehen"
 
 msgid "You must be logged in to access this area."
-msgstr "Du musst eingeloggt sein, um auf diesen Bereich zugreifen zu können."
+msgstr "Du musst eingeloggt sein, um auf diesen Bereich zugreifen zu knnen."
 
 msgid "Error:"
 msgstr "Fehler:"
@@ -197,7 +215,7 @@ msgid "Login failed!"
 msgstr "Login fehlgeschlagen!"
 
 msgid "Need to allow cookies!"
-msgstr "Cookies müssen erlaubt sein!"
+msgstr "Cookies mssen erlaubt sein!"
 
 msgid "Resent authentication credentials."
 msgstr "Authentifizierungs-Hinweise versendet."
@@ -224,7 +242,7 @@ msgid "New password:"
 msgstr "Neues Passwort:"
 
 msgid "The password should be changed immediately after login!"
-msgstr "Das Passwort sollte direkt nach dem Login geändert werden!"
+msgstr "Das Passwort sollte direkt nach dem Login gendert werden!"
 
 msgid "Activate"
 msgstr "Aktivieren"
@@ -233,7 +251,7 @@ msgid "No such token $token found."
 msgstr "Kein Token $token gefunden."
 
 msgid "$user: regenerated, activate on $link\n"
-msgstr "$user: neu erzeugt, Aktivierung über $link\n"
+msgstr "$user: neu erzeugt, Aktivierung ber $link\n"
 
 msgid "The $name Administrators"
 msgstr "Die Administratoren der $name"
