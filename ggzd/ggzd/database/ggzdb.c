@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 9555 2008-01-19 08:18:21Z josef $
+ * $Id: ggzdb.c 9557 2008-01-19 08:38:08Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -59,15 +59,15 @@ static void ggzdb_player_lowercase(ggzdbPlayerEntry *pe, char *orig);
 /* Function to initialize the database system */
 int ggzdb_init(ggzdbConnection connection, bool standalone)
 {
-	const char *suffix = "/ggzdb.ver";
-	char fname[strlen(connection.datadir) + strlen(suffix) + 1];
-	char vid[7];	/* Space for 123.45 */
-	char version_ok = 0;
-	FILE *vfile;
-
 	/* Verify that db version is cool with us */
 	/* FIXME: move all of that into db4.c! */
-	if(true) {
+	if(!ggz_strcmp(connection.type, "db4")) {
+		const char *suffix = "/ggzdb.ver";
+		char fname[strlen(connection.datadir) + strlen(suffix) + 1];
+		char vid[7];	/* Space for 123.45 */
+		char version_ok = 0;
+		FILE *vfile;
+
 		snprintf(fname, sizeof(fname), "%s%s", connection.datadir, suffix);
 
 		if((vfile = fopen(fname, "r")) == NULL) {
@@ -90,6 +90,7 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 			       "database.  It may be possible to automate this;\n"
 			       "see http://ggzgamingzone.org.\n");
 			exit(-1);
+			/* FIXME: we should be able to rely on ggz_err_sys() */
 		}
 	}
 

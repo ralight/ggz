@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 9556 2008-01-19 08:19:44Z josef $
+ * $Id: ggzduedit.c 9557 2008-01-19 08:38:08Z josef $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -468,12 +468,12 @@ int main(int argc, char **argv)
 		{"dbname", required_argument, 0, 'D'},
 		{"username", required_argument, 0, 'u'},
 		{"password", optional_argument, 0, 'p'},
-		{"type", optional_argument, 0, 't'},
+		{"type", required_argument, 0, 't'},
 		{"help", no_argument, 0, 'h'},
 		{"version", no_argument, 0, 'v'},
 		{0, 0, 0, 0}
 	};
-	const char *primarybackend;
+	const char *primarybackend = NULL;
 
 	conn.type = NULL;
 	conn.datadir = NULL;
@@ -530,7 +530,7 @@ int main(int argc, char **argv)
 				printf("[-H | --host     <hostname>] Host of the database\n");
 				printf("[-u | --username <username>] Database user\n");
 				printf("[-p | --password=[password]] Database password\n");
-				printf("[-t | --type     <dbtype>  ] Type of database (for DBI only)\n");
+				printf("[-t | --type     <dbtype>  ] Type of database (for DBI or to override default)\n");
 				printf("[-h | --help               ] Display this help\n");
 				printf("[-v | --version            ] Display version number only\n");
 				exit(0);
@@ -543,21 +543,23 @@ int main(int argc, char **argv)
 
 	if((!conn.database) || (!conn.host) || (!conn.username) || (!conn.password)) {
 		rc = ggz_conf_parse(GGZDCONFDIR "/ggzd.conf", GGZ_CONF_RDONLY);
-		if(!conn.database)
-			conn.database = ggz_conf_read_string(rc, "General", "DatabaseName", NULL);
-		if(!conn.host)
-			conn.host = ggz_conf_read_string(rc, "General", "DatabaseHost", NULL);
-		if(!conn.username)
-			conn.username = ggz_conf_read_string(rc, "General", "DatabaseUsername", NULL);
-		if(!conn.password)
-			conn.password = ggz_conf_read_string(rc, "General", "DatabasePassword", NULL);
-		if(!conn.type)
-			conn.type = ggz_conf_read_string(rc, "General", "DatabaseType", NULL);
-		if(!conn.hashing)
-			conn.hashing = ggz_conf_read_string(rc, "General", "DatabaseHashing", NULL);
-		if(!conn.hashencoding)
-			conn.hashencoding = ggz_conf_read_string(rc, "General", "DatabaseHashEncoding", NULL);
-		ggz_conf_close(rc);
+		if(rc != -1) {
+			if(!conn.database)
+				conn.database = ggz_conf_read_string(rc, "General", "DatabaseName", NULL);
+			if(!conn.host)
+				conn.host = ggz_conf_read_string(rc, "General", "DatabaseHost", NULL);
+			if(!conn.username)
+				conn.username = ggz_conf_read_string(rc, "General", "DatabaseUsername", NULL);
+			if(!conn.password)
+				conn.password = ggz_conf_read_string(rc, "General", "DatabasePassword", NULL);
+			if(!conn.type)
+				conn.type = ggz_conf_read_string(rc, "General", "DatabaseType", NULL);
+			if(!conn.hashing)
+				conn.hashing = ggz_conf_read_string(rc, "General", "DatabaseHashing", NULL);
+			if(!conn.hashencoding)
+				conn.hashencoding = ggz_conf_read_string(rc, "General", "DatabaseHashEncoding", NULL);
+			ggz_conf_close(rc);
+		}
 	}
 
 	if(!conn.datadir) {
@@ -569,13 +571,13 @@ int main(int argc, char **argv)
 	needs_id = 0;
 
 	if(!conn.type) {
-	}
 		char *backendlist = ggz_strdup(DATABASE_TYPES);
 		char *backendlistptr = backendlist;
 		primarybackend = ggz_strdup(strtok(backendlist, ","));
 		ggz_free(backendlistptr);
 
 		conn.type = primarybackend;
+	}
 
 	if(!strcmp(conn.type, "db4")) {
 		needs_id = 1;
