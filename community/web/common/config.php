@@ -81,6 +81,8 @@ class Config
 		endif;
 
 		$this->theme = $communitytheme;
+
+		$this->features = $features;
 	}
 
 	function parseconfigfile($configfile)
@@ -112,6 +114,17 @@ class Config
 		fclose($f);
 
 		return $content;
+	}
+
+	function feature($feature)
+	{
+		global $config_object;
+
+		if ($config_object->features) :
+			return $config_object->features[$feature];
+		else :
+			return true;
+		endif;
 	}
 
 	function getvalue($key)

@@ -13,28 +13,44 @@
 				<a href="/db/teams/" class="menuitem">_(Teams)</a>
 			</div>
 		</div>
+<?php if ((Config::feature("ggzgames")) && (Config::feature("webgames"))) : ?>
 		<div class="menu">
 			<a href="/games/" class="menuitem" title="_(Some online fun)">_(Play!)</a>
 			<div class="menu">
+<?php if (Config::feature("ggzgames")) : ?>
 				<a href="/games/" class="menuitem">_(GGZ games)</a>
+<?php endif; ?>
+<?php if (Config::feature("webgames")) : ?>
 				<a href="/webgames/" class="menuitem">_(Web games)</a>
+<?php endif; ?>
 			</div>
 		</div>
+<?php endif; ?>
 		<div class="menu">
 			<a href="/active/hotstuff/" class="menuitem" title="_(Player contributions)">_(Manage!)</a>
 			<div class="menu">
+<?php if (Config::feature("datarepo")) : ?>
 				<a href="/active/hotstuff/" class="menuitem">_(Game contents)</a>
+<?php endif; ?>
 				<a href="/active/tournaments/" class="menuitem">_(Tournaments)</a>
 				<a href="/active/teams/" class="menuitem">_(Teams)</a>
+<?php if (Config::feature("karma")) : ?>
 				<a href="/active/karma/" class="menuitem">_(Karma)</a>
+<?php endif; ?>
 			</div>
 		</div>
 		<div class="menu">
 			<a href="/forums/" class="menuitem" title="_(Forums)">_(Forums)</a>
 			<div class="menu">
+<?php if (Config::feature("forum")) : ?>
 				<a href="/forums/" class="menuitem">_(Community forum)</a>
+<?php endif; ?>
+<?php if (Config::feature("blogs")) : ?>
 				<a href="/blogs/" class="menuitem">_(Individual blogs)</a>
+<?php endif; ?>
+<?php if (Config::feature("articles")) : ?>
 				<a href="/articles/" class="menuitem">_(Articles)</a>
+<?php endif; ?>
 			</div>
 		</div>
 		<div class="menu">

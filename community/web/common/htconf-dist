@@ -4,6 +4,9 @@
 // Values which are commented out are fetched automatically from
 // ggzd or its configuration file, if set.
 
+# Path to the configuration file of the GGZ server
+# - when path is given, database parameters will be read automatically
+# - however, when performance is an issue, still set them by hand
 $ggzconfigfile = "/...../etc/ggzd/ggzd.conf";
 #$dbhost = "localhost";
 #$dbname = "xxx";
@@ -11,24 +14,48 @@ $ggzconfigfile = "/...../etc/ggzd/ggzd.conf";
 #$dbpass = "xxx";
 #$dbtype = "postgresql";
 
+# URL to the GGZ server this community instance runs on
+# - when URL is given, host/name/version can be read automatically
+# - however, when performance is an issue, still set them by hand
 $ggzurl = "ggz://localhost:5688";
 #$ggzhost = "localhost";
 #$ggzname = "Local Zone";
 #$ggzversion = "0.0.14+";
 
+# Directory where to find savegames
 $ggzgamedir = "/...../var/ggzd/gamedata/";
 
+# Community name and subtitle, to be displayed in the heading
 $communityname = "GGZ Community";
 $communityslogan = "The gamer's portal powered by GGZ Gaming Zone";
 
+# Copyright title and hyperlink
 $communitycopyright_title = "GGZ Gaming Zone";
 $communitycopyright_link = "http://www.ggzgamingzone.org/";
 
+# Base URL for the community site and contact email
 $communityurl = "https://www.ggzcommunity.org/";
 $communitymail = "info@ggzcommunity.org";
 
-$communitytls = 0;
+# Whether or not a secure connection shall be advertised
+# - use either 'true' or 'false'
+$communitytls = false;
 
+# The graphical style in which the community shall appear
+# - use either 'default'/'' or 'widelands' or 'freeciv'
 $communitytheme = "";
+
+# Use this array to customize the features of this installation
+# - when not set, all values default to true
+#$features = array(
+#	'blogs' => true,
+#	'forum' => true,
+#	'articles' => true,
+#	'ggzgames' => true,
+#	'webgames' => true,
+#	'worldmap' => true,
+#	'datarepo' => true,
+#	'karma' => true
+#);
 
 ?>

@@ -28,6 +28,7 @@ endif;
 $player->display();
 ?>
 	</div>
+<?php if (Config::feature("karma")) : ?>
 	<h2>
 		<span class="itemleader">:: </span>
 		Player Karma
@@ -60,6 +61,7 @@ else :
 endif;
 ?>
 	</div>
+<?php endif; ?>
 	<div class="text">
 
 <?php

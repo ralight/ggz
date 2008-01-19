@@ -15,6 +15,7 @@ latest_tournaments();
 ?>
 	</div>
 
+<?php if (Config::feature("blogs")) : ?>
 	<hr class="leather">
 
 	<div class="menubar">
@@ -23,7 +24,9 @@ latest_tournaments();
 latest_blogs();
 ?>
 	</div>
+<?php endif; ?>
 
+<?php if (Config::feature("forum")) : ?>
 	<hr class="leather">
 
 	<div class="menubar">
@@ -32,6 +35,7 @@ latest_blogs();
 latest_forumposts();
 ?>
 	</div>
+<?php endif; ?>
 
 <?php
 include_once("worldmap.php");

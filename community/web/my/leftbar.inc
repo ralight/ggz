@@ -15,6 +15,7 @@
 		_(Visit my) <a href="/db/players/?lookup=<?php echo Auth::username(); ?>">_(public page)</a>.
 	</form>
 
+<?php if (Config::feature("datarepo")) : ?>
 	<hr class="leather">
 
 	<form class="leather" action="" method="get">
@@ -25,5 +26,6 @@ $p = new Player(Auth::username());
 $p->items();
 ?>
 	</form>
+<?php endif; ?>
 </div>
 

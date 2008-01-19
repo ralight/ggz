@@ -1,3 +1,4 @@
+<?php if (Config::feature("worldmap")) : ?>
 	<hr class="leather">
 
 	<div class="menubar">
@@ -15,3 +16,4 @@ else :
 endif;
 ?>
 	</div>
+<?php endif; ?>
