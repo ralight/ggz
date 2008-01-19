@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 9555 2008-01-19 08:18:21Z josef $
+ * $Id: ggzduedit.c 9556 2008-01-19 08:19:44Z josef $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -577,9 +577,7 @@ int main(int argc, char **argv)
 
 		conn.type = primarybackend;
 
-	if((!strcmp(conn.type, "db2"))
-	|| (!strcmp(conn.type, "db3"))
-	|| (!strcmp(conn.type, "db4"))) {
+	if(!strcmp(conn.type, "db4")) {
 		needs_id = 1;
 
 		if(!conn.datadir) {
