@@ -25,7 +25,7 @@ body
 
 #pagehead .menubar
 	{
-		width:390px;
+		/*width:390px;*/
 		background-color:#71DC81;
 		border-top: 1px #3E6A3F solid;
 		border-left: 1px #3E6A3F solid;

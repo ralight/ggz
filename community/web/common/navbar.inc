@@ -53,9 +53,9 @@ if (Auth::username()) :
 	if ($p->admin()) :
 ?>
 		<div class="menu">
-			<a href="/admin/" class="menuitem" style="background-color:#ff0000" title="Community Administration">Admin</a>
+			<a href="/admin/" class="menuitem" style="background-color:#800000" title="_(Community Administration)">_(Admin)</a>
 			<div class="menu">
-				<a href="/admin/" class="menuitem">Admin Main</a>
+				<a href="/admin/" class="menuitem">_(Admin Main)</a>
 			</div>
 		</div>
 <?php
