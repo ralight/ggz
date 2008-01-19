@@ -22,12 +22,17 @@
 
 #include <kggzcore/coreclientbase.h>
 
+#include <QUrl>
+
 using namespace KGGZCore;
 
 CoreClient::CoreClient(QObject *parent)
 : QObject(parent)
 {
 	m_base = new CoreClientBase();
+
+	m_port = 5688;
+	m_mode = guest;
 
 	connect(m_base, SIGNAL(signalBaseError()), SLOT(slotBaseError()));
 	connect(m_base, SIGNAL(signalBaseServer(int, int)), SLOT(slotBaseServer(int, int)));
@@ -39,7 +44,11 @@ CoreClient::~CoreClient()
 
 void CoreClient::setUrl(QString url)
 {
-	m_url = url;
+	QUrl qurl(url);
+	m_host = qurl.host();
+	m_port = qurl.port();
+	m_username = qurl.userName();
+	m_password = qurl.password();
 }
 
 void CoreClient::setHost(QString host)
@@ -89,7 +98,8 @@ void CoreClient::initiateLogin()
 	else if(m_mode == normal) mode = GGZ_LOGIN;
 	else if(m_mode == firsttime) mode = GGZ_LOGIN_NEW;
 
-	m_base->setConnectionInfo(m_host.toUtf8(), m_port, m_username.toUtf8(), m_password.toUtf8(), m_email.toUtf8(), mode, tls);
+	m_base->setConnectionInfo(m_host.toUtf8().data(), m_port, m_username.toUtf8().data(),
+		m_password.toUtf8().data(), m_email.toUtf8().data(), mode, tls);
 	m_base->startConnection();
 }
 
@@ -111,7 +121,7 @@ void CoreClient::slotBaseError()
 {
 	qDebug("base error!");
 
-	delete m_base;
+	m_base->deleteLater();
 
 	emit signalEvent(libraryerror);
 }

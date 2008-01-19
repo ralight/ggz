@@ -25,6 +25,8 @@
 
 #include <ggzcore.h>
 
+class QSocketNotifier;
+
 namespace KGGZCore
 {
 
@@ -42,14 +44,19 @@ class CoreClientBase : public QObject
 		void signalBaseError();
 		void signalBaseServer(int id, int code) const;
 
+	private slots:
+		void slotSocket(int socket);
+
 	private:
 		void init();
 
 		void callback_server(unsigned int id, const void *event_data) const;
+		void handle_server(unsigned int id);
 
 		static GGZHookReturn cb_server(unsigned int id, const void *event_data, const void *user_data);
 
 		GGZServer *m_server;
+		QSocketNotifier *m_sn;
 };
 
 }

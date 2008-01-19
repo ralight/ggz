@@ -100,7 +100,7 @@ class CoreClient : public QObject
 		void slotBaseServer(int id, int code);
 
 	private:
-		QString m_url, m_host, m_username, m_password, m_email;
+		QString m_host, m_username, m_password, m_email;
 		int m_port;
 		bool m_tls;
 		LoginType m_mode;
