@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 9304 2007-09-09 07:24:14Z josef $
+ * $Id: ggzduedit.c 9554 2008-01-19 08:02:54Z josef $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -37,7 +37,6 @@
 #include <termios.h>
 
 #include "ggzdb.h"
-#include "ggzdb_proto.h"
 #include "datatypes.h" /* For Options type */
 #include "perms.h"
 
@@ -76,12 +75,12 @@ static void list_players(void)
 	int count=0;
 
 	printf("\nList of all known player handles:\n");
-	if((rc = _ggzdb_player_get_first(&pe)) != 0) {
-		fprintf(stderr, "_ggzdb_player_get_first() rc=%d\n", rc);
+	if((rc = ggzdb_player_get_first(&pe)) != 0) {
+		fprintf(stderr, "ggzdb_player_get_first() rc=%d\n", rc);
 		return;
 	}
 	printf("%-8u %s\n", pe.user_id, pe.handle);
-	while((rc = _ggzdb_player_get_next(&pe)) == 0) {
+	while((rc = ggzdb_player_get_next(&pe)) == 0) {
 		if(++count % 23 == 0) {
 			printf("[pause]\007 ");
 			getnextline();
@@ -98,9 +97,9 @@ static void list_players(void)
 	printf("\n");
 
 	if(rc != GGZDB_ERR_NOTFOUND)
-		fprintf(stderr, "_ggzdb_player_get_next() rc=%d\n", rc);
+		fprintf(stderr, "ggzdb_player_get_next() rc=%d\n", rc);
 
-	_ggzdb_player_drop_cursor();
+	ggzdb_player_drop_cursor();
 }
 
 
@@ -174,6 +173,7 @@ static void add_player(void)
 
 	printf("Adding new user\n");
 	if(needs_id) {
+		/* FIXME: use ggzdb_player_next_uid()? */
 		printf("UserID Number: ");
 		getnextline();
 		pe.user_id = strtoul(lb, NULL, 10);
@@ -261,11 +261,11 @@ static void add_player(void)
 		}
 	}
 
-	if((rc = _ggzdb_player_add(&pe)) != 0)
+	if((rc = ggzdb_player_add(&pe)) != 0)
 		if(rc == GGZDB_ERR_DUPKEY)
 			printf("\nError: user handle already exists\n\n");
 		else
-			fprintf(stderr, "_ggzdb_player_add() rc=%d\n", rc);
+			fprintf(stderr, "ggzdb_player_add() rc=%d\n", rc);
 	else
 		printf("\nNew user entry added\n\n");
 }
@@ -288,11 +288,11 @@ static void edit_player(int edit)
 	lb[i] = '\0';
 	strcpy(pe.handle, lb);
 
-	if((rc = _ggzdb_player_get(&pe)) != 0) {
+	if((rc = ggzdb_player_get(&pe)) != 0) {
 		if(rc == GGZDB_ERR_NOTFOUND)
 			printf("Handle not found in database\n");
 		else
-			fprintf(stderr, "_ggzdb_player_get() rc=%d\n", rc);
+			fprintf(stderr, "ggzdb_player_get() rc=%d\n", rc);
 		return;
 	}
 
@@ -389,8 +389,8 @@ static void edit_player(int edit)
 		}
 	}
 
-	if((rc = _ggzdb_player_update(&pe)) != 0)
-		fprintf(stderr, "_ggzdb_player_update() rc=%d\n", rc);
+	if((rc = ggzdb_player_update(&pe)) != 0)
+		fprintf(stderr, "ggzdb_player_update() rc=%d\n", rc);
 	else
 		printf("\nUser entry updated\n\n");
 }
@@ -456,7 +456,7 @@ static void echomode(int echo)
 
 int main(int argc, char **argv)
 {
-	int	rc;
+	int rc;
 	ggzdbConnection conn;
 	int opt, optindex;
 	char password[32];
@@ -471,6 +471,7 @@ int main(int argc, char **argv)
 		{"version", no_argument, 0, 'v'},
 		{0, 0, 0, 0}
 	};
+	const char *primarybackend;
 
 	conn.type = NULL;
 	conn.datadir = NULL;
@@ -479,6 +480,7 @@ int main(int argc, char **argv)
 	conn.username = NULL;
 	conn.password = NULL;
 	conn.hashing = ggz_strdup("plain");
+	conn.hashencoding = ggz_strdup("base64");
 
 	while(1)
 	{
@@ -549,6 +551,10 @@ int main(int argc, char **argv)
 			conn.password = ggz_conf_read_string(rc, "General", "DatabasePassword", NULL);
 		if(!conn.type)
 			conn.type = ggz_conf_read_string(rc, "General", "DatabaseType", NULL);
+		if(!conn.hashing)
+			conn.hashing = ggz_conf_read_string(rc, "General", "DatabaseHashing", NULL);
+		if(!conn.hashencoding)
+			conn.hashencoding = ggz_conf_read_string(rc, "General", "DatabaseHashEncoding", NULL);
 		ggz_conf_close(rc);
 	}
 
@@ -560,33 +566,42 @@ int main(int argc, char **argv)
 
 	needs_id = 0;
 
-	if((!strcmp(DATABASE_TYPE, "db2"))
-	|| (!strcmp(DATABASE_TYPE, "db3"))
-	|| (!strcmp(DATABASE_TYPE, "db4"))) {
+	if(!conn.type) {
+	}
+		char *backendlist = ggz_strdup(DATABASE_TYPES);
+		char *backendlistptr = backendlist;
+		primarybackend = ggz_strdup(strtok(backendlist, ","));
+		ggz_free(backendlistptr);
+
+		conn.type = primarybackend;
+
+	if((!strcmp(conn.type, "db2"))
+	|| (!strcmp(conn.type, "db3"))
+	|| (!strcmp(conn.type, "db4"))) {
 		needs_id = 1;
 
 		if(!conn.datadir) {
 			fprintf(stderr, "Database type '%s' needs data directory\n",
-				DATABASE_TYPE);
+				conn.type);
 			exit(-1);
 		}
 	}
 
-	if(!strcmp(DATABASE_TYPE, "dbi")) {
+	if(!strcmp(conn.type, "dbi")) {
 		if(!conn.type) {
 			fprintf(stderr, "Database type '%s' needs plugin type name\n",
-				DATABASE_TYPE);
+				conn.type);
 			exit(-1);
 		}
 	}
 
-	if((!strcmp(DATABASE_TYPE, "mysql"))
-	|| (!strcmp(DATABASE_TYPE, "pgsql"))
-	|| (!strcmp(DATABASE_TYPE, "sqlite"))
-	|| (!strcmp(DATABASE_TYPE, "dbi"))) {
+	if((!strcmp(conn.type, "mysql"))
+	|| (!strcmp(conn.type, "pgsql"))
+	|| (!strcmp(conn.type, "sqlite"))
+	|| (!strcmp(conn.type, "dbi"))) {
 		if((!conn.database) || (!conn.host) || (!conn.username) || (!conn.password)) {
 			fprintf(stderr, "Database type '%s' needs database access parameters\n",
-				DATABASE_TYPE);
+				conn.type);
 			exit(-1);
 		} else {
 			conn.datadir = NULL;
@@ -600,19 +615,19 @@ int main(int argc, char **argv)
 			conn.database, conn.username, conn.host);
 	}
 
-	if((rc = _ggzdb_init(conn, 1)) != 0) {
-		fprintf(stderr, "_ggzdb_init() rc=%d\n", rc);
-		return 1;
-	}
-	if((rc = _ggzdb_init_player(conn.datadir)) != 0) {
-		fprintf(stderr, "_ggzdb_init_player() rc=%d\n", rc);
+	if((rc = ggzdb_init(conn, true)) != 0) {
+		fprintf(stderr, "ggzdb_init() rc=%d\n", rc);
 		return 1;
 	}
 
 	while(main_menu())
 		;
 
-	_ggzdb_close();
+	ggzdb_close();
+
+	if(primarybackend)
+		ggz_free(primarybackend);
+
 	return 0;
 }
 

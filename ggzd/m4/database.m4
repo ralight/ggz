@@ -7,6 +7,7 @@ dnl and sets $database as well as LIB_DATABASE/DATABASE_INCLUDES appropriately
 dnl Note: $database is set from configure.ac initially and might also contain
 dnl a comma-separated list of database backends. All of those will be compiled
 dnl and made available as dynamically-loadable backends (plugins).
+dnl The list is also exported as DATABASE_TYPES definition.
 dnl
 dnl ------------------------------------------------------------------------
 dnl Content of this file:
@@ -450,7 +451,7 @@ if test $databaselist != yes; then
 	database=$databaselist
 fi
 
-AC_DEFINE_UNQUOTED([DATABASE_TYPE], "${database}", [Database backend type])
+AC_DEFINE_UNQUOTED([DATABASE_TYPES], "${database}", [Database backend type])
 AC_SUBST(LIB_DATABASE)
 AC_SUBST(DATABASE_INCLUDES)
 

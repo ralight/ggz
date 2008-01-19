@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 9421 2007-12-08 11:26:18Z josef $
+ * $Id: ggzdb.h 9554 2008-01-19 08:02:54Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -63,6 +63,7 @@ typedef struct {
 	const char *username;
 	const char *password;
 	const char *hashing;
+	const char *hashencoding;
 } ggzdbConnection;
 
 typedef struct {
@@ -91,7 +92,7 @@ typedef enum {
 
 
 /* Exported functions */
-GGZReturn ggzdb_init(void);
+GGZReturn ggzdb_init(ggzdbConnection connection, bool standalone);
 void ggzdb_close(void);
 
 GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *);
@@ -100,6 +101,10 @@ GGZDBResult ggzdb_player_get(ggzdbPlayerEntry *);
 GGZDBResult ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *);
 /* GGZDBResult ggzdb_player_delete(const char *handle); */
 unsigned int ggzdb_player_next_uid(void);
+
+GGZDBResult ggzdb_player_get_first(ggzdbPlayerEntry *pe);
+GGZDBResult ggzdb_player_get_next(ggzdbPlayerEntry *pe);
+void ggzdb_player_drop_cursor(void);
 
 /* Look up a player's stats entry.  Note, you should probably use
  * stats_lookup() instead. */

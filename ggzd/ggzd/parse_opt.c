@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9531 2008-01-13 07:58:33Z josef $
+ * $Id: parse_opt.c 9554 2008-01-19 08:02:54Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -147,7 +147,7 @@ static char **_ggz_string_to_list(const char *s, const char *sep)
 #else
 #define SPEC_DEBUG 0
 #endif
-#define SPEC_DB DATABASE_TYPE
+#define SPEC_DB DATABASE_TYPES
 #ifdef WITH_AVAHI
 #define SPEC_AVAHI 1
 #else
@@ -191,7 +191,7 @@ static void dump_specs(void)
 	{
 		snprintf(tlsstring, sizeof(tlsstring), "yes (%s)", tlsname);
 	}
-	if(!strcmp(DATABASE_TYPE, "dbi"))
+	if(!strcmp(DATABASE_TYPES, "dbi"))
 	{
 		/* FIXME: dbi is broken now, since dbi itself is the backend? */
 		snprintf(dbstring, sizeof(dbstring), " [using dbd::%s]", opt.dbtype);

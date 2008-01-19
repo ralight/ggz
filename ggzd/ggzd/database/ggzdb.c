@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 9421 2007-12-08 11:26:18Z josef $
+ * $Id: ggzdb.c 9554 2008-01-19 08:02:54Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -42,7 +42,8 @@
 
 
 /* Server-wide variables */
-extern Options opt;
+static const char *db_hashing;
+static const char *db_hashencoding;
 
 /* Internal variables */
 static char db_needs_init = 1;
@@ -56,19 +57,18 @@ static GGZDBResult ggzdb_stats_init(void);
 static void ggzdb_player_lowercase(ggzdbPlayerEntry *pe, char *orig);
 
 /* Function to initialize the database system */
-int ggzdb_init(void)
+int ggzdb_init(ggzdbConnection connection, bool standalone)
 {
 	const char *suffix = "/ggzdb.ver";
-	char fname[strlen(opt.data_dir) + strlen(suffix) + 1];
+	char fname[strlen(connection.datadir) + strlen(suffix) + 1];
 	char vid[7];	/* Space for 123.45 */
-	char version_ok=0;
+	char version_ok = 0;
 	FILE *vfile;
-	ggzdbConnection connection;
 
 	/* Verify that db version is cool with us */
-	connection.database = 0;
-	if(!connection.database) {
-		snprintf(fname, sizeof(fname), "%s%s", opt.data_dir, suffix);
+	/* FIXME: move all of that into db4.c! */
+	if(true) {
+		snprintf(fname, sizeof(fname), "%s%s", connection.datadir, suffix);
 
 		if((vfile = fopen(fname, "r")) == NULL) {
 			/* File not found, so we can create it */
@@ -94,13 +94,16 @@ int ggzdb_init(void)
 	}
 
 	/* Load the database backend plugin */
-	const char *backend = opt.dbtype;
+	const char *backend = connection.type;
+	const char *primarybackend = NULL;
 	if(!backend){
-		/* get from DATABASE_TYPE */
-		char *backendlist = ggz_strdup(DATABASE_TYPE);
+		/* get the first (default) from DATABASE_TYPES */
+		char *backendlist = ggz_strdup(DATABASE_TYPES);
 		char *backendlistptr = backendlist;
-		backend = ggz_strdup(strtok(backendlist, ","));
+		primarybackend = ggz_strdup(strtok(backendlist, ","));
 		ggz_free(backendlistptr);
+
+		backend = primarybackend;
 	}
 
 	char backendmodule[128];
@@ -112,6 +115,9 @@ int ggzdb_init(void)
 		err_sys_exit("%s (%s) is not a suitable database module (%s)",
 			backend, backendmodule, dlerror());
 	}
+
+	if(primarybackend)
+		ggz_free(primarybackend);
 
 	if(((_ggzdb_init = dlsym(handle, "_ggzdb_init")) == NULL)
 	|| ((_ggzdb_close = dlsym(handle, "_ggzdb_close")) == NULL)
@@ -139,15 +145,13 @@ int ggzdb_init(void)
 			backend, dlerror());
 	}
 
+	if(connection.hashing)
+		db_hashing = ggz_strdup(connection.hashing);
+	if(connection.hashencoding)
+		db_hashencoding = ggz_strdup(connection.hashencoding);
+
 	/* Call backend's initialization */
-	connection.type = opt.dbtype;
-	connection.datadir = opt.data_dir;
-	connection.host = opt.dbhost;
-	connection.database = opt.dbname;
-	connection.username = opt.dbusername;
-	connection.password = opt.dbpassword;
-	connection.hashing = opt.dbhashing;
-	if (_ggzdb_init(connection, 0) != GGZ_OK)
+	if (_ggzdb_init(connection, standalone) != GGZ_OK)
 		return GGZ_ERROR;
 	db_needs_init = 0;
 
@@ -158,6 +162,11 @@ int ggzdb_init(void)
 /* Function to TERMINATE database usage */
 void ggzdb_close(void)
 {
+	if(db_hashing)
+		ggz_free(db_hashing);
+	if(db_hashencoding)
+		ggz_free(db_hashencoding);
+
 	_ggzdb_close();
 	dlclose(handle);
 }
@@ -172,7 +181,7 @@ GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *pe)
 	char *password_enc;
 	char *origpassword = NULL;
 
-	if(!opt.dbhashing) return GGZDB_ERR_DB;
+	if(!db_hashing) return GGZDB_ERR_DB;
 
 	/* Lowercase player's name for comparison, saving original */
 	ggzdb_player_lowercase(pe, orig);
@@ -183,12 +192,12 @@ GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *pe)
 
 	if(rc == GGZDB_NO_ERROR)
 	{
-		if((!strcmp(opt.dbhashing, "md5"))
-		|| (!strcmp(opt.dbhashing, "sha1"))
-		|| (!strcmp(opt.dbhashing, "ripemd160")))
+		if((!strcmp(db_hashing, "md5"))
+		|| (!strcmp(db_hashing, "sha1"))
+		|| (!strcmp(db_hashing, "ripemd160")))
 		{
-			hash = ggz_hash_create(opt.dbhashing, pe->password);
-			if(!strcmp(opt.dbhashencoding, "base16")){
+			hash = ggz_hash_create(db_hashing, pe->password);
+			if(!strcmp(db_hashencoding, "base16")){
 				password_enc = ggz_base16_encode(hash.hash, hash.hashlen);
 			}else{
 				password_enc = ggz_base64_encode(hash.hash, hash.hashlen);
@@ -277,6 +286,50 @@ unsigned int ggzdb_player_next_uid(void)
 {
 	/* Just link to the db specific code */
 	return _ggzdb_player_next_uid();
+}
+
+
+GGZDBResult ggzdb_player_get_first(ggzdbPlayerEntry *pe)
+{
+	GGZDBResult rc = GGZDB_NO_ERROR;
+	_ggzdb_enter();
+	if(player_needs_init)
+		rc = ggzdb_player_init();
+
+	if(rc == GGZDB_NO_ERROR)
+		rc = _ggzdb_player_get_first(pe);
+
+	_ggzdb_exit();
+	return rc;
+}
+
+
+GGZDBResult ggzdb_player_get_next(ggzdbPlayerEntry *pe)
+{
+	GGZDBResult rc = GGZDB_NO_ERROR;
+	_ggzdb_enter();
+	if(player_needs_init)
+		rc = ggzdb_player_init();
+
+	if(rc == GGZDB_NO_ERROR)
+		rc = _ggzdb_player_get_next(pe);
+
+	_ggzdb_exit();
+	return rc;
+}
+
+
+void ggzdb_player_drop_cursor(void)
+{
+	GGZDBResult rc = GGZDB_NO_ERROR;
+	_ggzdb_enter();
+	if(player_needs_init)
+		rc = ggzdb_player_init();
+
+	if(rc == GGZDB_NO_ERROR)
+		_ggzdb_player_drop_cursor();
+
+	_ggzdb_exit();
 }
 
 
@@ -419,7 +472,8 @@ static GGZDBResult ggzdb_player_init(void)
 	if(db_needs_init)
 		return GGZDB_ERR_INIT;
 
-	rc = _ggzdb_init_player(opt.data_dir);
+	rc = _ggzdb_init_player();
+
 	if (rc == GGZDB_NO_ERROR)
 		player_needs_init = 0;
 
@@ -430,19 +484,12 @@ static GGZDBResult ggzdb_player_init(void)
 static GGZDBResult ggzdb_stats_init(void)
 {
 	GGZDBResult rc;
-	ggzdbConnection connection;
 
 	if (db_needs_init)
 		return GGZDB_ERR_INIT;
 
-	connection.datadir = opt.data_dir;
-	connection.host = opt.dbhost;
-	connection.database = opt.dbname;
-	connection.username = opt.dbusername;
-	connection.password = opt.dbpassword;
-	connection.hashing = opt.dbhashing;
+	rc = _ggzdb_init_stats();
 
-	rc = _ggzdb_init_stats(connection);
 	if (rc == GGZDB_NO_ERROR)
 		stats_needs_init = 0;
 
@@ -471,20 +518,20 @@ int ggzdb_compare_password(const char *input, const char *password)
 	char *password_enc;
 	int ret = 0;
 
-	if(!opt.dbhashing) return -1;
+	if(!db_hashing) return -1;
 	if((!input) || (!password)) return -1;
 
-	else if(!strcmp(opt.dbhashing, "plain"))
+	else if(!strcmp(db_hashing, "plain"))
 	{
 		if(!strcmp(input, password)) return 1;
 		else return 0;
 	}
-	else if((!strcmp(opt.dbhashing, "md5"))
-	|| (!strcmp(opt.dbhashing, "sha1"))
-	|| (!strcmp(opt.dbhashing, "ripemd160")))
+	else if((!strcmp(db_hashing, "md5"))
+	|| (!strcmp(db_hashing, "sha1"))
+	|| (!strcmp(db_hashing, "ripemd160")))
 	{
-		hash = ggz_hash_create(opt.dbhashing, input);
-		if(!strcmp(opt.dbhashencoding, "base16")){
+		hash = ggz_hash_create(db_hashing, input);
+		if(!strcmp(db_hashencoding, "base16")){
 			password_enc = ggz_base16_encode(hash.hash, hash.hashlen);
 		}else{
 			password_enc = ggz_base64_encode(hash.hash, hash.hashlen);
@@ -498,7 +545,7 @@ int ggzdb_compare_password(const char *input, const char *password)
 		return ret;
 	}
 
-	err_msg_exit("Unknown hashing type '%s'", opt.dbhashing);
+	err_msg_exit("Unknown hashing type '%s'", db_hashing);
 	
 	return -1;
 }

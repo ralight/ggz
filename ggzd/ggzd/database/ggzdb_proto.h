@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/08/2002
  * Desc: Back-end functions for handling database manipulation
- * $Id: ggzdb_proto.h 9245 2007-08-13 07:01:38Z josef $
+ * $Id: ggzdb_proto.h 9554 2008-01-19 08:02:54Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -37,7 +37,7 @@ void _ggzdb_exit(void);
  *
  *  @return GGZDB_NO_ERROR or GGZDB_ERR_DB
  */
-GGZDBResult _ggzdb_init_player(const char *datadir);
+GGZDBResult _ggzdb_init_player(void);
 
 /** @brief Try to add a player.
  *
@@ -106,7 +106,7 @@ void _ggzdb_player_drop_cursor(void);
 
 
 /** Initialize the stats database.  Return NO_ERROR or ERR_DB. */
-GGZDBResult _ggzdb_init_stats(ggzdbConnection connection);
+GGZDBResult _ggzdb_init_stats(void);
 
 /** Look up game stats.  The "player" and "game" field should be already
  *  filled in; everything else is filled in by the function.  If the entry

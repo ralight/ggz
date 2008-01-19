@@ -24,7 +24,7 @@ void (*_ggzdb_close)(void);
 void (*_ggzdb_enter)(void);
 void (*_ggzdb_exit)(void);
 
-GGZDBResult (*_ggzdb_init_player)(const char *datadir);
+GGZDBResult (*_ggzdb_init_player)(void);
 GGZDBResult (*_ggzdb_player_add)(ggzdbPlayerEntry * player);
 GGZDBResult (*_ggzdb_player_get)(ggzdbPlayerEntry * player);
 GGZDBResult (*_ggzdb_player_update)(ggzdbPlayerEntry * player);
@@ -35,7 +35,7 @@ GGZDBResult (*_ggzdb_player_get_extended)(ggzdbPlayerExtendedEntry * player);
 unsigned int (*_ggzdb_player_next_uid)(void);
 void (*_ggzdb_player_drop_cursor)(void);
 
-GGZDBResult (*_ggzdb_init_stats)(ggzdbConnection connection);
+GGZDBResult (*_ggzdb_init_stats)(void);
 GGZDBResult (*_ggzdb_stats_lookup)(ggzdbPlayerGameStats *stats);
 GGZDBResult (*_ggzdb_stats_update)(ggzdbPlayerGameStats *stats);
 GGZDBResult (*_ggzdb_stats_newmatch)(const char *game, const char *winner, const char *savegame);

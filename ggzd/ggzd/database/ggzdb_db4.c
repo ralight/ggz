@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db4 sytle database
- * $Id: ggzdb_db4.c 9245 2007-08-13 07:01:38Z josef $
+ * $Id: ggzdb_db4.c 9554 2008-01-19 08:02:54Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -103,7 +103,7 @@ void _ggzdb_exit(void)
 
 
 /* Function to initialize the player table */
-GGZDBResult _ggzdb_init_player(const char *datadir)
+GGZDBResult _ggzdb_init_player(void)
 {
 	u_int32_t flags;
 	ggzdbPlayerEntry marker;
@@ -321,9 +321,8 @@ void _ggzdb_player_drop_cursor(void)
 }
 
 
-GGZDBResult _ggzdb_init_stats(ggzdbConnection connection)
+GGZDBResult _ggzdb_init_stats(void)
 {
-
 	u_int32_t flags;
 
 	if(standalone)

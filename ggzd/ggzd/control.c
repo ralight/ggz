@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 9525 2008-01-12 22:03:18Z josef $
+ * $Id: control.c 9554 2008-01-19 08:02:54Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -130,9 +130,20 @@ static void init_dirs(void)
 /* Perhaps these should be put into their respective files? */
 static void init_data(void)
 {
+	ggzdbConnection connection;
+
 	pthread_rwlock_init(&state.lock, NULL);
 
-	if (ggzdb_init() != GGZ_OK)
+	connection.datadir = opt.data_dir;
+	connection.type = opt.dbtype;
+	connection.host = opt.dbhost;
+	connection.database = opt.dbname;
+	connection.username = opt.dbusername;
+	connection.password = opt.dbpassword;
+	connection.hashing = opt.dbhashing;
+	connection.hashencoding = opt.dbhashencoding;
+
+	if (ggzdb_init(connection, false) != GGZ_OK)
 		err_msg_exit("*** Database initialization failed");
 
 	hash_initialize();
