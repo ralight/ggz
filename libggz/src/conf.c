@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 9524 2008-01-12 21:55:18Z josef $
+ * $Id: conf.c 9583 2008-01-20 14:00:37Z oojah $
  *
  * Internal functions for handling configuration files
  *
@@ -1223,7 +1223,7 @@ ggz_intlstring *ggz_conf_read_intlstring(int handle,
 			{
 				intl->languages[intl->number - 1] = (char*)ggz_malloc(strlen(lang));
 				strncpy(intl->languages[intl->number - 1], lang + 1, strlen(lang) - 2);
-				intl->languages[intl->number - 1][strlen(lang)] = '\0';
+				intl->languages[intl->number - 1][strlen(lang) - 1] = '\0';
 			}
 			else intl->languages[intl->number - 1] = NULL;
 		}
