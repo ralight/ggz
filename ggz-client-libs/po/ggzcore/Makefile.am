@@ -26,7 +26,6 @@ pofiles = \
 	gu.po \
 	hi.po \
 	hu.po \
-	id.po \
 	it.po \
 	ja.po \
 	ko.po \
