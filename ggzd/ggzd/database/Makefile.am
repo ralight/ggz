@@ -9,7 +9,9 @@ libggzdb_a_CPPFLAGS = -I$(top_srcdir)/ggzd $(LIBGGZ_INCLUDES) -DGGZDEXECMODDIR=\
 libggzdb_a_SOURCES = \
 	ggzdb.c \
 	ggzdb.h \
-	ggzdb_proto.h
+	ggzdb_functions.h
+
+EXTRA_DIST = ggzdb_proto.h
 
 ggzdbdir = $(libdir)/ggzd/database
 ggzdb_LTLIBRARIES =

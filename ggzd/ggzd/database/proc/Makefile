@@ -7,5 +7,8 @@ MODULE_big = canonicalstr_proc
 OBJS = canonicalstr_proc.o
 
 PGXS := $(shell pg_config --pgxs)
-include $(PGXS)
+#include $(PGXS)
+# FIXME: taken out for snapshot-0.99.1 because doesn't seem to be avilable in Debian at the moment
+
+distdir:
 
