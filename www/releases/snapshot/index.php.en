@@ -1,0 +1,49 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="content">
+<tr>
+<td colspan="2">
+<b>GGZ Snapshot 0.99.1 Downloads</b><br/>
+<br/>
+<i>Source code release</i><br/>
+This is the first in a series of snapshots leading to a GGZ 1.0 release.
+The GGZ Gaming Zone project releases its components as source code, which
+can be downloaded here. In the special case of this snapshot release,
+only four of our countless <a href="/packages/">packages</a> have been
+included. Following a staggered release order, additional packages will be
+added in later snapshots.
+<br/><br/>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<i>Source code packages</i>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+<img src="/pics/site/flags/flag-be.png">
+Belnet Mirror, Belgium:<br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/">http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/</a><br/>
+<a href="ftp://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/">ftp://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/</a>
+<br/><br/>
+Thanks to <a href="http://www.belnet.be/">Belnet</a> for providing the mirror!
+</td><td bgcolor="#ffd000" valign="top">
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/libggz-snapshot-0.99.1.tar.gz">libggz-snapshot-0.99.1.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-client-libs-snapshot-0.99.1.tar.gz">ggz-client-libs-snapshot-0.99.1.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-server-snapshot-0.99.1.tar.gz">ggz-server-snapshot-0.99.1.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-txt-client-snapshot-0.99.1.tar.gz">ggz-txt-client-snapshot-0.99.1.tar.gz</a><br/>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Server hosting colocation!
+</td><td bgcolor="#ffd000" valign="top">
+We are actively looking for a sponsor to host our new permanent
+game server at a data centre.
+Please write a mail to the
+<a href="mailto:hostmaster@ggzgamingzone.org">hostmaster</a>
+if you are kind enough to provide such an offer.
+</td></tr>
+
+</table>
+
+<?php include_once("../../site/footer.php"); ?>
