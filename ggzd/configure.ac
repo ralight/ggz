@@ -1,7 +1,7 @@
 # Configuration for the GGZ server
 # ================================
 
-AC_INIT([GGZ server], [0.0.15pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
+AC_INIT([GGZ server], [snapshot-0.99.1], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE

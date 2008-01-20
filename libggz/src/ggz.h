@@ -23,8 +23,8 @@
 #define __GGZ_H__
 
 #define LIBGGZ_VERSION_MAJOR 0
-#define LIBGGZ_VERSION_MINOR 0
-#define LIBGGZ_VERSION_MICRO 14
+#define LIBGGZ_VERSION_MINOR 99
+#define LIBGGZ_VERSION_MICRO 1
 #define LIBGGZ_VERSION_IFACE "5:0:3"
 
 #include <sys/types.h>

@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 9570 2008-01-20 10:47:37Z josef $
+ * $Id: ggzcore.h 9577 2008-01-20 12:18:41Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -29,8 +29,8 @@
 #define __GGZCORE_H__
 
 #define GGZCORE_VERSION_MAJOR 0
-#define GGZCORE_VERSION_MINOR 0
-#define GGZCORE_VERSION_MICRO 14
+#define GGZCORE_VERSION_MINOR 99
+#define GGZCORE_VERSION_MICRO 1
 #define GGZCORE_VERSION_IFACE "9:0:0"
 
 #include <stdarg.h>

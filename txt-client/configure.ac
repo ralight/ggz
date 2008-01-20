@@ -1,7 +1,7 @@
 dnl Configuration for the text client
 dnl =================================
 
-AC_INIT([GGZ text client], [0.0.14], [ggz-dev@mail.ggzgamingzone.org], [ggz-txt-client])
+AC_INIT([GGZ text client], [snapshot-0.99.1], [ggz-dev@mail.ggzgamingzone.org], [ggz-txt-client])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
