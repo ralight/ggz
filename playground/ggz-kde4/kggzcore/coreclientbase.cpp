@@ -21,6 +21,7 @@
 #include <kggzcore/coreclientbase.h>
 
 #include <kggzcore/misc.h>
+#include <kggzcore/roombase.h>
 
 #include <QSocketNotifier>
 #include <QStringList>
@@ -32,6 +33,7 @@ CoreClientBase::CoreClientBase(QObject *parent)
 {
 	m_server = NULL;
 	m_sn = NULL;
+	m_roombase = NULL;
 
 	init();
 }
@@ -126,6 +128,11 @@ QStringList CoreClientBase::roomnames()
 	return names;
 }
 
+RoomBase *CoreClientBase::roombase()
+{
+	return m_roombase;
+}
+
 void CoreClientBase::callback_server(unsigned int id, const void *event_data) const
 {
 	qDebug("cb_server! id=%i event=%s", id, Misc::messagename(id).toUtf8().data());
@@ -140,12 +147,30 @@ void CoreClientBase::callback_server(unsigned int id, const void *event_data) co
 		errorcode = ((const GGZErrorEventData*)event_data)->status;
 	}
 
+	handle_server_pre(id);
+
 	emit signalBaseServer(id, errorcode);
 
-	handle_server(id);
+	handle_server_post(id);
 }
 
-void CoreClientBase::handle_server(unsigned int id)
+void CoreClientBase::handle_server_pre(unsigned int id)
+{
+	if(id == GGZ_ENTERED)
+	{
+		delete m_roombase;
+		m_roombase = new RoomBase(this);
+		m_roombase->setRoom(ggzcore_server_get_cur_room(m_server));
+	}
+	else if((id == GGZ_NET_ERROR)
+	     || (id == GGZ_PROTOCOL_ERROR))
+	{
+		delete m_roombase;
+		m_roombase = NULL;
+	}
+}
+
+void CoreClientBase::handle_server_post(unsigned int id)
 {
 	if(id == GGZ_CONNECTED)
 	{

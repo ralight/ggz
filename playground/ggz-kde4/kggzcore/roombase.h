@@ -18,19 +18,38 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef KGGZCORE_MISC_H
-#define KGGZCORE_MISC_H
+#ifndef KGGZCORE_ROOM_BASE_H
+#define KGGZCORE_ROOM_BASE_H
 
-#include <QString>
+#include <ggzcore.h>
+
+#include <QObject>
 
 namespace KGGZCore
 {
 
-class Misc
+class RoomBase : public QObject
 {
+	Q_OBJECT
 	public:
-		static QString messagename(int id);
-		static QString roommessagename(int id);
+		RoomBase(QObject *parent = NULL);
+		~RoomBase();
+
+		void setRoom(GGZRoom *room);
+		GGZRoom *room() const;
+
+	signals:
+		void signalBaseError();
+		void signalBaseRoom(int id, int code) const;
+
+	private:
+		void callback_room(unsigned int id, const void *event_data) const;
+		void handle_room_pre(unsigned int id);
+		void handle_room_post(unsigned int id);
+
+		static GGZHookReturn cb_room(unsigned int id, const void *event_data, const void *user_data);
+
+		GGZRoom *m_room;
 };
 
 }

@@ -22,34 +22,48 @@
 #define KGGZCORE_ROOM_H
 
 #include <QString>
+#include <QObject>
+
+#include <kggzcore/error.h>
 
 namespace KGGZCore
 {
 
-class Room
+class RoomBase;
+
+class Room : public QObject
 {
+	Q_OBJECT
 	public:
-		Room();
+		Room(QObject *parent = NULL);
 		~Room();
 
-		enum Event
+		void init(RoomBase *base);
+
+		enum AnswerMessage
 		{
 			playerlist,
-			tablelist,
-			chatevent,
+			tablelist
+		};
+
+		enum FeedbackMessage
+		{
+			tablelaunched,
+			tablejoined,
+			tableleft
+		};
+
+		enum EventMessage
+		{
+			chat,
 			enter,
 			leave,
 			tableupdate,
-			tablelaunched,
-			tablelaunchfail,
-			tablejoined,
-			tablejoinfail,
-			tableleft,
-			tableleavefail,
 			playerlag,
 			stats,
 			count,
-			perms
+			perms,
+			libraryerror
 		};
 
 		enum ChatType
@@ -70,11 +84,22 @@ class Room
 		};
 
 		QString name();
-		int players();
+		QString description();
+		int numplayers();
+		int numtables();
+		bool restricted();
+
+	signals:
+		void signalFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
+		void signalAnswer(KGGZCore::Room::AnswerMessage message);
+		void signalEvent(KGGZCore::Room::EventMessage message);
+
+	private slots:
+		void slotBaseError();
+		void slotBaseRoom(int id, int code);
 
 	private:
-		QString m_name;
-		int m_players;
+		RoomBase *m_base;
 };
 
 }

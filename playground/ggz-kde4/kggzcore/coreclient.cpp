@@ -22,6 +22,7 @@
 
 #include <kggzcore/coreclientbase.h>
 #include <kggzcore/room.h>
+//#include <kggzcore/roombase.h>
 
 #include <QUrl>
 
@@ -32,7 +33,7 @@ CoreClient::CoreClient(QObject *parent)
 {
 	m_room = NULL;
 
-	m_base = new CoreClientBase();
+	m_base = new CoreClientBase(this);
 
 	m_port = 5688;
 	m_mode = guest;
@@ -130,6 +131,7 @@ void CoreClient::slotBaseError()
 	qDebug("base error!");
 
 	m_base->deleteLater();
+	m_base = NULL;
 
 	emit signalEvent(libraryerror);
 }
@@ -165,13 +167,16 @@ void CoreClient::slotBaseServer(int id, int code)
 			break;
 		case GGZ_ENTERED:
 			delete m_room;
-			m_room = new Room();
+			m_room = new Room(this);
+			m_room->init(m_base->roombase());
 			emit signalFeedback(roomenter, errorcode);
 			break;
 		case GGZ_ENTER_FAIL:
 			emit signalFeedback(roomenter, errorcode);
 			break;
 		case GGZ_LOGOUT:
+			delete m_room;
+			m_room = NULL;
 			emit signalFeedback(logout, errorcode);
 			break;
 		case GGZ_CHAT_FAIL:
@@ -197,9 +202,13 @@ void CoreClient::slotBaseServer(int id, int code)
 			emit signalAnswer(typelist);
 			break;
 		case GGZ_NET_ERROR:
+			delete m_room;
+			m_room = NULL;
 			emit signalEvent(neterror);
 			break;
 		case GGZ_PROTOCOL_ERROR:
+			delete m_room;
+			m_room = NULL;
 			emit signalEvent(protoerror);
 			break;
 		case GGZ_SERVER_ROOMS_CHANGED:

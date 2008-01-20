@@ -30,6 +30,8 @@ class QSocketNotifier;
 namespace KGGZCore
 {
 
+class RoomBase;
+
 class CoreClientBase : public QObject
 {
 	Q_OBJECT
@@ -43,6 +45,8 @@ class CoreClientBase : public QObject
 
 		QStringList roomnames();
 
+		RoomBase *roombase();
+
 	signals:
 		void signalBaseError();
 		void signalBaseServer(int id, int code) const;
@@ -54,12 +58,14 @@ class CoreClientBase : public QObject
 		void init();
 
 		void callback_server(unsigned int id, const void *event_data) const;
-		void handle_server(unsigned int id);
+		void handle_server_pre(unsigned int id);
+		void handle_server_post(unsigned int id);
 
 		static GGZHookReturn cb_server(unsigned int id, const void *event_data, const void *user_data);
 
 		GGZServer *m_server;
 		QSocketNotifier *m_sn;
+		RoomBase *m_roombase;
 };
 
 }

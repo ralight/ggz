@@ -100,3 +100,62 @@ static QString Misc::messagename(int id)
 
 	return s;
 }
+
+static QString Misc::roommessagename(int id)
+{
+	QString s;
+
+	switch(id)
+	{
+		case GGZ_PLAYER_LIST:
+			s = "player list arrived";
+			break;
+		case GGZ_TABLE_LIST:
+			s = "table list arrived";
+			break;
+		case GGZ_CHAT_EVENT:
+			s = "chat event";
+			break;
+		case GGZ_ROOM_ENTER:
+			s = "someone entered the room";
+			break;
+		case GGZ_ROOM_LEAVE:
+			s = "someone left the room";
+			break;
+		case GGZ_TABLE_UPDATE:
+			s = "table update";
+			break;
+		case GGZ_TABLE_LAUNCHED:
+			s = "table launch succeeded";
+			break;
+		case GGZ_TABLE_LAUNCH_FAIL:
+			s = "table launch failed";
+			break;
+		case GGZ_TABLE_JOINED:
+			s = "table join succeeded";
+			break;
+		case GGZ_TABLE_JOIN_FAIL:
+			s = "table join failed";
+			break;
+		case GGZ_TABLE_LEFT:
+			s = "table leave succeeded";
+			break;
+		case GGZ_TABLE_LEAVE_FAIL:
+			s = "table leave failed";
+			break;
+		case GGZ_PLAYER_LAG:
+			s = "player lag";
+			break;
+		case GGZ_PLAYER_STATS:
+			s = "player statistics";
+			break;
+		case GGZ_PLAYER_COUNT:
+			s = "player count";
+			break;
+		case GGZ_PLAYER_PERMS:
+			s = "player permissions";
+			break;
+	}
+
+	return s;
+}

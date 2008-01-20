@@ -13,11 +13,13 @@ HEADERS = \
 	coreclientbase.h \
 	error.h \
 	misc.h \
-	room.h
+	room.h \
+	roombase.h
 
 SOURCES = \
 	coreclient.cpp \
 	coreclientbase.cpp \
 	error.cpp \
 	misc.cpp \
-	room.cpp
+	room.cpp \
+	roombase.cpp
