@@ -349,7 +349,7 @@ GGZHookReturn net_hook_connect(unsigned int id, const void *event_data, const vo
 /* Callback for login */
 GGZHookReturn net_hook_login(unsigned int id, const void *event_data, const void *user_data)
 {
-	ggzcore_server_list_rooms(server, -1, 0);
+	ggzcore_server_list_rooms(server, 0);
 	ggzcore_server_list_gametypes(server, 1);
 	return GGZ_HOOK_OK;
 }
@@ -374,7 +374,7 @@ GGZHookReturn net_hook_enter(unsigned int id, const void *event_data, const void
 
 	/*ggzcore_room_add_event_hook(room, GGZ_PLAYER_LIST, net_hook_playerlist);*/
 	ggzcore_room_list_players(room);
-	ggzcore_room_list_tables(room, 0, 0);
+	ggzcore_room_list_tables(room);
 
 	ggzcore_room_add_event_hook(room, GGZ_ROOM_ENTER, net_hook_roomenter);
 	ggzcore_room_add_event_hook(room, GGZ_ROOM_LEAVE, net_hook_roomleave);
