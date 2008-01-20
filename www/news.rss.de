@@ -10,6 +10,20 @@
 <language>de-de</language>
 
 <item>
+<title><i>20.01.2008: Developer snapshot 0.99.1</i> (by josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+Over the past months, the GGZ project was shaped like probably never before,
+and our roadmap plans for a version 1.0 have been fulfilled by now. Therefore,
+we part from our 0.0.x release scheme and release a series of 0.99.x snapshots
+on the way to GGZ 1.0, The first such snapshot has just been
+<a href="/releases/snapshot/">created</a> and can be downloaded by interested
+developers. It took one year to blossom out, although the next one will take
+significantly less time, about two months or so.
+</full>
+</item>
+
+<item>
 <title><i>10.01.2008: GGZ wird 8 Jahre alt</i> (von josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>
