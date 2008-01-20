@@ -71,7 +71,7 @@ int GGZCoreConfio::commit()
 void GGZCoreConfio::free(void *ptr)
 {
 	//ggz_free(ptr);
-	_ggz_free(ptr, " * " __FILE__,  __LINE__);
+	_ggz_free(ptr, " * ", __FILE__,  __LINE__);
 }
 
 void GGZCoreConfio::cleanup()
