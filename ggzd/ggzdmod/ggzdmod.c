@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 9062 2007-04-21 03:51:10Z jdorje $
+ * $Id: ggzdmod.c 9581 2008-01-20 12:58:29Z josef $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -350,10 +350,12 @@ static GGZSeat *_ggzdmod_get_seat_ptr(GGZdMod * ggzdmod,
 			.type = GGZ_SEAT_NONE,
 			.name = NULL,
 			.fd = -1};
-	GGZList *list = (is_spectator ? ggzdmod->spectators : ggzdmod->seats);
+	GGZList *list;
 	GGZListEntry *entry;
 
 	if (!CHECK_GGZDMOD(ggzdmod) || seat_num < 0) return NULL;
+
+	list = (is_spectator ? ggzdmod->spectators : ggzdmod->seats);
 
 	if (seat_num >= (is_spectator
 			 ? ggzdmod->max_num_spectators : ggzdmod->num_seats))
