@@ -185,7 +185,7 @@ void CoreClientBase::handle_server_post(unsigned int id)
 
 	if(id == GGZ_LOGGED_IN)
 	{
-		ggzcore_server_list_rooms(m_server, 0, 1);
+		ggzcore_server_list_rooms(m_server, 1);
 		ggzcore_server_list_gametypes(m_server, 1);
 	}
 

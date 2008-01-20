@@ -56,7 +56,7 @@ void RoomBase::setRoom(GGZRoom *room)
 	ggzcore_room_add_event_hook_full(m_room, GGZ_PLAYER_PERMS, &RoomBase::cb_room, this);
 
 	ggzcore_room_list_players(m_room);
-	ggzcore_room_list_tables(m_room, 0, 0);
+	ggzcore_room_list_tables(m_room);
 }
 
 GGZRoom *RoomBase::room() const
