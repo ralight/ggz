@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 9324 2007-10-20 08:08:46Z josef $
+ * $Id: main.c 9572 2008-01-20 10:50:17Z josef $
  *
  * Main program code for ggz-cmd program.
  *
@@ -287,7 +287,7 @@ static GGZHookReturn server_logged_in(GGZServerEvent id,
 {
 	ggz_debug(DBG_MAIN, "Logged in to server.");
 
-	ggzcore_server_list_rooms(server, 0, 0);
+	ggzcore_server_list_rooms(server, 0);
 
 	return GGZ_HOOK_OK;
 }

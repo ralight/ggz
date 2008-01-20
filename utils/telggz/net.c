@@ -167,7 +167,7 @@ static GGZHookReturn net_hook_failure(unsigned int id, const void *event_data,
 static GGZHookReturn net_hook_login(unsigned int id, const void *event_data,
 				    const void *user_data)
 {
-	ggzcore_server_list_rooms(server, -1, 0);
+	ggzcore_server_list_rooms(server, 0);
 
 	return GGZ_HOOK_OK;
 }
