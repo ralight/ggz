@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 9460 2007-12-24 12:18:40Z oojah $
+ * $Id: ggzcore.h 9570 2008-01-20 10:47:37Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -930,12 +930,11 @@ int ggzcore_server_motd(GGZServer *server);
 /** @brief Request room list.
  *
  * @param server The GGZ server object.
- * @param type Not used yet.
  * @param verbose Receive all information about a room or only the essentials.
  * @return 0 on success, -1 on failure.
  * @note A GGZ_ROOM_LIST might be generated thereafter.
  */
-int ggzcore_server_list_rooms(GGZServer *server, const int type, const char verbose);
+int ggzcore_server_list_rooms(GGZServer *server, const char verbose);
 
 /** @brief Request game type list.
  *
@@ -1089,12 +1088,8 @@ int ggzcore_room_list_players(GGZRoom *room);
 
 /** @brief Call to request a list of tables in the room.
  *  @param room Your current room
- *  @param type currently ignored (???)
- *  @param global currently ignored (???)
  *  @see GGZ_TABLE_LIST */
-int ggzcore_room_list_tables(GGZRoom *room,
-			     const int type,
-			     const char global);
+int ggzcore_room_list_tables(GGZRoom *room);
 
 /** @brief Chat!
  *  @param room Your current room.

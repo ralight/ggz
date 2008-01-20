@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.h 9539 2008-01-15 16:53:18Z josef $
+ * $Id: room.h 9570 2008-01-20 10:47:37Z josef $
  *
  * This fils contains functions for handling rooms
  *
@@ -107,8 +107,7 @@ void _ggzcore_room_set_table_leave_status(GGZRoom * room, GGZClientReqError stat
 /* Functions for invoking GGZRoom "actions" */
 
 int _ggzcore_room_load_playerlist(GGZRoom * room);
-int _ggzcore_room_load_tablelist(GGZRoom * room,
-				 const int type, const char global);
+int _ggzcore_room_load_tablelist(GGZRoom * room);
 
 int _ggzcore_room_chat(GGZRoom * room,
 		       const GGZChatType type,

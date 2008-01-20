@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 9540 2008-01-15 17:01:52Z josef $
+ * $Id: room.c 9570 2008-01-20 10:47:37Z josef $
  *
  * This fils contains functions for handling rooms
  *
@@ -431,11 +431,10 @@ int ggzcore_room_list_players(GGZRoom * room)
 }
 
 
-int ggzcore_room_list_tables(GGZRoom * room, const int type,
-			     const char global)
+int ggzcore_room_list_tables(GGZRoom * room)
 {
 	if (room && room->server)
-		return _ggzcore_room_load_tablelist(room, type, global);
+		return _ggzcore_room_load_tablelist(room);
 	else
 		return -1;
 }
@@ -799,13 +798,12 @@ int _ggzcore_room_load_playerlist(GGZRoom * room)
 }
 
 
-int _ggzcore_room_load_tablelist(GGZRoom * room, const int type,
-				 const char global)
+int _ggzcore_room_load_tablelist(GGZRoom * room)
 {
 	GGZNet *net;
 
 	net = _ggzcore_server_get_net(room->server);
-	return _ggzcore_net_send_list_tables(net, type, global);
+	return _ggzcore_net_send_list_tables(net);
 }
 
 

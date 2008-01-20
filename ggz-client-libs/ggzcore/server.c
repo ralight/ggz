@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 9446 2007-12-14 06:49:09Z jdorje $
+ * $Id: server.c 9570 2008-01-20 10:47:37Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -532,10 +532,10 @@ int ggzcore_server_motd(GGZServer * server)
 
 
 int ggzcore_server_list_rooms(GGZServer * server,
-			      const int type, const char verbose)
+			      const char verbose)
 {
 	if (server && server->state >= GGZ_STATE_LOGGED_IN)
-		return _ggzcore_server_load_roomlist(server, type,
+		return _ggzcore_server_load_roomlist(server,
 						     verbose);
 	else
 		return -1;
@@ -1285,10 +1285,10 @@ int _ggzcore_server_load_typelist(GGZServer * server, const char verbose)
 }
 
 
-int _ggzcore_server_load_roomlist(GGZServer * server, const int type,
+int _ggzcore_server_load_roomlist(GGZServer * server,
 				  const char verbose)
 {
-	return _ggzcore_net_send_list_rooms(server->net, type, verbose);
+	return _ggzcore_net_send_list_rooms(server->net, verbose);
 }
 
 

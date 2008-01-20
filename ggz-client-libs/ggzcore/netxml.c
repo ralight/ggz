@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 9447 2007-12-14 07:15:14Z jdorje $
+ * $Id: netxml.c 9570 2008-01-20 10:47:37Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -484,7 +484,7 @@ int _ggzcore_net_send_list_types(GGZNet * net, const char verbose)
 }
 
 
-int _ggzcore_net_send_list_rooms(GGZNet * net, const int type,
+int _ggzcore_net_send_list_rooms(GGZNet * net,
 				 const char verbose)
 {
 	int status = 0;
@@ -519,8 +519,7 @@ int _ggzcore_net_send_list_players(GGZNet * net)
 }
 
 
-int _ggzcore_net_send_list_tables(GGZNet * net, const int type,
-				  const char global)
+int _ggzcore_net_send_list_tables(GGZNet * net)
 {
 	int status = 0;
 

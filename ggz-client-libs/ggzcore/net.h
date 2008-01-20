@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: net.h 9249 2007-08-13 07:02:41Z josef $
+ * $Id: net.h 9570 2008-01-20 10:47:37Z josef $
  *
  * Code for performing network I/O
  *
@@ -62,12 +62,11 @@ int _ggzcore_net_send_channel(GGZNet * net, const char *id);
 int _ggzcore_net_send_motd(GGZNet * net);
 int _ggzcore_net_send_list_types(GGZNet * net, const char verbose);
 int _ggzcore_net_send_list_rooms(GGZNet * net,
-				 const int type, const char verbose);
+				 const char verbose);
 int _ggzcore_net_send_join_room(GGZNet * net, const unsigned int room_num);
 
 int _ggzcore_net_send_list_players(GGZNet * net);
-int _ggzcore_net_send_list_tables(GGZNet * net,
-				  const int type, const char global);
+int _ggzcore_net_send_list_tables(GGZNet * net);
 
 int _ggzcore_net_send_chat(GGZNet * net,
 			   const GGZChatType op,

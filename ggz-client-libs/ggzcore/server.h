@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.h 9073 2007-04-29 01:09:54Z jdorje $
+ * $Id: server.h 9570 2008-01-20 10:47:37Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -109,7 +109,7 @@ int _ggzcore_server_login(GGZServer * server);
 int _ggzcore_server_load_motd(GGZServer * server);
 int _ggzcore_server_load_typelist(GGZServer * server, const char verbose);
 int _ggzcore_server_load_roomlist(GGZServer * server,
-				  const int type, const char verbose);
+				  const char verbose);
 int _ggzcore_server_join_room(GGZServer * server, GGZRoom *room);
 
 int _ggzcore_server_logout(GGZServer * server);
