@@ -189,7 +189,7 @@ int GGZCoreRoom::listPlayers()
 
 int GGZCoreRoom::listTables(const int type, const char global)
 {
-	return ggzcore_room_list_tables(m_room, type, global);
+	return ggzcore_room_list_tables(m_room);
 }
 
 int GGZCoreRoom::chat(ChatTypes opcode, const char* player, const char* message)

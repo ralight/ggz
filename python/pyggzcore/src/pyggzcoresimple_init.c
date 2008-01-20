@@ -703,13 +703,13 @@ static GGZHookReturn pyggzcoresimple_cb_server_hook(unsigned int id, const void 
 
 	if(id == GGZ_LOGGED_IN)
 	{
-		ggzcore_server_list_rooms(ggzserver, 0, 1);
+		ggzcore_server_list_rooms(ggzserver, 1);
 		ggzcore_server_list_gametypes(ggzserver, 1);
 	}
 	if(id == GGZ_ENTERED)
 	{
 		ggzcore_room_list_players(ggzroom);
-		ggzcore_room_list_tables(ggzroom, -1, 0);
+		ggzcore_room_list_tables(ggzroom);
 	}
 	if(id == GGZ_CHANNEL_CONNECTED)
 	{

@@ -261,7 +261,7 @@ int GGZCoreServer::disconnect()
 int GGZCoreServer::listRooms(const int type, const char verbose)
 {
 	if(m_roomlist) return 1;
-	m_roomlist = ggzcore_server_list_rooms(m_server, type, verbose);
+	m_roomlist = ggzcore_server_list_rooms(m_server, verbose);
 	return m_roomlist;
 }
 

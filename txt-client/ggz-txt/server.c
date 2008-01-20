@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 9488 2008-01-12 16:00:48Z josef $
+ * $Id: server.c 9574 2008-01-20 10:58:24Z josef $
  *
  * Functions for handling server events
  *
@@ -197,7 +197,7 @@ static GGZHookReturn server_login_ok(GGZServerEvent id,
 
 	first_room_list = 1;
 	server_workinprogress(COMMAND_LIST, 1);
-	ggzcore_server_list_rooms(server, -1, 1);
+	ggzcore_server_list_rooms(server, 1);
 
 	return GGZ_HOOK_OK;
 }

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 9494 2008-01-12 17:26:10Z josef $
+ * $Id: input.c 9574 2008-01-20 10:58:24Z josef $
  *
  * Functions for inputing commands from the user
  *
@@ -279,7 +279,7 @@ static void input_handle_list(char* line)
 		else { /* Get list from server */
 			server_progresswait();
 			server_workinprogress(COMMAND_LIST, 1);
-			ggzcore_server_list_rooms(server, -1, 1);
+			ggzcore_server_list_rooms(server, 1);
 		}
 	}
 	else if (line && strcmp(line, "allrooms") == 0) {
@@ -288,7 +288,7 @@ static void input_handle_list(char* line)
 		else { /* Get list from server */
 			server_progresswait();
 			server_workinprogress(COMMAND_LIST, 1);
-			ggzcore_server_list_rooms(server, -1, 1);
+			ggzcore_server_list_rooms(server, 1);
 		}
 	}
 	else if (line && strcmp(line, "tables") == 0) {
@@ -302,7 +302,7 @@ static void input_handle_list(char* line)
 			else { /* Get list from server */
 				server_progresswait();
 				server_workinprogress(COMMAND_LIST, 1);
-				ggzcore_room_list_tables(room, -1, 0);
+				ggzcore_room_list_tables(room);
 			}
 		}
 	}
