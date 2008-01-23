@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 9525 2008-01-12 22:03:18Z josef $
+ * $Id: client.c 9584 2008-01-23 13:47:21Z oojah $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -125,8 +125,11 @@ static void* client_thread_init(void *arg_ptr)
 		pthread_exit(NULL);
 	}
 	
+	/* Reject connections if number of existing connections is opt.max_clients
+	 * and opt.max_clients > 0. This means setting opt.max_clients == 0 is
+	 * equivalent to no limit. */
 	pthread_rwlock_wrlock(&state.lock);
-	if (state.players == MAX_USERS) {
+	if (opt.max_clients > 0 && state.players == opt.max_clients) {
 		pthread_rwlock_unlock(&state.lock);
 		net_send_server_full(client->net, opt.server_name);
 		log_msg(GGZ_LOG_NOTICE,

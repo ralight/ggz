@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 9554 2008-01-19 08:02:54Z josef $
+ * $Id: control.c 9584 2008-01-23 13:47:21Z oojah $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -619,7 +619,7 @@ int main(int argc, char *argv[])
 		err_sys_exit("F_SETFL error");
 
 	/* Start accepting connections */
-	if (listen(main_sock, MAX_USERS) < 0)
+	if (listen(main_sock, opt.max_clients) < 0)
 		err_sys_exit("Error listening to socket");
 
 	log_msg(GGZ_LOG_NOTICE,

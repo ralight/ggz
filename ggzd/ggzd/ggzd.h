@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 7708 2005-12-29 12:10:36Z josef $
+ * $Id: ggzd.h 9584 2008-01-23 13:47:21Z oojah $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -45,7 +45,6 @@ typedef unsigned char _Bool;
 #define MAX_PATH_LEN 256
 #define MAX_GAME_TYPES 50
 #define MAX_TABLES 50
-#define MAX_USERS 500
 #define MAX_CHAT_LEN 512
 #define MAX_GAME_DESC_LEN 512
 #define MAX_CHAT_BUFFER 32

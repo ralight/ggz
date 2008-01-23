@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 9525 2008-01-12 22:03:18Z josef $
+ * $Id: datatypes.h 9584 2008-01-23 13:47:21Z oojah $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -80,6 +80,7 @@ typedef struct {
 	bool reconfigure_rooms;
 	const char *username_policy;
 	bool registration_policy;
+	int max_clients;
 } Options;
 
 

@@ -246,27 +246,28 @@ DebugTypes = All
 #   This is the load threshold where ggzd will start denying client
 #   connections and/or table launches.  The default is not to use a load
 #   threshold
-#maxloadclients = 2.5
-#maxloadtables = 2.5
+#MaxLoadClients = 2.5
+#MaxLoadTables = 2.5
 
 # Load binary (Not Implemented)
 #   This is a binary that ggzd can execute to determine the servers
 #   load average.  The second parameter is the word to use as the load
-#loadbinary = /usr/bin/uptime, 10
+#LoadBinary = /usr/bin/uptime, 10
 
 # Load proc file (Not Implemented)
 #   If your system supports the /proc directory (eg: Linux), then this
 #   file will be queried for system load.  The second paramter is the
 #   word to use as the load.  This will be used in preference to loadbinary
 #   if both options are coded.
-#loadfile = /proc/loadavg, 2
+#LoadFile = /proc/loadavg, 2
 
-# Maximum clients (Not Implemented)
-#   This is the maximum number of active clients allowed at one time
-#   Default is no maximum
-#maxclients = 1000
+# Maximum clients
+#   This is the maximum number of active clients allowed at one time. Either
+#   set to a maximum value or set to 0 for unlimited.
+#   Default is 500
+#MaxClients = 500
 
 # Maximum tables (Not Implemented)
 #   This is the maximum number of active games before games cannot be launched
 #   Default is no maximum
-#maxtables = 150
+#MaxTables = 150

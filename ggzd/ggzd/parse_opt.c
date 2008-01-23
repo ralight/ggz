@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9554 2008-01-19 08:02:54Z josef $
+ * $Id: parse_opt.c 9584 2008-01-23 13:47:21Z oojah $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -486,6 +486,8 @@ static void get_config_options(int ch)
 	}
 	opt.room_update_freq = ggz_conf_read_int(ch, "Miscellaneous",
 						 "RoomUpdateFrequency", 60);
+
+	opt.max_clients = ggz_conf_read_int(ch, "Miscellaneous", "MaxClients", 500);
 
 	if (opt.username_policy) {
 		init_unicode(opt.username_policy);
