@@ -263,11 +263,12 @@ DebugTypes = All
 
 # Maximum clients
 #   This is the maximum number of active clients allowed at one time. Either
-#   set to a maximum value or set to 0 for unlimited.
+#   set to a maximum value or set to 0 for "unlimited".
 #   Default is 500
 #MaxClients = 500
 
-# Maximum tables (Not Implemented)
-#   This is the maximum number of active games before games cannot be launched
-#   Default is no maximum
+# Maximum tables
+#   This is the maximum number of active games before games cannot be launched.
+#   Either set to a maximum value or set to 0 for "unlimited".
+#   Default is 150
 #MaxTables = 150

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 9304 2007-09-09 07:24:14Z josef $
+ * $Id: motd.c 9585 2008-01-23 13:58:26Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -403,7 +403,7 @@ static char *motd_get_tables(int option,
 		num_tables = 0;
 #if 0
 		/* Determine number of tables open */
-		for(i=0; i<MAX_TABLES; i++) {
+		for(i = 0; i <  opt.max_tables; i++) {
 			pthread_rwlock_rdlock(&tables[i].lock);
 			if(tables[i].type != -1 &&
 			   tables[i].state != GGZ_TABLE_PLAYING)

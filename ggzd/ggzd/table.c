@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 9525 2008-01-12 22:03:18Z josef $
+ * $Id: table.c 9585 2008-01-23 13:58:26Z oojah $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -335,9 +335,9 @@ static void* table_new_thread(void *index_ptr)
 	dbg_msg(GGZ_DBG_PROCESS, "Thread detached for table %d in room %d", 
 		table->index, table->room);
  
-	/* Check to see if we've exeeced total capacity for tables */
+	/* Check to see if we've exceeded total capacity for tables */
 	pthread_rwlock_wrlock(&state.lock);
-	if (state.tables == MAX_TABLES) {
+	if (opt.max_tables && state.tables == opt.max_tables) {
 		pthread_rwlock_unlock(&state.lock);
 		log_msg(GGZ_LOG_NOTICE,
 			"SERVER_FULL - %s could not create a new table",
@@ -1366,15 +1366,15 @@ int table_search(const char *name, int room, int type, bool global,
 		return 0;
 
 #if 0
-		*my_tables = ggz_malloc(MAX_TABLES * sizeof(GGZTable));
-		*indices = ggz_malloc(MAX_TABLES * sizeof(int));
+		*my_tables = ggz_malloc(opt.max_tables * sizeof(GGZTable));
+		*indices = ggz_malloc(opt.max_tables * sizeof(int));
 		
 		pthread_rwlock_rdlock(&state.lock);
 		t_count = state.tables;
 		pthread_rwlock_unlock(&state.lock);
 
 		/* Copy all tables of interest to local list */
-		for (i = 0; (i < MAX_TABLES && count < t_count); i++) {
+		for (i = 0; (i < opt.max_tables && count < t_count); i++) {
 			pthread_rwlock_rdlock(&tables[i].lock);
 			if (tables[i].type != -1 && type_match_table(type, i)){
 				(*my_tables)[count] = tables[i];
