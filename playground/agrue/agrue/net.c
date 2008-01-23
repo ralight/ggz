@@ -205,7 +205,7 @@ GGZHookReturn net_hook_login(unsigned int id, const void *ed, const void *ud)
 	printf("(net-debug) [%s] logged in; now list rooms and games\n", agrue->name);
 #endif
 
-	ggzcore_server_list_rooms(agrue->server, -1, 0);
+	ggzcore_server_list_rooms(agrue->server, 0);
 	ggzcore_server_list_gametypes(agrue->server, 1);
 
 	return GGZ_HOOK_OK;
