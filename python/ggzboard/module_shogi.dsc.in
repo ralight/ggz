@@ -1,0 +1,10 @@
+# GGZBoard game client description file
+[ModuleInfo]
+Name = GGZBoard Shogi
+Author = Josef Spillner
+Version = 0.0.3
+ProtocolEngine = Bogaprot-Shogi
+ProtocolVersion = 1
+CommandLine = @prefix@/bin/ggzboard --ggz --game shogi
+Frontend = sdl
+Homepage = http://www.ggzgamingzone.org/gameclients/ggzboard/

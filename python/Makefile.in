@@ -231,14 +231,17 @@ install-ggzboard:
 	$(ggz-config) --install --force --modfile=ggzboard/module_reversi.dsc
 	$(ggz-config) --install --force --modfile=ggzboard/module_connectx.dsc
 	$(ggz-config) --install --force --modfile=ggzboard/module_ludo.dsc
+	$(ggz-config) --install --force --modfile=ggzboard/module_shogi.dsc
 	mkdir -p $(DESTDIR)$(ggzd_confdir)/games
 	mkdir -p $(DESTDIR)$(ggzd_confdir)/rooms
 	cp ggzboard/server_hnefatafl.dsc $(DESTDIR)$(ggzd_confdir)/games
 	cp ggzboard/server_checkers.dsc $(DESTDIR)$(ggzd_confdir)/games
 	cp ggzboard/server_ludo.dsc $(DESTDIR)$(ggzd_confdir)/games
+	cp ggzboard/server_shogi.dsc $(DESTDIR)$(ggzd_confdir)/games
 	cp ggzboard/server_hnefatafl.room $(DESTDIR)$(ggzd_confdir)/rooms
 	cp ggzboard/server_checkers.room $(DESTDIR)$(ggzd_confdir)/rooms
 	cp ggzboard/server_ludo.room $(DESTDIR)$(ggzd_confdir)/rooms
+	cp ggzboard/server_shogi.room $(DESTDIR)$(ggzd_confdir)/rooms
 
 dist:
 	rm -rf ../ggz-python-$(version)

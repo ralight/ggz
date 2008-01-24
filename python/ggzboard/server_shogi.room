@@ -1,0 +1,9 @@
+[RoomInfo]
+Name = Shogi
+Name[de] = Shogi
+Description = Shogi (Japanese Chess) - Board game for two players
+Description[de] = Shogi (Japanisches Schach) - Brettspiel für zwei Spieler
+GameType = GGZ-Shogi
+MaxPlayers = 50
+MaxTables = 10
+
