@@ -101,7 +101,7 @@ static char *process(const char *program, Guru *message)
 	if(!writebuffer) writebuffer = (char*)malloc(MAXSIZE);
 	for(i = 0; i < MAXSIZE; i++)
 		readbuffer[i] = 0;
-	sprintf(writebuffer, "%s\n", message->message);
+	snprintf(writebuffer, MAXSIZE, "%s\n", message->message);
 	start = time(NULL);
 
 	/* Create child process and watch it */

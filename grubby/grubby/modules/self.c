@@ -109,7 +109,8 @@ Guru *gurumod_exec(Guru *message)
 		/* Show all available commands, independent of active plugins */
 		if((i == 1) && (!strcasecmp(message->list[i], "help")) && (active))
 		{
-			sprintf(buffer, __("This is the list of public commands I understand:\n"));
+			snprintf(buffer, sizeof(buffer),
+				__("This is the list of public commands I understand:\n"));
 
 			/* Find out grubby's data directory first */
 			home = getenv("HOME");

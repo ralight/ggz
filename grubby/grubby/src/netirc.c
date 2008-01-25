@@ -59,7 +59,7 @@ static void net_internal_queueadd(const char *player, const char *message, int t
 	/* Add dummy field on dummy messages */
 	if((message) && (type == GURU_PRIVMSG))
 	{
-		sprintf(realmessage, "%s %s", guruname, message);
+		snprintf(realmessage, sizeof(realmessage), "%s %s", guruname, message);
 		message = realmessage;
 	}
 
