@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 8929 2007-01-16 02:18:40Z jdorje $
+ * $Id: game.c 9598 2008-01-25 17:32:12Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -566,7 +566,7 @@ void game_add_player_info(int number)
 
 	// Creates and puts on the right place
 	for (a = 0; a < number; a++) {
-		sprintf(name_str, "player_list[%d]", a);
+		snprintf(name_str, sizeof(name_str), "player_list[%d]", a);
 		player_list[a] =
 		    gtk_player_info_new(main_win, name_str, a);
 		unit_list[a] =
@@ -609,7 +609,7 @@ void game_update_unit_list(int seat)
 	int a;
 	GtkTreeIter iter;
 
-	sprintf(widget_name, "player_list[%d]", seat);
+	snprintf(widget_name, sizeof(widget_name), "player_list[%d]", seat);
 	player_info = g_object_get_data(G_OBJECT(main_win), widget_name);
 	unit_list = g_object_get_data(G_OBJECT(player_info),
 				      "unit_list_store");
@@ -645,7 +645,7 @@ void game_update_player_name(int seat)
 	GtkWidget *player_info;
 	char widget_name[32];
 
-	sprintf(widget_name, "player_list[%d]", seat);
+	snprintf(widget_name, sizeof(widget_name), "player_list[%d]", seat);
 	player_info = g_object_get_data(G_OBJECT(main_win), widget_name);
 	player_label =
 	    g_object_get_data(G_OBJECT(player_info), "player_name");
@@ -728,7 +728,7 @@ void game_change_turn(void)
 
 	tmp = g_object_get_data(G_OBJECT(main_win), "current_turn");
 	id = gtk_statusbar_get_context_id(GTK_STATUSBAR(tmp), "Main");
-	sprintf(msg, "%s's turn", cbt_info.names[cbt_game.turn]);
+	snprintf(msg, sizeof(msg), "%s's turn", cbt_info.names[cbt_game.turn]);
 
 	gtk_statusbar_pop(GTK_STATUSBAR(tmp), id);
 	gtk_statusbar_push(GTK_STATUSBAR(tmp), id, msg);

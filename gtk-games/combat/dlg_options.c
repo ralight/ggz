@@ -4,7 +4,7 @@
  * Project: GGZ Combat Client
  * Date: 2001?
  * Desc: Options dialog
- * $Id: dlg_options.c 8953 2007-01-17 00:39:28Z jdorje $
+ * $Id: dlg_options.c 9598 2008-01-25 17:32:12Z josef $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -173,7 +173,7 @@ static void maps_list_selected(GtkTreeSelection * treeselection,
 		tot += preview_game->army[preview_game->number][a];
 		other += ARMY(preview_game, a);
 	}
-	sprintf(preview_string,
+	snprintf(preview_string, sizeof(preview_string),
 		"%d x %d\n\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %d\nOthers: %d\n\nTotal: %d",
 		preview_game->width, preview_game->height,
 		unitname[U_FLAG], ARMY(preview_game, U_FLAG),
@@ -1440,7 +1440,7 @@ void load_map(char *filename, GtkWidget * dialog)
 	}
 	// Options
 	for (a = 0; a < 15; a++) {
-		sprintf(options_name, "opt_bin1[%d]", a);
+		snprintf(options_name, sizeof(options_name), "opt_bin1[%d]", a);
 		options_widget = lookup_widget(dialog, options_name);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON
 					     (options_widget),
@@ -1596,7 +1596,7 @@ void dlg_options_update(GtkWidget * dlg_options)
 	// Gets options
 	options->options = 0;
 	for (a = 0; a < 15; a++) {
-		sprintf(option_name, "opt_bin1[%d]", a);
+		snprintf(option_name, sizeof(option_name), "opt_bin1[%d]", a);
 		option_button = lookup_widget(dlg_options, option_name);
 		if (gtk_toggle_button_get_active
 		    (GTK_TOGGLE_BUTTON(option_button)))
@@ -1661,35 +1661,35 @@ void update_counters(GtkWidget * dlg_options)
 	/* Update the labels */
 	// Open
 	if (n[0] > 0) {
-		sprintf(label, "Open (%d)", n[0]);
+		snprintf(label, sizeof(label), "Open (%d)", n[0]);
 		gtk_label_set_text(GTK_LABEL(open_label), label);
 	} else {
 		gtk_label_set_text(GTK_LABEL(open_label), "Open");
 	}
 	// Black
 	if (n[1] > 0) {
-		sprintf(label, "Black (%d)", n[1]);
+		snprintf(label, sizeof(label), "Black (%d)", n[1]);
 		gtk_label_set_text(GTK_LABEL(black_label), label);
 	} else {
 		gtk_label_set_text(GTK_LABEL(black_label), "Black");
 	}
 	// Open
 	if (n[2] > 0) {
-		sprintf(label, "Lake (%d)", n[2]);
+		snprintf(label, sizeof(label), "Lake (%d)", n[2]);
 		gtk_label_set_text(GTK_LABEL(lake_label), label);
 	} else {
 		gtk_label_set_text(GTK_LABEL(lake_label), "Lake");
 	}
 	// Open
 	if (n[3] > 0) {
-		sprintf(label, "Player 1 (%d)", n[3]);
+		snprintf(label, sizeof(label), "Player 1 (%d)", n[3]);
 		gtk_label_set_text(GTK_LABEL(player_1_label), label);
 	} else {
 		gtk_label_set_text(GTK_LABEL(player_1_label), "Player 1");
 	}
 	// Open
 	if (n[4] > 0) {
-		sprintf(label, "Player 2 (%d)", n[4]);
+		snprintf(label, sizeof(label), "Player 2 (%d)", n[4]);
 		gtk_label_set_text(GTK_LABEL(player_2_label), label);
 	} else {
 		gtk_label_set_text(GTK_LABEL(player_2_label), "Player 2");
@@ -1707,13 +1707,13 @@ void update_counters(GtkWidget * dlg_options)
 		units += ARMY(options, a);
 
 	// Set widgets
-	sprintf(label, "Total: %d", units);
+	snprintf(label, sizeof(label), "Total: %d", units);
 	gtk_label_set_text(GTK_LABEL(army_total), label);
 
-	sprintf(label, "Player 1: %d", n[3]);
+	snprintf(label, sizeof(label), "Player 1: %d", n[3]);
 	gtk_label_set_text(GTK_LABEL(army_player_1), label);
 
-	sprintf(label, "Player 2: %d", n[4]);
+	snprintf(label, sizeof(label), "Player 2: %d", n[4]);
 	gtk_label_set_text(GTK_LABEL(army_player_2), label);
 }
 

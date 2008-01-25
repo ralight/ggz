@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: map.c 8953 2007-01-17 00:39:28Z jdorje $
+ * $Id: map.c 9598 2008-01-25 17:32:12Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -60,7 +60,7 @@ static unsigned int _generate_hash(char *p)
 	unsigned char bitsave;
 	// Use Rich's ROL algorithm
 	while (*p != 0) {
-		bitsave = (sum & 0x80000000L);
+		bitsave = (sum & (int)0x80000000L);
 		sum *= 2;
 		sum = sum ^ *p;
 		sum = sum + bitsave;
@@ -78,36 +78,36 @@ int map_save(combat_game * map)
 	char *map_data;
 	int handle, a;
 	hash = _generate_hash((char*)combat_options_string_write(map, 1));
-	sprintf(filename, "%s/%s.%u", GLOBAL_MAPS, map->name, hash);
+	snprintf(filename, sizeof(filename), "%s/%s.%u", GLOBAL_MAPS, map->name, hash);
 	handle = ggz_conf_parse(filename, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
 	if (handle < 0) {
-		sprintf(filename, "%s/.ggz/combat/maps/%s.%u",
+		snprintf(filename, sizeof(filename), "%s/.ggz/combat/maps/%s.%u",
 			getenv("HOME"), map->name, hash);
 		handle =
 		    ggz_conf_parse(filename,
 				   GGZ_CONF_RDWR | GGZ_CONF_CREATE);
 		if (handle < 0) {
-			sprintf(filename, "%s/.ggz", getenv("HOME"));
+			snprintf(filename, sizeof(filename), "%s/.ggz", getenv("HOME"));
 #ifdef MKDIR_TAKES_ONE_ARG
 			mkdir(filename);
 #else
 			mkdir(filename, S_IRWXU | S_IRGRP | S_IXGRP);
 #endif
-			sprintf(filename, "%s/.ggz/combat",
+			snprintf(filename, sizeof(filename), "%s/.ggz/combat",
 				getenv("HOME"));
 #ifdef MKDIR_TAKES_ONE_ARG
 			mkdir(filename);
 #else
 			mkdir(filename, S_IRWXU | S_IRGRP | S_IXGRP);
 #endif
-			sprintf(filename, "%s/.ggz/combat/maps",
+			snprintf(filename, sizeof(filename), "%s/.ggz/combat/maps",
 				getenv("HOME"));
 #ifdef MKDIR_TAKES_ONE_ARG
 			mkdir(filename);
 #else
 			mkdir(filename, S_IRWXU | S_IRGRP | S_IXGRP);
 #endif
-			sprintf(filename, "%s/.ggz/combat/maps/%s.%u",
+			snprintf(filename, sizeof(filename), "%s/.ggz/combat/maps/%s.%u",
 				getenv("HOME"), map->name, hash);
 			handle =
 			    ggz_conf_parse(filename,
@@ -152,7 +152,7 @@ int map_save(combat_game * map)
 	map_data[map->width * map->height] = 0;
 	ggz_conf_write_string(handle, "map", "data", map_data);
 	// Options
-	sprintf(options, "%lX", map->options);
+	snprintf(options, sizeof(filename), "%lX", map->options);
 	ggz_conf_write_string(handle, "options", "bin1", options);
 	ggz_conf_commit(handle);
 	return 0;
@@ -177,9 +177,9 @@ int map_search(combat_game * map)
 	DIR* dir;
 
 	hash = _generate_hash((char*)combat_options_string_write(map, 1));
-	sprintf(hash_str, ".%u", hash);
-	sprintf(dir_name[0], GLOBAL_MAPS);
-	sprintf(dir_name[1], "%s/.ggz/combat/maps", getenv("HOME"));
+	snprintf(hash_str, sizeof(hash_str), ".%u", hash);
+	snprintf(dir_name[0], sizeof(dir_name[0]), GLOBAL_MAPS);
+	snprintf(dir_name[1], sizeof(dir_name[1]), "%s/.ggz/combat/maps", getenv("HOME"));
 	for (a = 0; a < 2; a++) {
 		dir = opendir(dir_name[a]);
 		if (!dir) {
@@ -271,7 +271,7 @@ void map_load(combat_game * _game, char *filename, gboolean *changed)
 
 	// Well, now that we have loaded the map, let's check it's hash!
 	hash = _generate_hash((char*)combat_options_string_write(_game, 1));
-	sprintf(hash_str, ".%u", hash);
+	snprintf(hash_str, sizeof(hash_str), ".%u", hash);
 	if (strstr(filename, hash_str) == NULL) {
 		// Hash don't match!!
 		ggz_error_msg
@@ -305,8 +305,8 @@ char **map_list(void)
 	DIR *dir;
 
 	/* This used to use scandir, but that isn't portable. */
-	sprintf(dir_name[0], "%s", GLOBAL_MAPS);
-	sprintf(dir_name[1], "%s/.ggz/combat/maps", getenv("HOME"));
+	snprintf(dir_name[0], sizeof(dir_name[0]), "%s", GLOBAL_MAPS);
+	snprintf(dir_name[1], sizeof(dir_name[1]), "%s/.ggz/combat/maps", getenv("HOME"));
 	for (a = 0; a < 2; a++) {
 		dir = opendir(dir_name[a]);
 		if (!dir) continue; /* FIXME: what else? */

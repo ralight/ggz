@@ -351,12 +351,12 @@ char *combat_options_describe(combat_game * _game, int short_desc)
 			strcat(retstr, _game->name);
 			strcat(retstr, "\n");
 		}
-		sprintf(temp, "Size: %d x %d\n", _game->width,
+		snprintf(temp, sizeof(temp), "Size: %d x %d\n", _game->width,
 			_game->height);
 		strcat(retstr, temp);
 		for (a = 0; a < 12; a++)
 			tot += ARMY(_game, a);
-		sprintf(temp, "%d units\n", tot);
+		snprintf(temp, sizeof(temp), "%d units\n", tot);
 		strcat(retstr, temp);
 		if (_game->options)
 			strcat(retstr, "Options:\n");
