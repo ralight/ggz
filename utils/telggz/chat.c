@@ -57,9 +57,12 @@ static char *chat_input()
 int chat_getserver()
 {
 	char *s;
+	int ret;
 	s = chat_input();
 	if(!s) return -1;
-	return atoi(s);
+	ret = atoi(s);
+	free(s);
+	return ret;
 }
 
 char *chat_getusername()

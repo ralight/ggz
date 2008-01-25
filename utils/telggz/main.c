@@ -90,6 +90,7 @@ int main(int argc, char *argv[])
 	uri = uri_from_string(GGZ_METASERVER);
 	seed = meta_server_new(uri);
 
+	printf("* synchronizing metaservers...\n", uristr);
 	metaservers = meta_network_load();
 	metaservers = meta_list_server(metaservers, seed);
 	metaservers = meta_network_sync(metaservers);
@@ -110,7 +111,8 @@ int main(int argc, char *argv[])
 	opt.flags = GGZ_OPT_MODULES | GGZ_OPT_PARSER;
 
 	/* We just announce us the the world. */
-	if(gethostname(hostname, sizeof(hostname))) strcpy(hostname, "[unknown]");
+	if(gethostname(hostname, sizeof(hostname)))
+		strcpy(hostname, "[unknown]");
 	printf("[TelGGZ: GGZ Gaming Zone Telnet Wrapper v%s]\n",
 	       TELGGZ_VERSION);
 	printf("You're connected to %s.\n", hostname);
@@ -146,6 +148,8 @@ int main(int argc, char *argv[])
 		password = chat_getpassword();
 		printf("Connecting to %s:%i...\n", host, port);
 		chat_connect(host, port, username, password);
+		free(username);
+		free(password);
 
 		printf("Type '/help' to get the list of available commands.\n");
 
