@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 9570 2008-01-20 10:47:37Z josef $
+ * $Id: netxml.c 9604 2008-01-25 18:40:54Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -2607,8 +2607,9 @@ static int _ggzcore_net_send_line(GGZNet * net, char *line, ...)
 	char buf[4096];
 	va_list ap;
 
+	/* FIXME: faster writing with (f)dprintf? */
 	va_start(ap, line);
-	vsprintf(buf, line, ap);
+	vsnprintf(buf, sizeof(buf), line, ap);
 	va_end(ap);
 	strcat(buf, "\n");
 
