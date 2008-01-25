@@ -206,6 +206,16 @@ char * _ggz_strdup(const char * ptr, const char *funcname,
  */
 char * ggz_strncpy(char * dst, const char * src, size_t n);
 
+/**
+ * Safe construction of formatted strings in memory. As opposed
+ * to calling s(n)printf, this function allocates the memory on
+ * its own, effectively preventing buffer overflows.
+ *
+ * @param fmt format string, followed by arguments
+ *
+ * @return formatted string which needs to be \ref ggz_free()'d.
+ */
+char *ggz_strbuild(const char *fmt, ...);
 
 /** 
  * Check memory allocated against memory freed and display any discrepancies.

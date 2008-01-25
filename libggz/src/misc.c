@@ -31,6 +31,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdarg.h>  /* For va_list */
+#include <stdlib.h>
 
 #include "ggz.h"
 
@@ -407,3 +409,35 @@ int ggz_strcasecmp(const char *a, const char *b)
 {
 	return safe_string_compare(a, b, strcasecmp);
 }
+
+/* Code derived from example in vsnprintf(3) manual page */
+char *ggz_strbuild(const char *fmt, ...)
+{
+	int n;
+	int size = 256;
+	char *p, *np;
+	va_list ap;
+
+	if ((p = ggz_malloc(size)) == NULL)
+		return NULL;
+
+	while (1) {
+		va_start(ap, fmt);
+		n = vsnprintf(p, size, fmt, ap);
+		va_end(ap);
+
+		if (n > -1 && n < size)
+			return p;
+
+		if (n > -1)
+			size = n + 1;
+
+		if ((np = ggz_realloc(p, size)) == NULL) {
+			free(p);
+			return NULL;
+		} else {
+			p = np;
+		}
+	}
+}
+
