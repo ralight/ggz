@@ -43,6 +43,13 @@
 /* Configuration */
 #include "config.h"
 
+/* Safe atoi with default value for NULL strings */
+static int safe_atoi(const char *s, int defval)
+{
+	if(s) return atoi(s);
+	return defval;
+}
+
 /* Print out all servers to play wrapper for */
 static void pref_listservers(ServerEntry **preflist)
 {
@@ -59,7 +66,7 @@ static void pref_listservers(ServerEntry **preflist)
 			meta_server_findattribute(iterator, "host"),
 			meta_server_findattribute(iterator, "version"),
 			meta_server_findattribute(iterator, "location"),
-			atoi(meta_server_findattribute(iterator, "speed")));
+			safe_atoi(meta_server_findattribute(iterator, "speed"), 0));
 	}
 	if(!i)
 	{
@@ -86,26 +93,39 @@ int main(int argc, char *argv[])
 	/* No output buffering. */
 	setbuf(stdout, NULL);
 
-	/* Meta server stuff */
-	uri = uri_from_string(GGZ_METASERVER);
-	seed = meta_server_new(uri);
-
-	printf("* synchronizing metaservers...\n", uristr);
-	metaservers = meta_network_load();
-	metaservers = meta_list_server(metaservers, seed);
-	metaservers = meta_network_sync(metaservers);
-	meta_network_store(metaservers);
-
-	for(i = 0; metaservers[i]; i++)
+	/* If a GGZ URI was given, skip the metaserver */
+	if(argc == 2)
 	{
-		uristr = uri_to_string(metaservers[i]->uri);
-		printf("* consulting metaserver %s\n", uristr);
-		free(uristr);
+		uri = uri_from_string(argv[1]);
+		seed = meta_server_new(uri);
+		meta_server_attribute(seed, "host", uri.host),
+		meta_server_attribute(seed, "version", "???"),
+		meta_server_attribute(seed, "location", "???"),
+		ggzservers = NULL;
+		ggzservers = meta_list_server(ggzservers, seed);
 	}
+	else
+	{
+		/* Meta server query to find all GGZ servers */
+		uri = uri_from_string(GGZ_METASERVER);
+		seed = meta_server_new(uri);
 
-	ggzservers = meta_queryallggz(metaservers, GGZ_PROTOCOL_VERSION);
-	meta_list_free(metaservers);
-	uri_free(uri);
+		printf("* synchronizing metaservers...\n");
+		metaservers = meta_network_load();
+		metaservers = meta_list_server(metaservers, seed);
+		metaservers = meta_network_sync(metaservers);
+		meta_network_store(metaservers);
+
+		for(i = 0; metaservers[i]; i++)
+		{
+			uristr = uri_to_string(metaservers[i]->uri);
+			printf("* consulting metaserver %s\n", uristr);
+			free(uristr);
+		}
+
+		ggzservers = meta_queryallggz(metaservers, GGZ_PROTOCOL_VERSION);
+		meta_list_free(metaservers);
+	}
 
 	/* This could be the default values. But we code in C here. */
 	opt.flags = GGZ_OPT_MODULES | GGZ_OPT_PARSER;
@@ -140,7 +160,7 @@ int main(int argc, char *argv[])
 	if(ret >= 0)
 	{
 		host = meta_server_findattribute(ggzservers[ret], "host");
-		port = atoi(meta_server_findattribute(ggzservers[ret], "port"));
+		port = safe_atoi(meta_server_findattribute(ggzservers[ret], "port"), 0);
 
 		printf("Login with username: ");
 		username = chat_getusername();

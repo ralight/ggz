@@ -82,7 +82,7 @@ void net_host(const char *hostname, int portnumber)
 	if(room) return;
 
 	if(host) free(host);
-	host = strdup(hostname);
+	host = (hostname ? strdup(hostname) : NULL);
 	port = portnumber;
 	printf("TelGGZ: Host is now %s:%i.\n", hostname, port);
 }
@@ -155,10 +155,30 @@ static GGZHookReturn net_hook_negotiated(unsigned int id,
 static GGZHookReturn net_hook_failure(unsigned int id, const void *event_data,
 				      const void *user_data)
 {
-	GGZErrorEventData error;
+	GGZErrorEventData *error;
+	const char *errstr;
 
-	error = *(GGZErrorEventData*)event_data;
-	printf("TelGGZ: Error %i: %s\n", id, error.message);
+	if((id == GGZ_NEGOTIATE_FAIL)
+	|| (id == GGZ_CONNECT_FAIL)
+	|| (id == GGZ_NET_ERROR))
+	{
+		errstr = (const char*)event_data;
+	}
+	else if((id == GGZ_LOGIN_FAIL)
+	     || (id == GGZ_ENTER_FAIL)
+	     || (id == GGZ_PROTOCOL_ERROR)
+	     || (id == GGZ_CHAT_FAIL)
+	     || (id == GGZ_CHANNEL_FAIL))
+	{
+		error = (GGZErrorEventData*)event_data;
+		errstr = (error ? error->message : NULL);
+	}
+	else
+	{
+		errstr = NULL;
+	}
+
+	printf("TelGGZ: Error %i: %s\n", id, errstr);
 	exit(-1);
 
 	return GGZ_HOOK_OK;
