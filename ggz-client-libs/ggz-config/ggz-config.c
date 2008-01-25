@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 9135 2007-05-23 05:50:18Z josef $
+ * $Id: ggz-config.c 9605 2008-01-25 18:48:57Z josef $
  *
  * Configuration query and module install program.
  *
@@ -236,7 +236,7 @@ static char *new_engine_id(int global)
 		}
 	}
 
-	snprintf(new_id, 10, "p%d", hi+1);
+	snprintf(new_id, sizeof(new_id), "p%d", hi+1);
 
 	return new_id;
 }
@@ -315,17 +315,16 @@ static void purge_engine_id(int global, char *engine_id)
 
 static int open_conffile(void)
 {
-	char	*global_filename = "ggz.modules";
-	char global_pathname[(moddest ? strlen(destdir) : 0)
-			     + strlen(GGZCONFDIR)
-			     + strlen(global_filename) + 3];
-	int	global;
+	char *global_filename = "ggz.modules";
+	char *global_pathname;
+	int global;
 
 	if(moddest)
-		sprintf(global_pathname, "%s/%s/%s", destdir,
-					  GGZCONFDIR, global_filename);
+		global_pathname = ggz_strbuild("%s/%s/%s",
+			destdir, GGZCONFDIR, global_filename);
 	else
-		sprintf(global_pathname, "%s/%s", GGZCONFDIR, global_filename);
+		global_pathname = ggz_strbuild("%s/%s",
+			GGZCONFDIR, global_filename);
 
 	global = ggz_conf_parse(global_pathname, GGZ_CONF_RDONLY);
 	if(global < 0) {
@@ -334,6 +333,7 @@ static int open_conffile(void)
 	global = ggz_conf_parse(global_pathname, GGZ_CONF_CREATE | GGZ_CONF_RDWR);
 	if(global < 0) {
 		fprintf(stderr, _("Insufficient permission to install modules\n"));
+		ggz_free(global_filename);
 		ggz_conf_cleanup();
 		return -1;
 	} else {
@@ -342,6 +342,7 @@ static int open_conffile(void)
 		chmod(global_pathname, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 #endif
 	}
+	ggz_free(global_filename);
 
 	return global;
 }
@@ -452,21 +453,21 @@ static int remove_module(void)
 static int noregister_module(void)
 {
 	char *suffix = ".module.dsc";
-	char global_pathname[(moddest ? strlen(destdir) : 0)
-			     + strlen(copydir)
-			     + strlen(modname)
-			     + strlen(suffix) + 3];
+	char *global_pathname;
 	char fixedmodname[strlen(modname) + 1];
 	unsigned int i;
 
 	if(moddest)
-		sprintf(global_pathname, "%s/%s", destdir, copydir);
+		global_pathname = ggz_strbuild("%s/%s",
+			destdir, copydir);
 	else
-		sprintf(global_pathname, "%s", copydir);
+		global_pathname = ggz_strbuild("%s",
+			copydir);
 
 	if (ggz_make_path(global_pathname) != 0) {
 		fprintf(stderr, _("Directory cannot be created (%s)\n"),
 			global_pathname);
+		ggz_free(global_pathname);
 		return -1;
 	}
 
@@ -474,10 +475,14 @@ static int noregister_module(void)
 	for(i = 0; i < strlen(fixedmodname); i++) {
 		if(fixedmodname[i] == '/') fixedmodname[i] = '_';
 	}
-	sprintf(global_pathname, "%s/%s%s", global_pathname, fixedmodname, suffix);
+	char *global_pathname_modname = ggz_strbuild("%s/%s%s",
+		global_pathname, fixedmodname, suffix);
+	ggz_free(global_pathname);
 
-	printf(_("Preserving %s as %s...\n"), modfile, global_pathname);
-	return filecopy(modfile, global_pathname);
+	printf(_("Preserving %s as %s...\n"), modfile, global_pathname_modname);
+	int ret = filecopy(modfile, global_pathname_modname);
+	ggz_free(global_pathname_modname);
+	return ret;
 }
 
 
@@ -552,13 +557,13 @@ static int install_module(void)
 				ggz_conf_write_string(global, "Games",
 						    "*Engines*", modpengine);
 			else {
-				snprintf(bigstr, 1024, "%s %s",
+				snprintf(bigstr, sizeof(bigstr), "%s %s",
 					 engine_list, modpengine);
 				ggz_conf_write_string(global, "Games",
 						    "*Engines*", bigstr);
 			}
 		} else if(!modforce) {
-			snprintf(bigstr, 1024, "%s %s",
+			snprintf(bigstr, sizeof(bigstr), "%s %s",
 				 engine_id_list, engine_id);
 			ggz_conf_write_string(global, "Games",
 					    	modpengine, bigstr);
@@ -595,8 +600,7 @@ static int noregister_all()
 		 * should be replaced by a configure check. */
 		if(e->d_type != DT_REG) continue;
 #endif
-		modfile = (char*)ggz_malloc(strlen(copydir) + strlen(e->d_name) + 2);
-		sprintf(modfile, "%s/%s", copydir, e->d_name);
+		modfile = ggz_strbuild("%s/%s", copydir, e->d_name);
 		if(load_modfile()) {
 			if(install_mod) {
 				printf(_("- register %s\n"), e->d_name);
