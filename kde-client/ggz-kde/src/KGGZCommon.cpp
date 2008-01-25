@@ -115,11 +115,11 @@ int KGGZCommon::findProcess(const char *process)
     char pids[32];
     int pid;
 
-	KGGZDEBUG("findProcess: %s\n", process); 
+    KGGZDEBUG("findProcess: %s\n", process); 
     d = opendir("/proc/");
     if(d == NULL) return -1;
     ret = 0;
-    sprintf(bprocess, "(%s)", process);
+    snprintf(bprocess, sizeof(bprocess), "(%s)", process);
     while((!ret) && (e = readdir(d)))
     {
         strcpy(dir, "/proc/");
