@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 9571 2008-01-20 10:49:08Z josef $
+ * $Id: server.c 9596 2008-01-25 17:17:42Z josef $
  *
  * Functions for handling server events
  *
@@ -388,8 +388,7 @@ static void checkplayer()
 			}
 		}
 		if (!found) {
-			printf(_
-			       ("checkplayer: The player %s could not be found.\n"),
+			printf(_("checkplayer: The player %s could not be found.\n"),
 			       dst_nick);
 			return;
 		}
