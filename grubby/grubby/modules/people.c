@@ -19,6 +19,7 @@ grubby have you seen someone
 #include "player.h"
 #include "i18n.h"
 #include <time.h>
+#include <ggz.h>
 
 /* Dummy init function */
 void gurumod_init(const char *datadir)
@@ -32,12 +33,10 @@ Guru *gurumod_exec(Guru *message)
 	int i, j;
 	char *realname, *name, *contact, *language;
 	Player *p;
-	static char *info = NULL;
+	char *info;
 	int firsttime;
 	time_t t;
 	char *ts;
-
-	if(!info) info = (char*)malloc(1024);
 
 	srand(time(NULL));
 
@@ -63,12 +62,10 @@ Guru *gurumod_exec(Guru *message)
 				switch(rand() % 9)
 				{
 					case 0:
-						strcpy(info, __("Nice to see you here again, "));
-						strcat(info, message->player);
+						info = ggz_strbuild(__("Nice to see you here again, %s"), message->player);
 						break;
 					case 1:
-						strcpy(info, message->player);
-						strcat(info, __(": Great you come here!"));
+						info = ggz_strbuild(__("%s: Great you come here!"), message->player);
 						break;
 					default:
 						return NULL;
@@ -77,16 +74,12 @@ Guru *gurumod_exec(Guru *message)
 			}
 			else
 			{
-				strcpy(info, __("Hi "));
-				strcat(info, message->player);
-				strcat(info, __(", I'm "));
-				strcat(info, message->guru);
-				strcat(info, __(". I have never seen you before here.\nType '"));
-				strcat(info, message->guru);
-				strcat(info, __(" help' to change this :)"));
+				info = ggz_strbuild(_("Hi %s, I'm %s. I have never seen you before here.\nType '%s help' to change this :)"),
+					message->player, message->guru, message->guru);
 			}
-			message->message = info;
+			message->message = strdup(info);
 			message->type = GURU_CHAT;
+			ggz_free(info);
 			return message;
 		}
 		if(message->type == GURU_LEAVE)
@@ -95,17 +88,17 @@ Guru *gurumod_exec(Guru *message)
 			switch(rand() % 30)
 			{
 				case 0:
-					strcpy(info, __("See you later, "));
-					strcat(info, message->player);
-					message->message = info;
+					info = ggz_strbuild(__("See you later, %s"), message->player);
+					message->message = strdup(info);
+					ggz_free(info);
 					break;
 				case 1:
 					message->message = __("Have a nice rest.");
 					break;
 				case 2:
-					strcpy(info, message->player);
-					strcat(info, __(": Don't stay away too long."));
-					message->message = info;
+					info = ggz_strbuild(__("%s: Don't stay away too long."), message->player);
+					message->message = strdup(info);
+					ggz_free(info);
 					break;
 				case 3:
 					message->message = __("Eh, why has he gone?");
@@ -133,12 +126,13 @@ Guru *gurumod_exec(Guru *message)
 		{
 			realname = NULL;
 			contact = NULL;
-			strcpy(info, message->list[4]);
+			info = ggz_strdup(message->list[4]);
 			j = 5;
 			while((message->list[j]) && (j < 15))
 			{
-				strcat(info, " ");
-				strcat(info, message->list[j]);
+				char *ninfo = ggz_strbuild("%s %s", info, message->list[j]);
+				ggz_free(info);
+				info = ninfo;
 				j++;
 			}
 			if(!strcmp(message->list[2], "name")) realname = info;
@@ -154,6 +148,7 @@ Guru *gurumod_exec(Guru *message)
 			if(realname) p->realname = realname;
 			if(contact) p->contact = contact;
 			guru_player_save(p);
+			ggz_free(info);
 			message->message = __("OK, registered your information.");
 			message->type = GURU_PRIVMSG;
 			return message;
@@ -172,9 +167,10 @@ Guru *gurumod_exec(Guru *message)
 				realname = (p->realname ? p->realname : "unknown");
 				contact = (p->contact ? p->contact : "unknown");
 				language = (p->language ? p->language : "unknown");
-				sprintf(info, "%s: %s, %s: %s, %s: %s",
+				info = ggz_strbuild("%s: %s, %s: %s, %s: %s",
 					__("Name"), realname, __("Contact"), contact, __("Language"), language);
-				message->message = info;
+				message->message = strdup(info);
+				ggz_free(info);
 			}
 			else message->message = __("Sorry, I don't know who this is.");
 			return message;
@@ -198,8 +194,9 @@ Guru *gurumod_exec(Guru *message)
 				{
 					t = p->lastseen;
 					ts = ctime(&t);
-					sprintf(info, __("Yeah, he was here at %s"), ts);
-					message->message = info;
+					info = ggz_strbuild(__("Yeah, he was here at %s"), ts);
+					message->message = strdup(info);
+					ggz_free(info);
 				}
 				else message->message = __("Nope, never seen this guy here.");
 			}
