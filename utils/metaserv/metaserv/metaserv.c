@@ -36,8 +36,8 @@
 #include <errno.h>
 
 #include "minidom.h"
-#include "uri.h"
 #include "meta.h"
+#include <ggz.h>
 
 #include "helper.h"
 
@@ -418,11 +418,11 @@ static int metaserv_notify(const char *username, const char *password, const cha
 	int port;
 	const char *text = "Hello World.\n";
 	ssize_t bytes;
-	URI uri;
+	ggz_uri_t uri;
 
 	logline("Notify: peer=%s username=%s password=%s", uristring, username, password);
 
-	uri = uri_from_string(uristring);
+	uri = ggz_uri_from_string(uristring);
 
 	/* FIXME: is never freed; move notification to libmeta */
 	hostname = uri.host;

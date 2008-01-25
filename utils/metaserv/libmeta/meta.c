@@ -45,7 +45,7 @@ ServerEntry **meta_network_load()
 	FILE *f;
 	char cachefile[1024];
 	char buf[1024];
-	URI uri;
+	ggz_uri_t uri;
 	ServerEntry *server;
 	ServerEntry **metaservers = NULL;
 
@@ -60,7 +60,7 @@ ServerEntry **meta_network_load()
 			buf[strlen(buf) - 1] = 0;
 			if(strlen(buf))
 			{
-				uri = uri_from_string(buf);
+				uri = ggz_uri_from_string(buf);
 				server = meta_server_new(uri);
 				metaservers = meta_list_server(metaservers, server);
 			}
@@ -92,7 +92,7 @@ void meta_network_store(ServerEntry **servers)
 	{
 		for(i = 0; servers[i]; i++)
 		{
-			uristr = uri_to_string(servers[i]->uri);
+			uristr = ggz_uri_to_string(servers[i]->uri);
 			fprintf(f, "%s\n", uristr);
 			free(uristr);
 		}
@@ -111,21 +111,21 @@ int meta_add(ServerEntry *server, const char *classname, const char *category,
 	DOM *dom;
 	ELE *root;
 	ELE *el;
-	URI uri;
+	ggz_uri_t uri;
 	char *serveruri;
 	int accepted;
 	int i;
 
 	accepted = 0;
 
-	uri = uri_from_string(metaserveruri);
+	uri = ggz_uri_from_string(metaserveruri);
 	if(!uri.port) uri.port = 15689;
 	fd = meta_connect_internal(uri.host, uri.port);
-	uri_free(uri);
+	ggz_uri_free(uri);
 
 	if(fd >= 0)
 	{
-		serveruri = uri_to_string(server->uri);
+		serveruri = ggz_uri_to_string(server->uri);
 		strcpy(options, "");
 		if(server->attributes)
 		{
@@ -182,7 +182,7 @@ int meta_add(ServerEntry *server, const char *classname, const char *category,
 	return accepted;
 }
 
-ServerEntry *meta_server_new(URI uri)
+ServerEntry *meta_server_new(ggz_uri_t uri)
 {
 	ServerEntry *server;
 
@@ -253,6 +253,8 @@ void meta_server_free(ServerEntry *server)
 
 	if(server->attributes) free(server->attributes);
 
+	ggz_uri_free(server->uri);
+
 	free(server);
 }
 
@@ -267,7 +269,7 @@ ServerEntry **meta_query(const char *metaserveruri, const char *classname,
 	ELE **el;
 	int i, j;
 
-	URI uri;
+	ggz_uri_t uri;
 	char options[512];
 	char oldoptions[512];
 	ServerEntry *server;
@@ -276,10 +278,10 @@ ServerEntry **meta_query(const char *metaserveruri, const char *classname,
 	char *name;
 	char *value;
 
-	uri = uri_from_string(metaserveruri);
+	uri = ggz_uri_from_string(metaserveruri);
 	if(!uri.port) uri.port = 15689;
 	fd = meta_connect_internal(uri.host, uri.port);
-	uri_free(uri);
+	ggz_uri_free(uri);
 
 	if(fd >= 0)
 	{
@@ -322,7 +324,7 @@ ServerEntry **meta_query(const char *metaserveruri, const char *classname,
 						continue;
 					}
 
-					uri = uri_from_string(uriattr);
+					uri = ggz_uri_from_string(uriattr);
 
 					server = meta_server_new(uri);
 
@@ -355,12 +357,12 @@ ServerEntry **meta_list_server(ServerEntry **list, ServerEntry *server)
 
 	if(list)
 	{
-		uristr = uri_to_string(server->uri);
+		uristr = ggz_uri_to_string(server->uri);
 		skip = 0;
 
 		for(count = 0; list[count]; count++)
 		{
-			uristr2 = uri_to_string(list[count]->uri);
+			uristr2 = ggz_uri_to_string(list[count]->uri);
 			if(!strcmp(uristr, uristr2)) skip = 1;
 			free(uristr2);
 		}
@@ -411,7 +413,7 @@ ServerEntry **meta_queryall(ServerEntry **servers, const char *classname,
 
 	for(i = 0; servers[i]; i++)
 	{
-		uristr = uri_to_string(servers[i]->uri);
+		uristr = ggz_uri_to_string(servers[i]->uri);
 		result = meta_query(uristr, classname, category, restriction);
 		free(uristr);
 		if(result)
@@ -435,7 +437,7 @@ ServerEntry **meta_network_sync(ServerEntry **servers)
 	const char *classname = "ggz";
 	const char *category = "meta";
 	const char *version = "0.5";
-	URI uri;
+	ggz_uri_t uri;
 	int i;
 
 	if(!servers) return NULL;
@@ -464,7 +466,7 @@ ServerEntry **meta_queryallggz(ServerEntry **servers, const char *protocol)
 	ServerEntry *restriction;
 	const char *classname = "ggz";
 	const char *category = "connection";
-	URI uri;
+	ggz_uri_t uri;
 
 	restriction = meta_server_new(uri);
 	meta_server_attribute(restriction, "protocol", protocol);

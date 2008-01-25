@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 	char *username, *password;
 	ServerEntry **metaservers, **ggzservers;
 	ServerEntry *seed;
-	URI uri;
+	ggz_uri_t uri;
 	const char *host;
 	int port;
 	char *uristr;
@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
 	/* If a GGZ URI was given, skip the metaserver */
 	if(argc == 2)
 	{
-		uri = uri_from_string(argv[1]);
+		uri = ggz_uri_from_string(argv[1]);
 		seed = meta_server_new(uri);
 		meta_server_attribute(seed, "host", uri.host),
 		meta_server_attribute(seed, "version", "???"),
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
 	else
 	{
 		/* Meta server query to find all GGZ servers */
-		uri = uri_from_string(GGZ_METASERVER);
+		uri = ggz_uri_from_string(GGZ_METASERVER);
 		seed = meta_server_new(uri);
 
 		printf("* synchronizing metaservers...\n");
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
 
 		for(i = 0; metaservers[i]; i++)
 		{
-			uristr = uri_to_string(metaservers[i]->uri);
+			uristr = ggz_uri_to_string(metaservers[i]->uri);
 			printf("* consulting metaserver %s\n", uristr);
 			free(uristr);
 		}
