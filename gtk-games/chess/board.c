@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Graphical functions handling the game board and filters for user input
  * (sending the events to game.c)
- * $Id: board.c 9338 2007-11-08 19:38:21Z jdorje $
+ * $Id: board.c 9599 2008-01-25 17:33:09Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -214,12 +214,12 @@ void board_info_update(void)
 	white = lookup_widget(main_win, "white_time");
 
 	/* Set the white text */
-	sprintf(text, "%s -> %02d:%02d", game_info.name[0],
+	snprintf(text, sizeof(text), "%s -> %02d:%02d", game_info.name[0],
 		game_info.t_seconds[0] / 60, game_info.t_seconds[0] % 60);
 	gtk_label_set_text(GTK_LABEL(white), text);
 
 	/* Set the black text */
-	sprintf(text, "%s -> %02d:%02d", game_info.name[1],
+	snprintf(text, sizeof(text), "%s -> %02d:%02d", game_info.name[1],
 		game_info.t_seconds[1] / 60, game_info.t_seconds[1] % 60);
 	gtk_label_set_text(GTK_LABEL(black), text);
 
