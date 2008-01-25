@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 9486 2008-01-12 15:11:49Z josef $
+ * $Id: output.c 9600 2008-01-25 17:35:45Z josef $
  *
  * Functions for display text/messages
  *
@@ -198,10 +198,10 @@ static void output_text_write(const char *message)
 	ggz_free(orig);
 
 #if 0
-	printf(SEQUENCE_SAVE);
+	printf("%s", SEQUENCE_SAVE);
 	output_goto(window.ws_row - 4, 0);
 	printf("\eD%s%s", message, COLOR_BLUE);
-	printf(SEQUENCE_RESTORE);
+	printf("%s", SEQUENCE_RESTORE);
 #endif
 }
 
@@ -229,7 +229,7 @@ void output_draw_text(void)
 
 	if(!output_enabled) return;
 
-	printf(SEQUENCE_SAVE);
+	printf("%s", SEQUENCE_SAVE);
 	output_goto(0, 0);
 	for (x = window.ws_row - 4 - chat_offset; x >= 0 + chat_offset; x--)
 	{
@@ -238,7 +238,7 @@ void output_draw_text(void)
 		else
 			printf("\e[K\n");
 	}
-	printf(SEQUENCE_RESTORE);
+	printf("%s", SEQUENCE_RESTORE);
 }
 
 void output_chat(GGZChatType type, const char *player, const char *message)
@@ -258,7 +258,7 @@ void output_chat(GGZChatType type, const char *player, const char *message)
 	switch(type) {
 	case GGZ_CHAT_BEEP:
 		output_text(_("%s--- You've been beeped by %s."), timestamp, player);
-		printf(SEQUENCE_BEEP);
+		printf("%s", SEQUENCE_BEEP);
 		break;
 	case GGZ_CHAT_PERSONAL:
 		output_text("%s>%s< %s", timestamp, player, message);
@@ -404,7 +404,7 @@ void output_status(void)
 	
 	now = time(NULL);
 
-	printf(SEQUENCE_SAVE);
+	printf("%s", SEQUENCE_SAVE);
 	if(user)
 	{
 		output_goto(window.ws_row - 3, 0);
@@ -465,7 +465,7 @@ void output_status(void)
 	output_label(_("Time"));
 	printf("\e[K%s", displaytime);
 
-	printf(SEQUENCE_RESTORE);
+	printf("%s", SEQUENCE_RESTORE);
 }
 
 void output_goto(int row, int col)
