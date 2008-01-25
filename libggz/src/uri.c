@@ -82,7 +82,7 @@ ggz_uri_t ggz_uri_from_string(const char *uristring)
 	}
 	else
 	{
-		port = strdup("0");
+		port = ggz_strdup("0");
 	}
 
 	ptr = strstr(base, "/");
