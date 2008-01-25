@@ -354,7 +354,7 @@ static void flush_buffer(void)
 {
 	if(buffer)
 	{
-		printf(buffer);
+		printf("%s", buffer);
 		free(buffer);
 		buffer = NULL;
 	}
