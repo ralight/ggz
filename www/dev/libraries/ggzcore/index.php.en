@@ -27,10 +27,11 @@ GGZ core clients and advanced games can use ggzcore to communicate with the GGZ 
 <i>Interfaces to ggzcore</i><br/>
 
 <table class="list">
-<tr><td>ggzcore</td><td>Language: C</td><td>Location: ggz-client-libs/ggzcore/ggzcore.h</td></tr>
-<tr><td>ggzcore++</td><td>Language: C++</td><td>Location: kde-client/ggz-kde/ggzcore++</td></tr>
-<tr><td>pyggzcoresimple</td><td>Language: Python</td><td>Location: python/pyggzcore</td></tr>
-<tr><td>ggzcore-java</td><td>Language: Java</td><td>Location: java/src/ggz/client/core</td></tr>
+<tr><td>ggzcore</td><td>Language: C</td><td>Location: ggz-client-libs/ggzcore/ggzcore.h</td><td>original implementation</td></tr>
+<tr><td>ggzcore++</td><td>Language: C++</td><td>Location: kde-client/ggz-kde/ggzcore++</td><td>based on ggzcore; obsolete</td></tr>
+<tr><td>pyggzcoresimple</td><td>Language: Python</td><td>Location: python/pyggzcore</td><td>based on ggzcore</td></tr>
+<tr><td>ggzcore-java</td><td>Language: Java</td><td>Location: java/src/ggz/client/core</td><td>reimplementation of ggzcore</td></tr>
+<tr><td>kggzcore</td><td>Language: C++ (Qt)</td><td>Location: playground/ggz-kde4/kggzcore</td><td>based on ggzcore</td></tr>
 </table>
 
 <br/>

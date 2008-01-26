@@ -34,6 +34,15 @@ The addition of ggz(d)mod wrappers for game client and server development
 is currently pending.
 <br/><br/>
 
+<i>Largest shared libraries written in/for Ruby</i><br/>
+
+<table class="list">
+<tr><td>ruggzmod</td><td>SLOC: 350</td><td>Location: playground/ggz-ruby/ruggzmod</td></tr>
+<tr><td>ruggzdmod</td><td>SLOC: 130</td><td>Location: playground/ggz-ruby/ruggzdmod</td></tr>
+</table>
+
+<br/>
+
 <i>Largest applications written in Ruby</i><br/>
 
 <table class="list">

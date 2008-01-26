@@ -33,16 +33,37 @@ servers), with more than a third of the code, as well as the Gtk+ client and gam
 with a similar figure combined. The rest is scattered among ggz-client-libs,
 the GNOME client, libggz, Grubby, the utilities, the text client and the SDL games.
 C is also the base language for most of the language bindings.
+Within GGZ, we use libggz to overcome some of the shortcomings and misdesign of C.
 <br/><br/>
 
 <i>Largest shared libraries written in C</i><br/>
 
 <table class="list">
-<tr><td>ggz-gtk</td><td>SLOC: 13000</td><td>Location: gtk-client/ggz-gtk</td></tr>
-<tr><td>ggzcore</td><td>SLOC: 8600</td><td>Location: ggz-client-libs/ggzcore (+ ggzmod-ggz)</td></tr>
-<tr><td>libggz</td><td>SLOC: 4800</td><td>Location: libggz/src</td></tr>
-<tr><td>ggzdmod</td><td>SLOC: 1800</td><td>Location: ggzd/ggzdmod</td></tr>
-<tr><td>ggzmod</td><td>SLOC: 1100</td><td>Location: ggz-client-libs/ggzmod</td></tr>
+<tr>
+ <td>ggz-gtk</td>
+ <td>SLOC: 13000</td>
+ <td>Location: <a href="http://svn.ggzgamingzone.org/trac.cgi/browser/trunk/gtk-client/ggz-gtk">gtk-client/ggz-gtk</a></td>
+</tr>
+<tr>
+ <td>ggzcore</td>
+ <td>SLOC: 8600</td>
+ <td>Location: <a href="http://svn.ggzgamingzone.org/trac.cgi/browser/trunk/ggz-client-libs/ggzcore">ggz-client-libs/ggzcore</a> (+ ggzmod-ggz)</td>
+</tr>
+<tr>
+ <td>libggz</td>
+ <td>SLOC: 4800</td>
+ <td>Location: <a href="http://svn.ggzgamingzone.org/trac.cgi/browser/trunk/libggz">libggz/src</a></td>
+</tr>
+<tr>
+ <td>ggzdmod</td>
+ <td>SLOC: 1800</td>
+ <td>Location: <a href="http://svn.ggzgamingzone.org/trac.cgi/browser/trunk/ggzd/ggzdmod">ggzd/ggzdmod</a></td>
+</tr>
+<tr>
+ <td>ggzmod</td>
+ <td>SLOC: 1100</td>
+ <td>Location: <a href="http://svn.ggzgamingzone.org/trac.cgi/browser/trunk/ggz-client-libs/ggzmod">ggz-client-libs/ggzmod</a></td>
+</tr>
 </table>
 
 <br/>
@@ -50,11 +71,31 @@ C is also the base language for most of the language bindings.
 <i>Largest applications written in C</i><br/>
 
 <table class="list">
-<tr><td>ggzd</td><td>SLOC: 13000</td><td>Location: ggzd/ggzd</td></tr>
-<tr><td>ggzcards server</td><td>SLOC: 10000</td><td>Location: ggzd/game_servers/ggzcards</td></tr>
-<tr><td>gnome-client</td><td>SLOC: 7400</td><td>Location: gnome-client/src</td></tr>
-<tr><td>grubby</td><td>SLOC: 4600</td><td>Location: grubby</td></tr>
-<tr><td>ggzcards client</td><td>SLOC: 4200</td><td>Location: gtk-games/ggzcards</td></tr>
+<tr>
+ <td>ggzd</td>
+ <td>SLOC: 13000</td>
+ <td>Location: <a href="http://svn.ggzgamingzone.org/trac.cgi/browser/trunk/ggzd/ggzd">ggzd/ggzd</a></td>
+</tr>
+<tr>
+ <td>ggzcards server</td>
+ <td>SLOC: 10000</td>
+ <td>Location: <a href="http://svn.ggzgamingzone.org/trac.cgi/browser/trunk/ggzd/game_servers/ggzcards">ggzd/game_servers/ggzcards</a></td>
+</tr>
+<tr>
+ <td>gnome-client</td>
+ <td>SLOC: 7400</td>
+ <td>Location: gnome-client/src (<a href="/graveyard/">R.I.P.</a>)</td>
+</tr>
+<tr>
+ <td>grubby</td>
+ <td>SLOC: 4600</td>
+ <td>Location: <a href="http://svn.ggzgamingzone.org/trac.cgi/browser/trunk/grubby">grubby</a></td>
+</tr>
+<tr>
+ <td>ggzcards client</td>
+ <td>SLOC: 4200</td>
+ <td>Location: <a href="http://svn.ggzgamingzone.org/trac.cgi/browser/trunk/gtk-games/ggzcards">gtk-games/ggzcards</a></td>
+</tr>
 </table>
 <br/>
 

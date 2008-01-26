@@ -33,6 +33,16 @@ There is a ggz-python module which contains more or less all of the
 Python-related code.
 <br/><br/>
 
+<i>Largest shared libraries written in/for Python</i><br/>
+
+<table class="list">
+<tr><td>pyggzcoresimple</td><td>SLOC: 800</td><td>Location: python/pyggzcore</td></tr>
+<tr><td>pyggzmod</td><td>SLOC: 500</td><td>Location: python/pyggzmod</td></tr>
+<tr><td>pyggzdmod</td><td>SLOC: 450</td><td>Location: python/pyggzdmod</td></tr>
+</table>
+
+<br/>
+
 <i>Largest applications written in Python</i><br/>
 
 <table class="list">

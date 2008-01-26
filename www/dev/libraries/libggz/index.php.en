@@ -37,6 +37,7 @@ The libggz library wraps many common low-level functions which are often used in
 <table class="list">
 <tr><td>OpenSSL</td><td>optional</td><td>for network functions with TLS</td></tr>
 <tr><td>GnuTLS</td><td>optional</td><td>for network functions with TLS</td></tr>
+<tr><td>NSS</td><td>optional</td><td>for network functions with TLS</td></tr>
 <tr><td>GCrypt</td><td>optional</td><td>for hash creation and validation</td></tr>
 </table>
 <br>
@@ -56,7 +57,7 @@ for game development are the networking functions, historically known as the eas
 They permit the creation of server or client sockets, compatible with IPv6, as well as reading and
 writing basic datatypes such as integers or strings. The last group are security functions, for both
 cryptographic hash creation and comparison (using the gcrypt library), and for TLS encryption for
-network channels using either GnuPG or OpenSSL.
+network channels using either GnuPG, OpenSSL or Netscape Security Services (NSS).
 <br><br>
 
 <i>More information</i><br>

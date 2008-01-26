@@ -27,11 +27,11 @@ Game servers can use the ggzdmod library to communicate with the GGZ server.
 <i>Interfaces to ggzdmod</i><br/>
 
 <table class="list">
-<tr><td>ggzdmod</td><td>Language: C</td><td>Location: ggzd/ggzdmod/ggzdmod.h</td><td></td></tr>
-<tr><td>ggzdmod++</td><td>Language: C++</td><td>Location: ggzd/ggzdmod++/ggzdmod++.h</td><td></td></tr>
-<tr><td>kggzdmod</td><td>Language: C++ (Qt)</td><td>Location: kde-games/lib/kggzdmod</td><td></td></tr>
-<tr><td>pyggzdmod</td><td>Language: Python</td><td>Location: python/pyggzdmod</td><td></td></tr>
-<tr><td>ruggzdmod</td><td>Language: Ruby</td><td>(Location: playground/ggz-ruby/ruggzdmod)</td><td></td></tr>
+<tr><td>ggzdmod</td><td>Language: C</td><td>Location: ggzd/ggzdmod/ggzdmod.h</td><td>original implementation</td></tr>
+<tr><td>ggzdmod++</td><td>Language: C++</td><td>Location: ggzd/ggzdmod++/ggzdmod++.h</td><td>based on ggzdmod</td></tr>
+<tr><td>kggzdmod</td><td>Language: C++ (Qt)</td><td>Location: playground/ggz-kde4/kggzdmod</td><td>based on ggzdmod</td></tr>
+<tr><td>pyggzdmod</td><td>Language: Python</td><td>Location: python/pyggzdmod</td><td>based on ggzdmod</td></tr>
+<tr><td>ruggzdmod</td><td>Language: Ruby</td><td>(Location: playground/ggz-ruby/ruggzdmod)</td><td>based on ggzdmod</td></tr>
 </table>
 <br/>
 
