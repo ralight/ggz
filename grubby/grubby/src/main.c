@@ -19,6 +19,25 @@
 #include <unistd.h>
 #include <getopt.h>
 
+/* This block is needed only for --specs */
+/* FIXME: should be moved into the embed module */
+#ifdef EMBED_RUBY
+#include <version.h>
+#endif
+#ifdef EMBED_PERL
+#include <EXTERN.h>
+#include <perl.h>
+#endif
+#ifdef EMBED_PYTHON
+#include <Python.h>
+#endif
+#ifdef EMBED_TCL
+#include <tcl.h>
+#endif
+#ifdef EMBED_PHP
+#include <php_embed.h>
+#endif
+
 #define GRUBBY_VERSION "0.9.2"
 
 static int running;
@@ -110,6 +129,7 @@ int main(int argc, char *argv[])
 	struct option options[] =
 	{
 		{"help", no_argument, 0, 'h'},
+		{"specs", no_argument, 0, 's'},
 		{"version", no_argument, 0, 'v'},
 		{"name", required_argument, 0, 'n'},
 		{"host", required_argument, 0, 'H'},
@@ -132,7 +152,7 @@ int main(int argc, char *argv[])
 
 	while(1)
 	{
-		opt = getopt_long(argc, argv, "hvH:n:d:", options, &optindex);
+		opt = getopt_long(argc, argv, "hsvH:n:d:", options, &optindex);
 		if(opt == -1) break;
 		switch(opt)
 		{
@@ -141,10 +161,11 @@ int main(int argc, char *argv[])
 				printf(_("Copyright (C) 2001 - 2006 Josef Spillner, josef@ggzgamingzone.org\n"));
 				printf(_("Published under the terms of the GNU GPL\n\n"));
 				printf(_("Recognized options:\n"));
-				printf(_("[-h | --help]:    Show this help screen\n"));
-				printf(_("[-H | --host]:    Connect to this host\n"));
-				printf(_("[-n | --name]:    Use this name\n"));
-				printf(_("[-d | --datadir]: Use this data directory (default: ~/.ggz)\n"));
+				printf(_("[-h | --help   ]: Show this help screen\n"));
+				printf(_("[-H | --host   ]: Connect to this host\n"));
+				printf(_("[-n | --name   ]: Use this name\n"));
+				printf(_("[-d | --datadir]: Use this GGZ data directory (default: ~/.ggz)\n"));
+				printf(_("[-s | --specs  ]: Display compilation options\n"));
 				printf(_("[-v | --version]: Display version number\n"));
 				exit(0);
 				break;
@@ -156,6 +177,32 @@ int main(int argc, char *argv[])
 				break;
 			case 'v':
 				printf(_("Grubby version %s\n"), GRUBBY_VERSION);
+				exit(0);
+				break;
+			case 's':
+				printf("Grubby specifications:\n");
+				printf("- network core plugins: %s%s%s%s\n",
+					"[console]",
+					"[irc]",
+					"[ggz]",
+					(HAVE_SILC ? "[silc]" : ""));
+				printf("- data directory: %s\n", GRUBBYDIR);
+				printf("- embeddable scripts:\n");
+#ifdef EMBED_RUBY
+				printf("  ruby   [%s]\n", RUBY_VERSION);
+#endif
+#ifdef EMBED_PERL
+				printf("  perl   [%s]\n", PERL_XS_APIVERSION);
+#endif
+#ifdef EMBED_PYTHON
+				printf("  python [%s]\n", PY_VERSION);
+#endif
+#ifdef EMBED_TCL
+				printf("  tcl    [%s]\n", TCL_PATCH_LEVEL);
+#endif
+#ifdef EMBED_PHP
+				printf("  php    [%s]\n", "???");
+#endif
 				exit(0);
 				break;
 			case 'd':

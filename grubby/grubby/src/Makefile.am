@@ -42,4 +42,5 @@ libguru_player_la_LIBADD = $(LIB_GGZCORE)
 noinst_HEADERS = guru.h module.h i18n.h gurumod.h net.h player.h
 
 AM_CPPFLAGS = $(GGZCORE_INCLUDES) $(SILC_INCLUDES) \
-	-DPREFIX=\"$(prefix)\"
+	-DPREFIX=\"$(prefix)\" \
+	$(ruby_includes) $(perl_includes) $(python_includes) $(tcl_includes) $(php_includes)
