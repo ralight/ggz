@@ -60,8 +60,7 @@ dnl ===========
 if test "$enable_perl" = yes; then
 	echo -n "Extra check: perl... "
 
-	inc=`perl -MConfig -e 'print "$Config{archlibexp}/CORE"' 2>/dev/null`
-	incs="$inc /usr/lib/perl/5.8.0/CORE /usr/lib/perl/5.6.1/CORE /usr/lib/perl/5.6.0/CORE"
+	incs=`perl -MConfig -e 'print "$Config{archlibexp}/CORE"' 2>/dev/null`
 	AC_GGZ_FIND_FILE("perl.h", $incs, perl_incdir)
 	perl_includes="$perl_incdir"
 
@@ -75,8 +74,6 @@ if test "$enable_perl" = yes; then
 		perl_libraries=""
 		enable_perl=no
 	else
-		#perl_includes="-I $perl_includes"
-		#perl_libraries="-L $perl_libraries -lperl"
 		perl_includes=`perl -MExtUtils::Embed -e ccopts`
 		perl_libraries=`perl -MExtUtils::Embed -e ldopts | sed 's/\(@<:@^ @:>@*DynaLoader.a\)//'`
 		AC_MSG_RESULT(ok.)
@@ -124,7 +121,7 @@ if test "$enable_python" = yes; then
 	echo -n "Extra check: python... "
 
 	usever=""
-	for ver in 2.2 2.3 2.4; do
+	for ver in 2.2 2.3 2.4 2.5; do
 		incs="/usr/local/include/python$ver /usr/include/python$ver"
 		AC_GGZ_FIND_FILE("Python.h", $incs, python_incdir)
 
@@ -137,12 +134,12 @@ if test "$enable_python" = yes; then
 			python_includes="-I $python_incdir"
 			python_libraries="-L $python_libdir -lpython$ver"
 			usever=$ver
-			enable_python=yes
 		fi
 	done
 
 	if test "x$usever" = "x"; then
 		AC_MSG_RESULT(no.)
+		enable_python=no
 	else
 		AC_MSG_RESULT([ok, version $usever.])
 		AC_SUBST(python_includes)
@@ -154,23 +151,30 @@ fi
 if test "$enable_tcl" = yes; then
 	echo -n "Extra check: tcl... "
 
-	incs="/usr/include/tcl8.4"
-	AC_GGZ_FIND_FILE("tcl.h", $incs, tcl_incdir)
-	tcl_includes="$tcl_incdir"
+	usever=""
+	for ver in 8.4 8.5; do
+		incs="/usr/include/tcl$ver"
+		AC_GGZ_FIND_FILE("tcl.h", $incs, tcl_incdir)
 
-	libs="/usr/lib"
-	AC_GGZ_FIND_FILE("libtcl8.4.so", $libs, tcl_libdir)
-	tcl_libraries="$tcl_libdir"
+		libs="/usr/lib"
+		AC_GGZ_FIND_FILE("libtcl$ver.so", $libs, tcl_libdir)
+		tcl_includes="$tcl_incdir"
+		tcl_libraries="$tcl_libdir"
 
-	if test "x$tcl_includes" = "xNO" || test "x$tcl_libraries" = "xNO"; then
+		if test "x$tcl_incdir" = "xNO" || test "x$tcl_libdir" = "xNO"; then
+			this_is_not_the_right_version=1
+		else
+			tcl_includes="-I $tcl_incdir"
+			tcl_libraries="-L $tcl_libdir -ltcl$ver"
+			usever=$ver
+		fi
+	done
+
+	if test "x$usever" = "x"; then
 		AC_MSG_RESULT(no.)
-		tcl_includes=""
-		tcl_libraries=""
 		enable_tcl=no
 	else
-		AC_MSG_RESULT(ok.)
-		tcl_includes="-I $tcl_includes"
-		tcl_libraries="-L $tcl_libraries -ltcl8.4"
+		AC_MSG_RESULT([ok, version $usever.])
 		AC_SUBST(tcl_includes)
 		AC_SUBST(tcl_libraries)
 		AC_DEFINE([EMBED_TCL], 1, [Define to use embedded Tcl])
@@ -229,11 +233,12 @@ if test "$enable_silc" = yes; then
 	else
 		SILC_INCLUDES="-I $silc_includes"
 		SILC_LDFLAGS="-L $silc_libraries"
-        LIB_SILC="-lsilcclient -lsilc"
+		LIB_SILC="-lsilcclient -lsilc"
 		AC_MSG_RESULT(ok.)
 		AC_SUBST(SILC_INCLUDES)
 		AC_SUBST(SILC_LDFLAGS)
 		AC_SUBST(LIB_SILC)
+		AC_DEFINE([HAVE_SILC], 1, [SILC network connection core plugin])
 	fi
 fi
 AM_CONDITIONAL([GRUBBY_SILC], [test "$enable_silc" = "yes"])
