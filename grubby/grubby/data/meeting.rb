@@ -24,7 +24,7 @@ class GuruMeeting
     @notes.delete(date)
   end
   def tell
-	print "Planned meetings: ", @notes.join " - "
+	print "Planned meetings: ", @notes.join(" - ")
 	#print "\n"
 	$stdout.flush
 	sleep 1

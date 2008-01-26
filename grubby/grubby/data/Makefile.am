@@ -10,9 +10,9 @@ dist_gurudata_SCRIPTS = \
 	statistics.py
 
 guruconfigdir = $(prefix)/bin
-dist_guruconfig_SCRIPTS = grubby-config
+guruconfig_SCRIPTS = grubby-config
 
-EXTRA_DIST = grubby-config.in webtranslator.sh embedtest.rb test.tcl
+EXTRA_DIST = grubby-config.in webtranslator.sh test.tcl
 
 messages:
 	touch guru.pot
