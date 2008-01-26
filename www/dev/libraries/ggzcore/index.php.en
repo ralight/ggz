@@ -68,7 +68,7 @@ Examples of usage include ggz-gtk, ggz-txt and ggz-gnome for the C library, kggz
 and víbora for the Python wrapper. As special core clients, also grubby and the Pidgin and Kopete IM plugins
 as well as ggzap use ggzcore. Finally, games such as Widelands use the embedded feature of ggzcore.
 The communication protocol between ggzcore and the GGZ server ggzd is standardized in the
-<a href="http://www.ggzgamingzone.org/docs/design/html/">main protocol specification</a>.
+<a href="http://www.ggzgamingzone.org/docs/design/mainspec/mainspec-html/">main protocol specification</a>.
 Recommended documentation includes the
 <a href="http://www.ggzgamingzone.org/docs/coreclients/coreclients.html">Core Clients</a> document,
 and to some extent the <a href="http://www.ggzgamingzone.org/docs/games/modules/">Game Modules</a> document.
