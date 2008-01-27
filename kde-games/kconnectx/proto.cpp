@@ -17,6 +17,9 @@
 #include <qdatastream.h>
 #include <qsocketdevice.h>
 
+// System includes
+#include <stdlib.h>
+
 // Empty constructor
 Proto::Proto()
 {
