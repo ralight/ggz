@@ -27,6 +27,7 @@
 
 // System includes
 #include <iostream>
+#include <cstring>
 
 // Constructor: inherit from ggzgameserver
 MuehleServer::MuehleServer ()

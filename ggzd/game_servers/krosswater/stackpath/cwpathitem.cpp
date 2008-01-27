@@ -15,6 +15,8 @@
 #  include <config.h>			/* Site-specific config */
 #endif
 
+#include <stdlib.h>
+
 // Stackpath includes
 #include "cwpathitem.h"
 
