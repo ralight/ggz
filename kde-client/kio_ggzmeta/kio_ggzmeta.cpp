@@ -365,7 +365,7 @@ void GGZMetaProtocol::work(QString queryclass, QString query)
 		m_sock->connectToHost("live.ggzgamingzone.org", 15689);
 		m_result = 0;
 		qApp->enter_loop();
-		while(!m_result);
+		while(!m_result){}
 		error(0, QString("An error occured: %1.").arg("blah"));
 	}
 	else
