@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 9621 2008-01-29 17:42:18Z oojah $
+ * $Id: netxml.c 9622 2008-01-29 18:28:10Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -1157,7 +1157,7 @@ void _ggzcore_net_handle_server(GGZNet * net, GGZXMLElement * element)
 
 		_ggzcore_server_set_negotiate_status(net->server, net, E_OK);
 	} else
-		_ggzcore_server_set_negotiate_status(net->server, net, -1);
+		_ggzcore_server_set_negotiate_status(net->server, net, E_UNKNOWN);
 }
 
 
