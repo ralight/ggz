@@ -11,6 +11,7 @@ def unquote(s):
 DATAPATH = None
 MODULEPATH = None
 I18NPATH = None
+PYTHONPATH = None
 
 path = sys.argv[0]
 if len(path) > 0:
@@ -18,11 +19,15 @@ if len(path) > 0:
 		DATAPATH = "./"
 		MODULEPATH = "./"
 		I18NPATH = "./"
+		PYTHONPATH = "./"
 		BREAK_HERE
 	else:
 		DATAPATH = unquote("@datadir@/ggz")
 		MODULEPATH = unquote("@prefix@/lib/ggz-python")
 		I18NPATH = unquote("@datadir@/locale")
+		ver_info = sys.version_info
+		ver = ver_info[0] + "." + ver_info[1]
+		PYTHONPATH = unquote("@prefix@/lib/python" + ver + "/site-packages")
 
 del unquote
 del path

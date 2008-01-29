@@ -15,9 +15,6 @@ import re
 import gettext
 import glob
 
-import rsvgsdl
-import sdlnewstuff
-
 try:
 	import ggzsettings
 	DATAPATH = ggzsettings.DATAPATH + "/ggzboard/"
@@ -25,11 +22,20 @@ try:
 	I18NPATH = ggzsettings.I18NPATH
 	sys.path = [ggzsettings.MODULEPATH + "/ggzboard/"] + sys.path
 	sys.path = [ggzsettings.MODULEPATH + "/common/"] + sys.path
+	sys.path = [ggzsettings.PYTHONPATH] + sys.path
 except:
 	DATAPATH = "./"
 	MODULEPATH = "./"
 	I18NPATH = "./"
 	sys.path = ["../lib/"] + sys.path
+	# FIXME: how to find out the architecture?
+	arch = "linux-x86_64-2.4"
+	sys.path = ["../pyrsvgsdl/build/lib." + arch] + sys.path
+	sys.path = ["../pyggzmod/build/lib." + arch] + sys.path
+	sys.path = ["../pyggzchess/build/lib." + arch] + sys.path
+
+import rsvgsdl
+import sdlnewstuff
 
 import playertable
 
