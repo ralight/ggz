@@ -96,6 +96,14 @@ class Game:
 			self.pout.write("white\n")
 			self.pout.flush()
 
+	def destroy(self):
+		if self.runningshogi:
+			print "Kill local AI!"
+			self.pout.write("quit\n")
+			self.pout.flush()
+			self.pin.close()
+			self.pout.close()
+
 	def name(self):
 		return _("Shogi")
 

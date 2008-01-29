@@ -855,6 +855,8 @@ class GGZBoard:
 			if event.type == KEYDOWN:
 				key = event.key
 				if key == K_ESCAPE or pygame.event.peek(QUIT):
+					if game.destroy:
+						game.destroy()
 					break
 				if key == K_f:
 					self.ui.togglefullscreen()

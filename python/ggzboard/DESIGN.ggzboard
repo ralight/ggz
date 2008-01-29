@@ -102,6 +102,9 @@ game.aimove(): tries to find a AI move
 game.domove((int, int), (int, int)): executes a previously checked move (will be revalidated)
 game.over(): returns whether a game is still running or over yet
 
+game.init(string): initialize and assign data path
+game.destroy(): cleanup routines
+
 game.toggleplayer(): notify game engine of turn change
  *FIXME*: can't it figure out itself? it knows the rules...
 
