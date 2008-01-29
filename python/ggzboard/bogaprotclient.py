@@ -6,7 +6,7 @@ import sys
 import time
 
 import ggzmod
-from ggzboard_net import *
+from ggzboard_net import NetworkBaseClient
 
 # vars: "winner" for send_gameover
 # vars: "seat" for send_reqmove
@@ -15,12 +15,12 @@ from ggzboard_net import *
 # vars: "value" for send_dice
 # vars: "source, "destination", ("type") for receive_move
 
-class BogaprotClient(NetworkBase):
+class BogaprotClient(NetworkBaseClient):
 
     ### Class definition
 
 	def __init__(self):
-		NetworkBase.__init__(self)
+		NetworkBaseClient.__init__(self)
 		self.REQ_HANDSHAKE = 101
 		self.RSP_HANDSHAKE = 102
 		self.MSG_SEAT = 103

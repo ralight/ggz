@@ -1,12 +1,12 @@
 # Bogaprot: Common protocol implementation for board games (server side)
-# Copyright (C) 2005 Josef Spillner <josef@ggzgamingzone.org>
+# Copyright (C) 2005 - 2008 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
 import sys
 import time
 
 import ggzdmod
-from ggzboard_net import *
+from ggzboard_net import NetworkBase
 
 # vars: "winner" for send_gameover
 # vars: "seat" for send_reqmove

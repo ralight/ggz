@@ -1,5 +1,5 @@
 # GGZBoard Network: Network base class for GGZBoard container
-# Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
+# Copyright (C) 2004 - 2008 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
 import ggzmod
@@ -8,41 +8,7 @@ import socket
 class NetworkBase:
 	def __init__(self):
 		self.sock = None
-		self.gamefd = -1
 		self.errorcode = 0
-		self.inputallowed = 0
-		self.inputthinking = 0
-
-	def handle_network(self):
-		ret = ggzmod.autonetwork()
-		if ret:
-			self.network()
-
-	def network(self):
-		print "ERROR: PURE VIRTUAL METHOD!"
-
-	def handle_server(self, fd):
-		ggzmod.setState(ggzmod.STATE_PLAYING)
-
-		self.gamefd = fd
-		self.init(self.gamefd)
-
-	def init(self, fd):
-		self.sock = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)
-
-	def connect(self):
-		ggzmod.setHandler(ggzmod.EVENT_SERVER, self.handle_server)
-		ret = ggzmod.connect()
-		return ret
-
-	def error(self):
-		return self.errorcode
-
-	def allowed(self):
-		return self.inputallowed
-	
-	def thinking(self):
-		return self.inputthinking
 
 	def getbyte(self):
 		opstr = self.sock.recv(4)
@@ -96,4 +62,42 @@ class NetworkBase:
 	def sendstring(self, str):
 		self.sendbyte(len(str))
 		self.sock.send(str)
+
+class NetworkBaseClient(NetworkBase):
+	def __init__(self):
+		NetworkBase.__init__(self)
+		self.gamefd = -1
+		self.inputallowed = 0
+		self.inputthinking = 0
+
+	def handle_network(self):
+		ret = ggzmod.autonetwork()
+		if ret:
+			self.network()
+
+	def network(self):
+		print "ERROR: PURE VIRTUAL METHOD!"
+
+	def handle_server(self, fd):
+		ggzmod.setState(ggzmod.STATE_PLAYING)
+
+		self.gamefd = fd
+		self.init(self.gamefd)
+
+	def init(self, fd):
+		self.sock = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)
+
+	def connect(self):
+		ggzmod.setHandler(ggzmod.EVENT_SERVER, self.handle_server)
+		ret = ggzmod.connect()
+		return ret
+
+	def error(self):
+		return self.errorcode
+
+	def allowed(self):
+		return self.inputallowed
+	
+	def thinking(self):
+		return self.inputthinking
 
