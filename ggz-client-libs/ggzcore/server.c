@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 9570 2008-01-20 10:47:37Z josef $
+ * $Id: server.c 9621 2008-01-29 17:42:18Z oojah $
  *
  * Code for handling server connection state and properties
  *
@@ -159,11 +159,9 @@ static GGZServer *reconnect_server = NULL;
 const int reconnect_timeout = 15;
 
 static void _ggzcore_server_main_negotiate_status(GGZServer * server,
-						  GGZClientReqError
-						  status);
+						  GGZClientReqError status);
 static void _ggzcore_server_channel_negotiate_status(GGZServer * server,
-						     GGZClientReqError
-						     status);
+						     GGZClientReqError status);
 
 /* Publicly exported functions */
 
@@ -1427,8 +1425,7 @@ static void _ggzcore_server_main_negotiate_status(GGZServer * server,
 }
 
 static void _ggzcore_server_channel_negotiate_status(GGZServer * server,
-						     GGZClientReqError
-						     status)
+						     GGZClientReqError status)
 {
 	int fd;
 

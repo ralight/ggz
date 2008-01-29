@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 9570 2008-01-20 10:47:37Z josef $
+ * $Id: room.c 9621 2008-01-29 17:42:18Z oojah $
  *
  * This fils contains functions for handling rooms
  *
@@ -884,7 +884,7 @@ void _ggzcore_room_add_chat(GGZRoom * room, GGZChatType type,
 }
 
 
-void _ggzcore_room_set_table_launch_status(GGZRoom * room, int status)
+void _ggzcore_room_set_table_launch_status(GGZRoom * room, GGZClientReqError status)
 {
 	_ggzcore_server_set_table_launch_status(room->server, status);
 
