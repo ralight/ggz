@@ -24,12 +24,15 @@ try:
 	sys.path = [ggzsettings.MODULEPATH + "/common/"] + sys.path
 	sys.path = [ggzsettings.PYTHONPATH] + sys.path
 except:
+	import platform
 	DATAPATH = "./"
 	MODULEPATH = "./"
 	I18NPATH = "./"
 	sys.path = ["../lib/"] + sys.path
-	# FIXME: how to find out the architecture?
-	arch = "linux-x86_64-2.4"
+
+	ver_info = sys.version_info
+	ver = str(ver_info[0]) + "." + str(ver_info[1])
+	arch = platform.system().lower() + "-" + platform.machine() + "-" + ver
 	sys.path = ["../pyrsvgsdl/build/lib." + arch] + sys.path
 	sys.path = ["../pyggzmod/build/lib." + arch] + sys.path
 	sys.path = ["../pyggzchess/build/lib." + arch] + sys.path

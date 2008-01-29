@@ -17,7 +17,8 @@ make
 make install
 
 Afterwards, the variable PYTHONPATH must point to this directory
-unless it's already in Python's default search path.
+unless it's already in Python's default search path. In most cases it's not
+even necessary to set it anymore, but if it is then set the following:
 
 export PYTHONPATH=/home/ggz/build/lib/python2.4/site-packages
 
