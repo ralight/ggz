@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 9543 2008-01-15 19:13:38Z josef $
+ * $Id: io.c 9630 2008-01-31 20:02:13Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -324,14 +324,46 @@ static int _io_read_stats(GGZMod *ggzmod)
 	return 0;
 }
 
+// FIXME: this might be useful in other contexts as well
+// for whenever data is received from libggz
+static const char *null_if_empty(const char *str)
+{
+	if(!str)
+		return NULL;
+	if(str[0] == '\0')
+		return NULL;
+	return str;
+}
+
+static void infos_free(void *pstat)
+{
+	GGZPlayerInfo *info = pstat;
+
+	ggz_free(info->realname);
+	ggz_free(info->photo);
+	ggz_free(info->host);
+	ggz_free(info);
+}
+
+static void rankings_free(void *pstat)
+{
+	GGZRanking *ranking = pstat;
+
+	ggz_free(ranking->name);
+	ggz_free(ranking);
+}
+
 static int _io_read_info(GGZMod *ggzmod)
 {
 	int i, num;
 	int seat_num;
 	char *realname, *photo, *host;
+	GGZList *infos;
 
 	if (ggz_read_int(ggzmod->fd, &num) < 0)
 		return -1;
+
+	infos = ggz_list_create(NULL, NULL, (ggzEntryDestroy)infos_free, GGZ_LIST_ALLOW_DUPS);
 
 	for (i = 0; i < num; i++) {
 		if (ggz_read_int(ggzmod->fd, &seat_num) < 0
@@ -341,23 +373,17 @@ static int _io_read_info(GGZMod *ggzmod)
 			return -1;
 		}
 
-		/* if we receive empty values, they should be NULL'd (discarded) */
-		_ggzmod_handle_info(ggzmod, seat_num,
-			(realname[0] == '\0' ? NULL : realname),
-			(photo[0] == '\0' ? NULL : photo),
-			(host[0] == '\0' ? NULL : host),
-			(num == 1 ? 1 : 0));
-
-		ggz_free(realname);
-		ggz_free(photo);
-		ggz_free(host);
+		GGZPlayerInfo *info = (GGZPlayerInfo*)ggz_malloc(sizeof(GGZPlayerInfo));
+		info->realname = null_if_empty(realname);
+		info->photo = null_if_empty(photo);
+		info->host = null_if_empty(host);
+		info->num = seat_num;
+		ggz_list_insert(infos, info);
 	}
 
-	/* only call finished event once instead of for every seat */
-	if(num != 1)
-	{
-		_ggzmod_handle_info(ggzmod, -1, NULL, NULL, NULL, 1);
-	}
+	_ggzmod_handle_info(ggzmod, infos);
+
+	ggz_list_free(infos);
 
 	return 0;
 }
@@ -372,28 +398,25 @@ static int _io_read_rankings(GGZMod *ggzmod)
 	if (ggz_read_int(ggzmod->fd, &num) < 0)
 		return -1;
 
-	rankings = ggz_list_create(NULL, NULL, NULL, GGZ_LIST_ALLOW_DUPS);
+	rankings = ggz_list_create(NULL, NULL, (ggzEntryDestroy)rankings_free, GGZ_LIST_ALLOW_DUPS);
 
 	for (i = 0; i < num; i++) {
 		if (ggz_read_string_alloc(ggzmod->fd, &name) < 0
 		    || ggz_read_int(ggzmod->fd, &position) < 0
 		    || ggz_read_int(ggzmod->fd, &score) < 0) {
 			return -1;
-
-			GGZRanking *rank = (GGZRanking*)ggz_malloc(sizeof(GGZRanking));
-			rank->position = position;
-			rank->score = score;
-			rank->name = name;
-			ggz_list_insert(rankings, rank);
 		}
+
+		GGZRanking *rank = (GGZRanking*)ggz_malloc(sizeof(GGZRanking));
+		rank->position = position;
+		rank->score = score;
+		rank->name = name;
+		ggz_list_insert(rankings, rank);
 	}
 
 	_ggzmod_handle_rankings(ggzmod, rankings);
 
 	ggz_list_free(rankings);
-
-	// FIXME: destroy function which does:
-	//ggz_free(rank->name);
 
 	return 0;
 }

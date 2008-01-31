@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 9577 2008-01-20 12:18:41Z josef $
+ * $Id: ggzmod.h 9630 2008-01-31 20:02:13Z josef $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -191,8 +191,8 @@ typedef enum {
 	/** @brief Player information has arrived.
 	 *
 	 *  Information has been requested about one or more players and
-	 *  it has now arrived. The event data is a GGZPlayerInfo*
-	 *  structure or NULL if info about all players was requested. */
+	 *  it has now arrived. The event data is a GGZList* which contains
+	 *  GGZPlayerInfo entries. */
 	GGZMOD_EVENT_INFO,
 
 	/** @brief Game rankings for this room has arrived.
