@@ -185,7 +185,12 @@ int main(int argc, char *argv[])
 					"[console]",
 					"[irc]",
 					"[ggz]",
-					(HAVE_SILC ? "[silc]" : ""));
+#ifdef HAVE_SILC
+					"[silc]"
+#else
+					""
+#endif
+					);
 				printf("- data directory: %s\n", GRUBBYDIR);
 				printf("- embeddable scripts:\n");
 #ifdef EMBED_RUBY
