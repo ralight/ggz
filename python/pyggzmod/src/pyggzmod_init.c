@@ -1,7 +1,7 @@
 /**********************************************/
 /*                                            */
 /* PyGGZMod - Python wrapper for libggzmod    */
-/* Copyright (C) 2003 - 2006 Josef Spillner   */
+/* Copyright (C) 2003 - 2008 Josef Spillner   */
 /* josef@ggzgamingzone.org                    */
 /* Published under GNU GPL conditions         */
 /*                                            */
@@ -26,6 +26,7 @@ static void pyggzmod_cb_spectatorseat_hook(GGZMod *ggzmod, GGZModEvent event, co
 static void pyggzmod_cb_chat_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data);
 static void pyggzmod_cb_stats_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data);
 static void pyggzmod_cb_info_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data);
+static void pyggzmod_cb_rankings_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data);
 static void pyggzmod_cb_error_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data);
 
 /**********************************************/
@@ -42,6 +43,7 @@ static PyObject *pyggzmod_cb_spectatorseat = NULL;
 static PyObject *pyggzmod_cb_chat = NULL;
 static PyObject *pyggzmod_cb_stats = NULL;
 static PyObject *pyggzmod_cb_info = NULL;
+static PyObject *pyggzmod_cb_rankings = NULL;
 static PyObject *pyggzmod_cb_error = NULL;
 
 /************************************************/
@@ -400,6 +402,11 @@ static PyObject *pyggzmod_set_handler(PyObject *self, PyObject *args)
 			pyggzmod_cb_info = temp;
 			ggzmod_set_handler(ggzmod, GGZMOD_EVENT_INFO, pyggzmod_cb_info_hook);
 			break;
+		case GGZMOD_EVENT_RANKINGS:
+			Py_XDECREF(pyggzmod_cb_rankings);
+			pyggzmod_cb_rankings = temp;
+			ggzmod_set_handler(ggzmod, GGZMOD_EVENT_RANKINGS, pyggzmod_cb_rankings_hook);
+			break;
 		case GGZMOD_EVENT_ERROR:
 			Py_XDECREF(pyggzmod_cb_error);
 			pyggzmod_cb_error = temp;
@@ -623,6 +630,35 @@ void pyggzmod_cb_info_hook(GGZMod *ggzmod, GGZModEvent event, const void *handle
 	Py_DECREF(arg);
 }
 
+void pyggzmod_cb_rankings_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data)
+{
+	PyObject *arg, *res, *rankingslist, *rankingelement;
+	GGZList *rankings;
+	GGZRanking *ranking;
+	GGZListEntry *rankingentry;
+
+	rankings = (GGZList*)handler_data;
+	rankingslist = PyList_New(0);
+	for(rankingentry = ggz_list_head(rankings); rankingentry; rankingentry = ggz_list_next(rankingentry))
+	{
+		ranking = ggz_list_get_data(rankingentry);
+		rankingelement = Py_BuildValue("(sii)", ranking->name, ranking->position, ranking->score);
+		PyList_Append(rankingslist, rankingelement);
+	}
+
+	arg = Py_BuildValue("(O)", rankingslist);
+
+	res = PyEval_CallObject(pyggzmod_cb_rankings, rankingslist);
+	if(res == NULL)
+	{
+		printf("--------------------------------------------\n");
+		printf("ERROR in pyggzmod callback (EVENT_RANKINGS)!\n");
+		PyErr_Print();
+		printf("--------------------------------------------\n");
+	}
+	Py_DECREF(arg);
+}
+
 void pyggzmod_cb_error_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
@@ -673,6 +709,7 @@ void initggzmod(void)
 	PyModule_AddIntConstant(mod, "EVENT_CHAT", GGZMOD_EVENT_CHAT);
 	PyModule_AddIntConstant(mod, "EVENT_STATS", GGZMOD_EVENT_STATS);
 	PyModule_AddIntConstant(mod, "EVENT_INFO", GGZMOD_EVENT_INFO);
+	PyModule_AddIntConstant(mod, "EVENT_RANKINGS", GGZMOD_EVENT_RANKINGS);
 	PyModule_AddIntConstant(mod, "EVENT_ERROR", GGZMOD_EVENT_ERROR);
 
 	ggzmod = ggzmod_new(GGZMOD_GAME);
