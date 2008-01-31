@@ -604,21 +604,22 @@ void pyggzmod_cb_stats_hook(GGZMod *ggzmod, GGZModEvent event, const void *handl
 
 void pyggzmod_cb_info_hook(GGZMod *ggzmod, GGZModEvent event, const void *handler_data)
 {
-	PyObject *arg, *res;
-	/*GGZPlayerInfo info;*/
+	PyObject *arg, *res, *infoslist, *infoelement;
+	GGZList *infos;
+	GGZPlayerInfo *info;
+	GGZListEntry *infoentry;
 
-	/*
-	if(handler_data)
+	infos = (GGZList*)handler_data;
+	infoslist = PyList_New(0);
+	for(infoentry = ggz_list_head(infos); infoentry; infoentry = ggz_list_next(infoentry))
 	{
-		info = *(GGZPlayerInfo*)handler_data;
-		arg = Py_BuildValue("(isss)", info.num, info.realname, info.photo, info.host);
+		info = ggz_list_get_data(infoentry);
+		infoelement = Py_BuildValue("(isss)", info->num, info->realname, info->photo, info->host);
+		PyList_Append(infoslist, infoelement);
 	}
-	else
-	{
-		arg = Py_BuildValue("(isss)", -1, NULL, NULL, NULL);
-	}
-	*/
-	arg = Py_BuildValue("()");
+
+	arg = Py_BuildValue("(O)", infoslist);
+
 	res = PyEval_CallObject(pyggzmod_cb_info, arg);
 	if(res == NULL)
 	{
