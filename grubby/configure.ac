@@ -158,8 +158,6 @@ if test "$enable_tcl" = yes; then
 
 		libs="/usr/lib"
 		AC_GGZ_FIND_FILE("libtcl$ver.so", $libs, tcl_libdir)
-		tcl_includes="$tcl_incdir"
-		tcl_libraries="$tcl_libdir"
 
 		if test "x$tcl_incdir" = "xNO" || test "x$tcl_libdir" = "xNO"; then
 			this_is_not_the_right_version=1
