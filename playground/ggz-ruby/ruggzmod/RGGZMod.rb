@@ -8,6 +8,32 @@ require "GGZMod"
 
 $singleton = nil
 
+# This class represents a GGZ player or spectator.
+# It holds information from the 'rankings', 'stats' and 'info' events.
+class Player
+	attr_reader :name, :position, :score, :realname, :photo, :hostname
+
+	def initialize(name)
+		@name = name
+		@position = nil
+		@score = nil
+		@realname = nil
+		@photo = nil
+		@hostname = nil
+	end
+
+	def setrankings(position, score)
+		@position = position
+		@score = score
+	end
+
+	def setinfo(realname, photo, hostname)
+		@realname = realname
+		@photo = photo
+		@hostname = hostname
+	end
+end
+
 # This class implements GGZ functionality for game clients.
 # For games to be able to run on GGZ, derive from this class and add all the
 # functionality that you need. To reimplement its methods, add 'super' as
@@ -28,6 +54,8 @@ class RGGZMod
 			raise "Error: could not connect to GGZ core client"
 		end
 		$singleton = self
+		@players = Hash.new
+		# holds information on all players and spectators, key is player name
 	end
 
 	# Arrival of events from the GGZ server through the GGZ core client.
@@ -51,6 +79,32 @@ class RGGZMod
 		}
 		name = names[id]
 		puts "== Event handler called! id = " + id.to_s + ", name = " + name.to_s
+
+		if id == GGZMod::EVENTSTATS
+			# FIXME: data not filled yet
+		end
+
+		if id == GGZMod::EVENTINFO
+			data.each do |info|
+				(realname, photo, host) = ranking
+				# FIXME: name is missing here!
+				name = nil
+				if not @players[name]
+					@players[name] = Player.new(name)
+				end
+				@players[name].setinfo(realname, photo, host)
+			end
+		end
+
+		if id == GGZMod::EVENTRANKINGS
+			data.each do |ranking|
+				(name, position, score) = ranking
+				if not @players[name]
+					@players[name] = Player.new(name)
+				end
+				@players[name].setposition(position, score)
+			end
+		end
 	end
 
 	# Enter the main loop and wait for events reported by the GGZ core client.
