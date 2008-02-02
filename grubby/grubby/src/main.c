@@ -22,7 +22,8 @@
 /* This block is needed only for --specs */
 /* FIXME: should be moved into the embed module */
 #ifdef EMBED_RUBY
-#include <version.h>
+/* FIXME: filename is too generic */
+/*#include <version.h>*/
 #endif
 #ifdef EMBED_PERL
 #include <EXTERN.h>
@@ -194,7 +195,7 @@ int main(int argc, char *argv[])
 				printf("- data directory: %s\n", GRUBBYDIR);
 				printf("- embeddable scripts:\n");
 #ifdef EMBED_RUBY
-				printf("  ruby   [%s]\n", RUBY_VERSION);
+				printf("  ruby   [%s]\n", /*RUBY_VERSION*/"???");
 #endif
 #ifdef EMBED_PERL
 				printf("  perl   [%s]\n", PERL_XS_APIVERSION);
