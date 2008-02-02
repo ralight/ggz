@@ -1,6 +1,6 @@
 /*
  * Ruby bindings for libggzmod
- * Copyright (C) 2007 Josef Spillner <josef@ggzgamingzone.org>
+ * Copyright (C) 2007, 2008 Josef Spillner <josef@ggzgamingzone.org>
  * Published under GNU GPL conditions
  */
 
@@ -33,10 +33,47 @@ static void cb_handler ( GGZMod *mod, GGZModEvent event, const void *data )
 	{
 		GGZChat *chat = ( GGZChat * ) data;
 		dataval = rb_str_new2 ( chat->player );
+
 		VALUE sep = rb_str_new2 ( ": " );
 		VALUE msg = rb_str_new2 ( chat->message );
 		rb_str_concat ( dataval, sep );
 		rb_str_concat ( dataval, msg );
+	}
+
+	if ( event == GGZMOD_EVENT_INFO )
+	{
+		GGZPlayerInfo *info;
+		GGZList *infoslist = ( GGZList * ) data;
+		GGZListEntry *entry;
+		dataval = rb_ary_new ();
+
+		for ( entry = ggz_list_head ( infoslist ); entry; entry = ggz_list_next ( entry ) )
+		{
+			info = ( GGZPlayerInfo * ) ggz_list_get_data ( entry );
+			VALUE infoval = rb_ary_new ();
+			rb_ary_push ( infoval, rb_str_new2 ( info->realname ) );
+			rb_ary_push ( infoval, rb_str_new2 ( info->photo ) );
+			rb_ary_push ( infoval, rb_str_new2 ( info->host ) );
+			rb_ary_push ( dataval, infoval );
+		}
+	}
+
+	if ( event == GGZMOD_EVENT_RANKINGS )
+	{
+		GGZRanking *ranking;
+		GGZList *rankingslist = ( GGZList * ) data;
+		GGZListEntry *entry;
+		dataval = rb_ary_new ();
+
+		for ( entry = ggz_list_head ( rankingslist ); entry; entry = ggz_list_next ( entry ) )
+		{
+			ranking = ( GGZRanking * ) ggz_list_get_data ( entry );
+			VALUE rankval = rb_ary_new ();
+			rb_ary_push ( rankval, rb_str_new2 ( ranking->name ) );
+			rb_ary_push ( rankval, INT2FIX ( ranking->position ) );
+			rb_ary_push ( rankval, INT2FIX ( ranking->score ) );
+			rb_ary_push ( dataval, rankval );
+		}
 	}
 
 	rb_funcall( cTEST, rb_intern("ggzmod_handler"), 2, INT2FIX ( event ), dataval );
@@ -52,6 +89,7 @@ static void init_ggz ()
 	ggzmod_set_handler ( ggzmod, GGZMOD_EVENT_CHAT, cb_handler );
 	ggzmod_set_handler ( ggzmod, GGZMOD_EVENT_STATS, cb_handler );
 	ggzmod_set_handler ( ggzmod, GGZMOD_EVENT_INFO, cb_handler );
+	ggzmod_set_handler ( ggzmod, GGZMOD_EVENT_RANKINGS, cb_handler );
 	ggzmod_set_handler ( ggzmod, GGZMOD_EVENT_ERROR, cb_handler );
 }
 
@@ -232,10 +270,10 @@ static VALUE t_get_record ( VALUE self, VALUE seat )
 	if ( ret )
 	{
 		array = rb_ary_new();
-		rb_ary_push(array, FIX2INT ( wins ) );
-		rb_ary_push(array, FIX2INT ( losses ) );
-		rb_ary_push(array, FIX2INT ( ties ) );
-		rb_ary_push(array, FIX2INT ( forfeits ) );
+		rb_ary_push(array, INT2FIX ( wins ) );
+		rb_ary_push(array, INT2FIX ( losses ) );
+		rb_ary_push(array, INT2FIX ( ties ) );
+		rb_ary_push(array, INT2FIX ( forfeits ) );
 		return array;
 	}
 	else
@@ -298,6 +336,15 @@ static VALUE t_get_info ( VALUE self, VALUE seat )
 	return array;
 }
 
+static VALUE t_request_rankings ( VALUE self )
+{
+	ret = ggzmod_player_request_rankings ( ggzmod );
+	if ( ret )
+		return Qtrue;
+	else
+		return Qfalse;
+}
+
 /* Module initialization */
 
 static void init_constants ( VALUE self )
@@ -326,6 +373,7 @@ static void init_constants ( VALUE self )
 	rb_define_const ( self, "EVENTCHAT", INT2FIX ( GGZMOD_EVENT_CHAT ) );
 	rb_define_const ( self, "EVENTSTATS", INT2FIX ( GGZMOD_EVENT_STATS ) );
 	rb_define_const ( self, "EVENTINFO", INT2FIX ( GGZMOD_EVENT_INFO ) );
+	rb_define_const ( self, "EVENTRANKINGS", INT2FIX ( GGZMOD_EVENT_RANKINGS) );
 	rb_define_const ( self, "EVENTERROR", INT2FIX ( GGZMOD_EVENT_ERROR ) );
 }
 
@@ -365,6 +413,8 @@ static void init_methods ( VALUE self )
 
 	rb_define_method ( self, "request_info", t_request_info, 1 );
 	rb_define_method ( self, "get_info", t_get_info, 1 );
+
+	rb_define_method ( self, "request_rankings", t_request_rankings, 0 );
 }
 
 void Init_GGZMod ()

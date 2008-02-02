@@ -46,6 +46,7 @@ class RGGZMod
 			GGZMod::EVENTCHAT => "chat",
 			GGZMod::EVENTSTATS => "stats",
 			GGZMod::EVENTINFO => "info",
+			GGZMod::EVENTRANKINGS => "rankings",
 			GGZMod::EVENTERROR => "error"
 		}
 		name = names[id]
