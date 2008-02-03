@@ -1,0 +1,22 @@
+Savegame support in GGZ Community
+=================================
+
+Any match registered in the database with a corresponding savegame can be
+viewed and at least partly verified by loading it into GGZ Community's
+savegame viewer. Right now only the endgame position is displayed,
+although a step-by-step replay through the game might be possible in
+the future.
+
+Each savegame handler consists of a 'Savegame' class to load the game
+and a GD-based script to display the game board graphically, either
+drawing with graphics primitives or using images or both.
+
+Right now the following savegame handlers exist:
+
+* Chess (PGN format)
+* Connect the Dots (custom format by GGZ)
+* Freelords (custom XML format)
+* Go (SGF format)
+* TEG (custom XML format)
+* Tic-Tac-Toe (custom format by GGZ)
+
