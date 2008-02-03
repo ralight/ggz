@@ -66,6 +66,9 @@ Our Chess server and clients do not follow <i>XBoard</i> but that might be
 changed in the future. The chess server does however support logging in the
 <i>PGN</i> format (Portable Game Notation), and the chess savegame handler in
 GGZ Community supports loading <i>PGN</i> files.
+On the other hand, the standard file format for Go (<i>SGF</i>, or
+<i>Smart Game Format</i>) isn't used by our Go server yet. It even looks like
+a good candidate for archiving other played board games.
 
 <br/>
 
