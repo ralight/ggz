@@ -1,0 +1,50 @@
+GGZBoard - a generic board game framework for the GGZ Gaming Zone
+=================================================================
+
+GGZBoard uses the power of Python, SDL (Pygame) and GGZ to deliver many board
+games including network game and local and remote AI players.
+
+GGZBoard also provides several Python-based game servers, although those are not
+tightly coupled to GGZBoard itself. In fact, several of the game modules use
+external game servers, e.g. from the ggz-server package.
+
+Tagua (formerly KBoard) is another, similar project for KDE 4, although
+GGZBoard also has an old experimental KDE 3 frontend, check
+playground/ggz-python/kuohbe for the sources.
+
+For more introductory information, see:
+- http://www.ggzgamingzone.org/gameclients/ggzboard/
+- the directory games/ggz-games/ggzboard in ggz-docs
+
+Supported games
+---------------
+
+The following Matrix documents the currently supported game modules within
+the GGZBoard framework. Each game is implemented in module_<gamename>.py and
+might provide net_<gamename>.py for networking and/or server_<gamename>.py
+for the game server, which runs standalone but re-uses the module.
+The module also contains the AI, either as internal code or as a wrapper
+around external programs.
+
+Game name  | Network  | Local AI | Protocol | Server   | Server AI
+-----------+----------+----------+----------+----------+----------
+Backgammon | no       | no       | --       | --       | --
+Checkers   | yes      | internal | custom   | ggzboard | (module)
+Chess      | yes      | ggzchess | custom   | ext.     | ext.
+ConnectX   | yes      | random!  | custom   | ext.     | ext.
+Go         | yes      | gnugo    | gtp      | ext.     | ext.
+Hnefatafl  | yes      | internal | custom   | ggzboard | (module)
+Ludo       | yes      | internal | bogaprot | ggzboard | (module)
+Reversi    | yes      | random   | custom   | ext.     | ext.
+Shogi      | no       | gnushogi | --       | --       | --
+Sudoku     | no       | no       | --       | --       | --
+
+Notes:
+- ConnectX could make use of Velena as good external AI
+  (the ggzd.connectx server already does)
+- Chess could make use of GNU Chess as good external AI
+  (the ggzd.chess server already does)
+- Random AIs should be substituted with something better
+  (this category includes dull AIs which aren't even random)
+- All custom protocol should be converted to Bogaprot
+
