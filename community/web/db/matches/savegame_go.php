@@ -116,7 +116,7 @@ class Savegame
 	function evaluate($prop, $propval)
 	{
 		if (($prop == "B") || ($prop == "W")) :
-			$x = ord($propval[0]) - ord('A');
+			$x = ord($propval[0]) - ord('a');
 			$y = ord($propval[1]) - ord('a');
 			$this->game[$x][$y] = $prop;
 		elseif ($prop == "SZ") :
