@@ -22,3 +22,4 @@ PlayersAllowed = 2
 [NamedBots]
 ConnectXInternal=connectx
 Velena=velena
+LINeup4=lineup4

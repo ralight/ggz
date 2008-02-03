@@ -4,7 +4,7 @@
  * Project: GGZ ConnectX game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 8780 2007-01-02 12:15:46Z josef $
+ * $Id: game.c 9645 2008-02-03 21:51:17Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -36,6 +36,7 @@
 
 #include "game.h"
 #include "ai-velena.h"
+#include "ai-lineup4.h"
 
 /* Data structure for ConnectX game */
 struct connectx_game_t {
@@ -47,7 +48,7 @@ struct connectx_game_t {
 	char state;
 	char turn;
 	int optionsseat;
-	int velena;
+	int ai;
 };
 
 /* ConnectX protocol */
@@ -82,6 +83,11 @@ struct connectx_game_t {
 #define CONNECTX_STATE_WAITING     2 /* Waiting for all players to join, options have been received */
 #define CONNECTX_STATE_PLAYING     3 /* Playing */
 #define CONNECTX_STATE_DONE        4
+
+/* Internal: AI players */
+#define AI_INTERNAL 1
+#define AI_VELENA   2
+#define AI_LINEUP4  3
 
 /* Global game variables */
 struct connectx_game_t connectx_game;
@@ -122,7 +128,7 @@ void game_init(GGZdMod *ggz)
 	connectx_game.turn = -1;
 	connectx_game.state = CONNECTX_STATE_INIT;
 	connectx_game.ggz = ggz;
-	connectx_game.velena = -1;
+	connectx_game.ai = AI_INTERNAL;
 	/* Board is set up after the options have been collected */
 }
 
@@ -492,8 +498,10 @@ static int game_do_move(int move)
 	}
 
 	game_bot_init();
-	if(connectx_game.velena == 1){
+	if(connectx_game.ai == AI_VELENA){
 		velena_ai_move(move);
+	}else if(connectx_game.ai == AI_LINEUP4){
+		lineup4_ai_move(move);
 	}
 
 	game_send_move(connectx_game.turn, move);
@@ -534,23 +542,31 @@ static void game_bot_init(void)
 
 	me = 1; /* FIXME: assumes that AI player is on seat 1 */
 
-	/* Detect if we play against Velena */
-	if(connectx_game.velena == -1){
+	/* Detect if we play against Velena or LINeup4 */
+	if(connectx_game.ai == AI_INTERNAL){
 		botname = ggzdmod_get_seat(connectx_game.ggz, me).name;
 		botclass = ggzdmod_get_bot_class(connectx_game.ggz, botname);
 		ggzdmod_log(connectx_game.ggz, "bot class: %s [on seat %i]",
 			botclass, me);
 
 		if((botclass) && (!strcmp(botclass, "velena"))){
-			connectx_game.velena = 1;
+			connectx_game.ai = AI_VELENA;
 			velena_ai_init(6, 7, VELENA_HARD);
 			ret = velena_launch();
 			if(!ret){
 				ggzdmod_log(connectx_game.ggz, "velena launch error!");
-				connectx_game.velena = 0;
+				connectx_game.ai = AI_INTERNAL;
+			}
+		}else if((botclass) && (!strcmp(botclass, "lineup4"))){
+			connectx_game.ai = AI_LINEUP4;
+			lineup4_ai_init(6, 7, LINEUP4_NORMAL);
+			ret = lineup4_launch();
+			if(!ret){
+				ggzdmod_log(connectx_game.ggz, "lineup4 launch error!");
+				connectx_game.ai = AI_INTERNAL;
 			}
 		}else{
-			connectx_game.velena = 0;
+			connectx_game.ai = AI_INTERNAL;
 		}
 	}
 }
@@ -562,9 +578,12 @@ static int game_bot_move(int me)
 	int botmove;
 	int ret;
 
-	if(connectx_game.velena){
+	if(connectx_game.ai == AI_VELENA){
 		ret = velena_ai_find(&botmove);
 		if(!ret) ggzdmod_log(connectx_game.ggz, "velena error!");
+	}else if(connectx_game.ai == AI_LINEUP4){
+		ret = lineup4_ai_find(&botmove);
+		if(!ret) ggzdmod_log(connectx_game.ggz, "lineup4 error!");
 	}else{
 		do{
 			botmove = (random() % connectx_game.boardwidth);
