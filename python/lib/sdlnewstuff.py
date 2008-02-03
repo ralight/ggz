@@ -81,7 +81,10 @@ def downloaddata(conf, category):
 		return None
 	print "FILENAME", filename
 
-	dom = xml.dom.minidom.parse(filename)
+	try:
+		dom = xml.dom.minidom.parse(filename)
+	except:
+		return None
 
 	root = dom.documentElement
 	print "root", root.tagName

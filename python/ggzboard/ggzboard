@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # GGZBoard: Board game client container application
-# Copyright (C) 2004 - 2006 Josef Spillner <josef@ggzgamingzone.org>
+# Copyright (C) 2004 - 2008 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
 import pygame
@@ -14,6 +14,7 @@ import imp
 import re
 import gettext
 import glob
+import signal
 
 try:
 	import ggzsettings
@@ -42,7 +43,7 @@ import sdlnewstuff
 
 import playertable
 
-gettext.install("ggzpython", I18NPATH, 1)
+gettext.install("ggzpython", I18NPATH, True)
 
 def asciify(str):
 		asciistr = str.encode("ascii", "replace")
@@ -162,6 +163,15 @@ class GGZBoard:
 		self.currentgame = None
 		self.nextgame = None
 		self.gamedirs = {}
+
+		signal.signal(signal.SIGINT, self.signalhandler)
+
+	def signalhandler(self, signum, stackframe):
+		print "## GGZBoard signal handler ##"
+		if self.game:
+			if self.game.destroy:
+				self.game.destroy()
+		sys.exit(1)
 
 	def ggzinit(self, ggzmode):
 		self.ggzmode = ggzmode
