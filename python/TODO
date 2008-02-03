@@ -1,0 +1,4 @@
+- gowrapper: see if 'qgo' can be used as an alternative, much nicer client
+  compared to CGoBan - apparently it doesn't support Modem play :(
+- gowrapper: report savegame to ggzd, making use of gnugo SGF saves
+
