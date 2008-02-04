@@ -31,7 +31,7 @@ print "Main configuration: This one is essential.\n";
 print "Grubby's name: "; $name = <STDIN>; chomp($name);
 print "The owner of $name: "; $owner = <STDIN>; chomp($owner);
 print "Which room should $name join first (default: 0)? "; $room = <STDIN>; chomp($room);
-print "What is $names\'s default host (default: localhost)? "; $host = <STDIN>; chomp($host);
+print "What is $name\'s default host (default: localhost)? "; $host = <STDIN>; chomp($host);
 print "Where should $name log to (default: no log file)? "; $logfile = <STDIN>; chomp($logfile);
 print "What is $name\'s native language (default: en)? "; $language = <STDIN>; chomp($language);
 print "\n";
