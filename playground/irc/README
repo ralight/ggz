@@ -1,0 +1,10 @@
+ggz-ircgate: Relay chat between GGZ and IRC chat
+
+With this tool, room chat from GGZ can be forwarded to IRC,
+and vice-versa. It works on a 1:1 mapping between GGZ room and
+IRC channel.
+
+As opposed to ggzd-jabberproxy, this doesn't actually combine GGZ
+functionality with a chat network. Instead, it really just focuses on
+relaying the chat messages.
+
