@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 9577 2008-01-20 12:18:41Z josef $
+ * $Id: ggzcore.h 9650 2008-02-06 20:07:20Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -31,7 +31,7 @@
 #define GGZCORE_VERSION_MAJOR 0
 #define GGZCORE_VERSION_MINOR 99
 #define GGZCORE_VERSION_MICRO 1
-#define GGZCORE_VERSION_IFACE "9:0:0"
+#define GGZCORE_VERSION_IFACE "9:0:0+devel"
 
 #include <stdarg.h>
 #include <sys/types.h>
@@ -118,6 +118,14 @@ void ggzcore_reload(void);
  */
 void ggzcore_destroy(void);
 
+/**
+ * Check if the library in use is the one the application was compiled against.
+ *
+ * @param iface GGZCORE_VERSION_IFACE
+ *
+ * @return 1 if this is the case, 0 otherwise.
+ */
+int ggzcore_check_library(const char *iface);
 
 /* Definitions for all internal ggzcore structures. */
 

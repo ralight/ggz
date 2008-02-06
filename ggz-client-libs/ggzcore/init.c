@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: init.c 9209 2007-07-24 06:44:48Z josef $
+ * $Id: init.c 9650 2008-02-06 20:07:20Z josef $
  *
  * Initialization code
  *
@@ -42,6 +42,14 @@
 #include <locale.h>
 #include <libintl.h>
 #include <signal.h>
+
+int ggzcore_check_library(const char *iface)
+{
+	if(!ggz_check_library(LIBGGZ_VERSION_IFACE))
+		return 0;
+	return !ggz_strcmp(iface, GGZCORE_VERSION_IFACE);
+}
+
 
 int ggzcore_init(GGZOptions options)
 {
