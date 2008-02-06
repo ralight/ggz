@@ -25,7 +25,7 @@
 #define LIBGGZ_VERSION_MAJOR 0
 #define LIBGGZ_VERSION_MINOR 99
 #define LIBGGZ_VERSION_MICRO 1
-#define LIBGGZ_VERSION_IFACE "5:0:3"
+#define LIBGGZ_VERSION_IFACE "5:0:3+devel"
 
 #include <sys/types.h>
 
@@ -224,6 +224,15 @@ char *ggz_strbuild(const char *fmt, ...);
  * @return 0 if no allocated memory remains, -1 otherwise
  */
 int ggz_memory_check(void);
+
+/**
+ * Check if the library in use is the one the application was compiled against.
+ *
+ * @param iface LIBGGZ_VERSION_IFACE
+ *
+ * @return 1 if this is the case, 0 otherwise.
+ */
+int ggz_check_library(const char *iface);
 
 /** @} */
 

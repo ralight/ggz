@@ -441,3 +441,8 @@ char *ggz_strbuild(const char *fmt, ...)
 	}
 }
 
+int ggz_check_library(const char *iface)
+{
+	return !ggz_strcmp(iface, LIBGGZ_VERSION_IFACE);
+}
+
