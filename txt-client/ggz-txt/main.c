@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 9492 2008-01-12 16:57:43Z josef $
+ * $Id: main.c 9648 2008-02-06 20:02:38Z josef $
  *
  * Main loop
  *
@@ -169,15 +169,26 @@ int main(int argc, char *argv[])
 	init_debug();
 #endif
 
+	/* Setup options and initialize ggzcore lib */
+	if(!ggz_check_library(LIBGGZ_VERSION_IFACE)) {
+		fprintf(stderr, "FATAL: libggz version mismatch (needs %s).\n", LIBGGZ_VERSION_IFACE);
+		return -1;
+	}
+
+	if(!ggzcore_check_library(GGZCORE_VERSION_IFACE)) {
+		fprintf(stderr, "FATAL: ggzcore version mismatch (needs %s).\n", GGZCORE_VERSION_IFACE);
+		return -1;
+	}
+
+	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES;
+	ggzcore_init(opt);
+	ggz_tls_init(NULL, NULL, NULL);
+
+	/* Set up the terminal window */
 	output_init(opt_reverse);
 	signal(SIGTERM, term_handle);
 	signal(SIGINT, term_handle);
 	output_banner();
-
-	/* Setup options and initialize ggzcore lib */
-	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES;
-	ggzcore_init(opt);
-	ggz_tls_init(NULL, NULL, NULL);
 
 	output_status();
 	output_prompt();
