@@ -1,6 +1,6 @@
 #!/bin/sh
 
 ./ggz-ircgate \
-	--ggzuri ggz://localhost:5688/Krosswater \
-	--ircuri irc://localhost/#moo
+	--ggzuri ggz://chatter@localhost:5688/Krosswater \
+	--ircuri irc://chatter@localhost/#moo
 

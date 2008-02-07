@@ -22,6 +22,7 @@ static int status = NET_NOOP;
 static GGZServer *server = NULL;
 static char *inputstr = NULL;
 static char *save_room;
+static char *chatname;
 
 /* Prototypes */
 static GGZHookReturn net_hook_connect(unsigned int id, const void *event_data, const void *user_data);
@@ -70,12 +71,14 @@ void net_ggz_connect(const char *ggzuri)
 	ggzcore_server_add_event_hook(server, GGZ_ROOM_LIST, net_hook_roomlist);
 
 	uri = ggz_uri_from_string(ggzuri);
+	printf("GGZ connection: %s@%s (room %s)\n", uri.user, uri.host, uri.path);
 
 	ggzcore_server_set_hostinfo(server, uri.host, uri.port, 0);
 	ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST, uri.user, uri.password, NULL);
 	ggzcore_server_connect(server);
 
 	save_room = ggz_strdup(uri.path);
+	chatname = ggz_strdup(uri.user);
 
 	ggz_uri_free(uri);
 }
@@ -110,9 +113,10 @@ int net_ggz_status(void)
 	int fd;
 	fd_set set;
 	struct timeval to;
+	int oldstatus;
 
-	to.tv_sec = 1;
-	to.tv_usec = 0;
+	to.tv_sec = 0;
+	to.tv_usec = 500000;
 
 	if(ggzcore_server_get_fd(server) < 0)
 		return NET_NOOP;
@@ -124,7 +128,9 @@ int net_ggz_status(void)
 	if(ret == 1)
 		ggzcore_server_read_data(server, fd);
 
-	return NET_NOOP;
+	oldstatus = status;
+	status = NET_NOOP;
+	return oldstatus;
 }
 
 /* Get an entry from the queue */
@@ -149,10 +155,7 @@ GGZHookReturn net_hook_connect(unsigned int id, const void *event_data, const vo
 	while((!ggzcore_server_is_online(server)) && (status == NET_NOOP))
 		ggzcore_server_read_data(server, ggzcore_server_get_fd(server));
 
-	if(status == NET_NOOP)
-	{
-		ggzcore_server_login(server);
-	}
+	ggzcore_server_login(server);
 
 	return GGZ_HOOK_OK;
 }
@@ -168,8 +171,6 @@ GGZHookReturn net_hook_login(unsigned int id, const void *event_data, const void
 /* Callback for rooms list */
 GGZHookReturn net_hook_roomlist(unsigned int id, const void *event_data, const void *user_data)
 {
-	status = NET_LOGIN;
-
 	net_join(save_room);
 
 	return GGZ_HOOK_OK;
@@ -183,8 +184,6 @@ GGZHookReturn net_hook_enter(unsigned int id, const void *event_data, const void
 	ggzcore_room_add_event_hook(room, GGZ_ROOM_ENTER, net_hook_roomenter);
 	ggzcore_room_add_event_hook(room, GGZ_ROOM_LEAVE, net_hook_roomleave);
 	ggzcore_room_add_event_hook(room, GGZ_CHAT_EVENT, net_hook_chat);
-
-	status = NET_GOTREADY;
 
 	return GGZ_HOOK_OK;
 }
@@ -207,9 +206,6 @@ GGZHookReturn net_hook_roomenter(unsigned int id, const void *event_data, const 
 {
 	const GGZRoomChangeEventData *data = event_data;
 
-	if(inputstr)
-		ggz_free(inputstr);
-
 	inputstr = ggz_strbuild("%s has joined the room", data->player_name);
 	status = NET_INPUT;
 
@@ -221,9 +217,6 @@ GGZHookReturn net_hook_roomleave(unsigned int id, const void *event_data, const 
 {
 	const GGZRoomChangeEventData *data = event_data;
 
-	if(inputstr)
-		ggz_free(inputstr);
-
 	inputstr = ggz_strbuild("%s has left the room", data->player_name);
 	status = NET_INPUT;
 
@@ -233,15 +226,10 @@ GGZHookReturn net_hook_roomleave(unsigned int id, const void *event_data, const 
 /* Chat callback which passes message to grubby */
 GGZHookReturn net_hook_chat(unsigned int id, const void *event_data, const void *user_data)
 {
-	/*int type;
-	const char *roomname;
-	time_t t;
-	char *ts;
-	int playertype;*/
 	const GGZChatEventData *chat = event_data;
 
-	if(inputstr)
-		ggz_free(inputstr);
+	if(!ggz_strcmp(chat->sender, chatname))
+		return GGZ_HOOK_OK;
 
 	inputstr = ggz_strbuild("[%s] %s", chat->sender, chat->message);
 	status = NET_INPUT;

@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 				ggzuri = optarg;
 				break;
 			default:
-				printf("Syntax: ggz-ircgate --ggzuri <uri> --ircuri <uri>\n");
+				fprintf(stderr, "Syntax: ggz-ircgate --ggzuri <uri> --ircuri <uri>\n");
 				exit(-1);
 				break;
 		}
@@ -62,11 +62,12 @@ int main(int argc, char *argv[])
 		switch(net_ggz_status())
 		{
 			case NET_ERROR:
-				printf("Error on GGZ!");
+				fprintf(stderr, "Error on GGZ!\n");
 				exit(-1);
 				break;
 			case NET_INPUT:
 				msg = net_ggz_input();
+				printf("GGZ->IRC: %s\n", msg);
 				net_irc_output(msg);
 				ggz_free(msg);
 				break;
@@ -75,11 +76,12 @@ int main(int argc, char *argv[])
 		switch(net_irc_status())
 		{
 			case NET_ERROR:
-				printf("Error on IRC!");
+				fprintf(stderr, "Error on IRC!\n");
 				exit(-1);
 				break;
 			case NET_INPUT:
 				msg = net_irc_input();
+				printf("IRC->GGZ: %s\n", msg);
 				net_ggz_output(msg);
 				ggz_free(msg);
 				break;

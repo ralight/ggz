@@ -14,9 +14,7 @@
 enum States
 {
 	NET_NOOP,
-	NET_LOGIN,
 	NET_ERROR,
-	NET_GOTREADY,
 	NET_INPUT
 };
 

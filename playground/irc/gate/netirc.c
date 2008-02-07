@@ -17,10 +17,13 @@
 #include <ggz.h>
 
 /* Globals */
-//static char *message = NULL;
+static char *inputstr = NULL;
 static int status = NET_NOOP;
 static FILE *irc = NULL;
 static char *chatroom = NULL;
+static char *chatname = NULL;
+
+void chat(const char *message);
 
 /* Establish connection: log into an IRC server */
 void net_irc_connect(const char *ircuri)
@@ -29,6 +32,7 @@ void net_irc_connect(const char *ircuri)
 	ggz_uri_t uri;
 
 	uri = ggz_uri_from_string(ircuri);
+	printf("IRC connection: %s@%s (channel %s)\n", uri.user, uri.host, uri.path);
 
 	fd = ggz_make_socket(GGZ_SOCK_CLIENT, 6667, uri.host);
 	if(fd < 0)
@@ -47,71 +51,83 @@ void net_irc_connect(const char *ircuri)
 		return;
 	}
 
-	fprintf(irc, "NICK %s\r\n", "_ggz-ircgate_");
-	fflush(irc);
-	fprintf(irc, "USER %s %s %s :%s\r\n", "_ggz-ircgate_", "somehost", "localhost", "_ggz-ircgate_");
-	fflush(irc);
+	setbuf(irc, NULL);
+	fcntl(fd, F_SETFL, O_NONBLOCK);
+
+	fprintf(irc, "NICK %s\r\n", uri.user);
+	fprintf(irc, "USER %s %s %s :%s\r\n", uri.user, "localhost", "localhost", "GGZ IRC gate");
+
+	/* FIXME: wait for IRC reverse lookup, we're lazy and simply sleep for (hopefully enough) time */
+	sleep(7);
 
 	chatroom = ggz_strdup(uri.path);
+	chatname = ggz_strdup(uri.user);
 
 	fprintf(irc, "JOIN %s\r\n", chatroom);
-	fflush(irc);
 
 	ggz_uri_free(uri);
-
-	status = NET_LOGIN;
 }
 
 /* Loop function */
 int net_irc_status()
 {
-	//int ret;
 	char buffer[1024];
+	int oldstatus;
 
 	if(status == NET_NOOP)
 	{
 		fgets(buffer, sizeof(buffer), irc);
-		buffer[strlen(buffer) - 2] = 0;
-
-		//chat(buffer);
+		if(strlen(buffer) > 0)
+		{
+			buffer[strlen(buffer) - 2] = '\0';
+			chat(buffer);
+		}
 	}
 
-	return NET_NOOP;
+	oldstatus = status;
+	status = NET_NOOP;
+	return oldstatus;
 }
 
 /* Get an entry from the queue */
 char *net_irc_input()
 {
-	return NULL;
+	return inputstr;
 }
 
 /* Let the gate speak */
 void net_irc_output(const char *output)
 {
 	fprintf(irc, "PRIVMSG %s :%s\r\n", chatroom, output);
-	fflush(irc);
 }
 
 void chat(const char *message)
 {
-	//time_t t;
-	//char *ts;
 	char *part;
 	char *tmp, *token;
-	char *msg, *player;
-	int type;
+	char *player;
 
 	/* Extract player name */
 	player = ggz_strdup(message + 1);
 	part = strstr(player, "!");
-	if(part) part[0] = 0;
-	else player = NULL;
+	if(part)
+	{
+		part[0] = '\0';
+	}
+	else
+	{
+		ggz_free(player);
+		return;
+	}
 
-	if(!player) return;
+	/* Bounce off our own messages */
+	if(!ggz_strcmp(player, chatname))
+	{
+		ggz_free(player);
+		return;
+	}
 
 	/* Extract message and message type */
-	type = 0;
-	msg = NULL;
 	part = strstr(message, "PRIVMSG");
 	if(part)
 	{
@@ -125,7 +141,8 @@ void chat(const char *message)
 				if(!strcmp(token, chatroom))
 				{
 					token = strtok(NULL, "\r\n");
-					msg = ggz_strdup(token + 1);
+					inputstr = ggz_strbuild("[%s] %s", player, token + 1);
+					status = NET_INPUT;
 				}
 			}
 		}
@@ -141,21 +158,6 @@ void chat(const char *message)
 		}
 	}
 
-	/*if(!type){
-		ggz_free(player);
-		if(msg) ggz_free(msg);
-		return;
-	}*/
-	/*if((!msg) && ((type == GURU_PRIVMSG) || (type == GURU_CHAT))){
-		ggz_free(player);
-		return;
-	}*/
-
-	/* Ignore all self-generates messages */
-	/*net_internal_queueadd(player, msg, type);*/
-	status = NET_INPUT;
-
-	if(msg) ggz_free(msg);
 	ggz_free(player);
 }
 
