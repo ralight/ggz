@@ -1,11 +1,22 @@
 #!/usr/bin/env python
+#
+# Commands:
+# guru stats
 
-import grubby
 import re
 import pg
 
-input = grubby.answer
-grubby.answer = ""
+try:
+	import grubby
+	embedded = True
+except:
+	embedded = False
+
+if embedded:
+	input = grubby.answer
+else:
+	input = raw_input("")
+answer = ""
 
 s = input.split(" ")
 if len(s) == 2:
@@ -19,5 +30,10 @@ if len(s) == 2:
 		for row in q.dictresult():
 			game = row['game']
 			print game
-			grubby.answer += game + "\n"
+			answer += game + "\n"
+
+if embedded:
+	grubby.answer = answer
+else:
+	print answer
 
