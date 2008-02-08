@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
 	/* Start connection procedure */
 	net_ggz_connect(ggzuri);
 	net_irc_connect(ircuri);
+	printf("Connected.\n");
 
 	/* Main loop */
 	while(1)

@@ -81,6 +81,10 @@
 		Some Sudoku creation and solver software written in the functional
 		programming language Haskell.
 
+	IRC:
+		Bidirectional message exchange gate between a channel on IRC and a
+		room on GGZ.
+
 	Kopete-GGZ:
 		GGZ plugin for the Kopete IM client. Should be moved to kde-client
 		actually.

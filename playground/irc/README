@@ -1,4 +1,4 @@
-ggz-ircgate: Relay chat between GGZ and IRC chat
+ggz-ircgate: Relay chat between GGZ and IRC
 
 With this tool, room chat from GGZ can be forwarded to IRC,
 and vice-versa. It works on a 1:1 mapping between GGZ room and

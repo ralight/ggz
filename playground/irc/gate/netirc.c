@@ -104,8 +104,9 @@ void net_irc_output(const char *output)
 void chat(const char *message)
 {
 	char *part;
-	char *tmp, *token;
+	char *token;
 	char *player;
+	char *user, *content;
 
 	/* Extract player name */
 	player = ggz_strdup(message + 1);
@@ -113,6 +114,18 @@ void chat(const char *message)
 	if(part)
 	{
 		part[0] = '\0';
+		user = part + 1;
+		part = strstr(user, " ");
+		if(part)
+		{
+			part[0] = '\0';
+			content = part + 1;
+		}
+		else
+		{
+			ggz_free(player);
+			return;
+		}
 	}
 	else
 	{
@@ -128,11 +141,9 @@ void chat(const char *message)
 	}
 
 	/* Extract message and message type */
-	part = strstr(message, "PRIVMSG");
-	if(part)
+	if(strstr(content, "PRIVMSG") == content)
 	{
-		tmp = ggz_strdup(part);
-		token = strtok(tmp, " ");
+		token = strtok(content, " ");
 		if(token)
 		{
 			token = strtok(NULL, " ");
@@ -146,16 +157,17 @@ void chat(const char *message)
 				}
 			}
 		}
-		ggz_free(tmp);
 	}
-	else
+	else if(strstr(content, "JOIN") == content)
 	{
-		if(strstr(message, " JOIN "))
-		{
-		}
-		if(strstr(message, " QUIT "))
-		{
-		}
+		inputstr = ggz_strbuild("%s has joined the room", player);
+		status = NET_INPUT;
+	}
+	else if((strstr(content, "PART") == content)
+	|| (strstr(content, "QUIT") == content))
+	{
+		inputstr = ggz_strbuild("%s has left the room", player);
+		status = NET_INPUT;
 	}
 
 	ggz_free(player);
