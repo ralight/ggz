@@ -16,64 +16,70 @@ databasedir = ENV['HOME'] + "/.ggz/grubby"
 class GuruMessages
   def initialize
     @msg = Array.new
-	@alerts = Array.new
+    @alerts = Array.new
+    @output = nil
   end
   def add(fromplayer, player, message)
     @entry = Array.new
-	newmessage = (fromplayer + " said: " + message.join(" ")).split(" ")
+    newmessage = (fromplayer + " said: " + message.join(" ")).split(" ")
     @entry << player << newmessage
     @msg.push(@entry)
-	print "OK, I make sure he gets the message."
-	$stdout.flush
-	sleep 1
+    @output = "OK, I make sure he gets the message."
   end
   def tell(player)
     len = @msg.length
-	a = 0
+    a = 0
     for i in 0..len
-	  unless @msg[len-i] == nil
-	    print @msg[len-i][1][0..@msg[len-i][1].length - 1].join(" ") + "\n" if player == @msg[len-i][0]
-		if player == @msg[len-i][0]
-  	      @msg.delete_at(len-i)
-		  a = 1
-		end
-	  end
-	end
-	if a == 0
-	  print "Sorry " + player + ", I guess you're not important enough to get any messages."
-	end
-	$stdout.flush
-	sleep 1
+      unless @msg[len-i] == nil
+        print @msg[len-i][1][0..@msg[len-i][1].length - 1].join(" ") + "\n" if player == @msg[len-i][0]
+        if player == @msg[len-i][0]
+          @msg.delete_at(len-i)
+          a = 1
+        end
+      end
+    end
+    if a == 0
+      @output = "Sorry " + player + ", I guess you're not important enough to get any messages."
+    end
   end
   def alert(fromplayer, player)
     @entry = Array.new << fromplayer << player
     @alerts.push(@entry)
-	print "OK, I alert " + player + " when I see him."
-	$stdout.flush
-	sleep 1
+    @output = "OK, I alert " + player + " when I see him."
   end
   def trigger(player)
     len = @alerts.length
-	a = 0
+    a = 0
     for i in 0..len
-	  unless @alerts[len-i] == nil
-  	    if player == @alerts[len-i][0]
-	      print player + ": ALERT from " + @alerts[len-i][1] + "\n"
-	      @alerts.delete_at(len-i)
-		  a = 1
-		end
+      unless @alerts[len-i] == nil
+        if player == @alerts[len-i][0]
+          if not @output
+              @output = ""
 	  end
-	end
-	if a == 1
-	  $stdout.flush
-	  sleep 1
-	  return 1
-	end
-	return 0
+          @output += print player + ": ALERT from " + @alerts[len-i][1] + "\n"
+          @alerts.delete_at(len-i)
+          a = 1
+        end
+      end
+      end
+      if a == 1
+        return 1
+      end
+    return 0
+  end
+  def output
+    return @output
   end
 end
 
-input = $stdin.gets.chomp.split(/\ /)
+if $answer
+  input = $answer[0]
+  $answer = nil
+  embedded = true
+else
+  input = $stdin.gets.chomp.split(/\ /)
+  embedded = false
+end
 
 mode = 0
 if (input[1] == "do") && (input[2] == "i") && (input[3] == "have") &&
@@ -112,9 +118,7 @@ if mode == 1
   if player != nil
     m.tell player
   else
-    print "If you mind telling me who you are?"
-    $stdout.flush
-	sleep 1
+    output = "If you mind telling me who you are?"
   end
 end
 if mode == 2
@@ -124,7 +128,18 @@ if mode == 3
   m.alert fromplayer, player
 end
 
+if m.output
+  output = m.output
+end
+
 File.open(databasedir + "/messages", "w+") do |f|
   Marshal.dump(m, f)
+end
+
+if embedded
+  $answer[0] = output
+else
+  $stdout.puts output
+  $stdout.flush
 end
 

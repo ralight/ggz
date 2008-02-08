@@ -24,14 +24,18 @@ class GuruMeeting
     @notes.delete(date)
   end
   def tell
-	print "Planned meetings: ", @notes.join(" - ")
-	#print "\n"
-	$stdout.flush
-	sleep 1
+	return "Planned meetings: " + @notes.join(" - ")
   end
 end
 
-input = $stdin.gets.chomp.split(/\ /)
+if $answer
+	input = $answer[0]
+	$answer = nil
+	embedded = true
+else
+	input = $stdin.gets.chomp.split(/\ /)
+	embedded = false
+end
 
 if (input[1] != "meeting")
   exit
@@ -61,8 +65,9 @@ if input[2] == "remove"
   dump = 1
 end
 
+output = nil
 if input[2] == nil
-  m.tell
+  output = m.tell
 end
 
 if dump == 1
@@ -71,3 +76,10 @@ if dump == 1
   end
 end
 
+if embedded
+	$answer[0] = output
+else
+	$stdout.puts output
+	$stdout.flush
+	sleep 1
+end
