@@ -8,6 +8,7 @@ import os
 import socket
 import signal
 import ancillary
+import ConfigParser
 
 reset = "\x1b[39;49;00m"
 red = "\x1b[31m"
@@ -118,10 +119,11 @@ def initserver(sock, gamename, seats, seatnames):
 
 	seatsmsg = net_int(len(seats))
 	seatsmsg += net_int(len(spectatorseats))
-	for seat in seats:
+	for i in range(len(seats)):
+		seat = seats[i]
 		seatsmsg += net_int(seat)
 		if seat == Protocol.SEAT_RESERVED or seat == Protocol.SEAT_BOT:
-			seatname = seatnames[seats.index(seat)]
+			seatname = seatnames[i]
 			seatsmsg += net_string(seatname)
 
 	msg = net_int(Protocol.MSG_GAME_LAUNCH) + net_string(gamename) + seatsmsg
@@ -189,23 +191,65 @@ def main():
 
 	gameserver = sys.argv[1]
 
+	gamename = None
+	numseats = None
+	seats = []
+	seatnames = []
+
 	try:
-		gamename = raw_input("Game name: ")
-		numseats = raw_input("Number of seats: ")
-		seats = []
-		seatnames = []
+		ini = ConfigParser.SafeConfigParser()
+		files = ini.read(os.path.expanduser('~/.ggz/launchserver.rc'))
+		if len(files) == 0:
+			raise "config file not found"
+		if ini.has_section(gameserver):
+			gamename = ini.get(gameserver, "name")
+			numseats = ini.getint(gameserver, "seats")
+			for i in range(numseats):
+				try:
+					seattype = ini.get(gameserver, "seat[" + str(i) + "]")
+				except:
+					seattype = None
+				try:
+					seatname = ini.get(gameserver, "seatname[" + str(i) + "]")
+				except:
+					seatname = None
+				if seattype in ["open", "bot", "reserved"]:
+					seat = Protocol.seattypes_reverse[seattype]
+				else:
+					seat = None
+				seats.append(seat)
+				seatnames.append(seatname)
+	except:
+		out("Notice: no config file loaded, querying all parameters")
+
+	try:
+		if not gamename:
+			gamename = raw_input("Game name: ")
+		if not numseats:
+			numseats = raw_input("Number of seats: ")
 		print "Seat types: open|bot|reserved"
 		for i in range(int(numseats)):
-			seattype = raw_input("Type of seat " + str(i) + ": ")
-			if seattype in ["open", "bot", "reserved"]:
-				seat = Protocol.seattypes_reverse[seattype]
-				seats.append(seat)
-				seatname = ""
-				if seat == Protocol.SEAT_RESERVED or seat == Protocol.SEAT_BOT:
-					seatname = raw_input("Name of player/bot in seat " + str(i) + ": ")
-				seatnames.append(seatname)
+			if len(seats) != numseats or seats[i] == None:
+				seattype = raw_input("Type of seat " + str(i) + ": ")
+				if seattype in ["open", "bot", "reserved"]:
+					seat = Protocol.seattypes_reverse[seattype]
+				else:
+					raise "unexpected value for seat"
+				if len(seats) != numseats:
+					seats.append(seat)
+				else:
+					seats[i] = seat
 			else:
-				raise "unexpected value for seat"
+				seat = seats[i]
+			nameneeded = (seat == Protocol.SEAT_RESERVED or seat == Protocol.SEAT_BOT)
+			if len(seatnames) != numseats or (seatnames[i] == None and nameneeded):
+				seatname = None
+				if nameneeded:
+					seatname = raw_input("Name of player/bot in seat " + str(i) + ": ")
+				if len(seatnames) != numseats:
+					seatnames.append(seatname)
+				else:
+					seatnames[i] = seatname
 	except:
 		err("Syntax error: invalid options")
 		sys.exit(1)
