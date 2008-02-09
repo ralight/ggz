@@ -7,6 +7,7 @@ import sys
 import os
 import socket
 import signal
+import ancillary
 
 reset = "\x1b[39;49;00m"
 red = "\x1b[31m"
@@ -133,9 +134,10 @@ def initserver(sock, gamename, seats, seatnames):
 	# FIXME: this is a fake player
 	#if seats[0] == Protocol.SEAT_PLAYER:
 	(parentsock, childsock) = socket.socketpair()
-	playermsg = net_int(Protocol.SEAT_PLAYER) + net_string("someplayer") + net_int(childsock.fileno())
+	playermsg = net_int(Protocol.SEAT_PLAYER) + net_string("someplayer")
 	msg = net_int(Protocol.MSG_GAME_SEAT) + net_int(0) + playermsg
 	sock.send(msg)
+	ancillary.write_fd(sock.fileno(), childsock.fileno())
 
 	while True:
 		s = sock.recv(4)
