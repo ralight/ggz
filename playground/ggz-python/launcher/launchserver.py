@@ -9,6 +9,7 @@ import socket
 import signal
 import ancillary
 import ConfigParser
+import select
 
 reset = "\x1b[39;49;00m"
 red = "\x1b[31m"
@@ -115,8 +116,38 @@ class Protocol:
 	seattypes_reverse = reverse_dict(seattypes)
 
 class ClientProtocol:
+	MSG_GAME_STATE = 0
+	REQ_STAND = 1
+	REQ_SIT = 2
+	REQ_BOOT = 3
+	REQ_OPEN = 4
+	REQ_CHAT = 5
+	REQ_INFO = 6
+	REQ_RANKINGS = 7
+
 	MSG_GAME_LAUNCH = 0
+	MSG_GAME_SERVER = 1
 	MSG_GAME_SERVER_FD = 2
+	MSG_GAME_PLAYER = 3
+	MSG_GAME_SEAT = 4
+	MSG_GAME_SPECTATOR_SEAT = 5
+	MSG_GAME_CHAT = 6
+	MSG_GAME_STATS = 7
+	MSG_GAME_INFO = 8
+	MSG_GAME_RANKINGS = 9
+
+	STATE_CREATED = 0
+	STATE_CONNECTED = 1
+	STATE_WAITING = 2
+	STATE_PLAYING = 3
+	STATE_DONE = 4
+
+	statenames = {}
+	statenames[STATE_CREATED] = "created"
+	statenames[STATE_CONNECTED] = "connected"
+	statenames[STATE_WAITING] = "waiting"
+	statenames[STATE_PLAYING] = "playing"
+	statenames[STATE_DONE] = "done"
 
 def initclient(clientsock, serversock, parentsock, childsock, clientexecutable):
 	# clientsock/serversock: game client<->game server
@@ -152,6 +183,8 @@ def initclient(clientsock, serversock, parentsock, childsock, clientexecutable):
 
 def initserver(sock, gamename, seats, seatnames, clientexecutable):
 	pids = []
+	csocks = []
+	poller = select.poll()
 
 	spectatorseats = []
 
@@ -171,6 +204,8 @@ def initserver(sock, gamename, seats, seatnames, clientexecutable):
 	#print
 	sock.send(msg)
 
+	poller.register(sock.fileno(), select.POLLIN)
+
 	# FIXME: this is a fake player
 	if seats[0] == Protocol.SEAT_OPEN:
 		out("Put a human into the first seat")
@@ -185,6 +220,8 @@ def initserver(sock, gamename, seats, seatnames, clientexecutable):
 		if clientexecutable:
 			pid = initclient(clientsock, serversock, parentsock, childsock, clientexecutable)
 			pids.append(pid)
+			csocks.append(parentsock)
+			poller.register(parentsock.fileno(), select.POLLIN)
 		else:
 			err("No game client executable known, forcing server-only mode")
 	else:
@@ -196,56 +233,98 @@ def initserver(sock, gamename, seats, seatnames, clientexecutable):
 		sock.send(msg)
 
 	while True:
-		s = sock.recv(4)
-		op = net_toint(s)
+		fdtuples = poller.poll()
+		for fdtuple in fdtuples:
+			(fd, event) = fdtuple
+			if fd == sock.fileno():
+				s = sock.recv(4)
+				op = net_toint(s)
 
-		if op == Protocol.MSG_LOG:
-			s = sock.recv(4)
-			strlen = net_toint(s)
-			s = sock.recv(strlen)
-			out("Game server log: " + s)
-		elif op == Protocol.REQ_GAME_STATE:
-			s = sock.recv(1)
-			state = ord(s)
+				if op == Protocol.MSG_LOG:
+					s = sock.recv(4)
+					strlen = net_toint(s)
+					s = sock.recv(strlen)
+					out("Game server log: " + s)
+				elif op == Protocol.REQ_GAME_STATE:
+					s = sock.recv(1)
+					state = ord(s)
 
-			if Protocol.tablenames.has_key(state):
-				statename = Protocol.tablenames[state]
+					if Protocol.tablenames.has_key(state):
+						statename = Protocol.tablenames[state]
+					else:
+						statename = "???"
+					out("Game server state: " + statename)
+
+					msg = net_int(Protocol.RSP_GAME_STATE)
+					sock.send(msg)
+				elif op == Protocol.REQ_NUM_SEATS:
+					err("FIXME: unhandled opcode numseats")
+				elif op == Protocol.REQ_BOOT:
+					err("FIXME: unhandled opcode reqboot")
+				elif op == Protocol.REQ_BOT:
+					err("FIXME: unhandled opcode reqbot")
+				elif op == Protocol.REQ_OPEN:
+					err("FIXME: unhandled opcode reqopen")
+				elif op == Protocol.MSG_GAME_REPORT:
+					s = sock.recv(4)
+					numplayers = net_toint(s)
+					out("Game server result for " + str(numplayers) + " players")
+					for i in range(numplayers):
+						s = sock.recv(4)
+						strlen = net_toint(s)
+						playername = sock.recv(strlen)
+						s = sock.recv(4)
+						playertype = net_toint(s)
+						s = sock.recv(4)
+						teamnumber = net_toint(s)
+						s = sock.recv(4)
+						result = net_toint(s)
+						s = sock.recv(4)
+						score = net_toint(s)
+						out("- #" + str(i) + " Player " + playername + ": " + str(score))
+				elif op == Protocol.MSG_SAVEGAME_REPORT:
+					err("FIXME: unhandled opcode savegamereport")
+				else:
+					err("Game server protocol error: unknown opcode " + str(op))
+					raise "unexpected opcode error"
 			else:
-				statename = "???"
-			out("Game server state: " + statename)
+				client = None
+				for csock in csocks:
+					if fd == csock.fileno():
+						client = csock
+						break
+				if not client:
+					continue
 
-			msg = net_int(Protocol.RSP_GAME_STATE)
-			sock.send(msg)
-		elif op == Protocol.REQ_NUM_SEATS:
-			err("FIXME: unhandled opcode numseats")
-		elif op == Protocol.REQ_BOOT:
-			err("FIXME: unhandled opcode reqboot")
-		elif op == Protocol.REQ_BOT:
-			err("FIXME: unhandled opcode reqbot")
-		elif op == Protocol.REQ_OPEN:
-			err("FIXME: unhandled opcode reqopen")
-		elif op == Protocol.MSG_GAME_REPORT:
-			s = sock.recv(4)
-			numplayers = net_toint(s)
-			out("Game server result for " + str(numplayers) + " players")
-			for i in range(numplayers):
-				s = sock.recv(4)
-				strlen = net_toint(s)
-				playername = sock.recv(strlen)
-				s = sock.recv(4)
-				playertype = net_toint(s)
-				s = sock.recv(4)
-				teamnumber = net_toint(s)
-				s = sock.recv(4)
-				result = net_toint(s)
-				s = sock.recv(4)
-				score = net_toint(s)
-				out("- #" + str(i) + " Player " + playername + ": " + str(score))
-		elif op == Protocol.MSG_SAVEGAME_REPORT:
-			err("FIXME: unhandled opcode savegamereport")
-		else:
-			err("Game server protocol error: unknown opcode " + str(op))
-			raise "unexpected opcode error"
+				s = client.recv(4)
+				op = net_toint(s)
+
+				if op == ClientProtocol.MSG_GAME_STATE:
+					s = client.recv(1)
+					state = ord(s)
+
+					if ClientProtocol.statenames.has_key(state):
+						statename = ClientProtocol.statenames[state]
+					else:
+						statename = "???"
+					out("Game client state: " + statename)
+				elif op == ClientProtocol.REQ_STAND:
+					err("FIXME: unhandled client opcode reqstand")
+				elif op == ClientProtocol.REQ_SIT:
+					err("FIXME: unhandled client opcode reqsit")
+				elif op == ClientProtocol.REQ_BOOT:
+					err("FIXME: unhandled client opcode reqboot")
+				elif op == ClientProtocol.REQ_OPEN:
+					err("FIXME: unhandled client opcode reqopen")
+				elif op == ClientProtocol.REQ_CHAT:
+					err("FIXME: unhandled client opcode reqchat")
+				elif op == ClientProtocol.REQ_INFO:
+					err("FIXME: unhandled client opcode reqinfo")
+				elif op == ClientProtocol.REQ_RANKINGS:
+					err("FIXME: unhandled client opcode reqrankings")
+				else:
+					err("Game client protocol error: unknown opcode " + str(op))
+					raise "unexpected opcode error"
 
 	return pids
 
