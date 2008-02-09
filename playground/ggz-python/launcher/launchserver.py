@@ -80,7 +80,7 @@ class Protocol:
 	CHAT_TABLE = 5
 
 	MSG_GAME_LAUNCH = 0
-	MSG_GAME_SEAT = 1
+	MSG_GAME_SEAT = 1 # FIXME: should be REQ_GAME_SEAT in protocol.h?
 	MSG_GAME_SPECTATOR_SEAT = 2
 	MSG_GAME_RESEAT = 3
 	RSP_GAME_STATE = 4
@@ -112,35 +112,42 @@ class Protocol:
 	tablenames_reverse = reverse_dict(tablenames)
 	seattypes_reverse = reverse_dict(seattypes)
 
-def initserver(socket, gamename, seats, seatnames):
+def initserver(sock, gamename, seats, seatnames):
 	spectatorseats = []
 
 	seatsmsg = net_int(len(seats))
 	seatsmsg += net_int(len(spectatorseats))
 	for seat in seats:
 		seatsmsg += net_int(seat)
-		if seat == Protocol.SEAT_RESERVED:
-			seatname = seatnames[seats.index[seat]]
-			seatmsg += net_string(seatname)
+		if seat == Protocol.SEAT_RESERVED or seat == Protocol.SEAT_BOT:
+			seatname = seatnames[seats.index(seat)]
+			seatsmsg += net_string(seatname)
 
 	msg = net_int(Protocol.MSG_GAME_LAUNCH) + net_string(gamename) + seatsmsg
 	#print "MSG", msg
 	#for m in msg:
 	#	print "[" + str(ord(m)) + "]",
 	#print
-	socket.send(msg)
+	sock.send(msg)
+
+	# FIXME: this is a fake player
+	#if seats[0] == Protocol.SEAT_PLAYER:
+	(parentsock, childsock) = socket.socketpair()
+	playermsg = net_int(Protocol.SEAT_PLAYER) + net_string("someplayer") + net_int(childsock.fileno())
+	msg = net_int(Protocol.MSG_GAME_SEAT) + net_int(0) + playermsg
+	sock.send(msg)
 
 	while True:
-		s = socket.recv(4)
+		s = sock.recv(4)
 		op = net_toint(s)
 
 		if op == Protocol.MSG_LOG:
-			s = socket.recv(4)
+			s = sock.recv(4)
 			strlen = net_toint(s)
-			s = socket.recv(strlen)
+			s = sock.recv(strlen)
 			out("Game server log: " + s)
 		elif op == Protocol.REQ_GAME_STATE:
-			s = socket.recv(1)
+			s = sock.recv(1)
 			state = ord(s)
 
 			if Protocol.tablenames.has_key(state):
@@ -150,7 +157,7 @@ def initserver(socket, gamename, seats, seatnames):
 			out("Game server state: " + statename)
 
 			msg = net_int(Protocol.RSP_GAME_STATE)
-			socket.send(msg)
+			sock.send(msg)
 		elif op == Protocol.REQ_NUM_SEATS:
 			err("FIXME: unhandled opcode")
 			pass
@@ -185,15 +192,15 @@ def main():
 		numseats = raw_input("Number of seats: ")
 		seats = []
 		seatnames = []
-		print "Seat types: open|bot|player|reserved|abandoned"
+		print "Seat types: open|bot|reserved"
 		for i in range(int(numseats)):
 			seattype = raw_input("Type of seat " + str(i) + ": ")
-			if Protocol.seattypes_reverse.has_key(seattype) :
+			if seattype in ["open", "bot", "reserved"]:
 				seat = Protocol.seattypes_reverse[seattype]
 				seats.append(seat)
 				seatname = ""
-				if seat == Protocol.SEAT_RESERVED:
-					seatname = raw_input("Name of player in seat " + str(i) + ": ")
+				if seat == Protocol.SEAT_RESERVED or seat == Protocol.SEAT_BOT:
+					seatname = raw_input("Name of player/bot in seat " + str(i) + ": ")
 				seatnames.append(seatname)
 			else:
 				raise "unexpected value for seat"
@@ -202,8 +209,8 @@ def main():
 		sys.exit(1)
 
 	(parentsock, childsock) = socket.socketpair()
-	print parentsock
-	print childsock
+	#print parentsock
+	#print childsock
 
 	pid = os.fork()
 	if pid == 0:
