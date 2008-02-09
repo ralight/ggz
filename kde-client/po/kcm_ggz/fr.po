@@ -1,0 +1,428 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-12-15 02:16+0100\n"
+"PO-Revision-Date: 2008-02-09 20:23+0100\n"
+"Last-Translator: HUSSON Pierre-Hugues <phhusson@Afree.fr>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:236
+msgid "(none)"
+msgstr "(aucun)"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:235
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:237
+msgid "(unknown)"
+msgstr "(inconnu)"
+
+#: ../../kcm_ggz/kcm_ggz.cpp:99
+msgid ""
+"<h1>GGZ Gaming Zone</1>  is a common way for playing internet games. "
+"Although it is possible to set all options from within the applications "
+"theirselves, some default data can be entered here which takes then "
+"precedence.<p> Please take a look at <a href='http://ggz.sourceforge."
+"net'>ggz.sourceforge.net</a> if you want to learn more."
+msgstr ""
+"<h1>GGZ Gaming Zone</1>  est un moyen simple pour jouer sur internet. "
+"Bien qu'il soit possible de régler toutes les options à partir des applications "
+"elles mêmes, quelques données par défaut peuvent être entrées "
+"<p>Regardez sur <a href='http://ggz.sourceforge.net'>ggz.sourceforge.net</a>"
+"pour en savoir plus"
+
+#: ../../kcm_ggz/kcm_ggz.cpp:101 ../../kcm_ggz/kcm_ggz.cpp:112
+#: ../../kcm_ggz/kcm_ggz.cpp:115
+msgid ""
+"<h1>GGZ Gaming Zone</h1>  is a common way for playing internet games. "
+"Although it is possible to set all options from within the applications "
+"theirselves, some default data can be entered here which takes then "
+"precedence.<p> Please take a look at <a href='http://ggz.sourceforge."
+"net'>ggz.sourceforge.net</a> if you want to learn more."
+msgstr ""
+"<h1>GGZ Gaming Zone</1>  est un moyen simple pour jouer sur internet. "
+"Bien qu'il soit possible de régler toutes les options à partir des applications "
+"elles mêmes, quelques données par défaut peuvent être entrées "
+"<p>Regardez sur <a href='http://ggz.sourceforge.net'>ggz.sourceforge.net</a>"
+"pour en savoir plus"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:37
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:40
+#: ../../kcm_ggz/modules/metaserver_add.cpp:36
+msgid "Add a metaserver"
+msgstr "Ajouter un meta-serveur"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:41
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:44
+#: ../../kcm_ggz/modules/metaserver_add_server.cpp:48
+msgid "Add a server"
+msgstr "Ajouter un serveur"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:157
+msgid "An error occured: %1"
+msgstr "Un erreur s'est produite: %1"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:29
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:31
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:32
+msgid "Author(s)"
+msgstr "Auteur(s)"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:109
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:121
+msgid "Author: "
+msgstr "Auteur: "
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:157
+msgid "Autoconfiguration failed"
+msgstr "La configuration automatique a échoué"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:39
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:43
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:42
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:46
+msgid "Autoconfigure"
+msgstr "Configuration automatique"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:31
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:34
+msgid "Available game servers"
+msgstr "Serveurs de jeux disponibles"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:84
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:129
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:143
+msgid "Available games"
+msgstr "Jeux disponibles"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:30
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:33
+msgid "Available meta servers"
+msgstr "Meta-serveurs disponibles"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:114
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:128
+msgid "Commandline: "
+msgstr "Ligne de commande: "
+
+#: ../../kcm_ggz/modules/metaserver_add_server.cpp:22
+msgid "Comment:"
+msgstr "Commentaire: "
+
+#: ../../kcm_ggz/modules/kcm_ggz_ggzd.cpp:75
+#: ../../kcm_ggz/modules/kcm_ggz_ggzd.cpp:111
+msgid "Configuration of ggzd"
+msgstr "Configuration de ggzd"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:147
+msgid "Connection refused"
+msgstr "Connexion refusée"
+
+#: ../../kcm_ggz/kcm_ggz.cpp:132
+msgid "Copyright (C) 2002, 2003 Josef Spillner"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_ggzd.cpp:28
+msgid "Default"
+msgstr "Défaut"
+
+#: ../../kcm_ggz/modules/kcm_ggz_default.cpp:70
+#: ../../kcm_ggz/modules/kcm_ggz_default.cpp:136
+msgid "Default Settings"
+msgstr "Réglages par défaut"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:48
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:54
+msgid "Description"
+msgstr "Description"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:115
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:129
+msgid "Detailed information"
+msgstr "Informations détaillées"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:113
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:127
+msgid "Engine: "
+msgstr "Moteur: "
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:117
+msgid "Entire screen (%1)"
+msgstr "Écran entier (%1)"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:123
+msgid "Environment: "
+msgstr "Environnement: "
+
+#: ../../kcm_ggz/kcm_ggz.cpp:65 ../../kcm_ggz/kcm_ggz.cpp:72
+#: ../../kcm_ggz/kcm_ggz.cpp:73
+msgid "Error!"
+msgstr "Erreur !"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:115
+msgid "Frame buffer (%1)"
+msgstr "Frame buffer (%1)"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:108
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:122
+msgid "Frontend: "
+msgstr "Interface: "
+
+#: ../../kcm_ggz/kcm_ggz.cpp:128
+msgid "GGZ Gaming Zone Configuration"
+msgstr "Configuration de GGZ Gaming Zone"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:25
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:27
+msgid "Game"
+msgstr "Jeu"
+
+#: ../../kcm_ggz/modules/kcm_ggz_default.cpp:29
+msgid "General"
+msgstr "Général"
+
+#: ../../kcm_ggz/kcm_ggz.cpp:53 ../../kcm_ggz/kcm_ggz.cpp:59
+#: ../../kcm_ggz/kcm_ggz.cpp:60
+msgid "Got a NULL object."
+msgstr "Obtenu un objet NULL."
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:28
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:30
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:31
+msgid "Homepage"
+msgstr "Page d'accueil"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:112
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:126
+msgid "Homepage: "
+msgstr "Page d'accueil: "
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:150
+msgid "Host not found"
+msgstr "Hôte non trouvé"
+
+#: ../../kcm_ggz/modules/kcm_ggz_default.cpp:46
+msgid "Load an image of yourself which is used in GGZ games."
+msgstr "Envoi une image de soit-même quiest utilisé dans les jeux GGZ"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:32
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:34
+msgid "Local"
+msgstr "Local"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:52
+msgid "Location"
+msgstr "Location"
+
+#: ../../kcm_ggz/modules/kcm_ggz_ggzd.cpp:72
+msgid "Location of the ggzd configuration file"
+msgstr "Chemin vers le fichier de configuration ggzd"
+
+#: ../../kcm_ggz/modules/metaserver_add_server.cpp:24
+msgid "Location:"
+msgstr "Location:"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:28
+msgid "Name"
+msgstr "Nom"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:107
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:120
+msgid "Name: "
+msgstr "Nom: "
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:113
+msgid "Non-interactive (%1)"
+msgstr "Non-interactif (%1)"
+
+#: ../../kcm_ggz/kcm_ggz.cpp:67 ../../kcm_ggz/kcm_ggz.cpp:74
+#: ../../kcm_ggz/kcm_ggz.cpp:75
+msgid "Online Games Configuration"
+msgstr "Configuration de jeux en-ligne"
+
+#: ../../kcm_ggz/modules/kcm_ggz_ggzd.cpp:15
+#: ../../kcm_ggz/modules/kcm_ggz_ggzd.cpp:27
+msgid "Parameters"
+msgstr "Parametres"
+
+#: ../../kcm_ggz/modules/kcm_ggz_default.cpp:35
+msgid "Personalization"
+msgstr "Personalisation"
+
+#: ../../kcm_ggz/modules/kcm_ggz_default.cpp:27
+#: ../../kcm_ggz/modules/kcm_ggz_default.cpp:41
+msgid "Preferred connection server"
+msgstr "Connexion serveur préferée"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:51
+msgid "Priority"
+msgstr "Priorité"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:27
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:29
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:30
+msgid "Protocol"
+msgstr "Protocole"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:111
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:125
+msgid "Protocol version: "
+msgstr "Version du protocole: "
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:153
+msgid "Read error"
+msgstr "Erreur de lecture"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:38
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:42
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:41
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:45
+msgid "Remove server"
+msgstr "Supprimer le serveur"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:207
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:342
+msgid "Servers"
+msgstr "Serveurs"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:135
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:185
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:205
+msgid "Show all information"
+msgstr "Montrer toutes les informations"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:53
+msgid "Speed"
+msgstr "Vitesse"
+
+#: ../../kcm_ggz/modules/metaserver_add_server.cpp:23
+msgid "Speed:"
+msgstr "Vitesse:"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:35
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:38
+msgid "Supported classes"
+msgstr "Classes supportées"
+
+#: ../../kcm_ggz/modules/metaserver_add.cpp:21
+msgid "Supported classes:"
+msgstr "Classes supportées:"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:73
+msgid "System"
+msgstr "Système"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:114
+msgid "Text console only (%1)"
+msgstr "Uniquement en console text (%1)"
+
+#: ../../kcm_ggz/modules/kcm_ggz_default.cpp:32
+#: ../../kcm_ggz/modules/kcm_ggz_default.cpp:51
+msgid ""
+"The GGZ Gaming Zone needs some information\n"
+" to be configured properly. You can specify here what is needed as\n"
+" default value for KGGZ, GGZap, the IO Slave and other applications.\n"
+msgstr ""
+"GGZ Gaming Zone a besoin de quelques informations\n"
+" pour être configuré correctement. Ici vous pouvez spécifier ce qui est nécessaire\n"
+" comme valeur par défaut pour KGGZ, GGZap, le KIO et d'autres applications.\n"
+
+#: ../../kcm_ggz/kcm_ggz.cpp:65 ../../kcm_ggz/kcm_ggz.cpp:72
+#: ../../kcm_ggz/kcm_ggz.cpp:73
+msgid ""
+"The KCM_GGZ modules couldn't be loaded!\n"
+"(%1)"
+msgstr ""
+"Le module KCM_GGZ n'a pu être chargé!\n"
+"(%1)"
+
+#: ../../kcm_ggz/kcm_ggz.cpp:55 ../../kcm_ggz/kcm_ggz.cpp:61
+#: ../../kcm_ggz/kcm_ggz.cpp:62
+msgid "This is no KCM_GGZ module."
+msgstr "Il n'y a pas de module kcm_ggz."
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:47
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:50
+msgid "Type"
+msgstr "Type"
+
+#: ../../kcm_ggz/modules/metaserver_add_server.cpp:21
+msgid "Type of server:"
+msgstr "Type de serveur:"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:34
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:46
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:37
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:49
+msgid "URI"
+msgstr "URI"
+
+#: ../../kcm_ggz/modules/metaserver_add.cpp:20
+#: ../../kcm_ggz/modules/metaserver_add_server.cpp:20
+msgid "URI:"
+msgstr "URI:"
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:142
+msgid "Unknown error"
+msgstr "Erreur inconnue"
+
+#: ../../kcm_ggz/modules/kcm_ggz_ggzd.cpp:74
+msgid "Update"
+msgstr "Mise à jour"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:34
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:36
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:35
+msgid "Update local game information"
+msgstr "Mettre à jour la liste des jeux locaux"
+
+#: ../../kcm_ggz/modules/kcm_ggz_ggzd.cpp:16
+#: ../../kcm_ggz/modules/kcm_ggz_ggzd.cpp:29
+msgid "Values"
+msgstr "Valeurs"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:26
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:28
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:29
+msgid "Version"
+msgstr "Version"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:110
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:124
+msgid "Version: "
+msgstr "Version:"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:134
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:184
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:204
+msgid "Visit the project home page"
+msgstr "Visiter la page d'accueil du projet"
+
+#: ../../kcm_ggz/modules/kcm_ggz_ggzd.cpp:169
+msgid "Write error"
+msgstr "Erreur d'écriture"
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:116
+msgid "X11 window (%1)"
+msgstr "Fenêtre X11 (%1)"
+
+#: ../../kcm_ggz/modules/kcm_ggz_ggzd.cpp:167
+msgid ""
+"You don't have the permission to modify any entries.\n"
+"All information is read-only."
+msgstr ""
+"Vous n'avez pas les permissions pour modifier quoique ce soit.\n"
+"Toutes les informations sont en lecture seule."
+
+#: ../../kcm_ggz/modules/kcm_ggz_default.cpp:29
+#: ../../kcm_ggz/modules/kcm_ggz_default.cpp:43
+msgid "Your login username"
+msgstr "Votre nom d'utilisateur"

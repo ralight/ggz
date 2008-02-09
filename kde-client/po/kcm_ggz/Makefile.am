@@ -1,6 +1,6 @@
 PACKAGE = kcmggz
 POTFILE = kcm_ggz.pot
-POFILES = de.po
+POFILES = de.po fr.po
 LOCATIONS = $(top_srcdir)/kcm_ggz/*.cpp $(top_srcdir)/kcm_ggz/modules/*.cpp
 
 EXTRA_DIST = $(POTFILE) $(POFILES)
