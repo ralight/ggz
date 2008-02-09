@@ -1,32 +1,39 @@
-.TH "ggz" "7" "0.0.14" "The GGZ Development Team" "GGZ Gaming Zone"
+.TH "ggz" "7" "0.0.14+" "The GGZ Development Team" "GGZ Gaming Zone"
 .SH "NAME"
 .LP
 ggz \- The GGZ Gaming Zone
 .SH "DESCRIPTION"
 .LP
-The GGZ Gaming Zone is a standards-conforming online gaming infrastructure
-which provides many applications and games to people who like to play
-on the internet or in local networks.
+The GGZ Gaming Zone is a standards-conforming free online gaming
+infrastructure which provides many applications and games to people who like
+to play on the internet or in local networks.
 GGZ, how the (recursive) acronym is called, is available for many computer
 systems. This document focuses on the installations on Linux, BSD and Unix.
+On such systems, GGZ-powered games often ship with the KDE and GNOME games
+packages, and most distributors also include all components as released by
+the GGZ project.
 .SH "APPLICATIONS"
 .LP
-There isn't a single executable named ggz, instead a multitude of programs
-is available to the user, and even more which operate on the system level or
-are used by developers and administrators.
+GGZ is available on several platforms.
+A multitude of programs is available to the user, and even more which operate
+on the system level or are used by developers and administrators.
 Users will most likely want to connect to a GGZ server on the internet,
 such as \fIggz://live.ggzgamingzone.org\fR, to play games against other people.
 \fICore clients\fR are used to perform this task. Functional clients exist
-in the form of \fBkggz\fR for the K Desktop Environment (KDE), \fBggz-gnome\fR
-and \fBggz-gtk\fR for GNOME or XFCE users, and \fBggz-txt\fR for people who
+in the form of \fBkggz\fR for the K Desktop Environment (KDE),
+\fBggz-gtk\fR for GNOME or XFCE users, and \fBggz-txt\fR for people who
 prefer command-line applications. Of course, the clients are not bound to a
 specific desktop, but the choices above will likely be influenced by the level
-of integration.
-A client under development is the SDL-based \fBvíbora\fR.
+of integration. In particular, the GNOME client is often found embedded
+in GGZ-enabled games of the GNOME project.
+A client under development is the SDL-based \fBvíbora\fR. Furthermore, a
+Java-based client and applet exists as well.
+Running \fBggz\fR will automatically select a suitable core client depending
+on the desktop environment.
 .LP
 Special clients exist in the form of \fBggzap\fR, a quick-launcher for the
 KDE panel, and \fBggz-wrapper\fR which is used for launching GGZ games from
-instant messenger applications.
+the command line and instant messenger applications.
 .SH "GAMES"
 .LP
 Games are usually launched by the GGZ server, with corresponding game clients
@@ -63,14 +70,19 @@ Game module registry for game clients.
 Configuration for the GGZ server, including rooms and game types.
 .SH "CONFORMING TO"
 .LP
-\fIGGZ Design Document and Protocol Reference\fR, available at
+\fIGGZ Design Document\fR, available at
 \fIhttp://www.ggzgamingzone.org/docs/design/\fR
+.LP
+\fIGGZ Main Client-Server Protocol Reference\fR, available at
+\fIhttp://www.ggzgamingzone.org/docs/design/mainspec/\fR
 .LP
 \fIGGZ Client-Client Protocol Reference\fR, available at
 \fIhttp://www.ggzgamingzone.org/docs/design/clientspec/\fR
 .LP
 \fIGGZ Server-Server Protocol Reference\fR, available at
 \fIhttp://www.ggzgamingzone.org/docs/design/serverspec/\fR
+.LP
+\fIGGZ URI specification\fR
 .LP
 Freedesktop.org specifications for desktop integration of games and
 applications, more information at
