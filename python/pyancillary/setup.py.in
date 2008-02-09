@@ -16,9 +16,9 @@ setup(
     ext_modules = [
         Extension('ancillary',
         ['src/pyancillary_init.c'],
-        library_dirs = ["/home/josef/sys/lib"],
+        library_dirs = ["@libggz_libraries@"],
         libraries = ['ggz'],
-        include_dirs = ["/home/josef/sys/include"])
+        include_dirs = ["@libggz_includes@"])
     ]
 )
 

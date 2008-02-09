@@ -1,7 +1,7 @@
 dnl Configuration for the GGZ Python package
 dnl ========================================
 
-AC_INIT([GGZ python package], [0.0.14], [ggz-dev@mail.ggzgamingzone.org], [ggz-python])
+AC_INIT([GGZ python package], [0.0.14+svn], [ggz-dev@mail.ggzgamingzone.org], [ggz-python])
 AC_CONFIG_SRCDIR([configure.ac])
 #AC_CONFIG_HEADERS([config.h])
 #AM_INIT_AUTOMAKE
@@ -9,11 +9,12 @@ AC_CONFIG_SRCDIR([configure.ac])
 
 dnl Compilation Options
 dnl ===================
-AC_ARG_ENABLE(ggzmod,   [  --disable-ggzmod   Exclude pyggzmod wrapper  ],, enable_ggzmod=yes)
-AC_ARG_ENABLE(ggzdmod,  [  --disable-ggzdmod  Exclude pyggzdmod wrapper ],, enable_ggzdmod=yes)
-AC_ARG_ENABLE(ggzcore,  [  --disable-ggzcore  Exclude pyggzcore wrapper ],, enable_ggzcore=yes)
-AC_ARG_ENABLE(ggzchess, [  --disable-ggzchess Exclude pyggzchess wrapper],, enable_ggzchess=yes)
-AC_ARG_ENABLE(rsvgsdl,  [  --disable-rsvgsdl  Exclude pyrsvgsdl wrapper ],, enable_rsvgsdl=yes)
+AC_ARG_ENABLE(ggzmod,   [  --disable-ggzmod    Exclude pyggzmod wrapper  ],, enable_ggzmod=yes)
+AC_ARG_ENABLE(ggzdmod,  [  --disable-ggzdmod   Exclude pyggzdmod wrapper ],, enable_ggzdmod=yes)
+AC_ARG_ENABLE(ggzcore,  [  --disable-ggzcore   Exclude pyggzcore wrapper ],, enable_ggzcore=yes)
+AC_ARG_ENABLE(ggzchess, [  --disable-ggzchess  Exclude pyggzchess wrapper],, enable_ggzchess=yes)
+AC_ARG_ENABLE(rsvgsdl,  [  --disable-rsvgsdl   Exclude pyrsvgsdl wrapper ],, enable_rsvgsdl=yes)
+AC_ARG_ENABLE(ancillary,[  --disable-ancillary Exclude libggz/easysock wrapper],, enable_ancillary=yes)
 
 AC_ARG_WITH(rsvg-dir,
 	AS_HELP_STRING([--with-rsvg-dir], [prefix of the rsvg library (default is /usr)]),
@@ -38,6 +39,7 @@ else
 	enable_ggzmod=no
 	enable_ggzdmod=no
 	enable_ggzcore=no
+	enable_ancillary=no
 fi
 AC_GGZ_CONFIG(["true"], [ignore])
 AC_GGZ_INTL
@@ -137,6 +139,7 @@ AC_SUBST(enable_ggzdmod)
 AC_SUBST(enable_ggzcore)
 AC_SUBST(enable_ggzchess)
 AC_SUBST(enable_rsvgsdl)
+AC_SUBST(enable_ancillary)
 
 AC_SUBST(PYVERSION)
 
@@ -149,6 +152,7 @@ AC_CONFIG_FILES([
 	xadrez-chines/module.dsc
 	go/module.dsc
 	vibora/vibora.desktop
+	pyancillary/setup.py
 	pyrsvgsdl/setup.py
 	pyggzmod/setup.py
 	pyggzdmod/setup.py
@@ -173,6 +177,7 @@ echo ""
 echo "Build ggzmod wrapper: $enable_ggzmod"
 echo "Build ggzdmod wrapper: $enable_ggzdmod"
 echo "Build ggzcore wrapper: $enable_ggzcore"
+echo "Build libggz/ancillary wrapper: $enable_ancillary"
 echo "Chess wrapper for Python: $enable_ggzchess"
 echo "RSVG wrapper for SDL: $enable_rsvgsdl"
 echo ""

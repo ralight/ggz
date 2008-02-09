@@ -36,6 +36,7 @@ ggzdmod = @enable_ggzdmod@
 ggzcore = @enable_ggzcore@
 ggzchess = @enable_ggzchess@
 rsvgsdl = @enable_rsvgsdl@
+ancillary = @enable_ancillary@
 
 wrappers =
 instwrappers =
@@ -55,6 +56,10 @@ endif
 ifeq ($(rsvgsdl),yes)
 	wrappers += rsvgsdl-build
 	instwrappers += rsvgsdl-install
+endif
+ifeq ($(ancillary),yes)
+	wrappers += ancillary-build
+	instwrappers += ancillary-install
 endif
 ifeq ($(ggzchess),yes)
 	wrappers += ggzchess-build
@@ -85,6 +90,10 @@ rsvgsdl-build:
 	@echo Building library PyRsvgSDL
 	cd pyrsvgsdl && python setup.py build
 
+ancillary-build:
+	@echo Building library PyAncillary
+	cd pyancillary && python setup.py build
+
 ggzchess-build:
 	@echo Building library PyGGZChess
 	cd chess && make
@@ -111,6 +120,10 @@ ggzcore-install:
 rsvgsdl-install:
 	@echo Installing library PyRsvgSDL
 	cd pyrsvgsdl && python setup.py install --prefix=$(DESTDIR)$(prefix)
+
+ancillary-install:
+	@echo Installing library PyAncillary
+	cd pyancillary && python setup.py install --prefix=$(DESTDIR)$(prefix)
 
 ggzchess-install:
 	@echo Installing library PyGGZChess
