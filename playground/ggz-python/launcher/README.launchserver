@@ -1,7 +1,7 @@
 launchserver.py - test GGZ game servers without running ggzd
 ------------------------------------------------------------
 
-Syntax: launchserver.py <gameexecutable>
+Syntax: launchserver.py <gameserverexecutable> [<gameclientexecutable>]
 
 The game server will be launched. On startup, the game and table
 parameters are queried on the command line. Green colour will be used
@@ -20,4 +20,7 @@ seatname[1]=le_bot
 Note: if the first seat is open, it will be filled with a fake
 player, but if it contains a bot then the bots will play against
 each other.
+
+Note: if no game client is given, this tool will be of limited
+use unless one wants all-bots games indeed.
 

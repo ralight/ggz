@@ -114,7 +114,45 @@ class Protocol:
 	tablenames_reverse = reverse_dict(tablenames)
 	seattypes_reverse = reverse_dict(seattypes)
 
-def initserver(sock, gamename, seats, seatnames):
+class ClientProtocol:
+	MSG_GAME_LAUNCH = 0
+	MSG_GAME_SERVER_FD = 2
+
+def initclient(clientsock, serversock, parentsock, childsock, clientexecutable):
+	# clientsock/serversock: game client<->game server
+	# parentsock/childsock: launchserver.py<->game client
+
+	pid = os.fork()
+	if pid == 0:
+		serversock.close()
+		parentsock.close()
+		os.environ["GGZMODE"] = "true"
+		os.environ["GGZSOCKET"] = str(childsock.fileno())
+		try:
+			os.execl(clientexecutable)
+		except:
+			err("Game client error: executable not found")
+		os._exit(1)
+	elif pid > 0:
+		childsock.close()
+		# FIXME: read game client messages from parentsock
+
+		msg = net_int(ClientProtocol.MSG_GAME_LAUNCH)
+		parentsock.send(msg)
+
+		msg = net_int(ClientProtocol.MSG_GAME_SERVER_FD)
+		parentsock.send(msg)
+		ancillary.write_fd(parentsock.fileno(), clientsock.fileno())
+		###clientsock.close()
+	else:
+		err("Error: fork failed")
+		return None
+	out("Launched " + clientexecutable + " with pid " + str(pid))
+	return pid
+
+def initserver(sock, gamename, seats, seatnames, clientexecutable):
+	pids = []
+
 	spectatorseats = []
 
 	seatsmsg = net_int(len(seats))
@@ -136,11 +174,19 @@ def initserver(sock, gamename, seats, seatnames):
 	# FIXME: this is a fake player
 	if seats[0] == Protocol.SEAT_OPEN:
 		out("Put a human into the first seat")
+		(clientsock, serversock) = socket.socketpair()
 		(parentsock, childsock) = socket.socketpair()
 		playermsg = net_int(Protocol.SEAT_PLAYER) + net_string("someplayer")
 		msg = net_int(Protocol.MSG_GAME_SEAT) + net_int(0) + playermsg
 		sock.send(msg)
-		ancillary.write_fd(sock.fileno(), childsock.fileno())
+		ancillary.write_fd(sock.fileno(), serversock.fileno())
+		###serversock.close()
+
+		if clientexecutable:
+			pid = initclient(clientsock, serversock, parentsock, childsock, clientexecutable)
+			pids.append(pid)
+		else:
+			err("No game client executable known, forcing server-only mode")
 	else:
 		# FIXME: this is a bug in ggzdmod, if the first seat is already a bot we
 		# shouldn't have to tell ggzdmod-game again!
@@ -172,16 +218,12 @@ def initserver(sock, gamename, seats, seatnames):
 			sock.send(msg)
 		elif op == Protocol.REQ_NUM_SEATS:
 			err("FIXME: unhandled opcode numseats")
-			pass
 		elif op == Protocol.REQ_BOOT:
 			err("FIXME: unhandled opcode reqboot")
-			pass
 		elif op == Protocol.REQ_BOT:
 			err("FIXME: unhandled opcode reqbot")
-			pass
 		elif op == Protocol.REQ_OPEN:
 			err("FIXME: unhandled opcode reqopen")
-			pass
 		elif op == Protocol.MSG_GAME_REPORT:
 			s = sock.recv(4)
 			numplayers = net_toint(s)
@@ -201,17 +243,21 @@ def initserver(sock, gamename, seats, seatnames):
 				out("- #" + str(i) + " Player " + playername + ": " + str(score))
 		elif op == Protocol.MSG_SAVEGAME_REPORT:
 			err("FIXME: unhandled opcode savegamereport")
-			pass
 		else:
 			err("Game server protocol error: unknown opcode " + str(op))
 			raise "unexpected opcode error"
 
+	return pids
+
 def main():
-	if len(sys.argv) != 2:
+	if len(sys.argv) != 2 and len(sys.argv) != 3:
 		err("Syntax error: needs game server executable")
 		sys.exit(1)
 
 	gameserver = sys.argv[1]
+	clientexecutable = None
+	if len(sys.argv) == 3:
+		clientexecutable = sys.argv[2]
 
 	gamename = None
 	numseats = None
@@ -302,7 +348,7 @@ def main():
 	out("Launched " + gameserver + " with pid " + str(pid))
 
 	try:
-		initserver(parentsock, gamename, seats, seatnames)
+		pids = initserver(parentsock, gamename, seats, seatnames, clientexecutable)
 	except NameError:
 		raise
 	except:
@@ -321,7 +367,18 @@ def main():
 		err("Error: game server execution failed")
 		sys.exit(1)
 
-	out("Finished execution successfully")
+	for cpid in pids:
+		try:
+			ret = os.waitpid(cpid, 0)
+		except:
+			err("Error: keyboard interrupt")
+
+		if ret != 0:
+			err("Error: game client execution failed")
+		else:
+			out("Finished game client " + str(cpid))
+
+	out("Finished game server execution successfully")
 
 if __name__ == "__main__":
 	try:
