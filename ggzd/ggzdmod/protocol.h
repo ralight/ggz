@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 8001 2006-04-24 07:17:07Z josef $
+ * $Id: protocol.h 9658 2008-02-09 14:34:29Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -74,8 +74,11 @@ typedef enum {
 	 *    - An integer containing the number of spectators
 	 *    - Seat data for every seat at the table:
 	 *      - An integer containing the seat type (GGZSeatType).
-	 *      - If the seat type is GGZ_SEAT_RESERVED, the name of the
-	 *        player at the seat (as an easysock-formatted string).
+	 *        Only GGZ_SEAT_OPEN, GGZ_SEAT_RESERVED and GGZ_SEAT_BOT
+	 *        are allowed.
+	 *      - If the seat type is GGZ_SEAT_RESERVED or GGZ_SEAT_BOT,
+	 *        the name of the player at the seat (as an easysock-
+	 *        formatted string).
 	 *  This packet is sent to the table shortly after the table
 	 *  executable has been launched.  GGZdMod-game, on receiving
 	 *  this packet, updates its internal data and changes the
