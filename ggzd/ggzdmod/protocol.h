@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 9659 2008-02-09 14:53:42Z josef $
+ * $Id: protocol.h 9665 2008-02-09 17:36:35Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -59,6 +59,21 @@ typedef enum {
 	REQ_BOT,
 	REQ_OPEN,
 
+	/** @brief Signals the start of a MSG_GAME_REPORT packet.
+	 *
+	 *  The packet is composed of:
+	 *    - An integer containing MSG_GAME_REPORT.
+	 *    - An integer for the number of players.
+	 *    - For each player:
+	 *      - An easysock-formatted string for the name.
+	 *      - An integer containing the player type.
+	 *      - An integer containing the team number.
+	 *        (If no teams are defined, each player represents
+	 *         a team on his own.)
+	 *      - An integer containing the result, e.g. win or loss.
+	 *      - An integer containing the score.
+	 *  This packet transmits game results and statistics.
+	 */
 	MSG_GAME_REPORT,
 	MSG_SAVEGAME_REPORT
 } TableToControl;
