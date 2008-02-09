@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 9658 2008-02-09 14:34:29Z josef $
+ * $Id: protocol.h 9659 2008-02-09 14:53:42Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -96,7 +96,9 @@ typedef enum {
 	 *    - An easysock-formatted string contining the player's name,
 	 *      or "" if the player has no name.
 	 *    - An easysock-formatted FD containing the FD for the
-	 *      player's client socket, IF the seat is a player
+	 *      player's client socket, IF the seat is a player.
+	 *      Note: This file descriptor carries ancillary data
+	 *      and cannot be read as an integer value.
 	 *  This packet is sent any time a seat is modified.  It gives
 	 *  the table all of the information it needs about the new
 	 *  seat.
