@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Launches a GGZ game server directly with two open seats
+# Launches a GGZ game server directly with any table configuration
 # Can be used as a test tool for game servers without the need for ggzd
 
 import sys
@@ -134,12 +134,20 @@ def initserver(sock, gamename, seats, seatnames):
 	sock.send(msg)
 
 	# FIXME: this is a fake player
-	#if seats[0] == Protocol.SEAT_PLAYER:
-	(parentsock, childsock) = socket.socketpair()
-	playermsg = net_int(Protocol.SEAT_PLAYER) + net_string("someplayer")
-	msg = net_int(Protocol.MSG_GAME_SEAT) + net_int(0) + playermsg
-	sock.send(msg)
-	ancillary.write_fd(sock.fileno(), childsock.fileno())
+	if seats[0] == Protocol.SEAT_OPEN:
+		out("Put a human into the first seat")
+		(parentsock, childsock) = socket.socketpair()
+		playermsg = net_int(Protocol.SEAT_PLAYER) + net_string("someplayer")
+		msg = net_int(Protocol.MSG_GAME_SEAT) + net_int(0) + playermsg
+		sock.send(msg)
+		ancillary.write_fd(sock.fileno(), childsock.fileno())
+	else:
+		# FIXME: this is a bug in ggzdmod, if the first seat is already a bot we
+		# shouldn't have to tell ggzdmod-game again!
+		out("Put a bot into the first seat")
+		playermsg = net_int(Protocol.SEAT_BOT) + net_string("somebot")
+		msg = net_int(Protocol.MSG_GAME_SEAT) + net_int(0) + playermsg
+		sock.send(msg)
 
 	while True:
 		s = sock.recv(4)
@@ -163,25 +171,39 @@ def initserver(sock, gamename, seats, seatnames):
 			msg = net_int(Protocol.RSP_GAME_STATE)
 			sock.send(msg)
 		elif op == Protocol.REQ_NUM_SEATS:
-			err("FIXME: unhandled opcode")
+			err("FIXME: unhandled opcode numseats")
 			pass
 		elif op == Protocol.REQ_BOOT:
-			err("FIXME: unhandled opcode")
+			err("FIXME: unhandled opcode reqboot")
 			pass
 		elif op == Protocol.REQ_BOT:
-			err("FIXME: unhandled opcode")
+			err("FIXME: unhandled opcode reqbot")
 			pass
 		elif op == Protocol.REQ_OPEN:
-			err("FIXME: unhandled opcode")
+			err("FIXME: unhandled opcode reqopen")
 			pass
 		elif op == Protocol.MSG_GAME_REPORT:
-			err("FIXME: unhandled opcode")
-			pass
+			s = sock.recv(4)
+			numplayers = net_toint(s)
+			out("Game server result for " + str(numplayers) + " players")
+			for i in range(numplayers):
+				s = sock.recv(4)
+				strlen = net_toint(s)
+				playername = sock.recv(strlen)
+				s = sock.recv(4)
+				playertype = net_toint(s)
+				s = sock.recv(4)
+				teamnumber = net_toint(s)
+				s = sock.recv(4)
+				result = net_toint(s)
+				s = sock.recv(4)
+				score = net_toint(s)
+				out("- #" + str(i) + " Player " + playername + ": " + str(score))
 		elif op == Protocol.MSG_SAVEGAME_REPORT:
-			err("FIXME: unhandled opcode")
+			err("FIXME: unhandled opcode savegamereport")
 			pass
 		else:
-			err("Game server protocol error: unknown opcode")
+			err("Game server protocol error: unknown opcode " + str(op))
 			raise "unexpected opcode error"
 
 def main():

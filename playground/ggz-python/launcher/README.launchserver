@@ -17,3 +17,7 @@ seat[0]=open
 seat[1]=bot
 seatname[1]=le_bot
 
+Note: if the first seat is open, it will be filled with a fake
+player, but if it contains a bot then the bots will play against
+each other.
+
