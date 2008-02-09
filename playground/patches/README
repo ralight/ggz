@@ -57,6 +57,8 @@ Only for pgsql and mysql.
 
 Old patches (just to keep it in memory)
 ---------------------------------------
+Abandoned seats:
+ abandoned.diff
 
 Unicode in GGZ usernames according to a certain policy:
  ggzd+unicode.diff
