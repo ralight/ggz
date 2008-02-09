@@ -1,7 +1,7 @@
 # fake package name
 PACKAGE = kggz
 
-POFILES = de.po pt_BR.po es.po
+POFILES = de.po pt_BR.po es.po fr.po
 
 EXTRA_DIST = $(POFILES) kggz.pot
 
