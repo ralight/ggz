@@ -1,0 +1,30 @@
+.TH "ggz-faketable" "1" "0.99.2" "The GGZ Development Team" "GGZ Gaming Zone"
+.SH "NAME"
+.LP
+ggz-faketable \- Low-level GGZ game server and client test utility
+.SH "SYNOPSIS"
+.LP
+.B ggz-faketable \fIgameserverexecutable\fR [\fIgameclientexecutable\fR]
+.SH "DESCRIPTION"
+.LP
+With \fBggz-faketable\fR, one can test GGZ games without running
+\fBggzd\fR and a core client.
+It provides a single table to botht the game server and
+any number of game clients depending on the table configuration.
+The game server will be launched. On startup, the game and table
+parameters are queried on the command line. Green colour will be used
+for status output and red colour for errors of any kind.
+.SH "OPTIONS"
+.LP
+There are currently no real command line options available.
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Output usage information.
+.SH "FILES"
+.LP
+\fI~/.ggz/ggz-faketable.rc\fP - optional configuration file, see
+README.ggz-faketable for details
+.SH "AUTHORS"
+.LP
+The GGZ Development Team
+<ggz\-dev@mail.ggzgamingzone.org>
