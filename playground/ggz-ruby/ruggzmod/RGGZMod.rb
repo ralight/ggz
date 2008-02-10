@@ -30,6 +30,18 @@ class Player
 		@realname = realname
 		@photo = photo
 	end
+
+	def to_s
+		s = "<GGZ Player #{@name}"
+		if @realname or @photo
+			s += " (realname #{@realname}, photo #{@photo})"
+		end
+		if @position or @score
+			s += " (score #{@score}, position #{@position})"
+		end
+		s += ">"
+		return s
+	end
 end
 
 # This class represents a GGZ player who currently spectates
@@ -39,6 +51,11 @@ class Spectator < Player
 	def initialize(name, seatnum)
 		super(name)
 		@seatnum = seatnum
+	end
+
+	def to_s
+		player = super()
+		return "<GGZ spectator ##{@seatnum}; player: #{player}>"
 	end
 end
 
@@ -55,6 +72,34 @@ class Seat < Player
 
 	def sethostname(hostname)
 		@hostname = hostname
+	end
+
+	def typename()
+		typenames = {
+			GGZMod::SEATNONE => nil,
+			GGZMod::SEATOPEN => "open",
+			GGZMod::SEATBOT => "bot",
+			GGZMod::SEATPLAYER => "player",
+			GGZMod::SEATRESERVED => "reserved",
+			GGZMod::SEATABANDONED => "abandoned"
+		}
+		return typenames[@type]
+	end
+
+	def to_s
+		if @type != GGZMod::SEATOPEN and @type != GGZMod::SEATNONE:
+			player = super()
+		end
+		type = typename()
+		playerstr = nil
+		hoststr = nil
+		if player
+			playerstr = ", player #{player}"
+		end
+		if @hostname
+			hoststr = ", hostname #{@hostname}"
+		end
+		return "<GGZ seat ##{@seatnum} (type #{type}#{playerstr}#{hoststr})>"
 	end
 end
 
