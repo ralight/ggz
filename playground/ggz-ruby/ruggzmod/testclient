@@ -441,9 +441,16 @@ class TestClient < RGGZMod
 				sock = IO.new(fd, "w+")
 				# FIXME: use select() but mainloop is in RGGZMod
 			end
+		elsif id == GGZMod::EVENTPLAYER
 		elsif id == GGZMod::EVENTSEAT
 			displayseats
 			# FIXME: if seat dialog is displayed, refresh it
+		elsif id == GGZMod::EVENTSPECTATOR
+		elsif id == GGZMod::EVENTCHAT
+		elsif id == GGZMod::EVENTSTATS
+		elsif id == GGZMod::EVENTINFO
+		elsif id == GGZMod::EVENTRANKINGS
+		elsif id == GGZMod::EVENTERROR
 		end
 	end
 

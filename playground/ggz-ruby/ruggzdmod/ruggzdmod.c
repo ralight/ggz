@@ -107,9 +107,12 @@ static void init_ggz ()
 
 static VALUE t_is_ggz_mode ( VALUE self )
 {
-	retv = INT2FIX ( ggzdmod_is_ggz_mode () );
+	ret = ggzdmod_is_ggz_mode ();
 
-	return retv;
+	if ( ret )
+		return Qtrue;
+	else
+		return Qfalse;
 }
 
 static VALUE t_init ( VALUE self )

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 #
 # High-level interface around low-level GGZMod wrapper
-# Copyright (C) 2007 Josef Spillner <josef@ggzgamingzone.org>
+# Copyright (C) 2007, 2008 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
 require "GGZMod"
@@ -31,6 +31,27 @@ class Player
 		@realname = realname
 		@photo = photo
 		@hostname = hostname
+	end
+end
+
+# This class represents a GGZ player who currently spectates
+class Spectator < Player
+	attr_reader :seatnum
+
+	def initialize(name, seatnum)
+		super(name)
+		@seatnum = seatnum
+	end
+end
+
+# This class represents a GGZ player who currently plays
+class Seat < Player
+	attr_reader :seatnum, :type
+
+	def initialize(name, seatnum, type)
+		super(name)
+		@seatnum = seatnum
+		@type = type
 	end
 end
 
