@@ -23,10 +23,40 @@ static void cb_handler ( GGZMod *mod, GGZModEvent event, const void *data )
 {
 	VALUE dataval = Qnil;
 
+	if ( event == GGZMOD_EVENT_STATE )
+	{
+		GGZModState state = *( GGZModState * ) data;
+		dataval = INT2FIX ( state );
+	}
+
 	if ( event == GGZMOD_EVENT_SERVER )
 	{
 		int fd = *( int * ) data;
 		dataval = INT2FIX ( fd );
+	}
+
+	if ( event == GGZMOD_EVENT_PLAYER )
+	{
+		int *pair = ( int * ) data;
+		VALUE oldspectator = Qfalse;
+		if ( pair[0] )
+			oldspectator = Qtrue;
+		VALUE oldseatnum = INT2FIX ( pair[1] );
+		dataval = rb_ary_new ();
+		rb_ary_push ( dataval, oldspectator );
+		rb_ary_push ( dataval, oldseatnum );
+	}
+
+	if ( event == GGZMOD_EVENT_SEAT )
+	{
+		GGZSeat *oldseat = ( GGZSeat* ) data;
+		dataval = INT2FIX ( oldseat->num );
+	}
+
+	if ( event == GGZMOD_EVENT_SPECTATOR_SEAT )
+	{
+		GGZSeat *oldseat = ( GGZSeat* ) data;
+		dataval = INT2FIX ( oldseat->num );
 	}
 
 	if ( event == GGZMOD_EVENT_CHAT )
@@ -73,6 +103,15 @@ static void cb_handler ( GGZMod *mod, GGZModEvent event, const void *data )
 			rb_ary_push ( rankval, INT2FIX ( ranking->position ) );
 			rb_ary_push ( rankval, INT2FIX ( ranking->score ) );
 			rb_ary_push ( dataval, rankval );
+		}
+	}
+
+	if ( event == GGZMOD_EVENT_ERROR )
+	{
+		const char *errormsg = ( const char * ) data;
+		if ( errormsg )
+		{
+			dataval = rb_str_new2 ( errormsg );
 		}
 	}
 
