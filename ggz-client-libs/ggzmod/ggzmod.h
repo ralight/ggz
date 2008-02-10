@@ -1,17 +1,7 @@
 /* 
- * File: ggzmod.h
- * Author: GGZ Dev Team
- * Project: ggzmod
- * Date: 10/14/01
- * Desc: GGZ game module functions
- * $Id: ggzmod.h 9630 2008-01-31 20:02:13Z josef $
+ * GGZMOD - C implementation of the GGZ client-client protocol
  *
- * This file contains the main interface for the ggzmod library.  This
- * library facilitates the communication between the GGZ core client (ggz)
- * and game clients.  This file provides a unified interface that can be
- * used at both ends.
- *
- * Copyright (C) 2001-2002 GGZ Development Team.
+ * Copyright (C) 2001 - 2008 GGZ Development Team.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,8 +17,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
-#include <ggz.h> /* libggz */
 
 /** @file ggzmod.h
  *  @brief Common functions for interfacing a game client and GGZ.
@@ -52,15 +40,15 @@
  * For more information, see the documentation at http://www.ggzgamingzone.org/.
  */
 
-
-#ifndef __GGZMOD_H__
-#define __GGZMOD_H__
+#ifndef GGZMOD_H
+#define GGZMOD_H
 
 #define GGZMOD_VERSION_MAJOR 0
 #define GGZMOD_VERSION_MINOR 99
 #define GGZMOD_VERSION_MICRO 1
-#define GGZMOD_VERSION_IFACE "5:0:1"
+#define GGZMOD_VERSION_IFACE "5:0:1+dev"
 
+#include <ggz.h> /* libggz */
 #include <ggz_common.h>
 
 #ifdef __cplusplus
@@ -294,6 +282,20 @@ typedef void (*GGZModHandler) (GGZMod * mod, GGZModEvent e, const void *data);
  *  @note Should only be called by game clients, not by GGZ itself.
  */
 int ggzmod_is_ggz_mode(void);
+
+/** @brief Check if the correct library is used.
+ *
+ * Check if the library in use is the one the application was compiled against.
+ * This is determined by comparing the current value of GGZMOD_VERSION_IFACE
+ * with the one which was present at the time of compilation.
+ * It transitively also checks for libggz, although applications should check
+ * as well if they make use of it explicitly.
+ *
+ * @param iface GGZMOD_VERSION_IFACE
+ *
+ * @return 1 if this is the case, 0 otherwise.
+ */
+int ggzmod_check_library(const char *iface);
 
 /* 
  * Creation functions
@@ -571,4 +573,4 @@ int ggzmod_player_request_rankings(GGZMod *ggzmod);
 }
 #endif
 
-#endif /* __GGZMOD_H__ */
+#endif /* GGZMOD_H */

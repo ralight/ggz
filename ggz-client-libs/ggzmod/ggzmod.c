@@ -1,17 +1,7 @@
 /* 
- * File: ggzmod.c
- * Author: GGZ Dev Team
- * Project: ggzmod
- * Date: 10/14/01
- * Desc: GGZ game module functions
- * $Id: ggzmod.c 9630 2008-01-31 20:02:13Z josef $
+ * GGZMOD - C implementation of the GGZ client-client protocol
  *
- * This file contains the backend for the ggzmod library.  This
- * library facilitates the communication between the GGZ core client (ggz)
- * and game clients.  This file provides backend code that can be
- * used at both ends.
- *
- * Copyright (C) 2001-2002 GGZ Development Team.
+ * Copyright (C) 2001 - 2008 GGZ Development Team.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -168,6 +158,14 @@ int ggzmod_is_ggz_mode(void)
 {
 	char *ggzmode = ggz_getenv("GGZMODE");	  
 	return (ggzmode && strcmp(ggzmode, "true") == 0);
+}
+
+
+int ggzmod_check_library(const char *iface)
+{
+	if(!ggz_check_library(LIBGGZ_VERSION_IFACE))
+		return 0;
+	return !ggz_strcmp(iface, GGZMOD_VERSION_IFACE);
 }
 
 

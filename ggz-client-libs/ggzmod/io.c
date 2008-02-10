@@ -1,17 +1,7 @@
 /* 
- * File: io.c
- * Author: GGZ Dev Team
- * Project: ggzmod
- * Date: 10/14/01
- * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 9693 2008-02-10 17:52:27Z josef $
+ * GGZMOD - C implementation of the GGZ client-client protocol
  *
- * This file contains the backend for the ggzmod library.  This
- * library facilitates the communication between the GGZ core client (ggz)
- * and game clients.  This file provides backend code that can be
- * used at both ends.
- *
- * Copyright (C) 2001 GGZ Dev Team.
+ * Copyright (C) 2001 - 2008 GGZ Development Team.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

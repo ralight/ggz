@@ -1,17 +1,7 @@
 /* 
- * File: mod.h
- * Author: GGZ Dev Team
- * Project: ggzmod
- * Date: 11/18/01
- * Desc: Functions for reading/writing messages from/to game modules
- * $Id: mod.h 9630 2008-01-31 20:02:13Z josef $
+ * GGZMOD - C implementation of the GGZ client-client protocol
  *
- * This file contains the backend for the ggzmod library.  This
- * library facilitates the communication between the GGZ server (ggz)
- * and game servers.  This file provides backend code that can be
- * used at both ends.
- *
- * Copyright (C) 2001 GGZ Dev Team.
+ * Copyright (C) 2001 - 2008 GGZ Development Team.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,9 +18,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
-#ifndef __GGZ_MOD_H__
-#define __GGZ_MOD_H__
+#ifndef GGZMOD_MOD_H
+#define GGZMOD_MOD_H
 
 #include <ggz.h>
 
@@ -101,4 +90,4 @@ void _ggzmod_handle_stats(GGZMod *ggzmod, GGZStat *player_stats,
 void _ggzmod_handle_info(GGZMod * ggzmod, GGZList *infos);
 void _ggzmod_handle_rankings(GGZMod * ggzmod, GGZList *rankings);
 
-#endif /* __GGZ_MOD_H__ */
+#endif /* GGZMOD_MOD_H */

@@ -1,17 +1,7 @@
 /* 
- * File: io.h
- * Author: GGZ Dev Team
- * Project: ggzmod
- * Date: 11/18/01
- * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.h 9543 2008-01-15 19:13:38Z josef $
+ * GGZMOD - C implementation of the GGZ client-client protocol
  *
- * This file contains the backend for the ggzmod library.  This
- * library facilitates the communication between the GGZ core client (ggz)
- * and game clients.  This file provides backend code that can be
- * used at both ends.
- *
- * Copyright (C) 2001 GGZ Dev Team.
+ * Copyright (C) 2001 - 2008 GGZ Development Team.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,8 +18,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __GGZ_IO_H__
-#define __GGZ_IO_H__
+#ifndef GGZMOD_IO_H
+#define GGZMOD_IO_H
 
 #include "ggzmod.h"
 #include "mod.h"
@@ -51,4 +41,4 @@ int _io_send_req_rankings(int fd);
 /* Read and dispatch message */
 int _io_read_data(GGZMod * ggzmod);
 
-#endif /* __GGZ_IO_H__ */
+#endif /* GGZMOD_IO_H */
