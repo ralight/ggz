@@ -1,0 +1,32 @@
+ggz-faketable - low-level GGZ game server and client test utility
+-----------------------------------------------------------------
+
+Syntax: ggz-faketable <gameserverexecutable> [<gameclientexecutable>]
+
+With ggz-faketable, one can test GGZ games without running ggzd and
+a core client. It provides a single table to botht the game server and
+any number of game cients depending on the table configuration.
+The game server will be launched. On startup, the game and table
+parameters are queried on the command line. Green colour will be used
+for status output and red colour for errors of any kind.
+
+In ~/.ggz/ggz-faketable.rc, parameters can be preset to the extent
+of less or no parameter querying will be necessary. The section name
+will match the full path to the game server executable. For example:
+
+[ggzd.tictactoe]
+name=TicTacToe
+seats=2
+seat[0]=open
+seat[1]=bot
+seatname[1]=le_bot
+
+Note: if the first seat is open, it will be filled with a local
+player, but if it contains a bot then the bots will play against
+each other.
+
+Note: if no game client is given, this tool will be of limited
+use unless one wants all-bots games indeed.
+
+Note: a high-level view can be found in launcheroverview.png
+

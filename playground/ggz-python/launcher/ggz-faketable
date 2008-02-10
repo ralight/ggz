@@ -1,15 +1,23 @@
 #!/usr/bin/env python
 #
-# Launches a GGZ game server directly with any table configuration
+# ggz-faketable - low-level GGZ game server and client test utility
+# Copyright (C) 2008 Josef Spillner <josef@ggzgamingzone.org>
+# Published under the conditions of the GNU GPL v2 or later
+#
+# Launches a GGZ game directly with any table configuration
 # Can be used as a test tool for game servers without the need for ggzd
+# See the manual page ggz-faketable(1) for details
 
+# Standard python modules
 import sys
 import os
 import socket
 import signal
-import ancillary
-import ConfigParser
 import select
+import ConfigParser
+
+# Modules from ggz-python
+import ancillary
 
 reset = "\x1b[39;49;00m"
 red = "\x1b[31m"
@@ -166,7 +174,6 @@ def initclient(clientsock, serversock, parentsock, childsock, clientexecutable):
 		os._exit(1)
 	elif pid > 0:
 		childsock.close()
-		# FIXME: read game client messages from parentsock
 
 		msg = net_int(ClientProtocol.MSG_GAME_LAUNCH)
 		parentsock.send(msg)
@@ -206,7 +213,7 @@ def initserver(sock, gamename, seats, seatnames, clientexecutable):
 
 	poller.register(sock.fileno(), select.POLLIN)
 
-	# FIXME: this is a fake player
+	# Setup a game client if seat is open and a game executable has been set
 	if seats[0] == Protocol.SEAT_OPEN:
 		out("Put a human into the first seat")
 		(clientsock, serversock) = socket.socketpair()
@@ -333,6 +340,10 @@ def main():
 		err("Syntax error: needs game server executable")
 		sys.exit(1)
 
+	if sys.argv[1] in ("-h", "--help"):
+		print "Syntax: ggz-faketable <serverexecutable> [<clientexecutable>]"
+		return
+
 	gameserver = sys.argv[1]
 	clientexecutable = None
 	if len(sys.argv) == 3:
@@ -345,7 +356,7 @@ def main():
 
 	try:
 		ini = ConfigParser.SafeConfigParser()
-		files = ini.read(os.path.expanduser('~/.ggz/launchserver.rc'))
+		files = ini.read(os.path.expanduser('~/.ggz/ggz-faketable.rc'))
 		if len(files) == 0:
 			raise "config file not found"
 		if ini.has_section(gameserver):
