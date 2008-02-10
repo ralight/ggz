@@ -25,9 +25,6 @@ static void pyggzdmod_cb_data_hook(GGZdMod *ggzdmod, GGZdModEvent event, const v
 static void pyggzdmod_cb_spectatorjoin_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
 static void pyggzdmod_cb_spectatorleave_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
 static void pyggzdmod_cb_spectatordata_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
-#if GGZDMOD_VERSION_MICRO < 14
-static void pyggzdmod_cb_log_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
-#endif
 static void pyggzdmod_cb_error_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
 
 /**********************************************/
@@ -43,9 +40,6 @@ static PyObject *pyggzdmod_cb_data = NULL;
 static PyObject *pyggzdmod_cb_spectatorjoin = NULL;
 static PyObject *pyggzdmod_cb_spectatorleave = NULL;
 static PyObject *pyggzdmod_cb_spectatordata = NULL;
-#if GGZDMOD_VERSION_MICRO < 14
-static PyObject *pyggzdmod_cb_log = NULL;
-#endif
 static PyObject *pyggzdmod_cb_error = NULL;
 
 /**********************************************/
@@ -305,13 +299,6 @@ static PyObject *pyggzdmod_set_handler(PyObject *self, PyObject *args)
 			pyggzdmod_cb_error = temp;
 			ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_ERROR, pyggzdmod_cb_error_hook);
 			break;
-#if GGZDMOD_VERSION_MICRO < 14
-		case GGZDMOD_EVENT_LOG:
-			Py_XDECREF(pyggzdmod_cb_log);
-			pyggzdmod_cb_log = temp;
-			ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LOG, pyggzdmod_cb_log_hook);
-			break;
-#endif
 	}
 	Py_INCREF(Py_None);
 	result = Py_None;
@@ -473,24 +460,6 @@ void pyggzdmod_cb_spectatordata_hook(GGZdMod *ggzdmod, GGZdModEvent event, const
 	Py_DECREF(arg);
 }
 
-#if GGZDMOD_VERSION_MICRO < 14
-void pyggzdmod_cb_log_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data)
-{
-	PyObject *arg, *res;
-
-	arg = Py_BuildValue("(s)", (char*)handler_data);
-	res = PyEval_CallObject(pyggzdmod_cb_log, arg);
-	if(res == NULL)
-	{
-		printf("----------------------------------------\n");
-		printf("ERROR in pyggzdmod callback (EVENT_LOG)!\n");
-		PyErr_Print();
-		printf("----------------------------------------\n");
-	}
-	Py_DECREF(arg);
-}
-#endif
-
 void pyggzdmod_cb_error_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data)
 {
 	PyObject *arg, *res;
@@ -533,9 +502,6 @@ void initggzdmod(void)
 	PyModule_AddIntConstant(mod, "EVENT_SPECTATORLEAVE", GGZDMOD_EVENT_SPECTATOR_LEAVE);
 	PyModule_AddIntConstant(mod, "EVENT_SPECTATORSEAT", GGZDMOD_EVENT_SPECTATOR_SEAT);
 	PyModule_AddIntConstant(mod, "EVENT_SPECTATORDATA", GGZDMOD_EVENT_SPECTATOR_DATA);
-#if GGZDMOD_VERSION_MICRO < 14
-	PyModule_AddIntConstant(mod, "EVENT_LOG", GGZDMOD_EVENT_LOG);
-#endif
 	PyModule_AddIntConstant(mod, "EVENT_ERROR", GGZDMOD_EVENT_ERROR);
 
 	PyModule_AddIntConstant(mod, "STATE_CREATED", GGZDMOD_STATE_CREATED);
