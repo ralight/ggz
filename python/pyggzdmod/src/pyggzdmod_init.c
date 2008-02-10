@@ -188,6 +188,16 @@ static PyObject *pyggzdmod_request_open(PyObject *self, PyObject *args)
 	return Py_None;
 }
 
+static PyObject *pyggzdmod_log(PyObject *self, PyObject *args)
+{
+	char *message;
+
+	if(!PyArg_ParseTuple(args, "s", &message)) return NULL;
+	ggzdmod_log(ggzdmod, "%s", message);
+
+	return Py_None;
+}
+
 /**********************************************/
 /* GGZDMod control functions                  */
 /**********************************************/
@@ -331,6 +341,7 @@ static PyMethodDef pyggzdmod_methods[] =
 	{"mainLoop", pyggzdmod_loop, METH_VARARGS},
 	{"getState", pyggzdmod_get_state, METH_VARARGS},
 	{"setState", pyggzdmod_set_state, METH_VARARGS},
+	{"log", pyggzdmod_log, METH_VARARGS},
 
 	{"setHandler", pyggzdmod_set_handler, METH_VARARGS},
 	{NULL, NULL}
