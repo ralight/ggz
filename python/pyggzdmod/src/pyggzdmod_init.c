@@ -21,9 +21,11 @@
 static void pyggzdmod_cb_state_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
 static void pyggzdmod_cb_join_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
 static void pyggzdmod_cb_leave_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
+static void pyggzdmod_cb_seat_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
 static void pyggzdmod_cb_data_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
 static void pyggzdmod_cb_spectatorjoin_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
 static void pyggzdmod_cb_spectatorleave_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
+static void pyggzdmod_cb_spectatorseat_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
 static void pyggzdmod_cb_spectatordata_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
 static void pyggzdmod_cb_error_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data);
 
@@ -36,9 +38,11 @@ static GGZdMod *ggzdmod;
 static PyObject *pyggzdmod_cb_state = NULL;
 static PyObject *pyggzdmod_cb_join = NULL;
 static PyObject *pyggzdmod_cb_leave = NULL;
+static PyObject *pyggzdmod_cb_seat = NULL;
 static PyObject *pyggzdmod_cb_data = NULL;
 static PyObject *pyggzdmod_cb_spectatorjoin = NULL;
 static PyObject *pyggzdmod_cb_spectatorleave = NULL;
+static PyObject *pyggzdmod_cb_spectatorseat = NULL;
 static PyObject *pyggzdmod_cb_spectatordata = NULL;
 static PyObject *pyggzdmod_cb_error = NULL;
 
@@ -284,6 +288,11 @@ static PyObject *pyggzdmod_set_handler(PyObject *self, PyObject *args)
 			pyggzdmod_cb_leave = temp;
 			ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, pyggzdmod_cb_leave_hook);
 			break;
+		case GGZDMOD_EVENT_SEAT:
+			Py_XDECREF(pyggzdmod_cb_seat);
+			pyggzdmod_cb_seat = temp;
+			ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SEAT, pyggzdmod_cb_seat_hook);
+			break;
 		case GGZDMOD_EVENT_PLAYER_DATA:
 			Py_XDECREF(pyggzdmod_cb_data);
 			pyggzdmod_cb_data = temp;
@@ -292,12 +301,17 @@ static PyObject *pyggzdmod_set_handler(PyObject *self, PyObject *args)
 		case GGZDMOD_EVENT_SPECTATOR_JOIN:
 			Py_XDECREF(pyggzdmod_cb_spectatorjoin);
 			pyggzdmod_cb_spectatorjoin = temp;
-			ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_JOIN, pyggzdmod_cb_spectatorjoin_hook);
+			ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN, pyggzdmod_cb_spectatorjoin_hook);
 			break;
 		case GGZDMOD_EVENT_SPECTATOR_LEAVE:
 			Py_XDECREF(pyggzdmod_cb_spectatorleave);
 			pyggzdmod_cb_spectatorleave = temp;
-			ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, pyggzdmod_cb_spectatorleave_hook);
+			ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, pyggzdmod_cb_spectatorleave_hook);
+			break;
+		case GGZDMOD_EVENT_SPECTATOR_SEAT:
+			Py_XDECREF(pyggzdmod_cb_spectatorseat);
+			pyggzdmod_cb_spectatorseat = temp;
+			ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_SEAT, pyggzdmod_cb_spectatorseat_hook);
 			break;
 		case GGZDMOD_EVENT_SPECTATOR_DATA:
 			Py_XDECREF(pyggzdmod_cb_spectatordata);
@@ -391,6 +405,7 @@ void pyggzdmod_cb_leave_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *h
 	PyObject *arg, *res;
 	GGZSeat seat;
 
+	/* FIXME: ggzdmod docs say it's a GGZSeat* and not a GGZSeat */
 	seat = *(GGZSeat*)handler_data;
 	seat = ggzdmod_get_seat(ggzdmod, seat.num);
 	arg = Py_BuildValue("(iisi)", seat.num, seat.type, seat.name, seat.fd);
@@ -401,6 +416,24 @@ void pyggzdmod_cb_leave_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *h
 		printf("ERROR in pyggzdmod callback (EVENT_LEAVE)!\n");
 		PyErr_Print();
 		printf("------------------------------------------\n");
+	}
+	Py_DECREF(arg);
+}
+
+void pyggzdmod_cb_seat_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data)
+{
+	PyObject *arg, *res;
+	GGZSeat *oldseat;
+
+	oldseat = (GGZSeat*)handler_data;
+	arg = Py_BuildValue("(iisi)", oldseat->num, oldseat->type, oldseat->name, oldseat->fd);
+	res = PyEval_CallObject(pyggzdmod_cb_seat, arg);
+	if(res == NULL)
+	{
+		printf("-----------------------------------------\n");
+		printf("ERROR in pyggzdmod callback (EVENT_SEAT)!\n");
+		PyErr_Print();
+		printf("-----------------------------------------\n");
 	}
 	Py_DECREF(arg);
 }
@@ -427,6 +460,7 @@ void pyggzdmod_cb_spectatorjoin_hook(GGZdMod *ggzdmod, GGZdModEvent event, const
 {
 	PyObject *arg, *res;
 
+	/* FIXME: ggzdmod docs talk about GGZSeat* here */
 	arg = Py_BuildValue("(i)", *(int*)handler_data);
 	res = PyEval_CallObject(pyggzdmod_cb_spectatorjoin, arg);
 	if(res == NULL)
@@ -443,6 +477,7 @@ void pyggzdmod_cb_spectatorleave_hook(GGZdMod *ggzdmod, GGZdModEvent event, cons
 {
 	PyObject *arg, *res;
 
+	/* FIXME: ggzdmod docs talk about GGZSeat* here */
 	arg = Py_BuildValue("(i)", *(int*)handler_data);
 	res = PyEval_CallObject(pyggzdmod_cb_spectatorleave, arg);
 	if(res == NULL)
@@ -451,6 +486,24 @@ void pyggzdmod_cb_spectatorleave_hook(GGZdMod *ggzdmod, GGZdModEvent event, cons
 		printf("ERROR in pyggzdmod callback (EVENT_SPECTATOR_LEAVE)!\n");
 		PyErr_Print();
 		printf("----------------------------------------------------\n");
+	}
+	Py_DECREF(arg);
+}
+
+void pyggzdmod_cb_spectatorseat_hook(GGZdMod *ggzdmod, GGZdModEvent event, const void *handler_data)
+{
+	PyObject *arg, *res;
+	GGZSeat *oldseat;
+
+	oldseat = (GGZSeat*)handler_data;
+	arg = Py_BuildValue("(iisi)", oldseat->num, oldseat->type, oldseat->name, oldseat->fd);
+	res = PyEval_CallObject(pyggzdmod_cb_spectatorseat, arg);
+	if(res == NULL)
+	{
+		printf("---------------------------------------------------\n");
+		printf("ERROR in pyggzdmod callback (EVENT_SPECTATOR_SEAT)!\n");
+		PyErr_Print();
+		printf("---------------------------------------------------\n");
 	}
 	Py_DECREF(arg);
 }
