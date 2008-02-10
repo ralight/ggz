@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 9447 2007-12-14 07:15:14Z jdorje $
+ * $Id: easysock.c 9691 2008-02-10 17:45:02Z josef $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -700,6 +700,19 @@ int ggz_read_string_alloc(const int sock, char **message)
 
 	ggz_debug(GGZ_SOCKET_DEBUG, "Received \"%s\" : string.", *message);
 	return 0;
+}
+
+
+int ggz_read_string_alloc_null(const int sock, char **message)
+{
+	int ret;
+
+	ret = ggz_read_string_alloc(sock, message);
+	if (ret == 0)
+		if (message[0] == '\0')
+			*message = NULL;
+
+	return ret;
 }
 
 

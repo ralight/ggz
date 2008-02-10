@@ -1717,10 +1717,23 @@ void ggz_read_string_or_die(const int sock, char *data, const unsigned int len);
  *  @param sock The socket file descriptor to read from
  *  @param data A pointer to an empty string pointer
  *  @return 0 on success, -1 on error
- *  @note The use of this function is a security risk.
  *  @see ggz_set_io_alloc_limit
  */
 int ggz_read_string_alloc(const int sock, char **data);
+
+/** @brief Read and allocate a string from the given socket.
+ *
+ *  This function works just like ggz_read_string_alloc(), including the need
+ *  to ggz_free() the string afterwards.
+ *  What makes it special is that if the string is empty, it returns a NULL
+ *  pointer instead. This is useful since writing NULL with ggz_write_string()
+ *  gets serialized as an empty string.
+ *
+ *  @param sock The socket file descriptor to read from
+ *  @param data A pointer to an empty string pointer
+ *  @return 0 on success, -1 on error
+ */
+int ggz_read_string_alloc_null(const int sock, char **data);
 
 /** @brief Read and allocate string from the given socket, exiting on error.
  *
