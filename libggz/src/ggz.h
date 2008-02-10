@@ -1,8 +1,8 @@
 /**
- * Header file for the GGZ base library libggz
+ * libggz - Programming in C with comfort, safety and network awareness
  *
  * Copyright (C) 2001 Brent Hendricks
- * Copyright (C) 2002-2007 GGZ Gaming Zone Development Team
+ * Copyright (C) 2002-2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __GGZ_H__
-#define __GGZ_H__
+#ifndef GGZ_H
+#define GGZ_H
 
 #define LIBGGZ_VERSION_MAJOR 0
 #define LIBGGZ_VERSION_MINOR 99
@@ -32,6 +32,18 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/** @file ggz.h
+ *  @brief Programming in C with comfort, safety and network awareness
+ *
+ * This file contains libggz functions which are not specific to GGZ at all
+ * but rather give C developers a great tool to create more robust and
+ * powerful applications.
+ *
+ * Two more header files beside ggz.h are provided by libggz:
+ * - ggz_dio.h contains functions for sending and receiving network packets
+ * - ggz_common.h contains various enumerations used by the GGZ applications
+ */
 
 /** @brief Allow easy use of GCC's "attribute" macro for debugging.
  *
@@ -2054,4 +2066,4 @@ void ggz_uri_free(ggz_uri_t uri);
 }
 #endif
 
-#endif  /* __GGZ_H__ */
+#endif  /* GGZ_H */

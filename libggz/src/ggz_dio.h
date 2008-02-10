@@ -1,19 +1,32 @@
-/********************************************************************** 
- Copyright (C) 1996-2006 the Freeciv Dev Team and the GGZ Dev Team
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+/**
+ * libggz - Programming in C with comfort, safety and network awareness
+ *
+ * Copyright (C) 1996-2006 Freeciv Dev Team
+ * Copyright (C) 2006-2008 GGZ Gaming Zone Development Team
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+/* This file contains DIO (Data I/O) functions to read and write quantized
+ * packets over a network. The advantage over libggz's easysock functions is
+ * that packets can be read when they have arrived in full without the danger
+ * of blocking.
+ */
 
-   $Id: ggz_dio.h 9180 2007-07-11 06:25:57Z josef $
-***********************************************************************/
-#ifndef __GGZ_DIO_H__
-#define __GGZ_DIO_H__
+#ifndef GGZ_DIO_H
+#define GGZ_DIO_H
 
 #include <stdbool.h>
 #include <stddef.h>

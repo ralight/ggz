@@ -1,15 +1,8 @@
-/*
- * File: ggz_common.h
- * Author: GGZ Dev Team
- * Project: GGZ Common Library
- * Date: 01/13/2002
- * $Id: ggz_common.h 9019 2007-03-30 05:35:54Z jdorje $
- *
- * This provides GGZ-specific functionality that is common to
- * some or all of the ggz-server, game-server, ggz-client, and
- * game-client.
+/**
+ * libggz - Programming in C with comfort, safety and network awareness
  *
  * Copyright (C) 2002 Brent Hendricks.
+ * Copyright (C) 2003-2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,8 +19,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __GGZ_COMMON_H__
-#define __GGZ_COMMON_H__
+/* This header contains common definitions of constants and their symbolic
+ * representations as strings. These constants are equally used by the GGZ
+ * server and core clients, as well as by GGZ-enabled game servers and
+ * clients.
+ */
+
+#ifndef GGZ_COMMON_H
+#define GGZ_COMMON_H
 
 #include <stdbool.h>
 #include <sys/types.h>
@@ -440,4 +439,4 @@ GGZPerm ggz_string_to_perm(const char *perm_str);
 }
 #endif /* __cplusplus */
 
-#endif /* __GGZ_COMMON_H__ */
+#endif /* GGZ_COMMON_H */
