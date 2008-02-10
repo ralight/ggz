@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 9630 2008-01-31 20:02:13Z josef $
+ * $Id: io.c 9693 2008-02-10 17:52:27Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -210,16 +210,16 @@ static int _io_read_msg_player(GGZMod *ggzmod)
 	int is_spectator, seat_num;
 	char *name;
 
-	if (ggz_read_string_alloc(ggzmod->fd, &name) < 0
+	if (ggz_read_string_alloc_null(ggzmod->fd, &name) < 0
 	    || ggz_read_int(ggzmod->fd, &is_spectator) < 0
 	    || ggz_read_int(ggzmod->fd, &seat_num) < 0)
 		return -1;
 
-	_ggzmod_handle_player(ggzmod,
-			      name[0] == '\0' ? NULL : name,
+	_ggzmod_handle_player(ggzmod, name,
 			      is_spectator, seat_num);
 
-	ggz_free(name);
+	if(name)
+		ggz_free(name);
 	return 0;
 }
 
@@ -231,16 +231,12 @@ static int _io_read_msg_seat(GGZMod *ggzmod)
 
 	if (ggz_read_int(ggzmod->fd, (int*)&seat.num) < 0
 	    || ggz_read_int(ggzmod->fd, &type) < 0
-	    || ggz_read_string_alloc(ggzmod->fd, &name) < 0)
+	    || ggz_read_string_alloc_null(ggzmod->fd, &name) < 0)
 		  return -1;
 
 	/* Set seat values */
 	seat.type = type;
-	if (name[0] == '\0') {
-		ggz_free(name);
-		seat.name = NULL;
-	} else
-		seat.name = name;
+	seat.name = name;
 
 	_ggzmod_handle_seat(ggzmod, &seat);
 
@@ -256,15 +252,10 @@ static int _io_read_msg_spectator_seat(GGZMod *ggzmod)
 	char *name;
 
 	if (ggz_read_int(ggzmod->fd, (int*)&seat.num) < 0
-	    || ggz_read_string_alloc(ggzmod->fd, &name) < 0)
+	    || ggz_read_string_alloc_null(ggzmod->fd, &name) < 0)
 		return -1;
 
-	/* Detect empty seat case */
-	if (name[0] == '\0') {
-		ggz_free(name);
-		seat.name = NULL;
-	} else
-		seat.name = name;
+	seat.name = name;
 
 	_ggzmod_handle_spectator_seat(ggzmod, &seat);
 
@@ -324,17 +315,6 @@ static int _io_read_stats(GGZMod *ggzmod)
 	return 0;
 }
 
-// FIXME: this might be useful in other contexts as well
-// for whenever data is received from libggz
-static const char *null_if_empty(const char *str)
-{
-	if(!str)
-		return NULL;
-	if(str[0] == '\0')
-		return NULL;
-	return str;
-}
-
 static void infos_free(void *pstat)
 {
 	GGZPlayerInfo *info = pstat;
@@ -367,16 +347,16 @@ static int _io_read_info(GGZMod *ggzmod)
 
 	for (i = 0; i < num; i++) {
 		if (ggz_read_int(ggzmod->fd, &seat_num) < 0
-		    || ggz_read_string_alloc(ggzmod->fd, &realname) < 0
-		    || ggz_read_string_alloc(ggzmod->fd, &photo) < 0
-		    || ggz_read_string_alloc(ggzmod->fd, &host) < 0) {
+		    || ggz_read_string_alloc_null(ggzmod->fd, &realname) < 0
+		    || ggz_read_string_alloc_null(ggzmod->fd, &photo) < 0
+		    || ggz_read_string_alloc_null(ggzmod->fd, &host) < 0) {
 			return -1;
 		}
 
 		GGZPlayerInfo *info = (GGZPlayerInfo*)ggz_malloc(sizeof(GGZPlayerInfo));
-		info->realname = null_if_empty(realname);
-		info->photo = null_if_empty(photo);
-		info->host = null_if_empty(host);
+		info->realname = realname;
+		info->photo = photo;
+		info->host = host;
 		info->num = seat_num;
 		ggz_list_insert(infos, info);
 	}
