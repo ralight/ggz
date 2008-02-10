@@ -70,7 +70,7 @@ See @url{http://www.ggzgamingzone.org/docs/guides/gamedev/} for the latest editi
 * Diving into GGZ:: Preparing a developer installation
 * Game Clients:: Get into the player's eye
 * Game Servers:: Where the real magic takes place
-* Programming Details:: Network, configuration etc.
+* Programming Details:: Network, configuration, tools etc.
 
 @c @detailmenu
 @c The GGZ System
@@ -918,6 +918,18 @@ Secondbot = external_ai
 The ggzdmod_get_bot_class() function is then called on the name of the
 bot (e.g. FirstBot) and returns the bot class, which the game server
 uses internally to activate the correct AI accordingly.
+
+@section Development and debugging tools
+
+With @command{ggz-faketable}, a combination of game server and game client
+can be launched from the command line without the need to have a GGZ server
+or core client running. The tool will manage initiate its own connections
+to the game executables and the fake network connection between the game
+server and the game clients. Debugging becomes easy since errors will be
+reported centrally by the tool.
+
+Another launch tool is @command{ggz-wrapper} which acts as a headless GGZ
+core client and initiates a game on a GGZ server.
 
 @section General purpose wrappers
 
