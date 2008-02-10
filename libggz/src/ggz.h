@@ -1643,6 +1643,8 @@ void ggz_read_int_or_die(const int sock, int *data);
  *
  *  This function will write a full string to the given socket.  The string
  *  may be read at the other end by ggz_read_string() and friends.
+ *  If the string is NULL, it will be transmitted as an empty string and may
+ *  be reinterpreted at the receiving end with ggz_read_string_alloc_null().
  *
  *  @param sock The socket file descriptor to write to
  *  @param data A pointer to the string to write
