@@ -69,7 +69,7 @@ def ttt_recv_op (seat):
 	#fd = ggzdmod.getPlayerSocket(seat)
 	fd = 0
 	sock = socket.fromfd(fd, socket.AF_UNIX, socket.SOCK_STREAM)
-	op = sock.ntohl(sock.read(4))
+	op = socket.ntohl(sock.recv(4))
 	print "Opcode: ", op
 
 	if op == SND_MOVE:
@@ -87,9 +87,9 @@ def ttt_update (type, move):
 # Network hooks ##################################################
 
 # Launch the game
-def hook_state ():
-	print "* state"
-	game.state = STATE_WAIT
+def hook_state (state):
+	print "* state", state
+	game.state = state
 
 # A player joins
 def hook_join (seat):
@@ -132,10 +132,10 @@ def hook_player (seat):
 ggzdmod.setHandler(ggzdmod.EVENT_STATE, hook_state)
 ggzdmod.setHandler(ggzdmod.EVENT_JOIN, hook_join)
 ggzdmod.setHandler(ggzdmod.EVENT_LEAVE, hook_leave)
-ggzdmod.setHandler(ggzdmod.EVENT_PLAYER, hook_player)
+ggzdmod.setHandler(ggzdmod.EVENT_DATA, hook_player)
 
 # Test
-ttt_recv_op(0)
+##ttt_recv_op(0)
 
 # Start
 ggzdmod.connect()
