@@ -15,9 +15,9 @@ class NetworkInfo:
 		self.playernames = None
 		self.modified = 0
 
-class Network(NetworkBase, NetworkInfo):
+class Network(NetworkBaseClient, NetworkInfo):
 	def __init__(self):
-		NetworkBase.__init__(self)
+		NetworkBaseClient.__init__(self)
 		NetworkInfo.__init__(self)
 
 		self.movequeue = []

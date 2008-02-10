@@ -30,9 +30,9 @@ class NetworkInfo:
 		# fixme: this one too?
 		self.movequeue = []
 
-class Network(NetworkBase, NetworkInfo):
+class Network(NetworkBaseClient, NetworkInfo):
 	def __init__(self):
-		NetworkBase.__init__(self)
+		NetworkBaseClient.__init__(self)
 		NetworkInfo.__init__(self)
 
 		self.MSG_SEAT = 0

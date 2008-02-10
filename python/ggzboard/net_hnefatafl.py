@@ -17,9 +17,9 @@ class NetworkInfo:
 #		self.state = None
 #		self.returnvalue = -1
 
-class Network(NetworkBase, NetworkInfo):
+class Network(NetworkBaseClient, NetworkInfo):
 	def __init__(self):
-		NetworkBase.__init__(self)
+		NetworkBaseClient.__init__(self)
 		NetworkInfo.__init__(self)
 		self.MSG_SEAT = 0
 		self.MSG_PLAYERS = 1
