@@ -11,7 +11,7 @@ $singleton = nil
 # This class represents a GGZ player or spectator.
 # It holds information from the 'rankings', 'stats' and 'info' events.
 class Player
-	attr_reader :name, :position, :score, :realname, :photo, :hostname
+	attr_reader :name, :position, :score, :realname, :photo
 
 	def initialize(name)
 		@name = name
@@ -19,7 +19,6 @@ class Player
 		@score = nil
 		@realname = nil
 		@photo = nil
-		@hostname = nil
 	end
 
 	def setrankings(position, score)
@@ -27,10 +26,9 @@ class Player
 		@score = score
 	end
 
-	def setinfo(realname, photo, hostname)
+	def setinfo(realname, photo)
 		@realname = realname
 		@photo = photo
-		@hostname = hostname
 	end
 end
 
@@ -46,12 +44,17 @@ end
 
 # This class represents a GGZ player who currently plays
 class Seat < Player
-	attr_reader :seatnum, :type
+	attr_reader :seatnum, :type, :hostname
 
 	def initialize(name, seatnum, type)
 		super(name)
 		@seatnum = seatnum
 		@type = type
+		@hostname = nil
+	end
+
+	def sethostname(hostname)
+		@hostname = hostname
 	end
 end
 
