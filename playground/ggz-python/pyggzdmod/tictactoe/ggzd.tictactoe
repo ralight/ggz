@@ -92,14 +92,14 @@ def hook_state (state):
 	game.state = state
 
 # A player joins
-def hook_join (seat):
-	print "* join: ", seat
+def hook_join (num, type, name, fd):
+	print "* join: ", num
 	if game.state != STATE_WAIT:
 		return
-	print "(Name: " + ggzdmod.getPlayerName(seat) + ")"
+	print "(Name: " + name + ")"
 
-	ttt_send_seat(seat)
-	ttt_send_players
+	ttt_send_seat(num)
+	ttt_send_players()
 
 	if ggzdmod.seatsOpen == 0:
 		if game.turn == -1:
@@ -108,14 +108,22 @@ def hook_join (seat):
 			ttt_send_sync()
 
 # A player leaves
-def hook_leave (seat):
-	print "* leave: ", seat
+def hook_leave (num, type, name, fd):
+	print "* leave: ", num
 	if game.state != STATE_PLAYING:
 		return
-	print "(Name: " + ggzdmod.getPlayerName(seat) + ")"
+	print "(Name: " + name + ")"
 
 	game.state = STATE_DONE
 	ttt_send_players()
+
+# A seat change happens
+def hook_seat (num, type, name, fd):
+	print "* seat change at: ", num
+	print "(Old name: " + name + ")"
+
+	(num2, type2, name2, fd2) = ggzdmod.getSeat(num)
+	print "(New name: " + name2 + ")"
 
 # Message from player
 def hook_player (seat):
@@ -133,11 +141,13 @@ ggzdmod.setHandler(ggzdmod.EVENT_STATE, hook_state)
 ggzdmod.setHandler(ggzdmod.EVENT_JOIN, hook_join)
 ggzdmod.setHandler(ggzdmod.EVENT_LEAVE, hook_leave)
 ggzdmod.setHandler(ggzdmod.EVENT_DATA, hook_player)
+ggzdmod.setHandler(ggzdmod.EVENT_SEAT, hook_seat)
 
 # Test
 ##ttt_recv_op(0)
 
 # Start
 ggzdmod.connect()
+ggzdmod.log("PiTTTy")
 ggzdmod.mainLoop()
 
