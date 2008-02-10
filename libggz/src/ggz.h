@@ -150,7 +150,8 @@ extern "C" {
  * directly.  Instead, call ggz_malloc().
  * 
  * @param size size of memory to allocate, in bytes
- * @param tag string describing the calling function
+ * @param funcname string describing the calling function
+ * @param tag string describing the calling function's context
  * @param line linenumber
  * 
  * @return pointer to newly allocated, zeroed memory
@@ -164,7 +165,8 @@ void * _ggz_malloc(const size_t size, const char *funcname,
  * 
  * @param ptr pointer to memory to reallocate
  * @param size new size, in bytes
- * @param tag string describing the calling function
+ * @param funcname string describing the calling function
+ * @param tag string describing the calling function's context
  * @param line linenumber
  * 
  * @return pointer to allocated memory
@@ -178,7 +180,8 @@ void * _ggz_realloc(const void * ptr, const size_t size,
  * directly.  Instead, call ggz_free().
  * 
  * @param ptr pointer to memory
- * @param tag string describing the calling function
+ * @param funcname string describing the calling function
+ * @param tag string describing the calling function's context
  * @param line linenumber
  * 
  * @return 0 on success, -1 on error
@@ -191,7 +194,8 @@ int _ggz_free(const void * ptr, const char *funcname,
  * directly.  Instead, call ggz_strdup().
  * 
  * @param ptr string to duplicate
- * @param tag string describing the calling function
+ * @param funcname string describing the calling function
+ * @param tag string describing the calling function's context
  * @param line linenumber
  * 
  * @return newly allocated string
@@ -2056,7 +2060,7 @@ char *ggz_uri_to_string(ggz_uri_t uri);
  *  Frees up all allocated memory taken up by an URI object. The object
  *  should not be used afterwards.
  *
- *  @param uri An URI object which was created with \ref uri_from_string
+ *  @param uri An URI object which was created with \ref ggz_uri_from_string
  */
 void ggz_uri_free(ggz_uri_t uri);
 
