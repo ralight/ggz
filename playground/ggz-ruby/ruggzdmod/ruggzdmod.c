@@ -29,10 +29,61 @@ static void cb_handler ( GGZdMod *mod, GGZdModEvent event, const void *data )
 		dataval = INT2FIX ( oldseat->num );
 	}
 
+	if ( event == GGZDMOD_EVENT_LEAVE )
+	{
+		GGZSeat *oldseat = ( GGZSeat* ) data;
+		dataval = INT2FIX ( oldseat->num );
+	}
+
+	if ( event == GGZDMOD_EVENT_SEAT )
+	{
+		GGZSeat *oldseat = ( GGZSeat* ) data;
+		dataval = INT2FIX ( oldseat->num );
+	}
+
+	if ( event == GGZDMOD_EVENT_SPECTATOR_JOIN )
+	{
+		GGZSeat *oldseat = ( GGZSeat* ) data;
+		dataval = INT2FIX ( oldseat->num );
+	}
+
+	if ( event == GGZDMOD_EVENT_SPECTATOR_LEAVE )
+	{
+		GGZSeat *oldseat = ( GGZSeat* ) data;
+		dataval = INT2FIX ( oldseat->num );
+	}
+
+	if ( event == GGZDMOD_EVENT_SPECTATOR_SEAT )
+	{
+		GGZSeat *oldseat = ( GGZSeat* ) data;
+		dataval = INT2FIX ( oldseat->num );
+	}
+
 	if ( event == GGZDMOD_EVENT_PLAYER_DATA )
 	{
 		int seatnum = * ( int * ) data;
 		dataval = INT2FIX ( seatnum );
+	}
+
+	if ( event == GGZDMOD_EVENT_SPECTATOR_DATA )
+	{
+		int seatnum = * ( int * ) data;
+		dataval = INT2FIX ( seatnum );
+	}
+
+	if ( event == GGZDMOD_EVENT_STATE )
+	{
+		GGZdModState state = * ( GGZdModState * ) data;
+		dataval = INT2FIX ( state );
+	}
+
+	if ( event == GGZDMOD_EVENT_ERROR )
+	{
+		const char *errormsg = ( const char * ) data;
+		if ( errormsg )
+		{
+			dataval = rb_str_new2 ( errormsg );
+		}
 	}
 
 	rb_funcall( cTEST, rb_intern("ggzdmod_handler"), 2, INT2FIX ( event ), dataval );
@@ -53,6 +104,13 @@ static void init_ggz ()
 }
 
 /* Methods for the ggzdmod object */
+
+static VALUE t_is_ggz_mode ( VALUE self )
+{
+	retv = INT2FIX ( ggzdmod_is_ggz_mode () );
+
+	return retv;
+}
 
 static VALUE t_init ( VALUE self )
 {
@@ -129,6 +187,17 @@ static VALUE t_get_seat_fd ( VALUE self, VALUE seat )
 	return retv;
 }
 
+static VALUE t_log ( VALUE self, VALUE str )
+{
+	ret = ggzdmod_log ( ggzdmod, STR2CSTR ( str ) );
+	if ( ret )
+		return Qtrue;
+	else
+		return Qfalse;
+
+	return retv;
+}
+
 /* Module initialization */
 
 static void init_constants ( VALUE self )
@@ -159,6 +228,8 @@ static void init_constants ( VALUE self )
 
 static void init_methods ( VALUE self )
 {
+	rb_define_method ( self, "is_ggz_mode", t_is_ggz_mode, 0 );
+
 	rb_define_method ( self, "initialize", t_init, 0 );
 	rb_define_method ( self, "connect", t_connect, 0 );
 	rb_define_method ( self, "disconnect", t_disconnect, 0 );
@@ -169,6 +240,8 @@ static void init_methods ( VALUE self )
 	rb_define_method ( self, "get_seat_name", t_get_seat_name, 1 );
 	rb_define_method ( self, "get_seat_type", t_get_seat_type, 1 );
 	rb_define_method ( self, "get_seat_fd", t_get_seat_fd, 1 );
+
+	rb_define_method ( self, "log", t_log, 1 );
 
 	rb_define_method ( self, "loop", t_loop, 0 );
 }
