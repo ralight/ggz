@@ -93,6 +93,7 @@ class TTTProto
 	NO_WINNER = 2
 end
 
+begin
 class TestWidget < Qt::TreeWidget
 	signals "itemRightClicked(QPoint)"
 
@@ -109,7 +110,10 @@ class TestWidget < Qt::TreeWidget
 		end
 	end
 end
+rescue NameError
+end
 
+begin
 class TestAdmin < Qt::Dialog
 	slots "popup(QPoint)", "boot()", "bot()", "open()", "stand()", "sit()", "chat()"
 
@@ -240,7 +244,10 @@ class TestAdmin < Qt::Dialog
 		@client.chat(msg)
 	end
 end
+rescue NameError
+end
 
+begin
 class TestApp < Qt::MainWindow
 	slots "trigger(int)", "data(int)", "move()", "showplayers()"
 
@@ -389,6 +396,8 @@ class TestApp < Qt::MainWindow
 		end
 	end
 end
+rescue NameError
+end
 
 class TestClient < RGGZMod
 	def initialize
@@ -401,6 +410,15 @@ class TestClient < RGGZMod
 	end
 
 	def displayseats
+		# NEW
+		for seat in seats()
+			puts seat
+		end
+		for spectator in spectators()
+			puts spectator
+		end
+
+		# OLD
 		for i in 0..@client.get_num_seats - 1
 			name = @client.get_seat_name(i)
 			type = @client.get_seat_type(i)
@@ -441,6 +459,8 @@ class TestClient < RGGZMod
 				sock = IO.new(fd, "w+")
 				# FIXME: use select() but mainloop is in RGGZMod
 			end
+
+			displayseats
 		elsif id == GGZMod::EVENTPLAYER
 		elsif id == GGZMod::EVENTSEAT
 			displayseats

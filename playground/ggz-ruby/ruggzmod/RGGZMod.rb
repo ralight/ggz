@@ -8,10 +8,13 @@ require "GGZMod"
 
 $singleton = nil
 
-# This class represents a GGZ player or spectator.
-# It holds information from the 'rankings', 'stats' and 'info' events.
+# This class represents a GGZ player who isn't necessarily playing at the
+# moment. He doesn't even have to be in the same room or logged in at all.
+# All that matters is that he's a registered player on the server.
+# The class holds information from the 'rankings', 'stats' and 'info' events.
 class Player
 	attr_reader :name, :position, :score, :realname, :photo
+	attr_reader :wins, :losses, :ties, :forfeits, :rating, :highscore
 
 	def initialize(name)
 		@name = name
@@ -19,6 +22,12 @@ class Player
 		@score = nil
 		@realname = nil
 		@photo = nil
+		@wins = nil
+		@losses = nil
+		@ties = nil
+		@forfeits = nil
+		@rating = nil
+		@highscore = nil
 	end
 
 	def setrankings(position, score)
@@ -31,13 +40,29 @@ class Player
 		@photo = photo
 	end
 
+	def setstatistics(wins, losses, ties, forfeits, rating, ranking, highscore)
+		@wins = wins
+		@losses = losses
+		@ties = ties
+		@forfeits = forfeits
+		@rating = rating
+		@highscore = highscore
+	end
+
 	def to_s
-		s = "<GGZ Player #{@name}"
+		s = "<GGZ Player '#{@name}'"
 		if @realname or @photo
-			s += " (realname #{@realname}, photo #{@photo})"
+			s += " (realname '#{@realname}', photo '#{@photo}')"
 		end
 		if @position or @score
 			s += " (score #{@score}, position #{@position})"
+		end
+		if @wins or @losses or @ties or @forfeits
+			s += " (record: #{@wins} wins, #{@losses} losses, #{@ties} ties, #{@forfeits} forfeits)"
+		elsif @rating
+			s += " (rating: #{@rating})"
+		elsif @highscore
+			s += " (highscore: #{@highscore})"
 		end
 		s += ">"
 		return s
@@ -97,7 +122,7 @@ class Seat < Player
 			playerstr = ", player #{player}"
 		end
 		if @hostname
-			hoststr = ", hostname #{@hostname}"
+			hoststr = ", hostname '#{@hostname}'"
 		end
 		return "<GGZ seat ##{@seatnum} (type #{type}#{playerstr}#{hoststr})>"
 	end
@@ -124,7 +149,7 @@ class RGGZMod
 		end
 		$singleton = self
 		@players = Hash.new
-		# holds information on all players and spectators, key is player name
+		# holds information on all players on the GGZ server, key is player name
 	end
 
 	# Arrival of events from the GGZ server through the GGZ core client.
@@ -150,7 +175,28 @@ class RGGZMod
 		puts "== Event handler called! id = " + id.to_s + ", name = " + name.to_s
 
 		if id == GGZMod::EVENTSTATS
-			# FIXME: data not filled yet
+			for i in 0..@client.get_num_seats - 1
+				name = @client.get_seat_name(i)
+				if not @players[name]
+					@players[name] = Player.new(name)
+				end
+				record = @client.get_record
+				rating = @client.get_rating
+				ranking = @client.get_ranking
+				highscore = @client.get_highscore
+				if record
+					wins = record[0]
+					losses = record[1]
+					ties = record[2]
+					forfeits = record[3]
+				else
+					wins = nil
+					losses = nil
+					ties = nil
+					forfeits = nil
+				end
+				@players[name].setstatistics(wins, losses, ties, forfeits, rating, ranking, highscore)
+			end
 		end
 
 		if id == GGZMod::EVENTINFO
@@ -161,7 +207,7 @@ class RGGZMod
 				if not @players[name]
 					@players[name] = Player.new(name)
 				end
-				@players[name].setinfo(realname, photo, host)
+				@players[name].setinfo(realname, photo)
 			end
 		end
 
@@ -174,6 +220,44 @@ class RGGZMod
 				@players[name].setposition(position, score)
 			end
 		end
+	end
+
+	# Build a list of spectator seats from player information available
+	def spectators
+		seats = []
+		for i in 0..@client.get_num_spectators - 1
+			name = @client.get_spectator_name(i)
+			if not @players[name]
+				@players[name] = Player.new(name)
+			end
+			p = @players[name]
+
+			seat = Spectator.new(name, i)
+			seat.setstatistics(p.wins, p.losses, p.ties, p.forfeits, p.rating, p.ranking, p.highscore)
+			seat.setinfo(p.realname, p.photo)
+		end
+		return seats
+	end
+
+	# Build a list of seats from player information available
+	def seats
+		seats = []
+		for i in 0..@client.get_num_seats - 1
+			name = @client.get_seat_name(i)
+			if not @players[name]
+				@players[name] = Player.new(name)
+			end
+			p = @players[name]
+			type = @client.get_seat_type(i)
+			hostname = nil
+			# FIXME: no method to get player info (with hostname) at this stage!
+
+			seat = Seat.new(name, i, type)
+			seat.setstatistics(p.wins, p.losses, p.ties, p.forfeits, p.rating, p.ranking, p.highscore)
+			seat.setinfo(p.realname, p.photo)
+			seat.sethostname(hostname)
+		end
+		return seats
 	end
 
 	# Enter the main loop and wait for events reported by the GGZ core client.
