@@ -1,17 +1,7 @@
 /* 
- * File: ggzdmod.c
- * Author: GGZ Dev Team
- * Project: ggzdmod
- * Date: 10/14/01
- * Desc: GGZ game module functions
- * $Id: ggzdmod.c 9581 2008-01-20 12:58:29Z josef $
+ * GGZDMOD - C implementation of the GGZ server-server protocol
  *
- * This file contains the backend for the ggzdmod library.  This
- * library facilitates the communication between the GGZ server (ggzd)
- * and game servers.  This file provides backend code that can be
- * used at both ends.
- *
- * Copyright (C) 2001-2002 GGZ Development Team.
+ * Copyright (C) 2001 - 2008 GGZ Development Team.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,6 +17,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+/* See ggzdmod.h for a short description of the purpose of this file. */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>			/* Site-specific config */
@@ -95,6 +87,13 @@ int ggzdmod_is_ggz_mode(void)
 	/* ggzdmod won't run in windows (windows doesn't have getenv()) */
 	ggzmode = getenv("GGZMODE");
 	return (ggzmode && strcmp(ggzmode, "true") == 0);
+}
+
+int ggzdmod_check_library(const char *iface)
+{
+	if(!ggz_check_library(LIBGGZ_VERSION_IFACE))
+		return 0;
+	return !ggz_strcmp(iface, GGZDMOD_VERSION_IFACE);
 }
 
 /* Invokes handlers for the specefied event */

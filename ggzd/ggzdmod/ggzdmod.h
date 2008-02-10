@@ -1,17 +1,7 @@
 /* 
- * File: ggzdmod.h
- * Author: GGZ Dev Team
- * Project: ggzdmod
- * Date: 10/14/01
- * Desc: GGZ game module functions
- * $Id: ggzdmod.h 9577 2008-01-20 12:18:41Z josef $
+ * GGZDMOD - C implementation of the GGZ server-server protocol
  *
- * This file contains the main interface for the ggzdmod library.  This
- * library facilitates the communication between the GGZ server (ggzd)
- * and game servers.  This file provides a unified interface that can be
- * used at both ends.
- *
- * Copyright (C) 2001-2002 GGZ Development Team.
+ * Copyright (C) 2001 - 2008 GGZ Development Team.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,9 +18,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <ggz.h> /* libggz */
-#include <ggz_common.h>
-
 /** @file ggzdmod.h
  *  @brief Common functions for interfacing a game server and GGZ.
  *
@@ -45,7 +32,7 @@
  * program should not read/write data from/to the GGZ socket unless it really
  * knows what it is doing.
  *
- * That this does not apply to the client sockets: ggzdmod provides
+ * This does not apply to the sockets of the game clients: ggzdmod provides
  * one file desriptor for communicating (TCP) to each client.  If data
  * is ready to be read by one of these file descriptors ggzdmod may
  * invoke the appropriate handler (see below), but will never actually
@@ -66,7 +53,7 @@
  *                             const void *data);
  *
  *     // Other game-defined functions (not ggz-related).
- *     void game_init(GGZdMod *ggz); // initialize a game
+ *     void game_init(GGZdMod *ggz);     // initialize a game
  *     void game_launch(void);           // handle a game "launch"
  *     void game_end(void);              // called before the table shuts down
  *     void resume_playing(void);        // we have enough players to play
@@ -187,14 +174,16 @@
  * For more information, see the documentation at http://www.ggzgamingzone.org/.
  */
 
+#ifndef GGZDMOD_H
+#define GGZDMOD_H
 
-#ifndef __GGZDMOD_H__
-#define __GGZDMOD_H__
+#include <ggz.h>
+#include <ggz_common.h>
 
 #define GGZDMOD_VERSION_MAJOR 0
 #define GGZDMOD_VERSION_MINOR 99
 #define GGZDMOD_VERSION_MICRO 1
-#define GGZDMOD_VERSION_IFACE "6:0:0"
+#define GGZDMOD_VERSION_IFACE "6:0:0+dev"
 
 #ifdef __cplusplus
 extern "C" {
@@ -242,21 +231,32 @@ typedef enum {
 	/** @brief Module status changed
 	 *  This event occurs when the game's status changes.  The old
 	 *  state (a GGZdModState*) is passed as the event's data.
-	 *  @see GGZdModState */
+	 *  @see GGZdModState
+	 */
 	GGZDMOD_EVENT_STATE,
 
 	/** @brief Player joined
-	 *  This event occurs when a player joins the table.  The
+	 *  This event occurs when a player has joined the table.  The
 	 *  old seat (a GGZSeat*) is passed as the event's data.
 	 *  The seat information will be updated before the event
-	 *  is invoked. */
+	 *  is invoked. Hence, the new seat data can be read by using
+	 *  ggzdmod_get_seat() in the event handler with the old seat's
+	 *  number.
+	 *  @see GGZSeat
+	 *  @see ggzdmod_get_seat
+	 */
 	GGZDMOD_EVENT_JOIN,
 
 	/** @brief Player left
-	 *  This event occurs when a player leaves the table.  The
+	 *  This event occurs when a player has left the table.  The
 	 *  old seat (a GGZSeat*) is passed as the event's data.
 	 *  The seat information will be updated before the event
-	 *  is invoked. */
+	 *  is invoked. Hence, the new seat data can be read by using
+	 *  ggzdmod_get_seat() in the event handler with the old seat's
+	 *  number.
+	 *  @see GGZSeat
+	 *  @see ggzdmod_get_seat
+	 */
 	GGZDMOD_EVENT_LEAVE,
 
 	/** @brief General seat change
@@ -270,45 +270,61 @@ typedef enum {
 	 *  no new connections are provided nor are connections removed in a
 	 *  SEAT event; thus, if a player is removed via this event you can
 	 *  be sure another SEAT or SPECTATOR_SEAT event will be provided
-	 *  shortly to re-add him to a new location. */
+	 *  shortly to re-add him to a new location.
+	 *  Similar to the corresponding JOIN and LEAVE events, the current
+	 *  seat can be read with ggzdmod_get_seat().
+	 */
 	GGZDMOD_EVENT_SEAT,
 
-	/** @brief A spectator joins the game.
+	/** @brief A spectator has joined the game.
 	 *  The data of the old spectator (GGZSeat*) is passed as the
 	 *  data for the event.  It can be assumed that the spectator seat
 	 *  was previously empty, so the name and socket given will be
-	 *  invalid (NULL/-1). */
+	 *  invalid (NULL/-1).
+	 *  Information on the spectator can be read with
+	 *  ggzdmod_get_spectator() with the number of the old seat.
+	 */
 	GGZDMOD_EVENT_SPECTATOR_JOIN,
 
-	/** @brief A spectator left the game
+	/** @brief A spectator has left the game
 	 *  The old spectator data can be obtained via the (GGZSeat*)
-	 *  which is passed as the event data. */
+	 *  which is passed as the event data.
+	 *  Information on the spectator can be read with
+	 *  ggzdmod_get_spectator() with the number of the old seat.
+	 */
 	GGZDMOD_EVENT_SPECTATOR_LEAVE,
 
 	/** @brief A spectator seat changed.
 	 *  The old spectator data can be obtained via the (GGZSeat*)
 	 *  which is passed as the event data.  The same caveats apply as
 	 *  to GGZDMOD_EVENT_SEAT.
-	 *  @see GGZDMOD_EVENT_SEAT */
+	 *  @see GGZDMOD_EVENT_SEAT
+	 */
 	GGZDMOD_EVENT_SPECTATOR_SEAT,
 
 	/** @brief Data available from player
 	 *  This event occurs when there is data ready to be read from
 	 *  one of the player sockets.  The player number (an int*) is
-	 *  passed as the event's data. */
+	 *  passed as the event's data. Call ggzdmod_get_seat() with that
+	 *  number to find out the file descriptor to read from.
+	 */
 	GGZDMOD_EVENT_PLAYER_DATA,
 
 	/** @brief Data available from spectator
 	 *  For games which support spectators, this indicates that one of them
-	 *  sent some data to the game server. */
+	 *  sent some data to the game server. The spectator's number (an int*)
+	 *  is sent as the event's data. Call ggzdmod_get_spectator() with that
+	 *  number to find out the file descriptor to read from.
+	 */
 	GGZDMOD_EVENT_SPECTATOR_DATA,
 
 	/** @brief An error has occurred
 	 *  This event occurs when a GGZdMod error has occurred.  An
-	 *  error message (a char*) will be passed as the event's data.
+	 *  error message (a const char*) will be passed as the event's data.
 	 *  GGZdMod may attempt to recover from the error, but it is
 	 *  not guaranteed that the GGZ connection will continue to
-	 *  work after an error has happened. */
+	 *  work after an error has happened.
+	 */
 	GGZDMOD_EVENT_ERROR
 
 	/* GGZDMOD_EVENT_ERROR must be last in the list! */
@@ -320,7 +336,7 @@ typedef enum {
  * allowed.
  */
 typedef enum {
-	GGZDMOD_GGZ,	/**< Used by the ggz server ("ggzd"). */
+	GGZDMOD_GGZ,	/**< Used by the GGZ server ("ggzd"). */
 	GGZDMOD_GAME	/**< Used by the game server ("table"). */
 } GGZdModType;
 
@@ -345,10 +361,10 @@ typedef struct GGZdMod GGZdMod;
  *    - GGZDMOD_EVENT_SEAT: The old seat (GGZSeat*)
  *    - GGZDMOD_EVENT_SPECTATOR_JOIN: The old spectator's data (GGZSeat*)
  *    - GGZDMOD_EVENT_SPECTATOR_LEAVE: The old spectator's data (GGZSeat*)
- *    - GGZDMOD_EVENT_LOG: The message string (char*)
+ *    - GGZDMOD_EVENT_SPECTATOR_SEAT: The old spectator's data (GGZSeat*)
  *    - GGZDMOD_EVENT_PLAYER_DATA: The player number (int*)
  *    - GGZDMOD_EVENT_SPECTATOR_DATA: The spectator number (int*)
- *    - GGZDMOD_EVENT_ERROR: An error string (char*)
+ *    - GGZDMOD_EVENT_ERROR: An error string (const char*)
  */
 typedef void (*GGZdModHandler) (GGZdMod * mod, GGZdModEvent event,
 				const void *data);
@@ -375,6 +391,20 @@ typedef struct {
  *  @note Should only be called by game servers, not by GGZ itself.
  */
 int ggzdmod_is_ggz_mode(void);
+
+/** @brief Check if the correct library is used.
+ *
+ * Check if the library in use is the one the application was compiled against.
+ * This is determined by comparing the current value of GGZDMOD_VERSION_IFACE
+ * with the one which was present at the time of compilation.
+ * It transitively also checks for libggz, although applications should check
+ * as well if they make use of it explicitly.
+ *
+ * @param iface GGZDMOD_VERSION_IFACE
+ *
+ * @return 1 if this is the case, 0 otherwise.
+ */
+int ggzdmod_check_library(const char *iface);
 
 /* 
  * Creation functions
@@ -687,4 +717,4 @@ void ggzdmod_request_open(GGZdMod * ggzdmod, int seat_num);
 }
 #endif
 
-#endif /* __GGZDMOD_H__ */
+#endif /* GGZDMOD_H */

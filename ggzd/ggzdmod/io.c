@@ -1,17 +1,7 @@
 /* 
- * File: io.c
- * Author: GGZ Dev Team
- * Project: ggzdmod
- * Date: 10/14/01
- * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 9694 2008-02-10 17:58:19Z josef $
+ * GGZDMOD - C implementation of the GGZ server-server protocol
  *
- * This file contains the backend for the ggzdmod library.  This
- * library facilitates the communication between the GGZ server (ggzd)
- * and game servers.  This file provides backend code that can be
- * used at both ends.
- *
- * Copyright (C) 2001 GGZ Dev Team.
+ * Copyright (C) 2001 - 2008 GGZ Development Team.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,6 +17,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+/* See ggzdmod.h for a short description of the purpose of this file. */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>			/* Site-specific config */

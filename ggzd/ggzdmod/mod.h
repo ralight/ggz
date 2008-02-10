@@ -1,17 +1,7 @@
 /* 
- * File: mod.h
- * Author: GGZ Dev Team
- * Project: ggzdmod
- * Date: 11/18/01
- * Desc: Functions for reading/writing messages from/to game modules
- * $Id: mod.h 9057 2007-04-17 22:12:51Z jdorje $
+ * GGZDMOD - C implementation of the GGZ server-server protocol
  *
- * This file contains the backend for the ggzdmod library.  This
- * library facilitates the communication between the GGZ server (ggzd)
- * and game servers.  This file provides backend code that can be
- * used at both ends.
- *
- * Copyright (C) 2001 GGZ Dev Team.
+ * Copyright (C) 2001 - 2008 GGZ Development Team.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,9 +18,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+/* This file contains callbacks for messages from both the GGZ server and the
+ * game server. Usually, some preprocessing and restructuring of the data is
+ * done to transform the low-level network representation into higher-level
+ * data structures.
+ */
 
-#ifndef __GGZ_MOD_H__
-#define __GGZ_MOD_H__
+#ifndef GGZDMOD_MOD_H
+#define GGZDMOD_MOD_H
 
 #include <ggz.h>
 
@@ -88,5 +83,4 @@ void _ggzdmod_handle_reseat(GGZdMod * ggzdmod,
 void _ggzdmod_handle_spectator_seat(GGZdMod * ggzdmod, GGZSeat *seat);
 void _ggzdmod_handle_state_response(GGZdMod * ggzdmod);
 
-
-#endif /* __GGZ_MOD_H__ */
+#endif /* GGZDMOD_MOD_H */

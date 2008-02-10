@@ -1,16 +1,7 @@
 /* 
- * File: ggzdmod-ggz.h
- * Author: GGZ Dev Team
- * Project: ggzdmod
- * Date: 10/27/02
- * Desc: GGZ game module functions, GGZ-side only
- * $Id: ggzdmod-ggz.h 9057 2007-04-17 22:12:51Z jdorje $
+ * GGZDMOD - C implementation of the GGZ server-server protocol
  *
- * This file contains the GGZ-only interface for the ggzdmod library.  This
- * library facilitates the communication between the GGZ server (ggzd)
- * and game servers.  See ggzdmod.h for the rest of the library.
- *
- * Copyright (C) 2001-2002 GGZ Development Team.
+ * Copyright (C) 2001 - 2008 GGZ Development Team.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,8 +18,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __GGZDMOD_GGZ_H__
-#define __GGZDMOD_GGZ_H__
+/* This file implements the GGZ-side functionality to control and modify
+ * ggzdmod objects. It is used by the GGZ server (ggzd) exclusively.
+ */
+
+#ifndef GGZDMOD_GGZ_H
+#define GGZDMOD_GGZ_H
 
 /** @brief Set the number of seats for the table.
  *  @param ggzdmod The GGZdMod object.
@@ -144,4 +139,4 @@ typedef enum {
 	/* GGZDMOD_EVENT_ERROR_INTERNAL must be the last one! */
 } GGZdModEventInternal;
 
-#endif /* __GGZDMOD_GGZ_H__ */
+#endif /* GGZDMOD_GGZ_H */
