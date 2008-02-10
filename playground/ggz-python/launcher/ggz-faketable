@@ -17,6 +17,15 @@ import select
 import ConfigParser
 
 # Modules from ggz-python
+try:
+	import ggzsettings
+	sys.path = [ggzsettings.PYTHONPATH] + sys.path
+except:
+	import platform
+	ver_info = sys.version_info
+	ver = str(ver_info[0]) + "." + str(ver_info[1])
+	arch = platform.system().lower() + "-" + platform.machine() + "-" + ver
+	sys.path = ["../pyancillary/build/lib." + arch] + sys.path
 import ancillary
 
 reset = "\x1b[39;49;00m"
@@ -445,7 +454,7 @@ def main():
 		err("Error: communication abortion, kill game server")
 		parentsock.close()
 		os.kill(pid, signal.SIGKILL)
-		#raise
+		raise
 
 	try:
 		ret = os.waitpid(pid, 0)
