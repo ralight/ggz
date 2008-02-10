@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 9063 2007-04-22 03:16:29Z jdorje $
+ * $Id: io.c 9694 2008-02-10 17:58:19Z josef $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -443,10 +443,8 @@ static int _io_read_req_launch(GGZdMod * ggzdmod)
 			return -1;
 
 		if (seat.type == GGZ_SEAT_RESERVED || seat.type == GGZ_SEAT_BOT) {
-			if (ggz_read_string_alloc(ggzdmod->fd, &name) < 0)
+			if (ggz_read_string_alloc_null(ggzdmod->fd, &name) < 0)
 				return -1;
-			if (name[0] == '\0')
-				name = NULL;
 		}
 		seat.name = name;
 		
@@ -473,16 +471,11 @@ static int _io_read_msg_seat_change(GGZdMod * ggzdmod)
 	
 	if (ggz_read_int(ggzdmod->fd, (int*)&seat.num) < 0
 	    || ggz_read_int(ggzdmod->fd, &type) < 0
-	    || ggz_read_string_alloc(ggzdmod->fd, &name) < 0)
+	    || ggz_read_string_alloc_null(ggzdmod->fd, &name) < 0)
 		return -1;
 	seat.name = name;
 	seat.type = type;
 	seat.playerdata = NULL;
-
-	if (seat.name[0] == '\0') {
-		ggz_free(seat.name);
-		seat.name = NULL;
-	}
 
 	if (seat.type == GGZ_SEAT_PLAYER) {
 		if (ggz_read_fd(ggzdmod->fd, &seat.fd) < 0)
@@ -522,14 +515,12 @@ static int _io_read_msg_spectator_seat_change(GGZdMod * ggzdmod)
 	char *name;
 	
 	if (ggz_read_int(ggzdmod->fd, (int*)&seat.num) < 0
-	    || ggz_read_string_alloc(ggzdmod->fd, &name) < 0)
+	    || ggz_read_string_alloc_null(ggzdmod->fd, &name) < 0)
 		return -1;
 	seat.name = name;
 	seat.playerdata = NULL;
 
-	if (seat.name[0] == '\0') {
-		ggz_free(seat.name);
-		seat.name = NULL;
+	if (!seat.name) {
 		seat.fd = -1;
 	} else {
 		if (ggz_read_fd(ggzdmod->fd, &seat.fd) < 0)
