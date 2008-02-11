@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9585 2008-01-23 13:58:26Z oojah $
+ * $Id: parse_opt.c 9702 2008-02-11 19:18:17Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -193,12 +193,13 @@ static void dump_specs(void)
 	}
 	if(!strcmp(DATABASE_TYPES, "dbi"))
 	{
-		/* FIXME: dbi is broken now, since dbi itself is the backend? */
+		/* FIXME: This only works if only dbi was compiled on. */
+		/* FIXME: Of course the type should then not be dbi. */
 		snprintf(dbstring, sizeof(dbstring), " [using dbd::%s]", opt.dbtype);
 	}
 	else
 	{
-		strcpy(dbstring, "");
+		snprintf(dbstring, sizeof(dbstring), " [using %s]", opt.dbtype);
 	}
 
 	printf("GGZ Gaming Zone server (ggzd) specifications\n");
@@ -298,16 +299,15 @@ void parse_conf_file(void)
 		} else
 			err_msg("WARNING:  Local conf file not found!");
 	} else {
-		const char *suffix = "/ggzd.conf";
-		char tmp[strlen(GGZDCONFDIR) + strlen(suffix) + 1];
+		char *global_conf = ggz_strbuild("%s/ggzd.conf", GGZDCONFDIR);
 
-		snprintf(tmp, sizeof(tmp), "%s%s", GGZDCONFDIR, suffix);
-
-		if((c_handle = ggz_conf_parse(tmp, GGZ_CONF_RDONLY)) >= 0)
+		if((c_handle = ggz_conf_parse(global_conf, GGZ_CONF_RDONLY)) >= 0)
 			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"Reading global conf file : %s", tmp);
+				"Reading global conf file : %s", global_conf);
 		else
 			err_msg("WARNING:  No configuration file loaded!");
+
+		ggz_free(global_conf);
 	}
 
 	/* Default settings (everything != 0/NULL) */

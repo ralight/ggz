@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 9584 2008-01-23 13:47:21Z oojah $
+ * $Id: control.c 9702 2008-02-11 19:18:17Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -564,7 +564,8 @@ int main(int argc, char *argv[])
 
 	logfile_initialize();
 
-	dbg_msg(GGZ_DBG_CONFIGURATION, "Conf file: %s", opt.local_conf);
+	dbg_msg(GGZ_DBG_CONFIGURATION, "Global conf file: %s/ggzd.conf", GGZDCONFDIR);
+	dbg_msg(GGZ_DBG_CONFIGURATION, "Local conf file: %s", opt.local_conf);
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Log level: %0X", log_info.log_types);
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Main Port: %d", opt.main_port);
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Encryption in use: %d", opt.tls_use);
