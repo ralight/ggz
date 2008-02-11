@@ -41,6 +41,10 @@ GREEN = (0, 255, 0)
 def _(x):
 	return unicode(x, "utf-8")
 
+def asciify(str):
+		asciistr = str.encode("ascii", "replace")
+		return asciistr
+
 def vibora_background(resolution):
 	granularity = 16
 	counter = 27
@@ -689,6 +693,7 @@ def main(host):
 					return
 				elif key == K_RETURN:
 					if chatline != "":
+						chatline = asciify(chatline)
 						ggzcoresimple.room.chat(ggzcoresimple.CHAT_NORMAL, "", chatline)
 						#chatoutput.append(chatline)
 						chatline = ""
