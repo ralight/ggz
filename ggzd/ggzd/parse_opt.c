@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9702 2008-02-11 19:18:17Z josef $
+ * $Id: parse_opt.c 9703 2008-02-11 19:22:45Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -199,7 +199,17 @@ static void dump_specs(void)
 	}
 	else
 	{
-		snprintf(dbstring, sizeof(dbstring), " [using %s]", opt.dbtype);
+		if(opt.dbtype)
+		{
+			snprintf(dbstring, sizeof(dbstring), " [using %s]", opt.dbtype);
+		}
+		else
+		{
+			char *typescopy = ggz_strdup(DATABASE_TYPES);
+			char *autotype = strtok(typescopy, ",");
+			snprintf(dbstring, sizeof(dbstring), " [autoselect %s]", autotype);
+			ggz_free(typescopy);
+		}
 	}
 
 	printf("GGZ Gaming Zone server (ggzd) specifications\n");
