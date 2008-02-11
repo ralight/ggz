@@ -205,6 +205,7 @@ class GGZBoard:
 
 	def walker(self, arg, dirname, fnames):
 		ex = re.compile("^module_(\S+)\.py$")
+		fnamescopy = fnames[:]
 		for file in fnames:
 			m = ex.match(file)
 			if m:
@@ -213,6 +214,9 @@ class GGZBoard:
 				if not self.ggzmode or self.ggzsuccess:
 					self.modulefilelist.append(m.group(1))
 					self.modulelist.append(self.game.name())
+			else:
+				fnamescopy.remove(file)
+		fnames = fnamescopy
 		self.game = None
 
 	def load(self, gamename, list):
