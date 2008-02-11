@@ -1,0 +1,21 @@
+table {
+	font-family: monospace;
+}
+
+th {
+	text-align: right;
+	border-bottom: 1px dashed black;
+}
+
+td {
+	text-align: right;
+	padding-left: 10px;
+	border: inherit;
+}
+
+tr.current {
+	border-top: 1px dashed black;
+	border-bottom: 1px dashed black;
+	font-weight: bold;
+}
+
