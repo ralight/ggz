@@ -23,7 +23,10 @@ try:
 	I18NPATH = ggzsettings.I18NPATH
 	sys.path = [ggzsettings.MODULEPATH + "/ggzboard/"] + sys.path
 	sys.path = [ggzsettings.MODULEPATH + "/common/"] + sys.path
-	sys.path = [ggzsettings.PYTHONPATH] + sys.path
+	if "PYTHONPATH" in dir(ggzsettings):
+		sys.path = [ggzsettings.PYTHONPATH] + sys.path
+	else:
+		print "## Warning: old ggzsettings, probably weird installation"
 except:
 	import platform
 	DATAPATH = "./"
@@ -59,7 +62,6 @@ def playsound(theme):
 		sound.play()
 	except:
 		print "Sound error:", file
-		pass
 
 class Conf:
 	def __init__(self):
