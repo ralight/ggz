@@ -931,9 +931,9 @@ if test "$have_ggzdconf" != yes; then
 	  AC_MSG_RESULT([$have_ggzdconf (but forced to ${ggzdconfdir})])
 	else
 	  AC_MSG_RESULT([$have_ggzdconf])
-      if test "x$2" = "x"; then
+	  if test "x$2" = "x"; then
 	    AC_MSG_ERROR([GGZ server configuration not found. Please check your installation! ])
-      fi
+	  fi
 
 	  # Perform actions given by argument 2.
 	  $2
@@ -964,14 +964,14 @@ if test "$have_ggzdconf" = yes || test "x$2" = "xforce"; then
 	  if test "x${exec_prefix}" = "xNONE"; then
 	    if test "x${prefix}" = "xNONE"; then
 	      ggzdexecmoddir="\${ac_default_prefix}/lib/ggzd"
-		  ggzdexecmodpath="${ac_default_prefix}/lib/ggzd"
+	      ggzdexecmodpath="${ac_default_prefix}/lib/ggzd"
 	    else
 	      ggzdexecmoddir="\${prefix}/lib/ggzd"
-		  ggzdexecmodpath="${prefix}/lib/ggzd"
+	      ggzdexecmodpath="${prefix}/lib/ggzd"
 	    fi
 	  else
 	    ggzdexecmoddir="\${exec_prefix}/lib/ggzd"
-		ggzdexecmodpath="${exec_prefix}/lib/ggzd"
+	    ggzdexecmodpath="${exec_prefix}/lib/ggzd"
 	  fi
 	else
 	  ggzdexecmoddir="\${libdir}/ggzd"
