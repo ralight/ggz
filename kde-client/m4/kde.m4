@@ -3373,10 +3373,12 @@ AC_DEFUN([KDE_CHECK_LIB64],
         AC_MSG_RESULT([not using lib directory suffix])
         AC_DEFINE(KDELIBSUFF, [""], Suffix for lib directories)
     else
-        if test "$libdir" = '${exec_prefix}/lib'; then
-            libdir="$libdir${kdelibsuff}"
-            AC_SUBST([libdir], ["$libdir"])  dnl ugly hack for lib64 platforms
-        fi
+# Disabled, is too intrusive
+# Although we might to only disable it if ggz-kde-* prefix != KDE prefix
+#        if test "$libdir" = '${exec_prefix}/lib'; then
+#            libdir="$libdir${kdelibsuff}"
+#            AC_SUBST([libdir], ["$libdir"])  dnl ugly hack for lib64 platforms
+#        fi
         AC_DEFINE_UNQUOTED(KDELIBSUFF, ["${kdelibsuff}"], Suffix for lib directories)
         AC_MSG_RESULT([using lib directory suffix $kdelibsuff])
     fi
