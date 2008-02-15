@@ -122,8 +122,6 @@ static void game_network_data(int opcode);
 static void game_network_error(void);
 
 /* Network IO function prototypes */
-static int game_send_seat(int seat);
-static int game_send_players(void);
 static int game_send_move(int num, int move);
 static int game_send_sync(GGZCommIO *io);
 static int game_send_gameover(int winner);
@@ -266,7 +264,6 @@ static void game_handle_ggz_spectator_seat(GGZdMod *ggz, GGZdModEvent event,
 	}
 
 	if (spectator.name) {
-		ggzcomm_msgplayers(spectator.playerdata);
 		game_send_sync(spectator.playerdata);
 	}
 
@@ -312,9 +309,7 @@ static void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event,
 		assert(new_seat.playerdata == io);
 	}
 
-	game_send_players();
 	if (new_seat.type == GGZ_SEAT_PLAYER) {
-		game_send_seat(new_seat.num);
 #ifdef GGZGAMERESUME
 		/* If we're continuing a game, send sync to new player */
 		if (variables.turn != -1)
@@ -403,46 +398,6 @@ static void game_handle_ggz_spectator_data(GGZdMod *ggz, GGZdModEvent event,
 	}
 }
 #endif
-
-/* Send out seat assignment */
-static int game_send_seat(int num)
-{
-	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, num);
-
-	ggzdmod_log(ttt_game.ggz, "Sending player %d's seat num", num);
-
-	variables.num = num;
-
-	ggzcomm_msgseat(seat.playerdata);
-
-	return 0;
-}
-
-
-/* Send out player list to everybody */
-static int game_send_players(void)
-{
-	int i, j;
-	GGZSeat seat, tmpseat;
-
-	for (j = 0; j < 2; j++) {
-		seat = ggzdmod_get_seat(ttt_game.ggz, j);
-
-		if (seat.fd != -1) {
-			ggzdmod_log(ttt_game.ggz, "Sending playerlist to player %d", j);
-
-			for (i = 0; i < 2; i++) {
-				tmpseat = ggzdmod_get_seat(ttt_game.ggz, i);
-				variables.seat[i] = tmpseat.type;
-				variables.name[i] = (char*)tmpseat.name;
-			}
-
-			ggzcomm_msgplayers(seat.playerdata);
-		}
-	}
-	return 0;
-}
-
 
 /* Send out move for player: num */
 static int game_send_move(int num, int move)
