@@ -1,0 +1,28 @@
+RubyToe - a Tic-Tac-Toe server written in Ruby
+==============================================
+
+This little gem, err, game shows what is possible with the Ruby bindings to
+the GGZ libraries ggzmod and ggzdmod.
+The server is 100% compatible to the TTT server written in C from the
+ggz-server package. The client works either in pure text console mode or
+uses the Python bindings of Qt 4, if available.
+
+To install the RubyToe example game, do the following (might need root for
+system-wide GGZ install):
+	% cp rubytoe /path/to/ggz-install/lib/ggzd
+	% cp rubytoeclient /path/to/ggz-install/bin
+	% cp rubytoe.dsc /path/to/ggz-install/etc/ggzd/games
+	% cp rubytoe.room /path/to/ggz-install/etc/ggzd/rooms
+The network handler must be installed as a Ruby extension as root (unless
+testing locally).
+	$ sitelibdir=`ruby -r rbconfig -e 'puts(Config::CONFIG["sitelibdir"])'`
+	$ cp rubytoenet.rb $sitelibdir
+
+Finally, test by running:
+	% ./test-rubytoe.sh
+
+Note that the TTT AI written in pure Ruby is very weak. This is intentional -
+please do not spend time on improving it! What can instead be done is to
+compile and install the 'ttt-ai' extension, which re-uses the AI from the
+tictactoe server written in C through Ruby bindings.
+

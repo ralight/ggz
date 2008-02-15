@@ -1,9 +1,9 @@
 [ModuleInfo]
-Name = RGGZMod TestClient
+Name = RubyToe Client
 Author = Josef Spillner
-CommandLine = testclient
-Frontend = text
-Homepage = XXX
+CommandLine = rubytoeclient
+Frontend = text/qt4
+Homepage = http://www.ggzgamingzone.org/
 ProtocolEngine = TicTacToe
 ProtocolVersion = 5
-Version = 0.0.1
+Version = 0.0.2

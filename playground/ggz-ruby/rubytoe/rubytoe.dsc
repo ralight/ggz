@@ -3,7 +3,7 @@ Author = Josef Spillner
 Description = Simple Ruby-enabled module for playing Tic-Tac-Toe
 Homepage = http://www.ggzgamingzone.org/gameservers/rubytoe/
 Name = RubyToe
-Version = 0.2
+Version = 0.3
 
 [LaunchInfo]
 ExecutablePath = rubytoe
