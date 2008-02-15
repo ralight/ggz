@@ -165,7 +165,8 @@ class GGZCommEvent
 				x += "\tggz_dio_put_" + esname + "(io->dio, " + data + ");\n"
 			else
 				x += "\tret = ggz_write_" + esname + "(io->fd, " + data + ");\n"
-				x += "\tif(ret < 0) ggzcomm_error();\n"
+				x += "\tif(ret < 0)\n"
+				x += "\t\tggzcomm_error();\n"
 			end
 		else
 			if mode == "debug":
@@ -262,7 +263,8 @@ class GGZCommEvent
 					end
 					parts += 1
 					if library == "easysock"
-						x += indent + "\tif(ret < 0) ggzcomm_error();\n"
+						x += indent + "\tif(ret < 0)\n"
+						x += indent + "\t\tggzcomm_error();\n"
 					end
 			end
 		end
@@ -274,7 +276,8 @@ class GGZCommEvent
 				x += "#endif\n"
 				x += "\n"
 			end
-			x += "\tif(notifier_func) (notifier_func)(" + name + ");\n"
+			x += "\tif(notifier_func)\n"
+			x += "\t\t(notifier_func)(" + name + ");\n"
 		else
 			if library == "dio"
 				x += "\tggz_dio_packet_end(io->dio);\n"
@@ -1267,7 +1270,7 @@ class GGZComm
 				end
 				f.print "void ggzcomm_" + event.name + "("
 				if role == "server"
-					f.print "GGZCommIO *dio"
+					f.print "GGZCommIO *io"
 				else
 					f.print "void"
 				end
@@ -1333,7 +1336,8 @@ class GGZComm
 			end
 			f.puts "\tif(requirelink)"
 			f.puts "\t{"
-			f.puts "\t\tif(opcode != nextlink) ggzcomm_error();"
+			f.puts "\t\tif(opcode != nextlink)"
+			f.puts "\t\t\tggzcomm_error();"
 			f.puts "\t\trequirelink = 0;"
 			f.puts "\t}"
 			f.puts ""
@@ -1364,7 +1368,8 @@ class GGZComm
 				f.puts ")\n"
 				f.puts "{"
 				f.puts "\tggz_dio_set_read_callback(io->dio, ggzcomm_network_main_cb, io);"
-				f.puts "\tif(ggz_dio_read_data(io->dio) < 0) ggzcomm_error();"
+				f.puts "\tif(ggz_dio_read_data(io->dio) < 0)"
+				f.puts "\t\tggzcomm_error();"
 				f.puts "}"
 				f.puts ""
 			end

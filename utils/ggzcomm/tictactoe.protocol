@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
-<ggzcomm engine="tictactoe" version="4">
+<ggzcomm engine="tictactoe" version="5">
 	<definitions>
+		<!--
 		<def name="msgseat" value="0"/>
 		<def name="msgplayers" value="1"/>
+		-->
 		<def name="msgmove" value="2"/>
 		<def name="msggameover" value="3"/>
 		<def name="reqmove" value="4"/>
@@ -27,6 +29,7 @@
 		<event name="reqsync"/>
 	</client>
 	<server>
+		<!--
 		<event name="msgseat">
 			<data name="num" type="int"/>
 		</event>
@@ -39,6 +42,7 @@
 				</eval>
 			</sequence>
 		</event>
+		-->
 		<event name="reqmove"/>
 		<event name="rspmove">
 			<data name="status" type="byte"/>
