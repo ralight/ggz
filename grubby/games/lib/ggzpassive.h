@@ -46,5 +46,8 @@ extern GGZDataIO *ggz_dio;
 /* Network socket for non-quantized (easysock-style) protocols */
 extern int ggz_gamefd;
 
+/* Get the player's seat number */
+int ggzpassive_seat();
+
 #endif
 

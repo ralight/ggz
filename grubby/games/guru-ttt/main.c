@@ -26,17 +26,12 @@
 
 #include <ggzpassive.h>
 
-static int gamenum = -1;
 static int gamemove = -1;
 static char gameturn = -1;
-static int seats[2];
-static char names[2][17];
 
 static char board[9];
 static int movemove = 0;
 
-#define TTT_MSG_SEAT     0
-#define TTT_MSG_PLAYERS  1
 #define TTT_MSG_MOVE     2
 #define TTT_MSG_GAMEOVER 3
 #define TTT_REQ_MOVE     4
@@ -56,19 +51,6 @@ static void ttt_ai(void)
 
 	switch(op)
 	{
-		case TTT_MSG_SEAT:
-			ggz_dio_get_int(ggz_dio, &gamenum);
-			break;
-		case TTT_MSG_PLAYERS:
-			for(i = 0; i < 2; i++)
-			{
-				ggz_dio_get_int(ggz_dio, &seats[i]);
-				if(seats[i] != GGZ_SEAT_OPEN)
-				{
-					ggz_dio_get_string(ggz_dio, names[i], 17);
-				}
-			}
-			break;
 		case TTT_REQ_MOVE:
 			for(i = 0; i < 9; i++)
 			{
@@ -82,7 +64,7 @@ static void ttt_ai(void)
 			break;
 		case TTT_RSP_MOVE:
 			ggz_dio_get_char(ggz_dio, &status);
-			if(status == 0) board[gamemove] = (gamenum == 0 ? 'x' : 'o');
+			if(status == 0) board[gamemove] = (ggzpassive_seat() == 0 ? 'x' : 'o');
 			break;
 		case TTT_MSG_MOVE:
 			ggz_dio_get_int(ggz_dio, &nummove);

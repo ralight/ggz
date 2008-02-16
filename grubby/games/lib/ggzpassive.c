@@ -153,3 +153,10 @@ void ggzpassive_start()
 	sleep(1);
 }
 
+int ggzpassive_seat()
+{
+	int is_spectator, seat_num;
+	ggzmod_get_player(ggz_mod, &is_spectator, &seat_num);
+	return seat_num;
+}
+
