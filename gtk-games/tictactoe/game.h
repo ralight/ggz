@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 4/11/00
  * Desc: TTT game functions
- * $Id: game.h 9190 2007-07-13 05:32:37Z josef $
+ * $Id: game.h 9731 2008-02-16 11:43:13Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -53,9 +53,6 @@
 struct game_state_t {
 	/* Basic info about connection */
 	GGZMod *ggzmod;
-	int num;
-	int seats[2];
-	char names[2][17];
 
 	/* TTT game specifics */
 	char board[9];
@@ -69,8 +66,6 @@ struct game_state_t {
 void game_init(void);
 
 /* Functions to handle incoming data from server*/
-void receive_seat(void);
-void receive_players(void);
 void receive_move_status(char status);
 void receive_move(int move, int player);
 void receive_sync(int turn, char spaces[9]);

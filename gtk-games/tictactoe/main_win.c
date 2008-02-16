@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 9235 2007-08-13 06:59:38Z josef $
+ * $Id: main_win.c 9731 2008-02-16 11:43:13Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -257,8 +257,12 @@ static gboolean get_move(GtkWidget * widget, GdkEventButton * event,
 	int col = (x - BORDERSIZE) / GRIDSIZE;
 	int row = (y - BORDERSIZE) / GRIDSIZE;
 
+	int is_spectator, seat_num;
+
+	ggzmod_get_player(game.ggzmod, &is_spectator, &seat_num);
+
 	if (game.state != STATE_MOVE) {
-		if (game.num >= 0)
+		if (!is_spectator)
 			/* FIXME 1: why do we track state when ggzmod can do it? */
 			/* FIXME 2: notwithstanding the PLAY_AGAIN feature, a TTT_ERR_OVER message could be useful */
 			if(game.state == STATE_DONE)

@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 9192 2007-07-16 13:30:40Z josef $
+ * $Id: main.c 9731 2008-02-16 11:43:13Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -111,15 +111,6 @@ static void game_handle_message(int opcode)
 {
 	switch (opcode) {
 
-	case msgseat:
-		receive_seat();
-		break;
-
-	case msgplayers:
-		receive_players();
-		game.state = STATE_WAIT;
-		break;
-
 	case reqmove:
 		game.state = STATE_MOVE;
 		game_status(_("It's your move."));
@@ -158,44 +149,19 @@ static gboolean game_handle_io(GGZMod * mod)
 }
 
 
-void receive_seat(void)
-{
-	game_status(_("Receiving your seat number..."));
-
-	game.num = variables.num;
-
-	game_status(_("Waiting for other player..."));
-}
-
-
-void receive_players(void)
-{
-	int i;
-
-	game_status(_("Getting player names..."));
-
-	for (i = 0; i < 2; i++) {
-		game.seats[i] = variables.seat[i];
-		strncpy(game.names[i], variables.name[i], sizeof(game.names[i]));
-
-		if (game.seats[i] != GGZ_SEAT_OPEN) {
-			game_status(_("%s is %c."),
-				    game.names[i], get_player_symbol(i));
-		}
-	}
-}
-
-
 /* The server doesn't usually inform us of our move.  But we get told about
    the opponent's move, and if we're a spectator we get to hear both. */
 void receive_move(move, nummove)
 {
 	/* nummove is the player who made the move (0 or 1). */
 	/* move is the move (0..8) */
+	int is_spectator, seat_num;
 
-	if (game.num < 0)
+	ggzmod_get_player(game.ggzmod, &is_spectator, &seat_num);
+
+	if (is_spectator)
 		game_status(_("%s (%c) has moved."),
-			    game.names[nummove],
+			    ggzmod_get_seat(game.ggzmod, nummove).name,
 			    get_player_symbol(nummove));
 	else
 		game_status(_("Your opponent has moved."));
@@ -212,7 +178,8 @@ void receive_sync(int turn, char spaces[9])
 	game_status(_("Syncing with server..."));
 
 	game_status(_("It's %s (%c)'s turn."),
-		    game.names[(int)turn], get_player_symbol(turn));
+		    ggzmod_get_seat(game.ggzmod, turn).name,
+		    get_player_symbol(turn));
 
 	for (i = 0; i < 9; i++) {
 		space = spaces[i];
@@ -232,7 +199,7 @@ void receive_gameover(char winner)
 	case 0:
 	case 1:
 		game_status(_("%s (%c) won"),
-			    game.names[(int)winner],
+			    ggzmod_get_seat(game.ggzmod, (int)winner).name,
 			    get_player_symbol(winner));
 		break;
 	case 2:
@@ -255,13 +222,16 @@ void game_init(void)
 	game.state = STATE_INIT;
 
 	game.ggzmod = init_ggz_gtk(GTK_WINDOW(main_win), game_handle_io);
-	game.num = -1;
 }
 
 
 int send_my_move(void)
 {
-	if (game.num < 0)
+	int is_spectator, seat_num;
+
+	ggzmod_get_player(game.ggzmod, &is_spectator, &seat_num);
+
+	if ((is_spectator) || (seat_num < 0))
 		return -1;
 	game_status(_("Sending move."));
 
@@ -281,6 +251,10 @@ int send_options(void)
 
 void receive_move_status(char status)
 {
+	int is_spectator, seat_num;
+
+	ggzmod_get_player(game.ggzmod, &is_spectator, &seat_num);
+
 	switch (status) {
 	case TTT_ERR_STATE:
 		game_status(_("Server not ready!!"));
@@ -296,7 +270,7 @@ void receive_move_status(char status)
 		break;
 	case 0:
 		game_status(_("Move accepted."));
-		game.board[game.move] = (game.num == 0 ? 'x' : 'o');
+		game.board[game.move] = (seat_num == 0 ? 'x' : 'o');
 		break;
 	}
 }
