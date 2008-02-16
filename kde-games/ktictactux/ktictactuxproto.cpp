@@ -23,10 +23,6 @@
 // Empty constructor
 KTicTacTuxProto::KTicTacTuxProto()
 {
-	seatnum = -1;
-	names[0] = NULL;
-	names[1] = NULL;
-
 	stats_record = false;
 	stats_wins = -1;
 	stats_losses = -1;
@@ -46,7 +42,7 @@ KTicTacTuxProto::~KTicTacTuxProto()
 
 int KTicTacTuxProto::num()
 {
-	if(!mod) return 0;
+	if(!mod) return -1;
 	return mod->self()->seat();
 }
 
@@ -67,27 +63,6 @@ int KTicTacTuxProto::getOp()
 	*packet->inputstream() >> op;
 
 	return op;
-}
-
-// Get one's own seat number
-int KTicTacTuxProto::getSeat()
-{
-	*packet->inputstream() >> seatnum;
-
-	return seatnum;
-}
-
-// Receive the player names
-int KTicTacTuxProto::getPlayers()
-{
-	for(int i = 0; i < 2; i++)
-	{
-		*packet->inputstream() >> seats[i];
-		if((seats[i] == GGZ_SEAT_PLAYER) || (seats[i] == GGZ_SEAT_BOT))
-			*packet->inputstream() >> names[i];
-	}
-
-	return 1;
 }
 
 // Ask whether move was ok

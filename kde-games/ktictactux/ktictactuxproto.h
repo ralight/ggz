@@ -29,8 +29,6 @@ class KTicTacTuxProto
 		// Opcodes which come from the server
 		enum ServerMessages
 		{
-			msgseat = 0,
-			msgplayers = 1,
 			msgmove = 2,
 			msggameover = 3,
 			reqmove = 4,

@@ -62,6 +62,8 @@ class KTicTacTux : public QWidget
 		void slotPacket();
 		// Network error
 		void slotError();
+		// Input from GGZ
+		void slotEvent(const KGGZMod::Event& event);
 
 	signals:
 		// Emit the game status

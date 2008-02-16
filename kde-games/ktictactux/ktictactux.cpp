@@ -13,6 +13,7 @@
 // GGZ-KDE-Games includes
 #include <kggzseatsdialog.h>
 #include <kggzpacket.h>
+#include <kggzmod/player.h>
 
 // KDE includes
 #include <klocale.h>
@@ -367,8 +368,18 @@ void KTicTacTux::setOpponent(int type)
 		connect(proto->packet, SIGNAL(signalPacket()), SLOT(slotPacket()));
 		connect(proto->mod, SIGNAL(signalError()), SLOT(slotError()));
 		connect(proto->mod, SIGNAL(signalNetwork(int)), proto->packet, SLOT(slotNetwork(int)));
+		connect(proto->mod, SIGNAL(signalEvent(const KGGZMod::Event&)), SLOT(slotEvent(const KGGZMod::Event&)));
 	}
 	emit signalStatus(i18n("Waiting for opponent!"));
+}
+
+void KTicTacTux::slotEvent(const KGGZMod::Event& event)
+{
+	if(event.type() == KGGZMod::Event::seat)
+	{
+		proto->state = proto->statewait;
+		emit signalScore(i18n("Network game with %1").arg((*proto->mod->players().at(!proto->num()))->name()));
+	}
 }
 
 // Synchronization
@@ -416,15 +427,6 @@ void KTicTacTux::slotPacket()
 
 	switch(op)
 	{
-		case KTicTacTuxProto::msgseat:
-			proto->getSeat();
-			break;
-		case KTicTacTuxProto::msgplayers:
-			proto->getPlayers();
-			proto->state = proto->statewait;
-			if((proto->num() >= 0) && (proto->names[!proto->num()][0]))
-				emit signalScore(i18n("Network game with %1").arg(proto->names[!proto->num()]));
-			break;
 		case KTicTacTuxProto::reqmove:
 			proto->state = proto->statemove;
 			m_turn = proto->num();
