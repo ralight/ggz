@@ -3,8 +3,8 @@
  * Author: Josef Spillner
  * Project: GGZ Server
  * Date: 03.05.2002
- * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 9555 2008-01-19 08:18:21Z josef $
+ * Desc: Back-end functions for handling the mysql style database
+ * $Id: ggzdb_mysql.c 9740 2008-02-16 20:08:35Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
