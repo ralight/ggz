@@ -44,16 +44,11 @@ static GGZMod *mod = NULL;
 static int gamefd = -1;
 static GGZDataIO *dio = NULL;
 
-static int gamenum = -1;
 static int gamemove = -1;
 static char gameturn = -1;
-static int seats[2];
-static char names[2][17];
 
 static char board[9];
 
-#define TTT_MSG_SEAT     0
-#define TTT_MSG_PLAYERS  1
 #define TTT_MSG_MOVE     2
 #define TTT_MSG_GAMEOVER 3
 #define TTT_REQ_MOVE     4
@@ -249,29 +244,18 @@ static void game_handle_io(GGZDataIO *dio, void *userdata)
 	int op, i;
 	int nummove, move;
 	char status, space, winner;
+	int is_spectator, seat_num;
 
 	ggz_dio_get_int(dio, &op);
 
 	switch(op)
 	{
-		case TTT_MSG_SEAT:
-			ggz_dio_get_int(dio, &gamenum);
-			break;
-		case TTT_MSG_PLAYERS:
-			for(i = 0; i < 2; i++)
-			{
-				ggz_dio_get_int(dio, &seats[i]);
-				if(seats[i] != GGZ_SEAT_OPEN)
-				{
-					ggz_dio_get_string(dio, names[i], 17);
-				}
-			}
-			break;
 		case TTT_REQ_MOVE:
 			break;
 		case TTT_RSP_MOVE:
+			ggzmod_get_player(mod, &is_spectator, &seat_num);
 			ggz_dio_get_char(dio, &status);
-			if(status == 0) board[gamemove] = (gamenum == 0 ? 'x' : 'o');
+			if(status == 0) board[gamemove] = (seat_num == 0 ? 'x' : 'o');
 			drawgameboard();
 			break;
 		case TTT_MSG_MOVE:
