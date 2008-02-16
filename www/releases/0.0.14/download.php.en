@@ -79,12 +79,6 @@ GGZ support:
 </div>
 <a href="http://www.freshports.org/search.php?query=ggz&search=go&num=10&stype=name&method=match&deleted=excludedeleted&start=1&casesensitivity=caseinsensitive">FreeBSD</a> (0.0.14)
 </li>
-<li>
-<div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
-<img src="/pics/distros/sorcerer.png">
-</div>
-<a href="http://sorcerer.aakin.net/grimoire/grimoire.html">Sorcerer</a> (0.0.13)
-</li>
 <!--
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
@@ -118,9 +112,15 @@ Other distributors with (unfortunately) partial or outdated GGZ packages include
 <ul>
 <li>
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
+<img src="/pics/distros/sorcerer.png">
+</div>
+<a href="http://sorcerer.aakin.net/">Sorcerer</a> (0.0.13)
+</li>
+<li>
+<div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/fink.png">
 </div>
-<a href="http://pdb.finkproject.org/pdb/search.php?summary=ggz">Fink</a> (0.0.11?, search is broken)
+<a href="http://pdb.finkproject.org/pdb/search.php?summary=ggz">Fink</a> (0.0.11)
 </li>
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
