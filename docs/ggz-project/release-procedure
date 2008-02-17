@@ -49,6 +49,7 @@ During release
 [] create source tarballs, and upload them to the GGZ FTP server,
    wait for mirrors
 [] web site synchronization - test success with md5 hash sums.
+   (md5sums *.gz; gpg --default-key root@ggzgamingzone.org --clearsign MD5SUMS)
    The release announcement as well as several common files should be updated.
    This includes the QuickStart.GGZ and README.GGZ files, and everything under
    docs/:
