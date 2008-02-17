@@ -10,6 +10,16 @@
 <language>en-us</language>
 
 <item>
+<title><i>17.02.2008: Stable release 0.0.14.1</i> (by josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+The GGZ release 0.0.14 was updated today with several bug fixes and added
+translations. All distributors are encourated to build on 0.0.14.1 while
+eaglerly looking how the next snapshots are shaping.
+</full>
+</item>
+
+<item>
 <title><i>20.01.2008: Developer snapshot 0.99.1</i> (by josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>

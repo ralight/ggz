@@ -1,0 +1,285 @@
+<?php include_once("../../site/header.php"); ?>
+
+<table class="pane">
+<tr>
+<td>
+<a href="index.php">GGZ 0.0.14 Release:</a>
+|
+<a href="release.php">Announcement</a>
+|
+<a href="changes.php">Changelog</a>
+|
+Download
+|
+<a href="installation.php">Installation</a>
+|
+<a href="credits.php">Credits</a>
+|
+<a href="play.php">Go play!</a>
+</td>
+</tr>
+</table>
+
+<table class="content">
+<tr>
+<td colspan="2">
+<b>GGZ 0.0.14 Downloads</b><br/>
+<br/>
+<i>Source code release</i><br/>
+The GGZ Gaming Zone project releases its components as source code, which
+can be downloaded here.
+These packages have mostly been developed on GNU/Linux systems.
+They should however compile and run on many similar operating systems.
+A <a href="/packages/">description</a> of all packages is available for those who
+are new to GGZ.
+<br/><br/>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<i>Distributors</i><br/>
+A number of distributors provide GGZ packages, either in the base
+distribution, or as contributions. These packages will certainly be updated
+in the near future. Please always use the latest version; bug the distributor
+if necessary.
+<i>The links below were updated on 22.05.2007.</i>
+<br/><br/>
+The following distributors are known to have up-to-date and rather complete
+GGZ support:
+<ul>
+<li>
+<div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
+<img src="/pics/distros/slackware.png">
+</div>
+<a href="http://www.slacky.eu/index.php?option=com_content&task=view&id=2376&Itemid=56">Slackware</a> (0.0.14)
+</li>
+<li>
+<div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
+<img src="/pics/distros/opensuse.png">
+</div>
+<a href="http://repos.opensuse.org/ggz/">openSUSE</a> (0.0.14)
+</li>
+<li>
+<div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
+<img src="/pics/distros/debian.png">
+</div>
+<a href="http://packages.debian.org/search?keywords=GGZ&searchon=all">Debian</a>
+(0.0.14)
+(see also <a href="http://alioth.debian.org/projects/pkg-ggz/">Alioth</a> packaging page)
+</li>
+<li>
+<div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
+<img src="/pics/distros/ubuntu.png">
+</div>
+<a href="http://packages.ubuntu.com/cgi-bin/search_packages.pl?keywords=ggz">Ubuntu</a> (0.0.14)
+</li>
+<li>
+<div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
+<img src="/pics/distros/freebsd.png">
+</div>
+<a href="http://www.freshports.org/search.php?query=ggz&search=go&num=10&stype=name&method=match&deleted=excludedeleted&start=1&casesensitivity=caseinsensitive">FreeBSD</a> (0.0.14)
+</li>
+<!--
+<li>
+<div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
+<img src="/pics/distros/fnux.png">
+</div>
+<a href="http://www.fnux.org/">Fnux</a> (0.0.13)
+</li>
+-->
+<li>
+<div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
+<img src="/pics/distros/sourcemage.png">
+</div>
+<a href="http://codex.sourcemage.org/listing.html">SourceMage</a> (0.0.14)
+</li>
+<li>
+<div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
+<img src="/pics/distros/gentoo.png">
+</div>
+<a href="http://packages.gentoo.org/category/dev-games">Gentoo</a> (0.0.14)
+</li>
+<li>
+<div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
+<img src="/pics/distros/mandriva.png">
+</div>
+<a href="http://club.mandriva.com/xwiki/bin/view/rpms/Category/Games/Other">Mandriva</a> (0.0.14)
+</li>
+</ul>
+
+Other distributors with (unfortunately) partial or outdated GGZ packages include:
+
+<ul>
+<li>
+<div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
+<img src="/pics/distros/sorcerer.png">
+</div>
+<a href="http://sorcerer.aakin.net/">Sorcerer</a> (0.0.13)
+</li>
+<li>
+<div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
+<img src="/pics/distros/fink.png">
+</div>
+<a href="http://pdb.finkproject.org/pdb/search.php?summary=ggz">Fink</a> (0.0.11)
+</li>
+<li>
+<div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
+<img src="/pics/distros/lunar.png">
+</div>
+Lunar Linux (0.0.12?, search broken)
+<!--
+<a href="http://modules.lunar-linux.org/index.php?option=moonbase&section=games">Lunar Linux</a> (0.0.12)
+-->
+</li>
+<li>
+<div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
+<img src="/pics/distros/fedora.png">
+</div>
+<a href="http://koji.fedoraproject.org/koji/search?match=glob&type=package&terms=*ggz*">Fedora Core/Red Hat</a> (0.0.14, updates are coming in)
+</li>
+<!--
+<li>
+<div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
+<img src="/pics/distros/arch.png">
+</div>
+<a href="http://www.archlinux.org/packages.php?s_repo=all&s_category=all&s_keyword=ggz&s_lastupdate=&pp=50">ArchLinux</a> (only libs, and outdated)
+</li>
+-->
+<li>
+<a href="http://pkgsrc.se/search.php?so=ggz">NetBSD</a> (0.0.14)
+</li>
+<li>
+<a href="http://www.sisyphus.ru/find.shtml?request=ggz">ALT Linux</a> (0.0.14, via Sisyphus)
+</li>
+</ul>
+
+Distributors and packagers are encouraged to subscribe to the
+<a href="https://mail.ggzgamingzone.org/cgi-bin/mailman/listinfo/ggz-servers">ggz-servers list</a>,
+as release pre-announcements are sent there.
+Users and other interested people should definitely subscribe to the low-traffic
+<a href="https://mail.ggzgamingzone.org/cgi-bin/mailman/listinfo/ggz-announce">ggz-announce list</a>.
+<br/><br/>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<i>Source code packages</i>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+<img src="/pics/site/flags/flag-be.png">
+Belnet Mirror, Belgium:<br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/">http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/</a><br/>
+<a href="ftp://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/">ftp://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/</a>
+<br/><br/>
+Make sure to check the source file integrity using the
+<br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/MD5SUMS">MD5 hash sums</a>
+and their
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/MD5SUMS.asc">digital signature</a>
+<br/>
+of the <a href="http://pgp.mit.edu:11371/pks/lookup?search=0xC4ED463C&op=index">GGZ Hostmaster Key</a>.
+<br/><br/>
+Thanks to <a href="http://www.belnet.be/">Belnet</a> for providing the mirror!
+</td><td bgcolor="#ffd000" valign="top">
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/libggz-0.0.14.tar.gz">libggz-0.0.14.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/ggz-client-libs-0.0.14.tar.gz">ggz-client-libs-0.0.14.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/ggz-server-0.0.14.tar.gz">ggz-server-0.0.14.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/ggz-txt-client-0.0.14.tar.gz">ggz-txt-client-0.0.14.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/ggz-gtk-client-0.0.14.tar.gz">ggz-gtk-client-0.0.14.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/ggz-kde-client-0.0.14.tar.gz">ggz-kde-client-0.0.14.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/ggz-gnome-client-0.0.14.tar.gz">ggz-gnome-client-0.0.14.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/ggz-gtk-games-0.0.14.tar.gz">ggz-gtk-games-0.0.14.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/ggz-kde-games-0.0.14.tar.gz">ggz-kde-games-0.0.14.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/ggz-sdl-games-0.0.14.tar.gz">ggz-sdl-games-0.0.14.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/ggz-python-0.0.14.tar.gz">ggz-python-0.0.14.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/ggz-utils-0.0.14.tar.gz">ggz-utils-0.0.14.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/ggz-grubby-0.0.14.tar.gz">ggz-grubby-0.0.14.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/ggz-docs-0.0.14.tar.gz">ggz-docs-0.0.14.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/ggz-community-0.0.14.tar.gz">ggz-community-0.0.14.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/0.0.14/ggz-java-0.0.14.tar.gz">ggz-java-0.0.14.tar.gz</a>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+<img src="/pics/site/flags/flag-dk.png">
+Dotsrc Mirror, Denmark:<br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/">http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/</a><br/>
+<a href="ftp://mirrors.dotsrc.org/mirrors/ggzgamingzone/ggz/0.0.14/">ftp://mirrors.dotsrc.org/mirrors/ggzgamingzone/ggz/0.0.14/</a>
+<br/><br/>
+Make sure to check the source file integrity using the
+<br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/MD5SUMS">MD5 hash sums</a>
+and their
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/MD5SUMS.asc">digital signature</a>
+<br/>
+of the <a href="http://pgp.mit.edu:11371/pks/lookup?search=0xC4ED463C&op=index">GGZ Hostmaster Key</a>.
+<br/><br/>
+Thanks to <a href="http://www.dotsrc.org/">Dotsrc</a> for providing the mirror!
+</td><td bgcolor="#ffd000" valign="top">
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/libggz-0.0.14.tar.gz">libggz-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/ggz-client-libs-0.0.14.tar.gz">ggz-client-libs-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/ggz-server-0.0.14.tar.gz">ggz-server-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/ggz-txt-client-0.0.14.tar.gz">ggz-txt-client-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/ggz-gtk-client-0.0.14.tar.gz">ggz-gtk-client-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/ggz-kde-client-0.0.14.tar.gz">ggz-kde-client-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/ggz-gnome-client-0.0.14.tar.gz">ggz-gnome-client-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/ggz-gtk-games-0.0.14.tar.gz">ggz-gtk-games-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/ggz-kde-games-0.0.14.tar.gz">ggz-kde-games-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/ggz-sdl-games-0.0.14.tar.gz">ggz-sdl-games-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/ggz-python-0.0.14.tar.gz">ggz-python-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/ggz-utils-0.0.14.tar.gz">ggz-utils-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/ggz-grubby-0.0.14.tar.gz">ggz-grubby-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/ggz-docs-0.0.14.tar.gz">ggz-docs-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/ggz-community-0.0.14.tar.gz">ggz-community-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/0.0.14/ggz-java-0.0.14.tar.gz">ggz-java-0.0.14.tar.gz</a>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+<img src="/pics/site/flags/flag-us.png">
+ibiblio Mirror, USA:<br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/">http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/</a><br/>
+<a href="ftp://mirrors.ibiblio.org/mirrors/ggzgamingzone/ggz/0.0.14/">ftp://mirrors.ibiblio.org/mirrors/ggzgamingzone/ggz/0.0.14/</a>
+<br/><br/>
+Make sure to check the source file integrity using the
+<br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/MD5SUMS">MD5 hash sums</a>
+and their
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/MD5SUMS.asc">digital signature</a>
+<br/>
+of the <a href="http://pgp.mit.edu:11371/pks/lookup?search=0xC4ED463C&op=index">GGZ Hostmaster Key</a>.
+<br/><br/>
+Thanks to <a href="http://www.ibiblio.org/">ibiblio</a> for providing the mirror!
+</td><td bgcolor="#ffd000" valign="top">
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/libggz-0.0.14.tar.gz">libggz-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/ggz-client-libs-0.0.14.tar.gz">ggz-client-libs-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/ggz-server-0.0.14.tar.gz">ggz-server-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/ggz-txt-client-0.0.14.tar.gz">ggz-txt-client-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/ggz-gtk-client-0.0.14.tar.gz">ggz-gtk-client-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/ggz-kde-client-0.0.14.tar.gz">ggz-kde-client-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/ggz-gnome-client-0.0.14.tar.gz">ggz-gnome-client-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/ggz-gtk-games-0.0.14.tar.gz">ggz-gtk-games-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/ggz-kde-games-0.0.14.tar.gz">ggz-kde-games-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/ggz-sdl-games-0.0.14.tar.gz">ggz-sdl-games-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/ggz-python-0.0.14.tar.gz">ggz-python-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/ggz-utils-0.0.14.tar.gz">ggz-utils-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/ggz-grubby-0.0.14.tar.gz">ggz-grubby-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/ggz-docs-0.0.14.tar.gz">ggz-docs-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/ggz-community-0.0.14.tar.gz">ggz-community-0.0.14.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/0.0.14/ggz-java-0.0.14.tar.gz">ggz-java-0.0.14.tar.gz</a>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Mirrors?
+</td><td bgcolor="#ffd000" valign="top">
+We do now have enough FTP mirrors. If you have a dedicated
+spare server, we'd use it to host our developer services
+like mail, source repository and bug tracker.
+on. We could also make use of a (static) WWW mirror.
+Please write a mail to the
+<a href="mailto:hostmaster@ggzgamingzone.org">hostmaster</a>
+if you are kind enough to provide such a server.
+</td></tr>
+
+</table>
+
+<?php include_once("../../site/footer.php"); ?>

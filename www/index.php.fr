@@ -38,7 +38,7 @@ GGZ on your desktop!
 <br/>
 <a href="/releases/latest/"><img src="/pics/site/actions/compfile.png"/></a>
 <br/>
-<i>(Version 0.0.14 from Jan 16 2007)</i>
+<i>(Version 0.0.14.1 from Feb 17 2008, <a href="/releases/">all versions</a>)</i>
 <br/><br/>
 <b>Join</b><br/>
 the GGZ Community!

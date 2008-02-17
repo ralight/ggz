@@ -1,9 +1,8 @@
 <?php include_once("../site/header.php"); ?>
 
-<table class="content" width="100%">
+<table class="content">
 <tr>
 <td colspan="2">
-<font size="3">
 <b>GGZ Gaming Zone Release Information</b><br>
 <br>
 Information about the current and all past releases can be found here.
@@ -11,6 +10,7 @@ Information about the current and all past releases can be found here.
 <a href="/releases/snapshot/">Development snapshot 0.99.1</a> - 20.01.2008<br>
 <br>
 <a href="/releases/0.0.14/">Version 0.0.14</a> (current version) - 16.01.2007<br>
+Point release 0.0.14.1 - 17.02.2008<br>
 <br>
 <a href="/releases/0.0.13/">Version 0.0.13</a> - 17.03.2006<br>
 <a href="/releases/0.0.12/">Version 0.0.12</a> - 01.10.2005<br>
