@@ -1,6 +1,6 @@
-=================================================================
-The GGZ Gaming Zone - Python Libraries and Games - Version 0.0.14
-=================================================================
+==================================================================
+The GGZ Gaming Zone - Python Libraries and Games - Snapshot 0.99.2
+==================================================================
 
 For people not liking C or C++, the GGZ Python package provides
 everything they need to start hacking on GGZ.
@@ -13,7 +13,8 @@ Content of GGZ-Python:
 	- PyGGZdMod, python wrapper for the ggzdmod library (game servers)
 	- PyGGZCore, simplified python wrapper for ggzcore (core clients)
 	- PyGGZChess, python wrapper for ggzchess library
-	- PyRsvgSDL, python wrapper for rsvg library (not part of GGZ)
+	- PyRsvgSDL, python wrapper for RSVG library (not part of GGZ)
+	- PyAncillary, python wrapper for libggz's socket transmission
 
 	- SDLNewStuff and PlayerTable, useful libraries for games
 
@@ -33,6 +34,8 @@ Content of GGZ-Python:
 	  - Shogi (client, ai-wrapper(gnushogi))
 
 	- Víbora, fullscreen core client
+
+	- ggz-faketable, a developer tool to launch game servers and clients
 
 All of them have their own README for more information on them.
 
