@@ -1,4 +1,322 @@
 ------------------------------------------------------------------------
+r9751 | josef | 2008-02-17 19:00:06 +0100 (So, 17 Feb 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/messages_de.properties
+
+- more formal translation for forcing window into the foreground (nice one helg ;)
+
+
+------------------------------------------------------------------------
+r9315 | helg | 2007-09-20 03:06:45 +0200 (Do, 20 Sep 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/ChatDocument.java
+   M /trunk/java/src/ggz/ui/ChatHistoryPane.java
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+
+Fixed bug where images could not be loaded when running under a security manager (applet).
+------------------------------------------------------------------------
+r9314 | helg | 2007-09-19 16:47:15 +0200 (Mi, 19 Sep 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/ChatDocument.java
+   M /trunk/java/src/ggz/ui/ChatHistoryPane.java
+
+Instead of loading images sychronously, cache them. This should 
+be more efficient but may be less compatible.
+------------------------------------------------------------------------
+r9313 | helg | 2007-09-19 15:59:02 +0200 (Mi, 19 Sep 2007) | 5 lines
+Geänderte Pfade:
+   A /trunk/java/src/ggz/ui/AutoCompleteTextField.java
+   A /trunk/java/src/ggz/ui/ChatDocument.java
+   A /trunk/java/src/ggz/ui/ChatHistoryPane.java
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+   A /trunk/java/src/ggz/ui/GlobalHyperlinkListener.java
+   M /trunk/java/src/ggz/ui/HyperlinkLabel.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   A /trunk/java/src/ggz/ui/emoticons.properties
+   M /trunk/java/src/ggz/ui/preferences/GGZPreferences.java
+
+Added hyperlink detection to chat history.
+Added tab completion of names in chat field.
+Emoticons are now easier to add.
+Repeated emoticons now appear as individual images rather than being coalesced.
+Chat text preferences now take effect on existing text.
+------------------------------------------------------------------------
+r9290 | helg | 2007-09-04 17:32:21 +0200 (Di, 04 Sep 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+
+Allow hosts to use PlayerAdminDialog.
+------------------------------------------------------------------------
+r9289 | helg | 2007-09-04 15:20:16 +0200 (Di, 04 Sep 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/client/Team.java
+
+Team now assumes the lastest score is the current score.
+------------------------------------------------------------------------
+r9287 | oojah | 2007-09-01 12:34:06 +0200 (Sa, 01 Sep 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/cards/client/Client.java
+
+Display current hand number.
+
+------------------------------------------------------------------------
+r9121 | oojah | 2007-05-15 13:39:43 +0200 (Di, 15 Mai 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/ClientApplet.java
+
+Change default hostname to live.ggzgamingzone.org. l.g.o is a CNAME to o.d.o, so nothing should change but it a more appropriate name to have in the code.
+
+------------------------------------------------------------------------
+r9106 | oojah | 2007-05-07 19:53:44 +0200 (Mo, 07 Mai 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+
+Removed duplicate lines, fixed image reference.
+
+------------------------------------------------------------------------
+r9105 | oojah | 2007-05-07 18:54:00 +0200 (Mo, 07 Mai 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   A /trunk/java/src/ggz/ui/images/emoticon_cup.png
+   A /trunk/java/src/ggz/ui/images/emoticon_drink.png
+   A /trunk/java/src/ggz/ui/images/emoticon_rosette.png
+
+Food/award type emoticons.
+
+------------------------------------------------------------------------
+r9104 | helg | 2007-05-07 14:17:32 +0200 (Mo, 07 Mai 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/client/Client.java
+   M /trunk/java/src/ggz/cards/common/ClientOpCode.java
+
+Changes that support new reveal hands op code. Commented out
+in the UI so it's not currently used.
+------------------------------------------------------------------------
+r9103 | helg | 2007-05-07 14:16:09 +0200 (Mo, 07 Mai 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   M /trunk/java/src/ggz/games/GamePanel.java
+
+Game window state is now stored when you leave a game. The 
+window state is remembered for each game type.
+------------------------------------------------------------------------
+r9100 | oojah | 2007-05-05 18:25:48 +0200 (Sa, 05 Mai 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+
+Better default dimensions for 1024x768
+
+
+------------------------------------------------------------------------
+r9099 | helg | 2007-05-05 08:45:24 +0200 (Sa, 05 Mai 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+
+Command out "show hands" releated stuff until we know it's working.
+------------------------------------------------------------------------
+r9085 | oojah | 2007-05-02 00:55:11 +0200 (Mi, 02 Mai 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   A /trunk/java/src/ggz/ui/images/emoticon_bomb.png
+   A /trunk/java/src/ggz/ui/images/emoticon_flag.png
+   A /trunk/java/src/ggz/ui/images/emoticon_lightbulb.png
+   A /trunk/java/src/ggz/ui/images/emoticon_rainbow.png
+
+Added a few more emoticons.
+
+------------------------------------------------------------------------
+r9083 | helg | 2007-04-30 14:54:05 +0200 (Mo, 30 Apr 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+
+Changed default window dimensions so that chat initially
+appears below the table. It seems a step backwards to me but
+whatever...
+------------------------------------------------------------------------
+r9082 | helg | 2007-04-30 14:35:44 +0200 (Mo, 30 Apr 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/ChatPanel.java
+   A /trunk/java/src/ggz/ui/images/emoticon_star.png
+
+Added new "star" emote.
+------------------------------------------------------------------------
+r9065 | helg | 2007-04-22 07:42:06 +0200 (So, 22 Apr 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/client/core/Player.java
+   M /trunk/java/src/ggz/common/PlayerType.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+
+Players are now sorted by type in preference to name.
+------------------------------------------------------------------------
+r9005 | josef | 2007-03-22 10:53:59 +0100 (Do, 22 Mär 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/Makefile
+   M /trunk/java/Makefile
+   M /trunk/python/Makefile.in
+
+- run svn-clean correctly (it doesn't recognise relative paths)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9004 | helg | 2007-03-20 12:41:59 +0100 (Di, 20 Mär 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/java/src/ggz/cards/CardGamePanel.java
+   A /trunk/java/src/ggz/cards/euchre
+   A /trunk/java/src/ggz/cards/euchre/EuchreBidPanel.java
+
+Added better support for Euchre. Removed stray text_message and bids are no longer displayed as -1.
+------------------------------------------------------------------------
+r8975 | helg | 2007-02-02 10:33:55 +0100 (Fr, 02 Feb 2007) | 1 line
+Geänderte Pfade:
+   A /trunk/java/src/ggz/common/MutablePermSet.java
+   A /trunk/java/src/ggz/common/Perm.java
+   A /trunk/java/src/ggz/common/PermSet.java
+   A /trunk/java/src/ggz/ui/PlayerAdminDialog.java
+   A /trunk/java/src/ggz/ui/PlayerPermissionsPanel.java
+   A /trunk/java/src/ggz/ui/images/application_icon.gif
+   A /trunk/java/src/ggz/ui/images/edit_permissions.png
+
+Woops!
+------------------------------------------------------------------------
+r8966 | helg | 2007-01-30 07:31:52 +0100 (Di, 30 Jan 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/client/core/Net.java
+   M /trunk/java/src/ggz/client/core/Player.java
+   M /trunk/java/src/ggz/client/core/Room.java
+   M /trunk/java/src/ggz/client/core/RoomEvent.java
+   M /trunk/java/src/ggz/client/core/RoomListener.java
+   M /trunk/java/src/ggz/client/core/Server.java
+   M /trunk/java/src/ggz/common/PlayerType.java
+   M /trunk/java/src/ggz/ui/IconFactory.java
+   M /trunk/java/src/ggz/ui/PrivateChatDialog.java
+   M /trunk/java/src/ggz/ui/RoomChatPanel.java
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+   M /trunk/java/src/ggz/ui/messages.properties
+   M /trunk/java/src/ggz/ui/messages_de.properties
+   M /trunk/java/src/ggz/ui/messages_pt_BR.properties
+
+Added dialog to allow admins to view and set permissions for 
+logged in players. This dialog also makes it easier to kick, 
+gag and ungag players.
+------------------------------------------------------------------------
+r8962 | helg | 2007-01-22 11:43:56 +0100 (Mo, 22 Jan 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/java/src/ggz/ui/RoomPanel.java
+
+Escape any HTML embedded in table descriptions to prevent
+JLabel from rendering it. Table descriptions need to treated
+as plain text.
+------------------------------------------------------------------------
+r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16 Jan 2007) | 8 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/java/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- updated changelogs
+
+This is VERY consuming (4 MB changes) since we change the changelog format.
+However we have to do so since no tool seems to be able to reproduce our old format.
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/NEWS
+   M /trunk/community/README.GGZ
+   M /trunk/docs/AUTHORS
+   M /trunk/docs/NEWS
+   M /trunk/docs/QuickStart.GGZ
+   M /trunk/docs/README.GGZ
+   M /trunk/ggz-client-libs/AUTHORS
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/QuickStart.GGZ
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggzd/AUTHORS
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/README.GGZ
+   M /trunk/gnome-client/AUTHORS
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/QuickStart.GGZ
+   M /trunk/gnome-client/README
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/grubby/AUTHORS
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/grubby/README.GGZ
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/QuickStart.GGZ
+   M /trunk/gtk-client/README
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-games/AUTHORS
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/QuickStart.GGZ
+   M /trunk/gtk-games/README
+   M /trunk/gtk-games/README.GGZ
+   M /trunk/java/AUTHORS
+   M /trunk/java/NEWS
+   M /trunk/java/README.GGZ
+   M /trunk/kde-client/AUTHORS
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/QuickStart.GGZ
+   M /trunk/kde-client/README
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-games/AUTHORS
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/QuickStart.GGZ
+   M /trunk/kde-games/README
+   M /trunk/kde-games/README.GGZ
+   M /trunk/libggz/AUTHORS
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/QuickStart.GGZ
+   M /trunk/libggz/README.GGZ
+   M /trunk/python/AUTHORS
+   M /trunk/python/NEWS
+   M /trunk/python/QuickStart.GGZ
+   M /trunk/python/README
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/AUTHORS
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/README
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/txt-client/AUTHORS
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/QuickStart.GGZ
+   M /trunk/txt-client/README.GGZ
+   M /trunk/utils/AUTHORS
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+   M /trunk/utils/README.GGZ
+
+- update common files slightly, and synchronise them
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
 r8928 | helg | 2007-01-16 02:23:49 +0100 (Di, 16 Jan 2007) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/spades/SpadesBidPanel.java

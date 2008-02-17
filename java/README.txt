@@ -1,6 +1,6 @@
-=================================
-The GGZ Gaming Zone - Java Client
-=================================
+===================================================
+The GGZ Gaming Zone - Java Client - Snapshot 0.99.2
+===================================================
 
 The Java client is a port of the following C libraries.
 
