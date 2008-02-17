@@ -210,6 +210,12 @@ static PyObject *pyggzdmod_connect(PyObject *self, PyObject *args)
 {
 	int ret;
 
+	if(!ggzdmod_check_library(GGZDMOD_VERSION_IFACE))
+	{
+		printf("ERROR in pyggzdmod: wrong ggzdmod library version");
+		return Py_None;
+	}
+
 	if(!PyArg_ParseTuple(args, "")) return NULL;
 	ret = ggzdmod_connect(ggzdmod);
 	return Py_BuildValue("i", (ret == 0 ? 1 : 0));

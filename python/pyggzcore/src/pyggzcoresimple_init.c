@@ -913,6 +913,12 @@ void initggzcoresimple(void)
 	PyObject *coreserver;
 	GGZOptions opt;
 
+	if(!ggzcore_check_library(GGZCORE_VERSION_IFACE))
+	{
+		printf("ERROR in pyggzcoresimple: wrong ggzcore library version");
+		return;
+	}
+
 	core = Py_InitModule("ggzcoresimple", pyggzcoresimple_methods);
 
 	PyModule_AddIntConstant(core, "LOGIN", GGZ_LOGIN);

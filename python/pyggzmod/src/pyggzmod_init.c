@@ -273,6 +273,12 @@ static PyObject *pyggzmod_connect(PyObject *self, PyObject *args)
 	int connect;
 	char *mode;
 
+	if(!ggzmod_check_library(GGZMOD_VERSION_IFACE))
+	{
+		printf("ERROR in pyggzmod: wrong ggzmod library version");
+		return Py_None;
+	}
+
 	if(!PyArg_ParseTuple(args, "")) return NULL;
 	connect = ggzmod_connect(ggzmod);
 	if(connect == 0)
