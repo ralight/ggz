@@ -156,7 +156,7 @@ class RGGZMod
 	end
 
 	# Arrival of events from the GGZ server through the GGZ core client.
-	# Override thie method and handle as many events as possible.
+	# Override this method and handle as many events as possible.
 	# The most important one is probably GGZMod::EVENTSERVER. Its data
 	# will be a file descriptor for a direct connection to the game server.
 	# Have a look at the GGZMod documentation for the meaning of all the
@@ -272,7 +272,7 @@ class RGGZMod
 	def loop
 		fd = @client.get_control_fd
 		controlchannel = IO.new(fd, "w+")
-		while true
+		while @client.get_state != GGZMod::STATEDONE
 			puts "=> select"
 			ret = IO.select([controlchannel], nil, nil, nil)
 			if ret

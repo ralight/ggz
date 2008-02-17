@@ -471,6 +471,7 @@ class TestClient < RGGZMod
 		elsif id == GGZMod::EVENTINFO
 		elsif id == GGZMod::EVENTRANKINGS
 		elsif id == GGZMod::EVENTERROR
+			@client.disconnect
 		end
 	end
 
