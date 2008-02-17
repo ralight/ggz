@@ -4,7 +4,8 @@ Bogaprot: a unified board game protocol
 Since GGZBoard supports so many board games which are similar in nature,
 it is only logical to try a unified approach on the network communication
 protocol between the board game servers and clients, unless there are
-specialised protocols available already (i.e. xboard for Chess, GMP for Go).
+specialised protocols available already (i.e. XBoard/UCI for Chess,
+GMP/GTP for Go).
 
 Bogaprot is therefore to be used for Hnefatafl, Checkers, Ludo and Arimaa,
 whereas Chess, Go, ConnectX and Reversi implement existing protocols used
@@ -149,14 +150,15 @@ server side. They are designed so that they could be auto-generated in the
 future using GGZComm. They are, however, tied to ggz(d)mod instead of just
 providing send/receive functions, so another abstraction layer may be
 introduced.
-Also, NetworkBase depends on ggzmod right now, parts of which should move
-into the BogaprotClient class (but then the non-bogaprot clients need an
+Also, NetworkBase(Client) depends on ggzmod right now, parts of which should
+move into the BogaprotClient class (but then the non-bogaprot clients need an
 alternative).
 
 NetworkBase (based on python sockets)
   -> BogaprotServer (with ggzdmod)
      -> LudoServer server
-  -> BogaprotClient (with ggzmod)
-     -> Network object
-	    -> GGZBoard client
+  -> NetworkBaseClient
+    -> BogaprotClient (with ggzmod)
+       -> Network object
+          -> GGZBoard client
 

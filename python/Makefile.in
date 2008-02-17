@@ -143,6 +143,8 @@ man-install:
 	mkdir -p $(DESTDIR)$(prefix)/share/man
 	mkdir -p $(DESTDIR)$(prefix)/share/man/man6
 	cp man/*.6 $(DESTDIR)$(prefix)/share/man/man6
+	mkdir -p $(DESTDIR)$(prefix)/share/man/man1
+	cp man/*.1 $(DESTDIR)$(prefix)/share/man/man1
 
 install-rest:
 	@echo Installing game Escape/SDL
@@ -201,6 +203,10 @@ install-rest:
 	cp submarine/submarine $(DESTDIR)$(ggzd_execmoddir)
 	cp submarine/submarine.dsc $(DESTDIR)$(ggzd_confdir)/games
 	cp submarine/submarine.room $(DESTDIR)$(ggzd_confdir)/rooms
+
+	@echo Installing application ggz-faketable
+	mkdir -p $(DESTDIR)$(bindir)
+	cp faketable/ggz-faketable $(DESTDIR)$(bindir)
 
 install-ggzboard:
 	@echo Installing GGZBoard framework and games
