@@ -203,6 +203,15 @@ static VALUE t_log ( VALUE self, VALUE str )
 
 /* Module initialization */
 
+static VALUE t_check ( VALUE self )
+{
+	ret = ggzdmod_check_library ( GGZDMOD_VERSION_IFACE );
+	if ( ret )
+		return Qtrue;
+	else
+		return Qfalse;
+}
+
 static void init_constants ( VALUE self )
 {
 	rb_define_const ( self, "SEATNONE", INT2NUM ( GGZ_SEAT_NONE ) );
@@ -255,5 +264,7 @@ void Init_GGZDMod ()
 
 	init_methods ( cTEST );
 	init_constants ( cTEST );
+
+	rb_define_singleton_method ( cTEST, "check_library", t_check, 0 );
 }
 

@@ -5,7 +5,7 @@
 require 'socket'
 
 class GGZRawSocket < Socket
-	def putint(n)
+	def sendint(n)
 		n1 = (n >> 24) & 0xff
 		n2 = (n >> 16) & 0xff
 		n3 = (n >> 8) & 0xff
@@ -25,7 +25,7 @@ class GGZRawSocket < Socket
 		return n
 	end
 
-	def putbyte(n)
+	def sendbyte(n)
 		self.putc(n)
 	end
 
@@ -34,8 +34,8 @@ class GGZRawSocket < Socket
 		return n
 	end
 
-	def putstring(s)
-		self.putint(s.length)
+	def sendstring(s)
+		self.sendint(s.length)
 		self.write(s)
 	end
 
@@ -79,6 +79,10 @@ class TictactoeProto
 		@ret = 0
 		@requirelink = 0
 		@nextlink = 0
+
+		@seat = Array.new
+		@seat << ::GGZ__SEAT_OPEN
+		@seat << ::GGZ__SEAT_OPEN
 	end
 
 	def ggzcomm_sndmove(player)
@@ -107,7 +111,7 @@ class TictactoeProto
 		s.sendbyte(::MSGPLAYERS)
 		for i1 in 0..2
 			s.sendbyte(@seat[i1])
-			if (@seat[i1] != @ggz__seat_open)
+			if (@seat[i1] != ::GGZ__SEAT_OPEN)
 				s.sendstring(@name[i1])
 			end
 		end

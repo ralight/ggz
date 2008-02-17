@@ -389,6 +389,15 @@ static VALUE t_request_rankings ( VALUE self )
 
 /* Module initialization */
 
+static VALUE t_check ( VALUE self )
+{
+	ret = ggzmod_check_library ( GGZMOD_VERSION_IFACE );
+	if ( ret )
+		return Qtrue;
+	else
+		return Qfalse;
+}
+
 static void init_constants ( VALUE self )
 {
 	/* This is shared with ruggzdmod (because it's actually from libggz) */
@@ -465,5 +474,7 @@ void Init_GGZMod ()
 
 	init_methods ( cTEST );
 	init_constants ( cTEST );
+
+	rb_define_singleton_method ( cTEST, "check_library", t_check, 0 );
 }
 

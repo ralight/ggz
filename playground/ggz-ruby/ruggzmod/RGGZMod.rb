@@ -112,7 +112,7 @@ class Seat < Player
 	end
 
 	def to_s
-		if @type != GGZMod::SEATOPEN and @type != GGZMod::SEATNONE:
+		if @type != GGZMod::SEATOPEN and @type != GGZMod::SEATNONE
 			player = super()
 		end
 		type = typename()
@@ -141,6 +141,9 @@ class RGGZMod
 		if not ENV['GGZMODE']
 			# FIXME: we silently go over this in ggzmod (legacy relict?)
 			raise "Error: not in GGZ mode"
+		end
+		if not GGZMod::check_library
+			raise "Error: wrong version of the library"
 		end
 		@client = GGZMod.new
 		ret = @client.connect

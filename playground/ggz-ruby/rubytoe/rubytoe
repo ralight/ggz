@@ -23,6 +23,8 @@ end
 
 class TTT < TictactoeProto
 	def initialize
+		super()
+
 		@turn = 0
 		@board = Array.new(9)
 	end
@@ -33,7 +35,7 @@ class TTT < TictactoeProto
 		for i in 0..num - 1
 			fd = $server.get_seat_fd(i)
 			if fd != -1 then
-				send_players(i)
+				ggzcomm_msgplayers(i)
 			end
 		end
 	end
@@ -180,12 +182,13 @@ class TTT < TictactoeProto
 	end
 
 	def event(id, data)
-		super(id, data)
+		# FIXME: don't we have a super method here?
+		###super(id, data)
 
 		if id == GGZDMod::EVENTJOIN then
 			num = data
 			broadcast_players
-			send_seat(num)
+			ggzcomm_msgseat(num)
 			trystart
 		elsif id == GGZDMod::EVENTLEAVE then
 			broadcast_players
