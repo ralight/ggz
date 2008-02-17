@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+import java.text.MessageFormat;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -299,8 +300,12 @@ public class RoomChatPanel extends JPanel implements RoomListener,
     public void player_count(final int n) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                playerCountLabel.setText(n + (n == 1 ? " player" : " players")
-                        + " in room");
+                playerCountLabel.setText(MessageFormat.format(messages
+                .getString("RoomChatPanel.PlayersInRoom"),
+                new Object[] {
+                    new Integer(n),
+                    (n == 1 ? messages.getString("PluralPlayer") : messages.getString("PluralPlayers"))
+                }));
                 revalidate();
                 repaint();
             }

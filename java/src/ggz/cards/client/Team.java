@@ -25,6 +25,10 @@ public class Team {
             this.scores.add(s);
     }
 
+    public void setScore(ScoreData s) {
+      // FIXME: do something here --josef
+    }
+
     public ScoreData getScore() {
         return (ScoreData) this.scores.get(this.scores.size() - 1);
     }
