@@ -66,10 +66,16 @@ if(file_exists($cache_file) && filemtime($cache_file) > filemtime($uptimes_file)
 	}
 
 	for($i = 0; $i < $records; $i++){
-		$page .= ("<tr><td></td><td>".($i+1)."</td><td>".format_time($utimes[$i])."</td></tr>\n");
+		if($i+1 == $current_pos){
+			$page .= ("<tr class=\"current\"><td>-&gt;</td><td>".($i+1)."</td><td>".format_time($utimes[$i])."</td></tr>\n");
+		}else{
+			$page .= ("<tr><td></td><td>".($i+1)."</td><td>".format_time($utimes[$i])."</td></tr>\n");
+		}
 	}
 
-	$page .= "<tr class=\"current\"><td>-&gt;</td><td>$current_pos</td><td>".format_time($current)."</td></tr>\n";
+	if($current_pos > $records){
+		$page .= "<tr class=\"current border\"><td>-&gt;</td><td>$current_pos</td><td>".format_time($current)."</td></tr>\n";
+	}
 
 	if($current_pos > 0){
 		$oneup = $utimes[$current_pos - 1] - $utimes[$current_pos];
@@ -86,7 +92,7 @@ if(file_exists($cache_file) && filemtime($cache_file) > filemtime($uptimes_file)
 	}
 
 	if($oneup > 0){
-		$page .= "<tr><td>1up</td><td>in</td><td>".format_time($oneup)."</td></tr>\n";
+		$page .= "<tr class=\"border\"><td>1up</td><td>in</td><td>".format_time($oneup)."</td></tr>\n";
 	}
 	if($topten > 0){
 		$page .= "<tr><td>t10</td><td>in</td><td>".format_time($topten)."</td></tr>\n";

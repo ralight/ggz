@@ -14,8 +14,10 @@ td {
 }
 
 tr.current {
-	border-top: 1px dashed black;
-	border-bottom: 1px dashed black;
 	font-weight: bold;
+}
+
+tr.border {
+	border-top: 1px dashed black;
 }
 
