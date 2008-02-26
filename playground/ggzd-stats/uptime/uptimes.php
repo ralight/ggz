@@ -85,8 +85,8 @@ if(file_exists($cache_file) && filemtime($cache_file) > filemtime($uptimes_file)
 		$top = 0;
 	}
 
-	if($current_pos > 9){
-		$topten = $utimes[9] - $utimes[$current_pos];
+	if($current_pos > 10){
+		$topten = $utimes[10] - $utimes[$current_pos];
 	}else{
 		$topten = 0;
 	}
