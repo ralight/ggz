@@ -7,6 +7,15 @@ The slides sources can then be stored here while the exported versions
 
 Past talks:
 
+** FOSDEM 23.+24.02.2008 in Brussels, Belgium:
+   Lightning: "GGZ Gaming Zone: Multiplayer gaming framework" (by Josef Spillner)
+   Devroom: "Roadmap for multiplayer gaming in KDE 4"
+   http://www.fosdem.org/2008/
+   (both talks in English)
+
+   - slides done with OpenOffice.org
+   - material available in Josef's talk repository
+
 ** RubyConf 02.11.2007 in Charlotte, NC, USA:
    "High Art on Top of Low-Level APIs: Building Games with Ruby" (by Andrea O. K. Wright)
    http://rubyconf2007.confreaks.com/
