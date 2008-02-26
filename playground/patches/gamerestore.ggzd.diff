@@ -1,6 +1,6 @@
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/control.c ./ggzd/control.c
---- ../ggzd-svn/ggzd/control.c	Thu Feb 21 12:20:06 2008
-+++ ./ggzd/control.c	Thu Feb 21 15:27:33 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzd/control.c ./ggzd/control.c
+--- ../ggzd-svn-patched/ggzd/control.c	Tue Feb 26 15:51:54 2008
++++ ./ggzd/control.c	Mon Feb 25 14:24:39 2008
 @@ -589,6 +589,13 @@
  	signal(TABLE_EVENT_SIGNAL, table_handle_event_signal);
  	pthread_key_create(&table_key, NULL);
@@ -15,9 +15,9 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/con
  	/* Setup TLS */
  	ggz_tls_init(opt.tls_cert, opt.tls_key, opt.tls_password);
  
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/database/ggzdb.c ./ggzd/database/ggzdb.c
---- ../ggzd-svn/ggzd/database/ggzdb.c	Thu Feb 21 12:20:06 2008
-+++ ./ggzd/database/ggzdb.c	Thu Feb 21 15:27:33 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzd/database/ggzdb.c ./ggzd/database/ggzdb.c
+--- ../ggzd-svn-patched/ggzd/database/ggzdb.c	Tue Feb 26 15:51:53 2008
++++ ./ggzd/database/ggzdb.c	Mon Feb 25 14:24:39 2008
 @@ -140,7 +140,12 @@
  	|| ((_ggzdb_stats_savegame = dlsym(handle, "_ggzdb_stats_savegame")) == NULL)
  	|| ((_ggzdb_stats_match = dlsym(handle, "_ggzdb_stats_match")) == NULL)
@@ -107,9 +107,9 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/dat
  
  	_ggzdb_exit();
  
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/database/ggzdb.h ./ggzd/database/ggzdb.h
---- ../ggzd-svn/ggzd/database/ggzdb.h	Thu Feb 21 12:20:06 2008
-+++ ./ggzd/database/ggzdb.h	Thu Feb 21 15:27:33 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzd/database/ggzdb.h ./ggzd/database/ggzdb.h
+--- ../ggzd-svn-patched/ggzd/database/ggzdb.h	Tue Feb 26 15:51:53 2008
++++ ./ggzd/database/ggzdb.h	Mon Feb 25 14:24:39 2008
 @@ -81,6 +81,11 @@
  	long highest_score;
  } ggzdbPlayerGameStats;
@@ -161,9 +161,9 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/dat
  
  #endif
  
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/database/ggzdb_functions.h ./ggzd/database/ggzdb_functions.h
---- ../ggzd-svn/ggzd/database/ggzdb_functions.h	Thu Feb 21 12:20:06 2008
-+++ ./ggzd/database/ggzdb_functions.h	Thu Feb 21 15:27:33 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzd/database/ggzdb_functions.h ./ggzd/database/ggzdb_functions.h
+--- ../ggzd-svn-patched/ggzd/database/ggzdb_functions.h	Tue Feb 26 15:51:53 2008
++++ ./ggzd/database/ggzdb_functions.h	Mon Feb 25 14:24:39 2008
 @@ -44,3 +44,8 @@
  GGZDBResult (*_ggzdb_stats_toprankings)(const char *game, int number, ggzdbPlayerGameStats **rankings);
  GGZDBResult (*_ggzdb_stats_calcrankings)(const char *game);
@@ -173,9 +173,9 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/dat
 +GGZDBResultDataPtr (*_ggzdb_find_first_owner)(const char *game);
 +GGZDBResult (*_ggzdb_find_next_owner_alloc)(GGZDBResultData *data, char **owner);
 +
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/database/ggzdb_pgsql.c ./ggzd/database/ggzdb_pgsql.c
---- ../ggzd-svn/ggzd/database/ggzdb_pgsql.c	Thu Feb 21 12:20:06 2008
-+++ ./ggzd/database/ggzdb_pgsql.c	Thu Feb 21 15:27:33 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzd/database/ggzdb_pgsql.c ./ggzd/database/ggzdb_pgsql.c
+--- ../ggzd-svn-patched/ggzd/database/ggzdb_pgsql.c	Tue Feb 26 15:51:53 2008
++++ ./ggzd/database/ggzdb_pgsql.c	Tue Feb 26 12:50:52 2008
 @@ -73,6 +73,14 @@
  }
  connection_t;
@@ -236,7 +236,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/dat
 +GGZDBResult _ggzdb_find_next_owner_alloc(GGZDBResultData* data, char **owner)
 +{
 +	if (data->i < data->count) {
-+		*owner = strdup(PQgetvalue(data->res, data->i++, 0));
++		*owner = ggz_strdup(PQgetvalue(data->res, data->i++, 0));
 +		return GGZDB_NO_ERROR;
 +	} else {
 +		PQclear(data->res);
@@ -275,7 +275,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/dat
 +GGZDBResult _ggzdb_find_next_savegame_alloc(GGZDBResultData *data, char **savedgame)
 +{
 +	if (data->i < data->count) {
-+		*savedgame = strdup(PQgetvalue(data->res, data->i++, 0));
++		*savedgame = ggz_strdup(PQgetvalue(data->res, data->i++, 0));
 +		return GGZDB_NO_ERROR;
 +	} else {
 +		PQclear(data->res);
@@ -287,9 +287,9 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/dat
 +	}
  }
  
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/database/ggzdb_proto.h ./ggzd/database/ggzdb_proto.h
---- ../ggzd-svn/ggzd/database/ggzdb_proto.h	Thu Feb 21 12:20:06 2008
-+++ ./ggzd/database/ggzdb_proto.h	Thu Feb 21 15:27:33 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzd/database/ggzdb_proto.h ./ggzd/database/ggzdb_proto.h
+--- ../ggzd-svn-patched/ggzd/database/ggzdb_proto.h	Tue Feb 26 15:51:53 2008
++++ ./ggzd/database/ggzdb_proto.h	Mon Feb 25 14:24:39 2008
 @@ -135,3 +135,9 @@
  GGZDBResult _ggzdb_stats_calcrankings(const char *game);
  
@@ -300,9 +300,9 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/dat
 +GGZDBResultDataPtr _ggzdb_find_first_owner(const char *game);
 +GGZDBResult _ggzdb_find_next_owner_alloc(GGZDBResultData *data, char **owner);
 +
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/datatypes.h ./ggzd/datatypes.h
---- ../ggzd-svn/ggzd/datatypes.h	Thu Feb 21 12:20:06 2008
-+++ ./ggzd/datatypes.h	Thu Feb 21 15:27:33 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzd/datatypes.h ./ggzd/datatypes.h
+--- ../ggzd-svn-patched/ggzd/datatypes.h	Tue Feb 26 15:51:54 2008
++++ ./ggzd/datatypes.h	Mon Feb 25 14:24:39 2008
 @@ -146,6 +146,10 @@
  
  	/* Can players request each other's hostnames? */
@@ -314,9 +314,9 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/dat
  } GameInfo;
  
  
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/parse_opt.c ./ggzd/parse_opt.c
---- ../ggzd-svn/ggzd/parse_opt.c	Thu Feb 21 12:20:07 2008
-+++ ./ggzd/parse_opt.c	Thu Feb 21 15:27:33 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzd/parse_opt.c ./ggzd/parse_opt.c
+--- ../ggzd-svn-patched/ggzd/parse_opt.c	Tue Feb 26 15:51:54 2008
++++ ./ggzd/parse_opt.c	Mon Feb 25 14:24:39 2008
 @@ -689,6 +689,9 @@
  	game_info.allow_peers = ggz_conf_read_int(ch, "TableOptions", 
  						  "AllowPeers", 0);
@@ -327,9 +327,9 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/par
  	/* Named bots */
  	game_info.named_bots = NULL;
  
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/room.c ./ggzd/room.c
---- ../ggzd-svn/ggzd/room.c	Thu Feb 21 12:20:07 2008
-+++ ./ggzd/room.c	Thu Feb 21 15:27:33 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzd/room.c ./ggzd/room.c
+--- ../ggzd-svn-patched/ggzd/room.c	Tue Feb 26 15:51:54 2008
++++ ./ggzd/room.c	Tue Feb 26 12:50:56 2008
 @@ -623,3 +623,61 @@
  	return removed;
  }
@@ -349,13 +349,13 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/roo
 +    
 +	if (restore_allow) {
 +		pthread_rwlock_rdlock(&rooms[room].lock);
-+		char *room_name = strdup(rooms[room].name);
++		char *game_name = ggz_strdup(ggz_intlstring_translated(rooms[room].name, NULL));
 +		pthread_rwlock_unlock(&rooms[room].lock);
 +
-+		GGZDBResultData *data = ggzdb_find_first_owner(room_name);
++		GGZDBResultData *data = ggzdb_find_first_owner(game_name);
 +		char *owner;
 +
-+		ggz_free(room_name);
++		ggz_free(game_name);
 +
 +		if (data != NULL) {
 +			while(ggzdb_find_next_owner_alloc(data, &owner) != GGZDB_ERR_NOTFOUND) {
@@ -392,9 +392,9 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/roo
 +	return;
 +}
 +
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/room.h ./ggzd/room.h
---- ../ggzd-svn/ggzd/room.h	Thu Feb 21 12:20:07 2008
-+++ ./ggzd/room.h	Thu Feb 21 15:27:33 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzd/room.h ./ggzd/room.h
+--- ../ggzd-svn-patched/ggzd/room.h	Tue Feb 26 15:51:54 2008
++++ ./ggzd/room.h	Mon Feb 25 14:24:39 2008
 @@ -123,6 +123,7 @@
  int room_get_count_rooms(void);
  int room_is_removed(int room);
@@ -403,10 +403,10 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/roo
  
  GGZReturn room_update_event(const char *player,
  			    GGZPlayerUpdateType update,
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/table.c ./ggzd/table.c
---- ../ggzd-svn/ggzd/table.c	Thu Feb 21 12:20:07 2008
-+++ ./ggzd/table.c	Thu Feb 21 15:27:33 2008
-@@ -86,6 +86,8 @@
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzd/table.c ./ggzd/table.c
+--- ../ggzd-svn-patched/ggzd/table.c	Tue Feb 26 15:52:27 2008
++++ ./ggzd/table.c	Tue Feb 26 15:43:44 2008
+@@ -87,6 +87,8 @@
  			      const void *data);
  static void table_game_savegame(GGZdMod *ggzdmod, GGZdModEvent event,
  			      const void *data);
@@ -415,7 +415,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/tab
  static void table_game_req_num_seats(GGZdMod *ggzdmod, GGZdModEvent event,
  				     const void *data);
  static void table_game_req_boot(GGZdMod *ggzdmod, GGZdModEvent event,
-@@ -94,6 +96,8 @@
+@@ -95,6 +97,8 @@
  			       const void *data);
  static void table_game_req_open(GGZdMod *ggzdmod, GGZdModEvent event,
  				const void *data);
@@ -424,7 +424,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/tab
  static void table_error(GGZdMod *ggzdmod, GGZdModEvent event,
  			const void *data);
  
-@@ -453,6 +457,8 @@
+@@ -454,6 +458,8 @@
  			    &table_game_report);
  	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_SAVEGAMEREPORT,
  			    &table_game_savegame);
@@ -433,7 +433,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/tab
  	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_NUM_SEATS,
  			    &table_game_req_num_seats);
  	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_BOOT,
-@@ -461,6 +467,8 @@
+@@ -462,6 +468,8 @@
  			    &table_game_req_bot);
  	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_OPEN,
  			    &table_game_req_open);
@@ -442,7 +442,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/tab
  	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_ERROR, &table_error);
  	
  	/* Setup seats for game table */
-@@ -487,6 +495,12 @@
+@@ -488,6 +496,12 @@
  	if (ggzdmod_connect(table->ggzdmod) < 0)
  		status = GGZ_ERROR;
  
@@ -455,15 +455,23 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/tab
  	return status;
  }
  
-@@ -887,6 +901,7 @@
+@@ -893,6 +907,15 @@
  			table_event_enqueue(table, GGZ_TABLE_UPDATE_STATE);
  		return;
  
 +	case GGZDMOD_STATE_RESTORED:
++		dbg_msg(GGZ_DBG_TABLE,
++			"Table %d in room %d is restored.", 
++			table->index, table->room);
++
++		pthread_rwlock_wrlock(&table->lock);
++		table->state = GGZ_TABLE_RESTORED;
++		pthread_rwlock_unlock(&table->lock);
++		return;
  	case GGZDMOD_STATE_CREATED:
  		break;
  	}
-@@ -935,7 +950,6 @@
+@@ -941,7 +964,6 @@
  	/* FIXME: we might want to auto-send the updated rankings here? */
  }
  
@@ -471,7 +479,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/tab
  static void table_game_savegame(GGZdMod *ggzdmod,
  			      GGZdModEvent event, const void *data)
  {
-@@ -948,6 +962,30 @@
+@@ -954,6 +976,30 @@
  	report_savegame(table->type, table->owner, table->savegame);
  }
  
@@ -482,11 +490,11 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/tab
 +
 +	pthread_rwlock_rdlock(&table->lock);
 +	int room = table->room;
-+	char *owner = strdup(table->owner);
++	char *owner = ggz_strdup(table->owner);
 +	pthread_rwlock_unlock(&table->lock);
 +
 +	pthread_rwlock_rdlock(&rooms[room].lock);
-+	char *roomname = strdup(rooms[room].name);
++	char *roomname = ggz_strdup(ggz_intlstring_translated(rooms[room].name, NULL));
 +	pthread_rwlock_unlock(&rooms[room].lock);
 +
 +	GGZDBResultData *dbRes = ggzdb_find_first_savegame(roomname, owner);
@@ -502,7 +510,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/tab
  
  /* Must be called with a write-lock on the table. */
  static void table_change_num_seats(GGZTable *table, int num_seats)
-@@ -1147,12 +1185,11 @@
+@@ -1153,12 +1199,11 @@
  }
  
  
@@ -518,7 +526,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/tab
  	GGZSeat seat;
  
  	/* FIXME: this code overlaps with the leaving code in transit.c */
-@@ -1170,13 +1207,13 @@
+@@ -1176,13 +1221,13 @@
  
  	seat.num = seat_num;
  	seat.type = GGZ_SEAT_OPEN;
@@ -534,7 +542,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/tab
  	table->seat_names[seat_num][0] = '\0';
  	pthread_rwlock_unlock(&table->lock);
  
-@@ -1185,6 +1222,24 @@
+@@ -1191,6 +1236,24 @@
  	   clients before the launch is.  This is quite bad. */
  	table_update_event_enqueue(table, GGZ_TABLE_UPDATE_SEAT,
  				   "", seat_num);
@@ -559,9 +567,9 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzd/tab
  }
  
  
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/ggzdmod-ggz.h ./ggzdmod/ggzdmod-ggz.h
---- ../ggzd-svn/ggzdmod/ggzdmod-ggz.h	Thu Feb 21 12:20:05 2008
-+++ ./ggzdmod/ggzdmod-ggz.h	Thu Feb 21 15:27:33 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzdmod/ggzdmod-ggz.h ./ggzdmod/ggzdmod-ggz.h
+--- ../ggzd-svn-patched/ggzdmod/ggzdmod-ggz.h	Tue Feb 26 15:51:45 2008
++++ ./ggzdmod/ggzdmod-ggz.h	Mon Feb 25 14:24:41 2008
 @@ -103,6 +103,10 @@
  	int *scores;
  } GGZdModGameReportData;
@@ -592,9 +600,9 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/
  
  	GGZDMOD_EVENT_ERROR_INTERNAL
  	/* GGZDMOD_EVENT_ERROR_INTERNAL must be the last one! */
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/ggzdmod.c ./ggzdmod/ggzdmod.c
---- ../ggzd-svn/ggzdmod/ggzdmod.c	Thu Feb 21 12:20:05 2008
-+++ ./ggzdmod/ggzdmod.c	Thu Feb 21 15:27:33 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzdmod/ggzdmod.c ./ggzdmod/ggzdmod.c
+--- ../ggzd-svn-patched/ggzdmod/ggzdmod.c	Tue Feb 26 15:51:45 2008
++++ ./ggzdmod/ggzdmod.c	Tue Feb 26 14:45:04 2008
 @@ -845,6 +845,13 @@
  	return 0;
  }
@@ -635,7 +643,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/
  }
  
  /* Returns -1 on error, the number of events handled on success. */
-@@ -1106,14 +1119,22 @@
+@@ -1106,10 +1119,10 @@
  		else
  			return -1;
  	} else {
@@ -643,8 +651,6 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/
 -		   needed for this to work ggz-side.  Let's get the rest
 -		   of it working first... */
 -		return -1;
-+		if (ggzdmod->state != GGZDMOD_STATE_CREATED)
-+			return -1;
 +		if (state == GGZDMOD_STATE_RESTORED)
 +			set_state(ggzdmod, state);
 +		else
@@ -652,17 +658,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/
  	}
  	return 0;
  }
- 
-+int _ggzdmod_set_state(GGZdMod *ggzdmod, GGZdModState state)
-+{
-+	ggzdmod->state = state;
-+	return 0;
-+}
-+
- /* 
-  * ggzd specific actions
-  */
-@@ -1411,6 +1432,7 @@
+@@ -1411,6 +1424,7 @@
  		/* Is this right? has the gameover happened yet? */   
  		return;
  	case GGZDMOD_STATE_CREATED:
@@ -670,7 +666,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/
  		break;
  	}
  
-@@ -1828,6 +1850,13 @@
+@@ -1828,6 +1842,13 @@
  	}
  }
  
@@ -684,7 +680,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/
  
  void ggzdmod_request_num_seats(GGZdMod * ggzdmod, int num_seats)
  {
-@@ -1852,6 +1881,11 @@
+@@ -1852,6 +1873,11 @@
  	_io_send_req_open(ggzdmod->fd, seat_num);
  }
  
@@ -696,7 +692,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/
  
  void _ggzdmod_handle_report(GGZdMod * ggzdmod,
  			    int num_players, char **names, GGZSeatType *types,
-@@ -1872,6 +1906,11 @@
+@@ -1872,6 +1898,11 @@
  	call_handler(ggzdmod, GGZDMOD_EVENT_SAVEGAMEREPORT, savegame);
  }
  
@@ -708,7 +704,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/
  
  void _ggzdmod_handle_num_seats_request(GGZdMod * ggzdmod, int num_seats)
  {
-@@ -1894,4 +1933,30 @@
+@@ -1894,4 +1925,31 @@
  void _ggzdmod_handle_open_request(GGZdMod *ggzdmod, int seat_num)
  {
  	call_handler(ggzdmod, GGZDMOD_EVENT_REQ_OPEN, &seat_num);
@@ -731,6 +727,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/
 +
 +void _ggzdmod_handle_state_changed(GGZdMod *ggzdmod, GGZdModState state)
 +{
++	ggzdmod->state = state;
 +	call_handler(ggzdmod, GGZDMOD_EVENT_MSG_GAME_STATE_CHANGED, &state);
 +	_io_send_state_changed_response(ggzdmod->fd);
 +}
@@ -739,9 +736,9 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/
 +{
 +	call_handler(ggzdmod, GGZDMOD_EVENT_GAME_STATE_CHANGED, NULL);
  }
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/ggzdmod.h ./ggzdmod/ggzdmod.h
---- ../ggzd-svn/ggzdmod/ggzdmod.h	Thu Feb 21 12:20:05 2008
-+++ ./ggzdmod/ggzdmod.h	Thu Feb 21 15:31:09 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzdmod/ggzdmod.h ./ggzdmod/ggzdmod.h
+--- ../ggzd-svn-patched/ggzdmod/ggzdmod.h	Tue Feb 26 15:51:45 2008
++++ ./ggzdmod/ggzdmod.h	Tue Feb 26 14:45:01 2008
 @@ -216,7 +216,9 @@
  	GGZDMOD_STATE_CREATED,	/**< Pre-launch; waiting for ggzdmod */
  	GGZDMOD_STATE_WAITING,	/**< Ready and waiting to play. */
@@ -766,22 +763,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/
  	/** @brief An error has occurred
  	 *  This event occurs when a GGZdMod error has occurred.  An
  	 *  error message (a const char*) will be passed as the event's data.
-@@ -607,6 +615,14 @@
-  */
- int ggzdmod_set_state(GGZdMod * ggzdmod, GGZdModState state);
- 
-+/** @brief Change the table's state value
-+ *
-+ *  This function used for set state velue and don't
-+ *  send message to ggzd server. It used when ggzd
-+ *  server send new state.
-+ */
-+int _ggzdmod_set_state(GGZdMod *ggzdmod, GGZdModState state);
-+
- /** @brief Connect to ggz.
-  *
-  *  Call this function to make an initial GGZ <-> game connection.
-@@ -700,6 +716,8 @@
+@@ -700,6 +708,8 @@
   */
  void ggzdmod_report_savegame(GGZdMod *ggzdmod, const char *savegame);
  
@@ -790,7 +772,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/
  /** @brief Tell GGZ to change the number of seats at this table.
   *  @note This functionality is incomplete, and should not yet be used. */
  void ggzdmod_request_num_seats(GGZdMod * ggzdmod, int num_seats);
-@@ -712,6 +730,9 @@
+@@ -712,6 +722,9 @@
  
  /** @brief Tell GGZ to change the given seat from BOT/RESERVED to OPEN. */
  void ggzdmod_request_open(GGZdMod * ggzdmod, int seat_num);
@@ -800,9 +782,9 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/
  
  #ifdef __cplusplus
  }
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/io.c ./ggzdmod/io.c
---- ../ggzd-svn/ggzdmod/io.c	Thu Feb 21 12:20:05 2008
-+++ ./ggzdmod/io.c	Thu Feb 21 15:27:33 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzdmod/io.c ./ggzdmod/io.c
+--- ../ggzd-svn-patched/ggzdmod/io.c	Tue Feb 26 15:51:45 2008
++++ ./ggzdmod/io.c	Mon Feb 25 14:24:41 2008
 @@ -43,12 +43,14 @@
  static int _io_read_req_boot(GGZdMod *ggzdmod);
  static int _io_read_req_bot(GGZdMod *ggzdmod);
@@ -978,9 +960,9 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/
 +	ggz_free(savedgame);
  	return 0;
  }
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/io.h ./ggzdmod/io.h
---- ../ggzd-svn/ggzdmod/io.h	Thu Feb 21 12:20:05 2008
-+++ ./ggzdmod/io.h	Thu Feb 21 15:27:33 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzdmod/io.h ./ggzdmod/io.h
+--- ../ggzd-svn-patched/ggzdmod/io.h	Tue Feb 26 15:51:45 2008
++++ ./ggzdmod/io.h	Mon Feb 25 14:24:41 2008
 @@ -34,10 +34,12 @@
  int _io_send_seat_change(int fd, const GGZSeat *seat);
  int _io_send_spectator_change(int fd, const GGZSeat *spectator);
@@ -1008,9 +990,9 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/
  
  /* Read and dispatch message */
  int _io_read_data(GGZdMod * ggzdmod);
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/mod.h ./ggzdmod/mod.h
---- ../ggzd-svn/ggzdmod/mod.h	Thu Feb 21 12:20:05 2008
-+++ ./ggzdmod/mod.h	Thu Feb 21 15:27:33 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzdmod/mod.h ./ggzdmod/mod.h
+--- ../ggzd-svn-patched/ggzdmod/mod.h	Tue Feb 26 15:51:45 2008
++++ ./ggzdmod/mod.h	Mon Feb 25 14:24:41 2008
 @@ -36,6 +36,12 @@
  /* FIXME: hard-coding this is a sure way to get bugs! */
  #define GGZDMOD_NUM_EVENTS (GGZDMOD_EVENT_ERROR_INTERNAL + 1)
@@ -1047,9 +1029,9 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/
 +void _ggzdmod_handle_state_changed(GGZdMod *ggzdmod, GGZdModState state);
  
  #endif /* GGZDMOD_MOD_H */
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/protocol.h ./ggzdmod/protocol.h
---- ../ggzd-svn/ggzdmod/protocol.h	Thu Feb 21 12:20:05 2008
-+++ ./ggzdmod/protocol.h	Thu Feb 21 15:27:33 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzdmod/protocol.h ./ggzdmod/protocol.h
+--- ../ggzd-svn-patched/ggzdmod/protocol.h	Tue Feb 26 15:51:45 2008
++++ ./ggzdmod/protocol.h	Mon Feb 25 14:24:41 2008
 @@ -76,6 +76,17 @@
  	 * - an integer with the seat number of the affected seat
  	 */
@@ -1107,9 +1089,9 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod/
  } ControlToTable;
  
  #endif /* GGZDMOD_SERVER_PROTOCOL_H */
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod++/ggzgameserver.cpp ./ggzdmod++/ggzgameserver.cpp
---- ../ggzd-svn/ggzdmod++/ggzgameserver.cpp	Thu Feb 21 12:19:59 2008
-+++ ./ggzdmod++/ggzgameserver.cpp	Thu Feb 21 15:27:33 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzdmod++/ggzgameserver.cpp ./ggzdmod++/ggzgameserver.cpp
+--- ../ggzd-svn-patched/ggzdmod++/ggzgameserver.cpp	Tue Feb 26 15:51:46 2008
++++ ./ggzdmod++/ggzgameserver.cpp	Tue Feb 26 15:22:19 2008
 @@ -59,6 +59,10 @@
  				GGZdModEvent event, const void *data);
  			static void handle_spectator_seat(GGZdMod* ggzdmod,
@@ -1155,7 +1137,7 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod+
  	if((int)GGZGameServer::waiting != (int)GGZDMOD_STATE_WAITING) error = true;
  	if((int)GGZGameServer::playing != (int)GGZDMOD_STATE_PLAYING) error = true;
  	if((int)GGZGameServer::done != (int)GGZDMOD_STATE_DONE) error = true;
-@@ -378,3 +395,18 @@
+@@ -378,3 +395,16 @@
  	m_parent->spectatorEvent(spectator);
  }
  
@@ -1168,15 +1150,13 @@ diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod+
 +
 +void GGZGameServerPrivate::handle_state_changed(GGZdMod *ggzdmod, GGZdModEvent, const void *data)
 +{
-+	char st = *(char *)data;
-+	_ggzdmod_set_state(m_parent->m_private->m_ggzdmod, (GGZdModState)st);
 +	std::cout << "GGZGameServer: state changed to: ";
 +	std::cout << (int)m_parent->state() << std::endl;
 +	m_parent->stateEvent();
 +}
-diff --exclude-from=/home/phantom/work/ggz/diff-exclude -ru ../ggzd-svn/ggzdmod++/ggzgameserver.h ./ggzdmod++/ggzgameserver.h
---- ../ggzd-svn/ggzdmod++/ggzgameserver.h	Thu Feb 21 12:19:59 2008
-+++ ./ggzdmod++/ggzgameserver.h	Thu Feb 21 15:29:34 2008
+diff -ru --exclude-from=/home/phantom/work/ggz/diff-exclude ../ggzd-svn-patched/ggzdmod++/ggzgameserver.h ./ggzdmod++/ggzgameserver.h
+--- ../ggzd-svn-patched/ggzdmod++/ggzgameserver.h	Tue Feb 26 15:51:46 2008
++++ ./ggzdmod++/ggzgameserver.h	Tue Feb 26 15:21:35 2008
 @@ -65,6 +65,16 @@
  		SeatType type;
  };
