@@ -23,6 +23,7 @@ Port:
 
 Room:
 - room name or number as per ggzcore numbering (name is better)
+- FIXME: room numbers shouldn't really be used anymore
 
 Table:
 - table id in the specific room
@@ -34,4 +35,15 @@ ggz://you@live.ggzgamingzone.org/#Chess/0 (participate in Chess game)
 Of course, table ids can be very short-living, except for keepalive games.
 Room names should be valid for quite a while, while room numbers are less
 stable due to possible server reconfigurations.
+
+Addressing scheme of players (experimental)
+----------------------------
+
+Format:
+ggz:user@host
+
+This scheme is needed to initiate the contact to users from non-GGZ
+systems, e.g. through WS APIs or from IM systems.
+It's not used anywhere yet but reserving this addressing scheme
+sounds like a good idea nonetheless.
 
