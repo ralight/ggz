@@ -65,6 +65,7 @@ libexpat1-dev
 libgnomeui-dev
 libgnutls-dev
 libgtk2.0-dev
+libicu-dev
 libperl-dev
 libreadline5-dev
 librsvg2-dev
