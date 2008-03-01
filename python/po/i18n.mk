@@ -9,6 +9,7 @@ builddir = $(top_builddir)/$(subdir)
 POFILES = $(srcdir)/*.po
 MOFILES = $(builddir)/*.mo
 STAMP = $(builddir)/translation.stamp
+SHELL = /bin/bash
 
 all-local: $(STAMP)
 
