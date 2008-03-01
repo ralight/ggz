@@ -2,8 +2,10 @@
 
 #include <kggzcore/room.h>
 
-TestKGGZCore::TestKGGZCore()
+TestKGGZCore::TestKGGZCore(QString url)
 {
+	qDebug("GGZ: connect to %s", qPrintable(url));
+
 	m_core = new KGGZCore::CoreClient(this);
 
 	connect(m_core,
@@ -16,7 +18,7 @@ TestKGGZCore::TestKGGZCore()
 		SIGNAL(signalEvent(KGGZCore::CoreClient::EventMessage)),
 		SLOT(slotEvent(KGGZCore::CoreClient::EventMessage)));
 
-	m_core->setUrl("ggz://guest9999@localhost:5688");
+	m_core->setUrl(url);
 	m_core->initiateLogin();
 }
 

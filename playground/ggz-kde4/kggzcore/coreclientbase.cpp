@@ -147,6 +147,13 @@ void CoreClientBase::callback_server(unsigned int id, const void *event_data) co
 		errorcode = ((const GGZErrorEventData*)event_data)->status;
 	}
 
+	if(id == GGZ_MOTD_LOADED)
+	{
+		GGZMotdEventData *motddata = (GGZMotdEventData*)event_data;
+		qDebug("MOTD web url: %s", motddata->url);
+		qDebug("MOTD web text:\n%s", motddata->motd);
+	}
+
 	handle_server_pre(id);
 
 	emit signalBaseServer(id, errorcode);

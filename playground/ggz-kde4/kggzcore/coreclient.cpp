@@ -126,6 +126,16 @@ Room *CoreClient::room()
 	return m_room;
 }
 
+QString CoreClient::textmotd()
+{
+	return m_motd;
+}
+
+QString CoreClient::webmotd()
+{
+	return m_webmotd;
+}
+
 void CoreClient::slotBaseError()
 {
 	qDebug("base error!");

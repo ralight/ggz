@@ -97,6 +97,9 @@ class CoreClient : public QObject
 		QStringList roomnames();
 		Room *room();
 
+		QString textmotd();
+		QString webmotd();
+
 	private slots:
 		void slotBaseError();
 		void slotBaseServer(int id, int code);
@@ -109,6 +112,7 @@ class CoreClient : public QObject
 		CoreClientBase *m_base;
 		QStringList m_roomnames;
 		Room *m_room;
+		QString m_motd, m_webmotd;
 };
 
 }

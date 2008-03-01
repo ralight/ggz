@@ -9,7 +9,7 @@ class TestKGGZCore : public QObject
 {
 	Q_OBJECT
 	public:
-		TestKGGZCore();
+		TestKGGZCore(QString url);
 
 	private slots:
 		void slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
