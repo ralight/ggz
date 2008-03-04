@@ -1,6 +1,7 @@
 #include "testkggzcore.h"
 
 #include <kggzcore/room.h>
+#include <kggzcore/misc.h>
 
 TestKGGZCore::TestKGGZCore(QString url)
 {
@@ -24,13 +25,32 @@ TestKGGZCore::TestKGGZCore(QString url)
 
 void TestKGGZCore::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZCore::Error::ErrorCode error)
 {
+	KGGZCore::Room *room;
+
+	Q_UNUSED(error);
+
 	qDebug("slotFeedback!");
 
-	if((message == KGGZCore::CoreClient::roomenter) && (error == KGGZCore::Error::no_status))
+	switch(message)
 	{
-		qDebug("We're in the room! Let's get some statistics");
-		KGGZCore::Room *room = m_core->room();
-		qDebug("Room name: %s", qPrintable(room->name()));
+		case KGGZCore::CoreClient::connection:
+			break;
+		case KGGZCore::CoreClient::negotiation:
+			break;
+		case KGGZCore::CoreClient::login:
+			break;
+		case KGGZCore::CoreClient::roomenter:
+			//if(error == KGGZCore::Error::no_status)
+			qDebug("We're in the room! Let's get some statistics");
+			room = m_core->room();
+			qDebug("Room name: %s", qPrintable(room->name()));
+			break;
+		case KGGZCore::CoreClient::chat:
+			break;
+		case KGGZCore::CoreClient::channel:
+			break;
+		case KGGZCore::CoreClient::logout:
+			break;
 	}
 }
 
@@ -38,10 +58,18 @@ void TestKGGZCore::slotAnswer(KGGZCore::CoreClient::AnswerMessage message)
 {
 	qDebug("slotAnswer!");
 
-	if(message == KGGZCore::CoreClient::roomlist)
+	switch(message)
 	{
-		qDebug("room 0 is %s", qPrintable(m_core->roomnames().at(0)));
-		m_core->initiateRoomChange(m_core->roomnames().at(0));
+		case KGGZCore::CoreClient::roomlist:
+			qDebug("room 0 is %s", qPrintable(m_core->roomnames().at(0)));
+			m_core->initiateRoomChange(m_core->roomnames().at(0));
+			break;
+		case KGGZCore::CoreClient::typelist:
+			break;
+		case KGGZCore::CoreClient::motd:
+			qDebug("MOTD web url: %s", qPrintable(m_core->textmotd()));
+			qDebug("MOTD web text:\n%s", qPrintable(m_core->webmotd()));
+			break;
 	}
 }
 
@@ -49,6 +77,21 @@ void TestKGGZCore::slotEvent(KGGZCore::CoreClient::EventMessage message)
 {
 	qDebug("slotEvent!");
 
-	Q_UNUSED(message);
+	switch(message)
+	{
+		case KGGZCore::CoreClient::state_changed:
+			qDebug("* state: %s", qPrintable(KGGZCore::Misc::statename(m_core->state())));
+			break;
+		case KGGZCore::CoreClient::players_changed:
+			break;
+		case KGGZCore::CoreClient::rooms_changed:
+			break;
+		case KGGZCore::CoreClient::neterror:
+			break;
+		case KGGZCore::CoreClient::protoerror:
+			break;
+		case KGGZCore::CoreClient::libraryerror:
+			break;
+	}
 }
 

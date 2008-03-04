@@ -44,8 +44,12 @@ class CoreClientBase : public QObject
 		void switchRoom(const char *name);
 
 		QStringList roomnames();
+		int state();
 
 		RoomBase *roombase();
+
+		QString textmotd();
+		QString webmotd();
 
 	signals:
 		void signalBaseError();
@@ -66,6 +70,7 @@ class CoreClientBase : public QObject
 		GGZServer *m_server;
 		QSocketNotifier *m_sn;
 		RoomBase *m_roombase;
+		QString m_motd, m_webmotd;
 };
 
 }

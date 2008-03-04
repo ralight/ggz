@@ -128,12 +128,17 @@ Room *CoreClient::room()
 
 QString CoreClient::textmotd()
 {
-	return m_motd;
+	return m_base->textmotd();
 }
 
 QString CoreClient::webmotd()
 {
-	return m_webmotd;
+	return m_base->webmotd();
+}
+
+int CoreClient::state()
+{
+	return m_base->state();
 }
 
 void CoreClient::slotBaseError()

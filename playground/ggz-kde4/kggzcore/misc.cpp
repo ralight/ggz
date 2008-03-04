@@ -24,6 +24,8 @@
 
 using namespace KGGZCore;
 
+// FIXME: replace all switches with hash lookups
+
 static QString Misc::messagename(int id)
 {
 	QString s;
@@ -154,6 +156,59 @@ static QString Misc::roommessagename(int id)
 			break;
 		case GGZ_PLAYER_PERMS:
 			s = "player permissions";
+			break;
+	}
+
+	return s;
+}
+
+static QString Misc::statename(int id)
+{
+	QString s;
+
+	switch(id)
+	{
+		case GGZ_STATE_OFFLINE:
+			s = "offline";
+			break;
+		case GGZ_STATE_CONNECTING:
+			s = "connecting";
+			break;
+		case GGZ_STATE_RECONNECTING:
+			s = "reconnecting";
+			break;
+		case GGZ_STATE_ONLINE:
+			s = "online";
+			break;
+		case GGZ_STATE_LOGGING_IN:
+			s = "logging in";
+			break;
+		case GGZ_STATE_LOGGED_IN:
+			s = "logged in";
+			break;
+		case GGZ_STATE_ENTERING_ROOM:
+			s = "entering room";
+			break;
+		case GGZ_STATE_IN_ROOM:
+			s = "in room";
+			break;
+		case GGZ_STATE_BETWEEN_ROOMS:
+			s = "between rows";
+			break;
+		case GGZ_STATE_LAUNCHING_TABLE:
+			s = "launching table";
+			break;
+		case GGZ_STATE_JOINING_TABLE:
+			s = "joining table";
+			break;
+		case GGZ_STATE_AT_TABLE:
+			s = "at table";
+			break;
+		case GGZ_STATE_LEAVING_TABLE:
+			s = "leaving table";
+			break;
+		case GGZ_STATE_LOGGING_OUT:
+			s = "logging out";
 			break;
 	}
 

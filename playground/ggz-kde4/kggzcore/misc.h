@@ -31,6 +31,7 @@ class Misc
 	public:
 		static QString messagename(int id);
 		static QString roommessagename(int id);
+		static QString statename(int id);
 };
 
 }

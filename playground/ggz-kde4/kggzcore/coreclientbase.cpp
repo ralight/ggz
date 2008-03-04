@@ -128,6 +128,21 @@ QStringList CoreClientBase::roomnames()
 	return names;
 }
 
+int CoreClientBase::state()
+{
+	return (int)(ggzcore_server_get_state(m_server));
+}
+
+QString CoreClientBase::textmotd()
+{
+	return m_motd;
+}
+
+QString CoreClientBase::webmotd()
+{
+	return m_webmotd;
+}
+
 RoomBase *CoreClientBase::roombase()
 {
 	return m_roombase;
@@ -150,8 +165,8 @@ void CoreClientBase::callback_server(unsigned int id, const void *event_data) co
 	if(id == GGZ_MOTD_LOADED)
 	{
 		GGZMotdEventData *motddata = (GGZMotdEventData*)event_data;
-		qDebug("MOTD web url: %s", motddata->url);
-		qDebug("MOTD web text:\n%s", motddata->motd);
+		m_motd = motddata->motd;
+		m_webmotd = motddata->url;
 	}
 
 	handle_server_pre(id);

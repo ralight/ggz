@@ -100,6 +100,9 @@ class CoreClient : public QObject
 		QString textmotd();
 		QString webmotd();
 
+		// FIXME: we don't have an enum yet
+		int state();
+
 	private slots:
 		void slotBaseError();
 		void slotBaseServer(int id, int code);
@@ -112,7 +115,6 @@ class CoreClient : public QObject
 		CoreClientBase *m_base;
 		QStringList m_roomnames;
 		Room *m_room;
-		QString m_motd, m_webmotd;
 };
 
 }
