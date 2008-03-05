@@ -176,8 +176,9 @@ def initclient(clientsock, serversock, parentsock, childsock, clientexecutable):
 		parentsock.close()
 		os.environ["GGZMODE"] = "true"
 		os.environ["GGZSOCKET"] = str(childsock.fileno())
+		exename = os.path.basename(clientexecutable)
 		try:
-			os.execl(clientexecutable)
+			os.execl(clientexecutable, exename + " [ggzclient]")
 		except:
 			err("Game client error: executable not found")
 		os._exit(1)
@@ -434,8 +435,9 @@ def main():
 		#	childsock.close()
 		os.environ["GGZMODE"] = "1"
 		os.environ["GGZSOCKET"] = str(childsock.fileno())
+		exename = os.path.basename(gameserver)
 		try:
-			os.execl(gameserver)
+			os.execl(gameserver, exename + " [ggzserver]")
 		except:
 			err("Game server error: executable not found")
 		os._exit(1)
