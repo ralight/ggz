@@ -380,7 +380,7 @@ AC_DEFUN([AC_GGZ_GCRYPT],
 [
 AC_ARG_WITH([gcrypt],
   AS_HELP_STRING([--with-gcrypt], [Add encryption support]),
-  [enable_gcrypt=$enableval],
+  [enable_gcrypt=$withval],
   [enable_gcrypt=auto])
 
 if test "$enable_gcrypt" != "no"; then
