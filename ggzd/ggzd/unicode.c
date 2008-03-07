@@ -25,6 +25,10 @@ struct blockassignment_t
 };
 typedef struct blockassignment_t blockassignment;
 
+static bool exclude_forbidden_chars = 1;
+
+static UChar forbiddenlist[] = {0x20, 0x25, 0x26, 0x5c, 0};
+
 static bool policy_initialized = false;
 static blockassignment unicode_blocks[99] =
 {
@@ -143,6 +147,17 @@ static bool block_enabled(UBlockCode code)
 }
 #endif
 
+#ifdef WITH_ICU
+bool contains(UChar c, UChar* list)
+{
+	int i;
+	for(i = 0; list[i]; i++)
+		if(list[i] == c)
+			return true;
+	return false;
+}
+#endif
+
 bool username_allowed(const char *str)
 {
 #ifdef WITH_ICU
@@ -185,6 +200,13 @@ bool username_allowed(const char *str)
 			/* prohibited, return after free() */
 			/* no policy in use allows all blocks */
 			allowed = false;
+		}
+
+		if(exclude_forbidden_chars)
+		{
+			/* FIXME: use unicode classes for more general checks */
+			if(contains(uc, forbiddenlist))
+				allowed = false;
 		}
 
 		if(u_isISOControl(uc))
@@ -243,6 +265,9 @@ bool init_unicode(const char *policyfile)
 			unicode_blocks[i].name, 0);
 		unicode_blocks[i].enabled = enabled;
 	}
+
+	exclude_forbidden_chars = ggz_conf_read_int(rc, "UsernameExclusions",
+			"forbidden_chars", 1);
 
 	ggz_conf_close(rc);
 	policy_initialized = true;

@@ -10,6 +10,12 @@
 # For cultural and technical considerations, please read the corresponding
 # sections in the GGZ Server Hosting Guide.
 
+[UsernameExclusions]
+
+# control_chars (basic_latin): ASCII 0-31, 127 - always forbidden
+# forbidden_chars (basic_latin): ASCII ' ', %, &, \
+forbidden_chars = 1
+
 [UsernameCharacterSets]
 
 # European alphabets ##########################################
