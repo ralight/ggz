@@ -4,13 +4,28 @@
 <tr>
 <td>
 
-<b>Google Summer of Code 2007</b><br/>
-GGZ will offer mentoring several tasks during the
-<a href="http://code.google.com/soc/">Google Summer of Code 2007</a> program.
+<b>GGZ @ Google Summer of Code 2008</b><br/>
+GGZ will offer mentoring for several tasks during the
+<a href="http://code.google.com/soc/2008/">Google Summer of Code 2008</a>
+program.
 Several ideas have been discussed and proposed for inclusion into
-the program by GGZ developers.
+the program by GGZ developers. Other ideas can be proposed, there are
+several mentors mentors available from GGZ and related projects.
 <br/><br/>
 
+<b>About GGZ</b><br/>
+First and foremost, a few words for those who don't know GGZ yet but are
+desperate to achieve progress in the world of internet games:
+GGZ aims to unify technical work needed to get decent and diverse online
+gaming features into today's games. GGZ powers your favourite desktop games
+on GNOME and KDE, and is also used by several other game projects.
+In addition to game-related work on protocols, networking libraries and such,
+the desktop and web integration aspects such as OpenID, web services and
+instant messaging clients are very important to the project's future.
+These goals are reflected in the tasks which you can find below.
+<br/><br/>
+
+<!--
 <i>Improving the GGZ-Java package</i>
 <br/>
 Core task: GGZ-Java is the primary GGZ package used as an applet by players 
@@ -33,44 +48,49 @@ Optional subtasks (just notes):
 </ul>
 Mentor: Helg Bredow, Roger Light<br/>
 <br/><br/>
+-->
 
-<i>Community portal extensions</i>
+<i>GGZ web service interfaces</i>
 <br/>
-Core task: GGZ-Community is the website which allows players to log into a 
-customised gaming portal, which contains access to the GGZ database, in 
-particular to the list of players, games and statistics. Furthermore, it can 
-be used to schedule tournaments, assign player karma and manage teams. 
-Especially the latter tasks are currently working insufficiently, and would 
-show a high potential of attracting new players on the internet when 
-implemented and integrated properly. New modules such as player and server 
-administration are needed as well, which are currently partly available as 
-external source code.
+<a href="http://www.ggzcommunity.org">GGZ-Community</a> is the
+website which allows players to log into a  customised gaming portal, which
+contains access to the GGZ database, in  particular to the list of players,
+games and statistics. Furthermore, it can be used to schedule tournaments,
+assign player karma and manage teams. 
+An experimental <a href="http://api.ggzcommunity.org/">web service API</a>
+exists which allows the development of special-purpose clients for player
+management, statistics building and integration with dedicated communities.
+The API is implemented as a REST interface in PHP but is far from being
+complete, to improve this is the first task. The second task is to finish
+(or redesign) the integrated OpenID provider and consumer for seamless
+authentication transitions between GGZ Community and GGZ desktop clients.
 <br/>
-Optional subtasks (just notes):
-<ul>
-<li>a good default theme (if artistic skills present)</li>
-<li>better integration with blogs, forums, news sites, CMS</li>
-</ul>
-Mentor: Roger Light, Josef Spillner<br/>
+Mentor: Josef Spillner (josef.spillner@googlemail.com)<br/>
 <br/><br/>
 
-<i>Desktop integration</i>
+<i>GGZ on KDE 4.2: Online game selector</i>
 <br/>
-Core task: GGZ is currently being integrated with the major free Linux/Unix 
-desktops (KDE and GNOME). A lot of games exist which currently do not have 
-any multiplayer capabilities, even though GGZ provides servers for their 
-kind, or implement protocols which do not talk to each other. In order to 
-allow for a pervasive online gaming environment on any default Linux desktop 
-games installation, the task would be to integrate GGZ into more games and to 
-look at how to make network games easier to use for the average user.
+<a href="http://metacle.ggzgamingzone.org/">Metacle</a> is a Python-based
+meta-meta-server which aggregates real time statistics from currently played
+games of various types. It does so by querying the appropriate meta servers
+and makes the aggregated lists available through a bandwidth-preserving method
+including delta transmission and push-style notifications.
+There needs to be a desktop client for Metacle which uses freedesktop.org's
+XDG standards to query locally installed game clients and offer users to
+launch new games or join running games independent of their type. Of course
+a majority of those will be GGZ-enabled, but some will not. An experimental
+client in was written in PyKDE to get started, but the task would be to write
+a client from scratch which can be shipped with KDE 4.2 if it turns out to
+be a great tool.
 <br/>
-Optional subtasks (just notes):
-<ul>
-<li>better server connection dialogs</li>
-<li>a control panel for those who want to safely run ggzd without knowing what a 
-server is (as is known from Apache)</li>
-</ul>
-Mentor: Josef Spillner<br/>
+Mentor: Josef Spillner (josef.spillner@googlemail.com)<br/>
+<br/><br/>
+
+<i>GGZ on GNOME 2.24:</i>
+<br/>
+What needs to be done?
+<br/>
+Mentor: TBD<br/>
 <br/><br/>
 
 </td>
