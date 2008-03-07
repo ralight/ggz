@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9703 2008-02-11 19:22:45Z josef $
+ * $Id: parse_opt.c 9781 2008-03-07 19:30:34Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -401,6 +401,7 @@ static void get_config_options(int ch)
 	/* [Database] */
 	opt.dbtype = ggz_conf_read_string(ch, "General", "DatabaseType", NULL);
 	opt.dbhost = ggz_conf_read_string(ch, "General", "DatabaseHost", NULL);
+	opt.dbport = ggz_conf_read_int(ch, "General", "DatabasePort", 0);
 	opt.dbname = ggz_conf_read_string(ch, "General", "DatabaseName", NULL);
 	opt.dbusername = ggz_conf_read_string(ch, "General", "DatabaseUsername", NULL);
 	opt.dbpassword = ggz_conf_read_string(ch, "General", "DatabasePassword", NULL);

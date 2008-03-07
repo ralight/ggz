@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 9558 2008-01-19 08:46:32Z josef $
+ * $Id: ggzduedit.c 9781 2008-03-07 19:30:34Z josef $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -481,6 +481,7 @@ int main(int argc, char **argv)
 	conn.datadir = NULL;
 	conn.database = NULL;
 	conn.host = NULL;
+	conn.port = 0;
 	conn.username = NULL;
 	conn.password = NULL;
 	conn.hashing = ggz_strdup("plain");
@@ -561,6 +562,8 @@ int main(int argc, char **argv)
 				conn.database = ggz_conf_read_string(rc, "General", "DatabaseName", NULL);
 			if(!conn.host)
 				conn.host = ggz_conf_read_string(rc, "General", "DatabaseHost", NULL);
+			if(!conn.port)
+				conn.port = ggz_conf_read_int(rc, "General", "DatabasePort", 0);
 			if(!conn.username)
 				conn.username = ggz_conf_read_string(rc, "General", "DatabaseUsername", NULL);
 			if(!conn.password)

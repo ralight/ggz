@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 9554 2008-01-19 08:02:54Z josef $
+ * $Id: ggzdb_pgsql.c 9781 2008-03-07 19:30:34Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -64,6 +64,7 @@ static const char *dbhost;
 static const char *dbname;
 static const char *dbusername;
 static const char *dbpassword;
+static int dbport;
 
 /* Entry type for the connection pool */
 typedef struct connection_t
@@ -118,8 +119,8 @@ static PGconn *claimconnection()
 		{
 			conn = ggz_malloc(sizeof(*conn));
 			snprintf(conninfo, sizeof(conninfo),
-				 "host=%s dbname=%s user=%s password=%s",
-				 dbhost, dbname, dbusername, dbpassword);
+				 "host=%s port=%i dbname=%s user=%s password=%s",
+				 dbhost, dbport, dbname, dbusername, dbpassword);
 			conn->conn = PQconnectdb(conninfo);
 			if((!conn->conn) || (PQstatus(conn->conn) == CONNECTION_BAD))
 			{
@@ -269,9 +270,13 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	char schemafile[1024];
 
 	dbhost = connection.host;
+	dbport = connection.port;
 	dbname = connection.database;
 	dbusername = connection.username;
 	dbpassword = connection.password;
+
+	if(dbport <= 0)
+		dbport = 5432;
 
 	list = ggz_list_create(NULL, NULL, NULL, GGZ_LIST_ALLOW_DUPS);
 

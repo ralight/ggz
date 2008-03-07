@@ -43,8 +43,10 @@
 # SQL database connection options
 #   If a SQL database is used as opposed to a flat embedded
 #   database, this block must be configured. DatabaseType
-#   is only relevant for the DBI backend.
+#   is only relevant for the DBI backend. DatabasePort is only
+#   needed for non-standard ports.
 #DatabaseHost = localhost
+#DatabasePort = 0
 #DatabaseName = ggz
 #DatabaseUsername = ggzd
 #DatabasePassword = ggzd

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 9740 2008-02-16 20:08:35Z oojah $
+ * $Id: ggzdb_mysql.c 9781 2008-03-07 19:30:34Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -72,7 +72,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	 */
 	mysql_options(conn, MYSQL_OPT_RECONNECT, &reconnect);
 	conn = mysql_real_connect(conn, connection.host, connection.username,
-		connection.password, connection.database, 0, NULL, 0);
+		connection.password, connection.database, connection.port, NULL, 0);
 
 	if(!conn)
 	{
