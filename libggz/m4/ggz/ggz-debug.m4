@@ -1,5 +1,5 @@
 # AC_GGZ_DEBUG
-# $Id: ggz-debug.m4 8808 2007-01-04 20:36:55Z jdorje $
+# $Id: ggz-debug.m4 9779 2008-03-07 17:09:08Z josef $
 #
 # Check for debugging choices.  Sets $enable_debug, $enable_debug_gdb,
 # and $enable_debug_mem.
@@ -48,7 +48,7 @@ AC_DEFUN([AC_GGZ_DEBUG],
 # include <dmalloc.h>
 #endif])
     DFLAGS="$DFLAGS DEBUG_MEM"
-    LDADD="$LDADD -ldmalloc"
+    LIBS="$LIBS -ldmalloc"
   fi
 
   # Use -Wall if we have gcc.

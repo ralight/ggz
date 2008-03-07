@@ -10,7 +10,7 @@ dnl ======================================
 dnl
 dnl This file contains operating system specific checks such as for system
 dnl libraries, header file flavours and non-POSIX/Unix handling.
-dnl Macros defined herein are allowed to modify LDADD and LDFLAGS.
+dnl Macros defined herein are allowed to modify LIBS and LDFLAGS.
 dnl Optional (advanced) checks go to system.m4 and should use LIB_* variables.
 dnl
 dnl ======================================
@@ -64,7 +64,7 @@ AC_DEFUN([AC_GGZ_PLATFORM_WIN32],
 
   if test "$MINGW32" = "yes"; then
     LDFLAGS="$LDFLAGS -no-undefined"
-    LDADD="$LDADD -lws2_32"
+    LIBS="$LIBS -lws2_32"
   fi
 
   AC_CHECK_HEADERS([winsock2.h])
@@ -250,8 +250,8 @@ AC_DEFUN([AC_GGZ_PLATFORM_POSIX_LIBC],
 # ===========================
 # On some systems additional libraries may be needed.  Simply include them
 # if they're there.
-AC_CHECK_LIB(socket, socket, [LDADD="$LDADD -lsocket"])
-AC_CHECK_LIB(nsl, gethostbyname, [LDADD="$LDADD -lnsl"])
+AC_CHECK_LIB(socket, socket, [LIBS="$LIBS -lsocket"])
+AC_CHECK_LIB(nsl, gethostbyname, [LIBS="$LIBS -lnsl"])
 ])
 
 dnl ------------------------------------------------------------------------
