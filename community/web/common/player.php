@@ -58,7 +58,7 @@ class Player
 			echo "Photo: none found<br>\n";
 		endif;
 		echo "Real name: $this->realname<br>\n";
-		echo "Email address: <a href='$this->email'>$this->email</a><br>\n";
+		echo "Email address: <a href='mailto:$this->email'>$this->email</a><br>\n";
 		if ($this->gender) :
 			$g = new Gender();
 			$gendername = $g->name($this->gender);
