@@ -16,6 +16,23 @@ include("top.inc");
 		<a name="database"></a>
 	</h1>
 	<div class="text">
+<?php if (Config::getvalue("registration") == "open") : ?>
+	Everybody can register at <?php Config::put("name"); ?>.
+<?php elseif (Config::getvalue("registration") == "closed") : ?>
+	Registration at <?php Config::put("name"); ?> is not possible.
+<?php elseif (Config::getvalue("registration") == "confirm") : ?>
+	Everybody can register at <?php Config::put("name"); ?>.
+	However, the account needs to be confirmed before it can be used.
+<?php elseif (Config::getvalue("registration") == "confirmlater") : ?>
+	Everybody can register at <?php Config::put("name"); ?>.
+	Games can be played immediately after registration.
+	However, the account must be confirmed within hours afterwards,
+	otherwise it will be erased again.
+<?php endif; ?>
+	</div>
+
+<?php if (Config::getvalue("registration") != "closed") : ?>
+	<div class="text">
 	Registration is not necessary, but gives you more power over the
 	site: you'll be able to register tournaments, upload contents,
 	and participate in forum discussion.
@@ -40,6 +57,7 @@ include("top.inc");
 		<input type="submit" size="20" value="Register" class="button">
 	</form>
 	</div>
+<?php endif; ?>
 </div>
 
 <?php include("bottom.inc"); ?>

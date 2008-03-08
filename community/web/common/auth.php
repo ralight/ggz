@@ -57,6 +57,12 @@ class Auth
 
 		$res = $database->exec("SELECT * FROM users WHERE handle = '%^' AND password = '%^'", array($username, $cryptpass));
 		if (($res) && ($database->numrows($res) == 1)) :
+			if (Config::getvalue("registration") == "confirm") :
+				$confirmed = $database->result($res, 0, "confirmed");
+				if ($confirmed == 'f') :
+					return false;
+				endif;
+			endif;
 			$cookiestem = base64_encode(md5($cryptpass));
 			$stamp = time();
 			$cookie = "$cookiestem$stamp";
@@ -95,6 +101,11 @@ class Auth
 		elseif ($_GET['register'] == "done"):
 			echo "<font color='#00ff00'>$notice</font>\n";
 			echo __("You have been registered.");
+			if (Config::getvalue("registration") == "confirm") :
+				echo __("Check your email to activate your account.");
+			elseif (Config::getvalue("registration") == "confirmlater") :
+				echo __("Don't forget to activate your account soon.");
+			endif;
 		elseif ($_GET['activation'] == "failed") :
 			echo "<font color='#ff0000'>$error</font>\n";
 			echo __("Activation failed!");
@@ -158,9 +169,13 @@ class Auth
 		setcookie(Auth::cookiename(), "", 0, "/");
 	}
 
-	function register($username, $password, $email)
+	function register($username, $password, $email, $realname)
 	{
 		global $database;
+
+		if (Config::getvalue("registration") == "closed") :
+			return false;
+		endif;
 
 		$res = $database->exec("SELECT * FROM users WHERE handle = '%^'", array($username));
 		if (($res) && ($database->numrows($res) > 0)) :
@@ -169,8 +184,14 @@ class Auth
 
 		$cryptpass = Auth::hash($password);
 
-		$res = $database->exec("INSERT INTO users (handle, password, permissions, name, email) " .
-			"VALUES ('$username', '$cryptpass', 7, '', '$email')");
+		$confirmed = 't';
+		if (Config::getvalue("registration") != "open") :
+			$confirmed = 'f';
+		endif;
+
+		$res = $database->exec("INSERT INTO users (handle, password, permissions, name, email, confirmed) " .
+			"VALUES ('%^', '%^', %^, '%^', '%^', '%^')",
+			array($username, $cryptpass, 7, $realname, $email, $confirmed));
 		return true;
 	}
 

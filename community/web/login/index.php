@@ -35,7 +35,7 @@ $param = "";
 
 if (($input_user) && ($input_pass)) :
 	if ($input_email) :
-		$ret = Auth::register($input_user, $input_pass, $input_email);
+		$ret = Auth::register($input_user, $input_pass, $input_email, $input_realname);
 		if ($ret) $param = "?register=done";
 		else $param = "?register=failed";
 	else :

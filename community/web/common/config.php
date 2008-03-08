@@ -17,6 +17,7 @@ class Config
 		global $communitytls;
 		global $communityurl;
 		global $communitymail;
+		global $communityregistration;
 
 		global $dbhost;
 		global $dbname;
@@ -52,6 +53,7 @@ class Config
 				$dbpass = $ini["General"]["DatabasePassword"];
 				$dbtype = $ini["General"]["DatabaseType"];
 				$ggzname = $ini["General"]["ServerName"];
+				$communityregistration = $ini["General"]["RegistrationPolicy"];
 			endif;
 		endif;
 
@@ -64,6 +66,7 @@ class Config
 		$this->config['tls'] = $communitytls;
 		$this->config['url'] = $communityurl;
 		$this->config['mail'] = $communitymail;
+		$this->config['registration'] = $communityregistration;
 
 		$this->config['dbhost'] = $dbhost;
 		$this->config['dbport'] = $dbport;
