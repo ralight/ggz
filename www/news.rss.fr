@@ -10,6 +10,17 @@
 <language>fr-fr</language>
 
 <item>
+<title><i>09.03.2008: Developer snapshot 0.99.2</i> (by josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+The second <a href="/releases/snapshot/">snapshot release</a> has been rushed
+to the FTP server today. It adds ggz-grubby, ggz-java and ggz-python to the
+previous set of four core GGZ packages. Many cool new features are available,
+check the NEWS file.
+</full>
+</item>
+
+<item>
 <title><i>17.02.2008: Stable release 0.0.14.1</i> (by josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>
