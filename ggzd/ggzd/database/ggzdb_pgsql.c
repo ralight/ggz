@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 9789 2008-03-08 08:50:11Z josef $
+ * $Id: ggzdb_pgsql.c 9794 2008-03-08 09:47:05Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -412,7 +412,7 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 
 	snprintf(query, sizeof(query), "INSERT INTO users "
 		 "(handle, password, name, email, lastlogin, permissions, firstlogin, confirmed) "
-		 "VALUES ('%s', '%s', '%s', '%s', %li, %u, %li, %u)",
+		 "VALUES ('%s', '%s', '%s', '%s', %li, %u, %li, '%u')",
 		 handle_quoted, password_quoted, name_quoted, email_quoted,
 		 pe->last_login, pe->perms, time(NULL), pe->confirmed);
 
@@ -531,7 +531,7 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	snprintf(query, sizeof(query),
 		 "UPDATE users SET "
 		 "password = '%s', name = '%s', email = '%s', "
-		 "lastlogin = %li, permissions = %u, confirmed = %u WHERE "
+		 "lastlogin = %li, permissions = %u, confirmed = '%u' WHERE "
 		 "%s(handle) = %s('%s')",
 		 password_quoted, name_quoted, email_quoted,
 		 pe->last_login, pe->perms, pe->confirmed,
