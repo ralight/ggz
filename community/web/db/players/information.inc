@@ -73,7 +73,11 @@ $ggzuser = $lookup;
 $res = $database->exec("SELECT * FROM users WHERE handle = '%^'", array($ggzuser));
 if ($database->numrows($res) == 1) :
 	$firstlogin = $database->result($res, 0, "firstlogin");
-	$veteran = (int)((time() - $firstlogin) / 86400);
+	if ($firstlogin > 0) :
+		$veteran = (int)((time() - $firstlogin) / 86400);
+	else :
+		$veteran = 0;
+	endif;
 
 	if ($veteran > 730):
 		$veteranpic = "veteran-level5";
