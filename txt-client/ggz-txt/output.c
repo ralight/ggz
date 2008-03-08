@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 9600 2008-01-25 17:35:45Z josef $
+ * $Id: output.c 9786 2008-03-08 08:06:23Z josef $
  *
  * Functions for display text/messages
  *
@@ -109,8 +109,8 @@ void output_display_help(void)
 	output_text(_("--- GGZ Gaming Zone -- Help"));
 	output_text(_("--- -----------------------"));
 	output_text(_("---"));
-	output_text(_("--- /connect [<server>[:<port>][:tls]] [<nick>] [<password>]"));
-	output_text(_("---    Connect to a GGZ server and log in"));
+	output_text(_("--- /connect [<server>[:<port>][:tls]] [<nick>] [<password>] [<email>]"));
+	output_text(_("---    Connect to a GGZ server and log in, or register with email address"));
 	output_text(_("--- /disconnect                                  Disconnect from server"));
 	output_text(_("--- /exit                                        Quit GGZ Gaming Zone"));
 	output_text(_("--- /desc <room>                                 Get description of room <room>"));
@@ -283,6 +283,7 @@ void output_rooms(int allrooms)
 	int i, num, players;
 	GGZRoom *room;
 	GGZGameType *type;
+	int occupied = 0;
 
 	if(!output_enabled) return;
 
@@ -292,6 +293,7 @@ void output_rooms(int allrooms)
 		room = ggzcore_server_get_nth_room(server, i);
 		type = ggzcore_room_get_gametype(room);
 		players = ggzcore_room_get_num_players(room);
+		if(players) occupied++;
 		if(players || allrooms){
 			if (type)
 				output_text(_("-- Room %d : %s (%s) (Players: %d)"), i,
@@ -304,6 +306,7 @@ void output_rooms(int allrooms)
 						players);
 		}
 	}
+	output_text(_("%i rooms on server, %i having players inside."), num, occupied);
 }
 
 

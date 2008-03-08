@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 9785 2008-03-08 07:41:11Z josef $
+ * $Id: main.c 9786 2008-03-08 08:06:23Z josef $
  *
  * Main loop
  *
@@ -208,7 +208,7 @@ int main(int argc, char *argv[])
 			(uri.port ? uri.port : 5688),
 			(uri.password ? GGZ_LOGIN : GGZ_LOGIN_GUEST),
 			(uri.user ? uri.user : getenv("LOGNAME")),
-			uri.password, 0);
+			uri.password, 0, NULL);
 	}
 
 	/* Startup script? */

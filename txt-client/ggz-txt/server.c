@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 9783 2008-03-08 07:14:21Z josef $
+ * $Id: server.c 9786 2008-03-08 08:06:23Z josef $
  *
  * Functions for handling server events
  *
@@ -89,14 +89,14 @@ void server_progresswait(void)
 }
 
 void server_init(char *host, int port, GGZLoginType type, char *login,
-		 char *password, int usetls)
+		 char *password, int usetls, char *email)
 {
 	char *sessiondump;
 
 	output_debug("connection info: host=%s port=%i tls=%i", host, port, usetls);
 	server = ggzcore_server_new();
 	ggzcore_server_set_hostinfo(server, host, port, usetls);
-	ggzcore_server_set_logininfo(server, type, login, password, NULL);
+	ggzcore_server_set_logininfo(server, type, login, password, email);
 	server_register(server);
 	sessiondump =
 	    ggzcore_conf_read_string("Debug", "SessionLog", NULL);
