@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 9574 2008-01-20 10:58:24Z josef $
+ * $Id: server.c 9783 2008-03-08 07:14:21Z josef $
  *
  * Functions for handling server events
  *
@@ -207,11 +207,11 @@ static GGZHookReturn server_login_fail(GGZServerEvent id,
 				       const void *event_data,
 				       const void *user_data)
 {
-	const char *msg = event_data;
+	const GGZErrorEventData *event = event_data;
 
 	server_workinprogress(COMMAND_CONNECT, 0);
 
-	output_text(_("--- Login failed: %s"), msg);
+	output_text(_("--- Login failed: %s"), event->message);
 
 	/* For the time being disconnect at not to confuse us */
 	ggzcore_server_logout(server);

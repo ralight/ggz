@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 9648 2008-02-06 20:02:38Z josef $
+ * $Id: main.c 9783 2008-03-08 07:14:21Z josef $
  *
  * Main loop
  *
@@ -73,17 +73,6 @@ static RETSIGTYPE term_handle(int signum)
 	exit(1);
 }
 
-static char* string_cat(char *s1, char *s2)
-{
-	char *new;
-
-	new = ggz_malloc(strlen(s1) + strlen(s2) + 1); /* Leave space for NULL */
-	strcpy(new, s1);
-	strcat(new, s2);
-	
-	return new;
-}
-
 #ifdef DEBUG
 static void init_debug(void)
 {
@@ -92,7 +81,7 @@ static void init_debug(void)
 	int num_types, i;
 
 	/* Inititialze debugging */
-	default_file = string_cat(getenv("HOME"), "/.ggz/ggz-text.debug");
+	default_file = ggz_strbuild("%s/.ggz/ggz-text.debug", getenv("HOME"));
 	debug_file = ggzcore_conf_read_string("Debug", "File", default_file);
 	ggzcore_conf_read_list("Debug", "Types", &num_types, (char***)&debug_types);
 	ggz_debug_init(debug_types, debug_file);
@@ -160,8 +149,8 @@ int main(int argc, char *argv[])
 	}
 
 	/* Use local config file */
-	/*g_path = string_cat(GGZCONFDIR, "/ggz-text.rc");*/
-	u_path = string_cat(getenv("HOME"), "/.ggz/ggz-text.rc");
+	/*g_path = ggz_strbuild("%s/ggz-text.rc", GGZCONFDIR);*/
+	u_path = ggz_strbuild("%s/.ggz/ggz-text.rc", getenv("HOME"));
 	ggzcore_conf_initialize(NULL, u_path);
 	ggz_free(u_path);
 
@@ -218,7 +207,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* Startup script? */
-	startup_path = string_cat(getenv("HOME"), "/.ggz/ggz-txt.startup");
+	startup_path = ggz_strbuild("%s/.ggz/ggz-txt.startup", getenv("HOME"));
 	startup = fopen(startup_path, "r");
 	ggz_free(startup_path);
 	if(startup) {
