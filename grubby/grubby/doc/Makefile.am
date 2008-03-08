@@ -1,1 +1,1 @@
-doc_DATA = INTERFACE Migration players SCORING_SYSTEM Setup Tutorial
+dist_doc_DATA = INTERFACE Migration players SCORING_SYSTEM Setup Tutorial
