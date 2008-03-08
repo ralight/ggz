@@ -14,10 +14,10 @@ class Database
 		$this->type = $type;
 	}
 
-	function connect($host, $name, $user, $pass)
+	function connect($host, $name, $user, $pass, $port)
 	{
 		if ($this->type == "postgresql") :
-			$this->id = @pg_connect("host=$host dbname=$name user=$user password=$pass");
+			$this->id = @pg_connect("host=$host port=$port dbname=$name user=$user password=$pass");
 		elseif ($this->type == "mysql") :
 			$this->id = mysql_connect($host, $user, $pass);
 			mysql_select_db($name, $this->id);
@@ -93,7 +93,7 @@ include_once("config.php");
 
 $database = new Database(Config::getvalue("dbtype"));
 $id = $database->connect(Config::getvalue("dbhost"), Config::getvalue("dbname"),
-	Config::getvalue("dbuser"), Config::getvalue("dbpass"));
+	Config::getvalue("dbuser"), Config::getvalue("dbpass"), Config::getvalue("dbport"));
 if (!$id) :
 	unset($database);
 endif;

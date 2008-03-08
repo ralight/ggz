@@ -23,6 +23,7 @@ class Config
 		global $dbuser;
 		global $dbpass;
 		global $dbtype;
+		global $dbport;
 
 		global $ggzhost;
 		global $ggzurl;
@@ -45,6 +46,7 @@ class Config
 			$ini = $this->parseconfigfile($ggzconfigfile);
 			if ($ini) :
 				$dbhost = $ini["General"]["DatabaseHost"];
+				$dbport = $ini["General"]["DatabasePort"];
 				$dbname = $ini["General"]["DatabaseName"];
 				$dbuser = $ini["General"]["DatabaseUsername"];
 				$dbpass = $ini["General"]["DatabasePassword"];
@@ -64,6 +66,7 @@ class Config
 		$this->config['mail'] = $communitymail;
 
 		$this->config['dbhost'] = $dbhost;
+		$this->config['dbport'] = $dbport;
 		$this->config['dbname'] = $dbname;
 		$this->config['dbuser'] = $dbuser;
 		$this->config['dbpass'] = $dbpass;
