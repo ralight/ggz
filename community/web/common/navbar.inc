@@ -26,8 +26,14 @@
 			</div>
 		</div>
 <?php endif; ?>
+<?php
+	$style = "";
+	if (Auth::username()) :
+		$style = "style='background-color:#006000'";
+	endif;
+?>
 		<div class="menu">
-			<a href="/active/hotstuff/" class="menuitem" title="_(Player contributions)">_(Manage!)</a>
+			<a href="/active/hotstuff/" class="menuitem" <?php echo $style; ?> title="_(Player contributions)">_(Manage!)</a>
 			<div class="menu">
 <?php if (Config::feature("datarepo")) : ?>
 				<a href="/active/hotstuff/" class="menuitem">_(Game contents)</a>
