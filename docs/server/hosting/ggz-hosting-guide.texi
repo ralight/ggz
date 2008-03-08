@@ -1152,9 +1152,16 @@ Starting in GGZ 0.0.15pre, it is possible to control whether users are allowed
 to register at all and which characters the usernames can contain. Note that
 the latter settings also affect guest names!
 
-The RegistrationPolicy configuration option can be set to 0 to prohibit new
+The RegistrationPolicy configuration option can be set to 'closed' to prohibit new
 registrations. Administrators can still add players by running the
-@command{ggzduedit} command.
+@command{ggzduedit} command. The default policy is 'open'.
+The advanced policy 'confirm' allows the registration of accounts, but doesn't
+allow their use until an account is being confirmed. The fourth policy,
+'confirmlater', works like 'open' but requires a timely confirmation to prevent
+the account from being erased.
+How and when confirmation takes place is currently outside of scope for ggzd.
+Instead, the use of GGZ Community is required which sends out email to let
+players confirm their email address.
 
 The UsernamePolicy setting points to a file which contains a detailed
 configuration of what character sets are allowed. If not given, all characters
