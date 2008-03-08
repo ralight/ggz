@@ -1,4 +1,6 @@
-Announcing the release of The GGZ Gaming Zone v0.0.14!
+** Intermediate snapshot release of base GGZ Gaming Zone components
+** Version 0.99.2 - targeted at developers only - API+ABI breakage included
+** Please follow the GGZ 0.0.14 branch to get a complete and stable version
 
 The GGZ Gaming Zone (GGZ) is an open-sourced Internet gaming center.
 Similar to other online gaming sites, players login and sit at tables
@@ -16,21 +18,70 @@ We're very pleased that a number of game projects have already
 chosen GGZ as their internet gaming platform. Let's work hard to
 bring as many multiplayer features into as many games as possible!
 
-Features in this release:
+** The snapshot release only comprises ggz-python, ggz-java and ggz-grubby,
+** in addition to libggz, ggz-server, ggz-client-libs and ggz-txt-client which
+** were already in 0.99.1. The next snapshot will include more components,
+** especially graphical clients and games as well as web-based applications.
+** You can already find them in our SVN.
 
-- Player management, permissions and host players make playing on GGZ more fun
-- Support for GNU Chess and Velena in our Chess and ConnectX servers
-- Windows installer for the Gtk+ client
-- The Metacle, a metaserver aggregator for cross-project game server access
-- More GGZBoard games: Shogi and Sudoku
-- Overhauled APIs for developers, including Pygame integration of game clients
-- Dynamic room reconfiguration in the GGZ server
-- Better KDE support through kggzmod and kggzgames libraries
-- Improved GGZCards experience with player feedback for Gtk+ and Java clients
+New and pending features in this snapshot release (0.99.2):
+
+- [ggz-grubby] support for Python 2.5 and Tcl 8.5 plugins
+- [ggz-grubby] support for SILC 1.1 API for network core plugin
+- [ggz-grubby] unification of several execution and embedded plugins
+- [ggz-grubby] French translation
+- [ggz-python] PyAncillary, wrapper library for libggz's ggz_send_fd function
+- [ggz-python] game server Submarine for KBattleship client
+- [ggz-python] completion of ggz(d)mod wrapper libraries
+- [ggz-python] ggz-faketable, a new developer tool for launching games
+- [ggz-java] handling of player permissions
+- [ggz-java] improved chat widget with emoticons, autocompletion and history
+
+- [libggz] compilation fixes, in particular for non-Linux platforms
+- [libggz] new utility functions such as ggz_strbuild()
+- [ggz-client-libs] bugfixes and extensive protocol documentation
+- [ggz-txt-client] player registration at GGZ server
+- [ggz-txt-client] persistent command line history
+- [ggz-server] game restoration architecture in ggzd, ggzdmod, ggzdmod++
+- [ggz-server] game restoration implemented for Tic-Tac-Toe server
+- [ggz-server] external Lineup4 AI player in ConnectX server
+- [ggz-server] extensive protocol documentation for ggzdmod
+- [ggz-server] confirmation policies for account registration
+
+New and pending features in the previous release (0.99.1):
+
+- [libggz] experimental support for NSS library backend for TLS encryption
+- [libggz] improved support for non-GCC compilation and unusual paths
+- [libggz] URI parser to handle ggz:// URIs
+- [libggz] handling of translated strings for language changes at runtime
+- [ggz-client-libs] improved support for parallel and non-Linux installation
+- [ggz-client-libs] support for GGZ top players rankings per room
+- [ggz-client-libs] several cleanups in the API of ggzcore
+- [ggz-client-libs] import of dozens of translations for ggzcore messages
+                    from gnome-games
+- [ggz-txt-client] ability to connect with TLS encryption
+- [ggz-txt-client] selection of frontend when launching a game
+- [ggz-txt-client] updated translations
+- [ggz-txt-client] more robust handling of batch commands without lockups
+- [ggz-server] password strength checks for new users based on (omni)crack
+- [ggz-server] removal of deprecated libdb 2.x/3.x database backends (use 4.x)
+- [ggz-server] compilation of multiple modular database backends at once
+- [ggz-server] automatic setup of database tables on startup
+- [ggz-server] Unicode string checks for usernames and passwords
+- [ggz-server] stored procedure for Unicode handling in the database
+- [ggz-server] translation of games and rooms information
+- [ggz-server] improved automatically generated network code for Tic-Tac-Toe
+- [ggz-server] various fixes in the GGZCards server, and better randomness
+- [ggz-server] implementation of GGZ top players rankings per room feature
+- [ggz-server] better logging in the server
+- [ggz-server] automatic recalculation of player rankings within the server,
+               taken from the previously external tool in ggz-community
+- [ggz-server] more robust XML handling in the server code
+- [ggz-server] symbolic privilege roles in ggzduedit for easier user creation
 
 See README.GGZ for an overview, or QuickStart.GGZ to get started with one
 of the GGZ core clients to be able to start playing.
 
 Additional information:
-http://www.ggzgamingzone.org/releases/0.0.14/
+http://www.ggzgamingzone.org/releases/snapshot/
 

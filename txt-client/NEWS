@@ -1,5 +1,5 @@
 ** Intermediate snapshot release of base GGZ Gaming Zone components
-** Version 0.99.1 - targeted at developers only - API+ABI breakage included
+** Version 0.99.2 - targeted at developers only - API+ABI breakage included
 ** Please follow the GGZ 0.0.14 branch to get a complete and stable version
 
 The GGZ Gaming Zone (GGZ) is an open-sourced Internet gaming center.
@@ -18,12 +18,37 @@ We're very pleased that a number of game projects have already
 chosen GGZ as their internet gaming platform. Let's work hard to
 bring as many multiplayer features into as many games as possible!
 
-** The snapshot release only comprises libggz, ggz-server, ggz-client-libs
-** and ggz-txt-client. The next snapshot will include more components
-** especially for development not just in C but also in C++, Python and Ruby.
+** The snapshot release only comprises ggz-python, ggz-java and ggz-grubby,
+** in addition to libggz, ggz-server, ggz-client-libs and ggz-txt-client which
+** were already in 0.99.1. The next snapshot will include more components,
+** especially graphical clients and games as well as web-based applications.
 ** You can already find them in our SVN.
 
-New and pending features in this snapshot release:
+New and pending features in this snapshot release (0.99.2):
+
+- [ggz-grubby] support for Python 2.5 and Tcl 8.5 plugins
+- [ggz-grubby] support for SILC 1.1 API for network core plugin
+- [ggz-grubby] unification of several execution and embedded plugins
+- [ggz-grubby] French translation
+- [ggz-python] PyAncillary, wrapper library for libggz's ggz_send_fd function
+- [ggz-python] game server Submarine for KBattleship client
+- [ggz-python] completion of ggz(d)mod wrapper libraries
+- [ggz-python] ggz-faketable, a new developer tool for launching games
+- [ggz-java] handling of player permissions
+- [ggz-java] improved chat widget with emoticons, autocompletion and history
+
+- [libggz] compilation fixes, in particular for non-Linux platforms
+- [libggz] new utility functions such as ggz_strbuild()
+- [ggz-client-libs] bugfixes and extensive protocol documentation
+- [ggz-txt-client] player registration at GGZ server
+- [ggz-txt-client] persistent command line history
+- [ggz-server] game restoration architecture in ggzd, ggzdmod, ggzdmod++
+- [ggz-server] game restoration implemented for Tic-Tac-Toe server
+- [ggz-server] external Lineup4 AI player in ConnectX server
+- [ggz-server] extensive protocol documentation for ggzdmod
+- [ggz-server] confirmation policies for account registration
+
+New and pending features in the previous release (0.99.1):
 
 - [libggz] experimental support for NSS library backend for TLS encryption
 - [libggz] improved support for non-GCC compilation and unusual paths
