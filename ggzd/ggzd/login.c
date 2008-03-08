@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 9789 2008-03-08 08:50:11Z josef $
+ * $Id: login.c 9791 2008-03-08 08:54:16Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -320,6 +320,13 @@ static GGZReturn login_add_user(ggzdbPlayerEntry *db_entry,
 	ggz_perms_init_from_list(&db_entry->perms,
 			     perms_default, num_perms_default);
 	db_entry->last_login = time(NULL);
+
+	if((opt.registration_policy == GGZ_REGISTRATION_OPEN)
+	|| (opt.registration_policy == GGZ_REGISTRATION_CONFIRMLATER)) {
+		db_entry->confirmed = 1;
+	} else {
+		db_entry->confirmed = 0;
+	}
 	
 	/* If we tried to overwrite a value, then we know it existed */
 	if (ggzdb_player_add(db_entry) == GGZDB_ERR_DUPKEY) {
