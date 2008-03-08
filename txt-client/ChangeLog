@@ -1,4 +1,423 @@
 ------------------------------------------------------------------------
+r9802 | josef | 2008-03-08 13:49:21 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/README
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/README
+   M /trunk/grubby/configure.ac
+   M /trunk/libggz/README
+   M /trunk/libggz/configure.ac
+   M /trunk/playground/ggz-kde4/README.ggz-kde4
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/README
+   M /trunk/txt-client/configure.ac
+
+- prepare package metadata for the next snapshot
+
+
+------------------------------------------------------------------------
+r9786 | josef | 2008-03-08 09:06:23 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/txt-client/ggz-txt/input.c
+   M /trunk/txt-client/ggz-txt/main.c
+   M /trunk/txt-client/ggz-txt/output.c
+   M /trunk/txt-client/ggz-txt/server.c
+   M /trunk/txt-client/ggz-txt/server.h
+
+- ability to register through ggz-txt by giving the email address to /connect
+
+
+------------------------------------------------------------------------
+r9785 | josef | 2008-03-08 08:41:11 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/txt-client/ggz-txt/main.c
+
+- make command history permanent in ~/.ggz/ggz-text.history
+
+
+------------------------------------------------------------------------
+r9783 | josef | 2008-03-08 08:14:21 +0100 (Sa, 08 Mär 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/txt-client/ggz-txt/main.c
+   M /trunk/txt-client/ggz-txt/server.c
+
+- one more conversion to GGZErrorEventData, for login failures
+- get rid of string_cat() utility function now that we have the more powerful ggz_strbuild()
+
+
+------------------------------------------------------------------------
+r9733 | josef | 2008-02-16 13:20:21 +0100 (Sa, 16 Feb 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/txt-client/tttxt/main.c
+
+- remove SEAT and PLAYER message and migrate towards ggzmod-managed information
+
+
+------------------------------------------------------------------------
+r9648 | josef | 2008-02-06 21:02:38 +0100 (Mi, 06 Feb 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/txt-client/ggz-txt/main.c
+
+- introduce library version checks to prevent false error hunts due to wrong LD_LIBRARY_PATH
+
+
+------------------------------------------------------------------------
+r9600 | josef | 2008-01-25 18:35:45 +0100 (Fr, 25 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/txt-client/ggz-txt/output.c
+
+- eliminate candidates for format string fatuities
+
+
+------------------------------------------------------------------------
+r9577 | josef | 2008-01-20 13:18:41 +0100 (So, 20 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggz-client-libs/ggzcore/Doxyfile
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzmod/Doxyfile
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.h
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/configure.ac
+   M /trunk/ggzd/ggzdmod/Doxyfile
+   M /trunk/ggzd/ggzdmod/ggzdmod.h
+   M /trunk/libggz/Doxyfile
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/README
+   M /trunk/libggz/configure.ac
+   M /trunk/libggz/src/ggz.h
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README
+   M /trunk/txt-client/configure.ac
+
+- prepare the snapshot 0.99.1 release by updating the version numbers and showing off with 27 large changes in 4 packages in NEWS
+
+
+------------------------------------------------------------------------
+r9574 | josef | 2008-01-20 11:58:24 +0100 (So, 20 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+   M /trunk/kde-client/ggz-kde/ggzcore++/src/GGZCoreRoom.cpp
+   M /trunk/kde-client/ggz-kde/ggzcore++/src/GGZCoreServer.cpp
+   M /trunk/python/pyggzcore/src/pyggzcoresimple_init.c
+   M /trunk/txt-client/ggz-txt/input.c
+   M /trunk/txt-client/ggz-txt/server.c
+
+- adapt all core clients to ggzcore API change
+
+
+------------------------------------------------------------------------
+r9494 | josef | 2008-01-12 18:26:10 +0100 (Sa, 12 Jan 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/txt-client/ggz-txt/game.c
+   M /trunk/txt-client/ggz-txt/input.c
+
+- undocumenteted extension: /launch [<modulename>] launches a specific module
+- one crash detected, need to debug this further
+
+
+------------------------------------------------------------------------
+r9492 | josef | 2008-01-12 17:57:43 +0100 (Sa, 12 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/txt-client/ggz-txt/main.c
+
+- convert to libggz's URI parser which should make the app more robust
+
+
+------------------------------------------------------------------------
+r9488 | josef | 2008-01-12 17:00:48 +0100 (Sa, 12 Jan 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/txt-client/ggz-txt/input.c
+   M /trunk/txt-client/ggz-txt/server.c
+
+- more foolproofness: do not allow table/player listings when outside a room
+- display current queue command symbolically, although the bug above has already been fixed
+- add some FIXMEs for later improvements
+
+
+------------------------------------------------------------------------
+r9487 | josef | 2008-01-12 16:46:11 +0100 (Sa, 12 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/txt-client/po/de.po
+   M /trunk/txt-client/po/ggz-txt.pot
+   M /trunk/txt-client/po/pt_BR.po
+
+- first translation updates after three years
+
+
+------------------------------------------------------------------------
+r9486 | josef | 2008-01-12 16:11:49 +0100 (Sa, 12 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/txt-client/ggz-txt/output.c
+
+- when we use debug, reverting to normal text seems to mean: reverting to white
+
+
+------------------------------------------------------------------------
+r9435 | josef | 2007-12-11 21:31:31 +0100 (Di, 11 Dez 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/txt-client/ggz-txt/Makefile.am
+   M /trunk/txt-client/man/Makefile.am
+   M /trunk/txt-client/po/Makefile.am
+   M /trunk/txt-client/tttxt/Makefile.am
+
+- less SUBDIRS=., less EXTRA_DIST
+
+
+------------------------------------------------------------------------
+r9402 | josef | 2007-12-01 13:30:50 +0100 (Sa, 01 Dez 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/grubby/m4/i18n.mk
+   M /trunk/gtk-client/m4/i18n.mk
+   M /trunk/gtk-games/m4/i18n.mk
+   M /trunk/python/po/i18n.mk
+   M /trunk/txt-client/m4/i18n.mk
+
+ r10434@nada:  josef | 2007-12-01 13:30:28 +0100
+ - synchronise versioned catalogue support among all i18n.mk files
+ 
+
+------------------------------------------------------------------------
+r9401 | josef | 2007-12-01 13:30:41 +0100 (Sa, 01 Dez 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/gtk-games/autogen.sh
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/autogen.sh
+   M /trunk/libggz/autogen.sh
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+ r10433@nada:  josef | 2007-12-01 13:29:38 +0100
+ - bump minimum versions of autotools so we don't accidentally hit problems with old tools
+ 
+
+------------------------------------------------------------------------
+r9361 | josef | 2007-11-17 16:33:44 +0100 (Sa, 17 Nov 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/txt-client/ggz-txt/main.c
+   M /trunk/txt-client/ggz-txt/output.c
+   M /trunk/txt-client/ggz-txt/server.c
+
+ r10306@nada:  josef | 2007-11-17 16:31:21 +0100
+ - earlier initialisation of the debugging handlers
+ - undo a translation mark for debug output
+ 
+
+------------------------------------------------------------------------
+r9359 | josef | 2007-11-17 16:33:29 +0100 (Sa, 17 Nov 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/txt-client/ggz-txt/main.c
+   M /trunk/txt-client/ggz-txt/output.c
+   M /trunk/txt-client/ggz-txt/server.c
+
+ r10304@nada:  josef | 2007-11-17 15:23:20 +0100
+ - use debug file for combined ggz-txt and ggzcore debug messages
+ 
+
+------------------------------------------------------------------------
+r9358 | josef | 2007-11-17 16:33:21 +0100 (Sa, 17 Nov 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/txt-client/ggz-txt/input.c
+   M /trunk/txt-client/ggz-txt/main.c
+   M /trunk/txt-client/ggz-txt/output.c
+   M /trunk/txt-client/ggz-txt/server.c
+   M /trunk/txt-client/ggz-txt/server.h
+
+ r10303@nada:  josef | 2007-11-16 22:01:51 +0100
+ - appending :tls to any host:port combination makes encrypted ggz-txt connections possible
+ 
+
+------------------------------------------------------------------------
+r9337 | jdorje | 2007-11-08 20:33:13 +0100 (Do, 08 Nov 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/txt-client/configure.ac
+   M /trunk/txt-client/ggz-txt/Makefile.am
+
+Remove unused ncurses dependency.
+------------------------------------------------------------------------
+r9109 | oojah | 2007-05-10 19:12:09 +0200 (Do, 10 Mai 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/txt-client/ggz-txt/input.c
+   M /trunk/txt-client/ggz-txt/output.c
+   M /trunk/txt-client/ggz-txt/output.h
+   M /trunk/txt-client/ggz-txt/server.c
+
+Add option for listing only those rooms which are currently occupied.
+
+/list rooms - displays currently occupied rooms
+/list allrooms - displays all rooms
+
+------------------------------------------------------------------------
+r9108 | oojah | 2007-05-10 12:11:38 +0200 (Do, 10 Mai 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/txt-client/ggz-txt/server.c
+
+Fix english string.
+
+------------------------------------------------------------------------
+r9073 | jdorje | 2007-04-29 03:09:54 +0200 (So, 29 Apr 2007) | 7 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggz-wrapper/server.c
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzcore/netxml.c
+   M /trunk/ggz-client-libs/ggzcore/server.c
+   M /trunk/ggz-client-libs/ggzcore/server.h
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+   M /trunk/txt-client/ggz-txt/server.c
+
+Change the ggzcore GGZ_PROTOCOL_ERROR event to provide a GGZErrorEventData
+instead of just a pointer to an arbitrary string.  This allows better
+presentation of the error data by the callers.
+
+Note also that contrary to previous documentation, GGZ_PROTOCOL_ERROR is not
+deprecated, nor does it look like it has ever been.
+
+------------------------------------------------------------------------
+r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16 Jan 2007) | 8 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/java/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- updated changelogs
+
+This is VERY consuming (4 MB changes) since we change the changelog format.
+However we have to do so since no tool seems to be able to reproduce our old format.
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8949 | josef | 2007-01-16 19:23:42 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- 0.0.14pre => 0.0.14
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/NEWS
+   M /trunk/community/README.GGZ
+   M /trunk/docs/AUTHORS
+   M /trunk/docs/NEWS
+   M /trunk/docs/QuickStart.GGZ
+   M /trunk/docs/README.GGZ
+   M /trunk/ggz-client-libs/AUTHORS
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/QuickStart.GGZ
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggzd/AUTHORS
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/README.GGZ
+   M /trunk/gnome-client/AUTHORS
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/QuickStart.GGZ
+   M /trunk/gnome-client/README
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/grubby/AUTHORS
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/grubby/README.GGZ
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/QuickStart.GGZ
+   M /trunk/gtk-client/README
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-games/AUTHORS
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/QuickStart.GGZ
+   M /trunk/gtk-games/README
+   M /trunk/gtk-games/README.GGZ
+   M /trunk/java/AUTHORS
+   M /trunk/java/NEWS
+   M /trunk/java/README.GGZ
+   M /trunk/kde-client/AUTHORS
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/QuickStart.GGZ
+   M /trunk/kde-client/README
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-games/AUTHORS
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/QuickStart.GGZ
+   M /trunk/kde-games/README
+   M /trunk/kde-games/README.GGZ
+   M /trunk/libggz/AUTHORS
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/QuickStart.GGZ
+   M /trunk/libggz/README.GGZ
+   M /trunk/python/AUTHORS
+   M /trunk/python/NEWS
+   M /trunk/python/QuickStart.GGZ
+   M /trunk/python/README
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/AUTHORS
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/README
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/txt-client/AUTHORS
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/QuickStart.GGZ
+   M /trunk/txt-client/README.GGZ
+   M /trunk/utils/AUTHORS
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+   M /trunk/utils/README.GGZ
+
+- update common files slightly, and synchronise them
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
 r8915 | josef | 2007-01-15 16:09:25 +0100 (Mo, 15 Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/txt-client/tttxt/main.c

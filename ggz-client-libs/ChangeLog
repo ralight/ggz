@@ -1,4 +1,1442 @@
 ------------------------------------------------------------------------
+r9802 | josef | 2008-03-08 13:49:21 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/README
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/README
+   M /trunk/grubby/configure.ac
+   M /trunk/libggz/README
+   M /trunk/libggz/configure.ac
+   M /trunk/playground/ggz-kde4/README.ggz-kde4
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/README
+   M /trunk/txt-client/configure.ac
+
+- prepare package metadata for the next snapshot
+
+
+------------------------------------------------------------------------
+r9784 | josef | 2008-03-08 08:32:10 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/server.h
+
+- use the correct (versioned) catalogue for looking up messages
+
+
+------------------------------------------------------------------------
+r9775 | oojah | 2008-03-06 13:22:09 +0100 (Do, 06 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/man/Makefile.am
+
+Don't install ggzwrap man pages when ggzwrap is disabled. This fixes gnome bug #517215. Patch supplied by Michal Pryc.
+
+
+------------------------------------------------------------------------
+r9698 | josef | 2008-02-10 20:07:10 +0100 (So, 10 Feb 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.c
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.h
+   M /trunk/ggz-client-libs/ggzmod/io.c
+   M /trunk/ggz-client-libs/ggzmod/io.h
+   M /trunk/ggz-client-libs/ggzmod/mod.h
+
+- more aesthetic header formatting similar to ggzdmod modifications
+- new function ggzmod_check_library() to find out version incompatibilities due to wrong LD_LIBRARY_PATH and such issues
+
+
+------------------------------------------------------------------------
+r9693 | josef | 2008-02-10 18:52:27 +0100 (So, 10 Feb 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzmod/io.c
+
+- 20 lines of code less due to new libggz function ggz_read_string_alloc_null
+
+
+------------------------------------------------------------------------
+r9690 | josef | 2008-02-10 18:36:21 +0100 (So, 10 Feb 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzmod/protocol.h
+   M /trunk/ggz-client-libs/ggzmod-ggz/protocol.h
+
+- big cleanup of the ggzmod protocol header, adding complete documentary coverage on all messages (Knuth would be proud, eh?)
+
+
+------------------------------------------------------------------------
+r9667 | josef | 2008-02-09 19:44:37 +0100 (Sa, 09 Feb 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/man/ggz.7
+
+- some overdue updates to the generic GGZ concept manual page
+
+
+------------------------------------------------------------------------
+r9650 | josef | 2008-02-06 21:07:20 +0100 (Mi, 06 Feb 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzcore/init.c
+
+- library version mismatch check for ggzcore, includes transitive check for libggz (which must still be included in apps using it)
+- bump interface version to include "+devel"
+
+
+------------------------------------------------------------------------
+r9630 | josef | 2008-01-31 21:02:13 +0100 (Do, 31 Jan 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.c
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.h
+   M /trunk/ggz-client-libs/ggzmod/io.c
+   M /trunk/ggz-client-libs/ggzmod/mod.h
+
+- improve player information hooks to use a GGZList* just like the rankings hooks
+- free list data after hook has returned
+
+
+------------------------------------------------------------------------
+r9622 | josef | 2008-01-29 19:28:10 +0100 (Di, 29 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/netxml.c
+
+- use E_UNKNOWN to indicate protocol mismatch, rather than the semantic-less -1
+
+
+------------------------------------------------------------------------
+r9621 | oojah | 2008-01-29 18:42:18 +0100 (Di, 29 Jan 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/netxml.c
+   M /trunk/ggz-client-libs/ggzcore/room.c
+   M /trunk/ggz-client-libs/ggzcore/room.h
+   M /trunk/ggz-client-libs/ggzcore/server.c
+
+"int status" -> "GGZClientReqError status" change in _ggzcore_room_set_table_launch_status(). All of the status arguments should now be using GGZClientReqError.
+
+------------------------------------------------------------------------
+r9605 | josef | 2008-01-25 19:48:57 +0100 (Fr, 25 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggz-config/ggz-config.c
+
+- safer strings throughout ggz-config
+
+
+------------------------------------------------------------------------
+r9604 | josef | 2008-01-25 19:40:54 +0100 (Fr, 25 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/netxml.c
+
+- kill one more (v)sprintf and hint at (v)dprintf to save one array on the stack
+
+
+------------------------------------------------------------------------
+r9596 | josef | 2008-01-25 18:17:42 +0100 (Fr, 25 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggz-wrapper/server.c
+
+- stupid line break
+
+
+------------------------------------------------------------------------
+r9579 | josef | 2008-01-20 13:40:39 +0100 (So, 20 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/po/ggzcore/Makefile.am
+
+- id.po doesn't exist, although we should try another merge after the release
+
+
+------------------------------------------------------------------------
+r9577 | josef | 2008-01-20 13:18:41 +0100 (So, 20 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggz-client-libs/ggzcore/Doxyfile
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzmod/Doxyfile
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.h
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/configure.ac
+   M /trunk/ggzd/ggzdmod/Doxyfile
+   M /trunk/ggzd/ggzdmod/ggzdmod.h
+   M /trunk/libggz/Doxyfile
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/README
+   M /trunk/libggz/configure.ac
+   M /trunk/libggz/src/ggz.h
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README
+   M /trunk/txt-client/configure.ac
+
+- prepare the snapshot 0.99.1 release by updating the version numbers and showing off with 27 large changes in 4 packages in NEWS
+
+
+------------------------------------------------------------------------
+r9571 | josef | 2008-01-20 11:49:08 +0100 (So, 20 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggz-wrapper/server.c
+
+- adapt to ggzcore API changes
+
+
+------------------------------------------------------------------------
+r9570 | josef | 2008-01-20 11:47:37 +0100 (So, 20 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzcore/net.h
+   M /trunk/ggz-client-libs/ggzcore/netxml.c
+   M /trunk/ggz-client-libs/ggzcore/room.c
+   M /trunk/ggz-client-libs/ggzcore/room.h
+   M /trunk/ggz-client-libs/ggzcore/server.c
+   M /trunk/ggz-client-libs/ggzcore/server.h
+
+- remove room and table listing parameters that have never been in use and confuse those who look at the API (including me!)
+
+
+------------------------------------------------------------------------
+r9543 | josef | 2008-01-15 20:13:38 +0100 (Di, 15 Jan 2008) | 6 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.c
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.h
+   M /trunk/ggz-client-libs/ggzmod/io.c
+   M /trunk/ggz-client-libs/ggzmod/io.h
+   M /trunk/ggz-client-libs/ggzmod/mod.h
+   M /trunk/ggz-client-libs/ggzmod/protocol.h
+
+- totally experimental ggzmod interface for top player lists
+- this complements the already existing code in ggzcore and ggzmod-ggz
+
+Note: This breaks the ABI of ggzmod again, recompilation needed!
+
+
+------------------------------------------------------------------------
+r9542 | josef | 2008-01-15 19:36:42 +0100 (Di, 15 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzmod-ggz/ggzmod-ggz.c
+   M /trunk/ggz-client-libs/ggzmod-ggz/ggzmod-ggz.h
+   M /trunk/ggz-client-libs/ggzmod-ggz/io-ggz.c
+   M /trunk/ggz-client-libs/ggzmod-ggz/io-ggz.h
+   M /trunk/ggz-client-libs/ggzmod-ggz/mod-ggz.h
+   M /trunk/ggz-client-libs/ggzmod-ggz/protocol.h
+
+- clarify the licences of these files based on commit r7888 where ggzmod and ggzcore were covered but ggzmod-ggz was forgotten (and nobody ever noticed?!)
+
+
+------------------------------------------------------------------------
+r9540 | josef | 2008-01-15 18:01:52 +0100 (Di, 15 Jan 2008) | 6 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/game.c
+   M /trunk/ggz-client-libs/ggzcore/room.c
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.c
+   M /trunk/ggz-client-libs/ggzmod-ggz/ggzmod-ggz.c
+
+- use correct C99 initialisers instead of GCC-isms.
+
+This was reported by Damien Carbery on bugs.gnome.org (#509404), although fixed slightly differently from what the patch suggested.
+It should be backported to 0.0.14.
+
+
+------------------------------------------------------------------------
+r9539 | josef | 2008-01-15 17:53:18 +0100 (Di, 15 Jan 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/room.h
+
+- let function declarations match their definitions
+
+Reported by Damien Carbery at bugs.gnome.org. Should be backported to 0.0.14.
+
+
+------------------------------------------------------------------------
+r9460 | oojah | 2007-12-24 13:18:40 +0100 (Mo, 24 Dez 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+
+Fix some trivial typos.
+
+------------------------------------------------------------------------
+r9450 | jdorje | 2007-12-15 11:57:13 +0100 (Sa, 15 Dez 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggz-client-libs/ggzcore/game.c
+   M /trunk/ggz-client-libs/ggzmod-ggz/ggzmod-ggz.c
+
+Improve the defines that control use of socketpair versus port connection and
+of ggzmod-game versus ggzmod-ggz channel creation.
+
+------------------------------------------------------------------------
+r9448 | jdorje | 2007-12-14 10:44:57 +0100 (Fr, 14 Dez 2007) | 9 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.c
+   M /trunk/ggz-client-libs/ggzmod-ggz/ggzmod-ggz.c
+
+Rewrite ggzcore<->ggzmod connection code so that it should work on windows.
+
+When using a local port to connect, the port number is put into the GGZPORT
+environment variable rather than into GGZSOCKET.  Later code checks the
+existence of this variable.
+
+Additionally, in embedded mode we now actually connect to the port (previously
+it would just freeze).
+
+------------------------------------------------------------------------
+r9447 | jdorje | 2007-12-14 08:15:14 +0100 (Fr, 14 Dez 2007) | 9 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/netxml.c
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.c
+   M /trunk/ggz-client-libs/ggzmod-ggz/ggzmod-ggz.c
+   M /trunk/libggz/src/easysock.c
+   M /trunk/libggz/src/ggz.h
+   M /trunk/libggz/tests/dio.c
+
+Add ggz_close_socket function to easysock.
+
+This corresponds to ggz_make_socket and works properly on windows as well as
+unix.  Windows is supposed to use closesocket() not close() so callers that
+blindly use the latter are (I think) wrong.
+
+Only the libggz and ggz-client-libs modules are changed over.  Others should
+be updated as needed.
+
+------------------------------------------------------------------------
+r9446 | jdorje | 2007-12-14 07:49:09 +0100 (Fr, 14 Dez 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/server.c
+
+Make specialy define for reconnect support.
+------------------------------------------------------------------------
+r9445 | jdorje | 2007-12-14 05:21:21 +0100 (Fr, 14 Dez 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.c
+   M /trunk/ggz-client-libs/ggzmod-ggz/ggzmod-ggz.c
+   M /trunk/ggz-client-libs/ggzmod-ggz/ggzmod-ggz.h
+
+Remove unnecessary GGZMOD_DEFAULT_FD.
+------------------------------------------------------------------------
+r9410 | josef | 2007-12-02 14:04:36 +0100 (So, 02 Dez 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/ggz-client-libs/ggz-wrapper/ggz
+
+ r10447@nada:  josef | 2007-12-02 14:04:37 +0100
+ - fix naming of ggz-gtk
+ - add support for the Text Window Manager (twin), preferring ggz-txt over all others
+ 
+
+------------------------------------------------------------------------
+r9408 | jdorje | 2007-12-02 09:24:45 +0100 (So, 02 Dez 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.c
+
+Add comment for broken code.
+------------------------------------------------------------------------
+r9407 | jdorje | 2007-12-02 09:19:20 +0100 (So, 02 Dez 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/netxml.c
+
+Cast printf argument to integer (the type apparently varies in different
+expat versions).
+
+------------------------------------------------------------------------
+r9401 | josef | 2007-12-01 13:30:41 +0100 (Sa, 01 Dez 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/gtk-games/autogen.sh
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/autogen.sh
+   M /trunk/libggz/autogen.sh
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+ r10433@nada:  josef | 2007-12-01 13:29:38 +0100
+ - bump minimum versions of autotools so we don't accidentally hit problems with old tools
+ 
+
+------------------------------------------------------------------------
+r9396 | jdorje | 2007-12-01 10:43:29 +0100 (Sa, 01 Dez 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.c
+
+Provide a wrapper for getenv.
+
+This code almost certainly does not work on windows.  This is okay, since the
+current code *certainly* will not compile on windows.
+
+------------------------------------------------------------------------
+r9395 | jdorje | 2007-12-01 10:41:27 +0100 (Sa, 01 Dez 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzmod-ggz/ggzmod-ggz.c
+
+Provide wrapper for ggz_setenv.
+------------------------------------------------------------------------
+r9354 | josef | 2007-11-11 22:42:19 +0100 (So, 11 Nov 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/ggz-client-libs/po/ggzcore/Makefile.am
+
+ r10293@nada:  josef | 2007-11-11 22:40:20 +0100
+ - add the new translation files to EXTRA_DIST
+ 
+
+------------------------------------------------------------------------
+r9351 | josef | 2007-11-11 22:41:44 +0100 (So, 11 Nov 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/ggz-client-libs/po/ggzcore/Makefile.am
+   A /trunk/ggz-client-libs/po/ggzcore/af.po
+   M /trunk/ggz-client-libs/po/ggzcore/ar.po
+   M /trunk/ggz-client-libs/po/ggzcore/bg.po
+   M /trunk/ggz-client-libs/po/ggzcore/ca.po
+   M /trunk/ggz-client-libs/po/ggzcore/cs.po
+   M /trunk/ggz-client-libs/po/ggzcore/cy.po
+   M /trunk/ggz-client-libs/po/ggzcore/da.po
+   M /trunk/ggz-client-libs/po/ggzcore/de.po
+   M /trunk/ggz-client-libs/po/ggzcore/dz.po
+   A /trunk/ggz-client-libs/po/ggzcore/el.po
+   M /trunk/ggz-client-libs/po/ggzcore/en_GB.po
+   M /trunk/ggz-client-libs/po/ggzcore/es.po
+   M /trunk/ggz-client-libs/po/ggzcore/et.po
+   M /trunk/ggz-client-libs/po/ggzcore/fi.po
+   M /trunk/ggz-client-libs/po/ggzcore/fr.po
+   M /trunk/ggz-client-libs/po/ggzcore/ggzcore.pot
+   M /trunk/ggz-client-libs/po/ggzcore/gl.po
+   M /trunk/ggz-client-libs/po/ggzcore/gu.po
+   A /trunk/ggz-client-libs/po/ggzcore/hi.po
+   M /trunk/ggz-client-libs/po/ggzcore/hu.po
+   A /trunk/ggz-client-libs/po/ggzcore/it.po
+   M /trunk/ggz-client-libs/po/ggzcore/ja.po
+   M /trunk/ggz-client-libs/po/ggzcore/ko.po
+   M /trunk/ggz-client-libs/po/ggzcore/lt.po
+   M /trunk/ggz-client-libs/po/ggzcore/lv.po
+   M /trunk/ggz-client-libs/po/ggzcore/mk.po
+   A /trunk/ggz-client-libs/po/ggzcore/ml.po
+   M /trunk/ggz-client-libs/po/ggzcore/nb.po
+   M /trunk/ggz-client-libs/po/ggzcore/nl.po
+   M /trunk/ggz-client-libs/po/ggzcore/oc.po
+   M /trunk/ggz-client-libs/po/ggzcore/pa.po
+   A /trunk/ggz-client-libs/po/ggzcore/pl.po
+   M /trunk/ggz-client-libs/po/ggzcore/pt.po
+   M /trunk/ggz-client-libs/po/ggzcore/pt_BR.po
+   M /trunk/ggz-client-libs/po/ggzcore/ru.po
+   A /trunk/ggz-client-libs/po/ggzcore/si.po
+   A /trunk/ggz-client-libs/po/ggzcore/sr.po
+   A /trunk/ggz-client-libs/po/ggzcore/sr@Latn.po
+   M /trunk/ggz-client-libs/po/ggzcore/sv.po
+   A /trunk/ggz-client-libs/po/ggzcore/ta.po
+   A /trunk/ggz-client-libs/po/ggzcore/te.po
+   M /trunk/ggz-client-libs/po/ggzcore/th.po
+   A /trunk/ggz-client-libs/po/ggzcore/tr.po
+   M /trunk/ggz-client-libs/po/ggzcore/uk.po
+   M /trunk/ggz-client-libs/po/ggzcore/vi.po
+   M /trunk/ggz-client-libs/po/ggzcore/zh_CN.po
+   M /trunk/ggz-client-libs/po/ggzcore/zh_HK.po
+   M /trunk/ggz-client-libs/po/ggzcore/zh_TW.po
+
+ r10290@nada:  josef | 2007-11-11 22:10:56 +0100
+ - catalogue updates for minor recent source changes
+ - GNOME translation updates, including 12 new languages
+ 
+
+------------------------------------------------------------------------
+r9350 | josef | 2007-11-11 22:41:35 +0100 (So, 11 Nov 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/ggz-client-libs/ggzcore/server.c
+
+ r10289@nada:  josef | 2007-11-11 22:08:26 +0100
+ - seaparate with comma instead of semicolon (taken from GNOME)
+ 
+
+------------------------------------------------------------------------
+r9349 | josef | 2007-11-11 22:41:28 +0100 (So, 11 Nov 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/ggz-client-libs/m4/i18n.mk
+
+ r10288@nada:  josef | 2007-11-11 22:07:06 +0100
+ - introduce CATALOG_VERSION on the i18n.mk level so the .pot file only gets renamed on installation
+ 
+
+------------------------------------------------------------------------
+r9341 | josef | 2007-11-08 21:27:39 +0100 (Do, 08 Nov 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   D /trunk/ggz-client-libs/m4/libtool.m4
+
+ r10272@nada:  josef | 2007-11-08 21:27:18 +0100
+ - remove outdated copy of libtool.m4; always use latest version during bootstrap
+ 
+
+------------------------------------------------------------------------
+r9340 | josef | 2007-11-08 21:27:32 +0100 (Do, 08 Nov 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/ggz-client-libs/configure.ac
+
+ r10271@nada:  josef | 2007-11-08 21:11:23 +0100
+ - remove strange automake warning by adding AM_PROG_CC_C_O
+ 
+
+------------------------------------------------------------------------
+r9339 | jdorje | 2007-11-08 20:39:53 +0100 (Do, 08 Nov 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/configure.ac
+
+Remove AC_PROG_CXX.
+------------------------------------------------------------------------
+r9323 | oojah | 2007-09-29 15:21:16 +0200 (Sa, 29 Sep 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/game.c
+
+Neither ggzcore_game_set_server_fd() nor _ggzcore_game_set_server_fd() return a value, so don't try to return with/from them. Spotted by
+gnome games.
+
+
+------------------------------------------------------------------------
+r9318 | josef | 2007-09-22 08:43:36 +0200 (Sa, 22 Sep 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/ggz-client-libs/ggz-wrapper/game.c
+   M /trunk/ggz-client-libs/ggz-wrapper/server.c
+
+ r10213@nada:  josef | 2007-09-22 08:29:13 +0200
+ - adapt all ggzcore error messages to GGZErrorEventData
+ - abort if game launch/join fails
+ 
+
+------------------------------------------------------------------------
+r9249 | josef | 2007-08-13 09:02:41 +0200 (Mo, 13 Aug 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/ggz-client-libs/ggzcore/game.c
+   M /trunk/ggz-client-libs/ggzcore/net.h
+   M /trunk/ggz-client-libs/ggzcore/netxml.c
+   M /trunk/ggz-client-libs/ggzmod-ggz/ggzmod-ggz.c
+   M /trunk/ggz-client-libs/ggzmod-ggz/ggzmod-ggz.h
+   M /trunk/ggz-client-libs/ggzmod-ggz/io-ggz.c
+   M /trunk/ggz-client-libs/ggzmod-ggz/mod-ggz.h
+   M /trunk/ggz-client-libs/ggzmod-ggz/protocol.h
+
+ r9190@nada:  josef | 2007-08-11 23:18:18 +0200
+ - addition of new request tag <RANKINGS/> in ggzmod protocol
+ 
+
+------------------------------------------------------------------------
+r9247 | josef | 2007-08-13 09:02:04 +0200 (Mo, 13 Aug 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/ggz-client-libs/ggzcore/game.c
+   M /trunk/ggz-client-libs/ggzcore/game.h
+   M /trunk/ggz-client-libs/ggzcore/netxml.c
+   M /trunk/ggz-client-libs/ggzmod-ggz/ggzmod-ggz.c
+   M /trunk/ggz-client-libs/ggzmod-ggz/ggzmod-ggz.h
+   M /trunk/ggz-client-libs/ggzmod-ggz/io-ggz.c
+   M /trunk/ggz-client-libs/ggzmod-ggz/io-ggz.h
+   M /trunk/ggz-client-libs/ggzmod-ggz/protocol.h
+
+ r9188@nada:  josef | 2007-08-11 22:56:14 +0200
+ - ggzcore-side implementation of top-rankings listing
+ - this includes ggzmod-ggz, but *not* ggzmod-game as only kggzmod is tested right now
+ - FIXME: the rankings list is leaking, this must be fixed with better GGZList handling
+ 
+
+------------------------------------------------------------------------
+r9209 | josef | 2007-07-24 08:44:48 +0200 (Di, 24 Jul 2007) | 9 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/ggz-client-libs/ggzcore/init.c
+
+ r9129@nada:  josef | 2007-07-23 09:41:35 +0200
+ - remove complex preprocessor magic again as autotools already define PACKAGE_VERSION for us
+   (that's assuming ggzcore + ggzmod have equal ones, but the makefile already assumed this)
+ 
+ For robustness reasons, we could have two checks, maybe in ggz-config:
+ * PACKAGE_VERSION matches the library versions
+ * a function for external apps which checks if library versions match header versions
+ 
+
+------------------------------------------------------------------------
+r9203 | josef | 2007-07-23 09:31:09 +0200 (Mo, 23 Jul 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/ggz-client-libs/ggzcore/init.c
+   M /trunk/ggz-client-libs/m4/libtool.m4
+   M /trunk/ggz-client-libs/po/ggzcore/Makefile.am
+
+ r9117@nada:  josef | 2007-07-23 09:29:22 +0200
+ - support versioned translation catalogues
+ 
+
+------------------------------------------------------------------------
+r9202 | josef | 2007-07-23 09:31:02 +0200 (Mo, 23 Jul 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/ggz-client-libs/ggzcore/netxml.c
+
+ r9116@nada:  josef | 2007-07-23 09:29:06 +0200
+ - make gcc happy
+ 
+
+------------------------------------------------------------------------
+r9179 | josef | 2007-07-11 08:25:03 +0200 (Mi, 11 Jul 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzmod-ggz/ggzmod-ggz.c
+
+- rename last mentions of "GGZ server" to "GGZ core client" since this is ggzmod without the 'd'
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9165 | josef | 2007-07-04 15:58:17 +0200 (Mi, 04 Jul 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggz-wrapper/README.wrapper
+   M /trunk/ggz-client-libs/ggz-wrapper/game.c
+   M /trunk/ggz-client-libs/ggz-wrapper/ggz-wrapper.c
+   M /trunk/ggz-client-libs/ggz-wrapper/server.c
+   M /trunk/ggz-client-libs/ggz-wrapper/server.h
+   M /trunk/ggz-client-libs/man/ggz-wrapper.6
+
+- add support for frontend preference in ggz-wrapper
+- enable GGZ_ENABLE_DEPRECATED - why are channels deprecated? They still seem to be needed, and in fact are used in ggz-gtk. That's another thing for jdorje to look at.
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9157 | josef | 2007-06-20 19:59:32 +0200 (Mi, 20 Jun 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/po/ggzcore/ar.po
+   M /trunk/ggz-client-libs/po/ggzcore/bg.po
+   M /trunk/ggz-client-libs/po/ggzcore/ca.po
+   M /trunk/ggz-client-libs/po/ggzcore/cs.po
+   M /trunk/ggz-client-libs/po/ggzcore/cy.po
+   M /trunk/ggz-client-libs/po/ggzcore/da.po
+   M /trunk/ggz-client-libs/po/ggzcore/de.po
+   M /trunk/ggz-client-libs/po/ggzcore/dz.po
+   M /trunk/ggz-client-libs/po/ggzcore/en_GB.po
+   M /trunk/ggz-client-libs/po/ggzcore/es.po
+   M /trunk/ggz-client-libs/po/ggzcore/et.po
+   M /trunk/ggz-client-libs/po/ggzcore/fi.po
+   M /trunk/ggz-client-libs/po/ggzcore/fr.po
+   M /trunk/ggz-client-libs/po/ggzcore/gl.po
+   M /trunk/ggz-client-libs/po/ggzcore/gu.po
+   M /trunk/ggz-client-libs/po/ggzcore/hu.po
+   D /trunk/ggz-client-libs/po/ggzcore/id.po
+   M /trunk/ggz-client-libs/po/ggzcore/ja.po
+   M /trunk/ggz-client-libs/po/ggzcore/ko.po
+   M /trunk/ggz-client-libs/po/ggzcore/lt.po
+   M /trunk/ggz-client-libs/po/ggzcore/lv.po
+   M /trunk/ggz-client-libs/po/ggzcore/mk.po
+   M /trunk/ggz-client-libs/po/ggzcore/nb.po
+   M /trunk/ggz-client-libs/po/ggzcore/nl.po
+   M /trunk/ggz-client-libs/po/ggzcore/oc.po
+   M /trunk/ggz-client-libs/po/ggzcore/pa.po
+   M /trunk/ggz-client-libs/po/ggzcore/pt.po
+   M /trunk/ggz-client-libs/po/ggzcore/pt_BR.po
+   M /trunk/ggz-client-libs/po/ggzcore/ru.po
+   M /trunk/ggz-client-libs/po/ggzcore/sv.po
+   M /trunk/ggz-client-libs/po/ggzcore/th.po
+   M /trunk/ggz-client-libs/po/ggzcore/uk.po
+   M /trunk/ggz-client-libs/po/ggzcore/vi.po
+   M /trunk/ggz-client-libs/po/ggzcore/zh_CN.po
+   M /trunk/ggz-client-libs/po/ggzcore/zh_HK.po
+   M /trunk/ggz-client-libs/po/ggzcore/zh_TW.po
+
+- remove empty/fuzzy translation entries
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9153 | josef | 2007-06-20 19:35:41 +0200 (Mi, 20 Jun 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/po/ggz-config/Makefile.am
+   A /trunk/ggz-client-libs/po/ggz-config/de.po
+   M /trunk/ggz-client-libs/po/ggzcore/Makefile.am
+
+- fix EXTRA_DIST to only contain relevant *.po files (FIXME: now we must always update this when adding po files - this is bad)
+- restore old German translation of ggz-config because gnome-games doesn't contain it
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9151 | josef | 2007-06-20 19:25:50 +0200 (Mi, 20 Jun 2007) | 5 lines
+Geänderte Pfade:
+   D /trunk/ggz-client-libs/po/ggz-config/am.po
+   D /trunk/ggz-client-libs/po/ggz-config/ar.po
+   D /trunk/ggz-client-libs/po/ggz-config/az.po
+   D /trunk/ggz-client-libs/po/ggz-config/be.po
+   D /trunk/ggz-client-libs/po/ggz-config/bg.po
+   D /trunk/ggz-client-libs/po/ggz-config/bn.po
+   D /trunk/ggz-client-libs/po/ggz-config/bn_IN.po
+   D /trunk/ggz-client-libs/po/ggz-config/ca.po
+   D /trunk/ggz-client-libs/po/ggz-config/cs.po
+   D /trunk/ggz-client-libs/po/ggz-config/cy.po
+   D /trunk/ggz-client-libs/po/ggz-config/da.po
+   D /trunk/ggz-client-libs/po/ggz-config/de.po
+   D /trunk/ggz-client-libs/po/ggz-config/dz.po
+   D /trunk/ggz-client-libs/po/ggz-config/el.po
+   D /trunk/ggz-client-libs/po/ggz-config/en_CA.po
+   D /trunk/ggz-client-libs/po/ggz-config/en_GB.po
+   D /trunk/ggz-client-libs/po/ggz-config/es.po
+   D /trunk/ggz-client-libs/po/ggz-config/et.po
+   D /trunk/ggz-client-libs/po/ggz-config/eu.po
+   D /trunk/ggz-client-libs/po/ggz-config/fa.po
+   D /trunk/ggz-client-libs/po/ggz-config/fi.po
+   D /trunk/ggz-client-libs/po/ggz-config/fr.po
+   D /trunk/ggz-client-libs/po/ggz-config/ga.po
+   D /trunk/ggz-client-libs/po/ggz-config/gl.po
+   D /trunk/ggz-client-libs/po/ggz-config/gu.po
+   D /trunk/ggz-client-libs/po/ggz-config/he.po
+   D /trunk/ggz-client-libs/po/ggz-config/hi.po
+   D /trunk/ggz-client-libs/po/ggz-config/hr.po
+   D /trunk/ggz-client-libs/po/ggz-config/hu.po
+   D /trunk/ggz-client-libs/po/ggz-config/id.po
+   D /trunk/ggz-client-libs/po/ggz-config/is.po
+   D /trunk/ggz-client-libs/po/ggz-config/it.po
+   D /trunk/ggz-client-libs/po/ggz-config/ja.po
+   D /trunk/ggz-client-libs/po/ggz-config/ka.po
+   D /trunk/ggz-client-libs/po/ggz-config/ko.po
+   D /trunk/ggz-client-libs/po/ggz-config/ku.po
+   D /trunk/ggz-client-libs/po/ggz-config/lt.po
+   D /trunk/ggz-client-libs/po/ggz-config/lv.po
+   D /trunk/ggz-client-libs/po/ggz-config/mk.po
+   D /trunk/ggz-client-libs/po/ggz-config/ml.po
+   D /trunk/ggz-client-libs/po/ggz-config/mn.po
+   D /trunk/ggz-client-libs/po/ggz-config/mr.po
+   D /trunk/ggz-client-libs/po/ggz-config/ms.po
+   D /trunk/ggz-client-libs/po/ggz-config/nb.po
+   D /trunk/ggz-client-libs/po/ggz-config/ne.po
+   D /trunk/ggz-client-libs/po/ggz-config/nl.po
+   D /trunk/ggz-client-libs/po/ggz-config/nn.po
+   D /trunk/ggz-client-libs/po/ggz-config/oc.po
+   D /trunk/ggz-client-libs/po/ggz-config/or.po
+   D /trunk/ggz-client-libs/po/ggz-config/pa.po
+   D /trunk/ggz-client-libs/po/ggz-config/pl.po
+   D /trunk/ggz-client-libs/po/ggz-config/pt.po
+   D /trunk/ggz-client-libs/po/ggz-config/pt_BR.po
+   D /trunk/ggz-client-libs/po/ggz-config/ro.po
+   D /trunk/ggz-client-libs/po/ggz-config/ru.po
+   D /trunk/ggz-client-libs/po/ggz-config/rw.po
+   D /trunk/ggz-client-libs/po/ggz-config/sk.po
+   D /trunk/ggz-client-libs/po/ggz-config/sl.po
+   D /trunk/ggz-client-libs/po/ggz-config/sq.po
+   D /trunk/ggz-client-libs/po/ggz-config/sr.po
+   D /trunk/ggz-client-libs/po/ggz-config/sr@Latn.po
+   D /trunk/ggz-client-libs/po/ggz-config/sv.po
+   D /trunk/ggz-client-libs/po/ggz-config/ta.po
+   D /trunk/ggz-client-libs/po/ggz-config/th.po
+   D /trunk/ggz-client-libs/po/ggz-config/tr.po
+   D /trunk/ggz-client-libs/po/ggz-config/uk.po
+   D /trunk/ggz-client-libs/po/ggz-config/vi.po
+   D /trunk/ggz-client-libs/po/ggz-config/wa.po
+   D /trunk/ggz-client-libs/po/ggz-config/xh.po
+   D /trunk/ggz-client-libs/po/ggz-config/zh_CN.po
+   D /trunk/ggz-client-libs/po/ggz-config/zh_HK.po
+   D /trunk/ggz-client-libs/po/ggz-config/zh_TW.po
+   D /trunk/ggz-client-libs/po/ggzcore/am.po
+   D /trunk/ggz-client-libs/po/ggzcore/az.po
+   D /trunk/ggz-client-libs/po/ggzcore/be.po
+   D /trunk/ggz-client-libs/po/ggzcore/bn.po
+   D /trunk/ggz-client-libs/po/ggzcore/bn_IN.po
+   D /trunk/ggz-client-libs/po/ggzcore/el.po
+   D /trunk/ggz-client-libs/po/ggzcore/en_CA.po
+   D /trunk/ggz-client-libs/po/ggzcore/eu.po
+   D /trunk/ggz-client-libs/po/ggzcore/fa.po
+   D /trunk/ggz-client-libs/po/ggzcore/ga.po
+   M /trunk/ggz-client-libs/po/ggzcore/gl.po
+   D /trunk/ggz-client-libs/po/ggzcore/he.po
+   D /trunk/ggz-client-libs/po/ggzcore/hi.po
+   D /trunk/ggz-client-libs/po/ggzcore/hr.po
+   D /trunk/ggz-client-libs/po/ggzcore/is.po
+   D /trunk/ggz-client-libs/po/ggzcore/it.po
+   D /trunk/ggz-client-libs/po/ggzcore/ka.po
+   D /trunk/ggz-client-libs/po/ggzcore/ku.po
+   D /trunk/ggz-client-libs/po/ggzcore/ml.po
+   D /trunk/ggz-client-libs/po/ggzcore/mn.po
+   D /trunk/ggz-client-libs/po/ggzcore/mr.po
+   D /trunk/ggz-client-libs/po/ggzcore/ms.po
+   D /trunk/ggz-client-libs/po/ggzcore/ne.po
+   D /trunk/ggz-client-libs/po/ggzcore/nn.po
+   D /trunk/ggz-client-libs/po/ggzcore/or.po
+   D /trunk/ggz-client-libs/po/ggzcore/pl.po
+   D /trunk/ggz-client-libs/po/ggzcore/ro.po
+   D /trunk/ggz-client-libs/po/ggzcore/rw.po
+   D /trunk/ggz-client-libs/po/ggzcore/sk.po
+   D /trunk/ggz-client-libs/po/ggzcore/sl.po
+   D /trunk/ggz-client-libs/po/ggzcore/sq.po
+   D /trunk/ggz-client-libs/po/ggzcore/sr.po
+   D /trunk/ggz-client-libs/po/ggzcore/sr@Latn.po
+   D /trunk/ggz-client-libs/po/ggzcore/ta.po
+   D /trunk/ggz-client-libs/po/ggzcore/tr.po
+   D /trunk/ggz-client-libs/po/ggzcore/wa.po
+   D /trunk/ggz-client-libs/po/ggzcore/xh.po
+
+- even more removals of non-relevant translation files (including the whole ggz-config stuff... hm)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9148 | josef | 2007-06-20 18:39:57 +0200 (Mi, 20 Jun 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/po/ggz-config/am.po
+   M /trunk/ggz-client-libs/po/ggz-config/be.po
+   M /trunk/ggz-client-libs/po/ggz-config/bn.po
+   M /trunk/ggz-client-libs/po/ggz-config/bn_IN.po
+   M /trunk/ggz-client-libs/po/ggz-config/ga.po
+   M /trunk/ggz-client-libs/po/ggz-config/gl.po
+   M /trunk/ggz-client-libs/po/ggz-config/he.po
+   M /trunk/ggz-client-libs/po/ggz-config/hr.po
+   M /trunk/ggz-client-libs/po/ggz-config/ka.po
+   M /trunk/ggz-client-libs/po/ggz-config/ku.po
+   M /trunk/ggz-client-libs/po/ggz-config/mn.po
+   M /trunk/ggz-client-libs/po/ggz-config/mr.po
+   M /trunk/ggz-client-libs/po/ggz-config/ms.po
+   M /trunk/ggz-client-libs/po/ggz-config/rw.po
+   M /trunk/ggz-client-libs/po/ggz-config/sk.po
+   M /trunk/ggz-client-libs/po/ggz-config/sl.po
+   M /trunk/ggz-client-libs/po/ggz-config/wa.po
+   M /trunk/ggz-client-libs/po/ggzcore/am.po
+   M /trunk/ggz-client-libs/po/ggzcore/be.po
+   M /trunk/ggz-client-libs/po/ggzcore/bn.po
+   M /trunk/ggz-client-libs/po/ggzcore/bn_IN.po
+   M /trunk/ggz-client-libs/po/ggzcore/ga.po
+   M /trunk/ggz-client-libs/po/ggzcore/gl.po
+   M /trunk/ggz-client-libs/po/ggzcore/he.po
+   M /trunk/ggz-client-libs/po/ggzcore/hr.po
+   M /trunk/ggz-client-libs/po/ggzcore/ka.po
+   M /trunk/ggz-client-libs/po/ggzcore/ku.po
+   M /trunk/ggz-client-libs/po/ggzcore/mn.po
+   M /trunk/ggz-client-libs/po/ggzcore/mr.po
+   M /trunk/ggz-client-libs/po/ggzcore/ms.po
+   M /trunk/ggz-client-libs/po/ggzcore/rw.po
+   M /trunk/ggz-client-libs/po/ggzcore/sk.po
+   M /trunk/ggz-client-libs/po/ggzcore/sl.po
+   M /trunk/ggz-client-libs/po/ggzcore/wa.po
+
+- remove more spurious last fuzzy lines
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9145 | josef | 2007-06-20 17:44:30 +0200 (Mi, 20 Jun 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/po/ggz-config/ar.po
+   M /trunk/ggz-client-libs/po/ggz-config/cs.po
+   M /trunk/ggz-client-libs/po/ggz-config/da.po
+   M /trunk/ggz-client-libs/po/ggz-config/dz.po
+   M /trunk/ggz-client-libs/po/ggz-config/en_GB.po
+   M /trunk/ggz-client-libs/po/ggz-config/es.po
+   M /trunk/ggz-client-libs/po/ggz-config/et.po
+   M /trunk/ggz-client-libs/po/ggz-config/fr.po
+   M /trunk/ggz-client-libs/po/ggz-config/gl.po
+   M /trunk/ggz-client-libs/po/ggz-config/id.po
+   M /trunk/ggz-client-libs/po/ggz-config/nb.po
+   A /trunk/ggz-client-libs/po/ggz-config/oc.po
+   M /trunk/ggz-client-libs/po/ggz-config/sv.po
+   M /trunk/ggz-client-libs/po/ggz-config/th.po
+   M /trunk/ggz-client-libs/po/ggz-config/zh_CN.po
+
+- translation updates from gnome
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9144 | josef | 2007-06-20 12:56:39 +0200 (Mi, 20 Jun 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/po/ggzcore/ar.po
+   M /trunk/ggz-client-libs/po/ggzcore/cs.po
+   M /trunk/ggz-client-libs/po/ggzcore/da.po
+   M /trunk/ggz-client-libs/po/ggzcore/dz.po
+   M /trunk/ggz-client-libs/po/ggzcore/en_GB.po
+   M /trunk/ggz-client-libs/po/ggzcore/es.po
+   M /trunk/ggz-client-libs/po/ggzcore/et.po
+   M /trunk/ggz-client-libs/po/ggzcore/fr.po
+   M /trunk/ggz-client-libs/po/ggzcore/gl.po
+   M /trunk/ggz-client-libs/po/ggzcore/id.po
+   M /trunk/ggz-client-libs/po/ggzcore/nb.po
+   A /trunk/ggz-client-libs/po/ggzcore/oc.po
+   M /trunk/ggz-client-libs/po/ggzcore/sv.po
+   M /trunk/ggz-client-libs/po/ggzcore/th.po
+   M /trunk/ggz-client-libs/po/ggzcore/zh_CN.po
+
+- translation updates (including new Occitan)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9135 | josef | 2007-05-23 07:50:18 +0200 (Mi, 23 Mai 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggz-config/ggz-config.c
+
+- change missing executable error into a warning, as this has nothing to do with the internal config file consistency
+- support applications search in $PATH by ggzcore's execvp()
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9129 | oojah | 2007-05-21 23:30:31 +0200 (Mo, 21 Mai 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggz-config/ggz-config.c
+   M /trunk/grubby/grubby/src/main.c
+   M /trunk/gtk-client/ggz-gtk/types.c
+
+Improved some english strings.
+
+------------------------------------------------------------------------
+r9073 | jdorje | 2007-04-29 03:09:54 +0200 (So, 29 Apr 2007) | 7 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggz-wrapper/server.c
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzcore/netxml.c
+   M /trunk/ggz-client-libs/ggzcore/server.c
+   M /trunk/ggz-client-libs/ggzcore/server.h
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+   M /trunk/txt-client/ggz-txt/server.c
+
+Change the ggzcore GGZ_PROTOCOL_ERROR event to provide a GGZErrorEventData
+instead of just a pointer to an arbitrary string.  This allows better
+presentation of the error data by the callers.
+
+Note also that contrary to previous documentation, GGZ_PROTOCOL_ERROR is not
+deprecated, nor does it look like it has ever been.
+
+------------------------------------------------------------------------
+r9070 | jdorje | 2007-04-24 21:00:13 +0200 (Di, 24 Apr 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzcore/netxml.c
+   M /trunk/ggz-client-libs/ggzcore/room.c
+   M /trunk/ggz-client-libs/ggzcore/server.c
+   M /trunk/ggz-client-libs/ggzcore/server.h
+
+Change the message on GGZErrorEventData to a pointer instead of a fixed-sized
+buffer.  This prevents overruns and truncated UTF-8 characters but breaks
+library compatibility (recompilation of users is required).
+
+See gnome bugzilla bug #431304.
+
+------------------------------------------------------------------------
+r9069 | jdorje | 2007-04-24 20:24:40 +0200 (Di, 24 Apr 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/room.c
+
+Fix initializer.
+------------------------------------------------------------------------
+r9038 | josef | 2007-04-12 10:18:00 +0200 (Do, 12 Apr 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/po/ggz-config/Makefile.am
+   A /trunk/ggz-client-libs/po/ggz-config/am.po
+   A /trunk/ggz-client-libs/po/ggz-config/ar.po
+   A /trunk/ggz-client-libs/po/ggz-config/az.po
+   A /trunk/ggz-client-libs/po/ggz-config/be.po
+   A /trunk/ggz-client-libs/po/ggz-config/bg.po
+   A /trunk/ggz-client-libs/po/ggz-config/bn.po
+   A /trunk/ggz-client-libs/po/ggz-config/bn_IN.po
+   A /trunk/ggz-client-libs/po/ggz-config/ca.po
+   A /trunk/ggz-client-libs/po/ggz-config/cs.po
+   A /trunk/ggz-client-libs/po/ggz-config/cy.po
+   A /trunk/ggz-client-libs/po/ggz-config/da.po
+   M /trunk/ggz-client-libs/po/ggz-config/de.po
+   A /trunk/ggz-client-libs/po/ggz-config/dz.po
+   A /trunk/ggz-client-libs/po/ggz-config/el.po
+   A /trunk/ggz-client-libs/po/ggz-config/en_CA.po
+   A /trunk/ggz-client-libs/po/ggz-config/en_GB.po
+   A /trunk/ggz-client-libs/po/ggz-config/es.po
+   A /trunk/ggz-client-libs/po/ggz-config/et.po
+   A /trunk/ggz-client-libs/po/ggz-config/eu.po
+   A /trunk/ggz-client-libs/po/ggz-config/fa.po
+   A /trunk/ggz-client-libs/po/ggz-config/fi.po
+   A /trunk/ggz-client-libs/po/ggz-config/fr.po
+   A /trunk/ggz-client-libs/po/ggz-config/ga.po
+   A /trunk/ggz-client-libs/po/ggz-config/gl.po
+   A /trunk/ggz-client-libs/po/ggz-config/gu.po
+   A /trunk/ggz-client-libs/po/ggz-config/he.po
+   A /trunk/ggz-client-libs/po/ggz-config/hi.po
+   A /trunk/ggz-client-libs/po/ggz-config/hr.po
+   A /trunk/ggz-client-libs/po/ggz-config/hu.po
+   A /trunk/ggz-client-libs/po/ggz-config/id.po
+   A /trunk/ggz-client-libs/po/ggz-config/is.po
+   A /trunk/ggz-client-libs/po/ggz-config/it.po
+   A /trunk/ggz-client-libs/po/ggz-config/ja.po
+   A /trunk/ggz-client-libs/po/ggz-config/ka.po
+   A /trunk/ggz-client-libs/po/ggz-config/ko.po
+   A /trunk/ggz-client-libs/po/ggz-config/ku.po
+   A /trunk/ggz-client-libs/po/ggz-config/lt.po
+   A /trunk/ggz-client-libs/po/ggz-config/lv.po
+   A /trunk/ggz-client-libs/po/ggz-config/mk.po
+   A /trunk/ggz-client-libs/po/ggz-config/ml.po
+   A /trunk/ggz-client-libs/po/ggz-config/mn.po
+   A /trunk/ggz-client-libs/po/ggz-config/mr.po
+   A /trunk/ggz-client-libs/po/ggz-config/ms.po
+   A /trunk/ggz-client-libs/po/ggz-config/nb.po
+   A /trunk/ggz-client-libs/po/ggz-config/ne.po
+   A /trunk/ggz-client-libs/po/ggz-config/nl.po
+   A /trunk/ggz-client-libs/po/ggz-config/nn.po
+   A /trunk/ggz-client-libs/po/ggz-config/or.po
+   A /trunk/ggz-client-libs/po/ggz-config/pa.po
+   A /trunk/ggz-client-libs/po/ggz-config/pl.po
+   A /trunk/ggz-client-libs/po/ggz-config/pt.po
+   A /trunk/ggz-client-libs/po/ggz-config/pt_BR.po
+   A /trunk/ggz-client-libs/po/ggz-config/ro.po
+   A /trunk/ggz-client-libs/po/ggz-config/ru.po
+   A /trunk/ggz-client-libs/po/ggz-config/rw.po
+   A /trunk/ggz-client-libs/po/ggz-config/sk.po
+   A /trunk/ggz-client-libs/po/ggz-config/sl.po
+   A /trunk/ggz-client-libs/po/ggz-config/sq.po
+   A /trunk/ggz-client-libs/po/ggz-config/sr.po
+   A /trunk/ggz-client-libs/po/ggz-config/sr@Latn.po
+   A /trunk/ggz-client-libs/po/ggz-config/sv.po
+   A /trunk/ggz-client-libs/po/ggz-config/ta.po
+   A /trunk/ggz-client-libs/po/ggz-config/th.po
+   A /trunk/ggz-client-libs/po/ggz-config/tr.po
+   A /trunk/ggz-client-libs/po/ggz-config/uk.po
+   A /trunk/ggz-client-libs/po/ggz-config/vi.po
+   A /trunk/ggz-client-libs/po/ggz-config/wa.po
+   A /trunk/ggz-client-libs/po/ggz-config/xh.po
+   A /trunk/ggz-client-libs/po/ggz-config/zh_CN.po
+   A /trunk/ggz-client-libs/po/ggz-config/zh_HK.po
+   A /trunk/ggz-client-libs/po/ggz-config/zh_TW.po
+   M /trunk/ggz-client-libs/po/ggzcore/Makefile.am
+   A /trunk/ggz-client-libs/po/ggzcore/am.po
+   A /trunk/ggz-client-libs/po/ggzcore/ar.po
+   A /trunk/ggz-client-libs/po/ggzcore/az.po
+   A /trunk/ggz-client-libs/po/ggzcore/be.po
+   A /trunk/ggz-client-libs/po/ggzcore/bg.po
+   A /trunk/ggz-client-libs/po/ggzcore/bn.po
+   A /trunk/ggz-client-libs/po/ggzcore/bn_IN.po
+   A /trunk/ggz-client-libs/po/ggzcore/ca.po
+   A /trunk/ggz-client-libs/po/ggzcore/cs.po
+   A /trunk/ggz-client-libs/po/ggzcore/cy.po
+   A /trunk/ggz-client-libs/po/ggzcore/da.po
+   M /trunk/ggz-client-libs/po/ggzcore/de.po
+   A /trunk/ggz-client-libs/po/ggzcore/dz.po
+   A /trunk/ggz-client-libs/po/ggzcore/el.po
+   A /trunk/ggz-client-libs/po/ggzcore/en_CA.po
+   A /trunk/ggz-client-libs/po/ggzcore/en_GB.po
+   A /trunk/ggz-client-libs/po/ggzcore/es.po
+   A /trunk/ggz-client-libs/po/ggzcore/et.po
+   A /trunk/ggz-client-libs/po/ggzcore/eu.po
+   A /trunk/ggz-client-libs/po/ggzcore/fa.po
+   A /trunk/ggz-client-libs/po/ggzcore/fi.po
+   A /trunk/ggz-client-libs/po/ggzcore/fr.po
+   A /trunk/ggz-client-libs/po/ggzcore/ga.po
+   A /trunk/ggz-client-libs/po/ggzcore/gl.po
+   A /trunk/ggz-client-libs/po/ggzcore/gu.po
+   A /trunk/ggz-client-libs/po/ggzcore/he.po
+   A /trunk/ggz-client-libs/po/ggzcore/hi.po
+   A /trunk/ggz-client-libs/po/ggzcore/hr.po
+   A /trunk/ggz-client-libs/po/ggzcore/hu.po
+   A /trunk/ggz-client-libs/po/ggzcore/id.po
+   A /trunk/ggz-client-libs/po/ggzcore/is.po
+   A /trunk/ggz-client-libs/po/ggzcore/it.po
+   A /trunk/ggz-client-libs/po/ggzcore/ja.po
+   A /trunk/ggz-client-libs/po/ggzcore/ka.po
+   A /trunk/ggz-client-libs/po/ggzcore/ko.po
+   A /trunk/ggz-client-libs/po/ggzcore/ku.po
+   A /trunk/ggz-client-libs/po/ggzcore/lt.po
+   A /trunk/ggz-client-libs/po/ggzcore/lv.po
+   A /trunk/ggz-client-libs/po/ggzcore/mk.po
+   A /trunk/ggz-client-libs/po/ggzcore/ml.po
+   A /trunk/ggz-client-libs/po/ggzcore/mn.po
+   A /trunk/ggz-client-libs/po/ggzcore/mr.po
+   A /trunk/ggz-client-libs/po/ggzcore/ms.po
+   A /trunk/ggz-client-libs/po/ggzcore/nb.po
+   A /trunk/ggz-client-libs/po/ggzcore/ne.po
+   A /trunk/ggz-client-libs/po/ggzcore/nl.po
+   A /trunk/ggz-client-libs/po/ggzcore/nn.po
+   A /trunk/ggz-client-libs/po/ggzcore/or.po
+   A /trunk/ggz-client-libs/po/ggzcore/pa.po
+   A /trunk/ggz-client-libs/po/ggzcore/pl.po
+   A /trunk/ggz-client-libs/po/ggzcore/pt.po
+   A /trunk/ggz-client-libs/po/ggzcore/pt_BR.po
+   A /trunk/ggz-client-libs/po/ggzcore/ro.po
+   A /trunk/ggz-client-libs/po/ggzcore/ru.po
+   A /trunk/ggz-client-libs/po/ggzcore/rw.po
+   A /trunk/ggz-client-libs/po/ggzcore/sk.po
+   A /trunk/ggz-client-libs/po/ggzcore/sl.po
+   A /trunk/ggz-client-libs/po/ggzcore/sq.po
+   A /trunk/ggz-client-libs/po/ggzcore/sr.po
+   A /trunk/ggz-client-libs/po/ggzcore/sr@Latn.po
+   A /trunk/ggz-client-libs/po/ggzcore/sv.po
+   A /trunk/ggz-client-libs/po/ggzcore/ta.po
+   A /trunk/ggz-client-libs/po/ggzcore/th.po
+   A /trunk/ggz-client-libs/po/ggzcore/tr.po
+   A /trunk/ggz-client-libs/po/ggzcore/uk.po
+   A /trunk/ggz-client-libs/po/ggzcore/vi.po
+   A /trunk/ggz-client-libs/po/ggzcore/wa.po
+   A /trunk/ggz-client-libs/po/ggzcore/xh.po
+   A /trunk/ggz-client-libs/po/ggzcore/zh_CN.po
+   A /trunk/ggz-client-libs/po/ggzcore/zh_HK.po
+   A /trunk/ggz-client-libs/po/ggzcore/zh_TW.po
+
+- more merged translations from gnome for ggzcore and ggz-config
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9019 | jdorje | 2007-03-30 07:35:54 +0200 (Fr, 30 Mär 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/server.c
+   M /trunk/ggzd/ggzd/control.c
+   M /trunk/ggzd/ggzd/login.c
+   M /trunk/gtk-client/ggz-gtk/login.c
+   M /trunk/libggz/src/ggz_common.c
+   M /trunk/libggz/src/ggz_common.h
+
+Remove 'random' password generation from the server.
+------------------------------------------------------------------------
+r8987 | jdorje | 2007-02-19 03:50:30 +0100 (Mo, 19 Feb 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/community/setup/scripts/ggz2phpbb.conf.in
+   M /trunk/community/setup/sql/trigger/ggzsync_trigger.c
+   M /trunk/community/setup/webserver/ggz-apache2.conf.in
+   M /trunk/docs/games/ggz-games/Makefile.am
+   M /trunk/docs/games/ggz-games/tictactoe/Makefile.am
+   M /trunk/docs/spec/mainspec/Makefile.am
+   M /trunk/ggz-client-libs/po/Makefile.am
+   M /trunk/ggz-client-libs/po/ggzcore/Makefile.am
+   M /trunk/ggzd/game_servers/chess/ai-gnuchess.c
+   M /trunk/ggzd/game_servers/chess/ai-gnuchess.h
+   M /trunk/ggzd/game_servers/connectx/ai-velena.c
+   M /trunk/ggzd/game_servers/connectx/ai-velena.h
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/score.c
+   M /trunk/ggzd/game_servers/ggzcards/score.h
+   M /trunk/ggzd/game_servers/tictactoe/ttt-ai.c
+   M /trunk/ggzd/game_servers/tictactoe/ttt-ai.h
+   M /trunk/ggzd/ggzd/database/ggzdb_dbi.c
+   M /trunk/ggzd/ggzd/meta/Makefile.am
+   M /trunk/ggzd/ggzd/meta/meta.c
+   M /trunk/ggzd/ggzd/meta/meta.h
+   M /trunk/ggzd/ggzd/meta/minidom.c
+   M /trunk/ggzd/ggzd/meta/minidom.h
+   M /trunk/ggzd/ggzd/meta/uri.c
+   M /trunk/ggzd/ggzd/meta/uri.h
+   M /trunk/ggzd/ggzd/reconfiguration.h
+   M /trunk/ggzd/ggzdmod++/Makefile.am
+   M /trunk/ggzd/ggzdmod++/ggzgameserver.h
+   M /trunk/ggzd/ggzdmod++/mnet.h
+   M /trunk/ggzd/ggzdmod++/net.h
+   M /trunk/gnome-client/man/Makefile.am
+   M /trunk/grubby/grubby/modules/banner.c
+   M /trunk/gtk-client/ggz-gtk/ggz-embed.h
+   M /trunk/gtk-client/ggz-gtk/ggz-gtk.h
+   M /trunk/gtk-client/ggz-gtk/ggz_gtk_host.svg
+   M /trunk/gtk-client/ggz-gtk/ggzutils.c
+   M /trunk/gtk-client/ggz-gtk/ggzutils.h
+   M /trunk/gtk-client/src/Makefile.am
+   M /trunk/gtk-games/ggzcards/dlg_scores.c
+   M /trunk/gtk-games/ggzcards/dlg_scores.h
+   M /trunk/kde-games/kconnectx/Makefile.am
+   M /trunk/kde-games/kconnectx/kconnectx.h
+   M /trunk/kde-games/kconnectx/module.dsc.in
+   M /trunk/kde-games/kconnectx/opt.h
+   M /trunk/kde-games/kconnectx/proto.h
+   M /trunk/kde-games/kconnectx/red.svg
+   M /trunk/kde-games/kconnectx/win.h
+   M /trunk/kde-games/kconnectx/yellow.svg
+   M /trunk/kde-games/lib/kggzmod/Makefile.am
+   M /trunk/kde-games/lib/kggzmod/event.h
+   M /trunk/kde-games/lib/kggzmod/misc_private.h
+   M /trunk/kde-games/lib/kggzmod/module.h
+   M /trunk/kde-games/lib/kggzmod/module_private.h
+   M /trunk/kde-games/lib/kggzmod/player.h
+   M /trunk/kde-games/lib/kggzmod/player_private.h
+   M /trunk/kde-games/lib/kggzmod/request.h
+   M /trunk/kde-games/lib/kggzmod/statistics.h
+   M /trunk/kde-games/lib/kggzmod/statistics_private.h
+   M /trunk/kde-games/lib/kggzpacket.h
+   M /trunk/kde-games/lib/kggzseatsdialog.h
+   M /trunk/kde-games/lib/kggzsystem.h
+   M /trunk/kde-games/lib/qsvgpixmap.h
+   M /trunk/libggz/src/ggz_dio.c
+   M /trunk/libggz/src/ggz_dio.h
+   M /trunk/libggz/src/security/base16.c
+   M /trunk/libggz/src/security/base16.h
+   M /trunk/libggz/tests/dio.c
+   M /trunk/libggz/tests/hashing.c
+   M /trunk/libggz/tests/test16.c
+   M /trunk/libggz/tests/test64.c
+   M /trunk/playground/agrue/agrue/main.c
+   M /trunk/playground/agrue/agrue/net.c
+   M /trunk/playground/agrue/agrue/net.h
+   M /trunk/playground/c-base/evilstr.c
+   M /trunk/playground/c-base/flexprintf.c
+   M /trunk/playground/c-base/safestring.c
+   M /trunk/playground/c-base/str.c
+   M /trunk/playground/ggz-kde4/kconnectx/kconnectx.h
+   M /trunk/playground/ggz-kde4/kconnectx/module.dsc.in
+   M /trunk/playground/ggz-kde4/kconnectx/opt.h
+   M /trunk/playground/ggz-kde4/kconnectx/proto.h
+   M /trunk/playground/ggz-kde4/kconnectx/win.h
+   M /trunk/playground/ggz-kde4/kggzmod/event.h
+   M /trunk/playground/ggz-kde4/kggzmod/misc_private.h
+   M /trunk/playground/ggz-kde4/kggzmod/module.h
+   M /trunk/playground/ggz-kde4/kggzmod/module_private.h
+   M /trunk/playground/ggz-kde4/kggzmod/player.h
+   M /trunk/playground/ggz-kde4/kggzmod/player_private.h
+   M /trunk/playground/ggz-kde4/kggzmod/request.h
+   M /trunk/playground/ggz-kde4/kggzmod/statistics.h
+   M /trunk/playground/ggz-kde4/kggzmod/statistics_private.h
+   M /trunk/playground/ggz-python/arimaa/module_arimaa.dsc.in
+   M /trunk/playground/ggz-ruby/ai-ttt/ruttt-ai.c
+   M /trunk/playground/ggz-ruby/ai-ttt/ttt-ai.c
+   M /trunk/playground/ggz-ruby/ai-ttt/ttt-ai.h
+   M /trunk/playground/server/async/gai_a.c
+   M /trunk/playground/server/async/ggzresolver.c
+   M /trunk/playground/server/coregen/proto.c
+   M /trunk/python/ggzboard/backgammon/bg.svg
+   M /trunk/python/ggzboard/connectx/player1.svg
+   M /trunk/python/ggzboard/connectx/player2.svg
+   M /trunk/python/ggzboard/module_connectx.dsc.in
+   M /trunk/python/ggzboard/module_ludo.dsc.in
+   M /trunk/python/ggzboard/shogi/b-bishop.svg
+   M /trunk/python/ggzboard/shogi/b-gold-general.svg
+   M /trunk/python/ggzboard/shogi/b-king.svg
+   M /trunk/python/ggzboard/shogi/b-knight.svg
+   M /trunk/python/ggzboard/shogi/b-lance.svg
+   M /trunk/python/ggzboard/shogi/b-pawn.svg
+   M /trunk/python/ggzboard/shogi/b-rook.svg
+   M /trunk/python/ggzboard/shogi/b-silver-general.svg
+   M /trunk/python/ggzboard/shogi/bishop.svg
+   M /trunk/python/ggzboard/shogi/gold-general.svg
+   M /trunk/python/ggzboard/shogi/king.svg
+   M /trunk/python/ggzboard/shogi/knight.svg
+   M /trunk/python/ggzboard/shogi/lance.svg
+   M /trunk/python/ggzboard/shogi/pawn.svg
+   M /trunk/python/ggzboard/shogi/rook.svg
+   M /trunk/python/ggzboard/shogi/silver-general.svg
+   M /trunk/python/lib/ggzsettings.py.in
+   M /trunk/python/pyrsvgsdl/setup.py.in
+   M /trunk/python/vibora/vibora.desktop.in
+   M /trunk/utils/ggzcomm/c++example/client.h
+   M /trunk/utils/ggzcomm/c++example/client4.h
+   M /trunk/utils/ggzcomm/c++example/server.h
+   M /trunk/utils/ggzcomm/c++example/server4.h
+   M /trunk/utils/metaserv/libmeta/Makefile.am
+   M /trunk/utils/metaserv/libmeta/meta.c
+   M /trunk/utils/metaserv/libmeta/meta.h
+   M /trunk/utils/metaserv/libmeta/minidom.c
+   M /trunk/utils/metaserv/libmeta/minidom.h
+   M /trunk/utils/metaserv/libmeta/uri.c
+   M /trunk/utils/metaserv/libmeta/uri.h
+
+Fix eol-style on .c, .h, .in, and .am files.
+------------------------------------------------------------------------
+r8986 | jdorje | 2007-02-13 00:51:13 +0100 (Di, 13 Feb 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggz-config/ggz-config.c
+
+Fix bad spelling, add punctuation.
+------------------------------------------------------------------------
+r8982 | josef | 2007-02-08 14:04:07 +0100 (Do, 08 Feb 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggz-wrapper/ggz
+
+- detect GNOME
+- mention bash-ism (but we need to propagate this to configure)
+
+
+------------------------------------------------------------------------
+r8981 | josef | 2007-02-08 13:59:09 +0100 (Do, 08 Feb 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggz-wrapper/ggz
+
+- this is an executable
+
+
+------------------------------------------------------------------------
+r8964 | oojah | 2007-01-28 03:05:51 +0100 (So, 28 Jan 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/server.c
+
+English fixes.
+
+------------------------------------------------------------------------
+r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16 Jan 2007) | 8 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/java/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- updated changelogs
+
+This is VERY consuming (4 MB changes) since we change the changelog format.
+However we have to do so since no tool seems to be able to reproduce our old format.
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8949 | josef | 2007-01-16 19:23:42 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- 0.0.14pre => 0.0.14
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/NEWS
+   M /trunk/community/README.GGZ
+   M /trunk/docs/AUTHORS
+   M /trunk/docs/NEWS
+   M /trunk/docs/QuickStart.GGZ
+   M /trunk/docs/README.GGZ
+   M /trunk/ggz-client-libs/AUTHORS
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/QuickStart.GGZ
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggzd/AUTHORS
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/README.GGZ
+   M /trunk/gnome-client/AUTHORS
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/QuickStart.GGZ
+   M /trunk/gnome-client/README
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/grubby/AUTHORS
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/grubby/README.GGZ
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/QuickStart.GGZ
+   M /trunk/gtk-client/README
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-games/AUTHORS
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/QuickStart.GGZ
+   M /trunk/gtk-games/README
+   M /trunk/gtk-games/README.GGZ
+   M /trunk/java/AUTHORS
+   M /trunk/java/NEWS
+   M /trunk/java/README.GGZ
+   M /trunk/kde-client/AUTHORS
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/QuickStart.GGZ
+   M /trunk/kde-client/README
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-games/AUTHORS
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/QuickStart.GGZ
+   M /trunk/kde-games/README
+   M /trunk/kde-games/README.GGZ
+   M /trunk/libggz/AUTHORS
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/QuickStart.GGZ
+   M /trunk/libggz/README.GGZ
+   M /trunk/python/AUTHORS
+   M /trunk/python/NEWS
+   M /trunk/python/QuickStart.GGZ
+   M /trunk/python/README
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/AUTHORS
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/README
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/txt-client/AUTHORS
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/QuickStart.GGZ
+   M /trunk/txt-client/README.GGZ
+   M /trunk/utils/AUTHORS
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+   M /trunk/utils/README.GGZ
+
+- update common files slightly, and synchronise them
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8945 | josef | 2007-01-16 18:42:57 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/Makefile.am
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzmod/Makefile.am
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.h
+   M /trunk/ggzd/ggzdmod/Makefile.am
+   M /trunk/ggzd/ggzdmod/ggzdmod.h
+   M /trunk/ggzd/ggzdmod++/Makefile.am
+   M /trunk/gtk-client/ggz-gtk/Makefile.am
+   M /trunk/libggz/src/Makefile.am
+   M /trunk/libggz/src/ggz.h
+
+- bump libtool versions according to public API changes since 0.0.13
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8943 | josef | 2007-01-16 17:31:59 +0100 (Di, 16 Jan 2007) | 7 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/Doxyfile
+   M /trunk/ggz-client-libs/ggzmod/Doxyfile
+   M /trunk/ggzd/ggzdmod/Doxyfile
+   M /trunk/libggz/Doxyfile
+
+- Doxyfile version updates
+
+Unfortunately, ggzdmod++ isn't doxyfied and won't either before 0.0.14 :(
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
 r8907 | oojah | 2007-01-14 15:37:42 +0100 (So, 14 Jan 2007) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/ggzcore/init.c
