@@ -9,7 +9,8 @@ CREATE TABLE "users" (
 	"email" character varying(256),
 	"lastlogin" bigint,
 	"permissions" integer,
-	"firstlogin" bigint
+	"firstlogin" bigint,
+	"confirmed" boolean
 );
 
 CREATE TABLE "stats" (
