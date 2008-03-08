@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 9605 2008-01-25 18:48:57Z josef $
+ * $Id: ggz-config.c 9818 2008-03-08 23:09:02Z josef $
  *
  * Configuration query and module install program.
  *
@@ -333,7 +333,7 @@ static int open_conffile(void)
 	global = ggz_conf_parse(global_pathname, GGZ_CONF_CREATE | GGZ_CONF_RDWR);
 	if(global < 0) {
 		fprintf(stderr, _("Insufficient permission to install modules\n"));
-		ggz_free(global_filename);
+		ggz_free(global_pathname);
 		ggz_conf_cleanup();
 		return -1;
 	} else {
@@ -342,7 +342,7 @@ static int open_conffile(void)
 		chmod(global_pathname, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 #endif
 	}
-	ggz_free(global_filename);
+	ggz_free(global_pathname);
 
 	return global;
 }
