@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 9783 2008-03-08 07:14:21Z josef $
+ * $Id: main.c 9785 2008-03-08 07:41:11Z josef $
  *
  * Main loop
  *
@@ -112,6 +112,9 @@ int main(int argc, char *argv[])
 	int opt_reverse = 0;
 	FILE *startup;
 	char command[1024];
+#ifdef HAVE_READLINE_HISTORY_H
+	char *historyfile;
+#endif
 
 #ifdef ENABLE_NLS
 	bindtextdomain("ggz-txt", PREFIX "/share/locale");
@@ -187,6 +190,8 @@ int main(int argc, char *argv[])
 #ifdef HAVE_READLINE_READLINE_H
 # ifdef HAVE_READLINE_HISTORY_H
 	using_history();
+	historyfile = ggz_strbuild("%s/.ggz/ggz-text.history", getenv("HOME"));
+	read_history(historyfile);
 # endif
 	/*rl_callback_handler_install("\e[2K\e[1m\e[37mGGZ\e[1m\e[30m>\e[1m\e[37m ", input_commandline);*/
 	rl_callback_handler_install("GGZ>> ", input_commandline);
@@ -232,6 +237,8 @@ int main(int argc, char *argv[])
 	output_shutdown();
 
 #ifdef HAVE_READLINE_HISTORY_H
+	write_history(historyfile);
+	ggz_free(historyfile);
 	clear_history();
 #endif
 #ifdef HAVE_READLINE_READLINE_H
