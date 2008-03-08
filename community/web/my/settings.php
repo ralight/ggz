@@ -21,6 +21,7 @@ $user_blogfeed = $_POST["user_blogfeed"];
 $user_longitude = $_POST["user_longitude"];
 $user_latitude = $_POST["user_latitude"];
 $user_language = $_POST["user_language"];
+$user_reason = $_POST["user_reason"];
 
 $res = $database->exec("SELECT * FROM userinfo WHERE handle = '%^'", array($ggzuser));
 if (($res) && ($database->numrows($res) == 0)) :
@@ -29,14 +30,14 @@ if (($res) && ($database->numrows($res) == 0)) :
 		"('%^', '', '', '', 0.0, 0.0)", array($ggzuser));
 endif;
 
-if ($password) :
+if ($_GET["password"]) :
 	$res = $database->exec("UPDATE users SET ".
 		"password = '%^' " .
 		"WHERE handle = '%^'", array($user_password, $ggzuser));
 	$md5pass = $user_password;
 	setcookie("ggzuser", "$md5pass");
 endif;
-if ($settings) :
+if ($_GET["settings"]) :
 	$res = $database->exec("UPDATE userinfo SET ".
 		"photo = '%^', gender = '%^', country = '%^', blogfeed = '%^' " .
 		"WHERE handle = '%^'", array($user_photo, $user_gender, $user_country, $user_blogfeed, $ggzuser));
@@ -47,13 +48,18 @@ if ($settings) :
 		"name = '%^', email = '%^' " .
 		"WHERE handle = '%^'", array($user_realname, $user_email, $ggzuser));
 endif;
-if ($pubkey) :
+if ($_GET["pubkey"]) :
 	$res = $database->exec("UPDATE userinfo SET ".
 		"pubkey = '%^' " .
 		"WHERE handle = '%^'", array($user_pubkey, $ggzuser));
 endif;
-if ($language) :
+if ($_GET["language"]) :
 	Auth::setlanguage($user_language);
+endif;
+if ($_GET["applyforcake"]) :
+	$res = $database->exec("UPDATE userinfo SET ".
+		"request = '%^' " .
+		"WHERE handle = '%^'", array("cake", $ggzuser));
 endif;
 
 header("Location: index.php");

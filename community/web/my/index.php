@@ -24,6 +24,8 @@ $ggzuser = Auth::username();
 	<a href="/db/players/?lookup=<?php echo $ggzuser; ?>">public page</a>.
 	To modify the settings about you, please proceed to the
 	<a href="change.php">change page</a>.
+	Host player applications can be sent from the
+	<a href="upgrade.php">upgrade page</a>.
 	</div>
 	<div class="text">
 

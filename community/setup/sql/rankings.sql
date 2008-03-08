@@ -11,7 +11,8 @@ CREATE TABLE userinfo (
 	"blogfeed" character varying(256),
 	"longitude" double precision,
 	"latitude" double precision,
-	"alterpass" character varying(256)
+	"alterpass" character varying(256),
+	"request" character varying(256)
 );
 
 CREATE TABLE "teams" (
