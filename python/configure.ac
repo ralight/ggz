@@ -1,7 +1,7 @@
 dnl Configuration for the GGZ Python package
 dnl ========================================
 
-AC_INIT([GGZ python package], [0.0.14+svn], [ggz-dev@mail.ggzgamingzone.org], [ggz-python])
+AC_INIT([GGZ python package], [snapshot-0.99.2], [ggz-dev@mail.ggzgamingzone.org], [ggz-python])
 AC_CONFIG_SRCDIR([configure.ac])
 #AC_CONFIG_HEADERS([config.h])
 #AM_INIT_AUTOMAKE

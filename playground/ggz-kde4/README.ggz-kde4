@@ -18,9 +18,10 @@ We also need CMake files :)
 A first attempt at supporting GGZ in CMake can be found in
 playground/buildsystem/cmake.
 
-Summary of GGZ-in-KDE4-efforts as of April 2007:
+Summary of GGZ-in-KDE4-efforts as of March 2008:
 * In this directory
  - kconnectx [||||||    ] - KConnectX demo game for kggzmod
+ - kggzcore  [||        ] - library for GGZ core clients
  - kggzdmod  [||        ] - core GGZ game server module library
  - conndlg   [|         ] - connection dialog for GGZ core client in KDE 4
  - playerlst [|         ] - player list for GGZ core clients in KDE 4
