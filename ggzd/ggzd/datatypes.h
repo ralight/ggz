@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 9789 2008-03-08 08:50:11Z josef $
+ * $Id: datatypes.h 9812 2008-03-08 22:03:46Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -147,6 +147,10 @@ typedef struct GameInfo {
 
 	/* Can players request each other's hostnames? */
 	bool allow_peers;
+
+	/* Games should be automatically restored if they're saved when
+	   server runs */
+	bool restore_allow;
 } GameInfo;
 
 

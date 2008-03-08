@@ -845,6 +845,13 @@ int ggzdmod_reseat(GGZdMod * ggzdmod,
 	return 0;
 }
 
+int ggzdmod_send_savedgame(GGZdMod *ggzdmod, const char *savedgame)
+{
+	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->type != GGZDMOD_GGZ)
+		return -1;
+	return _io_send_savedgame(ggzdmod->fd, savedgame);            
+}
+
 
 /* This information could be tracked every time  a player
    leaves/joins, but that's not really necessary at this point. */
@@ -919,6 +926,7 @@ static void set_state(GGZdMod * ggzdmod, GGZdModState state)
 	/* The callback function retrieves the state from ggzdmod_get_state.
 	   It could instead be passed as an argument. */
 	ggzdmod->state = state;
+
 	call_handler(ggzdmod, GGZDMOD_EVENT_STATE, &old_state);
 
 	/* If we are the game module, send the new state to GGZ */
@@ -926,8 +934,8 @@ static void set_state(GGZdMod * ggzdmod, GGZdModState state)
 		ggzdmod_log(ggzdmod, "GGZDMOD: Game setting state to %d", 
 			    state);
 		if (_io_send_state(ggzdmod->fd, state) < 0)
-			/* FIXME: do some sort of error handling? */
 			return;
+		/* FIXME: do some sort of error handling? */
 	}
 }
 
@@ -1106,10 +1114,10 @@ int ggzdmod_set_state(GGZdMod * ggzdmod, GGZdModState state)
 		else
 			return -1;
 	} else {
-		/* TODO: an extension to the communications protocol will be
-		   needed for this to work ggz-side.  Let's get the rest
-		   of it working first... */
-		return -1;
+		if (state == GGZDMOD_STATE_RESTORED)
+			set_state(ggzdmod, state);
+		else
+			return -1;
 	}
 	return 0;
 }
@@ -1411,6 +1419,7 @@ void _ggzdmod_handle_state(GGZdMod * ggzdmod, GGZdModState state)
 		/* Is this right? has the gameover happened yet? */   
 		return;
 	case GGZDMOD_STATE_CREATED:
+	case GGZDMOD_STATE_RESTORED:
 		break;
 	}
 
@@ -1894,4 +1903,9 @@ void _ggzdmod_handle_bot_request(GGZdMod *ggzdmod, int seat_num)
 void _ggzdmod_handle_open_request(GGZdMod *ggzdmod, int seat_num)
 {
 	call_handler(ggzdmod, GGZDMOD_EVENT_REQ_OPEN, &seat_num);
+}
+
+void _ggzdmod_handle_savedgame(GGZdMod *ggzdmod, const char *savedgame)
+{
+	call_handler(ggzdmod, GGZDMOD_EVENT_SAVEDGAME, (char *)savedgame);
 }

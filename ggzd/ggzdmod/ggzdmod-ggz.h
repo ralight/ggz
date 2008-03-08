@@ -103,6 +103,10 @@ typedef struct {
 	int *scores;
 } GGZdModGameReportData;
 
+/** @brief Send saved game to game module
+ */
+int ggzdmod_send_savedgame(GGZdMod *ggzdmod, const char *savedgame);
+
 /** @brief Callback events (GGZ-side additions).
  *
  *  These events are triggered by the game server and delivered

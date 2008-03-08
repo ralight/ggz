@@ -65,6 +65,16 @@ class Seat : public Spectator
 		SeatType type;
 };
 
+class SavedGame
+{
+	public:
+		SavedGame(const char *_savedgame) : savedgame(_savedgame) {}
+		const std::string& getName() const { return savedgame; };
+
+	private:
+		const std::string savedgame;
+};
+
 /* Class representing a game server module.
  * It is used by reimplementing the virtual methods, and then calling
  * connect().
@@ -91,7 +101,8 @@ class GGZGameServer
 			created,
 			waiting,
 			playing,
-			done
+			done,
+			restored
 		};
 
 		/* Callback for idle events (only in async mode) */
@@ -112,6 +123,9 @@ class GGZGameServer
 		virtual void seatEvent(Seat *seat);
 		/* A spectator seat change happened */
 		virtual void spectatorEvent(Spectator *spectator);
+
+		/* Got saved game name. This event occurred for each saved game name */
+		virtual void savedgameEvent(SavedGame *savedGames) {};
 
 		/* Current game state */
 		State state();
@@ -147,6 +161,8 @@ class GGZGameServer
 			if(!s->client) return -1;
 			return s->client->fd;
 		}
+
+		void reportSave(const char *);
 
 	private:
 		GGZGameServerPrivate *m_private;

@@ -60,6 +60,8 @@
 #define GGZBOTHASNAME /* do not undefine */
 /* The game supports to play one more time; FIXME: not used yet */
 #define GGZAGAINQUERY /* do not undefine */
+/* The game can be restored from a savegame */
+#define GGZRESTORGAME /* do not undefine */
 
 /* TTT artificial intelligence */
 #ifdef GGZBOTPLAYERS
@@ -116,6 +118,10 @@ static void game_handle_ggz_spectator_seat(GGZdMod *ggz,
 #endif
 static void game_handle_ggz_player(GGZdMod *ggz,
                                    GGZdModEvent event, const void *data);
+#ifdef GGZRESTORGAME
+static void game_handle_savedgame(GGZdMod *ggz,
+                                  GGZdModEvent event, const void *data);
+#endif
 
 /* Network IO main functions */
 static void game_network_data(int opcode);
@@ -176,11 +182,60 @@ void game_init(GGZdMod *ggzdmod)
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_SEAT,
 	                    &game_handle_ggz_spectator_seat);
 #endif
+#ifdef GGZRESTORGAME
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SAVEDGAME,
+	                    &game_handle_savedgame);
+#endif
 
 	/* Setup the network callbacks for GGZComm */
 	ggzcomm_set_notifier_callback(game_network_data);
 	ggzcomm_set_error_callback(game_network_error);
 }
+
+
+#ifdef GGZRESTORGAME
+/* Callback for GGZDMOD_EVENT_SAVEDGAME */
+static void game_handle_savedgame(GGZdMod *ggz, GGZdModEvent event,
+				  const void *data)
+{
+	const char *savegame = data;
+	char *savegamepath;
+	FILE *f;
+	char line[1024];
+
+	int w, h;
+	int x, y;
+
+	savegamepath = ggz_strbuild(GGZDSTATEDIR "/gamedata/TicTacToe/%s", savegame);
+	ggzdmod_log(ttt_game.ggz, "Game restoration: savegame=%s", savegamepath);
+
+	f = fopen(savegamepath, "r");
+	if(f) {
+		while(1) {
+			if(!fgets(line, sizeof(line), f))
+				break;
+			line[strlen(line) - 1] = '\0';
+			ggzdmod_log(ttt_game.ggz, "Game restoration: line=%s", line);
+			if(sscanf(line, "players options %i %i", &w, &h) == 2) {
+				ggzdmod_log(ttt_game.ggz, "Game restoration: options=%i/%i", w, h);
+				/* unused width/height */
+			} else if(sscanf(line, "player1 move %i %i", &x, &y) == 2) {
+				ggzdmod_log(ttt_game.ggz, "Game restoration: player1=%i/%i", x, y);
+				variables.space[x * 3 + y] = 1;
+			} else if(sscanf(line, "player2 move %i %i", &x, &y) == 2) {
+				ggzdmod_log(ttt_game.ggz, "Game restoration: player2=%i/%i", x, y);
+				variables.space[x * 3 + y] = 2;
+			} else {
+				ggzdmod_log(ttt_game.ggz, "Game restoration: dismiss");
+			}
+		}
+		fclose(f);
+	}
+
+	ttt_game.savegame = fopen(savegamepath, "a");
+	ggz_free(savegamepath);
+}
+#endif
 
 
 /* Callback for GGZDMOD_EVENT_STATE */
@@ -219,6 +274,10 @@ static void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event,
 		break;
 	case GGZDMOD_STATE_DONE:
 		/* The game is over and will be destroyed */
+		break;
+	case GGZDMOD_STATE_RESTORED:
+		/* The game is being restored. */
+		/* FIXME: we need to read in a savegame here. */
 		break;
 	}
 }
@@ -714,7 +773,7 @@ static void game_save(char *fmt, ...)
 	va_list ap;
 
 	if(!ttt_game.savegame) {
-		savegamepath = strdup(GGZDDATADIR "/gamedata/TicTacToe/" TEMPLATE);
+		savegamepath = strdup(GGZDSTATEDIR "/gamedata/TicTacToe/" TEMPLATE);
 		fd = mkstemp(savegamepath);
 		savegamename = strdup(savegamepath + strlen(savegamepath) - strlen(TEMPLATE));
 		free(savegamepath);

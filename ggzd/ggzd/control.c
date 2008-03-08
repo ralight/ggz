@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 9781 2008-03-07 19:30:34Z josef $
+ * $Id: control.c 9812 2008-03-08 22:03:46Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -589,6 +589,13 @@ int main(int argc, char *argv[])
 	pthread_key_create(&player_key, NULL);
 	signal(TABLE_EVENT_SIGNAL, table_handle_event_signal);
 	pthread_key_create(&table_key, NULL);
+
+	/* Restoring saved games for games with flag AutoRestoreGame */
+	int rooms = room_get_count_rooms();
+	while (!term_signal && --rooms)
+		room_restore(rooms);
+
+	// TODO: Need made cleanup and exit if signal arrived
 
 	/* Setup TLS */
 	ggz_tls_init(opt.tls_cert, opt.tls_key, opt.tls_password);

@@ -13,7 +13,8 @@ ggzd_tictactoe_SOURCES = \
 	ttt-ai.c \
 	ttt-ai.h
 
-AM_CPPFLAGS = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
+AM_CPPFLAGS = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES) \
+	-DGGZDSTATEDIR=\"$(ggzdstatedir)\"
 ggzd_tictactoe_LDADD = $(LDADD) $(top_builddir)/ggzdmod/libggzdmod.la
 
 PROTOCOL = tictactoe

@@ -174,6 +174,14 @@ typedef enum {
 	 *  only effect is to let the table know the information has
 	 */
 	RSP_GAME_STATE,
+
+	/** @brief Signals the start of a MSG_SAVEDGAMES packet.
+	 *
+	 *  The packed is composed of:
+	 *    - An integer containing the saved games names count.
+	 *    - An easysock-formated strings for each saved game.
+	 */
+	MSG_SAVEDGAMES
 } ControlToTable;
 
 #endif /* GGZDMOD_SERVER_PROTOCOL_H */

@@ -74,7 +74,19 @@ CREATE TABLE `savegames` (
 	`game` text NOT NULL,
 	`owner` text NOT NULL,
 	`savegame` text NOT NULL,
+	`tableid` int(11) NOT NULL default '0',
 	PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `savegameplayers` (
+	`id` int(11) NOT NULL auto_increment,
+	`savegame` int(11) NOT NULL default '0',
+	`seat` int(11) NOT NULL default '0',
+	`handle` text NOT NULL,
+	`seattype` text NOT NULL,
+	PRIMARY KEY  (`id`),
+	--CONSTRAINT `savegame` FOREIGN KEY (`savegame`) REFERENCES `savegames` (`tableid`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

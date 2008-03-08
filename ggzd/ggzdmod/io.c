@@ -48,7 +48,7 @@ static int _io_read_req_launch(GGZdMod *ggzdmod);
 static int _io_read_msg_seat_change(GGZdMod * ggzdmod);
 static int _io_read_msg_reseat(GGZdMod * ggzdmod);
 static int _io_read_msg_spectator_seat_change(GGZdMod *ggzdmod);
-
+static int _io_read_msg_savedgames(GGZdMod *ggzdmod);
 
 /* Functions for sending IO messages */
 int _io_send_launch(int fd, const char *name, int seats, int spectators)
@@ -221,7 +221,6 @@ int _io_send_req_open(int fd, int seat_num)
 	return 0;
 }
 
-
 int _io_respond_state(int fd)
 {
 	return ggz_write_int(fd, RSP_GAME_STATE);
@@ -249,6 +248,8 @@ int _io_read_data(GGZdMod * ggzdmod)
 		case RSP_GAME_STATE:
 			_ggzdmod_handle_state_response(ggzdmod);
 			return 0;
+		case MSG_SAVEDGAMES:
+			return _io_read_msg_savedgames(ggzdmod);
 		}
 	} else {
 		switch ((TableToControl)op) {
@@ -401,12 +402,12 @@ static int _io_read_req_bot(GGZdMod *ggzdmod)
 static int _io_read_req_open(GGZdMod *ggzdmod)
 {
 	int seat_num;
+
 	if (ggz_read_int(ggzdmod->fd, &seat_num) < 0)
 		return -1;
 	_ggzdmod_handle_open_request(ggzdmod, seat_num);
 	return 0;
 }
-
 
 static int _io_read_req_launch(GGZdMod * ggzdmod)
 {
@@ -524,5 +525,26 @@ static int _io_read_msg_spectator_seat_change(GGZdMod * ggzdmod)
 	if (seat.name)
 		ggz_free(seat.name);
 
+	return 0;
+}
+
+int _io_send_savedgame(int fd, const char *savedgame)
+{
+	if (ggz_write_int(fd, MSG_SAVEDGAMES) < 0
+	    || (!savedgame
+	    || (savedgame && ggz_write_string(fd, savedgame) < 0)))
+		return -1;
+	return 0;
+}
+
+static int _io_read_msg_savedgames(GGZdMod *ggzdmod)
+{
+	char *savedgame;
+
+	if (ggz_read_string_alloc(ggzdmod->fd, &savedgame) < 0)
+		return -1;
+    
+	_ggzdmod_handle_savedgame(ggzdmod, savedgame);
+	ggz_free(savedgame);
 	return 0;
 }

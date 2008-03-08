@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 9557 2008-01-19 08:38:08Z josef $
+ * $Id: ggzdb.c 9812 2008-03-08 22:03:46Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -140,7 +140,11 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 	|| ((_ggzdb_stats_savegame = dlsym(handle, "_ggzdb_stats_savegame")) == NULL)
 	|| ((_ggzdb_stats_match = dlsym(handle, "_ggzdb_stats_match")) == NULL)
 	|| ((_ggzdb_stats_toprankings = dlsym(handle, "_ggzdb_stats_toprankings")) == NULL)
-	|| ((_ggzdb_stats_calcrankings = dlsym(handle, "_ggzdb_stats_calcrankings")) == NULL))
+	|| ((_ggzdb_stats_calcrankings = dlsym(handle, "_ggzdb_stats_calcrankings")) == NULL)
+	|| ((_ggzdb_savegames = dlsym(handle, "_ggzdb_savegames")) == NULL)
+	|| ((_ggzdb_savegame_owners = dlsym(handle, "_ggzdb_savegame_owners")) == NULL)
+	|| ((_ggzdb_savegame_player = dlsym(handle, "_ggzdb_savegame_player")) == NULL)
+	)
 	{
 		err_sys_exit("%s is an invalid database module (%s)",
 			backend, dlerror());
@@ -418,7 +422,7 @@ GGZDBResult ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 }
 
 
-GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame)
+GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, int tableid)
 {
 	GGZDBResult rc = GGZDB_NO_ERROR;
 
@@ -428,7 +432,7 @@ GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char
 		rc = ggzdb_stats_init();
 
 	if (rc == GGZDB_NO_ERROR)
-		rc = _ggzdb_stats_savegame(game, owner, savegame);
+		rc = _ggzdb_stats_savegame(game, owner, savegame, tableid);
 
 	_ggzdb_exit();
 
@@ -465,6 +469,59 @@ GGZDBResult ggzdb_stats_calcrankings(const char *game)
 
 	if (rc == GGZDB_NO_ERROR)
 		rc = _ggzdb_stats_calcrankings(game);
+
+	_ggzdb_exit();
+
+	return rc;
+}
+
+GGZList *ggzdb_savegames(const char *game, const char *owner)
+{
+	GGZList *list = NULL;
+	GGZDBResult rc = GGZDB_NO_ERROR;
+
+	_ggzdb_enter();
+
+	if (stats_needs_init)
+		rc = ggzdb_stats_init();
+
+	if (rc == GGZDB_NO_ERROR)
+		list = _ggzdb_savegames(game, owner);
+
+	_ggzdb_exit();
+
+	return list;
+}
+
+GGZList *ggzdb_savegame_owners(const char *game)
+{
+	GGZList *list = NULL;
+	GGZDBResult rc = GGZDB_NO_ERROR;
+
+	_ggzdb_enter();
+
+	if (stats_needs_init)
+		rc = ggzdb_stats_init();
+
+	if (rc == GGZDB_NO_ERROR)
+		list = _ggzdb_savegame_owners(game);
+
+	_ggzdb_exit();
+
+	return list;
+}
+
+GGZDBResult ggzdb_savegameplayer(int savegame, int seat, const char *name, int type)
+{
+	GGZDBResult rc = GGZDB_NO_ERROR;
+
+	_ggzdb_enter();
+
+	if (stats_needs_init)
+		rc = ggzdb_stats_init();
+
+	if (rc == GGZDB_NO_ERROR)
+		rc = _ggzdb_savegame_player(savegame, seat, name, type);
 
 	_ggzdb_exit();
 

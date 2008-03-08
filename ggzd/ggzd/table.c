@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 9585 2008-01-23 13:58:26Z oojah $
+ * $Id: table.c 9812 2008-03-08 22:03:46Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -112,7 +112,7 @@ static GGZEventFuncReturn table_kill_callback(void* target, size_t size,
 static GGZReturn table_launch_event(char* name,
 				    GGZClientReqError status, int index);
 
-static int   type_match_table(int type, GGZTable* table);
+static int type_match_table(int type, GGZTable* table);
 
 
 
@@ -421,7 +421,7 @@ static GGZReturn table_start_game(GGZTable *table)
 #endif
 	char **args;
 	char *pwd;
-	char *game;
+	char *game, *name;
 	int type, i, num_seats;
 	GGZReturn status = GGZ_OK;
 	GGZSeat seat;
@@ -440,6 +440,7 @@ static GGZReturn table_start_game(GGZTable *table)
 	pwd = game_types[type].data_dir;
 	args = rooms[table->room].exec_args;
 	game = game_types[type].game;
+	name = ggz_intlstring_translated(game_types[type].name, NULL);
 	pthread_rwlock_unlock(&game_types[type].lock);
 
 	/* Set a pointer to the table so we can get it back in the
@@ -462,7 +463,7 @@ static GGZReturn table_start_game(GGZTable *table)
 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_OPEN,
 			    &table_game_req_open);
 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_ERROR, &table_error);
-	
+
 	/* Setup seats for game table */
 	num_seats = seats_num(table);
 	ggzdmod_set_num_seats(table->ggzdmod, num_seats);
@@ -479,13 +480,26 @@ static GGZReturn table_start_game(GGZTable *table)
 		seat.fd = -1;
 		if (ggzdmod_set_seat(table->ggzdmod, &seat) < 0)
 			status = GGZ_ERROR;
+
+		/* FIXME: to not accidentally nuke old entries, need to append timestamp
+		 *        to all pthread_self() arguments to database calls */
+		ggzdb_savegameplayer(pthread_self(), i, seat.name, seat.type);
 	}
+	ggzdb_stats_savegame(name, table->owner, table->savegame, pthread_self());
 
 	/* And start the game */
 	log_msg(GGZ_LOG_TABLES, "Launching table: %s", args[0]);
 	ggzdmod_set_module(table->ggzdmod, game, pwd, args);
 	if (ggzdmod_connect(table->ggzdmod) < 0)
 		status = GGZ_ERROR;
+
+	if (table->state == GGZDMOD_STATE_RESTORED) {
+		log_msg(GGZ_LOG_TABLES,"Server change game state to %d",
+			table->state);
+		ggzdmod_set_state(table->ggzdmod, table->state);
+		ggzdmod_send_savedgame(table->ggzdmod, table->savegame);
+		ggzdmod_set_state(table->ggzdmod, GGZDMOD_STATE_CREATED);
+	}
 
 	return status;
 }
@@ -887,6 +901,15 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event,
 			table_event_enqueue(table, GGZ_TABLE_UPDATE_STATE);
 		return;
 
+	case GGZDMOD_STATE_RESTORED:
+		dbg_msg(GGZ_DBG_TABLE,
+			"Table %d in room %d is restored.", 
+			table->index, table->room);
+
+		pthread_rwlock_wrlock(&table->lock);
+		table->state = GGZ_TABLE_RESTORED;
+		pthread_rwlock_unlock(&table->lock);
+		return;
 	case GGZDMOD_STATE_CREATED:
 		break;
 	}
@@ -934,7 +957,6 @@ static void table_game_report(GGZdMod *ggzdmod,
 
 	/* FIXME: we might want to auto-send the updated rankings here? */
 }
-
 
 static void table_game_savegame(GGZdMod *ggzdmod,
 			      GGZdModEvent event, const void *data)
@@ -1084,6 +1106,8 @@ static void table_game_req_boot(GGZdMod *ggzdmod,
 		ggzdmod_set_seat(ggzdmod, &seat);
 		transit = GGZ_TRANSIT_LEAVE;
 		update = GGZ_TABLE_UPDATE_LEAVE;
+
+		ggzdb_savegameplayer(pthread_self(), seat.num, seat.name, seat.type);
 	}
 
 	pthread_rwlock_wrlock(&table->lock);
@@ -1135,6 +1159,8 @@ static void table_game_req_bot(GGZdMod *ggzdmod,
 	seat.playerdata = NULL;
 	ggzdmod_set_seat(ggzdmod, &seat);
 
+	ggzdb_savegameplayer(pthread_self(), seat.num, seat.name, seat.type);
+
 	pthread_rwlock_wrlock(&table->lock);
 	table->seat_types[seat_num] = GGZ_SEAT_BOT;
 	pthread_rwlock_unlock(&table->lock);
@@ -1147,12 +1173,11 @@ static void table_game_req_bot(GGZdMod *ggzdmod,
 }
 
 
-static void table_game_req_open(GGZdMod *ggzdmod,
-				GGZdModEvent event, const void *data)
+static void _table_game_change_seat(GGZdMod *ggzdmod,
+				    GGZdModEvent event, int seat_num, GGZSeatType seat_type,
+				    const char *name)
 {
 	GGZTable *table = ggzdmod_get_gamedata(ggzdmod);
-	const int *seat_num_ptr = data;
-	const int seat_num = *seat_num_ptr;
 	GGZSeat seat;
 
 	/* FIXME: this code overlaps with the leaving code in transit.c */
@@ -1170,13 +1195,15 @@ static void table_game_req_open(GGZdMod *ggzdmod,
 
 	seat.num = seat_num;
 	seat.type = GGZ_SEAT_OPEN;
-	seat.name = NULL;
+	seat.name = name;
 	seat.fd = -1;
 	seat.playerdata = NULL;
 	ggzdmod_set_seat(ggzdmod, &seat);
 
+	ggzdb_savegameplayer(pthread_self(), seat.num, seat.name, seat.type);
+
 	pthread_rwlock_wrlock(&table->lock);
-	table->seat_types[seat_num] = GGZ_SEAT_OPEN;
+	table->seat_types[seat_num] = seat_type;
 	table->seat_names[seat_num][0] = '\0';
 	pthread_rwlock_unlock(&table->lock);
 
@@ -1185,6 +1212,15 @@ static void table_game_req_open(GGZdMod *ggzdmod,
 	   clients before the launch is.  This is quite bad. */
 	table_update_event_enqueue(table, GGZ_TABLE_UPDATE_SEAT,
 				   "", seat_num);
+}
+
+static void table_game_req_open(GGZdMod *ggzdmod,
+				GGZdModEvent event, const void *data)
+{
+	const int *seat_num_ptr = data;
+	const int seat_num = *seat_num_ptr;
+
+	_table_game_change_seat(ggzdmod, event, seat_num, GGZ_SEAT_OPEN, NULL);
 }
 
 

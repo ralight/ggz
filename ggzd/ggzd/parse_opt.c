@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9789 2008-03-08 08:50:11Z josef $
+ * $Id: parse_opt.c 9812 2008-03-08 22:03:46Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -697,6 +697,9 @@ static void parse_game(char *name, char *dir)
 
 	game_info.allow_peers = ggz_conf_read_int(ch, "TableOptions", 
 						  "AllowPeers", 0);
+
+	game_info.restore_allow = ggz_conf_read_int(ch, "TableOptions",
+						    "AllowRestore", 0);
 
 	/* Named bots */
 	game_info.named_bots = NULL;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 9789 2008-03-08 08:50:11Z josef $
+ * $Id: ggzdb.h 9812 2008-03-08 22:03:46Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -24,6 +24,8 @@
  */
 
 #include <time.h>
+#include <ggz.h>
+#include <ggz_common.h>
 
 #include "ggzd.h"
 
@@ -83,6 +85,14 @@ typedef struct {
 	long highest_score;
 } ggzdbPlayerGameStats;
 
+typedef struct {
+	char *owner;
+	char *savegame;
+	int count;
+	GGZSeatType *types;
+	char **names;
+} ggzdbSavegamePlayers;
+
 /* Error codes */
 typedef enum {
 	GGZDB_NO_ERROR,		/* All's well */
@@ -91,7 +101,6 @@ typedef enum {
 	GGZDB_ERR_NOTFOUND,	/* Couldn't find a record */
 	GGZDB_ERR_DB		/* Uh oh.  A database error. */
 } GGZDBResult;
-
 
 /* Exported functions */
 GGZReturn ggzdb_init(ggzdbConnection connection, bool standalone);
@@ -123,13 +132,22 @@ int ggzdb_compare_password(const char *input, const char *password);
 GGZDBResult ggzdb_stats_newmatch(const char *game, const char *winner, const char *savegame);
 
 /* Register a savegame entry temporarily */
-GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame);
+GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, int tableid);
 
 /* Report the top-N players for a certain game type */
 GGZDBResult ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGameStats **rankings);
 
 /* Recalculate statistics for a certain game type */
 GGZDBResult ggzdb_stats_calcrankings(const char *game);
+
+/* Loading saved games. The list must be deallocated afterwards. */
+GGZList *ggzdb_savegames(const char *game, const char *owner);
+
+/* Loading owners of saved games. The list must be deallocated afterwards. */
+GGZList *ggzdb_savegame_owners(const char *game);
+
+/* Report a table seat change to the database */
+GGZDBResult ggzdb_savegameplayer(int savegame, int seat, const char *name, int type);
 
 #endif
 

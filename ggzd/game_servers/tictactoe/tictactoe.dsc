@@ -22,6 +22,7 @@ AllowLeave = 1
 BotsAllowed = 1
 PlayersAllowed = 2
 AllowSpectators = 1
+AllowRestore = 1
 
 [Statistics]
 Records = 1

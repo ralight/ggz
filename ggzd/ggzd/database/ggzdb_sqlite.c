@@ -277,7 +277,7 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 	return GGZDB_NO_ERROR;
 }
 
-GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame)
+GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, int tableid)
 {
 	/* Not implemented, but do not return error */
 	return GGZDB_NO_ERROR;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 9794 2008-03-08 09:47:05Z josef $
+ * $Id: ggzdb_pgsql.c 9812 2008-03-08 22:03:46Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -486,7 +486,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 			strncpy(pe->email, PQgetvalue(res, 0, 2), sizeof(pe->email));
 			pe->last_login = atol(PQgetvalue(res, 0, 3));
 			pe->perms = atol(PQgetvalue(res, 0, 4));
-			pe->confirmed = atol(PQgetvalue(res, 0, 5));
+			pe->confirmed = (!ggz_strcmp(PQgetvalue(res, 0, 5), "t") ? 1 : 0);
 			rc = GGZDB_NO_ERROR;
 		} else	{
 			/* This is supposed to happen when we look up
@@ -643,7 +643,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 			strncpy(pe->email, PQgetvalue(iterres, 0, 4), sizeof(pe->email));
 			pe->last_login = atol(PQgetvalue(iterres, 0, 5));
 			pe->perms = atol(PQgetvalue(iterres, 0, 6));
-			pe->confirmed = atol(PQgetvalue(iterres, 0, 7));
+			pe->confirmed = (!ggz_strcmp(PQgetvalue(iterres, 0, 7), "t") ? 1 : 0);
 			rc = GGZDB_NO_ERROR;
 		} else {
 			PQclear(iterres);
@@ -680,7 +680,7 @@ GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 		strncpy(pe->email, PQgetvalue(iterres, itercount, 4), sizeof(pe->email));
 		pe->last_login = atol(PQgetvalue(iterres, itercount, 5));
 		pe->perms = atol(PQgetvalue(iterres, itercount, 6));
-		pe->confirmed = atol(PQgetvalue(iterres, itercount, 7));
+		pe->confirmed = (!ggz_strcmp(PQgetvalue(iterres, 0, 7), "t") ? 1 : 0);
 
 		return GGZDB_NO_ERROR;
 	} else {
@@ -931,7 +931,7 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 	return rc;
 }
 
-GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame)
+GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, int tableid)
 {
 	PGconn *conn;
 	PGresult *res;
@@ -945,13 +945,21 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 		return rc;
 	}
 
+	snprintf(query, sizeof(query),
+		"DELETE FROM savegames "
+		"WHERE game = '%s' AND owner = '%s'",
+		game, owner);
+
+	res = PQexec(conn, query);
+	PQclear(res);
+
 	owner_quoted = _ggz_sql_escape(owner);
 
 	snprintf(query, sizeof(query),
-		"INSERT INTO savegames"
-		"(date, game, owner, savegame) VALUES "
-		"(%li, '%s', '%s', '%s')",
-		time(NULL), game, owner, savegame);
+		"INSERT INTO savegames "
+		"(date, game, owner, savegame, tableid) VALUES "
+		"(%li, '%s', '%s', '%s', %i)",
+		time(NULL), game, owner, savegame, tableid);
 
 	ggz_free(owner_quoted);
 
@@ -1035,5 +1043,197 @@ GGZDBResult _ggzdb_stats_calcrankings(const char *game)
 	releaseconnection(conn);
 
 	return GGZDB_NO_ERROR;
+}
+
+static void strfree(void *str)
+{
+	ggzdbSavegamePlayers *sp = str;
+	int i;
+
+	ggz_free(sp->owner);
+	ggz_free(sp->savegame);
+	for(i = 0; i < sp->count; i++) {
+		ggz_free(sp->names[i]);
+	}
+	if(sp->names)
+		ggz_free(sp->names);
+	if(sp->types)
+		ggz_free(sp->types);
+	ggz_free(sp);
+}
+
+GGZList *_ggzdb_savegame_owners(const char *game)
+{
+	PGconn *conn;
+	PGresult *res, *res2;
+	GGZList *owners = NULL;
+
+	char query[4096];
+	char *game_quoted;
+	char *owner;
+	char *savegame;
+	int tableid;
+	int i, j;
+	ggzdbSavegamePlayers *sp;
+
+	conn = claimconnection();
+	if (!conn) {
+		err_msg("ggzdb_savegame_owners: couldn't claim connection");
+		return NULL;
+	}
+
+	game_quoted = _ggz_sql_escape(game);
+	snprintf(query, sizeof(query),
+		"SELECT owner, tableid, savegame FROM savegames WHERE game = '%s'",
+		game_quoted);
+	ggz_free(game_quoted);
+
+	res = PQexec(conn, query);
+	if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+		err_msg("couldn't read savegame owners");
+	} else {
+		owners = ggz_list_create(NULL, NULL, (ggzEntryDestroy)strfree, GGZ_LIST_ALLOW_DUPS);
+		for(i = 0; i < PQntuples(res); i++) {
+			owner = ggz_strdup(PQgetvalue(res, i, 0));
+			tableid = atol(ggz_strdup(PQgetvalue(res, i, 1)));
+			savegame = ggz_strdup(PQgetvalue(res, i, 2));
+
+			sp = ggz_malloc(sizeof(ggzdbSavegamePlayers));
+			sp->owner = owner;
+			sp->count = 0;
+			sp->names = NULL;
+			sp->types = NULL;
+			sp->savegame = savegame;
+
+			snprintf(query, sizeof(query),
+				"SELECT seat, seattype, handle FROM savegameplayers "
+				"WHERE savegame = %i ORDER BY seat ASC",
+				tableid);
+
+			res2 = PQexec(conn, query);
+			if (PQresultStatus(res2) != PGRES_TUPLES_OK) {
+				err_msg("couldn't read savegame players");
+			} else {
+				sp->count = PQntuples(res2);
+				sp->types = ggz_malloc(sp->count * sizeof(int));
+				sp->names = ggz_malloc(sp->count * sizeof(char*));
+				for(j = 0; j < sp->count; j++) {
+					sp->types[j] = ggz_string_to_seattype(PQgetvalue(res2, j, 1));
+					sp->names[j] = ggz_strdup(PQgetvalue(res2, j, 2));
+				}
+			}
+			PQclear(res2);
+
+			ggz_list_insert(owners, sp);
+
+			snprintf(query, sizeof(query),
+				"DELETE FROM savegameplayers WHERE savegame = %i",
+				tableid);
+
+			res2 = PQexec(conn, query);
+			PQclear(res2);
+
+			snprintf(query, sizeof(query),
+				"DELETE FROM savegames WHERE tableid = %i",
+				tableid);
+
+			res2 = PQexec(conn, query);
+			PQclear(res2);
+		}
+	}
+	PQclear(res);
+
+	releaseconnection(conn);
+
+	return owners;
+}
+
+GGZList *_ggzdb_savegames(const char *game, const char *owner)
+{
+	PGconn *conn;
+	PGresult *res;
+	GGZList *savegames = NULL;
+	
+	char query[4096];
+	char *game_quoted;
+	char *owner_quoted;
+	char *savegame;
+	int i;
+
+	conn = claimconnection();
+	if (!conn) {
+		err_msg("ggzdb_savegames: couldn't claim connection");
+		return NULL;
+	}
+
+	game_quoted = _ggz_sql_escape(game);
+	owner_quoted = _ggz_sql_escape(owner);
+	snprintf(query, sizeof(query),
+		"SELECT savegame FROM savegames "
+		"WHERE game = '%s' AND owner = '%s'",
+		game_quoted, owner_quoted);
+	ggz_free(game_quoted);
+	ggz_free(owner_quoted);
+
+	res = PQexec(conn, query);
+	if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+		err_msg("couldn't read savegames");
+	} else {
+		savegames = ggz_list_create(NULL, NULL, (ggzEntryDestroy)strfree, GGZ_LIST_ALLOW_DUPS);
+		for(i = 0; i < PQntuples(res); i++) {
+			savegame = ggz_strdup(PQgetvalue(res, i, 0));
+			ggz_list_insert(savegames, savegame);
+		}
+	}
+	PQclear(res);
+
+	releaseconnection(conn);
+
+	return savegames;
+}
+
+GGZDBResult _ggzdb_savegame_player(int savegame, int seat, const char *name, int type)
+{
+	PGconn *conn;
+	PGresult *res;
+	char query[4096];
+	int rc = GGZDB_ERR_DB;
+	char *name_quoted;
+
+	conn = claimconnection();
+	if (!conn) {
+		err_msg("_ggzdb_savegame_player: couldn't claim connection");
+		return rc;
+	}
+
+	snprintf(query, sizeof(query),
+		"DELETE FROM savegameplayers "
+		"WHERE savegame = %i AND seat = %i",
+		savegame, seat);
+
+	res = PQexec(conn, query);
+
+	name_quoted = _ggz_sql_escape(name);
+
+	snprintf(query, sizeof(query),
+		"INSERT INTO savegameplayers "
+		"(savegame, seat, handle, seattype) VALUES "
+		"(%i, %i, '%s', '%s')",
+		savegame, seat, name_quoted, ggz_seattype_to_string(type));
+
+	if(name_quoted)
+		ggz_free(name_quoted);
+
+	res = PQexec(conn, query);
+
+	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+		err_msg("couldn't insert savegame player");
+	}
+	else rc = GGZDB_NO_ERROR;
+	PQclear(res);
+
+	releaseconnection(conn);
+
+	return rc;
 }
 

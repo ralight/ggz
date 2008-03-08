@@ -38,6 +38,7 @@ int _io_send_seat(int fd, const GGZSeat *seat);
 int _io_send_reseat(int fd,
 		    int old_seat, int was_spectator,
 		    int new_seat, int is_spectator);
+int _io_send_savedgame(int fd, const char *savedgame);
 
 int _io_send_log(int fd, const char *msg);
 int _io_send_game_report(int fd, int num_players,

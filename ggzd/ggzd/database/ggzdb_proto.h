@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/08/2002
  * Desc: Back-end functions for handling database manipulation
- * $Id: ggzdb_proto.h 9554 2008-01-19 08:02:54Z josef $
+ * $Id: ggzdb_proto.h 9812 2008-03-08 22:03:46Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -123,7 +123,7 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats);
 GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const char *savegame);
 
 /** Register a savegame entry temporarily */
-GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame);
+GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, int tableid);
 
 /** Add player entry to a match statistics entry */
 GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats);
@@ -135,3 +135,9 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGa
 GGZDBResult _ggzdb_stats_calcrankings(const char *game);
 
 unsigned int _ggzdb_player_next_uid(void);
+
+GGZList *_ggzdb_savegames(const char *game, const char *owner);
+GGZList *_ggzdb_savegame_owners(const char *game);
+
+GGZDBResult _ggzdb_savegame_player(int savegame, int seat, const char *name, int type);
+
