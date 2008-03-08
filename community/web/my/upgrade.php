@@ -17,6 +17,8 @@ if (($res) && ($database->numrows($res) == 1)) :
 	$request = $database->result($res, 0, "request");
 endif;
 
+$p = new Player(Auth::username());
+
 ?>
 
 <div id="main">
@@ -34,7 +36,11 @@ endif;
 	</div>
 	<div class="text">
 
-<?php if (!$request) : ?>
+<?php if ($p->host()) : ?>
+
+You are already a host player. No need to apply.
+
+<?php elseif (!$request) : ?>
 
 <form action='settings.php?applyforcake=1' method='POST'>
 <table>

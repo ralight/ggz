@@ -66,13 +66,18 @@
 include_once("player.php");
 if (Auth::username()) :
 	$p = new Player(Auth::username());
+	if ($p->host()) :
+?>
+		<div class="menu">
+			<a href="/my/host.php" class="menuitem" style="background-color:#800000" title="_(Host player duties)">_(Host)</a>
+		</div>
+<?php
+	endif;
+
 	if ($p->admin()) :
 ?>
 		<div class="menu">
 			<a href="/admin/" class="menuitem" style="background-color:#800000" title="_(Community Administration)">_(Admin)</a>
-			<div class="menu">
-				<a href="/admin/" class="menuitem">_(Admin Main)</a>
-			</div>
 		</div>
 <?php
 	endif;

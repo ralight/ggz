@@ -257,11 +257,26 @@ class Player
 		$res = $database->exec("SELECT * FROM permissionmasks WHERE handle = '%^'", array($ggzuser));
 		if (($res) && ($database->numrows($res) == 1)) :
 			$adminprivs = $database->result($res, 0, "admin_mask");
-			$hostprivs = $database->result($res, 0, "host_mask");
-			$anon = $database->result($res, 0, "anon_mask");
-			$normal = $database->result($res, 0, "normal_mask");
 
 			if ($adminprivs == "t") :
+				return true;
+			endif;
+		endif;
+
+		return false;
+	}
+
+	function host()
+	{
+		global $database;
+
+		$ggzuser = $this->handle;
+
+		$res = $database->exec("SELECT * FROM permissionmasks WHERE handle = '%^'", array($ggzuser));
+		if (($res) && ($database->numrows($res) == 1)) :
+			$hostprivs = $database->result($res, 0, "host_mask");
+
+			if ($hostprivs == "t") :
 				return true;
 			endif;
 		endif;
