@@ -140,6 +140,27 @@ class Auth
 		endif;
 	}
 
+	function checkconfirmation($token)
+	{
+		global $database;
+
+		$crypttoken = Auth::hash($token);
+
+		$res = $database->exec("SELECT * FROM userinfo WHERE alterpass = '%^'", array($crypttoken));
+		if (($res) && ($database->numrows($res) == 1)) :
+			$handle = $database->result($res, 0, "handle");
+			$database->exec("UPDATE userinfo SET alterpass = '' WHERE handle = '%^'", array($handle));
+			$database->exec("UPDATE users SET confirmed = 't' WHERE handle = '%^'", array($handle));
+			$found = 1;
+		endif;
+
+		if ($found) :
+			echo __("The account is now active.") . "<br>";
+		else :
+			echo __("No such token $token found.");
+		endif;
+	}
+
 	function activate($password, $token)
 	{
 		global $database;
@@ -192,14 +213,49 @@ class Auth
 		$res = $database->exec("INSERT INTO users (handle, password, permissions, name, email, confirmed) " .
 			"VALUES ('%^', '%^', %^, '%^', '%^', '%^')",
 			array($username, $cryptpass, 7, $realname, $email, $confirmed));
+
+		if (Config::getvalue("registration") != "open") :
+			Auth::requestconfirmation($email);
+		endif;
+
 		return true;
+	}
+
+	function requestconfirmation($email)
+	{
+		global $database;
+
+		$res = $database->exec("SELECT * FROM users WHERE email = '%^'", array($email));
+		if (($res) && ($database->numrows($res) > 0)) :
+			$user = $database->result($res, 0, "handle");
+			$password = dechex(rand() + time());
+			$cryptpass = Auth::hash($password);
+			$database->exec("INSERT INTO userinfo (handle, alterpass) VALUES ('%^', '%^')",
+				array($user, $cryptpass));
+			$link = Config::getvalue("url") .  "/login/?task=confirm&token=$password";
+
+			$text = __("Account confirmation mail.") . "\n";
+			$text .= "\n";
+			$text .= __("To activate your account, visit $link\n");
+
+			$name = Config::getvalue("name");
+			$text .= "\n";
+			$text .= __("The $name Administrators") . "\n";
+			$text .= "mailto:" . Config::getvalue("mail") . "\n";
+
+			mail($email, "$name: " . ("Account confirmation"), $text);
+
+			return true;
+		else :
+			return false;
+		endif;
 	}
 
 	function resend($email, $encryption)
 	{
 		global $database;
 
-		$res = $database->exec("SELECT * FROM users WHERE email = '$email'");
+		$res = $database->exec("SELECT * FROM users WHERE email = '%^'", array($email));
 		if (($res) && ($database->numrows($res) > 0)) :
 			$text = __("Resending forgotten password(s) as per request.") . "\n";
 			$text .= "\n";

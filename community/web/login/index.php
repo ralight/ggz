@@ -21,6 +21,12 @@ if ($task == "reactivate") :
 	exit;
 endif;
 
+if ($task == "confirm") :
+	//Locale::includefile("confirm.inc");
+	include("confirm.inc");
+	exit;
+endif;
+
 include_once("auth.php");
 
 $input_user = $_POST["input_user"];

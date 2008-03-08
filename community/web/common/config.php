@@ -57,6 +57,10 @@ class Config
 			endif;
 		endif;
 
+		if (!$communityregistration) :
+			$communityregistration = "open";
+		endif;
+
 		$this->config = array();
 
 		$this->config['name'] = $communityname;
