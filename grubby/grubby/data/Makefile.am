@@ -12,7 +12,8 @@ dist_gurudata_SCRIPTS = \
 guruconfigdir = $(prefix)/bin
 guruconfig_SCRIPTS = grubby-config
 
-EXTRA_DIST = grubby-config.in webtranslator.sh test.tcl
+EXTRA_DIST = grubby-config.in webtranslator.sh test.tcl \
+	guru.pot de.po fr.po pt_BR.po
 
 messages:
 	touch guru.pot
