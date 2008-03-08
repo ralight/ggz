@@ -165,6 +165,7 @@ AC_CONFIG_FILES([
 	ggzboard/module_hnefatafl.dsc
 	ggzboard/module_connectx.dsc
 	ggzboard/module_ludo.dsc
+	ggzboard/module_shogi.dsc
 ])
 AC_OUTPUT
 

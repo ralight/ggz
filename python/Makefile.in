@@ -295,4 +295,5 @@ distclean: clean
 	rm -f ggzboard/module_hnefatafl.dsc
 	rm -f ggzboard/module_connectx.dsc
 	rm -f ggzboard/module_ludo.dsc
+	rm -f ggzboard/module_shogi.dsc
 
