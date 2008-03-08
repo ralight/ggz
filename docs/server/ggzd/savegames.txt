@@ -11,6 +11,7 @@ to GGZ through a MSG_SAVEGAME_REPORT. The GGZ server writes this information
 into the 'savegames' table, which lists all currently running games (with
 savegame support, naturally), together with the date of creation and the owner
 (i.e. table host player).
+All the seats are written into the 'savegameplayers' table.
 
 Once the game is finished, independent of savegame support, the match result
 gets recorded through MSG_GAME_REPORT to GGZ. The GGZ server writes an entry
@@ -29,11 +30,8 @@ after an abnormal termination such as software crash our power loss. It reads
 the list of pending savegames for each room and launches tables for any of
 them. The game server will know it's being restored instead of created so that
 the old savegame can be reused, through a MSG_SAVEDGAMES message.
-
--------------
-
-TODO:
-- inverse direction of state changes introduced by patch shouldn't happen
-- why does game get list of savegames instead of just one?
-- we need another table, 'savegameplayers', to record player types and names
+In order to function effectively, the game server will then read the saved
+game and modify its internal state accordingly. Since the seats are reserved
+for the original players, they can join and continue the game at the point
+where it was interrupted.
 
