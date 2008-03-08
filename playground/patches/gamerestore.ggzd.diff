@@ -127,11 +127,57 @@ Index: game_servers/tictactoe/tictactoe.dsc
  
  [Statistics]
  Records = 1
+Index: game_servers/tictactoe/Makefile.am
+===================================================================
+--- game_servers/tictactoe/Makefile.am	(Revision 9802)
++++ game_servers/tictactoe/Makefile.am	(Arbeitskopie)
+@@ -13,7 +13,8 @@
+ 	ttt-ai.c \
+ 	ttt-ai.h
+ 
+-AM_CPPFLAGS = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
++AM_CPPFLAGS = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES) \
++	-DGGZDSTATEDIR=\"$(ggzdstatedir)\"
+ ggzd_tictactoe_LDADD = $(LDADD) $(top_builddir)/ggzdmod/libggzdmod.la
+ 
+ PROTOCOL = tictactoe
 Index: game_servers/tictactoe/game.c
 ===================================================================
 --- game_servers/tictactoe/game.c	(Revision 9802)
 +++ game_servers/tictactoe/game.c	(Arbeitskopie)
-@@ -220,6 +220,10 @@
+@@ -116,6 +116,8 @@
+ #endif
+ static void game_handle_ggz_player(GGZdMod *ggz,
+                                    GGZdModEvent event, const void *data);
++static void game_handle_gamestatechanged(GGZdMod *ggz,
++                                  GGZdModEvent event, const void *data);
+ 
+ /* Network IO main functions */
+ static void game_network_data(int opcode);
+@@ -176,6 +178,8 @@
+ 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_SEAT,
+ 	                    &game_handle_ggz_spectator_seat);
+ #endif
++	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_MSG_GAME_STATE_CHANGED,
++	                    &game_handle_gamestatechanged);
+ 
+ 	/* Setup the network callbacks for GGZComm */
+ 	ggzcomm_set_notifier_callback(game_network_data);
+@@ -183,6 +187,13 @@
+ }
+ 
+ 
++/* Callback for GGZDMOD_EVENT_MSG_GAME_STATE_CHANGED */
++static void game_handle_gamestatechanged(GGZdMod *ggz, GGZdModEvent event,
++				  const void *data)
++{
++	/* FIXME: what to do here? */
++}
++
+ /* Callback for GGZDMOD_EVENT_STATE */
+ static void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event,
+ 				  const void *data)
+@@ -220,6 +231,10 @@
  	case GGZDMOD_STATE_DONE:
  		/* The game is over and will be destroyed */
  		break;
@@ -142,6 +188,15 @@ Index: game_servers/tictactoe/game.c
  	}
  }
  
+@@ -714,7 +729,7 @@
+ 	va_list ap;
+ 
+ 	if(!ttt_game.savegame) {
+-		savegamepath = strdup(GGZDDATADIR "/gamedata/TicTacToe/" TEMPLATE);
++		savegamepath = strdup(GGZDSTATEDIR "/gamedata/TicTacToe/" TEMPLATE);
+ 		fd = mkstemp(savegamepath);
+ 		savegamename = strdup(savegamepath + strlen(savegamepath) - strlen(TEMPLATE));
+ 		free(savegamepath);
 Index: ggzdmod/ggzdmod.h
 ===================================================================
 --- ggzdmod/ggzdmod.h	(Revision 9802)
@@ -273,15 +328,15 @@ Index: ggzdmod/protocol.h
  	REQ_OPEN,
 +	REQ_ABANDONED,
  
-+    /** @brief Signals the start of RSP_GAME_STATE_CHANGED
-+     *
-+     *  The packet is composed of:
-+     *    - An integer containing RPS_GAME_STATE_CHANGED.
-+     *  This packet is sent in response to a MSG_GAME_STATE_CHANGED.
-+     *  It's only effect is to let the table know the information
-+     *  has been received.
-+     */
-+    RSP_GAME_STATE_CHANGED,
++	/** @brief Signals the start of RSP_GAME_STATE_CHANGED
++	 *
++	 *  The packet is composed of:
++	 *    - An integer containing RPS_GAME_STATE_CHANGED.
++	 *  This packet is sent in response to a MSG_GAME_STATE_CHANGED.
++	 *  It's only effect is to let the table know the information
++	 *  has been received.
++	 */
++	RSP_GAME_STATE_CHANGED,
 +
  	/* Signals the start of a MSG_GAME_REPORT packet which transmits game
  	 * results and statistics.
@@ -731,6 +786,33 @@ Index: ggzd/database/ggzdb_pgsql.c
 ===================================================================
 --- ggzd/database/ggzdb_pgsql.c	(Revision 9802)
 +++ ggzd/database/ggzdb_pgsql.c	(Arbeitskopie)
+@@ -486,7 +486,7 @@
+ 			strncpy(pe->email, PQgetvalue(res, 0, 2), sizeof(pe->email));
+ 			pe->last_login = atol(PQgetvalue(res, 0, 3));
+ 			pe->perms = atol(PQgetvalue(res, 0, 4));
+-			pe->confirmed = atol(PQgetvalue(res, 0, 5));
++			pe->confirmed = (!ggz_strcmp(PQgetvalue(res, 0, 5), "t") ? 1 : 0);
+ 			rc = GGZDB_NO_ERROR;
+ 		} else	{
+ 			/* This is supposed to happen when we look up
+@@ -643,7 +643,7 @@
+ 			strncpy(pe->email, PQgetvalue(iterres, 0, 4), sizeof(pe->email));
+ 			pe->last_login = atol(PQgetvalue(iterres, 0, 5));
+ 			pe->perms = atol(PQgetvalue(iterres, 0, 6));
+-			pe->confirmed = atol(PQgetvalue(iterres, 0, 7));
++			pe->confirmed = (!ggz_strcmp(PQgetvalue(iterres, 0, 7), "t") ? 1 : 0);
+ 			rc = GGZDB_NO_ERROR;
+ 		} else {
+ 			PQclear(iterres);
+@@ -680,7 +680,7 @@
+ 		strncpy(pe->email, PQgetvalue(iterres, itercount, 4), sizeof(pe->email));
+ 		pe->last_login = atol(PQgetvalue(iterres, itercount, 5));
+ 		pe->perms = atol(PQgetvalue(iterres, itercount, 6));
+-		pe->confirmed = atol(PQgetvalue(iterres, itercount, 7));
++		pe->confirmed = (!ggz_strcmp(PQgetvalue(iterres, 0, 7), "t") ? 1 : 0);
+ 
+ 		return GGZDB_NO_ERROR;
+ 	} else {
 @@ -1037,3 +1037,86 @@
  	return GGZDB_NO_ERROR;
  }
@@ -918,7 +1000,7 @@ Index: ggzd/room.c
 ===================================================================
 --- ggzd/room.c	(Revision 9802)
 +++ ggzd/room.c	(Arbeitskopie)
-@@ -623,3 +623,62 @@
+@@ -623,3 +623,66 @@
  	return removed;
  }
  
@@ -936,9 +1018,9 @@ Index: ggzd/room.c
 +	pthread_rwlock_unlock(&game_types[game_type].lock);
 +    
 +	if (restore_allow) {
-+		pthread_rwlock_rdlock(&rooms[room].lock);
-+		char *game_name = ggz_strdup(ggz_intlstring_translated(rooms[room].name, NULL));
-+		pthread_rwlock_unlock(&rooms[room].lock);
++		pthread_rwlock_rdlock(&game_types[game_type].lock);
++		char *game_name = ggz_strdup(ggz_intlstring_translated(game_types[game_type].name, NULL));
++		pthread_rwlock_unlock(&game_types[game_type].lock);
 +
 +		GGZList *owners = ggzdb_savegame_owners(game_name);
 +		char *owner;
@@ -947,6 +1029,8 @@ Index: ggzd/room.c
 +		ggz_free(game_name);
 +
 +		if (owners != NULL) {
++			dbg_msg(GGZ_DBG_ROOM, "Restore games for room %d...", room);
++
 +			for(entry = ggz_list_head(owners); entry; entry = ggz_list_next(entry)) {
 +				owner = ggz_list_get_data(entry);
 +				GGZTable *table = table_new();
@@ -959,6 +1043,8 @@ Index: ggzd/room.c
 +				pthread_rwlock_rdlock(&game_types[game_type].lock);
 +				int seats = ggz_numberlist_get_max(&game_types[game_type].player_allow_list);
 +				pthread_rwlock_unlock(&game_types[game_type].lock);
++			
++				dbg_msg(GGZ_DBG_ROOM, "- owner %s with %d seats", owner, seats);
 +
 +				table->num_seats = seats;
 +				if (seats > 0) {
@@ -1006,16 +1092,18 @@ Index: ggzd/table.c
  static void table_game_req_num_seats(GGZdMod *ggzdmod, GGZdModEvent event,
  				     const void *data);
  static void table_game_req_boot(GGZdMod *ggzdmod, GGZdModEvent event,
-@@ -94,6 +96,8 @@
+@@ -94,6 +96,10 @@
  			       const void *data);
  static void table_game_req_open(GGZdMod *ggzdmod, GGZdModEvent event,
  				const void *data);
 +static void table_game_req_abandoned(GGZdMod *ggzdmod, GGZdModEvent event,
 +				     const void *data);
++static void table_game_state_changed(GGZdMod *mod, GGZdModEvent event,
++			       const void *data);
  static void table_error(GGZdMod *ggzdmod, GGZdModEvent event,
  			const void *data);
  
-@@ -453,6 +457,8 @@
+@@ -453,6 +459,8 @@
  			    &table_game_report);
  	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_SAVEGAMEREPORT,
  			    &table_game_savegame);
@@ -1024,16 +1112,18 @@ Index: ggzd/table.c
  	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_NUM_SEATS,
  			    &table_game_req_num_seats);
  	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_BOOT,
-@@ -461,6 +467,8 @@
+@@ -461,6 +469,10 @@
  			    &table_game_req_bot);
  	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_OPEN,
  			    &table_game_req_open);
 +	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_ABANDONED,
 +			    &table_game_req_abandoned);
++	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_GAME_STATE_CHANGED,
++			    &table_game_state_changed);
  	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_ERROR, &table_error);
  	
  	/* Setup seats for game table */
-@@ -487,6 +495,12 @@
+@@ -487,6 +499,12 @@
  	if (ggzdmod_connect(table->ggzdmod) < 0)
  		status = GGZ_ERROR;
  
@@ -1046,7 +1136,20 @@ Index: ggzd/table.c
  	return status;
  }
  
-@@ -887,6 +901,15 @@
+@@ -831,6 +849,12 @@
+ }
+ 
+ 
++static void table_game_state_changed(GGZdMod *mod, GGZdModEvent event,
++				    const void *data)
++{
++	/* FIXME: what to do here? */
++}
++
+ static void table_handle_state(GGZdMod *mod, GGZdModEvent event,
+ 			       const void *data)
+ {
+@@ -887,6 +911,15 @@
  			table_event_enqueue(table, GGZ_TABLE_UPDATE_STATE);
  		return;
  
@@ -1062,7 +1165,7 @@ Index: ggzd/table.c
  	case GGZDMOD_STATE_CREATED:
  		break;
  	}
-@@ -935,7 +958,6 @@
+@@ -935,7 +968,6 @@
  	/* FIXME: we might want to auto-send the updated rankings here? */
  }
  
@@ -1070,7 +1173,7 @@ Index: ggzd/table.c
  static void table_game_savegame(GGZdMod *ggzdmod,
  			      GGZdModEvent event, const void *data)
  {
-@@ -948,7 +970,34 @@
+@@ -948,7 +980,38 @@
  	report_savegame(table->type, table->owner, table->savegame);
  }
  
@@ -1088,6 +1191,8 @@ Index: ggzd/table.c
 +	char *roomname = ggz_strdup(ggz_intlstring_translated(rooms[room].name, NULL));
 +	pthread_rwlock_unlock(&rooms[room].lock);
 +
++	dbg_msg(GGZ_DBG_ROOM, "Send savegames for room %s, owner %s...", roomname, owner);
++
 +	GGZList *savegames = ggzdb_savegames(roomname, owner);
 +	ggz_free(owner);
 +	ggz_free(roomname);
@@ -1096,6 +1201,8 @@ Index: ggzd/table.c
 +	GGZListEntry *entry;
 +	for(entry = ggz_list_head(savegames); entry; entry = ggz_list_next(entry)) {
 +		savegame = ggz_list_get_data(entry);
++		dbg_msg(GGZ_DBG_ROOM, "- savegames %s", savegame);
++
 +		ggzdmod_send_savedgame(table->ggzdmod, savegame);
 +	}
 +
@@ -1105,7 +1212,7 @@ Index: ggzd/table.c
  /* Must be called with a write-lock on the table. */
  static void table_change_num_seats(GGZTable *table, int num_seats)
  {
-@@ -1147,12 +1196,11 @@
+@@ -1147,12 +1210,11 @@
  }
  
  
@@ -1121,7 +1228,7 @@ Index: ggzd/table.c
  	GGZSeat seat;
  
  	/* FIXME: this code overlaps with the leaving code in transit.c */
-@@ -1170,13 +1218,13 @@
+@@ -1170,13 +1232,13 @@
  
  	seat.num = seat_num;
  	seat.type = GGZ_SEAT_OPEN;
@@ -1137,7 +1244,7 @@ Index: ggzd/table.c
  	table->seat_names[seat_num][0] = '\0';
  	pthread_rwlock_unlock(&table->lock);
  
-@@ -1187,7 +1235,25 @@
+@@ -1187,7 +1249,25 @@
  				   "", seat_num);
  }
  
