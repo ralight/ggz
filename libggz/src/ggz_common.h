@@ -58,11 +58,12 @@ typedef enum {
  * the game state kept by libggzdmod
  */
 typedef enum {
-	GGZ_TABLE_ERROR   = -1,  /**< There is some error with the table */
-	GGZ_TABLE_CREATED = 0,   /**< Initial created state for the table. */
-	GGZ_TABLE_WAITING = 1,   /**< Waiting for enough players to join before playing */
-	GGZ_TABLE_PLAYING = 2,   /**< Playing a game */
-	GGZ_TABLE_DONE    = 3    /**< The game session is finished and the table will soon exit */
+	GGZ_TABLE_ERROR    = -1,  /**< There is some error with the table */
+	GGZ_TABLE_CREATED  = 0,   /**< Initial created state for the table. */
+	GGZ_TABLE_WAITING  = 1,   /**< Waiting for enough players to join before playing */
+	GGZ_TABLE_PLAYING  = 2,   /**< Playing a game */
+	GGZ_TABLE_DONE     = 3,   /**< The game session is finished and the table will soon exit */
+	GGZ_TABLE_RESTORED = 4    /**< A game is being restored */
 } GGZTableState;
 
 
