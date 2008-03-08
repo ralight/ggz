@@ -2,26 +2,19 @@ Index: ggzdmod++/ggzgameserver.cpp
 ===================================================================
 --- ggzdmod++/ggzgameserver.cpp	(Revision 9802)
 +++ ggzdmod++/ggzgameserver.cpp	(Arbeitskopie)
-@@ -59,6 +59,10 @@
+@@ -59,6 +59,8 @@
  				GGZdModEvent event, const void *data);
  			static void handle_spectator_seat(GGZdMod* ggzdmod,
  				GGZdModEvent event, const void *data);
 +			static void handle_savedgame(GGZdMod* ggzdmod,
 +				GGZdModEvent, const void *data);
-+			static void handle_state_changed(GGZdMod *ggzdmod,
-+				GGZdModEvent, const void *data);
  			void selfcheck();
  			// Parent object (which is a singleton in 'self')
  			static GGZGameServer *m_parent;
-@@ -240,6 +244,16 @@
+@@ -240,6 +242,11 @@
  	ggzdmod_set_state(m_private->ggzdmod(), (GGZdModState)state);
  }
  
-+void GGZGameServer::requestSavedGames()
-+{
-+	ggzdmod_request_savedgames(m_private->ggzdmod());
-+}
-+
 +void GGZGameServer::reportSave(const char *savedGame)
 +{
 +	ggzdmod_report_savegame(m_private->ggzdmod(), savedGame);
@@ -30,16 +23,15 @@ Index: ggzdmod++/ggzgameserver.cpp
  // Implementation of the internal class
  GGZGameServerPrivate::GGZGameServerPrivate(GGZGameServer *parent)
  {
-@@ -259,6 +273,8 @@
+@@ -259,6 +266,7 @@
  	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, &handle_spectator_leave);
  	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SPECTATOR_DATA, &handle_spectator_data);
  	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SPECTATOR_SEAT, &handle_spectator_seat);
 +	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SAVEDGAME, &handle_savedgame);
-+	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_MSG_GAME_STATE_CHANGED, &handle_state_changed);
  
  	selfcheck();
  }
-@@ -282,6 +298,7 @@
+@@ -282,6 +290,7 @@
  	if((int)Seat::abandoned != (int)GGZ_SEAT_ABANDONED) error = true;
  
  	if((int)GGZGameServer::created != (int)GGZDMOD_STATE_CREATED) error = true;
@@ -47,7 +39,7 @@ Index: ggzdmod++/ggzgameserver.cpp
  	if((int)GGZGameServer::waiting != (int)GGZDMOD_STATE_WAITING) error = true;
  	if((int)GGZGameServer::playing != (int)GGZDMOD_STATE_PLAYING) error = true;
  	if((int)GGZGameServer::done != (int)GGZDMOD_STATE_DONE) error = true;
-@@ -378,3 +395,16 @@
+@@ -378,3 +387,10 @@
  	m_parent->spectatorEvent(spectator);
  }
  
@@ -58,12 +50,6 @@ Index: ggzdmod++/ggzgameserver.cpp
 +	m_parent->savedgameEvent(&savedGame);
 +}
 +
-+void GGZGameServerPrivate::handle_state_changed(GGZdMod *ggzdmod, GGZdModEvent, const void *data)
-+{
-+	std::cout << "GGZGameServer: state changed to: ";
-+	std::cout << (int)m_parent->state() << std::endl;
-+	m_parent->stateEvent();
-+}
 Index: ggzdmod++/ggzgameserver.h
 ===================================================================
 --- ggzdmod++/ggzgameserver.h	(Revision 9802)
@@ -105,11 +91,10 @@ Index: ggzdmod++/ggzgameserver.h
  		/* Current game state */
  		State state();
  		/* Announce a state transition */
-@@ -148,6 +162,9 @@
+@@ -148,6 +162,8 @@
  			return s->client->fd;
  		}
  
-+		void requestSavedGames();
 +		void reportSave(const char *);
 +
  	private:
@@ -176,7 +161,7 @@ Index: game_servers/tictactoe/game.c
  
  	/* Setup the network callbacks for GGZComm */
  	ggzcomm_set_notifier_callback(game_network_data);
-@@ -183,6 +193,21 @@
+@@ -183,6 +193,51 @@
  }
  
  
@@ -187,8 +172,38 @@ Index: game_servers/tictactoe/game.c
 +{
 +	const char *savegame = data;
 +	char *savegamepath;
++	FILE *f;
++	char line[1024];
++
++	int w, h;
++	int x, y;
 +
 +	savegamepath = ggz_strbuild(GGZDSTATEDIR "/gamedata/TicTacToe/%s", savegame);
++	ggzdmod_log(ttt_game.ggz, "Game restoration: savegame=%s", savegamepath);
++
++	f = fopen(savegamepath, "r");
++	if(f) {
++		while(1) {
++			if(!fgets(line, sizeof(line), f))
++				break;
++			line[strlen(line) - 1] = '\0';
++			ggzdmod_log(ttt_game.ggz, "Game restoration: line=%s", line);
++			if(sscanf(line, "players options %i %i", &w, &h) == 2) {
++				ggzdmod_log(ttt_game.ggz, "Game restoration: options=%i/%i", w, h);
++				/* unused width/height */
++			} else if(sscanf(line, "player1 move %i %i", &x, &y) == 2) {
++				ggzdmod_log(ttt_game.ggz, "Game restoration: player1=%i/%i", x, y);
++				variables.space[x * 3 + y] = 1;
++			} else if(sscanf(line, "player2 move %i %i", &x, &y) == 2) {
++				ggzdmod_log(ttt_game.ggz, "Game restoration: player2=%i/%i", x, y);
++				variables.space[x * 3 + y] = 2;
++			} else {
++				ggzdmod_log(ttt_game.ggz, "Game restoration: dismiss");
++			}
++		}
++		fclose(f);
++	}
++
 +	ttt_game.savegame = fopen(savegamepath, "a");
 +	ggz_free(savegamepath);
 +}
@@ -198,7 +213,7 @@ Index: game_servers/tictactoe/game.c
  /* Callback for GGZDMOD_EVENT_STATE */
  static void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event,
  				  const void *data)
-@@ -220,6 +245,10 @@
+@@ -220,6 +275,10 @@
  	case GGZDMOD_STATE_DONE:
  		/* The game is over and will be destroyed */
  		break;
@@ -209,7 +224,7 @@ Index: game_servers/tictactoe/game.c
  	}
  }
  
-@@ -714,7 +743,7 @@
+@@ -714,7 +773,7 @@
  	va_list ap;
  
  	if(!ttt_game.savegame) {
@@ -245,15 +260,6 @@ Index: ggzdmod/ggzdmod.h
  	/** @brief An error has occurred
  	 *  This event occurs when a GGZdMod error has occurred.  An
  	 *  error message (a const char*) will be passed as the event's data.
-@@ -700,6 +707,8 @@
-  */
- void ggzdmod_report_savegame(GGZdMod *ggzdmod, const char *savegame);
- 
-+void ggzdmod_request_savedgames(GGZdMod *ggzdmod);
-+
- /** @brief Tell GGZ to change the number of seats at this table.
-  *  @note This functionality is incomplete, and should not yet be used. */
- void ggzdmod_request_num_seats(GGZdMod * ggzdmod, int num_seats);
 Index: ggzdmod/mod.h
 ===================================================================
 --- ggzdmod/mod.h	(Revision 9802)
@@ -284,15 +290,6 @@ Index: ggzdmod/protocol.h
 ===================================================================
 --- ggzdmod/protocol.h	(Revision 9802)
 +++ ggzdmod/protocol.h	(Arbeitskopie)
-@@ -99,7 +99,7 @@
- 	 * - an integer containing MSG_SAVEGAME_REPORT
- 	 * - an easysock-formatted string containing the path of the file
- 	 */
--	MSG_SAVEGAME_REPORT
-+	MSG_SAVEGAME_REPORT,
- } TableToControl;
- 
- /** Messages sent from the ggz server to the game server. */
 @@ -174,6 +174,14 @@
  	 *  only effect is to let the table know the information has
  	 */
@@ -1120,7 +1117,7 @@ Index: ggzd/room.c
 +				table->type = game_type;
 +				table->room = room;
 +				table->state = GGZDMOD_STATE_RESTORED;
-+				table->savegame = sp->savegame;
++				table->savegame = ggz_strdup(sp->savegame);
 +
 +				// Make open all seats. Game using save game
 +				// must be not used seats close.
