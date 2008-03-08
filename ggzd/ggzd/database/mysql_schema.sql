@@ -8,6 +8,7 @@ CREATE TABLE `users` (
 	`firstlogin` timestamp NOT NULL default '0',
 	`lastlogin` timestamp NOT NULL default '0',
 	`perms` int(11) NOT NULL default '7',
+	`confirmed` boolean,
 	PRIMARY KEY  (`id`),
 	UNIQUE KEY `handle` (`handle`),
 	KEY `player_get_first` (`password`,`name`,`email`,`lastvisit`,`perms`)

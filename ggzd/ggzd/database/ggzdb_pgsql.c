@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 9781 2008-03-07 19:30:34Z josef $
+ * $Id: ggzdb_pgsql.c 9789 2008-03-08 08:50:11Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -411,10 +411,10 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	email_quoted = _ggz_sql_escape(pe->email);
 
 	snprintf(query, sizeof(query), "INSERT INTO users "
-		 "(handle, password, name, email, lastlogin, permissions, firstlogin) "
-		 "VALUES ('%s', '%s', '%s', '%s', %li, %u, %li)",
+		 "(handle, password, name, email, lastlogin, permissions, firstlogin, confirmed) "
+		 "VALUES ('%s', '%s', '%s', '%s', %li, %u, %li, %u)",
 		 handle_quoted, password_quoted, name_quoted, email_quoted,
-		 pe->last_login, pe->perms, time(NULL));
+		 pe->last_login, pe->perms, time(NULL), pe->confirmed);
 
 	if (handle_quoted)
 		ggz_free(handle_quoted);
@@ -471,7 +471,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 
 	snprintf(query, sizeof(query),
 		 "SELECT "
-		 "password, name, email, lastlogin, permissions "
+		 "password, name, email, lastlogin, permissions, confirmed "
 		 "FROM users WHERE %s(handle) = %s('%s')",
 		 lower(), lower(), handle_quoted);
 
@@ -486,6 +486,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 			strncpy(pe->email, PQgetvalue(res, 0, 2), sizeof(pe->email));
 			pe->last_login = atol(PQgetvalue(res, 0, 3));
 			pe->perms = atol(PQgetvalue(res, 0, 4));
+			pe->confirmed = atol(PQgetvalue(res, 0, 5));
 			rc = GGZDB_NO_ERROR;
 		} else	{
 			/* This is supposed to happen when we look up
@@ -530,10 +531,10 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	snprintf(query, sizeof(query),
 		 "UPDATE users SET "
 		 "password = '%s', name = '%s', email = '%s', "
-		 "lastlogin = %li, permissions = %u WHERE "
+		 "lastlogin = %li, permissions = %u, confirmed = %u WHERE "
 		 "%s(handle) = %s('%s')",
 		 password_quoted, name_quoted, email_quoted,
-		 pe->last_login, pe->perms,
+		 pe->last_login, pe->perms, pe->confirmed,
 		 lower(), lower(), handle_quoted);
 
 	if (handle_quoted)
@@ -629,7 +630,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 
 	snprintf(query, sizeof(query),
 		 "SELECT "
-		 "id, handle, password, name, email, lastlogin, permissions "
+		 "id, handle, password, name, email, lastlogin, permissions, confirmed "
 		 "FROM users");
 	iterres = PQexec(conn, query);
 
@@ -642,6 +643,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 			strncpy(pe->email, PQgetvalue(iterres, 0, 4), sizeof(pe->email));
 			pe->last_login = atol(PQgetvalue(iterres, 0, 5));
 			pe->perms = atol(PQgetvalue(iterres, 0, 6));
+			pe->confirmed = atol(PQgetvalue(iterres, 0, 7));
 			rc = GGZDB_NO_ERROR;
 		} else {
 			PQclear(iterres);
@@ -678,6 +680,7 @@ GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 		strncpy(pe->email, PQgetvalue(iterres, itercount, 4), sizeof(pe->email));
 		pe->last_login = atol(PQgetvalue(iterres, itercount, 5));
 		pe->perms = atol(PQgetvalue(iterres, itercount, 6));
+		pe->confirmed = atol(PQgetvalue(iterres, itercount, 7));
 
 		return GGZDB_NO_ERROR;
 	} else {

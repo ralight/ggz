@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9781 2008-03-07 19:30:34Z josef $
+ * $Id: parse_opt.c 9789 2008-03-08 08:50:11Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -321,7 +321,7 @@ void parse_conf_file(void)
 	}
 
 	/* Default settings (everything != 0/NULL) */
-	opt.registration_policy = 1;
+	opt.registration_policy = GGZ_REGISTRATION_OPEN;
 
 	/* Get options from the file */
 	opt.conf_valid = false;
@@ -419,7 +419,15 @@ static void get_config_options(int ch)
 
 	/* Unicode/policy settings in [General] */
 	opt.username_policy = ggz_conf_read_string(ch, "General", "UsernamePolicy", NULL);
-	opt.registration_policy = ggz_conf_read_int(ch, "General", "RegistrationPolicy", 1);
+	strval = ggz_conf_read_string(ch, "General", "RegistrationPolicy", NULL);
+	if(!ggz_strcmp(strval, "open"))
+		opt.registration_policy = GGZ_REGISTRATION_OPEN;
+	else if(!ggz_strcmp(strval, "confirm"))
+		opt.registration_policy = GGZ_REGISTRATION_CONFIRM;
+	else if(!ggz_strcmp(strval, "confirmlater"))
+		opt.registration_policy = GGZ_REGISTRATION_CONFIRMLATER;
+	else if(!ggz_strcmp(strval, "closed"))
+		opt.registration_policy = GGZ_REGISTRATION_CLOSED;
 
 	/* [Games] */
 	ggz_conf_read_list(ch, "Games", "GameList", &g_count, &g_list);

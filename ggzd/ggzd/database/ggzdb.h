@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 9781 2008-03-07 19:30:34Z josef $
+ * $Id: ggzdb.h 9789 2008-03-08 08:50:11Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -34,7 +34,7 @@
 
 /* Anytime structures change, bump the version id */
 /* Must be fewer than 7 characters. */
-#define GGZDB_VERSION_ID	"0.7"
+#define GGZDB_VERSION_ID	"0.8"
 
 /* For ggzdb_player_XXX */
 typedef struct {
@@ -45,6 +45,7 @@ typedef struct {
 	char email[33];				/* Players email address */
 	time_t last_login;			/* Last login */
 	unsigned int perms;			/* Permission settings */
+	unsigned int confirmed;			/* Confirmation status */
 } ggzdbPlayerEntry;
 
 typedef struct {

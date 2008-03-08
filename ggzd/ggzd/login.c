@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 9547 2008-01-17 20:26:33Z oojah $
+ * $Id: login.c 9789 2008-03-08 08:50:11Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -97,7 +97,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 	        player, type);
 
 	/* If we disallow new registrations, we ignore logins straight away */
-	if(type != GGZ_LOGIN && !opt.registration_policy) {
+	if(type != GGZ_LOGIN && opt.registration_policy == GGZ_REGISTRATION_CLOSED) {
 		dbg_msg(GGZ_DBG_CONNECTION,
 		        "Registration/guest login attempt of name %s while it is prohibited.",
 		        name);
@@ -186,6 +186,13 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 				player->client->addr, name);
 			name_ok = false;
 			reason = E_USR_LOOKUP;
+		} else if(!db_pe.confirmed) {
+			if(opt.registration_policy == GGZ_REGISTRATION_CONFIRM) {
+				dbg_msg(GGZ_DBG_CONNECTION,
+					"Unsuccessful login of %s - account unconfirmed", name);
+				name_ok = false;
+				reason = E_USR_LOOKUP;
+			}
 		}
 		if(!name_ok) {
 			hash_player_delete(name);
@@ -227,6 +234,13 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 		log_msg(GGZ_LOG_SECURITY, "NEWACCT (%u) from %s for %s",
 			db_pe.user_id, player->client->addr, name);
 		login_type = " newly registered player";
+
+		if(opt.registration_policy == GGZ_REGISTRATION_CONFIRM) {
+			if (net_send_login(player->client->net, type,
+					   E_USR_LOOKUP, NULL) < 0)
+				return GGZ_REQ_DISCONNECT;
+			return GGZ_REQ_FAIL;
+		}
 	} else
 		login_type = "n anonymous player";
 

@@ -74,7 +74,8 @@
 
 # Policy file on guest names and player registration
 #UsernamePolicy = @prefix@/etc/ggzd/username.policy
-#RegistrationPolicy = 1
+#   The policy must be one of open, confirm, confirmlater, closed.
+#RegistrationPolicy = open
 
 ############################################################################
 # Logging Options

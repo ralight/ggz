@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 9585 2008-01-23 13:58:26Z oojah $
+ * $Id: ggzd.h 9789 2008-03-08 08:50:11Z josef $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -68,6 +68,14 @@ typedef enum {
 	GGZ_LOGIN_NONE = 0,
 	GGZ_LOGIN_REGISTERED = 1
 } GGZLoginStatus;
+
+/* Registration policies */
+typedef enum {
+	GGZ_REGISTRATION_OPEN,
+	GGZ_REGISTRATION_CONFIRM,
+	GGZ_REGISTRATION_CONFIRMLATER,
+	GGZ_REGISTRATION_CLOSED
+} GGZRegistrationPolicy;
 
 typedef struct _GGZPlayer GGZPlayer;
 typedef struct GGZTable GGZTable;
