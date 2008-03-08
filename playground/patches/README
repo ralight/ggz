@@ -7,10 +7,6 @@ Current patches
 Real-time statistics from ggzd:
  ggzd_statsrt.diff
 
-Game restores after crashes or disconnections (from Vasiliy, cleaned up a bit)
- gamerestore.libggz.diff
- gamerestore.ggzd.diff
-
 Game server in "scuola in ospedale" (on top of 0.0.14-branch diff)
  italy.diff
 
@@ -57,6 +53,11 @@ Only for pgsql and mysql.
 
 Old patches (just to keep it in memory)
 ---------------------------------------
+
+Game restores after crashes or disconnections (from Vasiliy, cleaned up a bit)
+ gamerestore.libggz.diff
+ gamerestore.ggzd.diff
+
 Abandoned seats:
  abandoned.diff
 
