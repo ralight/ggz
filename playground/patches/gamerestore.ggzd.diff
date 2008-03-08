@@ -732,6 +732,19 @@ Index: ggzdmod/io.h
  
  /* Read and dispatch message */
  int _io_read_data(GGZdMod * ggzdmod);
+Index: ggzd/stats.c
+===================================================================
+--- ggzd/stats.c	(Revision 9802)
++++ ggzd/stats.c	(Arbeitskopie)
+@@ -409,7 +409,7 @@
+ 		sizeof(game_name));
+ 	pthread_rwlock_unlock(&game_types[gametype].lock);
+ 
+-	ggzdb_stats_savegame(game_name, owner, savegame);
++	ggzdb_stats_savegame(game_name, owner, savegame, pthread_self());
+ }
+ 
+ /* This function allocates a list which must be ggz_list_free()d. */
 Index: ggzd/control.c
 ===================================================================
 --- ggzd/control.c	(Revision 9802)
@@ -754,7 +767,12 @@ Index: ggzd/database/mysql_schema.sql
 ===================================================================
 --- ggzd/database/mysql_schema.sql	(Revision 9802)
 +++ ggzd/database/mysql_schema.sql	(Arbeitskopie)
-@@ -78,6 +78,17 @@
+@@ -74,10 +74,22 @@
+ 	`game` text NOT NULL,
+ 	`owner` text NOT NULL,
+ 	`savegame` text NOT NULL,
++	`tableid` int(11) NOT NULL default '0',
+ 	PRIMARY KEY  (`id`)
  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
  
  
@@ -765,7 +783,7 @@ Index: ggzd/database/mysql_schema.sql
 +	`handle` text NOT NULL,
 +	`seattype` text NOT NULL,
 +	PRIMARY KEY  (`id`),
-+	CONSTRAINT `savegame` FOREIGN KEY (`savegame`) REFERENCES `savegames` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
++	--CONSTRAINT `savegame` FOREIGN KEY (`savegame`) REFERENCES `savegames` (`tableid`) ON UPDATE CASCADE ON DELETE CASCADE
 +) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 +
 +
@@ -776,15 +794,30 @@ Index: ggzd/database/ggzdb.h
 ===================================================================
 --- ggzd/database/ggzdb.h	(Revision 9802)
 +++ ggzd/database/ggzdb.h	(Arbeitskopie)
-@@ -24,6 +24,7 @@
+@@ -24,6 +24,8 @@
   */
  
  #include <time.h>
 +#include <ggz.h>
++#include <ggz_common.h>
  
  #include "ggzd.h"
  
-@@ -92,7 +93,6 @@
+@@ -83,6 +85,13 @@
+ 	long highest_score;
+ } ggzdbPlayerGameStats;
+ 
++typedef struct {
++	char *owner;
++	int count;
++	GGZSeatType *types;
++	char **names;
++} ggzdbSavegamePlayers;
++
+ /* Error codes */
+ typedef enum {
+ 	GGZDB_NO_ERROR,		/* All's well */
+@@ -92,7 +101,6 @@
  	GGZDB_ERR_DB		/* Uh oh.  A database error. */
  } GGZDBResult;
  
@@ -792,7 +825,16 @@ Index: ggzd/database/ggzdb.h
  /* Exported functions */
  GGZReturn ggzdb_init(ggzdbConnection connection, bool standalone);
  void ggzdb_close(void);
-@@ -131,5 +131,14 @@
+@@ -123,7 +131,7 @@
+ GGZDBResult ggzdb_stats_newmatch(const char *game, const char *winner, const char *savegame);
+ 
+ /* Register a savegame entry temporarily */
+-GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame);
++GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, int tableid);
+ 
+ /* Report the top-N players for a certain game type */
+ GGZDBResult ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGameStats **rankings);
+@@ -131,5 +139,14 @@
  /* Recalculate statistics for a certain game type */
  GGZDBResult ggzdb_stats_calcrankings(const char *game);
  
@@ -838,57 +880,115 @@ Index: ggzd/database/ggzdb_pgsql.c
  
  		return GGZDB_NO_ERROR;
  	} else {
-@@ -948,7 +948,7 @@
+@@ -931,7 +931,7 @@
+ 	return rc;
+ }
+ 
+-GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame)
++GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, int tableid)
+ {
+ 	PGconn *conn;
+ 	PGresult *res;
+@@ -948,10 +948,10 @@
  	owner_quoted = _ggz_sql_escape(owner);
  
  	snprintf(query, sizeof(query),
 -		"INSERT INTO savegames"
+-		"(date, game, owner, savegame) VALUES "
+-		"(%li, '%s', '%s', '%s')",
+-		time(NULL), game, owner, savegame);
 +		"INSERT INTO savegames "
- 		"(date, game, owner, savegame) VALUES "
- 		"(%li, '%s', '%s', '%s')",
- 		time(NULL), game, owner, savegame);
-@@ -1037,3 +1037,131 @@
++		"(date, game, owner, savegame, tableid) VALUES "
++		"(%li, '%s', '%s', '%s', %i)",
++		time(NULL), game, owner, savegame, tableid);
+ 
+ 	ggz_free(owner_quoted);
+ 
+@@ -1037,3 +1037,177 @@
  	return GGZDB_NO_ERROR;
  }
  
 +static void strfree(void *str)
 +{
-+	ggz_free(str);
++	ggzdbSavegamePlayers *sp = str;
++	int i;
++
++	ggz_free(sp->owner);
++	for(i = 0; i < sp->count; i++) {
++		ggz_free(sp->names[i]);
++	}
++	if(sp->names)
++		ggz_free(sp->names);
++	if(sp->types)
++		ggz_free(sp->types);
++	ggz_free(sp);
 +}
 +
 +GGZList *_ggzdb_savegame_owners(const char *game)
 +{
 +	PGconn *conn;
-+	PGresult *res;
++	PGresult *res, *res2;
 +	GGZList *owners = NULL;
++
++	char query[4096];
++	char *game_quoted;
++	char *owner;
++	int tableid;
++	int i, j;
++	ggzdbSavegamePlayers *sp;
 +
 +	conn = claimconnection();
 +	if (!conn) {
 +		err_msg("ggzdb_savegame_owners: couldn't claim connection");
 +		return NULL;
++	}
++
++	game_quoted = _ggz_sql_escape(game);
++	snprintf(query, sizeof(query),
++		"SELECT owner, tableid FROM savegames WHERE game = '%s'",
++		game_quoted);
++	ggz_free(game_quoted);
++
++	res = PQexec(conn, query);
++	if (PQresultStatus(res) != PGRES_TUPLES_OK) {
++		err_msg("couldn't read savegame owners");
 +	} else {
-+		char query[4096];
-+		char *game_quoted;
-+		char *owner;
-+		int i;
++		owners = ggz_list_create(NULL, NULL, (ggzEntryDestroy)strfree, GGZ_LIST_ALLOW_DUPS);
++		for(i = 0; i < PQntuples(res); i++) {
++			owner = ggz_strdup(PQgetvalue(res, i, 0));
++			tableid = atol(ggz_strdup(PQgetvalue(res, i, 1)));
 +
-+		game_quoted = _ggz_sql_escape(game);
-+		snprintf(query, sizeof(query),
-+			"SELECT owner FROM savegames WHERE game='%s'",
-+			game_quoted);
-+		ggz_free(game_quoted);
++			sp = ggz_malloc(sizeof(ggzdbSavegamePlayers));
++			sp->owner = owner;
++			sp->count = 0;
++			sp->names = NULL;
++			sp->types = NULL;
 +
-+		res = PQexec(conn, query);
-+		if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-+			err_msg("couldn't read savegame owners");
-+		} else {
-+			owners = ggz_list_create(NULL, NULL, (ggzEntryDestroy)strfree, GGZ_LIST_ALLOW_DUPS);
-+			for(i = 0; i < PQntuples(res); i++) {
-+				owner = ggz_strdup(PQgetvalue(res, i, 0));
-+				ggz_list_insert(owners, owner);
++			snprintf(query, sizeof(query),
++				"SELECT seat, seattype, handle FROM savegameplayers "
++				"WHERE savegame = %i ORDER BY seat ASC",
++				tableid);
++
++			res2 = PQexec(conn, query);
++			if (PQresultStatus(res2) != PGRES_TUPLES_OK) {
++				err_msg("couldn't read savegame players");
++			} else {
++				sp->count = PQntuples(res2);
++				sp->types = ggz_malloc(sp->count * sizeof(int));
++				sp->names = ggz_malloc(sp->count * sizeof(char*));
++				for(j = 0; j < sp->count; j++) {
++					sp->types[j] = ggz_string_to_seattype(PQgetvalue(res2, j, 1));
++					sp->names[j] = ggz_strdup(PQgetvalue(res2, j, 2));
++				}
 +			}
++			PQclear(res2);
++
++			ggz_list_insert(owners, sp);
 +		}
 +	}
++	PQclear(res);
++
++	releaseconnection(conn);
 +
 +	return owners;
 +}
@@ -899,37 +999,40 @@ Index: ggzd/database/ggzdb_pgsql.c
 +	PGresult *res;
 +	GGZList *savegames = NULL;
 +	
++	char query[4096];
++	char *game_quoted;
++	char *owner_quoted;
++	char *savegame;
++	int i;
++
 +	conn = claimconnection();
 +	if (!conn) {
 +		err_msg("ggzdb_savegames: couldn't claim connection");
 +		return NULL;
++	}
++
++	game_quoted = _ggz_sql_escape(game);
++	owner_quoted = _ggz_sql_escape(owner);
++	snprintf(query, sizeof(query),
++		"SELECT savegame FROM savegames "
++		"WHERE game = '%s' AND owner = '%s'",
++		game_quoted, owner_quoted);
++	ggz_free(game_quoted);
++	ggz_free(owner_quoted);
++
++	res = PQexec(conn, query);
++	if (PQresultStatus(res) != PGRES_TUPLES_OK) {
++		err_msg("couldn't read savegames");
 +	} else {
-+		char query[4096];
-+		char *game_quoted;
-+		char *owner_quoted;
-+		char *savegame;
-+		int i;
-+
-+		game_quoted = _ggz_sql_escape(game);
-+		owner_quoted = _ggz_sql_escape(owner);
-+		snprintf(query, sizeof(query),
-+			"SELECT savegame FROM savegames "
-+			"WHERE game='%s' AND owner='%s'",
-+			game_quoted, owner_quoted);
-+		ggz_free(game_quoted);
-+		ggz_free(owner_quoted);
-+
-+		res = PQexec(conn, query);
-+		if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-+			err_msg("couldn't read savegames");
-+		} else {
-+			savegames = ggz_list_create(NULL, NULL, (ggzEntryDestroy)strfree, GGZ_LIST_ALLOW_DUPS);
-+			for(i = 0; i < PQntuples(res); i++) {
-+				savegame = ggz_strdup(PQgetvalue(res, i, 0));
-+				ggz_list_insert(savegames, savegame);
-+			}
++		savegames = ggz_list_create(NULL, NULL, (ggzEntryDestroy)strfree, GGZ_LIST_ALLOW_DUPS);
++		for(i = 0; i < PQntuples(res); i++) {
++			savegame = ggz_strdup(PQgetvalue(res, i, 0));
++			ggz_list_insert(savegames, savegame);
 +		}
 +	}
++	PQclear(res);
++
++	releaseconnection(conn);
 +
 +	return savegames;
 +}
@@ -983,8 +1086,13 @@ Index: ggzd/database/ggz.sql
 ===================================================================
 --- ggzd/database/ggz.sql	(Revision 9802)
 +++ ggzd/database/ggz.sql	(Arbeitskopie)
-@@ -57,3 +57,11 @@
- 	"savegame" character varying(256)
+@@ -54,6 +54,15 @@
+ 	"date" bigint,
+ 	"game" character varying(256),
+ 	"owner" character varying(256),
+-	"savegame" character varying(256)
++	"savegame" character varying(256),
++	"tableid" bigint
  );
  
 +CREATE TABLE "%PREFIX%savegameplayers" (
@@ -995,10 +1103,71 @@ Index: ggzd/database/ggz.sql
 +	"seattype" character varying(256)
 +);
 +
+Index: ggzd/database/ggzdb_dbi.c
+===================================================================
+--- ggzd/database/ggzdb_dbi.c	(Revision 9802)
++++ ggzd/database/ggzdb_dbi.c	(Arbeitskopie)
+@@ -327,7 +327,7 @@
+ 	return GGZDB_NO_ERROR;
+ }
+ 
+-GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame)
++GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, int tableid)
+ {
+ 	/* Not implemented, but do not return error */
+ 	return GGZDB_NO_ERROR;
+Index: ggzd/database/ggzdb_sqlite.c
+===================================================================
+--- ggzd/database/ggzdb_sqlite.c	(Revision 9802)
++++ ggzd/database/ggzdb_sqlite.c	(Arbeitskopie)
+@@ -277,7 +277,7 @@
+ 	return GGZDB_NO_ERROR;
+ }
+ 
+-GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame)
++GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, int tableid)
+ {
+ 	/* Not implemented, but do not return error */
+ 	return GGZDB_NO_ERROR;
+Index: ggzd/database/ggzdb_mysql.c
+===================================================================
+--- ggzd/database/ggzdb_mysql.c	(Revision 9802)
++++ ggzd/database/ggzdb_mysql.c	(Arbeitskopie)
+@@ -525,7 +525,7 @@
+ 	}
+ }
+ 
+-GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame)
++GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, int tableid)
+ {
+ 	char query[4096];
+ 	int rc;
+@@ -535,9 +535,9 @@
+ 
+ 	snprintf(query, sizeof(query),
+ 		"INSERT INTO `savegames`"
+-		"(`date`,`game`,`owner`,`savegame`) VALUES "
+-		"(%li, '%s', '%s', '%s')",
+-		time(NULL), game, owner, savegame);
++		"(`date`,`game`,`owner`,`savegame`,`tableid`) VALUES "
++		"(%li, '%s', '%s', '%s', %i)",
++		time(NULL), game, owner, savegame, tableid);
+ 
+ 	ggz_free(owner_quoted);
+ 
 Index: ggzd/database/ggzdb_proto.h
 ===================================================================
 --- ggzd/database/ggzdb_proto.h	(Revision 9802)
 +++ ggzd/database/ggzdb_proto.h	(Arbeitskopie)
+@@ -123,7 +123,7 @@
+ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const char *savegame);
+ 
+ /** Register a savegame entry temporarily */
+-GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame);
++GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, int tableid);
+ 
+ /** Add player entry to a match statistics entry */
+ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats);
 @@ -135,3 +135,9 @@
  GGZDBResult _ggzdb_stats_calcrankings(const char *game);
  
@@ -1009,11 +1178,30 @@ Index: ggzd/database/ggzdb_proto.h
 +
 +GGZDBResult _ggzdb_savegame_player(int savegame, int seat, const char *name, int type);
 +
+Index: ggzd/database/ggzdb_db4.c
+===================================================================
+--- ggzd/database/ggzdb_db4.c	(Revision 9802)
++++ ggzd/database/ggzdb_db4.c	(Arbeitskopie)
+@@ -417,7 +417,7 @@
+ 	return GGZDB_NO_ERROR;
+ }
+ 
+-GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame)
++GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, int tableid)
+ {
+ 	/* Not implemented, but do not return error */
+ 	return GGZDB_NO_ERROR;
 Index: ggzd/database/ggzdb_functions.h
 ===================================================================
 --- ggzd/database/ggzdb_functions.h	(Revision 9802)
 +++ ggzd/database/ggzdb_functions.h	(Arbeitskopie)
-@@ -44,3 +44,8 @@
+@@ -39,8 +39,13 @@
+ GGZDBResult (*_ggzdb_stats_lookup)(ggzdbPlayerGameStats *stats);
+ GGZDBResult (*_ggzdb_stats_update)(ggzdbPlayerGameStats *stats);
+ GGZDBResult (*_ggzdb_stats_newmatch)(const char *game, const char *winner, const char *savegame);
+-GGZDBResult (*_ggzdb_stats_savegame)(const char *game, const char *owner, const char *savegame);
++GGZDBResult (*_ggzdb_stats_savegame)(const char *game, const char *owner, const char *savegame, int tableid);
+ GGZDBResult (*_ggzdb_stats_match)(ggzdbPlayerGameStats *stats);
  GGZDBResult (*_ggzdb_stats_toprankings)(const char *game, int number, ggzdbPlayerGameStats **rankings);
  GGZDBResult (*_ggzdb_stats_calcrankings)(const char *game);
  
@@ -1039,6 +1227,24 @@ Index: ggzd/database/ggzdb.c
  	{
  		err_sys_exit("%s is an invalid database module (%s)",
  			backend, dlerror());
+@@ -418,7 +422,7 @@
+ }
+ 
+ 
+-GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame)
++GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, int tableid)
+ {
+ 	GGZDBResult rc = GGZDB_NO_ERROR;
+ 
+@@ -428,7 +432,7 @@
+ 		rc = ggzdb_stats_init();
+ 
+ 	if (rc == GGZDB_NO_ERROR)
+-		rc = _ggzdb_stats_savegame(game, owner, savegame);
++		rc = _ggzdb_stats_savegame(game, owner, savegame, tableid);
+ 
+ 	_ggzdb_exit();
+ 
 @@ -471,7 +475,60 @@
  	return rc;
  }
@@ -1119,7 +1325,7 @@ Index: ggzd/room.c
 ===================================================================
 --- ggzd/room.c	(Revision 9802)
 +++ ggzd/room.c	(Arbeitskopie)
-@@ -623,3 +623,66 @@
+@@ -623,3 +623,71 @@
  	return removed;
  }
  
@@ -1142,7 +1348,7 @@ Index: ggzd/room.c
 +		pthread_rwlock_unlock(&game_types[game_type].lock);
 +
 +		GGZList *owners = ggzdb_savegame_owners(game_name);
-+		char *owner;
++		ggzdbSavegamePlayers *sp;
 +		GGZListEntry *entry;
 +
 +		ggz_free(game_name);
@@ -1151,7 +1357,7 @@ Index: ggzd/room.c
 +			dbg_msg(GGZ_DBG_ROOM, "Restore games for room %d...", room);
 +
 +			for(entry = ggz_list_head(owners); entry; entry = ggz_list_next(entry)) {
-+				owner = ggz_list_get_data(entry);
++				sp = ggz_list_get_data(entry);
 +				GGZTable *table = table_new();
 +				table->type = game_type;
 +				table->room = room;
@@ -1162,8 +1368,8 @@ Index: ggzd/room.c
 +				pthread_rwlock_rdlock(&game_types[game_type].lock);
 +				int seats = ggz_numberlist_get_max(&game_types[game_type].player_allow_list);
 +				pthread_rwlock_unlock(&game_types[game_type].lock);
-+			
-+				dbg_msg(GGZ_DBG_ROOM, "- owner %s with %d seats", owner, seats);
++
++				dbg_msg(GGZ_DBG_ROOM, "- owner %s with %d seats", sp->owner, seats);
 +
 +				table->num_seats = seats;
 +				if (seats > 0) {
@@ -1171,12 +1377,17 @@ Index: ggzd/room.c
 +					table->seat_names = ggz_malloc(seats * sizeof(*table->seat_names));
 +					int i;
 +					for(i = 0; i < seats; ++i) {
-+						table->seat_types[i] = GGZ_SEAT_OPEN;
-+						table->seat_names[i][0] = '\0';
++						if(i < sp->count) {
++							table->seat_types[i] = sp->types[i];
++							ggz_strncpy(table->seat_names[i], sp->names[i], MAX_USER_NAME_LEN);
++						} else {
++							table->seat_types[i] = GGZ_SEAT_OPEN;
++							table->seat_names[i][0] = '\0';
++						}
 +					}
 +				}
 +
-+				if (table_launch(table, owner) != E_OK)
++				if (table_launch(table, sp->owner) != E_OK)
 +					ggz_free(table);
 +			}
 +			ggz_list_free(owners);
