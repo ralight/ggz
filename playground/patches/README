@@ -4,6 +4,9 @@ be merged with the sources.
 Current patches
 ---------------
 
+Room additions and removals through the web frontend:
+ roomsdb.ggzd+community.diff
+
 Real-time statistics from ggzd:
  ggzd_statsrt.diff
 

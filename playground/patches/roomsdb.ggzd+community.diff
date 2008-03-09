@@ -1,0 +1,356 @@
+Index: community/setup/sql/tournaments.sql
+===================================================================
+--- community/setup/sql/tournaments.sql	(Revision 9802)
++++ community/setup/sql/tournaments.sql	(Arbeitskopie)
+@@ -16,3 +16,14 @@
+ 	"playertype" character varying(256)
+ );
+ 
++CREATE TABLE rooms (
++	"id" serial NOT NULL,
++	"filebased" boolean,
++	"name" character varying(256),
++	"description" character varying(256),
++	"gametype" character varying(256),
++	"maxplayers" bigint,
++	"maxtables" bigint,
++	"entryrestriction" character varying(256)
++);
++
+Index: community/web/admin/rooms.php
+===================================================================
+--- community/web/admin/rooms.php	(Revision 0)
++++ community/web/admin/rooms.php	(Revision 0)
+@@ -0,0 +1,127 @@
++<?php
++
++include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
++$global_leftbar = "disabled";
++$global_rightbar = "disabled";
++include("top.inc");
++
++?>
++
++<div id="main">
++	<h1 style="color:#e05040">
++		<span class="itemleader">:: </span>
++		Administrative Commands - Room Configuration
++		<span class="itemleader"> :: </span>
++		<a name="personal"></a>
++	</h1>
++	<div class="text">
++	Based on the room definition file in the configuration directory of the
++	GGZ server, room variants can dynamically be created here.
++	</div>
++	<div class="text">
++
++<?php
++	$room_name = $_POST["room_name"];
++	$name = $_POST["name"];
++?>
++
++<?php if (!$room_name) : ?>
++
++	Select the room which you want to clone.
++	<br/>
++	<form action="rooms.php" method="POST">
++
++<?php
++
++$res = $database->exec("SELECT * FROM rooms WHERE filebased = 't'", array());
++if (($res) && ($database->numrows($res) > 0)) :
++	echo "<select name='room_name'>";
++	for ($i = 0; $i < $database->numrows($res); $i++)
++	{
++		$name = $database->result($res, $i, "name");
++		echo "<option>$name</option>";
++	}
++	echo "</select>";
++?>
++
++	<br/><br/>
++	<input type="submit" value="Configure clone..."/>
++	</form>
++
++<?php
++
++else :
++	echo "No rooms were found.";
++endif;
++
++?>
++
++<?php elseif (!$name) : ?>
++
++	Configure the cloned room's parameters.
++	<br/>
++	<form action="rooms.php" method="POST">
++	<input type="hidden" name="room_name" value="<?php echo $room_name; ?>"/>
++
++<?php
++
++$res = $database->exec("SELECT * FROM rooms WHERE filebased = 't' AND name='%^'",
++	array($room_name));
++if (($res) && ($database->numrows($res) == 1)) :
++	$description = $database->result($res, 0, "description");
++	$maxplayers = $database->result($res, 0, "maxplayers");
++	$maxtables = $database->result($res, 0, "maxtables");
++	$entryrestriction = $database->result($res, 0, "entryrestriction");
++
++	echo "<table>";
++	echo "<tr><th>Parameter</th><th>Original</th><th>New</th></tr>";
++	echo "<tr><th>Name</td><td>$room_name</td><td><input name='name' value='$room_name'/></td></tr>";
++	echo "<tr><th>Description</td><td>$description</td><td><input name='description' value='$description'/></td></tr>";
++	echo "<tr><th>Max # players</td><td>$maxplayers</td><td><input name='maxplayers' value='$maxplayers'/></td></tr>";
++	echo "<tr><th>Max # tables</td><td>$maxtables</td><td><input name='maxtables' value='$maxtables'/></td></tr>";
++	echo "<tr><th>Entry restriction</td><td>$entryrestriction</td><td><select name='entryrestriction'>";
++	echo "<option value='none'>None</option>";
++	echo "<option value='registered'>Registered players only</option>";
++	echo "<option value='registered'>Administrators only</option>";
++	echo "</select></td></tr>";
++	echo "</table>";
++?>
++
++	<br/><br/>
++	<input type="submit" value="Clone room"/>
++	</form>
++
++<?php
++
++else :
++	echo "Room was not found.";
++endif;
++
++?>
++
++<?php else : ?>
++
++<?php
++	$description = $_POST["description"];
++	$maxplayers = $_POST["maxplayers"];
++	$maxtables = $_POST["maxtables"];
++	$entryrestriction = $_POST["entryrestriction"];
++
++	$database->exec("INSERT INTO rooms " .
++		"(filebased, name, description, gametype, maxplayers, maxtables, entryrestriction) VALUES " .
++		"('f', '%^', '%^', '???', %^, %^, '%^')",
++		array($name, $description, $maxplayers, $maxtables, $entryrestriction));
++?>
++
++	The room has been created.
++
++<?php endif; ?>
++
++	</div>
++</div>
++
++<?php
++
++include("bottom.inc")
++
++?>
+Index: community/web/admin/index.php
+===================================================================
+--- community/web/admin/index.php	(Revision 9802)
++++ community/web/admin/index.php	(Arbeitskopie)
+@@ -33,6 +33,7 @@
+ else:
+ 	echo "<a href='index.php?check=mail'>test admin mail</a><br>";
+ 	echo "<a href='index.php?check=phpinfo'>phpinfo output</a><br>";
++	echo "<a href='rooms.php'>room configuration</a><br>";
+ endif;
+ 
+ ?>
+Index: docs/ggz-project/release-procedure
+===================================================================
+--- docs/ggz-project/release-procedure	(Revision 9802)
++++ docs/ggz-project/release-procedure	(Arbeitskopie)
+@@ -20,7 +20,8 @@
+ [] update build instruction.
+    Affected files are README.GGZ and QuickStart.GGZ.
+    Does 'make distcheck' work? (The ggzbuild tools might help)
+-   (There's also DISTCHECK_CONFIGURE_FLAGS to add a prefix or the like.)
++   (There's also DISTCHECK_CONFIGURE_FLAGS to add a prefix or the like.
++   See playground/maintenance/makedist.sh)
+ [] update RPM and Debian scripts if possible
+ [] update NEWS and README
+ [] bump version numbers
+Index: ggzd/ggzd/database/ggzdb.h
+===================================================================
+--- ggzd/ggzd/database/ggzdb.h	(Revision 9812)
++++ ggzd/ggzd/database/ggzdb.h	(Arbeitskopie)
+@@ -28,6 +28,7 @@
+ #include <ggz_common.h>
+ 
+ #include "ggzd.h"
++#include "room.h"
+ 
+ /* Can't include twice */
+ #ifndef GGZDB_VERSION_ID
+@@ -149,5 +150,8 @@
+ /* Report a table seat change to the database */
+ GGZDBResult ggzdb_savegameplayer(int savegame, int seat, const char *name, int type);
+ 
++/* Register all rooms */
++GGZDBResult ggzdb_rooms(RoomStruct *rooms, int num);
++
+ #endif
+ 
+Index: ggzd/ggzd/database/ggzdb_pgsql.c
+===================================================================
+--- ggzd/ggzd/database/ggzdb_pgsql.c	(Revision 9812)
++++ ggzd/ggzd/database/ggzdb_pgsql.c	(Arbeitskopie)
+@@ -1212,6 +1212,7 @@
+ 		savegame, seat);
+ 
+ 	res = PQexec(conn, query);
++	PQclear(res);
+ 
+ 	name_quoted = _ggz_sql_escape(name);
+ 
+@@ -1237,3 +1238,61 @@
+ 	return rc;
+ }
+ 
++GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num)
++{
++	PGconn *conn;
++	PGresult *res;
++	char query[8192];
++	int rc = GGZDB_ERR_DB;
++	char *name_quoted, *description_quoted;
++	int i;
++
++	conn = claimconnection();
++	if (!conn) {
++		err_msg("_ggzdb_rooms: couldn't claim connection");
++		return rc;
++	}
++
++	/* FIXME: what do we do with invalidated derived rooms? */
++	snprintf(query, sizeof(query),
++		"DELETE FROM rooms WHERE filebased = 't'");
++
++	res = PQexec(conn, query);
++	PQclear(res);
++
++	for(i = 0; i < num; i++) {
++		RoomStruct room = rooms[i];
++
++		name_quoted = _ggz_sql_escape(ggz_intlstring_translated(room.name, NULL));
++		description_quoted = _ggz_sql_escape(ggz_intlstring_translated(room.description, NULL));
++
++		/* FIXME: evaluate room->perms and somehow also room->game_type */
++		snprintf(query, sizeof(query),
++			"INSERT INTO rooms "
++			"(filebased, name, description, gametype, maxplayers, maxtables, entryrestriction) VALUES "
++			"('t', '%s', '%s', '%s', %i, %i, '%s')",
++			name_quoted, description_quoted, "???",
++			room.max_players, room.max_tables, "none");
++
++		if(name_quoted)
++			ggz_free(name_quoted);
++		if(description_quoted)
++			ggz_free(description_quoted);
++
++		res = PQexec(conn, query);
++
++		if (PQresultStatus(res) != PGRES_COMMAND_OK) {
++			err_msg("couldn't insert room %s",
++				ggz_intlstring_translated(room.name, NULL));
++			PQclear(res);
++			break;
++		}
++		else rc = GGZDB_NO_ERROR;
++		PQclear(res);
++	}
++
++	releaseconnection(conn);
++
++	return rc;
++}
++
+Index: ggzd/ggzd/database/ggzdb_proto.h
+===================================================================
+--- ggzd/ggzd/database/ggzdb_proto.h	(Revision 9812)
++++ ggzd/ggzd/database/ggzdb_proto.h	(Arbeitskopie)
+@@ -141,3 +141,5 @@
+ 
+ GGZDBResult _ggzdb_savegame_player(int savegame, int seat, const char *name, int type);
+ 
++GGZDBResult ggzdb_rooms(RoomStruct *rooms, int num);
++
+Index: ggzd/ggzd/database/ggzdb_util.c
+===================================================================
+--- ggzd/ggzd/database/ggzdb_util.c	(Revision 9802)
++++ ggzd/ggzd/database/ggzdb_util.c	(Arbeitskopie)
+@@ -50,6 +50,7 @@
+ 
+ 	for(p = str; *p != '\0'; p++) {
+ 		if(*p == '\'') {
++			/* FIXME: for pgsql this needs to be '\'', i.e. «'Nine men''s morris'» */
+ 			*q++ = '\\';
+ 			*q = *p;
+ 		} else {
+Index: ggzd/ggzd/database/ggzdb_functions.h
+===================================================================
+--- ggzd/ggzd/database/ggzdb_functions.h	(Revision 9812)
++++ ggzd/ggzd/database/ggzdb_functions.h	(Arbeitskopie)
+@@ -49,3 +49,5 @@
+ 
+ GGZDBResult (*_ggzdb_savegame_player)(int savegame, int seat, const char *name, int type);
+ 
++GGZDBResult (*_ggzdb_rooms)(RoomStruct *rooms, int num);
++
+Index: ggzd/ggzd/database/ggzdb.c
+===================================================================
+--- ggzd/ggzd/database/ggzdb.c	(Revision 9812)
++++ ggzd/ggzd/database/ggzdb.c	(Arbeitskopie)
+@@ -144,6 +144,7 @@
+ 	|| ((_ggzdb_savegames = dlsym(handle, "_ggzdb_savegames")) == NULL)
+ 	|| ((_ggzdb_savegame_owners = dlsym(handle, "_ggzdb_savegame_owners")) == NULL)
+ 	|| ((_ggzdb_savegame_player = dlsym(handle, "_ggzdb_savegame_player")) == NULL)
++	|| ((_ggzdb_rooms = dlsym(handle, "_ggzdb_rooms")) == NULL)
+ 	)
+ 	{
+ 		err_sys_exit("%s is an invalid database module (%s)",
+@@ -528,7 +529,24 @@
+ 	return rc;
+ }
+ 
++GGZDBResult ggzdb_rooms(RoomStruct *rooms, int num)
++{
++	GGZDBResult rc = GGZDB_NO_ERROR;
+ 
++	_ggzdb_enter();
++
++	if (stats_needs_init)
++		rc = ggzdb_stats_init();
++
++	if (rc == GGZDB_NO_ERROR)
++		rc = _ggzdb_rooms(rooms, num);
++
++	_ggzdb_exit();
++
++	return rc;
++}
++
++
+ /*** INTERNAL FUNCTIONS ***/
+ 
+ /* Function to initialize player tables if necessary */
+Index: ggzd/ggzd/parse_opt.c
+===================================================================
+--- ggzd/ggzd/parse_opt.c	(Revision 9812)
++++ ggzd/ggzd/parse_opt.c	(Arbeitskopie)
+@@ -831,6 +831,10 @@
+ 	if(room_info.num_rooms == 0)
+ 		err_msg_exit("No rooms defined, ggzd unusable");
+ 
++	/* Enter rooms into the room template table in the database */
++	dbg_msg(GGZ_DBG_CONFIGURATION, "Adding rooms to database.");
++	ggzdb_rooms(rooms, room_info.num_rooms);
++
+ 	/* Cleanup the r_list */
+ 	if(r_count < 0)
+ 		r_count = -r_count;
