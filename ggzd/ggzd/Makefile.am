@@ -63,6 +63,7 @@ ggzd_CPPFLAGS = \
 	$(ICU_INCLUDES) \
 	$(CRACKLIB_INCLUDES) \
 	$(OMNICRACKLIB_INCLUDES) \
+	$(LIBWRAP_INCLUDES) \
 	-DGGZDCONFDIR=\"$(ggzdconfdir)\" \
 	-DGGZDSTATEDIR=\"$(ggzdstatedir)\" \
 	-DGGZDEXECMODDIR=\"$(ggzdexecmoddir)\"
@@ -81,6 +82,7 @@ ggzd_LDADD = \
 	$(LIB_ICU) \
 	$(LIB_CRACKLIB) \
 	$(LIB_OMNICRACKLIB) \
+	$(LIB_WRAP) \
 	$(LIB_DL)
 
 ggzduedit_SOURCES = \

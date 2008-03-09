@@ -47,6 +47,10 @@ AC_ARG_WITH([passwordcheck],
 	AS_HELP_STRING([--with-passwordcheck=TYPE],
 	[type of library to use: cracklib, omnicracklib]),
 	[passwordcheck=$withval], [passwordcheck=yes])
+AC_ARG_WITH([tcp-wrappers],
+	AS_HELP_STRING([--with-tcp-wrappers],
+	[Build with tcp-wrappers support]),
+	[libwrap=yes], [libwrap=no])
 AC_ARG_ENABLE([dbproc],
 	AS_HELP_STRING([--enable-dbproc],[Build stored procedures]),
 	[enable_dbproc=yes], [enable_dbproc=no])
@@ -169,6 +173,10 @@ dnl Check for reconfiguration support through file watchers
 dnl =======================================================
 AC_GGZ_RECONFIGURATION
 
+dnl Check for tcp-wrappers support
+dnl ==============================
+AC_GGZ_LIBWRAP
+
 dnl Debug modes
 dnl ===========
 AC_GGZ_DEBUG
@@ -279,6 +287,7 @@ echo "    Zeroconf.............$zeroconf"
 echo "    Reconfiguration......$reconfiguration"
 echo "    Unicode..............$unicode"
 echo "    Password checks......$passwordcheck"
+echo "    Tcp wrappers.........$libwrap"
 echo "Debugging options"
 echo "    General Debuging.....$enable_debug"
 echo "    GDB Debugging........$enable_debug_gdb"

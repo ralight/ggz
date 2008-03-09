@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 9812 2008-03-08 22:03:46Z josef $
+ * $Id: control.c 9831 2008-03-09 12:46:22Z oojah $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -68,6 +68,13 @@
 #endif
 #ifdef WITH_FAM
 #include <fam.h>
+#endif
+
+#ifdef WITH_LIBWRAP
+#include <syslog.h>
+#include <tcpd.h>
+int allow_severity = LOG_INFO;		// Needed by tcp-wrappers to
+int deny_severity = LOG_WARNING;	// determine logging level.
 #endif
 
 /* FIXME: this is in motd.c also - and we could probably use pathconf */
@@ -550,6 +557,9 @@ int main(int argc, char *argv[])
 	struct sockaddr_in addr;
 	fd_set active_fd_set, read_fd_set;
 	struct timeval tv, *tvp;
+#ifdef WITH_LIBWRAP
+	struct request_info wrap_request;
+#endif
 
 	/* Refuse to run as root */
 	if(geteuid() == 0) {
@@ -718,7 +728,35 @@ int main(int argc, char *argv[])
 				}
 			} else {
 				/* This is where to test for ignored IP addresses */
+#ifdef WITH_LIBWRAP
+				/* 
+				 * Start a tcp_wrappers request to see whether this connection should
+				 * be ignored. We need to pass as much information about the connection
+				 * as we have. 
+				 */
+				request_init(&wrap_request, RQ_FILE, new_sock, \
+						RQ_CLIENT_SIN, (struct sockaddr_in*)&addr, \
+						RQ_DAEMON, "ggzd", 0);
+
+				/* 
+				 * fromhost() takes the information we've passed to request_init() and
+				 * fills in the gaps. So host name lookups and what not.
+				 */
+				fromhost(&wrap_request);
+
+				/*
+				 * Do the actual lookup/comparison with /etc/hosts.allow and /etc/hosts.deny
+				 * and deny the access if need be.
+				 */
+				if(hosts_access(&wrap_request)){
+					client_handler_launch(new_sock);
+				}else{
+					close(new_sock);
+					new_sock = -1;
+				}
+#else /* WITH_LIBWRAP */
 				client_handler_launch(new_sock);
+#endif /* WITH_LIBWRAP */
 			}
 		} else if(reconfigure_fd > 0) {
 			if(FD_ISSET(reconfigure_fd, &read_fd_set)) {
