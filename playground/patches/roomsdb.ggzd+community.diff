@@ -2,7 +2,7 @@ Index: community/setup/sql/tournaments.sql
 ===================================================================
 --- community/setup/sql/tournaments.sql	(Revision 9802)
 +++ community/setup/sql/tournaments.sql	(Arbeitskopie)
-@@ -16,3 +16,14 @@
+@@ -16,3 +16,17 @@
  	"playertype" character varying(256)
  );
  
@@ -17,11 +17,14 @@ Index: community/setup/sql/tournaments.sql
 +	"entryrestriction" character varying(256)
 +);
 +
++CREATE RULE ggzroomchange AS
++ON INSERT TO rooms DO NOTIFY ggzroomchange;
++
 Index: community/web/admin/rooms.php
 ===================================================================
 --- community/web/admin/rooms.php	(Revision 0)
 +++ community/web/admin/rooms.php	(Revision 0)
-@@ -0,0 +1,127 @@
+@@ -0,0 +1,166 @@
 +<?php
 +
 +include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
@@ -46,7 +49,13 @@ Index: community/web/admin/rooms.php
 +
 +<?php
 +	$room_name = $_POST["room_name"];
++	$clonedroom_name = $_POST["clonedroom_name"];
 +	$name = $_POST["name"];
++
++	if ($clonedroom_name) :
++		$res = $database->exec("DELETE FROM rooms WHERE filebased = 'f' AND name = '%^'",
++			array($clonedroom_name));
++	endif;
 +?>
 +
 +<?php if (!$room_name) : ?>
@@ -69,13 +78,45 @@ Index: community/web/admin/rooms.php
 +?>
 +
 +	<br/><br/>
-+	<input type="submit" value="Configure clone..."/>
++	<input type="submit" value="Create cloned room..."/>
 +	</form>
 +
 +<?php
 +
 +else :
 +	echo "No rooms were found.";
++endif;
++
++?>
++
++	</div>
++	<div class="text">
++
++	Select the cloned room which you want to delete.
++	<br/>
++	<form action="rooms.php" method="POST">
++
++<?php
++
++$res = $database->exec("SELECT * FROM rooms WHERE filebased = 'f'", array());
++if (($res) && ($database->numrows($res) > 0)) :
++	echo "<select name='clonedroom_name'>";
++	for ($i = 0; $i < $database->numrows($res); $i++)
++	{
++		$name = $database->result($res, $i, "name");
++		echo "<option>$name</option>";
++	}
++	echo "</select>";
++?>
++
++	<br/><br/>
++	<input type="submit" value="Delete cloned room"/>
++	</form>
++
++<?php
++
++else :
++	echo "No cloned rooms were found.";
 +endif;
 +
 +?>
@@ -138,6 +179,7 @@ Index: community/web/admin/rooms.php
 +?>
 +
 +	The room has been created.
++	<a href="room.php">Back to room page</a>.
 +
 +<?php endif; ?>
 +
@@ -175,6 +217,62 @@ Index: docs/ggz-project/release-procedure
  [] update RPM and Debian scripts if possible
  [] update NEWS and README
  [] bump version numbers
+Index: ggzd/ggzd/control.c
+===================================================================
+--- ggzd/ggzd/control.c	(Revision 9812)
++++ ggzd/ggzd/control.c	(Arbeitskopie)
+@@ -92,6 +92,7 @@
+ 
+ /* Reconfiguration watcher */
+ static int reconfigure_fd;
++static int reconfigure_db_fd;
+ #ifdef WITH_FAM
+ FAMConnection fc;
+ #endif
+@@ -398,6 +399,20 @@
+ {
+ 	char watchdir[strlen(opt.conf_dir) + 8];
+ 
++	/* Notification handler for updates from databases */
++	reconfigure_db_fd = ggzdb_reconfiguration_fd();
++	if(reconfigure_db_fd > 0)
++	{
++		log_msg(GGZ_LOG_NOTICE,
++			"Reconfiguration: watching database for changes");
++		fcntl(reconfigure_db_fd, F_SETFD, FD_CLOEXEC);
++	}
++	else
++	{
++		log_msg(GGZ_LOG_NOTICE,
++			"Reconfiguration: no connection to the database");
++	}
++
+ 	snprintf(watchdir, sizeof(watchdir), "%s/rooms", opt.conf_dir);
+ 
+ #ifdef HAVE_INOTIFY
+@@ -644,6 +659,10 @@
+ 		FD_SET(reconfigure_fd, &active_fd_set);
+ 		select_max = MAX(select_max, reconfigure_fd);
+ 	}
++	if (reconfigure_db_fd > 0) {
++		FD_SET(reconfigure_db_fd, &active_fd_set);
++		select_max = MAX(select_max, reconfigure_db_fd);
++	}
+ 
+ 	/* Main loop */
+ 	while (!term_signal) {
+@@ -725,6 +744,11 @@
+ 				dbg_msg(GGZ_DBG_MISC, "reconfiguration monitor activated");
+ 				reconfiguration_handle();
+ 			}
++		} else if(reconfigure_db_fd > 0) {
++			if(FD_ISSET(reconfigure_db_fd, &read_fd_set)) {
++				dbg_msg(GGZ_DBG_MISC, "database reconfiguration monitor activated");
++				//reconfiguration_handle();
++			}
+ 		}
+ 	}
+ 
 Index: ggzd/ggzd/database/ggzdb.h
 ===================================================================
 --- ggzd/ggzd/database/ggzdb.h	(Revision 9812)
@@ -187,12 +285,14 @@ Index: ggzd/ggzd/database/ggzdb.h
  
  /* Can't include twice */
  #ifndef GGZDB_VERSION_ID
-@@ -149,5 +150,8 @@
+@@ -149,5 +150,10 @@
  /* Report a table seat change to the database */
  GGZDBResult ggzdb_savegameplayer(int savegame, int seat, const char *name, int type);
  
 +/* Register all rooms */
 +GGZDBResult ggzdb_rooms(RoomStruct *rooms, int num);
++
++int ggzdb_reconfiguration_fd(void);
 +
  #endif
  
@@ -200,7 +300,46 @@ Index: ggzd/ggzd/database/ggzdb_pgsql.c
 ===================================================================
 --- ggzd/ggzd/database/ggzdb_pgsql.c	(Revision 9812)
 +++ ggzd/ggzd/database/ggzdb_pgsql.c	(Arbeitskopie)
-@@ -1212,6 +1212,7 @@
+@@ -366,6 +366,30 @@
+ }
+ 
+ 
++int _ggzdb_reconfiguration_fd(void)
++{
++	PGconn *conn;
++	PGresult *res;
++	char query[4096];
++
++	conn = claimconnection();
++	if (!conn) {
++		err_msg("_ggzdb_reconfiguration_fd: couldn't claim connection");
++		return -1;
++	}
++
++	/* FIXME: we don't give the connection away again, but we should close it at the end */
++
++	snprintf(query, sizeof(query),
++		"LISTEN ggzroomchange");
++
++	res = PQexec(conn, query);
++	PQclear(res);
++
++	return PQsocket(conn);
++}
++
++
+ /* Function to enter the database */
+ void _ggzdb_enter(void)
+ {
+@@ -907,6 +931,7 @@
+ 		game, savegame);
+ 
+ 	res = PQexec(conn, query);
++	PQclear(res);
+ 
+ 	winner_quoted = _ggz_sql_escape(winner);
+ 
+@@ -1212,6 +1237,7 @@
  		savegame, seat);
  
  	res = PQexec(conn, query);
@@ -208,7 +347,7 @@ Index: ggzd/ggzd/database/ggzdb_pgsql.c
  
  	name_quoted = _ggz_sql_escape(name);
  
-@@ -1237,3 +1238,61 @@
+@@ -1237,3 +1263,61 @@
  	return rc;
  }
  
@@ -274,11 +413,13 @@ Index: ggzd/ggzd/database/ggzdb_proto.h
 ===================================================================
 --- ggzd/ggzd/database/ggzdb_proto.h	(Revision 9812)
 +++ ggzd/ggzd/database/ggzdb_proto.h	(Arbeitskopie)
-@@ -141,3 +141,5 @@
+@@ -141,3 +141,7 @@
  
  GGZDBResult _ggzdb_savegame_player(int savegame, int seat, const char *name, int type);
  
 +GGZDBResult ggzdb_rooms(RoomStruct *rooms, int num);
++
++int _ggzdb_reconfiguration_fd(void);
 +
 Index: ggzd/ggzd/database/ggzdb_util.c
 ===================================================================
@@ -296,25 +437,42 @@ Index: ggzd/ggzd/database/ggzdb_functions.h
 ===================================================================
 --- ggzd/ggzd/database/ggzdb_functions.h	(Revision 9812)
 +++ ggzd/ggzd/database/ggzdb_functions.h	(Arbeitskopie)
-@@ -49,3 +49,5 @@
+@@ -49,3 +49,7 @@
  
  GGZDBResult (*_ggzdb_savegame_player)(int savegame, int seat, const char *name, int type);
  
 +GGZDBResult (*_ggzdb_rooms)(RoomStruct *rooms, int num);
 +
++int (*_ggzdb_reconfiguration_fd)(void);
++
 Index: ggzd/ggzd/database/ggzdb.c
 ===================================================================
 --- ggzd/ggzd/database/ggzdb.c	(Revision 9812)
 +++ ggzd/ggzd/database/ggzdb.c	(Arbeitskopie)
-@@ -144,6 +144,7 @@
+@@ -144,6 +144,8 @@
  	|| ((_ggzdb_savegames = dlsym(handle, "_ggzdb_savegames")) == NULL)
  	|| ((_ggzdb_savegame_owners = dlsym(handle, "_ggzdb_savegame_owners")) == NULL)
  	|| ((_ggzdb_savegame_player = dlsym(handle, "_ggzdb_savegame_player")) == NULL)
 +	|| ((_ggzdb_rooms = dlsym(handle, "_ggzdb_rooms")) == NULL)
++	|| ((_ggzdb_reconfiguration_fd = dlsym(handle, "_ggzdb_reconfiguration_fd")) == NULL)
  	)
  	{
  		err_sys_exit("%s is an invalid database module (%s)",
-@@ -528,7 +529,24 @@
+@@ -177,6 +179,13 @@
+ }
+ 
+ 
++/* Not threadsafe: return file descriptor for notifications */
++int ggzdb_reconfiguration_fd(void)
++{
++	return _ggzdb_reconfiguration_fd();
++}
++
++
+ /* Function to add a player to the database */
+ GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *pe)
+ {
+@@ -528,7 +537,24 @@
  	return rc;
  }
  
