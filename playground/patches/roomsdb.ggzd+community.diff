@@ -2,7 +2,7 @@ Index: community/setup/sql/tournaments.sql
 ===================================================================
 --- community/setup/sql/tournaments.sql	(Revision 9802)
 +++ community/setup/sql/tournaments.sql	(Arbeitskopie)
-@@ -16,3 +16,17 @@
+@@ -16,3 +16,21 @@
  	"playertype" character varying(256)
  );
  
@@ -14,17 +14,21 @@ Index: community/setup/sql/tournaments.sql
 +	"gametype" character varying(256),
 +	"maxplayers" bigint,
 +	"maxtables" bigint,
-+	"entryrestriction" character varying(256)
++	"entryrestriction" character varying(256),
++	"action" character varying(256)
 +);
 +
 +CREATE RULE ggzroomchange AS
++ON INSERT TO rooms DO NOTIFY ggzroomchange;
++
++CREATE RULE ggzroomchangedel AS
 +ON INSERT TO rooms DO NOTIFY ggzroomchange;
 +
 Index: community/web/admin/rooms.php
 ===================================================================
 --- community/web/admin/rooms.php	(Revision 0)
 +++ community/web/admin/rooms.php	(Revision 0)
-@@ -0,0 +1,166 @@
+@@ -0,0 +1,167 @@
 +<?php
 +
 +include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
@@ -53,7 +57,8 @@ Index: community/web/admin/rooms.php
 +	$name = $_POST["name"];
 +
 +	if ($clonedroom_name) :
-+		$res = $database->exec("DELETE FROM rooms WHERE filebased = 'f' AND name = '%^'",
++		$res = $database->exec("UPDATE rooms SET action = 'delete' " .
++			"WHERE filebased = 'f' AND name = '%^'",
 +			array($clonedroom_name));
 +	endif;
 +?>
@@ -173,13 +178,13 @@ Index: community/web/admin/rooms.php
 +	$entryrestriction = $_POST["entryrestriction"];
 +
 +	$database->exec("INSERT INTO rooms " .
-+		"(filebased, name, description, gametype, maxplayers, maxtables, entryrestriction) VALUES " .
-+		"('f', '%^', '%^', '???', %^, %^, '%^')",
++		"(filebased, name, description, gametype, maxplayers, maxtables, entryrestriction, action) VALUES " .
++		"('f', '%^', '%^', '???', %^, %^, '%^', 'add')",
 +		array($name, $description, $maxplayers, $maxtables, $entryrestriction));
 +?>
 +
 +	The room has been created.
-+	<a href="room.php">Back to room page</a>.
++	<a href="rooms.php">Back to room page</a>.
 +
 +<?php endif; ?>
 +
@@ -368,7 +373,7 @@ Index: ggzd/ggzd/database/ggzdb_pgsql.c
  	entry = ggz_list_head(list);
  	while(entry)
  	{
-@@ -366,6 +371,50 @@
+@@ -366,6 +371,98 @@
  }
  
  
@@ -400,14 +405,62 @@ Index: ggzd/ggzd/database/ggzdb_pgsql.c
 +{
 +	RoomStruct room;
 +	PGnotify *notify;
++	PGresult *res, *res2;
++	char query[4096];
 +
 +	room.name = NULL;
 +
 +	PQconsumeInput(reconfigurationconn);
 +
-+	while((notify = PQnotifies(reconfigurationconn)) != NULL) {
++	notify = PQnotifies(reconfigurationconn);
++	if(notify != NULL) {
 +		if(!ggz_strcmp(notify->relname, "ggzroomchange")) {
-+			/* FIXME: do something with the room here */
++
++			snprintf(query, sizeof(query),
++			 "SELECT "
++			 "name, description, gametype, maxplayers, maxtables, entryrestriction, action "
++			 "FROM rooms WHERE action IS NOT NULL");
++
++			res = PQexec(reconfigurationconn, query);
++
++			if (PQresultStatus(res) == PGRES_TUPLES_OK) {
++				if(PQntuples(res) == 1)	{
++					const char *name = PQgetvalue(res, 0, 0);
++					const char *description = PQgetvalue(res, 0, 1);
++					const char *gametype = PQgetvalue(res, 0, 2);
++					int maxplayers = atoi(PQgetvalue(res, 0, 3));
++					int maxtables = atoi(PQgetvalue(res, 0, 4));
++					const char *entryrestriction = PQgetvalue(res, 0, 5);
++					const char *action = PQgetvalue(res, 0, 6);
++
++					if(!ggz_strcmp(action, "add")) {
++						snprintf(query, sizeof(query),
++							"UPDATE rooms SET action = NULL WHERE name = '%s'",
++							name);
++
++						res2 = PQexec(reconfigurationconn, query);
++						PQclear(res2);
++
++						room.name = ggz_intlstring_fromstring(name);
++						room.description = ggz_intlstring_fromstring(description);
++						room.game_type = -2;
++						room.max_players = maxplayers;
++						room.max_tables = maxtables;
++						room.perms = 0; /* FIXME: evaluate entryrestriction */
++					} else if(!ggz_strcmp(action, "delete")) {
++						/* FIXME: how to propagate room deletion? */
++
++						snprintf(query, sizeof(query),
++							"DELETE FROM rooms WHERE name = '%s'",
++							name);
++
++						res2 = PQexec(reconfigurationconn, query);
++						PQclear(res2);
++					}
++				}
++
++			}
++			PQclear(res);
 +		}
 +		PQfreemem(notify);
 +	}
@@ -419,7 +472,7 @@ Index: ggzd/ggzd/database/ggzdb_pgsql.c
  /* Function to enter the database */
  void _ggzdb_enter(void)
  {
-@@ -907,6 +956,7 @@
+@@ -907,6 +1004,7 @@
  		game, savegame);
  
  	res = PQexec(conn, query);
@@ -427,7 +480,7 @@ Index: ggzd/ggzd/database/ggzdb_pgsql.c
  
  	winner_quoted = _ggz_sql_escape(winner);
  
-@@ -1212,6 +1262,7 @@
+@@ -1212,6 +1310,7 @@
  		savegame, seat);
  
  	res = PQexec(conn, query);
@@ -435,7 +488,7 @@ Index: ggzd/ggzd/database/ggzdb_pgsql.c
  
  	name_quoted = _ggz_sql_escape(name);
  
-@@ -1237,3 +1288,61 @@
+@@ -1237,3 +1336,61 @@
  	return rc;
  }
  
