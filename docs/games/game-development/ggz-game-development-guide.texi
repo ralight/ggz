@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-game-development-guide.info
-@settitle The GGZ Gaming Zone 0.0.14+ - Game Development Guide
+@settitle The GGZ Gaming Zone 0.99.2+ - Game Development Guide
 @c %**end of header
 
 @c Do not remove the comments above - they're needed for TeX!
@@ -27,7 +27,7 @@ and integrate game packages.
 
 @copying
 This manual is about game development for the GGZ Gaming Zone environment.
-Copyright @copyright{} 2002 - 2007 Josef Spillner
+Copyright @copyright{} 2002 - 2008 Josef Spillner
 @quotation
 Published under the GNU General Public License.
 @end quotation
@@ -38,7 +38,7 @@ Published under the GNU General Public License.
 
 @titlepage
 @title The GGZ Game Development Guide
-@subtitle Development of games for the GGZ Gaming Zone 0.0.14+
+@subtitle Development of games for the GGZ Gaming Zone 0.99.2+
 @author GGZ Development Team
 
 @page
@@ -817,11 +817,26 @@ BotsAllowed = <0 [1 2 ...]>
 PlayersAllowed = <1 [2 3 ...]>
 KillWhenEmpty = <0/1>
 AllowSpectators = <0/1>
+AllowRestore = <0/1>
 
 [Statistics]
 Records = <0/1>
 Ratings = <0/1>
+Highscore = <0/1>
 @end verbatim
+
+The GameInfo and Protocol entries are similar to client-side .dsc files.
+TableOptions and Statistics, on the other hand, reflect the game server's
+capabilities. Depending on the scoring model, one of the ranking models can
+be enabled. The game server will have to report its scores or ratings after
+the game finishes in this case. The Allow* flags determine if the game can
+cope with players leaving and rejoining in between, spectators who only watch
+the game and game restoration based on savegames, respectively. The ggzdmod
+documentation explains what to do for these cases. KillWhenEmpty is set to
+1 by default but can be set to 0 to allow keepalive games even when no players
+are on the table. Finally, PlayersAllowed and BotsAllowed present a list of
+valid player and bot configurations. These two entries are lists rather than
+simple entries.
 
 The room file (<name>.room) has the following format:
 
