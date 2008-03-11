@@ -57,8 +57,8 @@ Mentor: Helg Bredow, Roger Light<br/>
 <i>GGZ web service interfaces</i>
 <br/>
 <a href="http://www.ggzcommunity.org">GGZ-Community</a> is the
-website which allows players to log into a  customised gaming portal, which
-contains access to the GGZ database, in  particular to the list of players,
+website which allows players to log into a customised gaming portal, which
+contains access to the GGZ database, in particular to the list of players,
 games and statistics. Furthermore, it can be used to schedule tournaments,
 assign player karma and manage teams. 
 An experimental <a href="http://api.ggzcommunity.org/">web service API</a>
@@ -81,7 +81,7 @@ players, and how to handle dynamically-sized games. Such small issues could be
 seen as a starting point to then add top-notch features to Freeciv's multiplayer
 mode. The programming language would be mostly C.
 <br/>
-Mentor: Jason Dorje Short<br/>
+Mentor: Jason Dorje Short (jdorje@gmail.com)<br/>
 <br/><br/>
 
 <i>GGZ on KDE 4.2: Online game selector</i>
@@ -100,7 +100,7 @@ a client from scratch which can be shipped with KDE 4.2 if it turns out to
 be a great tool. Both Python and C++ would be the best choices for this
 task.
 <br/>
-Mentor: Josef Spillner (josef.spillner@googlemail.com)<br/>
+Mentor: Matt Williams (matthew.peter.williams@gmail.com), Josef Spillner (josef.spillner@googlemail.com)<br/>
 <br/><br/>
 
 <i>New Game Client</i>
