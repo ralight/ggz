@@ -11,6 +11,10 @@ program.
 Several ideas have been discussed and proposed for inclusion into
 the program by GGZ developers. Other ideas can be proposed, there are
 several mentors mentors available from GGZ and related projects.
+You could join us on #ggz on freenode.net to find out about what's currently
+on the TODO list. Several game developers for example have asked us for
+help with multiplayer support, and we certainly cannot help all of them
+at once even if we wanted to.
 <br/><br/>
 
 <b>About GGZ</b><br/>
@@ -68,6 +72,18 @@ authentication transitions between GGZ Community and GGZ desktop clients.
 Mentor: Josef Spillner (josef.spillner@googlemail.com), Roger Light (rogerlight@gmail.com)<br/>
 <br/><br/>
 
+<i>Advanced multiplayer features in Freeciv</i>
+<br/>
+<a href="http://freeciv.wikia.com/wiki/Main_Page">Freeciv</a> is probably the
+most well-known game using GGZ for its multiplayer features. However, there
+are some limitations at the moment of how to handle joining and leaving
+players, and how to handle dynamically-sized games. Such small issues could be
+seen as a starting point to then add top-notch features to Freeciv's multiplayer
+mode. The programming language would be mostly C.
+<br/>
+Mentor: Jason Dorje Short
+<br/><br/>
+
 <i>GGZ on KDE 4.2: Online game selector</i>
 <br/>
 <a href="http://metacle.ggzgamingzone.org/">Metacle</a> is a Python-based
@@ -81,7 +97,8 @@ launch new games or join running games independent of their type. Of course
 a majority of those will be GGZ-enabled, but some will not. An experimental
 client in was written in PyKDE to get started, but the task would be to write
 a client from scratch which can be shipped with KDE 4.2 if it turns out to
-be a great tool.
+be a great tool. Both Python and C++ would be the best choices for this
+task.
 <br/>
 Mentor: Josef Spillner (josef.spillner@googlemail.com)<br/>
 <br/><br/>
