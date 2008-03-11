@@ -81,7 +81,7 @@ players, and how to handle dynamically-sized games. Such small issues could be
 seen as a starting point to then add top-notch features to Freeciv's multiplayer
 mode. The programming language would be mostly C.
 <br/>
-Mentor: Jason Dorje Short
+Mentor: Jason Dorje Short<br/>
 <br/><br/>
 
 <i>GGZ on KDE 4.2: Online game selector</i>
@@ -101,6 +101,29 @@ be a great tool. Both Python and C++ would be the best choices for this
 task.
 <br/>
 Mentor: Josef Spillner (josef.spillner@googlemail.com)<br/>
+<br/><br/>
+
+<i>New Game Client</i>
+<br/>
+As GGZ aims to provide the means for any open source game to add network
+support, any new game clients would be well received. This is an open ended
+task with the possibility of either extending an existing game to provide GGZ
+support (a good example would be GNU Backgammon), or else write a new client
+from scratch.<br/>
+Although writing a new client is more involved than extending an existing one
+in many ways, it does offer the advantage of greater flexibility because it can
+be written in one of any of the languages we currently use (C, C++, Java,
+Python, Ruby) and for any one of the toolkits (KDE, Gnome, Gtk, SDL).<br/>
+In both cases there are essentially three tasks:<br/>
+<ol>
+<li>Define a protocol for the game.</li>
+<li>Create the server program.</li>
+<li>Create/extend the client program.</li>
+</ol>
+Depending on the game chosen, some of these tasks may be already completed. 
+Looking at backgammon again, it would make sense to look at the FIBS protocol 
+for example.<br/>
+Mentor: Roger Light (rogerlight@gmail.com)<br/>
 <br/><br/>
 
 <i>GGZ on GNOME 2.24:</i>
