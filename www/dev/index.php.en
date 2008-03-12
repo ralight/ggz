@@ -11,6 +11,8 @@ Information about developers resources and processes.
 <i>Starters</i><br/>
 If you are new to GGZ and want to know where you can contribute,
 consult the <a href="contribute.php">contributions page</a>.
+We also try to offer some Google Summer of Code <a href="soc.php">projects</a>
+for 2008 to extend GGZ's capabilities and use cases.
 If you are a game developer who is not so much interested in GGZ itself but in
 using the GGZ libraries for your game, consult the
 <a href="external.php">external games development page</a>.

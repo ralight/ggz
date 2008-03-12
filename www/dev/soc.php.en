@@ -4,19 +4,6 @@
 <tr>
 <td>
 
-<b>GGZ @ Google Summer of Code 2008</b><br/>
-GGZ will offer mentoring for several tasks during the
-<a href="http://code.google.com/soc/2008/">Google Summer of Code 2008</a>
-program.
-Several ideas have been discussed and proposed for inclusion into
-the program by GGZ developers. Other ideas can be proposed, there are
-several mentors mentors available from GGZ and related projects.
-You could join us on #ggz on freenode.net to find out about what's currently
-on the TODO list. Several game developers for example have asked us for
-help with multiplayer support, and we certainly cannot help all of them
-at once even if we wanted to.
-<br/><br/>
-
 <b>About GGZ</b><br/>
 First and foremost, a few words for those who don't know GGZ yet but are
 desperate to achieve progress in the world of internet games:
@@ -29,30 +16,20 @@ instant messaging clients are very important to the project's future.
 These goals are reflected in the tasks which you can find below.
 <br/><br/>
 
-<!--
-<i>Improving the GGZ-Java package</i>
-<br/>
-Core task: GGZ-Java is the primary GGZ package used as an applet by players 
-migrating from existing Windows-centric gaming sites. It is currently 
-offering several cards games which can be played against the corresponding 
-desktop versions of the games, and against each other. Since GGZ-Java is a 
-new but promising package, some polishing is needed to establish it as the 
-premier free gaming applet. Requirements gathered from the players, such as 
-better administrative/hosting facilities, should be fulfilled together with 
-the other GGZ developers. More games are being requested constantly by the 
-players. A Texas Hold'em game could be implemented to demonstrate the power 
-of the GGZ platform for game development and the GGZ-Java framework in 
-particular.
-<br/>
-Optional subtasks (just notes):
-<ul>
-<li>help out Fink maintainer to integrate GGZ(-Java) on OSX better</li>
-<li>integration with existing GGZ core clients for cc-game interoperability</li>
-<li>even more games, in particular board games</li>
-</ul>
-Mentor: Helg Bredow, Roger Light<br/>
+<b>GGZ @ Google Summer of Code 2008</b><br/>
+GGZ will offer mentoring for several tasks during the
+<a href="http://code.google.com/soc/2008/">Google Summer of Code 2008</a>
+program.
+Some ideas have been discussed and proposed for inclusion into
+the program by GGZ developers. Other ideas can be proposed, there are
+several mentors mentors available from GGZ and related projects.
+You could join us on #ggz on freenode.net to find out about what's currently
+on the TODO list. Several game developers for example have asked us for
+help with multiplayer support, and we certainly cannot help all of them
+at once even if we wanted to. The mentors have in many cases been with the
+project for years, and would like to concentrate on the grunt work, while
+offering the most exciting feature additions to GSoC students.
 <br/><br/>
--->
 
 <i>GGZ web service interfaces</i>
 <br/>
@@ -128,9 +105,38 @@ Mentor: Roger Light (rogerlight@gmail.com)<br/>
 
 <i>GGZ on GNOME 2.24:</i>
 <br/>
-What needs to be done?
+A highscore submission system for single-player mode is needed for basically
+all games. This idea was suggested to make better use of the GGZ infrastructure
+even for games which do not run on the network at all. Local system-wide
+highscores have been popular on Unix-like systems for years, but single-user
+systems comprise nowadays the dominant group of players. Whoever implements
+this task will bring back the beat-your-friend or beat-your-colleague fun to
+single-player games.
 <br/>
-Mentor: TBD<br/>
+Mentor: TBD, in cooperation with gnome-games team<br/>
+<br/><br/>
+
+<i>Random ideas</i>
+<br/>
+The tasks descriptions above are very concrete and emerged out of the current
+development process. Didn't find the right task for you? No problem, you will
+also benefit from our dedicated and professional mentorship if you propose
+anything which helps to advance GGZ in a way which makes offering free online
+gaming easier for other game developers, and more joyful for players.
+<br/>
+<ol>
+<li>Porting GGZ to mobile devices. This doesn't just include software porting,
+but also defining how free online gaming on mobiles will look like in the future.</li>
+<li>Pervasive privacy protection in GGZ. With the growth of the GGZ Community
+portal into something similar to social networking sites, privacy and informational
+self-determination should be key features.</li>
+<li>Refactoring GGZ-Java into individual libraries to make it possible to ship
+GGZ-enabled Java games outside of the project.</li>
+<li>You idea here :)</li>
+</ol>
+<br/>
+Mentor: see other tasks, it really depends on the concrete ideas and programming
+languages.<br/>
 <br/><br/>
 
 </td>
