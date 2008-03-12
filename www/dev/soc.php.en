@@ -22,7 +22,7 @@ GGZ will offer mentoring for several tasks during the
 program.
 Some ideas have been discussed and proposed for inclusion into
 the program by GGZ developers. Other ideas can be proposed, there are
-several mentors mentors available from GGZ and related projects.
+several mentors available from GGZ and related projects.
 You could join us on #ggz on freenode.net to find out about what's currently
 on the TODO list. Several game developers for example have asked us for
 help with multiplayer support, and we certainly cannot help all of them
@@ -132,7 +132,7 @@ portal into something similar to social networking sites, privacy and informatio
 self-determination should be key features.</li>
 <li>Refactoring GGZ-Java into individual libraries to make it possible to ship
 GGZ-enabled Java games outside of the project.</li>
-<li>You idea here :)</li>
+<li>Your idea here :)</li>
 </ol>
 <br/>
 Mentor: see other tasks, it really depends on the concrete ideas and programming
