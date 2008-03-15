@@ -11,6 +11,7 @@
 #include <qpushbutton.h>
 #include <qlineedit.h>
 #include <qlabel.h>
+#include <qmenu.h>
 
 static Qt::ItemFlags ROFLAGS =
 	Qt::ItemIsSelectable |
@@ -23,6 +24,7 @@ PlayerList::PlayerList()
 : QWidget()
 {
 	m_treeview = new QTreeView();
+	m_treeview->setContextMenuPolicy(Qt::CustomContextMenu);
 
 	QLineEdit *searchbox = new QLineEdit();
 	QLabel *searchlabel = new QLabel("Search for:");
@@ -65,6 +67,7 @@ PlayerList::PlayerList()
 	m_treeview->expandAll();
 
 	connect(searchbox, SIGNAL(textChanged(const QString&)), SLOT(slotSearch(const QString&)));
+	connect(m_treeview, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(slotSelected(const QPoint&)));
 
 	setWindowTitle("GGZ gets a more flexible player list!");
 	resize(320, 300);
@@ -86,6 +89,8 @@ PlayerList::PlayerList()
 
 void PlayerList::addPlayer(Player *player)
 {
+	m_players[player->name()] = player;
+
 	QString pixmap = "guest.png";
 	if(player->role() == Player::Admin)
 		pixmap = "admin.png";
@@ -135,4 +140,35 @@ void PlayerList::slotSearch(const QString& text)
 	m_proxymodel->setFilterRegExp(QRegExp(text, Qt::CaseInsensitive, QRegExp::FixedString));
 	m_proxymodel->setFilterKeyColumn(0);
 	m_treeview->expandAll();
+}
+
+void PlayerList::slotSelected(const QPoint& pos)
+{
+	QModelIndex index = m_treeview->indexAt(pos);
+	if(!index.isValid())
+		return;
+
+	QString name = m_proxymodel->data(index).toString();
+	if(m_players.contains(name))
+	{
+		Player *player = m_players[name];
+
+		QMenu menu;
+		if(player->relation() == Player::Buddy)
+		{
+			menu.addAction("Remove from buddy list");
+		}
+		else if(player->relation() == Player::Ignored)
+		{
+			menu.addAction("Remove from list of ignored players");
+		}
+		else
+		{
+			menu.addAction("Add to list of ignored players.");
+			menu.addAction("Add to buddy list");
+		}
+		menu.addSeparator();
+		menu.addAction("Chat...");
+		menu.exec(mapToGlobal(pos));
+	}
 }
