@@ -4,6 +4,10 @@
 // Qt includes
 #include <QWidget>
 
+class QStandardItemModel;
+class QTreeView;
+class QRecursiveSortFilterProxyModel;
+
 // List of players
 class PlayerList : public QWidget
 {
@@ -11,6 +15,12 @@ class PlayerList : public QWidget
 	public:
 		// Constructor
 		PlayerList();
+	private slots:
+		void slotSearch(const QString& text);
+	private:
+		QStandardItemModel *m_model;
+		QRecursiveSortFilterProxyModel *m_proxymodel;
+		QTreeView *m_treeview;
 };
 
 #endif

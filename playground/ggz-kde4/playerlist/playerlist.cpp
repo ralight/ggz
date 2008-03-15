@@ -1,5 +1,6 @@
 // Player list includes
 #include "playerlist.h"
+#include "qrecursivesortfilterproxymodel.h"
 
 // Qt includes
 #include <qtreeview.h>
@@ -13,7 +14,7 @@
 PlayerList::PlayerList()
 : QWidget()
 {
-	QTreeView *treeview = new QTreeView();
+	m_treeview = new QTreeView();
 
 	QLineEdit *searchbox = new QLineEdit();
 	QLabel *searchlabel = new QLabel("Search for:");
@@ -23,20 +24,20 @@ PlayerList::PlayerList()
 	hbox->addWidget(searchbox);
 
 	QVBoxLayout *vbox = new QVBoxLayout();
-	vbox->addWidget(treeview);
+	vbox->addWidget(m_treeview);
 	vbox->addLayout(hbox);
 	setLayout(vbox);
 
-	QStandardItemModel *model = new QStandardItemModel();
-	model->setColumnCount(2);
+	m_model = new QStandardItemModel();
+	m_model->setColumnCount(2);
 
 	QStandardItem *item01 = new QStandardItem();
 	item01->setText("Friends");
-	model->appendRow(item01);
+	m_model->appendRow(item01);
 
 	QStandardItem *item02 = new QStandardItem();
 	item02->setText("Others");
-	model->appendRow(item02);
+	m_model->appendRow(item02);
 
 	QStandardItem *item11 = new QStandardItem();
 	item11->setIcon(QIcon("players/admin.png"));
@@ -47,7 +48,7 @@ PlayerList::PlayerList()
 	/*QList<QStandardItem*> list1;
 	list1 << item11;
 	list1 << item12;
-	model->appendRow(list1);*/
+	m_model->appendRow(list1);*/
 
 	QStandardItem *item21 = new QStandardItem();
 	item21->setIcon(QIcon("players/host.png"));
@@ -58,7 +59,7 @@ PlayerList::PlayerList()
 	/*QList<QStandardItem*> list2;
 	list2 << item21;
 	list2 << item22;
-	model->appendRow(list2);*/
+	m_model->appendRow(list2);*/
 
 	item01->setChild(0, 0, item21);
 	item01->setChild(0, 1, item22);
@@ -66,13 +67,25 @@ PlayerList::PlayerList()
 	item02->setChild(0, 0, item11);
 	item02->setChild(0, 1, item12);
 
-	model->setHeaderData(0, Qt::Horizontal, QString("Player"), Qt::DisplayRole);
-	model->setHeaderData(1, Qt::Horizontal, QString("Properties"), Qt::DisplayRole);
+	m_model->setHeaderData(0, Qt::Horizontal, QString("Player"), Qt::DisplayRole);
+	m_model->setHeaderData(1, Qt::Horizontal, QString("Properties"), Qt::DisplayRole);
 
-	treeview->setModel(model);
+	m_proxymodel = new QRecursiveSortFilterProxyModel(this);
+	m_proxymodel->setSourceModel(m_model);
+
+	m_treeview->setModel(m_proxymodel);
+	m_treeview->expandAll();
+
+	connect(searchbox, SIGNAL(textChanged(const QString&)), SLOT(slotSearch(const QString&)));
 
 	setWindowTitle("GGZ gets a more flexible player list!");
 	resize(320, 300);
 	show();
 }
 
+void PlayerList::slotSearch(const QString& text)
+{
+	m_proxymodel->setFilterRegExp(QRegExp(text, Qt::CaseInsensitive, QRegExp::FixedString));
+	m_proxymodel->setFilterKeyColumn(0);
+	m_treeview->expandAll();
+}
