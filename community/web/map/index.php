@@ -29,7 +29,7 @@ include("top.inc");
 	</h2>
 	<div class="text">
 <?php
-include_once("map/gencoords.php");
+include_once("map-gencoords.php");
 ?>
 	<img src="genmap.php" usemap="#ggzmap" border="0" alt="world map">
 	</div>
