@@ -12,6 +12,13 @@
 #include <qlineedit.h>
 #include <qlabel.h>
 
+static Qt::ItemFlags ROFLAGS =
+	Qt::ItemIsSelectable |
+	Qt::ItemIsDragEnabled |
+	Qt::ItemIsDropEnabled |
+	Qt::ItemIsUserCheckable |
+	Qt::ItemIsEnabled;
+
 PlayerList::PlayerList()
 : QWidget()
 {
@@ -34,14 +41,17 @@ PlayerList::PlayerList()
 
 	m_itemfriends = new QStandardItem();
 	m_itemfriends->setText("Friends");
+	m_itemfriends->setFlags(ROFLAGS);
 	m_model->appendRow(m_itemfriends);
 
 	m_itemignored = new QStandardItem();
 	m_itemignored->setText("Ignored");
+	m_itemignored->setFlags(ROFLAGS);
 	m_model->appendRow(m_itemignored);
 
 	m_itemothers = new QStandardItem();
 	m_itemothers->setText("Others");
+	m_itemothers->setFlags(ROFLAGS);
 	m_model->appendRow(m_itemothers);
 
 	m_model->setHeaderData(0, Qt::Horizontal, QString("Player"), Qt::DisplayRole);
@@ -99,10 +109,12 @@ void PlayerList::addPlayer(Player *player)
 		lagpixmap = "lag1.png";
 
 	QStandardItem *itemname = new QStandardItem();
+	itemname->setFlags(ROFLAGS);
 	itemname->setIcon(QIcon("players/" + pixmap));
 	itemname->setText(player->name());
 
 	QStandardItem *itemlagstats = new QStandardItem();
+	itemlagstats->setFlags(ROFLAGS);
 	itemlagstats->setIcon(QIcon("players/" + lagpixmap));
 	itemlagstats->setText(player->statistics());
 
