@@ -50,7 +50,7 @@ char *_ggz_sql_escape(const char *str)
 
 	for(p = str; *p != '\0'; p++) {
 		if(*p == '\'') {
-			*q++ = '\\';
+			*q++ = '\'';
 			*q = *p;
 		} else {
 			*q = *p;
@@ -75,7 +75,7 @@ char *_ggz_sql_escape(const char *str)
 	len = strlen(str);
 
 	for(p = str; *p != '\0'; p++) {
-		if(!strncmp(p, "\\'", 2)) {
+		if(!strncmp(p, "\'\'", 2)) {
 			p += 1;
 		}
 		len++;
@@ -86,7 +86,7 @@ char *_ggz_sql_escape(const char *str)
 
 	q = new = ggz_malloc(len + 1);
 	for(p = str; *p != '\0'; p++) {
-		if(!strncmp(p, "\\'", 2)) {
+		if(!strncmp(p, "\'\'", 2)) {
 			*q = '\'';
 			q++;
 			p += 1;
