@@ -83,12 +83,12 @@ RoomList::RoomList()
 	Room *room2 = new Room("Chess");
 	room2->setLogo("chess.png");
 	room2->setModule(true);
-	room1->setPlayers(42);
+	room2->setPlayers(42);
 	addRoom(room2);
 
 	Room *room3 = new Room("Connect The Dots");
 	room3->setLogo("dots.png");
-	room1->setDescription("Elite players only");
+	room3->setDescription("Elite players only");
 	room3->setAccess(Room::Locked);
 	addRoom(room3);
 }
