@@ -20,16 +20,20 @@ playground/buildsystem/cmake.
 
 Summary of GGZ-in-KDE4-efforts as of March 2008:
 * In this directory
- - kconnectx [||||||    ] - KConnectX demo game for kggzmod
- - kggzcore  [||        ] - library for GGZ core clients
- - kggzdmod  [||        ] - core GGZ game server module library
- - conndlg   [|         ] - connection dialog for GGZ core client in KDE 4
- - playerlst [|         ] - player list for GGZ core clients in KDE 4
+ - kconnectx   [||||||    ] - KConnectX demo game for kggzmod
+ - kggzcore    [||        ] - library for GGZ core clients
+ - kggzdmod    [||        ] - core GGZ game server module library
+ - conn-dialog [|         ] - connection dialog for GGZ core client in KDE 4
+ - playerlist  [|||       ] - player list for GGZ core clients in KDE 4
+ - roomlist    [||||||    ] - room list for GGZ core clients in KDE 4
+ - kggz-ng     [          ] - the successor to KGGZ (in planning stage)
 * In (lib)kdegames (KDE SVN)
- - cmake     [|||||     ] - CMake files for GGZ library checks
- - kggzmod   [||||||||| ] - core GGZ game module library
- - kggznet   [||||||||  ] - network protocols for easysock/dio compatibility
- - kggzgames [|||       ] - common seats dialogs and player management
- - kreversi  [||||      ] - GGZ support for KDE's KReversi game
- - kgameggz  [          ] - integration of kggzmod into KGame library
+ - cmake       [|||||     ] - CMake files for GGZ library checks
+ - kggzmod     [||||||||| ] - core GGZ game module library
+ - kggznet     [||||||||  ] - network protocols for easysock/dio compatibility
+ - kggzgames   [|||       ] - common seats dialogs and player management
+ - kreversi    [|||||     ] - GGZ support for KDE's KReversi game
+ - kbattleship [|||       ] - GGZ support for KDE's KBattleship game
+ - ksquares    [||||      ] - GGZ support for KDE's KSquares game
+ - kgameggz    [          ] - integration of kggzmod into KGame library
 

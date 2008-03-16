@@ -1,0 +1,12 @@
+Differences of the KDE4-based core client to the KDE3-based KGGZ:
+- headless base library (kggzcore) to take care of all events, including
+  connection/reconnection, protocol errors and such
+- development focuses on usable widgets at first:
+  seats list, player list, room list, table list, chat widget,
+  connection dialogue
+- also needs some better icons for players etc.
+- finally, porting the tools such as team view (based on API?) and grubby
+  dialogue
+- only afterwards, creation of successor to GGZap based on Plasma, and
+  porting of tools like KGrubby
+

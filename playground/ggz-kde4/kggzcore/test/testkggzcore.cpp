@@ -65,6 +65,7 @@ void TestKGGZCore::slotAnswer(KGGZCore::CoreClient::AnswerMessage message)
 			m_core->initiateRoomChange(m_core->roomnames().at(0));
 			break;
 		case KGGZCore::CoreClient::typelist:
+			qDebug("received list of game types supported by the server");
 			break;
 		case KGGZCore::CoreClient::motd:
 			qDebug("MOTD web url: %s", qPrintable(m_core->textmotd()));
