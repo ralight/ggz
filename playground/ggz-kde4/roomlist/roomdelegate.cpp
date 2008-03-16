@@ -1,4 +1,6 @@
 #include "roomdelegate.h"
+#include "room.h"
+#include "modelview.h"
 
 #include <qpainter.h>
 #include <qabstractitemmodel.h>
@@ -10,11 +12,8 @@ RoomDelegate::RoomDelegate(QObject *parent)
 
 void RoomDelegate::paint(QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-	/*if(index.column() == 1)
-	{
-		QItemDelegate::paint(painter, option, index);
-		return;
-	}*/
+	void *roomptr = index.model()->data(index, ROOM_ROLE).value<void*>();
+	Room *room = static_cast<Room*>(roomptr);
 
 	QRect r = option.rect;
 	int textx = 0;
@@ -38,9 +37,14 @@ void RoomDelegate::paint(QPainter *painter, const QStyleOptionViewItem& option, 
 		texty -= 10;
 	}
 
+	QString name = index.model()->data(index, Qt::DisplayRole).toString();
+	QRect trect(r.x() + textx, r.y(), r.width() - textx, r.height());
+	QRect bbox = painter->boundingRect(trect, 0, name);
+
 	if(index.column() == 0)
 	{
-		if(index.parent().isValid())
+		//if(index.parent().isValid())
+		if(room)
 		{
 			painter->setPen(QColor(70, 70, 70));
 			QFont font = painter->font();
@@ -48,19 +52,18 @@ void RoomDelegate::paint(QPainter *painter, const QStyleOptionViewItem& option, 
 			font.setPointSize(font.pointSize() + 2);
 			painter->setFont(font);
 		}
+
+		QRect bbtrect(trect.x(),
+			trect.y() + (trect.height() - bbox.height()) / 2 + texty,
+			bbox.width(), bbox.height());
+		painter->drawText(bbtrect, name);
 	}
 
-	QString name = index.model()->data(index, Qt::DisplayRole).toString();
-	QRect trect(r.x() + textx, r.y(), r.width() - textx, r.height());
-	QRect bbox = painter->boundingRect(trect, 0, name);
-	QRect bbtrect(trect.x(),
-		trect.y() + (trect.height() - bbox.height()) / 2 + texty,
-		bbox.width(), bbox.height());
-	painter->drawText(bbtrect, name);
-
+	// Left column
 	if(index.column() == 0)
 	{
-		if(index.parent().isValid())
+		//if(index.parent().isValid())
+		if(room)
 		{
 			QFont font = painter->font();
 			font.setBold(false);
@@ -68,12 +71,41 @@ void RoomDelegate::paint(QPainter *painter, const QStyleOptionViewItem& option, 
 			font.setPointSize(font.pointSize() - 2);
 			painter->setFont(font);
 
-			QString roominfo = "A room to do fun things in...";
-			QRect bboxinfo = painter->boundingRect(trect, 0, roominfo);
-			QRect bbtrectinfo(trect.x(),
-				trect.y() + trect.height() / 2 + bbox.height() + texty,
-				bboxinfo.width(), bboxinfo.height());
-			painter->drawText(bbtrectinfo, roominfo);
+			QString roominfo = room->description();
+			if(!roominfo.isEmpty())
+			{
+				QRect bboxinfo = painter->boundingRect(trect, 0, roominfo);
+				QRect bbtrectinfo(trect.x(),
+					trect.y() + trect.height() / 2 + bbox.height() + texty,
+					bboxinfo.width(), bboxinfo.height());
+				painter->drawText(bbtrectinfo, roominfo);
+			}
+		}
+	}
+
+	// Right column
+	if(index.column() == 1)
+	{
+		if(room)
+		{
+			QString players = QString("%1 players").arg(room->players());
+			QRect bboxplayers = painter->boundingRect(trect, 0, players);
+			QRect bbtrectplayers(trect.x(),
+				trect.y() + (trect.height() - bbox.height()) / 2,
+				bboxplayers.width(), bboxplayers.height());
+			painter->drawText(bbtrectplayers, players);
+
+			if(room->favourite())
+			{
+				QPixmap pix = QPixmap("icons/rating.png");
+				painter->drawPixmap(QRect(trect.x(), trect.y(), pix.height(), pix.height()), pix);
+			}
+
+			if(room->access() == Room::Locked)
+			{
+				QPixmap pix = QPixmap("icons/dialog-cancel.png");
+				painter->drawPixmap(QRect(trect.x() + 16, trect.y(), pix.height(), pix.height()), pix);
+			}
 		}
 	}
 
@@ -82,13 +114,16 @@ void RoomDelegate::paint(QPainter *painter, const QStyleOptionViewItem& option, 
 
 QSize RoomDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-	/*if(index.column() == 1)
-		return QSize(128, 64);
-	else
-		return QItemDelegate::sizeHint(option, index);*/
+	Q_UNUSED(option);
+
+	int width = 128;
+	int height = 64;
 
 	if(!index.parent().isValid())
-		return QSize(128, 32);
+		height = 32;
 
-	return QSize(128, 64);
+	if(index.column() == 0)
+		width = 160;
+
+	return QSize(width, height);
 }

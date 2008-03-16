@@ -3,6 +3,7 @@
 #include "room.h"
 #include "roomdelegate.h"
 #include "qrecursivesortfilterproxymodel.h"
+#include "modelview.h"
 
 // Qt includes
 #include <qtreeview.h>
@@ -53,7 +54,7 @@ RoomList::RoomList()
 	m_model->appendRow(m_itemchat);
 
 	m_model->setHeaderData(0, Qt::Horizontal, QString("Room"), Qt::DisplayRole);
-	m_model->setHeaderData(1, Qt::Horizontal, QString("Players"), Qt::DisplayRole);
+	m_model->setHeaderData(1, Qt::Horizontal, QString("Information"), Qt::DisplayRole);
 
 	m_proxymodel = new QRecursiveSortFilterProxyModel(this);
 	m_proxymodel->setSourceModel(m_model);
@@ -74,15 +75,20 @@ RoomList::RoomList()
 
 	Room *room1 = new Room("Tic-Tac-Toe");
 	room1->setLogo("tictactoe.png");
+	room1->setDescription("A room to do fun things in...");
+	room1->setPlayers(99);
+	room1->setFavourite(99);
 	addRoom(room1);
 
 	Room *room2 = new Room("Chess");
 	room2->setLogo("chess.png");
 	room2->setModule(true);
+	room1->setPlayers(42);
 	addRoom(room2);
 
 	Room *room3 = new Room("Connect The Dots");
 	room3->setLogo("dots.png");
+	room1->setDescription("Elite players only");
 	room3->setAccess(Room::Locked);
 	addRoom(room3);
 }
@@ -95,10 +101,14 @@ void RoomList::addRoom(Room *room)
 	itemname->setFlags(ROFLAGS);
 	itemname->setIcon(QIcon("games/" + room->logo()));
 	itemname->setText(room->name());
+	itemname->setData(QVariant::fromValue((void*)room), ROOM_ROLE);
 
 	QStandardItem *itemcount = new QStandardItem();
 	itemcount->setFlags(ROFLAGS);
-	itemcount->setText("99");
+	itemcount->setText(room->description());
+	itemcount->setData(QVariant::fromValue((void*)room), ROOM_ROLE);
+	// FIXME: why is ROOM_ROLE necessary? apparently Qt::UserRole+1 isn't used
+	// either here or in data() in RoomDelegate
 
 	QStandardItem *item = m_itemgame;
 	if(!room->module())
