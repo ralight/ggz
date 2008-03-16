@@ -7,9 +7,11 @@ class RoomDelegate : public QItemDelegate
 {
 	Q_OBJECT
 	public:
-		RoomDelegate(QObject *parent = 0);
+		RoomDelegate(QWidget *parent = 0);
 		virtual void paint(QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 		virtual QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const;
+	public slots:
+		void slotToolTip(QPoint pos);
 };
 
 #endif

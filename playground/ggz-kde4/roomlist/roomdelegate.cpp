@@ -1,11 +1,13 @@
 #include "roomdelegate.h"
 #include "room.h"
+#include "roomtreeview.h"
 #include "modelview.h"
 
 #include <qpainter.h>
 #include <qabstractitemmodel.h>
+#include <qtooltip.h>
 
-RoomDelegate::RoomDelegate(QObject *parent)
+RoomDelegate::RoomDelegate(QWidget *parent)
 : QItemDelegate(parent)
 {
 }
@@ -51,6 +53,8 @@ void RoomDelegate::paint(QPainter *painter, const QStyleOptionViewItem& option, 
 			font.setBold(true);
 			font.setPointSize(font.pointSize() + 2);
 			painter->setFont(font);
+
+			bbox = painter->boundingRect(trect, 0, name);
 		}
 
 		QRect bbtrect(trect.x(),
@@ -95,17 +99,28 @@ void RoomDelegate::paint(QPainter *painter, const QStyleOptionViewItem& option, 
 				bboxplayers.width(), bboxplayers.height());
 			painter->drawText(bbtrectplayers, players);
 
-			if(room->favourite())
-			{
-				QPixmap pix = QPixmap("icons/rating.png");
-				painter->drawPixmap(QRect(trect.x(), trect.y(), pix.height(), pix.height()), pix);
-			}
+			QPixmap pix;
 
-			if(room->access() == Room::Locked)
+			pix = QPixmap("icons/rating.png");
+			if(!(room->favourite()))
 			{
-				QPixmap pix = QPixmap("icons/dialog-cancel.png");
-				painter->drawPixmap(QRect(trect.x() + 16, trect.y(), pix.height(), pix.height()), pix);
+				pix = QIcon(pix).pixmap(QSize(16, 16), QIcon::Disabled);
 			}
+			painter->drawPixmap(QRect(trect.x(), trect.y(), pix.height(), pix.height()), pix);
+
+			pix = QPixmap("icons/dialog-cancel.png");
+			if(!(room->access() == Room::Locked))
+			{
+				pix = QIcon(pix).pixmap(QSize(16, 16), QIcon::Disabled);
+			}
+			painter->drawPixmap(QRect(trect.x() + 16, trect.y(), pix.height(), pix.height()), pix);
+
+			pix = QPixmap("icons/tagua.png");
+			if(!(room->module()))
+			{
+				pix = QIcon(pix).pixmap(QSize(16, 16), QIcon::Disabled);
+			}
+			painter->drawPixmap(QRect(trect.x() + 32, trect.y(), pix.height(), pix.height()), pix);
 		}
 	}
 
@@ -123,7 +138,69 @@ QSize RoomDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelInd
 		height = 32;
 
 	if(index.column() == 0)
-		width = 160;
+		width = 300;
 
 	return QSize(width, height);
+}
+
+void RoomDelegate::slotToolTip(QPoint pos)
+{
+	RoomTreeView *treeview = dynamic_cast<RoomTreeView*>(parent());
+
+	QModelIndex index = treeview->indexAt(pos);
+	if(index.isValid())
+	{
+		if(index.column() == 1)
+		{
+			void *roomptr = index.model()->data(index, ROOM_ROLE).value<void*>();
+			Room *room = static_cast<Room*>(roomptr);
+			if(!room)
+				return;
+
+			// FIXME: 32 is hardcoded, might depend on style
+			QRect rect = treeview->visualRect(index);
+			int x = pos.x() - rect.x();
+			int y = pos.y() - rect.y() - 32;
+
+			QString text;
+			if((y >= 0) && (y < 16))
+			{
+				if((x >= 0) && (x < 16))
+				{
+					if(room->favourite())
+					{
+						text = "Favourite room!";
+					}
+					else
+					{
+						text = "Room is not a favourite";
+					}
+				}
+				else if((x >= 16) && (x < 32))
+				{
+					if(room->access() == Room::Locked)
+					{
+						text = "Room is locked, you cannot join.";
+					}
+					else
+					{
+						text = "Room is open for you to join.";
+					}
+				}
+				else if((x >= 32) && (x < 48))
+				{
+					if(room->module())
+					{
+						text = "You can play a game here.";
+					}
+					else
+					{
+						text = "No suitable game clients found, only chat possible.";
+					}
+				}
+			}
+
+			QToolTip::showText(treeview->mapToGlobal(pos), text);
+		}
+	}
 }

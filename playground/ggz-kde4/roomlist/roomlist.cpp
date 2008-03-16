@@ -2,11 +2,11 @@
 #include "roomlist.h"
 #include "room.h"
 #include "roomdelegate.h"
+#include "roomtreeview.h"
 #include "qrecursivesortfilterproxymodel.h"
 #include "modelview.h"
 
 // Qt includes
-#include <qtreeview.h>
 #include <qstandarditemmodel.h>
 #include <qlayout.h>
 #include <qpainter.h>
@@ -25,7 +25,7 @@ static Qt::ItemFlags ROFLAGS =
 RoomList::RoomList()
 : QWidget()
 {
-	m_treeview = new QTreeView();
+	m_treeview = new RoomTreeView();
 	m_treeview->setContextMenuPolicy(Qt::CustomContextMenu);
 
 	QLineEdit *searchbox = new QLineEdit();
@@ -60,17 +60,20 @@ RoomList::RoomList()
 	m_proxymodel->setSourceModel(m_model);
 	m_proxymodel->setDynamicSortFilter(true);
 
-	RoomDelegate *delegate = new RoomDelegate(this);
+	RoomDelegate *delegate = new RoomDelegate(m_treeview);
 
 	m_treeview->setModel(m_proxymodel);
 	m_treeview->setItemDelegate(delegate);
 	m_treeview->expandAll();
+	m_treeview->resizeColumnToContents(0);
+	m_treeview->resizeColumnToContents(1);
 
 	connect(searchbox, SIGNAL(textChanged(const QString&)), SLOT(slotSearch(const QString&)));
 	connect(m_treeview, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(slotSelected(const QPoint&)));
+	connect(m_treeview, SIGNAL(signalToolTip(QPoint)), delegate, SLOT(slotToolTip(QPoint)));
 
 	setWindowTitle("GGZ gets a more flexible room list!");
-	resize(320, 300);
+	resize(500, 400);
 	show();
 
 	Room *room1 = new Room("Tic-Tac-Toe");

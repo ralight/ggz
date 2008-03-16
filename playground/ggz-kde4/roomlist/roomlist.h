@@ -7,9 +7,9 @@
 
 class QStandardItemModel;
 class QStandardItem;
-class QTreeView;
 class QRecursiveSortFilterProxyModel;
 class QModelIndex;
+class RoomTreeView;
 class Room;
 
 // List of rooms
@@ -22,12 +22,12 @@ class RoomList : public QWidget
 		void addRoom(Room *room);
 	private slots:
 		void slotSearch(const QString& text);
-		void slotSelected(const QPoint& index);
+		void slotSelected(const QPoint& pos);
 		void slotFavourites();
 	private:
 		QStandardItemModel *m_model;
 		QRecursiveSortFilterProxyModel *m_proxymodel;
-		QTreeView *m_treeview;
+		RoomTreeView *m_treeview;
 		QStandardItem *m_itemgame, *m_itemchat;
 		QMap<QString, Room*> m_rooms;
 		QString m_action_name;
