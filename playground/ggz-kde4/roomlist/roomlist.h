@@ -23,12 +23,14 @@ class RoomList : public QWidget
 	private slots:
 		void slotSearch(const QString& text);
 		void slotSelected(const QPoint& index);
+		void slotFavourites();
 	private:
 		QStandardItemModel *m_model;
 		QRecursiveSortFilterProxyModel *m_proxymodel;
 		QTreeView *m_treeview;
 		QStandardItem *m_itemgame, *m_itemchat;
 		QMap<QString, Room*> m_rooms;
+		QString m_action_name;
 };
 
 #endif

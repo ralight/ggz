@@ -1,6 +1,7 @@
 // Player list includes
 #include "roomlist.h"
 #include "room.h"
+#include "roomdelegate.h"
 #include "qrecursivesortfilterproxymodel.h"
 
 // Qt includes
@@ -58,7 +59,10 @@ RoomList::RoomList()
 	m_proxymodel->setSourceModel(m_model);
 	m_proxymodel->setDynamicSortFilter(true);
 
+	RoomDelegate *delegate = new RoomDelegate(this);
+
 	m_treeview->setModel(m_proxymodel);
+	m_treeview->setItemDelegate(delegate);
 	m_treeview->expandAll();
 
 	connect(searchbox, SIGNAL(textChanged(const QString&)), SLOT(slotSearch(const QString&)));
@@ -123,11 +127,26 @@ void RoomList::slotSelected(const QPoint& pos)
 	if(m_rooms.contains(name))
 	{
 		Room *room = m_rooms[name];
-
-		Q_UNUSED(room);
+		m_action_name = name;
 
 		QMenu menu;
-		menu.addAction("Add to favourites");
+
+		QAction *action_favourites;
+		if(room->favourite())
+			action_favourites = menu.addAction("Remove from favourites");
+		else
+			action_favourites = menu.addAction("Add to favourites");
+		connect(action_favourites, SIGNAL(triggered()), SLOT(slotFavourites()));
+
 		menu.exec(mapToGlobal(pos));
+	}
+}
+
+void RoomList::slotFavourites()
+{
+	if(m_rooms.contains(m_action_name))
+	{
+		Room *room = m_rooms[m_action_name];
+		room->setFavourite(!room->favourite());
 	}
 }
