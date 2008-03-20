@@ -1,6 +1,482 @@
+Index: ggzd/ggzd/parse_opt.h
+===================================================================
+--- ggzd/ggzd/parse_opt.h	(Revision 9855)
++++ ggzd/ggzd/parse_opt.h	(Arbeitskopie)
+@@ -22,6 +22,7 @@
+  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+  */
+ 
++#include "room.h"
+ 
+ /* Parse command-line options */
+ void parse_args(int argc, char *argv[]);
+@@ -37,4 +38,5 @@
+ 
+ /* Dynamic room reconfiguration */
+ void parse_room_change(const char *room);
++void parse_room_struct(RoomStruct room);
+ 
+Index: ggzd/ggzd/control.c
+===================================================================
+--- ggzd/ggzd/control.c	(Revision 9855)
++++ ggzd/ggzd/control.c	(Arbeitskopie)
+@@ -99,6 +99,7 @@
+ 
+ /* Reconfiguration watcher */
+ static int reconfigure_fd;
++static int reconfigure_db_fd;
+ #ifdef WITH_FAM
+ FAMConnection fc;
+ #endif
+@@ -405,6 +406,20 @@
+ {
+ 	char watchdir[strlen(opt.conf_dir) + 8];
+ 
++	/* Notification handler for updates from databases */
++	reconfigure_db_fd = ggzdb_reconfiguration_fd();
++	if(reconfigure_db_fd > 0)
++	{
++		log_msg(GGZ_LOG_NOTICE,
++			"Reconfiguration: watching database for changes");
++		fcntl(reconfigure_db_fd, F_SETFD, FD_CLOEXEC);
++	}
++	else
++	{
++		log_msg(GGZ_LOG_NOTICE,
++			"Reconfiguration: no connection to the database");
++	}
++
+ 	snprintf(watchdir, sizeof(watchdir), "%s/rooms", opt.conf_dir);
+ 
+ #ifdef HAVE_INOTIFY
+@@ -449,6 +464,20 @@
+ #endif
+ }
+ 
++
++static void reconfiguration_db_handle(void)
++{
++	RoomStruct room = ggzdb_reconfiguration_room();
++
++	if(room.name != NULL) {
++		log_msg(GGZ_LOG_NOTICE,
++			"Reconfiguration: room addition/deletion %s",
++			ggz_intlstring_translated(room.name, NULL));
++		parse_room_struct(room);
++	}
++}
++
++
+ static void reconfiguration_handle(void)
+ {
+ #ifdef HAVE_INOTIFY
+@@ -654,6 +683,10 @@
+ 		FD_SET(reconfigure_fd, &active_fd_set);
+ 		select_max = MAX(select_max, reconfigure_fd);
+ 	}
++	if (reconfigure_db_fd > 0) {
++		FD_SET(reconfigure_db_fd, &active_fd_set);
++		select_max = MAX(select_max, reconfigure_db_fd);
++	}
+ 
+ 	/* Main loop */
+ 	while (!term_signal) {
+@@ -758,12 +791,19 @@
+ 				client_handler_launch(new_sock);
+ #endif /* WITH_LIBWRAP */
+ 			}
+-		} else if(reconfigure_fd > 0) {
++		}
++		if(reconfigure_fd > 0) {
+ 			if(FD_ISSET(reconfigure_fd, &read_fd_set)) {
+ 				dbg_msg(GGZ_DBG_MISC, "reconfiguration monitor activated");
+ 				reconfiguration_handle();
+ 			}
+ 		}
++		if(reconfigure_db_fd > 0) {
++			if(FD_ISSET(reconfigure_db_fd, &read_fd_set)) {
++				dbg_msg(GGZ_DBG_MISC, "database reconfiguration monitor activated");
++				reconfiguration_db_handle();
++			}
++		}
+ 	}
+ 
+ 	log_msg(GGZ_LOG_NOTICE, "GGZ server terminating");
+Index: ggzd/ggzd/database/ggzdb.h
+===================================================================
+--- ggzd/ggzd/database/ggzdb.h	(Revision 9855)
++++ ggzd/ggzd/database/ggzdb.h	(Arbeitskopie)
+@@ -28,6 +28,7 @@
+ #include <ggz_common.h>
+ 
+ #include "ggzd.h"
++#include "room.h"
+ 
+ /* Can't include twice */
+ #ifndef GGZDB_VERSION_ID
+@@ -157,5 +158,11 @@
+ /* Report a table seat change to the database */
+ GGZDBResult ggzdb_savegameplayer(ggzdbStamp tableid, int seat, const char *name, int type);
+ 
++/* Register all rooms */
++GGZDBResult ggzdb_rooms(RoomStruct *rooms, int num);
++
++int ggzdb_reconfiguration_fd(void);
++RoomStruct ggzdb_reconfiguration_room(void);
++
+ #endif
+ 
+Index: ggzd/ggzd/database/ggzdb_pgsql.c
+===================================================================
+--- ggzd/ggzd/database/ggzdb_pgsql.c	(Revision 9855)
++++ ggzd/ggzd/database/ggzdb_pgsql.c	(Arbeitskopie)
+@@ -66,6 +66,8 @@
+ static const char *dbpassword;
+ static int dbport;
+ 
++static PGconn *reconfigurationconn = NULL;
++
+ /* Entry type for the connection pool */
+ typedef struct connection_t
+ {
+@@ -354,6 +356,9 @@
+ 	GGZListEntry *entry;
+ 	connection_t *conn2;
+ 
++	if(reconfigurationconn)
++		releaseconnection(reconfigurationconn);
++
+ 	entry = ggz_list_head(list);
+ 	while(entry)
+ 	{
+@@ -366,6 +371,119 @@
+ }
+ 
+ 
++int _ggzdb_reconfiguration_fd(void)
++{
++	PGresult *res;
++	char query[4096];
++
++	reconfigurationconn = claimconnection();
++	if (!reconfigurationconn) {
++		err_msg("_ggzdb_reconfiguration_fd: couldn't claim connection");
++		return -1;
++	}
++
++	snprintf(query, sizeof(query),
++		"LISTEN ggzroomchange");
++
++	res = PQexec(reconfigurationconn, query);
++	if(PQresultStatus(res) != PGRES_COMMAND_OK) {
++		return -1;
++	}
++	PQclear(res);
++
++	return PQsocket(reconfigurationconn);
++}
++
++
++RoomStruct _ggzdb_reconfiguration_room(void)
++{
++	RoomStruct room;
++	PGnotify *notify;
++	PGresult *res, *res2;
++	char query[4096];
++
++	room.name = NULL;
++	room.description = NULL;
++	room.game_type = -2;
++	room.max_players = 0;
++	room.max_tables = 0;
++	room.perms = 0;
++
++	PQconsumeInput(reconfigurationconn);
++
++	notify = PQnotifies(reconfigurationconn);
++	if(notify != NULL) {
++		if(!ggz_strcmp(notify->relname, "ggzroomchange")) {
++
++			snprintf(query, sizeof(query),
++			 "SELECT "
++			 "name, description, gametype, maxplayers, maxtables, entryrestriction, action "
++			 "FROM rooms WHERE action IS NOT NULL");
++
++			res = PQexec(reconfigurationconn, query);
++
++			if (PQresultStatus(res) == PGRES_TUPLES_OK) {
++				if(PQntuples(res) == 1)	{
++					const char *name = PQgetvalue(res, 0, 0);
++					const char *description = PQgetvalue(res, 0, 1);
++					const char *gametype = PQgetvalue(res, 0, 2);
++					int maxplayers = atoi(PQgetvalue(res, 0, 3));
++					int maxtables = atoi(PQgetvalue(res, 0, 4));
++					const char *entryrestriction = PQgetvalue(res, 0, 5);
++					const char *action = PQgetvalue(res, 0, 6);
++					int perms;
++					int type;
++
++					if(!ggz_strcmp(action, "add")) {
++						snprintf(query, sizeof(query),
++							"UPDATE rooms SET action = NULL WHERE name = '%s'",
++							name);
++
++						res2 = PQexec(reconfigurationconn, query);
++						PQclear(res2);
++
++						if(!ggz_strcmp(entryrestriction, "none"))
++							perms = 0;
++						else if(!ggz_strcmp(entryrestriction, "registered"))
++							perms = 1 << GGZ_PERM_ROOMS_LOGIN;
++						else if(!ggz_strcmp(entryrestriction, "admin"))
++							perms = 1 << GGZ_PERM_ROOMS_ADMIN;
++						else
++							perms = 0;
++
++						type = -2;
++						if(!ggz_strcmp(gametype, NULL))
++							type = -2;
++						// FIXME: this is all fake
++
++						room.name = ggz_intlstring_fromstring(name);
++						room.description = ggz_intlstring_fromstring(description);
++						room.game_type = type;
++						room.max_players = maxplayers;
++						room.max_tables = maxtables;
++						room.perms = perms;
++					} else if(!ggz_strcmp(action, "delete")) {
++						/* FIXME: how to propagate room deletion? */
++
++						snprintf(query, sizeof(query),
++							"DELETE FROM rooms WHERE name = '%s'",
++							name);
++
++						res2 = PQexec(reconfigurationconn, query);
++						PQclear(res2);
++					}
++				}
++
++			}
++			PQclear(res);
++		}
++		PQfreemem(notify);
++	}
++
++	return room;
++}
++
++
+ /* Function to enter the database */
+ void _ggzdb_enter(void)
+ {
+@@ -1240,3 +1358,61 @@
+ 	return rc;
+ }
+ 
++GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num)
++{
++	PGconn *conn;
++	PGresult *res;
++	char query[8192];
++	int rc = GGZDB_ERR_DB;
++	char *name_quoted, *description_quoted;
++	int i;
++
++	conn = claimconnection();
++	if (!conn) {
++		err_msg("_ggzdb_rooms: couldn't claim connection");
++		return rc;
++	}
++
++	/* FIXME: what do we do with invalidated derived rooms? */
++	snprintf(query, sizeof(query),
++		"DELETE FROM rooms WHERE filebased = 't'");
++
++	res = PQexec(conn, query);
++	PQclear(res);
++
++	for(i = 0; i < num; i++) {
++		RoomStruct room = rooms[i];
++
++		name_quoted = _ggz_sql_escape(ggz_intlstring_translated(room.name, NULL));
++		description_quoted = _ggz_sql_escape(ggz_intlstring_translated(room.description, NULL));
++
++		/* FIXME: evaluate room->perms and somehow also room->game_type */
++		snprintf(query, sizeof(query),
++			"INSERT INTO rooms "
++			"(filebased, name, description, gametype, maxplayers, maxtables, entryrestriction) VALUES "
++			"('t', '%s', '%s', '%s', %i, %i, '%s')",
++			name_quoted, description_quoted, "???",
++			room.max_players, room.max_tables, "none");
++
++		if(name_quoted)
++			ggz_free(name_quoted);
++		if(description_quoted)
++			ggz_free(description_quoted);
++
++		res = PQexec(conn, query);
++
++		if (PQresultStatus(res) != PGRES_COMMAND_OK) {
++			err_msg("couldn't insert room %s",
++				ggz_intlstring_translated(room.name, NULL));
++			PQclear(res);
++			break;
++		}
++		else rc = GGZDB_NO_ERROR;
++		PQclear(res);
++	}
++
++	releaseconnection(conn);
++
++	return rc;
++}
++
+Index: ggzd/ggzd/database/ggzdb_proto.h
+===================================================================
+--- ggzd/ggzd/database/ggzdb_proto.h	(Revision 9855)
++++ ggzd/ggzd/database/ggzdb_proto.h	(Arbeitskopie)
+@@ -141,3 +141,8 @@
+ 
+ GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *name, int type);
+ 
++GGZDBResult ggzdb_rooms(RoomStruct *rooms, int num);
++
++int _ggzdb_reconfiguration_fd(void);
++RoomStruct _ggzdb_reconfiguration_room(void);
++
+Index: ggzd/ggzd/database/ggzdb_functions.h
+===================================================================
+--- ggzd/ggzd/database/ggzdb_functions.h	(Revision 9855)
++++ ggzd/ggzd/database/ggzdb_functions.h	(Arbeitskopie)
+@@ -49,3 +49,8 @@
+ 
+ GGZDBResult (*_ggzdb_savegame_player)(ggzdbStamp tableid, int seat, const char *name, int type);
+ 
++GGZDBResult (*_ggzdb_rooms)(RoomStruct *rooms, int num);
++
++int (*_ggzdb_reconfiguration_fd)(void);
++RoomStruct (*_ggzdb_reconfiguration_room)(void);
++
+Index: ggzd/ggzd/database/ggzdb.c
+===================================================================
+--- ggzd/ggzd/database/ggzdb.c	(Revision 9855)
++++ ggzd/ggzd/database/ggzdb.c	(Arbeitskopie)
+@@ -160,6 +160,9 @@
+ 	|| ((_ggzdb_savegames = dlsym(handle, "_ggzdb_savegames")) == NULL)
+ 	|| ((_ggzdb_savegame_owners = dlsym(handle, "_ggzdb_savegame_owners")) == NULL)
+ 	|| ((_ggzdb_savegame_player = dlsym(handle, "_ggzdb_savegame_player")) == NULL)
++	|| ((_ggzdb_rooms = dlsym(handle, "_ggzdb_rooms")) == NULL)
++	|| ((_ggzdb_reconfiguration_fd = dlsym(handle, "_ggzdb_reconfiguration_fd")) == NULL)
++	|| ((_ggzdb_reconfiguration_room = dlsym(handle, "_ggzdb_reconfiguration_room")) == NULL)
+ 	)
+ 	{
+ 		err_sys_exit("%s is an invalid database module (%s)",
+@@ -193,6 +196,13 @@
+ }
+ 
+ 
++/* Not threadsafe: return file descriptor for notifications */
++int ggzdb_reconfiguration_fd(void)
++{
++	return _ggzdb_reconfiguration_fd();
++}
++
++
+ /* Function to add a player to the database */
+ GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *pe)
+ {
+@@ -544,6 +554,42 @@
+ 	return rc;
+ }
+ 
++GGZDBResult ggzdb_rooms(RoomStruct *rooms, int num)
++{
++	GGZDBResult rc = GGZDB_NO_ERROR;
++
++	_ggzdb_enter();
++
++	if (stats_needs_init)
++		rc = ggzdb_stats_init();
++
++	if (rc == GGZDB_NO_ERROR)
++		rc = _ggzdb_rooms(rooms, num);
++
++	_ggzdb_exit();
++
++	return rc;
++}
++
++RoomStruct ggzdb_reconfiguration_room(void)
++{
++	RoomStruct room;
++	GGZDBResult rc = GGZDB_NO_ERROR;
++
++	_ggzdb_enter();
++
++	if (stats_needs_init)
++		rc = ggzdb_stats_init();
++
++	if (rc == GGZDB_NO_ERROR)
++		room = _ggzdb_reconfiguration_room();
++
++	_ggzdb_exit();
++
++	return room;
++}
++
++
+ /*** INTERNAL FUNCTIONS ***/
+ 
+ /* Function to initialize player tables if necessary */
+Index: ggzd/ggzd/parse_opt.c
+===================================================================
+--- ggzd/ggzd/parse_opt.c	(Revision 9855)
++++ ggzd/ggzd/parse_opt.c	(Arbeitskopie)
+@@ -831,6 +831,10 @@
+ 	if(room_info.num_rooms == 0)
+ 		err_msg_exit("No rooms defined, ggzd unusable");
+ 
++	/* Enter rooms into the room template table in the database */
++	dbg_msg(GGZ_DBG_CONFIGURATION, "Adding rooms to database.");
++	ggzdb_rooms(rooms, room_info.num_rooms);
++
+ 	/* Cleanup the r_list */
+ 	if(r_count < 0)
+ 		r_count = -r_count;
+@@ -844,6 +848,30 @@
+ }
+ 
+ 
++/* FIXME: combine some aspects with parse_room(), i.e. let it use this function */
++void parse_room_struct(RoomStruct room)
++{
++	int num;
++
++	/* Allocate a room struct for this room */
++	if(room_info.num_rooms == 0)
++		room_initialize();
++	else
++		room_create_additional();
++	num = room_info.num_rooms - 1;
++
++	memcpy(&rooms[num], &room, sizeof(RoomStruct));
++
++	/* FIXME: highly bogus dummy values */
++	rooms[num].game_type = -2;
++	rooms[num].perms = 0;
++	rooms[num].room = NULL;
++	rooms[num].exec_args = NULL;
++	rooms[num].players = NULL;
++	rooms[num].tables = NULL;
++}
++
++
+ /* Parse a single room file, adding it's values to the room table */
+ static void parse_room(char *name, char *dir, int announce)
+ {
 Index: community/setup/sql/tournaments.sql
 ===================================================================
---- community/setup/sql/tournaments.sql	(Revision 9802)
+--- community/setup/sql/tournaments.sql	(Revision 9853)
 +++ community/setup/sql/tournaments.sql	(Arbeitskopie)
 @@ -16,3 +16,21 @@
  	"playertype" character varying(256)
@@ -152,7 +628,7 @@ Index: community/web/admin/rooms.php
 +	echo "<tr><th>Entry restriction</td><td>$entryrestriction</td><td><select name='entryrestriction'>";
 +	echo "<option value='none'>None</option>";
 +	echo "<option value='registered'>Registered players only</option>";
-+	echo "<option value='registered'>Administrators only</option>";
++	echo "<option value='admin'>Administrators only</option>";
 +	echo "</select></td></tr>";
 +	echo "</table>";
 +?>
@@ -198,7 +674,7 @@ Index: community/web/admin/rooms.php
 +?>
 Index: community/web/admin/index.php
 ===================================================================
---- community/web/admin/index.php	(Revision 9802)
+--- community/web/admin/index.php	(Revision 9853)
 +++ community/web/admin/index.php	(Arbeitskopie)
 @@ -33,6 +33,7 @@
  else:
@@ -208,500 +684,3 @@ Index: community/web/admin/index.php
  endif;
  
  ?>
-Index: docs/ggz-project/release-procedure
-===================================================================
---- docs/ggz-project/release-procedure	(Revision 9802)
-+++ docs/ggz-project/release-procedure	(Arbeitskopie)
-@@ -20,7 +20,8 @@
- [] update build instruction.
-    Affected files are README.GGZ and QuickStart.GGZ.
-    Does 'make distcheck' work? (The ggzbuild tools might help)
--   (There's also DISTCHECK_CONFIGURE_FLAGS to add a prefix or the like.)
-+   (There's also DISTCHECK_CONFIGURE_FLAGS to add a prefix or the like.
-+   See playground/maintenance/makedist.sh)
- [] update RPM and Debian scripts if possible
- [] update NEWS and README
- [] bump version numbers
-Index: ggzd/ggzd/parse_opt.h
-===================================================================
---- ggzd/ggzd/parse_opt.h	(Revision 9802)
-+++ ggzd/ggzd/parse_opt.h	(Arbeitskopie)
-@@ -22,6 +22,7 @@
-  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
-  */
- 
-+#include "room.h"
- 
- /* Parse command-line options */
- void parse_args(int argc, char *argv[]);
-@@ -37,4 +38,5 @@
- 
- /* Dynamic room reconfiguration */
- void parse_room_change(const char *room);
-+void parse_room_struct(RoomStruct room);
- 
-Index: ggzd/ggzd/control.c
-===================================================================
---- ggzd/ggzd/control.c	(Revision 9812)
-+++ ggzd/ggzd/control.c	(Arbeitskopie)
-@@ -92,6 +92,7 @@
- 
- /* Reconfiguration watcher */
- static int reconfigure_fd;
-+static int reconfigure_db_fd;
- #ifdef WITH_FAM
- FAMConnection fc;
- #endif
-@@ -398,6 +399,20 @@
- {
- 	char watchdir[strlen(opt.conf_dir) + 8];
- 
-+	/* Notification handler for updates from databases */
-+	reconfigure_db_fd = ggzdb_reconfiguration_fd();
-+	if(reconfigure_db_fd > 0)
-+	{
-+		log_msg(GGZ_LOG_NOTICE,
-+			"Reconfiguration: watching database for changes");
-+		fcntl(reconfigure_db_fd, F_SETFD, FD_CLOEXEC);
-+	}
-+	else
-+	{
-+		log_msg(GGZ_LOG_NOTICE,
-+			"Reconfiguration: no connection to the database");
-+	}
-+
- 	snprintf(watchdir, sizeof(watchdir), "%s/rooms", opt.conf_dir);
- 
- #ifdef HAVE_INOTIFY
-@@ -442,6 +457,20 @@
- #endif
- }
- 
-+
-+static void reconfiguration_db_handle(void)
-+{
-+	RoomStruct room = ggzdb_reconfiguration_room();
-+
-+	if(room.name != NULL) {
-+		log_msg(GGZ_LOG_NOTICE,
-+			"Reconfiguration: room addition/deletion %s",
-+			ggz_intlstring_translated(room.name, NULL));
-+		parse_room_struct(room);
-+	}
-+}
-+
-+
- static void reconfiguration_handle(void)
- {
- #ifdef HAVE_INOTIFY
-@@ -644,6 +673,10 @@
- 		FD_SET(reconfigure_fd, &active_fd_set);
- 		select_max = MAX(select_max, reconfigure_fd);
- 	}
-+	if (reconfigure_db_fd > 0) {
-+		FD_SET(reconfigure_db_fd, &active_fd_set);
-+		select_max = MAX(select_max, reconfigure_db_fd);
-+	}
- 
- 	/* Main loop */
- 	while (!term_signal) {
-@@ -720,12 +753,19 @@
- 				/* This is where to test for ignored IP addresses */
- 				client_handler_launch(new_sock);
- 			}
--		} else if(reconfigure_fd > 0) {
-+		}
-+		if(reconfigure_fd > 0) {
- 			if(FD_ISSET(reconfigure_fd, &read_fd_set)) {
- 				dbg_msg(GGZ_DBG_MISC, "reconfiguration monitor activated");
- 				reconfiguration_handle();
- 			}
- 		}
-+		if(reconfigure_db_fd > 0) {
-+			if(FD_ISSET(reconfigure_db_fd, &read_fd_set)) {
-+				dbg_msg(GGZ_DBG_MISC, "database reconfiguration monitor activated");
-+				reconfiguration_db_handle();
-+			}
-+		}
- 	}
- 
- 	log_msg(GGZ_LOG_NOTICE, "GGZ server terminating");
-Index: ggzd/ggzd/database/ggzdb.h
-===================================================================
---- ggzd/ggzd/database/ggzdb.h	(Revision 9812)
-+++ ggzd/ggzd/database/ggzdb.h	(Arbeitskopie)
-@@ -28,6 +28,7 @@
- #include <ggz_common.h>
- 
- #include "ggzd.h"
-+#include "room.h"
- 
- /* Can't include twice */
- #ifndef GGZDB_VERSION_ID
-@@ -149,5 +150,11 @@
- /* Report a table seat change to the database */
- GGZDBResult ggzdb_savegameplayer(int savegame, int seat, const char *name, int type);
- 
-+/* Register all rooms */
-+GGZDBResult ggzdb_rooms(RoomStruct *rooms, int num);
-+
-+int ggzdb_reconfiguration_fd(void);
-+RoomStruct ggzdb_reconfiguration_room(void);
-+
- #endif
- 
-Index: ggzd/ggzd/database/ggzdb_pgsql.c
-===================================================================
---- ggzd/ggzd/database/ggzdb_pgsql.c	(Revision 9812)
-+++ ggzd/ggzd/database/ggzdb_pgsql.c	(Arbeitskopie)
-@@ -66,6 +66,8 @@
- static const char *dbpassword;
- static int dbport;
- 
-+static PGconn *reconfigurationconn = NULL;
-+
- /* Entry type for the connection pool */
- typedef struct connection_t
- {
-@@ -354,6 +356,9 @@
- 	GGZListEntry *entry;
- 	connection_t *conn2;
- 
-+	if(reconfigurationconn)
-+		releaseconnection(reconfigurationconn);
-+
- 	entry = ggz_list_head(list);
- 	while(entry)
- 	{
-@@ -366,6 +371,98 @@
- }
- 
- 
-+int _ggzdb_reconfiguration_fd(void)
-+{
-+	PGresult *res;
-+	char query[4096];
-+
-+	reconfigurationconn = claimconnection();
-+	if (!reconfigurationconn) {
-+		err_msg("_ggzdb_reconfiguration_fd: couldn't claim connection");
-+		return -1;
-+	}
-+
-+	snprintf(query, sizeof(query),
-+		"LISTEN ggzroomchange");
-+
-+	res = PQexec(reconfigurationconn, query);
-+	if(PQresultStatus(res) != PGRES_COMMAND_OK) {
-+		return -1;
-+	}
-+	PQclear(res);
-+
-+	return PQsocket(reconfigurationconn);
-+}
-+
-+
-+RoomStruct _ggzdb_reconfiguration_room(void)
-+{
-+	RoomStruct room;
-+	PGnotify *notify;
-+	PGresult *res, *res2;
-+	char query[4096];
-+
-+	room.name = NULL;
-+
-+	PQconsumeInput(reconfigurationconn);
-+
-+	notify = PQnotifies(reconfigurationconn);
-+	if(notify != NULL) {
-+		if(!ggz_strcmp(notify->relname, "ggzroomchange")) {
-+
-+			snprintf(query, sizeof(query),
-+			 "SELECT "
-+			 "name, description, gametype, maxplayers, maxtables, entryrestriction, action "
-+			 "FROM rooms WHERE action IS NOT NULL");
-+
-+			res = PQexec(reconfigurationconn, query);
-+
-+			if (PQresultStatus(res) == PGRES_TUPLES_OK) {
-+				if(PQntuples(res) == 1)	{
-+					const char *name = PQgetvalue(res, 0, 0);
-+					const char *description = PQgetvalue(res, 0, 1);
-+					const char *gametype = PQgetvalue(res, 0, 2);
-+					int maxplayers = atoi(PQgetvalue(res, 0, 3));
-+					int maxtables = atoi(PQgetvalue(res, 0, 4));
-+					const char *entryrestriction = PQgetvalue(res, 0, 5);
-+					const char *action = PQgetvalue(res, 0, 6);
-+
-+					if(!ggz_strcmp(action, "add")) {
-+						snprintf(query, sizeof(query),
-+							"UPDATE rooms SET action = NULL WHERE name = '%s'",
-+							name);
-+
-+						res2 = PQexec(reconfigurationconn, query);
-+						PQclear(res2);
-+
-+						room.name = ggz_intlstring_fromstring(name);
-+						room.description = ggz_intlstring_fromstring(description);
-+						room.game_type = -2;
-+						room.max_players = maxplayers;
-+						room.max_tables = maxtables;
-+						room.perms = 0; /* FIXME: evaluate entryrestriction */
-+					} else if(!ggz_strcmp(action, "delete")) {
-+						/* FIXME: how to propagate room deletion? */
-+
-+						snprintf(query, sizeof(query),
-+							"DELETE FROM rooms WHERE name = '%s'",
-+							name);
-+
-+						res2 = PQexec(reconfigurationconn, query);
-+						PQclear(res2);
-+					}
-+				}
-+
-+			}
-+			PQclear(res);
-+		}
-+		PQfreemem(notify);
-+	}
-+
-+	return room;
-+}
-+
-+
- /* Function to enter the database */
- void _ggzdb_enter(void)
- {
-@@ -907,6 +1004,7 @@
- 		game, savegame);
- 
- 	res = PQexec(conn, query);
-+	PQclear(res);
- 
- 	winner_quoted = _ggz_sql_escape(winner);
- 
-@@ -1212,6 +1310,7 @@
- 		savegame, seat);
- 
- 	res = PQexec(conn, query);
-+	PQclear(res);
- 
- 	name_quoted = _ggz_sql_escape(name);
- 
-@@ -1237,3 +1336,61 @@
- 	return rc;
- }
- 
-+GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num)
-+{
-+	PGconn *conn;
-+	PGresult *res;
-+	char query[8192];
-+	int rc = GGZDB_ERR_DB;
-+	char *name_quoted, *description_quoted;
-+	int i;
-+
-+	conn = claimconnection();
-+	if (!conn) {
-+		err_msg("_ggzdb_rooms: couldn't claim connection");
-+		return rc;
-+	}
-+
-+	/* FIXME: what do we do with invalidated derived rooms? */
-+	snprintf(query, sizeof(query),
-+		"DELETE FROM rooms WHERE filebased = 't'");
-+
-+	res = PQexec(conn, query);
-+	PQclear(res);
-+
-+	for(i = 0; i < num; i++) {
-+		RoomStruct room = rooms[i];
-+
-+		name_quoted = _ggz_sql_escape(ggz_intlstring_translated(room.name, NULL));
-+		description_quoted = _ggz_sql_escape(ggz_intlstring_translated(room.description, NULL));
-+
-+		/* FIXME: evaluate room->perms and somehow also room->game_type */
-+		snprintf(query, sizeof(query),
-+			"INSERT INTO rooms "
-+			"(filebased, name, description, gametype, maxplayers, maxtables, entryrestriction) VALUES "
-+			"('t', '%s', '%s', '%s', %i, %i, '%s')",
-+			name_quoted, description_quoted, "???",
-+			room.max_players, room.max_tables, "none");
-+
-+		if(name_quoted)
-+			ggz_free(name_quoted);
-+		if(description_quoted)
-+			ggz_free(description_quoted);
-+
-+		res = PQexec(conn, query);
-+
-+		if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-+			err_msg("couldn't insert room %s",
-+				ggz_intlstring_translated(room.name, NULL));
-+			PQclear(res);
-+			break;
-+		}
-+		else rc = GGZDB_NO_ERROR;
-+		PQclear(res);
-+	}
-+
-+	releaseconnection(conn);
-+
-+	return rc;
-+}
-+
-Index: ggzd/ggzd/database/ggzdb_proto.h
-===================================================================
---- ggzd/ggzd/database/ggzdb_proto.h	(Revision 9812)
-+++ ggzd/ggzd/database/ggzdb_proto.h	(Arbeitskopie)
-@@ -141,3 +141,8 @@
- 
- GGZDBResult _ggzdb_savegame_player(int savegame, int seat, const char *name, int type);
- 
-+GGZDBResult ggzdb_rooms(RoomStruct *rooms, int num);
-+
-+int _ggzdb_reconfiguration_fd(void);
-+RoomStruct _ggzdb_reconfiguration_room(void);
-+
-Index: ggzd/ggzd/database/ggzdb_util.c
-===================================================================
---- ggzd/ggzd/database/ggzdb_util.c	(Revision 9802)
-+++ ggzd/ggzd/database/ggzdb_util.c	(Arbeitskopie)
-@@ -50,6 +50,7 @@
- 
- 	for(p = str; *p != '\0'; p++) {
- 		if(*p == '\'') {
-+			/* FIXME: for pgsql this needs to be '\'', i.e. «'Nine men''s morris'» */
- 			*q++ = '\\';
- 			*q = *p;
- 		} else {
-Index: ggzd/ggzd/database/ggzdb_functions.h
-===================================================================
---- ggzd/ggzd/database/ggzdb_functions.h	(Revision 9812)
-+++ ggzd/ggzd/database/ggzdb_functions.h	(Arbeitskopie)
-@@ -49,3 +49,8 @@
- 
- GGZDBResult (*_ggzdb_savegame_player)(int savegame, int seat, const char *name, int type);
- 
-+GGZDBResult (*_ggzdb_rooms)(RoomStruct *rooms, int num);
-+
-+int (*_ggzdb_reconfiguration_fd)(void);
-+RoomStruct (*_ggzdb_reconfiguration_room)(void);
-+
-Index: ggzd/ggzd/database/ggzdb.c
-===================================================================
---- ggzd/ggzd/database/ggzdb.c	(Revision 9812)
-+++ ggzd/ggzd/database/ggzdb.c	(Arbeitskopie)
-@@ -144,6 +144,9 @@
- 	|| ((_ggzdb_savegames = dlsym(handle, "_ggzdb_savegames")) == NULL)
- 	|| ((_ggzdb_savegame_owners = dlsym(handle, "_ggzdb_savegame_owners")) == NULL)
- 	|| ((_ggzdb_savegame_player = dlsym(handle, "_ggzdb_savegame_player")) == NULL)
-+	|| ((_ggzdb_rooms = dlsym(handle, "_ggzdb_rooms")) == NULL)
-+	|| ((_ggzdb_reconfiguration_fd = dlsym(handle, "_ggzdb_reconfiguration_fd")) == NULL)
-+	|| ((_ggzdb_reconfiguration_room = dlsym(handle, "_ggzdb_reconfiguration_room")) == NULL)
- 	)
- 	{
- 		err_sys_exit("%s is an invalid database module (%s)",
-@@ -177,6 +180,13 @@
- }
- 
- 
-+/* Not threadsafe: return file descriptor for notifications */
-+int ggzdb_reconfiguration_fd(void)
-+{
-+	return _ggzdb_reconfiguration_fd();
-+}
-+
-+
- /* Function to add a player to the database */
- GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *pe)
- {
-@@ -528,7 +538,42 @@
- 	return rc;
- }
- 
-+GGZDBResult ggzdb_rooms(RoomStruct *rooms, int num)
-+{
-+	GGZDBResult rc = GGZDB_NO_ERROR;
- 
-+	_ggzdb_enter();
-+
-+	if (stats_needs_init)
-+		rc = ggzdb_stats_init();
-+
-+	if (rc == GGZDB_NO_ERROR)
-+		rc = _ggzdb_rooms(rooms, num);
-+
-+	_ggzdb_exit();
-+
-+	return rc;
-+}
-+
-+RoomStruct ggzdb_reconfiguration_room(void)
-+{
-+	RoomStruct room;
-+	GGZDBResult rc = GGZDB_NO_ERROR;
-+
-+	_ggzdb_enter();
-+
-+	if (stats_needs_init)
-+		rc = ggzdb_stats_init();
-+
-+	if (rc == GGZDB_NO_ERROR)
-+		room = _ggzdb_reconfiguration_room();
-+
-+	_ggzdb_exit();
-+
-+	return room;
-+}
-+
-+
- /*** INTERNAL FUNCTIONS ***/
- 
- /* Function to initialize player tables if necessary */
-Index: ggzd/ggzd/parse_opt.c
-===================================================================
---- ggzd/ggzd/parse_opt.c	(Revision 9812)
-+++ ggzd/ggzd/parse_opt.c	(Arbeitskopie)
-@@ -831,6 +831,10 @@
- 	if(room_info.num_rooms == 0)
- 		err_msg_exit("No rooms defined, ggzd unusable");
- 
-+	/* Enter rooms into the room template table in the database */
-+	dbg_msg(GGZ_DBG_CONFIGURATION, "Adding rooms to database.");
-+	ggzdb_rooms(rooms, room_info.num_rooms);
-+
- 	/* Cleanup the r_list */
- 	if(r_count < 0)
- 		r_count = -r_count;
-@@ -844,6 +848,30 @@
- }
- 
- 
-+/* FIXME: combine some aspects with parse_room(), i.e. let it use this function */
-+void parse_room_struct(RoomStruct room)
-+{
-+	int num;
-+
-+	/* Allocate a room struct for this room */
-+	if(room_info.num_rooms == 0)
-+		room_initialize();
-+	else
-+		room_create_additional();
-+	num = room_info.num_rooms - 1;
-+
-+	memcpy(&rooms[num], &room, sizeof(RoomStruct));
-+
-+	/* FIXME: highly bogus dummy values */
-+	rooms[num].game_type = -2;
-+	rooms[num].perms = 0;
-+	rooms[num].room = NULL;
-+	rooms[num].exec_args = NULL;
-+	rooms[num].players = NULL;
-+	rooms[num].tables = NULL;
-+}
-+
-+
- /* Parse a single room file, adding it's values to the room table */
- static void parse_room(char *name, char *dir, int announce)
- {
