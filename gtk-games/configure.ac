@@ -1,5 +1,5 @@
 dnl Configuration for the Gtk+ games collection
-# $Id: configure.ac 9376 2007-11-21 19:21:45Z josef $
+# $Id: configure.ac 9854 2008-03-20 20:37:13Z josef $
 dnl ===========================================
 
 AC_INIT([GGZ GTK games], [0.0.14], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-games])
@@ -44,7 +44,7 @@ dnl Check for GGZ requirements
 dnl ==========================
 AC_GGZ_INIT(defaults, export)
 AC_GGZ_LIBGGZ
-AC_GGZ_VERSION(0, 0, 14)
+AC_GGZ_VERSION(0, 99, 2)
 AC_GGZ_GGZMOD
 AC_GGZ_CONFIG("true", ignore)
 AC_GGZ_INTL

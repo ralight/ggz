@@ -30,7 +30,7 @@ esac
 # ==========================
 AC_GGZ_INIT(defaults, export)
 AC_GGZ_LIBGGZ
-AC_GGZ_VERSION(0, 0, 14)
+AC_GGZ_VERSION(0, 99, 2)
 AC_GGZ_INTL
 
 # Check for what to build
