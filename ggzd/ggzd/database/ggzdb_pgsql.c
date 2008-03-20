@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 9812 2008-03-08 22:03:46Z josef $
+ * $Id: ggzdb_pgsql.c 9855 2008-03-20 20:38:47Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -907,6 +907,7 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 		game, savegame);
 
 	res = PQexec(conn, query);
+	PQclear(res);
 
 	winner_quoted = _ggz_sql_escape(winner);
 
@@ -931,7 +932,7 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 	return rc;
 }
 
-GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, int tableid)
+GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, ggzdbStamp tableid)
 {
 	PGconn *conn;
 	PGresult *res;
@@ -957,9 +958,9 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 
 	snprintf(query, sizeof(query),
 		"INSERT INTO savegames "
-		"(date, game, owner, savegame, tableid) VALUES "
-		"(%li, '%s', '%s', '%s', %i)",
-		time(NULL), game, owner, savegame, tableid);
+		"(date, game, owner, savegame, tableid, stamp) VALUES "
+		"(%li, '%s', '%s', '%s', %li, %li)",
+		time(NULL), game, owner, savegame, tableid.thread, tableid.starttime);
 
 	ggz_free(owner_quoted);
 
@@ -1072,7 +1073,7 @@ GGZList *_ggzdb_savegame_owners(const char *game)
 	char *game_quoted;
 	char *owner;
 	char *savegame;
-	int tableid;
+	ggzdbStamp tableid;
 	int i, j;
 	ggzdbSavegamePlayers *sp;
 
@@ -1084,7 +1085,7 @@ GGZList *_ggzdb_savegame_owners(const char *game)
 
 	game_quoted = _ggz_sql_escape(game);
 	snprintf(query, sizeof(query),
-		"SELECT owner, tableid, savegame FROM savegames WHERE game = '%s'",
+		"SELECT owner, tableid, stamp, savegame FROM savegames WHERE game = '%s'",
 		game_quoted);
 	ggz_free(game_quoted);
 
@@ -1095,8 +1096,9 @@ GGZList *_ggzdb_savegame_owners(const char *game)
 		owners = ggz_list_create(NULL, NULL, (ggzEntryDestroy)strfree, GGZ_LIST_ALLOW_DUPS);
 		for(i = 0; i < PQntuples(res); i++) {
 			owner = ggz_strdup(PQgetvalue(res, i, 0));
-			tableid = atol(ggz_strdup(PQgetvalue(res, i, 1)));
-			savegame = ggz_strdup(PQgetvalue(res, i, 2));
+			tableid.thread = atol(ggz_strdup(PQgetvalue(res, i, 1)));
+			tableid.starttime = atol(ggz_strdup(PQgetvalue(res, i, 2)));
+			savegame = ggz_strdup(PQgetvalue(res, i, 3));
 
 			sp = ggz_malloc(sizeof(ggzdbSavegamePlayers));
 			sp->owner = owner;
@@ -1107,8 +1109,8 @@ GGZList *_ggzdb_savegame_owners(const char *game)
 
 			snprintf(query, sizeof(query),
 				"SELECT seat, seattype, handle FROM savegameplayers "
-				"WHERE savegame = %i ORDER BY seat ASC",
-				tableid);
+				"WHERE tableid = %li AND stamp = %li ORDER BY seat ASC",
+				tableid.thread, tableid.starttime);
 
 			res2 = PQexec(conn, query);
 			if (PQresultStatus(res2) != PGRES_TUPLES_OK) {
@@ -1127,15 +1129,15 @@ GGZList *_ggzdb_savegame_owners(const char *game)
 			ggz_list_insert(owners, sp);
 
 			snprintf(query, sizeof(query),
-				"DELETE FROM savegameplayers WHERE savegame = %i",
-				tableid);
+				"DELETE FROM savegameplayers WHERE tableid = %li AND stamp = %li",
+				tableid.thread, tableid.starttime);
 
 			res2 = PQexec(conn, query);
 			PQclear(res2);
 
 			snprintf(query, sizeof(query),
-				"DELETE FROM savegames WHERE tableid = %i",
-				tableid);
+				"DELETE FROM savegames WHERE tableid = %li AND stamp = %li",
+				tableid.thread, tableid.starttime);
 
 			res2 = PQexec(conn, query);
 			PQclear(res2);
@@ -1192,7 +1194,7 @@ GGZList *_ggzdb_savegames(const char *game, const char *owner)
 	return savegames;
 }
 
-GGZDBResult _ggzdb_savegame_player(int savegame, int seat, const char *name, int type)
+GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *name, int type)
 {
 	PGconn *conn;
 	PGresult *res;
@@ -1208,18 +1210,19 @@ GGZDBResult _ggzdb_savegame_player(int savegame, int seat, const char *name, int
 
 	snprintf(query, sizeof(query),
 		"DELETE FROM savegameplayers "
-		"WHERE savegame = %i AND seat = %i",
-		savegame, seat);
+		"WHERE tableid = %li AND stamp = %li AND seat = %i",
+		tableid.thread, tableid.starttime, seat);
 
 	res = PQexec(conn, query);
+	PQclear(res);
 
 	name_quoted = _ggz_sql_escape(name);
 
 	snprintf(query, sizeof(query),
 		"INSERT INTO savegameplayers "
-		"(savegame, seat, handle, seattype) VALUES "
-		"(%i, %i, '%s', '%s')",
-		savegame, seat, name_quoted, ggz_seattype_to_string(type));
+		"(tableid, stamp, seat, handle, seattype) VALUES "
+		"(%li, %li, %i, '%s', '%s')",
+		tableid.thread, tableid.starttime, seat, name_quoted, ggz_seattype_to_string(type));
 
 	if(name_quoted)
 		ggz_free(name_quoted);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 9812 2008-03-08 22:03:46Z josef $
+ * $Id: ggzdb.c 9855 2008-03-20 20:38:47Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -55,6 +55,22 @@ static void *handle = NULL;
 static GGZDBResult ggzdb_player_init(void);
 static GGZDBResult ggzdb_stats_init(void);
 static void ggzdb_player_lowercase(ggzdbPlayerEntry *pe, char *orig);
+
+/* Helper function to get guaranteed uniqueness over time and (local) space  */
+/* For architecture-specific size constraints, see definition in ggzdb.h     */
+/* FIXME: this is ugly */
+static time_t serverstarttime = 0;
+ggzdbStamp unique_thread_id(void)
+{
+	ggzdbStamp stamp;
+
+	if(!serverstarttime)
+		serverstarttime = time(NULL);
+
+	stamp.thread = pthread_self();
+	stamp.starttime = serverstarttime;
+	return stamp;
+}
 
 /* Function to initialize the database system */
 int ggzdb_init(ggzdbConnection connection, bool standalone)
@@ -422,7 +438,7 @@ GGZDBResult ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 }
 
 
-GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, int tableid)
+GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, ggzdbStamp tableid)
 {
 	GGZDBResult rc = GGZDB_NO_ERROR;
 
@@ -511,7 +527,7 @@ GGZList *ggzdb_savegame_owners(const char *game)
 	return list;
 }
 
-GGZDBResult ggzdb_savegameplayer(int savegame, int seat, const char *name, int type)
+GGZDBResult ggzdb_savegameplayer(ggzdbStamp tableid, int seat, const char *name, int type)
 {
 	GGZDBResult rc = GGZDB_NO_ERROR;
 
@@ -521,13 +537,12 @@ GGZDBResult ggzdb_savegameplayer(int savegame, int seat, const char *name, int t
 		rc = ggzdb_stats_init();
 
 	if (rc == GGZDB_NO_ERROR)
-		rc = _ggzdb_savegame_player(savegame, seat, name, type);
+		rc = _ggzdb_savegame_player(tableid, seat, name, type);
 
 	_ggzdb_exit();
 
 	return rc;
 }
-
 
 /*** INTERNAL FUNCTIONS ***/
 

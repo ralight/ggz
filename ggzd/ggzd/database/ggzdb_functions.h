@@ -39,7 +39,7 @@ GGZDBResult (*_ggzdb_init_stats)(void);
 GGZDBResult (*_ggzdb_stats_lookup)(ggzdbPlayerGameStats *stats);
 GGZDBResult (*_ggzdb_stats_update)(ggzdbPlayerGameStats *stats);
 GGZDBResult (*_ggzdb_stats_newmatch)(const char *game, const char *winner, const char *savegame);
-GGZDBResult (*_ggzdb_stats_savegame)(const char *game, const char *owner, const char *savegame, int tableid);
+GGZDBResult (*_ggzdb_stats_savegame)(const char *game, const char *owner, const char *savegame, ggzdbStamp tableid);
 GGZDBResult (*_ggzdb_stats_match)(ggzdbPlayerGameStats *stats);
 GGZDBResult (*_ggzdb_stats_toprankings)(const char *game, int number, ggzdbPlayerGameStats **rankings);
 GGZDBResult (*_ggzdb_stats_calcrankings)(const char *game);
@@ -47,5 +47,5 @@ GGZDBResult (*_ggzdb_stats_calcrankings)(const char *game);
 GGZList* (*_ggzdb_savegames)(const char *game, const char *owner);
 GGZList* (*_ggzdb_savegame_owners)(const char *game);
 
-GGZDBResult (*_ggzdb_savegame_player)(int savegame, int seat, const char *name, int type);
+GGZDBResult (*_ggzdb_savegame_player)(ggzdbStamp tableid, int seat, const char *name, int type);
 

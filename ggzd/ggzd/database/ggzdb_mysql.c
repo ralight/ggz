@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 9812 2008-03-08 22:03:46Z josef $
+ * $Id: ggzdb_mysql.c 9855 2008-03-20 20:38:47Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -525,7 +525,7 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 	}
 }
 
-GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, int tableid)
+GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, ggzdbStamp tableid)
 {
 	char query[4096];
 	int rc;
@@ -535,9 +535,9 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 
 	snprintf(query, sizeof(query),
 		"INSERT INTO `savegames`"
-		"(`date`,`game`,`owner`,`savegame`,`tableid`) VALUES "
-		"(%li, '%s', '%s', '%s', %i)",
-		time(NULL), game, owner, savegame, tableid);
+		"(`date`,`game`,`owner`,`savegame`,`tableid`,`stamp`) VALUES "
+		"(%li, '%s', '%s', '%s', %li, %li)",
+		time(NULL), game, owner, savegame, tableid.thread, tableid.starttime);
 
 	ggz_free(owner_quoted);
 

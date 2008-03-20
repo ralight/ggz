@@ -55,12 +55,14 @@ CREATE TABLE "%PREFIX%savegames" (
 	"game" character varying(256),
 	"owner" character varying(256),
 	"savegame" character varying(256),
-	"tableid" bigint
+	"tableid" bigint,
+	"stamp" bigint
 );
 
 CREATE TABLE "%PREFIX%savegameplayers" (
 	"id" serial NOT NULL,
-	"savegame" bigint,
+	"tableid" bigint,
+	"stamp" bigint,
 	"seat" bigint,
 	"handle" character varying(256),
 	"seattype" character varying(256)

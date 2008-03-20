@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 9812 2008-03-08 22:03:46Z josef $
+ * $Id: table.c 9855 2008-03-20 20:38:47Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -483,9 +483,9 @@ static GGZReturn table_start_game(GGZTable *table)
 
 		/* FIXME: to not accidentally nuke old entries, need to append timestamp
 		 *        to all pthread_self() arguments to database calls */
-		ggzdb_savegameplayer(pthread_self(), i, seat.name, seat.type);
+		ggzdb_savegameplayer(unique_thread_id(), i, seat.name, seat.type);
 	}
-	ggzdb_stats_savegame(name, table->owner, table->savegame, pthread_self());
+	ggzdb_stats_savegame(name, table->owner, table->savegame, unique_thread_id());
 
 	/* And start the game */
 	log_msg(GGZ_LOG_TABLES, "Launching table: %s", args[0]);
@@ -1107,7 +1107,7 @@ static void table_game_req_boot(GGZdMod *ggzdmod,
 		transit = GGZ_TRANSIT_LEAVE;
 		update = GGZ_TABLE_UPDATE_LEAVE;
 
-		ggzdb_savegameplayer(pthread_self(), seat.num, seat.name, seat.type);
+		ggzdb_savegameplayer(unique_thread_id(), seat.num, seat.name, seat.type);
 	}
 
 	pthread_rwlock_wrlock(&table->lock);
@@ -1159,7 +1159,7 @@ static void table_game_req_bot(GGZdMod *ggzdmod,
 	seat.playerdata = NULL;
 	ggzdmod_set_seat(ggzdmod, &seat);
 
-	ggzdb_savegameplayer(pthread_self(), seat.num, seat.name, seat.type);
+	ggzdb_savegameplayer(unique_thread_id(), seat.num, seat.name, seat.type);
 
 	pthread_rwlock_wrlock(&table->lock);
 	table->seat_types[seat_num] = GGZ_SEAT_BOT;
@@ -1200,7 +1200,7 @@ static void _table_game_change_seat(GGZdMod *ggzdmod,
 	seat.playerdata = NULL;
 	ggzdmod_set_seat(ggzdmod, &seat);
 
-	ggzdb_savegameplayer(pthread_self(), seat.num, seat.name, seat.type);
+	ggzdb_savegameplayer(unique_thread_id(), seat.num, seat.name, seat.type);
 
 	pthread_rwlock_wrlock(&table->lock);
 	table->seat_types[seat_num] = seat_type;
