@@ -50,12 +50,12 @@ void CoreClientBase::init()
 {
 	GGZOptions options;
 
-	options.flags = (GGZOptionFlags)(GGZ_OPT_PARSER | GGZ_OPT_MODULES);
+	options.flags = (GGZOptionFlags)(GGZ_OPT_PARSER | GGZ_OPT_MODULES | GGZ_OPT_RECONNECT);
 
 	int ret = ggzcore_init(options);
 	if(ret == -1)
 	{
-		qWarning("Couldn't initialize ggzcore.");
+		qWarning("base: Couldn't initialize ggzcore.");
 		emit signalBaseError();
 		return;
 	}
@@ -96,7 +96,7 @@ void CoreClientBase::startConnection()
 	int ret = ggzcore_server_connect(m_server);
 	if(ret == -1)
 	{
-		qWarning("Couldn't start connection to server.");
+		qWarning("base: Couldn't start connection to server.");
 		emit signalBaseError();
 		return;
 	}
@@ -150,7 +150,7 @@ RoomBase *CoreClientBase::roombase()
 
 void CoreClientBase::callback_server(unsigned int id, const void *event_data) const
 {
-	qDebug("cb_server! id=%i event=%s", id, Misc::messagename(id).toUtf8().data());
+	qDebug("base: cb_server! id=%i event=%s", id, Misc::messagename(id).toUtf8().data());
 
 	int errorcode = E_OK;
 
@@ -189,6 +189,9 @@ void CoreClientBase::handle_server_pre(unsigned int id)
 	{
 		delete m_roombase;
 		m_roombase = NULL;
+
+		delete m_sn;
+		m_sn = NULL;
 	}
 }
 
@@ -219,7 +222,7 @@ void CoreClientBase::handle_server_post(unsigned int id)
 
 GGZHookReturn CoreClientBase::cb_server(unsigned int id, const void *event_data, const void *user_data)
 {
-	qDebug("cb_server-static!");
+	qDebug("base: cb_server-static!");
 
 	static_cast<const CoreClientBase*>(user_data)->callback_server(id, event_data);
 
@@ -228,11 +231,13 @@ GGZHookReturn CoreClientBase::cb_server(unsigned int id, const void *event_data,
 
 void CoreClientBase::slotSocket(int socket)
 {
-	qDebug("socket activity...");
+	qDebug("--------------------------------");
+	qDebug("----- socket activity...");
 
 	if(ggzcore_server_data_is_pending(m_server))
 		ggzcore_server_read_data(m_server, socket);
 
-	qDebug("socket reading done.");
+	qDebug("----- socket reading done.");
+	qDebug("--------------------------------");
 }
 
