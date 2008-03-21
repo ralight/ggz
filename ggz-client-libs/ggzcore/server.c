@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 9621 2008-01-29 17:42:18Z oojah $
+ * $Id: server.c 9860 2008-03-21 12:12:14Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -156,7 +156,7 @@ static int reconnect_policy = 0;
 #endif
 static int thread_policy = 0;
 static GGZServer *reconnect_server = NULL;
-const int reconnect_timeout = 15;
+const int reconnect_timeout = 5;
 
 static void _ggzcore_server_main_negotiate_status(GGZServer * server,
 						  GGZClientReqError status);
@@ -1560,6 +1560,8 @@ void _ggzcore_server_add_type(GGZServer * server, GGZGameType * type)
 #ifdef SUPPORT_RECONNECT
 static void reconnect_alarm(int signal)
 {
+	ggz_debug(GGZCORE_DBG_SERVER, "Trying to reconnect...");
+
 	if (_ggzcore_net_connect(reconnect_server->net) < 0) {
 		reconnect_server->state = GGZ_STATE_RECONNECTING;
 		alarm(reconnect_timeout);
