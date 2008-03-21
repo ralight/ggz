@@ -82,6 +82,8 @@ void TestKGGZCore::slotEvent(KGGZCore::CoreClient::EventMessage message)
 	{
 		case KGGZCore::CoreClient::state_changed:
 			qDebug("* state: %s", qPrintable(KGGZCore::Misc::statename(m_core->state())));
+			if(m_core->state() == KGGZCore::reconnecting)
+				qDebug("Trying to reconnect...");
 			break;
 		case KGGZCore::CoreClient::players_changed:
 			break;

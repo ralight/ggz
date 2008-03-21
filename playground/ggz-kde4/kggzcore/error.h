@@ -26,6 +26,24 @@
 namespace KGGZCore
 {
 
+enum State
+{
+	offline,
+	connecting,
+	reconnecting,
+	online,
+	logging_in,
+	logged_in,
+	entering_room,
+	in_room,
+	between_rooms,
+	launching_table,
+	joining_table,
+	at_table,
+	leaving_table,
+	logging_out
+};
+
 class Error
 {
 	public:
