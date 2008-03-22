@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9812 2008-03-08 22:03:46Z josef $
+ * $Id: parse_opt.c 9865 2008-03-22 21:11:56Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -331,6 +331,13 @@ void parse_conf_file(void)
 	}
 
 	/* Add any defaults which were not config'ed */
+
+	/* The default database type */
+	if(!opt.dbtype) {
+		char *typescopy = ggz_strdup(DATABASE_TYPES);
+		opt.dbtype = strtok(typescopy, ",");
+		ggz_free(typescopy);
+	}
 
 	/* If no game_exec_dir, default it to GGZDEXECMODDIR */
 	if(!opt.game_exec_dir)
