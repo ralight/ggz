@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 9831 2008-03-09 12:46:22Z oojah $
+ * $Id: control.c 9864 2008-03-22 21:10:36Z oojah $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -191,6 +191,7 @@ static void cleanup_data(void)
 	if (opt.admin_email) data_free(opt.admin_email);
 	if (opt.server_name) data_free(opt.server_name);
 
+	if (opt.dbtype) data_free(opt.dbtype);
 	if (opt.dbhost) data_free(opt.dbhost);
 	if (opt.dbname) data_free(opt.dbname);
 	if (opt.dbusername) data_free(opt.dbusername);
