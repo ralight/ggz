@@ -52,6 +52,19 @@ public class GGZChannel implements ReadableByteChannel, WritableByteChannel
 		return writebuffer(src.array(), src.position());
 	}
 
+	public byte readByte()
+	throws Exception
+	{
+		ByteBuffer bb = ByteBuffer.allocate(1);
+		int ret = read(bb);
+		if(ret < 0)
+			throw new Exception("handler: cannot read byte opcode");
+
+		byte[] data = bb.array();
+		byte op = data[0];
+		return op;
+	}
+
 	public int readInt()
 	throws Exception
 	{
@@ -73,10 +86,22 @@ public class GGZChannel implements ReadableByteChannel, WritableByteChannel
 		ByteBuffer bb = ByteBuffer.allocate(length);
 		int ret = read(bb);
 		if(ret < 0)
-			throw new Exception("handler: cannot read int opcode");
+			throw new Exception("handler: cannot read string opcode");
 
 		byte[] data = bb.array();
 		return new String(data);
+	}
+
+	public void writeByte(byte c)
+	throws Exception
+	{
+		byte[] data = {c};
+
+		ByteBuffer bb = ByteBuffer.allocate(1);
+		bb.put(data);
+		int ret = write(bb);
+		if(ret < 0)
+			throw new Exception("handler: cannot write byte opcode");
 	}
 
 	public void writeInt(int i)
@@ -88,7 +113,7 @@ public class GGZChannel implements ReadableByteChannel, WritableByteChannel
 		bb.put(data);
 		int ret = write(bb);
 		if(ret < 0)
-			throw new Exception("handler: cannot read int opcode");
+			throw new Exception("handler: cannot write int opcode");
 	}
 
 	public void writeString(String s)
@@ -100,7 +125,7 @@ public class GGZChannel implements ReadableByteChannel, WritableByteChannel
 		bb.put(s.getBytes());
 		int ret = write(bb);
 		if(ret < 0)
-			throw new Exception("handler: cannot read int opcode");
+			throw new Exception("handler: cannot write string opcode");
 	}
 
 	static

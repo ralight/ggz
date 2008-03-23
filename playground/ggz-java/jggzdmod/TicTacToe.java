@@ -15,10 +15,27 @@ class TTTServer extends GGZDMod
 	private final static int RSPMOVE = 5;
 	private final static int SNDSYNC = 6;
 
+	private final static byte STATUS_OK = 0;
+	private final static byte STATUS_ERR_STATE = -1;
+	private final static byte STATUS_ERR_TURN = -2;
+	private final static byte STATUS_ERR_BOUND = -3;
+	private final static byte STATUS_ERR_FULL = -4;
+
+	private final static int FIELD_EMPTY = -1;
+	private final static byte NO_WINNER = 2;
+
+	private int[] board;
+	private int turn;
+
 	public TTTServer()
 	throws Exception
 	{
 		super("Tic-Tac-Toe (java)");
+
+		this.board = new int[9];
+		for(int i = 0; i < 9; i++)
+			board[i] = FIELD_EMPTY;
+		this.turn = 0;
 	}
 
 	protected void stateEvent(int state)
@@ -33,10 +50,30 @@ class TTTServer extends GGZDMod
 
 	protected void dataEvent(Seat seat)
 	{
-		log("data: " + seat.getName());
+		try
+		{
+			dataEventPrivate(seat);
+		}
+		catch(Exception e)
+		{
+			log("ERROR: " + e.toString());
+		}
 	}
 
 	protected void seatEvent(Seat oldseat, Seat newseat)
+	{
+		try
+		{
+			seatEventPrivate(oldseat, newseat);
+		}
+		catch(Exception e)
+		{
+			log("ERROR: " + e.toString());
+		}
+	}
+
+	private void seatEventPrivate(Seat oldseat, Seat newseat)
+	throws Exception
 	{
 		if(oldseat == null)
 		{
@@ -70,14 +107,80 @@ class TTTServer extends GGZDMod
 		{
 			log("request move from player 0");
 
-			try
+			p1.getClient().writeInt(REQMOVE);
+		}
+	}
+
+	private void dataEventPrivate(Seat seat)
+	throws Exception
+	{
+		log("data: " + seat.getName());
+
+		// might be spectator or player
+		GGZChannel client = ((Spectator)seat).getClient();
+
+		int op;
+		op = client.readInt();
+
+		if(op == SNDMOVE)
+		{
+			int move = client.readInt();
+			byte status = STATUS_OK;
+
+			if((move < 0) || (move >= 9))
 			{
-				p1.getClient().writeInt(REQMOVE);
+				status = STATUS_ERR_BOUND;
 			}
-			catch(Exception e)
+			else if(getState() != STATE_PLAYING)
 			{
-				log("ERROR: " + e.toString());
+				status = STATUS_ERR_STATE;
 			}
+			else if(this.board[move] != FIELD_EMPTY)
+			{
+				status = STATUS_ERR_FULL;
+			}
+			else if(this.turn != seat.getNum())
+			{
+				status = STATUS_ERR_TURN;
+			}
+			else
+			{
+				this.board[move] = seat.getNum();
+			}
+
+			// poor man's TTT rules
+			boolean over = true;
+			for(int i = 0; i < 9; i++)
+				if(this.board[i] == FIELD_EMPTY)
+					over = false;
+
+			client.writeInt(RSPMOVE);
+			client.writeByte(status);
+
+			this.turn = 1 - this.turn;
+
+			Player opponent = (Player)getSeats().get(this.turn);
+			GGZChannel oppchannel = opponent.getClient();
+			if(oppchannel != null)
+			{
+				client.writeInt(MSGMOVE);
+				client.writeInt(1 - this.turn);
+				client.writeInt(move);
+			}
+
+			if(over)
+			{
+				// FIXME: broadcast
+				client.writeInt(MSGGAMEOVER);
+				client.writeByte(NO_WINNER);
+			}
+		}
+		else if(op == REQSYNC)
+		{
+			client.writeInt(SNDSYNC);
+			client.writeByte((byte)this.turn);
+			for(int i = 0; i < 9; i++)
+				client.writeInt(this.board[i]);
 		}
 	}
 }
