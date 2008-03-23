@@ -24,6 +24,11 @@ public class GGZChannel implements ReadableByteChannel, WritableByteChannel
 		this.fd = fd;
 	}
 
+	public int getFd()
+	{
+		return fd;
+	}
+
 	public boolean isOpen()
 	{
 		return true;

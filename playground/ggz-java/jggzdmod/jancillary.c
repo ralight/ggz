@@ -1,6 +1,41 @@
 #include <stdio.h>
 #include <jni.h>
 #include <ggz.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+jint Java_GGZDMod_GGZChannelPoller_polldescriptors(JNIEnv *env, jobject obj, jintArray fds)
+{
+	int ret, i;
+	int max;
+	fd_set set;
+
+	jint *ints = (*env)->GetIntArrayElements(env, fds, NULL);
+	jsize size = (*env)->GetArrayLength(env, fds);
+
+	FD_ZERO(&set);
+	max = 0;
+	for(i = 0; i < size; i++)
+	{
+		FD_SET(ints[i], &set);
+		if(ints[i] > max)
+			max = ints[i];
+	}
+
+	ret = select(max + 1, &set, NULL, NULL, NULL);
+
+	if(ret != -1)
+	{
+		ret = -1;
+		for(i = 0; i < size; i++)
+			if(FD_ISSET(ints[i], &set))
+				ret = ints[i];
+	}
+
+	(*env)->ReleaseIntArrayElements(env, fds, ints, JNI_ABORT);
+
+	return ret;
+}
 
 jint Java_GGZDMod_GGZChannel_readbuffer(JNIEnv *env, jobject obj, jbyteArray dst, jint length)
 {

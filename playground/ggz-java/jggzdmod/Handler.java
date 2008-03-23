@@ -12,6 +12,7 @@ public abstract class Handler extends Protocol
 	private ArrayList seats = new ArrayList();
 	private ArrayList spectators = new ArrayList();
 	private GGZChannel channel = null;
+	private GGZChannelPoller poller = null;
 
 	public Handler()
 	{
@@ -20,6 +21,8 @@ public abstract class Handler extends Protocol
 	protected void connect(int fd)
 	{
 		this.channel = new GGZChannel(fd);
+		this.poller = new GGZChannelPoller();
+		this.poller.registerChannel(this.channel);
 	}
 
 	protected ArrayList getSeats()
@@ -40,8 +43,36 @@ public abstract class Handler extends Protocol
 	protected void handle()
 	throws Exception
 	{
-		// FIXME: we block on reading at the moment
-		// FIXME: we also do not recognise a broken channel atm.
+		// FIXME: we do not recognise a broken channel atm.
+		// FIXME: we also need this.poller.unregisterChannel()
+		GGZChannel active = this.poller.poll();
+
+		if(active != this.channel)
+		{
+			Seat seat = null;
+			for(int i = 0; i < this.seats.size(); i++)
+			{
+				Player s = (Player)this.seats.get(i);
+				if((s != null) && (s.getClient() == active))
+				{
+					seat = s;
+					break;
+				}
+			}
+			for(int i = 0; i < this.spectators.size(); i++)
+			{
+				Spectator s = (Spectator)this.spectators.get(i);
+				if((s != null) && (s.getClient() == active))
+				{
+					seat = s;
+					break;
+				}
+			}
+			if(seat != null)
+				dataEvent(seat);
+			return;
+		}
+
 		int op = this.channel.readInt();
 
 		String name;
@@ -81,7 +112,10 @@ public abstract class Handler extends Protocol
 				fd = this.channel.readfd();
 
 				if(fd != -1)
+				{
 					client = new GGZChannel(fd);
+					this.poller.registerChannel(client);
+				}
 				Player player = new Player(name, num, client, type);
 				//Player oldplayer = (Player)this.seats.get(num);
 				//this.seats.ensureCapacity(num + 1);
@@ -97,7 +131,10 @@ public abstract class Handler extends Protocol
 				fd = this.channel.readfd();
 
 				if(fd != -1)
+				{
 					client = new GGZChannel(fd);
+					this.poller.registerChannel(client);
+				}
 				Spectator spectator = new Spectator(name, num, client);
 				//Spectator oldspectator = (Spectator)this.spectators.get(num);
 				//this.spectators.ensureCapacity(num + 1);
@@ -144,5 +181,6 @@ public abstract class Handler extends Protocol
 	abstract protected void seatEvent(Seat oldseat, Seat newseat);
 	abstract protected void stateEvent(int state);
 	abstract protected void savegameEvent(String savegame);
+	abstract protected void dataEvent(Seat seat);
 }
 

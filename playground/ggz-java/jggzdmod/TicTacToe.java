@@ -31,6 +31,11 @@ class TTTServer extends GGZDMod
 		log("savegame: " + savegame);
 	}
 
+	protected void dataEvent(Seat seat)
+	{
+		log("data: " + seat.getName());
+	}
+
 	protected void seatEvent(Seat oldseat, Seat newseat)
 	{
 		if(oldseat == null)
