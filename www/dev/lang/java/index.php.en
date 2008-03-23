@@ -34,6 +34,13 @@ There is a ggz-java module which contains both the Java core client
 and the games.
 <br/><br/>
 
+<i>Largest shared libraries written in/for Python</i><br/>
+
+<table class="list">
+<tr><td>jggzdmod</td><td>SLOC: 300</td><td>Location: playground/ggz-java/jggzdmod</td></tr>
+</table>
+
+<br/>
 <i>Largest applications written in Java</i><br/>
 
 <table class="list">
