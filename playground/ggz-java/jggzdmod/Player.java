@@ -14,9 +14,9 @@ public class Player extends Spectator implements Seat
 
 	private int type;
 
-	public Player(String name, int num, int fd, int type)
+	public Player(String name, int num, GGZChannel client, int type)
 	{
-		super(name, num, fd);
+		super(name, num, client);
 		this.type = type;
 	}
 

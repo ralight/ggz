@@ -7,10 +7,9 @@ package GGZDMod;
 import java.util.ArrayList;
 import java.nio.ByteBuffer;
 
-class Handler extends Protocol
+public abstract class Handler extends Protocol
 {
 	private int state = STATE_CREATED;
-	private int fd = -1;
 	private ArrayList seats = new ArrayList();
 	private ArrayList spectators = new ArrayList();
 	private GGZChannel channel = null;
@@ -21,7 +20,6 @@ class Handler extends Protocol
 
 	protected void connect(int fd)
 	{
-		this.fd = fd;
 		this.channel = new GGZChannel(fd);
 	}
 
@@ -45,59 +43,97 @@ class Handler extends Protocol
 	{
 		// FIXME: we block on reading at the moment
 		int op = readInt();
-System.err.println("OP: " + op);
+
+		String name;
+		int num;
+		int type;
+		int fd;
+		GGZChannel client = null;
 
 		switch(op)
 		{
 			case MSG_GAME_LAUNCH:
 				String gamename = readString();
+				gamename = gamename + "";
+				// FIXME: we don't need gamename here
 				int seats = readInt();
 				int spectators = readInt();
-				for(int i = 0; i < seats; i++)
+				for(num = 0; num < spectators; num++)
+					this.spectators.add(null);
+				for(num = 0; num < seats; num++)
 				{
-					int type = readInt();
-					String name = null;
+					type = readInt();
+					name = null;
 					if((type == Player.TYPE_RESERVED)
 					|| (type == Player.TYPE_BOT))
 						name = readString();
+
+					Player player = new Player(name, num, null, type);
+					this.seats.add(player);
 				}
-System.err.println("LAUNCH: " + seats + " seats");
 				this.state = STATE_WAITING;
+				stateEvent(this.state);
 				break;
 			case MSG_GAME_SEAT:
-				int num = readInt();
-				int type = readInt();
-				String name = readString();
-				int fd = this.channel.readfd();
-				GGZChannel client = new GGZChannel(fd);
-System.err.println("PLAYER: " + num);
-				Player player = new Player(name, num, fd, type);
-				this.seats.ensureCapacity(num + 1);
-				this.seats.add(num, player);
+				num = readInt();
+				type = readInt();
+				name = readString();
+				fd = this.channel.readfd();
+
+				if(fd != -1)
+					client = new GGZChannel(fd);
+				Player player = new Player(name, num, client, type);
+				//Player oldplayer = (Player)this.seats.get(num);
+				//this.seats.ensureCapacity(num + 1);
+				this.seats.set(num, player);
+				if(player.getType() == Player.TYPE_OPEN)
+					seatEvent(player, null);
+				else
+					seatEvent(null, player);
 				break;
 			case MSG_GAME_SPECTATOR_SEAT:
-				/*int*/ num = readInt();
-				/*String*/ name = readString();
-				/*int*/ fd = this.channel.readfd();
-				/*GGZChannel*/ client = new GGZChannel(fd);
-System.err.println("SPECTATOR: " + num);
-				Spectator spectator = new Spectator(name, num, fd);
-				this.spectators.ensureCapacity(num + 1);
-				this.spectators.add(num, spectator);
+				num = readInt();
+				name = readString();
+				fd = this.channel.readfd();
+
+				if(fd != -1)
+					client = new GGZChannel(fd);
+				Spectator spectator = new Spectator(name, num, client);
+				//Spectator oldspectator = (Spectator)this.spectators.get(num);
+				//this.spectators.ensureCapacity(num + 1);
+				this.spectators.set(num, spectator);
+				if(spectator.getClient() == null)
+					seatEvent(spectator, null);
+				else
+					seatEvent(null, spectator);
 				break;
 			case MSG_GAME_RESEAT:
 				int was_spectator = readInt();
-				int old_seat = readInt();
+				int oldnum = readInt();
 				int is_spectator = readInt();
-				int new_seat = readInt();
+				int newnum = readInt();
+
+				Seat oldseat, newseat;
+				if(was_spectator == 1)
+					oldseat = (Spectator)this.spectators.get(oldnum);
+				else
+					oldseat = (Player)this.seats.get(oldnum);
+				if(is_spectator == 1)
+					newseat = (Spectator)this.spectators.get(newnum);
+				else
+					newseat = (Player)this.seats.get(newnum);
+				seatEvent(oldseat, newseat);
 				break;
 			case RSP_GAME_STATE:
+				stateEvent(this.state);
 				break;
 			case MSG_SAVEDGAMES:
+				// FIXME (ggzdmod): there shouldn't ever be more than one here
 				int count = readInt();
 				for(int i = 0; i < count; i++)
 				{
 					String savegame = readString();
+					savegameEvent(savegame);
 				}
 				break;
 			default:
@@ -131,5 +167,9 @@ System.err.println("SPECTATOR: " + num);
 		byte[] data = bb.array();
 		return new String(data);
 	}
+
+	abstract protected void seatEvent(Seat oldseat, Seat newseat);
+	abstract protected void stateEvent(int state);
+	abstract protected void savegameEvent(String savegame);
 }
 

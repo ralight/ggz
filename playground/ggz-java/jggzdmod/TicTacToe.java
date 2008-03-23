@@ -15,12 +15,42 @@ class TTTServer extends GGZDMod
 		super("Tic-Tac-Toe (java)");
 	}
 
-	public void joinEvent(Seat seat)
+	protected void stateEvent(int state)
 	{
+		log("state: " + stateName(state));
 	}
 
-	public void leaveEvent(Seat seat)
+	protected void savegameEvent(String savegame)
 	{
+		log("savegame: " + savegame);
+	}
+
+	protected void seatEvent(Seat oldseat, Seat newseat)
+	{
+		if(oldseat == null)
+		{
+			// player/spectator has joined
+			if(newseat.getClass() == Player.class)
+			{
+				// it's a player
+				log("join of player " + newseat.getName());
+			}
+			else
+			{
+				// it's a spectator
+				log("join of spectator " + newseat.getName());
+			}
+		}
+		else if(newseat == null)
+		{
+			// player/spectator has left
+			log("leave of player or spectator " + oldseat.getName());
+		}
+		else
+		{
+			// seat change player<->spectator
+			log("someone stood up, sat down or the like...");
+		}
 	}
 }
 

@@ -39,7 +39,23 @@ public abstract class GGZDMod extends Handler
 		}
 	}
 
-	abstract protected void joinEvent(Seat seat);
-	abstract protected void leaveEvent(Seat seat);
+	public String stateName(int state)
+	{
+		switch(state)
+		{
+			case STATE_CREATED:
+				return "created";
+			case STATE_WAITING:
+				return "waiting";
+			case STATE_PLAYING:
+				return "playing";
+			case STATE_DONE:
+				return "done";
+			case STATE_RESTORED:
+				return "restored";
+		}
+
+		return null;
+	}
 }
 

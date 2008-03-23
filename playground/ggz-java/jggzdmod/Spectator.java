@@ -8,13 +8,13 @@ public class Spectator implements Seat
 {
 	private String name;
 	private int num;
-	private int fd;
+	private GGZChannel client;
 
-	public Spectator(String name, int num, int fd)
+	public Spectator(String name, int num, GGZChannel client)
 	{
 		this.name = name;
 		this.num = num;
-		this.fd = fd;
+		this.client = client;
 	}
 
 	public String getName()
@@ -27,9 +27,9 @@ public class Spectator implements Seat
 		return this.num;
 	}
 
-	public int getFd()
+	public GGZChannel getClient()
 	{
-		return this.fd;
+		return this.client;
 	}
 }
 
