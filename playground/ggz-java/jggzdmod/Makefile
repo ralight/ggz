@@ -17,5 +17,5 @@ clean:
 	find . -name *.class | xargs rm
 
 test:
-	ggz-faketable runserver.sh
+	ggz-faketable runserver.sh /home/josef/sys/lib/ggz/ggz.ttt
 

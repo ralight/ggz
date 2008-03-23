@@ -5,7 +5,6 @@
 package GGZDMod;
 
 import java.util.ArrayList;
-import java.nio.ByteBuffer;
 
 public abstract class Handler extends Protocol
 {
@@ -42,7 +41,8 @@ public abstract class Handler extends Protocol
 	throws Exception
 	{
 		// FIXME: we block on reading at the moment
-		int op = readInt();
+		// FIXME: we also do not recognise a broken channel atm.
+		int op = this.channel.readInt();
 
 		String name;
 		int num;
@@ -53,20 +53,20 @@ public abstract class Handler extends Protocol
 		switch(op)
 		{
 			case MSG_GAME_LAUNCH:
-				String gamename = readString();
+				String gamename = this.channel.readString();
 				gamename = gamename + "";
 				// FIXME: we don't need gamename here
-				int seats = readInt();
-				int spectators = readInt();
+				int seats = this.channel.readInt();
+				int spectators = this.channel.readInt();
 				for(num = 0; num < spectators; num++)
 					this.spectators.add(null);
 				for(num = 0; num < seats; num++)
 				{
-					type = readInt();
+					type = this.channel.readInt();
 					name = null;
 					if((type == Player.TYPE_RESERVED)
 					|| (type == Player.TYPE_BOT))
-						name = readString();
+						name = this.channel.readString();
 
 					Player player = new Player(name, num, null, type);
 					this.seats.add(player);
@@ -75,9 +75,9 @@ public abstract class Handler extends Protocol
 				stateEvent(this.state);
 				break;
 			case MSG_GAME_SEAT:
-				num = readInt();
-				type = readInt();
-				name = readString();
+				num = this.channel.readInt();
+				type = this.channel.readInt();
+				name = this.channel.readString();
 				fd = this.channel.readfd();
 
 				if(fd != -1)
@@ -92,8 +92,8 @@ public abstract class Handler extends Protocol
 					seatEvent(null, player);
 				break;
 			case MSG_GAME_SPECTATOR_SEAT:
-				num = readInt();
-				name = readString();
+				num = this.channel.readInt();
+				name = this.channel.readString();
 				fd = this.channel.readfd();
 
 				if(fd != -1)
@@ -108,10 +108,10 @@ public abstract class Handler extends Protocol
 					seatEvent(null, spectator);
 				break;
 			case MSG_GAME_RESEAT:
-				int was_spectator = readInt();
-				int oldnum = readInt();
-				int is_spectator = readInt();
-				int newnum = readInt();
+				int was_spectator = this.channel.readInt();
+				int oldnum = this.channel.readInt();
+				int is_spectator = this.channel.readInt();
+				int newnum = this.channel.readInt();
 
 				Seat oldseat, newseat;
 				if(was_spectator == 1)
@@ -129,43 +129,16 @@ public abstract class Handler extends Protocol
 				break;
 			case MSG_SAVEDGAMES:
 				// FIXME (ggzdmod): there shouldn't ever be more than one here
-				int count = readInt();
+				int count = this.channel.readInt();
 				for(int i = 0; i < count; i++)
 				{
-					String savegame = readString();
+					String savegame = this.channel.readString();
 					savegameEvent(savegame);
 				}
 				break;
 			default:
 				throw new Exception("handler: invalid opcode");
 		}
-	}
-
-	private int readInt()
-	throws Exception
-	{
-		ByteBuffer bb = ByteBuffer.allocate(4);
-		int ret = this.channel.read(bb);
-		if(ret < 0)
-			throw new Exception("handler: cannot read int opcode");
-
-		byte[] data = bb.array();
-		int op = (data[0] << 24) + (data[1] << 16) + (data[2] << 8) + data[3];
-		return op;
-	}
-
-	private String readString()
-	throws Exception
-	{
-		int length = readInt();
-
-		ByteBuffer bb = ByteBuffer.allocate(length);
-		int ret = this.channel.read(bb);
-		if(ret < 0)
-			throw new Exception("handler: cannot read int opcode");
-
-		byte[] data = bb.array();
-		return new String(data);
 	}
 
 	abstract protected void seatEvent(Seat oldseat, Seat newseat);

@@ -2,13 +2,19 @@
 // Copyright (C) 2008 Josef Spillner <josef@ggzgamingzone.org>
 // Published under GNU GPL conditions
 
-//import java.io.*;
-//import java.util.*;
-//import java.net.*;
+import java.util.*;
 import GGZDMod.*;
 
 class TTTServer extends GGZDMod
 {
+	private final static int SNDMOVE = 0;
+	private final static int REQSYNC = 1;
+	private final static int MSGMOVE = 2;
+	private final static int MSGGAMEOVER = 3;
+	private final static int REQMOVE = 4;
+	private final static int RSPMOVE = 5;
+	private final static int SNDSYNC = 6;
+
 	public TTTServer()
 	throws Exception
 	{
@@ -50,6 +56,23 @@ class TTTServer extends GGZDMod
 		{
 			// seat change player<->spectator
 			log("someone stood up, sat down or the like...");
+		}
+
+		ArrayList players = getSeats();
+		Player p1 = (Player)players.get(0);
+		Player p2 = (Player)players.get(1);
+		if((p1.getType() != Player.TYPE_OPEN) & (p2.getType() != Player.TYPE_OPEN))
+		{
+			log("request move from player 0");
+
+			try
+			{
+				p1.getClient().writeInt(REQMOVE);
+			}
+			catch(Exception e)
+			{
+				log("ERROR: " + e.toString());
+			}
 		}
 	}
 }
