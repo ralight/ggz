@@ -191,6 +191,10 @@ def initclient(clientsock, serversock, parentsock, childsock, clientexecutable):
 		msg = net_int(ClientProtocol.MSG_GAME_SERVER_FD)
 		parentsock.send(msg)
 		ancillary.write_fd(parentsock.fileno(), clientsock.fileno())
+
+		msg = net_int(ClientProtocol.MSG_GAME_PLAYER)
+		msg += net_string("someplayer") + net_int(0) + net_int(0)
+		parentsock.send(msg)
 		###clientsock.close()
 	else:
 		err("Error: fork failed")
