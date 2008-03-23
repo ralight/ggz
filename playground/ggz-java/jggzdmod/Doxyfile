@@ -1,0 +1,5 @@
+PROJECT_NAME           = jGGZDMod
+PROJECT_NUMBER         = 0.99.3
+OUTPUT_DIRECTORY       = api
+EXTRACT_ALL            = YES
+

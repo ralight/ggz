@@ -11,8 +11,8 @@ class Handler extends Protocol
 {
 	private int state = STATE_CREATED;
 	private int fd = -1;
-	private ArrayList seats = null;
-	private ArrayList spectators = null;
+	private ArrayList seats = new ArrayList();
+	private ArrayList spectators = new ArrayList();
 	private GGZChannel channel = null;
 
 	public Handler()
@@ -23,6 +23,21 @@ class Handler extends Protocol
 	{
 		this.fd = fd;
 		this.channel = new GGZChannel(fd);
+	}
+
+	protected ArrayList getSeats()
+	{
+		return this.seats;
+	}
+
+	protected ArrayList getSpectators()
+	{
+		return this.spectators;
+	}
+
+	protected int getState()
+	{
+		return this.state;
 	}
 
 	protected void handle()
@@ -47,6 +62,7 @@ System.err.println("OP: " + op);
 						name = readString();
 				}
 System.err.println("LAUNCH: " + seats + " seats");
+				this.state = STATE_WAITING;
 				break;
 			case MSG_GAME_SEAT:
 				int num = readInt();
@@ -54,15 +70,35 @@ System.err.println("LAUNCH: " + seats + " seats");
 				String name = readString();
 				int fd = this.channel.readfd();
 				GGZChannel client = new GGZChannel(fd);
-System.err.println("SEAT: " + num);
+System.err.println("PLAYER: " + num);
+				Player player = new Player(name, num, fd, type);
+				this.seats.ensureCapacity(num + 1);
+				this.seats.add(num, player);
 				break;
 			case MSG_GAME_SPECTATOR_SEAT:
+				/*int*/ num = readInt();
+				/*String*/ name = readString();
+				/*int*/ fd = this.channel.readfd();
+				/*GGZChannel*/ client = new GGZChannel(fd);
+System.err.println("SPECTATOR: " + num);
+				Spectator spectator = new Spectator(name, num, fd);
+				this.spectators.ensureCapacity(num + 1);
+				this.spectators.add(num, spectator);
 				break;
 			case MSG_GAME_RESEAT:
+				int was_spectator = readInt();
+				int old_seat = readInt();
+				int is_spectator = readInt();
+				int new_seat = readInt();
 				break;
 			case RSP_GAME_STATE:
 				break;
 			case MSG_SAVEDGAMES:
+				int count = readInt();
+				for(int i = 0; i < count; i++)
+				{
+					String savegame = readString();
+				}
 				break;
 			default:
 				throw new Exception("handler: invalid opcode");
