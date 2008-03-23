@@ -19,6 +19,7 @@ public abstract class GGZDMod extends Handler
 
 	public void log(String message)
 	{
+		super.log(message);
 		System.out.println("ggzdmod> " + message);
 	}
 

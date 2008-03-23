@@ -40,6 +40,36 @@ public abstract class Handler extends Protocol
 		return this.state;
 	}
 
+	protected void setState(int state)
+	{
+		this.state = state;
+		try
+		{
+			this.channel.writeInt(REQ_GAME_STATE);
+			this.channel.writeByte((byte)state);
+		}
+		catch(Exception e)
+		{
+			log("ERROR: " + e.toString());
+		}
+	}
+
+	protected void log(String s)
+	{
+		try
+		{
+			if(this.channel != null)
+			{
+				this.channel.writeInt(MSG_LOG);
+				this.channel.writeString(s);
+			}
+		}
+		catch(Exception e)
+		{
+			// can't do anything here
+		}
+	}
+
 	protected void handle()
 	throws Exception
 	{
@@ -102,7 +132,7 @@ public abstract class Handler extends Protocol
 					Player player = new Player(name, num, null, type);
 					this.seats.add(player);
 				}
-				this.state = STATE_WAITING;
+				setState(STATE_WAITING);
 				stateEvent(this.state);
 				break;
 			case MSG_GAME_SEAT:
