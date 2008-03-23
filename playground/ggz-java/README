@@ -1,20 +1,15 @@
-*** NOTE:
-*** This Java directory is mostly obsolete!
-*** There's a new (much more complete) effort available known as GGZ-Java.
-*** It is currently located in playground/ggz-java5, but might soon be
-*** released as a package of its own
-
 
  The GGZ Gaming Zone - Java Implementation
  =========================================
 
- The efforts which have been put into free Java implementations
- show first results. A complete gaming environment using free Java
- components (GNU, jikes, org.*, ...) is now possible.
+ GGZ ships a Java package named ggz-java which contains a core client, a
+ GGZCards game client and a TTT game client.
 
- This experimental package contains:
- - GGZDMod, an implementation of the GGZDMod library
- - TicTacToe, a sample game server
+ This experimental package contains additional software which might move
+ into ggz-java once completed:
+
+ - jGGZDMod, an implementation of the GGZDMod library
+   (includes TicTacToe, a sample game server)
  - TicTacToeClient, an AWT-based frontend for the TTT server
  - Distributed GGZ, a test program which will eventually allow
    distruted chat
@@ -22,5 +17,5 @@
  All sources are covered by the GNU GPL.
 
  Josef Spillner
- 26.01.2002
+ 26.01.2002, updated 23.03.2008
 
