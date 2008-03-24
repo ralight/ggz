@@ -26,6 +26,7 @@ class TTTServer extends GGZDMod
 
 	private int[] board;
 	private int turn;
+	private Random rand;
 
 	public TTTServer()
 	throws Exception
@@ -36,6 +37,7 @@ class TTTServer extends GGZDMod
 		for(int i = 0; i < 9; i++)
 			board[i] = FIELD_EMPTY;
 		this.turn = 0;
+		this.rand = new Random();
 	}
 
 	protected void stateEvent(int state)
@@ -107,6 +109,7 @@ class TTTServer extends GGZDMod
 		{
 			log("request move from player 0");
 
+			setState(STATE_PLAYING);
 			p1.getClient().writeInt(REQMOVE);
 		}
 	}
@@ -125,55 +128,8 @@ class TTTServer extends GGZDMod
 		if(op == SNDMOVE)
 		{
 			int move = client.readInt();
-			byte status = STATUS_OK;
 
-			if((move < 0) || (move >= 9))
-			{
-				status = STATUS_ERR_BOUND;
-			}
-			else if(getState() != STATE_PLAYING)
-			{
-				status = STATUS_ERR_STATE;
-			}
-			else if(this.board[move] != FIELD_EMPTY)
-			{
-				status = STATUS_ERR_FULL;
-			}
-			else if(this.turn != seat.getNum())
-			{
-				status = STATUS_ERR_TURN;
-			}
-			else
-			{
-				this.board[move] = seat.getNum();
-			}
-
-			// poor man's TTT rules
-			boolean over = true;
-			for(int i = 0; i < 9; i++)
-				if(this.board[i] == FIELD_EMPTY)
-					over = false;
-
-			client.writeInt(RSPMOVE);
-			client.writeByte(status);
-
-			this.turn = 1 - this.turn;
-
-			Player opponent = (Player)getSeats().get(this.turn);
-			GGZChannel oppchannel = opponent.getClient();
-			if(oppchannel != null)
-			{
-				client.writeInt(MSGMOVE);
-				client.writeInt(1 - this.turn);
-				client.writeInt(move);
-			}
-
-			if(over)
-			{
-				// FIXME: broadcast
-				client.writeInt(MSGGAMEOVER);
-				client.writeByte(NO_WINNER);
-			}
+			handleMove(move);
 		}
 		else if(op == REQSYNC)
 		{
@@ -181,6 +137,85 @@ class TTTServer extends GGZDMod
 			client.writeByte((byte)this.turn);
 			for(int i = 0; i < 9; i++)
 				client.writeInt(this.board[i]);
+		}
+	}
+
+	private void handleMove(int move)
+	throws Exception
+	{
+		byte status = STATUS_OK;
+
+		Player seat = (Player)getSeats().get(this.turn);
+		Player opponent = seat;
+
+		if((move < 0) || (move >= 9))
+		{
+			status = STATUS_ERR_BOUND;
+		}
+		else if(getState() != STATE_PLAYING)
+		{
+			status = STATUS_ERR_STATE;
+		}
+		else if(this.board[move] != FIELD_EMPTY)
+		{
+			status = STATUS_ERR_FULL;
+		}
+		else if(this.turn != seat.getNum())
+		{
+			status = STATUS_ERR_TURN;
+		}
+		else
+		{
+			this.board[move] = seat.getNum();
+		}
+
+		// poor man's TTT rules
+		boolean over = true;
+		for(int i = 0; i < 9; i++)
+			if(this.board[i] == FIELD_EMPTY)
+				over = false;
+
+		GGZChannel client = seat.getClient();
+		GGZChannel oppchannel = null;
+		if(client != null)
+		{
+			client.writeInt(RSPMOVE);
+			client.writeByte(status);
+		}
+
+		if(status == STATUS_OK)
+		{
+			this.turn = 1 - this.turn;
+
+			opponent = (Player)getSeats().get(this.turn);
+			oppchannel = opponent.getClient();
+			if(oppchannel != null)
+			{
+				oppchannel.writeInt(MSGMOVE);
+				oppchannel.writeInt(1 - this.turn);
+				oppchannel.writeInt(move);
+
+				oppchannel.writeInt(REQMOVE);
+			}
+		}
+
+		if(over)
+		{
+			if(client != null)
+			{
+				client.writeInt(MSGGAMEOVER);
+				client.writeByte(NO_WINNER);
+			}
+			if(oppchannel != null)
+			{
+				oppchannel.writeInt(MSGGAMEOVER);
+				oppchannel.writeByte(NO_WINNER);
+			}
+		}
+		else if(opponent.getType() == Player.TYPE_BOT)
+		{
+			move = this.rand.nextInt(10);
+			handleMove(move);
 		}
 	}
 }

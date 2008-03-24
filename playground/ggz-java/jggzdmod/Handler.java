@@ -133,7 +133,6 @@ public abstract class Handler extends Protocol
 					this.seats.add(player);
 				}
 				setState(STATE_WAITING);
-				stateEvent(this.state);
 				break;
 			case MSG_GAME_SEAT:
 				num = this.channel.readInt();
