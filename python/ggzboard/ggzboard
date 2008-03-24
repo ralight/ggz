@@ -50,7 +50,6 @@ import playertable
 gettext.install("ggzpython", I18NPATH, True)
 
 def asciify(str):
-		#asciistr = str.encode("ascii", "replace")
 		asciistr = str.encode(locale.getpreferredencoding(), "replace")
 		return asciistr
 

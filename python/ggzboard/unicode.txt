@@ -1,0 +1,24 @@
+Some notes on Unicode support in Python and Pygame
+--------------------------------------------------
+
+Python has file-level encodings for its literal strings in the source code
+and string objects built at runtime. The literal strings are always encoded
+in whatever the file format is, unless prefixed with 'u' to turn them into
+unicode strings. In addition, the header '-*- coding: utf-8 -*-' can be used
+to explicitly specify the file encoding.
+
+At runtime, the string literals still need to be encoded into Unicode unless
+they're prefixed with 'u'. This can be done using 'unicode(s, "utf-8")', which
+is used in the method 'unic()' xadrez-chinês.
+
+Also at runtime, strings need to be encoded into whatever their respective
+output medium supports. For Pygame, no encoding is necessary since Unicode is
+supported by default. For the command line and X11, the user's locale (i.e.
+the value of $LANG) influences the string representation. The method
+'asciify()' as used in xadrez-chinês and ggzboard does just that. All
+non-printable characters in legacy environments are substituted with question
+marks.
+
+Python 3.0 will likely encode all string literals in Unicode by default, hence
+saving some of the work described above.
+
