@@ -20,20 +20,23 @@ class Uri:
 		self.host = None
 		self.port = None
 		self.path = None
+		self.user = None
+		self.password = None
 
-		#r_uri = re.compile("(?:(\S+):(?:\/\/)?)?(\S+)?(?::(\d+))?(?:\/(\S+))?")
-		r_uri = re.compile("(?:([^:]+):(\/\/)?)?([^:\/]+)?(?::(\d+))?(?:\/(\S+))?")
+		r_uri = re.compile("(?:([^:]+):(\/\/)?)?(?:([^@:]+)(?::([^@]+))?@)?([^:\/]+)?(?::(\d+))?(?:\/(\S+))?")
 		m_uri = r_uri.match(s)
 
 		#print "#", m_uri.groups()
 		protocol = m_uri.group(1)
 		remote = m_uri.group(2)
-		host = m_uri.group(3)
-		if m_uri.group(4):
-			port = int(m_uri.group(4))
+		user = m_uri.group(3)
+		password = m_uri.group(4)
+		host = m_uri.group(5)
+		if m_uri.group(6):
+			port = int(m_uri.group(6))
 		else:
 			port = 0
-		path = m_uri.group(5)
+		path = m_uri.group(7)
 
 		if protocol == "file" and not path:
 			path = host
@@ -54,8 +57,12 @@ class Uri:
 		self.host = host
 		self.port = port
 		self.path = path
+		self.user = user
+		self.password = password
 
-		#print "# ->", self.protocol, self.host, self.port, self.path, remote
+		#print s
+		#print "# -> proto=", self.protocol, "host=", self.host, "port=", self.port, "path=", self.path, "(remote)=", remote
+		#print "   # user=", self.user, "password=", self.password
 
 if __name__ == "__main__":
 	u = Uri("file:foo.txt")
@@ -67,4 +74,8 @@ if __name__ == "__main__":
 	u = Uri("http://localhost/foobar")
 	u = Uri("localhost")
 	u = Uri("localhost:2000")
+
+	u = Uri("jabber:user@localhost")
+	u = Uri("ggz://user@localhost")
+	u = Uri("ggz://user:pass@localhost:5688")
 
