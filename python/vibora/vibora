@@ -22,8 +22,12 @@ import os, sys
 try:
 	import ggzsettings
 	DATAPATH = ggzsettings.DATAPATH + "/vibora/"
+	sys.path = [ggzsettings.MODULEPATH + "/common/"] + sys.path
 except:
 	DATAPATH = "./"
+	sys.path = ["../lib/"] + sys.path
+
+import commonuri
 
 CAPTION_ALL = 3
 CAPTION_TEXT = 2
@@ -207,15 +211,14 @@ def background_firsttime():
 
 	return bg
 
-def firsttime():
+def firsttime(uri):
 	global progressrect
 	global bg
 	global screen
-	global username
-	global password
 
-	username = ""
-	password = ""
+	if uri.username:
+		return uri
+
 	firstlogin = ""
 
 	inputready = 0
@@ -235,9 +238,9 @@ def firsttime():
 			(key, value) = line.split("=")
 			value = value[:-1]
 			if key == "username":
-				username = value
+				uri.username = value
 			elif key == "password":
-				password = value
+				uri.password = value
 			elif key == "firstlogin":
 				firstlogin = value
 		f.close()
@@ -245,7 +248,7 @@ def firsttime():
 		pass
 
 	if firstlogin == "false":
-		return 1
+		return uri
 
 	bg = background_firsttime()
 	bgshadow = pygame.Surface(screen_resolution)
@@ -265,25 +268,25 @@ def firsttime():
 				return -1
 			elif key == K_BACKSPACE:
 				if inputready == 0:
-					username = username[:-1]
+					uri.username = username[:-1]
 				else:
-					password = password[:-1]
+					uri.password = password[:-1]
 				bgdirty = 10
 			else:
 				if inputready == 0:
-					username += event.unicode
+					urn.username += event.unicode
 				else:
-					password += event.unicode
+					uri.password += event.unicode
 				bgdirty = 10
 
 		if bgdirty == 1:
 			bgshadow.blit(bg, (0, 0))
 			vibora_caption(bgshadow, _("* Username (can be registered at ggzcommunity.org)"), progressrect, CAPTION_ALL, YELLOW, 1)
-			if username:
-				vibora_caption(bgshadow, username, progressrect, CAPTION_ALL, GREEN, 2)
+			if uri.username:
+				vibora_caption(bgshadow, uri.username, progressrect, CAPTION_ALL, GREEN, 2)
 			if inputready > 0:
 				vibora_caption(bgshadow, _("* Password (empty for guest accounts)"), progressrect, CAPTION_ALL, YELLOW, 3)
-				if password:
+				if uri.password:
 					passwordsecret = ""
 					for c in password:
 						passwordsecret += "*"
@@ -297,12 +300,12 @@ def firsttime():
 			bgdirty -= 1
 
 	f = file(os.getenv("HOME") + "/.ggz/vibora.rc", "w")
-	f.write("username=" + username + "\n")
-	f.write("password=" + password + "\n")
+	f.write("username=" + uri.username + "\n")
+	f.write("password=" + uri.password + "\n")
 	f.write("firstlogin=" + "false" + "\n")
 	f.close()
 
-	return 1
+	return uri
 
 def background_problem():
 	global screen_resolution
@@ -406,7 +409,7 @@ def ggz_server_event(id, data):
 	global roomlist
 	global bg_dirty
 	global chatoutput
-	global username
+	global global_username
 	global playerlist
 	global tablelist
 	global serverstate
@@ -417,7 +420,7 @@ def ggz_server_event(id, data):
 		vibora_caption(bg, _("* Failure!"), progressrect, CAPTION_ALL, RED, 2)
 		ggzready = -1
 	elif id == ggzcoresimple.SERVER_NEGOTIATED:
-		vibora_caption(bg, _("* Logging in as ") + username, progressrect, CAPTION_ALL, YELLOW, 3)
+		vibora_caption(bg, _("* Logging in as ") + global_username, progressrect, CAPTION_ALL, YELLOW, 3)
 		ggzcoresimple.server.login()
 	elif id == ggzcoresimple.SERVER_LOGGED_IN:
 		vibora_caption(bg, _("* Logged in!"), progressrect, CAPTION_ALL, GREEN, 4)
@@ -492,12 +495,11 @@ def readenterkey():
 			if key == K_ESCAPE:
 				return
 
-def ggz_progress(host):
+def ggz_progress(uri):
 	global progressrect
 	global bg
 	global ggzready
-	global username
-	global password
+	global global_username
 
 	ggzready = 0
 
@@ -505,13 +507,14 @@ def ggz_progress(host):
 	ggzcoresimple.setHandler(ggzcoresimple.EVENT_ROOM, ggz_room_event)
 	ggzcoresimple.setHandler(ggzcoresimple.EVENT_GAME, ggz_game_event)
 
-	ggzcoresimple.server.set_hostinfo(host, 5688, 1)
-	if password:
-		ggzcoresimple.server.set_logininfo(ggzcoresimple.LOGIN, username, password)
+	ggzcoresimple.server.set_hostinfo(uri.host, uri.port, 1)
+	if uri.password:
+		ggzcoresimple.server.set_logininfo(ggzcoresimple.LOGIN, uri.username, uri.password)
 	else:
-		ggzcoresimple.server.set_logininfo(ggzcoresimple.LOGIN_GUEST, username, "")
+		ggzcoresimple.server.set_logininfo(ggzcoresimple.LOGIN_GUEST, uri.username, "")
+	global_username = uri.username
 
-	vibora_caption(bg, _("* Connecting to ") + host, progressrect, CAPTION_ALL, YELLOW, 1)
+	vibora_caption(bg, _("* Connecting to ") + uri.host, progressrect, CAPTION_ALL, YELLOW, 1)
 	screen.blit(bg, (0, 0))
 	pygame.display.flip()
 
@@ -538,7 +541,7 @@ def ggz_progress(host):
 		readenterkey()
 	return ggzready
 
-def main(host):
+def main(uristring):
 	global screen_resolution
 	global screen_problem
 	global screen_caption
@@ -595,14 +598,18 @@ def main(host):
 
 	""" Username/password entry on first startup """
 
-	ret = firsttime()
-	if ret < 0:
+	uri = commonuri.Uri(uristring)
+	if not uri.port:
+		uri.port = 5688
+
+	uri = firsttime(uri)
+	if not uri:
 		return
 
 	""" Progress """
 
 	bg = background_progress()
-	ret = ggz_progress(host)
+	ret = ggz_progress(uri)
 	if ret < 0:
 		return
 
@@ -881,17 +888,17 @@ def main(host):
 		clock.tick()
 
 if __name__ == '__main__':
-	host = None
+	uristring = None
 
 	if len(sys.argv) == 2:
-		host = sys.argv[1]
+		uristring = sys.argv[1]
 
-	if host == "--help":
-		print _("víbora [hostname]")
+	if uristring == "--help":
+		print _("víbora [uri]")
 		sys.exit(0)
 	
-	if not host:
-		host = "live.ggzgamingzone.org"
+	if not uristring:
+		uristring = "live.ggzgamingzone.org"
 
-	main(host)
+	main(uristring)
 

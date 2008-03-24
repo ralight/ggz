@@ -197,6 +197,7 @@ install-rest:
 	@echo Installing common GGZ classes and dialogs
 	mkdir -p $(DESTDIR)$(py_privmoddir)/common
 	cp lib/playertable.py $(DESTDIR)$(py_privmoddir)/common
+	cp lib/commonuri.py $(DESTDIR)$(py_privmoddir)/common
 
 	@echo Installing game server Submarine
 	mkdir -p $(DESTDIR)$(ggzd_execmoddir)
