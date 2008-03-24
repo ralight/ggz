@@ -41,6 +41,9 @@ GREEN = (0, 255, 0)
 def _(x):
 	return unicode(x, "utf-8")
 
+def unic(x):
+	return unicode(x, "utf-8")
+
 def asciify(str):
 		asciistr = str.encode("ascii", "replace")
 		return asciistr
@@ -376,7 +379,7 @@ def ggz_room_event(id, data):
 	if id == ggzcoresimple.ROOM_CHAT_EVENT:
 		type = data[0]
 		player = data[1]
-		message = data[2]
+		message = unic(data[2])
 
 		chatoutput.append(player + ": " + message)
 		bg_dirty = 1
@@ -693,7 +696,6 @@ def main(host):
 					return
 				elif key == K_RETURN:
 					if chatline != "":
-						chatline = asciify(chatline)
 						ggzcoresimple.room.chat(ggzcoresimple.CHAT_NORMAL, "", chatline)
 						#chatoutput.append(chatline)
 						chatline = ""
@@ -784,7 +786,8 @@ def main(host):
 
 			if current_room == 0:
 				i = 0
-				for line in roomlist:
+				for room in roomlist:
+					line = unic(room)
 					if i >= startroom:
 						vibora_caption(bgshadow, line, roomrect, CAPTION_ALL, RED, i - startroom + 1)
 					i = i + 1

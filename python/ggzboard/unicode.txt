@@ -19,6 +19,12 @@ the value of $LANG) influences the string representation. The method
 non-printable characters in legacy environments are substituted with question
 marks.
 
+The string exchange between Python and C also needs some care. To pass Python
+strings to C, the 'et' conversion specifier must be used instead of the more
+commonly known 's'. Unfortunately there's no such specifier for the way back
+into Python which means that the strings then need to be encoded within the
+receiving Python code using 'unic()'.
+
 Python 3.0 will likely encode all string literals in Unicode by default, hence
 saving some of the work described above.
 

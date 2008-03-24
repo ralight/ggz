@@ -331,7 +331,7 @@ static PyObject *pyggzcoresimple_room_chat(PyObject *self, PyObject *args)
 	int type;
 	int ret;
 
-	if(!PyArg_ParseTuple(args, "iss", &type, &player, &message)) return NULL;
+	if(!PyArg_ParseTuple(args, "iset", &type, &player, "utf-8", &message)) return NULL;
 	ret = ggzcore_room_chat(ggzroom, type, player, message);
 	return Py_BuildValue("i", ret);
 }
