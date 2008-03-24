@@ -13,6 +13,7 @@ import time
 import random
 import os, pwd
 import re
+import locale
 
 import ggzmod
 import sdlnewstuff
@@ -29,10 +30,14 @@ except:
 import playertable
 from xadrezlib import *
 
+def asciify(str):
+		asciistr = str.encode(locale.getpreferredencoding(), "replace")
+		return asciistr
+
 def unic(s):
 	return unicode(s, "utf-8")
 
-print unic("Xadrez Chinês: Using data path"), DATAPATH
+print asciify(unic("Xadrez Chinês: Using data path")), DATAPATH
 
 def homedir():
 	return pwd.getpwuid(os.geteuid())[5]
@@ -136,7 +141,7 @@ def main(ggzmode):
 	""" Pygame setup """
 
 	pygame.init()
-	pygame.display.set_caption("Xadrez Chines/SDL")
+	pygame.display.set_caption(asciify(unic("Xadrez Chinês/SDL")))
 
 	screen = pygame.display.set_mode((800, 600), DOUBLEBUF)
 
@@ -172,7 +177,7 @@ def main(ggzmode):
 	slashfont = font2.render("/", 1, (165, 140, 0))
 
 	surface.blit(xadrezfont, (580, 90))
-	surface.blit(chinesfont, (580, 120))
+	surface.blit(chinesfont, (580, 125))
 	surface.blit(sdlfont, (710, 150))
 	surface.blit(slashfont, (700, 125))
 
