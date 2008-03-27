@@ -23,6 +23,7 @@ public class Player extends Spectator implements Seat
 	public final static int TYPE_ABANDONED = 5;
 
 	private int type;
+	private Score score;
 
 	/** @brief Constructor
 	 *
@@ -52,6 +53,26 @@ public class Player extends Spectator implements Seat
 	public int getType()
 	{
 		return this.type;
+	}
+
+	/** @brief Set a player score
+	 *
+	 * This method should be called after a game has finished.
+	 *
+	 * @param score Game result and highscore for a player
+	 */
+	public void setScore(Score score)
+	{
+		this.score = score;
+	}
+
+	/** @brief Return a player score
+	 *
+	 * @return Game result and highscore for a player
+	 */
+	public Score getScore()
+	{
+		return this.score;
 	}
 }
 

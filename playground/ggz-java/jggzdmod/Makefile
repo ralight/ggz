@@ -9,7 +9,7 @@ jancillary:
 jggzdmod:
 	mkdir -p $(B)
 	javac -d $(B) GGZChannel.java GGZChannelPoller.java \
-		GGZDMod.java Handler.java Player.java Protocol.java Seat.java Spectator.java
+		GGZDMod.java Handler.java Player.java Protocol.java Seat.java Spectator.java Score.java
 
 ttt:
 	javac -cp $(B) -d $(B) TicTacToe.java

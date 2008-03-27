@@ -41,5 +41,14 @@ abstract class Protocol
 	public final static int STATE_DONE = 3;
 	/**< A savegame is being restored. */
 	public final static int STATE_RESTORED = 4;
+
+	/**< The player or team has won the game */
+	public final static int RESULT_WIN = 0;
+	/**< The player or team has lost the game */
+	public final static int RESULT_LOSS = 1;
+	/**< The players or teams have tied, there is no winner */
+	public final static int RESULT_TIE = 2;
+	/**< The player or team has vanished before the game ended */
+	public final static int RESULT_FORFEIT = 3;
 }
 

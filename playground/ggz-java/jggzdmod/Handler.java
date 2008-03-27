@@ -137,6 +137,168 @@ public abstract class Handler extends Protocol
 		}
 	}
 
+	/** @brief Request to resize the table
+	 *
+	 * If a table is too small, and too few players can participate in
+	 * a game, the game server can request it to become larger. Similarly,
+	 * tables currently too large can shrink.
+	 *
+	 * @param seats Number of seats on the resized table
+	 */
+	void resizeTable(int seats)
+	{
+		try
+		{
+			if(this.channel != null)
+			{
+				this.channel.writeInt(REQ_NUM_SEATS);
+				this.channel.writeInt(seats);
+			}
+		}
+		catch(Exception e)
+		{
+			log("ERROR: " + e.toString());
+		}
+	}
+
+	/** @brief Boot a player from the table
+	 *
+	 * The player's game client will be disconnected.
+	 *
+	 * @param name Name of the player to be booted
+	 */
+	void bootPlayer(String name)
+	{
+		try
+		{
+			if(this.channel != null)
+			{
+				this.channel.writeInt(REQ_BOOT);
+				this.channel.writeString(name);
+			}
+		}
+		catch(Exception e)
+		{
+			log("ERROR: " + e.toString());
+		}
+	}
+
+	/** @brief Insert a bot into an open seat
+	 *
+	 * Useful for adding AI players for human players who have left
+	 * the game.
+	 *
+	 * @param seatnum Number of an open seat which will receive a bot player
+	 */
+	void insertBot(int seatnum)
+	{
+		try
+		{
+			if(this.channel != null)
+			{
+				this.channel.writeInt(REQ_BOT);
+				this.channel.writeInt(seatnum);
+			}
+		}
+		catch(Exception e)
+		{
+			log("ERROR: " + e.toString());
+		}
+	}
+
+	/** @brief Remove a bot from a seat
+	 *
+	 * The seat will be opened up and can subsequently be occupied
+	 * by a human player again.
+	 *
+	 * @param seatnum Number of a seat currently occupied by a bot player
+	 */
+	void removeBot(int seatnum)
+	{
+		try
+		{
+			if(this.channel != null)
+			{
+				this.channel.writeInt(REQ_OPEN);
+				this.channel.writeInt(seatnum);
+			}
+		}
+		catch(Exception e)
+		{
+			log("ERROR: " + e.toString());
+		}
+	}
+
+	/** @brief Report a game result
+	 *
+	 * This method returns the game outcome and the scores of all players
+	 * to the GGZ server. For all players, GGZDMod::Player::setScore should be
+	 * called before.
+	 */
+	void reportGame()
+	{
+		try
+		{
+			if(this.channel != null)
+			{
+				this.channel.writeInt(MSG_GAME_REPORT);
+				int scoreplayers = 0;
+				for(int i = 0; i < this.seats.size(); i++)
+				{
+					Player p = (Player)this.seats.get(i);
+					if(p.getScore() != null)
+						scoreplayers++;
+				}
+				this.channel.writeInt(scoreplayers);
+				for(int i = 0; i < this.seats.size(); i++)
+				{
+					Player p = (Player)this.seats.get(i);
+					Score score = (Score)p.getScore();
+					if(score != null)
+					{
+						int team = score.getTeam();
+						if(team == -1)
+							team = i;
+
+						this.channel.writeString(p.getName());
+						this.channel.writeInt(p.getType());
+						this.channel.writeInt(team);
+						this.channel.writeInt(score.getResult());
+						this.channel.writeInt(score.getScore());
+					}
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			log("ERROR: " + e.toString());
+		}
+	}
+
+	/** @brief Report a savegame to the GGZ server
+	 *
+	 * Savegames are useful to track a game's progress and outcome, but also to let
+	 * a game server continue an interrupted game in case of connection or server
+	 * problems.
+	 *
+	 * @param filename Path name of a savegame file
+	 */
+	void reportSavegame(String filename)
+	{
+		try
+		{
+			if(this.channel != null)
+			{
+				this.channel.writeInt(MSG_SAVEGAME_REPORT);
+				this.channel.writeString(filename);
+			}
+		}
+		catch(Exception e)
+		{
+			log("ERROR: " + e.toString());
+		}
+	}
+
 	/** @brief Main loop for the game server
 	 *
 	 * Calling handle() is the last action a game server performs after
