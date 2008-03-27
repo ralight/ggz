@@ -9,22 +9,47 @@ package GGZDMod;
 import java.util.HashMap;
 import java.util.Set;
 
+/** @brief Main loop class for GGZDMod
+ *
+ * This class gets instantiated once by GGZDMod and multiplexes the input from
+ * all the various channels: One from the game server to GGZ, and many from the
+ * game server to the game clients.
+ *
+ * Attention: This class will only work on systems which have libggz
+ * installed, as it implements some native methods.
+ */
 public class GGZChannelPoller
 {
 	private HashMap polls;
 
+	/** @internal */
 	native int polldescriptors(int[] fds);
 
+	/** @brief Constructor
+	 *
+	 * Instantiates a poller object.
+	 */
 	public GGZChannelPoller()
 	{
 		this.polls = new HashMap();
 	}
 
+	/** @brief Registers a communication channel
+	 *
+	 * The channel will be added to the polling process.
+	 */
 	public void registerChannel(GGZChannel channel)
 	{
 		this.polls.put(new Integer(channel.getFd()), channel);
 	}
 
+	/** @brief Polls all channels
+	 *
+	 * This method sleeps and doesn't return until a channel offers data
+	 * to read.
+	 *
+	 * @return Activated channel
+	 */
 	public GGZChannel poll()
 	{
 		Set keys = this.polls.keySet();
@@ -32,9 +57,7 @@ public class GGZChannelPoller
 		int[] fds = new int[array.length];
 		for(int i = 0; i < array.length; i++)
 			fds[i] = ((Integer)array[i]).intValue();
-System.out.println("### assigned " + array.length);
 		int fd = polldescriptors(fds);
-System.out.println("### polled " + fd);
 		for(int i = 0; i < array.length; i++)
 			if(((Integer)array[i]).intValue() == fd)
 				return (GGZChannel)this.polls.get((Integer)array[i]);

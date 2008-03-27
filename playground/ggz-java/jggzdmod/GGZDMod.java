@@ -39,6 +39,11 @@
 
 package GGZDMod;
 
+/** @brief Main class of jGGZDMod
+ *
+ * Game servers inherit from this class to implement all the server-side
+ * GGZ functionality.
+ */
 public abstract class GGZDMod extends Handler
 {
 	/** @brief Constructor
