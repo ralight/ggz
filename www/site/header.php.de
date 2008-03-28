@@ -49,6 +49,7 @@ function outdated($lang = "en")
 {
 	$file = $_SERVER['REQUEST_URI'];
 	if(substr($file, -4, 4) == ".php") $file = "$file.$lang";
+	elseif (substr($file, -1, 1) == "/") $file = substr($file, 0, -1) . ".php.$lang";
 	else $file = substr($file, 0, -2) . "$lang";
 
 	echo "<table class='pane'>\n";
