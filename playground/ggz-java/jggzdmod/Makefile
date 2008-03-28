@@ -1,6 +1,6 @@
 B = classes
 
-all: jancillary jggzdmod ttt
+all: jancillary jggzdmod
 
 jancillary:
 	gcc -O2 -Wall -Werror -fPIC -c jancillary.c -I $(ggzdir)/include
@@ -11,12 +11,6 @@ jggzdmod:
 	javac -d $(B) GGZChannel.java GGZChannelPoller.java \
 		GGZDMod.java Handler.java Player.java Protocol.java Seat.java Spectator.java Score.java
 
-ttt:
-	javac -cp $(B) -d $(B) TicTacToe.java
-
 clean:
 	find . -name *.class | xargs rm
-
-test:
-	ggz-faketable runserver.sh /home/josef/sys/lib/ggz/ggz.ttt
 

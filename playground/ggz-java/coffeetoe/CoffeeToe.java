@@ -5,7 +5,7 @@
 import java.util.*;
 import GGZDMod.*;
 
-class TTTServer extends GGZDMod
+class CoffeeToeServer extends GGZDMod
 {
 	private final static int SNDMOVE = 0;
 	private final static int REQSYNC = 1;
@@ -28,10 +28,10 @@ class TTTServer extends GGZDMod
 	private int turn;
 	private Random rand;
 
-	public TTTServer()
+	public CoffeeToeServer()
 	throws Exception
 	{
-		super("Tic-Tac-Toe (java)");
+		super("CoffeeToe (Tic-Tac-Toe for Java)");
 
 		this.board = new int[9];
 		for(int i = 0; i < 9; i++)
@@ -220,13 +220,13 @@ class TTTServer extends GGZDMod
 	}
 }
 
-class TicTacToe
+class CoffeeToe
 {
 	public final static void main(String[] args)
 	{
 		try
 		{
-			TTTServer server = new TTTServer();
+			CoffeeToeServer server = new CoffeeToeServer();
 			server.loop();
 		}
 		catch(Exception e)
