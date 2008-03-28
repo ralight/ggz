@@ -866,7 +866,9 @@ For C++ developers there exist some choices in wrapping the ggzdmod library.
 For example, Krosswater uses the Zone library, and Muehle uses the
 GGZGameServer class, which are both wrappers for ggzdmod.
 In the latter case, you only need to inherit your main server class from
-GGZGameServer, and reimplement all of its protected event methods.
+GGZGameServer, and reimplement all of its protected event methods. This
+class can be found in the ggzdmod++ library.
+An experimental Qt-based wrapper called kggzdmod also exists now.
 
 @subsection Python Development
 
@@ -879,6 +881,11 @@ They are available as part of the ggz-python package.
 There is a ruby wrapper for ggzdmod in development: ruggzdmod.
 In the future, the GGZ server will also be available as a complete ruby
 implementation, which will come with a native game server interface.
+
+@subsection Java development
+
+Java game server developers can use jggzdmod, which is a complete
+reimplementation of the ggzdmod library.
 
 @node Programming Details
 @chapter Programming Details
