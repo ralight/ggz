@@ -1,0 +1,148 @@
+The Game Board
+==============
+
+The game board is represented as two character arrays, one for
+horizontal lines and one for vertical lines - the indices are numbered
+from 0,0 at the top left.  A zero in an array entry means that no line
+exists, a one means there is a line there.  The following *crude*
+diagram should explain the setup; H(x,y) designates the x,y value for
+the horizontal array, V(x,y) designates the same for the vertical array.
+
+    o-H(0,0)-o-H(1,0)-o
+    |        |        |
+  V(0,0)   V(1,0)   V(2,0)
+    |        |        |
+    o-H(0,1)-o-H(1,1)-o
+    |        |        |
+  V(0,1)   V(1,1)   V(2,1)
+    |        |        |
+    o-H(0,2)-o-H(1,2)-o
+
+There is also an ownership board (width-1 by height-1 squares, where 0,0
+is upper left), which is only used during a SYNC process.  This board
+represents the ownership of squares (seat number, or -1 for an unowned
+square).
+
+
+Protocol Specs
+==============
+
+Game Server -> Client
+---------------------
+
+   DOTS_MSG_SEAT (0)
+     int: Clients seat number
+
+   DOTS_MSG_PLAYERS (1)
+     int: Seat 0 player assignment
+     str: Seat 0 player name (if not open)
+     int: Seat 1 player assignment
+     str: Seat 1 player name (if not open)
+
+   DOTS_MSG_MOVE_H (2)
+     uchar: X
+     uchar: Y
+
+   DOTS_MSG_MOVE_V (3)
+     uchar: X
+     uchar: Y
+
+   DOTS_MSG_GAMEOVER (4)
+     uchar: Winner's seat number
+
+   DOTS_REQ_MOVE (5)
+     no arguments
+
+   DOTS_RSP_MOVE (6)
+     char: Move status
+
+   DOTS_SND_SYNC (7)
+     char: Seat number for current move
+     int: Seat 0 score
+     int: Seat 1 score
+     uchar array: vertical board
+     uchar array: horizontal board
+     char array: ownership board
+
+   DOTS_MSG_OPTIONS (8)
+     uchar: Board width
+     uchar: Board height
+
+   DOTS_REQ_OPTIONS (9)
+     no arguments
+
+Client -> Game Server
+---------------------
+
+   DOTS_SND_MOVE_H (0)
+     uchar: X
+     uchar: Y
+
+   DOTS_SND_MOVE_V (1)
+     uchar: X
+     uchar: Y
+
+   DOTS_REQ_SYNC (2)
+     no arguments
+
+   DOTS_SND_OPTIONS (3)
+     uchar: Board width (in DOTS)
+     uchar: Board height
+
+   DOTS_REQ_NEWGAME (4)
+     no arguments
+
+
+General Procedures
+==================
+
+Typical GGZ connection procedures apply.  A legal game consists of
+either two players, or one player and one bot.
+
+The options are sent (after receiving DOTS_REQ_OPTIONS from the server)
+as two unsigned chars representing the requested board size width first,
+then height.  The board size is represented as a number of DOTS, not
+squares, so a 2x2 board would equate to a single square.  2x2 is the
+minimum board size, 25x25 is the maximum.
+
+The board need not have the same number of dots vertically as
+horizontally.
+
+When a move is requested, a client can respond with either a vertical
+line or a horizontal line.  The x and y values passed should represent
+the array indices for the appropriate board array.  In the event that
+the move is illegal, a negative value will be returned:
+    DOTS_ERR_STATE -1 (not able to accept moves)
+    DOTS_ERR_TURN  -2 (not your turn)
+    DOTS_ERR_BOUND -3 (array indices out of bounds)
+    DOTS_ERR_FULL  -4 (line already in board at that position)
+If the move is legal, a 0 or positive value will be returned.  A
+positive value will represent the number of squares (1 or 2) completed
+with that line.  Typically the client would be computing this itself and
+would ignore that value.
+
+An appropriate DOTS_MSG_MOVE will also be sent to the opponent client,
+representing the move made by the other player in typical vertical or
+horizontal x,y fashion.
+
+If a score is made, the server will request another move from the client
+which scored.  The client may send another move ahead of this
+notification if it wishes to, but should carefully note when it's turn
+would typically be up so as not to have to deal with an error returned
+from the server.
+
+When all lines are completed (all squares filled in), the server will
+return the winner's seat number to both clients for their official
+information.  It is expected that each client will keep track of the
+running score on it's own and that this information need not be sent.
+
+The client can either exit at this point, ending the game, or it can
+optionally request a new game by sending a DOTS_REQ_NEWGAME to the
+server.  The first client to request a new game will be allowed to set
+the options for the new game (he will receive a DOTS_REQ_OPTIONS).  The
+other client may also request to stay, or he may leave the game.  If he
+leaves, the client which said yes is notified via a DOTS_MSG_PLAYERS (he
+can then wait for another person to join or exit).
+
+If both clients exit, the table will be removed.
+

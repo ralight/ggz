@@ -1,5 +1,5 @@
 SUBDIRS = ggzcards hastings tictactoe
 
-docdir = $(GGZDOCDIR)/games/hastings
-dist_doc_DATA = index.html
+docdir = $(GGZDOCDIR)/games
+dist_doc_DATA = index.html dots-design.txt
 
