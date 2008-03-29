@@ -166,7 +166,7 @@ class ClientProtocol:
 	statenames[STATE_PLAYING] = "playing"
 	statenames[STATE_DONE] = "done"
 
-def initclient(clientsock, serversock, parentsock, childsock, clientexecutable):
+def initclient(clientsock, serversock, parentsock, childsock, clientexecutable, seatname):
 	# clientsock/serversock: game client<->game server
 	# parentsock/childsock: launchserver.py<->game client
 
@@ -193,7 +193,7 @@ def initclient(clientsock, serversock, parentsock, childsock, clientexecutable):
 		ancillary.write_fd(parentsock.fileno(), clientsock.fileno())
 
 		msg = net_int(ClientProtocol.MSG_GAME_PLAYER)
-		msg += net_string("someplayer") + net_int(0) + net_int(0)
+		msg += net_string(seatname) + net_int(0) + net_int(0)
 		parentsock.send(msg)
 		###clientsock.close()
 	else:
@@ -232,14 +232,14 @@ def initserver(sock, gamename, seats, seatnames, clientexecutable):
 		out("Put a human into the first seat")
 		(clientsock, serversock) = socket.socketpair()
 		(parentsock, childsock) = socket.socketpair()
-		playermsg = net_int(Protocol.SEAT_PLAYER) + net_string("someplayer")
+		playermsg = net_int(Protocol.SEAT_PLAYER) + net_string(seatnames[0])
 		msg = net_int(Protocol.MSG_GAME_SEAT) + net_int(0) + playermsg
 		sock.send(msg)
 		ancillary.write_fd(sock.fileno(), serversock.fileno())
 		###serversock.close()
 
 		if clientexecutable:
-			pid = initclient(clientsock, serversock, parentsock, childsock, clientexecutable)
+			pid = initclient(clientsock, serversock, parentsock, childsock, clientexecutable, seatnames[0])
 			pids.append(pid)
 			csocks.append(parentsock)
 			poller.register(parentsock.fileno(), select.POLLIN)
