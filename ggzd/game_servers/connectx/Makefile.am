@@ -11,7 +11,7 @@ ggzd_connectx_SOURCES = \
 	ai-lineup4.c \
 	ai-lineup4.h
 
-AM_CPPFLAGS = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
-
+AM_CPPFLAGS = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES) \
+	-DGGZDSTATEDIR=\"$(ggzdstatedir)\"
 ggzd_connectx_LDADD = $(LDADD) $(top_builddir)/ggzdmod/libggzdmod.la
 

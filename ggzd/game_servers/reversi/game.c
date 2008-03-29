@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 9379 2007-11-21 21:08:24Z josef $
+ * $Id: game.c 9898 2008-03-29 19:56:07Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -577,7 +577,7 @@ static void game_save(char *fmt, ...)
 	va_list ap;
 
 	if(!savegame) {
-		savegamepath = strdup(GGZDDATADIR "/gamedata/Reversi/savegame.XXXXXX");
+		savegamepath = strdup(GGZDSTATEDIR "/gamedata/Reversi/savegame.XXXXXX");
 		fd = mkstemp(savegamepath);
 		savegamename = strdup(savegamepath + strlen(savegamepath) - strlen("savegame.XXXXXX"));
 		free(savegamepath);

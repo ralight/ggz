@@ -4,7 +4,7 @@
  * Project: GGZ ConnectX game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 9645 2008-02-03 21:51:17Z josef $
+ * $Id: game.c 9898 2008-03-29 19:56:07Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -810,7 +810,7 @@ static void game_save(char *fmt, ...)
 	va_list ap;
 
 	if(!savegame) {
-		savegamepath = strdup(GGZDDATADIR "/gamedata/ConnectX/savegame.XXXXXX");
+		savegamepath = strdup(GGZDSTATEDIR "/gamedata/ConnectX/savegame.XXXXXX");
 		fd = mkstemp(savegamepath);
 		savegamename = strdup(savegamepath + strlen(savegamepath) - strlen("savegame.XXXXXX"));
 		free(savegamepath);

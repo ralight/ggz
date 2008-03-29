@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.c 8567 2006-09-03 05:35:12Z jdorje $
+ * $Id: game.c 9898 2008-03-29 19:56:07Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -194,9 +194,14 @@ static int game_get_options(int seat)
 {
 	int fd = ggzdmod_get_seat(dots_game.ggz, seat).fd;
 
+	ggzdmod_log(dots_game.ggz, "Receive game options from player %d", seat);
+
 	if(ggz_read_char(fd, (char*)&dots_game.board_width) < 0
 	   || ggz_read_char(fd, (char*)&dots_game.board_height) < 0)
 		return -1;
+
+	ggzdmod_log(dots_game.ggz, "Board size: %dx%d",
+		dots_game.board_width, dots_game.board_height);
 
 	game_save("width %i", dots_game.board_width);
 	game_save("height %i", dots_game.board_height);
@@ -208,6 +213,8 @@ static int game_get_options(int seat)
 /* Send out options */
 int game_send_options(int fd)
 {
+	ggzdmod_log(dots_game.ggz, "Sending game options to opponent player and spectators");
+
 	if(ggz_write_int(fd, DOTS_MSG_OPTIONS) < 0
 	   || ggz_write_char(fd, dots_game.board_width) < 0
 	   || ggz_write_char(fd, dots_game.board_height) < 0)
@@ -220,6 +227,8 @@ int game_send_options(int fd)
 static int game_send_options_request(int seat)
 {
 	int fd = ggzdmod_get_seat(dots_game.ggz, seat).fd;
+
+	ggzdmod_log(dots_game.ggz, "Sending option request to player %d", seat);
 
 	if(ggz_write_int(fd, DOTS_REQ_OPTIONS) < 0)
 		return -1;
@@ -245,6 +254,8 @@ int game_send_seat(int seat)
 /* Send out seat assignment to spectators */
 int game_send_seat_spectators(int fd)
 {
+	ggzdmod_log(dots_game.ggz, "Sending spectator's seat num");
+
 	if(ggz_write_int(fd, DOTS_MSG_SEAT) < 0
 	   || ggz_write_int(fd, -1) < 0)
 		return -1;
@@ -257,6 +268,8 @@ int game_send_seat_spectators(int fd)
 int game_send_players(void)
 {
 	int i, j, fd;
+
+	ggzdmod_log(dots_game.ggz, "Sending list of players to everybody...");
 	
 	for(j=0; j<2; j++) {
 		if((fd = ggzdmod_get_seat(dots_game.ggz, j).fd) == -1)
@@ -284,6 +297,8 @@ int game_send_players(void)
 int game_send_players_spectators(void)
 {
 	int i, j, fd;
+
+	ggzdmod_log(dots_game.ggz, "Sending list of players to spectators...");
 
 	/* 'Everybody' might include spectators */
 	for(j = 0; j < ggzdmod_get_max_num_spectators(dots_game.ggz); j++)
@@ -349,6 +364,8 @@ int game_send_move_spectators(int num, int event, char x, char y)
 	int i, j;
 	int msg;
 	int fd;
+
+	ggzdmod_log(dots_game.ggz, "Sending move to spectators");
 
 	if(event == DOTS_EVENT_MOVE_H)
 		msg = DOTS_MSG_MOVE_H;
@@ -784,7 +801,7 @@ static void game_save(char *fmt, ...)
 	}
 
 	if(!savegame) {
-		savegamepath = ggz_strdup(GGZDDATADIR "/gamedata/Dots/savegame.XXXXXX");
+		savegamepath = ggz_strdup(GGZDSTATEDIR "/gamedata/Dots/savegame.XXXXXX");
 		fd = mkstemp(savegamepath);
 		if(fd < 0) return;
 		savegame = fdopen(fd, "w");

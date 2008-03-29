@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 8780 2007-01-02 12:15:46Z josef $
+ * $Id: game.c 9898 2008-03-29 19:56:07Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -871,7 +871,7 @@ static void game_save(char *fmt, ...)
   va_list ap;
 
   if(!savegame) {
-    savegamepath = ggz_strdup(GGZDDATADIR "/gamedata/Chess/savegame.pgn.XXXXXX");
+    savegamepath = ggz_strdup(GGZDSTATEDIR "/gamedata/Chess/savegame.pgn.XXXXXX");
     fd = mkstemp(savegamepath);
     ggz_free(savegamepath);
     if(fd < 0) return;
