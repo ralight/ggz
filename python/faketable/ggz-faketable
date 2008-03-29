@@ -137,10 +137,11 @@ class ClientProtocol:
 	REQ_STAND = 1
 	REQ_SIT = 2
 	REQ_BOOT = 3
-	REQ_OPEN = 4
-	REQ_CHAT = 5
-	REQ_INFO = 6
-	REQ_RANKINGS = 7
+	REQ_BOT = 4
+	REQ_OPEN = 5
+	REQ_CHAT = 6
+	REQ_INFO = 7
+	REQ_RANKINGS = 8
 
 	MSG_GAME_LAUNCH = 0
 	MSG_GAME_SERVER = 1
@@ -335,6 +336,8 @@ def initserver(sock, gamename, seats, seatnames, clientexecutable):
 					err("FIXME: unhandled client opcode reqsit")
 				elif op == ClientProtocol.REQ_BOOT:
 					err("FIXME: unhandled client opcode reqboot")
+				elif op == ClientProtocol.REQ_BOT:
+					err("FIXME: unhandled client opcode reqbot")
 				elif op == ClientProtocol.REQ_OPEN:
 					err("FIXME: unhandled client opcode reqopen")
 				elif op == ClientProtocol.REQ_CHAT:
