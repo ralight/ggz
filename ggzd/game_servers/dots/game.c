@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.c 9898 2008-03-29 19:56:07Z josef $
+ * $Id: game.c 9899 2008-03-29 20:07:29Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -201,10 +201,10 @@ static int game_get_options(int seat)
 		return -1;
 
 	ggzdmod_log(dots_game.ggz, "Board size: %dx%d",
-		dots_game.board_width, dots_game.board_height);
+		dots_game.board_width - 1, dots_game.board_height - 1);
 
-	game_save("width %i", dots_game.board_width);
-	game_save("height %i", dots_game.board_height);
+	game_save("width %i", dots_game.board_width - 1);
+	game_save("height %i", dots_game.board_height - 1);
 
 	return game_update(DOTS_EVENT_OPTIONS, NULL, NULL);
 }
