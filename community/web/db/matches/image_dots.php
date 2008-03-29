@@ -6,7 +6,7 @@ $savegame->load($savegamefile);
 
 $factor = 40;
 
-$im = imagecreatetruecolor(($savegame->width - 1) * $factor + 1, ($savegame->height - 1) * $factor + 1);
+$im = imagecreatetruecolor(($savegame->width) * $factor + 1, ($savegame->height) * $factor + 1);
 
 $background_color = imagecolorallocate($im, 33, 180, 91);
 $area_color_1 = imagecolorallocate($im, 200, 0, 0);
