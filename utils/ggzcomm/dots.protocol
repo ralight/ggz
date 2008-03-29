@@ -14,9 +14,9 @@
 
 		<def name="sndmoveh" value="0"/>
 		<def name="sndmovev" value="1"/>
-		<def name="reqsync" value="3"/>
-		<def name="sndoptions" value="4"/>
-		<def name="reqnewgame" value="5"/>
+		<def name="reqsync" value="2"/>
+		<def name="sndoptions" value="3"/>
+		<def name="reqnewgame" value="4"/>
 	</definitions>
 	<client>
 		<event name="reqsync"/>
