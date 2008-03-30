@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 9898 2008-03-29 19:56:07Z josef $
+ * $Id: game.c 9911 2008-03-30 12:50:18Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -48,28 +48,10 @@ static void game_save(char *fmt, ...);
 
 // Initializes everything
 void game_init(GGZdMod *ggzdmod) {
-	int i;
 	rvr_game.ggz = ggzdmod;
-	rvr_game.black = 2;
-	rvr_game.white = 2;
-	rvr_game.state = RVR_STATE_INIT;
-	rvr_game.turn = EMPTY;
-	for (i = 0; i < 64; i++) {
-		rvr_game.board[i] = EMPTY;
-	}
-	// Initial positions
-	rvr_game.board[CART(4,4)] = WHITE;
-	rvr_game.board[CART(5,5)] = WHITE;
-	rvr_game.board[CART(5,4)] = BLACK;
-	rvr_game.board[CART(4,5)] = BLACK;
+
 	// Inits random number generator
 	srand(time(0));
-
-	// Save initial positions
-	game_save("white-init 4 4");
-	game_save("white-init 5 5");
-	game_save("black-init 5 4");
-	game_save("black-init 4 5");
 }
 
 // Handle server messages
@@ -217,6 +199,27 @@ int game_send_sync(int seat) {
 int game_start(void) {
 
 	int i, fd;
+
+	// Reset game states
+	rvr_game.black = 2;
+	rvr_game.white = 2;
+	rvr_game.state = RVR_STATE_INIT;
+	rvr_game.turn = EMPTY;
+	for (i = 0; i < 64; i++) {
+		rvr_game.board[i] = EMPTY;
+	}
+
+	// Initial positions
+	rvr_game.board[CART(4,4)] = WHITE;
+	rvr_game.board[CART(5,5)] = WHITE;
+	rvr_game.board[CART(5,4)] = BLACK;
+	rvr_game.board[CART(4,5)] = BLACK;
+
+	// Save initial positions
+	game_save("white-init 4 4");
+	game_save("white-init 5 5");
+	game_save("black-init 5 4");
+	game_save("black-init 4 5");
 
 	// Start game variables
 	rvr_game.state = RVR_STATE_PLAYING;
@@ -584,6 +587,8 @@ static void game_save(char *fmt, ...)
 		if(fd < 0) return;
 		savegame = fdopen(fd, "w");
 		if(!savegame) return;
+
+		ggzdmod_log(rvr_game.ggz, "Initiating savegame at %s", savegamename);
 
 		ggzdmod_report_savegame(rvr_game.ggz, savegamename);
 		free(savegamename);
