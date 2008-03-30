@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db4 sytle database
- * $Id: ggzdb_db4.c 9902 2008-03-30 07:15:31Z josef $
+ * $Id: ggzdb_db4.c 9903 2008-03-30 08:06:09Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -44,20 +44,27 @@
 static DB *db_p = NULL; /* player database (table) */
 static DB *db_s = NULL; /* stats database (table) */
 static DB_ENV *db_e;
-static int standalone = 0;
-static int inmemory = 0;
+
+typedef struct {
+	int standalone;
+	int inmemory;
+} dboptions;
 
 
 /* Function to initialize the db4 database system */
 GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 {
 	u_int32_t flags;
+	dboptions *dbopt;
+
+	dbopt = ggz_malloc(sizeof(dboptions));
 
 	if(set_standalone) {
 		flags = DB_INIT_MPOOL | DB_INIT_LOCK;
-		standalone = 1;
+		dbopt->standalone = 1;
 	} else
 		flags = DB_CREATE | DB_INIT_MPOOL | DB_INIT_LOCK | DB_THREAD;
+		dbopt->standalone = 0;
 
 	if(db_env_create(&db_e, 0) != 0) {
 		err_sys("db_env_create() failed in _ggzdb_init()");
@@ -68,8 +75,12 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	}
 
 	if(!ggz_strcmp(connection.database, "memory")) {
-		inmemory = 1;
+		dbopt->inmemory = 1;
+	} else {
+		dbopt->inmemory = 0;
 	}
+
+	db_e->app_private = dbopt;
 
 	return GGZ_OK;
 }
@@ -88,6 +99,8 @@ void _ggzdb_close(void)
 		db_s->close(db_s, 0);
 		db_s = NULL;
 	}
+
+	ggz_free(db_e->app_private);
 
 	db_e->close(db_e, 0);
 	db_e = NULL;
@@ -115,12 +128,12 @@ GGZDBResult _ggzdb_init_player(void)
 	ggzdbPlayerEntry marker;
 	const char *dbname;
 
-	if(standalone)
+	if(((dboptions*)db_e->app_private)->standalone)
 		flags = 0;
 	else
 		flags = DB_CREATE | DB_THREAD;
 
-	if(inmemory)
+	if(((dboptions*)db_e->app_private)->inmemory)
 		dbname = NULL;
 	else
 		dbname = "player.db";
@@ -338,12 +351,12 @@ GGZDBResult _ggzdb_init_stats(void)
 	u_int32_t flags;
 	const char *dbname;
 
-	if(standalone)
+	if(((dboptions*)db_e->app_private)->standalone)
 		flags = 0;
 	else
 		flags = DB_CREATE | DB_THREAD;
 
-	if(inmemory)
+	if(((dboptions*)db_e->app_private)->inmemory)
 		dbname = NULL;
 	else
 		dbname = "stats.db";
