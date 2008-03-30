@@ -4,9 +4,6 @@ be merged with the sources.
 Current patches
 ---------------
 
-Room additions and removals through the web frontend:
- roomsdb.ggzd+community.diff
-
 Real-time statistics from ggzd:
  ggzd_statsrt.diff
 
@@ -50,6 +47,9 @@ Only for pgsql and mysql.
 
 Old patches (just to keep it in memory)
 ---------------------------------------
+
+Room additions and removals through the web frontend:
+ roomsdb.ggzd+community.diff
 
 Game restores after crashes or disconnections (from Vasiliy, cleaned up a bit)
  gamerestore.libggz.diff
