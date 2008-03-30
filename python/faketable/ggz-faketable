@@ -15,6 +15,7 @@ import socket
 import signal
 import select
 import ConfigParser
+import pwd
 
 # Modules from ggz-python
 try:
@@ -77,6 +78,9 @@ def reverse_dict(d):
 		value = d[key]
 		rev[value] = key
 	return rev
+
+def username():
+	return pwd.getpwuid(os.geteuid())[0]
 
 class Protocol:
 	SEAT_NONE = 0
@@ -425,6 +429,8 @@ def main():
 					seatnames.append(seatname)
 				else:
 					seatnames[i] = seatname
+				if i == 0 and not seatnames[i]:
+					seatnames[i] = username()
 	except:
 		err("Syntax error: invalid options")
 		sys.exit(1)
