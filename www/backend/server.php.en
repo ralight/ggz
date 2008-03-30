@@ -10,12 +10,13 @@ The GGZ Gaming Zone Main Server (ggzd).
 
 <i>GGZ Server features</i><br/>
 <ul>
-<li>User system with authorized users and anonymous access
-<li>Provides rooms with associated game types
+<li>User system with authorized users, anonymous access, and privilege system based on individual permissions
+<li>Provides rooms with associated game types, and allows for dynamic room additions and removals
 <li>Chat in rooms, between users and on tables
-<li>Database backend for users and statistics
+<li>Game support through savegame handling, statistics calculation and more
+<li>Various database backends for users and statistics
 <li>Speaks GGZ protocol (specified) on port 5688 (standardized)
-<li>Integration with Zeroconf systems like Avahi or Howl
+<li>Integration with server search facilities like zeroconf and the GGZ metaserver
 <li>IPv6 enabled
 </ul>
 
