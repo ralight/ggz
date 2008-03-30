@@ -1,0 +1,81 @@
+Savegame formats used by GGZ games
+==================================
+
+GGZ games can write their game progress to a logfile. Once the game is
+finished, the file is closed and stored as a permanent savegame. Therefore,
+savegame formats which follow the gameplay, instead of just dumping the
+current state of the game, are to be preferred, even though this isn't always
+possible, especially for larger games.
+
+Have a look at ggz-community/doc/Savegames to see which formats are supported
+in the GGZ Community web application for review of played games through the
+browser.
+In addition, some of the game clients can also replay savegames. Such games
+are marked below.
+
+The GGZ board games have very common line-based savegames. Other games
+might use standard formats. Have a look at
+	http://dev.ggzgamingzone.local/protocols/
+to see which savegame formats and protocols are being considered to be adopted
+from standardised or otherwise omnipresent cases.
+
+In the following list, for each game type (engine) there will be an entry on
+which savegame format the server uses, if it is documented somewhere, if the
+game server can also load the format again for game continuations, if the
+savegame files can be reviewed in ggz-community and if there are game clients
+which can replay the savegame files, possibly when running standalone.
+
+---------------------------------------------------------------------
+
+* Tic-Tac-Toe
+  format: own format
+  documentation: see ggz-games/tictactoe/savegames.txt
+  server: read-write
+  community: yes
+  clients: none
+
+* Connect the Dots
+  format: own format
+  documentation: (missing)
+  server: write-only
+  community: yes
+  clients: KDots supports replays
+
+* Chess
+  format: PGN
+  documentation: http://www.chessclub.com/help/PGN-spec
+  server: write-only [incomplete?]
+  community: yes
+  clients: none
+
+* Reversi
+  format: own format
+  documentation: (missing)
+  server: write-only
+  community: no
+  clients: none
+
+* ConnectX
+  format: own format
+  documentation: (missing)
+  server: write-only
+  community: no
+  clients: none
+
+---------------------------------------------------------------------
+
+Furthermore, GGZ-Community can load the following savegame formats which
+might be produced by external game servers:
+
+* Freelords
+  format: custom XML
+  documentation: (missing)
+
+* Go
+  format: SGF
+  documentation: http://www.red-bean.com/sgf/
+
+* TEG
+  format: custom XML
+  documentation: (missing)
+
