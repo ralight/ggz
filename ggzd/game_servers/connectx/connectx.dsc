@@ -23,3 +23,6 @@ PlayersAllowed = 2
 ConnectXInternal=connectx
 Velena=velena
 LINeup4=lineup4
+
+[Statistics]
+Records = 1
