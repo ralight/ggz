@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db4 sytle database
- * $Id: ggzdb_db4.c 9855 2008-03-20 20:38:47Z josef $
+ * $Id: ggzdb_db4.c 9902 2008-03-30 07:15:31Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -45,6 +45,7 @@ static DB *db_p = NULL; /* player database (table) */
 static DB *db_s = NULL; /* stats database (table) */
 static DB_ENV *db_e;
 static int standalone = 0;
+static int inmemory = 0;
 
 
 /* Function to initialize the db4 database system */
@@ -57,12 +58,17 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 		standalone = 1;
 	} else
 		flags = DB_CREATE | DB_INIT_MPOOL | DB_INIT_LOCK | DB_THREAD;
-	if (db_env_create(&db_e, 0) != 0) {
+
+	if(db_env_create(&db_e, 0) != 0) {
 		err_sys("db_env_create() failed in _ggzdb_init()");
 		return GGZ_ERROR;
 	} else if (db_e->open(db_e, connection.datadir, flags , 0600) != 0) {
 		err_sys("db_e->open() failed in _ggzdb_init(%s)", connection.datadir);
 		return GGZ_ERROR;
+	}
+
+	if(!ggz_strcmp(connection.database, "memory")) {
+		inmemory = 1;
 	}
 
 	return GGZ_OK;
@@ -107,20 +113,26 @@ GGZDBResult _ggzdb_init_player(void)
 {
 	u_int32_t flags;
 	ggzdbPlayerEntry marker;
+	const char *dbname;
 
 	if(standalone)
 		flags = 0;
 	else
 		flags = DB_CREATE | DB_THREAD;
 
+	if(inmemory)
+		dbname = NULL;
+	else
+		dbname = "player.db";
+
 	/* Open the database file */
 	if(db_create(&db_p, db_e, 0) != 0)
 		err_sys_exit("db_create() failed in _ggzdb_init_player()");
 #if DB_VERSION_MINOR >= 1
 	/*flags |= DB_AUTO_COMMIT;*/
-	if (db_p->open(db_p, NULL, "player.db", NULL, DB_BTREE, flags, 0600) != 0)
+	if (db_p->open(db_p, NULL, dbname, NULL, DB_BTREE, flags, 0600) != 0)
 #else
-	if (db_p->open(db_p, "player.db", NULL, DB_BTREE, flags, 0600) != 0)
+	if (db_p->open(db_p, dbname, NULL, DB_BTREE, flags, 0600) != 0)
 #endif
 		err_sys_exit("db_p->open() failed in _ggzdb_init_player()");
 
@@ -324,22 +336,28 @@ void _ggzdb_player_drop_cursor(void)
 GGZDBResult _ggzdb_init_stats(void)
 {
 	u_int32_t flags;
+	const char *dbname;
 
 	if(standalone)
 		flags = 0;
 	else
 		flags = DB_CREATE | DB_THREAD;
 
+	if(inmemory)
+		dbname = NULL;
+	else
+		dbname = "stats.db";
+
 	/* Open the database file */
 	if (db_create(&db_s, db_e, 0) != 0)
 		err_sys_exit("db_create() failed in _ggzdb_init_stats()");
 #if DB_VERSION_MINOR >= 1
 	/*flags |= DB_AUTO_COMMIT;*/
-	if (db_p->open(db_s, NULL, "stats.db", NULL, DB_BTREE, flags, 0600) != 0)
+	if (db_s->open(db_s, NULL, dbname, NULL, DB_BTREE, flags, 0600) != 0)
 #else
-	if (db_p->open(db_s, "stats.db", NULL, DB_BTREE, flags, 0600) != 0)
+	if (db_s->open(db_s, dbname, NULL, DB_BTREE, flags, 0600) != 0)
 #endif
-		err_sys_exit("db_p->open() failed in _ggzdb_init_stats()");
+		err_sys_exit("db_s->open() failed in _ggzdb_init_stats()");
 
 	return GGZDB_NO_ERROR;
 }
@@ -439,5 +457,46 @@ GGZDBResult _ggzdb_stats_calcrankings(const char *game)
 {
 	/* Not implemented, but do not return error */
 	return GGZDB_NO_ERROR;
+}
+
+GGZList *_ggzdb_savegames(const char *game, const char *owner)
+{
+	/* Not implemented, but do not return error */
+	return NULL;
+}
+
+GGZList *_ggzdb_savegame_owners(const char *game)
+{
+	/* Not implemented, but do not return error */
+	return NULL;
+}
+
+GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *name, int type)
+{
+	/* Not implemented, but do not return error */
+	return GGZDB_NO_ERROR;
+}
+
+GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num)
+{
+	/* Not implemented, but do not return error */
+	return GGZDB_NO_ERROR;
+}
+
+int _ggzdb_reconfiguration_fd(void)
+{
+	/* Not implemented, but do not return error */
+	return -1;
+}
+
+void _ggzdb_reconfiguration_load(void)
+{
+	/* Not implemented, but do not return error */
+}
+
+RoomStruct *_ggzdb_reconfiguration_room(void)
+{
+	/* Not implemented, but do not return error */
+	return NULL;
 }
 
