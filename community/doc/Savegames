@@ -19,4 +19,5 @@ Right now the following savegame handlers exist:
 * Go (SGF format)
 * TEG (custom XML format)
 * Tic-Tac-Toe (custom format by GGZ)
+* Reversi (custom format by GGZ)
 
