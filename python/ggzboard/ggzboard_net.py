@@ -43,6 +43,7 @@ class NetworkBase:
 			if len(opstr) < length:
 				self.errorcode = 1
 				return ""
+		opstr = opstr[:-1]
 		return opstr
 
 	def sendbyte(self, byte):

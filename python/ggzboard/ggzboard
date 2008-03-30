@@ -172,7 +172,7 @@ class GGZBoard:
 	def signalhandler(self, signum, stackframe):
 		print "## GGZBoard signal handler ##"
 		if self.game:
-			if self.game.destroy:
+			if "destroy" in dir(self.game):
 				self.game.destroy()
 		sys.exit(1)
 
