@@ -52,14 +52,14 @@ which can replay the savegame files, possibly when running standalone.
   format: own format
   documentation: (missing)
   server: write-only
-  community: no
+  community: yes
   clients: none
 
 * ConnectX
   format: own format
   documentation: (missing)
   server: write-only
-  community: no
+  community: yes
   clients: none
 
 ---------------------------------------------------------------------
