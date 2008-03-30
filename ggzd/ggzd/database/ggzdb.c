@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 9855 2008-03-20 20:38:47Z josef $
+ * $Id: ggzdb.c 9905 2008-03-30 09:08:09Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -95,16 +95,19 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 		} else {
 			/* File was found, so let's check it */
 			fgets(vid, 7, vfile);
+			if(strlen(vid) > 0)
+				vid[strlen(vid) - 1] = '\0';
 			if(!strncmp(GGZDB_VERSION_ID, vid, strlen(GGZDB_VERSION_ID)))
 				version_ok = 1;
 		}
 		fclose(vfile);
 
 		if (!version_ok) {
-			printf("Bad db version id, remove or convert db files.\n"
+			printf("Bad GGZ database version %s, expected %s.\n"
 			       "Most likely this means you must upgrade your\n"
-			       "database.  It may be possible to automate this;\n"
-			       "see http://ggzgamingzone.org.\n");
+			       "database schema.  It may be possible to automate this;\n"
+			       "see http://ggzgamingzone.org.\n",
+			       vid, GGZDB_VERSION_ID);
 			exit(-1);
 			/* FIXME: we should be able to rely on ggz_err_sys() */
 		}
@@ -160,6 +163,10 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 	|| ((_ggzdb_savegames = dlsym(handle, "_ggzdb_savegames")) == NULL)
 	|| ((_ggzdb_savegame_owners = dlsym(handle, "_ggzdb_savegame_owners")) == NULL)
 	|| ((_ggzdb_savegame_player = dlsym(handle, "_ggzdb_savegame_player")) == NULL)
+	|| ((_ggzdb_rooms = dlsym(handle, "_ggzdb_rooms")) == NULL)
+	|| ((_ggzdb_reconfiguration_fd = dlsym(handle, "_ggzdb_reconfiguration_fd")) == NULL)
+	|| ((_ggzdb_reconfiguration_load = dlsym(handle, "_ggzdb_reconfiguration_load")) == NULL)
+	|| ((_ggzdb_reconfiguration_room = dlsym(handle, "_ggzdb_reconfiguration_room")) == NULL)
 	)
 	{
 		err_sys_exit("%s is an invalid database module (%s)",
@@ -190,6 +197,20 @@ void ggzdb_close(void)
 
 	_ggzdb_close();
 	dlclose(handle);
+}
+
+
+/* Not threadsafe: return file descriptor for notifications */
+int ggzdb_reconfiguration_fd(void)
+{
+	return _ggzdb_reconfiguration_fd();
+}
+
+
+/* Not threadsafe: trigger mass room addition on startup */
+void ggzdb_reconfiguration_load(void)
+{
+	_ggzdb_reconfiguration_load();
 }
 
 
@@ -543,6 +564,42 @@ GGZDBResult ggzdb_savegameplayer(ggzdbStamp tableid, int seat, const char *name,
 
 	return rc;
 }
+
+GGZDBResult ggzdb_rooms(RoomStruct *rooms, int num)
+{
+	GGZDBResult rc = GGZDB_NO_ERROR;
+
+	_ggzdb_enter();
+
+	if (stats_needs_init)
+		rc = ggzdb_stats_init();
+
+	if (rc == GGZDB_NO_ERROR)
+		rc = _ggzdb_rooms(rooms, num);
+
+	_ggzdb_exit();
+
+	return rc;
+}
+
+RoomStruct* ggzdb_reconfiguration_room(void)
+{
+	RoomStruct *rooms = NULL;
+	GGZDBResult rc = GGZDB_NO_ERROR;
+
+	_ggzdb_enter();
+
+	if (stats_needs_init)
+		rc = ggzdb_stats_init();
+
+	if (rc == GGZDB_NO_ERROR)
+		rooms = _ggzdb_reconfiguration_room();
+
+	_ggzdb_exit();
+
+	return rooms;
+}
+
 
 /*** INTERNAL FUNCTIONS ***/
 

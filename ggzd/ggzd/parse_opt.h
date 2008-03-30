@@ -22,6 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include "room.h"
 
 /* Parse command-line options */
 void parse_args(int argc, char *argv[]);
@@ -37,4 +38,5 @@ void parse_room_files(void);
 
 /* Dynamic room reconfiguration */
 void parse_room_change(const char *room);
+void parse_room_change_db(RoomStruct *rooms);
 

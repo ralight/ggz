@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 9855 2008-03-20 20:38:47Z josef $
+ * $Id: ggzdb.h 9905 2008-03-30 09:08:09Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -28,6 +28,7 @@
 #include <ggz_common.h>
 
 #include "ggzd.h"
+#include "room.h"
 
 /* Can't include twice */
 #ifndef GGZDB_VERSION_ID
@@ -156,6 +157,13 @@ GGZList *ggzdb_savegame_owners(const char *game);
 
 /* Report a table seat change to the database */
 GGZDBResult ggzdb_savegameplayer(ggzdbStamp tableid, int seat, const char *name, int type);
+
+/* Register all rooms */
+GGZDBResult ggzdb_rooms(RoomStruct *rooms, int num);
+
+int ggzdb_reconfiguration_fd(void);
+RoomStruct* ggzdb_reconfiguration_room(void);
+void ggzdb_reconfiguration_load(void);
 
 #endif
 

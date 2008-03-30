@@ -49,3 +49,9 @@ GGZList* (*_ggzdb_savegame_owners)(const char *game);
 
 GGZDBResult (*_ggzdb_savegame_player)(ggzdbStamp tableid, int seat, const char *name, int type);
 
+GGZDBResult (*_ggzdb_rooms)(RoomStruct *rooms, int num);
+
+int (*_ggzdb_reconfiguration_fd)(void);
+RoomStruct* (*_ggzdb_reconfiguration_room)(void);
+void (*_ggzdb_reconfiguration_load)(void);
+

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 9855 2008-03-20 20:38:47Z josef $
+ * $Id: ggzdb_pgsql.c 9905 2008-03-30 09:08:09Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -65,6 +65,8 @@ static const char *dbname;
 static const char *dbusername;
 static const char *dbpassword;
 static int dbport;
+
+static PGconn *reconfigurationconn = NULL;
 
 /* Entry type for the connection pool */
 typedef struct connection_t
@@ -248,6 +250,17 @@ static int setupschema(PGconn *conn, const char *filename)
 	return rc;
 }
 
+/* Upgrade a database */
+static int upgrade(PGconn *conn, const char *oldversion, const char *newversion)
+{
+	char upgradefile[1024];
+
+	snprintf(upgradefile, sizeof(upgradefile), "%s/upgrade_%s_%s.sql",
+		GGZDDATADIR, oldversion, newversion);
+
+	return setupschema(conn, upgradefile);
+}
+
 /* String canonicalization for comparison */
 static const char *lower(void)
 {
@@ -299,8 +312,13 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 			version = PQgetvalue(res, 0, 0);
 			if(strcmp(version, GGZDB_VERSION_ID))
 			{
-				err_msg_exit("Wrong database version: %s present, %s needed.\n", version, GGZDB_VERSION_ID);
-				rc = GGZDB_ERR_DB;
+				/* Perform upgrade if possible */
+				err_msg("Wrong database version: %s present, %s needed.\n", version, GGZDB_VERSION_ID);
+				if(!upgrade(conn, version, GGZDB_VERSION_ID))
+				{
+					err_msg_exit("Database upgrade failed.\n");
+					rc = GGZDB_ERR_DB;
+				}
 			}
 		}
 		PQclear(res);
@@ -354,6 +372,9 @@ void _ggzdb_close(void)
 	GGZListEntry *entry;
 	connection_t *conn2;
 
+	if(reconfigurationconn)
+		releaseconnection(reconfigurationconn);
+
 	entry = ggz_list_head(list);
 	while(entry)
 	{
@@ -363,6 +384,151 @@ void _ggzdb_close(void)
 		entry = ggz_list_next(entry);
 	}
 	ggz_list_free(list);
+}
+
+
+int _ggzdb_reconfiguration_fd(void)
+{
+	PGresult *res;
+	char query[4096];
+
+	reconfigurationconn = claimconnection();
+	if (!reconfigurationconn) {
+		err_msg("_ggzdb_reconfiguration_fd: couldn't claim connection");
+		return -1;
+	}
+
+	snprintf(query, sizeof(query),
+		"LISTEN ggzroomchange");
+
+	res = PQexec(reconfigurationconn, query);
+	if(PQresultStatus(res) != PGRES_COMMAND_OK) {
+		return -1;
+	}
+	PQclear(res);
+
+	return PQsocket(reconfigurationconn);
+}
+
+
+void _ggzdb_reconfiguration_load(void)
+{
+	PGconn *conn;
+	PGresult *res;
+	char query[4096];
+
+	conn = claimconnection();
+	if (!conn) {
+		err_msg("_ggzdb_reconfiguration_load: couldn't claim connection");
+		return;
+	}
+
+	snprintf(query, sizeof(query),
+		"UPDATE rooms SET action = 'add' WHERE filebased = 'f'");
+
+	res = PQexec(conn, query);
+	PQclear(res);
+
+	releaseconnection(conn);
+}
+
+
+RoomStruct *_ggzdb_reconfiguration_room(void)
+{
+	RoomStruct *rooms = NULL;
+	PGnotify *notify;
+	PGresult *res, *res2;
+	char query[4096];
+	int i;
+
+	PQconsumeInput(reconfigurationconn);
+
+	notify = PQnotifies(reconfigurationconn);
+	if(notify != NULL) {
+		if(!ggz_strcmp(notify->relname, "ggzroomchange")) {
+
+			snprintf(query, sizeof(query),
+			 "SELECT "
+			 "name, description, gametype, maxplayers, maxtables, entryrestriction, action "
+			 "FROM rooms WHERE filebased = 'f' AND action IS NOT NULL");
+
+			res = PQexec(reconfigurationconn, query);
+
+			if (PQresultStatus(res) == PGRES_TUPLES_OK) {
+				rooms = ggz_malloc((PQntuples(res) + 1) * sizeof(RoomStruct));
+				rooms[PQntuples(res)].name = NULL;
+				rooms[PQntuples(res)].room = NULL;
+
+				for(i = 0; i < PQntuples(res); i++) {
+					const char *name = PQgetvalue(res, i, 0);
+					const char *description = PQgetvalue(res, i, 1);
+					const char *gametype = PQgetvalue(res, i, 2);
+					int maxplayers = atoi(PQgetvalue(res, i, 3));
+					int maxtables = atoi(PQgetvalue(res, i, 4));
+					const char *entryrestriction = PQgetvalue(res, i, 5);
+					const char *action = PQgetvalue(res, i, 6);
+					int perms;
+					int type;
+
+					rooms[i].name = NULL;
+					rooms[i].room = NULL;
+					rooms[i].description = NULL;
+					rooms[i].game_type = -1;
+					rooms[i].max_players = 0;
+					rooms[i].max_tables = 0;
+					rooms[i].perms = 0;
+
+					if(!ggz_strcmp(action, "add")) {
+						snprintf(query, sizeof(query),
+							"UPDATE rooms SET action = NULL WHERE name = '%s'",
+							name);
+
+						res2 = PQexec(reconfigurationconn, query);
+						PQclear(res2);
+
+						if(!ggz_strcmp(entryrestriction, "none"))
+							perms = 0;
+						else if(!ggz_strcmp(entryrestriction, "registered"))
+							perms = 1 << GGZ_PERM_ROOMS_LOGIN;
+						else if(!ggz_strcmp(entryrestriction, "admin"))
+							perms = 1 << GGZ_PERM_ROOMS_ADMIN;
+						else
+							perms = 0;
+
+						type = -1;
+						if(!ggz_strcmp(gametype, NULL))
+							type = -1;
+						// FIXME: this is all fake
+
+						/* The room's name equals its internal name */
+						rooms[i].room = ggz_strdup(name);
+						rooms[i].name = ggz_intlstring_fromstring(name);
+						rooms[i].description = ggz_intlstring_fromstring(description);
+						rooms[i].game_type = type;
+						rooms[i].max_players = maxplayers;
+						rooms[i].max_tables = maxtables;
+						rooms[i].perms = perms;
+					} else if(!ggz_strcmp(action, "delete")) {
+						snprintf(query, sizeof(query),
+							"DELETE FROM rooms WHERE name = '%s'",
+							name);
+
+						res2 = PQexec(reconfigurationconn, query);
+						PQclear(res2);
+
+						/* We use the room's internal name as its key for deletions */
+						rooms[i].room = ggz_strdup(name);
+						rooms[i].name = ggz_intlstring_fromstring(name);
+					}
+				}
+
+			}
+			PQclear(res);
+		}
+		PQfreemem(notify);
+	}
+
+	return rooms;
 }
 
 
@@ -1234,6 +1400,64 @@ GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *nam
 	}
 	else rc = GGZDB_NO_ERROR;
 	PQclear(res);
+
+	releaseconnection(conn);
+
+	return rc;
+}
+
+GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num)
+{
+	PGconn *conn;
+	PGresult *res;
+	char query[8192];
+	int rc = GGZDB_ERR_DB;
+	char *name_quoted, *description_quoted;
+	int i;
+
+	conn = claimconnection();
+	if (!conn) {
+		err_msg("_ggzdb_rooms: couldn't claim connection");
+		return rc;
+	}
+
+	/* FIXME: what do we do with invalidated derived rooms? */
+	snprintf(query, sizeof(query),
+		"DELETE FROM rooms WHERE filebased = 't'");
+
+	res = PQexec(conn, query);
+	PQclear(res);
+
+	for(i = 0; i < num; i++) {
+		RoomStruct room = rooms[i];
+
+		name_quoted = _ggz_sql_escape(ggz_intlstring_translated(room.name, NULL));
+		description_quoted = _ggz_sql_escape(ggz_intlstring_translated(room.description, NULL));
+
+		/* FIXME: evaluate room->perms and somehow also room->game_type */
+		snprintf(query, sizeof(query),
+			"INSERT INTO rooms "
+			"(filebased, name, description, gametype, maxplayers, maxtables, entryrestriction) VALUES "
+			"('t', '%s', '%s', '%s', %i, %i, '%s')",
+			name_quoted, description_quoted, "???",
+			room.max_players, room.max_tables, "none");
+
+		if(name_quoted)
+			ggz_free(name_quoted);
+		if(description_quoted)
+			ggz_free(description_quoted);
+
+		res = PQexec(conn, query);
+
+		if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+			err_msg("couldn't insert room %s",
+				ggz_intlstring_translated(room.name, NULL));
+			PQclear(res);
+			break;
+		}
+		else rc = GGZDB_NO_ERROR;
+		PQclear(res);
+	}
 
 	releaseconnection(conn);
 

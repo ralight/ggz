@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 9864 2008-03-22 21:10:36Z oojah $
+ * $Id: control.c 9905 2008-03-30 09:08:09Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -99,6 +99,7 @@ static sig_atomic_t term_signal;
 
 /* Reconfiguration watcher */
 static int reconfigure_fd;
+static int reconfigure_db_fd;
 #ifdef WITH_FAM
 FAMConnection fc;
 #endif
@@ -406,6 +407,20 @@ static void reconfiguration_setup(void)
 {
 	char watchdir[strlen(opt.conf_dir) + 8];
 
+	/* Notification handler for updates from databases */
+	reconfigure_db_fd = ggzdb_reconfiguration_fd();
+	if(reconfigure_db_fd > 0)
+	{
+		log_msg(GGZ_LOG_NOTICE,
+			"Reconfiguration: watching database for changes");
+		fcntl(reconfigure_db_fd, F_SETFD, FD_CLOEXEC);
+	}
+	else
+	{
+		log_msg(GGZ_LOG_NOTICE,
+			"Reconfiguration: no connection to the database");
+	}
+
 	snprintf(watchdir, sizeof(watchdir), "%s/rooms", opt.conf_dir);
 
 #ifdef HAVE_INOTIFY
@@ -449,6 +464,19 @@ static void reconfiguration_setup(void)
 #endif
 #endif
 }
+
+
+static void reconfiguration_db_handle(void)
+{
+	RoomStruct *rooms = ggzdb_reconfiguration_room();
+
+	if(rooms != NULL) {
+		log_msg(GGZ_LOG_NOTICE,
+			"Reconfiguration: room addition/deletion of room(s)");
+		parse_room_change_db(rooms);
+	}
+}
+
 
 static void reconfiguration_handle(void)
 {
@@ -624,6 +652,11 @@ int main(int argc, char *argv[])
 	else
 		reconfigure_fd = -1;
 
+	/* Trigger loading rooms from the database */
+	if(reconfigure_db_fd > 0) {
+		ggzdb_reconfiguration_load();
+	}
+
 	/* Create SERVER socket on main_port */
 	main_sock = ggz_make_socket(GGZ_SOCK_SERVER, opt.main_port, opt.interface);
 	if (main_sock < 0) {
@@ -654,6 +687,10 @@ int main(int argc, char *argv[])
 	if (reconfigure_fd > 0) {
 		FD_SET(reconfigure_fd, &active_fd_set);
 		select_max = MAX(select_max, reconfigure_fd);
+	}
+	if (reconfigure_db_fd > 0) {
+		FD_SET(reconfigure_db_fd, &active_fd_set);
+		select_max = MAX(select_max, reconfigure_db_fd);
 	}
 
 	/* Main loop */
@@ -759,10 +796,17 @@ int main(int argc, char *argv[])
 				client_handler_launch(new_sock);
 #endif /* WITH_LIBWRAP */
 			}
-		} else if(reconfigure_fd > 0) {
+		}
+		if(reconfigure_fd > 0) {
 			if(FD_ISSET(reconfigure_fd, &read_fd_set)) {
 				dbg_msg(GGZ_DBG_MISC, "reconfiguration monitor activated");
 				reconfiguration_handle();
+			}
+		}
+		if(reconfigure_db_fd > 0) {
+			if(FD_ISSET(reconfigure_db_fd, &read_fd_set)) {
+				dbg_msg(GGZ_DBG_MISC, "database reconfiguration monitor activated");
+				reconfiguration_db_handle();
 			}
 		}
 	}

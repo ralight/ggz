@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9865 2008-03-22 21:11:56Z josef $
+ * $Id: parse_opt.c 9905 2008-03-30 09:08:09Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -838,6 +838,10 @@ void parse_room_files(void)
 	if(room_info.num_rooms == 0)
 		err_msg_exit("No rooms defined, ggzd unusable");
 
+	/* Enter rooms into the room template table in the database */
+	dbg_msg(GGZ_DBG_CONFIGURATION, "Adding rooms to database.");
+	ggzdb_rooms(rooms, room_info.num_rooms);
+
 	/* Cleanup the r_list */
 	if(r_count < 0)
 		r_count = -r_count;
@@ -848,6 +852,35 @@ void parse_room_files(void)
 		r_list = NULL;
 		r_count = 0;
 	}
+}
+
+
+/* FIXME: combine some aspects with parse_room(), i.e. let it use this function */
+static void parse_room_struct(RoomStruct room)
+{
+	int num;
+
+	/* Allocate a room struct for this room */
+	if(room_info.num_rooms == 0)
+		room_initialize();
+	else
+		room_create_additional();
+	num = room_info.num_rooms - 1;
+
+	rooms[num].room = room.room;
+	rooms[num].name = room.name;
+	rooms[num].description = room.description;
+	rooms[num].max_players = room.max_players;
+	rooms[num].max_tables = room.max_tables;
+	rooms[num].game_type = room.game_type;
+	rooms[num].perms = room.perms;
+
+	rooms[num].players = ggz_malloc(rooms[num].max_players * sizeof(GGZPlayer*));
+	if (rooms[num].max_tables > 0)
+		rooms[num].tables = ggz_malloc(rooms[num].max_tables * sizeof(GGZTable*));
+	else
+		rooms[num].tables = NULL;
+	rooms[num].exec_args = NULL;
 }
 
 
@@ -965,6 +998,8 @@ static void parse_room(char *name, char *dir, int announce)
 		}
 #endif
 		if (exec_args) ggz_free(exec_args);
+	} else {
+		rooms[num].exec_args = NULL;
 	}
 
 	rooms[num].players = ggz_malloc(rooms[num].max_players
@@ -1022,6 +1057,40 @@ void parse_room_change(const char *room)
 	}
 
 	parse_room(roomname, dir, 1);
+}
+
+
+void parse_room_change_db(RoomStruct *dbrooms)
+{
+	int i, j;
+
+	for(j = 0; dbrooms[j].name; j++)
+	{
+		RoomStruct room = dbrooms[j];
+
+		for(i = 1; i < room_info.num_rooms; i++)
+		{
+			if(!strcmp(rooms[i].room, room.room))
+			{
+				if((rooms[i].removal_done) || (rooms[i].removal_pending))
+				{
+					/* shouldn't be reached - see parse_room_change() */
+					dbg_msg(GGZ_DBG_CONFIGURATION, "Ignoring room %s double removal", room.room);
+					return;
+				}
+				else
+				{
+					dbg_msg(GGZ_DBG_CONFIGURATION, "Removing room %s", room.room);
+					room_remove(i);
+					return;
+				}
+			}
+		}
+
+		parse_room_struct(room);
+	}
+
+	ggz_free(dbrooms);
 }
 
 

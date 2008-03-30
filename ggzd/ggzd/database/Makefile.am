@@ -55,5 +55,5 @@ calcrankings_LDFLAGS = $(LIBGGZ_LDFLAGS)
 calcrankings_LDADD = $(LIB_GGZ) $(LIB_DATABASE)
 endif
 
-dist_ggzddata_DATA = ggz.sql mysql_schema.sql
+dist_ggzddata_DATA = ggz.sql mysql_schema.sql upgrade_0.7_0.8.sql
 
