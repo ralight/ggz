@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-hosting-guide.info
-@settitle The GGZ Gaming Zone 0.0.15pre - Hosting Guide
+@settitle The GGZ Gaming Zone 0.99.3 - Hosting Guide
 @c %**end of header
 
 @c Do not remove the comments above - they're needed for TeX!
@@ -27,7 +27,7 @@ gaming portals using GGZ Community are covered as well.
 
 @copying
 This manual is about game development for the GGZ Gaming Zone environment.
-Copyright @copyright{} 2001 - 2007 Josef Spillner
+Copyright @copyright{} 2001 - 2008 Josef Spillner
 @quotation
 Published under the GNU General Public License.
 @end quotation
@@ -37,13 +37,13 @@ Published under the GNU General Public License.
 @c Frontpage ===================================================
 
 @titlepage
-@title The GGZ Gaming Zone 0.0.15pre - Hosting Guide
+@title The GGZ Gaming Zone 0.99.3 - Hosting Guide
 @subtitle Instructions and Recommendations for Server Hosters
 @author GGZ Development Team
 
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2001 - 2007 Josef Spillner.
+Copyright @copyright{} 2001 - 2008 Josef Spillner.
 Published under the GNU General Public License.
 @end titlepage
 
@@ -445,13 +445,12 @@ support to prepare an extended installation including GGZ Community.
 @section Database choices
 
 The GGZ server is able to store its data in various database formats.
-Currently, not only the traditional Berkeley DB format is supported (called db4),
+Currently, not only the traditional Berkeley DB format is supported (called DB4),
 but also SQlite, MySQL and PostgreSQL. The latter ones are more difficult
 to set up, but provide greater flexibility because there exist a lot of
 standard tools to use the data in them.
 In addition, a DBI backend exists which can in turn talk to a variety
 of database installations including PostgreSQL and SQlite.
-GGZ Community uses PostgreSQL, if in doubt this database should be used.
 
 There are three basic database table sets: one for the players (including passwords,
 email addresses, permissions and full name), one for the statistics generated
@@ -460,12 +459,28 @@ tournaments.
 More tables can be created for extended installations. The @b{ggz-community}
 package contains all the necessary SQL schema files in the directory setup/sql.
 
+GGZ Community uses PostgreSQL or MySQL, if in doubt these databases should be used.
+Some of its functionality depends on advanced database features such as stored
+procedures, triggers and notifications which work best with PostgreSQL.
+
+Database functionality is loaded into the GGZ server as plugins. Therefore,
+multiple database backends can be compiled with a command like
+@command{./configure --with-database=db4,pgsql}. The first such backend will be
+loaded as the default plugin. This can be overridden by changing the setting
+DatabaseType in @file{ggzd.conf}. When the first or only such backend is DBI,
+the selection of DatabaseType is mandatory.
+
 @section Embedded databases setup
 
-When using libdb or SQlite, nothing special has to be done.
+When using DB4 or SQlite, nothing special has to be done.
 For explicit support of a certain version number, running configure with
 @command{--with-database=db4} or similar when installing from source is
 sufficient. The server cares about creating and managing the database.
+
+The DB4 databases are stored in ggzd's writeable statedir (usually
+@file{/var/lib/ggzd}). No further configuration in @file{ggzd.conf} is necessary,
+although the setting DatabaseName can be set to the special value @b{memory}
+for DB4 to run the server with volatile databases which are not stored on disk.
 
 @section SQL setup
 
@@ -474,8 +489,7 @@ Instead, SQL databases with remote access from standard tools should
 be used. They are more difficult to set up but way more powerful once
 this is done.
 
-The libdb databases are stored in ggzd's variable datadir (usually
-@file{/var/ggzd}), whereas SQL databases can even be located on other hosts.
+SQL databases can even be located on other hosts.
 To set them up, make sure ggzd has support for them compiled in (using
 @command{--with-database=mysql} or @command{pgsql}), and setup the following
 values in ggzd.conf within the [General] section:
@@ -497,7 +511,7 @@ forgetting the old one, instead of having the old one resent to them.
 The setup of both MySQL and PostgreSQL databases will now be explained
 in detail.
 
-@section MySQL configuration
+@subsection MySQL configuration
 
 If ggzd uses MySQL as its database, most of the necessary data structures are
 initialized automatically, but a database user and the database itself must be
@@ -513,7 +527,7 @@ skip-networking option in @file{my.cnf} must be disabled.
 Note that the MySQL backend is not complete at the moment, as it is not used
 much.
 
-@section PostgreSQL setup
+@subsection PostgreSQL setup
 
 When using PostgreSQL, a dedicated GGZ user and database has to be created.
 From PostgreSQL 7.3 on, the following commands should be used:
@@ -552,12 +566,13 @@ The above information is only meant as a quick setup, not as complete
 documentation. As already mentioned, the SQL files from the @b{ggz-community}
 package should be used eventually.
 
-@section Format
+@section Format of the database tables
 
 The database format of the user table is the same for every configuration.
 Limits on string length or integer number size are more relaxed with the
 SQL database backends, but the limits below should be considered minimum
-guaranteed sizes.
+guaranteed sizes. Have a look at the next section to learn about compatibility
+issues.
 
 @verbatim
 id/user_id: unsigned int (4 bytes), must be unique
@@ -582,6 +597,16 @@ The statistics database generally doesn't need to be changed during its
 lifetime.
 There is a separate description of @command{ggzduedit} in the chapter about
 server tools.
+
+Sometimes, the database schema of the GGZ is changing. Likewise, new versions
+of the database software sometimes introduce on-disk format changes. For DB4,
+performing such upgrades is outside the scope of the GGZ server. Instead, the
+utilities which are part of the software should be used, for example to upgrade
+from DB 4.5 to DB 4.6: @command{db4.5_upgrade; db4.6_upgrade}
+
+If the GGZ schema changes, the server will detect a version number mismatch and
+abort. In the future, upgrade scripts might be provided. In the meantime, a
+manual modification of the tables is required.
 
 @section Integration and synchronization
 
