@@ -11,6 +11,9 @@ Launches an SQL database client to the GGZ database. \fBggz-sql\fR reads
 the configuration file and sets up all connection parameters accordingly,
 requiring as little involvement from the user as possible. In particular,
 it automatically detects whether PostgreSQL or MySQL is being used.
+.LP
+The only optional argument understood by ggz-sql is a configuration file
+for ggzd. If not given, it will use the default file.
 .SH "SEE ALSO"
 .LP
 ggz-config(6)

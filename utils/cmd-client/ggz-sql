@@ -4,25 +4,30 @@
 # Copyright (C) 2007 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
-ggzconfdir=`ggz-config -c`
-confdirs="$ggzconfdir /etc"
+if [ -z $1 ]; then
+	ggzconfdir=`ggz-config -c`
+	confdirs="$ggzconfdir /etc"
 
-unset ggzconfdir
-for confdir in $confdirs; do
-	if [ -d $confdir/ggzd ]; then
-		ggzconfdir=$confdir/ggzd
-		break
+	unset ggzconfdir
+	for confdir in $confdirs; do
+		if [ -d $confdir/ggzd ]; then
+			ggzconfdir=$confdir/ggzd
+			break
+		fi
+	done
+
+	if [ -z $ggzconfdir ]; then
+		echo "Error: GGZ configuration directory not found."
+		exit 1
 	fi
-done
 
-if [ -z $ggzconfdir ]; then
-	echo "Error: GGZ configuration directory not found."
-	exit 1
+	conffile=$ggzconfdir/ggzd.conf
+else
+	conffile=$1
 fi
 
-echo "* Using $ggzconfdir..."
+echo "* Using $conffile..."
 
-conffile=$ggzconfdir/ggzd.conf
 dbhost=`grep ^DatabaseHost $conffile | cut -d "=" -f 2- | tr -d " "`
 dbname=`grep ^DatabaseName $conffile | cut -d "=" -f 2- | tr -d " "`
 dbuser=`grep ^DatabaseUsername $conffile | cut -d "=" -f 2- | tr -d " "`
