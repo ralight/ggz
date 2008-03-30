@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 9911 2008-03-30 12:50:18Z josef $
+ * $Id: game.c 9912 2008-03-30 12:54:38Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -49,6 +49,8 @@ static void game_save(char *fmt, ...);
 // Initializes everything
 void game_init(GGZdMod *ggzdmod) {
 	rvr_game.ggz = ggzdmod;
+	rvr_game.state = RVR_STATE_INIT;
+	rvr_game.turn = EMPTY;
 
 	// Inits random number generator
 	srand(time(0));
@@ -203,8 +205,6 @@ int game_start(void) {
 	// Reset game states
 	rvr_game.black = 2;
 	rvr_game.white = 2;
-	rvr_game.state = RVR_STATE_INIT;
-	rvr_game.turn = EMPTY;
 	for (i = 0; i < 64; i++) {
 		rvr_game.board[i] = EMPTY;
 	}
