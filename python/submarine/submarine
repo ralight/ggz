@@ -6,9 +6,7 @@
 from Numeric import *
 import sys
 import time
-#import random
-#import os, pwd
-#import re
+import random
 
 # FIXME: This game needs 4XPath from 4suite.org (python-xml package)
 import xml.dom.minidom
@@ -46,35 +44,188 @@ class Network:
 		print "ELEMENT", element
 		return element
 
-def nickmessage(name):
+def xmlelement(doc, message, name, value):
+	element = doc.createElement(name)
+	message.appendChild(element)
+	element_text = doc.createTextNode(value)
+	element.appendChild(element_text)
+	return element
+
+def basemessage(type):
 	impl = xml.dom.minidom.getDOMImplementation()
 	doc = impl.createDocument(None, "kmessage", None)
 	message = doc.documentElement
-	msgtype = doc.createElement("msgtype")
-	message.appendChild(msgtype)
-	msgtype_text = doc.createTextNode("2")
-	msgtype.appendChild(msgtype_text)
-	nickname = doc.createElement("nickname")
-	message.appendChild(nickname)
-	nickname_text = doc.createTextNode(name)
-	nickname.appendChild(nickname_text)
+	message.appendChild(xmlelement(doc, message, "msgtype", str(type)))
+	return (doc, message)
+
+def nickmessage(name):
+	doc, message = basemessage(2)
+	message.appendChild(xmlelement(doc, message, "nickname", name))
 	return message
+
+def allshipsset():
+	doc, message = basemessage(3)
+	return message
+
+def aimove(x, y):
+	doc, message = basemessage(4)
+	message.appendChild(xmlelement(doc, message, "fieldx", str(x)))
+	message.appendChild(xmlelement(doc, message, "fieldy", str(y)))
+	return message
+
+def aieval(x, y, result, death):
+	doc, message = basemessage(5)
+	message.appendChild(xmlelement(doc, message, "fieldx", str(x)))
+	message.appendChild(xmlelement(doc, message, "fieldy", str(y)))
+	message.appendChild(xmlelement(doc, message, "fieldstate", str(result)))
+	if death:
+		(xstart, ystart, xstop, ystop) = death
+		message.appendChild(xmlelement(doc, message, "death", "true"))
+		message.appendChild(xmlelement(doc, message, "xstart", str(xstart)))
+		message.appendChild(xmlelement(doc, message, "ystart", str(ystart)))
+		message.appendChild(xmlelement(doc, message, "xstop", str(xstop)))
+		message.appendChild(xmlelement(doc, message, "ystop", str(ystop)))
+	return message
+
+class Board:
+	def __init__(self):
+		self.board = (None)
+		self.board = resize(self.board, (10, 10))
+		self.oppboard = (None)
+		self.oppboard = resize(self.oppboard, (10, 10))
+
+		spareships = []
+		spareships.append(1)
+		spareships.append(2)
+		spareships.append(3)
+		spareships.append(4)
+
+		self.ships = []
+
+		for shiplength in spareships:
+			vertical = random.randint(0, 1)
+			set = False
+			while not set:
+				fits = True
+				w = 0
+				h = 0
+				if vertical:
+					h = 1
+				else:
+					w = 1
+				x = random.randint(0, 9 - w * (shiplength - 1))
+				y = random.randint(0, 9 - h * (shiplength - 1))
+				for i in range(shiplength):
+					if self.board[x + w * i][y + h * i]:
+						fits = False
+				if fits:
+					set = True
+					ship = []
+					for i in range(shiplength):
+						ship.append((x + w * i, y + h * i))
+						self.board[x + w * i][y + h * i] = "ship"
+					self.ships.append(ship)
+
+		print "Ships:", self.ships
+
+	def aimove(self):
+		# Try random move first
+		for i in range(10):
+			 x = random.randint(0, 9)
+			 y = random.randint(0, 9)
+			 if not self.oppboard[x][y]:
+			 	self.oppboard[x][y] = "suspicion"
+			 	return (x, y)
+
+		# Won't work so we take any move
+		# FIXME: we should rather permutate the remaining squares
+		for x in range(10):
+			for y in range(10):
+				if not self.oppboard[x][y]:
+			 		self.oppboard[x][y] = "suspicion"
+					return (x, y)
+
+	def confirm(self, x, y, result):
+		if x < 0 or y < 0 or x > 9 or y > 9:
+			# invalid location
+			# TODO: kbs doesn't support error messages
+			return
+		if not self.oppboard[x][y]:
+			# invalid, since we never issued this explosion
+			# TODO: kbs doesn't support error message
+			return
+		if result == 99:
+			self.oppboard[x][y] = "water"
+		elif result == 1:
+			self.oppboard[x][y] = "shippart"
+
+	def uncover(self, xstart, ystart, xstop, ystop):
+		if xstart < 0 or ystart < 0 or xstart > 9 or ystart > 9:
+			# invalid location
+			# TODO: kbs doesn't support error messages
+			return
+		if xstop < 0 or ystop < 0 or xstop > 9 or ystop > 9:
+			# invalid location
+			# TODO: kbs doesn't support error messages
+			return
+		for x in range(xstart, xstop + 1):
+			for y in range(ystart, ystop + 1):
+				if self.oppboard[x][y] == "shippart":
+					self.oppboard[x][y] = "ship"
+				else:
+					pass
+					# invalid, since we never confirmed here
+
+	def explode(self, x, y):
+		if x < 0 or y < 0 or x > 9 or y > 9:
+			# TODO: kbs doesn't support error messages
+			return (None, None)
+		if not self.board[x][y]:
+			return (99, None)
+		if self.board[x][y] == "ship":
+			self.board[x][y] = "explosion"
+			death = None
+			for ship in self.ships:
+				shipdeath = True
+				for point in ship:
+					(x, y) = point
+					if self.board[x][y] != "explosion":
+						shipdeath = False
+				if shipdeath:
+					(xstart, ystart) = ship[0]
+					(xstop, ystop) = ship[-1]
+					death = (xstart, ystart, xstop, ystop)
+			return (1, death)
+		else:
+			pass
+			# invalid, since we explode an already exploded square
+
+def intxpath(path, message):
+	val = xml.xpath.Evaluate(path, message)
+	return int(val)
+
+def boolxpath(path, message):
+	val = xml.xpath.Evaluate(path, message)
+	return val == "true"
 
 class Submarine:
 	def __init__(self):
 		self.net = None
 		self.messagequeues = [[], []]
+		self.board = Board()
 
 	def setNet(self, net):
 		self.net = net
 
 	def work(self, num, message):
-		print "<= message from", num
+		oppnum = 1 - num
+
+		print "<= message from", num, "to", oppnum
 		print "MESSAGE", message
 
-		mtype = xml.xpath.Evaluate('string(/kmessage/msgtype)', message)
+		mtype = intxpath('string(/kmessage/msgtype)', message)
 		print "TYPE", mtype
-		if mtype == "0":
+		if mtype == 0:
 			# Client module information, handled by GGZ
 			# We drop in the nickname message here
 			seat = ggzdmod.getSeat(num)
@@ -82,45 +233,62 @@ class Submarine:
 			message = nickmessage(name)
 			self.messagequeues[num].append(message)
 			print "*STORE*", name, "for", num
-		elif mtype == "1":
-			# ???
+		elif mtype == 1:
+			# Version mismatch, won't happen with GGZ
 			pass
-		elif mtype == "2":
+		elif mtype == 2:
 			# Nickname, handled by GGZ
 			pass
-		elif mtype == "3":
+		elif mtype == 3:
 			# All ships set
-			pass
-		elif mtype == "4":
+			message = allshipsset()
+			self.messagequeues[oppnum].append(message)
+			(x, y) = self.board.aimove()
+			message = aimove(x, y)
+			self.messagequeues[oppnum].append(message)
+			print "[AI] *STORE* allshipsset and first move for", oppnum
+		elif mtype == 4:
 			# Explosion attempt
-			fieldx = xml.xpath.Evaluate('string(/kmessage/fieldx)', message)
-			fieldy = xml.xpath.Evaluate('string(/kmessage/fieldy)', message)
-		elif mtype == "5":
+			fieldx = intxpath('string(/kmessage/fieldx)', message)
+			fieldy = intxpath('string(/kmessage/fieldy)', message)
+			(result, death) = self.board.explode(fieldx, fieldy)
+			message = aieval(fieldx, fieldy, result, death)
+			self.messagequeues[oppnum].append(message)
+			print "[AI] *STORE* answer to explosion for", oppnum
+			(x, y) = self.board.aimove()
+			message = aimove(x, y)
+			self.messagequeues[oppnum].append(message)
+			print "[AI] *STORE* next move for", oppnum
+		elif mtype == 5:
 			# Explosion answer
-			fieldx = xml.xpath.Evaluate('string(/kmessage/fieldx)', message)
-			fieldy = xml.xpath.Evaluate('string(/kmessage/fieldy)', message)
-			fieldstate = xml.xpath.Evaluate('string(/kmessage/fieldstate)', message)
-			xstart = xml.xpath.Evaluate('string(/kmessage/xstart)', message)
-			ystart = xml.xpath.Evaluate('string(/kmessage/ystart)', message)
-			xstop = xml.xpath.Evaluate('string(/kmessage/xstop)', message)
-			ystop = xml.xpath.Evaluate('string(/kmessage/ystop)', message)
-			death = xml.xpath.Evaluate('string(/kmessage/death)', message)
-			if fieldstate == "1":
-				# hit
-				if death:
-					pass
-				else:
-					pass
-			elif fieldstate == "99":
-				# miss
-				pass
-		elif mtype == "6":
+			fieldx = intxpath('string(/kmessage/fieldx)', message)
+			fieldy = intxpath('string(/kmessage/fieldy)', message)
+			fieldstate = intxpath('string(/kmessage/fieldstate)', message)
+			death = boolxpath('string(/kmessage/death)', message)
+			self.board.confirm(fieldx, fieldy, fieldstate)
+			if death:
+				xstart = intxpath('string(/kmessage/xstart)', message)
+				ystart = intxpath('string(/kmessage/ystart)', message)
+				xstop = intxpath('string(/kmessage/xstop)', message)
+				ystop = intxpath('string(/kmessage/ystop)', message)
+				self.board.uncover(xstart, ystart, xstop, ystop)
+			#if fieldstate == 1:
+			#	# hit
+			#	if death:
+			#		pass
+			#	else:
+			#		pass
+			#elif fieldstate == 99:
+			#	# miss
+			#	pass
+		elif mtype == 6:
 			# Game over
-			ship0 = xml.xpath.Evaluate('string(/kmessage/ship0)', message)
-			ship1 = xml.xpath.Evaluate('string(/kmessage/ship1)', message)
-			ship2 = xml.xpath.Evaluate('string(/kmessage/ship2)', message)
-			ship3 = xml.xpath.Evaluate('string(/kmessage/ship3)', message)
-		elif mtype == "7":
+			sys.exit()
+			#ship0 = xml.xpath.Evaluate('string(/kmessage/ship0)', message)
+			#ship1 = xml.xpath.Evaluate('string(/kmessage/ship1)', message)
+			#ship2 = xml.xpath.Evaluate('string(/kmessage/ship2)', message)
+			#ship3 = xml.xpath.Evaluate('string(/kmessage/ship3)', message)
+		elif mtype == 7:
 			# Play-again
 			pass
 
@@ -128,16 +296,22 @@ class Submarine:
 		if openseats == 0:
 			self.workPending(num)
 			oppseat = ggzdmod.getSeat(1 - num)
-			self.net.init(oppseat[3])
-			print "=> send message to", oppseat
-			self.net.sendxml(message)
+			fd = oppseat[3]
+			if fd != -1:
+				self.net.init(fd)
+				print "=> send message to", oppseat
+				self.net.sendxml(message)
+			else:
+				print "=> opponent is AI player at", oppseat
 		else:
-			print "** freeze for later send"
+			print "** freeze for later send to", num
 			self.messagequeues[num].append(message)
 
+	# num: receiver of any message
+	# 1-num: sender of any message
 	def workPending(self, num):
 		if len(self.messagequeues[1 - num]) > 0:
-			print "** thaw queued messages"
+			print "** thaw queued messages to", num
 			oppseat = ggzdmod.getSeat(num)
 			self.net.init(oppseat[3])
 			for message in self.messagequeues[1 - num]:
@@ -188,8 +362,6 @@ def main():
 
 	print "### launched"
 
-	""" Setup """
-
 	submarine = Submarine()
 
 	print "### go init ggz"
@@ -201,11 +373,6 @@ def main():
 
 	ggzdmod.connect()
 	ggzdmod.mainLoop()
-
-	""" Main loop """
-
-	while 1:
-		pass
 
 if __name__ == "__main__":
 	main()

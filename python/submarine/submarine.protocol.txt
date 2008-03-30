@@ -1,3 +1,6 @@
+Squares: 10x10 (ranging from (0, 0) to (9, 9))
+
+
 54321 -> 46791
 
 <!DOCTYPE kmessage>
@@ -84,10 +87,12 @@ Spielende:
 <!DOCTYPE kmessage>
 <kmessage>
   <msgtype>6</msgtype>
+  <!--
   <ship1>1 4 1</ship1>
   <ship2>2 7 1</ship2>
   <ship0>3 1 1</ship0>
   <ship3>4 4 1</ship3>
+  -->
 </kmessage>
 
 Noch ein Spiel:
