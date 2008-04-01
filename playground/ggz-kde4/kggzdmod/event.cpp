@@ -16,6 +16,10 @@ Event::Type Event::type() const
 	return m_type;
 }
 
+void Event::init(EventPrivate *x)
+{
+}
+
 StateEvent::StateEvent(const Event& event) : Event(Event::state)
 {
 	//data = event.data;

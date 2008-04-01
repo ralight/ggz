@@ -3,11 +3,11 @@ TARGET = kggzdmod
 
 QT -= gui
 
-INCLUDEPATH += /home/josef/kde/installation/include
-INCLUDEPATH += /home/josef/ggz/installation/include
+INCLUDEPATH += /home/josef/sys/kde4/include
+INCLUDEPATH += /home/josef/sys/include
 INCLUDEPATH += ..
-LIBS += -L/home/josef/kde/installation/lib
-LIBS += -L/home/josef/ggz/installation/lib
+LIBS += -L/home/josef/sys/kde4/lib
+LIBS += -L/home/josef/sys/lib
 LIBS += -lkdecore
 LIBS += -lggzdmod
 
