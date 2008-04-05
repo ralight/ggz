@@ -1,6 +1,3 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8831 2007-01-05 00:51:25Z jdorje $
-
 ggzwrap_dirs = ggzwrap ggz-wrapper
 if COND_GGZWRAP
 ggzwrap_subdirs = ggzwrap ggz-wrapper
@@ -15,3 +12,5 @@ EXTRA_DIST = README.GGZ QuickStart.GGZ indent.pro
 
 ACLOCAL_AMFLAGS = -I m4 -I m4/ggz
 
+pkgconfigdir = $(datadir)/pkgconfig
+pkgconfig_DATA = ggzmod.pc ggzcore.pc

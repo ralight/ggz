@@ -268,6 +268,7 @@ AC_CONFIG_FILES([Makefile
 	game_servers/widelands/Makefile
 	man/Makefile
 	tests/Makefile
+	ggzdmod.pc
 ])
 #AC_CONFIG_COMMANDS([default],[[]],[[]])
 AC_OUTPUT

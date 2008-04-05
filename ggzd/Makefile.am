@@ -14,3 +14,6 @@ EXTRA_DIST = README.GGZ m4/test.mk
 include $(top_srcdir)/m4/test.mk
 
 ACLOCAL_AMFLAGS = -I m4 -I m4/ggz
+
+pkgconfigdir = $(datadir)/pkgconfig
+pkgconfig_DATA = ggzdmod.pc

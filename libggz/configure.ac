@@ -37,6 +37,7 @@ AC_CONFIG_FILES([
   src/security/Makefile
   tests/Makefile
   man/Makefile
+  libggz.pc
 ])
 AC_OUTPUT
 

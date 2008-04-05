@@ -1,0 +1,14 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+#datarootdir=${prefix}/share
+#datadir=${datarootdir}
+sysconfdir=@sysconfdir@
+
+Name: ggzdmod
+Description: GGZ Gaming Zone: Game server library for development in C.
+Version: @VERSION@
+Requires: libggz
+Cflags: -I${includedir}
+Libs: -L${libdir} -lggzdmod

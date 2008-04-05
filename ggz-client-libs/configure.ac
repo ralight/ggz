@@ -151,7 +151,9 @@ AC_CONFIG_FILES([Makefile
 	   po/Makefile
 	   po/ggzcore/Makefile
 	   po/ggz-config/Makefile
-	   ])
+	   ggzmod.pc
+	   ggzcore.pc
+])
 AC_OUTPUT
 
 
