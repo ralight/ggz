@@ -19,6 +19,12 @@ Then run ggzbuild in the current GGZ SVN module directory
 It will run autogen.sh, configure etc. automatically
 """
 
+reset = "\x1b[39;49;00m"
+red = "\x1b[31m"
+
+def out(s):
+	print red + s + reset
+
 def readconfig(configfile):
 	if not configfile:
 		configfile = os.getenv("HOME") + "/.ggzbuildrc"
@@ -26,7 +32,7 @@ def readconfig(configfile):
 	try:
 		conf = open(configfile)
 	except:
-		print "Create ~/.ggzbuildrc first (might be empty)!"
+		out("Create ~/.ggzbuildrc first (might be empty)!")
 		sys.exit(1)
 	lines = conf.readlines()
 	conf.close()
@@ -47,51 +53,65 @@ def readconfig(configfile):
 
 	return config
 
-def build(module, config, install):
-	print "GGZBUILD: module =", module
+def build(module, config, install, srcdir):
+	out("GGZBUILD: module = " + module)
 
 	args = config.setdefault(module, "")
 	args += " " + config.setdefault("GLOBAL", "")
 
-	if not os.path.exists("configure"):
-		cmd = "./autogen.sh " + args
+	if not os.path.exists(srcdir + "/configure"):
+		cmd = srcdir + "/autogen.sh " + args
 	else:
-		cmd = "./configure " + args
+		cmd = srcdir + "/configure " + args
 
-	print "GGZBUILD: options =", args
+	out("GGZBUILD: options = " + args)
 	ec = os.system(cmd)
 	if ec:
-		print "GGZBUILD: configure error"
+		out("GGZBUILD: configure error")
 		sys.exit(ec)
 
 	if install:
 		ec = os.system("make")
 		if ec:
-			print "GGZBUILD: make error"
+			out("GGZBUILD: make error")
 			sys.exit(ec)
 		ec = os.system("make install")
 		if ec:
-			print "GGZBUILD: make install error"
+			out("GGZBUILD: make install error")
 			sys.exit(ec)
 
 configfile = None
 if len(sys.argv) == 2:
 	if sys.argv[1] == "--help":
-		print "Syntax: ggzbuild [<~/.ggzbuildrc>]"
+		out("Syntax: ggzbuild [<~/.ggzbuildrc>]")
 		sys.exit(0)
 	configfile = sys.argv[1]
 config = readconfig(configfile)
 
-if os.path.exists("libggz") and os.path.exists("ggz-client-libs"):
-	print "GGZBUILD: global invocation"
+if config.has_key("SOURCEDIR"):
+	srcdir = config["SOURCEDIR"]
+else:
+	srcdir = "."
+
+if os.path.exists(srcdir + "/libggz") and os.path.exists(srcdir + "/ggz-client-libs"):
+	out("GGZBUILD: global invocation")
+
+	install = True
+	if os.getenv("NOCONFIGURE"):
+		install = False
 
 	#dirs = glob.glob("*")
 	dirs = config["MODULES"]
 	for module in dirs.split(" "):
+		if srcdir != ".":
+			os.mkdir(module)
+			xsrcdir = srcdir + "/" + module
+		else:
+			xsrcdir = "."
 		os.chdir(module)
-		build(module, config, True)
+		build(module, config, install, xsrcdir)
 		os.chdir("..")
 else:
 	module = os.getcwd().split("/")[-1]
-	build(module, config, False)
+	build(module, config, False, srcdir)
 
