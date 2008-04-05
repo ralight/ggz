@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 9905 2008-03-30 09:08:09Z josef $
+ * $Id: control.c 9924 2008-04-05 06:43:10Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -521,14 +521,14 @@ static void reconfiguration_handle(void)
 				log_msg(GGZ_LOG_NOTICE,
 					"Reconfiguration: room addition %s",
 					filename);
-				parse_room_change(filename);
+				parse_room_change(filename, 1);
 			}
 			else if(ev.mask == IN_DELETE)
 			{
 				log_msg(GGZ_LOG_NOTICE,
 					"Reconfiguration: room deletion %s",
 					filename);
-				parse_room_change(filename);
+				parse_room_change(filename, 0);
 			}
 			else
 			{
@@ -560,13 +560,13 @@ static void reconfiguration_handle(void)
 		{
 			log_msg(GGZ_LOG_NOTICE, "Reconfiguration: room addition %s",
 				fe.filename);
-			parse_room_change(fe.filename);
+			parse_room_change(fe.filename, 1);
 		}
 		else if(fe.code == FAMDeleted)
 		{
 			log_msg(GGZ_LOG_NOTICE, "Reconfiguration: room removal %s",
 				fe.filename);
-			parse_room_change(fe.filename);
+			parse_room_change(fe.filename, 0);
 		}
 		else
 		{

@@ -37,6 +37,6 @@ void parse_game_files(void);
 void parse_room_files(void);
 
 /* Dynamic room reconfiguration */
-void parse_room_change(const char *room);
+void parse_room_change(const char *room, int addition);
 void parse_room_change_db(RoomStruct *rooms);
 

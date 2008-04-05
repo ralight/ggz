@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9905 2008-03-30 09:08:09Z josef $
+ * $Id: parse_opt.c 9924 2008-04-05 06:43:10Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -1016,7 +1016,7 @@ static void parse_room(char *name, char *dir, int announce)
 }
 
 
-void parse_room_change(const char *room)
+void parse_room_change(const char *room, int addition)
 {
 	const char *suffix = "/rooms/";
 	char dir[strlen(opt.conf_dir) + strlen(suffix) + 1];
@@ -1051,7 +1051,8 @@ void parse_room_change(const char *room)
 			{
 				dbg_msg(GGZ_DBG_CONFIGURATION, "Removing room %s", roomname);
 				room_remove(i);
-				return;
+				if(!addition)
+					return;
 			}
 		}
 	}
