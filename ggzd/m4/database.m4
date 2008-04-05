@@ -242,6 +242,10 @@ AC_DEFUN([AC_GGZ_DATABASE_DB4],
 		AC_MSG_ERROR([cannot configure db4 (libdb4 needed)])
 	fi
 
+	if test "$database" = "db4" && test "$db4inc" = ""; then
+		database="yes"
+	fi
+
 	dnl Setup variables
 
 	if test "$database" = "db4"; then

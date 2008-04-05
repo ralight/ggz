@@ -16,7 +16,7 @@ EXTRA_DIST = ggzdb_proto.h
 ggzdbdir = $(libdir)/ggzd/database
 ggzdb_LTLIBRARIES =
 
-AM_CPPFLAGS = $(DATABASE_INCLUDES) -I$(top_srcdir)/ggzd $(LIBGGZ_INCLUDES)
+AM_CPPFLAGS = $(DATABASE_INCLUDES) -I$(top_srcdir)/ggzd -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
 
 if GGZDB_SQLITE
 libggzdb_sqlite_la_SOURCES = ggzdb_sqlite.c
