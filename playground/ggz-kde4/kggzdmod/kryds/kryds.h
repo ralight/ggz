@@ -18,7 +18,13 @@ class Kryds : public QObject
 	private slots:
  		void slotEvent(const KGGZdMod::Event& event);
 	private:
+		void nextPlayer();
+		void detectGameOver();
+
 		KGGZdMod::Module *m_module;
+		bool m_started;
+		int m_turn;
+		int m_board[9];
 };
 
 #endif
