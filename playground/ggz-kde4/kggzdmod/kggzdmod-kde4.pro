@@ -3,6 +3,8 @@ TARGET = kggzdmod
 
 QT -= gui
 
+CONFIG += debug
+
 INCLUDEPATH += /home/josef/sys/kde4/include
 INCLUDEPATH += /home/josef/sys/include
 INCLUDEPATH += ..

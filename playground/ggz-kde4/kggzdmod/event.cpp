@@ -18,6 +18,7 @@ Event::Type Event::type() const
 
 void Event::init(EventPrivate *x)
 {
+	Q_UNUSED(x);
 }
 
 StateEvent::StateEvent(const Event& event) : Event(Event::state)

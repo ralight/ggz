@@ -17,6 +17,8 @@ static ModulePrivate *s_private = NULL;
 
 void ModulePrivate::ggzdmod_handler(GGZdMod *mod, GGZdModEvent event, const void *data)
 {
+	kDebug() << "[kggzdmod] Event" << event;
+
 	if(event == GGZDMOD_EVENT_STATE)
 	{
 		GGZdModState oldstate;
@@ -62,6 +64,14 @@ void ModulePrivate::ggzdmod_handler(GGZdMod *mod, GGZdModEvent event, const void
 
 		s_private->signalEvent(e);
 	}
+	else if(event == GGZDMOD_EVENT_JOIN)
+	{
+		// FIXME
+	}
+	else if(event == GGZDMOD_EVENT_LEAVE)
+	{
+		// FIXME
+	}
 	else if(event == GGZDMOD_EVENT_SPECTATOR_SEAT)
 	{
 		GGZSpectator oldspectator;
@@ -90,6 +100,14 @@ void ModulePrivate::ggzdmod_handler(GGZdMod *mod, GGZdModEvent event, const void
 		e.init(ep);
 
 		s_private->signalEvent(e);
+	}
+	else if(event == GGZDMOD_EVENT_SPECTATOR_JOIN)
+	{
+		// FIXME
+	}
+	else if(event == GGZDMOD_EVENT_SPECTATOR_LEAVE)
+	{
+		// FIXME
 	}
 	else if(event == GGZDMOD_EVENT_PLAYER_DATA)
 	{
@@ -133,6 +151,10 @@ void ModulePrivate::ggzdmod_handler(GGZdMod *mod, GGZdModEvent event, const void
 
 		s_private->signalEvent(e);
 	}
+	else if(event == GGZDMOD_EVENT_SAVEDGAME)
+	{
+		// FIXME
+	}
 	else if(event == GGZDMOD_EVENT_ERROR)
 	{
 		QString message((char*)data);
@@ -146,7 +168,7 @@ void ModulePrivate::ggzdmod_handler(GGZdMod *mod, GGZdModEvent event, const void
 	}
 	else
 	{
-		kError() << "[kggzdmod] Unknown event from ggzdmod!" << endl;
+		kError() << "[kggzdmod] Unknown event from ggzdmod!";
 	}
 }
 
@@ -202,11 +224,11 @@ void ModulePrivate::sendRequest(Request request)
 {
 	if(!s_ggzdmod)
 	{
-		kDebug() << "[kggzdmod] error: not connected" << endl;
+		kDebug() << "[kggzdmod] error: not connected";
 		return;
 	}
 
-	kDebug() << "[kggzdmod] debug: send a request" << endl;
+	kDebug() << "[kggzdmod] debug: send a request";
 
 	Request::Type requesttype = request.type();
 
@@ -229,7 +251,7 @@ void ModulePrivate::slotGGZEvent()
 	int eventtype;
 	QList<Player*>::Iterator it;
 
-	kDebug() << "[kggzdmod] debug: input from GGZ has arrived" << endl;
+	kDebug() << "[kggzdmod] debug: input from GGZ has arrived";
 
 	if(eventtype == Event::state)
 	{
@@ -255,28 +277,33 @@ void ModulePrivate::slotGGZEvent()
 
 void ModulePrivate::connect()
 {
-	kDebug() << "[kggzdmod] debug: connect() to GGZ" << endl;
+	kDebug() << "[kggzdmod] debug: connect() to GGZ";
 
 	s_ggzdmod = ggzdmod_new(GGZDMOD_GAME);
 	int ret = ggzdmod_connect(s_ggzdmod);
 	if(ret)
 	{
-		kError() << "[kggzdmod] Could not connect to GGZ!" << endl;
+		kError() << "[kggzdmod] Could not connect to GGZ!";
 		ggzdmod_free(s_ggzdmod);
 		s_ggzdmod = NULL;
 		return;
 	}
 
 	ggzdmod_set_handler(s_ggzdmod, GGZDMOD_EVENT_STATE, &ggzdmod_handler);
+	ggzdmod_set_handler(s_ggzdmod, GGZDMOD_EVENT_JOIN, &ggzdmod_handler);
+	ggzdmod_set_handler(s_ggzdmod, GGZDMOD_EVENT_LEAVE, &ggzdmod_handler);
 	ggzdmod_set_handler(s_ggzdmod, GGZDMOD_EVENT_SEAT, &ggzdmod_handler);
+	ggzdmod_set_handler(s_ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN, &ggzdmod_handler);
+	ggzdmod_set_handler(s_ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, &ggzdmod_handler);
 	ggzdmod_set_handler(s_ggzdmod, GGZDMOD_EVENT_SPECTATOR_SEAT, &ggzdmod_handler);
 	ggzdmod_set_handler(s_ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, &ggzdmod_handler);
 	ggzdmod_set_handler(s_ggzdmod, GGZDMOD_EVENT_SPECTATOR_DATA, &ggzdmod_handler);
+	ggzdmod_set_handler(s_ggzdmod, GGZDMOD_EVENT_SAVEDGAME, &ggzdmod_handler);
 	ggzdmod_set_handler(s_ggzdmod, GGZDMOD_EVENT_ERROR, &ggzdmod_handler);
 
-	kDebug() << "[kggzdmod] debug: connect() is finished" << endl;
+	kDebug() << "[kggzdmod] debug: connect() is finished";
 
-	kDebug() << "[kggzdmod] debug: now LOOP because we don't do async ops yet..." << endl;
+	kDebug() << "[kggzdmod] debug: now LOOP because we don't do async ops yet...";
 
 	ggzdmod_loop(s_ggzdmod);
 }
@@ -286,7 +313,7 @@ void ModulePrivate::disconnect()
 	int ret = ggzdmod_disconnect(s_ggzdmod);
 	if(ret)
 	{
-		kError() << "[kggzdmod] Could not disconnect from GGZ!" << endl;
+		kError() << "[kggzdmod] Could not disconnect from GGZ!";
 	}
 	ggzdmod_free(s_ggzdmod);
 	s_ggzdmod = NULL;
