@@ -87,7 +87,7 @@ void ModulePrivate::handler(GGZdMod *mod, GGZdModEvent event, const void *data)
 		ep->m_oldstate = (Module::State)oldstate;
 		e.init(ep);
 
-		s_private->signalEvent(e);
+		emit signalEvent(e);
 	}
 	else if((event == GGZDMOD_EVENT_SEAT)
 	|| (event == GGZDMOD_EVENT_JOIN)
@@ -118,7 +118,7 @@ void ModulePrivate::handler(GGZdMod *mod, GGZdModEvent event, const void *data)
 		ep->m_oldseat = oldplayer;
 		e.init(ep);
 
-		s_private->signalEvent(e);
+		emit signalEvent(e);
 	}
 	else if((event == GGZDMOD_EVENT_SPECTATOR_SEAT)
 	|| (event == GGZDMOD_EVENT_SPECTATOR_JOIN)
@@ -149,7 +149,7 @@ void ModulePrivate::handler(GGZdMod *mod, GGZdModEvent event, const void *data)
 		ep->m_oldspectatorseat = oldplayer;
 		e.init(ep);
 
-		s_private->signalEvent(e);
+		emit signalEvent(e);
 	}
 	else if(event == GGZDMOD_EVENT_PLAYER_DATA)
 	{
@@ -170,7 +170,7 @@ void ModulePrivate::handler(GGZdMod *mod, GGZdModEvent event, const void *data)
 		ep->m_seat = player;
 		e.init(ep);
 
-		s_private->signalEvent(e);
+		emit signalEvent(e);
 	}
 	else if(event == GGZDMOD_EVENT_SPECTATOR_DATA)
 	{
@@ -191,7 +191,7 @@ void ModulePrivate::handler(GGZdMod *mod, GGZdModEvent event, const void *data)
 		ep->m_spectatorseat = player;
 		e.init(ep);
 
-		s_private->signalEvent(e);
+		emit signalEvent(e);
 	}
 	else if(event == GGZDMOD_EVENT_SAVEDGAME)
 	{
@@ -202,7 +202,7 @@ void ModulePrivate::handler(GGZdMod *mod, GGZdModEvent event, const void *data)
 		ep->m_savegame = savegame;
 		e.init(ep);
 
-		s_private->signalEvent(e);
+		emit signalEvent(e);
 	}
 	else if(event == GGZDMOD_EVENT_ERROR)
 	{
@@ -213,7 +213,7 @@ void ModulePrivate::handler(GGZdMod *mod, GGZdModEvent event, const void *data)
 		ep->m_message = message;
 		e.init(ep);
 
-		s_private->signalEvent(e);
+		emit signalEvent(e);
 	}
 	else
 	{
@@ -247,35 +247,6 @@ void ModulePrivate::sendRequest(Request request)
 	}
 }
 
-void ModulePrivate::slotGGZEvent()
-{
-	int eventtype;
-	QList<Player*>::Iterator it;
-
-	kDebug() << "[kggzdmod] debug: input from GGZ has arrived";
-
-	if(eventtype == Event::state)
-	{
-		Event e(Event::state);
-		emit signalEvent(e);
-	}
-	if(eventtype == Event::playerseat)
-	{
-	}
-	if(eventtype == Event::spectatorseat)
-	{
-	}
-	if(eventtype == Event::playerdata)
-	{
-	}
-	if(eventtype == Event::spectatordata)
-	{
-	}
-	if(eventtype == Event::error)
-	{
-	}
-}
-
 void ModulePrivate::connect()
 {
 	kDebug() << "[kggzdmod] debug: connect() to GGZ";
@@ -305,7 +276,10 @@ void ModulePrivate::connect()
 	kDebug() << "[kggzdmod] debug: connect() is finished";
 
 	kDebug() << "[kggzdmod] debug: now LOOP because we don't do async ops yet...";
+}
 
+void Module::loop()
+{
 	ggzdmod_loop(s_ggzdmod);
 }
 

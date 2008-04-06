@@ -18,7 +18,8 @@ Event::Type Event::type() const
 
 void Event::init(EventPrivate *x)
 {
-	Q_UNUSED(x);
+	delete d;
+	d = x;
 }
 
 StateEvent::StateEvent(const Event& event) : Event(Event::state)

@@ -39,7 +39,7 @@ class Event;
  *
  * Any game server intended to run on GGZ should instantiate exactly
  * one object of this class and connect its signals to the game
- * protocol handler.
+ * protocol handler, and afterwards call \ref loop().
  * Messages from the game clients are reported through \ref signalEvent,
  * as are other kinds of events.
  * Network input can either lead to a networking routine within the game
@@ -98,6 +98,14 @@ class Module : public QObject
 		 * @param request The request to the GGZ server
 		 */
 		void sendRequest(Request request);
+
+		/**
+		 * Enters the main loop
+		 *
+		 * This method must be called after a module object has been instantiated
+		 * and its signals have been connected to slots.
+		 */
+		void loop();
 
 		/**
 		 * Returns the list of seats on the table.

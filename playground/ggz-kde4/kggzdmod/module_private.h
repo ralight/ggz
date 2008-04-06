@@ -31,9 +31,6 @@ class ModulePrivate : public QObject
 		int m_playerseats;
 		int m_spectatorseats;
 
-	public slots:
-		void slotGGZEvent();
-
 	signals:
 		void signalEvent(const KGGZdMod::Event& event);
 
