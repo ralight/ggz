@@ -20,7 +20,8 @@ class ModulePrivate : public QObject
 		void connect();
 		void disconnect();
 		void sendRequest(Request request);
-		void insertPlayer(Player::Type seattype, QString name, int seat);
+		void insertPlayer(PlayerPrivate player);
+		void removePlayer(PlayerPrivate player);
 		Player *findPlayer(Player::Type seattype, QString name);
 
 		QString m_name;

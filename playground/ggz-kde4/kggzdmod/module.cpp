@@ -87,6 +87,23 @@ void ModulePrivate::handler(GGZdMod *mod, GGZdModEvent event, const void *data)
 		ep->m_oldstate = (Module::State)oldstate;
 		e.init(ep);
 
+		if(oldstate == GGZDMOD_STATE_CREATED)
+		{
+			kDebug() << "** insert" << ggzdmod_get_num_seats(mod) << "seats...";
+			// FIXME: work around ggzdmod not reporting initial bot joins
+			for(int i = 0; i < ggzdmod_get_num_seats(mod); i++)
+			{
+				GGZSeat seat = ggzdmod_get_seat(mod, i);
+				PlayerPrivate player;
+				player.m_type = (Player::Type)seat.type;
+				player.m_name = QString(seat.name);
+				player.m_seat = seat.num;
+				player.m_fd = seat.fd;
+				insertPlayer(player);
+				kDebug() << "** type" << player.m_type;
+			}
+		}
+
 		emit signalEvent(e);
 	}
 	else if((event == GGZDMOD_EVENT_SEAT)
@@ -107,16 +124,19 @@ void ModulePrivate::handler(GGZdMod *mod, GGZdModEvent event, const void *data)
 		player.m_seat = seat.num;
 		player.m_fd = seat.fd;
 
-		oldplayer.m_type = (Player::Type)seat.type;
-		oldplayer.m_name = QString(seat.name);
-		oldplayer.m_seat = seat.num;
-		oldplayer.m_fd = seat.fd;
+		oldplayer.m_type = (Player::Type)oldseat.type;
+		oldplayer.m_name = QString(oldseat.name);
+		oldplayer.m_seat = oldseat.num;
+		oldplayer.m_fd = oldseat.fd;
 
 		Event e(Event::playerseat);
 		EventPrivate *ep = new EventPrivate();
 		ep->m_seat = player;
 		ep->m_oldseat = oldplayer;
 		e.init(ep);
+
+		removePlayer(oldplayer);
+		insertPlayer(player);
 
 		emit signalEvent(e);
 	}
@@ -139,15 +159,18 @@ void ModulePrivate::handler(GGZdMod *mod, GGZdModEvent event, const void *data)
 		player.m_fd = spectator.fd;
 
 		oldplayer.m_type = Player::spectator;
-		oldplayer.m_name = QString(spectator.name);
-		oldplayer.m_seat = spectator.num;
-		oldplayer.m_fd = spectator.fd;
+		oldplayer.m_name = QString(oldspectator.name);
+		oldplayer.m_seat = oldspectator.num;
+		oldplayer.m_fd = oldspectator.fd;
 
 		Event e(Event::spectatorseat);
 		EventPrivate *ep = new EventPrivate();
 		ep->m_spectatorseat = player;
 		ep->m_oldspectatorseat = oldplayer;
 		e.init(ep);
+
+		removePlayer(oldplayer);
+		insertPlayer(player);
 
 		emit signalEvent(e);
 	}
@@ -294,6 +317,7 @@ void ModulePrivate::disconnect()
 	s_ggzdmod = NULL;
 }
 
+// FIXME: should maybe propagate wrapper to Module class, currently only used internally
 Player* ModulePrivate::findPlayer(Player::Type seattype, QString name)
 {
 	QList<Player*>::Iterator it;
@@ -322,40 +346,58 @@ Player* ModulePrivate::findPlayer(Player::Type seattype, QString name)
 	return 0;
 }
 
-void ModulePrivate::insertPlayer(Player::Type seattype, QString name, int seat)
+void ModulePrivate::removePlayer(PlayerPrivate player)
 {
 	QList<Player*>::Iterator it;
 
-	Player *p = new Player();
-	PlayerPrivate *ppriv = new PlayerPrivate();
-	ppriv->m_type = seattype;
-	ppriv->m_name = name;
-	ppriv->m_seat = seat;
-	ppriv->m_fd = -1;
-	p->init(ppriv);
-
-	if(seattype == Player::spectator)
+	if(player.m_type == Player::spectator)
 	{
 		for(it = m_spectators.begin(); it != m_spectators.end(); it++)
 		{
-			if((*it)->name() == p->name())
+			if((*it)->name() == player.m_name)
 			{
+				kDebug() << "** remove spectator at #" << player.m_seat;
+				delete (*it);
 				it = m_spectators.erase(it);
 				break;
 			}
 		}
-		m_spectators.append(p);
 	}
 	else
 	{
 		for(it = m_players.begin(); it != m_players.end(); it++)
 		{
-			if((*it)->name() == p->name())
+			if((*it)->name() == player.m_name)
 			{
+				kDebug() << "** remove player at #" << player.m_seat;
+				delete (*it);
 				it = m_players.erase(it);
 				break;
 			}
 		}
+	}
+}
+
+void ModulePrivate::insertPlayer(PlayerPrivate player)
+{
+	QList<Player*>::Iterator it;
+
+	Player *p = new Player();
+	PlayerPrivate *ppriv = new PlayerPrivate();
+	ppriv->m_type = player.m_type;
+	ppriv->m_name = player.m_name;
+	ppriv->m_seat = player.m_seat;
+	ppriv->m_fd = player.m_fd;
+	p->init(ppriv);
+
+	if(player.m_type == Player::spectator)
+	{
+		kDebug() << "** insert spectator at #" << player.m_seat;
+		m_spectators.append(p);
+	}
+	else
+	{
+		kDebug() << "** insert player at #" << player.m_seat;
 		m_players.append(p);
 	}
 }
