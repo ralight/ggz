@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 9731 2008-02-16 11:43:13Z josef $
+ * $Id: main.c 9932 2008-04-06 13:32:27Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -206,7 +206,8 @@ void receive_gameover(char winner)
 		game_status(_("Tie game!"));
 		break;
 	default:
-		assert(0);
+		game_status(_("Protocol error!"));
+		game.state = STATE_DONE;
 		break;
 	}
 }
