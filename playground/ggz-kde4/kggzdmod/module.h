@@ -85,7 +85,8 @@ class Module : public QObject
 			created,	/**< The initial state. */
 			waiting,	/**< The connection to the GGZ server has been established. */
 			playing,	/**< The game server is now playing. */
-			done		/**< The game is over. */
+			done,		/**< The game is over. */
+			restored	/**< A savegame is being restored. */
 		};
 
 		/**

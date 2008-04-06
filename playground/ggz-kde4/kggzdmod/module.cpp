@@ -17,6 +17,60 @@ static ModulePrivate *s_private = NULL;
 
 void ModulePrivate::ggzdmod_handler(GGZdMod *mod, GGZdModEvent event, const void *data)
 {
+	s_private->handler(mod, event, data);
+}
+
+Module::Module(QString name)
+: QObject()
+{
+	s_module = this;
+
+	d = new ModulePrivate();
+	s_private = d;
+
+	d->m_name = name;
+
+	d->m_state = created;
+
+	d->m_playerseats = 0;
+	d->m_spectatorseats = 0;
+
+	connect(d, SIGNAL(signalEvent(const KGGZdMod::Event&)), this, SIGNAL(signalEvent(const KGGZdMod::Event&)));
+
+	d->connect();
+}
+
+Module::~Module()
+{
+	d->disconnect();
+	delete d;
+
+	delete s_module;
+	s_module = NULL;
+}
+
+void Module::sendRequest(Request request)
+{
+	d->sendRequest(request);
+}
+
+QList<Player*> Module::players() const
+{
+	return d->m_players;
+}
+
+QList<Player*> Module::spectators() const
+{
+	return d->m_spectators;
+}
+
+Module::State Module::state() const
+{
+	return d->m_state;
+}
+
+void ModulePrivate::handler(GGZdMod *mod, GGZdModEvent event, const void *data)
+{
 	kDebug() << "[kggzdmod] Event" << event;
 
 	if(event == GGZDMOD_EVENT_STATE)
@@ -35,7 +89,9 @@ void ModulePrivate::ggzdmod_handler(GGZdMod *mod, GGZdModEvent event, const void
 
 		s_private->signalEvent(e);
 	}
-	else if(event == GGZDMOD_EVENT_SEAT)
+	else if((event == GGZDMOD_EVENT_SEAT)
+	|| (event == GGZDMOD_EVENT_JOIN)
+	|| (event == GGZDMOD_EVENT_LEAVE))
 	{
 		GGZSeat oldseat;
 		GGZSeat seat;
@@ -64,15 +120,9 @@ void ModulePrivate::ggzdmod_handler(GGZdMod *mod, GGZdModEvent event, const void
 
 		s_private->signalEvent(e);
 	}
-	else if(event == GGZDMOD_EVENT_JOIN)
-	{
-		// FIXME
-	}
-	else if(event == GGZDMOD_EVENT_LEAVE)
-	{
-		// FIXME
-	}
-	else if(event == GGZDMOD_EVENT_SPECTATOR_SEAT)
+	else if((event == GGZDMOD_EVENT_SPECTATOR_SEAT)
+	|| (event == GGZDMOD_EVENT_SPECTATOR_JOIN)
+	|| (event == GGZDMOD_EVENT_SPECTATOR_LEAVE))
 	{
 		GGZSpectator oldspectator;
 		GGZSpectator spectator;
@@ -100,14 +150,6 @@ void ModulePrivate::ggzdmod_handler(GGZdMod *mod, GGZdModEvent event, const void
 		e.init(ep);
 
 		s_private->signalEvent(e);
-	}
-	else if(event == GGZDMOD_EVENT_SPECTATOR_JOIN)
-	{
-		// FIXME
-	}
-	else if(event == GGZDMOD_EVENT_SPECTATOR_LEAVE)
-	{
-		// FIXME
 	}
 	else if(event == GGZDMOD_EVENT_PLAYER_DATA)
 	{
@@ -153,7 +195,14 @@ void ModulePrivate::ggzdmod_handler(GGZdMod *mod, GGZdModEvent event, const void
 	}
 	else if(event == GGZDMOD_EVENT_SAVEDGAME)
 	{
-		// FIXME
+		QString savegame = (const char*)data;
+
+		Event e(Event::savegame);
+		EventPrivate *ep = new EventPrivate();
+		ep->m_savegame = savegame;
+		e.init(ep);
+
+		s_private->signalEvent(e);
 	}
 	else if(event == GGZDMOD_EVENT_ERROR)
 	{
@@ -170,54 +219,6 @@ void ModulePrivate::ggzdmod_handler(GGZdMod *mod, GGZdModEvent event, const void
 	{
 		kError() << "[kggzdmod] Unknown event from ggzdmod!";
 	}
-}
-
-Module::Module(QString name)
-: QObject()
-{
-	s_module = this;
-
-	d = new ModulePrivate();
-	s_private = d;
-
-	d->m_name = name;
-
-	d->m_state = created;
-
-	d->m_playerseats = 0;
-	d->m_spectatorseats = 0;
-
-	connect(d, SIGNAL(signalEvent(const KGGZdMod::Event&)), this, SIGNAL(signalEvent(const KGGZdMod::Event&)));
-
-	d->connect();
-}
-
-Module::~Module()
-{
-	d->disconnect();
-	delete d;
-
-	delete s_module;
-}
-
-void Module::sendRequest(Request request)
-{
-	d->sendRequest(request);
-}
-
-QList<Player*> Module::players() const
-{
-	return d->m_players;
-}
-
-QList<Player*> Module::spectators() const
-{
-	return d->m_spectators;
-}
-
-Module::State Module::state() const
-{
-	return d->m_state;
 }
 
 void ModulePrivate::sendRequest(Request request)

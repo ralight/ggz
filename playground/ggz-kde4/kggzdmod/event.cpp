@@ -143,6 +143,18 @@ SpectatorSeat SpectatorDataEvent::seat() const
 	return p;
 }
 
+SavegameEvent::SavegameEvent(const Event& event) : Event(Event::savegame)
+{
+	//data = event.data;
+	d = event.d;
+}
+
+QString SavegameEvent::savegame() const
+{
+	//return data["message"];
+	return d->m_savegame;
+}
+
 ErrorEvent::ErrorEvent(const Event& event) : Event(Event::error)
 {
 	//data = event.data;

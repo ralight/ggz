@@ -14,10 +14,11 @@ class EventPrivate
 		QString m_message;
 		Module::State m_state;
 		Module::State m_oldstate;
-		PlayerPrivate m_oldseat;
 		PlayerPrivate m_seat;
-		PlayerPrivate m_oldspectatorseat;
+		PlayerPrivate m_oldseat;
 		PlayerPrivate m_spectatorseat;
+		PlayerPrivate m_oldspectatorseat;
+		QString m_savegame;
 };
 
 }

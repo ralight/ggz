@@ -39,6 +39,7 @@ class ModulePrivate : public QObject
 
 	private:
 		static void ggzdmod_handler(GGZdMod *mod, GGZdModEvent event, const void *data);
+		void handler(GGZdMod *mod, GGZdModEvent event, const void *data);
 };
 
 }

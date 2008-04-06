@@ -44,6 +44,7 @@ class Event
 	friend class SpectatorDataEvent;
 	friend class PlayerSeatEvent;
 	friend class SpectatorSeatEvent;
+	friend class SavegameEvent;
 	friend class ErrorEvent;
 
 	public:
@@ -59,6 +60,7 @@ class Event
 			spectatorseat,
 			playerdata,
 			spectatordata,
+			savegame,
 			error
 		};
 
@@ -220,6 +222,24 @@ class SpectatorDataEvent : public Event
 	public:
 		SpectatorDataEvent(const Event& event);
 		SpectatorSeat seat() const;
+};
+
+/**
+ * @short An old savegame is going to be restored.
+ *
+ * This event signals to the game server that instead of starting
+ * a new savegame, the old one should be loaded and continued
+ * instead.
+ *
+ * Refer to the \ref Event documentation for everything else.
+ *
+ * @author Josef Spillner (josef@ggzgamingzone.org)
+ */
+class SavegameEvent : public Event
+{
+	public:
+		SavegameEvent(const Event& event);
+		QString savegame() const;
 };
 
 /**
