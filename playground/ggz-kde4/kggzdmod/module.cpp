@@ -45,7 +45,6 @@ Module::~Module()
 	d->disconnect();
 	delete d;
 
-	delete s_module;
 	s_module = NULL;
 }
 

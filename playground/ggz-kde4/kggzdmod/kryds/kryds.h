@@ -26,6 +26,7 @@ class Kryds : public QObject
 		void nextPlayer();
 		void detectGameOver();
 		void handleInput(KGGZdMod::Player *p);
+		void shutdown();
 
 		KGGZdMod::Module *m_module;
 		KGGZdMod::Player *m_currentplayer;

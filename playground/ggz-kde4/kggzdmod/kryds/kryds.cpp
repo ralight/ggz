@@ -5,6 +5,8 @@
 
 #include <kdebug.h>
 
+#include <QCoreApplication>
+
 // FIXME: these should appear in protocol
 #define TTT_OK           0
 #define TTT_ERR_STATE   -1
@@ -112,8 +114,11 @@ void Kryds::slotEvent(const KGGZdMod::Event& event)
 	}
 	else if(event.type() == KGGZdMod::Event::error)
 	{
-		//KGGZdMod::ErrorEvent e(event);
-		// ...
+		KGGZdMod::ErrorEvent e(event);
+		kError() << e.message();
+
+		// share GGZ error handler with game client handler
+		shutdown();
 	}
 }
 
@@ -254,6 +259,28 @@ void Kryds::slotNotification(tictactoeOpcodes::Opcode messagetype, const msg& me
 
 void Kryds::slotError()
 {
-	kError() << "Something bad has happened!";
-	deleteLater();
+	kError() << "Something bad has happened with a game client!";
+
+	// FIXME: do something with m_currentplayer, like disconnecting
+}
+
+void Kryds::shutdown()
+{
+	kError() << "Something bad has happened with the GGZ connection!";
+	//deleteLater();
+	// FIXME: deleteLater would require Qt mainloop, but we use ggzdmod loop
+	// TODO: make it possible to hook in Qt mainloop
+
+	if(m_module)
+	{
+		//m_module->sendRequest(KGGZdMod::StateRequest(KGGZdMod::Module::done));
+		// FIXME: the above can only be done for game client disconnects
+		// otherwise it would trigger an error immediately again!
+
+		m_module->disconnect();
+		delete m_module;
+		m_module = 0;
+	}
+
+	QCoreApplication::exit();
 }
