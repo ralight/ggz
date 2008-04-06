@@ -4,35 +4,32 @@
 <tr>
 <td>
 
-<b>Tic-Tac-Toe Server</b><br/>
+<b>Kryds Tic-Tac-Toe Server</b><br/>
 Board game for 2 players.
 <br/><br/>
 
 <i>Fact sheet</i><br/>
 <ul>
 <li>Supports the <a href="/engines/tictactoe/">TicTacToe</a> engine
-<li>Supports AI players (with configurable difficulty level)
-<li>Implemented in C
+<li>Supports AI players (only random for now)
+<li>Implemented in C++
 <li>GGZ is required (no standalone mode)
 </ul>
 
-The TicTacToe server is designed to be the entry point for GGZ developers.
-As such, it supports basically all of GGZ's server-side features,
-which are highlighted accordingly in the server source code.
-
-The network code is generated from the XML protocol description automatically.
+Kryds has been written to highlight the features of the kggzdmod library,
+which is based on Qt. Kryds og bolle is the Danish name for Tic-Tac-Toe.
 
 <br/><br/>
 
 <i>GGZ game server support</i><br/>
 <table class="listnorm">
 <tr><td><i>Play-again</i></td><td><img src="/pics/icons/no.png">no</td></tr>
-<tr><td><i>Spectators</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
-<tr><td><i>Statistics</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Spectators</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Statistics</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 <tr><td><i>Bot players</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
-<tr><td><i>Named Bots</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
-<tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
-<tr><td><i>Savegames</i></td><td><img src="/pics/icons/yes.png">yes</td></tr>
+<tr><td><i>Named Bots</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Leave/Rejoin</i></td><td><img src="/pics/icons/no.png">no</td></tr>
+<tr><td><i>Savegames</i></td><td><img src="/pics/icons/no.png">no</td></tr>
 </table>
 
 </td><td>
@@ -63,13 +60,13 @@ The network code is generated from the XML protocol description automatically.
 <a href="/engines/tictactoe/"><i>Engine: TicTacToe</i></a>
 <br/><br/>
 
+<a href="/gameservers/tictactoe/"><i>Game server: TicTacToe</i></a>
+<br/><br/>
+
 <a href="/gameservers/rubytoe/"><i>Game server: RubyToe</i></a>
 <br/><br/>
 
 <a href="/gameservers/coffeetoe/"><i>Game server: CoffeeToe</i></a>
-<br/><br/>
-
-<a href="/gameservers/kryds/"><i>Game server: Kryds</i></a>
 <br/><br/>
 
 </td>
