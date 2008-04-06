@@ -1,16 +1,25 @@
 #include "kryds.h"
-#include "tictactoe_server.h"
 
 #include <kggzdmod/module.h>
 #include <kggzdmod/player.h>
 
 #include <kdebug.h>
 
+// FIXME: these should appear in protocol
+#define TTT_OK           0
+#define TTT_ERR_STATE   -1
+#define TTT_ERR_TURN    -2
+#define TTT_ERR_BOUND   -3
+#define TTT_ERR_FULL    -4
+
+#define TTT_NO_WINNER    2
+
 Kryds::Kryds(QObject *parent)
 : QObject(parent)
 {
 	m_started = false;
 	m_turn = -1;
+	m_currentplayer = 0;
 
 	m_module = new KGGZdMod::Module("Kryds");
 
@@ -76,8 +85,20 @@ void Kryds::slotEvent(const KGGZdMod::Event& event)
 	}
 	else if(event.type() == KGGZdMod::Event::playerdata)
 	{
-		//KGGZdMod::PlayerDataEvent e(event);
-		// ...
+		KGGZdMod::PlayerDataEvent e(event);
+
+		// FIXME: introduce findPlayerBySeat() method?
+		// FIXME: or can we rely on at() method?
+		QList<KGGZdMod::Player*> players = m_module->players();
+		for(int i = 0; i < players.size(); i++)
+		{
+			if(players.at(i)->seat() == e.seat().seat())
+			{
+				KGGZdMod::Player *p = players.at(i);
+				handleInput(p);
+				break;
+			}
+		}
 	}
 	else if(event.type() == KGGZdMod::Event::spectatordata)
 	{
@@ -139,12 +160,100 @@ void Kryds::detectGameOver()
 {
 	bool over = true;
 
-	for(int i = 0; i < m_board[i]; i++)
-		if(m_board[i] != -1)
+	for(int i = 0; i < 9; i++)
+		if(m_board[i] == -1)
 			over = false;
 
 	// TODO: we check for full board but not for win yet
 
 	if(!over)
 		nextPlayer();
+	else
+	{
+		msggameover over;
+		over.winner = TTT_NO_WINNER;
+
+		tictactoe proto;
+		QList<KGGZdMod::Player*> players = m_module->players();
+		for(int i = 0; i < players.size(); i++)
+		{
+			KGGZdMod::Player *p = players.at(i);
+			if(p->fd() != -1)
+			{
+				proto.ggzcomm_set_fd(p->fd());
+				proto.ggzcomm_msggameover(over);
+			}
+		}
+	}
+}
+
+void Kryds::handleInput(KGGZdMod::Player *p)
+{
+	kDebug() << "Input from player at #" << p->seat();
+
+	m_currentplayer = p;
+
+	tictactoe proto;
+	connect(&proto,
+		SIGNAL(signalNotification(tictactoeOpcodes::Opcode, const msg&)),
+		SLOT(slotNotification(tictactoeOpcodes::Opcode, const msg&)));
+	connect(&proto, SIGNAL(signalError()), SLOT(slotError()));
+
+	proto.ggzcomm_set_fd(p->fd());
+	proto.ggzcomm_network_main();
+
+	m_currentplayer = 0;
+}
+
+void Kryds::slotNotification(tictactoeOpcodes::Opcode messagetype, const msg& message)
+{
+	if(messagetype == tictactoeOpcodes::message_sndmove)
+	{
+		const sndmove *m = static_cast<const sndmove*>(&message);
+		kDebug() << "Move:" << m->move_c;
+
+		int ret = TTT_OK;
+		if(m_module->state() != KGGZdMod::Module::playing)
+			ret = TTT_ERR_STATE;
+		else if(m_turn != m_currentplayer->seat())
+			ret = TTT_ERR_TURN;
+		else if((m->move_c < 0) || (m->move_c >= 9))
+			ret = TTT_ERR_BOUND;
+		else if(m_board[m->move_c] != -1)
+			ret = TTT_ERR_FULL;
+
+		rspmove rsp;
+		rsp.status = ret;
+
+		msgmove msg;
+		msg.player = m_turn;
+		msg.move = m->move_c;
+
+		tictactoe proto;
+		proto.ggzcomm_set_fd(m_currentplayer->fd());
+		proto.ggzcomm_rspmove(rsp);
+
+		QList<KGGZdMod::Player*> players = m_module->players();
+		KGGZdMod::Player *opp = players.at(1 - m_turn);
+		if(opp->fd() != -1)
+		{
+			proto.ggzcomm_set_fd(opp->fd());
+			proto.ggzcomm_msgmove(msg);
+		}
+
+		if(ret == TTT_OK)
+		{
+			m_board[m->move_c] = m_turn;
+			detectGameOver();
+		}
+	}
+	else if(messagetype == tictactoeOpcodes::message_reqsync)
+	{
+	}
+}
+
+void Kryds::slotError()
+{
+	kError() << "Something bad has happened!";
+	deleteLater();
 }

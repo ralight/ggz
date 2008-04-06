@@ -81,6 +81,8 @@ void ModulePrivate::handler(GGZdMod *mod, GGZdModEvent event, const void *data)
 		oldstate = *(GGZdModState*)data;
 		state = ggzdmod_get_state(mod);
 
+		m_state = (KGGZdMod::Module::State)state;
+
 		Event e(Event::state);
 		EventPrivate *ep = new EventPrivate();
 		ep->m_state = (Module::State)state;
@@ -258,15 +260,18 @@ void ModulePrivate::sendRequest(Request request)
 
 	if(requesttype == Request::state)
 	{
+		ggzdmod_set_state(s_ggzdmod, (GGZdModState)request.data["state"].toInt());
 	}
 	if(requesttype == Request::log)
 	{
+		ggzdmod_log(s_ggzdmod, request.data["message"].toUtf8().data());
 	}
 	if(requesttype == Request::result)
 	{
 	}
 	if(requesttype == Request::savegame)
 	{
+		ggzdmod_report_savegame(s_ggzdmod, request.data["filename"].toUtf8().data());
 	}
 }
 
@@ -393,12 +398,18 @@ void ModulePrivate::insertPlayer(PlayerPrivate player)
 	if(player.m_type == Player::spectator)
 	{
 		kDebug() << "** insert spectator at #" << player.m_seat;
-		m_spectators.append(p);
+		if(player.m_seat < m_spectators.size())
+			m_spectators.insert(player.m_seat, p);
+		else
+			m_spectators.append(p);
 	}
 	else
 	{
 		kDebug() << "** insert player at #" << player.m_seat;
-		m_players.append(p);
+		if(player.m_seat < m_players.size())
+			m_players.insert(player.m_seat, p);
+		else
+			m_players.append(p);
 	}
 }
 
