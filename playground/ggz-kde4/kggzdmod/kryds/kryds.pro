@@ -9,11 +9,11 @@ QT -= gui
 CONFIG += debug
 
 INCLUDEPATH += ../..
-NCLUDEPATH += /home/josef/sys/kde4/include
+INCLUDEPATH += /home/josef/sys/kde4/include
 LIBS += -L..
 LIBS += -lkggzdmod
 LIBS += -L/home/josef/sys/kde4/lib
-LIBS += -lkdecore
+LIBS += -lkdecore -lkggznet
 
-HEADERS = kryds.h
-SOURCES = kryds.cpp main.cpp
+HEADERS = kryds.h tictactoe_server.h
+SOURCES = kryds.cpp tictactoe_server.cpp main.cpp
