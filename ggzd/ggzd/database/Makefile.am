@@ -5,7 +5,9 @@ endif
 SUBDIRS = $(DBPROC_DIR)
 
 noinst_LIBRARIES = libggzdb.a
-libggzdb_a_CPPFLAGS = -I$(top_srcdir)/ggzd $(LIBGGZ_INCLUDES) -DGGZDEXECMODDIR=\"$(ggzdexecmoddir)\"
+libggzdb_a_CPPFLAGS = -I$(top_srcdir)/ggzd $(LIBGGZ_INCLUDES) \
+	-I$(top_srcdir)/ggzdmod \
+	-DGGZDEXECMODDIR=\"$(ggzdexecmoddir)\"
 libggzdb_a_SOURCES = \
 	ggzdb.c \
 	ggzdb.h \
