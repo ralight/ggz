@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: map.c 9598 2008-01-25 17:32:12Z josef $
+ * $Id: map.c 9953 2008-04-12 22:56:10Z oojah $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -40,6 +40,10 @@
 
 #include "combat.h"
 #include "map.h"
+
+#ifdef MKDIR_TAKES_ONE_ARG
+#define mkdir(a, b) (mkdir) (a)
+#endif
 
 #define GLOBAL_MAPS GGZDATADIR "/combat/maps"
 
@@ -88,25 +92,16 @@ int map_save(combat_game * map)
 				   GGZ_CONF_RDWR | GGZ_CONF_CREATE);
 		if (handle < 0) {
 			snprintf(filename, sizeof(filename), "%s/.ggz", getenv("HOME"));
-#ifdef MKDIR_TAKES_ONE_ARG
-			mkdir(filename);
-#else
 			mkdir(filename, S_IRWXU | S_IRGRP | S_IXGRP);
-#endif
+
 			snprintf(filename, sizeof(filename), "%s/.ggz/combat",
 				getenv("HOME"));
-#ifdef MKDIR_TAKES_ONE_ARG
-			mkdir(filename);
-#else
 			mkdir(filename, S_IRWXU | S_IRGRP | S_IXGRP);
-#endif
+
 			snprintf(filename, sizeof(filename), "%s/.ggz/combat/maps",
 				getenv("HOME"));
-#ifdef MKDIR_TAKES_ONE_ARG
-			mkdir(filename);
-#else
 			mkdir(filename, S_IRWXU | S_IRGRP | S_IXGRP);
-#endif
+
 			snprintf(filename, sizeof(filename), "%s/.ggz/combat/maps/%s.%u",
 				getenv("HOME"), map->name, hash);
 			handle =
