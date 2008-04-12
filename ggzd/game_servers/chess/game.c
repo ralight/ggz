@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 9898 2008-03-29 19:56:07Z josef $
+ * $Id: game.c 9939 2008-04-12 05:53:49Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -833,11 +833,11 @@ static void game_send_gameover(char code)
     while(walker) {
       move = *walker;
       walker = walker->next;
-	  if(walker) {
+      if(walker) {
         move2 = *walker;
         walker = walker->next;
       } else {
-        move2.fs = -1;
+        move2.fs = move2.rd = move2.rs = -1;
       }
       snprintf(movestr, sizeof(movestr), "%c%c", move.rs + 'a', move.rd + '0');
       snprintf(movestr2, sizeof(movestr2), "%c%c", move2.rs + 'a', move2.rd + '0');
