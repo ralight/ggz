@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 9493 2008-01-12 17:02:50Z josef $
+ * $Id: main.c 9951 2008-04-12 22:32:00Z oojah $
  *
  * This is the main program body for the GGZ client
  *
@@ -74,7 +74,11 @@ static void init_debug(void)
 	int num_types, i;
 
 	/* Inititialze debugging */
+#ifdef WIN32
+	default_file = g_strjoin("\\", getenv("APPDATA"), ".ggz\\ggz-gtk.debug", NULL);
+#else
 	default_file = g_strjoin("/", getenv("HOME"), ".ggz/ggz-gtk.debug", NULL);
+#endif
 	debug_file = ggzcore_conf_read_string("Debug", "FILE", default_file);
 	g_free(default_file);
 

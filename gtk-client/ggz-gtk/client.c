@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 9392 2007-12-01 00:28:59Z jdorje $
+ * $Id: client.c 9951 2008-04-12 22:32:00Z oojah $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -810,7 +810,11 @@ void ggz_gtk_initialize(gboolean reconnect,
 	/*global_conf = "/etc/ggz/ggz.conf";*/
 	/* We don't support this quite yet */
 	global_conf = NULL;
+#ifdef WIN32
+	user_conf = g_strdup_printf("%s\\.ggz\\ggz-gtk.rc", getenv("APPDATA"));
+#else
 	user_conf = g_strdup_printf("%s/.ggz/ggz-gtk.rc", getenv("HOME"));
+#endif
 	ggzcore_conf_initialize(global_conf, user_conf);
 	g_free(user_conf);
 
