@@ -426,14 +426,16 @@ static int _io_read_req_launch(GGZdMod * ggzdmod)
 
 	for (i = 0; i < seats; i++) {
 		char *name = NULL;
+		int type;
 
 		/* Reset seat */
 		seat.num = i;
 		seat.fd = -1;
 		seat.playerdata = NULL;
 		
-		if (ggz_read_int(ggzdmod->fd, (int*)&seat.type) < 0)
+		if (ggz_read_int(ggzdmod->fd, &type) < 0)
 			return -1;
+		seat.type = type;
 
 		if (seat.type == GGZ_SEAT_RESERVED || seat.type == GGZ_SEAT_BOT) {
 			if (ggz_read_string_alloc_null(ggzdmod->fd, &name) < 0)
