@@ -1,0 +1,405 @@
+# Tradução portuguesa do pacote ggz-python.
+# Copyright (C) 2008 Josef Spillner <josef@ggzgamingzone.org>
+# This file is distributed under the same license as the ggz-python package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.0.14\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-04-01 13:47+0200\n"
+"PO-Revision-Date: 2006-04-01 13:47+0200\n"
+"Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
+"Language-Team: Deutsch <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../lib/sdlnewstuff.py:159
+msgid "Error: couldn't download GHNS feed"
+msgstr "Erro: não pude baixar os itens GHNS"
+
+#: ../lib/sdlnewstuff.py:161
+msgid "GHNS feed contains no entries"
+msgstr "O feed GHNS não contem itens"
+
+#: ../lib/sdlnewstuff.py:193
+msgid "not installed"
+msgstr "não instalado"
+
+#: ../lib/sdlnewstuff.py:194 ../lib/sdlnewstuff.py:248
+#: ../lib/sdlnewstuff.py:308 ../lib/sdlnewstuff.py:326
+msgid "installed"
+msgstr "instalado"
+
+#: ../lib/sdlnewstuff.py:328 ../lib/sdlnewstuff.py:330
+msgid "error"
+msgstr "erro"
+
+#: ../lib/playertable.py:30
+msgid "No players found. Looks like a local game."
+msgstr "Nenhum jogador encontrado. Parece ser um jogo local."
+
+#: ../lib/playertable.py:37
+msgid "Player table"
+msgstr "Lista de jogadores"
+
+#: ../lib/playertable.py:41
+msgid "Seat number"
+msgstr "Numero da cadeira"
+
+#: ../lib/playertable.py:42
+msgid "Type"
+msgstr "Tipo de jogador"
+
+#: ../lib/playertable.py:43 ../lib/playertable.py:93
+msgid "Name"
+msgstr "Nome"
+
+#: ../lib/playertable.py:58
+msgid "Occupied"
+msgstr "Ocupado"
+
+#: ../lib/playertable.py:60
+msgid "Empty"
+msgstr "Vazio"
+
+#: ../lib/playertable.py:62
+msgid "Bot"
+msgstr "IA"
+
+#: ../lib/playertable.py:64
+msgid "Reserved"
+msgstr "Reservado"
+
+#: ../lib/playertable.py:66
+msgid "Abandoned"
+msgstr "Abandonado"
+
+#: ../lib/playertable.py:88
+msgid "Spectator table"
+msgstr "Lista de espectadores"
+
+#: ../lib/playertable.py:92
+msgid "Spectator number"
+msgstr "Número do espectador"
+
+#: ../lib/playertable.py:94
+msgid "No spectators present."
+msgstr "Não há espectadores."
+
+#: ../lib/playertable.py:124
+msgid "Game information"
+msgstr "Informação sobre o jogo"
+
+#: ../lib/playertable.py:127
+msgid "(unknown)"
+msgstr "(desconhecido)"
+
+#: ../lib/playertable.py:130
+msgid "Game was launched"
+msgstr "O jogo foi lançado"
+
+#: ../lib/playertable.py:132
+msgid "Game is connected"
+msgstr "O jogo está conectado"
+
+#: ../lib/playertable.py:134
+msgid "Waiting for players"
+msgstr "Aguardando os jogadores"
+
+#: ../lib/playertable.py:136
+msgid "Running game"
+msgstr "Jogo em progresso"
+
+#: ../lib/playertable.py:138
+msgid "Game is finished"
+msgstr "Jogo acabado"
+
+#: ../lib/playertable.py:141
+msgid "Game state:"
+msgstr "Situação atual:"
+
+#: ../ggzboard/ggzboard:178
+#, python-format
+msgid "GGZBoard game %s not found"
+msgstr "Jogo GGZBoard %s não encontrado"
+
+#: ../ggzboard/ggzboard:205
+msgid "GGZBoard"
+msgstr "GGZBoard"
+
+#: ../ggzboard/ggzboard:236
+msgid "GGZBoard: piece selection"
+msgstr "GGZBoard: Seleção de marcadores"
+
+#: ../ggzboard/ggzboard:294
+msgid "Please select one of the following pieces:"
+msgstr "Por favor seleçione um dos marcadores seguintes:"
+
+#: ../ggzboard/ggzboard:314
+msgid "Cancel selection"
+msgstr "Cancelar seleção"
+
+#: ../ggzboard/ggzboard:340 ../ggzboard/ggzboard:342
+msgid "GGZBoard: help screen"
+msgstr "GGZBoard: Ajuda"
+
+#: ../ggzboard/ggzboard:388
+msgid "Common GGZBoard functions:"
+msgstr "Funções comuns:"
+
+#: ../ggzboard/ggzboard:389
+msgid "a: restart a local game"
+msgstr "a: reiniciar um jogo local"
+
+#: ../ggzboard/ggzboard:390
+msgid "u: download new games, levels, themes"
+msgstr "u: baixar novos jogos, levels e témas"
+
+#: ../ggzboard/ggzboard:391
+msgid "p: display the player list"
+msgstr "p: mostra a lista de jogadores"
+
+#: ../ggzboard/ggzboard:392
+msgid "s: produce a screen shot"
+msgstr "s: cria uma captura da tela"
+
+#: ../ggzboard/ggzboard:393
+msgid "f: toggle fullscreen display"
+msgstr "f: cambiar entre janela e fullscreen"
+
+#: ../ggzboard/ggzboard:394
+msgid "ESC: quit a running game"
+msgstr "ESC: sair do jogo corrente"
+
+#: ../ggzboard/ggzboard:396
+msgid "Game-specific help:"
+msgstr "Ajuda específica:"
+
+#: ../ggzboard/ggzboard:416
+msgid "Return to game"
+msgstr "Voltar ao jogo"
+
+#: ../ggzboard/ggzboard:428 ../ggzboard/ggzboard:430
+msgid "GGZBoard: about screen"
+msgstr "GGZBoard: sobre o programa"
+
+#: ../ggzboard/ggzboard:476
+msgid "GGZBoard: A multi-engine game container"
+msgstr "GGZBoard: Uma coleção de vários jogos tabuleiros"
+
+#: ../ggzboard/ggzboard:477 ../ggzboard/ggzboard:1186
+msgid "Copyright (C) 2004 - 2006 Josef Spillner <josef@ggzgamingzone.org>"
+msgstr "Copyright (C) 2004 - 2006 Josef Spillner <josef@ggzgamingzone.org>"
+
+#: ../ggzboard/ggzboard:479
+msgid "GGZBoard contains several board games, each of which can be played"
+msgstr "GGZBoard contêm jogos tabuleiros que podem ser jogados ou"
+
+#: ../ggzboard/ggzboard:480
+msgid "either alone against the artificial intelligence (AI) or against"
+msgstr "sozinho contra a inteligência artificial (IA) ou contra"
+
+#: ../ggzboard/ggzboard:481
+msgid "other humans or AIs over the network, using the GGZ Gaming Zone system."
+msgstr "outros humanos sobre a GGZ Gaming Zone."
+
+#: ../ggzboard/ggzboard:482
+msgid "Each of the games provides an in-game helpscreen."
+msgstr ""
+
+#: ../ggzboard/ggzboard:484
+msgid "More information can be found on the GGZBoard homepage:"
+msgstr ""
+
+#: ../ggzboard/ggzboard:485
+msgid "http://www.ggzgamingzone.org/gameclients/ggzboard/"
+msgstr "http://www.ggzgamingzone.org/gameclients/ggzboard/"
+
+#: ../ggzboard/ggzboard:498
+msgid "Return to main screen"
+msgstr "Volta a entrada"
+
+#: ../ggzboard/ggzboard:510 ../ggzboard/ggzboard:512
+msgid "GGZBoard: game selection"
+msgstr "GGZBoard: seleço do jogo"
+
+#: ../ggzboard/ggzboard:581
+msgid "About..."
+msgstr "Sobre..."
+
+#: ../ggzboard/ggzboard:590
+msgid "Quit..."
+msgstr "Sair..."
+
+#: ../ggzboard/ggzboard:608 ../ggzboard/ggzboard:610
+msgid "GGZBoard: theme selection"
+msgstr "GGZBoard: seleção do téma"
+
+#: ../ggzboard/ggzboard:677
+msgid "Back..."
+msgstr "Voltar..."
+
+#: ../ggzboard/ggzboard:697
+#, python-format
+msgid "AI #%s"
+msgstr "IA #%s"
+
+#: ../ggzboard/ggzboard:715
+msgid "(Default GGZBoard)"
+msgstr "(Padrão GGZBoard)"
+
+#: ../ggzboard/ggzboard:729 ../ggzboard/ggzboard:736 ../ggzboard/ggzboard:770
+msgid "GGZBoard: "
+msgstr "GGZBoard: "
+
+#: ../ggzboard/ggzboard:733 ../ggzboard/ggzboard:768
+msgid " (running on GGZ)"
+msgstr " (jogando na GGZ)"
+
+#: ../ggzboard/ggzboard:735 ../ggzboard/ggzboard:769
+msgid " (unavailable)"
+msgstr " (não disponível)"
+
+#: ../ggzboard/ggzboard:944
+msgid "Game over!"
+msgstr "Jogo acabou!"
+
+#: ../ggzboard/ggzboard:948
+#, python-format
+msgid "The winner is %s"
+msgstr "O vencedor é %s"
+
+#: ../ggzboard/ggzboard:1016
+#, python-format
+msgid "Player %s:"
+msgstr "Jogador %s:"
+
+#: ../ggzboard/ggzboard:1035
+msgid "Dice: "
+msgstr "Dados: "
+
+#: ../ggzboard/ggzboard:1048
+msgid "Thinking..."
+msgstr "Pensando..."
+
+#: ../ggzboard/ggzboard:1057
+msgid "Themes & games"
+msgstr "Témas & jogos"
+
+#: ../ggzboard/ggzboard:1057
+msgid "Player list"
+msgstr "Lista de jogadores"
+
+#: ../ggzboard/ggzboard:1057
+msgid "Game help"
+msgstr "Ajuda do jogo"
+
+#: ../ggzboard/ggzboard:1057
+msgid "Main menu"
+msgstr "Menu central"
+
+#: ../ggzboard/ggzboard:1171
+#, python-format
+msgid "Argument required for %s."
+msgstr "Preciso um argumento para %s."
+
+#: ../ggzboard/ggzboard:1179
+#, python-format
+msgid "Unknown option: %s"
+msgstr "Opção desconhecida: %s"
+
+#: ../ggzboard/ggzboard:1185
+msgid "GGZBoard - common board game client for GGZ"
+msgstr "GGZBoard - cliente comum para jogos tabuleiros na GGZ"
+
+#: ../ggzboard/ggzboard:1187
+msgid "Published under GNU GPL conditions"
+msgstr "Publicado sob a licença GNU GPL"
+
+#: ../ggzboard/ggzboard:1189
+msgid "Options:"
+msgstr "Opçoes:"
+
+#: ../ggzboard/ggzboard:1190
+msgid "[-h | --help           ] Display this game help"
+msgstr ""
+
+#: ../ggzboard/ggzboard:1191
+msgid "[-v | --version        ] Show version information"
+msgstr ""
+
+#: ../ggzboard/ggzboard:1192
+msgid "[-g | --ggz            ] Request game in GGZ mode"
+msgstr ""
+
+#: ../ggzboard/ggzboard:1193
+msgid "[-G | --game <gamename>] Skip intro screen and launch game directly"
+msgstr ""
+
+#: ../ggzboard/ggzboard:1194
+msgid "[-l | --list           ] List available games and their location"
+msgstr ""
+
+#: ../ggzboard/ggzboard:1195
+msgid "[-f | --fullscreen     ] Start in fullscreen mode"
+msgstr ""
+
+#: ../ggzboard/module_checkers.py:68
+msgid "Checkers/Draughts"
+msgstr "Damas"
+
+#: ../ggzboard/module_chess.py:80
+msgid "Chess"
+msgstr "Xadrez"
+
+#: ../ggzboard/module_connectx.py:46
+msgid "ConnectX"
+msgstr "ConnectX"
+
+#: ../ggzboard/module_go.py:60
+msgid "Go"
+msgstr "Go"
+
+#: ../ggzboard/module_hnefatafl.py:82
+msgid "Hnefatafl"
+msgstr "Hnefatafl"
+
+#: ../ggzboard/module_madn.py:171
+msgid "Ludo is a game for up to four players."
+msgstr "Ludo é um jogo de até quatro jogadores."
+
+#: ../ggzboard/module_madn.py:172
+msgid "After rolling dice, each player can either move a piece"
+msgstr ""
+
+#: ../ggzboard/module_madn.py:173
+msgid "out of the depot, onto the start field, or move a piece"
+msgstr ""
+
+#: ../ggzboard/module_madn.py:174
+msgid "already outside clock-wise until it reaches the end field."
+msgstr ""
+
+#: ../ggzboard/module_madn.py:175
+msgid "Opponent pieces can be beaten and are put back into the depot."
+msgstr ""
+
+#: ../ggzboard/module_madn.py:176
+msgid "To come out of a depot, a die must show a 1."
+msgstr ""
+
+#: ../ggzboard/module_madn.py:186
+msgid "Ludo"
+msgstr "Ludo (devagar se vai ao longe)"
+
+#: ../ggzboard/module_reversi.py:52
+msgid "Reversi"
+msgstr "Reversi"
+
+#: ../ggzboard/module_shogi.py:101
+msgid "Shogi"
+msgstr "Shogi"
+
+#~ msgid "Arimaa"
+#~ msgstr "Arimaa"
