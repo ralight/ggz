@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 #
 # Metacle - Aggregation of metaservers
-# Copyright (C) 2006 Josef Spillner <josef@ggzgamingzone.org>
+# Copyright (C) 2006 - 2008 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
-# [protocol:[//]][host][:port][[/]path]
-# defaults:
+# Syntax: [protocol:[//]][username[:password]@][host][:port][[/]path]
+# Defaults values:
 #  protocol = file (without //)
 #  host = -- (required, but not possible with file)
 #            (still possible with absolute paths, e.g. file:///tmp/x.txt)
@@ -20,7 +20,7 @@ class Uri:
 		self.host = None
 		self.port = None
 		self.path = None
-		self.user = None
+		self.username = None
 		self.password = None
 
 		r_uri = re.compile("(?:([^:]+):(\/\/)?)?(?:([^@:]+)(?::([^@]+))?@)?([^:\/]+)?(?::(\d+))?(?:\/(\S+))?")
@@ -29,7 +29,7 @@ class Uri:
 		#print "#", m_uri.groups()
 		protocol = m_uri.group(1)
 		remote = m_uri.group(2)
-		user = m_uri.group(3)
+		username = m_uri.group(3)
 		password = m_uri.group(4)
 		host = m_uri.group(5)
 		if m_uri.group(6):
@@ -57,12 +57,12 @@ class Uri:
 		self.host = host
 		self.port = port
 		self.path = path
-		self.user = user
+		self.username = username
 		self.password = password
 
 		#print s
 		#print "# -> proto=", self.protocol, "host=", self.host, "port=", self.port, "path=", self.path, "(remote)=", remote
-		#print "   # user=", self.user, "password=", self.password
+		#print "   # username=", self.username, "password=", self.password
 
 if __name__ == "__main__":
 	u = Uri("file:foo.txt")
