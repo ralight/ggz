@@ -62,6 +62,13 @@ which can replay the savegame files, possibly when running standalone.
   community: yes
   clients: none
 
+* Chinese Checkers
+  format: own format
+  documentation: (missing)
+  server: write-only
+  community: no
+  clients: none
+
 ---------------------------------------------------------------------
 
 Furthermore, GGZ-Community can load the following savegame formats which

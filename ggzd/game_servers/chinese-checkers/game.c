@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers game module
  * Date: 01/01/2001
  * Desc: Game functions
- * $Id: game.c 7268 2005-06-10 12:28:19Z josef $
+ * $Id: game.c 9944 2008-04-12 10:27:38Z josef $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -30,6 +30,9 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdarg.h>			/* for game_save() */
+#include <stdio.h>
+#include <string.h>
 
 #include <ggz.h>
 
@@ -38,11 +41,13 @@
 
 /* Global game variables */
 struct game_t game;
+static FILE *savegame;
 
 /* Private functions */
 static void game_handle_newgame(void);
 static void game_setup_board(void);
 static int game_find_path(int, int, int, int, int);
+static void game_save(char *fmt, ...);
 
 
 /* Setup game state and board */
@@ -129,7 +134,7 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, const void *data)
 	unsigned char ro, co, rd, cd;
 
 	fd = ggzdmod_get_seat(game.ggz, num).fd;
-	
+
 	if(ggz_read_int(fd, &op) < 0)
 		return; /* FIXME: handle error --JDS */
 
@@ -174,7 +179,7 @@ int game_send_seat(int seat)
 int game_send_players(void)
 {
 	int i, j, fd;
-	
+
 	for(j=0; j<ggzdmod_get_num_seats(game.ggz); j++) {
 		if((fd = ggzdmod_get_seat(game.ggz, j).fd) == -1)
 			continue;
@@ -183,7 +188,7 @@ int game_send_players(void)
 
 		if(ggz_write_int(fd, CC_MSG_PLAYERS) < 0)
 			return -1;
-	
+
 		if(ggz_write_int(fd, ggzdmod_get_num_seats(game.ggz)) < 0)
 			return -1;
 		for(i=0; i<ggzdmod_get_num_seats(game.ggz); i++) {
@@ -206,7 +211,7 @@ int game_send_move(int num, char ro, char co, char rd, char cd)
 {
 	int fd;
 	int i;
-	
+
 	for(i=0; i<ggzdmod_get_num_seats(game.ggz); i++) {
 		if((i == num) || ((fd = ggzdmod_get_seat(game.ggz, i).fd) == -1))
 			continue;
@@ -246,7 +251,7 @@ int game_send_sync(int num)
 
 	return 0;
 }
-	
+
 
 /* Send out game-over message */
 int game_send_gameover(char winner)
@@ -265,7 +270,7 @@ int game_send_gameover(char winner)
 		}
 	}
 	ggzdmod_report_game(game.ggz, NULL, results, NULL);
-	
+
 	for(i=0; i<ggzdmod_get_num_seats(game.ggz); i++) {
 		if((fd = ggzdmod_get_seat(game.ggz, i).fd) == -1)
 			continue;
@@ -370,7 +375,7 @@ int game_handle_move(int num, unsigned char *ro, unsigned char *co,
 
 	if(status < 0)
 		return 1;
-	
+
 	return 0;
 }
 
@@ -385,6 +390,8 @@ int game_make_move(char ro, char co, char rd, char cd)
 
 	game_send_move(game.turn, ro, co, rd, cd);
 
+	game_save("move %i %i to %i %i", ro, co, rd, cd);
+
 	if((victor = game_check_win()) < 0) {
 		/* Request next move */
 		game.turn = (game.turn + 1) % ggzdmod_get_num_seats(game.ggz);
@@ -396,8 +403,10 @@ int game_make_move(char ro, char co, char rd, char cd)
 		game_init(game.ggz);
 		game_send_gameover(victor);
 		game.play_again = 0;
+
+		game_save("winner ", victor);
 	}
-	
+
 	return 0;
 }
 
@@ -494,6 +503,15 @@ static void game_setup_board(void)
 			x = homexy[home][j][0];
 			y = homexy[home][j][1];
 			game.board[x][y] = i+1;
+		}
+	}
+
+	for(i = 0; i < 17; i++)
+	{
+		for(j = 0; j < 25; j++)
+		{
+			if(game.board[i][j] > 0)
+				game_save("set %i @ %i %i", game.board[i][j], i, j);
 		}
 	}
 }
@@ -627,4 +645,34 @@ char game_check_win(void)
 
 	/* This game is over, we won! */
 	return game.turn;
+}
+
+
+#define TEMPLATE "savegame.XXXXXX"
+static void game_save(char *fmt, ...)
+{
+	int fd;
+	char *savegamepath, *savegamename;
+	char buffer[1024];
+	va_list ap;
+
+	if(!savegame) {
+		savegamepath = strdup(GGZDSTATEDIR "/gamedata/ccheckers/" TEMPLATE);
+		fd = mkstemp(savegamepath);
+		savegamename = strdup(savegamepath + strlen(savegamepath) - strlen(TEMPLATE));
+		free(savegamepath);
+		if(fd < 0) return;
+		savegame = fdopen(fd, "w");
+		if(!savegame) return;
+		setbuf(savegame, NULL);
+
+		ggzdmod_report_savegame(game.ggz, savegamename);
+		free(savegamename);
+	}
+
+	va_start(ap, fmt);
+	vsnprintf(buffer, sizeof(buffer), fmt, ap);
+	va_end(ap);
+
+	fprintf(savegame, "%s\n", buffer);
 }
