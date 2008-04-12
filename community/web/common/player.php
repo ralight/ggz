@@ -283,6 +283,71 @@ class Player
 
 		return false;
 	}
+
+	function exportxml()
+	{
+		$xml = new DOMDocument("1.0", "utf-8");
+		$root = $xml->createElement("ggzplayer");
+		$xml->appendChild($root);
+
+		$handle = $xml->createElement("handle", $this->handle);
+		$realname = $xml->createElement("realname", $this->realname);
+		$email = $xml->createElement("email", $this->email);
+		$photo = $xml->createElement("photo", $this->photo);
+		$gender = $xml->createElement("gender", $this->gender);
+		$country = $xml->createElement("country", $this->country);
+		$root->appendChild($handle);
+		$root->appendChild($realname);
+		$root->appendChild($email);
+		$root->appendChild($photo);
+		$root->appendChild($gender);
+		$root->appendChild($country);
+
+		print $xml->saveXML();
+	}
+
+	function importxml($xmlfile)
+	{
+		$xml = new DOMDocument();
+		$xml->load($xmlfile);
+		$root = $xml->documentElement;
+		if ($root->tagName != "ggzplayer") :
+			return;
+		endif;
+
+		$elements = $root->getElementsByTagName("*");
+		foreach ($elements as $element)
+		{
+			if ($element->tagName == "handle") :
+				// ignore, because handle is fixed
+			elseif ($element->tagName == "realname") :
+				$this->realname = $element->nodeValue;
+			elseif ($element->tagName == "email") :
+				$this->email = $element->nodeValue;
+			elseif ($element->tagName == "photo") :
+				$this->photo = $element->nodeValue;
+			elseif ($element->tagName == "gender") :
+				$this->gender = $element->nodeValue;
+			elseif ($element->tagName == "country") :
+				$this->country = $element->nodeValue;
+			else:
+				// ignore unknown elements
+			endif;
+		}
+
+		$this->savesettings();
+	}
+
+	function savesettings()
+	{
+		global $database;
+
+		$res = $database->exec("UPDATE users SET email = '%^', name = '%^' WHERE handle = '%^'",
+			array($this->email, $this->realname, $this->handle));
+		$res = $database->exec("UPDATE userinfo SET photo = '%^', gender = '%^', country = '%^' " .
+			"WHERE handle = '%^'",
+			array($this->photo, $this->gender, $this->country, $this->handle));
+	}
 }
 
 ?>

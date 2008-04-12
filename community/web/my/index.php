@@ -26,6 +26,8 @@ $ggzuser = Auth::username();
 	<a href="change.php">change page</a>.
 	Host player applications can be sent from the
 	<a href="upgrade.php">upgrade page</a>.
+	You can take your personal data with you through the
+	<a href="mobility.php">mobility page</a>.
 	</div>
 	<div class="text">
 
