@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 9949 2008-04-12 22:16:49Z oojah $
+ * $Id: conf.c 9950 2008-04-12 22:26:40Z oojah $
  *
  * Internal functions for handling configuration files
  *
@@ -979,9 +979,8 @@ int make_path(const char *full, mode_t mode)
 	strcpy(copy, full);
 	path[0] = '\0';
 
-/* This is a bad test really - we're making the assumption that the way to 
- * detect Windows is with the presence of winsock2.h. */
-#ifdef HAVE_WINSOCK2_H
+/* FIXME - what happens for 64-bit Windows and mingw? */
+#ifdef WIN32
 	/* Deal with Windows style paths */
 
 	char *next = strchr(copy, '\\');
