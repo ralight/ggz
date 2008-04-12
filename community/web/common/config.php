@@ -61,6 +61,10 @@ class Config
 			$communityregistration = "open";
 		endif;
 
+		if (!$dbport) :
+			$dbport = 5432;
+		endif;
+
 		$this->config = array();
 
 		$this->config['name'] = $communityname;
