@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 9583 2008-01-20 14:00:37Z oojah $
+ * $Id: conf.c 9949 2008-04-12 22:16:49Z oojah $
  *
  * Internal functions for handling configuration files
  *
@@ -979,6 +979,37 @@ int make_path(const char *full, mode_t mode)
 	strcpy(copy, full);
 	path[0] = '\0';
 
+/* This is a bad test really - we're making the assumption that the way to 
+ * detect Windows is with the presence of winsock2.h. */
+#ifdef HAVE_WINSOCK2_H
+	/* Deal with Windows style paths */
+
+	char *next = strchr(copy, '\\');
+	if(!next) return 0;
+	*next = '\0';
+	strcat(path, copy);
+	copy = next + 1;
+
+	do {
+		next = strchr(copy, '\\');
+
+		/* If this is the last token, it's the file name - break */
+		if (!next) break;
+		
+		*next = '\0';
+
+		/* While there's still stuff left, it's a directory */
+		strcat(strcat(path, "\\"), copy);
+
+		if (mkdir(path, mode) < 0
+		    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
+			return -1;
+		}
+		copy = next + 1;
+	} while (1);
+#else
+	/* Deal with POSIX style paths */
+
 	/* Skip preceding / */
 	if (copy[0] == '/')
 		copy++;
@@ -1002,6 +1033,7 @@ int make_path(const char *full, mode_t mode)
 		copy = next + 1;
 	} while (1);
 
+#endif
 	return 0;
 }
 
