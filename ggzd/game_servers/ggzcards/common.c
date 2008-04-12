@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 9053 2007-04-17 03:16:36Z jdorje $
+ * $Id: common.c 9941 2008-04-12 05:58:03Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -442,6 +442,9 @@ void handle_ggz_state_event(GGZdMod * ggz,
 	}
 
 	switch (new_state) {
+	case GGZDMOD_STATE_RESTORED:
+		/* FIXME: Does anything need to be done here??? */
+		break;
 	case GGZDMOD_STATE_CREATED:
 	case GGZDMOD_STATE_WAITING:
 	case GGZDMOD_STATE_PLAYING:
