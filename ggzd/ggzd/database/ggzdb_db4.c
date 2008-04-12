@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db4 sytle database
- * $Id: ggzdb_db4.c 9903 2008-03-30 08:06:09Z josef $
+ * $Id: ggzdb_db4.c 9938 2008-04-12 05:51:08Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -490,11 +490,13 @@ GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *nam
 	return GGZDB_NO_ERROR;
 }
 
+#if 0
 GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num)
 {
 	/* Not implemented, but do not return error */
 	return GGZDB_NO_ERROR;
 }
+#endif
 
 int _ggzdb_reconfiguration_fd(void)
 {
