@@ -1,7 +1,7 @@
 # In case 'ant' does not work, it can still be tried without the SVN task
 # If this also fails, a simple 'make' invocation creates a basic application jar file
 
-version = 0.99.2
+version = snapshot-0.99.3
 
 DESTDIR =
 prefix = /usr/local

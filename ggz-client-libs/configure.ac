@@ -1,7 +1,7 @@
 # Configuration for the GGZ client libraries
 # ==========================================
 
-AC_INIT([GGZ client libraries], [snapshot-0.99.2], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
+AC_INIT([GGZ client libraries], [snapshot-0.99.3], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE

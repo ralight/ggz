@@ -1,7 +1,7 @@
 dnl Configuration for Grubby, the chatbot
 dnl =====================================
 
-AC_INIT([GGZ chat bot], [snapshot-0.99.2], [ggz-dev@mail.ggzgamingzone.org], [ggz-grubby])
+AC_INIT([GGZ chat bot], [snapshot-0.99.3], [ggz-dev@mail.ggzgamingzone.org], [ggz-grubby])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE

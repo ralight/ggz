@@ -1,6 +1,6 @@
 # Configuration for libggz
 # ========================
-AC_INIT([GGZ common libraries], [snapshot-0.99.2], [ggz-dev@mail.ggzgamingzone.org], [libggz])
+AC_INIT([GGZ common libraries], [snapshot-0.99.3], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE

@@ -46,7 +46,7 @@
 		<!-- Read current values. -->
 		<property name="version.major" value="0" />
 		<property name="version.minor" value="99" />
-		<property name="version.revision" value="2" />
+		<property name="version.revision" value="3" />
 		<property name="version.string" value="${version.major}.${version.minor}.${version.revision}.${build.number}" />
 
 		<!-- Include SVN revision in JAR file name to avoid cache problems. -->

@@ -1,7 +1,7 @@
 dnl Configuration for the utilities package
 dnl =======================================
 
-AC_INIT([GGZ utilities], [0.0.15pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-utils])
+AC_INIT([GGZ utilities], [snapshot-0.99.3], [ggz-dev@mail.ggzgamingzone.org], [ggz-utils])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
