@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.c 6330 2004-11-11 16:30:21Z jdorje $
+ * $Id: preferences.c 9952 2008-04-12 22:50:04Z oojah $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -225,9 +225,14 @@ static void access_preferences(int save)
 	PrefType *pref;
 
 	if (file < 0) {
+#ifdef WIN32
+		char *name = g_strdup_printf("%s\\.ggz\\ggzcards-gtk.rc",
+					     getenv("APPDATA"));
+#else
 		/* Preferences go in ~/.ggz/ggzcards-gtk.rc */
 		char *name = g_strdup_printf("%s/.ggz/ggzcards-gtk.rc",
 					     getenv("HOME"));
+#endif
 		file =
 		    ggz_conf_parse(name, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
 

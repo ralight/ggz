@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
- * $Id: game.c 6672 2005-01-14 04:02:16Z jdorje $
+ * $Id: game.c 9952 2008-04-12 22:50:04Z oojah $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -79,8 +79,13 @@ void game_init(void)
 	char *filename;
 
 	/* Get our preferences */
+#ifdef WIN32
+	filename =
+	    g_strdup_printf("%s\\.ggz\\ccheckers-gtk.rc", getenv("APPDATA"));
+#else
 	filename =
 	    g_strdup_printf("%s/.ggz/ccheckers-gtk.rc", getenv("HOME"));
+#endif
 	game.conf_handle =
 	    ggz_conf_parse(filename, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
 	g_free(filename);

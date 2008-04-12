@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Main loop and supporting logic
- * $Id: main.c 8880 2007-01-09 17:22:14Z josef $
+ * $Id: main.c 9952 2008-04-12 22:50:04Z oojah $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -87,8 +87,13 @@ static void initialize_debugging(void)
 	const char *debugging_types[] = { NULL };
 #endif
 	/* Debugging goes to ~/.ggz/ccheckers-gtk.debug */
+#ifdef WIN32
+	char *file_name =
+	    g_strdup_printf("%s/.ggz/ccheckers-gtk.debug", getenv("APPDATA"));
+#else
 	char *file_name =
 	    g_strdup_printf("%s/.ggz/ccheckers-gtk.debug", getenv("HOME"));
+#endif
 	ggz_debug_init(debugging_types, file_name);
 	g_free(file_name);
 
