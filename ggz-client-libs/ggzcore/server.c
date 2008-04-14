@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 9860 2008-03-21 12:12:14Z josef $
+ * $Id: server.c 9954 2008-04-14 20:00:20Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -1132,16 +1132,12 @@ int _ggzcore_server_connect(GGZServer * server)
 
 	if (status < 0) {
 		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_FAIL);
-		if (status == -1)
-			errmsg = strerror(errno);
-		else {
 #ifdef HAVE_HSTRERROR
-			errmsg = (char *)hstrerror(h_errno);
+		errmsg = (char *)hstrerror(h_errno);
 #else
-			/* Not all systems have hstrerror. */
-			errmsg = "Unable to connect";
+		/* Not all systems have hstrerror. */
+		errmsg = _("Unable to connect");
 #endif
-		}
 		_ggzcore_server_event(server, GGZ_CONNECT_FAIL, errmsg);
 	} else
 		_ggzcore_server_event(server, GGZ_CONNECTED, NULL);
@@ -1170,15 +1166,12 @@ int _ggzcore_server_create_channel(GGZServer *server)
 	
 	if (status < 0) {
 		ggz_debug(GGZCORE_DBG_SERVER, "Channel creation failed");
-		if(status == -1) errmsg = strerror(errno);
-		else {
 #ifdef HAVE_HSTRERROR
-			errmsg = (char*)hstrerror(h_errno);
+		errmsg = (char*)hstrerror(h_errno);
 #else
-			/* Not all systems have hstrerror. */
-			errmsg = _("Unable to connect");
+		/* Not all systems have hstrerror. */
+		errmsg = _("Unable to connect");
 #endif
-		}
 		_ggzcore_server_event(server, GGZ_CHANNEL_FAIL, errmsg);
  	}
 	else {
