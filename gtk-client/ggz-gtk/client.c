@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 9951 2008-04-12 22:32:00Z oojah $
+ * $Id: client.c 9955 2008-04-14 21:11:25Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -837,6 +837,13 @@ void ggz_gtk_initialize(gboolean reconnect,
 	}
 
 	ggzcore_init(opt);
+
+#ifdef ENABLE_NLS
+	/* GTK2 always uses UTF-8 so we tell gettext to output its
+	 * translations in that. */
+	bindtextdomain("ggz-gtk", PACKAGE_LOCALE_DIR);
+	bind_textdomain_codeset("ggz-gtk", "UTF-8");
+#endif
 
 	server_profiles_load();	
 

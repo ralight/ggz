@@ -2,7 +2,7 @@
  * File: support.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: support.h 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: support.h 9955 2008-04-14 21:11:25Z jdorje $
  *
  * Support code
  *
@@ -32,11 +32,10 @@
 /*
  * Standard gettext macros.
  */
-/*
 #ifdef ENABLE_NLS
 #  include <libintl.h>
 #  undef _
-#  define _(String) dgettext (PACKAGE, String)
+#  define _(String) dgettext ("ggz-gtk", String)
 #  ifdef gettext_noop
 #    define N_(String) gettext_noop (String)
 #  else
@@ -50,27 +49,6 @@
 #  define bindtextdomain(Domain,Directory) (Domain)
 #  define _(String) (String)
 #  define N_(String) (String)
-#endif
-*/
-#ifdef ENABLE_NLS
-#  include <libintl.h>
-#  ifndef N_
-#    ifdef gettext_noop
-#      define N_(x) gettext_noop(x)
-#    else
-#      define N_(x) x
-#    endif
-#  endif
-#  ifndef _
-#    define _(x) gettext(x)
-#  endif
-#else
-#  ifndef N_
-#    define N_(x) x
-#  endif
-#  ifndef _
-#    define _(x) x
-#  endif
 #endif
 
 
