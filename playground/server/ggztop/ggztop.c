@@ -393,6 +393,7 @@ int main(int argc, char *argv[])
 	if((argc == 2) && (!strcmp(argv[1], "-x")))
 		runmode = RUNMODE_XMLONLY;
 
+	lastupdate = time(NULL);
 	ret = ggztop_init();
 	if(!ret)
 		return -1;
