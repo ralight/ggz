@@ -1,0 +1,36 @@
+<?php
+
+$ggzconfigfile = "/home/josef/sys/etc/ggzd/akademy08community.conf";
+
+$ggzurl = "ggz://localhost:5688";
+#$ggzhost = "localhost";
+#$ggzname = "Local Zone";
+#$ggzversion = "0.0.14+";
+
+$ggzgamedir = "/home/josef/sys/var/ggzd/gamedata/";
+
+#$communityname = "aKademy Tournaments";
+$communityslogan = "Powered by GGZ Gaming Zone";
+
+$communitycopyright_title = "GGZ Gaming Zone";
+$communitycopyright_link = "http://www.ggzgamingzone.org/";
+
+$communityurl = "https://akademy08.ggzgamingzone.org/";
+#$communitymail = "spillner@kde.org";
+
+$communitytls = 0;
+
+$communitytheme = "akademy08";
+
+$features = array(
+	'blogs' => 0,
+	'forum' => 1,
+	'articles' => 0,
+	'ggzgames' => 1,
+	'webgames' => 1,
+	'worldmap' => 0,
+	'datarepo' => 0,
+	'karma' => 1
+);
+
+?>
