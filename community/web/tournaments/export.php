@@ -23,6 +23,7 @@ $height = 800;
 $im = imagecreatetruecolor($width, $height);
 
 $fontfile = "/usr/share/fonts/truetype/ttf-bitstream-vera/Vera.ttf";
+$fontfileit = "/usr/share/fonts/truetype/ttf-bitstream-vera/VeraIt.ttf";
 
 $bgcolor = imagecolorallocate($im, 255, 255, 255);
 $fgcolor = imagecolorallocate($im, 0, 0, 0);
@@ -45,7 +46,7 @@ for($i = 0; $i < $database->numrows($res); $i++)
 	$name = $database->result($res, $i, "name");
 	$number = $database->result($res, $i, "number");
 
-	imagefttext($im, 10, 0, 30, 135 + $i * 15, $fgcolor, $fontfile, $name);
+	imagefttext($im, 10, 0, 30, 135 + $i * 15, $fgcolor, $fontfileit, $name);
 
 	$num++;
 	$players[$number] = $name;
@@ -118,12 +119,13 @@ for($i = $level; $i > 0; $i--)
 				$open = true;
 			endif;
 
-			$x = ($j + (3 - log($xnum))) * 80 + 50;
+			$x = (($width - 100) / 2) + $j * 80 - ($xnum - 1) * 80;
 
-			imagefttext($im, 10, 0, $x, 135 + ($i - 1) * 100, $fgcolor, $fontfile, "$player1");
-			imagefttext($im, 10, 0, $x, 150 + ($i - 1) * 100, $fgcolor, $fontfile, "$player2");
+			imagefttext($im, 10, 0, $x, 135 + ($i - 1) * 100, $fgcolor, $fontfile, "Match: $op");
+			imagefttext($im, 10, 0, $x, 150 + ($i - 1) * 100, $fgcolor, $fontfileit, "$player1");
+			imagefttext($im, 10, 0, $x, 165 + ($i - 1) * 100, $fgcolor, $fontfileit, "$player2");
 			if ($winner) :
-				imagefttext($im, 10, 0, $x, 165 + ($i - 1) * 100, $fgcolor, $fontfile, "Winner: $winnerstr");
+				imagefttext($im, 10, 0, $x, 180 + ($i - 1) * 100, $fgcolor, $fontfile, "Winner: $winnerstr");
 			endif;
 
 			$op += 1;
@@ -134,13 +136,18 @@ for($i = $level; $i > 0; $i--)
 		$op2 = 2 + $opoffset;
 		for($j = 0; $j < $xnum; $j++)
 		{
+			$fontfilep1 = $fontfile;
+			$fontfilep2 = $fontfile;
+
 			$player1 = "winner of ($op1)";
 			$player2 = "winner of ($op2)";
 			if ($winners[$op1]) :
 				$player1 = $winners[$op1];
+				$fontfilep1 = $fontfileit;
 			endif;
 			if ($winners[$op2]) :
 				$player2 = $winners[$op2];
+				$fontfilep2 = $fontfileit;
 			endif;
 			$winner = played($player1, $player2);
 			if ($winner) :
@@ -150,12 +157,13 @@ for($i = $level; $i > 0; $i--)
 				$open = true;
 			endif;
 
-			$x = ($j + (3 - log($xnum))) * 160 + 100;
+			$x = (($width - 100) / 2) + $j * 160 - ($xnum - 1) * 80;
 
-			imagefttext($im, 10, 0, $x, 135 + ($i - 1) * 100, $fgcolor, $fontfile, "$player1");
-			imagefttext($im, 10, 0, $x, 150 + ($i - 1) * 100, $fgcolor, $fontfile, "$player2");
+			imagefttext($im, 10, 0, $x, 135 + ($i - 1) * 100, $fgcolor, $fontfile, "Match: $op");
+			imagefttext($im, 10, 0, $x, 150 + ($i - 1) * 100, $fgcolor, $fontfilep1, "$player1");
+			imagefttext($im, 10, 0, $x, 165 + ($i - 1) * 100, $fgcolor, $fontfilep2, "$player2");
 			if ($winner) :
-				imagefttext($im, 10, 0, $x, 165 + ($i - 1) * 100, $fgcolor, $fontfile, "Winner: $winnerstr");
+				imagefttext($im, 10, 0, $x, 180 + ($i - 1) * 100, $fgcolor, $fontfile, "Winner: $winnerstr");
 			endif;
 
 			$op1 += 2;
