@@ -53,7 +53,15 @@ class Config
 				$dbpass = $ini["General"]["DatabasePassword"];
 				$dbtype = $ini["General"]["DatabaseType"];
 				$ggzname = $ini["General"]["ServerName"];
+				$ggzmail = $ini["General"]["AdminEmail"];
 				$communityregistration = $ini["General"]["RegistrationPolicy"];
+
+				if (!$communityname) :
+					$communityname = $ggzname;
+				endif;
+				if (!$communitymail) :
+					$communitymail = $ggzmail;
+				endif;
 			endif;
 		endif;
 
