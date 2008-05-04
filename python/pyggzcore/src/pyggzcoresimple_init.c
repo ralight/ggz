@@ -356,6 +356,24 @@ static PyObject *pyggzcoresimple_room_launch(PyObject *self, PyObject *args)
 	return Py_BuildValue("i", ret);
 }
 
+static PyObject *pyggzcoresimple_room_launch_trex(PyObject *self, PyObject *args)
+{
+	GGZTable *table;
+	GGZGameType *gametype2;
+	int ret;
+
+	gametype2 = ggzcore_room_get_gametype(ggzroom);
+
+	table = ggzcore_table_new();
+	ggzcore_table_init(table, gametype2, "t-rex autolaunched table", 2);
+	ggzcore_table_set_seat(table, 0, GGZ_SEAT_RESERVED, "resv1");
+	ggzcore_table_set_seat(table, 1, GGZ_SEAT_RESERVED, "resv2");
+
+	ret = ggzcore_room_launch_table(ggzroom, table);
+
+	return Py_BuildValue("i", (ret == 0));
+}
+
 static PyObject *pyggzcoresimple_room_join(PyObject *self, PyObject *args)
 {
 	int ret;
@@ -545,6 +563,7 @@ static PyMethodDef pyggzcoresimple_room_methods[] =
 	{"play", pyggzcoresimple_room_play, METH_VARARGS},
 	{"join", pyggzcoresimple_room_join, METH_VARARGS},
 	{"launch", pyggzcoresimple_room_launch, METH_VARARGS},
+	{"launchtrex", pyggzcoresimple_room_launch_trex, METH_VARARGS},
 	{NULL, NULL, 0}
 };
 
