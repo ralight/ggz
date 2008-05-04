@@ -1,10 +1,27 @@
 <form method="post" action="index.php?page=new3">
 
 <?php
+
+$freeform = false;
+
+if (!$freeform) :
+	$res = $database->exec("SELECT handle FROM users ORDER BY handle DESC", null);
+endif;
+
 for($i = 0; $i < $form_participants; $i++)
 {
 	echo "Name of player $i:";
-	echo "<input type='text' name='form_participant_$i'>\n";
+	if ($freeform) :
+		echo "<input type='text' name='form_participant_$i'>\n";
+	else :
+		echo "<select name='form_participant_$i'>\n";
+		for ($j = 0; $j < $database->numrows($res); $j++)
+		{
+			$handle = $database->result($res, $j, "handle");
+			echo "<option>$handle</option>\n";
+		}
+		echo "</select>\n";
+	endif;
 	echo "<br>\n";
 }
 ?>
