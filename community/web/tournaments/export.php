@@ -2,23 +2,40 @@
 
 include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
 
+header("Content-type: image/png");
+
 include_once("match.php");
 
 $res = $database->exec("SELECT * FROM tournaments WHERE id = '%^'", array($tid));
 
 $name = $database->result($res, $i, "name");
 $game = $database->result($res, $i, "game");
+$room = $database->result($res, $i, "room");
 $date = $database->result($res, $i, "date");
 $organizer = $database->result($res, $i, "organizer");
 
 $datestr = date("d.m.Y", $date);
+$nowstr = date("d.m.Y", time());
 
-echo "Selected tournament: $name<br>\n";
-echo "Game type: <a href=\"/db/games/?lookup=$game\">$game</a><br>\n";
-echo "Organized by: <a href=\"/db/players/?lookup=$organizer\">$organizer</a><br>\n";
-echo "Starting: $datestr<br><br>\n";
+$width = 1280;
+$height = 800;
 
-echo "Participants:<br><br>\n";
+$im = imagecreatetruecolor($width, $height);
+
+$fontfile = "/usr/share/fonts/truetype/ttf-bitstream-vera/Vera.ttf";
+
+$bgcolor = imagecolorallocate($im, 255, 255, 255);
+$fgcolor = imagecolorallocate($im, 0, 0, 0);
+
+imagefill($im, 0, 0, $bgcolor);
+
+imagefttext($im, 14, 0, 20, 20, $fgcolor, $fontfile, "GGZ Gaming Zone site " . Config::getvalue("name"));
+imagefttext($im, 12, 0, 20, 40, $fgcolor, $fontfile, "Tournament $name in room $room of type $game");
+imagefttext($im, 12, 0, 20, 60, $fgcolor, $fontfile, "Start date: $datestr; current date: $nowstr");
+imagefttext($im, 12, 0, 20, 80, $fgcolor, $fontfile, "Organizer: $organizer");
+
+imagefttext($im, 12, 0, 20, 120, $fgcolor, $fontfile, "Participants:");
+
 $res = $database->exec("SELECT * FROM tournamentplayers WHERE id = '%^'", array($tid));
 $num = 0;
 $match = new Match($tid);
@@ -28,14 +45,11 @@ for($i = 0; $i < $database->numrows($res); $i++)
 	$name = $database->result($res, $i, "name");
 	$number = $database->result($res, $i, "number");
 
-	echo $match->link($name);
-	echo "<br>\n";
+	imagefttext($im, 10, 0, 30, 135 + $i * 15, $fgcolor, $fontfile, $name);
 
 	$num++;
 	$players[$number] = $name;
 }
-
-echo "<br>\n";
 
 function played($player1, $player2)
 {
@@ -75,8 +89,6 @@ function played($player1, $player2)
 	return "";
 }
 
-echo "Tournament plan:<br><br>\n";
-
 $names = array("Finals", "Semi-finals", "Quarter-finals", "Qualification", "Pre-qualification");
 
 $level = log($num) / log(2);
@@ -88,7 +100,10 @@ $winners = array();
 for($i = $level; $i > 0; $i--)
 {
 	$name = $names[$i - 1];
-	echo "$name<br>\n";
+
+	$x = (3 - log(1)) * 160 + 100;
+
+	imagefttext($im, 12, 0, $x, 110 + ($i - 1) * 100, $fgcolor, $fontfile, $name);
 
 	if($i == $level) :
 		for($j = 0; $j < $num; $j += 2)
@@ -98,18 +113,21 @@ for($i = $level; $i > 0; $i--)
 			$winner = played($player1, $player2);
 			if ($winner) :
 				$winners[$op] = $winner;
-				$winnerstr = "<b>$winner</b>";
-				$matchstr = " (<a href='/db/matches/?lookup=$matchid'>match details</a>)";
+				$winnerstr = $winner;
 			else:
-				$winnerstr = "<b>(open)</b>";
-				$matchstr = "";
 				$open = true;
 			endif;
-			echo "($op) $player1 vs. $player2: $winnerstr$matchstr<br>\n";
+
+			$x = ($j + (3 - log($xnum))) * 80 + 50;
+
+			imagefttext($im, 10, 0, $x, 135 + ($i - 1) * 100, $fgcolor, $fontfile, "$player1");
+			imagefttext($im, 10, 0, $x, 150 + ($i - 1) * 100, $fgcolor, $fontfile, "$player2");
+			if ($winner) :
+				imagefttext($im, 10, 0, $x, 165 + ($i - 1) * 100, $fgcolor, $fontfile, "Winner: $winnerstr");
+			endif;
 
 			$op += 1;
 		}
-		echo "<br>\n";
 	else :
 		$xnum = $xnum / 2;
 		$op1 = 1 + $opoffset;
@@ -127,68 +145,28 @@ for($i = $level; $i > 0; $i--)
 			$winner = played($player1, $player2);
 			if ($winner) :
 				$winners[$op] = $winner;
-				$winnerstr = "<b>$winner</b>";
-				$matchstr = " (<a href='/db/matches/?lookup=$matchid'>match details</a>)";
+				$winnerstr = $winner;
 			else:
-				$winnerstr = "<b>(open)</b>";
-				$matchstr = "";
 				$open = true;
 			endif;
-			echo "($op) $player1 vs. $player2: $winnerstr$matchstr<br>\n";
+
+			$x = ($j + (3 - log($xnum))) * 160 + 100;
+
+			imagefttext($im, 10, 0, $x, 135 + ($i - 1) * 100, $fgcolor, $fontfile, "$player1");
+			imagefttext($im, 10, 0, $x, 150 + ($i - 1) * 100, $fgcolor, $fontfile, "$player2");
+			if ($winner) :
+				imagefttext($im, 10, 0, $x, 165 + ($i - 1) * 100, $fgcolor, $fontfile, "Winner: $winnerstr");
+			endif;
+
 			$op1 += 2;
 			$op2 += 2;
 			$op += 1;
 			$opoffset += 2;
 		}
-		echo "<br>\n";
 	endif;
 }
 
-$res = $database->exec("SELECT * FROM placements WHERE tournament = '%^'", array($tid));
-if ($database->numrows($res) > 0) :
-	$already_approved = 1;
-else :
-	$already_approved = 0;
-endif;
-
-if (Auth::username() != $organizer) :
-	$approved = 0;
-endif;
-
-if (($approved) && (!$already_approved) && (!$open)) :
-	if ($player1 == $winner) :
-		$second = $player2;
-	else:
-		$second = $player1;
-	endif;
-	$database->exec("INSERT INTO placements " .
-		"(tournament, place, handle) VALUES " .
-		"('%^', 2, '%^')", array($tid, $second));
-	$database->exec("INSERT INTO placements " .
-		"(tournament, place, handle) VALUES " .
-		"('%^', 1, '%^')", array($tid, $winner));
-endif;
-
-if (!$open) :
-
-if ($already_approved) :
-	echo "This result has been approved.\n";
-else:
-	if (Auth::username() == $organizer) :
-		echo "<a href='index.php?page=show2&tid=$tid&approved=1'>Approve this result!</a>\n";
-	else :
-		echo "$Waiting for approval by tournament organizer.\n";
-	endif;
-endif;
-
-else :
-
-echo "This tournament is still running!\n";
-
-endif;
-
-echo "<br><br>\n";
-echo "<a href='export.php?tid=$tid'>Export tournament map</a>\n";
+imagepng($im);
+imagedestroy($im);
 
 ?>
-
