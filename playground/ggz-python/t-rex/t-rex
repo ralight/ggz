@@ -1,0 +1,160 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Tournament table launcher
+# Copyright (C) 2008 Josef Spillner <josef@ggzgamingzone.org>
+# Published under GNU GPL conditions
+
+import os, sys
+import ConfigParser
+import pg
+
+import ggzcoresimple
+import commonuri
+
+global_room = None
+
+def ggz_game_event(id, data):
+	pass
+
+def ggz_room_event(id, data):
+	if id == ggzcoresimple.ROOM_CHAT_EVENT:
+		#type = data[0]
+		#player = data[1]
+		#message = unic(data[2])
+
+		#chatoutput.append(player + ": " + message)
+		pass
+	elif id == ggzcoresimple.ROOM_TABLE_LIST:
+		tablelist = data
+	elif id == ggzcoresimple.ROOM_PLAYER_LIST:
+		playerlist = data
+	elif id == ggzcoresimple.ROOM_TABLE_UPDATE:
+		tablelist = data
+	elif id == ggzcoresimple.ROOM_ENTER:
+		#tablelist = data
+		pass
+	elif id == ggzcoresimple.ROOM_LEAVE:
+		#tablelist = data
+		pass
+
+def ggz_server_event(id, data):
+	if id == ggzcoresimple.SERVER_CONNECTED:
+		print "- connected"
+	elif id == ggzcoresimple.SERVER_CONNECT_FAIL:
+		print "- connection failure"
+	elif id == ggzcoresimple.SERVER_NEGOTIATED:
+		print "- negotiated"
+		ggzcoresimple.server.login()
+	elif id == ggzcoresimple.SERVER_LOGGED_IN:
+		print "- logged in"
+	elif id == ggzcoresimple.SERVER_ROOM_LIST:
+		print "- room list"
+		roomlist = data
+		ggzcoresimple.server.join_room(global_room)
+	elif id == ggzcoresimple.SERVER_ENTERED:
+		print "- entered"
+		print "## launching table now ##"
+		ggzcoresimple.room.launch()
+	elif id == ggzcoresimple.SERVER_ENTER_FAIL:
+		print "- entering failed"
+	elif id == ggzcoresimple.SERVER_LOGIN_FAIL:
+		print "- login failed"
+	elif id == ggzcoresimple.SERVER_STATE_CHANGE:
+		state = ggzcoresimple.server.get_state()
+		if state == ggzcoresimple.STATE_OFFLINE:
+			serverstate = "offline"
+		elif state == ggzcoresimple.STATE_CONNECTING:
+			serverstate = "connecting"
+		elif state == ggzcoresimple.STATE_ONLINE:
+			serverstate = "online"
+		elif state == ggzcoresimple.STATE_LOGGING_IN:
+			serverstate = "logging in"
+		elif state == ggzcoresimple.STATE_LOGGED_IN:
+			serverstate = "logged in"
+		elif state == ggzcoresimple.STATE_ENTERING_ROOM:
+			serverstate = "entering room"
+		elif state == ggzcoresimple.STATE_BETWEEN_ROOMS:
+			serverstate = "between rooms"
+		elif state == ggzcoresimple.STATE_IN_ROOM:
+			serverstate = "in room"
+		elif state == ggzcoresimple.STATE_LAUNCHING_TABLE:
+			serverstate = "launching table"
+		elif state == ggzcoresimple.STATE_JOINING_TABLE:
+			serverstate = "joining table"
+		elif state == ggzcoresimple.STATE_AT_TABLE:
+			serverstate = "at table"
+		elif state == ggzcoresimple.STATE_LEAVING_TABLE:
+			serverstate = "leaving table"
+		elif state == ggzcoresimple.STATE_LOGGING_OUT:
+			serverstate = "logging out"
+		else:
+			serverstate = "(unknown)"
+		print "- state changed: " + serverstate
+
+def ggz_progress(uri):
+	global global_room
+
+	ggzcoresimple.setHandler(ggzcoresimple.EVENT_SERVER, ggz_server_event)
+	ggzcoresimple.setHandler(ggzcoresimple.EVENT_ROOM, ggz_room_event)
+	ggzcoresimple.setHandler(ggzcoresimple.EVENT_GAME, ggz_game_event)
+
+	ggzcoresimple.server.set_hostinfo(uri.host, uri.port, 1)
+	if uri.password:
+		ggzcoresimple.server.set_logininfo(ggzcoresimple.LOGIN, uri.username, uri.password)
+	else:
+		ggzcoresimple.server.set_logininfo(ggzcoresimple.LOGIN_GUEST, uri.username, "")
+
+	global_room = uri.path[1:]
+
+	ggzcoresimple.server.connect()
+
+	while True:
+		ggzcoresimple.server.process()
+
+def main(cns):
+	q = cns.query("SELECT name, room FROM tournaments")
+
+	tournamentroom = None
+
+	for row in q.dictresult():
+		name = row["name"]
+		room = row["room"]
+		print "Tournament", name, "in", room
+
+		tournamentroom = room
+
+	uri = commonuri.Uri("ggz://t-rex@localhost:5688/#" + tournamentroom)
+	ggz_progress(uri)
+
+if __name__ == '__main__':
+	if len(sys.argv) != 2:
+		print "t-rex </path/to/ggzd.conf>"
+		sys.exit(1)
+
+	if sys.argv[1] == "--help":
+		print "t-rex - the GGZ Gaming Zone tournament table manager"
+		sys.exit(0)
+
+	ini = ConfigParser.SafeConfigParser()
+	files = ini.read(sys.argv[1])
+	if len(files) == 0:
+		print "Error: configuration file not found"
+		sys.exit(1)
+
+	if ini.has_section("General"):
+		dbhost = ini.get("General", "DatabaseHost")
+		dbport = ini.get("General", "DatabasePort")
+		dbname = ini.get("General", "DatabaseName")
+		dbuser = ini.get("General", "DatabaseUsername")
+		dbpass = ini.get("General", "DatabasePassword")
+		dbtype = ini.get("General", "DatabaseType")
+
+	if dbtype != "pgsql":
+		print "Error: currently works for pgsql databases only"
+		sys.exit(1)
+
+	cns = pg.DB(host=dbhost, port=int(dbport), dbname=dbname, user=dbuser, passwd=dbpass)
+
+	main(cns)
+
