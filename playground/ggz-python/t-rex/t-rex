@@ -50,12 +50,20 @@ def ggz_server_event(id, data):
 		print "- logged in"
 	elif id == ggzcoresimple.SERVER_ROOM_LIST:
 		print "- room list"
+		# FIXME: this is what we get from i18n'd room names :-)
+		global_room = "Schiffe versenken"
+		# FIXME: this needs to be fixed somehow
 		roomlist = data
+		try:
+			num = roomlist.index(global_room)
+		except:
+			print "ERROR: room " + global_room + " not found"
+			return
 		ggzcoresimple.server.join_room(global_room)
 	elif id == ggzcoresimple.SERVER_ENTERED:
 		print "- entered"
 		print "## launching table now ##"
-		ggzcoresimple.room.launch()
+		ggzcoresimple.room.launchtrex()
 	elif id == ggzcoresimple.SERVER_ENTER_FAIL:
 		print "- entering failed"
 	elif id == ggzcoresimple.SERVER_LOGIN_FAIL:
