@@ -25,14 +25,17 @@ function random_array($size)
 $datestamp = strtotime($form_date);
 $datestring = date("d.m.Y", $datestamp);
 
-echo "Tournament $form_name of $form_game will start on $datestring.\n";
+$res = $database->exec("SELECT gametype FROM rooms WHERE name = '%^'", array($form_room));
+$gametype = $database->result($res, 0, "gametype");
+
+echo "Tournament $form_name of type $gametype will start on $datestring in room $form_room.\n";
 echo "<br><br>\n";
 
 $organizer = Auth::username();
 
 $database->exec("INSERT INTO tournaments " .
-	"(name, game, date, organizer) VALUES " .
-	"('%^', '%^', '%^', '%^')", array($form_name, $gorm_game, $datestamp, $organizer));
+	"(name, game, room, date, organizer) VALUES " .
+	"('%^', '%^', '%^', '%^', '%^')", array($form_name, $gametype, $form_room, $datestamp, $organizer));
 
 $res = $database->exec("SELECT MAX(id) FROM tournaments", NULL);
 $tid = $database->result($res, 0, "max");

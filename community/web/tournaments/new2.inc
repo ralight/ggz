@@ -20,7 +20,7 @@ All players must be registered on the GGZ server.
 <input type="submit" value="Next page">
 
 <input type="hidden" name="form_name" value="<?php echo $form_name; ?>">
-<input type="hidden" name="form_game" value="<?php echo $form_game; ?>">
+<input type="hidden" name="form_room" value="<?php echo $form_room; ?>">
 <input type="hidden" name="form_date" value="<?php echo $form_date; ?>">
 <input type="hidden" name="form_participants" value="<?php echo $form_participants; ?>">
 

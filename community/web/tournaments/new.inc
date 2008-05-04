@@ -5,15 +5,15 @@ Name of the tournament:
 
 <br><br>
 
-Game type:
-<select name="form_game">
+Tournament room:
+<select name="form_room">
 <?php
-$res = $database->exec("SELECT DISTINCT game FROM stats", NULL);
+$res = $database->exec("SELECT DISTINCT name FROM rooms", NULL);
 for ($i = 0; $i < $database->numrows($res); $i++)
 {
-	$game = $database->result($res, $i, "game");
+	$roomname = $database->result($res, $i, "name");
 
-	echo "<option>$game</option>\n";
+	echo "<option>$roomname</option>\n";
 }
 ?>
 </select>
