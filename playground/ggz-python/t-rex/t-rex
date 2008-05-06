@@ -70,7 +70,7 @@ def ggz_server_event(id, data):
 		print "- entered"
 		print "## launching table now ##"
 		global_backinroom = False
-		ggzcoresimple.room.launchtrex()
+		ggzcoresimple.room.launchtrex("t-rex autolaunched table", "resv1", "resv2")
 		print "## done with launch ##"
 	elif id == ggzcoresimple.SERVER_ENTER_FAIL:
 		print "- entering failed"
