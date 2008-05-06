@@ -8,11 +8,13 @@
 import os, sys
 import ConfigParser
 import pg
+import math
 
 import ggzcoresimple
 import commonuri
 
 global_room = None
+global_abort = False
 
 def ggz_game_event(id, data):
 	pass
@@ -39,10 +41,14 @@ def ggz_room_event(id, data):
 		pass
 
 def ggz_server_event(id, data):
+	global global_abort
+	global global_backinroom
+
 	if id == ggzcoresimple.SERVER_CONNECTED:
 		print "- connected"
 	elif id == ggzcoresimple.SERVER_CONNECT_FAIL:
 		print "- connection failure"
+		global_abort = True
 	elif id == ggzcoresimple.SERVER_NEGOTIATED:
 		print "- negotiated"
 		ggzcoresimple.server.login()
@@ -63,11 +69,15 @@ def ggz_server_event(id, data):
 	elif id == ggzcoresimple.SERVER_ENTERED:
 		print "- entered"
 		print "## launching table now ##"
+		global_backinroom = False
 		ggzcoresimple.room.launchtrex()
+		print "## done with launch ##"
 	elif id == ggzcoresimple.SERVER_ENTER_FAIL:
 		print "- entering failed"
+		global_abort = True
 	elif id == ggzcoresimple.SERVER_LOGIN_FAIL:
 		print "- login failed"
+		global_abort = True
 	elif id == ggzcoresimple.SERVER_STATE_CHANGE:
 		state = ggzcoresimple.server.get_state()
 		if state == ggzcoresimple.STATE_OFFLINE:
@@ -86,6 +96,8 @@ def ggz_server_event(id, data):
 			serverstate = "between rooms"
 		elif state == ggzcoresimple.STATE_IN_ROOM:
 			serverstate = "in room"
+			global_backinroom = True
+			#ggzcoresimple.server.join_room("Eingangsbereich") # XXX
 		elif state == ggzcoresimple.STATE_LAUNCHING_TABLE:
 			serverstate = "launching table"
 		elif state == ggzcoresimple.STATE_JOINING_TABLE:
@@ -102,6 +114,7 @@ def ggz_server_event(id, data):
 
 def ggz_progress(uri):
 	global global_room
+	global global_abort
 
 	ggzcoresimple.setHandler(ggzcoresimple.EVENT_SERVER, ggz_server_event)
 	ggzcoresimple.setHandler(ggzcoresimple.EVENT_ROOM, ggz_room_event)
@@ -117,23 +130,43 @@ def ggz_progress(uri):
 
 	ggzcoresimple.server.connect()
 
-	while True:
+	while not global_abort:
 		ggzcoresimple.server.process()
 
+	sys.exit(-1)
+
 def main(cns):
-	q = cns.query("SELECT name, room FROM tournaments")
-
 	tournamentroom = None
+	players = {}
 
+	q = cns.query("SELECT name, room, id FROM tournaments")
 	for row in q.dictresult():
 		name = row["name"]
 		room = row["room"]
+		id = row["id"]
 		print "Tournament", name, "in", room
+
+		qp = cns.query("SELECT name, number FROM tournamentplayers WHERE id = '" + str(id) + "'")
+		for row in qp.dictresult():
+			pname = row["name"]
+			pnumber = row["number"]
+			if not players.has_key(id):
+				players[id] = {}
+			players[id][pnumber] = pname
+			print "-", pname
 
 		tournamentroom = room
 
+		level = math.log(len(qp.dictresult())) / math.log(2)
+		for l in range(level, 0, -1):
+			if l == level:
+				for p in range(0, len(players[id]), 2):
+					p1 = players[id][p]
+					p2 = players[id][p + 1]
+					print "** match **", p1, p2
+
 	uri = commonuri.Uri("ggz://t-rex@localhost:5688/#" + tournamentroom)
-	ggz_progress(uri)
+	#ggz_progress(uri)
 
 if __name__ == '__main__':
 	if len(sys.argv) != 2:
