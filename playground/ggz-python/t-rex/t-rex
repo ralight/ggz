@@ -135,16 +135,44 @@ def ggz_progress(uri):
 
 	sys.exit(-1)
 
+def played(cns, p1, p2):
+	x = {}
+	y = {}
+	number = 0
+
+	q1 = cns.query("SELECT match FROM matchplayers WHERE handle = '" + p1 + "'")
+	for row in q1.dictresult():
+		x[row["match"]] = row["match"]
+
+	q2 = cns.query("SELECT match FROM matchplayers WHERE handle = '" + p2 + "'")
+	for row in q2.dictresult():
+		if x.has_key(row["match"]):
+			y[number] = row["match"]
+			number += 1
+
+	for pair in y.keys():
+		#print "//", pair
+		match = y[pair]
+		# FIXME: use correct date of match
+		q = cns.query("SELECT id, winner FROM matches WHERE id = '" + str(match) + "' AND date > '0'")
+		if len(q.dictresult()) == 1:
+			winner = q.dictresult()[0]["winner"]
+			#print "//", winner
+			return winner
+
+	return None
+
 def main(cns):
-	tournamentroom = None
+	tournamenttables = {}
 	players = {}
 
-	q = cns.query("SELECT name, room, id FROM tournaments")
+	q = cns.query("SELECT name, room, id, game FROM tournaments")
 	for row in q.dictresult():
 		name = row["name"]
 		room = row["room"]
 		id = row["id"]
-		print "Tournament", name, "in", room
+		game = row["game"]
+		print "Tournament", name, "of game", game, "in", room
 
 		qp = cns.query("SELECT name, number FROM tournamentplayers WHERE id = '" + str(id) + "'")
 		for row in qp.dictresult():
@@ -153,20 +181,68 @@ def main(cns):
 			if not players.has_key(id):
 				players[id] = {}
 			players[id][pnumber] = pname
-			print "-", pname
+			#print "-", pname
 
-		tournamentroom = room
+		level = int(math.log(len(players[id])) / math.log(2))
+		xnum = len(players[id]) / 2
+		opoffset = 0
+		op = 1
+		winners = {}
 
-		level = math.log(len(qp.dictresult())) / math.log(2)
 		for l in range(level, 0, -1):
 			if l == level:
 				for p in range(0, len(players[id]), 2):
 					p1 = players[id][p]
 					p2 = players[id][p + 1]
-					print "** match **", p1, p2
+					#print "** match **", p1, p2
 
-	uri = commonuri.Uri("ggz://t-rex@localhost:5688/#" + tournamentroom)
-	#ggz_progress(uri)
+					winner = played(cns, p1, p2)
+					if winner:
+						#print "*=====*", winner, "@", op
+						winners[op] = winner
+					else:
+						# open table here
+						print "[table]", p1, p2, "@", room
+						if not tournamenttables.has_key(room):
+							tournamenttables[room] = []
+						tournamenttables[room].append((p1, p2))
+
+					op += 1
+			else:
+				xnum = xnum / 2
+				op1 = opoffset + 1
+				op2 = opoffset + 2
+				for p in range(xnum):
+					#print "# winner of", op1, "<=>", op2
+
+					if winners.has_key(op1) and winners.has_key(op2):
+						p1 = winners[op1]
+						p2 = winners[op2]
+						winner = played(cns, p1, p2)
+						if winner:
+							#print "*^=^=^*", winner, "@", op
+							winners[op] = winner
+						else:
+							# open table here
+							print "[table]", p1, p2, "@", room
+							if not tournamenttables.has_key(room):
+								tournamenttables[room] = []
+							tournamenttables[room].append((p1, p2))
+					else:
+						# do not open table here
+						pass
+
+					op1 += 2
+					op2 += 2
+					opoffset += 2
+					op += 1
+
+	if len(tournamenttables.keys()) > 0:
+		# FIXME: iterate over all rooms
+		tournamentroom = tournamenttables.keys()[0]
+		print "'''", tournamentroom
+		uri = commonuri.Uri("ggz://t-rex@localhost:5688/#" + tournamentroom)
+		ggz_progress(uri)
 
 if __name__ == '__main__':
 	if len(sys.argv) != 2:
