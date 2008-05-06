@@ -361,13 +361,16 @@ static PyObject *pyggzcoresimple_room_launch_trex(PyObject *self, PyObject *args
 	GGZTable *table;
 	GGZGameType *gametype2;
 	int ret;
+	char *title, *player1, *player2;
+
+	if(!PyArg_ParseTuple(args, "sss", &title, &player1, &player2)) return NULL;
 
 	gametype2 = ggzcore_room_get_gametype(ggzroom);
 
 	table = ggzcore_table_new();
-	ggzcore_table_init(table, gametype2, "t-rex autolaunched table", 2);
-	ggzcore_table_set_seat(table, 0, GGZ_SEAT_RESERVED, "resv1");
-	ggzcore_table_set_seat(table, 1, GGZ_SEAT_RESERVED, "resv2");
+	ggzcore_table_init(table, gametype2, title, 2);
+	ggzcore_table_set_seat(table, 0, GGZ_SEAT_RESERVED, player1);
+	ggzcore_table_set_seat(table, 1, GGZ_SEAT_RESERVED, player2);
 
 	ret = ggzcore_room_launch_table(ggzroom, table);
 
