@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 9621 2008-01-29 17:42:18Z oojah $
+ * $Id: room.c 9974 2008-05-07 07:24:57Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -950,7 +950,7 @@ void _ggzcore_room_set_table_join(GGZRoom * room, int table_index)
 void _ggzcore_room_set_table_join_status(GGZRoom * room,
 					 GGZClientReqError status)
 {
-	char buf[128];
+	char *buf;
 
 	if (status != E_OK)
 		_ggzcore_server_set_table_join_status(room->server,
@@ -965,45 +965,46 @@ void _ggzcore_room_set_table_join_status(GGZRoom * room,
 
 	case E_NOT_IN_ROOM:
 		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
-				    "Not in a room");
+				    _("Not in a room"));
 		break;
 
 	case E_AT_TABLE:
 		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
-				    "Already at a table");
+				    _("Already at a table"));
 		break;
 
 	case E_IN_TRANSIT:
 		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
-				    "Already joining/leaving a table");
+				    _("Already joining/leaving a table"));
 		break;
 
 	case E_BAD_OPTIONS:
 		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
-				    "Bad option");
+				    _("Bad option"));
 		break;
 
 	case E_NO_TABLE:
 		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
-				    "No such table");
+				    _("No such table"));
 		break;
 
 	case E_TABLE_FULL:
 		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
-				    "The table is full "
-				    "(or has reserved seats)");
+				    _("The table is full "
+				      "(or has reserved seats)"));
 		break;
 
 	case E_NO_PERMISSION:
 		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
-				    "You don't have enough "
-				    "permissions to join this table.");
+				    _("You don't have enough "
+				      "permissions to join this table."));
 		break;
 
 	default:
-		snprintf(buf, sizeof(buf),
-			 "Unknown join failure (status %d)", status);
+		buf = ggz_strbuild(_("Unknown join failure (status %d)"),
+				   status);
 		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL, buf);
+		ggz_free(buf);
 		break;
 
 	}
@@ -1025,7 +1026,7 @@ void _ggzcore_room_set_table_leave(GGZRoom * room,
 void _ggzcore_room_set_table_leave_status(GGZRoom * room,
 					  GGZClientReqError status)
 {
-	char buf[128];
+	char *buf;
 
 	if (status != E_OK)
 		_ggzcore_server_set_table_leave_status(room->server,
@@ -1040,23 +1041,24 @@ void _ggzcore_room_set_table_leave_status(GGZRoom * room,
 
 	case E_NOT_IN_ROOM:
 		_ggzcore_room_event(room, GGZ_TABLE_LEAVE_FAIL,
-				    "Not at a table");
+				    _("Not at a table"));
 		break;
 
 	case E_NO_TABLE:
 		_ggzcore_room_event(room, GGZ_TABLE_LEAVE_FAIL,
-				    "No such table");
+				    _("No such table"));
 		break;
 
 	case E_LEAVE_FORBIDDEN:
 		_ggzcore_room_event(room, GGZ_TABLE_LEAVE_FAIL,
-				    "Cannot leave games of this type");
+				    _("Cannot leave games of this type"));
 		break;
 
 	default:
-		snprintf(buf, sizeof(buf),
-			 "Unknown leave failure (status %d)", status);
+		buf = ggz_strbuild(_("Unknown leave failure (status %d)"),
+				   status);
 		_ggzcore_room_event(room, GGZ_TABLE_LEAVE_FAIL, buf);
+		ggz_free(buf);
 		break;
 	}
 }
