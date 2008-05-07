@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 9863 2008-03-22 20:04:31Z josef $
+ * $Id: ggzcore.h 9973 2008-05-07 07:15:27Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -40,6 +40,9 @@
 
 /** @file ggzcore.h
  *  @brief The interface for the ggzcore library used by GGZ clients
+ *
+ *  Any strings passed from ggzcore into your application will be in
+ *  either ASCII or (in case of translated strings) UTF-8 format.
  */
 
 #ifdef __cplusplus

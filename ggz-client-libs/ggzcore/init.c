@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: init.c 9650 2008-02-06 20:07:20Z josef $
+ * $Id: init.c 9973 2008-05-07 07:15:27Z jdorje $
  *
  * Initialization code
  *
@@ -67,7 +67,8 @@ int ggzcore_init(GGZOptions options)
 #endif
 
 	/* This catalog must be preloaded by applications */
-	bindtextdomain("ggzcore_" PACKAGE_VERSION, PREFIX "/share/locale");
+	bindtextdomain(GGZCORE_PACKAGE, PREFIX "/share/locale");
+	bind_textdomain_codeset(GGZCORE_PACKAGE, "UTF-8");
 
 	/* Initialize various systems */
 	if (options.flags & GGZ_OPT_MODULES)
