@@ -1,0 +1,15 @@
+T-rex is a pyggzcore-based client application which is to be run on the server in order to
+automatically launch tables required for tournament play. At the time being, only two-player
+games are supported.
+
+Some more issues:
+
+- GGZ currently assumes that tables are launched by the "host player", i.e. the one
+  which will join the first seat. T-rex however launches tables and reserves seats
+  for other players without joining itself. Therefore, the patch t-rex.ggzinfrastructure.diff
+  must be applied to ggzcore and ggzd first.
+- Internationalised room names make t-rex impossible to work. Therefore it is suggested to
+  modify the GGZ protocol to also transmit the "internal" (untranslated) room name along
+  with the translated version. A requirement for it would be to be unique. We cannot rely
+  on the room numbers as they might change.
+

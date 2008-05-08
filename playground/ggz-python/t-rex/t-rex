@@ -13,8 +13,10 @@ import math
 import ggzcoresimple
 import commonuri
 
-global_room = None
+global_room_data = None
 global_abort = False
+global_tournamenttables = None
+global_roomlist = None
 
 def ggz_game_event(id, data):
 	pass
@@ -40,9 +42,30 @@ def ggz_room_event(id, data):
 		#tablelist = data
 		pass
 
+def join_room():
+	global global_room_data
+	global global_roomlist
+
+	(room, pair) = global_room_data
+	# FIXME: this is what we get from i18n'd room names :-)
+	if room == "Connect the dots":
+		room = "Punkte verbinden"
+	elif room == "Battleship":
+		room = "Schiffe versenken"
+	# FIXME: this needs to be fixed somehow
+	try:
+		num = global_roomlist.index(room)
+	except:
+		print "ERROR: room " + room + " not found"
+		global_room_data = None
+		return
+	print "->", room
+	ggzcoresimple.server.join_room(room)
+
 def ggz_server_event(id, data):
 	global global_abort
-	global global_backinroom
+	global global_room_data
+	global global_roomlist
 
 	if id == ggzcoresimple.SERVER_CONNECTED:
 		print "- connected"
@@ -56,22 +79,15 @@ def ggz_server_event(id, data):
 		print "- logged in"
 	elif id == ggzcoresimple.SERVER_ROOM_LIST:
 		print "- room list"
-		# FIXME: this is what we get from i18n'd room names :-)
-		global_room = "Schiffe versenken"
-		# FIXME: this needs to be fixed somehow
-		roomlist = data
-		try:
-			num = roomlist.index(global_room)
-		except:
-			print "ERROR: room " + global_room + " not found"
-			return
-		ggzcoresimple.server.join_room(global_room)
+		global_roomlist = data
 	elif id == ggzcoresimple.SERVER_ENTERED:
 		print "- entered"
 		print "## launching table now ##"
-		global_backinroom = False
-		ggzcoresimple.room.launchtrex("t-rex autolaunched table", "resv1", "resv2")
+		(room, pair) = global_room_data
+		print "## pair is", pair
+		ggzcoresimple.room.launchtrex("t-rex autolaunched table", pair[0], pair[1])
 		print "## done with launch ##"
+		global_room_data = None
 	elif id == ggzcoresimple.SERVER_ENTER_FAIL:
 		print "- entering failed"
 		global_abort = True
@@ -96,8 +112,6 @@ def ggz_server_event(id, data):
 			serverstate = "between rooms"
 		elif state == ggzcoresimple.STATE_IN_ROOM:
 			serverstate = "in room"
-			global_backinroom = True
-			#ggzcoresimple.server.join_room("Eingangsbereich") # XXX
 		elif state == ggzcoresimple.STATE_LAUNCHING_TABLE:
 			serverstate = "launching table"
 		elif state == ggzcoresimple.STATE_JOINING_TABLE:
@@ -113,8 +127,11 @@ def ggz_server_event(id, data):
 		print "- state changed: " + serverstate
 
 def ggz_progress(uri):
-	global global_room
+	global global_room_data
 	global global_abort
+	global global_tournamenttables
+	global global_tournamenttablelist
+	global global_roomlist
 
 	ggzcoresimple.setHandler(ggzcoresimple.EVENT_SERVER, ggz_server_event)
 	ggzcoresimple.setHandler(ggzcoresimple.EVENT_ROOM, ggz_room_event)
@@ -126,11 +143,24 @@ def ggz_progress(uri):
 	else:
 		ggzcoresimple.server.set_logininfo(ggzcoresimple.LOGIN_GUEST, uri.username, "")
 
-	global_room = uri.path[1:]
+	global_room_data = None
 
 	ggzcoresimple.server.connect()
 
+	global_tournamenttablelist = []
+	for room in global_tournamenttables.keys():
+		for pair in global_tournamenttables[room]:
+			print room, pair, "*****"
+			global_tournamenttablelist.append((room, pair))
+
 	while not global_abort:
+		if not global_room_data:
+			if global_roomlist:
+				state = ggzcoresimple.server.get_state()
+				if state == ggzcoresimple.STATE_IN_ROOM or state == ggzcoresimple.STATE_LOGGED_IN:
+					if len(global_tournamenttablelist) > 0:
+						global_room_data = global_tournamenttablelist.pop()
+						join_room()
 		ggzcoresimple.server.process()
 
 	sys.exit(-1)
@@ -163,7 +193,9 @@ def played(cns, p1, p2):
 	return None
 
 def main(cns):
-	tournamenttables = {}
+	global global_tournamenttables
+	
+	global_tournamenttables = {}
 	players = {}
 
 	q = cns.query("SELECT name, room, id, game FROM tournaments")
@@ -203,9 +235,9 @@ def main(cns):
 					else:
 						# open table here
 						print "[table]", p1, p2, "@", room
-						if not tournamenttables.has_key(room):
-							tournamenttables[room] = []
-						tournamenttables[room].append((p1, p2))
+						if not global_tournamenttables.has_key(room):
+							global_tournamenttables[room] = []
+						global_tournamenttables[room].append((p1, p2))
 
 					op += 1
 			else:
@@ -225,9 +257,9 @@ def main(cns):
 						else:
 							# open table here
 							print "[table]", p1, p2, "@", room
-							if not tournamenttables.has_key(room):
-								tournamenttables[room] = []
-							tournamenttables[room].append((p1, p2))
+							if not global_tournamenttables.has_key(room):
+								global_tournamenttables[room] = []
+							global_tournamenttables[room].append((p1, p2))
 					else:
 						# do not open table here
 						pass
@@ -237,11 +269,8 @@ def main(cns):
 					opoffset += 2
 					op += 1
 
-	if len(tournamenttables.keys()) > 0:
-		# FIXME: iterate over all rooms
-		tournamentroom = tournamenttables.keys()[0]
-		print "'''", tournamentroom
-		uri = commonuri.Uri("ggz://t-rex@localhost:5688/#" + tournamentroom)
+	if len(global_tournamenttables.keys()) > 0:
+		uri = commonuri.Uri("ggz://t-rex@localhost:5688/")
 		ggz_progress(uri)
 
 if __name__ == '__main__':
