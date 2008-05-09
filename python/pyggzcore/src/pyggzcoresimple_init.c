@@ -316,6 +316,15 @@ static PyObject *pyggzcoresimple_room_get_name(PyObject *self, PyObject *args)
 	return Py_BuildValue("s", ret);
 }
 
+static PyObject *pyggzcoresimple_room_get_refname(PyObject *self, PyObject *args)
+{
+	const char *ret;
+
+	if(!PyArg_ParseTuple(args, "")) return NULL;
+	ret = ggzcore_room_get_refname(ggzroom);
+	return Py_BuildValue("s", ret);
+}
+
 static PyObject *pyggzcoresimple_room_get_desc(PyObject *self, PyObject *args)
 {
 	const char *ret;
@@ -561,6 +570,7 @@ static PyMethodDef pyggzcoresimple_server_methods[] =
 static PyMethodDef pyggzcoresimple_room_methods[] =
 {
 	{"get_name", pyggzcoresimple_room_get_name, METH_VARARGS},
+	{"get_refname", pyggzcoresimple_room_get_refname, METH_VARARGS},
 	{"get_desc", pyggzcoresimple_room_get_desc, METH_VARARGS},
 	{"chat", pyggzcoresimple_room_chat, METH_VARARGS},
 	{"play", pyggzcoresimple_room_play, METH_VARARGS},
@@ -659,6 +669,7 @@ static GGZHookReturn pyggzcoresimple_cb_server_hook(unsigned int id, const void 
 {
 	PyObject *arg, *res;
 	PyObject *element;
+	PyObject *reflist, *combinedlist;
 	char *str;
 	int i;
 	GGZRoom *room;
@@ -686,14 +697,20 @@ static GGZHookReturn pyggzcoresimple_cb_server_hook(unsigned int id, const void 
 	if(id == GGZ_ROOM_LIST)
 	{
 		roomlist = PyList_New(0);
+		reflist = PyList_New(0);
 		//ggzcore_server_get_num_rooms(ggzserver));
 		for(i = 0; i < ggzcore_server_get_num_rooms(ggzserver); i++)
 		{
 			room = ggzcore_server_get_nth_room(ggzserver, i);
 			element = Py_BuildValue("s", ggzcore_room_get_name(room));
 			PyList_Append(roomlist, element);
+			element = Py_BuildValue("s", ggzcore_room_get_refname(room));
+			PyList_Append(reflist, element);
 		}
-		arg = Py_BuildValue("(iO)", id, roomlist);
+		combinedlist = PyList_New(0);
+		PyList_Append(combinedlist, roomlist);
+		PyList_Append(combinedlist, reflist);
+		arg = Py_BuildValue("(iO)", id, combinedlist);
 	}
 	if(id == GGZ_ENTERED)
 	{
