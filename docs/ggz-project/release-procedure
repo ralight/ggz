@@ -20,7 +20,8 @@ Directly before release
 [] update build instruction.
    Affected files are README.GGZ and QuickStart.GGZ.
    Does 'make distcheck' work? (The ggzbuild tools might help)
-   (There's also DISTCHECK_CONFIGURE_FLAGS to add a prefix or the like.)
+   (There's also DISTCHECK_CONFIGURE_FLAGS to add a prefix or the like.
+   See playground/maintenance/makedist.sh)
 [] update RPM and Debian scripts if possible
 [] update NEWS and README
 [] bump version numbers

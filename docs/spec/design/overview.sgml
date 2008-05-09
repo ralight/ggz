@@ -244,12 +244,12 @@
       Since the server runs non-interactively in the background,
       there needs to be some run-time configuration tools so that
       server options may be changed without restarting.
-	  Updates are either executed indirectly (e.g. when removing a
-	  player from the database), or explicitely (e.g. when changing
-	  some configuration parameters and sending a hangup signal
-	  to ggzd).
-	  The latter one will be steered by a configuration utility as well
-	  at some point.
+      Updates are either executed indirectly (e.g. when removing a
+      player from the database), or explicitely (e.g. when changing
+      some configuration parameters and sending a hangup signal
+      to ggzd).
+      The latter one will be steered by a configuration utility as well
+      at some point.
     </para>
 
     <para>
@@ -344,8 +344,8 @@
   <title>Config Utility</title>
   <para>
     There is currently one such tool, namely ggzduedit.
-	It can be used to access the player database, edit permissions
-	and add and remove registered players.
+    It can be used to access the player database, edit permissions
+    and add and remove registered players.
   </para>
 </section>
 
@@ -425,89 +425,16 @@
       addition/deletion. GGZ can use libdb for
       this. A SQL database is possible too but probably not
       necessary for most installation.
-	  Both PostgreSQL and MySQL are supported at this point.
+      Both PostgreSQL and MySQL are supported at this point.
     </para>
   </section>
 
   <section id="motd"><title>MOTD System</title>
     <para>
-      The message of the day is read at initialization time from a file
-      pointed to by the MOTD configuration file option. The file can
-      consist of up to 80 lines (this is configurable at build via
-      MAX_MOTD_LINES).
-    </para>
-
-    <para>
-      The message of the day file can contain % specifiers which are
-      replaced by the server before sending to the client. The following
-      codes are supported:
-      <itemizedlist>
-	<listitem>
-	  <para>
-	    %a - Server administrator's name
-	  </para>
-	</listitem>
-	<listitem>
-	  <para>
-	    %C - Server cputype (according to last kernel build)
-	  </para>
-	</listitem>
-	<listitem>
-	  <para>
-	    %d - Current date on server
-	  </para>
-	</listitem>
-	<listitem>
-	  <para>
-	    %e - Server administrator's email address
-	  </para>
-	</listitem>
-	<listitem>
-	  <para>
-	    %g - Current number of game tables
-	  </para>
-	</listitem>
-	<listitem>
-	  <para>
-	    %G - Current number of game tables with free seats
-	  </para>
-	</listitem>
-	<listitem>
-	  <para>
-	    %h - Server's hostname
-	  </para>
-	</listitem>
-	<listitem>
-	  <para>
-	    %o - Server's OS name
-	  </para>
-	</listitem>
-	<listitem>
-	  <para>
-	    %p - Port number for this server
-	  </para>
-	</listitem>
-	<listitem>
-	  <para>
-	    %t - Current local time on server
-	  </para>
-	</listitem>
-	<listitem>
-	  <para>
-	    %u - Current server uptime statistic
-	  </para>
-	</listitem>
-	<listitem>
-	  <para>
-	    %U - Current numbers of users on system
-	  </para>
-	</listitem>
-	<listitem>
-	  <para>
-	    %v - Version of running server
-	  </para>
-	</listitem>
-      </itemizedlist>
+      The Message Of The Day (MOTD) is sent from the server to the client
+      upon login.
+      Documentation on the contents of the text MOTD can be found in
+      the GGZ Server Hosting Guide.
     </para>
   </section>
 
@@ -516,9 +443,9 @@
       Since the game modules are dynamic, it makes sense to store
       the statistics on a per-game type basis, rather than on a
       per-user basis.
-	  Statistics are currently handled by ggzdmod, independent from
-	  ggzd. Several types will be supported eventually, some of
-	  them are already implemented, e.g. win/loss or ELO.
+      Statistics are currently handled by ggzdmod, independent from
+      ggzd. Several types will be supported eventually, some of
+      them are already implemented, e.g. win/loss or ELO.
     </para>
   </section>
 

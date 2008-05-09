@@ -319,8 +319,8 @@ C-style variables place holders can be used, they are currently defined like:
 @item %G: current number of game tables with open seats
 @item %h: server hostname
 @item %o: server operating system
-@item %p: server port
-@item %t: time zone (local time)
+@item %p: server port number
+@item %t: local time on the server
 @item %u: server uptime
 @item %U: number of users logged in
 @item %v: GGZ server version number
@@ -331,6 +331,8 @@ of the @b{ggz-utils} package.
 In addition, the @b{ggz-gnome-client} package provides an application named
 @command{motd-editor}, which can be used to graphically edit such MOTD files,
 while having a real-time preview of the colour settings.
+The text MOTD has a limit of 80 lines which can be changed through
+MAX_MOTD_LINES at compilation time.
 
 @subsection Widely used terms
 

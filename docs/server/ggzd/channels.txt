@@ -93,7 +93,7 @@ Language   | use open file descriptor    | transmit file descriptors
 -----------+-----------------------------+----------------------------
 C/pure C++ | yes: write(), fdopen() etc. | yes: implemented in libggz
 C++/Qt     | yes: in QAbstractSocket     | yes: implemented in kggzmod
-Python     | yes: in Socket class        | only through PyAncillary
+Python     | yes: in Socket class        | only through PyAncillary [libggz]
 Ruby       | yes: in Socket class        | no
-Java       | only through GGZChannel     | only through GGZChannel
+Java       | only through GGZChannel     | only through GGZChannel [libggz]
 
