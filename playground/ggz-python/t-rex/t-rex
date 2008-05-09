@@ -47,12 +47,6 @@ def join_room():
 	global global_roomlist
 
 	(room, pair) = global_room_data
-	# FIXME: this is what we get from i18n'd room names :-)
-	if room == "Connect the dots":
-		room = "Punkte verbinden"
-	elif room == "Battleship":
-		room = "Schiffe versenken"
-	# FIXME: this needs to be fixed somehow
 	try:
 		num = global_roomlist.index(room)
 	except:
@@ -79,7 +73,7 @@ def ggz_server_event(id, data):
 		print "- logged in"
 	elif id == ggzcoresimple.SERVER_ROOM_LIST:
 		print "- room list"
-		global_roomlist = data
+		global_roomlist = data[1]
 	elif id == ggzcoresimple.SERVER_ENTERED:
 		print "- entered"
 		print "## launching table now ##"

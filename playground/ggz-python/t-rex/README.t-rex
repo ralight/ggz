@@ -12,4 +12,5 @@ Some more issues:
   modify the GGZ protocol to also transmit the "internal" (untranslated) room name along
   with the translated version. A requirement for it would be to be unique. We cannot rely
   on the room numbers as they might change.
+  => The suggested fix has been implemented now.
 
