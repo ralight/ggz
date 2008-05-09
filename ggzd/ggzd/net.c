@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 9532 2008-01-13 08:32:52Z josef $
+ * $Id: net.c 9977 2008-05-09 23:46:16Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -424,18 +424,21 @@ GGZReturn net_send_room(GGZNetIO *net, int index,
 {
 	const char *language = net->client->language;
 	const char *roomname = ggz_intlstring_translated(room->name, language);
+	const char *refname = ggz_intlstring_translated(room->name, NULL);
 	const char *roomdesc = ggz_intlstring_translated(room->description, language);
 
 	const char *roomname_quoted = ggz_xml_escape(roomname);
+	const char *refname_quoted = ggz_xml_escape(refname);
 	const char *roomdesc_quoted = ggz_xml_escape(roomdesc);
 
-	_net_send_line(net, "<ROOM ID='%d' NAME='%s' GAME='%d' PLAYERS='%d'>",
-		       index, roomname_quoted, room->game_type,
+	_net_send_line(net, "<ROOM ID='%d' NAME='%s' REFNAME='%s' GAME='%d' PLAYERS='%d'>",
+		       index, roomname_quoted, refname_quoted, room->game_type,
 		       room->player_count);
 	if (verbose && room->description)
 		_net_send_line(net, "<DESC>%s</DESC>", roomdesc_quoted);
 
 	ggz_free(roomname_quoted);
+	ggz_free(refname_quoted);
 	ggz_free(roomdesc_quoted);
 
 	return _net_send_line(net, "</ROOM>");
