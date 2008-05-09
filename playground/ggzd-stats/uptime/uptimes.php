@@ -48,7 +48,6 @@ if(file_exists($cache_file) && filemtime($cache_file) > filemtime($uptimes_file)
 	$current = $utimes[count($utimes)-1];
 	rsort($utimes, SORT_NUMERIC);
 	arsort($times, SORT_NUMERIC);
-	//print_r($times);
 
 	$page = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 	$page .= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"DTD/xhtml1-strict.dtd\">\n";
@@ -66,7 +65,7 @@ if(file_exists($cache_file) && filemtime($cache_file) > filemtime($uptimes_file)
 	}
 
 	for($i = 0; $i < $records; $i++){
-		if($i+1 == $current_pos){
+		if($i == $current_pos){
 			$page .= ("<tr class=\"current\"><td>-&gt;</td><td>".($i+1)."</td><td>".format_time($utimes[$i])."</td></tr>\n");
 		}else{
 			$page .= ("<tr><td></td><td>".($i+1)."</td><td>".format_time($utimes[$i])."</td></tr>\n");
