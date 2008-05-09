@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.h 9621 2008-01-29 17:42:18Z oojah $
+ * $Id: room.h 9978 2008-05-09 23:49:26Z josef $
  *
  * This fils contains functions for handling rooms
  *
@@ -45,6 +45,7 @@ void _ggzcore_room_init(GGZRoom * room,
 			GGZServer * server,
 			const unsigned int id,
 			const char *name,
+			const char *refname,
 			const unsigned int game,
 			const char *desc, int player_count);
 

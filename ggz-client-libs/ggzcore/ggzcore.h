@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 9973 2008-05-07 07:15:27Z jdorje $
+ * $Id: ggzcore.h 9978 2008-05-09 23:49:26Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -998,6 +998,9 @@ GGZServer *ggzcore_room_get_server(const GGZRoom *room);
 
 /** @brief Return the name of the room (or NULL on error). */
 const char* ggzcore_room_get_name(const GGZRoom *room);
+
+/** @brief Return the internal name of the room (or NULL on error). */
+const char* ggzcore_room_get_refname(const GGZRoom *room);
 
 /** @brief Return the description of the room (or NULL on error). */
 const char* ggzcore_room_get_desc(const GGZRoom *room);

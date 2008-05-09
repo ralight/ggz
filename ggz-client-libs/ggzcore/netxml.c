@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 9858 2008-03-21 11:37:04Z josef $
+ * $Id: netxml.c 9978 2008-05-09 23:49:26Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -2068,7 +2068,7 @@ static void _ggzcore_net_handle_room(GGZNet * net, GGZXMLElement * element)
 {
 	GGZRoom *ggz_room;
 	int id, game, players;
-	const char *name, *desc;
+	const char *name, *refname, *desc;
 	GGZXMLElement *parent = ggz_stack_top(net->stack);
 	const char *parent_tag, *parent_type;
 
@@ -2082,6 +2082,7 @@ static void _ggzcore_net_handle_room(GGZNet * net, GGZXMLElement * element)
 	/* Grab data from tag */
 	id = str_to_int(ATTR(element, "ID"), -1);
 	name = ATTR(element, "NAME");
+	refname = ATTR(element, "REFNAME");
 	game = str_to_int(ATTR(element, "GAME"), -1);
 	desc = ggz_xmlelement_get_data(element);
 	players = str_to_int(ATTR(element, "PLAYERS"), -1);
@@ -2089,7 +2090,7 @@ static void _ggzcore_net_handle_room(GGZNet * net, GGZXMLElement * element)
 	/* Set up GGZRoom object */
 	ggz_room = _ggzcore_room_new();
 	_ggzcore_room_init(ggz_room, net->server, id,
-			   name, game, desc, players);
+			   name, refname, game, desc, players);
 
 	/* Free description if present */
 	if (desc)

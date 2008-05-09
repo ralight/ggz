@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 9974 2008-05-07 07:24:57Z jdorje $
+ * $Id: room.c 9978 2008-05-09 23:49:26Z josef $
  *
  * This fils contains functions for handling rooms
  *
@@ -84,8 +84,11 @@ struct _GGZRoom {
 	/* The rooms index in the server's room list. */
 	int num;
 
-	/* Name of room */
+	/* Name of room (translated) */
 	char *name;
+
+	/* Name of room (internal, only for reference) */
+	char *refname;
 
 	/* Supported game type (ID on server) */
 	unsigned int game;
@@ -157,6 +160,11 @@ static unsigned int _ggzcore_room_get_closed(const GGZRoom * room)
 static const char *_ggzcore_room_get_name(const GGZRoom * room)
 {
 	return room->name;
+}
+
+static const char *_ggzcore_room_get_refname(const GGZRoom * room)
+{
+	return room->refname;
 }
 
 
@@ -301,6 +309,14 @@ const char *ggzcore_room_get_name(const GGZRoom * room)
 {
 	if (room)
 		return _ggzcore_room_get_name(room);
+	else
+		return NULL;
+}
+
+const char *ggzcore_room_get_refname(const GGZRoom * room)
+{
+	if (room)
+		return _ggzcore_room_get_refname(room);
 	else
 		return NULL;
 }
@@ -518,6 +534,7 @@ void _ggzcore_room_init(GGZRoom * room,
 			GGZServer * server,
 			const unsigned int id,
 			const char *name,
+			const char *refname,
 			const unsigned int game,
 			const char *desc, const int player_count)
 {
@@ -527,6 +544,7 @@ void _ggzcore_room_init(GGZRoom * room,
 	room->id = id;
 	room->game = game;
 	room->name = ggz_strdup(name);
+	room->refname = ggz_strdup(refname);
 	room->desc = ggz_strdup(desc);
 	room->player_count = player_count;
 
@@ -545,6 +563,9 @@ void _ggzcore_room_free(GGZRoom * room)
 
 	if (room->name)
 		ggz_free(room->name);
+
+	if (room->refname)
+		ggz_free(room->refname);
 
 	if (room->desc)
 		ggz_free(room->desc);
@@ -1203,7 +1224,8 @@ void *_ggzcore_room_copy(void *p)
 	GGZRoom *new, *src = p;
 
 	new = _ggzcore_room_new();
-	_ggzcore_room_init(new, src->server, src->id, src->name, src->game,
+	_ggzcore_room_init(new, src->server, src->id, src->name,
+			   src->refname, src->game,
 			   src->desc, src->player_count);
 
 	return (void *)new;
