@@ -19,6 +19,7 @@ AllowLeave = 0
 #BotsAllowed = 0
 PlayersAllowed = 2..8
 AllowSpectators = 0
+#AllowPeers = 1
 
 [Statistics]
 Records = 0

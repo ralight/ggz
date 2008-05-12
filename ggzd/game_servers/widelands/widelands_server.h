@@ -15,6 +15,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+// FIXME: The already nearly non-existing protocol can nowadays be reduced
+// further by setting AllowPeers=1 and letting the game client read the
+// extended player information after join events.
+
 #ifndef WIDELANDS_SERVER_H
 #define WIDELANDS_SERVER_H
 
