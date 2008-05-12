@@ -1,0 +1,7 @@
+[RoomInfo]
+Name = UDP game room
+Description = UDP game room
+GameType = UDP TEST
+
+MaxPlayers = 50
+MaxTables = 5

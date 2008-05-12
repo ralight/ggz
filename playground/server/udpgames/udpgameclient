@@ -1,0 +1,62 @@
+#!/usr/bin/env ruby
+
+require "RGGZMod"
+require "socket"
+
+class UdpTestClient < RGGZMod
+	def initialize
+		super
+	end
+
+	def displayseats
+		puts "-- begin seats --"
+		for seat in seats()
+			puts seat
+		end
+		for spectator in spectators()
+			puts spectator
+		end
+		puts "-- end seats --"
+	end
+
+	def event(id, data)
+		super
+
+		puts "UdpTestClient: event!"
+
+		if id == GGZMod::EVENTSTATE
+			state = @client.get_state
+			puts "State is now " + state.to_s
+		elsif id == GGZMod::EVENTSERVER
+			fd = data
+			puts "Socket to server is " + fd.to_s
+
+			sock = IO.new(fd, "w+")
+			# FIXME: fd represents a TCP channel, but maybe we want UDP or RDP?
+
+			displayseats
+		elsif id == GGZMod::EVENTPLAYER
+		elsif id == GGZMod::EVENTSEAT
+			displayseats
+		elsif id == GGZMod::EVENTSPECTATOR
+		elsif id == GGZMod::EVENTCHAT
+		elsif id == GGZMod::EVENTSTATS
+		elsif id == GGZMod::EVENTINFO
+		elsif id == GGZMod::EVENTRANKINGS
+		elsif id == GGZMod::EVENTERROR
+			#@client.disconnect
+		end
+	end
+
+	def loop
+		super
+	end
+end
+
+puts "## UDP Test Client ##"
+
+client = UdpTestClient.new
+client.loop
+
+puts "## Bye ##"
+

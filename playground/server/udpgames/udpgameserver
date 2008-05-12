@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+
+require "GGZDMod"
+require "socket"
+
+class UdpTestServer < GGZDMod
+#	def input(p)
+#		s = GGZRawSocket.for_fd($server.get_seat_fd(p))
+#		op = s.geti()
+#	end
+
+	def event(id, data)
+		if id == GGZDMod::EVENTJOIN then
+			trystart
+			puts "-- player joined"
+			puts "-- ... with fd", $server.get_seat_fd(data)
+		elsif id == GGZDMod::EVENTLEAVE then
+			puts "-- player left"
+		elsif id == GGZDMod::EVENTDATA then
+			#num = data
+			#input(num)
+			puts "-- player sent data"
+		elsif id == GGZDMod::EVENTERROR then
+			puts "**GGZ ERROR** - aborting now"
+			Thread.exit
+		end
+	end
+
+	def trystart()
+		num = $server.get_num_seats
+		empty = 0
+		for i in 0..num -1
+			if $server.get_seat_type(i) == GGZDMod::SEATOPEN then
+				empty += 1
+			end
+		end
+
+		if empty == 0 then
+			#puts "     Start now!"
+			#request_move(@turn)
+		end
+	end
+end
+
+def ggzdmod_handler(id, data)
+	$server.event(id, data)
+end
+
+puts "## UDP Test Server ##"
+
+$server = UdpTestServer.new
+$server.connect
+$server.loop
+
+puts "## Bye ##"
+
