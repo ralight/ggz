@@ -818,6 +818,7 @@ PlayersAllowed = <1 [2 3 ...]>
 KillWhenEmpty = <0/1>
 AllowSpectators = <0/1>
 AllowRestore = <0/1>
+AllowPeers = <0/1>
 
 [Statistics]
 Records = <0/1>
@@ -837,6 +838,8 @@ documentation explains what to do for these cases. KillWhenEmpty is set to
 are on the table. Finally, PlayersAllowed and BotsAllowed present a list of
 valid player and bot configurations. These two entries are lists rather than
 simple entries.
+One additional Allow* flag is AllowPeers which if set allows ggzd to reveal
+the IP addresses of participating players to the game clients of their peers.
 
 The room file (<name>.room) has the following format:
 
