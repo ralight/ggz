@@ -31,8 +31,25 @@ class UdpTestClient < RGGZMod
 			fd = data
 			puts "Socket to server is " + fd.to_s
 
-			sock = IO.new(fd, "w+")
+			sock = Socket.for_fd(fd)
+			peername = sock.getpeername
+			puts "... socket peer:", peername
+			puts "... (0)", peername[0]
+			puts "... (1)", peername[1]
+
 			# FIXME: fd represents a TCP channel, but maybe we want UDP or RDP?
+			# Ruby socket class hierarchy:
+			# IO -> BasicSocket -> IPSocket -> TCPSocket -> SOCKSSocket
+			#                               -> UDPSocket
+			#                   -> Socket
+			#                   -> UNIXSocket
+			# However we already get TCP semantics with the pre-connected fd!
+			# Only Socket and IO give us the possibility to make use of it with for_fd/new.
+			# But only Socket gives us getpeername via BasicSocket!
+
+			# FIXME: we only get 2 characters being 1 and 0, respectively
+			# maybe this has to do with passing on the file descriptor?
+			# It should work in theory though, see the Widelands server for getpeername().
 
 			displayseats
 		elsif id == GGZMod::EVENTPLAYER
