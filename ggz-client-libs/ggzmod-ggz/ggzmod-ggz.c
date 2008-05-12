@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 9542 2008-01-15 18:36:42Z josef $
+ * $Id: ggzmod-ggz.c 9982 2008-05-12 10:17:19Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ core client (ggz)
@@ -278,7 +278,7 @@ void ggzmod_ggz_set_server_host(GGZMod * ggzmod,
 			    const char *handle)
 {
 	if (ggzmod && ggzmod->type == GGZMOD_GGZ) {
-		/* If we're already connected, send the fd */
+		/* If we're already connected, send the connection info */
 		if (ggzmod->state == GGZMOD_STATE_CONNECTED)
 			_io_ggz_send_server(ggzmod->fd, host, port, handle);
 		ggzmod->server_host = ggz_strdup(host);
@@ -711,7 +711,7 @@ static int send_game_launch(GGZMod * ggzmod)
 	if (_io_ggz_send_launch(ggzmod->fd) < 0)
 		return -1;
 
-	/* If the server fd has already been set, send that too */
+	/* If the server fd or connection info has already been set, send that too */
 	if (ggzmod->server_fd != -1)
 		if (_io_ggz_send_server_fd(ggzmod->fd, ggzmod->server_fd) < 0)
 			return -5;
