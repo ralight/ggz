@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 9248 2007-08-13 07:02:11Z josef $
+ * $Id: players.c 9988 2008-05-23 18:45:01Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -382,10 +382,12 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 		dbg_msg(GGZ_DBG_TABLE,
 			"%s tries to launch table without connection",
 			player->name);
-		if (net_send_table_launch(player->client->net,
-					  E_NO_CHANNEL) < 0)
-			return GGZ_REQ_DISCONNECT;
-		return GGZ_REQ_FAIL;
+		if (!perms_check(player, GGZ_PERM_ROOMS_ADMIN)) {
+			if (net_send_table_launch(player->client->net,
+						  E_NO_CHANNEL) < 0)
+				return GGZ_REQ_DISCONNECT;
+			return GGZ_REQ_FAIL;
+		}
 	}
 
 	/* Do actual launch of table */
