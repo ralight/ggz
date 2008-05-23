@@ -209,6 +209,10 @@ install-rest:
 	mkdir -p $(DESTDIR)$(bindir)
 	cp faketable/ggz-faketable $(DESTDIR)$(bindir)
 
+	@echo Installing application t-rex
+	mkdir -p $(DESTDIR)$(bindir)
+	cp t-rex/t-rex $(DESTDIR)$(bindir)
+
 install-ggzboard:
 	@echo Installing GGZBoard framework and games
 	mkdir -p $(DESTDIR)$(bindir)
