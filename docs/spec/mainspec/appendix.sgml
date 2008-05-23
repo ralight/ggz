@@ -275,7 +275,7 @@
 
 		  <row rowsep="0">
 		    <entry namest="C1" nameend="C3">
-		      &lt;ROOM ID="id" NAME="name" GAME="game" PLAYERS="players"&gt;
+		      &lt;ROOM ID="id" NAME="name" REFNAME="name" GAME="game" PLAYERS="players"&gt;
 		      &lt;DESC&gt;desc&lt;/DESC&gt;
 		      &lt;/ROOM&gt;
 		    </entry>
@@ -295,6 +295,12 @@
 
 		  <row rowsep="1">
 		    <entry>NAME</entry>
+		    <entry>string</entry>
+		    <entry>TicTacToeTranslated</entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry>REFNAME</entry>
 		    <entry>string</entry>
 		    <entry>TicTacToe</entry>
 		  </row>
@@ -340,7 +346,15 @@
 	    <term><emphasis role="bold">NAME</emphasis></term>
 	    <listitem>
 	      <para>
-		Room name
+		Room name, potentially translated, for displaying to user
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">REFNAME</emphasis></term>
+	    <listitem>
+	      <para>
+		Room name for internal use, including URIs, should not be shown to user
 	      </para>
 	    </listitem>
 	  </varlistentry>
