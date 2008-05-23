@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 9978 2008-05-09 23:49:26Z josef $
+ * $Id: ggzcore.h 9987 2008-05-23 18:31:15Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -1133,6 +1133,8 @@ int ggzcore_room_admin(GGZRoom *room,
  *  When a player wants to launch a new table, this is the function to do
  *  it.  You must first create the table and set up the number and type of
  *  seats.  Then call this function to initiate the launch.
+ *  Note that in most cases a game should have been created before calling
+ *  this function.
  *  @param room Your current room.
  *  @param table The table to launch.
  *  @return 0 on success, negative on (any) failure */
