@@ -8,9 +8,14 @@ Some more issues:
   which will join the first seat. T-rex however launches tables and reserves seats
   for other players without joining itself. Therefore, the patch t-rex.ggzinfrastructure.diff
   must be applied to ggzcore and ggzd first.
+
+=> The patch has been made obsolete. However, t-rex must run as a registered user with
+   admin privileges now.
+
 - Internationalised room names make t-rex impossible to work. Therefore it is suggested to
   modify the GGZ protocol to also transmit the "internal" (untranslated) room name along
   with the translated version. A requirement for it would be to be unique. We cannot rely
   on the room numbers as they might change.
+
   => The suggested fix has been implemented now.
 
