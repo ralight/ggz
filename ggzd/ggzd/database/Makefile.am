@@ -3,6 +3,7 @@ DBPROC_DIR = proc
 endif
 
 SUBDIRS = $(DBPROC_DIR)
+DIST_SUBDIRS =
 
 noinst_LIBRARIES = libggzdb.a
 libggzdb_a_CPPFLAGS = -I$(top_srcdir)/ggzd $(LIBGGZ_INCLUDES) \
@@ -13,7 +14,8 @@ libggzdb_a_SOURCES = \
 	ggzdb.h \
 	ggzdb_functions.h
 
-EXTRA_DIST = ggzdb_proto.h
+EXTRA_DIST = ggzdb_proto.h \
+	proc/Makefile proc/canonicalstr_proc.c proc/README.proc
 
 ggzdbdir = $(libdir)/ggzd/database
 ggzdb_LTLIBRARIES =
