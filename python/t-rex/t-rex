@@ -10,6 +10,18 @@ import ConfigParser
 import pg
 import math
 
+try:
+	import ggzsettings
+	sys.path = [ggzsettings.PYTHONPATH] + sys.path
+	sys.path = [ggzsettings.MODULEPATH + "/common/"] + sys.path
+except:
+	import platform
+	ver_info = sys.version_info
+	ver = str(ver_info[0]) + "." + str(ver_info[1])
+	arch = platform.system().lower() + "-" + platform.machine() + "-" + ver
+	sys.path = ["../pyggzcore/build/lib." + arch] + sys.path
+	sys.path = ["../lib"] + sys.path
+
 import ggzcoresimple
 import commonuri
 
