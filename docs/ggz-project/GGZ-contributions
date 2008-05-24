@@ -51,6 +51,13 @@ Imported from other projects
   - kde-games/koenig/pixs/*.svg
   - python/ggzboard/chess/*.svg
 
+* New Chess figures
+  Chess SVG images by Colin M.L. Burnett.
+  Licenced under GPL/GFDL/BSD.
+  http://en.wikipedia.org/wiki/User:Cburnett
+  http://commons.wikimedia.org/wiki/Category:Chess_svg_pieces
+  - gtk-games/chess/bitmaps/*.svg
+
 * Widelands theme in GGZ Community
   - community/images/widelands
 
