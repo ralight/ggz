@@ -1,7 +1,7 @@
 if COND_GUIDES
 allguides = ggz-game-development-guide.ps ggz-game-development-guide.html ggz-game-development-guide.txt
-sourceguide = ggz-game-development-guide.texi
 endif
+sourceguide = ggz-game-development-guide.texi
 
 info_TEXINFOS = $(sourceguide)
 

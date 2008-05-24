@@ -1,7 +1,7 @@
 if COND_GUIDES
 allguides = ggz-hosting-guide.ps ggz-hosting-guide.html ggz-hosting-guide.txt
-sourceguide = ggz-hosting-guide.texi
 endif
+sourceguide = ggz-hosting-guide.texi
 
 info_TEXINFOS = $(sourceguide)
 
