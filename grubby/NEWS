@@ -1,5 +1,5 @@
 ** Intermediate snapshot release of base GGZ Gaming Zone components
-** Version 0.99.2 - targeted at developers only - API+ABI breakage included
+** Version 0.99.3 - targeted at developers only - API+ABI breakage included
 ** Please follow the GGZ 0.0.14 branch to get a complete and stable version
 
 The GGZ Gaming Zone (GGZ) is an open-sourced Internet gaming center.
@@ -18,13 +18,56 @@ We're very pleased that a number of game projects have already
 chosen GGZ as their internet gaming platform. Let's work hard to
 bring as many multiplayer features into as many games as possible!
 
-** The snapshot release only comprises ggz-python, ggz-java and ggz-grubby,
-** in addition to libggz, ggz-server, ggz-client-libs and ggz-txt-client which
-** were already in 0.99.1. The next snapshot will include more components,
-** especially graphical clients and games as well as web-based applications.
-** You can already find them in our SVN.
+** The snapshot series contains staggered releases. 0.99.1 contained libggz,
+** ggz-server, ggz-client-libs and ggz-txt-client. 0.99.2 added ggz-python,
+** ggz-java and ggz-grubby. 0.99.3 now adds ggz-docs, ggz-community,
+** ggz-gtk-games, ggz-gtk-client and ggz-utils.
+** You can find all the remaining modules in our SVN. Note that the final
+** package structure might change.
 
-New and pending features in this snapshot release (0.99.2):
+New and pending features in this snapshot release (0.99.3):
+
+- {general} pkg-config files for the GGZ libraries
+- {protocol} transmission of untranslated/internal room name
+
+- [ggz-docs] documentation of the Connect-the-Dots protocol
+- [ggz-docs] documentation of savegame formats and game restoration
+- [ggz-docs] documentation of local and remote socket usage
+- [ggz-docs] extended hosting and game development guides
+- [ggz-docs] more talks about GGZ were given and are now referenced
+- [ggz-community] integrated forum software in addition to phpBB integration
+- [ggz-community] Web Service API for some statistical functions
+- [ggz-community] experimental support for OpenID, both provider and consumer
+- [ggz-community] improved installation instructions and feature list
+- [ggz-community] improved tournament support including graphical plans
+- [ggz-community] more modular configurability of feature sets
+- [ggz-community] additional savegame handlers for ConnectX, Go and Reversi
+- [ggz-community] more functionality on the personal page
+- [ggz-community] confirmation for new accounts, and host player upgrades
+- [ggz-community] administrator menu for room changes
+- [ggz-community] Freeciv theme to give Freeciv players on GGZ a web frontend
+- [ggz-gtk-games] use ggzcomm-generated protocol code in TicTacToe
+- [ggz-gtk-games] removal of obsolete Spades client
+- [ggz-gtk-games] improved SVN graphics for the Chess client
+- [ggz-gtk-client] convert Gaim plugin into a Pidgin plugin
+- [ggz-gtk-client] several GUI fixes taken from gnome-games project
+- [ggz-gtk-client] large number of translations, all from gnome-games project
+- [ggz-utils] convenience tool ggz-sql to connect to the ggzd database
+- [ggz-utils] several improvements and fixes to the TelGGZ tool
+- [ggz-utils] much more robust protocol generation in ggzcomm
+- [ggz-utils] ggzcomm now supports the KGGZRaw class as networking backend
+
+- [ggz-python] new application t-rex for automatic tournament table launching
+- [ggz-python] completion of Submarine server for the KBattleship client
+- [ggz-python] improved Unicode handling for command-line output
+- [ggz-python] inclusion of the Uri class into the ggz-python library
+- [ggz-python] Portuguese translation for some games
+- [ggz-server] support for TCP wrappers to be able to blacklist connections
+- [ggz-server] savegame support for Reversi and Chinese Checkers
+- [ggz-server] rooms can now be reconfigured through the database, too
+- [ggz-server] zero-configuration database upgrades for PostgreSQL backend
+
+New and pending features in the previous release (0.99.2):
 
 - [ggz-grubby] support for Python 2.5 and Tcl 8.5 plugins
 - [ggz-grubby] support for SILC 1.1 API for network core plugin
