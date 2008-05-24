@@ -1,4 +1,4 @@
-version = 0.0.14pre
+version = snapshot-0.99.3
 
 CONFIGURATION = .ggzcommunity.setup
 
@@ -36,5 +36,6 @@ dist:
 	cd ../ggz-community-$(version) && svn-clean
 	find ../ggz-community-$(version) -name .svn | xargs rm -rf
 	cd .. && tar cvzf ggz-community-$(version).tar.gz ggz-community-$(version)
+	rm -rf ../ggz-community-$(version)
 
 .PHONY: setup

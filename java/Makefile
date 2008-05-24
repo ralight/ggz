@@ -35,4 +35,5 @@ dist:
 	cd ../ggz-java-$(version) && svn-clean
 	find ../ggz-java-$(version) -name .svn | xargs rm -rf
 	cd .. && tar cvzf ggz-java-$(version).tar.gz ggz-java-$(version)
+	rm -rf ../ggz-java-$(version)
 

@@ -275,6 +275,7 @@ dist:
 	cp /tmp/configure ../ggz-python-$(version)
 	find ../ggz-python-$(version) -name .svn | xargs rm -rf
 	cd .. && tar cvzf ggz-python-$(version).tar.gz ggz-python-$(version)
+	rm -rf ../ggz-python-$(version)
 
 distclean: clean
 	rm -f config.status config.log
