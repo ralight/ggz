@@ -20,7 +20,7 @@ for i in $modules; do
 		make install >$log
 		cp *-$version.tar.gz ..
 		cd $base
-	elif test -d $i && test -f $i/Makefile*; then
+	elif test -d $i && (test -f $i/Makefile || test -f $i/Makefile.in); then
 		echo $i...
 		cd $i
 		if test -f autogen.sh; then

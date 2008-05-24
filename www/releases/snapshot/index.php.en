@@ -3,13 +3,13 @@
 <table class="content">
 <tr>
 <td colspan="2">
-<b>GGZ Snapshot 0.99.2 Downloads</b><br/>
+<b>GGZ Snapshot 0.99.3 Downloads</b><br/>
 <br/>
 <i>Source code release</i><br/>
-This is the second in a series of snapshots leading to a GGZ 1.0 release.
+This is the third in a series of snapshots leading to a GGZ 1.0 release.
 The GGZ Gaming Zone project releases its components as source code, which
 can be downloaded here. In the special case of this snapshot release,
-only four of our countless <a href="/packages/">packages</a> have been
+only twelve of our countless <a href="/packages/">packages</a> have been
 included. Following a staggered release order, additional packages will be
 added in later snapshots.
 <br/><br/>
@@ -28,23 +28,31 @@ Dotsrc Mirror, Denmark:<br/>
 <br/><br/>
 Thanks to <a href="http://www.dotsrc.org/">Dotsrc</a> for providing the mirror!
 </td><td bgcolor="#ffd000" valign="top">
-<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/libggz-snapshot-0.99.2.tar.gz">libggz-snapshot-0.99.2.tar.gz</a><br/>
-<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/ggz-client-libs-snapshot-0.99.2.tar.gz">ggz-client-libs-snapshot-0.99.2.tar.gz</a><br/>
-<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/ggz-server-snapshot-0.99.2.tar.gz">ggz-server-snapshot-0.99.2.tar.gz</a><br/>
-<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/ggz-txt-client-snapshot-0.99.2.tar.gz">ggz-txt-client-snapshot-0.99.2.tar.gz</a><br/>
-<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/ggz-grubby-snapshot-0.99.2.tar.gz">ggz-client-libs-snapshot-0.99.2.tar.gz</a><br/>
-<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/ggz-python-snapshot-0.99.2.tar.gz">ggz-python-snapshot-0.99.2.tar.gz</a><br/>
-<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/ggz-java-0.99.2.tar.gz">ggz-java-snapshot-0.99.2.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/libggz-snapshot-0.99.3.tar.gz">libggz-snapshot-0.99.3.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/ggz-client-libs-snapshot-0.99.3.tar.gz">ggz-client-libs-snapshot-0.99.3.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/ggz-server-snapshot-0.99.3.tar.gz">ggz-server-snapshot-0.99.3.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/ggz-txt-client-snapshot-0.99.3.tar.gz">ggz-txt-client-snapshot-0.99.3.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/ggz-grubby-snapshot-0.99.3.tar.gz">ggz-client-libs-snapshot-0.99.3.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/ggz-python-snapshot-0.99.3.tar.gz">ggz-python-snapshot-0.99.3.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/ggz-java-snapshot-0.99.3.tar.gz">ggz-java-snapshot-0.99.3.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/ggz-java-gtk-client-0.99.3.tar.gz">ggz-gtk-client-snapshot-0.99.3.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/ggz-java-gtk-games-0.99.3.tar.gz">ggz-gtk-games-snapshot-0.99.3.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/ggz-java-utils-0.99.3.tar.gz">ggz-java-utils-0.99.3.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/ggz-java-docs-0.99.3.tar.gz">ggz-docs-snapshot-0.99.3.tar.gz</a><br/>
+<a href="http://mirrors.dotsrc.org/ggzgamingzone/ggz/snapshots/ggz-java-community-0.99.3.tar.gz">ggz-community-snapshot-0.99.3.tar.gz</a><br/>
 </td></tr>
 
 <tr><td bgcolor="#ffd000" valign="top">
-Server hosting colocation!
+Server donation, anyone?
 </td><td bgcolor="#ffd000" valign="top">
-We are actively looking for a sponsor to host our new permanent
-game server at a data centre.
+We were that close to receiving a dedicated server but our
+contact to the company in question turned out to be unreachable
+somehow. We do already have a location for hosting the server.
+This means that the previous situation, where we had a promise for
+a server but no location, has now been reversed!
 Please write a mail to the
 <a href="mailto:hostmaster@ggzgamingzone.org">hostmaster</a>
-if you are kind enough to provide such an offer.
+if you are kind enough to provide a server to us.
 </td></tr>
 
 </table>

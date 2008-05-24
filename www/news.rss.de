@@ -10,6 +10,19 @@
 <language>de-de</language>
 
 <item>
+<title><i>24.05.2008: Developer snapshot 0.99.3</i> (by josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+Commit #10,000 has hit our SVN repository! It marks the third
+<a href="/releases/snapshot/">snapshot release</a> and adds ggz-gtk-client,
+ggz-gtk-games, utils, docs and community to the mix. More than 30,000
+lines of code diff and 60,000 lines of translation diff demonstrate quite
+some progress. As usual, check the NEWS file and turn yourself into a proper
+user or contributor to GGZ!
+</full>
+</item>
+
+<item>
 <title><i>09.03.2008: Developer snapshot 0.99.2</i> (by josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>
