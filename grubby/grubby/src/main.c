@@ -26,8 +26,7 @@
 /*#include <version.h>*/
 #endif
 #ifdef EMBED_PERL
-#include <EXTERN.h>
-#include <perl.h>
+#include <patchlevel.h>
 #endif
 #ifdef EMBED_PYTHON
 #include <Python.h>
@@ -198,7 +197,7 @@ int main(int argc, char *argv[])
 				printf("  ruby   [%s]\n", /*RUBY_VERSION*/"???");
 #endif
 #ifdef EMBED_PERL
-				printf("  perl   [%s]\n", PERL_XS_APIVERSION);
+				printf("  perl   [%i.%i.%i]\n", PERL_REVISION, PERL_VERSION, PERL_SUBVERSION);
 #endif
 #ifdef EMBED_PYTHON
 				printf("  python [%s]\n", PY_VERSION);
