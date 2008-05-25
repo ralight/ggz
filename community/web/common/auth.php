@@ -210,9 +210,9 @@ class Auth
 			$confirmed = 'f';
 		endif;
 
-		$res = $database->exec("INSERT INTO users (handle, password, permissions, name, email, confirmed) " .
-			"VALUES ('%^', '%^', %^, '%^', '%^', '%^')",
-			array($username, $cryptpass, 7, $realname, $email, $confirmed));
+		$res = $database->exec("INSERT INTO users (handle, password, permissions, name, email, confirmed, firstlogin) " .
+			"VALUES ('%^', '%^', %^, '%^', '%^', '%^', '%^')",
+			array($username, $cryptpass, 7, $realname, $email, $confirmed, time()));
 
 		if (Config::getvalue("registration") != "open") :
 			Auth::requestconfirmation($email);
