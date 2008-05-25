@@ -1,7 +1,0 @@
-The file ggz.diff contains an up-to-date GGZ patch (currently for Freeciv 2.0,
-GGZ 0.0.11).
-
-Simply apply the patch using "patch", rerun autogen.sh, make and install.
-
-Currently there are a few shortcomings.  It only works with the GTK+-2.0
-client, and endgame (victory/ratings) aren't handled perfectly.

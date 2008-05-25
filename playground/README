@@ -52,9 +52,6 @@
 		Translation of Doxygen API documentation. Very work-intensive but
 		a good idea to attract more developers.
 
-	Freeciv:
-		Patches for GGZ integration into the freeciv game.
-
 	Gamedata:
 		Add-on packages containing levels, themes and so on.
 		This will be moved to a dedicated download server later (via GHNS).
@@ -65,6 +62,10 @@
 	GGZCollector:
 		Fire-'n-forget highscore collecting server for games with GGZ support
 		without running in GGZ mode (e.g. possible for Frozen Bubble).
+
+	GGZD-Stats:
+		Scripts to create nice graphics from statistical information in
+		ggzd's log file.
 
 	GGZ-Java:
 	GGZ-Python:
@@ -77,6 +78,9 @@
 		Likewise, GGZ-Java5 is rather complete, whereas GGZ-Java is quite old.
 		GGZ-Ruby has recently been made usable.
 
+	GGZ-KDE4:
+		Natural integration of GGZ protocols and tools into a KDE 4 desktop.
+
 	Haskell:
 		Some Sudoku creation and solver software written in the functional
 		programming language Haskell.
@@ -84,6 +88,10 @@
 	IRC:
 		Bidirectional message exchange gate between a channel on IRC and a
 		room on GGZ.
+
+	Jabber:
+		Jabber component which makes playing GGZ games on Jabber networks
+		possible.
 
 	Kopete-GGZ:
 		GGZ plugin for the Kopete IM client. Should be moved to kde-client
@@ -108,9 +116,15 @@
 	POVray:
 		Original POVray sources of the GGZ project logo.
 
+	Schedule:
+		Reworked tournament planner for GGZ Community, not yet integrated.
+
 	Server:
 		Code generation framework for data handling in multi-threaded code.
 		Might be of use for future ggzd development.
+
+	Win32_Installer:
+		Nullsoft NSIS-based installer for some GGZ packages on Windows. 
 
 	XMLGettext:
 		An xgettext variant to extract textual information from xml files.
@@ -125,4 +139,5 @@
 	- GGZWars      (removed)
 	- SDL-Games    (-> now sdl-games module)
 	- GGZ-Java5    (-> now java module)
+	- Freeciv      (-> integrated into freeciv proper)
 
