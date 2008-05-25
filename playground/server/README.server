@@ -4,9 +4,6 @@ Some of it also applies to clients.
 
 Contents right now:
 
-* coregen
-  has its own readme file ;)
-
 * async
   Test file for asynchronous libggz hostname lookups
   FIXME: the global_req must go away, but it segfaults if the
@@ -16,19 +13,28 @@ Contents right now:
   (getconf GNU_LIBC_VERSION maybe? or run /lib/libc-***.so)
   FIXME: find out revision number and check without global_req
 
-* passwords
-  Some checks so we can improve cracklib
-  a few issues are written in the source file
+* coregen
+  has its own readme file ;)
 
-* games
-  A tiny wrapper for the Velena AI engine
-
-* omnicrack
-  Next-generation password strength checker (see also 'passwords')
+* epoll
+  Optimal socket activity notification under Linux
 
 * events
   High-resolution timer for multiple reoccurring events
 
+* games
+  A tiny wrapper for the Velena AI engine in ConnectX
+
 * ggztop
   Frontend for the real-time statistics feature
+
+* omnicrack
+  Next-generation password strength checker (see also 'passwords')
+
+* passwords
+  Some checks so we can improve cracklib
+  a few issues are written in the source file, see 'omnicrack'
+
+* udpgames
+  Attempt to make playing UDP-based games on GGZ possible
 
