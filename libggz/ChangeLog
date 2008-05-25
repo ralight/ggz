@@ -1,4 +1,140 @@
 ------------------------------------------------------------------------
+r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/NEWS
+   M /trunk/community/README
+   M /trunk/docs/NEWS
+   M /trunk/docs/README
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.h
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/ggzdmod/ggzdmod.h
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README
+   M /trunk/java/NEWS
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/README
+   M /trunk/libggz/src/ggz.h
+   M /trunk/python/NEWS
+   M /trunk/python/README
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+
+- prepare new snapshot 0.99.3: updated NEWS file with overview on new stuff, plus usual version bumps
+
+
+------------------------------------------------------------------------
+r9950 | oojah | 2008-04-13 00:26:40 +0200 (So, 13 Apr 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/libggz/src/conf.c
+
+Use WIN32 define to detect whether compiling on Windows rather than HAVE_WINSOCK2_H.
+
+------------------------------------------------------------------------
+r9949 | oojah | 2008-04-13 00:16:49 +0200 (So, 13 Apr 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/libggz/src/conf.c
+
+make_path() support for Windows style paths with backwards slashes and drive prefixes.
+
+------------------------------------------------------------------------
+r9946 | josef | 2008-04-12 13:59:55 +0200 (Sa, 12 Apr 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/java/Makefile
+   M /trunk/java/build.xml
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- ensure that the next snapshot release will have the proper version number in its packages
+
+
+------------------------------------------------------------------------
+r9921 | josef | 2008-04-05 07:48:32 +0200 (Sa, 05 Apr 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs
+   M /trunk/ggz-client-libs/Makefile.am
+   M /trunk/ggz-client-libs/configure.ac
+   A /trunk/ggz-client-libs/ggzcore.pc.in
+   A /trunk/ggz-client-libs/ggzmod.pc.in
+   M /trunk/ggzd
+   M /trunk/ggzd/Makefile.am
+   M /trunk/ggzd/configure.ac
+   A /trunk/ggzd/ggzdmod.pc.in
+   M /trunk/libggz
+   M /trunk/libggz/Makefile.am
+   M /trunk/libggz/configure.ac
+   A /trunk/libggz/libggz.pc.in
+
+- addition of pkg-config files for all C libraries, as requested by gnome-games
+
+
+------------------------------------------------------------------------
+r9862 | josef | 2008-03-22 21:03:19 +0100 (Sa, 22 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/libggz/src/ggz.h
+
+- we forgot to bump the version for the snapshot, detected by canophone
+
+
+------------------------------------------------------------------------
+r9815 | josef | 2008-03-08 23:40:34 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/java/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/txt-client/ChangeLog
+
+- six thousand lines of changelog, admittedly some since 0.0.14
+
+
+------------------------------------------------------------------------
+r9814 | josef | 2008-03-08 23:31:23 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggzd/NEWS
+   M /trunk/grubby/NEWS
+   M /trunk/java/NEWS
+   M /trunk/libggz/NEWS
+   M /trunk/python/Makefile.in
+   M /trunk/python/NEWS
+   M /trunk/txt-client/NEWS
+
+- news entries for all 0.99.2 packages
+
+
+------------------------------------------------------------------------
+r9811 | josef | 2008-03-08 22:59:29 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/libggz/src/ggz_common.h
+
+- merge libggz part of Vasiliy's game restoration patch
+
+
+------------------------------------------------------------------------
 r9802 | josef | 2008-03-08 13:49:21 +0100 (Sa, 08 Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/README

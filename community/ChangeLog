@@ -1,4 +1,1139 @@
 ------------------------------------------------------------------------
+r9999 | josef | 2008-05-24 11:11:00 +0200 (Sa, 24 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/Makefile
+   M /trunk/java/Makefile
+   M /trunk/python/Makefile.in
+
+- remove generated dist directories after tarball creation
+
+
+------------------------------------------------------------------------
+r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/NEWS
+   M /trunk/community/README
+   M /trunk/docs/NEWS
+   M /trunk/docs/README
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.h
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/ggzdmod/ggzdmod.h
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README
+   M /trunk/java/NEWS
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/README
+   M /trunk/libggz/src/ggz.h
+   M /trunk/python/NEWS
+   M /trunk/python/README
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+
+- prepare new snapshot 0.99.3: updated NEWS file with overview on new stuff, plus usual version bumps
+
+
+------------------------------------------------------------------------
+r9965 | josef | 2008-05-04 16:49:29 +0200 (So, 04 Mai 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/web/tournaments/export.php
+
+- fix alignment: replace logarithm with more simple formula
+- do not forget to mention match identifiers
+- use some italic font for better readability of player names
+
+
+------------------------------------------------------------------------
+r9964 | josef | 2008-05-04 16:36:57 +0200 (So, 04 Mai 2008) | 3 lines
+Geänderte Pfade:
+   A /trunk/community/web/tournaments/export.php
+   M /trunk/community/web/tournaments/show2.inc
+
+- export facility for image showing the tourney plan graphically as a tree
+
+
+------------------------------------------------------------------------
+r9963 | josef | 2008-05-04 15:24:58 +0200 (So, 04 Mai 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/web/tournaments/new2.inc
+
+- avoid free-form text input and always load list of players
+
+For 32 participants and 10000 registered players this will take some time to load but I wish we had this problem for real.
+
+
+------------------------------------------------------------------------
+r9962 | josef | 2008-05-04 15:18:05 +0200 (So, 04 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/setup/sql/tournaments.sql
+
+- room field addition to tourney table
+
+
+------------------------------------------------------------------------
+r9961 | josef | 2008-05-04 15:17:17 +0200 (So, 04 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/tournaments/new.inc
+   M /trunk/community/web/tournaments/new2.inc
+   M /trunk/community/web/tournaments/new3.inc
+
+- register the room along with the gametype for tournaments since rooms might offer differing rules
+
+
+------------------------------------------------------------------------
+r9958 | josef | 2008-05-04 12:18:44 +0200 (So, 04 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/config.php
+
+- read two more options from ggzd.conf to avoid having to configure them in ggz-community
+
+
+------------------------------------------------------------------------
+r9947 | josef | 2008-04-12 16:53:11 +0200 (Sa, 12 Apr 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/config.php
+
+- force database port to be 5432 when not configured
+
+It looks like using 0 as the default is not possible in PHP.
+
+
+------------------------------------------------------------------------
+r9943 | josef | 2008-04-12 11:23:15 +0200 (Sa, 12 Apr 2008) | 6 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/player.php
+   M /trunk/community/web/my/index.php
+   A /trunk/community/web/my/mobility.php
+
+- introduce personal data mobility to allow players to replicate their configuration to other GGZ Community instances
+
+Right now this only applies to personal data. It might be extended to social aspects (buddy lists), karma, schedules
+and other items if it makes sense.
+
+
+------------------------------------------------------------------------
+r9916 | josef | 2008-03-30 15:49:47 +0200 (So, 30 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/doc/Savegames
+   A /trunk/community/web/db/matches/image_connectx.php
+   A /trunk/community/web/db/matches/savegame_connectx.php
+
+- addition of savegame handler for ConnectX games
+
+
+------------------------------------------------------------------------
+r9913 | josef | 2008-03-30 15:06:36 +0200 (So, 30 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/doc/Savegames
+   A /trunk/community/web/db/matches/image_reversi.php
+   A /trunk/community/web/db/matches/savegame_reversi.php
+
+- add savegame loader for Reversi
+
+
+------------------------------------------------------------------------
+r9906 | josef | 2008-03-30 11:08:57 +0200 (So, 30 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/setup/sql/tournaments.sql
+   M /trunk/community/web/admin/index.php
+   A /trunk/community/web/admin/rooms.php
+
+- community frontend for dynamic room changes
+
+
+------------------------------------------------------------------------
+r9900 | josef | 2008-03-29 21:10:58 +0100 (Sa, 29 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/db/matches/image_dots.php
+
+- adapt savegame review code to modified board sizes in the savegame file
+
+
+------------------------------------------------------------------------
+r9842 | josef | 2008-03-15 16:35:45 +0100 (Sa, 15 Mär 2008) | 4 lines
+Geänderte Pfade:
+   A /trunk/community/web/common/map-gencoords.php (von /trunk/community/web/map/gencoords.php:9802)
+   D /trunk/community/web/map/gencoords.php
+   M /trunk/community/web/map/index.php
+   M /trunk/community/web/map/mundomap.large.png
+
+- move HTML image map creator for the world map into the common include directory
+- fix up the worldmap: the default map was accidentally the one from ggzcommunity.org instead of the empty one
+
+
+------------------------------------------------------------------------
+r9801 | josef | 2008-03-08 13:14:21 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/navbar.inc
+
+- highlight player management pages for all registered and currently logged in players
+
+
+------------------------------------------------------------------------
+r9800 | josef | 2008-03-08 13:07:46 +0100 (Sa, 08 Mär 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/player.php
+
+- forgot the mailto:
+
+What an odd commit for having the honour of doing r9800!
+
+
+------------------------------------------------------------------------
+r9799 | josef | 2008-03-08 13:05:15 +0100 (Sa, 08 Mär 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/web/admin/index.php
+   M /trunk/community/web/common/navbar.inc
+   M /trunk/community/web/common/player.php
+   A /trunk/community/web/my/host.php
+   M /trunk/community/web/my/upgrade.php
+
+- cake bakery for hosts, now also accessible through the menu
+- more consistent style for the admin pages
+
+
+------------------------------------------------------------------------
+r9798 | josef | 2008-03-08 11:40:42 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/setup/sql/rankings.sql
+   M /trunk/community/web/my/index.php
+   M /trunk/community/web/my/settings.php
+   A /trunk/community/web/my/upgrade.php
+
+- automatic cake bakery (applicants part)
+
+
+------------------------------------------------------------------------
+r9797 | josef | 2008-03-08 11:27:30 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/db/players/information.inc
+
+- newly registered players are newbies and don't really deserve veteran status
+
+
+------------------------------------------------------------------------
+r9796 | josef | 2008-03-08 11:22:28 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/auth.php
+   M /trunk/community/web/common/config.php
+   A /trunk/community/web/login/confirm.inc
+   M /trunk/community/web/login/index.php
+
+- implement real confirmation mails
+
+
+------------------------------------------------------------------------
+r9795 | josef | 2008-03-08 10:47:49 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/auth.php
+   M /trunk/community/web/common/config.php
+   M /trunk/community/web/login/index.php
+   M /trunk/community/web/login/register.inc
+
+- honour registration policies, but don't send out mail yet when confirmation is needed
+
+
+------------------------------------------------------------------------
+r9793 | josef | 2008-03-08 10:22:46 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/images/freeciv/full.css
+
+- modify font style: main area now matches the left navigation bar (shouldn't be different anyway)
+
+
+------------------------------------------------------------------------
+r9790 | josef | 2008-03-08 09:51:05 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/setup/sql/ggz.sql
+
+- adapt to new column for confirmation status
+
+
+------------------------------------------------------------------------
+r9788 | josef | 2008-03-08 09:19:25 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/player.php
+
+- turn mail address into a link
+
+
+------------------------------------------------------------------------
+r9787 | josef | 2008-03-08 09:14:32 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/config.php
+   M /trunk/community/web/common/database.php
+
+- make use of DatabasePort in ggzd.conf
+
+
+------------------------------------------------------------------------
+r9644 | josef | 2008-02-03 20:58:28 +0100 (So, 03 Feb 2008) | 3 lines
+Geänderte Pfade:
+   A /trunk/community/doc/Savegames
+
+- add some information about the savegames visualisation functionality in ggz-community
+
+
+------------------------------------------------------------------------
+r9643 | josef | 2008-02-03 20:52:22 +0100 (So, 03 Feb 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/web/db/matches/savegame_go.php
+
+- more robust, but still somewhat bogus, parsing of comments
+- reading out the winning player correctly
+- comment all other opcodes even if not implemented yet
+
+
+------------------------------------------------------------------------
+r9642 | josef | 2008-02-03 18:22:31 +0100 (So, 03 Feb 2008) | 3 lines
+Geänderte Pfade:
+   A /trunk/community/web/db/matches/go
+   A /trunk/community/web/db/matches/go/black.png
+   A /trunk/community/web/db/matches/go/cgobanboard.png
+   A /trunk/community/web/db/matches/go/white.png
+   A /trunk/community/web/db/matches/image_go.php
+   M /trunk/community/web/db/matches/savegame_go.php
+
+- add visual representation of a savegame or finished game for Go
+
+
+------------------------------------------------------------------------
+r9641 | josef | 2008-02-03 17:31:33 +0100 (So, 03 Feb 2008) | 4 lines
+Geänderte Pfade:
+   A /trunk/community/web/db/matches/savegame_go.php
+
+- savegame handler for the SGF savegame format as used by Go
+- the handler is very primitive and does nowhere near handle complex games yet
+
+
+------------------------------------------------------------------------
+r9565 | josef | 2008-01-19 13:27:02 +0100 (Sa, 19 Jan 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/acknowledgements.inc
+   M /trunk/community/web/common/acknowledgements.inc.sv
+   M /trunk/community/web/images/freeciv/full.css
+
+- bump copyright from 2006 to 2008
+- move left navigation bar down so the civ logo becomes fully visible (long live css!)
+
+
+------------------------------------------------------------------------
+r9564 | josef | 2008-01-19 13:17:26 +0100 (Sa, 19 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/intro.php
+   M /trunk/community/web/common/latest.php
+   M /trunk/community/web/common/stats.php
+   M /trunk/community/web/common/statsclass.php
+
+- more verbosity in cases no players/teams/games/matches/tournaments were found
+
+
+------------------------------------------------------------------------
+r9563 | josef | 2008-01-19 13:04:38 +0100 (Sa, 19 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/my/change.php
+
+- oops: do not try to include genderlist.php twice
+
+
+------------------------------------------------------------------------
+r9562 | josef | 2008-01-19 12:59:19 +0100 (Sa, 19 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/db/players/information.inc
+   M /trunk/community/web/my/index.php
+
+- more verbose information about the player karma and veteran status
+
+
+------------------------------------------------------------------------
+r9561 | josef | 2008-01-19 12:00:23 +0100 (Sa, 19 Jan 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/config.php
+   M /trunk/community/web/common/default.rightbar
+   M /trunk/community/web/common/htconf-dist
+   M /trunk/community/web/common/navbar.inc
+   M /trunk/community/web/common/worldmap.php
+   M /trunk/community/web/db/players/information.inc
+   M /trunk/community/web/my/leftbar.inc
+
+- new feature for ggz-community: customizability! (useful for minimal installations to only look at stats etc.)
+- some documentation on the contents of the configuration file
+
+
+------------------------------------------------------------------------
+r9560 | josef | 2008-01-19 11:37:41 +0100 (Sa, 19 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/navbar.inc
+   M /trunk/community/web/images/default/full.css
+   M /trunk/community/web/images/freeciv/full.css
+   M /trunk/community/web/images/widelands/full.css
+
+- do not impose a fixed width on the navigation menu so the admin submenu will fit in dynamically
+
+
+------------------------------------------------------------------------
+r9559 | josef | 2008-01-19 11:36:27 +0100 (Sa, 19 Jan 2008) | 4 lines
+Geänderte Pfade:
+   D /trunk/community/web/common/navbar.inc.sv
+   M /trunk/community/web/common/po/de.po
+   M /trunk/community/web/common/po/extract-php.pl
+   M /trunk/community/web/common/po/extract.pl
+   M /trunk/community/web/common/po/ggzcommunity.pot
+   A /trunk/community/web/common/po/sv.po
+
+- improve the robustness of the translatable text extraction tool, in turn making the perl regexps harder to read
+- merge the Swedish menu translations into a .po file so the separate menu template can be removed
+
+
+------------------------------------------------------------------------
+r9553 | josef | 2008-01-19 07:51:39 +0100 (Sa, 19 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/admin/loginfunc.inc
+
+- be smart about error message: of course, if no admin is in the database, this is different from when the database cannot be reached at all
+
+
+------------------------------------------------------------------------
+r9552 | josef | 2008-01-18 21:52:18 +0100 (Fr, 18 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/blogs/index.php
+
+- if planet.inc isn't present, don't try to display blog posts
+
+
+------------------------------------------------------------------------
+r9551 | josef | 2008-01-18 21:46:18 +0100 (Fr, 18 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/setup/sql/views.sql
+
+- apparently newer PostgreSQL versions need FROM tablename even when selecting the fully qualified columns
+
+
+------------------------------------------------------------------------
+r9549 | josef | 2008-01-18 21:31:41 +0100 (Fr, 18 Jan 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/default.rightbar
+   M /trunk/community/web/common/default.rightbar.sv
+   A /trunk/community/web/common/worldmap.php
+   A /trunk/community/web/images/freeciv
+   A /trunk/community/web/images/freeciv/bg_lowquality.jpg
+   A /trunk/community/web/images/freeciv/full.css
+   A /trunk/community/web/images/freeciv/menu_bright.png
+   A /trunk/community/web/images/freeciv/menu_dark.png
+   A /trunk/community/web/images/freeciv/pagelogo.png
+
+- new ggz-community theme for freeciv
+- move worldmap handler into a PHP file on its own so we can easily disable it
+
+
+------------------------------------------------------------------------
+r9477 | josef | 2008-01-06 16:59:29 +0100 (So, 06 Jan 2008) | 3 lines
+Geänderte Pfade:
+   A /trunk/community/doc/community-arch-extended.flw
+   A /trunk/community/doc/community-arch-extended.png
+
+- more complete architectural view on how to plug all the components together
+
+
+------------------------------------------------------------------------
+r9476 | josef | 2008-01-06 16:44:54 +0100 (So, 06 Jan 2008) | 3 lines
+Geänderte Pfade:
+   A /trunk/community/api/api/realtimestats.php
+   M /trunk/community/api/index.html
+
+- addition of PHP frontend to ggzop
+
+
+------------------------------------------------------------------------
+r9458 | josef | 2007-12-20 15:46:29 +0100 (Do, 20 Dez 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/api/api/index.php
+
+- improve code a bit by changing 0/1 to false/true
+
+
+------------------------------------------------------------------------
+r9238 | josef | 2007-08-13 09:00:08 +0200 (Mo, 13 Aug 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/community/setup/setup-build.sh
+   M /trunk/community/setup/setup.txt
+
+ r9179@nada:  josef | 2007-08-11 19:28:33 +0200
+ - calcrankings is no more (at least not here)
+ 
+
+------------------------------------------------------------------------
+r9237 | josef | 2007-08-13 09:00:00 +0200 (Mo, 13 Aug 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   D /trunk/community/setup/scripts/calcrankings
+
+ r9178@nada:  josef | 2007-08-11 19:28:03 +0200
+ - remove old 'calcrankings' tool; it has now been merged into ggzd to allow for timely highscore updates
+ 
+
+------------------------------------------------------------------------
+r9236 | josef | 2007-08-13 08:59:45 +0200 (Mo, 13 Aug 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/community/setup/sql/trigger/Makefile
+
+ r9177@nada:  josef | 2007-08-11 19:26:34 +0200
+ - do not hardcode home directory
+ 
+
+------------------------------------------------------------------------
+r9234 | josef | 2007-08-13 08:59:29 +0200 (Mo, 13 Aug 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/community/api/api/htconf.php-dist
+   M /trunk/community/api/api/index.php
+
+ r9175@nada:  josef | 2007-08-06 19:20:56 +0200
+ - implementation of strict read-only option for the paranoid
+ - implementation of result set limits, which should suffice for now
+   (apps must traverse with ?offset which is not intuitive but works)
+ 
+
+------------------------------------------------------------------------
+r9233 | josef | 2007-08-13 08:59:23 +0200 (Mo, 13 Aug 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/community/web/common/database.php
+
+ r9174@nada:  josef | 2007-08-06 18:47:06 +0200
+ - let $database be null in case of connection errors
+ 
+
+------------------------------------------------------------------------
+r9232 | josef | 2007-08-13 08:59:16 +0200 (Mo, 13 Aug 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/community/api/api/index.php
+
+ r9173@nada:  josef | 2007-08-06 18:46:37 +0200
+ - remove obsolete $conn parameter from $database->exec()
+ 
+
+------------------------------------------------------------------------
+r9231 | oojah | 2007-08-08 13:42:09 +0200 (Mi, 08 Aug 2007) | 2 lines
+Geänderte Pfade:
+   A /trunk/community/web/common/index.html
+
+Add a blank index page to the common directory as a precaution in case .htaccess files aren't allowed and so the directory index could be available for everybody.
+
+------------------------------------------------------------------------
+r9230 | josef | 2007-08-06 08:12:45 +0200 (Mo, 06 Aug 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/community/setup/scripts/calcrankings/main.c
+
+ r9166@nada:  josef | 2007-08-05 21:59:04 +0200
+ - of course, --config requires an argument
+ 
+
+------------------------------------------------------------------------
+r9223 | josef | 2007-07-30 09:28:45 +0200 (Mo, 30 Jul 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/community/setup/scripts/api/README.api
+
+ r9151@nada:  josef | 2007-07-28 17:15:51 +0200
+ - two useful commands for debugging
+ 
+
+------------------------------------------------------------------------
+r9222 | josef | 2007-07-30 09:28:34 +0200 (Mo, 30 Jul 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/community/api/api/index.php
+
+ r9150@nada:  josef | 2007-07-28 16:58:16 +0200
+ - force contents to be xml-formatted
+ 
+
+------------------------------------------------------------------------
+r9213 | josef | 2007-07-24 08:45:18 +0200 (Di, 24 Jul 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk
+   D /trunk/community/api/api/.htconf.php-dist
+   D /trunk/community/api/api/.htinclude.php
+   A /trunk/community/api/api/htconf.php-dist (von /trunk/community/api/api/.htconf.php-dist:9201)
+   M /trunk/community/api/api/index.php
+
+ r9133@nada:  josef | 2007-07-23 23:02:03 +0200
+ - make configuration easier by removing API specific files (substituting Community classes for separate code)
+ - this implies taking advantage of Community's database abstraction layer
+ - and this in turn makes API work with MySQL :-)
+ 
+
+------------------------------------------------------------------------
+r9212 | josef | 2007-07-24 08:45:09 +0200 (Di, 24 Jul 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   A /trunk/community/doc/community-arch.flw
+   A /trunk/community/doc/community-arch.png
+
+ r9132@nada:  josef | 2007-07-23 21:52:35 +0200
+ - architecture graphics explaining the relation between Community and ggzd
+ 
+
+------------------------------------------------------------------------
+r9211 | josef | 2007-07-24 08:45:02 +0200 (Di, 24 Jul 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   D /trunk/community/Community.features
+   M /trunk/community/README
+   A /trunk/community/doc
+   A /trunk/community/doc/Community.features (von /trunk/community/Community.features:9193)
+   M /trunk/community/setup/setup.txt
+   M /trunk/community/web/common/htconf-dist
+
+ r9131@nada:  josef | 2007-07-23 21:35:51 +0200
+ - totally overhauled README, installation instructions and feature lists
+ 
+
+------------------------------------------------------------------------
+r9210 | josef | 2007-07-24 08:44:55 +0200 (Di, 24 Jul 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/community/api/setup.txt
+
+ r9130@nada:  josef | 2007-07-23 20:37:24 +0200
+ - make it much more readable, and point out the OpenID subdirectory
+ 
+
+------------------------------------------------------------------------
+r9199 | josef | 2007-07-23 09:30:41 +0200 (Mo, 23 Jul 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/community/api/api/.htconf.php-dist
+
+ r9113@nada:  josef | 2007-07-21 10:51:37 +0200
+ - remove typo
+ 
+
+------------------------------------------------------------------------
+r9191 | josef | 2007-07-16 14:51:02 +0200 (Mo, 16 Jul 2007) | 3 lines
+Geänderte Pfade:
+   A /trunk/community/web/forums/GGZForum.txt
+   A /trunk/utils/ggzcomm/battleship.protocol
+
+- those were still in my old trunk dir... commit before I delete it to make space
+
+
+------------------------------------------------------------------------
+r9124 | josef | 2007-05-21 12:05:14 +0200 (Mo, 21 Mai 2007) | 7 lines
+Geänderte Pfade:
+   M /trunk/community/web/admin/.htaccess
+   A /trunk/community/web/admin/forbidden.php
+   M /trunk/community/web/admin/index.php
+   A /trunk/community/web/admin/login.php
+   A /trunk/community/web/admin/loginfunc.inc
+   A /trunk/community/web/admin/php_auth.diff
+   M /trunk/community/web/common/access.php
+   A /trunk/community/web/common/accessadmin.php
+   M /trunk/community/web/common/navbar.inc
+   M /trunk/community/web/common/player.php
+   M /trunk/community/web/common/top.inc
+   M /trunk/community/web/db/ggzicons
+   M /trunk/community/web/images/default/full.css
+
+- integration of administrator menu through HTTP-Digest authentication (FIXME: need to submit fixes upstream to sloppy PHP team)
+- logins are bound to GGZ admin privileges
+- check if 'gd' extension is present (this will lead to a general environment checking page)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9122 | josef | 2007-05-18 13:46:51 +0200 (Fr, 18 Mai 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk/community/api/openid/README.openid
+   A /trunk/community/api/openid/auth.php
+   M /trunk/community/api/openid/index.php
+   M /trunk/community/api/openid/main.html
+   A /trunk/community/api/openid/provider.php
+   M /trunk/community/api/openid/test.html
+   M /trunk/community/api/openid/test.php
+
+- complete implementation of OpenID consumer-side algorithm (not integrated with web pages yet)
+- addition of a variant of phpMyID to run a GGZ OpenID identity provider (not integrated with database yet)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9120 | josef | 2007-05-15 13:26:02 +0200 (Di, 15 Mai 2007) | 6 lines
+Geänderte Pfade:
+   D /trunk/community/api/README.openid
+   A /trunk/community/api/openid/.htconf.php-dist
+   A /trunk/community/api/openid/README.openid (von /trunk/community/api/README.openid:9119)
+
+- move readme file (must've been drunk)
+- config file with trusted sites, I think we need it (the docs are very unclear about this)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9119 | josef | 2007-05-15 12:58:13 +0200 (Di, 15 Mai 2007) | 5 lines
+Geänderte Pfade:
+   A /trunk/community/api/README.openid
+
+- some information on how we could use OpenID
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9118 | josef | 2007-05-15 12:39:24 +0200 (Di, 15 Mai 2007) | 5 lines
+Geänderte Pfade:
+   A /trunk/community/api/openid
+   A /trunk/community/api/openid/index.php
+   A /trunk/community/api/openid/login-bg.png
+   A /trunk/community/api/openid/main.html
+   A /trunk/community/api/openid/test.html
+   A /trunk/community/api/openid/test.php
+
+- just out of fun, some lines for OpenID authentication (not working at all yet)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9117 | josef | 2007-05-15 08:50:42 +0200 (Di, 15 Mai 2007) | 7 lines
+Geänderte Pfade:
+   M /trunk/community/api/api/index.php
+
+- quote all database arguments (partly re-using community code)
+- code reduction through global assignment of XML document for all POST/PUT data
+- more refined error handling (internal errors and input errors were added)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9116 | josef | 2007-05-15 08:30:50 +0200 (Di, 15 Mai 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk/community/setup/scripts/api/ggzapi_rest.pm
+   M /trunk/community/setup/scripts/api/ggzapi_shell.pm
+
+- print error messages in cases of errors
+- perl modules are not executable
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9030 | josef | 2007-04-10 09:06:26 +0200 (Di, 10 Apr 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/api/api/index.php
+   M /trunk/community/api/doc/players.html
+   M /trunk/community/api/doc/teams.html
+   M /trunk/community/setup/scripts/api/ggzapi_rest.pm
+   M /trunk/community/setup/scripts/api/ggzapi_shell.pm
+   A /trunk/community/setup/sql/forum.sql
+   M /trunk/community/setup/sql/views.sql
+
+- completed team handling in the API: team members can now be managed as well
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9029 | josef | 2007-04-10 09:05:22 +0200 (Di, 10 Apr 2007) | 9 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/countrylist.php
+   M /trunk/community/web/common/player.php
+   A /trunk/community/web/db/ggzicons/players/host.png
+   M /trunk/community/web/db/players/details.php
+   M /trunk/community/web/db/players/information.inc
+   A /trunk/community/web/db/players/karma.inc
+   A /trunk/community/web/db/players/karma.php
+   A /trunk/community/web/forums/forum.inc
+   A /trunk/community/web/forums/forumslist.inc
+   A /trunk/community/web/forums/forumthreads.inc
+   A /trunk/community/web/forums/ggzforum.php
+   M /trunk/community/web/forums/index.php
+   M /trunk/community/web/help/players.php.en
+   M /trunk/community/web/tournaments/show2.inc
+
+- a few fixes in the Community PHP code
+- move detailed Karma assignments list into page on its own, similar to match results page
+- better support for host players (also changes SQL view schema!)
+- paragraph about player privileges in the help system
+- first code for a forum software integrated into GGZ Community to get rid of phpBB
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9027 | josef | 2007-04-04 17:22:29 +0200 (Mi, 04 Apr 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/api/api/.htconf.php-dist
+   M /trunk/community/api/api/index.php
+
+- if no ggzd is installed, we still need access to the database
+
+
+------------------------------------------------------------------------
+r9026 | josef | 2007-04-04 08:15:54 +0200 (Mi, 04 Apr 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk/community/api/api/index.php
+   A /trunk/community/api/doc/statistics.html
+   A /trunk/community/api/doc/teams.html
+   M /trunk/community/api/index.html
+   M /trunk/community/setup/scripts/api/ggzapi_rest.pm
+   M /trunk/community/setup/scripts/api/ggzapi_shell.pm
+
+- read-only handling of statistics
+- complete handling of teams (still excluding team members)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9025 | josef | 2007-04-03 15:55:59 +0200 (Di, 03 Apr 2007) | 8 lines
+Geänderte Pfade:
+   M /trunk/community/api/api/index.php
+   M /trunk/community/setup/scripts/api/ggzapi_rest.pm
+   M /trunk/community/setup/scripts/api/ggzapi_shell.pm
+
+- player updates and deletions are now possible as well
+- proper authentication, which is only valid for resources created by oneself
+
+OK, remote GGZ player management does now work!
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9024 | josef | 2007-04-03 13:04:58 +0200 (Di, 03 Apr 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/api/api/index.php
+   A /trunk/community/api/doc
+   A /trunk/community/api/doc/.htaccess
+   A /trunk/community/api/doc/index.html
+   A /trunk/community/api/doc/players.html
+   M /trunk/community/api/index.html
+   M /trunk/community/setup/scripts/api/ggzapi_rest.pm
+   M /trunk/community/setup/scripts/api/ggzapi_shell.pm
+
+- players can now be added and retrieved using the WS API
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9023 | josef | 2007-04-02 08:52:11 +0200 (Mo, 02 Apr 2007) | 5 lines
+Geänderte Pfade:
+   A /trunk/community/api
+   A /trunk/community/api/api
+   A /trunk/community/api/api/.htconf.php-dist
+   A /trunk/community/api/api/.htinclude.php
+   A /trunk/community/api/api/index.php
+   A /trunk/community/api/api.png
+   A /trunk/community/api/api.png.big
+   A /trunk/community/api/index.html
+   A /trunk/community/api/setup.txt
+   A /trunk/community/setup/scripts/api
+   A /trunk/community/setup/scripts/api/README.api
+   A /trunk/community/setup/scripts/api/ggzapi_client.pl
+   A /trunk/community/setup/scripts/api/ggzapi_rest.pm
+   A /trunk/community/setup/scripts/api/ggzapi_shell.pm
+
+- first bits of web services API for reading/writing database contents
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9005 | josef | 2007-03-22 10:53:59 +0100 (Do, 22 Mär 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/Makefile
+   M /trunk/java/Makefile
+   M /trunk/python/Makefile.in
+
+- run svn-clean correctly (it doesn't recognise relative paths)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8987 | jdorje | 2007-02-19 03:50:30 +0100 (Mo, 19 Feb 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/community/setup/scripts/ggz2phpbb.conf.in
+   M /trunk/community/setup/sql/trigger/ggzsync_trigger.c
+   M /trunk/community/setup/webserver/ggz-apache2.conf.in
+   M /trunk/docs/games/ggz-games/Makefile.am
+   M /trunk/docs/games/ggz-games/tictactoe/Makefile.am
+   M /trunk/docs/spec/mainspec/Makefile.am
+   M /trunk/ggz-client-libs/po/Makefile.am
+   M /trunk/ggz-client-libs/po/ggzcore/Makefile.am
+   M /trunk/ggzd/game_servers/chess/ai-gnuchess.c
+   M /trunk/ggzd/game_servers/chess/ai-gnuchess.h
+   M /trunk/ggzd/game_servers/connectx/ai-velena.c
+   M /trunk/ggzd/game_servers/connectx/ai-velena.h
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/score.c
+   M /trunk/ggzd/game_servers/ggzcards/score.h
+   M /trunk/ggzd/game_servers/tictactoe/ttt-ai.c
+   M /trunk/ggzd/game_servers/tictactoe/ttt-ai.h
+   M /trunk/ggzd/ggzd/database/ggzdb_dbi.c
+   M /trunk/ggzd/ggzd/meta/Makefile.am
+   M /trunk/ggzd/ggzd/meta/meta.c
+   M /trunk/ggzd/ggzd/meta/meta.h
+   M /trunk/ggzd/ggzd/meta/minidom.c
+   M /trunk/ggzd/ggzd/meta/minidom.h
+   M /trunk/ggzd/ggzd/meta/uri.c
+   M /trunk/ggzd/ggzd/meta/uri.h
+   M /trunk/ggzd/ggzd/reconfiguration.h
+   M /trunk/ggzd/ggzdmod++/Makefile.am
+   M /trunk/ggzd/ggzdmod++/ggzgameserver.h
+   M /trunk/ggzd/ggzdmod++/mnet.h
+   M /trunk/ggzd/ggzdmod++/net.h
+   M /trunk/gnome-client/man/Makefile.am
+   M /trunk/grubby/grubby/modules/banner.c
+   M /trunk/gtk-client/ggz-gtk/ggz-embed.h
+   M /trunk/gtk-client/ggz-gtk/ggz-gtk.h
+   M /trunk/gtk-client/ggz-gtk/ggz_gtk_host.svg
+   M /trunk/gtk-client/ggz-gtk/ggzutils.c
+   M /trunk/gtk-client/ggz-gtk/ggzutils.h
+   M /trunk/gtk-client/src/Makefile.am
+   M /trunk/gtk-games/ggzcards/dlg_scores.c
+   M /trunk/gtk-games/ggzcards/dlg_scores.h
+   M /trunk/kde-games/kconnectx/Makefile.am
+   M /trunk/kde-games/kconnectx/kconnectx.h
+   M /trunk/kde-games/kconnectx/module.dsc.in
+   M /trunk/kde-games/kconnectx/opt.h
+   M /trunk/kde-games/kconnectx/proto.h
+   M /trunk/kde-games/kconnectx/red.svg
+   M /trunk/kde-games/kconnectx/win.h
+   M /trunk/kde-games/kconnectx/yellow.svg
+   M /trunk/kde-games/lib/kggzmod/Makefile.am
+   M /trunk/kde-games/lib/kggzmod/event.h
+   M /trunk/kde-games/lib/kggzmod/misc_private.h
+   M /trunk/kde-games/lib/kggzmod/module.h
+   M /trunk/kde-games/lib/kggzmod/module_private.h
+   M /trunk/kde-games/lib/kggzmod/player.h
+   M /trunk/kde-games/lib/kggzmod/player_private.h
+   M /trunk/kde-games/lib/kggzmod/request.h
+   M /trunk/kde-games/lib/kggzmod/statistics.h
+   M /trunk/kde-games/lib/kggzmod/statistics_private.h
+   M /trunk/kde-games/lib/kggzpacket.h
+   M /trunk/kde-games/lib/kggzseatsdialog.h
+   M /trunk/kde-games/lib/kggzsystem.h
+   M /trunk/kde-games/lib/qsvgpixmap.h
+   M /trunk/libggz/src/ggz_dio.c
+   M /trunk/libggz/src/ggz_dio.h
+   M /trunk/libggz/src/security/base16.c
+   M /trunk/libggz/src/security/base16.h
+   M /trunk/libggz/tests/dio.c
+   M /trunk/libggz/tests/hashing.c
+   M /trunk/libggz/tests/test16.c
+   M /trunk/libggz/tests/test64.c
+   M /trunk/playground/agrue/agrue/main.c
+   M /trunk/playground/agrue/agrue/net.c
+   M /trunk/playground/agrue/agrue/net.h
+   M /trunk/playground/c-base/evilstr.c
+   M /trunk/playground/c-base/flexprintf.c
+   M /trunk/playground/c-base/safestring.c
+   M /trunk/playground/c-base/str.c
+   M /trunk/playground/ggz-kde4/kconnectx/kconnectx.h
+   M /trunk/playground/ggz-kde4/kconnectx/module.dsc.in
+   M /trunk/playground/ggz-kde4/kconnectx/opt.h
+   M /trunk/playground/ggz-kde4/kconnectx/proto.h
+   M /trunk/playground/ggz-kde4/kconnectx/win.h
+   M /trunk/playground/ggz-kde4/kggzmod/event.h
+   M /trunk/playground/ggz-kde4/kggzmod/misc_private.h
+   M /trunk/playground/ggz-kde4/kggzmod/module.h
+   M /trunk/playground/ggz-kde4/kggzmod/module_private.h
+   M /trunk/playground/ggz-kde4/kggzmod/player.h
+   M /trunk/playground/ggz-kde4/kggzmod/player_private.h
+   M /trunk/playground/ggz-kde4/kggzmod/request.h
+   M /trunk/playground/ggz-kde4/kggzmod/statistics.h
+   M /trunk/playground/ggz-kde4/kggzmod/statistics_private.h
+   M /trunk/playground/ggz-python/arimaa/module_arimaa.dsc.in
+   M /trunk/playground/ggz-ruby/ai-ttt/ruttt-ai.c
+   M /trunk/playground/ggz-ruby/ai-ttt/ttt-ai.c
+   M /trunk/playground/ggz-ruby/ai-ttt/ttt-ai.h
+   M /trunk/playground/server/async/gai_a.c
+   M /trunk/playground/server/async/ggzresolver.c
+   M /trunk/playground/server/coregen/proto.c
+   M /trunk/python/ggzboard/backgammon/bg.svg
+   M /trunk/python/ggzboard/connectx/player1.svg
+   M /trunk/python/ggzboard/connectx/player2.svg
+   M /trunk/python/ggzboard/module_connectx.dsc.in
+   M /trunk/python/ggzboard/module_ludo.dsc.in
+   M /trunk/python/ggzboard/shogi/b-bishop.svg
+   M /trunk/python/ggzboard/shogi/b-gold-general.svg
+   M /trunk/python/ggzboard/shogi/b-king.svg
+   M /trunk/python/ggzboard/shogi/b-knight.svg
+   M /trunk/python/ggzboard/shogi/b-lance.svg
+   M /trunk/python/ggzboard/shogi/b-pawn.svg
+   M /trunk/python/ggzboard/shogi/b-rook.svg
+   M /trunk/python/ggzboard/shogi/b-silver-general.svg
+   M /trunk/python/ggzboard/shogi/bishop.svg
+   M /trunk/python/ggzboard/shogi/gold-general.svg
+   M /trunk/python/ggzboard/shogi/king.svg
+   M /trunk/python/ggzboard/shogi/knight.svg
+   M /trunk/python/ggzboard/shogi/lance.svg
+   M /trunk/python/ggzboard/shogi/pawn.svg
+   M /trunk/python/ggzboard/shogi/rook.svg
+   M /trunk/python/ggzboard/shogi/silver-general.svg
+   M /trunk/python/lib/ggzsettings.py.in
+   M /trunk/python/pyrsvgsdl/setup.py.in
+   M /trunk/python/vibora/vibora.desktop.in
+   M /trunk/utils/ggzcomm/c++example/client.h
+   M /trunk/utils/ggzcomm/c++example/client4.h
+   M /trunk/utils/ggzcomm/c++example/server.h
+   M /trunk/utils/ggzcomm/c++example/server4.h
+   M /trunk/utils/metaserv/libmeta/Makefile.am
+   M /trunk/utils/metaserv/libmeta/meta.c
+   M /trunk/utils/metaserv/libmeta/meta.h
+   M /trunk/utils/metaserv/libmeta/minidom.c
+   M /trunk/utils/metaserv/libmeta/minidom.h
+   M /trunk/utils/metaserv/libmeta/uri.c
+   M /trunk/utils/metaserv/libmeta/uri.h
+
+Fix eol-style on .c, .h, .in, and .am files.
+------------------------------------------------------------------------
+r8965 | josef | 2007-01-29 08:10:05 +0100 (Mo, 29 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/web/.htaccess
+   M /trunk/community/web/motd/index.html
+
+- use index.html if no index.php is available
+
+[commit from ggzd@serv]
+
+
+------------------------------------------------------------------------
+r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16 Jan 2007) | 8 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/java/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- updated changelogs
+
+This is VERY consuming (4 MB changes) since we change the changelog format.
+However we have to do so since no tool seems to be able to reproduce our old format.
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/NEWS
+   M /trunk/community/README.GGZ
+   M /trunk/docs/AUTHORS
+   M /trunk/docs/NEWS
+   M /trunk/docs/QuickStart.GGZ
+   M /trunk/docs/README.GGZ
+   M /trunk/ggz-client-libs/AUTHORS
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/QuickStart.GGZ
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggzd/AUTHORS
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/README.GGZ
+   M /trunk/gnome-client/AUTHORS
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/QuickStart.GGZ
+   M /trunk/gnome-client/README
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/grubby/AUTHORS
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/grubby/README.GGZ
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/QuickStart.GGZ
+   M /trunk/gtk-client/README
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-games/AUTHORS
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/QuickStart.GGZ
+   M /trunk/gtk-games/README
+   M /trunk/gtk-games/README.GGZ
+   M /trunk/java/AUTHORS
+   M /trunk/java/NEWS
+   M /trunk/java/README.GGZ
+   M /trunk/kde-client/AUTHORS
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/QuickStart.GGZ
+   M /trunk/kde-client/README
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-games/AUTHORS
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/QuickStart.GGZ
+   M /trunk/kde-games/README
+   M /trunk/kde-games/README.GGZ
+   M /trunk/libggz/AUTHORS
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/QuickStart.GGZ
+   M /trunk/libggz/README.GGZ
+   M /trunk/python/AUTHORS
+   M /trunk/python/NEWS
+   M /trunk/python/QuickStart.GGZ
+   M /trunk/python/README
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/AUTHORS
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/README
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/txt-client/AUTHORS
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/QuickStart.GGZ
+   M /trunk/txt-client/README.GGZ
+   M /trunk/utils/AUTHORS
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+   M /trunk/utils/README.GGZ
+
+- update common files slightly, and synchronise them
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
 r8942 | josef | 2007-01-16 17:22:43 +0100 (Di, 16 Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/mundomap/map.png

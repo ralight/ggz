@@ -1,4 +1,185 @@
 ------------------------------------------------------------------------
+r9946 | josef | 2008-04-12 13:59:55 +0200 (Sa, 12 Apr 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/java/Makefile
+   M /trunk/java/build.xml
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- ensure that the next snapshot release will have the proper version number in its packages
+
+
+------------------------------------------------------------------------
+r9735 | josef | 2008-02-16 13:34:26 +0100 (Sa, 16 Feb 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/sdl-games/ttt3d/main.c
+
+- move towards ggzmod-managed seats and players
+
+
+------------------------------------------------------------------------
+r9401 | josef | 2007-12-01 13:30:41 +0100 (Sa, 01 Dez 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/gtk-games/autogen.sh
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/autogen.sh
+   M /trunk/libggz/autogen.sh
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+ r10433@nada:  josef | 2007-12-01 13:29:38 +0100
+ - bump minimum versions of autotools so we don't accidentally hit problems with old tools
+ 
+
+------------------------------------------------------------------------
+r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16 Jan 2007) | 8 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/java/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- updated changelogs
+
+This is VERY consuming (4 MB changes) since we change the changelog format.
+However we have to do so since no tool seems to be able to reproduce our old format.
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8949 | josef | 2007-01-16 19:23:42 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- 0.0.14pre => 0.0.14
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/NEWS
+   M /trunk/community/README.GGZ
+   M /trunk/docs/AUTHORS
+   M /trunk/docs/NEWS
+   M /trunk/docs/QuickStart.GGZ
+   M /trunk/docs/README.GGZ
+   M /trunk/ggz-client-libs/AUTHORS
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/QuickStart.GGZ
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggzd/AUTHORS
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/README.GGZ
+   M /trunk/gnome-client/AUTHORS
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/QuickStart.GGZ
+   M /trunk/gnome-client/README
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/grubby/AUTHORS
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/grubby/README.GGZ
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/QuickStart.GGZ
+   M /trunk/gtk-client/README
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-games/AUTHORS
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/QuickStart.GGZ
+   M /trunk/gtk-games/README
+   M /trunk/gtk-games/README.GGZ
+   M /trunk/java/AUTHORS
+   M /trunk/java/NEWS
+   M /trunk/java/README.GGZ
+   M /trunk/kde-client/AUTHORS
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/QuickStart.GGZ
+   M /trunk/kde-client/README
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-games/AUTHORS
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/QuickStart.GGZ
+   M /trunk/kde-games/README
+   M /trunk/kde-games/README.GGZ
+   M /trunk/libggz/AUTHORS
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/QuickStart.GGZ
+   M /trunk/libggz/README.GGZ
+   M /trunk/python/AUTHORS
+   M /trunk/python/NEWS
+   M /trunk/python/QuickStart.GGZ
+   M /trunk/python/README
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/AUTHORS
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/README
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/txt-client/AUTHORS
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/QuickStart.GGZ
+   M /trunk/txt-client/README.GGZ
+   M /trunk/utils/AUTHORS
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+   M /trunk/utils/README.GGZ
+
+- update common files slightly, and synchronise them
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
 r8938 | josef | 2007-01-16 16:52:26 +0100 (Di, 16 Jan 2007) | 6 lines
 Geänderte Pfade:
    M /trunk/sdl-games/geekgame/graphics/banner.bmp

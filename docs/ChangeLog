@@ -1,4 +1,916 @@
 ------------------------------------------------------------------------
+r10002 | josef | 2008-05-24 15:27:18 +0200 (Sa, 24 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/ggz-project/GGZ-contributions
+   D /trunk/gtk-games/chess/bitmaps/Credits
+
+- keep credits for imported data centralised
+
+
+------------------------------------------------------------------------
+r10001 | josef | 2008-05-24 13:42:26 +0200 (Sa, 24 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/presentation/README.talks
+
+- document another talk on GGZ, although the site seems to have been hijacked
+
+
+------------------------------------------------------------------------
+r9998 | josef | 2008-05-24 11:02:55 +0200 (Sa, 24 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/games/game-development/Makefile.am
+   M /trunk/docs/server/hosting/Makefile.am
+   M /trunk/docs/server/metaserver/Makefile.am
+
+- unbreak some makefiles for 'make dist'
+
+
+------------------------------------------------------------------------
+r9995 | josef | 2008-05-24 10:04:45 +0200 (Sa, 24 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/spec/Makefile.am
+   M /trunk/docs/spec/design/Makefile.am
+
+- Uri-spec.txt remained in the parent directory
+
+
+------------------------------------------------------------------------
+r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/NEWS
+   M /trunk/community/README
+   M /trunk/docs/NEWS
+   M /trunk/docs/README
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.h
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/ggzdmod/ggzdmod.h
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README
+   M /trunk/java/NEWS
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/README
+   M /trunk/libggz/src/ggz.h
+   M /trunk/python/NEWS
+   M /trunk/python/README
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+
+- prepare new snapshot 0.99.3: updated NEWS file with overview on new stuff, plus usual version bumps
+
+
+------------------------------------------------------------------------
+r9990 | josef | 2008-05-23 20:53:56 +0200 (Fr, 23 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/spec/mainspec/appendix.sgml
+
+- document new @refname attribute
+
+
+------------------------------------------------------------------------
+r9984 | josef | 2008-05-12 13:13:47 +0200 (Mo, 12 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/games/game-development/ggz-game-development-guide.texi
+
+- document AllowPeers configuration option for completeness
+
+
+------------------------------------------------------------------------
+r9981 | josef | 2008-05-10 01:52:49 +0200 (Sa, 10 Mai 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/docs/ggz-project/release-procedure
+   M /trunk/docs/server/ggzd/channels.txt
+   M /trunk/docs/server/hosting/ggz-hosting-guide.texi
+   M /trunk/docs/spec
+   M /trunk/docs/spec/Makefile.am
+   A /trunk/docs/spec/design
+   A /trunk/docs/spec/design/Makefile.am (von /trunk/docs/spec/Makefile.am:9944)
+   A /trunk/docs/spec/design/design-txt.dsl (von /trunk/docs/spec/design-txt.dsl:9944)
+   A /trunk/docs/spec/design/design.dsl (von /trunk/docs/spec/design.dsl:9944)
+   A /trunk/docs/spec/design/design.sgml (von /trunk/docs/spec/design.sgml:9944)
+   A /trunk/docs/spec/design/overview.sgml (von /trunk/docs/spec/overview.sgml:9944)
+   A /trunk/docs/spec/design/requirements.sgml (von /trunk/docs/spec/requirements.sgml:9944)
+   A /trunk/docs/spec/design/server_arch.fig (von /trunk/docs/spec/server_arch.fig:9944)
+   D /trunk/docs/spec/design-txt.dsl
+   D /trunk/docs/spec/design.dsl
+   D /trunk/docs/spec/design.sgml
+   D /trunk/docs/spec/overview.sgml
+   D /trunk/docs/spec/requirements.sgml
+   D /trunk/docs/spec/server_arch.fig
+
+- clean up a bit: move GGZ design document into subdirectory spec/design
+- strip the explanation of the contents of the MOTD and refer to the hosting guide instead which contains this info
+
+
+------------------------------------------------------------------------
+r9946 | josef | 2008-04-12 13:59:55 +0200 (Sa, 12 Apr 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/java/Makefile
+   M /trunk/java/build.xml
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- ensure that the next snapshot release will have the proper version number in its packages
+
+
+------------------------------------------------------------------------
+r9944 | josef | 2008-04-12 12:27:38 +0200 (Sa, 12 Apr 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/games/savegames.txt
+   M /trunk/ggzd/game_servers/chinese-checkers/Makefile.am
+   M /trunk/ggzd/game_servers/chinese-checkers/game.c
+   M /trunk/ggzd/game_servers/chinese-checkers/main.c
+
+- basic savegame implementation for Chinese Checkers
+
+
+------------------------------------------------------------------------
+r9917 | josef | 2008-03-30 15:51:20 +0200 (So, 30 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/games/savegames.txt
+
+- progress report: we've got 5 complete savegame implementations by now
+
+
+------------------------------------------------------------------------
+r9909 | josef | 2008-03-30 14:25:42 +0200 (So, 30 Mär 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/games/Makefile.am
+   A /trunk/docs/games/savegames.txt
+
+- complete list of savegame support throughout GGZ
+
+The list serves as an eye-opener for the incompleteness!
+
+
+------------------------------------------------------------------------
+r9904 | josef | 2008-03-30 10:28:38 +0200 (So, 30 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/server/hosting/ggz-hosting-guide.texi
+
+- more information about database choices and lifecycle issues
+
+
+------------------------------------------------------------------------
+r9901 | josef | 2008-03-29 22:42:31 +0100 (Sa, 29 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/games/ggz-games/Makefile.am
+   A /trunk/docs/games/ggz-games/dots-design.txt
+
+- found the original CtD design document from Rich in a mail from around June 2000, put it to the game docs here
+
+
+------------------------------------------------------------------------
+r9892 | josef | 2008-03-28 20:52:27 +0100 (Fr, 28 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/games/game-development/ggz-game-development-guide.texi
+
+- small pitch for kggzdmod and jggzdmod, but the whole chapter needs to be reworked
+
+
+------------------------------------------------------------------------
+r9867 | josef | 2008-03-23 13:05:37 +0100 (So, 23 Mär 2008) | 4 lines
+Geänderte Pfade:
+   A /trunk/docs/server/ggzd/channels.txt
+
+- networking capabilities of C, C++, Python, Ruby, Java for GGZ developers
+- the document is placed here for the time being as it also affects the game server launch
+
+
+------------------------------------------------------------------------
+r9829 | josef | 2008-03-09 07:38:56 +0100 (So, 09 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/games/game-development/ggz-game-development-guide.texi
+
+- document AllowRestore and server-side .dsc entries in general
+
+
+------------------------------------------------------------------------
+r9810 | josef | 2008-03-08 22:40:42 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/server/ggzd/savegames.txt
+
+- update documentation, most of the issues are gone now
+
+
+------------------------------------------------------------------------
+r9805 | josef | 2008-03-08 19:13:32 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/server/ggzd/Makefile.am
+   A /trunk/docs/server/ggzd/savegames.txt
+
+- document everything related to storing information about games being played on the server
+
+
+------------------------------------------------------------------------
+r9792 | josef | 2008-03-08 09:58:05 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/server/hosting/ggz-hosting-guide.texi
+
+- updated documentation on player registration policies
+
+
+------------------------------------------------------------------------
+r9767 | josef | 2008-02-27 13:59:54 +0100 (Mi, 27 Feb 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/spec/Uri-spec.txt
+
+- prepare unambiguous/bijective player addressing scheme for better IM integration
+
+
+------------------------------------------------------------------------
+r9762 | josef | 2008-02-26 08:22:00 +0100 (Di, 26 Feb 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/presentation/README.talks
+
+- more GGZ propaganda accomplished
+
+
+------------------------------------------------------------------------
+r9747 | josef | 2008-02-17 11:16:18 +0100 (So, 17 Feb 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/ggz-project/release-procedure
+
+- document how to sign release tarballs since I forget this every time ;)
+
+
+------------------------------------------------------------------------
+r9678 | josef | 2008-02-10 10:10:44 +0100 (So, 10 Feb 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/games/game-development/ggz-game-development-guide.texi
+
+- section on game launchers
+
+
+------------------------------------------------------------------------
+r9623 | josef | 2008-01-29 19:38:47 +0100 (Di, 29 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/ggz-project/branches.flw
+   M /trunk/docs/ggz-project/branches.png
+
+- add 0.99.1 snapshot and 0.0.14.1 point release as well as ggz-1-0-0 branch plans
+
+
+------------------------------------------------------------------------
+r9489 | josef | 2008-01-12 17:37:27 +0100 (Sa, 12 Jan 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/docs/spec/Makefile.am
+   A /trunk/docs/spec/Uri-spec.txt (von /trunk/ggzd/ggzd/meta/Uri-spec.txt:9481)
+   M /trunk/ggzd/ggzd/meta/Makefile.am
+   D /trunk/ggzd/ggzd/meta/Uri-spec.txt
+   M /trunk/ggzd/ggzd/meta/meta.c
+   M /trunk/ggzd/ggzd/meta/meta.h
+   D /trunk/ggzd/ggzd/meta/uri.c
+   D /trunk/ggzd/ggzd/meta/uri.h
+   M /trunk/libggz/src/Makefile.am
+   M /trunk/libggz/src/ggz.h
+   A /trunk/libggz/src/uri.c (von /trunk/ggzd/ggzd/meta/uri.c:9481)
+
+- move URI functions from metaserver into libggz so that we can trim down the core clients
+- move URI spec into spec directory in ggz-docs
+
+
+------------------------------------------------------------------------
+r9457 | josef | 2007-12-18 22:32:00 +0100 (Di, 18 Dez 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/presentation/README.talks
+
+- oops, forgot the name twice
+
+
+------------------------------------------------------------------------
+r9456 | josef | 2007-12-18 22:31:07 +0100 (Di, 18 Dez 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk/docs/presentation/README.talks
+
+- add Ruby series of talks, each of which featured GGZ to some extent
+- some link updates and mention of audio recordings
+
+
+------------------------------------------------------------------------
+r9455 | josef | 2007-12-18 22:15:05 +0100 (Di, 18 Dez 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/ggz-project/promo.txt
+
+- Andrea's article
+
+
+------------------------------------------------------------------------
+r9439 | josef | 2007-12-11 23:01:45 +0100 (Di, 11 Dez 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/docs/games/game-development/Makefile.am
+   M /trunk/docs/server/hosting/Makefile.am
+
+- clean up the guides build process a bit
+
+The only issue left with it is that now automake complains that a rule like %.o : %.c is a GNU extension. Huh?
+
+
+------------------------------------------------------------------------
+r9438 | josef | 2007-12-11 21:56:06 +0100 (Di, 11 Dez 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/spec/Makefile.am
+   M /trunk/docs/spec/clientspec/Makefile.am
+   M /trunk/docs/spec/mainspec/Makefile.am
+   M /trunk/docs/spec/serverspec/Makefile.am
+
+- now remove lines completely as they're a GNU extension, supposedly
+
+
+------------------------------------------------------------------------
+r9437 | josef | 2007-12-11 21:53:28 +0100 (Di, 11 Dez 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/articles/Makefile.am
+   M /trunk/docs/coreclients/Makefile.am
+   M /trunk/docs/games/external-games/Makefile.am
+   M /trunk/docs/games/modules/Makefile.am
+   M /trunk/docs/grubby/Makefile.am
+   M /trunk/docs/intro/Makefile.am
+   M /trunk/docs/overview/Makefile.am
+   M /trunk/docs/overview/architecture/Makefile.am
+   M /trunk/docs/server/database/Makefile.am
+   M /trunk/docs/server/ggzd/Makefile.am
+
+- less EXTRA_DIST
+
+
+------------------------------------------------------------------------
+r9432 | josef | 2007-12-11 20:29:24 +0100 (Di, 11 Dez 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/spec/Makefile.am
+   M /trunk/docs/spec/clientspec/Makefile.am
+   M /trunk/docs/spec/mainspec/Makefile.am
+   M /trunk/docs/spec/serverspec/Makefile.am
+
+- do not try to copy picture files from gtk-doc-tools anymore
+
+
+------------------------------------------------------------------------
+r9401 | josef | 2007-12-01 13:30:41 +0100 (Sa, 01 Dez 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/gtk-games/autogen.sh
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/autogen.sh
+   M /trunk/libggz/autogen.sh
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+ r10433@nada:  josef | 2007-12-01 13:29:38 +0100
+ - bump minimum versions of autotools so we don't accidentally hit problems with old tools
+ 
+
+------------------------------------------------------------------------
+r9400 | josef | 2007-12-01 13:11:35 +0100 (Sa, 01 Dez 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/docs/Makefile.am
+   M /trunk/docs/configure.ac
+   M /trunk/docs/games/game-development/Makefile.am
+   M /trunk/docs/games/modules/Makefile.am
+   M /trunk/docs/intro/Makefile.am
+   M /trunk/docs/overview/architecture/Makefile.am
+   M /trunk/docs/server/database/Makefile.am
+   M /trunk/docs/server/ggzd/Makefile.am
+   M /trunk/docs/server/hosting/Makefile.am
+   M /trunk/docs/server/metaserver/Makefile.am
+   M /trunk/docs/spec/clientspec/Makefile.am
+   M /trunk/docs/spec/design.sgml
+   M /trunk/docs/spec/mainspec/mainspec.sgml
+   M /trunk/docs/spec/serverspec/Makefile.am
+
+ r10421@nada:  josef | 2007-12-01 13:11:29 +0100
+ - more conditional subdirectories
+ - more checks for docbook tools which must be installed
+ - get rid of old SUBDIRS=. hacks
+ 
+
+------------------------------------------------------------------------
+r9373 | josef | 2007-11-21 17:10:42 +0100 (Mi, 21 Nov 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/docs/ggz-project/hacking
+
+ r10352@nada:  josef | 2007-11-21 17:10:07 +0100
+ - chapter on the tricky issue of catching error messages from the server - might be moved to the hosting guide at some point
+ 
+
+------------------------------------------------------------------------
+r9366 | josef | 2007-11-18 16:30:54 +0100 (So, 18 Nov 2007) | 10 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/docs/coreclients/coreclients.html
+   M /trunk/www/dev/libraries/ggzcore/index.php.en
+   M /trunk/www/dev/svn.php.en
+   M /trunk/www/packages/index.php.en
+   D /trunk/www/utils/ggz-gaim.php.en
+   M /trunk/www/utils/ggz-kopete.php.en
+   A /trunk/www/utils/ggz-pidgin.php.en (von /trunk/www/utils/ggz-gaim.php.en:9249)
+   M /trunk/www/utils/index.php.en
+
+ r10325@nada:  josef | 2007-11-18 16:26:20 +0100
+ - ggz-gaim has been renamed to ggz-pidgin
+ 
+ r10326@nada:  josef | 2007-11-18 16:28:22 +0100
+ - more renaming of ggz-gaim into ggz-pidgin
+ 
+ r10327@nada:  josef | 2007-11-18 16:30:26 +0100
+ - introduce pidgin name into ggz-docs as well
+ 
+
+------------------------------------------------------------------------
+r9364 | josef | 2007-11-17 17:36:14 +0100 (Sa, 17 Nov 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/docs/ggz-project/hacking
+
+ r10317@nada:  josef | 2007-11-17 17:36:16 +0100
+ - more notes on debugging, especially for libggz types and ggz-txt
+ 
+
+------------------------------------------------------------------------
+r9348 | josef | 2007-11-11 20:23:55 +0100 (So, 11 Nov 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   A /trunk/docs/server/ggzd/ggzd-dependencies.flw
+   A /trunk/docs/server/ggzd/ggzd-dependencies.png
+   M /trunk/docs/server/ggzd/index.html
+
+ r10286@nada:  josef | 2007-11-11 20:23:36 +0100
+ - addition of ggzd dependencies diagram
+ 
+
+------------------------------------------------------------------------
+r9327 | josef | 2007-10-20 10:09:10 +0200 (Sa, 20 Okt 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/docs/server/hosting/ggz-hosting-guide.texi
+
+ r10237@nada:  josef | 2007-10-20 10:08:20 +0200
+ - no more db2 or db3
+ 
+
+------------------------------------------------------------------------
+r9325 | josef | 2007-10-20 10:08:55 +0200 (Sa, 20 Okt 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/docs/server/hosting/ggz-hosting-guide.texi
+
+ r10235@nada:  josef | 2007-10-13 22:58:54 +0200
+ - make default users for administrator, grubby and ggz-cmd/nagios more clear
+ - fix some misplaced words in a copy&paste phrase
+ 
+
+------------------------------------------------------------------------
+r9316 | josef | 2007-09-22 08:43:21 +0200 (Sa, 22 Sep 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/docs/spec/Makefile.am
+
+ r10205@nada:  josef | 2007-09-19 22:44:22 +0200
+ - delete created files (improvement taken from Debian packages)
+ 
+
+------------------------------------------------------------------------
+r9280 | josef | 2007-08-29 09:00:06 +0200 (Mi, 29 Aug 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/docs/server/hosting/ggz-hosting-guide.texi
+
+ r10050@nada:  josef | 2007-08-28 20:11:36 +0200
+ - more pointers to the graveyard
+ 
+
+------------------------------------------------------------------------
+r9279 | josef | 2007-08-29 08:59:53 +0200 (Mi, 29 Aug 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/docs/games/Makefile.am
+   M /trunk/docs/games/features.html
+   A /trunk/docs/games/games-history.html (von /trunk/docs/games/games.html:9249)
+   M /trunk/docs/games/games.html
+
+ r10049@nada:  josef | 2007-08-28 20:10:08 +0200
+ - create new games version/protocol document and mark old one as historic
+ - some updates due to game removals
+ 
+
+------------------------------------------------------------------------
+r9257 | josef | 2007-08-27 08:45:04 +0200 (Mo, 27 Aug 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/docs/server/hosting/ggz-hosting-guide.texi
+
+ r9995@nada:  josef | 2007-08-26 20:09:21 +0200
+ - document the stored SQL function 'canonicalstr()'
+ 
+
+------------------------------------------------------------------------
+r9175 | josef | 2007-07-11 08:20:20 +0200 (Mi, 11 Jul 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/ggz-project/hacking
+
+- some information on coding style as produced by ggzcomm
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9101 | josef | 2007-05-07 09:00:33 +0200 (Mo, 07 Mai 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/games/game-development/ggz-game-development-guide.texi
+   M /trunk/docs/server/hosting/ggz-hosting-guide.texi
+
+- give separate sections to TeXinfo so they won't overwrite (man is this a stupid system)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9086 | josef | 2007-05-02 09:41:39 +0200 (Mi, 02 Mai 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk/docs/ggz-project/Internationalization
+   M /trunk/docs/ggz-project/Roadmap
+   A /trunk/docs/ggz-project/branches.flw
+   A /trunk/docs/ggz-project/branches.png
+
+- graphics outlining our current development branches and releases
+- some updates on how to handle translations
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9075 | josef | 2007-04-30 09:53:46 +0200 (Mo, 30 Apr 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/server/hosting/ggz-hosting-guide.texi
+
+- the most pressing adaptation of database docs to reality...
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9067 | josef | 2007-04-23 11:50:19 +0200 (Mo, 23 Apr 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/presentation/README.talks
+   A /trunk/docs/presentation/output2007
+   A /trunk/docs/presentation/output2007/abstract.txt
+   A /trunk/docs/presentation/output2007/linux-spieletechnologien.odp
+
+- my talk from last Friday's Output (and of course Murphy disturbed the GGZ experience, which is bad)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9051 | josef | 2007-04-16 09:18:04 +0200 (Mo, 16 Apr 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/games/game-development/ggz-game-development-guide.texi
+
+- updated information about KDE game development for GGZ
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9049 | josef | 2007-04-16 09:15:16 +0200 (Mo, 16 Apr 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/server/hosting/ggz-hosting-guide.texi
+
+- some first information about policies
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8991 | josef | 2007-02-26 09:23:27 +0100 (Mo, 26 Feb 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/spec/clientspec/clientspec.sgml
+
+- the fd is piggybacked on a single character, not an integer
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8987 | jdorje | 2007-02-19 03:50:30 +0100 (Mo, 19 Feb 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/community/setup/scripts/ggz2phpbb.conf.in
+   M /trunk/community/setup/sql/trigger/ggzsync_trigger.c
+   M /trunk/community/setup/webserver/ggz-apache2.conf.in
+   M /trunk/docs/games/ggz-games/Makefile.am
+   M /trunk/docs/games/ggz-games/tictactoe/Makefile.am
+   M /trunk/docs/spec/mainspec/Makefile.am
+   M /trunk/ggz-client-libs/po/Makefile.am
+   M /trunk/ggz-client-libs/po/ggzcore/Makefile.am
+   M /trunk/ggzd/game_servers/chess/ai-gnuchess.c
+   M /trunk/ggzd/game_servers/chess/ai-gnuchess.h
+   M /trunk/ggzd/game_servers/connectx/ai-velena.c
+   M /trunk/ggzd/game_servers/connectx/ai-velena.h
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/score.c
+   M /trunk/ggzd/game_servers/ggzcards/score.h
+   M /trunk/ggzd/game_servers/tictactoe/ttt-ai.c
+   M /trunk/ggzd/game_servers/tictactoe/ttt-ai.h
+   M /trunk/ggzd/ggzd/database/ggzdb_dbi.c
+   M /trunk/ggzd/ggzd/meta/Makefile.am
+   M /trunk/ggzd/ggzd/meta/meta.c
+   M /trunk/ggzd/ggzd/meta/meta.h
+   M /trunk/ggzd/ggzd/meta/minidom.c
+   M /trunk/ggzd/ggzd/meta/minidom.h
+   M /trunk/ggzd/ggzd/meta/uri.c
+   M /trunk/ggzd/ggzd/meta/uri.h
+   M /trunk/ggzd/ggzd/reconfiguration.h
+   M /trunk/ggzd/ggzdmod++/Makefile.am
+   M /trunk/ggzd/ggzdmod++/ggzgameserver.h
+   M /trunk/ggzd/ggzdmod++/mnet.h
+   M /trunk/ggzd/ggzdmod++/net.h
+   M /trunk/gnome-client/man/Makefile.am
+   M /trunk/grubby/grubby/modules/banner.c
+   M /trunk/gtk-client/ggz-gtk/ggz-embed.h
+   M /trunk/gtk-client/ggz-gtk/ggz-gtk.h
+   M /trunk/gtk-client/ggz-gtk/ggz_gtk_host.svg
+   M /trunk/gtk-client/ggz-gtk/ggzutils.c
+   M /trunk/gtk-client/ggz-gtk/ggzutils.h
+   M /trunk/gtk-client/src/Makefile.am
+   M /trunk/gtk-games/ggzcards/dlg_scores.c
+   M /trunk/gtk-games/ggzcards/dlg_scores.h
+   M /trunk/kde-games/kconnectx/Makefile.am
+   M /trunk/kde-games/kconnectx/kconnectx.h
+   M /trunk/kde-games/kconnectx/module.dsc.in
+   M /trunk/kde-games/kconnectx/opt.h
+   M /trunk/kde-games/kconnectx/proto.h
+   M /trunk/kde-games/kconnectx/red.svg
+   M /trunk/kde-games/kconnectx/win.h
+   M /trunk/kde-games/kconnectx/yellow.svg
+   M /trunk/kde-games/lib/kggzmod/Makefile.am
+   M /trunk/kde-games/lib/kggzmod/event.h
+   M /trunk/kde-games/lib/kggzmod/misc_private.h
+   M /trunk/kde-games/lib/kggzmod/module.h
+   M /trunk/kde-games/lib/kggzmod/module_private.h
+   M /trunk/kde-games/lib/kggzmod/player.h
+   M /trunk/kde-games/lib/kggzmod/player_private.h
+   M /trunk/kde-games/lib/kggzmod/request.h
+   M /trunk/kde-games/lib/kggzmod/statistics.h
+   M /trunk/kde-games/lib/kggzmod/statistics_private.h
+   M /trunk/kde-games/lib/kggzpacket.h
+   M /trunk/kde-games/lib/kggzseatsdialog.h
+   M /trunk/kde-games/lib/kggzsystem.h
+   M /trunk/kde-games/lib/qsvgpixmap.h
+   M /trunk/libggz/src/ggz_dio.c
+   M /trunk/libggz/src/ggz_dio.h
+   M /trunk/libggz/src/security/base16.c
+   M /trunk/libggz/src/security/base16.h
+   M /trunk/libggz/tests/dio.c
+   M /trunk/libggz/tests/hashing.c
+   M /trunk/libggz/tests/test16.c
+   M /trunk/libggz/tests/test64.c
+   M /trunk/playground/agrue/agrue/main.c
+   M /trunk/playground/agrue/agrue/net.c
+   M /trunk/playground/agrue/agrue/net.h
+   M /trunk/playground/c-base/evilstr.c
+   M /trunk/playground/c-base/flexprintf.c
+   M /trunk/playground/c-base/safestring.c
+   M /trunk/playground/c-base/str.c
+   M /trunk/playground/ggz-kde4/kconnectx/kconnectx.h
+   M /trunk/playground/ggz-kde4/kconnectx/module.dsc.in
+   M /trunk/playground/ggz-kde4/kconnectx/opt.h
+   M /trunk/playground/ggz-kde4/kconnectx/proto.h
+   M /trunk/playground/ggz-kde4/kconnectx/win.h
+   M /trunk/playground/ggz-kde4/kggzmod/event.h
+   M /trunk/playground/ggz-kde4/kggzmod/misc_private.h
+   M /trunk/playground/ggz-kde4/kggzmod/module.h
+   M /trunk/playground/ggz-kde4/kggzmod/module_private.h
+   M /trunk/playground/ggz-kde4/kggzmod/player.h
+   M /trunk/playground/ggz-kde4/kggzmod/player_private.h
+   M /trunk/playground/ggz-kde4/kggzmod/request.h
+   M /trunk/playground/ggz-kde4/kggzmod/statistics.h
+   M /trunk/playground/ggz-kde4/kggzmod/statistics_private.h
+   M /trunk/playground/ggz-python/arimaa/module_arimaa.dsc.in
+   M /trunk/playground/ggz-ruby/ai-ttt/ruttt-ai.c
+   M /trunk/playground/ggz-ruby/ai-ttt/ttt-ai.c
+   M /trunk/playground/ggz-ruby/ai-ttt/ttt-ai.h
+   M /trunk/playground/server/async/gai_a.c
+   M /trunk/playground/server/async/ggzresolver.c
+   M /trunk/playground/server/coregen/proto.c
+   M /trunk/python/ggzboard/backgammon/bg.svg
+   M /trunk/python/ggzboard/connectx/player1.svg
+   M /trunk/python/ggzboard/connectx/player2.svg
+   M /trunk/python/ggzboard/module_connectx.dsc.in
+   M /trunk/python/ggzboard/module_ludo.dsc.in
+   M /trunk/python/ggzboard/shogi/b-bishop.svg
+   M /trunk/python/ggzboard/shogi/b-gold-general.svg
+   M /trunk/python/ggzboard/shogi/b-king.svg
+   M /trunk/python/ggzboard/shogi/b-knight.svg
+   M /trunk/python/ggzboard/shogi/b-lance.svg
+   M /trunk/python/ggzboard/shogi/b-pawn.svg
+   M /trunk/python/ggzboard/shogi/b-rook.svg
+   M /trunk/python/ggzboard/shogi/b-silver-general.svg
+   M /trunk/python/ggzboard/shogi/bishop.svg
+   M /trunk/python/ggzboard/shogi/gold-general.svg
+   M /trunk/python/ggzboard/shogi/king.svg
+   M /trunk/python/ggzboard/shogi/knight.svg
+   M /trunk/python/ggzboard/shogi/lance.svg
+   M /trunk/python/ggzboard/shogi/pawn.svg
+   M /trunk/python/ggzboard/shogi/rook.svg
+   M /trunk/python/ggzboard/shogi/silver-general.svg
+   M /trunk/python/lib/ggzsettings.py.in
+   M /trunk/python/pyrsvgsdl/setup.py.in
+   M /trunk/python/vibora/vibora.desktop.in
+   M /trunk/utils/ggzcomm/c++example/client.h
+   M /trunk/utils/ggzcomm/c++example/client4.h
+   M /trunk/utils/ggzcomm/c++example/server.h
+   M /trunk/utils/ggzcomm/c++example/server4.h
+   M /trunk/utils/metaserv/libmeta/Makefile.am
+   M /trunk/utils/metaserv/libmeta/meta.c
+   M /trunk/utils/metaserv/libmeta/meta.h
+   M /trunk/utils/metaserv/libmeta/minidom.c
+   M /trunk/utils/metaserv/libmeta/minidom.h
+   M /trunk/utils/metaserv/libmeta/uri.c
+   M /trunk/utils/metaserv/libmeta/uri.h
+
+Fix eol-style on .c, .h, .in, and .am files.
+------------------------------------------------------------------------
+r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16 Jan 2007) | 8 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/java/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- updated changelogs
+
+This is VERY consuming (4 MB changes) since we change the changelog format.
+However we have to do so since no tool seems to be able to reproduce our old format.
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8949 | josef | 2007-01-16 19:23:42 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- 0.0.14pre => 0.0.14
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/NEWS
+   M /trunk/community/README.GGZ
+   M /trunk/docs/AUTHORS
+   M /trunk/docs/NEWS
+   M /trunk/docs/QuickStart.GGZ
+   M /trunk/docs/README.GGZ
+   M /trunk/ggz-client-libs/AUTHORS
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/QuickStart.GGZ
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggzd/AUTHORS
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/README.GGZ
+   M /trunk/gnome-client/AUTHORS
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/QuickStart.GGZ
+   M /trunk/gnome-client/README
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/grubby/AUTHORS
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/grubby/README.GGZ
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/QuickStart.GGZ
+   M /trunk/gtk-client/README
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-games/AUTHORS
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/QuickStart.GGZ
+   M /trunk/gtk-games/README
+   M /trunk/gtk-games/README.GGZ
+   M /trunk/java/AUTHORS
+   M /trunk/java/NEWS
+   M /trunk/java/README.GGZ
+   M /trunk/kde-client/AUTHORS
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/QuickStart.GGZ
+   M /trunk/kde-client/README
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-games/AUTHORS
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/QuickStart.GGZ
+   M /trunk/kde-games/README
+   M /trunk/kde-games/README.GGZ
+   M /trunk/libggz/AUTHORS
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/QuickStart.GGZ
+   M /trunk/libggz/README.GGZ
+   M /trunk/python/AUTHORS
+   M /trunk/python/NEWS
+   M /trunk/python/QuickStart.GGZ
+   M /trunk/python/README
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/AUTHORS
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/README
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/txt-client/AUTHORS
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/QuickStart.GGZ
+   M /trunk/txt-client/README.GGZ
+   M /trunk/utils/AUTHORS
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+   M /trunk/utils/README.GGZ
+
+- update common files slightly, and synchronise them
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8946 | josef | 2007-01-16 18:49:40 +0100 (Di, 16 Jan 2007) | 6 lines
+Geänderte Pfade:
+   M /trunk/docs/ggz-project/Versioning
+   M /trunk/grubby/grubby/src/main.c
+   M /trunk/utils/telggz/main.c
+
+- bump a couple of application version numbers, where changes did happen
+- update versioning document with application and library interface numbers
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
 r8942 | josef | 2007-01-16 17:22:43 +0100 (Di, 16 Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/mundomap/map.png

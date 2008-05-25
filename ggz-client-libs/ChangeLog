@@ -1,4 +1,206 @@
 ------------------------------------------------------------------------
+r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/NEWS
+   M /trunk/community/README
+   M /trunk/docs/NEWS
+   M /trunk/docs/README
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.h
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/ggzdmod/ggzdmod.h
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README
+   M /trunk/java/NEWS
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/README
+   M /trunk/libggz/src/ggz.h
+   M /trunk/python/NEWS
+   M /trunk/python/README
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+
+- prepare new snapshot 0.99.3: updated NEWS file with overview on new stuff, plus usual version bumps
+
+
+------------------------------------------------------------------------
+r9987 | josef | 2008-05-23 20:31:15 +0200 (Fr, 23 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzcore/room.c
+
+- beefed-up ggzcore part of ggz-infrastructure.patch to make launching foreign tables work
+
+
+------------------------------------------------------------------------
+r9982 | josef | 2008-05-12 12:17:19 +0200 (Mo, 12 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzmod-ggz/ggzmod-ggz.c
+
+- adapt comments to the current code
+
+
+------------------------------------------------------------------------
+r9978 | josef | 2008-05-10 01:49:26 +0200 (Sa, 10 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzcore/netxml.c
+   M /trunk/ggz-client-libs/ggzcore/room.c
+   M /trunk/ggz-client-libs/ggzcore/room.h
+
+- read @refname in room tags which contains the untranslated room name
+
+
+------------------------------------------------------------------------
+r9974 | jdorje | 2008-05-07 09:24:57 +0200 (Mi, 07 Mai 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/room.c
+
+Mark some more ggzcore strings for translation.
+
+------------------------------------------------------------------------
+r9973 | jdorje | 2008-05-07 09:15:27 +0200 (Mi, 07 Mai 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzcore/init.c
+   M /trunk/ggz-client-libs/ggzcore/server.h
+
+Fix translation of ggzcore strings to be put into UTF-8.
+
+------------------------------------------------------------------------
+r9954 | jdorje | 2008-04-14 22:00:20 +0200 (Mo, 14 Apr 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/server.c
+
+Use hstrerror to get the error string on libggz errors; the special case
+for -1 is incorrect.
+
+------------------------------------------------------------------------
+r9946 | josef | 2008-04-12 13:59:55 +0200 (Sa, 12 Apr 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/java/Makefile
+   M /trunk/java/build.xml
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- ensure that the next snapshot release will have the proper version number in its packages
+
+
+------------------------------------------------------------------------
+r9921 | josef | 2008-04-05 07:48:32 +0200 (Sa, 05 Apr 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs
+   M /trunk/ggz-client-libs/Makefile.am
+   M /trunk/ggz-client-libs/configure.ac
+   A /trunk/ggz-client-libs/ggzcore.pc.in
+   A /trunk/ggz-client-libs/ggzmod.pc.in
+   M /trunk/ggzd
+   M /trunk/ggzd/Makefile.am
+   M /trunk/ggzd/configure.ac
+   A /trunk/ggzd/ggzdmod.pc.in
+   M /trunk/libggz
+   M /trunk/libggz/Makefile.am
+   M /trunk/libggz/configure.ac
+   A /trunk/libggz/libggz.pc.in
+
+- addition of pkg-config files for all C libraries, as requested by gnome-games
+
+
+------------------------------------------------------------------------
+r9863 | josef | 2008-03-22 21:04:31 +0100 (Sa, 22 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.h
+
+- forgot to bump the snapshot version numbers
+
+
+------------------------------------------------------------------------
+r9860 | josef | 2008-03-21 13:12:14 +0100 (Fr, 21 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/server.c
+
+- shorter reconnection interval
+
+
+------------------------------------------------------------------------
+r9858 | josef | 2008-03-21 12:37:04 +0100 (Fr, 21 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/netxml.c
+
+- protect against applications which disconnect on error, instead of trying to reconnect
+
+
+------------------------------------------------------------------------
+r9854 | josef | 2008-03-20 21:37:13 +0100 (Do, 20 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+
+- choke on the 0.0.14 bloke, and require 0.99.2
+
+
+------------------------------------------------------------------------
+r9818 | josef | 2008-03-09 00:09:02 +0100 (So, 09 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggz-config/ggz-config.c
+
+- ggz_free() the correct string
+
+
+------------------------------------------------------------------------
+r9815 | josef | 2008-03-08 23:40:34 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/java/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/txt-client/ChangeLog
+
+- six thousand lines of changelog, admittedly some since 0.0.14
+
+
+------------------------------------------------------------------------
+r9814 | josef | 2008-03-08 23:31:23 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggzd/NEWS
+   M /trunk/grubby/NEWS
+   M /trunk/java/NEWS
+   M /trunk/libggz/NEWS
+   M /trunk/python/Makefile.in
+   M /trunk/python/NEWS
+   M /trunk/txt-client/NEWS
+
+- news entries for all 0.99.2 packages
+
+
+------------------------------------------------------------------------
 r9802 | josef | 2008-03-08 13:49:21 +0100 (Sa, 08 Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/README

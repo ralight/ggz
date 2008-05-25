@@ -1,4 +1,1041 @@
 ------------------------------------------------------------------------
+r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/NEWS
+   M /trunk/community/README
+   M /trunk/docs/NEWS
+   M /trunk/docs/README
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.h
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/ggzdmod/ggzdmod.h
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README
+   M /trunk/java/NEWS
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/README
+   M /trunk/libggz/src/ggz.h
+   M /trunk/python/NEWS
+   M /trunk/python/README
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+
+- prepare new snapshot 0.99.3: updated NEWS file with overview on new stuff, plus usual version bumps
+
+
+------------------------------------------------------------------------
+r9955 | jdorje | 2008-04-14 23:11:25 +0200 (Mo, 14 Apr 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/client.c
+   M /trunk/gtk-client/ggz-gtk/support.h
+
+Initialize ggz-gtk domain correctly for libggz-gtk, and make sure it
+is always the domain used for internal strings.
+
+This should fix translation issues with the embedded ggz-gtk library.
+
+------------------------------------------------------------------------
+r9951 | oojah | 2008-04-13 00:32:00 +0200 (So, 13 Apr 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/client.c
+   M /trunk/gtk-client/src/main.c
+
+Store rc and debug files in $APPDATA (usually C:\Documents and Settings\username\Application Data) instead of $HOME when on Windows.
+
+------------------------------------------------------------------------
+r9946 | josef | 2008-04-12 13:59:55 +0200 (Sa, 12 Apr 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/java/Makefile
+   M /trunk/java/build.xml
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- ensure that the next snapshot release will have the proper version number in its packages
+
+
+------------------------------------------------------------------------
+r9942 | jdorje | 2008-04-12 08:58:33 +0200 (Sa, 12 Apr 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/xtext.c
+
+Avoid harmless compiler warning.
+------------------------------------------------------------------------
+r9854 | josef | 2008-03-20 21:37:13 +0100 (Do, 20 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+
+- choke on the 0.0.14 bloke, and require 0.99.2
+
+
+------------------------------------------------------------------------
+r9618 | josef | 2008-01-28 00:34:27 +0100 (Mo, 28 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/about.c
+
+- GCC 4.3 is smarter than the programmers - mark this bug until someone in the know can fix it
+
+
+------------------------------------------------------------------------
+r9574 | josef | 2008-01-20 11:58:24 +0100 (So, 20 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+   M /trunk/kde-client/ggz-kde/ggzcore++/src/GGZCoreRoom.cpp
+   M /trunk/kde-client/ggz-kde/ggzcore++/src/GGZCoreServer.cpp
+   M /trunk/python/pyggzcore/src/pyggzcoresimple_init.c
+   M /trunk/txt-client/ggz-txt/input.c
+   M /trunk/txt-client/ggz-txt/server.c
+
+- adapt all core clients to ggzcore API change
+
+
+------------------------------------------------------------------------
+r9493 | josef | 2008-01-12 18:02:50 +0100 (Sa, 12 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/src/main.c
+
+- use libggz's URI parser
+
+
+------------------------------------------------------------------------
+r9429 | josef | 2007-12-11 10:15:58 +0100 (Di, 11 Dez 2007) | 3 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/pidgin-plugin/simple.c
+
+- make pidgin plugin compile
+
+
+------------------------------------------------------------------------
+r9402 | josef | 2007-12-01 13:30:50 +0100 (Sa, 01 Dez 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/grubby/m4/i18n.mk
+   M /trunk/gtk-client/m4/i18n.mk
+   M /trunk/gtk-games/m4/i18n.mk
+   M /trunk/python/po/i18n.mk
+   M /trunk/txt-client/m4/i18n.mk
+
+ r10434@nada:  josef | 2007-12-01 13:30:28 +0100
+ - synchronise versioned catalogue support among all i18n.mk files
+ 
+
+------------------------------------------------------------------------
+r9401 | josef | 2007-12-01 13:30:41 +0100 (Sa, 01 Dez 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/gtk-games/autogen.sh
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/autogen.sh
+   M /trunk/libggz/autogen.sh
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+ r10433@nada:  josef | 2007-12-01 13:29:38 +0100
+ - bump minimum versions of autotools so we don't accidentally hit problems with old tools
+ 
+
+------------------------------------------------------------------------
+r9394 | jdorje | 2007-12-01 01:30:32 +0100 (Sa, 01 Dez 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/configure.ac
+
+GTK_DISABLE_DEPRECATED for debug compilations.
+------------------------------------------------------------------------
+r9393 | jdorje | 2007-12-01 01:29:32 +0100 (Sa, 01 Dez 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/license.c
+   M /trunk/gtk-client/ggz-gtk/motd.c
+   M /trunk/gtk-client/ggz-gtk/pick_module.c
+   M /trunk/gtk-client/ggz-gtk/playerinfo.c
+   M /trunk/gtk-client/ggz-gtk/props.c
+
+Remove unnecessary gtk_widget_ref/unref calls.
+------------------------------------------------------------------------
+r9392 | jdorje | 2007-12-01 01:28:59 +0100 (Sa, 01 Dez 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/client.c
+
+Tooltips cleanup for 2.12.
+------------------------------------------------------------------------
+r9391 | jdorje | 2007-12-01 00:59:18 +0100 (Sa, 01 Dez 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/about.c
+
+Clean up 'about' dialog.
+------------------------------------------------------------------------
+r9374 | josef | 2007-11-21 17:34:52 +0100 (Mi, 21 Nov 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/gtk-client/Makefile.am
+
+ r10358@nada:  josef | 2007-11-21 17:15:58 +0100
+ - use correct variable name
+ - get DIST_SUBDIRS for free
+ 
+
+------------------------------------------------------------------------
+r9365 | josef | 2007-11-18 12:00:46 +0100 (So, 18 Nov 2007) | 16 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/gtk-client/Makefile.am
+   M /trunk/gtk-client/configure.ac
+   D /trunk/gtk-client/gaim-plugin
+   D /trunk/gtk-client/m4/gaim.m4
+   A /trunk/gtk-client/m4/pidgin.m4 (von /trunk/gtk-client/m4/gaim.m4:9249)
+   A /trunk/gtk-client/pidgin-plugin (von /trunk/gtk-client/gaim-plugin:9249)
+   M /trunk/gtk-client/pidgin-plugin/Makefile.am
+   M /trunk/gtk-client/pidgin-plugin/simple.c
+
+ r10319@nada:  josef | 2007-11-18 10:59:20 +0100
+ - Gaim has been renamed to Pidgin a long time ago
+ - libgaim has been renamed to libpurple
+ 
+ r10320@nada:  josef | 2007-11-18 11:24:34 +0100
+ - convert the Gaim check to a Pidgin check, and use the provided version checker function so we save some autoconf logic
+ 
+ r10321@nada:  josef | 2007-11-18 11:45:29 +0100
+ - apprently all the Gtk+ specific Pidgin headers are in their own package, so check for them as well
+ 
+ r10322@nada:  josef | 2007-11-18 11:59:55 +0100
+ - port former Gaim plugin to Pidgin
+ 
+ It compiles, but is entirely untested.
+ 
+
+------------------------------------------------------------------------
+r9353 | josef | 2007-11-11 22:42:06 +0100 (So, 11 Nov 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/gtk-client/po/Makefile.am
+   A /trunk/gtk-client/po/af.po
+   M /trunk/gtk-client/po/am.po
+   M /trunk/gtk-client/po/ar.po
+   M /trunk/gtk-client/po/az.po
+   M /trunk/gtk-client/po/be.po
+   M /trunk/gtk-client/po/bg.po
+   M /trunk/gtk-client/po/bn.po
+   M /trunk/gtk-client/po/bn_IN.po
+   M /trunk/gtk-client/po/ca.po
+   M /trunk/gtk-client/po/cs.po
+   M /trunk/gtk-client/po/cy.po
+   M /trunk/gtk-client/po/da.po
+   M /trunk/gtk-client/po/de.po
+   M /trunk/gtk-client/po/dz.po
+   M /trunk/gtk-client/po/el.po
+   M /trunk/gtk-client/po/en_CA.po
+   M /trunk/gtk-client/po/en_GB.po
+   M /trunk/gtk-client/po/es.po
+   M /trunk/gtk-client/po/et.po
+   M /trunk/gtk-client/po/eu.po
+   M /trunk/gtk-client/po/fa.po
+   M /trunk/gtk-client/po/fi.po
+   M /trunk/gtk-client/po/fr.po
+   M /trunk/gtk-client/po/ga.po
+   M /trunk/gtk-client/po/ggz-gtk.pot
+   M /trunk/gtk-client/po/gl.po
+   M /trunk/gtk-client/po/gu.po
+   M /trunk/gtk-client/po/he.po
+   M /trunk/gtk-client/po/hi.po
+   M /trunk/gtk-client/po/hr.po
+   M /trunk/gtk-client/po/hu.po
+   M /trunk/gtk-client/po/id.po
+   M /trunk/gtk-client/po/is.po
+   M /trunk/gtk-client/po/it.po
+   M /trunk/gtk-client/po/ja.po
+   M /trunk/gtk-client/po/ka.po
+   M /trunk/gtk-client/po/ko.po
+   M /trunk/gtk-client/po/lt.po
+   M /trunk/gtk-client/po/lv.po
+   M /trunk/gtk-client/po/mk.po
+   M /trunk/gtk-client/po/ml.po
+   M /trunk/gtk-client/po/mn.po
+   M /trunk/gtk-client/po/mr.po
+   M /trunk/gtk-client/po/ms.po
+   M /trunk/gtk-client/po/nb.po
+   M /trunk/gtk-client/po/ne.po
+   M /trunk/gtk-client/po/nl.po
+   M /trunk/gtk-client/po/nn.po
+   M /trunk/gtk-client/po/oc.po
+   M /trunk/gtk-client/po/or.po
+   M /trunk/gtk-client/po/pa.po
+   M /trunk/gtk-client/po/pl.po
+   M /trunk/gtk-client/po/pt.po
+   M /trunk/gtk-client/po/pt_BR.po
+   M /trunk/gtk-client/po/ro.po
+   M /trunk/gtk-client/po/ru.po
+   M /trunk/gtk-client/po/rw.po
+   A /trunk/gtk-client/po/si.po
+   M /trunk/gtk-client/po/sk.po
+   M /trunk/gtk-client/po/sl.po
+   M /trunk/gtk-client/po/sq.po
+   M /trunk/gtk-client/po/sr.po
+   M /trunk/gtk-client/po/sr@Latn.po
+   M /trunk/gtk-client/po/sv.po
+   M /trunk/gtk-client/po/ta.po
+   A /trunk/gtk-client/po/te.po
+   M /trunk/gtk-client/po/th.po
+   M /trunk/gtk-client/po/tr.po
+   M /trunk/gtk-client/po/uk.po
+   M /trunk/gtk-client/po/vi.po
+   M /trunk/gtk-client/po/wa.po
+   M /trunk/gtk-client/po/xh.po
+   M /trunk/gtk-client/po/zh_CN.po
+   M /trunk/gtk-client/po/zh_HK.po
+   M /trunk/gtk-client/po/zh_TW.po
+
+ r10292@nada:  josef | 2007-11-11 22:36:13 +0100
+ - merge from GNOME, including 3 new translations
+ - this update detroys a few translations due to incompatible string changes
+ 
+
+------------------------------------------------------------------------
+r9168 | josef | 2007-07-04 17:18:44 +0200 (Mi, 04 Jul 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+
+- use GGZ error message structure to avoid the display of garbage (might need replication in other places, yet another thing for jdorje, hehe)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9161 | josef | 2007-06-28 16:15:32 +0200 (Do, 28 Jun 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/props.c
+
+- quick fix to make it compile (jdorje, that's something for you to look at!)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9156 | josef | 2007-06-20 19:56:44 +0200 (Mi, 20 Jun 2007) | 9 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/po/am.po
+   M /trunk/gtk-client/po/ar.po
+   M /trunk/gtk-client/po/az.po
+   M /trunk/gtk-client/po/be.po
+   M /trunk/gtk-client/po/bg.po
+   M /trunk/gtk-client/po/bn.po
+   M /trunk/gtk-client/po/bn_IN.po
+   M /trunk/gtk-client/po/ca.po
+   M /trunk/gtk-client/po/cs.po
+   M /trunk/gtk-client/po/cy.po
+   M /trunk/gtk-client/po/da.po
+   M /trunk/gtk-client/po/de.po
+   M /trunk/gtk-client/po/dz.po
+   M /trunk/gtk-client/po/el.po
+   M /trunk/gtk-client/po/en_CA.po
+   M /trunk/gtk-client/po/en_GB.po
+   M /trunk/gtk-client/po/es.po
+   M /trunk/gtk-client/po/et.po
+   M /trunk/gtk-client/po/eu.po
+   M /trunk/gtk-client/po/fa.po
+   M /trunk/gtk-client/po/fi.po
+   M /trunk/gtk-client/po/fr.po
+   M /trunk/gtk-client/po/ga.po
+   M /trunk/gtk-client/po/gl.po
+   M /trunk/gtk-client/po/gu.po
+   M /trunk/gtk-client/po/he.po
+   M /trunk/gtk-client/po/hi.po
+   M /trunk/gtk-client/po/hr.po
+   M /trunk/gtk-client/po/hu.po
+   M /trunk/gtk-client/po/id.po
+   M /trunk/gtk-client/po/is.po
+   M /trunk/gtk-client/po/it.po
+   M /trunk/gtk-client/po/ja.po
+   M /trunk/gtk-client/po/ka.po
+   M /trunk/gtk-client/po/ko.po
+   M /trunk/gtk-client/po/lt.po
+   M /trunk/gtk-client/po/lv.po
+   M /trunk/gtk-client/po/mk.po
+   M /trunk/gtk-client/po/ml.po
+   M /trunk/gtk-client/po/mn.po
+   M /trunk/gtk-client/po/mr.po
+   M /trunk/gtk-client/po/ms.po
+   M /trunk/gtk-client/po/nb.po
+   M /trunk/gtk-client/po/ne.po
+   M /trunk/gtk-client/po/nl.po
+   M /trunk/gtk-client/po/nn.po
+   M /trunk/gtk-client/po/oc.po
+   M /trunk/gtk-client/po/or.po
+   M /trunk/gtk-client/po/pa.po
+   M /trunk/gtk-client/po/pl.po
+   M /trunk/gtk-client/po/pt.po
+   M /trunk/gtk-client/po/pt_BR.po
+   M /trunk/gtk-client/po/ro.po
+   M /trunk/gtk-client/po/ru.po
+   M /trunk/gtk-client/po/rw.po
+   M /trunk/gtk-client/po/sk.po
+   M /trunk/gtk-client/po/sl.po
+   M /trunk/gtk-client/po/sq.po
+   M /trunk/gtk-client/po/sr.po
+   M /trunk/gtk-client/po/sr@Latn.po
+   M /trunk/gtk-client/po/sv.po
+   M /trunk/gtk-client/po/ta.po
+   M /trunk/gtk-client/po/th.po
+   M /trunk/gtk-client/po/tr.po
+   M /trunk/gtk-client/po/uk.po
+   M /trunk/gtk-client/po/vi.po
+   M /trunk/gtk-client/po/wa.po
+   M /trunk/gtk-client/po/xh.po
+   M /trunk/gtk-client/po/zh_CN.po
+   M /trunk/gtk-client/po/zh_HK.po
+   M /trunk/gtk-client/po/zh_TW.po
+
+- clean up all merged translations.
+
+Here's what diffstat has to say:
+  71 files changed, 1539 insertions(+), 52631 deletions(-)
+The insertations are actually reformatted lines. Shouldn't do any harm but is still inconvenient (potool's fault).
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9154 | josef | 2007-06-20 19:37:40 +0200 (Mi, 20 Jun 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/po/Makefile.am
+
+- fix EXTRA_DIST
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9150 | josef | 2007-06-20 19:02:51 +0200 (Mi, 20 Jun 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/po/gl.po
+   D /trunk/gtk-client/po/ku.po
+
+- remove useless translation files which do not contain a single relevant translation
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9147 | josef | 2007-06-20 18:28:17 +0200 (Mi, 20 Jun 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/po/am.po
+   M /trunk/gtk-client/po/be.po
+   M /trunk/gtk-client/po/bn.po
+   M /trunk/gtk-client/po/bn_IN.po
+   M /trunk/gtk-client/po/ga.po
+   M /trunk/gtk-client/po/gl.po
+   M /trunk/gtk-client/po/he.po
+   M /trunk/gtk-client/po/hr.po
+   M /trunk/gtk-client/po/ka.po
+   M /trunk/gtk-client/po/ku.po
+   M /trunk/gtk-client/po/mn.po
+   M /trunk/gtk-client/po/mr.po
+   M /trunk/gtk-client/po/ms.po
+   M /trunk/gtk-client/po/rw.po
+   M /trunk/gtk-client/po/sk.po
+   M /trunk/gtk-client/po/sl.po
+   M /trunk/gtk-client/po/wa.po
+
+- remove spurious last fuzzy lines
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9146 | josef | 2007-06-20 17:50:56 +0200 (Mi, 20 Jun 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/po/ar.po
+   M /trunk/gtk-client/po/cs.po
+   M /trunk/gtk-client/po/da.po
+   M /trunk/gtk-client/po/dz.po
+   M /trunk/gtk-client/po/en_GB.po
+   M /trunk/gtk-client/po/es.po
+   M /trunk/gtk-client/po/et.po
+   M /trunk/gtk-client/po/fr.po
+   M /trunk/gtk-client/po/gl.po
+   M /trunk/gtk-client/po/he.po
+   M /trunk/gtk-client/po/id.po
+   M /trunk/gtk-client/po/lt.po
+   M /trunk/gtk-client/po/nb.po
+   A /trunk/gtk-client/po/oc.po
+   M /trunk/gtk-client/po/sv.po
+   M /trunk/gtk-client/po/th.po
+   M /trunk/gtk-client/po/zh_CN.po
+
+- translation updates from GNOME SVN
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9143 | jdorje | 2007-06-11 04:54:07 +0200 (Mo, 11 Jun 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/props.c
+
+Replace the deprecated GtkCombo with a GtkComboBox.
+------------------------------------------------------------------------
+r9140 | jdorje | 2007-05-28 21:31:35 +0200 (Mo, 28 Mai 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/login.c
+
+Replace the deprecated GtkCombo with a GtkComboBox.
+------------------------------------------------------------------------
+r9139 | jdorje | 2007-05-28 09:13:58 +0200 (Mo, 28 Mai 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/launch.c
+
+Replace the deprecated GtkCombo with a GtkComboBox.
+
+------------------------------------------------------------------------
+r9138 | jdorje | 2007-05-28 08:11:26 +0200 (Mo, 28 Mai 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/launch.c
+
+Minor GTK cleanups.
+------------------------------------------------------------------------
+r9137 | jdorje | 2007-05-28 06:32:22 +0200 (Mo, 28 Mai 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/xtext.c
+   M /trunk/gtk-client/ggz-gtk/xtext.h
+
+Work around idiotic signedness warnings in xtext by adding lots of casts.
+
+------------------------------------------------------------------------
+r9129 | oojah | 2007-05-21 23:30:31 +0200 (Mo, 21 Mai 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggz-config/ggz-config.c
+   M /trunk/grubby/grubby/src/main.c
+   M /trunk/gtk-client/ggz-gtk/types.c
+
+Improved some english strings.
+
+------------------------------------------------------------------------
+r9073 | jdorje | 2007-04-29 03:09:54 +0200 (So, 29 Apr 2007) | 7 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggz-wrapper/server.c
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzcore/netxml.c
+   M /trunk/ggz-client-libs/ggzcore/server.c
+   M /trunk/ggz-client-libs/ggzcore/server.h
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+   M /trunk/txt-client/ggz-txt/server.c
+
+Change the ggzcore GGZ_PROTOCOL_ERROR event to provide a GGZErrorEventData
+instead of just a pointer to an arbitrary string.  This allows better
+presentation of the error data by the callers.
+
+Note also that contrary to previous documentation, GGZ_PROTOCOL_ERROR is not
+deprecated, nor does it look like it has ever been.
+
+------------------------------------------------------------------------
+r9039 | josef | 2007-04-12 10:34:50 +0200 (Do, 12 Apr 2007) | 8 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/login.c
+
+- change button order to be HIG compliant
+- do not mark localhost as translatable
+
+Patch from GNOME SVN.
+
+BACKPORT ggz-0-0-14-branch
+
+
+------------------------------------------------------------------------
+r9037 | josef | 2007-04-12 10:05:09 +0200 (Do, 12 Apr 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/po/Makefile.am
+   A /trunk/gtk-client/po/am.po
+   A /trunk/gtk-client/po/ar.po
+   A /trunk/gtk-client/po/az.po
+   A /trunk/gtk-client/po/be.po
+   A /trunk/gtk-client/po/bg.po
+   A /trunk/gtk-client/po/bn.po
+   A /trunk/gtk-client/po/bn_IN.po
+   A /trunk/gtk-client/po/ca.po
+   A /trunk/gtk-client/po/cs.po
+   A /trunk/gtk-client/po/cy.po
+   A /trunk/gtk-client/po/da.po
+   M /trunk/gtk-client/po/de.po
+   A /trunk/gtk-client/po/dz.po
+   A /trunk/gtk-client/po/el.po
+   A /trunk/gtk-client/po/en_CA.po
+   A /trunk/gtk-client/po/en_GB.po
+   M /trunk/gtk-client/po/es.po
+   A /trunk/gtk-client/po/et.po
+   A /trunk/gtk-client/po/eu.po
+   A /trunk/gtk-client/po/fa.po
+   A /trunk/gtk-client/po/fi.po
+   A /trunk/gtk-client/po/fr.po
+   A /trunk/gtk-client/po/ga.po
+   A /trunk/gtk-client/po/gl.po
+   A /trunk/gtk-client/po/gu.po
+   A /trunk/gtk-client/po/he.po
+   A /trunk/gtk-client/po/hi.po
+   A /trunk/gtk-client/po/hr.po
+   A /trunk/gtk-client/po/hu.po
+   A /trunk/gtk-client/po/id.po
+   A /trunk/gtk-client/po/is.po
+   A /trunk/gtk-client/po/it.po
+   A /trunk/gtk-client/po/ja.po
+   A /trunk/gtk-client/po/ka.po
+   A /trunk/gtk-client/po/ko.po
+   A /trunk/gtk-client/po/ku.po
+   A /trunk/gtk-client/po/lt.po
+   A /trunk/gtk-client/po/lv.po
+   A /trunk/gtk-client/po/mk.po
+   A /trunk/gtk-client/po/ml.po
+   A /trunk/gtk-client/po/mn.po
+   A /trunk/gtk-client/po/mr.po
+   A /trunk/gtk-client/po/ms.po
+   A /trunk/gtk-client/po/nb.po
+   A /trunk/gtk-client/po/ne.po
+   A /trunk/gtk-client/po/nl.po
+   A /trunk/gtk-client/po/nn.po
+   A /trunk/gtk-client/po/or.po
+   A /trunk/gtk-client/po/pa.po
+   A /trunk/gtk-client/po/pl.po
+   A /trunk/gtk-client/po/pt.po
+   M /trunk/gtk-client/po/pt_BR.po
+   A /trunk/gtk-client/po/ro.po
+   A /trunk/gtk-client/po/ru.po
+   A /trunk/gtk-client/po/rw.po
+   A /trunk/gtk-client/po/sk.po
+   A /trunk/gtk-client/po/sl.po
+   A /trunk/gtk-client/po/sq.po
+   A /trunk/gtk-client/po/sr.po
+   A /trunk/gtk-client/po/sr@Latn.po
+   M /trunk/gtk-client/po/sv.po
+   A /trunk/gtk-client/po/ta.po
+   A /trunk/gtk-client/po/th.po
+   A /trunk/gtk-client/po/tr.po
+   A /trunk/gtk-client/po/uk.po
+   A /trunk/gtk-client/po/vi.po
+   A /trunk/gtk-client/po/wa.po
+   A /trunk/gtk-client/po/xh.po
+   A /trunk/gtk-client/po/zh_CN.po
+   A /trunk/gtk-client/po/zh_HK.po
+   A /trunk/gtk-client/po/zh_TW.po
+
+- lots, lots and lots of translations (numbering umpteen in total)
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r9019 | jdorje | 2007-03-30 07:35:54 +0200 (Fr, 30 Mär 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/server.c
+   M /trunk/ggzd/ggzd/control.c
+   M /trunk/ggzd/ggzd/login.c
+   M /trunk/gtk-client/ggz-gtk/login.c
+   M /trunk/libggz/src/ggz_common.c
+   M /trunk/libggz/src/ggz_common.h
+
+Remove 'random' password generation from the server.
+------------------------------------------------------------------------
+r9018 | jdorje | 2007-03-30 03:26:41 +0200 (Fr, 30 Mär 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/login.c
+
+Add more cases for login_failed.
+------------------------------------------------------------------------
+r9017 | jdorje | 2007-03-30 03:19:49 +0200 (Fr, 30 Mär 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/chat.c
+
+Remove unused variables.
+------------------------------------------------------------------------
+r8987 | jdorje | 2007-02-19 03:50:30 +0100 (Mo, 19 Feb 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/community/setup/scripts/ggz2phpbb.conf.in
+   M /trunk/community/setup/sql/trigger/ggzsync_trigger.c
+   M /trunk/community/setup/webserver/ggz-apache2.conf.in
+   M /trunk/docs/games/ggz-games/Makefile.am
+   M /trunk/docs/games/ggz-games/tictactoe/Makefile.am
+   M /trunk/docs/spec/mainspec/Makefile.am
+   M /trunk/ggz-client-libs/po/Makefile.am
+   M /trunk/ggz-client-libs/po/ggzcore/Makefile.am
+   M /trunk/ggzd/game_servers/chess/ai-gnuchess.c
+   M /trunk/ggzd/game_servers/chess/ai-gnuchess.h
+   M /trunk/ggzd/game_servers/connectx/ai-velena.c
+   M /trunk/ggzd/game_servers/connectx/ai-velena.h
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/score.c
+   M /trunk/ggzd/game_servers/ggzcards/score.h
+   M /trunk/ggzd/game_servers/tictactoe/ttt-ai.c
+   M /trunk/ggzd/game_servers/tictactoe/ttt-ai.h
+   M /trunk/ggzd/ggzd/database/ggzdb_dbi.c
+   M /trunk/ggzd/ggzd/meta/Makefile.am
+   M /trunk/ggzd/ggzd/meta/meta.c
+   M /trunk/ggzd/ggzd/meta/meta.h
+   M /trunk/ggzd/ggzd/meta/minidom.c
+   M /trunk/ggzd/ggzd/meta/minidom.h
+   M /trunk/ggzd/ggzd/meta/uri.c
+   M /trunk/ggzd/ggzd/meta/uri.h
+   M /trunk/ggzd/ggzd/reconfiguration.h
+   M /trunk/ggzd/ggzdmod++/Makefile.am
+   M /trunk/ggzd/ggzdmod++/ggzgameserver.h
+   M /trunk/ggzd/ggzdmod++/mnet.h
+   M /trunk/ggzd/ggzdmod++/net.h
+   M /trunk/gnome-client/man/Makefile.am
+   M /trunk/grubby/grubby/modules/banner.c
+   M /trunk/gtk-client/ggz-gtk/ggz-embed.h
+   M /trunk/gtk-client/ggz-gtk/ggz-gtk.h
+   M /trunk/gtk-client/ggz-gtk/ggz_gtk_host.svg
+   M /trunk/gtk-client/ggz-gtk/ggzutils.c
+   M /trunk/gtk-client/ggz-gtk/ggzutils.h
+   M /trunk/gtk-client/src/Makefile.am
+   M /trunk/gtk-games/ggzcards/dlg_scores.c
+   M /trunk/gtk-games/ggzcards/dlg_scores.h
+   M /trunk/kde-games/kconnectx/Makefile.am
+   M /trunk/kde-games/kconnectx/kconnectx.h
+   M /trunk/kde-games/kconnectx/module.dsc.in
+   M /trunk/kde-games/kconnectx/opt.h
+   M /trunk/kde-games/kconnectx/proto.h
+   M /trunk/kde-games/kconnectx/red.svg
+   M /trunk/kde-games/kconnectx/win.h
+   M /trunk/kde-games/kconnectx/yellow.svg
+   M /trunk/kde-games/lib/kggzmod/Makefile.am
+   M /trunk/kde-games/lib/kggzmod/event.h
+   M /trunk/kde-games/lib/kggzmod/misc_private.h
+   M /trunk/kde-games/lib/kggzmod/module.h
+   M /trunk/kde-games/lib/kggzmod/module_private.h
+   M /trunk/kde-games/lib/kggzmod/player.h
+   M /trunk/kde-games/lib/kggzmod/player_private.h
+   M /trunk/kde-games/lib/kggzmod/request.h
+   M /trunk/kde-games/lib/kggzmod/statistics.h
+   M /trunk/kde-games/lib/kggzmod/statistics_private.h
+   M /trunk/kde-games/lib/kggzpacket.h
+   M /trunk/kde-games/lib/kggzseatsdialog.h
+   M /trunk/kde-games/lib/kggzsystem.h
+   M /trunk/kde-games/lib/qsvgpixmap.h
+   M /trunk/libggz/src/ggz_dio.c
+   M /trunk/libggz/src/ggz_dio.h
+   M /trunk/libggz/src/security/base16.c
+   M /trunk/libggz/src/security/base16.h
+   M /trunk/libggz/tests/dio.c
+   M /trunk/libggz/tests/hashing.c
+   M /trunk/libggz/tests/test16.c
+   M /trunk/libggz/tests/test64.c
+   M /trunk/playground/agrue/agrue/main.c
+   M /trunk/playground/agrue/agrue/net.c
+   M /trunk/playground/agrue/agrue/net.h
+   M /trunk/playground/c-base/evilstr.c
+   M /trunk/playground/c-base/flexprintf.c
+   M /trunk/playground/c-base/safestring.c
+   M /trunk/playground/c-base/str.c
+   M /trunk/playground/ggz-kde4/kconnectx/kconnectx.h
+   M /trunk/playground/ggz-kde4/kconnectx/module.dsc.in
+   M /trunk/playground/ggz-kde4/kconnectx/opt.h
+   M /trunk/playground/ggz-kde4/kconnectx/proto.h
+   M /trunk/playground/ggz-kde4/kconnectx/win.h
+   M /trunk/playground/ggz-kde4/kggzmod/event.h
+   M /trunk/playground/ggz-kde4/kggzmod/misc_private.h
+   M /trunk/playground/ggz-kde4/kggzmod/module.h
+   M /trunk/playground/ggz-kde4/kggzmod/module_private.h
+   M /trunk/playground/ggz-kde4/kggzmod/player.h
+   M /trunk/playground/ggz-kde4/kggzmod/player_private.h
+   M /trunk/playground/ggz-kde4/kggzmod/request.h
+   M /trunk/playground/ggz-kde4/kggzmod/statistics.h
+   M /trunk/playground/ggz-kde4/kggzmod/statistics_private.h
+   M /trunk/playground/ggz-python/arimaa/module_arimaa.dsc.in
+   M /trunk/playground/ggz-ruby/ai-ttt/ruttt-ai.c
+   M /trunk/playground/ggz-ruby/ai-ttt/ttt-ai.c
+   M /trunk/playground/ggz-ruby/ai-ttt/ttt-ai.h
+   M /trunk/playground/server/async/gai_a.c
+   M /trunk/playground/server/async/ggzresolver.c
+   M /trunk/playground/server/coregen/proto.c
+   M /trunk/python/ggzboard/backgammon/bg.svg
+   M /trunk/python/ggzboard/connectx/player1.svg
+   M /trunk/python/ggzboard/connectx/player2.svg
+   M /trunk/python/ggzboard/module_connectx.dsc.in
+   M /trunk/python/ggzboard/module_ludo.dsc.in
+   M /trunk/python/ggzboard/shogi/b-bishop.svg
+   M /trunk/python/ggzboard/shogi/b-gold-general.svg
+   M /trunk/python/ggzboard/shogi/b-king.svg
+   M /trunk/python/ggzboard/shogi/b-knight.svg
+   M /trunk/python/ggzboard/shogi/b-lance.svg
+   M /trunk/python/ggzboard/shogi/b-pawn.svg
+   M /trunk/python/ggzboard/shogi/b-rook.svg
+   M /trunk/python/ggzboard/shogi/b-silver-general.svg
+   M /trunk/python/ggzboard/shogi/bishop.svg
+   M /trunk/python/ggzboard/shogi/gold-general.svg
+   M /trunk/python/ggzboard/shogi/king.svg
+   M /trunk/python/ggzboard/shogi/knight.svg
+   M /trunk/python/ggzboard/shogi/lance.svg
+   M /trunk/python/ggzboard/shogi/pawn.svg
+   M /trunk/python/ggzboard/shogi/rook.svg
+   M /trunk/python/ggzboard/shogi/silver-general.svg
+   M /trunk/python/lib/ggzsettings.py.in
+   M /trunk/python/pyrsvgsdl/setup.py.in
+   M /trunk/python/vibora/vibora.desktop.in
+   M /trunk/utils/ggzcomm/c++example/client.h
+   M /trunk/utils/ggzcomm/c++example/client4.h
+   M /trunk/utils/ggzcomm/c++example/server.h
+   M /trunk/utils/ggzcomm/c++example/server4.h
+   M /trunk/utils/metaserv/libmeta/Makefile.am
+   M /trunk/utils/metaserv/libmeta/meta.c
+   M /trunk/utils/metaserv/libmeta/meta.h
+   M /trunk/utils/metaserv/libmeta/minidom.c
+   M /trunk/utils/metaserv/libmeta/minidom.h
+   M /trunk/utils/metaserv/libmeta/uri.c
+   M /trunk/utils/metaserv/libmeta/uri.h
+
+Fix eol-style on .c, .h, .in, and .am files.
+------------------------------------------------------------------------
+r8984 | jdorje | 2007-02-11 07:32:46 +0100 (So, 11 Feb 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/Makefile.am
+   A /trunk/gtk-client/ggz-gtk/ggz_gtk_host.svg
+   M /trunk/gtk-client/ggz-gtk/playerlist.c
+
+Add host icon.
+------------------------------------------------------------------------
+r8979 | josef | 2007-02-07 12:51:24 +0100 (Mi, 07 Feb 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/doc/Makefile.am
+
+- install help files into the correct directory
+
+(as reported by nyhm@#ggz)
+
+
+------------------------------------------------------------------------
+r8978 | jdorje | 2007-02-03 04:40:58 +0100 (Sa, 03 Feb 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/chat.c
+
+Fix more issues with dashes and translation.
+------------------------------------------------------------------------
+r8977 | jdorje | 2007-02-03 04:36:09 +0100 (Sa, 03 Feb 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/chat.c
+
+Translate /me command the same as the others.
+------------------------------------------------------------------------
+r8976 | jdorje | 2007-02-03 04:14:16 +0100 (Sa, 03 Feb 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/chat.c
+
+Don't translate dashes.
+------------------------------------------------------------------------
+r8974 | jdorje | 2007-02-02 06:05:32 +0100 (Fr, 02 Feb 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/chat.c
+
+Improve translation of command usage strings.
+------------------------------------------------------------------------
+r8973 | jdorje | 2007-02-02 01:29:51 +0100 (Fr, 02 Feb 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/chat.c
+
+Clean up translation of command help.
+------------------------------------------------------------------------
+r8972 | jdorje | 2007-02-02 00:16:55 +0100 (Fr, 02 Feb 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/login.c
+
+Numbers aren't translated.
+------------------------------------------------------------------------
+r8971 | jdorje | 2007-02-02 00:15:47 +0100 (Fr, 02 Feb 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/chat.c
+
+Define INADDR_NONE if not present.  Reported by gnome bugzilla.
+------------------------------------------------------------------------
+r8970 | oojah | 2007-02-02 00:09:19 +0100 (Fr, 02 Feb 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/chat.c
+   M /trunk/gtk-client/ggz-gtk/client.c
+   M /trunk/gtk-client/ggz-gtk/props.c
+   M /trunk/gtk-client/ggz-gtk/roomlist.c
+
+English string improvements.
+
+------------------------------------------------------------------------
+r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16 Jan 2007) | 8 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/java/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- updated changelogs
+
+This is VERY consuming (4 MB changes) since we change the changelog format.
+However we have to do so since no tool seems to be able to reproduce our old format.
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8949 | josef | 2007-01-16 19:23:42 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- 0.0.14pre => 0.0.14
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/NEWS
+   M /trunk/community/README.GGZ
+   M /trunk/docs/AUTHORS
+   M /trunk/docs/NEWS
+   M /trunk/docs/QuickStart.GGZ
+   M /trunk/docs/README.GGZ
+   M /trunk/ggz-client-libs/AUTHORS
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/QuickStart.GGZ
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggzd/AUTHORS
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/README.GGZ
+   M /trunk/gnome-client/AUTHORS
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/QuickStart.GGZ
+   M /trunk/gnome-client/README
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/grubby/AUTHORS
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/grubby/README.GGZ
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/QuickStart.GGZ
+   M /trunk/gtk-client/README
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-games/AUTHORS
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/QuickStart.GGZ
+   M /trunk/gtk-games/README
+   M /trunk/gtk-games/README.GGZ
+   M /trunk/java/AUTHORS
+   M /trunk/java/NEWS
+   M /trunk/java/README.GGZ
+   M /trunk/kde-client/AUTHORS
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/QuickStart.GGZ
+   M /trunk/kde-client/README
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-games/AUTHORS
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/QuickStart.GGZ
+   M /trunk/kde-games/README
+   M /trunk/kde-games/README.GGZ
+   M /trunk/libggz/AUTHORS
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/QuickStart.GGZ
+   M /trunk/libggz/README.GGZ
+   M /trunk/python/AUTHORS
+   M /trunk/python/NEWS
+   M /trunk/python/QuickStart.GGZ
+   M /trunk/python/README
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/AUTHORS
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/README
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/txt-client/AUTHORS
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/QuickStart.GGZ
+   M /trunk/txt-client/README.GGZ
+   M /trunk/utils/AUTHORS
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+   M /trunk/utils/README.GGZ
+
+- update common files slightly, and synchronise them
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8945 | josef | 2007-01-16 18:42:57 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/Makefile.am
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzmod/Makefile.am
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.h
+   M /trunk/ggzd/ggzdmod/Makefile.am
+   M /trunk/ggzd/ggzdmod/ggzdmod.h
+   M /trunk/ggzd/ggzdmod++/Makefile.am
+   M /trunk/gtk-client/ggz-gtk/Makefile.am
+   M /trunk/libggz/src/Makefile.am
+   M /trunk/libggz/src/ggz.h
+
+- bump libtool versions according to public API changes since 0.0.13
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
 r8942 | josef | 2007-01-16 17:22:43 +0100 (Di, 16 Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/mundomap/map.png

@@ -1,4 +1,404 @@
 ------------------------------------------------------------------------
+r9996 | josef | 2008-05-24 10:26:42 +0200 (Sa, 24 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/Makefile.am
+
+- this is how to combine distributable, optional non-automaked subdirectories with an automake tree
+
+
+------------------------------------------------------------------------
+r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/NEWS
+   M /trunk/community/README
+   M /trunk/docs/NEWS
+   M /trunk/docs/README
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.h
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/ggzdmod/ggzdmod.h
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README
+   M /trunk/java/NEWS
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/README
+   M /trunk/libggz/src/ggz.h
+   M /trunk/python/NEWS
+   M /trunk/python/README
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+
+- prepare new snapshot 0.99.3: updated NEWS file with overview on new stuff, plus usual version bumps
+
+
+------------------------------------------------------------------------
+r9988 | josef | 2008-05-23 20:45:01 +0200 (Fr, 23 Mai 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/players.c
+
+- admins are allowed to launch tables without having a game channel open
+- this means t-rex must be registered with admin privileges, although being registered as a bot could also be a natural fit
+
+
+------------------------------------------------------------------------
+r9985 | josef | 2008-05-12 13:18:39 +0200 (Mo, 12 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/game_servers/widelands/widelands.dsc
+   M /trunk/ggzd/game_servers/widelands/widelands_server.h
+
+- add note about the anticipated use of AllowPeers for games of the Widelands kind
+
+
+------------------------------------------------------------------------
+r9977 | josef | 2008-05-10 01:46:16 +0200 (Sa, 10 Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/net.c
+
+- send untranslated room names as additional attributes, which we need for name-based access from the client if the name is referenced on the server side
+
+
+------------------------------------------------------------------------
+r9946 | josef | 2008-04-12 13:59:55 +0200 (Sa, 12 Apr 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/java/Makefile
+   M /trunk/java/build.xml
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- ensure that the next snapshot release will have the proper version number in its packages
+
+
+------------------------------------------------------------------------
+r9944 | josef | 2008-04-12 12:27:38 +0200 (Sa, 12 Apr 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/games/savegames.txt
+   M /trunk/ggzd/game_servers/chinese-checkers/Makefile.am
+   M /trunk/ggzd/game_servers/chinese-checkers/game.c
+   M /trunk/ggzd/game_servers/chinese-checkers/main.c
+
+- basic savegame implementation for Chinese Checkers
+
+
+------------------------------------------------------------------------
+r9941 | jdorje | 2008-04-12 07:58:03 +0200 (Sa, 12 Apr 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/game_servers/ggzcards/common.c
+
+Handle GGZMOD_STATE_RESTORED.  However this is just a stub as I don't know if anything needs to be done here.
+
+------------------------------------------------------------------------
+r9940 | jdorje | 2008-04-12 07:57:16 +0200 (Sa, 12 Apr 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/ggzd/game_servers/ggzcards/game.c
+
+Fix harmless unitialized-variable warning.
+------------------------------------------------------------------------
+r9939 | jdorje | 2008-04-12 07:53:49 +0200 (Sa, 12 Apr 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/ggzd/game_servers/chess/game.c
+
+Initialize some values before they're used (does this make sense?).
+------------------------------------------------------------------------
+r9938 | jdorje | 2008-04-12 07:51:08 +0200 (Sa, 12 Apr 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_db4.c
+
+Comment out unused function.
+------------------------------------------------------------------------
+r9937 | jdorje | 2008-04-12 07:48:26 +0200 (Sa, 12 Apr 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/ggzd/ggzdmod/io.c
+
+Remove 'bad' cast on ggz_read_int pointer.
+------------------------------------------------------------------------
+r9936 | jdorje | 2008-04-12 07:06:58 +0200 (Sa, 12 Apr 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/Makefile.am
+
+Fix compile error: include ggzdmod headers.
+------------------------------------------------------------------------
+r9924 | josef | 2008-04-05 08:43:10 +0200 (Sa, 05 Apr 2008) | 7 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/control.c
+   M /trunk/ggzd/ggzd/parse_opt.c
+   M /trunk/ggzd/ggzd/parse_opt.h
+
+- dynamic room changes: handly room updates
+
+Until now, we handled either additions (not present -> parse) or removals (present -> remove) for inotify-based updates. We did not handle updates (present -> remove & parse), which resulted in updates causing a series of removals and additions.
+
+When players are in the room during the updates, a new room with the same name will co-exist for some time, while the old one will be locked and people can only leave, not join. Given a proper representation in the core clients, this should be an intuitive process.
+
+
+------------------------------------------------------------------------
+r9923 | josef | 2008-04-05 08:13:03 +0200 (Sa, 05 Apr 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/Makefile.am
+   M /trunk/ggzd/m4/database.m4
+
+- when db4 headers aren't found but the libs are, make them invalid
+- include local ggzdmod correctly since we seem to use some of its structures inside ggzd's database layer (which we probably shouldn't)
+
+
+------------------------------------------------------------------------
+r9921 | josef | 2008-04-05 07:48:32 +0200 (Sa, 05 Apr 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs
+   M /trunk/ggz-client-libs/Makefile.am
+   M /trunk/ggz-client-libs/configure.ac
+   A /trunk/ggz-client-libs/ggzcore.pc.in
+   A /trunk/ggz-client-libs/ggzmod.pc.in
+   M /trunk/ggzd
+   M /trunk/ggzd/Makefile.am
+   M /trunk/ggzd/configure.ac
+   A /trunk/ggzd/ggzdmod.pc.in
+   M /trunk/libggz
+   M /trunk/libggz/Makefile.am
+   M /trunk/libggz/configure.ac
+   A /trunk/libggz/libggz.pc.in
+
+- addition of pkg-config files for all C libraries, as requested by gnome-games
+
+
+------------------------------------------------------------------------
+r9915 | josef | 2008-03-30 15:29:36 +0200 (So, 30 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/game_servers/connectx/connectx.dsc
+
+- games which report statistics need a configuration setting telling ggzd about this
+
+
+------------------------------------------------------------------------
+r9912 | josef | 2008-03-30 14:54:38 +0200 (So, 30 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/game_servers/reversi/game.c
+
+- oops: the code assumes that some initialisation needs to go into game_init
+
+
+------------------------------------------------------------------------
+r9911 | josef | 2008-03-30 14:50:18 +0200 (So, 30 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/game_servers/reversi/game.c
+
+- move game initialisation and first savegame lines after the game start so that we don't log when ggzdmod isn't connected yet and hence don't transmit the savegame filename correctly
+
+
+------------------------------------------------------------------------
+r9905 | josef | 2008-03-30 11:08:09 +0200 (So, 30 Mär 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/control.c
+   M /trunk/ggzd/ggzd/database/Makefile.am
+   M /trunk/ggzd/ggzd/database/ggzdb.c
+   M /trunk/ggzd/ggzd/database/ggzdb.h
+   M /trunk/ggzd/ggzd/database/ggzdb_functions.h
+   M /trunk/ggzd/ggzd/database/ggzdb_pgsql.c
+   M /trunk/ggzd/ggzd/database/ggzdb_proto.h
+   A /trunk/ggzd/ggzd/database/upgrade_0.7_0.8.sql
+   M /trunk/ggzd/ggzd/parse_opt.c
+   M /trunk/ggzd/ggzd/parse_opt.h
+   M /trunk/ggzd/ggzdmod/ggzdmod.h
+
+- commit the database-driven dynamic room additions/removals functionality, which is complete except for the gametype
+- also, since we're at it, add the database schema upgrade function for the pgsql database backend
+
+
+------------------------------------------------------------------------
+r9903 | josef | 2008-03-30 10:06:09 +0200 (So, 30 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_db4.c
+
+- less global variables: move options into app_private pointer
+
+
+------------------------------------------------------------------------
+r9902 | josef | 2008-03-30 09:15:31 +0200 (So, 30 Mär 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_db4.c
+
+- cool new feature: if db4 is used with the database name "memory", it will create volatile databases without accessing the harddisk
+- addition of lots of empty methods, we might want to let ggzd not bail out if the advanced ones are missing though
+
+
+------------------------------------------------------------------------
+r9899 | josef | 2008-03-29 21:07:29 +0100 (Sa, 29 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/game_servers/dots/game.c
+
+- in the logfile and the savegame, shrink the board size by one for each dimension to make it more intuitive (squares instead of edges)
+
+
+------------------------------------------------------------------------
+r9898 | josef | 2008-03-29 20:56:07 +0100 (Sa, 29 Mär 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/ggzd/game_servers/chess/Makefile.am
+   M /trunk/ggzd/game_servers/chess/game.c
+   M /trunk/ggzd/game_servers/connectx/Makefile.am
+   M /trunk/ggzd/game_servers/connectx/game.c
+   M /trunk/ggzd/game_servers/dots/Makefile.am
+   M /trunk/ggzd/game_servers/dots/game.c
+   M /trunk/ggzd/game_servers/reversi/Makefile.am
+   M /trunk/ggzd/game_servers/reversi/game.c
+
+- fix all remaining uses of GGZDDATADIR for the savegames which instead need to go the GGZDSTATEDIR
+- more logging in the dots server to easy ksquares development
+
+
+------------------------------------------------------------------------
+r9865 | josef | 2008-03-22 22:11:56 +0100 (Sa, 22 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/parse_opt.c
+
+- attempt to set database type by default when no config file was given
+
+
+------------------------------------------------------------------------
+r9864 | oojah | 2008-03-22 22:10:36 +0100 (Sa, 22 Mär 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/control.c
+
+Free database type string on exit.
+
+------------------------------------------------------------------------
+r9855 | josef | 2008-03-20 21:38:47 +0100 (Do, 20 Mär 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggz.sql
+   M /trunk/ggzd/ggzd/database/ggzdb.c
+   M /trunk/ggzd/ggzd/database/ggzdb.h
+   M /trunk/ggzd/ggzd/database/ggzdb_db4.c
+   M /trunk/ggzd/ggzd/database/ggzdb_dbi.c
+   M /trunk/ggzd/ggzd/database/ggzdb_functions.h
+   M /trunk/ggzd/ggzd/database/ggzdb_mysql.c
+   M /trunk/ggzd/ggzd/database/ggzdb_pgsql.c
+   M /trunk/ggzd/ggzd/database/ggzdb_proto.h
+   M /trunk/ggzd/ggzd/database/ggzdb_sqlite.c
+   M /trunk/ggzd/ggzd/database/mysql_schema.sql
+   M /trunk/ggzd/ggzd/stats.c
+   M /trunk/ggzd/ggzd/table.c
+
+- fix problems with globally and temporally unique thread ids
+- also fix two leaks from pgsql queries
+
+
+------------------------------------------------------------------------
+r9854 | josef | 2008-03-20 21:37:13 +0100 (Do, 20 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+
+- choke on the 0.0.14 bloke, and require 0.99.2
+
+
+------------------------------------------------------------------------
+r9843 | josef | 2008-03-15 18:06:39 +0100 (Sa, 15 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_util.c
+
+- MySQL also supports the '' quoting style, and it seems to be correct according to SQL, therefore switch to it
+
+
+------------------------------------------------------------------------
+r9831 | oojah | 2008-03-09 13:46:22 +0100 (So, 09 Mär 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/configure.ac
+   M /trunk/ggzd/ggzd/Makefile.am
+   M /trunk/ggzd/ggzd/control.c
+   A /trunk/ggzd/m4/tcp-wrappers.m4
+   M /trunk/playground/patches/README
+   D /trunk/playground/patches/ggzd_tcp_wrappers.diff
+
+Merge patch for optional tcp-wrappers support.
+
+------------------------------------------------------------------------
+r9815 | josef | 2008-03-08 23:40:34 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/java/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/txt-client/ChangeLog
+
+- six thousand lines of changelog, admittedly some since 0.0.14
+
+
+------------------------------------------------------------------------
+r9814 | josef | 2008-03-08 23:31:23 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggzd/NEWS
+   M /trunk/grubby/NEWS
+   M /trunk/java/NEWS
+   M /trunk/libggz/NEWS
+   M /trunk/python/Makefile.in
+   M /trunk/python/NEWS
+   M /trunk/txt-client/NEWS
+
+- news entries for all 0.99.2 packages
+
+
+------------------------------------------------------------------------
+r9812 | josef | 2008-03-08 23:03:46 +0100 (Sa, 08 Mär 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/game_servers/tictactoe/Makefile.am
+   M /trunk/ggzd/game_servers/tictactoe/game.c
+   M /trunk/ggzd/game_servers/tictactoe/tictactoe.dsc
+   M /trunk/ggzd/ggzd/control.c
+   M /trunk/ggzd/ggzd/database/ggz.sql
+   M /trunk/ggzd/ggzd/database/ggzdb.c
+   M /trunk/ggzd/ggzd/database/ggzdb.h
+   M /trunk/ggzd/ggzd/database/ggzdb_db4.c
+   M /trunk/ggzd/ggzd/database/ggzdb_dbi.c
+   M /trunk/ggzd/ggzd/database/ggzdb_functions.h
+   M /trunk/ggzd/ggzd/database/ggzdb_mysql.c
+   M /trunk/ggzd/ggzd/database/ggzdb_pgsql.c
+   M /trunk/ggzd/ggzd/database/ggzdb_proto.h
+   M /trunk/ggzd/ggzd/database/ggzdb_sqlite.c
+   M /trunk/ggzd/ggzd/database/mysql_schema.sql
+   M /trunk/ggzd/ggzd/datatypes.h
+   M /trunk/ggzd/ggzd/parse_opt.c
+   M /trunk/ggzd/ggzd/room.c
+   M /trunk/ggzd/ggzd/room.h
+   M /trunk/ggzd/ggzd/stats.c
+   M /trunk/ggzd/ggzd/table.c
+   M /trunk/ggzd/ggzdmod/ggzdmod-ggz.h
+   M /trunk/ggzd/ggzdmod/ggzdmod.c
+   M /trunk/ggzd/ggzdmod/ggzdmod.h
+   M /trunk/ggzd/ggzdmod/io.c
+   M /trunk/ggzd/ggzdmod/io.h
+   M /trunk/ggzd/ggzdmod/mod.h
+   M /trunk/ggzd/ggzdmod/protocol.h
+   M /trunk/ggzd/ggzdmod++/ggzgameserver.cpp
+   M /trunk/ggzd/ggzdmod++/ggzgameserver.h
+
+- merge ggzd part of Vasiliy's game restoration patch (heavily modified)
+
+
+------------------------------------------------------------------------
 r9802 | josef | 2008-03-08 13:49:21 +0100 (Sa, 08 Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/README

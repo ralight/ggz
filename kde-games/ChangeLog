@@ -1,4 +1,392 @@
 ------------------------------------------------------------------------
+r9946 | josef | 2008-04-12 13:59:55 +0200 (Sa, 12 Apr 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/java/Makefile
+   M /trunk/java/build.xml
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- ensure that the next snapshot release will have the proper version number in its packages
+
+
+------------------------------------------------------------------------
+r9732 | josef | 2008-02-16 13:17:27 +0100 (Sa, 16 Feb 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-games/ktictactux/ktictactux.cpp
+   M /trunk/kde-games/ktictactux/ktictactux.h
+   M /trunk/kde-games/ktictactux/ktictactuxproto.cpp
+   M /trunk/kde-games/ktictactux/ktictactuxproto.h
+
+- quick port to ggzmod-managed seat and player information
+- still needs some reworking afterwards
+
+
+------------------------------------------------------------------------
+r9619 | josef | 2008-01-28 00:43:02 +0100 (Mo, 28 Jan 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-games/kconnectx/proto.cpp
+
+- make g++ 4.3 happy
+
+
+------------------------------------------------------------------------
+r9401 | josef | 2007-12-01 13:30:41 +0100 (Sa, 01 Dez 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/gtk-games/autogen.sh
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/autogen.sh
+   M /trunk/libggz/autogen.sh
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+ r10433@nada:  josef | 2007-12-01 13:29:38 +0100
+ - bump minimum versions of autotools so we don't accidentally hit problems with old tools
+ 
+
+------------------------------------------------------------------------
+r9281 | josef | 2007-08-29 09:00:27 +0200 (Mi, 29 Aug 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/kde-games/configure.ac
+
+ r10051@nada:  josef | 2007-08-28 20:49:11 +0200
+ - there goes my keepalive
+ 
+
+------------------------------------------------------------------------
+r9262 | josef | 2007-08-28 08:41:55 +0200 (Di, 28 Aug 2007) | 4 lines
+Geänderte Pfade:
+   M /trunk
+   M /trunk/kde-games/Makefile.am
+   M /trunk/kde-games/README
+   D /trunk/kde-games/keepalive
+
+ r10007@nada:  josef | 2007-08-27 21:09:35 +0200
+ - more drastic surgery: remove keepalive client
+ 
+
+------------------------------------------------------------------------
+r8990 | josef | 2007-02-22 10:13:57 +0100 (Do, 22 Feb 2007) | 7 lines
+Geänderte Pfade:
+   M /trunk/kde-games/lib/kggzseatsdialog.cpp
+
+- stand up instead of sitting down when the standup action is selected
+
+BACKPORT ggz-0-0-14-branch
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8987 | jdorje | 2007-02-19 03:50:30 +0100 (Mo, 19 Feb 2007) | 1 line
+Geänderte Pfade:
+   M /trunk/community/setup/scripts/ggz2phpbb.conf.in
+   M /trunk/community/setup/sql/trigger/ggzsync_trigger.c
+   M /trunk/community/setup/webserver/ggz-apache2.conf.in
+   M /trunk/docs/games/ggz-games/Makefile.am
+   M /trunk/docs/games/ggz-games/tictactoe/Makefile.am
+   M /trunk/docs/spec/mainspec/Makefile.am
+   M /trunk/ggz-client-libs/po/Makefile.am
+   M /trunk/ggz-client-libs/po/ggzcore/Makefile.am
+   M /trunk/ggzd/game_servers/chess/ai-gnuchess.c
+   M /trunk/ggzd/game_servers/chess/ai-gnuchess.h
+   M /trunk/ggzd/game_servers/connectx/ai-velena.c
+   M /trunk/ggzd/game_servers/connectx/ai-velena.h
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-bridge.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-fortytwo.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-hearts.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-lapocha.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-spades.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-suaro.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-sueca.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards-whist.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/config/ggzcards.dsc.in
+   M /trunk/ggzd/game_servers/ggzcards/score.c
+   M /trunk/ggzd/game_servers/ggzcards/score.h
+   M /trunk/ggzd/game_servers/tictactoe/ttt-ai.c
+   M /trunk/ggzd/game_servers/tictactoe/ttt-ai.h
+   M /trunk/ggzd/ggzd/database/ggzdb_dbi.c
+   M /trunk/ggzd/ggzd/meta/Makefile.am
+   M /trunk/ggzd/ggzd/meta/meta.c
+   M /trunk/ggzd/ggzd/meta/meta.h
+   M /trunk/ggzd/ggzd/meta/minidom.c
+   M /trunk/ggzd/ggzd/meta/minidom.h
+   M /trunk/ggzd/ggzd/meta/uri.c
+   M /trunk/ggzd/ggzd/meta/uri.h
+   M /trunk/ggzd/ggzd/reconfiguration.h
+   M /trunk/ggzd/ggzdmod++/Makefile.am
+   M /trunk/ggzd/ggzdmod++/ggzgameserver.h
+   M /trunk/ggzd/ggzdmod++/mnet.h
+   M /trunk/ggzd/ggzdmod++/net.h
+   M /trunk/gnome-client/man/Makefile.am
+   M /trunk/grubby/grubby/modules/banner.c
+   M /trunk/gtk-client/ggz-gtk/ggz-embed.h
+   M /trunk/gtk-client/ggz-gtk/ggz-gtk.h
+   M /trunk/gtk-client/ggz-gtk/ggz_gtk_host.svg
+   M /trunk/gtk-client/ggz-gtk/ggzutils.c
+   M /trunk/gtk-client/ggz-gtk/ggzutils.h
+   M /trunk/gtk-client/src/Makefile.am
+   M /trunk/gtk-games/ggzcards/dlg_scores.c
+   M /trunk/gtk-games/ggzcards/dlg_scores.h
+   M /trunk/kde-games/kconnectx/Makefile.am
+   M /trunk/kde-games/kconnectx/kconnectx.h
+   M /trunk/kde-games/kconnectx/module.dsc.in
+   M /trunk/kde-games/kconnectx/opt.h
+   M /trunk/kde-games/kconnectx/proto.h
+   M /trunk/kde-games/kconnectx/red.svg
+   M /trunk/kde-games/kconnectx/win.h
+   M /trunk/kde-games/kconnectx/yellow.svg
+   M /trunk/kde-games/lib/kggzmod/Makefile.am
+   M /trunk/kde-games/lib/kggzmod/event.h
+   M /trunk/kde-games/lib/kggzmod/misc_private.h
+   M /trunk/kde-games/lib/kggzmod/module.h
+   M /trunk/kde-games/lib/kggzmod/module_private.h
+   M /trunk/kde-games/lib/kggzmod/player.h
+   M /trunk/kde-games/lib/kggzmod/player_private.h
+   M /trunk/kde-games/lib/kggzmod/request.h
+   M /trunk/kde-games/lib/kggzmod/statistics.h
+   M /trunk/kde-games/lib/kggzmod/statistics_private.h
+   M /trunk/kde-games/lib/kggzpacket.h
+   M /trunk/kde-games/lib/kggzseatsdialog.h
+   M /trunk/kde-games/lib/kggzsystem.h
+   M /trunk/kde-games/lib/qsvgpixmap.h
+   M /trunk/libggz/src/ggz_dio.c
+   M /trunk/libggz/src/ggz_dio.h
+   M /trunk/libggz/src/security/base16.c
+   M /trunk/libggz/src/security/base16.h
+   M /trunk/libggz/tests/dio.c
+   M /trunk/libggz/tests/hashing.c
+   M /trunk/libggz/tests/test16.c
+   M /trunk/libggz/tests/test64.c
+   M /trunk/playground/agrue/agrue/main.c
+   M /trunk/playground/agrue/agrue/net.c
+   M /trunk/playground/agrue/agrue/net.h
+   M /trunk/playground/c-base/evilstr.c
+   M /trunk/playground/c-base/flexprintf.c
+   M /trunk/playground/c-base/safestring.c
+   M /trunk/playground/c-base/str.c
+   M /trunk/playground/ggz-kde4/kconnectx/kconnectx.h
+   M /trunk/playground/ggz-kde4/kconnectx/module.dsc.in
+   M /trunk/playground/ggz-kde4/kconnectx/opt.h
+   M /trunk/playground/ggz-kde4/kconnectx/proto.h
+   M /trunk/playground/ggz-kde4/kconnectx/win.h
+   M /trunk/playground/ggz-kde4/kggzmod/event.h
+   M /trunk/playground/ggz-kde4/kggzmod/misc_private.h
+   M /trunk/playground/ggz-kde4/kggzmod/module.h
+   M /trunk/playground/ggz-kde4/kggzmod/module_private.h
+   M /trunk/playground/ggz-kde4/kggzmod/player.h
+   M /trunk/playground/ggz-kde4/kggzmod/player_private.h
+   M /trunk/playground/ggz-kde4/kggzmod/request.h
+   M /trunk/playground/ggz-kde4/kggzmod/statistics.h
+   M /trunk/playground/ggz-kde4/kggzmod/statistics_private.h
+   M /trunk/playground/ggz-python/arimaa/module_arimaa.dsc.in
+   M /trunk/playground/ggz-ruby/ai-ttt/ruttt-ai.c
+   M /trunk/playground/ggz-ruby/ai-ttt/ttt-ai.c
+   M /trunk/playground/ggz-ruby/ai-ttt/ttt-ai.h
+   M /trunk/playground/server/async/gai_a.c
+   M /trunk/playground/server/async/ggzresolver.c
+   M /trunk/playground/server/coregen/proto.c
+   M /trunk/python/ggzboard/backgammon/bg.svg
+   M /trunk/python/ggzboard/connectx/player1.svg
+   M /trunk/python/ggzboard/connectx/player2.svg
+   M /trunk/python/ggzboard/module_connectx.dsc.in
+   M /trunk/python/ggzboard/module_ludo.dsc.in
+   M /trunk/python/ggzboard/shogi/b-bishop.svg
+   M /trunk/python/ggzboard/shogi/b-gold-general.svg
+   M /trunk/python/ggzboard/shogi/b-king.svg
+   M /trunk/python/ggzboard/shogi/b-knight.svg
+   M /trunk/python/ggzboard/shogi/b-lance.svg
+   M /trunk/python/ggzboard/shogi/b-pawn.svg
+   M /trunk/python/ggzboard/shogi/b-rook.svg
+   M /trunk/python/ggzboard/shogi/b-silver-general.svg
+   M /trunk/python/ggzboard/shogi/bishop.svg
+   M /trunk/python/ggzboard/shogi/gold-general.svg
+   M /trunk/python/ggzboard/shogi/king.svg
+   M /trunk/python/ggzboard/shogi/knight.svg
+   M /trunk/python/ggzboard/shogi/lance.svg
+   M /trunk/python/ggzboard/shogi/pawn.svg
+   M /trunk/python/ggzboard/shogi/rook.svg
+   M /trunk/python/ggzboard/shogi/silver-general.svg
+   M /trunk/python/lib/ggzsettings.py.in
+   M /trunk/python/pyrsvgsdl/setup.py.in
+   M /trunk/python/vibora/vibora.desktop.in
+   M /trunk/utils/ggzcomm/c++example/client.h
+   M /trunk/utils/ggzcomm/c++example/client4.h
+   M /trunk/utils/ggzcomm/c++example/server.h
+   M /trunk/utils/ggzcomm/c++example/server4.h
+   M /trunk/utils/metaserv/libmeta/Makefile.am
+   M /trunk/utils/metaserv/libmeta/meta.c
+   M /trunk/utils/metaserv/libmeta/meta.h
+   M /trunk/utils/metaserv/libmeta/minidom.c
+   M /trunk/utils/metaserv/libmeta/minidom.h
+   M /trunk/utils/metaserv/libmeta/uri.c
+   M /trunk/utils/metaserv/libmeta/uri.h
+
+Fix eol-style on .c, .h, .in, and .am files.
+------------------------------------------------------------------------
+r8969 | oojah | 2007-02-01 23:38:49 +0100 (Do, 01 Feb 2007) | 2 lines
+Geänderte Pfade:
+   M /trunk/kde-games/KReversi/main.cpp
+   M /trunk/kde-games/fyrdman/mainwindow.cpp
+   M /trunk/kde-games/kdots/main.cpp
+   M /trunk/kde-games/koenig/game.cc
+   M /trunk/kde-games/koenig/main.cc
+   M /trunk/kde-games/krosswater/main.cpp
+   M /trunk/kde-games/ktictactux/ktictactuxwin.cpp
+   M /trunk/kde-games/muehle/src/board.cpp
+   M /trunk/kde-games/muehle/src/main.cpp
+
+Improved English strings.
+
+------------------------------------------------------------------------
+r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16 Jan 2007) | 8 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/gnome-client/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/java/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- updated changelogs
+
+This is VERY consuming (4 MB changes) since we change the changelog format.
+However we have to do so since no tool seems to be able to reproduce our old format.
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8949 | josef | 2007-01-16 19:23:42 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gnome-client/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/kde-client/configure.ac
+   M /trunk/kde-games/configure.ac
+   M /trunk/libggz/configure.ac
+   M /trunk/python/configure.ac
+   M /trunk/sdl-games/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- 0.0.14pre => 0.0.14
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
+r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16 Jan 2007) | 5 lines
+Geänderte Pfade:
+   M /trunk/community/NEWS
+   M /trunk/community/README.GGZ
+   M /trunk/docs/AUTHORS
+   M /trunk/docs/NEWS
+   M /trunk/docs/QuickStart.GGZ
+   M /trunk/docs/README.GGZ
+   M /trunk/ggz-client-libs/AUTHORS
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/QuickStart.GGZ
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggz-client-libs/README.GGZ
+   M /trunk/ggzd/AUTHORS
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/ggzd/README.GGZ
+   M /trunk/gnome-client/AUTHORS
+   M /trunk/gnome-client/NEWS
+   M /trunk/gnome-client/QuickStart.GGZ
+   M /trunk/gnome-client/README
+   M /trunk/gnome-client/README.GGZ
+   M /trunk/grubby/AUTHORS
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/grubby/README.GGZ
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/QuickStart.GGZ
+   M /trunk/gtk-client/README
+   M /trunk/gtk-client/README.GGZ
+   M /trunk/gtk-games/AUTHORS
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/QuickStart.GGZ
+   M /trunk/gtk-games/README
+   M /trunk/gtk-games/README.GGZ
+   M /trunk/java/AUTHORS
+   M /trunk/java/NEWS
+   M /trunk/java/README.GGZ
+   M /trunk/kde-client/AUTHORS
+   M /trunk/kde-client/NEWS
+   M /trunk/kde-client/QuickStart.GGZ
+   M /trunk/kde-client/README
+   M /trunk/kde-client/README.GGZ
+   M /trunk/kde-games/AUTHORS
+   M /trunk/kde-games/NEWS
+   M /trunk/kde-games/QuickStart.GGZ
+   M /trunk/kde-games/README
+   M /trunk/kde-games/README.GGZ
+   M /trunk/libggz/AUTHORS
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/QuickStart.GGZ
+   M /trunk/libggz/README.GGZ
+   M /trunk/python/AUTHORS
+   M /trunk/python/NEWS
+   M /trunk/python/QuickStart.GGZ
+   M /trunk/python/README
+   M /trunk/python/README.GGZ
+   M /trunk/sdl-games/AUTHORS
+   M /trunk/sdl-games/NEWS
+   M /trunk/sdl-games/QuickStart.GGZ
+   M /trunk/sdl-games/README
+   M /trunk/sdl-games/README.GGZ
+   M /trunk/txt-client/AUTHORS
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/QuickStart.GGZ
+   M /trunk/txt-client/README.GGZ
+   M /trunk/utils/AUTHORS
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+   M /trunk/utils/README.GGZ
+
+- update common files slightly, and synchronise them
+
+[commit from josef@nada]
+
+
+------------------------------------------------------------------------
 r8942 | josef | 2007-01-16 17:22:43 +0100 (Di, 16 Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/mundomap/map.png
