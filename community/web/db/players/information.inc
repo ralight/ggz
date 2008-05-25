@@ -56,7 +56,7 @@ else :
 endif;
 if ($player->registered) :
 	echo "<img src='/db/ggzicons/misc/$karmapic.png' title='$karmatitle'>&nbsp;\n";
-	echo "The player's overall karma score is $karma out of 10.!<br>\n";
+	echo "The player's overall karma score is $karma out of 10.<br>\n";
 	echo $karmameaning;
 	echo "The <a href='karma.php?lookup=$lookup'>karma page</a>\n";
 	echo "contains the details.\n";
