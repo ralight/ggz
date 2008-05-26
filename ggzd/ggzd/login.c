@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 9791 2008-03-08 08:54:16Z josef $
+ * $Id: login.c 10009 2008-05-26 22:37:19Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -56,6 +56,7 @@
 #include "perms.h"
 #include "client.h"
 #include "unicode.h"
+#include "stats.h"
 
 
 #if 0
@@ -283,6 +284,8 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 	/* Log the connection */
 	log_msg(GGZ_LOG_CONNECTION_INFO, "LOGIN %s from %s as a%s", name,
 		ip_addr, login_type);
+
+	stats_rt_report();
 
 	return GGZ_REQ_OK;
 }

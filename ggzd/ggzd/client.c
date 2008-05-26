@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 9584 2008-01-23 13:47:21Z oojah $
+ * $Id: client.c 10009 2008-05-26 22:37:19Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -47,6 +47,8 @@
 #include "net.h"
 #include "table.h"
 #include "util.h"
+#include "ggzdb.h"
+#include "stats.h"
 
 
 static void* client_thread_init(void *arg_ptr);
@@ -151,6 +153,8 @@ static void* client_thread_init(void *arg_ptr)
 	pthread_rwlock_wrlock(&state.lock);
 	state.players--;
 	pthread_rwlock_unlock(&state.lock);
+
+	stats_rt_report();
 
 	return (NULL);
 }

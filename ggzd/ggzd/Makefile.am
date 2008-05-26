@@ -40,6 +40,7 @@ ggzd_SOURCES = \
 	room.h \
 	stats.c \
 	stats.h \
+	statsrt.h \
 	strsep.c \
 	transit.c \
 	transit.h \

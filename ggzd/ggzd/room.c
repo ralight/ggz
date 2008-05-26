@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 9812 2008-03-08 22:03:46Z josef $
+ * $Id: room.c 10009 2008-05-26 22:37:19Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -41,6 +41,8 @@
 #include "perms.h"
 #include "protocols.h"
 #include "room.h"
+#include "stats.h"
+#include "ggzdb.h"
 #include "stats.h"
 
 
@@ -483,6 +485,8 @@ GGZClientReqError room_join(GGZPlayer* player, const int room)
 		rooms[room].players[count-1] = player;
 		dbg_msg(GGZ_DBG_ROOM, "Room %d player count = %d", room, count);
 	}
+
+	stats_rt_report();
 
 	/* Finally we can release the other chat room lock */
 	if(room != -1)

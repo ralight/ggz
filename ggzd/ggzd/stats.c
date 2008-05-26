@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 9855 2008-03-20 20:38:47Z josef $
+ * $Id: stats.c 10009 2008-05-26 22:37:19Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -31,6 +31,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <sys/shm.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <errno.h>
+
 #include "ggzdmod.h"
 #include "ggzdmod-ggz.h"
 
@@ -43,7 +48,10 @@
 #include "protocols.h"
 #include "room.h"
 #include "stats.h"
+#include "statsrt.h"
 
+static int stats_rt_shmid = 0;
+static stats_rt *rt;
 
 GGZReturn stats_lookup(ggzdbPlayerGameStats *stats)
 {
@@ -454,5 +462,108 @@ GGZList *toprankings(int gametype)
 	ggz_free(rankings);
 
 	return rankingslist;
+}
+
+void stats_rt_init(void)
+{
+	struct shmid_ds ds;
+	int ret;
+
+	if(!opt.logstatistics)
+		return;
+
+	dbg_msg(GGZ_DBG_STATS, "RT Stats: init");
+	stats_rt_shmid = shmget(STATS_RT_SHMID, sizeof(stats_rt), IPC_CREAT | S_IRUSR | S_IWUSR);
+	if(stats_rt_shmid < 0)
+	{
+		err_msg("RT Stats: shared memory setup failure (%s)",
+			strerror(errno));
+		return;
+	}
+	ret = shmctl(stats_rt_shmid, IPC_STAT, &ds);
+	if(ret < 0)
+	{
+		err_msg("RT Stats: shared memory stats failure (%s)",
+			strerror(errno));
+		return;
+	}
+	dbg_msg(GGZ_DBG_STATS, "RT Stats: size=%zi bytes, segment=%zi bytes",
+		sizeof(stats_rt), ds.shm_segsz);
+
+	rt = (stats_rt*)shmat(stats_rt_shmid, 0, 0);
+
+	rt->version = STATS_RT_VERSION;
+	rt->magicversion = sizeof(stats_rt);
+
+	ret = sem_init(&rt->semlock, 1, 1);
+	if(ret < 0)
+	{
+		err_msg("RT Stats: semaphore initialization failure (%s)",
+			strerror(errno));
+		return;
+	}
+
+	stats_rt_report();
+}
+
+void stats_rt_report(void)
+{
+	int i;
+	int ret;
+
+	if(!opt.logstatistics)
+		return;
+
+	/* FIXME: error handling in case of signal arrival */
+	dbg_msg(GGZ_DBG_STATS, "RT Stats: report event");
+	ret = sem_wait(&rt->semlock);
+	if(ret < 0)
+	{
+		err_msg("RT Stats: semaphore lock failure (%s)",
+			strerror(errno));
+		return;
+	}
+
+	rt->uptime = uptime();
+
+	rt->num_players = state.players;
+	rt->num_tables = state.tables;
+	rt->num_rooms = room_info.num_rooms;
+	for(i = 0; i < rt->num_rooms; i++)
+	{
+		snprintf(rt->rooms[i], STATS_RT_MAX_ROOMNAME_LEN,
+			ggz_intlstring_translated(rooms[i].name, NULL));
+		rt->players[i] = rooms[i].player_count;
+		rt->tables[i] = rooms[i].table_count;
+	}
+
+	ret = sem_post(&rt->semlock);
+	if(ret < 0)
+	{
+		err_msg("RT Stats: semaphore unlock failure (%s)",
+			strerror(errno));
+		return;
+	}
+}
+
+void stats_rt_report_chat(int room)
+{
+	if(!opt.logstatistics)
+		return;
+
+	dbg_msg(GGZ_DBG_STATS, "RT Stats: report chat");
+
+	rt->uptime = uptime();
+
+	rt->chat[room]++;
+}
+
+void stats_rt_shutdown(void)
+{
+	if(!opt.logstatistics)
+		return;
+
+	shmdt(rt);
+	shmctl(stats_rt_shmid, IPC_RMID, NULL);
 }
 

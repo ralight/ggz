@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 8905 2007-01-13 12:18:47Z oojah $
+ * $Id: chat.c 10009 2008-05-26 22:37:19Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -43,6 +43,7 @@
 #include "protocols.h"
 #include "room.h"
 #include "table.h"
+#include "stats.h"
 
 
 /* Local data type */
@@ -100,6 +101,8 @@ GGZClientReqError chat_room_enqueue(int room, GGZChatType type,
 		} else
 			return E_OK;
 	}
+
+	stats_rt_report_chat(room);
 
 	if (event_room_enqueue(room, chat_event_callback,
 			       sizeof(*data), data, chat_free) != GGZ_OK)

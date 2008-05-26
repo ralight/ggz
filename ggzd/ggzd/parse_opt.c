@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 9924 2008-04-05 06:43:10Z josef $
+ * $Id: parse_opt.c 10009 2008-05-26 22:37:19Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -496,6 +496,8 @@ static void get_config_options(int ch)
 #endif
 	intval = ggz_conf_read_int(ch, "Logs", "UpdateInterval", 600);
 	log_update_set_interval(intval);
+
+	opt.logstatistics = ggz_conf_read_int(ch, "Logs", "Statistics", 0);
 
 	/* Miscellaneous */
 	opt.perform_lookups = ggz_conf_read_int(ch, "Miscellaneous", "HostnameLookup", 0);

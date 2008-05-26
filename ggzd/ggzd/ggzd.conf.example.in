@@ -165,6 +165,12 @@ DebugTypes = All
 #   How often to generate an update log entry? (in seconds)
 #UpdateInterval = 600
 
+# Provide statistical data
+#   This option offers an interface for client applications to access
+#   statistical information through shared memory. The default is 0,
+#   switch to 1 to make it work.
+#Statistics = 1
+
 ############################################################################
 # Directory and File Options
 ############################################################################

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 9372 2007-11-21 16:10:35Z josef $
+ * $Id: err_func.c 10009 2008-05-26 22:37:19Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -469,3 +469,13 @@ void log_update_set_interval(int sec)
 	 * initialized.  The easiest solution was just to remove it. */
 	update_info.update_interval = sec;
 }
+
+ggztime_t uptime(void)
+{
+	ggztime_t t;
+
+	t = get_current_time() - update_info.start_time;
+
+	return t;
+}
+

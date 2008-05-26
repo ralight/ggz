@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.h 9245 2007-08-13 07:01:38Z josef $
+ * $Id: stats.h 10009 2008-05-26 22:37:19Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -45,5 +45,11 @@ typedef struct {
 
 /* Returns (allocated) list with GGZRanking entries */
 GGZList *toprankings(int gametype);
+
+/* Real-time server statistics */
+void stats_rt_init(void);
+void stats_rt_report(void);
+void stats_rt_report_chat(int room);
+void stats_rt_shutdown(void);
 
 #endif /* _GGZ_STATS_H */

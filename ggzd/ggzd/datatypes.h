@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 9812 2008-03-08 22:03:46Z josef $
+ * $Id: datatypes.h 10009 2008-05-26 22:37:19Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -83,6 +83,7 @@ typedef struct {
 	GGZRegistrationPolicy registration_policy;
 	int max_clients;
 	int max_tables;
+	bool logstatistics;
 } Options;
 
 

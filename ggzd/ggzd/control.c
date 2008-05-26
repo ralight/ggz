@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 9924 2008-04-05 06:43:10Z josef $
+ * $Id: control.c 10009 2008-05-26 22:37:19Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -61,6 +61,7 @@
 #include "table.h"
 #include "util.h"
 #include "meta.h"
+#include "stats.h"
 
 #ifdef HAVE_INOTIFY
 #include <sys/inotify.h>
@@ -657,6 +658,9 @@ int main(int argc, char *argv[])
 		ggzdb_reconfiguration_load();
 	}
 
+	/* Add real-time statistics */
+	stats_rt_init();
+
 	/* Create SERVER socket on main_port */
 	main_sock = ggz_make_socket(GGZ_SOCK_SERVER, opt.main_port, opt.interface);
 	if (main_sock < 0) {
@@ -828,6 +832,8 @@ int main(int argc, char *argv[])
 	}
 
 	cleanup_data(); /* FIXME: must destroy all threads first */
+
+	stats_rt_shutdown();
 
 	return 0;
 }
