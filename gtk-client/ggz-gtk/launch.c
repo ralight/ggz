@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 9139 2007-05-28 07:13:58Z jdorje $
+ * $Id: launch.c 10012 2008-05-30 19:33:56Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -517,7 +517,7 @@ GtkWidget *create_dlg_launch(void)
 
 		snprintf(text, sizeof(text), _("Seat %d:"), i + 1);
 		seats[i].label = gtk_label_new(text);
-		snprintf(text, sizeof(text), "seat%d_lable", i + 1);
+		snprintf(text, sizeof(text), "seat%d_label", i + 1);
 		g_object_set_data(G_OBJECT(dlg_launch), text,
 				  seats[i].label);
 		gtk_box_pack_start(GTK_BOX(seats[i].box), seats[i].label,
