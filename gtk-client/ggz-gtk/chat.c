@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 9017 2007-03-30 01:19:49Z jdorje $
+ * $Id: chat.c 10013 2008-05-30 20:01:43Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -446,19 +446,21 @@ static void chat_send_msg(GGZServer *server, const gchar *message)
  */
 static void chat_display_usage(CCMDType ccmd_type)
 {
-	char text[1024];
+	char *text;
 
-	snprintf(text, sizeof(text), "%s", _("Usage:"));
-	snprintf(text + strlen(text), sizeof(text) - strlen(text),
-		 " %s", commands[ccmd_type].cmd);
-	if (commands[ccmd_type].params) {
-		snprintf(text + strlen(text), sizeof(text) - strlen(text),
-			 " %s", _(commands[ccmd_type].params));
-	}
-	chat_display_local(CHAT_LOCAL_NORMAL, NULL, text);
+	text = g_strdup_printf("%s %s %s",
+			       _("Usage:"),
+			       commands[ccmd_type].cmd,
+			       (commands[ccmd_type].params ? 
+				_(commands[ccmd_type].params)
+				: ""));
 
-	snprintf(text, sizeof(text), "    %s", _(commands[ccmd_type].desc));
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL, text);
+	g_free(text);
+
+	text = g_strdup_printf("    %s", _(commands[ccmd_type].desc));
+	chat_display_local(CHAT_LOCAL_NORMAL, NULL, text);
+	g_free(text);
 }
 
 
@@ -569,26 +571,24 @@ void chat_enter(const gchar *player, gboolean room_known, GGZRoom *from_room)
 {
         GtkXText *tmp = NULL;
 
-        if( !ggzcore_conf_read_int("CHAT", "IGNORE", FALSE) )
-        {
-		char message[256];
+        if (!ggzcore_conf_read_int("CHAT", "IGNORE", FALSE)) {
+		char *message;
 
 		if (!room_known) {
 			/* Just entering server. */
-			snprintf(message, sizeof(message),
-				 _("%s (logged on)"), player);
+			message = g_strdup_printf(_("%s (logged on)"), player);
 		} else if (from_room) {
-			snprintf(message, sizeof(message),
-				 "%s (from %s)", player,
-				 ggzcore_room_get_name(from_room));
+			message = g_strdup_printf(_("%s (from %s)"), player,
+					ggzcore_room_get_name(from_room));
 		} else {
-			/* No data. */
-			snprintf(message, sizeof(message), "%s", player);
+			/* Older servers don't include this data. */
+			message = g_strdup(player);
 		}
 
 	        tmp = g_object_get_data(G_OBJECT(win_main), "xtext_custom");
 		gtk_xtext_append_indent(tmp->buffer,
 					"-->", 3, message, strlen(message));
+		g_free(message);
 	}
 }
 
@@ -607,26 +607,24 @@ void chat_part(const gchar *player, int room_known, GGZRoom *to_room)
 {
         GtkXText *tmp = NULL;
 
-        if( !ggzcore_conf_read_int("CHAT", "IGNORE", FALSE) )
-        {
-		char message[256];
+        if (!ggzcore_conf_read_int("CHAT", "IGNORE", FALSE)) {
+		char *message;
 
 		if (!room_known) {
 			/* Leaving server. */
-			snprintf(message, sizeof(message),
-				 _("%s (logged off)"), player);
+			message = g_strdup_printf(_("%s (logged off)"), player);
 		} else if (to_room) {
-			snprintf(message, sizeof(message),
-				 "%s (to %s)", player,
-				 ggzcore_room_get_name(to_room));
+			message = g_strdup_printf(_("%s (to %s)"), player,
+					ggzcore_room_get_name(to_room));
 		} else {
-			/* No data. */
-			snprintf(message, sizeof(message), "%s", player);
+			/* Older servers don't include this data. */
+			message = g_strdup(player);
 		}
 
 	        tmp = g_object_get_data(G_OBJECT(win_main), "xtext_custom");
 		gtk_xtext_append_indent(tmp->buffer,
 					"<--", 3, message, strlen(message));
+		g_free(message);
 	}
 }
 
@@ -663,10 +661,13 @@ static void chat_help(GGZServer *server, const gchar *message)
 	   fixed-width font.  But there is nothing to ensure that the
 	   xtext is using a fixed-width font (in fact, it's not). */
 
+	/* FIXME2: this is mildly UTF-8 unclean since it prints text
+	   into a fixed-width buffer. */
+
 	chat_display_header(_("Chat Commands"));
 
 	for (i = 0; i < NUM_CHAT_COMMANDS + 1; i++) {
-		char text[1024];
+		char text[4096];
 		GGZCommand *cmd;
 
 		if (i == 0) {
@@ -820,7 +821,6 @@ void chat_word_clicked(GtkXText *xtext, char *word,
  * Returns:
  * gchar		*color	: The color to use (a _static_ string)
  */
-/* FIXME: Everything that calls this needs to free the memory */
 static const gchar *chat_get_color(const gchar *name, const gchar *msg)
 {
 	unsigned int pos;

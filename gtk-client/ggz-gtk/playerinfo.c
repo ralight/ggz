@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 9393 2007-12-01 00:29:32Z jdorje $
+ * $Id: playerinfo.c 10013 2008-05-30 20:01:43Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -268,7 +268,7 @@ void player_info_create_or_raise(GGZPlayer *player)
 	GGZRoom *room = ggzcore_player_get_room(player);
 	GGZTable *table = ggzcore_player_get_table(player);
 	GGZServer *server = ggzcore_room_get_server(room);
-	char text[1024];
+	char text[4096];
 	char *ptype = _("Unknown");
 	int wins, losses, ties, forfeits;
 	int rating, ranking;
@@ -321,6 +321,10 @@ void player_info_create_or_raise(GGZPlayer *player)
 		break;
 	}
 	gtk_label_set_text(GTK_LABEL(tmp), ptype);
+
+	/* UTF-8 FIXME.
+	 * This should be done as a checkbox rather than a text list.
+	 * The interface would then double as an admin editor. */
 
 	tmp = g_object_get_data(G_OBJECT(dialog), "perms");
 	text[0] = '\0';
@@ -388,7 +392,7 @@ void player_info_create_or_raise(GGZPlayer *player)
 		tmp = g_object_get_data(G_OBJECT(dialog), "ranking");
 		gtk_widget_show(tmp);
 
-		snprintf(text, sizeof(text), "#%d", ranking);
+		snprintf(text, sizeof(text), _("#%d"), ranking);
 
 		gtk_label_set_text(GTK_LABEL(tmp), text);
 	} else {

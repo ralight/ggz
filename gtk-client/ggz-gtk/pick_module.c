@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Text Client 
  * Date: 11/5/2002
- * $Id: pick_module.c 9393 2007-12-01 00:29:32Z jdorje $
+ * $Id: pick_module.c 10013 2008-05-30 20:01:43Z jdorje $
  *
  * Dialog window to pick a module for your game
  *
@@ -95,8 +95,9 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules, int *modulenumbers
 	for (i = 0; modules[i]; i++) {
 		const char *fe = ggzcore_module_get_frontend(modules[i]);
 		const char *name = ggzcore_module_get_name(modules[i]);
-		char text[512];
-		snprintf(text, sizeof(text), "%s (%s)", name, fe);
+		char *text;
+
+		text = g_strdup_printf("%s (%s)", name, fe);
 
 		frontend = gtk_radio_button_new_with_label(group, text);
 		group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(frontend));
@@ -113,6 +114,7 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules, int *modulenumbers
 		g_signal_connect(GTK_OBJECT(frontend), "toggled",
 				   GTK_SIGNAL_FUNC(on_button_toggled),
 				   GINT_TO_POINTER(modulenumbers[i]));
+		g_free(text);
 	}
 
 	hseparator1 = gtk_hseparator_new();

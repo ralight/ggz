@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 9140 2007-05-28 19:31:35Z jdorje $
+ * $Id: login.c 10013 2008-05-30 20:01:43Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -90,7 +90,7 @@ void login_connect_failed(void)
 void login_failed(const GGZErrorEventData * error)
 {
 	GtkWidget *tmp;
-	char msg[1024];
+	char *msg;
 
 	/* First, disconnect from the server. */
 	if (ggzcore_server_logout(server) < 0)
@@ -111,34 +111,34 @@ void login_failed(const GGZErrorEventData * error)
 
 	switch (error->status) {
 	case E_ALREADY_LOGGED_IN:
-		snprintf(msg, sizeof(msg),
-			 _("That username is already in use."));
+		msg = g_strdup(_("That username is already in use."));
 		break;
 	case E_USR_LOOKUP:
-		snprintf(msg, sizeof(msg),
-			 _("Authentication has failed.\n"
-				"Please supply the correct password."));
+		msg = g_strdup(_("Authentication has failed.\n"
+				 "Please supply the correct password."));
 		break;
 	case E_TOO_LONG:
-		snprintf(msg, sizeof(msg), _("The username is too long!"));
+		msg = g_strdup(_("The username is too long!"));
 		break;
 	case E_BAD_USERNAME:
-		snprintf(msg, sizeof(msg), _("Invalid username, do not use special characters!"));
+		msg = g_strdup(_("Invalid username; "
+				 "do not use special characters!"));
 		break;
 	case E_BAD_PASSWORD:
-		snprintf(msg, sizeof(msg), _("Invalid password."));
+		msg = g_strdup(_("Invalid password."));
 		break;
 	case E_USR_TYPE:
 	case E_USR_TAKEN:
-		snprintf(msg, sizeof(msg), _("Username is already taken."));
+		msg = g_strdup(_("Username is already taken."));
 		break;
 	default:
-		snprintf(msg, sizeof(msg),
-			 _("Login failed for unknown reason %d: %s"),
-			 error->status, error->message);
+		msg = g_strdup_printf(_("Login failed for unknown "
+					"reason %d: %s"),
+				      error->status, error->message);
 		break;
 	}
 	gtk_label_set_text(GTK_LABEL(tmp), msg);
+	g_free(msg);
 }
 
 

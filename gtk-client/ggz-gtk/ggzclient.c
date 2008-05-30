@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 9574 2008-01-20 10:58:24Z josef $
+ * $Id: ggzclient.c 10013 2008-05-30 20:01:43Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -270,13 +270,15 @@ static GGZHookReturn ggz_num_players_changed(GGZServerEvent id,
 	GtkWidget *serverbar = ggz_lookup_widget(win_main, "serverbar");
 	guint context;
 	int players = ggzcore_server_get_num_players(server);
-	char buf[128];
+	char *buf;
 
-	snprintf(buf, sizeof(buf), _("Players on server: %d"), players);
+	buf = g_strdup_printf(_("Players on server: %d"), players);
 	context = gtk_statusbar_get_context_id(GTK_STATUSBAR(serverbar),
 					       "players");
 	gtk_statusbar_pop(GTK_STATUSBAR(serverbar), context);
 	gtk_statusbar_push(GTK_STATUSBAR(serverbar), context, buf);
+
+	g_free(buf);
 
 	return GGZ_HOOK_OK;
 }
@@ -419,22 +421,23 @@ static GGZHookReturn ggz_chat_fail(GGZRoomEvent id, const void *event_data,
 				   const void *user_data)
 {
 	const GGZErrorEventData *error = event_data;
-	char buf[512];
+	char *buf;
 
 	switch (error->status) {
 	case E_NOT_IN_ROOM:
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
-				   _
-				   ("You can't chat while not in a room."));
+				   _("You can't chat while "
+				     "not in a room."));
 		break;
 	case E_NO_PERMISSION:
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
-				   _
-				   ("You don't have permission to chat here."));
+				   _("You don't have permission "
+				     "to chat here."));
 		break;
 	case E_AT_TABLE:
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
-				   _("No private chatting at a table!"));
+				   _("No private chatting "
+				     "at a table!"));
 		break;
 	case E_USR_LOOKUP:
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
@@ -442,17 +445,17 @@ static GGZHookReturn ggz_chat_fail(GGZRoomEvent id, const void *event_data,
 		break;
 	case E_BAD_OPTIONS:
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
-				   _
-				   ("There was an error sending the chat."));
+				   _("There was an error "
+				     "sending the chat."));
 		break;
 	case E_NO_TABLE:
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
 				   _("You're not at a table."));
 		break;
 	default:
-		snprintf(buf, sizeof(buf),
-			 _("Chat failed: %s."), error->message);
+		buf = g_strdup_printf(_("Chat failed: %s."), error->message);
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL, buf);
+		g_free(buf);
 		break;
 	}
 
@@ -573,11 +576,11 @@ static GGZHookReturn ggz_table_joined(GGZRoomEvent id,
 				      const void *user_data)
 {
 	const int *table_id = event_data;
+	char *message;
 
-	char message[1024];
-	snprintf(message, sizeof(message),
-		 _("You have joined table %d."), *table_id);
+	message = g_strdup_printf(_("You have joined table %d."), *table_id);
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL, message);
+	g_free(message);
 
 	return GGZ_HOOK_OK;
 }
@@ -590,9 +593,8 @@ static GGZHookReturn ggz_table_join_fail(GGZRoomEvent id,
 	gchar *msg;
 	const char *event_message = event_data;
 
-	msg =
-	    g_strdup_printf(_("Error joining table: %s"),
-			    event_message);
+	msg = g_strdup_printf(_("Error joining table: %s"),
+			      event_message);
 	msgbox(msg, _("Error"),
 	       MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 	g_free(msg);
@@ -608,27 +610,27 @@ static GGZHookReturn ggz_table_left(GGZRoomEvent id,
 				    const void *user_data)
 {
 	const GGZTableLeaveEventData *data = event_data;
-	char message[1024] = "???";
+	char *message = g_strdup(_("Unknown reason"));;
 
 	switch (data->reason) {
 	case GGZ_LEAVE_BOOT:
-		snprintf(message, sizeof(message),
-			 _("You have been booted from the table by %s."),
-			 data->player);
+		message = g_strdup_printf(_("You have been booted "
+					    "from the table by %s."),
+					  data->player);
 		break;
 	case GGZ_LEAVE_NORMAL:
-		snprintf(message, sizeof(message),
-			 _("You have left the table."));
+		message = g_strdup(_("You have left the table."));
 		break;
 	case GGZ_LEAVE_GAMEOVER:
-		snprintf(message, sizeof(message), _("The game is over."));
+		message = g_strdup(_("The game is over."));
 		break;
 	case GGZ_LEAVE_GAMEERROR:
-		snprintf(message, sizeof(message),
-			 _("There was an error with the game server."));
+		message = g_strdup(_("There was an error with "
+				     "the game server."));
 		break;
 	}
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL, message);
+	g_free(message);
 
 	game_quit();
 
@@ -643,9 +645,8 @@ static GGZHookReturn ggz_table_leave_fail(GGZRoomEvent id,
 	gchar *msg;
 	const char *event_message = event_data;
 
-	msg =
-	    g_strdup_printf(_("Error leaving table: %s"),
-			    event_message);
+	msg = g_strdup_printf(_("Error leaving table: %s"),
+			      event_message);
 	msgbox(msg, _("Error"),
 	       MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 	g_free(msg);
