@@ -49,7 +49,11 @@ function checkauthentication($realm)
 	$authrequest = false;
 
 	// FIXME: manual query on rooms_admin
-	$res = $database->exec("SELECT handle, password FROM users WHERE (permissions & 8) = 8", array());
+	if ($database) :
+		$res = $database->exec("SELECT handle, password FROM users WHERE (permissions & 8) = 8", array());
+	else :
+		$res = false;
+	endif;
 
 	if ($res) :
 		if ($database->numrows($res) > 0) :

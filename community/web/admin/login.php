@@ -2,7 +2,7 @@
 
 include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
 include("database.php");
-include("../admin/loginfunc.inc");
+include("loginfunc.inc");
 $global_leftbar = "disabled";
 $global_rightbar = "disabled";
 
