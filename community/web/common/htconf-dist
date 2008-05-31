@@ -4,8 +4,10 @@
 // Values which are commented out are fetched automatically from
 // ggzd or its configuration file, if set.
 
+// New: use /admin/configuration.php to auto-create this file!
+
 # Path to the configuration file of the GGZ server
-# - when path is given, database parameters will be read automatically
+# - when config file is given, database parameters will be read automatically
 # - however, when performance is an issue, still set them by hand
 $ggzconfigfile = "/...../etc/ggzd/ggzd.conf";
 #$dbhost = "localhost";
@@ -13,6 +15,12 @@ $ggzconfigfile = "/...../etc/ggzd/ggzd.conf";
 #$dbuser = "xxx";
 #$dbpass = "xxx";
 #$dbtype = "postgresql";
+# The port is optional and only needed for non-default setups
+#$dbport = 5433;
+
+# The registration policy, can be read automatically from config file
+# - otherwise set to "open"/"confirm"/"confirmlater"/"closed"
+#$communityregistration = "open";
 
 # URL to the GGZ server this community instance runs on
 # - when URL is given, host/name/version can be read automatically
