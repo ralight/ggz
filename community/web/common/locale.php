@@ -63,16 +63,23 @@ class Locale
 		global $community_locale_lang;
 
 		$lang = $community_locale_lang;
-		ob_start(); 
-		$ret = @include("$file.$lang");
-		$contents = ob_get_contents(); 
-		ob_end_clean(); 
-		if(!$ret) :
-			ob_start(); 
-			$ret = @include($file);
-			$contents = ob_get_contents(); 
-			ob_end_clean(); 
-			if (!$ret) :
+
+		$ret = @fopen("$file.$lang", "r", true);
+		if ($ret) :
+			fclose($ret);
+
+			ob_start();
+			include("$file.$lang");
+			$contents = ob_get_contents();
+			ob_end_clean();
+		else :
+			$ret = @fopen($file, "r", true);
+			if ($ret) :
+				ob_start();
+				include($file);
+				$contents = ob_get_contents();
+				ob_end_clean();
+			else :
 				return null;
 			endif;
 		endif;

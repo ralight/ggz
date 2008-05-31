@@ -38,13 +38,13 @@ class Database
 	function exec($query, $arguments)
 	{
 		/* $query should be a static string with no variables inside it.
-		** To pass variables into the query, add %^ at the appropriate place 
+		** To pass variables into the query, add %^ at the appropriate place
 		** and add the variable to the $arguments array. e.g.
 		**
 		** $database->exec("SELECT * FROM users WHERE handle='%^' ORDER BY '%^';", array($handle, $order));
 		**
 		** This doesn't really offer any advantage over escaping everything
-		** before the query is passed to exec() (ie. the person writing the 
+		** before the query is passed to exec() (ie. the person writing the
 		** query still has to remember to pass the arguments so that they are
 		** escaped whereas currently they just have to escape them manually)
 		** but having to add the extra argument does make it less likely that

@@ -31,12 +31,16 @@ endif;
 
 if ($config_object->unconfigured) :
 	echo "GGZ Community is not configured yet.";
+	$global_rightbar = "disabled";
+	$global_leftbar = "disabled";
 	include("bottom.inc");
 	exit;
 endif;
 
 if (!$database->id) :
 	echo "GGZ Community database access is not possible.";
+	$global_rightbar = "disabled";
+	$global_leftbar = "disabled";
 	include("bottom.inc");
 	exit;
 endif;
@@ -44,6 +48,8 @@ endif;
 if (!extension_loaded("gd")) :
 	// FIXME: make this optional, e.g. only for map generation?
 	echo "Site error: Missing PHP module 'gd'.";
+	$global_rightbar = "disabled";
+	$global_leftbar = "disabled";
 	include("bottom.inc");
 	exit;
 endif;
