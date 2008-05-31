@@ -1,0 +1,564 @@
+body
+	{
+		background-color:#000000;
+		margin:0px;
+		padding:6px;
+		width: 90%;
+		background-image:url('/images/freeciv/bg_lowquality.jpg');
+	}
+
+#pagehead
+	{
+		position:absolute;
+		top:6px;
+		left:6px;
+		width: 90%;
+		padding:2px;
+		background-color:#B08000;
+		border-top: 1px #C07000 solid;
+		border-left: 1px #C07000 solid;
+		border-right: 1px #402000 solid;
+		border-bottom: 1px #402000 solid;
+		/*background-image:url('');*/
+		color: #ffffff;
+	}
+
+#pagehead .menubar
+	{
+		/*width:390px;*/
+		background-color:#0000C0;
+		border-top: 1px #3030C0 solid;
+		border-left: 1px #3030C0 solid;
+		border-right: 1px #101050 solid;
+		border-bottom: 1px #101050 solid;
+		font-family:sans-serif;
+		font-size:9pt;
+		font-weight:normal;
+		font-style:normal;
+		padding:2px;
+		text-align:right;
+		background-image:url('/images/freeciv/menu_dark.png');
+	}
+
+#leftbar
+	{
+		width: 18%;
+		background-color:#0000C0;
+		border-top: 1px #3030C0 solid;
+		border-left: 1px #3030C0 solid;
+		border-right: 1px #101050 solid;
+		border-bottom: 1px #101050 solid;
+		line-height:12pt;
+		z-index:50;
+		font-size:9pt;
+		font-family:sans-serif;
+		background-image:url('/images/freeciv/menu_dark.png');
+		color: #ffffff;
+	}
+
+#rightbar
+	{
+		width: 18%;
+		background-color:#0000C0;
+		border-top: 1px #3030C0 solid;
+		border-left: 1px #3030C0 solid;
+		border-right: 1px #101050 solid;
+		border-bottom: 1px #101050 solid;
+		line-height:12pt;
+		z-index:50;
+		font-size:9pt;
+		font-family:sans-serif;
+		background-image:url('/images/freeciv/menu_dark.png');
+		color: #ffffff;
+	}
+
+#mainandacknowledgements
+	{
+		width: 60%;
+	}
+
+#main, #acknowledgements
+	{
+		background-color:#0000C0;
+		border-top: 1px #3030C0 solid;
+		border-left: 1px #3030C0 solid;
+		border-right: 1px #101050 solid;
+		border-bottom: 1px #101050 solid;
+		font-size:12pt;
+		font-weight:normal;
+		font-style:normal;
+		z-index:50;
+		background-image:url('/images/freeciv/menu_dark.png');
+	}
+
+#main .note, #acknowledgements .note
+	{
+		padding:2px;
+		color: #404040;
+		font-family:sans-serif;
+		font-size:6pt;
+		text-align:right;
+	}
+
+#main .note a, #acknowledgements .note a
+	{
+		color: #606060;
+	}
+
+#leftbar h1
+	{
+		margin:0px 0px 0px 0px;
+		padding:2px 2px 0px 2px;
+		font-family:sans-serif;
+		font-size:10pt;
+		font-weight:bold;
+		font-style:normal;
+	}
+
+#leftbar h2
+	{
+		margin:0px 0px 0px 0px;
+		padding:2px 2px 0px 2px;
+		font-family:sans-serif;
+		font-size:10pt;
+		font-weight:normal;
+		font-style:normal;
+	}
+
+#main .text, #acknowledgements .text
+	{
+		background-color:#D0D0FF;
+		border-top: 1px #101050 solid;
+		border-left: 1px #101050 solid;
+		border-right: 1px #3030C0 solid;
+		border-bottom: 1px #3030C0 solid;
+		padding:2px;
+		margin:4px;
+		font-family:serif;
+		font-size:11pt;
+		font-weight:normal;
+		font-style:normal;
+		color: black;
+		/*background-image:url('/images/widelands/strand_00.png');*/
+	}
+
+#main .text a, #acknowledgements .text a
+	{
+		font-family:sans-serif;
+		font-size:smaller;
+		text-decoration:none;
+		color: #404040;
+		font-weight:bold;
+	}
+
+.linklike
+	{
+		font-family:sans-serif;
+		font-size:smaller;
+		text-decoration:none;
+		font-weight:bold;
+	}
+
+#leftbar .menu a
+	{
+		font-weight:normal;
+	}
+
+#leftbar a
+	{
+		font-family:sans-serif;
+		text-decoration:none;
+		color: #a0a0ff;
+		font-weight:bold;
+	}
+
+#leftbar a:hover
+	{
+		color:#c0c0ff;
+	}
+
+#rightbar a
+	{
+		font-family:sans-serif;
+		text-decoration:none;
+		color: #a0a0ff;
+	}
+
+#main .text h1, #acknowledgements .text h1
+	{
+		margin:0px 0px 0px 0px;
+		padding:2px 2px 0px 2px;
+		font-family:sans-serif;
+		font-size:10pt;
+		font-weight:bold;
+		font-style:normal;
+	}
+
+#main .text h2, #acknowledgements .text h2
+	{
+		margin:0px 0px 0px 0px;
+		padding:2px 2px 0px 2px;
+		font-family:sans-serif;
+		font-size:10pt;
+		font-weight:normal;
+		font-style:normal;
+	}
+
+#main h1, #acknowledgements h1
+	{
+		margin:4px;
+		padding:2px 2px 0px 2px;
+		font-family:sans-serif;
+		font-size:14pt;
+		font-weight:bold;
+		font-style:normal;
+		background-color:#000000;
+		border-top: 1px #3030C0 solid;
+		border-left: 1px #3030C0 solid;
+		border-right: 1px #101050 solid;
+		border-bottom: 1px #101050 solid;
+		color:#DFDFDF;
+		background-image:url('/images/freeciv/menu_bright.png');
+	}
+
+#main h2, #acknowledgements h2
+	{
+		margin:0px 0px 0px 0px;
+		padding:2px 2px 0px 2px;
+		font-family:sans-serif;
+		font-size:14pt;
+		font-weight:bold;
+		font-style:normal;
+		background-image:none;
+		color: #ffffff;
+	}
+
+#pagehead h1
+	{
+		margin:0px 0px 0px 0px;
+		padding:2px 2px 0px 2px;
+		font-family:sans-serif;
+		font-size:14pt;
+		font-weight:bold;
+		font-style:normal;
+	}
+
+#pagehead h2
+	{
+		margin:0px 0px 0px 0px;
+		padding:2px 2px 0px 2px;
+		font-family:serif;
+		font-size:10pt;
+		font-weight:normal;
+		font-style:italic;
+	}
+
+#rightbar h1
+	{
+		margin:0px 0px 0px 0px;padding:2px 2px 0px 2px;font-family:sans-serif;font-size:10pt;font-weight:bold;font-style:normal;
+	}
+
+#rightbar h2
+	{
+		margin:0px 0px 0px 0px;
+		padding:2px 2px 0px 2px;
+		font-family:sans-serif;
+		font-size:10pt;
+		font-weight:normal;
+		font-style:normal;
+	}
+
+body #leftbar
+	{
+		position:absolute;
+		top:170px;
+		left: 1%;
+	}
+
+body #mainandacknowledgements
+	{
+		position:absolute;
+		top:96px;
+		left: 20%;
+	}
+
+body #pagehead .menubar
+	{
+		position:absolute;
+		top:60px;
+		right: 8%;
+	}
+
+body #pagehead
+	{
+		height:68px;
+	}
+
+body #rightbar
+	{
+		position:absolute;
+		top: 96px;
+		left: 81%;
+	}
+
+h1 span.itemleader
+	{
+		font-family:sans-serif;
+		color: #a0a0ff;
+		letter-spacing:0.125em;
+		font-style:normal;
+		font-weight:bold;
+	}
+
+hr.leather
+	{
+		background-color:#000000;
+		border-top:1px #3030C0 solid;
+		border-left:1px #3030C0 solid;
+		border-right:1px #101050 solid;
+		border-bottom:1px #101050 solid;
+		height:6px;
+		margin-left:6px;
+		margin-right:6px;
+		background-image:url('/images/freeciv/menu_bright.png');
+	}
+
+#pagehead div.menu
+	{
+		top:24px;
+		display:block;
+		width:64px;
+		float:left;
+		font-size:8pt;
+		text-align:center;
+		background-color:transparent;
+		color: #a0a0ff;
+	}
+
+#pagehead a.menuitem
+	{
+		display:block;
+		text-align:center;
+		margin: 1px;
+		color: #a0a0ff;
+		text-decoration:none;
+	}
+
+#pagehead div.menu div.menu a.menuitem
+	{
+		text-align:left;
+	}
+
+#pagehead a.menuitem:hover
+	{
+		color: #FFFFFF;
+		background-color: #5050B0;
+	}
+
+#pagehead a.menuitem:hover > div.menu
+	{
+		display:block;
+	}
+
+#pagehead div.menu div.menu
+	{
+		display:none;
+		width:120px;
+		float:left;
+		font-size:8pt;
+		text-align:center;
+		z-index:100;
+		position:absolute;
+		top:1.5em;
+		background-color:#000000;
+		border-top: 1px #3030C0 solid;
+		border-left: 1px #3030C0 solid;
+		border-right: 1px #101050 solid;
+		border-bottom: 1px #101050 solid;
+		background-image:url('/images/freeciv/menu_bright.png');
+	}
+
+#pagehead div.menu:hover > div.menu
+	{
+		display:block;
+	}
+
+#rightbar div.menubar h1, #leftbar div.menubar h1
+	{
+		color:#FFFFFF;
+	}
+
+#rightbar div.menubar, #leftbar div.menubar
+	{
+		background-color:#000000;
+		border-top: 1px #3030C0 solid;
+		border-left: 1px #3030C0 solid;
+		border-right: 1px #101050 solid;
+		border-bottom: 1px #101050 solid;
+		color:#FFFFFF;
+		background-image:url('/images/freeciv/menu_bright.png');
+	}
+
+#leftbar div.menu, #rightbar div.menu
+	{
+		display:block;
+		font-size:8pt;
+		font-family:sans-serif;
+		text-align:center;
+		background-color:#000000;
+		color: #FFFFFF;
+		background-image:url('/images/freeciv/menu_bright.png');
+	}
+
+#leftbar a.menuitem, #rightbar a.menuitem
+	{
+		display:block;
+		text-align:left;
+		margin: 1px;
+		color: #A0A0FF;
+		text-decoration:none;
+	}
+
+#leftbar div.menu div.menu a.menuitem, #rightbar div.menu div.menu a.menuitem
+	{
+		text-align:left;
+	}
+
+#leftbar a.menuitem:hover, #rightbar a.menuitem:hover
+	{
+		color: #C0C0FF;
+		background-color: #000000;
+	}
+
+#leftbar a.menuitem:hover > div.menu, #rightbar a.menuitem:hover > div.menu
+	{
+		display:block;
+	}
+
+#leftbar div.menu div.menu, #rightbar div.menu div.menu
+	{
+		display:none;
+		width:120px;
+		float:left;
+		font-size:8pt;
+		text-align:center;
+		z-index:100;
+		position:absolute;
+		left:45px;
+		background-color:#000000;
+		border-top: 1px #3030C0 solid;
+		border-left: 1px #3030C0 solid;
+		border-right: 1px #101050 solid;
+		border-bottom: 1px #101050 solid;
+		background-image:url('/images/freeciv/menu_bright.png');
+		color: #a0a0ff;
+	}
+
+#leftbar div.menu:hover > div.menu, #rightbarbar div.menu:hover > div.menu
+	{
+		display:block;
+	}
+
+form.leather
+	{
+		margin:2px;
+		padding:2px;
+		display:block;
+		background-color:#FFFFFF;
+		border-top: 1px #3030C0 solid;
+		border-left: 1px #3030C0 solid;
+		border-right: 1px #101050 solid;
+		border-bottom: 1px #101050 solid;
+		background-image:url('/images/freeciv/menu_bright.png');
+		color: #ffffff;
+	}
+
+form.leather h1
+	{
+		font-size:larger;
+	}
+
+form.leather h2
+	{
+		font-weight:normal;
+	}
+
+form.leather input.button
+	{
+		margin-top:4px;
+		background-color:#5050B0;
+		border-top: 1px #3030C0 solid;
+		border-left: 1px #3030C0 solid;
+		border-right: 1px #101050 solid;
+		border-bottom: 1px #101050 solid;
+	}
+
+form.leather input
+	{
+		background-color:#5050B0;
+		border-top: 1px #101050 solid;
+		border-left: 1px #101050 solid;
+		border-right: 1px #3030C0 solid;
+		border-bottom: 1px #3030C0 solid;
+	}
+
+form.leather select
+	{
+		background-color:#5050B0;
+		border-top: 1px #CCFFEB solid;
+		border-left: 1px #CCFFEB solid;
+		border-right: 1px #1B5432 solid;
+		border-bottom: 1px #1B5432 solid;
+	}
+
+form.leather textarea
+	{
+		background-color:#5050B0;
+		border-top: 1px #1B5432 solid;
+		border-left: 1px #1B5432 solid;
+		border-right: 1px #CCFFEB solid;
+		border-bottom: 1px #CCFFEB solid;
+	}
+
+form.leather input.button:focus
+	{
+		background-color:#6060C0;
+	}
+
+form.leather input:focus
+	{
+		background-color:#6060C0;
+	}
+
+form.leather select:focus
+	{
+		background-color:#6060C0;
+	}
+
+form.leather textarea:focus
+	{
+		background-color:#6060C0;
+	}
+
+img.leather
+	{
+		padding:4px;
+		background-color:#000000;
+		/*border-top: 1px #75CBA9 solid;
+		border-left: 1px #75CBA9 solid;
+		border-right: 1px #0D2818 solid;
+		border-bottom: 1px #0D2818 solid;*/
+		background-repeat : no-repeat;
+	}
+
+table.leather
+	{
+		padding:4px;
+		background-color:#5050B0;
+		/*border-top: 1px #CCFFEB solid;
+		border-left: 1px #CCFFEB solid;
+		border-right: 1px #2B744B solid;
+		border-bottom: 1px #2B744B solid;*/
+		background-repeat : no-repeat;
+	}
+
