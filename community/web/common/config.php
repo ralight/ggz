@@ -39,7 +39,7 @@ class Config
 		if (!$ret) :
 			$this->config = array();
 			$this->theme = "default";
-			$this->unconfigured = 1;
+			$this->unconfigured = true;
 			return;
 		endif;
 
