@@ -30,7 +30,8 @@ if ($active) :
 endif;
 
 if ($config_object->unconfigured) :
-	echo "GGZ Community is not configured yet.";
+	echo "GGZ Community is not configured yet.\n";
+	echo "You might want to visit the <a href='/admin/configuration.php'>configuration wizard</a>.";
 	$global_rightbar = "disabled";
 	$global_leftbar = "disabled";
 	include("bottom.inc");
