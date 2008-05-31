@@ -183,6 +183,13 @@ class Config
 	{
 		echo Config::gettheme($image);
 	}
+
+	function themename()
+	{
+		global $config_object;
+
+		return $config_object->theme;
+	}
 }
 
 $config_object = new Config("htconf");
