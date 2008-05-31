@@ -45,7 +45,7 @@ function latest_forumposts()
 	if(!$ret) $ret = @include("../../forums/.htconf");
 
 	$phpbb = new Database("postgresql");
-	$phpbb->connect($conf_host, $conf_name, $conf_user, $conf_pass);
+	$phpbb->connect($conf_host, $conf_name, $conf_user, $conf_pass, $conf_port);
 
 	if (!$phpbb->id) :
 		echo "Forum not reachable.\n";
