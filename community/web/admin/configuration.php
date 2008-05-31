@@ -63,6 +63,8 @@ if ($_POST["savevalues"]) :
 			fwrite($f, "\$dbuser = \"" . $_POST["form_dbuser"] . "\";\n");
 			fwrite($f, "\$dbpass = \"" . $_POST["form_dbpass"] . "\";\n");
 			fwrite($f, "\$dbtype = \"" . $_POST["form_dbtype"] . "\";\n");
+
+			fwrite($f, "\$communityregistration = \"" . $_POST["form_communityregistration"] . "\";\n");
 		endif;
 
 		if ($_POST["form_ggzserver"] == "query") :
@@ -78,21 +80,21 @@ if ($_POST["savevalues"]) :
 		fwrite($f, "\$communityslogan = \"" . $_POST["form_communityslogan"] . "\";\n");
 		fwrite($f, "\$communityurl = \"" . $_POST["form_communityurl"] . "\";\n");
 		fwrite($f, "\$communitymail = \"" . $_POST["form_communitymail"] . "\";\n");
-		fwrite($f, "\$copyright_title = \"" . $_POST["form_copyright_title"] . "\";\n");
-		fwrite($f, "\$copyright_link = \"" . $_POST["form_copyright_link"] . "\";\n");
+		fwrite($f, "\$communitycopyright_title = \"" . $_POST["form_copyright_title"] . "\";\n");
+		fwrite($f, "\$communitycopyright_link = \"" . $_POST["form_copyright_link"] . "\";\n");
 
 		fwrite($f, "\$communitytheme = \"" . $_POST["form_communitytheme"] . "\";\n");
 		fwrite($f, "\$communitytls = " . optbool($_POST["form_communitytls"]) . ";\n");
 
 		fwrite($f, "\$features = array(\n");
-		fwrite($f, "\t\"blogs\" => " . optbool($_POST["form_community_features_blogs"]) . ",\n");
-		fwrite($f, "\t\"forum\" => " . optbool($_POST["form_community_features_forum"]) . ",\n");
-		fwrite($f, "\t\"articles\" => " . optbool($_POST["form_community_features_articles"]) . ",\n");
-		fwrite($f, "\t\"ggzgames\" => " . optbool($_POST["form_community_features_ggzgames"]) . ",\n");
-		fwrite($f, "\t\"webgames\" => " . optbool($_POST["form_community_features_webgames"]) . ",\n");
-		fwrite($f, "\t\"worldmap\" => " . optbool($_POST["form_community_features_worldmap"]) . ",\n");
-		fwrite($f, "\t\"datarepo\" => " . optbool($_POST["form_community_features_datarepo"]) . ",\n");
-		fwrite($f, "\t\"karma\" => " . optbool($_POST["form_community_features_karma"]) . "\n");
+		fwrite($f, "\t\"blogs\" => " . optbool($_POST["form_features_blogs"]) . ",\n");
+		fwrite($f, "\t\"forum\" => " . optbool($_POST["form_features_forum"]) . ",\n");
+		fwrite($f, "\t\"articles\" => " . optbool($_POST["form_features_articles"]) . ",\n");
+		fwrite($f, "\t\"ggzgames\" => " . optbool($_POST["form_features_ggzgames"]) . ",\n");
+		fwrite($f, "\t\"webgames\" => " . optbool($_POST["form_features_webgames"]) . ",\n");
+		fwrite($f, "\t\"worldmap\" => " . optbool($_POST["form_features_worldmap"]) . ",\n");
+		fwrite($f, "\t\"datarepo\" => " . optbool($_POST["form_features_datarepo"]) . ",\n");
+		fwrite($f, "\t\"karma\" => " . optbool($_POST["form_features_karma"]) . "\n");
 		fwrite($f, ");\n");
 
 		fwrite($f, "?>\n");
@@ -117,12 +119,37 @@ else :
 	$checked_ggz_manual = " checked=\"checked\"";
 endif;
 
+$selected_open = "";
+$selected_confirm = "";
+$selected_confirmlater = "";
+$selected_closed = "";
+if (Config::getvalue("registration") == "closed") :
+	$selected_closed = " selected=\"selected\"";
+elseif (Config::getvalue("registration") == "confirm") :
+	$selected_confirm = " selected=\"selected\"";
+elseif (Config::getvalue("registration") == "confirmlater") :
+	$selected_confirmlater = " selected=\"selected\"";
+else :
+	$selected_open = " selected=\"selected\"";
+endif;
+
 $selected_default = "";
 $selected_widelands = "";
 $selected_freeciv = "";
-if (Config::getvalue("communitytheme") == "widelands") :
+if (Config::themename() == "widelands") :
 	$selected_widelands = " selected=\"selected\"";
-elseif (Config::getvalue("communitytheme") == "freeciv") :
+elseif (Config::themename() == "freeciv") :
+	$selected_freeciv = " selected=\"selected\"";
+else :
+	$selected_default = " selected=\"selected\"";
+endif;
+
+$selected_default = "";
+$selected_widelands = "";
+$selected_freeciv = "";
+if (Config::themename() == "widelands") :
+	$selected_widelands = " selected=\"selected\"";
+elseif (Config::themename() == "freeciv") :
 	$selected_freeciv = " selected=\"selected\"";
 else :
 	$selected_default = " selected=\"selected\"";
@@ -134,6 +161,43 @@ if (Config::getvalue("dbtype") == "mysql") :
 	$selected_mysql = " selected=\"selected\"";
 elseif (Config::getvalue("dbtype") == "postgresql") :
 	$selected_pgsql = " selected=\"selected\"";
+endif;
+
+$check_tls = "";
+$check_blogs = "";
+$check_forum = "";
+$check_articles = "";
+$check_ggzgames = "";
+$check_webgames = "";
+$check_worldmap = "";
+$check_datarepo = "";
+$check_karma = "";
+if (Config::getvalue("tls")) :
+	$check_tls = " checked=\"checked\"";
+endif;
+if (Config::feature("blogs")) :
+	$check_blogs = " checked=\"checked\"";
+endif;
+if (Config::feature("forum")) :
+	$check_forum = " checked=\"checked\"";
+endif;
+if (Config::feature("articles")) :
+	$check_articles = " checked=\"checked\"";
+endif;
+if (Config::feature("ggzgames")) :
+	$check_ggzgames = " checked=\"checked\"";
+endif;
+if (Config::feature("webgames")) :
+	$check_webgames = " checked=\"checked\"";
+endif;
+if (Config::feature("worldmap")) :
+	$check_worldmap = " checked=\"checked\"";
+endif;
+if (Config::feature("datarepo")) :
+	$check_datarepo = " checked=\"checked\"";
+endif;
+if (Config::feature("karma")) :
+	$check_karma = " checked=\"checked\"";
 endif;
 
 $global_problems = array();
@@ -205,6 +269,8 @@ endif;
 </tr><tr>
 <td>Password:</td><td><input type="text" name="form_dbpass" value="<?php Config::put("dbpass"); ?>"></td>
 </tr><tr>
+<td>Registration policy:</td><td><select name="form_communityregistration"><option value="open"<?php echo $selected_open; ?>>open for all</option><option value="confirm"<?php echo $selected_confirm; ?>>confirmation before use</option><option value="confirmlater"<?php echo $selected_confirmlater; ?>>confirmation later</option><option value="closed"<?php echo $selected_closed; ?>>closed, invitation only</option></select></td>
+</tr><tr>
 <td colspan="2" class="gap">&nbsp;</td>
 </tr><tr>
 <td colspan="2" class="head">GGZ server configuration</td>
@@ -233,13 +299,13 @@ endif;
 </tr><tr>
 <td colspan="2" class="headexpl">blah blah blah blah blah</td>
 </tr><tr>
-<td>Name:</td><td><input type="text" name="form_communityname" value="<?php Config::put("communityname"); ?>"></td>
+<td>Name:</td><td><input type="text" name="form_communityname" value="<?php Config::put("name"); ?>"></td>
 </tr><tr>
-<td>Slogan:</td><td><input type="text" name="form_communityslogan" value="<?php Config::put("communityslogan"); ?>"></td>
+<td>Slogan:</td><td><input type="text" name="form_communityslogan" value="<?php Config::put("slogan"); ?>"></td>
 </tr><tr>
-<td>URL:</td><td><input type="text" name="form_communityurl" value="<?php Config::put("communityurl"); ?>"></td>
+<td>URL:</td><td><input type="text" name="form_communityurl" value="<?php Config::put("url"); ?>"></td>
 </tr><tr>
-<td>Contact mail address:</td><td><input type="text" name="form_communitymail" value="<?php Config::put("communitymail"); ?>"></td>
+<td>Contact mail address:</td><td><input type="text" name="form_communitymail" value="<?php Config::put("mail"); ?>"></td>
 </tr><tr>
 <td>Copyright title:</td><td><input type="text" name="form_copyright_title" value="<?php Config::put("copyright_title"); ?>"></td>
 </tr><tr>
@@ -253,27 +319,27 @@ endif;
 </tr><tr>
 <td colspan="2" class="sel">Miscellaneous</td>
 </tr><tr>
-<td>Advertise TLS:</td><td><input type="checkbox" name="form_communitytls"></td>
+<td>Advertise TLS:</td><td><input type="checkbox" name="form_communitytls" <?php echo $check_tls; ?>></td>
 </tr><tr>
 <td>Theme:</td><td><select name="form_communitytheme"><option value="default"<?php echo $selected_default; ?>>Default</option><option value="freeciv"<?php echo $selected_freeciv; ?>>Freeciv</option><option value="widelands"<?php echo $selected_widelands; ?>>Widelands</option></select></td>
 </tr><tr>
 <td colspan="2" class="sel">Custom modules</td>
 </tr><tr>
-<td>Blog aggregation:</td><td><input type="checkbox" name="form_features_blogs"></td>
+<td>Blog aggregation:</td><td><input type="checkbox" name="form_features_blogs" <?php echo $check_blogs; ?>></td>
 </tr><tr>
-<td>Integrated forum:</td><td><input type="checkbox" name="form_features_forum"></td>
+<td>Integrated forum:</td><td><input type="checkbox" name="form_features_forum" <?php echo $check_forum; ?>></td>
 </tr><tr>
-<td>Show articles:</td><td><input type="checkbox" name="form_features_articles"></td>
+<td>Show articles:</td><td><input type="checkbox" name="form_features_articles" <?php echo $check_articles; ?>></td>
 </tr><tr>
-<td>Offer GGZ games:</td><td><input type="checkbox" name="form_features_ggzgames"></td>
+<td>Offer GGZ games:</td><td><input type="checkbox" name="form_features_ggzgames" <?php echo $check_ggzgames; ?>></td>
 </tr><tr>
-<td>Offer web games:</td><td><input type="checkbox" name="form_features_webgames"></td>
+<td>Offer web games:</td><td><input type="checkbox" name="form_features_webgames" <?php echo $check_webgames; ?>></td>
 </tr><tr>
-<td>World map:</td><td><input type="checkbox" name="form_features_worldmap"></td>
+<td>World map:</td><td><input type="checkbox" name="form_features_worldmap" <?php echo $check_worldmap; ?>></td>
 </tr><tr>
-<td>Data repositories:</td><td><input type="checkbox" name="form_features_datarepo"></td>
+<td>Data repositories:</td><td><input type="checkbox" name="form_features_datarepo" <?php echo $check_datarepo; ?>></td>
 </tr><tr>
-<td>Karma system:</td><td><input type="checkbox" name="form_features_karma"></td>
+<td>Karma system:</td><td><input type="checkbox" name="form_features_karma" <?php echo $check_karma; ?>></td>
 </tr><tr>
 <td colspan="2" class="gap">&nbsp;</td>
 </tr><tr>
