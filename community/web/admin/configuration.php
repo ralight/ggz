@@ -39,6 +39,14 @@ background-color: #ffffff;
 
 include("../common/config.php");
 
+function optbool($s)
+{
+	if ($s == "on") :
+		return "true";
+	endif;
+	return "false";
+}
+
 if ($_POST["savevalues"]) :
 	echo "**save**<br/>\n";
 
@@ -64,6 +72,29 @@ if ($_POST["savevalues"]) :
 			fwrite($f, "\$ggzname = \"" . $_POST["form_ggzname"] . "\";\n");
 			fwrite($f, "\$ggzversion = \"" . $_POST["form_ggzversion"] . "\";\n");
 		endif;
+		fwrite($f, "\$ggzgamedir = \"" . $_POST["form_ggzgamedir"] . "\";\n");
+
+		fwrite($f, "\$communityname = \"" . $_POST["form_communityname"] . "\";\n");
+		fwrite($f, "\$communityslogan = \"" . $_POST["form_communityslogan"] . "\";\n");
+		fwrite($f, "\$communityurl = \"" . $_POST["form_communityurl"] . "\";\n");
+		fwrite($f, "\$communitymail = \"" . $_POST["form_communitymail"] . "\";\n");
+		fwrite($f, "\$copyright_title = \"" . $_POST["form_copyright_title"] . "\";\n");
+		fwrite($f, "\$copyright_link = \"" . $_POST["form_copyright_link"] . "\";\n");
+
+		fwrite($f, "\$communitytheme = \"" . $_POST["form_communitytheme"] . "\";\n");
+		fwrite($f, "\$communitytls = " . optbool($_POST["form_communitytls"]) . ";\n");
+
+		fwrite($f, "\$features = array(\n");
+		fwrite($f, "\t\"blogs\" => " . optbool($_POST["form_community_features_blogs"]) . ",\n");
+		fwrite($f, "\t\"forum\" => " . optbool($_POST["form_community_features_forum"]) . ",\n");
+		fwrite($f, "\t\"articles\" => " . optbool($_POST["form_community_features_articles"]) . ",\n");
+		fwrite($f, "\t\"ggzgames\" => " . optbool($_POST["form_community_features_ggzgames"]) . ",\n");
+		fwrite($f, "\t\"webgames\" => " . optbool($_POST["form_community_features_webgames"]) . ",\n");
+		fwrite($f, "\t\"worldmap\" => " . optbool($_POST["form_community_features_worldmap"]) . ",\n");
+		fwrite($f, "\t\"datarepo\" => " . optbool($_POST["form_community_features_datarepo"]) . ",\n");
+		fwrite($f, "\t\"karma\" => " . optbool($_POST["form_community_features_karma"]) . "\n");
+		fwrite($f, ");\n");
+
 		fwrite($f, "?>\n");
 	endif;
 
@@ -84,6 +115,25 @@ if (Config::getvalue("ggzurl")) :
 else :
 	$checked_ggz_server = "";
 	$checked_ggz_manual = " checked=\"checked\"";
+endif;
+
+$selected_default = "";
+$selected_widelands = "";
+$selected_freeciv = "";
+if (Config::getvalue("communitytheme") == "widelands") :
+	$selected_widelands = " selected=\"selected\"";
+elseif (Config::getvalue("communitytheme") == "freeciv") :
+	$selected_freeciv = " selected=\"selected\"";
+else :
+	$selected_default = " selected=\"selected\"";
+endif;
+
+$selected_mysql = "";
+$selected_pgsql = "";
+if (Config::getvalue("dbtype") == "mysql") :
+	$selected_mysql = " selected=\"selected\"";
+elseif (Config::getvalue("dbtype") == "postgresql") :
+	$selected_pgsql = " selected=\"selected\"";
 endif;
 
 $global_problems = array();
@@ -143,7 +193,7 @@ endif;
 </tr><tr>
 <td colspan="2" class="sel"><input type="radio" name="form_database" value="manual"<?php echo $checked_database_manual; ?>/> Configure values manually</td>
 </tr><tr>
-<td>Database type:</td><td><select name="form_dbtype"><option value="postgresql">PostgreSQL</option><option value="mysql">MySQL</option></select></td>
+<td>Database type:</td><td><select name="form_dbtype"><option value="postgresql"<?php echo $selected_pgsql; ?>>PostgreSQL</option><option value="mysql"<?php echo $selected_mysql; ?>>MySQL</option></select></td>
 </tr><tr>
 <td>Database name:</td><td><input type="text" name="form_dbname" value="<?php Config::put("dbname"); ?>"></td>
 </tr><tr>
@@ -205,7 +255,7 @@ endif;
 </tr><tr>
 <td>Advertise TLS:</td><td><input type="checkbox" name="form_communitytls"></td>
 </tr><tr>
-<td>Theme:</td><td><select name="form_communitytheme"><option value="default">Default</option><option value="freeciv">Freeciv</option><option value="widelands">Widelands</option></select></td>
+<td>Theme:</td><td><select name="form_communitytheme"><option value="default"<?php echo $selected_default; ?>>Default</option><option value="freeciv"<?php echo $selected_freeciv; ?>>Freeciv</option><option value="widelands"<?php echo $selected_widelands; ?>>Widelands</option></select></td>
 </tr><tr>
 <td colspan="2" class="sel">Custom modules</td>
 </tr><tr>
