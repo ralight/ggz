@@ -13,7 +13,7 @@
 				<a href="/db/teams/" class="menuitem">_(Teams)</a>
 			</div>
 		</div>
-<?php if ((Config::feature("ggzgames")) && (Config::feature("webgames"))) : ?>
+<?php if ((Config::feature("ggzgames")) || (Config::feature("webgames"))) : ?>
 		<div class="menu">
 			<a href="/games/" class="menuitem" title="_(Some online fun)">_(Play!)</a>
 			<div class="menu">
