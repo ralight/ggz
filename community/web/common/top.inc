@@ -11,6 +11,11 @@ function html($s)
 	return htmlspecialchars($s);
 }
 
+function htmlurl($s)
+{
+	return html(urlencode($s));
+}
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>

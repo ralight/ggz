@@ -112,7 +112,7 @@ class Statistics
 			if ($i == $max - 1) :
 				echo "\t<a href=\"/db/players/\" class=\"menuitem\" title=\"More...\">More...</a>\n";
 			else:
-				echo "\t<a href=\"/db/players/?lookup=" . html($handle) . "\" class=\"menuitem\" title=\"" . html($handle) . "\">" . html($handle) . "</a>\n";
+				echo "\t<a href=\"/db/players/?lookup=" . htmlurl($handle) . "\" class=\"menuitem\" title=\"" . html($handle) . "\">" . html($handle) . "</a>\n";
 			endif;
 		}
 

@@ -75,7 +75,7 @@ function player_intro()
 		$p->icon();
 
 		echo "The most active player is ";
-		echo "<a href='/db/players/?lookup=" . html($player) . "'>" . html($player) . "</a> ";
+		echo "<a href='/db/players/?lookup=" . htmlurl($player) . "'>" . html($player) . "</a> ";
 		echo "with $count games played.";
 	else :
 		echo "The players just seem to chat instead of playing games.";

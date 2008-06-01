@@ -12,7 +12,7 @@
 		<h1>_(Personal page)</h1>
 		_(Visit) <a href="/my/">_(My Community)</a>.<br>
 		_(Change my) <a href="/my/change.php">_(settings)</a>.<br>
-		_(Visit my) <a href="/db/players/?lookup=<?php echo Auth::username(); ?>">_(public page)</a>.
+		_(Visit my) <a href="/db/players/?lookup=<?php echo htmlurl(Auth::username()); ?>">_(public page)</a>.
 	</form>
 
 <?php if (Config::feature("datarepo")) : ?>

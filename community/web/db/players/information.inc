@@ -58,7 +58,7 @@ if ($player->registered) :
 	echo "<img src='/db/ggzicons/misc/$karmapic.png' title='$karmatitle'>&nbsp;\n";
 	echo "The player's overall karma score is $karma out of 10.<br>\n";
 	echo $karmameaning;
-	echo "The <a href='karma.php?lookup=" . html($lookup) . "'>karma page</a>\n";
+	echo "The <a href='karma.php?lookup=" . htmlurl($lookup) . "'>karma page</a>\n";
 	echo "contains the details.\n";
 else :
 	echo "Player not found.<br>\n";
