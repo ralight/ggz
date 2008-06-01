@@ -7,6 +7,8 @@ class Config
 	var $config;
 	var $theme;
 	var $unconfigured;
+
+	var $roomfilter;
 	
 	function Config($file)
 	{
@@ -55,6 +57,8 @@ class Config
 				$ggzname = $ini["General"]["ServerName"];
 				$ggzmail = $ini["General"]["AdminEmail"];
 				$communityregistration = $ini["General"]["RegistrationPolicy"];
+
+				$this->roomfilter = $ini["Games"]["RoomList"];
 
 				if (!$communityname) :
 					$communityname = $ggzname;
