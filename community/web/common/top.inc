@@ -5,6 +5,12 @@ include_once("accessadmin.php");
 include_once("config.php");
 include_once("locale.php");
 include_once("negotiation.php");
+
+function html($s)
+{
+	return htmlspecialchars($s);
+}
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>

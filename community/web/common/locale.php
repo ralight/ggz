@@ -64,6 +64,10 @@ class Locale
 
 		$lang = $community_locale_lang;
 
+		if (!$file):
+			return null;
+		endif;
+
 		$ret = @fopen("$file.$lang", "r", true);
 		if ($ret) :
 			fclose($ret);

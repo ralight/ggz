@@ -19,7 +19,7 @@ endif;
 ?>
 	<h2>
 		<span class="itemleader">:: </span>
-		<?php $player->icon(); ?> Public information for player <?php echo $lookup; ?>
+		<?php $player->icon(); ?> Public information for player <?php echo html($lookup); ?>
 		<span class="itemleader"> :: </span>
 		<a name="database"></a>
 	</h2>
@@ -44,21 +44,21 @@ $karma = 10 * (1 - ($bad_ratings / $overall_ratings));
 if ($karma >= 8) :
 	$karmapic = "karma_good";
 	$karmatitle = "Good karma";
-	$karmameaning = "This makes $lookup a most-wanted opponent and team mate.";
+	$karmameaning = "This makes " . html($lookup) . " a most-wanted opponent and team mate.";
 elseif ($karma >= 4) :
 	$karmapic = "karma_medium";
 	$karmatitle = "Medium karma";
-	$karmameaning = "Feel free to play against $lookup and don't forget to give out karma points.";
+	$karmameaning = "Feel free to play against " . html($lookup) . " and don't forget to give out karma points.";
 else :
 	$karmapic = "karma_bad";
 	$karmatitle = "Bad karma";
-	$karmameaning = "It's probably a good idea not wanting to play against $lookup.";
+	$karmameaning = "It's probably a good idea not wanting to play against " . html($lookup) . ".";
 endif;
 if ($player->registered) :
 	echo "<img src='/db/ggzicons/misc/$karmapic.png' title='$karmatitle'>&nbsp;\n";
 	echo "The player's overall karma score is $karma out of 10.<br>\n";
 	echo $karmameaning;
-	echo "The <a href='karma.php?lookup=$lookup'>karma page</a>\n";
+	echo "The <a href='karma.php?lookup=" . html($lookup) . "'>karma page</a>\n";
 	echo "contains the details.\n";
 else :
 	echo "Player not found.<br>\n";

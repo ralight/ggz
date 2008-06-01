@@ -14,7 +14,7 @@ include("top.inc");
 	</h1>
 	<div class="text">
 	The
-	<a href="http://www.kstuff.org/">Get Hot New Stuff</a>
+	<a href="http://newstuff.kde.org/">Get Hot New Stuff</a>
 	framework is a (not so) new way of
 	enhancing games with additional content such as games, themes,
 	background graphics and more.

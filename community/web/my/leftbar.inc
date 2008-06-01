@@ -1,7 +1,7 @@
 <div id="leftbar">
 	<form class="leather" action="/login/" method="get">
 		<h1>_(Personal sidebar)</h1>
-		_(You are logged in as) <?php echo Auth::username(); ?>.
+		_(You are logged in as) <?php echo html(Auth::username()); ?>.
 		<br>
 		<input type="submit" size="10" maxlength="15" value="Logout" class="button">
 	</form>

@@ -138,7 +138,7 @@
 		if ($value) :
 			//$player = new Player($handle);
 			//$player->display();
-			echo "Found player: <a href='/db/players/?lookup=$handle'>$handle</a><br>\n";
+			echo "Found player: <a href='/db/players/?lookup=" . html($handle) . "'>" . html($handle) . "</a><br>\n";
 		endif;
 	}
 
