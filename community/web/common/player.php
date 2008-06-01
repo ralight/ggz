@@ -184,7 +184,7 @@ class Player
 		include("hotstuff/.htconf");
 
 		$hotstuff = new Database("postgresql");
-		$hotstuff->connect($conf_host, $conf_name, $conf_user, $conf_pass);
+		$hotstuff->connect($conf_host, $conf_name, $conf_user, $conf_pass, $conf_port);
 
 		if ($hotstuff->id) :
 			$res = $hotstuff->exec("SELECT * FROM directory WHERE author = '%^' OR author = '%^'", array($this->realname, $ggzuser));

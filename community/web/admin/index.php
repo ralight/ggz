@@ -34,6 +34,7 @@ else:
 	echo "<a href='index.php?check=mail'>test admin mail</a><br>";
 	echo "<a href='index.php?check=phpinfo'>phpinfo output</a><br>";
 	echo "<a href='rooms.php'>room configuration</a><br>";
+	echo "<a href='configuration.php'>configuration wizard</a> for reconfiguration<br>";
 endif;
 
 ?>

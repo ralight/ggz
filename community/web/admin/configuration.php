@@ -3,6 +3,7 @@
 include("../common/config.php");
 
 if (!$config_object->unconfigured) :
+	include("../common/database.php");
 	include("loginfunc.inc");
 	$checked = checkauthentication(default_realm());
 	$errorstr = $checked['errorstr'];
