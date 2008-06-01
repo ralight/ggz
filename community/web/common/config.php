@@ -65,6 +65,13 @@ class Config
 			endif;
 		endif;
 
+		if (!$dbname) :
+			$this->config = array();
+			$this->theme = "default";
+			$this->unconfigured = true;
+			return;
+		endif;
+
 		if (!$communityregistration) :
 			$communityregistration = "open";
 		endif;
