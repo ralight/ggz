@@ -4,7 +4,7 @@ body
 		margin:0px;
 		padding:6px;
 		width: 90%;
-		background-image:url('/images/freeciv/bg_lowquality.jpg');
+		background-image:url('/images/cards/bg_lowquality.jpg');
 	}
 
 #pagehead
@@ -37,7 +37,7 @@ body
 		font-style:normal;
 		padding:2px;
 		text-align:right;
-		background-image:url('/images/freeciv/menu_dark.png');
+		background-image:url('/images/cards/menu_dark.png');
 	}
 
 #leftbar
@@ -52,7 +52,7 @@ body
 		z-index:50;
 		font-size:9pt;
 		font-family:sans-serif;
-		background-image:url('/images/freeciv/menu_dark.png');
+		background-image:url('/images/cards/menu_dark.png');
 		color: #ffffff;
 	}
 
@@ -68,7 +68,7 @@ body
 		z-index:50;
 		font-size:9pt;
 		font-family:sans-serif;
-		background-image:url('/images/freeciv/menu_dark.png');
+		background-image:url('/images/cards/menu_dark.png');
 		color: #ffffff;
 	}
 
@@ -88,7 +88,7 @@ body
 		font-weight:normal;
 		font-style:normal;
 		z-index:50;
-		background-image:url('/images/freeciv/menu_dark.png');
+		background-image:url('/images/cards/menu_dark.png');
 	}
 
 #main .note, #acknowledgements .note
@@ -218,7 +218,7 @@ body
 		border-right: 1px #101050 solid;
 		border-bottom: 1px #101050 solid;
 		color:#DFDFDF;
-		background-image:url('/images/freeciv/menu_bright.png');
+		background-image:url('/images/cards/menu_bright.png');
 	}
 
 #main h2, #acknowledgements h2
@@ -320,7 +320,7 @@ hr.leather
 		height:6px;
 		margin-left:6px;
 		margin-right:6px;
-		background-image:url('/images/freeciv/menu_bright.png');
+		background-image:url('/images/cards/menu_bright.png');
 	}
 
 #pagehead div.menu
@@ -375,7 +375,7 @@ hr.leather
 		border-left: 1px #3030C0 solid;
 		border-right: 1px #101050 solid;
 		border-bottom: 1px #101050 solid;
-		background-image:url('/images/freeciv/menu_bright.png');
+		background-image:url('/images/cards/menu_bright.png');
 	}
 
 #pagehead div.menu:hover > div.menu
@@ -396,7 +396,7 @@ hr.leather
 		border-right: 1px #101050 solid;
 		border-bottom: 1px #101050 solid;
 		color:#FFFFFF;
-		background-image:url('/images/freeciv/menu_bright.png');
+		background-image:url('/images/cards/menu_bright.png');
 	}
 
 #leftbar div.menu, #rightbar div.menu
@@ -407,7 +407,7 @@ hr.leather
 		text-align:center;
 		background-color:#000000;
 		color: #FFFFFF;
-		background-image:url('/images/freeciv/menu_bright.png');
+		background-image:url('/images/cards/menu_bright.png');
 	}
 
 #leftbar a.menuitem, #rightbar a.menuitem
@@ -450,7 +450,7 @@ hr.leather
 		border-left: 1px #3030C0 solid;
 		border-right: 1px #101050 solid;
 		border-bottom: 1px #101050 solid;
-		background-image:url('/images/freeciv/menu_bright.png');
+		background-image:url('/images/cards/menu_bright.png');
 		color: #a0a0ff;
 	}
 
@@ -469,7 +469,7 @@ form.leather
 		border-left: 1px #3030C0 solid;
 		border-right: 1px #101050 solid;
 		border-bottom: 1px #101050 solid;
-		background-image:url('/images/freeciv/menu_bright.png');
+		background-image:url('/images/cards/menu_bright.png');
 		color: #ffffff;
 	}
 
