@@ -7,4 +7,7 @@ $dbname = "meta";
 $dbuser = "xxx";
 $dbpass = "xxx";
 
+// optional:
+//$dbport = 5433;
+
 ?>
