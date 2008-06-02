@@ -388,10 +388,29 @@ if test "$enable_gcrypt" != "no"; then
     [
       AC_CHECK_HEADER(gcrypt.h,
         [
-          AC_DEFINE_UNQUOTED([USE_GCRYPT], 1,
-                             [Define if you have the gcrypt library])
-          LIB_GCRYPT="-lgcrypt"
-          enable_gcrypt=yes
+          versionstring=`grep "#define GCRYPT_VERSION" /usr/include/gcrypt.h | cut -d " " -f 3 | tr -d [\"]`
+          versionmajor=`echo $versionstring | cut -d "." -f 1`
+          versionminor=`echo $versionstring | cut -d "." -f 2`
+          too_old=0
+          if test "$versionmajor" -lt 1; then
+            too_old=1
+          elif test "$versionminor" -lt 4; then
+            too_old=1
+          else
+            AC_DEFINE_UNQUOTED([USE_GCRYPT], 1,
+                               [Define if you have the gcrypt library])
+            LIB_GCRYPT="-lgcrypt"
+            enable_gcrypt=yes
+          fi
+
+          if test $too_old -eq 1; then
+            if test "$enable_gcrypt" = "yes"; then
+              AC_MSG_ERROR([*** The gcrypt-dev is too old])
+            else
+              AC_MSG_WARN([*** The gcrypt-dev is too old - compiling without encryption support])
+              enable_gcrypt=no
+            fi
+          fi
         ],
         [
           if test "$enable_gcrypt" = "yes"; then
