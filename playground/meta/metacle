@@ -142,7 +142,12 @@ class MetaBase:
 		dbname = passwd.dbname
 		user = passwd.user
 		password = passwd.passwd
-		self.conn = pg.DB(host=host, dbname=dbname, user=user, passwd=password)
+
+		if "port" in dir(passwd):
+			port = passwd.port
+		else:
+			port = 5432
+		self.conn = pg.DB(host=host, dbname=dbname, user=user, passwd=password, port=port)
 
 		q = self.conn.query("SELECT key, url FROM metaservers")
 		for row in q.dictresult():
@@ -188,11 +193,11 @@ class MetaBase:
 		except:
 			available = -1
 
-		key = key.replace("\'", "\\\'")
-		uri = uri.replace("\'", "\\\'")
-		version = version.replace("\'", "\\\'")
-		state = state.replace("\'", "\\\'")
-		topic = topic.replace("\'", "\\\'")
+		key = key.replace("\'", "\'\'")
+		uri = uri.replace("\'", "\'\'")
+		version = version.replace("\'", "\'\'")
+		state = state.replace("\'", "\'\'")
+		topic = topic.replace("\'", "\'\'")
 
 		tuple = (key, uri, version, state, topic, players, available)
 
@@ -215,7 +220,7 @@ class MetaBase:
 		q = self.conn.query(query)
 
 	def quote(self, s):
-		return s.replace("'", "\\'")
+		return s.replace("'", "''")
 
 class MetaRunner(threading.Thread):
 	def __init__(self):

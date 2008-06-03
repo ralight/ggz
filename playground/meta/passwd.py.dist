@@ -6,3 +6,5 @@ dbname = ""
 user = ""
 passwd = ""
 
+#port = 5433
+
