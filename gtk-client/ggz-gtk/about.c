@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 9618 2008-01-27 23:34:27Z josef $
+ * $Id: about.c 10038 2008-06-07 05:13:44Z jdorje $
  *
  * About dialog: Displays information about the authors and the application.
  *
@@ -127,8 +127,8 @@ static void about_realize(GtkWidget * widget, gpointer data)
 	tmp = g_object_get_data(G_OBJECT(about_dialog), "background");
 	oldstyle = gtk_widget_get_style(tmp);
 	newstyle = gtk_style_copy(oldstyle);
-	/* FIXME: text_gc[0..4] only */
-	newstyle->text[5] = colors[12];
+	/* I don't know why it's the 4th element of text */
+	newstyle->text[4] = colors[12];
 	gtk_widget_set_style(tmp, newstyle);
 
 	if (!font[0]) {
@@ -294,8 +294,8 @@ static gint about_draw_text(GtkDrawingArea * background, gchar * text,
 	}
 
 
-	/* FIXME: text_gc[0..4] only */
-	gdk_draw_layout(pixmap, GTK_WIDGET(background)->style->text_gc[5],
+	/* I don't know why it's the 4th element of text_gc */
+	gdk_draw_layout(pixmap, GTK_WIDGET(background)->style->text_gc[4],
 			(250 - rect.width) / 2, loc + l, layout);
 	l += rect.height;
 
