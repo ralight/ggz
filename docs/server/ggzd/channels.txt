@@ -25,7 +25,8 @@ to the GGZ components, through the variable GGZSOCKET, in addition to GGZMODE
 which tells them that they run in GGZ mode at all.
 On platforms where socketpair() is not available, i.e. win32, GGZPORT will
 instead tell the game components where to connect to on localhost to establish
-the control connection.
+the control connection. This is currently implemented for ggzdmod, but not
+for ggzdmod.
 
 Finally, the connection between game server and game client is created as a
 new session on the main GGZ connection, and then each end is handed over to
@@ -69,8 +70,8 @@ Alternative socket transmission
 
 On win32, both socketpair() and ggz_read_fd()/ggz_write_fd() is currently not
 available. Hence, the control socket to the game client is transmitted through
-GGZPORT (see above), and the socket to the game server is replaced by
-connection information to the game server instead.
+GGZPORT (see above) to the game client, and the socket to the game server is
+replaced by connection information to the game server instead.
 This is not ideal but works for game clients.
 
 On the Java platform, similar restrictions apply. Furthermore, since Java is
@@ -82,6 +83,9 @@ array. However, since solving it requires at least wrapping C code like libc,
 we can as well wrap libggz and get file descriptor transmission for free, thus
 not having to extend the game server launch code. Another reason is that it
 is slower to redirect traffic through another process.
+
+Some recent discussion on channels took place on ggz-dev:
+http://mail.ggzgamingzone.org/pipermail/ggz-dev/2008-June/thread.html
 
 Summary
 -------
