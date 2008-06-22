@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/08/2002
  * Desc: Back-end functions for handling database manipulation
- * $Id: ggzdb_proto.h 9905 2008-03-30 09:08:09Z josef $
+ * $Id: ggzdb_proto.h 10043 2008-06-22 06:46:39Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -141,7 +141,7 @@ GGZList *_ggzdb_savegame_owners(const char *game);
 
 GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *name, int type);
 
-GGZDBResult ggzdb_rooms(RoomStruct *rooms, int num);
+GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num);
 
 int _ggzdb_reconfiguration_fd(void);
 RoomStruct* _ggzdb_reconfiguration_room(void);
