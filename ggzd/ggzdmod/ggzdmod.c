@@ -589,7 +589,7 @@ int ggzdmod_set_handler(GGZdMod * ggzdmod, GGZdModEvent e,
 static int _ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 {
 	ggz_debug("GGZDMOD", "Seat %d set to type %d (%s)",
-		  seat->num, seat->type, seat->name);
+		  seat->num, seat->type, seat->name ? seat->name : "-");
 
 	ggz_list_insert(ggzdmod->seats, seat);
 	
@@ -665,8 +665,8 @@ int ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 
 static int _ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSeat *spectator)
 {
-	ggz_debug("GGZDMOD", "Spectator %d set to type 'spectator' (%s)",
-		  spectator->num, spectator->name);
+	ggz_debug("GGZDMOD", "Spectator %d set to name %s",
+		  spectator->num, spectator->name ? spectator->name : "-");
 
 	if (spectator->name) {
 		if (spectator->num >= ggzdmod->max_num_spectators)
