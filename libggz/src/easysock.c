@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 9692 2008-02-10 17:48:40Z josef $
+ * $Id: easysock.c 10050 2008-06-22 23:31:49Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -929,21 +929,21 @@ int ggz_read_fd(int sock, int *recvfd)
 #ifdef	HAVE_MSGHDR_MSG_CONTROL
         if ( (cmptr = CMSG_FIRSTHDR(&msg)) == NULL
 	     || cmptr->cmsg_len != CMSG_LEN(sizeof(int))) {
-		ggz_debug(GGZ_SOCKET_DEBUG, "Bad cmsg.");
+		ggz_debug(GGZ_SOCKET_DEBUG, "Bad cmsg (length).");
 		if (_err_func)
 			(*_err_func) ("Bad cmsg", GGZ_IO_READ, sock, GGZ_DATA_FD);
 		return -1;
 	}
 
 	if (cmptr->cmsg_level != SOL_SOCKET) {
-		ggz_debug(GGZ_SOCKET_DEBUG, "Bad cmsg.");
+		ggz_debug(GGZ_SOCKET_DEBUG, "Bad cmsg (level).");
 		if (_err_func)
 			(*_err_func) ("level != SOL_SOCKET", GGZ_IO_READ, sock, GGZ_DATA_FD);
 		return -1;
 	}
 
 	if (cmptr->cmsg_type != SCM_RIGHTS) {
-		ggz_debug(GGZ_SOCKET_DEBUG, "Bad cmsg.");
+		ggz_debug(GGZ_SOCKET_DEBUG, "Bad cmsg (rights).");
 		if (_err_func)
 			(*_err_func) ("type != SCM_RIGHTS", GGZ_IO_READ, sock, GGZ_DATA_FD);
 		return -1;
