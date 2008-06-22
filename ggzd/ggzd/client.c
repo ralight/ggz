@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 10009 2008-05-26 22:37:19Z josef $
+ * $Id: client.c 10046 2008-06-22 13:55:58Z oojah $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -305,6 +305,14 @@ static void client_loop(GGZClient* client)
 	/* Force disconnect, but log out players first */
 	if (client->type == GGZ_CLIENT_PLAYER) {
 		player_logout(client->data);
+		net_disconnect(client->net);
+	}
+
+	/* Clients that have not yet sent sufficient data to determine whether they
+	 * are a GGZ_CLIENT_PLAYER or a GGZ_CLIENT_CHANNEL will remain as
+	 * GGZ_CLIENT_GENERIC. If they reach this point they need disconnecting
+	 * otherwise the socket will be left in a CLOSE_WAIT state. */
+	if (client->type == GGZ_CLIENT_GENERIC) {
 		net_disconnect(client->net);
 	}
 
