@@ -20,8 +20,8 @@ th {text-align: left}
 <h2>GGZ Gaming Zone Database Documentation</h2>
 
 <small>
-<i>Revision: 0.1</i><br>
-<i>Date: 12.12.2004</i><br>
+<i>Revision: 0.2</i><br>
+<i>Date: 22.06.2008</i><br>
 <i>Author: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
 </small>
 
@@ -36,15 +36,18 @@ More information can be found in the GGZ Hosting Guide.
 The GGZ server makes extensive use of its database.
 There can either be a basic installation, or a full installation.
 The full installation is currently only supported by the PostgreSQL and
-MySQL backends, while the libdb variants are limited to the basic installation.
-Running a GGZ server ('ggzd') does not require the full installation,
+MySQL backends, while other variants (Berkeley DB, SQlite and the generic
+DBI backend) are limited to the basic installation.
+Running a GGZ server (ggzd) does not require the full installation,
 but operating the web interface (ggz-community) does.
 </p>
 
 <p>
-The database backend has to be selected at compile time, for only one can
-be present at a time. The following graphics illustrates the programmer's view
-on the GGZ database.
+The database backend(s) have to be selected at compile time. Only one can
+be active at a time, but any number of them can be compiled into the server.
+The first one in the list will be the default backend and will be loaded
+even if no database type is configured explicitly.
+The following graphics illustrates the programmer's view on the GGZ database.
 </p>
 
 <p style="text-align:center">
@@ -57,6 +60,9 @@ startup, using the connection data specified in ggzd.conf.
 This only includes the basic setup however, so it can operate at minimum
 level, so it's recommended to use the provided SQL schema files for the
 table creation before starting ggzd.
+On upgrades, the database schema might be upgraded autmatically with the
+upgrade scripts supplied by the updated software.
+On virgin runs, accounts for bots will be created.
 </p>
 
 <h3>Tables and Relations</h3>
@@ -96,6 +102,7 @@ Table <tt>users</tt>: contains all registered users.
 <tr><th>password</th><td>player password</td></tr>
 <tr><th>name</th><td>full name</td></tr>
 <tr><th>email</th><td>email address</td></tr>
+<tr><th>firstlogin</th><td>date of registration</td></tr>
 <tr><th>lastlogin</th><td>timestamp of last login</td></tr>
 <tr><th>permissions</th><td>permission bit mask</td></tr>
 </table>
@@ -123,7 +130,8 @@ Table <tt>stats</tt>: contains one entry for each player-gametype combination.
 </p>
 
 <p>
-Table <tt>userinfo</tt>: (and others) TODO
+Table <tt>userinfo</tt>: (and others) TODO, see SQL schema files in
+community/setup/sql.
 <table>
 <tr><th></th><td></td></tr>
 <tr><th></th><td></td></tr>
@@ -133,6 +141,13 @@ Table <tt>userinfo</tt>: (and others) TODO
 <tr><th></th><td></td></tr>
 <tr><th></th><td></td></tr>
 </table>
+</p>
+
+<p>
+In addition to the static tables, ggzd supports several advanced database operations.
+If database-driven notification about new rooms is configured, then triggers will be
+installed on each run. If the 'canonicalstr' extension is installed, the PostgreSQL
+backend will be able to handle Unicode names.
 </p>
 
 </div>
