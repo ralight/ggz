@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db4 sytle database
- * $Id: ggzdb_db4.c 10043 2008-06-22 06:46:39Z jdorje $
+ * $Id: ggzdb_db4.c 10044 2008-06-22 08:38:32Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -62,9 +62,10 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	if(set_standalone) {
 		flags = DB_INIT_MPOOL | DB_INIT_LOCK;
 		dbopt->standalone = 1;
-	} else
+	} else {
 		flags = DB_CREATE | DB_INIT_MPOOL | DB_INIT_LOCK | DB_THREAD;
 		dbopt->standalone = 0;
+	}
 
 	if(db_env_create(&db_e, 0) != 0) {
 		err_sys("db_env_create() failed in _ggzdb_init()");

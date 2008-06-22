@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 9905 2008-03-30 09:08:09Z josef $
+ * $Id: ggzdb.c 10044 2008-06-22 08:38:32Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -95,8 +95,6 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 		} else {
 			/* File was found, so let's check it */
 			fgets(vid, 7, vfile);
-			if(strlen(vid) > 0)
-				vid[strlen(vid) - 1] = '\0';
 			if(!strncmp(GGZDB_VERSION_ID, vid, strlen(GGZDB_VERSION_ID)))
 				version_ok = 1;
 		}
@@ -108,6 +106,7 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 			       "database schema.  It may be possible to automate this;\n"
 			       "see http://ggzgamingzone.org.\n",
 			       vid, GGZDB_VERSION_ID);
+			printf("Database location: %s\n", fname);
 			exit(-1);
 			/* FIXME: we should be able to rely on ggz_err_sys() */
 		}
