@@ -301,3 +301,44 @@ GGZDBResult _ggzdb_stats_calcrankings(const char *game)
 	return GGZDB_NO_ERROR;
 }
 
+GGZList *_ggzdb_savegames(const char *game, const char *owner)
+{
+	/* Not implemented, but do not return error */
+	return NULL;
+}
+
+GGZList *_ggzdb_savegame_owners(const char *game)
+{
+	/* Not implemented, but do not return error */
+	return NULL;
+}
+
+GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *name, int type)
+{
+	/* Not implemented, but do not return error */
+	return GGZDB_NO_ERROR;
+}
+
+GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num)
+{
+	/* Not implemented, but do not return error */
+	return GGZDB_NO_ERROR;
+}
+
+int _ggzdb_reconfiguration_fd(void)
+{
+	/* Not implemented, but do not return error */
+	return -1;
+}
+
+void _ggzdb_reconfiguration_load(void)
+{
+	/* Not implemented, but do not return error */
+}
+
+RoomStruct *_ggzdb_reconfiguration_room(void)
+{
+	/* Not implemented, but do not return error */
+	return NULL;
+}
+
