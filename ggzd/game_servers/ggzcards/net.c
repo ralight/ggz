@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 9110 2007-05-13 02:28:51Z jdorje $
+ * $Id: net.c 10056 2008-06-23 22:52:56Z oojah $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -112,6 +112,11 @@ void net_send_player_list(player_t p)
 {
 	GGZDataIO *dio = get_player_dio(p);
 	seat_t s_rel;
+
+	/* If we start a game with open seats then we will be trying to send an
+	 * immediate sync to players that don't exist (and hence have no dio). So
+	 * return and don't send them a sync. */
+	if(!dio) return;
 
 	ggz_dio_packet_start(dio);
 	write_opcode(dio, MSG_PLAYERS);
