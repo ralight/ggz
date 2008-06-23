@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 10044 2008-06-22 08:38:32Z josef $
+ * $Id: ggzdb.c 10053 2008-06-23 07:29:52Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -72,6 +72,30 @@ ggzdbStamp unique_thread_id(void)
 	return stamp;
 }
 
+/* Return the most suitable database backend, which must be ggz_free()'d */
+char *ggzdb_get_default_backend(void)
+{
+	char *primarybackend = NULL;
+	char *token, *nexttoken;
+	char *backendlist = ggz_strdup(DATABASE_TYPES);
+	char *backendlistptr = backendlist;
+	bool gooddefault = false;
+	token = strtok(backendlist, ",");
+	while(token) {
+		nexttoken = strtok(NULL, ",");
+		if((!ggz_strcmp(token, "db4"))
+		|| (!ggz_strcmp(token, "sqlite")))
+			gooddefault = true;
+		if((!nexttoken) || (gooddefault)) {
+			primarybackend = ggz_strdup(token);
+			break;
+		}
+		token = nexttoken;
+	}
+	ggz_free(backendlistptr);
+	return primarybackend;
+}
+
 /* Function to initialize the database system */
 int ggzdb_init(ggzdbConnection connection, bool standalone)
 {
@@ -116,12 +140,7 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 	const char *backend = connection.type;
 	const char *primarybackend = NULL;
 	if(!backend){
-		/* get the first (default) from DATABASE_TYPES */
-		char *backendlist = ggz_strdup(DATABASE_TYPES);
-		char *backendlistptr = backendlist;
-		primarybackend = ggz_strdup(strtok(backendlist, ","));
-		ggz_free(backendlistptr);
-
+		primarybackend = ggzdb_get_default_backend();
 		backend = primarybackend;
 	}
 

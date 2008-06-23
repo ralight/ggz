@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 9781 2008-03-07 19:30:34Z josef $
+ * $Id: ggzduedit.c 10053 2008-06-23 07:29:52Z josef $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -587,11 +587,7 @@ int main(int argc, char **argv)
 	needs_id = 0;
 
 	if(!conn.type) {
-		char *backendlist = ggz_strdup(DATABASE_TYPES);
-		char *backendlistptr = backendlist;
-		primarybackend = ggz_strdup(strtok(backendlist, ","));
-		ggz_free(backendlistptr);
-
+		primarybackend = ggzdb_get_default_backend();
 		conn.type = primarybackend;
 	}
 

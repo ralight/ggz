@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 9905 2008-03-30 09:08:09Z josef $
+ * $Id: ggzdb.h 10053 2008-06-23 07:29:52Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -114,6 +114,8 @@ ggzdbStamp unique_thread_id(void);
 /* Exported functions */
 GGZReturn ggzdb_init(ggzdbConnection connection, bool standalone);
 void ggzdb_close(void);
+
+char *ggzdb_get_default_backend(void);
 
 GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *);
 GGZDBResult ggzdb_player_update(ggzdbPlayerEntry *);
