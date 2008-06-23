@@ -39,6 +39,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 {
 	int rc;
 	char query[4096];
+	bool created = true;
 
 	if(conn) return GGZ_OK;
 
@@ -51,15 +52,41 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 		return GGZ_ERROR;
 	}
 
-	snprintf(query, sizeof(query), "CREATE TABLE users "
-		"(id INTEGER PRIMARY KEY AUTOINCREMENT, handle TEXT, password TEXT, "
-		"name TEXT, email TEXT, lastlogin INT, permissions INT)");
+	snprintf(query, sizeof(query), "SELECT value FROM control WHERE key = 'version'");
 
-	rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
+	rc = sqlite3_prepare(conn, query, strlen(query), &res, NULL);
 
-	if(rc != SQLITE_OK)
+	if (rc != SQLITE_OK)
 	{
-		err_msg("Couldn't create database tables.");
+		snprintf(query, sizeof(query), "CREATE TABLE users "
+			"(id INTEGER PRIMARY KEY AUTOINCREMENT, handle TEXT, password TEXT, "
+			"name TEXT, email TEXT, lastlogin INT, permissions INT)");
+
+		rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
+
+		if(rc != SQLITE_OK)
+			created = false;
+
+		snprintf(query, sizeof(query), "CREATE TABLE control "
+			"(key varchar(256), value varchar(256))");
+
+		rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
+
+		if(rc != SQLITE_OK)
+			created = false;
+
+		snprintf(query, sizeof(query), "INSERT INTO control "
+			"(key, value) VALUES ('version', '%s')", GGZDB_VERSION_ID);
+
+		rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
+
+		if(rc != SQLITE_OK)
+			created = false;
+
+		if(!created)
+		{
+			err_msg("Couldn't create database tables.");
+		}
 	}
 
 	/* Hack. */
