@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 10013 2008-05-30 20:01:43Z jdorje $
+ * $Id: login.c 10051 2008-06-23 01:52:30Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -234,8 +234,8 @@ static void login_entry_changed(GtkEditable * editable, gpointer user_data)
 	GtkWidget *tmp = NULL;
 
 	if (!entries_update) {
-		tmp = ggz_lookup_widget(login_dialog, "profile_entry");
-		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+		tmp = ggz_lookup_widget(login_dialog, "profile_combo");
+		gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), -1);
 	}
 }
 
@@ -248,8 +248,8 @@ login_normal_toggled(GtkToggleButton * togglebutton, gpointer user_data)
 	GtkWidget *tmp;
 
 	if (!entries_update) {
-		tmp = ggz_lookup_widget(login_dialog, "profile_entry");
-		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+		tmp = ggz_lookup_widget(login_dialog, "profile_combo");
+		gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), -1);
 	}
 }
 
@@ -263,8 +263,8 @@ login_guest_toggled(GtkToggleButton * togglebutton, gpointer user_data)
 	gtk_widget_set_sensitive(tmp, !togglebutton->active);
 
 	if (!entries_update) {
-		tmp = ggz_lookup_widget(login_dialog, "profile_entry");
-		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+		tmp = ggz_lookup_widget(login_dialog, "profile_combo");
+		gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), -1);
 	}
 }
 
@@ -278,8 +278,8 @@ login_first_toggled(GtkToggleButton * togglebutton, gpointer user_data)
 	gtk_widget_set_sensitive(tmp, togglebutton->active);
 
 	if (!entries_update) {
-		tmp = ggz_lookup_widget(login_dialog, "profile_entry");
-		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+		tmp = ggz_lookup_widget(login_dialog, "profile_combo");
+		gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), -1);
 	}
 }
 
