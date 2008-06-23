@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 10051 2008-06-23 01:52:30Z jdorje $
+ * $Id: login.c 10052 2008-06-23 02:08:14Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -392,7 +392,7 @@ static void login_start_session(void)
 	/* Save as last profile */
 	tmp = ggz_lookup_widget(login_dialog, "profile_combo");
 	profile = gtk_combo_box_get_active_text(GTK_COMBO_BOX(tmp));
-	if (strcmp(profile, "")) {
+	if (profile && strcmp(profile, "")) {
 		ggzcore_conf_write_string("OPTIONS", "LASTPROFILE",
 					  profile);
 		ggzcore_conf_commit();
