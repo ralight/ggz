@@ -222,6 +222,14 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 	if (type != GGZDMOD_GGZ && type != GGZDMOD_GAME)
 		return NULL;
 
+	/* set up the debugging for ggzdmod-ggz and ggzdmod-game */
+#ifdef DEBUG
+	if (type == GGZDMOD_GAME) {
+		ggz_debug_init(NULL, NULL);
+	}
+	ggz_debug_enable("GGZDMOD");
+#endif
+
 	/* allocate */
 	ggzdmod = ggz_malloc(sizeof(*ggzdmod));
 
