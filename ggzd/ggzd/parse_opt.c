@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 10067 2008-06-24 22:01:07Z jdorje $
+ * $Id: parse_opt.c 10068 2008-06-24 22:35:10Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -92,6 +92,7 @@ static char *dbg_types[] = {
 	GGZ_DBG_GAME_MSG,
 	GGZ_DBG_STATS,
 	GGZ_DBG_XML,
+	GGZDMOD_DEBUG,
 	NULL
 };
 #endif

@@ -222,14 +222,6 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 	if (type != GGZDMOD_GGZ && type != GGZDMOD_GAME)
 		return NULL;
 
-#ifdef DEBUG
-	/* Currently it's apparently not possible to control debugging through
-	   ggzd.conf, as should be done.  Instead we just enable it here. */
-	if (type == GGZDMOD_GGZ) {
-		ggz_debug_enable(GGZDMOD_DEBUG);
-	}
-#endif
-
 	/* allocate */
 	ggzdmod = ggz_malloc(sizeof(*ggzdmod));
 

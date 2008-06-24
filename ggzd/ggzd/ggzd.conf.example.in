@@ -108,7 +108,7 @@ LogTypes = All
 # Debug logfile
 #   Logfile can be either a filename, or 'syslogd', or 'stdout'/'stderr'
 #   syslogd is the default
-#DebugFile = stderr
+DebugFile = stderr
 
 # Debug types
 #   The types of debugging information which the server sends to the
@@ -127,6 +127,7 @@ LogTypes = All
 #                 Lists
 #                 Game_Msg
 #                 XML
+#                 GGZDMOD
 DebugTypes = All
 
 # Syslogd facility
