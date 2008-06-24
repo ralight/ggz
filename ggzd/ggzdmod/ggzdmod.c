@@ -118,6 +118,8 @@ static void call_handler(GGZdMod * ggzdmod, GGZdModEvent event, void *data)
 		   since the problem is usually a missing connection!
 		   So, we use this hack to avoid a recursive loop. */
 		char *which = ggzdmod->type == GGZDMOD_GAME ? "game" : "ggz";
+		char *message = data;
+
 		if (event != GGZDMOD_EVENT_ERROR)
 			ggzdmod_log(ggzdmod,
 				    "GGZDMOD: unhandled event %d by %s.",
@@ -125,7 +127,7 @@ static void call_handler(GGZdMod * ggzdmod, GGZdModEvent event, void *data)
 		else
 			fprintf(stderr,
 				"GGZDMOD: unhandled error event %d by %s: %s\n",
-				event, which, (char*)data);
+				event, which, message);
 	}
 }
 
