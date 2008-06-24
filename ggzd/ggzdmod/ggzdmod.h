@@ -349,6 +349,13 @@ typedef enum {
 	GGZDMOD_GAME	/**< Used by the game server ("table"). */
 } GGZdModType;
 
+/** @brief ggz_debug debugging type for ggzdmod debuggin.
+ *
+ *  To enable ggzdmod debugging, add this to the list of debugging types.
+ *  @see ggz_debug_enable
+ */
+#define GGZDMOD_DEBUG "GGZDMOD"
+
 /** @brief A GGZdmod object, used for tracking a ggzd<->table connection.
  *
  * A game server should track a pointer to a GGZdMod object; it contains

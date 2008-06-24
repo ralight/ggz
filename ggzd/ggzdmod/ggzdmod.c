@@ -226,7 +226,7 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 	/* Currently it's apparently not possible to control debugging through
 	   ggzd.conf, as should be done.  Instead we just enable it here. */
 	if (type == GGZDMOD_GGZ) {
-		ggz_debug_enable("GGZDMOD");
+		ggz_debug_enable(GGZDMOD_DEBUG);
 	}
 #endif
 
@@ -539,7 +539,7 @@ void ggzdmod_set_module(GGZdMod * ggzdmod,
 {
 	int i;
 
-	ggz_debug("GGZDMOD", "Setting arguments");
+	ggz_debug(GGZDMOD_DEBUG, "Setting arguments");
 	
 	if (!CHECK_GGZDMOD(ggzdmod))
 		return;
@@ -558,7 +558,7 @@ void ggzdmod_set_module(GGZdMod * ggzdmod,
 	/* Count the number of args so we know how much to allocate */
 	for (i = 0; argv[i]; i++) {}
 
-	ggz_debug("GGZDMOD", "Set %d arguments", i);
+	ggz_debug(GGZDMOD_DEBUG, "Set %d arguments", i);
 	
 	ggzdmod->argv = ggz_malloc(sizeof(*ggzdmod->argv) * (i + 1));
 	ggzdmod->pwd = ggz_strdup(pwd);
@@ -598,7 +598,7 @@ int ggzdmod_set_handler(GGZdMod * ggzdmod, GGZdModEvent e,
 
 static int _ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 {
-	ggz_debug("GGZDMOD", "Seat %d set to type %d (%s)",
+	ggz_debug(GGZDMOD_DEBUG, "Seat %d set to type %d (%s)",
 		  seat->num, seat->type, seat->name ? seat->name : "-");
 
 	ggz_list_insert(ggzdmod->seats, seat);
@@ -675,7 +675,7 @@ int ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 
 static int _ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSeat *spectator)
 {
-	ggz_debug("GGZDMOD", "Spectator %d set to name %s",
+	ggz_debug(GGZDMOD_DEBUG, "Spectator %d set to name %s",
 		  spectator->num, spectator->name ? spectator->name : "-");
 
 	if (spectator->name) {

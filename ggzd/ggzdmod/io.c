@@ -65,7 +65,7 @@ int _io_send_launch(int fd, const char *name, int seats, int spectators)
 
 int _io_send_seat_change(int fd, const GGZSeat *seat)
 {
-	ggz_debug("GGZDMOD", "Sending seat change");
+	ggz_debug(GGZDMOD_DEBUG, "Sending seat change");
 	if (ggz_write_int(fd, MSG_GAME_SEAT) < 0
 	    || ggz_write_int(fd, seat->num) < 0
 	    || ggz_write_int(fd, seat->type) < 0
@@ -73,7 +73,7 @@ int _io_send_seat_change(int fd, const GGZSeat *seat)
 		return -1;
 
 	if (seat->type == GGZ_SEAT_PLAYER) {
-		ggz_debug("GGZDMOD", "Sending seat change fd");
+		ggz_debug(GGZDMOD_DEBUG, "Sending seat change fd");
 		if (ggz_write_fd(fd, seat->fd) < 0)
 			return -1;
 	}
@@ -85,7 +85,7 @@ int _io_send_reseat(int fd,
 		    int old_seat, int was_spectator,
 		    int new_seat, int is_spectator)
 {
-	ggz_debug("GGZDMOD", "Sending reseat");
+	ggz_debug(GGZDMOD_DEBUG, "Sending reseat");
 	if (ggz_write_int(fd, MSG_GAME_RESEAT) < 0
 	    || ggz_write_int(fd, old_seat) < 0
 	    || ggz_write_int(fd, was_spectator) < 0
@@ -100,7 +100,7 @@ int _io_send_spectator_change(int fd, const GGZSeat *spectator)
 {
 	const char *name = spectator->name ? spectator->name : "";
 
-	ggz_debug("GGZDMOD", "Sending spectator change");
+	ggz_debug(GGZDMOD_DEBUG, "Sending spectator change");
 	if (ggz_write_int(fd, MSG_GAME_SPECTATOR_SEAT) < 0
 	    || ggz_write_int(fd, spectator->num) < 0
 	    || ggz_write_string(fd, name) < 0)
