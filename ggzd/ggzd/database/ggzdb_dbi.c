@@ -45,21 +45,21 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 
 	if(!connection.type)
 	{
-		err_msg("Couldn't initialize database: no DBI type given.");
+		ggz_error_msg("Couldn't initialize database: no DBI type given.");
 		return GGZ_ERROR;
 	}
 
 	numdrivers = dbi_initialize(NULL);
 	if(numdrivers == -1)
 	{
-		err_msg("Couldn't initialize drivers.");
+		ggz_error_msg("Couldn't initialize drivers.");
 		return GGZ_ERROR;
 	}
 
 	conn = dbi_conn_new(connection.type);
 	if(conn == NULL)
 	{
-		err_msg("Could not create connection object.");
+		ggz_error_msg("Could not create connection object.");
 		return GGZ_ERROR;
 	}
 
@@ -70,14 +70,14 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	rc |= dbi_conn_set_option(conn, "dbname", connection.database);
 	if(rc != 0)
 	{
-		err_msg("Could not set connection options.");
+		ggz_error_msg("Could not set connection options.");
 		return GGZ_ERROR;
 	}
 
 	rc = dbi_conn_connect(conn);
 	if(rc != 0)
 	{
-		err_msg("Could not connect to the database.");
+		ggz_error_msg("Could not connect to the database.");
 		return GGZ_ERROR;
 	}
 
@@ -160,7 +160,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	result = dbi_conn_query(conn, query);
 
 	if (!result) {
-		err_msg("Couldn't lookup player.");
+		ggz_error_msg("Couldn't lookup player.");
 		return GGZDB_ERR_DB;
 	}
 
@@ -170,7 +170,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 		pe->password, pe->name, pe->email, &pe->last_login, &pe->perms);
 	if(rc == -1)
 	{
-		err_msg("Column binding failed.");
+		ggz_error_msg("Column binding failed.");
 		return GGZDB_ERR_DB;
 	}*/
 
@@ -208,7 +208,7 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	result = dbi_conn_query(conn, query);
 
 	if (!result) {
-		err_msg("Couldn't update player.");
+		ggz_error_msg("Couldn't update player.");
 		return GGZDB_ERR_DB;
 	}
 
@@ -239,7 +239,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 	iterresult = dbi_conn_query(conn, query);
 
 	if (!iterresult) {
-		err_msg("Couldn't lookup player.");
+		ggz_error_msg("Couldn't lookup player.");
 		return GGZDB_ERR_DB;
 	}
 

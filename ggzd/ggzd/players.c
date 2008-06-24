@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 9988 2008-05-23 18:45:01Z josef $
+ * $Id: players.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -180,7 +180,7 @@ void player_logout(GGZPlayer* player)
 	} else
 		pthread_rwlock_unlock(&player->lock);
 
-	dbg_msg(GGZ_DBG_CONNECTION, "Logging out %s", player->name);
+	ggz_debug(GGZ_DBG_CONNECTION, "Logging out %s", player->name);
 
 	/* Need to leave table if we're at one */
 	/* FIXME: is this the correct way to do it? */
@@ -198,7 +198,7 @@ void player_logout(GGZPlayer* player)
 
 	/* Close channel if it's open */
 	if (player->game_fd != -1) {
-		dbg_msg(GGZ_DBG_TABLE, "Closing leftover channel for %s", 
+		ggz_debug(GGZ_DBG_TABLE, "Closing leftover channel for %s", 
 			player->name);
 		close(player->game_fd);
 	}
@@ -329,11 +329,11 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 	int room;
 	GGZClientReqError status;
 
-	dbg_msg(GGZ_DBG_TABLE, "Handling table launch for %s", player->name);
+	ggz_debug(GGZ_DBG_TABLE, "Handling table launch for %s", player->name);
 
 	/* Check permissions */
 	if (!perms_check(player, GGZ_PERM_LAUNCH_TABLE)) {
-		dbg_msg(GGZ_DBG_TABLE, "%s insufficient perms to launch",
+		ggz_debug(GGZ_DBG_TABLE, "%s insufficient perms to launch",
 			player->name);
 		if(net_send_table_launch(player->client->net,
 					 E_NO_PERMISSION) < 0)
@@ -343,7 +343,7 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 
 	/* Check if in a room */
 	if ( (room = player->room) == -1) {
-		dbg_msg(GGZ_DBG_TABLE, "%s tried to launch table in room -1", 
+		ggz_debug(GGZ_DBG_TABLE, "%s tried to launch table in room -1", 
 			player->name);
 		if (net_send_table_launch(player->client->net, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -357,7 +357,7 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 	
 	/* Don't allow multiple table launches */
 	if (player->table != -1 || player->launching) {
-		dbg_msg(GGZ_DBG_TABLE, "%s tried to launch table while at one",
+		ggz_debug(GGZ_DBG_TABLE, "%s tried to launch table while at one",
 			player->name);
 		if (net_send_table_launch(player->client->net, E_LAUNCH_FAIL) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -369,7 +369,7 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 	/* RG: Eventually we will need more room locks when we have dynamic */
 	/*     rooms, right now the room's game_type can't change           */
 	if (table->type != rooms[room].game_type) {
-		dbg_msg(GGZ_DBG_TABLE, "%s tried to launch wrong table type",
+		ggz_debug(GGZ_DBG_TABLE, "%s tried to launch wrong table type",
 			player->name);
 		if (net_send_table_launch(player->client->net, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -379,7 +379,7 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 	/* Currently a <LAUNCH> implies an immediate <JOIN> as well.  So you
 	   need to have a connection already established. */
 	if (player->game_fd < 0) {
-		dbg_msg(GGZ_DBG_TABLE,
+		ggz_debug(GGZ_DBG_TABLE,
 			"%s tries to launch table without connection",
 			player->name);
 		if (!perms_check(player, GGZ_PERM_ROOMS_ADMIN)) {
@@ -419,7 +419,7 @@ GGZEventFuncReturn player_launch_callback(void* target, size_t size,
 	player->launching = false;
 	pthread_rwlock_unlock(&player->lock);
 
-	dbg_msg(GGZ_DBG_TABLE, "%s launch result: %d",
+	ggz_debug(GGZ_DBG_TABLE, "%s launch result: %d",
 		player->name, event->status);
 	
 	/* Automatically join newly created table */
@@ -455,7 +455,7 @@ static GGZTable *check_table_perms(GGZPlayer *player,
 
 	if (strcasecmp(table->owner, player->name) != 0) {
 		pthread_rwlock_unlock(&table->lock);
-		dbg_msg(GGZ_DBG_TABLE, "%s tried to modify bad table",
+		ggz_debug(GGZ_DBG_TABLE, "%s tried to modify bad table",
 			player->name);
 		return NULL;
 	}
@@ -536,7 +536,7 @@ GGZPlayerHandlerStatus player_table_seat_update(GGZPlayer *player,
 		return GGZ_REQ_FAIL;
 	}
 
-	dbg_msg(GGZ_DBG_TABLE,
+	ggz_debug(GGZ_DBG_TABLE,
 		"%s requested seat %d on table %d/%d become %s",
 		player->name, seat->index, table->room, table->index,
 		ggz_seattype_to_string(seat->type));
@@ -580,7 +580,7 @@ GGZPlayerHandlerStatus player_table_boot_update(GGZPlayer *player,
 	pthread_rwlock_unlock(&game_types[table->type].lock);
 	pthread_rwlock_unlock(&table->lock);
 
-	dbg_msg(GGZ_DBG_TABLE,
+	ggz_debug(GGZ_DBG_TABLE,
 		"%s tried to boot %s from table %d in room %d",
 		player->name, name, table_id, room_id);
 
@@ -639,9 +639,9 @@ GGZPlayerHandlerStatus player_table_join(GGZPlayer* player,
 {
 	GGZClientReqError status;
 
-	dbg_msg(GGZ_DBG_TABLE, "Handling table join for %s", player->name);
+	ggz_debug(GGZ_DBG_TABLE, "Handling table join for %s", player->name);
 
-	dbg_msg(GGZ_DBG_TABLE, "%s attempting to join table %d in room %d", 
+	ggz_debug(GGZ_DBG_TABLE, "%s attempting to join table %d in room %d", 
 		player->name, table_index, player->room);
 
 	if (player->table != -1)
@@ -675,9 +675,9 @@ GGZPlayerHandlerStatus player_table_join_spectator(GGZPlayer* player, int index)
 {
 	GGZClientReqError status;
 
-	dbg_msg(GGZ_DBG_TABLE, "Handling table join (as spectator) for %s", player->name);
+	ggz_debug(GGZ_DBG_TABLE, "Handling table join (as spectator) for %s", player->name);
 
-	dbg_msg(GGZ_DBG_TABLE, "%s attempting to join (as spectator) table %d in room %d", 
+	ggz_debug(GGZ_DBG_TABLE, "%s attempting to join (as spectator) table %d in room %d", 
 		player->name, index, player->room);
 
 	if (player->table != -1)
@@ -730,11 +730,11 @@ GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player,
 	table = table_lookup(player->room, player->table);
 
 	if (!table) {
-		dbg_msg(GGZ_DBG_TABLE,
+		ggz_debug(GGZ_DBG_TABLE,
 			"%s tried to leave nonexistent table %d (room %d)",
 			player->name, player->table, player->room);
 		if (player->room >= 0 && player->table >= 0) {
-			err_msg("Couldn't find %s's table %d (room %d)!",
+			ggz_error_msg("Couldn't find %s's table %d (room %d)!",
 				player->name, player->table, player->room);
 			player->table = -1; /* What else can we do? */
 		}
@@ -773,7 +773,7 @@ GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player,
 		transit = GGZ_TRANSIT_LEAVE;
 	}
 
-	dbg_msg(GGZ_DBG_TABLE, "%s attempting to leave table %d%s", 
+	ggz_debug(GGZ_DBG_TABLE, "%s attempting to leave table %d%s", 
 		player->name, player->table,
 		spectator ? " (spectating)" : (force ? " (forced)" : ""));
 
@@ -825,17 +825,17 @@ GGZPlayerHandlerStatus player_table_reseat(GGZPlayer *player,
 		action = GGZ_TRANSIT_MOVE;
 		break;
 	default:
-		err_msg("player_table_reseat: bad opcode %d.", opcode);
+		ggz_error_msg("player_table_reseat: bad opcode %d.", opcode);
 		return GGZ_REQ_OK;
 	}
 
 	table = table_lookup(player->room, player->table);
 	if (!table) {
-		dbg_msg(GGZ_DBG_TABLE,
+		ggz_debug(GGZ_DBG_TABLE,
 			"%s tried to reseat at nonexistent table %d:%d.",
 			player->name, player->room, player->table);
 		if (player->room >= 0 && player->table >= 0) {
-			err_msg("Couldn't find %s's table %d (room %d)!",
+			ggz_error_msg("Couldn't find %s's table %d (room %d)!",
 				player->name, player->table, player->room);
 			player->table = -1; /* What else can we do? */
 		}
@@ -899,7 +899,7 @@ GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
 	table = table_lookup(player->room, player->table);
 
 	if (!table) {
-		dbg_msg(GGZ_DBG_TABLE,
+		ggz_debug(GGZ_DBG_TABLE,
 			"%s tried to leave nonexistent table %d (room %d)",
 			player->name, player->table, player->room);
 		/* This is probably an error on the client's part.  But
@@ -914,7 +914,7 @@ GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
 		return GGZ_REQ_OK;
 	}		
 
-	dbg_msg(GGZ_DBG_TABLE, "%s attempting to leave table %d as spectator",
+	ggz_debug(GGZ_DBG_TABLE, "%s attempting to leave table %d as spectator",
 		player->name, player->table);
 
 	gametype = table->type;
@@ -957,7 +957,7 @@ GGZPlayerHandlerStatus player_table_info(GGZPlayer *player, int seat_num)
 
 	table = table_lookup(player->room, player->table);
 	if (!table) {
-		dbg_msg(GGZ_DBG_TABLE,
+		ggz_debug(GGZ_DBG_TABLE,
 			"%s tried to get player info about non-existing table %d:%d.",
 			player->name, player->room, player->table);
 		return GGZ_REQ_FAIL;
@@ -1036,7 +1036,7 @@ GGZPlayerHandlerStatus player_table_rankings(GGZPlayer *player)
 
 	table = table_lookup(player->room, player->table);
 	if (!table) {
-		dbg_msg(GGZ_DBG_TABLE,
+		ggz_debug(GGZ_DBG_TABLE,
 			"%s tried to get player rankings on non-existing table %d:%d.",
 			player->name, player->room, player->table);
 		return GGZ_REQ_FAIL;
@@ -1102,7 +1102,7 @@ static GGZClientReqError player_transit(GGZPlayer* player,
 	if (table_index == -1)
 		return E_NO_TABLE;
 
-	dbg_msg(GGZ_DBG_UPDATE, "player_transit(%s, %d, %d)",
+	ggz_debug(GGZ_DBG_UPDATE, "player_transit(%s, %d, %d)",
 		player->name, opcode, table_index);
 
 	/* Implement LEAVE by setting my seat to open */
@@ -1118,7 +1118,7 @@ static GGZClientReqError player_transit(GGZPlayer* player,
 		if (seat_num < 0) {
 			/* Uh oh.  A ggzd bug.  But it doesn't have
 			   to be fatal. */
-			err_msg("%s couldn't be found at table %d (room %d).",
+			ggz_error_msg("%s couldn't be found at table %d (room %d).",
 				player->name, player->table, player->room);
 			/* Fake success, so that the client doesn't get
 			   confused. */
@@ -1189,7 +1189,7 @@ static GGZClientReqError player_transit(GGZPlayer* player,
 		if (seat_num < 0) {
 			/* Uh oh.  A ggzd bug.  But it doesn't have
 			   to be fatal. */
-			err_msg("%s couldn't be found at table %d (room %d).",
+			ggz_error_msg("%s couldn't be found at table %d (room %d).",
 				player->name, player->table, player->room);
 			/* Fake success, so that the client doesn't get
 			   confused. */
@@ -1224,7 +1224,7 @@ static GGZClientReqError player_transit(GGZPlayer* player,
 					    opcode, seat, caller, -1);
 		break;
 	case GGZ_TRANSIT_SEAT:
-		err_msg("player_transit: shouldn't have TRANSIT_SEAT.");
+		ggz_error_msg("player_transit: shouldn't have TRANSIT_SEAT.");
 		break;
 	}
 
@@ -1248,12 +1248,12 @@ GGZPlayerHandlerStatus player_list_players(GGZPlayer* player)
 	GGZPlayer* data;
 
 
-	dbg_msg(GGZ_DBG_UPDATE, "Handling player list request for %s", 
+	ggz_debug(GGZ_DBG_UPDATE, "Handling player list request for %s", 
 		player->name);
 		
 	/* Don't send list if they're not in a room */
 	if (player->room == -1) {
-		dbg_msg(GGZ_DBG_UPDATE, "%s requested player list in room -1",
+		ggz_debug(GGZ_DBG_UPDATE, "%s requested player list in room -1",
 			player->name);
 		if (net_send_player_list_error(player->client->net,
 					       E_NOT_IN_ROOM) < 0)
@@ -1308,12 +1308,12 @@ GGZPlayerHandlerStatus player_list_types(GGZPlayer* player, char verbose)
 	int i, max, count = 0;
 	GameInfo info[MAX_GAME_TYPES];
 
-	dbg_msg(GGZ_DBG_UPDATE, "Handling type list request for %s", 
+	ggz_debug(GGZ_DBG_UPDATE, "Handling type list request for %s", 
 		player->name);
 		
 	/* Don't send list if they're not logged in */
  	if (player->login_status == GGZ_LOGIN_NONE) {
-		dbg_msg(GGZ_DBG_UPDATE, "%s requested type list before login",
+		ggz_debug(GGZ_DBG_UPDATE, "%s requested type list before login",
 			player->name);
 		if (net_send_type_list_error(player->client->net,
 					     E_NOT_LOGGED_IN) < 0)
@@ -1353,13 +1353,13 @@ GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
 	GGZTable **my_tables;
 	int count, i;
 	
-	dbg_msg(GGZ_DBG_UPDATE, "Handling table list request for %s", 
+	ggz_debug(GGZ_DBG_UPDATE, "Handling table list request for %s", 
 		player->name);
 	
 	
 	/* Don`t send list if they`re not logged in */
 	if (player->login_status == GGZ_LOGIN_NONE) {
-		dbg_msg(GGZ_DBG_UPDATE, "%s requested table list before login",
+		ggz_debug(GGZ_DBG_UPDATE, "%s requested table list before login",
 			player->name);
 		if (net_send_table_list_error(player->client->net, E_NOT_LOGGED_IN) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -1409,12 +1409,12 @@ GGZPlayerHandlerStatus player_chat(GGZPlayer* player, GGZChatType type,
 				/* are going to support per-room announce... */
 	GGZClientReqError status = E_BAD_OPTIONS;
 
-	dbg_msg(GGZ_DBG_CHAT, "Handling chat for %s", player->name);
+	ggz_debug(GGZ_DBG_CHAT, "Handling chat for %s", player->name);
 	
 	/* Verify that we are in a regular room */
 	/* No lock needed: no one can change our room but us */
 	if (player->room == -1) {
-		dbg_msg(GGZ_DBG_CHAT, "%s tried to chat from room -1", 
+		ggz_debug(GGZ_DBG_CHAT, "%s tried to chat from room -1", 
 			player->name);
 		if (net_send_chat_result(player->client->net, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -1431,11 +1431,11 @@ GGZPlayerHandlerStatus player_chat(GGZPlayer* player, GGZChatType type,
 		/* FIXME: perhaps if there is a target we should treat it
 		   as a personal message instead? */
 	case GGZ_CHAT_NORMAL:
-		dbg_msg(GGZ_DBG_CHAT, "%s sends %s", player->name, msg);
+		ggz_debug(GGZ_DBG_CHAT, "%s sends %s", player->name, msg);
 		status = chat_room_enqueue(player->room, type, player, msg);
 		break;
 	case GGZ_CHAT_TABLE:
-		dbg_msg(GGZ_DBG_CHAT, "%s sends table %s", player->name, msg);
+		ggz_debug(GGZ_DBG_CHAT, "%s sends table %s", player->name, msg);
 		status = chat_table_enqueue(player->room, player->table,
 					    type, player, msg);
 		break;
@@ -1444,12 +1444,12 @@ GGZPlayerHandlerStatus player_chat(GGZPlayer* player, GGZChatType type,
 		status = chat_player_enqueue(target, type, player, msg);
 		break;
 	case GGZ_CHAT_ANNOUNCE:
-		dbg_msg(GGZ_DBG_CHAT, "%s announces %s", player->name, msg);
+		ggz_debug(GGZ_DBG_CHAT, "%s announces %s", player->name, msg);
 		status = chat_room_enqueue(target_room, type, player, msg);
 		break;
 	}
 
-	dbg_msg(GGZ_DBG_CHAT, "%s's chat result: %d", player->name, status);
+	ggz_debug(GGZ_DBG_CHAT, "%s's chat result: %d", player->name, status);
 	if (net_send_chat_result(player->client->net, status) < 0)
 		return GGZ_REQ_DISCONNECT;
 	
@@ -1465,12 +1465,12 @@ GGZPlayerHandlerStatus player_room_admin(GGZPlayer* player, GGZAdminType type,
 	GGZClientReqError status = E_BAD_OPTIONS;
 	GGZPlayer* rcvr;
 
-	dbg_msg(GGZ_DBG_CHAT, "Handling admin action for %s", player->name);
+	ggz_debug(GGZ_DBG_CHAT, "Handling admin action for %s", player->name);
 
 	/* Verify that we are in a regular room */
 	/* No lock needed: no one can change our room but us */
 	if (player->room == -1) {
-		dbg_msg(GGZ_DBG_CHAT, "%s is not in a room to perform admin action", 
+		ggz_debug(GGZ_DBG_CHAT, "%s is not in a room to perform admin action", 
 			player->name);
 		if (net_send_admin_result(player->client->net, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -1479,7 +1479,7 @@ GGZPlayerHandlerStatus player_room_admin(GGZPlayer* player, GGZAdminType type,
 
 	/* Only hosts and admins can do admin actions */
 	if (!ggz_perms_is_host(player->perms)) {
-		dbg_msg(GGZ_DBG_CHAT, "%s is no host!", player->name);
+		ggz_debug(GGZ_DBG_CHAT, "%s is no host!", player->name);
 		if (net_send_admin_result(player->client->net, E_NO_PERMISSION) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_OK;
@@ -1540,7 +1540,7 @@ GGZPlayerHandlerStatus player_room_admin(GGZPlayer* player, GGZAdminType type,
 		pthread_rwlock_unlock(&rcvr->lock);
 	}
 
-	dbg_msg(GGZ_DBG_CHAT, "%s's admin action result: %d", player->name, status);
+	ggz_debug(GGZ_DBG_CHAT, "%s's admin action result: %d", player->name, status);
 	if (net_send_admin_result(player->client->net, status) < 0)
 		return GGZ_REQ_DISCONNECT;
 
@@ -1555,12 +1555,12 @@ GGZPlayerHandlerStatus player_perms_admin(GGZPlayer *player,
 {
 	GGZPlayer* rcvr;
 
-	dbg_msg(GGZ_DBG_CHAT, "Handling admin perm action for %s",
+	ggz_debug(GGZ_DBG_CHAT, "Handling admin perm action for %s",
 		player->name);
 
 	/* Only admins can do permission actions */
 	if (!ggz_perms_is_admin(player->perms)) {
-		dbg_msg(GGZ_DBG_CHAT, "%s is no admin!", player->name);
+		ggz_debug(GGZ_DBG_CHAT, "%s is no admin!", player->name);
 		if (net_send_admin_result(player->client->net,
 					  E_NO_PERMISSION) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -1613,14 +1613,14 @@ GGZPlayerHandlerStatus player_perms_admin(GGZPlayer *player,
 
 GGZPlayerHandlerStatus player_motd(GGZPlayer* player)
 {
-	dbg_msg(GGZ_DBG_CHAT, "Handling motd request for %s", player->name);
+	ggz_debug(GGZ_DBG_CHAT, "Handling motd request for %s", player->name);
 
   	if (!motd_is_defined())
 		return GGZ_REQ_OK;
 
  	/* Don't send motd if they're not logged in */
  	if (player->login_status == GGZ_LOGIN_NONE) {
-		dbg_msg(GGZ_DBG_CHAT, "%s requested motd before logging in",
+		ggz_debug(GGZ_DBG_CHAT, "%s requested motd before logging in",
 			player->name);
 		if (net_send_motd_error(player->client->net,
 					E_NOT_LOGGED_IN) < 0)
@@ -1641,7 +1641,7 @@ GGZPlayerHandlerStatus player_send_room_update(GGZPlayer *player)
 	time_t curr_time = time(NULL);
 
 	if (opt.room_update_freq == 0) {
-		/*err_msg("Doing a room update even though they're disabled.");*/
+		/*ggz_error_msg("Doing a room update even though they're disabled.");*/
 		return GGZ_REQ_OK;
 	}
 

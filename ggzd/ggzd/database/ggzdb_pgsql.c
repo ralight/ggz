@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 9905 2008-03-30 09:08:09Z josef $
+ * $Id: ggzdb_pgsql.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -101,11 +101,11 @@ static PGconn *claimconnection()
 				pthread_mutex_unlock(&mutex);
 				if(PQstatus(conn->conn) == CONNECTION_BAD)
 				{
-					err_msg("Database connection lost, reconnecting.");
+					ggz_error_msg("Database connection lost, reconnecting.");
 					PQreset(conn->conn);
 					if((!conn->conn) || (PQstatus(conn->conn) == CONNECTION_BAD))
 					{
-						err_msg("Could not connect to database.");
+						ggz_error_msg("Could not connect to database.");
 						return NULL;
 					}
 				}
@@ -126,7 +126,7 @@ static PGconn *claimconnection()
 			conn->conn = PQconnectdb(conninfo);
 			if((!conn->conn) || (PQstatus(conn->conn) == CONNECTION_BAD))
 			{
-				err_msg("Could not connect to database.");
+				ggz_error_msg("Could not connect to database.");
 				pthread_mutex_unlock(&mutex);
 				return NULL;
 			}
@@ -140,7 +140,7 @@ static PGconn *claimconnection()
 		sleep(1);
 	}
 
-	err_msg("Number of database connections exceeded.");
+	ggz_error_msg("Number of database connections exceeded.");
 	return NULL;
 }
 
@@ -203,7 +203,7 @@ static int setupschema(PGconn *conn, const char *filename)
 	FILE *f = fopen(filename, "r");
 	if(!f)
 	{
-		err_msg("Schema read error from %s.", filename);
+		ggz_error_msg("Schema read error from %s.", filename);
 		return 0;
 	}
 
@@ -216,7 +216,7 @@ static int setupschema(PGconn *conn, const char *filename)
 			if((PQresultStatus(res) != PGRES_EMPTY_QUERY)
 			&& (PQresultStatus(res) != PGRES_COMMAND_OK))
 			{
-				err_msg("Table creation error %i.",
+				ggz_error_msg("Table creation error %i.",
 					PQresultStatus(res));
 				rc = 0;
 			}
@@ -313,10 +313,10 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 			if(strcmp(version, GGZDB_VERSION_ID))
 			{
 				/* Perform upgrade if possible */
-				err_msg("Wrong database version: %s present, %s needed.\n", version, GGZDB_VERSION_ID);
+				ggz_error_msg("Wrong database version: %s present, %s needed.\n", version, GGZDB_VERSION_ID);
 				if(!upgrade(conn, version, GGZDB_VERSION_ID))
 				{
-					err_msg_exit("Database upgrade failed.\n");
+					ggz_error_msg_exit("Database upgrade failed.\n");
 					rc = GGZDB_ERR_DB;
 				}
 			}
@@ -357,7 +357,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 		PQclear(res);
 
 		if(rc == GGZDB_ERR_DB)
-			err_msg_exit("Could not initialize the database (with %s).\n", schemafile);
+			ggz_error_msg_exit("Could not initialize the database (with %s).\n", schemafile);
 	}
 
 	releaseconnection(conn);
@@ -394,7 +394,7 @@ int _ggzdb_reconfiguration_fd(void)
 
 	reconfigurationconn = claimconnection();
 	if (!reconfigurationconn) {
-		err_msg("_ggzdb_reconfiguration_fd: couldn't claim connection");
+		ggz_error_msg("_ggzdb_reconfiguration_fd: couldn't claim connection");
 		return -1;
 	}
 
@@ -419,7 +419,7 @@ void _ggzdb_reconfiguration_load(void)
 
 	conn = claimconnection();
 	if (!conn) {
-		err_msg("_ggzdb_reconfiguration_load: couldn't claim connection");
+		ggz_error_msg("_ggzdb_reconfiguration_load: couldn't claim connection");
 		return;
 	}
 
@@ -567,7 +567,7 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 
 	conn = claimconnection();
 	if (!conn) {
-		err_msg("_ggzdb_player_add: couldn't claim connection");
+		ggz_error_msg("_ggzdb_player_add: couldn't claim connection");
 		return GGZDB_ERR_DB;
 	}
 
@@ -629,7 +629,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 
 	conn = claimconnection();
 	if (!conn) {
-		err_msg("_ggzdb_player_add: couldn't claim connection");
+		ggz_error_msg("_ggzdb_player_add: couldn't claim connection");
 		return GGZDB_ERR_DB;
 	}
 
@@ -660,7 +660,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 			rc = GGZDB_ERR_NOTFOUND;
 		}
 	} else {
-		err_msg("Couldn't lookup player.");
+		ggz_error_msg("Couldn't lookup player.");
 		rc = GGZDB_ERR_DB;
 	}
 	PQclear(res);
@@ -685,7 +685,7 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 
 	conn = claimconnection();
 	if (!conn) {
-		err_msg("_ggzdb_player_update: couldn't claim connection");
+		ggz_error_msg("_ggzdb_player_update: couldn't claim connection");
 		return GGZDB_ERR_DB;
 	}
 
@@ -714,7 +714,7 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 
 	res = PQexec(conn, query);
 	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-		err_msg("Couldn't update player.");
+		ggz_error_msg("Couldn't update player.");
 		rc = GGZDB_ERR_DB;
 	}
 	PQclear(res);
@@ -736,7 +736,7 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 
 	conn = claimconnection();
 	if (!conn) {
-		err_msg("_ggzdb_player_add: couldn't claim connection");
+		ggz_error_msg("_ggzdb_player_add: couldn't claim connection");
 		return GGZDB_ERR_DB;
 	}
 
@@ -761,7 +761,7 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 			rc = GGZDB_ERR_NOTFOUND;
 		}
 	} else {
-		err_msg("Couldn't lookup player.");
+		ggz_error_msg("Couldn't lookup player.");
 		rc = GGZDB_ERR_DB;
 	}
 	PQclear(res);
@@ -790,7 +790,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 
 	conn = claimconnection();
 	if (!conn) {
-		err_msg("_ggzdb_player_get_first: couldn't claim connection");
+		ggz_error_msg("_ggzdb_player_get_first: couldn't claim connection");
 		return GGZDB_ERR_DB;
 	}
 
@@ -817,7 +817,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 			rc = GGZDB_ERR_NOTFOUND;
 		}
 	} else {
-		err_msg("Couldn't lookup player.");
+		ggz_error_msg("Couldn't lookup player.");
 		PQclear(iterres);
 		iterres = NULL;
 		rc = GGZDB_ERR_DB;
@@ -834,7 +834,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 {
 	if (!iterres) {
-		err_msg_exit("get_next called before get_first, dummy");
+		ggz_error_msg_exit("get_next called before get_first, dummy");
 	}
 
 	if (itercount < PQntuples(iterres) - 1) {
@@ -864,7 +864,7 @@ void _ggzdb_player_drop_cursor(void)
 		/* This isn't an error; since we clear the cursor at the end
 		   of _ggzdb_player_get_next we should expect to end up
 		   here.  --JDS */
-		/*err_msg_exit("drop_cursor called before get_first, dummy");*/
+		/*ggz_error_msg_exit("drop_cursor called before get_first, dummy");*/
 		return;
 	}
 
@@ -895,7 +895,7 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 
 	conn = claimconnection();
 	if(!conn) {
-		err_msg("_ggzdb_stats_lookup: couldn't claim connection");
+		ggz_error_msg("_ggzdb_stats_lookup: couldn't claim connection");
 		return rc;
 	}
 
@@ -921,7 +921,7 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 			stats->ranking = atol(PQgetvalue(res, 0, 5));
 			stats->highest_score = atol(PQgetvalue(res, 0, 6));
 		} else {
-			err_msg("couldn't lookup player stats");
+			ggz_error_msg("couldn't lookup player stats");
 			rc = GGZDB_ERR_NOTFOUND;
 		}
 	}
@@ -942,7 +942,7 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 
 	conn = claimconnection();
 	if (!conn) {
-		err_msg("_ggzdb_stats_update: couldn't claim connection");
+		ggz_error_msg("_ggzdb_stats_update: couldn't claim connection");
 		return rc;
 	}
 
@@ -962,7 +962,7 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 	res = PQexec(conn, query);
 
 	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-		err_msg("couldn't update stats");
+		ggz_error_msg("couldn't update stats");
 	} else {
 		if (!strcmp(PQcmdTuples(res), "0")) {
 			player_quoted = _ggz_sql_escape(stats->player);
@@ -980,7 +980,7 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 			res2 = PQexec(conn, query);
 
 			if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-				err_msg("couldn't insert stats");
+				ggz_error_msg("couldn't insert stats");
 			}
 			else rc = GGZDB_NO_ERROR;
 			PQclear(res2);
@@ -1007,7 +1007,7 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 
 	conn = claimconnection();
 	if (!conn) {
-		err_msg("_ggzdb_stats_match: couldn't claim connection");
+		ggz_error_msg("_ggzdb_stats_match: couldn't claim connection");
 		return rc;
 	}
 
@@ -1017,7 +1017,7 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	res = PQexec(conn, query);
 
 	if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-		err_msg("couldn't read match");
+		ggz_error_msg("couldn't read match");
 		number = NULL;
 	}
 	else {
@@ -1043,7 +1043,7 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	res = PQexec(conn, query);
 
 	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-		err_msg("couldn't insert matchplayer");
+		ggz_error_msg("couldn't insert matchplayer");
 	}
 	else rc = GGZDB_NO_ERROR;
 	PQclear(res);
@@ -1063,7 +1063,7 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 
 	conn = claimconnection();
 	if (!conn) {
-		err_msg("_ggzdb_stats_newmatch: couldn't claim connection");
+		ggz_error_msg("_ggzdb_stats_newmatch: couldn't claim connection");
 		return rc;
 	}
 
@@ -1088,7 +1088,7 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 	res = PQexec(conn, query);
 
 	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-		err_msg("couldn't insert match");
+		ggz_error_msg("couldn't insert match");
 	}
 	else rc = GGZDB_NO_ERROR;
 	PQclear(res);
@@ -1108,7 +1108,7 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 
 	conn = claimconnection();
 	if (!conn) {
-		err_msg("_ggzdb_stats_savegame: couldn't claim connection");
+		ggz_error_msg("_ggzdb_stats_savegame: couldn't claim connection");
 		return rc;
 	}
 
@@ -1133,7 +1133,7 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 	res = PQexec(conn, query);
 
 	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-		err_msg("couldn't insert savegame");
+		ggz_error_msg("couldn't insert savegame");
 	}
 	else rc = GGZDB_NO_ERROR;
 	PQclear(res);
@@ -1154,7 +1154,7 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGa
 
 	conn = claimconnection();
 	if (!conn) {
-		err_msg("_ggzdb_stats_toplist: couldn't claim connection");
+		ggz_error_msg("_ggzdb_stats_toplist: couldn't claim connection");
 		return rc;
 	}
 
@@ -1166,7 +1166,7 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGa
 	res = PQexec(conn, query);
 
 	if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-		err_msg("couldn't read rankings");
+		ggz_error_msg("couldn't read rankings");
 	} else {
 		rc = GGZDB_NO_ERROR;
 		for(i = 0; i < PQntuples(res); i++) {
@@ -1197,7 +1197,7 @@ GGZDBResult _ggzdb_stats_calcrankings(const char *game)
 
 	conn = claimconnection();
 	if (!conn) {
-		err_msg("_ggzdb_stats_calcrankings: couldn't claim connection");
+		ggz_error_msg("_ggzdb_stats_calcrankings: couldn't claim connection");
 		return GGZDB_ERR_DB;
 	}
 
@@ -1245,7 +1245,7 @@ GGZList *_ggzdb_savegame_owners(const char *game)
 
 	conn = claimconnection();
 	if (!conn) {
-		err_msg("ggzdb_savegame_owners: couldn't claim connection");
+		ggz_error_msg("ggzdb_savegame_owners: couldn't claim connection");
 		return NULL;
 	}
 
@@ -1257,7 +1257,7 @@ GGZList *_ggzdb_savegame_owners(const char *game)
 
 	res = PQexec(conn, query);
 	if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-		err_msg("couldn't read savegame owners");
+		ggz_error_msg("couldn't read savegame owners");
 	} else {
 		owners = ggz_list_create(NULL, NULL, (ggzEntryDestroy)strfree, GGZ_LIST_ALLOW_DUPS);
 		for(i = 0; i < PQntuples(res); i++) {
@@ -1280,7 +1280,7 @@ GGZList *_ggzdb_savegame_owners(const char *game)
 
 			res2 = PQexec(conn, query);
 			if (PQresultStatus(res2) != PGRES_TUPLES_OK) {
-				err_msg("couldn't read savegame players");
+				ggz_error_msg("couldn't read savegame players");
 			} else {
 				sp->count = PQntuples(res2);
 				sp->types = ggz_malloc(sp->count * sizeof(int));
@@ -1330,7 +1330,7 @@ GGZList *_ggzdb_savegames(const char *game, const char *owner)
 
 	conn = claimconnection();
 	if (!conn) {
-		err_msg("ggzdb_savegames: couldn't claim connection");
+		ggz_error_msg("ggzdb_savegames: couldn't claim connection");
 		return NULL;
 	}
 
@@ -1345,7 +1345,7 @@ GGZList *_ggzdb_savegames(const char *game, const char *owner)
 
 	res = PQexec(conn, query);
 	if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-		err_msg("couldn't read savegames");
+		ggz_error_msg("couldn't read savegames");
 	} else {
 		savegames = ggz_list_create(NULL, NULL, (ggzEntryDestroy)strfree, GGZ_LIST_ALLOW_DUPS);
 		for(i = 0; i < PQntuples(res); i++) {
@@ -1370,7 +1370,7 @@ GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *nam
 
 	conn = claimconnection();
 	if (!conn) {
-		err_msg("_ggzdb_savegame_player: couldn't claim connection");
+		ggz_error_msg("_ggzdb_savegame_player: couldn't claim connection");
 		return rc;
 	}
 
@@ -1396,7 +1396,7 @@ GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *nam
 	res = PQexec(conn, query);
 
 	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-		err_msg("couldn't insert savegame player");
+		ggz_error_msg("couldn't insert savegame player");
 	}
 	else rc = GGZDB_NO_ERROR;
 	PQclear(res);
@@ -1417,7 +1417,7 @@ GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num)
 
 	conn = claimconnection();
 	if (!conn) {
-		err_msg("_ggzdb_rooms: couldn't claim connection");
+		ggz_error_msg("_ggzdb_rooms: couldn't claim connection");
 		return rc;
 	}
 
@@ -1450,7 +1450,7 @@ GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num)
 		res = PQexec(conn, query);
 
 		if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-			err_msg("couldn't insert room %s",
+			ggz_error_msg("couldn't insert room %s",
 				ggz_intlstring_translated(room.name, NULL));
 			PQclear(res);
 			break;

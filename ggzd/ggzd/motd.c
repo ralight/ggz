@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 9585 2008-01-23 13:58:26Z oojah $
+ * $Id: motd.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -136,7 +136,7 @@ void motd_read_file(const char *file)
 	if (file[0] == '/')
 		fullpath = ggz_strdup(file);
 	else if (!opt.conf_dir) {
-		err_msg("motd_read_file: config directory unspecified");
+		ggz_error_msg("motd_read_file: config directory unspecified");
 		return;
 	} else {
 		len = strlen(file) + strlen(opt.conf_dir) + 2;
@@ -146,7 +146,7 @@ void motd_read_file(const char *file)
 
 	/* Try to open the file */
 	if((motd_fdes = open(fullpath, O_RDONLY)) < 0) {
-		err_msg("MOTD file not found");
+		ggz_error_msg("MOTD file not found");
 		ggz_free(fullpath);
 		motd_read_file(NULL);
 		return;
@@ -171,7 +171,7 @@ void motd_read_file(const char *file)
 
 	ggz_free_file_struct(motd_file);
 	close(motd_fdes);
-	dbg_msg(GGZ_DBG_CONFIGURATION, "Read MOTD file, %d lines", lines);
+	ggz_debug(GGZ_DBG_CONFIGURATION, "Read MOTD file, %d lines", lines);
 
 	/* Initialize stuff that is constant as long as the server is up.
 	   This stuff is currently re-read every time we reread the MOTD.
@@ -184,7 +184,7 @@ void motd_read_file(const char *file)
 
 	/* Get the OS and CPU Type */
 	if(uname(&unames) < 0)
-		err_sys_exit("uname error in motd_parse_motd()");
+		ggz_error_sys_exit("uname error in motd_parse_motd()");
 	motd_info.sysname = ggz_strdup(unames.sysname);
 	motd_info.cputype = ggz_strdup(unames.machine);
 
@@ -352,7 +352,7 @@ static char *motd_get_date(char *date_str, size_t sz_date_str)
 
 	time(&now);
 	if(localtime_r(&now, &localtm) == NULL)
-		err_sys_exit("localtime_r returned error in motd_get_date()");
+		ggz_error_sys_exit("localtime_r returned error in motd_get_date()");
 	strftime(date_str, sz_date_str, "%B %e, %Y", &localtm);
 
 	return date_str;
@@ -367,7 +367,7 @@ static char *motd_get_time(char *time_str, size_t sz_time_str)
 
 	time(&now);
 	if(localtime_r(&now, &localtm) == NULL)
-		err_sys_exit("localtime_r returned error in motd_get_date()");
+		ggz_error_sys_exit("localtime_r returned error in motd_get_date()");
 	strftime(time_str, sz_time_str, "%H:%M %Z", &localtm);
 
 	return time_str;

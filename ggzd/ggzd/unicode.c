@@ -176,12 +176,12 @@ bool username_allowed(const char *str)
 	ustr = u_strFromUTF8(ustr, length, &length, str, -1, &error);
 	free(ustr);
 	if(U_FAILURE(error)) {
-		err_msg("Error: conversion failure");
+		ggz_error_msg("Error: conversion failure");
 		return false;
 	}
 	ustr = (UChar*)malloc(sizeof(UChar) * length);
 	if(!ustr) {
-		err_msg("Error: malloc failure");
+		ggz_error_msg("Error: malloc failure");
 		return false;
 	}
 	ustr = u_strFromUTF8(ustr, length, NULL, str, -1, &error);
@@ -255,7 +255,7 @@ bool init_unicode(const char *policyfile)
 	rc = ggz_conf_parse(policyfile, GGZ_CONF_RDONLY);
 	if(rc == -1)
 	{
-		err_msg("Error: unable to open policy file.");
+		ggz_error_msg("Error: unable to open policy file.");
 		return false;
 	}
 
@@ -297,7 +297,7 @@ char *username_canonical(const char *username)
 	profile = usprep_open(NULL, "uidna", &status);
 	if(U_FAILURE(status))
 	{
-		err_msg("Error: unable to open stringprep profile.");
+		ggz_error_msg("Error: unable to open stringprep profile.");
 		return NULL;
 	}
 
@@ -308,13 +308,13 @@ char *username_canonical(const char *username)
 	ustr = u_strFromUTF8(ustr, length, &length, username, -1, &error);
 	free(ustr);
 	if(U_FAILURE(error)) {
-		err_msg("Error: conversion failure");
+		ggz_error_msg("Error: conversion failure");
 		usprep_close(profile);
 		return NULL;
 	}
 	ustr = (UChar*)malloc(sizeof(UChar) * length);
 	if(!ustr) {
-		err_msg("Error: malloc failure");
+		ggz_error_msg("Error: malloc failure");
 		usprep_close(profile);
 		return NULL;
 	}
@@ -328,7 +328,7 @@ char *username_canonical(const char *username)
 	free(ustr);
 	if(U_FAILURE(error))
 	{
-		err_msg("Error: stringprep failure");
+		ggz_error_msg("Error: stringprep failure");
 		free(ustr2);
 		usprep_close(profile);
 		return NULL;
@@ -342,7 +342,7 @@ char *username_canonical(const char *username)
 	u_strToUTF8(canonical, length, &length, ustr2, numchars, &error);
 	if(U_FAILURE(error))
 	{
-		err_msg("Error: conversion failure");
+		ggz_error_msg("Error: conversion failure");
 		free(canonical);
 		free(ustr2);
 		usprep_close(profile);
@@ -352,7 +352,7 @@ char *username_canonical(const char *username)
 	u_strToUTF8(canonical, length, NULL, ustr2, length2, &error);
 	if(U_FAILURE(error))
 	{
-		err_msg("HUH??");
+		ggz_error_msg("HUH??");
 	}*/
 
 	free(ustr2);

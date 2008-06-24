@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 9304 2007-09-09 07:24:14Z josef $
+ * $Id: transit.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -128,7 +128,7 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 	struct GGZTableSeat *seat = &(event->seat);
 	bool spectating = false;
 
-	dbg_msg(GGZ_DBG_TABLE, 
+	ggz_debug(GGZ_DBG_TABLE, 
 		"%s requested seat change %d on table %d: "
 		"Seat %d to %s with fd %d", 
 		event->caller, event->transit, table->index,
@@ -221,7 +221,7 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 	GGZPlayer* player = target;
 	GGZPlayerTransitEventData *data = event_data;
 	
-	dbg_msg(GGZ_DBG_TABLE, "%s transit result: %d",
+	ggz_debug(GGZ_DBG_TABLE, "%s transit result: %d",
 		player->name, data->status);
 	
 	switch (data->opcode) {
@@ -311,7 +311,7 @@ static GGZReturn transit_send_seat_to_game(GGZTable* table,
 	case GGZ_TRANSIT_JOIN:
 	case GGZ_TRANSIT_LEAVE:
 	case GGZ_TRANSIT_SEAT:
-		dbg_msg(GGZ_DBG_TABLE, "Sending seat for table %d in room %d",
+		ggz_debug(GGZ_DBG_TABLE, "Sending seat for table %d in room %d",
 			table->index, table->room);
 
 		seat.num = event->seat.index;
@@ -358,7 +358,7 @@ static GGZReturn transit_send_seat_to_game(GGZTable* table,
 	}
 
 	if (result < 0) {
-		err_msg("transit_send_seat_to_game (transit %d): "
+		ggz_error_msg("transit_send_seat_to_game (transit %d): "
 			"failed ggzdmod call - error %d.",
 			action, result);
 		return GGZ_ERROR;

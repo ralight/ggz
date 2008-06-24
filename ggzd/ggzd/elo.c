@@ -4,7 +4,7 @@
  * Project: GGZ Server (moved from ggzdmod/ggzstats)
  * Date: 5/07/2002 (moved from ggz_stats.c)
  * Desc: GGZ game module stat functions - ELO ratings
- * $Id: elo.c 5080 2002-10-28 04:56:55Z jdorje $
+ * $Id: elo.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Dev Team.
  *
@@ -410,7 +410,7 @@ static void elo_compute_expectations(int num, float *ratings, float *probs)
 		sum += probs[i];
 	}
 
-	dbg_msg(GGZ_DBG_STATS, "Probabilities sum to %f; normalizing.", sum);
+	ggz_debug(GGZ_DBG_STATS, "Probabilities sum to %f; normalizing.", sum);
 	for (i = 0; i < num; i++)
 		probs[i] /= sum;
 }
@@ -428,7 +428,7 @@ void elo_recalculate_ratings(int num_players, float *player_ratings,
 	/* Debugging data */
 	for (i = 0; i < num_players; i++) {
 		int team = num_teams > 0 ? player_teams[i] : i;
-		dbg_msg(GGZ_DBG_STATS,
+		ggz_debug(GGZ_DBG_STATS,
 			"Player %d has rating %f, expectation %f.", i,
 			team_ratings[team], team_probs[team]);
 	}
@@ -449,7 +449,7 @@ void elo_recalculate_ratings(int num_players, float *player_ratings,
 
 		diff = K * (team_winners[team] - team_probs[team]);
 		player_ratings[i] += diff;
-		dbg_msg(GGZ_DBG_STATS,
+		ggz_debug(GGZ_DBG_STATS,
 			"Player %d has new rating %f (slope %f).", i,
 			player_ratings[i], K);
 	}

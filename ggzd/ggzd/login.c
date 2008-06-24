@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 10009 2008-05-26 22:37:19Z josef $
+ * $Id: login.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -94,12 +94,12 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 	if(password)
 		snprintf(new_pw, sizeof(new_pw), password);
 
-	dbg_msg(GGZ_DBG_CONNECTION, "Player %p attempting login as %d",
+	ggz_debug(GGZ_DBG_CONNECTION, "Player %p attempting login as %d",
 	        player, type);
 
 	/* If we disallow new registrations, we ignore logins straight away */
 	if(type != GGZ_LOGIN && opt.registration_policy == GGZ_REGISTRATION_CLOSED) {
-		dbg_msg(GGZ_DBG_CONNECTION,
+		ggz_debug(GGZ_DBG_CONNECTION,
 		        "Registration/guest login attempt of name %s while it is prohibited.",
 		        name);
 		if (net_send_login(player->client->net, type,
@@ -111,7 +111,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 	/* A too-long username gives an error.  We used to just truncate it
 	   but that would probably just confuse the user. */
 	if (strlen(name) > MAX_USER_NAME_LEN) {
-		dbg_msg(GGZ_DBG_CONNECTION, "Too-long username of %s", name);
+		ggz_debug(GGZ_DBG_CONNECTION, "Too-long username of %s", name);
 		if (net_send_login(player->client->net, type,
 				   E_TOO_LONG, NULL) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -120,7 +120,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 
 	/* Validate the username */
 	if(!is_valid_username(name)) {
-		dbg_msg(GGZ_DBG_CONNECTION, "Invalid login name of %s",
+		ggz_debug(GGZ_DBG_CONNECTION, "Invalid login name of %s",
 			name);
 		if (net_send_login(player->client->net, type,
 				   E_BAD_USERNAME, NULL) < 0)
@@ -131,7 +131,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 	/* Validate the password */
 	if (type == GGZ_LOGIN || type == GGZ_LOGIN_NEW) {
 		if(!is_valid_password(new_pw)) {
-			dbg_msg(GGZ_DBG_CONNECTION, "Insecure password from %s",
+			ggz_debug(GGZ_DBG_CONNECTION, "Insecure password from %s",
 				name);
 			if (net_send_login(player->client->net, type,
 					   E_BAD_PASSWORD, NULL) < 0)
@@ -148,7 +148,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 	snprintf(db_pe.handle, sizeof(db_pe.handle), "%s", name);
 	db_status = ggzdb_player_get(&db_pe);
 	if(type == GGZ_LOGIN_GUEST && db_status != GGZDB_ERR_NOTFOUND) {
-		dbg_msg(GGZ_DBG_CONNECTION,
+		ggz_debug(GGZ_DBG_CONNECTION,
 		        "Guest player trying to use actual login name %s.",
 		        name);
 		name_ok = false;
@@ -157,7 +157,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 
 	/* Add the player name to the hash table */
 	if (name_ok && !hash_player_add(name, player)) {
-		dbg_msg(GGZ_DBG_CONNECTION, "Could not add player %s to hash.",
+		ggz_debug(GGZ_DBG_CONNECTION, "Could not add player %s to hash.",
 		        name);
 		name_ok = false;
 		reason = E_ALREADY_LOGGED_IN;
@@ -166,7 +166,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 	/* Error if the name is already in the hash table or guest
 	   name in the DB */
 	if (!name_ok) {
-		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful login of %s", name);
+		ggz_debug(GGZ_DBG_CONNECTION, "Unsuccessful login of %s", name);
 		if (net_send_login(player->client->net, type, reason, NULL) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
@@ -176,12 +176,12 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 	if (type == GGZ_LOGIN) {
 		/* Check password */
 		if(db_status == GGZDB_ERR_NOTFOUND) {
-			dbg_msg(GGZ_DBG_CONNECTION,
+			ggz_debug(GGZ_DBG_CONNECTION,
 				"Unsuccessful login of %s - no account", name);
 			name_ok = false;
 			reason = E_USR_FOUND;
 		} else if(ggzdb_compare_password(password, db_pe.password) != 1) {
-			dbg_msg(GGZ_DBG_CONNECTION,
+			ggz_debug(GGZ_DBG_CONNECTION,
 				"Unsuccessful login of %s - bad password", name);
 			log_msg(GGZ_LOG_SECURITY, "BADPWD from %s for %s",
 				player->client->addr, name);
@@ -189,7 +189,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 			reason = E_USR_LOOKUP;
 		} else if(!db_pe.confirmed) {
 			if(opt.registration_policy == GGZ_REGISTRATION_CONFIRM) {
-				dbg_msg(GGZ_DBG_CONNECTION,
+				ggz_debug(GGZ_DBG_CONNECTION,
 					"Unsuccessful login of %s - account unconfirmed", name);
 				name_ok = false;
 				reason = E_USR_LOOKUP;
@@ -207,7 +207,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 		snprintf(db_pe.handle, sizeof(db_pe.handle), "%s", name);
 		db_pe.last_login = time(NULL);
 		if (ggzdb_player_update(&db_pe) != 0)
-			err_msg("Player database update failed (%s)", name);
+			ggz_error_msg("Player database update failed (%s)", name);
 
 		login_type = " registered player";
 	}
@@ -279,7 +279,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 	if (motd_is_defined() && net_send_motd(player->client->net) < 0)
 		return GGZ_REQ_DISCONNECT;
 
-	dbg_msg(GGZ_DBG_CONNECTION, "Successful login of %s", name);
+	ggz_debug(GGZ_DBG_CONNECTION, "Successful login of %s", name);
 
 	/* Log the connection */
 	log_msg(GGZ_LOG_CONNECTION_INFO, "LOGIN %s from %s as a%s", name,
@@ -333,7 +333,7 @@ static GGZReturn login_add_user(ggzdbPlayerEntry *db_entry,
 	
 	/* If we tried to overwrite a value, then we know it existed */
 	if (ggzdb_player_add(db_entry) == GGZDB_ERR_DUPKEY) {
-		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful new login of %s", 
+		ggz_debug(GGZ_DBG_CONNECTION, "Unsuccessful new login of %s", 
 			name);
 		return GGZ_ERROR;
 	}
@@ -388,7 +388,7 @@ static bool is_valid_password(const char *password)
 			return false;
 		}
 	} else {
-		err_msg("Cracklib password database not found.");
+		ggz_error_msg("Cracklib password database not found.");
 		return false;
 	}
 #endif

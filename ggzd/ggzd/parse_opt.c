@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 10053 2008-06-23 07:29:52Z josef $
+ * $Id: parse_opt.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -103,7 +103,7 @@ static int r_count = 0;
 static char **r_list = NULL;
 
 /* Convience macro for parse_file(), parse_game() */
-#define PARSE_ERR(s)  err_msg("Config file: %s, line %d", s, linenum)
+#define PARSE_ERR(s)  ggz_error_msg("Config file: %s, line %d", s, linenum)
 
 /* Defaults for Admin items */
 #define ADMIN_ERR     "<You must set this parameter in ggzd.conf>"
@@ -304,18 +304,18 @@ void parse_conf_file(void)
 	/* Use conf_parse on an approrpriate configuration file */
 	if (opt.local_conf) {
 		if((c_handle = ggz_conf_parse(opt.local_conf, GGZ_CONF_RDONLY)) >= 0) {
-			dbg_msg(GGZ_DBG_CONFIGURATION,
+			ggz_debug(GGZ_DBG_CONFIGURATION,
 				"Reading local conf file : %s", opt.local_conf);
 		} else
-			err_msg("WARNING:  Local conf file not found!");
+			ggz_error_msg("WARNING:  Local conf file not found!");
 	} else {
 		char *global_conf = ggz_strbuild("%s/ggzd.conf", GGZDCONFDIR);
 
 		if((c_handle = ggz_conf_parse(global_conf, GGZ_CONF_RDONLY)) >= 0)
-			dbg_msg(GGZ_DBG_CONFIGURATION,
+			ggz_debug(GGZ_DBG_CONFIGURATION,
 				"Reading global conf file : %s", global_conf);
 		else
-			err_msg("WARNING:  No configuration file loaded!");
+			ggz_error_msg("WARNING:  No configuration file loaded!");
 
 		ggz_free(global_conf);
 	}
@@ -465,7 +465,7 @@ static void get_config_options(int ch)
 	strval = ggz_conf_read_string(ch, "Logs", "Facility", NULL);
 	if(strval) {
 		if(logfile_set_facility(strval) < 0)
-			err_msg("Configuration: Invalid syslogd facility");
+			ggz_error_msg("Configuration: Invalid syslogd facility");
 		ggz_free(strval);
 	}
 	intval = ggz_conf_read_int(ch, "Logs", "PIDInLogs", 1);
@@ -537,12 +537,12 @@ void parse_game_files(void)
 
 	if(g_count > 0) {
 		/* Go through all games explicitly included in the add list */
-		dbg_msg(GGZ_DBG_CONFIGURATION, "Adding games in add list");
+		ggz_debug(GGZ_DBG_CONFIGURATION, "Adding games in add list");
 		for(i=0; i<g_count; i++)
 			parse_game(g_list[i], dir);
 	} else {
 		/* Scan for all .dsc files in the dir */
-		dbg_msg(GGZ_DBG_CONFIGURATION, "Adding all games in %s", dir);
+		ggz_debug(GGZ_DBG_CONFIGURATION, "Adding all games in %s", dir);
 		num_games = scandir(dir, &namelist, parse_gselect, 0);
 		for(i=0; i<num_games; i++) {
 			/* Make a temporary copy of the name w/o .dsc */
@@ -563,7 +563,7 @@ void parse_game_files(void)
 			if(addit)
 				parse_game(name, dir);
 			else
-				dbg_msg(GGZ_DBG_CONFIGURATION,
+				ggz_debug(GGZ_DBG_CONFIGURATION,
 					"Ignoring game %s", name);
 
 			free(namelist[i]);
@@ -605,7 +605,7 @@ static void parse_game(char *name, char *dir)
 
 	/* Check to see if we are allocating too many games */
 	if(state.types == MAX_GAME_TYPES) {
-		err_msg("Ignoring game %s, already at MAX_GAME_TYPES", name);
+		ggz_error_msg("Ignoring game %s, already at MAX_GAME_TYPES", name);
 		return;
 	}
 
@@ -613,11 +613,11 @@ static void parse_game(char *name, char *dir)
 	snprintf(fname, sizeof(fname), "%s/%s.dsc", dir, name);
 
 	if((ch = ggz_conf_parse(fname, GGZ_CONF_RDONLY)) < 0) {
-		err_msg("Ignoring %s, could not open %s", name, fname);
+		ggz_error_msg("Ignoring %s, could not open %s", name, fname);
 		return;
 	}
 
-	dbg_msg(GGZ_DBG_CONFIGURATION, "Adding game %s from %s", name, fname);
+	ggz_debug(GGZ_DBG_CONFIGURATION, "Adding game %s from %s", name, fname);
 
 	/* Initialize the basic data for the game info struct. */
 	memset(&game_info, 0, sizeof(GameInfo));
@@ -629,12 +629,12 @@ static void parse_game(char *name, char *dir)
 	intltmp = ggz_conf_read_intlstring(ch, "GameInfo", "Name");
 	tmp = ggz_intlstring_translated(intltmp, NULL);
 	if (!tmp) {
-		err_msg("Game name missing for '%s'.", name);
+		ggz_error_msg("Game name missing for '%s'.", name);
 		ggz_intlstring_free(intltmp);
 		return;
 	}
 	if (strlen(tmp) > MAX_GAME_NAME_LEN) {
-		err_msg("Game name '%s' too long: max length %d.",
+		ggz_error_msg("Game name '%s' too long: max length %d.",
 			tmp, MAX_GAME_NAME_LEN);
 		ggz_intlstring_free(intltmp);
 		return;
@@ -653,7 +653,7 @@ static void parse_game(char *name, char *dir)
 	ggz_conf_read_list(ch, "LaunchInfo", "ExecutablePath",
 			   &num_args, &game_info.exec_args);
 	if (!game_info.exec_args || !game_info.exec_args[0]) {
-		err_msg("Missing ExecutablePath for game %s.",
+		ggz_error_msg("Missing ExecutablePath for game %s.",
 			ggz_intlstring_translated(game_info.name, NULL));
 		/* This leaves some memory leak, but it's acceptable under
 		   the circumstances. */
@@ -714,7 +714,7 @@ static void parse_game(char *name, char *dir)
 	if(ret == 0) {
 		game_info.named_bots = (char***)ggz_malloc((argcp + 1) * sizeof(char**));
 		for (i = 0; i < argcp; i++) {
-			dbg_msg(GGZ_DBG_CONFIGURATION,
+			ggz_debug(GGZ_DBG_CONFIGURATION,
 				"Found named bot <%s>.",
 				argvp[i]);
 			tmp = ggz_conf_read_string(ch, "NamedBots", argvp[i], NULL);
@@ -735,7 +735,7 @@ static void parse_game(char *name, char *dir)
 			db_status = ggzdb_player_get(&db_pe);
 			if ((db_pe.perms & (1 << GGZ_PERM_CHAT_BOT))
 			    && (db_status != GGZDB_ERR_NOTFOUND)) {
-				dbg_msg(GGZ_DBG_CONFIGURATION,
+				ggz_debug(GGZ_DBG_CONFIGURATION,
 					"named_bot <%s> registered already.",
 					game_info.named_bots[i][0]);
 				continue;
@@ -753,7 +753,7 @@ static void parse_game(char *name, char *dir)
 			ggz_strncpy(db_pe.name, "", sizeof(db_pe.name));
 
 			if (ggzdb_player_add(&db_pe) == GGZDB_ERR_DUPKEY) {
-				err_msg("Could not register named bot <%s>.",
+				ggz_error_msg("Could not register named bot <%s>.",
 					game_info.named_bots[i][0]);
 			} else {
 				log_msg(GGZ_LOG_SECURITY, "NEWACCT (%u) (named bot) for %s",
@@ -791,14 +791,14 @@ void parse_room_files(void)
 
 	if(r_count > 0) {
 		/* Go through all rooms explicitly included in the add list */
-		dbg_msg(GGZ_DBG_CONFIGURATION, "Adding rooms in add list");
+		ggz_debug(GGZ_DBG_CONFIGURATION, "Adding rooms in add list");
 		for(i=0; i<r_count; i++)
 			/* Add everything, but don't readd entry room */
 			if(strcmp(r_list[i], "entry"))
 				parse_room(r_list[i], dir, 0);
 	} else {
 		/* Scan for all .room files in dir */
-		dbg_msg(GGZ_DBG_CONFIGURATION, "Adding all rooms in %s", dir);
+		ggz_debug(GGZ_DBG_CONFIGURATION, "Adding all rooms in %s", dir);
 		num_rooms = scandir(dir, &namelist, parse_rselect, 0);
 		for(i=0; i<num_rooms; i++) {
 			/* Make a temporary copy of the name w/o .room */
@@ -823,7 +823,7 @@ void parse_room_files(void)
 			if(addit)
 				parse_room(name, dir, 0);
 			else
-				dbg_msg(GGZ_DBG_CONFIGURATION,
+				ggz_debug(GGZ_DBG_CONFIGURATION,
 					"Ignoring room %s", name);
 
 			free(namelist[i]);
@@ -835,10 +835,10 @@ void parse_room_files(void)
 
 	/* At this point, we should have at least one working room */
 	if(room_info.num_rooms == 0)
-		err_msg_exit("No rooms defined, ggzd unusable");
+		ggz_error_msg_exit("No rooms defined, ggzd unusable");
 
 	/* Enter rooms into the room template table in the database */
-	dbg_msg(GGZ_DBG_CONFIGURATION, "Adding rooms to database.");
+	ggz_debug(GGZ_DBG_CONFIGURATION, "Adding rooms to database.");
 	ggzdb_rooms(rooms, room_info.num_rooms);
 
 	/* Cleanup the r_list */
@@ -894,11 +894,11 @@ static void parse_room(char *name, char *dir, int announce)
 	snprintf(fname, sizeof(fname), "%s/%s.room", dir, name);
 
 	if((ch = ggz_conf_parse(fname, GGZ_CONF_RDONLY)) < 0) {
-		err_msg("Ignoring %s, could not open %s", name, fname);
+		ggz_error_msg("Ignoring %s, could not open %s", name, fname);
 		return;
 	}
 
-	dbg_msg(GGZ_DBG_CONFIGURATION, "Adding room %s from %s", name, fname);
+	ggz_debug(GGZ_DBG_CONFIGURATION, "Adding room %s from %s", name, fname);
 
 	/* Allocate a room struct for this room */
 	if(room_info.num_rooms == 0)
@@ -929,7 +929,7 @@ static void parse_room(char *name, char *dir, int announce)
 		else if(!strcasecmp(strval, "none"))
 			rooms[num].game_type = -1;
 		else
-			err_msg("Invalid GameType specified in room %s", name);
+			ggz_error_msg("Invalid GameType specified in room %s", name);
 		ggz_free(strval);
 	}
 	strval = ggz_conf_read_string(ch, "RoomInfo",
@@ -942,30 +942,30 @@ static void parse_room(char *name, char *dir, int announce)
 		else if(!strcasecmp(strval, "None"))
 			rooms[num].perms = 0;
 		else
-			err_msg("Invalid EntryRestriction in room %s", name);
+			ggz_error_msg("Invalid EntryRestriction in room %s", name);
 		ggz_free(strval);
 	}
 
 	if(rooms[num].name == NULL) {
-		err_msg("No Name given for room %s", name);
+		ggz_error_msg("No Name given for room %s", name);
 		rooms[num].name = ggz_intlstring_fromstring("none");
 	}
 	if(rooms[num].description == NULL) {
-		err_msg("No Description given for room %s", name);
+		ggz_error_msg("No Description given for room %s", name);
 		rooms[num].description = ggz_intlstring_fromstring("none");
 	}
 	if(rooms[num].max_players <= 0) {
 		if(rooms[num].max_players < 0)
-			err_msg("Invalid MaxPlayers given for room %s", name);
+			ggz_error_msg("Invalid MaxPlayers given for room %s", name);
 		rooms[num].max_players = DEFAULT_MAX_ROOM_USERS;
 	}
 	if(rooms[num].max_tables < 0) {
 		if(rooms[num].max_tables < -1)
-			err_msg("Invalid MaxTables given for room %s", name);
+			ggz_error_msg("Invalid MaxTables given for room %s", name);
 		rooms[num].max_tables = DEFAULT_MAX_ROOM_TABLES;
 	}
 	if(rooms[num].game_type == -2) {
-		err_msg("No GameType given for room %s", name);
+		ggz_error_msg("No GameType given for room %s", name);
 		rooms[num].game_type = -1;
 	}
 
@@ -1043,12 +1043,12 @@ void parse_room_change(const char *room, int addition)
 				/* FIXME: FAM does indeed send removal requests twice */
 				/* so we must discard additions during this time, too */
 
-				dbg_msg(GGZ_DBG_CONFIGURATION, "Room %s subject of removal", roomname);
+				ggz_debug(GGZ_DBG_CONFIGURATION, "Room %s subject of removal", roomname);
 				return;
 			}
 			else
 			{
-				dbg_msg(GGZ_DBG_CONFIGURATION, "Removing room %s", roomname);
+				ggz_debug(GGZ_DBG_CONFIGURATION, "Removing room %s", roomname);
 				room_remove(i);
 				if(!addition)
 					return;
@@ -1075,12 +1075,12 @@ void parse_room_change_db(RoomStruct *dbrooms)
 				if((rooms[i].removal_done) || (rooms[i].removal_pending))
 				{
 					/* shouldn't be reached - see parse_room_change() */
-					dbg_msg(GGZ_DBG_CONFIGURATION, "Ignoring room %s double removal", room.room);
+					ggz_debug(GGZ_DBG_CONFIGURATION, "Ignoring room %s double removal", room.room);
 					return;
 				}
 				else
 				{
-					dbg_msg(GGZ_DBG_CONFIGURATION, "Removing room %s", room.room);
+					ggz_debug(GGZ_DBG_CONFIGURATION, "Removing room %s", room.room);
 					room_remove(i);
 					return;
 				}
@@ -1127,14 +1127,14 @@ static unsigned parse_log_types(int num, char **entry)
 			if(!strcasecmp(entry[i], log_types[j].name))
 				break;
 		if(j == num_log_types) {
-			err_msg("Config: Invalid log type '%s' specified",
+			ggz_error_msg("Config: Invalid log type '%s' specified",
 				entry[i]);
-			err_msg("Possible types are:");
+			ggz_error_msg("Possible types are:");
 			for(j = 0; j < num_log_types; j++)
-				err_msg("- %s", log_types[j].name);
+				ggz_error_msg("- %s", log_types[j].name);
 		}
 		else {
-			dbg_msg(GGZ_DBG_CONFIGURATION,
+			ggz_debug(GGZ_DBG_CONFIGURATION,
 				"%s added to log types", log_types[j].name);
 			types |= log_types[j].type;
 		}
@@ -1165,16 +1165,16 @@ static void parse_dbg_types(int num, char **entry)
 				for (j = 0; dbg_types[j]; j++)
 					ggz_debug_enable(dbg_types[j]);
 			} else {
-				err_msg("Config: Invalid debug type '%s' specified",
+				ggz_error_msg("Config: Invalid debug type '%s' specified",
 					entry[i]);
-				err_msg("Possible types are:");
+				ggz_error_msg("Possible types are:");
 				for(j = 0; dbg_types[j]; j++)
-					err_msg("- %s", dbg_types[j]);
+					ggz_error_msg("- %s", dbg_types[j]);
 			}
 		} else {
 			/* FIXME: how does this work if debugging isn't set up
 			   yet??? */
-			dbg_msg(GGZ_DBG_CONFIGURATION,
+			ggz_debug(GGZ_DBG_CONFIGURATION,
 				"%s added to debug types", dbg_types[j]);
 			ggz_debug_enable(dbg_types[j]);
 		}

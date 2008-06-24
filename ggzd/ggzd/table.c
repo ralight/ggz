@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 9855 2008-03-20 20:38:47Z josef $
+ * $Id: table.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -206,11 +206,11 @@ static GGZReturn table_check(GGZTable* table)
 	pthread_rwlock_unlock(&rooms[table->room].lock);
 
 	if (room_type == g_type) 
-		dbg_msg(GGZ_DBG_TABLE, 
+		ggz_debug(GGZ_DBG_TABLE, 
 			"Launching table of type %d in room %d (accept)", 
 			g_type, table->room);
 	else {
-		dbg_msg(GGZ_DBG_TABLE, 
+		ggz_debug(GGZ_DBG_TABLE, 
 			"Launching table of type %d in room %d (invalid)", 
 			g_type, table->room);
 		return GGZ_ERROR;
@@ -220,33 +220,33 @@ static GGZReturn table_check(GGZTable* table)
 	/* Display and verify total seats and bot seats */
 	if (ggz_numberlist_isset(&game_types[g_type].player_allow_list,
 				  seat_total))
-		dbg_msg(GGZ_DBG_TABLE, "Seats  : %d (accept)", seat_total);
+		ggz_debug(GGZ_DBG_TABLE, "Seats  : %d (accept)", seat_total);
 	else {
-		dbg_msg(GGZ_DBG_TABLE, "Seats  : %d (invalid)", seat_total);
+		ggz_debug(GGZ_DBG_TABLE, "Seats  : %d (invalid)", seat_total);
 		status = GGZ_ERROR;
 	}
 	
 	if(ai_total == 0
 	   || ggz_numberlist_isset(&game_types[g_type].bot_allow_list,
 				   ai_total))
-		dbg_msg(GGZ_DBG_TABLE, "Bots   : %d (accept)", ai_total);
+		ggz_debug(GGZ_DBG_TABLE, "Bots   : %d (accept)", ai_total);
 	else {
-		dbg_msg(GGZ_DBG_TABLE, "Bots   : %d (invalid)", ai_total);
+		ggz_debug(GGZ_DBG_TABLE, "Bots   : %d (invalid)", ai_total);
 		status = GGZ_ERROR;
 	}
 
 	if (game_types[g_type].allow_spectators)
-		dbg_msg(GGZ_DBG_TABLE, "Spectators: %d", spectator_total);
+		ggz_debug(GGZ_DBG_TABLE, "Spectators: %d", spectator_total);
 	else {
 		if (spectator_total > 0)
 			status = GGZ_ERROR;
-		dbg_msg(GGZ_DBG_TABLE, "Spectators not supported.");
+		ggz_debug(GGZ_DBG_TABLE, "Spectators not supported.");
 	}
 
-	dbg_msg(GGZ_DBG_TABLE, "Open Seats : %d", seats_count(table, GGZ_SEAT_OPEN));
-	dbg_msg(GGZ_DBG_TABLE, "Resv.Seats : %d", seats_count(table, GGZ_SEAT_RESERVED));
-	dbg_msg(GGZ_DBG_TABLE, "State      : %d", table->state);
-	dbg_msg(GGZ_DBG_TABLE, "GGZdMod    : %p", table->ggzdmod);
+	ggz_debug(GGZ_DBG_TABLE, "Open Seats : %d", seats_count(table, GGZ_SEAT_OPEN));
+	ggz_debug(GGZ_DBG_TABLE, "Resv.Seats : %d", seats_count(table, GGZ_SEAT_RESERVED));
+	ggz_debug(GGZ_DBG_TABLE, "State      : %d", table->state);
+	ggz_debug(GGZ_DBG_TABLE, "GGZdMod    : %p", table->ggzdmod);
 	
 	/* FIXME: this correctly logs everything about the GGZdMod object, but it
 	   will incorrectly be labeled as coming from the table itself instead of
@@ -256,21 +256,21 @@ static GGZReturn table_check(GGZTable* table)
 	for (i = 0; i < seat_total; i++) {
 		switch (seats_type(table, i)) {
 		case GGZ_SEAT_OPEN:
-			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: open", i);
+			ggz_debug(GGZ_DBG_TABLE, "Seat[%d]: open", i);
 			break;
 		case GGZ_SEAT_BOT:
-			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: computer", i);
+			ggz_debug(GGZ_DBG_TABLE, "Seat[%d]: computer", i);
 			break;
 		case GGZ_SEAT_RESERVED:
-			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: reserved for %s", i,
+			ggz_debug(GGZ_DBG_TABLE, "Seat[%d]: reserved for %s", i,
 				table->seat_names[i]);
 			break;
 		case GGZ_SEAT_PLAYER:
-			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: player %s", i, 
+			ggz_debug(GGZ_DBG_TABLE, "Seat[%d]: player %s", i, 
 				table->seat_names[i]);
 			break;
 		default:
-			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: **invalid**", i);
+			ggz_debug(GGZ_DBG_TABLE, "Seat[%d]: **invalid**", i);
 			status = GGZ_ERROR;
 			break;
 		}
@@ -329,10 +329,10 @@ static void* table_new_thread(void *index_ptr)
 	/* Detach thread since no one needs to join us */
 	if ((status = pthread_detach(pthread_self())) != 0) {
 		errno = status;
-		err_sys_exit("pthread_detach error");
+		ggz_error_sys_exit("pthread_detach error");
 	}
 
-	dbg_msg(GGZ_DBG_PROCESS, "Thread detached for table %d in room %d", 
+	ggz_debug(GGZ_DBG_PROCESS, "Thread detached for table %d in room %d", 
 		table->index, table->room);
  
 	/* Check to see if we've exceeded total capacity for tables */
@@ -376,7 +376,7 @@ static void* table_new_thread(void *index_ptr)
 	pthread_rwlock_unlock(&table->lock);
 	pthread_rwlock_unlock(&rooms[table->room].lock);
 	
-	dbg_msg(GGZ_DBG_ROOM, "Room %d table count now = %d", table->room, 
+	ggz_debug(GGZ_DBG_ROOM, "Room %d table count now = %d", table->room, 
 		count);
 
 	/* Get the name of this game type */
@@ -399,7 +399,7 @@ static void* table_new_thread(void *index_ptr)
 		ggz_free(gname);
 	}
 	else {
-		dbg_msg(GGZ_DBG_TABLE, "Table %d failed to start game module", 
+		ggz_debug(GGZ_DBG_TABLE, "Table %d failed to start game module", 
 			table->index);
 		/* ggzdmod already does that */
 		/*table_launch_event(table->owner, E_LAUNCH_FAIL, 0);*/
@@ -525,7 +525,7 @@ static void table_loop(GGZTable* table)
 			if (status == 0 || errno == EINTR)
 				continue;
 			else
-				err_sys_exit("select error in table_loop()");
+				ggz_error_sys_exit("select error in table_loop()");
 		}
 
 		pthread_sigmask(SIG_BLOCK, &set, NULL);
@@ -539,7 +539,7 @@ static void table_loop(GGZTable* table)
 	/* Don't want signals interrupting after this point */
 	pthread_sigmask(SIG_BLOCK, &set, NULL);
 
-	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d loop completed", 
+	ggz_debug(GGZ_DBG_TABLE, "Table %d in room %d loop completed", 
 		table->index, table->room);
 }
 
@@ -555,7 +555,7 @@ void table_game_join(GGZTable *table, const char *name,
 	int i;
 #endif
 
-	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to join", 
+	ggz_debug(GGZ_DBG_TABLE, "Table %d in room %d responded to join", 
 		table->index, table->room);
 
 	/* Transit successful: Assign seat */
@@ -576,7 +576,7 @@ void table_game_join(GGZTable *table, const char *name,
 					    .name = "",
 					    .fd = -1};
 
-		dbg_msg(GGZ_DBG_TABLE, "%s logged out during join", name);
+		ggz_debug(GGZ_DBG_TABLE, "%s logged out during join", name);
 		transit_seat_event(table->room, table->index,
 				   GGZ_TRANSIT_LEAVE, seat, name,
 				   GGZ_LEAVE_GAMEERROR);
@@ -626,7 +626,7 @@ void table_game_leave(GGZTable *table, const char *caller,
 	char player[MAX_USER_NAME_LEN + 1];
 	strcpy(player, table->seat_names[num]);
 
-	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to leave", 
+	ggz_debug(GGZ_DBG_TABLE, "Table %d in room %d responded to leave", 
 		table->index, table->room);
 
 	/* Vacate seat */
@@ -643,7 +643,7 @@ void table_game_leave(GGZTable *table, const char *caller,
 
 	empty = (seats_count(table, GGZ_SEAT_PLAYER) == 0);
 	if (empty)
-		dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d now empty",
+		ggz_debug(GGZ_DBG_TABLE, "Table %d in room %d now empty",
 			table->index, table->room);
 
 	/* Notify player.  We don't care if this fails; that just means
@@ -671,7 +671,7 @@ void table_game_reseat(GGZTable *table,
 	int empty = 0;
 	GGZTransitType transit = GGZ_TRANSIT_SIT;
 
-	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d reseat %d: %d->%d",
+	ggz_debug(GGZ_DBG_TABLE, "Table %d in room %d reseat %d: %d->%d",
 		table->index, table->room, op, old_seat, new_seat);
 
 	switch (op) {
@@ -704,7 +704,7 @@ void table_game_reseat(GGZTable *table,
 	}
 
 	if (empty)
-		dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d now empty",
+		ggz_debug(GGZ_DBG_TABLE, "Table %d in room %d now empty",
 			table->index, table->room);
 
 	if (transit_player_event(name, transit, E_OK,
@@ -722,7 +722,7 @@ void table_game_reseat(GGZTable *table,
 		else
 			transit = GGZ_TRANSIT_LEAVE;
 
-		dbg_msg(GGZ_DBG_TABLE, "%s logged out during reseat", name);
+		ggz_debug(GGZ_DBG_TABLE, "%s logged out during reseat", name);
 		transit_seat_event(table->room, table->index,
 				   transit, seat, name,
 				   GGZ_LEAVE_GAMEERROR);
@@ -754,7 +754,7 @@ void table_game_reseat(GGZTable *table,
 
 void table_game_seatchange(GGZTable *table, GGZSeatType type, int num)
 {
-	dbg_msg(GGZ_DBG_TABLE,
+	ggz_debug(GGZ_DBG_TABLE,
 		"Seat %d changes to %s at table %d of room %d",
 		num, ggz_seattype_to_string(type),
 		table->index, table->room);
@@ -774,7 +774,7 @@ void table_game_seatchange(GGZTable *table, GGZSeatType type, int num)
 void table_game_spectator_join(GGZTable *table, const char *name,
 			       GGZJoinType reason, int num)
 {
-	dbg_msg(GGZ_DBG_TABLE,
+	ggz_debug(GGZ_DBG_TABLE,
 		"Table %d in room %d responded to spectator join", 
 		table->index, table->room);
 
@@ -793,7 +793,7 @@ void table_game_spectator_join(GGZTable *table, const char *name,
 					    .name = "",
 					    .fd = -1};
 
-		dbg_msg(GGZ_DBG_TABLE, "%s logged out during spectator join",
+		ggz_debug(GGZ_DBG_TABLE, "%s logged out during spectator join",
 			name);
 
 		transit_seat_event(table->room, table->index,
@@ -805,7 +805,7 @@ void table_game_spectator_join(GGZTable *table, const char *name,
 	/* Notify everyone in the room about the change. */
 	table_update_event_enqueue(table, GGZ_TABLE_UPDATE_SPECTATOR_JOIN,
 				   name, num);
-	dbg_msg(GGZ_DBG_TABLE, 
+	ggz_debug(GGZ_DBG_TABLE, 
 		"%s in spectator %d at table %d of room %d",
 		name, num, table->index, table->room);
 }
@@ -820,12 +820,12 @@ void table_game_spectator_leave(GGZTable *table, const char *caller,
 	char player[MAX_USER_NAME_LEN + 1];
 	strcpy(player, table->spectators[num]);
 
-	dbg_msg(GGZ_DBG_TABLE,
+	ggz_debug(GGZ_DBG_TABLE,
 		"Table %d in room %d responded to spectator leave", 
 		table->index, table->room);
 
 	/* Vacate seat */
-	dbg_msg(GGZ_DBG_TABLE, 
+	ggz_debug(GGZ_DBG_TABLE, 
 		"%s left spectator %d at table %d of room %d",
 		player, num,
 		table->index, table->room);
@@ -858,7 +858,7 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event,
 
 	switch (cur) {
 	case GGZDMOD_STATE_WAITING:
-		dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d now waiting", 
+		ggz_debug(GGZ_DBG_TABLE, "Table %d in room %d now waiting", 
 			table->index, table->room);
 
 		/* FIXME: maybe we shouldn't keep track of table state
@@ -882,12 +882,12 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event,
 		pthread_rwlock_unlock(&table->lock);
 
 		table_event_enqueue(table, GGZ_TABLE_UPDATE_STATE);
-		dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d now full/playing",
+		ggz_debug(GGZ_DBG_TABLE, "Table %d in room %d now full/playing",
 			table->index, table->room);
 		return;
 
 	case GGZDMOD_STATE_DONE:
-		dbg_msg(GGZ_DBG_TABLE,
+		ggz_debug(GGZ_DBG_TABLE,
 			"Table %d in room %d game module is done", 
 			table->index, table->room);
 
@@ -902,7 +902,7 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event,
 		return;
 
 	case GGZDMOD_STATE_RESTORED:
-		dbg_msg(GGZ_DBG_TABLE,
+		ggz_debug(GGZ_DBG_TABLE,
 			"Table %d in room %d is restored.", 
 			table->index, table->room);
 
@@ -915,7 +915,7 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event,
 	}
 
 	/* It's an error if we reach here. */
-	err_msg("Table %d in room %d changed to invalid state %d.",
+	ggz_error_msg("Table %d in room %d changed to invalid state %d.",
 		table->index, table->room, cur);
 }
 
@@ -935,14 +935,14 @@ static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, const void *data)
 		game_name = ggz_strdup(ggz_intlstring_translated(game_types[type].name, NULL));
 		pthread_rwlock_unlock(&game_types[type].lock);
 		
-		dbg_msg(GGZ_DBG_GAME_MSG, "(%s) %s", game_name, msg);
+		ggz_debug(GGZ_DBG_GAME_MSG, "(%s) %s", game_name, msg);
 		
 		ggz_free(game_name);
 	} else {
 		/* It's important that we use the %s so that we can
 		   safely log messages containing % and other printf
 		   meta-characters. */
-		dbg_msg(GGZ_DBG_GAME_MSG, "%s", msg);
+		ggz_debug(GGZ_DBG_GAME_MSG, "%s", msg);
 	}
 }
 
@@ -992,7 +992,7 @@ static void table_game_req_num_seats(GGZdMod *ggzdmod, GGZdModEvent event,
 	int seat;
 
 	if (num_seats <= 0) {
-		err_msg("table_game_req_num_seats: table in room %d "
+		ggz_error_msg("table_game_req_num_seats: table in room %d "
 			"requested %d seats.",
 			table->room, num_seats);
 		return;
@@ -1054,7 +1054,7 @@ static void table_game_req_boot(GGZdMod *ggzdmod,
 	GGZTableUpdateType update;
 
 	if (len == 0 || len > MAX_USER_NAME_LEN) {
-		err_msg("table_game_req_boot: invalid name %s in room %d.",
+		ggz_error_msg("table_game_req_boot: invalid name %s in room %d.",
 			name, table->room);
 		return;
 	}
@@ -1088,7 +1088,7 @@ static void table_game_req_boot(GGZdMod *ggzdmod,
 				     .type = GGZ_SEAT_NONE,
 				     .fd = -1,
 				     .playerdata = NULL};
-		dbg_msg(GGZ_DBG_TABLE,
+		ggz_debug(GGZ_DBG_TABLE,
 			"Table %d/%d: server is booting spectator %s.",
 			table->index, table->room, name);
 		ggzdmod_set_spectator(ggzdmod, &seat);
@@ -1100,7 +1100,7 @@ static void table_game_req_boot(GGZdMod *ggzdmod,
 				.type = GGZ_SEAT_OPEN,
 				.fd = -1,
 				.playerdata = NULL};
-		dbg_msg(GGZ_DBG_TABLE,
+		ggz_debug(GGZ_DBG_TABLE,
 			"Table %d/%d: server is booting seat %s.",
 			table->index, table->room, name);
 		ggzdmod_set_seat(ggzdmod, &seat);
@@ -1146,7 +1146,7 @@ static void table_game_req_bot(GGZdMod *ggzdmod,
 	    || table->seat_types[seat_num] != GGZ_SEAT_OPEN) {
 		/* Actually, this might not be an error - the seat might
 		   have just changed while the request was in transit */
-		err_msg("table_game_req_bot: seat %d requested bot in"
+		ggz_error_msg("table_game_req_bot: seat %d requested bot in"
 			"table %d, room %d", seat_num, table->index,
 			table->room);
 		return;
@@ -1187,7 +1187,7 @@ static void _table_game_change_seat(GGZdMod *ggzdmod,
 		&& table->seat_types[seat_num] != GGZ_SEAT_RESERVED)) {
 		/* Actually, this might not be an error - the seat might
 		   have just changed while the request was in transit */
-		err_msg("table_game_req_bot: seat %d requested open in"
+		ggz_error_msg("table_game_req_bot: seat %d requested open in"
 			"table %d, room %d", seat_num, table->index,
 			table->room);
 		return;
@@ -1229,7 +1229,7 @@ static void table_error(GGZdMod *ggzdmod,
 {
 	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
 	
-	dbg_msg(GGZ_DBG_TABLE, "GAME ERROR: %s", (char*)data);
+	ggz_debug(GGZ_DBG_TABLE, "GAME ERROR: %s", (char*)data);
 
 	/* If we never made out of CREATED state, it's a launch error */
 	if (ggzdmod_get_state(ggzdmod) == GGZDMOD_STATE_CREATED)
@@ -1256,7 +1256,7 @@ static void table_remove(GGZTable* table)
 	room = table->room;
 	index = table->index;
 
-	dbg_msg(GGZ_DBG_TABLE, "Removing table %d from room %d", table->index,
+	ggz_debug(GGZ_DBG_TABLE, "Removing table %d from room %d", table->index,
 		table->room);
 
 	pthread_rwlock_wrlock(&rooms[room].lock);
@@ -1264,7 +1264,7 @@ static void table_remove(GGZTable* table)
 	rooms[room].tables[index] = NULL;
 	pthread_rwlock_unlock(&rooms[room].lock);
 
-	dbg_msg(GGZ_DBG_ROOM, "Room %d table count now = %d", room, count);
+	ggz_debug(GGZ_DBG_ROOM, "Room %d table count now = %d", room, count);
 
 	if (table->error)
 		reason = GGZ_LEAVE_GAMEERROR;
@@ -1344,7 +1344,7 @@ GGZClientReqError table_launch(GGZTable *table, const char *name)
 /* Change table description of running table */
 void table_set_desc(GGZTable *table, const char *desc)
 {
-	dbg_msg(GGZ_DBG_TABLE, "Table %p new desc: '%s'", table, desc);
+	ggz_debug(GGZ_DBG_TABLE, "Table %p new desc: '%s'", table, desc);
 	
         pthread_rwlock_wrlock(&table->lock);
         strcpy(table->desc, desc);
@@ -1359,7 +1359,7 @@ GGZClientReqError table_kill(int room, int index, const char *name)
 {
 	char *data;
 
-	dbg_msg(GGZ_DBG_TABLE, "Kill request for table %d in room %d", index, 
+	ggz_debug(GGZ_DBG_TABLE, "Kill request for table %d in room %d", index, 
 		room);
 	
 	data = ggz_strdup(name);
@@ -1378,7 +1378,7 @@ static GGZEventFuncReturn table_kill_callback(void* target, size_t size,
 	GGZTable *table = target;
 	char *caller = data;
 
-	dbg_msg(GGZ_DBG_TABLE, "%s requested death of table %d in room %d",
+	ggz_debug(GGZ_DBG_TABLE, "%s requested death of table %d in room %d",
 		caller, table->index, table->room);
 
 	/* FIXME: we should make sure that the caller is either the
@@ -1571,22 +1571,22 @@ static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 
 	switch (event->opcode) {
 	case GGZ_TABLE_UPDATE_DELETE:
-		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d deleted",
+		ggz_debug(GGZ_DBG_UPDATE, "%s sees table %d deleted",
 			player->name, event->table->index);
 		break;
 
 	case GGZ_TABLE_UPDATE_ADD:
-		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d added",
+		ggz_debug(GGZ_DBG_UPDATE, "%s sees table %d added",
 			player->name, event->table->index);
 		break;
 
 	case GGZ_TABLE_UPDATE_DESC:
-		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d new desc '%s'",
+		ggz_debug(GGZ_DBG_UPDATE, "%s sees table %d new desc '%s'",
 			player->name, event->table->index, event->table->desc);
 		break;		
 		
 	case GGZ_TABLE_UPDATE_STATE:
-		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d new state %d",
+		ggz_debug(GGZ_DBG_UPDATE, "%s sees table %d new state %d",
 			player->name, 
 			event->table->index, event->table->state);
 		break;
@@ -1599,7 +1599,7 @@ static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 
 		update_data = &seat;
 
-		dbg_msg(GGZ_DBG_UPDATE, "%s sees %s %s seat %d at table %d", 
+		ggz_debug(GGZ_DBG_UPDATE, "%s sees %s %s seat %d at table %d", 
 			player->name, seat.name, 
 			event->opcode == GGZ_TABLE_UPDATE_JOIN ? "join"
 							       : "leave",
@@ -1620,7 +1620,7 @@ static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 
 		update_data = &spectator;
 
-		dbg_msg(GGZ_DBG_UPDATE,
+		ggz_debug(GGZ_DBG_UPDATE,
 			"%s sees %s %s spectator seat %d at table %d",
 			player->name, spectator.name,
 			event->opcode == GGZ_TABLE_UPDATE_SPECTATOR_JOIN
@@ -1629,7 +1629,7 @@ static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 		break;
 	case GGZ_TABLE_UPDATE_RESIZE:
 		/* TODO? */
-		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d resized %d",
+		ggz_debug(GGZ_DBG_UPDATE, "%s sees table %d resized %d",
 			player->name, 
 			event->table->index, event->table->num_seats);
 		break;

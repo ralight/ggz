@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 10009 2008-05-26 22:37:19Z josef $
+ * $Id: stats.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -74,7 +74,7 @@ GGZReturn stats_lookup(ggzdbPlayerGameStats *stats)
 
 		return GGZ_OK;
 	} else if (status != GGZDB_NO_ERROR) {
-		err_msg("DB error %d in table_game_report", status);
+		ggz_error_msg("DB error %d in table_game_report", status);
 		return GGZ_ERROR;
 	}
 
@@ -132,7 +132,7 @@ static void calculate_ratings(ggzdbPlayerGameStats *stats,
 		const int team = report->teams[i];
 		float winner_value = 0;
 		if (team < 0) {
-			err_msg("Invalid team %d.", team);
+			ggz_error_msg("Invalid team %d.", team);
 			return;
 		}
 		team_ratings[team] += player_ratings[i];
@@ -153,13 +153,13 @@ static void calculate_ratings(ggzdbPlayerGameStats *stats,
 		}
 		if (team_sizes[team] > 1
 		    && abs(winner_value - team_scores[team]) > 0.01)
-			err_msg("Team given different winner values!");
+			ggz_error_msg("Team given different winner values!");
 		team_scores[team] = winner_value;
 	}
 	for (i = 0; i < num_teams; i++) {
 		/* The team rating is the average of the individual ratings. */
 		if (team_sizes[i] == 0) {
-			err_msg("Empty team %d!", i);
+			ggz_error_msg("Empty team %d!", i);
 			return;
 		}
 		team_ratings[i] /= (float) team_sizes[i];
@@ -191,7 +191,7 @@ static void calculate_ratings(ggzdbPlayerGameStats *stats,
 
 	for (i = 0; i < num_players; i++) {
 		stats[i].rating = player_ratings[i];
-		dbg_msg(GGZ_DBG_STATS,
+		ggz_debug(GGZ_DBG_STATS,
 			"%s's rating becomes %f.\n", report->names[i],
 		       stats[i].rating);
 	}
@@ -269,7 +269,7 @@ void report_statistics(int room, int gametype,
 		if (report->types[i] != GGZ_SEAT_PLAYER
 		    && report->types[i] != GGZ_SEAT_BOT
 		    && report->types[i] != GGZ_SEAT_ABANDONED) {
-			err_msg("Unknown player type %d in stats calc.",
+			ggz_error_msg("Unknown player type %d in stats calc.",
 				report->types[i]);
 			return;
 		}
@@ -289,13 +289,13 @@ void report_statistics(int room, int gametype,
 			if (status == GGZDB_ERR_NOTFOUND) {
 				/* Guest player */
 				if(!guest_stats) {
-					dbg_msg(GGZ_DBG_STATS, "Not tracking stats for guest player %s.",
+					ggz_debug(GGZ_DBG_STATS, "Not tracking stats for guest player %s.",
 						report->names[i]);
 					return;
 				}
 				else stats[i].player_type = GGZ_PLAYER_GUEST;
 			} else if (status != GGZDB_NO_ERROR) {
-				err_msg("Error %d accessing player %s for stats check",
+				ggz_error_msg("Error %d accessing player %s for stats check",
 					status, player.handle);
 				return;
 			} else {
@@ -472,22 +472,22 @@ void stats_rt_init(void)
 	if(!opt.logstatistics)
 		return;
 
-	dbg_msg(GGZ_DBG_STATS, "RT Stats: init");
+	ggz_debug(GGZ_DBG_STATS, "RT Stats: init");
 	stats_rt_shmid = shmget(STATS_RT_SHMID, sizeof(stats_rt), IPC_CREAT | S_IRUSR | S_IWUSR);
 	if(stats_rt_shmid < 0)
 	{
-		err_msg("RT Stats: shared memory setup failure (%s)",
+		ggz_error_msg("RT Stats: shared memory setup failure (%s)",
 			strerror(errno));
 		return;
 	}
 	ret = shmctl(stats_rt_shmid, IPC_STAT, &ds);
 	if(ret < 0)
 	{
-		err_msg("RT Stats: shared memory stats failure (%s)",
+		ggz_error_msg("RT Stats: shared memory stats failure (%s)",
 			strerror(errno));
 		return;
 	}
-	dbg_msg(GGZ_DBG_STATS, "RT Stats: size=%zi bytes, segment=%zi bytes",
+	ggz_debug(GGZ_DBG_STATS, "RT Stats: size=%zi bytes, segment=%zi bytes",
 		sizeof(stats_rt), ds.shm_segsz);
 
 	rt = (stats_rt*)shmat(stats_rt_shmid, 0, 0);
@@ -498,7 +498,7 @@ void stats_rt_init(void)
 	ret = sem_init(&rt->semlock, 1, 1);
 	if(ret < 0)
 	{
-		err_msg("RT Stats: semaphore initialization failure (%s)",
+		ggz_error_msg("RT Stats: semaphore initialization failure (%s)",
 			strerror(errno));
 		return;
 	}
@@ -515,11 +515,11 @@ void stats_rt_report(void)
 		return;
 
 	/* FIXME: error handling in case of signal arrival */
-	dbg_msg(GGZ_DBG_STATS, "RT Stats: report event");
+	ggz_debug(GGZ_DBG_STATS, "RT Stats: report event");
 	ret = sem_wait(&rt->semlock);
 	if(ret < 0)
 	{
-		err_msg("RT Stats: semaphore lock failure (%s)",
+		ggz_error_msg("RT Stats: semaphore lock failure (%s)",
 			strerror(errno));
 		return;
 	}
@@ -540,7 +540,7 @@ void stats_rt_report(void)
 	ret = sem_post(&rt->semlock);
 	if(ret < 0)
 	{
-		err_msg("RT Stats: semaphore unlock failure (%s)",
+		ggz_error_msg("RT Stats: semaphore unlock failure (%s)",
 			strerror(errno));
 		return;
 	}
@@ -551,7 +551,7 @@ void stats_rt_report_chat(int room)
 	if(!opt.logstatistics)
 		return;
 
-	dbg_msg(GGZ_DBG_STATS, "RT Stats: report chat");
+	ggz_debug(GGZ_DBG_STATS, "RT Stats: report chat");
 
 	rt->uptime = uptime();
 

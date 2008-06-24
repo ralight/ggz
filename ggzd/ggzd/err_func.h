@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error function prototypes
- * $Id: err_func.h 10009 2008-05-26 22:37:19Z josef $
+ * $Id: err_func.h 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -39,7 +39,7 @@
 #define GGZ_LOG_ADMIN		(unsigned) 0x00000020
 #define GGZ_LOG_ALL		(unsigned) 0xFFFFFFFF
 
-/* Debug levels for dbg_msg.  If you add a new entry, make sure to
+/* Debug levels for ggz_debug.  If you add a new entry, make sure to
    add it to dbg_types[] in parse_opt.c. */
 #define GGZ_DBG_CONFIGURATION	"configuration"
 #define GGZ_DBG_PROCESS		"process"
@@ -81,13 +81,6 @@ typedef struct {
 	int verbose_updates;
 #endif
 } LogInfo;
-
-#define dbg_msg ggz_debug
-#define err_msg ggz_error_msg
-#define err_msg_exit ggz_error_msg_exit
-#define err_sys ggz_error_sys
-#define err_sys_exit ggz_error_sys_exit
-
 
 /* Logfile info */
 extern LogInfo log_info;

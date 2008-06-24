@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/23/01
  * Desc: Functions for dealing with user permissions
- * $Id: perms.c 8763 2006-12-27 10:02:33Z jdorje $
+ * $Id: perms.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -51,7 +51,7 @@ bool perms_check(GGZPlayer *player, GGZPerm perm)
 	bool result;
 
 	if (perm < 0 || perm >= GGZ_PERM_COUNT) {
-	  err_msg("Invalid perm %d.", perm);
+	  ggz_error_msg("Invalid perm %d.", perm);
 	  return false;
 	}
 

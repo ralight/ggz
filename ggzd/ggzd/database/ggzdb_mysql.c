@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 9855 2008-03-20 20:38:47Z josef $
+ * $Id: ggzdb_mysql.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -76,7 +76,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 
 	if(!conn)
 	{
-		err_msg("Couldn't initialize database.");
+		ggz_error_msg("Couldn't initialize database.");
 		return GGZ_ERROR;
 	}
 
@@ -194,7 +194,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 		}
 	} else {
 		pthread_mutex_unlock(&mutex);
-		err_msg("Couldn't lookup player.");
+		ggz_error_msg("Couldn't lookup player.");
 		return GGZDB_ERR_DB;
 	}
 }
@@ -216,7 +216,7 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	pthread_mutex_unlock(&mutex);
 
 	if(rc) {
-		err_msg("Couldn't update player.");
+		ggz_error_msg("Couldn't update player.");
 		return GGZDB_ERR_DB;
 	}
 
@@ -257,13 +257,13 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 			itercount = 0;
 			return GGZDB_NO_ERROR;
 		} else {
-			err_msg("No entries found.");
+			ggz_error_msg("No entries found.");
 			mysql_free_result(iterres);
 			iterres = NULL;
 			return GGZDB_NO_ERROR;
 		}
 	} else {
-		err_msg("Couldn't lookup player.");
+		ggz_error_msg("Couldn't lookup player.");
 		iterres = NULL;
 		return GGZDB_ERR_DB;
 	}
@@ -275,7 +275,7 @@ GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 	MYSQL_ROW row;
 
 	if (!iterres) {
-		err_msg_exit("get_next called before get_first, dummy");
+		ggz_error_msg_exit("get_next called before get_first, dummy");
 	}
 
 	if(iterres && (itercount < mysql_num_rows(iterres) - 1)) {
@@ -303,7 +303,7 @@ void _ggzdb_player_drop_cursor(void)
 		/* This isn't an error; since we clear the cursor at the end
 		   of _ggzdb_player_get_next we should expect to end up
 		   here.  --JDS */
-		/*err_msg_exit("drop_cursor called before get_first, dummy");*/
+		/*ggz_error_msg_exit("drop_cursor called before get_first, dummy");*/
 		return;
 	}
 
@@ -356,7 +356,7 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 			rc = mysql_query(conn, query);
 
 			if(rc){
-				err_msg("couldn't insert stats");
+				ggz_error_msg("couldn't insert stats");
 			}
 			else ret = GGZDB_NO_ERROR;
 		}
@@ -365,7 +365,7 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 		pthread_mutex_unlock(&mutex);
 	} else {
 		pthread_mutex_unlock(&mutex);
-		err_msg("couldn't update stats");
+		ggz_error_msg("couldn't update stats");
 		ret = GGZDB_ERR_DB;
 	}
 
@@ -418,7 +418,7 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 		}
 	} else {
 		pthread_mutex_unlock(&mutex);
-		err_msg("Couldn't lookup stats.");
+		ggz_error_msg("Couldn't lookup stats.");
 		return GGZDB_ERR_DB;
 	}
 }
@@ -439,7 +439,7 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	rc = mysql_query(conn, query);
 
 	if(rc) {
-		err_msg("couldn't read match");
+		ggz_error_msg("couldn't read match");
 		number = NULL;
 
 		pthread_mutex_unlock(&mutex);
@@ -485,7 +485,7 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	pthread_mutex_unlock(&mutex);
 
 	if(rc){
-		err_msg("couldn't insert matchplayer");
+		ggz_error_msg("couldn't insert matchplayer");
 		return GGZDB_ERR_DB;
 	}else{
 		return GGZDB_NO_ERROR;
@@ -520,7 +520,7 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 	if(!rc){
 		return GGZDB_NO_ERROR;
 	} else {
-		err_msg("Couldn't insert match.");
+		ggz_error_msg("Couldn't insert match.");
 		return GGZDB_ERR_DB;
 	}
 }
@@ -546,7 +546,7 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 	pthread_mutex_unlock(&mutex);
 
 	if(rc){
-		err_msg("couldn't insert savegame");
+		ggz_error_msg("couldn't insert savegame");
 		return GGZDB_ERR_DB;
 	} else {
 		return GGZDB_NO_ERROR;
@@ -591,7 +591,7 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 		}
 	} else {
 		/* FIXME: shouldn't we unlock the mutex here? */
-		err_msg("Couldn't lookup player.");
+		ggz_error_msg("Couldn't lookup player.");
 		return GGZDB_ERR_DB;
 	}
 }
@@ -613,7 +613,7 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGa
 	rc = mysql_query(conn, query);
 
 	if (rc) {
-		err_msg("couldn't read rankings");
+		ggz_error_msg("couldn't read rankings");
 	} else {
 		rc = GGZDB_NO_ERROR;
 

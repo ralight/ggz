@@ -48,7 +48,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	
 	if(rc != SQLITE_OK)
 	{
-		err_msg("Couldn't initialize database.");
+		ggz_error_msg("Couldn't initialize database.");
 		return GGZ_ERROR;
 	}
 
@@ -85,7 +85,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 
 		if(!created)
 		{
-			err_msg("Couldn't create database tables.");
+			ggz_error_msg("Couldn't create database tables.");
 		}
 	}
 
@@ -177,7 +177,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 			return GGZDB_ERR_NOTFOUND;
 		}
 	} else {
-		err_msg("Couldn't lookup player.");
+		ggz_error_msg("Couldn't lookup player.");
 		return GGZDB_ERR_DB;
 	}
 }
@@ -197,7 +197,7 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
 
 	if(rc != SQLITE_OK) {
-		err_msg("Couldn't update player.");
+		ggz_error_msg("Couldn't update player.");
 		return GGZDB_ERR_DB;
 	}
 
@@ -233,11 +233,11 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 			pe->perms = sqlite3_column_int(res, 5);
 			return GGZDB_NO_ERROR;
 		} else {
-			err_msg("No entries found.");
+			ggz_error_msg("No entries found.");
 			return GGZDB_NO_ERROR;
 		}
 	} else {
-		err_msg("Couldn't lookup player.");
+		ggz_error_msg("Couldn't lookup player.");
 		return GGZDB_ERR_DB;
 	}
 }

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 05/04/2002 (code moved from control.c)
  * Desc: General utility functions for ggzd
- * $Id: util.c 7665 2005-12-13 00:35:51Z jdorje $
+ * $Id: util.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -52,10 +52,10 @@ void check_path(const char* full_path)
 	DIR* dir;
 	
 	if ( (dir = opendir(full_path)) == NULL) {
-		dbg_msg(GGZ_DBG_CONFIGURATION,
+		ggz_debug(GGZ_DBG_CONFIGURATION,
 			"Couldn't open %s -- trying to create", full_path);
 		if (ggz_make_path(full_path) < 0)
-			err_sys_exit("Couldn't create %s", full_path);
+			ggz_error_sys_exit("Couldn't create %s", full_path);
 	} else /* Everything eas OK, so close it */
 		closedir(dir);
 }

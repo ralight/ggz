@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 10009 2008-05-26 22:37:19Z josef $
+ * $Id: room.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -158,7 +158,7 @@ GGZPlayerHandlerStatus room_list_send(GGZPlayer* player, int req_game,
 /* Initialize the first room */
 void room_initialize(void)
 {
-	dbg_msg(GGZ_DBG_ROOM, "Initializing room array");
+	ggz_debug(GGZ_DBG_ROOM, "Initializing room array");
 
 	room_info.num_rooms = 1;
 	room_info.count_rooms = 1;
@@ -182,7 +182,7 @@ void room_create_additional(void)
 {
 	int room_id;
 
-	dbg_msg(GGZ_DBG_ROOM, "Creating a new room");
+	ggz_debug(GGZ_DBG_ROOM, "Creating a new room");
 
 	room_id = room_info.num_rooms;
 
@@ -255,7 +255,7 @@ void room_remove(int room)
 		return;
 	}
 
-	dbg_msg(GGZ_DBG_ROOM, "Marking room %i for removal", room);
+	ggz_debug(GGZ_DBG_ROOM, "Marking room %i for removal", room);
 
 	/* TODO: need global event enqueue function (for server-wide events) */
 
@@ -285,7 +285,7 @@ void room_remove_really(int old_room)
 		rooms[old_room].removal_done = 1;
 		pthread_rwlock_unlock(&rooms[old_room].lock);
 
-		dbg_msg(GGZ_DBG_ROOM, "Delete room %i entirely", old_room);
+		ggz_debug(GGZ_DBG_ROOM, "Delete room %i entirely", old_room);
 
 		/* For notification, see ROOM_UPDATE_CLOSE */
 		for (i = 0; i < room_info.num_rooms; i++) {
@@ -463,7 +463,7 @@ GGZClientReqError room_join(GGZPlayer* player, const int room)
 				rooms[old_room].players[i] = last;
 				break;
 			}
-		dbg_msg(GGZ_DBG_ROOM,
+		ggz_debug(GGZ_DBG_ROOM,
 			"Room %d player count = %d", old_room, count);
 	}
 
@@ -483,7 +483,7 @@ GGZClientReqError room_join(GGZPlayer* player, const int room)
 		count = ++ rooms[room].player_count;
 		rooms[room].last_player_change = time(NULL);
 		rooms[room].players[count-1] = player;
-		dbg_msg(GGZ_DBG_ROOM, "Room %d player count = %d", room, count);
+		ggz_debug(GGZ_DBG_ROOM, "Room %d player count = %d", room, count);
 	}
 
 	stats_rt_report();
@@ -509,7 +509,7 @@ GGZClientReqError room_join(GGZPlayer* player, const int room)
 /* Notify clients that someone has entered/left the room */
 static void room_notify_change(char* name, const int old, const int new)
 {
-	dbg_msg(GGZ_DBG_ROOM, "%s moved from room %d to %d", name, old, new);
+	ggz_debug(GGZ_DBG_ROOM, "%s moved from room %d to %d", name, old, new);
 
 	if (old != -1) {
 		/* Send DELETE update to old room */
@@ -652,7 +652,7 @@ void room_restore(int room)
 		ggz_free(game_name);
 
 		if (owners != NULL) {
-			dbg_msg(GGZ_DBG_ROOM, "Restore games for room %d...", room);
+			ggz_debug(GGZ_DBG_ROOM, "Restore games for room %d...", room);
 
 			for(entry = ggz_list_head(owners); entry; entry = ggz_list_next(entry)) {
 				sp = ggz_list_get_data(entry);
@@ -668,7 +668,7 @@ void room_restore(int room)
 				int seats = ggz_numberlist_get_max(&game_types[game_type].player_allow_list);
 				pthread_rwlock_unlock(&game_types[game_type].lock);
 
-				dbg_msg(GGZ_DBG_ROOM, "- owner %s with %d seats", sp->owner, seats);
+				ggz_debug(GGZ_DBG_ROOM, "- owner %s with %d seats", sp->owner, seats);
 
 				table->num_seats = seats;
 				if (seats > 0) {

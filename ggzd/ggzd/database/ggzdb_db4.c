@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db4 sytle database
- * $Id: ggzdb_db4.c 10044 2008-06-22 08:38:32Z josef $
+ * $Id: ggzdb_db4.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -68,10 +68,10 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	}
 
 	if(db_env_create(&db_e, 0) != 0) {
-		err_sys("db_env_create() failed in _ggzdb_init()");
+		ggz_error_sys("db_env_create() failed in _ggzdb_init()");
 		return GGZ_ERROR;
 	} else if (db_e->open(db_e, connection.datadir, flags , 0600) != 0) {
-		err_sys("db_e->open() failed in _ggzdb_init(%s)", connection.datadir);
+		ggz_error_sys("db_e->open() failed in _ggzdb_init(%s)", connection.datadir);
 		return GGZ_ERROR;
 	}
 
@@ -141,14 +141,14 @@ GGZDBResult _ggzdb_init_player(void)
 
 	/* Open the database file */
 	if(db_create(&db_p, db_e, 0) != 0)
-		err_sys_exit("db_create() failed in _ggzdb_init_player()");
+		ggz_error_sys_exit("db_create() failed in _ggzdb_init_player()");
 #if DB_VERSION_MINOR >= 1
 	/*flags |= DB_AUTO_COMMIT;*/
 	if (db_p->open(db_p, NULL, dbname, NULL, DB_BTREE, flags, 0600) != 0)
 #else
 	if (db_p->open(db_p, dbname, NULL, DB_BTREE, flags, 0600) != 0)
 #endif
-		err_sys_exit("db_p->open() failed in _ggzdb_init_player()");
+		ggz_error_sys_exit("db_p->open() failed in _ggzdb_init_player()");
 
 	/* Add a marker entry for our next UID */
 	marker.user_id = 1;
@@ -184,7 +184,7 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	if (result == DB_KEYEXIST)
 		return GGZDB_ERR_DUPKEY;
 	else if (result != 0) {
-		err_sys("put failed in _ggzdb_player_add()");
+		ggz_error_sys("put failed in _ggzdb_player_add()");
 		return GGZDB_ERR_DB;
 	}
 
@@ -214,7 +214,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	if (result == DB_NOTFOUND)
 		return GGZDB_ERR_NOTFOUND;
 	else if (result != 0) {
-		err_sys("get failed in _ggzdb_player_get()");
+		ggz_error_sys("get failed in _ggzdb_player_get()");
 		return GGZDB_ERR_DB;
 	}
 
@@ -241,7 +241,7 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	data.flags = DB_DBT_USERMEM;
 
 	if (db_p->put(db_p, NULL, &key, &data, 0) != 0) {
-		err_sys("put failed in _ggzdb_player_update()");
+		ggz_error_sys("put failed in _ggzdb_player_update()");
 		return GGZDB_ERR_DB;
 	}
 
@@ -283,7 +283,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 
 	if(db_c == NULL
 	   && db_p->cursor(db_p, NULL, &db_c, 0) != 0) {
-		err_sys("Failed to create db4 cursor");
+		ggz_error_sys("Failed to create db4 cursor");
 		return GGZDB_ERR_DB;
 	}
 
@@ -295,7 +295,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 	data.size = sizeof(ggzdbPlayerEntry);
 	data.flags = DB_DBT_MALLOC;
 	if(db_c->c_get(db_c, &key, &data, DB_FIRST) != 0) {
-		err_sys("Failed to get DB_FIRST record");
+		ggz_error_sys("Failed to get DB_FIRST record");
 		return GGZDB_ERR_DB;
 	}
 
@@ -314,7 +314,7 @@ GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 	DBT key, data;
 
 	if(db_c == NULL)
-		err_sys_exit("get_next called before get_first, dummy");
+		ggz_error_sys_exit("get_next called before get_first, dummy");
 
 	/* Build the two DBT structures */
 	memset(&key, 0, sizeof(DBT));
@@ -327,7 +327,7 @@ GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 	if (result == DB_NOTFOUND)
 		return GGZDB_ERR_NOTFOUND;
 	else if (result != 0) {
-		err_sys("Failed to get DB_NEXT record");
+		ggz_error_sys("Failed to get DB_NEXT record");
 		return GGZDB_ERR_DB;
 	}
 
@@ -341,7 +341,7 @@ GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 void _ggzdb_player_drop_cursor(void)
 {
 	if(db_c == NULL)
-		err_sys_exit("drop_cursor called before get_first, dummy");
+		ggz_error_sys_exit("drop_cursor called before get_first, dummy");
 	db_c->c_close(db_c);
 	db_c = NULL;
 }
@@ -364,14 +364,14 @@ GGZDBResult _ggzdb_init_stats(void)
 
 	/* Open the database file */
 	if (db_create(&db_s, db_e, 0) != 0)
-		err_sys_exit("db_create() failed in _ggzdb_init_stats()");
+		ggz_error_sys_exit("db_create() failed in _ggzdb_init_stats()");
 #if DB_VERSION_MINOR >= 1
 	/*flags |= DB_AUTO_COMMIT;*/
 	if (db_s->open(db_s, NULL, dbname, NULL, DB_BTREE, flags, 0600) != 0)
 #else
 	if (db_s->open(db_s, dbname, NULL, DB_BTREE, flags, 0600) != 0)
 #endif
-		err_sys_exit("db_s->open() failed in _ggzdb_init_stats()");
+		ggz_error_sys_exit("db_s->open() failed in _ggzdb_init_stats()");
 
 	return GGZDB_NO_ERROR;
 }
@@ -398,7 +398,7 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 	if (result == DB_NOTFOUND)
 		return GGZDB_ERR_NOTFOUND;
 	else if (result != 0) {
-		err_sys("get failed in _ggzdb_stats_lookup()");
+		ggz_error_sys("get failed in _ggzdb_stats_lookup()");
 		return GGZDB_ERR_DB;
 	}
 
@@ -427,7 +427,7 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 	data.flags = DB_DBT_USERMEM;
 
 	if (db_s->put(db_s, NULL, &key, &data, 0) != 0) {
-		err_sys("put failed in _ggzdb_stats_update()");
+		ggz_error_sys("put failed in _ggzdb_stats_update()");
 		return GGZDB_ERR_DB;
 	}
 

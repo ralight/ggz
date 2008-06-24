@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 9977 2008-05-09 23:46:16Z josef $
+ * $Id: net.c 10067 2008-06-24 22:01:07Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -209,7 +209,7 @@ GGZNetIO* net_new(int fd, GGZClient *client)
 
         /* Init parser */
         if (!(net->parser = XML_ParserCreate(NULL)))
-                err_sys_exit("Couldn't allocate memory for XML parser");
+                ggz_error_sys_exit("Couldn't allocate memory for XML parser");
 
         /* Setup handlers for tags */
         XML_SetElementHandler(net->parser, _net_parse_start_tag, 
@@ -739,13 +739,13 @@ GGZReturn net_send_chat(GGZNetIO *net, GGZChatType type,
 	if (type == GGZ_CHAT_BEEP) {
 		/* A beep chat can't have a message. */
 		if (msg) {
-			err_msg("net_send_chat: invalid message.");
+			ggz_error_msg("net_send_chat: invalid message.");
 			msg = NULL;
 		}
 	} else {
 		/* All other chats must have messages. */
 		if (!msg) {
-			err_msg("net_send_chat: missing message.");
+			ggz_error_msg("net_send_chat: missing message.");
 			msg = "";
 		}
 	}
@@ -852,7 +852,7 @@ GGZReturn net_send_player_update(GGZNetIO *net, GGZPlayerUpdateType opcode,
 		/* This returns with player's write lock held, so drop it  */
 		player = hash_player_lookup(name);
 		if (!player) {
-			err_msg("Player lookup failed!");
+			ggz_error_msg("Player lookup failed!");
 			return GGZ_OK;
 		}
 		pthread_rwlock_rdlock(&player->stats_lock);
@@ -869,7 +869,7 @@ GGZReturn net_send_player_update(GGZNetIO *net, GGZPlayerUpdateType opcode,
 		/* This returns with player's write lock held, so drop it  */
 		player = hash_player_lookup(name);
 		if (!player) {
-			err_msg("Player lookup failed!");
+			ggz_error_msg("Player lookup failed!");
 			return GGZ_OK;
 		}
 		p2 = *player;
@@ -882,7 +882,7 @@ GGZReturn net_send_player_update(GGZNetIO *net, GGZPlayerUpdateType opcode,
 		/* This returns with player's write lock held, so drop it  */
 		player = hash_player_lookup(name);
 		if (!player) {
-			err_msg("Player lookup failed!");
+			ggz_error_msg("Player lookup failed!");
 			return GGZ_OK;
 		}
 		pthread_rwlock_rdlock(&player->stats_lock);
@@ -896,7 +896,7 @@ GGZReturn net_send_player_update(GGZNetIO *net, GGZPlayerUpdateType opcode,
 	case GGZ_PLAYER_UPDATE_PERMS:
 		player = hash_player_lookup(name);
 		if (!player) {
-			err_msg("Player lookup failed!");
+			ggz_error_msg("Player lookup failed!");
 			return GGZ_OK;
 		}
 		p2 = *player;
@@ -908,7 +908,7 @@ GGZReturn net_send_player_update(GGZNetIO *net, GGZPlayerUpdateType opcode,
 		return _net_send_line(net, "</UPDATE>");
 	}
 
-	err_msg("net_send_player_update: unknown opcode %d.", opcode);
+	ggz_error_msg("net_send_player_update: unknown opcode %d.", opcode);
 	return GGZ_ERROR;
 }
 
@@ -1069,14 +1069,14 @@ static bool net_data_is_pending(GGZNetIO *net)
 	struct pollfd fd[1] = {{net->fd, POLLIN, 0}};
 
 	if (net && net->fd != -1) {
-		dbg_msg(GGZ_DBG_CONNECTION, "Checking for net events");
+		ggz_debug(GGZ_DBG_CONNECTION, "Checking for net events");
 		result = poll(fd, 1, 0);
 		if (result < 0) {
 			if (errno == EINTR) {
 				/* Ignore interruptions */
 				return false;
 			} else {
-				err_sys_exit("poll failed in ggzcore_server_data_is_pending");
+				ggz_error_sys_exit("poll failed in ggzcore_server_data_is_pending");
 			}
 
 		} else if (result > 0) {
@@ -1095,7 +1095,7 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 	char *buf;
 	int len, done;
 
-	/* dbg_msg(GGZ_DBG_XML, "Parsing...");*/
+	/* ggz_debug(GGZ_DBG_XML, "Parsing...");*/
 
 	/* We're already in a parse call, and XML parsing is *not* reentrant */
 	if (net->parsing) 
@@ -1106,7 +1106,7 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 
 	/* Get a buffer to hold the data */
 	if (!(buf = XML_GetBuffer(net->parser, BUFFSIZE)))
-		err_sys_exit("Couldn't allocate buffer");
+		ggz_error_sys_exit("Couldn't allocate buffer");
 
 	/* Read in data from socket */
 	if ( (len = ggz_tls_read(net->fd, buf, BUFFSIZE)) < 0) {
@@ -1118,7 +1118,7 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 			return GGZ_REQ_OK;
 		}
 
-		dbg_msg(GGZ_DBG_CONNECTION, "Network error reading data (%d)", errno);
+		ggz_debug(GGZ_DBG_CONNECTION, "Network error reading data (%d)", errno);
 		return GGZ_REQ_DISCONNECT;
 	}
 
@@ -1129,11 +1129,11 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 
 	/* If client disconnected..*/
 	if (done) {
-		dbg_msg(GGZ_DBG_CONNECTION, "Client from %s disconnected", 
+		ggz_debug(GGZ_DBG_CONNECTION, "Client from %s disconnected", 
 			net->client->addr);
 	}
 	else if (!XML_ParseBuffer(net->parser, len, done)) {
-		dbg_msg(GGZ_DBG_XML, "Parse error at line %d, col %d:%s",
+		ggz_debug(GGZ_DBG_XML, "Parse error at line %d, col %d:%s",
 			XML_GetCurrentLineNumber(net->parser),
 			XML_GetCurrentColumnNumber(net->parser),
 			XML_ErrorString(XML_GetErrorCode(net->parser)));
@@ -1151,7 +1151,7 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 		net->byte_count += len;
 		/* If we haven't seen a tag in a while, it's an error */
 		if (net->byte_count > MAX_CHAT_LEN) {
-			dbg_msg(GGZ_DBG_XML, "Error: player overflowed XML buffer");
+			ggz_debug(GGZ_DBG_XML, "Error: player overflowed XML buffer");
 
 			_net_send_result(net, "protocol", E_BAD_OPTIONS);
 			done = 1;
@@ -1172,7 +1172,7 @@ static void _net_parse_start_tag(void *data, const char *el,
 	GGZNetIO *net = (GGZNetIO*)data;
 	GGZXMLElement *element;
 
-	dbg_msg(GGZ_DBG_XML, "New %s element", el);
+	ggz_debug(GGZ_DBG_XML, "New %s element", el);
 
 	/* Create new element object */
 	element = _net_new_element(el, attr);
@@ -1194,7 +1194,7 @@ static void _net_parse_end_tag(void *data, const char *el)
 	element = ggz_stack_pop(net->stack);
 
 	/* Process tag */
-	dbg_msg(GGZ_DBG_XML, "Handling %s element", element->tag);
+	ggz_debug(GGZ_DBG_XML, "Handling %s element", element->tag);
 	if (element->process)
 		element->process(net, element);
 
@@ -1997,7 +1997,7 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 			if (ggzdb_player_get(&player) != 0) {
 				/* This is some kind of error...but for now we
 				   just cover it up. */
-				dbg_msg(GGZ_DBG_TABLE,
+				ggz_debug(GGZ_DBG_TABLE,
 					"Invalid name '%s' sent for reserved "
 					"seat.  Changing it to an open seat.",
 					player.handle);
@@ -2229,7 +2229,7 @@ static bool check_playerconn(GGZNetIO *net, const char *type)
 		return true;
 
 	/* This should only be caused by a malicious client. */
-	dbg_msg(GGZ_DBG_CONNECTION,
+	ggz_debug(GGZ_DBG_CONNECTION,
 		"Client requested %s before login.", type);
 
 	_net_send_result(net, type, E_NOT_LOGGED_IN);

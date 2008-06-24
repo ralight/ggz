@@ -3,7 +3,7 @@
  *  Copyright (C) 1996 Thomas Koenig
  *
  *  Modified 6/24/00 by Brent Hendricks for use with the GGZ project.
- *  $Id: daemon.c 5928 2004-02-15 02:43:16Z jdorje $
+ *  $Id: daemon.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ static GGZReturn lock_fd(int fd)
 	lock.l_len = 0;
 
 	if (fcntl(fd, F_SETLK, &lock) < 0) {
-		err_sys("failed fcntl call");
+		ggz_error_sys("failed fcntl call");
 		return GGZ_ERROR;
 	} else {
 		return GGZ_OK;
@@ -67,7 +67,7 @@ void daemon_init(void)
 	char pid_file[strlen(opt.data_dir) + strlen(pid_filename) + 2];
 
 	if ((pid = fork()) < 0)
-		err_sys_exit("fork failed");
+		ggz_error_sys_exit("fork failed");
 	else if (pid != 0)
 		exit(0);
 
@@ -90,13 +90,13 @@ void daemon_init(void)
 			S_IWUSR | S_IRUSR | S_IRGRP | S_IROTH)) == -1) {
 		
 		if (errno != EEXIST)
-			err_sys_exit("Cannot open %s", pid_file);
+			ggz_error_sys_exit("Cannot open %s", pid_file);
 		
 		if ( (fd = open(pid_file, O_RDWR)) < 0)
-			err_sys_exit("Cannot open %s", pid_file);
+			ggz_error_sys_exit("Cannot open %s", pid_file);
 		
 		if ( (fp = fdopen(fd, "rw")) == NULL)
-			err_sys_exit("Cannot open %s for reading", pid_file);
+			ggz_error_sys_exit("Cannot open %s for reading", pid_file);
 
 		pid = -1;
 		if ((fscanf(fp, "%d", &pid) != 1) || (pid == getpid())
@@ -104,10 +104,10 @@ void daemon_init(void)
 				
 			log_msg(GGZ_LOG_NOTICE, "Removing stale lockfile for pid %d", pid);
 			if (unlink(pid_file) == -1)
-				err_sys_exit("Cannot unlink %s", pid_file);
+				ggz_error_sys_exit("Cannot unlink %s", pid_file);
 
 		} else 
-			err_sys_exit("Another ggzd already running with pid %d!", pid);
+			ggz_error_sys_exit("Another ggzd already running with pid %d!", pid);
 		
 		fclose(fp);
 		unlink(pid_file);
@@ -115,14 +115,14 @@ void daemon_init(void)
 			  S_IWUSR | S_IRUSR | S_IRGRP | S_IROTH);
 				
 		if (fd == -1)
-			err_sys_exit("Cannot open %s the second time round", pid_file);
+			ggz_error_sys_exit("Cannot open %s the second time round", pid_file);
 	}
 
 	if (lock_fd(fd) == GGZ_ERROR)
-		err_sys_exit("Cannot lock %s", pid_file);
+		ggz_error_sys_exit("Cannot lock %s", pid_file);
 	
 	if ( (fp = fdopen(fd, "w")) == NULL)
-		err_sys_exit("Special weirdness: fdopen failed");
+		ggz_error_sys_exit("Special weirdness: fdopen failed");
 	
 	fprintf(fp, "%d\n", getpid());
 	

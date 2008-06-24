@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 10009 2008-05-26 22:37:19Z josef $
+ * $Id: err_func.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -166,7 +166,7 @@ static void debug_handler(int priority, const char *msg)
 	if(log_info.options & GGZ_LOGOPT_INC_TIME) {
 		time(&now);
 		if(localtime_r(&now, &localtm) == NULL)
-			/* Can't err_sys_exit, might cause a loop */
+			/* Can't ggz_error_sys_exit, might cause a loop */
 			kill_me = 1;
 		else
 			strftime(hdr + strlen(hdr), sizeof(hdr) - strlen(hdr),
@@ -232,7 +232,7 @@ int logfile_set_facility(char *facstr)
 
 	if(fac >= 0) {
 		log_info.syslog_facility = fac;
-		dbg_msg(GGZ_DBG_CONFIGURATION,
+		ggz_debug(GGZ_DBG_CONFIGURATION,
 			"syslogd facility set to %s", facstr);
 	}
 
@@ -259,7 +259,7 @@ void logfile_initialize(void)
 			log_info.logfile = log_open_logfile(log_info.log_fname);
 			if(log_info.logfile == NULL) {
 				if(opt.foreground)
-					err_msg("Cannot open logfile for writing");
+					ggz_error_msg("Cannot open logfile for writing");
 			} else {
 				log_info.options &= ~GGZ_LOGOPT_USE_SYSLOG;
 				if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
@@ -295,7 +295,7 @@ void logfile_initialize(void)
 		if(strcasecmp("syslogd", log_info.dbg_fname)) {
 			log_info.dbgfile = log_open_logfile(log_info.dbg_fname);
 			if(log_info.dbgfile == NULL)
-				err_msg("Cannot open dbgfile for writing");
+				ggz_error_msg("Cannot open dbgfile for writing");
 			else {
 				log_info.options &= ~GGZ_DBGOPT_USE_SYSLOG;
 				if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
@@ -312,7 +312,7 @@ void logfile_initialize(void)
 #endif
 
 	log_info.log_initialized = 1;
-	dbg_msg(GGZ_DBG_CONFIGURATION, "Logfiles initialized");
+	ggz_debug(GGZ_DBG_CONFIGURATION, "Logfiles initialized");
 }
 
 

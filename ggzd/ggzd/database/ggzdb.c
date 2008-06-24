@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 10053 2008-06-23 07:29:52Z josef $
+ * $Id: ggzdb.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -113,7 +113,7 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 		if((vfile = fopen(fname, "r")) == NULL) {
 			/* File not found, so we can create it */
 			if((vfile = fopen(fname, "w")) == NULL)
-				err_sys_exit("fopen(w) failed in ggzdb_init()");
+				ggz_error_sys_exit("fopen(w) failed in ggzdb_init()");
 			fprintf(vfile, "%s", GGZDB_VERSION_ID);
 			version_ok = 1;
 		} else {
@@ -132,7 +132,7 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 			       vid, GGZDB_VERSION_ID);
 			printf("Database location: %s\n", fname);
 			exit(-1);
-			/* FIXME: we should be able to rely on ggz_err_sys() */
+			/* FIXME: we should be able to rely on ggz_ggz_error_sys() */
 		}
 	}
 
@@ -150,7 +150,7 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 		GGZDEXECMODDIR, backend);
 	handle = dlopen(backendmodule, RTLD_NOW);
 	if(!handle) {
-		err_sys_exit("%s (%s) is not a suitable database module (%s)",
+		ggz_error_sys_exit("%s (%s) is not a suitable database module (%s)",
 			backend, backendmodule, dlerror());
 	}
 
@@ -187,7 +187,7 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 	|| ((_ggzdb_reconfiguration_room = dlsym(handle, "_ggzdb_reconfiguration_room")) == NULL)
 	)
 	{
-		err_sys_exit("%s is an invalid database module (%s)",
+		ggz_error_sys_exit("%s is an invalid database module (%s)",
 			backend, dlerror());
 	}
 
@@ -298,7 +298,7 @@ GGZDBResult ggzdb_player_get(ggzdbPlayerEntry *pe)
 	/* Lowercase player's name for comparison, saving original */
 	ggzdb_player_lowercase(pe, orig);
 
-	dbg_msg(GGZ_DBG_CONNECTION, "Getting player (%s) as (%s)..", orig, pe->handle);
+	ggz_debug(GGZ_DBG_CONNECTION, "Getting player (%s) as (%s)..", orig, pe->handle);
 	
 	_ggzdb_enter();
 	if(player_needs_init)
@@ -307,7 +307,7 @@ GGZDBResult ggzdb_player_get(ggzdbPlayerEntry *pe)
 	if(rc == GGZDB_NO_ERROR)
 		rc = _ggzdb_player_get(pe);
 
-	dbg_msg(GGZ_DBG_CONNECTION, "result was %d", rc);
+	ggz_debug(GGZ_DBG_CONNECTION, "result was %d", rc);
 
 	/* Restore the original name */
 	strcpy(pe->handle, orig);
@@ -407,7 +407,7 @@ GGZDBResult ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 {
 	GGZDBResult rc = GGZDB_NO_ERROR;
 
-	dbg_msg(GGZ_DBG_CONNECTION, "Getting player %s's extended info.", pe->handle);
+	ggz_debug(GGZ_DBG_CONNECTION, "Getting player %s's extended info.", pe->handle);
 	
 	_ggzdb_enter();
 	if(player_needs_init)
@@ -416,7 +416,7 @@ GGZDBResult ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 	if(rc == GGZDB_NO_ERROR)
 		rc = _ggzdb_player_get_extended(pe);
 
-	dbg_msg(GGZ_DBG_CONNECTION, "result was %d", rc);
+	ggz_debug(GGZ_DBG_CONNECTION, "result was %d", rc);
 
 	_ggzdb_exit();
 	return rc;
@@ -702,7 +702,7 @@ int ggzdb_compare_password(const char *input, const char *password)
 		return ret;
 	}
 
-	err_msg_exit("Unknown hashing type '%s'", db_hashing);
+	ggz_error_msg_exit("Unknown hashing type '%s'", db_hashing);
 	
 	return -1;
 }

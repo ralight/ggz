@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 10046 2008-06-22 13:55:58Z oojah $
+ * $Id: client.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -77,7 +77,7 @@ void client_handler_launch(int sock)
 	status = pthread_create(&thread, NULL, client_thread_init, arg_ptr);
 	if (status != 0) {
 		errno = status;
-		err_sys_exit("pthread_create error");
+		ggz_error_sys_exit("pthread_create error");
 	}
 }
 
@@ -104,7 +104,7 @@ static void* client_thread_init(void *arg_ptr)
 	status = pthread_detach(pthread_self());
 	if (status != 0) {
 		errno = status;
-		err_sys_exit("pthread_detach error");
+		ggz_error_sys_exit("pthread_detach error");
 	}
 
 	/* Initialize client data */
@@ -143,7 +143,7 @@ static void* client_thread_init(void *arg_ptr)
 	state.players++;
 	pthread_rwlock_unlock(&state.lock);
 
-	dbg_msg(GGZ_DBG_CONNECTION, "New client connected from %s", 
+	ggz_debug(GGZ_DBG_CONNECTION, "New client connected from %s", 
 		client->addr);
 
 	/* Main client event loop */
@@ -277,7 +277,7 @@ static void client_loop(GGZClient* client)
 		status = select(fd + 1, &read_fd_set, NULL, NULL, select_tv);
 		if (status <= 0) {
 			if (status != 0 && errno != EINTR)
-				err_sys_exit("select error in client_loop()");
+				ggz_error_sys_exit("select error in client_loop()");
 		}
 
 		/* Check for message from client */
@@ -300,7 +300,7 @@ static void client_loop(GGZClient* client)
 	/* Don't want signals interrupting after this point */
 	pthread_sigmask(SIG_BLOCK, &set, NULL);
 
-	dbg_msg(GGZ_DBG_CONNECTION, "Client loop finished");
+	ggz_debug(GGZ_DBG_CONNECTION, "Client loop finished");
 
 	/* Force disconnect, but log out players first */
 	if (client->type == GGZ_CLIENT_PLAYER) {
@@ -325,20 +325,20 @@ void client_create_channel(GGZClient *client)
 	GGZPlayer *player;
 	int fd;
 
-	dbg_msg(GGZ_DBG_CONNECTION, "Forming direct game connection");
+	ggz_debug(GGZ_DBG_CONNECTION, "Forming direct game connection");
 
 	/* FIXME: this is just a proof of concept hack */
-	dbg_msg(GGZ_DBG_CONNECTION, "Direct ID: %s", (char*)client->data);
+	ggz_debug(GGZ_DBG_CONNECTION, "Direct ID: %s", (char*)client->data);
 	fd = net_get_fd(client->net);
 	player = hash_player_lookup(client->data);
 	if (player) {
-		dbg_msg(GGZ_DBG_CONNECTION, "Found player %s", player->name);
+		ggz_debug(GGZ_DBG_CONNECTION, "Found player %s", player->name);
 		player->game_fd = fd;
 		pthread_rwlock_unlock(&player->lock);
-		dbg_msg(GGZ_DBG_CONNECTION, "Direct connection on fd %d", fd);
+		ggz_debug(GGZ_DBG_CONNECTION, "Direct connection on fd %d", fd);
 	}
 	else 
-		dbg_msg(GGZ_DBG_CONNECTION, "No player %s", (char*)client->data);
+		ggz_debug(GGZ_DBG_CONNECTION, "No player %s", (char*)client->data);
 }
 
 
@@ -360,7 +360,7 @@ void client_set_type(GGZClient *client, GGZClientType type)
 	}
 
 	/* If we get here, it's an error. */
-	err_msg("client_set_type: illegal type %d.", type);
+	ggz_error_msg("client_set_type: illegal type %d.", type);
 }
 
 

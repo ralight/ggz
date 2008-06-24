@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 10009 2008-05-26 22:37:19Z josef $
+ * $Id: control.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -154,7 +154,7 @@ static void init_data(void)
 	connection.hashencoding = opt.dbhashencoding;
 
 	if (ggzdb_init(connection, false) != GGZ_OK)
-		err_msg_exit("*** Database initialization failed");
+		ggz_error_msg_exit("*** Database initialization failed");
 
 	hash_initialize();
 }
@@ -508,7 +508,7 @@ static void reconfiguration_handle(void)
 			pending -= diff;
 			offset += diff;
 
-			dbg_msg(GGZ_DBG_MISC, "* inotify: file %s mask %i", filename, ev.mask);
+			ggz_debug(GGZ_DBG_MISC, "* inotify: file %s mask %i", filename, ev.mask);
 
 			if(strncmp(filename + strlen(filename) - 5, ".room", 5))
 			{
@@ -550,7 +550,7 @@ static void reconfiguration_handle(void)
 			return;
 		}
 
-		dbg_msg(GGZ_DBG_MISC, "* fam: file %s code %i", fe.filename, fe.code);
+		ggz_debug(GGZ_DBG_MISC, "* fam: file %s code %i", fe.filename, fe.code);
 
 		if(strncmp(fe.filename + strlen(fe.filename) - 5, ".room", 5))
 		{
@@ -593,7 +593,7 @@ int main(int argc, char *argv[])
 
 	/* Refuse to run as root */
 	if(geteuid() == 0) {
-		err_msg_exit("The GGZ server should not be run as root.");
+		ggz_error_msg_exit("The GGZ server should not be run as root.");
 	}
 
 	logfile_preinitialize();
@@ -605,11 +605,11 @@ int main(int argc, char *argv[])
 
 	logfile_initialize();
 
-	dbg_msg(GGZ_DBG_CONFIGURATION, "Global conf file: %s/ggzd.conf", GGZDCONFDIR);
-	dbg_msg(GGZ_DBG_CONFIGURATION, "Local conf file: %s", opt.local_conf);
-	dbg_msg(GGZ_DBG_CONFIGURATION, "Log level: %0X", log_info.log_types);
-	dbg_msg(GGZ_DBG_CONFIGURATION, "Main Port: %d", opt.main_port);
-	dbg_msg(GGZ_DBG_CONFIGURATION, "Encryption in use: %d", opt.tls_use);
+	ggz_debug(GGZ_DBG_CONFIGURATION, "Global conf file: %s/ggzd.conf", GGZDCONFDIR);
+	ggz_debug(GGZ_DBG_CONFIGURATION, "Local conf file: %s", opt.local_conf);
+	ggz_debug(GGZ_DBG_CONFIGURATION, "Log level: %0X", log_info.log_types);
+	ggz_debug(GGZ_DBG_CONFIGURATION, "Main Port: %d", opt.main_port);
+	ggz_debug(GGZ_DBG_CONFIGURATION, "Encryption in use: %d", opt.tls_use);
 
 	init_dirs();
 	init_data();
@@ -665,19 +665,19 @@ int main(int argc, char *argv[])
 	main_sock = ggz_make_socket(GGZ_SOCK_SERVER, opt.main_port, opt.interface);
 	if (main_sock < 0) {
 		fprintf(stderr, "Could not bind to port %i\n", opt.main_port);
-		err_msg_exit("Could not bind to port %i", opt.main_port);
+		ggz_error_msg_exit("Could not bind to port %i", opt.main_port);
 	}
 
 	/* Make socket non-blocking */
 	if ( (flags = fcntl(main_sock, F_GETFL, 0)) < 0)
-		err_sys_exit("F_GETFL error");
+		ggz_error_sys_exit("F_GETFL error");
 	flags |= O_NONBLOCK;
 	if (fcntl(main_sock, F_SETFL, flags) < 0)
-		err_sys_exit("F_SETFL error");
+		ggz_error_sys_exit("F_SETFL error");
 
 	/* Start accepting connections */
 	if (listen(main_sock, opt.max_clients) < 0)
-		err_sys_exit("Error listening to socket");
+		ggz_error_sys_exit("Error listening to socket");
 
 	log_msg(GGZ_LOG_NOTICE,
 		"GGZ server initialized and ready for player connections");
@@ -750,7 +750,7 @@ int main(int argc, char *argv[])
 				}
 				continue;
 			} else
-				err_sys_exit("select error in main()");
+				ggz_error_sys_exit("select error in main()");
 		} else if(status == 0) {
 			log_generate_update();
 			continue;
@@ -766,7 +766,7 @@ int main(int argc, char *argv[])
 					continue;
 					break;
 				default:
-					err_sys_exit("Error accepting connection");
+					ggz_error_sys_exit("Error accepting connection");
 				}
 			} else {
 				/* This is where to test for ignored IP addresses */
@@ -803,13 +803,13 @@ int main(int argc, char *argv[])
 		}
 		if(reconfigure_fd > 0) {
 			if(FD_ISSET(reconfigure_fd, &read_fd_set)) {
-				dbg_msg(GGZ_DBG_MISC, "reconfiguration monitor activated");
+				ggz_debug(GGZ_DBG_MISC, "reconfiguration monitor activated");
 				reconfiguration_handle();
 			}
 		}
 		if(reconfigure_db_fd > 0) {
 			if(FD_ISSET(reconfigure_db_fd, &read_fd_set)) {
-				dbg_msg(GGZ_DBG_MISC, "database reconfiguration monitor activated");
+				ggz_debug(GGZ_DBG_MISC, "database reconfiguration monitor activated");
 				reconfiguration_db_handle();
 			}
 		}

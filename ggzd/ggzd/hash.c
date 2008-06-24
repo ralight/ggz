@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/08/2000
  * Desc: Functions for handling the player name hash tables
- * $Id: hash.c 9246 2007-08-13 07:01:56Z josef $
+ * $Id: hash.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -201,7 +201,7 @@ void hash_player_delete(const char *orig_name)
 	/* Verrrry odd if it's not here, make a note */
 	if(hl == NULL) {
 		pthread_rwlock_unlock(&hash_list_lock[hash_num]);
-		err_msg("*NOTICE* - Player name hash table is corrupt!");
+		ggz_error_msg("*NOTICE* - Player name hash table is corrupt!");
 		return;
 	}
 
@@ -276,7 +276,7 @@ static void hash_dump_stats(void)
 	int i, max=0, min=999999, tot=0, num;
 	float avg;
 
-	dbg_msg(GGZ_DBG_MISC, "=-=-=- Hash table stats -=-=-=");
+	ggz_debug(GGZ_DBG_MISC, "=-=-=- Hash table stats -=-=-=");
 	for(i=0; i<HASH_NUM_LISTS; i++) {
 		num = hash_list_entries[i];
 		if(num > max)
@@ -284,14 +284,14 @@ static void hash_dump_stats(void)
 		if(num < min)
 			min = num;
 		tot += num;
-		dbg_msg(GGZ_DBG_LISTS, "  List %d has %d entries", i, num);
+		ggz_debug(GGZ_DBG_LISTS, "  List %d has %d entries", i, num);
 	}
 	avg = tot / (float)HASH_NUM_LISTS;
 
-	dbg_msg(GGZ_DBG_MISC, "  Total hash entries = %d", tot);
-	dbg_msg(GGZ_DBG_MISC, "  Minimum chain length = %d", min);
-	dbg_msg(GGZ_DBG_MISC, "  Maximum chain length = %d", max);
-	dbg_msg(GGZ_DBG_MISC, "  Average chain length = %0.2f", avg);
-	dbg_msg(GGZ_DBG_MISC, "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+	ggz_debug(GGZ_DBG_MISC, "  Total hash entries = %d", tot);
+	ggz_debug(GGZ_DBG_MISC, "  Minimum chain length = %d", min);
+	ggz_debug(GGZ_DBG_MISC, "  Maximum chain length = %d", max);
+	ggz_debug(GGZ_DBG_MISC, "  Average chain length = %0.2f", avg);
+	ggz_debug(GGZ_DBG_MISC, "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
 }
 #endif /*DEBUG*/

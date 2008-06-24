@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/3/00
  * Desc: Support functions for table seats
- * $Id: seats.c 5924 2004-02-14 22:14:26Z jdorje $
+ * $Id: seats.c 10067 2008-06-24 22:01:07Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -59,7 +59,7 @@ int seats_num(GGZTable* table)
 #  ifdef DEBUG
 	for (i = 0; i < table->num_seats; i++)
 		if (table->seat_types[i] == GGZ_SEAT_NONE) {
-			err_msg("Table has seat %d with type NONE.", i);
+			ggz_error_msg("Table has seat %d with type NONE.", i);
 			break;
 		}
 #  endif
