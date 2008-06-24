@@ -8,6 +8,6 @@ CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.ttt @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
 Homepage = http://www.ggzgamingzone.org/gameclients/tictactoe/
 ProtocolEngine = TicTacToe
-ProtocolVersion = 5
+ProtocolVersion = 5+dev
 Version = 0.0.6
 #SupportedGames = TicTacToe
