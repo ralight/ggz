@@ -82,6 +82,6 @@ void _ggzdmod_handle_reseat(GGZdMod * ggzdmod,
 			    int new_seat, int is_spectator);
 void _ggzdmod_handle_spectator_seat(GGZdMod * ggzdmod, GGZSeat *seat);
 void _ggzdmod_handle_state_response(GGZdMod * ggzdmod);
-void _ggzdmod_handle_savedgame(GGZdMod *ggzdmod, const char *savedgame);
+void _ggzdmod_handle_savedgame(GGZdMod *ggzdmod, char *savedgame);
 
 #endif /* GGZDMOD_MOD_H */

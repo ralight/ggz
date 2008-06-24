@@ -1905,7 +1905,7 @@ void _ggzdmod_handle_open_request(GGZdMod *ggzdmod, int seat_num)
 	call_handler(ggzdmod, GGZDMOD_EVENT_REQ_OPEN, &seat_num);
 }
 
-void _ggzdmod_handle_savedgame(GGZdMod *ggzdmod, const char *savedgame)
+void _ggzdmod_handle_savedgame(GGZdMod *ggzdmod, char *savedgame)
 {
-	call_handler(ggzdmod, GGZDMOD_EVENT_SAVEDGAME, (char *)savedgame);
+	call_handler(ggzdmod, GGZDMOD_EVENT_SAVEDGAME, savedgame);
 }
