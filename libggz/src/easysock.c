@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 10050 2008-06-22 23:31:49Z jdorje $
+ * $Id: easysock.c 10060 2008-06-24 17:26:10Z oojah $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -627,7 +627,7 @@ int ggz_read_string(const int sock, char *message, const unsigned int len)
 		return -1;
 	}
 	
-       	if ( (status = ggz_readn(sock, message, size)) < 0) {
+	if ( (status = ggz_readn(sock, message, size)) < 0) {
 		ggz_debug(GGZ_SOCKET_DEBUG, "Error receiving string: %s",
 			  strerror(errno));
 		if (_err_func)
@@ -854,8 +854,8 @@ int ggz_write_fd(int sock, int sendfd)
 	msg.msg_name = NULL;
 	msg.msg_namelen = 0;
 
-        /* We're just sending a fd, so it's a dummy byte */
-        iov[0].iov_base = "";
+	/* We're just sending a fd, so it's a dummy byte */
+	iov[0].iov_base = "";
 	iov[0].iov_len = 1;
 
 	msg.msg_iov = iov;
@@ -882,7 +882,7 @@ int ggz_read_fd(int sock, int *recvfd)
 	struct msghdr msg;
 	struct iovec iov[1];
 	ssize_t	n;
-        char dummy;
+	char dummy;
 #ifndef HAVE_MSGHDR_MSG_CONTROL
 	int newfd;
 #endif
@@ -905,7 +905,7 @@ int ggz_read_fd(int sock, int *recvfd)
 	msg.msg_name = NULL;
 	msg.msg_namelen = 0;
 
-        /* We're just sending a fd, so it's a dummy byte */
+	/* We're just sending a fd, so it's a dummy byte */
 	iov[0].iov_base = &dummy;
 	iov[0].iov_len = 1;
 
@@ -919,7 +919,7 @@ int ggz_read_fd(int sock, int *recvfd)
 		return -1;
 	}
 
-        if (n == 0) {
+	if (n == 0) {
 		ggz_debug(GGZ_SOCKET_DEBUG, "Warning: fd is closed.");
 		if (_err_func)
 			(*_err_func) ("fd closed", GGZ_IO_READ, sock, GGZ_DATA_FD);
@@ -927,7 +927,7 @@ int ggz_read_fd(int sock, int *recvfd)
 	}
 
 #ifdef	HAVE_MSGHDR_MSG_CONTROL
-        if ( (cmptr = CMSG_FIRSTHDR(&msg)) == NULL
+	if ( (cmptr = CMSG_FIRSTHDR(&msg)) == NULL
 	     || cmptr->cmsg_len != CMSG_LEN(sizeof(int))) {
 		ggz_debug(GGZ_SOCKET_DEBUG, "Bad cmsg (length).");
 		if (_err_func)
@@ -964,7 +964,7 @@ int ggz_read_fd(int sock, int *recvfd)
 #endif
 	
 	ggz_debug(GGZ_SOCKET_DEBUG, "Received \"%d\" : fd.", *recvfd);
-        return 0;
+	return 0;
 #else
 	return -1;
 #endif
