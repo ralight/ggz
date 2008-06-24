@@ -321,7 +321,9 @@ typedef enum {
 	GGZDMOD_EVENT_SPECTATOR_DATA,
 
 	/** @brief Data about saved games avaiable from ggzd
-         *  This message is answer to saved games request.
+         *  This message is sent to the client as an instruction to load a
+	 *  saved game.  The filename to be loaded (absolute path) is
+	 *  passed in as the event data (a char*).
 	 */
 	GGZDMOD_EVENT_SAVEDGAME,
 
