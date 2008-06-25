@@ -53,7 +53,7 @@ dnl   AC_GGZ_REMOVEDUPS - eliminate duplicate list elements
 dnl
 
 # Version number of this script
-# serial 0014
+# serial 0015
 
 dnl ------------------------------------------------------------------------
 dnl Find a directory containing a single file
