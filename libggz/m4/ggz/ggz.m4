@@ -957,7 +957,6 @@ if test "$have_ggzdconf" = yes || test "x$2" = "xforce"; then
 	AC_SUBST(ggzdconfdir)
 
 	ggzddatadir=${datadir}/${PACKAGE}
-	AC_DEFINE_UNQUOTED(GGZDDATADIR, "${ggzddatadir}", [Game server data directory])
 	AC_SUBST(ggzddatadir)
 
 	if test "x${libdir}" = 'x${exec_prefix}/lib'; then
