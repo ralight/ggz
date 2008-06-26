@@ -1092,7 +1092,7 @@ should be used for state changes as is used for seat changes.  This may
 affect games however because it means the state change is asynchronous and 
 not immediate (there is a state-change callback in ggzdmod, that currently 
 gets invoked from inside ggzdmod_set_state; if this were changed then it 
-wouldn't be invoked until the message was sent to ggzd and the response 
+would not be invoked until the message was sent to ggzd and the response 
 was received).
 */
 int ggzdmod_set_state(GGZdMod * ggzdmod, GGZdModState state)
