@@ -24,6 +24,8 @@
 #include <ggz.h>
 #include <string.h>
 
+#include "ggzdb_util.h"
+
 /* Helper function, might go into libggz*/
 char *_ggz_sql_escape(const char *str)
 {
