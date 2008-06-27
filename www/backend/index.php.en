@@ -44,6 +44,10 @@ The following components comprise a full-featured GGZ server.
 <img src="/pics/icons/community.png">
 <a href="/backend/web/">GGZ Community</a>
 <br/>
+<i>Community Web Service API:</i><br/>
+<img src="/pics/icons/community.png">
+<a href="/backend/api/">GGZ Community API</a>
+<br/>
 <i>Metacle metaserver aggregator:</i><br/>
 <img src="/pics/icons/metacle.png">
 <a href="/backend/metacle/">Metacle</a>

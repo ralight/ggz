@@ -1,0 +1,41 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content">
+<tr>
+<td>
+
+<b>GGZ Community Web Service API</b><br/>
+Programmatic access to the GGZ database.
+<br/><br/>
+
+<table class="twoside">
+<tr>
+<td>
+
+<i>The main features</i><br/>
+<ul>
+<li>Access to players, teams and statistics
+<li>Read-only operation possible
+<li>Allows for cross-platform GGZ management tools
+</ul>
+
+
+<i>Detailed information</i><br/>
+A read-only reference installation is running on <a href="http://api.ggzcommunity.org">api.ggzcommunity.org</a>.
+The only client so far is a test client which ships alongside the API code.
+
+</td><td>
+
+<i>Logo:</i><br/>
+<img src="/backend/pics/wsapi.png">
+
+</td>
+</tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+
