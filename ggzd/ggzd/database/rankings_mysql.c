@@ -138,6 +138,6 @@ void rankings_recalculate_game(GGZRankings *rankings, const char *game)
 /* Iterate over all games for further calculation */
 void rankings_recalculate_all(GGZRankings *rankings, const char *types)
 {
-#warning "Total recalculation via 'calcrankings' tool not supported for MySQL yet."
+	/* FIXME: Total recalculation via 'calcrankings' 
+	   tool not supported for MySQL yet. */
 }
-
