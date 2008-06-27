@@ -1,12 +1,7 @@
 /*
- * File: ggzdb.h
- * Author: Rich Gade
- * Project: GGZ Server
- * Date: 06/11/2000
- * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 10053 2008-06-23 07:29:52Z josef $
- *
+ * Front-end functions for handling database manipulation (ggzd <-> ggzdb)
  * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2001 - 2008 GGZ Development Team.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

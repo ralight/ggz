@@ -1,6 +1,7 @@
 /*
- * Plugins calls to back-end functions for handling database manipulation
- * Copyright (C) 2007 GGZ Development Team.
+ * Plugin calls to back-end functions for handling database manipulation
+ * (ggzdb <-> ggzdbplugins)
+ * Copyright (C) 2007, 2008 GGZ Development Team.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +19,8 @@
  */
 
 #include "ggzdb.h"
+
+/* For documentation, see the corresponding functions in ggzdb_proto.h */
 
 GGZReturn (*_ggzdb_init)(ggzdbConnection connection, int standalone);
 void (*_ggzdb_close)(void);

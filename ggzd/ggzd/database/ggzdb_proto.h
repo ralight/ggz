@@ -1,12 +1,6 @@
 /*
- * File: ggzdb.h
- * Author: GGZ Development Team
- * Project: GGZ Server
- * Date: 09/08/2002
- * Desc: Back-end functions for handling database manipulation
- * $Id: ggzdb_proto.h 10043 2008-06-22 06:46:39Z jdorje $
- *
- * Copyright (C) 2002 GGZ Development Team.
+ * Function prototypes for plugins for database manipulation (ggzdbplugin)
+ * Copyright (C) 2002 - 2008 GGZ Development Team.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,15 +19,25 @@
 
 #include "ggzdb.h"
 
+/** @brief Open the main database connection or file
+ *
+ *  @param connection Connection information from ggzd
+ *  @param standalone If set, assume a single thread, do not require locking
+ *
+ *  @return GGZ_OK or GGZ_ERROR
+ */
 GGZReturn _ggzdb_init(ggzdbConnection connection, int standalone);
 
+/** @brief Close the database */
 void _ggzdb_close(void);
 
+/** @brief Lock the database for exclusive access from one thread */
 void _ggzdb_enter(void);
 
+/** @brief Unlock the database access again */
 void _ggzdb_exit(void);
 
-/** @brief Initialize the database.
+/** @brief Initialize the player database in non-SQL plugins.
  *
  *  @return GGZDB_NO_ERROR or GGZDB_ERR_DB
  */
@@ -131,19 +135,37 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats);
 /** Report the top-N players for a certain game type */
 GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGameStats **rankings);
 
-/* Recalculate statistics for a certain game type */
+/** Recalculate statistics for a certain game type */
 GGZDBResult _ggzdb_stats_calcrankings(const char *game);
 
+/** Find out the next id for a player in non-SQL plugins; ignore for SQL */
 unsigned int _ggzdb_player_next_uid(void);
 
+/** Return a list of strings representing unfinished savegame filenames for
+ *  a given game-type and table owner. Usually the list will only contain
+ *  one entry, but not always. */
 GGZList *_ggzdb_savegames(const char *game, const char *owner);
+
+/** Return a list of ggzdbSavegamePlayers structures representing the owners
+ *  of a savegame, which reference all unfinished savegames of a player. */
 GGZList *_ggzdb_savegame_owners(const char *game);
 
+/** Registers player information for a savegame so the table seats can be
+ *  reserved for them. */
 GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *name, int type);
 
+/** Stores the ggzd room list into the database and flags them as file-based,
+ *  as opposed to rooms which can be added and removed through GGZ Community. */
 GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num);
 
+/** Returns the file descriptor to listen on for changes in the SQL rooms
+ *  database. Returning -1 means this is not supported. */
 int _ggzdb_reconfiguration_fd(void);
+
+/** Returns the list of rooms which were added or removed through GGZ Community. */
 RoomStruct* _ggzdb_reconfiguration_room(void);
+
+/** Triggers the reconfiguration fd on startup of ggzd to load up all rooms
+ *  in the database before accepting connections. */
 void _ggzdb_reconfiguration_load(void);
 
