@@ -11,96 +11,15 @@
 #include <executor/spi.h>
 #include <commands/trigger.h>
 
-/* Unicode includes */
-#ifdef WITH_ICU
-#include <unicode/ustring.h>
-#include <unicode/uchar.h>
-#include <unicode/usprep.h>
-#endif
-
 /* System includes */
 #include <string.h>
+
+#include "canonicalstr.h"
 
 /* Standard PostgreSQL module declarations */
 #ifdef PG_MODULE_MAGIC
 PG_MODULE_MAGIC;
 #endif
-
-/* Function which returns canonicalized string */
-/* FIXME: taken from unicode.c - see there for comments about bugs */
-static char *username_canonical(const char *username)
-{
-#ifdef WITH_ICU
-	char *canonical;
-	UStringPrepProfile *profile;
-	UErrorCode status;
-	uint32_t numchars;
-	UChar *ustr = NULL;
-	UChar *ustr2;
-	int32_t length = 0;
-	int32_t length2;
-	UErrorCode error = U_ZERO_ERROR;
-
-	status = U_ZERO_ERROR;
-	profile = usprep_open(NULL, "uidna", &status);
-	if(U_FAILURE(status))
-	{
-		elog(ERROR, "Error: unable to open stringprep profile.");
-		return NULL;
-	}
-
-	ustr = (UChar*)malloc(strlen(username) * 4);
-	length = strlen(username) * 4;
-
-	ustr = u_strFromUTF8(ustr, length, &length, username, -1, &error);
-	free(ustr);
-	if(U_FAILURE(error)) {
-		elog(ERROR, "Error: conversion failure");
-		usprep_close(profile);
-		return NULL;
-	}
-	ustr = (UChar*)malloc(sizeof(UChar) * length);
-	if(!ustr) {
-		elog(ERROR, "Error: malloc failure");
-		usprep_close(profile);
-		return NULL;
-	}
-	ustr = u_strFromUTF8(ustr, length, NULL, username, -1, &error);
-
-	length2 = length * 4;
-	ustr2 = (UChar*)malloc(sizeof(UChar) * length2);
-
-	numchars = usprep_prepare(profile, ustr, length, ustr2, length2, USPREP_DEFAULT, NULL, &error);
-	free(ustr);
-	if(U_FAILURE(error))
-	{
-		elog(ERROR, "Error: stringprep failure");
-		free(ustr2);
-		usprep_close(profile);
-		return NULL;
-	}
-
-	length = length2 * 4;
-	canonical = malloc(length);
-	error = U_ZERO_ERROR;
-	u_strToUTF8(canonical, length, &length, ustr2, numchars, &error);
-	if(U_FAILURE(error))
-	{
-		elog(ERROR, "Error: conversion failure");
-		free(canonical);
-		free(ustr2);
-		usprep_close(profile);
-		return NULL;
-	}
-
-	free(ustr2);
-	usprep_close(profile);
-
-	return canonical;
-#else
-	return strdup(username);
-#endif
-}
 
 
 extern Datum canonicalstr(PG_FUNCTION_ARGS);
