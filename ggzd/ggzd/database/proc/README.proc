@@ -17,7 +17,9 @@ own extension function which re-uses the stringprep code already found
 in other places inside ggzd.
 
 Just like what applies to the 'ggzsync' trigger also applies here:
-The stored procedure only works with PostgreSQL.
+
+PostgreSQL
+==========
 
 For compilation, PostgreSQL 8.2 is recommended, although any 8.x should work.
 The 'pg_config' utility must be installed.
@@ -30,8 +32,23 @@ assuming the USAGE privilege is available (which usually resides with
 the superuser only):
 
 CREATE FUNCTION canonicalstr(text) RETURNS text
-  AS '$libdir/canonicalstr_proc', 'canonicalstr'
+  AS '$libdir/canonicalstr_proc_pgsql', 'canonicalstr'
   LANGUAGE C STRICT;
+
+MySQL
+=====
+
+Compilation is not handled within the Makefile yet.
+
+The following function must be called to load the function into mysql. This
+assumes that you have INSERT rights on the mysql table itself (which is usually
+the case for the superuser only).
+
+CREATE FUNCTION canonicalstr RETURNS STRING SONAME
+  '$libdir/libcanonicalstr_proc_mysql';
+
+Testing
+=======
 
 To test the function, call canonicalstr('Fuß¹²³') as the GGZ database user.
 The 'ß' will be altered to 'ss' and the '¹²³' to '123'. The capital 'F' will

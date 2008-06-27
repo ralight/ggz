@@ -3,8 +3,8 @@ GGZCONF = $(shell ggz-config -c)
 PG_CPPFLAGS = -DWITH_ICU
 SHLIB_LINK = -licui18n
 
-MODULE_big = canonicalstr_proc
-OBJS = canonicalstr_proc.o
+MODULE_big = canonicalstr_proc_pgsql
+OBJS = canonicalstr_proc_pgsql.o
 
 PGXS := $(shell pg_config --pgxs)
 #include $(PGXS)
