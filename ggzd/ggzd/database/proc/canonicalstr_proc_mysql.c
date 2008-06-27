@@ -3,9 +3,10 @@
 #include <unicode/usprep.h>
 
 /* System includes */
+#include <stdlib.h>
 #include <string.h>
 
-#include <mysql.h>
+#include <mysql/mysql.h>
 
 /* Function which returns canonicalized string */
 /* FIXME: taken from unicode.c - see there for comments about bugs */
