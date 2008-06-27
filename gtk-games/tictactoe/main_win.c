@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 9731 2008-02-16 11:43:13Z josef $
+ * $Id: main_win.c 10082 2008-06-27 22:39:46Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -40,9 +40,10 @@
 #include "dlg_about.h"
 #include "dlg_players.h"
 #include "dlg_exit.h"
+#include "game.h"
 #include "menus.h"
 #include "main_win.h"
-#include "game.h"
+#include "net.h"
 #include "support.h"
 
 
@@ -217,7 +218,7 @@ static gboolean main_exit(GtkWidget * widget, GdkEvent * event,
 
 void game_resync(void)
 {
-	assert(FALSE);
+	ggzcomm_reqsync();
 }
 
 
@@ -300,7 +301,7 @@ static GtkWidget *create_menus(GtkWidget * window)
 				   items,
 				   sizeof(items) / sizeof(items[0]));
 
-	set_menu_sensitive(TABLE_SYNC, FALSE);
+	set_menu_sensitive(TABLE_SYNC, TRUE);
 	set_menu_sensitive(TABLE_CHAT_WINDOW, TRUE);
 
 	return menubar;
