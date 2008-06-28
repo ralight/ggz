@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 10053 2008-06-23 07:29:52Z josef $
+ * $Id: ggzduedit.c 10085 2008-06-28 09:09:31Z josef $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -478,6 +478,7 @@ int main(int argc, char **argv)
 	const char *configfile = NULL;
 
 	conn.type = NULL;
+	conn.option = NULL;
 	conn.datadir = NULL;
 	conn.database = NULL;
 	conn.host = NULL;
@@ -570,6 +571,8 @@ int main(int argc, char **argv)
 				conn.password = ggz_conf_read_string(rc, "General", "DatabasePassword", NULL);
 			if(!conn.type)
 				conn.type = ggz_conf_read_string(rc, "General", "DatabaseType", NULL);
+			if(!conn.option)
+				conn.option = ggz_conf_read_string(rc, "General", "DatabaseOption", NULL);
 			if(!conn.hashing)
 				conn.hashing = ggz_conf_read_string(rc, "General", "DatabaseHashing", NULL);
 			if(!conn.hashencoding)
@@ -602,7 +605,7 @@ int main(int argc, char **argv)
 	}
 
 	if(!strcmp(conn.type, "dbi")) {
-		if(!conn.type) {
+		if(!conn.option) {
 			fprintf(stderr, "Database type '%s' needs plugin type name\n",
 				conn.type);
 			exit(-1);
@@ -634,8 +637,7 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	while(main_menu())
-		;
+	while(main_menu()){}
 
 	ggzdb_close();
 
