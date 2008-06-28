@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 10068 2008-06-24 22:35:10Z jdorje $
+ * $Id: parse_opt.c 10084 2008-06-28 07:45:28Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -192,25 +192,13 @@ static void dump_specs(void)
 	{
 		snprintf(tlsstring, sizeof(tlsstring), "yes (%s)", tlsname);
 	}
-	if(!strcmp(DATABASE_TYPES, "dbi"))
+	if(opt.dbtype)
 	{
-		/* FIXME: This only works if only dbi was compiled on. */
-		/* FIXME: Of course the type should then not be dbi. */
-		snprintf(dbstring, sizeof(dbstring), " [using dbd::%s]", opt.dbtype);
+		snprintf(dbstring, sizeof(dbstring), " [using %s::%s]", opt.dbtype, opt.dboption);
 	}
 	else
 	{
-		if(opt.dbtype)
-		{
-			snprintf(dbstring, sizeof(dbstring), " [using %s]", opt.dbtype);
-		}
-		else
-		{
-			char *typescopy = ggz_strdup(DATABASE_TYPES);
-			char *autotype = strtok(typescopy, ",");
-			snprintf(dbstring, sizeof(dbstring), " [autoselect %s]", autotype);
-			ggz_free(typescopy);
-		}
+		snprintf(dbstring, sizeof(dbstring), " [autoselect %s]", ggzdb_get_default_backend());
 	}
 
 	printf("GGZ Gaming Zone server (ggzd) specifications\n");
@@ -405,6 +393,7 @@ static void get_config_options(int ch)
 
 	/* [Database] */
 	opt.dbtype = ggz_conf_read_string(ch, "General", "DatabaseType", NULL);
+	opt.dboption = ggz_conf_read_string(ch, "General", "DatabaseOption", NULL);
 	opt.dbhost = ggz_conf_read_string(ch, "General", "DatabaseHost", NULL);
 	opt.dbport = ggz_conf_read_int(ch, "General", "DatabasePort", 0);
 	opt.dbname = ggz_conf_read_string(ch, "General", "DatabaseName", NULL);

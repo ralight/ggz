@@ -56,6 +56,7 @@ typedef struct {
 /* Connection information */
 typedef struct {
 	const char *type;
+	const char *option;
 	const char *datadir;
 	const char *host;
 	int port;

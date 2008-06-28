@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db4 sytle database
- * $Id: ggzdb_db4.c 10067 2008-06-24 22:01:07Z jdorje $
+ * $Id: ggzdb_db4.c 10084 2008-06-28 07:45:28Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -75,7 +75,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 		return GGZ_ERROR;
 	}
 
-	if(!ggz_strcmp(connection.database, "memory")) {
+	if(!ggz_strcmp(connection.option, "memory")) {
 		dbopt->inmemory = 1;
 	} else {
 		dbopt->inmemory = 0;

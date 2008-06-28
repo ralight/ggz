@@ -43,7 +43,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 
 	if(conn) return GGZ_OK;
 
-	if(!connection.type)
+	if(!connection.option)
 	{
 		ggz_error_msg("Couldn't initialize database: no DBI type given.");
 		return GGZ_ERROR;
@@ -52,14 +52,15 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	numdrivers = dbi_initialize(NULL);
 	if(numdrivers == -1)
 	{
-		ggz_error_msg("Couldn't initialize drivers.");
+		ggz_error_msg("Couldn't initialize DBI drivers.");
 		return GGZ_ERROR;
 	}
 
-	conn = dbi_conn_new(connection.type);
+	conn = dbi_conn_new(connection.option);
 	if(conn == NULL)
 	{
-		ggz_error_msg("Could not create connection object.");
+		ggz_error_msg("Could not load DBI connection driver of type '%s'.",
+			connection.option);
 		return GGZ_ERROR;
 	}
 
@@ -349,5 +350,46 @@ GGZDBResult _ggzdb_stats_calcrankings(const char *game)
 {
 	/* Not implemented, but do not return error */
 	return GGZDB_NO_ERROR;
+}
+
+GGZList *_ggzdb_savegames(const char *game, const char *owner)
+{
+	/* Not implemented, but do not return error */
+	return NULL;
+}
+
+GGZList *_ggzdb_savegame_owners(const char *game)
+{
+	/* Not implemented, but do not return error */
+	return NULL;
+}
+
+GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *name, int type)
+{
+	/* Not implemented, but do not return error */
+	return GGZDB_NO_ERROR;
+}
+
+GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num)
+{
+	/* Not implemented, but do not return error */
+	return GGZDB_NO_ERROR;
+}
+
+int _ggzdb_reconfiguration_fd(void)
+{
+	/* Not implemented, but do not return error */
+	return -1;
+}
+
+void _ggzdb_reconfiguration_load(void)
+{
+	/* Not implemented, but do not return error */
+}
+
+RoomStruct *_ggzdb_reconfiguration_room(void)
+{
+	/* Not implemented, but do not return error */
+	return NULL;
 }
 

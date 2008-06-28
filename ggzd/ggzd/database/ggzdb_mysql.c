@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10067 2008-06-24 22:01:07Z jdorje $
+ * $Id: ggzdb_mysql.c 10084 2008-06-28 07:45:28Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -655,5 +655,46 @@ GGZDBResult _ggzdb_stats_calcrankings(const char *game)
 	pthread_mutex_unlock(&mutex);
 
 	return GGZDB_NO_ERROR;
+}
+
+GGZList *_ggzdb_savegames(const char *game, const char *owner)
+{
+	/* Not implemented, but do not return error */
+	return NULL;
+}
+
+GGZList *_ggzdb_savegame_owners(const char *game)
+{
+	/* Not implemented, but do not return error */
+	return NULL;
+}
+
+GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *name, int type)
+{
+	/* Not implemented, but do not return error */
+	return GGZDB_NO_ERROR;
+}
+
+GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num)
+{
+	/* Not implemented, but do not return error */
+	return GGZDB_NO_ERROR;
+}
+
+int _ggzdb_reconfiguration_fd(void)
+{
+	/* Not implemented, but do not return error */
+	return -1;
+}
+
+void _ggzdb_reconfiguration_load(void)
+{
+	/* Not implemented, but do not return error */
+}
+
+RoomStruct *_ggzdb_reconfiguration_room(void)
+{
+	/* Not implemented, but do not return error */
+	return NULL;
 }
 

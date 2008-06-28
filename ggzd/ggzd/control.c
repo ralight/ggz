@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 10067 2008-06-24 22:01:07Z jdorje $
+ * $Id: control.c 10084 2008-06-28 07:45:28Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -145,6 +145,7 @@ static void init_data(void)
 
 	connection.datadir = opt.data_dir;
 	connection.type = opt.dbtype;
+	connection.option = opt.dboption;
 	connection.host = opt.dbhost;
 	connection.port = opt.dbport;
 	connection.database = opt.dbname;

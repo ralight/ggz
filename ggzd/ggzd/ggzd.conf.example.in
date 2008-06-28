@@ -42,16 +42,19 @@
 
 # SQL database connection options
 #   If a SQL database is used as opposed to a flat embedded
-#   database, this block must be configured. DatabaseType
-#   is only relevant for the DBI backend. DatabasePort is only
+#   database, this block must be configured. DatabasePort is only
 #   needed for non-standard ports.
 #DatabaseHost = localhost
 #DatabasePort = 0
 #DatabaseName = ggz
 #DatabaseUsername = ggzd
 #DatabasePassword = ggzd
-#   DatabaseType: pgsql, mysql, sqlite, ...
+#   DatabaseType: pgsql, mysql, sqlite, db4, dbi, ...
+#   Will be selected automatically if not set. DatabaseOption
+#   is only relevant for the DBI backend, or for volatile db4
+#   databases if set to 'memory'.
 #DatabaseType = @database@
+#DatabaseOption = @database
 #   Database hashing: plain, md5, sha1 or ripemd160
 #DatabaseHashing = plain
 #   Database hash encoding: base64 or base16 (defaults to base64)
