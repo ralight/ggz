@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10084 2008-06-28 07:45:28Z josef $
+ * $Id: ggzdb_mysql.c 10086 2008-06-28 21:50:59Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -48,8 +48,17 @@ static MYSQL *conn = NULL;
 static MYSQL_RES *iterres = NULL;
 static int itercount;
 static pthread_mutex_t mutex;
+static int mysql_canonicalstr;
 
 /* Internal functions */
+
+/* String canonicalization for comparison */
+static const char *lower(void)
+{
+	if(mysql_canonicalstr)
+		return "canonicalstr";
+	return "lower";
+}
 
 
 /* Function to initialize the mysql database system */
@@ -58,6 +67,8 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	int rc;
 	char query[4096];
 	my_bool reconnect = true;
+	MYSQL_RES *res;
+	MYSQL_ROW row;
 
 	if(conn) return GGZ_OK;
 
@@ -85,6 +96,23 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 		"`name` varchar(255), `email` varchar(255), `lastlogin` int8, `perms` int8, `firstlogin` int8)");
 
 	rc = mysql_query(conn, query);
+
+	/* Check if we have canonicalstr() available. This would also be possible
+	 * by checking the mysql.func table for the presence of the function, but
+	 * that assumes read access to the mysql table.  */
+	mysql_canonicalstr = 0;
+	snprintf(query, sizeof(query), "SELECT canonicalstr(\"Fuß¹²³\")");
+	rc = mysql_query(conn, query);
+	if(!rc){
+		res = mysql_store_result(conn);
+		if(res){
+			row = mysql_fetch_row(res);
+			if(!strcmp(row[0], "fuss123")){
+				mysql_canonicalstr = 1;
+			}
+			mysql_free_result(res);
+		}
+	}
 
 	/* Hack. */
 	return GGZ_OK;
@@ -167,8 +195,8 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 
 	snprintf(query, sizeof(query), "SELECT "
 		"`password`,`name`,`email`,`lastlogin`,`perms` FROM `users` WHERE "
-		"`handle` = LOWER('%s')",
-		pe->handle);
+		"`handle` = %s('%s')",
+		lower(), pe->handle);
 
 	pthread_mutex_lock(&mutex);
 	rc = mysql_query(conn, query);
@@ -208,8 +236,8 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 
 	snprintf(query, sizeof(query), "UPDATE `users` SET "
 		"`password`='%s',`name`='%s',`email`='%s',`lastlogin`=%li,`perms`=%u WHERE "
-		"`handle`=LOWER('%s')",
-		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
+		"`handle`=%s('%s')",
+		pe->password, pe->name, pe->email, pe->last_login, pe->perms, lower(), pe->handle);
 
 	pthread_mutex_lock(&mutex);
 	rc = mysql_query(conn, query);
@@ -336,10 +364,10 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 		"UPDATE `stats` "
 		"SET `wins`=%i,`losses`=%i,`ties`=%i,`forfeits`=%i,"
 		"`rating`=%f,`ranking`=%u,`highscore`=%li "
-		"WHERE `handle` = LOWER('%s') AND `game`='%s'",
+		"WHERE `handle` = %s('%s') AND `game`='%s'",
 		stats->wins, stats->losses, stats->ties, stats->forfeits,
 		stats->rating, stats->ranking, stats->highest_score,
-		player_quoted, stats->game);
+		lower(), player_quoted, stats->game);
 
 	pthread_mutex_lock(&mutex);
 	rc = mysql_query(conn, query);
@@ -389,8 +417,8 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 	snprintf(query, sizeof(query),
 			"SELECT "
 			"`wins`,`losses`,`ties`,`forfeits`,`rating`,`ranking`,`highscore` "
-			"FROM `stats` WHERE `handle`=LOWER('%s') AND `game`='%s'",
-			player_quoted, stats->game);
+			"FROM `stats` WHERE `handle`=%s('%s') AND `game`='%s'",
+			lower(), player_quoted, stats->game);
 	ggz_free(player_quoted);
 
 	pthread_mutex_lock(&mutex);
@@ -566,8 +594,8 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 	snprintf(query, sizeof(query),
 		 "SELECT "
 		 "`id`,`photo` "
-		 "FROM `userinfo` WHERE `handle`=LOWER('%s')",
-		 handle_quoted);
+		 "FROM `userinfo` WHERE `handle`=%s('%s')",
+		 lower(), handle_quoted);
 
 	ggz_free(handle_quoted);
 

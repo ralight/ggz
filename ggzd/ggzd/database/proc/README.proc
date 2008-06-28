@@ -32,7 +32,7 @@ assuming the USAGE privilege is available (which usually resides with
 the superuser only):
 
 CREATE FUNCTION canonicalstr(text) RETURNS text
-  AS '$libdir/canonicalstr_proc_pgsql', 'canonicalstr'
+  AS '$libdir/canonicalstr_pgsql', 'canonicalstr'
   LANGUAGE C STRICT;
 
 MySQL
@@ -42,10 +42,11 @@ Compilation is not handled within the Makefile yet.
 
 The following function must be called to load the function into mysql. This
 assumes that you have INSERT rights on the mysql table itself (which is usually
-the case for the superuser only).
+the case for the superuser only). Note that the library must reside in a path
+which can be found by the linker.
 
 CREATE FUNCTION canonicalstr RETURNS STRING SONAME
-  '$libdir/libcanonicalstr_proc_mysql';
+  'libcanonicalstr_mysql';
 
 Testing
 =======
