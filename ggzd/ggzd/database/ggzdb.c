@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 10103 2008-06-29 13:29:48Z oojah $
+ * $Id: ggzdb.c 10104 2008-06-29 13:35:28Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -183,7 +183,7 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 		GGZDEXECMODDIR, backend);
 	ggzdbhandle = dlopen(backendmodule, RTLD_NOW);
 	if(!ggzdbhandle) {
-		ggz_error_sys_exit("%s (%s) is not a suitable database module (%s)",
+		ggz_error_msg_exit("%s (%s) is not a suitable database module (%s)",
 			backend, backendmodule, dlerror());
 	}
 
@@ -220,7 +220,7 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 	|| ((_ggzdb_reconfiguration_room = dlsym(ggzdbhandle, "_ggzdb_reconfiguration_room")) == NULL)
 	)
 	{
-		ggz_error_sys_exit("%s is an invalid database module (%s)",
+		ggz_error_msg_exit("%s is an invalid database module (%s)",
 			backend, dlerror());
 	}
 
