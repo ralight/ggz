@@ -55,7 +55,7 @@ ggzd_SOURCES = \
 	util.c \
 	util.h
 
-ggzd_CPPFLAGS = \
+AM_CPPFLAGS = \
 	-I$(top_srcdir)/ggzd/database \
 	-I$(top_srcdir)/ggzd/meta \
 	-I$(top_srcdir)/ggzdmod \
@@ -90,13 +90,6 @@ ggzduedit_SOURCES = \
 	datatypes.h \
 	ggzduedit.c \
 	perms.h perms.c
-
-ggzduedit_CPPFLAGS = \
-	-I$(top_srcdir)/ggzd/database \
-	-I$(top_srcdir)/ggzdmod \
-	-DGGZDCONFDIR=\"$(ggzdconfdir)\" \
-	-DGGZDSTATEDIR=\"$(ggzdstatedir)\" \
-	$(LIBGGZ_INCLUDES)
 
 ggzduedit_LDFLAGS = $(LIBGGZ_LDFLAGS)
 ggzduedit_LDADD = \
