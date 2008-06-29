@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10086 2008-06-28 21:50:59Z oojah $
+ * $Id: ggzdb_mysql.c 10105 2008-06-29 13:40:20Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -303,7 +303,7 @@ GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 	MYSQL_ROW row;
 
 	if (!iterres) {
-		ggz_error_msg_exit("get_next called before get_first, dummy");
+		ggz_error_msg_exit("get_first should be called before get_next");
 	}
 
 	if(iterres && (itercount < mysql_num_rows(iterres) - 1)) {
@@ -331,7 +331,7 @@ void _ggzdb_player_drop_cursor(void)
 		/* This isn't an error; since we clear the cursor at the end
 		   of _ggzdb_player_get_next we should expect to end up
 		   here.  --JDS */
-		/*ggz_error_msg_exit("drop_cursor called before get_first, dummy");*/
+		/*ggz_error_msg_exit("get_first should be called before drop_cursor");*/
 		return;
 	}
 

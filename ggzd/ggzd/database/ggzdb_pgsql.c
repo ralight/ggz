@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10067 2008-06-24 22:01:07Z jdorje $
+ * $Id: ggzdb_pgsql.c 10105 2008-06-29 13:40:20Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -834,7 +834,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 {
 	if (!iterres) {
-		ggz_error_msg_exit("get_next called before get_first, dummy");
+		ggz_error_msg_exit("get_first should be called before get_next");
 	}
 
 	if (itercount < PQntuples(iterres) - 1) {
@@ -864,7 +864,7 @@ void _ggzdb_player_drop_cursor(void)
 		/* This isn't an error; since we clear the cursor at the end
 		   of _ggzdb_player_get_next we should expect to end up
 		   here.  --JDS */
-		/*ggz_error_msg_exit("drop_cursor called before get_first, dummy");*/
+		/*ggz_error_msg_exit("get_first should be called before drop_cursor");*/
 		return;
 	}
 

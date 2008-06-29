@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db4 sytle database
- * $Id: ggzdb_db4.c 10084 2008-06-28 07:45:28Z josef $
+ * $Id: ggzdb_db4.c 10105 2008-06-29 13:40:20Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -314,7 +314,7 @@ GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 	DBT key, data;
 
 	if(db_c == NULL)
-		ggz_error_sys_exit("get_next called before get_first, dummy");
+		ggz_error_sys_exit("get_first should be called before get_next");
 
 	/* Build the two DBT structures */
 	memset(&key, 0, sizeof(DBT));
@@ -341,7 +341,7 @@ GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 void _ggzdb_player_drop_cursor(void)
 {
 	if(db_c == NULL)
-		ggz_error_sys_exit("drop_cursor called before get_first, dummy");
+		ggz_error_sys_exit("get_first should be called before drop_cursor");
 	db_c->c_close(db_c);
 	db_c = NULL;
 }
