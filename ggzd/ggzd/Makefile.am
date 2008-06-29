@@ -76,7 +76,6 @@ ggzd_LDADD = \
 	$(top_builddir)/ggzdmod/libggzdmod.la \
 	$(LIB_EXPAT) \
 	$(LIB_GGZ) \
-	$(LIB_DATABASE) \
 	$(LIB_AVAHI) \
 	$(LIB_FAM) \
 	$(LIB_PTHREADS) \
@@ -96,6 +95,5 @@ ggzduedit_LDADD = \
 	$(top_builddir)/ggzd/database/libggzdb.a \
 	$(ggzd_LIBS) \
 	$(LIB_GGZ) \
-	$(LIB_DATABASE) \
 	$(LIB_DL)
 

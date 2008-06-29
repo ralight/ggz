@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 10067 2008-06-24 22:01:07Z jdorje $
+ * $Id: ggzdb.c 10103 2008-06-29 13:29:48Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -49,7 +49,8 @@ static const char *db_hashencoding;
 static char db_needs_init = 1;
 static char player_needs_init = 1;
 static char stats_needs_init = 1;
-static void *handle = NULL;
+static void *ggzdbhandle = NULL; /* For e.g. ggzdb_mysql.so */
+static void *dblibhandle = NULL; /* For e.g. libmysqlclient_r.so */
 
 /* Internal functions */
 static GGZDBResult ggzdb_player_init(void);
@@ -144,12 +145,44 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 		backend = primarybackend;
 	}
 
+	if(!strcmp(backend, "db4")){
+		dblibhandle = dlopen("libdb.so", RTLD_NOW | RTLD_GLOBAL);
+		if(!dblibhandle){
+			ggz_error_msg_exit("Unable to open libdb.so (%s)",
+				dlerror());
+		}
+	}else if(!strcmp(backend, "dbi")){
+		dblibhandle = dlopen("libdbi.so", RTLD_NOW | RTLD_GLOBAL);
+		if(!dblibhandle){
+			ggz_error_msg_exit("Unable to open libdbi.so (%s)",
+				dlerror());
+		}
+	}else if(!strcmp(backend, "mysql")){
+		dblibhandle = dlopen("libmysqlclient_r.so", RTLD_NOW | RTLD_GLOBAL);
+		if(!dblibhandle){
+			ggz_error_msg_exit("Unable to open libmysqlclient_r.so (%s)",
+				dlerror());
+		}
+	}else if(!strcmp(backend, "pgsql")){
+		dblibhandle = dlopen("libpq.so", RTLD_NOW | RTLD_GLOBAL);
+		if(!dblibhandle){
+			ggz_error_msg_exit("Unable to open libpq.so (%s)",
+				dlerror());
+		}
+	}else if(!strcmp(backend, "sqlite")){
+		dblibhandle = dlopen("libsqlite3.so", RTLD_NOW | RTLD_GLOBAL);
+		if(!dblibhandle){
+			ggz_error_msg_exit("Unable to open libsqlite3.so (%s)",
+				dlerror());
+		}
+	}
+
 	char backendmodule[128];
 	snprintf(backendmodule, sizeof(backendmodule),
 		"%s/database/libggzdb_%s.so",
 		GGZDEXECMODDIR, backend);
-	handle = dlopen(backendmodule, RTLD_NOW);
-	if(!handle) {
+	ggzdbhandle = dlopen(backendmodule, RTLD_NOW);
+	if(!ggzdbhandle) {
 		ggz_error_sys_exit("%s (%s) is not a suitable database module (%s)",
 			backend, backendmodule, dlerror());
 	}
@@ -157,34 +190,34 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 	if(primarybackend)
 		ggz_free(primarybackend);
 
-	if(((_ggzdb_init = dlsym(handle, "_ggzdb_init")) == NULL)
-	|| ((_ggzdb_close = dlsym(handle, "_ggzdb_close")) == NULL)
-	|| ((_ggzdb_enter = dlsym(handle, "_ggzdb_enter")) == NULL)
-	|| ((_ggzdb_exit = dlsym(handle, "_ggzdb_exit")) == NULL)
-	|| ((_ggzdb_init_player = dlsym(handle, "_ggzdb_init_player")) == NULL)
-	|| ((_ggzdb_player_add = dlsym(handle, "_ggzdb_player_add")) == NULL)
-	|| ((_ggzdb_player_get = dlsym(handle, "_ggzdb_player_get")) == NULL)
-	|| ((_ggzdb_player_update = dlsym(handle, "_ggzdb_player_update")) == NULL)
-	|| ((_ggzdb_player_get_first = dlsym(handle, "_ggzdb_player_get_first")) == NULL)
-	|| ((_ggzdb_player_get_next = dlsym(handle, "_ggzdb_player_get_next")) == NULL)
-	|| ((_ggzdb_player_get_extended = dlsym(handle, "_ggzdb_player_get_extended")) == NULL)
-	|| ((_ggzdb_player_next_uid = dlsym(handle, "_ggzdb_player_next_uid")) == NULL)
-	|| ((_ggzdb_player_drop_cursor = dlsym(handle, "_ggzdb_player_drop_cursor")) == NULL)
-	|| ((_ggzdb_init_stats = dlsym(handle, "_ggzdb_init_stats")) == NULL)
-	|| ((_ggzdb_stats_lookup = dlsym(handle, "_ggzdb_stats_lookup")) == NULL)
-	|| ((_ggzdb_stats_update = dlsym(handle, "_ggzdb_stats_update")) == NULL)
-	|| ((_ggzdb_stats_newmatch = dlsym(handle, "_ggzdb_stats_newmatch")) == NULL)
-	|| ((_ggzdb_stats_savegame = dlsym(handle, "_ggzdb_stats_savegame")) == NULL)
-	|| ((_ggzdb_stats_match = dlsym(handle, "_ggzdb_stats_match")) == NULL)
-	|| ((_ggzdb_stats_toprankings = dlsym(handle, "_ggzdb_stats_toprankings")) == NULL)
-	|| ((_ggzdb_stats_calcrankings = dlsym(handle, "_ggzdb_stats_calcrankings")) == NULL)
-	|| ((_ggzdb_savegames = dlsym(handle, "_ggzdb_savegames")) == NULL)
-	|| ((_ggzdb_savegame_owners = dlsym(handle, "_ggzdb_savegame_owners")) == NULL)
-	|| ((_ggzdb_savegame_player = dlsym(handle, "_ggzdb_savegame_player")) == NULL)
-	|| ((_ggzdb_rooms = dlsym(handle, "_ggzdb_rooms")) == NULL)
-	|| ((_ggzdb_reconfiguration_fd = dlsym(handle, "_ggzdb_reconfiguration_fd")) == NULL)
-	|| ((_ggzdb_reconfiguration_load = dlsym(handle, "_ggzdb_reconfiguration_load")) == NULL)
-	|| ((_ggzdb_reconfiguration_room = dlsym(handle, "_ggzdb_reconfiguration_room")) == NULL)
+	if(((_ggzdb_init = dlsym(ggzdbhandle, "_ggzdb_init")) == NULL)
+	|| ((_ggzdb_close = dlsym(ggzdbhandle, "_ggzdb_close")) == NULL)
+	|| ((_ggzdb_enter = dlsym(ggzdbhandle, "_ggzdb_enter")) == NULL)
+	|| ((_ggzdb_exit = dlsym(ggzdbhandle, "_ggzdb_exit")) == NULL)
+	|| ((_ggzdb_init_player = dlsym(ggzdbhandle, "_ggzdb_init_player")) == NULL)
+	|| ((_ggzdb_player_add = dlsym(ggzdbhandle, "_ggzdb_player_add")) == NULL)
+	|| ((_ggzdb_player_get = dlsym(ggzdbhandle, "_ggzdb_player_get")) == NULL)
+	|| ((_ggzdb_player_update = dlsym(ggzdbhandle, "_ggzdb_player_update")) == NULL)
+	|| ((_ggzdb_player_get_first = dlsym(ggzdbhandle, "_ggzdb_player_get_first")) == NULL)
+	|| ((_ggzdb_player_get_next = dlsym(ggzdbhandle, "_ggzdb_player_get_next")) == NULL)
+	|| ((_ggzdb_player_get_extended = dlsym(ggzdbhandle, "_ggzdb_player_get_extended")) == NULL)
+	|| ((_ggzdb_player_next_uid = dlsym(ggzdbhandle, "_ggzdb_player_next_uid")) == NULL)
+	|| ((_ggzdb_player_drop_cursor = dlsym(ggzdbhandle, "_ggzdb_player_drop_cursor")) == NULL)
+	|| ((_ggzdb_init_stats = dlsym(ggzdbhandle, "_ggzdb_init_stats")) == NULL)
+	|| ((_ggzdb_stats_lookup = dlsym(ggzdbhandle, "_ggzdb_stats_lookup")) == NULL)
+	|| ((_ggzdb_stats_update = dlsym(ggzdbhandle, "_ggzdb_stats_update")) == NULL)
+	|| ((_ggzdb_stats_newmatch = dlsym(ggzdbhandle, "_ggzdb_stats_newmatch")) == NULL)
+	|| ((_ggzdb_stats_savegame = dlsym(ggzdbhandle, "_ggzdb_stats_savegame")) == NULL)
+	|| ((_ggzdb_stats_match = dlsym(ggzdbhandle, "_ggzdb_stats_match")) == NULL)
+	|| ((_ggzdb_stats_toprankings = dlsym(ggzdbhandle, "_ggzdb_stats_toprankings")) == NULL)
+	|| ((_ggzdb_stats_calcrankings = dlsym(ggzdbhandle, "_ggzdb_stats_calcrankings")) == NULL)
+	|| ((_ggzdb_savegames = dlsym(ggzdbhandle, "_ggzdb_savegames")) == NULL)
+	|| ((_ggzdb_savegame_owners = dlsym(ggzdbhandle, "_ggzdb_savegame_owners")) == NULL)
+	|| ((_ggzdb_savegame_player = dlsym(ggzdbhandle, "_ggzdb_savegame_player")) == NULL)
+	|| ((_ggzdb_rooms = dlsym(ggzdbhandle, "_ggzdb_rooms")) == NULL)
+	|| ((_ggzdb_reconfiguration_fd = dlsym(ggzdbhandle, "_ggzdb_reconfiguration_fd")) == NULL)
+	|| ((_ggzdb_reconfiguration_load = dlsym(ggzdbhandle, "_ggzdb_reconfiguration_load")) == NULL)
+	|| ((_ggzdb_reconfiguration_room = dlsym(ggzdbhandle, "_ggzdb_reconfiguration_room")) == NULL)
 	)
 	{
 		ggz_error_sys_exit("%s is an invalid database module (%s)",
@@ -214,7 +247,8 @@ void ggzdb_close(void)
 		ggz_free(db_hashencoding);
 
 	_ggzdb_close();
-	dlclose(handle);
+	dlclose(ggzdbhandle);
+	dlclose(dblibhandle);
 }
 
 
