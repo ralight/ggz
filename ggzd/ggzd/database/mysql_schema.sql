@@ -5,13 +5,13 @@ CREATE TABLE `users` (
 	`password` varchar(32) NOT NULL default '',
 	`name` varchar(255) NOT NULL default '',
 	`email` varchar(255) NOT NULL default '',
-	`firstlogin` timestamp NOT NULL default '0',
-	`lastlogin` timestamp NOT NULL default '0',
+	`firstlogin` timestamp NOT NULL,
+	`lastlogin` timestamp NOT NULL,
 	`perms` int(11) NOT NULL default '7',
 	`confirmed` boolean,
 	PRIMARY KEY  (`id`),
 	UNIQUE KEY `handle` (`handle`),
-	KEY `player_get_first` (`password`,`name`,`email`,`lastvisit`,`perms`)
+	KEY `player_get_first` (`password`,`name`,`email`,`lastlogin`,`perms`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
