@@ -209,6 +209,8 @@ static void game_handle_savedgame(GGZdMod *ggz, GGZdModEvent event,
 	savegamepath = ggz_strbuild(GGZDSTATEDIR "/gamedata/TicTacToe/%s", savegame);
 	ggzdmod_log(ttt_game.ggz, "Game restoration: savegame=%s", savegamepath);
 
+	variables.turn = -1;
+
 	f = fopen(savegamepath, "r");
 	if(f) {
 		while(1) {
@@ -222,14 +224,22 @@ static void game_handle_savedgame(GGZdMod *ggz, GGZdModEvent event,
 			} else if(sscanf(line, "player1 move %i %i", &x, &y) == 2) {
 				ggzdmod_log(ttt_game.ggz, "Game restoration: player1=%i/%i", x, y);
 				variables.space[x * 3 + y] = 0;
+				variables.turn = 1;
+				ttt_game.move_count++;
 			} else if(sscanf(line, "player2 move %i %i", &x, &y) == 2) {
 				ggzdmod_log(ttt_game.ggz, "Game restoration: player2=%i/%i", x, y);
 				variables.space[x * 3 + y] = 1;
+				variables.turn = 0;
+				ttt_game.move_count++;
 			} else {
 				ggzdmod_log(ttt_game.ggz, "Game restoration: dismiss");
 			}
 		}
 		fclose(f);
+	}
+
+	if (game_check_win() >= 0) {
+		ggzdmod_set_state(ttt_game.ggz, GGZDMOD_STATE_DONE);
 	}
 
 	ttt_game.savegame = fopen(savegamepath, "a");
