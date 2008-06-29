@@ -54,7 +54,7 @@
 #   is only relevant for the DBI backend, or for volatile db4
 #   databases if set to 'memory'.
 #DatabaseType = @database@
-#DatabaseOption = @database
+#DatabaseOption = 
 #   Database hashing: plain, md5, sha1 or ripemd160
 #DatabaseHashing = plain
 #   Database hash encoding: base64 or base16 (defaults to base64)
