@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10105 2008-06-29 13:40:20Z oojah $
+ * $Id: ggzdb_pgsql.c 10108 2008-06-29 14:08:07Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -343,7 +343,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	/* Initialize the database if needed */
 	if(init)
 	{
-		snprintf(schemafile, sizeof(schemafile), "%s/ggz.sql", GGZDDATADIR);
+		snprintf(schemafile, sizeof(schemafile), "%s/pgsql_schema.sql", GGZDDATADIR);
 
 		ret = setupschema(conn, schemafile);
 		if(!ret) rc = GGZDB_ERR_DB;
