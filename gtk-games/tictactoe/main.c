@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 9932 2008-04-06 13:32:27Z josef $
+ * $Id: main.c 10087 2008-06-29 04:36:44Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -89,7 +89,8 @@ static void initialize_about_dialog(void)
 	char *header;
 
 	header = g_strdup_printf(_("GGZ Gaming Zone\n"
-				   "Tic-Tac-Toe Version %s"), GAME_VERSION);
+				   "Tic-Tac-Toe Version %s"),
+				 GAME_VERSION);
 	init_dlg_about(_("About Tic-Tac-Toe"), header, content);
 	g_free(header);
 }
@@ -97,9 +98,13 @@ static void initialize_about_dialog(void)
 static char get_player_symbol(int player)
 {
 	assert(player >= -1 && player <= 1);
-	if (player == 0) return 'O';
-	else if (player == 1) return 'X';
-	else return '-';
+	if (player == 0) {
+		return 'O';
+	} else if (player == 1) {
+		return 'X';
+	} else {
+		return '-';
+	}
 }
 
 static void game_handle_error()
