@@ -5,5 +5,4 @@ libggzmeta_a_SOURCES = \
 	minidom.c \
 	minidom.h
 
-libggzmeta_a_CPPFLAGS = \
-    $(LIBGGZ_INCLUDES)
+AM_CPPFLAGS = $(LIBGGZ_INCLUDES)
