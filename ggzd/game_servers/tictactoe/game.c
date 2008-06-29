@@ -221,10 +221,10 @@ static void game_handle_savedgame(GGZdMod *ggz, GGZdModEvent event,
 				/* unused width/height */
 			} else if(sscanf(line, "player1 move %i %i", &x, &y) == 2) {
 				ggzdmod_log(ttt_game.ggz, "Game restoration: player1=%i/%i", x, y);
-				variables.space[x * 3 + y] = 1;
+				variables.space[x * 3 + y] = 0;
 			} else if(sscanf(line, "player2 move %i %i", &x, &y) == 2) {
 				ggzdmod_log(ttt_game.ggz, "Game restoration: player2=%i/%i", x, y);
-				variables.space[x * 3 + y] = 2;
+				variables.space[x * 3 + y] = 1;
 			} else {
 				ggzdmod_log(ttt_game.ggz, "Game restoration: dismiss");
 			}
