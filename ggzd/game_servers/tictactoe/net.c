@@ -76,6 +76,17 @@ void ggzcomm_sndsync(GGZCommIO *io)
 		if(ret < 0)
 			ggzcomm_error();
 	}
+
+	ggz_debug("board",
+		  "sent sync.\n"
+		  "turn %d\n"
+		  "%d %d %d\n"
+		  "%d %d %d\n"
+		  "%d %d %d",
+		  variables.turn,
+		  variables.space[0], variables.space[1], variables.space[2],
+		  variables.space[3], variables.space[4], variables.space[5],
+		  variables.space[6], variables.space[7], variables.space[8]);
 }
 
 void ggzcomm_msggameover(GGZCommIO *io)
