@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 4/11/00
  * Desc: TTT game functions
- * $Id: game.h 9731 2008-02-16 11:43:13Z josef $
+ * $Id: game.h 10088 2008-06-29 04:43:48Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -29,6 +29,10 @@
 #include <ggz_dio.h>
 
 #include <ggzmod.h>
+
+/* debugging types */
+#define DBG_MAIN "main"
+#define DBG_BOARD "board"
 
 /* Tic-Tac-Toe protocol */
 /* Messages from server now in net.h */

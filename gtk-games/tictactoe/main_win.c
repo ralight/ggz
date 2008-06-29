@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 10082 2008-06-27 22:39:46Z jdorje $
+ * $Id: main_win.c 10088 2008-06-29 04:43:48Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -91,17 +91,17 @@ void display_board(void)
 					   "drawingarea");
 	int w = tmp->allocation.width, h = tmp->allocation.height;
 
-#if 0
-	g_print("  %c | %c | %c  \n", game.board[0], game.board[1],
-		game.board[2]);
-	g_print("-------------\n");
-	g_print("  %c | %c | %c  \n", game.board[3], game.board[4],
-		game.board[5]);
-	g_print("-------------\n");
-	g_print("  %c | %c | %c  \n", game.board[6], game.board[7],
-		game.board[8]);
-	g_print("\n");
-#endif
+	ggz_debug(DBG_BOARD,
+		  "  %c | %c | %c  ", game.board[0], game.board[1],
+		  game.board[2]);
+	ggz_debug(DBG_BOARD, "-------------");
+	ggz_debug(DBG_BOARD,
+		  "  %c | %c | %c  ", game.board[3], game.board[4],
+		  game.board[5]);
+	ggz_debug(DBG_BOARD, "-------------");
+	ggz_debug(DBG_BOARD,
+		  "  %c | %c | %c  ", game.board[6], game.board[7],
+		  game.board[8]);
 
 	tmp = g_object_get_data(G_OBJECT(main_win), "drawingarea");
 	style = gtk_widget_get_style(main_win);

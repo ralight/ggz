@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 10087 2008-06-29 04:36:44Z jdorje $
+ * $Id: main.c 10088 2008-06-29 04:43:48Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -29,6 +29,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <string.h>
@@ -54,8 +55,43 @@ struct game_state_t game;
 
 static void initialize_about_dialog(void);
 
+static void initialize_debugging(void)
+{
+#ifdef WIN32
+	char *file_name =
+	    g_strdup_printf("%s\\.ggz\\ttt-gtk.debug",
+			    getenv("APPDATA"));
+#else
+	char *file_name =
+	    g_strdup_printf("%s/.ggz/ttt-gtk.debug", getenv("HOME"));
+#endif
+	const char *debugging_types[] = {
+#ifdef DEBUG
+		DBG_MAIN, DBG_BOARD,
+#endif
+		NULL
+	};
+	ggz_debug_init(debugging_types, file_name);
+	g_free(file_name);
+
+	ggz_debug(DBG_MAIN, "Starting TTT client.");
+}
+
+static void cleanup_debugging(void)
+{
+	/* ggz_cleanup_debug writes the data out to the file and does a memory 
+	   check at the same time. */
+	ggz_debug(DBG_MAIN, "Shutting down TTT client.");
+#ifdef DEBUG
+	ggz_debug_cleanup(GGZ_CHECK_MEM);
+#else
+	ggz_debug_cleanup(GGZ_CHECK_NONE);
+#endif
+}
+
 int main(int argc, char *argv[])
 {
+	initialize_debugging();
 	ggz_intl_init("tictactoe");
 
 	gtk_init(&argc, &argv);
@@ -77,6 +113,7 @@ int main(int argc, char *argv[])
 		return -1;
 
 	ggzmod_free(game.ggzmod);
+	cleanup_debugging();
 	return 0;
 }
 
