@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 10104 2008-06-29 13:35:28Z oojah $
+ * $Id: ggzdb.c 10106 2008-06-29 13:49:37Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -100,43 +100,6 @@ char *ggzdb_get_default_backend(void)
 /* Function to initialize the database system */
 int ggzdb_init(ggzdbConnection connection, bool standalone)
 {
-	/* Verify that db version is cool with us */
-	/* FIXME: move all of that into db4.c! */
-	if(!ggz_strcmp(connection.type, "db4")) {
-		const char *suffix = "/ggzdb.ver";
-		char fname[strlen(connection.datadir) + strlen(suffix) + 1];
-		char vid[7];	/* Space for 123.45 */
-		char version_ok = 0;
-		FILE *vfile;
-
-		snprintf(fname, sizeof(fname), "%s%s", connection.datadir, suffix);
-
-		if((vfile = fopen(fname, "r")) == NULL) {
-			/* File not found, so we can create it */
-			if((vfile = fopen(fname, "w")) == NULL)
-				ggz_error_sys_exit("fopen(w) failed in ggzdb_init()");
-			fprintf(vfile, "%s", GGZDB_VERSION_ID);
-			version_ok = 1;
-		} else {
-			/* File was found, so let's check it */
-			fgets(vid, 7, vfile);
-			if(!strncmp(GGZDB_VERSION_ID, vid, strlen(GGZDB_VERSION_ID)))
-				version_ok = 1;
-		}
-		fclose(vfile);
-
-		if (!version_ok) {
-			printf("Bad GGZ database version %s, expected %s.\n"
-			       "Most likely this means you must upgrade your\n"
-			       "database schema.  It may be possible to automate this;\n"
-			       "see http://ggzgamingzone.org.\n",
-			       vid, GGZDB_VERSION_ID);
-			printf("Database location: %s\n", fname);
-			exit(-1);
-			/* FIXME: we should be able to rely on ggz_ggz_error_sys() */
-		}
-	}
-
 	/* Load the database backend plugin */
 	const char *backend = connection.type;
 	const char *primarybackend = NULL;
