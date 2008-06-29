@@ -1,0 +1,6 @@
+This is the basic fd tracking code I wrote to help try and find where sockets
+weren't being closed in ggzd. To use, just replace all of your fd
+opening/closing/accepting etc. calls with the fdt_ ones. It's not pretty, but
+it works and allows you to correlate the hosts that are in CLOSE_WAIT with the
+fd, file and line of code that caused it.
+
