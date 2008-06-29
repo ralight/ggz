@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10105 2008-06-29 13:40:20Z oojah $
+ * $Id: ggzdb_mysql.c 10107 2008-06-29 13:57:51Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -618,7 +618,7 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 			return GGZDB_ERR_NOTFOUND;
 		}
 	} else {
-		/* FIXME: shouldn't we unlock the mutex here? */
+		pthread_mutex_unlock(&mutex);
 		ggz_error_msg("Couldn't lookup player.");
 		return GGZDB_ERR_DB;
 	}
