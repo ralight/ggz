@@ -50,10 +50,12 @@
 #DatabaseUsername = ggzd
 #DatabasePassword = ggzd
 #   DatabaseType: pgsql, mysql, sqlite, db4, dbi, ...
-#   Will be selected automatically if not set. DatabaseOption
-#   is only relevant for the DBI backend, or for volatile db4
-#   databases if set to 'memory'.
+#   Will be selected automatically if not set.
 #DatabaseType = @database@
+#   If DatabaseType is dbi then DatabaseOption is used to choose which DBI
+#   backend to use.
+#   If DatabaseType is db4 then DatabaseOption can be set to 'memory' to use a
+#   volatile database.
 #DatabaseOption = 
 #   Database hashing: plain, md5, sha1 or ripemd160
 #DatabaseHashing = plain
