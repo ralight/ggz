@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6959 2005-03-04 00:18:42Z josef $
+# $Id: Makefile.am 10089 2008-06-29 09:30:27Z jdorje $
 
 SUBDIRS = .
 
@@ -23,7 +23,6 @@ AM_CPPFLAGS = -I$(top_srcdir)/game_servers/ggzcards/games \
 
 noinst_LIBRARIES = libggzcardsai.a
 libggzcardsai_a_SOURCES = aicommon.c game.c main.c aicommon.h game.h
-libggzcardsai_a_CFLAGS = -DAI_CLIENT
 noinst_HEADERS = aicommon.h game.h
 
 AILIB = $(top_builddir)/game_servers/ggzcards/client/libclient.a \
@@ -35,16 +34,13 @@ AILIB = $(top_builddir)/game_servers/ggzcards/client/libclient.a \
 
 ggzd_ggzcards_ai_random_SOURCES = random.c
 ggzd_ggzcards_ai_random_LDADD = $(AILIB)
-ggzd_ggzcards_ai_random_CFLAGS = -DAI_CLIENT
 ggzd_ggzcards_ai_random_LDFLAGS = $(LIBGGZ_LDFLAGS)
 
 ggzd_ggzcards_ai_spades_SOURCES = spades.c
 ggzd_ggzcards_ai_spades_LDADD = $(AILIB)
-ggzd_ggzcards_ai_spades_CFLAGS = -DAI_CLIENT
 ggzd_ggzcards_ai_spades_LDFLAGS = $(LIBGGZ_LDFLAGS)
 
 ggzd_ggzcards_ai_suaro_SOURCES = suaro.c
 ggzd_ggzcards_ai_suaro_LDADD = $(AILIB)
-ggzd_ggzcards_ai_suaro_CFLAGS = -DAI_CLIENT
 ggzd_ggzcards_ai_suaro_LDFLAGS = $(LIBGGZ_LDFLAGS)
 
