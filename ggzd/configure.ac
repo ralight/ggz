@@ -27,10 +27,6 @@ AC_ARG_ENABLE([server],
 AC_ARG_ENABLE([games],
 	AS_HELP_STRING([--disable-games], [Don't build game servers]),
 	[enable_games=no], [enable_games=yes])
-AC_ARG_WITH([database],
-	AS_HELP_STRING([--with-database=DB],
-	[type of database(s) to use: db4, pgsql, mysql, sqlite, dbi]),
-	[database=$withval], [database=yes])
 AC_ARG_WITH([zeroconf],
 	AS_HELP_STRING([--with-zeroconf=TYPE],
 	[type of library to use: avahi]),
@@ -161,7 +157,6 @@ AC_SUBST(LIB_GCRYPT)
 dnl Check database libs
 dnl ===================
 AC_GGZ_DATABASE
-AC_SUBST(database)
 
 dnl Check for zeroconf implementations
 dnl ==================================
@@ -284,7 +279,11 @@ echo "    Build Server.........$enable_server"
 echo "    Build Game Servers...$enable_games"
 echo "    Build Procedures.....$enable_dbproc"
 echo "Configuration options"
-echo "    Database type(s).....$database"
+echo "    db4 database.........$db4"
+echo "    pgsql database.......$pgsql"
+echo "    mysql database.......$mysql"
+echo "    sqlite database......$sqlite"
+echo "    dbi database.........$dbi"
 echo "    Zeroconf.............$zeroconf"
 echo "    Reconfiguration......$reconfiguration"
 echo "    Unicode..............$unicode"

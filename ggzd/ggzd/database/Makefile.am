@@ -22,26 +22,31 @@ ggzdb_LTLIBRARIES =
 if GGZDB_SQLITE
 libggzdb_sqlite_la_SOURCES = ggzdb_sqlite.c ggzdb_proto.h
 libggzdb_sqlite_la_LDFLAGS = -module -avoid-version
+libggzdb_sqlite_la_LIBADD = $(LIB_SQLITE)
 ggzdb_LTLIBRARIES += libggzdb_sqlite.la
 endif
 if GGZDB_MYSQL
 libggzdb_mysql_la_SOURCES = ggzdb_mysql.c rankings.c rankings_mysql.c rankings.h ggzdb_util.c ggzdb_util.h ggzdb_proto.h
 libggzdb_mysql_la_LDFLAGS = -module -avoid-version
+libggzdb_mysql_la_LIBADD = $(LIB_MYSQL)
 ggzdb_LTLIBRARIES += libggzdb_mysql.la
 endif
 if GGZDB_PGSQL
 libggzdb_pgsql_la_SOURCES = ggzdb_pgsql.c rankings.c rankings_pgsql.c rankings.h ggzdb_util.c ggzdb_util.h ggzdb_proto.h
 libggzdb_pgsql_la_LDFLAGS = -module -avoid-version
+libggzdb_pgsql_la_LIBADD = $(LIB_PGSQL)
 ggzdb_LTLIBRARIES += libggzdb_pgsql.la
 endif
 if GGZDB_DB4
 libggzdb_db4_la_SOURCES = ggzdb_db4.c ggzdb_proto.h
 libggzdb_db4_la_LDFLAGS = -module -avoid-version
+libggzdb_db4_la_LIBADD = $(LIB_DB4)
 ggzdb_LTLIBRARIES += libggzdb_db4.la
 endif
 if GGZDB_DBI
 libggzdb_dbi_la_SOURCES = ggzdb_dbi.c ggzdb_proto.h
 libggzdb_dbi_la_LDFLAGS = -module -avoid-version
+libggzdb_dbi_la_LIBADD = $(LIB_DBI)
 ggzdb_LTLIBRARIES += libggzdb_dbi.la
 endif
 
@@ -49,7 +54,7 @@ if GGZDB_PGSQL
 noinst_PROGRAMS = calcrankings
 calcrankings_SOURCES = calcrankings.c
 calcrankings_LDFLAGS = $(LIBGGZ_LDFLAGS)
-calcrankings_LDADD = $(LIB_GGZ) $(LIB_DATABASE) libggzdb_pgsql.la
+calcrankings_LDADD = $(LIB_GGZ) libggzdb_pgsql.la
 endif
 
 dist_ggzddata_DATA = mysql_schema.sql pgsql_schema.sql upgrade_0.7_0.8.sql
