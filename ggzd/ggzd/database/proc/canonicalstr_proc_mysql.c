@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
+
 /* System includes */
 #include <stdlib.h>
 #include <string.h>

@@ -6,6 +6,10 @@
  * it is subject to careful changes only!
  */
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
+
 /* Server-side includes */
 #include <postgres.h>
 #include <executor/spi.h>
