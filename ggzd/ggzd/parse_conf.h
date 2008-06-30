@@ -22,18 +22,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "room.h"
+#include "ggzdb.h"
 
-/* Parse command-line options */
-void parse_args(int argc, char *argv[]);
+unsigned parse_log_types(int, char **);
 
-/* Main entry point for parsing the game files */
-void parse_game_files(void);
-
-/* Main entry point for parsing the room files */
-void parse_room_files(void);
-
-/* Dynamic room reconfiguration */
-void parse_room_change(const char *room, int addition);
-void parse_room_change_db(RoomStruct *rooms);
-
+/* Parse options from conf file, but don't overwrite existing options*/
+void parse_conf_file(void);

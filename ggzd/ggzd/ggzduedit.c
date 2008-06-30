@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 10085 2008-06-28 09:09:31Z josef $
+ * $Id: ggzduedit.c 10125 2008-06-30 22:18:05Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -38,6 +38,7 @@
 
 #include "ggzdb.h"
 #include "datatypes.h" /* For Options type */
+#include "parse_conf.h"
 #include "perms.h"
 
 
@@ -459,8 +460,7 @@ static void echomode(int echo)
 int main(int argc, char **argv)
 {
 	int rc;
-	ggzdbConnection conn;
-	int opt, optindex;
+	int optn, optindex;
 	char password[32];
 	struct option options[] = {
 		{"datadir", required_argument, 0, 'd'},
@@ -474,40 +474,27 @@ int main(int argc, char **argv)
 		{"version", no_argument, 0, 'v'},
 		{0, 0, 0, 0}
 	};
-	const char *primarybackend = NULL;
-	const char *configfile = NULL;
-
-	conn.type = NULL;
-	conn.option = NULL;
-	conn.datadir = NULL;
-	conn.database = NULL;
-	conn.host = NULL;
-	conn.port = 0;
-	conn.username = NULL;
-	conn.password = NULL;
-	conn.hashing = ggz_strdup("plain");
-	conn.hashencoding = ggz_strdup("base64");
 
 	while(1)
 	{
-		opt = getopt_long(argc, argv, "vhf:d:H:D:u:t:p::", options, &optindex);
-		if(opt == -1) break;
-		switch(opt)
+		optn = getopt_long(argc, argv, "vhf:d:H:D:u:t:p::", options, &optindex);
+		if(optn == -1) break;
+		switch(optn)
 		{
 			case 'd':
-				conn.datadir = optarg;
+				opt.data_dir = optarg;
 				break;
 			case 'D':
-				conn.database = optarg;
+				opt.db.database = optarg;
 				break;
 			case 'H':
-				conn.host = optarg;
+				opt.db.host = optarg;
 				break;
 			case 'u':
-				conn.username = optarg;
+				opt.db.username = optarg;
 				break;
 			case 't':
-				conn.type = optarg;
+				opt.db.type = optarg;
 				break;
 			case 'p':
 				if(!optarg)
@@ -521,10 +508,10 @@ int main(int argc, char **argv)
 					password[strlen(password) - 1] = '\0';
 					optarg = password;
 				}
-				conn.password = optarg;
+				opt.db.password = optarg;
 				break;
 			case 'f':
-				configfile = optarg;
+				opt.local_conf = optarg;
 				break;
 			case 'v':
 				printf("%s\n", VERSION);
@@ -550,89 +537,14 @@ int main(int argc, char **argv)
 		}
 	}
 
-	if((!conn.database) || (!conn.host) || (!conn.username) || (!conn.password)) {
-		char ggzdconfigfile[128];
-		if(configfile)
-			ggz_strncpy(ggzdconfigfile, configfile, sizeof(ggzdconfigfile));
-		else
-			snprintf(ggzdconfigfile, sizeof(ggzdconfigfile), "%s/ggzd.conf", GGZDCONFDIR);
-		printf("Loading settings from configuration file '%s'\n", ggzdconfigfile);
-		rc = ggz_conf_parse(ggzdconfigfile, GGZ_CONF_RDONLY);
-		if(rc != -1) {
-			if(!conn.database)
-				conn.database = ggz_conf_read_string(rc, "General", "DatabaseName", NULL);
-			if(!conn.host)
-				conn.host = ggz_conf_read_string(rc, "General", "DatabaseHost", NULL);
-			if(!conn.port)
-				conn.port = ggz_conf_read_int(rc, "General", "DatabasePort", 0);
-			if(!conn.username)
-				conn.username = ggz_conf_read_string(rc, "General", "DatabaseUsername", NULL);
-			if(!conn.password)
-				conn.password = ggz_conf_read_string(rc, "General", "DatabasePassword", NULL);
-			if(!conn.type)
-				conn.type = ggz_conf_read_string(rc, "General", "DatabaseType", NULL);
-			if(!conn.option)
-				conn.option = ggz_conf_read_string(rc, "General", "DatabaseOption", NULL);
-			if(!conn.hashing)
-				conn.hashing = ggz_conf_read_string(rc, "General", "DatabaseHashing", NULL);
-			if(!conn.hashencoding)
-				conn.hashencoding = ggz_conf_read_string(rc, "General", "DatabaseHashEncoding", NULL);
-			ggz_conf_close(rc);
-		}
-	}
-
-	if(!conn.datadir) {
-		if(!conn.database) {
-			conn.datadir = GGZDSTATEDIR;
-		}
-	}
+	parse_conf_file();
 
 	needs_id = 0;
 
-	if(!conn.type) {
-		primarybackend = ggzdb_get_default_backend();
-		conn.type = primarybackend;
-	}
+	printf("Using database '%s' as '%s' on '%s'\n",
+	       opt.db.database, opt.db.username, opt.db.host);
 
-	if(!strcmp(conn.type, "db4")) {
-		needs_id = 1;
-
-		if(!conn.datadir) {
-			fprintf(stderr, "Database type '%s' needs data directory\n",
-				conn.type);
-			exit(-1);
-		}
-	}
-
-	if(!strcmp(conn.type, "dbi")) {
-		if(!conn.option) {
-			fprintf(stderr, "Database type '%s' needs plugin type name\n",
-				conn.type);
-			exit(-1);
-		}
-	}
-
-	if((!strcmp(conn.type, "mysql"))
-	|| (!strcmp(conn.type, "pgsql"))
-	|| (!strcmp(conn.type, "sqlite"))
-	|| (!strcmp(conn.type, "dbi"))) {
-		if((!conn.database) || (!conn.host) || (!conn.username) || (!conn.password)) {
-			fprintf(stderr, "Database type '%s' needs database access parameters\n",
-				conn.type);
-			exit(-1);
-		} else {
-			conn.datadir = NULL;
-		}
-	}
-
-	if(conn.datadir) {
-		printf("Using data directory '%s'\n", conn.datadir);
-	} else {
-		printf("Using database '%s' as '%s' on '%s'\n",
-			conn.database, conn.username, conn.host);
-	}
-
-	if((rc = ggzdb_init(conn, true)) != 0) {
+	if((rc = ggzdb_init(opt.db, true)) != 0) {
 		fprintf(stderr, "ggzdb_init() rc=%d\n", rc);
 		return 1;
 	}
@@ -640,9 +552,6 @@ int main(int argc, char **argv)
 	while(main_menu()){}
 
 	ggzdb_close();
-
-	if(primarybackend)
-		ggz_free(primarybackend);
 
 	return 0;
 }

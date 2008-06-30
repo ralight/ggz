@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 10124 2008-06-30 22:07:01Z jdorje $
+ * $Id: datatypes.h 10125 2008-06-30 22:18:05Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -73,6 +73,18 @@ typedef struct {
 	const char *announce_metaserver;
 	const char *metausername;
 	const char *metapassword;
+#define g_count opt.games.count
+#define g_list opt.games.list
+#define r_count opt.rooms.count
+#define r_list opt.rooms.list
+	struct {
+		int count;
+		char **list;
+	} rooms;
+	struct {
+		int count;
+		char **list;
+	} games;
 	bool reconfigure_rooms;
 	const char *username_policy;
 	GGZRegistrationPolicy registration_policy;

@@ -23,6 +23,7 @@ ggzd_SOURCES = \
 	event.c \
 	event.h \
 	ggzd.h \
+	parse_conf.h parse_conf.c	\
 	parse_opt.c \
 	parse_opt.h \
 	players.c \
@@ -85,10 +86,14 @@ ggzd_LDADD = \
 	$(LIB_WRAP) \
 	$(LIB_DL)
 
-ggzduedit_SOURCES = \
-	datatypes.h \
-	ggzduedit.c \
-	perms.h perms.c
+ggzduedit_SOURCES =			\
+	datatypes.h			\
+	err_func.c err_func.h		\
+	ggzduedit.c			\
+	perms.h perms.c			\
+	parse_conf.c parse_conf.h	\
+	unicode.c unicode.h		\
+	util.c util.h
 
 ggzduedit_LDFLAGS = $(LIBGGZ_LDFLAGS)
 ggzduedit_LDADD = \

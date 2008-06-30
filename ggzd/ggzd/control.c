@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 10124 2008-06-30 22:07:01Z jdorje $
+ * $Id: control.c 10125 2008-06-30 22:18:05Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -55,6 +55,7 @@
 #include "ggzdb.h"
 #include "hash.h"
 #include "motd.h"
+#include "parse_conf.h"
 #include "parse_opt.h"
 #include "players.h"
 #include "room.h"
