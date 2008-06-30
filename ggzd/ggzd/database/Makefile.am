@@ -49,10 +49,9 @@ endif
 
 if GGZDB_PGSQL
 noinst_PROGRAMS = calcrankings
-calcrankings_SOURCES = calcrankings.c rankings.c rankings_pgsql.c rankings.h
-calcrankings_CPPFLAGS = ${AM_CPPFLAGS}
+calcrankings_SOURCES = calcrankings.c
 calcrankings_LDFLAGS = $(LIBGGZ_LDFLAGS)
-calcrankings_LDADD = $(LIB_GGZ) $(LIB_DATABASE)
+calcrankings_LDADD = $(LIB_GGZ) $(LIB_DATABASE) libggzdb_pgsql.la
 endif
 
 dist_ggzddata_DATA = mysql_schema.sql pgsql_schema.sql upgrade_0.7_0.8.sql
