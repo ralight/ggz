@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 9053 2007-04-17 03:16:36Z jdorje $
+ * $Id: client.c 10121 2008-06-30 18:04:32Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -27,14 +27,6 @@
 #  include <config.h>
 #endif
 
-#ifdef GGZ_SERVER
-#  define AI_CLIENT
-#endif
-
-#ifndef AI_CLIENT
-#  define GUI_CLIENT
-#endif
-
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -44,9 +36,6 @@
 #include <unistd.h>	/* for close() */
 
 #include <ggz.h>
-#ifdef GUI_CLIENT
-# include <ggzmod.h>
-#endif
 
 #include "net_common.h"
 #include "protocol.h"
@@ -63,13 +52,13 @@ static void handle_game_specific_packet(void);
 
 static struct {
 	GGZDataIO *dio;
-#ifdef GUI_CLIENT
+#ifndef GGZ_SERVER
 	GGZMod *ggzmod;
-#endif				/* GUI_CLIENT */
+#endif
 	int max_hand_size;
 } game_internal = {
 	0,
-#ifdef GUI_CLIENT
+#ifndef GGZ_SERVER
 	    NULL,
 #endif
 0};
@@ -78,7 +67,7 @@ struct ggzcards_game_t ggzcards = {.hand_num = -1 };
 
 static void handle_req_play(void);
 
-#ifdef GUI_CLIENT
+#ifndef GGZ_SERVER
 GGZMod *client_get_ggzmod(void)
 {
 	return game_internal.ggzmod;
@@ -127,16 +116,16 @@ int client_initialize(void)
 	ggzcards.state = STATE_INIT;
 	ggz_debug(DBG_CLIENT, "Client initialized.");
 
-#ifdef GUI_CLIENT
+#ifndef GGZ_SERVER
 	game_internal.ggzmod = ggzmod_new(GGZMOD_GAME);
 	ggzmod_set_handler(game_internal.ggzmod,
 			   GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
 	ggzmod_connect(game_internal.ggzmod);
-#else /* AI_CLIENT */
+#else /* GGZ_SERVER */
 	handle_server_connect(3);
 #endif
 
-#ifdef GUI_CLIENT
+#ifndef GGZ_SERVER
 	return ggzmod_get_fd(game_internal.ggzmod);
 #else
 	return -1;
@@ -149,9 +138,9 @@ void client_quit(void)
 	int p;
 
 	/* Disconnect */
-#ifdef GUI_CLIENT
+#ifndef GGZ_SERVER
 	if (ggzmod_disconnect(game_internal.ggzmod) < 0)
-#else /* AI_CLIENT */
+#else
 	if (close(ggz_dio_get_socket(game_internal.dio)) < 0)
 #endif
 		ggz_error_msg_exit("Couldn't disconnect from ggz.");
@@ -392,8 +381,8 @@ static void handle_msg_players(void)
 		if (ggzcards.players) {
 			for (p = 0; p < ggzcards.num_players; p++)
 				if (ggzcards.players[p].hand.cards)
-					ggz_free(ggzcards.players[p].hand.
-						 cards);
+					ggz_free(ggzcards.players[p].
+						 hand.cards);
 			ggz_free(ggzcards.players);
 		}
 		ggz_debug(DBG_CLIENT,
@@ -1046,7 +1035,7 @@ void client_send_open_hand(bool is_open)
 	ggz_dio_packet_end(game_internal.dio);
 }
 
-#ifdef GUI_CLIENT
+#ifndef GGZ_SERVER
 int client_handle_ggz(void)
 {
 	return ggzmod_dispatch(game_internal.ggzmod);
