@@ -16,8 +16,6 @@ libggzdb_a_SOURCES = \
 	ggzdb_functions.h \
 	ggzdb_proto.h
 
-EXTRA_DIST = proc/Makefile proc/canonicalstr_proc.c proc/README.proc
-
 ggzdbdir = $(libdir)/ggzd/database
 ggzdb_LTLIBRARIES =
 
