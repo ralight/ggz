@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 10106 2008-06-29 13:49:37Z oojah $
+ * $Id: ggzdb.c 10119 2008-06-30 17:50:15Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -106,38 +106,6 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 	if(!backend){
 		primarybackend = ggzdb_get_default_backend();
 		backend = primarybackend;
-	}
-
-	if(!strcmp(backend, "db4")){
-		dblibhandle = dlopen("libdb.so", RTLD_NOW | RTLD_GLOBAL);
-		if(!dblibhandle){
-			ggz_error_msg_exit("Unable to open libdb.so (%s)",
-				dlerror());
-		}
-	}else if(!strcmp(backend, "dbi")){
-		dblibhandle = dlopen("libdbi.so", RTLD_NOW | RTLD_GLOBAL);
-		if(!dblibhandle){
-			ggz_error_msg_exit("Unable to open libdbi.so (%s)",
-				dlerror());
-		}
-	}else if(!strcmp(backend, "mysql")){
-		dblibhandle = dlopen("libmysqlclient_r.so", RTLD_NOW | RTLD_GLOBAL);
-		if(!dblibhandle){
-			ggz_error_msg_exit("Unable to open libmysqlclient_r.so (%s)",
-				dlerror());
-		}
-	}else if(!strcmp(backend, "pgsql")){
-		dblibhandle = dlopen("libpq.so", RTLD_NOW | RTLD_GLOBAL);
-		if(!dblibhandle){
-			ggz_error_msg_exit("Unable to open libpq.so (%s)",
-				dlerror());
-		}
-	}else if(!strcmp(backend, "sqlite")){
-		dblibhandle = dlopen("libsqlite3.so", RTLD_NOW | RTLD_GLOBAL);
-		if(!dblibhandle){
-			ggz_error_msg_exit("Unable to open libsqlite3.so (%s)",
-				dlerror());
-		}
 	}
 
 	char backendmodule[128];
