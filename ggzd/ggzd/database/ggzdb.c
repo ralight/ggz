@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 10119 2008-06-30 17:50:15Z jdorje $
+ * $Id: ggzdb.c 10123 2008-06-30 20:55:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -76,25 +76,7 @@ ggzdbStamp unique_thread_id(void)
 /* Return the most suitable database backend, which must be ggz_free()'d */
 char *ggzdb_get_default_backend(void)
 {
-	char *primarybackend = NULL;
-	char *token, *nexttoken;
-	char *backendlist = ggz_strdup(DATABASE_TYPES);
-	char *backendlistptr = backendlist;
-	bool gooddefault = false;
-	token = strtok(backendlist, ",");
-	while(token) {
-		nexttoken = strtok(NULL, ",");
-		if((!ggz_strcmp(token, "db4"))
-		|| (!ggz_strcmp(token, "sqlite")))
-			gooddefault = true;
-		if((!nexttoken) || (gooddefault)) {
-			primarybackend = ggz_strdup(token);
-			break;
-		}
-		token = nexttoken;
-	}
-	ggz_free(backendlistptr);
-	return primarybackend;
+	return DEFAULT_DB;
 }
 
 /* Function to initialize the database system */

@@ -263,7 +263,7 @@ AC_DEFUN([AC_GGZ_DATABASE_DB4],
 		LIB_DB4="$db4lib"
 		AC_SUBST(LIB_DB4)
 		AC_MSG_NOTICE([Configuring db4 database module])
-		database="$database,db4"
+		default_db=db4
 	fi
 	AM_CONDITIONAL([GGZDB_DB4], [test "$db4" = yes])
 ])
@@ -306,7 +306,7 @@ AC_DEFUN([AC_GGZ_DATABASE_PGSQL],
 		LIB_PGSQL="-lpq"
 		AC_SUBST(LIB_PGSQL)
 		AC_MSG_NOTICE([Configuring pgsql database module.])
-		database="$database,pgsql"
+		default_db=pgsql
 		AC_DEFINE([WITH_PGSQL], 1, [PostgreSQL is used, needed for statistics])
 	fi
 	AM_CONDITIONAL([GGZDB_PGSQL], [test "$pgsql" = yes])
@@ -349,7 +349,7 @@ AC_DEFUN([AC_GGZ_DATABASE_MYSQL],
 		LIB_MYSQL="-L/usr/lib/mysql -lmysqlclient_r"
 		AC_SUBST(LIB_MYSQL)
 		AC_MSG_NOTICE([Configuring mysql database module.])
-		database="$database,mysql"
+		default_db=mysql
 		AC_DEFINE([WITH_MYSQL], 1, [MySQL is used, needed for statistics])
 	fi
 	AM_CONDITIONAL([GGZDB_MYSQL], [test "$enable_mysql" = yes])
@@ -386,7 +386,7 @@ AC_DEFUN([AC_GGZ_DATABASE_SQLITE],
 		LIB_SQLITE="-lsqlite3"
 		AC_SUBST(LIB_SQLITE)
 		AC_MSG_NOTICE([Configuring sqlite database module.])
-		database="$database,sqlite"
+		default_db=sqlite
 	fi
 	AM_CONDITIONAL([GGZDB_SQLITE], [test "$sqlite" = yes])
 
@@ -423,7 +423,7 @@ AC_DEFUN([AC_GGZ_DATABASE_DBI],
 		LIB_DBI="-ldbi"
 		AC_SUBST(LIB_DBI)
 		AC_MSG_NOTICE([Configuring dbi database module.])
-		database="$database,dbi"
+		default_db=dbi
 	fi
 	AM_CONDITIONAL([GGZDB_DBI], [test "$enable_dbi" = yes])
 ])
@@ -433,18 +433,17 @@ AC_DEFUN([AC_GGZ_DATABASE],
 	# Initialisation
 	DATABASE_INCLUDES=""
 
-	AC_GGZ_DATABASE_DB4
-	AC_GGZ_DATABASE_PGSQL
-	AC_GGZ_DATABASE_MYSQL
 	AC_GGZ_DATABASE_SQLITE
 	AC_GGZ_DATABASE_DBI
-
-	# Make sure a database was configured
-	if test "x$database" = x; then
-		AC_MSG_ERROR([no usable database library found.  See above messages for more.])
-	fi
+	AC_GGZ_DATABASE_MYSQL
+	AC_GGZ_DATABASE_PGSQL
+	AC_GGZ_DATABASE_DB4
 
 	AC_SUBST(DATABASE_INCLUDES)
-	AC_DEFINE(DATABASE_TYPES,"$database",[Database types available])
-])
 
+	# Make sure a database was configured
+	if test "$default_db" = ""; then
+		AC_MSG_ERROR([no usable database library found.  See above messages for more.])
+	fi
+	AC_DEFINE_UNQUOTED(DEFAULT_DB, "$default_db", [Default database module to use])
+])
