@@ -79,24 +79,24 @@ fi
 
 if test "x$need_libtool" = "x1"; then
 	echo -n "[libtoolize]"
-	(cd $srcdir && libtoolize --force --copy >/dev/null) || { echo "libtoolize failed."; exit; }
+	(cd $srcdir && libtoolize --force --copy >/dev/null) || { echo "libtoolize failed."; exit 1; }
 fi
 echo -n "[aclocal]"
 if test -d $srcdir/m4; then
-	(cd $srcdir && aclocal -I m4 -I m4/ggz) || { echo "aclocal failed."; exit; }
+	(cd $srcdir && aclocal -I m4 -I m4/ggz) || { echo "aclocal failed."; exit 1; }
 else
-	(cd $srcdir && aclocal) || { echo "aclocal failed."; exit; }
+	(cd $srcdir && aclocal) || { echo "aclocal failed."; exit 1; }
 fi
 echo -n "[autoheader]"
-(cd $srcdir && autoheader) || { echo "autoheader failed."; exit; }
+(cd $srcdir && autoheader) || { echo "autoheader failed."; exit 1; }
 echo -n "[automake]"
-set -o pipefail 2>/dev/null && { ((cd $srcdir && automake --add-missing --gnu 2>&1) | (grep -v installing || true)) || { echo "automake failed." ; exit; } } || { (cd $srcdir && automake --add-missing --gnu) || { echo "automake failed." ; exit; } }
+set -o pipefail 2>/dev/null && { ((cd $srcdir && automake --add-missing --gnu 2>&1) | (grep -v installing || true)) || { echo "automake failed." ; exit 1; } } || { (cd $srcdir && automake --add-missing --gnu) || { echo "automake failed." ; exit 1; } }
 if test -f $srcdir/am_edit; then
 	echo -n "[am_edit]"
-	(cd $srcdir && perl am_edit --foreign-libtool --no-autodist) || { echo "am_edit failed."; exit; }
+	(cd $srcdir && perl am_edit --foreign-libtool --no-autodist) || { echo "am_edit failed."; exit 1; }
 fi
 echo -n "[autoconf]"
-autoconf -I $srcdir $srcdir/configure.ac > $srcdir/configure && chmod +x $srcdir/configure || { echo "autoconf failed."; exit; }
+autoconf -I $srcdir $srcdir/configure.ac > $srcdir/configure && chmod +x $srcdir/configure || { echo "autoconf failed."; exit 1; }
 echo ""
 
 # Run configuration
