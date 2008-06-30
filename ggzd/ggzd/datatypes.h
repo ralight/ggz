@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 10084 2008-06-28 07:45:28Z josef $
+ * $Id: datatypes.h 10124 2008-06-30 22:07:01Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -32,6 +32,8 @@
 
 #include <ggz_common.h>
 #include <ggz.h>
+
+#include "ggzdb.h"
 
 #include "ggzd.h"
 #include "util.h"
@@ -61,15 +63,7 @@ typedef struct {
 	ggztime_t ping_freq;
 	ggztime_t lag_class_time[4];
 	ggztime_t room_update_freq;
-	const char *dbtype;
-	const char *dboption;
-	const char *dbhost;
-	const char *dbname;
-	const char *dbusername;
-	const char *dbpassword;
-	const char *dbhashing;
-	const char *dbhashencoding;
-	int dbport;
+	ggzdbConnection db;
 	bool tls_use;
 	const char *tls_key;
 	const char *tls_cert;

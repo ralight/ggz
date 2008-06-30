@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 10123 2008-06-30 20:55:07Z jdorje $
+ * $Id: parse_opt.c 10124 2008-06-30 22:07:01Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -191,12 +191,9 @@ static void dump_specs(void)
 	{
 		snprintf(tlsstring, sizeof(tlsstring), "yes (%s)", tlsname);
 	}
-	if(opt.dbtype)
-	{
-		snprintf(dbstring, sizeof(dbstring), " [using %s::%s]", opt.dbtype, opt.dboption);
-	}
-	else
-	{
+	if(opt.db.type)	{
+		snprintf(dbstring, sizeof(dbstring), " [using %s::%s]", opt.db.type, opt.db.option);
+	} else {
 		snprintf(dbstring, sizeof(dbstring), " [autoselect %s]", ggzdb_get_default_backend());
 	}
 
@@ -321,8 +318,8 @@ void parse_conf_file(void)
 	/* Add any defaults which were not config'ed */
 
 	/* The default database type */
-	if(!opt.dbtype)
-		opt.dbtype = ggzdb_get_default_backend();
+	if (!opt.db.type)
+		opt.db.type = ggzdb_get_default_backend();
 
 	/* If no game_exec_dir, default it to GGZDEXECMODDIR */
 	if(!opt.game_exec_dir)
@@ -335,6 +332,7 @@ void parse_conf_file(void)
 	/* If no data_dir, default it to STATEDIR */
 	if(!opt.data_dir)
 		opt.data_dir = ggz_strdup(GGZDSTATEDIR);
+	opt.db.datadir = opt.data_dir;
 
 	/* If no main_port, default it to 5688 (or whatever) */
 	if(!opt.main_port)
@@ -347,11 +345,11 @@ void parse_conf_file(void)
 		opt.admin_email = ggz_strdup(ADMIN_ERR);
 
 	/* Database defaults */
-	if(!opt.dbhashing)
-		opt.dbhashing = ggz_strdup("plain");
+	if (!opt.db.hashing)
+		opt.db.hashing = ggz_strdup("plain");
 
-	if(!opt.dbhashencoding)
-		opt.dbhashencoding = ggz_strdup("base64");
+	if (!opt.db.hashencoding)
+		opt.db.hashencoding = ggz_strdup("base64");
 
 	if(!opt.motd_file)
 		opt.motd_file = ggz_strdup("ggzd.motd");
@@ -391,15 +389,15 @@ static void get_config_options(int ch)
 	opt.data_dir = ggz_conf_read_string(ch, "Directories", "DataDir", NULL);
 
 	/* [Database] */
-	opt.dbtype = ggz_conf_read_string(ch, "General", "DatabaseType", NULL);
-	opt.dboption = ggz_conf_read_string(ch, "General", "DatabaseOption", NULL);
-	opt.dbhost = ggz_conf_read_string(ch, "General", "DatabaseHost", NULL);
-	opt.dbport = ggz_conf_read_int(ch, "General", "DatabasePort", 0);
-	opt.dbname = ggz_conf_read_string(ch, "General", "DatabaseName", NULL);
-	opt.dbusername = ggz_conf_read_string(ch, "General", "DatabaseUsername", NULL);
-	opt.dbpassword = ggz_conf_read_string(ch, "General", "DatabasePassword", NULL);
-	opt.dbhashing = ggz_conf_read_string(ch, "General", "DatabaseHashing", NULL);
-	opt.dbhashencoding = ggz_conf_read_string(ch, "General", "DatabaseHashEncoding", NULL);
+	opt.db.type = ggz_conf_read_string(ch, "General", "DatabaseType", NULL);
+	opt.db.option = ggz_conf_read_string(ch, "General", "DatabaseOption", NULL);
+	opt.db.host = ggz_conf_read_string(ch, "General", "DatabaseHost", NULL);
+	opt.db.port = ggz_conf_read_int(ch, "General", "DatabasePort", 0);
+	opt.db.database = ggz_conf_read_string(ch, "General", "DatabaseName", NULL);
+	opt.db.username = ggz_conf_read_string(ch, "General", "DatabaseUsername", NULL);
+	opt.db.password = ggz_conf_read_string(ch, "General", "DatabasePassword", NULL);
+	opt.db.hashing = ggz_conf_read_string(ch, "General", "DatabaseHashing", NULL);
+	opt.db.hashencoding = ggz_conf_read_string(ch, "General", "DatabaseHashEncoding", NULL);
 
 	/* Announcements in [General] */
 	opt.announce_lan = ggz_conf_read_int(ch, "General", "AnnounceLAN", 0);

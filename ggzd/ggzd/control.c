@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 10084 2008-06-28 07:45:28Z josef $
+ * $Id: control.c 10124 2008-06-30 22:07:01Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -139,22 +139,9 @@ static void init_dirs(void)
 /* Perhaps these should be put into their respective files? */
 static void init_data(void)
 {
-	ggzdbConnection connection;
-
 	pthread_rwlock_init(&state.lock, NULL);
 
-	connection.datadir = opt.data_dir;
-	connection.type = opt.dbtype;
-	connection.option = opt.dboption;
-	connection.host = opt.dbhost;
-	connection.port = opt.dbport;
-	connection.database = opt.dbname;
-	connection.username = opt.dbusername;
-	connection.password = opt.dbpassword;
-	connection.hashing = opt.dbhashing;
-	connection.hashencoding = opt.dbhashencoding;
-
-	if (ggzdb_init(connection, false) != GGZ_OK)
+	if (ggzdb_init(opt.db, false) != GGZ_OK)
 		ggz_error_msg_exit("*** Database initialization failed");
 
 	hash_initialize();
@@ -194,13 +181,13 @@ static void cleanup_data(void)
 	if (opt.admin_email) data_free(opt.admin_email);
 	if (opt.server_name) data_free(opt.server_name);
 
-	if (opt.dbtype) data_free(opt.dbtype);
-	if (opt.dbhost) data_free(opt.dbhost);
-	if (opt.dbname) data_free(opt.dbname);
-	if (opt.dbusername) data_free(opt.dbusername);
-	if (opt.dbpassword) data_free(opt.dbpassword);
-	if (opt.dbhashing) data_free(opt.dbhashing);
-	if (opt.dbhashencoding) data_free(opt.dbhashencoding);
+	if (opt.db.type) data_free(opt.db.type);
+	if (opt.db.host) data_free(opt.db.host);
+	if (opt.db.database) data_free(opt.db.database);
+	if (opt.db.username) data_free(opt.db.username);
+	if (opt.db.password) data_free(opt.db.password);
+	if (opt.db.hashing) data_free(opt.db.hashing);
+	if (opt.db.hashencoding) data_free(opt.db.hashencoding);
 
 	if (opt.tls_key) data_free(opt.tls_key);
 	if (opt.tls_cert) data_free(opt.tls_cert);
