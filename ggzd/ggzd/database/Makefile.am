@@ -13,36 +13,36 @@ noinst_LIBRARIES = libggzdb.a
 libggzdb_a_SOURCES = \
 	ggzdb.c \
 	ggzdb.h \
-	ggzdb_functions.h
+	ggzdb_functions.h \
+	ggzdb_proto.h
 
-EXTRA_DIST = ggzdb_proto.h \
-	proc/Makefile proc/canonicalstr_proc.c proc/README.proc
+EXTRA_DIST = proc/Makefile proc/canonicalstr_proc.c proc/README.proc
 
 ggzdbdir = $(libdir)/ggzd/database
 ggzdb_LTLIBRARIES =
 
 if GGZDB_SQLITE
-libggzdb_sqlite_la_SOURCES = ggzdb_sqlite.c
+libggzdb_sqlite_la_SOURCES = ggzdb_sqlite.c ggzdb_proto.h
 libggzdb_sqlite_la_LDFLAGS = -module -avoid-version
 ggzdb_LTLIBRARIES += libggzdb_sqlite.la
 endif
 if GGZDB_MYSQL
-libggzdb_mysql_la_SOURCES = ggzdb_mysql.c rankings.c rankings_mysql.c rankings.h ggzdb_util.c ggzdb_util.h
+libggzdb_mysql_la_SOURCES = ggzdb_mysql.c rankings.c rankings_mysql.c rankings.h ggzdb_util.c ggzdb_util.h ggzdb_proto.h
 libggzdb_mysql_la_LDFLAGS = -module -avoid-version
 ggzdb_LTLIBRARIES += libggzdb_mysql.la
 endif
 if GGZDB_PGSQL
-libggzdb_pgsql_la_SOURCES = ggzdb_pgsql.c rankings.c rankings_pgsql.c rankings.h ggzdb_util.c ggzdb_util.h
+libggzdb_pgsql_la_SOURCES = ggzdb_pgsql.c rankings.c rankings_pgsql.c rankings.h ggzdb_util.c ggzdb_util.h ggzdb_proto.h
 libggzdb_pgsql_la_LDFLAGS = -module -avoid-version
 ggzdb_LTLIBRARIES += libggzdb_pgsql.la
 endif
 if GGZDB_DB4
-libggzdb_db4_la_SOURCES = ggzdb_db4.c
+libggzdb_db4_la_SOURCES = ggzdb_db4.c ggzdb_proto.h
 libggzdb_db4_la_LDFLAGS = -module -avoid-version
 ggzdb_LTLIBRARIES += libggzdb_db4.la
 endif
 if GGZDB_DBI
-libggzdb_dbi_la_SOURCES = ggzdb_dbi.c
+libggzdb_dbi_la_SOURCES = ggzdb_dbi.c ggzdb_proto.h
 libggzdb_dbi_la_LDFLAGS = -module -avoid-version
 ggzdb_LTLIBRARIES += libggzdb_dbi.la
 endif
