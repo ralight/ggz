@@ -100,5 +100,6 @@ ggzduedit_LDADD = \
 	$(top_builddir)/ggzd/database/libggzdb.a \
 	$(ggzd_LIBS) \
 	$(LIB_GGZ) \
+	$(LIB_ICU) \
 	$(LIB_DL)
 
