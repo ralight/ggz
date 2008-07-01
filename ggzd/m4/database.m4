@@ -433,10 +433,12 @@ AC_DEFUN([AC_GGZ_DATABASE],
 	# Initialisation
 	DATABASE_INCLUDES=""
 
-	AC_GGZ_DATABASE_SQLITE
+	# Check if each module type is supported.  The *last* available
+	# module in this list will be made the default.
 	AC_GGZ_DATABASE_DBI
 	AC_GGZ_DATABASE_MYSQL
 	AC_GGZ_DATABASE_PGSQL
+	AC_GGZ_DATABASE_SQLITE
 	AC_GGZ_DATABASE_DB4
 
 	AC_SUBST(DATABASE_INCLUDES)
