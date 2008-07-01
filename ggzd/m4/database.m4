@@ -446,4 +446,5 @@ AC_DEFUN([AC_GGZ_DATABASE],
 		AC_MSG_ERROR([no usable database library found.  See above messages for more.])
 	fi
 	AC_DEFINE_UNQUOTED(DEFAULT_DB, "$default_db", [Default database module to use])
+	AC_SUBST(default_db)
 ])

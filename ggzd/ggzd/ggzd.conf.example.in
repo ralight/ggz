@@ -51,7 +51,7 @@
 #DatabasePassword = ggzd
 #   DatabaseType: pgsql, mysql, sqlite, db4, dbi, ...
 #   Will be selected automatically if not set.
-#DatabaseType = @database@
+#DatabaseType = @default_db@
 #   If DatabaseType is dbi then DatabaseOption is used to choose which DBI
 #   backend to use.
 #   If DatabaseType is db4 then DatabaseOption can be set to 'memory' to use a
