@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 10062 2008-06-24 20:04:58Z josef $
+ * $Id: easysock.c 10130 2008-07-01 04:00:32Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -1092,6 +1092,11 @@ const char *ggz_getpeername(int fd, int resolve)
 
 int ggz_close_socket(const int sock)
 {
+	if (sock < 0) {
+		ggz_error_msg("ggz_close_socket called with "
+			      "invalid file descriptor.");
+		return -1;
+	}
 #ifdef HAVE_WINSOCK2_H
 	return closesocket(sock);
 #else
