@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 10013 2008-05-30 20:01:43Z jdorje $
+ * $Id: ggzclient.c 10131 2008-07-01 04:07:19Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -84,6 +84,7 @@ static GGZHookReturn ggz_connected(GGZServerEvent id,
 		ggz_debug("connection", "We're connected.");
 		fd = ggzcore_server_get_fd(server);
 		assert(!is_server);
+		assert(fd >= 0);
 		channel = g_io_channel_unix_new(fd);
 		server_tag =
 		    g_io_add_watch_full(channel, G_PRIORITY_DEFAULT,
@@ -99,6 +100,7 @@ static GGZHookReturn ggz_connected(GGZServerEvent id,
 		ggz_debug("connection", "Direct game channel connected.");
 		fd = ggzcore_server_get_channel(server);
 		assert(!is_channel);
+		assert(fd >= 0);
 		channel = g_io_channel_unix_new(fd);
 		channel_tag = g_io_add_watch(channel, G_IO_IN,
 					     ggz_check_fd,
