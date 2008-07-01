@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 10127 2008-07-01 01:36:18Z jdorje $
+ * $Id: ggzdb.c 10138 2008-07-01 16:18:31Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -426,6 +426,12 @@ GGZDBResult ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame, ggzdbStamp tableid)
 {
 	GGZDBResult rc = GGZDB_NO_ERROR;
+
+	if (!game || !owner || !savegame) {
+		ggz_error_msg("NULL strings in ggzdb_stats_savegame: %s %s %s",
+			      game, owner, savegame);
+		return GGZDB_NO_ERROR;
+	}
 
 	_ggzdb_enter();
 
