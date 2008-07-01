@@ -65,7 +65,7 @@ char *_ggz_sql_escape(const char *str)
 }
 
 /* Helper function, might go into libggz*/
-/*char *_ggz_sql_unescape(const char *str)
+char *_ggz_sql_unescape(const char *str)
 {
 	char *new, *q;
 	const char *p;
@@ -100,5 +100,5 @@ char *_ggz_sql_escape(const char *str)
 	*q = '\0';
 
 	return new;
-}*/
+}
 

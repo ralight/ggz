@@ -23,7 +23,7 @@
 char *_ggz_sql_escape(const char *str);
 
 /* Unescape a string from SQL */
-/*char *_ggz_sql_unescape(const char *str); */
+char *_ggz_sql_unescape(const char *str);
 
 #endif
 

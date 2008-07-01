@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10135 2008-07-01 12:43:46Z oojah $
+ * $Id: ggzdb_mysql.c 10136 2008-07-01 13:46:14Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -208,6 +208,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	MYSQL_ROW row;
 	char query[4096];
 	char *handle_quoted;
+	char *unquoted;
 
 	handle_quoted = _ggz_sql_escape(pe->handle);
 
@@ -226,11 +227,20 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 		pthread_mutex_unlock(&mutex);
 
 		if (res && (mysql_num_rows(res) == 1)) {
-			/* FIXME - these need unescaping */
 			row = mysql_fetch_row(res);
-			strncpy(pe->password, row[0], sizeof(pe->password));
-			strncpy(pe->name, row[1], sizeof(pe->name));
-			strncpy(pe->email, row[2], sizeof(pe->email));
+
+			unquoted = _ggz_sql_unescape(row[0]);
+			strncpy(pe->password, unquoted, sizeof(pe->password));
+			ggz_free(password_unquoted);
+
+			unquoted = _ggz_sql_unescape(row[1]);
+			strncpy(pe->name, unquoted, sizeof(pe->name));
+			ggz_free(unquoted);
+			
+			unquoted = _ggz_sql_unescape(row[2]);
+			strncpy(pe->email, unquoted, sizeof(pe->email));
+			ggz_free(unquoted);
+
 			pe->last_login = atol(row[3]);
 			pe->perms = atol(row[4]);
 			mysql_free_result(res);
@@ -298,6 +308,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 	int result;
 	MYSQL_ROW row;
 	char query[4096];
+	char *unquoted;
 
 	if (iterres) {
 		mysql_free_result(iterres);
@@ -313,10 +324,23 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 			/* FIXME - these must be unescaped */
 			row = mysql_fetch_row(iterres);
 			pe->user_id = atoi(row[0]);
-			strncpy(pe->handle, row[1], sizeof(pe->handle));
-			strncpy(pe->password, row[2], sizeof(pe->password));
-			strncpy(pe->name, row[3], sizeof(pe->name));
-			strncpy(pe->email, row[4], sizeof(pe->email));
+
+			unquoted = _ggz_sql_unescape(row[1]);
+			strncpy(pe->handle, unquoted, sizeof(pe->handle));
+			ggz_free(unquoted);
+			
+			unquoted = _ggz_sql_unescape(row[2]);
+			strncpy(pe->password, unquoted, sizeof(pe->password));
+			ggz_free(unquoted);
+			
+			unquoted = _ggz_sql_unescape(row[3]);
+			strncpy(pe->name, unquoted, sizeof(pe->name));
+			ggz_free(unquoted);
+			
+			unquoted = _ggz_sql_unescape(row[4]);
+			strncpy(pe->email, unquoted, sizeof(pe->email));
+			ggz_free(unquoted);
+			
 			pe->last_login = atol(row[5]);
 			pe->perms = atol(row[6]);
 			itercount = 0;
@@ -338,6 +362,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 {
 	MYSQL_ROW row;
+	char *unquoted;
 
 	if (!iterres) {
 		ggz_error_msg_exit("get_first should be called before get_next");
@@ -347,11 +372,23 @@ GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 		itercount++;
 		row = mysql_fetch_row(iterres);
 		pe->user_id = atoi(row[0]);
-		/* FIXME - these need unescaping */
-		strncpy(pe->handle, row[1], sizeof(pe->handle));
-		strncpy(pe->password, row[2], sizeof(pe->password));
-		strncpy(pe->name, row[3], sizeof(pe->name));
-		strncpy(pe->email, row[4], sizeof(pe->email));
+
+		unquoted = _ggz_sql_unescape(row[1]);
+		strncpy(pe->handle, unquoted, sizeof(pe->handle));
+		ggz_free(unquoted);
+
+		unquoted = _ggz_sql_unescape(row[2]);
+		strncpy(pe->password, unquoted, sizeof(pe->password));
+		ggz_gree(unquoted);
+
+		unquoted = _ggz_sql_unescape(row[3]);
+		strncpy(pe->name, unquoted, sizeof(pe->name));
+		ggz_gree(unquoted);
+
+		unquoted = _ggz_sql_unescape(row[4]);
+		strncpy(pe->email, unquoted, sizeof(pe->email));
+		ggz_gree(unquoted);
+
 		pe->last_login = atol(row[5]);
 		pe->perms = atol(row[6]);
 		return GGZDB_NO_ERROR;
@@ -647,6 +684,7 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 	MYSQL_ROW row;
 	char query[4096];
 	char *handle_quoted;
+	char *unquoted;
 
 	handle_quoted = _ggz_sql_escape(pe->handle);
 
@@ -670,7 +708,11 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 
 			/* FIXME - unescape */
 			pe->user_id = atol(row[0]);
-			strncpy(pe->photo, row[1], sizeof(pe->photo));
+
+			unquoted = _ggz_sql_unescape(row[1]);
+			strncpy(pe->photo, unquoted, sizeof(pe->photo));
+			ggz_free(unquoted);
+
 			mysql_free_result(res);
 			return GGZDB_NO_ERROR;
 		} else	{
@@ -693,6 +735,7 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGa
 	ggzdbPlayerGameStats *stats;
 	int i;
 	char *game_quoted;
+	char *unquoted;
 
 	game_quoted = _ggz_sql_escape(game);
 
@@ -722,8 +765,10 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGa
 			stats->rating = atof(row[4]);
 			stats->ranking = atol(row[5]);
 			stats->highest_score = atol(row[6]);
-			/* FIXME - unescape */
-			snprintf(stats->player, MAX_USER_NAME_LEN, row[7]);
+			
+			unquoted = _ggz_sql_unescape(row[7]);
+			snprintf(stats->player, MAX_USER_NAME_LEN, unquoted);
+			ggz_free(unquoted);
 		}
 
 		mysql_free_result(res);
