@@ -168,23 +168,27 @@ bool username_allowed(const char *str)
 	int i;
 	bool allowed;
 
-	/* FIXME: the following two lines document a sucky IBM API bug */
-	/* FIXME: it's #5638 on bugs.icu-project.org */
-	ustr = (UChar*)malloc(strlen(str) * 4);
-	length = strlen(str) * 4;
-
-	ustr = u_strFromUTF8(ustr, length, &length, str, -1, &error);
-	free(ustr);
+	u_strFromUTF8(NULL, 0, &length, str, -1, &error);
 	if(U_FAILURE(error)) {
-		ggz_error_msg("Error: conversion failure");
-		return false;
+		if(error != U_BUFFER_OVERFLOW_ERROR) {
+			ggz_error_msg("Error: utf->unicode conversion failure");
+			return false;
+		}
 	}
+
 	ustr = (UChar*)malloc(sizeof(UChar) * length);
 	if(!ustr) {
-		ggz_error_msg("Error: malloc failure");
+		ggz_error_msg("Error: utf->unicode malloc failure");
 		return false;
 	}
-	ustr = u_strFromUTF8(ustr, length, NULL, str, -1, &error);
+
+	error = U_ZERO_ERROR;
+	u_strFromUTF8(ustr, length, NULL, str, -1, &error);
+	if(U_FAILURE(error)) {
+		ggz_error_msg("Error: utf->unicode conversion failure");
+		free(ustr);
+		return NULL;
+	}
 
 	/* iterate over the characters */
 	allowed = true;
@@ -301,24 +305,30 @@ char *username_canonical(const char *username)
 		return NULL;
 	}
 
-	/* FIXME: for sucky IBM bug description, see username_allowed() */
-	ustr = (UChar*)malloc(strlen(username) * 4);
-	length = strlen(username) * 4;
-
-	ustr = u_strFromUTF8(ustr, length, &length, username, -1, &error);
-	free(ustr);
+	u_strFromUTF8(NULL, 0, &length, username, -1, &error);
 	if(U_FAILURE(error)) {
-		ggz_error_msg("Error: conversion failure");
-		usprep_close(profile);
-		return NULL;
+		if(error != U_BUFFER_OVERFLOW_ERROR) {
+			ggz_error_msg("Error: utf->unicode pre-flight failure");
+			usprep_close(profile);
+			return NULL;
+		}
 	}
+
 	ustr = (UChar*)malloc(sizeof(UChar) * length);
 	if(!ustr) {
-		ggz_error_msg("Error: malloc failure");
+		ggz_error_msg("Error: utf->unicode malloc failure");
 		usprep_close(profile);
 		return NULL;
 	}
+
+	error = U_ZERO_ERROR;
 	ustr = u_strFromUTF8(ustr, length, NULL, username, -1, &error);
+	if(U_FAILURE(error)) {
+		ggz_error_msg("Error: utf->unicode conversion failure");
+		free(ustr);
+		usprep_close(profile);
+		return NULL;
+	}
 
 	/* FIXME: of course there's no documentation of how to estimate... */
 	length2 = length * 4;
@@ -326,34 +336,41 @@ char *username_canonical(const char *username)
 
 	numchars = usprep_prepare(profile, ustr, length, ustr2, length2, USPREP_DEFAULT, NULL, &error);
 	free(ustr);
-	if(U_FAILURE(error))
-	{
+	if(U_FAILURE(error)) {
 		ggz_error_msg("Error: stringprep failure");
 		free(ustr2);
 		usprep_close(profile);
 		return NULL;
 	}
 
-	/* FIXME: sucky IBM bug strikes again */
-	length = length2 * 4;
-	canonical = malloc(length);
 	error = U_ZERO_ERROR;
-	/*u_strToUTF8(NULL, 0, &length, ustr2, numchars, &error);*/
-	u_strToUTF8(canonical, length, &length, ustr2, numchars, &error);
-	if(U_FAILURE(error))
-	{
-		ggz_error_msg("Error: conversion failure");
+	u_strToUTF8(NULL, 0, &length, ustr2, numchars, &error);
+	if(U_FAILURE(error)) {
+		if(error != U_BUFFER_OVERFLOW_ERROR) {
+			ggz_error_msg("Error: unicode->utf pre-flight failure");
+			free(ustr2);
+			usprep_close(profile);
+			return NULL;
+		}
+	}
+
+	canonical = malloc(length);
+	if(!canonical) {
+		ggz_error_msg("Error: unicode->utf malloc failure");
+		free(ustr2);
+		usprep_close(profile);
+		return NULL;
+	}
+
+	error = U_ZERO_ERROR;
+	u_strToUTF8(canonical, length, NULL, ustr2, numchars, &error);
+	if(U_FAILURE(error)) {
+		ggz_error_msg("Error: unicode->utf conversion failure");
 		free(canonical);
 		free(ustr2);
 		usprep_close(profile);
 		return NULL;
 	}
-	/*canonical = malloc(length);
-	u_strToUTF8(canonical, length, NULL, ustr2, length2, &error);
-	if(U_FAILURE(error))
-	{
-		ggz_error_msg("HUH??");
-	}*/
 
 	free(ustr2);
 	usprep_close(profile);
@@ -379,46 +396,49 @@ char *stringcut(const char *string, int len)
 	ustr = u_strFromUTF8(NULL, 0, &length, string, -1, &error);
 	if(U_FAILURE(error)) {
 		if(error != U_BUFFER_OVERFLOW_ERROR) {
-			printf("Error: pre-flight failure\n");
+			ggz_error_msg("Error: utf->unicode pre-flight failure");
 			return NULL;
 		}
 	}
 
 	ustr = (UChar*)malloc(sizeof(UChar) * length);
 	if(!ustr) {
-		printf("Error: malloc failure\n");
+		ggz_error_msg("Error: malloc failure in utf->unicode transformation");
 		return NULL;
 	}
+
 	error = U_ZERO_ERROR;
 	u_strFromUTF8(ustr, length, NULL, string, -1, &error);
-	if(U_FAILURE(error))
-	{
-		printf("Error: conversion failure\n");
+	if(U_FAILURE(error)) {
+		ggz_error_msg("Error: utf->unicode conversion failure");
 		free(ustr);
 		return NULL;
 	}
 
-	if(length > len)
-		length = len;
-
-	u_strToUTF8(NULL, 0, &blength, ustr, length, &error);
-	if(U_FAILURE(error)) {
-		if(error != U_BUFFER_OVERFLOW_ERROR) {
-			printf("Error: back-pre-flight failure\n");
-			return NULL;
+	while(1) {
+		error = U_ZERO_ERROR;
+		u_strToUTF8(NULL, 0, &blength, ustr, length, &error);
+		if(U_FAILURE(error)) {
+			if(error != U_BUFFER_OVERFLOW_ERROR) {
+				ggz_error_msg("Error: unicode->utf back-pre-flight failure");
+				return NULL;
+			}
 		}
+		if(blength < len)
+			break;
+		length--;
 	}
 
 	cutstring = ggz_malloc(blength + 1);
-	if(!cutstring){
-		printf("Error: back-malloc failure\n");
+	if(!cutstring) {
+		ggz_error_msg("Error: malloc failure in unicode->utf transformation");
 		return NULL;
 	}
+
 	error = U_ZERO_ERROR;
 	u_strToUTF8(cutstring, blength, NULL, ustr, length, &error);
-	if(U_FAILURE(error))
-	{
-		printf("Error: back-conversion failure\n");
+	if(U_FAILURE(error)) {
+		ggz_error_msg("Error: unicode->utf conversion failure");
 		ggz_free(cutstring);
 		return NULL;
 	}
