@@ -364,3 +364,70 @@ char *username_canonical(const char *username)
 #endif
 }
 
+char *stringcut(const char *string, int len)
+{
+#ifdef WITH_ICU
+	char *cutstring;
+	UChar *ustr = NULL;
+	int32_t length = 0;
+	int32_t blength = 0;
+	UErrorCode error = U_ZERO_ERROR;
+
+	if(len < 0)
+		return NULL;
+
+	ustr = u_strFromUTF8(NULL, 0, &length, string, -1, &error);
+	if(U_FAILURE(error)) {
+		if(error != U_BUFFER_OVERFLOW_ERROR) {
+			printf("Error: pre-flight failure\n");
+			return NULL;
+		}
+	}
+
+	ustr = (UChar*)malloc(sizeof(UChar) * length);
+	if(!ustr) {
+		printf("Error: malloc failure\n");
+		return NULL;
+	}
+	error = U_ZERO_ERROR;
+	u_strFromUTF8(ustr, length, NULL, string, -1, &error);
+	if(U_FAILURE(error))
+	{
+		printf("Error: conversion failure\n");
+		free(ustr);
+		return NULL;
+	}
+
+	if(length > len)
+		length = len;
+
+	u_strToUTF8(NULL, 0, &blength, ustr, length, &error);
+	if(U_FAILURE(error)) {
+		if(error != U_BUFFER_OVERFLOW_ERROR) {
+			printf("Error: back-pre-flight failure\n");
+			return NULL;
+		}
+	}
+
+	cutstring = ggz_malloc(blength + 1);
+	if(!cutstring){
+		printf("Error: back-malloc failure\n");
+		return NULL;
+	}
+	error = U_ZERO_ERROR;
+	u_strToUTF8(cutstring, blength, NULL, ustr, length, &error);
+	if(U_FAILURE(error))
+	{
+		printf("Error: back-conversion failure\n");
+		ggz_free(cutstring);
+		return NULL;
+	}
+
+	free(ustr);
+
+	return cutstring;
+#else
+	return NULL;
+#endif
+}
+
