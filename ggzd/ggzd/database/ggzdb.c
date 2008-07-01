@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 10123 2008-06-30 20:55:07Z jdorje $
+ * $Id: ggzdb.c 10127 2008-07-01 01:36:18Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -50,7 +50,6 @@ static char db_needs_init = 1;
 static char player_needs_init = 1;
 static char stats_needs_init = 1;
 static void *ggzdbhandle = NULL; /* For e.g. ggzdb_mysql.so */
-static void *dblibhandle = NULL; /* For e.g. libmysqlclient_r.so */
 
 /* Internal functions */
 static GGZDBResult ggzdb_player_init(void);
@@ -161,7 +160,7 @@ void ggzdb_close(void)
 
 	_ggzdb_close();
 	dlclose(ggzdbhandle);
-	dlclose(dblibhandle);
+	ggzdbhandle = NULL;
 }
 
 
