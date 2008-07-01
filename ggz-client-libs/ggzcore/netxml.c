@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 9978 2008-05-09 23:49:26Z josef $
+ * $Id: netxml.c 10129 2008-07-01 03:58:44Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -979,10 +979,8 @@ int _ggzcore_net_read_data(GGZNet * net)
 	/* If len == 0 then we've reached EOF */
 	done = (len == 0);
 	if (done) {
-		_ggzcore_server_protocol_error(net->server, E_BAD_XML);
 		if(net->server) {
-			_ggzcore_net_disconnect(net);
-			_ggzcore_server_session_over(net->server, net);
+			_ggzcore_server_protocol_error(net->server, E_BAD_XML);
 		} else {
 			/* Application doesn't handle reconnection properly */
 			ggz_debug(GGZCORE_DBG_NET, "Error: application shut down GGZ!");
