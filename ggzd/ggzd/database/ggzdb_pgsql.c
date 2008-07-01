@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10108 2008-06-29 14:08:07Z oojah $
+ * $Id: ggzdb_pgsql.c 10134 2008-07-01 10:28:09Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -892,6 +892,7 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 	char query[4096];
 	GGZDBResult rc = GGZDB_ERR_DB;
 	char *player_quoted;
+	char *game_quoted;
 
 	conn = claimconnection();
 	if(!conn) {
@@ -900,13 +901,15 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 	}
 
 	player_quoted = _ggz_sql_escape(stats->player);
+	game_quoted = _ggz_sql_escape(stats->game);
 
 	snprintf(query, sizeof(query),
 		"SELECT "
 		"wins, losses, ties, forfeits, rating, ranking, highscore "
 		"FROM stats WHERE %s(handle) = %s('%s') AND game = '%s'",
-		lower(), lower(), player_quoted, stats->game);
+		lower(), lower(), player_quoted, game_quoted);
 
+	ggz_free(game_quoted);
 	ggz_free(player_quoted);
 
 	res = PQexec(conn, query);
@@ -939,6 +942,7 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 	char query[4096];
 	int rc = GGZDB_ERR_DB;
 	char *player_quoted;
+	char *game_quoted;
 
 	conn = claimconnection();
 	if (!conn) {
@@ -947,6 +951,7 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 	}
 
 	player_quoted = _ggz_sql_escape(stats->player);
+	game_quoted = _ggz_sql_escape(stats->game);
 
 	snprintf(query, sizeof(query),
 		"UPDATE stats "
@@ -955,9 +960,7 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 		"WHERE %s(handle) = %s('%s') AND game = '%s'",
 		stats->wins, stats->losses, stats->ties, stats->forfeits,
 		stats->rating, stats->ranking, stats->highest_score,
-		lower(), lower(), player_quoted, stats->game);
-
-	ggz_free(player_quoted);
+		lower(), lower(), player_quoted, game_quoted);
 
 	res = PQexec(conn, query);
 
@@ -965,17 +968,13 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 		ggz_error_msg("couldn't update stats");
 	} else {
 		if (!strcmp(PQcmdTuples(res), "0")) {
-			player_quoted = _ggz_sql_escape(stats->player);
-
 			snprintf(query, sizeof(query),
 				"INSERT INTO stats "
 				"(handle, game, wins, losses, ties, forfeits, rating, ranking, highscore) VALUES "
 				"('%s', '%s', %i, %i, %i, %i, %f, %u, %li)",
-				player_quoted, stats->game,
+				player_quoted, game_quoted,
 				stats->wins, stats->losses, stats->ties, stats->forfeits,
 				stats->rating, stats->ranking, stats->highest_score);
-
-			ggz_free(player_quoted);
 
 			res2 = PQexec(conn, query);
 
@@ -987,6 +986,10 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 		}
 		else rc = GGZDB_NO_ERROR;
 	}
+
+	ggz_free(player_quoted);
+	ggz_free(game_quoted);
+
 	PQclear(res);
 
 	releaseconnection(conn);
@@ -1105,6 +1108,8 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 	char query[4096];
 	int rc = GGZDB_ERR_DB;
 	char *owner_quoted;
+	char *game_quoted;
+	char *savegame_quoted;
 
 	conn = claimconnection();
 	if (!conn) {
@@ -1112,22 +1117,26 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 		return rc;
 	}
 
+	owner_quoted = _ggz_sql_escape(owner);
+	game_quoted = _ggz_sql_escape(game);
+	savegame_quoted = _ggz_sql_escape(savegame);
+
 	snprintf(query, sizeof(query),
 		"DELETE FROM savegames "
 		"WHERE game = '%s' AND owner = '%s'",
-		game, owner);
+		game_quoted, owner_quoted);
 
 	res = PQexec(conn, query);
 	PQclear(res);
-
-	owner_quoted = _ggz_sql_escape(owner);
 
 	snprintf(query, sizeof(query),
 		"INSERT INTO savegames "
 		"(date, game, owner, savegame, tableid, stamp) VALUES "
 		"(%li, '%s', '%s', '%s', %li, %li)",
-		time(NULL), game, owner, savegame, tableid.thread, tableid.starttime);
+		time(NULL), game_quoted, owner_quoted, savegame_quoted, tableid.thread, tableid.starttime);
 
+	ggz_free(savegame_quoted);
+	ggz_free(game_quoted);
 	ggz_free(owner_quoted);
 
 	res = PQexec(conn, query);
@@ -1151,6 +1160,7 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGa
 	int rc = GGZDB_ERR_DB;
 	ggzdbPlayerGameStats *stats;
 	int i;
+	char *game_quoted;
 
 	conn = claimconnection();
 	if (!conn) {
@@ -1158,10 +1168,12 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGa
 		return rc;
 	}
 
+	game_quoted = _ggz_sql_escape(game);
 	snprintf(query, sizeof(query),
 		"SELECT wins, losses, ties, forfeits, rating, ranking, highscore, handle FROM stats "
 		"WHERE game = '%s' AND ranking <> 0 ORDER BY ranking ASC LIMIT %i",
-		game, number);
+		game_quoted, number);
+	ggz_free(game);
 
 	res = PQexec(conn, query);
 
