@@ -105,7 +105,7 @@ typedef struct {
 
 /** @brief Send saved game to game module
  */
-int ggzdmod_send_savedgame(GGZdMod *ggzdmod, const char *savedgame);
+int ggzdmod_set_savedgame(GGZdMod *ggzdmod, const char *savedgame);
 
 /** @brief Callback events (GGZ-side additions).
  *

@@ -49,6 +49,9 @@ struct GGZdMod {
 	GGZdModHandler handlers[GGZDMOD_NUM_EVENTS];
 	void *gamedata;         /* game-specific data */
 
+	/* Name of savegame this is restored from (or NULL) */
+	const char *savegame;
+
 	/* ggz-only data */
 	pid_t pid;		/* process ID of table */
 	char *pwd;		/* working directory for game */
@@ -73,7 +76,9 @@ void _ggzdmod_handle_bot_request(GGZdMod *ggzdmod, int seat_num);
 void _ggzdmod_handle_open_request(GGZdMod *ggzdmod, int seat_num);
 
 /* Game side functions for handling various messages */
-void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, const char *game, int num_seats, int num_spectators);
+void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod,
+				  const char *game, const char *savedgame,
+				  int num_seats, int num_spectators);
 void _ggzdmod_handle_launch_seat(GGZdMod * ggzdmod, GGZSeat seat);
 void _ggzdmod_handle_launch_end(GGZdMod * ggzdmod);
 void _ggzdmod_handle_seat(GGZdMod * ggzdmod, GGZSeat *seat);
@@ -82,6 +87,5 @@ void _ggzdmod_handle_reseat(GGZdMod * ggzdmod,
 			    int new_seat, int is_spectator);
 void _ggzdmod_handle_spectator_seat(GGZdMod * ggzdmod, GGZSeat *seat);
 void _ggzdmod_handle_state_response(GGZdMod * ggzdmod);
-void _ggzdmod_handle_savedgame(GGZdMod *ggzdmod, char *savedgame);
 
 #endif /* GGZDMOD_MOD_H */

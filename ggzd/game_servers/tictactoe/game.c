@@ -119,8 +119,7 @@ static void game_handle_ggz_spectator_seat(GGZdMod *ggz,
 static void game_handle_ggz_player(GGZdMod *ggz,
                                    GGZdModEvent event, const void *data);
 #ifdef GGZRESTORGAME
-static void game_handle_savedgame(GGZdMod *ggz,
-                                  GGZdModEvent event, const void *data);
+static void load_savegame(GGZdMod *ggz, const char *savegame);
 #endif
 
 /* Network IO main functions */
@@ -182,10 +181,6 @@ void game_init(GGZdMod *ggzdmod)
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_SEAT,
 	                    &game_handle_ggz_spectator_seat);
 #endif
-#ifdef GGZRESTORGAME
-	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SAVEDGAME,
-	                    &game_handle_savedgame);
-#endif
 
 	/* Setup the network callbacks for GGZComm */
 	ggzcomm_set_notifier_callback(game_network_data);
@@ -195,10 +190,8 @@ void game_init(GGZdMod *ggzdmod)
 
 #ifdef GGZRESTORGAME
 /* Callback for GGZDMOD_EVENT_SAVEDGAME */
-static void game_handle_savedgame(GGZdMod *ggz, GGZdModEvent event,
-				  const void *data)
+static void load_savegame(GGZdMod *ggz, const char *savegame)
 {
-	const char *savegame = data;
 	char *savegamepath;
 	FILE *f;
 	char line[1024];
@@ -253,6 +246,13 @@ static void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event,
 				  const void *data)
 {
 	int i;
+	const GGZdModState *old_state = data;
+
+	if (*old_state == GGZDMOD_STATE_CREATED) {
+		if (ggzdmod_get_savedgame(ggz)) {
+			load_savegame(ggz, ggzdmod_get_savedgame(ggz));
+		}
+	}
 
 	switch(ggzdmod_get_state(ggz)) {
 	case GGZDMOD_STATE_CREATED:
@@ -284,10 +284,6 @@ static void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event,
 		break;
 	case GGZDMOD_STATE_DONE:
 		/* The game is over and will be destroyed */
-		break;
-	case GGZDMOD_STATE_RESTORED:
-		/* The game is being restored. */
-		/* FIXME: we need to read in a savegame here. */
 		break;
 	}
 }

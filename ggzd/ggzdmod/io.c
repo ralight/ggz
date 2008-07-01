@@ -48,13 +48,13 @@ static int _io_read_req_launch(GGZdMod *ggzdmod);
 static int _io_read_msg_seat_change(GGZdMod * ggzdmod);
 static int _io_read_msg_reseat(GGZdMod * ggzdmod);
 static int _io_read_msg_spectator_seat_change(GGZdMod *ggzdmod);
-static int _io_read_msg_savedgames(GGZdMod *ggzdmod);
 
 /* Functions for sending IO messages */
-int _io_send_launch(int fd, const char *name, int seats, int spectators)
+int _io_send_launch(int fd, const char *name, const char *savegame, int seats, int spectators)
 {
 	if (ggz_write_int(fd, MSG_GAME_LAUNCH) < 0 
 	    || ggz_write_string(fd, name) < 0
+	    || ggz_write_string(fd, savegame) < 0
 	    || ggz_write_int(fd, seats) < 0
 		|| ggz_write_int(fd, spectators) < 0)
 		return -1;
@@ -248,8 +248,6 @@ int _io_read_data(GGZdMod * ggzdmod)
 		case RSP_GAME_STATE:
 			_ggzdmod_handle_state_response(ggzdmod);
 			return 0;
-		case MSG_SAVEDGAMES:
-			return _io_read_msg_savedgames(ggzdmod);
 		}
 	} else {
 		switch ((TableToControl)op) {
@@ -414,15 +412,18 @@ static int _io_read_req_launch(GGZdMod * ggzdmod)
 	int seats, spectators, i;
 	GGZSeat seat;
 	char *game;
+	char *savegame;
 	
 	if (ggz_read_string_alloc(ggzdmod->fd, &game) < 0)
+		return -1;
+	if (ggz_read_string_alloc(ggzdmod->fd, &savegame) < 0)
 		return -1;
 	if (ggz_read_int(ggzdmod->fd, &seats) < 0)
 		return -1;
 	if (ggz_read_int(ggzdmod->fd, &spectators) < 0)
 		return -1;
 
-	_ggzdmod_handle_launch_begin(ggzdmod, game, seats, spectators);
+	_ggzdmod_handle_launch_begin(ggzdmod, game, savegame, seats, spectators);
 
 	for (i = 0; i < seats; i++) {
 		char *name = NULL;
@@ -527,26 +528,5 @@ static int _io_read_msg_spectator_seat_change(GGZdMod * ggzdmod)
 	if (seat.name)
 		ggz_free(seat.name);
 
-	return 0;
-}
-
-int _io_send_savedgame(int fd, const char *savedgame)
-{
-	if (ggz_write_int(fd, MSG_SAVEDGAMES) < 0
-	    || (!savedgame
-	    || (savedgame && ggz_write_string(fd, savedgame) < 0)))
-		return -1;
-	return 0;
-}
-
-static int _io_read_msg_savedgames(GGZdMod *ggzdmod)
-{
-	char *savedgame;
-
-	if (ggz_read_string_alloc(ggzdmod->fd, &savedgame) < 0)
-		return -1;
-    
-	_ggzdmod_handle_savedgame(ggzdmod, savedgame);
-	ggz_free(savedgame);
 	return 0;
 }

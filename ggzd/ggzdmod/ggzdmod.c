@@ -847,11 +847,19 @@ int ggzdmod_reseat(GGZdMod * ggzdmod,
 	return 0;
 }
 
-int ggzdmod_send_savedgame(GGZdMod *ggzdmod, const char *savedgame)
+const char *ggzdmod_get_savedgame(GGZdMod *ggzdmod)
+{
+	if (!CHECK_GGZDMOD(ggzdmod))
+		return NULL;
+	return ggzdmod->savegame;
+}
+
+int ggzdmod_set_savedgame(GGZdMod *ggzdmod, const char *savedgame)
 {
 	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->type != GGZDMOD_GGZ)
 		return -1;
-	return _io_send_savedgame(ggzdmod->fd, savedgame);            
+	ggzdmod->savegame = savedgame;
+	return 0;
 }
 
 
@@ -1116,10 +1124,7 @@ int ggzdmod_set_state(GGZdMod * ggzdmod, GGZdModState state)
 		else
 			return -1;
 	} else {
-		if (state == GGZDMOD_STATE_RESTORED)
-			set_state(ggzdmod, state);
-		else
-			return -1;
+		return -1;
 	}
 	return 0;
 }
@@ -1136,8 +1141,8 @@ static int send_game_launch(GGZdMod * ggzdmod)
 	GGZListEntry *entry;
 	GGZSeat *seat;
 		
-
-	if (_io_send_launch(ggzdmod->fd, ggzdmod->game, ggzdmod->num_seats,
+	if (_io_send_launch(ggzdmod->fd, ggzdmod->game,
+			    ggzdmod->savegame, ggzdmod->num_seats,
 			    ggzdmod->max_num_spectators) < 0) {
 		_ggzdmod_error(ggzdmod, "Error writing launch to game");
 		return -1;
@@ -1421,7 +1426,6 @@ void _ggzdmod_handle_state(GGZdMod * ggzdmod, GGZdModState state)
 		/* Is this right? has the gameover happened yet? */   
 		return;
 	case GGZDMOD_STATE_CREATED:
-	case GGZDMOD_STATE_RESTORED:
 		break;
 	}
 
@@ -1436,7 +1440,9 @@ void _ggzdmod_handle_log(GGZdMod * ggzdmod, char *msg)
 
 
 /* Game-side event: launch event received from ggzd */
-void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, const char *game, int num_seats, int num_spectators)
+void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod,
+				  const char *game, const char *savegame,
+				  int num_seats, int num_spectators)
 {
 #if 0
 	int bots = 0;
@@ -1457,6 +1463,11 @@ void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, const char *game, int num_s
 	_ggzdmod_set_game(ggzdmod, game);
 	_ggzdmod_set_num_seats(ggzdmod, num_seats);
 	_ggzdmod_set_max_num_spectators(ggzdmod, num_spectators);
+	if (savegame && savegame[0] == '\0') {
+		ggz_free(savegame);
+		savegame = NULL;
+	}
+	ggzdmod->savegame = savegame;
 }
 
 
@@ -1905,9 +1916,4 @@ void _ggzdmod_handle_bot_request(GGZdMod *ggzdmod, int seat_num)
 void _ggzdmod_handle_open_request(GGZdMod *ggzdmod, int seat_num)
 {
 	call_handler(ggzdmod, GGZDMOD_EVENT_REQ_OPEN, &seat_num);
-}
-
-void _ggzdmod_handle_savedgame(GGZdMod *ggzdmod, char *savedgame)
-{
-	call_handler(ggzdmod, GGZDMOD_EVENT_SAVEDGAME, savedgame);
 }

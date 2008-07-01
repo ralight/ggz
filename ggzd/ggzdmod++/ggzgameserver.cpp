@@ -266,7 +266,6 @@ GGZGameServerPrivate::GGZGameServerPrivate(GGZGameServer *parent)
 	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, &handle_spectator_leave);
 	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SPECTATOR_DATA, &handle_spectator_data);
 	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SPECTATOR_SEAT, &handle_spectator_seat);
-	ggzdmod_set_handler(m_ggzdmod, GGZDMOD_EVENT_SAVEDGAME, &handle_savedgame);
 
 	selfcheck();
 }
@@ -290,7 +289,6 @@ void GGZGameServerPrivate::selfcheck()
 	if((int)Seat::abandoned != (int)GGZ_SEAT_ABANDONED) error = true;
 
 	if((int)GGZGameServer::created != (int)GGZDMOD_STATE_CREATED) error = true;
-	if((int)GGZGameServer::restored != (int)GGZDMOD_STATE_RESTORED) error = true;
 	if((int)GGZGameServer::waiting != (int)GGZDMOD_STATE_WAITING) error = true;
 	if((int)GGZGameServer::playing != (int)GGZDMOD_STATE_PLAYING) error = true;
 	if((int)GGZGameServer::done != (int)GGZDMOD_STATE_DONE) error = true;
@@ -386,11 +384,3 @@ void GGZGameServerPrivate::handle_spectator_seat(GGZdMod* ggzdmod, GGZdModEvent 
 	Spectator *spectator = m_parent->spectator(oldspectator.num);
 	m_parent->spectatorEvent(spectator);
 }
-
-void GGZGameServerPrivate::handle_savedgame(GGZdMod *ggzdmod, GGZdModEvent event, const void *data)
-{
-	std::cout << "GGZGameServer: savedgame event." << std::endl;
-	SavedGame savedGame(static_cast<const char *>(data));
-	m_parent->savedgameEvent(&savedGame);
-}
-

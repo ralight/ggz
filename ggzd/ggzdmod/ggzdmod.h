@@ -217,8 +217,6 @@ typedef enum {
 	GGZDMOD_STATE_WAITING,	/**< Ready and waiting to play. */
 	GGZDMOD_STATE_PLAYING,	/**< Currently playing a game. */
 	GGZDMOD_STATE_DONE,	/**< Table halted, prepping to exit. */
-	GGZDMOD_STATE_RESTORED  /**< Pre-launch if server restore all saved games
-	                             ; waiting for ggzdmod */
 } GGZdModState;
 
 /** @brief Callback events.
@@ -319,13 +317,6 @@ typedef enum {
 	 *  number to find out the file descriptor to read from.
 	 */
 	GGZDMOD_EVENT_SPECTATOR_DATA,
-
-	/** @brief Data about saved games avaiable from ggzd
-         *  This message is sent to the client as an instruction to load a
-	 *  saved game.  The filename to be loaded (absolute path) is
-	 *  passed in as the event data (a char*).
-	 */
-	GGZDMOD_EVENT_SAVEDGAME,
 
 	/** @brief An error has occurred
 	 *  This event occurs when a GGZdMod error has occurred.  An
@@ -465,6 +456,18 @@ GGZdModType ggzdmod_get_type(GGZdMod * ggzdmod);
  *  @return The state of the table.
  */
 GGZdModState ggzdmod_get_state(GGZdMod * ggzdmod);
+
+/** @brief Get savegame name or return NULL if there is none.
+ *
+ *  For games that support loading of savegames, the savegame name will be
+ *  passed in to the game server at launch time.  When the state is changed
+ *  out of CREATED the game server should do most of its initialization,
+ *  including loading the savegame.  The value returned here will be
+ *  identical to what was passed in in ggzdmod_report_savegame earlier.
+ *  @param ggzdmod The GGZdMod object.
+ *  @return The savegame name, or NULL on error or if there is no restore
+ *  @see ggzdmod_report_savegame */
+const char *ggzdmod_get_savedgame(GGZdMod *ggzdmod);
 
 /** @brief Get the total number of seats at the table.
  *  @return The number of seats, or -1 on error.

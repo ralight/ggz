@@ -30,7 +30,8 @@
 #include "mod.h"
 
 /* Functions for sending IO messages */
-int _io_send_launch(int fd, const char *game, int seats, int spectators);
+int _io_send_launch(int fd, const char *game, const char *savegame,
+		    int seats, int spectators);
 int _io_send_seat_change(int fd, const GGZSeat *seat);
 int _io_send_spectator_change(int fd, const GGZSeat *spectator);
 int _io_send_state(int fd, GGZdModState state);
@@ -38,7 +39,6 @@ int _io_send_seat(int fd, const GGZSeat *seat);
 int _io_send_reseat(int fd,
 		    int old_seat, int was_spectator,
 		    int new_seat, int is_spectator);
-int _io_send_savedgame(int fd, const char *savedgame);
 
 int _io_send_log(int fd, const char *msg);
 int _io_send_game_report(int fd, int num_players,

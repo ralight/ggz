@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 10067 2008-06-24 22:01:07Z jdorje $
+ * $Id: room.c 10128 2008-07-01 02:31:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -659,7 +659,6 @@ void room_restore(int room)
 				GGZTable *table = table_new();
 				table->type = game_type;
 				table->room = room;
-				table->state = GGZDMOD_STATE_RESTORED;
 				table->savegame = ggz_strdup(sp->savegame);
 
 				// Make open all seats. Game using save game

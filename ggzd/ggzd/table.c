@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 10067 2008-06-24 22:01:07Z jdorje $
+ * $Id: table.c 10128 2008-07-01 02:31:12Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -490,16 +490,9 @@ static GGZReturn table_start_game(GGZTable *table)
 	/* And start the game */
 	log_msg(GGZ_LOG_TABLES, "Launching table: %s", args[0]);
 	ggzdmod_set_module(table->ggzdmod, game, pwd, args);
+	ggzdmod_set_savedgame(table->ggzdmod, table->savegame);
 	if (ggzdmod_connect(table->ggzdmod) < 0)
 		status = GGZ_ERROR;
-
-	if (table->state == GGZDMOD_STATE_RESTORED) {
-		log_msg(GGZ_LOG_TABLES,"Server change game state to %d",
-			table->state);
-		ggzdmod_set_state(table->ggzdmod, table->state);
-		ggzdmod_send_savedgame(table->ggzdmod, table->savegame);
-		ggzdmod_set_state(table->ggzdmod, GGZDMOD_STATE_CREATED);
-	}
 
 	return status;
 }
@@ -901,15 +894,6 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event,
 			table_event_enqueue(table, GGZ_TABLE_UPDATE_STATE);
 		return;
 
-	case GGZDMOD_STATE_RESTORED:
-		ggz_debug(GGZ_DBG_TABLE,
-			"Table %d in room %d is restored.", 
-			table->index, table->room);
-
-		pthread_rwlock_wrlock(&table->lock);
-		table->state = GGZ_TABLE_RESTORED;
-		pthread_rwlock_unlock(&table->lock);
-		return;
 	case GGZDMOD_STATE_CREATED:
 		break;
 	}
@@ -962,10 +946,11 @@ static void table_game_savegame(GGZdMod *ggzdmod,
 			      GGZdModEvent event, const void *data)
 {
 	GGZTable *table = ggzdmod_get_gamedata(ggzdmod);
+	const char *savegame = data;
 
 	if (table->savegame)
 		ggz_free(table->savegame);
-	table->savegame = ggz_strdup((char*)data);
+	table->savegame = ggz_strdup(savegame);
 
 	report_savegame(table->type, table->owner, table->savegame);
 }
