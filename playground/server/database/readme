@@ -1,0 +1,3 @@
+Start of a tool for upgrading db4 databases.
+
+The idea here is to check the current version, move the databases player.db -> player.db_0.7 etc., initialise the new databases as player.db etc. then perform a copy based on the old and new data structures. The old database versions should stay around for the admin to delete once they are happy with the new ones.
