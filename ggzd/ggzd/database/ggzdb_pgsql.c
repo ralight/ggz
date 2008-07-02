@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10137 2008-07-01 14:35:25Z oojah $
+ * $Id: ggzdb_pgsql.c 10141 2008-07-02 07:15:40Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,6 +27,7 @@
 # include <config.h>		/* Site specific config */
 #endif
 
+#include <assert.h>
 #include <limits.h>
 #include <pthread.h>
 #include <stdlib.h>
@@ -120,6 +121,10 @@ static PGconn *claimconnection()
 		if(ggz_list_count(list) < SQL_MAXCONNECTIONS)
 		{
 			conn = ggz_malloc(sizeof(*conn));
+			assert(dbhost != NULL
+			       && dbname != NULL
+			       && dbusername != NULL
+			       && dbpassword != NULL);
 			snprintf(conninfo, sizeof(conninfo),
 				 "host=%s port=%i dbname=%s user=%s password=%s",
 				 dbhost, dbport, dbname, dbusername, dbpassword);
@@ -348,6 +353,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 		ret = setupschema(conn, schemafile);
 		if(!ret) rc = GGZDB_ERR_DB;
 
+		assert(GGZDB_VERSION_ID != NULL);
 		snprintf(query, sizeof(query), "INSERT INTO control "
 			"(key, value) VALUES ('version', '%s')", GGZDB_VERSION_ID);
 
@@ -514,6 +520,7 @@ RoomStruct *_ggzdb_reconfiguration_room(void)
 						rooms[i].max_tables = maxtables;
 						rooms[i].perms = perms;
 					} else if(!ggz_strcmp(action, "delete")) {
+						assert(name != NULL);
 						snprintf(query, sizeof(query),
 							"DELETE FROM rooms WHERE name = '%s'",
 							name);
@@ -581,6 +588,8 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	name_quoted = _ggz_sql_escape(pe->name);
 	email_quoted = _ggz_sql_escape(pe->email);
 
+	assert(handle_quoted != NULL && password_quoted != NULL
+	       && name_quoted != NULL && email_quoted != NULL);
 	snprintf(query, sizeof(query), "INSERT INTO users "
 		 "(handle, password, name, email, lastlogin, permissions, firstlogin, confirmed) "
 		 "VALUES ('%s', '%s', '%s', '%s', %li, %u, %li, '%u')",
@@ -602,6 +611,7 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 
 	/* FIXME: provide server-side function for Unicode-safe stringprep */
 	/* FIXME: here and elsewhere (e.g. for ggzdb_mysql.c) */
+	assert(handle_quoted != NULL);
 	snprintf(query, sizeof(query), "DELETE FROM stats "
 		 "WHERE %s(handle) = %s('%s')",
 		 lower(), lower(), handle_quoted);
@@ -641,6 +651,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 
 	handle_quoted = _ggz_sql_escape(pe->handle);
 
+	assert(handle_quoted != NULL);
 	snprintf(query, sizeof(query),
 		 "SELECT "
 		 "password, name, email, lastlogin, permissions, confirmed "
@@ -709,6 +720,9 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	name_quoted = _ggz_sql_escape(pe->name);
 	email_quoted = _ggz_sql_escape(pe->email);
 
+	assert(password_quoted != NULL
+	       && name_quoted != NULL
+	       && email_quoted != NULL);
 	snprintf(query, sizeof(query),
 		 "UPDATE users SET "
 		 "password = '%s', name = '%s', email = '%s', "
@@ -758,6 +772,7 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 
 	handle_quoted = _ggz_sql_escape(pe->handle);
 
+	assert(handle_quoted != NULL);
 	snprintf(query, sizeof(query),
 		 "SELECT "
 		 "id, photo "
@@ -950,6 +965,7 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 	player_quoted = _ggz_sql_escape(stats->player);
 	game_quoted = _ggz_sql_escape(stats->game);
 
+	assert(player_quoted != NULL && stats->game != NULL);
 	snprintf(query, sizeof(query),
 		"SELECT "
 		"wins, losses, ties, forfeits, rating, ranking, highscore "
@@ -1000,6 +1016,7 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 	player_quoted = _ggz_sql_escape(stats->player);
 	game_quoted = _ggz_sql_escape(stats->game);
 
+	assert(player_quoted != NULL && stats->game != NULL);
 	snprintf(query, sizeof(query),
 		"UPDATE stats "
 		"SET wins = %i, losses = %i, ties = %i, forfeits = %i, "
@@ -1081,6 +1098,9 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 
 	player_quoted = _ggz_sql_escape(stats->player);
 
+	assert(number != NULL
+	       && player_quoted != NULL
+	       && playertype != NULL);
 	snprintf(query, sizeof(query),
 		"INSERT INTO matchplayers "
 		"(match, handle, playertype) VALUES "
@@ -1119,6 +1139,7 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 		return rc;
 	}
 
+	assert(game != NULL && savegame != NULL);
 	game_quoted = _ggz_sql_escape(game);
 	savegame_quoted = _ggz_sql_escape(savegame);
 
@@ -1131,6 +1152,7 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 	PQclear(res);
 
 	winner_quoted = _ggz_sql_escape(winner);
+	assert(winner_quoted != NULL);
 
 	snprintf(query, sizeof(query),
 		"INSERT INTO matches "
@@ -1171,6 +1193,7 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 		return rc;
 	}
 
+	assert(game != NULL && owner != NULL && savegame != NULL);
 	owner_quoted = _ggz_sql_escape(owner);
 	game_quoted = _ggz_sql_escape(game);
 	savegame_quoted = _ggz_sql_escape(savegame);
@@ -1223,6 +1246,7 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGa
 		return rc;
 	}
 
+	assert(game != NULL);
 	game_quoted = _ggz_sql_escape(game);
 	snprintf(query, sizeof(query),
 		"SELECT wins, losses, ties, forfeits, rating, ranking, highscore, handle FROM stats "
@@ -1319,6 +1343,7 @@ GGZList *_ggzdb_savegame_owners(const char *game)
 	}
 
 	game_quoted = _ggz_sql_escape(game);
+	assert(game_quoted != NULL);
 	snprintf(query, sizeof(query),
 		"SELECT owner, tableid, stamp, savegame FROM savegames WHERE game = '%s'",
 		game_quoted);
@@ -1405,6 +1430,7 @@ GGZList *_ggzdb_savegames(const char *game, const char *owner)
 
 	game_quoted = _ggz_sql_escape(game);
 	owner_quoted = _ggz_sql_escape(owner);
+	assert(game_quoted != NULL && owner_quoted != NULL);
 	snprintf(query, sizeof(query),
 		"SELECT savegame FROM savegames "
 		"WHERE game = '%s' AND owner = '%s'",
@@ -1453,6 +1479,7 @@ GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *nam
 
 	name_quoted = _ggz_sql_escape(name);
 
+	assert(name_quoted != NULL);
 	snprintf(query, sizeof(query),
 		"INSERT INTO savegameplayers "
 		"(tableid, stamp, seat, handle, seattype) VALUES "
@@ -1504,6 +1531,8 @@ GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num)
 		description_quoted = _ggz_sql_escape(ggz_intlstring_translated(room.description, NULL));
 
 		/* FIXME: evaluate room->perms and somehow also room->game_type */
+		assert(name_quoted != NULL
+		       && description_quoted != NULL);
 		snprintf(query, sizeof(query),
 			"INSERT INTO rooms "
 			"(filebased, name, description, gametype, maxplayers, maxtables, entryrestriction) VALUES "

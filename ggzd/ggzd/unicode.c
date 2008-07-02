@@ -381,6 +381,7 @@ char *username_canonical(const char *username)
 #endif
 }
 
+#if 0
 char *stringcut(const char *string, int len)
 {
 #ifdef WITH_ICU
@@ -450,4 +451,4 @@ char *stringcut(const char *string, int len)
 	return NULL;
 #endif
 }
-
+#endif
