@@ -120,14 +120,17 @@ static void call_handler(GGZdMod * ggzdmod, GGZdModEvent event, void *data)
 		char *which = ggzdmod->type == GGZDMOD_GAME ? "game" : "ggz";
 		char *message = data;
 
-		if (event != GGZDMOD_EVENT_ERROR)
+		if (event != GGZDMOD_EVENT_ERROR) {
 			ggzdmod_log(ggzdmod,
 				    "GGZDMOD: unhandled event %d by %s.",
 				    event, which);
-		else
+		} else {
+			/* The only safe choice here is to exit. */
 			fprintf(stderr,
 				"GGZDMOD: unhandled error event %d by %s: %s\n",
 				event, which, message);
+			exit(255);
+		}
 	}
 }
 
