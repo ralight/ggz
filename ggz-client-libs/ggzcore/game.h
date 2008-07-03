@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.h 9247 2007-08-13 07:02:04Z josef $
+ * $Id: game.h 10147 2008-07-03 19:22:39Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -47,10 +47,10 @@ void _ggzcore_game_set_player(GGZGame * game, int is_spectator,
 void _ggzcore_game_inform_chat(GGZGame * game, const char *player,
 			       const char *msg);
 
-int _ggzcore_game_is_spectator(GGZGame * game);
-int _ggzcore_game_get_seat_num(GGZGame * game);
-int _ggzcore_game_get_room_id(GGZGame * game);
-int _ggzcore_game_get_table_id(GGZGame * game);
+int _ggzcore_game_is_spectator(const GGZGame * game);
+int _ggzcore_game_get_seat_num(const GGZGame * game);
+int _ggzcore_game_get_room_id(const GGZGame * game);
+int _ggzcore_game_get_table_id(const GGZGame * game);
 
 void _ggzcore_game_set_info(GGZGame * game, int num, GGZList *infos);
 void _ggzcore_game_set_rankings(GGZGame * game, int num, GGZList *rankings);
@@ -74,8 +74,8 @@ int _ggzcore_game_data_is_pending(struct _GGZGame *game);
 int _ggzcore_game_read_data(struct _GGZGame *game);
 int _ggzcore_game_write_data(struct _GGZGame *game);
 
-int _ggzcore_game_get_control_fd(struct _GGZGame *game);
-GGZModule *_ggzcore_game_get_module(struct _GGZGame *game);
+int _ggzcore_game_get_control_fd(const struct _GGZGame *game);
+GGZModule *_ggzcore_game_get_module(const struct _GGZGame *game);
 
 void _ggzcore_game_set_server_fd(struct _GGZGame *game, int fd);
 

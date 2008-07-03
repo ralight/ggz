@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 9954 2008-04-14 20:00:20Z jdorje $
+ * $Id: server.c 10147 2008-07-03 19:22:39Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -677,7 +677,7 @@ const char *_ggzcore_server_get_password(const GGZServer * server)
 }
 
 
-int ggzcore_server_get_channel(GGZServer *server)
+int ggzcore_server_get_channel(const GGZServer *server)
 {
 	if (server && server->channel)
 		return _ggzcore_net_get_fd(server->channel);

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 9540 2008-01-15 17:01:52Z josef $
+ * $Id: game.c 10147 2008-07-03 19:22:39Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -221,7 +221,7 @@ int ggzcore_game_remove_event_hook_id(GGZGame * game,
 }
 
 
-int ggzcore_game_get_control_fd(GGZGame * game)
+int ggzcore_game_get_control_fd(const GGZGame * game)
 {
 	if (game)
 		return _ggzcore_game_get_control_fd(game);
@@ -246,7 +246,7 @@ void ggzcore_game_set_server_fd(GGZGame *game, unsigned int fd)
 }
 
 
-GGZModule *ggzcore_game_get_module(GGZGame * game)
+GGZModule *ggzcore_game_get_module(const GGZGame * game)
 {
 	if (game)
 		return _ggzcore_game_get_module(game);
@@ -704,25 +704,25 @@ void _ggzcore_game_inform_chat(GGZGame * game,
 	}
 }
 
-int _ggzcore_game_is_spectator(GGZGame * game)
+int _ggzcore_game_is_spectator(const GGZGame * game)
 {
 	return game->spectating;
 }
 
 
-int _ggzcore_game_get_seat_num(GGZGame * game)
+int _ggzcore_game_get_seat_num(const GGZGame * game)
 {
 	return game->seat_num;
 }
 
 
-int _ggzcore_game_get_room_id(GGZGame * game)
+int _ggzcore_game_get_room_id(const GGZGame * game)
 {
 	return game->room_id;
 }
 
 
-int _ggzcore_game_get_table_id(GGZGame * game)
+int _ggzcore_game_get_table_id(const GGZGame * game)
 {
 	return game->table_id;
 }
@@ -755,7 +755,7 @@ int _ggzcore_game_remove_event_hook_id(struct _GGZGame *game,
 }
 
 
-int _ggzcore_game_get_control_fd(struct _GGZGame *game)
+int _ggzcore_game_get_control_fd(const struct _GGZGame *game)
 {
 	return ggzmod_ggz_get_fd(game->client);
 }
@@ -818,7 +818,7 @@ void _ggzcore_game_set_server_fd(struct _GGZGame *game, int fd)
 }
 
 
-GGZModule *_ggzcore_game_get_module(struct _GGZGame * game)
+GGZModule *_ggzcore_game_get_module(const struct _GGZGame * game)
 {
 	return game->module;
 }

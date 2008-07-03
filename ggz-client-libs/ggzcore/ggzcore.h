@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 9993 2008-05-24 06:41:33Z josef $
+ * $Id: ggzcore.h 10147 2008-07-03 19:22:39Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -812,7 +812,7 @@ int ggzcore_server_get_fd(const GGZServer *server);
  *  @return The file descriptor of the connection socket.
  *  @see ggzcore_server_create_channel
  */
-int ggzcore_server_get_channel(GGZServer *server);
+int ggzcore_server_get_channel(const GGZServer *server);
 
 /** @brief Get the state of the server connection.
  *
@@ -1279,19 +1279,19 @@ int ggzcore_table_get_seat_count(const GGZTable *table, GGZSeatType type);
 
 /** @brief Return the name of a player at the table, or NULL on error. */
 const char *ggzcore_table_get_nth_player_name(const GGZTable *table,
-					      const unsigned int num);
+					      unsigned int num);
 
 /** @brief Return the number of spectator seats at the table, or -1. */
 int ggzcore_table_get_num_spectator_seats(const GGZTable *table);
 
 /** @brief Return the name of the nth spectator, or NULL if seat is empty. */
 const char *ggzcore_table_get_nth_spectator_name(const GGZTable *table,
-						 const unsigned int num);
+						 unsigned int num);
 
 /** @brief Return the type of a player at the table, or GGZ_PLAYER_NONE on
  *  error. */
 GGZSeatType ggzcore_table_get_nth_player_type(const GGZTable *table, 
-					      const unsigned int num);
+					      unsigned int num);
 
 
 /** @brief Get the ID of this gametype.
@@ -1340,8 +1340,10 @@ int ggzcore_gametype_num_bots_is_valid(const GGZGameType *type,
 
 /** @brief Return the number of named bots for this gametype. */
 int ggzcore_gametype_get_num_namedbots(const GGZGameType *type);
-const char* ggzcore_gametype_get_namedbot_name(const GGZGameType *type, unsigned int num);
-const char* ggzcore_gametype_get_namedbot_class(const GGZGameType *type, unsigned int num);
+const char* ggzcore_gametype_get_namedbot_name(const GGZGameType *type,
+					       unsigned int num);
+const char* ggzcore_gametype_get_namedbot_class(const GGZGameType *type,
+						unsigned int num);
 
 /** @brief Return TRUE iff this game may disclose the player's hostname. */
 int ggzcore_gametype_get_peers_allowed(const GGZGameType *type);
@@ -1494,7 +1496,7 @@ int ggzcore_module_add(const char *name,
 		       const char *exe_path,
 		       const char *icon_path,
 		       const char *help_path,
-			   GGZModuleEnvironment environment);		       
+		       GGZModuleEnvironment environment);		       
 
 
 /** @brief Returns how many modules support this game and protocol */
@@ -1506,41 +1508,41 @@ int ggzcore_module_get_num_by_type(const char *game,
 GGZModule* ggzcore_module_get_nth_by_type(const char *game, 
 					  const char *engine,
 					  const char *version,
-					  const unsigned int num);
+					  unsigned int num);
 
 /** @brief Return the name of the module. */
-const char * ggzcore_module_get_name(GGZModule *module);
+const char * ggzcore_module_get_name(const GGZModule *module);
 
 /** @brief Return the (game?) version of the module. */
-const char* ggzcore_module_get_version(GGZModule *module);
+const char* ggzcore_module_get_version(const GGZModule *module);
 
 /** @brief Return the name of the module's protocol engine. */
-const char* ggzcore_module_get_prot_engine(GGZModule *module);
+const char* ggzcore_module_get_prot_engine(const GGZModule *module);
 
 /** @brief Return the version of the module's protocol engine. */
-const char* ggzcore_module_get_prot_version(GGZModule *module);
+const char* ggzcore_module_get_prot_version(const GGZModule *module);
 
 /** @brief Return the author of the module. */
-const char* ggzcore_module_get_author(GGZModule *module);
+const char* ggzcore_module_get_author(const GGZModule *module);
 
 /** @brief Return the module's frontend type. */
-const char* ggzcore_module_get_frontend(GGZModule *module);
+const char* ggzcore_module_get_frontend(const GGZModule *module);
 
 /** @brief Return the URL associated with the module. */
-const char* ggzcore_module_get_url(GGZModule *module);
+const char* ggzcore_module_get_url(const GGZModule *module);
 
 /** This is (intended to be) an optional xpm file that the module can provide
  *  to use for representing the game graphically. */
-const char* ggzcore_module_get_icon_path(GGZModule *module);
+const char* ggzcore_module_get_icon_path(const GGZModule *module);
 
 /** @brief Return the help path of the module (?). */
-const char* ggzcore_module_get_help_path(GGZModule *module);
+const char* ggzcore_module_get_help_path(const GGZModule *module);
 
 /** @brief Return the executable arguments for the module.  See exec(). */
-char** ggzcore_module_get_argv(GGZModule *module);
+char** ggzcore_module_get_argv(const GGZModule *module);
 
 /** @brief Return the preferred environment type. */
-GGZModuleEnvironment ggzcore_module_get_environment(GGZModule *module);
+GGZModuleEnvironment ggzcore_module_get_environment(const GGZModule *module);
 
 /* Functions related to game clients */
 /* --------------------------------- */
@@ -1588,13 +1590,13 @@ int ggzcore_game_remove_event_hook_id(GGZGame *game,
 				      const unsigned int hook_id);
 
 /** @brief Return the control (ggzmod) socket for the game. */
-int  ggzcore_game_get_control_fd(GGZGame *game);
+int  ggzcore_game_get_control_fd(const GGZGame *game);
 
 /** @brief Return the game's server socket. Needed only for channels set up by ggzcore. */
 void ggzcore_game_set_server_fd(GGZGame *game, unsigned int fd);
 
 /** @brief Return the module set for the game. */
-GGZModule* ggzcore_game_get_module(GGZGame *game);
+GGZModule* ggzcore_game_get_module(const GGZGame *game);
 
 /** @brief Launch thee game! */
 int ggzcore_game_launch(GGZGame *game);
