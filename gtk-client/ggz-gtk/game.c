@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 10145 2008-07-03 19:10:52Z jdorje $
+ * $Id: game.c 10146 2008-07-03 19:14:29Z jdorje $
  *
  * Functions for handling game events
  *
@@ -46,7 +46,6 @@
 
 #include <ggz.h>	/* libggz */
 
-static int fd = -1;
 static guint game_tag;
 
 static GGZModule *pick_module(GGZGameType * gt)
@@ -167,6 +166,9 @@ void game_channel_ready(void)
 
 void game_quit(void)
 {
+	GGZGame *game = ggzcore_server_get_cur_game(server);
+	int fd = ggzcore_game_get_control_fd(game);
+
 	if (fd != -1) {
 		g_source_remove(game_tag);
 		fd = -1;
@@ -201,10 +203,11 @@ static GGZHookReturn game_launched(GGZGameEvent id, const void *event_data,
 {
 	GIOChannel *channel;
 	GGZGame *game = ggzcore_server_get_cur_game(server);
+	int fd = ggzcore_game_get_control_fd(game);
+
 
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL, _("Launched game"));
 
-	fd = ggzcore_game_get_control_fd(game);
 	channel = g_io_channel_unix_new(fd);
 	game_tag = g_io_add_watch_full(channel, G_PRIORITY_DEFAULT,
 				       G_IO_IN, game_process, server,
@@ -269,6 +272,9 @@ static GGZHookReturn game_playing(GGZGameEvent id, const void *event_data,
 
 int game_play(void)
 {
+ 	GGZGame *game = ggzcore_server_get_cur_game(server);
+	int fd = ggzcore_game_get_control_fd(game);
+
 	if (fd != -1)
 		return TRUE;
 	return FALSE;
