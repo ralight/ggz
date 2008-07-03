@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 8705 2006-12-06 01:04:14Z jdorje $
+ * $Id: game.c 10145 2008-07-03 19:10:52Z jdorje $
  *
  * Functions for handling game events
  *
@@ -46,7 +46,6 @@
 
 #include <ggz.h>	/* libggz */
 
-static GGZGame *game;
 static int fd = -1;
 static guint game_tag;
 
@@ -142,6 +141,7 @@ static GGZModule *pick_module(GGZGameType * gt)
 int game_launch(void)
 {
 	gint status;
+	GGZGame *game = ggzcore_server_get_cur_game(server);
 
 	/* Launch game */
 	if ((status = ggzcore_game_launch(game) < 0)) {
@@ -158,6 +158,8 @@ int game_launch(void)
 
 void game_channel_ready(void)
 {
+	GGZGame *game = ggzcore_server_get_cur_game(server);
+
 	ggzcore_game_set_server_fd(game,
 				   ggzcore_server_get_channel(server));
 }
@@ -175,13 +177,14 @@ void game_quit(void)
 void game_destroy(void)
 {
 	ggzcore_game_free(ggzcore_server_get_cur_game(server));
-	game = NULL;
 }
 
 
 static gboolean game_process(GIOChannel * source, GIOCondition condition,
 			     gpointer data)
 {
+	GGZGame *game = ggzcore_server_get_cur_game(server);
+
 	return (game && ggzcore_game_read_data(game) >= 0);
 }
 
@@ -197,6 +200,7 @@ static GGZHookReturn game_launched(GGZGameEvent id, const void *event_data,
 				   const void *user_data)
 {
 	GIOChannel *channel;
+	GGZGame *game = ggzcore_server_get_cur_game(server);
 
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL, _("Launched game"));
 
@@ -290,6 +294,7 @@ int game_initialize(int spectate)
 	GGZRoom *room;
 	GGZGameType *gt;
 	GGZModule *module = NULL;
+	GGZGame *game = ggzcore_server_get_cur_game(server);
 
 	/* Make sure we aren't already in a game */
 	if (game) {
