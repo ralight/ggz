@@ -1,0 +1,18 @@
+[Desktop Entry]
+Name=KGGZ Multiplayer Client
+Comment=Access to the GGZ Gaming Zone
+Icon=ggz
+Type=Service
+ 
+X-KDE-ServiceTypes=Plasma/Applet
+X-KDE-Library=plasma_kggz
+X-KDE-PluginInfo-Author=Josef Spillner
+X-KDE-PluginInfo-Email=spillner@kde.org
+X-KDE-PluginInfo-Name=kggz
+X-KDE-PluginInfo-Version=0.1
+X-KDE-PluginInfo-Website=http://plasma.kde.org/
+X-KDE-PluginInfo-Category=Online Services
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+
