@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Text Client 
  * Date: 11/5/2002
- * $Id: pick_module.h 6089 2004-07-12 16:50:18Z josef $
+ * $Id: pick_module.h 10148 2008-07-04 01:49:57Z jdorje $
  *
  * Dialog window to pick a module for your game
  *
@@ -24,5 +24,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-int ask_user_to_pick_module(GGZModule **modules, int *modulenumbers, int *preserve);
+int ask_user_to_pick_module(GGZModule **modules,
+			    int *modulenumbers, int *preserve);
 void cancel_module_picking(void);

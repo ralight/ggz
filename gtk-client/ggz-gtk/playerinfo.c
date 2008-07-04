@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 10013 2008-05-30 20:01:43Z jdorje $
+ * $Id: playerinfo.c 10148 2008-07-04 01:49:57Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -262,7 +262,7 @@ static GtkWidget *create_dlg_info(GGZServer *server)
  *
  * Returns:
  */
-void player_info_create_or_raise(GGZPlayer *player)
+void player_info_create_or_raise(const GGZPlayer *player)
 {
 	GtkWidget *tmp;
 	GGZRoom *room = ggzcore_player_get_room(player);

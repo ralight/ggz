@@ -30,6 +30,6 @@
 #ifndef __GGZUTILS_H__
 #define __GGZUTILS_H__
 
-char *perm_name(GGZPerm p);
+const char *perm_name(GGZPerm p);
 
 #endif /* __GGZUTILS_H__ */

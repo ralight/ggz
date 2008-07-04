@@ -32,7 +32,7 @@
 #include "support.h"
 
 /* Return a text name for the permission, or NULL. */
-char *perm_name(GGZPerm p)
+const char *perm_name(GGZPerm p)
 {
 	switch (p) {
 	case GGZ_PERM_JOIN_TABLE:

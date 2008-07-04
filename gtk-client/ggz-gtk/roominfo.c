@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: roominfo.c 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: roominfo.c 10148 2008-07-04 01:49:57Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user. 
@@ -134,7 +134,7 @@ static GtkWidget *create_dlg_info(GtkWidget *parent)
  * Returns:
  */
 
-void room_info_create_or_raise(GGZRoom * room)
+void room_info_create_or_raise(const GGZRoom * room)
 {
 	GtkWidget *tmp;
 	GGZGameType *gt = ggzcore_room_get_gametype(room);

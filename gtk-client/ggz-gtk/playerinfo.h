@@ -2,7 +2,7 @@
  * File: playerinfo.h
  * Author: Jason Short
  * Project: GGZ GTK Client
- * $Id: playerinfo.h 5094 2002-10-29 00:13:04Z jdorje $
+ * $Id: playerinfo.h 10148 2008-07-04 01:49:57Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -26,4 +26,4 @@
 
 #include <ggzcore.h>
 
-void player_info_create_or_raise(GGZPlayer * player);
+void player_info_create_or_raise(const GGZPlayer *player);

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.h 8168 2006-06-12 01:19:58Z jdorje $
+ * $Id: game.h 10148 2008-07-04 01:49:57Z jdorje $
  *
  * Functions for handling game events
  *
@@ -43,4 +43,4 @@ void game_destroy(void);
 
 int game_play(void);
 
-gboolean can_launch_gametype(GGZGameType *gt);
+gboolean can_launch_gametype(const GGZGameType *gt);
