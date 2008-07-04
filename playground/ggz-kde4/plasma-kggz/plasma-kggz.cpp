@@ -10,7 +10,7 @@
 PlasmaKGGZ::PlasmaKGGZ(QObject *parent, const QVariantList &args)
     : Plasma::Applet(parent, args),
     m_svg(this),
-    m_icon("document")
+    m_icon("ggz")
 {
     m_svg.setImagePath("widgets/background");
     // this will get us the standard applet background, for free!

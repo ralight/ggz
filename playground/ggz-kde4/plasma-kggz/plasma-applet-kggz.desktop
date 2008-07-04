@@ -5,7 +5,7 @@ Icon=ggz
 Type=Service
  
 X-KDE-ServiceTypes=Plasma/Applet
-X-KDE-Library=plasma_kggz
+X-KDE-Library=plasma_applet_kggz
 X-KDE-PluginInfo-Author=Josef Spillner
 X-KDE-PluginInfo-Email=spillner@kde.org
 X-KDE-PluginInfo-Name=kggz
