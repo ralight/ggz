@@ -91,9 +91,19 @@ void PlasmaKGGZ::paintInterface(QPainter *p,
 	m_svg.paint(p, (int)contentsRect.left(), (int)contentsRect.top());
 
 	p->drawPixmap(7, 0, m_icon.pixmap((int)contentsRect.width(), (int)contentsRect.width() - 14));
+
+	QRect chatrect(contentsRect.topLeft(), QSize(contentsRect.width(), contentsRect.height() - 20));
+	QRect invitationrect(contentsRect.topLeft(), QSize(contentsRect.width(), contentsRect.height() - 40));
+	QRect roominforect(contentsRect.topLeft(), QSize(contentsRect.width(), contentsRect.height() - 60));
+
 	p->save();
 	p->setPen(Qt::white);
 	p->drawText(contentsRect, Qt::AlignBottom | Qt::AlignHCenter, m_activity);
+	p->setPen(Qt::gray);
+	p->drawText(roominforect, Qt::AlignBottom | Qt::AlignHCenter, m_roominfo);
+	p->setPen(Qt::yellow);
+	p->drawText(invitationrect, Qt::AlignBottom | Qt::AlignHCenter, m_invitation);
+	p->drawText(chatrect, Qt::AlignBottom | Qt::AlignHCenter, m_chat);
 	p->restore();
 }
 
@@ -125,6 +135,7 @@ void PlasmaKGGZ::createConfigurationInterface(KConfigDialog *parent)
 	KConfigGroup cg = config();
 	m_config->setUsername(cg.readEntry("username"));
 	m_config->setPassword(cg.readEntry("password"));
+	m_config->setRoomname(cg.readEntry("roomname"));
 
 	connect(parent, SIGNAL(applyClicked()), SLOT(slotConfiguration()));
 	connect(parent, SIGNAL(okClicked()), SLOT(slotConfiguration()));
@@ -136,6 +147,28 @@ void PlasmaKGGZ::activity(QString activity)
 	update();
 }
 
+void PlasmaKGGZ::chat(QString chat)
+{
+	m_chat = chat;
+	update();
+}
+
+void PlasmaKGGZ::invitation(QString invitation)
+{
+	m_invitation = invitation;
+	update();
+}
+
+void PlasmaKGGZ::roominfo()
+{
+	//m_roominfo = roominfo;
+	m_roominfo = i18n("Room %1, %2 players, %3 tables.",
+		m_core->room()->name(),
+		m_core->room()->players().size(),
+		m_core->room()->tables().size());
+	update();
+}
+
 void PlasmaKGGZ::slotConfiguration()
 {
 	kDebug() << "slotConfiguration!";
@@ -143,6 +176,7 @@ void PlasmaKGGZ::slotConfiguration()
 	KConfigGroup cg = config();
 	cg.writeEntry("username", m_config->username());
 	cg.writeEntry("password", m_config->password());
+	cg.writeEntry("roomname", m_config->roomname());
 	cg.sync();
 
 	if((!m_core) || (m_config->username() != m_core->username()))
@@ -150,10 +184,16 @@ void PlasmaKGGZ::slotConfiguration()
 		delete m_core;
 		init();
 	}
+	else if((m_core->room()) && (m_config->roomname() != m_core->room()->name()))
+	{
+		m_core->initiateRoomChange(m_config->roomname());
+	}
 }
 
 void PlasmaKGGZ::checkTables()
 {
+	bool foundinvitation = false;
+
 	QList<KGGZCore::Table*> tables = m_core->room()->tables();
 	qDebug() << "#count:" << tables.size();
 	for(int i = 0; i < tables.size(); i++)
@@ -171,11 +211,15 @@ void PlasmaKGGZ::checkTables()
 				if(m_core->username() == p->name())
 				{
 					qDebug() << "GO!";
-					activity(i18n("You're invited to table %1 (%2)!", i, table->description()));
+					invitation(i18n("You're invited to table %1 (%2)!", i, table->description()));
+					foundinvitation = true;
 				}
 			}
 		}
 	}
+
+	if(!foundinvitation)
+		invitation(QString());
 }
 
 void PlasmaKGGZ::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZCore::Error::ErrorCode error)
@@ -204,6 +248,7 @@ void PlasmaKGGZ::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGG
 			break;
 		case KGGZCore::CoreClient::roomenter:
 			activity(i18n("In the room %1!", m_core->room()->name()));
+			roominfo();
 			connect(m_core->room(),
 				SIGNAL(signalFeedback(KGGZCore::Room::FeedbackMessage, KGGZCore::Error::ErrorCode)),
 				SLOT(slotFeedback(KGGZCore::Room::FeedbackMessage, KGGZCore::Error::ErrorCode)));
@@ -232,7 +277,13 @@ void PlasmaKGGZ::slotAnswer(KGGZCore::CoreClient::AnswerMessage message)
 		case KGGZCore::CoreClient::roomlist:
 			num = m_core->roomnames().count();
 			if(num > 0)
-				m_core->initiateRoomChange(m_core->roomnames().at(num - 1));
+			{
+				KConfigGroup cg = config();
+				QString roomname = cg.readEntry("roomname");
+				if((roomname.isEmpty()) | (!m_core->roomnames().contains(roomname)))
+					roomname = m_core->roomnames().at(0);
+				m_core->initiateRoomChange(roomname);
+			}
 			break;
 		case KGGZCore::CoreClient::typelist:
 			break;
@@ -250,6 +301,7 @@ void PlasmaKGGZ::slotEvent(KGGZCore::CoreClient::EventMessage message)
 				activity(i18n("Reconnecting..."));
 			break;
 		case KGGZCore::CoreClient::players_changed:
+			roominfo();
 			break;
 		case KGGZCore::CoreClient::rooms_changed:
 			break;
@@ -284,6 +336,7 @@ void PlasmaKGGZ::slotAnswer(KGGZCore::Room::AnswerMessage message)
 		case KGGZCore::Room::tablelist:
 			qDebug() << "#tables";
 			checkTables();
+			roominfo();
 			break;
 	}
 }
@@ -293,6 +346,7 @@ void PlasmaKGGZ::slotEvent(KGGZCore::Room::EventMessage message)
 	switch(message)
 	{
 		case KGGZCore::Room::chat:
+			chat(i18n("Players are chatting..."));
 			break;
 		case KGGZCore::Room::enter:
 			break;
@@ -301,6 +355,7 @@ void PlasmaKGGZ::slotEvent(KGGZCore::Room::EventMessage message)
 		case KGGZCore::Room::tableupdate:
 			qDebug() << "#tables(update)";
 			checkTables();
+			roominfo();
 			break;
 		case KGGZCore::Room::playerlag:
 			break;

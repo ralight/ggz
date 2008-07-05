@@ -19,9 +19,13 @@ class ConfigWidget : public QWidget
 		void setPassword(const QString &password);
 		QString password() const;
 
+		void setRoomname(const QString &roomname);
+		QString roomname() const;
+
 	private:
 		QLineEdit *m_username;
 		QLineEdit *m_password;
+		QLineEdit *m_roomname;
 };
 
 #endif

@@ -41,12 +41,18 @@ class PlasmaKGGZ : public Plasma::Applet
 	private:
 		void checkTables();
 		void activity(QString activity);
+		void chat(QString chat);
+		void invitation(QString invitation);
+		void roominfo();
 
 		Plasma::Svg m_svg;
 		KIcon m_icon;
 		ConfigWidget *m_config;
 		KGGZCore::CoreClient *m_core;
 		QString m_activity;
+		QString m_chat;
+		QString m_invitation;
+		QString m_roominfo;
 };
  
 K_EXPORT_PLASMA_APPLET(kggz, PlasmaKGGZ)

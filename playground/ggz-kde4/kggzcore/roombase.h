@@ -29,6 +29,7 @@ namespace KGGZCore
 {
 
 class Table;
+class Player;
 
 class RoomBase : public QObject
 {
@@ -41,6 +42,7 @@ class RoomBase : public QObject
 		GGZRoom *room() const;
 
 		QList<Table*> buildtables();
+		QList<Player*> buildplayers();
 
 	signals:
 		void signalBaseError();

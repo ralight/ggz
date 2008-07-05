@@ -31,6 +31,7 @@ namespace KGGZCore
 
 class RoomBase;
 class Table;
+class Player;
 
 class Room : public QObject
 {
@@ -86,10 +87,10 @@ class Room : public QObject
 
 		QString name();
 		QString description();
-		int numplayers();
 		bool restricted();
 
 		QList<Table*> tables();
+		QList<Player*> players();
 
 	signals:
 		void signalFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
@@ -103,6 +104,7 @@ class Room : public QObject
 	private:
 		RoomBase *m_base;
 		QList<Table*> m_tables;
+		QList<Player*> m_players;
 };
 
 }

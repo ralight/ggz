@@ -66,6 +66,24 @@ GGZRoom *RoomBase::room() const
 	return m_room;
 }
 
+QList<Player*> RoomBase::buildplayers()
+{
+	QList<Player*> players;
+
+	for(int i = 0; i < ggzcore_room_get_num_players(m_room); i++)
+	{
+		GGZPlayer *player = ggzcore_room_get_nth_player(m_room, i);
+		QString name = ggzcore_player_get_name(player);
+		//GGZSeatType type = ggzcore_player_get_type(player);
+		//KGGZCore::Player::PlayerType ktype = (KGGZCore::Player::PlayerType)type;
+		KGGZCore::Player::PlayerType ktype = KGGZCore::Player::none;
+		Player *p = new Player(name, ktype);
+		players << p;
+	}
+
+	return players;
+}
+
 QList<Table*> RoomBase::buildtables()
 {
 	QList<Table*> tables;
@@ -87,7 +105,6 @@ QList<Table*> RoomBase::buildtables()
 
 	return tables;
 }
-
 
 void RoomBase::callback_room(unsigned int id, const void *event_data) const
 {

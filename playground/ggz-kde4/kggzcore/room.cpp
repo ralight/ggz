@@ -47,11 +47,6 @@ QString Room::description()
 	return desc;
 }
 
-int Room::numplayers()
-{
-	return ggzcore_room_get_num_players(m_base->room());
-}
-
 bool Room::restricted()
 {
 	return ggzcore_room_get_closed(m_base->room());
@@ -60,6 +55,11 @@ bool Room::restricted()
 QList<Table*> Room::tables()
 {
 	return m_tables;
+}
+
+QList<Player*> Room::players()
+{
+	return m_players;
 }
 
 void Room::init(RoomBase *base)
@@ -92,6 +92,8 @@ void Room::slotBaseRoom(int id, int code)
 	switch(xid)
 	{
 		case GGZ_PLAYER_LIST:
+			qDeleteAll(m_players);
+			m_players = m_base->buildplayers();
 			emit signalAnswer(playerlist);
 			break;
 		case GGZ_TABLE_LIST:
@@ -103,9 +105,13 @@ void Room::slotBaseRoom(int id, int code)
 			emit signalEvent(chat);
 			break;
 		case GGZ_ROOM_ENTER:
+			qDeleteAll(m_players);
+			m_players = m_base->buildplayers();
 			emit signalEvent(enter);
 			break;
 		case GGZ_ROOM_LEAVE:
+			qDeleteAll(m_players);
+			m_players = m_base->buildplayers();
 			emit signalEvent(leave);
 			break;
 		case GGZ_TABLE_UPDATE:
