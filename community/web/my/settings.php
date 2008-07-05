@@ -41,9 +41,11 @@ if ($_GET["settings"]) :
 	$res = $database->exec("UPDATE userinfo SET ".
 		"photo = '%^', gender = '%^', country = '%^', blogfeed = '%^' " .
 		"WHERE handle = '%^'", array($user_photo, $user_gender, $user_country, $user_blogfeed, $ggzuser));
-	$res = $database->exec("UPDATE userinfo SET ".
-		"longitude = '%^', latitude = '%^' " .
-		"WHERE handle = '%^'", array($user_longitude, $user_latitude, $ggzuser));
+	if (($user_longitude) && ($user_latitude)) :
+		$res = $database->exec("UPDATE userinfo SET ".
+			"longitude = '%^', latitude = '%^' " .
+			"WHERE handle = '%^'", array($user_longitude, $user_latitude, $ggzuser));
+	endif;
 	$res = $database->exec("UPDATE users SET ".
 		"name = '%^', email = '%^' " .
 		"WHERE handle = '%^'", array($user_realname, $user_email, $ggzuser));

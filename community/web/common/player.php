@@ -52,7 +52,7 @@ class Player
 	{
 		if ($this->photo) :
 			echo "Photo:<br>\n";
-			echo "<img src='" . htmlurl($this->photo) . "' height='64'>\n";
+			echo "<img src='" . html($this->photo) . "' height='64'>\n";
 			echo "<br clear='all'>\n";
 		else :
 			echo "Photo: none found<br>\n";
