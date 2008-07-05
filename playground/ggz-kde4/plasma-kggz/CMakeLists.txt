@@ -13,7 +13,7 @@ include_directories(
    ${KDE4_INCLUDES}
 )
  
-set(plasmakggz_SRCS plasma-kggz.cpp)
+set(plasmakggz_SRCS plasma-kggz.cpp configwidget.cpp)
  
 kde4_add_plugin(plasma_applet_kggz ${plasmakggz_SRCS})
 #target_link_libraries(plasma_applet_kggz
