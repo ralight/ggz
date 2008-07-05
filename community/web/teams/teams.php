@@ -38,10 +38,10 @@ elseif ($create == 1) :
 		$stamp = time();
 		$res = $database->exec("INSERT INTO teams " .
 			"(teamname, fullname, icon, foundingdate, homepage, founder) VALUES " .
-			"('%^', '%^', '%^', '%^', '%^', '%^')", array($team_name, $team_full, $team_logo, $stamp, $team_homepage));
+			"('%^', '%^', '%^', '%^', '%^', '%^')", array($team_name, $team_full, $team_logo, $stamp, $team_homepage, $ggzuser));
 		$res = $database->exec("INSERT INTO teammembers " .
-			"(teamname, handle, role) VALUES " .
-			"('%^', '%^', 'leader,founder,member')", array($team_name, $ggzuser));
+			"(teamname, handle, role, entrydate) VALUES " .
+			"('%^', '%^', 'leader,founder,member', '%^')", array($team_name, $ggzuser, $stamp));
 	endif;
 elseif ($approve == 1) :
 	if ($player_approval == 'approved') :
