@@ -2,11 +2,19 @@
 #define PLASMA_KGGZ_HEADER
 
 #include <kicon.h>
+
 #include <plasma/applet.h>
 #include <plasma/svg.h>
+
+#include <kggzcore/coreclient.h>
  
 //class QSizeF;
 class ConfigWidget;
+
+//namespace KGGZCore
+//{
+//	class CoreClient;
+//}
  
 class PlasmaKGGZ : public Plasma::Applet
 {
@@ -24,15 +32,20 @@ class PlasmaKGGZ : public Plasma::Applet
 		void createConfigurationInterface(KConfigDialog *parent);
 
 	protected:
-		void mousePressEvent(QGraphicsSceneMouseEvent*);
+		void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 	private slots:
 		void slotConfiguration();
+		void slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
+		void slotAnswer(KGGZCore::CoreClient::AnswerMessage message);
+		void slotEvent(KGGZCore::CoreClient::EventMessage message);
  
 	private:
 		Plasma::Svg m_svg;
 		KIcon m_icon;
 		ConfigWidget *m_config;
+		KGGZCore::CoreClient *m_core;
+		QString m_activity;
 };
  
 K_EXPORT_PLASMA_APPLET(kggz, PlasmaKGGZ)

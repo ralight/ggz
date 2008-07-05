@@ -1,3 +1,7 @@
+# compile
 cmake -DCMAKE_INSTALL_PREFIX=$HOME/sys/kde4/ .
+
+# run
+export LD_LIBRARY_PATH=../kggzcore
 kde4launch plasmoidviewer kggz
 
