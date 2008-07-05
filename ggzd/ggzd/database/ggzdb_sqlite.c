@@ -43,7 +43,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 
 	if(conn) return GGZ_OK;
 
-	snprintf(query, sizeof(query), "%s/ggzd.sqlite", connection.datadir);
+	sqlite3_snprintf(sizeof(query), query, "%q/ggzd.sqlite", connection.datadir);
 	rc = sqlite3_open(query, &conn);
 	
 	if(rc != SQLITE_OK)
@@ -52,13 +52,13 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 		return GGZ_ERROR;
 	}
 
-	snprintf(query, sizeof(query), "SELECT value FROM control WHERE key = 'version'");
+	sqlite3_snprintf(sizeof(query), query, "SELECT value FROM control WHERE key = 'version'");
 
 	rc = sqlite3_prepare(conn, query, strlen(query), &res, NULL);
 
 	if (rc != SQLITE_OK)
 	{
-		snprintf(query, sizeof(query), "CREATE TABLE users "
+		sqlite3_snprintf(sizeof(query), query, "CREATE TABLE users "
 			"(id INTEGER PRIMARY KEY AUTOINCREMENT, handle TEXT, password TEXT, "
 			"name TEXT, email TEXT, lastlogin INT, permissions INT)");
 
@@ -67,7 +67,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 		if(rc != SQLITE_OK)
 			created = false;
 
-		snprintf(query, sizeof(query), "CREATE TABLE control "
+		sqlite3_snprintf(sizeof(query), query, "CREATE TABLE control "
 			"(key varchar(256), value varchar(256))");
 
 		rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
@@ -75,8 +75,8 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 		if(rc != SQLITE_OK)
 			created = false;
 
-		snprintf(query, sizeof(query), "INSERT INTO control "
-			"(key, value) VALUES ('version', '%s')", GGZDB_VERSION_ID);
+		sqlite3_snprintf(sizeof(query), query, "INSERT INTO control "
+			"(key, value) VALUES ('version', '%q')", GGZDB_VERSION_ID);
 
 		rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
 
@@ -131,9 +131,9 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	int rc;
 	char query[4096];
 
-	snprintf(query, sizeof(query), "INSERT INTO users "
+	sqlite3_snprintf(sizeof(query), query, "INSERT INTO users "
 		"(handle, password, name, email, lastlogin, permissions) VALUES "
-		"('%s', '%s', '%s', '%s', %li, %u)",
+		"('%q', '%q', '%q', '%q', %li, %u)",
 		pe->handle, pe->password, pe->name, pe->email, pe->last_login, pe->perms);
 
 	rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
@@ -154,9 +154,9 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	int rc;
 	char query[4096];
 
-	snprintf(query, sizeof(query), "SELECT "
+	sqlite3_snprintf(sizeof(query), query, "SELECT "
 		"password, name, email, lastlogin, permissions FROM users WHERE "
-		"handle = '%s'",
+		"handle = '%q'",
 		pe->handle);
 
 	rc = sqlite3_prepare(conn, query, strlen(query), &res, NULL);
@@ -189,9 +189,9 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	int rc;
 	char query[4096];
 
-	snprintf(query, sizeof(query), "UPDATE users SET "
-		"password = '%s', name = '%s', email = '%s', lastlogin = %li, permissions = %u WHERE "
-		"handle = '%s'",
+	sqlite3_snprintf(sizeof(query), query, "UPDATE users SET "
+		"password = '%q', name = '%q', email = '%q', lastlogin = %li, permissions = %u WHERE "
+		"handle = '%q'",
 		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
 
 	rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
@@ -215,7 +215,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 	int result;
 	char query[4096];
 
-	snprintf(query, sizeof(query), "SELECT "
+	sqlite3_snprintf(sizeof(query), query, "SELECT "
 		"id, handle, password, name, email, lastlogin, permissions FROM users");
 
 	result = sqlite3_prepare(conn, query, strlen(query), &res, NULL);
@@ -369,3 +369,7 @@ RoomStruct *_ggzdb_reconfiguration_room(void)
 	return NULL;
 }
 
+/* These are not needed - use the sqlite3_snprintf() function with %q instead of %s to do escaping.
+char *_ggzdb_escape(const char *str)
+char *_ggzdb_unescape(const char *str)
+*/
