@@ -8,7 +8,7 @@ class Country
 	function Country()
 	{
 		$docroot = $_SERVER["DOCUMENT_ROOT"];
-		$this->flagdir = "/usr/share/locale/l10n";
+		$this->flagdir = "$docroot/db/ggzicons/flags";
 	}
 
 	function available()
