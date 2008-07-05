@@ -8,7 +8,15 @@ class Country
 	function Country()
 	{
 		$docroot = $_SERVER["DOCUMENT_ROOT"];
-		$this->flagdir = "$docroot/db/ggzicons/flags";
+		$this->flagdir = "/usr/share/locale/l10n";
+	}
+
+	function available()
+	{
+		if(file_exists($this->flagdir)) :
+			return true;
+		endif;
+		return false;
 	}
 
 	function load($code)
@@ -52,19 +60,32 @@ class Country
 		endif;
 		echo "<option value=''$selected>(undisclosed)</option>\n";
 
+		$countrynames = array();
+		$countrylist = array();
 		$d = opendir($this->flagdir);
-		while(($e = readdir($d)))
+		while (($e = readdir($d)))
 		{
-			$countryname = $this->name($e);
-			if ($countryname) :
-				$selected = "";
-				if ($e == $this->countrycode) :
-					$selected = " SELECTED";
+			if ((is_dir("$this->flagdir/$e")) && ($e[0] != ".")) :
+				$countryname = $this->name($e);
+				if ($countryname) :
+					$countrynames[$countryname] = $e;
+					$countrylist[] = $countryname;
 				endif;
-				echo "<option value='$e'$selected>$countryname</option>\n";
 			endif;
 		}
 		closedir($d);
+
+		array_multisort($countrylist);
+
+		foreach ($countrylist as $countryname)
+		{
+			$e = $countrynames[$countryname];
+			$selected = "";
+			if ($e == $this->countrycode) :
+				$selected = " SELECTED";
+			endif;
+			echo "<option value='$e'$selected>$countryname</option>\n";
+		}
 	}	
 }
 
