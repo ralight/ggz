@@ -7,12 +7,16 @@
 #include <QtGui/QGraphicsSceneMouseEvent>
 
 #include <kconfigdialog.h>
+#include <kprocess.h>
+#include <kshell.h>
  
 #include <plasma/svg.h>
 #include <plasma/theme.h>
 
 #include <kggzcore/room.h>
 #include <kggzcore/misc.h>
+#include <kggzcore/table.h>
+#include <kggzcore/player.h>
  
 PlasmaKGGZ::PlasmaKGGZ(QObject *parent, const QVariantList &args)
 	: Plasma::Applet(parent, args),
@@ -24,7 +28,7 @@ PlasmaKGGZ::PlasmaKGGZ(QObject *parent, const QVariantList &args)
 	setBackgroundHints(DefaultBackground);
 	setHasConfigurationInterface(true);
 
-	m_activity = i18n("GGZ Gaming Zone");
+	activity(i18n("GGZ Gaming Zone"));
 
 	m_svg.setImagePath("widgets/plot-background");
 
@@ -54,7 +58,7 @@ void PlasmaKGGZ::init()
 	KConfigGroup cg = config();
 	if(cg.readEntry("username").isEmpty())
 	{
-		m_activity = i18n("Unconfigured.");
+		activity(i18n("Unconfigured."));
 		return;
 	}
 
@@ -70,7 +74,7 @@ void PlasmaKGGZ::init()
 		SIGNAL(signalEvent(KGGZCore::CoreClient::EventMessage)),
 		SLOT(slotEvent(KGGZCore::CoreClient::EventMessage)));
 
-	m_activity = i18n("Connecting...");
+	activity(i18n("Connecting..."));
 
 	m_core->setUrl("ggz://localhost:5688");
 	m_core->setUsername(cg.readEntry("username"));
@@ -103,6 +107,10 @@ void PlasmaKGGZ::mousePressEvent(QGraphicsSceneMouseEvent *event)
 		{
 			// ...
 		}
+
+		QString url = KShell::quoteArg(m_core->url());
+
+		KProcess::startDetached("ggz-gtk", QStringList() << url);
 	}
 
 	event->ignore();
@@ -122,6 +130,12 @@ void PlasmaKGGZ::createConfigurationInterface(KConfigDialog *parent)
 	connect(parent, SIGNAL(okClicked()), SLOT(slotConfiguration()));
 }
 
+void PlasmaKGGZ::activity(QString activity)
+{
+	m_activity = activity;
+	update();
+}
+
 void PlasmaKGGZ::slotConfiguration()
 {
 	kDebug() << "slotConfiguration!";
@@ -131,12 +145,36 @@ void PlasmaKGGZ::slotConfiguration()
 	cg.writeEntry("password", m_config->password());
 	cg.sync();
 
-	// FIXME: kggzmod needs username() method
-	//if((!m_core) || (m_config->username() != m_core->username()))
-	if(!m_core)
+	if((!m_core) || (m_config->username() != m_core->username()))
 	{
 		delete m_core;
 		init();
+	}
+}
+
+void PlasmaKGGZ::checkTables()
+{
+	QList<KGGZCore::Table*> tables = m_core->room()->tables();
+	qDebug() << "#count:" << tables.size();
+	for(int i = 0; i < tables.size(); i++)
+	{
+		KGGZCore::Table *table = tables.at(i);
+		qDebug() << "# -" << table->description() << endl;
+		QList<KGGZCore::Player*> players = table->players();
+		for(int j = 0; j < players.size(); j++)
+		{
+			KGGZCore::Player *p = players.at(j);
+			qDebug() << "#  -" << p->name() << p->type();
+			qDebug() << "   -" << m_core->username() << KGGZCore::Player::reserved;
+			if(p->type() == KGGZCore::Player::reserved)
+			{
+				if(m_core->username() == p->name())
+				{
+					qDebug() << "GO!";
+					activity(i18n("You're invited to table %1 (%2)!", i, table->description()));
+				}
+			}
+		}
 	}
 }
 
@@ -148,24 +186,24 @@ void PlasmaKGGZ::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGG
 	{
 		case KGGZCore::CoreClient::connection:
 			if(error == KGGZCore::Error::no_status)
-				m_activity = i18n("Negotiating...");
+				activity(i18n("Negotiating..."));
 			else
-				m_activity = i18n("Connection failed!");
+				activity(i18n("Connection failed!"));
 			break;
 		case KGGZCore::CoreClient::negotiation:
 			if(error == KGGZCore::Error::no_status)
-				m_activity = i18n("Logging in...");
+				activity(i18n("Logging in..."));
 			else
-				m_activity = i18n("Negotiation failed!");
+				activity(i18n("Negotiation failed!"));
 			break;
 		case KGGZCore::CoreClient::login:
 			if(error == KGGZCore::Error::no_status)
-				m_activity = i18n("Entering the room...");
+				activity(i18n("Entering the room..."));
 			else
-				m_activity = i18n("Login failed!");
+				activity(i18n("Login failed!"));
 			break;
 		case KGGZCore::CoreClient::roomenter:
-			m_activity = i18n("In the room %1!", m_core->room()->name());
+			activity(i18n("In the room %1!", m_core->room()->name()));
 			connect(m_core->room(),
 				SIGNAL(signalFeedback(KGGZCore::Room::FeedbackMessage, KGGZCore::Error::ErrorCode)),
 				SLOT(slotFeedback(KGGZCore::Room::FeedbackMessage, KGGZCore::Error::ErrorCode)));
@@ -209,7 +247,7 @@ void PlasmaKGGZ::slotEvent(KGGZCore::CoreClient::EventMessage message)
 	{
 		case KGGZCore::CoreClient::state_changed:
 			if(m_core->state() == KGGZCore::reconnecting)
-				m_activity = i18n("Reconnecting...");
+				activity(i18n("Reconnecting..."));
 			break;
 		case KGGZCore::CoreClient::players_changed:
 			break;
@@ -244,7 +282,8 @@ void PlasmaKGGZ::slotAnswer(KGGZCore::Room::AnswerMessage message)
 		case KGGZCore::Room::playerlist:
 			break;
 		case KGGZCore::Room::tablelist:
-			qDebug() << "#tables: " << m_core->room()->numtables();
+			qDebug() << "#tables";
+			checkTables();
 			break;
 	}
 }
@@ -260,7 +299,8 @@ void PlasmaKGGZ::slotEvent(KGGZCore::Room::EventMessage message)
 		case KGGZCore::Room::leave:
 			break;
 		case KGGZCore::Room::tableupdate:
-			qDebug() << "#tables(update): " << m_core->room()->numtables();
+			qDebug() << "#tables(update)";
+			checkTables();
 			break;
 		case KGGZCore::Room::playerlag:
 			break;

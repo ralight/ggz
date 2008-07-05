@@ -39,6 +39,9 @@ class PlasmaKGGZ : public Plasma::Applet
 		void slotEvent(KGGZCore::Room::EventMessage message);
  
 	private:
+		void checkTables();
+		void activity(QString activity);
+
 		Plasma::Svg m_svg;
 		KIcon m_icon;
 		ConfigWidget *m_config;
