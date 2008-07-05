@@ -1,5 +1,5 @@
 /*
-    This file is part of the kggzdcore library.
+    This file is part of the kggzcore library.
     Copyright (c) 2008 Josef Spillner <josef@ggzgamingzone.org>
 
     This library is free software; you can redistribute it and/or
@@ -50,7 +50,7 @@ void CoreClient::setUrl(QString url)
 {
 	QUrl qurl(url);
 	m_host = qurl.host();
-	m_port = qurl.port();
+	m_port = qurl.port(5688);
 	m_username = qurl.userName();
 	m_password = qurl.password();
 }
@@ -93,7 +93,7 @@ void CoreClient::setMode(LoginType mode)
 void CoreClient::initiateLogin()
 {
 	int tls;
-	GGZLoginType mode;
+	GGZLoginType mode = GGZ_LOGIN_GUEST;
 
 	if(m_tls) tls = 1;
 	else tls = 0;
@@ -134,6 +134,22 @@ QString CoreClient::textmotd()
 QString CoreClient::webmotd()
 {
 	return m_base->webmotd();
+}
+
+QString CoreClient::username()
+{
+	return m_username;
+}
+
+QString CoreClient::url()
+{
+	QUrl url;
+	url.setScheme("ggz");
+	url.setHost(m_host);
+	url.setPort(m_port);
+	url.setUserName(m_username);
+	url.setPassword(m_password);
+	return url.toString();
 }
 
 int CoreClient::state()

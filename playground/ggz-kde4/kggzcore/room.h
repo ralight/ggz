@@ -1,5 +1,5 @@
 /*
-    This file is part of the kggzdcore library.
+    This file is part of the kggzcore library.
     Copyright (c) 2008 Josef Spillner <josef@ggzgamingzone.org>
 
     This library is free software; you can redistribute it and/or
@@ -30,6 +30,7 @@ namespace KGGZCore
 {
 
 class RoomBase;
+class Table;
 
 class Room : public QObject
 {
@@ -86,8 +87,9 @@ class Room : public QObject
 		QString name();
 		QString description();
 		int numplayers();
-		int numtables();
 		bool restricted();
+
+		QList<Table*> tables();
 
 	signals:
 		void signalFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
@@ -100,6 +102,7 @@ class Room : public QObject
 
 	private:
 		RoomBase *m_base;
+		QList<Table*> m_tables;
 };
 
 }

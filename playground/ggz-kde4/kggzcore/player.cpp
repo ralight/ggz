@@ -18,12 +18,27 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <kggzcore/error.h>
+#include "player.h"
 
 using namespace KGGZCore;
 
-QString Error::errormessage(ErrorCode error)
+Player::Player(QString name, PlayerType type)
 {
-	return QString("blah blah blah");
+	m_name = name;
+	m_type = type;
+}
+
+Player::~Player()
+{
+}
+
+QString Player::name()
+{
+	return m_name;
+}
+
+Player::PlayerType Player::type()
+{
+	return m_type;
 }
 

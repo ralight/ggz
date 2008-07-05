@@ -1,5 +1,5 @@
 /*
-    This file is part of the kggzdcore library.
+    This file is part of the kggzcore library.
     Copyright (c) 2008 Josef Spillner <josef@ggzgamingzone.org>
 
     This library is free software; you can redistribute it and/or
@@ -21,6 +21,7 @@
 #include <kggzcore/room.h>
 
 #include <kggzcore/roombase.h>
+#include <kggzcore/table.h>
 
 using namespace KGGZCore;
 
@@ -51,14 +52,14 @@ int Room::numplayers()
 	return ggzcore_room_get_num_players(m_base->room());
 }
 
-int Room::numtables()
-{
-	return ggzcore_room_get_num_tables(m_base->room());
-}
-
 bool Room::restricted()
 {
 	return ggzcore_room_get_closed(m_base->room());
+}
+
+QList<Table*> Room::tables()
+{
+	return m_tables;
 }
 
 void Room::init(RoomBase *base)
@@ -94,6 +95,8 @@ void Room::slotBaseRoom(int id, int code)
 			emit signalAnswer(playerlist);
 			break;
 		case GGZ_TABLE_LIST:
+			qDeleteAll(m_tables);
+			m_tables = m_base->buildtables();
 			emit signalAnswer(tablelist);
 			break;
 		case GGZ_CHAT_EVENT:
@@ -106,6 +109,8 @@ void Room::slotBaseRoom(int id, int code)
 			emit signalEvent(leave);
 			break;
 		case GGZ_TABLE_UPDATE:
+			qDeleteAll(m_tables);
+			m_tables = m_base->buildtables();
 			emit signalEvent(tableupdate);
 			break;
 		case GGZ_TABLE_LAUNCHED:

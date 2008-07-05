@@ -1,5 +1,5 @@
 /*
-    This file is part of the kggzdcore library.
+    This file is part of the kggzcore library.
     Copyright (c) 2008 Josef Spillner <josef@ggzgamingzone.org>
 
     This library is free software; you can redistribute it and/or
@@ -99,6 +99,9 @@ class CoreClient : public QObject
 
 		QString textmotd();
 		QString webmotd();
+
+		QString username();
+		QString url();
 
 		// FIXME: we don't have an enum yet
 		int state();

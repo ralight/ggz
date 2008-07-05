@@ -1,5 +1,5 @@
 /*
-    This file is part of the kggzdcore library.
+    This file is part of the kggzcore library.
     Copyright (c) 2008 Josef Spillner <josef@ggzgamingzone.org>
 
     This library is free software; you can redistribute it and/or
@@ -26,7 +26,7 @@ using namespace KGGZCore;
 
 // FIXME: replace all switches with hash lookups
 
-static QString Misc::messagename(int id)
+QString Misc::messagename(int id)
 {
 	QString s;
 
@@ -103,7 +103,7 @@ static QString Misc::messagename(int id)
 	return s;
 }
 
-static QString Misc::roommessagename(int id)
+QString Misc::roommessagename(int id)
 {
 	QString s;
 
@@ -162,7 +162,7 @@ static QString Misc::roommessagename(int id)
 	return s;
 }
 
-static QString Misc::statename(int id)
+QString Misc::statename(int id)
 {
 	QString s;
 

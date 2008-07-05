@@ -18,12 +18,33 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <kggzcore/error.h>
+#include "table.h"
+
+#include "player.h"
 
 using namespace KGGZCore;
 
-QString Error::errormessage(ErrorCode error)
+Table::Table(QString description)
 {
-	return QString("blah blah blah");
+	m_description = description;
+}
+
+Table::~Table()
+{
+}
+
+QString Table::description()
+{
+	return m_description;
+}
+
+QList<Player*> Table::players()
+{
+	return m_players;
+}
+
+void Table::addPlayer(Player *p)
+{
+	m_players << p;
 }
 

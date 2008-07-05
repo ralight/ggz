@@ -1,5 +1,5 @@
 /*
-    This file is part of the kggzdcore library.
+    This file is part of the kggzcore library.
     Copyright (c) 2008 Josef Spillner <josef@ggzgamingzone.org>
 
     This library is free software; you can redistribute it and/or
@@ -21,6 +21,8 @@
 #include <kggzcore/roombase.h>
 
 #include <kggzcore/misc.h>
+#include <kggzcore/table.h>
+#include <kggzcore/player.h>
 
 using namespace KGGZCore;
 
@@ -63,6 +65,29 @@ GGZRoom *RoomBase::room() const
 {
 	return m_room;
 }
+
+QList<Table*> RoomBase::buildtables()
+{
+	QList<Table*> tables;
+
+	for(int i = 0; i < ggzcore_room_get_num_tables(m_room); i++)
+	{
+		GGZTable *t = ggzcore_room_get_nth_table(m_room, i);
+		Table *table = new Table(ggzcore_table_get_desc(t));
+		for(int j = 0; j < ggzcore_table_get_num_seats(t); j++)
+		{
+			QString name = ggzcore_table_get_nth_player_name(t, j);
+			GGZSeatType type = ggzcore_table_get_nth_player_type(t, j);
+			KGGZCore::Player::PlayerType ktype = (KGGZCore::Player::PlayerType)type;
+			Player *p = new Player(name, ktype);
+			table->addPlayer(p);
+		}
+		tables << table;
+	}
+
+	return tables;
+}
+
 
 void RoomBase::callback_room(unsigned int id, const void *event_data) const
 {
@@ -116,12 +141,12 @@ void RoomBase::callback_room(unsigned int id, const void *event_data) const
 	handle_room_post(id);
 }
 
-void RoomBase::handle_room_pre(unsigned int id)
+void RoomBase::handle_room_pre(unsigned int id) const
 {
 	Q_UNUSED(id);
 }
 
-void RoomBase::handle_room_post(unsigned int id)
+void RoomBase::handle_room_post(unsigned int id) const
 {
 	Q_UNUSED(id);
 }

@@ -1,5 +1,5 @@
 /*
-    This file is part of the kggzdcore library.
+    This file is part of the kggzcore library.
     Copyright (c) 2008 Josef Spillner <josef@ggzgamingzone.org>
 
     This library is free software; you can redistribute it and/or
@@ -28,6 +28,8 @@
 namespace KGGZCore
 {
 
+class Table;
+
 class RoomBase : public QObject
 {
 	Q_OBJECT
@@ -38,14 +40,16 @@ class RoomBase : public QObject
 		void setRoom(GGZRoom *room);
 		GGZRoom *room() const;
 
+		QList<Table*> buildtables();
+
 	signals:
 		void signalBaseError();
 		void signalBaseRoom(int id, int code) const;
 
 	private:
 		void callback_room(unsigned int id, const void *event_data) const;
-		void handle_room_pre(unsigned int id);
-		void handle_room_post(unsigned int id);
+		void handle_room_pre(unsigned int id) const;
+		void handle_room_post(unsigned int id) const;
 
 		static GGZHookReturn cb_room(unsigned int id, const void *event_data, const void *user_data);
 

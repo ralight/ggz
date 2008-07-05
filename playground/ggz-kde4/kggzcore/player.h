@@ -18,12 +18,40 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <kggzcore/error.h>
+#ifndef KGGZCORE_PLAYER_H
+#define KGGZCORE_PLAYER_H
 
-using namespace KGGZCore;
+#include <QString>
+#include <QObject>
 
-QString Error::errormessage(ErrorCode error)
+namespace KGGZCore
 {
-	return QString("blah blah blah");
+
+class Player : public QObject
+{
+	Q_OBJECT
+	public:
+		enum PlayerType
+		{
+			none,
+			open,
+			bot,
+			player,
+			reserved,
+			abandoned
+		};
+
+		Player(QString name, PlayerType type);
+		~Player();
+
+		QString name();
+		PlayerType type();
+
+	private:
+		QString m_name;
+		PlayerType m_type;
+};
+
 }
 
+#endif

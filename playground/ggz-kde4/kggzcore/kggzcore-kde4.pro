@@ -14,7 +14,9 @@ HEADERS = \
 	error.h \
 	misc.h \
 	room.h \
-	roombase.h
+	roombase.h \
+	table.h \
+	player.h
 
 SOURCES = \
 	coreclient.cpp \
@@ -22,4 +24,6 @@ SOURCES = \
 	error.cpp \
 	misc.cpp \
 	room.cpp \
-	roombase.cpp
+	roombase.cpp \
+	table.cpp \
+	player.cpp

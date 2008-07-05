@@ -1,5 +1,5 @@
 /*
-    This file is part of the kggzdcore library.
+    This file is part of the kggzcore library.
     Copyright (c) 2008 Josef Spillner <josef@ggzgamingzone.org>
 
     This library is free software; you can redistribute it and/or
@@ -61,7 +61,7 @@ class CoreClientBase : public QObject
 	private:
 		void init();
 
-		void callback_server(unsigned int id, const void *event_data) const;
+		void callback_server(unsigned int id, const void *event_data);
 		void handle_server_pre(unsigned int id);
 		void handle_server_post(unsigned int id);
 

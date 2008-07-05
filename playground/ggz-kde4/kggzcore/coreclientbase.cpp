@@ -1,5 +1,5 @@
 /*
-    This file is part of the kggzdcore library.
+    This file is part of the kggzcore library.
     Copyright (c) 2008 Josef Spillner <josef@ggzgamingzone.org>
 
     This library is free software; you can redistribute it and/or
@@ -148,7 +148,7 @@ RoomBase *CoreClientBase::roombase()
 	return m_roombase;
 }
 
-void CoreClientBase::callback_server(unsigned int id, const void *event_data) const
+void CoreClientBase::callback_server(unsigned int id, const void *event_data)
 {
 	qDebug("base: cb_server! id=%i event=%s", id, Misc::messagename(id).toUtf8().data());
 
@@ -224,7 +224,9 @@ GGZHookReturn CoreClientBase::cb_server(unsigned int id, const void *event_data,
 {
 	qDebug("base: cb_server-static!");
 
-	static_cast<const CoreClientBase*>(user_data)->callback_server(id, event_data);
+	const CoreClientBase *base = static_cast<const CoreClientBase*>(user_data);
+	CoreClientBase *ncbase = (CoreClientBase*)base;
+	ncbase->callback_server(id, event_data);
 
 	return GGZ_HOOK_OK;
 }
