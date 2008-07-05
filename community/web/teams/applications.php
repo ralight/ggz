@@ -23,7 +23,7 @@ $teamname = $database->result($res, $i, "teamname");
 
 echo "<h2>$teamname</h2>";
 
-	$res2 = $database->exec("SELECT * FROM teammembers WHERE teamname = '%^' AND role = ''", $array($teamname));
+	$res2 = $database->exec("SELECT * FROM teammembers WHERE teamname = '%^' AND role = ''", array($teamname));
 
 	if ($database->numrows($res2) > 0) :
 		//echo "<table><tr><td bgcolor='#00a0a0'>\n";
