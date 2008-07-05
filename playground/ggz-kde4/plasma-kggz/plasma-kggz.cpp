@@ -4,7 +4,6 @@
 
 #include <qpainter.h>
 #include <qfontmetrics.h>
-//#include <qsizef.h>
 #include <QtGui/QGraphicsSceneMouseEvent>
 
 #include <kconfigdialog.h>
@@ -19,7 +18,8 @@ PlasmaKGGZ::PlasmaKGGZ(QObject *parent, const QVariantList &args)
 	: Plasma::Applet(parent, args),
 	m_svg(this),
 	m_icon("ggz"),
-	m_config(0)
+	m_config(0),
+	m_core(0)
 {
 	setBackgroundHints(DefaultBackground);
 	setHasConfigurationInterface(true);
@@ -114,6 +114,10 @@ void PlasmaKGGZ::createConfigurationInterface(KConfigDialog *parent)
 
 	parent->addPage(m_config, parent->windowTitle(), icon());
 
+	KConfigGroup cg = config();
+	m_config->setUsername(cg.readEntry("username"));
+	m_config->setPassword(cg.readEntry("password"));
+
 	connect(parent, SIGNAL(applyClicked()), SLOT(slotConfiguration()));
 	connect(parent, SIGNAL(okClicked()), SLOT(slotConfiguration()));
 }
@@ -125,6 +129,7 @@ void PlasmaKGGZ::slotConfiguration()
 	KConfigGroup cg = config();
 	cg.writeEntry("username", m_config->username());
 	cg.writeEntry("password", m_config->password());
+	cg.sync();
 
 	// FIXME: kggzmod needs username() method
 	//if((!m_core) || (m_config->username() != m_core->username()))
@@ -160,7 +165,16 @@ void PlasmaKGGZ::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGG
 				m_activity = i18n("Login failed!");
 			break;
 		case KGGZCore::CoreClient::roomenter:
-			m_activity = i18n("In the room!");
+			m_activity = i18n("In the room %1!", m_core->room()->name());
+			connect(m_core->room(),
+				SIGNAL(signalFeedback(KGGZCore::Room::FeedbackMessage, KGGZCore::Error::ErrorCode)),
+				SLOT(slotFeedback(KGGZCore::Room::FeedbackMessage, KGGZCore::Error::ErrorCode)));
+			connect(m_core->room(),
+				SIGNAL(signalAnswer(KGGZCore::Room::AnswerMessage)),
+				SLOT(slotAnswer(KGGZCore::Room::AnswerMessage)));
+			connect(m_core->room(),
+				SIGNAL(signalEvent(KGGZCore::Room::EventMessage)),
+				SLOT(slotEvent(KGGZCore::Room::EventMessage)));
 			break;
 		case KGGZCore::CoreClient::chat:
 			break;
@@ -173,10 +187,14 @@ void PlasmaKGGZ::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGG
 
 void PlasmaKGGZ::slotAnswer(KGGZCore::CoreClient::AnswerMessage message)
 {
+	int num;
+
 	switch(message)
 	{
 		case KGGZCore::CoreClient::roomlist:
-			m_core->initiateRoomChange(m_core->roomnames().at(0));
+			num = m_core->roomnames().count();
+			if(num > 0)
+				m_core->initiateRoomChange(m_core->roomnames().at(num - 1));
 			break;
 		case KGGZCore::CoreClient::typelist:
 			break;
@@ -202,6 +220,57 @@ void PlasmaKGGZ::slotEvent(KGGZCore::CoreClient::EventMessage message)
 		case KGGZCore::CoreClient::protoerror:
 			break;
 		case KGGZCore::CoreClient::libraryerror:
+			break;
+	}
+}
+
+void PlasmaKGGZ::slotFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::Error::ErrorCode error)
+{
+	switch(message)
+	{
+		case KGGZCore::Room::tablelaunched:
+			break;
+		case KGGZCore::Room::tablejoined:
+			break;
+		case KGGZCore::Room::tableleft:
+			break;
+	}
+}
+
+void PlasmaKGGZ::slotAnswer(KGGZCore::Room::AnswerMessage message)
+{
+	switch(message)
+	{
+		case KGGZCore::Room::playerlist:
+			break;
+		case KGGZCore::Room::tablelist:
+			qDebug() << "#tables: " << m_core->room()->numtables();
+			break;
+	}
+}
+
+void PlasmaKGGZ::slotEvent(KGGZCore::Room::EventMessage message)
+{
+	switch(message)
+	{
+		case KGGZCore::Room::chat:
+			break;
+		case KGGZCore::Room::enter:
+			break;
+		case KGGZCore::Room::leave:
+			break;
+		case KGGZCore::Room::tableupdate:
+			qDebug() << "#tables(update): " << m_core->room()->numtables();
+			break;
+		case KGGZCore::Room::playerlag:
+			break;
+		case KGGZCore::Room::stats:
+			break;
+		case KGGZCore::Room::count:
+			break;
+		case KGGZCore::Room::perms:
+			break;
+		case KGGZCore::Room::libraryerror:
 			break;
 	}
 }

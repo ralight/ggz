@@ -7,15 +7,10 @@
 #include <plasma/svg.h>
 
 #include <kggzcore/coreclient.h>
+#include <kggzcore/room.h>
  
-//class QSizeF;
 class ConfigWidget;
 
-//namespace KGGZCore
-//{
-//	class CoreClient;
-//}
- 
 class PlasmaKGGZ : public Plasma::Applet
 {
 	Q_OBJECT
@@ -39,6 +34,9 @@ class PlasmaKGGZ : public Plasma::Applet
 		void slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
 		void slotAnswer(KGGZCore::CoreClient::AnswerMessage message);
 		void slotEvent(KGGZCore::CoreClient::EventMessage message);
+		void slotFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
+		void slotAnswer(KGGZCore::Room::AnswerMessage message);
+		void slotEvent(KGGZCore::Room::EventMessage message);
  
 	private:
 		Plasma::Svg m_svg;
