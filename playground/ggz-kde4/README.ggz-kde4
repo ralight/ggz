@@ -21,12 +21,13 @@ playground/buildsystem/cmake.
 Summary of GGZ-in-KDE4-efforts as of March 2008:
 * In this directory
  - kconnectx   [||||||    ] - KConnectX demo game for kggzmod
- - kggzcore    [||        ] - library for GGZ core clients
+ - kggzcore    [|||       ] - library for GGZ core clients
  - kggzdmod    [|||||     ] - core GGZ game server module library
  - conn-dialog [|         ] - connection dialog for GGZ core client in KDE 4
  - playerlist  [|||       ] - player list for GGZ core clients in KDE 4
  - roomlist    [||||||    ] - room list for GGZ core clients in KDE 4
  - kggz-ng     [          ] - the successor to KGGZ (in planning stage)
+ - plasma-kggz [||||      ] - Plasma widget to succeed GGZap
 * In (lib)kdegames (KDE SVN)
  - cmake       [|||||     ] - CMake files for GGZ library checks
  - kggzmod     [||||||||| ] - core GGZ game module library
