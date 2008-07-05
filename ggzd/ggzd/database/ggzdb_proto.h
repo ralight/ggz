@@ -169,3 +169,19 @@ RoomStruct* _ggzdb_reconfiguration_room(void);
  *  in the database before accepting connections. */
 void _ggzdb_reconfiguration_load(void);
 
+/** Carries out escaping on the provided string that is specific to the
+ *  database module.  This is an optional function and if it is not provided
+ *  then no escaping will be carried out.
+ *
+ *  @return The escaped string or NULL on error. The escaped string must be
+ *  freed using free(), *not* using ggz_free().
+ */
+char *_ggzdb_escape(const char *str);
+
+/** Removes the escaping added in _ggzdb_escape().  This is an optional
+ *  function and if it is not provided then no unescaping will be carried out.
+ *
+ *  @return The unescaped string or NULL on error. The unescaped string must be
+ *  freed using free(), *not* using ggz_free().
+ */
+char *_ggzdb_unescape(const char *str);

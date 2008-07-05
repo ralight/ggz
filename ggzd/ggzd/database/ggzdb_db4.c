@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db4 sytle database
- * $Id: ggzdb_db4.c 10106 2008-06-29 13:49:37Z oojah $
+ * $Id: ggzdb_db4.c 10156 2008-07-05 12:08:03Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -547,3 +547,7 @@ RoomStruct *_ggzdb_reconfiguration_room(void)
 	return NULL;
 }
 
+/* These are not needed.
+char *_ggzdb_escape(const char *str)
+char *_ggzdb_unescape(const char *str)
+*/

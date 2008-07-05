@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10142 2008-07-02 07:16:38Z jdorje $
+ * $Id: ggzdb_pgsql.c 10156 2008-07-05 12:08:03Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -1533,3 +1533,33 @@ GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num)
 	return rc;
 }
 
+char *_ggzdb_escape(const char *str)
+{
+	char *to;
+	int error;
+
+	PGconn *conn;
+
+	conn = claimconnection();
+	if (!conn) {
+		ggz_error_msg("_ggzdb_rooms: couldn't claim connection");
+		return NULL;
+	}
+
+	to = malloc(strlen(str)*2 + 1);
+	if(to){
+		PQescapeStringConn(conn, to, str, strlen(str), &error);
+		if(error){
+			free(to);
+			to = NULL;
+		}
+	}
+
+	releaseconnection(conn);
+
+	return to;
+}
+
+/* These are not needed.
+char *_ggzdb_unescape(const char *str)
+*/

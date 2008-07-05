@@ -393,3 +393,17 @@ RoomStruct *_ggzdb_reconfiguration_room(void)
 	return NULL;
 }
 
+char *_ggzdb_escape(const char *str)
+{
+	char *to;
+
+	if(dbi_conn_quote_string_copy(conn, str, &to) > 0){
+		return to;
+	}else{
+		return NULL;
+	}
+}
+
+/* These are not needed.
+char *_ggzdb_unescape(const char *str)
+*/

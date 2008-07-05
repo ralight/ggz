@@ -58,3 +58,5 @@ int (*_ggzdb_reconfiguration_fd)(void);
 RoomStruct* (*_ggzdb_reconfiguration_room)(void);
 void (*_ggzdb_reconfiguration_load)(void);
 
+char *(*_ggzdb_escape)(const char *str);
+char *(*_ggzdb_unescape)(const char *str);
