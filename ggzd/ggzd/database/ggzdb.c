@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 10156 2008-07-05 12:08:03Z oojah $
+ * $Id: ggzdb.c 10165 2008-07-05 22:57:24Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -135,7 +135,7 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 		ggz_error_msg_exit("%s is an invalid database module (%s)",
 			backend, dlerror());
 	}
-	/* These two functions are option so we don't need to worry if they aren't provided. */
+	/* These two functions are optional so we don't need to worry if they aren't provided. */
 	_ggzdb_escape = dlsym(ggzdbhandle, "_ggzdb_escape");
 	_ggzdb_unescape = dlsym(ggzdbhandle, "_ggzdb_unescape");
 

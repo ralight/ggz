@@ -126,12 +126,26 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 {
 	dbi_result result;
 	char query[4096];
+	char *handle_quoted;
+	char *password_quoted;
+	char *name_quoted;
+	char *email_quoted;
+
+	handle_quoted = _ggzdb_escape(pe->handle);
+	password_quoted = _ggzdb_escape(pe->password);
+	name_quoted = _ggzdb_escape(pe->name);
+	email_quoted = _ggzdb_escape(pe->email);
 
 	snprintf(query, sizeof(query), "INSERT INTO users "
 		"(handle, password, name, email, lastlogin, permissions, firstlogin) VALUES "
 		"('%s', '%s', '%s', '%s', %li, %u, %li)",
-		pe->handle, pe->password, pe->name, pe->email, pe->last_login, pe->perms,
+		handle_quoted, password_quoted, name_quoted, email_quoted, pe->last_login, pe->perms,
 		time(NULL));
+	
+	free(email_quoted);
+	free(name_quoted);
+	free(password_quoted);
+	free(handle_quoted);
 
 	result = dbi_conn_query(conn, query);
 
@@ -152,11 +166,16 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	dbi_result result;
 	char query[4096];
 	int row;
+	char *handle_quoted;
+
+	handle_quoted = _ggzdb_escape(pe->handle);
 
 	snprintf(query, sizeof(query), "SELECT "
 		"id, password, name, email, lastlogin, permissions FROM users WHERE "
 		"handle = '%s'",
-		pe->handle);
+		handle_quoted);
+	
+	free(handle_quoted);
 
 	result = dbi_conn_query(conn, query);
 
@@ -200,11 +219,25 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 {
 	dbi_result result;
 	char query[4096];
+	char *handle_quoted;
+	char *password_quoted;
+	char *name_quoted;
+	char *email_quoted;
+
+	handle_quoted = _ggzdb_escape(pe->handle);
+	password_quoted = _ggzdb_escape(pe->password);
+	name_quoted = _ggzdb_escape(pe->name);
+	email_quoted = _ggzdb_escape(pe->email);
 
 	snprintf(query, sizeof(query), "UPDATE users SET "
 		"password = '%s', name = '%s', email = '%s', lastlogin = %li, permissions = %u WHERE "
 		"handle = '%s'",
-		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
+		password_quoted, name_quoted, email_quoted, pe->last_login, pe->perms, handle_quoted);
+
+	free(email_quoted);
+	free(name_quoted);
+	free(password_quoted);
+	free(handle_quoted);
 
 	result = dbi_conn_query(conn, query);
 

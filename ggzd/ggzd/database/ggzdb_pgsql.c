@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10156 2008-07-05 12:08:03Z oojah $
+ * $Id: ggzdb_pgsql.c 10165 2008-07-05 22:57:24Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -440,7 +440,6 @@ RoomStruct *_ggzdb_reconfiguration_room(void)
 	PGresult *res, *res2;
 	char query[4096];
 	int i;
-	char *unquoted;
 
 	PQconsumeInput(reconfigurationconn);
 
@@ -502,13 +501,9 @@ RoomStruct *_ggzdb_reconfiguration_room(void)
 						// FIXME: this is all fake
 
 						/* The room's name equals its internal name */
-						rooms[i].room = _ggz_sql_unescape(name);
-						rooms[i].name = ggz_intlstring_fromstring(rooms[i].room);
-
-						unquoted = _ggz_sql_unescape(description);
-						rooms[i].description = ggz_intlstring_fromstring(unquoted);
-						ggz_free(unquoted);
-
+						rooms[i].room = ggz_strdup(name);
+						rooms[i].name = ggz_intlstring_fromstring(name);
+						rooms[i].description = ggz_intlstring_fromstring(description);
 						rooms[i].game_type = type;
 						rooms[i].max_players = maxplayers;
 						rooms[i].max_tables = maxtables;
@@ -522,8 +517,8 @@ RoomStruct *_ggzdb_reconfiguration_room(void)
 						PQclear(res2);
 
 						/* We use the room's internal name as its key for deletions */
-						rooms[i].room = _ggz_sql_unescape(name);
-						rooms[i].name = ggz_intlstring_fromstring(rooms[i].room);
+						rooms[i].room = ggz_strdup(name);
+						rooms[i].name = ggz_intlstring_fromstring(name);
 					}
 				}
 
@@ -576,10 +571,10 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 		return GGZDB_ERR_DB;
 	}
 
-	handle_quoted = _ggz_sql_escape(pe->handle);
-	password_quoted = _ggz_sql_escape(pe->password);
-	name_quoted = _ggz_sql_escape(pe->name);
-	email_quoted = _ggz_sql_escape(pe->email);
+	handle_quoted = _ggzdb_escape(pe->handle);
+	password_quoted = _ggzdb_escape(pe->password);
+	name_quoted = _ggzdb_escape(pe->name);
+	email_quoted = _ggzdb_escape(pe->email);
 
 	snprintf(query, sizeof(query), "INSERT INTO users "
 		 "(handle, password, name, email, lastlogin, permissions, firstlogin, confirmed) "
@@ -588,17 +583,17 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 		 pe->last_login, pe->perms, time(NULL), pe->confirmed);
 
 	if (handle_quoted)
-		ggz_free(handle_quoted);
+		free(handle_quoted);
 	if (password_quoted)
-		ggz_free(password_quoted);
+		free(password_quoted);
 	if (name_quoted)
-		ggz_free(name_quoted);
+		free(name_quoted);
 	if (email_quoted)
-		ggz_free(email_quoted);
+		free(email_quoted);
 
 	res = PQexec(conn, query);
 
-	handle_quoted = _ggz_sql_escape(pe->handle);
+	handle_quoted = _ggzdb_escape(pe->handle);
 
 	/* FIXME: provide server-side function for Unicode-safe stringprep */
 	/* FIXME: here and elsewhere (e.g. for ggzdb_mysql.c) */
@@ -607,7 +602,7 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 		 lower(), lower(), handle_quoted);
 
 	if (handle_quoted)
-		ggz_free(handle_quoted);
+		free(handle_quoted);
 
 	res = PQexec(conn, query);
 
@@ -631,7 +626,6 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	PGresult *res;
 	char query[4096];
 	char *handle_quoted;
-	char *unquoted;
 
 	conn = claimconnection();
 	if (!conn) {
@@ -639,7 +633,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 		return GGZDB_ERR_DB;
 	}
 
-	handle_quoted = _ggz_sql_escape(pe->handle);
+	handle_quoted = _ggzdb_escape(pe->handle);
 
 	snprintf(query, sizeof(query),
 		 "SELECT "
@@ -647,24 +641,15 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 		 "FROM users WHERE %s(handle) = %s('%s')",
 		 lower(), lower(), handle_quoted);
 
-	ggz_free(handle_quoted);
+	free(handle_quoted);
 
 	res = PQexec(conn, query);
 
 	if (PQresultStatus(res) == PGRES_TUPLES_OK) {
 		if(PQntuples(res) == 1)	{
-			unquoted = _ggz_sql_unescape(PQgetvalue(res, 0, 0));
-			strncpy(pe->password, unquoted, sizeof(pe->password));
-			ggz_free(unquoted);
-
-			unquoted = _ggz_sql_unescape(PQgetvalue(res, 0, 1));
-			strncpy(pe->name, unquoted, sizeof(pe->name));
-			ggz_free(unquoted);
-
-			unquoted = _ggz_sql_unescape(PQgetvalue(res, 0, 2));
-			strncpy(pe->email, unquoted, sizeof(pe->email));
-			ggz_free(unquoted);
-
+			strncpy(pe->password, PQgetvalue(res, 0, 0), sizeof(pe->password));
+			strncpy(pe->name, PQgetvalue(res, 0, 1), sizeof(pe->name));
+			strncpy(pe->email, PQgetvalue(res, 0, 2), sizeof(pe->email));
 			pe->last_login = atol(PQgetvalue(res, 0, 3));
 			pe->perms = atol(PQgetvalue(res, 0, 4));
 			pe->confirmed = (!ggz_strcmp(PQgetvalue(res, 0, 5), "t") ? 1 : 0);
@@ -704,10 +689,10 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 		return GGZDB_ERR_DB;
 	}
 
-	handle_quoted = _ggz_sql_escape(pe->handle);
-	password_quoted = _ggz_sql_escape(pe->password);
-	name_quoted = _ggz_sql_escape(pe->name);
-	email_quoted = _ggz_sql_escape(pe->email);
+	handle_quoted = _ggzdb_escape(pe->handle);
+	password_quoted = _ggzdb_escape(pe->password);
+	name_quoted = _ggzdb_escape(pe->name);
+	email_quoted = _ggzdb_escape(pe->email);
 
 	snprintf(query, sizeof(query),
 		 "UPDATE users SET "
@@ -719,13 +704,13 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 		 lower(), lower(), handle_quoted);
 
 	if (handle_quoted)
-		ggz_free(handle_quoted);
+		free(handle_quoted);
 	if (password_quoted)
-		ggz_free(password_quoted);
+		free(password_quoted);
 	if (name_quoted)
-		ggz_free(name_quoted);
+		free(name_quoted);
 	if (email_quoted)
-		ggz_free(email_quoted);
+		free(email_quoted);
 
 	res = PQexec(conn, query);
 	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
@@ -748,7 +733,6 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 	PGresult *res;
 	char query[4096];
 	char *handle_quoted;
-	char *unquoted;
 
 	conn = claimconnection();
 	if (!conn) {
@@ -756,7 +740,7 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 		return GGZDB_ERR_DB;
 	}
 
-	handle_quoted = _ggz_sql_escape(pe->handle);
+	handle_quoted = _ggzdb_escape(pe->handle);
 
 	snprintf(query, sizeof(query),
 		 "SELECT "
@@ -764,16 +748,14 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 		 "FROM userinfo WHERE %s(handle) = %s('%s')",
 		 lower(), lower(), handle_quoted);
 
-	ggz_free(handle_quoted);
+	free(handle_quoted);
 
 	res = PQexec(conn, query);
 
 	if (PQresultStatus(res) == PGRES_TUPLES_OK) {
 		if(PQntuples(res) == 1)	{
 			pe->user_id = atol(PQgetvalue(res, 0, 0));
-			unquoted = _ggz_sql_unescape(PQgetvalue(res, 0, 1));
-			strncpy(pe->photo, unquoted, sizeof(pe->photo));
-			ggz_free(unquoted);
+			strncpy(pe->photo, PQgetvalue(res, 0, 1), sizeof(pe->photo));
 			rc = GGZDB_NO_ERROR;
 		} else	{
 			rc = GGZDB_ERR_NOTFOUND;
@@ -800,7 +782,6 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 	GGZDBResult rc;
 	char query[4096];
 	PGconn *conn;
-	char *unquoted;
 
 	if(iterres)
 	{
@@ -822,23 +803,10 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 	if (PQresultStatus(iterres) == PGRES_TUPLES_OK) {
 		if(PQntuples(iterres) > 0) {
 			pe->user_id = atoi(PQgetvalue(iterres, 0, 0));
-
-			unquoted = _ggz_sql_unescape(PQgetvalue(iterres, 0, 1));
-			strncpy(pe->handle, unquoted, sizeof(pe->handle));
-			ggz_free(unquoted);
-
-			unquoted = _ggz_sql_unescape(PQgetvalue(iterres, 0, 2));
-			strncpy(pe->password, unquoted, sizeof(pe->password));
-			ggz_free(unquoted);
-
-			unquoted = _ggz_sql_unescape(PQgetvalue(iterres, 0, 3));
-			strncpy(pe->name, unquoted, sizeof(pe->name));
-			ggz_free(unquoted);
-
-			unquoted = _ggz_sql_unescape(PQgetvalue(iterres, 0, 4));
-			strncpy(pe->email, unquoted, sizeof(pe->email));
-			ggz_free(unquoted);
-
+			strncpy(pe->handle, PQgetvalue(iterres, 0, 1), sizeof(pe->handle));
+			strncpy(pe->password, PQgetvalue(iterres, 0, 2), sizeof(pe->password));
+			strncpy(pe->name, PQgetvalue(iterres, 0, 3), sizeof(pe->name));
+			strncpy(pe->email, PQgetvalue(iterres, 0, 4), sizeof(pe->email));
 			pe->last_login = atol(PQgetvalue(iterres, 0, 5));
 			pe->perms = atol(PQgetvalue(iterres, 0, 6));
 			pe->confirmed = (!ggz_strcmp(PQgetvalue(iterres, 0, 7), "t") ? 1 : 0);
@@ -865,8 +833,6 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 
 GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 {
-	char *unquoted;
-
 	if (!iterres) {
 		ggz_error_msg_exit("get_first should be called before get_next");
 	}
@@ -875,22 +841,10 @@ GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 		itercount++;
 		pe->user_id = atoi(PQgetvalue(iterres, itercount, 0));
 
-		unquoted = _ggz_sql_unescape(PQgetvalue(iterres, itercount, 1));
-		strncpy(pe->handle, unquoted, sizeof(pe->handle));
-		ggz_free(unquoted);
-
-		unquoted = _ggz_sql_unescape(PQgetvalue(iterres, itercount, 2));
-		strncpy(pe->password, unquoted, sizeof(pe->password));
-		ggz_free(unquoted);
-
-		unquoted = _ggz_sql_unescape(PQgetvalue(iterres, itercount, 3));
-		strncpy(pe->name, unquoted, sizeof(pe->name));
-		ggz_free(unquoted);
-
-		unquoted = _ggz_sql_unescape(PQgetvalue(iterres, itercount, 4));
-		strncpy(pe->email, unquoted, sizeof(pe->email));
-		ggz_free(unquoted);
-
+		strncpy(pe->handle, PQgetvalue(iterres, itercount, 1), sizeof(pe->handle));
+		strncpy(pe->password, PQgetvalue(iterres, itercount, 2), sizeof(pe->password));
+		strncpy(pe->name, PQgetvalue(iterres, itercount, 3), sizeof(pe->name));
+		strncpy(pe->email, PQgetvalue(iterres, itercount, 4), sizeof(pe->email));
 		pe->last_login = atol(PQgetvalue(iterres, itercount, 5));
 		pe->perms = atol(PQgetvalue(iterres, itercount, 6));
 		pe->confirmed = (!ggz_strcmp(PQgetvalue(iterres, 0, 7), "t") ? 1 : 0);
@@ -947,8 +901,8 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 		return rc;
 	}
 
-	player_quoted = _ggz_sql_escape(stats->player);
-	game_quoted = _ggz_sql_escape(stats->game);
+	player_quoted = _ggzdb_escape(stats->player);
+	game_quoted = _ggzdb_escape(stats->game);
 
 	snprintf(query, sizeof(query),
 		"SELECT "
@@ -956,8 +910,8 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 		"FROM stats WHERE %s(handle) = %s('%s') AND game = '%s'",
 		lower(), lower(), player_quoted, game_quoted);
 
-	ggz_free(game_quoted);
-	ggz_free(player_quoted);
+	free(game_quoted);
+	free(player_quoted);
 
 	res = PQexec(conn, query);
 	if(PQresultStatus(res) == PGRES_TUPLES_OK) {
@@ -997,8 +951,8 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 		return rc;
 	}
 
-	player_quoted = _ggz_sql_escape(stats->player);
-	game_quoted = _ggz_sql_escape(stats->game);
+	player_quoted = _ggzdb_escape(stats->player);
+	game_quoted = _ggzdb_escape(stats->game);
 
 	snprintf(query, sizeof(query),
 		"UPDATE stats "
@@ -1034,8 +988,8 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 		else rc = GGZDB_NO_ERROR;
 	}
 
-	ggz_free(player_quoted);
-	ggz_free(game_quoted);
+	free(player_quoted);
+	free(game_quoted);
 
 	PQclear(res);
 
@@ -1079,7 +1033,7 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	else if(stats->player_type == GGZ_PLAYER_NORMAL) playertype = "registered";
 	else if(stats->player_type == GGZ_PLAYER_BOT) playertype = "bot";
 
-	player_quoted = _ggz_sql_escape(stats->player);
+	player_quoted = _ggzdb_escape(stats->player);
 
 	snprintf(query, sizeof(query),
 		"INSERT INTO matchplayers "
@@ -1087,7 +1041,7 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 		"(%s, '%s', '%s')",
 		number, player_quoted, playertype);
 
-	ggz_free(player_quoted);
+	free(player_quoted);
 
 	PQclear(res);
 	res = PQexec(conn, query);
@@ -1119,8 +1073,8 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 		return rc;
 	}
 
-	game_quoted = _ggz_sql_escape(game);
-	savegame_quoted = _ggz_sql_escape(savegame);
+	game_quoted = _ggzdb_escape(game);
+	savegame_quoted = _ggzdb_escape(savegame);
 
 	snprintf(query, sizeof(query),
 		"DELETE FROM savegames "
@@ -1130,7 +1084,7 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 	res = PQexec(conn, query);
 	PQclear(res);
 
-	winner_quoted = _ggz_sql_escape(winner);
+	winner_quoted = _ggzdb_escape(winner);
 
 	snprintf(query, sizeof(query),
 		"INSERT INTO matches "
@@ -1138,9 +1092,9 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 		"(%li, '%s', '%s', '%s')",
 		time(NULL), game_quoted, winner_quoted, savegame_quoted);
 
-	ggz_free(game_quoted);
-	ggz_free(savegame_quoted);
-	ggz_free(winner_quoted);
+	free(game_quoted);
+	free(savegame_quoted);
+	free(winner_quoted);
 
 	res = PQexec(conn, query);
 
@@ -1171,9 +1125,9 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 		return rc;
 	}
 
-	owner_quoted = _ggz_sql_escape(owner);
-	game_quoted = _ggz_sql_escape(game);
-	savegame_quoted = _ggz_sql_escape(savegame);
+	owner_quoted = _ggzdb_escape(owner);
+	game_quoted = _ggzdb_escape(game);
+	savegame_quoted = _ggzdb_escape(savegame);
 
 	snprintf(query, sizeof(query),
 		"DELETE FROM savegames "
@@ -1189,9 +1143,9 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 		"(%li, '%s', '%s', '%s', %li, %li)",
 		time(NULL), game_quoted, owner_quoted, savegame_quoted, tableid.thread, tableid.starttime);
 
-	ggz_free(savegame_quoted);
-	ggz_free(game_quoted);
-	ggz_free(owner_quoted);
+	free(savegame_quoted);
+	free(game_quoted);
+	free(owner_quoted);
 
 	res = PQexec(conn, query);
 
@@ -1215,7 +1169,6 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGa
 	ggzdbPlayerGameStats *stats;
 	int i;
 	char *game_quoted;
-	char *unquoted;
 
 	conn = claimconnection();
 	if (!conn) {
@@ -1223,12 +1176,12 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGa
 		return rc;
 	}
 
-	game_quoted = _ggz_sql_escape(game);
+	game_quoted = _ggzdb_escape(game);
 	snprintf(query, sizeof(query),
 		"SELECT wins, losses, ties, forfeits, rating, ranking, highscore, handle FROM stats "
 		"WHERE game = '%s' AND ranking <> 0 ORDER BY ranking ASC LIMIT %i",
 		game_quoted, number);
-	ggz_free(game);
+	free(game_quoted);
 
 	res = PQexec(conn, query);
 
@@ -1245,9 +1198,7 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGa
 			stats->rating = atof(PQgetvalue(res, i, 4));
 			stats->ranking = atol(PQgetvalue(res, i, 5));
 			stats->highest_score = atol(PQgetvalue(res, i, 6));
-			unquoted = _ggz_sql_unescape(PQgetvalue(res, i, 7));
-			snprintf(stats->player, MAX_USER_NAME_LEN, unquoted);
-			ggz_free(unquoted);
+			snprintf(stats->player, MAX_USER_NAME_LEN, PQgetvalue(res, i, 7));
 		}
 	}
 	PQclear(res);
@@ -1318,11 +1269,11 @@ GGZList *_ggzdb_savegame_owners(const char *game)
 		return NULL;
 	}
 
-	game_quoted = _ggz_sql_escape(game);
+	game_quoted = _ggzdb_escape(game);
 	snprintf(query, sizeof(query),
 		"SELECT owner, tableid, stamp, savegame FROM savegames WHERE game = '%s'",
 		game_quoted);
-	ggz_free(game_quoted);
+	free(game_quoted);
 
 	res = PQexec(conn, query);
 	if (PQresultStatus(res) != PGRES_TUPLES_OK) {
@@ -1356,7 +1307,7 @@ GGZList *_ggzdb_savegame_owners(const char *game)
 				sp->names = ggz_malloc(sp->count * sizeof(char*));
 				for(j = 0; j < sp->count; j++) {
 					sp->types[j] = ggz_string_to_seattype(PQgetvalue(res2, j, 1));
-					sp->names[j] = _ggz_sql_unescape(PQgetvalue(res2, j, 2));
+					sp->names[j] = ggz_strdup(PQgetvalue(res2, j, 2));
 				}
 			}
 			PQclear(res2);
@@ -1403,14 +1354,14 @@ GGZList *_ggzdb_savegames(const char *game, const char *owner)
 		return NULL;
 	}
 
-	game_quoted = _ggz_sql_escape(game);
-	owner_quoted = _ggz_sql_escape(owner);
+	game_quoted = _ggzdb_escape(game);
+	owner_quoted = _ggzdb_escape(owner);
 	snprintf(query, sizeof(query),
 		"SELECT savegame FROM savegames "
 		"WHERE game = '%s' AND owner = '%s'",
 		game_quoted, owner_quoted);
-	ggz_free(game_quoted);
-	ggz_free(owner_quoted);
+	free(game_quoted);
+	free(owner_quoted);
 
 	res = PQexec(conn, query);
 	if (PQresultStatus(res) != PGRES_TUPLES_OK) {
@@ -1418,7 +1369,7 @@ GGZList *_ggzdb_savegames(const char *game, const char *owner)
 	} else {
 		savegames = ggz_list_create(NULL, NULL, (ggzEntryDestroy)strfree, GGZ_LIST_ALLOW_DUPS);
 		for(i = 0; i < PQntuples(res); i++) {
-			savegame = _ggz_sql_unescape(PQgetvalue(res, i, 0));
+			savegame = ggz_strdup(PQgetvalue(res, i, 0));
 			ggz_list_insert(savegames, savegame);
 		}
 	}
@@ -1451,7 +1402,7 @@ GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *nam
 	res = PQexec(conn, query);
 	PQclear(res);
 
-	name_quoted = _ggz_sql_escape(name);
+	name_quoted = _ggzdb_escape(name);
 
 	snprintf(query, sizeof(query),
 		"INSERT INTO savegameplayers "
@@ -1460,7 +1411,7 @@ GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *nam
 		tableid.thread, tableid.starttime, seat, name_quoted, ggz_seattype_to_string(type));
 
 	if(name_quoted)
-		ggz_free(name_quoted);
+		free(name_quoted);
 
 	res = PQexec(conn, query);
 
@@ -1500,8 +1451,8 @@ GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num)
 	for(i = 0; i < num; i++) {
 		RoomStruct room = rooms[i];
 
-		name_quoted = _ggz_sql_escape(ggz_intlstring_translated(room.name, NULL));
-		description_quoted = _ggz_sql_escape(ggz_intlstring_translated(room.description, NULL));
+		name_quoted = _ggzdb_escape(ggz_intlstring_translated(room.name, NULL));
+		description_quoted = _ggzdb_escape(ggz_intlstring_translated(room.description, NULL));
 
 		/* FIXME: evaluate room->perms and somehow also room->game_type */
 		snprintf(query, sizeof(query),
@@ -1512,9 +1463,9 @@ GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num)
 			room.max_players, room.max_tables, "none");
 
 		if(name_quoted)
-			ggz_free(name_quoted);
+			free(name_quoted);
 		if(description_quoted)
-			ggz_free(description_quoted);
+			free(description_quoted);
 
 		res = PQexec(conn, query);
 
