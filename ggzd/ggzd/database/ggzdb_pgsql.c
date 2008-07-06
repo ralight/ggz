@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10167 2008-07-06 00:44:37Z oojah $
+ * $Id: ggzdb_pgsql.c 10172 2008-07-06 15:36:17Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -1282,8 +1282,8 @@ GGZList *_ggzdb_savegame_owners(const char *game)
 		owners = ggz_list_create(NULL, NULL, (ggzEntryDestroy)strfree, GGZ_LIST_ALLOW_DUPS);
 		for(i = 0; i < PQntuples(res); i++) {
 			owner = ggz_strdup(PQgetvalue(res, i, 0));
-			tableid.thread = atol(ggz_strdup(PQgetvalue(res, i, 1)));
-			tableid.starttime = atol(ggz_strdup(PQgetvalue(res, i, 2)));
+			tableid.thread = atol(PQgetvalue(res, i, 1));
+			tableid.starttime = atol(PQgetvalue(res, i, 2));
 			savegame = ggz_strdup(PQgetvalue(res, i, 3));
 
 			sp = ggz_malloc(sizeof(ggzdbSavegamePlayers));
