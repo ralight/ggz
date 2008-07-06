@@ -71,19 +71,19 @@ include("top.inc");
 		Newbie, has registered only recently
 		<br>
 		<img src="/db/ggzicons/misc/veteran-level1.png">
-		Amateur, has joined a few days ago but is probably still learning
+		Amateur, has joined about a month ago but is probably still learning
 		<br>
 		<img src="/db/ggzicons/misc/veteran-level2.png">
-		Known player, between one and two months
+		Known player, more than months of playing
 		<br>
 		<img src="/db/ggzicons/misc/veteran-level3.png">
-		Long-time player, more than two months of experience
+		Long-time player, more than half a year of experience
 		<br>
 		<img src="/db/ggzicons/misc/veteran-level4.png">
-		Veteran, after half a year of playing on the site
+		Veteran, after one year of playing on the site
 		<br>
 		<img src="/db/ggzicons/misc/veteran-level5.png">
-		Veteran with honours, registered for more than a full year
+		Veteran with honours, registered for more than two years
 	</div>
 
 	<h1>
