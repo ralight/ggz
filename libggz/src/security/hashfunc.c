@@ -26,11 +26,15 @@ static hash_t hash_create_private(const char *algo, const char *text, const char
 	if((!algo) || (!text)) return hash;
 
 	if(!strcmp(algo, "md5")) algos[0] = GCRY_MD_MD5;
-	else if(!strcmp(algo, "sha1")) algos[0] = GCRY_MD_SHA1;
 	else if(!strcmp(algo, "ripemd160")) algos[0] = GCRY_MD_RMD160;
+	else if(!strcmp(algo, "sha1")) algos[0] = GCRY_MD_SHA1;
+	else if(!strcmp(algo, "sha224")) algos[0] = GCRY_MD_SHA224;
+	else if(!strcmp(algo, "sha256")) algos[0] = GCRY_MD_SHA256;
+	else if(!strcmp(algo, "sha384")) algos[0] = GCRY_MD_SHA384;
+	else if(!strcmp(algo, "sha512")) algos[0] = GCRY_MD_SHA512;
 	else return hash;
 
-	if(!gcry_check_version("1.1.10"))
+	if(!gcry_check_version("1.4.0"))
 	{
 		fprintf(stderr, "Error: gcrypt version is too old.\n");
 		return hash;
