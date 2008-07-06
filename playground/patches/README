@@ -41,6 +41,10 @@ applications, so instead of using `users` as the table name, it could be `ggz_us
 Only for pgsql and mysql.
  ggzd_table_prefixes.diff (oojah, 25/8/2007)
 
+Support for loading and installing the mysql schema from a file as done by the
+postgresql module. Not quite ready yet (the normal database code in
+ggzdb_mysql.c needs updating to match new columns.
+ ggzd_mysql_schema_load.diff
 
 Old patches (just to keep it in memory)
 ---------------------------------------
