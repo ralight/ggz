@@ -24,6 +24,7 @@
 #include <ggz.h>
 #include <string.h>
 
+#include "ggzdb.h"
 #include "ggzdb_util.h"
 
 /* Helper function, might go into libggz*/
@@ -100,5 +101,22 @@ char *_ggz_sql_unescape(const char *str)
 	*q = '\0';
 
 	return new;
+}
+
+void _ggzdb_sgpstr_free(void *str)
+{
+	ggzdbSavegamePlayers *sp = str;
+	int i;
+
+	ggz_free(sp->owner);
+	ggz_free(sp->savegame);
+	for(i = 0; i < sp->count; i++) {
+		ggz_free(sp->names[i]);
+	}
+	if(sp->names)
+		ggz_free(sp->names);
+	if(sp->types)
+		ggz_free(sp->types);
+	ggz_free(sp);
 }
 

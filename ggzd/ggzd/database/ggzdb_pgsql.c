@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10172 2008-07-06 15:36:17Z oojah $
+ * $Id: ggzdb_pgsql.c 10173 2008-07-06 16:19:21Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -1232,23 +1232,6 @@ GGZDBResult _ggzdb_stats_calcrankings(const char *game)
 	return GGZDB_NO_ERROR;
 }
 
-static void strfree(void *str)
-{
-	ggzdbSavegamePlayers *sp = str;
-	int i;
-
-	ggz_free(sp->owner);
-	ggz_free(sp->savegame);
-	for(i = 0; i < sp->count; i++) {
-		ggz_free(sp->names[i]);
-	}
-	if(sp->names)
-		ggz_free(sp->names);
-	if(sp->types)
-		ggz_free(sp->types);
-	ggz_free(sp);
-}
-
 GGZList *_ggzdb_savegame_owners(const char *game)
 {
 	PGconn *conn;
@@ -1279,7 +1262,7 @@ GGZList *_ggzdb_savegame_owners(const char *game)
 	if (PQresultStatus(res) != PGRES_TUPLES_OK) {
 		ggz_error_msg("couldn't read savegame owners");
 	} else {
-		owners = ggz_list_create(NULL, NULL, (ggzEntryDestroy)strfree, GGZ_LIST_ALLOW_DUPS);
+		owners = ggz_list_create(NULL, NULL, (ggzEntryDestroy)_ggzdb_sgpstr_free, GGZ_LIST_ALLOW_DUPS);
 		for(i = 0; i < PQntuples(res); i++) {
 			owner = ggz_strdup(PQgetvalue(res, i, 0));
 			tableid.thread = atol(PQgetvalue(res, i, 1));
@@ -1367,7 +1350,7 @@ GGZList *_ggzdb_savegames(const char *game, const char *owner)
 	if (PQresultStatus(res) != PGRES_TUPLES_OK) {
 		ggz_error_msg("couldn't read savegames");
 	} else {
-		savegames = ggz_list_create(NULL, NULL, (ggzEntryDestroy)strfree, GGZ_LIST_ALLOW_DUPS);
+		savegames = ggz_list_create(NULL, NULL, (ggzEntryDestroy)_ggzdb_sgpstr_free, GGZ_LIST_ALLOW_DUPS);
 		for(i = 0; i < PQntuples(res); i++) {
 			savegame = ggz_strdup(PQgetvalue(res, i, 0));
 			ggz_list_insert(savegames, savegame);
