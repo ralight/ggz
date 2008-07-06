@@ -2,7 +2,14 @@
 
 include($_SERVER['DOCUMENT_ROOT']."/common/include_cfg.php");
 
-header("Content-type: image/png");
+//$format = $_GET["format"];
+
+if ($format == "svg") :
+	header("Content-type: image/svg+xml");
+else :
+	header("Content-type: image/png");
+	$format = "png";
+endif;
 
 include_once("match.php");
 
@@ -20,22 +27,26 @@ $nowstr = date("d.m.Y", time());
 $width = 1280;
 $height = 800;
 
-$im = imagecreatetruecolor($width, $height);
+if ($format == "png") :
+	$im = imagecreatetruecolor($width, $height);
 
-$fontfile = "/usr/share/fonts/truetype/ttf-bitstream-vera/Vera.ttf";
-$fontfileit = "/usr/share/fonts/truetype/ttf-bitstream-vera/VeraIt.ttf";
+	$fontfile = "/usr/share/fonts/truetype/ttf-bitstream-vera/Vera.ttf";
+	$fontfileit = "/usr/share/fonts/truetype/ttf-bitstream-vera/VeraIt.ttf";
 
-$bgcolor = imagecolorallocate($im, 255, 255, 255);
-$fgcolor = imagecolorallocate($im, 0, 0, 0);
+	$bgcolor = imagecolorallocate($im, 255, 255, 255);
+	$fgcolor = imagecolorallocate($im, 0, 0, 0);
 
-imagefill($im, 0, 0, $bgcolor);
+	imagefill($im, 0, 0, $bgcolor);
 
-imagefttext($im, 14, 0, 20, 20, $fgcolor, $fontfile, "GGZ Gaming Zone site " . Config::getvalue("name"));
-imagefttext($im, 12, 0, 20, 40, $fgcolor, $fontfile, "Tournament $name in room $room of type $game");
-imagefttext($im, 12, 0, 20, 60, $fgcolor, $fontfile, "Start date: $datestr; current date: $nowstr");
-imagefttext($im, 12, 0, 20, 80, $fgcolor, $fontfile, "Organizer: $organizer");
+	imagefttext($im, 14, 0, 20, 20, $fgcolor, $fontfile, "GGZ Gaming Zone site " . Config::getvalue("name"));
+	imagefttext($im, 12, 0, 20, 40, $fgcolor, $fontfile, "Tournament $name in room $room of type $game");
+	imagefttext($im, 12, 0, 20, 60, $fgcolor, $fontfile, "Start date: $datestr; current date: $nowstr");
+	imagefttext($im, 12, 0, 20, 80, $fgcolor, $fontfile, "Organizer: $organizer");
 
-imagefttext($im, 12, 0, 20, 120, $fgcolor, $fontfile, "Participants:");
+	imagefttext($im, 12, 0, 20, 120, $fgcolor, $fontfile, "Participants:");
+elseif ($format == "svg") :
+	echo "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='$width' height='$height'>\n";
+endif;
 
 $res = $database->exec("SELECT * FROM tournamentplayers WHERE id = '%^'", array($tid));
 $num = 0;
@@ -46,7 +57,9 @@ for($i = 0; $i < $database->numrows($res); $i++)
 	$name = $database->result($res, $i, "name");
 	$number = $database->result($res, $i, "number");
 
-	imagefttext($im, 10, 0, 30, 135 + $i * 15, $fgcolor, $fontfileit, $name);
+	if ($format == "png") :
+		imagefttext($im, 10, 0, 30, 135 + $i * 15, $fgcolor, $fontfileit, $name);
+	endif;
 
 	$num++;
 	$players[$number] = $name;
@@ -90,6 +103,50 @@ function played($player1, $player2)
 	return "";
 }
 
+function drawsvgbox($xb, $yb, $winner, $tid, $player1, $player2)
+{
+	$color = "ffffff";
+	if ($winner) :
+		$color = "e1e956";
+		echo "<a xlink:href='/db/tournaments/?lookup=$tid' xlink:title='Match details'>\n";
+	endif;
+	echo "<rect width='88' height='62' x='" . $xb . "' y='" . $yb . "' style='fill:#$color;stroke:#000000'/>\n";
+	if ($winner) :
+		echo "</a>\n";
+	endif;
+	echo "<rect width='44' height='51' x='" . $xb . "' y='" . ($yb + 62) . "' style='fill:#e1e9b4;stroke:#000000'/>\n";
+	echo "<rect width='44' height='51' x='" . ($xb + 44) . "' y='" . ($yb + 62) . "' style='fill:#e1e9b4;stroke:#000000'/>\n";
+	$textstyle="font-size:7px;fill:#000000;stroke:none;font-family:Bitstream Vera Serif";
+	if ($player1) :
+		// $p = new Player($player1);
+		// if ($p->photo) : ...
+		echo "<a xlink:href='/db/players/?lookup=$player1' xlink:title='Player page'>\n";
+		echo "<image width='34' height='31' x='" . ($xb + 5) . "' y='" . ($yb + 65) . "' xlink:href='/images/akademy08/pagelogo.png'/>\n";
+		echo "</a>\n";
+		echo "<text style='$textstyle'>\n";
+		echo "<tspan x='" . ($xb + 5) . "' y='" . ($yb + 106) . "'>\n";
+		echo $player1;
+		if ($winner == $player1) :
+			echo " *";
+		endif;
+		echo "</tspan>\n";
+		echo "</text>\n";
+	endif;
+	if ($player2) :
+		echo "<a xlink:href='/db/players/?lookup=$player2' xlink:title='Player page'>\n";
+		echo "<image width='34' height='31' x='" . ($xb + 49) . "' y='" . ($yb + 65) . "' xlink:href='/images/akademy08/pagelogo.png'/>\n";
+		echo "</a>\n";
+		echo "<text style='$textstyle'>\n";
+		echo "<tspan x='" . ($xb + 49) . "' y='" . ($yb + 106) . "'>\n";
+		echo $player2;
+		if ($winner == $player2) :
+			echo " *";
+		endif;
+		echo "</tspan>\n";
+		echo "</text>\n";
+	endif;
+}
+
 $names = array("Finals", "Semi-finals", "Quarter-finals", "Qualification", "Pre-qualification");
 
 $level = log($num) / log(2);
@@ -104,7 +161,9 @@ for($i = $level; $i > 0; $i--)
 
 	$x = (3 - log(1)) * 160 + 100;
 
-	imagefttext($im, 12, 0, $x, 110 + ($i - 1) * 100, $fgcolor, $fontfile, $name);
+	if ($format == "png") :
+		imagefttext($im, 12, 0, $x, 110 + ($i - 1) * 100, $fgcolor, $fontfile, $name);
+	endif;
 
 	if($i == $level) :
 		for($j = 0; $j < $num; $j += 2)
@@ -121,11 +180,17 @@ for($i = $level; $i > 0; $i--)
 
 			$x = (($width - 100) / 2) + $j * 80 - ($xnum - 1) * 80;
 
-			imagefttext($im, 10, 0, $x, 135 + ($i - 1) * 100, $fgcolor, $fontfile, "Match: $op");
-			imagefttext($im, 10, 0, $x, 150 + ($i - 1) * 100, $fgcolor, $fontfileit, "$player1");
-			imagefttext($im, 10, 0, $x, 165 + ($i - 1) * 100, $fgcolor, $fontfileit, "$player2");
-			if ($winner) :
-				imagefttext($im, 10, 0, $x, 180 + ($i - 1) * 100, $fgcolor, $fontfile, "Winner: $winnerstr");
+			if ($format == "png") :
+				imagefttext($im, 10, 0, $x, 135 + ($i - 1) * 100, $fgcolor, $fontfile, "Match: $op");
+				imagefttext($im, 10, 0, $x, 150 + ($i - 1) * 100, $fgcolor, $fontfileit, "$player1");
+				imagefttext($im, 10, 0, $x, 165 + ($i - 1) * 100, $fgcolor, $fontfileit, "$player2");
+				if ($winner) :
+					imagefttext($im, 10, 0, $x, 180 + ($i - 1) * 100, $fgcolor, $fontfile, "Winner: $winnerstr");
+				endif;
+			elseif ($format == "svg") :
+				$xb = $x;
+				$yb = $height - $i * 150;
+				drawsvgbox($xb, $yb, $winner, $tid, $player1, $player2);
 			endif;
 
 			$op += 1;
@@ -159,11 +224,29 @@ for($i = $level; $i > 0; $i--)
 
 			$x = (($width - 100) / 2) + $j * 160 - ($xnum - 1) * 80;
 
-			imagefttext($im, 10, 0, $x, 135 + ($i - 1) * 100, $fgcolor, $fontfile, "Match: $op");
-			imagefttext($im, 10, 0, $x, 150 + ($i - 1) * 100, $fgcolor, $fontfilep1, "$player1");
-			imagefttext($im, 10, 0, $x, 165 + ($i - 1) * 100, $fgcolor, $fontfilep2, "$player2");
-			if ($winner) :
-				imagefttext($im, 10, 0, $x, 180 + ($i - 1) * 100, $fgcolor, $fontfile, "Winner: $winnerstr");
+			if ($format == "png") :
+				imagefttext($im, 10, 0, $x, 135 + ($i - 1) * 100, $fgcolor, $fontfile, "Match: $op");
+				imagefttext($im, 10, 0, $x, 150 + ($i - 1) * 100, $fgcolor, $fontfilep1, "$player1");
+				imagefttext($im, 10, 0, $x, 165 + ($i - 1) * 100, $fgcolor, $fontfilep2, "$player2");
+				if ($winner) :
+					imagefttext($im, 10, 0, $x, 180 + ($i - 1) * 100, $fgcolor, $fontfile, "Winner: $winnerstr");
+				endif;
+			elseif ($format == "svg") :
+				$xb = $x;
+				$yb = $height - $i * 150;
+				drawsvgbox($xb, $yb, $winner, $tid, $winners[$op1], $winners[$op2]);
+
+				$jleft = $j * 2;
+				$jright = $j * 2 + 1;
+
+				$xold = (($width - 100) / 2) + $jleft * 160 - ($xnum * 2 - 1) * 80;
+				$xold2 = (($width - 100) / 2) + $jright * 160 - ($xnum * 2 - 1) * 80;
+				$xold += 44;
+				$xold2 += 44;
+				$yold = $yb - 150 + 113;
+				$xbc = $xb + 44;
+				echo "<path style='fill:none;fill-rule:evenodd;stroke:#000000' d='M $xbc,$yb L $xold,$yold'/>\n";
+				echo "<path style='fill:none;fill-rule:evenodd;stroke:#000000' d='M $xbc,$yb L $xold2,$yold'/>\n";
 			endif;
 
 			$op1 += 2;
@@ -174,7 +257,11 @@ for($i = $level; $i > 0; $i--)
 	endif;
 }
 
-imagepng($im);
-imagedestroy($im);
+if ($format == "png") :
+	imagepng($im);
+	imagedestroy($im);
+elseif ($format == "svg") :
+	echo "</svg>\n";
+endif;
 
 ?>

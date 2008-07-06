@@ -188,7 +188,8 @@ echo "This tournament is still running!\n";
 endif;
 
 echo "<br><br>\n";
-echo "<a href='/tournaments/export.php?tid=$tid'>Export tournament map</a>\n";
+echo "<a href='/tournaments/export.php?tid=$tid'>Export tournament map as PNG</a><br>\n";
+echo "<a href='/tournaments/export.php?tid=$tid&format=svg'>Export tournament map as SVG</a>\n";
 
 ?>
 
