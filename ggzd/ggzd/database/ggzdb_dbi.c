@@ -430,6 +430,8 @@ char *_ggzdb_escape(const char *str)
 {
 	char *to;
 
+	if(!str) return strdup("");
+
 	if(dbi_conn_quote_string_copy(conn, str, &to) > 0){
 		return to;
 	}else{

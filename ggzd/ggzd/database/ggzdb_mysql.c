@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10165 2008-07-05 22:57:24Z oojah $
+ * $Id: ggzdb_mysql.c 10167 2008-07-06 00:44:37Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -793,6 +793,8 @@ RoomStruct *_ggzdb_reconfiguration_room(void)
 char *_ggzdb_escape(const char *str)
 {
 	char *to;
+
+	if(!str) return strdup("");
 
 	to = malloc(strlen(str)*2 + 1);
 	if(to){

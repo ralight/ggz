@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10165 2008-07-05 22:57:24Z oojah $
+ * $Id: ggzdb_pgsql.c 10167 2008-07-06 00:44:37Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -1490,6 +1490,8 @@ char *_ggzdb_escape(const char *str)
 	int error;
 
 	PGconn *conn;
+
+	if(!str) return strdup("");
 
 	conn = claimconnection();
 	if (!conn) {
