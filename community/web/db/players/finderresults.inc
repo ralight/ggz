@@ -5,7 +5,6 @@
 	<div class="text">
 
 <?php
-
 	$userlist = array();
 	$userinfolist = array();
 	$userkarmalist = array();
@@ -110,38 +109,43 @@
 
 			$mindays = 0;
 			if ($user_veteran == "amateur") :
-				$mindays = 14;
-			endif;
-			if ($user_veteran == "knownplayer") :
 				$mindays = 30;
 			endif;
-			if ($user_veteran == "longtimeplayer") :
+			if ($user_veteran == "knownplayer") :
 				$mindays = 60;
 			endif;
-			if ($user_veteran == "veteran") :
+			if ($user_veteran == "longtimeplayer") :
 				$mindays = 180;
 			endif;
-			if ($user_veteran == "veteranhonours") :
+			if ($user_veteran == "veteran") :
 				$mindays = 365;
+			endif;
+			if ($user_veteran == "veteranhonours") :
+				$mindays = 730;
 			endif;
 
 			$date = time();
-			if (($date - $firstlogin) / 86500 < $mindays) :
+			if ((($date - $firstlogin) / 86500 < $mindays) || (!$firstlogin)) :
 				$userlist[$handle] = 0;
 			endif;
 		}
 	endif;
 
 	include_once("player.php");
+	$numfound = 0;
 	foreach ($userlist as $handle => $value)
 	{
 		if ($value) :
 			//$player = new Player($handle);
 			//$player->display();
 			echo "Found player: <a href='/db/players/?lookup=" . htmlurl($handle) . "'>" . html($handle) . "</a><br>\n";
+			$numfound++;
 		endif;
 	}
 
+	if ($numfound == 0) :
+		echo "No players matched the criteria.\n";
+	endif;
 ?>
 
 	</div>

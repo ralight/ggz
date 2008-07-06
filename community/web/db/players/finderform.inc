@@ -44,12 +44,12 @@ $c->listall();
 <tr><td>Veteran:</td><td>
 	<select name='user_veteran'>
 	<option value=''>(undisclosed)</option>
-	<option value='newbie'>Newbie (1-2 weeks)</option>
-	<option value='amateur'>Amateur (3-4 weeks)</option>
-	<option value='knownplayer'>Known player (1-2 months)</option>
-	<option value='longtimeplayer'>Long-time player (2-6 months)</option>
-	<option value='veteran'>Veteran (6-12 months)</option>
-	<option value='veteranhonours'>Veteran with Honours (&gt; 1 year)</option>
+	<option value='newbie'>Newbie (up to 1 month)</option>
+	<option value='amateur'>Amateur (1-2 months)</option>
+	<option value='knownplayer'>Known player (2-6 months)</option>
+	<option value='longtimeplayer'>Long-time player (6-12 months)</option>
+	<option value='veteran'>Veteran (&gt; 1 year)</option>
+	<option value='veteranhonours'>Veteran with Honours (&gt; 2 years)</option>
 	</select>
 </td></tr>
 <tr><td></td><td><input type='submit' value='Find'></td></tr>
