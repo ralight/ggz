@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: movecheck.c 10219 2008-07-08 17:26:29Z jdorje $
+ *  $Id: movecheck.c 10220 2008-07-08 17:37:05Z jdorje $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -101,7 +101,7 @@ int cgc_valid_move(struct game *curgame, int fs, int rs, int fd, int rd,
 	if (!curgame->player1 || !curgame->player2)
 		return E_PLAYERALONE;
 
-	if (color(curgame->board[fs][rs]) != curgame->onmove)
+	if (get_color(curgame->board[fs][rs]) != curgame->onmove)
 		return E_WRONGCOLOR;
 
 	if (curgame->board[fs][rs] == EMPTY)
@@ -117,7 +117,8 @@ int cgc_valid_move(struct game *curgame, int fs, int rs, int fd, int rd,
 	if (fd == fs && rd == rs)
 		return E_BADMOVE;
 
-	if (color(curgame->board[fd][rd]) == color(curgame->board[fs][rs]))
+	if (get_color(curgame->board[fd][rd]) ==
+	    get_color(curgame->board[fs][rs]))
 		return E_BADMOVE;
 
 	for (cptr = piece; cptr->name; cptr++)
@@ -212,10 +213,10 @@ int cgc_do_move(struct game *curgame, int fs, int rs, int fd, int rd,
 	if (cgc_piece_type(curgame->board[fs][rs]) == PAWN) {
 
 		/* Promotion */
-		if (color(curgame->board[fs][rs]) == WHITE && rs == 6) {
+		if (get_color(curgame->board[fs][rs]) == WHITE && rs == 6) {
 			curgame->board[fs][rs] = (promote | WHITE);
 			rd = 7;
-		} else if (color(curgame->board[fs][rs]) == BLACK
+		} else if (get_color(curgame->board[fs][rs]) == BLACK
 			   && rs == 1) {
 			curgame->board[fs][rs] = (promote | BLACK);
 			rd = 0;
@@ -541,7 +542,8 @@ static int check_attackers(struct game *curgame, int f, int r, int *af,
 
 			/* Our own piece can't hurt us */
 			if (curgame->board[cf][cr] != EMPTY)
-				if (color(curgame->board[cf][cr]) != pcol)
+				if (get_color(curgame->board[cf][cr]) !=
+				    pcol)
 					break;
 
 			/* Stop for blockers */
@@ -611,7 +613,7 @@ static int safe_square(struct game *curgame, int f, int r)
 {
 	int enemy;
 
-	enemy = (color(curgame->board[f][r]) ? BLACK : WHITE);
+	enemy = (get_color(curgame->board[f][r]) ? BLACK : WHITE);
 
 	return safe_from_color(curgame, f, r, enemy);
 }
@@ -634,7 +636,7 @@ static int find_attacker(struct game *curgame, int f, int r, int *af,
 {
 	int enemy;
 
-	enemy = (color(curgame->board[f][r]) ? BLACK : WHITE);
+	enemy = (get_color(curgame->board[f][r]) ? BLACK : WHITE);
 
 	if (check_attackers(curgame, f, r, af, ar, enemy, 0))
 		return VALID;	/* Found the attacker */
@@ -890,7 +892,7 @@ int cgc_check_state(struct game *curgame, int kf, int kr)
 	 */
 
 	tmp = board[af][ar];
-	board[af][ar] = BISHOP | color(board[kf][kr]);
+	board[af][ar] = BISHOP | get_color(board[kf][kr]);
 
 	if (!safe_square(curgame, kf, kr)) {	/* Still not safe, two attacker */
 		board[af][ar] = tmp;
@@ -995,7 +997,7 @@ int cgc_check_state(struct game *curgame, int kf, int kr)
 			break;
 		}
 
-		if (can_be_occupied(curgame, cf, cr, color(tmp))) {
+		if (can_be_occupied(curgame, cf, cr, get_color(tmp))) {
 			status = CHECK;
 			break;
 		}
@@ -1020,7 +1022,7 @@ static int king_has_move(struct game *curgame, int kf, int kr)
 	tmp = curgame->board[kf][kr];
 	curgame->board[kf][kr] = EMPTY;
 
-	enemy = color(tmp) ? BLACK : WHITE;
+	enemy = get_color(tmp) ? BLACK : WHITE;
 
 	for (direction = 0; direction <= 7; ++direction) {
 		cf = kf;
@@ -1061,7 +1063,7 @@ static int king_has_move(struct game *curgame, int kf, int kr)
 			continue;
 
 		/* We can't have a valid move into friendly piece */
-		if (color(curgame->board[cf][cr]) == color(tmp))
+		if (get_color(curgame->board[cf][cr]) == get_color(tmp))
 			continue;
 
 		if (safe_from_color(curgame, cf, cr, enemy)) {
@@ -1105,7 +1107,8 @@ int cgc_is_stale(struct game *curgame, int kf, int kr)
 				continue;
 
 			/* Filter out the enemy's pieces */
-			if (color(board[cf][cr]) != color(board[kf][kr]))
+			if (get_color(board[cf][cr]) !=
+			    get_color(board[kf][kr]))
 				continue;
 
 			/* Filter out pinned pieces */
@@ -1122,7 +1125,7 @@ int cgc_is_stale(struct game *curgame, int kf, int kr)
 					return INVALID;
 				break;
 			case PAWN:
-				if (color(board[cf][cr]) == WHITE) {
+				if (get_color(board[cf][cr]) == WHITE) {
 					if (board[cf][cr + 1] == EMPTY)
 						return INVALID;
 				} else if (board[cf][cr - 1] == EMPTY)
@@ -1173,7 +1176,7 @@ static int check_rook_moves(piece_t ** board, int f, int r)
 		if (!onboard(cf, cr))
 			break;
 
-		if (color(board[cf][cr]) == color(board[f][r]))
+		if (get_color(board[cf][cr]) == get_color(board[f][r]))
 			break;
 
 		return VALID;
@@ -1213,7 +1216,7 @@ static int check_bishop_moves(piece_t ** board, int f, int r)
 			break;
 		}
 
-		if (color(board[cf][cr]) == color(board[f][r]))
+		if (get_color(board[cf][cr]) == get_color(board[f][r]))
 			break;
 
 		return VALID;
@@ -1236,7 +1239,7 @@ int cgc_has_sufficient(game_t * curgame, int ocolor)
 		for (r = 0; r < 8; ++r) {
 			if (curgame->board[f][r] == EMPTY)
 				continue;
-			if (color(curgame->board[f][r]) != ocolor &&
+			if (get_color(curgame->board[f][r]) != ocolor &&
 			    cgc_piece_type(curgame->board[f][r]) != BISHOP)
 				continue;
 
@@ -1247,7 +1250,8 @@ int cgc_has_sufficient(game_t * curgame, int ocolor)
 				return 1;
 				break;
 			case BISHOP:
-				if (color(curgame->board[f][r]) != ocolor) {
+				if (get_color(curgame->board[f][r]) !=
+				    ocolor) {
 					if (bishop_type(f, r) == 1)
 						++e_dbishop;
 					else
@@ -1322,7 +1326,7 @@ static int check_knight_moves(piece_t ** board, int f, int r)
 			break;
 		}
 
-		if (color(board[cf][cr]) == color(board[f][r]))
+		if (get_color(board[cf][cr]) == get_color(board[f][r]))
 			break;
 
 		return VALID;

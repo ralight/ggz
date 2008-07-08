@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: board.h 10219 2008-07-08 17:26:29Z jdorje $
+ *  $Id: board.h 10220 2008-07-08 17:37:05Z jdorje $
  */
 
 #ifndef CGC_BOARD_H
@@ -55,7 +55,7 @@ game_t *cgc_setup_table(void);
 int setup_board(piece_t ** board);
 piece_t **cgc_get_empty_board(void);
 int cgc_free_board(piece_t ** board);
-int color(piece_t piece);
+int get_color(piece_t piece);
 piece_t cgc_piece_type(piece_t piece);
 unsigned int cgc_hash(char *str);
 void cgc_free_postab(struct posnode *postab[]);

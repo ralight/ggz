@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: board.c 10219 2008-07-08 17:26:29Z jdorje $
+ *  $Id: board.c 10220 2008-07-08 17:37:05Z jdorje $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -97,7 +97,7 @@ int cgc_free_board(piece_t ** board)
 	return 0;
 }
 
-int color(piece_t piece)
+int get_color(piece_t piece)
 {
 	if (piece == EMPTY)
 		return -1;
