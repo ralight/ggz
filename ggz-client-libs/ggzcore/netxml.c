@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 10191 2008-07-08 03:46:11Z jdorje $
+ * $Id: netxml.c 10193 2008-07-08 03:51:56Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -2626,11 +2626,14 @@ static int _ggzcore_net_send_line(GGZNet * net, char *line, ...)
 
 static int str_to_int(const char *str, int dflt)
 {
-	int val;
+	int val1;
+	unsigned int val2;
 
 	if (!str) return dflt;
-	if (sscanf(str, "0x%x", &val) == 1) return val;
-	if (sscanf(str, "%d", &val) == 1) return val;
+
+	if (sscanf(str, "0x%x", &val2) == 1) return val2;
+
+	if (sscanf(str, "%d", &val1) == 1) return val1;
 
 	return dflt;
 }
