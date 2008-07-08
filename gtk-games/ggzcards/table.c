@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 10188 2008-07-08 03:20:24Z jdorje $
+ * $Id: table.c 10197 2008-07-08 04:00:27Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -198,7 +198,7 @@ void table_initialize(void)
 			 GTK_SIGNAL_FUNC(on_table_expose_event), NULL);
 
 	assert(table_drawing_area->window);
-	assert(get_table_width() > 0 && get_table_height > 0);
+	assert(get_table_width() > 0 && get_table_height() > 0);
 	table_buf = gdk_pixmap_new(table->window,
 				   get_table_width(), get_table_height(),
 				   -1);
