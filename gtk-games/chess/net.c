@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Functions to filter input and send the events to game.c and send stuff
  * out to the server
- * $Id: net.c 6903 2005-01-25 18:57:38Z jdorje $
+ * $Id: net.c 10232 2008-07-08 19:34:02Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -141,12 +141,12 @@ void net_send_time(int time_option)
 	ggz_write_int(game_info.fd, time_option);
 }
 
-void net_send_move(char *move, int time)
+void net_send_move(char *move, int mytime)
 {
 	ggz_write_char(game_info.fd, CHESS_REQ_MOVE);
 	ggz_write_string(game_info.fd, move);
-	if (time >= 0)
-		ggz_write_int(game_info.fd, time);
+	if (mytime >= 0)
+		ggz_write_int(game_info.fd, mytime);
 	/*
 	   ggz_write_char(game_info.fd, from);
 	   ggz_write_char(game_info.fd, to);
@@ -168,8 +168,8 @@ void net_request_update(void)
 	ggz_write_char(game_info.fd, CHESS_REQ_UPDATE);
 }
 
-void net_update_server(int time)
+void net_update_server(int mytime)
 {
 	ggz_write_char(game_info.fd, CHESS_MSG_UPDATE);
-	ggz_write_int(game_info.fd, time);
+	ggz_write_int(game_info.fd, mytime);
 }
