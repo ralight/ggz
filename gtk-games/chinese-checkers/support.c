@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 2001
  * Desc: Support code
- * $Id: support.c 6353 2004-11-13 18:05:57Z jdorje $
+ * $Id: support.c 10178 2008-07-08 01:55:06Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -85,8 +85,9 @@ static GtkWidget *create_dummy_pixmap(GtkWidget * widget)
 	gdkpixmap =
 	    gdk_pixmap_colormap_create_from_xpm_d(NULL, colormap, &mask,
 						  NULL, dummy_pixmap_xpm);
-	if (gdkpixmap == NULL)
+	if (gdkpixmap == NULL) {
 		g_error("Couldn't create replacement pixmap.");
+	}
 	pixmap = gtk_pixmap_new(gdkpixmap, mask);
 	g_object_unref(gdkpixmap);
 	g_object_unref(mask);

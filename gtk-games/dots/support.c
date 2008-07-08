@@ -64,8 +64,9 @@ static GtkWidget *create_dummy_pixmap(GtkWidget * widget)
 	gdkpixmap =
 	    gdk_pixmap_colormap_create_from_xpm_d(NULL, colormap, &mask,
 						  NULL, dummy_pixmap_xpm);
-	if (gdkpixmap == NULL)
+	if (gdkpixmap == NULL) {
 		g_error("Couldn't create replacement pixmap.");
+	}
 	pixmap = gtk_pixmap_new(gdkpixmap, mask);
 	g_object_unref(gdkpixmap);
 	g_object_unref(mask);
