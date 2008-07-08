@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 9939 2008-04-12 05:53:49Z jdorje $
+ * $Id: game.c 10221 2008-07-08 17:42:19Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -158,7 +158,7 @@ static int seats_full(void)
  *  CHESS_EVENT_START: NULL */
 static int game_update(int event_id, const void *data)
 {
-  int time, st;
+  int timer, st;
   int from, to;
   int ret;
   char botmove[6];
@@ -317,17 +317,17 @@ static int game_update(int event_id, const void *data)
           game_send_move((char *)data, 0);
       else {
         /* Worry about time */
-        time = *((int *)data + (6/sizeof(int)) + 1);
+        timer = *((int *)data + (6/sizeof(int)) + 1);
         /* Update the structures */
         if (!OUT_OF_TIME(game_info.turn %2))
-          game_info.seconds[game_info.turn % 2] -= time;
+          game_info.seconds[game_info.turn % 2] -= timer;
         else
           game_info.seconds[game_info.turn % 2] = 0;
         /* If server, stop the chronometer */
         if (game_info.clock_type != CHESS_CLOCK_CLIENT)
           game_restart_chronometer();
         /* Send the move */
-        game_send_move((char *)data, time);
+        game_send_move((char *)data, timer);
       }
       /* Check if the game is over */
       switch (st) {
@@ -415,9 +415,9 @@ static int game_update(int event_id, const void *data)
         break;
       /* If we have server clock, then update the time */
       if (game_info.clock_type == CHESS_CLOCK_SERVER) {
-	time = game_read_chronometer();
+	timer = game_read_chronometer();
         game_restart_chronometer();
-        game_info.seconds[game_info.turn%2] -= time;
+        game_info.seconds[game_info.turn%2] -= timer;
       }
       if (OUT_OF_TIME(0))
         game_info.seconds[0] = 0;
@@ -501,7 +501,7 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id,
 			     const void *seat_data)
 {
   const int *seat = seat_data;
-  int fd, time;
+  int fd, timer;
   char op;
   void *data = NULL;
 
@@ -522,23 +522,23 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id,
   switch (op) {
     case CHESS_RSP_TIME:
       ggzdmod_log(game_info.ggz, "Player sent a RSP_TIME");
-      if (ggz_read_int(fd, &time) < 0)
+      if (ggz_read_int(fd, &timer) < 0)
         return;
       /* Check if this player is the host */
       if (*seat != game_info.host)
         return;
-      ggzdmod_log(game_info.ggz, "Player sent the following time: %d", time);
+      ggzdmod_log(game_info.ggz, "Player sent the following time: %d", timer);
       /* Is it a valid time ? */
-      if ((time >> 24) > 3) {
+      if ((timer >> 24) > 3) {
         game_update(CHESS_EVENT_TIME, NULL);
         return;
       }
-      if ((time >> 24) > 0 && (time & 0xFFFFFF) <= 0) {
+      if ((timer >> 24) > 0 && (timer & 0xFFFFFF) <= 0) {
         game_update(CHESS_EVENT_TIME, NULL);
         return;
       }
       /* Ok, then trigger the event */
-      game_update(CHESS_EVENT_TIME, &time);
+      game_update(CHESS_EVENT_TIME, &timer);
       break;
     case CHESS_REQ_MOVE:
       ggzdmod_log(game_info.ggz, "Player sent a REQ_MOVE");
@@ -569,17 +569,17 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id,
         */
         if (game_info.clock_type == CHESS_CLOCK_CLIENT) {
           /* Get the time */
-          ggz_read_int(fd, &time);
+          ggz_read_int(fd, &timer);
           /* Now put it on the data buffer */
         } else {
           /* How much type did that player take ? */
-          time = game_read_chronometer();
+          timer = game_read_chronometer();
         }
         /* If first turn, there is no time! */
         if (game_info.turn == 0 || game_info.turn == 1)
-          time = 0;
-        ggzdmod_log(game_info.ggz, "Move: %s\tTime: %d", (char*)data, time);
-        *((int *)data + (6/sizeof(int)) + 1) = time;
+          timer = 0;
+        ggzdmod_log(game_info.ggz, "Move: %s\tTime: %d", (char*)data, timer);
+        *((int *)data + (6/sizeof(int)) + 1) = timer;
       }
       /* Check if correct turn */
       if (*seat == game_info.turn % 2)
@@ -606,17 +606,17 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id,
       /* Check for the right clock */
       if (game_info.clock_type == CHESS_CLOCK_NOCLOCK)
         break;
-      time = 0;
+      timer = 0;
       /* If server clock, get the time until now*/
       if (game_info.clock_type == CHESS_CLOCK_SERVER ||
           game_info.clock_type == CHESS_CLOCK_SERVERLAG) {
-        time = game_read_chronometer();
+        timer = game_read_chronometer();
       }
       /* Check if this player can claim */
-      if (game_info.turn % 2 == *seat && game_info.seconds[*seat] - time <= 0)
+      if (game_info.turn % 2 == *seat && game_info.seconds[*seat] - timer <= 0)
         break;
       /* Ok, so update it */
-      game_update(CHESS_EVENT_FLAG, &time);
+      game_update(CHESS_EVENT_FLAG, &timer);
       break;
     case CHESS_REQ_DRAW:
       if (*seat == 0 && game_info.draw == 3)
@@ -718,7 +718,7 @@ static void game_send_start(void)
   }
 }
 
-static void game_send_move(char *move, int time)
+static void game_send_move(char *move, int timer)
 {
   int fd, a;
 
@@ -746,7 +746,7 @@ static void game_send_move(char *move, int time)
 
     /* Send time, if not error */
     if (game_info.clock_type && move)
-      ggz_write_int(fd, time);
+      ggz_write_int(fd, timer);
   }
 }
 
