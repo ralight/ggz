@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
- * $Id: main.c 9952 2008-04-12 22:50:04Z oojah $
+ * $Id: main.c 10236 2008-07-08 19:47:01Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -58,7 +58,6 @@ GtkWidget *opt_dialog;
 GtkWidget *new_dialog;
 struct game_t game;
 int conf_handle;
-GGZMod *mod = NULL;
 
 static void initialize_debugging(void);
 static void cleanup_debugging(void);
@@ -75,6 +74,7 @@ static int get_sync_info(void);
 int main(int argc, char *argv[])
 {
 	char *filename;
+	GGZMod *mod;
 
 	initialize_debugging();
 
