@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Header for board.c
- * $Id: board.h 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: board.h 10187 2008-07-08 03:17:39Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -22,6 +22,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifndef _BOARD_H
+#define _BOARD_H
 
 /* definitions used here */
 #define BISHOP_B 0
@@ -71,3 +74,5 @@ int board_auto_call(void);
 
 /* Promote hack */
 void promote_piece(GtkButton * button, gpointer user_data);
+
+#endif
