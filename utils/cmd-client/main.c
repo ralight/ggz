@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 9572 2008-01-20 10:50:17Z josef $
+ * $Id: main.c 10189 2008-07-08 03:29:19Z jdorje $
  *
  * Main program code for ggz-cmd program.
  *
@@ -234,7 +234,7 @@ static void wait_for_input(int fd)
 {
 	fd_set my_fd_set;
 	int status;
-	struct timeval timeout = {tv_sec: 10, tv_usec: 0};
+	struct timeval timeout = {.tv_sec = 10, .tv_usec = 0};
 
 	assert(fd >= 0);
 
