@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.h 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: dlg_players.h 10184 2008-07-08 02:58:33Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -22,6 +22,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifndef _DLG_PLAYERS_H
+#define _DLG_PLAYERS_H
 
 #include <gtk/gtk.h>
 
@@ -58,3 +61,5 @@ void popup_player_menu(GGZSeat * seat,
    table, and do_stand() to stand up (obviously). */
 void do_sit(void);
 void do_stand(void);
+
+#endif

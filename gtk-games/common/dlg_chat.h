@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 2/20/2004 (moved from GGZCards)
  * Desc: Create the "Chat" Gtk dialog
- * $Id: dlg_chat.h 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: dlg_chat.h 10184 2008-07-08 02:58:33Z jdorje $
  *
  * Copyright (C) 2004 GGZ Development Team
  *
@@ -23,6 +23,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef _DLG_CHAT_H
+#define _DLG_CHAT_H
+
 #include <gtk/gtk.h>
 #include <ggzmod.h>
 
@@ -39,3 +42,5 @@ GtkWidget *create_chat_widget(void);
 void create_or_raise_dlg_chat(void);
 
 void toggle_chat_window(gpointer data, guint action, GtkWidget * w);
+
+#endif
