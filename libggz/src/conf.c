@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 10179 2008-07-08 02:08:44Z jdorje $
+ * $Id: conf.c 10206 2008-07-08 15:44:48Z jdorje $
  *
  * Internal functions for handling configuration files
  *
@@ -175,7 +175,7 @@ int ggz_conf_read_int(int handle, const char *section, const char *key, int def)
 int ggz_conf_read_list(int handle, const char *section, const char *key,
 		   int *argcp, char ***argvp)
 {
-	int	index, rc;
+	int	i, rc;
 	char	*p, *s1, *s2;
 	char	*str, *tmp, *tmp2;
 	char	saw_space=0, saw_backspace;
@@ -206,7 +206,7 @@ int ggz_conf_read_list(int handle, const char *section, const char *key,
 
 
 		p = str;
-		index = 0;
+		i = 0;
 		do {
 			tmp = p;
 
@@ -220,9 +220,9 @@ int ggz_conf_read_list(int handle, const char *section, const char *key,
 			}
 
 			tmp2 = ggz_malloc(p-tmp+1);
-			(*argvp)[index] = strncpy(tmp2, tmp, p - tmp);
+			(*argvp)[i] = strncpy(tmp2, tmp, p - tmp);
 			tmp2[p-tmp] = '\0';
-			s1 = s2 = (*argvp)[index++];
+			s1 = s2 = (*argvp)[i++];
 
 			while (*s1) {
 				if (*s1 == '\\')

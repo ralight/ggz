@@ -37,21 +37,23 @@ static void ggz_xmlelement_do_free(GGZXMLElement *element);
 
 
 GGZXMLElement *ggz_xmlelement_new(const char *tag, const char * const *attrs,
-	void (*process)(void*, GGZXMLElement*), void (*free)(GGZXMLElement*))
+				  void (*process)(void*, GGZXMLElement*),
+				  void (*free_func)(GGZXMLElement*))
 {
 	GGZXMLElement *element;
 
 	element = ggz_malloc(sizeof(GGZXMLElement));
 	
-	ggz_xmlelement_init(element, tag, attrs, process, free);
+	ggz_xmlelement_init(element, tag, attrs, process, free_func);
 
 	return element;
 }
 
 
 void ggz_xmlelement_init(GGZXMLElement *element, const char *tag,
-	const char * const *attrs,
-	void (*process)(void*, GGZXMLElement*), void (*free)(GGZXMLElement*))
+			 const char * const *attrs,
+			 void (*process)(void*, GGZXMLElement*),
+			 void (*free_func)(GGZXMLElement*))
 {
 	int i;
 
@@ -67,7 +69,7 @@ void ggz_xmlelement_init(GGZXMLElement *element, const char *tag,
 		for (i = 0; attrs[i]; i++)
 			ggz_list_insert(element->attributes, (void *)attrs[i]);
 
-		element->free = (free ? free : ggz_xmlelement_do_free);
+		element->free = (free_func ? free_func : ggz_xmlelement_do_free);
 	}
 }
 

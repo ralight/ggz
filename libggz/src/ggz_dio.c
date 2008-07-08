@@ -142,14 +142,14 @@ static void my_nonblock(int sockfd)
 }
 #endif
 
-GGZDataIO *ggz_dio_new(int socket)
+GGZDataIO *ggz_dio_new(int fd)
 {
 	GGZDataIO *dio = ggz_malloc(sizeof(*dio));
 	const size_t bufsz = 20;
 
-	dio->fd = socket;
+	dio->fd = fd;
 #if 0
-	my_nonblock(socket);
+	my_nonblock(fd);
 #endif
 
 	dio->output.auto_flush = false;
