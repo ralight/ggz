@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 10088 2008-06-29 04:43:48Z jdorje $
+ * $Id: main.c 10198 2008-07-08 04:02:19Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -193,7 +193,7 @@ static gboolean game_handle_io(GGZMod * mod)
 
 /* The server doesn't usually inform us of our move.  But we get told about
    the opponent's move, and if we're a spectator we get to hear both. */
-void receive_move(move, nummove)
+void receive_move(int move, int nummove)
 {
 	/* nummove is the player who made the move (0 or 1). */
 	/* move is the move (0..8) */
