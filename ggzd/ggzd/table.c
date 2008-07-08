@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 10128 2008-07-01 02:31:12Z jdorje $
+ * $Id: table.c 10204 2008-07-08 06:39:36Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -246,7 +246,7 @@ static GGZReturn table_check(GGZTable* table)
 	ggz_debug(GGZ_DBG_TABLE, "Open Seats : %d", seats_count(table, GGZ_SEAT_OPEN));
 	ggz_debug(GGZ_DBG_TABLE, "Resv.Seats : %d", seats_count(table, GGZ_SEAT_RESERVED));
 	ggz_debug(GGZ_DBG_TABLE, "State      : %d", table->state);
-	ggz_debug(GGZ_DBG_TABLE, "GGZdMod    : %p", table->ggzdmod);
+	ggz_debug(GGZ_DBG_TABLE, "GGZdMod    : %p", (void *)table->ggzdmod);
 	
 	/* FIXME: this correctly logs everything about the GGZdMod object, but it
 	   will incorrectly be labeled as coming from the table itself instead of
@@ -1329,13 +1329,14 @@ GGZClientReqError table_launch(GGZTable *table, const char *name)
 /* Change table description of running table */
 void table_set_desc(GGZTable *table, const char *desc)
 {
-	ggz_debug(GGZ_DBG_TABLE, "Table %p new desc: '%s'", table, desc);
+	ggz_debug(GGZ_DBG_TABLE, "Table %p new desc: '%s'",
+		  (void *)table, desc);
 	
-        pthread_rwlock_wrlock(&table->lock);
-        strcpy(table->desc, desc);
-        pthread_rwlock_unlock(&table->lock);
-	
-        table_event_enqueue(table, GGZ_TABLE_UPDATE_DESC);
+	pthread_rwlock_wrlock(&table->lock);
+	strcpy(table->desc, desc);
+	pthread_rwlock_unlock(&table->lock);
+
+	table_event_enqueue(table, GGZ_TABLE_UPDATE_DESC);
 }
 
 

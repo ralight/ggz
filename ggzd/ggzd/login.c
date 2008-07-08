@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 10067 2008-06-24 22:01:07Z jdorje $
+ * $Id: login.c 10204 2008-07-08 06:39:36Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -95,7 +95,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 		snprintf(new_pw, sizeof(new_pw), password);
 
 	ggz_debug(GGZ_DBG_CONNECTION, "Player %p attempting login as %d",
-	        player, type);
+		  (void *)player, type);
 
 	/* If we disallow new registrations, we ignore logins straight away */
 	if(type != GGZ_LOGIN && opt.registration_policy == GGZ_REGISTRATION_CLOSED) {

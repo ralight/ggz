@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 10067 2008-06-24 22:01:07Z jdorje $
+ * $Id: event.c 10204 2008-07-08 06:39:36Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -102,7 +102,7 @@ GGZReturn event_room_enqueue(int room, GGZEventFunc func,
 
 	/* Allocate a new event item */
 	event = ggz_malloc(sizeof(GGZEvent));
-	ggz_debug(GGZ_DBG_LISTS, "Allocated event %p", event);
+	ggz_debug(GGZ_DBG_LISTS, "Allocated event %p", (void *)event);
 
 	/* Fill in event structure */
 	event->next = NULL;
@@ -253,7 +253,8 @@ GGZReturn event_room_flush(GGZPlayer* player)
 	while ( (event = player->room_events)) {
 		player->room_events = event->next;
 		if (--(event->ref_count) == 0) {
-			ggz_debug(GGZ_DBG_LISTS, "Removing event %p", event);
+			ggz_debug(GGZ_DBG_LISTS, "Removing event %p",
+				  (void *)event);
 			if (rooms[room].event_tail == event)
 				rooms[room].event_tail = NULL;
 #ifdef DEBUG
@@ -281,7 +282,7 @@ GGZReturn event_player_enqueue(const char* name, GGZEventFunc func,
 
 	/* Allocate a new event item */
 	event = ggz_malloc(sizeof(GGZEvent));
-	ggz_debug(GGZ_DBG_LISTS, "Allocated event %p", event);
+	ggz_debug(GGZ_DBG_LISTS, "Allocated event %p", (void *)event);
 
 	/* Fill in event structure */
 	event->ref_count = 1;
@@ -295,7 +296,7 @@ GGZReturn event_player_enqueue(const char* name, GGZEventFunc func,
 	if ( (player = hash_player_lookup(name)) == NULL ) {
 		event_free(event);
 		ggz_debug(GGZ_DBG_LISTS, "Deallocated event %p (no user)", 
-			event);		
+			  (void *)event);		
 		return GGZ_ERROR;
 	}
 
@@ -304,7 +305,7 @@ GGZReturn event_player_enqueue(const char* name, GGZEventFunc func,
 		pthread_rwlock_unlock(&player->lock);
 		event_free(event);
 		ggz_debug(GGZ_DBG_LISTS, "Deallocated event %p (no user)", 
-			event);
+			  (void *)event);
 		return GGZ_ERROR;
 	}
 
@@ -346,12 +347,13 @@ GGZReturn event_player_handle(GGZPlayer* player)
 			/* Remove event if necessary (always) */
 			if (--(event->ref_count) == 0) {
 				ggz_debug(GGZ_DBG_LISTS, "Removing event %p", 
-					event);
+					  (void *)event);
 				event_free(event);
 			}
 			break;
 		case GGZ_EVENT_DEFER:
-			ggz_debug(GGZ_DBG_LISTS, "Deferring event %p", event);
+			ggz_debug(GGZ_DBG_LISTS, "Deferring event %p",
+				  (void *)event);
 			pthread_rwlock_wrlock(&player->lock);
 			event_player_do_enqueue(player, event);
 			pthread_rwlock_unlock(&player->lock);
@@ -385,7 +387,8 @@ GGZReturn event_player_flush(GGZPlayer* player)
 		next = event->next;
 		/* Remove event if necessary (always) */
 		if (--(event->ref_count) == 0) {
-			ggz_debug(GGZ_DBG_LISTS, "Removing event %p", event);
+			ggz_debug(GGZ_DBG_LISTS, "Removing event %p",
+				  (void *)event);
 			event_free(event);
 		}
 		event = next;
@@ -436,7 +439,7 @@ GGZReturn event_table_enqueue(int room, int index, GGZEventFunc func,
 	
 	/* Allocate a new event item */
 	event = ggz_malloc(sizeof(GGZEvent));
-	ggz_debug(GGZ_DBG_LISTS, "Allocated event %p", event);
+	ggz_debug(GGZ_DBG_LISTS, "Allocated event %p", (void *)event);
 
 	/* Fill in event structure */
 	event->ref_count = 1;
@@ -450,7 +453,7 @@ GGZReturn event_table_enqueue(int room, int index, GGZEventFunc func,
 	if ( (table = table_lookup(room, index)) == NULL) {
 		event_free(event);
 		ggz_debug(GGZ_DBG_LISTS, "Deallocated event %p (no table)", 
-			event);				
+			  (void *)event);				
 		return GGZ_ERROR;
 	}
 
@@ -493,12 +496,13 @@ GGZReturn event_table_handle(GGZTable* table)
 			/* Remove event if necessary (always) */
 			if (--(event->ref_count) == 0) {
 				ggz_debug(GGZ_DBG_LISTS, "Removing event %p", 
-					event);
+					  (void *)event);
 				event_free(event);
 			}
 			break;
 		case GGZ_EVENT_DEFER:
-			ggz_debug(GGZ_DBG_LISTS, "Deferring event %p", event);
+			ggz_debug(GGZ_DBG_LISTS, "Deferring event %p",
+				  (void *)event);
 			pthread_rwlock_wrlock(&table->lock);
 			event_table_do_enqueue(table, event);
 			pthread_rwlock_unlock(&table->lock);
@@ -532,7 +536,8 @@ GGZReturn event_table_flush(GGZTable* table)
 		next = event->next;
 		/* Remove event if necessary (always) */
 		if (--(event->ref_count) == 0) {
-			ggz_debug(GGZ_DBG_LISTS, "Removing event %p", event);
+			ggz_debug(GGZ_DBG_LISTS, "Removing event %p",
+				  (void *)event);
 			event_free(event);
 		}
 		event = next;
@@ -581,13 +586,14 @@ static void event_room_spew(int room)
 
 	ggz_debug(GGZ_DBG_LISTS, "------ Room %d Event List ------", room);
 	event = rooms[room].event_head;
-	ggz_debug(GGZ_DBG_LISTS, "Event head is %p", event);
+	ggz_debug(GGZ_DBG_LISTS, "Event head is %p", (void *)event);
 	while (event) {
 		ggz_debug(GGZ_DBG_LISTS, "  Chain item %p (%d)",
-			event, event->ref_count);
+			  (void *)event, event->ref_count);
 		event = event->next;
 	}
-	ggz_debug(GGZ_DBG_LISTS, "Event tail is %p", rooms[room].event_tail);
+	ggz_debug(GGZ_DBG_LISTS, "Event tail is %p",
+		  (void *)rooms[room].event_tail);
 	ggz_debug(GGZ_DBG_LISTS, "-----------------------");
 }
 
@@ -597,14 +603,14 @@ static void event_player_spew(GGZPlayer* player)
 
 	ggz_debug(GGZ_DBG_LISTS, "------ %s Event List ------", player->name);
 	event = player->my_events_head;
-	ggz_debug(GGZ_DBG_LISTS, "Event head is %p", event);
+	ggz_debug(GGZ_DBG_LISTS, "Event head is %p", (void *)event);
 	while (event) {
 		ggz_debug(GGZ_DBG_LISTS, "  Chain item %p (%d)",
-			event, event->ref_count);
+			  (void *)event, event->ref_count);
 		event = event->next;
 	}
 	ggz_debug(GGZ_DBG_LISTS, "Event tail is %p", 
-		player->my_events_tail);
+		  (void *)player->my_events_tail);
 	ggz_debug(GGZ_DBG_LISTS, "-----------------------");
 }
 
@@ -615,14 +621,14 @@ static void event_table_spew(GGZTable* table)
 	ggz_debug(GGZ_DBG_LISTS, "------ Table %d room %d Event List ------",
 		table->index, table->room);
 	event = table->events_head;
-	ggz_debug(GGZ_DBG_LISTS, "Event head is %p", event);
+	ggz_debug(GGZ_DBG_LISTS, "Event head is %p", (void *)event);
 	while (event) {
 		ggz_debug(GGZ_DBG_LISTS, "  Chain item %p (%d)",
-			event, event->ref_count);
+			  (void *)event, event->ref_count);
 		event = event->next;
 	}
 	ggz_debug(GGZ_DBG_LISTS, "Event tail is %p", 
-		table->events_tail);
+		  (void *)table->events_tail);
 	ggz_debug(GGZ_DBG_LISTS, "-----------------------");
 }
 
