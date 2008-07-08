@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 10067 2008-06-24 22:01:07Z jdorje $
+ * $Id: stats.c 10212 2008-07-08 16:25:37Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -524,7 +524,7 @@ void stats_rt_report(void)
 		return;
 	}
 
-	rt->uptime = uptime();
+	rt->uptime = get_uptime();
 
 	rt->num_players = state.players;
 	rt->num_tables = state.tables;
@@ -553,7 +553,7 @@ void stats_rt_report_chat(int room)
 
 	ggz_debug(GGZ_DBG_STATS, "RT Stats: report chat");
 
-	rt->uptime = uptime();
+	rt->uptime = get_uptime();
 
 	rt->chat[room]++;
 }

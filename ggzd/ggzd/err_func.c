@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 10205 2008-07-08 06:42:38Z jdorje $
+ * $Id: err_func.c 10212 2008-07-08 16:25:37Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -469,7 +469,7 @@ void log_update_set_interval(int sec)
 	update_info.update_interval = sec;
 }
 
-ggztime_t uptime(void)
+ggztime_t get_uptime(void)
 {
 	ggztime_t t;
 

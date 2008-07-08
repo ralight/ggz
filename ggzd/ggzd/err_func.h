@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error function prototypes
- * $Id: err_func.h 10067 2008-06-24 22:01:07Z jdorje $
+ * $Id: err_func.h 10212 2008-07-08 16:25:37Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -107,4 +107,4 @@ void log_update_set_interval(int);
 void log_create_table(void);
 void log_close_table(void);
 
-ggztime_t uptime(void);
+ggztime_t get_uptime(void);
