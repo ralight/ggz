@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 9952 2008-04-12 22:50:04Z oojah $
+ * $Id: main.c 10188 2008-07-08 03:20:24Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -376,9 +376,6 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 	GdkPixmap *image = NULL;
 	int p, i, max_len = 0;
 	int width, height, w, h;
-	extern GtkWidget *table;	/* Damn, why can't I figure out
-					   another way to do this? */
-	extern GtkStyle *table_style;	/* And I do it twice!! */
 
 	/* determine dimensions */
 	for (p = 0; p < ggzcards.num_players; p++)

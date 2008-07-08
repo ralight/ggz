@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 8515 2006-08-16 02:59:53Z jdorje $
+ * $Id: table.c 10188 2008-07-08 03:20:24Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -68,7 +68,6 @@ static gboolean table_ready = FALSE;
    is set or not. */
 static int selected_card = -1;
 
-void table_show_table(int x, int y, int w, int h);
 static void draw_text_box(int p);
 static void draw_card_box(int p);
 static void draw_card_areas(int write_to_screen);
