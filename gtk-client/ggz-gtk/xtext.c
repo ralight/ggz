@@ -2194,9 +2194,11 @@ gtk_xtext_button_press (GtkWidget * widget, GdkEventButton * event)
 /* another program has claimed the selection */
 
 static gboolean
-gtk_xtext_selection_kill (GtkXText *xtext, GdkEventSelection *event)
+gtk_xtext_selection_kill (GtkWidget *widget, GdkEventSelection *event)
 {
 #ifndef WIN32
+	GtkXText *xtext = GTK_XTEXT(widget);
+
 	if (xtext->buffer->last_ent_start)
 		gtk_xtext_unselect (xtext);
 #endif
