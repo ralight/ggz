@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Text Client 
  * Date: 11/5/2002
- * $Id: pick_module.c 10013 2008-05-30 20:01:43Z jdorje $
+ * $Id: pick_module.c 10229 2008-07-08 18:55:50Z jdorje $
  *
  * Dialog window to pick a module for your game
  *
@@ -40,26 +40,28 @@
 #include "support.h"
 
 
-static GtkWidget *dialog = NULL;
-static int choice = 0;
-static int preserve = 0;
+static struct {
+	GtkWidget *dialog;
+	int choice;
+	int preserve;
+} win;
 
 static void on_pickmodule_ok_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
-	gtk_widget_destroy(dialog);
+	gtk_widget_destroy(win.dialog);
 	gtk_main_quit();
 }
 
 static void on_button_toggled(GtkToggleButton * widget, gpointer data)
 {
 	if (widget->active)
-		choice = GPOINTER_TO_INT(data);
+		win.choice = GPOINTER_TO_INT(data);
 }
 
 static void on_preserve_toggled(GtkToggleButton * widget, gpointer data)
 {
-	preserve = widget->active;
+	win.preserve = widget->active;
 }
 
 static GtkWidget *create_pick_module_dlg(GGZModule **modules, int *modulenumbers)
@@ -108,7 +110,7 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules, int *modulenumbers
 
 		if (i == 0 || strcasecmp(fe, "gtk") == 0) {
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(frontend), TRUE);
-			choice = modulenumbers[i];
+			win.choice = modulenumbers[i];
 		}
 
 		g_signal_connect(GTK_OBJECT(frontend), "toggled",
@@ -152,27 +154,27 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules, int *modulenumbers
 
 int ask_user_to_pick_module(GGZModule **modules, int *modulenumbers, int *dopreserve)
 {
-	if (dialog)
+	if (win.dialog)
 		return -1; /* FIXME: this shouldn't be allowed to happen */
 
-	preserve = 0;
-	dialog = create_pick_module_dlg(modules, modulenumbers);
+	win.preserve = 0;
+	win.dialog = create_pick_module_dlg(modules, modulenumbers);
 
-	gtk_widget_show(dialog);
+	gtk_widget_show(win.dialog);
 
 	gtk_main();
 
-	dialog = NULL;
-	*dopreserve = preserve;
+	win.dialog = NULL;
+	*dopreserve = win.preserve;
 
-	return choice;
+	return win.choice;
 }
 
 void cancel_module_picking(void)
 {
-	if (dialog) {
-		gtk_widget_destroy(dialog);
+	if (win.dialog) {
+		gtk_widget_destroy(win.dialog);
 		gtk_main_quit();
-		choice = -1;
+		win.choice = -1;
 	}
 }
