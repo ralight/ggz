@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 8427 2006-07-31 22:50:50Z jdorje $
+ * $Id: animation.c 10228 2008-07-08 18:47:41Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -175,7 +175,7 @@ int animation_start(int player, card_t card, int card_num, int destination)
 		get_card_pos(player, card_num,
 			     !preferences.single_click_play,
 			     &start_x, &start_y);
-		if (orientation(player) % 2 == 1) {
+		if (get_orientation(player) % 2 == 1) {
 			/* The player's cards are horizontal, but we're going
 			   to animate vertically.  So we recenter. */
 			start_x += CARDHEIGHT / 2 - CARDWIDTH / 2;
@@ -205,7 +205,7 @@ int animation_start(int player, card_t card, int card_num, int destination)
 
 		get_card_box_pos(destination, &x, &y);
 
-		switch (orientation(destination)) {
+		switch (get_orientation(destination)) {
 		case FACE_BOTTOM:
 			dest_x = x + CARD_BOX_WIDTH / 2;
 			dest_y = y + TEXT_BOX_WIDTH;

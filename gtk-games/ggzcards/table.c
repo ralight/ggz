@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 10197 2008-07-08 04:00:27Z jdorje $
+ * $Id: table.c 10228 2008-07-08 18:47:41Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -535,8 +535,8 @@ gboolean table_handle_cardclick_event(GdkEventButton * event)
 
 	/* This gets all of the layout information from the layout engine.
 	   Unfortunately, it's very dense code. */
-	card_width = get_card_width(orientation(p));
-	card_height = get_card_height(orientation(p));
+	card_width = get_card_width(get_orientation(p));
+	card_height = get_card_height(get_orientation(p));
 
 	/* Calculate our card target */
 	hand_size = preferences.collapse_hand
@@ -690,7 +690,7 @@ void table_display_hand(int p, int write_to_screen)
 			     p == ggzcards.play_hand && i == selected_card,
 			     &x, &y);
 
-		draw_card(card, orientation(p), x, y, table_buf);
+		draw_card(card, get_orientation(p), x, y, table_buf);
 	}
 
 	/* And refresh the on-screen image for card areas */

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.c 7273 2005-06-10 12:54:26Z josef $
+ * $Id: layout.c 10228 2008-07-08 18:47:41Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -246,13 +246,13 @@ int get_text_width(void)
 	return MAX(CARDHEIGHT + (int)extra_height, text_width);
 }
 
-orientation_t orientation(int p)
+orientation_t get_orientation(int p)
 {
 	assert(LAYOUT);
 	return LAYOUT->orientations[p];
 }
 
-static rotation_t rotation(int p)
+static rotation_t get_rotation(int p)
 {
 	assert(LAYOUT);
 	return LAYOUT->rotations[p];
@@ -309,11 +309,12 @@ void get_fulltable_dim(int *x, int *y, int *w, int *h)
 
 void get_text_box_pos(int p, int *x, int *y)
 {
-	orientation_t or = orientation(p);
+	orientation_t or = get_orientation(p);
+
 	assert(LAYOUT);
 	BOX(p) (x, y);
 
-	if (rotation(p) == TEXT_ON_RIGHT)
+	if (get_rotation(p) == TEXT_ON_RIGHT)
 		or = (or + 2) % 4;	/* hack */
 	if (or == FACE_TOP)
 		*x += CARD_BOX_WIDTH;
@@ -323,11 +324,11 @@ void get_text_box_pos(int p, int *x, int *y)
 
 void get_card_box_pos(int p, int *x, int *y)
 {
-	orientation_t or = orientation(p);
+	orientation_t or = get_orientation(p);
 	assert(LAYOUT);
 	BOX(p) (x, y);
 
-	if (rotation(p) == TEXT_ON_RIGHT)
+	if (get_rotation(p) == TEXT_ON_RIGHT)
 		or = (or + 2) % 4;	/* hack */
 	if (or == FACE_BOTTOM)
 		*x += TEXT_BOX_WIDTH;
@@ -337,7 +338,7 @@ void get_card_box_pos(int p, int *x, int *y)
 
 void get_card_box_dim(int p, int *w, int *h)
 {
-	switch (orientation(p)) {
+	switch (get_orientation(p)) {
 	case FACE_BOTTOM:
 	case FACE_TOP:
 		*w = CARD_BOX_WIDTH;
@@ -355,7 +356,7 @@ void get_card_box_dim(int p, int *w, int *h)
 
 static int get_card_selection_offset_x(int p)
 {
-	switch (orientation(p)) {
+	switch (get_orientation(p)) {
 	case FACE_BOTTOM:
 	case FACE_TOP:
 		return 0;
@@ -370,7 +371,7 @@ static int get_card_selection_offset_x(int p)
 
 static int get_card_selection_offset_y(int p)
 {
-	switch (orientation(p)) {
+	switch (get_orientation(p)) {
 	case FACE_BOTTOM:
 		return -2 * XWIDTH;
 	case FACE_LEFT:
@@ -402,7 +403,7 @@ void get_full_card_area(int p, int *x, int *y, int *w, int *h)
 	*h -= 2 * XWIDTH;
 
 	/* now account for the offset */
-	switch (orientation(p)) {
+	switch (get_orientation(p)) {
 	case FACE_BOTTOM:
 		*y -= 2 * XWIDTH;
 		*h += 2 * XWIDTH;
@@ -433,7 +434,7 @@ void get_inner_card_area_pos(int p, int *x, int *y)
 
 	get_card_box_pos(p, x, y);
 
-	switch (orientation(p)) {
+	switch (get_orientation(p)) {
 	case FACE_BOTTOM:
 	case FACE_TOP:
 		*x += wdiff;
@@ -449,7 +450,7 @@ void get_inner_card_area_pos(int p, int *x, int *y)
 
 static void get_card_coloffset(int p, float *w, float *h)
 {
-	switch (orientation(p)) {
+	switch (get_orientation(p)) {
 	case FACE_BOTTOM:
 	case FACE_TOP:
 		*w = CARD_VISIBILITY;
@@ -465,7 +466,7 @@ static void get_card_coloffset(int p, float *w, float *h)
 
 static void get_card_rowoffset(int p, float *w, float *h)
 {
-	switch (orientation(p)) {
+	switch (get_orientation(p)) {
 	case FACE_BOTTOM:
 	case FACE_TOP:
 		*w = 0;
@@ -506,7 +507,7 @@ void get_card_pos(int p, int card_num, bool selected, int *x, int *y)
 	x0 += (int)(((float)col * w) + 0.5);
 	y0 += (int)(((float)col * h) + 0.5);
 
-	if (orientation(p) == 1 || orientation(p) == 2)
+	if (get_orientation(p) == 1 || get_orientation(p) == 2)
 		row = NUM_CARD_ROWS - row - 1;
 
 	get_card_rowoffset(p, &w, &h);

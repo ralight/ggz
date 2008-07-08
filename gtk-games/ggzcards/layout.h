@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.h 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: layout.h 10228 2008-07-08 18:47:41Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -68,7 +68,7 @@ int get_text_width(void);
 int get_max_hand_size(void);
 void set_max_hand_size(int max_hand_size);
 
-orientation_t orientation(int p);
+orientation_t get_orientation(int p);
 
 void get_tablecard_pos(int p, int *x, int *y);
 void get_table_dim(int *x, int *y, int *w, int *h);
