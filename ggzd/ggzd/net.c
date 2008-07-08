@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 10180 2008-07-08 02:11:36Z jdorje $
+ * $Id: net.c 10203 2008-07-08 06:33:42Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -2213,11 +2213,13 @@ static void _net_handle_tls_start(GGZNetIO *net, GGZXMLElement *data)
 
 static int str_to_int(const char *str, int dflt)
 {
-	int val;
+	int val1;
+	unsigned int val2;
 
 	if (!str) return dflt;
-	if (sscanf(str, "0x%x", &val) == 1) return val;
-	if (sscanf(str, "%d", &val) == 1) return val;
+
+	if (sscanf(str, "0x%x", &val2) == 1) return val2;
+	if (sscanf(str, "%d", &val1) == 1) return val1;
 
 	return dflt;
 }
