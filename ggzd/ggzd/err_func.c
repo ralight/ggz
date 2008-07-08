@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 10067 2008-06-24 22:01:07Z jdorje $
+ * $Id: err_func.c 10205 2008-07-08 06:42:38Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -46,21 +46,20 @@
 
 /* Logfile info */
 LogInfo log_info = {
-	log_initialized: 0,
-	syslog_facility: 0,
-	options: ( GGZ_LOGOPT_INC_PID
-		       | GGZ_LOGOPT_USE_SYSLOG
-		       | GGZ_LOGOPT_INC_GAMETYPE
-		       | GGZ_DBGOPT_USE_SYSLOG ),
-	log_fname: NULL,
-	logfile: NULL,
-	log_types: 0,
-	log_types_console: 0
+	.log_initialized = 0,
+	.syslog_facility = 0,
+	.options = ( GGZ_LOGOPT_INC_PID
+		     | GGZ_LOGOPT_USE_SYSLOG
+		     | GGZ_LOGOPT_INC_GAMETYPE
+		     | GGZ_DBGOPT_USE_SYSLOG ),
+	.log_fname = NULL,
+	.logfile = NULL,
+	.log_types = 0,
+	.log_types_console = 0,
 #ifdef DEBUG
-	,
-	dbg_fname: NULL,
-	dbgfile: NULL,
-	verbose_updates: 0
+	.dbg_fname = NULL,
+	.dbgfile = NULL,
+	.verbose_updates = 0,
 #endif
 };
 
