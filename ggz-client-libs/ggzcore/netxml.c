@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 10180 2008-07-08 02:11:36Z jdorje $
+ * $Id: netxml.c 10191 2008-07-08 03:46:11Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -296,7 +296,7 @@ int _ggzcore_net_set_dump_file(GGZNet * net, const char *filename)
 	else
 		net->dump_file = fopen(filename, "w");
 
-	if (net->dump_file < 0)
+	if (!net->dump_file)
 		return -1;
 	else
 		return 0;
