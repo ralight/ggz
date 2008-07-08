@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 8984 2007-02-11 06:32:46Z jdorje $
+ * $Id: playerlist.c 10192 2008-07-08 03:50:06Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -366,7 +366,7 @@ void update_player_list(void)
 				   ggzcore_player_get_name(p), -1);
 
 		/* Table # */
-		if (table <= 0) {
+		if (!table) {
 			snprintf(tabletext, sizeof(tabletext), "--");
 		} else {
 			snprintf(tabletext, sizeof(tabletext), "%d",
