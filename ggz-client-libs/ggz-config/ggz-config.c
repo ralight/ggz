@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 9818 2008-03-08 23:09:02Z josef $
+ * $Id: ggz-config.c 10210 2008-07-08 16:04:32Z jdorje $
  *
  * Configuration query and module install program.
  *
@@ -192,17 +192,17 @@ static int purge_engine_name(int global)
 {
 	int items;
 	char **engine_list;
-	int index;
+	int i;
 
 	ggz_conf_read_list(global, "Games", "*Engines*",
 				 &items, &engine_list);
 
-	for(index=0; index<items; index++)
-		if(!strcmp(engine_list[index], modpengine))
+	for (i = 0; i < items; i++)
+		if(!strcmp(engine_list[i], modpengine))
 			break;
 
-	if(index != items-1)
-		engine_list[index] = engine_list[items-1];
+	if (i != items - 1)
+		engine_list[i] = engine_list[items - 1];
 	items--;
 
 	if(items != 0)
@@ -248,15 +248,15 @@ static char *get_engine_id(int global)
 	char **engine_list;
 	char *engine_id=NULL;
 	char *author, *ui, *version;
-	int index;
+	int i;
 
 	ggz_conf_read_list(global, "Games", modpengine,
 				 &items, &engine_list);
 	if(items == 0)
 		return NULL;
 
-	for(index=0; index<items; index++) {
-		engine_id = engine_list[index];
+	for (i = 0; i < items; i++) {
+		engine_id = engine_list[i];
 		author = ggz_conf_read_string(global, engine_id,
 						    "Author", NULL);
 		ui = ggz_conf_read_string(global, engine_id,
@@ -279,7 +279,7 @@ static char *get_engine_id(int global)
 			break;
 	}
 
-	if(index >= items)
+	if (i >= items)
 		return NULL;
 	else
 		return engine_id;
@@ -290,17 +290,17 @@ static void purge_engine_id(int global, char *engine_id)
 {
 	int items;
 	char **engine_list;
-	int index;
+	int i;
 
 	ggz_conf_read_list(global, "Games", modpengine,
 				 &items, &engine_list);
 
-	for(index=0; index<items; index++)
-		if(!strcmp(engine_list[index], engine_id))
+	for (i = 0; i < items; i++)
+		if(!strcmp(engine_list[i], engine_id))
 			break;
 
-	if(index != items-1)
-		engine_list[index] = engine_list[items-1];
+	if (i != items - 1)
+		engine_list[i] = engine_list[items-1];
 	items--;
 
 	if(items != 0)
