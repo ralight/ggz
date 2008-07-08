@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 10125 2008-06-30 22:18:05Z jdorje $
+ * $Id: control.c 10214 2008-07-08 16:44:13Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -458,12 +458,12 @@ static void reconfiguration_setup(void)
 
 static void reconfiguration_db_handle(void)
 {
-	RoomStruct *rooms = ggzdb_reconfiguration_room();
+	RoomStruct *roomdata = ggzdb_reconfiguration_room();
 
-	if(rooms != NULL) {
+	if (roomdata != NULL) {
 		log_msg(GGZ_LOG_NOTICE,
 			"Reconfiguration: room addition/deletion of room(s)");
-		parse_room_change_db(rooms);
+		parse_room_change_db(roomdata);
 	}
 }
 
@@ -579,6 +579,7 @@ int main(int argc, char *argv[])
 #ifdef WITH_LIBWRAP
 	struct request_info wrap_request;
 #endif
+	int num_rooms;
 
 	/* Refuse to run as root */
 	if(geteuid() == 0) {
@@ -620,9 +621,9 @@ int main(int argc, char *argv[])
 	pthread_key_create(&table_key, NULL);
 
 	/* Restoring saved games for games with flag AutoRestoreGame */
-	int rooms = room_get_count_rooms();
-	while (!term_signal && --rooms)
-		room_restore(rooms);
+	num_rooms = room_get_count_rooms();
+	while (!term_signal && --num_rooms)
+		room_restore(num_rooms);
 
 	// TODO: Need made cleanup and exit if signal arrived
 

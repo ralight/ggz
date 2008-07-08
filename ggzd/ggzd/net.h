@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.h 9245 2007-08-13 07:01:38Z josef $
+ * $Id: net.h 10214 2008-07-08 16:44:13Z jdorje $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -63,13 +63,13 @@ GGZReturn net_send_motd_error(GGZNetIO *net, GGZClientReqError status);
 
 GGZReturn net_send_room_list_error(GGZNetIO *net, GGZClientReqError status);
 GGZReturn net_send_room_list_count(GGZNetIO *net, int count);
-GGZReturn net_send_room(GGZNetIO *net, int index,
+GGZReturn net_send_room(GGZNetIO *net, int room_id,
 			RoomStruct *room, bool verbose);
 GGZReturn net_send_room_list_end(GGZNetIO *net);
 
 GGZReturn net_send_type_list_error(GGZNetIO *net, GGZClientReqError status);
 GGZReturn net_send_type_list_count(GGZNetIO *net, int count);
-GGZReturn net_send_type(GGZNetIO *net, int index,
+GGZReturn net_send_type(GGZNetIO *net, int game_id,
 			GameInfo *type, bool verbose);
 GGZReturn net_send_type_list_end(GGZNetIO *net);
 
@@ -90,7 +90,7 @@ GGZReturn net_send_chat_result(GGZNetIO *net, GGZClientReqError status);
 GGZReturn net_send_admin_result(GGZNetIO *net, GGZClientReqError status);
 GGZReturn net_send_table_launch(GGZNetIO *net, GGZClientReqError status);
 GGZReturn net_send_table_join(GGZNetIO *net, bool is_spectator,
-			      const unsigned int table_index);
+			      const unsigned int table_id);
 GGZReturn net_send_table_join_result(GGZNetIO *net, GGZClientReqError status);
 GGZReturn net_send_table_leave(GGZNetIO *net, GGZLeaveType reason,
 			       const char *player);
@@ -103,7 +103,7 @@ GGZReturn net_send_table_update(GGZNetIO *net, GGZTableUpdateType opcode,
 				GGZTable *table, void *seat_data,
 				int room_id);
 GGZReturn net_send_room_update(GGZNetIO *net, GGZRoomUpdateType opcode,
-			       int index, int player_count, RoomStruct *room);
+			       int room_id, int player_count, RoomStruct *room);
 GGZReturn net_send_update_result(GGZNetIO *net, GGZClientReqError status);
 GGZReturn net_send_logout(GGZNetIO *net, GGZClientReqError status);
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 10204 2008-07-08 06:39:36Z jdorje $
+ * $Id: table.c 10214 2008-07-08 16:44:13Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -1230,7 +1230,7 @@ static void table_error(GGZdMod *ggzdmod,
 
 static void table_remove(GGZTable* table)
 {
-	int room, count, index, i;
+	int room, count, table_index, i;
 	GGZLeaveType reason;
 	GGZTableState origstate;
 
@@ -1239,14 +1239,14 @@ static void table_remove(GGZTable* table)
 
 	/* First get it off the list in rooms */
 	room = table->room;
-	index = table->index;
+	table_index = table->index;
 
 	ggz_debug(GGZ_DBG_TABLE, "Removing table %d from room %d", table->index,
 		table->room);
 
 	pthread_rwlock_wrlock(&rooms[room].lock);
 	count = --rooms[room].table_count;
-	rooms[room].tables[index] = NULL;
+	rooms[room].tables[table_index] = NULL;
 	pthread_rwlock_unlock(&rooms[room].lock);
 
 	ggz_debug(GGZ_DBG_ROOM, "Room %d table count now = %d", room, count);
@@ -1265,7 +1265,7 @@ static void table_remove(GGZTable* table)
 			transit_player_event(table->seat_names[i],
 					     GGZ_TRANSIT_LEAVE, E_OK,
 					     table->seat_names[i],
-					     reason, index);
+					     reason, table_index);
 		}
 	}
 
@@ -1278,7 +1278,7 @@ static void table_remove(GGZTable* table)
 			transit_player_event(table->spectators[i],
 					     GGZ_TRANSIT_LEAVE_SPECTATOR,
 					     E_OK, table->seat_names[i],
-					     reason, index);
+					     reason, table_index);
 		}
 	}
 
@@ -1341,16 +1341,16 @@ void table_set_desc(GGZTable *table, const char *desc)
 
 
 /* Kill the table */
-GGZClientReqError table_kill(int room, int index, const char *name)
+GGZClientReqError table_kill(int room, int table_index, const char *name)
 {
 	char *data;
 
-	ggz_debug(GGZ_DBG_TABLE, "Kill request for table %d in room %d", index, 
-		room);
+	ggz_debug(GGZ_DBG_TABLE, "Kill request for table %d in room %d",
+		  table_index, room);
 	
 	data = ggz_strdup(name);
 
-	if (event_table_enqueue(room, index, table_kill_callback, 
+	if (event_table_enqueue(room, table_index, table_kill_callback, 
 				strlen(data)+1, data, NULL) != GGZ_OK)
 		return E_NO_TABLE;
 
@@ -1450,13 +1450,13 @@ int table_search(const char *name, int room, int type, bool global,
 
 
 /* Find a player at a table */
-int table_find_player(int room, int index, const char *name)
+int table_find_player(int room, int table_index, const char *name)
 {
 	int i, seats, seat = -1;
 	GGZTable *table;
 
 	/* grab handle to table (along with write lock) */
-	table = table_lookup(room, index);
+	table = table_lookup(room, table_index);
 	if(table != NULL) {
 		seats  = seats_num(table);
 		for (i = 0; i < seats; i++)
@@ -1472,13 +1472,13 @@ int table_find_player(int room, int index, const char *name)
 }
 
 /* Find a player at a table */
-int table_find_spectator(int room, int index, const char *name)
+int table_find_spectator(int room, int table_index, const char *name)
 {
 	int i, spectator = -1;
 	GGZTable *table;
 
 	/* grab handle to table (along with write lock) */
-	table = table_lookup(room, index);
+	table = table_lookup(room, table_index);
 	if(table != NULL) {
 		for (i = 0; i < spectator_seats_num(table); i++)
 			if (table->spectators[i]
@@ -1631,12 +1631,13 @@ static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 
 
 static GGZReturn table_launch_event(char* name,
-				    GGZClientReqError status, int index)
+				    GGZClientReqError status,
+				    int table_index)
 {
 	GGZLaunchEventData *data = ggz_malloc(sizeof(*data));
 
 	data->status = status;
-	data->table_index = (status == 0) ? index : -1;
+	data->table_index = (status == 0) ? table_index : -1;
 
 	return event_player_enqueue(name, player_launch_callback,
 				    sizeof(*data), data, NULL);
@@ -1687,14 +1688,14 @@ int type_match_table(int type, GGZTable* table)
  *
  * Note: table is returned with write lock acquired
  */
-GGZTable* table_lookup(int room, int index)
+GGZTable* table_lookup(int room, int table_index)
 {
 	GGZTable* table = NULL;
 
-	if (room != -1 && index != -1) {
+	if (room != -1 && table_index != -1) {
 		/* Grab pointer to table from room index */
 		pthread_rwlock_rdlock(&rooms[room].lock);
-		if ( (table = rooms[room].tables[index]) != NULL)
+		if ( (table = rooms[room].tables[table_index]) != NULL)
 			pthread_rwlock_wrlock(&table->lock);
 		pthread_rwlock_unlock(&rooms[room].lock);
 	}
@@ -1703,7 +1704,7 @@ GGZTable* table_lookup(int room, int index)
 }
 
 
-RETSIGTYPE table_handle_event_signal(int signal)
+RETSIGTYPE table_handle_event_signal(int sig)
 {
 	GGZTable *table = pthread_getspecific(table_key);
 

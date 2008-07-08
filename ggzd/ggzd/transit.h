@@ -42,7 +42,7 @@ GGZReturn transit_table_event(int room, int index, char opcode,
 			      const char *name);
 #endif
 
-GGZReturn transit_seat_event(int room_index, int table_index,
+GGZReturn transit_seat_event(int room_index, int table_id,
 			     GGZTransitType transit,
 			     struct GGZTableSeat seat, const char *caller,
 			     int reason);

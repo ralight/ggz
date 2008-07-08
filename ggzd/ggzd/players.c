@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 10067 2008-06-24 22:01:07Z jdorje $
+ * $Id: players.c 10214 2008-07-08 16:44:13Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -671,14 +671,14 @@ GGZPlayerHandlerStatus player_table_join(GGZPlayer* player,
 	return GGZ_REQ_OK;
 }
 
-GGZPlayerHandlerStatus player_table_join_spectator(GGZPlayer* player, int index)
+GGZPlayerHandlerStatus player_table_join_spectator(GGZPlayer* player, int table_id)
 {
 	GGZClientReqError status;
 
 	ggz_debug(GGZ_DBG_TABLE, "Handling table join (as spectator) for %s", player->name);
 
 	ggz_debug(GGZ_DBG_TABLE, "%s attempting to join (as spectator) table %d in room %d", 
-		player->name, index, player->room);
+		  player->name, table_id, player->room);
 
 	if (player->table != -1)
 		status = E_AT_TABLE;
@@ -689,7 +689,7 @@ GGZPlayerHandlerStatus player_table_join_spectator(GGZPlayer* player, int index)
 	else /* Send a join event to the table */
 		status = player_transit(player, GGZ_TRANSIT_JOIN_SPECTATOR,
 					player->name,
-					index, -1, GGZ_JOIN_REQUEST);
+					table_id, -1, GGZ_JOIN_REQUEST);
 
 	/* Return any immediate failures to client*/
 	if (status != E_OK) {
@@ -722,7 +722,7 @@ GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player,
 	int gametype;
 	GGZClientReqError status;
 	bool allow;
-	GGZTableState state;
+	GGZTableState tablestate;
 	GGZTable *table;
 	GGZTransitType transit;
 
@@ -756,12 +756,12 @@ GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player,
 		/* FIXME: make sure the player really is a spectator!
 		   Otherwise the table could break! */
 		allow = true;
-		state = GGZ_TABLE_WAITING;
+		tablestate = GGZ_TABLE_WAITING;
 
 		transit = GGZ_TRANSIT_LEAVE_SPECTATOR;
 	} else {
 		gametype = table->type;
-		state = table->state;
+		tablestate = table->state;
 		pthread_rwlock_unlock(&table->lock);
 
 		/* FIXME: make sure the player isn't a spectator!  Otherwise
@@ -780,7 +780,7 @@ GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player,
 	/* Error if we're already in transit */
 	if (player->transit)
 		status = E_IN_TRANSIT;
-	else if (!spectator && state == GGZ_TABLE_PLAYING && !allow) {
+	else if (!spectator && tablestate == GGZ_TABLE_PLAYING && !allow) {
 		if (force)
 			status = table_kill(player->room, player->table,
 					    player->name);
@@ -892,7 +892,7 @@ GGZPlayerHandlerStatus player_table_reseat(GGZPlayer *player,
 GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
 {
 	int status, gametype;
-	GGZTableState state;
+	GGZTableState tablestate;
 	GGZTable *table;
 
 	/* Check if leave during gameplay is allowed */
@@ -918,7 +918,7 @@ GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
 		player->name, player->table);
 
 	gametype = table->type;
-	state = table->state;
+	tablestate = table->state;
 	pthread_rwlock_unlock(&table->lock);
 
 	/* Error if we're already in transit */
@@ -1393,7 +1393,6 @@ GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
 		return GGZ_REQ_DISCONNECT;
 
 	if (count > 0) {
-		int i;
 		for (i = 0; i < count; i++) table_free(my_tables[i]);
 		ggz_free(my_tables);
 	}
@@ -1640,7 +1639,7 @@ GGZPlayerHandlerStatus player_send_room_update(GGZPlayer *player)
 	int i;
 	time_t curr_time = time(NULL);
 
-	if (opt.room_update_freq == 0) {
+	if (opt.room_update_freq <= 0) {
 		/*ggz_error_msg("Doing a room update even though they're disabled.");*/
 		return GGZ_REQ_OK;
 	}
@@ -1720,7 +1719,7 @@ void player_handle_pong(GGZPlayer *player)
 }
 
 
-RETSIGTYPE player_handle_event_signal(int signal)
+RETSIGTYPE player_handle_event_signal(int sig)
 {
 	GGZPlayer *player = pthread_getspecific(player_key);
 

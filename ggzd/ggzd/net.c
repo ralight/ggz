@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 10203 2008-07-08 06:33:42Z jdorje $
+ * $Id: net.c 10214 2008-07-08 16:44:13Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -171,9 +171,9 @@ static GGZReturn _net_send_spectator(GGZNetIO *net,
 static GGZReturn _net_send_pong(GGZNetIO *net, const char *id);
 
 static GGZReturn _net_send_room_player_count(GGZNetIO *net,
-					     int index, int player_count);
+					     int room_id, int player_count);
 static GGZReturn _net_send_room_delete(GGZNetIO *net,
-					     int index);
+					     int room_id);
 static GGZReturn _net_send_line(GGZNetIO *net, char *line, ...)
 				ggz__attribute((format(printf, 2, 3)));
 
@@ -419,7 +419,7 @@ GGZReturn net_send_room_list_count(GGZNetIO *net, int count)
 }
 
 
-GGZReturn net_send_room(GGZNetIO *net, int index,
+GGZReturn net_send_room(GGZNetIO *net, int room_id,
 			RoomStruct *room, bool verbose)
 {
 	const char *language = net->client->language;
@@ -432,7 +432,7 @@ GGZReturn net_send_room(GGZNetIO *net, int index,
 	const char *roomdesc_quoted = ggz_xml_escape(roomdesc);
 
 	_net_send_line(net, "<ROOM ID='%d' NAME='%s' REFNAME='%s' GAME='%d' PLAYERS='%d'>",
-		       index, roomname_quoted, refname_quoted, room->game_type,
+		       room_id, roomname_quoted, refname_quoted, room->game_type,
 		       room->player_count);
 	if (verbose && room->description)
 		_net_send_line(net, "<DESC>%s</DESC>", roomdesc_quoted);
@@ -466,7 +466,7 @@ GGZReturn net_send_type_list_count(GGZNetIO *net, int count)
 }
 
 
-GGZReturn net_send_type(GGZNetIO *net, int index,
+GGZReturn net_send_type(GGZNetIO *net, int game_id,
 			GameInfo *type, bool verbose)
 {
 	int i;
@@ -481,7 +481,7 @@ GGZReturn net_send_type(GGZNetIO *net, int index,
 	const char *gamename_quoted = ggz_xml_escape(gamename);
 
 	_net_send_line(net, "<GAME ID='%d' NAME='%s' VERSION='%s'>",
-		       index, gamename_quoted, type->version);
+		       game_id, gamename_quoted, type->version);
 	_net_send_line(net, "<PROTOCOL ENGINE='%s' VERSION='%s'/>",
 		       type->p_engine, type->p_version);
 	_net_send_line(net, "<ALLOW PLAYERS='%s' BOTS='%s' SPECTATORS='%s' PEERS='%s'/>",
@@ -788,11 +788,11 @@ GGZReturn net_send_table_launch(GGZNetIO *net, GGZClientReqError status)
 
 GGZReturn net_send_table_join(GGZNetIO *net,
 			      bool is_spectator,
-			      const unsigned int table_index)
+			      const unsigned int table_id)
 {
 	return _net_send_line(net,
 			      "<JOIN TABLE='%d' SPECTATOR='%s'/>",
-			      table_index, bool_to_str(is_spectator));
+			      table_id, bool_to_str(is_spectator));
 }
 
 
@@ -986,23 +986,21 @@ GGZReturn net_send_table_update(GGZNetIO *net, GGZTableUpdateType opcode,
 
 
 GGZReturn _net_send_room_player_count(GGZNetIO *net,
-				      int index, int player_count)
+				      int room_id, int player_count)
 {
 	return _net_send_line(net, "<ROOM ID='%d' PLAYERS='%d'/>",
-			      index, player_count);
+			      room_id, player_count);
 }
 
 
-GGZReturn _net_send_room_delete(GGZNetIO *net,
-				      int index)
+GGZReturn _net_send_room_delete(GGZNetIO *net, int room_id)
 {
-	return _net_send_line(net, "<ROOM ID='%d'/>",
-			      index);
+	return _net_send_line(net, "<ROOM ID='%d'/>", room_id);
 }
 
 
 GGZReturn net_send_room_update(GGZNetIO *net, GGZRoomUpdateType opcode,
-			       int index, int player_count, RoomStruct *room)
+			       int room_id, int player_count, RoomStruct *room)
 {
 	char *action = NULL;
 
@@ -1025,17 +1023,17 @@ GGZReturn net_send_room_update(GGZNetIO *net, GGZRoomUpdateType opcode,
 
 	switch (opcode) {
 	case GGZ_ROOM_UPDATE_PLAYER_COUNT:
-		_net_send_room_player_count(net, index, player_count);
+		_net_send_room_player_count(net, room_id, player_count);
 		break;
 	case GGZ_ROOM_UPDATE_ADD:
 		/* TODO: always send verbose? */
-		net_send_room(net, index, room, 1);
+		net_send_room(net, room_id, room, 1);
 		break;
 	case GGZ_ROOM_UPDATE_DELETE:
-		_net_send_room_delete(net, index);
+		_net_send_room_delete(net, room_id);
 		break;
 	case GGZ_ROOM_UPDATE_CLOSE:
-		_net_send_room_delete(net, index);
+		_net_send_room_delete(net, room_id);
 		break;
 	}
 

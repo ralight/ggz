@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 10067 2008-06-24 22:01:07Z jdorje $
+ * $Id: transit.c 10214 2008-07-08 16:44:13Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -85,7 +85,8 @@ static int transit_find_available_seat(GGZTable *table, char *name);
 static int transit_find_available_spectator(GGZTable *table, char *name);
 
 
-GGZReturn transit_seat_event(int room, int index, GGZTransitType transit,
+GGZReturn transit_seat_event(int room, int table_index,
+			     GGZTransitType transit,
 			     struct GGZTableSeat seat, const char *caller,
 			     int reason)
 {
@@ -96,20 +97,22 @@ GGZReturn transit_seat_event(int room, int index, GGZTransitType transit,
 	data->reason = reason;
 	strcpy(data->caller, caller);
 	
-	return event_table_enqueue(room, index, transit_seat_event_callback,
+	return event_table_enqueue(room, table_index,
+				   transit_seat_event_callback,
 				   sizeof(*data), data, NULL);
 }
 
 
 GGZReturn transit_player_event(const char *name, GGZTransitType opcode,
 			       GGZClientReqError status,
-			       const char *caller, int reason, int index)
+			       const char *caller, int reason,
+			       int table_index)
 {
 	GGZPlayerTransitEventData* data = ggz_malloc(sizeof(*data));
 
 	data->opcode = opcode;
 	data->status = status;
-	data->table_index = index;
+	data->table_index = table_index;
 	data->reason = reason;
 	strcpy(data->caller, caller);
 	
@@ -161,11 +164,11 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 	}
 
 	if (!spectating && seat->type == GGZ_SEAT_PLAYER) {
-		int index = transit_find_required_seat(table, event->caller);
+		int seat_num = transit_find_required_seat(table, event->caller);
 
-		if (index >= 0) {
+		if (seat_num >= 0) {
 			/* Force the player into this seat. */
-			seat->index = index;
+			seat->index = seat_num;
 		}
 	}
 

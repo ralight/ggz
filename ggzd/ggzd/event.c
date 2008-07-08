@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 10204 2008-07-08 06:39:36Z jdorje $
+ * $Id: event.c 10214 2008-07-08 16:44:13Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -94,7 +94,8 @@ static void event_free(GGZEvent *event)
 
 /* Place an event into the room-specific event queue */
 GGZReturn event_room_enqueue(int room, GGZEventFunc func,
-			     size_t size, void* data, GGZEventDataFree free)
+			     size_t size, void* data,
+			     GGZEventDataFree free_func)
 		       
 {
 	GGZEvent *event;
@@ -108,7 +109,7 @@ GGZReturn event_room_enqueue(int room, GGZEventFunc func,
 	event->next = NULL;
 	event->size = size;
 	event->data = data;
-	event->free = free;
+	event->free = free_func;
 	event->handle = func;
 
 	/* Check for illegal room # */	
@@ -274,7 +275,8 @@ GGZReturn event_room_flush(GGZPlayer* player)
 
 /* Place an event into the player-specific event queue */
 GGZReturn event_player_enqueue(const char* name, GGZEventFunc func,
-			       size_t size, void* data, GGZEventDataFree free)
+			       size_t size, void* data,
+			       GGZEventDataFree free_func)
 			 
 {
 	GGZEvent *event;
@@ -289,7 +291,7 @@ GGZReturn event_player_enqueue(const char* name, GGZEventFunc func,
 	event->next = NULL;
 	event->size = size;
 	event->data = data;
-	event->free = free;
+	event->free = free_func;
 	event->handle = func;
 
 	/* Find target player.  Returns with player write-locked */
@@ -431,8 +433,10 @@ static void event_player_do_enqueue(GGZPlayer* player, GGZEvent* event) {
 
 
 /* Place an event into the table-specific event queue */
-GGZReturn event_table_enqueue(int room, int index, GGZEventFunc func, 
-			size_t size, void* data, GGZEventDataFree free)
+GGZReturn event_table_enqueue(int room, int table_index,
+			      GGZEventFunc func, 
+			      size_t size, void* data,
+			      GGZEventDataFree free_func)
 {
 	GGZEvent *event;
 	GGZTable *table;
@@ -446,11 +450,11 @@ GGZReturn event_table_enqueue(int room, int index, GGZEventFunc func,
 	event->next = NULL;
 	event->size = size;
 	event->data = data;
-	event->free = free;
+	event->free = free_func;
 	event->handle = func;
 
 	/* Find target table.  Returns with table write-locked */
-	if ( (table = table_lookup(room, index)) == NULL) {
+	if ( (table = table_lookup(room, table_index)) == NULL) {
 		event_free(event);
 		ggz_debug(GGZ_DBG_LISTS, "Deallocated event %p (no table)", 
 			  (void *)event);				

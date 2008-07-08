@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/8/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.h 5928 2004-02-15 02:43:16Z jdorje $
+ * $Id: event.h 10214 2008-07-08 16:44:13Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -69,7 +69,8 @@ typedef void (*GGZEventDataFree)(void* data);
  * Note: memory pointed to by data MUST be dynamcially allocated
  */
 GGZReturn event_room_enqueue(int room, GGZEventFunc func,
-			     size_t size, void* data, GGZEventDataFree free);
+			     size_t size, void* data,
+			     GGZEventDataFree free_func);
 		       
 /* Process queued-up room-specific events for player */
 GGZReturn event_room_handle(GGZPlayer* player);
@@ -90,7 +91,8 @@ GGZReturn event_room_flush(GGZPlayer* player);
  * Note: memory pointed to by data MUST be dynamcially allocated
  */
 GGZReturn event_player_enqueue(const char* name, GGZEventFunc func,
-			       size_t size, void* data, GGZEventDataFree free);
+			       size_t size, void* data,
+			       GGZEventDataFree free_func);
 			 
 /*
  * event_player_handle() processes all events currently in the private
@@ -123,8 +125,10 @@ GGZReturn event_player_flush(GGZPlayer* player);
  *
  * Note: memory pointed to by data MUST be dynamcially allocated
  */
-GGZReturn event_table_enqueue(int room, int index, GGZEventFunc func, 
-			      size_t, void* data, GGZEventDataFree free);
+GGZReturn event_table_enqueue(int room, int table_index,
+			      GGZEventFunc func, 
+			      size_t, void* data,
+			      GGZEventDataFree free_func);
 
 /*
  * event_table_handle() processes all events currently in the private

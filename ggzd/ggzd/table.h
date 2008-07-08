@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 7067 2005-03-28 19:30:35Z josef $
+ * $Id: table.h 10214 2008-07-08 16:44:13Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -141,17 +141,17 @@ void table_game_spectator_leave(GGZTable *table, const char *name,
 				GGZLeaveType reason, int num);
 
 /* Kill the table */
-GGZClientReqError table_kill(int room, int index, const char *name);
+GGZClientReqError table_kill(int room, int table_index, const char *name);
 
 /* Search for tables */
 int table_search(const char *name, int room, int type, bool global, 
 		 struct GGZTable*** tables);
 
 /* Find a player at a table */
-int table_find_player(int room, int index, const char *name);
+int table_find_player(int room, int table_index, const char *name);
 
 /* Find a spectator */
-int table_find_spectator(int room, int index, const char *name);
+int table_find_spectator(int room, int table_index, const char *name);
 
 
 /*
@@ -166,7 +166,7 @@ int table_find_spectator(int room, int index, const char *name);
  *
  * Note: table is returned with write lock acquired
  */
-struct GGZTable* table_lookup(int room, int index);
+struct GGZTable* table_lookup(int room, int table_index);
 
 
 /* Packaging for a table launch event */
