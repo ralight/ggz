@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10173 2008-07-06 16:19:21Z oojah $
+ * $Id: ggzdb_pgsql.c 10175 2008-07-08 00:33:30Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -1080,6 +1080,7 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 		"DELETE FROM savegames "
 		"WHERE game = '%s' AND savegame = '%s'",
 		game_quoted, savegame_quoted);
+	/* FIXME: we need to delete from savegameplayers here too */
 
 	res = PQexec(conn, query);
 	PQclear(res);
