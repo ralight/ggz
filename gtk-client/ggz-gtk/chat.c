@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 10177 2008-07-08 01:52:20Z jdorje $
+ * $Id: chat.c 10199 2008-07-08 04:12:00Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -715,15 +715,14 @@ static void chat_help(GGZServer *server, const gchar *message)
  * WORD_*	: The URL Type
  */
 
-int chat_checkurl(GtkXText *xtext, char *word)
+int chat_checkurl(GtkWidget *xtext, char *word, int len)
 {
 	char *at, *dot;
 	int i, dots;
-	int len;
 
 	if(!word) return 0;
 	
-	len = strlen (word);
+	assert(len == strlen(word));
 
 	/* Check for URLs */
 	if (!strncasecmp (word, "ftp.", 4))
@@ -799,17 +798,16 @@ int chat_checkurl(GtkXText *xtext, char *word)
 void chat_word_clicked(GtkXText *xtext, char *word,
         GdkEventButton *event)
 {
-	switch(chat_checkurl(xtext, word))
-	{
-		case WORD_GGZ:
-			login_goto_server(word);
-			break;
-		case WORD_HOST:
-		case WORD_URL:
-			support_goto_url(word);
-			break;
-		default:
-			break;
+  	switch (chat_checkurl(GTK_WIDGET(xtext), word, strlen(word))) {
+	case WORD_GGZ:
+		login_goto_server(word);
+		break;
+	case WORD_HOST:
+	case WORD_URL:
+		support_goto_url(word);
+		break;
+	default:
+		break;
 	}
 }
 

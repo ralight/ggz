@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 9955 2008-04-14 21:11:25Z jdorje $
+ * $Id: client.c 10199 2008-07-08 04:12:00Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -716,7 +716,7 @@ client_realize                    (GtkWidget       *widget,
 	gtk_xtext_set_time_stamp(tmp->buffer, TRUE);
 
 	/* URL Handiler */
-	tmp->urlcheck_function = (void*)chat_checkurl;
+	tmp->urlcheck_function = chat_checkurl;
 	g_signal_connect (GTK_OBJECT (tmp), "word_click",
 		GTK_SIGNAL_FUNC (chat_word_clicked), NULL);
 
