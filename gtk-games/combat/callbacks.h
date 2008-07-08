@@ -3,7 +3,7 @@
  * Author: Ismael Orenstein
  * Project: GGZ Combat game module
  * Desc: Combat client GTK callback functions
- * $Id: callbacks.h 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: callbacks.h 10185 2008-07-08 03:11:00Z jdorje $
  *
  * Copyright (C) 2002 Ismael Orenstein.
  *
@@ -41,9 +41,6 @@ on_main_window_delete_event(GtkWidget * widget,
 gboolean
 on_mainarea_expose_event(GtkWidget * widget,
 			 GdkEventExpose * event, gpointer user_data);
-
-void game_exit(void);
-
 
 gboolean
 main_window_exit(GtkWidget * widget, GdkEvent * event, gpointer user_data);
