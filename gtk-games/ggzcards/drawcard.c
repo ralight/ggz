@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 7401 2005-08-13 21:34:23Z jdorje $
+ * $Id: drawcard.c 10196 2008-07-08 03:59:27Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -202,7 +202,7 @@ static void draw_domino_card(card_t card, orientation_t orientation,
 {
 	const int h = get_card_height0() - 1;
 	const int spot_radius = (h) / 8;
-	const int spots[7][7][2] = { {},
+	const int spots[7][7][2] = { {{0, 0}},
 	{{h / 2, h / 2}},
 	{{h / 3, h / 3},
 	 {(2 * h) / 3, (2 * h) / 3}},
