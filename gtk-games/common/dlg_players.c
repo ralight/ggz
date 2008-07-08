@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 7107 2005-04-15 17:54:31Z jdorje $
+ * $Id: dlg_players.c 10215 2008-07-08 16:45:25Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -97,7 +97,7 @@ void init_player_list(GGZMod * ggzmod)
 
 static void update_player_list(GtkWidget * tree)
 {
-	int p, num;
+	int p, num_seats;
 	GtkListStore *store = g_object_get_data(G_OBJECT(tree), "store");
 
 	assert(ggz);
@@ -106,8 +106,8 @@ static void update_player_list(GtkWidget * tree)
 	num_entries = 0;
 
 	/* Put all players on the list. */
-	num = ggzmod_get_num_seats(ggz);
-	for (p = 0; p < num; p++) {
+	num_seats = ggzmod_get_num_seats(ggz);
+	for (p = 0; p < num_seats; p++) {
 		GGZSeat seat = ggzmod_get_seat(ggz, p);
 		GtkTreeIter iter;
 		const gchar *status = NULL, *name = NULL;
@@ -154,8 +154,8 @@ static void update_player_list(GtkWidget * tree)
 	}
 
 	/* Append any spectators to the list */
-	num = ggzmod_get_num_spectator_seats(ggz);
-	for (p = 0; p < num; p++) {
+	num_seats = ggzmod_get_num_spectator_seats(ggz);
+	for (p = 0; p < num_seats; p++) {
 		GGZSpectatorSeat seat = ggzmod_get_spectator_seat(ggz, p);
 		GtkTreeIter iter;
 
@@ -192,7 +192,7 @@ static GtkWidget *create_player_list(void)
 	GtkWidget *tree;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
-	GtkTreeSelection *select;
+	GtkTreeSelection *selection;
 
 	assert(PLAYER_COLUMNS == 5);
 	store = gtk_list_store_new(PLAYER_COLUMNS,
@@ -227,8 +227,8 @@ static GtkWidget *create_player_list(void)
 						     NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
-	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
-	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 	/* Set up callbacks */
 	g_signal_connect(tree, "button-press-event",
