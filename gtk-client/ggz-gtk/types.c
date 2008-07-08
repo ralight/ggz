@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: types.c 9129 2007-05-21 21:30:31Z oojah $
+ * $Id: types.c 10240 2008-07-08 20:11:19Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user.
@@ -161,7 +161,7 @@ static GtkWidget *tree_new(GtkWidget * parent)
 	GtkWidget *tree;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
-	GtkTreeSelection *select;
+	GtkTreeSelection *selection;
 
 	assert(TYPE_COLUMNS == 4);
 	store = gtk_list_store_new(TYPE_COLUMNS,
@@ -207,8 +207,8 @@ static GtkWidget *tree_new(GtkWidget * parent)
 	g_object_set_data(G_OBJECT(parent), "table_list_store", store);
 	GTK_WIDGET_UNSET_FLAGS(tree, GTK_CAN_FOCUS);
 
-	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
-	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 	return tree;
 }
