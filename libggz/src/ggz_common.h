@@ -268,7 +268,7 @@ int str_to_bool(const char *str, int dflt);
  *  @param bool_value A boolean value.
  *  @return "true" or "false", as appropriate.
  */
-char *bool_to_str(int bool_val);
+const char *bool_to_str(int bool_val);
 
 /**
  * @defgroup numberlist Number lists

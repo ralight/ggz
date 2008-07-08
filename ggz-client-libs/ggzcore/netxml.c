@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 10129 2008-07-01 03:58:44Z jdorje $
+ * $Id: netxml.c 10180 2008-07-08 02:11:36Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -471,7 +471,7 @@ int _ggzcore_net_send_motd(GGZNet * net)
 int _ggzcore_net_send_list_types(GGZNet * net, const char verbose)
 {
 	int status = 0;
-	char *full;
+	const char *full;
 
 	net->gametype_verbose = verbose;
 
@@ -488,7 +488,7 @@ int _ggzcore_net_send_list_rooms(GGZNet * net,
 				 const char verbose)
 {
 	int status = 0;
-	char *full;
+	const char *full;
 
 	net->room_verbose = verbose;
 	ggz_debug(GGZCORE_DBG_NET, "Sending room list request");

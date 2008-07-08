@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 9019 2007-03-30 05:35:54Z jdorje $
+ * $Id: ggz_common.c 10180 2008-07-08 02:11:36Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -280,7 +280,7 @@ GGZPlayerType ggz_string_to_playertype(const char *type_str)
 #define TRUE_NAME "true"
 #define FALSE_NAME "false"
 
-char *bool_to_str(int bool_val)
+const char *bool_to_str(int bool_val)
 {
 	if (bool_val)
 		return TRUE_NAME;

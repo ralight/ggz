@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 10067 2008-06-24 22:01:07Z jdorje $
+ * $Id: net.c 10180 2008-07-08 02:11:36Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -472,8 +472,8 @@ GGZReturn net_send_type(GGZNetIO *net, int index,
 	int i;
 	char *players = ggz_numberlist_write(&type->player_allow_list);
 	char *bots = ggz_numberlist_write(&type->bot_allow_list);
-	char *spectators = bool_to_str(type->allow_spectators);
-	char *peers = bool_to_str(type->allow_peers);
+	const char *spectators = bool_to_str(type->allow_spectators);
+	const char *peers = bool_to_str(type->allow_peers);
 
 	const char *language = net->client->language;
 
