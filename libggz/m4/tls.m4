@@ -322,6 +322,7 @@ if test "$tls_type" = yes -o "$tls_type" = GnuTLS; then
     TLS_TYPE="GnuTLS"
   fi
 fi
+AM_CONDITIONAL(GGZ_TLS_GNUTLS, test "$have_gnutls" = "yes")
 
 if test \( "$tls_type" = yes -a "$have_gnutls" = no \) -o "$tls_type" = OpenSSL
 then
@@ -337,6 +338,7 @@ then
     TLS_TYPE="OpenSSL"
   fi
 fi
+AM_CONDITIONAL(GGZ_TLS_OPENSSL, test "$have_ssl" = "yes")
 
 if test \( "$tls_type" = yes -a "$have_gnutls" = no -a "$have_ssl" = no \) -o "$tls_type" = NSS
 then
@@ -352,6 +354,7 @@ then
     TLS_TYPE="NSS"
   fi
 fi
+AM_CONDITIONAL(GGZ_TLS_NSS, test "$have_nss" = "yes")
 
 if test "$TLS_TYPE" = no; then
   if test "$tls_type" = no; then
