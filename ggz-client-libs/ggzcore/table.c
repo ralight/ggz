@@ -3,7 +3,7 @@
  * Author: Justin Zaun
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: table.c 8533 2006-08-26 01:26:29Z jdorje $
+ * $Id: table.c 10195 2008-07-08 03:56:26Z jdorje $
  *
  * This fils contains functions for handling tables
  *
@@ -215,7 +215,7 @@ int ggzcore_table_set_seat(GGZTable *table,
 	GGZNet *net;
 	GGZTableSeat seat = {index, type, name};
 
-	ggz_debug(GGZCORE_DBG_TABLE, "User changing seats... on %p", table);
+	ggz_debug(GGZCORE_DBG_TABLE, "User changing seats... on %p", (void*)table);
 
 	/* Check table and seat number. */
 	if (!table || index >= table->num_seats)
@@ -259,7 +259,7 @@ int ggzcore_table_set_desc(GGZTable *table, const char *desc)
 	GGZServer *server;
 	GGZNet *net;
 
-	ggz_debug(GGZCORE_DBG_TABLE, "User changing desc... on %p", table);
+	ggz_debug(GGZCORE_DBG_TABLE, "User changing desc... on %p", (void*)table);
 
 	/* Check table and seat number. */
 	if (!table)
