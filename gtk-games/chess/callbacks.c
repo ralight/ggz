@@ -3,7 +3,7 @@
  * Author: Ismael Orenstein
  * Project: GGZ Chess game module
  * Desc: GTK Callback functions
- * $Id: callbacks.c 6385 2004-11-16 05:21:05Z jdorje $
+ * $Id: callbacks.c 10227 2008-07-08 18:34:30Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -146,7 +146,7 @@ on_board_drag_begin(GtkWidget * widget,
 gboolean
 on_board_drag_motion(GtkWidget * widget,
 		     GdkDragContext * drag_context,
-		     gint x, gint y, guint time, gpointer user_data)
+		     gint x, gint y, guint timer, gpointer user_data)
 {
 	int f_x =
 	    GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), "from_x"));
@@ -172,7 +172,7 @@ on_board_drag_motion(GtkWidget * widget,
 gboolean
 on_board_drag_drop(GtkWidget * widget,
 		   GdkDragContext * drag_context,
-		   gint x, gint y, guint time, gpointer user_data)
+		   gint x, gint y, guint timer, gpointer user_data)
 {
 	int arg[4];
 	char move[6];

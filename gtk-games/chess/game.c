@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 6744 2005-01-19 22:53:59Z jdorje $
+ * $Id: game.c 10227 2008-07-08 18:34:30Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -398,9 +398,10 @@ int game_timer(gpointer user_data)
 
 int game_update_server(gpointer user_data)
 {
-	int time;
-	time = g_timer_elapsed(game_info.timer, NULL);
+	int mytime;
+
+	mytime = g_timer_elapsed(game_info.timer, NULL);
 	g_timer_reset(game_info.timer);
-	net_update_server(time);
+	net_update_server(mytime);
 	return TRUE;
 }
