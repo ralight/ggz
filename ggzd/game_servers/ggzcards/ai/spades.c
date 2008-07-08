@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 10186 2008-07-08 03:15:31Z jdorje $
+ * $Id: spades.c 10222 2008-07-08 18:04:48Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -53,9 +53,6 @@
 #define nil_tricks_count 1	/* FIXME */
 #define minimum_team_bid 3	/* FIXME */
 
-#define IS_GOING_NIL(p) (bids[p].sbid.spec == SPADES_NIL || \
-			 bids[p].sbid.spec == SPADES_DNIL)
-
 /* #define USE_AI_TRICKS */
 
 /* Aggressive bidding causes us to value our hand more aggressively.
@@ -69,22 +66,28 @@ enum {
 	R_OPP = 3
 };
 
-static int count_cards[4];	/* the number of "count" cards each player
-				   has played.  Count cards are A/K of a
-				   suit, A/K/Q of spades, or a fourth or more
-				   spade.  Tracking these can help us to
-				   determine what the player has left. */
-
-static struct play {
+struct play {
 	card_t card;		/* card's value */
 	int trick;		/* likelyhood card will take this trick */
 	int future;		/* likelyhood card will take future trick */
-} play[13];
-static int plays, high;
+};
 
-int has_bid[4];
-bid_t bids[4];
-static int partner_lead_spades;
+static struct {
+	/* the number of "count" cards each player
+	   has played.  Count cards are A/K of a
+	   suit, A/K/Q of spades, or a fourth or more
+	   spade.  Tracking these can help us to
+	   determine what the player has left. */
+	int count_cards[4];
+
+	/* List of what plays are legal, and information computed about them. */
+	struct play play[13];
+	int plays, high;
+
+	int has_bid[4];
+	bid_t bids[4];
+	int partner_lead_spades;
+} ai;
 
 static int count_spade_ruff_winners(void);
 static int count_spade_strength_winners(void);
@@ -101,6 +104,13 @@ static int SetNil(int agg);
 static int PlayNormal(int agg, int lastTrick);
 static int card_comp(card_t c1, card_t c2);
 
+
+static int is_going_nil(int p)
+{
+	return (ai.bids[p].sbid.spec == SPADES_NIL
+		|| ai.bids[p].sbid.spec == SPADES_DNIL);
+}
+
 void start_hand(void)
 {
 	int p;
@@ -108,11 +118,11 @@ void start_hand(void)
 	ailib_start_hand();
 
 	for (p = 0; p < 4; p++) {
-		count_cards[p] = 0;
-		has_bid[p] = FALSE;
+		ai.count_cards[p] = 0;
+		ai.has_bid[p] = FALSE;
 	}
 
-	partner_lead_spades = 0;
+	ai.partner_lead_spades = 0;
 }
 
 void alert_bid(int p, bid_t bid)
@@ -121,8 +131,8 @@ void alert_bid(int p, bid_t bid)
 	
 	assert(p >= 0 && p < 4);
 
-	has_bid[p] = 1;
-	bids[p] = bid;
+	ai.has_bid[p] = 1;
+	ai.bids[p] = bid;
 }
 
 void alert_play(int p, card_t play)
@@ -143,7 +153,7 @@ void alert_play(int p, card_t play)
 			  "Counting %s of %s as a count card for player %d.",
 			  get_face_name(play.face),
 			  get_suit_name(play.suit), p);
-		count_cards[p]++;
+		ai.count_cards[p]++;
 	}
 
 	/* The problem with both these "tricks" below is that if a player has
@@ -154,7 +164,7 @@ void alert_play(int p, card_t play)
 #ifdef USE_AI_TRICKS
 	/* when a nil player sluffs, they'll sluff their highest card in that
 	   suit */
-	if (IS_GOING_NIL(p)
+	if (is_going_nil(p)
 	    && ggzcards.players[p].tricks == 0 && play.suit != lead.suit
 	    && play.suit != SPADES) {
 		card_t card = play;
@@ -166,7 +176,7 @@ void alert_play(int p, card_t play)
 #ifdef USE_AI_TRICKS
 	/* a nil player will generally play their highest card beneath an
 	   already-played card */
-	if (IS_GOING_NIL(p) &&
+	if (is_going_nil(p) &&
 	    game.players[p].tricks == 0 && play.suit == lead.suit) {
 		if (!libai_might_player_have_card(p, play)) {
 			/* If we didn't think this player could have this
@@ -190,7 +200,7 @@ void alert_play(int p, card_t play)
 #endif
 
 	if (p == get_leader() && p == PARTNER && play.suit == SPADES)
-		partner_lead_spades = 1;
+		ai.partner_lead_spades = 1;
 }
 
 void alert_trick(int winner)
@@ -472,7 +482,7 @@ static char find_final_bid(int points)
 {
 	int prob;		/* for rounding */
 	char bid_val, total, other_total;
-	int bid_count = has_bid[L_OPP] + has_bid[PARTNER] + has_bid[R_OPP];
+	int bid_count = ai.has_bid[L_OPP] + ai.has_bid[PARTNER] + ai.has_bid[R_OPP];
 
 	ggz_debug(DBG_BID, "Bid count is %d.", bid_count);
 
@@ -493,8 +503,8 @@ static char find_final_bid(int points)
 
 		/* Total between "other" players. */
 		other_total =
-			bids[L_OPP].sbid.val + bids[PARTNER].sbid.val +
-			bids[R_OPP].sbid.val;
+			ai.bids[L_OPP].sbid.val + ai.bids[PARTNER].sbid.val +
+			ai.bids[R_OPP].sbid.val;
 
 		/* We attempt to balance the bid toward 10/11.  This could be
 		   dangerous... */
@@ -535,16 +545,16 @@ static char find_final_bid(int points)
 	ggz_debug(DBG_BID, "Subtotal bid: %d", bid_val);
 
 	/* don't forget the minimum bid!!! */
-	if (has_bid[PARTNER]
-	    && (bid_val + bids[PARTNER].sbid.val < minimum_team_bid)) {
-		bid_val = minimum_team_bid - bids[PARTNER].sbid.val;
+	if (ai.has_bid[PARTNER]
+	    && (bid_val + ai.bids[PARTNER].sbid.val < minimum_team_bid)) {
+		bid_val = minimum_team_bid - ai.bids[PARTNER].sbid.val;
 		ggz_debug(DBG_BID, "Upping bid to meet minimum of %d",
 			  minimum_team_bid);
 	}
 
 	/* And avoid bidding higher than 13 */
-	if (has_bid[PARTNER] && bids[PARTNER].sbid.val + bid_val > 13)
-		bid_val = 13 - bids[PARTNER].sbid.val;
+	if (ai.has_bid[PARTNER] && ai.bids[PARTNER].sbid.val + bid_val > 13)
+		bid_val = 13 - ai.bids[PARTNER].sbid.val;
 
 	return bid_val;
 }
@@ -644,16 +654,16 @@ static int consider_bidding_nil(int points)
 
 	/* --------------- NIL BIDS ----------------- */
 	/* Consider bidding nil. */
-	if (IS_GOING_NIL(L_OPP) || IS_GOING_NIL(R_OPP)) {
+	if (is_going_nil(L_OPP) || is_going_nil(R_OPP)) {
 		nilrisk -= 2;
 		ggz_debug(DBG_BID,
 			  "Dec. nilrisk because opponent is kneeling");
 	}
 
-	if ((!has_bid[PARTNER] || bids[PARTNER].sbid.val >= minimum_team_bid)
+	if ((!ai.has_bid[PARTNER] || ai.bids[PARTNER].sbid.val >= minimum_team_bid)
 	    && ((nilrisk <= 0) || (nilrisk <= 1 && points < 250)
 		|| (nilrisk <= 2 && points < 150)
-		|| (bids[PARTNER].sbid.val >= 3 + nilrisk))) {
+		|| (ai.bids[PARTNER].sbid.val >= 3 + nilrisk))) {
 		return 1;
 	}
 
@@ -725,7 +735,7 @@ card_t get_play(int play_seat, bool *valid_plays)
 
 	assert(play_seat == 0);
 
-	high = -1;
+	ai.high = -1;
 	lead.suit = 0;
 	hi_card.suit = 0;
 	hi_card.face = 0;
@@ -735,7 +745,7 @@ card_t get_play(int play_seat, bool *valid_plays)
 	/* FIXME: this should call an external game function? */
 	if (get_leader() != ME) {
 		lead = ggzcards.players[get_leader()].table_card;
-		high = get_leader();
+		ai.high = get_leader();
 		hi_card = ggzcards.players[get_leader()].table_card;
 		for (i = get_leader() + 1; i <= R_OPP; i++) {
 			card_t p_card = ggzcards.players[i].table_card;
@@ -743,7 +753,7 @@ card_t get_play(int play_seat, bool *valid_plays)
 			     && (hi_card.suit != SPADES))
 			    || ((p_card.suit == hi_card.suit)
 				&& (p_card.face > hi_card.face))) {
-				high = i;
+				ai.high = i;
 				hi_card = p_card;
 			}
 		}
@@ -765,19 +775,19 @@ card_t get_play(int play_seat, bool *valid_plays)
 
 	/* First determine how many more tricks we need. */
 	totTricks = ggzcards.players[ME].hand.hand_size;
-	myNeed = bids[ME].sbid.val + bids[PARTNER].sbid.val;
-	if (nil_tricks_count || bids[ME].sbid.spec == 0)
+	myNeed = ai.bids[ME].sbid.val + ai.bids[PARTNER].sbid.val;
+	if (nil_tricks_count || ai.bids[ME].sbid.spec == 0)
 		myNeed -= get_tricks(ME);
-	if (nil_tricks_count || bids[PARTNER].sbid.spec == 0)
+	if (nil_tricks_count || ai.bids[PARTNER].sbid.spec == 0)
 		myNeed -= get_tricks(PARTNER);
 	if (myNeed < 0)
 		myNeed = 0;
 
 	/* Now determine how many more tricks the opponent needs. */
-	oppNeed = bids[L_OPP].sbid.val + bids[R_OPP].sbid.val;
-	if (nil_tricks_count || bids[L_OPP].sbid.spec == 0)
+	oppNeed = ai.bids[L_OPP].sbid.val + ai.bids[R_OPP].sbid.val;
+	if (nil_tricks_count || ai.bids[L_OPP].sbid.spec == 0)
 		oppNeed -= get_tricks(L_OPP);
-	if (nil_tricks_count || bids[R_OPP].sbid.spec == 0)
+	if (nil_tricks_count || ai.bids[R_OPP].sbid.spec == 0)
 		oppNeed -= get_tricks(R_OPP);
 	if (oppNeed < 0)
 		oppNeed = 0;
@@ -820,47 +830,47 @@ card_t get_play(int play_seat, bool *valid_plays)
 
 
 	/* Populate the play structure with our valid plays. */
-	plays = 0;
+	ai.plays = 0;
 	for (i = 0; i < hand->hand_size; i++) {
 		if (valid_plays[i]) {
-			play[plays].card = hand->cards[i];
-			Calculate(&play[plays], agg);
+			ai.play[ai.plays].card = hand->cards[i];
+			Calculate(&ai.play[ai.plays], agg);
 			ggz_debug(DBG_PLAY,
 				  "The %s of %s is calculated as %d / %d.",
-				  get_face_name(play[plays].card.face),
-				  get_suit_name(play[plays].card.suit),
-				  play[plays].trick, play[plays].future);
-			plays++;
+				  get_face_name(ai.play[ai.plays].card.face),
+				  get_suit_name(ai.play[ai.plays].card.suit),
+				  ai.play[ai.plays].trick, ai.play[ai.plays].future);
+			ai.plays++;
 		}
 	}
 
 #ifdef AI_DEBUG
-	for (i = 0; i < plays; i++)
+	for (i = 0; i < ai.plays; i++)
 		ggz_debug(DBG_PLAY, " %s of %s,%d,%d",
-			  get_face_name(play[i].card.face),
-			  get_suit_name(play[i].card.suit), play[i].trick,
-			  play[i].future);
+			  get_face_name(ai.play[i].card.face),
+			  get_suit_name(ai.play[i].card.suit), ai.play[i].trick,
+			  ai.play[i].future);
 #endif
 
 	/* Now determine our disposition for this trick. */
-	if (IS_GOING_NIL(ME) && get_tricks(ME) == 0)
+	if (is_going_nil(ME) && get_tricks(ME) == 0)
 		chosen = PlayNil();
 
 	if (chosen < 0
-	    && IS_GOING_NIL(PARTNER)
+	    && is_going_nil(PARTNER)
 	    && get_tricks(PARTNER) == 0)
 		chosen = CoverNil(agg);
 
 	if (chosen < 0
-	    && ((IS_GOING_NIL(L_OPP) && get_tricks(L_OPP) == 0)
-	        || (IS_GOING_NIL(R_OPP) && get_tricks(R_OPP) == 0)))
+	    && ((is_going_nil(L_OPP) && get_tricks(L_OPP) == 0)
+	        || (is_going_nil(R_OPP) && get_tricks(R_OPP) == 0)))
 		chosen = SetNil(agg);
 
 	if (chosen < 0)
 		chosen = PlayNormal(agg, lastTrick);
 
 	ggz_debug(DBG_PLAY, "Chosen play is %d", chosen);
-	return play[chosen].card;
+	return ai.play[chosen].card;
 }
 
 
@@ -870,8 +880,8 @@ static void Calculate(struct play *play, int agg)
 {
 	int mask, map, count, danger, trump, n, cover, sCount, o;
 	card_t high_card =
-		(high ==
-		 -1) ? UNKNOWN_CARD : ggzcards.players[high].table_card;
+		((ai.high == -1)
+		 ? UNKNOWN_CARD : ggzcards.players[ai.high].table_card);
 	char suit_lead = ggzcards.players[get_leader()].table_card.suit;
 	char s, r;
 	hand_t *hand = &ggzcards.players[ME].hand;
@@ -897,7 +907,7 @@ static void Calculate(struct play *play, int agg)
 	   higher than the highest current card. */
 	/* NOTE: we also calculate our partner's chance of winning with an
 	   already-played card, so we must consider that case as well. */
-	if (high < 0
+	if (ai.high < 0
 	    || ((play->card.suit == SPADES && high_card.suit != SPADES)
 		|| (play->card.suit == high_card.suit
 		    && play->card.face >= high_card.face))
@@ -923,7 +933,7 @@ static void Calculate(struct play *play, int agg)
 			     && are_cards_equal(ggzcards.players[o].
 						table_card, UNKNOWN_CARD);
 			     o++) {
-				if (o == PARTNER && bids[ME].sbid.val > 0)
+				if (o == PARTNER && ai.bids[ME].sbid.val > 0)
 					continue;
 				map = SuitMap(o, s);
 				if (map == 0 && s != SPADES) {	/* void in
@@ -1000,7 +1010,7 @@ static void Calculate(struct play *play, int agg)
 	for (o = L_OPP; o <= R_OPP; o++) {
 		if ((map = SuitMap(o, s)) != 0)
 			count++;
-		if (o == PARTNER && bids[ME].sbid.val > 0)
+		if (o == PARTNER && ai.bids[ME].sbid.val > 0)
 			continue;
 		if (map & mask)
 			danger++;
@@ -1067,7 +1077,7 @@ static void Calculate(struct play *play, int agg)
 
 			/* Playing this card could _cost_ us a trick. */
 			play->trick = -50;
-		} else if (partner_lead_spades) {
+		} else if (ai.partner_lead_spades) {
 			ggz_debug(DBG_PLAY,
 				  "Partner lead spades.  We should respond.");
 			play->trick += 100;
@@ -1126,11 +1136,11 @@ static int PlayNil(void)
 
 	/* For nil bids, pick the card with highest potential that doesn't
 	   take the trick. */
-	for (i = 0; i < plays; i++) {
-		if (chosen < 0 || play[i].trick < play[chosen].trick)
+	for (i = 0; i < ai.plays; i++) {
+		if (chosen < 0 || ai.play[i].trick < ai.play[chosen].trick)
 			chosen = i;
-		else if (play[i].trick == play[chosen].trick) {
-			if (play[i].future > play[chosen].future)
+		else if (ai.play[i].trick == ai.play[chosen].trick) {
+			if (ai.play[i].future > ai.play[chosen].future)
 				chosen = i;
 		}
 	}
@@ -1145,8 +1155,8 @@ static int CoverNil(int agg)
 	char suit_lead = ggzcards.players[get_leader()].table_card.suit;
 	card_t pard_card = ggzcards.players[PARTNER].table_card;
 	card_t high_card =
-		(high ==
-		 -1) ? UNKNOWN_CARD : ggzcards.players[high].table_card;
+		((ai.high == -1)
+		 ? UNKNOWN_CARD : ggzcards.players[ai.high].table_card);
 
 	ggz_debug(DBG_PLAY, "Strategy: cover nil");
 
@@ -1155,24 +1165,24 @@ static int CoverNil(int agg)
 		map[i] = SuitMap(PARTNER, i);
 
 	/* If our pard has the highest card, try to beat it. */
-	if (PARTNER == high) {
-		for (i = 0; i < plays; i++)
-			if (card_comp(play[i].card, pard_card) > 0)
+	if (PARTNER == ai.high) {
+		for (i = 0; i < ai.plays; i++)
+			if (card_comp(ai.play[i].card, pard_card) > 0)
 				if (chosen < 0
-				    || card_comp(play[i].card,
-						 play[chosen].card) < 0)
+				    || card_comp(ai.play[i].card,
+						 ai.play[chosen].card) < 0)
 					chosen = i;
 	}
 
 	/* Determine if there's any danger of our pard taking this trick. */
-	if (high >= 0 && pard_card.suit == -1 && high_card.suit == suit_lead) {
+	if (ai.high >= 0 && pard_card.suit == -1 && high_card.suit == suit_lead) {
 		for (r = high_card.face + 1; r <= ACE_HIGH; r++)
 			if (map[(int) suit_lead] & (1 << r))
 				danger++;
 	}
 
 	/* If there's no danger or we can't cover him, sluff intelligently. */
-	if (chosen < 0 && danger == 0 && high >= 0) {
+	if (chosen < 0 && danger == 0 && ai.high >= 0) {
 		if (agg <= 50)
 			sluff = 1;
 		/* else we'll drop through and play normally */
@@ -1180,28 +1190,28 @@ static int CoverNil(int agg)
 		/* If we're here, then our pard hasn't played yet and there's
 		   some danger of his taking the trick.  First things first --
 		   always try to lead to a void. */
-		if (high < 0) {
-			for (i = 0; i < plays; i++)
-				if (map[(int) play[i].card.suit] == 0) {
+		if (ai.high < 0) {
+			for (i = 0; i < ai.plays; i++)
+				if (map[(int) ai.play[i].card.suit] == 0) {
 					if (chosen < 0)
 						chosen = i;
 					else if (agg < 30
-						 && play[i].trick <
-						 play[chosen].trick)
+						 && ai.play[i].trick <
+						 ai.play[chosen].trick)
 						chosen = i;
 					else if (agg >= 30
-						 && play[i].future <=
-						 play[i].trick) {
-						if (play[chosen].future >
-						    play[chosen].trick)
+						 && ai.play[i].future <=
+						 ai.play[i].trick) {
+						if (ai.play[chosen].future >
+						    ai.play[chosen].trick)
 							chosen = i;
-						else if (play[i].trick >
-							 play[chosen].trick)
+						else if (ai.play[i].trick >
+							 ai.play[chosen].trick)
 							chosen = i;
-						else if (play[i].trick ==
-							 play[chosen].trick) {
-							if (play[i].future <
-							    play[chosen].
+						else if (ai.play[i].trick ==
+							 ai.play[chosen].trick) {
+							if (ai.play[i].future <
+							    ai.play[chosen].
 							    future)
 								chosen = i;
 						}
@@ -1211,18 +1221,18 @@ static int CoverNil(int agg)
 
 		/* Try to pick something he can't beat. */
 		if (chosen < 0) {
-			for (i = 0; i < plays; i++) {
-				char s = play[i].card.suit;
-				if (high >= 0
-				    && card_comp(play[i].card,
+			for (i = 0; i < ai.plays; i++) {
+				char s = ai.play[i].card.suit;
+				if (ai.high >= 0
+				    && card_comp(ai.play[i].card,
 						 high_card) <= 0)
 					continue;	/* don't consider
 							   cards which don't
 							   beat high card */
 
-				if (high < 0 || s == suit_lead) {
+				if (ai.high < 0 || s == suit_lead) {
 					for (mask = 0, r =
-					     play[i].card.face + 1;
+					     ai.play[i].card.face + 1;
 					     r < ACE_HIGH; r++)
 						mask |= (1 << r);	/* bitmap
 									   of
@@ -1238,8 +1248,8 @@ static int CoverNil(int agg)
 					chosen = i;
 				else if (agg < 30) {
 					if (s == suit_lead) {
-						if (play[i].trick <
-						    play[chosen].trick)
+						if (ai.play[i].trick <
+						    ai.play[chosen].trick)
 							chosen = i;
 					} else {
 						/* If we're here then we're
@@ -1250,24 +1260,24 @@ static int CoverNil(int agg)
 						   pard's trumps later. */
 						/* XXX maybe throw a higher
 						   trump if pard is covered? */
-						if (play[i].trick <
-						    play[chosen].trick)
+						if (ai.play[i].trick <
+						    ai.play[chosen].trick)
 							chosen = i;	/* for
 									   now,
 									   choose
 									   lowest
 									   trump */
-						else if (play[i].trick ==
-							 play[chosen].trick)
-							if (play[i].future <
-							    play[chosen].
+						else if (ai.play[i].trick ==
+							 ai.play[chosen].trick)
+							if (ai.play[i].future <
+							    ai.play[chosen].
 							    future)
 								chosen = i;
 					}
 				} else if (agg >= 30) {
 					if (s != suit_lead) {
-						if (play[i].trick <
-						    play[chosen].trick)
+						if (ai.play[i].trick <
+						    ai.play[chosen].trick)
 							chosen = i;	/* both
 									   must
 									   be
@@ -1275,24 +1285,24 @@ static int CoverNil(int agg)
 									   --
 									   choose
 									   lower */
-						else if (play[i].trick ==
-							 play[chosen].trick)
-							if (play[i].future <
-							    play[chosen].
+						else if (ai.play[i].trick ==
+							 ai.play[chosen].trick)
+							if (ai.play[i].future <
+							    ai.play[chosen].
 							    future)
 								chosen = i;
-					} else if (play[i].future <=
-						   play[i].trick) {
-						if (play[chosen].future >
-						    play[chosen].trick)
+					} else if (ai.play[i].future <=
+						   ai.play[i].trick) {
+						if (ai.play[chosen].future >
+						    ai.play[chosen].trick)
 							chosen = i;
-						else if (play[i].trick >
-							 play[chosen].trick)
+						else if (ai.play[i].trick >
+							 ai.play[chosen].trick)
 							chosen = i;
-						else if (play[i].trick ==
-							 play[chosen].trick) {
-							if (play[i].future <
-							    play[chosen].
+						else if (ai.play[i].trick ==
+							 ai.play[chosen].trick) {
+							if (ai.play[i].future <
+							    ai.play[chosen].
 							    future)
 								chosen = i;
 						}
@@ -1305,23 +1315,23 @@ static int CoverNil(int agg)
 		   trouble. Play our highest card. */
 		if (chosen < 0 && sluff == 0) {
 			sluff = 1;
-			for (i = 0; i < plays; i++)
+			for (i = 0; i < ai.plays; i++)
 				if (suit_lead < 0
-				    || play[i].card.suit == suit_lead)
+				    || ai.play[i].card.suit == suit_lead)
 					if (chosen < 0
-					    || play[i].card.face >
-					    play[chosen].card.face)
+					    || ai.play[i].card.face >
+					    ai.play[chosen].card.face)
 						chosen = i;
 		}
 
 		/* If this card is essentially one card greater than the
 		   current high, then just sluff. */
-		if (chosen >= 0 && high >= 0
-		    && play[chosen].card.suit == high_card.suit) {
+		if (chosen >= 0 && ai.high >= 0
+		    && ai.play[chosen].card.suit == high_card.suit) {
 			for (r = high_card.face + 1;
 			     libai_is_card_played(high_card.suit, r); r++)
 				continue;
-			if (r == play[chosen].card.face) {
+			if (r == ai.play[chosen].card.face) {
 				sluff = 1;
 				chosen = -1;
 			}
@@ -1330,9 +1340,9 @@ static int CoverNil(int agg)
 
 	if (chosen < 0 && sluff) {
 		/* XXX sluff something intelligently */
-		for (i = 0; i < plays; i++)
+		for (i = 0; i < ai.plays; i++)
 			if (chosen < 0
-			    || play[i].future < play[chosen].future)
+			    || ai.play[i].future < ai.play[chosen].future)
 				chosen = i;
 	}
 
@@ -1348,8 +1358,8 @@ static int SetNil(int agg)
 {
 	int i, pp, chosen = -1, r, mask, map, count;
 	card_t high_card =
-		(high ==
-		 -1) ? UNKNOWN_CARD : ggzcards.players[high].table_card;
+		((ai.high == -1)
+		 ? UNKNOWN_CARD : ggzcards.players[ai.high].table_card);
 	char suit_lead = ggzcards.players[get_leader()].table_card.suit, s;
 	
 	if (agg >= 100)
@@ -1360,43 +1370,43 @@ static int SetNil(int agg)
 	/* If one of our opponents bid nil and either hasn't played or has
 	   played the high card, try to get under it. */
 	for (pp = L_OPP; pp <= R_OPP && chosen < 0; pp++) {
-		if (pp == PARTNER || !IS_GOING_NIL(pp)
+		if (pp == PARTNER || !is_going_nil(pp)
 		    || get_tricks(pp) != 0)
 			continue;
-		if (high < 0 && agg <= 50) {
+		if (ai.high < 0 && agg <= 50) {
 			/*
 			 * If we're leading, lead something small.
 			 */
 			ggz_debug(DBG_PLAY, "Set nil: lead small.");
-			for (i = 0; i < plays; i++) {
-				for (mask = 0, r = play[i].card.face + 1;
+			for (i = 0; i < ai.plays; i++) {
+				for (mask = 0, r = ai.play[i].card.face + 1;
 				     r <= ACE_HIGH; r++)
 					mask |= (1 << r);	/* bitmap of
 								   ranks
 								   which beat
 								   this card */
-				if ((SuitMap(pp, play[i].card.suit) & mask)
+				if ((SuitMap(pp, ai.play[i].card.suit) & mask)
 				    == 0)
 					continue;	/* he can't beat this
 							   one -- skip it */
 				if (chosen < 0
-				    || play[i].card.face <
-				    play[chosen].card.face)
+				    || ai.play[i].card.face <
+				    ai.play[chosen].card.face)
 					chosen = i;
 			}
-		} else if (high == pp) {
+		} else if (ai.high == pp) {
 			/*
 			 * Try to get under the high card.
 			 */
 			ggz_debug(DBG_PLAY, "Set nil: duck the nil.");
-			for (i = 0; i < plays; i++)
-				if (card_comp(play[i].card, high_card) <= 0
-				    && play[i].future < 40
+			for (i = 0; i < ai.plays; i++)
+				if (card_comp(ai.play[i].card, high_card) <= 0
+				    && ai.play[i].future < 40
 				    && (chosen < 0
-					|| (play[i].future >
-					    play[chosen].future)))
+					|| (ai.play[i].future >
+					    ai.play[chosen].future)))
 					chosen = i;
-		} else if (high >= 0
+		} else if (ai.high >= 0
 			   && ggzcards.players[pp].table_card.suit < 0) {
 			ggz_debug(DBG_PLAY, "Set nil: follow.");
 			
@@ -1404,8 +1414,8 @@ static int SetNil(int agg)
 			 * Count how many cards we have under the high.
 			 */
 			count = 0;
-			for (i = 0; i < plays; i++)
-				if (card_comp(play[i].card, high_card) <= 0)
+			for (i = 0; i < ai.plays; i++)
+				if (card_comp(ai.play[i].card, high_card) <= 0)
 					count++;
 			ggz_debug(DBG_PLAY, "We have %d losers.", count);
 
@@ -1424,9 +1434,9 @@ static int SetNil(int agg)
 							   which beat high
 							   card */
 
-			if ((agg > 50 && high != PARTNER)
+			if ((agg > 50 && ai.high != PARTNER)
 			    || (count < 2)
-			    || (r >= JACK && high != PARTNER)
+			    || (r >= JACK && ai.high != PARTNER)
 			    || (s != suit_lead || (map & mask) == 0)) {
 				ggz_debug(DBG_PLAY, "Set nil: cover.");
 				
@@ -1444,10 +1454,10 @@ static int SetNil(int agg)
 				}
 				for (r = high_card.face + 1; r <= ACE_HIGH; r++) {
 					if (!libai_is_card_played(s, r)) {
-						for (i = 0; i < plays; i++)
-							if (play[i].card.
+						for (i = 0; i < ai.plays; i++)
+							if (ai.play[i].card.
 							    suit == s
-							    && play[i].card.
+							    && ai.play[i].card.
 							    face == r) {
 								chosen = i;
 								break;
@@ -1462,18 +1472,18 @@ static int SetNil(int agg)
 				 */
 				if (chosen < 0 && s == suit_lead
 				    && (map & mask) == SPADES) {
-					for (i = 0; i < plays; i++)
-						if (play[i].card.suit ==
+					for (i = 0; i < ai.plays; i++)
+						if (ai.play[i].card.suit ==
 						    SPADES)
 							if (map != 0
-							    || play[i].card.
+							    || ai.play[i].card.
 							    face <= 6)
 								if (chosen < 0
 								    ||
-								    play[i].
+								    ai.play[i].
 								    card.
 								    face >
-								    play
+								    ai.play
 								    [chosen].
 								    card.face)
 									chosen = i;
@@ -1482,12 +1492,12 @@ static int SetNil(int agg)
 			/*
 			 * Otherwise, try to get under the high card.
 			 */
-			for (i = 0; i < plays; i++)
-				if (card_comp(play[i].card, high_card) <= 0
-				    && play[i].future < 40
+			for (i = 0; i < ai.plays; i++)
+				if (card_comp(ai.play[i].card, high_card) <= 0
+				    && ai.play[i].future < 40
 				    && (chosen < 0
-					|| (play[i].future >
-					    play[chosen].future)))
+					|| (ai.play[i].future >
+					    ai.play[chosen].future)))
 					chosen = i;
 		} else {
 			ggz_debug(DBG_PLAY, "Set nil: nothing...");
@@ -1510,7 +1520,7 @@ static int PlayNormal(int agg, int lastTrick)
 	/*
 	 * If our pard has played, calculate the chances that his card is a winner.
 	 */
-	if (high == PARTNER) {
+	if (ai.high == PARTNER) {
 		pCard.card = ggzcards.players[PARTNER].table_card;
 		Calculate(&pCard, agg);
 		ggz_debug(DBG_PLAY,
@@ -1525,7 +1535,7 @@ static int PlayNormal(int agg, int lastTrick)
 	if (lastTrick && pCard.trick >= 100)
 		return PlayNil();
 	if (agg == 0) {
-		if (PARTNER == high && pCard.trick > 30) {
+		if (PARTNER == ai.high && pCard.trick > 30) {
 			/* Our pard's winning the trick -- beat him if we
 			   can. */
 		} else
@@ -1537,18 +1547,18 @@ static int PlayNormal(int agg, int lastTrick)
 	   highest and bestest card. */
 	/* For any other aggression, find the card that can win the trick but
 	   * has the lowest future value. */
-	for (i = 0; i < plays; i++) {
-		if (agg > 0 && (play[i].future > play[i].trick ||
-				(play[i].future == play[i].trick
-				 && (play[i].trick < 30 || !lastTrick))))
+	for (i = 0; i < ai.plays; i++) {
+		if (agg > 0 && (ai.play[i].future > ai.play[i].trick ||
+				(ai.play[i].future == ai.play[i].trick
+				 && (ai.play[i].trick < 30 || !lastTrick))))
 			continue;
-		if (chosen < 0 || play[i].trick > play[chosen].trick)
+		if (chosen < 0 || ai.play[i].trick > ai.play[chosen].trick)
 			chosen = i;
-		else if (play[i].trick == play[chosen].trick) {
-			if (agg == 0 || (lastTrick && play[i].trick >= 50)) {
-				if (play[i].future > play[chosen].future)
+		else if (ai.play[i].trick == ai.play[chosen].trick) {
+			if (agg == 0 || (lastTrick && ai.play[i].trick >= 50)) {
+				if (ai.play[i].future > ai.play[chosen].future)
 					chosen = i;
-			} else if (play[i].future < play[chosen].future)
+			} else if (ai.play[i].future < ai.play[chosen].future)
 				chosen = i;
 		}
 	}
@@ -1556,15 +1566,15 @@ static int PlayNormal(int agg, int lastTrick)
 	/* 
 	 * Watch the finesse.  Beat an opponent's best card if we can do so.
 	 */
-	if (chosen < 0 && high >= 0 && high != 2) {
-		for (i = 0; i < plays; i++) {
-			if ((play[i].card.suit ==
-			     ggzcards.players[high].table_card.suit)
-			    && play[i].card.face >
-			    ggzcards.players[high].table_card.face
+	if (chosen < 0 && ai.high >= 0 && ai.high != 2) {
+		for (i = 0; i < ai.plays; i++) {
+			if ((ai.play[i].card.suit ==
+			     ggzcards.players[ai.high].table_card.suit)
+			    && ai.play[i].card.face >
+			    ggzcards.players[ai.high].table_card.face
 			    && (chosen < 0
-				|| play[i].card.face <
-				play[chosen].card.face))
+				|| ai.play[i].card.face <
+				ai.play[chosen].card.face))
 				chosen = i;
 		}
 	}
@@ -1580,26 +1590,26 @@ static int PlayNormal(int agg, int lastTrick)
 	 * Randomly elect not to take this trick.  If we can't afford to lose
 	 * one then our aggression would be higher.
 	 */
-	if (agg > 0 && agg < 75 && chosen >= 0 && (pard < 0 || high != pard)
+	if (agg > 0 && agg < 75 && chosen >= 0 && (pard < 0 || ai.high != pard)
 	    && (random() % 100) > agg)
 		chosen = -1;
 
 	/* 
 	 * Consider leading to our pard's void.
 	 */
-	if (high < 0 && SuitMap(pard, p, 0) != 0
+	if (ai.high < 0 && SuitMap(pard, p, 0) != 0
 	    && (chosen < 0 || (random() % 2) == 0)) {
 		int tmp = -1;
 		for (s = 0; s < 4; s++) {
 			pmap[s] = SuitMap(pard, p, s);
 			omap[s] = SuitMap((p + 3) % 4, p, s);
 		}
-		for (i = 0; i < plays; i++) {
-			s = play[i].card.suit;
+		for (i = 0; i < ai.plays; i++) {
+			s = ai.play[i].card.suit;
 			if (pmap[s] == 0 && omap[s] != 0)
 				if (tmp < 0
-				    || play[i].card.face <
-				    play[tmp].card.face)
+				    || ai.play[i].card.face <
+				    ai.play[tmp].card.face)
 					tmp = i;
 		}
 		if (tmp >= 0)
@@ -1614,11 +1624,11 @@ static int PlayNormal(int agg, int lastTrick)
 	 * card, then consider playing a precious trump.
 	 */
 	if (chosen < 0 && agg >= 75 && pCard.trick < 50) {
-		for (i = 0; i < plays; i++)
-			if (play[i].trick >= 50)
+		for (i = 0; i < ai.plays; i++)
+			if (ai.play[i].trick >= 50)
 				if (chosen < 0
-				    || play[i].card.face <
-				    play[chosen].card.face)
+				    || ai.play[i].card.face <
+				    ai.play[chosen].card.face)
 					chosen = i;
 	}
 
@@ -1628,13 +1638,13 @@ static int PlayNormal(int agg, int lastTrick)
 	 * future.  For any other aggression, sluff our lowest card.
 	 */
 	if (chosen < 0) {
-		for (i = 0; i < plays; i++)
+		for (i = 0; i < ai.plays; i++)
 			if (chosen < 0)
 				chosen = i;
 			else if (agg == 0) {
-				if (play[i].future > play[chosen].future)
+				if (ai.play[i].future > ai.play[chosen].future)
 					chosen = i;
-			} else if (play[i].future < play[chosen].future)
+			} else if (ai.play[i].future < ai.play[chosen].future)
 				chosen = i;
 	}
 
@@ -1644,19 +1654,19 @@ static int PlayNormal(int agg, int lastTrick)
 	 * of those pesky middle cards which are bag-machines later in the hand.
 	 */
 	if (agg > 0 && agg < 75) {
-		s = play[chosen].card.suit;
+		s = ai.play[chosen].card.suit;
 		for (;;) {
 			/* 
 			 * Find the next highest card in suit.
 			 */
 			n = -1;
-			for (i = 0; i < plays; i++)
-				if (play[i].card.suit == s
-				    && play[i].card.face >
-				    play[chosen].card.face && (n < 0
-							       || play[i].
+			for (i = 0; i < ai.plays; i++)
+				if (ai.play[i].card.suit == s
+				    && ai.play[i].card.face >
+				    ai.play[chosen].card.face && (n < 0
+							       || ai.play[i].
 							       card.face <
-							       play[n].card.
+							       ai.play[n].card.
 							       face))
 					n = i;
 			if (n < 0)
@@ -1666,19 +1676,19 @@ static int PlayNormal(int agg, int lastTrick)
 			 * Determine the highest rank equivalence of the chosen card,
 			 * based on which cards have been played.
 			 */
-			r = play[chosen].card.face + 1;
+			r = ai.play[chosen].card.face + 1;
 			while (r <= ACE_HIGH && libai_is_card_played(s, r)
-			       && (high < 0
-				   || !(ggzcards.players[high].table_card.
+			       && (ai.high < 0
+				   || !(ggzcards.players[ai.high].table_card.
 					suit == s
-					&& ggzcards.players[high].table_card.
+					&& ggzcards.players[ai.high].table_card.
 					face == r)))
 				r++;
-			if (r != play[n].card.face	/* cards are
+			if (r != ai.play[n].card.face	/* cards are
 							   equivalent */
-			    && ((play[n].future >= 50)	/* card has a good
+			    && ((ai.play[n].future >= 50)	/* card has a good
 							   future */
-				||(play[n].future >= 20 && agg >= 50)))	/* card 
+				||(ai.play[n].future >= 20 && agg >= 50)))	/* card 
 									   has 
 									   a
 									   decent 
