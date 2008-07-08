@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 10131 2008-07-01 04:07:19Z jdorje $
+ * $Id: ggzclient.c 10231 2008-07-08 19:30:17Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -55,8 +55,6 @@
 
 static guint server_tag, channel_tag;
 static gboolean is_server, is_channel;
-
-static gint numrooms;
 
 /* Gdk input callbacks */
 static void ggz_input_removed(gpointer data);
@@ -665,7 +663,7 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id,
 	gint i;
 
 	/* Display current list of rooms */
-	numrooms = ggzcore_server_get_num_rooms(server);
+	const int numrooms = ggzcore_server_get_num_rooms(server);
 
 	update_room_list();
 

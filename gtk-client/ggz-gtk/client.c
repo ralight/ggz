@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 10199 2008-07-08 04:12:00Z jdorje $
+ * $Id: client.c 10231 2008-07-08 19:30:17Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -652,6 +652,13 @@ void client_join_table(void)
 }
 
 
+static void tooltip(char *widget, char *tip)
+{
+	GtkWidget *ttmp = ggz_lookup_widget(win_main, widget);
+
+	gtk_widget_set_tooltip_text(ttmp, tip);
+}
+
 static void
 client_realize                    (GtkWidget       *widget,
 				   gpointer         data)
@@ -673,12 +680,6 @@ client_realize                    (GtkWidget       *widget,
 	/* setup Tooltips */
 	client_window_tips = gtk_tooltips_new();
 #endif
-
-#define tooltip(widget, tip)						\
-	do {								\
-		GtkWidget *tmp = ggz_lookup_widget(win_main, widget);	\
-		gtk_widget_set_tooltip_text(tmp, tip);			\
-	} while (0)
 
 	tooltip("disconnect_button",
 		_("Disconnect from the GGZ Gaming Zone server"));
@@ -867,7 +868,7 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
   GtkWidget *connect;
   GtkWidget *disconnect;
   GtkWidget *separator1;
-  GtkWidget *exit;
+  GtkWidget *exit_mnu;
   GtkWidget *game;
   GtkWidget *game_menu;
   GtkWidget *launch;
@@ -976,10 +977,10 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
   gtk_container_add (GTK_CONTAINER (ggz_menu), separator1);
   gtk_widget_set_sensitive (separator1, FALSE);
 
-  exit = gtk_menu_item_new_with_label(_("Quit"));
-  g_object_set_data(G_OBJECT (win_main), "exit", exit);
-  gtk_container_add (GTK_CONTAINER (ggz_menu), exit);
-  gtk_widget_add_accelerator (exit, "activate", accel_group,
+  exit_mnu = gtk_menu_item_new_with_label(_("Quit"));
+  g_object_set_data(G_OBJECT (win_main), "exit", exit_mnu);
+  gtk_container_add (GTK_CONTAINER (ggz_menu), exit_mnu);
+  gtk_widget_add_accelerator (exit_mnu, "activate", accel_group,
                               GDK_X, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
@@ -1342,7 +1343,7 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
   g_signal_connect (GTK_OBJECT (disconnect), "activate",
                       GTK_SIGNAL_FUNC (client_disconnect_activate),
                       NULL);
-  g_signal_connect (GTK_OBJECT (exit), "activate",
+  g_signal_connect (GTK_OBJECT(exit_mnu), "activate",
                       GTK_SIGNAL_FUNC (client_exit_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (launch), "activate",

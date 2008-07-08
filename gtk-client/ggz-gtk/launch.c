@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 10012 2008-05-30 19:33:56Z jdorje $
+ * $Id: launch.c 10231 2008-07-08 19:30:17Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -100,7 +100,7 @@ void launch_create_or_raise(void)
 static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 {
 	GtkWidget *tmp;
-	gchar *text;
+	gchar *label_text;
 	GGZRoom *room;
 	GGZGameType *gt;
 	gint maxplayers, maxbots, x;
@@ -110,29 +110,29 @@ static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 
 	/* Set the labels */
 	tmp = g_object_get_data(G_OBJECT(launch_dialog), "type_label");
-	text = g_strdup_printf(_("Game Type:  %s"),
-			       ggzcore_gametype_get_name(gt));
-	gtk_label_set_text(GTK_LABEL(tmp), text);
-	g_free(text);
+	label_text = g_strdup_printf(_("Game Type:  %s"),
+				     ggzcore_gametype_get_name(gt));
+	gtk_label_set_text(GTK_LABEL(tmp), label_text);
+	g_free(label_text);
 
 	tmp = g_object_get_data(G_OBJECT(launch_dialog), "author_label");
-	text = g_strdup_printf(_("Author:  %s"),
-			       ggzcore_gametype_get_author(gt));
-	gtk_label_set_text(GTK_LABEL(tmp), text);
-	g_free(text);
+	label_text = g_strdup_printf(_("Author:  %s"),
+				     ggzcore_gametype_get_author(gt));
+	gtk_label_set_text(GTK_LABEL(tmp), label_text);
+	g_free(label_text);
 
 	tmp = g_object_get_data(G_OBJECT(launch_dialog),
 				  "type_desc_label");
-	text = g_strdup_printf(_("Description:  %s"),
-			       ggzcore_gametype_get_desc(gt));
-	gtk_label_set_text(GTK_LABEL(tmp), text);
-	g_free(text);
+	label_text = g_strdup_printf(_("Description:  %s"),
+				     ggzcore_gametype_get_desc(gt));
+	gtk_label_set_text(GTK_LABEL(tmp), label_text);
+	g_free(label_text);
 
 	tmp = g_object_get_data(G_OBJECT(launch_dialog), "web_label");
-	text = g_strdup_printf(_("Home Page:  %s"),
-			       ggzcore_gametype_get_url(gt));
-	gtk_label_set_text(GTK_LABEL(tmp), text);
-	g_free(text);
+	label_text = g_strdup_printf(_("Home Page:  %s"),
+				     ggzcore_gametype_get_url(gt));
+	gtk_label_set_text(GTK_LABEL(tmp), label_text);
+	g_free(label_text);
 
 
 	/* Set the number of players combo */
@@ -140,10 +140,10 @@ static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 	tmp = g_object_get_data(G_OBJECT(launch_dialog), "seats_combo");
 	for (x = 1; x <= maxplayers; x++) {
 		if (ggzcore_gametype_num_players_is_valid(gt, x)) {
-			char text[128];
+			char buf[128];
 
-			snprintf(text, sizeof(text), "%d", x);
-			gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), text);
+			snprintf(buf, sizeof(buf), "%d", x);
+			gtk_combo_box_append_text(GTK_COMBO_BOX(tmp), buf);
 		}
 	}
 	gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), 0);
@@ -171,18 +171,18 @@ static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 	}
 
 	for (x = 2; x <= maxplayers; x++) {
-		char text[128];
+		char buf[128];
 
 		if (maxbots >= x - 1) {
-			snprintf(text, sizeof(text), "seat%d_bot", x);
+			snprintf(buf, sizeof(buf), "seat%d_bot", x);
 		} else {
-			snprintf(text, sizeof(text), "seat%d_bot", x);
-			tmp = ggz_lookup_widget(launch_dialog, text);
+			snprintf(buf, sizeof(buf), "seat%d_bot", x);
+			tmp = ggz_lookup_widget(launch_dialog, buf);
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp), FALSE);
 
-			snprintf(text, sizeof(text), "seat%d_open", x);
+			snprintf(buf, sizeof(buf), "seat%d_open", x);
 		}
-		tmp = ggz_lookup_widget(launch_dialog, text);
+		tmp = ggz_lookup_widget(launch_dialog, buf);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 	}
 }

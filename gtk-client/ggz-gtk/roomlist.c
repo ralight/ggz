@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 8970 2007-02-01 23:09:19Z oojah $
+ * $Id: roomlist.c 10231 2008-07-08 19:30:17Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -396,7 +396,7 @@ GtkWidget *create_room_list(GtkWidget *window)
 	GtkWidget *tree;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
-	GtkTreeSelection *select;
+	GtkTreeSelection *selection;
 
 
 	assert(ROOM_COLUMNS == 3);
@@ -431,8 +431,8 @@ GtkWidget *create_room_list(GtkWidget *window)
 	gtk_widget_set_sensitive(tree, FALSE);
 	GTK_WIDGET_UNSET_FLAGS(tree, GTK_CAN_FOCUS);
 
-	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
-	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 	g_signal_connect(tree, "button-press-event",
 			 GTK_SIGNAL_FUNC(room_list_event), NULL);

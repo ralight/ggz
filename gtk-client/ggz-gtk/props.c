@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 9393 2007-12-01 00:29:32Z jdorje $
+ * $Id: props.c 10231 2008-07-08 19:30:17Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -409,7 +409,7 @@ void props_profile_box_realized(GtkWidget *widget, gpointer user_data)
 }
 
 
-static void props_profile_list_select(GtkTreeSelection *select,
+static void props_profile_list_select(GtkTreeSelection *selection,
 				      gpointer user_data)
 {
 	GtkWidget *tmp;
@@ -419,7 +419,7 @@ static void props_profile_list_select(GtkTreeSelection *select,
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
-	if (!gtk_tree_selection_get_selected(select, &model, &iter)) {
+	if (!gtk_tree_selection_get_selected(selection, &model, &iter)) {
 		return;
 	}
 
@@ -763,7 +763,7 @@ static GtkWidget *tree_new(GtkWidget *window)
 	GtkWidget *tree;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
-	GtkTreeSelection *select;
+	GtkTreeSelection *selection;
 
 	assert(PROFILE_COLUMNS == 1);
 	store = gtk_list_store_new(PROFILE_COLUMNS,
@@ -780,9 +780,9 @@ static GtkWidget *tree_new(GtkWidget *window)
 	g_object_set_data(G_OBJECT(window), "profile_list", tree);
 	g_object_set_data(G_OBJECT(window), "profile_list_store", store);
 
-	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
-	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
-	g_signal_connect(select, "changed",
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
+	g_signal_connect(selection, "changed",
 			 GTK_SIGNAL_FUNC(props_profile_list_select),
 			 store);
 

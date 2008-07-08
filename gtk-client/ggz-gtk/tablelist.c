@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: tablelist.c 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: tablelist.c 10231 2008-07-08 19:30:17Z jdorje $
  * 
  * List of tables in the current room
  * 
@@ -102,14 +102,14 @@ static GtkWidget *create_mnu_table(void)
 GGZTable *get_selected_table(void)
 {
 	GtkWidget *tree = table_list;
-	GtkTreeSelection *select
+	GtkTreeSelection *selection
 	  = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	gint id;
 
-	if (!gtk_tree_selection_get_selected(select, &model, &iter)) {
+	if (!gtk_tree_selection_get_selected(selection, &model, &iter)) {
 		return NULL;
 	}
 
@@ -177,7 +177,7 @@ GtkWidget *create_table_list(GtkWidget * window)
 	GtkWidget *tree;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
-	GtkTreeSelection *select;
+	GtkTreeSelection *selection;
 
 	assert(TABLE_COLUMNS == 3);
 	store = gtk_list_store_new(TABLE_COLUMNS,
@@ -208,8 +208,8 @@ GtkWidget *create_table_list(GtkWidget * window)
 	gtk_widget_set_sensitive(tree, FALSE);
 	GTK_WIDGET_UNSET_FLAGS(tree, GTK_CAN_FOCUS);
 
-	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
-	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 	g_signal_connect(tree, "button-press-event",
 			 GTK_SIGNAL_FUNC(table_list_event), NULL);

@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 10192 2008-07-08 03:50:06Z jdorje $
+ * $Id: playerlist.c 10231 2008-07-08 19:30:17Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -276,13 +276,12 @@ static gboolean player_list_event(GtkWidget *widget,
 
 	gtk_tree_model_get(model, &iter, PLAYER_COLUMN_NAME, &name, -1);
 	player = ggzcore_server_get_player(server, name);
-	g_free(name);
+
 	if (event->type == GDK_BUTTON_PRESS
 	    && buttonevent->button == 3
 	    && player) {
 		/* Right mouse button:
 		 * Create and display the menu */
-		char *name = ggzcore_player_get_name(player);
 		int is_friend = chat_is_friend(name);
 		int is_ignore = chat_is_ignore(name);
 		GtkWidget *menu;
@@ -292,6 +291,8 @@ static gboolean player_list_event(GtkWidget *widget,
 		gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL,
 			       NULL, buttonevent->button, 0);
 	}
+
+	g_free(name);
 
 	return FALSE;
 }
@@ -455,7 +456,7 @@ GtkWidget *create_player_list(GtkWidget *parent)
 	GtkWidget *tree;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
-	GtkTreeSelection *select;
+	GtkTreeSelection *selection;
 
 	store = gtk_list_store_new(PLAYER_COLUMNS,
 				   GDK_TYPE_PIXBUF,
@@ -506,8 +507,8 @@ GtkWidget *create_player_list(GtkWidget *parent)
 	gtk_widget_set_sensitive(tree, FALSE);
 	GTK_WIDGET_UNSET_FLAGS(tree, GTK_CAN_FOCUS);
 
-	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
-	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 	g_signal_connect(tree, "button-press-event",
 			 GTK_SIGNAL_FUNC(player_list_event), NULL);
