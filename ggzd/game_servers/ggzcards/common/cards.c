@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 02/25/2002
  * Desc: Card data for the GGZCards client and server
- * $Id: cards.c 4047 2002-04-22 01:07:22Z jdorje $
+ * $Id: cards.c 10190 2008-07-08 03:32:44Z jdorje $
  *
  * This contains card definitions common to both GGZCards client
  * and server.
@@ -50,9 +50,9 @@ cardset_type_t get_cardset_type(void)
 	return cardset_type;
 }
 
-const card_t UNKNOWN_CARD = {face: UNKNOWN_FACE,
-                             suit: UNKNOWN_SUIT,
-                             deck: UNKNOWN_DECK};
+const card_t UNKNOWN_CARD = {.face = UNKNOWN_FACE,
+                             .suit = UNKNOWN_SUIT,
+                             .deck = UNKNOWN_DECK};
 
 /* FIXME: a better system for returning names is needed.  It should
    be i18n'able, at least at the client. */

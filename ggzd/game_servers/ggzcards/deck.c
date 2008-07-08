@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000 (as cards.c)
  * Desc: Various useful deck manipulation routines for card games
- * $Id: deck.c 9016 2007-03-30 00:09:05Z jdorje $
+ * $Id: deck.c 10190 2008-07-08 03:32:44Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -127,9 +127,9 @@ deck_t *create_deck(deck_type_t which_deck)
 	for (deck = 0; deck < deck_deck_cnt; deck++)
 		for (suit = 0; suit < deck_suit_cnt; suit++)
 			for (face = 0; face < deck_face_cnt; face++) {
-				card_t card = {face: deck_faces[face],
-				               suit: deck_suits[suit],
-				               deck: deck_decks[deck]};
+				card_t card = {.face = deck_faces[face],
+				               .suit = deck_suits[suit],
+				               .deck = deck_decks[deck]};
 				if (is_valid_card(card)) {
 					/* HACK: for instance, in dominoes
 					   we wish to exclude certain cards. */

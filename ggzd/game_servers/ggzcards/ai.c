@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 8427 2006-07-31 22:50:50Z jdorje $
+ * $Id: ai.c 10190 2008-07-08 03:32:44Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -57,10 +57,10 @@ static char *path = NULL;
    AI specfiles can't be read when GGZD is running under "make test";
    but if the random AI is hard-coded it can still run. */
 static ai_module_t random_ai = {
-	name: "Random",
-	game: NULL, /* all games */
-	path: "ggzd.ggzcards.ai-random", /* path added later */
-	next: NULL /* not used */
+	.name = "Random",
+	.game = NULL, /* all games */
+	.path = "ggzd.ggzcards.ai-random", /* path added later */
+	.next = NULL /* not used */
 };
 
 void start_ai(player_t p, const ai_module_t *module)

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 10128 2008-07-01 02:31:12Z jdorje $
+ * $Id: common.c 10190 2008-07-08 03:32:44Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -52,7 +52,7 @@
 
 /* Global game variables */
 game_t game = {
-      rated:TRUE
+	.rated = TRUE
 };
 
 bool seats_full(void)
