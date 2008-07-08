@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 10147 2008-07-03 19:22:39Z jdorje $
+ * $Id: server.c 10213 2008-07-08 16:26:11Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -1095,10 +1095,10 @@ void _ggzcore_server_reset(GGZServer * server)
 }
 
 
-static void connection_callback(const char *address, int socket)
+static void connection_callback(const char *address, int fd)
 {
-	/*printf("<gai> called back! [%s][%i]\n", address, socket);*/
-	_ggzcore_net_set_fd(reconnect_server->net, socket);
+	/*printf("<gai> called back! [%s][%i]\n", address, fd);*/
+	_ggzcore_net_set_fd(reconnect_server->net, fd);
 	_ggzcore_server_connect(NULL);
 }
 
@@ -1551,7 +1551,7 @@ void _ggzcore_server_add_type(GGZServer * server, GGZGameType * type)
 }
 
 #ifdef SUPPORT_RECONNECT
-static void reconnect_alarm(int signal)
+static void reconnect_alarm(int sig)
 {
 	ggz_debug(GGZCORE_DBG_SERVER, "Trying to reconnect...");
 

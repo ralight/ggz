@@ -3,7 +3,7 @@
  * Author: Justin Zaun
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: table.c 10195 2008-07-08 03:56:26Z jdorje $
+ * $Id: table.c 10213 2008-07-08 16:26:11Z jdorje $
  *
  * This fils contains functions for handling tables
  *
@@ -207,18 +207,18 @@ void ggzcore_table_free(GGZTable *table)
 
 
 int ggzcore_table_set_seat(GGZTable *table,
-			   const unsigned int index,
+			   const unsigned int seat_num,
 			   GGZSeatType type,
 			   const char *name)
 {
 	GGZServer *server;
 	GGZNet *net;
-	GGZTableSeat seat = {index, type, name};
+	GGZTableSeat seat = {seat_num, type, name};
 
 	ggz_debug(GGZCORE_DBG_TABLE, "User changing seats... on %p", (void*)table);
 
 	/* Check table and seat number. */
-	if (!table || index >= table->num_seats)
+	if (!table || seat_num >= table->num_seats)
 		return -1;
 		
 	/* GGZ clients should only ever set seats to OPEN, BOT, or RESERVED. */
