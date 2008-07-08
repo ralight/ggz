@@ -24,6 +24,8 @@
 #include <stdlib.h>
 #include "minidom.h"
 
+#include <ggz.h>
+
 /* === Internal functions === */
 /* ========================== */
 
@@ -130,7 +132,7 @@ static ELE *minidom_makechild(ELE *parent, char *tag)
 	k = 0;
 	l = 0;
 	count = 0;
-	token = strdup(tag);
+	token = ggz_strdup(tag);
 	len = strlen(tag);
 	for(j = 0; j < len; j++)
 	{
@@ -157,12 +159,12 @@ static ELE *minidom_makechild(ELE *parent, char *tag)
 				pos = strpos(token, '=');
 				if(pos == -1)
 				{
-					att->name = strdup(token);
+					att->name = ggz_strdup(token);
 					att->value = NULL;
 				}
 				else
 				{
-					att->name = (char*)malloc(pos + 1);
+					att->name = ggz_malloc(pos + 1);
 					att->value = (char*)malloc(strlen(token) - pos + 1);
 					memcpy(att->name, token, pos);
 					memcpy(att->value, token + pos + 1 + 1, strlen(token) - pos - 1 - 2); /* exclude "" marks */
@@ -180,7 +182,7 @@ static ELE *minidom_makechild(ELE *parent, char *tag)
 			count++;
 		}
 	}
-	free(token);
+	ggz_free(token);
 
 	return ele;
 }

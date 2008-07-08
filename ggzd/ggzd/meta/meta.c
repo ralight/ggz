@@ -175,7 +175,7 @@ int meta_add(ServerEntry *server, const char *classname, const char *category,
 				minidom_free(dom);
 			}
 
-			free(s);
+			ggz_free(s);
 		}
 	}
 
@@ -211,8 +211,8 @@ void meta_server_attribute(ServerEntry *server,
 
 	server->attributes = (ServerAttribute*)realloc(server->attributes,
 		(i + 2) * sizeof(ServerAttribute));
-	server->attributes[i].key = strdup(key);
-	server->attributes[i].value = strdup(value);
+	server->attributes[i].key = ggz_strdup(key);
+	server->attributes[i].value = ggz_strdup(value);
 	server->attributes[i + 1].key = NULL;
 	server->attributes[i + 1].value = NULL;
 }
@@ -246,8 +246,8 @@ void meta_server_free(ServerEntry *server)
 	{
 		for(i = 0; server->attributes[i].key; i++)
 		{
-			free(server->attributes[i].key);
-			free(server->attributes[i].value);
+			ggz_free(server->attributes[i].key);
+			ggz_free(server->attributes[i].value);
 		}
 	}
 
@@ -340,6 +340,7 @@ ServerEntry **meta_query(const char *metaserveruri, const char *classname,
 			}
 			minidom_free(dom);
 		}
+		ggz_free(s);
 	}
 
 	return list;
@@ -488,7 +489,7 @@ static char *meta_query_internal(int fd, const char *text)
 	if(ret2 > 0)
 	{
 		buffer[ret2 - 1] = 0;
-		ret = strdup(buffer);
+		ret = ggz_strdup(buffer);
 	}
 	else ret = NULL;
 
