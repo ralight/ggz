@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 10038 2008-06-07 05:13:44Z jdorje $
+ * $Id: about.c 10177 2008-07-08 01:52:20Z jdorje $
  *
  * About dialog: Displays information about the authors and the application.
  *
@@ -121,8 +121,9 @@ static void about_realize(GtkWidget * widget, gpointer data)
 	colormap = gdk_colormap_get_system();
 	pixmap = gdk_pixmap_new(widget->window, 250, 300, -1);
 	bg_img = load_pixbuf("about_bg");
-	if (bg_img == NULL)
+	if (bg_img == NULL) {
 		g_error("Couldn't create about background pixmap.");
+	}
 
 	tmp = g_object_get_data(G_OBJECT(about_dialog), "background");
 	oldstyle = gtk_widget_get_style(tmp);

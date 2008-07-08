@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 10013 2008-05-30 20:01:43Z jdorje $
+ * $Id: chat.c 10177 2008-07-08 01:52:20Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -237,22 +237,25 @@ static void chat_allocate_colors(void)
                                         (colors[i].blue & 0xff00) / 256);
                         if (!gdk_colormap_alloc_color(gdk_colormap_get_system(),
 						      &colors[i],
-						      FALSE, TRUE))
+						      FALSE, TRUE)) {
                                 g_error("*** GGZ: Couldn't alloc color\n");
+			}
                 }
         }
         ColorBlack.pixel = (gulong) ((ColorBlack.red & 0xff00) * 256 +
         			(ColorBlack.green & 0xff00) +
         			(ColorBlack.blue & 0xff00) / 256);
         if (!gdk_colormap_alloc_color(gdk_colormap_get_system(),
-				      &ColorBlack, FALSE, TRUE))
+				      &ColorBlack, FALSE, TRUE)) {
         	g_error("*** GGZ: Couldn't alloc color\n");
+	}
         ColorWhite.pixel = (gulong) ((ColorWhite.red & 0xff00) * 256 +
         			(ColorWhite.green & 0xff00) +
         			(ColorWhite.blue & 0xff00) / 256);
         if (!gdk_colormap_alloc_color(gdk_colormap_get_system(),
-				      &ColorWhite, FALSE, TRUE))
+				      &ColorWhite, FALSE, TRUE)) {
         	g_error("*** GGZ: Couldn't alloc color\n");
+	}
 }
 
 /* chat_display_message() - Adds text to the xtext widget wich is used to diaplying
