@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
- * $Id: main.c 9952 2008-04-12 22:50:04Z oojah $
+ * $Id: main.c 10238 2008-07-08 20:02:24Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -56,8 +56,6 @@ static void initialize_about_dialog(void);
 static void load_data(void);
 static void save_data(void);
 
-static GGZMod *mod;
-
 static gboolean game_handle_io(GGZMod * mod)
 {
 	int op = -1;
@@ -106,6 +104,7 @@ static gboolean game_handle_io(GGZMod * mod)
 
 int main(int argc, char *argv[])
 {
+	GGZMod *mod;
 
 	ggz_intl_init("reversi");
 	initialize_debugging();
@@ -214,12 +213,7 @@ static void load_data(void)
    immediately before exiting. */
 static void save_data(void)
 {
-	GdkColor *back_color, *last_color;
-
 	/* Write to config file */
-	back_color = g_object_get_data(G_OBJECT(main_win), "back_color");
-	last_color = g_object_get_data(G_OBJECT(main_win), "last_color");
-
 	ggz_conf_write_int(config_file, "background color", "red",
 			   back_color->red);
 	ggz_conf_write_int(config_file, "background color", "green",
