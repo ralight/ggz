@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.h 8240 2006-06-21 15:35:15Z jdorje $
+ * $Id: games.h 10225 2008-07-08 18:19:56Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -95,8 +95,6 @@ typedef struct {
 	int (*compare_cards) (card_t, card_t);
 	void (*send_hand) (player_t, seat_t);	/* sends a hand to a player */
 } game_data_t;
-
-extern game_data_t *game_data[];
 
 /* which game is this? */
 game_data_t *games_get_gametype(char *game_name);	

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 8259 2006-06-23 06:53:15Z jdorje $
+ * $Id: games.c 10225 2008-07-08 18:19:56Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -60,7 +60,7 @@ extern game_data_t fortytwo_data;
 
 /* This holds the actual info about the different game modules.  It
    need not correspond with the enumeration in games.h. */
-game_data_t *game_data[] = {
+static game_data_t *game_data[] = {
 	&bridge_data,
 	&euchre_data,
 	&fortytwo_data,
