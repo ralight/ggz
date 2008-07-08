@@ -76,7 +76,7 @@ static void simpleexec(const char *argvec)
 }
 
 /* Launch a child program and reassign some fd's */
-static int startup(int fdin, int fdout, const char *exec, int convert)
+static int startup(void)
 {
 	int fd[2];
 	int res;
@@ -172,12 +172,12 @@ static void sighandler(int foo)
 }
 
 /* GGZ handler */
-static void callback(GGZMod *mod, GGZModEvent e, const void *data)
+static void callback(GGZMod *ggzmod, GGZModEvent e, const void *data)
 {
 	const int *fd = data;
 
 	fdgame = *fd;
-	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
+	ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
 	
 }
 
@@ -260,7 +260,7 @@ int main(int argc, char *argv[])
 		while(fdgame < 0) ggzmod_dispatch(mod);
 
 		/* Try to launch the child program */
-		ret = startup(fdin, fdout, exec, convert);
+		ret = startup();
 
 		ggzmod_disconnect(mod);
 		ggzmod_free(mod);
