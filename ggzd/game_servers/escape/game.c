@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 8780 2007-01-02 12:15:46Z josef $
+ * $Id: game.c 10201 2008-07-08 04:19:40Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -795,7 +795,7 @@ static char game_check_win(void)
 	if(count==8){
 		ggzdmod_log(escape_game.ggz, "game_checkwin() count = 8");
 		ggzdmod_log(escape_game.ggz, "\tescape_game.boardheight = %d",escape_game.boardheight);
-		ggzdmod_log(escape_game.ggz, "\escape_game.wallwidth+escape_game.goalwidth = %d",escape_game.wallwidth+escape_game.goalwidth);
+		ggzdmod_log(escape_game.ggz, "escape_game.wallwidth+escape_game.goalwidth = %d",escape_game.wallwidth+escape_game.goalwidth);
 		ggzdmod_log(escape_game.ggz, "\tescape_game.x = %d",escape_game.x);
 		ggzdmod_log(escape_game.ggz, "\tescape_game.y = %d",escape_game.y);
 		for(i=1; i<10; i++){
