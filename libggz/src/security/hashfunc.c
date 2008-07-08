@@ -6,7 +6,6 @@
 # include <gcrypt.h>
 #endif
 #include "ggz.h"
-#include "hashfunc.h"
 
 #ifdef USE_GCRYPT
 

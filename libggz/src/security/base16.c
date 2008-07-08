@@ -6,7 +6,6 @@
 #include <stdlib.h>
 
 #include "ggz.h"
-#include "base16.h"
 
 /* Function to encode strings to base16 (hex) with a nibble per hex character */
 

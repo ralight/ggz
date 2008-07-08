@@ -6,7 +6,6 @@
 #include <stdlib.h>
 
 #include "ggz.h"
-#include "base64.h"
 
 /* Base64 functions as per RFC 2045 */
 
