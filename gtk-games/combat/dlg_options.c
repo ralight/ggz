@@ -4,7 +4,7 @@
  * Project: GGZ Combat Client
  * Date: 2001?
  * Desc: Options dialog
- * $Id: dlg_options.c 9598 2008-01-25 17:32:12Z josef $
+ * $Id: dlg_options.c 10235 2008-07-08 19:42:13Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -74,7 +74,7 @@ static void dlg_options_list_maps(GtkTreeView * tree)
 {
 	GtkListStore *store =
 	    GTK_LIST_STORE(gtk_tree_view_get_model(tree));
-	GtkTreeSelection *select = gtk_tree_view_get_selection(tree);
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(tree);
 	char **names;
 
 	gtk_list_store_clear(store);
@@ -96,7 +96,7 @@ static void dlg_options_list_maps(GtkTreeView * tree)
 				   MAP_COLUMN_FILE, *names, -1);
 
 		if (strcmp(name, "Default") == 0) {
-			gtk_tree_selection_select_iter(select, &iter);
+			gtk_tree_selection_select_iter(selection, &iter);
 		}
 	}
 }
@@ -107,10 +107,10 @@ static void dlg_options_list_maps(GtkTreeView * tree)
 static gboolean get_current_map(GtkTreeView * tree,
 				gchar ** mapname, gchar ** filename)
 {
-	GtkTreeSelection *select = gtk_tree_view_get_selection(tree);
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(tree);
 	GtkTreeModel *model;
 	GtkTreeIter iter;
-	GList *list = gtk_tree_selection_get_selected_rows(select, &model);
+	GList *list = gtk_tree_selection_get_selected_rows(selection, &model);
 
 	if (!list || !list->data) {
 		*mapname = NULL;
@@ -204,7 +204,7 @@ static GtkWidget *tree_new(GtkWidget * parent)
 	GtkWidget *tree;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
-	GtkTreeSelection *select;
+	GtkTreeSelection *selection;
 
 	assert(MAP_COLUMNS == 2);
 	store =
@@ -225,10 +225,10 @@ static GtkWidget *tree_new(GtkWidget * parent)
 	g_object_set_data(G_OBJECT(parent), "maps_list_store", store);
 	gtk_widget_show(tree);
 
-	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
-	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
-	g_signal_connect(select, "changed",
+	g_signal_connect(selection, "changed",
 			 GTK_SIGNAL_FUNC(maps_list_selected), parent);
 
 	return tree;

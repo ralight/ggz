@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 10/14/2000
  * Desc: Player info widget
- * $Id: gtk_player_info.c 6346 2004-11-13 08:37:39Z jdorje $
+ * $Id: gtk_player_info.c 10235 2008-07-08 19:42:13Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -43,7 +43,7 @@ static GtkWidget *tree_new(GtkWidget * parent)
 	GtkWidget *tree;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
-	GtkTreeSelection *select;
+	GtkTreeSelection *selection;
 
 	assert(UNIT_COLUMNS == 4);
 	store = gtk_list_store_new(UNIT_COLUMNS, G_TYPE_INT,
@@ -79,10 +79,10 @@ static GtkWidget *tree_new(GtkWidget * parent)
 	g_object_set_data(G_OBJECT(parent), "unit_list_store", store);
 	gtk_widget_show(tree);
 
-	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
-	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
-	g_signal_connect(select, "changed",
+	g_signal_connect(selection, "changed",
 			 GTK_SIGNAL_FUNC(game_unit_list_handle), parent);
 
 	return tree;

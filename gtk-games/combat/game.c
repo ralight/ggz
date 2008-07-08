@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 9598 2008-01-25 17:32:12Z josef $
+ * $Id: game.c 10235 2008-07-08 19:42:13Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -422,7 +422,7 @@ void game_draw_terrain(int x, int y, int type)
 			   solid_gc, TRUE, x, y, PIXSIZE, PIXSIZE);
 }
 
-void game_draw_unit(int x, int y, int tile, int player)
+void game_draw_unit(int x, int y, int unit, int player)
 {
 	x = x * (PIXSIZE + 1) + 1;
 	y = y * (PIXSIZE + 1) + 1;
@@ -435,8 +435,8 @@ void game_draw_unit(int x, int y, int tile, int player)
 				   solid_gc, TRUE, x, y, PIXSIZE, PIXSIZE);
 	}
 	// Draws the image, if it is known
-	if (tile >= 0 && tile < PIXMAPS) {
-		gdk_draw_pixbuf(cbt_buf, tile_gc, tiles[tile],
+	if (unit >= 0 && unit < PIXMAPS) {
+		gdk_draw_pixbuf(cbt_buf, tile_gc, tiles[unit],
 				0, 0, x, y, PIXSIZE,
 				PIXSIZE, GDK_RGB_DITHER_NONE, 0, 0);
 	}
@@ -735,10 +735,10 @@ void game_change_turn(void)
 
 }
 
-void game_unit_list_handle(GtkTreeSelection * select, gpointer user_data)
+void game_unit_list_handle(GtkTreeSelection * selection, gpointer user_data)
 {
 	GtkTreeModel *model;
-	GList *list = gtk_tree_selection_get_selected_rows(select, &model);
+	GList *list = gtk_tree_selection_get_selected_rows(selection, &model);
 	GtkTreeIter iter;
 
 	// If its not prep time, there is no need to do that!
