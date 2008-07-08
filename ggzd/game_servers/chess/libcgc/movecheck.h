@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: movecheck.h 1133 2001-02-19 23:22:16Z bugg $
+ *  $Id: movecheck.h 10219 2008-07-08 17:26:29Z jdorje $
  */
 
 #ifndef _CGC_MOVECHECK_H
@@ -36,11 +36,23 @@
 
 #define SAFE 3
 
-enum { BLACK = 0x00, WHITE=0x40 };
-enum { EMPTY = 0x01, PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, BLOCKER};
-enum { W_PAWN = (PAWN | WHITE), W_KNIGHT, W_BISHOP, W_ROOK, W_QUEEN, W_KING};
-enum { B_PAWN = (PAWN | BLACK), B_KNIGHT, B_BISHOP, B_ROOK, B_QUEEN, B_KING};
-enum { STANDARD, Q_CASTLE, K_CASTLE, ENPASSANT };
+enum {
+	BLACK = 0x00, WHITE = 0x40
+};
+enum {
+	EMPTY = 0x01, PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, BLOCKER
+};
+enum {
+	W_PAWN = (PAWN | WHITE),
+	W_KNIGHT, W_BISHOP, W_ROOK, W_QUEEN, W_KING
+};
+enum {
+	B_PAWN = (PAWN | BLACK),
+	B_KNIGHT, B_BISHOP, B_ROOK, B_QUEEN, B_KING
+};
+enum {
+	STANDARD, Q_CASTLE, K_CASTLE, ENPASSANT
+};
 
 struct move {
 	int fs;
@@ -55,9 +67,12 @@ struct move {
 };
 
 /* movecheck.c */
-int cgc_valid_move(struct game *curgame, int fs, int rs, int fd, int rd, int promote);
-int cgc_do_move(struct game *curgame, int fs, int rs, int fd, int rd, int promote);
-int cgc_register_move(struct game *curgame, int fs, int rs, int fd, int rd, int promote);
+int cgc_valid_move(struct game *curgame, int fs, int rs, int fd, int rd,
+		   int promote);
+int cgc_do_move(struct game *curgame, int fs, int rs, int fd, int rd,
+		int promote);
+int cgc_register_move(struct game *curgame, int fs, int rs, int fd, int rd,
+		      int promote);
 int cgc_check_state(struct game *curgame, int kf, int kr);
 int cgc_is_stale(struct game *curgame, int kf, int kr);
 

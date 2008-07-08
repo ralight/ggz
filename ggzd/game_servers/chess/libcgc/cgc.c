@@ -23,17 +23,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: cgc.c 3990 2002-04-15 07:23:26Z jdorje $
+ *  $Id: cgc.c 10219 2008-07-08 17:26:29Z jdorje $
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include "cgc.h"
 
-game_t *
-cgc_create_game(void)
+game_t *cgc_create_game(void)
 {
 	game_t *newgame;
 
@@ -42,22 +41,17 @@ cgc_create_game(void)
 	return newgame;
 }
 
-int
-cgc_join_game(game_t *game, int color)
+int cgc_join_game(game_t * game, int color)
 {
 	return cgc_join_table(game, color);
 }
 
-int
-cgc_make_move(game_t *game, char *move)
+int cgc_make_move(game_t * game, char *move)
 {
 	return cgc_handle_move(game, move);
 }
 
-void
-cgc_free_game(game_t *game)
+void cgc_free_game(game_t * game)
 {
 	cgc_game_over(game);
 }
-
-
