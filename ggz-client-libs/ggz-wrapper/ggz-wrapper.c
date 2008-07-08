@@ -3,7 +3,7 @@
  * Author: Josef Spillner
  * Project: GGZ Client libs
  * Date: 2004
- * $Id: ggz-wrapper.c 9165 2007-07-04 13:58:17Z josef $
+ * $Id: ggz-wrapper.c 10209 2008-07-08 16:03:03Z jdorje $
  *
  * Code for a wrapper for GGZ games
  *
@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
 	int optch;
 	int optindex;
 
-	char *server = DEFAULT_SERVER;
+	char *host = DEFAULT_SERVER;
 	char *password = DEFAULT_PASSWORD;
 	char *nick = DEFAULT_NICKNAME;
 	int port = DEFAULT_PORT;
@@ -105,7 +105,7 @@ int main(int argc, char **argv) {
 				password = optarg;
 				break;
 			case 's':
-				server = optarg;
+				host = optarg;
 				break;
 			case 'd':
 				dst_nick = optarg;
@@ -132,9 +132,9 @@ int main(int argc, char **argv) {
 	}
 
 	if(password)
-		server_init(server, port, GGZ_LOGIN, nick, password);
+		server_init(host, port, GGZ_LOGIN, nick, password);
 	else
-		server_init(server, port, GGZ_LOGIN_GUEST, nick, password);
+		server_init(host, port, GGZ_LOGIN_GUEST, nick, password);
 	loop();
 	return 0;
 }

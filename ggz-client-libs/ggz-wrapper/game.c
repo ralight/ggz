@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 9318 2007-09-22 06:43:36Z josef $
+ * $Id: game.c 10209 2008-07-08 16:03:03Z jdorje $
  *
  * Functions for handling game events
  *
@@ -76,7 +76,7 @@ void game_init(GGZModule * module, GGZGameType * type, int index,
 
 	game = ggzcore_game_new();
 	ggzcore_game_init(game, server, module);
-	game_register(game);
+	game_register();
 	ggzcore_game_launch(game);
 }
 
@@ -109,27 +109,28 @@ static void channel_process(void)
 	if (!readserver)
 		return;
 	if (server) {
-		int fd = ggzcore_server_get_channel(server);
-		ggzcore_server_read_data(server, fd);
+		int sock = ggzcore_server_get_channel(server);
+
+		ggzcore_server_read_data(server, sock);
 	}
 }
 
 
-void game_channel_connected(int fd)
+void game_channel_connected(int sock)
 {
-	loop_add_fd(fd, channel_process, NULL);
+	loop_add_fd(sock, channel_process, NULL);
 }
 
 
-void game_channel_ready(int fd)
+void game_channel_ready(int sock)
 {
-	ggzcore_game_set_server_fd(game, fd);
+	ggzcore_game_set_server_fd(game, sock);
 	readserver = 0;
 }
 
 
 #endif
-void game_register(GGZGame * game)
+void game_register(void)
 {
 	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCHED,
 				    game_launched);

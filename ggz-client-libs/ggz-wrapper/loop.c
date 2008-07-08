@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: loop.c 7172 2005-05-03 20:30:32Z oojah $
+ * $Id: loop.c 10209 2008-07-08 16:03:03Z jdorje $
  *
  * Functions for handling main IO loop
  *
@@ -77,13 +77,13 @@ void loop_init(int seconds)
 }
 
 
-void loop_add_fd(unsigned int fd, callback read, callback destroy)
+void loop_add_fd(unsigned int fd, callback read_cb, callback destroy)
 {
 	fds = ggz_realloc(fds, (num_fds + 1) * sizeof(struct _fd_info));
 	
 	fds[num_fds].fd = fd;
 	fds[num_fds].removed = 0;
-	fds[num_fds].read = read;
+	fds[num_fds].read = read_cb;
 	fds[num_fds].write = NULL;
 	fds[num_fds].destroy = destroy;
 

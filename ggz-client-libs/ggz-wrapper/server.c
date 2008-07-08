@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 9596 2008-01-25 17:17:42Z josef $
+ * $Id: server.c 10209 2008-07-08 16:03:03Z jdorje $
  *
  * Functions for handling server events
  *
@@ -47,7 +47,7 @@ extern char *dst_nick;
 extern char *game_name;
 extern char *frontend;
 
-static void server_register(GGZServer * server);
+static void server_register(void);
 static void server_process(void);
 
 static void checkplayer(void);
@@ -125,7 +125,7 @@ int server_init(char *host, int port, GGZLoginType type, char *login,
 	server = ggzcore_server_new();
 	ggzcore_server_set_hostinfo(server, host, port, 0);
 	ggzcore_server_set_logininfo(server, type, login, password, NULL);
-	server_register(server);
+	server_register();
 
 	return ggzcore_server_connect(server);
 }
@@ -133,12 +133,12 @@ int server_init(char *host, int port, GGZLoginType type, char *login,
 static void server_process(void)
 {
 	if (server) {
-		int fd = ggzcore_server_get_fd(server);
-		ggzcore_server_read_data(server, fd);
+		ggzcore_server_read_data(server,
+					 ggzcore_server_get_fd(server));
 	}
 }
 
-static void server_register(GGZServer * server)
+static void server_register(void)
 {
 	ggzcore_server_add_event_hook(server, GGZ_CONNECTED,
 				      server_connected);
