@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 10165 2008-07-05 22:57:24Z oojah $
+ * $Id: ggzdb.c 10202 2008-07-08 05:43:38Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -84,6 +84,8 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 	/* Load the database backend plugin */
 	const char *backend = connection.type;
 	const char *primarybackend = NULL;
+	char *error;
+
 	if(!backend){
 		primarybackend = ggzdb_get_default_backend();
 		backend = primarybackend;
@@ -102,42 +104,49 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 	if(primarybackend)
 		ggz_free(primarybackend);
 
-	if(((_ggzdb_init = dlsym(ggzdbhandle, "_ggzdb_init")) == NULL)
-	|| ((_ggzdb_close = dlsym(ggzdbhandle, "_ggzdb_close")) == NULL)
-	|| ((_ggzdb_enter = dlsym(ggzdbhandle, "_ggzdb_enter")) == NULL)
-	|| ((_ggzdb_exit = dlsym(ggzdbhandle, "_ggzdb_exit")) == NULL)
-	|| ((_ggzdb_init_player = dlsym(ggzdbhandle, "_ggzdb_init_player")) == NULL)
-	|| ((_ggzdb_player_add = dlsym(ggzdbhandle, "_ggzdb_player_add")) == NULL)
-	|| ((_ggzdb_player_get = dlsym(ggzdbhandle, "_ggzdb_player_get")) == NULL)
-	|| ((_ggzdb_player_update = dlsym(ggzdbhandle, "_ggzdb_player_update")) == NULL)
-	|| ((_ggzdb_player_get_first = dlsym(ggzdbhandle, "_ggzdb_player_get_first")) == NULL)
-	|| ((_ggzdb_player_get_next = dlsym(ggzdbhandle, "_ggzdb_player_get_next")) == NULL)
-	|| ((_ggzdb_player_get_extended = dlsym(ggzdbhandle, "_ggzdb_player_get_extended")) == NULL)
-	|| ((_ggzdb_player_next_uid = dlsym(ggzdbhandle, "_ggzdb_player_next_uid")) == NULL)
-	|| ((_ggzdb_player_drop_cursor = dlsym(ggzdbhandle, "_ggzdb_player_drop_cursor")) == NULL)
-	|| ((_ggzdb_init_stats = dlsym(ggzdbhandle, "_ggzdb_init_stats")) == NULL)
-	|| ((_ggzdb_stats_lookup = dlsym(ggzdbhandle, "_ggzdb_stats_lookup")) == NULL)
-	|| ((_ggzdb_stats_update = dlsym(ggzdbhandle, "_ggzdb_stats_update")) == NULL)
-	|| ((_ggzdb_stats_newmatch = dlsym(ggzdbhandle, "_ggzdb_stats_newmatch")) == NULL)
-	|| ((_ggzdb_stats_savegame = dlsym(ggzdbhandle, "_ggzdb_stats_savegame")) == NULL)
-	|| ((_ggzdb_stats_match = dlsym(ggzdbhandle, "_ggzdb_stats_match")) == NULL)
-	|| ((_ggzdb_stats_toprankings = dlsym(ggzdbhandle, "_ggzdb_stats_toprankings")) == NULL)
-	|| ((_ggzdb_stats_calcrankings = dlsym(ggzdbhandle, "_ggzdb_stats_calcrankings")) == NULL)
-	|| ((_ggzdb_savegames = dlsym(ggzdbhandle, "_ggzdb_savegames")) == NULL)
-	|| ((_ggzdb_savegame_owners = dlsym(ggzdbhandle, "_ggzdb_savegame_owners")) == NULL)
-	|| ((_ggzdb_savegame_player = dlsym(ggzdbhandle, "_ggzdb_savegame_player")) == NULL)
-	|| ((_ggzdb_rooms = dlsym(ggzdbhandle, "_ggzdb_rooms")) == NULL)
-	|| ((_ggzdb_reconfiguration_fd = dlsym(ggzdbhandle, "_ggzdb_reconfiguration_fd")) == NULL)
-	|| ((_ggzdb_reconfiguration_load = dlsym(ggzdbhandle, "_ggzdb_reconfiguration_load")) == NULL)
-	|| ((_ggzdb_reconfiguration_room = dlsym(ggzdbhandle, "_ggzdb_reconfiguration_room")) == NULL)
-	)
-	{
-		ggz_error_msg_exit("%s is an invalid database module (%s)",
-			backend, dlerror());
+#define DL_LOAD(x) (x) = dlsym(ggzdbhandle, #x)
+
+	/* Required backend functions. */
+	DL_LOAD(_ggzdb_init);
+	DL_LOAD(_ggzdb_close);
+	DL_LOAD(_ggzdb_enter);
+	DL_LOAD(_ggzdb_exit);
+	DL_LOAD(_ggzdb_init_player);
+	DL_LOAD(_ggzdb_player_add);
+	DL_LOAD(_ggzdb_player_get);
+	DL_LOAD(_ggzdb_player_update);
+	DL_LOAD(_ggzdb_player_get_first);
+	DL_LOAD(_ggzdb_player_get_next);
+	DL_LOAD(_ggzdb_player_get_extended);
+	DL_LOAD(_ggzdb_player_next_uid);
+	DL_LOAD(_ggzdb_player_drop_cursor);
+	DL_LOAD(_ggzdb_init_stats);
+	DL_LOAD(_ggzdb_stats_lookup);
+	DL_LOAD(_ggzdb_stats_update);
+	DL_LOAD(_ggzdb_stats_newmatch);
+	DL_LOAD(_ggzdb_stats_savegame);
+	DL_LOAD(_ggzdb_stats_match);
+	DL_LOAD(_ggzdb_stats_toprankings);
+	DL_LOAD(_ggzdb_stats_calcrankings);
+	DL_LOAD(_ggzdb_savegames);
+	DL_LOAD(_ggzdb_savegame_owners);
+	DL_LOAD(_ggzdb_savegame_player);
+	DL_LOAD(_ggzdb_rooms);
+	DL_LOAD(_ggzdb_reconfiguration_fd);
+	DL_LOAD(_ggzdb_reconfiguration_load);
+	DL_LOAD(_ggzdb_reconfiguration_room);
+
+	error = dlerror();
+	if (error) {
+		ggz_error_msg_exit("Error loading database module %s (%s)",
+				   backend, error);
 	}
+
 	/* These two functions are optional so we don't need to worry if they aren't provided. */
-	_ggzdb_escape = dlsym(ggzdbhandle, "_ggzdb_escape");
-	_ggzdb_unescape = dlsym(ggzdbhandle, "_ggzdb_unescape");
+	DL_LOAD(_ggzdb_escape);
+	DL_LOAD(_ggzdb_unescape);
+
+#undef DL_LOAD
 
 	if(connection.hashing)
 		db_hashing = ggz_strdup(connection.hashing);
