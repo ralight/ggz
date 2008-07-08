@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 10177 2008-07-08 01:52:20Z jdorje $
+ * $Id: about.c 10230 2008-07-08 19:26:50Z jdorje $
  *
  * About dialog: Displays information about the authors and the application.
  *
@@ -41,13 +41,19 @@
 #include "client.h"
 #include "support.h"
 
-static GtkWidget *about_dialog;
-static guint about_tag;
-static PangoFontDescription *font[4];
-static GdkColormap *colormap;
-static GdkPixmap *pixmap;
-static GdkPixbuf *bg_img;
-static gint Yloc = 320;
+struct about {
+	GtkWidget *dialog;
+	guint tag;
+	PangoFontDescription *font[4];
+	GdkColormap *colormap;
+	GdkPixmap *pixmap;
+	GdkPixbuf *bg_img;
+	gint Yloc;
+};
+
+static struct about about = {
+	.Yloc = 320
+};
 
 static GtkWidget *create_dlg_about(void);
 static void about_realize(GtkWidget * widget, gpointer data);
@@ -58,13 +64,13 @@ static gint about_draw_text(GtkDrawingArea * background, gchar * text,
 
 void about_create_or_raise(void)
 {
-	if (!about_dialog) {
-		Yloc = 320;
-		about_dialog = create_dlg_about();
-		gtk_widget_show_all(about_dialog);
+	if (!about.dialog) {
+		about.Yloc = 320;
+		about.dialog = create_dlg_about();
+		gtk_widget_show_all(about.dialog);
 	} else {
-		gdk_window_show(about_dialog->window);
-		gdk_window_raise(about_dialog->window);
+		gdk_window_show(about.dialog->window);
+		gdk_window_raise(about.dialog->window);
 	}
 }
 
@@ -72,10 +78,10 @@ static void about_response(GtkDialog * dialog, gint response,
 			   gpointer data)
 {
 	assert(response = GTK_RESPONSE_CLOSE);
-	g_source_remove(about_tag);
-	gtk_widget_destroy(about_dialog);
-	about_dialog = NULL;
-	about_tag = 0;
+	g_source_remove(about.tag);
+	gtk_widget_destroy(about.dialog);
+	about.dialog = NULL;
+	about.tag = 0;
 }
 
 static GtkWidget *create_dlg_about(void)
@@ -118,39 +124,43 @@ static void about_realize(GtkWidget * widget, gpointer data)
 	GtkWidget *tmp;
 	int i;
 
-	colormap = gdk_colormap_get_system();
-	pixmap = gdk_pixmap_new(widget->window, 250, 300, -1);
-	bg_img = load_pixbuf("about_bg");
-	if (bg_img == NULL) {
+	about.colormap = gdk_colormap_get_system();
+	about.pixmap = gdk_pixmap_new(widget->window, 250, 300, -1);
+	about.bg_img = load_pixbuf("about_bg");
+	if (about.bg_img == NULL) {
 		g_error("Couldn't create about background pixmap.");
 	}
 
-	tmp = g_object_get_data(G_OBJECT(about_dialog), "background");
+	tmp = g_object_get_data(G_OBJECT(about.dialog), "background");
 	oldstyle = gtk_widget_get_style(tmp);
 	newstyle = gtk_style_copy(oldstyle);
 	/* I don't know why it's the 4th element of text */
 	newstyle->text[4] = colors[12];
 	gtk_widget_set_style(tmp, newstyle);
 
-	if (!font[0]) {
+	if (!about.font[0]) {
 		for (i = 0; i < 4; i++) {
-			font[i]
-			    = pango_font_description_copy(oldstyle->
-							  font_desc);
+			about.font[i] =
+			    pango_font_description_copy
+			    (oldstyle->font_desc);
 		}
 
 		for (i = 0; i < 3; i++) {
-			pango_font_description_set_weight(font[i],
+			pango_font_description_set_weight(about.font[i],
 							  PANGO_WEIGHT_BOLD);
 		}
 
-		pango_font_description_set_size(font[0], PANGO_SCALE * 16);
-		pango_font_description_set_size(font[1], PANGO_SCALE * 14);
-		pango_font_description_set_size(font[2], PANGO_SCALE * 12);
-		pango_font_description_set_size(font[3], PANGO_SCALE * 9);
+		pango_font_description_set_size(about.font[0],
+						PANGO_SCALE * 16);
+		pango_font_description_set_size(about.font[1],
+						PANGO_SCALE * 14);
+		pango_font_description_set_size(about.font[2],
+						PANGO_SCALE * 12);
+		pango_font_description_set_size(about.font[3],
+						PANGO_SCALE * 9);
 	}
 
-	about_tag = g_timeout_add(100, about_update, NULL);
+	about.tag = g_timeout_add(100, about_update, NULL);
 }
 
 
@@ -164,116 +174,140 @@ static gint about_update(gpointer data)
 	int status;
 
 	background =
-	    g_object_get_data(G_OBJECT(about_dialog), "background");
-	gdk_draw_pixbuf(pixmap,
+	    g_object_get_data(G_OBJECT(about.dialog), "background");
+	gdk_draw_pixbuf(about.pixmap,
 			GTK_WIDGET(background)->style->
-			fg_gc[GTK_WIDGET_STATE(background)],
-			bg_img,
+			fg_gc[GTK_WIDGET_STATE(background)], about.bg_img,
 			0, 0, 0, 0, 250, 300, GDK_RGB_DITHER_NONE, 0, 0);
 
 	/* FIXME: we ignore all status checks but the last?? */
 	status =
-	    about_draw_text(background, "GGZ Gaming Zone", font[0], Yloc,
-			    TRUE);
+	    about_draw_text(background, "GGZ Gaming Zone", about.font[0],
+			    about.Yloc, TRUE);
 
 	status =
-	    about_draw_text(background, VERSION, font[1], Yloc, FALSE);
+	    about_draw_text(background, VERSION, about.font[1], about.Yloc,
+			    FALSE);
 
-	status = about_draw_text(background, "(C) 1999-2004", font[1],
-				 Yloc, FALSE);
+	status =
+	    about_draw_text(background, "(C) 1999-2004", about.font[1],
+			    about.Yloc, FALSE);
 	status =
 	    about_draw_text(background, "(http://www.ggzgamingzone.org)",
-			    font[3], Yloc, FALSE);
-	status = about_draw_text(background, " ", font[1], Yloc, FALSE);
-	status = about_draw_text(background, " ", font[1], Yloc, FALSE);
+			    about.font[3], about.Yloc, FALSE);
 	status =
-	    about_draw_text(background, "Server", font[1], Yloc, FALSE);
-	status =
-	    about_draw_text(background, "Rich Gade", font[2], Yloc, FALSE);
-	status =
-	    about_draw_text(background, "Brent Hendricks", font[2], Yloc,
+	    about_draw_text(background, " ", about.font[1], about.Yloc,
 			    FALSE);
 	status =
-	    about_draw_text(background, "Jason Short", font[2], Yloc,
-			    FALSE);
-	status = about_draw_text(background, " ", font[1], Yloc, FALSE);
-	status = about_draw_text(background, "GTK+ Client", font[1], Yloc,
-				 FALSE);
-	status =
-	    about_draw_text(background, "Brian Cox", font[2], Yloc, FALSE);
-	status =
-	    about_draw_text(background, "Rich Gade", font[2], Yloc, FALSE);
-	status =
-	    about_draw_text(background, "Brent Hendricks", font[2], Yloc,
+	    about_draw_text(background, " ", about.font[1], about.Yloc,
 			    FALSE);
 	status =
-	    about_draw_text(background, "Ismael Orenstein", font[2], Yloc,
+	    about_draw_text(background, "Server", about.font[1],
+			    about.Yloc, FALSE);
+	status =
+	    about_draw_text(background, "Rich Gade", about.font[2],
+			    about.Yloc, FALSE);
+	status =
+	    about_draw_text(background, "Brent Hendricks", about.font[2],
+			    about.Yloc, FALSE);
+	status =
+	    about_draw_text(background, "Jason Short", about.font[2],
+			    about.Yloc, FALSE);
+	status =
+	    about_draw_text(background, " ", about.font[1], about.Yloc,
 			    FALSE);
 	status =
-	    about_draw_text(background, "Dan Papasian", font[2], Yloc,
+	    about_draw_text(background, "GTK+ Client", about.font[1],
+			    about.Yloc, FALSE);
+	status =
+	    about_draw_text(background, "Brian Cox", about.font[2],
+			    about.Yloc, FALSE);
+	status =
+	    about_draw_text(background, "Rich Gade", about.font[2],
+			    about.Yloc, FALSE);
+	status =
+	    about_draw_text(background, "Brent Hendricks", about.font[2],
+			    about.Yloc, FALSE);
+	status =
+	    about_draw_text(background, "Ismael Orenstein", about.font[2],
+			    about.Yloc, FALSE);
+	status =
+	    about_draw_text(background, "Dan Papasian", about.font[2],
+			    about.Yloc, FALSE);
+	status =
+	    about_draw_text(background, "Justin Zaun", about.font[2],
+			    about.Yloc, FALSE);
+	status =
+	    about_draw_text(background, "Jason Short", about.font[2],
+			    about.Yloc, FALSE);
+	status =
+	    about_draw_text(background, " ", about.font[1], about.Yloc,
 			    FALSE);
 	status =
-	    about_draw_text(background, "Justin Zaun", font[2], Yloc,
+	    about_draw_text(background, "KDE2 Client", about.font[1],
+			    about.Yloc, FALSE);
+	status =
+	    about_draw_text(background, "Josef Spillner", about.font[2],
+			    about.Yloc, FALSE);
+	status =
+	    about_draw_text(background, " ", about.font[1], about.Yloc,
 			    FALSE);
 	status =
-	    about_draw_text(background, "Jason Short", font[2], Yloc,
-			    FALSE);
-	status = about_draw_text(background, " ", font[1], Yloc, FALSE);
-	status = about_draw_text(background, "KDE2 Client", font[1], Yloc,
-				 FALSE);
+	    about_draw_text(background, "Windows Client", about.font[1],
+			    about.Yloc, FALSE);
 	status =
-	    about_draw_text(background, "Josef Spillner", font[2], Yloc,
-			    FALSE);
-	status = about_draw_text(background, " ", font[1], Yloc, FALSE);
+	    about_draw_text(background, "Doug Hudson", about.font[2],
+			    about.Yloc, FALSE);
 	status =
-	    about_draw_text(background, "Windows Client", font[1], Yloc,
-			    FALSE);
+	    about_draw_text(background, "Roger Light", about.font[2],
+			    about.Yloc, FALSE);
 	status =
-	    about_draw_text(background, "Doug Hudson", font[2], Yloc,
-			    FALSE);
+	    about_draw_text(background, "Justin Zaun", about.font[2],
+			    about.Yloc, FALSE);
 	status =
-	    about_draw_text(background, "Roger Light", font[2], Yloc,
+	    about_draw_text(background, " ", about.font[1], about.Yloc,
 			    FALSE);
 	status =
-	    about_draw_text(background, "Justin Zaun", font[2], Yloc,
-			    FALSE);
-	status = about_draw_text(background, " ", font[1], Yloc, FALSE);
-	status = about_draw_text(background, "Text Client", font[1], Yloc,
-				 FALSE);
+	    about_draw_text(background, "Text Client", about.font[1],
+			    about.Yloc, FALSE);
 	status =
-	    about_draw_text(background, "Brent Hendricks", font[2], Yloc,
-			    FALSE);
+	    about_draw_text(background, "Brent Hendricks", about.font[2],
+			    about.Yloc, FALSE);
 	status =
-	    about_draw_text(background, "Justin Zaun", font[2], Yloc,
-			    FALSE);
-	status = about_draw_text(background, " ", font[1], Yloc, FALSE);
+	    about_draw_text(background, "Justin Zaun", about.font[2],
+			    about.Yloc, FALSE);
 	status =
-	    about_draw_text(background, "Libraries", font[1], Yloc, FALSE);
-	status =
-	    about_draw_text(background, "Rich Gade", font[2], Yloc, FALSE);
-	status =
-	    about_draw_text(background, "Brent Hendricks", font[2], Yloc,
+	    about_draw_text(background, " ", about.font[1], about.Yloc,
 			    FALSE);
 	status =
-	    about_draw_text(background, "Ismael Orenstein", font[2], Yloc,
-			    FALSE);
+	    about_draw_text(background, "Libraries", about.font[1],
+			    about.Yloc, FALSE);
 	status =
-	    about_draw_text(background, "Justin Zaun", font[2], Yloc,
-			    FALSE);
+	    about_draw_text(background, "Rich Gade", about.font[2],
+			    about.Yloc, FALSE);
 	status =
-	    about_draw_text(background, "Jason Short", font[2], Yloc,
-			    FALSE);
+	    about_draw_text(background, "Brent Hendricks", about.font[2],
+			    about.Yloc, FALSE);
 	status =
-	    about_draw_text(background, "Josef Spillner", font[2], Yloc,
-			    FALSE);
+	    about_draw_text(background, "Ismael Orenstein", about.font[2],
+			    about.Yloc, FALSE);
+	status =
+	    about_draw_text(background, "Justin Zaun", about.font[2],
+			    about.Yloc, FALSE);
+	status =
+	    about_draw_text(background, "Jason Short", about.font[2],
+			    about.Yloc, FALSE);
+	status =
+	    about_draw_text(background, "Josef Spillner", about.font[2],
+			    about.Yloc, FALSE);
 	gdk_draw_drawable(GTK_WIDGET(background)->window,
 			  GTK_WIDGET(background)->style->
-			  fg_gc[GTK_WIDGET_STATE(background)], pixmap, 0,
-			  0, 0, 0, 250, 300);
+			  fg_gc[GTK_WIDGET_STATE(background)],
+			  about.pixmap, 0, 0, 0, 0, 250, 300);
 
 	if (status)
-		Yloc = 320;
-	Yloc = Yloc - 2;
+		about.Yloc = 320;
+	about.Yloc = about.Yloc - 2;
 	return TRUE;
 }
 
@@ -296,7 +330,8 @@ static gint about_draw_text(GtkDrawingArea * background, gchar * text,
 
 
 	/* I don't know why it's the 4th element of text_gc */
-	gdk_draw_layout(pixmap, GTK_WIDGET(background)->style->text_gc[4],
+	gdk_draw_layout(about.pixmap,
+			GTK_WIDGET(background)->style->text_gc[4],
 			(250 - rect.width) / 2, loc + l, layout);
 	l += rect.height;
 
