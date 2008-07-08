@@ -808,9 +808,9 @@ int ggzdmod_reseat(GGZdMod * ggzdmod,
 			     .type = GGZ_SEAT_OPEN,
 			     .fd = -1,
 			     .playerdata = NULL};
-		const char *name;
+		const char *old_name;
 
-		name = ggz_strdup(ggzdmod_get_seat(ggzdmod, old_seat).name);
+		old_name = ggz_strdup(ggzdmod_get_seat(ggzdmod, old_seat).name);
 		if (ggzdmod->state == GGZDMOD_STATE_PLAYING) {
 			/* Mark the seat as abandoned rather than open.
 			   FIXME - this should probably be done inside ggzd
@@ -818,13 +818,13 @@ int ggzdmod_reseat(GGZdMod * ggzdmod,
 			   controlled by game options. However this will
 			   take some interface changes.  See also the comment
 			   in handle_reseat. */
-			s.name = name;
+			s.name = old_name;
 			s.type = GGZ_SEAT_ABANDONED;
 		}
 
 		if (_ggzdmod_set_seat(ggzdmod, &s) < 0)
 			_ggzdmod_error(ggzdmod, "ggzdmod_reseat failed");
-		ggz_free(name); /* It's been copied in _ggzdmod_set_seat. */
+		ggz_free(old_name); /* It's been copied in _ggzdmod_set_seat. */
 	}
 
 	if (is_spectator) {
