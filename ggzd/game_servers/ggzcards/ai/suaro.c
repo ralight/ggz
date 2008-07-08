@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 4399 2002-09-03 17:25:09Z jdorje $
+ * $Id: suaro.c 10223 2008-07-08 18:14:08Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
@@ -41,17 +41,6 @@
 #include "game.h"
 #include "suaro.h"
 #include "aicommon.h"
-
-static char *short_suaro_suit_names[] = { "lo", "C", "D", "H", "S", "hi" };
-
-static int declarer = -1;
-static bid_t contract;
-static char trump = -1;
-
-enum {
-	ME = 0,
-	OPP = 2
-};
 
 /* 
  *
@@ -110,12 +99,32 @@ enum {
  *
  */
 
+static struct {
+	int declarer;
+	bid_t contract;
+	char trump;
+} ai;
+
+enum {
+	ME = 0,
+	OPP = 2
+};
+
+static const char *short_suaro_suit_name(int suit)
+{
+	const char *names[] = { "lo", "C", "D", "H", "S", "hi" };
+
+	assert(suit >= 0 && suit < 6);
+	return names[suit];
+}
+
+
 /* this inits AI static data at the start of a hand */
 void start_hand(void)
 {
 	ailib_start_hand();
-	declarer = -1;
-	trump = -1;
+	ai.declarer = -1;
+	ai.trump = -1;
 }
 
 /* this alerts the ai to someone else's bid/play */
@@ -126,15 +135,15 @@ void alert_bid(int player, bid_t bid)
 	/* we really need to take advantage of this information! */
 
 	if (bid.sbid.val > 0) {
-		declarer = player;
-		contract = bid;
+		ai.declarer = player;
+		ai.contract = bid;
 
-		contract.sbid.suit = bid.sbid.suit;
-		if (contract.sbid.suit == SUARO_HIGH
-		    || contract.sbid.suit == SUARO_LOW)
-			trump = -1;
+		ai.contract.sbid.suit = bid.sbid.suit;
+		if (ai.contract.sbid.suit == SUARO_HIGH
+		    || ai.contract.sbid.suit == SUARO_LOW)
+			ai.trump = -1;
 		else
-			trump = contract.sbid.suit - 1;
+			ai.trump = ai.contract.sbid.suit - 1;
 	}
 }
 
@@ -233,7 +242,7 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 
 	bidsuit = find_best_suit(FALSE) + 1;
 	ggz_debug(DBG_BID, "Best suit is %s.",
-		  short_suaro_suit_names[(int) bidsuit]);
+		  short_suaro_suit_name(bidsuit));
 
 	/* This really needs to be more accurate.  It basically just affects
 	   rounding (way below). */
@@ -315,7 +324,7 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 		my_bid.sbid.val = tricks;
 		my_bid.sbid.suit = bidsuit;
 		ggz_debug(DBG_BID, "Bidding %d %s.", (int) my_bid.sbid.val,
-			  short_suaro_suit_names[(int) my_bid.sbid.suit]);
+			  short_suaro_suit_name(my_bid.sbid.suit));
 	} else {
 		my_bid.sbid.spec = SUARO_PASS;
 		ggz_debug(DBG_BID, "Passing.");
@@ -335,11 +344,11 @@ card_t get_play(int play_seat, bool *valid_plays)
 
 		/* If we're the declarer and there is a trump, we want to
 		   pull trump. Otherwise just pick a strong suit. */
-		if (declarer == ME
-		    && trump >= 0 && libai_count_suit(ME, trump) > 1)
-			suit = trump;
+		if (ai.declarer == ME
+		    && ai.trump >= 0 && libai_count_suit(ME, ai.trump) > 1)
+			suit = ai.trump;
 		else
-			suit = find_best_suit(contract.sbid.suit ==
+			suit = find_best_suit(ai.contract.sbid.suit ==
 					      SUARO_LOW);
 		
 		ggz_debug(DBG_PLAY, "I'm leading.  My strongest suit is %s.",
@@ -364,10 +373,10 @@ card_t get_play(int play_seat, bool *valid_plays)
 			          get_suit_name(opp_card.suit));
 
 			/* Try to trump. */
-			if (trump >= 0 && libai_count_suit(ME, trump) > 0) {
+			if (ai.trump >= 0 && libai_count_suit(ME, ai.trump) > 0) {
 				card_t card;
 
-				for (card.suit = trump, card.face =
+				for (card.suit = ai.trump, card.face =
 				     8, card.deck = 0; card.face <= ACE_HIGH;
 				     card.face++) {
 					if (libai_is_card_in_hand(ME, card)) {
