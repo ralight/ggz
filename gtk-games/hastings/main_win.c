@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 6385 2004-11-16 05:21:05Z jdorje $
+ * $Id: main_win.c 10237 2008-07-08 19:54:54Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -77,9 +77,6 @@ GdkPixmap *hastings_buf;
 
 /* Main window */
 GtkWidget *main_win;
-
-/* Global game variables */
-extern struct game_state_t game;
 
 const char *player_colors[] = { N_("red"), N_("blue"),
 	N_("green"), N_("yellow")
@@ -440,7 +437,7 @@ static GtkWidget *create_menus(GtkWidget * window)
 /* Gtk+ stuff: set up the window */
 GtkWidget *create_main_win(void)
 {
-	GtkWidget *main_win;
+	GtkWidget *win_main;
 	GtkWidget *main_box;
 	GtkWidget *menubar;
 	GtkWidget *drawingarea;
@@ -449,21 +446,21 @@ GtkWidget *create_main_win(void)
 
 	accel_group = gtk_accel_group_new();
 
-	main_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	g_object_set_data(G_OBJECT(main_win), "main_win", main_win);
-	gtk_window_set_title(GTK_WINDOW(main_win), _("Hastings1066"));
-	gtk_window_set_resizable(GTK_WINDOW(main_win), FALSE);
+	win_main = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	g_object_set_data(G_OBJECT(win_main), "main_win", win_main);
+	gtk_window_set_title(GTK_WINDOW(win_main), _("Hastings1066"));
+	gtk_window_set_resizable(GTK_WINDOW(win_main), FALSE);
 
 	main_box = gtk_vbox_new(FALSE, 0);
 	gtk_widget_ref(main_box);
-	g_object_set_data_full(G_OBJECT(main_win), "main_box", main_box,
+	g_object_set_data_full(G_OBJECT(win_main), "main_box", main_box,
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(main_box);
-	gtk_container_add(GTK_CONTAINER(main_win), main_box);
+	gtk_container_add(GTK_CONTAINER(win_main), main_box);
 
-	menubar = create_menus(main_win);
+	menubar = create_menus(win_main);
 	gtk_widget_ref(menubar);
-	g_object_set_data_full(G_OBJECT(main_win), "menubar", menubar,
+	g_object_set_data_full(G_OBJECT(win_main), "menubar", menubar,
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(menubar);
 	gtk_box_pack_start(GTK_BOX(main_box), menubar, FALSE, FALSE, 0);
@@ -471,7 +468,7 @@ GtkWidget *create_main_win(void)
 
 	drawingarea = gtk_drawing_area_new();
 	gtk_widget_ref(drawingarea);
-	g_object_set_data_full(G_OBJECT(main_win), "drawingarea",
+	g_object_set_data_full(G_OBJECT(win_main), "drawingarea",
 			       drawingarea,
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(drawingarea);
@@ -482,14 +479,14 @@ GtkWidget *create_main_win(void)
 
 	statusbar = gtk_statusbar_new();
 	gtk_widget_ref(statusbar);
-	g_object_set_data_full(G_OBJECT(main_win), "statusbar", statusbar,
+	g_object_set_data_full(G_OBJECT(win_main), "statusbar", statusbar,
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(statusbar);
 	gtk_box_pack_start(GTK_BOX(main_box), statusbar, FALSE, FALSE, 0);
 
-	g_signal_connect(GTK_OBJECT(main_win), "delete_event",
+	g_signal_connect(GTK_OBJECT(win_main), "delete_event",
 			 GTK_SIGNAL_FUNC(main_exit), NULL);
-	g_signal_connect(GTK_OBJECT(main_win), "realize",
+	g_signal_connect(GTK_OBJECT(win_main), "realize",
 			 GTK_SIGNAL_FUNC(on_main_win_realize), NULL);
 	g_signal_connect(GTK_OBJECT(drawingarea), "configure_event",
 			 GTK_SIGNAL_FUNC(configure_handle), NULL);
@@ -498,7 +495,7 @@ GtkWidget *create_main_win(void)
 	g_signal_connect(GTK_OBJECT(drawingarea), "button_press_event",
 			 GTK_SIGNAL_FUNC(get_move), NULL);
 
-	gtk_window_add_accel_group(GTK_WINDOW(main_win), accel_group);
+	gtk_window_add_accel_group(GTK_WINDOW(win_main), accel_group);
 
-	return main_win;
+	return win_main;
 }

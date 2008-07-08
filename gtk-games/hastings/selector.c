@@ -38,9 +38,6 @@
 #include "game.h"
 #include "selector.h"
 
-/* Global game variables */
-extern struct game_state_t game;
-
 /* Combo box for map selection */
 static GtkWidget *list;
 

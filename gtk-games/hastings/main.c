@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main loop
- * $Id: main.c 9952 2008-04-12 22:50:04Z oojah $
+ * $Id: main.c 10237 2008-07-08 19:54:54Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -48,9 +48,6 @@
 #include "game.h"
 #include "main_win.h"
 
-/* main window widget */
-extern GtkWidget *main_win;
-
 /* Global game variables */
 struct game_state_t game;
 
@@ -62,11 +59,11 @@ static void get_maps(void);
 
 static gboolean game_handle_io(GGZMod * mod);
 
-static GGZMod *mod;
-
 /* Main function: connect and set up everything */
 int main(int argc, char *argv[])
 {
+	GGZMod *mod;
+
 	initialize_debugging();
 	ggz_intl_init("hastings");
 

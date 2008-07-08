@@ -29,6 +29,9 @@
 extern const char *player_colors[];
 extern const char *team_colors[];
 
+/* main window widget */
+extern GtkWidget *main_win;
+
 /* Create the main window */
 GtkWidget *create_main_win(void);
 

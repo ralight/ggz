@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 9/10/00
  * Desc: Hastings1066 game functions
- * $Id: game.h 6333 2004-11-12 02:27:20Z jdorje $
+ * $Id: game.h 10237 2008-07-08 19:54:54Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -111,5 +111,8 @@ int send_my_move(void);
 
 /* Requests */
 int request_sync(void);
+
+/* Global game variables */
+extern struct game_state_t game;
 
 #endif
