@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Callbacks for the main dialog window
- * $Id: main_cb.c 6385 2004-11-16 05:21:05Z jdorje $
+ * $Id: main_cb.c 10234 2008-07-08 19:38:25Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -70,13 +70,13 @@ static void update_theme_list(void)
 	gchar *name;
 	GtkTreeView *tree;
 	GtkListStore *store;
-	GtkTreeSelection *select;
+	GtkTreeSelection *selection;
 	int i;
 
 	tree = GTK_TREE_VIEW(lookup_widget(dlg_prefs, "theme_list"));
 	store =
 	    GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(tree)));
-	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
 
 	gtk_list_store_clear(GTK_LIST_STORE(store));
 	for (i = 0; i < game.num_themes; i++) {
@@ -89,7 +89,7 @@ static void update_theme_list(void)
 				   -1);
 
 		if (strcmp(game.theme_names[i], game.theme) == 0) {
-			gtk_tree_selection_select_iter(select, &iter);
+			gtk_tree_selection_select_iter(selection, &iter);
 		}
 	}
 }

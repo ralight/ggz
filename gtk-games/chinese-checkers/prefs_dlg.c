@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 2001
  * Desc: Preferences dialog
- * $Id: prefs_dlg.c 6354 2004-11-13 18:19:09Z jdorje $
+ * $Id: prefs_dlg.c 10234 2008-07-08 19:38:25Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -46,7 +46,7 @@ static GtkWidget *theme_list_new(GtkWidget * parent)
 	GtkWidget *tree;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
-	GtkTreeSelection *select;
+	GtkTreeSelection *selection;
 
 	assert(THEME_COLUMNS == 1);
 	store = gtk_list_store_new(THEME_COLUMNS, G_TYPE_STRING);
@@ -68,10 +68,10 @@ static GtkWidget *theme_list_new(GtkWidget * parent)
 	GTK_WIDGET_UNSET_FLAGS(tree, GTK_CAN_FOCUS);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(tree), FALSE);
 
-	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
-	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
-	g_signal_connect(select, "changed",
+	g_signal_connect(selection, "changed",
 			 GTK_SIGNAL_FUNC(on_theme_list_select_changed),
 			 NULL);
 

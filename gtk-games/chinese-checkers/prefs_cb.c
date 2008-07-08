@@ -25,12 +25,12 @@ void on_apply_button_clicked(GtkButton * button, gpointer user_data)
 	int beep;
 	GtkWidget *toggle;
 	GtkWidget *tree = lookup_widget(dlg_prefs, "theme_list");
-	GtkTreeSelection *select
+	GtkTreeSelection *selection
 	    = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 
-	if (gtk_tree_selection_get_selected(select, &model, &iter)) {
+	if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
 		gtk_tree_model_get(model, &iter, THEME_COLUMN_NAME,
 				   &theme, -1);
 	} else {
@@ -55,7 +55,7 @@ void on_cancel_button_clicked(GtkButton * button, gpointer user_data)
 	gtk_widget_destroy(dlg_prefs);
 }
 
-void on_theme_list_select_changed(GtkTreeSelection * select, gpointer data)
+void on_theme_list_select_changed(GtkTreeSelection * selection, gpointer data)
 {
 
 }
