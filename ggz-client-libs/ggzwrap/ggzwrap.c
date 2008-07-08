@@ -38,13 +38,13 @@
 #include <ggzmod.h>
 
 /* Global variables */
-int fdin = -1;
-int fdout = -1;
-int fdserver = -1;
-int fdgame = -1;
-char *exec = NULL;
-int convert = 0;
-GGZMod *mod = NULL;
+static int fdin = -1;
+static int fdout = -1;
+static int fdserver = -1;
+static int fdgame = -1;
+static char *exec = NULL;
+static int convert = 0;
+static GGZMod *mod = NULL;
 
 /* Execute a program with the given argument vector */
 static void simpleexec(const char *argvec)
