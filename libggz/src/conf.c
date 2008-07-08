@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 9950 2008-04-12 22:26:40Z oojah $
+ * $Id: conf.c 10179 2008-07-08 02:08:44Z jdorje $
  *
  * Internal functions for handling configuration files
  *
@@ -79,12 +79,12 @@ typedef struct conf_section_t {
 
 typedef struct conf_entry_t {
         char    *key;
-        char    *value;
+        const char    *value;
 } conf_entry_t;
 
 /* Our private functions and vars */
 static GGZList * file_parser(const char *path);
-static void parse_line(char *line, char **varname, char **varvalue);
+static void parse_line(char *line, char **varname, const char **varvalue);
 static int section_compare(const void *a, const void *b);
 static void *section_create(void *data);
 static void section_destroy(void *data);
@@ -692,7 +692,8 @@ static GGZList * file_parser(const char *path)
 	int		c_file;
 	GGZFile		*c_struct;
 	char		*line;
-	char		*varname, *varvalue;
+	char		*varname;
+	const char *varvalue;
 	int		linenum = 0;
 	GGZList		*s_list;
 	GGZListEntry	*s_entry;
@@ -783,7 +784,7 @@ static GGZList * file_parser(const char *path)
  *	separated by an optional equals sign.  Pointers to the lhs (varname)
  *	and rhs (varvalue) are returned via the argument list.
  */
-static void parse_line(char *p, char **varname, char **varvalue)
+static void parse_line(char *p, char **varname, const char **varvalue)
 {
 	char csave, *psave, *sol;
 
