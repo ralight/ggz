@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 8540 2006-08-26 18:01:03Z oojah $
+ * $Id: spades.c 10186 2008-07-08 03:15:31Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -61,12 +61,6 @@
 /* Aggressive bidding causes us to value our hand more aggressively.
    Unfortunately the AI cannot back this up with good play. */
 /* #define AGGRESSIVE_BIDDING */
-
-void start_hand(void);
-void alert_bid(int p, bid_t bid);
-void alert_play(int p, card_t card);
-bid_t get_bid(bid_t * bid_choices, int bid_count);
-card_t get_play(int play_hand, bool *valid_plays);
 
 enum {
 	ME = 0,
