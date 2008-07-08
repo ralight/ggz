@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 9022 2007-03-31 00:16:50Z jdorje $
+ * $Id: game.c 10233 2008-07-08 19:36:02Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -476,7 +476,6 @@ void game_get_play(int play_hand, int num_valid_cards,
 		int play_num, hand_num;
 		hand_t *hand = &ggzcards.players[play_hand].hand;
 		bool valid_plays[hand->hand_size];
-		card_t play_card;
 
 		assert(play_hand == ggzcards.play_hand);
 
@@ -495,8 +494,7 @@ void game_get_play(int play_hand, int num_valid_cards,
 			assert(hand_num < hand->hand_size);
 		}
 
-		play_card = get_play(ggzcards.play_hand, valid_plays);
-		game_play_card2(play_card);
+		game_play_card2(get_play(ggzcards.play_hand, valid_plays));
 	}
 #endif /* DEBUG */
 }
