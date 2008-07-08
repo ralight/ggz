@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game header
- * $Id: game.h 6346 2004-11-13 08:37:39Z jdorje $
+ * $Id: game.h 10182 2008-07-08 02:56:58Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -71,7 +71,6 @@ void game_get_sync(void);
 
 // Get info from the player
 void game_ask_options(void);
-void game_handle_setup(int);
 void game_handle_move(int);
 void game_send_setup(void);
 int game_send_options(GtkWidget *);
