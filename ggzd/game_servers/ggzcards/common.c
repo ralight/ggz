@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 10190 2008-07-08 03:32:44Z jdorje $
+ * $Id: common.c 10226 2008-07-08 18:29:16Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -836,8 +836,8 @@ void handle_client_open_hand(player_t p, bool is_open)
 
 	game.seats[s].open_hand = is_open;
 
-	allplayers_iterate(p) {
-		game.data->send_hand(p, s);
+	allplayers_iterate(p2) {
+		game.data->send_hand(p2, s);
 	} allplayers_iterate_end;
 }
 

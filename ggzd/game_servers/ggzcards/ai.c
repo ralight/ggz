@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 10190 2008-07-08 03:32:44Z jdorje $
+ * $Id: ai.c 10226 2008-07-08 18:29:16Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -289,9 +289,10 @@ static void set_path(const char *exec_cmd)
 static void init_random_ai(void)
 {
 	int len = strlen(path) + strlen(random_ai.path) + 2;
-	char *rand = ggz_malloc(len);
-	snprintf(rand, len, "%s/%s", path, random_ai.path);
-	random_ai.path = rand;
+	char *rand_ai = ggz_malloc(len);
+
+	snprintf(rand_ai, len, "%s/%s", path, random_ai.path);
+	random_ai.path = rand_ai;
 }
 
 void read_ai_modules(const char *exec_cmd)
