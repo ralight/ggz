@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 10223 2008-07-08 18:14:08Z jdorje $
+ * $Id: suaro.c 10224 2008-07-08 18:17:29Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
@@ -374,8 +374,6 @@ card_t get_play(int play_seat, bool *valid_plays)
 
 			/* Try to trump. */
 			if (ai.trump >= 0 && libai_count_suit(ME, ai.trump) > 0) {
-				card_t card;
-
 				for (card.suit = ai.trump, card.face =
 				     8, card.deck = 0; card.face <= ACE_HIGH;
 				     card.face++) {
