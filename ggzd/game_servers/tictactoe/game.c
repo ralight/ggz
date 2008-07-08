@@ -588,20 +588,18 @@ int game_read_move(int num, int* move)
 /* Do the next move*/
 static int game_next_move(void)
 {
+	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, variables.turn);
 #ifdef GGZBOTPLAYERS
 	int move;
-	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, variables.turn);
 #endif
 	
 #ifdef GGZBOTPLAYERS
 	if (seat.type == GGZ_SEAT_BOT) {
 #ifdef GGZBOTHASNAME
-		GGZSeat seat;
 		int difficulty;
 		char *botclass;
 
 		difficulty = 1;
-		seat = ggzdmod_get_seat(ttt_game.ggz, variables.turn);
 		botclass = ggzdmod_get_bot_class(ttt_game.ggz, seat.name);
 		if (!ggz_strcmp(botclass, "easy"))
 			difficulty = 0;
