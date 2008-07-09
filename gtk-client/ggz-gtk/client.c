@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 10245 2008-07-09 03:11:29Z jdorje $
+ * $Id: client.c 10246 2008-07-09 03:17:17Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -64,7 +64,6 @@
 #include "xtext.h"
 
 GtkWidget *win_main, *main_window;
-GtkWidget *ggznotebook;
 struct ggz_gtk ggz_gtk;
 
 static gint spectating = -1;
@@ -1454,42 +1453,42 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
 {
 	main_window = main_win;
 
-	ggznotebook = gtk_notebook_new();
+	ggz_gtk.notebook = gtk_notebook_new();
 
-	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(ggznotebook), FALSE);
-	gtk_notebook_set_show_border(GTK_NOTEBOOK(ggznotebook), FALSE);
+	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(ggz_gtk.notebook), FALSE);
+	gtk_notebook_set_show_border(GTK_NOTEBOOK(ggz_gtk.notebook), FALSE);
 
 	/* The order of these matches the enum ggz_page in client.h */
-	gtk_notebook_append_page(GTK_NOTEBOOK(ggznotebook),
+	gtk_notebook_append_page(GTK_NOTEBOOK(ggz_gtk.notebook),
 				 create_dlg_first(), NULL);
-	gtk_notebook_append_page(GTK_NOTEBOOK(ggznotebook),
+	gtk_notebook_append_page(GTK_NOTEBOOK(ggz_gtk.notebook),
 			create_dlg_login(ggz_gtk.embedded_default_profile),
 			NULL);
-	gtk_notebook_append_page(GTK_NOTEBOOK(ggznotebook),
+	gtk_notebook_append_page(GTK_NOTEBOOK(ggz_gtk.notebook),
 				 create_main_dlg(main_win), NULL);
-	gtk_notebook_append_page(GTK_NOTEBOOK(ggznotebook),
+	gtk_notebook_append_page(GTK_NOTEBOOK(ggz_gtk.notebook),
 				 create_props_dlg(), NULL);
 
-	gtk_widget_show_all(ggznotebook);
+	gtk_widget_show_all(ggz_gtk.notebook);
 
 	main_activate();
 
-	return ggznotebook;
+	return ggz_gtk.notebook;
 }
 
 void main_activate(void)
 {
 	if (first_is_raised()) {
-		gtk_notebook_set_current_page(GTK_NOTEBOOK(ggznotebook),
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(ggz_gtk.notebook),
 					      GGZ_PAGE_FIRSTLOGIN);
 	} else if (props_is_raised()) {
-		gtk_notebook_set_current_page(GTK_NOTEBOOK(ggznotebook),
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(ggz_gtk.notebook),
 					      GGZ_PAGE_PROPS);
 	} else if (server && ggzcore_server_is_logged_in(server)) {
-		gtk_notebook_set_current_page(GTK_NOTEBOOK(ggznotebook),
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(ggz_gtk.notebook),
 					      GGZ_PAGE_MAIN);
 	} else {
-		gtk_notebook_set_current_page(GTK_NOTEBOOK(ggznotebook),
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(ggz_gtk.notebook),
 					      GGZ_PAGE_LOGIN);
 	}
 }
