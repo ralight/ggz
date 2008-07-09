@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 10247 2008-07-09 03:39:44Z jdorje $
+ * $Id: client.c 10248 2008-07-09 04:12:22Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -63,7 +63,6 @@
 #include "types.h"
 #include "xtext.h"
 
-GtkWidget *main_window;
 struct ggz_gtk ggz_gtk;
 
 static gint spectating = -1;
@@ -1452,8 +1451,7 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
 
 GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
 {
-	main_window = main_win;
-
+	ggz_gtk.main_window = main_win;
 	ggz_gtk.notebook = gtk_notebook_new();
 
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(ggz_gtk.notebook), FALSE);

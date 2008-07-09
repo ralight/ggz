@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 10242 2008-07-09 00:48:24Z jdorje $
+ * $Id: main.c 10248 2008-07-09 04:12:22Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -147,7 +147,7 @@ int main (int argc, char *argv[])
 #endif
 
 	init_version = ggzcore_conf_read_string("INIT", "VERSION", VERSION);
-	main_window = create_win_main();
+	ggz_gtk.main_window = create_win_main();
 	ggz_sensitivity_init();
 
 	if (ggzcore_conf_read_int("INIT", "FIRST", 0) == 0 ||
@@ -155,7 +155,7 @@ int main (int argc, char *argv[])
 		first_raise();
 	}
 
-	gtk_widget_show_all(main_window);
+	gtk_widget_show_all(ggz_gtk.main_window);
 
 	/* Auto-connect to GGZ URI */
 	if (option_url) {

@@ -2,7 +2,7 @@
  * File: license.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: license.c 9393 2007-12-01 00:29:32Z jdorje $
+ * $Id: license.c 10248 2008-07-09 04:12:22Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -82,7 +82,7 @@ create_dlg_license (void)
 
   dlg_license = gtk_dialog_new ();
   gtk_window_set_transient_for(GTK_WINDOW(dlg_license),
-			       GTK_WINDOW(main_window));
+			       GTK_WINDOW(ggz_gtk.main_window));
   g_object_set_data(G_OBJECT (dlg_license), "dlg_license", dlg_license);
   gtk_window_set_title (GTK_WINDOW (dlg_license), "License");
 

@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 10231 2008-07-08 19:30:17Z jdorje $
+ * $Id: launch.c 10248 2008-07-09 04:12:22Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -415,7 +415,7 @@ GtkWidget *create_dlg_launch(void)
 
 	dlg_launch = gtk_dialog_new();
 	gtk_window_set_transient_for(GTK_WINDOW(dlg_launch),
-				     GTK_WINDOW(main_window));
+				     GTK_WINDOW(ggz_gtk.main_window));
 	g_object_set_data(G_OBJECT(dlg_launch), "dlg_launch", dlg_launch);
 	gtk_window_set_title(GTK_WINDOW(dlg_launch), _("Seat Assignments"));
 	gtk_window_set_resizable(GTK_WINDOW(dlg_launch), TRUE);

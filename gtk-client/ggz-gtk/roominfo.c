@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: roominfo.c 10148 2008-07-04 01:49:57Z jdorje $
+ * $Id: roominfo.c 10248 2008-07-09 04:12:22Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user. 
@@ -141,7 +141,7 @@ void room_info_create_or_raise(const GGZRoom * room)
 	const char *text;
 
 	if (!dialog) {
-		dialog = create_dlg_info(main_window);
+		dialog = create_dlg_info(ggz_gtk.main_window);
 		gtk_widget_show_all(dialog);
 	} else {
 		gdk_window_show(dialog->window);

@@ -2,7 +2,7 @@
  * File: motd.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: motd.c 10243 2008-07-09 02:00:29Z jdorje $
+ * $Id: motd.c 10248 2008-07-09 04:12:22Z jdorje $
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -161,7 +161,8 @@ static GtkWidget *create_dlg_motd(void)
 	GtkWidget *motd_text;
 
 	dlg_motd = gtk_dialog_new_with_buttons(_("Message of the Day"),
-					       GTK_WINDOW(main_window), 0,
+					       GTK_WINDOW(ggz_gtk.main_window),
+					       0,
 					       GTK_STOCK_CLOSE,
 					       GTK_RESPONSE_CLOSE, NULL);
 	g_object_set_data(G_OBJECT(dlg_motd), "dlg_motd", dlg_motd);

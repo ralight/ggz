@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: types.c 10240 2008-07-08 20:11:19Z jdorje $
+ * $Id: types.c 10248 2008-07-09 04:12:22Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user.
@@ -231,7 +231,7 @@ GtkWidget *create_dlg_types(void)
 
 	dlg_types = gtk_dialog_new();
 	gtk_window_set_transient_for(GTK_WINDOW(dlg_types),
-				     GTK_WINDOW(main_window));
+				     GTK_WINDOW(ggz_gtk.main_window));
 	g_object_set_data(G_OBJECT(dlg_types), "dlg_types", dlg_types);
 	gtk_widget_set_size_request(dlg_types, 600, 300);
 	gtk_window_set_title(GTK_WINDOW(dlg_types), _("Game Types"));
