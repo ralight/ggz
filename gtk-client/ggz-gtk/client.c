@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 10248 2008-07-09 04:12:22Z jdorje $
+ * $Id: client.c 10249 2008-07-09 04:17:16Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -64,8 +64,6 @@
 #include "xtext.h"
 
 struct ggz_gtk ggz_gtk;
-
-static gint spectating = -1;
 
 /* Maximum cache size for last entries */
 #define CHAT_MAXIMUM_CACHE 5
@@ -576,7 +574,7 @@ void client_start_table_join(void)
 	}
 
 	/* Initialize a game module */
-	spectating = 0;
+	ggz_gtk.spectating = FALSE;
 	if (game_initialize(0) == 0) {
 		if (game_launch() < 0) {
 			msgbox(_("Error launching game module."),
@@ -617,7 +615,7 @@ static void client_start_table_watch(void)
 #endif
 
 	/* Initialize a game module */
-	spectating = 1;
+	ggz_gtk.spectating = TRUE;
 	if (game_initialize(1) == 0) {
 		if (game_launch() < 0) {
 			msgbox(_("Error launching game module."),
@@ -636,9 +634,8 @@ void client_join_table(void)
 	GGZTable *table = get_selected_table();
 
 	room = ggzcore_server_get_cur_room(server);
-	assert(spectating >= 0);
 	status = ggzcore_room_join_table(room, ggzcore_table_get_id(table),
-					 spectating);
+					 ggz_gtk.spectating);
 	
 	if (status < 0) {
 		msgbox(_("Failed to join table.\nJoin aborted."),
