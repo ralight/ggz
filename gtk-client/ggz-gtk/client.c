@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 10243 2008-07-09 02:00:29Z jdorje $
+ * $Id: client.c 10244 2008-07-09 03:06:25Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -65,11 +65,9 @@
 
 GtkWidget *win_main, *main_window;
 GtkWidget *ggznotebook;
-void (*connected_cb)(GGZServer *server);
-void (*launched_cb)(void);
-void (*ggz_closed_cb)(void);
 const char *embedded_protocol_engine, *embedded_protocol_version;
 const char *embedded_default_profile;
+struct ggz_gtk ggz_gtk;
 
 static gint spectating = -1;
 
@@ -851,9 +849,9 @@ void ggz_gtk_initialize(gboolean reconnect,
 
 	server_profiles_load();	
 
-	connected_cb = connected;
-	launched_cb = launched;
-	ggz_closed_cb = ggz_closed;
+	ggz_gtk.connected_cb = connected;
+	ggz_gtk.launched_cb = launched;
+	ggz_gtk.ggz_closed_cb = ggz_closed;
 	if (embedded_protocol_engine) ggz_free(embedded_protocol_engine);
 	if (embedded_protocol_version) ggz_free(embedded_protocol_version);
 	if (embedded_default_profile) ggz_free(embedded_default_profile);

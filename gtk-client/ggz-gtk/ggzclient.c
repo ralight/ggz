@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 10242 2008-07-09 00:48:24Z jdorje $
+ * $Id: ggzclient.c 10244 2008-07-09 03:06:25Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -208,8 +208,8 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id,
 	const gchar *password;
 	gchar *message;
 
-	if (connected_cb) {
-		connected_cb(server);
+	if (ggz_gtk.connected_cb) {
+		ggz_gtk.connected_cb(server);
 	}
 
 	/* Set title */
@@ -1154,8 +1154,8 @@ void server_disconnect(void)
 	chat_display_local(CHAT_LOCAL_HIGH, NULL,
 			   _("Disconnected from server."));
 	main_activate();
-	if (connected_cb) {
-		connected_cb(NULL);
+	if (ggz_gtk.connected_cb) {
+		ggz_gtk.connected_cb(NULL);
 	}
 }
 

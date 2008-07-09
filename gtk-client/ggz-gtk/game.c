@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 10148 2008-07-04 01:49:57Z jdorje $
+ * $Id: game.c 10244 2008-07-09 03:06:25Z jdorje $
  *
  * Functions for handling game events
  *
@@ -214,8 +214,8 @@ static GGZHookReturn game_launched(GGZGameEvent id, const void *event_data,
 				       game_input_removed);
 	g_io_channel_unref(channel);
 
-	if (launched_cb) {
-		launched_cb();
+	if (ggz_gtk.launched_cb) {
+		ggz_gtk.launched_cb();
 	}
 
 	return GGZ_HOOK_OK;

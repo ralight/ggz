@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 10242 2008-07-09 00:48:24Z jdorje $
+ * $Id: login.c 10244 2008-07-09 03:06:25Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -318,8 +318,8 @@ static void login_cancel_button_clicked(GtkButton * button, gpointer data)
 				      "login_cancel_button_clicked");
 		server = NULL;
 	}
-	if (ggz_closed_cb) {
-		(ggz_closed_cb)();
+	if (ggz_gtk.ggz_closed_cb) {
+		ggz_gtk.ggz_closed_cb();
 	} else {
 		gtk_main_quit();
 	}
@@ -735,7 +735,7 @@ GtkWidget *create_dlg_login(const char *default_profile)
 			   TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(hbuttonbox), 5);
 
-	if (ggz_closed_cb) {
+	if (ggz_gtk.ggz_closed_cb) {
 		cancel_button = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
 	} else {
 		cancel_button = gtk_button_new_from_stock(GTK_STOCK_QUIT);
