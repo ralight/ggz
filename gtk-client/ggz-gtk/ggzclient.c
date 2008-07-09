@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 10252 2008-07-09 20:16:56Z jdorje $
+ * $Id: ggzclient.c 10254 2008-07-09 20:54:09Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -1160,48 +1160,48 @@ void server_disconnect(void)
 }
 
 
-void ggz_event_init(GGZServer * Server)
+void ggz_event_init(GGZServer * server)
 {
-	ggzcore_server_add_event_hook(Server,
+	ggzcore_server_add_event_hook(server,
 				      GGZ_CONNECTED, ggz_connected);
-	ggzcore_server_add_event_hook(Server,
+	ggzcore_server_add_event_hook(server,
 				      GGZ_CONNECT_FAIL, ggz_connect_fail);
-	ggzcore_server_add_event_hook(Server,
+	ggzcore_server_add_event_hook(server,
 				      GGZ_NEGOTIATED, ggz_negotiated);
-	ggzcore_server_add_event_hook(Server,
+	ggzcore_server_add_event_hook(server,
 				      GGZ_NEGOTIATE_FAIL,
 				      ggz_connect_fail);
-	ggzcore_server_add_event_hook(Server, GGZ_LOGGED_IN,
+	ggzcore_server_add_event_hook(server, GGZ_LOGGED_IN,
 				      ggz_logged_in);
-	ggzcore_server_add_event_hook(Server, GGZ_LOGIN_FAIL,
+	ggzcore_server_add_event_hook(server, GGZ_LOGIN_FAIL,
 				      ggz_login_fail);
-	ggzcore_server_add_event_hook(Server, GGZ_MOTD_LOADED,
+	ggzcore_server_add_event_hook(server, GGZ_MOTD_LOADED,
 				      ggz_motd_loaded);
-	ggzcore_server_add_event_hook(Server, GGZ_ROOM_LIST,
+	ggzcore_server_add_event_hook(server, GGZ_ROOM_LIST,
 				      ggz_room_list);
 	/* Unused: GGZ_TYPE_LIST */
-	ggzcore_server_add_event_hook(Server, GGZ_SERVER_PLAYERS_CHANGED,
+	ggzcore_server_add_event_hook(server, GGZ_SERVER_PLAYERS_CHANGED,
 				      ggz_num_players_changed);
-	ggzcore_server_add_event_hook(Server, GGZ_SERVER_ROOMS_CHANGED,
+	ggzcore_server_add_event_hook(server, GGZ_SERVER_ROOMS_CHANGED,
 				      ggz_num_rooms_changed);
-	ggzcore_server_add_event_hook(Server, GGZ_ENTERED, ggz_entered);
-	ggzcore_server_add_event_hook(Server,
+	ggzcore_server_add_event_hook(server, GGZ_ENTERED, ggz_entered);
+	ggzcore_server_add_event_hook(server,
 				      GGZ_ENTER_FAIL, ggz_entered_fail);
-	ggzcore_server_add_event_hook(Server, GGZ_LOGOUT, ggz_logout);
-	ggzcore_server_add_event_hook(Server, GGZ_NET_ERROR,
+	ggzcore_server_add_event_hook(server, GGZ_LOGOUT, ggz_logout);
+	ggzcore_server_add_event_hook(server, GGZ_NET_ERROR,
 				      ggz_net_error);
-	ggzcore_server_add_event_hook(Server, GGZ_PROTOCOL_ERROR,
+	ggzcore_server_add_event_hook(server, GGZ_PROTOCOL_ERROR,
 				      ggz_server_error);
-	ggzcore_server_add_event_hook(Server, GGZ_CHAT_FAIL,
+	ggzcore_server_add_event_hook(server, GGZ_CHAT_FAIL,
 				      ggz_chat_fail);
-	ggzcore_server_add_event_hook(Server, GGZ_STATE_CHANGE,
+	ggzcore_server_add_event_hook(server, GGZ_STATE_CHANGE,
 				      ggz_state_change);
-	ggzcore_server_add_event_hook(Server, GGZ_STATE_CHANGE,
+	ggzcore_server_add_event_hook(server, GGZ_STATE_CHANGE,
 				      ggz_state_sensitivity);
-	ggzcore_server_add_event_hook(Server, GGZ_CHANNEL_CONNECTED,
+	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_CONNECTED,
 				      ggz_connected);
-	ggzcore_server_add_event_hook(Server, GGZ_CHANNEL_READY,
+	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_READY,
 				      ggz_channel_ready);
-	ggzcore_server_add_event_hook(Server, GGZ_CHANNEL_FAIL,
+	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_FAIL,
 				      ggz_connect_fail);
 }
