@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 10231 2008-07-08 19:30:17Z jdorje $
+ * $Id: ggzclient.c 10242 2008-07-09 00:48:24Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -809,11 +809,7 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 	case GGZ_STATE_OFFLINE:
 	case GGZ_STATE_RECONNECTING:
 		/* Re-enable connect button */
-		if (login_dialog) {
-			tmp =
-			    ggz_lookup_widget(login_dialog, "connect_button");
-			gtk_widget_set_sensitive(tmp, TRUE);
-		}
+		login_set_sensitive(TRUE);
 
 		/* Menu bar */
 		tmp = ggz_lookup_widget(win_main, "connect");
@@ -862,12 +858,7 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 		break;
 
 	case GGZ_STATE_CONNECTING:
-		if (login_dialog) {
-			/* Desensitize the connect button */
-			tmp =
-			    ggz_lookup_widget(login_dialog, "connect_button");
-			gtk_widget_set_sensitive(tmp, FALSE);
-		}
+		login_set_sensitive(FALSE);
 
 		/* Menu bar */
 		tmp = ggz_lookup_widget(win_main, "connect");
@@ -885,13 +876,7 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 		break;
 
 	case GGZ_STATE_LOGGING_IN:
-		if (login_dialog) {
-			/* Desensitize the connect button */
-			tmp =
-			    ggz_lookup_widget(login_dialog, "connect_button");
-			gtk_widget_set_sensitive(tmp, FALSE);
-		}
-
+		login_set_sensitive(FALSE);
 		break;
 
 	case GGZ_STATE_LOGGED_IN:

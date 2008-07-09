@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 10052 2008-06-23 02:08:14Z jdorje $
+ * $Id: login.c 10242 2008-07-09 00:48:24Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -53,11 +53,13 @@
 #include "support.h"
 #include "tablelist.h"
 
-GtkWidget *login_dialog;
-gint entries_update;
+static struct {
+	GtkWidget *dialog;
+	gint entries_update;
 
-/* Global command line option */
-gchar *option_log = NULL;
+	/* Global command line option */
+	const char *option_log;
+} login;
 
 /* Callbacks login dialog box */
 static void login_fill_defaults(GtkWidget * widget, gpointer data);
@@ -97,17 +99,17 @@ void login_failed(const GGZErrorEventData * error)
 		ggz_error_msg("Error logging out in login_failed");
 
 	/* Re-enable the "connect" button and change it say "Login" */
-	tmp = ggz_lookup_widget(login_dialog, "connect_button");
+	tmp = ggz_lookup_widget(login.dialog, "connect_button");
 	stockbutton_set_text(tmp, _("Login"));
 	gtk_widget_set_sensitive(tmp, TRUE);
 
-	tmp = ggz_lookup_widget(login_dialog, "top_panel");
+	tmp = ggz_lookup_widget(login.dialog, "top_panel");
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(tmp), 1);
 
-	tmp = ggz_lookup_widget(login_dialog, "profile_frame");
+	tmp = ggz_lookup_widget(login.dialog, "profile_frame");
 	gtk_frame_set_label(GTK_FRAME(tmp), _("Sorry!"));
 
-	tmp = ggz_lookup_widget(login_dialog, "msg_label");
+	tmp = ggz_lookup_widget(login.dialog, "msg_label");
 
 	switch (error->status) {
 	case E_ALREADY_LOGGED_IN:
@@ -147,17 +149,17 @@ void login_goto_server(const gchar * server_url)
 	GtkWidget *tmp;
 
 	main_activate();
-	tmp = ggz_lookup_widget(GTK_WIDGET(login_dialog), "host_entry");
+	tmp = ggz_lookup_widget(GTK_WIDGET(login.dialog), "host_entry");
 	if (!strncasecmp(server_url, "ggz://", 6))
 		gtk_entry_set_text(GTK_ENTRY(tmp), server_url + 6);
 	else
 		gtk_entry_set_text(GTK_ENTRY(tmp), server_url);
 
-	tmp = ggz_lookup_widget(GTK_WIDGET(login_dialog), "name_entry");
+	tmp = ggz_lookup_widget(GTK_WIDGET(login.dialog), "name_entry");
 	gtk_entry_set_text(GTK_ENTRY(tmp),
 			   (gchar *) ggzcore_server_get_handle(server));
 
-	tmp = ggz_lookup_widget(GTK_WIDGET(login_dialog), "guest_radio");
+	tmp = ggz_lookup_widget(GTK_WIDGET(login.dialog), "guest_radio");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 }
 
@@ -169,7 +171,7 @@ static void login_fill_defaults(GtkWidget * widget, gpointer user_data)
 	char *profile = user_data;
 	int i = 0;
 
-	tmp = ggz_lookup_widget(login_dialog, "profile_combo");
+	tmp = ggz_lookup_widget(login.dialog, "profile_combo");
 
 	/* Set to last server connected to */
 	if (profile) {
@@ -233,8 +235,8 @@ static void login_entry_changed(GtkEditable * editable, gpointer user_data)
 {
 	GtkWidget *tmp = NULL;
 
-	if (!entries_update) {
-		tmp = ggz_lookup_widget(login_dialog, "profile_combo");
+	if (!login.entries_update) {
+		tmp = ggz_lookup_widget(login.dialog, "profile_combo");
 		gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), -1);
 	}
 }
@@ -247,8 +249,8 @@ login_normal_toggled(GtkToggleButton * togglebutton, gpointer user_data)
 {
 	GtkWidget *tmp;
 
-	if (!entries_update) {
-		tmp = ggz_lookup_widget(login_dialog, "profile_combo");
+	if (!login.entries_update) {
+		tmp = ggz_lookup_widget(login.dialog, "profile_combo");
 		gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), -1);
 	}
 }
@@ -262,8 +264,8 @@ login_guest_toggled(GtkToggleButton * togglebutton, gpointer user_data)
 	tmp = ggz_lookup_widget(GTK_WIDGET(user_data), "password_box");
 	gtk_widget_set_sensitive(tmp, !togglebutton->active);
 
-	if (!entries_update) {
-		tmp = ggz_lookup_widget(login_dialog, "profile_combo");
+	if (!login.entries_update) {
+		tmp = ggz_lookup_widget(login.dialog, "profile_combo");
 		gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), -1);
 	}
 }
@@ -277,8 +279,8 @@ login_first_toggled(GtkToggleButton * togglebutton, gpointer user_data)
 	tmp = ggz_lookup_widget(GTK_WIDGET(user_data), "email_box");
 	gtk_widget_set_sensitive(tmp, togglebutton->active);
 
-	if (!entries_update) {
-		tmp = ggz_lookup_widget(login_dialog, "profile_combo");
+	if (!login.entries_update) {
+		tmp = ggz_lookup_widget(login.dialog, "profile_combo");
 		gtk_combo_box_set_active(GTK_COMBO_BOX(tmp), -1);
 	}
 }
@@ -327,7 +329,8 @@ static void login_cancel_button_clicked(GtkButton * button, gpointer data)
 static void login_start_session(void)
 {
 	GtkWidget *tmp;
-	const char *host = NULL, *login = NULL, *password = NULL, *email = NULL;
+	const char *host = NULL, *username = NULL;
+	const char *password = NULL, *email = NULL;
 	char *sessiondump;
 	char *profile;
 	int port;
@@ -344,31 +347,31 @@ static void login_start_session(void)
 	   gtk_widget_set_sensitive(tmp, FALSE); */
 
 	/* Get connection and login data */
-	tmp = ggz_lookup_widget(login_dialog, "host_entry");
+	tmp = ggz_lookup_widget(login.dialog, "host_entry");
 	host = gtk_entry_get_text(GTK_ENTRY(tmp));
 
-	tmp = ggz_lookup_widget(login_dialog, "port_entry");
+	tmp = ggz_lookup_widget(login.dialog, "port_entry");
 	port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
 
-	tmp = ggz_lookup_widget(login_dialog, "name_entry");
-	login = gtk_entry_get_text(GTK_ENTRY(tmp));
+	tmp = ggz_lookup_widget(login.dialog, "name_entry");
+	username = gtk_entry_get_text(GTK_ENTRY(tmp));
 
-	tmp = ggz_lookup_widget(login_dialog, "normal_radio");
+	tmp = ggz_lookup_widget(login.dialog, "normal_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active) 
 		type = GGZ_LOGIN;
-	tmp = ggz_lookup_widget(login_dialog, "guest_radio");
+	tmp = ggz_lookup_widget(login.dialog, "guest_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		type = GGZ_LOGIN_GUEST;
 	if (!GTK_TOGGLE_BUTTON(tmp)->active) {
-		tmp = ggz_lookup_widget(login_dialog,
+		tmp = ggz_lookup_widget(login.dialog,
 				      "pass_entry");
 		password = gtk_entry_get_text(GTK_ENTRY(tmp));
 	}
-	tmp = ggz_lookup_widget(login_dialog, "first_radio");
+	tmp = ggz_lookup_widget(login.dialog, "first_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		type = GGZ_LOGIN_NEW;
 	if (GTK_TOGGLE_BUTTON(tmp)->active) {
-		tmp = ggz_lookup_widget(login_dialog,
+		tmp = ggz_lookup_widget(login.dialog,
 				      "email_entry");
 		email = gtk_entry_get_text(GTK_ENTRY(tmp));
 	}
@@ -376,11 +379,12 @@ static void login_start_session(void)
 	/* Create new server object and set connection/login info */
 	server = ggzcore_server_new();
 	ggzcore_server_set_hostinfo(server, host, port, 0);
-	ggzcore_server_set_logininfo(server, type, login, password, email);
+	ggzcore_server_set_logininfo(server, type,
+				     username, password, email);
 
 	/* Log server communications to file */
-	if (option_log) {
-		ggzcore_server_log_session(server, option_log);
+	if (login.option_log) {
+		ggzcore_server_log_session(server, login.option_log);
 	} else {
 		sessiondump =
 		    ggzcore_conf_read_string("Debug", "SessionLog", NULL);
@@ -390,7 +394,7 @@ static void login_start_session(void)
 	}
 
 	/* Save as last profile */
-	tmp = ggz_lookup_widget(login_dialog, "profile_combo");
+	tmp = ggz_lookup_widget(login.dialog, "profile_combo");
 	profile = gtk_combo_box_get_active_text(GTK_COMBO_BOX(tmp));
 	if (profile && strcmp(profile, "")) {
 		ggzcore_conf_write_string("OPTIONS", "LASTPROFILE",
@@ -409,37 +413,38 @@ static void login_start_session(void)
 static void login_relogin(void)
 {
 	GtkWidget *tmp;
-	const char *login = NULL, *password = NULL, *email = NULL;
+	const char *username = NULL, *password = NULL, *email = NULL;
 	GGZLoginType type = GGZ_LOGIN_GUEST;
 
 	/* FIXME: perhaps this should be done elsewhere? 
-	   tmp = ggz_lookup_widget(login_dialog, "connect_button");
+	   tmp = ggz_lookup_widget(login.dialog, "connect_button");
 	   gtk_widget_set_sensitive(tmp, FALSE); */
 
 	/* Get login data */
-	tmp = ggz_lookup_widget(login_dialog, "name_entry");
-	login = gtk_entry_get_text(GTK_ENTRY(tmp));
+	tmp = ggz_lookup_widget(login.dialog, "name_entry");
+	username = gtk_entry_get_text(GTK_ENTRY(tmp));
 
-	tmp = ggz_lookup_widget(login_dialog, "normal_radio");
+	tmp = ggz_lookup_widget(login.dialog, "normal_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		type = GGZ_LOGIN;
-	tmp = ggz_lookup_widget(login_dialog, "guest_radio");
+	tmp = ggz_lookup_widget(login.dialog, "guest_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		type = GGZ_LOGIN_GUEST;
 	if (!GTK_TOGGLE_BUTTON(tmp)->active) {
-		tmp = ggz_lookup_widget(login_dialog, "pass_entry");
+		tmp = ggz_lookup_widget(login.dialog, "pass_entry");
 		password = gtk_entry_get_text(GTK_ENTRY(tmp));
 	}
-	tmp = ggz_lookup_widget(login_dialog, "first_radio");
+	tmp = ggz_lookup_widget(login.dialog, "first_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		type = GGZ_LOGIN_NEW;
 	if (GTK_TOGGLE_BUTTON(tmp)->active) {
-		tmp = ggz_lookup_widget(login_dialog,
+		tmp = ggz_lookup_widget(login.dialog,
 				      "email_entry");
 		email = gtk_entry_get_text(GTK_ENTRY(tmp));
 	}
 
-	ggzcore_server_set_logininfo(server, type, login, password, email);
+	ggzcore_server_set_logininfo(server, type,
+				     username, password, email);
 	ggzcore_server_login(server);
 }
 
@@ -461,51 +466,63 @@ void login_set_entries(Server server)
 	GtkWidget *tmp;
 	gchar *port;
 
-	entries_update = TRUE;
+	login.entries_update = TRUE;
 
 	/*
-	   tmp = ggz_lookup_widget(login_dialog, "profile_entry");
+	   tmp = ggz_lookup_widget(login.dialog, "profile_entry");
 	   if (server.name)
 	   gtk_entry_set_text(GTK_ENTRY(tmp), server.name);
 	 */
 
-	tmp = ggz_lookup_widget(login_dialog, "host_entry");
+	tmp = ggz_lookup_widget(login.dialog, "host_entry");
 	gtk_entry_set_text(GTK_ENTRY(tmp), server.host);
 
-	tmp = ggz_lookup_widget(login_dialog, "port_entry");
+	tmp = ggz_lookup_widget(login.dialog, "port_entry");
 	port = g_strdup_printf("%d", server.port);
 	gtk_entry_set_text(GTK_ENTRY(tmp), port);
 	g_free(port);
 
 	switch (server.type) {
 	case GGZ_LOGIN:
-		tmp = ggz_lookup_widget(login_dialog, "normal_radio");
+		tmp = ggz_lookup_widget(login.dialog, "normal_radio");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 		break;
 	case GGZ_LOGIN_GUEST:
-		tmp = ggz_lookup_widget(login_dialog, "guest_radio");
+		tmp = ggz_lookup_widget(login.dialog, "guest_radio");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 		break;
 	case GGZ_LOGIN_NEW:
-		tmp = ggz_lookup_widget(login_dialog, "first_radio");
+		tmp = ggz_lookup_widget(login.dialog, "first_radio");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 		break;
 	}
 
-	tmp = ggz_lookup_widget(login_dialog, "name_entry");
+	tmp = ggz_lookup_widget(login.dialog, "name_entry");
 	gtk_entry_set_text(GTK_ENTRY(tmp), server.login);
 
 	if (server.type == GGZ_LOGIN && server.password != NULL) {
-		tmp = ggz_lookup_widget(login_dialog, "pass_entry");
+		tmp = ggz_lookup_widget(login.dialog, "pass_entry");
 		gtk_entry_set_text(GTK_ENTRY(tmp), server.password);
 	}
 
-	entries_update = FALSE;
+	login.entries_update = FALSE;
 }
 
+void login_set_sensitive(gboolean sensitive)
+{
+	GtkWidget *tmp;
 
+	if (!login.dialog) return;
 
+	/* Desensitize the connect button */
+	tmp = ggz_lookup_widget(login.dialog, "connect_button");
+	gtk_widget_set_sensitive(tmp, sensitive);
+}
 
+void login_set_option_log(const char *option_log)
+{
+	login.option_log = option_log;
+}
 
 GtkWidget *create_dlg_login(const char *default_profile)
 {
@@ -549,7 +566,7 @@ GtkWidget *create_dlg_login(const char *default_profile)
 	dlg_login = gtk_vbox_new(FALSE, 0);
 
 	/* Set global value. */
-	login_dialog = dlg_login;
+	login.dialog = dlg_login;
 
 	profile_frame = gtk_frame_new(_("Server Profile"));
 	g_object_set_data(G_OBJECT(dlg_login), "profile_frame", profile_frame);
@@ -737,7 +754,7 @@ GtkWidget *create_dlg_login(const char *default_profile)
 			 ggz_strdup(default_profile));
 	g_signal_connect(GTK_OBJECT(dlg_login), "destroy",
 			 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-			 &login_dialog);
+			 &login.dialog);
 	g_signal_connect(GTK_OBJECT(profile_combo), "changed",
 			 GTK_SIGNAL_FUNC(login_profile_changed),
 			 dlg_login);

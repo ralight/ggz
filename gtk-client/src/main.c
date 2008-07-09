@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 9951 2008-04-12 22:32:00Z oojah $
+ * $Id: main.c 10242 2008-07-09 00:48:24Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -117,6 +117,7 @@ int main (int argc, char *argv[])
 	/* Support for command line options since Gtk+ 2.6 */
 
 	gchar **option_urls = NULL;
+	char *option_log = NULL;
 
 	GOptionEntry entries[] = {
 		{"log", 'l', 0, G_OPTION_ARG_STRING, &option_log,
@@ -135,6 +136,8 @@ int main (int argc, char *argv[])
 		fprintf(stderr, _("Wrong arguments, try %s --help.\n"), argv[0]);
 		return -1;
 	}
+
+	login_set_option_log(option_log);
 
 	if(option_urls)
 		option_url = option_urls[0];

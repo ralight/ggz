@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 10231 2008-07-08 19:30:17Z jdorje $
+ * $Id: props.c 10242 2008-07-09 00:48:24Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -250,13 +250,13 @@ static void props_update(void)
 	/* Display a status Message */
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL, _("Properties Updated"));
 
+#if 0
 	/* If the login dialog is open refill the combo box */
 	if(login_dialog != NULL) {
-#if 0
 		/* FIXME: either remove or make this function non-static */
 		login_fill_defaults(NULL);
-#endif
 	}
+#endif
 }
 
 
