@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 10250 2008-07-09 18:44:38Z jdorje $
+ * $Id: launch.c 10256 2008-07-09 23:01:44Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -24,7 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include "config.h"
+#  include <config.h>
 #endif
 
 #include <assert.h>
