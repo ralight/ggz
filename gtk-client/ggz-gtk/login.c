@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 10244 2008-07-09 03:06:25Z jdorje $
+ * $Id: login.c 10250 2008-07-09 18:44:38Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -27,6 +27,7 @@
 # include <config.h>
 #endif
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -95,7 +96,7 @@ void login_failed(const GGZErrorEventData * error)
 	char *msg;
 
 	/* First, disconnect from the server. */
-	if (ggzcore_server_logout(server) < 0)
+	if (ggzcore_server_logout(ggz_gtk.server) < 0)
 		ggz_error_msg("Error logging out in login_failed");
 
 	/* Re-enable the "connect" button and change it say "Login" */
@@ -157,7 +158,7 @@ void login_goto_server(const gchar * server_url)
 
 	tmp = ggz_lookup_widget(GTK_WIDGET(login.dialog), "name_entry");
 	gtk_entry_set_text(GTK_ENTRY(tmp),
-			   (gchar *) ggzcore_server_get_handle(server));
+			   (gchar *) ggzcore_server_get_handle(ggz_gtk.server));
 
 	tmp = ggz_lookup_widget(GTK_WIDGET(login.dialog), "guest_radio");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
@@ -289,19 +290,20 @@ login_first_toggled(GtkToggleButton * togglebutton, gpointer user_data)
 static void login_connect_button_clicked(GtkButton * button, gpointer data)
 {
 	/* If the server object doesn't exist, create a new one */
-	if (!server) {
+	if (!ggz_gtk.server) {
 		login_start_session();
 	}
 
 	/* If we're not logged in yet, assume second login attempt */
-	else if (ggzcore_server_get_state(server) == GGZ_STATE_ONLINE) {
+	else if (ggzcore_server_get_state(ggz_gtk.server)
+		 == GGZ_STATE_ONLINE) {
 		login_relogin();
 	}
 
 	/* otherwise disconnect then reconnect */
 	else {
 		/* FIXME: should popup modal "Are you sure?" */
-		if (ggzcore_server_logout(server) < 0)
+		if (ggzcore_server_logout(ggz_gtk.server) < 0)
 			ggz_error_msg("Error logging out in "
 				      "login_connect_button_clicked");
 		/* FIXME: should provide service to reconnect */
@@ -312,11 +314,11 @@ static void login_connect_button_clicked(GtkButton * button, gpointer data)
 static void login_cancel_button_clicked(GtkButton * button, gpointer data)
 {
 	/* If we're already connected, disconnect */
-	if (server) {
-		if (ggzcore_server_logout(server) < 0)
+	if (ggz_gtk.server) {
+		if (ggzcore_server_logout(ggz_gtk.server) < 0)
 			ggz_error_msg("Error logging out in "
 				      "login_cancel_button_clicked");
-		server = NULL;
+		ggz_gtk.server = NULL;
 	}
 	if (ggz_gtk.ggz_closed_cb) {
 		ggz_gtk.ggz_closed_cb();
@@ -377,18 +379,19 @@ static void login_start_session(void)
 	}
 
 	/* Create new server object and set connection/login info */
-	server = ggzcore_server_new();
-	ggzcore_server_set_hostinfo(server, host, port, 0);
-	ggzcore_server_set_logininfo(server, type,
+	assert(ggz_gtk.server == NULL);
+	ggz_gtk.server = ggzcore_server_new();
+	ggzcore_server_set_hostinfo(ggz_gtk.server, host, port, 0);
+	ggzcore_server_set_logininfo(ggz_gtk.server, type,
 				     username, password, email);
 
 	/* Log server communications to file */
 	if (login.option_log) {
-		ggzcore_server_log_session(server, login.option_log);
+		ggzcore_server_log_session(ggz_gtk.server, login.option_log);
 	} else {
 		sessiondump =
 		    ggzcore_conf_read_string("Debug", "SessionLog", NULL);
-		ggzcore_server_log_session(server, sessiondump);
+		ggzcore_server_log_session(ggz_gtk.server, sessiondump);
 		if (sessiondump)
 			ggz_free(sessiondump);
 	}
@@ -403,10 +406,10 @@ static void login_start_session(void)
 	}
 
 	/* Setup callbacks on server */
-	ggz_event_init(server);
+	ggz_event_init(ggz_gtk.server);
 
 	/* Start connection */
-	ggzcore_server_connect(server);
+	ggzcore_server_connect(ggz_gtk.server);
 }
 
 
@@ -443,9 +446,9 @@ static void login_relogin(void)
 		email = gtk_entry_get_text(GTK_ENTRY(tmp));
 	}
 
-	ggzcore_server_set_logininfo(server, type,
+	ggzcore_server_set_logininfo(ggz_gtk.server, type,
 				     username, password, email);
-	ggzcore_server_login(server);
+	ggzcore_server_login(ggz_gtk.server);
 }
 
 

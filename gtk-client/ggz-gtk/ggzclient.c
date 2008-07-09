@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 10248 2008-07-09 04:12:22Z jdorje $
+ * $Id: ggzclient.c 10250 2008-07-09 18:44:38Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -65,7 +65,7 @@ static gboolean ggz_check_fd(GIOChannel * source, GIOCondition cond,
 {
 	gint fd = GPOINTER_TO_INT(data);
 
-	return ggzcore_server_read_data(server, fd) >= 0;
+	return ggzcore_server_read_data(ggz_gtk.server, fd) >= 0;
 }
 
 
@@ -80,7 +80,7 @@ static GGZHookReturn ggz_connected(GGZServerEvent id,
 
 		/* Add the fd to the gtk main loop */
 		ggz_debug("connection", "We're connected.");
-		fd = ggzcore_server_get_fd(server);
+		fd = ggzcore_server_get_fd(ggz_gtk.server);
 		assert(!is_server);
 		assert(fd >= 0);
 		channel = g_io_channel_unix_new(fd);
@@ -96,7 +96,7 @@ static GGZHookReturn ggz_connected(GGZServerEvent id,
 
 		/* Add the fd to the gtk main loop */
 		ggz_debug("connection", "Direct game channel connected.");
-		fd = ggzcore_server_get_channel(server);
+		fd = ggzcore_server_get_channel(ggz_gtk.server);
 		assert(!is_channel);
 		assert(fd >= 0);
 		channel = g_io_channel_unix_new(fd);
@@ -135,7 +135,7 @@ static GGZHookReturn ggz_negotiated(GGZServerEvent id,
 				    const void *event_data,
 				    const void *user_data)
 {
-	ggzcore_server_login(server);
+	ggzcore_server_login(ggz_gtk.server);
 
 	return GGZ_HOOK_OK;
 }
@@ -162,11 +162,11 @@ static GGZHookReturn ggz_auto_join(GGZServerEvent id,
 				   const void *user_data)
 {
 	int i;
-	const int numrooms = ggzcore_server_get_num_rooms(server);
+	const int numrooms = ggzcore_server_get_num_rooms(ggz_gtk.server);
 	GGZRoom *lobby = NULL, *supported = NULL, *joinroom = NULL;
 
 	for (i = 0; i < numrooms; i++) {
-		GGZRoom *room = ggzcore_server_get_nth_room(server, i);
+		GGZRoom *room = ggzcore_server_get_nth_room(ggz_gtk.server, i);
 		GGZGameType *gt = ggzcore_room_get_gametype(room);
 
 		if (ggzcore_room_get_closed(room)) {
@@ -194,7 +194,7 @@ static GGZHookReturn ggz_auto_join(GGZServerEvent id,
 		/* Otherwise: don't join any room */
 	}
 
-	ggzcore_server_join_room(server, joinroom);
+	ggzcore_server_join_room(ggz_gtk.server, joinroom);
 	select_room(joinroom);
 
 	return GGZ_HOOK_REMOVE;
@@ -209,7 +209,7 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id,
 	gchar *message;
 
 	if (ggz_gtk.connected_cb) {
-		ggz_gtk.connected_cb(server);
+		ggz_gtk.connected_cb(ggz_gtk.server);
 	}
 
 	/* Set title */
@@ -217,22 +217,22 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id,
 		gchar *title;
 
 		title = g_strdup_printf("GGZ Gaming Zone - [%s:%d]",
-					ggzcore_server_get_host(server),
-					ggzcore_server_get_port(server));
+					ggzcore_server_get_host(ggz_gtk.server),
+					ggzcore_server_get_port(ggz_gtk.server));
 		gtk_window_set_title(GTK_WINDOW(ggz_gtk.main_window), title);
 		g_free(title);
 	}
 
 	main_activate();
-	ggzcore_server_add_event_hook(server, GGZ_ROOM_LIST,
+	ggzcore_server_add_event_hook(ggz_gtk.server, GGZ_ROOM_LIST,
 				      ggz_auto_join);
-	ggzcore_server_list_gametypes(server, 1);
-	ggzcore_server_list_rooms(server, 1);
+	ggzcore_server_list_gametypes(ggz_gtk.server, 1);
+	ggzcore_server_list_rooms(ggz_gtk.server, 1);
 
 
 	/* If this was a first-time login, get the password from the server */
-	if (ggzcore_server_get_type(server) == GGZ_LOGIN_NEW) {
-		password = ggzcore_server_get_password(server);
+	if (ggzcore_server_get_type(ggz_gtk.server) == GGZ_LOGIN_NEW) {
+		password = ggzcore_server_get_password(ggz_gtk.server);
 		message =
 		    g_strdup_printf(_("Your new password is %s"),
 				    password);
@@ -269,7 +269,7 @@ static GGZHookReturn ggz_num_players_changed(GGZServerEvent id,
 {
 	GtkWidget *serverbar = ggz_lookup_widget(ggz_gtk.win_main, "serverbar");
 	guint context;
-	int players = ggzcore_server_get_num_players(server);
+	int players = ggzcore_server_get_num_players(ggz_gtk.server);
 	char *buf;
 
 	buf = g_strdup_printf(_("Players on server: %d"), players);
@@ -311,8 +311,8 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, const void *event_data,
 
 	/* Get player list */
 	/* FIXME: Player list should use the ggz update system */
-	ggzcore_room_list_tables(ggzcore_server_get_cur_room(server));
-	ggzcore_room_list_players(ggzcore_server_get_cur_room(server));
+	ggzcore_room_list_tables(ggzcore_server_get_cur_room(ggz_gtk.server));
+	ggzcore_room_list_players(ggzcore_server_get_cur_room(ggz_gtk.server));
 
 
 	/* Set the room label to current room */
@@ -320,7 +320,7 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, const void *event_data,
 	name =
 	    g_strdup_printf(_("Current Room: %s"),
 			    ggzcore_room_get_name
-			    (ggzcore_server_get_cur_room(server)));
+			    (ggzcore_server_get_cur_room(ggz_gtk.server)));
 	gtk_label_set_text(GTK_LABEL(tmp), name);
 	g_free(name);
 
@@ -328,15 +328,15 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, const void *event_data,
 	message =
 	    g_strdup_printf(_("You've joined room \"%s\"."),
 			    ggzcore_room_get_name
-			    (ggzcore_server_get_cur_room(server)));
+			    (ggzcore_server_get_cur_room(ggz_gtk.server)));
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL, message);
 	g_free(message);
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL,
 			   ggzcore_room_get_desc
-			   (ggzcore_server_get_cur_room(server)));
+			   (ggzcore_server_get_cur_room(ggz_gtk.server)));
 
 	/* Check what the current game type is */
-	room = ggzcore_server_get_cur_room(server);
+	room = ggzcore_server_get_cur_room(ggz_gtk.server);
 	gt = ggzcore_room_get_gametype(room);
 
 	if (ggzcore_gametype_get_name(gt) == NULL) {
@@ -391,7 +391,8 @@ static GGZHookReturn ggz_logout(GGZServerEvent id, const void *event_data,
 {
 	ggz_debug("connection", "Logged out.");
 
-	if (ggzcore_server_get_state(server) != GGZ_STATE_RECONNECTING) {
+	if (ggzcore_server_get_state(ggz_gtk.server)
+	    != GGZ_STATE_RECONNECTING) {
 		server_disconnect();
 	}
 
@@ -663,12 +664,12 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id,
 	gint i;
 
 	/* Display current list of rooms */
-	const int numrooms = ggzcore_server_get_num_rooms(server);
+	const int numrooms = ggzcore_server_get_num_rooms(ggz_gtk.server);
 
 	update_room_list();
 
 	for (i = 0; i < numrooms; i++) {
-		room = ggzcore_server_get_nth_room(server, i);
+		room = ggzcore_server_get_nth_room(ggz_gtk.server, i);
 
 		/* Hookup the chat functions to the new room */
 		ggzcore_room_add_event_hook(room, GGZ_CHAT_EVENT,
@@ -743,7 +744,7 @@ static GGZHookReturn ggz_state_change(GGZServerEvent id,
 	char *state = _("**none**");
 	GGZStateID state_id;
 
-	state_id = ggzcore_server_get_state(server);
+	state_id = ggzcore_server_get_state(ggz_gtk.server);
 
 	switch (state_id) {
 	case GGZ_STATE_OFFLINE:
@@ -803,7 +804,7 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 	GtkWidget *tmp;
 	GGZStateID state_id;
 
-	state_id = ggzcore_server_get_state(server);
+	state_id = ggzcore_server_get_state(ggz_gtk.server);
 
 	switch (state_id) {
 	case GGZ_STATE_OFFLINE:
@@ -1053,7 +1054,8 @@ static GGZHookReturn ggz_server_error(GGZServerEvent id,
 
 	ggz_debug("connection", "Server error.");
 
-	if (ggzcore_server_get_state(server) != GGZ_STATE_RECONNECTING) {
+	if (ggzcore_server_get_state(ggz_gtk.server)
+	    != GGZ_STATE_RECONNECTING) {
 		server_disconnect();
 	} else {
 		g_source_remove(server_tag);
@@ -1062,7 +1064,8 @@ static GGZHookReturn ggz_server_error(GGZServerEvent id,
 
 	/* Should we clear the list of rooms/players/tables? */
 
-	if (ggzcore_server_get_state(server) != GGZ_STATE_RECONNECTING) {
+	if (ggzcore_server_get_state(ggz_gtk.server)
+	    != GGZ_STATE_RECONNECTING) {
 		msg = g_strdup_printf(_("Server error: %s"),
 				      error->message);
 		msgbox(msg, _("Error"),
@@ -1097,7 +1100,7 @@ static GGZHookReturn ggz_net_error(GGZServerEvent id,
 /* GdkDestroyNotify function for server fd */
 static void ggz_input_removed(gpointer data)
 {
-	if (!server) {
+	if (!ggz_gtk.server) {
 		/* This function should only be called once when we
 		   disconnect; calling it more than once would attempt to
 		   free the server twice.  See server_disconnect().  It's
@@ -1115,12 +1118,13 @@ static void ggz_input_removed(gpointer data)
 		return;
 	}
 
-	if (ggzcore_server_get_state(server) == GGZ_STATE_RECONNECTING) {
+	if (ggzcore_server_get_state(ggz_gtk.server)
+	    == GGZ_STATE_RECONNECTING) {
 		return;
 	}
 
-	ggzcore_server_free(server);
-	server = NULL;
+	ggzcore_server_free(ggz_gtk.server);
+	ggz_gtk.server = NULL;
 }
 
 
@@ -1132,16 +1136,16 @@ int ggz_connection_query(void)
 /* Handle the ggz-gtk end of disconnecting. */
 void server_disconnect(void)
 {
-	assert(server);
+	assert(ggz_gtk.server);
 
 	/* This can happen if we get disconnected from a server that we never
 	   actually connected to (for instance if there's no server listening
 	   on the host/port we connected to).  We still have to free the
 	   server variable, but not remove the input handler.  This is ugly.
 	   See ggz_input_removed(). */
-	if (!is_server && server) {
-		ggzcore_server_free(server);
-		server = NULL;
+	if (!is_server && ggz_gtk.server) {
+		ggzcore_server_free(ggz_gtk.server);
+		ggz_gtk.server = NULL;
 		return;
 	}
 

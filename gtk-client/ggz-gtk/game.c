@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 10245 2008-07-09 03:11:29Z jdorje $
+ * $Id: game.c 10250 2008-07-09 18:44:38Z jdorje $
  *
  * Functions for handling game events
  *
@@ -140,7 +140,7 @@ static GGZModule *pick_module(GGZGameType * gt)
 int game_launch(void)
 {
 	gint status;
-	GGZGame *game = ggzcore_server_get_cur_game(server);
+	GGZGame *game = ggzcore_server_get_cur_game(ggz_gtk.server);
 
 	/* Launch game */
 	if ((status = ggzcore_game_launch(game) < 0)) {
@@ -157,16 +157,16 @@ int game_launch(void)
 
 void game_channel_ready(void)
 {
-	GGZGame *game = ggzcore_server_get_cur_game(server);
+	GGZGame *game = ggzcore_server_get_cur_game(ggz_gtk.server);
 
 	ggzcore_game_set_server_fd(game,
-				   ggzcore_server_get_channel(server));
+				   ggzcore_server_get_channel(ggz_gtk.server));
 }
 
 
 void game_quit(void)
 {
-	GGZGame *game = ggzcore_server_get_cur_game(server);
+	GGZGame *game = ggzcore_server_get_cur_game(ggz_gtk.server);
 	int fd = ggzcore_game_get_control_fd(game);
 
 	if (fd != -1) {
@@ -178,14 +178,14 @@ void game_quit(void)
 
 void game_destroy(void)
 {
-	ggzcore_game_free(ggzcore_server_get_cur_game(server));
+	ggzcore_game_free(ggzcore_server_get_cur_game(ggz_gtk.server));
 }
 
 
 static gboolean game_process(GIOChannel * source, GIOCondition condition,
 			     gpointer data)
 {
-	GGZGame *game = ggzcore_server_get_cur_game(server);
+	GGZGame *game = ggzcore_server_get_cur_game(ggz_gtk.server);
 
 	return (game && ggzcore_game_read_data(game) >= 0);
 }
@@ -202,7 +202,7 @@ static GGZHookReturn game_launched(GGZGameEvent id, const void *event_data,
 				   const void *user_data)
 {
 	GIOChannel *channel;
-	GGZGame *game = ggzcore_server_get_cur_game(server);
+	GGZGame *game = ggzcore_server_get_cur_game(ggz_gtk.server);
 	int fd = ggzcore_game_get_control_fd(game);
 
 
@@ -210,7 +210,7 @@ static GGZHookReturn game_launched(GGZGameEvent id, const void *event_data,
 
 	channel = g_io_channel_unix_new(fd);
 	game_tag = g_io_add_watch_full(channel, G_PRIORITY_DEFAULT,
-				       G_IO_IN, game_process, server,
+				       G_IO_IN, game_process, ggz_gtk.server,
 				       game_input_removed);
 	g_io_channel_unref(channel);
 
@@ -241,7 +241,7 @@ static GGZHookReturn game_negotiated(GGZGameEvent id,
 	ggz_debug("game", "Game module ready (creating channel)");
 
 #ifndef HAVE_WINSOCK_H
-	ggzcore_server_create_channel(server);
+	ggzcore_server_create_channel(ggz_gtk.server);
 #endif
 
 	return GGZ_HOOK_OK;
@@ -272,7 +272,7 @@ static GGZHookReturn game_playing(GGZGameEvent id, const void *event_data,
 
 int game_play(void)
 {
- 	GGZGame *game = ggzcore_server_get_cur_game(server);
+ 	GGZGame *game = ggzcore_server_get_cur_game(ggz_gtk.server);
 	int fd = ggzcore_game_get_control_fd(game);
 
 	if (fd != -1)
@@ -300,7 +300,7 @@ int game_initialize(int spectate)
 	GGZRoom *room;
 	GGZGameType *gt;
 	GGZModule *module = NULL;
-	GGZGame *game = ggzcore_server_get_cur_game(server);
+	GGZGame *game = ggzcore_server_get_cur_game(ggz_gtk.server);
 
 	/* Make sure we aren't already in a game */
 	if (game) {
@@ -311,7 +311,7 @@ int game_initialize(int spectate)
 	}
 
 	/* Make sure we're actually in a room and not already at a table */
-	if (ggzcore_server_get_state(server) != GGZ_STATE_IN_ROOM) {
+	if (ggzcore_server_get_state(ggz_gtk.server) != GGZ_STATE_IN_ROOM) {
 		msgbox(_("You're still at a table."),
 		       _("Game Error"), MSGBOX_OKONLY, MSGBOX_INFO,
 		       MSGBOX_NORMAL);
@@ -319,7 +319,7 @@ int game_initialize(int spectate)
 	}
 
 	/* Make sure we're in a room */
-	room = ggzcore_server_get_cur_room(server);
+	room = ggzcore_server_get_cur_room(ggz_gtk.server);
 	if (!room) {
 		msgbox(_("You must be in a room to launch a game.\n"
 			 "Launch aborted"),
@@ -370,7 +370,7 @@ int game_initialize(int spectate)
 
 	/* Create new game using this module */
 	game = ggzcore_game_new();
-	ggzcore_game_init(game, server, module);
+	ggzcore_game_init(game, ggz_gtk.server, module);
 
 	/* Register callbacks */
 	game_register(game);

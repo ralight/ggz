@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: tablelist.c 10231 2008-07-08 19:30:17Z jdorje $
+ * $Id: tablelist.c 10250 2008-07-09 18:44:38Z jdorje $
  * 
  * List of tables in the current room
  * 
@@ -104,7 +104,7 @@ GGZTable *get_selected_table(void)
 	GtkWidget *tree = table_list;
 	GtkTreeSelection *selection
 	  = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
-	GGZRoom *room = ggzcore_server_get_cur_room(server);
+	GGZRoom *room = ggzcore_server_get_cur_room(ggz_gtk.server);
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	gint id;
@@ -134,7 +134,7 @@ void sensitize_table_list(gboolean sensitive)
 void update_table_list(void)
 {
 	GtkListStore *store;
-	GGZRoom *room = ggzcore_server_get_cur_room(server);
+	GGZRoom *room = ggzcore_server_get_cur_room(ggz_gtk.server);
 	int i;
 	const int num = ggzcore_room_get_num_tables(room);
 

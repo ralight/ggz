@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 10248 2008-07-09 04:12:22Z jdorje $
+ * $Id: launch.c 10250 2008-07-09 18:44:38Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -105,7 +105,7 @@ static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 	GGZGameType *gt;
 	gint maxplayers, maxbots, x;
 
-	room = ggzcore_server_get_cur_room(server);
+	room = ggzcore_server_get_cur_room(ggz_gtk.server);
 	gt = ggzcore_room_get_gametype(room);
 
 	/* Set the labels */
@@ -154,7 +154,8 @@ static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 
 	/* Default to reserving us a seat */
 	tmp = g_object_get_data(G_OBJECT(launch_dialog), "seat1_name");
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_server_get_handle(server));
+	gtk_entry_set_text(GTK_ENTRY(tmp),
+			   ggzcore_server_get_handle(ggz_gtk.server));
 
 	/* FIXME: for guest users, the reservation won't work.  But it should
 	   be easily converted by ggzd into an open seat, which should be
@@ -196,7 +197,7 @@ static void launch_seats_changed(GtkWidget * widget, gpointer data)
 	GGZRoom *room;
 
 	seats = atoi(gtk_combo_box_get_active_text(GTK_COMBO_BOX(widget)));
-	room = ggzcore_server_get_cur_room(server);
+	room = ggzcore_server_get_cur_room(ggz_gtk.server);
 	gt = ggzcore_room_get_gametype(room);
 	max = ggzcore_gametype_get_max_players(gt);
 
@@ -252,7 +253,7 @@ void launch_table(void)
 
 	/* Create a table for sending to the server */
 	table = ggzcore_table_new();
-	room = ggzcore_server_get_cur_room(server);
+	room = ggzcore_server_get_cur_room(ggz_gtk.server);
 	gt = ggzcore_room_get_gametype(room);
 	tmp = ggz_lookup_widget(launch_dialog, "desc_entry");
 	ggzcore_table_init(table, gt, gtk_entry_get_text(GTK_ENTRY(tmp)),
@@ -320,7 +321,7 @@ static void launch_start_game(GtkWidget * widget, gpointer data)
 			bots++;
 	}
 
-	room = ggzcore_server_get_cur_room(server);
+	room = ggzcore_server_get_cur_room(ggz_gtk.server);
 	gt = ggzcore_room_get_gametype(room);
 
 	if (!ggzcore_gametype_num_bots_is_valid(gt, bots)) {
@@ -392,7 +393,7 @@ GtkWidget *create_dlg_launch(void)
 	GtkWidget *launch_button;
 	GtkWidget *cancel_button;
 
-	GGZRoom *room = ggzcore_server_get_cur_room(server);
+	GGZRoom *room = ggzcore_server_get_cur_room(ggz_gtk.server);
 	GGZGameType *gametype = ggzcore_room_get_gametype(room);
 	const int num_seats = ggzcore_gametype_get_max_players(gametype);
 	struct {

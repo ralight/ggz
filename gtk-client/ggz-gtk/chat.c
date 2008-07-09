@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 10247 2008-07-09 03:39:44Z jdorje $
+ * $Id: chat.c 10250 2008-07-09 18:44:38Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -340,12 +340,12 @@ void chat_send(const gchar *message)
 	for (i = 0; i < NUM_CHAT_COMMANDS; i++) {
 		int len = strlen(commands[i].cmd);
 		if (strncasecmp(message, commands[i].cmd, len) == 0) {
-			(commands[i].func)(server, message + len);
+			(commands[i].func)(ggz_gtk.server, message + len);
 			return;
 		}
 	}
 
-	chat_send_msg(server, message);
+	chat_send_msg(ggz_gtk.server, message);
 }
 
 
@@ -753,7 +753,7 @@ static const gchar *chat_get_color(const gchar *name, const gchar *msg)
 	static gchar color[16];
 
 	/* Is our name in the message? */
-	srv_handle = ggzcore_server_get_handle(server);
+	srv_handle = ggzcore_server_get_handle(ggz_gtk.server);
 	if(strlen(msg) > strlen(srv_handle)+1)
 	{
 		for(pos=0; pos<strlen(msg)-strlen(srv_handle)+1; pos++)
@@ -1026,7 +1026,7 @@ gchar *chat_complete_name(const gchar *name, int *perfect)
 	gchar *returnname = NULL;
 	int matches = 0;
 
-	GGZRoom *room = ggzcore_server_get_cur_room(server);
+	GGZRoom *room = ggzcore_server_get_cur_room(ggz_gtk.server);
 	int num = ggzcore_room_get_num_players(room);
 	int i, j;
 

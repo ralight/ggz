@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: types.c 10248 2008-07-09 04:12:22Z jdorje $
+ * $Id: types.c 10250 2008-07-09 18:44:38Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user.
@@ -62,10 +62,10 @@ static void update_dlg_types(void)
 	int i, num;
 
 	gtk_list_store_clear(GTK_LIST_STORE(store));
-	num = ggzcore_server_get_num_gametypes(server);
+	num = ggzcore_server_get_num_gametypes(ggz_gtk.server);
 	for (i = 0; i < num; i++) {
 		GGZGameType *gt =
-		    ggzcore_server_get_nth_gametype(server, i);
+		    ggzcore_server_get_nth_gametype(ggz_gtk.server, i);
 		GtkTreeIter iter;
 		const gchar *name = ggzcore_gametype_get_name(gt);
 		const gchar *author = ggzcore_gametype_get_author(gt);

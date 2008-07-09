@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 10231 2008-07-08 19:30:17Z jdorje $
+ * $Id: roomlist.c 10250 2008-07-09 18:44:38Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -59,12 +59,12 @@ static void client_join_room(GGZRoom *room)
 	gchar *err_msg = NULL;
 	gint singleclick, status = -1;
 
-	if(ggzcore_server_get_cur_room(server) == room) {
+	if(ggzcore_server_get_cur_room(ggz_gtk.server) == room) {
 		/* ignore silently that we're already in this room */
 		return;
 	}
 
-	switch (ggzcore_server_get_state(server)) {
+	switch (ggzcore_server_get_state(ggz_gtk.server)) {
 	case GGZ_STATE_OFFLINE:
 	case GGZ_STATE_CONNECTING:
 	case GGZ_STATE_ONLINE:
@@ -91,7 +91,7 @@ static void client_join_room(GGZRoom *room)
 	}
 
 	if (status == 0) {
-		if (ggzcore_server_join_room(server, room) == 0) {
+		if (ggzcore_server_join_room(ggz_gtk.server, room) == 0) {
 	
 			/* Only desensitize with single click, dues to
 	                some weird bug that freezes the mouse if we
@@ -243,7 +243,7 @@ void select_room(GGZRoom *room)
 	GtkTreeStore *store;
 	GtkTreeSelection *select;
 	GtkTreeIter iter;
-	int count = ggzcore_server_get_num_rooms(server), i;
+	int count = ggzcore_server_get_num_rooms(ggz_gtk.server), i;
 
 	tree = GTK_TREE_VIEW(room_list);
 	store = GTK_TREE_STORE(gtk_tree_view_get_model(tree));
@@ -325,7 +325,7 @@ static gboolean tree_model_update_room(GtkTreeModel *store,
 void update_one_room(const GGZRoom *room)
 {
 	GtkTreeStore *store;
-	int num = ggzcore_server_get_room_num(server, room);
+	int num = ggzcore_server_get_room_num(ggz_gtk.server, room);
 
 	/* Retrieve the player list widget. */
 	store = GTK_TREE_STORE(ggz_lookup_widget(room_list, "room_list_store"));
@@ -337,7 +337,7 @@ void update_room_list(void)
 {
 	GtkTreeStore *store;
 	int i;
-	const int numrooms = ggzcore_server_get_num_rooms(server);
+	const int numrooms = ggzcore_server_get_num_rooms(ggz_gtk.server);
 
 	/* Retrieve the player list widget. */
 	store = GTK_TREE_STORE(ggz_lookup_widget(room_list, "room_list_store"));
@@ -352,7 +352,7 @@ void update_room_list(void)
 
 	room_iter = ggz_realloc(room_iter, numrooms * sizeof(*room_iter));
 	for (i = 0; i < numrooms; i++) {
-		GGZRoom *room = ggzcore_server_get_nth_room(server, i);
+		GGZRoom *room = ggzcore_server_get_nth_room(ggz_gtk.server, i);
 		GGZGameType *gt = ggzcore_room_get_gametype(room);
 		GtkTreeIter *iter = &room_iter[i];
 

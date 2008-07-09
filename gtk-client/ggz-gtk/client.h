@@ -2,7 +2,7 @@
  * File: client.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.h 10249 2008-07-09 04:17:16Z jdorje $
+ * $Id: client.h 10250 2008-07-09 18:44:38Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -61,6 +61,7 @@ struct ggz_gtk {
 	const char *embedded_protocol_version;
 	const char *embedded_default_profile;
 
+	GGZServer *server;
 	gboolean spectating;
 };
 

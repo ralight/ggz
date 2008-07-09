@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 10231 2008-07-08 19:30:17Z jdorje $
+ * $Id: playerlist.c 10250 2008-07-09 18:44:38Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -36,6 +36,7 @@
 #include <ggzcore.h>
 
 #include "chat.h"
+#include "client.h"
 #include "ggzutils.h"
 #include "playerinfo.h"
 #include "playerlist.h"
@@ -87,7 +88,7 @@ static void client_player_kick_activate(GtkMenuItem * menuitem, gpointer data)
 {
 	GGZPlayer *player = data;
 
-	ggzcore_room_admin(ggzcore_server_get_cur_room(server),
+	ggzcore_room_admin(ggzcore_server_get_cur_room(ggz_gtk.server),
 			   GGZ_ADMIN_KICK,
 			   ggzcore_player_get_name(player), NULL);
 }
@@ -96,7 +97,7 @@ static void client_player_gag_activate(GtkMenuItem * menuitem, gpointer data)
 {
 	GGZPlayer *player = data;
 
-	ggzcore_room_admin(ggzcore_server_get_cur_room(server),
+	ggzcore_room_admin(ggzcore_server_get_cur_room(ggz_gtk.server),
 			   GGZ_ADMIN_GAG,
 			   ggzcore_player_get_name(player), NULL);
 }
@@ -105,7 +106,7 @@ static void client_player_ungag_activate(GtkMenuItem * menuitem, gpointer data)
 {
 	GGZPlayer *player = data;
 
-	ggzcore_room_admin(ggzcore_server_get_cur_room(server),
+	ggzcore_room_admin(ggzcore_server_get_cur_room(ggz_gtk.server),
 			   GGZ_ADMIN_UNGAG,
 			   ggzcore_player_get_name(player), NULL);
 }
@@ -139,8 +140,9 @@ static void client_player_perm_activate(GtkMenuItem * menuitem, gpointer data)
 
 static bool is_admin(void)
 {
-	const char *handle = ggzcore_server_get_handle(server);
-	const GGZPlayer *player = ggzcore_server_get_player(server, handle);
+	const char *handle = ggzcore_server_get_handle(ggz_gtk.server);
+	const GGZPlayer *player = ggzcore_server_get_player(ggz_gtk.server,
+							    handle);
 
 	if (player) {
 		GGZPlayerType type = ggzcore_player_get_type(player);
@@ -275,7 +277,7 @@ static gboolean player_list_event(GtkWidget *widget,
 	gtk_tree_model_get_iter(model, &iter, path);
 
 	gtk_tree_model_get(model, &iter, PLAYER_COLUMN_NAME, &name, -1);
-	player = ggzcore_server_get_player(server, name);
+	player = ggzcore_server_get_player(ggz_gtk.server, name);
 
 	if (event->type == GDK_BUTTON_PRESS
 	    && buttonevent->button == 3
@@ -322,7 +324,7 @@ void update_player_list(void)
 	gint i, num, l;
 	GGZPlayer *p;
 	GGZTable *table;
-	GGZRoom *room = ggzcore_server_get_cur_room(server);
+	GGZRoom *room = ggzcore_server_get_cur_room(ggz_gtk.server);
 	int wins, losses, ties, forfeits, rating, ranking, highscore;
 	char stats[512];
 

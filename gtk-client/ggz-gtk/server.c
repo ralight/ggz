@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Client
  * Date: 6/19/00
- * $Id: server.c 7940 2006-03-16 14:34:24Z josef $
+ * $Id: server.c 10250 2008-07-09 18:44:38Z jdorje $
  *
  * This file contains functions for handling server client profiles
  *
@@ -46,8 +46,6 @@ static void server_list_print(void);
 static void server_print(gpointer server, gpointer data);
 static void server_free_node(gpointer server, gpointer data);
 static gint server_match_name(gconstpointer, gconstpointer);
-
-GGZServer *server = NULL;
 
 void server_profiles_cleanup(void)
 {

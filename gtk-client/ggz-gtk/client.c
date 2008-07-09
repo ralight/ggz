@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 10249 2008-07-09 04:17:16Z jdorje $
+ * $Id: client.c 10250 2008-07-09 18:44:38Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -117,7 +117,7 @@ static void
 client_disconnect_activate		(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
-	if (ggzcore_server_logout(server) < 0)
+	if (ggzcore_server_logout(ggz_gtk.server) < 0)
 		ggz_error_msg("Error logging out in "
 		              "client_disconnect_activate");
 
@@ -260,7 +260,7 @@ static void
 client_motd_activate			(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
-	ggzcore_server_motd(server);
+	ggzcore_server_motd(ggz_gtk.server);
 }
 
 
@@ -331,7 +331,7 @@ static void
 client_disconnect_button_clicked	(GtkButton	*button,
 					 gpointer	 data)
 {
-	if (ggzcore_server_logout(server) < 0)
+	if (ggzcore_server_logout(ggz_gtk.server) < 0)
 		ggz_error_msg("Error logging out in "
 		              "client_disconnect_button_clicked");
 
@@ -633,7 +633,7 @@ void client_join_table(void)
         int status;
 	GGZTable *table = get_selected_table();
 
-	room = ggzcore_server_get_cur_room(server);
+	room = ggzcore_server_get_cur_room(ggz_gtk.server);
 	status = ggzcore_room_join_table(room, ggzcore_table_get_id(table),
 					 ggz_gtk.spectating);
 	
@@ -749,7 +749,7 @@ static void client_tables_size_request(GtkWidget *widget, gpointer data)
 	tmp =  ggz_lookup_widget(ggz_gtk.win_main, "table_vpaned");
 
 	/* Check what the current game type is */
-	room = ggzcore_server_get_cur_room(server);
+	room = ggzcore_server_get_cur_room(ggz_gtk.server);
 	gt = ggzcore_room_get_gametype(room);
 
 	if(ggzcore_gametype_get_name(gt) != NULL)
@@ -762,13 +762,14 @@ static void client_tables_size_request(GtkWidget *widget, gpointer data)
 
 void ggz_embed_leave_table(void)
 {
-	ggzcore_room_leave_table(ggzcore_server_get_cur_room(server), 0);
+	ggzcore_room_leave_table(ggzcore_server_get_cur_room(ggz_gtk.server),
+				 0);
 }
 
 
 GGZServer *ggz_embed_get_server(void)
 {
-	return server;
+	return ggz_gtk.server;
 }
 
 void ggz_embed_ensure_server(const char *profile_name,
@@ -1480,7 +1481,8 @@ void main_activate(void)
 	} else if (props_is_raised()) {
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(ggz_gtk.notebook),
 					      GGZ_PAGE_PROPS);
-	} else if (server && ggzcore_server_is_logged_in(server)) {
+	} else if (ggz_gtk.server
+		   && ggzcore_server_is_logged_in(ggz_gtk.server)) {
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(ggz_gtk.notebook),
 					      GGZ_PAGE_MAIN);
 	} else {
