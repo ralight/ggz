@@ -24,6 +24,7 @@
 #ifdef HAVE_CONFIG_H
 #  include <config.h>	/* Site-specific config */
 #endif
+#undef GTK_DISABLE_DEPRECATED /* don't want this */
 
 #define XCHAT							/* using xchat */
 #define TINT_VALUE 195				/* 195/255 of the brightness. */
