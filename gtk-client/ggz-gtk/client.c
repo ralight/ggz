@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 10231 2008-07-08 19:30:17Z jdorje $
+ * $Id: client.c 10243 2008-07-09 02:00:29Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -46,6 +46,7 @@
 #include "first.h"
 #include "game.h"
 #include "ggzclient.h"
+#include "ggzutils.h"
 #include "ggz-embed.h"
 #include "ggz-gtk.h"
 #include "playerlist.h"
@@ -328,7 +329,8 @@ main_xtext_chat_create			(gchar		*widget_name,
 					 gint		 int2)
 {
         GtkWidget *chat_text;
-        chat_text = gtk_xtext_new (colors, TRUE);
+
+        chat_text = create_xtext();
         return chat_text;
 }
 
@@ -674,6 +676,7 @@ client_realize                    (GtkWidget       *widget,
 	char *buf;
 	char *font_str;
 
+	init_colors();
 	chat_init();
 
 #if !GTK_CHECK_VERSION(2, 12, 0)
@@ -710,7 +713,7 @@ client_realize                    (GtkWidget       *widget,
 	gtk_xtext_set_font(tmp, font_str);
 	ggz_free(font_str);
 
-	gtk_xtext_set_palette(tmp, colors); 
+	activate_colors(tmp);
 	tmp->auto_indent = ggzcore_conf_read_int("CHAT", "AUTO_INDENT", TRUE);
 	tmp->wordwrap = ggzcore_conf_read_int("CHAT", "WORD_WRAP", TRUE);
 	tmp->max_auto_indent = 200;

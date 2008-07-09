@@ -24,12 +24,25 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <gtk/gtk.h>
+
 #include <ggz_common.h>
 
+#include "xtext.h"
 
 #ifndef __GGZUTILS_H__
 #define __GGZUTILS_H__
 
 const char *perm_name(GGZPerm p);
+
+GtkWidget *create_xtext(void);
+
+/* xtext color palette */
+void init_colors(void);
+void activate_colors(GtkXText *xtext);
+GdkColor color_white(void);
+GdkColor color_black(void);
+GdkColor get_color(int id);
+void set_color(int id, GdkColor color);
 
 #endif /* __GGZUTILS_H__ */

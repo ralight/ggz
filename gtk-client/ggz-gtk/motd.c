@@ -2,7 +2,7 @@
  * File: motd.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: motd.c 9393 2007-12-01 00:29:32Z jdorje $
+ * $Id: motd.c 10243 2008-07-09 02:00:29Z jdorje $
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -34,11 +34,13 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include <ggz.h>
+
 #include "chat.h"
 #include "client.h"
+#include "ggzutils.h"
 #include "motd.h"
 #include "support.h"
-#include "ggz.h"
 
 static GtkWidget *motd_dialog;
 static GtkWidget *create_dlg_motd(void);
@@ -78,13 +80,14 @@ void motd_print_line(const gchar * line)
 	GdkColormap *cmap;
 	gint color_index = 0;	/* Black */
 	gint letter;
+	GdkColor color = get_color(color_index);
 
 	/* Make shure the motd window it there */
 	if (motd_dialog == NULL)
 		return;
 
 	cmap = gdk_colormap_get_system();
-	if (!gdk_colormap_alloc_color(cmap, &colors[color_index],
+	if (!gdk_colormap_alloc_color(cmap, &color,
 				      FALSE, TRUE)) {
 		g_error("couldn't allocate color");
 	}
@@ -113,8 +116,7 @@ void motd_print_line(const gchar * line)
 					color_index = atoi(&line[lindex]);
 					cmap = gdk_colormap_get_system();
 					if (!gdk_colormap_alloc_color(cmap,
-								      &colors
-								      [color_index],
+								      &color,
 								      FALSE,
 								      TRUE))
 					{

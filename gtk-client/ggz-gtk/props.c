@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 10242 2008-07-09 00:48:24Z jdorje $
+ * $Id: props.c 10243 2008-07-09 02:00:29Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -41,6 +41,7 @@
 
 #include "chat.h"
 #include "ggzcore.h"
+#include "ggzutils.h"
 #include "login.h"
 #include "msgbox.h"
 #include "props.h"
@@ -234,15 +235,14 @@ static void props_update(void)
 
 	/* Background Color */
 	tmp = ggz_lookup_widget((props_dialog), "white_radio");
-	if (GTK_TOGGLE_BUTTON(tmp)->active)
-	{
-		colors[18] = ColorBlack;
-		colors[19] = ColorWhite;
-	}else{
-		colors[18] = ColorWhite;
-		colors[19] = ColorBlack;
+	if (GTK_TOGGLE_BUTTON(tmp)->active) {
+		set_color(18, color_black());
+		set_color(19, color_white());
+	} else {
+		set_color(18, color_white());
+		set_color(19, color_black());
 	}
-	gtk_xtext_set_palette(xtext, colors);
+	activate_colors(xtext);
 
 	/* Refresh XText to make changed take affect */
 	gtk_xtext_refresh(xtext, 0);

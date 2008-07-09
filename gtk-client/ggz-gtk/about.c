@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 10230 2008-07-08 19:26:50Z jdorje $
+ * $Id: about.c 10243 2008-07-09 02:00:29Z jdorje $
  *
  * About dialog: Displays information about the authors and the application.
  *
@@ -39,6 +39,7 @@
 #include "about.h"
 #include "chat.h"
 #include "client.h"
+#include "ggzutils.h"
 #include "support.h"
 
 struct about {
@@ -135,7 +136,7 @@ static void about_realize(GtkWidget * widget, gpointer data)
 	oldstyle = gtk_widget_get_style(tmp);
 	newstyle = gtk_style_copy(oldstyle);
 	/* I don't know why it's the 4th element of text */
-	newstyle->text[4] = colors[12];
+	newstyle->text[4] = get_color(12);
 	gtk_widget_set_style(tmp, newstyle);
 
 	if (!about.font[0]) {

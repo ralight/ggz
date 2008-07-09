@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 10241 2008-07-08 23:09:47Z jdorje $
+ * $Id: chat.c 10243 2008-07-09 02:00:29Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -58,13 +58,13 @@
 #include "client.h"
 #include "ggz.h"
 #include "ggzcore.h"
+#include "ggzutils.h"
 #include "login.h"
 #include "server.h"
 #include "xtext.h"
 #define gettext_noop			/* FIXME: why is this necessary? */
 #include "support.h"
 
-static void chat_allocate_colors(void);
 static const gchar *chat_get_color(const gchar *name, const gchar *msg);
 static void chat_load_lists(void);
 
@@ -151,39 +151,6 @@ static GGZCommand me_command = {
 	"/me", NULL, N_("<action>"), N_("Send an action")
 };
 
-/* Aray of GdkColors currently used for chat and MOTD
- * They are all non-ditherable and as such should look the same everywhere
- */
-GdkColor colors[] =
-{
-        {0, 0x0000, 0x0000, 0x0000},          /* 0   Black			*/
-        {0, 0xFFFF, 0xFFFF, 0x3333},          /* 1   Dark Goldenrod		*/
-        {0, 0xCCCC, 0x0000, 0x0000},          /* 2   Orange Red 3		*/
-        {0, 0x6666, 0x9999, 0x0000},          /* 3   Olive Drab			*/
-        {0, 0xCCCC, 0x3333, 0xCCCC},          /* 4   Medium Orchid		*/
-        {0, 0x9999, 0x3333, 0x3333},          /* 5   Indian Red 4		*/
-        {0, 0x0000, 0x6666, 0xFFFF},          /* 6   Royal Blue 2		*/
-        {0, 0xFFFF, 0x9999, 0x3333},          /* 7   Tan 1			*/
-        {0, 0x6666, 0xCCCC, 0xCCCC},          /* 8   Dark Slate Grey 3		*/
-        {0, 0x6666, 0xCCCC, 0xFFFF},          /* 9   Cadet Blue			*/
-        {0, 0x9999, 0x3333, 0xFFFF},          /* 10  Purple 2			*/
-        {0, 0x9999, 0x0000, 0x6666},          /* 11  Violet Red 4		*/
-        {0, 0x3333, 0x0000, 0x6666},          /* 12  Dark Blue			*/
-        {0, 0x9999, 0x3333, 0x3333},          /* 13  Indian Red			*/
-        {0, 0x3333, 0x6666, 0xFFFF},          /* 14  Blue			*/
-        {0, 0x6666, 0xCCCC, 0xFFFF},          /* 15  Pale Violet Red		*/
-        {0, 0xCCCC, 0xCCCC, 0x3333},          /* 16  Yellow 3			*/
-        {0, 0x6666, 0xFFFF, 0xCCCC},          /* 17  Aquamarine 2		*/
-        {0, 0xFFFF, 0xFFFF, 0xFFFF},          /* 18  forebround (White)		*/
-        {0, 0x0000, 0x0000, 0x0000}           /* 19  background (Black)		*/
-};
-
-/* Used for forground/background colors 
- * in the chat area
- */
-GdkColor ColorWhite = {0, 0xFFFF, 0xFFFF, 0xFFFF};
-GdkColor ColorBlack = {0, 0x0000, 0x0000, 0x0000};
-
 /* chatinfo holds 2 arrays one for friends and one for 
  * people to ignore. Friends are shown in a different 
  * color in chat and ingnored people's chats don't show
@@ -202,61 +169,18 @@ static struct chatinfo {
  */
 void chat_init(void)
 {
-	chat_allocate_colors();
 	chatinfo.friends = g_array_new(FALSE, FALSE, sizeof(gchar*));
 	chatinfo.ignore = g_array_new(FALSE, FALSE, sizeof(gchar*));
 
 	/* sets up background color for chat area*/
-	if (ggzcore_conf_read_int("CHAT", "BACKGROUND", TRUE))
-	{
-		colors[18] = ColorBlack;
-		colors[19] = ColorWhite;
+	if (ggzcore_conf_read_int("CHAT", "BACKGROUND", TRUE)) {
+		set_color(18, color_black());
+		set_color(19, color_white());
 	}
 
 	chat_load_lists();
 }
 
-
-/* chat_allocate_colors() - Allocates the colors all at once so they
- *                          can be called without the need to allocate
- *                          each time.
- *
- * Recieves:
- *
- * Returns:   
- */
-
-static void chat_allocate_colors(void)
-{
-	gint i;
-        /* Allocate standared colors (just once)*/
-        if (!colors[0].pixel) {
-                for (i = 0; i < 20; i++) {
-                        colors[i].pixel = (gulong) ((colors[i].red & 0xff00) * 256 +
-                                        (colors[i].green & 0xff00) +
-                                        (colors[i].blue & 0xff00) / 256);
-                        if (!gdk_colormap_alloc_color(gdk_colormap_get_system(),
-						      &colors[i],
-						      FALSE, TRUE)) {
-                                g_error("*** GGZ: Couldn't alloc color\n");
-			}
-                }
-        }
-        ColorBlack.pixel = (gulong) ((ColorBlack.red & 0xff00) * 256 +
-        			(ColorBlack.green & 0xff00) +
-        			(ColorBlack.blue & 0xff00) / 256);
-        if (!gdk_colormap_alloc_color(gdk_colormap_get_system(),
-				      &ColorBlack, FALSE, TRUE)) {
-        	g_error("*** GGZ: Couldn't alloc color\n");
-	}
-        ColorWhite.pixel = (gulong) ((ColorWhite.red & 0xff00) * 256 +
-        			(ColorWhite.green & 0xff00) +
-        			(ColorWhite.blue & 0xff00) / 256);
-        if (!gdk_colormap_alloc_color(gdk_colormap_get_system(),
-				      &ColorWhite, FALSE, TRUE)) {
-        	g_error("*** GGZ: Couldn't alloc color\n");
-	}
-}
 
 /* chat_display_message() - Adds text to the xtext widget wich is used to diaplying
  *                          chatt and system messages.
