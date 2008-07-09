@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 10250 2008-07-09 18:44:38Z jdorje $
+ * $Id: ggzclient.c 10251 2008-07-09 20:00:15Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -54,7 +54,6 @@
 
 
 static guint server_tag, channel_tag;
-static gboolean is_server, is_channel;
 
 /* Gdk input callbacks */
 static void ggz_input_removed(gpointer data);
@@ -81,7 +80,7 @@ static GGZHookReturn ggz_connected(GGZServerEvent id,
 		/* Add the fd to the gtk main loop */
 		ggz_debug("connection", "We're connected.");
 		fd = ggzcore_server_get_fd(ggz_gtk.server);
-		assert(!is_server);
+		assert(server_tag == 0);
 		assert(fd >= 0);
 		channel = g_io_channel_unix_new(fd);
 		server_tag =
@@ -90,21 +89,19 @@ static GGZHookReturn ggz_connected(GGZServerEvent id,
 					GINT_TO_POINTER(fd),
 					ggz_input_removed);
 		g_io_channel_unref(channel);
-		is_server = TRUE;
 	} else if (id == GGZ_CHANNEL_CONNECTED) {
 		GIOChannel *channel;
 
 		/* Add the fd to the gtk main loop */
 		ggz_debug("connection", "Direct game channel connected.");
 		fd = ggzcore_server_get_channel(ggz_gtk.server);
-		assert(!is_channel);
+		assert(channel_tag == 0);
 		assert(fd >= 0);
 		channel = g_io_channel_unix_new(fd);
 		channel_tag = g_io_add_watch(channel, G_IO_IN,
 					     ggz_check_fd,
 					     GINT_TO_POINTER(fd));
 		g_io_channel_unref(channel);
-		is_channel = TRUE;
 	}
 
 	return GGZ_HOOK_OK;
@@ -149,7 +146,7 @@ static GGZHookReturn ggz_channel_ready(GGZGameEvent id,
 
 	/* Remove channel from gdk input list */
 	g_source_remove(channel_tag);
-	is_channel = FALSE;
+	channel_tag = 0;
 
 	game_channel_ready();
 
@@ -1059,7 +1056,7 @@ static GGZHookReturn ggz_server_error(GGZServerEvent id,
 		server_disconnect();
 	} else {
 		g_source_remove(server_tag);
-		is_server = FALSE;
+		server_tag = 0;
 	}
 
 	/* Should we clear the list of rooms/players/tables? */
@@ -1130,7 +1127,7 @@ static void ggz_input_removed(gpointer data)
 
 int ggz_connection_query(void)
 {
-	return is_server;
+	return (server_tag > 0);
 }
 
 /* Handle the ggz-gtk end of disconnecting. */
@@ -1143,7 +1140,7 @@ void server_disconnect(void)
 	   on the host/port we connected to).  We still have to free the
 	   server variable, but not remove the input handler.  This is ugly.
 	   See ggz_input_removed(). */
-	if (!is_server && ggz_gtk.server) {
+	if (server_tag == 0 && ggz_gtk.server) {
 		ggzcore_server_free(ggz_gtk.server);
 		ggz_gtk.server = NULL;
 		return;
@@ -1153,7 +1150,7 @@ void server_disconnect(void)
 	   ggz_input_removed, which frees the server data.   This is
 	   a bit kludgy, but... */
 	g_source_remove(server_tag);
-	is_server = FALSE;
+	server_tag = 0;
 
 	chat_display_local(CHAT_LOCAL_HIGH, NULL,
 			   _("Disconnected from server."));
