@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 10244 2008-07-09 03:06:25Z jdorje $
+ * $Id: ggzclient.c 10245 2008-07-09 03:11:29Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -179,7 +179,7 @@ static GGZHookReturn ggz_auto_join(GGZServerEvent id,
 		}
 	}
 
-	if (embedded_protocol_engine && supported) {
+	if (ggz_gtk.embedded_protocol_engine && supported) {
 		joinroom = supported;
 		/* For embedded GGZ:
 		   first choice is to join a supported room. */
@@ -213,7 +213,7 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id,
 	}
 
 	/* Set title */
-	if (!embedded_protocol_engine) {
+	if (!ggz_gtk.embedded_protocol_engine) {
 		gchar *title;
 
 		title = g_strdup_printf("GGZ Gaming Zone - [%s:%d]",
@@ -396,7 +396,7 @@ static GGZHookReturn ggz_logout(GGZServerEvent id, const void *event_data,
 	}
 
 	/* set title */
-	if (!embedded_protocol_version) {
+	if (!ggz_gtk.embedded_protocol_version) {
 		gtk_window_set_title(GTK_WINDOW(main_window),
 				     _("GGZ Gaming Zone"));
 	}

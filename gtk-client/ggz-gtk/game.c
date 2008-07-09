@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 10244 2008-07-09 03:06:25Z jdorje $
+ * $Id: game.c 10245 2008-07-09 03:11:29Z jdorje $
  *
  * Functions for handling game events
  *
@@ -347,15 +347,15 @@ int game_initialize(int spectate)
 		return -1;
 	}
 
-	if (embedded_protocol_engine && embedded_protocol_version) {
+	if (ggz_gtk.embedded_protocol_engine
+	    && ggz_gtk.embedded_protocol_version) {
 		const char *engine = ggzcore_gametype_get_prot_engine(gt);
 		const char *version = ggzcore_gametype_get_prot_version(gt);
 
 		module = NULL;
-		if (strcmp(engine, embedded_protocol_engine) != 0
-		    || strcmp(version, embedded_protocol_version) != 0) {
-		  printf("%s %s vs %s %s\n", engine, version,
-			 embedded_protocol_engine, embedded_protocol_version);
+		if (strcmp(engine, ggz_gtk.embedded_protocol_engine) != 0
+		    || strcmp(version,
+			      ggz_gtk.embedded_protocol_version) != 0) {
 			msgbox(_("You need to launch the GGZ client directly\n"
 				 "to be able to play this game."),
 			       _("Launch Error"),
@@ -385,10 +385,11 @@ gboolean can_launch_gametype(const GGZGameType *gt)
 	const char *version = ggzcore_gametype_get_prot_version(gt);
 	const int num = ggzcore_module_get_num_by_type(game, engine, version);
 
-	if (embedded_protocol_engine && embedded_protocol_version) {
-	  return (strcmp(engine, embedded_protocol_engine) == 0
-		  && strcmp(version, embedded_protocol_version) == 0);
+	if (ggz_gtk.embedded_protocol_engine
+	    && ggz_gtk.embedded_protocol_version) {
+		return (strcmp(engine, ggz_gtk.embedded_protocol_engine) == 0
+			&& strcmp(version, ggz_gtk.embedded_protocol_version) == 0);
 	} else {
-	  return (num > 0);
+		return (num > 0);
 	}
 }

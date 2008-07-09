@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 10244 2008-07-09 03:06:25Z jdorje $
+ * $Id: client.c 10245 2008-07-09 03:11:29Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -65,8 +65,6 @@
 
 GtkWidget *win_main, *main_window;
 GtkWidget *ggznotebook;
-const char *embedded_protocol_engine, *embedded_protocol_version;
-const char *embedded_default_profile;
 struct ggz_gtk ggz_gtk;
 
 static gint spectating = -1;
@@ -852,12 +850,18 @@ void ggz_gtk_initialize(gboolean reconnect,
 	ggz_gtk.connected_cb = connected;
 	ggz_gtk.launched_cb = launched;
 	ggz_gtk.ggz_closed_cb = ggz_closed;
-	if (embedded_protocol_engine) ggz_free(embedded_protocol_engine);
-	if (embedded_protocol_version) ggz_free(embedded_protocol_version);
-	if (embedded_default_profile) ggz_free(embedded_default_profile);
-	embedded_protocol_engine = ggz_strdup(protocol_engine);
-	embedded_protocol_version = ggz_strdup(protocol_version);
-	embedded_default_profile = ggz_strdup(default_profile);
+	if (ggz_gtk.embedded_protocol_engine) {
+		ggz_free(ggz_gtk.embedded_protocol_engine);
+	}
+	if (ggz_gtk.embedded_protocol_version) {
+		ggz_free(ggz_gtk.embedded_protocol_version);
+	}
+	if (ggz_gtk.embedded_default_profile) {
+		ggz_free(ggz_gtk.embedded_default_profile);
+	}
+	ggz_gtk.embedded_protocol_engine = ggz_strdup(protocol_engine);
+	ggz_gtk.embedded_protocol_version = ggz_strdup(protocol_version);
+	ggz_gtk.embedded_default_profile = ggz_strdup(default_profile);
 }
 
 static GtkWidget *create_main_dlg(GtkWidget *main_window)
@@ -1459,8 +1463,8 @@ GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_win)
 	gtk_notebook_append_page(GTK_NOTEBOOK(ggznotebook),
 				 create_dlg_first(), NULL);
 	gtk_notebook_append_page(GTK_NOTEBOOK(ggznotebook),
-				 create_dlg_login(embedded_default_profile),
-				 NULL);
+			create_dlg_login(ggz_gtk.embedded_default_profile),
+			NULL);
 	gtk_notebook_append_page(GTK_NOTEBOOK(ggznotebook),
 				 create_main_dlg(main_win), NULL);
 	gtk_notebook_append_page(GTK_NOTEBOOK(ggznotebook),
