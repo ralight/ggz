@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 10243 2008-07-09 02:00:29Z jdorje $
+ * $Id: props.c 10247 2008-07-09 03:39:44Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -95,7 +95,7 @@ void props_raise(void)
 static void props_update(void)
 {
 	GtkWidget *tmp;
-	GtkXText *xtext = GTK_XTEXT(ggz_lookup_widget(win_main, "xtext_custom"));
+	GtkXText *xtext = GTK_XTEXT(ggz_lookup_widget(ggz_gtk.win_main, "xtext_custom"));
 	const char *text;
 
 	/* Save Changes */

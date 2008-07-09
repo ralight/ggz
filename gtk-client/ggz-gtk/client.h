@@ -2,7 +2,7 @@
  * File: client.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.h 10246 2008-07-09 03:17:17Z jdorje $
+ * $Id: client.h 10247 2008-07-09 03:39:44Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -46,10 +46,10 @@ enum ggz_page {
 
 void main_activate(void);
 
-extern GtkWidget *win_main; /* FIXME: not actually a window anymore. */
 extern GtkWidget *main_window;
 
 struct ggz_gtk {
+	GtkWidget *win_main; /* FIXME: not actually a window anymore. */
 	GtkWidget *notebook;
 
 	/* Callback functions registered by the

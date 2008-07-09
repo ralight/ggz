@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 10246 2008-07-09 03:17:17Z jdorje $
+ * $Id: client.c 10247 2008-07-09 03:39:44Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -63,7 +63,7 @@
 #include "types.h"
 #include "xtext.h"
 
-GtkWidget *win_main, *main_window;
+GtkWidget *main_window;
 struct ggz_gtk ggz_gtk;
 
 static gint spectating = -1;
@@ -198,7 +198,8 @@ static void client_room_toggle_activate(GtkMenuItem *menuitem,
 	GtkWidget *tmp;
 	static gboolean room_view = TRUE;
 
-	tmp = g_object_get_data(G_OBJECT(win_main), "room_scrolledwindow");
+	tmp = g_object_get_data(G_OBJECT(ggz_gtk.win_main),
+				"room_scrolledwindow");
 	if (room_view)
 		gtk_widget_hide(tmp);
 	else
@@ -214,7 +215,7 @@ static void client_player_toggle_activate(GtkMenuItem *menuitem,
 	GtkWidget *tmp;
 	static gboolean player_view = TRUE;
 
-	tmp = g_object_get_data(G_OBJECT(win_main),
+	tmp = g_object_get_data(G_OBJECT(ggz_gtk.win_main),
 				  "player_scrolledwindow");
 	if (player_view)
 		gtk_widget_hide(tmp);
@@ -350,7 +351,7 @@ static void chat_line_entered(void)
 	GtkEntry *tmp;
 	GGZList *last_list; /* List for last entries */
 
-	tmp = g_object_get_data(G_OBJECT(win_main), "chat_entry");
+	tmp = g_object_get_data(G_OBJECT(ggz_gtk.win_main), "chat_entry");
 	last_list = g_object_get_data(G_OBJECT(tmp), "last_list");
 
 	while (ggz_list_count(last_list) > CHAT_MAXIMUM_CACHE)
@@ -392,7 +393,7 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 		int match;
 
 		/* Get start of name */
-		tmp = g_object_get_data(G_OBJECT(win_main), "chat_entry");
+		tmp = g_object_get_data(G_OBJECT(ggz_gtk.win_main), "chat_entry");
 		text = gtk_entry_get_text(GTK_ENTRY(tmp));
 		length = strlen(text);
 
@@ -433,7 +434,7 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 						      text,
 						      &name[strlen(startname)],
 						      match ? " " : "");
-			tmp = g_object_get_data(G_OBJECT(win_main), "chat_entry");
+			tmp = g_object_get_data(G_OBJECT(ggz_gtk.win_main), "chat_entry");
 			gtk_entry_set_text(GTK_ENTRY(tmp), out);
 
 			/* Set the cursor to the end of the autocompleted
@@ -448,7 +449,7 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 		return TRUE;
 	} else if (event->keyval == GDK_Up || event->keyval == GDK_Down) {
 		gchar *out;
-		tmp = g_object_get_data(G_OBJECT(win_main), "chat_entry");
+		tmp = g_object_get_data(G_OBJECT(ggz_gtk.win_main), "chat_entry");
 		text = gtk_entry_get_text(GTK_ENTRY(tmp));
 		last_list = g_object_get_data(G_OBJECT(tmp), "last_list");
 		entry = g_object_get_data(G_OBJECT(tmp), "current_entry");
@@ -651,7 +652,7 @@ void client_join_table(void)
 
 static void tooltip(char *widget, char *tip)
 {
-	GtkWidget *ttmp = ggz_lookup_widget(win_main, widget);
+	GtkWidget *ttmp = ggz_lookup_widget(ggz_gtk.win_main, widget);
 
 	gtk_widget_set_tooltip_text(ttmp, tip);
 }
@@ -701,10 +702,10 @@ client_realize                    (GtkWidget       *widget,
 		_("Exit the GGZ client application."));
 
 	/* Set Properties */
-	tmp = g_object_get_data(G_OBJECT(win_main), "table_vpaned");
+	tmp = g_object_get_data(G_OBJECT(ggz_gtk.win_main), "table_vpaned");
 	g_object_set(G_OBJECT(tmp), "user_data", 125, NULL);
 	font_str = ggzcore_conf_read_string("CHAT", "FONT", DEFAULT_FONT);
-	tmp = g_object_get_data(G_OBJECT(win_main), "xtext_custom");
+	tmp = g_object_get_data(G_OBJECT(ggz_gtk.win_main), "xtext_custom");
 	gtk_xtext_set_font(tmp, font_str);
 	ggz_free(font_str);
 
@@ -722,7 +723,7 @@ client_realize                    (GtkWidget       *widget,
 	gtk_xtext_refresh(tmp,0);
 
 	/* Initialize the scroll bar */
-	tmp2 = g_object_get_data(G_OBJECT(win_main), "chat_vscrollbar");
+	tmp2 = g_object_get_data(G_OBJECT(ggz_gtk.win_main), "chat_vscrollbar");
 	gtk_range_set_adjustment(GTK_RANGE(tmp2), tmp->adj);
 
 	gtk_xtext_refresh(tmp,0);
@@ -749,7 +750,7 @@ static void client_tables_size_request(GtkWidget *widget, gpointer data)
 	GGZRoom *room;
 	GGZGameType *gt;
 
-	tmp =  ggz_lookup_widget(win_main, "table_vpaned");
+	tmp =  ggz_lookup_widget(ggz_gtk.win_main, "table_vpaned");
 
 	/* Check what the current game type is */
 	room = ggzcore_server_get_cur_room(server);
@@ -947,29 +948,29 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
   main_vbox = gtk_vbox_new (FALSE, 0);
 
   /* Set global value. */
-  win_main = main_vbox;
+  ggz_gtk.win_main = main_vbox;
 
   menubar = gtk_menu_bar_new ();
-  g_object_set_data(G_OBJECT (win_main), "menubar", menubar);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "menubar", menubar);
   gtk_box_pack_start (GTK_BOX (main_vbox), menubar, FALSE, FALSE, 0);
 
   ggz = gtk_menu_item_new_with_label(_("GGZ"));
-  g_object_set_data(G_OBJECT (win_main), "ggz", ggz);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "ggz", ggz);
   gtk_container_add (GTK_CONTAINER (menubar), ggz);
 
   ggz_menu = gtk_menu_new ();
-  g_object_set_data(G_OBJECT (win_main), "ggz_menu", ggz_menu);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "ggz_menu", ggz_menu);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (ggz), ggz_menu);
 
   connect = gtk_menu_item_new_with_label(_("Connect"));
-  g_object_set_data(G_OBJECT (win_main), "connect", connect);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "connect", connect);
   gtk_container_add (GTK_CONTAINER (ggz_menu), connect);
   gtk_widget_add_accelerator (connect, "activate", accel_group,
                               GDK_C, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   disconnect = gtk_menu_item_new_with_label(_("Disconnect"));
-  g_object_set_data(G_OBJECT (win_main), "disconnect", disconnect);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "disconnect", disconnect);
   gtk_container_add (GTK_CONTAINER (ggz_menu), disconnect);
   gtk_widget_set_sensitive (disconnect, FALSE);
   gtk_widget_add_accelerator (disconnect, "activate", accel_group,
@@ -977,107 +978,107 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
                               GTK_ACCEL_VISIBLE);
 
   separator1 = gtk_menu_item_new ();
-  g_object_set_data(G_OBJECT (win_main), "separator1", separator1);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "separator1", separator1);
   gtk_container_add (GTK_CONTAINER (ggz_menu), separator1);
   gtk_widget_set_sensitive (separator1, FALSE);
 
   exit_mnu = gtk_menu_item_new_with_label(_("Quit"));
-  g_object_set_data(G_OBJECT (win_main), "exit", exit_mnu);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "exit", exit_mnu);
   gtk_container_add (GTK_CONTAINER (ggz_menu), exit_mnu);
   gtk_widget_add_accelerator (exit_mnu, "activate", accel_group,
                               GDK_X, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   game = gtk_menu_item_new_with_label(_("Game"));
-  g_object_set_data(G_OBJECT (win_main), "game", game);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "game", game);
   gtk_container_add (GTK_CONTAINER (menubar), game);
   gtk_widget_set_sensitive (game, FALSE);
 
   game_menu = gtk_menu_new ();
-  g_object_set_data(G_OBJECT (win_main), "game_menu", game_menu);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "game_menu", game_menu);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (game), game_menu);
 
   launch = gtk_menu_item_new_with_label(_("Launch"));
-  g_object_set_data(G_OBJECT (win_main), "launch", launch);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "launch", launch);
   gtk_container_add (GTK_CONTAINER (game_menu), launch);
   gtk_widget_add_accelerator (launch, "activate", accel_group,
                               GDK_L, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   join = gtk_menu_item_new_with_label(_("Join"));
-  g_object_set_data(G_OBJECT (win_main), "join", join);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "join", join);
   gtk_container_add (GTK_CONTAINER (game_menu), join);
   gtk_widget_add_accelerator (join, "activate", accel_group,
                               GDK_J, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   watch = gtk_menu_item_new_with_label(_("Watch"));
-  g_object_set_data(G_OBJECT (win_main), "watch", watch);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "watch", watch);
   gtk_container_add (GTK_CONTAINER (game_menu), watch);
   gtk_widget_add_accelerator (watch, "activate", accel_group,
                               GDK_W, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   separator2 = gtk_menu_item_new ();
-  g_object_set_data(G_OBJECT (win_main), "separator2", separator2);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "separator2", separator2);
   gtk_container_add (GTK_CONTAINER (game_menu), separator2);
   gtk_widget_set_sensitive (separator2, FALSE);
 
   leave = gtk_menu_item_new_with_label(_("Leave"));
-  g_object_set_data(G_OBJECT (win_main), "leave", leave);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "leave", leave);
   gtk_container_add (GTK_CONTAINER (game_menu), leave);
   gtk_widget_add_accelerator (leave, "activate", accel_group,
                               GDK_V, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   edit = gtk_menu_item_new_with_label(_("Edit"));
-  g_object_set_data(G_OBJECT (win_main), "edit", edit);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "edit", edit);
   gtk_container_add (GTK_CONTAINER (menubar), edit);
 
   edit_menu = gtk_menu_new ();
-  g_object_set_data(G_OBJECT (win_main), "edit_menu", edit_menu);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "edit_menu", edit_menu);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (edit), edit_menu);
 
   properties = gtk_menu_item_new_with_label(_("Properties"));
-  g_object_set_data(G_OBJECT (win_main), "properties", properties);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "properties", properties);
   gtk_container_add (GTK_CONTAINER (edit_menu), properties);
   gtk_widget_add_accelerator (properties, "activate", accel_group,
                               GDK_P, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   view = gtk_menu_item_new_with_label(_("View"));
-  g_object_set_data(G_OBJECT (win_main), "view", view);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "view", view);
   gtk_container_add (GTK_CONTAINER (menubar), view);
   gtk_widget_set_sensitive (view, FALSE);
 
   view_menu = gtk_menu_new ();
-  g_object_set_data(G_OBJECT (win_main), "view_menu", view_menu);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "view_menu", view_menu);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (view), view_menu);
 
   room_toggle = gtk_check_menu_item_new_with_label(_("Room List"));
-  g_object_set_data(G_OBJECT (win_main), "room_toggle", room_toggle);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "room_toggle", room_toggle);
   gtk_container_add (GTK_CONTAINER (view_menu), room_toggle);
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (room_toggle),
 				  TRUE);
 
   player_toggle = gtk_check_menu_item_new_with_label(_("Player List"));
-  g_object_set_data(G_OBJECT (win_main), "player_toggle",
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "player_toggle",
 		    player_toggle);
   gtk_container_add (GTK_CONTAINER (view_menu), player_toggle);
   gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM (player_toggle), TRUE);
 
   separator8 = gtk_menu_item_new ();
-  g_object_set_data(G_OBJECT (win_main), "separator8", separator8);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "separator8", separator8);
   gtk_container_add (GTK_CONTAINER (view_menu), separator8);
   gtk_widget_set_sensitive (separator8, FALSE);
 
 #ifdef STATS
   server_stats = gtk_menu_item_new_with_label(_("Server Stats"));
-  g_object_set_data(G_OBJECT (win_main), "server_stats", server_stats);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "server_stats", server_stats);
   gtk_container_add (GTK_CONTAINER (view_menu), server_stats);
 
   player_stats = gtk_menu_item_new_with_label(_("Player Stats"));
-  g_object_set_data(G_OBJECT (win_main), "player_stats", player_stats);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "player_stats", player_stats);
   gtk_container_add (GTK_CONTAINER (view_menu), player_stats);
   gtk_widget_add_accelerator (player_stats, "activate", accel_group,
                               GDK_S, GDK_CONTROL_MASK,
@@ -1085,71 +1086,71 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
 #endif
 
   game_types = gtk_menu_item_new_with_label(_("Game Types"));
-  g_object_set_data(G_OBJECT (win_main), "game_types", game_types);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "game_types", game_types);
   gtk_container_add (GTK_CONTAINER (view_menu), game_types);
 
   separator3 = gtk_menu_item_new ();
-  g_object_set_data(G_OBJECT (win_main), "separator3", separator3);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "separator3", separator3);
   gtk_container_add (GTK_CONTAINER (view_menu), separator3);
   gtk_widget_set_sensitive (separator3, FALSE);
 
   motd = gtk_menu_item_new_with_label(_("MOTD"));
-  g_object_set_data(G_OBJECT (win_main), "motd", motd);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "motd", motd);
   gtk_container_add (GTK_CONTAINER (view_menu), motd);
   gtk_widget_add_accelerator (motd, "activate", accel_group,
                               GDK_M, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   help = gtk_menu_item_new_with_label(_("Help"));
-  g_object_set_data(G_OBJECT (win_main), "help", help);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "help", help);
   gtk_container_add (GTK_CONTAINER (menubar), help);
 
   help_menu = gtk_menu_new ();
-  g_object_set_data(G_OBJECT (win_main), "help_menu", help_menu);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "help_menu", help_menu);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (help), help_menu);
 
   about = gtk_menu_item_new_with_label(_("About"));
-  g_object_set_data(G_OBJECT (win_main), "about", about);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "about", about);
   gtk_container_add (GTK_CONTAINER (help_menu), about);
   gtk_widget_add_accelerator (about, "activate", accel_group,
                               GDK_A, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
 
   license = gtk_menu_item_new_with_label(_("Copyright"));
-  g_object_set_data(G_OBJECT (win_main), "license", license);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "license", license);
   gtk_container_add (GTK_CONTAINER (help_menu), license);
 
   separator6 = gtk_menu_item_new ();
-  g_object_set_data(G_OBJECT (win_main), "separator6", separator6);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "separator6", separator6);
   gtk_container_add (GTK_CONTAINER (help_menu), separator6);
   gtk_widget_set_sensitive (separator6, FALSE);
 
   ggz_help = gtk_menu_item_new_with_label(_("GGZ Help"));
-  g_object_set_data(G_OBJECT (win_main), "ggz_help", ggz_help);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "ggz_help", ggz_help);
   gtk_container_add (GTK_CONTAINER (help_menu), ggz_help);
   gtk_widget_add_accelerator (ggz_help, "activate", accel_group,
                               GDK_F1, 0,
                               GTK_ACCEL_VISIBLE);
 
   game_help = gtk_menu_item_new_with_label(_("Game Help"));
-  g_object_set_data(G_OBJECT (win_main), "game_help", game_help);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "game_help", game_help);
   gtk_container_add (GTK_CONTAINER (help_menu), game_help);
 
   separator7 = gtk_menu_item_new ();
-  g_object_set_data(G_OBJECT (win_main), "separator7", separator7);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "separator7", separator7);
   gtk_container_add (GTK_CONTAINER (help_menu), separator7);
   gtk_widget_set_sensitive (separator7, FALSE);
 
   goto_web1 = gtk_menu_item_new_with_label(_("Go to Web"));
-  g_object_set_data(G_OBJECT (win_main), "goto_web1", goto_web1);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "goto_web1", goto_web1);
   gtk_container_add (GTK_CONTAINER (help_menu), goto_web1);
 
   handlebox1 = gtk_handle_box_new ();
-  g_object_set_data(G_OBJECT (win_main), "handlebox1", handlebox1);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "handlebox1", handlebox1);
   gtk_box_pack_start (GTK_BOX (main_vbox), handlebox1, FALSE, TRUE, 0);
 
   toolbar = gtk_toolbar_new();
-  g_object_set_data(G_OBJECT (win_main), "toolbar", toolbar);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "toolbar", toolbar);
   gtk_container_add (GTK_CONTAINER (handlebox1), toolbar);
 
   launch_button = gtk_tool_button_new(NULL, _("Launch"));
@@ -1157,7 +1158,7 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
 			       GTK_STOCK_NEW);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(launch_button), -1);
-  g_object_set_data(G_OBJECT(win_main), "launch_button", launch_button);
+  g_object_set_data(G_OBJECT(ggz_gtk.win_main), "launch_button", launch_button);
   gtk_widget_set_sensitive(GTK_WIDGET(launch_button), FALSE);
 
   join_button = gtk_tool_button_new(NULL, _("Join"));
@@ -1165,7 +1166,7 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
 			       GTK_STOCK_OPEN);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(join_button), -1);
-  g_object_set_data(G_OBJECT(win_main), "join_button", join_button);
+  g_object_set_data(G_OBJECT(ggz_gtk.win_main), "join_button", join_button);
   gtk_widget_set_sensitive(GTK_WIDGET(join_button), FALSE);
 
   watch_button = gtk_tool_button_new(NULL, _("Watch"));
@@ -1173,7 +1174,7 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
 			       GTK_STOCK_ZOOM_FIT);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(watch_button), -1);
-  g_object_set_data(G_OBJECT(win_main), "watch_button", watch_button);
+  g_object_set_data(G_OBJECT(ggz_gtk.win_main), "watch_button", watch_button);
   gtk_widget_set_sensitive(GTK_WIDGET(watch_button), FALSE);
 
   leave_button = gtk_tool_button_new(NULL, _("Leave"));
@@ -1181,19 +1182,19 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
 			       GTK_STOCK_CLOSE);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(leave_button), -1);
-  g_object_set_data(G_OBJECT(win_main), "leave_button", leave_button);
+  g_object_set_data(G_OBJECT(ggz_gtk.win_main), "leave_button", leave_button);
   gtk_widget_set_sensitive(GTK_WIDGET(leave_button), FALSE);
 
   props_button = gtk_tool_button_new_from_stock(GTK_STOCK_PREFERENCES);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(props_button), -1);
-  g_object_set_data(G_OBJECT(win_main), "props_button", props_button);
+  g_object_set_data(G_OBJECT(ggz_gtk.win_main), "props_button", props_button);
 
 #ifdef STATS
   stats_button = gtk_tool_button_new(NULL, _("Stats"));
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(stats_button), -1);
-  g_object_set_data(G_OBJECT(win_main), "stats_button", stats_button);
+  g_object_set_data(G_OBJECT(ggz_gtk.win_main), "stats_button", stats_button);
   gtk_widget_set_sensitive(GTK_WIDGET(stats_button), FALSE);
 #endif
 
@@ -1206,39 +1207,39 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
 #endif
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(disconnect_button), -1);
-  g_object_set_data(G_OBJECT(win_main), "disconnect_button",
+  g_object_set_data(G_OBJECT(ggz_gtk.win_main), "disconnect_button",
 		    disconnect_button);
   gtk_widget_set_sensitive(GTK_WIDGET(disconnect_button), FALSE);
 
   exit_button = gtk_tool_button_new_from_stock(GTK_STOCK_QUIT);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(exit_button), -1);
-  g_object_set_data(G_OBJECT(win_main), "exit_button", exit_button);
+  g_object_set_data(G_OBJECT(ggz_gtk.win_main), "exit_button", exit_button);
 
   Current_room_label = gtk_label_new (_("Current Room:"));
-  g_object_set_data(G_OBJECT (win_main), "Current_room_label",
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "Current_room_label",
 		    Current_room_label);
   gtk_box_pack_start (GTK_BOX (main_vbox), Current_room_label, FALSE, FALSE, 0);
   gtk_misc_set_alignment (GTK_MISC (Current_room_label), 7.45058e-09, 0.5);
   gtk_misc_set_padding (GTK_MISC (Current_room_label), 8, 5);
 
   client_hbox = gtk_hbox_new (FALSE, 0);
-  g_object_set_data(G_OBJECT (win_main), "client_hbox", client_hbox);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "client_hbox", client_hbox);
   gtk_box_pack_start (GTK_BOX (main_vbox), client_hbox, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (client_hbox), 3);
 
   client_hpaned = gtk_hpaned_new ();
-  g_object_set_data(G_OBJECT (win_main), "client_hpaned", client_hpaned);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "client_hpaned", client_hpaned);
   gtk_box_pack_start (GTK_BOX (client_hbox), client_hpaned, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (client_hpaned), 3);
   gtk_paned_set_position (GTK_PANED (client_hpaned), 220);
 
   lists_vbox = gtk_vbox_new (FALSE, 0);
-  g_object_set_data(G_OBJECT (win_main), "lists_vbox", lists_vbox);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "lists_vbox", lists_vbox);
   gtk_paned_pack1 (GTK_PANED (client_hpaned), lists_vbox, FALSE, TRUE);
 
   room_scrolledwindow = gtk_scrolled_window_new (NULL, NULL);
-  g_object_set_data(G_OBJECT (win_main), "room_scrolledwindow",
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "room_scrolledwindow",
 		    room_scrolledwindow);
   gtk_box_pack_start (GTK_BOX (lists_vbox), room_scrolledwindow, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (room_scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -1247,7 +1248,7 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
   gtk_container_add (GTK_CONTAINER (room_scrolledwindow), room_list);
 
   player_scrolledwindow = gtk_scrolled_window_new (NULL, NULL);
-  g_object_set_data(G_OBJECT (win_main), "player_scrolledwindow",
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "player_scrolledwindow",
 		    player_scrolledwindow);
   gtk_box_pack_start (GTK_BOX (lists_vbox), player_scrolledwindow, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (player_scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -1256,12 +1257,12 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
   gtk_container_add(GTK_CONTAINER(player_scrolledwindow), player_tree);
 
   table_vpaned = gtk_vpaned_new ();
-  g_object_set_data(G_OBJECT (win_main), "table_vpaned", table_vpaned);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "table_vpaned", table_vpaned);
   gtk_paned_pack2 (GTK_PANED (client_hpaned), table_vpaned, TRUE, TRUE);
   gtk_paned_set_position (GTK_PANED (table_vpaned), 125);
 
   scrolledwindow3 = gtk_scrolled_window_new (NULL, NULL);
-  g_object_set_data(G_OBJECT (win_main), "scrolledwindow3", scrolledwindow3);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "scrolledwindow3", scrolledwindow3);
   gtk_paned_pack1 (GTK_PANED (table_vpaned), scrolledwindow3, FALSE, TRUE);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow3), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
@@ -1269,40 +1270,40 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
   gtk_container_add(GTK_CONTAINER(scrolledwindow3), table_list);
 
   chat_vbox = gtk_vbox_new (FALSE, 0);
-  g_object_set_data(G_OBJECT (win_main), "chat_vbox", chat_vbox);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "chat_vbox", chat_vbox);
   gtk_paned_pack2 (GTK_PANED (table_vpaned), chat_vbox, TRUE, TRUE);
 
   chatdisplay_hbox = gtk_hbox_new (FALSE, 0);
-  g_object_set_data(G_OBJECT (win_main), "chatdisplay_hbox",
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "chatdisplay_hbox",
 		    chatdisplay_hbox);
   gtk_box_pack_start (GTK_BOX (chat_vbox), chatdisplay_hbox, TRUE, TRUE, 0);
 
   chat_frame = gtk_frame_new (NULL);
-  g_object_set_data(G_OBJECT (win_main), "chat_frame", chat_frame);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "chat_frame", chat_frame);
   gtk_box_pack_start (GTK_BOX (chatdisplay_hbox), chat_frame, TRUE, TRUE, 0);
   gtk_frame_set_shadow_type (GTK_FRAME (chat_frame), GTK_SHADOW_IN);
 
   xtext_custom = main_xtext_chat_create ("xtext_custom", NULL, NULL, 0, 0);
-  g_object_set_data(G_OBJECT (win_main), "xtext_custom", xtext_custom);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "xtext_custom", xtext_custom);
   gtk_container_add (GTK_CONTAINER (chat_frame), xtext_custom);
   GTK_WIDGET_UNSET_FLAGS (xtext_custom, GTK_CAN_FOCUS);
   GTK_WIDGET_UNSET_FLAGS (xtext_custom, GTK_CAN_DEFAULT);
 
   chat_vscrollbar = gtk_vscrollbar_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 0, 0, 0, 0)));
-  g_object_set_data(G_OBJECT (win_main), "chat_vscrollbar", chat_vscrollbar);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "chat_vscrollbar", chat_vscrollbar);
   gtk_box_pack_start (GTK_BOX (chatdisplay_hbox), chat_vscrollbar, FALSE, TRUE, 0);
 
   newchat_hbox = gtk_hbox_new (FALSE, 0);
-  g_object_set_data(G_OBJECT (win_main), "newchat_hbox", newchat_hbox);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "newchat_hbox", newchat_hbox);
   gtk_box_pack_start (GTK_BOX (chat_vbox), newchat_hbox, FALSE, FALSE, 0);
 
   chat_label = gtk_label_new (_("Message:"));
-  g_object_set_data(G_OBJECT (win_main), "chat_label", chat_label);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "chat_label", chat_label);
   gtk_box_pack_start (GTK_BOX (newchat_hbox), chat_label, FALSE, FALSE, 0);
   gtk_misc_set_padding (GTK_MISC (chat_label), 3, 0);
 
   chat_entry = gtk_entry_new ();
-  g_object_set_data(G_OBJECT (win_main), "chat_entry", chat_entry);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "chat_entry", chat_entry);
   gtk_box_pack_start (GTK_BOX (newchat_hbox), chat_entry, TRUE, TRUE, 0);
   gtk_widget_set_sensitive (chat_entry, FALSE);
 
@@ -1311,33 +1312,33 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
   g_object_set_data(G_OBJECT(chat_entry), "last_list", last_list);
 
   chat_hbuttonbox = gtk_hbutton_box_new ();
-  g_object_set_data(G_OBJECT (win_main), "chat_hbuttonbox", chat_hbuttonbox);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "chat_hbuttonbox", chat_hbuttonbox);
   gtk_box_pack_start (GTK_BOX (newchat_hbox), chat_hbuttonbox, FALSE, FALSE, 0);
 
   send_button = stockbutton_new(GTK_STOCK_EXECUTE, _("Send"));
-  g_object_set_data(G_OBJECT (win_main), "send_button", send_button);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "send_button", send_button);
   gtk_container_add (GTK_CONTAINER (chat_hbuttonbox), send_button);
   gtk_widget_set_sensitive (send_button, FALSE);
   GTK_WIDGET_UNSET_FLAGS (send_button, GTK_CAN_FOCUS);
   GTK_WIDGET_SET_FLAGS (send_button, GTK_CAN_DEFAULT);
 
   status_box = gtk_hbox_new (FALSE, 5);
-  g_object_set_data(G_OBJECT (win_main), "status_box", status_box);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "status_box", status_box);
   gtk_box_pack_start (GTK_BOX (main_vbox), status_box, FALSE, FALSE, 0);
 
   serverbar = gtk_statusbar_new ();
-  g_object_set_data(G_OBJECT (win_main), "serverbar", serverbar);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "serverbar", serverbar);
   gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR (serverbar), FALSE);
   gtk_box_pack_start(GTK_BOX (status_box), serverbar, TRUE, TRUE, 0);
 
   statusbar = gtk_statusbar_new ();
-  g_object_set_data(G_OBJECT (win_main), "statusbar", statusbar);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "statusbar", statusbar);
   gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR (statusbar), FALSE);
   gtk_widget_set_size_request(GTK_WIDGET (statusbar), 150, -1);
   gtk_box_pack_start (GTK_BOX (status_box), statusbar, FALSE, TRUE, 0);
 
   statebar = gtk_statusbar_new ();
-  g_object_set_data(G_OBJECT (win_main), "statebar", statebar);
+  g_object_set_data(G_OBJECT (ggz_gtk.win_main), "statebar", statebar);
   gtk_widget_set_size_request(GTK_WIDGET (statebar), 150, -1);
   gtk_box_pack_start (GTK_BOX (status_box), statebar, FALSE, TRUE, 0);
 

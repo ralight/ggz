@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 10245 2008-07-09 03:11:29Z jdorje $
+ * $Id: ggzclient.c 10247 2008-07-09 03:39:44Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -267,7 +267,7 @@ static GGZHookReturn ggz_num_players_changed(GGZServerEvent id,
 					     const void *event_data,
 					     const void *user_data)
 {
-	GtkWidget *serverbar = ggz_lookup_widget(win_main, "serverbar");
+	GtkWidget *serverbar = ggz_lookup_widget(ggz_gtk.win_main, "serverbar");
 	guint context;
 	int players = ggzcore_server_get_num_players(server);
 	char *buf;
@@ -316,7 +316,7 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, const void *event_data,
 
 
 	/* Set the room label to current room */
-	tmp = ggz_lookup_widget(win_main, "Current_room_label");
+	tmp = ggz_lookup_widget(ggz_gtk.win_main, "Current_room_label");
 	name =
 	    g_strdup_printf(_("Current Room: %s"),
 			    ggzcore_room_get_name
@@ -340,27 +340,27 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, const void *event_data,
 	gt = ggzcore_room_get_gametype(room);
 
 	if (ggzcore_gametype_get_name(gt) == NULL) {
-		tmp = ggz_lookup_widget(win_main, "table_vpaned");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "table_vpaned");
 		if (GTK_PANED(tmp)->child1_size != 0)
 			g_object_set(G_OBJECT(tmp), "user_data",
 				     GTK_PANED(tmp)->child1_size, NULL);
 		gtk_paned_set_position(GTK_PANED(tmp), 0);
-		tmp = ggz_lookup_widget(win_main, "launch_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "launch_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
-		tmp = ggz_lookup_widget(win_main, "join_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "join_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
-		tmp = ggz_lookup_widget(win_main, "watch_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "watch_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 	} else {
 		int height;
-		tmp = ggz_lookup_widget(win_main, "table_vpaned");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "table_vpaned");
 		g_object_get(G_OBJECT(tmp), "user_data", &height, NULL);
 		gtk_paned_set_position(GTK_PANED(tmp), height);
-		tmp = ggz_lookup_widget(win_main, "launch_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "launch_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
-		tmp = ggz_lookup_widget(win_main, "join_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "join_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
-		tmp = ggz_lookup_widget(win_main, "watch_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "watch_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
 	}
 
@@ -717,7 +717,7 @@ void ggz_sensitivity_init(void)
 	/* Menu bar */
 
 	/* Set the room label to current room */
-	tmp = ggz_lookup_widget(win_main, "Current_room_label");
+	tmp = ggz_lookup_widget(ggz_gtk.win_main, "Current_room_label");
 	gtk_label_set_text(GTK_LABEL(tmp), _("Current Room:"));
 }
 
@@ -786,7 +786,7 @@ static GGZHookReturn ggz_state_change(GGZServerEvent id,
 		break;
 	}
 
-	statebar = ggz_lookup_widget(win_main, "statebar");
+	statebar = ggz_lookup_widget(ggz_gtk.win_main, "statebar");
 	context =
 	    gtk_statusbar_get_context_id(GTK_STATUSBAR(statebar), "state");
 	gtk_statusbar_pop(GTK_STATUSBAR(statebar), context);
@@ -812,36 +812,36 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 		login_set_sensitive(TRUE);
 
 		/* Menu bar */
-		tmp = ggz_lookup_widget(win_main, "connect");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "connect");
 		gtk_widget_set_sensitive(tmp, TRUE);
 
-		tmp = ggz_lookup_widget(win_main, "disconnect");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "disconnect");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "game");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "game");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "view");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "view");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
 		/* Tool bar */
-		tmp = ggz_lookup_widget(win_main, "disconnect_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "disconnect_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "launch_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "launch_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "join_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "join_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "watch_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "watch_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "leave_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "leave_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
 #ifdef STATS_BUTTON
-		tmp = ggz_lookup_widget(win_main, "stats_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "stats_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 #endif
 
@@ -850,10 +850,10 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 		sensitize_player_list(FALSE);
 		sensitize_table_list(FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "chat_entry");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "chat_entry");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "send_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "send_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 		break;
 
@@ -861,14 +861,14 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 		login_set_sensitive(FALSE);
 
 		/* Menu bar */
-		tmp = ggz_lookup_widget(win_main, "connect");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "connect");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "disconnect");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "disconnect");
 		gtk_widget_set_sensitive(tmp, TRUE);
 
 		/* Tool bar */
-		tmp = ggz_lookup_widget(win_main, "disconnect_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "disconnect_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
 		break;
 
@@ -882,12 +882,12 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 	case GGZ_STATE_LOGGED_IN:
 		/* set senditivity */
 		/* Menu bar */
-		tmp = ggz_lookup_widget(win_main, "view");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "view");
 		gtk_widget_set_sensitive(tmp, TRUE);
 
 		/* Tool bar */
 #ifdef STATS_BUTTON
-		tmp = ggz_lookup_widget(win_main, "stats_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "stats_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
 #endif
 
@@ -897,32 +897,32 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 
 	case GGZ_STATE_BETWEEN_ROOMS:
 	case GGZ_STATE_ENTERING_ROOM:
-		tmp = ggz_lookup_widget(win_main, "chat_entry");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "chat_entry");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "send_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "send_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 		break;
 
 	case GGZ_STATE_IN_ROOM:
 		/* Menu bar */
-		tmp = ggz_lookup_widget(win_main, "game");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "game");
 		gtk_widget_set_sensitive(tmp, TRUE);
 
-		tmp = ggz_lookup_widget(win_main, "launch");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "launch");
 		gtk_widget_set_sensitive(tmp, TRUE);
 
-		tmp = ggz_lookup_widget(win_main, "join");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "join");
 		gtk_widget_set_sensitive(tmp, TRUE);
 
 		/* Tool bar */
-		tmp = ggz_lookup_widget(win_main, "launch_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "launch_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
 
-		tmp = ggz_lookup_widget(win_main, "join_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "join_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
 
-		tmp = ggz_lookup_widget(win_main, "watch_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "watch_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
 
 		/* Client area */
@@ -930,100 +930,100 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 		sensitize_player_list(TRUE);
 		sensitize_table_list(TRUE);
 
-		tmp = ggz_lookup_widget(win_main, "chat_entry");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "chat_entry");
 		gtk_widget_set_sensitive(tmp, TRUE);
 
-		tmp = ggz_lookup_widget(win_main, "send_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "send_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
 		break;
 
 	case GGZ_STATE_LAUNCHING_TABLE:
 		/* Tool bar */
-		tmp = ggz_lookup_widget(win_main, "launch_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "launch_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "join_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "join_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "watch_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "watch_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
 		/* Menu bar */
-		tmp = ggz_lookup_widget(win_main, "launch");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "launch");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "join");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "join");
 		gtk_widget_set_sensitive(tmp, FALSE);
 		break;
 
 	case GGZ_STATE_JOINING_TABLE:
 		/* Tool bar */
-		tmp = ggz_lookup_widget(win_main, "launch_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "launch_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "join_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "join_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "watch_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "watch_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
 		/* Menu bar */
-		tmp = ggz_lookup_widget(win_main, "launch");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "launch");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "join");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "join");
 		gtk_widget_set_sensitive(tmp, FALSE);
 		break;
 
 	case GGZ_STATE_AT_TABLE:
 		/* Tool bar */
-		tmp = ggz_lookup_widget(win_main, "leave_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "leave_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
 
 		/* Menu bar */
-		tmp = ggz_lookup_widget(win_main, "leave");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "leave");
 		gtk_widget_set_sensitive(tmp, TRUE);
 		break;
 
 	case GGZ_STATE_LEAVING_TABLE:
 		/* Tool bar */
-		tmp = ggz_lookup_widget(win_main, "leave_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "leave_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
 		/* Menu bar */
-		tmp = ggz_lookup_widget(win_main, "leave");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "leave");
 		gtk_widget_set_sensitive(tmp, FALSE);
 		break;
 
 	case GGZ_STATE_LOGGING_OUT:
 		/* Menu bar */
-		tmp = ggz_lookup_widget(win_main, "disconnect");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "disconnect");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "game");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "game");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "view");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "view");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
 		/* Tool bar */
-		tmp = ggz_lookup_widget(win_main, "disconnect_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "disconnect_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "launch_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "launch_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "join_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "join_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "watch_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "watch_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "leave_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "leave_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
 #ifdef STATS_BUTTON
-		tmp = ggz_lookup_widget(win_main, "stats_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "stats_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 #endif
 
@@ -1032,10 +1032,10 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 		sensitize_player_list(FALSE);
 		sensitize_table_list(FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "chat_entry");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "chat_entry");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = ggz_lookup_widget(win_main, "send_button");
+		tmp = ggz_lookup_widget(ggz_gtk.win_main, "send_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 		break;
 	}
