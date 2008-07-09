@@ -2,7 +2,7 @@
  * File: client.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.h 10252 2008-07-09 20:16:56Z jdorje $
+ * $Id: client.h 10253 2008-07-09 20:50:25Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -66,6 +66,8 @@ struct ggz_gtk {
 
 	/* glib monitoring tags for server and channel sockets */
 	guint server_tag, channel_tag;
+
+	struct ggz_chat *chat;
 };
 
 extern struct ggz_gtk ggz_gtk;

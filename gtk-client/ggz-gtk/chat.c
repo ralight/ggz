@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 10250 2008-07-09 18:44:38Z jdorje $
+ * $Id: chat.c 10253 2008-07-09 20:50:25Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -67,9 +67,6 @@
 
 static const gchar *chat_get_color(const gchar *name, const gchar *msg);
 static void chat_load_lists(void);
-
-static int friend_count;
-static int ignore_count;
 
 static void chat_send_msg(GGZServer *server, const gchar *message);
 
@@ -156,10 +153,11 @@ static GGZCommand me_command = {
  * color in chat and ingnored people's chats don't show
  * up at all.
  */
-static struct chatinfo {
+struct ggz_chat {
+	int friend_count, ignore_count;
 	GArray *friends;
 	GArray *ignore;
-} chatinfo;
+};
 
 /* chat_init() - setup chatinfo and allocates colors
  *
@@ -169,8 +167,12 @@ static struct chatinfo {
  */
 void chat_init(void)
 {
-	chatinfo.friends = g_array_new(FALSE, FALSE, sizeof(gchar*));
-	chatinfo.ignore = g_array_new(FALSE, FALSE, sizeof(gchar*));
+	ggz_gtk.chat = ggz_malloc(sizeof(*ggz_gtk.chat));
+
+	ggz_gtk.chat->friend_count = 0;
+	ggz_gtk.chat->ignore_count = 0;
+	ggz_gtk.chat->friends = g_array_new(FALSE, FALSE, sizeof(gchar*));
+	ggz_gtk.chat->ignore = g_array_new(FALSE, FALSE, sizeof(gchar*));
 
 	/* sets up background color for chat area*/
 	if (ggzcore_conf_read_int("CHAT", "BACKGROUND", TRUE)) {
@@ -796,8 +798,8 @@ void chat_add_friend(const gchar *name, gint display)
 	char *name_copy;
 
 	name_copy = ggz_strdup(name);
-	g_array_append_val(chatinfo.friends, name_copy);
-	friend_count++;
+	g_array_append_val(ggz_gtk.chat->friends, name_copy);
+	ggz_gtk.chat->friend_count++;
 	if (display)
 	{
 		out = g_strdup_printf(_("Added %s to your friends list."), name);
@@ -820,14 +822,14 @@ void chat_remove_friend(const gchar *name)
 	char *p;
 	char *out;
 
-	for(i=0; i<friend_count; i++) {
-		p = g_array_index(chatinfo.friends, char *, i);
+	for (i = 0; i < ggz_gtk.chat->friend_count; i++) {
+		p = g_array_index(ggz_gtk.chat->friends, char *, i);
 		if(!strcasecmp(p, name)) {
-			g_array_remove_index_fast(chatinfo.friends, i);
+			g_array_remove_index_fast(ggz_gtk.chat->friends, i);
 			out = g_strdup_printf(_("Removed %s from your friends list."), name);
 			chat_display_local(CHAT_LOCAL_NORMAL, NULL, out);
 			g_free(out);
-			friend_count--;
+			ggz_gtk.chat->friend_count--;
 			ggz_free(p);
 			return;
 		}
@@ -851,8 +853,8 @@ void chat_add_ignore(const gchar *name, gint display)
 	char *name_copy;
 
 	name_copy = ggz_strdup(name);
-	g_array_append_val(chatinfo.ignore, name_copy);
-	ignore_count++;
+	g_array_append_val(ggz_gtk.chat->ignore, name_copy);
+	ggz_gtk.chat->ignore_count++;
 	if(display)
 	{
 		out = g_strdup_printf(_("Added %s to your ignore list."), name);
@@ -876,14 +878,14 @@ void chat_remove_ignore(const gchar *name)
 	char *p;
 	char *out;
 
-	for(i=0; i<ignore_count; i++) {
-		p = g_array_index(chatinfo.ignore, char *, i);
+	for (i = 0; i < ggz_gtk.chat->ignore_count; i++) {
+		p = g_array_index(ggz_gtk.chat->ignore, char *, i);
 		if(!strcasecmp(p, name)) {
-			g_array_remove_index_fast(chatinfo.ignore, i);
+			g_array_remove_index_fast(ggz_gtk.chat->ignore, i);
 			out = g_strdup_printf(_("Removed %s from your ignore list."), name);
 			chat_display_local(CHAT_LOCAL_NORMAL, NULL, out);
 			g_free(out);
-			ignore_count--;
+			ggz_gtk.chat->ignore_count--;
 			ggz_free(p);
 			return;
 		}
@@ -904,19 +906,19 @@ void chat_save_lists(void)
 	char *p;
 	char c_num[16];
 
-	for(i=0; i<ignore_count; i++) {
+	for (i = 0; i < ggz_gtk.chat->ignore_count; i++) {
 		snprintf(c_num, sizeof(c_num), "%d", i+1);
-		p = g_array_index(chatinfo.ignore, char *, i);
+		p = g_array_index(ggz_gtk.chat->ignore, char *, i);
 		ggzcore_conf_write_string("IGNORE", c_num, p);
 	}
-	ggzcore_conf_write_int("IGNORE", "TOTAL", ignore_count);
+	ggzcore_conf_write_int("IGNORE", "TOTAL", ggz_gtk.chat->ignore_count);
 
-	for(i=0; i<friend_count; i++) {
+	for (i = 0; i < ggz_gtk.chat->friend_count; i++) {
 		snprintf(c_num, sizeof(c_num), "%d", i+1);
-		p = g_array_index(chatinfo.friends, char *, i);
+		p = g_array_index(ggz_gtk.chat->friends, char *, i);
 		ggzcore_conf_write_string("FRIENDS", c_num, p);
 	}
-	ggzcore_conf_write_int("FRIENDS", "TOTAL", friend_count);
+	ggzcore_conf_write_int("FRIENDS", "TOTAL", ggz_gtk.chat->friend_count);
 
 	ggzcore_conf_commit();
 }
@@ -956,9 +958,10 @@ static void chat_list_friend(GGZServer *server, const gchar *message)
 	int i;
 
 	chat_display_header(_("People currently your friends"));
-	for(i=0; i<friend_count; i++)
+	for (i = 0; i < ggz_gtk.chat->friend_count; i++)
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
-				   g_array_index(chatinfo.friends, char *, i));
+				   g_array_index(ggz_gtk.chat->friends,
+						 char *, i));
 }
 
 
@@ -967,9 +970,10 @@ static void chat_list_ignore(GGZServer *server, const gchar *message)
 	int i;
 
 	chat_display_header(_("People you're currently ignoring"));
-	for(i=0; i<ignore_count; i++)
+	for (i = 0; i < ggz_gtk.chat->ignore_count; i++)
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
-				   g_array_index(chatinfo.ignore, char *, i));
+				   g_array_index(ggz_gtk.chat->ignore,
+						 char *, i));
 }
 
 static void chat_kick(GGZServer *server, const gchar *message)
@@ -1066,8 +1070,9 @@ gint chat_is_friend(const gchar *name)
 {
 	int i;
 
-	for(i=0; i<friend_count; i++)
-		if(!strcasecmp(g_array_index(chatinfo.friends, char *, i),
+	for (i = 0; i < ggz_gtk.chat->friend_count; i++)
+		if(!strcasecmp(g_array_index(ggz_gtk.chat->friends,
+					     char *, i),
 			       name))
 			return TRUE;
 
@@ -1078,8 +1083,8 @@ gint chat_is_ignore(const gchar *name)
 {
 	int i;
 
-	for(i=0; i<ignore_count; i++)
-		if(!strcasecmp(g_array_index(chatinfo.ignore, char *, i),
+	for (i = 0; i < ggz_gtk.chat->ignore_count; i++)
+		if(!strcasecmp(g_array_index(ggz_gtk.chat->ignore, char *, i),
 			       name))
 			return TRUE;
 
@@ -1091,9 +1096,12 @@ void chat_lists_cleanup(void)
 {
 	int i;
 
-	for(i=0; i<ignore_count; i++)
-		ggz_free(g_array_index(chatinfo.ignore, char *, i));
+	for (i = 0; i < ggz_gtk.chat->ignore_count; i++)
+		ggz_free(g_array_index(ggz_gtk.chat->ignore, char *, i));
 
-	for(i=0; i<friend_count; i++)
-		ggz_free(g_array_index(chatinfo.friends, char *, i));
+	for (i = 0; i < ggz_gtk.chat->friend_count; i++)
+		ggz_free(g_array_index(ggz_gtk.chat->friends, char *, i));
+
+	ggz_gtk.chat->friend_count = 0;
+	ggz_gtk.chat->ignore_count = 0;
 }
