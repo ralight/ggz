@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 10256 2008-07-09 23:01:44Z jdorje $
+ * $Id: launch.c 10261 2008-07-10 01:16:54Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -61,29 +61,26 @@ static void launch_cancel_button_clicked(GtkWidget * widget, gpointer data);
 static void launch_seat_show(gint seat, gchar show);
 static GtkWidget *create_dlg_launch(void);
 
-static GtkWidget *launch_dialog;
-static char _launching = 0;
-
 /* Close the launch dialog.  This is done when switching rooms. */
 void launch_dialog_close(void)
 {
-	if (!launch_dialog) return;
+	if (!ggz_gtk.launch_dialog) return;
 
 	/* Free up game we allocated but never launched */
 	cancel_module_picking();
 	game_destroy();
 
-	gtk_widget_destroy(launch_dialog);
-	launch_dialog = NULL;
+	gtk_widget_destroy(ggz_gtk.launch_dialog);
+	ggz_gtk.launch_dialog = NULL;
 }
 
 void launch_create_or_raise(void)
 {
-	if (!launch_dialog) {
+	if (!ggz_gtk.launch_dialog) {
 		/* Dialog for setting table seats */
-		launch_dialog = create_dlg_launch();
-		if (launch_dialog) {
-			gtk_widget_show_all(launch_dialog);
+		ggz_gtk.launch_dialog = create_dlg_launch();
+		if (ggz_gtk.launch_dialog) {
+			gtk_widget_show_all(ggz_gtk.launch_dialog);
 		} else {
 			/* We shouldn't have gotten this far - menu and
 			   buttons should be disabled. */
@@ -91,8 +88,8 @@ void launch_create_or_raise(void)
 		}
 	} else {
 		/* It already exists, so raise it */
-		gdk_window_show(launch_dialog->window);
-		gdk_window_raise(launch_dialog->window);
+		gdk_window_show(ggz_gtk.launch_dialog->window);
+		gdk_window_raise(ggz_gtk.launch_dialog->window);
 	}
 }
 
@@ -109,26 +106,28 @@ static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 	gt = ggzcore_room_get_gametype(room);
 
 	/* Set the labels */
-	tmp = g_object_get_data(G_OBJECT(launch_dialog), "type_label");
+	tmp = g_object_get_data(G_OBJECT(ggz_gtk.launch_dialog),
+				"type_label");
 	label_text = g_strdup_printf(_("Game Type:  %s"),
 				     ggzcore_gametype_get_name(gt));
 	gtk_label_set_text(GTK_LABEL(tmp), label_text);
 	g_free(label_text);
 
-	tmp = g_object_get_data(G_OBJECT(launch_dialog), "author_label");
+	tmp = g_object_get_data(G_OBJECT(ggz_gtk.launch_dialog),
+				"author_label");
 	label_text = g_strdup_printf(_("Author:  %s"),
 				     ggzcore_gametype_get_author(gt));
 	gtk_label_set_text(GTK_LABEL(tmp), label_text);
 	g_free(label_text);
 
-	tmp = g_object_get_data(G_OBJECT(launch_dialog),
+	tmp = g_object_get_data(G_OBJECT(ggz_gtk.launch_dialog),
 				  "type_desc_label");
 	label_text = g_strdup_printf(_("Description:  %s"),
 				     ggzcore_gametype_get_desc(gt));
 	gtk_label_set_text(GTK_LABEL(tmp), label_text);
 	g_free(label_text);
 
-	tmp = g_object_get_data(G_OBJECT(launch_dialog), "web_label");
+	tmp = g_object_get_data(G_OBJECT(ggz_gtk.launch_dialog), "web_label");
 	label_text = g_strdup_printf(_("Home Page:  %s"),
 				     ggzcore_gametype_get_url(gt));
 	gtk_label_set_text(GTK_LABEL(tmp), label_text);
@@ -137,7 +136,8 @@ static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 
 	/* Set the number of players combo */
 	maxplayers = ggzcore_gametype_get_max_players(gt);
-	tmp = g_object_get_data(G_OBJECT(launch_dialog), "seats_combo");
+	tmp = g_object_get_data(G_OBJECT(ggz_gtk.launch_dialog),
+				"seats_combo");
 	for (x = 1; x <= maxplayers; x++) {
 		if (ggzcore_gametype_num_players_is_valid(gt, x)) {
 			char buf[128];
@@ -153,21 +153,23 @@ static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 		launch_seat_show(x, TRUE);
 
 	/* Default to reserving us a seat */
-	tmp = g_object_get_data(G_OBJECT(launch_dialog), "seat1_name");
+	tmp = g_object_get_data(G_OBJECT(ggz_gtk.launch_dialog),
+				"seat1_name");
 	gtk_entry_set_text(GTK_ENTRY(tmp),
 			   ggzcore_server_get_handle(ggz_gtk.server));
 
 	/* FIXME: for guest users, the reservation won't work.  But it should
 	   be easily converted by ggzd into an open seat, which should be
 	   fine. */
-	tmp = g_object_get_data(G_OBJECT(launch_dialog), "seat1_resv");
+	tmp = g_object_get_data(G_OBJECT(ggz_gtk.launch_dialog),
+				"seat1_resv");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 
 	/* If bots are allowed, default to bot players, otherwise open */
 	maxbots = ggzcore_gametype_get_max_bots(gt);
 
 	if (maxbots < maxplayers) {
-		tmp = ggz_lookup_widget(launch_dialog, "seat1_bot");
+		tmp = ggz_lookup_widget(ggz_gtk.launch_dialog, "seat1_bot");
 		gtk_widget_set_sensitive(GTK_WIDGET(tmp), FALSE);
 	}
 
@@ -178,12 +180,12 @@ static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 			snprintf(buf, sizeof(buf), "seat%d_bot", x);
 		} else {
 			snprintf(buf, sizeof(buf), "seat%d_bot", x);
-			tmp = ggz_lookup_widget(launch_dialog, buf);
+			tmp = ggz_lookup_widget(ggz_gtk.launch_dialog, buf);
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp), FALSE);
 
 			snprintf(buf, sizeof(buf), "seat%d_open", x);
 		}
-		tmp = ggz_lookup_widget(launch_dialog, buf);
+		tmp = ggz_lookup_widget(ggz_gtk.launch_dialog, buf);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 	}
 }
@@ -206,13 +208,15 @@ static void launch_seats_changed(GtkWidget * widget, gpointer data)
 	for (i = 1; i <= seats; i++) {
 		char text[128];
 		snprintf(text, sizeof(text), "seat%d_box", i);
-		tmp = g_object_get_data(G_OBJECT(launch_dialog), text);
+		tmp = g_object_get_data(G_OBJECT(ggz_gtk.launch_dialog),
+					text);
 		gtk_widget_set_sensitive(tmp, TRUE);
 	}
 	for (i = (seats + 1); i <= max; i++) {
 		char text[128];
 		snprintf(text, sizeof(text), "seat%d_box", i);
-		tmp = g_object_get_data(G_OBJECT(launch_dialog), text);
+		tmp = g_object_get_data(G_OBJECT(ggz_gtk.launch_dialog),
+					text);
 		gtk_widget_set_sensitive(tmp, FALSE);
 	}
 }
@@ -230,7 +234,7 @@ static void launch_resv_toggle(GtkWidget * widget, gpointer data)
 
 char launch_in_process(void)
 {
-	return _launching;
+	return ggz_gtk.launching;
 }
 
 void launch_table(void)
@@ -242,20 +246,20 @@ void launch_table(void)
 	gint seats;
 	int x, status;
 
-	_launching = 0;
+	ggz_gtk.launching = FALSE;
 
 	/* Grab the number of seats */
-	if (!launch_dialog)
+	if (!ggz_gtk.launch_dialog)
 		ggz_error_msg("Trying to launch table when "
 			      "there is no launch dialog.");
-	tmp = ggz_lookup_widget(launch_dialog, "seats_combo");
+	tmp = ggz_lookup_widget(ggz_gtk.launch_dialog, "seats_combo");
 	seats = atoi(gtk_combo_box_get_active_text(GTK_COMBO_BOX(tmp)));
 
 	/* Create a table for sending to the server */
 	table = ggzcore_table_new();
 	room = ggzcore_server_get_cur_room(ggz_gtk.server);
 	gt = ggzcore_room_get_gametype(room);
-	tmp = ggz_lookup_widget(launch_dialog, "desc_entry");
+	tmp = ggz_lookup_widget(ggz_gtk.launch_dialog, "desc_entry");
 	ggzcore_table_init(table, gt, gtk_entry_get_text(GTK_ENTRY(tmp)),
 			   seats);
 
@@ -263,7 +267,7 @@ void launch_table(void)
 		/* Check to see if the seat is a bot. */
 		char text[128];
 		snprintf(text, sizeof(text), "seat%d_bot", x + 1);
-		tmp = ggz_lookup_widget(launch_dialog, text);
+		tmp = ggz_lookup_widget(ggz_gtk.launch_dialog, text);
 		if (GTK_TOGGLE_BUTTON(tmp)->active)
 			if (ggzcore_table_set_seat(table, x,
 						   GGZ_SEAT_BOT, NULL) < 0)
@@ -271,11 +275,11 @@ void launch_table(void)
 
 		/* Check to see if the seat is reserved. */
 		snprintf(text, sizeof(text), "seat%d_resv", x + 1);
-		tmp = ggz_lookup_widget(launch_dialog, text);
+		tmp = ggz_lookup_widget(ggz_gtk.launch_dialog, text);
 		if (GTK_TOGGLE_BUTTON(tmp)->active) {
 			const gchar *name;
 			snprintf(text, sizeof(text), "seat%d_name", x + 1);
-			tmp = ggz_lookup_widget(launch_dialog, text);
+			tmp = ggz_lookup_widget(ggz_gtk.launch_dialog, text);
 			name = gtk_entry_get_text(GTK_ENTRY(tmp));
 
 			if (ggzcore_table_set_seat(table, x,
@@ -295,7 +299,7 @@ void launch_table(void)
 		game_destroy();
 	}
 
-	gtk_widget_destroy(launch_dialog);
+	gtk_widget_destroy(ggz_gtk.launch_dialog);
 }
 
 
@@ -308,7 +312,7 @@ static void launch_start_game(GtkWidget * widget, gpointer data)
 	gint x, seats, bots;
 
 	/* Grab the number of seats */
-	tmp = ggz_lookup_widget(launch_dialog, "seats_combo");
+	tmp = ggz_lookup_widget(ggz_gtk.launch_dialog, "seats_combo");
 	seats = atoi(gtk_combo_box_get_active_text(GTK_COMBO_BOX(tmp)));
 
 	/* Let's go bot counting.... */
@@ -316,7 +320,7 @@ static void launch_start_game(GtkWidget * widget, gpointer data)
 	for (x = 0; x < seats; x++) {
 		char text[128];
 		snprintf(text, sizeof(text), "seat%d_bot", x + 1);
-		tmp = ggz_lookup_widget(launch_dialog, text);
+		tmp = ggz_lookup_widget(ggz_gtk.launch_dialog, text);
 		if (GTK_TOGGLE_BUTTON(tmp)->active)
 			bots++;
 	}
@@ -339,7 +343,7 @@ static void launch_start_game(GtkWidget * widget, gpointer data)
 			       MSGBOX_NORMAL);
 			game_destroy();
 		} else
-			_launching = 1;
+			ggz_gtk.launching = TRUE;
 	}
 }
 
@@ -357,7 +361,7 @@ static void launch_seat_show(gint seat, gchar show)
 
 	/* Show seat's hbox */
 	snprintf(text, sizeof(text), "seat%d_box", seat);
-	tmp = g_object_get_data(G_OBJECT(launch_dialog), text);
+	tmp = g_object_get_data(G_OBJECT(ggz_gtk.launch_dialog), text);
 	if (show)
 		gtk_widget_show(GTK_WIDGET(tmp));
 	else
@@ -608,7 +612,7 @@ GtkWidget *create_dlg_launch(void)
 
 	g_signal_connect(GTK_OBJECT(dlg_launch), "destroy",
 			   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-			   &launch_dialog);
+			   &ggz_gtk.launch_dialog);
 	g_signal_connect(GTK_OBJECT(dlg_launch), "realize",
 			   GTK_SIGNAL_FUNC(launch_fill_defaults), NULL);
 	g_signal_connect(GTK_OBJECT(seats_combo), "changed",

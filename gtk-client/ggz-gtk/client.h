@@ -2,7 +2,7 @@
  * File: client.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.h 10260 2008-07-10 01:04:50Z jdorje $
+ * $Id: client.h 10261 2008-07-10 01:16:54Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -68,6 +68,10 @@ struct ggz_gtk {
 	guint server_tag, channel_tag, game_tag;
 
 	struct ggz_chat *chat;
+
+	/* launch code */
+	GtkWidget *launch_dialog;
+	gboolean launching;
 };
 
 extern struct ggz_gtk ggz_gtk;
