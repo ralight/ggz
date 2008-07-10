@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 10250 2008-07-09 18:44:38Z jdorje $
+ * $Id: playerlist.c 10272 2008-07-10 21:25:33Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -315,8 +315,8 @@ void clear_player_list(void)
 }
 
 #define LAG_CATEGORIES 6
-gboolean pixmaps_initted = FALSE;
-GdkPixbuf *lag[LAG_CATEGORIES], *guest, *registered, *admin, *host, *bot;
+static gboolean pixmaps_initted = FALSE;
+static GdkPixbuf *lag[LAG_CATEGORIES], *guest, *registered, *admin, *host, *bot;
 
 void update_player_list(void)
 {
