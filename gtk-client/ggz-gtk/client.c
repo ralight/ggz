@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 10266 2008-07-10 05:36:38Z jdorje $
+ * $Id: client.c 10270 2008-07-10 21:11:57Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -92,8 +92,9 @@ static void client_leave_button_clicked(GtkButton *button, gpointer data);
 static void client_props_button_clicked(GtkButton *button, gpointer data);
 
 static void client_chat_entry_activate(GtkEditable *editable, gpointer data);
-gboolean client_chat_entry_key_press_event(GtkWidget *widget, 
-					   GdkEventKey *event, gpointer data);
+static gboolean client_chat_entry_key_press_event(GtkWidget *widget, 
+						  GdkEventKey *event,
+						  gpointer data);
 static void client_send_button_clicked(GtkButton *button, gpointer data);
 static void client_start_table_watch(void);
 static void client_tables_size_request(GtkWidget *widget, gpointer data);
