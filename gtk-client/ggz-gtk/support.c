@@ -2,7 +2,7 @@
  * File: support.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: support.c 8180 2006-06-12 21:56:56Z jdorje $
+ * $Id: support.c 10271 2008-07-10 21:22:01Z jdorje $
  *
  * Support code
  *
@@ -105,24 +105,6 @@ GdkPixbuf *load_svg_pixbuf(const char *name, int width, int height)
 	g_free(fullpath);
 
 	return image;
-}
-
-char *nocasestrstr(char *text, char *tofind)
-{
-	char *ret = text, *find = tofind;
-
-	while (1) {
-		if (*find == 0)
-			return ret;
-		if (*text == 0)
-			return 0;
-		if (toupper(*find) != toupper(*text)) {
-			ret = text + 1;
-			find = tofind;
-		} else
-			find++;
-		text++;
-	}
 }
 
 int support_goto_url(gchar * url)

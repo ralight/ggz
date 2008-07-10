@@ -2,7 +2,7 @@
  * File: support.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: support.h 10183 2008-07-08 02:57:12Z jdorje $
+ * $Id: support.h 10271 2008-07-10 21:22:01Z jdorje $
  *
  * Support code
  *
@@ -64,11 +64,6 @@
  */
 GtkWidget*  ggz_lookup_widget              (GtkWidget       *widget,
                                         const gchar     *widget_name);
-
-/*
- * This function is needed by the xtext widget.
- */
-char *nocasestrstr (char *text, char *tofind);
 
 /*
  * Use this function to load a URL in netscape
