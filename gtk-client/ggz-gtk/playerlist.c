@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 10272 2008-07-10 21:25:33Z jdorje $
+ * $Id: playerlist.c 10273 2008-07-10 21:28:22Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -52,7 +52,7 @@ enum {
 	PLAYER_COLUMNS
 };
 
-GtkWidget *player_list;
+static GtkWidget *player_list;
 
 static void client_player_info_activate(GtkMenuItem * menuitem, gpointer data)
 {
