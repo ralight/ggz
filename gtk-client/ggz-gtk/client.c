@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 10250 2008-07-09 18:44:38Z jdorje $
+ * $Id: client.c 10259 2008-07-10 00:43:35Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -78,9 +78,6 @@ static void client_joinm_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_watchm_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_leave_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_properties_activate(GtkMenuItem *menuitem, gpointer data);
-static void client_room_toggle_activate(GtkMenuItem *menuitem, gpointer data);
-static void client_player_toggle_activate(GtkMenuItem *menuitem,
-					  gpointer data);
 static void client_game_types_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_motd_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_about_activate(GtkMenuItem *menuitem, gpointer data);
@@ -189,37 +186,14 @@ client_properties_activate	(GtkMenuItem	*menuitem,
 }
 
 
-static void client_room_toggle_activate(GtkMenuItem *menuitem,
-					gpointer data)
+static void widget_toggle_activate(GtkMenuItem *menuitem, gpointer data)
 {
-	GtkWidget *tmp;
-	static gboolean room_view = TRUE;
+	GtkWidget *tmp = data;
 
-	tmp = g_object_get_data(G_OBJECT(ggz_gtk.win_main),
-				"room_scrolledwindow");
-	if (room_view)
-		gtk_widget_hide(tmp);
-	else
+	if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menuitem)))
 		gtk_widget_show_all(tmp);
-
-	room_view = !room_view;
-}
-
-
-static void client_player_toggle_activate(GtkMenuItem *menuitem,
-					  gpointer data)
-{
-	GtkWidget *tmp;
-	static gboolean player_view = TRUE;
-
-	tmp = g_object_get_data(G_OBJECT(ggz_gtk.win_main),
-				  "player_scrolledwindow");
-	if (player_view)
-		gtk_widget_hide(tmp);
 	else
-		gtk_widget_show_all(tmp);
-
-	player_view = !player_view;
+		gtk_widget_hide(tmp);
 }
 
 
@@ -1363,12 +1337,12 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
   g_signal_connect (GTK_OBJECT (properties), "activate",
                       GTK_SIGNAL_FUNC (client_properties_activate),
                       NULL);
-  g_signal_connect (GTK_OBJECT (room_toggle), "activate",
-                      GTK_SIGNAL_FUNC (client_room_toggle_activate),
-                      NULL);
-  g_signal_connect (GTK_OBJECT(player_toggle), "activate",
-                      GTK_SIGNAL_FUNC(client_player_toggle_activate),
-                      NULL);
+  g_signal_connect (GTK_OBJECT (room_toggle), "toggled",
+		    GTK_SIGNAL_FUNC(widget_toggle_activate),
+		    room_scrolledwindow);
+  g_signal_connect (GTK_OBJECT(player_toggle), "toggled",
+		    GTK_SIGNAL_FUNC(widget_toggle_activate),
+		    player_scrolledwindow);
 #ifdef STATS
   g_signal_connect (GTK_OBJECT (server_stats), "activate",
                       GTK_SIGNAL_FUNC (client_server_stats_activate),
