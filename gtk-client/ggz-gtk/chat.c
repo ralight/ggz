@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 10266 2008-07-10 05:36:38Z jdorje $
+ * $Id: chat.c 10267 2008-07-10 19:29:02Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -723,7 +723,7 @@ int chat_checkurl(GtkWidget *xtext, char *word, int fake_length)
 void chat_word_clicked(GtkXText *xtext, char *word,
         GdkEventButton *event)
 {
-  	switch (chat_checkurl(GTK_WIDGET(xtext), word, strlen(word))) {
+  	switch (chat_checkurl(GTK_WIDGET(xtext), word, -1)) {
 	case WORD_GGZ:
 		login_goto_server(word);
 		break;
