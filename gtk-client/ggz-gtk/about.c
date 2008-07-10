@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 10248 2008-07-09 04:12:22Z jdorje $
+ * $Id: about.c 10258 2008-07-10 00:24:03Z jdorje $
  *
  * About dialog: Displays information about the authors and the application.
  *
@@ -50,6 +50,7 @@ struct about {
 	GdkPixmap *pixmap;
 	GdkPixbuf *bg_img;
 	gint Yloc;
+	int l;			/* ??? */
 };
 
 static struct about about = {
@@ -91,11 +92,11 @@ static GtkWidget *create_dlg_about(void)
 	GtkWidget *dialog_vbox1;
 	GtkWidget *background;
 
-	dlg_about = gtk_dialog_new_with_buttons(_("About"),
-						GTK_WINDOW(ggz_gtk.main_window),
-						0,
-						GTK_STOCK_CLOSE,
-						GTK_RESPONSE_CLOSE, NULL);
+	dlg_about
+	    = gtk_dialog_new_with_buttons(_("About"),
+					  GTK_WINDOW(ggz_gtk.main_window),
+					  0, GTK_STOCK_CLOSE,
+					  GTK_RESPONSE_CLOSE, NULL);
 	gtk_window_set_resizable(GTK_WINDOW(dlg_about), FALSE);
 
 	dialog_vbox1 = GTK_DIALOG(dlg_about)->vbox;
@@ -178,9 +179,10 @@ static gint about_update(gpointer data)
 	background =
 	    g_object_get_data(G_OBJECT(about.dialog), "background");
 	gdk_draw_pixbuf(about.pixmap,
-			GTK_WIDGET(background)->style->
-			fg_gc[GTK_WIDGET_STATE(background)], about.bg_img,
-			0, 0, 0, 0, 250, 300, GDK_RGB_DITHER_NONE, 0, 0);
+			GTK_WIDGET(background)->
+			style->fg_gc[GTK_WIDGET_STATE(background)],
+			about.bg_img, 0, 0, 0, 0, 250, 300,
+			GDK_RGB_DITHER_NONE, 0, 0);
 
 	/* FIXME: we ignore all status checks but the last?? */
 	status =
@@ -303,8 +305,8 @@ static gint about_update(gpointer data)
 	    about_draw_text(background, "Josef Spillner", about.font[2],
 			    about.Yloc, FALSE);
 	gdk_draw_drawable(GTK_WIDGET(background)->window,
-			  GTK_WIDGET(background)->style->
-			  fg_gc[GTK_WIDGET_STATE(background)],
+			  GTK_WIDGET(background)->
+			  style->fg_gc[GTK_WIDGET_STATE(background)],
 			  about.pixmap, 0, 0, 0, 0, 250, 300);
 
 	if (status)
@@ -317,7 +319,6 @@ static gint about_draw_text(GtkDrawingArea * background, gchar * text,
 			    PangoFontDescription * font, gint loc,
 			    gint start)
 {
-	static int l;
 	PangoLayout *layout;
 	PangoRectangle rect;
 
@@ -327,17 +328,17 @@ static gint about_draw_text(GtkDrawingArea * background, gchar * text,
 	pango_layout_get_pixel_extents(layout, NULL, &rect);
 
 	if (start) {
-		l = 0;
+		about.l = 0;
 	}
 
 
 	/* I don't know why it's the 4th element of text_gc */
 	gdk_draw_layout(about.pixmap,
 			GTK_WIDGET(background)->style->text_gc[4],
-			(250 - rect.width) / 2, loc + l, layout);
-	l += rect.height;
+			(250 - rect.width) / 2, loc + about.l, layout);
+	about.l += rect.height;
 
-	if (loc + l <= 0)
+	if (loc + about.l <= 0)
 		return TRUE;
 	else
 		return FALSE;
