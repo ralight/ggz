@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 10259 2008-07-10 00:43:35Z jdorje $
+ * $Id: client.c 10266 2008-07-10 05:36:38Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -642,7 +642,7 @@ client_realize                    (GtkWidget       *widget,
 	char *buf;
 	char *font_str;
 
-	init_colors();
+	colors_init();
 	chat_init();
 
 #if !GTK_CHECK_VERSION(2, 12, 0)
@@ -679,7 +679,7 @@ client_realize                    (GtkWidget       *widget,
 	gtk_xtext_set_font(tmp, font_str);
 	ggz_free(font_str);
 
-	activate_colors(tmp);
+	colors_activate(tmp);
 	tmp->auto_indent = ggzcore_conf_read_int("CHAT", "AUTO_INDENT", TRUE);
 	tmp->wordwrap = ggzcore_conf_read_int("CHAT", "WORD_WRAP", TRUE);
 	tmp->max_auto_indent = 200;

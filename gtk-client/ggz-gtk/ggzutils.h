@@ -38,11 +38,11 @@ const char *perm_name(GGZPerm p);
 GtkWidget *create_xtext(void);
 
 /* xtext color palette */
-void init_colors(void);
-void activate_colors(GtkXText *xtext);
+void colors_init(void);
+void colors_activate(GtkXText *xtext);
 GdkColor color_white(void);
 GdkColor color_black(void);
-GdkColor get_color(int id);
-void set_color(int id, GdkColor color);
+GdkColor color_get(int id);
+void color_set(int id, GdkColor color);
 
 #endif /* __GGZUTILS_H__ */

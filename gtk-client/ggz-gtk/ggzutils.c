@@ -104,7 +104,7 @@ static GdkColor colors[] =
  * Returns:   
  */
 
-void init_colors(void)
+void colors_init(void)
 {
 	gint i;
 
@@ -143,7 +143,7 @@ GtkWidget *create_xtext(void)
 }
 
 
-void activate_colors(GtkXText *xtext)
+void colors_activate(GtkXText *xtext)
 {
 	gtk_xtext_set_palette(xtext, colors);
 }
@@ -158,13 +158,13 @@ GdkColor color_black(void)
 	return ColorBlack;
 }
 
-GdkColor get_color(int id)
+GdkColor color_get(int id)
 {
 	assert(id >= 0 && id < sizeof(colors) / sizeof(colors[0]));
 	return colors[id];
 }
 
-void set_color(int id, GdkColor color)
+void color_set(int id, GdkColor color)
 {
 	colors[id] = color;
 }

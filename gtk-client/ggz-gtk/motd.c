@@ -2,7 +2,7 @@
  * File: motd.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: motd.c 10248 2008-07-09 04:12:22Z jdorje $
+ * $Id: motd.c 10266 2008-07-10 05:36:38Z jdorje $
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -80,7 +80,7 @@ void motd_print_line(const gchar * line)
 	GdkColormap *cmap;
 	gint color_index = 0;	/* Black */
 	gint letter;
-	GdkColor color = get_color(color_index);
+	GdkColor color = color_get(color_index);
 
 	/* Make shure the motd window it there */
 	if (motd_dialog == NULL)

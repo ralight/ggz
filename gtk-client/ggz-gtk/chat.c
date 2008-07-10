@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 10262 2008-07-10 01:23:48Z jdorje $
+ * $Id: chat.c 10266 2008-07-10 05:36:38Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -176,8 +176,8 @@ void chat_init(void)
 
 	/* sets up background color for chat area*/
 	if (ggzcore_conf_read_int("CHAT", "BACKGROUND", TRUE)) {
-		set_color(18, color_black());
-		set_color(19, color_white());
+		color_set(18, color_black());
+		color_set(19, color_white());
 	}
 
 	chat_load_lists();
