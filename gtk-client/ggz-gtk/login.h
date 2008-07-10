@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.h 10274 2008-07-10 21:38:34Z jdorje $
+ * $Id: login.h 10275 2008-07-10 22:26:54Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -33,6 +33,6 @@ void INTERNAL login_goto_server(const gchar * server_url);
 
 void login_set_entries(Server server);
 void INTERNAL login_set_sensitive(gboolean sensitive);
-void login_set_option_log(const char *option_log);
+void INTERNAL login_set_option_log(const char *option_log);
 
 GtkWidget INTERNAL *create_dlg_login(const char *default_profile);

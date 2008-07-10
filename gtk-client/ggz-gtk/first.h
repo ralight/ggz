@@ -27,4 +27,4 @@
 GtkWidget INTERNAL *create_dlg_first(void);
 
 gboolean INTERNAL first_is_raised(void);
-void first_raise(void);
+void INTERNAL first_raise(void);

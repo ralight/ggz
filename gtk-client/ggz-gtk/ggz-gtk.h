@@ -2,7 +2,7 @@
  * File: ggz-gtk.h
  * Author: Jason Short
  * Project: GGZ GTK Client Library
- * $Id: ggz-gtk.h 8987 2007-02-19 02:50:30Z jdorje $
+ * $Id: ggz-gtk.h 10275 2008-07-10 22:26:54Z jdorje $
  *
  * This library provides interface functions so external programs can embed
  * GGZ via a GTK interface
@@ -37,3 +37,4 @@ void ggz_gtk_initialize(gboolean reconnect,
 			const char *default_profile);
 
 GtkWidget *ggz_gtk_create_main_area(GtkWidget *main_window);
+GtkWidget *ggz_gtk_create_main_window(const char *option_log);

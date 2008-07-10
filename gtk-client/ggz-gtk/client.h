@@ -2,7 +2,7 @@
  * File: client.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.h 10274 2008-07-10 21:38:34Z jdorje $
+ * $Id: client.h 10275 2008-07-10 22:26:54Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -33,8 +33,6 @@
 void INTERNAL client_join_table(void);
 
 void INTERNAL client_start_table_join(void);
-
-GtkWidget *create_win_main(void);
 
 /* Default font */
 #define DEFAULT_FONT "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-1"
@@ -76,6 +74,6 @@ struct ggz_gtk {
 	gboolean launching;
 };
 
-extern struct ggz_gtk ggz_gtk;
+extern INTERNAL struct ggz_gtk ggz_gtk;
 
 #endif /* __CLIENT_H__ */

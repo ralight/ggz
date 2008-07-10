@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 10248 2008-07-09 04:12:22Z jdorje $
+ * $Id: main.c 10275 2008-07-10 22:26:54Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -95,7 +95,6 @@ static void init_debug(void)
 
 int main (int argc, char *argv[])
 {
-	char *init_version;
 	gboolean ret;
 	
 #ifdef ENABLE_NLS
@@ -118,6 +117,7 @@ int main (int argc, char *argv[])
 
 	gchar **option_urls = NULL;
 	char *option_log = NULL;
+	GtkWidget *main_window;
 
 	GOptionEntry entries[] = {
 		{"log", 'l', 0, G_OPTION_ARG_STRING, &option_log,
@@ -137,25 +137,12 @@ int main (int argc, char *argv[])
 		return -1;
 	}
 
-	login_set_option_log(option_log);
-
 	if(option_urls)
 		option_url = option_urls[0];
 
 #else
 	gtk_init(&argc, &argv);
 #endif
-
-	init_version = ggzcore_conf_read_string("INIT", "VERSION", VERSION);
-	ggz_gtk.main_window = create_win_main();
-	ggz_sensitivity_init();
-
-	if (ggzcore_conf_read_int("INIT", "FIRST", 0) == 0 ||
-	    strcmp(init_version, VERSION) !=0 ) {
-		first_raise();
-	}
-
-	gtk_widget_show_all(ggz_gtk.main_window);
 
 	/* Auto-connect to GGZ URI */
 	if (option_url) {
@@ -175,7 +162,9 @@ int main (int argc, char *argv[])
 
 		ggz_uri_free(uri);
 	}
-	ggz_free(init_version);
+
+	main_window = ggz_gtk_create_main_window(option_log);
+	gtk_widget_show_all(main_window);
 
 	gtk_main();
 

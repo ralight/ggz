@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 10270 2008-07-10 21:11:57Z jdorje $
+ * $Id: client.c 10275 2008-07-10 22:26:54Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -1466,21 +1466,33 @@ void main_activate(void)
 	}
 }
 
-GtkWidget *create_win_main(void)
+GtkWidget *ggz_gtk_create_main_window(const char *option_log)
 {
-  GtkWidget *main_window, *main_vbox;
+	GtkWidget *main_window, *main_vbox;
+	const char *init_version;
 
-  main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_widget_set_size_request(main_window, 620, 400);
-  gtk_window_set_title (GTK_WINDOW (main_window), _("GGZ Gaming Zone"));
-  gtk_window_set_resizable(GTK_WINDOW(main_window), TRUE);
+	login_set_option_log(option_log);
 
-  main_vbox = ggz_gtk_create_main_area(main_window);
-  gtk_container_add (GTK_CONTAINER (main_window), main_vbox);
+	main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_widget_set_size_request(main_window, 620, 400);
+	gtk_window_set_title(GTK_WINDOW (main_window), _("GGZ Gaming Zone"));
+	gtk_window_set_resizable(GTK_WINDOW(main_window), TRUE);
 
-  g_signal_connect (GTK_OBJECT (main_window), "delete_event",
-                      GTK_SIGNAL_FUNC (client_exit_activate),
-                      NULL);
+	main_vbox = ggz_gtk_create_main_area(main_window);
+	gtk_container_add (GTK_CONTAINER (main_window), main_vbox);
 
-  return main_window;
+	g_signal_connect(GTK_OBJECT(main_window), "delete_event",
+			 GTK_SIGNAL_FUNC (client_exit_activate),
+			 NULL);
+
+	ggz_sensitivity_init();
+
+	init_version = ggzcore_conf_read_string("INIT", "VERSION", VERSION);
+	if (ggzcore_conf_read_int("INIT", "FIRST", 0) == 0
+	    || strcmp(init_version, VERSION) != 0) {
+		first_raise();
+	}
+	ggz_free(init_version);
+
+	return main_window;
 }
