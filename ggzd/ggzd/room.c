@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 10264 2008-07-10 05:07:42Z jdorje $
+ * $Id: room.c 10265 2008-07-10 05:21:21Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -655,35 +655,34 @@ void room_restore(int room)
 
 		ggz_debug(GGZ_DBG_ROOM, "Restore games for room %d...", room);
 
-		for(entry = ggz_list_head(owners); entry; entry = ggz_list_next(entry)) {
+		for (entry = ggz_list_head(owners);
+		     entry;
+		     entry = ggz_list_next(entry)) {
 			ggzdbSavegamePlayers *sp = ggz_list_get_data(entry);
+
+			if (sp->count <= 0) {
+				ggz_error_msg("Savegame with no players.");
+				continue;
+			}
+
 			GGZTable *table = table_new();
+
 			table->type = game_type;
 			table->room = room;
 			table->savegame = ggz_strdup(sp->savegame);
 
-			// Make open all seats. Game using save game
-			// must be not used seats close.
-			pthread_rwlock_rdlock(&game_types[game_type].lock);
-			int seats = ggz_numberlist_get_max(&game_types[game_type].player_allow_list);
-			pthread_rwlock_unlock(&game_types[game_type].lock);
+			ggz_debug(GGZ_DBG_ROOM, "- owner %s with %d seats",
+				  sp->owner, sp->count);
 
-			ggz_debug(GGZ_DBG_ROOM, "- owner %s with %d seats", sp->owner, seats);
-
-			table->num_seats = seats;
-			if (seats > 0) {
-				table->seat_types = ggz_malloc(seats * sizeof(*table->seat_types));
-				table->seat_names = ggz_malloc(seats * sizeof(*table->seat_names));
-				int i;
-				for(i = 0; i < seats; ++i) {
-					if(i < sp->count) {
-						table->seat_types[i] = sp->types[i];
-						ggz_strncpy(table->seat_names[i], sp->names[i], MAX_USER_NAME_LEN);
-					} else {
-						table->seat_types[i] = GGZ_SEAT_OPEN;
-						table->seat_names[i][0] = '\0';
-					}
-				}
+			table->num_seats = sp->count;
+			table->seat_types = ggz_malloc(sp->count * sizeof(*table->seat_types));
+			table->seat_names = ggz_malloc(sp->count * sizeof(*table->seat_names));
+			int i;
+			for (i = 0; i < sp->count; ++i) {
+				table->seat_types[i] = sp->types[i];
+				ggz_strncpy(table->seat_names[i],
+					    sp->names[i],
+					    MAX_USER_NAME_LEN);
 			}
 
 			if (table_launch(table, sp->owner) != E_OK)
