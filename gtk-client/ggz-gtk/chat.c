@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 10253 2008-07-09 20:50:25Z jdorje $
+ * $Id: chat.c 10262 2008-07-10 01:23:48Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -906,6 +906,8 @@ void chat_save_lists(void)
 	char *p;
 	char c_num[16];
 
+	if (!ggz_gtk.chat) return;
+
 	for (i = 0; i < ggz_gtk.chat->ignore_count; i++) {
 		snprintf(c_num, sizeof(c_num), "%d", i+1);
 		p = g_array_index(ggz_gtk.chat->ignore, char *, i);
@@ -1095,6 +1097,8 @@ gint chat_is_ignore(const gchar *name)
 void chat_lists_cleanup(void)
 {
 	int i;
+
+	if (!ggz_gtk.chat) return;
 
 	for (i = 0; i < ggz_gtk.chat->ignore_count; i++)
 		ggz_free(g_array_index(ggz_gtk.chat->ignore, char *, i));
