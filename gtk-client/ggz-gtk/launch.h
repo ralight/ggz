@@ -22,8 +22,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include "support.h"
 
-void launch_create_or_raise(void);
-void launch_table(void);
-char launch_in_process(void);
-void launch_dialog_close(void);
+void INTERNAL launch_create_or_raise(void);
+void INTERNAL launch_table(void);
+char INTERNAL launch_in_process(void);
+void INTERNAL launch_dialog_close(void);

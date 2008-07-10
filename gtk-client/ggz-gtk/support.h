@@ -2,7 +2,7 @@
  * File: support.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: support.h 10271 2008-07-10 21:22:01Z jdorje $
+ * $Id: support.h 10274 2008-07-10 21:38:34Z jdorje $
  *
  * Support code
  *
@@ -26,6 +26,9 @@
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
+
+#ifndef __SUPPORT_H__
+#define __SUPPORT_H__
 
 #include <gtk/gtk.h>
 
@@ -51,6 +54,8 @@
 #  define N_(String) (String)
 #endif
 
+#define INTERNAL __attribute__ ((visibility ("internal")))
+
 
 /*
  * Public Functions.
@@ -62,24 +67,24 @@
  * or alternatively any widget in the component, and the name of the widget
  * you want returned.
  */
-GtkWidget*  ggz_lookup_widget              (GtkWidget       *widget,
+GtkWidget INTERNAL *ggz_lookup_widget              (GtkWidget       *widget,
                                         const gchar     *widget_name);
 
 /*
  * Use this function to load a URL in netscape
  */
-int support_goto_url(gchar *url);
+int INTERNAL support_goto_url(gchar *url);
 
 /*
  * Use this function to fork a command
  */
-void support_exec(char *cmd);
+void INTERNAL support_exec(char *cmd);
 
 /* get_widget() is deprecated. Use ggz_lookup_widget instead. */
 #define get_widget ggz_lookup_widget
 
 /* Use this function to set the directory containing installed pixmaps. */
-void        add_pixmap_directory       (const gchar     *directory);
+void INTERNAL add_pixmap_directory       (const gchar     *directory);
 
 
 /*
@@ -87,9 +92,11 @@ void        add_pixmap_directory       (const gchar     *directory);
  */
 
 /* This is used to create the pixmaps in the interface. */
-GtkWidget*  create_pixmap              (GtkWidget       *widget,
+GtkWidget INTERNAL *create_pixmap              (GtkWidget       *widget,
                                         const gchar     *filename);
 
 
-GdkPixbuf *load_pixbuf(const char *name);
-GdkPixbuf *load_svg_pixbuf(const char *name, int width, int height);
+GdkPixbuf INTERNAL *load_pixbuf(const char *name);
+GdkPixbuf INTERNAL *load_svg_pixbuf(const char *name, int width, int height);
+
+#endif

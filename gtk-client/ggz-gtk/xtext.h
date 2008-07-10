@@ -13,6 +13,8 @@
 #include <X11/extensions/XShm.h>
 #endif
 
+#include "support.h"
+
 #define GTK_TYPE_XTEXT              (gtk_xtext_get_type ())
 #define GTK_XTEXT(object)           (G_TYPE_CHECK_INSTANCE_CAST ((object), GTK_TYPE_XTEXT, GtkXText))
 #define GTK_XTEXT_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_XTEXT, GtkXTextClass))
@@ -222,41 +224,41 @@ struct _GtkXTextClass
 	void (*word_click) (GtkXText * xtext, char *word, GdkEventButton * event);
 };
 
-GtkWidget *gtk_xtext_new (GdkColor palette[], int separator);
-void gtk_xtext_append (xtext_buffer *buf, unsigned char *text, int len);
-void gtk_xtext_append_indent (xtext_buffer *buf,
+GtkWidget INTERNAL *gtk_xtext_new (GdkColor palette[], int separator);
+void INTERNAL gtk_xtext_append (xtext_buffer *buf, unsigned char *text, int len);
+void INTERNAL gtk_xtext_append_indent (xtext_buffer *buf,
 										char *left_text, int left_len,
 										char *right_text, int right_len);
-int gtk_xtext_set_font (GtkXText *xtext, char *name);
-void gtk_xtext_set_background (GtkXText * xtext, GdkPixmap * pixmap, gboolean trans);
-void gtk_xtext_set_palette (GtkXText * xtext, GdkColor palette[]);
-void gtk_xtext_clear (xtext_buffer *buf);
-void gtk_xtext_save (GtkXText * xtext, int fh);
-void gtk_xtext_refresh (GtkXText * xtext, int do_trans);
-void *gtk_xtext_search (GtkXText * xtext, const unsigned char *text, void *start);
-void gtk_xtext_reset_marker_pos (GtkXText *xtext);
-void gtk_xtext_check_marker_visibility(GtkXText *xtext);
+int INTERNAL gtk_xtext_set_font (GtkXText *xtext, char *name);
+void INTERNAL gtk_xtext_set_background (GtkXText * xtext, GdkPixmap * pixmap, gboolean trans);
+void INTERNAL gtk_xtext_set_palette (GtkXText * xtext, GdkColor palette[]);
+void INTERNAL gtk_xtext_clear (xtext_buffer *buf);
+void INTERNAL gtk_xtext_save (GtkXText * xtext, int fh);
+void INTERNAL gtk_xtext_refresh (GtkXText * xtext, int do_trans);
+void INTERNAL *gtk_xtext_search (GtkXText * xtext, const unsigned char *text, void *start);
+void INTERNAL gtk_xtext_reset_marker_pos (GtkXText *xtext);
+void INTERNAL gtk_xtext_check_marker_visibility(GtkXText *xtext);
 
-gboolean gtk_xtext_is_empty (xtext_buffer *buf);
+gboolean INTERNAL gtk_xtext_is_empty (xtext_buffer *buf);
 typedef void (*GtkXTextForeach) (GtkXText *xtext, unsigned char *text, void *data);
-void gtk_xtext_foreach (xtext_buffer *buf, GtkXTextForeach func, void *data);
+void INTERNAL gtk_xtext_foreach (xtext_buffer *buf, GtkXTextForeach func, void *data);
 
-void gtk_xtext_set_error_function (GtkXText *xtext, void (*error_function) (int));
-void gtk_xtext_set_indent (GtkXText *xtext, gboolean indent);
-void gtk_xtext_set_max_indent (GtkXText *xtext, int max_auto_indent);
-void gtk_xtext_set_max_lines (GtkXText *xtext, int max_lines);
-void gtk_xtext_set_show_marker (GtkXText *xtext, gboolean show_marker);
-void gtk_xtext_set_show_separator (GtkXText *xtext, gboolean show_separator);
-void gtk_xtext_set_thin_separator (GtkXText *xtext, gboolean thin_separator);
-void gtk_xtext_set_time_stamp (xtext_buffer *buf, gboolean timestamp);
-void gtk_xtext_set_tint (GtkXText *xtext, int tint_red, int tint_green, int tint_blue);
-void gtk_xtext_set_urlcheck_function (GtkXText *xtext, int (*urlcheck_function) (GtkWidget *, char *, int));
-void gtk_xtext_set_wordwrap (GtkXText *xtext, gboolean word_wrap);
+void INTERNAL gtk_xtext_set_error_function (GtkXText *xtext, void (*error_function) (int));
+void INTERNAL gtk_xtext_set_indent (GtkXText *xtext, gboolean indent);
+void INTERNAL gtk_xtext_set_max_indent (GtkXText *xtext, int max_auto_indent);
+void INTERNAL gtk_xtext_set_max_lines (GtkXText *xtext, int max_lines);
+void INTERNAL gtk_xtext_set_show_marker (GtkXText *xtext, gboolean show_marker);
+void INTERNAL gtk_xtext_set_show_separator (GtkXText *xtext, gboolean show_separator);
+void INTERNAL gtk_xtext_set_thin_separator (GtkXText *xtext, gboolean thin_separator);
+void INTERNAL gtk_xtext_set_time_stamp (xtext_buffer *buf, gboolean timestamp);
+void INTERNAL gtk_xtext_set_tint (GtkXText *xtext, int tint_red, int tint_green, int tint_blue);
+void INTERNAL gtk_xtext_set_urlcheck_function (GtkXText *xtext, int (*urlcheck_function) (GtkWidget *, char *, int));
+void INTERNAL gtk_xtext_set_wordwrap (GtkXText *xtext, gboolean word_wrap);
 
-xtext_buffer *gtk_xtext_buffer_new (GtkXText *xtext);
-void gtk_xtext_buffer_free (xtext_buffer *buf);
-void gtk_xtext_buffer_show (GtkXText *xtext, xtext_buffer *buf, int render);
-GtkType gtk_xtext_get_type (void);
+xtext_buffer INTERNAL *gtk_xtext_buffer_new (GtkXText *xtext);
+void INTERNAL gtk_xtext_buffer_free (xtext_buffer *buf);
+void INTERNAL gtk_xtext_buffer_show (GtkXText *xtext, xtext_buffer *buf, int render);
+GtkType INTERNAL gtk_xtext_get_type (void);
 
 #include "xtext-ggz.h"
 

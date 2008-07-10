@@ -2,7 +2,7 @@
  * File: chat.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.h 10253 2008-07-09 20:50:25Z jdorje $
+ * $Id: chat.h 10274 2008-07-10 21:38:34Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -30,6 +30,7 @@
 
 #include <ggzcore.h>
 
+#include "support.h"
 #include "xtext.h"
 
 struct ggz_chat;
@@ -41,25 +42,25 @@ typedef enum {
 	CHAT_LOCAL_HIGH
 } LocalChatType;
 
-void chat_init(void);
-void chat_display_server(GGZChatType type,
+void INTERNAL chat_init(void);
+void INTERNAL chat_display_server(GGZChatType type,
 			 const char *player, const char *message);
-void chat_display_local(LocalChatType type,
+void INTERNAL chat_display_local(LocalChatType type,
 			const char *player, const char *message);
-void chat_send(const gchar *message);
-void chat_enter(const gchar *player, gboolean room_known, GGZRoom *from_room);
-void chat_part(const gchar *player, gboolean room_known, GGZRoom *to_room);
-int chat_checkurl(GtkWidget *xtext, char *word, int len);
-void chat_word_clicked(GtkXText *xtext, char *word,
+void INTERNAL chat_send(const gchar *message);
+void INTERNAL chat_enter(const gchar *player, gboolean room_known, GGZRoom *from_room);
+void INTERNAL chat_part(const gchar *player, gboolean room_known, GGZRoom *to_room);
+int INTERNAL chat_checkurl(GtkWidget *xtext, char *word, int len);
+void INTERNAL chat_word_clicked(GtkXText *xtext, char *word,
 	GdkEventButton *event);
-void chat_add_friend(const gchar *name, gint display);
-void chat_remove_friend(const gchar *name);
-void chat_add_ignore(const gchar *name, gint display);
-void chat_remove_ignore(const gchar *name);
+void INTERNAL chat_add_friend(const gchar *name, gint display);
+void INTERNAL chat_remove_friend(const gchar *name);
+void INTERNAL chat_add_ignore(const gchar *name, gint display);
+void INTERNAL chat_remove_ignore(const gchar *name);
 void chat_save_lists(void);
-gchar *chat_complete_name(const gchar *name, int *perfect);
-gint chat_is_friend(const gchar *name);
-gint chat_is_ignore(const gchar *name);
+gchar INTERNAL *chat_complete_name(const gchar *name, int *perfect);
+gint INTERNAL chat_is_friend(const gchar *name);
+gint INTERNAL chat_is_ignore(const gchar *name);
 void chat_lists_cleanup(void);
 
 #endif

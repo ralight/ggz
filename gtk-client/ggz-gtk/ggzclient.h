@@ -2,7 +2,7 @@
  * File: ggzclient.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.h 8811 2007-01-04 22:39:18Z jdorje $
+ * $Id: ggzclient.h 10274 2008-07-10 21:38:34Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -27,12 +27,13 @@
 #define __GGZCLIENT_H__
 
 #include "ggzcore.h"
+#include "support.h"
 
-void ggz_event_init(GGZServer *Server);
+void INTERNAL ggz_event_init(GGZServer *Server);
 void ggz_sensitivity_init(void);
-int ggz_connection_query(void);
+int INTERNAL ggz_connection_query(void);
 
 /* Should be called any time we disconnect from the server. */
-void server_disconnect(void);
+void INTERNAL server_disconnect(void);
 
 #endif /* __GGZCLIENT_H__ */

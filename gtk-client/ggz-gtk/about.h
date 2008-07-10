@@ -22,5 +22,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include "support.h"
 
-void about_create_or_raise(void);
+void INTERNAL about_create_or_raise(void);

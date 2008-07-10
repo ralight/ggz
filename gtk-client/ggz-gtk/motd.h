@@ -21,5 +21,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-void motd_create_or_raise(void);
-void motd_print_line(const gchar * line);
+#include "support.h"
+
+void INTERNAL motd_create_or_raise(void);
+void INTERNAL motd_print_line(const gchar * line);

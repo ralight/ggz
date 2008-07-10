@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.h 10148 2008-07-04 01:49:57Z jdorje $
+ * $Id: game.h 10274 2008-07-10 21:38:34Z jdorje $
  *
  * Functions for handling game events
  *
@@ -26,21 +26,22 @@
 
 
 #include "ggzcore.h"
+#include "support.h"
 
 /** Initialize a game client.
  *
  *  @param spectating 1 if we're spectating, 0 if we're joining
  */
-int game_initialize(int spectating);
+int INTERNAL game_initialize(int spectating);
 
-int game_launch(void);
+int INTERNAL game_launch(void);
 
-void game_channel_ready(void);
+void INTERNAL game_channel_ready(void);
 
-void game_quit(void);
+void INTERNAL game_quit(void);
 
-void game_destroy(void);
+void INTERNAL game_destroy(void);
 
-int game_play(void);
+int INTERNAL game_play(void);
 
-gboolean can_launch_gametype(const GGZGameType *gt);
+gboolean INTERNAL can_launch_gametype(const GGZGameType *gt);

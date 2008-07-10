@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Client
  * Date: 6/19/00
- * $Id: server.h 10250 2008-07-09 18:44:38Z jdorje $
+ * $Id: server.h 10274 2008-07-10 21:38:34Z jdorje $
  *
  * This file contains functions for handling server connection profiles
  *
@@ -37,6 +37,8 @@
 
 #include <ggzcore.h>
 
+#include "support.h"
+
 typedef struct Server {
 	
 	/* Name of profile */
@@ -61,11 +63,11 @@ typedef struct Server {
 
 
 /* Read (or re-read) server profiles from configuration files */
-void server_profiles_load(void);
+void INTERNAL server_profiles_load(void);
 
 
 /* Save server profiles to configuration file */
-void server_profiles_save(void);
+void INTERNAL server_profiles_save(void);
 
 
 /* Cleanup the server profiles structures */
@@ -76,33 +78,33 @@ void server_profiles_cleanup(void);
  * dynamically allocated Server structure.  All string members should
  * also be dynmcially allocated 
  */
-void server_list_add(Server* server);
+void INTERNAL server_list_add(Server* server);
 
 
 /* 
  * Return list of profile names as a GList.  The list should be
  * free'd, but not the data elememts.  
  */
-GList* server_get_name_list(void);
+GList INTERNAL *server_get_name_list(void);
 
 
 /*
  * Return the list of profile names as an argv-style array of strings
  * The array should be free'd, but not the array elements.
  */
-char** server_get_names(void);
+char INTERNAL **server_get_names(void);
 
 
 /*
  * Return a pointer to the server profile whose name matches 'name'
  * Do *not* free()!
  */
-Server* server_get(const gchar* name);
+Server INTERNAL *server_get(const gchar* name);
 
 
 /*
  * Remove the server profile whose name matches 'name'
  */
-void server_list_remove(const gchar* name);
+void INTERNAL server_list_remove(const gchar* name);
 
 #endif

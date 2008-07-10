@@ -28,21 +28,22 @@
 
 #include <ggz_common.h>
 
+#include "support.h"
 #include "xtext.h"
 
 #ifndef __GGZUTILS_H__
 #define __GGZUTILS_H__
 
-const char *perm_name(GGZPerm p);
+const char INTERNAL *perm_name(GGZPerm p);
 
-GtkWidget *create_xtext(void);
+GtkWidget INTERNAL *create_xtext(void);
 
 /* xtext color palette */
-void colors_init(void);
-void colors_activate(GtkXText *xtext);
-GdkColor color_white(void);
-GdkColor color_black(void);
-GdkColor color_get(int id);
-void color_set(int id, GdkColor color);
+void INTERNAL colors_init(void);
+void INTERNAL colors_activate(GtkXText *xtext);
+GdkColor INTERNAL color_white(void);
+GdkColor INTERNAL color_black(void);
+GdkColor INTERNAL color_get(int id);
+void INTERNAL color_set(int id, GdkColor color);
 
 #endif /* __GGZUTILS_H__ */

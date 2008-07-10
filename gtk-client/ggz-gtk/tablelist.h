@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: tablelist.h 7757 2006-01-09 18:03:06Z jdorje $
+ * $Id: tablelist.h 10274 2008-07-10 21:38:34Z jdorje $
  * 
  * List of tables in the current room
  * 
@@ -25,15 +25,15 @@
  */
 
 /* Clear the table list. */
-void clear_table_list(void);
+void INTERNAL clear_table_list(void);
 
-void sensitize_table_list(gboolean sensitive);
+void INTERNAL sensitize_table_list(gboolean sensitive);
 
 /* Return the currently selected table, or NULL. */
-GGZTable *get_selected_table(void);
+GGZTable INTERNAL *get_selected_table(void);
 
 /* Update the table list. */
-void update_table_list(void);
+void INTERNAL update_table_list(void);
 
 /* Create the table list.  Pass it the main window. */
-GtkWidget *create_table_list(GtkWidget * window);
+GtkWidget INTERNAL *create_table_list(GtkWidget * window);

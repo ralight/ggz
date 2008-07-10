@@ -22,9 +22,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include "support.h"
+
 /* Creates a button with a stock icon and custom text. */
-GtkWidget *stockbutton_new(const gchar *stock, const gchar *label_text);
-void stockbutton_set_text(GtkWidget *button, const gchar *label_text);
+GtkWidget INTERNAL *stockbutton_new(const gchar *stock,
+				    const gchar *label_text);
+void INTERNAL stockbutton_set_text(GtkWidget *button,
+				   const gchar *label_text);
 
 /*
  * A very easily cusomisible message box. This message box can be used to 
@@ -60,5 +64,5 @@ typedef enum {
 	MSGBOX_MODAL	= 2,
 }	MBModal;
 
-MBReturn msgbox(gchar *textmessage, gchar *title, MBType type,
-		MBIcon itype, MBModal modal);
+MBReturn INTERNAL msgbox(gchar *textmessage, gchar *title, MBType type,
+			 MBIcon itype, MBModal modal);
