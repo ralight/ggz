@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 10250 2008-07-09 18:44:38Z jdorje $
+ * $Id: game.c 10260 2008-07-10 01:04:50Z jdorje $
  *
  * Functions for handling game events
  *
@@ -28,10 +28,12 @@
 #  include <config.h>	/* Site-specific config */
 #endif
 
-#include <gtk/gtk.h>
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h> /* For strcasecmp */
+
+#include <gtk/gtk.h>
 
 #include <ggzcore.h>
 
@@ -45,8 +47,6 @@
 #include "support.h"
 
 #include <ggz.h>	/* libggz */
-
-static guint game_tag;
 
 static GGZModule *pick_module(GGZGameType * gt)
 {
@@ -170,7 +170,9 @@ void game_quit(void)
 	int fd = ggzcore_game_get_control_fd(game);
 
 	if (fd != -1) {
-		g_source_remove(game_tag);
+		assert(ggz_gtk.game_tag != 0);
+		g_source_remove(ggz_gtk.game_tag);
+		ggz_gtk.game_tag = 0;
 		fd = -1;
 	}
 }
@@ -209,9 +211,11 @@ static GGZHookReturn game_launched(GGZGameEvent id, const void *event_data,
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL, _("Launched game"));
 
 	channel = g_io_channel_unix_new(fd);
-	game_tag = g_io_add_watch_full(channel, G_PRIORITY_DEFAULT,
-				       G_IO_IN, game_process, ggz_gtk.server,
-				       game_input_removed);
+	assert(ggz_gtk.game_tag == 0);
+	ggz_gtk.game_tag
+	  = g_io_add_watch_full(channel, G_PRIORITY_DEFAULT,
+				G_IO_IN, game_process, ggz_gtk.server,
+				game_input_removed);
 	g_io_channel_unref(channel);
 
 	if (ggz_gtk.launched_cb) {
