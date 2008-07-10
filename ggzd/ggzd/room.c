@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 10128 2008-07-01 02:31:12Z jdorje $
+ * $Id: room.c 10264 2008-07-10 05:07:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -639,59 +639,57 @@ void room_restore(int room)
 	pthread_rwlock_rdlock(&game_types[game_type].lock);
 	int restore_allow = game_types[game_type].restore_allow;
 	pthread_rwlock_unlock(&game_types[game_type].lock);
-    
-	if (restore_allow) {
-		pthread_rwlock_rdlock(&game_types[game_type].lock);
-		char *game_name = ggz_strdup(ggz_intlstring_translated(game_types[game_type].name, NULL));
-		pthread_rwlock_unlock(&game_types[game_type].lock);
 
-		GGZList *owners = ggzdb_savegame_owners(game_name);
-		ggzdbSavegamePlayers *sp;
+	if (!restore_allow) return;
+    
+	pthread_rwlock_rdlock(&game_types[game_type].lock);
+	char *game_name = ggz_strdup(ggz_intlstring_translated(game_types[game_type].name, NULL));
+	pthread_rwlock_unlock(&game_types[game_type].lock);
+
+	GGZList *owners = ggzdb_savegame_owners(game_name);
+
+	ggz_free(game_name);
+
+	if (owners != NULL) {
 		GGZListEntry *entry;
 
-		ggz_free(game_name);
+		ggz_debug(GGZ_DBG_ROOM, "Restore games for room %d...", room);
 
-		if (owners != NULL) {
-			ggz_debug(GGZ_DBG_ROOM, "Restore games for room %d...", room);
+		for(entry = ggz_list_head(owners); entry; entry = ggz_list_next(entry)) {
+			ggzdbSavegamePlayers *sp = ggz_list_get_data(entry);
+			GGZTable *table = table_new();
+			table->type = game_type;
+			table->room = room;
+			table->savegame = ggz_strdup(sp->savegame);
 
-			for(entry = ggz_list_head(owners); entry; entry = ggz_list_next(entry)) {
-				sp = ggz_list_get_data(entry);
-				GGZTable *table = table_new();
-				table->type = game_type;
-				table->room = room;
-				table->savegame = ggz_strdup(sp->savegame);
+			// Make open all seats. Game using save game
+			// must be not used seats close.
+			pthread_rwlock_rdlock(&game_types[game_type].lock);
+			int seats = ggz_numberlist_get_max(&game_types[game_type].player_allow_list);
+			pthread_rwlock_unlock(&game_types[game_type].lock);
 
-				// Make open all seats. Game using save game
-				// must be not used seats close.
-				pthread_rwlock_rdlock(&game_types[game_type].lock);
-				int seats = ggz_numberlist_get_max(&game_types[game_type].player_allow_list);
-				pthread_rwlock_unlock(&game_types[game_type].lock);
+			ggz_debug(GGZ_DBG_ROOM, "- owner %s with %d seats", sp->owner, seats);
 
-				ggz_debug(GGZ_DBG_ROOM, "- owner %s with %d seats", sp->owner, seats);
-
-				table->num_seats = seats;
-				if (seats > 0) {
-					table->seat_types = ggz_malloc(seats * sizeof(*table->seat_types));
-					table->seat_names = ggz_malloc(seats * sizeof(*table->seat_names));
-					int i;
-					for(i = 0; i < seats; ++i) {
-						if(i < sp->count) {
-							table->seat_types[i] = sp->types[i];
-							ggz_strncpy(table->seat_names[i], sp->names[i], MAX_USER_NAME_LEN);
-						} else {
-							table->seat_types[i] = GGZ_SEAT_OPEN;
-							table->seat_names[i][0] = '\0';
-						}
+			table->num_seats = seats;
+			if (seats > 0) {
+				table->seat_types = ggz_malloc(seats * sizeof(*table->seat_types));
+				table->seat_names = ggz_malloc(seats * sizeof(*table->seat_names));
+				int i;
+				for(i = 0; i < seats; ++i) {
+					if(i < sp->count) {
+						table->seat_types[i] = sp->types[i];
+						ggz_strncpy(table->seat_names[i], sp->names[i], MAX_USER_NAME_LEN);
+					} else {
+						table->seat_types[i] = GGZ_SEAT_OPEN;
+						table->seat_names[i][0] = '\0';
 					}
 				}
-
-				if (table_launch(table, sp->owner) != E_OK)
-					ggz_free(table);
 			}
-			ggz_list_free(owners);
-		}
-	}
 
-	return;
+			if (table_launch(table, sp->owner) != E_OK)
+				ggz_free(table);
+		}
+		ggz_list_free(owners);
+	}
 }
 
