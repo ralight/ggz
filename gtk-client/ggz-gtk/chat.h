@@ -2,7 +2,7 @@
  * File: chat.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.h 10274 2008-07-10 21:38:34Z jdorje $
+ * $Id: chat.h 10276 2008-07-10 22:32:14Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -57,10 +57,10 @@ void INTERNAL chat_add_friend(const gchar *name, gint display);
 void INTERNAL chat_remove_friend(const gchar *name);
 void INTERNAL chat_add_ignore(const gchar *name, gint display);
 void INTERNAL chat_remove_ignore(const gchar *name);
-void chat_save_lists(void);
+void INTERNAL chat_save_lists(void);
 gchar INTERNAL *chat_complete_name(const gchar *name, int *perfect);
 gint INTERNAL chat_is_friend(const gchar *name);
 gint INTERNAL chat_is_ignore(const gchar *name);
-void chat_lists_cleanup(void);
+void INTERNAL chat_lists_cleanup(void);
 
 #endif

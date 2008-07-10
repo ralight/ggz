@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Client
  * Date: 6/19/00
- * $Id: server.h 10274 2008-07-10 21:38:34Z jdorje $
+ * $Id: server.h 10276 2008-07-10 22:32:14Z jdorje $
  *
  * This file contains functions for handling server connection profiles
  *
@@ -71,7 +71,7 @@ void INTERNAL server_profiles_save(void);
 
 
 /* Cleanup the server profiles structures */
-void server_profiles_cleanup(void);
+void INTERNAL server_profiles_cleanup(void);
 
 /* 
  * Add a server to the profile list.  server should be be a pointer to

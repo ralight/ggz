@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 10275 2008-07-10 22:26:54Z jdorje $
+ * $Id: client.c 10276 2008-07-10 22:32:14Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -834,6 +834,15 @@ void ggz_gtk_initialize(gboolean reconnect,
 	ggz_gtk.embedded_protocol_engine = ggz_strdup(protocol_engine);
 	ggz_gtk.embedded_protocol_version = ggz_strdup(protocol_version);
 	ggz_gtk.embedded_default_profile = ggz_strdup(default_profile);
+}
+
+void ggz_gtk_exit(void)
+{
+	chat_save_lists();
+	server_profiles_cleanup();
+	chat_lists_cleanup();
+
+	ggzcore_destroy();
 }
 
 static GtkWidget *create_main_dlg(GtkWidget *main_window)
