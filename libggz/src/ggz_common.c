@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 10180 2008-07-08 02:11:36Z jdorje $
+ * $Id: ggz_common.c 10268 2008-07-10 20:31:20Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -280,7 +280,7 @@ GGZPlayerType ggz_string_to_playertype(const char *type_str)
 #define TRUE_NAME "true"
 #define FALSE_NAME "false"
 
-const char *bool_to_str(int bool_val)
+const char *ggz_bool_to_str(int bool_val)
 {
 	if (bool_val)
 		return TRUE_NAME;
@@ -291,7 +291,7 @@ const char *bool_to_str(int bool_val)
 /* Convert a possibly-null string that should contain "true" or "false"
    to a boolean (int) value.  The default value is returned if an invalid
    or empty value is sent. */
-int str_to_bool(const char *str, int dflt)
+int ggz_str_to_bool(const char *str, int dflt)
 {
 	if (!str)
 		return dflt;

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 10193 2008-07-08 03:51:56Z jdorje $
+ * $Id: netxml.c 10268 2008-07-10 20:31:20Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -476,7 +476,7 @@ int _ggzcore_net_send_list_types(GGZNet * net, const char verbose)
 	net->gametype_verbose = verbose;
 
 	ggz_debug(GGZCORE_DBG_NET, "Sending gametype list request");
-	full = bool_to_str(verbose);
+	full = ggz_bool_to_str(verbose);
 
 	_ggzcore_net_send_line(net, "<LIST TYPE='game' FULL='%s'/>", full);
 
@@ -492,7 +492,7 @@ int _ggzcore_net_send_list_rooms(GGZNet * net,
 
 	net->room_verbose = verbose;
 	ggz_debug(GGZCORE_DBG_NET, "Sending room list request");
-	full = bool_to_str(verbose);
+	full = ggz_bool_to_str(verbose);
 
 	_ggzcore_net_send_line(net, "<LIST TYPE='room' FULL='%s'/>", full);
 
@@ -671,7 +671,7 @@ int _ggzcore_net_send_perm_admin(GGZNet * net, GGZPlayer *player,
 				 GGZPerm perm, bool set)
 {
 	const char *permname = ggz_perm_to_string(perm);
-	const char *setname = bool_to_str(set);
+	const char *setname = ggz_bool_to_str(set);
 	const char *playername = _ggzcore_player_get_name(player);
 
 	return _ggzcore_net_send_line(net,
@@ -783,7 +783,7 @@ int _ggzcore_net_send_table_join(GGZNet * net,
 	ggz_debug(GGZCORE_DBG_NET, "Sending table join request");
 	return _ggzcore_net_send_line(net,
 				      "<JOIN TABLE='%d' SPECTATOR='%s'/>",
-				      num, bool_to_str(spectator));
+				      num, ggz_bool_to_str(spectator));
 }
 
 int _ggzcore_net_send_table_leave(GGZNet * net, int force, int spectator)
@@ -791,8 +791,8 @@ int _ggzcore_net_send_table_leave(GGZNet * net, int force, int spectator)
 	ggz_debug(GGZCORE_DBG_NET, "Sending table leave request");
 	return _ggzcore_net_send_line(net,
 				      "<LEAVE FORCE='%s' SPECTATOR='%s'/>",
-				      bool_to_str(force),
-				      bool_to_str(spectator));
+				      ggz_bool_to_str(force),
+				      ggz_bool_to_str(spectator));
 }
 
 
@@ -1974,8 +1974,8 @@ static void _ggzcore_net_handle_allow(GGZNet * net,
 
 	players = ggz_numberlist_read(ATTR(element, "PLAYERS"));
 	bots = ggz_numberlist_read(ATTR(element, "BOTS"));
-	spectators = str_to_bool(ATTR(element, "SPECTATORS"), 0);
-	peers = str_to_bool(ATTR(element, "PEERS"), 0);
+	spectators = ggz_str_to_bool(ATTR(element, "SPECTATORS"), 0);
+	peers = ggz_str_to_bool(ATTR(element, "PEERS"), 0);
 
 	_ggzcore_net_game_set_allowed(parent, players, bots, spectators, peers);
 }

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 10214 2008-07-08 16:44:13Z jdorje $
+ * $Id: net.c 10268 2008-07-10 20:31:20Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -472,8 +472,8 @@ GGZReturn net_send_type(GGZNetIO *net, int game_id,
 	int i;
 	char *players = ggz_numberlist_write(&type->player_allow_list);
 	char *bots = ggz_numberlist_write(&type->bot_allow_list);
-	const char *spectators = bool_to_str(type->allow_spectators);
-	const char *peers = bool_to_str(type->allow_peers);
+	const char *spectators = ggz_bool_to_str(type->allow_spectators);
+	const char *peers = ggz_bool_to_str(type->allow_peers);
 
 	const char *language = net->client->language;
 
@@ -792,7 +792,7 @@ GGZReturn net_send_table_join(GGZNetIO *net,
 {
 	return _net_send_line(net,
 			      "<JOIN TABLE='%d' SPECTATOR='%s'/>",
-			      table_id, bool_to_str(is_spectator));
+			      table_id, ggz_bool_to_str(is_spectator));
 }
 
 
@@ -1646,7 +1646,7 @@ static void _net_handle_list(GGZNetIO *net, GGZXMLElement *element)
 		return;
 	}
 
-	verbose = str_to_bool(ggz_xmlelement_get_attr(element, "FULL"), 0);
+	verbose = ggz_str_to_bool(ggz_xmlelement_get_attr(element, "FULL"), 0);
 
 	if (strcasecmp(type, "game") == 0)
 		player_list_types(net->client->data, verbose);
@@ -1745,7 +1745,7 @@ static void _net_handle_adminperm(GGZNetIO *net, GGZXMLElement *element)
 	valuestr = ggz_xmlelement_get_attr(element, "VALUE");
 
 	perm = ggz_string_to_perm(permstr);
-	value = str_to_bool(valuestr, false);
+	value = ggz_str_to_bool(valuestr, false);
 
 	player_perms_admin(net->client->data, player, perm, value);
 }
@@ -1809,7 +1809,7 @@ static void _net_handle_join(GGZNetIO *net, GGZXMLElement *element)
 	if (!check_playerconn(net, "join")) return;
 
 	table = str_to_int(ggz_xmlelement_get_attr(element, "TABLE"), -1);
-	spectator = str_to_bool(ggz_xmlelement_get_attr(element,
+	spectator = ggz_str_to_bool(ggz_xmlelement_get_attr(element,
 							"SPECTATOR"), 0);
 	seat_num = str_to_int(ggz_xmlelement_get_attr(element, "SEAT"), -1);
 
@@ -1828,9 +1828,9 @@ static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element)
 	if (!element) return;
 	if (!check_playerconn(net, "leave")) return;
 
-	force = str_to_bool(ggz_xmlelement_get_attr(element, "FORCE"), 0);
-	spectator = str_to_bool(ggz_xmlelement_get_attr(element,
-							"SPECTATOR"), 0);
+	force = ggz_str_to_bool(ggz_xmlelement_get_attr(element, "FORCE"), 0);
+	spectator = ggz_str_to_bool(ggz_xmlelement_get_attr(element,
+							    "SPECTATOR"), 0);
 
 	player_table_leave(net->client->data, spectator, force);
 }

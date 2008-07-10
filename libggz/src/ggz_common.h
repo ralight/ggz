@@ -261,14 +261,14 @@ GGZAdminType ggz_string_to_admintype(const char *type_str);
  *  @param dflt The default, if the string is unreadible or NULL.
  *  @return The boolean value.
  */
-int str_to_bool(const char *str, int dflt);
+int ggz_str_to_bool(const char *str, int dflt);
 
 /** @brief Convert a boolean value to a string.
  *
  *  @param bool_value A boolean value.
  *  @return "true" or "false", as appropriate.
  */
-const char *bool_to_str(int bool_val);
+const char *ggz_bool_to_str(int bool_val);
 
 /**
  * @defgroup numberlist Number lists
