@@ -29,6 +29,15 @@ AC_GGZ_DEBUG
 # ===============
 AM_CONDITIONAL(INSTALL_LIBGGZ, true)
 
+# Experimental symbol visibility
+AC_ARG_ENABLE([visibility],
+  AS_HELP_STRING([--enable-visibility], [Restrict library symbol visibility]),
+  [enable_visibility=$enableval], [enable_visibility="no"])
+if test "$enable_visibility" = yes; then
+  SYMBOL_VISIBILITY="-Wl,--version-script=linker.map"
+  AC_SUBST(SYMBOL_VISIBILITY)
+fi
+
 # Makefile creation
 # =================
 AC_CONFIG_FILES([
@@ -70,3 +79,9 @@ if test "$enable_anl" = yes; then
 	echo "GNU libc >= 2.3.7. Make sure that libc is up to date."
 fi
 
+if test "$enable_visibility" = yes; then
+	echo ""
+	echo "*** WARNING ***"
+	echo "You have enabled symbol visibility restrictions."
+	echo "This feature hasn't been tested much yet."
+fi
