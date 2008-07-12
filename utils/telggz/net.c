@@ -61,11 +61,11 @@ void net_process(void)
 			ggzcore_server_read_data(server, ggzcore_server_get_fd(server));
 }
 
-void net_send(char *buffer)
+void net_send(char *buf)
 {
 	if(!room) return;
 
-	ggzcore_room_chat(room, GGZ_CHAT_NORMAL, NULL, buffer);
+	ggzcore_room_chat(room, GGZ_CHAT_NORMAL, NULL, buf);
 }
 
 void net_allow(int allow)
@@ -96,12 +96,12 @@ void net_join(int roomnum)
 void net_list(void)
 {
 	int i;
-	GGZRoom *room;
+	GGZRoom *myroom;
 
 	for(i = 0; i < ggzcore_server_get_num_rooms(server); i++)
 	{
-		room = ggzcore_server_get_nth_room(server, i);
-		printf("%3i: %s\n", i, ggzcore_room_get_name(room));
+		myroom = ggzcore_server_get_nth_room(server, i);
+		printf("%3i: %s\n", i, ggzcore_room_get_name(myroom));
 	}
 }
 
