@@ -23,24 +23,22 @@
 #include <qcombobox.h>
 #include <qpushbutton.h>
 #include <qimage.h>
-//Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3Frame>
+
+#include <QFrame>
 #include <Q3ValueList>
 #include <QPixmap>
-#include <Q3VBoxLayout>
 
 #define PREFIX "XXX"
 
-App::App(QWidget *parent, const char *name)
+App::App(QWidget *parent)
 : KTabWidget(parent)
 {
 	KStandardDirs d;
 	QWidget *tab_general, *tab_plugins, *tab_profile;
-	Q3VBoxLayout *vbox_general, *vbox_plugins, *vbox_profile;
-	Q3HBoxLayout *hbox_profile, *hbox_profile2;
+	QVBoxLayout *vbox_general, *vbox_plugins, *vbox_profile;
+	QHBoxLayout *hbox_profile, *hbox_profile2;
 	QPushButton *profile_add;
-	Q3Frame *frame_grubby;
+	QFrame *frame_grubby;
 	QMap<QString, QString> pluginnames, plugininfos;
 
 	tab_profile = new QWidget(this);
@@ -48,9 +46,12 @@ App::App(QWidget *parent, const char *name)
 	tab_plugins = new QWidget(this);
 
 	QPixmap grubby(d.findResource("data", "kgrubby/kgrubby.png"));
-	frame_grubby = new Q3Frame(tab_profile);
+	frame_grubby = new QFrame(tab_profile);
 	frame_grubby->setFixedSize(grubby.width(), grubby.height());
-	frame_grubby->setBackgroundPixmap(grubby);
+
+	QPalette palette;
+	palette.setBrush(frame_grubby->backgroundRole(), QBrush(grubby));
+	frame_grubby->setPalette(palette);
 
 	m_profile = new QComboBox(tab_profile);
 
@@ -60,10 +61,10 @@ App::App(QWidget *parent, const char *name)
 	for(QStringList::Iterator it = profiles.begin(); it != profiles.end(); it++)
 	{
 		if(((*it) == ".") || ((*it) == "..")) continue;
-		m_profile->addAction((*it));
+		m_profile->addItem((*it));
 	}
 	if(m_profile->count() == 0)
-		m_profile->addAction("default");
+		m_profile->addItem("default");
 	if(m_profile->count() == 1)
 		m_profile->setEnabled(false);
 	m_profilename = m_profile->currentText();
@@ -75,10 +76,10 @@ App::App(QWidget *parent, const char *name)
 
 	m_networktypelabel = new QLabel(i18n("Network type"), tab_general);
 	m_networktype = new QComboBox(tab_general);
-	m_networktype->addAction(i18n("GGZ Gaming Zone"));
-	m_networktype->addAction(i18n("IRC"));
-	m_networktype->addAction(i18n("SILC"));
-	m_networktype->addAction(i18n("Console"));
+	m_networktype->addItem(i18n("GGZ Gaming Zone"));
+	m_networktype->addItem(i18n("IRC"));
+	m_networktype->addItem(i18n("SILC"));
+	m_networktype->addItem(i18n("Console"));
 
 	m_namelabel = new QLabel(i18n("Name"), tab_general);
 	m_name = new QLineEdit(tab_general);
@@ -127,7 +128,7 @@ App::App(QWidget *parent, const char *name)
 	QMap<QString, QString>::Iterator it;
 	for(it = pluginnames.begin(); it != pluginnames.end(); it++)
 	{
-		item = new Q3CheckListItem(m_pluginlist, it.data(), Q3CheckListItem::CheckBox);
+		item = new Q3CheckListItem(m_pluginlist, it.value(), Q3CheckListItem::CheckBox);
 		item->setText(1, plugininfos[it.key()]);
 		m_plugins[item] = it.key();
 	}
@@ -135,18 +136,24 @@ App::App(QWidget *parent, const char *name)
 	m_plugin_configure = new QPushButton(i18n("Configure..."), tab_plugins);
 	m_plugin_configure->setEnabled(false);
 
-	vbox_profile = new Q3VBoxLayout(tab_profile, 5);
-	hbox_profile2 = new Q3HBoxLayout(vbox_profile, 5);
+	hbox_profile2 = new QHBoxLayout();
 	hbox_profile2->addStretch(1);
 	hbox_profile2->addWidget(frame_grubby);
 	hbox_profile2->addStretch(1);
-	vbox_profile->addWidget(m_profile);
-	hbox_profile = new Q3HBoxLayout(vbox_profile, 5);
+
+	hbox_profile = new QHBoxLayout();
 	hbox_profile->addWidget(profile_add);
 	hbox_profile->addWidget(m_profile_remove);
+
+	vbox_profile = new QVBoxLayout();
+	vbox_profile->addLayout(hbox_profile2);
+	vbox_profile->addWidget(m_profile);
+	vbox_profile->addLayout(hbox_profile);
 	vbox_profile->addStretch(1);
 
-	vbox_general = new Q3VBoxLayout(tab_general, 5);
+	tab_profile->setLayout(vbox_profile);
+
+	vbox_general = new QVBoxLayout();
 	vbox_general->addWidget(m_namelabel);
 	vbox_general->addWidget(m_name);
 	vbox_general->addWidget(m_ownerlabel);
@@ -161,13 +168,17 @@ App::App(QWidget *parent, const char *name)
 	vbox_general->addWidget(m_networktype);
 	vbox_general->addStretch(1);
 
-	vbox_plugins = new Q3VBoxLayout(tab_plugins, 5);
+	tab_general->setLayout(vbox_general);
+
+	vbox_plugins = new QVBoxLayout();
 	vbox_plugins->addWidget(m_pluginlist);
 	vbox_plugins->addWidget(m_plugin_configure);
 
-	insertTab(tab_profile, i18n("Profile"));
-	insertTab(tab_general, i18n("General"));
-	insertTab(tab_plugins, i18n("Plugins"));
+	tab_plugins->setLayout(vbox_plugins);
+
+	addTab(tab_profile, i18n("Profile"));
+	addTab(tab_general, i18n("General"));
+	addTab(tab_plugins, i18n("Plugins"));
 
 	connect(m_profile, SIGNAL(activated(int)), SLOT(slotProfileChange()));
 	connect(profile_add, SIGNAL(clicked()), SLOT(slotProfileNew()));
@@ -197,7 +208,7 @@ void App::slotProfileNew()
 
 	if(!name.isEmpty())
 	{
-		m_profile->addAction(name);
+		m_profile->addItem(name);
 		m_profile->setEditText(name);
 
 		m_profile_remove->setEnabled(true);
@@ -254,7 +265,7 @@ void App::slotProfileChange()
 
 void App::slotPluginConfigure()
 {
-	Q3CheckListItem *item = static_cast<Q3CheckListItem*>(m_pluginlist->currentIndex());
+	Q3CheckListItem *item = static_cast<Q3CheckListItem*>(m_pluginlist->currentItem());
 	if(!item) return;
 
 	QString name = m_plugins[item];
@@ -310,7 +321,7 @@ void App::slotPluginConfigure()
 
 void App::slotPluginSelected()
 {
-	Q3CheckListItem *item = static_cast<Q3CheckListItem*>(m_pluginlist->currentIndex());
+	Q3CheckListItem *item = static_cast<Q3CheckListItem*>(m_pluginlist->currentItem());
 	if(!item)
 	{
 		m_plugin_configure->setEnabled(false);
@@ -318,7 +329,7 @@ void App::slotPluginSelected()
 	}
 
 	QString name = m_plugins[item];
-	if(m_plugindialogs[name]) m_plugin_configure->setEnabled(true);
+	if(!m_plugindialogs[name].isEmpty()) m_plugin_configure->setEnabled(true);
 	else m_plugin_configure->setEnabled(false);
 }
 
@@ -361,7 +372,7 @@ void App::saveProfile()
 		stream << "[modules]\n";
 		for(pit = m_plugins.begin(); pit != m_plugins.end(); pit++)
 		{
-			QString module = pit.data();
+			QString module = pit.value();
 			stream << module << " = " << moduledir << "libgurumod_" << module << ".so\n";
 		}
 		stream << "\n";
@@ -379,7 +390,7 @@ void App::saveProfile()
 			if(item->isOn())
 			{
 				stream << " ";
-				stream << pit.data();
+				stream << pit.value();
 			}
 		}
 		stream << "\n";
@@ -516,7 +527,7 @@ void App::loadProfile()
 	for(pit = m_plugins.begin(); pit != m_plugins.end(); pit++)
 	{
 		Q3CheckListItem *item = pit.key();
-		if(active.contains(pit.data())) item->setOn(true);
+		if(active.contains(pit.value())) item->setOn(true);
 		else item->setOn(false);
 	}
 	QString net = cg.readEntry("net");

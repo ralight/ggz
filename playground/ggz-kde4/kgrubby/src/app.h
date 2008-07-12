@@ -18,7 +18,7 @@ class App : public KTabWidget
 {
 	Q_OBJECT
 	public:
-		App(QWidget *parent = NULL, const char *name = NULL);
+		App(QWidget *parent = NULL);
 		~App();
 
 		void saveProfile();

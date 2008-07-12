@@ -3,7 +3,7 @@
 
 #include <kdialog.h>
 
-class Q3Table;
+class QTableWidget;
 //class K3ListView;
 //class QPushButton;
 
@@ -11,7 +11,7 @@ class Plugin : public KDialog
 {
 	Q_OBJECT
 	public:
-		Plugin(QWidget *parent = NULL, const char *name = NULL);
+		Plugin(QWidget *parent = NULL);
 		~Plugin();
 
 		void addColumn(QString caption);
@@ -24,7 +24,7 @@ class Plugin : public KDialog
 		void slotChanged(int row, int col);
 
 	private:
-		Q3Table *m_settings;
+		QTableWidget *m_settings;
 };
 
 #endif

@@ -5,37 +5,38 @@
 
 #include <qlayout.h>
 #include <qpushbutton.h>
-#include <q3vbox.h>
-#include <q3table.h>
-//Added by qt3to4:
-#include <Q3VBoxLayout>
+#include <qtablewidget.h>
+#include <qheaderview.h>
 
-Plugin::Plugin(QWidget *parent, const char *name)
-: KDialog(parent, name, true, i18n("Plugin configuration"),
-	KDialog::Ok | KDialog::Cancel, KDialog::Ok, true)
+Plugin::Plugin(QWidget *parent)
+: KDialog(parent)
 {
 	QWidget *frame;
 //	QHBoxLayout *hbox;
-	Q3VBoxLayout *vbox;
+	QVBoxLayout *vbox;
 //	QPushButton *add, *modify, *remove;
+
+	setCaption(i18n("Plugin configuration"));
+	setButtons(KDialog::Ok | KDialog::Cancel);
 
 	frame = new QWidget(this);
 	setMainWidget(frame);
 
 	//m_settings = new K3ListView(frame);
-	m_settings = new Q3Table(frame);
-	m_settings->setNumRows(1);
+	m_settings = new QTableWidget(frame);
+	m_settings->setRowCount(1);
 
 //	add = new QPushButton(i18n("Add"), frame);
 //	modify = new QPushButton(i18n("Modify"), frame);
 //	remove = new QPushButton(i18n("Remove"), frame);
 
-	vbox = new Q3VBoxLayout(frame, 5);
-	vbox->add(m_settings);
+	vbox = new QVBoxLayout();
+	vbox->addWidget(m_settings);
 //	hbox = new QHBoxLayout(vbox, 5);
 //	hbox->add(add);
 //	hbox->add(modify);
 //	hbox->add(remove);
+	frame->setLayout(vbox);
 
 //	vbox = new QVBoxLayout(plainPage(), 5);
 //	vbox->add(m_settings);
@@ -50,8 +51,8 @@ Plugin::~Plugin()
 void Plugin::addColumn(QString caption)
 {
 	//m_settings->addColumn(caption);
-	m_settings->setNumCols(m_settings->numCols() + 1);
-	m_settings->horizontalHeader()->setLabel(m_settings->numCols() - 1, caption);
+	m_settings->setColumnCount(m_settings->columnCount() + 1);
+	m_settings->horizontalHeaderItem(m_settings->columnCount() - 1)->setText(caption);
 }
 
 void Plugin::addRow(QStringList row)
@@ -59,22 +60,22 @@ void Plugin::addRow(QStringList row)
 	int i = 0;
 	for(QStringList::Iterator it = row.begin(); it != row.end(); it++)
 	{
-		m_settings->setText(m_settings->numRows() - 1, i, (*it));
+		m_settings->item(m_settings->rowCount() - 1, i)->setText((*it));
 		i++;
 	}
-	m_settings->setNumRows(m_settings->numRows() + 1);
+	m_settings->setRowCount(m_settings->rowCount() + 1);
 }
 
 int Plugin::numRows()
 {
-	return m_settings->numRows() - 1;
+	return m_settings->rowCount() - 1;
 }
 
 QStringList Plugin::getRow(int number)
 {
 	QStringList l;
-	for(int i = 0; i < m_settings->numCols(); i++)
-		l << m_settings->text(number, i);
+	for(int i = 0; i < m_settings->columnCount(); i++)
+		l << m_settings->item(number, i)->text();
 	return l;
 }
 
@@ -84,15 +85,15 @@ void Plugin::slotChanged(int row, int col)
 
 	Q_UNUSED(col);
 
-	for(int i = 0; i < m_settings->numCols(); i++)
-		if(!(m_settings->text(row, i).isEmpty()))
+	for(int i = 0; i < m_settings->columnCount(); i++)
+		if(!(m_settings->item(row, i)->text().isEmpty()))
 			empty = false;
 	if(empty)
 	{
 		m_settings->removeRow(row);
 		row -= 1;
 	}
-	if(row == m_settings->numRows() - 1)
-		m_settings->setNumRows(row + 2);
+	if(row == m_settings->rowCount() - 1)
+		m_settings->setRowCount(row + 2);
 }
 
