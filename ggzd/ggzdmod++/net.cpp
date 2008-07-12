@@ -20,7 +20,7 @@
 #include "net.h"
 #include <ggz.h> // ggz_read*, ggz_write*, ggz_malloc
 #include <unistd.h> // read, write
-#include <string.h> // memmove
+#include <cstring> // memmove
 #include <netinet/in.h> // ntohl
 #include <iostream> // cout, cerr
 #include <errno.h> // EAGAIN
