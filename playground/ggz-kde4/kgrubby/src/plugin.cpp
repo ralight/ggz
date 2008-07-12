@@ -11,8 +11,8 @@
 #include <Q3VBoxLayout>
 
 Plugin::Plugin(QWidget *parent, const char *name)
-: KDialogBase(parent, name, true, i18n("Plugin configuration"),
-	KDialogBase::Ok | KDialogBase::Cancel, KDialogBase::Ok, true)
+: KDialog(parent, name, true, i18n("Plugin configuration"),
+	KDialog::Ok | KDialog::Cancel, KDialog::Ok, true)
 {
 	QWidget *frame;
 //	QHBoxLayout *hbox;

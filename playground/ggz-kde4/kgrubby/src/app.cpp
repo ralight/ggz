@@ -1,6 +1,5 @@
 #include "app.h"
 #include "plugin.h"
-#include "config.h"
 
 #include <kapplication.h>
 #include <kconfig.h>
@@ -31,8 +30,10 @@
 #include <QPixmap>
 #include <Q3VBoxLayout>
 
+#define PREFIX "XXX"
+
 App::App(QWidget *parent, const char *name)
-: KTabWidget(parent, name)
+: KTabWidget(parent)
 {
 	KStandardDirs d;
 	QWidget *tab_general, *tab_plugins, *tab_profile;
@@ -59,10 +60,10 @@ App::App(QWidget *parent, const char *name)
 	for(QStringList::Iterator it = profiles.begin(); it != profiles.end(); it++)
 	{
 		if(((*it) == ".") || ((*it) == "..")) continue;
-		m_profile->insertItem((*it));
+		m_profile->addAction((*it));
 	}
 	if(m_profile->count() == 0)
-		m_profile->insertItem("default");
+		m_profile->addAction("default");
 	if(m_profile->count() == 1)
 		m_profile->setEnabled(false);
 	m_profilename = m_profile->currentText();
@@ -74,10 +75,10 @@ App::App(QWidget *parent, const char *name)
 
 	m_networktypelabel = new QLabel(i18n("Network type"), tab_general);
 	m_networktype = new QComboBox(tab_general);
-	m_networktype->insertItem(i18n("GGZ Gaming Zone"));
-	m_networktype->insertItem(i18n("IRC"));
-	m_networktype->insertItem(i18n("SILC"));
-	m_networktype->insertItem(i18n("Console"));
+	m_networktype->addAction(i18n("GGZ Gaming Zone"));
+	m_networktype->addAction(i18n("IRC"));
+	m_networktype->addAction(i18n("SILC"));
+	m_networktype->addAction(i18n("Console"));
 
 	m_namelabel = new QLabel(i18n("Name"), tab_general);
 	m_name = new QLineEdit(tab_general);
@@ -137,32 +138,32 @@ App::App(QWidget *parent, const char *name)
 	vbox_profile = new Q3VBoxLayout(tab_profile, 5);
 	hbox_profile2 = new Q3HBoxLayout(vbox_profile, 5);
 	hbox_profile2->addStretch(1);
-	hbox_profile2->add(frame_grubby);
+	hbox_profile2->addWidget(frame_grubby);
 	hbox_profile2->addStretch(1);
-	vbox_profile->add(m_profile);
+	vbox_profile->addWidget(m_profile);
 	hbox_profile = new Q3HBoxLayout(vbox_profile, 5);
-	hbox_profile->add(profile_add);
-	hbox_profile->add(m_profile_remove);
+	hbox_profile->addWidget(profile_add);
+	hbox_profile->addWidget(m_profile_remove);
 	vbox_profile->addStretch(1);
 
 	vbox_general = new Q3VBoxLayout(tab_general, 5);
-	vbox_general->add(m_namelabel);
-	vbox_general->add(m_name);
-	vbox_general->add(m_ownerlabel);
-	vbox_general->add(m_owner);
-	vbox_general->add(m_langlabel);
-	vbox_general->add(m_lang);
-	vbox_general->add(m_hostlabel);
-	vbox_general->add(m_host);
-	vbox_general->add(m_autojoinlabel);
-	vbox_general->add(m_autojoin);
-	vbox_general->add(m_networktypelabel);
-	vbox_general->add(m_networktype);
+	vbox_general->addWidget(m_namelabel);
+	vbox_general->addWidget(m_name);
+	vbox_general->addWidget(m_ownerlabel);
+	vbox_general->addWidget(m_owner);
+	vbox_general->addWidget(m_langlabel);
+	vbox_general->addWidget(m_lang);
+	vbox_general->addWidget(m_hostlabel);
+	vbox_general->addWidget(m_host);
+	vbox_general->addWidget(m_autojoinlabel);
+	vbox_general->addWidget(m_autojoin);
+	vbox_general->addWidget(m_networktypelabel);
+	vbox_general->addWidget(m_networktype);
 	vbox_general->addStretch(1);
 
 	vbox_plugins = new Q3VBoxLayout(tab_plugins, 5);
-	vbox_plugins->add(m_pluginlist);
-	vbox_plugins->add(m_plugin_configure);
+	vbox_plugins->addWidget(m_pluginlist);
+	vbox_plugins->addWidget(m_plugin_configure);
 
 	insertTab(tab_profile, i18n("Profile"));
 	insertTab(tab_general, i18n("General"));
@@ -193,10 +194,11 @@ void App::slotProfileNew()
 	QString name = KInputDialog::getText(
 		i18n("New profile"),
 		i18n("Profile name:"));
-	if(name)
+
+	if(!name.isEmpty())
 	{
-		m_profile->insertItem(name);
-		m_profile->setCurrentText(name);
+		m_profile->addAction(name);
+		m_profile->setEditText(name);
 
 		m_profile_remove->setEnabled(true);
 		m_profile->setEnabled(true);
@@ -222,7 +224,7 @@ void App::slotProfileDelete()
 		proc << home.path().toLatin1();
 		proc.start(K3Process::Block);
 
-		m_profile->removeItem(m_profile->currentItem());
+		m_profile->removeItem(m_profile->currentIndex());
 		if(m_profile->count() == 1)
 		{
 			m_profile_remove->setEnabled(false);
@@ -252,7 +254,7 @@ void App::slotProfileChange()
 
 void App::slotPluginConfigure()
 {
-	Q3CheckListItem *item = static_cast<Q3CheckListItem*>(m_pluginlist->currentItem());
+	Q3CheckListItem *item = static_cast<Q3CheckListItem*>(m_pluginlist->currentIndex());
 	if(!item) return;
 
 	QString name = m_plugins[item];
@@ -308,7 +310,7 @@ void App::slotPluginConfigure()
 
 void App::slotPluginSelected()
 {
-	Q3CheckListItem *item = static_cast<Q3CheckListItem*>(m_pluginlist->currentItem());
+	Q3CheckListItem *item = static_cast<Q3CheckListItem*>(m_pluginlist->currentIndex());
 	if(!item)
 	{
 		m_plugin_configure->setEnabled(false);
@@ -341,7 +343,7 @@ void App::saveProfile()
 	home.setPath(home.path() + "/" + m_profilename);
 	home.mkdir(home.path());
 
-	file.setName(home.path() + "/grubby.rc");
+	file.setFileName(home.path() + "/grubby.rc");
 	if(file.open(QIODevice::WriteOnly))
 	{
 		QString moduledir = PREFIX "/lib/grubby/modules/";
@@ -399,7 +401,7 @@ void App::saveProfile()
 	home.mkdir(home.path());
 
 	valuelist = m_profiledata["badword"];
-	file.setName(home.path() + "/modbadword.rc");
+	file.setFileName(home.path() + "/modbadword.rc");
 	if(file.open(QIODevice::WriteOnly))
 	{
 		Q3TextStream stream(&file);
@@ -415,7 +417,7 @@ void App::saveProfile()
 	}
 
 	valuelist = m_profiledata["exec"];
-	file.setName(home.path() + "/modexec.rc");
+	file.setFileName(home.path() + "/modexec.rc");
 	if(file.open(QIODevice::WriteOnly))
 	{
 		Q3TextStream stream(&file);
@@ -431,7 +433,7 @@ void App::saveProfile()
 	}
 
 	valuelist = m_profiledata["embed"];
-	file.setName(home.path() + "/modembed.rc");
+	file.setFileName(home.path() + "/modembed.rc");
 	if(file.open(QIODevice::WriteOnly))
 	{
 		Q3TextStream stream(&file);
@@ -447,7 +449,7 @@ void App::saveProfile()
 	}
 
 	valuelist = m_profiledata["learning"];
-	file.setName(home.path() + "/learning.db");
+	file.setFileName(home.path() + "/learning.db");
 	if(file.open(QIODevice::WriteOnly))
 	{
 		Q3TextStream stream(&file);
@@ -462,7 +464,7 @@ void App::saveProfile()
 	}
 
 	valuelist = m_profiledata["people"];
-	file.setName(home.path() + "/playerdb");
+	file.setFileName(home.path() + "/playerdb");
 	if(file.open(QIODevice::WriteOnly))
 	{
 		Q3TextStream stream(&file);
@@ -494,41 +496,42 @@ void App::loadProfile()
 	QStringList::Iterator lit;
 	QString entrystring;
 	QStringList entry;
+	KConfigGroup cg;
 
 	QDir home = QDir::home();
 	home.setPath(home.path() + "/.ggz/kgrubby/");
 	home.setPath(home.path() + "/" + m_profilename);
 
-	KSimpleConfig conf(home.path() + "/grubby.rc");
-	conf.setGroup("preferences");
-	m_name->setText(conf.readEntry("name"));
-	m_lang->setText(conf.readEntry("language"));
-	m_owner->setText(conf.readEntry("owner"));
-	m_autojoin->setText(conf.readEntry("autojoin"));
-	m_host->setText(conf.readEntry("host"));
+	KConfig conf(home.path() + "/grubby.rc", KConfig::SimpleConfig);
+	cg = KConfigGroup(&conf, "preferences");
+	m_name->setText(cg.readEntry("name"));
+	m_lang->setText(cg.readEntry("language"));
+	m_owner->setText(cg.readEntry("owner"));
+	m_autojoin->setText(cg.readEntry("autojoin"));
+	m_host->setText(cg.readEntry("host"));
 
-	conf.setGroup("guru");
-	QString activestring = conf.readEntry("modules");
-	QStringList active = QStringList::split(" ", activestring);
+	cg = KConfigGroup(&conf, "guru");
+	QString activestring = cg.readEntry("modules");
+	QStringList active = activestring.split(" ");
 	for(pit = m_plugins.begin(); pit != m_plugins.end(); pit++)
 	{
 		Q3CheckListItem *item = pit.key();
 		if(active.contains(pit.data())) item->setOn(true);
 		else item->setOn(false);
 	}
-	QString net = conf.readEntry("net");
-	if(net.contains("netggz")) m_networktype->setCurrentText(i18n("GGZ Gaming Zone"));
-	else if(net.contains("netirc")) m_networktype->setCurrentText(i18n("IRC"));
-	else if(net.contains("netsilc")) m_networktype->setCurrentText(i18n("SILC"));
-	else if(net.contains("netconsole")) m_networktype->setCurrentText(i18n("Console"));
+	QString net = cg.readEntry("net");
+	if(net.contains("netggz")) m_networktype->setEditText(i18n("GGZ Gaming Zone"));
+	else if(net.contains("netirc")) m_networktype->setEditText(i18n("IRC"));
+	else if(net.contains("netsilc")) m_networktype->setEditText(i18n("SILC"));
+	else if(net.contains("netconsole")) m_networktype->setEditText(i18n("Console"));
 
 	home.setPath(home.path() + "/grubby");
 
 	valuelist.clear();
-	KSimpleConfig badword_conf(home.path() + "/modbadword.rc");
-	badword_conf.setGroup("badwords");
-	entrystring = badword_conf.readEntry("badwords");
-	entry = QStringList::split(" ", entrystring);
+	KConfig badword_conf(home.path() + "/modbadword.rc", KConfig::SimpleConfig);
+	cg = KConfigGroup(&badword_conf, "badwords");
+	entrystring = cg.readEntry("badwords");
+	entry = entrystring.split(" ");
 	for(lit = entry.begin(); lit != entry.end(); lit++)
 	{
 		QStringList l;
@@ -538,10 +541,10 @@ void App::loadProfile()
 	m_profiledata["badword"] = valuelist;
 
 	valuelist.clear();
-	KSimpleConfig exec_conf(home.path() + "/modexec.rc");
-	exec_conf.setGroup("programs");
-	entrystring = exec_conf.readEntry("programs");
-	entry = QStringList::split(" ", entrystring);
+	KConfig exec_conf(home.path() + "/modexec.rc", KConfig::SimpleConfig);
+	cg = KConfigGroup(&exec_conf, "programs");
+	entrystring = cg.readEntry("programs");
+	entry = entrystring.split(" ");
 	for(lit = entry.begin(); lit != entry.end(); lit++)
 	{
 		QStringList l;
@@ -551,10 +554,10 @@ void App::loadProfile()
 	m_profiledata["exec"] = valuelist;
 
 	valuelist.clear();
-	KSimpleConfig embed_conf(home.path() + "/modembed.rc");
-	embed_conf.setGroup("programs");
-	entrystring = embed_conf.readEntry("programs");
-	entry = QStringList::split(" ", entrystring);
+	KConfig embed_conf(home.path() + "/modembed.rc", KConfig::SimpleConfig);
+	cg = KConfigGroup(&embed_conf, "programs");
+	entrystring = cg.readEntry("programs");
+	entry = entrystring.split(" ");
 	for(lit = entry.begin(); lit != entry.end(); lit++)
 	{
 		QStringList l;
@@ -564,14 +567,14 @@ void App::loadProfile()
 	m_profiledata["embed"] = valuelist;
 
 	valuelist.clear();
-	file.setName(home.path() + "/learning.db");
+	file.setFileName(home.path() + "/learning.db");
 	if(file.open(QIODevice::ReadOnly))
 	{
 		Q3TextStream stream(&file);
 		while(!stream.atEnd())
 		{
 			entrystring = stream.readLine();
-			entry = QStringList::split("\t", entrystring);
+			entry = entrystring.split("\t");
 			valuelist.append(entry);
 		}
 		file.close();
@@ -579,26 +582,26 @@ void App::loadProfile()
 	m_profiledata["learning"] = valuelist;
 
 	valuelist.clear();
-	KSimpleConfig people_conf(home.path() + "/playerdb");
+	KConfig people_conf(home.path() + "/playerdb", KConfig::SimpleConfig);
 	QStringList grouplist = people_conf.groupList();
 	for(lit = grouplist.begin(); lit != grouplist.end(); lit++)
 	{
-		people_conf.setGroup((*lit));
+		cg = KConfigGroup(&people_conf, (*lit));
 		QStringList l;
 		l << (*lit);
-		entrystring = people_conf.readEntry("LASTACTIVE");
+		entrystring = cg.readEntry("LASTACTIVE");
 		l << entrystring;
-		entrystring = people_conf.readEntry("LASTSEEN");
+		entrystring = cg.readEntry("LASTSEEN");
 		l << entrystring;
-		entrystring = people_conf.readEntry("SEEN");
+		entrystring = cg.readEntry("SEEN");
 		l << entrystring;
-		entrystring = people_conf.readEntry("STATUS");
+		entrystring = cg.readEntry("STATUS");
 		l << entrystring;
-		entrystring = people_conf.readEntry("CONTACT");
+		entrystring = cg.readEntry("CONTACT");
 		l << entrystring;
-		entrystring = people_conf.readEntry("LANGUAGE");
+		entrystring = cg.readEntry("LANGUAGE");
 		l << entrystring;
-		entrystring = people_conf.readEntry("REALNAME");
+		entrystring = cg.readEntry("REALNAME");
 		l << entrystring;
 		valuelist.append(l);
 	}

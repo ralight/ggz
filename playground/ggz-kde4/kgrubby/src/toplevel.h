@@ -5,6 +5,7 @@
 
 class App;
 class KMenu;
+class QAction;
 
 class Toplevel : public KMainWindow
 {
@@ -14,18 +15,13 @@ class Toplevel : public KMainWindow
 		~Toplevel();
 
 	protected slots:
-		void slotMenu(int id);
+		void slotMenu(QAction *action);
 		void slotChanged(bool changed);
 
 	private:
-		enum MenuItems
-		{
-			menusave,
-			menuquit
-		};
-
 		App *m_app;
 		KMenu *menu_file;
+		QAction *action_save, *action_quit;
 
 };
 

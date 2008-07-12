@@ -5,6 +5,7 @@
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <QLabel>
+#include <QMap>
 
 class K3ListView;
 class QLabel;

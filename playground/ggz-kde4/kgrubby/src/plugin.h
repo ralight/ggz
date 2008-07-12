@@ -1,13 +1,13 @@
 #ifndef KGRUBBY_PLUGIN_H
 #define KGRUBBY_PLUGIN_H
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 class Q3Table;
 //class K3ListView;
 //class QPushButton;
 
-class Plugin : public KDialogBase
+class Plugin : public KDialog
 {
 	Q_OBJECT
 	public:

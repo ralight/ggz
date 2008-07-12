@@ -2,6 +2,7 @@
 #include <klocale.h>
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
+
 #include "toplevel.h"
 
 int main(int argc, char **argv)
@@ -10,22 +11,22 @@ int main(int argc, char **argv)
 	KAboutData *about;
 
 	about = new KAboutData("kgrubby",
-		I18N_NOOP("KGrubby"),
+		0,
+		ki18n("KGrubby"),
 		"0.1",
-		I18N_NOOP("Chatbot configuration"),
+		ki18n("Configuration of Grubby, the GGZ chatbot"),
 		KAboutData::License_GPL,
-		"Copyright (C) 2005 Josef Spillner",
-		I18N_NOOP("Configuration of grubby, the GGZ chatbot"),
+		ki18n("Copyright (C) 2005 - 2008 Josef Spillner"),
+		KLocalizedString(),
 		"http://www.ggzgamingzone.org/utils/kgrubby/",
 		"josef@ggzgamingzone.org");
-	about->addAuthor("Josef Spillner", I18N_NOOP("Developer"), "josef@ggzgamingzone.org");
-	about->setTranslator(I18N_NOOP("TRANSLATOR-NAME"), I18N_NOOP("TRANSLATOR-EMAIL"));
+	about->addAuthor(ki18n("Josef Spillner"), ki18n("Developer"), "josef@ggzgamingzone.org");
 
 	KCmdLineArgs::init(argc, argv, about);
 
 	KApplication a;
 	top = new Toplevel();
-	a.setMainWidget(top);
+	//a.setMainWidget(top);
 	return a.exec();
 }
 
