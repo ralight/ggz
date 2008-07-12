@@ -20,7 +20,6 @@ playground/buildsystem/cmake.
 
 Summary of GGZ-in-KDE4-efforts as of July 2008:
 * In this directory
- - kconnectx   [||||||    ] - KConnectX demo game for kggzmod
  - kggzcore    [|||       ] - library for GGZ core clients
  - kggzdmod    [|||||     ] - core GGZ game server module library
  - conn-dialog [|         ] - connection dialog for GGZ core client in KDE 4
@@ -28,7 +27,10 @@ Summary of GGZ-in-KDE4-efforts as of July 2008:
  - roomlist    [||||||    ] - room list for GGZ core clients in KDE 4
  - kggz-ng     [          ] - the successor to KGGZ (in planning stage)
  - plasma-kggz [||||      ] - Plasma widget to succeed GGZap
- - kgrubby     [||||||||  ] - (ported from ggz-kde-client)
+* In this directory, ported from ggz-kde-{games,client}
+ - kconnectx   [||||||    ] - KConnectX demo game for kggzmod
+ - ktictactux  [||||||    ] - Tic-Tac-Toe game client
+ - kgrubby     [||||||||  ] - Graphical configuration of grubby
 * In (lib)kdegames (KDE SVN)
  - cmake       [|||||     ] - CMake files for GGZ library checks
  - kggzmod     [||||||||| ] - core GGZ game module library
