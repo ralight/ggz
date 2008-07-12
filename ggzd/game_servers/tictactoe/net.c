@@ -135,7 +135,7 @@ void ggzcomm_set_error_callback(error_func_type f)
 
 GGZCommIO *ggzcomm_io_allocate(int fd)
 {
-	GGZCommIO *io = malloc(sizeof(GGZCommIO));
+	GGZCommIO *io = ggz_malloc(sizeof(GGZCommIO));
 	io->fd = fd;
 	return io;
 }
