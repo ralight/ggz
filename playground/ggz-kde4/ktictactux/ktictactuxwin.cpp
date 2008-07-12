@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 // KTicTacTux
-// Copyright (C) 2001 - 2006 Josef Spillner <josef@ggzgamingzone.org>
+// Copyright (C) 2001 - 2008 Josef Spillner <josef@ggzgamingzone.org>
 // Published under GNU GPL conditions
 //////////////////////////////////////////////////////////////////////
 
@@ -29,8 +29,8 @@
 #include <qstringlist.h>
 
 // Constructor
-KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
-: KMainWindow(parent, name)
+KTicTacTuxWin::KTicTacTuxWin()
+: KMainWindow()
 {
 	m_tux = new KTicTacTux(this);
 	setCentralWidget(m_tux);
@@ -38,24 +38,22 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 	m_networked = false;
 
 	mgame = new KPopupMenu(this);
-	mgame->insertItem(KGlobal::iconLoader()->loadIcon("reload", KIcon::Small), i18n("Synchronize"), menusync);
-	mgame->insertItem(KGlobal::iconLoader()->loadIcon("history", KIcon::Small), i18n("View score"), menuscore);
-	mgame->insertSeparator();
-#ifdef HAVE_KNEWSTUFF
-	mgame->insertItem(KGlobal::iconLoader()->loadIcon("knewstuff", KIcon::Small), i18n("Get themes"), menutheme);
-	mgame->insertSeparator();
-#endif
-	mgame->insertItem(KGlobal::iconLoader()->loadIcon("exit", KIcon::Small), i18n("Quit"), menuquit);
+	action_sync = mgame->addItem(KGlobal::iconLoader()->loadIcon("reload", KIconLoader::Small), i18n("Synchronize"));
+	action_score = mgame->addItem(KGlobal::iconLoader()->loadIcon("history", KIconLoader::Small), i18n("View score"));
+	mgame->addSeparator();
+	action_theme = mgame->addItem(KGlobal::iconLoader()->loadIcon("knewstuff", KIconLoader::Small), i18n("Get themes"));
+	mgame->addSeparator();
+	action_quit = mgame->insertItem(KGlobal::iconLoader()->loadIcon("exit", KIconLoader::Small), i18n("Quit"));
 
 	mggz = new KPopupMenu(this);
-	mggz->insertItem(KGlobal::iconLoader()->loadIcon("ggz", KIcon::Small), i18n("Seats && Spectators"), menuggzplayers);
+	action_ggzplayers = mggz->insertItem(KGlobal::iconLoader()->loadIcon("ggz", KIconLoader::Small), i18n("Seats && Spectators"));
 
 	mtheme = new KPopupMenu(this);
 
-	menuBar()->insertItem(i18n("Game"), mgame);
-	menuBar()->insertItem(i18n("GGZ"), mggz);
-	menuBar()->insertItem(i18n("Theme"), mtheme);
-	menuBar()->insertItem(i18n("Help"), helpMenu());
+	menuBar()->addItem(i18n("Game"), mgame);
+	menuBar()->addItem(i18n("GGZ"), mggz);
+	menuBar()->addItem(i18n("Theme"), mtheme);
+	menuBar()->addItem(i18n("Help"), helpMenu());
 
 	statusBar()->insertItem(i18n("Status"), 1, 1);
 	statusBar()->insertItem(i18n("Game with the AI"), 2, 1);
@@ -64,9 +62,9 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 	connect(m_tux, SIGNAL(signalScore(const QString &)), SLOT(slotScore(const QString &)));
 	connect(m_tux, SIGNAL(signalNetworkScore(int, int, int)), SLOT(slotNetworkScore(int, int, int)));
 	connect(m_tux, SIGNAL(signalGameOver()), SLOT(slotGameOver()));
-	connect(mgame, SIGNAL(activated(int)), SLOT(slotMenu(int)));
-	connect(mggz, SIGNAL(activated(int)), SLOT(slotMenu(int)));
-	connect(mtheme, SIGNAL(activated(int)), SLOT(slotMenu(int)));
+	connect(mgame, SIGNAL(triggered(QAction*)), SLOT(slotMenu(QAction*)));
+	connect(mggz, SIGNAL(triggered(QAction*)), SLOT(slotMenu(QAction*)));
+	connect(mtheme, SIGNAL(triggered(QAction*)), SLOT(slotMenu(QAction*)));
 
 	loadThemes();
 
@@ -124,45 +122,45 @@ void KTicTacTuxWin::changeTheme(QString theme)
 }
 
 // Handle menu stuff
-void KTicTacTuxWin::slotMenu(int id)
+void KTicTacTuxWin::slotMenu(QAction *action)
 {
 	KConfig *conf;
 	QDir d;
 
 	// Standard menu entries
-	switch(id)
+	if(action == action_sync)
 	{
-		case menusync:
-			m_tux->sync();
-			break;
-		case menuscore:
-			score();
-			break;
-#ifdef HAVE_KNEWSTUFF
-		case menutheme:
-			d.mkdir(QDir::home().path() + "/.ggz");
-			d.mkdir(QDir::home().path() + "/.ggz/games");
-			d.mkdir(QDir::home().path() + "/.ggz/games/ktictactux");
-			KNS::DownloadDialog::open("ktictactux/theme");
-			break;
-#endif
-		case menuggzplayers:
-			m_tux->seats();
-			break;
-		case menuquit:
-			close();
-			break;
+		m_tux->sync();
+	}
+	else if(action == action_score)
+	{
+		score();
+	}
+	else if(action == action_theme)
+	{
+		d.mkdir(QDir::home().path() + "/.ggz");
+		d.mkdir(QDir::home().path() + "/.ggz/games");
+		d.mkdir(QDir::home().path() + "/.ggz/games/ktictactux");
+		KNS::DownloadDialog::open("ktictactux/theme");
+	}
+	else if(action == action_ggzplayers)
+	{
+		m_tux->seats();
+	}
+	else if(action == action_quit)
+	{
+		close();
 	}
 
 	// Dynamic theme menu entries
-	if(id >= menuthemes)
-	{
-		changeTheme(m_themes[m_themenames[id]]);
-		conf = kapp->config();
-		conf->setGroup("Settings");
-		conf->writeEntry("theme", m_themes[mtheme->text(id)]);
-		conf->sync();
-	}
+//	if(id >= menuthemes)
+//	{
+//		changeTheme(m_themes[m_themenames[id]]);
+//		conf = kapp->config();
+//		conf->setGroup("Settings");
+//		conf->writeEntry("theme", m_themes[mtheme->text(id)]);
+//		conf->sync();
+//	}
 }
 
 /// Enable network functionality
@@ -253,7 +251,7 @@ void KTicTacTuxWin::loadThemes()
 	KStandardDirs *d = KGlobal::dirs();
 	QString name, player1, player2;
 	QString file;
-	int index = menuthemes;
+	int count = 0;
 
 	// Recursively scan all data directories
 	kdDebug() << "loadThemes" << endl;
@@ -281,14 +279,15 @@ void KTicTacTuxWin::loadThemes()
 				m_player1[file] = (*it) + player1;
 				m_player2[file] = (*it) + player2;
 
-				m_themenames[index] = name;
-				mtheme->insertItem(KGlobal::iconLoader()->loadIcon("imagegallery", KIcon::Small), name, index);
-				index++;
+				m_themenames[count] = name;
+				QAction *action_theme = mtheme->insertItem(KGlobal::iconLoader()->loadIcon("imagegallery", KIconLoader::Small), name, index);
+				count++;
+				// FIXME: do something with action_theme
 			}
 		}
 	}
 
-	if(index == menuthemes)
+	if(count == 0)
 	{
 		KMessageBox::error(this,
 			i18n("No pixmap themes could be found"),

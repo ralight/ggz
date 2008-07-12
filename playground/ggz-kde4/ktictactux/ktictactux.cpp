@@ -9,6 +9,9 @@
 
 // KTicTacTux includes
 #include "qwhiteframe.h"
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
 
 // GGZ-KDE-Games includes
 #include <kggzseatsdialog.h>
@@ -34,21 +37,21 @@
 KTicTacTux::KTicTacTux(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
-	QVBoxLayout *vbox, *vbox2;
-	QHBoxLayout *hbox[3];
+	Q3VBoxLayout *vbox, *vbox2;
+	Q3HBoxLayout *hbox[3];
 	QWidget *container;
 
 	container = new QWidget(this);
 	container->setErasePixmap(QPixmap(QString("%1/ktictactux/bg.png").arg(GGZDATADIR)));
 
-	vbox = new QVBoxLayout(this);
+	vbox = new Q3VBoxLayout(this);
 	vbox->add(container);
 
-	vbox2 = new QVBoxLayout(container);
+	vbox2 = new Q3VBoxLayout(container);
 	vbox2->addStretch(1);
 	for(int j = 0; j < 3; j++)
 	{
-		hbox[j] = new QHBoxLayout(vbox2);
+		hbox[j] = new Q3HBoxLayout(vbox2);
 		hbox[j]->addStretch(1);
 		for(int i = 0; i < 3; i++)
 		{

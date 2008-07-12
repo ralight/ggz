@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 // KTicTacTux
-// Copyright (C) 2001 - 2006 Josef Spillner <josef@ggzgamingzone.org>
+// Copyright (C) 2001 - 2008 Josef Spillner <josef@ggzgamingzone.org>
 // Published under GNU GPL conditions
 //////////////////////////////////////////////////////////////////////
 
@@ -8,7 +8,7 @@
 #include "ktictactuxwin.h"
 
 // GGZ-KDE includes
-#include <kggzsystem.h>
+//#include <kggzsystem.h>
 
 // KDE includes
 #include <kapplication.h>
@@ -23,23 +23,23 @@ int main(int argc, char **argv)
 	KTicTacTuxWin *ktictactuxwin;
 
 	aboutData = new KAboutData("ktictactux",
-		I18N_NOOP("KTicTacTux"),
-		"0.0.10",
-		I18N_NOOP("This is a TicTacToe game for KDE."),
+		0,
+		ki18n("KTicTacTux"),
+		"0.99.4",
+		ki18n("This is a TicTacToe game for KDE."),
 		KAboutData::License_GPL,
-		"Copyright (C) 2001 - 2006 Josef Spillner",
-		I18N_NOOP("This game is part of the GGZ Gaming Zone."),
+		ki18n("Copyright (C) 2001 - 2006 Josef Spillner"),
+		ki18n("This game is part of the GGZ Gaming Zone."),
 		"http://www.ggzgamingzone.org/gameclients/ktictactux/",
 		"josef@ggzgamingzone.org");
-	aboutData->addAuthor("Josef Spillner", I18N_NOOP("Inventor"), "josef@ggzgamingzone.org");
-	aboutData->setTranslator(I18N_NOOP("TRANSLATOR-NAME"), I18N_NOOP("TRANSLATOR-EMAIL"));
+	aboutData->addAuthor("Josef Spillner", ki18n("Inventor"), "josef@ggzgamingzone.org");
 
 	KCmdLineArgs::init(argc, argv, aboutData);
 
 	KApplication a;
-	KGGZSystem::ensureInstallation();
+	//KGGZSystem::ensureInstallation();
 
-	ktictactuxwin = new KTicTacTuxWin(NULL, "KTicTacTuxWin");
+	ktictactuxwin = new KTicTacTuxWin();
 	if(KGGZMod::Module::isGGZ())
 	{
 		ktictactuxwin->enableNetwork(true);
@@ -49,7 +49,6 @@ int main(int argc, char **argv)
 		ktictactuxwin->enableNetwork(false);
 	}
 
-	a.setMainWidget(ktictactuxwin);
 	return a.exec();
 }
 

@@ -8,11 +8,13 @@
 #define Q_WHITEFRAME_H
 
 // Qt includes
-#include <qframe.h>
+#include <q3frame.h>
 #include <qevent.h>
+//Added by qt3to4:
+#include <QMouseEvent>
 
 // A special Qt class
-class QWhiteFrame : public QFrame
+class QWhiteFrame : public Q3Frame
 {
 	Q_OBJECT
 	public:

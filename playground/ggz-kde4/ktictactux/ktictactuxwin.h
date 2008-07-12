@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 // KTicTacTux
-// Copyright (C) 2001 - 2006 Josef Spillner <josef@ggzgamingzone.org>
+// Copyright (C) 2001 - 2008 Josef Spillner <josef@ggzgamingzone.org>
 // Published under GNU GPL conditions
 //////////////////////////////////////////////////////////////////////
 
@@ -18,6 +18,7 @@
 
 // Forward declarations
 class KPopupMenu;
+class QAction;
 
 // The game window
 class KTicTacTuxWin : public KMainWindow
@@ -25,19 +26,9 @@ class KTicTacTuxWin : public KMainWindow
 	Q_OBJECT
 	public:
 		// Constructor
-		KTicTacTuxWin(QWidget *parent = NULL, const char *name = NULL);
+		KTicTacTuxWin();
 		// Destructor
 		~KTicTacTuxWin();
-		// Menu ids
-		enum MenuEntries
-		{
-			menusync = 1,
-			menuscore = 2,
-			menutheme = 3,
-			menuquit = 4,
-			menuggzplayers = 5,
-			menuthemes = 100
-		};
 		// Enable network functionality
 		void enableNetwork(bool enabled);
 		// Display score
@@ -55,7 +46,7 @@ class KTicTacTuxWin : public KMainWindow
 		// Receive statistics
 		void slotNetworkScore(int wins, int losses, int ties);
 		// Menu slot
-		void slotMenu(int id);
+		void slotMenu(QAction *action);
 		// Game is over
 		void slotGameOver();
 
@@ -69,6 +60,14 @@ class KTicTacTuxWin : public KMainWindow
 		// List of themes
 		QMap<QString, QString> m_themes, m_player1, m_player2;
 		QMap<int, QString> m_themenames;
+
+		// Menu ids
+		QAction *action_sync;
+		QAction *action_score;
+		QAction *action_theme;
+		QAction *action_quit;
+		QAction *action_ggzplayers;
+		QAction *action_themes;
 };
 
 #endif
