@@ -5,11 +5,11 @@
 #include <kconfig.h>
 #include <ksimpleconfig.h>
 #include <klocale.h>
-#include <k3listview.h>
+#include <qtreewidget.h>
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
 #include <kinputdialog.h>
-#include <k3process.h>
+#include <kprocess.h>
 
 #include <kdebug.h>
 
@@ -18,14 +18,13 @@
 #include <qdir.h>
 #include <qfile.h>
 #include <qstringlist.h>
-#include <q3textstream.h>
+#include <qtextstream.h>
 #include <qlineedit.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
 #include <qimage.h>
 
 #include <QFrame>
-#include <Q3ValueList>
 #include <QPixmap>
 
 #define PREFIX "XXX"
@@ -41,19 +40,19 @@ App::App(QWidget *parent)
 	QFrame *frame_grubby;
 	QMap<QString, QString> pluginnames, plugininfos;
 
-	tab_profile = new QWidget(this);
-	tab_general = new QWidget(this);
-	tab_plugins = new QWidget(this);
+	tab_profile = new QWidget();
+	tab_general = new QWidget();
+	tab_plugins = new QWidget();
 
 	QPixmap grubby(d.findResource("data", "kgrubby/kgrubby.png"));
-	frame_grubby = new QFrame(tab_profile);
+	frame_grubby = new QFrame();
 	frame_grubby->setFixedSize(grubby.width(), grubby.height());
 
 	QPalette palette;
 	palette.setBrush(frame_grubby->backgroundRole(), QBrush(grubby));
 	frame_grubby->setPalette(palette);
 
-	m_profile = new QComboBox(tab_profile);
+	m_profile = new QComboBox();
 
 	QDir home = QDir::home();
 	home.setPath(home.path() + "/.ggz/kgrubby/");
@@ -69,33 +68,35 @@ App::App(QWidget *parent)
 		m_profile->setEnabled(false);
 	m_profilename = m_profile->currentText();
 
-	profile_add = new QPushButton(i18n("Add Profile..."), tab_profile);
-	m_profile_remove = new QPushButton(i18n("Remove"), tab_profile);
+	profile_add = new QPushButton(i18n("Add Profile..."));
+	m_profile_remove = new QPushButton(i18n("Remove"));
 	if(m_profile->count() == 1)
 		m_profile_remove->setEnabled(false);
 
-	m_networktypelabel = new QLabel(i18n("Network type"), tab_general);
+	m_networktypelabel = new QLabel(i18n("Network type"));
 	m_networktype = new QComboBox(tab_general);
 	m_networktype->addItem(i18n("GGZ Gaming Zone"));
 	m_networktype->addItem(i18n("IRC"));
 	m_networktype->addItem(i18n("SILC"));
 	m_networktype->addItem(i18n("Console"));
 
-	m_namelabel = new QLabel(i18n("Name"), tab_general);
-	m_name = new QLineEdit(tab_general);
-	m_ownerlabel = new QLabel(i18n("Owner"), tab_general);
-	m_owner = new QLineEdit(tab_general);
-	m_langlabel = new QLabel(i18n("Primary language (2-letter)"), tab_general);
-	m_lang = new QLineEdit(tab_general);
-	m_hostlabel = new QLabel(i18n("Hostname"), tab_general);
-	m_host = new QLineEdit(tab_general);
-	m_autojoinlabel = new QLabel(i18n("Autojoin room/channel"), tab_general);
-	m_autojoin = new QLineEdit(tab_general);
+	m_namelabel = new QLabel(i18n("Name"));
+	m_name = new QLineEdit();
+	m_ownerlabel = new QLabel(i18n("Owner"));
+	m_owner = new QLineEdit();
+	m_langlabel = new QLabel(i18n("Primary language (2-letter)"));
+	m_lang = new QLineEdit();
+	m_hostlabel = new QLabel(i18n("Hostname"));
+	m_host = new QLineEdit();
+	m_autojoinlabel = new QLabel(i18n("Autojoin room/channel"));
+	m_autojoin = new QLineEdit();
 
-	m_pluginlist = new K3ListView(tab_plugins);
-	m_pluginlist->addColumn(i18n("Name"));
-	m_pluginlist->addColumn(i18n("Description"));
-	Q3CheckListItem *item;
+	QStringList headers;
+	headers << i18n("Name");
+	headers << i18n("Description");
+
+	m_pluginlist = new QTreeWidget();
+	m_pluginlist->setHeaderLabels(headers);
 
 	pluginnames["game"] = i18n("Games");
 	pluginnames["self"] = i18n("Himself");
@@ -125,15 +126,19 @@ App::App(QWidget *parent)
 	m_plugindialogs["embed"] = "embed";
 	m_plugindialogs["badword"] = "badword";
 
+	QTreeWidgetItem *item;
+
 	QMap<QString, QString>::Iterator it;
 	for(it = pluginnames.begin(); it != pluginnames.end(); it++)
 	{
-		item = new Q3CheckListItem(m_pluginlist, it.value(), Q3CheckListItem::CheckBox);
+		item = new QTreeWidgetItem();
+		item->setText(0, it.value());
 		item->setText(1, plugininfos[it.key()]);
+		m_pluginlist->addTopLevelItem(item);
 		m_plugins[item] = it.key();
 	}
 
-	m_plugin_configure = new QPushButton(i18n("Configure..."), tab_plugins);
+	m_plugin_configure = new QPushButton(i18n("Configure..."));
 	m_plugin_configure->setEnabled(false);
 
 	hbox_profile2 = new QHBoxLayout();
@@ -184,7 +189,7 @@ App::App(QWidget *parent)
 	connect(profile_add, SIGNAL(clicked()), SLOT(slotProfileNew()));
 	connect(m_profile_remove, SIGNAL(clicked()), SLOT(slotProfileDelete()));
 	connect(m_plugin_configure, SIGNAL(clicked()), SLOT(slotPluginConfigure()));
-	connect(m_pluginlist, SIGNAL(selectionChanged()), SLOT(slotPluginSelected()));
+	connect(m_pluginlist, SIGNAL(itemSelectionChanged()), SLOT(slotPluginSelected()));
 
 	connect(m_networktype, SIGNAL(activated(int)), SLOT(slotModified()));
 	connect(m_name, SIGNAL(textChanged(const QString&)), SLOT(slotModified()));
@@ -223,17 +228,18 @@ void App::slotProfileDelete()
 	int ret = KMessageBox::questionYesNo(this,
 		i18n("Do you really want to remove this profile?"),
 		i18n("Remove profile"));
+
 	if(ret == KMessageBox::Yes)
 	{
 		QDir home = QDir::home();
 		home.setPath(home.path() + "/.ggz/kgrubby/");
 		home.setPath(home.path() + "/" + m_profilename);
 
-		K3Process proc;
+		KProcess proc;
 		proc << "rm";
 		proc << "-rf";
 		proc << home.path().toLatin1();
-		proc.start(K3Process::Block);
+		proc.start();
 
 		m_profile->removeItem(m_profile->currentIndex());
 		if(m_profile->count() == 1)
@@ -265,14 +271,14 @@ void App::slotProfileChange()
 
 void App::slotPluginConfigure()
 {
-	Q3CheckListItem *item = static_cast<Q3CheckListItem*>(m_pluginlist->currentItem());
+	QTreeWidgetItem *item = static_cast<QTreeWidgetItem*>(m_pluginlist->currentItem());
 	if(!item) return;
 
 	QString name = m_plugins[item];
 	QString dialog = m_plugindialogs[name];
 
-	Q3ValueList<QStringList> valuelist;
-	Q3ValueList<QStringList>::iterator it;
+	QList<QStringList> valuelist;
+	QList<QStringList>::iterator it;
 	Plugin p(this);
 
 	if(dialog == "people")
@@ -321,7 +327,7 @@ void App::slotPluginConfigure()
 
 void App::slotPluginSelected()
 {
-	Q3CheckListItem *item = static_cast<Q3CheckListItem*>(m_pluginlist->currentItem());
+	QTreeWidgetItem *item = static_cast<QTreeWidgetItem*>(m_pluginlist->currentItem());
 	if(!item)
 	{
 		m_plugin_configure->setEnabled(false);
@@ -341,10 +347,10 @@ void App::slotModified()
 
 void App::saveProfile()
 {
-	Q3ValueList<QStringList> valuelist;
-	Q3ValueList<QStringList>::iterator it;
+	QList<QStringList> valuelist;
+	QList<QStringList>::iterator it;
 	QFile file;
-	QMap<Q3CheckListItem*, QString>::Iterator pit;
+	QMap<QTreeWidgetItem*, QString>::Iterator pit;
 
 	QDir home = QDir::home();
 	home.setPath(home.path() + "/.ggz");
@@ -360,7 +366,7 @@ void App::saveProfile()
 		QString moduledir = PREFIX "/lib/grubby/modules/";
 		QString coremoduledir = PREFIX "/lib/grubby/coremodules/";
 
-		Q3TextStream stream(&file);
+		QTextStream stream(&file);
 		stream << "[preferences]\n";
 		stream << "name = " << m_name->text() << "\n";
 		stream << "language = " << m_lang->text() << "\n";
@@ -386,8 +392,8 @@ void App::saveProfile()
 		stream << "modules =";
 		for(pit = m_plugins.begin(); pit != m_plugins.end(); pit++)
 		{
-			Q3CheckListItem *item = pit.key();
-			if(item->isOn())
+			QTreeWidgetItem *item = pit.key();
+			if(item->checkState(0) == Qt::Checked)
 			{
 				stream << " ";
 				stream << pit.value();
@@ -415,7 +421,7 @@ void App::saveProfile()
 	file.setFileName(home.path() + "/modbadword.rc");
 	if(file.open(QIODevice::WriteOnly))
 	{
-		Q3TextStream stream(&file);
+		QTextStream stream(&file);
 		stream << "[badwords]\n";
 		stream << "badwords =";
 		for(it = valuelist.begin(); it != valuelist.end(); it++)
@@ -431,7 +437,7 @@ void App::saveProfile()
 	file.setFileName(home.path() + "/modexec.rc");
 	if(file.open(QIODevice::WriteOnly))
 	{
-		Q3TextStream stream(&file);
+		QTextStream stream(&file);
 		stream << "[programs]\n";
 		stream << "programs =";
 		for(it = valuelist.begin(); it != valuelist.end(); it++)
@@ -447,7 +453,7 @@ void App::saveProfile()
 	file.setFileName(home.path() + "/modembed.rc");
 	if(file.open(QIODevice::WriteOnly))
 	{
-		Q3TextStream stream(&file);
+		QTextStream stream(&file);
 		stream << "[programs]\n";
 		stream << "programs =";
 		for(it = valuelist.begin(); it != valuelist.end(); it++)
@@ -463,7 +469,7 @@ void App::saveProfile()
 	file.setFileName(home.path() + "/learning.db");
 	if(file.open(QIODevice::WriteOnly))
 	{
-		Q3TextStream stream(&file);
+		QTextStream stream(&file);
 		for(it = valuelist.begin(); it != valuelist.end(); it++)
 		{
 			stream << (*it)[0];
@@ -478,7 +484,7 @@ void App::saveProfile()
 	file.setFileName(home.path() + "/playerdb");
 	if(file.open(QIODevice::WriteOnly))
 	{
-		Q3TextStream stream(&file);
+		QTextStream stream(&file);
 		for(it = valuelist.begin(); it != valuelist.end(); it++)
 		{
 			stream << "[" << (*it)[0] << "]\n";
@@ -500,10 +506,10 @@ void App::saveProfile()
 
 void App::loadProfile()
 {
-	Q3ValueList<QStringList> valuelist;
-	Q3ValueList<QStringList>::iterator it;
+	QList<QStringList> valuelist;
+	QList<QStringList>::iterator it;
 	QFile file;
-	QMap<Q3CheckListItem*, QString>::Iterator pit;
+	QMap<QTreeWidgetItem*, QString>::Iterator pit;
 	QStringList::Iterator lit;
 	QString entrystring;
 	QStringList entry;
@@ -526,9 +532,9 @@ void App::loadProfile()
 	QStringList active = activestring.split(" ");
 	for(pit = m_plugins.begin(); pit != m_plugins.end(); pit++)
 	{
-		Q3CheckListItem *item = pit.key();
-		if(active.contains(pit.value())) item->setOn(true);
-		else item->setOn(false);
+		QTreeWidgetItem *item = pit.key();
+		if(active.contains(pit.value())) item->setCheckState(0, Qt::Checked);
+		else item->setCheckState(0, Qt::Unchecked);
 	}
 	QString net = cg.readEntry("net");
 	if(net.contains("netggz")) m_networktype->setEditText(i18n("GGZ Gaming Zone"));
@@ -581,7 +587,7 @@ void App::loadProfile()
 	file.setFileName(home.path() + "/learning.db");
 	if(file.open(QIODevice::ReadOnly))
 	{
-		Q3TextStream stream(&file);
+		QTextStream stream(&file);
 		while(!stream.atEnd())
 		{
 			entrystring = stream.readLine();

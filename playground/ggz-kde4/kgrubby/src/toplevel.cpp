@@ -20,7 +20,6 @@ Toplevel::Toplevel()
 	action_quit = menu_file->addAction(KIconLoader::global()->loadIcon("exit", KIconLoader::Small),
 		i18n("Quit"));
 
-	//menu_file->setItemEnabled(menusave, false);
 	action_save->setEnabled(false);
 
 	menu_file->setTitle(i18n("Program"));
@@ -47,7 +46,6 @@ void Toplevel::slotMenu(QAction *action)
 	}
 	else if(action == action_quit)
 	{
-		//if(menu_file->isItemEnabled(menusave))
 		if(action_save->isEnabled())
 		{
 			int ret = KMessageBox::questionYesNo(this,
@@ -62,7 +60,6 @@ void Toplevel::slotMenu(QAction *action)
 
 void Toplevel::slotChanged(bool changed)
 {
-	//menu_file->setItemEnabled(menusave, changed);
 	action_save->setEnabled(changed);
 }
 

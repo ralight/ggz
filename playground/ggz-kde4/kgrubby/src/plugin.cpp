@@ -1,6 +1,5 @@
 #include "plugin.h"
 
-//#include <k3listview.h>
 #include <klocale.h>
 
 #include <qlayout.h>

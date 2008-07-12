@@ -4,8 +4,6 @@
 #include <kdialog.h>
 
 class QTableWidget;
-//class K3ListView;
-//class QPushButton;
 
 class Plugin : public KDialog
 {
