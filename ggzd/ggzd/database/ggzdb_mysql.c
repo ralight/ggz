@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10175 2008-07-08 00:33:30Z jdorje $
+ * $Id: ggzdb_mysql.c 10312 2008-07-12 18:29:35Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -573,12 +573,22 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 	savegame_quoted = _ggzdb_escape(savegame);
 
 	snprintf(query, sizeof(query),
+		"DELETE FROM savegameplayers WHERE "
+		"tableid = (SELECT tableid FROM savegames WHERE "
+		"game = '%s' AND savegame = '%s') AND "
+		"stamp = (SELECT stamp FROM savegames WHERE "
+		"game = '%s' and savegame = '%s')",
+		game_quoted, savegame_quoted,
+		game_quoted, savegame_quoted);
+
+	pthread_mutex_lock(&mutex);
+	mysql_query(conn, query);
+
+	snprintf(query, sizeof(query),
 		"DELETE FROM `savegames` "
 		"WHERE `game`='%s' AND `savegame`='%s'",
 		game_quoted, savegame_quoted);
-	/* FIXME: we need to delete from savegameplayers here too */
 
-	pthread_mutex_lock(&mutex);
 	mysql_query(conn, query);
 
 	winner_quoted = _ggzdb_escape(winner);
