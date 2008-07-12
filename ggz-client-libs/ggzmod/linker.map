@@ -1,0 +1,47 @@
+/*
+This linker map has been produced from the following files:
+ggzmod.h
+But it was certainly modified, so check twice!
+*/
+
+{
+global:
+    ggzmod_check_library;
+    ggzmod_connect;
+    ggzmod_disconnect;
+    ggzmod_dispatch;
+    ggzmod_free;
+    ggzmod_get_fd;
+    ggzmod_get_gamedata;
+    ggzmod_get_num_seats;
+    ggzmod_get_num_spectator_seats;
+    ggzmod_get_player;
+    ggzmod_get_seat;
+    ggzmod_get_server_fd;
+    ggzmod_get_spectator_seat;
+    ggzmod_get_state;
+    ggzmod_get_type;
+    ggzmod_is_ggz_mode;
+    ggzmod_new;
+    ggzmod_player_get_highscore;
+    ggzmod_player_get_info;
+    ggzmod_player_get_ranking;
+    ggzmod_player_get_rating;
+    ggzmod_player_get_record;
+    ggzmod_player_request_info;
+    ggzmod_player_request_rankings;
+    ggzmod_request_boot;
+    ggzmod_request_bot;
+    ggzmod_request_chat;
+    ggzmod_request_open;
+    ggzmod_request_sit;
+    ggzmod_request_stand;
+    ggzmod_set_gamedata;
+    ggzmod_set_handler;
+    ggzmod_set_state;
+    ggzmod_spectator_get_highscore;
+    ggzmod_spectator_get_ranking;
+    ggzmod_spectator_get_rating;
+    ggzmod_spectator_get_record;
+local: *;
+};

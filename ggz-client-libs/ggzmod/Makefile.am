@@ -15,6 +15,10 @@ libggzmod_la_LIBADD += $(LIB_GGZ)
 endif
 
 libggzmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 5:0:1
+if SYMBOL_VISIBILITY
+libggzmod_la_LDFLAGS += -Wl,--version-script=linker.map
+libggzmod_la_DEPENDENCIES = linker.map
+endif
 
 libggzmod_la_SOURCES = \
 	ggzmod.c \

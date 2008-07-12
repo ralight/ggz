@@ -1,4 +1,10 @@
-VERSION {
+/*
+This linker map has been produced from the following files:
+ggzcore.h ggzcore-ggz.h ../ggzmod-ggz/ggzmod-ggz.h
+But it was certainly modified, so check twice!
+*/
+
+{
 global:
     ggzcore_check_library;
     ggzcore_conf_commit;
@@ -153,5 +159,27 @@ global:
     ggzcore_table_remove_player;
     ggzcore_table_set_desc;
     ggzcore_table_set_seat;
+    ggzcore_channel_connect;
+    ggzmod_ggz_connect;
+    ggzmod_ggz_disconnect;
+    ggzmod_ggz_dispatch;
+    ggzmod_ggz_free;
+    ggzmod_ggz_get_fd;
+    ggzmod_ggz_get_gamedata;
+    ggzmod_ggz_get_state;
+    ggzmod_ggz_inform_chat;
+    ggzmod_ggz_new;
+    ggzmod_ggz_set_gamedata;
+    ggzmod_ggz_set_handler;
+    ggzmod_ggz_set_info;
+    ggzmod_ggz_set_module;
+    ggzmod_ggz_set_player;
+    ggzmod_ggz_set_rankings;
+    ggzmod_ggz_set_seat;
+    ggzmod_ggz_set_server_fd;
+    ggzmod_ggz_set_server_host;
+    ggzmod_ggz_set_spectator_seat;
+    ggzmod_ggz_set_stats;
+    ggzmod_ggz_set_transaction_handler;
 local: *;
 };
