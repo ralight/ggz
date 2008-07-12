@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 		ki18n("This game is part of the GGZ Gaming Zone."),
 		"http://www.ggzgamingzone.org/gameclients/ktictactux/",
 		"josef@ggzgamingzone.org");
-	aboutData->addAuthor("Josef Spillner", ki18n("Inventor"), "josef@ggzgamingzone.org");
+	aboutData->addAuthor(ki18n("Josef Spillner"), ki18n("Inventor"), "josef@ggzgamingzone.org");
 
 	KCmdLineArgs::init(argc, argv, aboutData);
 

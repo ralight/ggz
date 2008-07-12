@@ -11,11 +11,7 @@
 #include <kggzmod/module.h>
 #include <kggzmod/player.h>
 #include <kggzmod/statistics.h>
-#include <kggzpacket.h>
-
-// GGZ includes
-#include <ggz.h>
-#include <ggz_common.h>
+#include <kggznet/kggzpacket.h>
 
 // System includes
 #include <stdio.h>

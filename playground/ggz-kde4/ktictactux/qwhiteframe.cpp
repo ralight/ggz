@@ -6,17 +6,17 @@
 
 // Includes
 #include "qwhiteframe.h"
-//Added by qt3to4:
-#include <Q3Frame>
+#include <QFrame>
 #include <QMouseEvent>
 
 // Constructor which defines a style
-QWhiteFrame::QWhiteFrame(int id, QWidget *parent, const char *name)
-: Q3Frame(parent, name)
+QWhiteFrame::QWhiteFrame(int id)
+: QFrame()
 {
 	m_id = id;
-	setPaletteBackgroundColor(QColor(255, 255, 255));
-	setFrameStyle(Q3Frame::Panel | Q3Frame::Sunken);
+	setFrameStyle(QFrame::Panel | QFrame::Sunken);
+
+	setPixmap(QPixmap());
 }
 
 // Destructor
@@ -38,3 +38,10 @@ int QWhiteFrame::id()
 	return m_id;
 }
 
+void QWhiteFrame::setPixmap(QPixmap pix)
+{
+	QPalette palette(QColor(255, 255, 255));
+	if(!pix.isNull())
+		palette.setBrush(backgroundRole(), QBrush(pix));
+	setPalette(palette);
+}

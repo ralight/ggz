@@ -9,19 +9,17 @@
 
 // KTicTacTux includes
 #include "qwhiteframe.h"
-//Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
 
 // GGZ-KDE-Games includes
-#include <kggzseatsdialog.h>
-#include <kggzpacket.h>
+#include <kggzgames/kggzseatsdialog.h>
+#include <kggznet/kggzpacket.h>
 #include <kggzmod/player.h>
 
 // KDE includes
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kconfig.h>
+#include <kconfiggroup.h>
 #include <kapplication.h>
 #include <kdebug.h>
 
@@ -34,40 +32,44 @@
 #include <stdlib.h>
 #include <kglobal.h>
 
+#define GGZDATADIR "XXX"
+
 // Cons... Konstructor :-)
-KTicTacTux::KTicTacTux(QWidget *parent, const char *name)
-: QWidget(parent, name)
+KTicTacTux::KTicTacTux()
+: QWidget()
 {
-	Q3VBoxLayout *vbox, *vbox2;
-	Q3HBoxLayout *hbox[3];
+	QVBoxLayout *vbox, *vbox2;
+	QHBoxLayout *hbox[3];
 	QWidget *container;
 
 	container = new QWidget(this);
-	container->setErasePixmap(QPixmap(QString("%1/ktictactux/bg.png").arg(GGZDATADIR)));
+	QPixmap pix(QString("%1/ktictactux/bg.png").arg(GGZDATADIR));
+	QPalette palette;
+	palette.setBrush(backgroundRole(), QBrush(pix));
+	container->setPalette(palette);
 
-	vbox = new Q3VBoxLayout(this);
-	vbox->add(container);
+	vbox = new QVBoxLayout();
+	setLayout(vbox);
+	vbox->addWidget(container);
 
-	vbox2 = new Q3VBoxLayout(container);
+	vbox2 = new QVBoxLayout();
+	container->setLayout(vbox2);
 	vbox2->addStretch(1);
 	for(int j = 0; j < 3; j++)
 	{
-		hbox[j] = new Q3HBoxLayout(vbox2);
+		hbox[j] = new QHBoxLayout();
+		vbox2->addLayout(hbox[j]);
 		hbox[j]->addStretch(1);
 		for(int i = 0; i < 3; i++)
 		{
-			frame[i][j] = new QWhiteFrame(j * 3 + i, container);
+			frame[i][j] = new QWhiteFrame(j * 3 + i);
 			frame[i][j]->setFixedSize(64, 64);
-			hbox[j]->add(frame[i][j]);
+			hbox[j]->addWidget(frame[i][j]);
 			connect(frame[i][j], SIGNAL(signalSelected(QWidget *)), SLOT(slotSelected(QWidget *)));
 		}
 		hbox[j]->addStretch(1);
 	}
 	vbox2->addStretch(1);
-
-	//setFixedSize(210, 210);
-	setCaption("KTicTacTux");
-	show();
 
 	m_turn = 0;
 
@@ -169,7 +171,6 @@ void KTicTacTux::getNextTurn()
 int KTicTacTux::gameOver()
 {
 	m_x = -1;
-	KConfig *conf;
 
 	// Check for draw (no empty fields left)
 	for(int j = 0; j < 3; j++)
@@ -180,8 +181,8 @@ int KTicTacTux::gameOver()
 				m_y = j;
 			}
 
-	conf = KGlobal::config();
-	conf->setGroup("Score");
+	KSharedConfig::Ptr conf = KGlobal::config();
+	KConfigGroup cg = KConfigGroup(conf, "Score");
 
 	// evaluate if game is still in progress
 	if(m_x != -1)
@@ -200,16 +201,16 @@ int KTicTacTux::gameOver()
 				if(m_winner == proto->opponent)
 				{
 					m_score_opp++;
-					if(m_opponent == PLAYER_NETWORK) conf->writeEntry("humanwon", conf->readNumEntry("humanwon") + 1);
-					else conf->writeEntry("aiwon", conf->readNumEntry("aiwon") + 1);
+					if(m_opponent == PLAYER_NETWORK) cg.writeEntry("humanwon", cg.readEntry("humanwon").toInt() + 1);
+					else cg.writeEntry("aiwon", cg.readEntry("aiwon").toInt() + 1);
 					conf->sync();
 					announce(i18n("You lost the game."));
 				}
 				else
 				{
 					m_score_you++;
-					if(m_opponent == PLAYER_NETWORK) conf->writeEntry("humanlost", conf->readNumEntry("humanlost") + 1);
-					else conf->writeEntry("ailost", conf->readNumEntry("ailost") + 1);
+					if(m_opponent == PLAYER_NETWORK) cg.writeEntry("humanlost", cg.readEntry("humanlost").toInt() + 1);
+					else cg.writeEntry("ailost", cg.readEntry("ailost").toInt() + 1);
 					conf->sync();
 					announce(i18n("You are the winner!"));
 				}
@@ -223,8 +224,8 @@ int KTicTacTux::gameOver()
 	{
 		emit signalStatus(i18n("Game Over!"));
 
-		if(m_opponent == PLAYER_NETWORK) conf->writeEntry("humantied", conf->readNumEntry("humantied") + 1);
-		else conf->writeEntry("aitied", conf->readNumEntry("aitied") + 1);
+		if(m_opponent == PLAYER_NETWORK) cg.writeEntry("humantied", cg.readEntry("humantied").toInt() + 1);
+		else cg.writeEntry("aitied", cg.readEntry("aitied").toInt() + 1);
 		conf->sync();
 		announce(i18n("The game is over. There is no winner."));
 		emit signalGameOver();
@@ -242,7 +243,7 @@ void KTicTacTux::announce(QString str)
 	if(m_opponent == PLAYER_NETWORK) return;
 
 	// Announce the new score
-	emit signalScore(i18n(QString("Score: you %1, opponent %2")).arg(m_score_you).arg(m_score_opp));
+	emit signalScore(i18n("Score: you %1, opponent %2", m_score_you, m_score_opp));
 
 	ret = KMessageBox::questionYesNo(this, str + "\n\n" + i18n("Play another game?"), i18n("Game over"));
 
@@ -382,7 +383,7 @@ void KTicTacTux::slotEvent(const KGGZMod::Event& event)
 	if(event.type() == KGGZMod::Event::seat)
 	{
 		proto->state = proto->statewait;
-		emit signalScore(i18n("Network game with %1").arg((*proto->mod->players().at(!proto->num()))->name()));
+		emit signalScore(i18n("Network game with %1").arg((*proto->mod->players().at(!proto->num())).name()));
 	}
 }
 
@@ -483,13 +484,13 @@ void KTicTacTux::drawBoard()
 		switch(proto->board[i % 3][i / 3])
 		{
 			case KTicTacTuxProto::player:
-				frame[i % 3][i / 3]->setPaletteBackgroundPixmap(QPixmap(m_t1));
+				frame[i % 3][i / 3]->setPixmap(QPixmap(m_t1));
 				break;
 			case KTicTacTuxProto::opponent:
-				frame[i % 3][i / 3]->setPaletteBackgroundPixmap(QPixmap(m_t2));
+				frame[i % 3][i / 3]->setPixmap(QPixmap(m_t2));
 				break;
 			default:
-				frame[i % 3][i / 3]->setPaletteBackgroundPixmap(NULL);
+				frame[i % 3][i / 3]->setPixmap(QPixmap());
 		}
 	}
 	update();

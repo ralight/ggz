@@ -8,22 +8,22 @@
 #define Q_WHITEFRAME_H
 
 // Qt includes
-#include <q3frame.h>
+#include <qframe.h>
 #include <qevent.h>
-//Added by qt3to4:
 #include <QMouseEvent>
 
 // A special Qt class
-class QWhiteFrame : public Q3Frame
+class QWhiteFrame : public QFrame
 {
 	Q_OBJECT
 	public:
 		// Constructor
-		QWhiteFrame(int id, QWidget *parent = NULL, const char *name = NULL);
+		QWhiteFrame(int id);
 		// Destructor
 		~QWhiteFrame();
 		// Retrieve widget id
 		int id();
+		void setPixmap(QPixmap pix);
 	protected slots:
 		// Receive a mouse event
 		void mousePressEvent(QMouseEvent *event);

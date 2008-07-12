@@ -13,16 +13,14 @@
 #include <klocale.h>
 #include <kstatusbar.h>
 #include <kconfig.h>
-#include <ksimpleconfig.h>
+#include <kconfiggroup.h>
 #include <kapplication.h>
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
 #include <kdebug.h>
 #include <kiconloader.h>
 
-#ifdef HAVE_KNEWSTUFF
-#include <knewstuff/downloaddialog.h>
-#endif
+#include <knewstuff2/engine.h>
 
 // Qt includes
 #include <qdir.h>
@@ -33,28 +31,31 @@
 KTicTacTuxWin::KTicTacTuxWin()
 : KMainWindow()
 {
-	m_tux = new KTicTacTux(this);
+	m_tux = new KTicTacTux();
 	setCentralWidget(m_tux);
 
 	m_networked = false;
 
 	mgame = new KMenu(this);
-	action_sync = mgame->addItem(KIconLoader::global()->loadIcon("view-refresh", KIconLoader::Small), i18n("Synchronize"));
-	action_score = mgame->addItem(KIconLoader::global()->loadIcon("history", KIconLoader::Small), i18n("View score"));
+	mgame->setTitle(i18n("Game"));
+	action_sync = mgame->addAction(KIconLoader::global()->loadIcon("view-refresh", KIconLoader::Small), i18n("Synchronize"));
+	action_score = mgame->addAction(KIconLoader::global()->loadIcon("history", KIconLoader::Small), i18n("View score"));
 	mgame->addSeparator();
-	action_theme = mgame->addItem(KIconLoader::global()->loadIcon("get-hot-new-stuff", KIconLoader::Small), i18n("Get themes"));
+	action_theme = mgame->addAction(KIconLoader::global()->loadIcon("get-hot-new-stuff", KIconLoader::Small), i18n("Get themes"));
 	mgame->addSeparator();
-	action_quit = mgame->insertItem(KIconLoader::global()->loadIcon("application-exit", KIconLoader::Small), i18n("Quit"));
+	action_quit = mgame->addAction(KIconLoader::global()->loadIcon("application-exit", KIconLoader::Small), i18n("Quit"));
 
 	mggz = new KMenu(this);
-	action_ggzplayers = mggz->insertItem(KIconLoader::global()->loadIcon("ggz", KIconLoader::Small), i18n("Seats && Spectators"));
+	mggz->setTitle(i18n("GGZ"));
+	action_ggzplayers = mggz->addAction(KIconLoader::global()->loadIcon("ggz", KIconLoader::Small), i18n("Seats && Spectators"));
 
 	mtheme = new KMenu(this);
+	mtheme->setTitle(i18n("Theme"));
 
-	menuBar()->addItem(i18n("Game"), mgame);
-	menuBar()->addItem(i18n("GGZ"), mggz);
-	menuBar()->addItem(i18n("Theme"), mtheme);
-	menuBar()->addItem(i18n("Help"), helpMenu());
+	menuBar()->addMenu(mgame);
+	menuBar()->addMenu(mggz);
+	menuBar()->addMenu(mtheme);
+	menuBar()->addMenu(helpMenu());
 
 	statusBar()->insertItem(i18n("Status"), 1, 1);
 	statusBar()->insertItem(i18n("Game with the AI"), 2, 1);
@@ -70,9 +71,9 @@ KTicTacTuxWin::KTicTacTuxWin()
 	loadThemes();
 
 	KSharedConfig::Ptr conf = KGlobal::config();
-	conf->setGroup("Settings");
-	QString theme = conf->readEntry("theme");
-	if(theme) changeTheme(theme);
+	KConfigGroup cg = KConfigGroup(conf, "Settings");
+	QString theme = cg.readEntry("theme");
+	if(!theme.isEmpty()) changeTheme(theme);
 	else changeTheme(QString::null);
 
 	setCaption(i18n("KTicTacTux"));
@@ -101,7 +102,6 @@ void KTicTacTuxWin::slotScore(const QString &score)
 void KTicTacTuxWin::changeTheme(QString theme)
 {
 	KStandardDirs *d = KGlobal::dirs();
-	int id;
 
 	// fall back to default if no theme is set or theme is no more installed
 	if((theme == QString::null) || m_player1[theme] == QString::null)
@@ -110,11 +110,11 @@ void KTicTacTuxWin::changeTheme(QString theme)
 	}
 
 	// try to enable the corresponding menu item
-	for(unsigned int i = 0; i < mtheme->count(); i++)
+	for(int i = 0; i < m_themeactions.count(); i++)
 	{
-		id = mtheme->idAt(i);
-		if(m_themes[mtheme->text(id)] == theme) mtheme->setItemChecked(id, true);
-		else mtheme->setItemChecked(id, false);
+		QAction *action = m_themeactions.at(i);
+		if(m_themes[action->text()] == theme) action->setChecked(true);
+		else action->setChecked(false);
 	}
 
 	// Update pixmaps
@@ -125,7 +125,6 @@ void KTicTacTuxWin::changeTheme(QString theme)
 // Handle menu stuff
 void KTicTacTuxWin::slotMenu(QAction *action)
 {
-	KConfig *conf;
 	QDir d;
 
 	// Standard menu entries
@@ -142,7 +141,8 @@ void KTicTacTuxWin::slotMenu(QAction *action)
 		d.mkdir(QDir::home().path() + "/.ggz");
 		d.mkdir(QDir::home().path() + "/.ggz/games");
 		d.mkdir(QDir::home().path() + "/.ggz/games/ktictactux");
-		KNS::DownloadDialog::open("ktictactux/theme");
+		//KNS::DownloadDialog::open("ktictactux/theme");
+		KNS::Entry::List entries = KNS::Engine::download();
 	}
 	else if(action == action_ggzplayers)
 	{
@@ -153,21 +153,24 @@ void KTicTacTuxWin::slotMenu(QAction *action)
 		close();
 	}
 
-	// Dynamic theme menu entries
-//	if(id >= menuthemes)
-//	{
-//		changeTheme(m_themes[m_themenames[id]]);
-//		conf = KGlobal::config();
-//		conf->setGroup("Settings");
-//		conf->writeEntry("theme", m_themes[mtheme->text(id)]);
-//		conf->sync();
-//	}
+	for(int i = 0; i < m_themeactions.count(); i++)
+	{
+		QAction *action2 = m_themeactions.at(i);
+		if(action == action2)
+		{
+			changeTheme(m_themes[m_themenames[i]]);
+			KSharedConfig::Ptr conf = KGlobal::config();
+			KConfigGroup cg = KConfigGroup(conf, "Settings");
+			cg.writeEntry("theme", m_themes[action->text()]);
+			conf->sync();
+		}
+	}
 }
 
 /// Enable network functionality
 void KTicTacTuxWin::enableNetwork(bool enabled)
 {
-	mgame->setItemEnabled(menusync, enabled);
+	action_sync->setEnabled(enabled);
 	m_networked = enabled;
 
 	mggz->setEnabled(enabled);
@@ -190,10 +193,10 @@ void KTicTacTuxWin::score()
 	}
 
 	KSharedConfig::Ptr conf = KGlobal::config();
-	conf->setGroup("Score");
-	int ailost = conf->readNumEntry("ailost");
-	int aiwon = conf->readNumEntry("aiwon");
-	int aitied = conf->readNumEntry("aitied");
+	KConfigGroup cg = KConfigGroup(conf, "Score");
+	int ailost = cg.readEntry("ailost").toInt();
+	int aiwon = cg.readEntry("aiwon").toInt();
+	int aitied = cg.readEntry("aitied").toInt();
 
 	QString comment = "";
 	if(!(ailost + aiwon))
@@ -242,8 +245,8 @@ void KTicTacTuxWin::slotNetworkScore(int wins, int losses, int ties)
 // Game is over
 void KTicTacTuxWin::slotGameOver()
 {
-	mgame->setItemEnabled(menusync, false);
-	if(m_networked) mgame->setItemEnabled(menuscore, false);
+	action_sync->setEnabled(false);
+	if(m_networked) action_score->setEnabled(false);
 }
 
 // Read in all themes
@@ -267,23 +270,23 @@ void KTicTacTuxWin::loadThemes()
 			if((*it2).right(4) == ".png") continue;
 			file = (*it) + (*it2);
 			kDebug() << "Check file: " << file << endl;
-			KSimpleConfig conf(file);
+			KConfig conf(file, KConfig::SimpleConfig);
 			if(conf.hasGroup("Description"))
 			{
-				conf.setGroup("Description");
-				name = conf.readEntry("name");
-				conf.setGroup("Pixmaps");
-				player1 = conf.readEntry("player1");
-				player2 = conf.readEntry("player2");
+				KConfigGroup cg = KConfigGroup(&conf, "Description");
+				name = cg.readEntry("name");
+				cg = KConfigGroup(&conf, "Pixmaps");
+				player1 = cg.readEntry("player1");
+				player2 = cg.readEntry("player2");
 
 				m_themes[name] = file;
 				m_player1[file] = (*it) + player1;
 				m_player2[file] = (*it) + player2;
 
 				m_themenames[count] = name;
-				QAction *action_theme = mtheme->insertItem(KIconLoader::global()->loadIcon("imagegallery", KIconLoader::Small), name, index);
+				QAction *action_theme = mtheme->addAction(KIconLoader::global()->loadIcon("imagegallery", KIconLoader::Small), name);
+				m_themeactions << action_theme;
 				count++;
-				// FIXME: do something with action_theme
 			}
 		}
 	}

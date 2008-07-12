@@ -8,7 +8,6 @@
 #define KTICTACTUX_H
 
 // KTicTacTux includes
-#include "config.h"
 #include "ktictactuxproto.h"
 
 // GGZ-KDE-Games includes
@@ -35,7 +34,7 @@ class KTicTacTux : public QWidget
 	Q_OBJECT
 	public:
 		// Constructor
-		KTicTacTux(QWidget *parent = NULL, const char *name = NULL);
+		KTicTacTux();
 		// Destructor
 		~KTicTacTux();
 		// Set opponent type

@@ -15,6 +15,7 @@
 
 // Qt includes
 #include <qmap.h>
+#include <qlist.h>
 
 // Forward declarations
 class KMenu;
@@ -68,6 +69,7 @@ class KTicTacTuxWin : public KMainWindow
 		QAction *action_quit;
 		QAction *action_ggzplayers;
 		QAction *action_themes;
+		QList<QAction*> m_themeactions;
 };
 
 #endif
