@@ -10,16 +10,27 @@ if [ -z $1 ]; then
 fi
 
 symbols=""
+headers=""
 lb=`echo -e '\n '`
 while [ ! -z $1 ]; do
 	header=$1
 	newsymbols=`ctags-exuberant -x -I ggz__attribute --c-kinds=p $1 | cut -d " " -f 1`
 	symbols="$symbols$lb$newsymbols"
+	headers="$headers $header"
 	shift
 done
 
 rm -f linker.map
-echo "VERSION {" >> linker.map
+
+echo "/*" >> linker.map
+echo "This linker map has been produced from the following files:" >> linker.map
+echo $headers >> linker.map
+echo "But it was certainly modified, so check twice!" >> linker.map
+echo "*/" >> linker.map
+echo "" >> linker.map
+
+#echo "VERSION" >> linker.map
+echo "{" >> linker.map
 echo "global:" >> linker.map
 for symbol in $symbols; do
 echo "    $symbol;" >> linker.map
