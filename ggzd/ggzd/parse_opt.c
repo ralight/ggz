@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 10125 2008-06-30 22:18:05Z jdorje $
+ * $Id: parse_opt.c 10292 2008-07-12 08:18:30Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -452,6 +452,7 @@ static void parse_game(char *name, char *dir)
 					     perms_default, num_perms_default);
 			db_pe.perms |= (1 << GGZ_PERM_CHAT_BOT);
 			db_pe.last_login = time(NULL);
+			db_pe.confirmed = 0;
 			snprintf(db_pe.handle, sizeof(db_pe.handle), "%s",
 				game_info.named_bots[i][0]);
 			ggz_strncpy(db_pe.password, "", sizeof(db_pe.password));
