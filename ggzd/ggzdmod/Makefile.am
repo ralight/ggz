@@ -10,6 +10,10 @@ noinst_LTLIBRARIES = libggzdmod.la
 endif
 
 libggzdmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 6:0:0
+if SYMBOL_VISIBILITY
+libggzdmod_la_LDFLAGS += -Wl,--version-script=linker.map
+libggzdmod_la_DEPENDENCIES = linker.map
+endif
 libggzdmod_la_LIBADD = $(LIB_GGZ)
 libggzdmod_la_SOURCES = ggzdmod.h ggzdmod-ggz.h \
 			ggzdmod.c \
