@@ -3,8 +3,8 @@
 
 #include <kdialogbase.h>
 
-class QTable;
-//class KListView;
+class Q3Table;
+//class K3ListView;
 //class QPushButton;
 
 class Plugin : public KDialogBase
@@ -24,7 +24,7 @@ class Plugin : public KDialogBase
 		void slotChanged(int row, int col);
 
 	private:
-		QTable *m_settings;
+		Q3Table *m_settings;
 };
 
 #endif

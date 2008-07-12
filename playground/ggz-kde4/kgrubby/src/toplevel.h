@@ -4,7 +4,7 @@
 #include <kmainwindow.h>
 
 class App;
-class KPopupMenu;
+class KMenu;
 
 class Toplevel : public KMainWindow
 {
@@ -25,7 +25,7 @@ class Toplevel : public KMainWindow
 		};
 
 		App *m_app;
-		KPopupMenu *menu_file;
+		KMenu *menu_file;
 
 };
 

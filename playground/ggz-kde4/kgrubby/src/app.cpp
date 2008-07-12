@@ -6,11 +6,11 @@
 #include <kconfig.h>
 #include <ksimpleconfig.h>
 #include <klocale.h>
-#include <klistview.h>
+#include <k3listview.h>
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
 #include <kinputdialog.h>
-#include <kprocess.h>
+#include <k3process.h>
 
 #include <kdebug.h>
 
@@ -19,21 +19,27 @@
 #include <qdir.h>
 #include <qfile.h>
 #include <qstringlist.h>
-#include <qtextstream.h>
+#include <q3textstream.h>
 #include <qlineedit.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
 #include <qimage.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3Frame>
+#include <Q3ValueList>
+#include <QPixmap>
+#include <Q3VBoxLayout>
 
 App::App(QWidget *parent, const char *name)
 : KTabWidget(parent, name)
 {
 	KStandardDirs d;
 	QWidget *tab_general, *tab_plugins, *tab_profile;
-	QVBoxLayout *vbox_general, *vbox_plugins, *vbox_profile;
-	QHBoxLayout *hbox_profile, *hbox_profile2;
+	Q3VBoxLayout *vbox_general, *vbox_plugins, *vbox_profile;
+	Q3HBoxLayout *hbox_profile, *hbox_profile2;
 	QPushButton *profile_add;
-	QFrame *frame_grubby;
+	Q3Frame *frame_grubby;
 	QMap<QString, QString> pluginnames, plugininfos;
 
 	tab_profile = new QWidget(this);
@@ -41,7 +47,7 @@ App::App(QWidget *parent, const char *name)
 	tab_plugins = new QWidget(this);
 
 	QPixmap grubby(d.findResource("data", "kgrubby/kgrubby.png"));
-	frame_grubby = new QFrame(tab_profile);
+	frame_grubby = new Q3Frame(tab_profile);
 	frame_grubby->setFixedSize(grubby.width(), grubby.height());
 	frame_grubby->setBackgroundPixmap(grubby);
 
@@ -84,10 +90,10 @@ App::App(QWidget *parent, const char *name)
 	m_autojoinlabel = new QLabel(i18n("Autojoin room/channel"), tab_general);
 	m_autojoin = new QLineEdit(tab_general);
 
-	m_pluginlist = new KListView(tab_plugins);
+	m_pluginlist = new K3ListView(tab_plugins);
 	m_pluginlist->addColumn(i18n("Name"));
 	m_pluginlist->addColumn(i18n("Description"));
-	QCheckListItem *item;
+	Q3CheckListItem *item;
 
 	pluginnames["game"] = i18n("Games");
 	pluginnames["self"] = i18n("Himself");
@@ -120,7 +126,7 @@ App::App(QWidget *parent, const char *name)
 	QMap<QString, QString>::Iterator it;
 	for(it = pluginnames.begin(); it != pluginnames.end(); it++)
 	{
-		item = new QCheckListItem(m_pluginlist, it.data(), QCheckListItem::CheckBox);
+		item = new Q3CheckListItem(m_pluginlist, it.data(), Q3CheckListItem::CheckBox);
 		item->setText(1, plugininfos[it.key()]);
 		m_plugins[item] = it.key();
 	}
@@ -128,18 +134,18 @@ App::App(QWidget *parent, const char *name)
 	m_plugin_configure = new QPushButton(i18n("Configure..."), tab_plugins);
 	m_plugin_configure->setEnabled(false);
 
-	vbox_profile = new QVBoxLayout(tab_profile, 5);
-	hbox_profile2 = new QHBoxLayout(vbox_profile, 5);
+	vbox_profile = new Q3VBoxLayout(tab_profile, 5);
+	hbox_profile2 = new Q3HBoxLayout(vbox_profile, 5);
 	hbox_profile2->addStretch(1);
 	hbox_profile2->add(frame_grubby);
 	hbox_profile2->addStretch(1);
 	vbox_profile->add(m_profile);
-	hbox_profile = new QHBoxLayout(vbox_profile, 5);
+	hbox_profile = new Q3HBoxLayout(vbox_profile, 5);
 	hbox_profile->add(profile_add);
 	hbox_profile->add(m_profile_remove);
 	vbox_profile->addStretch(1);
 
-	vbox_general = new QVBoxLayout(tab_general, 5);
+	vbox_general = new Q3VBoxLayout(tab_general, 5);
 	vbox_general->add(m_namelabel);
 	vbox_general->add(m_name);
 	vbox_general->add(m_ownerlabel);
@@ -154,7 +160,7 @@ App::App(QWidget *parent, const char *name)
 	vbox_general->add(m_networktype);
 	vbox_general->addStretch(1);
 
-	vbox_plugins = new QVBoxLayout(tab_plugins, 5);
+	vbox_plugins = new Q3VBoxLayout(tab_plugins, 5);
 	vbox_plugins->add(m_pluginlist);
 	vbox_plugins->add(m_plugin_configure);
 
@@ -210,11 +216,11 @@ void App::slotProfileDelete()
 		home.setPath(home.path() + "/.ggz/kgrubby/");
 		home.setPath(home.path() + "/" + m_profilename);
 
-		KProcess proc;
+		K3Process proc;
 		proc << "rm";
 		proc << "-rf";
-		proc << home.path().latin1();
-		proc.start(KProcess::Block);
+		proc << home.path().toLatin1();
+		proc.start(K3Process::Block);
 
 		m_profile->removeItem(m_profile->currentItem());
 		if(m_profile->count() == 1)
@@ -246,14 +252,14 @@ void App::slotProfileChange()
 
 void App::slotPluginConfigure()
 {
-	QCheckListItem *item = static_cast<QCheckListItem*>(m_pluginlist->currentItem());
+	Q3CheckListItem *item = static_cast<Q3CheckListItem*>(m_pluginlist->currentItem());
 	if(!item) return;
 
 	QString name = m_plugins[item];
 	QString dialog = m_plugindialogs[name];
 
-	QValueList<QStringList> valuelist;
-	QValueList<QStringList>::iterator it;
+	Q3ValueList<QStringList> valuelist;
+	Q3ValueList<QStringList>::iterator it;
 	Plugin p(this);
 
 	if(dialog == "people")
@@ -302,7 +308,7 @@ void App::slotPluginConfigure()
 
 void App::slotPluginSelected()
 {
-	QCheckListItem *item = static_cast<QCheckListItem*>(m_pluginlist->currentItem());
+	Q3CheckListItem *item = static_cast<Q3CheckListItem*>(m_pluginlist->currentItem());
 	if(!item)
 	{
 		m_plugin_configure->setEnabled(false);
@@ -322,10 +328,10 @@ void App::slotModified()
 
 void App::saveProfile()
 {
-	QValueList<QStringList> valuelist;
-	QValueList<QStringList>::iterator it;
+	Q3ValueList<QStringList> valuelist;
+	Q3ValueList<QStringList>::iterator it;
 	QFile file;
-	QMap<QCheckListItem*, QString>::Iterator pit;
+	QMap<Q3CheckListItem*, QString>::Iterator pit;
 
 	QDir home = QDir::home();
 	home.setPath(home.path() + "/.ggz");
@@ -336,12 +342,12 @@ void App::saveProfile()
 	home.mkdir(home.path());
 
 	file.setName(home.path() + "/grubby.rc");
-	if(file.open(IO_WriteOnly))
+	if(file.open(QIODevice::WriteOnly))
 	{
 		QString moduledir = PREFIX "/lib/grubby/modules/";
 		QString coremoduledir = PREFIX "/lib/grubby/coremodules/";
 
-		QTextStream stream(&file);
+		Q3TextStream stream(&file);
 		stream << "[preferences]\n";
 		stream << "name = " << m_name->text() << "\n";
 		stream << "language = " << m_lang->text() << "\n";
@@ -367,7 +373,7 @@ void App::saveProfile()
 		stream << "modules =";
 		for(pit = m_plugins.begin(); pit != m_plugins.end(); pit++)
 		{
-			QCheckListItem *item = pit.key();
+			Q3CheckListItem *item = pit.key();
 			if(item->isOn())
 			{
 				stream << " ";
@@ -394,9 +400,9 @@ void App::saveProfile()
 
 	valuelist = m_profiledata["badword"];
 	file.setName(home.path() + "/modbadword.rc");
-	if(file.open(IO_WriteOnly))
+	if(file.open(QIODevice::WriteOnly))
 	{
-		QTextStream stream(&file);
+		Q3TextStream stream(&file);
 		stream << "[badwords]\n";
 		stream << "badwords =";
 		for(it = valuelist.begin(); it != valuelist.end(); it++)
@@ -410,9 +416,9 @@ void App::saveProfile()
 
 	valuelist = m_profiledata["exec"];
 	file.setName(home.path() + "/modexec.rc");
-	if(file.open(IO_WriteOnly))
+	if(file.open(QIODevice::WriteOnly))
 	{
-		QTextStream stream(&file);
+		Q3TextStream stream(&file);
 		stream << "[programs]\n";
 		stream << "programs =";
 		for(it = valuelist.begin(); it != valuelist.end(); it++)
@@ -426,9 +432,9 @@ void App::saveProfile()
 
 	valuelist = m_profiledata["embed"];
 	file.setName(home.path() + "/modembed.rc");
-	if(file.open(IO_WriteOnly))
+	if(file.open(QIODevice::WriteOnly))
 	{
-		QTextStream stream(&file);
+		Q3TextStream stream(&file);
 		stream << "[programs]\n";
 		stream << "programs =";
 		for(it = valuelist.begin(); it != valuelist.end(); it++)
@@ -442,9 +448,9 @@ void App::saveProfile()
 
 	valuelist = m_profiledata["learning"];
 	file.setName(home.path() + "/learning.db");
-	if(file.open(IO_WriteOnly))
+	if(file.open(QIODevice::WriteOnly))
 	{
-		QTextStream stream(&file);
+		Q3TextStream stream(&file);
 		for(it = valuelist.begin(); it != valuelist.end(); it++)
 		{
 			stream << (*it)[0];
@@ -457,9 +463,9 @@ void App::saveProfile()
 
 	valuelist = m_profiledata["people"];
 	file.setName(home.path() + "/playerdb");
-	if(file.open(IO_WriteOnly))
+	if(file.open(QIODevice::WriteOnly))
 	{
-		QTextStream stream(&file);
+		Q3TextStream stream(&file);
 		for(it = valuelist.begin(); it != valuelist.end(); it++)
 		{
 			stream << "[" << (*it)[0] << "]\n";
@@ -481,10 +487,10 @@ void App::saveProfile()
 
 void App::loadProfile()
 {
-	QValueList<QStringList> valuelist;
-	QValueList<QStringList>::iterator it;
+	Q3ValueList<QStringList> valuelist;
+	Q3ValueList<QStringList>::iterator it;
 	QFile file;
-	QMap<QCheckListItem*, QString>::Iterator pit;
+	QMap<Q3CheckListItem*, QString>::Iterator pit;
 	QStringList::Iterator lit;
 	QString entrystring;
 	QStringList entry;
@@ -506,7 +512,7 @@ void App::loadProfile()
 	QStringList active = QStringList::split(" ", activestring);
 	for(pit = m_plugins.begin(); pit != m_plugins.end(); pit++)
 	{
-		QCheckListItem *item = pit.key();
+		Q3CheckListItem *item = pit.key();
 		if(active.contains(pit.data())) item->setOn(true);
 		else item->setOn(false);
 	}
@@ -559,9 +565,9 @@ void App::loadProfile()
 
 	valuelist.clear();
 	file.setName(home.path() + "/learning.db");
-	if(file.open(IO_ReadOnly))
+	if(file.open(QIODevice::ReadOnly))
 	{
-		QTextStream stream(&file);
+		Q3TextStream stream(&file);
 		while(!stream.atEnd())
 		{
 			entrystring = stream.readLine();

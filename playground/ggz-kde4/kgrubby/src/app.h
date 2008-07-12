@@ -2,12 +2,15 @@
 #define KGRUBBY_APP_H
 
 #include <ktabwidget.h>
+//Added by qt3to4:
+#include <Q3ValueList>
+#include <QLabel>
 
-class KListView;
+class K3ListView;
 class QLabel;
 class QComboBox;
 class QLineEdit;
-class QCheckListItem;
+class Q3CheckListItem;
 class QPushButton;
 
 class App : public KTabWidget
@@ -32,8 +35,8 @@ class App : public KTabWidget
 		void slotModified();
 
 	private:
-		KListView *m_pluginlist;
-		QMap<QCheckListItem*, QString> m_plugins;
+		K3ListView *m_pluginlist;
+		QMap<Q3CheckListItem*, QString> m_plugins;
 		QMap<QString, QString> m_plugindialogs;
 		QComboBox *m_networktype, *m_profile;
 		QPushButton *m_profile_remove, *m_plugin_configure;
@@ -41,7 +44,7 @@ class App : public KTabWidget
 		QLabel *m_namelabel, *m_ownerlabel, *m_networktypelabel;
 		QLabel *m_langlabel, *m_hostlabel, *m_autojoinlabel;
 		QString m_profilename;
-		QMap<QString, QValueList<QStringList> > m_profiledata;
+		QMap<QString, Q3ValueList<QStringList> > m_profiledata;
 		bool m_profilemodified;
 };
 

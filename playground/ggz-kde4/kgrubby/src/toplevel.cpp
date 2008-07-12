@@ -2,7 +2,7 @@
 #include "app.h"
 
 #include <kmenubar.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <klocale.h>
 #include <kiconloader.h>
 #include <kmessagebox.h>
@@ -13,11 +13,11 @@ Toplevel::Toplevel()
 	m_app = new App(this);
 	setCentralWidget(m_app);
 
-	menu_file = new KPopupMenu(this);
-	menu_file->insertItem(KGlobal::iconLoader()->loadIcon("filesave", KIcon::Small),
+	menu_file = new KMenu(this);
+	menu_file->insertItem(KIconLoader::global()->loadIcon("filesave", KIcon::Small),
 		i18n("Save"), menusave);
 	menu_file->insertSeparator();
-	menu_file->insertItem(KGlobal::iconLoader()->loadIcon("exit", KIcon::Small),
+	menu_file->insertItem(KIconLoader::global()->loadIcon("exit", KIcon::Small),
 		i18n("Quit"), menuquit);
 
 	menu_file->setItemEnabled(menusave, false);
