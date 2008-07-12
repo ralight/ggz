@@ -1,4 +1,10 @@
-VERSION {
+/*
+This linker map has been produced from the following files:
+ggz.h ggz_common.h ggz_dio.h
+But it was certainly modified, so check twice!
+*/
+
+{
 global:
     _ggz_free;
     _ggz_malloc;
