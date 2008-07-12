@@ -50,7 +50,7 @@ extern "C" {
  * Under gcc, we use the __attribute__ macro to check variadic arguments,
  * for instance to printf-style functions.  Other compilers may be able
  * to do something similar, but this is generally unnecessary since it's
- * only realy purpose is to give warning messages when the developer compiles
+ * only real purpose is to give warning messages when the developer compiles
  * the code.
  */
 #ifdef __GNUC__
