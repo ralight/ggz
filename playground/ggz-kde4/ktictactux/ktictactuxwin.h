@@ -17,7 +17,7 @@
 #include <qmap.h>
 
 // Forward declarations
-class KPopupMenu;
+class KMenu;
 class QAction;
 
 // The game window
@@ -54,7 +54,7 @@ class KTicTacTuxWin : public KMainWindow
 		// The game itself
 		KTicTacTux *m_tux;
 		// The menus;
-		KPopupMenu *mgame, *mtheme, *mggz;
+		KMenu *mgame, *mtheme, *mggz;
 		// Game network status
 		bool m_networked;
 		// List of themes

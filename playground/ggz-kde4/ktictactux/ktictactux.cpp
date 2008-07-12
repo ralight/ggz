@@ -32,6 +32,7 @@
 // System includes
 #include <stdio.h>
 #include <stdlib.h>
+#include <kglobal.h>
 
 // Cons... Konstructor :-)
 KTicTacTux::KTicTacTux(QWidget *parent, const char *name)
@@ -179,7 +180,7 @@ int KTicTacTux::gameOver()
 				m_y = j;
 			}
 
-	conf = kapp->config();
+	conf = KGlobal::config();
 	conf->setGroup("Score");
 
 	// evaluate if game is still in progress
@@ -422,11 +423,11 @@ void KTicTacTux::slotPacket()
 {
 	int op;
 
-	kdDebug() << "Network data arriving from packet reader" << endl;
+	kDebug() << "Network data arriving from packet reader" << endl;
 
 	op = proto->getOp();
 
-	kdDebug() << "Opcode is " << op << endl;
+	kDebug() << "Opcode is " << op << endl;
 
 	switch(op)
 	{

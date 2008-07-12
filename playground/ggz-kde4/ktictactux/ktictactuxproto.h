@@ -72,7 +72,7 @@ class KTicTacTuxProto
 		};
 
 		// A winner, if any
-		Q_INT8 winner;
+		qint8 winner;
 		// Holds a move
 		int move;
 
@@ -88,7 +88,7 @@ class KTicTacTuxProto
 		// The current game state
 		States state;
 		// The player who is on
-		Q_INT8 turn;
+		qint8 turn;
 
 		// Statistics
 		bool stats_record;

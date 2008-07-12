@@ -8,7 +8,7 @@
 #include "ktictactuxwin.h"
 
 // KDE includes
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kmenubar.h>
 #include <klocale.h>
 #include <kstatusbar.h>
@@ -27,6 +27,7 @@
 // Qt includes
 #include <qdir.h>
 #include <qstringlist.h>
+#include <kglobal.h>
 
 // Constructor
 KTicTacTuxWin::KTicTacTuxWin()
@@ -37,18 +38,18 @@ KTicTacTuxWin::KTicTacTuxWin()
 
 	m_networked = false;
 
-	mgame = new KPopupMenu(this);
-	action_sync = mgame->addItem(KGlobal::iconLoader()->loadIcon("reload", KIconLoader::Small), i18n("Synchronize"));
-	action_score = mgame->addItem(KGlobal::iconLoader()->loadIcon("history", KIconLoader::Small), i18n("View score"));
+	mgame = new KMenu(this);
+	action_sync = mgame->addItem(KIconLoader::global()->loadIcon("view-refresh", KIconLoader::Small), i18n("Synchronize"));
+	action_score = mgame->addItem(KIconLoader::global()->loadIcon("history", KIconLoader::Small), i18n("View score"));
 	mgame->addSeparator();
-	action_theme = mgame->addItem(KGlobal::iconLoader()->loadIcon("knewstuff", KIconLoader::Small), i18n("Get themes"));
+	action_theme = mgame->addItem(KIconLoader::global()->loadIcon("get-hot-new-stuff", KIconLoader::Small), i18n("Get themes"));
 	mgame->addSeparator();
-	action_quit = mgame->insertItem(KGlobal::iconLoader()->loadIcon("exit", KIconLoader::Small), i18n("Quit"));
+	action_quit = mgame->insertItem(KIconLoader::global()->loadIcon("application-exit", KIconLoader::Small), i18n("Quit"));
 
-	mggz = new KPopupMenu(this);
-	action_ggzplayers = mggz->insertItem(KGlobal::iconLoader()->loadIcon("ggz", KIconLoader::Small), i18n("Seats && Spectators"));
+	mggz = new KMenu(this);
+	action_ggzplayers = mggz->insertItem(KIconLoader::global()->loadIcon("ggz", KIconLoader::Small), i18n("Seats && Spectators"));
 
-	mtheme = new KPopupMenu(this);
+	mtheme = new KMenu(this);
 
 	menuBar()->addItem(i18n("Game"), mgame);
 	menuBar()->addItem(i18n("GGZ"), mggz);
@@ -68,7 +69,7 @@ KTicTacTuxWin::KTicTacTuxWin()
 
 	loadThemes();
 
-	KConfig *conf = kapp->config();
+	KSharedConfig::Ptr conf = KGlobal::config();
 	conf->setGroup("Settings");
 	QString theme = conf->readEntry("theme");
 	if(theme) changeTheme(theme);
@@ -117,7 +118,7 @@ void KTicTacTuxWin::changeTheme(QString theme)
 	}
 
 	// Update pixmaps
-	kdDebug() << "Player 1 has " << m_player1[theme] << ", theme " << theme << endl;
+	kDebug() << "Player 1 has " << m_player1[theme] << ", theme " << theme << endl;
 	m_tux->setTheme(m_player1[theme], m_player2[theme]);
 }
 
@@ -156,7 +157,7 @@ void KTicTacTuxWin::slotMenu(QAction *action)
 //	if(id >= menuthemes)
 //	{
 //		changeTheme(m_themes[m_themenames[id]]);
-//		conf = kapp->config();
+//		conf = KGlobal::config();
 //		conf->setGroup("Settings");
 //		conf->writeEntry("theme", m_themes[mtheme->text(id)]);
 //		conf->sync();
@@ -188,7 +189,7 @@ void KTicTacTuxWin::score()
 		return;
 	}
 
-	KConfig *conf = kapp->config();
+	KSharedConfig::Ptr conf = KGlobal::config();
 	conf->setGroup("Score");
 	int ailost = conf->readNumEntry("ailost");
 	int aiwon = conf->readNumEntry("aiwon");
@@ -254,18 +255,18 @@ void KTicTacTuxWin::loadThemes()
 	int count = 0;
 
 	// Recursively scan all data directories
-	kdDebug() << "loadThemes" << endl;
+	kDebug() << "loadThemes" << endl;
 	QStringList list(d->findDirs("data", "ktictactux"));
 	for(QStringList::iterator it = list.begin(); it != list.end(); it++)
 	{
 		QDir dir((*it));
-		kdDebug() << "Scan dir: " << (*it) << endl;
+		kDebug() << "Scan dir: " << (*it) << endl;
 		QStringList entries = dir.entryList(QDir::Files);
 		for(QStringList::iterator it2 = entries.begin(); it2 != entries.end(); it2++)
 		{
 			if((*it2).right(4) == ".png") continue;
 			file = (*it) + (*it2);
-			kdDebug() << "Check file: " << file << endl;
+			kDebug() << "Check file: " << file << endl;
 			KSimpleConfig conf(file);
 			if(conf.hasGroup("Description"))
 			{
@@ -280,7 +281,7 @@ void KTicTacTuxWin::loadThemes()
 				m_player2[file] = (*it) + player2;
 
 				m_themenames[count] = name;
-				QAction *action_theme = mtheme->insertItem(KGlobal::iconLoader()->loadIcon("imagegallery", KIconLoader::Small), name, index);
+				QAction *action_theme = mtheme->insertItem(KIconLoader::global()->loadIcon("imagegallery", KIconLoader::Small), name, index);
 				count++;
 				// FIXME: do something with action_theme
 			}

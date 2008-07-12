@@ -68,7 +68,7 @@ int KTicTacTuxProto::getOp()
 // Ask whether move was ok
 int KTicTacTuxProto::getMoveStatus()
 {
-	Q_INT8 status;
+	qint8 status;
 
 	*packet->inputstream() >> status;
 
@@ -99,7 +99,7 @@ int KTicTacTuxProto::getOpponentMove()
 // Oooops... volunteers :-)
 int KTicTacTuxProto::getSync()
 {
-	Q_INT8 space;
+	qint8 space;
 
 	*packet->inputstream() >> turn;
 
