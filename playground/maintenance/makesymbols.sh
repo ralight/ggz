@@ -22,7 +22,7 @@ rm -f linker.map
 echo "VERSION {" >> linker.map
 echo "global:" >> linker.map
 for symbol in $symbols; do
-echo "$symbol;" >> linker.map
+echo "    $symbol;" >> linker.map
 done
 echo "local: *;" >> linker.map
 echo "};" >> linker.map
