@@ -352,7 +352,7 @@ AC_DEFUN([AC_GGZ_DATABASE_MYSQL],
 		default_db=mysql
 		AC_DEFINE([WITH_MYSQL], 1, [MySQL is used, needed for statistics])
 	fi
-	AM_CONDITIONAL([GGZDB_MYSQL], [test "$enable_mysql" = yes])
+	AM_CONDITIONAL([GGZDB_MYSQL], [test "$mysql" = yes])
 ])
 
 AC_DEFUN([AC_GGZ_DATABASE_SQLITE],
@@ -425,7 +425,7 @@ AC_DEFUN([AC_GGZ_DATABASE_DBI],
 		AC_MSG_NOTICE([Configuring dbi database module.])
 		default_db=dbi
 	fi
-	AM_CONDITIONAL([GGZDB_DBI], [test "$enable_dbi" = yes])
+	AM_CONDITIONAL([GGZDB_DBI], [test "$dbi" = yes])
 ])
 
 AC_DEFUN([AC_GGZ_DATABASE],
