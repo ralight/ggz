@@ -33,10 +33,7 @@ AM_CONDITIONAL(INSTALL_LIBGGZ, true)
 AC_ARG_ENABLE([visibility],
   AS_HELP_STRING([--enable-visibility], [Restrict library symbol visibility]),
   [enable_visibility=$enableval], [enable_visibility="no"])
-if test "$enable_visibility" = yes; then
-  SYMBOL_VISIBILITY="-Wl,--version-script=linker.map"
-  AC_SUBST(SYMBOL_VISIBILITY)
-fi
+AM_CONDITIONAL(SYMBOL_VISIBILITY, test "$enable_visibility" = yes)
 
 # Makefile creation
 # =================
