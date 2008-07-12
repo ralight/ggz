@@ -41,6 +41,7 @@ dnl   AC_GGZ_CONFIG - find the ggz-config tool and set up configuration
 dnl   AC_GGZ_GGZMOD - find the ggzmod library
 dnl   AC_GGZ_GGZDMOD - find the ggzdmod library
 dnl   AC_GGZ_SERVER - set up game and room path for ggzd game servers
+dnl   AC_GGZ_VISIBILITY - linker support for symbol visibility
 dnl
 dnl   Each macro takes two arguments:
 dnl     1.  Action-if-found (or empty for no action).
@@ -206,6 +207,19 @@ else
 fi
 CFLAGS=$save_cflags
 CXXFLAGS=$save_cxxflags
+])
+
+dnl ------------------------------------------------------------------------
+dnl Experimental symbol visibility for the linker
+dnl Synopsis: AC_GGZ_VISIBILITY
+dnl ------------------------------------------------------------------------
+dnl
+AC_DEFUN([AC_GGZ_VISIBILITY],
+[
+	AC_ARG_ENABLE([visibility],
+		AS_HELP_STRING([--enable-visibility], [Restrict library symbol visibility]),
+		[enable_visibility=$enableval], [enable_visibility="no"])
+	AM_CONDITIONAL(SYMBOL_VISIBILITY, test "$enable_visibility" = yes)
 ])
 
 dnl ------------------------------------------------------------------------

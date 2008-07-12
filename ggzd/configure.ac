@@ -217,11 +217,7 @@ dnl Attempt to use as much as we can on systems with glibc
 AC_DEFINE([_GNU_SOURCE], 1,
 	  [Attempt to use as much as we can on systems with glibc])
 
-# Experimental symbol visibility
-AC_ARG_ENABLE([visibility],
-  AS_HELP_STRING([--enable-visibility], [Restrict library symbol visibility]),
-  [enable_visibility=$enableval], [enable_visibility="no"])
-AM_CONDITIONAL(SYMBOL_VISIBILITY, test "$enable_visibility" = yes)
+AC_GGZ_VISIBILITY
 
 AC_CONFIG_FILES([Makefile
 	ggzdmod/Makefile
