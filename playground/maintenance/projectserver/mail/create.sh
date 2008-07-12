@@ -9,7 +9,6 @@ for list in `ls -1 | grep -v mbox`; do
 	cd $list
 	rm -f $base/$list.stats
 	for i in *.txt; do
-		#month=`echo $i | cut -d "." -f 1 | cut -d "-" -f 2`
 		month=`echo $i | cut -d "." -f 1`
 		num=`grep ^From $i | wc -l`
 		num=$[$num / 2]

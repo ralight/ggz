@@ -67,13 +67,14 @@ my @data = ();
 push @data, [@months];
 push @data, [@numbers];
 
-my $mygraph = GD::Graph::area->new(500, 300);
+my $mygraph = GD::Graph::area->new(1024, 500);
 $mygraph->set(
 	x_label => "Month",
 	y_label => "Postings",
 	title => "Activity of $list mailing list",
 	x_labels_vertical => 1
 ) or warn $mygraph->error;
+$mygraph->set_legend_font(GD::gdMediumBoldFont);
 
 my $myimage = $mygraph->plot(\@data) or die $mygraph->error;
 
