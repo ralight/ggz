@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10175 2008-07-08 00:33:30Z jdorje $
+ * $Id: ggzdb_pgsql.c 10311 2008-07-12 17:11:51Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -1077,10 +1077,21 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 	savegame_quoted = _ggzdb_escape(savegame);
 
 	snprintf(query, sizeof(query),
+		"DELETE FROM savegameplayers WHERE "
+		"tableid = (SELECT tableid FROM savegames WHERE "
+		"game = '%s' AND savegame = '%s') AND "
+		"stamp = (SELECT stamp FROM savegames WHERE "
+		"game = '%s' and savegame = '%s')",
+		game_quoted, savegame_quoted,
+		game_quoted, savegame_quoted);
+
+	res = PQexec(conn, query);
+	PQclear(res);
+
+	snprintf(query, sizeof(query),
 		"DELETE FROM savegames "
 		"WHERE game = '%s' AND savegame = '%s'",
 		game_quoted, savegame_quoted);
-	/* FIXME: we need to delete from savegameplayers here too */
 
 	res = PQexec(conn, query);
 	PQclear(res);
