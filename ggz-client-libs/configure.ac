@@ -129,6 +129,12 @@ AC_SUBST(LIB_EXPAT)
 # ===========
 AC_GGZ_DEBUG
 
+# Experimental symbol visibility
+AC_ARG_ENABLE([visibility],
+  AS_HELP_STRING([--enable-visibility], [Restrict library symbol visibility]),
+  [enable_visibility=$enableval], [enable_visibility="no"])
+AM_CONDITIONAL(SYMBOL_VISIBILITY, test "$enable_visibility" = yes)
+
 # Library settings
 # ================
 AM_CONDITIONAL(INSTALL_GGZMOD, true)

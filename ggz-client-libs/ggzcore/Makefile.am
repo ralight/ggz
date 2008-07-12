@@ -19,6 +19,10 @@ libggzcore_la_LIBADD += $(LIB_GGZ)
 endif
 
 libggzcore_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 9:0:0
+if SYMBOL_VISIBILITY
+libggzcore_la_LDFLAGS += -Wl,--version-script=linker.map
+libggzcore_la_DEPENDENCIES = linker.map
+endif
 
 libggzcore_la_SOURCES =	conf.c \
 			conf.h \
