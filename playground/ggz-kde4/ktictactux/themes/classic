@@ -1,0 +1,10 @@
+[Description]
+name=Tux/Kandalf (classic)
+name[de]=Tux/Kandalf (klassisch)
+name[fr]=Tux/Kandalf (classique)
+name[it]=Tux/Kandalf (classico)
+
+[Pixmaps]
+player1=tux.png
+player2=merlin.png
+

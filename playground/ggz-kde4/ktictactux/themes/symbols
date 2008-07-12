@@ -1,0 +1,10 @@
+[Description]
+name=Symbols
+name[de]=Symbole
+name[fr]=Symboles
+name[it]=Symboles
+
+[Pixmaps]
+player1=circle.png
+player2=cross.png
+

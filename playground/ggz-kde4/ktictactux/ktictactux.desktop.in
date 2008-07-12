@@ -1,0 +1,16 @@
+[Desktop Entry]
+Encoding=UTF-8
+
+Name=KTicTacTux
+GenericName=TicTacToe game for KDE
+GenericName[de]=TicTacToe-Spiel für KDE
+GenericName[fr]=Jeu TicTacToe pour KDE
+Comment=GGZ TicTacToe game
+Comment[de]=GGZ TicTacToe-Spiel
+Comment[fr]=Jeu GGZ TicTacToe
+
+Type=Application
+Exec=@ggzexecmoddir@/ktictactux_client
+Icon=ktictactux
+Terminal=false
+Categories=X-GGZ-Games;BoardGame;Game;KDE;Qt;

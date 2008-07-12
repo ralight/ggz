@@ -1,0 +1,10 @@
+[Description]
+name=KDE/GNOME
+name[de]=KDE/GNOME
+name[fr]=KDE/GNOME
+name[it]=KDE/GNOME
+
+[Pixmaps]
+player1=kde.png
+player2=gnome.png
+
