@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10312 2008-07-12 18:29:35Z oojah $
+ * $Id: ggzdb_mysql.c 10315 2008-07-12 18:56:41Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -625,6 +625,14 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 	savegame_quoted = _ggzdb_escape(savegame);
 
 	snprintf(query, sizeof(query),
+		"DELETE FROM savegames "
+		"WHERE game = '%s' AND owner = '%s'",
+		game_quoted, owner_quoted);
+
+	pthread_mutex_lock(&mutex);
+	mysql_query(conn, query);
+
+	snprintf(query, sizeof(query),
 		"INSERT INTO `savegames`"
 		"(`date`,`game`,`owner`,`savegame`,`tableid`,`stamp`) VALUES "
 		"(%li, '%s', '%s', '%s', %li, %li)",
@@ -635,7 +643,6 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 	free(owner_quoted);
 	free(game_quoted);
 
-	pthread_mutex_lock(&mutex);
 	mysql_rc = mysql_query(conn, query);
 	pthread_mutex_unlock(&mutex);
 
