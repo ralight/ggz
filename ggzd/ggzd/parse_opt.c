@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 10292 2008-07-12 08:18:30Z josef $
+ * $Id: parse_opt.c 10293 2008-07-12 08:39:50Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -439,8 +439,8 @@ static void parse_game(char *name, char *dir)
 			snprintf(db_pe.handle, sizeof(db_pe.handle), "%s",
 				game_info.named_bots[i][0]);
 			db_status = ggzdb_player_get(&db_pe);
-			if ((db_pe.perms & (1 << GGZ_PERM_CHAT_BOT))
-			    && (db_status != GGZDB_ERR_NOTFOUND)) {
+			if ((db_status != GGZDB_ERR_NOTFOUND)
+			    && (db_pe.perms & (1 << GGZ_PERM_CHAT_BOT))) {
 				ggz_debug(GGZ_DBG_CONFIGURATION,
 					"named_bot <%s> registered already.",
 					game_info.named_bots[i][0]);
