@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+
+Name=KGrubby
+GenericName=Chatbot configuration
+GenericName[de]=Chatbot-Konfiguration
+Comment=Configuration of Grubby, the GGZ chatbot
+Comment[de]=Konfiguration von Grubby, dem Chatbot von GGZ
+
+Type=Application
+Exec=kgrubby
+Icon=kgrubby
+Terminal=false
+Categories=X-GGZ;DesktopSettings;KDE;Qt;
