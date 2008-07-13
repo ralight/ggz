@@ -1,36 +1,33 @@
 GGZ Gaming Zone for KDE 4
 =========================
 
-This directory contains some bits of what shall become a
-decent GGZ support for KDE 4 games. Note that it used to contain
-more libraries, which have since however been moved to libkdegames
-already.
+This directory serves as incubator for new games, tools,
+applications and libraries for the 'ggz-kde-center' package.
+It also relates to the 'kdegames' package.
 
-Right now it contains the 'kggzdmod' library, which is a Qt-based version
-of ggzdmod.
-To compile it, change the include paths to kdecore in kggzdmod-kde4.pro,
-run qmake-qt4 and finally make.
-
-It also contains a port of the 'kconnectx' example game.
-Compilation works similar to kggzdmod.
-
-We also need CMake files :)
-A first attempt at supporting GGZ in CMake can be found in
-playground/buildsystem/cmake.
+The older 'ggz-kde-client' and 'ggz-kde-games' packages have
+also been moved here because some of their contents still need
+to be ported. Already ported games and apps are marked with [ported].
 
 Summary of GGZ-in-KDE4-efforts as of July 2008:
-* In this directory
- - kggzcore    [|||       ] - library for GGZ core clients
- - kggzdmod    [|||||     ] - core GGZ game server module library
+
+* In this directory (incubator)
  - conn-dialog [|         ] - connection dialog for GGZ core client in KDE 4
  - playerlist  [|||       ] - player list for GGZ core clients in KDE 4
  - roomlist    [||||||    ] - room list for GGZ core clients in KDE 4
  - kggz-ng     [          ] - the successor to KGGZ (in planning stage)
+ - kconnectx   [||||||    ] - KConnectX demo game for kggzmod [ported]
+
+ - kde-games-kde3
+ - kde-client-kde3
+
+* In ggz-kde-center
+ - kggzcore    [|||||     ] - library for GGZ core clients
+ - kggzdmod    [|||||     ] - core GGZ game server module library
  - plasma-kggz [||||      ] - Plasma widget to succeed GGZap
-* In this directory, ported from ggz-kde-{games,client}
- - kconnectx   [||||||    ] - KConnectX demo game for kggzmod
- - ktictactux  [||||||    ] - Tic-Tac-Toe game client
+ - ktictactux  [||||||    ] - Tic-Tac-Toe game client [ported]
  - kgrubby     [||||||||  ] - Graphical configuration of grubby
+
 * In (lib)kdegames (KDE SVN)
  - cmake       [|||||     ] - CMake files for GGZ library checks
  - kggzmod     [||||||||| ] - core GGZ game module library
