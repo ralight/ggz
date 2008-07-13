@@ -20,5 +20,5 @@ install(FILES
 	module.h
 	player.h
 	request.h
-	DESTINATION ${INCLUDE_INSTALL_DIR}/kggzcore
+	DESTINATION ${INCLUDE_INSTALL_DIR}/kggzdmod
 )
