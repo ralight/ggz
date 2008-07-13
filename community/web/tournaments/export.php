@@ -71,6 +71,8 @@ function played($player1, $player2)
 	global $date;
 	global $matchid;
 
+	// FIXME: restrict to gametype?
+
 	$res = $database->exec("SELECT match FROM matchplayers WHERE handle = '%^'", array($player1));
 	for($k = 0; $k < $database->numrows($res); $k++)
 	{
