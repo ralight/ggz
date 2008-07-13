@@ -1,8 +1,8 @@
 dnl Configuration for the Gtk+ core client
-# $Id: configure.ac 9946 2008-04-12 11:59:55Z josef $
+# $Id: configure.ac 10331 2008-07-13 15:37:43Z josef $
 dnl ======================================
 
-AC_INIT([GGZ Gtk+ client], [snapshot-0.99.3], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
+AC_INIT([GGZ Gtk+ client], [snapshot-0.99.4], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -22,7 +22,7 @@ dnl Check for GGZ Requirements
 dnl ==========================
 AC_GGZ_INIT(defaults, export)
 AC_GGZ_LIBGGZ
-AC_GGZ_VERSION(0, 99, 2)
+AC_GGZ_VERSION(0, 99, 4)
 AC_GGZ_GGZCORE
 AC_GGZ_INTL
 
