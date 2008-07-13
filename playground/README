@@ -81,6 +81,10 @@
 	GGZ-KDE4:
 		Natural integration of GGZ protocols and tools into a KDE 4 desktop.
 
+	GGZ-SDL-Games:
+		The formerly included SDL games package, which is currently not
+		maintained anymore.
+
 	Haskell:
 		Some Sudoku creation and solver software written in the functional
 		programming language Haskell.
