@@ -3,6 +3,8 @@ project(ggz-kde-center)
 cmake_minimum_required(VERSION 2.6)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/)
 
+include(GGZKDECenterPackage)
+
 find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})

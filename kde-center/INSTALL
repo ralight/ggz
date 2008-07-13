@@ -1,0 +1,10 @@
+The GGZ KDE Center package uses cmake as its build system.
+
+Configure the package with:
+  mkdir <builddir>; cd <builddir>
+  cmake -DCMAKE_INSTALL_PREFIX= <srcdir>
+
+Add -DCMAKE_VERBOSE_MAKEFILE for troubleshooting.
+
+Finally, compile and install:
+  make && make install
