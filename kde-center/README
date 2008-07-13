@@ -19,8 +19,9 @@ Contents of the ggz-kde-center package:
 	  games and join them with a core client
 	- kgrubby, a configuration utility for the chatbot Grubby
 
-	- ktictactux, the well-known GGZ example game, in a fresh look
-	  for KDE 4
+	- ktictactux, the well-known GGZ example game Tic-Tac-Toe,
+	  in a fresh look for KDE 4
+	- kryds, a game server for Tic-Tac-Toe using kggzdmod
 
 Most of them have their own README for more information on them.
 
