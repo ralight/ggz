@@ -23,10 +23,12 @@
 
 #include <QString>
 
+#include "kggzcore_export.h"
+
 namespace KGGZCore
 {
 
-class Misc
+class KGGZCORE_EXPORT Misc
 {
 	public:
 		static QString messagename(int id);

@@ -26,6 +26,8 @@
 
 #include <kggzcore/error.h>
 
+#include "kggzcore_export.h"
+
 namespace KGGZCore
 {
 
@@ -33,7 +35,7 @@ class RoomBase;
 class Table;
 class Player;
 
-class Room : public QObject
+class KGGZCORE_EXPORT Room : public QObject
 {
 	Q_OBJECT
 	public:

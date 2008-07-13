@@ -24,10 +24,12 @@
 #include <QString>
 #include <QObject>
 
+#include "kggzcore_export.h"
+
 namespace KGGZCore
 {
 
-class Player : public QObject
+class KGGZCORE_EXPORT Player : public QObject
 {
 	Q_OBJECT
 	public:

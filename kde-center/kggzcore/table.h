@@ -24,12 +24,14 @@
 #include <QString>
 #include <QObject>
 
+#include "kggzcore_export.h"
+
 namespace KGGZCore
 {
 
 class Player;
 
-class Table : public QObject
+class KGGZCORE_EXPORT Table : public QObject
 {
 	Q_OBJECT
 	public:

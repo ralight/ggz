@@ -25,6 +25,8 @@
 
 #include <ggzcore.h>
 
+#include "kggzcore_export.h"
+
 class QSocketNotifier;
 
 namespace KGGZCore
@@ -32,7 +34,7 @@ namespace KGGZCore
 
 class RoomBase;
 
-class CoreClientBase : public QObject
+class KGGZCORE_EXPORT CoreClientBase : public QObject
 {
 	Q_OBJECT
 	public:

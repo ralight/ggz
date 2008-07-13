@@ -13,8 +13,8 @@ set(kggzcore_LIB_SRCS
 	player.cpp
 )
 
-kde4_automoc(${kggzcore_LIB_SRCS})
+#kde4_automoc(${kggzcore_LIB_SRCS})
 
-kde4_add_library(kggzcore STATIC ${kggzcore_LIB_SRCS})
+kde4_add_library(kggzcore SHARED ${kggzcore_LIB_SRCS})
 
-target_link_libraries(kggzcore ${QT_QTNETWORK_LIBRARY})
+target_link_libraries(kggzcore ${KDE4_KDECORE_LIBS} ${QT_QTNETWORK_LIBRARY} ggzcore)

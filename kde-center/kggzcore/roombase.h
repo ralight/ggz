@@ -25,13 +25,15 @@
 
 #include <QObject>
 
+#include "kggzcore_export.h"
+
 namespace KGGZCore
 {
 
 class Table;
 class Player;
 
-class RoomBase : public QObject
+class KGGZCORE_EXPORT RoomBase : public QObject
 {
 	Q_OBJECT
 	public:

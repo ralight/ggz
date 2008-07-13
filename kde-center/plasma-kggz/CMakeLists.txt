@@ -16,7 +16,7 @@ kde4_add_plugin(plasma_applet_kggz ${plasmakggz_SRCS})
 #                      ${PLASMA_LIBS} ${KDE4_KDEUI_LIBS})
 target_link_libraries(plasma_applet_kggz
    -lplasma ${KDE4_KDEUI_LIBS}
-   -L../kggzcore -lkggzcore)
+   -L../lib -lkggzcore)
  
 install(TARGETS plasma_applet_kggz
         DESTINATION ${PLUGIN_INSTALL_DIR})

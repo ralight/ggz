@@ -27,13 +27,15 @@
 
 #include <kggzcore/error.h>
 
+#include "kggzcore_export.h"
+
 namespace KGGZCore
 {
 
 class CoreClientBase;
 class Room;
 
-class CoreClient : public QObject
+class KGGZCORE_EXPORT CoreClient : public QObject
 {
 	Q_OBJECT
 	public:

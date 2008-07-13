@@ -23,6 +23,8 @@
 
 #include <QString>
 
+#include "kggzcore_export.h"
+
 namespace KGGZCore
 {
 
@@ -44,7 +46,7 @@ enum State
 	logging_out
 };
 
-class Error
+class KGGZCORE_EXPORT Error
 {
 	public:
 		//Error();
