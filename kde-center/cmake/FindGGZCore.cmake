@@ -1,7 +1,7 @@
 SET(GGZCORE_FOUND "NO")
 
 FIND_PROGRAM(PKGCONFIG_EXECUTABLE NAMES pkg-config PATHS /usr/bin/ /usr/local/bin)
-EXEC_PROGRAM(${PKGCONFIG_EXECUTABLE} ARGS 'ggzcore >= snapshot-0.99.3' RETURN_VALUE _return)
+EXEC_PROGRAM(${PKGCONFIG_EXECUTABLE} ARGS 'ggzcore >= snapshot-0.99.4' RETURN_VALUE _return)
 if(_return STREQUAL "0")
   SET(GGZCORE_FOUND "YES")
 endif(_return STREQUAL "0")
