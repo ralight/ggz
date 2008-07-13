@@ -1,0 +1,38 @@
+====================================================================
+The GGZ Gaming Zone - KDE Clients, Tools and Games - Snapshot 0.99.4
+====================================================================
+
+This package contains the foundation for online gaming on the KDE 4
+desktop. It replaces the previous packages ggz-kde-client and
+ggz-kde-games from KDE 3 times.
+
+It is required to install the kdegames package to compile the game
+clients. This will as well get you more GGZ-enabled KDE 4 games.
+
+Contents of the ggz-kde-center package:
+	- kggzcore, a C++ KDE/Qt wrapper for the ggzcore library, serving
+	  as a base for GGZ core clients
+	- kggzdmod, a C++ KDE/Qt wrapper for the ggzdmod library, used
+	  in game server development
+
+	- plasma-kggz, a Plasma widget to receive invitations for
+	  games and join them with a core client
+	- kgrubby, a configuration utility for the chatbot Grubby
+
+	- ktictactux, the well-known GGZ example game, in a fresh look
+	  for KDE 4
+
+Most of them have their own README for more information on them.
+
+Please read 'INSTALL' if you aren't experienced with the build yet.
+For an overall view on the GGZ setup procedures, please consult the file
+README.GGZ.
+Have a look at QuickStart.GGZ to learn about the installation process.
+
+If you encounter any bugs, please send them to the mailing list,
+	<ggz-dev@mail.ggzgamingzone.org>.
+Or use the bug tracker at http://bugs.ggzgamingzone.org/.
+
+Have fun!
+	The GGZ Gaming Zone Development Team
+
