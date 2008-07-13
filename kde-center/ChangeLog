@@ -1,0 +1,169 @@
+------------------------------------------------------------------------
+r10328 | josef | 2008-07-13 16:27:58 +0200 (So, 13. Jul 2008) | 4 lines
+Geänderte Pfade:
+   A /trunk/kde-center/AUTHORS
+   M /trunk/kde-center/CMakeLists.txt
+   A /trunk/kde-center/COPYING
+   A /trunk/kde-center/INSTALL
+   A /trunk/kde-center/cmake/GGZKDECenterPackage.cmake
+
+- add some standard files, and a not-so-standard INSTALL hint
+- prepare for packaging with 'cpack' although that seems to produce only a ggz-kde-center-0.99.4-Linux.tar.bz2 of 42 bytes at the moment
+
+
+------------------------------------------------------------------------
+r10327 | josef | 2008-07-13 15:33:50 +0200 (So, 13. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzdmod/CMakeLists.txt
+
+- typo in directory
+
+
+------------------------------------------------------------------------
+r10326 | josef | 2008-07-13 15:31:48 +0200 (So, 13. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzcore/CMakeLists.txt
+   M /trunk/kde-center/kggzdmod/CMakeLists.txt
+   M /trunk/kde-center/ktictactux/CMakeLists.txt
+   M /trunk/kde-center/ktictactux/ktictactux.cpp
+   A /trunk/kde-center/ktictactux/ktictactux.desktop (von /trunk/kde-center/ktictactux/ktictactux.desktop.in:10318)
+   D /trunk/kde-center/ktictactux/ktictactux.desktop.in
+   A /trunk/kde-center/ktictactux/themes/CMakeLists.txt
+   D /trunk/kde-center/ktictactux/themes/Makefile.am
+
+- installation of ktictactux themes and desktop file
+- installation of kggzdmod and kggzcore header files
+
+
+------------------------------------------------------------------------
+r10325 | josef | 2008-07-13 15:11:16 +0200 (So, 13. Jul 2008) | 3 lines
+Geänderte Pfade:
+   A /trunk/kde-center/kgrubby/data/CMakeLists.txt
+   M /trunk/kde-center/kgrubby/src/CMakeLists.txt
+   M /trunk/kde-center/kgrubby/src/app.cpp
+   M /trunk/kde-center/kgrubby/src/plugin.cpp
+   M /trunk/kde-center/kgrubby/src/plugin.h
+   M /trunk/kde-center/kgrubby/src/toplevel.cpp
+
+- finish porting: do not crash in QTableWidget, and install icons
+
+
+------------------------------------------------------------------------
+r10324 | josef | 2008-07-13 13:42:38 +0200 (So, 13. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/CMakeLists.txt
+   A /trunk/kde-center/cmake
+   A /trunk/kde-center/cmake/FindGGZCore.cmake
+   A /trunk/kde-center/cmake/FindGGZDMod.cmake
+   M /trunk/kde-center/kggzcore/CMakeLists.txt
+   M /trunk/kde-center/kggzdmod/CMakeLists.txt
+
+- add cmake macros to find ggzcore and ggzdmod, and require these
+
+
+------------------------------------------------------------------------
+r10322 | josef | 2008-07-13 12:35:12 +0200 (So, 13. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/CMakeLists.txt
+   A /trunk/kde-center/kggzdmod/CMakeLists.txt
+   M /trunk/kde-center/kggzdmod/event.h
+   D /trunk/kde-center/kggzdmod/kggzdmod-kde4.pro
+   A /trunk/kde-center/kggzdmod/kggzdmod_export.h
+   M /trunk/kde-center/kggzdmod/module.cpp
+   M /trunk/kde-center/kggzdmod/module.h
+   M /trunk/kde-center/kggzdmod/player.h
+   M /trunk/kde-center/kggzdmod/request.h
+   A /trunk/kde-center/kryds/CMakeLists.txt
+   M /trunk/kde-center/kryds/kryds.cpp
+   D /trunk/kde-center/kryds/kryds.pro
+
+- add kggzdmod and kryds to the CMake build system
+
+
+------------------------------------------------------------------------
+r10321 | josef | 2008-07-13 12:12:18 +0200 (So, 13. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/README
+   D /trunk/kde-center/kggzdmod/kryds
+   A /trunk/kde-center/kryds (von /trunk/kde-center/kggzdmod/kryds:10318)
+
+- move the Kryds game server one level up so we've got a fairly visible kggzdmod-based example server
+
+
+------------------------------------------------------------------------
+r10320 | josef | 2008-07-13 12:09:13 +0200 (So, 13. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/CMakeLists.txt
+   M /trunk/kde-center/kggzcore/CMakeLists.txt
+   M /trunk/kde-center/kggzcore/coreclient.h
+   M /trunk/kde-center/kggzcore/coreclientbase.h
+   M /trunk/kde-center/kggzcore/error.h
+   D /trunk/kde-center/kggzcore/kggzcore-kde4.pro
+   A /trunk/kde-center/kggzcore/kggzcore_export.h
+   M /trunk/kde-center/kggzcore/misc.h
+   M /trunk/kde-center/kggzcore/player.h
+   M /trunk/kde-center/kggzcore/room.h
+   M /trunk/kde-center/kggzcore/roombase.h
+   M /trunk/kde-center/kggzcore/table.h
+   M /trunk/kde-center/ktictactux/CMakeLists.txt
+   M /trunk/kde-center/plasma-kggz/CMakeLists.txt
+
+- make entire package compile, although with some hacks
+- add necessary visibility macros to kggzcore
+
+
+------------------------------------------------------------------------
+r10319 | josef | 2008-07-13 11:46:19 +0200 (So, 13. Jul 2008) | 3 lines
+Geänderte Pfade:
+   A /trunk/kde-center/CMakeLists.txt
+   M /trunk/kde-center/kggzcore/CMakeLists.txt
+   M /trunk/kde-center/kgrubby/CMakeLists.txt
+   M /trunk/kde-center/ktictactux/CMakeLists.txt
+   M /trunk/kde-center/plasma-kggz/CMakeLists.txt
+
+- move all common configuration code into a top-level cmake file
+
+
+------------------------------------------------------------------------
+r10316 | josef | 2008-07-13 10:40:27 +0200 (So, 13. Jul 2008) | 5 lines
+Geänderte Pfade:
+   A /trunk/kde-center
+   A /trunk/kde-center/README
+   A /trunk/kde-center/README.GGZ (von /trunk/kde-client/README.GGZ:10294)
+   A /trunk/kde-center/kggzcore (von /trunk/playground/ggz-kde4/kggzcore:10295)
+   A /trunk/kde-center/kggzdmod (von /trunk/playground/ggz-kde4/kggzdmod:10295)
+   A /trunk/kde-center/kgrubby (von /trunk/playground/ggz-kde4/kgrubby:10296)
+   R /trunk/kde-center/kgrubby/CMakeLists.txt (von /trunk/playground/ggz-kde4/kgrubby/CMakeLists.txt:10301)
+   R /trunk/kde-center/kgrubby/src/CMakeLists.txt (von /trunk/playground/ggz-kde4/kgrubby/src/CMakeLists.txt:10303)
+   R /trunk/kde-center/kgrubby/src/app.cpp (von /trunk/playground/ggz-kde4/kgrubby/src/app.cpp:10303)
+   R /trunk/kde-center/kgrubby/src/app.h (von /trunk/playground/ggz-kde4/kgrubby/src/app.h:10303)
+   R /trunk/kde-center/kgrubby/src/main.cpp (von /trunk/playground/ggz-kde4/kgrubby/src/main.cpp:10301)
+   R /trunk/kde-center/kgrubby/src/plugin.cpp (von /trunk/playground/ggz-kde4/kgrubby/src/plugin.cpp:10303)
+   R /trunk/kde-center/kgrubby/src/plugin.h (von /trunk/playground/ggz-kde4/kgrubby/src/plugin.h:10303)
+   R /trunk/kde-center/kgrubby/src/toplevel.cpp (von /trunk/playground/ggz-kde4/kgrubby/src/toplevel.cpp:10303)
+   R /trunk/kde-center/kgrubby/src/toplevel.h (von /trunk/playground/ggz-kde4/kgrubby/src/toplevel.h:10301)
+   A /trunk/kde-center/ktictactux (von /trunk/playground/ggz-kde4/ktictactux:10305)
+   A /trunk/kde-center/ktictactux/CMakeLists.txt (von /trunk/playground/ggz-kde4/ktictactux/CMakeLists.txt:10309)
+   D /trunk/kde-center/ktictactux/Makefile.am
+   R /trunk/kde-center/ktictactux/ktictactux.cpp (von /trunk/playground/ggz-kde4/ktictactux/ktictactux.cpp:10309)
+   R /trunk/kde-center/ktictactux/ktictactux.h (von /trunk/playground/ggz-kde4/ktictactux/ktictactux.h:10309)
+   R /trunk/kde-center/ktictactux/ktictactuxproto.cpp (von /trunk/playground/ggz-kde4/ktictactux/ktictactuxproto.cpp:10309)
+   R /trunk/kde-center/ktictactux/ktictactuxproto.h (von /trunk/playground/ggz-kde4/ktictactux/ktictactuxproto.h:10307)
+   R /trunk/kde-center/ktictactux/ktictactuxwin.cpp (von /trunk/playground/ggz-kde4/ktictactux/ktictactuxwin.cpp:10309)
+   R /trunk/kde-center/ktictactux/ktictactuxwin.h (von /trunk/playground/ggz-kde4/ktictactux/ktictactuxwin.h:10309)
+   R /trunk/kde-center/ktictactux/main.cpp (von /trunk/playground/ggz-kde4/ktictactux/main.cpp:10309)
+   R /trunk/kde-center/ktictactux/qwhiteframe.cpp (von /trunk/playground/ggz-kde4/ktictactux/qwhiteframe.cpp:10309)
+   R /trunk/kde-center/ktictactux/qwhiteframe.h (von /trunk/playground/ggz-kde4/ktictactux/qwhiteframe.h:10309)
+   A /trunk/kde-center/plasma-kggz (von /trunk/playground/ggz-kde4/plasma-kggz:10295)
+   D /trunk/playground/ggz-kde4/kggzcore
+   D /trunk/playground/ggz-kde4/kggzdmod
+   D /trunk/playground/ggz-kde4/kgrubby
+   D /trunk/playground/ggz-kde4/ktictactux
+   D /trunk/playground/ggz-kde4/plasma-kggz
+
+- creation of a new GGZ package named 'ggz-kde-center' which is going to replace 'ggz-kde-{client,games}'
+- moving two libraries, two applications and one game there which mostly work already
+- the rest remains in playground/ggz-kde4 waiting for further improvements
+
+
+------------------------------------------------------------------------
