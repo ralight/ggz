@@ -1,13 +1,13 @@
 #!/bin/sh
 
-version=0.0.14
+version=0.99.4
 base=$PWD
 log=makedist.log
 
 prefix=/tmp/ggz-dist-$version
 export DISTCHECK_CONFIGURE_FLAGS=--prefix=$prefix
 
-modules="libggz ggz-client-libs ggzd docs txt-client utils grubby gtk-client gtk-games kde-client kde-games sdl-games gnome-client java python community"
+modules="libggz ggz-client-libs ggzd txt-client grubby java python gtk-client gtk-games utils community docs kde-center"
 
 echo "GGZ $version Distribution"
 for i in $modules; do
@@ -20,6 +20,12 @@ for i in $modules; do
 		make install >$log
 		cp *-$version.tar.gz ..
 		cd $base
+	elif test -d $i && (test -f $i/CMakeLists.txt); then
+		echo $i...
+		cd $i
+		kde4launch cmake -DCMAKE_INSTALL_PREFIX=$prefix $PWD
+		cpack -G TGZ
+		cd $base
 	elif test -d $i && (test -f $i/Makefile || test -f $i/Makefile.in); then
 		echo $i...
 		cd $i
@@ -29,7 +35,6 @@ for i in $modules; do
 			make install >$log
 		fi
 		make dist >$log
-		#cp ../*-$version.tar.gz ..
 		cd $base
 	fi
 done
