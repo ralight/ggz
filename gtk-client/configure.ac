@@ -1,5 +1,5 @@
 dnl Configuration for the Gtk+ core client
-# $Id: configure.ac 10331 2008-07-13 15:37:43Z josef $
+# $Id: configure.ac 10338 2008-07-13 16:55:05Z jdorje $
 dnl ======================================
 
 AC_INIT([GGZ Gtk+ client], [snapshot-0.99.4], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
@@ -90,6 +90,7 @@ fi
 # ================
 AM_CONDITIONAL(INSTALL_GGZ_GTK, true)
 AM_CONDITIONAL([COND_PIDGIN], [test "$have_pidgin" = yes])
+AC_GGZ_VISIBILITY
 
 dnl Various dirs
 dnl ============
