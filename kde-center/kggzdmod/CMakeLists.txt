@@ -12,3 +12,13 @@ set(kggzdmod_LIB_SRCS
 kde4_add_library(kggzdmod SHARED ${kggzdmod_LIB_SRCS})
 
 target_link_libraries(kggzdmod ${KDE4_KDECORE_LIBS} ${QT_QTNETWORK_LIBRARY} ${GGZDMOD_LIBRARY})
+set_target_properties(kggzdmod PROPERTIES SOVERSION 0.0.0)
+
+install(TARGETS kggzdmod ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(FILES
+	event.h
+	module.h
+	player.h
+	request.h
+	DESTINATION ${INCLUDE_INSTALL_DIR}/kggzcore
+)

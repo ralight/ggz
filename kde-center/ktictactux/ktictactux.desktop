@@ -10,7 +10,7 @@ Comment[de]=GGZ TicTacToe-Spiel
 Comment[fr]=Jeu GGZ TicTacToe
 
 Type=Application
-Exec=@ggzexecmoddir@/ktictactux_client
+Exec=ktictactux
 Icon=ktictactux
 Terminal=false
 Categories=X-GGZ-Games;BoardGame;Game;KDE;Qt;

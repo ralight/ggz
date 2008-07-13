@@ -22,17 +22,17 @@
 #include <kconfiggroup.h>
 #include <kapplication.h>
 #include <kdebug.h>
+#include <kstandarddirs.h>
 
 // Qt includes
 #include <qlayout.h>
 #include <qpixmap.h>
+#include <qlabel.h>
 
 // System includes
 #include <stdio.h>
 #include <stdlib.h>
 #include <kglobal.h>
-
-#define GGZDATADIR "XXX"
 
 // Cons... Konstructor :-)
 KTicTacTux::KTicTacTux()
@@ -40,13 +40,12 @@ KTicTacTux::KTicTacTux()
 {
 	QVBoxLayout *vbox, *vbox2;
 	QHBoxLayout *hbox[3];
-	QWidget *container;
+	QLabel *container;
+	KStandardDirs d;
 
-	container = new QWidget(this);
-	QPixmap pix(QString("%1/ktictactux/bg.png").arg(GGZDATADIR));
-	QPalette palette;
-	palette.setBrush(backgroundRole(), QBrush(pix));
-	container->setPalette(palette);
+	container = new QLabel();
+	QPixmap pix(d.findResource("data", "ktictactux/bg.png"));
+	container->setPixmap(pix);
 
 	vbox = new QVBoxLayout();
 	setLayout(vbox);

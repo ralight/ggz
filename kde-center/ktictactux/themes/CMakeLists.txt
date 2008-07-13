@@ -1,0 +1,12 @@
+install(FILES
+	tux.png
+	merlin.png
+	kde.png
+	gnome.png
+	cross.png
+	circle.png
+	desktopwar
+	classic
+	symbols
+	DESTINATION ${DATA_INSTALL_DIR}/ktictactux
+)
