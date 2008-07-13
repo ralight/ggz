@@ -3,15 +3,17 @@
 <table class="content">
 <tr>
 <td colspan="2">
-<b>GGZ Snapshot 0.99.3 Downloads</b><br/>
+<b>GGZ Snapshot 0.99.4 Downloads</b><br/>
 <br/>
 <i>Source code release</i><br/>
-This is the third in a series of snapshots leading to a GGZ 1.0 release.
+This is the fourth in a series of snapshots leading to a GGZ 1.0 release.
 The GGZ Gaming Zone project releases its components as source code, which
 can be downloaded here. In the special case of this snapshot release,
 only twelve of our countless <a href="/packages/">packages</a> have been
-included. Following a staggered release order, additional packages will be
-added in later snapshots.
+included. Following a staggered release order, additional packages were added
+from time to time. The packages are complete now, although further
+changes to the package layout, as well as massive bugfixing and some
+enhancement, will still happen before 1.0.
 <br/><br/>
 </td></tr>
 
@@ -28,18 +30,19 @@ Belnet Mirror, Belgium:<br/>
 <br/><br/>
 Thanks to <a href="http://www.belnet.be/">Belnet</a> for providing the mirror!
 </td><td bgcolor="#ffd000" valign="top">
-<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/libggz-snapshot-0.99.3.tar.gz">libggz-snapshot-0.99.3.tar.gz</a><br/>
-<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-client-libs-snapshot-0.99.3.tar.gz">ggz-client-libs-snapshot-0.99.3.tar.gz</a><br/>
-<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-server-snapshot-0.99.3.tar.gz">ggz-server-snapshot-0.99.3.tar.gz</a><br/>
-<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-txt-client-snapshot-0.99.3.tar.gz">ggz-txt-client-snapshot-0.99.3.tar.gz</a><br/>
-<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-grubby-snapshot-0.99.3.tar.gz">ggz-client-libs-snapshot-0.99.3.tar.gz</a><br/>
-<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-python-snapshot-0.99.3.tar.gz">ggz-python-snapshot-0.99.3.tar.gz</a><br/>
-<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-java-snapshot-0.99.3.tar.gz">ggz-java-snapshot-0.99.3.tar.gz</a><br/>
-<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-gtk-client-snapshot-0.99.3.tar.gz">ggz-gtk-client-snapshot-0.99.3.tar.gz</a><br/>
-<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-gtk-games-snapshot-0.99.3.tar.gz">ggz-gtk-games-snapshot-0.99.3.tar.gz</a><br/>
-<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-utils-snapshot-0.99.3.tar.gz">ggz-utils-snapshot-0.99.3.tar.gz</a><br/>
-<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-docs-snapshot-0.99.3.tar.gz">ggz-docs-snapshot-0.99.3.tar.gz</a><br/>
-<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-community-snapshot-0.99.3.tar.gz">ggz-community-snapshot-0.99.3.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/libggz-snapshot-0.99.4.tar.gz">libggz-snapshot-0.99.4.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-client-libs-snapshot-0.99.4.tar.gz">ggz-client-libs-snapshot-0.99.4.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-server-snapshot-0.99.4.tar.gz">ggz-server-snapshot-0.99.4.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-txt-client-snapshot-0.99.4.tar.gz">ggz-txt-client-snapshot-0.99.4.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-grubby-snapshot-0.99.4.tar.gz">ggz-client-libs-snapshot-0.99.4.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-python-snapshot-0.99.4.tar.gz">ggz-python-snapshot-0.99.4.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-java-snapshot-0.99.4.tar.gz">ggz-java-snapshot-0.99.4.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-gtk-client-snapshot-0.99.4.tar.gz">ggz-gtk-client-snapshot-0.99.4.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-gtk-games-snapshot-0.99.4.tar.gz">ggz-gtk-games-snapshot-0.99.4.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-utils-snapshot-0.99.4.tar.gz">ggz-utils-snapshot-0.99.4.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-docs-snapshot-0.99.4.tar.gz">ggz-docs-snapshot-0.99.4.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-community-snapshot-0.99.4.tar.gz">ggz-community-snapshot-0.99.4.tar.gz</a><br/>
+<a href="http://ftp.belnet.be/packages/ggzgamingzone/ggz/snapshots/ggz-kde-center-0.99.4.tar.gz">ggz-kde-center-0.99.4.tar.gz</a><br/>
 </td></tr>
 
 <tr><td bgcolor="#ffd000" valign="top">
