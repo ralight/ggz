@@ -1,12 +1,7 @@
-cmake_minimum_required(VERSION 2.6)
-
 project(plasma-kggz)
  
-find_package(KDE4 REQUIRED)
-include(KDE4Defaults)
 find_package(Plasma REQUIRED)
  
-add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 include_directories(
    ${CMAKE_SOURCE_DIR}
    ${CMAKE_BINARY_DIR}
