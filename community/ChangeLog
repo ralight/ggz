@@ -1,5 +1,312 @@
 ------------------------------------------------------------------------
-r9999 | josef | 2008-05-24 11:11:00 +0200 (Sa, 24 Mai 2008) | 3 lines
+r10171 | josef | 2008-07-06 14:50:26 +0200 (So, 06. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/db/players/finderform.inc
+   M /trunk/community/web/db/players/finderresults.inc
+   M /trunk/community/web/help/players.php.en
+
+- adapt the player finder to deflated veteran rules
+
+
+------------------------------------------------------------------------
+r10170 | josef | 2008-07-06 14:40:07 +0200 (So, 06. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/help/players.php.en
+
+- adapt help text to deflated veteran status rules
+
+
+------------------------------------------------------------------------
+r10169 | josef | 2008-07-06 14:32:58 +0200 (So, 06. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/tournaments/export.php
+   M /trunk/community/web/tournaments/show2.inc
+
+- tournament maps are now also exportable as SVG, although some information is still missing from them
+
+
+------------------------------------------------------------------------
+r10168 | josef | 2008-07-06 12:39:09 +0200 (So, 06. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/tournaments/show2.inc
+
+- fix path to export script
+
+
+------------------------------------------------------------------------
+r10164 | josef | 2008-07-05 21:06:27 +0200 (Sa, 05. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/teams/applications.php
+
+- somebody likes to put dollar signs in front of array()
+
+
+------------------------------------------------------------------------
+r10163 | josef | 2008-07-05 21:04:00 +0200 (Sa, 05. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/teams/teams.php
+
+- add missing parameters, namely founder entry date and name, for team creation
+
+
+------------------------------------------------------------------------
+r10162 | josef | 2008-07-05 20:52:56 +0200 (Sa, 05. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/countrylist.php
+
+- revert directory change: of course we need one which is readable by browsers within the webroot, so use symlink instead
+
+
+------------------------------------------------------------------------
+r10161 | josef | 2008-07-05 20:44:52 +0200 (Sa, 05. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/countrylist.php
+
+- not yet used function to find out if flag directory is present, and assume /usr/share/locale/l10n by default
+- sort country names alphabetically
+
+
+------------------------------------------------------------------------
+r10160 | josef | 2008-07-05 20:21:18 +0200 (Sa, 05. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/player.php
+   M /trunk/community/web/my/settings.php
+
+- two small fixes for the personal settings
+
+
+------------------------------------------------------------------------
+r10034 | josef | 2008-06-01 22:07:23 +0200 (So, 01. Jun 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/config.php
+   M /trunk/community/web/games/index.php
+
+- replace static room listing with one based on the currently used ggzd.conf
+- this includes support for exclusions from RoomList
+
+
+------------------------------------------------------------------------
+r10033 | josef | 2008-06-01 14:14:40 +0200 (So, 01. Jun 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/intro.php
+   M /trunk/community/web/common/player.php
+   M /trunk/community/web/common/statsclass.php
+   M /trunk/community/web/common/top.inc
+   M /trunk/community/web/db/players/finderresults.inc
+   M /trunk/community/web/db/players/information.inc
+   M /trunk/community/web/my/leftbar.inc
+
+- use URL-specific quoting function for all occurrences of user-generated content
+
+
+------------------------------------------------------------------------
+r10032 | josef | 2008-06-01 13:22:58 +0200 (So, 01. Jun 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/active/hotstuff.php
+   M /trunk/community/web/common/intro.php
+   M /trunk/community/web/common/locale.php
+   M /trunk/community/web/common/player.php
+   M /trunk/community/web/common/statsclass.php
+   M /trunk/community/web/common/top.inc
+   M /trunk/community/web/db/players/finderresults.inc
+   M /trunk/community/web/db/players/information.inc
+   M /trunk/community/web/my/leftbar.inc
+
+- quote the most blatant sources of cross-site scripting attacks
+
+
+------------------------------------------------------------------------
+r10031 | josef | 2008-06-01 12:49:22 +0200 (So, 01. Jun 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/images/cards/bg_lowquality.jpg
+   M /trunk/community/web/images/cards/full.css
+
+- brighter background image
+
+
+------------------------------------------------------------------------
+r10030 | josef | 2008-06-01 12:22:47 +0200 (So, 01. Jun 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/web/admin/configuration.php
+   M /trunk/community/web/admin/index.php
+   M /trunk/community/web/common/player.php
+   M /trunk/community/web/games/applet.php
+
+- make reconfiguration possible, but only as authenticated admin
+- link to current Java applet since live.g.o doesn't seem to exist anymore (huh?)
+
+
+------------------------------------------------------------------------
+r10029 | josef | 2008-06-01 12:11:51 +0200 (So, 01. Jun 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/web/admin/configuration.php
+
+- streamline the wizard even more: add initial administrator account to the database
+- transaction safety: only finish configuration if everything went well
+
+
+------------------------------------------------------------------------
+r10028 | josef | 2008-06-01 12:05:56 +0200 (So, 01. Jun 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/config.php
+
+- consider the configuration invalid until the database name has been set
+
+
+------------------------------------------------------------------------
+r10026 | josef | 2008-06-01 00:28:36 +0200 (So, 01. Jun 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/navbar.inc
+
+- correct the boolean logic here
+
+
+------------------------------------------------------------------------
+r10025 | josef | 2008-06-01 00:06:04 +0200 (So, 01. Jun 2008) | 3 lines
+Geänderte Pfade:
+   A /trunk/community/web/images/cards (von /trunk/community/web/images/freeciv:10023)
+   M /trunk/community/web/images/cards/full.css
+   M /trunk/community/web/images/cards/pagelogo.png
+
+- addition of new theme especially for our cards players, with Oxygen carddeck-derived logo
+
+
+------------------------------------------------------------------------
+r10024 | josef | 2008-05-31 23:50:40 +0200 (Sa, 31. Mai 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/web/admin/configuration.php
+   M /trunk/community/web/common/access.php
+   M /trunk/community/web/common/worldmap.php
+
+- link to configuration wizard from any page as long as community isn't configured yet
+- prevent unauthorised access to configuration page after settings have been saved
+
+
+------------------------------------------------------------------------
+r10023 | josef | 2008-05-31 20:24:31 +0200 (Sa, 31. Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/latest.php
+
+- the port parameter was added recently
+
+
+------------------------------------------------------------------------
+r10022 | josef | 2008-05-31 20:20:01 +0200 (Sa, 31. Mai 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/htconf-dist
+
+- adapt template to new settings: registration policy, database port
+- hint at configuration wizard even though it's not finished yet
+
+
+------------------------------------------------------------------------
+r10019 | josef | 2008-05-31 19:33:29 +0200 (Sa, 31. Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/config.php
+
+- we need this function to query the theme from the static object
+
+
+------------------------------------------------------------------------
+r10018 | josef | 2008-05-31 19:31:34 +0200 (Sa, 31. Mai 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/web/admin/configuration.php
+
+- reproduce checkbox values, too
+- include additional configuration setting for the registration policy
+
+
+------------------------------------------------------------------------
+r10017 | josef | 2008-05-31 18:36:05 +0200 (Sa, 31. Mai 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/web/admin/configuration.php
+
+- writing out the remaining values
+- preselecting the right entries in <select> boxes, but not in checkboxes yet
+
+
+------------------------------------------------------------------------
+r10016 | josef | 2008-05-31 11:50:12 +0200 (Sa, 31. Mai 2008) | 3 lines
+Geänderte Pfade:
+   A /trunk/community/web/admin/configuration.php
+   M /trunk/community/web/common/config.php
+
+- half-baked interactive configuration wizard for GGZ Community
+
+
+------------------------------------------------------------------------
+r10015 | josef | 2008-05-31 10:25:27 +0200 (Sa, 31. Mai 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/web/admin/login.php
+   M /trunk/community/web/admin/loginfunc.inc
+   D /trunk/community/web/admin/php_auth.diff
+   M /trunk/playground/patches/README
+   A /trunk/playground/patches/php_auth.diff (von /trunk/community/web/admin/php_auth.diff:10010)
+
+- move php_auth diff to patches directory (it's a patch against the PHP documentation)
+- do not even try to find out whether a client is privileged to access the /admin/ area when the database isn't configured yet
+
+
+------------------------------------------------------------------------
+r10014 | josef | 2008-05-31 10:04:18 +0200 (Sa, 31. Mai 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/access.php
+   M /trunk/community/web/common/database.php
+   M /trunk/community/web/common/locale.php
+
+- improve error reporting in included files by trading off a bit of disk access/performance (thanks to PHP language structural weakness)
+- when community isn't configured yet, do not even attempt to show the left and right bars
+
+
+------------------------------------------------------------------------
+r10011 | josef | 2008-05-30 20:02:23 +0200 (Fr, 30. Mai 2008) | 3 lines
+Geänderte Pfade:
+   D /trunk/community/web/5years
+   A /trunk/playground/community/ggzcommunity.org/5years (von /trunk/community/web/5years:10010)
+
+- move "5 years" celebration article to ggzcommunity.org-specific instance
+
+
+------------------------------------------------------------------------
+r10008 | josef | 2008-05-25 13:03:08 +0200 (So, 25. Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/db/players/information.inc
+
+- drop shouting exclamation mark
+
+
+------------------------------------------------------------------------
+r10007 | josef | 2008-05-25 13:00:25 +0200 (So, 25. Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/common/auth.php
+
+- set registration time to be the "first login" time, as this time stamp is needed to purge old accounts
+
+
+------------------------------------------------------------------------
+r10004 | josef | 2008-05-25 11:12:02 +0200 (So, 25. Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/java/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- prepend 5300 lines of change summaries to the changelog files
+
+
+------------------------------------------------------------------------
+r9999 | josef | 2008-05-24 11:11:00 +0200 (Sa, 24. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
    M /trunk/java/Makefile
@@ -9,7 +316,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24 Mai 2008) | 3 lines
+r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README
@@ -43,7 +350,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9965 | josef | 2008-05-04 16:49:29 +0200 (So, 04 Mai 2008) | 5 lines
+r9965 | josef | 2008-05-04 16:49:29 +0200 (So, 04. Mai 2008) | 5 lines
 Geänderte Pfade:
    M /trunk/community/web/tournaments/export.php
 
@@ -53,7 +360,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9964 | josef | 2008-05-04 16:36:57 +0200 (So, 04 Mai 2008) | 3 lines
+r9964 | josef | 2008-05-04 16:36:57 +0200 (So, 04. Mai 2008) | 3 lines
 Geänderte Pfade:
    A /trunk/community/web/tournaments/export.php
    M /trunk/community/web/tournaments/show2.inc
@@ -62,7 +369,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9963 | josef | 2008-05-04 15:24:58 +0200 (So, 04 Mai 2008) | 5 lines
+r9963 | josef | 2008-05-04 15:24:58 +0200 (So, 04. Mai 2008) | 5 lines
 Geänderte Pfade:
    M /trunk/community/web/tournaments/new2.inc
 
@@ -72,7 +379,7 @@ For 32 participants and 10000 registered players this will take some time to loa
 
 
 ------------------------------------------------------------------------
-r9962 | josef | 2008-05-04 15:18:05 +0200 (So, 04 Mai 2008) | 3 lines
+r9962 | josef | 2008-05-04 15:18:05 +0200 (So, 04. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/tournaments.sql
 
@@ -80,7 +387,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9961 | josef | 2008-05-04 15:17:17 +0200 (So, 04 Mai 2008) | 3 lines
+r9961 | josef | 2008-05-04 15:17:17 +0200 (So, 04. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/tournaments/new.inc
    M /trunk/community/web/tournaments/new2.inc
@@ -90,7 +397,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9958 | josef | 2008-05-04 12:18:44 +0200 (So, 04 Mai 2008) | 3 lines
+r9958 | josef | 2008-05-04 12:18:44 +0200 (So, 04. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/common/config.php
 
@@ -98,7 +405,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9947 | josef | 2008-04-12 16:53:11 +0200 (Sa, 12 Apr 2008) | 5 lines
+r9947 | josef | 2008-04-12 16:53:11 +0200 (Sa, 12. Apr 2008) | 5 lines
 Geänderte Pfade:
    M /trunk/community/web/common/config.php
 
@@ -108,7 +415,7 @@ It looks like using 0 as the default is not possible in PHP.
 
 
 ------------------------------------------------------------------------
-r9943 | josef | 2008-04-12 11:23:15 +0200 (Sa, 12 Apr 2008) | 6 lines
+r9943 | josef | 2008-04-12 11:23:15 +0200 (Sa, 12. Apr 2008) | 6 lines
 Geänderte Pfade:
    M /trunk/community/web/common/player.php
    M /trunk/community/web/my/index.php
@@ -121,7 +428,7 @@ and other items if it makes sense.
 
 
 ------------------------------------------------------------------------
-r9916 | josef | 2008-03-30 15:49:47 +0200 (So, 30 Mär 2008) | 3 lines
+r9916 | josef | 2008-03-30 15:49:47 +0200 (So, 30. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/doc/Savegames
    A /trunk/community/web/db/matches/image_connectx.php
@@ -131,7 +438,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9913 | josef | 2008-03-30 15:06:36 +0200 (So, 30 Mär 2008) | 3 lines
+r9913 | josef | 2008-03-30 15:06:36 +0200 (So, 30. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/doc/Savegames
    A /trunk/community/web/db/matches/image_reversi.php
@@ -141,7 +448,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9906 | josef | 2008-03-30 11:08:57 +0200 (So, 30 Mär 2008) | 3 lines
+r9906 | josef | 2008-03-30 11:08:57 +0200 (So, 30. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/tournaments.sql
    M /trunk/community/web/admin/index.php
@@ -151,7 +458,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9900 | josef | 2008-03-29 21:10:58 +0100 (Sa, 29 Mär 2008) | 3 lines
+r9900 | josef | 2008-03-29 21:10:58 +0100 (Sa, 29. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/db/matches/image_dots.php
 
@@ -159,7 +466,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9842 | josef | 2008-03-15 16:35:45 +0100 (Sa, 15 Mär 2008) | 4 lines
+r9842 | josef | 2008-03-15 16:35:45 +0100 (Sa, 15. Mär 2008) | 4 lines
 Geänderte Pfade:
    A /trunk/community/web/common/map-gencoords.php (von /trunk/community/web/map/gencoords.php:9802)
    D /trunk/community/web/map/gencoords.php
@@ -171,7 +478,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9801 | josef | 2008-03-08 13:14:21 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9801 | josef | 2008-03-08 13:14:21 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/common/navbar.inc
 
@@ -179,7 +486,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9800 | josef | 2008-03-08 13:07:46 +0100 (Sa, 08 Mär 2008) | 5 lines
+r9800 | josef | 2008-03-08 13:07:46 +0100 (Sa, 08. Mär 2008) | 5 lines
 Geänderte Pfade:
    M /trunk/community/web/common/player.php
 
@@ -189,7 +496,7 @@ What an odd commit for having the honour of doing r9800!
 
 
 ------------------------------------------------------------------------
-r9799 | josef | 2008-03-08 13:05:15 +0100 (Sa, 08 Mär 2008) | 4 lines
+r9799 | josef | 2008-03-08 13:05:15 +0100 (Sa, 08. Mär 2008) | 4 lines
 Geänderte Pfade:
    M /trunk/community/web/admin/index.php
    M /trunk/community/web/common/navbar.inc
@@ -202,7 +509,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9798 | josef | 2008-03-08 11:40:42 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9798 | josef | 2008-03-08 11:40:42 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/rankings.sql
    M /trunk/community/web/my/index.php
@@ -213,7 +520,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9797 | josef | 2008-03-08 11:27:30 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9797 | josef | 2008-03-08 11:27:30 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/db/players/information.inc
 
@@ -221,7 +528,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9796 | josef | 2008-03-08 11:22:28 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9796 | josef | 2008-03-08 11:22:28 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/common/auth.php
    M /trunk/community/web/common/config.php
@@ -232,7 +539,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9795 | josef | 2008-03-08 10:47:49 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9795 | josef | 2008-03-08 10:47:49 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/common/auth.php
    M /trunk/community/web/common/config.php
@@ -243,7 +550,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9793 | josef | 2008-03-08 10:22:46 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9793 | josef | 2008-03-08 10:22:46 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/images/freeciv/full.css
 
@@ -251,7 +558,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9790 | josef | 2008-03-08 09:51:05 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9790 | josef | 2008-03-08 09:51:05 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/ggz.sql
 
@@ -259,7 +566,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9788 | josef | 2008-03-08 09:19:25 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9788 | josef | 2008-03-08 09:19:25 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/common/player.php
 
@@ -267,7 +574,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9787 | josef | 2008-03-08 09:14:32 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9787 | josef | 2008-03-08 09:14:32 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/common/config.php
    M /trunk/community/web/common/database.php
@@ -276,7 +583,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9644 | josef | 2008-02-03 20:58:28 +0100 (So, 03 Feb 2008) | 3 lines
+r9644 | josef | 2008-02-03 20:58:28 +0100 (So, 03. Feb 2008) | 3 lines
 Geänderte Pfade:
    A /trunk/community/doc/Savegames
 
@@ -284,7 +591,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9643 | josef | 2008-02-03 20:52:22 +0100 (So, 03 Feb 2008) | 5 lines
+r9643 | josef | 2008-02-03 20:52:22 +0100 (So, 03. Feb 2008) | 5 lines
 Geänderte Pfade:
    M /trunk/community/web/db/matches/savegame_go.php
 
@@ -294,7 +601,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9642 | josef | 2008-02-03 18:22:31 +0100 (So, 03 Feb 2008) | 3 lines
+r9642 | josef | 2008-02-03 18:22:31 +0100 (So, 03. Feb 2008) | 3 lines
 Geänderte Pfade:
    A /trunk/community/web/db/matches/go
    A /trunk/community/web/db/matches/go/black.png
@@ -307,7 +614,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9641 | josef | 2008-02-03 17:31:33 +0100 (So, 03 Feb 2008) | 4 lines
+r9641 | josef | 2008-02-03 17:31:33 +0100 (So, 03. Feb 2008) | 4 lines
 Geänderte Pfade:
    A /trunk/community/web/db/matches/savegame_go.php
 
@@ -316,7 +623,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9565 | josef | 2008-01-19 13:27:02 +0100 (Sa, 19 Jan 2008) | 4 lines
+r9565 | josef | 2008-01-19 13:27:02 +0100 (Sa, 19. Jan 2008) | 4 lines
 Geänderte Pfade:
    M /trunk/community/web/common/acknowledgements.inc
    M /trunk/community/web/common/acknowledgements.inc.sv
@@ -327,7 +634,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9564 | josef | 2008-01-19 13:17:26 +0100 (Sa, 19 Jan 2008) | 3 lines
+r9564 | josef | 2008-01-19 13:17:26 +0100 (Sa, 19. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/common/intro.php
    M /trunk/community/web/common/latest.php
@@ -338,7 +645,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9563 | josef | 2008-01-19 13:04:38 +0100 (Sa, 19 Jan 2008) | 3 lines
+r9563 | josef | 2008-01-19 13:04:38 +0100 (Sa, 19. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/my/change.php
 
@@ -346,7 +653,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9562 | josef | 2008-01-19 12:59:19 +0100 (Sa, 19 Jan 2008) | 3 lines
+r9562 | josef | 2008-01-19 12:59:19 +0100 (Sa, 19. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/db/players/information.inc
    M /trunk/community/web/my/index.php
@@ -355,7 +662,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9561 | josef | 2008-01-19 12:00:23 +0100 (Sa, 19 Jan 2008) | 4 lines
+r9561 | josef | 2008-01-19 12:00:23 +0100 (Sa, 19. Jan 2008) | 4 lines
 Geänderte Pfade:
    M /trunk/community/web/common/config.php
    M /trunk/community/web/common/default.rightbar
@@ -370,7 +677,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9560 | josef | 2008-01-19 11:37:41 +0100 (Sa, 19 Jan 2008) | 3 lines
+r9560 | josef | 2008-01-19 11:37:41 +0100 (Sa, 19. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/common/navbar.inc
    M /trunk/community/web/images/default/full.css
@@ -381,7 +688,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9559 | josef | 2008-01-19 11:36:27 +0100 (Sa, 19 Jan 2008) | 4 lines
+r9559 | josef | 2008-01-19 11:36:27 +0100 (Sa, 19. Jan 2008) | 4 lines
 Geänderte Pfade:
    D /trunk/community/web/common/navbar.inc.sv
    M /trunk/community/web/common/po/de.po
@@ -395,7 +702,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9553 | josef | 2008-01-19 07:51:39 +0100 (Sa, 19 Jan 2008) | 3 lines
+r9553 | josef | 2008-01-19 07:51:39 +0100 (Sa, 19. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/admin/loginfunc.inc
 
@@ -403,7 +710,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9552 | josef | 2008-01-18 21:52:18 +0100 (Fr, 18 Jan 2008) | 3 lines
+r9552 | josef | 2008-01-18 21:52:18 +0100 (Fr, 18. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/blogs/index.php
 
@@ -411,7 +718,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9551 | josef | 2008-01-18 21:46:18 +0100 (Fr, 18 Jan 2008) | 3 lines
+r9551 | josef | 2008-01-18 21:46:18 +0100 (Fr, 18. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/views.sql
 
@@ -419,7 +726,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9549 | josef | 2008-01-18 21:31:41 +0100 (Fr, 18 Jan 2008) | 4 lines
+r9549 | josef | 2008-01-18 21:31:41 +0100 (Fr, 18. Jan 2008) | 4 lines
 Geänderte Pfade:
    M /trunk/community/web/common/default.rightbar
    M /trunk/community/web/common/default.rightbar.sv
@@ -436,7 +743,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9477 | josef | 2008-01-06 16:59:29 +0100 (So, 06 Jan 2008) | 3 lines
+r9477 | josef | 2008-01-06 16:59:29 +0100 (So, 06. Jan 2008) | 3 lines
 Geänderte Pfade:
    A /trunk/community/doc/community-arch-extended.flw
    A /trunk/community/doc/community-arch-extended.png
@@ -445,7 +752,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9476 | josef | 2008-01-06 16:44:54 +0100 (So, 06 Jan 2008) | 3 lines
+r9476 | josef | 2008-01-06 16:44:54 +0100 (So, 06. Jan 2008) | 3 lines
 Geänderte Pfade:
    A /trunk/community/api/api/realtimestats.php
    M /trunk/community/api/index.html
@@ -454,7 +761,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9458 | josef | 2007-12-20 15:46:29 +0100 (Do, 20 Dez 2007) | 3 lines
+r9458 | josef | 2007-12-20 15:46:29 +0100 (Do, 20. Dez 2007) | 3 lines
 Geänderte Pfade:
    M /trunk/community/api/api/index.php
 
@@ -462,7 +769,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9238 | josef | 2007-08-13 09:00:08 +0200 (Mo, 13 Aug 2007) | 4 lines
+r9238 | josef | 2007-08-13 09:00:08 +0200 (Mo, 13. Aug 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/community/setup/setup-build.sh
@@ -473,7 +780,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9237 | josef | 2007-08-13 09:00:00 +0200 (Mo, 13 Aug 2007) | 4 lines
+r9237 | josef | 2007-08-13 09:00:00 +0200 (Mo, 13. Aug 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    D /trunk/community/setup/scripts/calcrankings
@@ -483,7 +790,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9236 | josef | 2007-08-13 08:59:45 +0200 (Mo, 13 Aug 2007) | 4 lines
+r9236 | josef | 2007-08-13 08:59:45 +0200 (Mo, 13. Aug 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/community/setup/sql/trigger/Makefile
@@ -493,7 +800,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9234 | josef | 2007-08-13 08:59:29 +0200 (Mo, 13 Aug 2007) | 6 lines
+r9234 | josef | 2007-08-13 08:59:29 +0200 (Mo, 13. Aug 2007) | 6 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/community/api/api/htconf.php-dist
@@ -506,7 +813,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9233 | josef | 2007-08-13 08:59:23 +0200 (Mo, 13 Aug 2007) | 4 lines
+r9233 | josef | 2007-08-13 08:59:23 +0200 (Mo, 13. Aug 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/community/web/common/database.php
@@ -516,7 +823,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9232 | josef | 2007-08-13 08:59:16 +0200 (Mo, 13 Aug 2007) | 4 lines
+r9232 | josef | 2007-08-13 08:59:16 +0200 (Mo, 13. Aug 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/community/api/api/index.php
@@ -526,14 +833,14 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9231 | oojah | 2007-08-08 13:42:09 +0200 (Mi, 08 Aug 2007) | 2 lines
+r9231 | oojah | 2007-08-08 13:42:09 +0200 (Mi, 08. Aug 2007) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/common/index.html
 
 Add a blank index page to the common directory as a precaution in case .htaccess files aren't allowed and so the directory index could be available for everybody.
 
 ------------------------------------------------------------------------
-r9230 | josef | 2007-08-06 08:12:45 +0200 (Mo, 06 Aug 2007) | 4 lines
+r9230 | josef | 2007-08-06 08:12:45 +0200 (Mo, 06. Aug 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/community/setup/scripts/calcrankings/main.c
@@ -543,7 +850,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9223 | josef | 2007-07-30 09:28:45 +0200 (Mo, 30 Jul 2007) | 4 lines
+r9223 | josef | 2007-07-30 09:28:45 +0200 (Mo, 30. Jul 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/community/setup/scripts/api/README.api
@@ -553,7 +860,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9222 | josef | 2007-07-30 09:28:34 +0200 (Mo, 30 Jul 2007) | 4 lines
+r9222 | josef | 2007-07-30 09:28:34 +0200 (Mo, 30. Jul 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/community/api/api/index.php
@@ -563,7 +870,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9213 | josef | 2007-07-24 08:45:18 +0200 (Di, 24 Jul 2007) | 6 lines
+r9213 | josef | 2007-07-24 08:45:18 +0200 (Di, 24. Jul 2007) | 6 lines
 Geänderte Pfade:
    M /trunk
    D /trunk/community/api/api/.htconf.php-dist
@@ -578,7 +885,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9212 | josef | 2007-07-24 08:45:09 +0200 (Di, 24 Jul 2007) | 4 lines
+r9212 | josef | 2007-07-24 08:45:09 +0200 (Di, 24. Jul 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    A /trunk/community/doc/community-arch.flw
@@ -589,7 +896,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9211 | josef | 2007-07-24 08:45:02 +0200 (Di, 24 Jul 2007) | 4 lines
+r9211 | josef | 2007-07-24 08:45:02 +0200 (Di, 24. Jul 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    D /trunk/community/Community.features
@@ -604,7 +911,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9210 | josef | 2007-07-24 08:44:55 +0200 (Di, 24 Jul 2007) | 4 lines
+r9210 | josef | 2007-07-24 08:44:55 +0200 (Di, 24. Jul 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/community/api/setup.txt
@@ -614,7 +921,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9199 | josef | 2007-07-23 09:30:41 +0200 (Mo, 23 Jul 2007) | 4 lines
+r9199 | josef | 2007-07-23 09:30:41 +0200 (Mo, 23. Jul 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/community/api/api/.htconf.php-dist
@@ -624,7 +931,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9191 | josef | 2007-07-16 14:51:02 +0200 (Mo, 16 Jul 2007) | 3 lines
+r9191 | josef | 2007-07-16 14:51:02 +0200 (Mo, 16. Jul 2007) | 3 lines
 Geänderte Pfade:
    A /trunk/community/web/forums/GGZForum.txt
    A /trunk/utils/ggzcomm/battleship.protocol
@@ -633,7 +940,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9124 | josef | 2007-05-21 12:05:14 +0200 (Mo, 21 Mai 2007) | 7 lines
+r9124 | josef | 2007-05-21 12:05:14 +0200 (Mo, 21. Mai 2007) | 7 lines
 Geänderte Pfade:
    M /trunk/community/web/admin/.htaccess
    A /trunk/community/web/admin/forbidden.php
@@ -657,7 +964,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9122 | josef | 2007-05-18 13:46:51 +0200 (Fr, 18 Mai 2007) | 6 lines
+r9122 | josef | 2007-05-18 13:46:51 +0200 (Fr, 18. Mai 2007) | 6 lines
 Geänderte Pfade:
    M /trunk/community/api/openid/README.openid
    A /trunk/community/api/openid/auth.php
@@ -674,7 +981,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9120 | josef | 2007-05-15 13:26:02 +0200 (Di, 15 Mai 2007) | 6 lines
+r9120 | josef | 2007-05-15 13:26:02 +0200 (Di, 15. Mai 2007) | 6 lines
 Geänderte Pfade:
    D /trunk/community/api/README.openid
    A /trunk/community/api/openid/.htconf.php-dist
@@ -687,7 +994,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9119 | josef | 2007-05-15 12:58:13 +0200 (Di, 15 Mai 2007) | 5 lines
+r9119 | josef | 2007-05-15 12:58:13 +0200 (Di, 15. Mai 2007) | 5 lines
 Geänderte Pfade:
    A /trunk/community/api/README.openid
 
@@ -697,7 +1004,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9118 | josef | 2007-05-15 12:39:24 +0200 (Di, 15 Mai 2007) | 5 lines
+r9118 | josef | 2007-05-15 12:39:24 +0200 (Di, 15. Mai 2007) | 5 lines
 Geänderte Pfade:
    A /trunk/community/api/openid
    A /trunk/community/api/openid/index.php
@@ -712,7 +1019,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9117 | josef | 2007-05-15 08:50:42 +0200 (Di, 15 Mai 2007) | 7 lines
+r9117 | josef | 2007-05-15 08:50:42 +0200 (Di, 15. Mai 2007) | 7 lines
 Geänderte Pfade:
    M /trunk/community/api/api/index.php
 
@@ -724,7 +1031,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9116 | josef | 2007-05-15 08:30:50 +0200 (Di, 15 Mai 2007) | 6 lines
+r9116 | josef | 2007-05-15 08:30:50 +0200 (Di, 15. Mai 2007) | 6 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/api/ggzapi_rest.pm
    M /trunk/community/setup/scripts/api/ggzapi_shell.pm
@@ -736,7 +1043,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9030 | josef | 2007-04-10 09:06:26 +0200 (Di, 10 Apr 2007) | 5 lines
+r9030 | josef | 2007-04-10 09:06:26 +0200 (Di, 10. Apr 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/api/api/index.php
    M /trunk/community/api/doc/players.html
@@ -752,7 +1059,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9029 | josef | 2007-04-10 09:05:22 +0200 (Di, 10 Apr 2007) | 9 lines
+r9029 | josef | 2007-04-10 09:05:22 +0200 (Di, 10. Apr 2007) | 9 lines
 Geänderte Pfade:
    M /trunk/community/web/common/countrylist.php
    M /trunk/community/web/common/player.php
@@ -779,7 +1086,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9027 | josef | 2007-04-04 17:22:29 +0200 (Mi, 04 Apr 2007) | 3 lines
+r9027 | josef | 2007-04-04 17:22:29 +0200 (Mi, 04. Apr 2007) | 3 lines
 Geänderte Pfade:
    M /trunk/community/api/api/.htconf.php-dist
    M /trunk/community/api/api/index.php
@@ -788,7 +1095,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9026 | josef | 2007-04-04 08:15:54 +0200 (Mi, 04 Apr 2007) | 6 lines
+r9026 | josef | 2007-04-04 08:15:54 +0200 (Mi, 04. Apr 2007) | 6 lines
 Geänderte Pfade:
    M /trunk/community/api/api/index.php
    A /trunk/community/api/doc/statistics.html
@@ -804,7 +1111,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9025 | josef | 2007-04-03 15:55:59 +0200 (Di, 03 Apr 2007) | 8 lines
+r9025 | josef | 2007-04-03 15:55:59 +0200 (Di, 03. Apr 2007) | 8 lines
 Geänderte Pfade:
    M /trunk/community/api/api/index.php
    M /trunk/community/setup/scripts/api/ggzapi_rest.pm
@@ -819,7 +1126,7 @@ OK, remote GGZ player management does now work!
 
 
 ------------------------------------------------------------------------
-r9024 | josef | 2007-04-03 13:04:58 +0200 (Di, 03 Apr 2007) | 5 lines
+r9024 | josef | 2007-04-03 13:04:58 +0200 (Di, 03. Apr 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/api/api/index.php
    A /trunk/community/api/doc
@@ -836,7 +1143,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9023 | josef | 2007-04-02 08:52:11 +0200 (Mo, 02 Apr 2007) | 5 lines
+r9023 | josef | 2007-04-02 08:52:11 +0200 (Mo, 02. Apr 2007) | 5 lines
 Geänderte Pfade:
    A /trunk/community/api
    A /trunk/community/api/api
@@ -859,7 +1166,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9005 | josef | 2007-03-22 10:53:59 +0100 (Do, 22 Mär 2007) | 5 lines
+r9005 | josef | 2007-03-22 10:53:59 +0100 (Do, 22. Mär 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
    M /trunk/java/Makefile
@@ -871,7 +1178,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8987 | jdorje | 2007-02-19 03:50:30 +0100 (Mo, 19 Feb 2007) | 1 line
+r8987 | jdorje | 2007-02-19 03:50:30 +0100 (Mo, 19. Feb 2007) | 1 line
 Geänderte Pfade:
    M /trunk/community/setup/scripts/ggz2phpbb.conf.in
    M /trunk/community/setup/sql/trigger/ggzsync_trigger.c
@@ -1017,7 +1324,7 @@ Geänderte Pfade:
 
 Fix eol-style on .c, .h, .in, and .am files.
 ------------------------------------------------------------------------
-r8965 | josef | 2007-01-29 08:10:05 +0100 (Mo, 29 Jan 2007) | 5 lines
+r8965 | josef | 2007-01-29 08:10:05 +0100 (Mo, 29. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/web/.htaccess
    M /trunk/community/web/motd/index.html
@@ -1028,7 +1335,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16 Jan 2007) | 8 lines
+r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16. Jan 2007) | 8 lines
 Geänderte Pfade:
    M /trunk/community/ChangeLog
    M /trunk/docs/ChangeLog
@@ -1056,7 +1363,7 @@ However we have to do so since no tool seems to be able to reproduce our old for
 
 
 ------------------------------------------------------------------------
-r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16 Jan 2007) | 5 lines
+r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README.GGZ
@@ -1134,7 +1441,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8942 | josef | 2007-01-16 17:22:43 +0100 (Di, 16 Jan 2007) | 5 lines
+r8942 | josef | 2007-01-16 17:22:43 +0100 (Di, 16. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/mundomap/map.png
    M /trunk/community/web/db/ggzicons/misc/karma_bad.png
@@ -1224,7 +1531,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8932 | josef | 2007-01-16 12:11:49 +0100 (Di, 16 Jan 2007) | 5 lines
+r8932 | josef | 2007-01-16 12:11:49 +0100 (Di, 16. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/web/admin/index.php
 
@@ -1234,7 +1541,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8931 | josef | 2007-01-16 12:05:41 +0100 (Di, 16 Jan 2007) | 7 lines
+r8931 | josef | 2007-01-16 12:05:41 +0100 (Di, 16. Jan 2007) | 7 lines
 Geänderte Pfade:
    M /trunk/community/web/images/default/mundomap.map
    M /trunk/community/web/images/default/mundomap.png
@@ -1248,7 +1555,7 @@ These files should later be ignored by SVN, but then there must be a suitable ve
 
 
 ------------------------------------------------------------------------
-r8863 | josef | 2007-01-08 14:49:44 +0100 (Mo, 08 Jan 2007) | 5 lines
+r8863 | josef | 2007-01-08 14:49:44 +0100 (Mo, 08. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
    M /trunk/java/Makefile
@@ -1259,7 +1566,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8797 | josef | 2007-01-02 13:43:42 +0100 (Di, 02 Jan 2007) | 9 lines
+r8797 | josef | 2007-01-02 13:43:42 +0100 (Di, 02. Jan 2007) | 9 lines
 Geänderte Pfade:
    M /trunk/community/web/common/auth.php
    M /trunk/community/web/common/config.php
@@ -1280,7 +1587,7 @@ This centralisation saves a lot of manual configuration.
 
 
 ------------------------------------------------------------------------
-r8736 | josef | 2006-12-20 15:37:59 +0100 (Mi, 20 Dez 2006) | 3 lines
+r8736 | josef | 2006-12-20 15:37:59 +0100 (Mi, 20. Dez 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/trigger/Makefile
 
@@ -1288,7 +1595,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8735 | josef | 2006-12-20 15:35:50 +0100 (Mi, 20 Dez 2006) | 7 lines
+r8735 | josef | 2006-12-20 15:35:50 +0100 (Mi, 20. Dez 2006) | 7 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/trigger/README.trigger
    M /trunk/community/setup/sql/trigger/ggzsync_trigger.c
@@ -1302,7 +1609,7 @@ never delete users and only disable accounts instead!
 
 
 ------------------------------------------------------------------------
-r8734 | josef | 2006-12-20 14:28:38 +0100 (Mi, 20 Dez 2006) | 3 lines
+r8734 | josef | 2006-12-20 14:28:38 +0100 (Mi, 20. Dez 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/ggz2phpbb.conf.in
    M /trunk/community/setup/scripts/ggz2phpbb.pl
@@ -1311,7 +1618,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8733 | josef | 2006-12-19 20:49:48 +0100 (Di, 19 Dez 2006) | 7 lines
+r8733 | josef | 2006-12-19 20:49:48 +0100 (Di, 19. Dez 2006) | 7 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/trigger/ggzsync_trigger.c
 
@@ -1323,7 +1630,7 @@ must be synced as well...
 
 
 ------------------------------------------------------------------------
-r8732 | josef | 2006-12-19 17:48:39 +0100 (Di, 19 Dez 2006) | 10 lines
+r8732 | josef | 2006-12-19 17:48:39 +0100 (Di, 19. Dez 2006) | 10 lines
 Geänderte Pfade:
    A /trunk/community/setup/sql/trigger
    A /trunk/community/setup/sql/trigger/Makefile
@@ -1342,7 +1649,7 @@ For the time being, peers.conf needs to be copied to /tmp (yuck!)
 
 
 ------------------------------------------------------------------------
-r8661 | josef | 2006-11-10 18:58:39 +0100 (Fr, 10 Nov 2006) | 5 lines
+r8661 | josef | 2006-11-10 18:58:39 +0100 (Fr, 10. Nov 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
 
@@ -1352,7 +1659,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8660 | josef | 2006-11-10 18:41:06 +0100 (Fr, 10 Nov 2006) | 5 lines
+r8660 | josef | 2006-11-10 18:41:06 +0100 (Fr, 10. Nov 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/calcrankings/Makefile
 
@@ -1362,7 +1669,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8659 | josef | 2006-11-10 02:40:40 +0100 (Fr, 10 Nov 2006) | 7 lines
+r8659 | josef | 2006-11-10 02:40:40 +0100 (Fr, 10. Nov 2006) | 7 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
    M /trunk/community/setup/scripts/calcrankings/Makefile
@@ -1378,7 +1685,7 @@ Still somewhat clumsy but that will be sorted out soon.
 
 
 ------------------------------------------------------------------------
-r8652 | josef | 2006-11-09 08:46:28 +0100 (Do, 09 Nov 2006) | 5 lines
+r8652 | josef | 2006-11-09 08:46:28 +0100 (Do, 09. Nov 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/community/setup/external
 
@@ -1388,7 +1695,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8642 | josef | 2006-11-07 21:46:46 +0100 (Di, 07 Nov 2006) | 5 lines
+r8642 | josef | 2006-11-07 21:46:46 +0100 (Di, 07. Nov 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/community/setup/external/Makefile
    M /trunk/community/setup/external/tarballs.txt
@@ -1400,7 +1707,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8641 | josef | 2006-11-07 18:32:06 +0100 (Di, 07 Nov 2006) | 5 lines
+r8641 | josef | 2006-11-07 18:32:06 +0100 (Di, 07. Nov 2006) | 5 lines
 Geänderte Pfade:
    A /trunk/community/setup/external
    A /trunk/community/setup/external/Makefile
@@ -1416,7 +1723,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8640 | josef | 2006-11-07 00:49:24 +0100 (Di, 07 Nov 2006) | 5 lines
+r8640 | josef | 2006-11-07 00:49:24 +0100 (Di, 07. Nov 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/community/setup/setup.sh
 
@@ -1426,7 +1733,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8639 | josef | 2006-11-07 00:36:15 +0100 (Di, 07 Nov 2006) | 5 lines
+r8639 | josef | 2006-11-07 00:36:15 +0100 (Di, 07. Nov 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/ggz2phpbb.pl
 
@@ -1436,7 +1743,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8638 | josef | 2006-11-07 00:21:07 +0100 (Di, 07 Nov 2006) | 5 lines
+r8638 | josef | 2006-11-07 00:21:07 +0100 (Di, 07. Nov 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/community/setup/setup.sh
 
@@ -1446,7 +1753,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8636 | josef | 2006-11-07 00:05:58 +0100 (Di, 07 Nov 2006) | 6 lines
+r8636 | josef | 2006-11-07 00:05:58 +0100 (Di, 07. Nov 2006) | 6 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts
    A /trunk/community/setup/scripts/ggz2phpbb.conf.in
@@ -1461,7 +1768,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8635 | josef | 2006-11-06 02:51:42 +0100 (Mo, 06 Nov 2006) | 5 lines
+r8635 | josef | 2006-11-06 02:51:42 +0100 (Mo, 06. Nov 2006) | 5 lines
 Geänderte Pfade:
    A /trunk/community/setup/setup.sh
    M /trunk/community/setup/setup.txt
@@ -1474,14 +1781,14 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8594 | oojah | 2006-09-24 20:26:22 +0200 (So, 24 Sep 2006) | 2 lines
+r8594 | oojah | 2006-09-24 20:26:22 +0200 (So, 24. Sep 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/database.php
 
 Don't replace the whole of the string after the first argument is found.
 
 ------------------------------------------------------------------------
-r8593 | oojah | 2006-09-24 17:24:34 +0200 (So, 24 Sep 2006) | 4 lines
+r8593 | oojah | 2006-09-24 17:24:34 +0200 (So, 24. Sep 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/community/web/common/auth.php
    M /trunk/community/web/common/database.php
@@ -1514,21 +1821,21 @@ Results of queries are also unescaped.
 
 
 ------------------------------------------------------------------------
-r8529 | oojah | 2006-08-21 16:17:14 +0200 (Mo, 21 Aug 2006) | 2 lines
+r8529 | oojah | 2006-08-21 16:17:14 +0200 (Mo, 21. Aug 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/database.php
 
 Add database functions for escaping strings.
 
 ------------------------------------------------------------------------
-r8523 | oojah | 2006-08-20 19:15:01 +0200 (So, 20 Aug 2006) | 2 lines
+r8523 | oojah | 2006-08-20 19:15:01 +0200 (So, 20. Aug 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/forums/index.php
 
 Remove erroneous character.
 
 ------------------------------------------------------------------------
-r8522 | oojah | 2006-08-20 17:50:27 +0200 (So, 20 Aug 2006) | 2 lines
+r8522 | oojah | 2006-08-20 17:50:27 +0200 (So, 20. Aug 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/.htaccess
    M /trunk/community/web/5years/index.php
@@ -1606,7 +1913,7 @@ Geänderte Pfade:
 More portable include path configuration.
 
 ------------------------------------------------------------------------
-r8503 | josef | 2006-08-08 11:06:10 +0200 (Di, 08 Aug 2006) | 4 lines
+r8503 | josef | 2006-08-08 11:06:10 +0200 (Di, 08. Aug 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/views.sql
 
@@ -1615,7 +1922,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8382 | josef | 2006-07-22 09:08:32 +0200 (Sa, 22 Jul 2006) | 3 lines
+r8382 | josef | 2006-07-22 09:08:32 +0200 (Sa, 22. Jul 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/common/default.rightbar
    M /trunk/community/web/common/default.rightbar.sv
@@ -1625,7 +1932,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8379 | josef | 2006-07-20 17:58:46 +0200 (Do, 20 Jul 2006) | 4 lines
+r8379 | josef | 2006-07-20 17:58:46 +0200 (Do, 20. Jul 2006) | 4 lines
 Geänderte Pfade:
    A /trunk/community/web/help/council.php.en
    M /trunk/community/web/help/index.php.en
@@ -1636,7 +1943,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8376 | josef | 2006-07-20 14:46:07 +0200 (Do, 20 Jul 2006) | 5 lines
+r8376 | josef | 2006-07-20 14:46:07 +0200 (Do, 20. Jul 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/community/web/common/statsclass.php
    M /trunk/community/web/db/players/finderform.inc
@@ -1650,7 +1957,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8375 | josef | 2006-07-20 14:44:31 +0200 (Do, 20 Jul 2006) | 3 lines
+r8375 | josef | 2006-07-20 14:44:31 +0200 (Do, 20. Jul 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/ggz.sql
 
@@ -1658,7 +1965,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8368 | josef | 2006-07-17 14:28:47 +0200 (Mo, 17 Jul 2006) | 5 lines
+r8368 | josef | 2006-07-17 14:28:47 +0200 (Mo, 17. Jul 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/community/web/common/database.php
    M /trunk/community/web/common/latest.php
@@ -1686,7 +1993,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8367 | josef | 2006-07-17 14:27:46 +0200 (Mo, 17 Jul 2006) | 5 lines
+r8367 | josef | 2006-07-17 14:27:46 +0200 (Mo, 17. Jul 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/community/web/map/change.php
    M /trunk/community/web/map/genmap.php
@@ -1697,7 +2004,7 @@ For some reason newer Konqs don't display the main menu anymore! This is a grave
 
 
 ------------------------------------------------------------------------
-r8366 | josef | 2006-07-17 14:26:52 +0200 (Mo, 17 Jul 2006) | 3 lines
+r8366 | josef | 2006-07-17 14:26:52 +0200 (Mo, 17. Jul 2006) | 3 lines
 Geänderte Pfade:
    A /trunk/community/web/help
    A /trunk/community/web/help/index.php.en
@@ -1706,7 +2013,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8062 | josef | 2006-05-24 11:17:53 +0200 (Mi, 24 Mai 2006) | 3 lines
+r8062 | josef | 2006-05-24 11:17:53 +0200 (Mi, 24. Mai 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/games/index.php
 
@@ -1714,7 +2021,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8058 | josef | 2006-05-24 10:55:37 +0200 (Mi, 24 Mai 2006) | 3 lines
+r8058 | josef | 2006-05-24 10:55:37 +0200 (Mi, 24. Mai 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/images
    D /trunk/community/web/images/grubbyparty.png
@@ -1725,7 +2032,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8055 | josef | 2006-05-24 10:51:12 +0200 (Mi, 24 Mai 2006) | 3 lines
+r8055 | josef | 2006-05-24 10:51:12 +0200 (Mi, 24. Mai 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/articles
 
@@ -1733,7 +2040,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8054 | josef | 2006-05-24 10:50:01 +0200 (Mi, 24 Mai 2006) | 3 lines
+r8054 | josef | 2006-05-24 10:50:01 +0200 (Mi, 24. Mai 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/articles
    D /trunk/community/web/articles/ggzboard
@@ -1745,7 +2052,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7979 | josef | 2006-03-27 18:29:15 +0200 (Mo, 27 Mär 2006) | 4 lines
+r7979 | josef | 2006-03-27 18:29:15 +0200 (Mo, 27. Mär 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/community/web/hotstuff/cocodrilo.php
    A /trunk/community/web/hotstuff/providers.xml
@@ -1755,7 +2062,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7978 | josef | 2006-03-27 11:18:19 +0200 (Mo, 27 Mär 2006) | 4 lines
+r7978 | josef | 2006-03-27 11:18:19 +0200 (Mo, 27. Mär 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/community/web/hotstuff/cocodrilo.php
    M /trunk/community/web/hotstuff/engine.php
@@ -1767,7 +2074,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7963 | josef | 2006-03-20 13:33:27 +0100 (Mo, 20 Mär 2006) | 5 lines
+r7963 | josef | 2006-03-20 13:33:27 +0100 (Mo, 20. Mär 2006) | 5 lines
 Geänderte Pfade:
    A /trunk/community/web/hotstuff/cocodrilo.php
    A /trunk/community/web/hotstuff/engine.php
@@ -1781,7 +2088,7 @@ Feeds can now be read from remote webpages.
 
 
 ------------------------------------------------------------------------
-r7958 | josef | 2006-03-16 20:20:32 +0100 (Do, 16 Mär 2006) | 3 lines
+r7958 | josef | 2006-03-16 20:20:32 +0100 (Do, 16. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
 
@@ -1789,7 +2096,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7942 | josef | 2006-03-16 16:15:01 +0100 (Do, 16 Mär 2006) | 3 lines
+r7942 | josef | 2006-03-16 16:15:01 +0100 (Do, 16. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/ChangeLog
    M /trunk/docs/ChangeLog
@@ -1811,7 +2118,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7923 | josef | 2006-03-15 14:04:46 +0100 (Mi, 15 Mär 2006) | 3 lines
+r7923 | josef | 2006-03-15 14:04:46 +0100 (Mi, 15. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README.GGZ
@@ -1820,7 +2127,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7873 | josef | 2006-02-27 10:10:03 +0100 (Mo, 27 Feb 2006) | 7 lines
+r7873 | josef | 2006-02-27 10:10:03 +0100 (Mo, 27. Feb 2006) | 7 lines
 Geänderte Pfade:
    A /trunk/community/web/admin
    A /trunk/community/web/admin/.htaccess
@@ -1834,7 +2141,7 @@ in question works at all.
 
 
 ------------------------------------------------------------------------
-r7857 | josef | 2006-02-10 21:17:29 +0100 (Fr, 10 Feb 2006) | 3 lines
+r7857 | josef | 2006-02-10 21:17:29 +0100 (Fr, 10. Feb 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/calcrankings/Makefile
 
@@ -1842,7 +2149,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7853 | josef | 2006-02-10 12:15:30 +0100 (Fr, 10 Feb 2006) | 3 lines
+r7853 | josef | 2006-02-10 12:15:30 +0100 (Fr, 10. Feb 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/games/applet.php
 
@@ -1850,7 +2157,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7823 | josef | 2006-01-26 18:30:41 +0100 (Do, 26 Jan 2006) | 3 lines
+r7823 | josef | 2006-01-26 18:30:41 +0100 (Do, 26. Jan 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/games/applet.php
    M /trunk/community/web/games/index.php
@@ -1859,7 +2166,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7815 | josef | 2006-01-23 11:57:24 +0100 (Mo, 23 Jan 2006) | 5 lines
+r7815 | josef | 2006-01-23 11:57:24 +0100 (Mo, 23. Jan 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
    M /trunk/community/setup/scripts/calcrankings/Makefile
@@ -1875,7 +2182,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7660 | josef | 2005-12-12 12:54:49 +0100 (Mo, 12 Dez 2005) | 5 lines
+r7660 | josef | 2005-12-12 12:54:49 +0100 (Mo, 12. Dez 2005) | 5 lines
 Geänderte Pfade:
    M /trunk/community/web/articles
    M /trunk/community/web/common
@@ -2178,7 +2485,7 @@ This week's XXL commit!
 
 
 ------------------------------------------------------------------------
-r7627 | josef | 2005-11-17 08:55:23 +0100 (Do, 17 Nov 2005) | 3 lines
+r7627 | josef | 2005-11-17 08:55:23 +0100 (Do, 17. Nov 2005) | 3 lines
 Geänderte Pfade:
    A /trunk/community/web/articles/default.frontpage.inc.en (von /trunk/community/web/articles/frontpage.inc.en:7593)
    D /trunk/community/web/articles/frontpage.inc.en
@@ -2192,7 +2499,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7623 | josef | 2005-11-15 09:10:19 +0100 (Di, 15 Nov 2005) | 4 lines
+r7623 | josef | 2005-11-15 09:10:19 +0100 (Di, 15. Nov 2005) | 4 lines
 Geänderte Pfade:
    A /trunk/community/web/map/change.php
    A /trunk/community/web/map/gencoords.php
@@ -2205,7 +2512,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7620 | josef | 2005-11-14 09:06:45 +0100 (Mo, 14 Nov 2005) | 3 lines
+r7620 | josef | 2005-11-14 09:06:45 +0100 (Mo, 14. Nov 2005) | 3 lines
 Geänderte Pfade:
    A /trunk/community/web/images/ruby.png
 
@@ -2213,7 +2520,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7618 | josef | 2005-11-14 09:05:37 +0100 (Mo, 14 Nov 2005) | 4 lines
+r7618 | josef | 2005-11-14 09:05:37 +0100 (Mo, 14. Nov 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/community/web/articles/index.php
    A /trunk/community/web/articles/ruby
@@ -2225,7 +2532,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7617 | josef | 2005-11-14 09:04:00 +0100 (Mo, 14 Nov 2005) | 3 lines
+r7617 | josef | 2005-11-14 09:04:00 +0100 (Mo, 14. Nov 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/db/players/information.inc
 
@@ -2233,7 +2540,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7592 | josef | 2005-09-25 20:15:14 +0200 (So, 25 Sep 2005) | 3 lines
+r7592 | josef | 2005-09-25 20:15:14 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    A /trunk/community/ChangeLog
 
@@ -2241,7 +2548,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7551 | josef | 2005-09-25 12:11:25 +0200 (So, 25 Sep 2005) | 3 lines
+r7551 | josef | 2005-09-25 12:11:25 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
    M /trunk/community/web/common/htconf-dist
@@ -2264,7 +2571,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7550 | josef | 2005-09-25 11:54:30 +0200 (So, 25 Sep 2005) | 4 lines
+r7550 | josef | 2005-09-25 11:54:30 +0200 (So, 25. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README.GGZ
@@ -2313,7 +2620,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7547 | josef | 2005-09-23 23:54:25 +0200 (Fr, 23 Sep 2005) | 4 lines
+r7547 | josef | 2005-09-23 23:54:25 +0200 (Fr, 23. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/community/COPYING
    M /trunk/ggz-client-libs/COPYING
@@ -2336,7 +2643,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7505 | josef | 2005-09-06 14:01:26 +0200 (Di, 06 Sep 2005) | 3 lines
+r7505 | josef | 2005-09-06 14:01:26 +0200 (Di, 06. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/.htaccess
    M /trunk/community/web/common/default.rightbar
@@ -2347,7 +2654,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7467 | josef | 2005-08-21 00:51:14 +0200 (So, 21 Aug 2005) | 3 lines
+r7467 | josef | 2005-08-21 00:51:14 +0200 (So, 21. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
 
@@ -2355,7 +2662,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7465 | josef | 2005-08-21 00:16:09 +0200 (So, 21 Aug 2005) | 3 lines
+r7465 | josef | 2005-08-21 00:16:09 +0200 (So, 21. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
    M /trunk/python/Makefile.in
@@ -2364,7 +2671,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7423 | josef | 2005-08-14 18:22:37 +0200 (So, 14 Aug 2005) | 3 lines
+r7423 | josef | 2005-08-14 18:22:37 +0200 (So, 14. Aug 2005) | 3 lines
 Geänderte Pfade:
    A /trunk/community/web/db/ggzicons/games/Freelords.png
 
@@ -2372,7 +2679,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7397 | josef | 2005-08-13 20:50:46 +0200 (Sa, 13 Aug 2005) | 4 lines
+r7397 | josef | 2005-08-13 20:50:46 +0200 (Sa, 13. Aug 2005) | 4 lines
 Geänderte Pfade:
    A /trunk/community/web/db/matches/image_dots.php
    M /trunk/community/web/db/matches/replay.php
@@ -2383,7 +2690,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7376 | josef | 2005-08-13 10:24:37 +0200 (Sa, 13 Aug 2005) | 3 lines
+r7376 | josef | 2005-08-13 10:24:37 +0200 (Sa, 13. Aug 2005) | 3 lines
 Geänderte Pfade:
    A /trunk/community/web/articles/frontpage.inc.en
    M /trunk/community/web/common/locale.php
@@ -2395,7 +2702,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7374 | josef | 2005-08-13 10:02:57 +0200 (Sa, 13 Aug 2005) | 4 lines
+r7374 | josef | 2005-08-13 10:02:57 +0200 (Sa, 13. Aug 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/community/web/common/access.php
    M /trunk/community/web/common/config.php
@@ -2406,7 +2713,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7373 | josef | 2005-08-13 09:49:25 +0200 (Sa, 13 Aug 2005) | 3 lines
+r7373 | josef | 2005-08-13 09:49:25 +0200 (Sa, 13. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/.htaccess
 
@@ -2414,7 +2721,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7352 | josef | 2005-08-03 12:12:20 +0200 (Mi, 03 Aug 2005) | 3 lines
+r7352 | josef | 2005-08-03 12:12:20 +0200 (Mi, 03. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/mundomap/map.png
    M /trunk/community/web/articles/packaging/all.png
@@ -2463,7 +2770,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7307 | josef | 2005-06-19 14:37:29 +0200 (So, 19 Jun 2005) | 2 lines
+r7307 | josef | 2005-06-19 14:37:29 +0200 (So, 19. Jun 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/index.php.de
    M /trunk/community/web/index.php.en
@@ -2472,7 +2779,7 @@ Geänderte Pfade:
 - news entry about i18n
 
 ------------------------------------------------------------------------
-r7306 | josef | 2005-06-19 14:25:05 +0200 (So, 19 Jun 2005) | 2 lines
+r7306 | josef | 2005-06-19 14:25:05 +0200 (So, 19. Jun 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/config.php
    M /trunk/community/web/common/htconf-dist
@@ -2482,21 +2789,21 @@ Geänderte Pfade:
 - display information about the GGZ server
 
 ------------------------------------------------------------------------
-r7305 | josef | 2005-06-19 14:12:50 +0200 (So, 19 Jun 2005) | 2 lines
+r7305 | josef | 2005-06-19 14:12:50 +0200 (So, 19. Jun 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/setup/custom.txt
 
 - some more documentation about how to hack the community
 
 ------------------------------------------------------------------------
-r7304 | josef | 2005-06-19 13:53:50 +0200 (So, 19 Jun 2005) | 2 lines
+r7304 | josef | 2005-06-19 13:53:50 +0200 (So, 19. Jun 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/common/negotiation.php
 
 - autonegotiation script which works either directly or indirectly
 
 ------------------------------------------------------------------------
-r7303 | josef | 2005-06-19 13:52:52 +0200 (So, 19 Jun 2005) | 5 lines
+r7303 | josef | 2005-06-19 13:52:52 +0200 (So, 19. Jun 2005) | 5 lines
 Geänderte Pfade:
    A /trunk/community/web/common/access.php
    M /trunk/community/web/common/auth.php
@@ -2536,7 +2843,7 @@ Geänderte Pfade:
 - overriding Apache in case a preferred language is set
 
 ------------------------------------------------------------------------
-r7302 | josef | 2005-06-19 01:33:32 +0200 (So, 19 Jun 2005) | 2 lines
+r7302 | josef | 2005-06-19 01:33:32 +0200 (So, 19. Jun 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/setup/custom.txt
    M /trunk/community/setup/setup.txt
@@ -2544,7 +2851,7 @@ Geänderte Pfade:
 - documentation for the new PHP template/configuration system
 
 ------------------------------------------------------------------------
-r7301 | josef | 2005-06-19 01:24:28 +0200 (So, 19 Jun 2005) | 2 lines
+r7301 | josef | 2005-06-19 01:24:28 +0200 (So, 19. Jun 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/db/games/index.rightbar
    M /trunk/community/web/db/matches/index.rightbar
@@ -2555,7 +2862,7 @@ Geänderte Pfade:
 - fix static reference to Statistics object
 
 ------------------------------------------------------------------------
-r7300 | josef | 2005-06-19 01:14:22 +0200 (So, 19 Jun 2005) | 2 lines
+r7300 | josef | 2005-06-19 01:14:22 +0200 (So, 19. Jun 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/db/index.rightbar
    M /trunk/community/web/images/widelands/full.css
@@ -2563,7 +2870,7 @@ Geänderte Pfade:
 - smaller fixes
 
 ------------------------------------------------------------------------
-r7299 | josef | 2005-06-19 01:09:43 +0200 (So, 19 Jun 2005) | 2 lines
+r7299 | josef | 2005-06-19 01:09:43 +0200 (So, 19. Jun 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/bottom.inc
    M /trunk/community/web/common/locale.php
@@ -2578,14 +2885,14 @@ Geänderte Pfade:
 - support for rightbars/leftbars
 
 ------------------------------------------------------------------------
-r7298 | josef | 2005-06-19 00:46:14 +0200 (So, 19 Jun 2005) | 2 lines
+r7298 | josef | 2005-06-19 00:46:14 +0200 (So, 19. Jun 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/locale.php
 
 - fix: handle tagged strings in original language well
 
 ------------------------------------------------------------------------
-r7297 | josef | 2005-06-19 00:31:03 +0200 (So, 19 Jun 2005) | 8 lines
+r7297 | josef | 2005-06-19 00:31:03 +0200 (So, 19. Jun 2005) | 8 lines
 Geänderte Pfade:
    M /trunk/community/web/common/config.php
    M /trunk/community/web/common/locale.php
@@ -2600,7 +2907,7 @@ one writes:
 	$communityname['de'] = "Widelands-Gesellschaft";
 
 ------------------------------------------------------------------------
-r7296 | josef | 2005-06-19 00:17:56 +0200 (So, 19 Jun 2005) | 2 lines
+r7296 | josef | 2005-06-19 00:17:56 +0200 (So, 19. Jun 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/acknowledgements.inc
    D /trunk/community/web/common/acknowledgements.inc.de
@@ -2610,7 +2917,7 @@ Geänderte Pfade:
 - even more translations
 
 ------------------------------------------------------------------------
-r7295 | josef | 2005-06-19 00:04:58 +0200 (So, 19 Jun 2005) | 8 lines
+r7295 | josef | 2005-06-19 00:04:58 +0200 (So, 19. Jun 2005) | 8 lines
 Geänderte Pfade:
    M /trunk/community/web/common/config.php
    M /trunk/community/web/common/default.leftbar
@@ -2632,7 +2939,7 @@ This can certainly be done prettier but it works and produces nice scary
 regular expressions.
 
 ------------------------------------------------------------------------
-r7294 | josef | 2005-06-18 22:48:09 +0200 (Sa, 18 Jun 2005) | 8 lines
+r7294 | josef | 2005-06-18 22:48:09 +0200 (Sa, 18. Jun 2005) | 8 lines
 Geänderte Pfade:
    M /trunk/community/web/common/locale.php
    M /trunk/community/web/common/navbar.inc
@@ -2652,7 +2959,7 @@ Now there are 2 ways to add translations:
 - translate xx.po
 
 ------------------------------------------------------------------------
-r7292 | josef | 2005-06-18 20:12:13 +0200 (Sa, 18 Jun 2005) | 3 lines
+r7292 | josef | 2005-06-18 20:12:13 +0200 (Sa, 18. Jun 2005) | 3 lines
 Geänderte Pfade:
    A /trunk/community/web/images/default
    A /trunk/community/web/images/default/full.css
@@ -2679,7 +2986,7 @@ Geänderte Pfade:
 - new theme: widelands (with original game graphics)
 
 ------------------------------------------------------------------------
-r7291 | josef | 2005-06-18 20:09:43 +0200 (Sa, 18 Jun 2005) | 2 lines
+r7291 | josef | 2005-06-18 20:09:43 +0200 (Sa, 18. Jun 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/config.php
    M /trunk/community/web/common/default.rightbar
@@ -2694,7 +3001,7 @@ Geänderte Pfade:
 - support for different themesets
 
 ------------------------------------------------------------------------
-r7290 | josef | 2005-06-18 19:55:18 +0200 (Sa, 18 Jun 2005) | 4 lines
+r7290 | josef | 2005-06-18 19:55:18 +0200 (Sa, 18. Jun 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/community/web/common/acknowledgements.inc
    M /trunk/community/web/common/acknowledgements.inc.de
@@ -2726,7 +3033,7 @@ Geänderte Pfade:
 - reformat all files with unix line endings and as utf-8 encoded
 
 ------------------------------------------------------------------------
-r7288 | josef | 2005-06-18 14:25:38 +0200 (Sa, 18 Jun 2005) | 2 lines
+r7288 | josef | 2005-06-18 14:25:38 +0200 (Sa, 18. Jun 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/ggz2phpbb.pl
    M /trunk/community/setup/scripts/ggzblogs.pl
@@ -2734,7 +3041,7 @@ Geänderte Pfade:
 - abort immediately if the database connection did not succeed
 
 ------------------------------------------------------------------------
-r7277 | josef | 2005-06-14 00:09:29 +0200 (Di, 14 Jun 2005) | 2 lines
+r7277 | josef | 2005-06-14 00:09:29 +0200 (Di, 14. Jun 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/db/matches/image_freelords.php
    M /trunk/community/web/db/matches/savegame_freelords.php
@@ -2742,7 +3049,7 @@ Geänderte Pfade:
 - improved savegame handling for freelords: handle cities and army stacks
 
 ------------------------------------------------------------------------
-r7262 | josef | 2005-05-29 18:21:00 +0200 (So, 29 Mai 2005) | 2 lines
+r7262 | josef | 2005-05-29 18:21:00 +0200 (So, 29. Mai 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/db/matches/image_freelords.php
    A /trunk/community/web/db/matches/savegame_freelords.php
@@ -2750,7 +3057,7 @@ Geänderte Pfade:
 - basic support for Freelords savegames (maps only, no units yet)
 
 ------------------------------------------------------------------------
-r7261 | josef | 2005-05-29 16:54:06 +0200 (So, 29 Mai 2005) | 2 lines
+r7261 | josef | 2005-05-29 16:54:06 +0200 (So, 29. Mai 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/db/matches/teg
    A /trunk/community/web/db/matches/teg/TEG.savegames
@@ -2758,7 +3065,7 @@ Geänderte Pfade:
 - placeholder for TEG theme data
 
 ------------------------------------------------------------------------
-r7246 | josef | 2005-05-21 20:47:04 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7246 | josef | 2005-05-21 20:47:04 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/articles/index.php
    A /trunk/community/web/images/packagesarticle.png
@@ -2769,7 +3076,7 @@ Geänderte Pfade:
 - news entry about GGZ 0.0.11 and link to article
 
 ------------------------------------------------------------------------
-r7245 | josef | 2005-05-21 20:46:07 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7245 | josef | 2005-05-21 20:46:07 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/articles/packaging
    A /trunk/community/web/articles/packaging/all.png
@@ -2791,7 +3098,7 @@ Geänderte Pfade:
 - a new article for GGZ community!
 
 ------------------------------------------------------------------------
-r7235 | josef | 2005-05-21 15:49:32 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7235 | josef | 2005-05-21 15:49:32 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
    M /trunk/community/NEWS
@@ -2800,14 +3107,14 @@ Geänderte Pfade:
 - preparation of community package
 
 ------------------------------------------------------------------------
-r7143 | josef | 2005-04-23 21:36:43 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7143 | josef | 2005-04-23 21:36:43 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/bottom.inc
 
 - fix detection of localized rightbars/leftbars
 
 ------------------------------------------------------------------------
-r7142 | josef | 2005-04-23 21:35:57 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7142 | josef | 2005-04-23 21:35:57 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/db/index.php.de
    A /trunk/community/web/db/index.rightbar.de
@@ -2815,35 +3122,35 @@ Geänderte Pfade:
 - German translation for database rightbar
 
 ------------------------------------------------------------------------
-r7141 | josef | 2005-04-23 21:27:59 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7141 | josef | 2005-04-23 21:27:59 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/locale.php
 
 - swap strstr arguments (oops!)
 
 ------------------------------------------------------------------------
-r7140 | josef | 2005-04-23 21:08:52 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7140 | josef | 2005-04-23 21:08:52 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/locale.php
 
 - display default language name if no *.php.$lang files are available
 
 ------------------------------------------------------------------------
-r7139 | josef | 2005-04-23 21:05:33 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7139 | josef | 2005-04-23 21:05:33 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/teams/teams.php
 
 - do not allow to join an empty team (that is, when the combobox has no entries)
 
 ------------------------------------------------------------------------
-r7138 | josef | 2005-04-23 21:00:38 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7138 | josef | 2005-04-23 21:00:38 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/db/players/rankings.php
 
 - more links in the display
 
 ------------------------------------------------------------------------
-r7137 | josef | 2005-04-23 20:34:39 +0200 (Sa, 23 Apr 2005) | 4 lines
+r7137 | josef | 2005-04-23 20:34:39 +0200 (Sa, 23. Apr 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/community/web/common/player.php
    M /trunk/community/web/common/stats.php
@@ -2853,7 +3160,7 @@ Geänderte Pfade:
 - use gender information for "him", "her", "him/her" phrases
 
 ------------------------------------------------------------------------
-r7136 | josef | 2005-04-23 20:11:07 +0200 (Sa, 23 Apr 2005) | 6 lines
+r7136 | josef | 2005-04-23 20:11:07 +0200 (Sa, 23. Apr 2005) | 6 lines
 Geänderte Pfade:
    A /trunk/community/web/db/ggzicons/players/guest.png
 
@@ -2864,28 +3171,28 @@ be special-cased until this is solved correctly (using the match data which
 already has the player type).
 
 ------------------------------------------------------------------------
-r7135 | josef | 2005-04-23 19:53:43 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7135 | josef | 2005-04-23 19:53:43 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/my/leftbar.inc
 
 - link to change settings in the left navigation bar
 
 ------------------------------------------------------------------------
-r7134 | josef | 2005-04-23 19:26:35 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7134 | josef | 2005-04-23 19:26:35 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/db/players/finderresults.inc
 
 - fix karma search
 
 ------------------------------------------------------------------------
-r7133 | josef | 2005-04-23 18:58:32 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7133 | josef | 2005-04-23 18:58:32 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/db/players/information.inc
 
 - display overall karma value with pixmap
 
 ------------------------------------------------------------------------
-r7132 | josef | 2005-04-23 18:54:29 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7132 | josef | 2005-04-23 18:54:29 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/db/ggzicons/misc/karma_bad.png
    A /trunk/community/web/db/ggzicons/misc/karma_good.png
@@ -2894,7 +3201,7 @@ Geänderte Pfade:
 - karma pixmaps for good, bad and medium karma
 
 ------------------------------------------------------------------------
-r7131 | josef | 2005-04-23 18:20:03 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7131 | josef | 2005-04-23 18:20:03 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/intro.php
    M /trunk/community/web/common/player.php
@@ -2902,14 +3209,14 @@ Geänderte Pfade:
 - improved display of matches intro page
 
 ------------------------------------------------------------------------
-r7130 | josef | 2005-04-23 18:06:26 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7130 | josef | 2005-04-23 18:06:26 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/images/mundomap.map
 
 - dummy coordinate file for the worldmap
 
 ------------------------------------------------------------------------
-r7129 | josef | 2005-04-23 18:03:34 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7129 | josef | 2005-04-23 18:03:34 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/default.rightbar
    M /trunk/community/web/common/default.rightbar.de
@@ -2918,28 +3225,28 @@ Geänderte Pfade:
 - the worldmap stuff
 
 ------------------------------------------------------------------------
-r7128 | josef | 2005-04-23 18:02:15 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7128 | josef | 2005-04-23 18:02:15 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/top.inc
 
 - the /karma/ area is only available to logged in users
 
 ------------------------------------------------------------------------
-r7127 | josef | 2005-04-23 17:56:37 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7127 | josef | 2005-04-23 17:56:37 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/rankings.sql
 
 - password alteration needs another column in the database
 
 ------------------------------------------------------------------------
-r7126 | josef | 2005-04-23 17:39:18 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7126 | josef | 2005-04-23 17:39:18 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/login/reactivate.inc
 
 - reactivation page
 
 ------------------------------------------------------------------------
-r7125 | josef | 2005-04-23 17:38:46 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7125 | josef | 2005-04-23 17:38:46 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/auth.php
    M /trunk/community/web/login/index.php
@@ -2947,14 +3254,14 @@ Geänderte Pfade:
 - support for password regeneration and activation (via email)
 
 ------------------------------------------------------------------------
-r7122 | josef | 2005-04-23 12:11:32 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7122 | josef | 2005-04-23 12:11:32 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/images/full.css
 
 - base dropdown menu positioning on current font size
 
 ------------------------------------------------------------------------
-r7112 | josef | 2005-04-16 23:30:19 +0200 (Sa, 16 Apr 2005) | 2 lines
+r7112 | josef | 2005-04-16 23:30:19 +0200 (Sa, 16. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/mundomap/ggz-clusters
    M /trunk/community/setup/scripts/mundomap/ggz-htmlmap
@@ -2962,7 +3269,7 @@ Geänderte Pfade:
 - synchronize with current version which supports the large map too
 
 ------------------------------------------------------------------------
-r7111 | josef | 2005-04-16 23:14:05 +0200 (Sa, 16 Apr 2005) | 2 lines
+r7111 | josef | 2005-04-16 23:14:05 +0200 (Sa, 16. Apr 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/map
    A /trunk/community/web/map/index.php
@@ -2971,14 +3278,14 @@ Geänderte Pfade:
 - large version of the map
 
 ------------------------------------------------------------------------
-r7110 | josef | 2005-04-16 21:41:33 +0200 (Sa, 16 Apr 2005) | 2 lines
+r7110 | josef | 2005-04-16 21:41:33 +0200 (Sa, 16. Apr 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/setup/scripts/mundomap/ggz-htmlmap
 
 - script to generate HTML map for the worldmap
 
 ------------------------------------------------------------------------
-r7103 | josef | 2005-04-10 11:42:48 +0200 (So, 10 Apr 2005) | 3 lines
+r7103 | josef | 2005-04-10 11:42:48 +0200 (So, 10. Apr 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/.htaccess
    M /trunk/community/web/common/intro.php
@@ -3002,21 +3309,21 @@ Geänderte Pfade:
 - improved display of member names, permissions etc.
 
 ------------------------------------------------------------------------
-r7102 | josef | 2005-04-10 10:52:47 +0200 (So, 10 Apr 2005) | 2 lines
+r7102 | josef | 2005-04-10 10:52:47 +0200 (So, 10. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/statsclass.php
 
 - randomize display of teams, players and games, so everyone gets his share
 
 ------------------------------------------------------------------------
-r7101 | josef | 2005-04-10 10:42:00 +0200 (So, 10 Apr 2005) | 2 lines
+r7101 | josef | 2005-04-10 10:42:00 +0200 (So, 10. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/locale.php
 
 - do not include .rightbar/.leftbar files as language variants
 
 ------------------------------------------------------------------------
-r7098 | josef | 2005-04-09 17:59:08 +0200 (Sa, 09 Apr 2005) | 2 lines
+r7098 | josef | 2005-04-09 17:59:08 +0200 (Sa, 09. Apr 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/db/matches/helper_teg.php
    A /trunk/community/web/db/matches/image_teg.php
@@ -3026,7 +3333,7 @@ Geänderte Pfade:
 - support for TEG savegames
 
 ------------------------------------------------------------------------
-r7084 | josef | 2005-04-08 14:34:49 +0200 (Fr, 08 Apr 2005) | 2 lines
+r7084 | josef | 2005-04-08 14:34:49 +0200 (Fr, 08. Apr 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/motd
    A /trunk/community/web/motd/index.html
@@ -3034,7 +3341,7 @@ Geänderte Pfade:
 - MOTD webpage
 
 ------------------------------------------------------------------------
-r7074 | josef | 2005-04-02 15:56:26 +0200 (Sa, 02 Apr 2005) | 2 lines
+r7074 | josef | 2005-04-02 15:56:26 +0200 (Sa, 02. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/.htaccess
    M /trunk/community/web/index.php.de
@@ -3044,7 +3351,7 @@ Geänderte Pfade:
 - news entry about the server move
 
 ------------------------------------------------------------------------
-r7073 | josef | 2005-04-02 14:59:43 +0200 (Sa, 02 Apr 2005) | 2 lines
+r7073 | josef | 2005-04-02 14:59:43 +0200 (Sa, 02. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/ggz.sql
    M /trunk/community/setup/sql/rankings.sql
@@ -3053,7 +3360,7 @@ Geänderte Pfade:
 - SQL schema file cleanup
 
 ------------------------------------------------------------------------
-r7066 | josef | 2005-03-28 00:36:20 +0200 (Mo, 28 Mär 2005) | 3 lines
+r7066 | josef | 2005-03-28 00:36:20 +0200 (Mo, 28. Mär 2005) | 3 lines
 Geänderte Pfade:
    A /trunk/community/web/db/matches/chess
    A /trunk/community/web/db/matches/chess/50.bishop_b.svg.png
@@ -3080,21 +3387,21 @@ Geänderte Pfade:
 - implement PGN format parser for chess savegame handling
 
 ------------------------------------------------------------------------
-r7065 | josef | 2005-03-27 20:57:57 +0200 (So, 27 Mär 2005) | 2 lines
+r7065 | josef | 2005-03-27 20:57:57 +0200 (So, 27. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/ggz.sql
 
 - new table to hold temporary savegames (aka logs for games in progress)
 
 ------------------------------------------------------------------------
-r7023 | josef | 2005-03-19 10:31:28 +0100 (Sa, 19 Mär 2005) | 2 lines
+r7023 | josef | 2005-03-19 10:31:28 +0100 (Sa, 19. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/db/matches/replay.php
 
 - link to savegame, if available
 
 ------------------------------------------------------------------------
-r7022 | josef | 2005-03-19 10:31:14 +0100 (Sa, 19 Mär 2005) | 3 lines
+r7022 | josef | 2005-03-19 10:31:14 +0100 (Sa, 19. Mär 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/common/htconf-dist
    M /trunk/community/web/common/match.php
@@ -3104,21 +3411,21 @@ Geänderte Pfade:
 - use savegame property of matches
 
 ------------------------------------------------------------------------
-r7021 | josef | 2005-03-19 10:22:47 +0100 (Sa, 19 Mär 2005) | 2 lines
+r7021 | josef | 2005-03-19 10:22:47 +0100 (Sa, 19. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/ggz.sql
 
 - new column 'savegame' for each match
 
 ------------------------------------------------------------------------
-r7020 | josef | 2005-03-19 10:15:48 +0100 (Sa, 19 Mär 2005) | 2 lines
+r7020 | josef | 2005-03-19 10:15:48 +0100 (Sa, 19. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/stats.php
 
 - use new match class, cut down stats code size
 
 ------------------------------------------------------------------------
-r7019 | josef | 2005-03-19 10:12:04 +0100 (Sa, 19 Mär 2005) | 3 lines
+r7019 | josef | 2005-03-19 10:12:04 +0100 (Sa, 19. Mär 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/db/matches/image.php
    M /trunk/community/web/db/matches/replay.php
@@ -3128,14 +3435,14 @@ Geänderte Pfade:
 - use new match class
 
 ------------------------------------------------------------------------
-r7018 | josef | 2005-03-19 10:11:39 +0100 (Sa, 19 Mär 2005) | 2 lines
+r7018 | josef | 2005-03-19 10:11:39 +0100 (Sa, 19. Mär 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/common/match.php
 
 - new PHP class for match abstraction
 
 ------------------------------------------------------------------------
-r7017 | josef | 2005-03-19 01:23:29 +0100 (Sa, 19 Mär 2005) | 3 lines
+r7017 | josef | 2005-03-19 01:23:29 +0100 (Sa, 19. Mär 2005) | 3 lines
 Geänderte Pfade:
    A /trunk/community/web/db/matches/image.php
    A /trunk/community/web/db/matches/replay.php
@@ -3145,7 +3452,7 @@ Geänderte Pfade:
 - requires GD2, has some hardcoded TTT savegame, is not yet integrated
 
 ------------------------------------------------------------------------
-r6930 | josef | 2005-02-26 16:21:36 +0100 (Sa, 26 Feb 2005) | 4 lines
+r6930 | josef | 2005-02-26 16:21:36 +0100 (Sa, 26. Feb 2005) | 4 lines
 Geänderte Pfade:
    A /trunk/community/web/db/players/finderform.inc
    A /trunk/community/web/db/players/finderresults.inc
@@ -3158,7 +3465,7 @@ Geänderte Pfade:
 - todo: karma and rankings search
 
 ------------------------------------------------------------------------
-r6929 | josef | 2005-02-26 15:05:30 +0100 (Sa, 26 Feb 2005) | 3 lines
+r6929 | josef | 2005-02-26 15:05:30 +0100 (Sa, 26. Feb 2005) | 3 lines
 Geänderte Pfade:
    A /trunk/community/setup/scripts/mundomap
    A /trunk/community/setup/scripts/mundomap/ggz-clusters
@@ -3170,7 +3477,7 @@ Geänderte Pfade:
 - instead of creating the clusters from a logfile, they're read from the db
 
 ------------------------------------------------------------------------
-r6928 | josef | 2005-02-26 14:13:57 +0100 (Sa, 26 Feb 2005) | 3 lines
+r6928 | josef | 2005-02-26 14:13:57 +0100 (Sa, 26. Feb 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/my/change.php
    M /trunk/community/web/my/leftbar.inc
@@ -3180,7 +3487,7 @@ Geänderte Pfade:
 - link to player's public page in left navigation bar
 
 ------------------------------------------------------------------------
-r6927 | josef | 2005-02-26 13:58:28 +0100 (Sa, 26 Feb 2005) | 8 lines
+r6927 | josef | 2005-02-26 13:58:28 +0100 (Sa, 26. Feb 2005) | 8 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/rankings.sql
 
@@ -3193,7 +3500,7 @@ This has the additional advantage of being able to produce large world maps
 with the player names on them.
 
 ------------------------------------------------------------------------
-r6925 | josef | 2005-02-18 00:01:59 +0100 (Fr, 18 Feb 2005) | 2 lines
+r6925 | josef | 2005-02-18 00:01:59 +0100 (Fr, 18. Feb 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/active/karma.php
    M /trunk/community/web/common/navbar.inc
@@ -3206,14 +3513,14 @@ Geänderte Pfade:
 - first implementation of karma system
 
 ------------------------------------------------------------------------
-r6912 | josef | 2005-01-31 10:23:24 +0100 (Mo, 31 Jan 2005) | 2 lines
+r6912 | josef | 2005-01-31 10:23:24 +0100 (Mo, 31. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/tournaments/new3.inc
 
 - drop the '$conn' parameter
 
 ------------------------------------------------------------------------
-r6867 | josef | 2005-01-24 02:46:19 +0100 (Mo, 24 Jan 2005) | 2 lines
+r6867 | josef | 2005-01-24 02:46:19 +0100 (Mo, 24. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/index.php.de
    M /trunk/community/web/index.php.en
@@ -3222,14 +3529,14 @@ Geänderte Pfade:
 - announce new release (for swedish, this is currently in english)
 
 ------------------------------------------------------------------------
-r6847 | josef | 2005-01-23 16:22:50 +0100 (So, 23 Jan 2005) | 2 lines
+r6847 | josef | 2005-01-23 16:22:50 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/stats.php
 
 - exclude non-ranked positions from players' public page too
 
 ------------------------------------------------------------------------
-r6843 | josef | 2005-01-23 14:12:48 +0100 (So, 23 Jan 2005) | 2 lines
+r6843 | josef | 2005-01-23 14:12:48 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/NEWS
    M /trunk/docs/QuickStart.GGZ
@@ -3271,35 +3578,35 @@ Geänderte Pfade:
 - updated common files
 
 ------------------------------------------------------------------------
-r6842 | josef | 2005-01-23 13:51:08 +0100 (So, 23 Jan 2005) | 2 lines
+r6842 | josef | 2005-01-23 13:51:08 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/README.GGZ
 
 - new readme.ggz
 
 ------------------------------------------------------------------------
-r6841 | josef | 2005-01-23 13:37:29 +0100 (So, 23 Jan 2005) | 2 lines
+r6841 | josef | 2005-01-23 13:37:29 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/Makefile
 
 - a makefile is always good (especially for 'make dist')
 
 ------------------------------------------------------------------------
-r6777 | josef | 2005-01-21 00:46:24 +0100 (Fr, 21 Jan 2005) | 2 lines
+r6777 | josef | 2005-01-21 00:46:24 +0100 (Fr, 21. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/articles/ggzboard/thumb.ggzboard.chess.jpg
 
 - fix thumbnail file
 
 ------------------------------------------------------------------------
-r6647 | josef | 2005-01-13 13:29:11 +0100 (Do, 13 Jan 2005) | 2 lines
+r6647 | josef | 2005-01-13 13:29:11 +0100 (Do, 13. Jan 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/images/mundomap.png
 
 - the generated worldmap (still empty)
 
 ------------------------------------------------------------------------
-r6646 | josef | 2005-01-13 13:28:42 +0100 (Do, 13 Jan 2005) | 2 lines
+r6646 | josef | 2005-01-13 13:28:42 +0100 (Do, 13. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/default.rightbar
    M /trunk/community/web/common/default.rightbar.de
@@ -3308,14 +3615,14 @@ Geänderte Pfade:
 - include world map
 
 ------------------------------------------------------------------------
-r6631 | josef | 2005-01-10 19:18:39 +0100 (Mo, 10 Jan 2005) | 2 lines
+r6631 | josef | 2005-01-10 19:18:39 +0100 (Mo, 10. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/latest.php
 
 - use thread id, not post id in the link
 
 ------------------------------------------------------------------------
-r6627 | josef | 2005-01-09 17:32:55 +0100 (So, 09 Jan 2005) | 2 lines
+r6627 | josef | 2005-01-09 17:32:55 +0100 (So, 09. Jan 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/5years
    A /trunk/community/web/5years/chess.png
@@ -3342,14 +3649,14 @@ Geänderte Pfade:
 - jubilee page with a galore of history
 
 ------------------------------------------------------------------------
-r6626 | josef | 2005-01-09 14:53:21 +0100 (So, 09 Jan 2005) | 2 lines
+r6626 | josef | 2005-01-09 14:53:21 +0100 (So, 09. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/games/index.php
 
 - adding widelands
 
 ------------------------------------------------------------------------
-r6625 | josef | 2005-01-09 14:26:57 +0100 (So, 09 Jan 2005) | 3 lines
+r6625 | josef | 2005-01-09 14:26:57 +0100 (So, 09. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/ggz2phpbb.pl
 
@@ -3357,21 +3664,21 @@ Geänderte Pfade:
 - set user level to 0 (previously all users were board admins ;)
 
 ------------------------------------------------------------------------
-r6624 | josef | 2005-01-09 13:33:28 +0100 (So, 09 Jan 2005) | 2 lines
+r6624 | josef | 2005-01-09 13:33:28 +0100 (So, 09. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/db/live/index.php
 
 - fix page caption
 
 ------------------------------------------------------------------------
-r6623 | josef | 2005-01-09 13:32:44 +0100 (So, 09 Jan 2005) | 2 lines
+r6623 | josef | 2005-01-09 13:32:44 +0100 (So, 09. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/live.php
 
 - fix display of hostname in live script
 
 ------------------------------------------------------------------------
-r6622 | josef | 2005-01-09 13:28:42 +0100 (So, 09 Jan 2005) | 3 lines
+r6622 | josef | 2005-01-09 13:28:42 +0100 (So, 09. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/common/auth.php
    M /trunk/community/web/common/default.leftbar
@@ -3383,28 +3690,28 @@ Geänderte Pfade:
   login, registration, password resend
 
 ------------------------------------------------------------------------
-r6621 | senko | 2005-01-09 01:05:35 +0100 (So, 09 Jan 2005) | 2 lines
+r6621 | senko | 2005-01-09 01:05:35 +0100 (So, 09. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/default.rightbar.sv
 
 changed "Senaste ��ndringar" into "Nyheter"
 
 ------------------------------------------------------------------------
-r6620 | senko | 2005-01-09 00:35:24 +0100 (So, 09 Jan 2005) | 2 lines
+r6620 | senko | 2005-01-09 00:35:24 +0100 (So, 09. Jan 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/common/acknowledgements.inc.sv
 
 add file: web/common/acknowledgements.inc.sv
 
 ------------------------------------------------------------------------
-r6619 | josef | 2005-01-08 23:38:38 +0100 (Sa, 08 Jan 2005) | 2 lines
+r6619 | josef | 2005-01-08 23:38:38 +0100 (Sa, 08. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/locale.php
 
 - fix for file-as-directory URLs
 
 ------------------------------------------------------------------------
-r6618 | josef | 2005-01-08 23:37:47 +0100 (Sa, 08 Jan 2005) | 2 lines
+r6618 | josef | 2005-01-08 23:37:47 +0100 (Sa, 08. Jan 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/common/default.leftbar.sv
    A /trunk/community/web/common/default.rightbar.sv
@@ -3414,14 +3721,14 @@ Geänderte Pfade:
 - more swedish translations by kettil
 
 ------------------------------------------------------------------------
-r6617 | josef | 2005-01-08 22:43:22 +0100 (Sa, 08 Jan 2005) | 2 lines
+r6617 | josef | 2005-01-08 22:43:22 +0100 (Sa, 08. Jan 2005) | 2 lines
 Geänderte Pfade:
    D /trunk/community/web/blogs/planet.rightbar
 
 - this file is not used
 
 ------------------------------------------------------------------------
-r6616 | josef | 2005-01-08 22:41:46 +0100 (Sa, 08 Jan 2005) | 2 lines
+r6616 | josef | 2005-01-08 22:41:46 +0100 (Sa, 08. Jan 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/contact.php.sv
    A /trunk/community/web/index.php.sv
@@ -3429,7 +3736,7 @@ Geänderte Pfade:
 - translations done by kettil
 
 ------------------------------------------------------------------------
-r6615 | josef | 2005-01-08 22:33:46 +0100 (Sa, 08 Jan 2005) | 2 lines
+r6615 | josef | 2005-01-08 22:33:46 +0100 (Sa, 08. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/acknowledgements.inc
    M /trunk/community/web/common/acknowledgements.inc.de
@@ -3438,7 +3745,7 @@ Geänderte Pfade:
 - display list of available page languages at the bottom
 
 ------------------------------------------------------------------------
-r6608 | josef | 2005-01-06 23:56:33 +0100 (Do, 06 Jan 2005) | 3 lines
+r6608 | josef | 2005-01-06 23:56:33 +0100 (Do, 06. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/common/player.php
    M /trunk/community/web/common/stats.php
@@ -3449,14 +3756,14 @@ Geänderte Pfade:
 - fix item list in player's personal page
 
 ------------------------------------------------------------------------
-r6607 | josef | 2005-01-06 23:55:53 +0100 (Do, 06 Jan 2005) | 2 lines
+r6607 | josef | 2005-01-06 23:55:53 +0100 (Do, 06. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/README
 
 - list database independency as additional feature
 
 ------------------------------------------------------------------------
-r6606 | josef | 2005-01-06 22:20:13 +0100 (Do, 06 Jan 2005) | 3 lines
+r6606 | josef | 2005-01-06 22:20:13 +0100 (Do, 06. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/teams/applications.php
    M /trunk/community/web/teams/index.php
@@ -3471,14 +3778,14 @@ Geänderte Pfade:
   included for logged-in players
 
 ------------------------------------------------------------------------
-r6605 | josef | 2005-01-06 20:43:29 +0100 (Do, 06 Jan 2005) | 2 lines
+r6605 | josef | 2005-01-06 20:43:29 +0100 (Do, 06. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/intro.php
 
 - use new icon code in player page
 
 ------------------------------------------------------------------------
-r6604 | josef | 2005-01-06 20:41:47 +0100 (Do, 06 Jan 2005) | 4 lines
+r6604 | josef | 2005-01-06 20:41:47 +0100 (Do, 06. Jan 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/community/web/common/player.php
    M /trunk/community/web/common/stats.php
@@ -3489,7 +3796,7 @@ Geänderte Pfade:
   and the viewer in case he is logged in
 
 ------------------------------------------------------------------------
-r6603 | josef | 2005-01-06 20:22:50 +0100 (Do, 06 Jan 2005) | 5 lines
+r6603 | josef | 2005-01-06 20:22:50 +0100 (Do, 06. Jan 2005) | 5 lines
 Geänderte Pfade:
    A /trunk/community/web/common/intro.php
    M /trunk/community/web/db/games/index.php
@@ -3504,14 +3811,14 @@ Geänderte Pfade:
   (congrats Reversi and jdorje)
 
 ------------------------------------------------------------------------
-r6602 | josef | 2005-01-06 19:51:56 +0100 (Do, 06 Jan 2005) | 2 lines
+r6602 | josef | 2005-01-06 19:51:56 +0100 (Do, 06. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/latest.php
 
 - jump to forums directly from latest-list
 
 ------------------------------------------------------------------------
-r6601 | josef | 2005-01-06 19:27:11 +0100 (Do, 06 Jan 2005) | 2 lines
+r6601 | josef | 2005-01-06 19:27:11 +0100 (Do, 06. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/setup/blogs/config.ini
    M /trunk/community/setup/blogs/index.html.tmpl
@@ -3520,14 +3827,14 @@ Geänderte Pfade:
 - new planet templates
 
 ------------------------------------------------------------------------
-r6600 | josef | 2005-01-06 19:24:52 +0100 (Do, 06 Jan 2005) | 2 lines
+r6600 | josef | 2005-01-06 19:24:52 +0100 (Do, 06. Jan 2005) | 2 lines
 Geänderte Pfade:
    D /trunk/community/web/blogs/planet.inc
 
 - remove generated file from CVS
 
 ------------------------------------------------------------------------
-r6599 | josef | 2005-01-06 19:23:59 +0100 (Do, 06 Jan 2005) | 2 lines
+r6599 | josef | 2005-01-06 19:23:59 +0100 (Do, 06. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/blogs/index.php
    M /trunk/community/web/blogs/index.rightbar
@@ -3536,7 +3843,7 @@ Geänderte Pfade:
 - use planet sidebar (displaying blog subscriptions)
 
 ------------------------------------------------------------------------
-r6598 | josef | 2005-01-06 18:39:39 +0100 (Do, 06 Jan 2005) | 2 lines
+r6598 | josef | 2005-01-06 18:39:39 +0100 (Do, 06. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/auth.php
    M /trunk/community/web/common/database.php
@@ -3564,7 +3871,7 @@ Geänderte Pfade:
 - big database commit: use generic wrapper for postgresql/mysql unification
 
 ------------------------------------------------------------------------
-r6597 | josef | 2005-01-06 16:51:52 +0100 (Do, 06 Jan 2005) | 2 lines
+r6597 | josef | 2005-01-06 16:51:52 +0100 (Do, 06. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/player.php
    A /trunk/community/web/db/players/details.inc
@@ -3573,7 +3880,7 @@ Geänderte Pfade:
 - first try: list player permissions and explain them
 
 ------------------------------------------------------------------------
-r6596 | josef | 2005-01-06 16:05:37 +0100 (Do, 06 Jan 2005) | 3 lines
+r6596 | josef | 2005-01-06 16:05:37 +0100 (Do, 06. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/common/acknowledgements.inc
    M /trunk/community/web/common/acknowledgements.inc.de
@@ -3584,28 +3891,28 @@ Geänderte Pfade:
 - acknowledgement: bump copyright to 2005, and link to GGZ homepage
 
 ------------------------------------------------------------------------
-r6595 | josef | 2005-01-06 15:55:53 +0100 (Do, 06 Jan 2005) | 2 lines
+r6595 | josef | 2005-01-06 15:55:53 +0100 (Do, 06. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/setup/setup.txt
 
 - some more words on how to setup GGZ Community
 
 ------------------------------------------------------------------------
-r6594 | josef | 2005-01-06 15:51:41 +0100 (Do, 06 Jan 2005) | 2 lines
+r6594 | josef | 2005-01-06 15:51:41 +0100 (Do, 06. Jan 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/setup/forum/overall_header.tpl
 
 - the original file was missing the logout hyperlink
 
 ------------------------------------------------------------------------
-r6593 | josef | 2005-01-06 15:48:11 +0100 (Do, 06 Jan 2005) | 2 lines
+r6593 | josef | 2005-01-06 15:48:11 +0100 (Do, 06. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/ggz2phpbb.pl
 
 - export extended user attributes too (for now this is only the country)
 
 ------------------------------------------------------------------------
-r6592 | josef | 2005-01-06 15:21:42 +0100 (Do, 06 Jan 2005) | 3 lines
+r6592 | josef | 2005-01-06 15:21:42 +0100 (Do, 06. Jan 2005) | 3 lines
 Geänderte Pfade:
    A /trunk/community/setup/forum
    A /trunk/community/setup/forum/agreement.tpl
@@ -3614,7 +3921,7 @@ Geänderte Pfade:
   to get a GGZ login first (since forum and GGZ logins are the same)
 
 ------------------------------------------------------------------------
-r6590 | josef | 2005-01-05 19:40:17 +0100 (Mi, 05 Jan 2005) | 2 lines
+r6590 | josef | 2005-01-05 19:40:17 +0100 (Mi, 05. Jan 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/db/ggzicons/games/Checkers.png
    A /trunk/community/web/db/ggzicons/games/Hnefatafl.png
@@ -3623,7 +3930,7 @@ Geänderte Pfade:
 - synchronize game icons with kggz
 
 ------------------------------------------------------------------------
-r6582 | josef | 2005-01-02 12:38:08 +0100 (So, 02 Jan 2005) | 4 lines
+r6582 | josef | 2005-01-02 12:38:08 +0100 (So, 02. Jan 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/community/web/common/latest.php
    M /trunk/community/web/common/stats.php
@@ -3634,7 +3941,7 @@ Geänderte Pfade:
   (unless we decide to have named AIs one day)
 
 ------------------------------------------------------------------------
-r6579 | josef | 2005-01-02 12:14:53 +0100 (So, 02 Jan 2005) | 6 lines
+r6579 | josef | 2005-01-02 12:14:53 +0100 (So, 02. Jan 2005) | 6 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/calcrankings/main.c
 
@@ -3645,7 +3952,7 @@ Geänderte Pfade:
   * can be used to restrict appearance of ranking lists
 
 ------------------------------------------------------------------------
-r6578 | josef | 2005-01-02 02:30:04 +0100 (So, 02 Jan 2005) | 2 lines
+r6578 | josef | 2005-01-02 02:30:04 +0100 (So, 02. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/player.php
    M /trunk/community/web/common/stats.php
@@ -3653,7 +3960,7 @@ Geänderte Pfade:
 - exclude pending team members from being shown
 
 ------------------------------------------------------------------------
-r6577 | josef | 2005-01-02 02:20:34 +0100 (So, 02 Jan 2005) | 4 lines
+r6577 | josef | 2005-01-02 02:20:34 +0100 (So, 02. Jan 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/ggz.sql
 
@@ -3662,14 +3969,14 @@ Geänderte Pfade:
  * and it is needed for logical SQL operations (bitmask views)
 
 ------------------------------------------------------------------------
-r6576 | josef | 2005-01-02 02:04:04 +0100 (So, 02 Jan 2005) | 2 lines
+r6576 | josef | 2005-01-02 02:04:04 +0100 (So, 02. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/ggz.sql
 
 - include playertype into SQL schema for matchplayers table
 
 ------------------------------------------------------------------------
-r6575 | josef | 2005-01-02 01:40:09 +0100 (So, 02 Jan 2005) | 5 lines
+r6575 | josef | 2005-01-02 01:40:09 +0100 (So, 02. Jan 2005) | 5 lines
 Geänderte Pfade:
    M /trunk/community/web/common/stats.php
 
@@ -3679,7 +3986,7 @@ Geänderte Pfade:
   migration
 
 ------------------------------------------------------------------------
-r6574 | josef | 2005-01-02 01:30:51 +0100 (So, 02 Jan 2005) | 5 lines
+r6574 | josef | 2005-01-02 01:30:51 +0100 (So, 02. Jan 2005) | 5 lines
 Geänderte Pfade:
    M /trunk/community/web/common/database.php
    M /trunk/community/web/common/stats.php
@@ -3690,14 +3997,14 @@ Geänderte Pfade:
   * the file is protected anyway since it resides in the 'common' directory
 
 ------------------------------------------------------------------------
-r6572 | josef | 2005-01-01 20:12:43 +0100 (Sa, 01 Jan 2005) | 2 lines
+r6572 | josef | 2005-01-01 20:12:43 +0100 (Sa, 01. Jan 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/common/latest.php
 
 - missing implementation of 'latest stuff...' functions
 
 ------------------------------------------------------------------------
-r6571 | josef | 2005-01-01 20:12:00 +0100 (Sa, 01 Jan 2005) | 3 lines
+r6571 | josef | 2005-01-01 20:12:00 +0100 (Sa, 01. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/common/default.rightbar
    M /trunk/community/web/common/default.rightbar.de
@@ -3707,7 +4014,7 @@ Geänderte Pfade:
   forum posts and played game matches/tournaments
 
 ------------------------------------------------------------------------
-r6570 | josef | 2005-01-01 19:29:32 +0100 (Sa, 01 Jan 2005) | 3 lines
+r6570 | josef | 2005-01-01 19:29:32 +0100 (Sa, 01. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/common/player.php
    M /trunk/community/web/my/leftbar.inc
@@ -3716,7 +4023,7 @@ Geänderte Pfade:
   logged in
 
 ------------------------------------------------------------------------
-r6569 | josef | 2005-01-01 17:48:50 +0100 (Sa, 01 Jan 2005) | 3 lines
+r6569 | josef | 2005-01-01 17:48:50 +0100 (Sa, 01. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/setup/blogs/config.ini
    A /trunk/community/setup/scripts/ggzblogs.pl
@@ -3728,7 +4035,7 @@ Geänderte Pfade:
 - use user-configured blog feeds for Planet configuration
 
 ------------------------------------------------------------------------
-r6567 | josef | 2004-12-31 17:47:47 +0100 (Fr, 31 Dez 2004) | 2 lines
+r6567 | josef | 2004-12-31 17:47:47 +0100 (Fr, 31. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/auth.php
    M /trunk/community/web/login/index.php
@@ -3737,7 +4044,7 @@ Geänderte Pfade:
 - implement encrypted email to notify players of their passwords
 
 ------------------------------------------------------------------------
-r6566 | josef | 2004-12-31 16:38:38 +0100 (Fr, 31 Dez 2004) | 2 lines
+r6566 | josef | 2004-12-31 16:38:38 +0100 (Fr, 31. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/rankings.sql
    M /trunk/community/web/my/change.php
@@ -3746,14 +4053,14 @@ Geänderte Pfade:
 - support OpenPGP public key upload (so emails can be sent encrypted)
 
 ------------------------------------------------------------------------
-r6527 | josef | 2004-12-18 23:11:22 +0100 (Sa, 18 Dez 2004) | 2 lines
+r6527 | josef | 2004-12-18 23:11:22 +0100 (Sa, 18. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/calendar/index.xml.php
 
 - send a <game> tag alongside the tournament so compcal can recognize it
 
 ------------------------------------------------------------------------
-r6525 | josef | 2004-12-18 22:10:55 +0100 (Sa, 18 Dez 2004) | 4 lines
+r6525 | josef | 2004-12-18 22:10:55 +0100 (Sa, 18. Dez 2004) | 4 lines
 Geänderte Pfade:
    A /trunk/community/web/calendar
    A /trunk/community/web/calendar/index.xml.php
@@ -3763,7 +4070,7 @@ Geänderte Pfade:
 - but does not yet include match results and upcoming/past games
 
 ------------------------------------------------------------------------
-r6519 | josef | 2004-12-18 16:23:35 +0100 (Sa, 18 Dez 2004) | 9 lines
+r6519 | josef | 2004-12-18 16:23:35 +0100 (Sa, 18. Dez 2004) | 9 lines
 Geänderte Pfade:
    M /trunk/community/web/common/top.inc
    M /trunk/community/web/login/index.php
@@ -3783,14 +4090,14 @@ Ideally, the following would happen in a default case:
 * Members: can't do anything :)
 
 ------------------------------------------------------------------------
-r6518 | josef | 2004-12-18 15:14:10 +0100 (Sa, 18 Dez 2004) | 2 lines
+r6518 | josef | 2004-12-18 15:14:10 +0100 (Sa, 18. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/stats.php
 
 - team members: display and sort by entry date
 
 ------------------------------------------------------------------------
-r6517 | josef | 2004-12-18 15:10:05 +0100 (Sa, 18 Dez 2004) | 3 lines
+r6517 | josef | 2004-12-18 15:10:05 +0100 (Sa, 18. Dez 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/community/setup/sql/rankings.sql
 
@@ -3798,14 +4105,14 @@ Geänderte Pfade:
 - new teammember attribute: entrydate
 
 ------------------------------------------------------------------------
-r6516 | josef | 2004-12-18 15:08:12 +0100 (Sa, 18 Dez 2004) | 2 lines
+r6516 | josef | 2004-12-18 15:08:12 +0100 (Sa, 18. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/stats.php
 
 - display team founder and icon
 
 ------------------------------------------------------------------------
-r6515 | josef | 2004-12-18 13:48:32 +0100 (Sa, 18 Dez 2004) | 4 lines
+r6515 | josef | 2004-12-18 13:48:32 +0100 (Sa, 18. Dez 2004) | 4 lines
 Geänderte Pfade:
    M /trunk/community/setup/setup.txt
    M /trunk/community/setup/sql/tournaments.sql
@@ -3823,7 +4130,7 @@ Geänderte Pfade:
 - some additional setup information
 
 ------------------------------------------------------------------------
-r6514 | josef | 2004-12-18 12:32:07 +0100 (Sa, 18 Dez 2004) | 3 lines
+r6514 | josef | 2004-12-18 12:32:07 +0100 (Sa, 18. Dez 2004) | 3 lines
 Geänderte Pfade:
    A /trunk/community/web/common/player.php
    M /trunk/community/web/common/top.inc
@@ -3836,7 +4143,7 @@ Geänderte Pfade:
 - common PHP class 'Player' to retrieve and display information
 
 ------------------------------------------------------------------------
-r6513 | josef | 2004-12-17 18:51:38 +0100 (Fr, 17 Dez 2004) | 3 lines
+r6513 | josef | 2004-12-17 18:51:38 +0100 (Fr, 17. Dez 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/db/players/index.php
    A /trunk/community/web/db/players/rankings.php
@@ -3848,7 +4155,7 @@ Geänderte Pfade:
 - old functionality is now more or less migrated
 
 ------------------------------------------------------------------------
-r6512 | josef | 2004-12-17 18:16:59 +0100 (Fr, 17 Dez 2004) | 2 lines
+r6512 | josef | 2004-12-17 18:16:59 +0100 (Fr, 17. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/bottom.inc
    M /trunk/community/web/common/database.php
@@ -3863,7 +4170,7 @@ Geänderte Pfade:
 - improved tournaments and teams management (to be continued...)
 
 ------------------------------------------------------------------------
-r6510 | josef | 2004-12-17 02:00:59 +0100 (Fr, 17 Dez 2004) | 2 lines
+r6510 | josef | 2004-12-17 02:00:59 +0100 (Fr, 17. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/tournaments/new.inc
    M /trunk/community/web/tournaments/show.inc
@@ -3872,7 +4179,7 @@ Geänderte Pfade:
 - link player and games pages back to their respective database entries
 
 ------------------------------------------------------------------------
-r6509 | josef | 2004-12-17 01:51:32 +0100 (Fr, 17 Dez 2004) | 2 lines
+r6509 | josef | 2004-12-17 01:51:32 +0100 (Fr, 17. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/community/web/common/navbar.inc
    M /trunk/community/web/common/navbar.inc.de
@@ -3881,7 +4188,7 @@ Geänderte Pfade:
 - enforce authorization on /teams/ and /tournaments/
 
 ------------------------------------------------------------------------
-r6508 | josef | 2004-12-17 01:36:48 +0100 (Fr, 17 Dez 2004) | 3 lines
+r6508 | josef | 2004-12-17 01:36:48 +0100 (Fr, 17. Dez 2004) | 3 lines
 Geänderte Pfade:
    A /trunk/community/web/active
    A /trunk/community/web/active/hotstuff.php
@@ -3892,14 +4199,14 @@ Geänderte Pfade:
 - the real pages will require authorization while the above do not
 
 ------------------------------------------------------------------------
-r6507 | josef | 2004-12-17 01:01:54 +0100 (Fr, 17 Dez 2004) | 2 lines
+r6507 | josef | 2004-12-17 01:01:54 +0100 (Fr, 17. Dez 2004) | 2 lines
 Geänderte Pfade:
    A /trunk/community/web/common/tls.inc
 
 - the missing TLS snippet
 
 ------------------------------------------------------------------------
-r6506 | josef | 2004-12-17 01:01:31 +0100 (Fr, 17 Dez 2004) | 3 lines
+r6506 | josef | 2004-12-17 01:01:31 +0100 (Fr, 17. Dez 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/common/navbar.inc
    M /trunk/community/web/common/navbar.inc.de
@@ -3912,7 +4219,7 @@ Geänderte Pfade:
 - if user does not use TLS, gently notify him/her of his/her mistake
 
 ------------------------------------------------------------------------
-r6505 | josef | 2004-12-17 00:40:52 +0100 (Fr, 17 Dez 2004) | 4 lines
+r6505 | josef | 2004-12-17 00:40:52 +0100 (Fr, 17. Dez 2004) | 4 lines
 Geänderte Pfade:
    M /trunk/community/web/.htaccess
    M /trunk/community/web/common/acknowledgements.inc.de
@@ -3931,14 +4238,14 @@ Geänderte Pfade:
 - "fix" .htaccess (but everyone else will have to modify this again)
 
 ------------------------------------------------------------------------
-r6458 | josef | 2004-12-13 16:51:21 +0100 (Mo, 13 Dez 2004) | 2 lines
+r6458 | josef | 2004-12-13 16:51:21 +0100 (Mo, 13. Dez 2004) | 2 lines
 Geänderte Pfade:
    A /trunk/community/COPYING
 
 - licence file
 
 ------------------------------------------------------------------------
-r6454 | josef | 2004-12-13 16:46:32 +0100 (Mo, 13 Dez 2004) | 2 lines
+r6454 | josef | 2004-12-13 16:46:32 +0100 (Mo, 13. Dez 2004) | 2 lines
 Geänderte Pfade:
    A /trunk/community
    A /trunk/community/Community.features

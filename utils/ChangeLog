@@ -1,5 +1,80 @@
 ------------------------------------------------------------------------
-r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24 Mai 2008) | 3 lines
+r10308 | jdorje | 2008-07-12 18:07:21 +0200 (Sa, 12. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/utils/telggz/net.c
+
+Don't shadow global variables.
+------------------------------------------------------------------------
+r10189 | jdorje | 2008-07-08 05:29:19 +0200 (Di, 08. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/utils/cmd-client/main.c
+
+Fix initializers.
+------------------------------------------------------------------------
+r10117 | jdorje | 2008-06-30 08:26:37 +0200 (Mo, 30. Jun 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/gtk-games/autogen.sh
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/autogen.sh
+   M /trunk/libggz/autogen.sh
+   M /trunk/playground/agrue/autogen.sh
+   M /trunk/playground/irc/autogen.sh
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+Exit with return value 1 on failure.  Previously if an autotool failed
+autogen would exit with a success value.
+
+All autogen files other than the python module one are updated.
+
+------------------------------------------------------------------------
+r10091 | jdorje | 2008-06-29 11:46:27 +0200 (So, 29. Jun 2008) | 1 line
+Geänderte Pfade:
+   D /trunk/ggz-client-libs/m4/iconv.m4
+   D /trunk/ggzd/m4/iconv.m4
+   D /trunk/grubby/m4/iconv.m4
+   D /trunk/gtk-client/m4/iconv.m4
+   D /trunk/gtk-games/m4/iconv.m4
+   D /trunk/kde-client/m4/iconv.m4
+   D /trunk/kde-games/m4/iconv.m4
+   A /trunk/libggz/src/ggz (von /trunk/ggzd/m4/iconv.m4:10089)
+   D /trunk/playground/agrue/m4/iconv.m4
+   D /trunk/playground/irc/m4/iconv.m4
+   D /trunk/sdl-games/m4/iconv.m4
+   D /trunk/txt-client/m4/iconv.m4
+   D /trunk/utils/m4/iconv.m4
+
+Move iconv.m4 into ggz common m4 directory.
+------------------------------------------------------------------------
+r10004 | josef | 2008-05-25 11:12:02 +0200 (So, 25. Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/java/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- prepend 5300 lines of change summaries to the changelog files
+
+
+------------------------------------------------------------------------
+r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README
@@ -33,7 +108,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9946 | josef | 2008-04-12 13:59:55 +0200 (Sa, 12 Apr 2008) | 3 lines
+r9946 | josef | 2008-04-12 13:59:55 +0200 (Sa, 12. Apr 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -56,7 +131,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9910 | josef | 2008-03-30 14:35:43 +0200 (So, 30 Mär 2008) | 3 lines
+r9910 | josef | 2008-03-30 14:35:43 +0200 (So, 30. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/ggz-sql
    M /trunk/utils/man/ggz-sql.1
@@ -65,7 +140,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9896 | josef | 2008-03-29 15:41:17 +0100 (Sa, 29 Mär 2008) | 3 lines
+r9896 | josef | 2008-03-29 15:41:17 +0100 (Sa, 29. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/dots.protocol
 
@@ -73,7 +148,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9727 | josef | 2008-02-15 20:40:18 +0100 (Fr, 15 Feb 2008) | 4 lines
+r9727 | josef | 2008-02-15 20:40:18 +0100 (Fr, 15. Feb 2008) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/ggzcommgen
    M /trunk/utils/ggzcomm/tictactoe.protocol
@@ -83,7 +158,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9617 | josef | 2008-01-28 00:25:29 +0100 (Mo, 28 Jan 2008) | 3 lines
+r9617 | josef | 2008-01-28 00:25:29 +0100 (Mo, 28. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/Makefile.am
 
@@ -91,7 +166,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9608 | josef | 2008-01-25 22:09:48 +0100 (Fr, 25 Jan 2008) | 3 lines
+r9608 | josef | 2008-01-25 22:09:48 +0100 (Fr, 25. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/libmeta/Makefile.am
    M /trunk/utils/metaserv/libmeta/meta.c
@@ -105,7 +180,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9607 | josef | 2008-01-25 21:58:55 +0100 (Fr, 25 Jan 2008) | 4 lines
+r9607 | josef | 2008-01-25 21:58:55 +0100 (Fr, 25. Jan 2008) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/main.c
    M /trunk/utils/telggz/net.c
@@ -115,7 +190,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9606 | josef | 2008-01-25 20:53:00 +0100 (Fr, 25 Jan 2008) | 4 lines
+r9606 | josef | 2008-01-25 20:53:00 +0100 (Fr, 25. Jan 2008) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/chat.c
    M /trunk/utils/telggz/main.c
@@ -125,7 +200,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9597 | josef | 2008-01-25 18:21:59 +0100 (Fr, 25 Jan 2008) | 3 lines
+r9597 | josef | 2008-01-25 18:21:59 +0100 (Fr, 25. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/net.c
 
@@ -133,7 +208,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9572 | josef | 2008-01-20 11:50:17 +0100 (So, 20 Jan 2008) | 3 lines
+r9572 | josef | 2008-01-20 11:50:17 +0100 (So, 20. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/main.c
    M /trunk/utils/telggz/net.c
@@ -142,7 +217,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9436 | josef | 2007-12-11 21:42:26 +0100 (Di, 11 Dez 2007) | 4 lines
+r9436 | josef | 2007-12-11 21:42:26 +0100 (Di, 11. Dez 2007) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/Makefile.am
    M /trunk/utils/configure.ac
@@ -156,7 +231,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9401 | josef | 2007-12-01 13:30:41 +0100 (Sa, 01 Dez 2007) | 4 lines
+r9401 | josef | 2007-12-01 13:30:41 +0100 (Sa, 01. Dez 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/docs/autogen.sh
@@ -177,7 +252,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9378 | josef | 2007-11-21 20:43:31 +0100 (Mi, 21 Nov 2007) | 6 lines
+r9378 | josef | 2007-11-21 20:43:31 +0100 (Mi, 21. Nov 2007) | 6 lines
 Geänderte Pfade:
    M /trunk
    A /trunk/utils/motds/ggzd.motd.orig
@@ -189,7 +264,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9333 | josef | 2007-10-28 23:35:21 +0100 (So, 28 Okt 2007) | 4 lines
+r9333 | josef | 2007-10-28 23:35:21 +0100 (So, 28. Okt 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/utils/ggzcomm/ggzcommgen
@@ -200,7 +275,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9324 | josef | 2007-10-20 10:08:46 +0200 (Sa, 20 Okt 2007) | 5 lines
+r9324 | josef | 2007-10-20 10:08:46 +0200 (Sa, 20. Okt 2007) | 5 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/utils/cmd-client/main.c
@@ -211,7 +286,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9227 | josef | 2007-08-06 08:12:25 +0200 (Mo, 06 Aug 2007) | 5 lines
+r9227 | josef | 2007-08-06 08:12:25 +0200 (Mo, 06. Aug 2007) | 5 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/utils/ggzcomm/README.ggzcomm
@@ -224,7 +299,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9226 | josef | 2007-08-06 08:12:18 +0200 (Mo, 06 Aug 2007) | 4 lines
+r9226 | josef | 2007-08-06 08:12:18 +0200 (Mo, 06. Aug 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/utils/cmd-client/Makefile.am
@@ -237,7 +312,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9194 | josef | 2007-07-18 09:15:22 +0200 (Mi, 18 Jul 2007) | 10 lines
+r9194 | josef | 2007-07-18 09:15:22 +0200 (Mi, 18. Jul 2007) | 10 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/ggzd/ggzd/parse_opt.c
@@ -255,7 +330,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9191 | josef | 2007-07-16 14:51:02 +0200 (Mo, 16 Jul 2007) | 3 lines
+r9191 | josef | 2007-07-16 14:51:02 +0200 (Mo, 16. Jul 2007) | 3 lines
 Geänderte Pfade:
    A /trunk/community/web/forums/GGZForum.txt
    A /trunk/utils/ggzcomm/battleship.protocol
@@ -264,7 +339,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9185 | josef | 2007-07-13 07:31:14 +0200 (Fr, 13 Jul 2007) | 4 lines
+r9185 | josef | 2007-07-13 07:31:14 +0200 (Fr, 13. Jul 2007) | 4 lines
 Geänderte Pfade:
    M /trunk/utils
    M /trunk/utils/ggzcomm/ggzcommgen
@@ -274,7 +349,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9183 | josef | 2007-07-12 12:58:32 +0200 (Do, 12 Jul 2007) | 5 lines
+r9183 | josef | 2007-07-12 12:58:32 +0200 (Do, 12. Jul 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/ggzcommgen
 
@@ -284,7 +359,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9182 | josef | 2007-07-12 12:02:11 +0200 (Do, 12 Jul 2007) | 5 lines
+r9182 | josef | 2007-07-12 12:02:11 +0200 (Do, 12. Jul 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/ggzcommgen
 
@@ -294,7 +369,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9176 | josef | 2007-07-11 08:21:58 +0200 (Mi, 11 Jul 2007) | 9 lines
+r9176 | josef | 2007-07-11 08:21:58 +0200 (Mi, 11. Jul 2007) | 9 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/ggzcommgen
 
@@ -308,7 +383,7 @@ backends would become easier.
 
 
 ------------------------------------------------------------------------
-r8993 | josef | 2007-02-28 12:44:38 +0100 (Mi, 28 Feb 2007) | 5 lines
+r8993 | josef | 2007-02-28 12:44:38 +0100 (Mi, 28. Feb 2007) | 5 lines
 Geänderte Pfade:
    A /trunk/utils/ggzcomm/reversi.protocol
 
@@ -318,7 +393,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8987 | jdorje | 2007-02-19 03:50:30 +0100 (Mo, 19 Feb 2007) | 1 line
+r8987 | jdorje | 2007-02-19 03:50:30 +0100 (Mo, 19. Feb 2007) | 1 line
 Geänderte Pfade:
    M /trunk/community/setup/scripts/ggz2phpbb.conf.in
    M /trunk/community/setup/sql/trigger/ggzsync_trigger.c
@@ -464,7 +539,7 @@ Geänderte Pfade:
 
 Fix eol-style on .c, .h, .in, and .am files.
 ------------------------------------------------------------------------
-r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16 Jan 2007) | 8 lines
+r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16. Jan 2007) | 8 lines
 Geänderte Pfade:
    M /trunk/community/ChangeLog
    M /trunk/docs/ChangeLog
@@ -492,7 +567,7 @@ However we have to do so since no tool seems to be able to reproduce our old for
 
 
 ------------------------------------------------------------------------
-r8949 | josef | 2007-01-16 19:23:42 +0100 (Di, 16 Jan 2007) | 5 lines
+r8949 | josef | 2007-01-16 19:23:42 +0100 (Di, 16. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -515,7 +590,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16 Jan 2007) | 5 lines
+r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README.GGZ
@@ -593,7 +668,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8946 | josef | 2007-01-16 18:49:40 +0100 (Di, 16 Jan 2007) | 6 lines
+r8946 | josef | 2007-01-16 18:49:40 +0100 (Di, 16. Jan 2007) | 6 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Versioning
    M /trunk/grubby/grubby/src/main.c
@@ -606,7 +681,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8857 | josef | 2007-01-08 14:42:50 +0100 (Mo, 08 Jan 2007) | 5 lines
+r8857 | josef | 2007-01-08 14:42:50 +0100 (Mo, 08. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm
 
@@ -616,7 +691,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8852 | josef | 2007-01-08 14:36:45 +0100 (Mo, 08 Jan 2007) | 9 lines
+r8852 | josef | 2007-01-08 14:36:45 +0100 (Mo, 08. Jan 2007) | 9 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz-client-libs/autogen.sh
@@ -642,7 +717,7 @@ But I'm sure we had a reason not to and I don't want to break it right now.
 
 
 ------------------------------------------------------------------------
-r8813 | jdorje | 2007-01-04 23:52:10 +0100 (Do, 04 Jan 2007) | 1 line
+r8813 | jdorje | 2007-01-04 23:52:10 +0100 (Do, 04. Jan 2007) | 1 line
 Geänderte Pfade:
    M /trunk/utils/Makefile.am
    M /trunk/utils/autogen.sh
@@ -652,7 +727,7 @@ Geänderte Pfade:
 
 Use externals for common GGZ m4 files.
 ------------------------------------------------------------------------
-r8802 | josef | 2007-01-04 13:41:51 +0100 (Do, 04 Jan 2007) | 7 lines
+r8802 | josef | 2007-01-04 13:41:51 +0100 (Do, 04. Jan 2007) | 7 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -675,7 +750,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8777 | josef | 2007-01-02 13:09:25 +0100 (Di, 02 Jan 2007) | 9 lines
+r8777 | josef | 2007-01-02 13:09:25 +0100 (Di, 02. Jan 2007) | 9 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -700,7 +775,7 @@ shall now be happy again.
 
 
 ------------------------------------------------------------------------
-r8729 | josef | 2006-12-18 08:15:56 +0100 (Mo, 18 Dez 2006) | 5 lines
+r8729 | josef | 2006-12-18 08:15:56 +0100 (Mo, 18. Dez 2006) | 5 lines
 Geänderte Pfade:
    A /trunk/utils/ggzcomm/c++example/Makefile.qt4
    A /trunk/utils/ggzcomm/c++example/client4.cpp
@@ -718,7 +793,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8727 | josef | 2006-12-15 10:55:23 +0100 (Fr, 15 Dez 2006) | 3 lines
+r8727 | josef | 2006-12-15 10:55:23 +0100 (Fr, 15. Dez 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/connectx.protocol
    M /trunk/utils/ggzcomm/ggzcommgen
@@ -727,7 +802,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8726 | josef | 2006-12-14 17:23:22 +0100 (Do, 14 Dez 2006) | 3 lines
+r8726 | josef | 2006-12-14 17:23:22 +0100 (Do, 14. Dez 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/c++example/Makefile
    M /trunk/utils/ggzcomm/c++example/client.cpp
@@ -740,7 +815,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8725 | josef | 2006-12-13 16:42:32 +0100 (Mi, 13 Dez 2006) | 3 lines
+r8725 | josef | 2006-12-13 16:42:32 +0100 (Mi, 13. Dez 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -758,7 +833,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8723 | josef | 2006-12-13 15:58:04 +0100 (Mi, 13 Dez 2006) | 3 lines
+r8723 | josef | 2006-12-13 15:58:04 +0100 (Mi, 13. Dez 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/Makefile.am
 
@@ -766,7 +841,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8722 | josef | 2006-12-13 15:31:44 +0100 (Mi, 13 Dez 2006) | 4 lines
+r8722 | josef | 2006-12-13 15:31:44 +0100 (Mi, 13. Dez 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/c++example/Makefile
    M /trunk/utils/ggzcomm/c++example/client.cpp
@@ -780,7 +855,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8721 | josef | 2006-12-12 14:38:50 +0100 (Di, 12 Dez 2006) | 4 lines
+r8721 | josef | 2006-12-12 14:38:50 +0100 (Di, 12. Dez 2006) | 4 lines
 Geänderte Pfade:
    A /trunk/utils/ggzcomm/c++example
    A /trunk/utils/ggzcomm/c++example/Makefile
@@ -793,7 +868,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8718 | josef | 2006-12-11 10:08:10 +0100 (Mo, 11 Dez 2006) | 11 lines
+r8718 | josef | 2006-12-11 10:08:10 +0100 (Mo, 11. Dez 2006) | 11 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/README.ggzcomm
    M /trunk/utils/ggzcomm/connectx.protocol
@@ -816,7 +891,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8683 | josef | 2006-11-28 11:33:35 +0100 (Di, 28 Nov 2006) | 4 lines
+r8683 | josef | 2006-11-28 11:33:35 +0100 (Di, 28. Nov 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/ggzcommgen
 
@@ -825,7 +900,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8651 | josef | 2006-11-09 07:47:54 +0100 (Do, 09 Nov 2006) | 8 lines
+r8651 | josef | 2006-11-09 07:47:54 +0100 (Do, 09. Nov 2006) | 8 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/configure.ac
    M /trunk/ggz-client-libs/ggzcore/Makefile.am
@@ -856,7 +931,7 @@ Now there are both INTLLIBS and LIB_GETTEXT in the gtk+ modules. This seems to b
 
 
 ------------------------------------------------------------------------
-r8607 | jdorje | 2006-10-02 23:36:27 +0200 (Mo, 02 Okt 2006) | 1 line
+r8607 | jdorje | 2006-10-02 23:36:27 +0200 (Mo, 02. Okt 2006) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -872,7 +947,7 @@ Geänderte Pfade:
 
 Josef forgot to propogate the ggz.m4 changes.
 ------------------------------------------------------------------------
-r8606 | josef | 2006-09-25 12:59:28 +0200 (Mo, 25 Sep 2006) | 5 lines
+r8606 | josef | 2006-09-25 12:59:28 +0200 (Mo, 25. Sep 2006) | 5 lines
 Geänderte Pfade:
    A /trunk/utils/m4/system.m4
    M /trunk/utils/metaserv/Makefile.am
@@ -884,7 +959,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8587 | jdorje | 2006-09-20 04:15:08 +0200 (Mi, 20 Sep 2006) | 1 line
+r8587 | jdorje | 2006-09-20 04:15:08 +0200 (Mi, 20. Sep 2006) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -901,7 +976,7 @@ Geänderte Pfade:
 
 Add AC_GGZ_CHECK_SERVER macro.
 ------------------------------------------------------------------------
-r8583 | jdorje | 2006-09-19 17:26:31 +0200 (Di, 19 Sep 2006) | 3 lines
+r8583 | jdorje | 2006-09-19 17:26:31 +0200 (Di, 19. Sep 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/ggz-config/Makefile.am
    M /trunk/ggz-client-libs/ggzcore/Makefile.am
@@ -926,7 +1001,7 @@ Don't define PREFIX in config.h, as this makes it impossible to change
 the prefix at compile time (as per GNU standards).
 
 ------------------------------------------------------------------------
-r8567 | jdorje | 2006-09-03 07:35:12 +0200 (So, 03 Sep 2006) | 5 lines
+r8567 | jdorje | 2006-09-03 07:35:12 +0200 (So, 03. Sep 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/Makefile.am
    M /trunk/ggz-client-libs/configure.ac
@@ -965,7 +1040,7 @@ code conforms to GNU standards as the prefix may be changed at compile time;
 see the autoconf manual for details.
 
 ------------------------------------------------------------------------
-r8452 | jdorje | 2006-08-01 21:53:36 +0200 (Di, 01 Aug 2006) | 2 lines
+r8452 | jdorje | 2006-08-01 21:53:36 +0200 (Di, 01. Aug 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/ggz-games/Makefile.am
    M /trunk/docs/games/ggz-games/tictactoe/Makefile.am
@@ -1014,7 +1089,7 @@ Geänderte Pfade:
 Enable keyword substitution for all .c, .h, .ac, and .am files.
 
 ------------------------------------------------------------------------
-r8416 | josef | 2006-07-29 13:23:46 +0200 (Sa, 29 Jul 2006) | 4 lines
+r8416 | josef | 2006-07-29 13:23:46 +0200 (Sa, 29. Jul 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/ggzcommgen
 
@@ -1023,7 +1098,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8412 | jdorje | 2006-07-28 02:48:14 +0200 (Fr, 28 Jul 2006) | 1 line
+r8412 | jdorje | 2006-07-28 02:48:14 +0200 (Fr, 28. Jul 2006) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1040,7 +1115,7 @@ Geänderte Pfade:
 
 Extensions to AC_GGZ_VERSION.
 ------------------------------------------------------------------------
-r8390 | josef | 2006-07-22 12:24:08 +0200 (Sa, 22 Jul 2006) | 3 lines
+r8390 | josef | 2006-07-22 12:24:08 +0200 (Sa, 22. Jul 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/connectx.protocol
 
@@ -1048,7 +1123,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8386 | josef | 2006-07-22 12:11:54 +0200 (Sa, 22 Jul 2006) | 3 lines
+r8386 | josef | 2006-07-22 12:11:54 +0200 (Sa, 22. Jul 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/connectx.protocol
 
@@ -1056,7 +1131,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8381 | josef | 2006-07-22 09:05:34 +0200 (Sa, 22 Jul 2006) | 4 lines
+r8381 | josef | 2006-07-22 09:05:34 +0200 (Sa, 22. Jul 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/ggzcommgen
 
@@ -1065,7 +1140,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8371 | josef | 2006-07-19 13:39:47 +0200 (Mi, 19 Jul 2006) | 3 lines
+r8371 | josef | 2006-07-19 13:39:47 +0200 (Mi, 19. Jul 2006) | 3 lines
 Geänderte Pfade:
    A /trunk/utils/ggzcomm/connectx.protocol
 
@@ -1073,7 +1148,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8278 | josef | 2006-06-27 09:28:12 +0200 (Di, 27 Jun 2006) | 3 lines
+r8278 | josef | 2006-06-27 09:28:12 +0200 (Di, 27. Jun 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1091,7 +1166,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8249 | josef | 2006-06-22 08:31:37 +0200 (Do, 22 Jun 2006) | 3 lines
+r8249 | josef | 2006-06-22 08:31:37 +0200 (Do, 22. Jun 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/Makefile.am
 
@@ -1099,7 +1174,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8246 | josef | 2006-06-22 07:27:31 +0200 (Do, 22 Jun 2006) | 3 lines
+r8246 | josef | 2006-06-22 07:27:31 +0200 (Do, 22. Jun 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/man/Makefile.am
 
@@ -1107,7 +1182,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8096 | josef | 2006-06-01 12:04:26 +0200 (Do, 01 Jun 2006) | 3 lines
+r8096 | josef | 2006-06-01 12:04:26 +0200 (Do, 01. Jun 2006) | 3 lines
 Geänderte Pfade:
    A /trunk/utils/metaserv/libmeta/TODO
 
@@ -1115,7 +1190,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8095 | josef | 2006-06-01 12:03:21 +0200 (Do, 01 Jun 2006) | 4 lines
+r8095 | josef | 2006-06-01 12:03:21 +0200 (Do, 01. Jun 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/utils
    M /trunk/utils/ggzcomm/ggzcommgen
@@ -1125,7 +1200,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8094 | josef | 2006-06-01 12:02:19 +0200 (Do, 01 Jun 2006) | 5 lines
+r8094 | josef | 2006-06-01 12:02:19 +0200 (Do, 01. Jun 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/Makefile.am
    M /trunk/utils/telggz/main.c
@@ -1138,7 +1213,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8093 | josef | 2006-06-01 12:01:13 +0200 (Do, 01 Jun 2006) | 8 lines
+r8093 | josef | 2006-06-01 12:01:13 +0200 (Do, 01. Jun 2006) | 8 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/README.ggz-metaserver
    M /trunk/utils/metaserv/libmeta
@@ -1162,7 +1237,7 @@ Planned addition to ggzmeta: asynchronous query mode (not easy to implement)
 
 
 ------------------------------------------------------------------------
-r8081 | josef | 2006-05-30 14:59:51 +0200 (Di, 30 Mai 2006) | 8 lines
+r8081 | josef | 2006-05-30 14:59:51 +0200 (Di, 30. Mai 2006) | 8 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1186,7 +1261,7 @@ and --libdir=/usr/lib64 doesn't break the prefix search anymore.
 
 
 ------------------------------------------------------------------------
-r8060 | josef | 2006-05-24 11:15:56 +0200 (Mi, 24 Mai 2006) | 3 lines
+r8060 | josef | 2006-05-24 11:15:56 +0200 (Mi, 24. Mai 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/man/Makefile.am
    M /trunk/utils/man/ggz-cmd.1
@@ -1199,7 +1274,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8049 | josef | 2006-05-22 08:55:12 +0200 (Mo, 22 Mai 2006) | 4 lines
+r8049 | josef | 2006-05-22 08:55:12 +0200 (Mo, 22. Mai 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/Makefile.am
    M /trunk/utils/metaserv/metaserv/metaserv.c
@@ -1210,7 +1285,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8046 | josef | 2006-05-22 08:51:28 +0200 (Mo, 22 Mai 2006) | 7 lines
+r8046 | josef | 2006-05-22 08:51:28 +0200 (Mo, 22. Mai 2006) | 7 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1233,7 +1308,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8043 | josef | 2006-05-22 08:45:40 +0200 (Mo, 22 Mai 2006) | 3 lines
+r8043 | josef | 2006-05-22 08:45:40 +0200 (Mo, 22. Mai 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/Makefile.am
    M /trunk/utils/telggz/main.c
@@ -1243,7 +1318,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8022 | josef | 2006-05-02 09:17:18 +0200 (Di, 02 Mai 2006) | 4 lines
+r8022 | josef | 2006-05-02 09:17:18 +0200 (Di, 02. Mai 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/ggzd/configure.ac
    M /trunk/utils/Makefile.am
@@ -1254,7 +1329,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8020 | josef | 2006-05-02 09:14:36 +0200 (Di, 02 Mai 2006) | 3 lines
+r8020 | josef | 2006-05-02 09:14:36 +0200 (Di, 02. Mai 2006) | 3 lines
 Geänderte Pfade:
    D /trunk/utils/metaserv/gui-custom
    D /trunk/utils/metaserv/gui-perl
@@ -1263,7 +1338,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8019 | josef | 2006-05-02 09:13:40 +0200 (Di, 02 Mai 2006) | 4 lines
+r8019 | josef | 2006-05-02 09:13:40 +0200 (Di, 02. Mai 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/Makefile.am
    M /trunk/utils/metaserv/README.ggz-metaserver
@@ -1290,7 +1365,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8018 | josef | 2006-05-02 09:12:44 +0200 (Di, 02 Mai 2006) | 9 lines
+r8018 | josef | 2006-05-02 09:12:44 +0200 (Di, 02. Mai 2006) | 9 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/Configuration
    A /trunk/utils/metaserv/metaserv/Diagram
@@ -1315,7 +1390,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8017 | josef | 2006-05-02 09:09:59 +0200 (Di, 02 Mai 2006) | 3 lines
+r8017 | josef | 2006-05-02 09:09:59 +0200 (Di, 02. Mai 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/minidom/Makefile.am
    M /trunk/utils/metaserv/minidom/minidom.c
@@ -1325,7 +1400,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8003 | josef | 2006-04-24 09:21:05 +0200 (Mo, 24 Apr 2006) | 3 lines
+r8003 | josef | 2006-04-24 09:21:05 +0200 (Mo, 24. Apr 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/chat.c
    M /trunk/utils/telggz/main.c
@@ -1335,7 +1410,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7997 | josef | 2006-04-07 21:25:28 +0200 (Fr, 07 Apr 2006) | 3 lines
+r7997 | josef | 2006-04-07 21:25:28 +0200 (Fr, 07. Apr 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/net.c
 
@@ -1343,7 +1418,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7996 | josef | 2006-04-07 20:56:50 +0200 (Fr, 07 Apr 2006) | 3 lines
+r7996 | josef | 2006-04-07 20:56:50 +0200 (Fr, 07. Apr 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/xinetd.conf
 
@@ -1351,7 +1426,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7942 | josef | 2006-03-16 16:15:01 +0100 (Do, 16 Mär 2006) | 3 lines
+r7942 | josef | 2006-03-16 16:15:01 +0100 (Do, 16. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/ChangeLog
    M /trunk/docs/ChangeLog
@@ -1373,7 +1448,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7912 | josef | 2006-03-14 14:54:27 +0100 (Di, 14 Mär 2006) | 3 lines
+r7912 | josef | 2006-03-14 14:54:27 +0100 (Di, 14. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/README
    M /trunk/gnome-client/README
@@ -1390,7 +1465,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7911 | josef | 2006-03-14 14:53:58 +0100 (Di, 14 Mär 2006) | 3 lines
+r7911 | josef | 2006-03-14 14:53:58 +0100 (Di, 14. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/QuickStart.GGZ
    M /trunk/docs/autogen.sh
@@ -1419,7 +1494,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7905 | josef | 2006-03-14 14:47:11 +0100 (Di, 14 Mär 2006) | 4 lines
+r7905 | josef | 2006-03-14 14:47:11 +0100 (Di, 14. Mär 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/NEWS
@@ -1470,7 +1545,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7903 | josef | 2006-03-14 14:45:48 +0100 (Di, 14 Mär 2006) | 3 lines
+r7903 | josef | 2006-03-14 14:45:48 +0100 (Di, 14. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -1490,7 +1565,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7813 | josef | 2006-01-23 11:50:39 +0100 (Mo, 23 Jan 2006) | 3 lines
+r7813 | josef | 2006-01-23 11:50:39 +0100 (Mo, 23. Jan 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/README.ggzcomm
 
@@ -1498,7 +1573,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7782 | jdorje | 2006-01-14 06:29:03 +0100 (Sa, 14 Jan 2006) | 1 line
+r7782 | jdorje | 2006-01-14 06:29:03 +0100 (Sa, 14. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1515,7 +1590,7 @@ Geänderte Pfade:
 
 Fix AM_CONDITIONAL problem.
 ------------------------------------------------------------------------
-r7762 | jdorje | 2006-01-11 08:00:16 +0100 (Mi, 11 Jan 2006) | 1 line
+r7762 | jdorje | 2006-01-11 08:00:16 +0100 (Mi, 11. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1532,7 +1607,7 @@ Geänderte Pfade:
 
 ggz-gtk support in ggz.m4.
 ------------------------------------------------------------------------
-r7690 | josef | 2005-12-29 12:31:27 +0100 (Do, 29 Dez 2005) | 4 lines
+r7690 | josef | 2005-12-29 12:31:27 +0100 (Do, 29. Dez 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/README.GGZ
    M /trunk/docs/autogen.sh
@@ -1585,7 +1660,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7685 | josef | 2005-12-29 12:21:34 +0100 (Do, 29 Dez 2005) | 5 lines
+r7685 | josef | 2005-12-29 12:21:34 +0100 (Do, 29. Dez 2005) | 5 lines
 Geänderte Pfade:
    A /trunk/utils/ggzcomm/README.ggzcomm
    A /trunk/utils/ggzcomm/bogaprot.protocol
@@ -1603,7 +1678,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7660 | josef | 2005-12-12 12:54:49 +0100 (Mo, 12 Dez 2005) | 5 lines
+r7660 | josef | 2005-12-12 12:54:49 +0100 (Mo, 12. Dez 2005) | 5 lines
 Geänderte Pfade:
    M /trunk/community/web/articles
    M /trunk/community/web/common
@@ -1906,7 +1981,7 @@ This week's XXL commit!
 
 
 ------------------------------------------------------------------------
-r7601 | josef | 2005-09-28 01:37:04 +0200 (Mi, 28 Sep 2005) | 4 lines
+r7601 | josef | 2005-09-28 01:37:04 +0200 (Mi, 28. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/configure.ac
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -1935,7 +2010,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7594 | josef | 2005-09-25 21:21:53 +0200 (So, 25 Sep 2005) | 3 lines
+r7594 | josef | 2005-09-25 21:21:53 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaservconf.xml
 
@@ -1943,7 +2018,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7593 | josef | 2005-09-25 20:25:14 +0200 (So, 25 Sep 2005) | 3 lines
+r7593 | josef | 2005-09-25 20:25:14 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
    M /trunk/ggz-client-libs/ChangeLog
@@ -1964,7 +2039,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7551 | josef | 2005-09-25 12:11:25 +0200 (So, 25 Sep 2005) | 3 lines
+r7551 | josef | 2005-09-25 12:11:25 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
    M /trunk/community/web/common/htconf-dist
@@ -1987,7 +2062,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7550 | josef | 2005-09-25 11:54:30 +0200 (So, 25 Sep 2005) | 4 lines
+r7550 | josef | 2005-09-25 11:54:30 +0200 (So, 25. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README.GGZ
@@ -2036,7 +2111,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7547 | josef | 2005-09-23 23:54:25 +0200 (Fr, 23 Sep 2005) | 4 lines
+r7547 | josef | 2005-09-23 23:54:25 +0200 (Fr, 23. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/community/COPYING
    M /trunk/ggz-client-libs/COPYING
@@ -2059,7 +2134,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7516 | josef | 2005-09-15 20:00:53 +0200 (Do, 15 Sep 2005) | 4 lines
+r7516 | josef | 2005-09-15 20:00:53 +0200 (Do, 15. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz-client-libs/autogen.sh
@@ -2089,7 +2164,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7464 | josef | 2005-08-20 23:41:45 +0200 (Sa, 20 Aug 2005) | 4 lines
+r7464 | josef | 2005-08-20 23:41:45 +0200 (Sa, 20. Aug 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -2113,7 +2188,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7434 | josef | 2005-08-15 11:57:30 +0200 (Mo, 15 Aug 2005) | 3 lines
+r7434 | josef | 2005-08-15 11:57:30 +0200 (Mo, 15. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/README.ggz-metaserver
    M /trunk/utils/metaserv/metaserv/README.metaserv
@@ -2122,7 +2197,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7419 | josef | 2005-08-14 16:27:21 +0200 (So, 14 Aug 2005) | 3 lines
+r7419 | josef | 2005-08-14 16:27:21 +0200 (So, 14. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/Makefile.am
 
@@ -2130,7 +2205,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7387 | josef | 2005-08-13 19:44:31 +0200 (Sa, 13 Aug 2005) | 3 lines
+r7387 | josef | 2005-08-13 19:44:31 +0200 (Sa, 13. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/configure.ac
    M /trunk/utils/m4/ggz.m4
@@ -2139,7 +2214,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7367 | josef | 2005-08-06 10:32:26 +0200 (Sa, 06 Aug 2005) | 4 lines
+r7367 | josef | 2005-08-06 10:32:26 +0200 (Sa, 06. Aug 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -2158,7 +2233,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7216 | josef | 2005-05-21 13:13:11 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7216 | josef | 2005-05-21 13:13:11 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/NEWS
@@ -2225,7 +2300,7 @@ Geänderte Pfade:
 - common files synchronisation and README update for 0.0.11
 
 ------------------------------------------------------------------------
-r7214 | josef | 2005-05-21 12:46:02 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7214 | josef | 2005-05-21 12:46:02 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz/game_clients/configure.ac
@@ -2245,14 +2320,14 @@ Geänderte Pfade:
 - LET version = 0.0.11
 
 ------------------------------------------------------------------------
-r7211 | josef | 2005-05-21 12:32:40 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7211 | josef | 2005-05-21 12:32:40 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/main.c
 
 - version bumped to 0.4 due to some small changes
 
 ------------------------------------------------------------------------
-r7210 | josef | 2005-05-21 12:30:36 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7210 | josef | 2005-05-21 12:30:36 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/Makefile.am
    A /trunk/utils/ggzcomm/ggzcommgen
@@ -2261,7 +2336,7 @@ Geänderte Pfade:
 - drop .rb prefix from ggzcommgen
 
 ------------------------------------------------------------------------
-r7182 | josef | 2005-05-06 23:19:56 +0200 (Fr, 06 Mai 2005) | 5 lines
+r7182 | josef | 2005-05-06 23:19:56 +0200 (Fr, 06. Mai 2005) | 5 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-txt-client/m4/ggz.m4
@@ -2281,7 +2356,7 @@ Geänderte Pfade:
 - fixes ggzcore linkage force in ggzmod problem
 
 ------------------------------------------------------------------------
-r7151 | josef | 2005-04-24 16:43:14 +0200 (So, 24 Apr 2005) | 2 lines
+r7151 | josef | 2005-04-24 16:43:14 +0200 (So, 24. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/ggzcommgen.rb
    M /trunk/utils/ggzcomm/tictactoe.protocol
@@ -2289,7 +2364,7 @@ Geänderte Pfade:
 - make it produce the exact same code as needed for TTT
 
 ------------------------------------------------------------------------
-r7123 | josef | 2005-04-23 13:31:46 +0200 (Sa, 23 Apr 2005) | 4 lines
+r7123 | josef | 2005-04-23 13:31:46 +0200 (Sa, 23. Apr 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/gtk/login.c
    M /trunk/ggz/src/frontend/kde/ggzcore++/src/GGZCoreServer.cpp
@@ -2313,7 +2388,7 @@ Geänderte Pfade:
  * allow users to give email address
 
 ------------------------------------------------------------------------
-r7116 | josef | 2005-04-21 17:29:23 +0200 (Do, 21 Apr 2005) | 2 lines
+r7116 | josef | 2005-04-21 17:29:23 +0200 (Do, 21. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/Makefile.am
    M /trunk/utils/ggzcomm/ggzcommgen.rb
@@ -2321,7 +2396,7 @@ Geänderte Pfade:
 - fix resulting compilation errors
 
 ------------------------------------------------------------------------
-r7090 | josef | 2005-04-08 15:18:08 +0200 (Fr, 08 Apr 2005) | 2 lines
+r7090 | josef | 2005-04-08 15:18:08 +0200 (Fr, 08. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/gtk/ggzclient.c
    M /trunk/gnome-client/src/ggzclient.c
@@ -2331,28 +2406,28 @@ Geänderte Pfade:
 - fix MOTD loading
 
 ------------------------------------------------------------------------
-r7076 | josef | 2005-04-02 22:14:52 +0200 (Sa, 02 Apr 2005) | 2 lines
+r7076 | josef | 2005-04-02 22:14:52 +0200 (Sa, 02. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaservconf.xml
 
 - prepare next version on new live server
 
 ------------------------------------------------------------------------
-r7003 | josef | 2005-03-13 23:56:30 +0100 (So, 13 Mär 2005) | 2 lines
+r7003 | josef | 2005-03-13 23:56:30 +0100 (So, 13. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/ggzcommgen.rb
 
 - basic support for C++ with Qt signals and slots
 
 ------------------------------------------------------------------------
-r7002 | josef | 2005-03-13 22:27:22 +0100 (So, 13 Mär 2005) | 2 lines
+r7002 | josef | 2005-03-13 22:27:22 +0100 (So, 13. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/ggzcommgen.rb
 
 - dummy support for python/socket output
 
 ------------------------------------------------------------------------
-r7001 | josef | 2005-03-13 21:47:13 +0100 (So, 13 Mär 2005) | 3 lines
+r7001 | josef | 2005-03-13 21:47:13 +0100 (So, 13. Mär 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/ggzcommgen.rb
    M /trunk/utils/ggzcomm/tictactoe.protocol
@@ -2361,14 +2436,14 @@ Geänderte Pfade:
 - make TTT example compile (needs a workaround but this is ok for now)
 
 ------------------------------------------------------------------------
-r7000 | josef | 2005-03-13 18:47:42 +0100 (So, 13 Mär 2005) | 2 lines
+r7000 | josef | 2005-03-13 18:47:42 +0100 (So, 13. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/ggzcommgen.rb
 
 - support for comparison operators: = != < >
 
 ------------------------------------------------------------------------
-r6999 | josef | 2005-03-13 18:43:35 +0100 (So, 13 Mär 2005) | 3 lines
+r6999 | josef | 2005-03-13 18:43:35 +0100 (So, 13. Mär 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/Makefile.am
    D /trunk/utils/ggzcomm/ggzcommgen.c
@@ -2379,7 +2454,7 @@ Geänderte Pfade:
 - delete old C implementation
 
 ------------------------------------------------------------------------
-r6998 | josef | 2005-03-13 18:16:09 +0100 (So, 13 Mär 2005) | 4 lines
+r6998 | josef | 2005-03-13 18:16:09 +0100 (So, 13. Mär 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/ggzcommgen.rb
 
@@ -2388,7 +2463,7 @@ Geänderte Pfade:
 This should make the first games like TTT work!
 
 ------------------------------------------------------------------------
-r6997 | josef | 2005-03-13 17:31:02 +0100 (So, 13 Mär 2005) | 2 lines
+r6997 | josef | 2005-03-13 17:31:02 +0100 (So, 13. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/ggzcommgen.rb
    M /trunk/utils/ggzcomm/protocol-format.txt
@@ -2397,7 +2472,7 @@ Geänderte Pfade:
 - support for sequences
 
 ------------------------------------------------------------------------
-r6996 | josef | 2005-03-13 16:13:35 +0100 (So, 13 Mär 2005) | 7 lines
+r6996 | josef | 2005-03-13 16:13:35 +0100 (So, 13. Mär 2005) | 7 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/DESIGN
    M /trunk/utils/ggzcomm/chess.protocol
@@ -2417,14 +2492,14 @@ Geänderte Pfade:
   * the C sources are to be deprecated, they cannot be maintained
 
 ------------------------------------------------------------------------
-r6992 | josef | 2005-03-11 22:18:01 +0100 (Fr, 11 Mär 2005) | 2 lines
+r6992 | josef | 2005-03-11 22:18:01 +0100 (Fr, 11. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/meta.c
 
 - do not crash on empty server list
 
 ------------------------------------------------------------------------
-r6984 | jdorje | 2005-03-11 08:58:18 +0100 (Fr, 11 Mär 2005) | 4 lines
+r6984 | jdorje | 2005-03-11 08:58:18 +0100 (Fr, 11. Mär 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/main.c
 
@@ -2433,7 +2508,7 @@ Portability fixes:
 2.  Use ggz_strdup not strdup.
 
 ------------------------------------------------------------------------
-r6918 | josef | 2005-02-04 16:59:43 +0100 (Fr, 04 Feb 2005) | 2 lines
+r6918 | josef | 2005-02-04 16:59:43 +0100 (Fr, 04. Feb 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -2450,7 +2525,7 @@ Geänderte Pfade:
 - synchronize
 
 ------------------------------------------------------------------------
-r6870 | jdorje | 2005-01-24 04:23:21 +0100 (Mo, 24 Jan 2005) | 2 lines
+r6870 | jdorje | 2005-01-24 04:23:21 +0100 (Mo, 24. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/main.c
    M /trunk/utils/telggz/net.c
@@ -2459,7 +2534,7 @@ Geänderte Pfade:
 Make hook functions take const pointers.
 
 ------------------------------------------------------------------------
-r6866 | jdorje | 2005-01-24 02:39:48 +0100 (Mo, 24 Jan 2005) | 7 lines
+r6866 | jdorje | 2005-01-24 02:39:48 +0100 (Mo, 24. Jan 2005) | 7 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz/src/ggzcore/game.c
@@ -2492,7 +2567,7 @@ library dependency.  This is solved by linking ggzcore in along with
 ggzmod inside AC_GGZ_GGZMOD.
 
 ------------------------------------------------------------------------
-r6856 | josef | 2005-01-23 22:23:07 +0100 (So, 23 Jan 2005) | 2 lines
+r6856 | josef | 2005-01-23 22:23:07 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/ChangeLog
@@ -2526,7 +2601,7 @@ Geänderte Pfade:
 - authors and changelog
 
 ------------------------------------------------------------------------
-r6844 | josef | 2005-01-23 14:20:29 +0100 (So, 23 Jan 2005) | 2 lines
+r6844 | josef | 2005-01-23 14:20:29 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/NEWS
    M /trunk/ggz/game_clients/NEWS
@@ -2546,7 +2621,7 @@ Geänderte Pfade:
 - news update
 
 ------------------------------------------------------------------------
-r6843 | josef | 2005-01-23 14:12:48 +0100 (So, 23 Jan 2005) | 2 lines
+r6843 | josef | 2005-01-23 14:12:48 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/NEWS
    M /trunk/docs/QuickStart.GGZ
@@ -2588,7 +2663,7 @@ Geänderte Pfade:
 - updated common files
 
 ------------------------------------------------------------------------
-r6824 | jdorje | 2005-01-22 20:22:53 +0100 (Sa, 22 Jan 2005) | 2 lines
+r6824 | jdorje | 2005-01-22 20:22:53 +0100 (Sa, 22. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-txt-client/m4/ggz.m4
@@ -2605,7 +2680,7 @@ Geänderte Pfade:
 Search for .la files instead of .so.
 
 ------------------------------------------------------------------------
-r6813 | josef | 2005-01-22 16:38:16 +0100 (Sa, 22 Jan 2005) | 2 lines
+r6813 | josef | 2005-01-22 16:38:16 +0100 (Sa, 22. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz-txt-client/man/ggz-txt.6
    M /trunk/ggzd/man/ggzd.6
@@ -2626,7 +2701,7 @@ Geänderte Pfade:
 - updated version numbers
 
 ------------------------------------------------------------------------
-r6812 | josef | 2005-01-22 16:28:57 +0100 (Sa, 22 Jan 2005) | 2 lines
+r6812 | josef | 2005-01-22 16:28:57 +0100 (Sa, 22. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
@@ -2647,7 +2722,7 @@ Geänderte Pfade:
 - version number bump
 
 ------------------------------------------------------------------------
-r6675 | jdorje | 2005-01-14 08:01:43 +0100 (Fr, 14 Jan 2005) | 3 lines
+r6675 | jdorje | 2005-01-14 08:01:43 +0100 (Fr, 14. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/Makefile.am
@@ -2686,28 +2761,28 @@ Add support for libintl and libiconv to AC_GGZ_INTL.  This is needed to
 compile at all on non-glibc systems.
 
 ------------------------------------------------------------------------
-r6650 | jdorje | 2005-01-13 19:35:43 +0100 (Do, 13 Jan 2005) | 2 lines
+r6650 | jdorje | 2005-01-13 19:35:43 +0100 (Do, 13. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/configure.ac
 
 Greatly improve configure checks.
 
 ------------------------------------------------------------------------
-r6649 | jdorje | 2005-01-13 19:35:01 +0100 (Do, 13 Jan 2005) | 2 lines
+r6649 | jdorje | 2005-01-13 19:35:01 +0100 (Do, 13. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
 Check if headers are present before including them.
 
 ------------------------------------------------------------------------
-r6648 | jdorje | 2005-01-13 19:34:04 +0100 (Do, 13 Jan 2005) | 2 lines
+r6648 | jdorje | 2005-01-13 19:34:04 +0100 (Do, 13. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/main.c
 
 Include winsock if needed.
 
 ------------------------------------------------------------------------
-r6643 | jdorje | 2005-01-13 03:23:59 +0100 (Do, 13 Jan 2005) | 2 lines
+r6643 | jdorje | 2005-01-13 03:23:59 +0100 (Do, 13. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -2725,7 +2800,7 @@ Geänderte Pfade:
 Fix a typo in checking for libintl.h and locale.h.
 
 ------------------------------------------------------------------------
-r6641 | jdorje | 2005-01-13 02:45:15 +0100 (Do, 13 Jan 2005) | 3 lines
+r6641 | jdorje | 2005-01-13 02:45:15 +0100 (Do, 13. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -2744,7 +2819,7 @@ Define ENABLE_NLS if NLS is present.  This is standard, even though it's
 not helpful for most packages since NLS is manditory.
 
 ------------------------------------------------------------------------
-r6638 | jdorje | 2005-01-11 18:36:35 +0100 (Di, 11 Jan 2005) | 3 lines
+r6638 | jdorje | 2005-01-11 18:36:35 +0100 (Di, 11. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-txt-client/m4/ggz.m4
@@ -2762,7 +2837,7 @@ Make AC_GGZ_INTL fail if the gettext functions are not available.  It also
 checks for the header files but doesn't fail if they're not present.
 
 ------------------------------------------------------------------------
-r6258 | jdorje | 2004-11-05 00:00:59 +0100 (Fr, 05 Nov 2004) | 2 lines
+r6258 | jdorje | 2004-11-05 00:00:59 +0100 (Fr, 05. Nov 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/ggzd/game_servers/chess/Makefile.am
    M /trunk/ggzd/game_servers/chinese-checkers/Makefile.am
@@ -2800,7 +2875,7 @@ Geänderte Pfade:
 Change INCLUDES to AM_CPPFLAGS.
 
 ------------------------------------------------------------------------
-r6153 | josef | 2004-07-18 02:37:08 +0200 (So, 18 Jul 2004) | 2 lines
+r6153 | josef | 2004-07-18 02:37:08 +0200 (So, 18. Jul 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
    M /trunk/ggz/game_clients/ChangeLog
@@ -2820,7 +2895,7 @@ Geänderte Pfade:
 - changelog update
 
 ------------------------------------------------------------------------
-r6135 | josef | 2004-07-17 05:59:30 +0200 (Sa, 17 Jul 2004) | 2 lines
+r6135 | josef | 2004-07-17 05:59:30 +0200 (Sa, 17. Jul 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/Makefile.am
    M /trunk/ggzd/Makefile.am
@@ -2833,14 +2908,14 @@ Geänderte Pfade:
 - fix libtool.m4 inclusion
 
 ------------------------------------------------------------------------
-r6121 | josef | 2004-07-17 02:39:32 +0200 (Sa, 17 Jul 2004) | 2 lines
+r6121 | josef | 2004-07-17 02:39:32 +0200 (Sa, 17. Jul 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
 - version update for the metaserver
 
 ------------------------------------------------------------------------
-r6117 | josef | 2004-07-16 21:08:39 +0200 (Fr, 16 Jul 2004) | 2 lines
+r6117 | josef | 2004-07-16 21:08:39 +0200 (Fr, 16. Jul 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/NEWS
@@ -2917,7 +2992,7 @@ Geänderte Pfade:
 - 0.0.9 updates propagation
 
 ------------------------------------------------------------------------
-r6098 | josef | 2004-07-13 16:56:49 +0200 (Di, 13 Jul 2004) | 2 lines
+r6098 | josef | 2004-07-13 16:56:49 +0200 (Di, 13. Jul 2004) | 2 lines
 Geänderte Pfade:
    D /trunk/ggz-client-libs/m4/libtool.m4
    D /trunk/ggzd/m4/libtool.m4
@@ -2930,7 +3005,7 @@ Geänderte Pfade:
 - remove libtool macros
 
 ------------------------------------------------------------------------
-r6074 | jdorje | 2004-07-10 19:45:53 +0200 (Sa, 10 Jul 2004) | 2 lines
+r6074 | jdorje | 2004-07-10 19:45:53 +0200 (Sa, 10. Jul 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/configure.ac
    M /trunk/ggz-client-libs/m4/libtool.m4
@@ -2942,7 +3017,7 @@ Geänderte Pfade:
 Update libtool.m4.
 
 ------------------------------------------------------------------------
-r6010 | josef | 2004-06-10 16:06:10 +0200 (Do, 10 Jun 2004) | 8 lines
+r6010 | josef | 2004-06-10 16:06:10 +0200 (Do, 10. Jun 2004) | 8 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
@@ -2955,7 +3030,7 @@ more than 1500 operations.
 Oh and the CVS server is now patched too :)
 
 ------------------------------------------------------------------------
-r6004 | josef | 2004-05-17 16:31:39 +0200 (Mo, 17 Mai 2004) | 4 lines
+r6004 | josef | 2004-05-17 16:31:39 +0200 (Mo, 17. Mai 2004) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
@@ -2964,14 +3039,14 @@ Geänderte Pfade:
 There's still one other grave bug in the source :(
 
 ------------------------------------------------------------------------
-r6003 | josef | 2004-05-17 16:30:49 +0200 (Mo, 17 Mai 2004) | 2 lines
+r6003 | josef | 2004-05-17 16:30:49 +0200 (Mo, 17. Mai 2004) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/metaserv/gui-perl/ggzserver-register.pl
 
 - add script to register GGZ server with the metaserver
 
 ------------------------------------------------------------------------
-r5961 | jdorje | 2004-02-28 02:58:10 +0100 (Sa, 28 Feb 2004) | 2 lines
+r5961 | jdorje | 2004-02-28 02:58:10 +0100 (Sa, 28. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/Makefile.am
    A /trunk/ggz-client-libs/m4/libtool.m4
@@ -2989,7 +3064,7 @@ Geänderte Pfade:
 Add libtool.m4 to CVS.
 
 ------------------------------------------------------------------------
-r5956 | jdorje | 2004-02-21 09:51:32 +0100 (Sa, 21 Feb 2004) | 7 lines
+r5956 | jdorje | 2004-02-21 09:51:32 +0100 (Sa, 21. Feb 2004) | 7 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -3012,21 +3087,21 @@ Geänderte Pfade:
 - Propogate the changes back into all modules.
 
 ------------------------------------------------------------------------
-r5882 | josef | 2004-02-10 09:01:45 +0100 (Di, 10 Feb 2004) | 2 lines
+r5882 | josef | 2004-02-10 09:01:45 +0100 (Di, 10. Feb 2004) | 2 lines
 Geänderte Pfade:
    D /trunk/utils/debian
 
 - fourth round of removals of distribution files
 
 ------------------------------------------------------------------------
-r5815 | josef | 2004-02-07 10:40:50 +0100 (Sa, 07 Feb 2004) | 2 lines
+r5815 | josef | 2004-02-07 10:40:50 +0100 (Sa, 07. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
 - version bump: 0.2 -> 0.3
 
 ------------------------------------------------------------------------
-r5804 | josef | 2004-02-05 23:12:18 +0100 (Do, 05 Feb 2004) | 5 lines
+r5804 | josef | 2004-02-05 23:12:18 +0100 (Do, 05. Feb 2004) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/helper.c
 
@@ -3036,14 +3111,14 @@ Does this fix it?
 Otherwise I don't know.
 
 ------------------------------------------------------------------------
-r5803 | josef | 2004-02-05 13:16:29 +0100 (Do, 05 Feb 2004) | 2 lines
+r5803 | josef | 2004-02-05 13:16:29 +0100 (Do, 05. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaservconf.xml
 
 - changed metaserver target URIs
 
 ------------------------------------------------------------------------
-r5797 | josef | 2004-02-05 12:53:34 +0100 (Do, 05 Feb 2004) | 3 lines
+r5797 | josef | 2004-02-05 12:53:34 +0100 (Do, 05. Feb 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/man/ggz-cmd.1
    M /trunk/utils/man/ggzcommgen.1
@@ -3054,7 +3129,7 @@ Geänderte Pfade:
 - mention Nagios in ggz-cmd manpage
 
 ------------------------------------------------------------------------
-r5790 | josef | 2004-02-05 11:46:53 +0100 (Do, 05 Feb 2004) | 7 lines
+r5790 | josef | 2004-02-05 11:46:53 +0100 (Do, 05. Feb 2004) | 7 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
    M /trunk/ggz/game_clients/ChangeLog
@@ -3144,7 +3219,7 @@ Geänderte Pfade:
 - ChangeLog updates
 
 ------------------------------------------------------------------------
-r5770 | josef | 2004-01-31 11:54:44 +0100 (Sa, 31 Jan 2004) | 2 lines
+r5770 | josef | 2004-01-31 11:54:44 +0100 (Sa, 31. Jan 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -3168,7 +3243,7 @@ Geänderte Pfade:
 - sync common files
 
 ------------------------------------------------------------------------
-r5740 | dr_maux | 2004-01-17 19:46:28 +0100 (Sa, 17 Jan 2004) | 2 lines
+r5740 | dr_maux | 2004-01-17 19:46:28 +0100 (Sa, 17. Jan 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -3186,14 +3261,14 @@ Geänderte Pfade:
 - sync
 
 ------------------------------------------------------------------------
-r5732 | dr_maux | 2004-01-02 18:44:17 +0100 (Fr, 02 Jan 2004) | 2 lines
+r5732 | dr_maux | 2004-01-02 18:44:17 +0100 (Fr, 02. Jan 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
 - removals of entries
 
 ------------------------------------------------------------------------
-r5727 | dr_maux | 2003-12-31 18:02:57 +0100 (Mi, 31 Dez 2003) | 2 lines
+r5727 | dr_maux | 2003-12-31 18:02:57 +0100 (Mi, 31. Dez 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/configure.ac
    M /trunk/ggz-txt-client/configure.ac
@@ -3204,7 +3279,7 @@ Geänderte Pfade:
 - use new-style AC_INIT
 
 ------------------------------------------------------------------------
-r5717 | dr_maux | 2003-12-16 15:58:05 +0100 (Di, 16 Dez 2003) | 3 lines
+r5717 | dr_maux | 2003-12-16 15:58:05 +0100 (Di, 16. Dez 2003) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
@@ -3212,7 +3287,7 @@ Geänderte Pfade:
   suffices, the odd fclose() would prevent multi-query sessions anyway
 
 ------------------------------------------------------------------------
-r5716 | dr_maux | 2003-12-16 10:09:13 +0100 (Di, 16 Dez 2003) | 4 lines
+r5716 | dr_maux | 2003-12-16 10:09:13 +0100 (Di, 16. Dez 2003) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
@@ -3221,7 +3296,7 @@ Geänderte Pfade:
 That reminds me of ggzd again ;)
 
 ------------------------------------------------------------------------
-r5714 | dr_maux | 2003-12-13 15:09:22 +0100 (Sa, 13 Dez 2003) | 3 lines
+r5714 | dr_maux | 2003-12-13 15:09:22 +0100 (Sa, 13. Dez 2003) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
@@ -3229,7 +3304,7 @@ Geänderte Pfade:
 - in verbose mode, set logfile to stdout if not set
 
 ------------------------------------------------------------------------
-r5712 | dr_maux | 2003-12-09 15:11:35 +0100 (Di, 09 Dez 2003) | 11 lines
+r5712 | dr_maux | 2003-12-09 15:11:35 +0100 (Di, 09. Dez 2003) | 11 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/main.c
 
@@ -3245,21 +3320,21 @@ command[check_ggz]=/usr/lib/netsaint/plugins/ggz_cmd $HOSTNAME guestuser pass
 Josef
 
 ------------------------------------------------------------------------
-r5648 | dr_maux | 2003-09-20 15:36:23 +0200 (Sa, 20 Sep 2003) | 2 lines
+r5648 | dr_maux | 2003-09-20 15:36:23 +0200 (Sa, 20. Sep 2003) | 2 lines
 Geänderte Pfade:
    D /trunk/utils/motd-editor
 
 - forgot to remove this beast
 
 ------------------------------------------------------------------------
-r5641 | dr_maux | 2003-08-30 20:24:13 +0200 (Sa, 30 Aug 2003) | 2 lines
+r5641 | dr_maux | 2003-08-30 20:24:13 +0200 (Sa, 30. Aug 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/configure.ac
 
 - don't include motd-editor in makefile creation list
 
 ------------------------------------------------------------------------
-r5640 | dr_maux | 2003-08-30 20:21:03 +0200 (Sa, 30 Aug 2003) | 2 lines
+r5640 | dr_maux | 2003-08-30 20:21:03 +0200 (Sa, 30. Aug 2003) | 2 lines
 Geänderte Pfade:
    D /trunk/utils/m4/gnome.m4
    D /trunk/utils/motd-editor/macros/Makefile.am
@@ -3291,14 +3366,14 @@ Geänderte Pfade:
 - remove obsolete gnome macros
 
 ------------------------------------------------------------------------
-r5638 | dr_maux | 2003-08-28 03:42:59 +0200 (Do, 28 Aug 2003) | 2 lines
+r5638 | dr_maux | 2003-08-28 03:42:59 +0200 (Do, 28. Aug 2003) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/ggzcomm/ccheckers.protocol
 
 - preliminary protocol formalization for chinese checkers
 
 ------------------------------------------------------------------------
-r5628 | dr_maux | 2003-07-26 09:49:19 +0200 (Sa, 26 Jul 2003) | 5 lines
+r5628 | dr_maux | 2003-07-26 09:49:19 +0200 (Sa, 26. Jul 2003) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
@@ -3308,14 +3383,14 @@ Geänderte Pfade:
   compatible)
 
 ------------------------------------------------------------------------
-r5627 | dr_maux | 2003-07-26 00:08:27 +0200 (Sa, 26 Jul 2003) | 2 lines
+r5627 | dr_maux | 2003-07-26 00:08:27 +0200 (Sa, 26. Jul 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
 - ignore sigpipe
 
 ------------------------------------------------------------------------
-r5626 | dr_maux | 2003-07-25 22:27:07 +0200 (Fr, 25 Jul 2003) | 3 lines
+r5626 | dr_maux | 2003-07-25 22:27:07 +0200 (Fr, 25. Jul 2003) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
@@ -3323,7 +3398,7 @@ Geänderte Pfade:
 - prohibit updates when not running in daemon mode
 
 ------------------------------------------------------------------------
-r5625 | dr_maux | 2003-07-25 21:25:53 +0200 (Fr, 25 Jul 2003) | 4 lines
+r5625 | dr_maux | 2003-07-25 21:25:53 +0200 (Fr, 25. Jul 2003) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
@@ -3332,7 +3407,7 @@ Geänderte Pfade:
 - assign session ids and log them so usage can be traced
 
 ------------------------------------------------------------------------
-r5624 | dr_maux | 2003-07-25 21:24:08 +0200 (Fr, 25 Jul 2003) | 5 lines
+r5624 | dr_maux | 2003-07-25 21:24:08 +0200 (Fr, 25. Jul 2003) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/minidom/minidom.c
 
@@ -3342,7 +3417,7 @@ Up until now, they had to be written as <!-- foo --/>.
 Just 4 lines of C fixed that issue.
 
 ------------------------------------------------------------------------
-r5619 | dr_maux | 2003-06-28 11:09:12 +0200 (Sa, 28 Jun 2003) | 2 lines
+r5619 | dr_maux | 2003-06-28 11:09:12 +0200 (Sa, 28. Jun 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/release-procedure
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
@@ -3352,21 +3427,21 @@ Geänderte Pfade:
 - no more snafu
 
 ------------------------------------------------------------------------
-r5616 | dr_maux | 2003-06-27 19:48:20 +0200 (Fr, 27 Jun 2003) | 2 lines
+r5616 | dr_maux | 2003-06-27 19:48:20 +0200 (Fr, 27. Jun 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
 - don't crash on SIGPIPE if fd has become invalid
 
 ------------------------------------------------------------------------
-r5615 | dr_maux | 2003-06-26 21:34:59 +0200 (Do, 26 Jun 2003) | 2 lines
+r5615 | dr_maux | 2003-06-26 21:34:59 +0200 (Do, 26. Jun 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/README.ggz-metaserver
 
 - mention kderadiostation as a usage example
 
 ------------------------------------------------------------------------
-r5614 | dr_maux | 2003-06-26 11:25:46 +0200 (Do, 26 Jun 2003) | 2 lines
+r5614 | dr_maux | 2003-06-26 11:25:46 +0200 (Do, 26. Jun 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/Makefile.am
    M /trunk/utils/configure.ac
@@ -3385,7 +3460,7 @@ Geänderte Pfade:
 - move MOTD editor out of utils into gnome-client
 
 ------------------------------------------------------------------------
-r5609 | dr_maux | 2003-05-29 19:33:39 +0200 (Do, 29 Mai 2003) | 5 lines
+r5609 | dr_maux | 2003-05-29 19:33:39 +0200 (Do, 29. Mai 2003) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
@@ -3395,7 +3470,7 @@ It isn't missing in GGZ entries, but e.g. in metasound entries, which are to be
 used for the KDE Radio Station program.
 
 ------------------------------------------------------------------------
-r5588 | dr_maux | 2003-05-17 10:10:42 +0200 (Sa, 17 Mai 2003) | 2 lines
+r5588 | dr_maux | 2003-05-17 10:10:42 +0200 (Sa, 17. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/ChangeLog
    M /trunk/ggz-client-libs/ChangeLog
@@ -3413,7 +3488,7 @@ Geänderte Pfade:
 - update changelog
 
 ------------------------------------------------------------------------
-r5583 | dr_maux | 2003-05-16 20:34:45 +0200 (Fr, 16 Mai 2003) | 2 lines
+r5583 | dr_maux | 2003-05-16 20:34:45 +0200 (Fr, 16. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -3431,14 +3506,14 @@ Geänderte Pfade:
 - apply autogen.sh changes from libggz
 
 ------------------------------------------------------------------------
-r5571 | dr_maux | 2003-05-11 11:23:30 +0200 (So, 11 Mai 2003) | 2 lines
+r5571 | dr_maux | 2003-05-11 11:23:30 +0200 (So, 11. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaservconf.xml
 
 - update the metaserver configuration to reflect the new server versions
 
 ------------------------------------------------------------------------
-r5563 | dr_maux | 2003-05-11 01:54:28 +0200 (So, 11 Mai 2003) | 2 lines
+r5563 | dr_maux | 2003-05-11 01:54:28 +0200 (So, 11. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -3456,7 +3531,7 @@ Geänderte Pfade:
 - set the package version number (via configure.ac) to 0.0.7
 
 ------------------------------------------------------------------------
-r5561 | dr_maux | 2003-05-11 01:46:58 +0200 (So, 11 Mai 2003) | 2 lines
+r5561 | dr_maux | 2003-05-11 01:46:58 +0200 (So, 11. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/README
    M /trunk/grubby/README
@@ -3467,7 +3542,7 @@ Geänderte Pfade:
 - version update
 
 ------------------------------------------------------------------------
-r5555 | dr_maux | 2003-05-11 01:25:43 +0200 (So, 11 Mai 2003) | 4 lines
+r5555 | dr_maux | 2003-05-11 01:25:43 +0200 (So, 11. Mai 2003) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/man/ggz-cmd.1
    M /trunk/utils/man/metaserv.1
@@ -3478,7 +3553,7 @@ Geänderte Pfade:
 Some are a bit out of date, this should be fixed for 0.0.8.
 
 ------------------------------------------------------------------------
-r5550 | dr_maux | 2003-05-11 01:17:00 +0200 (So, 11 Mai 2003) | 2 lines
+r5550 | dr_maux | 2003-05-11 01:17:00 +0200 (So, 11. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/NEWS
    M /trunk/utils/README.GGZ
@@ -3487,7 +3562,7 @@ Geänderte Pfade:
 - update common files for 0.0.7 in utils
 
 ------------------------------------------------------------------------
-r5539 | dr_maux | 2003-05-10 16:38:57 +0200 (Sa, 10 Mai 2003) | 2 lines
+r5539 | dr_maux | 2003-05-10 16:38:57 +0200 (Sa, 10. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -3505,7 +3580,7 @@ Geänderte Pfade:
 - sync autogen.sh
 
 ------------------------------------------------------------------------
-r5533 | dr_maux | 2003-05-10 13:31:06 +0200 (Sa, 10 Mai 2003) | 3 lines
+r5533 | dr_maux | 2003-05-10 13:31:06 +0200 (Sa, 10. Mai 2003) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/Makefile.am
    M /trunk/utils/metaserv/metaserv/Makefile.am
@@ -3514,7 +3589,7 @@ Geänderte Pfade:
 - also, exclude gui-* from the distribution again
 
 ------------------------------------------------------------------------
-r5522 | dr_maux | 2003-05-10 09:02:27 +0200 (Sa, 10 Mai 2003) | 4 lines
+r5522 | dr_maux | 2003-05-10 09:02:27 +0200 (Sa, 10. Mai 2003) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/chat.c
    M /trunk/utils/telggz/main.c
@@ -3525,14 +3600,14 @@ Geänderte Pfade:
 - version bump
 
 ------------------------------------------------------------------------
-r5518 | dr_maux | 2003-05-10 08:31:44 +0200 (Sa, 10 Mai 2003) | 2 lines
+r5518 | dr_maux | 2003-05-10 08:31:44 +0200 (Sa, 10. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
 - remove odd square bracket
 
 ------------------------------------------------------------------------
-r5516 | dr_maux | 2003-05-10 07:50:57 +0200 (Sa, 10 Mai 2003) | 2 lines
+r5516 | dr_maux | 2003-05-10 07:50:57 +0200 (Sa, 10. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/helper.c
    M /trunk/utils/metaserv/metaserv/helper.h
@@ -3541,7 +3616,7 @@ Geänderte Pfade:
 - compiler warning fixes
 
 ------------------------------------------------------------------------
-r5500 | dr_maux | 2003-05-05 15:03:41 +0200 (Mo, 05 Mai 2003) | 2 lines
+r5500 | dr_maux | 2003-05-05 15:03:41 +0200 (Mo, 05. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-txt-client/m4/ggz.m4
@@ -3556,7 +3631,7 @@ Geänderte Pfade:
 - add -fsigned-char
 
 ------------------------------------------------------------------------
-r5489 | dr_maux | 2003-03-30 17:36:32 +0200 (So, 30 Mär 2003) | 3 lines
+r5489 | dr_maux | 2003-03-30 17:36:32 +0200 (So, 30. Mär 2003) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/minidom/minidom.c
 
@@ -3564,7 +3639,7 @@ Geänderte Pfade:
   should now be idempotent
 
 ------------------------------------------------------------------------
-r5488 | dr_maux | 2003-03-30 17:11:23 +0200 (So, 30 Mär 2003) | 15 lines
+r5488 | dr_maux | 2003-03-30 17:11:23 +0200 (So, 30. Mär 2003) | 15 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/Makefile.am
    M /trunk/utils/metaserv/metaserv/helper.c
@@ -3588,7 +3663,7 @@ There will eventually be two main modes:
 - as non-daemon (via xinetd and friends) with a database backend
 
 ------------------------------------------------------------------------
-r5482 | dr_maux | 2003-03-29 11:45:00 +0100 (Sa, 29 Mär 2003) | 3 lines
+r5482 | dr_maux | 2003-03-29 11:45:00 +0100 (Sa, 29. Mär 2003) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/Makefile.am
    M /trunk/utils/metaserv/gui-qt/Makefile.gui-qt
@@ -3598,7 +3673,7 @@ Geänderte Pfade:
 - include various GUIs in distribution tarballs
 
 ------------------------------------------------------------------------
-r5476 | dr_maux | 2003-03-29 11:33:32 +0100 (Sa, 29 Mär 2003) | 2 lines
+r5476 | dr_maux | 2003-03-29 11:33:32 +0100 (Sa, 29. Mär 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -3616,7 +3691,7 @@ Geänderte Pfade:
 - apply improverished autogen globally
 
 ------------------------------------------------------------------------
-r5475 | dr_maux | 2003-03-29 11:27:44 +0100 (Sa, 29 Mär 2003) | 2 lines
+r5475 | dr_maux | 2003-03-29 11:27:44 +0100 (Sa, 29. Mär 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -3633,7 +3708,7 @@ Geänderte Pfade:
 - update GGZ macro file
 
 ------------------------------------------------------------------------
-r5432 | dr_maux | 2003-02-19 23:53:11 +0100 (Mi, 19 Feb 2003) | 10 lines
+r5432 | dr_maux | 2003-02-19 23:53:11 +0100 (Mi, 19. Feb 2003) | 10 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/Makefile.am
    M /trunk/utils/metaserv/metaserv/README.metaserv
@@ -3653,7 +3728,7 @@ Geänderte Pfade:
 - update examples
 
 ------------------------------------------------------------------------
-r5428 | dr_maux | 2003-02-18 22:31:14 +0100 (Di, 18 Feb 2003) | 8 lines
+r5428 | dr_maux | 2003-02-18 22:31:14 +0100 (Di, 18. Feb 2003) | 8 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/chat.c
    M /trunk/utils/telggz/chat.h
@@ -3672,7 +3747,7 @@ Geänderte Pfade:
 - print correct error messages, not just their numbers
 
 ------------------------------------------------------------------------
-r5427 | dr_maux | 2003-02-18 22:28:28 +0100 (Di, 18 Feb 2003) | 4 lines
+r5427 | dr_maux | 2003-02-18 22:28:28 +0100 (Di, 18. Feb 2003) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/minidom/minidom.c
 
@@ -3681,7 +3756,7 @@ Geänderte Pfade:
 This is more like a dirty workaround, hopefully nothing will break.
 
 ------------------------------------------------------------------------
-r5419 | dr_maux | 2003-02-16 16:14:16 +0100 (So, 16 Feb 2003) | 2 lines
+r5419 | dr_maux | 2003-02-16 16:14:16 +0100 (So, 16. Feb 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/main.c
    M /trunk/utils/telggz/net.c
@@ -3689,7 +3764,7 @@ Geänderte Pfade:
 - don't use TLS for now
 
 ------------------------------------------------------------------------
-r5418 | dr_maux | 2003-02-16 16:12:01 +0100 (So, 16 Feb 2003) | 11 lines
+r5418 | dr_maux | 2003-02-16 16:12:01 +0100 (So, 16. Feb 2003) | 11 lines
 Geänderte Pfade:
    D /trunk/utils/acconfig.h
    M /trunk/utils/configure.ac
@@ -3706,7 +3781,7 @@ My guess is that motd-editor should be ported to GNOME 2.x so we can drop 1.x
 support entirely, and have less problems.
 
 ------------------------------------------------------------------------
-r5413 | dr_maux | 2003-02-16 14:02:09 +0100 (So, 16 Feb 2003) | 2 lines
+r5413 | dr_maux | 2003-02-16 14:02:09 +0100 (So, 16. Feb 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/autogen.sh
    M /trunk/ggz-client-libs/autogen.sh
@@ -3724,14 +3799,14 @@ Geänderte Pfade:
 - new autogen.sh
 
 ------------------------------------------------------------------------
-r5390 | jdorje | 2003-02-04 20:06:28 +0100 (Di, 04 Feb 2003) | 2 lines
+r5390 | jdorje | 2003-02-04 20:06:28 +0100 (Di, 04. Feb 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/configure.ac
 
 Run autoupdate over configure.ac.
 
 ------------------------------------------------------------------------
-r5389 | jdorje | 2003-02-04 20:04:48 +0100 (Di, 04 Feb 2003) | 3 lines
+r5389 | jdorje | 2003-02-04 20:04:48 +0100 (Di, 04. Feb 2003) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/m4/gnome.m4
 
@@ -3739,7 +3814,7 @@ I couldn't find an autoconf2.5x-compatible gnome macro file (!), so I
 just made a quick change to the existing one.
 
 ------------------------------------------------------------------------
-r5360 | jdorje | 2003-02-04 03:02:20 +0100 (Di, 04 Feb 2003) | 2 lines
+r5360 | jdorje | 2003-02-04 03:02:20 +0100 (Di, 04. Feb 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/autogen.sh
    A /trunk/utils/configure.ac
@@ -3748,7 +3823,7 @@ Geänderte Pfade:
 Step 1 of autoconf2.5x-only support: rename configure.in as configure.ac.
 
 ------------------------------------------------------------------------
-r5338 | dr_maux | 2003-01-18 01:58:42 +0100 (Sa, 18 Jan 2003) | 3 lines
+r5338 | dr_maux | 2003-01-18 01:58:42 +0100 (Sa, 18. Jan 2003) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/main.c
    M /trunk/utils/telggz/meta.c
@@ -3757,7 +3832,7 @@ Geänderte Pfade:
 - for queries, use GGZ version number, not TelGGZ version
 
 ------------------------------------------------------------------------
-r5316 | dr_maux | 2003-01-12 12:41:37 +0100 (So, 12 Jan 2003) | 4 lines
+r5316 | dr_maux | 2003-01-12 12:41:37 +0100 (So, 12. Jan 2003) | 4 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/text/main.c
    M /trunk/kde-games/muehle/src/ggzwrap/ggzwrap.c
@@ -3769,7 +3844,7 @@ Geänderte Pfade:
 - getopt returns int, not char
 
 ------------------------------------------------------------------------
-r5305 | jdorje | 2002-12-20 05:59:26 +0100 (Fr, 20 Dez 2002) | 2 lines
+r5305 | jdorje | 2002-12-20 05:59:26 +0100 (Fr, 20. Dez 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/kde-client/Makefile.am
    D /trunk/kde-client/acinclude.ggz
@@ -3796,7 +3871,7 @@ Geänderte Pfade:
 Move acinclude.* to m4/*.m4.
 
 ------------------------------------------------------------------------
-r5288 | dr_maux | 2002-12-15 13:04:23 +0100 (So, 15 Dez 2002) | 3 lines
+r5288 | dr_maux | 2002-12-15 13:04:23 +0100 (So, 15. Dez 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/main.c
 
@@ -3804,14 +3879,14 @@ Geänderte Pfade:
   allow for saving common broadcast texts etc.
 
 ------------------------------------------------------------------------
-r5278 | dr_maux | 2002-12-09 14:09:17 +0100 (Mo, 09 Dez 2002) | 2 lines
+r5278 | dr_maux | 2002-12-09 14:09:17 +0100 (Mo, 09. Dez 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/main.c
 
 - include sys/time.h for old libc compatibility
 
 ------------------------------------------------------------------------
-r5257 | dr_maux | 2002-11-23 19:16:16 +0100 (Sa, 23 Nov 2002) | 2 lines
+r5257 | dr_maux | 2002-11-23 19:16:16 +0100 (Sa, 23. Nov 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/kde-client/kcm_ggz
    M /trunk/kde-client/kcm_ggz/.cvsignore
@@ -3823,14 +3898,14 @@ Geänderte Pfade:
 - update cvsignore
 
 ------------------------------------------------------------------------
-r5255 | dr_maux | 2002-11-20 23:34:25 +0100 (Mi, 20 Nov 2002) | 2 lines
+r5255 | dr_maux | 2002-11-20 23:34:25 +0100 (Mi, 20. Nov 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/main.c
 
 - add 'checkonline' command to ggz-cmd
 
 ------------------------------------------------------------------------
-r4929 | jdorje | 2002-10-16 02:07:30 +0200 (Mi, 16 Okt 2002) | 16 lines
+r4929 | jdorje | 2002-10-16 02:07:30 +0200 (Mi, 16. Okt 2002) | 16 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/ggz-client-libs/acinclude.ggz
@@ -3860,7 +3935,7 @@ the first parameter to the macro.  But this way is more consistent, in
 my opinion.
 
 ------------------------------------------------------------------------
-r4830 | jdorje | 2002-10-10 01:37:11 +0200 (Do, 10 Okt 2002) | 4 lines
+r4830 | jdorje | 2002-10-10 01:37:11 +0200 (Do, 10. Okt 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/net.c
 
@@ -3869,14 +3944,14 @@ straightforward and likely to work, but it has not been tested since
 telggz doesn't work right now.
 
 ------------------------------------------------------------------------
-r4806 | dr_maux | 2002-10-08 02:03:12 +0200 (Di, 08 Okt 2002) | 2 lines
+r4806 | dr_maux | 2002-10-08 02:03:12 +0200 (Di, 08. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/README
 
 - s/0.0.5/0.0.6
 
 ------------------------------------------------------------------------
-r4797 | dr_maux | 2002-10-08 00:06:59 +0200 (Di, 08 Okt 2002) | 2 lines
+r4797 | dr_maux | 2002-10-08 00:06:59 +0200 (Di, 08. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/Makefile.am
    M /trunk/utils/telggz/Makefile.am
@@ -3884,7 +3959,7 @@ Geänderte Pfade:
 - fix makefiles: include $(GGZCORE_LDFLAGS)
 
 ------------------------------------------------------------------------
-r4795 | jdorje | 2002-10-07 23:28:18 +0200 (Mo, 07 Okt 2002) | 2 lines
+r4795 | jdorje | 2002-10-07 23:28:18 +0200 (Mo, 07. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/NEWS
    M /trunk/ggz/game_clients/NEWS
@@ -3901,7 +3976,7 @@ Geänderte Pfade:
 Rewrote NEWS for 0.0.6, and propogated it to all modules.
 
 ------------------------------------------------------------------------
-r4794 | dr_maux | 2002-10-07 23:16:10 +0200 (Mo, 07 Okt 2002) | 2 lines
+r4794 | dr_maux | 2002-10-07 23:16:10 +0200 (Mo, 07. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
    M /trunk/ggz/game_clients/ChangeLog
@@ -3918,14 +3993,14 @@ Geänderte Pfade:
 - update changelog for 0.0.6
 
 ------------------------------------------------------------------------
-r4786 | jdorje | 2002-10-01 23:28:16 +0200 (Di, 01 Okt 2002) | 2 lines
+r4786 | jdorje | 2002-10-01 23:28:16 +0200 (Di, 01. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/motd-editor/callbacks.c
 
 #if 0...#endif to disable an unused function.
 
 ------------------------------------------------------------------------
-r4783 | dr_maux | 2002-10-01 20:53:52 +0200 (Di, 01 Okt 2002) | 2 lines
+r4783 | dr_maux | 2002-10-01 20:53:52 +0200 (Di, 01. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/gnome-client/configure.in
    M /trunk/gtk-client/configure.in
@@ -3935,7 +4010,7 @@ Geänderte Pfade:
 - use configure.in for AC_INIT
 
 ------------------------------------------------------------------------
-r4770 | dr_maux | 2002-09-29 15:58:08 +0200 (So, 29 Sep 2002) | 4 lines
+r4770 | dr_maux | 2002-09-29 15:58:08 +0200 (So, 29. Sep 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/configure.in
 
@@ -3944,7 +4019,7 @@ Geänderte Pfade:
 (this was not yet synced)
 
 ------------------------------------------------------------------------
-r4769 | dr_maux | 2002-09-29 15:52:00 +0200 (So, 29 Sep 2002) | 6 lines
+r4769 | dr_maux | 2002-09-29 15:52:00 +0200 (So, 29. Sep 2002) | 6 lines
 Geänderte Pfade:
    M /trunk/utils/acconfig.h
    M /trunk/utils/acinclude.gnome
@@ -3956,7 +4031,7 @@ Geänderte Pfade:
 This comment written in nano. Ugh.
 
 ------------------------------------------------------------------------
-r4762 | dr_maux | 2002-09-29 14:35:46 +0200 (So, 29 Sep 2002) | 3 lines
+r4762 | dr_maux | 2002-09-29 14:35:46 +0200 (So, 29. Sep 2002) | 3 lines
 Geänderte Pfade:
    A /trunk/utils/acinclude.gnome
    M /trunk/utils/autogen.sh
@@ -3969,7 +4044,7 @@ Geänderte Pfade:
 - bump version numbers
 
 ------------------------------------------------------------------------
-r4746 | dr_maux | 2002-09-27 10:58:31 +0200 (Fr, 27 Sep 2002) | 2 lines
+r4746 | dr_maux | 2002-09-27 10:58:31 +0200 (Fr, 27. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -3987,7 +4062,7 @@ Geänderte Pfade:
 - new autogen
 
 ------------------------------------------------------------------------
-r4725 | dr_maux | 2002-09-26 13:28:14 +0200 (Do, 26 Sep 2002) | 2 lines
+r4725 | dr_maux | 2002-09-26 13:28:14 +0200 (Do, 26. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/acinclude.ggz
    M /trunk/utils/configure.in
@@ -3995,7 +4070,7 @@ Geänderte Pfade:
 - deploy new acinclude.ggz
 
 ------------------------------------------------------------------------
-r4679 | dr_maux | 2002-09-24 09:36:20 +0200 (Di, 24 Sep 2002) | 2 lines
+r4679 | dr_maux | 2002-09-24 09:36:20 +0200 (Di, 24. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/QuickStart.GGZ
    M /trunk/docs/README.GGZ
@@ -4021,7 +4096,7 @@ Geänderte Pfade:
 - update intro docs
 
 ------------------------------------------------------------------------
-r4674 | jdorje | 2002-09-24 00:45:37 +0200 (Di, 24 Sep 2002) | 3 lines
+r4674 | jdorje | 2002-09-24 00:45:37 +0200 (Di, 24. Sep 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/ggz-client-libs/acinclude.ggz
@@ -4038,14 +4113,14 @@ Update acinclude.ggz in the txt-client, and label acinclude.ggz as being
 included in txt-client.
 
 ------------------------------------------------------------------------
-r4635 | dr_maux | 2002-09-19 18:41:53 +0200 (Do, 19 Sep 2002) | 2 lines
+r4635 | dr_maux | 2002-09-19 18:41:53 +0200 (Do, 19. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/gui-qt/Makefile.gui-qt
 
 - use qt-mt instead of qt
 
 ------------------------------------------------------------------------
-r4631 | jdorje | 2002-09-19 18:18:33 +0200 (Do, 19 Sep 2002) | 2 lines
+r4631 | jdorje | 2002-09-19 18:18:33 +0200 (Do, 19. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/ggz-client-libs/acinclude.ggz
@@ -4060,7 +4135,7 @@ Geänderte Pfade:
 Include gnome-client on the list of modules that use acinclude.ggz.
 
 ------------------------------------------------------------------------
-r4601 | jdorje | 2002-09-17 05:37:40 +0200 (Di, 17 Sep 2002) | 3 lines
+r4601 | jdorje | 2002-09-17 05:37:40 +0200 (Di, 17. Sep 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/Makefile.am
    M /trunk/utils/configure.in
@@ -4096,7 +4171,7 @@ Remove configure.in and associated stuff from the motd-editor directory.
 Change configure.in and Makefile.am so that the motd-editor is compile.
 
 ------------------------------------------------------------------------
-r4593 | jdorje | 2002-09-17 02:44:14 +0200 (Di, 17 Sep 2002) | 4 lines
+r4593 | jdorje | 2002-09-17 02:44:14 +0200 (Di, 17. Sep 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/main.c
 
@@ -4105,7 +4180,7 @@ ggzcore_server_get_channel (which means something different now) as the
 GGZCore server FD.
 
 ------------------------------------------------------------------------
-r4592 | jdorje | 2002-09-17 02:15:20 +0200 (Di, 17 Sep 2002) | 6 lines
+r4592 | jdorje | 2002-09-17 02:15:20 +0200 (Di, 17. Sep 2002) | 6 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/main.c
 
@@ -4116,7 +4191,7 @@ Geänderte Pfade:
 - Removing trailing \n from ggz_debug lines.
 
 ------------------------------------------------------------------------
-r4591 | jdorje | 2002-09-17 01:59:31 +0200 (Di, 17 Sep 2002) | 4 lines
+r4591 | jdorje | 2002-09-17 01:59:31 +0200 (Di, 17. Sep 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/main.c
 
@@ -4125,7 +4200,7 @@ Geänderte Pfade:
 - #include "config.h"
 
 ------------------------------------------------------------------------
-r4565 | dr_maux | 2002-09-14 23:21:16 +0200 (Sa, 14 Sep 2002) | 3 lines
+r4565 | dr_maux | 2002-09-14 23:21:16 +0200 (Sa, 14. Sep 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/chat.c
    M /trunk/utils/telggz/chat.h
@@ -4139,14 +4214,14 @@ Geänderte Pfade:
 - support for room join/leave events
 
 ------------------------------------------------------------------------
-r4496 | jdorje | 2002-09-09 07:54:08 +0200 (Mo, 09 Sep 2002) | 2 lines
+r4496 | jdorje | 2002-09-09 07:54:08 +0200 (Mo, 09. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/ggzcommgen.c
 
 Added missing #include "ggzcommgen.h".
 
 ------------------------------------------------------------------------
-r4495 | jdorje | 2002-09-09 07:53:05 +0200 (Mo, 09 Sep 2002) | 8 lines
+r4495 | jdorje | 2002-09-09 07:53:05 +0200 (Mo, 09. Sep 2002) | 8 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/chat.c
    M /trunk/utils/telggz/chat.h
@@ -4163,14 +4238,14 @@ Geänderte Pfade:
   VERSION that's #defined in config.h.
 
 ------------------------------------------------------------------------
-r4494 | jdorje | 2002-09-09 07:46:44 +0200 (Mo, 09 Sep 2002) | 2 lines
+r4494 | jdorje | 2002-09-09 07:46:44 +0200 (Mo, 09. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
 Marked some functions as static.
 
 ------------------------------------------------------------------------
-r4493 | jdorje | 2002-09-09 07:43:00 +0200 (Mo, 09 Sep 2002) | 2 lines
+r4493 | jdorje | 2002-09-09 07:43:00 +0200 (Mo, 09. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/main.c
    M /trunk/utils/metaserv/minidom/minidom.c
@@ -4178,7 +4253,7 @@ Geänderte Pfade:
 Mark some functions as static.
 
 ------------------------------------------------------------------------
-r4376 | jdorje | 2002-08-20 22:49:40 +0200 (Di, 20 Aug 2002) | 2 lines
+r4376 | jdorje | 2002-08-20 22:49:40 +0200 (Di, 20. Aug 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/ggz/game_clients/configure.in
@@ -4195,14 +4270,14 @@ Geänderte Pfade:
 Changed -I<directory> to -isystem<directory> to avoid warnings in gcc3.
 
 ------------------------------------------------------------------------
-r4361 | dr_maux | 2002-08-12 20:01:19 +0200 (Mo, 12 Aug 2002) | 2 lines
+r4361 | dr_maux | 2002-08-12 20:01:19 +0200 (Mo, 12. Aug 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/tictactoe.protocol
 
 - updated the TTT protocol description
 
 ------------------------------------------------------------------------
-r4258 | dr_maux | 2002-06-16 14:26:45 +0200 (So, 16 Jun 2002) | 3 lines
+r4258 | dr_maux | 2002-06-16 14:26:45 +0200 (So, 16. Jun 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/main.c
    M /trunk/utils/telggz/meta.c
@@ -4212,7 +4287,7 @@ Geänderte Pfade:
 - fix segfault in TelGGZ's meta server handling
 
 ------------------------------------------------------------------------
-r4232 | dr_maux | 2002-05-25 19:08:19 +0200 (Sa, 25 Mai 2002) | 8 lines
+r4232 | dr_maux | 2002-05-25 19:08:19 +0200 (Sa, 25. Mai 2002) | 8 lines
 Geänderte Pfade:
    A /trunk/utils/ggzcomm/chess.protocol
    A /trunk/utils/ggzcomm/dots.protocol
@@ -4229,14 +4304,14 @@ usable, so I'm going to think over it again.
 Of special interest is chess, which evaluates a non-protocol variable.
 
 ------------------------------------------------------------------------
-r4160 | jdorje | 2002-05-05 09:13:20 +0200 (So, 05 Mai 2002) | 2 lines
+r4160 | jdorje | 2002-05-05 09:13:20 +0200 (So, 05. Mai 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/main.c
 
 Added support for different server ports to cmd-client.
 
 ------------------------------------------------------------------------
-r4129 | dr_maux | 2002-05-01 09:53:06 +0200 (Mi, 01 Mai 2002) | 3 lines
+r4129 | dr_maux | 2002-05-01 09:53:06 +0200 (Mi, 01. Mai 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm/ggzcommgen.rb
    M /trunk/utils/ggzcomm/tictactoe.protocol
@@ -4245,7 +4320,7 @@ Geänderte Pfade:
 - some more implementation done
 
 ------------------------------------------------------------------------
-r4124 | dr_maux | 2002-05-01 00:09:17 +0200 (Mi, 01 Mai 2002) | 2 lines
+r4124 | dr_maux | 2002-05-01 00:09:17 +0200 (Mi, 01. Mai 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/ggzcomm
    M /trunk/utils/ggzcomm/.cvsignore
@@ -4259,14 +4334,14 @@ Geänderte Pfade:
 - started alternative implementation for ggzcomm source generator
 
 ------------------------------------------------------------------------
-r4088 | dr_maux | 2002-04-27 09:14:05 +0200 (Sa, 27 Apr 2002) | 2 lines
+r4088 | dr_maux | 2002-04-27 09:14:05 +0200 (Sa, 27. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
 - treat EOF correctly (disconnect)
 
 ------------------------------------------------------------------------
-r4076 | dr_maux | 2002-04-24 17:15:34 +0200 (Mi, 24 Apr 2002) | 2 lines
+r4076 | dr_maux | 2002-04-24 17:15:34 +0200 (Mi, 24. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/Makefile.am
    M /trunk/utils/configure.in
@@ -4274,7 +4349,7 @@ Geänderte Pfade:
 - build ggzcomm stuff correctly (depends on minidom for XML parsing)
 
 ------------------------------------------------------------------------
-r4075 | dr_maux | 2002-04-24 17:15:11 +0200 (Mi, 24 Apr 2002) | 2 lines
+r4075 | dr_maux | 2002-04-24 17:15:11 +0200 (Mi, 24. Apr 2002) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/ggzcomm
    A /trunk/utils/ggzcomm/.cvsignore
@@ -4290,14 +4365,14 @@ Geänderte Pfade:
 - move the not yet complete ggzcommgen to the utils module
 
 ------------------------------------------------------------------------
-r3979 | dr_maux | 2002-04-14 14:53:12 +0200 (So, 14 Apr 2002) | 2 lines
+r3979 | dr_maux | 2002-04-14 14:53:12 +0200 (So, 14. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/main.c
 
 - use correct version (not 0.0.5pre hardcoded)
 
 ------------------------------------------------------------------------
-r3970 | bmh | 2002-04-13 09:15:03 +0200 (Sa, 13 Apr 2002) | 3 lines
+r3970 | bmh | 2002-04-13 09:15:03 +0200 (Sa, 13. Apr 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/ChangeLog
 
@@ -4305,14 +4380,14 @@ Geänderte Pfade:
 - Updated for 0.0.5 release
 
 ------------------------------------------------------------------------
-r3955 | dr_maux | 2002-04-13 06:44:49 +0200 (Sa, 13 Apr 2002) | 2 lines
+r3955 | dr_maux | 2002-04-13 06:44:49 +0200 (Sa, 13. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/configure.in
 
 - bump version to 0.0.5
 
 ------------------------------------------------------------------------
-r3949 | bmh | 2002-04-13 06:06:57 +0200 (Sa, 13 Apr 2002) | 3 lines
+r3949 | bmh | 2002-04-13 06:06:57 +0200 (Sa, 13. Apr 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/NEWS
@@ -4327,7 +4402,7 @@ Geänderte Pfade:
 - Doc file updates
 
 ------------------------------------------------------------------------
-r3929 | dr_maux | 2002-04-13 02:45:42 +0200 (Sa, 13 Apr 2002) | 2 lines
+r3929 | dr_maux | 2002-04-13 02:45:42 +0200 (Sa, 13. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggzd/Makefile.am
    M /trunk/grubby/Makefile.am
@@ -4337,21 +4412,21 @@ Geänderte Pfade:
 - remove local make clean rule again
 
 ------------------------------------------------------------------------
-r3882 | dr_maux | 2002-04-10 16:01:02 +0200 (Mi, 10 Apr 2002) | 2 lines
+r3882 | dr_maux | 2002-04-10 16:01:02 +0200 (Mi, 10. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/Makefile.am
 
 - fix telggz includes
 
 ------------------------------------------------------------------------
-r3881 | dr_maux | 2002-04-10 15:59:31 +0200 (Mi, 10 Apr 2002) | 2 lines
+r3881 | dr_maux | 2002-04-10 15:59:31 +0200 (Mi, 10. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/Makefile.am
 
 - fix cmd-client includes
 
 ------------------------------------------------------------------------
-r3878 | dr_maux | 2002-04-10 15:22:43 +0200 (Mi, 10 Apr 2002) | 2 lines
+r3878 | dr_maux | 2002-04-10 15:22:43 +0200 (Mi, 10. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/acconfig.h
    M /trunk/utils/configure.in
@@ -4359,7 +4434,7 @@ Geänderte Pfade:
 - define PREFIX for use in C source files
 
 ------------------------------------------------------------------------
-r3877 | dr_maux | 2002-04-10 15:22:18 +0200 (Mi, 10 Apr 2002) | 3 lines
+r3877 | dr_maux | 2002-04-10 15:22:18 +0200 (Mi, 10. Apr 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
    M /trunk/utils/metaserv/metaserv/metaservconf.xml
@@ -4368,7 +4443,7 @@ Geänderte Pfade:
 - don't log trailing line breaks
 
 ------------------------------------------------------------------------
-r3863 | dr_maux | 2002-04-09 22:40:42 +0200 (Di, 09 Apr 2002) | 2 lines
+r3863 | dr_maux | 2002-04-09 22:40:42 +0200 (Di, 09. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/debian/control
    M /trunk/utils/debian/rules
@@ -4376,7 +4451,7 @@ Geänderte Pfade:
 - finalize utils
 
 ------------------------------------------------------------------------
-r3830 | dr_maux | 2002-04-07 12:59:18 +0200 (So, 07 Apr 2002) | 2 lines
+r3830 | dr_maux | 2002-04-07 12:59:18 +0200 (So, 07. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/debian
    M /trunk/utils/debian/.cvsignore
@@ -4384,7 +4459,7 @@ Geänderte Pfade:
 - update cvsignore file
 
 ------------------------------------------------------------------------
-r3829 | dr_maux | 2002-04-07 12:58:35 +0200 (So, 07 Apr 2002) | 2 lines
+r3829 | dr_maux | 2002-04-07 12:58:35 +0200 (So, 07. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/debian/changelog
    M /trunk/utils/debian/control
@@ -4394,14 +4469,14 @@ Geänderte Pfade:
 - debianize utilies package
 
 ------------------------------------------------------------------------
-r3828 | dr_maux | 2002-04-07 12:53:24 +0200 (So, 07 Apr 2002) | 2 lines
+r3828 | dr_maux | 2002-04-07 12:53:24 +0200 (So, 07. Apr 2002) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/man/ggz-cmd.1
 
 - forgot the new one :)
 
 ------------------------------------------------------------------------
-r3827 | dr_maux | 2002-04-07 12:52:55 +0200 (So, 07 Apr 2002) | 2 lines
+r3827 | dr_maux | 2002-04-07 12:52:55 +0200 (So, 07. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/man/Makefile.am
    D /trunk/utils/man/cmd-client.1
@@ -4411,21 +4486,21 @@ Geänderte Pfade:
 - add more manpages, and rename the one for the cmd-client
 
 ------------------------------------------------------------------------
-r3826 | dr_maux | 2002-04-07 12:48:03 +0200 (So, 07 Apr 2002) | 2 lines
+r3826 | dr_maux | 2002-04-07 12:48:03 +0200 (So, 07. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/Makefile.am
 
 - make clean rule
 
 ------------------------------------------------------------------------
-r3825 | dr_maux | 2002-04-07 12:47:10 +0200 (So, 07 Apr 2002) | 2 lines
+r3825 | dr_maux | 2002-04-07 12:47:10 +0200 (So, 07. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/minidom/Makefile.am
 
 - don't install minidom test program
 
 ------------------------------------------------------------------------
-r3823 | dr_maux | 2002-04-07 12:38:51 +0200 (So, 07 Apr 2002) | 2 lines
+r3823 | dr_maux | 2002-04-07 12:38:51 +0200 (So, 07. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils
    M /trunk/utils/.cvsignore
@@ -4433,7 +4508,7 @@ Geänderte Pfade:
 - update cvsignore file
 
 ------------------------------------------------------------------------
-r3778 | dr_maux | 2002-04-06 17:39:12 +0200 (Sa, 06 Apr 2002) | 2 lines
+r3778 | dr_maux | 2002-04-06 17:39:12 +0200 (Sa, 06. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/ggz-client-libs/acinclude.ggz
@@ -4446,7 +4521,7 @@ Geänderte Pfade:
 - sync acinclude.ggz
 
 ------------------------------------------------------------------------
-r3769 | jdorje | 2002-04-06 10:02:03 +0200 (Sa, 06 Apr 2002) | 8 lines
+r3769 | jdorje | 2002-04-06 10:02:03 +0200 (Sa, 06. Apr 2002) | 8 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/Makefile.am
 
@@ -4459,14 +4534,14 @@ With these changes (specifically the last one), a "make distcheck" should
 now succeed for the utils module.
 
 ------------------------------------------------------------------------
-r3767 | jdorje | 2002-04-06 09:50:08 +0200 (Sa, 06 Apr 2002) | 2 lines
+r3767 | jdorje | 2002-04-06 09:50:08 +0200 (Sa, 06. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/Makefile.am
 
 Added *.h files to telggz_SOURCES.
 
 ------------------------------------------------------------------------
-r3766 | jdorje | 2002-04-06 09:43:25 +0200 (Sa, 06 Apr 2002) | 5 lines
+r3766 | jdorje | 2002-04-06 09:43:25 +0200 (Sa, 06. Apr 2002) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/minidom/Makefile.am
 
@@ -4476,7 +4551,7 @@ Geänderte Pfade:
   EXTRA_DIST.
 
 ------------------------------------------------------------------------
-r3764 | jdorje | 2002-04-06 09:35:54 +0200 (Sa, 06 Apr 2002) | 4 lines
+r3764 | jdorje | 2002-04-06 09:35:54 +0200 (Sa, 06. Apr 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/Makefile.am
    M /trunk/utils/configure.in
@@ -4486,7 +4561,7 @@ Geänderte Pfade:
 - Changed the ending output of configure slightly.
 
 ------------------------------------------------------------------------
-r3763 | jdorje | 2002-04-06 09:00:33 +0200 (Sa, 06 Apr 2002) | 3 lines
+r3763 | jdorje | 2002-04-06 09:00:33 +0200 (Sa, 06. Apr 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/man/Makefile.am
 
@@ -4494,14 +4569,14 @@ Change "SUBDIRS =" to "SUBDIRS = ." so that "make dist" will work
 properly.
 
 ------------------------------------------------------------------------
-r3760 | dr_maux | 2002-04-06 00:23:41 +0200 (Sa, 06 Apr 2002) | 2 lines
+r3760 | dr_maux | 2002-04-06 00:23:41 +0200 (Sa, 06. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/README
 
 - update package information
 
 ------------------------------------------------------------------------
-r3758 | dr_maux | 2002-04-06 00:03:05 +0200 (Sa, 06 Apr 2002) | 2 lines
+r3758 | dr_maux | 2002-04-06 00:03:05 +0200 (Sa, 06. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/README.GGZ
    M /trunk/ggz/game_clients/QuickStart.GGZ
@@ -4523,14 +4598,14 @@ Geänderte Pfade:
 - update installation instructions and overview
 
 ------------------------------------------------------------------------
-r3684 | dr_maux | 2002-03-25 21:19:07 +0100 (Mo, 25 Mär 2002) | 2 lines
+r3684 | dr_maux | 2002-03-25 21:19:07 +0100 (Mo, 25. Mär 2002) | 2 lines
 Geänderte Pfade:
    D /trunk/utils/grubby
 
 - another .cvsignore
 
 ------------------------------------------------------------------------
-r3683 | dr_maux | 2002-03-25 21:18:24 +0100 (Mo, 25 Mär 2002) | 2 lines
+r3683 | dr_maux | 2002-03-25 21:18:24 +0100 (Mo, 25. Mär 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/man/Makefile.am
    A /trunk/utils/man/cmd-client.1
@@ -4538,14 +4613,14 @@ Geänderte Pfade:
 - add (alibi) man page for cmd-client
 
 ------------------------------------------------------------------------
-r3681 | dr_maux | 2002-03-25 21:13:46 +0100 (Mo, 25 Mär 2002) | 2 lines
+r3681 | dr_maux | 2002-03-25 21:13:46 +0100 (Mo, 25. Mär 2002) | 2 lines
 Geänderte Pfade:
    D /trunk/utils/gensecure
 
 - forgot a .cvsignore file
 
 ------------------------------------------------------------------------
-r3680 | dr_maux | 2002-03-25 21:11:22 +0100 (Mo, 25 Mär 2002) | 2 lines
+r3680 | dr_maux | 2002-03-25 21:11:22 +0100 (Mo, 25. Mär 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/Makefile.am
    M /trunk/utils/configure.in
@@ -4553,7 +4628,7 @@ Geänderte Pfade:
 - don't build (re)moved projects
 
 ------------------------------------------------------------------------
-r3679 | dr_maux | 2002-03-25 21:10:47 +0100 (Mo, 25 Mär 2002) | 2 lines
+r3679 | dr_maux | 2002-03-25 21:10:47 +0100 (Mo, 25. Mär 2002) | 2 lines
 Geänderte Pfade:
    D /trunk/utils/gensecure/GGZ-TLS
    D /trunk/utils/gensecure/Makefile.am
@@ -4566,7 +4641,7 @@ Geänderte Pfade:
 - some more stuff
 
 ------------------------------------------------------------------------
-r3678 | dr_maux | 2002-03-25 21:08:27 +0100 (Mo, 25 Mär 2002) | 3 lines
+r3678 | dr_maux | 2002-03-25 21:08:27 +0100 (Mo, 25. Mär 2002) | 3 lines
 Geänderte Pfade:
    D /trunk/utils/agrue
    D /trunk/utils/gensecure/io
@@ -4608,14 +4683,14 @@ Geänderte Pfade:
   deprecated
 
 ------------------------------------------------------------------------
-r3580 | dr_maux | 2002-03-16 19:33:29 +0100 (Sa, 16 Mär 2002) | 2 lines
+r3580 | dr_maux | 2002-03-16 19:33:29 +0100 (Sa, 16. Mär 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/main.c
 
 - someone forgot to adapt this to the latest ggzcore changes
 
 ------------------------------------------------------------------------
-r3478 | jdorje | 2002-02-26 04:33:42 +0100 (Di, 26 Feb 2002) | 2 lines
+r3478 | jdorje | 2002-02-26 04:33:42 +0100 (Di, 26. Feb 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/motd-editor/po
    M /trunk/utils/motd-editor/po/.cvsignore
@@ -4623,7 +4698,7 @@ Geänderte Pfade:
 Dammit!  One final file that I missed.
 
 ------------------------------------------------------------------------
-r3477 | jdorje | 2002-02-26 04:29:39 +0100 (Di, 26 Feb 2002) | 7 lines
+r3477 | jdorje | 2002-02-26 04:29:39 +0100 (Di, 26. Feb 2002) | 7 lines
 Geänderte Pfade:
    M /trunk/utils/motd-editor
    M /trunk/utils/motd-editor/.cvsignore
@@ -4649,7 +4724,7 @@ I'm still doubtful that this is actually useful, but I'm really tired of
 seeing several pages of ignored or modified files on every update.
 
 ------------------------------------------------------------------------
-r3476 | jdorje | 2002-02-26 04:20:15 +0100 (Di, 26 Feb 2002) | 2 lines
+r3476 | jdorje | 2002-02-26 04:20:15 +0100 (Di, 26. Feb 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/motd-editor
    M /trunk/utils/motd-editor/.cvsignore
@@ -4665,7 +4740,7 @@ Geänderte Pfade:
 Removed additional automatically-generated files from the repository.
 
 ------------------------------------------------------------------------
-r3475 | jdorje | 2002-02-26 04:07:02 +0100 (Di, 26 Feb 2002) | 7 lines
+r3475 | jdorje | 2002-02-26 04:07:02 +0100 (Di, 26. Feb 2002) | 7 lines
 Geänderte Pfade:
    M /trunk/utils/motd-editor
    A /trunk/utils/motd-editor/.cvsignore
@@ -4685,7 +4760,7 @@ with autogen.sh and all other autoconf files.  Is this code still
 relevant?
 
 ------------------------------------------------------------------------
-r3473 | jdorje | 2002-02-26 03:57:27 +0100 (Di, 26 Feb 2002) | 3 lines
+r3473 | jdorje | 2002-02-26 03:57:27 +0100 (Di, 26. Feb 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/acconfig.h
    M /trunk/gtk-client/configure.in
@@ -4696,7 +4771,7 @@ Change autoconf system so that if DEBUG is not defined (--enable-debug,
 currently on by default) we'll get NDEBUG defined instead.
 
 ------------------------------------------------------------------------
-r3441 | dr_maux | 2002-02-23 03:31:02 +0100 (Sa, 23 Feb 2002) | 3 lines
+r3441 | dr_maux | 2002-02-23 03:31:02 +0100 (Sa, 23. Feb 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/patches/ggz-0.0.5pre-gensecure.ggz-client-libs.patch
    M /trunk/utils/patches/ggz-0.0.5pre-gensecure.ggzd.patch
@@ -4706,7 +4781,7 @@ Geänderte Pfade:
 - they work in theory but not in practice :(
 
 ------------------------------------------------------------------------
-r3332 | dr_maux | 2002-02-11 16:58:44 +0100 (Mo, 11 Feb 2002) | 7 lines
+r3332 | dr_maux | 2002-02-11 16:58:44 +0100 (Mo, 11. Feb 2002) | 7 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/minidom
    M /trunk/utils/metaserv/minidom/.cvsignore
@@ -4720,7 +4795,7 @@ not developed in our CVS, and not very functional yet.
 I wish I actually had a handheld.... but Linux + FBdev work quite well.
 
 ------------------------------------------------------------------------
-r3331 | dr_maux | 2002-02-11 15:50:15 +0100 (Mo, 11 Feb 2002) | 9 lines
+r3331 | dr_maux | 2002-02-11 15:50:15 +0100 (Mo, 11. Feb 2002) | 9 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/minidom/README.minidom
    M /trunk/utils/metaserv/minidom/minidom.c
@@ -4735,7 +4810,7 @@ I don't understand why Qt/embedded doesn't include their QDom classes, but
 anyway...
 
 ------------------------------------------------------------------------
-r3327 | dr_maux | 2002-02-11 10:57:26 +0100 (Mo, 11 Feb 2002) | 5 lines
+r3327 | dr_maux | 2002-02-11 10:57:26 +0100 (Mo, 11. Feb 2002) | 5 lines
 Geänderte Pfade:
    A /trunk/utils/metaserv/gui-custom
    A /trunk/utils/metaserv/gui-custom/Information
@@ -4747,14 +4822,14 @@ Once both querying and updating works, we should be able to support all kind of
 meta entries, because freeciv's already require a bit of flexibility.
 
 ------------------------------------------------------------------------
-r3326 | dr_maux | 2002-02-11 10:52:55 +0100 (Mo, 11 Feb 2002) | 2 lines
+r3326 | dr_maux | 2002-02-11 10:52:55 +0100 (Mo, 11. Feb 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaservconf.xml
 
 - add freeciv dummy entry
 
 ------------------------------------------------------------------------
-r3294 | rgade | 2002-02-10 06:31:35 +0100 (So, 10 Feb 2002) | 2 lines
+r3294 | rgade | 2002-02-10 06:31:35 +0100 (So, 10. Feb 2002) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/gnutls
    A /trunk/utils/gnutls/README
@@ -4766,21 +4841,21 @@ Geänderte Pfade:
 - Patch to support GnuTLS
 
 ------------------------------------------------------------------------
-r3232 | jdorje | 2002-02-03 22:02:54 +0100 (So, 03 Feb 2002) | 2 lines
+r3232 | jdorje | 2002-02-03 22:02:54 +0100 (So, 03. Feb 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/agrue/Makefile.am
 
 Oops: removed $(LIB_EASYSOCK) from LDADD.
 
 ------------------------------------------------------------------------
-r3231 | jdorje | 2002-02-03 22:01:35 +0100 (So, 03 Feb 2002) | 2 lines
+r3231 | jdorje | 2002-02-03 22:01:35 +0100 (So, 03. Feb 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/acinclude.ggz
 
 Updated acinclude.ggz from changes made in ggzd.
 
 ------------------------------------------------------------------------
-r3230 | jdorje | 2002-02-03 22:01:03 +0100 (So, 03 Feb 2002) | 4 lines
+r3230 | jdorje | 2002-02-03 22:01:03 +0100 (So, 03. Feb 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/agrue/Makefile.am
    M /trunk/utils/agrue/agrue.c
@@ -4791,7 +4866,7 @@ Geänderte Pfade:
 - Change all es_*** function calls to ggz_*** ones.
 
 ------------------------------------------------------------------------
-r3229 | jdorje | 2002-02-03 21:58:59 +0100 (So, 03 Feb 2002) | 2 lines
+r3229 | jdorje | 2002-02-03 21:58:59 +0100 (So, 03. Feb 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/chat.c
    M /trunk/utils/grubby/net.c
@@ -4799,7 +4874,7 @@ Geänderte Pfade:
 Removed unneeded "#include <easysock.h>" directives.
 
 ------------------------------------------------------------------------
-r3173 | dr_maux | 2002-01-20 13:36:43 +0100 (So, 20 Jan 2002) | 2 lines
+r3173 | dr_maux | 2002-01-20 13:36:43 +0100 (So, 20. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/patches/ggz-0.0.5pre-spectators.ggz-client-libs.patch
    M /trunk/utils/patches/ggz-0.0.5pre-spectators.ggzd.patch
@@ -4807,21 +4882,21 @@ Geänderte Pfade:
 - update spectator patches: they should now work, except for ggzdmod
 
 ------------------------------------------------------------------------
-r3150 | dr_maux | 2002-01-19 20:36:00 +0100 (Sa, 19 Jan 2002) | 2 lines
+r3150 | dr_maux | 2002-01-19 20:36:00 +0100 (Sa, 19. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/net.c
 
 - tell id on hook error
 
 ------------------------------------------------------------------------
-r3121 | dr_maux | 2002-01-16 12:58:23 +0100 (Mi, 16 Jan 2002) | 2 lines
+r3121 | dr_maux | 2002-01-16 12:58:23 +0100 (Mi, 16. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/Makefile.am
 
 - build only one binary
 
 ------------------------------------------------------------------------
-r3120 | dr_maux | 2002-01-16 12:56:08 +0100 (Mi, 16 Jan 2002) | 2 lines
+r3120 | dr_maux | 2002-01-16 12:56:08 +0100 (Mi, 16. Jan 2002) | 2 lines
 Geänderte Pfade:
    D /trunk/utils/metaserv/metaserv/configuration.h
    D /trunk/utils/metaserv/metaserv/gensocket.c
@@ -4831,7 +4906,7 @@ Geänderte Pfade:
 - remove unneeded files (metaserv handles connections on its own)
 
 ------------------------------------------------------------------------
-r3119 | dr_maux | 2002-01-16 12:53:40 +0100 (Mi, 16 Jan 2002) | 4 lines
+r3119 | dr_maux | 2002-01-16 12:53:40 +0100 (Mi, 16. Jan 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaserv.c
 
@@ -4840,7 +4915,7 @@ Geänderte Pfade:
 - one step further now: peer notifications
 
 ------------------------------------------------------------------------
-r3117 | dr_maux | 2002-01-14 19:36:20 +0100 (Mo, 14 Jan 2002) | 2 lines
+r3117 | dr_maux | 2002-01-14 19:36:20 +0100 (Mo, 14. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/patches/README
    A /trunk/utils/patches/ggz-0.0.5pre-spectators.ggz-client-libs.patch
@@ -4850,7 +4925,7 @@ Geänderte Pfade:
 - Only the brave ones will try them... and they don't work yet :P
 
 ------------------------------------------------------------------------
-r3087 | jdorje | 2002-01-12 11:13:19 +0100 (Sa, 12 Jan 2002) | 2 lines
+r3087 | jdorje | 2002-01-12 11:13:19 +0100 (Sa, 12. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    A /trunk/ggz-client-libs/acinclude.ggz
@@ -4864,7 +4939,7 @@ Geänderte Pfade:
 Added acinclude.ggz to ggzd and ggz-client-libs.
 
 ------------------------------------------------------------------------
-r3086 | jdorje | 2002-01-12 11:05:20 +0100 (Sa, 12 Jan 2002) | 2 lines
+r3086 | jdorje | 2002-01-12 11:05:20 +0100 (Sa, 12. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/grubby/acinclude.ggz
@@ -4876,14 +4951,14 @@ Geänderte Pfade:
 Added libggz support to acinclude.ggz.
 
 ------------------------------------------------------------------------
-r3069 | dr_maux | 2002-01-11 23:25:30 +0100 (Fr, 11 Jan 2002) | 2 lines
+r3069 | dr_maux | 2002-01-11 23:25:30 +0100 (Fr, 11. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/pyggzdmod/tictactoe/ggzd.tictactoe
 
 - fix example so far
 
 ------------------------------------------------------------------------
-r3068 | dr_maux | 2002-01-11 22:57:57 +0100 (Fr, 11 Jan 2002) | 5 lines
+r3068 | dr_maux | 2002-01-11 22:57:57 +0100 (Fr, 11. Jan 2002) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/pyggzdmod/src/pyggzdmod_init.c
    M /trunk/utils/pyggzdmod/src/test.py
@@ -4894,7 +4969,7 @@ Geänderte Pfade:
   :-)
 
 ------------------------------------------------------------------------
-r3066 | dr_maux | 2002-01-11 22:02:57 +0100 (Fr, 11 Jan 2002) | 3 lines
+r3066 | dr_maux | 2002-01-11 22:02:57 +0100 (Fr, 11. Jan 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/ruggzdmod
    M /trunk/utils/ruggzdmod/.cvsignore
@@ -4906,21 +4981,21 @@ Geänderte Pfade:
 - note: it doesn't work yet due to some problems on the ruby side of life
 
 ------------------------------------------------------------------------
-r3014 | jdorje | 2002-01-08 12:13:26 +0100 (Di, 08 Jan 2002) | 2 lines
+r3014 | jdorje | 2002-01-08 12:13:26 +0100 (Di, 08. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/agrue/Makefile.am
 
 Oops!  Add easysock lib to LDADD.
 
 ------------------------------------------------------------------------
-r3013 | jdorje | 2002-01-08 11:04:17 +0100 (Di, 08 Jan 2002) | 2 lines
+r3013 | jdorje | 2002-01-08 11:04:17 +0100 (Di, 08. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/cmd-client/main.c
 
 Doh!  Updated dates to 2002 instead of 2001.
 
 ------------------------------------------------------------------------
-r3012 | jdorje | 2002-01-08 11:03:00 +0100 (Di, 08 Jan 2002) | 7 lines
+r3012 | jdorje | 2002-01-08 11:03:00 +0100 (Di, 08. Jan 2002) | 7 lines
 Geänderte Pfade:
    M /trunk/utils
    M /trunk/utils/.cvsignore
@@ -4939,7 +5014,7 @@ Added cmd-client command-line GGZ client-like program.
   - Added the ggz-cmd sources.
 
 ------------------------------------------------------------------------
-r3011 | jdorje | 2002-01-08 10:21:08 +0100 (Di, 08 Jan 2002) | 3 lines
+r3011 | jdorje | 2002-01-08 10:21:08 +0100 (Di, 08. Jan 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/grubby/acinclude.ggz
@@ -4952,14 +5027,14 @@ Added acinclude to utils/ module, and updated the years on the
 copyright notice.
 
 ------------------------------------------------------------------------
-r2982 | dr_maux | 2001-12-22 20:02:10 +0100 (Sa, 22 Dez 2001) | 2 lines
+r2982 | dr_maux | 2001-12-22 20:02:10 +0100 (Sa, 22. Dez 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/metaservconf.xml
 
 - T.E.G. entry in the metaserver configuration file
 
 ------------------------------------------------------------------------
-r2981 | dr_maux | 2001-12-22 18:23:44 +0100 (Sa, 22 Dez 2001) | 4 lines
+r2981 | dr_maux | 2001-12-22 18:23:44 +0100 (Sa, 22. Dez 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/README.telggz
    A /trunk/utils/telggz/xinetd.conf
@@ -4969,7 +5044,7 @@ Geänderte Pfade:
   The TelGGZ on mindx.dyndns.org will now be installed permanently again. Logging into jzaun.com works too again, maybe the server just hung yesterday.
 
 ------------------------------------------------------------------------
-r2980 | dr_maux | 2001-12-22 17:59:14 +0100 (Sa, 22 Dez 2001) | 3 lines
+r2980 | dr_maux | 2001-12-22 17:59:14 +0100 (Sa, 22. Dez 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/meta.c
 
@@ -4977,7 +5052,7 @@ Geänderte Pfade:
 - the underlying problem is a more nasty one: either one can run inetd as normal user, or someone codes a substitute, or there already exists a substitute
 
 ------------------------------------------------------------------------
-r2978 | dr_maux | 2001-12-22 00:42:00 +0100 (Sa, 22 Dez 2001) | 5 lines
+r2978 | dr_maux | 2001-12-22 00:42:00 +0100 (Sa, 22. Dez 2001) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/Makefile.am
    M /trunk/utils/telggz/chat.c
@@ -4994,14 +5069,14 @@ Geänderte Pfade:
 - inetd support is somewhat broken, I don't know why
 
 ------------------------------------------------------------------------
-r2911 | dr_maux | 2001-12-17 02:59:27 +0100 (Mo, 17 Dez 2001) | 2 lines
+r2911 | dr_maux | 2001-12-17 02:59:27 +0100 (Mo, 17. Dez 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/Makefile.am
 
 - link to local libgensecure, not global one, until this has moved to libggz
 
 ------------------------------------------------------------------------
-r2910 | dr_maux | 2001-12-17 02:58:46 +0100 (Mo, 17 Dez 2001) | 3 lines
+r2910 | dr_maux | 2001-12-17 02:58:46 +0100 (Mo, 17. Dez 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/main.c
    M /trunk/utils/telggz/net.c
@@ -5010,7 +5085,7 @@ Geänderte Pfade:
 - include stdlib.h
 
 ------------------------------------------------------------------------
-r2885 | dr_maux | 2001-12-12 15:39:47 +0100 (Mi, 12 Dez 2001) | 5 lines
+r2885 | dr_maux | 2001-12-12 15:39:47 +0100 (Mi, 12. Dez 2001) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/README.telggz
    M /trunk/utils/telggz/main.c
@@ -5022,7 +5097,7 @@ Geänderte Pfade:
 - Sync cache contents before any queries so the list is always up to date
 
 ------------------------------------------------------------------------
-r2884 | dr_maux | 2001-12-12 11:43:43 +0100 (Mi, 12 Dez 2001) | 3 lines
+r2884 | dr_maux | 2001-12-12 11:43:43 +0100 (Mi, 12. Dez 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/Makefile.am
    M /trunk/utils/configure.in
@@ -5031,7 +5106,7 @@ Geänderte Pfade:
 - this will be obsolete once minidom is is libggz (if we decide so)
 
 ------------------------------------------------------------------------
-r2883 | dr_maux | 2001-12-12 11:40:02 +0100 (Mi, 12 Dez 2001) | 8 lines
+r2883 | dr_maux | 2001-12-12 11:40:02 +0100 (Mi, 12. Dez 2001) | 8 lines
 Geänderte Pfade:
    M /trunk/utils/telggz/Makefile.am
    M /trunk/utils/telggz/chat.c
@@ -5050,7 +5125,7 @@ Geänderte Pfade:
   automatically.
 
 ------------------------------------------------------------------------
-r2831 | dr_maux | 2001-12-09 21:27:08 +0100 (So, 09 Dez 2001) | 2 lines
+r2831 | dr_maux | 2001-12-09 21:27:08 +0100 (So, 09. Dez 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv
    M /trunk/utils/metaserv/metaserv/.cvsignore
@@ -5062,7 +5137,7 @@ Geänderte Pfade:
 - prepare daemon mode, TLS and all that stuff
 
 ------------------------------------------------------------------------
-r2830 | dr_maux | 2001-12-09 21:25:30 +0100 (So, 09 Dez 2001) | 3 lines
+r2830 | dr_maux | 2001-12-09 21:25:30 +0100 (So, 09. Dez 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/Makefile.am
    M /trunk/utils/metaserv/metaserv/metaserv.c
@@ -5073,7 +5148,7 @@ Geänderte Pfade:
 - update configuration to contain one meta server entry
 
 ------------------------------------------------------------------------
-r2829 | dr_maux | 2001-12-09 21:24:41 +0100 (So, 09 Dez 2001) | 4 lines
+r2829 | dr_maux | 2001-12-09 21:24:41 +0100 (So, 09. Dez 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/gui-qt/qmetagui.cpp
    M /trunk/utils/metaserv/gui-qt/qmetagui.h
@@ -5083,7 +5158,7 @@ Geänderte Pfade:
   now
 
 ------------------------------------------------------------------------
-r2826 | dr_maux | 2001-12-09 18:18:10 +0100 (So, 09 Dez 2001) | 3 lines
+r2826 | dr_maux | 2001-12-09 18:18:10 +0100 (So, 09. Dez 2001) | 3 lines
 Geänderte Pfade:
    A /trunk/utils/metaserv/gui-perl
    A /trunk/utils/metaserv/gui-perl/metaconf.pl
@@ -5092,7 +5167,7 @@ Geänderte Pfade:
 - note: it may currently incompatible with the latest changes
 
 ------------------------------------------------------------------------
-r2825 | dr_maux | 2001-12-09 18:16:53 +0100 (So, 09 Dez 2001) | 8 lines
+r2825 | dr_maux | 2001-12-09 18:16:53 +0100 (So, 09. Dez 2001) | 8 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/Update-Protocol
    M /trunk/utils/metaserv/metaserv/metaserv.c
@@ -5110,7 +5185,7 @@ Geänderte Pfade:
   however clearing it is recommended
 
 ------------------------------------------------------------------------
-r2809 | dr_maux | 2001-12-09 01:26:26 +0100 (So, 09 Dez 2001) | 5 lines
+r2809 | dr_maux | 2001-12-09 01:26:26 +0100 (So, 09. Dez 2001) | 5 lines
 Geänderte Pfade:
    A /trunk/utils/metaserv/metaserv/Configuration
    M /trunk/utils/metaserv/metaserv/metaserv.c
@@ -5122,7 +5197,7 @@ Geänderte Pfade:
 ... and from this day on, the GGZ Gaming Zone could span multiple hosts...
 
 ------------------------------------------------------------------------
-r2808 | dr_maux | 2001-12-09 00:42:49 +0100 (So, 09 Dez 2001) | 6 lines
+r2808 | dr_maux | 2001-12-09 00:42:49 +0100 (So, 09. Dez 2001) | 6 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/gui-qt/qmetagui.cpp
    M /trunk/utils/metaserv/gui-qt/qmetagui.h
@@ -5139,7 +5214,7 @@ Geänderte Pfade:
   :)
 
 ------------------------------------------------------------------------
-r2761 | dr_maux | 2001-11-23 23:01:25 +0100 (Fr, 23 Nov 2001) | 5 lines
+r2761 | dr_maux | 2001-11-23 23:01:25 +0100 (Fr, 23. Nov 2001) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/gensecure/src/gensecure.h
    M /trunk/utils/gensecure/src/server.c
@@ -5151,7 +5226,7 @@ Remove 3 bugs:
 - when no TLS is in use, say so (-1 wasn't interpreted as 0)
 
 ------------------------------------------------------------------------
-r2688 | dr_maux | 2001-11-07 09:06:56 +0100 (Mi, 07 Nov 2001) | 4 lines
+r2688 | dr_maux | 2001-11-07 09:06:56 +0100 (Mi, 07. Nov 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/patches/ggz-0.0.5pre-gensecure.libggz.patch
 
@@ -5160,7 +5235,7 @@ Geänderte Pfade:
 - now include gensecure in configure.in
 
 ------------------------------------------------------------------------
-r2684 | dr_maux | 2001-11-07 08:27:38 +0100 (Mi, 07 Nov 2001) | 3 lines
+r2684 | dr_maux | 2001-11-07 08:27:38 +0100 (Mi, 07. Nov 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/patches/ggz-0.0.5pre-gensecure.ggz-client-libs.patch
    M /trunk/utils/patches/ggz-0.0.5pre-gensecure.ggzd.patch
@@ -5170,7 +5245,7 @@ Geänderte Pfade:
 - does now contain ggzcore_server_get_encryption again
 
 ------------------------------------------------------------------------
-r2681 | dr_maux | 2001-11-06 01:12:35 +0100 (Di, 06 Nov 2001) | 4 lines
+r2681 | dr_maux | 2001-11-06 01:12:35 +0100 (Di, 06. Nov 2001) | 4 lines
 Geänderte Pfade:
    A /trunk/utils/patches
    A /trunk/utils/patches/README
@@ -5183,7 +5258,7 @@ Geänderte Pfade:
   compile time
 
 ------------------------------------------------------------------------
-r2617 | dr_maux | 2001-10-26 21:32:28 +0200 (Fr, 26 Okt 2001) | 5 lines
+r2617 | dr_maux | 2001-10-26 21:32:28 +0200 (Fr, 26. Okt 2001) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/minidom/main.c
    M /trunk/utils/metaserv/minidom/minidom.c
@@ -5195,7 +5270,7 @@ Geänderte Pfade:
 - some more minor fixes
 
 ------------------------------------------------------------------------
-r2616 | dr_maux | 2001-10-26 11:17:38 +0200 (Fr, 26 Okt 2001) | 3 lines
+r2616 | dr_maux | 2001-10-26 11:17:38 +0200 (Fr, 26. Okt 2001) | 3 lines
 Geänderte Pfade:
    A /trunk/utils/ruggzdmod
    A /trunk/utils/ruggzdmod/.cvsignore
@@ -5208,14 +5283,14 @@ Geänderte Pfade:
 - note: it uses the deprecated API so currently it isn't of much use
 
 ------------------------------------------------------------------------
-r2577 | dr_maux | 2001-10-17 22:00:19 +0200 (Mi, 17 Okt 2001) | 2 lines
+r2577 | dr_maux | 2001-10-17 22:00:19 +0200 (Mi, 17. Okt 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/pyggzdmod/civil/README.civil
 
 - ooops, forgot the readme
 
 ------------------------------------------------------------------------
-r2576 | dr_maux | 2001-10-17 21:59:45 +0200 (Mi, 17 Okt 2001) | 8 lines
+r2576 | dr_maux | 2001-10-17 21:59:45 +0200 (Mi, 17. Okt 2001) | 8 lines
 Geänderte Pfade:
    A /trunk/utils/pyggzdmod
    A /trunk/utils/pyggzdmod/.cvsignore
@@ -5241,7 +5316,7 @@ Geänderte Pfade:
   by it
 
 ------------------------------------------------------------------------
-r2567 | dr_maux | 2001-10-15 00:15:40 +0200 (Mo, 15 Okt 2001) | 4 lines
+r2567 | dr_maux | 2001-10-15 00:15:40 +0200 (Mo, 15. Okt 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/gensecure/src/client.c
    M /trunk/utils/gensecure/src/server.c
@@ -5252,7 +5327,7 @@ Geänderte Pfade:
 - this obsoletes the old macros and the gensockwrap.h file
 
 ------------------------------------------------------------------------
-r2566 | dr_maux | 2001-10-14 23:18:06 +0200 (So, 14 Okt 2001) | 2 lines
+r2566 | dr_maux | 2001-10-14 23:18:06 +0200 (So, 14. Okt 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/gensecure/src/list.c
    A /trunk/utils/gensecure/src/list.h
@@ -5260,7 +5335,7 @@ Geänderte Pfade:
 - double-linked list which stores TLS objects with their fd and state
 
 ------------------------------------------------------------------------
-r2565 | dr_maux | 2001-10-14 23:16:54 +0200 (So, 14 Okt 2001) | 7 lines
+r2565 | dr_maux | 2001-10-14 23:16:54 +0200 (So, 14. Okt 2001) | 7 lines
 Geänderte Pfade:
    M /trunk/utils/gensecure/src/Makefile.am
    M /trunk/utils/gensecure/src/tls.c
@@ -5274,7 +5349,7 @@ the example programs are broken now, but the ggzd/ggzcore patches still work the
 same as before (i.e. only until the login message)
 
 ------------------------------------------------------------------------
-r2560 | dr_maux | 2001-10-14 02:11:33 +0200 (So, 14 Okt 2001) | 2 lines
+r2560 | dr_maux | 2001-10-14 02:11:33 +0200 (So, 14. Okt 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/gensecure/src
    M /trunk/utils/gensecure/src/.cvsignore
@@ -5283,7 +5358,7 @@ Geänderte Pfade:
 - new global header file
 
 ------------------------------------------------------------------------
-r2559 | dr_maux | 2001-10-14 02:10:46 +0200 (So, 14 Okt 2001) | 4 lines
+r2559 | dr_maux | 2001-10-14 02:10:46 +0200 (So, 14. Okt 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/gensecure/src/Makefile.am
    M /trunk/utils/gensecure/src/client.c
@@ -5297,7 +5372,7 @@ Geänderte Pfade:
 - just fake for now: thread-safety by referencing _tls on filedescriptor basis
 
 ------------------------------------------------------------------------
-r2543 | dr_maux | 2001-10-07 20:02:19 +0200 (So, 07 Okt 2001) | 8 lines
+r2543 | dr_maux | 2001-10-07 20:02:19 +0200 (So, 07. Okt 2001) | 8 lines
 Geänderte Pfade:
    M /trunk/utils/gensecure/src/configuration.h
    M /trunk/utils/gensecure/src/tls.c
@@ -5311,7 +5386,7 @@ Geänderte Pfade:
   we should keep an eye on that.
 
 ------------------------------------------------------------------------
-r2531 | dr_maux | 2001-10-03 15:09:21 +0200 (Mi, 03 Okt 2001) | 4 lines
+r2531 | dr_maux | 2001-10-03 15:09:21 +0200 (Mi, 03. Okt 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/gensecure/src/client.c
    M /trunk/utils/gensecure/src/server.c
@@ -5323,7 +5398,7 @@ Geänderte Pfade:
 - on error try to show internal TLS errors as well
 
 ------------------------------------------------------------------------
-r2375 | jzaun | 2001-09-05 20:46:06 +0200 (Mi, 05 Sep 2001) | 4 lines
+r2375 | jzaun | 2001-09-05 20:46:06 +0200 (Mi, 05. Sep 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/configure.in
 
@@ -5332,7 +5407,7 @@ Geänderte Pfade:
 - output what is going to be built
 
 ------------------------------------------------------------------------
-r2355 | dr_maux | 2001-09-04 20:44:56 +0200 (Di, 04 Sep 2001) | 2 lines
+r2355 | dr_maux | 2001-09-04 20:44:56 +0200 (Di, 04. Sep 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/Makefile.am
    M /trunk/utils/configure.in
@@ -5340,7 +5415,7 @@ Geänderte Pfade:
 - now it should work: guru removal
 
 ------------------------------------------------------------------------
-r2354 | dr_maux | 2001-09-04 20:41:01 +0200 (Di, 04 Sep 2001) | 3 lines
+r2354 | dr_maux | 2001-09-04 20:41:01 +0200 (Di, 04. Sep 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/gensecure/io
    M /trunk/utils/gensecure/io/.cvsignore
@@ -5351,14 +5426,14 @@ Geänderte Pfade:
 - put .libs in some .cvsignore files
 
 ------------------------------------------------------------------------
-r2353 | dr_maux | 2001-09-04 20:25:34 +0200 (Di, 04 Sep 2001) | 2 lines
+r2353 | dr_maux | 2001-09-04 20:25:34 +0200 (Di, 04. Sep 2001) | 2 lines
 Geänderte Pfade:
    D /trunk/utils/guru
 
 - these got not deleted last time
 
 ------------------------------------------------------------------------
-r2339 | dr_maux | 2001-09-01 22:06:19 +0200 (Sa, 01 Sep 2001) | 2 lines
+r2339 | dr_maux | 2001-09-01 22:06:19 +0200 (Sa, 01. Sep 2001) | 2 lines
 Geänderte Pfade:
    D /trunk/utils/guru/.cvsignore
    D /trunk/utils/guru/Makefile.am
@@ -5385,7 +5460,7 @@ Geänderte Pfade:
 - bye-bye old guru source directory
 
 ------------------------------------------------------------------------
-r2335 | dr_maux | 2001-09-01 20:26:15 +0200 (Sa, 01 Sep 2001) | 4 lines
+r2335 | dr_maux | 2001-09-01 20:26:15 +0200 (Sa, 01. Sep 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/guru/doc/Setup
    M /trunk/utils/guru/modules/people.c
@@ -5400,7 +5475,7 @@ Geänderte Pfade:
 - improved log format, syslog-like
 
 ------------------------------------------------------------------------
-r2332 | dr_maux | 2001-09-01 17:32:26 +0200 (Sa, 01 Sep 2001) | 3 lines
+r2332 | dr_maux | 2001-09-01 17:32:26 +0200 (Sa, 01. Sep 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/guru/Makefile.am
    M /trunk/utils/guru/data/Makefile.am
@@ -5425,14 +5500,14 @@ Geänderte Pfade:
 - multi-line answers
 
 ------------------------------------------------------------------------
-r2173 | dr_maux | 2001-08-19 15:54:40 +0200 (So, 19 Aug 2001) | 2 lines
+r2173 | dr_maux | 2001-08-19 15:54:40 +0200 (So, 19. Aug 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/guru/modules/people.c
 
 - here it comes :-)
 
 ------------------------------------------------------------------------
-r2172 | dr_maux | 2001-08-19 15:54:10 +0200 (So, 19 Aug 2001) | 4 lines
+r2172 | dr_maux | 2001-08-19 15:54:10 +0200 (So, 19. Aug 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/guru/doc/Setup
    M /trunk/utils/guru/modules/Makefile.am
@@ -5450,7 +5525,7 @@ Geänderte Pfade:
 - query last seen status
 
 ------------------------------------------------------------------------
-r2171 | dr_maux | 2001-08-19 14:36:36 +0200 (So, 19 Aug 2001) | 4 lines
+r2171 | dr_maux | 2001-08-19 14:36:36 +0200 (So, 19. Aug 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/guru/README.guru
    M /trunk/utils/guru/doc/Migration
@@ -5478,7 +5553,7 @@ Geänderte Pfade:
 - let it appear as grubby rather than as guru on startup etc.
 
 ------------------------------------------------------------------------
-r2170 | dr_maux | 2001-08-19 12:53:53 +0200 (So, 19 Aug 2001) | 3 lines
+r2170 | dr_maux | 2001-08-19 12:53:53 +0200 (So, 19. Aug 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/guru/src/Makefile.am
    M /trunk/utils/guru/src/player.c
@@ -5489,7 +5564,7 @@ Geänderte Pfade:
 - save into $HOME/.ggz/guru/playerdb
 
 ------------------------------------------------------------------------
-r2169 | dr_maux | 2001-08-19 11:39:54 +0200 (So, 19 Aug 2001) | 2 lines
+r2169 | dr_maux | 2001-08-19 11:39:54 +0200 (So, 19. Aug 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/guru/data
    M /trunk/utils/guru/data/.cvsignore
@@ -5497,7 +5572,7 @@ Geänderte Pfade:
 - update cvsignore
 
 ------------------------------------------------------------------------
-r2168 | dr_maux | 2001-08-19 11:39:30 +0200 (So, 19 Aug 2001) | 4 lines
+r2168 | dr_maux | 2001-08-19 11:39:30 +0200 (So, 19. Aug 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/guru/data/Makefile.am
    M /trunk/utils/guru/data/dict.pl
@@ -5510,7 +5585,7 @@ Geänderte Pfade:
 - reading from stdin is now essential for modexec
 
 ------------------------------------------------------------------------
-r2166 | dr_maux | 2001-08-18 01:33:24 +0200 (Sa, 18 Aug 2001) | 2 lines
+r2166 | dr_maux | 2001-08-18 01:33:24 +0200 (Sa, 18. Aug 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/guru/src/main.c
    M /trunk/utils/guru/src/module.c
@@ -5521,14 +5596,14 @@ Geänderte Pfade:
 - little fixes, but race condition still remains!
 
 ------------------------------------------------------------------------
-r2165 | dr_maux | 2001-08-18 00:20:46 +0200 (Sa, 18 Aug 2001) | 2 lines
+r2165 | dr_maux | 2001-08-18 00:20:46 +0200 (Sa, 18. Aug 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/guru/src/net.c
 
 - log to /tmp/guruchatlog
 
 ------------------------------------------------------------------------
-r2164 | dr_maux | 2001-08-18 00:10:33 +0200 (Sa, 18 Aug 2001) | 2 lines
+r2164 | dr_maux | 2001-08-18 00:10:33 +0200 (Sa, 18. Aug 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/guru/src/main.c
    M /trunk/utils/guru/src/module.c
@@ -5537,21 +5612,21 @@ Geänderte Pfade:
 - read host from configuration
 
 ------------------------------------------------------------------------
-r2163 | dr_maux | 2001-08-18 00:08:00 +0200 (Sa, 18 Aug 2001) | 2 lines
+r2163 | dr_maux | 2001-08-18 00:08:00 +0200 (Sa, 18. Aug 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/guru/src/module.c
 
 - fix little bug: allow empty module list
 
 ------------------------------------------------------------------------
-r2162 | dr_maux | 2001-08-17 17:57:55 +0200 (Fr, 17 Aug 2001) | 2 lines
+r2162 | dr_maux | 2001-08-17 17:57:55 +0200 (Fr, 17. Aug 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/guru/doc/Setup
 
 - added sample setup for guru
 
 ------------------------------------------------------------------------
-r2161 | dr_maux | 2001-08-17 17:33:07 +0200 (Fr, 17 Aug 2001) | 4 lines
+r2161 | dr_maux | 2001-08-17 17:33:07 +0200 (Fr, 17. Aug 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/guru/src/main.c
    M /trunk/utils/guru/src/module.c
@@ -5562,7 +5637,7 @@ Geänderte Pfade:
 - Linux sucks, Grubby rocks: implemented insmod and rmmod
 
 ------------------------------------------------------------------------
-r2160 | dr_maux | 2001-08-17 14:42:48 +0200 (Fr, 17 Aug 2001) | 4 lines
+r2160 | dr_maux | 2001-08-17 14:42:48 +0200 (Fr, 17. Aug 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/guru/modules/exec.c
    M /trunk/utils/guru/src/main.c
@@ -5576,7 +5651,7 @@ Geänderte Pfade:
 - fixed bug in exec.c, maybe there's still a race condition
 
 ------------------------------------------------------------------------
-r2158 | dr_maux | 2001-08-16 21:52:00 +0200 (Do, 16 Aug 2001) | 2 lines
+r2158 | dr_maux | 2001-08-16 21:52:00 +0200 (Do, 16. Aug 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/guru/data
    A /trunk/utils/guru/data/.cvsignore
@@ -5585,7 +5660,7 @@ Geänderte Pfade:
 - install data files
 
 ------------------------------------------------------------------------
-r2157 | dr_maux | 2001-08-16 21:50:41 +0200 (Do, 16 Aug 2001) | 3 lines
+r2157 | dr_maux | 2001-08-16 21:50:41 +0200 (Do, 16. Aug 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/guru/modules/exec.c
    M /trunk/utils/guru/src/module.c
@@ -5594,7 +5669,7 @@ Geänderte Pfade:
 - introduced some new ones - proper child process handling needed
 
 ------------------------------------------------------------------------
-r2156 | dr_maux | 2001-08-16 20:38:49 +0200 (Do, 16 Aug 2001) | 4 lines
+r2156 | dr_maux | 2001-08-16 20:38:49 +0200 (Do, 16. Aug 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/guru/src/Makefile.am
    M /trunk/utils/guru/src/guru.c
@@ -5611,7 +5686,7 @@ Geänderte Pfade:
 - still need to take care about memory issues
 
 ------------------------------------------------------------------------
-r2155 | dr_maux | 2001-08-16 12:49:51 +0200 (Do, 16 Aug 2001) | 2 lines
+r2155 | dr_maux | 2001-08-16 12:49:51 +0200 (Do, 16. Aug 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/guru/src
    M /trunk/utils/guru/src/.cvsignore
@@ -5619,7 +5694,7 @@ Geänderte Pfade:
 - updated cvsignore
 
 ------------------------------------------------------------------------
-r2154 | dr_maux | 2001-08-16 12:49:16 +0200 (Do, 16 Aug 2001) | 5 lines
+r2154 | dr_maux | 2001-08-16 12:49:16 +0200 (Do, 16. Aug 2001) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/guru/src/Makefile.am
    M /trunk/utils/guru/src/test_net.c
@@ -5630,7 +5705,7 @@ Geänderte Pfade:
 - introduced concept of core and external modules
 
 ------------------------------------------------------------------------
-r2153 | dr_maux | 2001-08-16 08:57:42 +0200 (Do, 16 Aug 2001) | 3 lines
+r2153 | dr_maux | 2001-08-16 08:57:42 +0200 (Do, 16. Aug 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/guru/src/net.c
    M /trunk/utils/guru/src/net.h
@@ -5640,21 +5715,21 @@ Geänderte Pfade:
 - add event for chat or player actions
 
 ------------------------------------------------------------------------
-r2152 | dr_maux | 2001-08-15 21:29:08 +0200 (Mi, 15 Aug 2001) | 2 lines
+r2152 | dr_maux | 2001-08-15 21:29:08 +0200 (Mi, 15. Aug 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/guru/src/module.c
 
 - fixed one of these stupid malloc() bugs I never learn....
 
 ------------------------------------------------------------------------
-r2151 | dr_maux | 2001-08-15 20:11:38 +0200 (Mi, 15 Aug 2001) | 2 lines
+r2151 | dr_maux | 2001-08-15 20:11:38 +0200 (Mi, 15. Aug 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/guru/src/test_net.c
 
 - forgot test file
 
 ------------------------------------------------------------------------
-r2150 | dr_maux | 2001-08-15 20:11:06 +0200 (Mi, 15 Aug 2001) | 4 lines
+r2150 | dr_maux | 2001-08-15 20:11:06 +0200 (Mi, 15. Aug 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/guru/modules/Makefile.am
    A /trunk/utils/guru/modules/self.c
@@ -5670,7 +5745,7 @@ Geänderte Pfade:
 - add easy-to-use-but-rather-limited net functions
 
 ------------------------------------------------------------------------
-r2149 | dr_maux | 2001-08-14 14:12:24 +0200 (Di, 14 Aug 2001) | 2 lines
+r2149 | dr_maux | 2001-08-14 14:12:24 +0200 (Di, 14. Aug 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/guru/src
    M /trunk/utils/guru/src/.cvsignore
@@ -5679,7 +5754,7 @@ Geänderte Pfade:
 - add test program for the player interface
 
 ------------------------------------------------------------------------
-r2148 | dr_maux | 2001-08-14 14:11:24 +0200 (Di, 14 Aug 2001) | 3 lines
+r2148 | dr_maux | 2001-08-14 14:11:24 +0200 (Di, 14. Aug 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/guru/modules/Makefile.am
    A /trunk/utils/guru/modules/badword.c
@@ -5693,7 +5768,7 @@ Geänderte Pfade:
 - implemented common player interface
 
 ------------------------------------------------------------------------
-r2147 | dr_maux | 2001-08-14 10:12:47 +0200 (Di, 14 Aug 2001) | 2 lines
+r2147 | dr_maux | 2001-08-14 10:12:47 +0200 (Di, 14. Aug 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/guru/doc/Migration
    A /trunk/utils/guru/doc/players
@@ -5701,14 +5776,14 @@ Geänderte Pfade:
 - add plans and documentation of the new grubby structure
 
 ------------------------------------------------------------------------
-r2145 | dr_maux | 2001-08-14 09:40:46 +0200 (Di, 14 Aug 2001) | 2 lines
+r2145 | dr_maux | 2001-08-14 09:40:46 +0200 (Di, 14. Aug 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/guru/modules/exec.h
 
 - forgot header file
 
 ------------------------------------------------------------------------
-r2144 | dr_maux | 2001-08-14 09:39:49 +0200 (Di, 14 Aug 2001) | 2 lines
+r2144 | dr_maux | 2001-08-14 09:39:49 +0200 (Di, 14. Aug 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/guru/data/dict.pl
    M /trunk/utils/guru/data/meeting.rb
@@ -5717,7 +5792,7 @@ Geänderte Pfade:
 - simplify the usage of the grubby modules
 
 ------------------------------------------------------------------------
-r2138 | dr_maux | 2001-08-12 18:06:31 +0200 (So, 12 Aug 2001) | 3 lines
+r2138 | dr_maux | 2001-08-12 18:06:31 +0200 (So, 12. Aug 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/README.ggz-metaserver
    M /trunk/utils/metaserv/gui-qt/main.cpp
@@ -5732,14 +5807,14 @@ Geänderte Pfade:
 - changed c++ comments to c comments
 
 ------------------------------------------------------------------------
-r2137 | dr_maux | 2001-08-12 17:59:48 +0200 (So, 12 Aug 2001) | 2 lines
+r2137 | dr_maux | 2001-08-12 17:59:48 +0200 (So, 12. Aug 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/metaserv/README.ggz-metaserver
 
 - actually add the global readme file for metaserv
 
 ------------------------------------------------------------------------
-r2136 | dr_maux | 2001-08-12 17:59:03 +0200 (So, 12 Aug 2001) | 4 lines
+r2136 | dr_maux | 2001-08-12 17:59:03 +0200 (So, 12. Aug 2001) | 4 lines
 Geänderte Pfade:
    A /trunk/utils/metaserv/gui-qt
    A /trunk/utils/metaserv/gui-qt/.cvsignore
@@ -5757,7 +5832,7 @@ Geänderte Pfade:
 - ready for inetd use
 
 ------------------------------------------------------------------------
-r2135 | dr_maux | 2001-08-12 15:43:08 +0200 (So, 12 Aug 2001) | 3 lines
+r2135 | dr_maux | 2001-08-12 15:43:08 +0200 (So, 12. Aug 2001) | 3 lines
 Geänderte Pfade:
    A /trunk/utils/metaserv/minidom/main.c
 
@@ -5765,7 +5840,7 @@ Geänderte Pfade:
 - add convenience test program
 
 ------------------------------------------------------------------------
-r2134 | dr_maux | 2001-08-12 15:42:23 +0200 (So, 12 Aug 2001) | 5 lines
+r2134 | dr_maux | 2001-08-12 15:42:23 +0200 (So, 12. Aug 2001) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/metaserv/Makefile.am
    M /trunk/utils/metaserv/metaserv/README.metaserv
@@ -5783,7 +5858,7 @@ Geänderte Pfade:
 - on URI-based queries, select by priority
 
 ------------------------------------------------------------------------
-r2133 | dr_maux | 2001-08-12 13:06:40 +0200 (So, 12 Aug 2001) | 6 lines
+r2133 | dr_maux | 2001-08-12 13:06:40 +0200 (So, 12. Aug 2001) | 6 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/minidom/README.minidom
    M /trunk/utils/metaserv/minidom/example.xml
@@ -5798,7 +5873,7 @@ Geänderte Pfade:
 - simple query/querylist function
 
 ------------------------------------------------------------------------
-r2132 | dr_maux | 2001-08-12 12:15:52 +0200 (So, 12 Aug 2001) | 6 lines
+r2132 | dr_maux | 2001-08-12 12:15:52 +0200 (So, 12. Aug 2001) | 6 lines
 Geänderte Pfade:
    M /trunk/utils/metaserv/minidom/README.minidom
    M /trunk/utils/metaserv/minidom/example.xml
@@ -5811,7 +5886,7 @@ Geänderte Pfade:
 - don't throw away spaces in values
 
 ------------------------------------------------------------------------
-r2130 | dr_maux | 2001-08-10 19:45:38 +0200 (Fr, 10 Aug 2001) | 2 lines
+r2130 | dr_maux | 2001-08-10 19:45:38 +0200 (Fr, 10. Aug 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/Makefile.am
    M /trunk/utils/configure.in
@@ -5819,7 +5894,7 @@ Geänderte Pfade:
 - update build so metaserv is includes
 
 ------------------------------------------------------------------------
-r2129 | dr_maux | 2001-08-10 19:45:12 +0200 (Fr, 10 Aug 2001) | 5 lines
+r2129 | dr_maux | 2001-08-10 19:45:12 +0200 (Fr, 10. Aug 2001) | 5 lines
 Geänderte Pfade:
    A /trunk/utils/metaserv
    A /trunk/utils/metaserv/.cvsignore
@@ -5843,7 +5918,7 @@ Geänderte Pfade:
 - includes own DOM implementation
 
 ------------------------------------------------------------------------
-r2128 | dr_maux | 2001-08-09 21:20:28 +0200 (Do, 09 Aug 2001) | 3 lines
+r2128 | dr_maux | 2001-08-09 21:20:28 +0200 (Do, 09. Aug 2001) | 3 lines
 Geänderte Pfade:
    A /trunk/utils/guru/data/guru_setup.pl
    M /trunk/utils/guru/modules/Makefile.am
@@ -5856,7 +5931,7 @@ Geänderte Pfade:
 - improve execution of external programs in modexec
 
 ------------------------------------------------------------------------
-r2127 | dr_maux | 2001-08-09 19:56:40 +0200 (Do, 09 Aug 2001) | 3 lines
+r2127 | dr_maux | 2001-08-09 19:56:40 +0200 (Do, 09. Aug 2001) | 3 lines
 Geänderte Pfade:
    A /trunk/utils/guru/data/meeting.rb
 
@@ -5864,7 +5939,7 @@ Geänderte Pfade:
 - add meeting module
 
 ------------------------------------------------------------------------
-r2126 | dr_maux | 2001-08-09 18:37:32 +0200 (Do, 09 Aug 2001) | 2 lines
+r2126 | dr_maux | 2001-08-09 18:37:32 +0200 (Do, 09. Aug 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/Makefile.am
    M /trunk/utils/configure.in
@@ -5872,7 +5947,7 @@ Geänderte Pfade:
 - update build system to include telggz
 
 ------------------------------------------------------------------------
-r2125 | dr_maux | 2001-08-09 18:36:44 +0200 (Do, 09 Aug 2001) | 2 lines
+r2125 | dr_maux | 2001-08-09 18:36:44 +0200 (Do, 09. Aug 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/telggz
    A /trunk/utils/telggz/.cvsignore
@@ -5887,7 +5962,7 @@ Geänderte Pfade:
 - Add GGZ telnet wrapper: TelGGZ
 
 ------------------------------------------------------------------------
-r2109 | dr_maux | 2001-08-04 19:41:20 +0200 (Sa, 04 Aug 2001) | 4 lines
+r2109 | dr_maux | 2001-08-04 19:41:20 +0200 (Sa, 04. Aug 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/guru/data/dict.pl
    A /trunk/utils/guru/data/trans_convert.pl
@@ -5897,7 +5972,7 @@ Geänderte Pfade:
 - support for spanish, portuguese and italian
 
 ------------------------------------------------------------------------
-r2106 | dr_maux | 2001-08-04 14:26:06 +0200 (Sa, 04 Aug 2001) | 4 lines
+r2106 | dr_maux | 2001-08-04 14:26:06 +0200 (Sa, 04. Aug 2001) | 4 lines
 Geänderte Pfade:
    A /trunk/utils/guru/data/dict.pl
 
@@ -5906,7 +5981,7 @@ Geänderte Pfade:
 - supports fuzzy search
 
 ------------------------------------------------------------------------
-r2105 | dr_maux | 2001-08-04 05:03:01 +0200 (Sa, 04 Aug 2001) | 2 lines
+r2105 | dr_maux | 2001-08-04 05:03:01 +0200 (Sa, 04. Aug 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/guru/data/rdf.pl
    D /trunk/utils/guru/data/slashdot.rdf
@@ -5914,7 +5989,7 @@ Geänderte Pfade:
 - autodownload XML files off the web
 
 ------------------------------------------------------------------------
-r2104 | dr_maux | 2001-08-04 02:13:21 +0200 (Sa, 04 Aug 2001) | 3 lines
+r2104 | dr_maux | 2001-08-04 02:13:21 +0200 (Sa, 04. Aug 2001) | 3 lines
 Geänderte Pfade:
    A /trunk/utils/guru/data/rdf.pl
    A /trunk/utils/guru/data/slashdot.rdf
@@ -5925,7 +6000,7 @@ Geänderte Pfade:
 - can be queried later by "Grubby news"
 
 ------------------------------------------------------------------------
-r2103 | dr_maux | 2001-08-02 17:02:13 +0200 (Do, 02 Aug 2001) | 3 lines
+r2103 | dr_maux | 2001-08-02 17:02:13 +0200 (Do, 02. Aug 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/Makefile.am
    M /trunk/utils/configure.in
@@ -5934,7 +6009,7 @@ Geänderte Pfade:
 - include libtool in build system
 
 ------------------------------------------------------------------------
-r2102 | dr_maux | 2001-08-02 16:57:16 +0200 (Do, 02 Aug 2001) | 3 lines
+r2102 | dr_maux | 2001-08-02 16:57:16 +0200 (Do, 02. Aug 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/motd-editor/Makefile.in
    M /trunk/utils/motd-editor/config.h.in
@@ -5946,7 +6021,7 @@ Geänderte Pfade:
 - version bump to 0.0.5pre
 
 ------------------------------------------------------------------------
-r2101 | dr_maux | 2001-08-02 16:54:42 +0200 (Do, 02 Aug 2001) | 2 lines
+r2101 | dr_maux | 2001-08-02 16:54:42 +0200 (Do, 02. Aug 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/guru
    A /trunk/utils/guru/.cvsignore
@@ -5982,21 +6057,21 @@ Geänderte Pfade:
 - imported Guru into the utils module
 
 ------------------------------------------------------------------------
-r2023 | dr_maux | 2001-07-14 22:43:18 +0200 (Sa, 14 Jul 2001) | 2 lines
+r2023 | dr_maux | 2001-07-14 22:43:18 +0200 (Sa, 14. Jul 2001) | 2 lines
 Geänderte Pfade:
    D /trunk/utils/motd-editor/intl
 
 - those files are automatically created by Gnome
 
 ------------------------------------------------------------------------
-r1822 | dr_maux | 2001-06-24 21:02:19 +0200 (So, 24 Jun 2001) | 2 lines
+r1822 | dr_maux | 2001-06-24 21:02:19 +0200 (So, 24. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/configure.in
 
 - updated configure.in to include gensecure
 
 ------------------------------------------------------------------------
-r1821 | dr_maux | 2001-06-24 21:01:31 +0200 (So, 24 Jun 2001) | 3 lines
+r1821 | dr_maux | 2001-06-24 21:01:31 +0200 (So, 24. Jun 2001) | 3 lines
 Geänderte Pfade:
    A /trunk/utils/gensecure
    A /trunk/utils/gensecure/.cvsignore
@@ -6025,14 +6100,14 @@ Geänderte Pfade:
 - to be used for GGZ TLS encryption and authentication
 
 ------------------------------------------------------------------------
-r1755 | riq | 2001-06-19 00:41:04 +0200 (Di, 19 Jun 2001) | 2 lines
+r1755 | riq | 2001-06-19 00:41:04 +0200 (Di, 19. Jun 2001) | 2 lines
 Geänderte Pfade:
    D /trunk/utils/motd-editor/src/.deps
 
 removed dependencies (oops)
 
 ------------------------------------------------------------------------
-r1751 | riq | 2001-06-19 00:39:08 +0200 (Di, 19 Jun 2001) | 2 lines
+r1751 | riq | 2001-06-19 00:39:08 +0200 (Di, 19. Jun 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/motd-editor
    A /trunk/utils/motd-editor/AUTHORS
@@ -6115,7 +6190,7 @@ Geänderte Pfade:
 Initial revision
 
 ------------------------------------------------------------------------
-r1747 | riq | 2001-06-19 00:16:31 +0200 (Di, 19 Jun 2001) | 2 lines
+r1747 | riq | 2001-06-19 00:16:31 +0200 (Di, 19. Jun 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/motds
    A /trunk/utils/motds/Car1
@@ -6152,7 +6227,7 @@ Geänderte Pfade:
 justin's motd collections
 
 ------------------------------------------------------------------------
-r1738 | rgade | 2001-06-18 00:03:21 +0200 (Mo, 18 Jun 2001) | 2 lines
+r1738 | rgade | 2001-06-18 00:03:21 +0200 (Mo, 18. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/agrue/Makefile.am
    M /trunk/utils/configure.in
@@ -6162,7 +6237,7 @@ Geänderte Pfade:
 - Last minute fixes to get distributed files correct
 
 ------------------------------------------------------------------------
-r1733 | rgade | 2001-06-17 22:56:23 +0200 (So, 17 Jun 2001) | 2 lines
+r1733 | rgade | 2001-06-17 22:56:23 +0200 (So, 17. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/ChangeLog
    M /trunk/ggz-client-libs/ChangeLog
@@ -6176,7 +6251,7 @@ Geänderte Pfade:
 - Updated ChangeLog
 
 ------------------------------------------------------------------------
-r1688 | jzaun | 2001-06-09 01:08:35 +0200 (Sa, 09 Jun 2001) | 3 lines
+r1688 | jzaun | 2001-06-09 01:08:35 +0200 (Sa, 09. Jun 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/chat.c
 
@@ -6184,7 +6259,7 @@ Geänderte Pfade:
 - removed debug code
 
 ------------------------------------------------------------------------
-r1687 | jzaun | 2001-06-09 01:06:55 +0200 (Sa, 09 Jun 2001) | 3 lines
+r1687 | jzaun | 2001-06-09 01:06:55 +0200 (Sa, 09. Jun 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/chat.c
    M /trunk/utils/grubby/commands.c
@@ -6193,7 +6268,7 @@ Geänderte Pfade:
 - Fixed the : and , problem
 
 ------------------------------------------------------------------------
-r1686 | dr_maux | 2001-06-09 00:28:30 +0200 (Sa, 09 Jun 2001) | 2 lines
+r1686 | dr_maux | 2001-06-09 00:28:30 +0200 (Sa, 09. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils
    M /trunk/utils/.cvsignore
@@ -6201,7 +6276,7 @@ Geänderte Pfade:
 - add build-stamp here too
 
 ------------------------------------------------------------------------
-r1685 | jzaun | 2001-06-09 00:24:56 +0200 (Sa, 09 Jun 2001) | 3 lines
+r1685 | jzaun | 2001-06-09 00:24:56 +0200 (Sa, 09. Jun 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/commands.c
 
@@ -6209,7 +6284,7 @@ Geänderte Pfade:
 - Fixed a segfault in the tell command
 
 ------------------------------------------------------------------------
-r1680 | dr_maux | 2001-06-08 20:03:52 +0200 (Fr, 08 Jun 2001) | 3 lines
+r1680 | dr_maux | 2001-06-08 20:03:52 +0200 (Fr, 08. Jun 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/man/Makefile.am
    A /trunk/utils/man/agrub.6
@@ -6219,7 +6294,7 @@ Geänderte Pfade:
 - shadow grubby to agrub manpage
 
 ------------------------------------------------------------------------
-r1677 | dr_maux | 2001-06-08 19:07:53 +0200 (Fr, 08 Jun 2001) | 2 lines
+r1677 | dr_maux | 2001-06-08 19:07:53 +0200 (Fr, 08. Jun 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/README.GGZ
    A /trunk/ggzd/README.GGZ
@@ -6228,14 +6303,14 @@ Geänderte Pfade:
 - actually add readme.ggz
 
 ------------------------------------------------------------------------
-r1676 | dr_maux | 2001-06-08 19:01:42 +0200 (Fr, 08 Jun 2001) | 2 lines
+r1676 | dr_maux | 2001-06-08 19:01:42 +0200 (Fr, 08. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/configure.in
 
 - forgot man/ in configure.in
 
 ------------------------------------------------------------------------
-r1675 | dr_maux | 2001-06-08 19:00:50 +0200 (Fr, 08 Jun 2001) | 2 lines
+r1675 | dr_maux | 2001-06-08 19:00:50 +0200 (Fr, 08. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/Makefile.am
    M /trunk/utils/configure.in
@@ -6243,7 +6318,7 @@ Geänderte Pfade:
 - also build man page
 
 ------------------------------------------------------------------------
-r1674 | dr_maux | 2001-06-08 19:00:28 +0200 (Fr, 08 Jun 2001) | 2 lines
+r1674 | dr_maux | 2001-06-08 19:00:28 +0200 (Fr, 08. Jun 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/man
    A /trunk/utils/man/.cvsignore
@@ -6253,7 +6328,7 @@ Geänderte Pfade:
 - create simple man page for grubby
 
 ------------------------------------------------------------------------
-r1668 | dr_maux | 2001-06-08 16:45:42 +0200 (Fr, 08 Jun 2001) | 2 lines
+r1668 | dr_maux | 2001-06-08 16:45:42 +0200 (Fr, 08. Jun 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/AUTHORS
    A /trunk/utils/ChangeLog
@@ -6262,14 +6337,14 @@ Geänderte Pfade:
 - added standard files for finalizing this module
 
 ------------------------------------------------------------------------
-r1663 | dr_maux | 2001-06-07 23:26:56 +0200 (Do, 07 Jun 2001) | 2 lines
+r1663 | dr_maux | 2001-06-07 23:26:56 +0200 (Do, 07. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/debian/docs
 
 - adding project-wide readme file
 
 ------------------------------------------------------------------------
-r1584 | dr_maux | 2001-05-30 15:34:42 +0200 (Mi, 30 Mai 2001) | 2 lines
+r1584 | dr_maux | 2001-05-30 15:34:42 +0200 (Mi, 30. Mai 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/COPYING
    A /trunk/utils/INSTALL
@@ -6277,7 +6352,7 @@ Geänderte Pfade:
 - added standard files
 
 ------------------------------------------------------------------------
-r1583 | dr_maux | 2001-05-30 15:34:08 +0200 (Mi, 30 Mai 2001) | 3 lines
+r1583 | dr_maux | 2001-05-30 15:34:08 +0200 (Mi, 30. Mai 2001) | 3 lines
 Geänderte Pfade:
    A /trunk/utils/debian
    A /trunk/utils/debian/.cvsignore
@@ -6294,7 +6369,7 @@ Geänderte Pfade:
 - added standard files
 
 ------------------------------------------------------------------------
-r1556 | dr_maux | 2001-05-22 21:38:37 +0200 (Di, 22 Mai 2001) | 3 lines
+r1556 | dr_maux | 2001-05-22 21:38:37 +0200 (Di, 22. Mai 2001) | 3 lines
 Geänderte Pfade:
    A /trunk/utils/grubby
    A /trunk/utils/grubby/.cvsignore
@@ -6325,7 +6400,7 @@ Geänderte Pfade:
 - ported him to the new ggzcore API
 
 ------------------------------------------------------------------------
-r1476 | perdig | 2001-04-30 18:55:19 +0200 (Mo, 30 Apr 2001) | 3 lines
+r1476 | perdig | 2001-04-30 18:55:19 +0200 (Mo, 30. Apr 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/pygenclient/pygenclient.py
 
@@ -6333,7 +6408,7 @@ Geänderte Pfade:
 - Limited support for sending strings over the socket (just type a string and it should be sent)
 
 ------------------------------------------------------------------------
-r1417 | perdig | 2001-04-15 18:33:24 +0200 (So, 15 Apr 2001) | 3 lines
+r1417 | perdig | 2001-04-15 18:33:24 +0200 (So, 15. Apr 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/pygenclient/pygenclient.py
 
@@ -6341,7 +6416,7 @@ Geänderte Pfade:
 - Get the module name from the argument (ie: "pygenclient.py Chess" would connect to the Chess module)
 
 ------------------------------------------------------------------------
-r1013 | perdig | 2001-01-10 17:28:52 +0100 (Mi, 10 Jan 2001) | 9 lines
+r1013 | perdig | 2001-01-10 17:28:52 +0100 (Mi, 10. Jan 2001) | 9 lines
 Geänderte Pfade:
    M /trunk/utils/pygenclient/pygenclient.py
 
@@ -6355,7 +6430,7 @@ Geänderte Pfade:
   to the end of the number (por example, "40i" sends 0, 0, 0, 40)
 
 ------------------------------------------------------------------------
-r995 | perdig | 2001-01-06 19:19:56 +0100 (Sa, 06 Jan 2001) | 7 lines
+r995 | perdig | 2001-01-06 19:19:56 +0100 (Sa, 06. Jan 2001) | 7 lines
 Geänderte Pfade:
    M /trunk/utils/README
    A /trunk/utils/pygenclient
@@ -6370,7 +6445,7 @@ Geänderte Pfade:
 - Instructions of use are in the pygenclient/README file
 
 ------------------------------------------------------------------------
-r955 | jzaun | 2000-12-30 03:22:22 +0100 (Sa, 30 Dez 2000) | 3 lines
+r955 | jzaun | 2000-12-30 03:22:22 +0100 (Sa, 30. Dez 2000) | 3 lines
 Geänderte Pfade:
    D /trunk/utils/grubby
 
@@ -6378,14 +6453,14 @@ Geänderte Pfade:
 - Removeing old out of date grubby files
 
 ------------------------------------------------------------------------
-r716 | bugg | 2000-09-09 03:26:22 +0200 (Sa, 09 Sep 2000) | 2 lines
+r716 | bugg | 2000-09-09 03:26:22 +0200 (Sa, 09. Sep 2000) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/loop.c
 
 Include unistd.h for select().
 
 ------------------------------------------------------------------------
-r715 | jzaun | 2000-09-08 00:55:02 +0200 (Fr, 08 Sep 2000) | 4 lines
+r715 | jzaun | 2000-09-08 00:55:02 +0200 (Fr, 08. Sep 2000) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/commands.c
    M /trunk/utils/grubby/loop.c
@@ -6396,7 +6471,7 @@ Geänderte Pfade:
 - Made help a little easier to read
 
 ------------------------------------------------------------------------
-r714 | jzaun | 2000-09-08 00:21:33 +0200 (Fr, 08 Sep 2000) | 3 lines
+r714 | jzaun | 2000-09-08 00:21:33 +0200 (Fr, 08. Sep 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/loop.c
    M /trunk/utils/grubby/net.c
@@ -6405,7 +6480,7 @@ Geänderte Pfade:
 - Updated for protocol version 3
 
 ------------------------------------------------------------------------
-r710 | rgade | 2000-09-07 23:18:24 +0200 (Do, 07 Sep 2000) | 3 lines
+r710 | rgade | 2000-09-07 23:18:24 +0200 (Do, 07. Sep 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/agrue/agrue.c
    M /trunk/utils/agrue/protocols.h
@@ -6414,7 +6489,7 @@ Geänderte Pfade:
 - GRUEs are less random now, doing one thing every five seconds always
 
 ------------------------------------------------------------------------
-r583 | jzaun | 2000-06-15 01:34:41 +0200 (Do, 15 Jun 2000) | 4 lines
+r583 | jzaun | 2000-06-15 01:34:41 +0200 (Do, 15. Jun 2000) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/commands.c
    M /trunk/utils/grubby/init.c
@@ -6424,7 +6499,7 @@ Geänderte Pfade:
   I'm catching SIGINT, SIGQUIT, and SIGTERM
 
 ------------------------------------------------------------------------
-r582 | jzaun | 2000-06-15 01:18:50 +0200 (Do, 15 Jun 2000) | 3 lines
+r582 | jzaun | 2000-06-15 01:18:50 +0200 (Do, 15. Jun 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/Makefile.am
    M /trunk/utils/grubby/chat.c
@@ -6437,7 +6512,7 @@ Geänderte Pfade:
 - Grubby now saves his memory between sessions. Everything is in rc.[ch].
 
 ------------------------------------------------------------------------
-r563 | jzaun | 2000-06-11 21:46:27 +0200 (So, 11 Jun 2000) | 3 lines
+r563 | jzaun | 2000-06-11 21:46:27 +0200 (So, 11. Jun 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/chat.c
    M /trunk/utils/grubby/commands.c
@@ -6449,7 +6524,7 @@ Geänderte Pfade:
 - Fixed a spelling mistake s/memmory/memory/
 
 ------------------------------------------------------------------------
-r562 | jzaun | 2000-06-11 21:34:13 +0200 (So, 11 Jun 2000) | 3 lines
+r562 | jzaun | 2000-06-11 21:34:13 +0200 (So, 11. Jun 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/chat.c
    M /trunk/utils/grubby/chat.h
@@ -6459,7 +6534,7 @@ Geänderte Pfade:
 - Grubby now accepts commands give thew a personal message (/msg) as well.
 
 ------------------------------------------------------------------------
-r559 | jzaun | 2000-06-11 19:03:33 +0200 (So, 11 Jun 2000) | 3 lines
+r559 | jzaun | 2000-06-11 19:03:33 +0200 (So, 11. Jun 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/chat.c
    M /trunk/utils/grubby/commands.c
@@ -6470,7 +6545,7 @@ Geänderte Pfade:
 - Added the 'tell <username> <message>' command back in.
 
 ------------------------------------------------------------------------
-r557 | jzaun | 2000-06-11 04:27:12 +0200 (So, 11 Jun 2000) | 3 lines
+r557 | jzaun | 2000-06-11 04:27:12 +0200 (So, 11. Jun 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/chat.c
    M /trunk/utils/grubby/commands.c
@@ -6480,7 +6555,7 @@ Geänderte Pfade:
 - Added a bit more flexibility to the command recognition system
 
 ------------------------------------------------------------------------
-r556 | jzaun | 2000-06-11 01:38:12 +0200 (So, 11 Jun 2000) | 3 lines
+r556 | jzaun | 2000-06-11 01:38:12 +0200 (So, 11. Jun 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/chat.c
    M /trunk/utils/grubby/chat.h
@@ -6492,7 +6567,7 @@ Geänderte Pfade:
 - Added the about command back in
 
 ------------------------------------------------------------------------
-r555 | jzaun | 2000-06-11 00:40:10 +0200 (So, 11 Jun 2000) | 3 lines
+r555 | jzaun | 2000-06-11 00:40:10 +0200 (So, 11. Jun 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/chat.c
    M /trunk/utils/grubby/commands.c
@@ -6502,7 +6577,7 @@ Geänderte Pfade:
 - Everything in Grubby is fully working, thanks in part to Jason.
 
 ------------------------------------------------------------------------
-r554 | jzaun | 2000-06-11 00:06:43 +0200 (So, 11 Jun 2000) | 4 lines
+r554 | jzaun | 2000-06-11 00:06:43 +0200 (So, 11. Jun 2000) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/commands.c
    M /trunk/utils/grubby/log.c
@@ -6512,7 +6587,7 @@ Geänderte Pfade:
 - Also fixed in one of the log functions (had not happed yet, but could of).
 
 ------------------------------------------------------------------------
-r553 | jzaun | 2000-06-10 22:58:31 +0200 (Sa, 10 Jun 2000) | 3 lines
+r553 | jzaun | 2000-06-10 22:58:31 +0200 (Sa, 10. Jun 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/Makefile.am
    M /trunk/utils/grubby/agrub.c
@@ -6541,7 +6616,7 @@ Geänderte Pfade:
 - Big rewrite to grubby
 
 ------------------------------------------------------------------------
-r502 | jzaun | 2000-05-09 02:18:50 +0200 (Di, 09 Mai 2000) | 4 lines
+r502 | jzaun | 2000-05-09 02:18:50 +0200 (Di, 09. Mai 2000) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
    M /trunk/utils/grubby/protocols.h
@@ -6551,14 +6626,14 @@ Geänderte Pfade:
 - Grubby can teke command by grubby: or /msg grubby
 
 ------------------------------------------------------------------------
-r489 | rgade | 2000-05-06 06:16:49 +0200 (Sa, 06 Mai 2000) | 2 lines
+r489 | rgade | 2000-05-06 06:16:49 +0200 (Sa, 06. Mai 2000) | 2 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
 
 - Don't free room_list strings until just before exit
 
 ------------------------------------------------------------------------
-r485 | jzaun | 2000-05-05 03:46:45 +0200 (Fr, 05 Mai 2000) | 3 lines
+r485 | jzaun | 2000-05-05 03:46:45 +0200 (Fr, 05. Mai 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
 
@@ -6566,7 +6641,7 @@ Geänderte Pfade:
 - Fixed the random crashes caused by not freeing string in all cases
 
 ------------------------------------------------------------------------
-r483 | jzaun | 2000-05-03 00:02:03 +0200 (Mi, 03 Mai 2000) | 4 lines
+r483 | jzaun | 2000-05-03 00:02:03 +0200 (Mi, 03. Mai 2000) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
 
@@ -6575,7 +6650,7 @@ Geänderte Pfade:
 - logging is in html format for posting to our web site. looks nicer too.
 
 ------------------------------------------------------------------------
-r474 | bmh | 2000-04-28 20:34:16 +0200 (Fr, 28 Apr 2000) | 3 lines
+r474 | bmh | 2000-04-28 20:34:16 +0200 (Fr, 28. Apr 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils
    A /trunk/utils/.cvsignore
@@ -6598,7 +6673,7 @@ Geänderte Pfade:
 - Make grie and grubby use autoconf/automake
 
 ------------------------------------------------------------------------
-r464 | jzaun | 2000-04-27 00:30:46 +0200 (Do, 27 Apr 2000) | 4 lines
+r464 | jzaun | 2000-04-27 00:30:46 +0200 (Do, 27. Apr 2000) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
 
@@ -6607,7 +6682,7 @@ Geänderte Pfade:
 - addedd stay/move commands for owners only
 
 ------------------------------------------------------------------------
-r437 | jzaun | 2000-04-20 00:01:42 +0200 (Do, 20 Apr 2000) | 4 lines
+r437 | jzaun | 2000-04-20 00:01:42 +0200 (Do, 20. Apr 2000) | 4 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
 
@@ -6616,7 +6691,7 @@ Geänderte Pfade:
 - added the ability to have random greatings.
 
 ------------------------------------------------------------------------
-r436 | jzaun | 2000-04-19 19:23:16 +0200 (Mi, 19 Apr 2000) | 3 lines
+r436 | jzaun | 2000-04-19 19:23:16 +0200 (Mi, 19. Apr 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
 
@@ -6624,7 +6699,7 @@ Geänderte Pfade:
 - Added command 'save memmory' as a owner only wich forces a update of ~/.agrub
 
 ------------------------------------------------------------------------
-r434 | jzaun | 2000-04-18 23:55:38 +0200 (Di, 18 Apr 2000) | 7 lines
+r434 | jzaun | 2000-04-18 23:55:38 +0200 (Di, 18. Apr 2000) | 7 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
 
@@ -6636,7 +6711,7 @@ Geänderte Pfade:
 You _must_ be owner for the command to work
 
 ------------------------------------------------------------------------
-r432 | jzaun | 2000-04-18 03:39:21 +0200 (Di, 18 Apr 2000) | 5 lines
+r432 | jzaun | 2000-04-18 03:39:21 +0200 (Di, 18. Apr 2000) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
 
@@ -6646,7 +6721,7 @@ Geänderte Pfade:
   you should remove your old one before trying this out.
 
 ------------------------------------------------------------------------
-r431 | jzaun | 2000-04-16 23:04:53 +0200 (So, 16 Apr 2000) | 3 lines
+r431 | jzaun | 2000-04-16 23:04:53 +0200 (So, 16. Apr 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
 
@@ -6654,7 +6729,7 @@ Geänderte Pfade:
 - Forgot to add the help item. (sorry)
 
 ------------------------------------------------------------------------
-r430 | jzaun | 2000-04-16 23:00:31 +0200 (So, 16 Apr 2000) | 9 lines
+r430 | jzaun | 2000-04-16 23:00:31 +0200 (So, 16. Apr 2000) | 9 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
 
@@ -6668,7 +6743,7 @@ Geänderte Pfade:
 - I've made the unknown user message a little bigger, and my human like (I hope...)
 
 ------------------------------------------------------------------------
-r429 | jzaun | 2000-04-16 22:36:37 +0200 (So, 16 Apr 2000) | 5 lines
+r429 | jzaun | 2000-04-16 22:36:37 +0200 (So, 16. Apr 2000) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
 
@@ -6678,7 +6753,7 @@ Geänderte Pfade:
 	I removed the 2 paragraph, as Grubby can now remember things from a past lifetime.
 
 ------------------------------------------------------------------------
-r428 | rgade | 2000-04-16 20:16:26 +0200 (So, 16 Apr 2000) | 5 lines
+r428 | rgade | 2000-04-16 20:16:26 +0200 (So, 16. Apr 2000) | 5 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
 
@@ -6688,7 +6763,7 @@ Various enhancements to Grubby:
   - Correctly tests for url and info values when reporting whois
 
 ------------------------------------------------------------------------
-r426 | jzaun | 2000-04-15 11:08:08 +0200 (Sa, 15 Apr 2000) | 3 lines
+r426 | jzaun | 2000-04-15 11:08:08 +0200 (Sa, 15. Apr 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
 
@@ -6696,7 +6771,7 @@ Geänderte Pfade:
 - Grubby now shows all known information entered when he recieves the whois command
 
 ------------------------------------------------------------------------
-r425 | jzaun | 2000-04-15 10:50:32 +0200 (Sa, 15 Apr 2000) | 3 lines
+r425 | jzaun | 2000-04-15 10:50:32 +0200 (Sa, 15. Apr 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
 
@@ -6704,7 +6779,7 @@ Geänderte Pfade:
 - Storing of email, url and info
 
 ------------------------------------------------------------------------
-r424 | jzaun | 2000-04-15 10:07:24 +0200 (Sa, 15 Apr 2000) | 3 lines
+r424 | jzaun | 2000-04-15 10:07:24 +0200 (Sa, 15. Apr 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
 
@@ -6712,7 +6787,7 @@ Geänderte Pfade:
 - Added a whois command
 
 ------------------------------------------------------------------------
-r423 | jzaun | 2000-04-15 09:12:42 +0200 (Sa, 15 Apr 2000) | 3 lines
+r423 | jzaun | 2000-04-15 09:12:42 +0200 (Sa, 15. Apr 2000) | 3 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
 
@@ -6720,7 +6795,7 @@ Geänderte Pfade:
 - Now load information back in at startup. This means that a grub can remember between sesions
 
 ------------------------------------------------------------------------
-r422 | jzaun | 2000-04-15 08:10:03 +0200 (Sa, 15 Apr 2000) | 8 lines
+r422 | jzaun | 2000-04-15 08:10:03 +0200 (Sa, 15. Apr 2000) | 8 lines
 Geänderte Pfade:
    M /trunk/utils/grubby/agrub.c
 
@@ -6733,14 +6808,14 @@ Number Known
 the known struct
 
 ------------------------------------------------------------------------
-r420 | rgade | 2000-04-15 06:58:49 +0200 (Sa, 15 Apr 2000) | 2 lines
+r420 | rgade | 2000-04-15 06:58:49 +0200 (Sa, 15. Apr 2000) | 2 lines
 Geänderte Pfade:
    A /trunk/utils/README
 
 - Some notes for AGRUE and AGRUB
 
 ------------------------------------------------------------------------
-r419 | rgade | 2000-04-15 06:48:40 +0200 (Sa, 15 Apr 2000) | 2 lines
+r419 | rgade | 2000-04-15 06:48:40 +0200 (Sa, 15. Apr 2000) | 2 lines
 Geänderte Pfade:
    A /trunk/utils
    A /trunk/utils/agrue

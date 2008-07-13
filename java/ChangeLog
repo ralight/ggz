@@ -1,5 +1,27 @@
 ------------------------------------------------------------------------
-r9999 | josef | 2008-05-24 11:11:00 +0200 (Sa, 24 Mai 2008) | 3 lines
+r10004 | josef | 2008-05-25 11:12:02 +0200 (So, 25. Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/java/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- prepend 5300 lines of change summaries to the changelog files
+
+
+------------------------------------------------------------------------
+r9999 | josef | 2008-05-24 11:11:00 +0200 (Sa, 24. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
    M /trunk/java/Makefile
@@ -9,7 +31,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24 Mai 2008) | 3 lines
+r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README
@@ -43,7 +65,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9946 | josef | 2008-04-12 13:59:55 +0200 (Sa, 12 Apr 2008) | 3 lines
+r9946 | josef | 2008-04-12 13:59:55 +0200 (Sa, 12. Apr 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -66,7 +88,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9815 | josef | 2008-03-08 23:40:34 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9815 | josef | 2008-03-08 23:40:34 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/ChangeLog
    M /trunk/ggzd/ChangeLog
@@ -80,7 +102,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9814 | josef | 2008-03-08 23:31:23 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9814 | josef | 2008-03-08 23:31:23 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/NEWS
    M /trunk/ggzd/NEWS
@@ -95,7 +117,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9753 | josef | 2008-02-17 19:38:48 +0100 (So, 17 Feb 2008) | 3 lines
+r9753 | josef | 2008-02-17 19:38:48 +0100 (So, 17. Feb 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/java/ChangeLog
    M /trunk/java/Makefile
@@ -106,7 +128,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9752 | josef | 2008-02-17 19:23:15 +0100 (So, 17 Feb 2008) | 3 lines
+r9752 | josef | 2008-02-17 19:23:15 +0100 (So, 17. Feb 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/client/Team.java
    M /trunk/java/src/ggz/ui/RoomChatPanel.java
@@ -117,7 +139,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9751 | josef | 2008-02-17 19:00:06 +0100 (So, 17 Feb 2008) | 3 lines
+r9751 | josef | 2008-02-17 19:00:06 +0100 (So, 17. Feb 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/messages_de.properties
 
@@ -125,7 +147,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9315 | helg | 2007-09-20 03:06:45 +0200 (Do, 20 Sep 2007) | 1 line
+r9315 | helg | 2007-09-20 03:06:45 +0200 (Do, 20. Sep 2007) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/ChatDocument.java
    M /trunk/java/src/ggz/ui/ChatHistoryPane.java
@@ -133,7 +155,7 @@ Geänderte Pfade:
 
 Fixed bug where images could not be loaded when running under a security manager (applet).
 ------------------------------------------------------------------------
-r9314 | helg | 2007-09-19 16:47:15 +0200 (Mi, 19 Sep 2007) | 2 lines
+r9314 | helg | 2007-09-19 16:47:15 +0200 (Mi, 19. Sep 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/ChatDocument.java
    M /trunk/java/src/ggz/ui/ChatHistoryPane.java
@@ -141,7 +163,7 @@ Geänderte Pfade:
 Instead of loading images sychronously, cache them. This should 
 be more efficient but may be less compatible.
 ------------------------------------------------------------------------
-r9313 | helg | 2007-09-19 15:59:02 +0200 (Mi, 19 Sep 2007) | 5 lines
+r9313 | helg | 2007-09-19 15:59:02 +0200 (Mi, 19. Sep 2007) | 5 lines
 Geänderte Pfade:
    A /trunk/java/src/ggz/ui/AutoCompleteTextField.java
    A /trunk/java/src/ggz/ui/ChatDocument.java
@@ -160,19 +182,19 @@ Emoticons are now easier to add.
 Repeated emoticons now appear as individual images rather than being coalesced.
 Chat text preferences now take effect on existing text.
 ------------------------------------------------------------------------
-r9290 | helg | 2007-09-04 17:32:21 +0200 (Di, 04 Sep 2007) | 1 line
+r9290 | helg | 2007-09-04 17:32:21 +0200 (Di, 04. Sep 2007) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/RoomChatPanel.java
 
 Allow hosts to use PlayerAdminDialog.
 ------------------------------------------------------------------------
-r9289 | helg | 2007-09-04 15:20:16 +0200 (Di, 04 Sep 2007) | 1 line
+r9289 | helg | 2007-09-04 15:20:16 +0200 (Di, 04. Sep 2007) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/client/Team.java
 
 Team now assumes the lastest score is the current score.
 ------------------------------------------------------------------------
-r9287 | oojah | 2007-09-01 12:34:06 +0200 (Sa, 01 Sep 2007) | 2 lines
+r9287 | oojah | 2007-09-01 12:34:06 +0200 (Sa, 01. Sep 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
    M /trunk/java/src/ggz/cards/client/Client.java
@@ -180,21 +202,21 @@ Geänderte Pfade:
 Display current hand number.
 
 ------------------------------------------------------------------------
-r9121 | oojah | 2007-05-15 13:39:43 +0200 (Di, 15 Mai 2007) | 2 lines
+r9121 | oojah | 2007-05-15 13:39:43 +0200 (Di, 15. Mai 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/ClientApplet.java
 
 Change default hostname to live.ggzgamingzone.org. l.g.o is a CNAME to o.d.o, so nothing should change but it a more appropriate name to have in the code.
 
 ------------------------------------------------------------------------
-r9106 | oojah | 2007-05-07 19:53:44 +0200 (Mo, 07 Mai 2007) | 2 lines
+r9106 | oojah | 2007-05-07 19:53:44 +0200 (Mo, 07. Mai 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/ChatPanel.java
 
 Removed duplicate lines, fixed image reference.
 
 ------------------------------------------------------------------------
-r9105 | oojah | 2007-05-07 18:54:00 +0200 (Mo, 07 Mai 2007) | 2 lines
+r9105 | oojah | 2007-05-07 18:54:00 +0200 (Mo, 07. Mai 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/ChatPanel.java
    A /trunk/java/src/ggz/ui/images/emoticon_cup.png
@@ -204,7 +226,7 @@ Geänderte Pfade:
 Food/award type emoticons.
 
 ------------------------------------------------------------------------
-r9104 | helg | 2007-05-07 14:17:32 +0200 (Mo, 07 Mai 2007) | 2 lines
+r9104 | helg | 2007-05-07 14:17:32 +0200 (Mo, 07. Mai 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/client/Client.java
    M /trunk/java/src/ggz/cards/common/ClientOpCode.java
@@ -212,7 +234,7 @@ Geänderte Pfade:
 Changes that support new reveal hands op code. Commented out
 in the UI so it's not currently used.
 ------------------------------------------------------------------------
-r9103 | helg | 2007-05-07 14:16:09 +0200 (Mo, 07 Mai 2007) | 2 lines
+r9103 | helg | 2007-05-07 14:16:09 +0200 (Mo, 07. Mai 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
    M /trunk/java/src/ggz/games/GamePanel.java
@@ -220,7 +242,7 @@ Geänderte Pfade:
 Game window state is now stored when you leave a game. The 
 window state is remembered for each game type.
 ------------------------------------------------------------------------
-r9100 | oojah | 2007-05-05 18:25:48 +0200 (Sa, 05 Mai 2007) | 3 lines
+r9100 | oojah | 2007-05-05 18:25:48 +0200 (Sa, 05. Mai 2007) | 3 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
 
@@ -228,13 +250,13 @@ Better default dimensions for 1024x768
 
 
 ------------------------------------------------------------------------
-r9099 | helg | 2007-05-05 08:45:24 +0200 (Sa, 05 Mai 2007) | 1 line
+r9099 | helg | 2007-05-05 08:45:24 +0200 (Sa, 05. Mai 2007) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
 
 Command out "show hands" releated stuff until we know it's working.
 ------------------------------------------------------------------------
-r9085 | oojah | 2007-05-02 00:55:11 +0200 (Mi, 02 Mai 2007) | 2 lines
+r9085 | oojah | 2007-05-02 00:55:11 +0200 (Mi, 02. Mai 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/ChatPanel.java
    A /trunk/java/src/ggz/ui/images/emoticon_bomb.png
@@ -245,7 +267,7 @@ Geänderte Pfade:
 Added a few more emoticons.
 
 ------------------------------------------------------------------------
-r9083 | helg | 2007-04-30 14:54:05 +0200 (Mo, 30 Apr 2007) | 3 lines
+r9083 | helg | 2007-04-30 14:54:05 +0200 (Mo, 30. Apr 2007) | 3 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
 
@@ -253,14 +275,14 @@ Changed default window dimensions so that chat initially
 appears below the table. It seems a step backwards to me but
 whatever...
 ------------------------------------------------------------------------
-r9082 | helg | 2007-04-30 14:35:44 +0200 (Mo, 30 Apr 2007) | 1 line
+r9082 | helg | 2007-04-30 14:35:44 +0200 (Mo, 30. Apr 2007) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/ChatPanel.java
    A /trunk/java/src/ggz/ui/images/emoticon_star.png
 
 Added new "star" emote.
 ------------------------------------------------------------------------
-r9065 | helg | 2007-04-22 07:42:06 +0200 (So, 22 Apr 2007) | 1 line
+r9065 | helg | 2007-04-22 07:42:06 +0200 (So, 22. Apr 2007) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/client/core/Player.java
    M /trunk/java/src/ggz/common/PlayerType.java
@@ -268,7 +290,7 @@ Geänderte Pfade:
 
 Players are now sorted by type in preference to name.
 ------------------------------------------------------------------------
-r9005 | josef | 2007-03-22 10:53:59 +0100 (Do, 22 Mär 2007) | 5 lines
+r9005 | josef | 2007-03-22 10:53:59 +0100 (Do, 22. Mär 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
    M /trunk/java/Makefile
@@ -280,7 +302,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9004 | helg | 2007-03-20 12:41:59 +0100 (Di, 20 Mär 2007) | 1 line
+r9004 | helg | 2007-03-20 12:41:59 +0100 (Di, 20. Mär 2007) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
    A /trunk/java/src/ggz/cards/euchre
@@ -288,7 +310,7 @@ Geänderte Pfade:
 
 Added better support for Euchre. Removed stray text_message and bids are no longer displayed as -1.
 ------------------------------------------------------------------------
-r8975 | helg | 2007-02-02 10:33:55 +0100 (Fr, 02 Feb 2007) | 1 line
+r8975 | helg | 2007-02-02 10:33:55 +0100 (Fr, 02. Feb 2007) | 1 line
 Geänderte Pfade:
    A /trunk/java/src/ggz/common/MutablePermSet.java
    A /trunk/java/src/ggz/common/Perm.java
@@ -300,7 +322,7 @@ Geänderte Pfade:
 
 Woops!
 ------------------------------------------------------------------------
-r8966 | helg | 2007-01-30 07:31:52 +0100 (Di, 30 Jan 2007) | 3 lines
+r8966 | helg | 2007-01-30 07:31:52 +0100 (Di, 30. Jan 2007) | 3 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/client/core/Net.java
    M /trunk/java/src/ggz/client/core/Player.java
@@ -321,7 +343,7 @@ Added dialog to allow admins to view and set permissions for
 logged in players. This dialog also makes it easier to kick, 
 gag and ungag players.
 ------------------------------------------------------------------------
-r8962 | helg | 2007-01-22 11:43:56 +0100 (Mo, 22 Jan 2007) | 3 lines
+r8962 | helg | 2007-01-22 11:43:56 +0100 (Mo, 22. Jan 2007) | 3 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/RoomPanel.java
 
@@ -329,7 +351,7 @@ Escape any HTML embedded in table descriptions to prevent
 JLabel from rendering it. Table descriptions need to treated
 as plain text.
 ------------------------------------------------------------------------
-r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16 Jan 2007) | 8 lines
+r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16. Jan 2007) | 8 lines
 Geänderte Pfade:
    M /trunk/community/ChangeLog
    M /trunk/docs/ChangeLog
@@ -357,7 +379,7 @@ However we have to do so since no tool seems to be able to reproduce our old for
 
 
 ------------------------------------------------------------------------
-r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16 Jan 2007) | 5 lines
+r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README.GGZ
@@ -435,33 +457,33 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8928 | helg | 2007-01-16 02:23:49 +0100 (Di, 16 Jan 2007) | 1 line
+r8928 | helg | 2007-01-16 02:23:49 +0100 (Di, 16. Jan 2007) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/spades/SpadesBidPanel.java
 
 Second attempt at fixing rendering of special Spades bids.
 ------------------------------------------------------------------------
-r8927 | helg | 2007-01-16 02:10:59 +0100 (Di, 16 Jan 2007) | 1 line
+r8927 | helg | 2007-01-16 02:10:59 +0100 (Di, 16. Jan 2007) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/PrivateChatDialog.java
 
 Bring to front should now work properly.
 ------------------------------------------------------------------------
-r8926 | helg | 2007-01-16 02:00:57 +0100 (Di, 16 Jan 2007) | 2 lines
+r8926 | helg | 2007-01-16 02:00:57 +0100 (Di, 16. Jan 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/TableLayout.java
 
 Adjusted location of bid panel so that long nicknames don't 
 obscure the bid buttons, preventing players from bidding.
 ------------------------------------------------------------------------
-r8925 | helg | 2007-01-16 01:36:17 +0100 (Di, 16 Jan 2007) | 2 lines
+r8925 | helg | 2007-01-16 01:36:17 +0100 (Di, 16. Jan 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/spades/SpadesBidPanel.java
 
 Fixed display of Spades bids that used to have a value of -1
 but now have a value of 0.
 ------------------------------------------------------------------------
-r8914 | helg | 2007-01-15 07:52:31 +0100 (Mo, 15 Jan 2007) | 3 lines
+r8914 | helg | 2007-01-15 07:52:31 +0100 (Mo, 15. Jan 2007) | 3 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/Sprite.java
    M /trunk/java/test/ggz/cards/SpriteTest.java
@@ -470,7 +492,7 @@ Fix for bug 0000093. There is no longer image corruption under Java 6. You used 
 able to "flip" an image in place (i.e. source = destination) but now you need to use
 two images.
 ------------------------------------------------------------------------
-r8912 | helg | 2007-01-15 04:25:44 +0100 (Mo, 15 Jan 2007) | 3 lines
+r8912 | helg | 2007-01-15 04:25:44 +0100 (Mo, 15. Jan 2007) | 3 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/PrivateChatDialog.java
    M /trunk/java/src/ggz/ui/messages.properties
@@ -482,13 +504,13 @@ Added checkbox to private chat window to toggle between "annoying in your face" 
 "woops, I didn't notice that message you sent 5 hours ago". Stupid Java doesn't 
 provide a mechanism to "flash" a window.
 ------------------------------------------------------------------------
-r8910 | helg | 2007-01-15 03:41:02 +0100 (Mo, 15 Jan 2007) | 1 line
+r8910 | helg | 2007-01-15 03:41:02 +0100 (Mo, 15. Jan 2007) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/RoomPanel.java
 
 Fixed layout of seats on tables for two players games.
 ------------------------------------------------------------------------
-r8909 | helg | 2007-01-15 03:32:21 +0100 (Mo, 15 Jan 2007) | 2 lines
+r8909 | helg | 2007-01-15 03:32:21 +0100 (Mo, 15. Jan 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/client/mod/ModEventHandler.java
    M /trunk/java/src/ggz/client/mod/ModGame.java
@@ -499,7 +521,7 @@ Geänderte Pfade:
 Modified TTT client to experiment with firing events on the AWT event queue rather
 than having the UI worry about which thread event handlers are called on.
 ------------------------------------------------------------------------
-r8904 | helg | 2007-01-12 16:42:26 +0100 (Fr, 12 Jan 2007) | 2 lines
+r8904 | helg | 2007-01-12 16:42:26 +0100 (Fr, 12. Jan 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/SmartChatLayout.java
    M /trunk/java/src/ggz/games/GamePanel.java
@@ -508,7 +530,7 @@ Geänderte Pfade:
 Games can now specify their preferred window size. For example, TTT doesn't need 
 as big an initial window as GGZCards.
 ------------------------------------------------------------------------
-r8903 | helg | 2007-01-12 15:38:37 +0100 (Fr, 12 Jan 2007) | 3 lines
+r8903 | helg | 2007-01-12 15:38:37 +0100 (Fr, 12. Jan 2007) | 3 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/tictactoe/BoardPanel.java
    M /trunk/java/src/ggz/tictactoe/Client.java
@@ -519,26 +541,26 @@ Improved the UI for TTT. The game is now more user friendly but I still have to 
 support for booting etc. I also have to update the core client to better render
 tables for two player games.
 ------------------------------------------------------------------------
-r8902 | helg | 2007-01-12 12:42:57 +0100 (Fr, 12 Jan 2007) | 1 line
+r8902 | helg | 2007-01-12 12:42:57 +0100 (Fr, 12. Jan 2007) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/ClientApp.java
    A /trunk/java/src/ggz/ui/images/ggz_logo_32x32.png
 
 Core client window now has GGZ logo.
 ------------------------------------------------------------------------
-r8897 | helg | 2007-01-12 03:19:40 +0100 (Fr, 12 Jan 2007) | 1 line
+r8897 | helg | 2007-01-12 03:19:40 +0100 (Fr, 12. Jan 2007) | 1 line
 Geänderte Pfade:
    D /trunk/java/src/ggz/ui/images/exclamation.png
 
 It's gone.
 ------------------------------------------------------------------------
-r8896 | helg | 2007-01-12 03:07:37 +0100 (Fr, 12 Jan 2007) | 1 line
+r8896 | helg | 2007-01-12 03:07:37 +0100 (Fr, 12. Jan 2007) | 1 line
 Geänderte Pfade:
    A /trunk/java/src/ggz/ui/images/comments_add.png
 
 Damn, checked in the wrong icon!
 ------------------------------------------------------------------------
-r8895 | helg | 2007-01-12 03:06:07 +0100 (Fr, 12 Jan 2007) | 6 lines
+r8895 | helg | 2007-01-12 03:06:07 +0100 (Fr, 12. Jan 2007) | 6 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/PrivateChatDialog.java
    M /trunk/java/src/ggz/ui/RoomChatPanel.java
@@ -551,14 +573,14 @@ works in GNOME too but for some reason the window isn't created iconified so tha
 first message still results in the focus being stolen from the current window. Subsequent
 messages simply cause the icon to blink.
 ------------------------------------------------------------------------
-r8894 | oojah | 2007-01-10 20:58:54 +0100 (Mi, 10 Jan 2007) | 2 lines
+r8894 | oojah | 2007-01-10 20:58:54 +0100 (Mi, 10. Jan 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/ClientApplet.java
 
 Default port should be 5688.
 
 ------------------------------------------------------------------------
-r8878 | josef | 2007-01-09 15:57:50 +0100 (Di, 09 Jan 2007) | 9 lines
+r8878 | josef | 2007-01-09 15:57:50 +0100 (Di, 09. Jan 2007) | 9 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/messages_de.properties
 
@@ -572,7 +594,7 @@ changes, the others are not affected.
 
 
 ------------------------------------------------------------------------
-r8876 | josef | 2007-01-09 15:14:51 +0100 (Di, 09 Jan 2007) | 5 lines
+r8876 | josef | 2007-01-09 15:14:51 +0100 (Di, 09. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/messages_de.properties
 
@@ -582,7 +604,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8873 | josef | 2007-01-09 12:51:28 +0100 (Di, 09 Jan 2007) | 5 lines
+r8873 | josef | 2007-01-09 12:51:28 +0100 (Di, 09. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/java/Makefile
 
@@ -592,7 +614,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8871 | helg | 2007-01-09 09:33:50 +0100 (Di, 09 Jan 2007) | 4 lines
+r8871 | helg | 2007-01-09 09:33:50 +0100 (Di, 09. Jan 2007) | 4 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/client/Client.java
    M /trunk/java/src/ggz/cards/common/GGZCardInputStream.java
@@ -614,7 +636,7 @@ used the KDE one as a reference but at least now Josef can sleep at night :)
 
 oh, and I know that it has bugs...
 ------------------------------------------------------------------------
-r8863 | josef | 2007-01-08 14:49:44 +0100 (Mo, 08 Jan 2007) | 5 lines
+r8863 | josef | 2007-01-08 14:49:44 +0100 (Mo, 08. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
    M /trunk/java/Makefile
@@ -625,7 +647,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8834 | helg | 2007-01-05 10:15:34 +0100 (Fr, 05 Jan 2007) | 4 lines
+r8834 | helg | 2007-01-05 10:15:34 +0100 (Fr, 05. Jan 2007) | 4 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
 
@@ -634,7 +656,7 @@ already on the card. The card under the cursor should ideally "pop up" as well b
 Java 1.4 does not provide a method to obtain the mouse cursor location (or the
 component under the mouse cursor).
 ------------------------------------------------------------------------
-r8672 | helg | 2006-11-27 05:03:08 +0100 (Mo, 27 Nov 2006) | 3 lines
+r8672 | helg | 2006-11-27 05:03:08 +0100 (Mo, 27. Nov 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/build.xml
 
@@ -642,7 +664,7 @@ Build now only generates one JAR file that can be used both as an application an
 The downside is that downloading the JAR for an applet will take slightly longer since 
 the JAR is now signed and hence larger.
 ------------------------------------------------------------------------
-r8658 | josef | 2006-11-09 21:19:09 +0100 (Do, 09 Nov 2006) | 5 lines
+r8658 | josef | 2006-11-09 21:19:09 +0100 (Do, 09. Nov 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/java/Makefile
 
@@ -652,7 +674,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8657 | josef | 2006-11-09 21:01:06 +0100 (Do, 09 Nov 2006) | 6 lines
+r8657 | josef | 2006-11-09 21:01:06 +0100 (Do, 09. Nov 2006) | 6 lines
 Geänderte Pfade:
    M /trunk/java/Makefile
    M /trunk/java/build.xml
@@ -665,7 +687,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8656 | josef | 2006-11-09 20:42:35 +0100 (Do, 09 Nov 2006) | 5 lines
+r8656 | josef | 2006-11-09 20:42:35 +0100 (Do, 09. Nov 2006) | 5 lines
 Geänderte Pfade:
    A /trunk/java/integration
    A /trunk/java/integration/ggz-java
@@ -677,7 +699,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8655 | helg | 2006-11-09 09:31:11 +0100 (Do, 09 Nov 2006) | 3 lines
+r8655 | helg | 2006-11-09 09:31:11 +0100 (Do, 09. Nov 2006) | 3 lines
 Geänderte Pfade:
    A /trunk/java/help/emoticon_kiss.png
    M /trunk/java/help/help.html
@@ -691,7 +713,7 @@ Fixed bug when toggling between single and double clicking to play card.
 Added kiss emoticon.
 Checked in oojah's changes to help (downloaded from g.g.o).
 ------------------------------------------------------------------------
-r8654 | josef | 2006-11-09 09:02:33 +0100 (Do, 09 Nov 2006) | 5 lines
+r8654 | josef | 2006-11-09 09:02:33 +0100 (Do, 09. Nov 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/java/src
 
@@ -701,7 +723,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8653 | josef | 2006-11-09 08:53:29 +0100 (Do, 09 Nov 2006) | 5 lines
+r8653 | josef | 2006-11-09 08:53:29 +0100 (Do, 09. Nov 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/java
 
@@ -711,7 +733,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8650 | josef | 2006-11-09 06:52:41 +0100 (Do, 09 Nov 2006) | 5 lines
+r8650 | josef | 2006-11-09 06:52:41 +0100 (Do, 09. Nov 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/java/nosvn-build.xml
 
@@ -721,7 +743,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8645 | josef | 2006-11-08 02:24:53 +0100 (Mi, 08 Nov 2006) | 5 lines
+r8645 | josef | 2006-11-08 02:24:53 +0100 (Mi, 08. Nov 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/java/Makefile
 
@@ -731,7 +753,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8644 | josef | 2006-11-08 01:13:08 +0100 (Mi, 08 Nov 2006) | 7 lines
+r8644 | josef | 2006-11-08 01:13:08 +0100 (Mi, 08. Nov 2006) | 7 lines
 Geänderte Pfade:
    A /trunk/java/MANIFEST.MF
    A /trunk/java/Makefile
@@ -745,7 +767,7 @@ This is a somewhat intermediate build system addition. I expect the makefile to 
 
 
 ------------------------------------------------------------------------
-r8627 | helg | 2006-10-25 08:37:04 +0200 (Mi, 25 Okt 2006) | 4 lines
+r8627 | helg | 2006-10-25 08:37:04 +0200 (Mi, 25. Okt 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
    M /trunk/java/src/ggz/cards/GGZCardsPreferencesTab.java
@@ -765,7 +787,7 @@ Modified Module handling to simplify it and remove baggage inherited from C port
 Module support now only checks protocol engine and version and matches on the start of the game name to make it easier to add games on the server.
 
 ------------------------------------------------------------------------
-r8624 | josef | 2006-10-12 15:44:43 +0200 (Do, 12 Okt 2006) | 3 lines
+r8624 | josef | 2006-10-12 15:44:43 +0200 (Do, 12. Okt 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/messages_de.properties
 
@@ -773,13 +795,13 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8621 | helg | 2006-10-10 13:24:32 +0200 (Di, 10 Okt 2006) | 1 line
+r8621 | helg | 2006-10-10 13:24:32 +0200 (Di, 10. Okt 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/RoomPanel.java
 
 Fixed bug where new game button sometimes remains disabled when entering a room.
 ------------------------------------------------------------------------
-r8571 | helg | 2006-09-06 11:46:57 +0200 (Mi, 06 Sep 2006) | 1 line
+r8571 | helg | 2006-09-06 11:46:57 +0200 (Mi, 06. Sep 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
    M /trunk/java/src/ggz/cards/client/CardGameHandler.java
@@ -790,7 +812,7 @@ Geänderte Pfade:
 
 Added support for version 17 of GGZCards protocol.
 ------------------------------------------------------------------------
-r8566 | helg | 2006-09-01 14:11:23 +0200 (Fr, 01 Sep 2006) | 1 line
+r8566 | helg | 2006-09-01 14:11:23 +0200 (Fr, 01. Sep 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
    M /trunk/java/src/ggz/cards/Sprite.java
@@ -804,7 +826,7 @@ Geänderte Pfade:
 
 Fixed Bridge bidding.
 ------------------------------------------------------------------------
-r8562 | helg | 2006-08-31 11:35:08 +0200 (Do, 31 Aug 2006) | 2 lines
+r8562 | helg | 2006-08-31 11:35:08 +0200 (Do, 31. Aug 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/BidPanel.java
    M /trunk/java/src/ggz/cards/CardGamePanel.java
@@ -819,7 +841,7 @@ Geänderte Pfade:
 Modified client to interpret NO_VALUE ane NO_SUIT properly.
 Updated client to sync state on MSG_PLAYERS_STATUS so bid panel doesn't appear when joining mid game.
 ------------------------------------------------------------------------
-r8560 | helg | 2006-08-31 09:39:40 +0200 (Do, 31 Aug 2006) | 2 lines
+r8560 | helg | 2006-08-31 09:39:40 +0200 (Do, 31. Aug 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
    M /trunk/java/src/ggz/cards/client/Client.java
@@ -830,7 +852,7 @@ Geänderte Pfade:
 Add support for reading extra score information.
 
 ------------------------------------------------------------------------
-r8557 | helg | 2006-08-31 08:28:43 +0200 (Do, 31 Aug 2006) | 4 lines
+r8557 | helg | 2006-08-31 08:28:43 +0200 (Do, 31. Aug 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/BidPanel.java
    M /trunk/java/src/ggz/cards/CardGamePanel.java
@@ -848,13 +870,13 @@ Removed custom Spades UI and folded custom logic into the generic UI based on
 the game type notified by the server.
 Fixed/changed a few other bits and pieces.
 ------------------------------------------------------------------------
-r8555 | helg | 2006-08-31 04:27:56 +0200 (Do, 31 Aug 2006) | 1 line
+r8555 | helg | 2006-08-31 04:27:56 +0200 (Do, 31. Aug 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/client/core/Module.java
 
 Updated supported protocol version for GGZCards client.
 ------------------------------------------------------------------------
-r8554 | oojah | 2006-08-31 01:54:49 +0200 (Do, 31 Aug 2006) | 3 lines
+r8554 | oojah | 2006-08-31 01:54:49 +0200 (Do, 31. Aug 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/images/human.gif
 
@@ -862,7 +884,7 @@ Removed brain from human.
 
 Now there's a good commit entry.
 ------------------------------------------------------------------------
-r8553 | helg | 2006-08-30 09:41:11 +0200 (Mi, 30 Aug 2006) | 2 lines
+r8553 | helg | 2006-08-30 09:41:11 +0200 (Mi, 30. Aug 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/TODO.txt
    M /trunk/java/src/ggz/cards/BidPanel.java
@@ -887,7 +909,7 @@ Geänderte Pfade:
 Added support for latest GGZCards protocol changes. 
 Custom game message for Spades is ignored.
 ------------------------------------------------------------------------
-r8517 | helg | 2006-08-16 16:21:49 +0200 (Mi, 16 Aug 2006) | 1 line
+r8517 | helg | 2006-08-16 16:21:49 +0200 (Mi, 16. Aug 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
    M /trunk/java/src/ggz/cards/TableLayout.java
@@ -895,13 +917,13 @@ Geänderte Pfade:
 
 Improved layout of cards; hidden hands now have a small, fixed gap.
 ------------------------------------------------------------------------
-r8516 | helg | 2006-08-16 14:50:11 +0200 (Mi, 16 Aug 2006) | 1 line
+r8516 | helg | 2006-08-16 14:50:11 +0200 (Mi, 16. Aug 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/spades/SpadesGamePanel.java
 
 Changed text from Bidding or Playing to just Thinking since the Spades client can't accurately determine the state the game is in.
 ------------------------------------------------------------------------
-r8514 | helg | 2006-08-15 11:26:44 +0200 (Di, 15 Aug 2006) | 4 lines
+r8514 | helg | 2006-08-15 11:26:44 +0200 (Di, 15. Aug 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/client/core/Net.java
    M /trunk/java/src/ggz/client/core/Server.java
@@ -916,7 +938,7 @@ Removed race condition when joining and then leaving a room
 immediately. This can sometimes happen when server is on same machine as client.
 
 ------------------------------------------------------------------------
-r8513 | helg | 2006-08-15 07:25:54 +0200 (Di, 15 Aug 2006) | 3 lines
+r8513 | helg | 2006-08-15 07:25:54 +0200 (Di, 15. Aug 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/build.xml
    M /trunk/java/src/ggz/cards/spades/SpadesGamePanel.java
@@ -926,7 +948,7 @@ Changed Build # to SVN Revision in about box (didn't I already do this?)
 Fixed layout bug in Chat Preferences when running on Blackdown JVM on Linux.
 Removed unused variable.
 ------------------------------------------------------------------------
-r8512 | helg | 2006-08-14 13:15:12 +0200 (Mo, 14 Aug 2006) | 3 lines
+r8512 | helg | 2006-08-14 13:15:12 +0200 (Mo, 14. Aug 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
    M /trunk/java/src/ggz/cards/GGZCardsPreferencesTab.java
@@ -940,7 +962,7 @@ Added option to beep on your turn.
 Moved links off the table area and into a "menu bar".
 Options are now shown in a dialog rather than a tooltip.
 ------------------------------------------------------------------------
-r8509 | helg | 2006-08-14 09:19:32 +0200 (Mo, 14 Aug 2006) | 2 lines
+r8509 | helg | 2006-08-14 09:19:32 +0200 (Mo, 14. Aug 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/build.xml
    M /trunk/java/src/ggz/cards/GGZCardsPreferencesTab.java
@@ -952,7 +974,7 @@ Geänderte Pfade:
 Fixed two few memory leaks.
 Minor build file edit.
 ------------------------------------------------------------------------
-r8505 | helg | 2006-08-08 12:28:01 +0200 (Di, 08 Aug 2006) | 3 lines
+r8505 | helg | 2006-08-08 12:28:01 +0200 (Di, 08. Aug 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
    M /trunk/java/src/ggz/cards/client/CardGameHandler.java
@@ -978,14 +1000,14 @@ Added support for dynamic room add and remove.
 Changed label from 'Build #' to 'SVN Revision' in the about box.
 Some incomplete stuff in card client.
 ------------------------------------------------------------------------
-r8497 | helg | 2006-08-08 08:24:18 +0200 (Di, 08 Aug 2006) | 1 line
+r8497 | helg | 2006-08-08 08:24:18 +0200 (Di, 08. Aug 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/build.xml
    M /trunk/java/ggz-java.properties
 
 
 ------------------------------------------------------------------------
-r8496 | helg | 2006-08-08 07:29:23 +0200 (Di, 08 Aug 2006) | 1 line
+r8496 | helg | 2006-08-08 07:29:23 +0200 (Di, 08. Aug 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/README.txt
    D /trunk/java/build.number
@@ -994,32 +1016,32 @@ Geänderte Pfade:
 
 More build shenanigans.
 ------------------------------------------------------------------------
-r8495 | helg | 2006-08-08 06:30:52 +0200 (Di, 08 Aug 2006) | 1 line
+r8495 | helg | 2006-08-08 06:30:52 +0200 (Di, 08. Aug 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
    M /trunk/java/src/version.properties
 
 Test to see if the root java directory revision changes.
 ------------------------------------------------------------------------
-r8494 | helg | 2006-08-08 05:03:16 +0200 (Di, 08 Aug 2006) | 1 line
+r8494 | helg | 2006-08-08 05:03:16 +0200 (Di, 08. Aug 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/build.number
 
 Experimenting with $Revision$ build.number file.
 ------------------------------------------------------------------------
-r8491 | jdorje | 2006-08-07 20:42:59 +0200 (Mo, 07 Aug 2006) | 1 line
+r8491 | jdorje | 2006-08-07 20:42:59 +0200 (Mo, 07. Aug 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java
 
 svn:ignore manifest directory.
 ------------------------------------------------------------------------
-r8490 | jdorje | 2006-08-07 17:01:00 +0200 (Mo, 07 Aug 2006) | 1 line
+r8490 | jdorje | 2006-08-07 17:01:00 +0200 (Mo, 07. Aug 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/build.number
 
 Enable keyword substitution on build.number.
 ------------------------------------------------------------------------
-r8489 | helg | 2006-08-07 16:20:00 +0200 (Mo, 07 Aug 2006) | 2 lines
+r8489 | helg | 2006-08-07 16:20:00 +0200 (Mo, 07. Aug 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
    M /trunk/java/src/ggz/cards/client/CardGameHandler.java
@@ -1037,7 +1059,7 @@ Geänderte Pfade:
 Updated GGZCards client to support DIO and latest protocol changes.
 It doesn't do anything with the new information yet but at least it doesn't barf.
 ------------------------------------------------------------------------
-r8484 | helg | 2006-08-07 11:14:58 +0200 (Mo, 07 Aug 2006) | 1 line
+r8484 | helg | 2006-08-07 11:14:58 +0200 (Mo, 07. Aug 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/client/core/Net.java
    M /trunk/java/src/ggz/client/core/Room.java
@@ -1050,14 +1072,14 @@ Geänderte Pfade:
 
 Initial admin command support.
 ------------------------------------------------------------------------
-r8483 | helg | 2006-08-07 09:52:25 +0200 (Mo, 07 Aug 2006) | 1 line
+r8483 | helg | 2006-08-07 09:52:25 +0200 (Mo, 07. Aug 2006) | 1 line
 Geänderte Pfade:
    A /trunk/java/src/ggz/client/mod/ModGGZ.java
    A /trunk/java/src/ggz/client/mod/ModGame.java
 
 Missed two files.
 ------------------------------------------------------------------------
-r8482 | helg | 2006-08-07 09:49:12 +0200 (Mo, 07 Aug 2006) | 3 lines
+r8482 | helg | 2006-08-07 09:49:12 +0200 (Mo, 07. Aug 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/cards/CardGamePanel.java
@@ -1105,7 +1127,7 @@ Loads of stuff, mainly to do with the Mod. The core client <-> game client inter
 should be more robust and Java <-> non-java core client and game client launching 
 is about %90 compatible.
 ------------------------------------------------------------------------
-r8397 | helg | 2006-07-23 12:18:35 +0200 (So, 23 Jul 2006) | 1 line
+r8397 | helg | 2006-07-23 12:18:35 +0200 (So, 23. Jul 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/ui/ChatPanel.java
@@ -1113,7 +1135,7 @@ Geänderte Pfade:
 
 Fixed ignore bug.
 ------------------------------------------------------------------------
-r8387 | helg | 2006-07-22 12:12:28 +0200 (Sa, 22 Jul 2006) | 2 lines
+r8387 | helg | 2006-07-22 12:12:28 +0200 (Sa, 22. Jul 2006) | 2 lines
 Geänderte Pfade:
    A /trunk/java/help/emoticon_evilgrin.png
    A /trunk/java/help/emoticon_grin.png
@@ -1134,7 +1156,7 @@ Geänderte Pfade:
 Added emoticons to help file.
 Various code improvements.
 ------------------------------------------------------------------------
-r8380 | helg | 2006-07-21 07:54:01 +0200 (Fr, 21 Jul 2006) | 1 line
+r8380 | helg | 2006-07-21 07:54:01 +0200 (Fr, 21. Jul 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/client/core/Game.java
@@ -1153,7 +1175,7 @@ Geänderte Pfade:
 
 Various code "improvements".
 ------------------------------------------------------------------------
-r8364 | helg | 2006-07-17 07:25:44 +0200 (Mo, 17 Jul 2006) | 2 lines
+r8364 | helg | 2006-07-17 07:25:44 +0200 (Mo, 17. Jul 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/build.xml
    M /trunk/java/src/ggz/ui/AboutDialog.java
@@ -1163,7 +1185,7 @@ Geänderte Pfade:
 Added Credits tab to About box.
 Escape key now closes dialogs.
 ------------------------------------------------------------------------
-r8363 | helg | 2006-07-17 03:02:15 +0200 (Mo, 17 Jul 2006) | 2 lines
+r8363 | helg | 2006-07-17 03:02:15 +0200 (Mo, 17. Jul 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/ChatPanel.java
    M /trunk/java/src/ggz/ui/PrivateChatDialog.java
@@ -1171,7 +1193,7 @@ Geänderte Pfade:
 Private chat window was still popping up when a PM was received from an ignored
 player. The chat didn't show the message but the window shouldn't have appeared.
 ------------------------------------------------------------------------
-r8360 | helg | 2006-07-14 12:26:31 +0200 (Fr, 14 Jul 2006) | 4 lines
+r8360 | helg | 2006-07-14 12:26:31 +0200 (Fr, 14. Jul 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/edu/stanford/ejalbert/BrowserLauncher.java
@@ -1240,7 +1262,7 @@ All chat fonts are now customisable.
 A few code cleanups based on Eclipse compiler warnings.
 Added empty seat icon.
 ------------------------------------------------------------------------
-r8351 | helg | 2006-07-11 06:52:47 +0200 (Di, 11 Jul 2006) | 2 lines
+r8351 | helg | 2006-07-11 06:52:47 +0200 (Di, 11. Jul 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/ui/ChatPanel.java
@@ -1253,7 +1275,7 @@ Geänderte Pfade:
 Added support for emoticons.
 Added more colour preferences but they're going to change.
 ------------------------------------------------------------------------
-r8344 | helg | 2006-07-10 09:59:55 +0200 (Mo, 10 Jul 2006) | 1 line
+r8344 | helg | 2006-07-10 09:59:55 +0200 (Mo, 10. Jul 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/cards/CardGamePanel.java
@@ -1262,7 +1284,7 @@ Geänderte Pfade:
 
 Added icon for unoccupied seats.
 ------------------------------------------------------------------------
-r8343 | helg | 2006-07-10 08:40:30 +0200 (Mo, 10 Jul 2006) | 1 line
+r8343 | helg | 2006-07-10 08:40:30 +0200 (Mo, 10. Jul 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
    M /trunk/java/src/ggz/ui/LoginPanel.java
@@ -1273,7 +1295,7 @@ Geänderte Pfade:
 
 Added "Remember nickname" checkbox to login.
 ------------------------------------------------------------------------
-r8342 | helg | 2006-07-10 06:07:35 +0200 (Mo, 10 Jul 2006) | 10 lines
+r8342 | helg | 2006-07-10 06:07:35 +0200 (Mo, 10. Jul 2006) | 10 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    A /trunk/java/help/beep.png
@@ -1312,7 +1334,7 @@ Added password confirm field when registering new player.
 Private chat window now comes to front when a new message is received.
 
 ------------------------------------------------------------------------
-r8329 | helg | 2006-07-07 04:47:35 +0200 (Fr, 07 Jul 2006) | 4 lines
+r8329 | helg | 2006-07-07 04:47:35 +0200 (Fr, 07. Jul 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/client/core/Room.java
    M /trunk/java/src/ggz/client/core/Server.java
@@ -1323,7 +1345,7 @@ the scrollbar arrows scrolls a 'line' at at time.
 Server state is fully reset on logout. This should prevent state related errors
 after logging in again after an error has occurred.
 ------------------------------------------------------------------------
-r8326 | helg | 2006-07-06 13:08:03 +0200 (Do, 06 Jul 2006) | 2 lines
+r8326 | helg | 2006-07-06 13:08:03 +0200 (Do, 06. Jul 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/TODO.txt
    M /trunk/java/build.number
@@ -1343,7 +1365,7 @@ Geänderte Pfade:
 Changed colours back (Windows 3.1 seems to be the look they like)
 Added support for E_USR_TAKEN (untested)
 ------------------------------------------------------------------------
-r8325 | helg | 2006-07-06 03:21:04 +0200 (Do, 06 Jul 2006) | 4 lines
+r8325 | helg | 2006-07-06 03:21:04 +0200 (Do, 06. Jul 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/java/TODO.txt
    M /trunk/java/build.number
@@ -1370,7 +1392,7 @@ cards spin, the gap between cards and whether the slot is closed when cards are
 played.
 New colour scheme for card games.
 ------------------------------------------------------------------------
-r8319 | helg | 2006-07-05 07:48:57 +0200 (Mi, 05 Jul 2006) | 2 lines
+r8319 | helg | 2006-07-05 07:48:57 +0200 (Mi, 05. Jul 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/ui/ChatPanel.java
@@ -1381,7 +1403,7 @@ Geänderte Pfade:
 Chat font preferences are now also used for the chat input field.
 Labels along the bottom of the applet now use regular sized font.
 ------------------------------------------------------------------------
-r8309 | helg | 2006-07-04 09:37:19 +0200 (Di, 04 Jul 2006) | 3 lines
+r8309 | helg | 2006-07-04 09:37:19 +0200 (Di, 04. Jul 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/cards/BidPanel.java
@@ -1405,7 +1427,7 @@ Added new Host player type.
 Added buttons below player list that make it easy to initiate private chat, beep, ignore and add to friends.
 
 ------------------------------------------------------------------------
-r8307 | helg | 2006-07-04 01:54:13 +0200 (Di, 04 Jul 2006) | 2 lines
+r8307 | helg | 2006-07-04 01:54:13 +0200 (Di, 04. Jul 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/client/core/Server.java
@@ -1443,7 +1465,7 @@ Geänderte Pfade:
 Added support for new login errors.
 Added preferences mechanism with initial support for customizable chat font.
 ------------------------------------------------------------------------
-r8301 | oojah | 2006-07-03 12:34:08 +0200 (Mo, 03 Jul 2006) | 3 lines
+r8301 | oojah | 2006-07-03 12:34:08 +0200 (Mo, 03. Jul 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/images/spades.gif
 
@@ -1451,7 +1473,7 @@ Centred the spades image.
 
 I am planning on making a nicer one in the future.
 ------------------------------------------------------------------------
-r8293 | helg | 2006-06-30 06:53:12 +0200 (Fr, 30 Jun 2006) | 7 lines
+r8293 | helg | 2006-06-30 06:53:12 +0200 (Fr, 30. Jun 2006) | 7 lines
 Geänderte Pfade:
    M /trunk/java/TODO.txt
    M /trunk/java/help.html
@@ -1475,7 +1497,7 @@ Fixed minor layout problem with rooms.
 Changed "Back to Main Lobby" to say "Back to {room[0].name}" so that it always
 refelects the Entry Room name as specified on the server.
 ------------------------------------------------------------------------
-r8292 | helg | 2006-06-29 07:55:46 +0200 (Do, 29 Jun 2006) | 2 lines
+r8292 | helg | 2006-06-29 07:55:46 +0200 (Do, 29. Jun 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/ui/LoungePanel.java
@@ -1485,7 +1507,7 @@ Geänderte Pfade:
 Added row highlighting to room list.
 Added splitter so you can resize chat area.
 ------------------------------------------------------------------------
-r8290 | helg | 2006-06-29 03:07:27 +0200 (Do, 29 Jun 2006) | 3 lines
+r8290 | helg | 2006-06-29 03:07:27 +0200 (Do, 29. Jun 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/client/core/Server.java
@@ -1500,7 +1522,7 @@ Added text notification when other players leave or enter the room.
 Added message box that asks you if you want to join a table if a seat has been
 reserved for you.
 ------------------------------------------------------------------------
-r8286 | helg | 2006-06-28 08:44:19 +0200 (Mi, 28 Jun 2006) | 3 lines
+r8286 | helg | 2006-06-28 08:44:19 +0200 (Mi, 28. Jun 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/help.html
    M /trunk/java/src/ggz/client/core/Net.java
@@ -1513,7 +1535,7 @@ Added total count of players. This count only shows the total of players in room
 which a supported game is found so that the count of players in the rooms shown in
 the applet matches the total displayed.
 ------------------------------------------------------------------------
-r8285 | helg | 2006-06-28 04:12:35 +0200 (Mi, 28 Jun 2006) | 3 lines
+r8285 | helg | 2006-06-28 04:12:35 +0200 (Mi, 28. Jun 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/client/core/Net.java
@@ -1531,7 +1553,7 @@ Made some minor changes to the core client so that events pass the data that has
 changed rather then room ids or players names.
 Tweaked the locking on the list of players maintained by the Room object.
 ------------------------------------------------------------------------
-r8284 | helg | 2006-06-28 04:12:23 +0200 (Mi, 28 Jun 2006) | 3 lines
+r8284 | helg | 2006-06-28 04:12:23 +0200 (Mi, 28. Jun 2006) | 3 lines
 Geänderte Pfade:
    A /trunk/java/test/ggz/common
 
@@ -1539,7 +1561,7 @@ Made some minor changes to the core client so that events pass the data that has
 changed rather then room ids or players names.
 Tweaked the locking on the list of players maintained by the Room object.
 ------------------------------------------------------------------------
-r8276 | helg | 2006-06-27 08:26:53 +0200 (Di, 27 Jun 2006) | 7 lines
+r8276 | helg | 2006-06-27 08:26:53 +0200 (Di, 27. Jun 2006) | 7 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/spades/SpadesGamePanel.java
    M /trunk/java/src/ggz/client/core/Net.java
@@ -1558,7 +1580,7 @@ after the </SESSION> tag.
 Added locking to Room class so that one thread isn't iterating over players while
 another updates them.
 ------------------------------------------------------------------------
-r8274 | helg | 2006-06-26 13:41:44 +0200 (Mo, 26 Jun 2006) | 5 lines
+r8274 | helg | 2006-06-26 13:41:44 +0200 (Mo, 26. Jun 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/client/core/Game.java
@@ -1576,7 +1598,7 @@ by the applet.
 Fixed SeatAllocationDialog so that it doesn't throw exceptions when bots are not
 enabled for a game.
 ------------------------------------------------------------------------
-r8272 | helg | 2006-06-26 10:47:13 +0200 (Mo, 26 Jun 2006) | 2 lines
+r8272 | helg | 2006-06-26 10:47:13 +0200 (Mo, 26. Jun 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/cards/CardGamePanel.java
@@ -1586,7 +1608,7 @@ Geänderte Pfade:
 Changed tooltip text for Last Trick and Previous Hand buttons.
 Removed Rating column from player list at Tina's request "people dont like to feel ike they suck".
 ------------------------------------------------------------------------
-r8271 | helg | 2006-06-26 09:19:41 +0200 (Mo, 26 Jun 2006) | 1 line
+r8271 | helg | 2006-06-26 09:19:41 +0200 (Mo, 26. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/CardGamePanel.java
    M /trunk/java/src/ggz/cards/TableLayout.java
@@ -1600,7 +1622,7 @@ Geänderte Pfade:
 
 Added view last hand to the GGZ Cards Java client.
 ------------------------------------------------------------------------
-r8270 | helg | 2006-06-26 02:18:43 +0200 (Mo, 26 Jun 2006) | 2 lines
+r8270 | helg | 2006-06-26 02:18:43 +0200 (Mo, 26. Jun 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/ggz-java.properties
@@ -1615,7 +1637,7 @@ Geänderte Pfade:
 Changed private chat window to a JFrame so that it can be minimised, is not always on top and appears on the task bar.
 The number of players in the room is now displayed.
 ------------------------------------------------------------------------
-r8268 | helg | 2006-06-25 13:39:27 +0200 (So, 25 Jun 2006) | 7 lines
+r8268 | helg | 2006-06-25 13:39:27 +0200 (So, 25. Jun 2006) | 7 lines
 Geänderte Pfade:
    A /trunk/java/src/ggz/client/core/PrivateChatDialog.java
    M /trunk/java/src/ggz/client/mod/ModEventHandler.java
@@ -1633,7 +1655,7 @@ player changes rooms and you can continue chatting.
 Removed /table command so that table chat can be echoed locally
 when playing a game. This was pretty redundant.
 ------------------------------------------------------------------------
-r8266 | helg | 2006-06-24 11:53:10 +0200 (Sa, 24 Jun 2006) | 11 lines
+r8266 | helg | 2006-06-24 11:53:10 +0200 (Sa, 24. Jun 2006) | 11 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/build.xml
@@ -1668,7 +1690,7 @@ cache problems.
 Bidding grid cells now use theme font.
 Changed a few labels in the seat allocation dialog.
 ------------------------------------------------------------------------
-r8258 | helg | 2006-06-23 06:52:26 +0200 (Fr, 23 Jun 2006) | 6 lines
+r8258 | helg | 2006-06-23 06:52:26 +0200 (Fr, 23. Jun 2006) | 6 lines
 Geänderte Pfade:
    M /trunk/java/ggz-java.properties
    M /trunk/java/src/ggz/cards/CardGamePanel.java
@@ -1690,7 +1712,7 @@ text for the table description. I'm sure we'll have to revisit
 this again. We also have to find a better solution for
 displaying the spectators.
 ------------------------------------------------------------------------
-r8253 | helg | 2006-06-22 10:44:17 +0200 (Do, 22 Jun 2006) | 1 line
+r8253 | helg | 2006-06-22 10:44:17 +0200 (Do, 22. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/ui/ClientApplet.java
@@ -1700,7 +1722,7 @@ Geänderte Pfade:
 
 Changed logind dialog (broken in a different way now)
 ------------------------------------------------------------------------
-r8252 | helg | 2006-06-22 10:19:21 +0200 (Do, 22 Jun 2006) | 1 line
+r8252 | helg | 2006-06-22 10:19:21 +0200 (Do, 22. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/ggz-java.properties
@@ -1717,7 +1739,7 @@ Geänderte Pfade:
 
 Forgot to check in some files.
 ------------------------------------------------------------------------
-r8244 | helg | 2006-06-22 06:26:02 +0200 (Do, 22 Jun 2006) | 2 lines
+r8244 | helg | 2006-06-22 06:26:02 +0200 (Do, 22. Jun 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/ggz-java.properties
@@ -1742,7 +1764,7 @@ Geänderte Pfade:
 Added Spades specific Game UI.
 Fixed a few odd bugs.
 ------------------------------------------------------------------------
-r8229 | helg | 2006-06-20 15:14:11 +0200 (Di, 20 Jun 2006) | 2 lines
+r8229 | helg | 2006-06-20 15:14:11 +0200 (Di, 20. Jun 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/cards/BidPanel.java
@@ -1767,7 +1789,7 @@ Geänderte Pfade:
 You can now choose which seat you want to sit in when joining.
 Handle field limits entry to 16 characters.
 ------------------------------------------------------------------------
-r8216 | helg | 2006-06-19 15:09:14 +0200 (Mo, 19 Jun 2006) | 3 lines
+r8216 | helg | 2006-06-19 15:09:14 +0200 (Mo, 19. Jun 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/cards/CardGamePanel.java
@@ -1778,7 +1800,7 @@ Fixed thread sleep bug for delay to show cards at end of trick.
 Removed filter so that any player can now be selected when
 reserving seats.
 ------------------------------------------------------------------------
-r8215 | helg | 2006-06-19 14:22:02 +0200 (Mo, 19 Jun 2006) | 1 line
+r8215 | helg | 2006-06-19 14:22:02 +0200 (Mo, 19. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/ClientApplet.java
    D /trunk/java/src/ggz/ui/images/watermark.gif
@@ -1786,7 +1808,7 @@ Geänderte Pfade:
 
 Changed the clown watermark to the GGZ dice.
 ------------------------------------------------------------------------
-r8213 | helg | 2006-06-19 13:27:07 +0200 (Mo, 19 Jun 2006) | 2 lines
+r8213 | helg | 2006-06-19 13:27:07 +0200 (Mo, 19. Jun 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/bridge/BridgeBidPanel.java
    M /trunk/java/src/ggz/ui/ClientApplet.java
@@ -1794,13 +1816,13 @@ Geänderte Pfade:
 Bridge bid buttons are now not displayed to spectators.
 Applet defaults back to live.ggzgamingzone.org again.
 ------------------------------------------------------------------------
-r8212 | helg | 2006-06-19 12:12:23 +0200 (Mo, 19 Jun 2006) | 1 line
+r8212 | helg | 2006-06-19 12:12:23 +0200 (Mo, 19. Jun 2006) | 1 line
 Geänderte Pfade:
    A /trunk/java/src/ggz/cards/BidPanel.java
 
 Forgot to add BidPanel.java
 ------------------------------------------------------------------------
-r8211 | helg | 2006-06-19 11:51:54 +0200 (Mo, 19 Jun 2006) | 3 lines
+r8211 | helg | 2006-06-19 11:51:54 +0200 (Mo, 19. Jun 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/client/core/Module.java
@@ -1811,7 +1833,7 @@ Added support for WebMOTD (affects login performance somewhat though).
 Added custom game type for oojah's server.
 
 ------------------------------------------------------------------------
-r8210 | helg | 2006-06-19 09:40:24 +0200 (Mo, 19 Jun 2006) | 3 lines
+r8210 | helg | 2006-06-19 09:40:24 +0200 (Mo, 19. Jun 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/cards/CardGamePanel.java
@@ -1832,7 +1854,7 @@ Added display of other player's bids during bidding.
 Removed "Stand" button.
 Applet now supports MOTD URL. The downside of this change is that it can take slightly longer to log in while the URL is loaded etc.
 ------------------------------------------------------------------------
-r8204 | helg | 2006-06-16 16:36:01 +0200 (Fr, 16 Jun 2006) | 10 lines
+r8204 | helg | 2006-06-16 16:36:01 +0200 (Fr, 16. Jun 2006) | 10 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/cards/CardGamePanel.java
@@ -1865,7 +1887,7 @@ Core client now sends errors to game via Mod so that the game
 can show a message dialog when a reseat operation is not permitted
 or fails for some other reason.
 ------------------------------------------------------------------------
-r8203 | helg | 2006-06-16 11:39:27 +0200 (Fr, 16 Jun 2006) | 3 lines
+r8203 | helg | 2006-06-16 11:39:27 +0200 (Fr, 16. Jun 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/cards/CardGamePanel.java
@@ -1876,7 +1898,7 @@ Added right click popup menu to "south" seat.
 Join button is now disabled on tables if a seat is not reserved
 for you - it used to let you join any table with reserved seats.
 ------------------------------------------------------------------------
-r8202 | helg | 2006-06-16 10:04:04 +0200 (Fr, 16 Jun 2006) | 2 lines
+r8202 | helg | 2006-06-16 10:04:04 +0200 (Fr, 16. Jun 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/cards/CardGamePanel.java
@@ -1890,7 +1912,7 @@ Geänderte Pfade:
 Created a custom LayoutManager so that tables are not stretched
 when the window is resized.
 ------------------------------------------------------------------------
-r8199 | helg | 2006-06-16 07:21:20 +0200 (Fr, 16 Jun 2006) | 4 lines
+r8199 | helg | 2006-06-16 07:21:20 +0200 (Fr, 16. Jun 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/build.xml
@@ -1908,7 +1930,7 @@ anymore and instead has "buttons" for each table. This should
 make it easier for dummies to join and spectate. Looks nicer
 too but it of course needs more work to be truly great.
 ------------------------------------------------------------------------
-r8194 | helg | 2006-06-14 18:23:47 +0200 (Mi, 14 Jun 2006) | 7 lines
+r8194 | helg | 2006-06-14 18:23:47 +0200 (Mi, 14. Jun 2006) | 7 lines
 Geänderte Pfade:
    M /trunk/java/TODO.txt
    M /trunk/java/build.number
@@ -1934,7 +1956,7 @@ Added right click popup menu for moving seats while playing
 a game.
 Some minor tweaks.
 ------------------------------------------------------------------------
-r8187 | helg | 2006-06-13 16:09:53 +0200 (Di, 13 Jun 2006) | 4 lines
+r8187 | helg | 2006-06-13 16:09:53 +0200 (Di, 13. Jun 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/cards/CardGamePanel.java
@@ -1959,7 +1981,7 @@ When reserving a seat, the player who the seat is reserved for is now shown in t
 Chat now scrolls properly in all cases.
 You now get notified when you receive a private message. It's still not great but at least you can now know that it's a private message. In the long term, you'll get a private chat window.
 ------------------------------------------------------------------------
-r8147 | helg | 2006-06-09 11:37:21 +0200 (Fr, 09 Jun 2006) | 1 line
+r8147 | helg | 2006-06-09 11:37:21 +0200 (Fr, 09. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/cards/TableLayout.java
@@ -1967,7 +1989,7 @@ Geänderte Pfade:
 
 Increased the card gap by 2 pixels.
 ------------------------------------------------------------------------
-r8144 | helg | 2006-06-09 03:52:31 +0200 (Fr, 09 Jun 2006) | 4 lines
+r8144 | helg | 2006-06-09 03:52:31 +0200 (Fr, 09. Jun 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/src/ggz/cards/CardGamePanel.java
@@ -1980,7 +2002,7 @@ for Spades using DN.
 Moved last trick tracking out of CardPanel and into CardClient.
 Put rounded corners on last trick icon.
 ------------------------------------------------------------------------
-r8135 | helg | 2006-06-08 13:51:11 +0200 (Do, 08 Jun 2006) | 3 lines
+r8135 | helg | 2006-06-08 13:51:11 +0200 (Do, 08. Jun 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/client/core/Player.java
    A /trunk/java/src/ggz/ui/IconFactory.java
@@ -1992,7 +2014,7 @@ Added icons to player combo in seat allocation dialog.
 Limited players in combo to bots, admins and registered players.
 
 ------------------------------------------------------------------------
-r8132 | helg | 2006-06-08 04:42:06 +0200 (Do, 08 Jun 2006) | 3 lines
+r8132 | helg | 2006-06-08 04:42:06 +0200 (Do, 08. Jun 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/TODO.txt
    M /trunk/java/build.number
@@ -2008,7 +2030,7 @@ You can now view last trick in GGZ Cards games.
 Seat reservation dialog now allows you to reserve seats.
 Card sorting has been improved.
 ------------------------------------------------------------------------
-r8124 | helg | 2006-06-07 15:11:08 +0200 (Mi, 07 Jun 2006) | 1 line
+r8124 | helg | 2006-06-07 15:11:08 +0200 (Mi, 07. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/TODO.txt
    M /trunk/java/build.number
@@ -2026,7 +2048,7 @@ Geänderte Pfade:
 
 Added ability to view last trick in card games.
 ------------------------------------------------------------------------
-r8098 | helg | 2006-06-05 15:37:13 +0200 (Mo, 05 Jun 2006) | 5 lines
+r8098 | helg | 2006-06-05 15:37:13 +0200 (Mo, 05. Jun 2006) | 5 lines
 Geänderte Pfade:
    A /trunk/java/src/ggz/cards/CardGamePanel.java (von /trunk/java/src/ggz/cards/GamePanel.java:8097)
    D /trunk/java/src/ggz/cards/GamePanel.java
@@ -2048,14 +2070,14 @@ all Mod messages and manages the chat window. This will come
 in useful when I get around to porting some board games. Made
 a few other minor tweaks.
 ------------------------------------------------------------------------
-r8077 | helg | 2006-05-30 09:37:27 +0200 (Di, 30 Mai 2006) | 1 line
+r8077 | helg | 2006-05-30 09:37:27 +0200 (Di, 30. Mai 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/README.txt
    M /trunk/java/help.html
 
 Added to questions to the help page.
 ------------------------------------------------------------------------
-r8076 | helg | 2006-05-30 09:02:46 +0200 (Di, 30 Mai 2006) | 6 lines
+r8076 | helg | 2006-05-30 09:02:46 +0200 (Di, 30. Mai 2006) | 6 lines
 Geänderte Pfade:
    M /trunk/java/README.txt
    D /trunk/java/appletparams.properties
@@ -2084,7 +2106,7 @@ Added help link and help page.
 
 Documented theme properties.
 ------------------------------------------------------------------------
-r8070 | helg | 2006-05-29 04:10:03 +0200 (Mo, 29 Mai 2006) | 2 lines
+r8070 | helg | 2006-05-29 04:10:03 +0200 (Mo, 29. Mai 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/appletparams.properties
    M /trunk/java/build.number
@@ -2097,7 +2119,7 @@ Geänderte Pfade:
 Added options for disabling gradient painting and disabling
 the watermark image. Also improved theme handling.
 ------------------------------------------------------------------------
-r8069 | helg | 2006-05-26 13:51:42 +0200 (Fr, 26 Mai 2006) | 7 lines
+r8069 | helg | 2006-05-26 13:51:42 +0200 (Fr, 26. Mai 2006) | 7 lines
 Geänderte Pfade:
    A /trunk/java/appletparams.properties
    M /trunk/java/build.number
@@ -2114,7 +2136,7 @@ directory. I know this file should be in the home dir but it's
 alpha stuff at the moment and I don't see people running it as
 an app much. It was quick to knock up and works.
 ------------------------------------------------------------------------
-r8065 | helg | 2006-05-25 12:10:52 +0200 (Do, 25 Mai 2006) | 2 lines
+r8065 | helg | 2006-05-25 12:10:52 +0200 (Do, 25. Mai 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/java/build.number
    M /trunk/java/build.xml
@@ -2123,7 +2145,7 @@ Geänderte Pfade:
 Fixed build file so that it outputs the correct information
 to version.properties when compiling under Linux.
 ------------------------------------------------------------------------
-r8064 | helg | 2006-05-25 10:39:46 +0200 (Do, 25 Mai 2006) | 4 lines
+r8064 | helg | 2006-05-25 10:39:46 +0200 (Do, 25. Mai 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/java/TODO.txt
    M /trunk/java/build.number
@@ -2139,7 +2161,7 @@ NullPointerException when a second spectator joined a game and
 the list of spectators in the list of tables only showed the first
 spectator.
 ------------------------------------------------------------------------
-r8063 | helg | 2006-05-25 06:36:49 +0200 (Do, 25 Mai 2006) | 1 line
+r8063 | helg | 2006-05-25 06:36:49 +0200 (Do, 25. Mai 2006) | 1 line
 Geänderte Pfade:
    A /trunk/java/build.number
    M /trunk/java/build.xml
@@ -2149,20 +2171,20 @@ Geänderte Pfade:
 
 Added build number to Ant build file and a version.properties file is now updated as part of the build. This file contains version information as well as the host and user that did the build. The Manifest file is now generated by the Ant build and includes package version information for the ggz.ui package. This package version is read by the About dialog to display the version number - it was hard-coded before. Most importantly the About dialog now shows the build number so it is easier to distinguish between builds. After performing a build, the build.number and version.properties files should be committed to SVN so that build numbers are picked up by other developers.
 ------------------------------------------------------------------------
-r8051 | helg | 2006-05-23 03:46:56 +0200 (Di, 23 Mai 2006) | 1 line
+r8051 | helg | 2006-05-23 03:46:56 +0200 (Di, 23. Mai 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/cards/bridge/BridgeBidPanel.java
 
 Fixed bug where Bridge bidding didn't work due to difference in behaviour when running as an applet vs an application.
 ------------------------------------------------------------------------
-r8014 | helg | 2006-05-01 15:04:53 +0200 (Mo, 01 Mai 2006) | 1 line
+r8014 | helg | 2006-05-01 15:04:53 +0200 (Mo, 01. Mai 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/src/ggz/client/core/GameType.java
    M /trunk/java/src/ggz/client/core/Net.java
 
 Fixed bug in code that parses received XML where it didn't properly manage arrays of named bots. Obviously this code had never been run before!
 ------------------------------------------------------------------------
-r7943 | josef | 2006-03-16 16:17:26 +0100 (Do, 16 Mär 2006) | 7 lines
+r7943 | josef | 2006-03-16 16:17:26 +0100 (Do, 16. Mär 2006) | 7 lines
 Geänderte Pfade:
    A /trunk/java/ChangeLog
 
@@ -2174,7 +2196,7 @@ right now.
 
 
 ------------------------------------------------------------------------
-r7905 | josef | 2006-03-14 14:47:11 +0100 (Di, 14 Mär 2006) | 4 lines
+r7905 | josef | 2006-03-14 14:47:11 +0100 (Di, 14. Mär 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/NEWS
@@ -2225,7 +2247,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7904 | josef | 2006-03-14 14:46:20 +0100 (Di, 14 Mär 2006) | 3 lines
+r7904 | josef | 2006-03-14 14:46:20 +0100 (Di, 14. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java/src/ggz/ui/AboutDialog.java
 
@@ -2233,7 +2255,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7898 | helg | 2006-03-08 02:31:17 +0100 (Mi, 08 Mär 2006) | 1 line
+r7898 | helg | 2006-03-08 02:31:17 +0100 (Mi, 08. Mär 2006) | 1 line
 Geänderte Pfade:
    M /trunk/java/README.txt
    M /trunk/java/src/ggz/ui/ClientApp.java
@@ -2241,7 +2263,7 @@ Geänderte Pfade:
 
 Updated README.txt and fixed applet parameter names for xmlin and xmlout.
 ------------------------------------------------------------------------
-r7896 | josef | 2006-03-07 14:28:01 +0100 (Di, 07 Mär 2006) | 3 lines
+r7896 | josef | 2006-03-07 14:28:01 +0100 (Di, 07. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/java
 
@@ -2249,7 +2271,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7895 | josef | 2006-03-07 14:26:19 +0100 (Di, 07 Mär 2006) | 3 lines
+r7895 | josef | 2006-03-07 14:26:19 +0100 (Di, 07. Mär 2006) | 3 lines
 Geänderte Pfade:
    A /trunk/java (von /trunk/playground/ggz-java5:7894)
    D /trunk/playground/ggz-java5
@@ -2258,7 +2280,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7886 | helg | 2006-03-07 03:06:13 +0100 (Di, 07 Mär 2006) | 1 line
+r7886 | helg | 2006-03-07 03:06:13 +0100 (Di, 07. Mär 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
    M /trunk/playground/ggz-java5/src/ggz/cards/client/CardGameHandler.java
@@ -2266,20 +2288,20 @@ Geänderte Pfade:
 
 Fixed bug in Bridge where bidding UI was not being removed once play started.
 ------------------------------------------------------------------------
-r7882 | helg | 2006-03-03 01:52:00 +0100 (Fr, 03 Mär 2006) | 1 line
+r7882 | helg | 2006-03-03 01:52:00 +0100 (Fr, 03. Mär 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
 
 
 ------------------------------------------------------------------------
-r7871 | helg | 2006-02-15 01:58:07 +0100 (Mi, 15 Feb 2006) | 1 line
+r7871 | helg | 2006-02-15 01:58:07 +0100 (Mi, 15. Feb 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/edu/stanford/ejalbert/BrowserLauncher.java
    M /trunk/playground/ggz-java5/src/ggz/cards/bridge/BridgeBidPanel.java
 
 Improved default browser detection under Unix when clicking on a hyperlink (e.g. How to play) when running as an app. It's still not very good but it's better than it was.
 ------------------------------------------------------------------------
-r7870 | helg | 2006-02-15 01:16:01 +0100 (Mi, 15 Feb 2006) | 1 line
+r7870 | helg | 2006-02-15 01:16:01 +0100 (Mi, 15. Feb 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/build.xml
    M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
@@ -2344,13 +2366,13 @@ Geänderte Pfade:
 
 Made wholesale changes to enum classes to provide compatibility with JDK1.4. Also removed generic collections for the same reason. Added custom bid panel for Bridge so that you can more easily see the other players bids and rather than having a large array of buttons you now have specialised buttons just for bridge.
 ------------------------------------------------------------------------
-r7858 | helg | 2006-02-11 07:56:56 +0100 (Sa, 11 Feb 2006) | 1 line
+r7858 | helg | 2006-02-11 07:56:56 +0100 (Sa, 11. Feb 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/ggz/ui/messages_de.properties
 
 
 ------------------------------------------------------------------------
-r7854 | josef | 2006-02-10 13:56:12 +0100 (Fr, 10 Feb 2006) | 3 lines
+r7854 | josef | 2006-02-10 13:56:12 +0100 (Fr, 10. Feb 2006) | 3 lines
 Geänderte Pfade:
    A /trunk/playground/ggz-java5/src/ggz/ui/messages_pt_BR.properties
 
@@ -2358,7 +2380,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7852 | josef | 2006-02-10 11:24:50 +0100 (Fr, 10 Feb 2006) | 3 lines
+r7852 | josef | 2006-02-10 11:24:50 +0100 (Fr, 10. Feb 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/ggz/ui/messages_de.properties
 
@@ -2366,7 +2388,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7851 | helg | 2006-02-10 07:19:08 +0100 (Fr, 10 Feb 2006) | 1 line
+r7851 | helg | 2006-02-10 07:19:08 +0100 (Fr, 10. Feb 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/ggz/client/core/Server.java
    M /trunk/playground/ggz-java5/src/ggz/client/core/messages.properties
@@ -2380,13 +2402,13 @@ Geänderte Pfade:
 
 More localisation. Does it never end?
 ------------------------------------------------------------------------
-r7850 | helg | 2006-02-10 03:05:12 +0100 (Fr, 10 Feb 2006) | 1 line
+r7850 | helg | 2006-02-10 03:05:12 +0100 (Fr, 10. Feb 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/ggz/client/core/Net.java
 
 Changed the way Server XML is traced (yet again). Server XML is not traced byte for byte rather than after XML parsing.
 ------------------------------------------------------------------------
-r7849 | helg | 2006-02-10 02:36:27 +0100 (Fr, 10 Feb 2006) | 1 line
+r7849 | helg | 2006-02-10 02:36:27 +0100 (Fr, 10. Feb 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/TODO.txt
    M /trunk/playground/ggz-java5/src/ggz/client/core/Net.java
@@ -2396,7 +2418,7 @@ Geänderte Pfade:
 
 Added i18n support for Net and Server classes.
 ------------------------------------------------------------------------
-r7847 | helg | 2006-02-09 10:22:58 +0100 (Do, 09 Feb 2006) | 1 line
+r7847 | helg | 2006-02-09 10:22:58 +0100 (Do, 09. Feb 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/ggz/client/core/Server.java
    M /trunk/playground/ggz-java5/src/ggz/common/NumberList.java
@@ -2417,14 +2439,14 @@ Geänderte Pfade:
 
 Added i18n support for core client. Current supported languages are English and German.
 ------------------------------------------------------------------------
-r7843 | helg | 2006-02-07 07:23:07 +0100 (Di, 07 Feb 2006) | 1 line
+r7843 | helg | 2006-02-07 07:23:07 +0100 (Di, 07. Feb 2006) | 1 line
 Geänderte Pfade:
    D /trunk/playground/ggz-java5/src/ggz/cards/SuaroPanel.java
    M /trunk/playground/ggz-java5/src/ggz/cards/TableLayout.java
 
 
 ------------------------------------------------------------------------
-r7842 | helg | 2006-02-07 07:20:15 +0100 (Di, 07 Feb 2006) | 3 lines
+r7842 | helg | 2006-02-07 07:20:15 +0100 (Di, 07. Feb 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/README.txt
    M /trunk/playground/ggz-java5/TODO.txt
@@ -2440,7 +2462,7 @@ Added "bad username" result code.
 
 Renamed CardSeat to Player.
 ------------------------------------------------------------------------
-r7841 | helg | 2006-02-07 01:12:48 +0100 (Di, 07 Feb 2006) | 3 lines
+r7841 | helg | 2006-02-07 01:12:48 +0100 (Di, 07. Feb 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
    M /trunk/playground/ggz-java5/src/ggz/cards/SmartChatLayout.java
@@ -2454,13 +2476,13 @@ Modified Net to use SAX Transformer to generate XML instead of concatenating str
 
 "Back to Lounge" button is not disabled while playing a game.
 ------------------------------------------------------------------------
-r7835 | helg | 2006-02-02 09:03:38 +0100 (Do, 02 Feb 2006) | 1 line
+r7835 | helg | 2006-02-02 09:03:38 +0100 (Do, 02. Feb 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/TODO.txt
 
 Forgot to update the TODO file.
 ------------------------------------------------------------------------
-r7834 | helg | 2006-02-02 08:55:17 +0100 (Do, 02 Feb 2006) | 5 lines
+r7834 | helg | 2006-02-02 08:55:17 +0100 (Do, 02. Feb 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/TODO.txt
    M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
@@ -2480,21 +2502,21 @@ Added more SwingUtilities.invokeLater() to hopefully resolve some Swing threadin
 
 Java clients can now spectate!
 ------------------------------------------------------------------------
-r7833 | helg | 2006-01-30 14:51:38 +0100 (Mo, 30 Jan 2006) | 1 line
+r7833 | helg | 2006-01-30 14:51:38 +0100 (Mo, 30. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
    M /trunk/playground/ggz-java5/src/ggz/ui/ChatPanel.java
 
 Minor size and color tweaks.
 ------------------------------------------------------------------------
-r7830 | helg | 2006-01-30 13:24:56 +0100 (Mo, 30 Jan 2006) | 1 line
+r7830 | helg | 2006-01-30 13:24:56 +0100 (Mo, 30. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
    A /trunk/playground/ggz-java5/src/ggz/cards/SmartChatLayout.java
 
 Created new layout for chat and card table.
 ------------------------------------------------------------------------
-r7829 | helg | 2006-01-30 10:28:01 +0100 (Mo, 30 Jan 2006) | 1 line
+r7829 | helg | 2006-01-30 10:28:01 +0100 (Mo, 30. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/TODO.txt
    M /trunk/playground/ggz-java5/src/ggz/cards/TablePanel.java
@@ -2505,7 +2527,7 @@ Geänderte Pfade:
 
 Add tool tip to player list in game rooms that shows player stats. Improved animation performance for deal and trick win.
 ------------------------------------------------------------------------
-r7828 | helg | 2006-01-30 07:48:15 +0100 (Mo, 30 Jan 2006) | 1 line
+r7828 | helg | 2006-01-30 07:48:15 +0100 (Mo, 30. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
    M /trunk/playground/ggz-java5/src/ggz/cards/GrayFilter.java
@@ -2591,7 +2613,7 @@ Geänderte Pfade:
 
 Added LGPL terms to the top of each source file.
 ------------------------------------------------------------------------
-r7827 | helg | 2006-01-30 07:23:49 +0100 (Mo, 30 Jan 2006) | 1 line
+r7827 | helg | 2006-01-30 07:23:49 +0100 (Mo, 30. Jan 2006) | 1 line
 Geänderte Pfade:
    A /trunk/playground/ggz-java5/COPYING.txt
    M /trunk/playground/ggz-java5/TODO.txt
@@ -2616,7 +2638,7 @@ Geänderte Pfade:
 
 Added about box and new watermark. Added open source class that launches platform browser when clicking game help when running as application. Made a few other minor adjustments.
 ------------------------------------------------------------------------
-r7826 | helg | 2006-01-29 15:08:51 +0100 (So, 29 Jan 2006) | 1 line
+r7826 | helg | 2006-01-29 15:08:51 +0100 (So, 29. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/TODO.txt
    M /trunk/playground/ggz-java5/src/ggz/client/core/GameType.java
@@ -2629,32 +2651,32 @@ Geänderte Pfade:
 
 Add seat allocation dialog. Only thing is it doesn't ley you allocate seats yet. The main reason I did it was to remove the "play against computer" button since people were clicking on "new game" instead and then couldn't work out how to play against the computer. Seat allocation and named bot support is coming...
 ------------------------------------------------------------------------
-r7825 | helg | 2006-01-29 11:49:10 +0100 (So, 29 Jan 2006) | 1 line
+r7825 | helg | 2006-01-29 11:49:10 +0100 (So, 29. Jan 2006) | 1 line
 Geänderte Pfade:
    D /trunk/playground/ggz-java5/src/ggz/ui/images/rose.gif
 
 Removed rose from applet since it doesn't seem appropriate. I haven't got a replacement at the moment but when I find something I'll put a watermark back.
 ------------------------------------------------------------------------
-r7822 | helg | 2006-01-25 15:16:39 +0100 (Mi, 25 Jan 2006) | 1 line
+r7822 | helg | 2006-01-25 15:16:39 +0100 (Mi, 25. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/ggz/ui/ChatPanel.java
    A /trunk/playground/ggz-java5/src/ggz/ui/images/chat.gif
 
 Added chat icon that I drew myself after some searching in free icon libraries for inspiration.
 ------------------------------------------------------------------------
-r7821 | helg | 2006-01-25 14:32:33 +0100 (Mi, 25 Jan 2006) | 1 line
+r7821 | helg | 2006-01-25 14:32:33 +0100 (Mi, 25. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/ggz/ui/ChatAction.java
 
 
 ------------------------------------------------------------------------
-r7820 | helg | 2006-01-25 05:50:31 +0100 (Mi, 25 Jan 2006) | 1 line
+r7820 | helg | 2006-01-25 05:50:31 +0100 (Mi, 25. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/TODO.txt
 
 
 ------------------------------------------------------------------------
-r7819 | helg | 2006-01-25 05:19:09 +0100 (Mi, 25 Jan 2006) | 1 line
+r7819 | helg | 2006-01-25 05:19:09 +0100 (Mi, 25. Jan 2006) | 1 line
 Geänderte Pfade:
    D /trunk/playground/ggz-java5/.classpath
    D /trunk/playground/ggz-java5/.project
@@ -2663,7 +2685,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7818 | helg | 2006-01-25 05:17:11 +0100 (Mi, 25 Jan 2006) | 1 line
+r7818 | helg | 2006-01-25 05:17:11 +0100 (Mi, 25. Jan 2006) | 1 line
 Geänderte Pfade:
    A /trunk/playground/ggz-java5/README.txt
    A /trunk/playground/ggz-java5/TODO.txt
@@ -2675,7 +2697,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7817 | helg | 2006-01-24 07:01:25 +0100 (Di, 24 Jan 2006) | 1 line
+r7817 | helg | 2006-01-24 07:01:25 +0100 (Di, 24. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/signing/create_self_cert.cmd
    M /trunk/playground/ggz-java5/signing/ggz_self.cer
@@ -2694,7 +2716,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7816 | helg | 2006-01-24 02:33:07 +0100 (Di, 24 Jan 2006) | 1 line
+r7816 | helg | 2006-01-24 02:33:07 +0100 (Di, 24. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
    M /trunk/playground/ggz-java5/src/ggz/cards/Sprite.java
@@ -2707,7 +2729,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7800 | helg | 2006-01-20 12:08:29 +0100 (Fr, 20 Jan 2006) | 1 line
+r7800 | helg | 2006-01-20 12:08:29 +0100 (Fr, 20. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
    M /trunk/playground/ggz-java5/src/ggz/cards/Sprite.java
@@ -2722,7 +2744,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7797 | helg | 2006-01-20 04:36:37 +0100 (Fr, 20 Jan 2006) | 1 line
+r7797 | helg | 2006-01-20 04:36:37 +0100 (Fr, 20. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
    M /trunk/playground/ggz-java5/src/ggz/cards/TablePanel.java
@@ -2730,7 +2752,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7796 | helg | 2006-01-20 01:19:19 +0100 (Fr, 20 Jan 2006) | 2 lines
+r7796 | helg | 2006-01-20 01:19:19 +0100 (Fr, 20. Jan 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/.settings/org.eclipse.jdt.core.prefs
    M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
@@ -2743,7 +2765,7 @@ Geänderte Pfade:
 Change made on laptop.
 
 ------------------------------------------------------------------------
-r7794 | helg | 2006-01-19 08:03:35 +0100 (Do, 19 Jan 2006) | 1 line
+r7794 | helg | 2006-01-19 08:03:35 +0100 (Do, 19. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5
    M /trunk/playground/ggz-java5/.settings/org.eclipse.jdt.core.prefs
@@ -2776,25 +2798,25 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7781 | helg | 2006-01-13 07:50:01 +0100 (Fr, 13 Jan 2006) | 1 line
+r7781 | helg | 2006-01-13 07:50:01 +0100 (Fr, 13. Jan 2006) | 1 line
 Geänderte Pfade:
    D /trunk/playground/ggz-java5/src/ggz/cards/images/cards/Thumbs.db
 
 Removed file/folder
 ------------------------------------------------------------------------
-r7780 | helg | 2006-01-13 07:45:37 +0100 (Fr, 13 Jan 2006) | 1 line
+r7780 | helg | 2006-01-13 07:45:37 +0100 (Fr, 13. Jan 2006) | 1 line
 Geänderte Pfade:
    D /trunk/playground/ggz-java5/src/ggz/cards/images/Thumbs.db
 
 Removed file/folder
 ------------------------------------------------------------------------
-r7778 | helg | 2006-01-13 07:31:44 +0100 (Fr, 13 Jan 2006) | 1 line
+r7778 | helg | 2006-01-13 07:31:44 +0100 (Fr, 13. Jan 2006) | 1 line
 Geänderte Pfade:
    D /trunk/playground/ggz-java5/src/ggz/ui/images/Thumbs.db
 
 Removed file/folder
 ------------------------------------------------------------------------
-r7777 | helg | 2006-01-13 07:26:27 +0100 (Fr, 13 Jan 2006) | 1 line
+r7777 | helg | 2006-01-13 07:26:27 +0100 (Fr, 13. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/src/ggz/cards/GamePanel.java
    M /trunk/playground/ggz-java5/src/ggz/cards/Sprite.java
@@ -2842,19 +2864,19 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7776 | helg | 2006-01-13 07:14:15 +0100 (Fr, 13 Jan 2006) | 1 line
+r7776 | helg | 2006-01-13 07:14:15 +0100 (Fr, 13. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/playground/ggz-java5/build.xml
 
 
 ------------------------------------------------------------------------
-r7759 | helg | 2006-01-10 03:49:28 +0100 (Di, 10 Jan 2006) | 1 line
+r7759 | helg | 2006-01-10 03:49:28 +0100 (Di, 10. Jan 2006) | 1 line
 Geänderte Pfade:
    D /trunk/playground/ggz-java5/ggz-java.jar
 
 Removed file/folder
 ------------------------------------------------------------------------
-r7758 | helg | 2006-01-10 03:42:42 +0100 (Di, 10 Jan 2006) | 1 line
+r7758 | helg | 2006-01-10 03:42:42 +0100 (Di, 10. Jan 2006) | 1 line
 Geänderte Pfade:
    A /trunk/playground/ggz-java5
    A /trunk/playground/ggz-java5/.classpath

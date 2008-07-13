@@ -1,5 +1,5 @@
 ** Intermediate snapshot release of base GGZ Gaming Zone components
-** Version 0.99.3 - targeted at developers only - API+ABI breakage included
+** Version 0.99.4 - targeted at developers only - API+ABI breakage included
 ** Please follow the GGZ 0.0.14 branch to get a complete and stable version
 
 The GGZ Gaming Zone (GGZ) is an open-sourced Internet gaming center.
@@ -20,12 +20,35 @@ bring as many multiplayer features into as many games as possible!
 
 ** The snapshot series contains staggered releases. 0.99.1 contained libggz,
 ** ggz-server, ggz-client-libs and ggz-txt-client. 0.99.2 added ggz-python,
-** ggz-java and ggz-grubby. 0.99.3 now adds ggz-docs, ggz-community,
-** ggz-gtk-games, ggz-gtk-client and ggz-utils.
-** You can find all the remaining modules in our SVN. Note that the final
-** package structure might change.
+** ggz-java and ggz-grubby. 0.99.3 added ggz-docs, ggz-community,
+** ggz-gtk-games, ggz-gtk-client and ggz-utils. 0.99.4 now adds
+** ggz-kde-center to complete the package list.
+** Note that the final package structure might change.
 
-New and pending features in this snapshot release (0.99.3):
+New and pending features in this snapshot release (0.99.4):
+
+- {general} ggz-kde-{games,client} were replaced by ggz-kde-center
+- {general} ggz-sdl-games was moved back into playground
+- {general} many global and shadowed variable cleanups in C applications
+- {general} linker map support for C libraries to reduce symbol count
+
+- [ggz-kde-center] new application Plasma-KGGZ
+- [ggz-kde-center] new libraries KGGZDMod and KGGZCore
+- [ggz-kde-center] new Tic-Tac-Toe game server Kryds
+- [ggz-kde-center] KTicTacTux and KGrubby ported to KDE 4
+
+- [ggz-community] export of tournament tables as SVG
+- [ggz-community] implementation of registration policies
+- [ggz-community] first-time setup configuration wizard
+- [ggz-gtk-client] several usability and code improvements
+- [ggz-gtk-games] several code improvements
+- [ggz-server] individually selectable database plugins, and other updates
+- [ggz-server] improvements to the savegame handling
+- [ggz-server] enhancements to the GGZCards and Tic-Tac-Toe servers
+- [ggz-server] integration of real-time statistics functionality
+- [ggz-server] updates to the MySQL database plugin and stored procedures
+
+New and pending features in the previous release (0.99.3):
 
 - {general} pkg-config files for the GGZ libraries
 - {protocol} transmission of untranslated/internal room name

@@ -1,5 +1,68 @@
 ------------------------------------------------------------------------
-r9997 | josef | 2008-05-24 10:31:44 +0200 (Sa, 24 Mai 2008) | 3 lines
+r10117 | jdorje | 2008-06-30 08:26:37 +0200 (Mo, 30. Jun 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/gtk-games/autogen.sh
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/autogen.sh
+   M /trunk/libggz/autogen.sh
+   M /trunk/playground/agrue/autogen.sh
+   M /trunk/playground/irc/autogen.sh
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+Exit with return value 1 on failure.  Previously if an autotool failed
+autogen would exit with a success value.
+
+All autogen files other than the python module one are updated.
+
+------------------------------------------------------------------------
+r10091 | jdorje | 2008-06-29 11:46:27 +0200 (So, 29. Jun 2008) | 1 line
+Geänderte Pfade:
+   D /trunk/ggz-client-libs/m4/iconv.m4
+   D /trunk/ggzd/m4/iconv.m4
+   D /trunk/grubby/m4/iconv.m4
+   D /trunk/gtk-client/m4/iconv.m4
+   D /trunk/gtk-games/m4/iconv.m4
+   D /trunk/kde-client/m4/iconv.m4
+   D /trunk/kde-games/m4/iconv.m4
+   A /trunk/libggz/src/ggz (von /trunk/ggzd/m4/iconv.m4:10089)
+   D /trunk/playground/agrue/m4/iconv.m4
+   D /trunk/playground/irc/m4/iconv.m4
+   D /trunk/sdl-games/m4/iconv.m4
+   D /trunk/txt-client/m4/iconv.m4
+   D /trunk/utils/m4/iconv.m4
+
+Move iconv.m4 into ggz common m4 directory.
+------------------------------------------------------------------------
+r10004 | josef | 2008-05-25 11:12:02 +0200 (So, 25. Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/java/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- prepend 5300 lines of change summaries to the changelog files
+
+
+------------------------------------------------------------------------
+r9997 | josef | 2008-05-24 10:31:44 +0200 (Sa, 24. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/main.c
 
@@ -7,7 +70,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24 Mai 2008) | 3 lines
+r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README
@@ -41,7 +104,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9946 | josef | 2008-04-12 13:59:55 +0200 (Sa, 12 Apr 2008) | 3 lines
+r9946 | josef | 2008-04-12 13:59:55 +0200 (Sa, 12. Apr 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -64,7 +127,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9819 | josef | 2008-03-09 00:21:43 +0100 (So, 09 Mär 2008) | 3 lines
+r9819 | josef | 2008-03-09 00:21:43 +0100 (So, 09. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/Makefile.am
 
@@ -72,7 +135,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9817 | josef | 2008-03-08 23:59:01 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9817 | josef | 2008-03-08 23:59:01 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/doc/Makefile.am
 
@@ -80,7 +143,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9815 | josef | 2008-03-08 23:40:34 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9815 | josef | 2008-03-08 23:40:34 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/ChangeLog
    M /trunk/ggzd/ChangeLog
@@ -94,7 +157,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9814 | josef | 2008-03-08 23:31:23 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9814 | josef | 2008-03-08 23:31:23 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/NEWS
    M /trunk/ggzd/NEWS
@@ -109,7 +172,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9802 | josef | 2008-03-08 13:49:21 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9802 | josef | 2008-03-08 13:49:21 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/README
    M /trunk/ggz-client-libs/configure.ac
@@ -128,7 +191,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9734 | josef | 2008-02-16 13:32:32 +0100 (Sa, 16 Feb 2008) | 3 lines
+r9734 | josef | 2008-02-16 13:32:32 +0100 (Sa, 16. Feb 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/games/guru-ttt/main.c
    M /trunk/grubby/games/lib/ggzpassive.c
@@ -138,14 +201,14 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9668 | phh | 2008-02-09 19:55:52 +0100 (Sa, 09 Feb 2008) | 1 line
+r9668 | phh | 2008-02-09 19:55:52 +0100 (Sa, 09. Feb 2008) | 1 line
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/fr.po
    A /trunk/kde-client/ggz-kde/po/fr.po
 
 Update some french translation
 ------------------------------------------------------------------------
-r9654 | josef | 2008-02-08 23:33:26 +0100 (Fr, 08 Feb 2008) | 3 lines
+r9654 | josef | 2008-02-08 23:33:26 +0100 (Fr, 08. Feb 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/embedtest.rb
    M /trunk/grubby/grubby/data/meeting.rb
@@ -155,7 +218,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9653 | josef | 2008-02-08 22:59:16 +0100 (Fr, 08 Feb 2008) | 3 lines
+r9653 | josef | 2008-02-08 22:59:16 +0100 (Fr, 08. Feb 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/phrasecatcher.py
    M /trunk/grubby/grubby/data/statistics.py
@@ -164,14 +227,14 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9646 | oojah | 2008-02-04 14:49:52 +0100 (Mo, 04 Feb 2008) | 2 lines
+r9646 | oojah | 2008-02-04 14:49:52 +0100 (Mo, 04. Feb 2008) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/grubby-config.in
 
 Fix minor variable typo.
 
 ------------------------------------------------------------------------
-r9633 | josef | 2008-02-02 19:54:43 +0100 (Sa, 02 Feb 2008) | 5 lines
+r9633 | josef | 2008-02-02 19:54:43 +0100 (Sa, 02. Feb 2008) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/main.c
 
@@ -181,7 +244,7 @@ The C interface to the Ruby library has this flaw, while Perl includes <config.h
 
 
 ------------------------------------------------------------------------
-r9632 | josef | 2008-01-31 22:04:44 +0100 (Do, 31 Jan 2008) | 3 lines
+r9632 | josef | 2008-01-31 22:04:44 +0100 (Do, 31. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/main.c
 
@@ -189,7 +252,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9631 | josef | 2008-01-31 21:37:24 +0100 (Do, 31 Jan 2008) | 3 lines
+r9631 | josef | 2008-01-31 21:37:24 +0100 (Do, 31. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
 
@@ -197,7 +260,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9613 | josef | 2008-01-26 10:28:51 +0100 (Sa, 26 Jan 2008) | 4 lines
+r9613 | josef | 2008-01-26 10:28:51 +0100 (Sa, 26. Jan 2008) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/fortune.py
 
@@ -206,7 +269,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9612 | josef | 2008-01-26 10:03:52 +0100 (Sa, 26 Jan 2008) | 3 lines
+r9612 | josef | 2008-01-26 10:03:52 +0100 (Sa, 26. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/Makefile.am
    M /trunk/grubby/grubby/src/main.c
@@ -215,7 +278,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9611 | josef | 2008-01-26 09:56:30 +0100 (Sa, 26 Jan 2008) | 3 lines
+r9611 | josef | 2008-01-26 09:56:30 +0100 (Sa, 26. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
 
@@ -223,7 +286,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9610 | josef | 2008-01-26 09:09:36 +0100 (Sa, 26 Jan 2008) | 4 lines
+r9610 | josef | 2008-01-26 09:09:36 +0100 (Sa, 26. Jan 2008) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/Makefile.am
    M /trunk/grubby/grubby/data/meeting.rb
@@ -233,7 +296,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9602 | josef | 2008-01-25 19:33:18 +0100 (Fr, 25 Jan 2008) | 5 lines
+r9602 | josef | 2008-01-25 19:33:18 +0100 (Fr, 25. Jan 2008) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/people.c
 
@@ -243,7 +306,7 @@ The only reason why we need to strdup() those afterwards is that grubby doesn't 
 
 
 ------------------------------------------------------------------------
-r9595 | josef | 2008-01-25 18:16:05 +0100 (Fr, 25 Jan 2008) | 5 lines
+r9595 | josef | 2008-01-25 18:16:05 +0100 (Fr, 25. Jan 2008) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/exec.c
    M /trunk/grubby/grubby/modules/self.c
@@ -258,7 +321,7 @@ We should really introduce some 'safestring' handling into libggz.
 
 
 ------------------------------------------------------------------------
-r9573 | josef | 2008-01-20 11:51:42 +0100 (So, 20 Jan 2008) | 3 lines
+r9573 | josef | 2008-01-20 11:51:42 +0100 (So, 20. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/net.c
 
@@ -266,7 +329,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9443 | josef | 2007-12-12 16:22:44 +0100 (Mi, 12 Dez 2007) | 3 lines
+r9443 | josef | 2007-12-12 16:22:44 +0100 (Mi, 12. Dez 2007) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
    M /trunk/grubby/grubby/src/Makefile.am
@@ -275,7 +338,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9434 | josef | 2007-12-11 21:28:13 +0100 (Di, 11 Dez 2007) | 4 lines
+r9434 | josef | 2007-12-11 21:28:13 +0100 (Di, 11. Dez 2007) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
    M /trunk/grubby/grubby/Makefile.am
@@ -290,7 +353,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9433 | josef | 2007-12-11 21:17:00 +0100 (Di, 11 Dez 2007) | 3 lines
+r9433 | josef | 2007-12-11 21:17:00 +0100 (Di, 11. Dez 2007) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/man/Makefile.am
    M /trunk/grubby/man/de/Makefile.am
@@ -299,7 +362,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9402 | josef | 2007-12-01 13:30:50 +0100 (Sa, 01 Dez 2007) | 4 lines
+r9402 | josef | 2007-12-01 13:30:50 +0100 (Sa, 01. Dez 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/grubby/m4/i18n.mk
@@ -313,7 +376,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9401 | josef | 2007-12-01 13:30:41 +0100 (Sa, 01 Dez 2007) | 4 lines
+r9401 | josef | 2007-12-01 13:30:41 +0100 (Sa, 01. Dez 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/docs/autogen.sh
@@ -334,21 +397,21 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9288 | oojah | 2007-09-01 21:13:51 +0200 (Sa, 01 Sep 2007) | 2 lines
+r9288 | oojah | 2007-09-01 21:13:51 +0200 (Sa, 01. Sep 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/banner.c
 
 Add missing variable declaration.
 
 ------------------------------------------------------------------------
-r9260 | oojah | 2007-08-27 13:02:28 +0200 (Mo, 27 Aug 2007) | 2 lines
+r9260 | oojah | 2007-08-27 13:02:28 +0200 (Mo, 27. Aug 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/banner.c
 
 Database auto-reconnect for grubby.
 
 ------------------------------------------------------------------------
-r9174 | josef | 2007-07-10 17:59:58 +0200 (Di, 10 Jul 2007) | 5 lines
+r9174 | josef | 2007-07-10 17:59:58 +0200 (Di, 10. Jul 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/netsilc.c
 
@@ -358,7 +421,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9129 | oojah | 2007-05-21 23:30:31 +0200 (Mo, 21 Mai 2007) | 2 lines
+r9129 | oojah | 2007-05-21 23:30:31 +0200 (Mo, 21. Mai 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/ggz-config/ggz-config.c
    M /trunk/grubby/grubby/src/main.c
@@ -367,7 +430,7 @@ Geänderte Pfade:
 Improved some english strings.
 
 ------------------------------------------------------------------------
-r8987 | jdorje | 2007-02-19 03:50:30 +0100 (Mo, 19 Feb 2007) | 1 line
+r8987 | jdorje | 2007-02-19 03:50:30 +0100 (Mo, 19. Feb 2007) | 1 line
 Geänderte Pfade:
    M /trunk/community/setup/scripts/ggz2phpbb.conf.in
    M /trunk/community/setup/sql/trigger/ggzsync_trigger.c
@@ -513,7 +576,7 @@ Geänderte Pfade:
 
 Fix eol-style on .c, .h, .in, and .am files.
 ------------------------------------------------------------------------
-r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16 Jan 2007) | 8 lines
+r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16. Jan 2007) | 8 lines
 Geänderte Pfade:
    M /trunk/community/ChangeLog
    M /trunk/docs/ChangeLog
@@ -541,7 +604,7 @@ However we have to do so since no tool seems to be able to reproduce our old for
 
 
 ------------------------------------------------------------------------
-r8949 | josef | 2007-01-16 19:23:42 +0100 (Di, 16 Jan 2007) | 5 lines
+r8949 | josef | 2007-01-16 19:23:42 +0100 (Di, 16. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -564,7 +627,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16 Jan 2007) | 5 lines
+r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README.GGZ
@@ -642,7 +705,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8946 | josef | 2007-01-16 18:49:40 +0100 (Di, 16 Jan 2007) | 6 lines
+r8946 | josef | 2007-01-16 18:49:40 +0100 (Di, 16. Jan 2007) | 6 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Versioning
    M /trunk/grubby/grubby/src/main.c
@@ -655,7 +718,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8917 | josef | 2007-01-15 16:10:28 +0100 (Mo, 15 Jan 2007) | 6 lines
+r8917 | josef | 2007-01-15 16:10:28 +0100 (Mo, 15. Jan 2007) | 6 lines
 Geänderte Pfade:
    M /trunk/grubby/games/guru-chess/Makefile.am
    M /trunk/grubby/games/guru-ttt/Makefile.am
@@ -672,21 +735,21 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8908 | oojah | 2007-01-15 01:05:24 +0100 (Mo, 15 Jan 2007) | 2 lines
+r8908 | oojah | 2007-01-15 01:05:24 +0100 (Mo, 15. Jan 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/banner.c
 
 We're only looking up a single player.
 
 ------------------------------------------------------------------------
-r8906 | oojah | 2007-01-14 02:20:54 +0100 (So, 14 Jan 2007) | 2 lines
+r8906 | oojah | 2007-01-14 02:20:54 +0100 (So, 14. Jan 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/banner.c
 
 Username column is already lower case.
 
 ------------------------------------------------------------------------
-r8880 | josef | 2007-01-09 18:22:14 +0100 (Di, 09 Jan 2007) | 7 lines
+r8880 | josef | 2007-01-09 18:22:14 +0100 (Di, 09. Jan 2007) | 7 lines
 Geänderte Pfade:
    M /trunk/docs/spec/mainspec/appendix.sgml
    M /trunk/ggzd/game_servers/chess/chess.dsc
@@ -805,7 +868,7 @@ This affects mainly game information files (*.dsc) but also some sources and tra
 
 
 ------------------------------------------------------------------------
-r8852 | josef | 2007-01-08 14:36:45 +0100 (Mo, 08 Jan 2007) | 9 lines
+r8852 | josef | 2007-01-08 14:36:45 +0100 (Mo, 08. Jan 2007) | 9 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz-client-libs/autogen.sh
@@ -831,7 +894,7 @@ But I'm sure we had a reason not to and I don't want to break it right now.
 
 
 ------------------------------------------------------------------------
-r8832 | jdorje | 2007-01-05 01:52:07 +0100 (Fr, 05 Jan 2007) | 1 line
+r8832 | jdorje | 2007-01-05 01:52:07 +0100 (Fr, 05. Jan 2007) | 1 line
 Geänderte Pfade:
    M /trunk/grubby/Makefile.am
    M /trunk/grubby/autogen.sh
@@ -841,25 +904,25 @@ Geänderte Pfade:
 
 Use externals for common GGZ m4 files.
 ------------------------------------------------------------------------
-r8830 | jdorje | 2007-01-05 01:35:55 +0100 (Fr, 05 Jan 2007) | 1 line
+r8830 | jdorje | 2007-01-05 01:35:55 +0100 (Fr, 05. Jan 2007) | 1 line
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/Makefile.am
 
 Disable time module (time.c is missing).
 ------------------------------------------------------------------------
-r8824 | jdorje | 2007-01-05 01:12:43 +0100 (Fr, 05 Jan 2007) | 1 line
+r8824 | jdorje | 2007-01-05 01:12:43 +0100 (Fr, 05. Jan 2007) | 1 line
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/main.c
 
 Make function static.
 ------------------------------------------------------------------------
-r8823 | jdorje | 2007-01-05 01:02:41 +0100 (Fr, 05 Jan 2007) | 1 line
+r8823 | jdorje | 2007-01-05 01:02:41 +0100 (Fr, 05. Jan 2007) | 1 line
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/Makefile.am
 
 Automake does not like commented lines in the middle of declarations.
 ------------------------------------------------------------------------
-r8802 | josef | 2007-01-04 13:41:51 +0100 (Do, 04 Jan 2007) | 7 lines
+r8802 | josef | 2007-01-04 13:41:51 +0100 (Do, 04. Jan 2007) | 7 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -882,7 +945,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8777 | josef | 2007-01-02 13:09:25 +0100 (Di, 02 Jan 2007) | 9 lines
+r8777 | josef | 2007-01-02 13:09:25 +0100 (Di, 02. Jan 2007) | 9 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -907,7 +970,7 @@ shall now be happy again.
 
 
 ------------------------------------------------------------------------
-r8774 | oojah | 2006-12-28 15:25:34 +0100 (Do, 28 Dez 2006) | 3 lines
+r8774 | oojah | 2006-12-28 15:25:34 +0100 (Do, 28. Dez 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/Makefile.am
    A /trunk/grubby/grubby/modules/banner.c
@@ -916,14 +979,14 @@ The banner module for displaying a banner on player entry, as in use by ServerBo
 This isn't integrated into the build process because it needs mysql at the moment. This would mean changes to configure.ac as well and in any case it's only a cheat to get around the limitations of the information that grubby modules can access. 
 
 ------------------------------------------------------------------------
-r8773 | oojah | 2006-12-28 15:15:36 +0100 (Do, 28 Dez 2006) | 2 lines
+r8773 | oojah | 2006-12-28 15:15:36 +0100 (Do, 28. Dez 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/module.c
 
 Passed incorrect reference to modules.
 
 ------------------------------------------------------------------------
-r8772 | oojah | 2006-12-28 14:02:47 +0100 (Do, 28 Dez 2006) | 2 lines
+r8772 | oojah | 2006-12-28 14:02:47 +0100 (Do, 28. Dez 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/Makefile.am
    M /trunk/grubby/grubby/modules/badword.c
@@ -942,7 +1005,7 @@ Geänderte Pfade:
 Memory code cleanup for grubby. It was gradually leaking memory so I've done malloc -> ggz_malloc etc. substitions, added cleanup functions to make valgrind debugging easier and as a result made some fixes. It's now only reporting a few one-time still reachable memory losses that aren't that important, as well as some invalid reads to do with gettext that I can't fix.
 
 ------------------------------------------------------------------------
-r8725 | josef | 2006-12-13 16:42:32 +0100 (Mi, 13 Dez 2006) | 3 lines
+r8725 | josef | 2006-12-13 16:42:32 +0100 (Mi, 13. Dez 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -960,7 +1023,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8684 | josef | 2006-12-01 16:27:34 +0100 (Fr, 01 Dez 2006) | 5 lines
+r8684 | josef | 2006-12-01 16:27:34 +0100 (Fr, 01. Dez 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/Makefile.am
    M /trunk/grubby/configure.ac
@@ -971,7 +1034,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8664 | josef | 2006-11-20 10:50:03 +0100 (Mo, 20 Nov 2006) | 3 lines
+r8664 | josef | 2006-11-20 10:50:03 +0100 (Mo, 20. Nov 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/net.c
 
@@ -979,7 +1042,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8651 | josef | 2006-11-09 07:47:54 +0100 (Do, 09 Nov 2006) | 8 lines
+r8651 | josef | 2006-11-09 07:47:54 +0100 (Do, 09. Nov 2006) | 8 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/configure.ac
    M /trunk/ggz-client-libs/ggzcore/Makefile.am
@@ -1010,7 +1073,7 @@ Now there are both INTLLIBS and LIB_GETTEXT in the gtk+ modules. This seems to b
 
 
 ------------------------------------------------------------------------
-r8607 | jdorje | 2006-10-02 23:36:27 +0200 (Mo, 02 Okt 2006) | 1 line
+r8607 | jdorje | 2006-10-02 23:36:27 +0200 (Mo, 02. Okt 2006) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1026,7 +1089,7 @@ Geänderte Pfade:
 
 Josef forgot to propogate the ggz.m4 changes.
 ------------------------------------------------------------------------
-r8605 | josef | 2006-09-25 12:39:52 +0200 (Mo, 25 Sep 2006) | 4 lines
+r8605 | josef | 2006-09-25 12:39:52 +0200 (Mo, 25. Sep 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/net.c
    A /trunk/grubby/m4/system.m4
@@ -1036,7 +1099,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8587 | jdorje | 2006-09-20 04:15:08 +0200 (Mi, 20 Sep 2006) | 1 line
+r8587 | jdorje | 2006-09-20 04:15:08 +0200 (Mi, 20. Sep 2006) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1053,7 +1116,7 @@ Geänderte Pfade:
 
 Add AC_GGZ_CHECK_SERVER macro.
 ------------------------------------------------------------------------
-r8583 | jdorje | 2006-09-19 17:26:31 +0200 (Di, 19 Sep 2006) | 3 lines
+r8583 | jdorje | 2006-09-19 17:26:31 +0200 (Di, 19. Sep 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/ggz-config/Makefile.am
    M /trunk/ggz-client-libs/ggzcore/Makefile.am
@@ -1078,7 +1141,7 @@ Don't define PREFIX in config.h, as this makes it impossible to change
 the prefix at compile time (as per GNU standards).
 
 ------------------------------------------------------------------------
-r8567 | jdorje | 2006-09-03 07:35:12 +0200 (So, 03 Sep 2006) | 5 lines
+r8567 | jdorje | 2006-09-03 07:35:12 +0200 (So, 03. Sep 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/Makefile.am
    M /trunk/ggz-client-libs/configure.ac
@@ -1117,7 +1180,7 @@ code conforms to GNU standards as the prefix may be changed at compile time;
 see the autoconf manual for details.
 
 ------------------------------------------------------------------------
-r8414 | oojah | 2006-07-28 22:33:43 +0200 (Fr, 28 Jul 2006) | 3 lines
+r8414 | oojah | 2006-07-28 22:33:43 +0200 (Fr, 28. Jul 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/gurumod.h
    M /trunk/grubby/grubby/src/net.c
@@ -1128,7 +1191,7 @@ Added host player type.
 Added function for modules to get a playertype for a player.
 
 ------------------------------------------------------------------------
-r8412 | jdorje | 2006-07-28 02:48:14 +0200 (Fr, 28 Jul 2006) | 1 line
+r8412 | jdorje | 2006-07-28 02:48:14 +0200 (Fr, 28. Jul 2006) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1145,7 +1208,7 @@ Geänderte Pfade:
 
 Extensions to AC_GGZ_VERSION.
 ------------------------------------------------------------------------
-r8278 | josef | 2006-06-27 09:28:12 +0200 (Di, 27 Jun 2006) | 3 lines
+r8278 | josef | 2006-06-27 09:28:12 +0200 (Di, 27. Jun 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1163,7 +1226,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8105 | josef | 2006-06-06 09:37:15 +0200 (Di, 06 Jun 2006) | 4 lines
+r8105 | josef | 2006-06-06 09:37:15 +0200 (Di, 06. Jun 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/man/Makefile.am
    M /trunk/ggz-client-libs/man/ggz-config.6.in
@@ -1182,7 +1245,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8081 | josef | 2006-05-30 14:59:51 +0200 (Di, 30 Mai 2006) | 8 lines
+r8081 | josef | 2006-05-30 14:59:51 +0200 (Di, 30. Mai 2006) | 8 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1206,7 +1269,7 @@ and --libdir=/usr/lib64 doesn't break the prefix search anymore.
 
 
 ------------------------------------------------------------------------
-r8046 | josef | 2006-05-22 08:51:28 +0200 (Mo, 22 Mai 2006) | 7 lines
+r8046 | josef | 2006-05-22 08:51:28 +0200 (Mo, 22. Mai 2006) | 7 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1229,7 +1292,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7976 | josef | 2006-03-27 10:29:41 +0200 (Mo, 27 Mär 2006) | 6 lines
+r7976 | josef | 2006-03-27 10:29:41 +0200 (Mo, 27. Mär 2006) | 6 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
    M /trunk/grubby/grubby/modules/Makefile.am
@@ -1242,7 +1305,7 @@ can link against installed by default.
 
 
 ------------------------------------------------------------------------
-r7942 | josef | 2006-03-16 16:15:01 +0100 (Do, 16 Mär 2006) | 3 lines
+r7942 | josef | 2006-03-16 16:15:01 +0100 (Do, 16. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/ChangeLog
    M /trunk/docs/ChangeLog
@@ -1264,7 +1327,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7928 | josef | 2006-03-15 14:07:48 +0100 (Mi, 15 Mär 2006) | 3 lines
+r7928 | josef | 2006-03-15 14:07:48 +0100 (Mi, 15. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
 
@@ -1272,7 +1335,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7912 | josef | 2006-03-14 14:54:27 +0100 (Di, 14 Mär 2006) | 3 lines
+r7912 | josef | 2006-03-14 14:54:27 +0100 (Di, 14. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/README
    M /trunk/gnome-client/README
@@ -1289,7 +1352,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7911 | josef | 2006-03-14 14:53:58 +0100 (Di, 14 Mär 2006) | 3 lines
+r7911 | josef | 2006-03-14 14:53:58 +0100 (Di, 14. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/QuickStart.GGZ
    M /trunk/docs/autogen.sh
@@ -1318,7 +1381,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7905 | josef | 2006-03-14 14:47:11 +0100 (Di, 14 Mär 2006) | 4 lines
+r7905 | josef | 2006-03-14 14:47:11 +0100 (Di, 14. Mär 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/NEWS
@@ -1369,7 +1432,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7903 | josef | 2006-03-14 14:45:48 +0100 (Di, 14 Mär 2006) | 3 lines
+r7903 | josef | 2006-03-14 14:45:48 +0100 (Di, 14. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -1389,7 +1452,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7869 | josef | 2006-02-13 08:12:23 +0100 (Mo, 13 Feb 2006) | 3 lines
+r7869 | josef | 2006-02-13 08:12:23 +0100 (Mo, 13. Feb 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/Makefile.am
    A /trunk/grubby/grubby/data/fortune.py
@@ -1400,7 +1463,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7838 | josef | 2006-02-03 14:00:33 +0100 (Fr, 03 Feb 2006) | 5 lines
+r7838 | josef | 2006-02-03 14:00:33 +0100 (Fr, 03. Feb 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/gurumod.h
    M /trunk/grubby/grubby/src/main.c
@@ -1417,7 +1480,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7837 | josef | 2006-02-03 13:58:52 +0100 (Fr, 03 Feb 2006) | 7 lines
+r7837 | josef | 2006-02-03 13:58:52 +0100 (Fr, 03. Feb 2006) | 7 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/embed.c
 
@@ -1429,7 +1492,7 @@ Was not easy to figure out the reason!
 
 
 ------------------------------------------------------------------------
-r7782 | jdorje | 2006-01-14 06:29:03 +0100 (Sa, 14 Jan 2006) | 1 line
+r7782 | jdorje | 2006-01-14 06:29:03 +0100 (Sa, 14. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1446,7 +1509,7 @@ Geänderte Pfade:
 
 Fix AM_CONDITIONAL problem.
 ------------------------------------------------------------------------
-r7762 | jdorje | 2006-01-11 08:00:16 +0100 (Mi, 11 Jan 2006) | 1 line
+r7762 | jdorje | 2006-01-11 08:00:16 +0100 (Mi, 11. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1463,7 +1526,7 @@ Geänderte Pfade:
 
 ggz-gtk support in ggz.m4.
 ------------------------------------------------------------------------
-r7690 | josef | 2005-12-29 12:31:27 +0100 (Do, 29 Dez 2005) | 4 lines
+r7690 | josef | 2005-12-29 12:31:27 +0100 (Do, 29. Dez 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/README.GGZ
    M /trunk/docs/autogen.sh
@@ -1516,7 +1579,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7689 | josef | 2005-12-29 12:29:39 +0100 (Do, 29 Dez 2005) | 3 lines
+r7689 | josef | 2005-12-29 12:29:39 +0100 (Do, 29. Dez 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/main.c
 
@@ -1524,7 +1587,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7677 | josef | 2005-12-19 09:38:17 +0100 (Mo, 19 Dez 2005) | 4 lines
+r7677 | josef | 2005-12-19 09:38:17 +0100 (Mo, 19. Dez 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/Makefile.am
    A /trunk/grubby/grubby/data/test.tcl
@@ -1535,7 +1598,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7674 | josef | 2005-12-16 13:48:42 +0100 (Fr, 16 Dez 2005) | 3 lines
+r7674 | josef | 2005-12-16 13:48:42 +0100 (Fr, 16. Dez 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
    M /trunk/grubby/grubby/modules/Makefile.am
@@ -1546,7 +1609,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7660 | josef | 2005-12-12 12:54:49 +0100 (Mo, 12 Dez 2005) | 5 lines
+r7660 | josef | 2005-12-12 12:54:49 +0100 (Mo, 12. Dez 2005) | 5 lines
 Geänderte Pfade:
    M /trunk/community/web/articles
    M /trunk/community/web/common
@@ -1849,7 +1912,7 @@ This week's XXL commit!
 
 
 ------------------------------------------------------------------------
-r7601 | josef | 2005-09-28 01:37:04 +0200 (Mi, 28 Sep 2005) | 4 lines
+r7601 | josef | 2005-09-28 01:37:04 +0200 (Mi, 28. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/configure.ac
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -1878,7 +1941,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7593 | josef | 2005-09-25 20:25:14 +0200 (So, 25 Sep 2005) | 3 lines
+r7593 | josef | 2005-09-25 20:25:14 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
    M /trunk/ggz-client-libs/ChangeLog
@@ -1899,7 +1962,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7585 | josef | 2005-09-25 19:27:00 +0200 (So, 25 Sep 2005) | 3 lines
+r7585 | josef | 2005-09-25 19:27:00 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
 
@@ -1907,7 +1970,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7558 | josef | 2005-09-25 13:33:51 +0200 (So, 25 Sep 2005) | 3 lines
+r7558 | josef | 2005-09-25 13:33:51 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/main.c
 
@@ -1915,7 +1978,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7551 | josef | 2005-09-25 12:11:25 +0200 (So, 25 Sep 2005) | 3 lines
+r7551 | josef | 2005-09-25 12:11:25 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
    M /trunk/community/web/common/htconf-dist
@@ -1938,7 +2001,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7550 | josef | 2005-09-25 11:54:30 +0200 (So, 25 Sep 2005) | 4 lines
+r7550 | josef | 2005-09-25 11:54:30 +0200 (So, 25. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README.GGZ
@@ -1987,7 +2050,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7547 | josef | 2005-09-23 23:54:25 +0200 (Fr, 23 Sep 2005) | 4 lines
+r7547 | josef | 2005-09-23 23:54:25 +0200 (Fr, 23. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/community/COPYING
    M /trunk/ggz-client-libs/COPYING
@@ -2010,7 +2073,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7516 | josef | 2005-09-15 20:00:53 +0200 (Do, 15 Sep 2005) | 4 lines
+r7516 | josef | 2005-09-15 20:00:53 +0200 (Do, 15. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz-client-libs/autogen.sh
@@ -2040,7 +2103,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7473 | josef | 2005-08-21 11:35:31 +0200 (So, 21 Aug 2005) | 3 lines
+r7473 | josef | 2005-08-21 11:35:31 +0200 (So, 21. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
 
@@ -2048,7 +2111,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7472 | josef | 2005-08-21 11:25:35 +0200 (So, 21 Aug 2005) | 3 lines
+r7472 | josef | 2005-08-21 11:25:35 +0200 (So, 21. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/embedtest.rb
 
@@ -2056,7 +2119,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7464 | josef | 2005-08-20 23:41:45 +0200 (Sa, 20 Aug 2005) | 4 lines
+r7464 | josef | 2005-08-20 23:41:45 +0200 (Sa, 20. Aug 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -2080,7 +2143,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7451 | josef | 2005-08-20 12:48:33 +0200 (Sa, 20 Aug 2005) | 3 lines
+r7451 | josef | 2005-08-20 12:48:33 +0200 (Sa, 20. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/man/de/grubby-config.1
    M /trunk/grubby/man/de/grubby.6
@@ -2089,7 +2152,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7450 | josef | 2005-08-20 12:47:30 +0200 (Sa, 20 Aug 2005) | 6 lines
+r7450 | josef | 2005-08-20 12:47:30 +0200 (Sa, 20. Aug 2005) | 6 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/embedtest.rb
 
@@ -2100,7 +2163,7 @@ But for now it's at least consistent.
 
 
 ------------------------------------------------------------------------
-r7448 | josef | 2005-08-20 12:22:49 +0200 (Sa, 20 Aug 2005) | 6 lines
+r7448 | josef | 2005-08-20 12:22:49 +0200 (Sa, 20. Aug 2005) | 6 lines
 Geänderte Pfade:
    M /trunk/grubby/Makefile.am
 
@@ -2111,7 +2174,7 @@ SVN there's always "svn blame" available.
 
 
 ------------------------------------------------------------------------
-r7428 | josef | 2005-08-15 11:46:23 +0200 (Mo, 15 Aug 2005) | 3 lines
+r7428 | josef | 2005-08-15 11:46:23 +0200 (Mo, 15. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/games/guru-ttt/module.dsc.in
 
@@ -2119,7 +2182,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7416 | josef | 2005-08-14 14:47:15 +0200 (So, 14 Aug 2005) | 3 lines
+r7416 | josef | 2005-08-14 14:47:15 +0200 (So, 14. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/game.c
 
@@ -2127,7 +2190,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7415 | josef | 2005-08-14 14:44:29 +0200 (So, 14 Aug 2005) | 5 lines
+r7415 | josef | 2005-08-14 14:44:29 +0200 (So, 14. Aug 2005) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/net.c
 
@@ -2137,7 +2200,7 @@ Unfortunately playing games doesn't work at all for some reason :(
 
 
 ------------------------------------------------------------------------
-r7414 | josef | 2005-08-14 14:42:47 +0200 (So, 14 Aug 2005) | 3 lines
+r7414 | josef | 2005-08-14 14:42:47 +0200 (So, 14. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/games/guru-ttt/module.dsc.in
 
@@ -2145,7 +2208,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7413 | josef | 2005-08-14 14:26:56 +0200 (So, 14 Aug 2005) | 3 lines
+r7413 | josef | 2005-08-14 14:26:56 +0200 (So, 14. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/game.c
 
@@ -2153,7 +2216,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7394 | josef | 2005-08-13 19:46:34 +0200 (Sa, 13 Aug 2005) | 3 lines
+r7394 | josef | 2005-08-13 19:46:34 +0200 (Sa, 13. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
    M /trunk/grubby/m4/ggz.m4
@@ -2162,7 +2225,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7367 | josef | 2005-08-06 10:32:26 +0200 (Sa, 06 Aug 2005) | 4 lines
+r7367 | josef | 2005-08-06 10:32:26 +0200 (Sa, 06. Aug 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -2181,7 +2244,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7269 | josef | 2005-06-10 14:37:56 +0200 (Fr, 10 Jun 2005) | 3 lines
+r7269 | josef | 2005-06-10 14:37:56 +0200 (Fr, 10. Jun 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/ChangeLog
    M /trunk/grubby/games/guru-chess/ai.c
@@ -2192,7 +2255,7 @@ Geänderte Pfade:
 - changelog was missing
 
 ------------------------------------------------------------------------
-r7216 | josef | 2005-05-21 13:13:11 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7216 | josef | 2005-05-21 13:13:11 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/NEWS
@@ -2259,7 +2322,7 @@ Geänderte Pfade:
 - common files synchronisation and README update for 0.0.11
 
 ------------------------------------------------------------------------
-r7214 | josef | 2005-05-21 12:46:02 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7214 | josef | 2005-05-21 12:46:02 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz/game_clients/configure.ac
@@ -2279,14 +2342,14 @@ Geänderte Pfade:
 - LET version = 0.0.11
 
 ------------------------------------------------------------------------
-r7209 | josef | 2005-05-21 12:26:34 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7209 | josef | 2005-05-21 12:26:34 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/main.c
 
 - version bumped to 0.8 (SILC plugin, literal room names allowed, more changes)
 
 ------------------------------------------------------------------------
-r7182 | josef | 2005-05-06 23:19:56 +0200 (Fr, 06 Mai 2005) | 5 lines
+r7182 | josef | 2005-05-06 23:19:56 +0200 (Fr, 06. Mai 2005) | 5 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-txt-client/m4/ggz.m4
@@ -2306,7 +2369,7 @@ Geänderte Pfade:
 - fixes ggzcore linkage force in ggzmod problem
 
 ------------------------------------------------------------------------
-r7123 | josef | 2005-04-23 13:31:46 +0200 (Sa, 23 Apr 2005) | 4 lines
+r7123 | josef | 2005-04-23 13:31:46 +0200 (Sa, 23. Apr 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/gtk/login.c
    M /trunk/ggz/src/frontend/kde/ggzcore++/src/GGZCoreServer.cpp
@@ -2330,21 +2393,21 @@ Geänderte Pfade:
  * allow users to give email address
 
 ------------------------------------------------------------------------
-r7057 | josef | 2005-03-26 19:56:06 +0100 (Sa, 26 Mär 2005) | 2 lines
+r7057 | josef | 2005-03-26 19:56:06 +0100 (Sa, 26. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/netsilc.c
 
 - do not hardcode room
 
 ------------------------------------------------------------------------
-r7056 | josef | 2005-03-26 19:42:30 +0100 (Sa, 26 Mär 2005) | 2 lines
+r7056 | josef | 2005-03-26 19:42:30 +0100 (Sa, 26. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/netsilc.c
 
 - make SILC plugin work (more or less)
 
 ------------------------------------------------------------------------
-r7042 | josef | 2005-03-25 22:16:40 +0100 (Fr, 25 Mär 2005) | 5 lines
+r7042 | josef | 2005-03-25 22:16:40 +0100 (Fr, 25. Mär 2005) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
    M /trunk/grubby/grubby/src/Makefile.am
@@ -2356,7 +2419,7 @@ It does NOT work yet, it crashes with an illegal instruction.
 But most of the work is done already.
 
 ------------------------------------------------------------------------
-r7014 | josef | 2005-03-18 15:07:30 +0100 (Fr, 18 Mär 2005) | 3 lines
+r7014 | josef | 2005-03-18 15:07:30 +0100 (Fr, 18. Mär 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/Makefile.am
    M /trunk/grubby/grubby/src/net.c
@@ -2365,7 +2428,7 @@ Geänderte Pfade:
 - allow room names too in addition to room numbers
 
 ------------------------------------------------------------------------
-r6918 | josef | 2005-02-04 16:59:43 +0100 (Fr, 04 Feb 2005) | 2 lines
+r6918 | josef | 2005-02-04 16:59:43 +0100 (Fr, 04. Feb 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -2382,7 +2445,7 @@ Geänderte Pfade:
 - synchronize
 
 ------------------------------------------------------------------------
-r6903 | jdorje | 2005-01-25 19:57:38 +0100 (Di, 25 Jan 2005) | 2 lines
+r6903 | jdorje | 2005-01-25 19:57:38 +0100 (Di, 25. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/chess/main.c
    M /trunk/ggz/game_clients/chess/net.c
@@ -2420,21 +2483,21 @@ Geänderte Pfade:
 Change ggzmod event handler functions to take a const data parameter.
 
 ------------------------------------------------------------------------
-r6902 | jdorje | 2005-01-25 19:43:06 +0100 (Di, 25 Jan 2005) | 2 lines
+r6902 | jdorje | 2005-01-25 19:43:06 +0100 (Di, 25. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/net.c
 
 Const-pointer fixes.
 
 ------------------------------------------------------------------------
-r6876 | jdorje | 2005-01-24 07:09:35 +0100 (Mo, 24 Jan 2005) | 2 lines
+r6876 | jdorje | 2005-01-24 07:09:35 +0100 (Mo, 24. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/net.c
 
 Make hook functions take const pointers.
 
 ------------------------------------------------------------------------
-r6866 | jdorje | 2005-01-24 02:39:48 +0100 (Mo, 24 Jan 2005) | 7 lines
+r6866 | jdorje | 2005-01-24 02:39:48 +0100 (Mo, 24. Jan 2005) | 7 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz/src/ggzcore/game.c
@@ -2467,7 +2530,7 @@ library dependency.  This is solved by linking ggzcore in along with
 ggzmod inside AC_GGZ_GGZMOD.
 
 ------------------------------------------------------------------------
-r6856 | josef | 2005-01-23 22:23:07 +0100 (So, 23 Jan 2005) | 2 lines
+r6856 | josef | 2005-01-23 22:23:07 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/ChangeLog
@@ -2501,7 +2564,7 @@ Geänderte Pfade:
 - authors and changelog
 
 ------------------------------------------------------------------------
-r6844 | josef | 2005-01-23 14:20:29 +0100 (So, 23 Jan 2005) | 2 lines
+r6844 | josef | 2005-01-23 14:20:29 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/NEWS
    M /trunk/ggz/game_clients/NEWS
@@ -2521,7 +2584,7 @@ Geänderte Pfade:
 - news update
 
 ------------------------------------------------------------------------
-r6843 | josef | 2005-01-23 14:12:48 +0100 (So, 23 Jan 2005) | 2 lines
+r6843 | josef | 2005-01-23 14:12:48 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/NEWS
    M /trunk/docs/QuickStart.GGZ
@@ -2563,7 +2626,7 @@ Geänderte Pfade:
 - updated common files
 
 ------------------------------------------------------------------------
-r6824 | jdorje | 2005-01-22 20:22:53 +0100 (Sa, 22 Jan 2005) | 2 lines
+r6824 | jdorje | 2005-01-22 20:22:53 +0100 (Sa, 22. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-txt-client/m4/ggz.m4
@@ -2580,14 +2643,14 @@ Geänderte Pfade:
 Search for .la files instead of .so.
 
 ------------------------------------------------------------------------
-r6817 | josef | 2005-01-22 17:06:45 +0100 (Sa, 22 Jan 2005) | 2 lines
+r6817 | josef | 2005-01-22 17:06:45 +0100 (Sa, 22. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/main.c
 
 - version bump: 0.7
 
 ------------------------------------------------------------------------
-r6813 | josef | 2005-01-22 16:38:16 +0100 (Sa, 22 Jan 2005) | 2 lines
+r6813 | josef | 2005-01-22 16:38:16 +0100 (Sa, 22. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz-txt-client/man/ggz-txt.6
    M /trunk/ggzd/man/ggzd.6
@@ -2608,7 +2671,7 @@ Geänderte Pfade:
 - updated version numbers
 
 ------------------------------------------------------------------------
-r6812 | josef | 2005-01-22 16:28:57 +0100 (Sa, 22 Jan 2005) | 2 lines
+r6812 | josef | 2005-01-22 16:28:57 +0100 (Sa, 22. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
@@ -2629,7 +2692,7 @@ Geänderte Pfade:
 - version number bump
 
 ------------------------------------------------------------------------
-r6776 | josef | 2005-01-21 00:44:14 +0100 (Fr, 21 Jan 2005) | 2 lines
+r6776 | josef | 2005-01-21 00:44:14 +0100 (Fr, 21. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggzd/game_servers/chess/ai.c
    M /trunk/grubby/games/guru-chess/ai.c
@@ -2638,7 +2701,7 @@ Geänderte Pfade:
 - disable rule exception: force pawns to capture if possible
 
 ------------------------------------------------------------------------
-r6765 | josef | 2005-01-20 18:14:07 +0100 (Do, 20 Jan 2005) | 2 lines
+r6765 | josef | 2005-01-20 18:14:07 +0100 (Do, 20. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/po
    M /trunk/grubby/grubby/po/.cvsignore
@@ -2646,7 +2709,7 @@ Geänderte Pfade:
 - shut it up!
 
 ------------------------------------------------------------------------
-r6726 | josef | 2005-01-18 17:28:48 +0100 (Di, 18 Jan 2005) | 3 lines
+r6726 | josef | 2005-01-18 17:28:48 +0100 (Di, 18. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/main.c
    M /trunk/grubby/grubby/src/module.c
@@ -2660,14 +2723,14 @@ Geänderte Pfade:
 - conveniently replace parameter with new one: password, for registered grubbies
 
 ------------------------------------------------------------------------
-r6679 | josef | 2005-01-15 00:06:54 +0100 (Sa, 15 Jan 2005) | 2 lines
+r6679 | josef | 2005-01-15 00:06:54 +0100 (Sa, 15. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
 
 - fix for python checks
 
 ------------------------------------------------------------------------
-r6675 | jdorje | 2005-01-14 08:01:43 +0100 (Fr, 14 Jan 2005) | 3 lines
+r6675 | jdorje | 2005-01-14 08:01:43 +0100 (Fr, 14. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/Makefile.am
@@ -2706,7 +2769,7 @@ Add support for libintl and libiconv to AC_GGZ_INTL.  This is needed to
 compile at all on non-glibc systems.
 
 ------------------------------------------------------------------------
-r6643 | jdorje | 2005-01-13 03:23:59 +0100 (Do, 13 Jan 2005) | 2 lines
+r6643 | jdorje | 2005-01-13 03:23:59 +0100 (Do, 13. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -2724,7 +2787,7 @@ Geänderte Pfade:
 Fix a typo in checking for libintl.h and locale.h.
 
 ------------------------------------------------------------------------
-r6641 | jdorje | 2005-01-13 02:45:15 +0100 (Do, 13 Jan 2005) | 3 lines
+r6641 | jdorje | 2005-01-13 02:45:15 +0100 (Do, 13. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -2743,7 +2806,7 @@ Define ENABLE_NLS if NLS is present.  This is standard, even though it's
 not helpful for most packages since NLS is manditory.
 
 ------------------------------------------------------------------------
-r6638 | jdorje | 2005-01-11 18:36:35 +0100 (Di, 11 Jan 2005) | 3 lines
+r6638 | jdorje | 2005-01-11 18:36:35 +0100 (Di, 11. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-txt-client/m4/ggz.m4
@@ -2761,7 +2824,7 @@ Make AC_GGZ_INTL fail if the gettext functions are not available.  It also
 checks for the header files but doesn't fail if they're not present.
 
 ------------------------------------------------------------------------
-r6636 | jdorje | 2005-01-11 04:14:32 +0100 (Di, 11 Jan 2005) | 2 lines
+r6636 | jdorje | 2005-01-11 04:14:32 +0100 (Di, 11. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/kde/ggzcore++/src/Makefile.am
    M /trunk/ggz/src/frontend/kde/src/Makefile.am
@@ -2807,49 +2870,49 @@ Geänderte Pfade:
 Replace deprated INCLUDES directive with AM_CPPFLAGS.
 
 ------------------------------------------------------------------------
-r6552 | josef | 2004-12-22 10:30:58 +0100 (Mi, 22 Dez 2004) | 2 lines
+r6552 | josef | 2004-12-22 10:30:58 +0100 (Mi, 22. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/games/guru-chess/ai.c
 
 - pawn fix: if pawn can beat opponent, he's forced to do so
 
 ------------------------------------------------------------------------
-r6547 | josef | 2004-12-21 18:21:11 +0100 (Di, 21 Dez 2004) | 2 lines
+r6547 | josef | 2004-12-21 18:21:11 +0100 (Di, 21. Dez 2004) | 2 lines
 Geänderte Pfade:
    A /trunk/grubby/m4/i18n.mk
 
 - new i18n infrastructure
 
 ------------------------------------------------------------------------
-r6546 | josef | 2004-12-21 18:19:01 +0100 (Di, 21 Dez 2004) | 2 lines
+r6546 | josef | 2004-12-21 18:19:01 +0100 (Di, 21. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/po/Makefile.am
 
 - use new i18n infrastructure
 
 ------------------------------------------------------------------------
-r6499 | josef | 2004-12-15 23:11:20 +0100 (Mi, 15 Dez 2004) | 2 lines
+r6499 | josef | 2004-12-15 23:11:20 +0100 (Mi, 15. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/Makefile.am
 
 - install guru modules as actual plugins
 
 ------------------------------------------------------------------------
-r6498 | josef | 2004-12-15 23:09:31 +0100 (Mi, 15 Dez 2004) | 2 lines
+r6498 | josef | 2004-12-15 23:09:31 +0100 (Mi, 15. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
 
 - include python 2.4 in checks
 
 ------------------------------------------------------------------------
-r6477 | josef | 2004-12-15 01:13:06 +0100 (Mi, 15 Dez 2004) | 2 lines
+r6477 | josef | 2004-12-15 01:13:06 +0100 (Mi, 15. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/module.c
 
 - mark more strings for translation
 
 ------------------------------------------------------------------------
-r6476 | josef | 2004-12-15 01:10:42 +0100 (Mi, 15 Dez 2004) | 3 lines
+r6476 | josef | 2004-12-15 01:10:42 +0100 (Mi, 15. Dez 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/po/Makefile.am
    A /trunk/grubby/grubby/po/pt_BR.po
@@ -2858,7 +2921,7 @@ Geänderte Pfade:
 - consistency checks
 
 ------------------------------------------------------------------------
-r6372 | josef | 2004-11-14 18:52:25 +0100 (So, 14 Nov 2004) | 2 lines
+r6372 | josef | 2004-11-14 18:52:25 +0100 (So, 14. Nov 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/po/de.po
    M /trunk/grubby/grubby/po/grubby.pot
@@ -2866,7 +2929,7 @@ Geänderte Pfade:
 - update message catalog and German translation of grubby (program part)
 
 ------------------------------------------------------------------------
-r6366 | josef | 2004-11-14 14:03:40 +0100 (So, 14 Nov 2004) | 4 lines
+r6366 | josef | 2004-11-14 14:03:40 +0100 (So, 14. Nov 2004) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/net.c
    M /trunk/grubby/grubby/src/netconsole.c
@@ -2877,7 +2940,7 @@ Geänderte Pfade:
 This character is often used in names.
 
 ------------------------------------------------------------------------
-r6360 | josef | 2004-11-14 00:58:33 +0100 (So, 14 Nov 2004) | 2 lines
+r6360 | josef | 2004-11-14 00:58:33 +0100 (So, 14. Nov 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/de.po
    M /trunk/grubby/grubby/data/pt_BR.po
@@ -2885,7 +2948,7 @@ Geänderte Pfade:
 - update the German and Portuguese grubby (module) translations
 
 ------------------------------------------------------------------------
-r6358 | josef | 2004-11-14 00:05:16 +0100 (So, 14 Nov 2004) | 3 lines
+r6358 | josef | 2004-11-14 00:05:16 +0100 (So, 14. Nov 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/learning.c
 
@@ -2893,7 +2956,7 @@ Geänderte Pfade:
 - discard all messages generated from server
 
 ------------------------------------------------------------------------
-r6357 | josef | 2004-11-13 23:46:10 +0100 (Sa, 13 Nov 2004) | 3 lines
+r6357 | josef | 2004-11-13 23:46:10 +0100 (Sa, 13. Nov 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/learning.c
 
@@ -2901,14 +2964,14 @@ Geänderte Pfade:
 - this causes less disk usage, but increases memory requirements (neglectable)
 
 ------------------------------------------------------------------------
-r6316 | jdorje | 2004-11-10 23:49:30 +0100 (Mi, 10 Nov 2004) | 2 lines
+r6316 | jdorje | 2004-11-10 23:49:30 +0100 (Mi, 10. Nov 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/i18n.h
 
 Add a missing #include.
 
 ------------------------------------------------------------------------
-r6309 | josef | 2004-11-09 14:57:30 +0100 (Di, 09 Nov 2004) | 3 lines
+r6309 | josef | 2004-11-09 14:57:30 +0100 (Di, 09. Nov 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/games/guru-chess/ai.c
    M /trunk/grubby/games/guru-chess/ai.h
@@ -2917,7 +2980,7 @@ Geänderte Pfade:
 - checkmate() function (works, although not following the chess rules)
 
 ------------------------------------------------------------------------
-r6253 | josef | 2004-11-04 17:56:21 +0100 (Do, 04 Nov 2004) | 3 lines
+r6253 | josef | 2004-11-04 17:56:21 +0100 (Do, 04. Nov 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/games/guru-chess/ai.c
    M /trunk/grubby/games/guru-chess/ai.h
@@ -2926,7 +2989,7 @@ Geänderte Pfade:
 - handle left-side rochade (another oops... never did that)
 
 ------------------------------------------------------------------------
-r6233 | josef | 2004-11-01 15:28:16 +0100 (Mo, 01 Nov 2004) | 3 lines
+r6233 | josef | 2004-11-01 15:28:16 +0100 (Mo, 01. Nov 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/games/guru-chess/TROUBLE.ai
    M /trunk/grubby/games/guru-chess/ai.c
@@ -2936,7 +2999,7 @@ Geänderte Pfade:
 - handle pawn exchange
 
 ------------------------------------------------------------------------
-r6204 | josef | 2004-10-21 18:01:13 +0200 (Do, 21 Okt 2004) | 5 lines
+r6204 | josef | 2004-10-21 18:01:13 +0200 (Do, 21. Okt 2004) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/games/guru-chess/TROUBLE.ai
    M /trunk/grubby/games/guru-chess/ai.c
@@ -2947,7 +3010,7 @@ Geänderte Pfade:
 - allow pawns to move twice at the beginning
 
 ------------------------------------------------------------------------
-r6153 | josef | 2004-07-18 02:37:08 +0200 (So, 18 Jul 2004) | 2 lines
+r6153 | josef | 2004-07-18 02:37:08 +0200 (So, 18. Jul 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
    M /trunk/ggz/game_clients/ChangeLog
@@ -2967,7 +3030,7 @@ Geänderte Pfade:
 - changelog update
 
 ------------------------------------------------------------------------
-r6148 | josef | 2004-07-17 19:53:21 +0200 (Sa, 17 Jul 2004) | 3 lines
+r6148 | josef | 2004-07-17 19:53:21 +0200 (Sa, 17. Jul 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/net.c
 
@@ -2975,7 +3038,7 @@ Geänderte Pfade:
   pointer (duh, this is old)
 
 ------------------------------------------------------------------------
-r6135 | josef | 2004-07-17 05:59:30 +0200 (Sa, 17 Jul 2004) | 2 lines
+r6135 | josef | 2004-07-17 05:59:30 +0200 (Sa, 17. Jul 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/Makefile.am
    M /trunk/ggzd/Makefile.am
@@ -2988,14 +3051,14 @@ Geänderte Pfade:
 - fix libtool.m4 inclusion
 
 ------------------------------------------------------------------------
-r6122 | josef | 2004-07-17 02:40:16 +0200 (Sa, 17 Jul 2004) | 2 lines
+r6122 | josef | 2004-07-17 02:40:16 +0200 (Sa, 17. Jul 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/main.c
 
 - grubby can now comment on games, this justifies a new version for him also
 
 ------------------------------------------------------------------------
-r6117 | josef | 2004-07-16 21:08:39 +0200 (Fr, 16 Jul 2004) | 2 lines
+r6117 | josef | 2004-07-16 21:08:39 +0200 (Fr, 16. Jul 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/NEWS
@@ -3072,7 +3135,7 @@ Geänderte Pfade:
 - 0.0.9 updates propagation
 
 ------------------------------------------------------------------------
-r6098 | josef | 2004-07-13 16:56:49 +0200 (Di, 13 Jul 2004) | 2 lines
+r6098 | josef | 2004-07-13 16:56:49 +0200 (Di, 13. Jul 2004) | 2 lines
 Geänderte Pfade:
    D /trunk/ggz-client-libs/m4/libtool.m4
    D /trunk/ggzd/m4/libtool.m4
@@ -3085,7 +3148,7 @@ Geänderte Pfade:
 - remove libtool macros
 
 ------------------------------------------------------------------------
-r6074 | jdorje | 2004-07-10 19:45:53 +0200 (Sa, 10 Jul 2004) | 2 lines
+r6074 | jdorje | 2004-07-10 19:45:53 +0200 (Sa, 10. Jul 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/configure.ac
    M /trunk/ggz-client-libs/m4/libtool.m4
@@ -3097,7 +3160,7 @@ Geänderte Pfade:
 Update libtool.m4.
 
 ------------------------------------------------------------------------
-r6064 | josef | 2004-07-09 13:16:35 +0200 (Fr, 09 Jul 2004) | 3 lines
+r6064 | josef | 2004-07-09 13:16:35 +0200 (Fr, 09. Jul 2004) | 3 lines
 Geänderte Pfade:
    A /trunk/grubby/games/guru-chess/TROUBLE.ai
    M /trunk/grubby/games/guru-chess/ai.c
@@ -3109,7 +3172,7 @@ Geänderte Pfade:
 - add some AI explanations
 
 ------------------------------------------------------------------------
-r6062 | josef | 2004-06-28 16:06:38 +0200 (Mo, 28 Jun 2004) | 3 lines
+r6062 | josef | 2004-06-28 16:06:38 +0200 (Mo, 28. Jun 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/games/guru-chess/ai.c
 
@@ -3117,7 +3180,7 @@ Geänderte Pfade:
   of the 8x8 board)
 
 ------------------------------------------------------------------------
-r6060 | josef | 2004-06-27 21:32:30 +0200 (So, 27 Jun 2004) | 3 lines
+r6060 | josef | 2004-06-27 21:32:30 +0200 (So, 27. Jun 2004) | 3 lines
 Geänderte Pfade:
    A /trunk/grubby/games/guru-chess/DESIGN.ai
    M /trunk/grubby/games/guru-chess/ai.c
@@ -3129,7 +3192,7 @@ Geänderte Pfade:
 - design document about alpha-beta and minimax/negamax implementation
 
 ------------------------------------------------------------------------
-r5971 | josef | 2004-03-22 18:01:02 +0100 (Mo, 22 Mär 2004) | 13 lines
+r5971 | josef | 2004-03-22 18:01:02 +0100 (Mo, 22. Mär 2004) | 13 lines
 Geänderte Pfade:
    M /trunk/grubby/games/guru-chess/Makefile.am
    A /trunk/grubby/games/guru-chess/ai.c
@@ -3182,7 +3245,7 @@ The big grubby update:
 - timer-based GURU_TICK events, independent of messages
 
 ------------------------------------------------------------------------
-r5964 | josef | 2004-03-08 17:38:34 +0100 (Mo, 08 Mär 2004) | 8 lines
+r5964 | josef | 2004-03-08 17:38:34 +0100 (Mo, 08. Mär 2004) | 8 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
    M /trunk/grubby/games/Makefile.am
@@ -3210,7 +3273,7 @@ optimizations) which should then also be used for the server and optionally the 
 Thus it will probably become libcgc-compatible.
 
 ------------------------------------------------------------------------
-r5961 | jdorje | 2004-02-28 02:58:10 +0100 (Sa, 28 Feb 2004) | 2 lines
+r5961 | jdorje | 2004-02-28 02:58:10 +0100 (Sa, 28. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/Makefile.am
    A /trunk/ggz-client-libs/m4/libtool.m4
@@ -3228,7 +3291,7 @@ Geänderte Pfade:
 Add libtool.m4 to CVS.
 
 ------------------------------------------------------------------------
-r5956 | jdorje | 2004-02-21 09:51:32 +0100 (Sa, 21 Feb 2004) | 7 lines
+r5956 | jdorje | 2004-02-21 09:51:32 +0100 (Sa, 21. Feb 2004) | 7 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -3251,14 +3314,14 @@ Geänderte Pfade:
 - Propogate the changes back into all modules.
 
 ------------------------------------------------------------------------
-r5883 | josef | 2004-02-10 09:29:30 +0100 (Di, 10 Feb 2004) | 2 lines
+r5883 | josef | 2004-02-10 09:29:30 +0100 (Di, 10. Feb 2004) | 2 lines
 Geänderte Pfade:
    D /trunk/grubby/debian
 
 - fifth round of removals of distribution files
 
 ------------------------------------------------------------------------
-r5867 | josef | 2004-02-09 10:19:23 +0100 (Mo, 09 Feb 2004) | 8 lines
+r5867 | josef | 2004-02-09 10:19:23 +0100 (Mo, 09. Feb 2004) | 8 lines
 Geänderte Pfade:
    M /trunk/grubby/games/guru-ttt/main.c
    M /trunk/grubby/grubby/src/net.c
@@ -3272,28 +3335,28 @@ broken pipe which makes grubby crash.
 This will have to be fixed.
 
 ------------------------------------------------------------------------
-r5866 | josef | 2004-02-09 09:53:36 +0100 (Mo, 09 Feb 2004) | 2 lines
+r5866 | josef | 2004-02-09 09:53:36 +0100 (Mo, 09. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/extra.c
 
 - make grubby shut up if he's told so
 
 ------------------------------------------------------------------------
-r5816 | josef | 2004-02-07 10:44:07 +0100 (Sa, 07 Feb 2004) | 2 lines
+r5816 | josef | 2004-02-07 10:44:07 +0100 (Sa, 07. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/main.c
 
 - grubby gets a new version too
 
 ------------------------------------------------------------------------
-r5812 | josef | 2004-02-06 21:42:41 +0100 (Fr, 06 Feb 2004) | 2 lines
+r5812 | josef | 2004-02-06 21:42:41 +0100 (Fr, 06. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/po/Makefile.am
 
 - uninstall po files
 
 ------------------------------------------------------------------------
-r5810 | josef | 2004-02-06 21:14:28 +0100 (Fr, 06 Feb 2004) | 2 lines
+r5810 | josef | 2004-02-06 21:14:28 +0100 (Fr, 06. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
    M /trunk/grubby/games/guru-ttt/Makefile.am
@@ -3301,14 +3364,14 @@ Geänderte Pfade:
 - handle module.dsc file correctly
 
 ------------------------------------------------------------------------
-r5805 | josef | 2004-02-06 11:12:06 +0100 (Fr, 06 Feb 2004) | 2 lines
+r5805 | josef | 2004-02-06 11:12:06 +0100 (Fr, 06. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
 
 - fix display of python check result
 
 ------------------------------------------------------------------------
-r5801 | josef | 2004-02-05 13:07:09 +0100 (Do, 05 Feb 2004) | 2 lines
+r5801 | josef | 2004-02-05 13:07:09 +0100 (Do, 05. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/man/de/grubby-config.1
    M /trunk/grubby/man/de/grubby.6
@@ -3316,7 +3379,7 @@ Geänderte Pfade:
 - forgot German manpages
 
 ------------------------------------------------------------------------
-r5793 | josef | 2004-02-05 12:46:52 +0100 (Do, 05 Feb 2004) | 5 lines
+r5793 | josef | 2004-02-05 12:46:52 +0100 (Do, 05. Feb 2004) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/man/grubby-config.1
    M /trunk/grubby/man/grubby.6
@@ -3327,7 +3390,7 @@ Geänderte Pfade:
   * version bump
 
 ------------------------------------------------------------------------
-r5790 | josef | 2004-02-05 11:46:53 +0100 (Do, 05 Feb 2004) | 7 lines
+r5790 | josef | 2004-02-05 11:46:53 +0100 (Do, 05. Feb 2004) | 7 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
    M /trunk/ggz/game_clients/ChangeLog
@@ -3417,7 +3480,7 @@ Geänderte Pfade:
 - ChangeLog updates
 
 ------------------------------------------------------------------------
-r5770 | josef | 2004-01-31 11:54:44 +0100 (Sa, 31 Jan 2004) | 2 lines
+r5770 | josef | 2004-01-31 11:54:44 +0100 (Sa, 31. Jan 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -3441,7 +3504,7 @@ Geänderte Pfade:
 - sync common files
 
 ------------------------------------------------------------------------
-r5740 | dr_maux | 2004-01-17 19:46:28 +0100 (Sa, 17 Jan 2004) | 2 lines
+r5740 | dr_maux | 2004-01-17 19:46:28 +0100 (Sa, 17. Jan 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -3459,7 +3522,7 @@ Geänderte Pfade:
 - sync
 
 ------------------------------------------------------------------------
-r5727 | dr_maux | 2003-12-31 18:02:57 +0100 (Mi, 31 Dez 2003) | 2 lines
+r5727 | dr_maux | 2003-12-31 18:02:57 +0100 (Mi, 31. Dez 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/configure.ac
    M /trunk/ggz-txt-client/configure.ac
@@ -3470,7 +3533,7 @@ Geänderte Pfade:
 - use new-style AC_INIT
 
 ------------------------------------------------------------------------
-r5671 | dr_maux | 2003-11-06 19:16:17 +0100 (Do, 06 Nov 2003) | 5 lines
+r5671 | dr_maux | 2003-11-06 19:16:17 +0100 (Do, 06. Nov 2003) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/self.c
 
@@ -3480,28 +3543,28 @@ This is certainly platform-specific.
 The Linux process accounting functions are horrible.
 
 ------------------------------------------------------------------------
-r5670 | dr_maux | 2003-11-06 18:53:01 +0100 (Do, 06 Nov 2003) | 2 lines
+r5670 | dr_maux | 2003-11-06 18:53:01 +0100 (Do, 06. Nov 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
 
 - detect perl includes correctly
 
 ------------------------------------------------------------------------
-r5669 | dr_maux | 2003-10-25 15:08:40 +0200 (Sa, 25 Okt 2003) | 2 lines
+r5669 | dr_maux | 2003-10-25 15:08:40 +0200 (Sa, 25. Okt 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
 
 - damn typo
 
 ------------------------------------------------------------------------
-r5668 | dr_maux | 2003-10-25 15:07:34 +0200 (Sa, 25 Okt 2003) | 2 lines
+r5668 | dr_maux | 2003-10-25 15:07:34 +0200 (Sa, 25. Okt 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
 
 - python 2.3 is now supported too
 
 ------------------------------------------------------------------------
-r5653 | dr_maux | 2003-09-27 15:31:23 +0200 (Sa, 27 Sep 2003) | 4 lines
+r5653 | dr_maux | 2003-09-27 15:31:23 +0200 (Sa, 27. Sep 2003) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/Makefile.am
    M /trunk/grubby/configure.ac
@@ -3523,28 +3586,28 @@ Geänderte Pfade:
 - add sample ttt game with stupid AI
 
 ------------------------------------------------------------------------
-r5652 | dr_maux | 2003-09-27 12:25:52 +0200 (Sa, 27 Sep 2003) | 2 lines
+r5652 | dr_maux | 2003-09-27 12:25:52 +0200 (Sa, 27. Sep 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/self.c
 
 - only react to about and help commands if people speak with grubby directly
 
 ------------------------------------------------------------------------
-r5644 | dr_maux | 2003-09-10 12:07:06 +0200 (Mi, 10 Sep 2003) | 2 lines
+r5644 | dr_maux | 2003-09-10 12:07:06 +0200 (Mi, 10. Sep 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
 
 - suppress errors if the binary 'ruby' is not found
 
 ------------------------------------------------------------------------
-r5643 | dr_maux | 2003-09-09 21:16:08 +0200 (Di, 09 Sep 2003) | 2 lines
+r5643 | dr_maux | 2003-09-09 21:16:08 +0200 (Di, 09. Sep 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
 
 - much more robust check for ruby
 
 ------------------------------------------------------------------------
-r5588 | dr_maux | 2003-05-17 10:10:42 +0200 (Sa, 17 Mai 2003) | 2 lines
+r5588 | dr_maux | 2003-05-17 10:10:42 +0200 (Sa, 17. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/ChangeLog
    M /trunk/ggz-client-libs/ChangeLog
@@ -3562,7 +3625,7 @@ Geänderte Pfade:
 - update changelog
 
 ------------------------------------------------------------------------
-r5583 | dr_maux | 2003-05-16 20:34:45 +0200 (Fr, 16 Mai 2003) | 2 lines
+r5583 | dr_maux | 2003-05-16 20:34:45 +0200 (Fr, 16. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -3580,14 +3643,14 @@ Geänderte Pfade:
 - apply autogen.sh changes from libggz
 
 ------------------------------------------------------------------------
-r5577 | dr_maux | 2003-05-11 17:28:37 +0200 (So, 11 Mai 2003) | 2 lines
+r5577 | dr_maux | 2003-05-11 17:28:37 +0200 (So, 11. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/po/Makefile.am
 
 - fix installation of translation
 
 ------------------------------------------------------------------------
-r5563 | dr_maux | 2003-05-11 01:54:28 +0200 (So, 11 Mai 2003) | 2 lines
+r5563 | dr_maux | 2003-05-11 01:54:28 +0200 (So, 11. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -3605,7 +3668,7 @@ Geänderte Pfade:
 - set the package version number (via configure.ac) to 0.0.7
 
 ------------------------------------------------------------------------
-r5561 | dr_maux | 2003-05-11 01:46:58 +0200 (So, 11 Mai 2003) | 2 lines
+r5561 | dr_maux | 2003-05-11 01:46:58 +0200 (So, 11. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/README
    M /trunk/grubby/README
@@ -3616,7 +3679,7 @@ Geänderte Pfade:
 - version update
 
 ------------------------------------------------------------------------
-r5556 | dr_maux | 2003-05-11 01:27:19 +0200 (So, 11 Mai 2003) | 2 lines
+r5556 | dr_maux | 2003-05-11 01:27:19 +0200 (So, 11. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/man/de/grubby-config.1
    M /trunk/grubby/man/de/grubby.6
@@ -3626,7 +3689,7 @@ Geänderte Pfade:
 - grubby manpage version update
 
 ------------------------------------------------------------------------
-r5549 | dr_maux | 2003-05-11 01:16:42 +0200 (So, 11 Mai 2003) | 2 lines
+r5549 | dr_maux | 2003-05-11 01:16:42 +0200 (So, 11. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/NEWS
    M /trunk/grubby/README.GGZ
@@ -3635,7 +3698,7 @@ Geänderte Pfade:
 - update common files for 0.0.7 in grubby
 
 ------------------------------------------------------------------------
-r5539 | dr_maux | 2003-05-10 16:38:57 +0200 (Sa, 10 Mai 2003) | 2 lines
+r5539 | dr_maux | 2003-05-10 16:38:57 +0200 (Sa, 10. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -3653,28 +3716,28 @@ Geänderte Pfade:
 - sync autogen.sh
 
 ------------------------------------------------------------------------
-r5530 | dr_maux | 2003-05-10 12:30:28 +0200 (Sa, 10 Mai 2003) | 2 lines
+r5530 | dr_maux | 2003-05-10 12:30:28 +0200 (Sa, 10. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/po/Makefile.am
 
 - fix 'make distcheck'
 
 ------------------------------------------------------------------------
-r5528 | dr_maux | 2003-05-10 11:42:46 +0200 (Sa, 10 Mai 2003) | 2 lines
+r5528 | dr_maux | 2003-05-10 11:42:46 +0200 (Sa, 10. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/Makefile.am
 
 - add po/ directory to SUBDIRS
 
 ------------------------------------------------------------------------
-r5519 | dr_maux | 2003-05-10 08:32:28 +0200 (Sa, 10 Mai 2003) | 2 lines
+r5519 | dr_maux | 2003-05-10 08:32:28 +0200 (Sa, 10. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/main.c
 
 - grubby application version bump
 
 ------------------------------------------------------------------------
-r5500 | dr_maux | 2003-05-05 15:03:41 +0200 (Mo, 05 Mai 2003) | 2 lines
+r5500 | dr_maux | 2003-05-05 15:03:41 +0200 (Mo, 05. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-txt-client/m4/ggz.m4
@@ -3689,7 +3752,7 @@ Geänderte Pfade:
 - add -fsigned-char
 
 ------------------------------------------------------------------------
-r5494 | dr_maux | 2003-04-28 08:55:58 +0200 (Mo, 28 Apr 2003) | 2 lines
+r5494 | dr_maux | 2003-04-28 08:55:58 +0200 (Mo, 28. Apr 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.ac
    M /trunk/grubby/man/Makefile.am
@@ -3703,7 +3766,7 @@ Geänderte Pfade:
 - more i18n: add German man pages for grubby and grubby-config
 
 ------------------------------------------------------------------------
-r5493 | dr_maux | 2003-04-28 08:54:52 +0200 (Mo, 28 Apr 2003) | 2 lines
+r5493 | dr_maux | 2003-04-28 08:54:52 +0200 (Mo, 28. Apr 2003) | 2 lines
 Geänderte Pfade:
    A /trunk/grubby/grubby/po
    A /trunk/grubby/grubby/po/.cvsignore
@@ -3717,14 +3780,14 @@ Geänderte Pfade:
 - i18n'ize grubby
 
 ------------------------------------------------------------------------
-r5490 | dr_maux | 2003-03-30 20:40:20 +0200 (So, 30 Mär 2003) | 2 lines
+r5490 | dr_maux | 2003-03-30 20:40:20 +0200 (So, 30. Mär 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/embed.c
 
 - finish embedding for python and perl
 
 ------------------------------------------------------------------------
-r5476 | dr_maux | 2003-03-29 11:33:32 +0100 (Sa, 29 Mär 2003) | 2 lines
+r5476 | dr_maux | 2003-03-29 11:33:32 +0100 (Sa, 29. Mär 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -3742,7 +3805,7 @@ Geänderte Pfade:
 - apply improverished autogen globally
 
 ------------------------------------------------------------------------
-r5475 | dr_maux | 2003-03-29 11:27:44 +0100 (Sa, 29 Mär 2003) | 2 lines
+r5475 | dr_maux | 2003-03-29 11:27:44 +0100 (Sa, 29. Mär 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -3759,7 +3822,7 @@ Geänderte Pfade:
 - update GGZ macro file
 
 ------------------------------------------------------------------------
-r5413 | dr_maux | 2003-02-16 14:02:09 +0100 (So, 16 Feb 2003) | 2 lines
+r5413 | dr_maux | 2003-02-16 14:02:09 +0100 (So, 16. Feb 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/autogen.sh
    M /trunk/ggz-client-libs/autogen.sh
@@ -3777,7 +3840,7 @@ Geänderte Pfade:
 - new autogen.sh
 
 ------------------------------------------------------------------------
-r5392 | jdorje | 2003-02-04 20:12:03 +0100 (Di, 04 Feb 2003) | 2 lines
+r5392 | jdorje | 2003-02-04 20:12:03 +0100 (Di, 04. Feb 2003) | 2 lines
 Geänderte Pfade:
    D /trunk/grubby/acconfig.h
    M /trunk/grubby/configure.ac
@@ -3785,14 +3848,14 @@ Geänderte Pfade:
 Various updates for autoconf2.5x usage.
 
 ------------------------------------------------------------------------
-r5391 | jdorje | 2003-02-04 20:11:20 +0100 (Di, 04 Feb 2003) | 2 lines
+r5391 | jdorje | 2003-02-04 20:11:20 +0100 (Di, 04. Feb 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/net.c
 
 Disable TLS in the call to ggzcore_server_set_hostinfo.
 
 ------------------------------------------------------------------------
-r5367 | jdorje | 2003-02-04 09:45:04 +0100 (Di, 04 Feb 2003) | 2 lines
+r5367 | jdorje | 2003-02-04 09:45:04 +0100 (Di, 04. Feb 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/embed.c
    M /trunk/grubby/grubby/src/net.c
@@ -3800,7 +3863,7 @@ Geänderte Pfade:
 Mark one function as static, and comment out an unused static function.
 
 ------------------------------------------------------------------------
-r5365 | jdorje | 2003-02-04 09:42:05 +0100 (Di, 04 Feb 2003) | 2 lines
+r5365 | jdorje | 2003-02-04 09:42:05 +0100 (Di, 04. Feb 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/autogen.sh
    A /trunk/grubby/configure.ac
@@ -3815,7 +3878,7 @@ Geänderte Pfade:
 Step 1 of autoconf2.5x-only support: rename configure.in as configure.ac.
 
 ------------------------------------------------------------------------
-r5328 | dr_maux | 2003-01-12 22:20:53 +0100 (So, 12 Jan 2003) | 7 lines
+r5328 | dr_maux | 2003-01-12 22:20:53 +0100 (So, 12. Jan 2003) | 7 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.in
 
@@ -3827,7 +3890,7 @@ The problem is that there's not automatic way to determine the architecture.
 Uname -m/-p gives either 'ppc' or '750FX', both are not really of use to us.
 
 ------------------------------------------------------------------------
-r5315 | dr_maux | 2003-01-12 12:36:43 +0100 (So, 12 Jan 2003) | 6 lines
+r5315 | dr_maux | 2003-01-12 12:36:43 +0100 (So, 12. Jan 2003) | 6 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/main.c
    M /trunk/grubby/grubby/src/module.h
@@ -3839,7 +3902,7 @@ Geänderte Pfade:
   only the GGZ net plugin does an atoi() on it
 
 ------------------------------------------------------------------------
-r5310 | dr_maux | 2003-01-06 21:29:18 +0100 (Mo, 06 Jan 2003) | 7 lines
+r5310 | dr_maux | 2003-01-06 21:29:18 +0100 (Mo, 06. Jan 2003) | 7 lines
 Geänderte Pfade:
    M /trunk/grubby/m4/ggz.m4
 
@@ -3851,7 +3914,7 @@ it wouldn't make much sense to synchronize them right now (more changes will
 come).
 
 ------------------------------------------------------------------------
-r5304 | jdorje | 2002-12-20 05:48:32 +0100 (Fr, 20 Dez 2002) | 2 lines
+r5304 | jdorje | 2002-12-20 05:48:32 +0100 (Fr, 20. Dez 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/Makefile.am
    D /trunk/grubby/acinclude.ggz
@@ -3862,14 +3925,14 @@ Geänderte Pfade:
 Move acinclude.ggz to m4/ggz.m4.
 
 ------------------------------------------------------------------------
-r5264 | dr_maux | 2002-11-25 16:14:55 +0100 (Mo, 25 Nov 2002) | 2 lines
+r5264 | dr_maux | 2002-11-25 16:14:55 +0100 (Mo, 25. Nov 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/TODO
 
 - update TODO for grubby
 
 ------------------------------------------------------------------------
-r5263 | dr_maux | 2002-11-25 15:59:32 +0100 (Mo, 25 Nov 2002) | 7 lines
+r5263 | dr_maux | 2002-11-25 15:59:32 +0100 (Mo, 25. Nov 2002) | 7 lines
 Geänderte Pfade:
    M /trunk/grubby/autogen.sh
    M /trunk/grubby/configure.in
@@ -3882,7 +3945,7 @@ systems should be supported without --look-there and --look-there-too.
 For all others such strings should be added though.
 
 ------------------------------------------------------------------------
-r5221 | dr_maux | 2002-11-04 20:13:13 +0100 (Mo, 04 Nov 2002) | 5 lines
+r5221 | dr_maux | 2002-11-04 20:13:13 +0100 (Mo, 04. Nov 2002) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/extra.c
    M /trunk/grubby/grubby/src/netirc.c
@@ -3893,7 +3956,7 @@ Geänderte Pfade:
  * understand channel enter and leave actions
 
 ------------------------------------------------------------------------
-r5181 | dr_maux | 2002-11-03 21:27:39 +0100 (So, 03 Nov 2002) | 5 lines
+r5181 | dr_maux | 2002-11-03 21:27:39 +0100 (So, 03. Nov 2002) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/badword.c
    M /trunk/grubby/grubby/src/Makefile.am
@@ -3911,7 +3974,7 @@ Geänderte Pfade:
   players (though they always should be)
 
 ------------------------------------------------------------------------
-r5170 | dr_maux | 2002-11-03 20:04:31 +0100 (So, 03 Nov 2002) | 4 lines
+r5170 | dr_maux | 2002-11-03 20:04:31 +0100 (So, 03. Nov 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/acconfig.h
    M /trunk/grubby/configure.in
@@ -3921,7 +3984,7 @@ Geänderte Pfade:
 Support for 2.1 could be added but this is rather obsolete now.
 
 ------------------------------------------------------------------------
-r5169 | dr_maux | 2002-11-03 20:02:39 +0100 (So, 03 Nov 2002) | 6 lines
+r5169 | dr_maux | 2002-11-03 20:02:39 +0100 (So, 03. Nov 2002) | 6 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/Makefile.am
    M /trunk/grubby/grubby/modules/embed.c
@@ -3933,7 +3996,7 @@ Python seems to be difficult - it should be flexible enough to allow parameters
 (Py_Main() is too simple), but not as complex as the code used in GGZSH.
 
 ------------------------------------------------------------------------
-r5137 | dr_maux | 2002-11-01 23:27:32 +0100 (Fr, 01 Nov 2002) | 2 lines
+r5137 | dr_maux | 2002-11-01 23:27:32 +0100 (Fr, 01. Nov 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/acconfig.h
    M /trunk/grubby/configure.in
@@ -3943,7 +4006,7 @@ Geänderte Pfade:
 - start with perl support
 
 ------------------------------------------------------------------------
-r4929 | jdorje | 2002-10-16 02:07:30 +0200 (Mi, 16 Okt 2002) | 16 lines
+r4929 | jdorje | 2002-10-16 02:07:30 +0200 (Mi, 16. Okt 2002) | 16 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/ggz-client-libs/acinclude.ggz
@@ -3973,14 +4036,14 @@ the first parameter to the macro.  But this way is more consistent, in
 my opinion.
 
 ------------------------------------------------------------------------
-r4831 | jdorje | 2002-10-10 02:29:28 +0200 (Do, 10 Okt 2002) | 2 lines
+r4831 | jdorje | 2002-10-10 02:29:28 +0200 (Do, 10. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/net.c
 
 Update grubby to use the new ggzcore interface.
 
 ------------------------------------------------------------------------
-r4825 | jdorje | 2002-10-09 22:05:47 +0200 (Mi, 09 Okt 2002) | 8 lines
+r4825 | jdorje | 2002-10-09 22:05:47 +0200 (Mi, 09. Okt 2002) | 8 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/Makefile.am
    M /trunk/grubby/grubby/modules/badword.c
@@ -4005,21 +4068,21 @@ Fix compiler warnings for grubby:
   - Remove exec.h (contents are effectively moved into gurumod.h).
 
 ------------------------------------------------------------------------
-r4824 | jdorje | 2002-10-09 21:13:15 +0200 (Mi, 09 Okt 2002) | 2 lines
+r4824 | jdorje | 2002-10-09 21:13:15 +0200 (Mi, 09. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/net.c
 
 Don't segfault if we can't connect to the server.  Just exit gracefully.
 
 ------------------------------------------------------------------------
-r4804 | dr_maux | 2002-10-08 02:02:33 +0200 (Di, 08 Okt 2002) | 2 lines
+r4804 | dr_maux | 2002-10-08 02:02:33 +0200 (Di, 08. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/README
 
 - s/0.0.5/0.0.6/
 
 ------------------------------------------------------------------------
-r4803 | jdorje | 2002-10-08 01:58:26 +0200 (Di, 08 Okt 2002) | 3 lines
+r4803 | jdorje | 2002-10-08 01:58:26 +0200 (Di, 08. Okt 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/embed.c
 
@@ -4027,14 +4090,14 @@ Undo an earlier (foolish) commit, so that the embed module will actually
 work.
 
 ------------------------------------------------------------------------
-r4802 | dr_maux | 2002-10-08 01:31:06 +0200 (Di, 08 Okt 2002) | 2 lines
+r4802 | dr_maux | 2002-10-08 01:31:06 +0200 (Di, 08. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/embed.c
 
 - don't comment out status variable; rather, move it into ruby-specific part
 
 ------------------------------------------------------------------------
-r4799 | jdorje | 2002-10-08 00:53:48 +0200 (Di, 08 Okt 2002) | 4 lines
+r4799 | jdorje | 2002-10-08 00:53:48 +0200 (Di, 08. Okt 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/embed.c
    M /trunk/grubby/grubby/src/main.c
@@ -4046,14 +4109,14 @@ Fixed some trivial compiler warnings:
   - Gave specific prototypes to some functions.
 
 ------------------------------------------------------------------------
-r4798 | dr_maux | 2002-10-08 00:30:44 +0200 (Di, 08 Okt 2002) | 2 lines
+r4798 | dr_maux | 2002-10-08 00:30:44 +0200 (Di, 08. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/net.c
 
 - shut up debug messages for player leave/join events
 
 ------------------------------------------------------------------------
-r4795 | jdorje | 2002-10-07 23:28:18 +0200 (Mo, 07 Okt 2002) | 2 lines
+r4795 | jdorje | 2002-10-07 23:28:18 +0200 (Mo, 07. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/NEWS
    M /trunk/ggz/game_clients/NEWS
@@ -4070,7 +4133,7 @@ Geänderte Pfade:
 Rewrote NEWS for 0.0.6, and propogated it to all modules.
 
 ------------------------------------------------------------------------
-r4794 | dr_maux | 2002-10-07 23:16:10 +0200 (Mo, 07 Okt 2002) | 2 lines
+r4794 | dr_maux | 2002-10-07 23:16:10 +0200 (Mo, 07. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
    M /trunk/ggz/game_clients/ChangeLog
@@ -4087,7 +4150,7 @@ Geänderte Pfade:
 - update changelog for 0.0.6
 
 ------------------------------------------------------------------------
-r4761 | dr_maux | 2002-09-29 14:17:42 +0200 (So, 29 Sep 2002) | 2 lines
+r4761 | dr_maux | 2002-09-29 14:17:42 +0200 (So, 29. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.in
    M /trunk/grubby/grubby/src/main.c
@@ -4097,7 +4160,7 @@ Geänderte Pfade:
 - grubby version number bumping
 
 ------------------------------------------------------------------------
-r4746 | dr_maux | 2002-09-27 10:58:31 +0200 (Fr, 27 Sep 2002) | 2 lines
+r4746 | dr_maux | 2002-09-27 10:58:31 +0200 (Fr, 27. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -4115,7 +4178,7 @@ Geänderte Pfade:
 - new autogen
 
 ------------------------------------------------------------------------
-r4739 | dr_maux | 2002-09-26 20:42:43 +0200 (Do, 26 Sep 2002) | 5 lines
+r4739 | dr_maux | 2002-09-26 20:42:43 +0200 (Do, 26. Sep 2002) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/Makefile.am
    M /trunk/grubby/configure.in
@@ -4126,14 +4189,14 @@ Geänderte Pfade:
 - grubby does now pass 'make distcheck'
 
 ------------------------------------------------------------------------
-r4738 | dr_maux | 2002-09-26 20:41:31 +0200 (Do, 26 Sep 2002) | 2 lines
+r4738 | dr_maux | 2002-09-26 20:41:31 +0200 (Do, 26. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/Makefile.am
 
 - include embedtest.rb into EXTRA_DIST
 
 ------------------------------------------------------------------------
-r4737 | dr_maux | 2002-09-26 20:23:39 +0200 (Do, 26 Sep 2002) | 2 lines
+r4737 | dr_maux | 2002-09-26 20:23:39 +0200 (Do, 26. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/doc/Setup
    M /trunk/grubby/grubby/doc/Tutorial
@@ -4141,21 +4204,21 @@ Geänderte Pfade:
 - update internal grubby docs a bit
 
 ------------------------------------------------------------------------
-r4736 | dr_maux | 2002-09-26 20:19:42 +0200 (Do, 26 Sep 2002) | 2 lines
+r4736 | dr_maux | 2002-09-26 20:19:42 +0200 (Do, 26. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/embed.c
 
 - don't crash in NULL messages (e.g. if players enter the room)
 
 ------------------------------------------------------------------------
-r4735 | dr_maux | 2002-09-26 20:17:47 +0200 (Do, 26 Sep 2002) | 2 lines
+r4735 | dr_maux | 2002-09-26 20:17:47 +0200 (Do, 26. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/embedtest.rb
 
 - shut up debug information in mod_embed test script
 
 ------------------------------------------------------------------------
-r4714 | dr_maux | 2002-09-26 12:12:19 +0200 (Do, 26 Sep 2002) | 3 lines
+r4714 | dr_maux | 2002-09-26 12:12:19 +0200 (Do, 26. Sep 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/acinclude.ggz
 
@@ -4163,7 +4226,7 @@ Geänderte Pfade:
   AC_GGZ_CONFIG and AC_GGZ_INTL too
 
 ------------------------------------------------------------------------
-r4698 | dr_maux | 2002-09-25 17:46:21 +0200 (Mi, 25 Sep 2002) | 7 lines
+r4698 | dr_maux | 2002-09-25 17:46:21 +0200 (Mi, 25. Sep 2002) | 7 lines
 Geänderte Pfade:
    M /trunk/grubby/acinclude.ggz
 
@@ -4175,7 +4238,7 @@ Otherwise, a header could be found in the right directory while the library is
 chosen from the wrong one.
 
 ------------------------------------------------------------------------
-r4695 | dr_maux | 2002-09-25 17:08:17 +0200 (Mi, 25 Sep 2002) | 5 lines
+r4695 | dr_maux | 2002-09-25 17:08:17 +0200 (Mi, 25. Sep 2002) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/acinclude.ggz
    M /trunk/grubby/configure.in
@@ -4186,7 +4249,7 @@ Geänderte Pfade:
 * new internal macro AC_GGZ_REMOVEDUPS(list, <retlist>)
 
 ------------------------------------------------------------------------
-r4694 | dr_maux | 2002-09-25 16:09:01 +0200 (Mi, 25 Sep 2002) | 6 lines
+r4694 | dr_maux | 2002-09-25 16:09:01 +0200 (Mi, 25. Sep 2002) | 6 lines
 Geänderte Pfade:
    M /trunk/grubby/acinclude.ggz
    M /trunk/grubby/autogen.sh
@@ -4199,7 +4262,7 @@ Geänderte Pfade:
 * in autogen, take acinclude.ggz from $srcdir explicitely
 
 ------------------------------------------------------------------------
-r4693 | dr_maux | 2002-09-25 12:36:13 +0200 (Mi, 25 Sep 2002) | 5 lines
+r4693 | dr_maux | 2002-09-25 12:36:13 +0200 (Mi, 25. Sep 2002) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/acinclude.ggz
    M /trunk/grubby/configure.in
@@ -4210,7 +4273,7 @@ Note that this is not yet the final version, which will also take a condition
 parameter. It should be tested here first however.
 
 ------------------------------------------------------------------------
-r4692 | dr_maux | 2002-09-25 12:34:47 +0200 (Mi, 25 Sep 2002) | 4 lines
+r4692 | dr_maux | 2002-09-25 12:34:47 +0200 (Mi, 25. Sep 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/Makefile.am
    M /trunk/grubby/grubby/data/de.po
@@ -4221,7 +4284,7 @@ Geänderte Pfade:
 Too bad my Spanish skills are still in their infancy...
 
 ------------------------------------------------------------------------
-r4683 | dr_maux | 2002-09-24 10:40:15 +0200 (Di, 24 Sep 2002) | 5 lines
+r4683 | dr_maux | 2002-09-24 10:40:15 +0200 (Di, 24. Sep 2002) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/net.c
 
@@ -4231,7 +4294,7 @@ Old grubby ate 95% CPU.
 New grubby is dieting.
 
 ------------------------------------------------------------------------
-r4679 | dr_maux | 2002-09-24 09:36:20 +0200 (Di, 24 Sep 2002) | 2 lines
+r4679 | dr_maux | 2002-09-24 09:36:20 +0200 (Di, 24. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/QuickStart.GGZ
    M /trunk/docs/README.GGZ
@@ -4257,7 +4320,7 @@ Geänderte Pfade:
 - update intro docs
 
 ------------------------------------------------------------------------
-r4674 | jdorje | 2002-09-24 00:45:37 +0200 (Di, 24 Sep 2002) | 3 lines
+r4674 | jdorje | 2002-09-24 00:45:37 +0200 (Di, 24. Sep 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/ggz-client-libs/acinclude.ggz
@@ -4274,7 +4337,7 @@ Update acinclude.ggz in the txt-client, and label acinclude.ggz as being
 included in txt-client.
 
 ------------------------------------------------------------------------
-r4631 | jdorje | 2002-09-19 18:18:33 +0200 (Do, 19 Sep 2002) | 2 lines
+r4631 | jdorje | 2002-09-19 18:18:33 +0200 (Do, 19. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/ggz-client-libs/acinclude.ggz
@@ -4289,14 +4352,14 @@ Geänderte Pfade:
 Include gnome-client on the list of modules that use acinclude.ggz.
 
 ------------------------------------------------------------------------
-r4561 | dr_maux | 2002-09-14 09:46:34 +0200 (Sa, 14 Sep 2002) | 2 lines
+r4561 | dr_maux | 2002-09-14 09:46:34 +0200 (Sa, 14. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/man/grubby.6
 
 - add command line options to grubby's man page
 
 ------------------------------------------------------------------------
-r4410 | dr_maux | 2002-09-05 21:52:47 +0200 (Do, 05 Sep 2002) | 6 lines
+r4410 | dr_maux | 2002-09-05 21:52:47 +0200 (Do, 05. Sep 2002) | 6 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/dict.pl
    M /trunk/grubby/grubby/data/rdf.pl
@@ -4308,7 +4371,7 @@ Geänderte Pfade:
  * when requesting news via HTTP, send out compliant HTTP/1.0 header
 
 ------------------------------------------------------------------------
-r4376 | jdorje | 2002-08-20 22:49:40 +0200 (Di, 20 Aug 2002) | 2 lines
+r4376 | jdorje | 2002-08-20 22:49:40 +0200 (Di, 20. Aug 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/ggz/game_clients/configure.in
@@ -4325,7 +4388,7 @@ Geänderte Pfade:
 Changed -I<directory> to -isystem<directory> to avoid warnings in gcc3.
 
 ------------------------------------------------------------------------
-r4368 | dr_maux | 2002-08-18 09:53:02 +0200 (So, 18 Aug 2002) | 10 lines
+r4368 | dr_maux | 2002-08-18 09:53:02 +0200 (So, 18. Aug 2002) | 10 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/webtranslator.sh
 
@@ -4340,7 +4403,7 @@ echo "grubby translate de-fr was ist ein fisch" | ./webtranslator.sh
 perfectly, n'est-ce pas?)
 
 ------------------------------------------------------------------------
-r4365 | dr_maux | 2002-08-13 07:35:49 +0200 (Di, 13 Aug 2002) | 5 lines
+r4365 | dr_maux | 2002-08-13 07:35:49 +0200 (Di, 13. Aug 2002) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/webtranslator.sh
 
@@ -4350,7 +4413,7 @@ Geänderte Pfade:
 - store cache in ~/.ggz/grubby/google instead of ~/google
 
 ------------------------------------------------------------------------
-r4364 | dr_maux | 2002-08-12 22:44:31 +0200 (Mo, 12 Aug 2002) | 12 lines
+r4364 | dr_maux | 2002-08-12 22:44:31 +0200 (Mo, 12. Aug 2002) | 12 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/Makefile.am
    A /trunk/grubby/grubby/data/webtranslator.sh
@@ -4368,7 +4431,7 @@ line, this works already.
 For single words, the traditional translator will still be faster I guess.
 
 ------------------------------------------------------------------------
-r4231 | dr_maux | 2002-05-24 20:56:14 +0200 (Fr, 24 Mai 2002) | 7 lines
+r4231 | dr_maux | 2002-05-24 20:56:14 +0200 (Fr, 24. Mai 2002) | 7 lines
 Geänderte Pfade:
    M /trunk/grubby
    M /trunk/grubby/.cvsignore
@@ -4382,7 +4445,7 @@ experimental there.)
 - add autom4te.cache to .cvsignore
 
 ------------------------------------------------------------------------
-r4228 | dr_maux | 2002-05-22 11:33:18 +0200 (Mi, 22 Mai 2002) | 6 lines
+r4228 | dr_maux | 2002-05-22 11:33:18 +0200 (Mi, 22. Mai 2002) | 6 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/Makefile.am
 
@@ -4393,7 +4456,7 @@ Geänderte Pfade:
 test = /usr/local/.../embedtest.rb
 
 ------------------------------------------------------------------------
-r4227 | dr_maux | 2002-05-22 11:31:39 +0200 (Mi, 22 Mai 2002) | 7 lines
+r4227 | dr_maux | 2002-05-22 11:31:39 +0200 (Mi, 22. Mai 2002) | 7 lines
 Geänderte Pfade:
    A /trunk/grubby/grubby/data/embedtest.rb
    M /trunk/grubby/grubby/modules/embed.c
@@ -4407,7 +4470,7 @@ Geänderte Pfade:
 - fix ggzcore_read_data
 
 ------------------------------------------------------------------------
-r4019 | dr_maux | 2002-04-18 22:02:54 +0200 (Do, 18 Apr 2002) | 3 lines
+r4019 | dr_maux | 2002-04-18 22:02:54 +0200 (Do, 18. Apr 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/acconfig.h
    M /trunk/grubby/configure.in
@@ -4416,7 +4479,7 @@ Geänderte Pfade:
 - if it's not there, 'embed' turns into an empty module
 
 ------------------------------------------------------------------------
-r4018 | dr_maux | 2002-04-18 22:01:59 +0200 (Do, 18 Apr 2002) | 4 lines
+r4018 | dr_maux | 2002-04-18 22:01:59 +0200 (Do, 18. Apr 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/Makefile.am
    A /trunk/grubby/grubby/modules/embed.c
@@ -4426,7 +4489,7 @@ Geänderte Pfade:
   advantages in the future
 
 ------------------------------------------------------------------------
-r4016 | dr_maux | 2002-04-18 21:30:05 +0200 (Do, 18 Apr 2002) | 3 lines
+r4016 | dr_maux | 2002-04-18 21:30:05 +0200 (Do, 18. Apr 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.in
 
@@ -4434,7 +4497,7 @@ Geänderte Pfade:
 - output some text after running configure
 
 ------------------------------------------------------------------------
-r3971 | bmh | 2002-04-13 09:16:27 +0200 (Sa, 13 Apr 2002) | 3 lines
+r3971 | bmh | 2002-04-13 09:16:27 +0200 (Sa, 13. Apr 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/AUTHORS
    M /trunk/grubby/ChangeLog
@@ -4446,14 +4509,14 @@ Geänderte Pfade:
 - Updated docs for 0.0.5
 
 ------------------------------------------------------------------------
-r3956 | dr_maux | 2002-04-13 06:45:37 +0200 (Sa, 13 Apr 2002) | 2 lines
+r3956 | dr_maux | 2002-04-13 06:45:37 +0200 (Sa, 13. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.in
 
 - bump grubby to 0.0.5
 
 ------------------------------------------------------------------------
-r3929 | dr_maux | 2002-04-13 02:45:42 +0200 (Sa, 13 Apr 2002) | 2 lines
+r3929 | dr_maux | 2002-04-13 02:45:42 +0200 (Sa, 13. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggzd/Makefile.am
    M /trunk/grubby/Makefile.am
@@ -4463,7 +4526,7 @@ Geänderte Pfade:
 - remove local make clean rule again
 
 ------------------------------------------------------------------------
-r3862 | dr_maux | 2002-04-09 22:33:42 +0200 (Di, 09 Apr 2002) | 2 lines
+r3862 | dr_maux | 2002-04-09 22:33:42 +0200 (Di, 09. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/debian/control
    M /trunk/grubby/debian/rules
@@ -4471,7 +4534,7 @@ Geänderte Pfade:
 - update build information
 
 ------------------------------------------------------------------------
-r3793 | dr_maux | 2002-04-06 23:22:03 +0200 (Sa, 06 Apr 2002) | 2 lines
+r3793 | dr_maux | 2002-04-06 23:22:03 +0200 (Sa, 06. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/debian
    M /trunk/grubby/debian/.cvsignore
@@ -4484,14 +4547,14 @@ Geänderte Pfade:
 - debianize grubby
 
 ------------------------------------------------------------------------
-r3792 | dr_maux | 2002-04-06 23:13:57 +0200 (Sa, 06 Apr 2002) | 2 lines
+r3792 | dr_maux | 2002-04-06 23:13:57 +0200 (Sa, 06. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/Makefile.am
 
 - config status deletion rule
 
 ------------------------------------------------------------------------
-r3778 | dr_maux | 2002-04-06 17:39:12 +0200 (Sa, 06 Apr 2002) | 2 lines
+r3778 | dr_maux | 2002-04-06 17:39:12 +0200 (Sa, 06. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/ggz-client-libs/acinclude.ggz
@@ -4504,7 +4567,7 @@ Geänderte Pfade:
 - sync acinclude.ggz
 
 ------------------------------------------------------------------------
-r3759 | dr_maux | 2002-04-06 00:18:14 +0200 (Sa, 06 Apr 2002) | 2 lines
+r3759 | dr_maux | 2002-04-06 00:18:14 +0200 (Sa, 06. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/README
    M /trunk/kde-client/README
@@ -4515,7 +4578,7 @@ Geänderte Pfade:
 - update package information
 
 ------------------------------------------------------------------------
-r3758 | dr_maux | 2002-04-06 00:03:05 +0200 (Sa, 06 Apr 2002) | 2 lines
+r3758 | dr_maux | 2002-04-06 00:03:05 +0200 (Sa, 06. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/README.GGZ
    M /trunk/ggz/game_clients/QuickStart.GGZ
@@ -4537,7 +4600,7 @@ Geänderte Pfade:
 - update installation instructions and overview
 
 ------------------------------------------------------------------------
-r3620 | dr_maux | 2002-03-22 23:30:10 +0100 (Fr, 22 Mär 2002) | 4 lines
+r3620 | dr_maux | 2002-03-22 23:30:10 +0100 (Fr, 22. Mär 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/i18n.c
    M /trunk/grubby/grubby/src/net.c
@@ -4547,28 +4610,28 @@ Geänderte Pfade:
   twice today...)
 
 ------------------------------------------------------------------------
-r3549 | dr_maux | 2002-03-06 22:19:37 +0100 (Mi, 06 Mär 2002) | 2 lines
+r3549 | dr_maux | 2002-03-06 22:19:37 +0100 (Mi, 06. Mär 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/de.po
 
 - fix missing %s in translation
 
 ------------------------------------------------------------------------
-r3510 | dr_maux | 2002-03-02 17:22:16 +0100 (Sa, 02 Mär 2002) | 2 lines
+r3510 | dr_maux | 2002-03-02 17:22:16 +0100 (Sa, 02. Mär 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/net.c
 
 - omit TLS argument until tls-branch is merged with HEAD
 
 ------------------------------------------------------------------------
-r3509 | dr_maux | 2002-03-02 17:10:11 +0100 (Sa, 02 Mär 2002) | 2 lines
+r3509 | dr_maux | 2002-03-02 17:10:11 +0100 (Sa, 02. Mär 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/TODO
 
 - update todo file
 
 ------------------------------------------------------------------------
-r3508 | dr_maux | 2002-03-02 17:08:56 +0100 (Sa, 02 Mär 2002) | 3 lines
+r3508 | dr_maux | 2002-03-02 17:08:56 +0100 (Sa, 02. Mär 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/de.po
    M /trunk/grubby/grubby/data/fr.po
@@ -4589,7 +4652,7 @@ Geänderte Pfade:
 - enhance grubby-config to include default language
 
 ------------------------------------------------------------------------
-r3507 | dr_maux | 2002-03-02 15:50:48 +0100 (Sa, 02 Mär 2002) | 6 lines
+r3507 | dr_maux | 2002-03-02 15:50:48 +0100 (Sa, 02. Mär 2002) | 6 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/de.po
    M /trunk/grubby/grubby/data/fr.po
@@ -4609,7 +4672,7 @@ Geänderte Pfade:
  altered in order to work properly for combined strings
 
 ------------------------------------------------------------------------
-r3506 | dr_maux | 2002-03-02 14:04:23 +0100 (Sa, 02 Mär 2002) | 2 lines
+r3506 | dr_maux | 2002-03-02 14:04:23 +0100 (Sa, 02. Mär 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby
    M /trunk/grubby/.cvsignore
@@ -4617,28 +4680,28 @@ Geänderte Pfade:
 - put new auto-generated automake1.5 files into .cvsignore
 
 ------------------------------------------------------------------------
-r3505 | dr_maux | 2002-03-02 13:49:13 +0100 (Sa, 02 Mär 2002) | 2 lines
+r3505 | dr_maux | 2002-03-02 13:49:13 +0100 (Sa, 02. Mär 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/man/grubby-config.1
 
 - fix grubby-config manpage (section 1, not 6, and verbose++)
 
 ------------------------------------------------------------------------
-r3233 | jdorje | 2002-02-03 22:13:20 +0100 (So, 03 Feb 2002) | 2 lines
+r3233 | jdorje | 2002-02-03 22:13:20 +0100 (So, 03. Feb 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/acinclude.ggz
 
 Updated acinclude.ggz from changes made in ggzd.
 
 ------------------------------------------------------------------------
-r3190 | dr_maux | 2002-01-24 21:04:13 +0100 (Do, 24 Jan 2002) | 2 lines
+r3190 | dr_maux | 2002-01-24 21:04:13 +0100 (Do, 24. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/autogen.sh
 
 - don't generate player.c anymore as it's not used anyway (we use RTLD_GLOBAL)
 
 ------------------------------------------------------------------------
-r3189 | dr_maux | 2002-01-24 21:03:25 +0100 (Do, 24 Jan 2002) | 3 lines
+r3189 | dr_maux | 2002-01-24 21:03:25 +0100 (Do, 24. Jan 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/exec.c
    M /trunk/grubby/grubby/modules/extra.c
@@ -4660,14 +4723,14 @@ Geänderte Pfade:
 - this needed some API changes and doesn't work for external scripts yet
 
 ------------------------------------------------------------------------
-r3151 | dr_maux | 2002-01-19 20:49:27 +0100 (Sa, 19 Jan 2002) | 2 lines
+r3151 | dr_maux | 2002-01-19 20:49:27 +0100 (Sa, 19. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/people.c
 
 - don't be so loud in modpeople
 
 ------------------------------------------------------------------------
-r3148 | dr_maux | 2002-01-19 19:15:50 +0100 (Sa, 19 Jan 2002) | 2 lines
+r3148 | dr_maux | 2002-01-19 19:15:50 +0100 (Sa, 19. Jan 2002) | 2 lines
 Geänderte Pfade:
    A /trunk/grubby/debian
    A /trunk/grubby/debian/.cvsignore
@@ -4683,7 +4746,7 @@ Geänderte Pfade:
 - debianize grubby
 
 ------------------------------------------------------------------------
-r3147 | dr_maux | 2002-01-19 18:54:37 +0100 (Sa, 19 Jan 2002) | 2 lines
+r3147 | dr_maux | 2002-01-19 18:54:37 +0100 (Sa, 19. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/man/Makefile.am
    A /trunk/grubby/man/grubby-config.1
@@ -4691,21 +4754,21 @@ Geänderte Pfade:
 - add minimalistic man page for grubby-config
 
 ------------------------------------------------------------------------
-r3146 | dr_maux | 2002-01-19 18:54:01 +0100 (Sa, 19 Jan 2002) | 2 lines
+r3146 | dr_maux | 2002-01-19 18:54:01 +0100 (Sa, 19. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/main.c
 
 - give hint to grubby-config if not configured yet
 
 ------------------------------------------------------------------------
-r3145 | dr_maux | 2002-01-19 18:46:36 +0100 (Sa, 19 Jan 2002) | 2 lines
+r3145 | dr_maux | 2002-01-19 18:46:36 +0100 (Sa, 19. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.in
 
 - don't check for easysock (it was never needed anyway)
 
 ------------------------------------------------------------------------
-r3144 | dr_maux | 2002-01-19 18:46:03 +0100 (Sa, 19 Jan 2002) | 2 lines
+r3144 | dr_maux | 2002-01-19 18:46:03 +0100 (Sa, 19. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/meeting.rb
    M /trunk/grubby/grubby/data/messages.rb
@@ -4713,7 +4776,7 @@ Geänderte Pfade:
 - correct path to ruby
 
 ------------------------------------------------------------------------
-r3087 | jdorje | 2002-01-12 11:13:19 +0100 (Sa, 12 Jan 2002) | 2 lines
+r3087 | jdorje | 2002-01-12 11:13:19 +0100 (Sa, 12. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    A /trunk/ggz-client-libs/acinclude.ggz
@@ -4727,7 +4790,7 @@ Geänderte Pfade:
 Added acinclude.ggz to ggzd and ggz-client-libs.
 
 ------------------------------------------------------------------------
-r3086 | jdorje | 2002-01-12 11:05:20 +0100 (Sa, 12 Jan 2002) | 2 lines
+r3086 | jdorje | 2002-01-12 11:05:20 +0100 (Sa, 12. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/grubby/acinclude.ggz
@@ -4739,14 +4802,14 @@ Geänderte Pfade:
 Added libggz support to acinclude.ggz.
 
 ------------------------------------------------------------------------
-r3055 | dr_maux | 2002-01-11 14:11:05 +0100 (Fr, 11 Jan 2002) | 2 lines
+r3055 | dr_maux | 2002-01-11 14:11:05 +0100 (Fr, 11. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/configure.in
 
 - create grubby-config during configure step
 
 ------------------------------------------------------------------------
-r3054 | dr_maux | 2002-01-11 14:10:34 +0100 (Fr, 11 Jan 2002) | 3 lines
+r3054 | dr_maux | 2002-01-11 14:10:34 +0100 (Fr, 11. Jan 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data
    M /trunk/grubby/grubby/data/.cvsignore
@@ -4759,14 +4822,14 @@ Geänderte Pfade:
   too (like /home/ggz/usr/lib...)
 
 ------------------------------------------------------------------------
-r3035 | dr_maux | 2002-01-09 13:51:47 +0100 (Mi, 09 Jan 2002) | 2 lines
+r3035 | dr_maux | 2002-01-09 13:51:47 +0100 (Mi, 09. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/TODO
 
 - missed TODO file from earlier commit
 
 ------------------------------------------------------------------------
-r3034 | dr_maux | 2002-01-09 13:51:20 +0100 (Mi, 09 Jan 2002) | 3 lines
+r3034 | dr_maux | 2002-01-09 13:51:20 +0100 (Mi, 09. Jan 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/Makefile.am
 
@@ -4774,7 +4837,7 @@ Geänderte Pfade:
 - fix typo in makefile.am, but make distcheck STILL won't work :(
 
 ------------------------------------------------------------------------
-r3028 | dr_maux | 2002-01-09 12:08:17 +0100 (Mi, 09 Jan 2002) | 5 lines
+r3028 | dr_maux | 2002-01-09 12:08:17 +0100 (Mi, 09. Jan 2002) | 5 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/badword.c
    M /trunk/grubby/grubby/modules/exec.c
@@ -4788,7 +4851,7 @@ Geänderte Pfade:
   stuff except for netggz; after netconsole I expect a netirc module for 0.0.6
 
 ------------------------------------------------------------------------
-r3027 | dr_maux | 2002-01-09 11:56:20 +0100 (Mi, 09 Jan 2002) | 4 lines
+r3027 | dr_maux | 2002-01-09 11:56:20 +0100 (Mi, 09. Jan 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/dict.pl
    M /trunk/grubby/grubby/data/meeting.rb
@@ -4823,7 +4886,7 @@ Geänderte Pfade:
 - update copyrights
 
 ------------------------------------------------------------------------
-r3011 | jdorje | 2002-01-08 10:21:08 +0100 (Di, 08 Jan 2002) | 3 lines
+r3011 | jdorje | 2002-01-08 10:21:08 +0100 (Di, 08. Jan 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/grubby/acinclude.ggz
@@ -4836,7 +4899,7 @@ Added acinclude to utils/ module, and updated the years on the
 copyright notice.
 
 ------------------------------------------------------------------------
-r3010 | dr_maux | 2002-01-07 16:31:08 +0100 (Mo, 07 Jan 2002) | 2 lines
+r3010 | dr_maux | 2002-01-07 16:31:08 +0100 (Mo, 07. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby
    M /trunk/grubby/.cvsignore
@@ -4844,7 +4907,7 @@ Geänderte Pfade:
 - put acinclude.m4 into .cvsignore
 
 ------------------------------------------------------------------------
-r3009 | dr_maux | 2002-01-07 16:30:12 +0100 (Mo, 07 Jan 2002) | 6 lines
+r3009 | dr_maux | 2002-01-07 16:30:12 +0100 (Mo, 07. Jan 2002) | 6 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/grubby-config
    M /trunk/grubby/grubby/modules/Makefile.am
@@ -4858,7 +4921,7 @@ Geänderte Pfade:
 - update manpage
 
 ------------------------------------------------------------------------
-r2985 | dr_maux | 2001-12-23 00:54:14 +0100 (So, 23 Dez 2001) | 4 lines
+r2985 | dr_maux | 2001-12-23 00:54:14 +0100 (So, 23. Dez 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/people.c
    M /trunk/grubby/grubby/modules/player.c
@@ -4869,14 +4932,14 @@ Geänderte Pfade:
 i
 
 ------------------------------------------------------------------------
-r2984 | dr_maux | 2001-12-23 00:14:37 +0100 (So, 23 Dez 2001) | 2 lines
+r2984 | dr_maux | 2001-12-23 00:14:37 +0100 (So, 23. Dez 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/self.c
 
 - actually let him say '$name help' rather than 'guru help'
 
 ------------------------------------------------------------------------
-r2983 | dr_maux | 2001-12-23 00:06:47 +0100 (So, 23 Dez 2001) | 3 lines
+r2983 | dr_maux | 2001-12-23 00:06:47 +0100 (So, 23. Dez 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/main.c
 
@@ -4884,7 +4947,7 @@ Geänderte Pfade:
 - requires getopt, but this is standard nowadays.
 
 ------------------------------------------------------------------------
-r2917 | jdorje | 2001-12-17 09:14:12 +0100 (Mo, 17 Dez 2001) | 3 lines
+r2917 | jdorje | 2001-12-17 09:14:12 +0100 (Mo, 17. Dez 2001) | 3 lines
 Geänderte Pfade:
    A /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/grubby/acinclude.ggz
@@ -4896,7 +4959,7 @@ Updated acinclude.ggz to check for new ggzmod; added it to gtk-games and
 gtk-client.
 
 ------------------------------------------------------------------------
-r2889 | jdorje | 2001-12-13 14:53:50 +0100 (Do, 13 Dez 2001) | 4 lines
+r2889 | jdorje | 2001-12-13 14:53:50 +0100 (Do, 13. Dez 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/acinclude.ggz
 
@@ -4905,7 +4968,7 @@ between different modules.  Also updated the file, which appeared to be
 very out of date.
 
 ------------------------------------------------------------------------
-r2673 | dr_maux | 2001-11-05 12:57:52 +0100 (Mo, 05 Nov 2001) | 4 lines
+r2673 | dr_maux | 2001-11-05 12:57:52 +0100 (Mo, 05. Nov 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/Makefile.am
    M /trunk/grubby/grubby/modules/badword.c
@@ -4917,7 +4980,7 @@ Geänderte Pfade:
 - install translation correctly in a fakeroot environment
 
 ------------------------------------------------------------------------
-r2558 | dr_maux | 2001-10-13 23:48:51 +0200 (Sa, 13 Okt 2001) | 3 lines
+r2558 | dr_maux | 2001-10-13 23:48:51 +0200 (Sa, 13. Okt 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/de.po
    M /trunk/grubby/grubby/data/fr.po
@@ -4927,7 +4990,7 @@ Geänderte Pfade:
   better keeps for himself :)
 
 ------------------------------------------------------------------------
-r2557 | dr_maux | 2001-10-13 23:28:41 +0200 (Sa, 13 Okt 2001) | 3 lines
+r2557 | dr_maux | 2001-10-13 23:28:41 +0200 (Sa, 13. Okt 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/rdf.pl
    M /trunk/grubby/grubby/modules/badword.c
@@ -4940,7 +5003,7 @@ Geänderte Pfade:
 - enhance plugins 'badword' and 'extra'
 
 ------------------------------------------------------------------------
-r2555 | dr_maux | 2001-10-13 02:42:14 +0200 (Sa, 13 Okt 2001) | 3 lines
+r2555 | dr_maux | 2001-10-13 02:42:14 +0200 (Sa, 13. Okt 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/Makefile.am
    A /trunk/grubby/grubby/modules/extra.c
@@ -4949,7 +5012,7 @@ Geänderte Pfade:
   messages
 
 ------------------------------------------------------------------------
-r2554 | dr_maux | 2001-10-12 12:50:20 +0200 (Fr, 12 Okt 2001) | 4 lines
+r2554 | dr_maux | 2001-10-12 12:50:20 +0200 (Fr, 12. Okt 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/learning.c
    M /trunk/grubby/grubby/modules/people.c
@@ -4961,14 +5024,14 @@ Geänderte Pfade:
   up all the time
 
 ------------------------------------------------------------------------
-r2550 | dr_maux | 2001-10-12 12:23:40 +0200 (Fr, 12 Okt 2001) | 2 lines
+r2550 | dr_maux | 2001-10-12 12:23:40 +0200 (Fr, 12. Okt 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/Makefile.am
 
 - put grubby-config into scripts, not data
 
 ------------------------------------------------------------------------
-r2549 | dr_maux | 2001-10-12 11:57:43 +0200 (Fr, 12 Okt 2001) | 2 lines
+r2549 | dr_maux | 2001-10-12 11:57:43 +0200 (Fr, 12. Okt 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/Makefile.am
    M /trunk/grubby/grubby/data/grubby-config
@@ -4976,7 +5039,7 @@ Geänderte Pfade:
 - let grubby-config be useful (i.e. it works now)
 
 ------------------------------------------------------------------------
-r2548 | dr_maux | 2001-10-12 10:30:57 +0200 (Fr, 12 Okt 2001) | 4 lines
+r2548 | dr_maux | 2001-10-12 10:30:57 +0200 (Fr, 12. Okt 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/src/module.c
 
@@ -4985,7 +5048,7 @@ Geänderte Pfade:
 - provide new admin command: reload <plugin> is useful for development
 
 ------------------------------------------------------------------------
-r2547 | dr_maux | 2001-10-12 09:04:22 +0200 (Fr, 12 Okt 2001) | 4 lines
+r2547 | dr_maux | 2001-10-12 09:04:22 +0200 (Fr, 12. Okt 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/doc/Setup
    M /trunk/grubby/grubby/modules/badword.c
@@ -5014,7 +5077,7 @@ Geänderte Pfade:
 - marked critical sections which are to be fixed
 
 ------------------------------------------------------------------------
-r2540 | dr_maux | 2001-10-06 05:14:50 +0200 (Sa, 06 Okt 2001) | 3 lines
+r2540 | dr_maux | 2001-10-06 05:14:50 +0200 (Sa, 06. Okt 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/Makefile.am
    A /trunk/grubby/grubby/modules/learning.c
@@ -5023,7 +5086,7 @@ Geänderte Pfade:
 - warning: it carries a memory leak
 
 ------------------------------------------------------------------------
-r2431 | dr_maux | 2001-09-09 21:03:35 +0200 (So, 09 Sep 2001) | 4 lines
+r2431 | dr_maux | 2001-09-09 21:03:35 +0200 (So, 09. Sep 2001) | 4 lines
 Geänderte Pfade:
    A /trunk/grubby/grubby/data/messages.rb
    M /trunk/grubby/grubby/doc/Setup
@@ -5033,7 +5096,7 @@ Geänderte Pfade:
 - update Setup file
 
 ------------------------------------------------------------------------
-r2430 | dr_maux | 2001-09-09 21:01:30 +0200 (So, 09 Sep 2001) | 4 lines
+r2430 | dr_maux | 2001-09-09 21:01:30 +0200 (So, 09. Sep 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/data/Makefile.am
    M /trunk/grubby/grubby/data/de.po
@@ -5049,7 +5112,7 @@ Geänderte Pfade:
 - actually pass player as argv[1] to external programs
 
 ------------------------------------------------------------------------
-r2428 | dr_maux | 2001-09-09 18:44:36 +0200 (So, 09 Sep 2001) | 3 lines
+r2428 | dr_maux | 2001-09-09 18:44:36 +0200 (So, 09. Sep 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules/Makefile.am
    M /trunk/grubby/grubby/modules/player.c
@@ -5062,7 +5125,7 @@ Geänderte Pfade:
 - changed ggzcore_list_room call
 
 ------------------------------------------------------------------------
-r2342 | dr_maux | 2001-09-02 13:30:06 +0200 (So, 02 Sep 2001) | 4 lines
+r2342 | dr_maux | 2001-09-02 13:30:06 +0200 (So, 02. Sep 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/grubby/grubby/modules
    M /trunk/grubby/grubby/modules/.cvsignore
@@ -5085,7 +5148,7 @@ Geänderte Pfade:
 - nicer output and recognization of own name
 
 ------------------------------------------------------------------------
-r2336 | dr_maux | 2001-09-01 21:56:13 +0200 (Sa, 01 Sep 2001) | 2 lines
+r2336 | dr_maux | 2001-09-01 21:56:13 +0200 (Sa, 01. Sep 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/grubby
    A /trunk/grubby/.cvsignore

@@ -1,5 +1,83 @@
 ------------------------------------------------------------------------
-r10002 | josef | 2008-05-24 15:27:18 +0200 (Sa, 24 Mai 2008) | 3 lines
+r10117 | jdorje | 2008-06-30 08:26:37 +0200 (Mo, 30. Jun 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/gtk-games/autogen.sh
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/autogen.sh
+   M /trunk/libggz/autogen.sh
+   M /trunk/playground/agrue/autogen.sh
+   M /trunk/playground/irc/autogen.sh
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+Exit with return value 1 on failure.  Previously if an autotool failed
+autogen would exit with a success value.
+
+All autogen files other than the python module one are updated.
+
+------------------------------------------------------------------------
+r10048 | josef | 2008-06-22 18:52:54 +0200 (So, 22. Jun 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/server/database/index.html
+
+- some documentation updates on how the ggzd database works
+
+
+------------------------------------------------------------------------
+r10042 | josef | 2008-06-20 09:57:10 +0200 (Fr, 20. Jun 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/docs/server/ggzd/channels.txt
+
+- stupid me, even getting this wrong
+- I wonder if this breaks the SVN comments per changed character ratio record
+
+
+------------------------------------------------------------------------
+r10041 | josef | 2008-06-20 09:54:54 +0200 (Fr, 20. Jun 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/server/ggzd/channels.txt
+
+- gnarfhgrmpfbleh, spotted by oojah
+
+
+------------------------------------------------------------------------
+r10040 | josef | 2008-06-19 19:22:35 +0200 (Do, 19. Jun 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/server/ggzd/channels.txt
+
+- some small clarifications and a link to the current discussion about channels
+
+
+------------------------------------------------------------------------
+r10004 | josef | 2008-05-25 11:12:02 +0200 (So, 25. Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/java/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- prepend 5300 lines of change summaries to the changelog files
+
+
+------------------------------------------------------------------------
+r10002 | josef | 2008-05-24 15:27:18 +0200 (Sa, 24. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/GGZ-contributions
    D /trunk/gtk-games/chess/bitmaps/Credits
@@ -8,7 +86,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r10001 | josef | 2008-05-24 13:42:26 +0200 (Sa, 24 Mai 2008) | 3 lines
+r10001 | josef | 2008-05-24 13:42:26 +0200 (Sa, 24. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/presentation/README.talks
 
@@ -16,7 +94,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9998 | josef | 2008-05-24 11:02:55 +0200 (Sa, 24 Mai 2008) | 3 lines
+r9998 | josef | 2008-05-24 11:02:55 +0200 (Sa, 24. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/Makefile.am
    M /trunk/docs/server/hosting/Makefile.am
@@ -26,7 +104,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9995 | josef | 2008-05-24 10:04:45 +0200 (Sa, 24 Mai 2008) | 3 lines
+r9995 | josef | 2008-05-24 10:04:45 +0200 (Sa, 24. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/spec/Makefile.am
    M /trunk/docs/spec/design/Makefile.am
@@ -35,7 +113,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24 Mai 2008) | 3 lines
+r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README
@@ -69,7 +147,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9990 | josef | 2008-05-23 20:53:56 +0200 (Fr, 23 Mai 2008) | 3 lines
+r9990 | josef | 2008-05-23 20:53:56 +0200 (Fr, 23. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/spec/mainspec/appendix.sgml
 
@@ -77,7 +155,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9984 | josef | 2008-05-12 13:13:47 +0200 (Mo, 12 Mai 2008) | 3 lines
+r9984 | josef | 2008-05-12 13:13:47 +0200 (Mo, 12. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
 
@@ -85,7 +163,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9981 | josef | 2008-05-10 01:52:49 +0200 (Sa, 10 Mai 2008) | 4 lines
+r9981 | josef | 2008-05-10 01:52:49 +0200 (Sa, 10. Mai 2008) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/docs/ggz-project/release-procedure
@@ -113,7 +191,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9946 | josef | 2008-04-12 13:59:55 +0200 (Sa, 12 Apr 2008) | 3 lines
+r9946 | josef | 2008-04-12 13:59:55 +0200 (Sa, 12. Apr 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -136,7 +214,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9944 | josef | 2008-04-12 12:27:38 +0200 (Sa, 12 Apr 2008) | 3 lines
+r9944 | josef | 2008-04-12 12:27:38 +0200 (Sa, 12. Apr 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/savegames.txt
    M /trunk/ggzd/game_servers/chinese-checkers/Makefile.am
@@ -147,7 +225,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9917 | josef | 2008-03-30 15:51:20 +0200 (So, 30 Mär 2008) | 3 lines
+r9917 | josef | 2008-03-30 15:51:20 +0200 (So, 30. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/savegames.txt
 
@@ -155,7 +233,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9909 | josef | 2008-03-30 14:25:42 +0200 (So, 30 Mär 2008) | 5 lines
+r9909 | josef | 2008-03-30 14:25:42 +0200 (So, 30. Mär 2008) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/games/Makefile.am
    A /trunk/docs/games/savegames.txt
@@ -166,7 +244,7 @@ The list serves as an eye-opener for the incompleteness!
 
 
 ------------------------------------------------------------------------
-r9904 | josef | 2008-03-30 10:28:38 +0200 (So, 30 Mär 2008) | 3 lines
+r9904 | josef | 2008-03-30 10:28:38 +0200 (So, 30. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
@@ -174,7 +252,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9901 | josef | 2008-03-29 22:42:31 +0100 (Sa, 29 Mär 2008) | 3 lines
+r9901 | josef | 2008-03-29 22:42:31 +0100 (Sa, 29. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/ggz-games/Makefile.am
    A /trunk/docs/games/ggz-games/dots-design.txt
@@ -183,7 +261,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9892 | josef | 2008-03-28 20:52:27 +0100 (Fr, 28 Mär 2008) | 3 lines
+r9892 | josef | 2008-03-28 20:52:27 +0100 (Fr, 28. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
 
@@ -191,7 +269,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9867 | josef | 2008-03-23 13:05:37 +0100 (So, 23 Mär 2008) | 4 lines
+r9867 | josef | 2008-03-23 13:05:37 +0100 (So, 23. Mär 2008) | 4 lines
 Geänderte Pfade:
    A /trunk/docs/server/ggzd/channels.txt
 
@@ -200,7 +278,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9829 | josef | 2008-03-09 07:38:56 +0100 (So, 09 Mär 2008) | 3 lines
+r9829 | josef | 2008-03-09 07:38:56 +0100 (So, 09. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
 
@@ -208,7 +286,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9810 | josef | 2008-03-08 22:40:42 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9810 | josef | 2008-03-08 22:40:42 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/server/ggzd/savegames.txt
 
@@ -216,7 +294,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9805 | josef | 2008-03-08 19:13:32 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9805 | josef | 2008-03-08 19:13:32 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/server/ggzd/Makefile.am
    A /trunk/docs/server/ggzd/savegames.txt
@@ -225,7 +303,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9792 | josef | 2008-03-08 09:58:05 +0100 (Sa, 08 Mär 2008) | 3 lines
+r9792 | josef | 2008-03-08 09:58:05 +0100 (Sa, 08. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
@@ -233,7 +311,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9767 | josef | 2008-02-27 13:59:54 +0100 (Mi, 27 Feb 2008) | 3 lines
+r9767 | josef | 2008-02-27 13:59:54 +0100 (Mi, 27. Feb 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/spec/Uri-spec.txt
 
@@ -241,7 +319,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9762 | josef | 2008-02-26 08:22:00 +0100 (Di, 26 Feb 2008) | 3 lines
+r9762 | josef | 2008-02-26 08:22:00 +0100 (Di, 26. Feb 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/presentation/README.talks
 
@@ -249,7 +327,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9747 | josef | 2008-02-17 11:16:18 +0100 (So, 17 Feb 2008) | 3 lines
+r9747 | josef | 2008-02-17 11:16:18 +0100 (So, 17. Feb 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/release-procedure
 
@@ -257,7 +335,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9678 | josef | 2008-02-10 10:10:44 +0100 (So, 10 Feb 2008) | 3 lines
+r9678 | josef | 2008-02-10 10:10:44 +0100 (So, 10. Feb 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
 
@@ -265,7 +343,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9623 | josef | 2008-01-29 19:38:47 +0100 (Di, 29 Jan 2008) | 3 lines
+r9623 | josef | 2008-01-29 19:38:47 +0100 (Di, 29. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/branches.flw
    M /trunk/docs/ggz-project/branches.png
@@ -274,7 +352,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9489 | josef | 2008-01-12 17:37:27 +0100 (Sa, 12 Jan 2008) | 4 lines
+r9489 | josef | 2008-01-12 17:37:27 +0100 (Sa, 12. Jan 2008) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/spec/Makefile.am
    A /trunk/docs/spec/Uri-spec.txt (von /trunk/ggzd/ggzd/meta/Uri-spec.txt:9481)
@@ -293,7 +371,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9457 | josef | 2007-12-18 22:32:00 +0100 (Di, 18 Dez 2007) | 3 lines
+r9457 | josef | 2007-12-18 22:32:00 +0100 (Di, 18. Dez 2007) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/presentation/README.talks
 
@@ -301,7 +379,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9456 | josef | 2007-12-18 22:31:07 +0100 (Di, 18 Dez 2007) | 4 lines
+r9456 | josef | 2007-12-18 22:31:07 +0100 (Di, 18. Dez 2007) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/presentation/README.talks
 
@@ -310,7 +388,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9455 | josef | 2007-12-18 22:15:05 +0100 (Di, 18 Dez 2007) | 3 lines
+r9455 | josef | 2007-12-18 22:15:05 +0100 (Di, 18. Dez 2007) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/promo.txt
 
@@ -318,7 +396,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9439 | josef | 2007-12-11 23:01:45 +0100 (Di, 11 Dez 2007) | 5 lines
+r9439 | josef | 2007-12-11 23:01:45 +0100 (Di, 11. Dez 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/docs/games/game-development/Makefile.am
@@ -330,7 +408,7 @@ The only issue left with it is that now automake complains that a rule like %.o 
 
 
 ------------------------------------------------------------------------
-r9438 | josef | 2007-12-11 21:56:06 +0100 (Di, 11 Dez 2007) | 3 lines
+r9438 | josef | 2007-12-11 21:56:06 +0100 (Di, 11. Dez 2007) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/spec/Makefile.am
    M /trunk/docs/spec/clientspec/Makefile.am
@@ -341,7 +419,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9437 | josef | 2007-12-11 21:53:28 +0100 (Di, 11 Dez 2007) | 3 lines
+r9437 | josef | 2007-12-11 21:53:28 +0100 (Di, 11. Dez 2007) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/articles/Makefile.am
    M /trunk/docs/coreclients/Makefile.am
@@ -358,7 +436,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9432 | josef | 2007-12-11 20:29:24 +0100 (Di, 11 Dez 2007) | 3 lines
+r9432 | josef | 2007-12-11 20:29:24 +0100 (Di, 11. Dez 2007) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/spec/Makefile.am
    M /trunk/docs/spec/clientspec/Makefile.am
@@ -369,7 +447,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9401 | josef | 2007-12-01 13:30:41 +0100 (Sa, 01 Dez 2007) | 4 lines
+r9401 | josef | 2007-12-01 13:30:41 +0100 (Sa, 01. Dez 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/docs/autogen.sh
@@ -390,7 +468,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9400 | josef | 2007-12-01 13:11:35 +0100 (Sa, 01 Dez 2007) | 6 lines
+r9400 | josef | 2007-12-01 13:11:35 +0100 (Sa, 01. Dez 2007) | 6 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/docs/Makefile.am
@@ -415,7 +493,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9373 | josef | 2007-11-21 17:10:42 +0100 (Mi, 21 Nov 2007) | 4 lines
+r9373 | josef | 2007-11-21 17:10:42 +0100 (Mi, 21. Nov 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/docs/ggz-project/hacking
@@ -425,7 +503,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9366 | josef | 2007-11-18 16:30:54 +0100 (So, 18 Nov 2007) | 10 lines
+r9366 | josef | 2007-11-18 16:30:54 +0100 (So, 18. Nov 2007) | 10 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/docs/coreclients/coreclients.html
@@ -448,7 +526,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9364 | josef | 2007-11-17 17:36:14 +0100 (Sa, 17 Nov 2007) | 4 lines
+r9364 | josef | 2007-11-17 17:36:14 +0100 (Sa, 17. Nov 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/docs/ggz-project/hacking
@@ -458,7 +536,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9348 | josef | 2007-11-11 20:23:55 +0100 (So, 11 Nov 2007) | 4 lines
+r9348 | josef | 2007-11-11 20:23:55 +0100 (So, 11. Nov 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    A /trunk/docs/server/ggzd/ggzd-dependencies.flw
@@ -470,7 +548,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9327 | josef | 2007-10-20 10:09:10 +0200 (Sa, 20 Okt 2007) | 4 lines
+r9327 | josef | 2007-10-20 10:09:10 +0200 (Sa, 20. Okt 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
@@ -480,7 +558,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9325 | josef | 2007-10-20 10:08:55 +0200 (Sa, 20 Okt 2007) | 5 lines
+r9325 | josef | 2007-10-20 10:08:55 +0200 (Sa, 20. Okt 2007) | 5 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
@@ -491,7 +569,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9316 | josef | 2007-09-22 08:43:21 +0200 (Sa, 22 Sep 2007) | 4 lines
+r9316 | josef | 2007-09-22 08:43:21 +0200 (Sa, 22. Sep 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/docs/spec/Makefile.am
@@ -501,7 +579,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9280 | josef | 2007-08-29 09:00:06 +0200 (Mi, 29 Aug 2007) | 4 lines
+r9280 | josef | 2007-08-29 09:00:06 +0200 (Mi, 29. Aug 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
@@ -511,7 +589,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9279 | josef | 2007-08-29 08:59:53 +0200 (Mi, 29 Aug 2007) | 5 lines
+r9279 | josef | 2007-08-29 08:59:53 +0200 (Mi, 29. Aug 2007) | 5 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/docs/games/Makefile.am
@@ -525,7 +603,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9257 | josef | 2007-08-27 08:45:04 +0200 (Mo, 27 Aug 2007) | 4 lines
+r9257 | josef | 2007-08-27 08:45:04 +0200 (Mo, 27. Aug 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
@@ -535,7 +613,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9175 | josef | 2007-07-11 08:20:20 +0200 (Mi, 11 Jul 2007) | 5 lines
+r9175 | josef | 2007-07-11 08:20:20 +0200 (Mi, 11. Jul 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/hacking
 
@@ -545,7 +623,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9101 | josef | 2007-05-07 09:00:33 +0200 (Mo, 07 Mai 2007) | 5 lines
+r9101 | josef | 2007-05-07 09:00:33 +0200 (Mo, 07. Mai 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
@@ -556,7 +634,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9086 | josef | 2007-05-02 09:41:39 +0200 (Mi, 02 Mai 2007) | 6 lines
+r9086 | josef | 2007-05-02 09:41:39 +0200 (Mi, 02. Mai 2007) | 6 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Internationalization
    M /trunk/docs/ggz-project/Roadmap
@@ -570,7 +648,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9075 | josef | 2007-04-30 09:53:46 +0200 (Mo, 30 Apr 2007) | 5 lines
+r9075 | josef | 2007-04-30 09:53:46 +0200 (Mo, 30. Apr 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
@@ -580,7 +658,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9067 | josef | 2007-04-23 11:50:19 +0200 (Mo, 23 Apr 2007) | 5 lines
+r9067 | josef | 2007-04-23 11:50:19 +0200 (Mo, 23. Apr 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/presentation/README.talks
    A /trunk/docs/presentation/output2007
@@ -593,7 +671,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9051 | josef | 2007-04-16 09:18:04 +0200 (Mo, 16 Apr 2007) | 5 lines
+r9051 | josef | 2007-04-16 09:18:04 +0200 (Mo, 16. Apr 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
 
@@ -603,7 +681,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9049 | josef | 2007-04-16 09:15:16 +0200 (Mo, 16 Apr 2007) | 5 lines
+r9049 | josef | 2007-04-16 09:15:16 +0200 (Mo, 16. Apr 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
@@ -613,7 +691,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8991 | josef | 2007-02-26 09:23:27 +0100 (Mo, 26 Feb 2007) | 5 lines
+r8991 | josef | 2007-02-26 09:23:27 +0100 (Mo, 26. Feb 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/spec/clientspec/clientspec.sgml
 
@@ -623,7 +701,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8987 | jdorje | 2007-02-19 03:50:30 +0100 (Mo, 19 Feb 2007) | 1 line
+r8987 | jdorje | 2007-02-19 03:50:30 +0100 (Mo, 19. Feb 2007) | 1 line
 Geänderte Pfade:
    M /trunk/community/setup/scripts/ggz2phpbb.conf.in
    M /trunk/community/setup/sql/trigger/ggzsync_trigger.c
@@ -769,7 +847,7 @@ Geänderte Pfade:
 
 Fix eol-style on .c, .h, .in, and .am files.
 ------------------------------------------------------------------------
-r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16 Jan 2007) | 8 lines
+r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16. Jan 2007) | 8 lines
 Geänderte Pfade:
    M /trunk/community/ChangeLog
    M /trunk/docs/ChangeLog
@@ -797,7 +875,7 @@ However we have to do so since no tool seems to be able to reproduce our old for
 
 
 ------------------------------------------------------------------------
-r8949 | josef | 2007-01-16 19:23:42 +0100 (Di, 16 Jan 2007) | 5 lines
+r8949 | josef | 2007-01-16 19:23:42 +0100 (Di, 16. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -820,7 +898,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16 Jan 2007) | 5 lines
+r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README.GGZ
@@ -898,7 +976,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8946 | josef | 2007-01-16 18:49:40 +0100 (Di, 16 Jan 2007) | 6 lines
+r8946 | josef | 2007-01-16 18:49:40 +0100 (Di, 16. Jan 2007) | 6 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Versioning
    M /trunk/grubby/grubby/src/main.c
@@ -911,7 +989,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8942 | josef | 2007-01-16 17:22:43 +0100 (Di, 16 Jan 2007) | 5 lines
+r8942 | josef | 2007-01-16 17:22:43 +0100 (Di, 16. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/mundomap/map.png
    M /trunk/community/web/db/ggzicons/misc/karma_bad.png
@@ -1001,7 +1079,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8935 | josef | 2007-01-16 16:36:33 +0100 (Di, 16 Jan 2007) | 5 lines
+r8935 | josef | 2007-01-16 16:36:33 +0100 (Di, 16. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/games/games.html
 
@@ -1011,7 +1089,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8920 | josef | 2007-01-15 16:12:44 +0100 (Mo, 15 Jan 2007) | 5 lines
+r8920 | josef | 2007-01-15 16:12:44 +0100 (Mo, 15. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/security-and-privacy
 
@@ -1021,7 +1099,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8919 | josef | 2007-01-15 16:12:06 +0100 (Mo, 15 Jan 2007) | 5 lines
+r8919 | josef | 2007-01-15 16:12:06 +0100 (Mo, 15. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/games/games.html
 
@@ -1031,7 +1109,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8918 | josef | 2007-01-15 16:11:30 +0100 (Mo, 15 Jan 2007) | 6 lines
+r8918 | josef | 2007-01-15 16:11:30 +0100 (Mo, 15. Jan 2007) | 6 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
 
@@ -1042,7 +1120,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8901 | josef | 2007-01-12 10:43:22 +0100 (Fr, 12 Jan 2007) | 5 lines
+r8901 | josef | 2007-01-12 10:43:22 +0100 (Fr, 12. Jan 2007) | 5 lines
 Geänderte Pfade:
    A /trunk/docs/ggz-project/hacking
 
@@ -1052,7 +1130,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8899 | josef | 2007-01-12 10:41:28 +0100 (Fr, 12 Jan 2007) | 5 lines
+r8899 | josef | 2007-01-12 10:41:28 +0100 (Fr, 12. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting
 
@@ -1062,19 +1140,19 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8890 | jdorje | 2007-01-10 04:34:02 +0100 (Mi, 10 Jan 2007) | 1 line
+r8890 | jdorje | 2007-01-10 04:34:02 +0100 (Mi, 10. Jan 2007) | 1 line
 Geänderte Pfade:
    M /trunk/docs/spec/mainspec/appendix.sgml
 
 Minor doc fixes for ADMIN/PERMADMIN tags.
 ------------------------------------------------------------------------
-r8889 | jdorje | 2007-01-10 04:10:23 +0100 (Mi, 10 Jan 2007) | 1 line
+r8889 | jdorje | 2007-01-10 04:10:23 +0100 (Mi, 10. Jan 2007) | 1 line
 Geänderte Pfade:
    M /trunk/docs/spec/mainspec/appendix.sgml
 
 Add doc for the PERMADMIN tag.
 ------------------------------------------------------------------------
-r8881 | josef | 2007-01-09 18:43:44 +0100 (Di, 09 Jan 2007) | 7 lines
+r8881 | josef | 2007-01-09 18:43:44 +0100 (Di, 09. Jan 2007) | 7 lines
 Geänderte Pfade:
    M /trunk/docs/games/ggz-games/index.html
    M /trunk/docs/games/ggz-games/tictactoe/Makefile.am
@@ -1088,7 +1166,7 @@ All savegame formats should be documented, except when standard formats are used
 
 
 ------------------------------------------------------------------------
-r8880 | josef | 2007-01-09 18:22:14 +0100 (Di, 09 Jan 2007) | 7 lines
+r8880 | josef | 2007-01-09 18:22:14 +0100 (Di, 09. Jan 2007) | 7 lines
 Geänderte Pfade:
    M /trunk/docs/spec/mainspec/appendix.sgml
    M /trunk/ggzd/game_servers/chess/chess.dsc
@@ -1207,7 +1285,7 @@ This affects mainly game information files (*.dsc) but also some sources and tra
 
 
 ------------------------------------------------------------------------
-r8859 | josef | 2007-01-08 14:44:32 +0100 (Mo, 08 Jan 2007) | 6 lines
+r8859 | josef | 2007-01-08 14:44:32 +0100 (Mo, 08. Jan 2007) | 6 lines
 Geänderte Pfade:
    M /trunk/docs/games/features.html
    M /trunk/docs/games/ggz-games/Makefile.am
@@ -1222,7 +1300,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8858 | josef | 2007-01-08 14:43:21 +0100 (Mo, 08 Jan 2007) | 5 lines
+r8858 | josef | 2007-01-08 14:43:21 +0100 (Mo, 08. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/server/ggzd/ggzd.flw
 
@@ -1232,7 +1310,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8854 | josef | 2007-01-08 14:39:47 +0100 (Mo, 08 Jan 2007) | 7 lines
+r8854 | josef | 2007-01-08 14:39:47 +0100 (Mo, 08. Jan 2007) | 7 lines
 Geänderte Pfade:
    M /trunk/docs/coreclients/ggzcore.flw
    M /trunk/docs/coreclients/playing.flw
@@ -1252,7 +1330,7 @@ Those had svn:eol-style in them because the conversion was done without auto-det
 
 
 ------------------------------------------------------------------------
-r8853 | josef | 2007-01-08 14:37:22 +0100 (Mo, 08 Jan 2007) | 5 lines
+r8853 | josef | 2007-01-08 14:37:22 +0100 (Mo, 08. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/spec/Makefile.am
    M /trunk/docs/spec/clientspec/Makefile.am
@@ -1265,7 +1343,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8852 | josef | 2007-01-08 14:36:45 +0100 (Mo, 08 Jan 2007) | 9 lines
+r8852 | josef | 2007-01-08 14:36:45 +0100 (Mo, 08. Jan 2007) | 9 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz-client-libs/autogen.sh
@@ -1291,7 +1369,7 @@ But I'm sure we had a reason not to and I don't want to break it right now.
 
 
 ------------------------------------------------------------------------
-r8840 | josef | 2007-01-05 13:51:21 +0100 (Fr, 05 Jan 2007) | 5 lines
+r8840 | josef | 2007-01-05 13:51:21 +0100 (Fr, 05. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/server/ggzd/index.html
 
@@ -1301,7 +1379,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8839 | josef | 2007-01-05 13:50:55 +0100 (Fr, 05 Jan 2007) | 5 lines
+r8839 | josef | 2007-01-05 13:50:55 +0100 (Fr, 05. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/intro/index.html
 
@@ -1311,7 +1389,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8838 | josef | 2007-01-05 13:50:33 +0100 (Fr, 05 Jan 2007) | 5 lines
+r8838 | josef | 2007-01-05 13:50:33 +0100 (Fr, 05. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/spec/Makefile.am
    M /trunk/docs/spec/clientspec/Makefile.am
@@ -1324,7 +1402,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8803 | josef | 2007-01-04 13:42:27 +0100 (Do, 04 Jan 2007) | 5 lines
+r8803 | josef | 2007-01-04 13:42:27 +0100 (Do, 04. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting
 
@@ -1334,14 +1412,14 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8800 | oojah | 2007-01-02 17:13:46 +0100 (Di, 02 Jan 2007) | 2 lines
+r8800 | oojah | 2007-01-02 17:13:46 +0100 (Di, 02. Jan 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec/dtd/ggzd.dtd
 
 Updates to the ggzd DTD from recent changes. ggz-client.dtd still needs updating.
 
 ------------------------------------------------------------------------
-r8790 | josef | 2007-01-02 13:28:18 +0100 (Di, 02 Jan 2007) | 5 lines
+r8790 | josef | 2007-01-02 13:28:18 +0100 (Di, 02. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/games/ggz-games/tictactoe/ttt-explained.html
    M /trunk/docs/games/modules/index.html
@@ -1360,7 +1438,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8789 | josef | 2007-01-02 13:27:55 +0100 (Di, 02 Jan 2007) | 5 lines
+r8789 | josef | 2007-01-02 13:27:55 +0100 (Di, 02. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/games/features.html
 
@@ -1370,7 +1448,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8788 | josef | 2007-01-02 13:27:18 +0100 (Di, 02 Jan 2007) | 5 lines
+r8788 | josef | 2007-01-02 13:27:18 +0100 (Di, 02. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/TODO
 
@@ -1380,7 +1458,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8787 | josef | 2007-01-02 13:26:39 +0100 (Di, 02 Jan 2007) | 5 lines
+r8787 | josef | 2007-01-02 13:26:39 +0100 (Di, 02. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
 
@@ -1390,7 +1468,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8786 | josef | 2007-01-02 13:25:42 +0100 (Di, 02 Jan 2007) | 5 lines
+r8786 | josef | 2007-01-02 13:25:42 +0100 (Di, 02. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/games/external-games/ggzfeatures.html
    M /trunk/docs/games/games.html
@@ -1401,7 +1479,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8785 | josef | 2007-01-02 13:24:19 +0100 (Di, 02 Jan 2007) | 8 lines
+r8785 | josef | 2007-01-02 13:24:19 +0100 (Di, 02. Jan 2007) | 8 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
@@ -1414,7 +1492,7 @@ I've heard that once upon a time some guy on some isle knew all about it... :-)
 
 
 ------------------------------------------------------------------------
-r8784 | josef | 2007-01-02 13:19:42 +0100 (Di, 02 Jan 2007) | 5 lines
+r8784 | josef | 2007-01-02 13:19:42 +0100 (Di, 02. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/overview/architecture/index.html
    M /trunk/docs/overview/index.de.html
@@ -1426,7 +1504,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8783 | josef | 2007-01-02 13:19:22 +0100 (Di, 02 Jan 2007) | 7 lines
+r8783 | josef | 2007-01-02 13:19:22 +0100 (Di, 02. Jan 2007) | 7 lines
 Geänderte Pfade:
    M /trunk/docs/coreclients/Makefile.am
    M /trunk/docs/coreclients/coreclients.html
@@ -1442,13 +1520,13 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8748 | jdorje | 2006-12-24 10:25:55 +0100 (So, 24 Dez 2006) | 1 line
+r8748 | jdorje | 2006-12-24 10:25:55 +0100 (So, 24. Dez 2006) | 1 line
 Geänderte Pfade:
    M /trunk/docs/spec/mainspec/appendix.sgml
 
 Add docs for permissions field.
 ------------------------------------------------------------------------
-r8728 | josef | 2006-12-15 16:12:57 +0100 (Fr, 15 Dez 2006) | 3 lines
+r8728 | josef | 2006-12-15 16:12:57 +0100 (Fr, 15. Dez 2006) | 3 lines
 Geänderte Pfade:
    A /trunk/docs/games/protocols/ggzcomm-arch.flw
    A /trunk/docs/games/protocols/ggzcomm-arch.png
@@ -1457,7 +1535,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8677 | josef | 2006-11-27 10:40:17 +0100 (Mo, 27 Nov 2006) | 3 lines
+r8677 | josef | 2006-11-27 10:40:17 +0100 (Mo, 27. Nov 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
 
@@ -1465,7 +1543,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8665 | josef | 2006-11-20 10:51:17 +0100 (Mo, 20 Nov 2006) | 4 lines
+r8665 | josef | 2006-11-20 10:51:17 +0100 (Mo, 20. Nov 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
 
@@ -1474,7 +1552,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8633 | josef | 2006-11-03 12:52:15 +0100 (Fr, 03 Nov 2006) | 3 lines
+r8633 | josef | 2006-11-03 12:52:15 +0100 (Fr, 03. Nov 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/ggz-games
    M /trunk/docs/games/ggz-games/tictactoe
@@ -1485,7 +1563,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8598 | josef | 2006-09-24 22:11:34 +0200 (So, 24 Sep 2006) | 5 lines
+r8598 | josef | 2006-09-24 22:11:34 +0200 (So, 24. Sep 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
    M /trunk/docs/ggz-project/Roadmap
@@ -1500,7 +1578,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8501 | josef | 2006-08-08 11:03:48 +0200 (Di, 08 Aug 2006) | 3 lines
+r8501 | josef | 2006-08-08 11:03:48 +0200 (Di, 08. Aug 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/ggz-games/ggzboard/ggzboard.flw
    M /trunk/docs/games/ggz-games/ggzboard/ggzboard.png
@@ -1509,7 +1587,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8477 | josef | 2006-08-05 12:15:19 +0200 (Sa, 05 Aug 2006) | 4 lines
+r8477 | josef | 2006-08-05 12:15:19 +0200 (Sa, 05. Aug 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/spec/mainspec/appendix.sgml
    M /trunk/docs/spec/mainspec/client-server.sgml
@@ -1520,7 +1598,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8452 | jdorje | 2006-08-01 21:53:36 +0200 (Di, 01 Aug 2006) | 2 lines
+r8452 | jdorje | 2006-08-01 21:53:36 +0200 (Di, 01. Aug 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/ggz-games/Makefile.am
    M /trunk/docs/games/ggz-games/tictactoe/Makefile.am
@@ -1569,7 +1647,7 @@ Geänderte Pfade:
 Enable keyword substitution for all .c, .h, .ac, and .am files.
 
 ------------------------------------------------------------------------
-r8400 | josef | 2006-07-24 13:09:09 +0200 (Mo, 24 Jul 2006) | 4 lines
+r8400 | josef | 2006-07-24 13:09:09 +0200 (Mo, 24. Jul 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/ggz-dependencies
    A /trunk/docs/ggz-project/packagers
@@ -1579,7 +1657,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8389 | josef | 2006-07-22 12:21:08 +0200 (Sa, 22 Jul 2006) | 3 lines
+r8389 | josef | 2006-07-22 12:21:08 +0200 (Sa, 22. Jul 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/protocols/index.xhtml
 
@@ -1587,7 +1665,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8385 | josef | 2006-07-22 09:41:49 +0200 (Sa, 22 Jul 2006) | 3 lines
+r8385 | josef | 2006-07-22 09:41:49 +0200 (Sa, 22. Jul 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/gnome-client/configure.ac
@@ -1601,7 +1679,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8365 | josef | 2006-07-17 14:26:16 +0200 (Mo, 17 Jul 2006) | 3 lines
+r8365 | josef | 2006-07-17 14:26:16 +0200 (Mo, 17. Jul 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/promo.txt
 
@@ -1609,7 +1687,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8345 | josef | 2006-07-10 10:00:10 +0200 (Mo, 10 Jul 2006) | 8 lines
+r8345 | josef | 2006-07-10 10:00:10 +0200 (Mo, 10. Jul 2006) | 8 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/docs/spec/Makefile.am
@@ -1633,13 +1711,13 @@ A lot of work is now due on the design spec.
 
 
 ------------------------------------------------------------------------
-r8227 | jdorje | 2006-06-20 08:38:29 +0200 (Di, 20 Jun 2006) | 1 line
+r8227 | jdorje | 2006-06-20 08:38:29 +0200 (Di, 20. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
 
 Add documentation for SEAT attribute of JOIN tag.
 ------------------------------------------------------------------------
-r8109 | josef | 2006-06-06 09:41:53 +0200 (Di, 06 Jun 2006) | 5 lines
+r8109 | josef | 2006-06-06 09:41:53 +0200 (Di, 06. Jun 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/Makefile.am
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
@@ -1650,7 +1728,7 @@ But still needs a lot more content before someone will waste the paper to print 
 
 
 ------------------------------------------------------------------------
-r8092 | josef | 2006-06-01 11:57:18 +0200 (Do, 01 Jun 2006) | 4 lines
+r8092 | josef | 2006-06-01 11:57:18 +0200 (Do, 01. Jun 2006) | 4 lines
 Geänderte Pfade:
    A /trunk/docs/TODO
    M /trunk/docs/ggz-project/Roadmap
@@ -1660,7 +1738,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8079 | josef | 2006-05-30 14:55:48 +0200 (Di, 30 Mai 2006) | 3 lines
+r8079 | josef | 2006-05-30 14:55:48 +0200 (Di, 30. Mai 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
@@ -1669,7 +1747,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8078 | josef | 2006-05-30 14:55:17 +0200 (Di, 30 Mai 2006) | 3 lines
+r8078 | josef | 2006-05-30 14:55:17 +0200 (Di, 30. Mai 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/server/ggzd/index.html
 
@@ -1677,7 +1755,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8074 | josef | 2006-05-29 10:34:30 +0200 (Mo, 29 Mai 2006) | 4 lines
+r8074 | josef | 2006-05-29 10:34:30 +0200 (Mo, 29. Mai 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
 
@@ -1686,7 +1764,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8036 | josef | 2006-05-12 20:55:25 +0200 (Fr, 12 Mai 2006) | 3 lines
+r8036 | josef | 2006-05-12 20:55:25 +0200 (Fr, 12. Mai 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/promo.txt
 
@@ -1694,7 +1772,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8035 | josef | 2006-05-12 20:45:24 +0200 (Fr, 12 Mai 2006) | 3 lines
+r8035 | josef | 2006-05-12 20:45:24 +0200 (Fr, 12. Mai 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/promo.txt
 
@@ -1702,7 +1780,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8023 | josef | 2006-05-04 11:30:31 +0200 (Do, 04 Mai 2006) | 3 lines
+r8023 | josef | 2006-05-04 11:30:31 +0200 (Do, 04. Mai 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/server/metaserver/Makefile.am
    R /trunk/docs/server/metaserver/index.html
@@ -1713,7 +1791,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8007 | josef | 2006-04-27 09:57:33 +0200 (Do, 27 Apr 2006) | 3 lines
+r8007 | josef | 2006-04-27 09:57:33 +0200 (Do, 27. Apr 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/spec/serverspec/serverspec.sgml
 
@@ -1721,7 +1799,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8005 | josef | 2006-04-24 09:23:30 +0200 (Mo, 24 Apr 2006) | 4 lines
+r8005 | josef | 2006-04-24 09:23:30 +0200 (Mo, 24. Apr 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/games/games.html
    M /trunk/docs/games/ggz-games/ggzboard/ggzboard.flw
@@ -1736,7 +1814,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7967 | josef | 2006-03-20 14:30:36 +0100 (Mo, 20 Mär 2006) | 5 lines
+r7967 | josef | 2006-03-20 14:30:36 +0100 (Mo, 20. Mär 2006) | 5 lines
 Geänderte Pfade:
    A /trunk/docs/ggz-project/promo.txt
    M /trunk/docs/ggz-project/release-procedure
@@ -1747,7 +1825,7 @@ This should ease keeping track of where new releases can be announced.
 
 
 ------------------------------------------------------------------------
-r7964 | josef | 2006-03-20 13:34:15 +0100 (Mo, 20 Mär 2006) | 3 lines
+r7964 | josef | 2006-03-20 13:34:15 +0100 (Mo, 20. Mär 2006) | 3 lines
 Geänderte Pfade:
    A /trunk/docs/games/ggz-games/ggzboard
    A /trunk/docs/games/ggz-games/ggzboard/ggzboard.flw
@@ -1757,7 +1835,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7942 | josef | 2006-03-16 16:15:01 +0100 (Do, 16 Mär 2006) | 3 lines
+r7942 | josef | 2006-03-16 16:15:01 +0100 (Do, 16. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/ChangeLog
    M /trunk/docs/ChangeLog
@@ -1779,7 +1857,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7926 | josef | 2006-03-15 14:07:04 +0100 (Mi, 15 Mär 2006) | 3 lines
+r7926 | josef | 2006-03-15 14:07:04 +0100 (Mi, 15. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
 
@@ -1787,7 +1865,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7925 | josef | 2006-03-15 14:06:27 +0100 (Mi, 15 Mär 2006) | 3 lines
+r7925 | josef | 2006-03-15 14:06:27 +0100 (Mi, 15. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/release-procedure
 
@@ -1795,7 +1873,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7917 | josef | 2006-03-14 14:58:51 +0100 (Di, 14 Mär 2006) | 4 lines
+r7917 | josef | 2006-03-14 14:58:51 +0100 (Di, 14. Mär 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/games/games.html
 
@@ -1804,7 +1882,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7911 | josef | 2006-03-14 14:53:58 +0100 (Di, 14 Mär 2006) | 3 lines
+r7911 | josef | 2006-03-14 14:53:58 +0100 (Di, 14. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/QuickStart.GGZ
    M /trunk/docs/autogen.sh
@@ -1833,7 +1911,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7906 | josef | 2006-03-14 14:48:56 +0100 (Di, 14 Mär 2006) | 5 lines
+r7906 | josef | 2006-03-14 14:48:56 +0100 (Di, 14. Mär 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/GGZ-contributions
    M /trunk/docs/ggz-project/Internationalization
@@ -1849,7 +1927,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7905 | josef | 2006-03-14 14:47:11 +0100 (Di, 14 Mär 2006) | 4 lines
+r7905 | josef | 2006-03-14 14:47:11 +0100 (Di, 14. Mär 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/NEWS
@@ -1900,7 +1978,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7903 | josef | 2006-03-14 14:45:48 +0100 (Di, 14 Mär 2006) | 3 lines
+r7903 | josef | 2006-03-14 14:45:48 +0100 (Di, 14. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -1920,7 +1998,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7897 | josef | 2006-03-07 14:31:46 +0100 (Di, 07 Mär 2006) | 3 lines
+r7897 | josef | 2006-03-07 14:31:46 +0100 (Di, 07. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/presentation/README.talks
 
@@ -1928,7 +2006,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7884 | josef | 2006-03-06 18:48:55 +0100 (Mo, 06 Mär 2006) | 5 lines
+r7884 | josef | 2006-03-06 18:48:55 +0100 (Mo, 06. Mär 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/presentation/README.talks
    A /trunk/docs/presentation/chemnitz2006
@@ -1940,7 +2018,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7872 | josef | 2006-02-27 10:05:25 +0100 (Mo, 27 Feb 2006) | 3 lines
+r7872 | josef | 2006-02-27 10:05:25 +0100 (Mo, 27. Feb 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/GGZ-contributions
 
@@ -1948,7 +2026,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7840 | josef | 2006-02-03 14:02:09 +0100 (Fr, 03 Feb 2006) | 3 lines
+r7840 | josef | 2006-02-03 14:02:09 +0100 (Fr, 03. Feb 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.sxw
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
@@ -1958,7 +2036,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7839 | josef | 2006-02-03 14:01:20 +0100 (Fr, 03 Feb 2006) | 3 lines
+r7839 | josef | 2006-02-03 14:01:20 +0100 (Fr, 03. Feb 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/grubby/admin-manual.html
 
@@ -1966,7 +2044,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7713 | josef | 2006-01-02 17:46:57 +0100 (Mo, 02 Jan 2006) | 3 lines
+r7713 | josef | 2006-01-02 17:46:57 +0100 (Mo, 02. Jan 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/coreclients/coreclients.html
    M /trunk/docs/games/game-development
@@ -1978,7 +2056,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7695 | josef | 2005-12-29 12:36:51 +0100 (Do, 29 Dez 2005) | 5 lines
+r7695 | josef | 2005-12-29 12:36:51 +0100 (Do, 29. Dez 2005) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/GGZ-contributions
    M /trunk/docs/ggz-project/Versioning
@@ -1992,7 +2070,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7694 | josef | 2005-12-29 12:35:44 +0100 (Do, 29 Dez 2005) | 4 lines
+r7694 | josef | 2005-12-29 12:35:44 +0100 (Do, 29. Dez 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/games/Makefile.am
    A /trunk/docs/games/features.html (von /trunk/docs/games/game-development/features.html:7659)
@@ -2019,7 +2097,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7693 | josef | 2005-12-29 12:34:01 +0100 (Do, 29 Dez 2005) | 3 lines
+r7693 | josef | 2005-12-29 12:34:01 +0100 (Do, 29. Dez 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.sxw
 
@@ -2027,7 +2105,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7692 | josef | 2005-12-29 12:33:18 +0100 (Do, 29 Dez 2005) | 3 lines
+r7692 | josef | 2005-12-29 12:33:18 +0100 (Do, 29. Dez 2005) | 3 lines
 Geänderte Pfade:
    A /trunk/docs/games/protocols/index.xhtml
 
@@ -2035,7 +2113,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7691 | josef | 2005-12-29 12:32:51 +0100 (Do, 29 Dez 2005) | 4 lines
+r7691 | josef | 2005-12-29 12:32:51 +0100 (Do, 29. Dez 2005) | 4 lines
 Geänderte Pfade:
    A /trunk/docs/games/protocols/generate.sh
    M /trunk/docs/games/protocols/ggzcommgen.xsl
@@ -2046,7 +2124,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7690 | josef | 2005-12-29 12:31:27 +0100 (Do, 29 Dez 2005) | 4 lines
+r7690 | josef | 2005-12-29 12:31:27 +0100 (Do, 29. Dez 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/README.GGZ
    M /trunk/docs/autogen.sh
@@ -2099,7 +2177,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7660 | josef | 2005-12-12 12:54:49 +0100 (Mo, 12 Dez 2005) | 5 lines
+r7660 | josef | 2005-12-12 12:54:49 +0100 (Mo, 12. Dez 2005) | 5 lines
 Geänderte Pfade:
    M /trunk/community/web/articles
    M /trunk/community/web/common
@@ -2402,7 +2480,7 @@ This week's XXL commit!
 
 
 ------------------------------------------------------------------------
-r7647 | josef | 2005-11-29 19:09:49 +0100 (Di, 29 Nov 2005) | 3 lines
+r7647 | josef | 2005-11-29 19:09:49 +0100 (Di, 29. Nov 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/Makefile.am
 
@@ -2410,7 +2488,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7646 | josef | 2005-11-29 19:09:37 +0100 (Di, 29 Nov 2005) | 3 lines
+r7646 | josef | 2005-11-29 19:09:37 +0100 (Di, 29. Nov 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/Makefile.am
 
@@ -2418,7 +2496,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7621 | josef | 2005-11-14 10:01:33 +0100 (Mo, 14 Nov 2005) | 7 lines
+r7621 | josef | 2005-11-14 10:01:33 +0100 (Mo, 14. Nov 2005) | 7 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/features.html
    A /trunk/kde-games/keepalive/keepalive.desktop
@@ -2439,7 +2517,7 @@ Some random commits of what has been lurking around for some time:
 
 
 ------------------------------------------------------------------------
-r7595 | josef | 2005-09-25 22:43:32 +0200 (So, 25 Sep 2005) | 4 lines
+r7595 | josef | 2005-09-25 22:43:32 +0200 (So, 25. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
@@ -2449,7 +2527,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7593 | josef | 2005-09-25 20:25:14 +0200 (So, 25 Sep 2005) | 3 lines
+r7593 | josef | 2005-09-25 20:25:14 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
    M /trunk/ggz-client-libs/ChangeLog
@@ -2470,7 +2548,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7587 | josef | 2005-09-25 19:50:35 +0200 (So, 25 Sep 2005) | 3 lines
+r7587 | josef | 2005-09-25 19:50:35 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/spec/Makefile.am
 
@@ -2478,7 +2556,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7567 | josef | 2005-09-25 15:34:35 +0200 (So, 25 Sep 2005) | 3 lines
+r7567 | josef | 2005-09-25 15:34:35 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/release-procedure
 
@@ -2486,7 +2564,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7563 | josef | 2005-09-25 14:54:12 +0200 (So, 25 Sep 2005) | 3 lines
+r7563 | josef | 2005-09-25 14:54:12 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/games.html
 
@@ -2494,7 +2572,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7559 | josef | 2005-09-25 13:35:16 +0200 (So, 25 Sep 2005) | 3 lines
+r7559 | josef | 2005-09-25 13:35:16 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Versioning
 
@@ -2502,7 +2580,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7553 | josef | 2005-09-25 13:09:16 +0200 (So, 25 Sep 2005) | 5 lines
+r7553 | josef | 2005-09-25 13:09:16 +0200 (So, 25. Sep 2005) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/COPYING
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
@@ -2514,7 +2592,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7551 | josef | 2005-09-25 12:11:25 +0200 (So, 25 Sep 2005) | 3 lines
+r7551 | josef | 2005-09-25 12:11:25 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
    M /trunk/community/web/common/htconf-dist
@@ -2537,7 +2615,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7550 | josef | 2005-09-25 11:54:30 +0200 (So, 25 Sep 2005) | 4 lines
+r7550 | josef | 2005-09-25 11:54:30 +0200 (So, 25. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README.GGZ
@@ -2586,7 +2664,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7522 | josef | 2005-09-16 23:43:58 +0200 (Fr, 16 Sep 2005) | 3 lines
+r7522 | josef | 2005-09-16 23:43:58 +0200 (Fr, 16. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/spec/serverspec/serverspec.sgml
 
@@ -2594,7 +2672,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7521 | josef | 2005-09-16 23:43:09 +0200 (Fr, 16 Sep 2005) | 3 lines
+r7521 | josef | 2005-09-16 23:43:09 +0200 (Fr, 16. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/spec/clientspec/clientspec.sgml
 
@@ -2602,7 +2680,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7520 | josef | 2005-09-16 22:14:26 +0200 (Fr, 16 Sep 2005) | 4 lines
+r7520 | josef | 2005-09-16 22:14:26 +0200 (Fr, 16. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/spec/clientspec/clientspec.sgml
 
@@ -2611,7 +2689,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7516 | josef | 2005-09-15 20:00:53 +0200 (Do, 15 Sep 2005) | 4 lines
+r7516 | josef | 2005-09-15 20:00:53 +0200 (Do, 15. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz-client-libs/autogen.sh
@@ -2641,7 +2719,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7512 | josef | 2005-09-14 12:48:25 +0200 (Mi, 14 Sep 2005) | 3 lines
+r7512 | josef | 2005-09-14 12:48:25 +0200 (Mi, 14. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/buildsystem
 
@@ -2649,7 +2727,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7511 | josef | 2005-09-14 12:28:02 +0200 (Mi, 14 Sep 2005) | 4 lines
+r7511 | josef | 2005-09-14 12:28:02 +0200 (Mi, 14. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/buildsystem
 
@@ -2658,7 +2736,7 @@ currently (ab)use CXXFLAGS, but also some others like gnome-client
 
 
 ------------------------------------------------------------------------
-r7510 | josef | 2005-09-14 12:05:38 +0200 (Mi, 14 Sep 2005) | 3 lines
+r7510 | josef | 2005-09-14 12:05:38 +0200 (Mi, 14. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/buildsystem
 
@@ -2666,7 +2744,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7509 | josef | 2005-09-14 11:55:20 +0200 (Mi, 14 Sep 2005) | 5 lines
+r7509 | josef | 2005-09-14 11:55:20 +0200 (Mi, 14. Sep 2005) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/buildsystem
 
@@ -2676,7 +2754,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7464 | josef | 2005-08-20 23:41:45 +0200 (Sa, 20 Aug 2005) | 4 lines
+r7464 | josef | 2005-08-20 23:41:45 +0200 (Sa, 20. Aug 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -2700,7 +2778,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7458 | josef | 2005-08-20 18:45:32 +0200 (Sa, 20 Aug 2005) | 3 lines
+r7458 | josef | 2005-08-20 18:45:32 +0200 (Sa, 20. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/spec/Makefile.am
 
@@ -2708,7 +2786,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7438 | josef | 2005-08-15 12:02:49 +0200 (Mo, 15 Aug 2005) | 3 lines
+r7438 | josef | 2005-08-15 12:02:49 +0200 (Mo, 15. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
 
@@ -2716,7 +2794,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7412 | josef | 2005-08-14 14:10:02 +0200 (So, 14 Aug 2005) | 3 lines
+r7412 | josef | 2005-08-14 14:10:02 +0200 (So, 14. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
    M /trunk/docs/spec/serverspec/serverspec.sgml
@@ -2725,7 +2803,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7369 | josef | 2005-08-06 11:24:18 +0200 (Sa, 06 Aug 2005) | 4 lines
+r7369 | josef | 2005-08-06 11:24:18 +0200 (Sa, 06. Aug 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/presentation/chemnitz2003/ggz-presentation.de.sxi
    M /trunk/docs/presentation/chemnitz2003/ggz-presentation.en.sxi
@@ -2735,7 +2813,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7368 | josef | 2005-08-06 10:52:56 +0200 (Sa, 06 Aug 2005) | 4 lines
+r7368 | josef | 2005-08-06 10:52:56 +0200 (Sa, 06. Aug 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/presentation/linuxtag2005/paper/ggzpaper-lt2k5.sxw
 
@@ -2744,7 +2822,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7364 | josef | 2005-08-05 19:35:21 +0200 (Fr, 05 Aug 2005) | 3 lines
+r7364 | josef | 2005-08-05 19:35:21 +0200 (Fr, 05. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.sxw
 
@@ -2752,7 +2830,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7356 | josef | 2005-08-03 16:23:33 +0200 (Mi, 03 Aug 2005) | 3 lines
+r7356 | josef | 2005-08-03 16:23:33 +0200 (Mi, 03. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/intro
    M /trunk/docs/server/database
@@ -2764,7 +2842,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7355 | josef | 2005-08-03 16:20:27 +0200 (Mi, 03 Aug 2005) | 3 lines
+r7355 | josef | 2005-08-03 16:20:27 +0200 (Mi, 03. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
 
@@ -2772,7 +2850,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7348 | josef | 2005-08-03 12:02:54 +0200 (Mi, 03 Aug 2005) | 3 lines
+r7348 | josef | 2005-08-03 12:02:54 +0200 (Mi, 03. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/coreclients/ggzcore_room.png
    M /trunk/docs/coreclients/ggzcore_server.png
@@ -2807,7 +2885,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7323 | josef | 2005-06-28 10:37:49 +0200 (Di, 28 Jun 2005) | 3 lines
+r7323 | josef | 2005-06-28 10:37:49 +0200 (Di, 28. Jun 2005) | 3 lines
 Geänderte Pfade:
    A /trunk/docs/presentation/README.talks
    A /trunk/docs/presentation/linuxtag2005/paper
@@ -2817,7 +2895,7 @@ Geänderte Pfade:
 - readme with information about exporting slides
 
 ------------------------------------------------------------------------
-r7322 | josef | 2005-06-28 10:24:33 +0200 (Di, 28 Jun 2005) | 2 lines
+r7322 | josef | 2005-06-28 10:24:33 +0200 (Di, 28. Jun 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/presentation/chemnitz2003
    A /trunk/docs/presentation/chemnitz2003/ggz-presentation.de.sxi
@@ -2826,7 +2904,7 @@ Geänderte Pfade:
 - saving the old talk material of 2003, just for the archives
 
 ------------------------------------------------------------------------
-r7321 | josef | 2005-06-28 10:22:43 +0200 (Di, 28 Jun 2005) | 2 lines
+r7321 | josef | 2005-06-28 10:22:43 +0200 (Di, 28. Jun 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/presentation
    A /trunk/docs/presentation/linuxtag2005
@@ -2853,42 +2931,42 @@ Geänderte Pfade:
 - magicpoint slides material for the LinuxTag 2005 talk
 
 ------------------------------------------------------------------------
-r7293 | josef | 2005-06-18 20:13:45 +0200 (Sa, 18 Jun 2005) | 2 lines
+r7293 | josef | 2005-06-18 20:13:45 +0200 (Sa, 18. Jun 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/GGZ-contributions
 
 - mention widelands graphics
 
 ------------------------------------------------------------------------
-r7285 | josef | 2005-06-18 09:49:33 +0200 (Sa, 18 Jun 2005) | 2 lines
+r7285 | josef | 2005-06-18 09:49:33 +0200 (Sa, 18. Jun 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec/clientspec/clientspec.sgml
 
 - mention GGZMODE and GGZSOCKET
 
 ------------------------------------------------------------------------
-r7284 | josef | 2005-06-18 09:37:37 +0200 (Sa, 18 Jun 2005) | 2 lines
+r7284 | josef | 2005-06-18 09:37:37 +0200 (Sa, 18. Jun 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec/serverspec/serverspec.sgml
 
 - mention GGZMOD and GGZSOCKET
 
 ------------------------------------------------------------------------
-r7230 | josef | 2005-05-21 13:54:24 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7230 | josef | 2005-05-21 13:54:24 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
 - hosting guide for 0.0.11
 
 ------------------------------------------------------------------------
-r7229 | josef | 2005-05-21 13:53:34 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7229 | josef | 2005-05-21 13:53:34 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
 
 - gamedev guide for 0.0.11
 
 ------------------------------------------------------------------------
-r7228 | josef | 2005-05-21 13:50:35 +0200 (Sa, 21 Mai 2005) | 5 lines
+r7228 | josef | 2005-05-21 13:50:35 +0200 (Sa, 21. Mai 2005) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/features.html
    M /trunk/docs/games/game-development/games.html
@@ -2899,14 +2977,14 @@ Ludo is the first GGZ game ever without network support. Ooops :-)
 Therefore, there's no protocol engine assigned and also no protocol version.
 
 ------------------------------------------------------------------------
-r7221 | josef | 2005-05-21 13:28:15 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7221 | josef | 2005-05-21 13:28:15 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Internationalization
 
 - update i18n status a bit
 
 ------------------------------------------------------------------------
-r7216 | josef | 2005-05-21 13:13:11 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7216 | josef | 2005-05-21 13:13:11 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/NEWS
@@ -2973,7 +3051,7 @@ Geänderte Pfade:
 - common files synchronisation and README update for 0.0.11
 
 ------------------------------------------------------------------------
-r7214 | josef | 2005-05-21 12:46:02 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7214 | josef | 2005-05-21 12:46:02 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz/game_clients/configure.ac
@@ -2993,63 +3071,63 @@ Geänderte Pfade:
 - LET version = 0.0.11
 
 ------------------------------------------------------------------------
-r7213 | josef | 2005-05-21 12:36:27 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7213 | josef | 2005-05-21 12:36:27 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Versioning
 
 - GGZ 0.0.11 application and library versions: all done :-)
 
 ------------------------------------------------------------------------
-r7202 | josef | 2005-05-21 11:27:56 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7202 | josef | 2005-05-21 11:27:56 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/intro/index.html
 
 - link to kggz and ggz-gtk documentation (might not work on all installations)
 
 ------------------------------------------------------------------------
-r7184 | josef | 2005-05-07 13:11:10 +0200 (Sa, 07 Mai 2005) | 2 lines
+r7184 | josef | 2005-05-07 13:11:10 +0200 (Sa, 07. Mai 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/ggz-project/ggz-dependencies
 
 - updated dependency information (and now it's finally in cvs)
 
 ------------------------------------------------------------------------
-r7176 | josef | 2005-05-05 10:50:40 +0200 (Do, 05 Mai 2005) | 2 lines
+r7176 | josef | 2005-05-05 10:50:40 +0200 (Do, 05. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Versioning
 
 - add note about inter-library dependencies
 
 ------------------------------------------------------------------------
-r7124 | josef | 2005-04-23 14:00:06 +0200 (Sa, 23 Apr 2005) | 2 lines
+r7124 | josef | 2005-04-23 14:00:06 +0200 (Sa, 23. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
 
 - document new tag
 
 ------------------------------------------------------------------------
-r7097 | josef | 2005-04-09 11:44:36 +0200 (Sa, 09 Apr 2005) | 2 lines
+r7097 | josef | 2005-04-09 11:44:36 +0200 (Sa, 09. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec/clientspec/clientspec.sgml
 
 - some minor additions (still no individual events descriptions)
 
 ------------------------------------------------------------------------
-r7096 | josef | 2005-04-09 11:39:59 +0200 (Sa, 09 Apr 2005) | 2 lines
+r7096 | josef | 2005-04-09 11:39:59 +0200 (Sa, 09. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/intro/index.html
 
 - link to new game module document and slight reordering of game development docs
 
 ------------------------------------------------------------------------
-r7095 | josef | 2005-04-09 11:39:27 +0200 (Sa, 09 Apr 2005) | 2 lines
+r7095 | josef | 2005-04-09 11:39:27 +0200 (Sa, 09. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
 
 - create makefile for new game modules document
 
 ------------------------------------------------------------------------
-r7094 | josef | 2005-04-09 11:39:02 +0200 (Sa, 09 Apr 2005) | 3 lines
+r7094 | josef | 2005-04-09 11:39:02 +0200 (Sa, 09. Apr 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/Makefile.am
    A /trunk/docs/games/modules
@@ -3067,7 +3145,7 @@ Geänderte Pfade:
 - includes diagrams for states, seats and seat transitions
 
 ------------------------------------------------------------------------
-r7093 | josef | 2005-04-08 22:17:51 +0200 (Fr, 08 Apr 2005) | 3 lines
+r7093 | josef | 2005-04-08 22:17:51 +0200 (Fr, 08. Apr 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/spec/serverspec/serverspec.sgml
 
@@ -3075,14 +3153,14 @@ Geänderte Pfade:
 - including all the message data and their purpose
 
 ------------------------------------------------------------------------
-r7092 | josef | 2005-04-08 20:21:07 +0200 (Fr, 08 Apr 2005) | 2 lines
+r7092 | josef | 2005-04-08 20:21:07 +0200 (Fr, 08. Apr 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
 
 - documentation of URL parameter to MOTD tag
 
 ------------------------------------------------------------------------
-r7064 | josef | 2005-03-27 18:07:52 +0200 (So, 27 Mär 2005) | 3 lines
+r7064 | josef | 2005-03-27 18:07:52 +0200 (So, 27. Mär 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/intro/index.html
 
@@ -3090,21 +3168,21 @@ Geänderte Pfade:
 - inclusion of ggzd architecture document
 
 ------------------------------------------------------------------------
-r7063 | josef | 2005-03-27 17:53:12 +0200 (So, 27 Mär 2005) | 2 lines
+r7063 | josef | 2005-03-27 17:53:12 +0200 (So, 27. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
 
 - create ggzd directory
 
 ------------------------------------------------------------------------
-r7062 | josef | 2005-03-27 17:52:55 +0200 (So, 27 Mär 2005) | 2 lines
+r7062 | josef | 2005-03-27 17:52:55 +0200 (So, 27. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/server/Makefile.am
 
 - descend into ggzd directory
 
 ------------------------------------------------------------------------
-r7061 | josef | 2005-03-27 17:52:29 +0200 (So, 27 Mär 2005) | 3 lines
+r7061 | josef | 2005-03-27 17:52:29 +0200 (So, 27. Mär 2005) | 3 lines
 Geänderte Pfade:
    A /trunk/docs/server/ggzd
    A /trunk/docs/server/ggzd/Makefile.am
@@ -3116,7 +3194,7 @@ Geänderte Pfade:
 - is still lacking many details but it's better than none at all :-)
 
 ------------------------------------------------------------------------
-r7060 | josef | 2005-03-27 17:05:26 +0200 (So, 27 Mär 2005) | 8 lines
+r7060 | josef | 2005-03-27 17:05:26 +0200 (So, 27. Mär 2005) | 8 lines
 Geänderte Pfade:
    M /trunk/docs/overview/architecture/Makefile.am
    A /trunk/docs/overview/architecture/communication.flw
@@ -3132,14 +3210,14 @@ Geänderte Pfade:
   further reading
 
 ------------------------------------------------------------------------
-r7059 | josef | 2005-03-27 01:36:45 +0100 (So, 27 Mär 2005) | 2 lines
+r7059 | josef | 2005-03-27 01:36:45 +0100 (So, 27. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/intro/index.html
 
 - reference new documentation
 
 ------------------------------------------------------------------------
-r7058 | josef | 2005-03-27 01:30:45 +0100 (So, 27 Mär 2005) | 4 lines
+r7058 | josef | 2005-03-27 01:30:45 +0100 (So, 27. Mär 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/grubby/Makefile.am
    M /trunk/docs/grubby/admin-manual.html
@@ -3154,14 +3232,14 @@ Geänderte Pfade:
   (and deprecating some text files in grubby's doc/ directory)
 
 ------------------------------------------------------------------------
-r7049 | josef | 2005-03-26 11:39:08 +0100 (Sa, 26 Mär 2005) | 2 lines
+r7049 | josef | 2005-03-26 11:39:08 +0100 (Sa, 26. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
 
 - create client spec makefile
 
 ------------------------------------------------------------------------
-r7048 | josef | 2005-03-26 11:38:51 +0100 (Sa, 26 Mär 2005) | 3 lines
+r7048 | josef | 2005-03-26 11:38:51 +0100 (Sa, 26. Mär 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/spec/Makefile.am
    A /trunk/docs/spec/clientspec
@@ -3175,14 +3253,14 @@ Geänderte Pfade:
 - this is only a stub for now, all the real documentation is missing
 
 ------------------------------------------------------------------------
-r7040 | josef | 2005-03-25 17:44:56 +0100 (Fr, 25 Mär 2005) | 2 lines
+r7040 | josef | 2005-03-25 17:44:56 +0100 (Fr, 25. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
 
 - create makefile for serverspec
 
 ------------------------------------------------------------------------
-r7039 | josef | 2005-03-25 17:44:34 +0100 (Fr, 25 Mär 2005) | 4 lines
+r7039 | josef | 2005-03-25 17:44:34 +0100 (Fr, 25. Mär 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/spec/Makefile.am
    A /trunk/docs/spec/serverspec
@@ -3196,7 +3274,7 @@ Geänderte Pfade:
 - there will also be a similar spec for core client <-> game client interaction
 
 ------------------------------------------------------------------------
-r7004 | josef | 2005-03-14 20:19:17 +0100 (Mo, 14 Mär 2005) | 2 lines
+r7004 | josef | 2005-03-14 20:19:17 +0100 (Mo, 14. Mär 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/games/protocols
    A /trunk/docs/games/protocols/ggzcommgen.xsl
@@ -3205,14 +3283,14 @@ Geänderte Pfade:
 - XSL file which, when applied to a XML protocol spec, produces a nice HTML doc
 
 ------------------------------------------------------------------------
-r6987 | josef | 2005-03-11 12:03:16 +0100 (Fr, 11 Mär 2005) | 2 lines
+r6987 | josef | 2005-03-11 12:03:16 +0100 (Fr, 11. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/intro/index.html
 
 - refer to external KGGZ handbook in docs list
 
 ------------------------------------------------------------------------
-r6985 | josef | 2005-03-11 10:32:13 +0100 (Fr, 11 Mär 2005) | 4 lines
+r6985 | josef | 2005-03-11 10:32:13 +0100 (Fr, 11. Mär 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/coreclients/Makefile.am
    A /trunk/docs/coreclients/ggz-txt-handbook.de.html
@@ -3223,7 +3301,7 @@ Geänderte Pfade:
   we had plenty of them...)
 
 ------------------------------------------------------------------------
-r6976 | josef | 2005-03-11 01:19:37 +0100 (Fr, 11 Mär 2005) | 2 lines
+r6976 | josef | 2005-03-11 01:19:37 +0100 (Fr, 11. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/overview/Makefile.am
    A /trunk/docs/overview/index.de.html
@@ -3231,7 +3309,7 @@ Geänderte Pfade:
 - German translation of GGZ overview documentation
 
 ------------------------------------------------------------------------
-r6975 | josef | 2005-03-11 00:48:14 +0100 (Fr, 11 Mär 2005) | 5 lines
+r6975 | josef | 2005-03-11 00:48:14 +0100 (Fr, 11. Mär 2005) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/Makefile.am
    M /trunk/docs/configure.ac
@@ -3245,7 +3323,7 @@ Geänderte Pfade:
 - still lots of docs need an update
 
 ------------------------------------------------------------------------
-r6974 | josef | 2005-03-11 00:14:34 +0100 (Fr, 11 Mär 2005) | 3 lines
+r6974 | josef | 2005-03-11 00:14:34 +0100 (Fr, 11. Mär 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/docs/overview/Makefile.am
@@ -3258,7 +3336,7 @@ Geänderte Pfade:
   (even though the latter one is outdated a bit)
 
 ------------------------------------------------------------------------
-r6973 | josef | 2005-03-11 00:03:04 +0100 (Fr, 11 Mär 2005) | 2 lines
+r6973 | josef | 2005-03-11 00:03:04 +0100 (Fr, 11. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec/Makefile.am
    M /trunk/docs/spec/overview.sgml
@@ -3266,7 +3344,7 @@ Geänderte Pfade:
 - some build and installation fixes (now uses spec/ subdirectory)
 
 ------------------------------------------------------------------------
-r6972 | josef | 2005-03-10 19:22:18 +0100 (Do, 10 Mär 2005) | 3 lines
+r6972 | josef | 2005-03-10 19:22:18 +0100 (Do, 10. Mär 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/coreclients/Makefile.am
    M /trunk/docs/coreclients/coreclients.html
@@ -3282,14 +3360,14 @@ Geänderte Pfade:
 - using the new-style HTML format and some explanation charts
 
 ------------------------------------------------------------------------
-r6937 | josef | 2005-02-27 02:27:18 +0100 (So, 27 Feb 2005) | 2 lines
+r6937 | josef | 2005-02-27 02:27:18 +0100 (So, 27. Feb 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
 
 - create makefile for new architecture documentation
 
 ------------------------------------------------------------------------
-r6936 | josef | 2005-02-27 02:26:34 +0100 (So, 27 Feb 2005) | 2 lines
+r6936 | josef | 2005-02-27 02:26:34 +0100 (So, 27. Feb 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/overview/architecture
    A /trunk/docs/overview/architecture/.cvsignore
@@ -3303,7 +3381,7 @@ Geänderte Pfade:
 - preliminary architecture documentation
 
 ------------------------------------------------------------------------
-r6935 | josef | 2005-02-27 00:09:19 +0100 (So, 27 Feb 2005) | 4 lines
+r6935 | josef | 2005-02-27 00:09:19 +0100 (So, 27. Feb 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/games/external-games/Makefile.am
    A /trunk/docs/games/external-games/ggzfeatures.html
@@ -3313,7 +3391,7 @@ Geänderte Pfade:
 I assembled a list of 12 points. Maybe there are more.
 
 ------------------------------------------------------------------------
-r6934 | josef | 2005-02-26 23:32:23 +0100 (Sa, 26 Feb 2005) | 4 lines
+r6934 | josef | 2005-02-26 23:32:23 +0100 (Sa, 26. Feb 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/overview/Makefile.am
    A /trunk/docs/overview/community.200.png
@@ -3331,21 +3409,21 @@ Geänderte Pfade:
   in some developer docs.
 
 ------------------------------------------------------------------------
-r6919 | josef | 2005-02-04 17:09:06 +0100 (Fr, 04 Feb 2005) | 2 lines
+r6919 | josef | 2005-02-04 17:09:06 +0100 (Fr, 04. Feb 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/buildsystem
 
 - update documentation about using GGZ macros
 
 ------------------------------------------------------------------------
-r6860 | josef | 2005-01-23 23:31:03 +0100 (So, 23 Jan 2005) | 2 lines
+r6860 | josef | 2005-01-23 23:31:03 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/Makefile.am
 
 - use extra dist
 
 ------------------------------------------------------------------------
-r6856 | josef | 2005-01-23 22:23:07 +0100 (So, 23 Jan 2005) | 2 lines
+r6856 | josef | 2005-01-23 22:23:07 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/ChangeLog
@@ -3379,7 +3457,7 @@ Geänderte Pfade:
 - authors and changelog
 
 ------------------------------------------------------------------------
-r6853 | josef | 2005-01-23 19:58:42 +0100 (So, 23 Jan 2005) | 2 lines
+r6853 | josef | 2005-01-23 19:58:42 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/server/database/ggzdb-modular.xmi
    A /trunk/docs/server/database/ggzdb.xmi
@@ -3387,14 +3465,14 @@ Geänderte Pfade:
 - backup of database schema files
 
 ------------------------------------------------------------------------
-r6852 | josef | 2005-01-23 19:55:40 +0100 (So, 23 Jan 2005) | 2 lines
+r6852 | josef | 2005-01-23 19:55:40 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
 - slight update for 0.0.10
 
 ------------------------------------------------------------------------
-r6851 | josef | 2005-01-23 19:52:22 +0100 (So, 23 Jan 2005) | 2 lines
+r6851 | josef | 2005-01-23 19:52:22 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/Makefile.am
    A /trunk/docs/games/game-development/ggz-game-development-guide.sxw
@@ -3402,7 +3480,7 @@ Geänderte Pfade:
 - OOo version of gamedev guide (for PDF generation)
 
 ------------------------------------------------------------------------
-r6850 | josef | 2005-01-23 19:47:57 +0100 (So, 23 Jan 2005) | 3 lines
+r6850 | josef | 2005-01-23 19:47:57 +0100 (So, 23. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/features.html
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
@@ -3411,14 +3489,14 @@ Geänderte Pfade:
 - synchronize guide updates from PDF document
 
 ------------------------------------------------------------------------
-r6849 | josef | 2005-01-23 19:33:59 +0100 (So, 23 Jan 2005) | 2 lines
+r6849 | josef | 2005-01-23 19:33:59 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Versioning
 
 - libggz bump was not yet included
 
 ------------------------------------------------------------------------
-r6844 | josef | 2005-01-23 14:20:29 +0100 (So, 23 Jan 2005) | 2 lines
+r6844 | josef | 2005-01-23 14:20:29 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/NEWS
    M /trunk/ggz/game_clients/NEWS
@@ -3438,7 +3516,7 @@ Geänderte Pfade:
 - news update
 
 ------------------------------------------------------------------------
-r6843 | josef | 2005-01-23 14:12:48 +0100 (So, 23 Jan 2005) | 2 lines
+r6843 | josef | 2005-01-23 14:12:48 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/NEWS
    M /trunk/docs/QuickStart.GGZ
@@ -3480,21 +3558,21 @@ Geänderte Pfade:
 - updated common files
 
 ------------------------------------------------------------------------
-r6819 | josef | 2005-01-22 17:20:19 +0100 (Sa, 22 Jan 2005) | 2 lines
+r6819 | josef | 2005-01-22 17:20:19 +0100 (Sa, 22. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Internationalization
 
 - i18n docs updated
 
 ------------------------------------------------------------------------
-r6818 | josef | 2005-01-22 17:14:42 +0100 (Sa, 22 Jan 2005) | 2 lines
+r6818 | josef | 2005-01-22 17:14:42 +0100 (Sa, 22. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Versioning
 
 - version number updates everywhere
 
 ------------------------------------------------------------------------
-r6812 | josef | 2005-01-22 16:28:57 +0100 (Sa, 22 Jan 2005) | 2 lines
+r6812 | josef | 2005-01-22 16:28:57 +0100 (Sa, 22. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
@@ -3515,14 +3593,14 @@ Geänderte Pfade:
 - version number bump
 
 ------------------------------------------------------------------------
-r6794 | josef | 2005-01-21 22:50:01 +0100 (Fr, 21 Jan 2005) | 2 lines
+r6794 | josef | 2005-01-21 22:50:01 +0100 (Fr, 21. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/features.html
 
 - Checkers and Hnefatafl have statistics
 
 ------------------------------------------------------------------------
-r6712 | josef | 2005-01-16 20:05:06 +0100 (So, 16 Jan 2005) | 2 lines
+r6712 | josef | 2005-01-16 20:05:06 +0100 (So, 16. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec
    M /trunk/docs/spec/.cvsignore
@@ -3530,7 +3608,7 @@ Geänderte Pfade:
 - some more files that are generated
 
 ------------------------------------------------------------------------
-r6711 | josef | 2005-01-16 20:04:18 +0100 (So, 16 Jan 2005) | 4 lines
+r6711 | josef | 2005-01-16 20:04:18 +0100 (So, 16. Jan 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/spec/Makefile.am
    M /trunk/docs/spec/design.sgml
@@ -3542,7 +3620,7 @@ Geänderte Pfade:
 - copyright update, so nobody thinks the doc is 5 years old
 
 ------------------------------------------------------------------------
-r6699 | josef | 2005-01-16 13:12:29 +0100 (So, 16 Jan 2005) | 2 lines
+r6699 | josef | 2005-01-16 13:12:29 +0100 (So, 16. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/features.html
    M /trunk/docs/games/game-development/games.html
@@ -3550,14 +3628,14 @@ Geänderte Pfade:
 - add go client and server
 
 ------------------------------------------------------------------------
-r6681 | josef | 2005-01-15 00:31:28 +0100 (Sa, 15 Jan 2005) | 2 lines
+r6681 | josef | 2005-01-15 00:31:28 +0100 (Sa, 15. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec/Makefile.am
 
 - blur the difference between docbook2html and docbook-2-html
 
 ------------------------------------------------------------------------
-r6680 | josef | 2005-01-15 00:29:21 +0100 (Sa, 15 Jan 2005) | 3 lines
+r6680 | josef | 2005-01-15 00:29:21 +0100 (Sa, 15. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
 
@@ -3565,7 +3643,7 @@ Geänderte Pfade:
 - recognize both docbook-2-html and docbook2html
 
 ------------------------------------------------------------------------
-r6533 | josef | 2004-12-19 23:29:00 +0100 (So, 19 Dez 2004) | 6 lines
+r6533 | josef | 2004-12-19 23:29:00 +0100 (So, 19. Dez 2004) | 6 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/features.html
    M /trunk/docs/games/game-development/games.html
@@ -3577,7 +3655,7 @@ Among others, these tables should take game collections like GGZCards and GGZBoa
 better into account.
 
 ------------------------------------------------------------------------
-r6453 | josef | 2004-12-12 15:42:27 +0100 (So, 12 Dez 2004) | 5 lines
+r6453 | josef | 2004-12-12 15:42:27 +0100 (So, 12. Dez 2004) | 5 lines
 Geänderte Pfade:
    A /trunk/docs/server/database
    A /trunk/docs/server/database/ggzdb-modular.png
@@ -3590,28 +3668,28 @@ Geänderte Pfade:
 - ... and a description of the tables and fields
 
 ------------------------------------------------------------------------
-r6436 | josef | 2004-12-05 21:03:49 +0100 (So, 05 Dez 2004) | 2 lines
+r6436 | josef | 2004-12-05 21:03:49 +0100 (So, 05. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/GGZ-contributions
 
 - list the background image and chess SVG pieces in python module
 
 ------------------------------------------------------------------------
-r6315 | jdorje | 2004-11-10 23:42:06 +0100 (Mi, 10 Nov 2004) | 2 lines
+r6315 | jdorje | 2004-11-10 23:42:06 +0100 (Mi, 10. Nov 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/GGZ-contributions
 
 Update file names.
 
 ------------------------------------------------------------------------
-r6211 | josef | 2004-10-22 11:21:38 +0200 (Fr, 22 Okt 2004) | 2 lines
+r6211 | josef | 2004-10-22 11:21:38 +0200 (Fr, 22. Okt 2004) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/ggz-project/GGZ-contributions
 
 - first attempt to classify all external contributions to GGZ
 
 ------------------------------------------------------------------------
-r6153 | josef | 2004-07-18 02:37:08 +0200 (So, 18 Jul 2004) | 2 lines
+r6153 | josef | 2004-07-18 02:37:08 +0200 (So, 18. Jul 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
    M /trunk/ggz/game_clients/ChangeLog
@@ -3631,14 +3709,14 @@ Geänderte Pfade:
 - changelog update
 
 ------------------------------------------------------------------------
-r6130 | josef | 2004-07-17 04:28:40 +0200 (Sa, 17 Jul 2004) | 2 lines
+r6130 | josef | 2004-07-17 04:28:40 +0200 (Sa, 17. Jul 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/games.html
 
 - game version matrix update
 
 ------------------------------------------------------------------------
-r6123 | josef | 2004-07-17 02:41:48 +0200 (Sa, 17 Jul 2004) | 8 lines
+r6123 | josef | 2004-07-17 02:41:48 +0200 (Sa, 17. Jul 2004) | 8 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Versioning
 
@@ -3651,7 +3729,7 @@ In particular,
 - ggzdmod and ggzcore had additions, changes and removals
 
 ------------------------------------------------------------------------
-r6117 | josef | 2004-07-16 21:08:39 +0200 (Fr, 16 Jul 2004) | 2 lines
+r6117 | josef | 2004-07-16 21:08:39 +0200 (Fr, 16. Jul 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/NEWS
@@ -3728,14 +3806,14 @@ Geänderte Pfade:
 - 0.0.9 updates propagation
 
 ------------------------------------------------------------------------
-r6097 | josef | 2004-07-13 16:46:52 +0200 (Di, 13 Jul 2004) | 2 lines
+r6097 | josef | 2004-07-13 16:46:52 +0200 (Di, 13. Jul 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/features.html
 
 - game feature matrix update
 
 ------------------------------------------------------------------------
-r6048 | josef | 2004-06-21 16:18:56 +0200 (Mo, 21 Jun 2004) | 3 lines
+r6048 | josef | 2004-06-21 16:18:56 +0200 (Mo, 21. Jun 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/games.html
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
@@ -3744,14 +3822,14 @@ Geänderte Pfade:
 - includes xadrez-chines in games list
 
 ------------------------------------------------------------------------
-r6047 | josef | 2004-06-21 16:17:57 +0200 (Mo, 21 Jun 2004) | 2 lines
+r6047 | josef | 2004-06-21 16:17:57 +0200 (Mo, 21. Jun 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
 - further doc updates
 
 ------------------------------------------------------------------------
-r6005 | josef | 2004-05-17 16:33:01 +0200 (Mo, 17 Mai 2004) | 7 lines
+r6005 | josef | 2004-05-17 16:33:01 +0200 (Mo, 17. Mai 2004) | 7 lines
 Geänderte Pfade:
    M /trunk/docs/coreclients/Makefile.am
    A /trunk/docs/coreclients/ggz-txt-handbook.html
@@ -3764,14 +3842,14 @@ Ideally, manuals would be produced from SGML pages, which also would be
 the source for man pages then.
 
 ------------------------------------------------------------------------
-r5937 | jdorje | 2004-02-16 07:29:00 +0100 (Mo, 16 Feb 2004) | 2 lines
+r5937 | jdorje | 2004-02-16 07:29:00 +0100 (Mo, 16. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
 
 Improve documentation on the RESULT tag.
 
 ------------------------------------------------------------------------
-r5914 | josef | 2004-02-11 18:11:23 +0100 (Mi, 11 Feb 2004) | 4 lines
+r5914 | josef | 2004-02-11 18:11:23 +0100 (Mi, 11. Feb 2004) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
@@ -3780,14 +3858,14 @@ Geänderte Pfade:
 - some minor bits like URL changes and game server additions
 
 ------------------------------------------------------------------------
-r5907 | josef | 2004-02-11 14:19:26 +0100 (Mi, 11 Feb 2004) | 2 lines
+r5907 | josef | 2004-02-11 14:19:26 +0100 (Mi, 11. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
 
 - add type 'bot' to the player types
 
 ------------------------------------------------------------------------
-r5898 | jdorje | 2004-02-11 02:27:30 +0100 (Mi, 11 Feb 2004) | 6 lines
+r5898 | jdorje | 2004-02-11 02:27:30 +0100 (Mi, 11. Feb 2004) | 6 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
 
@@ -3798,28 +3876,28 @@ Document additions to the protocol:
 Also improve the explanation of the UPDATE tag.
 
 ------------------------------------------------------------------------
-r5884 | josef | 2004-02-10 09:31:45 +0100 (Di, 10 Feb 2004) | 2 lines
+r5884 | josef | 2004-02-10 09:31:45 +0100 (Di, 10. Feb 2004) | 2 lines
 Geänderte Pfade:
    D /trunk/docs/debian
 
 - sixth round of removals of distribution files
 
 ------------------------------------------------------------------------
-r5871 | jdorje | 2004-02-09 22:35:13 +0100 (Mo, 09 Feb 2004) | 2 lines
+r5871 | jdorje | 2004-02-09 22:35:13 +0100 (Mo, 09. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
 
 Document the addition of the FROMROOM and TOROOM labels.
 
 ------------------------------------------------------------------------
-r5821 | josef | 2004-02-07 10:58:48 +0100 (Sa, 07 Feb 2004) | 2 lines
+r5821 | josef | 2004-02-07 10:58:48 +0100 (Sa, 07. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Versioning
 
 - updated versioning information
 
 ------------------------------------------------------------------------
-r5790 | josef | 2004-02-05 11:46:53 +0100 (Do, 05 Feb 2004) | 7 lines
+r5790 | josef | 2004-02-05 11:46:53 +0100 (Do, 05. Feb 2004) | 7 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
    M /trunk/ggz/game_clients/ChangeLog
@@ -3909,7 +3987,7 @@ Geänderte Pfade:
 - ChangeLog updates
 
 ------------------------------------------------------------------------
-r5785 | josef | 2004-02-04 10:17:08 +0100 (Mi, 04 Feb 2004) | 3 lines
+r5785 | josef | 2004-02-04 10:17:08 +0100 (Mi, 04. Feb 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/NEWS
    M /trunk/docs/QuickStart.GGZ
@@ -3921,14 +3999,14 @@ Geänderte Pfade:
 - includes prototype for global release files
 
 ------------------------------------------------------------------------
-r5784 | josef | 2004-02-04 10:15:40 +0100 (Mi, 04 Feb 2004) | 2 lines
+r5784 | josef | 2004-02-04 10:15:40 +0100 (Mi, 04. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
 
 - mention ggz-python
 
 ------------------------------------------------------------------------
-r5783 | josef | 2004-02-04 10:13:52 +0100 (Mi, 04 Feb 2004) | 3 lines
+r5783 | josef | 2004-02-04 10:13:52 +0100 (Mi, 04. Feb 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
@@ -3936,7 +4014,7 @@ Geänderte Pfade:
 - mentioning the Interface config option for ggzd
 
 ------------------------------------------------------------------------
-r5782 | josef | 2004-02-04 10:08:17 +0100 (Mi, 04 Feb 2004) | 2 lines
+r5782 | josef | 2004-02-04 10:08:17 +0100 (Mi, 04. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Internationalization
    M /trunk/docs/ggz-project/Roadmap
@@ -3945,7 +4023,7 @@ Geänderte Pfade:
 - lists.sourceforge.net -> mail.ggzgamingzone.org
 
 ------------------------------------------------------------------------
-r5780 | josef | 2004-02-01 15:54:27 +0100 (So, 01 Feb 2004) | 2 lines
+r5780 | josef | 2004-02-01 15:54:27 +0100 (So, 01. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/features.html
    M /trunk/docs/games/game-development/games.html
@@ -3953,7 +4031,7 @@ Geänderte Pfade:
 - preliminary game comparison updates
 
 ------------------------------------------------------------------------
-r5770 | josef | 2004-01-31 11:54:44 +0100 (Sa, 31 Jan 2004) | 2 lines
+r5770 | josef | 2004-01-31 11:54:44 +0100 (Sa, 31. Jan 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -3977,7 +4055,7 @@ Geänderte Pfade:
 - sync common files
 
 ------------------------------------------------------------------------
-r5740 | dr_maux | 2004-01-17 19:46:28 +0100 (Sa, 17 Jan 2004) | 2 lines
+r5740 | dr_maux | 2004-01-17 19:46:28 +0100 (Sa, 17. Jan 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -3995,7 +4073,7 @@ Geänderte Pfade:
 - sync
 
 ------------------------------------------------------------------------
-r5728 | dr_maux | 2003-12-31 18:07:01 +0100 (Mi, 31 Dez 2003) | 3 lines
+r5728 | dr_maux | 2003-12-31 18:07:01 +0100 (Mi, 31. Dez 2003) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
 
@@ -4003,14 +4081,14 @@ Geänderte Pfade:
 - use new-style AC_OUTPUT
 
 ------------------------------------------------------------------------
-r5713 | dr_maux | 2003-12-09 15:22:31 +0100 (Di, 09 Dez 2003) | 2 lines
+r5713 | dr_maux | 2003-12-09 15:22:31 +0100 (Di, 09. Dez 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
 - mention checknagios stuff in the hosting guide
 
 ------------------------------------------------------------------------
-r5676 | dr_maux | 2003-11-22 13:59:56 +0100 (Sa, 22 Nov 2003) | 3 lines
+r5676 | dr_maux | 2003-11-22 13:59:56 +0100 (Sa, 22. Nov 2003) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
@@ -4020,7 +4098,7 @@ Geänderte Pfade:
 - mention the python Network class
 
 ------------------------------------------------------------------------
-r5660 | dr_maux | 2003-09-28 11:30:02 +0200 (So, 28 Sep 2003) | 2 lines
+r5660 | dr_maux | 2003-09-28 11:30:02 +0200 (So, 28. Sep 2003) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/spec/dtd
    A /trunk/docs/spec/dtd/ggz_client.dtd
@@ -4029,7 +4107,7 @@ Geänderte Pfade:
 - add Roger's DTD files to the specification
 
 ------------------------------------------------------------------------
-r5659 | dr_maux | 2003-09-28 11:24:52 +0200 (So, 28 Sep 2003) | 2 lines
+r5659 | dr_maux | 2003-09-28 11:24:52 +0200 (So, 28. Sep 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/grubby/admin-manual.html
    M /trunk/docs/grubby/user-manual.de.html
@@ -4038,7 +4116,7 @@ Geänderte Pfade:
 - document the grubby games plugin
 
 ------------------------------------------------------------------------
-r5619 | dr_maux | 2003-06-28 11:09:12 +0200 (Sa, 28 Jun 2003) | 2 lines
+r5619 | dr_maux | 2003-06-28 11:09:12 +0200 (Sa, 28. Jun 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/release-procedure
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
@@ -4048,7 +4126,7 @@ Geänderte Pfade:
 - no more snafu
 
 ------------------------------------------------------------------------
-r5611 | dr_maux | 2003-06-10 09:27:26 +0200 (Di, 10 Jun 2003) | 4 lines
+r5611 | dr_maux | 2003-06-10 09:27:26 +0200 (Di, 10. Jun 2003) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/release-procedure
 
@@ -4057,14 +4135,14 @@ Geänderte Pfade:
 They have a nice 'ggz' meta package which installs all GGZ stuff
 
 ------------------------------------------------------------------------
-r5587 | dr_maux | 2003-05-17 10:06:54 +0200 (Sa, 17 Mai 2003) | 2 lines
+r5587 | dr_maux | 2003-05-17 10:06:54 +0200 (Sa, 17. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
 
 - update changelog to reflect our lazyness^Whard work
 
 ------------------------------------------------------------------------
-r5583 | dr_maux | 2003-05-16 20:34:45 +0200 (Fr, 16 Mai 2003) | 2 lines
+r5583 | dr_maux | 2003-05-16 20:34:45 +0200 (Fr, 16. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -4082,14 +4160,14 @@ Geänderte Pfade:
 - apply autogen.sh changes from libggz
 
 ------------------------------------------------------------------------
-r5564 | dr_maux | 2003-05-11 11:02:48 +0200 (So, 11 Mai 2003) | 2 lines
+r5564 | dr_maux | 2003-05-11 11:02:48 +0200 (So, 11. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Versioning
 
 - add library interface versioning to this document
 
 ------------------------------------------------------------------------
-r5542 | dr_maux | 2003-05-11 01:13:24 +0200 (So, 11 Mai 2003) | 2 lines
+r5542 | dr_maux | 2003-05-11 01:13:24 +0200 (So, 11. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/NEWS
    M /trunk/docs/QuickStart.GGZ
@@ -4104,7 +4182,7 @@ Geänderte Pfade:
 - update documentation for 0.0.7
 
 ------------------------------------------------------------------------
-r5539 | dr_maux | 2003-05-10 16:38:57 +0200 (Sa, 10 Mai 2003) | 2 lines
+r5539 | dr_maux | 2003-05-10 16:38:57 +0200 (Sa, 10. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -4122,7 +4200,7 @@ Geänderte Pfade:
 - sync autogen.sh
 
 ------------------------------------------------------------------------
-r5527 | dr_maux | 2003-05-10 11:08:27 +0200 (Sa, 10 Mai 2003) | 2 lines
+r5527 | dr_maux | 2003-05-10 11:08:27 +0200 (Sa, 10. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/Makefile.am
    M /trunk/docs/games/game-development/Makefile.am
@@ -4131,7 +4209,7 @@ Geänderte Pfade:
 - make 'make dist' work again, using the dist_data_DATA feature
 
 ------------------------------------------------------------------------
-r5520 | dr_maux | 2003-05-10 08:34:06 +0200 (Sa, 10 Mai 2003) | 4 lines
+r5520 | dr_maux | 2003-05-10 08:34:06 +0200 (Sa, 10. Mai 2003) | 4 lines
 Geänderte Pfade:
    A /trunk/docs/ggz-project/Versioning
 
@@ -4140,14 +4218,14 @@ Geänderte Pfade:
 This is a suggestion, modifications can be done of course.
 
 ------------------------------------------------------------------------
-r5496 | dr_maux | 2003-04-28 09:34:05 +0200 (Mo, 28 Apr 2003) | 2 lines
+r5496 | dr_maux | 2003-04-28 09:34:05 +0200 (Mo, 28. Apr 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/features.html
 
 - add a new column to the features document: single player mode
 
 ------------------------------------------------------------------------
-r5495 | dr_maux | 2003-04-28 09:02:23 +0200 (Mo, 28 Apr 2003) | 3 lines
+r5495 | dr_maux | 2003-04-28 09:02:23 +0200 (Mo, 28. Apr 2003) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Internationalization
    M /trunk/docs/ggz-project/release-procedure
@@ -4156,7 +4234,7 @@ Geänderte Pfade:
 - add Mandrake to the list of distros (even though we're only in contrib yet)
 
 ------------------------------------------------------------------------
-r5481 | dr_maux | 2003-03-29 11:42:00 +0100 (Sa, 29 Mär 2003) | 2 lines
+r5481 | dr_maux | 2003-03-29 11:42:00 +0100 (Sa, 29. Mär 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development
    M /trunk/docs/games/game-development/.cvsignore
@@ -4164,7 +4242,7 @@ Geänderte Pfade:
 - add HTML output directory to cvsignore
 
 ------------------------------------------------------------------------
-r5476 | dr_maux | 2003-03-29 11:33:32 +0100 (Sa, 29 Mär 2003) | 2 lines
+r5476 | dr_maux | 2003-03-29 11:33:32 +0100 (Sa, 29. Mär 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -4182,14 +4260,14 @@ Geänderte Pfade:
 - apply improverished autogen globally
 
 ------------------------------------------------------------------------
-r5460 | dr_maux | 2003-02-26 14:53:27 +0100 (Mi, 26 Feb 2003) | 2 lines
+r5460 | dr_maux | 2003-02-26 14:53:27 +0100 (Mi, 26. Feb 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec/overview.sgml
 
 - fix typos (this word has been a curse)
 
 ------------------------------------------------------------------------
-r5425 | dr_maux | 2003-02-16 21:55:08 +0100 (So, 16 Feb 2003) | 5 lines
+r5425 | dr_maux | 2003-02-16 21:55:08 +0100 (So, 16. Feb 2003) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
 
@@ -4199,7 +4277,7 @@ Geänderte Pfade:
  * add [Statistics] in .dsc files
 
 ------------------------------------------------------------------------
-r5424 | dr_maux | 2003-02-16 21:22:20 +0100 (So, 16 Feb 2003) | 5 lines
+r5424 | dr_maux | 2003-02-16 21:22:20 +0100 (So, 16. Feb 2003) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/features.html
    M /trunk/docs/games/game-development/games.html
@@ -4210,7 +4288,7 @@ Geänderte Pfade:
  * add new game servers and game clients to both lists
 
 ------------------------------------------------------------------------
-r5412 | dr_maux | 2003-02-16 13:58:20 +0100 (So, 16 Feb 2003) | 4 lines
+r5412 | dr_maux | 2003-02-16 13:58:20 +0100 (So, 16. Feb 2003) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
 
@@ -4219,7 +4297,7 @@ Geänderte Pfade:
 - works with {bash, dash, omsh, zsh} but not yet with {csh, tcsh}
 
 ------------------------------------------------------------------------
-r5404 | dr_maux | 2003-02-15 01:43:56 +0100 (Sa, 15 Feb 2003) | 5 lines
+r5404 | dr_maux | 2003-02-15 01:43:56 +0100 (Sa, 15. Feb 2003) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/release-procedure
 
@@ -4229,7 +4307,7 @@ If this continues we'll end up having 200 commits to this file.
 But in the end it ain't bad at all...
 
 ------------------------------------------------------------------------
-r5379 | dr_maux | 2003-02-04 15:55:47 +0100 (Di, 04 Feb 2003) | 6 lines
+r5379 | dr_maux | 2003-02-04 15:55:47 +0100 (Di, 04. Feb 2003) | 6 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
@@ -4240,7 +4318,7 @@ Geänderte Pfade:
  * new parameters for ggzduedit and ggz-cmd
 
 ------------------------------------------------------------------------
-r5361 | jdorje | 2003-02-04 03:07:36 +0100 (Di, 04 Feb 2003) | 2 lines
+r5361 | jdorje | 2003-02-04 03:07:36 +0100 (Di, 04. Feb 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    A /trunk/docs/configure.ac
@@ -4249,14 +4327,14 @@ Geänderte Pfade:
 Step 1 of autoconf2.5x-only support: rename configure.in as configure.ac.
 
 ------------------------------------------------------------------------
-r5349 | dr_maux | 2003-01-23 18:14:15 +0100 (Do, 23 Jan 2003) | 2 lines
+r5349 | dr_maux | 2003-01-23 18:14:15 +0100 (Do, 23. Jan 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/release-procedure
 
 - add note about version information in header files to release checklist
 
 ------------------------------------------------------------------------
-r5309 | dr_maux | 2003-01-03 22:51:46 +0100 (Fr, 03 Jan 2003) | 5 lines
+r5309 | dr_maux | 2003-01-03 22:51:46 +0100 (Fr, 03. Jan 2003) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
@@ -4266,49 +4344,49 @@ Geänderte Pfade:
   (This should be done elsewhere too)
 
 ------------------------------------------------------------------------
-r5308 | dr_maux | 2003-01-03 22:44:37 +0100 (Fr, 03 Jan 2003) | 2 lines
+r5308 | dr_maux | 2003-01-03 22:44:37 +0100 (Fr, 03. Jan 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
 
 - mention Net and MNet in the server networking section
 
 ------------------------------------------------------------------------
-r5273 | jdorje | 2002-12-06 07:19:44 +0100 (Fr, 06 Dez 2002) | 2 lines
+r5273 | jdorje | 2002-12-06 07:19:44 +0100 (Fr, 06. Dez 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
 
 Fix two broken links.
 
 ------------------------------------------------------------------------
-r5272 | jdorje | 2002-12-06 07:18:03 +0100 (Fr, 06 Dez 2002) | 2 lines
+r5272 | jdorje | 2002-12-06 07:18:03 +0100 (Fr, 06. Dez 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
 
 Document the JOIN and LEAVE server tags.
 
 ------------------------------------------------------------------------
-r5229 | jdorje | 2002-11-06 08:45:00 +0100 (Mi, 06 Nov 2002) | 2 lines
+r5229 | jdorje | 2002-11-06 08:45:00 +0100 (Mi, 06. Nov 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
 
 Document the client-sent PING.
 
 ------------------------------------------------------------------------
-r5228 | jdorje | 2002-11-06 08:23:13 +0100 (Mi, 06 Nov 2002) | 2 lines
+r5228 | jdorje | 2002-11-06 08:23:13 +0100 (Mi, 06. Nov 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
 
 Document the ID attribute of the PING and PONG tags.
 
 ------------------------------------------------------------------------
-r5220 | dr_maux | 2002-11-04 17:25:27 +0100 (Mo, 04 Nov 2002) | 2 lines
+r5220 | dr_maux | 2002-11-04 17:25:27 +0100 (Mo, 04. Nov 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/grubby/admin-manual.html
 
 - update the grubby admin manual
 
 ------------------------------------------------------------------------
-r5219 | dr_maux | 2002-11-04 16:29:39 +0100 (Mo, 04 Nov 2002) | 2 lines
+r5219 | dr_maux | 2002-11-04 16:29:39 +0100 (Mo, 04. Nov 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs
    M /trunk/docs/.cvsignore
@@ -4316,7 +4394,7 @@ Geänderte Pfade:
 - update cvsignore
 
 ------------------------------------------------------------------------
-r5218 | dr_maux | 2002-11-04 16:29:09 +0100 (Mo, 04 Nov 2002) | 3 lines
+r5218 | dr_maux | 2002-11-04 16:29:09 +0100 (Mo, 04. Nov 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.in
 
@@ -4324,7 +4402,7 @@ Geänderte Pfade:
 - bump version to 0.0.7pre
 
 ------------------------------------------------------------------------
-r5109 | jdorje | 2002-10-30 02:02:50 +0100 (Mi, 30 Okt 2002) | 4 lines
+r5109 | jdorje | 2002-10-30 02:02:50 +0100 (Mi, 30. Okt 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
 
@@ -4333,7 +4411,7 @@ Change the entry for <RESULT>:
   - List the possible error codes.
 
 ------------------------------------------------------------------------
-r5100 | jdorje | 2002-10-29 10:14:48 +0100 (Di, 29 Okt 2002) | 5 lines
+r5100 | jdorje | 2002-10-29 10:14:48 +0100 (Di, 29. Okt 2002) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
 
@@ -4343,7 +4421,7 @@ It is a virtual certainty that this is incomplete.  Perhaps we should
 think about a more formal definition?
 
 ------------------------------------------------------------------------
-r4993 | dr_maux | 2002-10-22 19:07:43 +0200 (Di, 22 Okt 2002) | 6 lines
+r4993 | dr_maux | 2002-10-22 19:07:43 +0200 (Di, 22. Okt 2002) | 6 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/release-procedure
 
@@ -4354,7 +4432,7 @@ Also, all asterisks have turned into checkboxes, so it can be printed out as a
 checklist.
 
 ------------------------------------------------------------------------
-r4837 | dr_maux | 2002-10-10 13:13:24 +0200 (Do, 10 Okt 2002) | 2 lines
+r4837 | dr_maux | 2002-10-10 13:13:24 +0200 (Do, 10. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs
    M /trunk/docs/.cvsignore
@@ -4362,14 +4440,14 @@ Geänderte Pfade:
 - another autom4te.cache case
 
 ------------------------------------------------------------------------
-r4801 | dr_maux | 2002-10-08 01:16:18 +0200 (Di, 08 Okt 2002) | 2 lines
+r4801 | dr_maux | 2002-10-08 01:16:18 +0200 (Di, 08. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/games.html
 
 - include release date
 
 ------------------------------------------------------------------------
-r4795 | jdorje | 2002-10-07 23:28:18 +0200 (Mo, 07 Okt 2002) | 2 lines
+r4795 | jdorje | 2002-10-07 23:28:18 +0200 (Mo, 07. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/NEWS
    M /trunk/ggz/game_clients/NEWS
@@ -4386,7 +4464,7 @@ Geänderte Pfade:
 Rewrote NEWS for 0.0.6, and propogated it to all modules.
 
 ------------------------------------------------------------------------
-r4794 | dr_maux | 2002-10-07 23:16:10 +0200 (Mo, 07 Okt 2002) | 2 lines
+r4794 | dr_maux | 2002-10-07 23:16:10 +0200 (Mo, 07. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
    M /trunk/ggz/game_clients/ChangeLog
@@ -4403,7 +4481,7 @@ Geänderte Pfade:
 - update changelog for 0.0.6
 
 ------------------------------------------------------------------------
-r4775 | dr_maux | 2002-09-29 17:58:10 +0200 (So, 29 Sep 2002) | 2 lines
+r4775 | dr_maux | 2002-09-29 17:58:10 +0200 (So, 29. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs
    M /trunk/docs/.cvsignore
@@ -4411,28 +4489,28 @@ Geänderte Pfade:
 - put config.h.in into cvsignore
 
 ------------------------------------------------------------------------
-r4764 | dr_maux | 2002-09-29 14:40:57 +0200 (So, 29 Sep 2002) | 2 lines
+r4764 | dr_maux | 2002-09-29 14:40:57 +0200 (So, 29. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/configure.in
 
 - docs go 0.0.6 too
 
 ------------------------------------------------------------------------
-r4756 | dr_maux | 2002-09-29 13:43:21 +0200 (So, 29 Sep 2002) | 2 lines
+r4756 | dr_maux | 2002-09-29 13:43:21 +0200 (So, 29. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/games.html
 
 - update game versioning document
 
 ------------------------------------------------------------------------
-r4754 | dr_maux | 2002-09-27 18:33:02 +0200 (Fr, 27 Sep 2002) | 2 lines
+r4754 | dr_maux | 2002-09-27 18:33:02 +0200 (Fr, 27. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/games.html
 
 - finish first round of version bumping: kde-games
 
 ------------------------------------------------------------------------
-r4746 | dr_maux | 2002-09-27 10:58:31 +0200 (Fr, 27 Sep 2002) | 2 lines
+r4746 | dr_maux | 2002-09-27 10:58:31 +0200 (Fr, 27. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -4450,7 +4528,7 @@ Geänderte Pfade:
 - new autogen
 
 ------------------------------------------------------------------------
-r4717 | dr_maux | 2002-09-26 12:32:31 +0200 (Do, 26 Sep 2002) | 4 lines
+r4717 | dr_maux | 2002-09-26 12:32:31 +0200 (Do, 26. Sep 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/buildsystem
 
@@ -4459,35 +4537,35 @@ Included hints on how to use the 'ignore' keyword which is useful for 3rd party
 game authors.
 
 ------------------------------------------------------------------------
-r4697 | dr_maux | 2002-09-25 17:19:30 +0200 (Mi, 25 Sep 2002) | 2 lines
+r4697 | dr_maux | 2002-09-25 17:19:30 +0200 (Mi, 25. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Makefile.am
 
 - argh! add 'buildsystem' to list of to-be-installed files
 
 ------------------------------------------------------------------------
-r4696 | dr_maux | 2002-09-25 17:18:32 +0200 (Mi, 25 Sep 2002) | 2 lines
+r4696 | dr_maux | 2002-09-25 17:18:32 +0200 (Mi, 25. Sep 2002) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/ggz-project/buildsystem
 
 - build documentation, mostly for acinclude.ggz as of now
 
 ------------------------------------------------------------------------
-r4681 | dr_maux | 2002-09-24 09:59:04 +0200 (Di, 24 Sep 2002) | 2 lines
+r4681 | dr_maux | 2002-09-24 09:59:04 +0200 (Di, 24. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Makefile.am
 
 - put new file into EXTRA_DIST, and align filenames in one column
 
 ------------------------------------------------------------------------
-r4680 | dr_maux | 2002-09-24 09:57:25 +0200 (Di, 24 Sep 2002) | 2 lines
+r4680 | dr_maux | 2002-09-24 09:57:25 +0200 (Di, 24. Sep 2002) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/ggz-project/release-procedure
 
 - documentation on how to do a release
 
 ------------------------------------------------------------------------
-r4679 | dr_maux | 2002-09-24 09:36:20 +0200 (Di, 24 Sep 2002) | 2 lines
+r4679 | dr_maux | 2002-09-24 09:36:20 +0200 (Di, 24. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/QuickStart.GGZ
    M /trunk/docs/README.GGZ
@@ -4513,21 +4591,21 @@ Geänderte Pfade:
 - update intro docs
 
 ------------------------------------------------------------------------
-r4648 | dr_maux | 2002-09-21 18:47:41 +0200 (Sa, 21 Sep 2002) | 2 lines
+r4648 | dr_maux | 2002-09-21 18:47:41 +0200 (Sa, 21. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/features.html
 
 - hastings can handle spectators now
 
 ------------------------------------------------------------------------
-r4646 | dr_maux | 2002-09-21 12:11:00 +0200 (Sa, 21 Sep 2002) | 2 lines
+r4646 | dr_maux | 2002-09-21 12:11:00 +0200 (Sa, 21. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/Makefile.am
 
 - install features.html
 
 ------------------------------------------------------------------------
-r4645 | dr_maux | 2002-09-21 11:56:18 +0200 (Sa, 21 Sep 2002) | 5 lines
+r4645 | dr_maux | 2002-09-21 11:56:18 +0200 (Sa, 21. Sep 2002) | 5 lines
 Geänderte Pfade:
    A /trunk/docs/games/game-development/features.html
    M /trunk/docs/games/game-development/games.html
@@ -4538,7 +4616,7 @@ Geänderte Pfade:
   release.
 
 ------------------------------------------------------------------------
-r4613 | jdorje | 2002-09-17 23:54:48 +0200 (Di, 17 Sep 2002) | 5 lines
+r4613 | jdorje | 2002-09-17 23:54:48 +0200 (Di, 17. Sep 2002) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/configure.in
    M /trunk/docs/spec
@@ -4552,14 +4630,14 @@ Geänderte Pfade:
 - Generate a text design document, using design-txt.dsl, jade, and lynx.
 
 ------------------------------------------------------------------------
-r4598 | jdorje | 2002-09-17 05:15:49 +0200 (Di, 17 Sep 2002) | 2 lines
+r4598 | jdorje | 2002-09-17 05:15:49 +0200 (Di, 17. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/Makefile.am
 
 Added $(doc_DATA) (games.html) to EXTRA_DIST.
 
 ------------------------------------------------------------------------
-r4588 | jdorje | 2002-09-16 23:32:04 +0200 (Mo, 16 Sep 2002) | 6 lines
+r4588 | jdorje | 2002-09-16 23:32:04 +0200 (Mo, 16. Sep 2002) | 6 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
 
@@ -4570,7 +4648,7 @@ A few fixes to the XML specification portion of the design document:
   - Specify the types of login explicitly.
 
 ------------------------------------------------------------------------
-r4549 | dr_maux | 2002-09-13 18:34:19 +0200 (Fr, 13 Sep 2002) | 3 lines
+r4549 | dr_maux | 2002-09-13 18:34:19 +0200 (Fr, 13. Sep 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/Makefile.am
    M /trunk/docs/configure.in
@@ -4583,21 +4661,21 @@ Geänderte Pfade:
 - off by default
 
 ------------------------------------------------------------------------
-r4524 | dr_maux | 2002-09-12 10:11:49 +0200 (Do, 12 Sep 2002) | 2 lines
+r4524 | dr_maux | 2002-09-12 10:11:49 +0200 (Do, 12. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/spec/modules.sgml
 
 - add bulk information from ggzdmod's protocol.h file
 
 ------------------------------------------------------------------------
-r4513 | dr_maux | 2002-09-11 08:56:18 +0200 (Mi, 11 Sep 2002) | 2 lines
+r4513 | dr_maux | 2002-09-11 08:56:18 +0200 (Mi, 11. Sep 2002) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/spec/modules.sgml
 
 - new file modules.sgml since appendix.sgml is way too large already
 
 ------------------------------------------------------------------------
-r4512 | dr_maux | 2002-09-11 08:55:41 +0200 (Mi, 11 Sep 2002) | 4 lines
+r4512 | dr_maux | 2002-09-11 08:55:41 +0200 (Mi, 11. Sep 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
    M /trunk/docs/spec/client-server.sgml
@@ -4608,7 +4686,7 @@ Geänderte Pfade:
 - prepare server/module protocol (i.e. ggzdmod opcodes)
 
 ------------------------------------------------------------------------
-r4511 | dr_maux | 2002-09-11 08:27:48 +0200 (Mi, 11 Sep 2002) | 5 lines
+r4511 | dr_maux | 2002-09-11 08:27:48 +0200 (Mi, 11. Sep 2002) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
    M /trunk/docs/spec/client-server.sgml
@@ -4619,7 +4697,7 @@ Geänderte Pfade:
 - convert LAUNCH
 
 ------------------------------------------------------------------------
-r4510 | dr_maux | 2002-09-11 07:42:41 +0200 (Mi, 11 Sep 2002) | 4 lines
+r4510 | dr_maux | 2002-09-11 07:42:41 +0200 (Mi, 11. Sep 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/spec/appendix.sgml
    M /trunk/docs/spec/client-server.sgml
@@ -4629,7 +4707,7 @@ Geänderte Pfade:
 - convert TABLE, PLAYER and SEAT tags
 
 ------------------------------------------------------------------------
-r4503 | dr_maux | 2002-09-10 19:44:17 +0200 (Di, 10 Sep 2002) | 4 lines
+r4503 | dr_maux | 2002-09-10 19:44:17 +0200 (Di, 10. Sep 2002) | 4 lines
 Geänderte Pfade:
    A /trunk/docs/spec/Makefile
    A /trunk/docs/spec/appendix.sgml
@@ -4644,7 +4722,7 @@ Geänderte Pfade:
 - this stuff takes more time than one would have expected
 
 ------------------------------------------------------------------------
-r4502 | dr_maux | 2002-09-10 19:40:59 +0200 (Di, 10 Sep 2002) | 4 lines
+r4502 | dr_maux | 2002-09-10 19:40:59 +0200 (Di, 10. Sep 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/spec
    M /trunk/docs/spec/.cvsignore
@@ -4660,7 +4738,7 @@ Geänderte Pfade:
   stuff :)
 
 ------------------------------------------------------------------------
-r4461 | dr_maux | 2002-09-08 07:48:18 +0200 (So, 08 Sep 2002) | 3 lines
+r4461 | dr_maux | 2002-09-08 07:48:18 +0200 (So, 08. Sep 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.in
    M /trunk/docs/texi2text.pl
@@ -4669,7 +4747,7 @@ Geänderte Pfade:
 - produce both info and text guides by default
 
 ------------------------------------------------------------------------
-r4460 | dr_maux | 2002-09-08 07:47:25 +0200 (So, 08 Sep 2002) | 3 lines
+r4460 | dr_maux | 2002-09-08 07:47:25 +0200 (So, 08. Sep 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/grubby/Makefile.am
    M /trunk/docs/server/hosting
@@ -4679,7 +4757,7 @@ Geänderte Pfade:
 - produce both info and text guides per default
 
 ------------------------------------------------------------------------
-r4459 | dr_maux | 2002-09-08 07:46:42 +0200 (So, 08 Sep 2002) | 2 lines
+r4459 | dr_maux | 2002-09-08 07:46:42 +0200 (So, 08. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development
    M /trunk/docs/games/game-development/.cvsignore
@@ -4687,7 +4765,7 @@ Geänderte Pfade:
 - ignore generated text file
 
 ------------------------------------------------------------------------
-r4458 | dr_maux | 2002-09-08 07:46:22 +0200 (So, 08 Sep 2002) | 3 lines
+r4458 | dr_maux | 2002-09-08 07:46:22 +0200 (So, 08. Sep 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/Makefile.am
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
@@ -4696,7 +4774,7 @@ Geänderte Pfade:
 - add spectator events to documentation
 
 ------------------------------------------------------------------------
-r4446 | dr_maux | 2002-09-07 23:31:26 +0200 (Sa, 07 Sep 2002) | 5 lines
+r4446 | dr_maux | 2002-09-07 23:31:26 +0200 (Sa, 07. Sep 2002) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/Makefile.am
    A /trunk/docs/texi2text.pl
@@ -4707,7 +4785,7 @@ Geänderte Pfade:
   now we keep it here
 
 ------------------------------------------------------------------------
-r4445 | dr_maux | 2002-09-07 23:29:43 +0200 (Sa, 07 Sep 2002) | 4 lines
+r4445 | dr_maux | 2002-09-07 23:29:43 +0200 (Sa, 07. Sep 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/Makefile.am
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
@@ -4717,7 +4795,7 @@ Geänderte Pfade:
   and neither does html2text
 
 ------------------------------------------------------------------------
-r4369 | dr_maux | 2002-08-18 10:35:24 +0200 (So, 18 Aug 2002) | 6 lines
+r4369 | dr_maux | 2002-08-18 10:35:24 +0200 (So, 18. Aug 2002) | 6 lines
 Geänderte Pfade:
    M /trunk/docs/grubby/admin-manual.html
    A /trunk/docs/grubby/user-manual.de.html
@@ -4731,14 +4809,14 @@ Geänderte Pfade:
 user-manual.html to the right language automatically, I think.)
 
 ------------------------------------------------------------------------
-r4354 | dr_maux | 2002-08-10 20:38:22 +0200 (Sa, 10 Aug 2002) | 2 lines
+r4354 | dr_maux | 2002-08-10 20:38:22 +0200 (Sa, 10. Aug 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
 
 - two functions were duplicated somehow - remove the empty ones
 
 ------------------------------------------------------------------------
-r4315 | dr_maux | 2002-07-29 22:22:12 +0200 (Mo, 29 Jul 2002) | 3 lines
+r4315 | dr_maux | 2002-07-29 22:22:12 +0200 (Mo, 29. Jul 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
 
@@ -4746,21 +4824,21 @@ Geänderte Pfade:
 - add small code samples for ggzmod, ggzdmod, ggzstats
 
 ------------------------------------------------------------------------
-r4301 | dr_maux | 2002-07-13 15:28:32 +0200 (Sa, 13 Jul 2002) | 2 lines
+r4301 | dr_maux | 2002-07-13 15:28:32 +0200 (Sa, 13. Jul 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
 - explain MySQL setup
 
 ------------------------------------------------------------------------
-r4300 | dr_maux | 2002-07-13 13:18:07 +0200 (Sa, 13 Jul 2002) | 2 lines
+r4300 | dr_maux | 2002-07-13 13:18:07 +0200 (Sa, 13. Jul 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
 - describe a typical PostgreSQL server setup so it can be used for ggzd
 
 ------------------------------------------------------------------------
-r4225 | dr_maux | 2002-05-21 09:52:21 +0200 (Di, 21 Mai 2002) | 7 lines
+r4225 | dr_maux | 2002-05-21 09:52:21 +0200 (Di, 21. Mai 2002) | 7 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
@@ -4772,21 +4850,21 @@ Update of the hosting guide:
 - Variable game directories
 
 ------------------------------------------------------------------------
-r4174 | dr_maux | 2002-05-06 09:59:53 +0200 (Mo, 06 Mai 2002) | 2 lines
+r4174 | dr_maux | 2002-05-06 09:59:53 +0200 (Mo, 06. Mai 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/Makefile.am
 
 - don't mix up generated and present HTML files
 
 ------------------------------------------------------------------------
-r3984 | dr_maux | 2002-04-14 17:33:41 +0200 (So, 14 Apr 2002) | 2 lines
+r3984 | dr_maux | 2002-04-14 17:33:41 +0200 (So, 14. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
 - update external games info in hosting guide (after installing them on GGZe1)
 
 ------------------------------------------------------------------------
-r3983 | dr_maux | 2002-04-14 15:00:48 +0200 (So, 14 Apr 2002) | 2 lines
+r3983 | dr_maux | 2002-04-14 15:00:48 +0200 (So, 14. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/Makefile.am
    M /trunk/docs/configure.in
@@ -4794,7 +4872,7 @@ Geänderte Pfade:
 - build and install articles
 
 ------------------------------------------------------------------------
-r3982 | dr_maux | 2002-04-14 15:00:24 +0200 (So, 14 Apr 2002) | 2 lines
+r3982 | dr_maux | 2002-04-14 15:00:24 +0200 (So, 14. Apr 2002) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/articles
    A /trunk/docs/articles/.cvsignore
@@ -4804,14 +4882,14 @@ Geänderte Pfade:
 - add new article directory to documentation
 
 ------------------------------------------------------------------------
-r3981 | dr_maux | 2002-04-14 14:56:26 +0200 (So, 14 Apr 2002) | 2 lines
+r3981 | dr_maux | 2002-04-14 14:56:26 +0200 (So, 14. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/debian/control
 
 - texi2html is an extra package
 
 ------------------------------------------------------------------------
-r3972 | bmh | 2002-04-13 09:18:08 +0200 (Sa, 13 Apr 2002) | 3 lines
+r3972 | bmh | 2002-04-13 09:18:08 +0200 (Sa, 13. Apr 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
 
@@ -4819,7 +4897,7 @@ Geänderte Pfade:
 - Update for 0.0.5 release
 
 ------------------------------------------------------------------------
-r3949 | bmh | 2002-04-13 06:06:57 +0200 (Sa, 13 Apr 2002) | 3 lines
+r3949 | bmh | 2002-04-13 06:06:57 +0200 (Sa, 13. Apr 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/NEWS
@@ -4834,7 +4912,7 @@ Geänderte Pfade:
 - Doc file updates
 
 ------------------------------------------------------------------------
-r3924 | dr_maux | 2002-04-12 23:22:17 +0200 (Fr, 12 Apr 2002) | 2 lines
+r3924 | dr_maux | 2002-04-12 23:22:17 +0200 (Fr, 12. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/Makefile.am
    A /trunk/docs/games/game-development/games.html
@@ -4842,28 +4920,28 @@ Geänderte Pfade:
 - add games compatibility/version page and install it into $ggzdocdir/games
 
 ------------------------------------------------------------------------
-r3903 | dr_maux | 2002-04-11 14:20:21 +0200 (Do, 11 Apr 2002) | 2 lines
+r3903 | dr_maux | 2002-04-11 14:20:21 +0200 (Do, 11. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
 - fix typo: Batalla Naval
 
 ------------------------------------------------------------------------
-r3902 | dr_maux | 2002-04-11 14:09:23 +0200 (Do, 11 Apr 2002) | 2 lines
+r3902 | dr_maux | 2002-04-11 14:09:23 +0200 (Do, 11. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
 - pointer to premade MOTDs
 
 ------------------------------------------------------------------------
-r3901 | dr_maux | 2002-04-11 14:06:49 +0200 (Do, 11 Apr 2002) | 2 lines
+r3901 | dr_maux | 2002-04-11 14:06:49 +0200 (Do, 11. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
 
 - remove email address again (texinfo doesn't like it)
 
 ------------------------------------------------------------------------
-r3900 | dr_maux | 2002-04-11 14:04:07 +0200 (Do, 11 Apr 2002) | 2 lines
+r3900 | dr_maux | 2002-04-11 14:04:07 +0200 (Do, 11. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development
    M /trunk/docs/games/game-development/.cvsignore
@@ -4873,7 +4951,7 @@ Geänderte Pfade:
 - update game development guide
 
 ------------------------------------------------------------------------
-r3899 | dr_maux | 2002-04-11 13:37:14 +0200 (Do, 11 Apr 2002) | 2 lines
+r3899 | dr_maux | 2002-04-11 13:37:14 +0200 (Do, 11. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting
    M /trunk/docs/server/hosting/.cvsignore
@@ -4883,7 +4961,7 @@ Geänderte Pfade:
 - extend the hosting guide
 
 ------------------------------------------------------------------------
-r3898 | dr_maux | 2002-04-11 12:55:18 +0200 (Do, 11 Apr 2002) | 2 lines
+r3898 | dr_maux | 2002-04-11 12:55:18 +0200 (Do, 11. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/Makefile.am
    M /trunk/docs/configure.in
@@ -4891,14 +4969,14 @@ Geänderte Pfade:
 - addon
 
 ------------------------------------------------------------------------
-r3897 | dr_maux | 2002-04-11 12:55:08 +0200 (Do, 11 Apr 2002) | 2 lines
+r3897 | dr_maux | 2002-04-11 12:55:08 +0200 (Do, 11. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/overview/Makefile.am
 
 - let 'make distcheck' work
 
 ------------------------------------------------------------------------
-r3896 | dr_maux | 2002-04-11 12:41:20 +0200 (Do, 11 Apr 2002) | 3 lines
+r3896 | dr_maux | 2002-04-11 12:41:20 +0200 (Do, 11. Apr 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.in
 
@@ -4906,21 +4984,21 @@ Geänderte Pfade:
 - generate HTML pages too with --enable-guides
 
 ------------------------------------------------------------------------
-r3895 | dr_maux | 2002-04-11 12:38:49 +0200 (Do, 11 Apr 2002) | 2 lines
+r3895 | dr_maux | 2002-04-11 12:38:49 +0200 (Do, 11. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/Makefile.am
 
 - add rules for HTML documentation
 
 ------------------------------------------------------------------------
-r3894 | dr_maux | 2002-04-11 12:38:25 +0200 (Do, 11 Apr 2002) | 2 lines
+r3894 | dr_maux | 2002-04-11 12:38:25 +0200 (Do, 11. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/Makefile.am
 
 - add rules for HTML generation
 
 ------------------------------------------------------------------------
-r3857 | dr_maux | 2002-04-09 22:00:14 +0200 (Di, 09 Apr 2002) | 3 lines
+r3857 | dr_maux | 2002-04-09 22:00:14 +0200 (Di, 09. Apr 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/debian/control
    M /trunk/docs/debian/rules
@@ -4929,7 +5007,7 @@ Geänderte Pfade:
 - run autogen.sh automatically if not configure is present
 
 ------------------------------------------------------------------------
-r3856 | dr_maux | 2002-04-09 20:35:50 +0200 (Di, 09 Apr 2002) | 2 lines
+r3856 | dr_maux | 2002-04-09 20:35:50 +0200 (Di, 09. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/NEWS
    M /trunk/docs/configure.in
@@ -4937,7 +5015,7 @@ Geänderte Pfade:
 - addon
 
 ------------------------------------------------------------------------
-r3855 | dr_maux | 2002-04-09 20:35:38 +0200 (Di, 09 Apr 2002) | 4 lines
+r3855 | dr_maux | 2002-04-09 20:35:38 +0200 (Di, 09. Apr 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/debian/control
    M /trunk/docs/debian/rules
@@ -4949,7 +5027,7 @@ Geänderte Pfade:
 - Debian packages include guides by default
 
 ------------------------------------------------------------------------
-r3806 | dr_maux | 2002-04-07 10:00:07 +0200 (So, 07 Apr 2002) | 2 lines
+r3806 | dr_maux | 2002-04-07 10:00:07 +0200 (So, 07. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/debian
    M /trunk/docs/debian/.cvsignore
@@ -4957,7 +5035,7 @@ Geänderte Pfade:
 - update .cvsignore
 
 ------------------------------------------------------------------------
-r3805 | dr_maux | 2002-04-07 09:59:36 +0200 (So, 07 Apr 2002) | 4 lines
+r3805 | dr_maux | 2002-04-07 09:59:36 +0200 (So, 07. Apr 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/debian
    M /trunk/docs/debian/.cvsignore
@@ -4973,7 +5051,7 @@ Note: a rule to generate all "hardcopy" stuff (PDF's and the like) will yet
 have to be adjusted.
 
 ------------------------------------------------------------------------
-r3761 | dr_maux | 2002-04-06 00:31:54 +0200 (Sa, 06 Apr 2002) | 3 lines
+r3761 | dr_maux | 2002-04-06 00:31:54 +0200 (Sa, 06. Apr 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
@@ -4981,7 +5059,7 @@ Geänderte Pfade:
 - some minor updates
 
 ------------------------------------------------------------------------
-r3758 | dr_maux | 2002-04-06 00:03:05 +0200 (Sa, 06 Apr 2002) | 2 lines
+r3758 | dr_maux | 2002-04-06 00:03:05 +0200 (Sa, 06. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/README.GGZ
    M /trunk/ggz/game_clients/QuickStart.GGZ
@@ -5003,7 +5081,7 @@ Geänderte Pfade:
 - update installation instructions and overview
 
 ------------------------------------------------------------------------
-r3609 | dr_maux | 2002-03-21 12:10:29 +0100 (Do, 21 Mär 2002) | 3 lines
+r3609 | dr_maux | 2002-03-21 12:10:29 +0100 (Do, 21. Mär 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
    M /trunk/docs/ggz-project/Internationalization
@@ -5072,21 +5150,21 @@ Geänderte Pfade:
 - see mail to ggz-dev for the details
 
 ------------------------------------------------------------------------
-r3226 | dr_maux | 2002-02-03 12:49:32 +0100 (So, 03 Feb 2002) | 2 lines
+r3226 | dr_maux | 2002-02-03 12:49:32 +0100 (So, 03. Feb 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/configure.in
 
 - create makefile for gamedev guide
 
 ------------------------------------------------------------------------
-r3225 | dr_maux | 2002-02-03 12:49:12 +0100 (So, 03 Feb 2002) | 2 lines
+r3225 | dr_maux | 2002-02-03 12:49:12 +0100 (So, 03. Feb 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/Makefile.am
 
 - include gamedev guide
 
 ------------------------------------------------------------------------
-r3224 | dr_maux | 2002-02-03 12:48:44 +0100 (So, 03 Feb 2002) | 2 lines
+r3224 | dr_maux | 2002-02-03 12:48:44 +0100 (So, 03. Feb 2002) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/games/game-development
    A /trunk/docs/games/game-development/.cvsignore
@@ -5096,7 +5174,7 @@ Geänderte Pfade:
 - add first example of a game development guide
 
 ------------------------------------------------------------------------
-r3162 | dr_maux | 2002-01-20 10:01:27 +0100 (So, 20 Jan 2002) | 3 lines
+r3162 | dr_maux | 2002-01-20 10:01:27 +0100 (So, 20. Jan 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
@@ -5104,21 +5182,21 @@ Geänderte Pfade:
 - encourage server hosters to subscribe to ggz-servers
 
 ------------------------------------------------------------------------
-r3040 | dr_maux | 2002-01-09 14:21:04 +0100 (Mi, 09 Jan 2002) | 2 lines
+r3040 | dr_maux | 2002-01-09 14:21:04 +0100 (Mi, 09. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
 - include cmd-client into the GGZ hosting guide
 
 ------------------------------------------------------------------------
-r2979 | dr_maux | 2001-12-22 01:26:08 +0100 (Sa, 22 Dez 2001) | 2 lines
+r2979 | dr_maux | 2001-12-22 01:26:08 +0100 (Sa, 22. Dez 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/server/hosting/ggz-hosting-guide.texi
 
 - one more chapter for our 'hosting guide'
 
 ------------------------------------------------------------------------
-r2899 | dr_maux | 2001-12-16 23:03:23 +0100 (So, 16 Dez 2001) | 2 lines
+r2899 | dr_maux | 2001-12-16 23:03:23 +0100 (So, 16. Dez 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/Makefile.am
    M /trunk/docs/configure.in
@@ -5126,7 +5204,7 @@ Geänderte Pfade:
 - top-level updates: include server directory into build process
 
 ------------------------------------------------------------------------
-r2898 | dr_maux | 2001-12-16 23:02:57 +0100 (So, 16 Dez 2001) | 2 lines
+r2898 | dr_maux | 2001-12-16 23:02:57 +0100 (So, 16. Dez 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/server
    A /trunk/docs/server/.cvsignore
@@ -5134,7 +5212,7 @@ Geänderte Pfade:
 - write .cvsignore file for server directory
 
 ------------------------------------------------------------------------
-r2897 | dr_maux | 2001-12-16 23:02:09 +0100 (So, 16 Dez 2001) | 5 lines
+r2897 | dr_maux | 2001-12-16 23:02:09 +0100 (So, 16. Dez 2001) | 5 lines
 Geänderte Pfade:
    A /trunk/docs/server/Makefile.am
    A /trunk/docs/server/hosting
@@ -5148,7 +5226,7 @@ Geänderte Pfade:
   maybe?)
 
 ------------------------------------------------------------------------
-r2827 | dr_maux | 2001-12-09 18:21:02 +0100 (So, 09 Dez 2001) | 4 lines
+r2827 | dr_maux | 2001-12-09 18:21:02 +0100 (So, 09. Dez 2001) | 4 lines
 Geänderte Pfade:
    A /trunk/docs/server
    A /trunk/docs/server/metaserver
@@ -5169,7 +5247,7 @@ Geänderte Pfade:
 - includes Official (tm) specification of our meta server protocol
 
 ------------------------------------------------------------------------
-r2589 | dr_maux | 2001-10-22 10:11:27 +0200 (Mo, 22 Okt 2001) | 2 lines
+r2589 | dr_maux | 2001-10-22 10:11:27 +0200 (Mo, 22. Okt 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/Makefile.am
    M /trunk/docs/configure.in
@@ -5177,7 +5255,7 @@ Geänderte Pfade:
 - install overview docs
 
 ------------------------------------------------------------------------
-r2588 | dr_maux | 2001-10-22 10:11:08 +0200 (Mo, 22 Okt 2001) | 3 lines
+r2588 | dr_maux | 2001-10-22 10:11:08 +0200 (Mo, 22. Okt 2001) | 3 lines
 Geänderte Pfade:
    A /trunk/docs/overview
    A /trunk/docs/overview/.cvsignore
@@ -5191,7 +5269,7 @@ Geänderte Pfade:
 - includes graphical representation of the source code
 
 ------------------------------------------------------------------------
-r2551 | dr_maux | 2001-10-12 12:24:07 +0200 (Fr, 12 Okt 2001) | 2 lines
+r2551 | dr_maux | 2001-10-12 12:24:07 +0200 (Fr, 12. Okt 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/grubby/admin-manual.html
    M /trunk/docs/grubby/user-manual.html
@@ -5199,14 +5277,14 @@ Geänderte Pfade:
 - update grubby user and admin manual
 
 ------------------------------------------------------------------------
-r2426 | dr_maux | 2001-09-09 17:17:54 +0200 (So, 09 Sep 2001) | 2 lines
+r2426 | dr_maux | 2001-09-09 17:17:54 +0200 (So, 09. Sep 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/configure.in
 
 - updated configure.in to place makefile for ggzcards
 
 ------------------------------------------------------------------------
-r2425 | dr_maux | 2001-09-09 17:17:31 +0200 (So, 09 Sep 2001) | 2 lines
+r2425 | dr_maux | 2001-09-09 17:17:31 +0200 (So, 09. Sep 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/ggzcards
    A /trunk/docs/games/ggzcards/.cvsignore
@@ -5217,7 +5295,7 @@ Geänderte Pfade:
 - the new files come here
 
 ------------------------------------------------------------------------
-r2424 | dr_maux | 2001-09-09 17:16:44 +0200 (So, 09 Sep 2001) | 4 lines
+r2424 | dr_maux | 2001-09-09 17:16:44 +0200 (So, 09. Sep 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/games/Makefile.am
    M /trunk/docs/ggz-project/Internationalization
@@ -5230,7 +5308,7 @@ Geänderte Pfade:
 - some additions everywhere
 
 ------------------------------------------------------------------------
-r2186 | jdorje | 2001-08-23 07:52:29 +0200 (Do, 23 Aug 2001) | 5 lines
+r2186 | jdorje | 2001-08-23 07:52:29 +0200 (Do, 23. Aug 2001) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/games/external-games/ggz-support-howto.txt
 
@@ -5240,14 +5318,14 @@ with GGZ.
 More should be written about this soon.
 
 ------------------------------------------------------------------------
-r2159 | dr_maux | 2001-08-17 09:15:20 +0200 (Fr, 17 Aug 2001) | 2 lines
+r2159 | dr_maux | 2001-08-17 09:15:20 +0200 (Fr, 17. Aug 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/grubby/user-manual.html
 
 - user documentation update
 
 ------------------------------------------------------------------------
-r2146 | dr_maux | 2001-08-14 09:41:09 +0200 (Di, 14 Aug 2001) | 2 lines
+r2146 | dr_maux | 2001-08-14 09:41:09 +0200 (Di, 14. Aug 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/grubby/admin-manual.html
    M /trunk/docs/grubby/user-manual.html
@@ -5255,7 +5333,7 @@ Geänderte Pfade:
 - grubby docs update
 
 ------------------------------------------------------------------------
-r2108 | dr_maux | 2001-08-04 15:41:20 +0200 (Sa, 04 Aug 2001) | 2 lines
+r2108 | dr_maux | 2001-08-04 15:41:20 +0200 (Sa, 04. Aug 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/Makefile.am
    M /trunk/docs/configure.in
@@ -5263,7 +5341,7 @@ Geänderte Pfade:
 - update build system
 
 ------------------------------------------------------------------------
-r2107 | dr_maux | 2001-08-04 15:41:00 +0200 (Sa, 04 Aug 2001) | 3 lines
+r2107 | dr_maux | 2001-08-04 15:41:00 +0200 (Sa, 04. Aug 2001) | 3 lines
 Geänderte Pfade:
    A /trunk/docs/grubby
    A /trunk/docs/grubby/.cvsignore
@@ -5275,7 +5353,7 @@ Geänderte Pfade:
 - currently covers only the latest guru stuff
 
 ------------------------------------------------------------------------
-r1943 | jdorje | 2001-07-08 23:01:40 +0200 (So, 08 Jul 2001) | 4 lines
+r1943 | jdorje | 2001-07-08 23:01:40 +0200 (So, 08. Jul 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/games/ggzcards/adding_games.txt
 
@@ -5284,14 +5362,14 @@ Updated the adding-games document for the new server structure.
 I started to add adding-AI informaiton to it, but didn't do very much of it.
 
 ------------------------------------------------------------------------
-r1843 | jdorje | 2001-06-26 10:09:26 +0200 (Di, 26 Jun 2001) | 2 lines
+r1843 | jdorje | 2001-06-26 10:09:26 +0200 (Di, 26. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/ggzcards/adding_games.txt
 
 Wrote a simple howto for adding games.
 
 ------------------------------------------------------------------------
-r1842 | jdorje | 2001-06-26 08:22:55 +0200 (Di, 26 Jun 2001) | 2 lines
+r1842 | jdorje | 2001-06-26 08:22:55 +0200 (Di, 26. Jun 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/games/ggzcards
    A /trunk/docs/games/ggzcards/adding_games.txt
@@ -5299,14 +5377,14 @@ Geänderte Pfade:
 Added new documentation file.
 
 ------------------------------------------------------------------------
-r1740 | rgade | 2001-06-18 00:14:15 +0200 (Mo, 18 Jun 2001) | 2 lines
+r1740 | rgade | 2001-06-18 00:14:15 +0200 (Mo, 18. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
 
 - Updated ChangeLog
 
 ------------------------------------------------------------------------
-r1739 | rgade | 2001-06-18 00:13:31 +0200 (Mo, 18 Jun 2001) | 3 lines
+r1739 | rgade | 2001-06-18 00:13:31 +0200 (Mo, 18. Jun 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/coreclients/Makefile.am
    M /trunk/docs/games/external-games/Makefile.am
@@ -5317,7 +5395,7 @@ Geänderte Pfade:
   Fixed...
 
 ------------------------------------------------------------------------
-r1677 | dr_maux | 2001-06-08 19:07:53 +0200 (Fr, 08 Jun 2001) | 2 lines
+r1677 | dr_maux | 2001-06-08 19:07:53 +0200 (Fr, 08. Jun 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/README.GGZ
    A /trunk/ggzd/README.GGZ
@@ -5326,7 +5404,7 @@ Geänderte Pfade:
 - actually add readme.ggz
 
 ------------------------------------------------------------------------
-r1670 | dr_maux | 2001-06-08 18:27:20 +0200 (Fr, 08 Jun 2001) | 2 lines
+r1670 | dr_maux | 2001-06-08 18:27:20 +0200 (Fr, 08. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Makefile.am
    A /trunk/docs/ggz-project/cvs-modules.txt
@@ -5334,7 +5412,7 @@ Geänderte Pfade:
 - more docs
 
 ------------------------------------------------------------------------
-r1664 | dr_maux | 2001-06-07 23:28:55 +0200 (Do, 07 Jun 2001) | 2 lines
+r1664 | dr_maux | 2001-06-07 23:28:55 +0200 (Do, 07. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/debian/docs
    M /trunk/ggzd/debian/docs
@@ -5342,7 +5420,7 @@ Geänderte Pfade:
 - add project-wide readme file
 
 ------------------------------------------------------------------------
-r1647 | dr_maux | 2001-06-03 22:23:40 +0200 (So, 03 Jun 2001) | 2 lines
+r1647 | dr_maux | 2001-06-03 22:23:40 +0200 (So, 03. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/Makefile.am
    M /trunk/docs/configure.in
@@ -5350,7 +5428,7 @@ Geänderte Pfade:
 - build updates
 
 ------------------------------------------------------------------------
-r1646 | dr_maux | 2001-06-03 22:23:24 +0200 (So, 03 Jun 2001) | 2 lines
+r1646 | dr_maux | 2001-06-03 22:23:24 +0200 (So, 03. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project
    A /trunk/docs/ggz-project/.cvsignore
@@ -5359,7 +5437,7 @@ Geänderte Pfade:
 - install Internationalization file
 
 ------------------------------------------------------------------------
-r1645 | dr_maux | 2001-06-03 22:22:36 +0200 (So, 03 Jun 2001) | 2 lines
+r1645 | dr_maux | 2001-06-03 22:22:36 +0200 (So, 03. Jun 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/coreclients
    A /trunk/docs/coreclients/.cvsignore
@@ -5371,28 +5449,28 @@ Geänderte Pfade:
 - add core client documentation skeleton
 
 ------------------------------------------------------------------------
-r1633 | dr_maux | 2001-06-02 22:22:18 +0200 (Sa, 02 Jun 2001) | 2 lines
+r1633 | dr_maux | 2001-06-02 22:22:18 +0200 (Sa, 02. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/Makefile.am
 
 - add ggz-project dir to subdirs
 
 ------------------------------------------------------------------------
-r1618 | dr_maux | 2001-06-02 05:18:10 +0200 (Sa, 02 Jun 2001) | 2 lines
+r1618 | dr_maux | 2001-06-02 05:18:10 +0200 (Sa, 02. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Internationalization
 
 - new rules
 
 ------------------------------------------------------------------------
-r1611 | dr_maux | 2001-06-02 02:09:30 +0200 (Sa, 02 Jun 2001) | 2 lines
+r1611 | dr_maux | 2001-06-02 02:09:30 +0200 (Sa, 02. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ggz-project/Internationalization
 
 - little update
 
 ------------------------------------------------------------------------
-r1607 | dr_maux | 2001-06-02 01:31:38 +0200 (Sa, 02 Jun 2001) | 2 lines
+r1607 | dr_maux | 2001-06-02 01:31:38 +0200 (Sa, 02. Jun 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/ggz-project
    A /trunk/docs/ggz-project/Internationalization
@@ -5400,7 +5478,7 @@ Geänderte Pfade:
 - added small localization/internationalization help
 
 ------------------------------------------------------------------------
-r1587 | dr_maux | 2001-05-30 19:11:33 +0200 (Mi, 30 Mai 2001) | 2 lines
+r1587 | dr_maux | 2001-05-30 19:11:33 +0200 (Mi, 30. Mai 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs
    A /trunk/docs/.cvsignore
@@ -5417,7 +5495,7 @@ Geänderte Pfade:
 - more files
 
 ------------------------------------------------------------------------
-r1586 | dr_maux | 2001-05-30 19:10:45 +0200 (Mi, 30 Mai 2001) | 2 lines
+r1586 | dr_maux | 2001-05-30 19:10:45 +0200 (Mi, 30. Mai 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games
    A /trunk/docs/games/.cvsignore
@@ -5430,7 +5508,7 @@ Geänderte Pfade:
 - added some more files
 
 ------------------------------------------------------------------------
-r1585 | dr_maux | 2001-05-30 19:08:59 +0200 (Mi, 30 Mai 2001) | 3 lines
+r1585 | dr_maux | 2001-05-30 19:08:59 +0200 (Mi, 30. Mai 2001) | 3 lines
 Geänderte Pfade:
    A /trunk/docs/debian
    A /trunk/docs/debian/.cvsignore
@@ -5454,14 +5532,14 @@ Geänderte Pfade:
 - added docs for external and kde games
 
 ------------------------------------------------------------------------
-r1572 | dr_maux | 2001-05-30 15:18:40 +0200 (Mi, 30 Mai 2001) | 2 lines
+r1572 | dr_maux | 2001-05-30 15:18:40 +0200 (Mi, 30. Mai 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/README
 
 - add readme for documentation
 
 ------------------------------------------------------------------------
-r1571 | dr_maux | 2001-05-30 15:17:41 +0200 (Mi, 30 Mai 2001) | 2 lines
+r1571 | dr_maux | 2001-05-30 15:17:41 +0200 (Mi, 30. Mai 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/docs/games
    A /trunk/docs/games/hastings
@@ -5475,7 +5553,7 @@ Geänderte Pfade:
 - add hastings documentation in doc module
 
 ------------------------------------------------------------------------
-r872 | bmh | 2000-11-20 18:53:49 +0100 (Mo, 20 Nov 2000) | 2 lines
+r872 | bmh | 2000-11-20 18:53:49 +0100 (Mo, 20. Nov 2000) | 2 lines
 Geänderte Pfade:
    A /trunk/docs
    A /trunk/docs/spec

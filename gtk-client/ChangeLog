@@ -1,5 +1,490 @@
 ------------------------------------------------------------------------
-r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24 Mai 2008) | 3 lines
+r10280 | jdorje | 2008-07-11 22:35:30 +0200 (Fr, 11. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+
+Fix protocol-error event.
+------------------------------------------------------------------------
+r10276 | jdorje | 2008-07-11 00:32:14 +0200 (Fr, 11. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/chat.h
+   M /trunk/gtk-client/ggz-gtk/client.c
+   M /trunk/gtk-client/ggz-gtk/ggz-gtk.h
+   M /trunk/gtk-client/ggz-gtk/server.h
+   M /trunk/gtk-client/src/main.c
+
+Provide ggz-gtk cleanup function.
+------------------------------------------------------------------------
+r10275 | jdorje | 2008-07-11 00:26:54 +0200 (Fr, 11. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/client.c
+   M /trunk/gtk-client/ggz-gtk/client.h
+   M /trunk/gtk-client/ggz-gtk/first.h
+   M /trunk/gtk-client/ggz-gtk/ggz-gtk.h
+   M /trunk/gtk-client/ggz-gtk/ggzclient.h
+   M /trunk/gtk-client/ggz-gtk/login.h
+   M /trunk/gtk-client/src/main.c
+
+Properly separate a few more symbols from libggz-gtk and ggz-gtk.
+------------------------------------------------------------------------
+r10274 | jdorje | 2008-07-10 23:38:34 +0200 (Do, 10. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/about.h
+   M /trunk/gtk-client/ggz-gtk/chat.h
+   M /trunk/gtk-client/ggz-gtk/client.h
+   M /trunk/gtk-client/ggz-gtk/first.h
+   M /trunk/gtk-client/ggz-gtk/game.h
+   M /trunk/gtk-client/ggz-gtk/ggzclient.h
+   M /trunk/gtk-client/ggz-gtk/ggzutils.h
+   M /trunk/gtk-client/ggz-gtk/launch.h
+   M /trunk/gtk-client/ggz-gtk/license.h
+   M /trunk/gtk-client/ggz-gtk/login.h
+   M /trunk/gtk-client/ggz-gtk/motd.h
+   M /trunk/gtk-client/ggz-gtk/msgbox.h
+   M /trunk/gtk-client/ggz-gtk/pick_module.h
+   M /trunk/gtk-client/ggz-gtk/playerinfo.h
+   M /trunk/gtk-client/ggz-gtk/playerlist.h
+   M /trunk/gtk-client/ggz-gtk/props.h
+   M /trunk/gtk-client/ggz-gtk/roominfo.h
+   M /trunk/gtk-client/ggz-gtk/roomlist.h
+   M /trunk/gtk-client/ggz-gtk/server.h
+   M /trunk/gtk-client/ggz-gtk/support.h
+   M /trunk/gtk-client/ggz-gtk/tablelist.h
+   M /trunk/gtk-client/ggz-gtk/types.h
+   M /trunk/gtk-client/ggz-gtk/xtext.h
+
+Quick fix for overzealous exporting of symbols: most global
+variables and functions are now marked as internal.
+
+------------------------------------------------------------------------
+r10273 | jdorje | 2008-07-10 23:28:22 +0200 (Do, 10. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/playerlist.c
+
+Mark variable static.
+------------------------------------------------------------------------
+r10272 | jdorje | 2008-07-10 23:25:33 +0200 (Do, 10. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/playerlist.c
+
+Mark variables static.
+------------------------------------------------------------------------
+r10271 | jdorje | 2008-07-10 23:22:01 +0200 (Do, 10. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/support.c
+   M /trunk/gtk-client/ggz-gtk/support.h
+
+Remove unnecessary/duplicated function.
+------------------------------------------------------------------------
+r10270 | jdorje | 2008-07-10 23:11:57 +0200 (Do, 10. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/client.c
+
+Mark function as static.
+------------------------------------------------------------------------
+r10267 | jdorje | 2008-07-10 21:29:02 +0200 (Do, 10. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/chat.c
+
+Don't strlen a NULL string.
+------------------------------------------------------------------------
+r10266 | jdorje | 2008-07-10 07:36:38 +0200 (Do, 10. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/about.c
+   M /trunk/gtk-client/ggz-gtk/chat.c
+   M /trunk/gtk-client/ggz-gtk/client.c
+   M /trunk/gtk-client/ggz-gtk/ggzutils.c
+   M /trunk/gtk-client/ggz-gtk/ggzutils.h
+   M /trunk/gtk-client/ggz-gtk/motd.c
+   M /trunk/gtk-client/ggz-gtk/props.c
+
+Rename color functions for consistency.
+------------------------------------------------------------------------
+r10262 | jdorje | 2008-07-10 03:23:48 +0200 (Do, 10. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/chat.c
+
+Don't clear/save unset chat data.
+------------------------------------------------------------------------
+r10261 | jdorje | 2008-07-10 03:16:54 +0200 (Do, 10. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/client.h
+   M /trunk/gtk-client/ggz-gtk/launch.c
+
+Move launch statics into ggz_gtk structure.
+------------------------------------------------------------------------
+r10260 | jdorje | 2008-07-10 03:04:50 +0200 (Do, 10. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/client.h
+   M /trunk/gtk-client/ggz-gtk/game.c
+
+Move game_tag into ggz_gtk structure.
+------------------------------------------------------------------------
+r10259 | jdorje | 2008-07-10 02:43:35 +0200 (Do, 10. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/client.c
+
+Clean up menu toggle code.
+------------------------------------------------------------------------
+r10258 | jdorje | 2008-07-10 02:24:03 +0200 (Do, 10. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/about.c
+
+One more random static variable here.
+------------------------------------------------------------------------
+r10257 | jdorje | 2008-07-10 01:05:27 +0200 (Do, 10. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/xtext.c
+
+Don't check for deprecated code in xtext.
+------------------------------------------------------------------------
+r10256 | jdorje | 2008-07-10 01:01:44 +0200 (Do, 10. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/launch.c
+   M /trunk/gtk-client/ggz-gtk/xtext.c
+
+Fix config.h includes.
+------------------------------------------------------------------------
+r10255 | jdorje | 2008-07-09 23:47:49 +0200 (Mi, 09. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/license.c
+
+Heavy cleanups to license.c.
+------------------------------------------------------------------------
+r10254 | jdorje | 2008-07-09 22:54:09 +0200 (Mi, 09. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+
+Rename variable - for consistency and to avoid shadowing global typedef.
+------------------------------------------------------------------------
+r10253 | jdorje | 2008-07-09 22:50:25 +0200 (Mi, 09. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/chat.c
+   M /trunk/gtk-client/ggz-gtk/chat.h
+   M /trunk/gtk-client/ggz-gtk/client.h
+
+Move static chat data into the ggz_gtk structure.
+------------------------------------------------------------------------
+r10252 | jdorje | 2008-07-09 22:16:56 +0200 (Mi, 09. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/client.h
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+
+Move server_tag and channel_tag into ggz_gtk structure.
+------------------------------------------------------------------------
+r10251 | jdorje | 2008-07-09 22:00:15 +0200 (Mi, 09. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+
+Remove unnecessary is_server/is_channel variables.
+------------------------------------------------------------------------
+r10250 | jdorje | 2008-07-09 20:44:38 +0200 (Mi, 09. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/chat.c
+   M /trunk/gtk-client/ggz-gtk/client.c
+   M /trunk/gtk-client/ggz-gtk/client.h
+   M /trunk/gtk-client/ggz-gtk/game.c
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+   M /trunk/gtk-client/ggz-gtk/launch.c
+   M /trunk/gtk-client/ggz-gtk/login.c
+   M /trunk/gtk-client/ggz-gtk/playerlist.c
+   M /trunk/gtk-client/ggz-gtk/roomlist.c
+   M /trunk/gtk-client/ggz-gtk/server.c
+   M /trunk/gtk-client/ggz-gtk/server.h
+   M /trunk/gtk-client/ggz-gtk/tablelist.c
+   M /trunk/gtk-client/ggz-gtk/types.c
+
+Move server parameter into ggz_gtk structure.
+------------------------------------------------------------------------
+r10249 | jdorje | 2008-07-09 06:17:16 +0200 (Mi, 09. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/client.c
+   M /trunk/gtk-client/ggz-gtk/client.h
+
+Move spectating flag into ggz_gtk structure.
+------------------------------------------------------------------------
+r10248 | jdorje | 2008-07-09 06:12:22 +0200 (Mi, 09. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/about.c
+   M /trunk/gtk-client/ggz-gtk/client.c
+   M /trunk/gtk-client/ggz-gtk/client.h
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+   M /trunk/gtk-client/ggz-gtk/launch.c
+   M /trunk/gtk-client/ggz-gtk/license.c
+   M /trunk/gtk-client/ggz-gtk/motd.c
+   M /trunk/gtk-client/ggz-gtk/msgbox.c
+   M /trunk/gtk-client/ggz-gtk/pick_module.c
+   M /trunk/gtk-client/ggz-gtk/playerinfo.c
+   M /trunk/gtk-client/ggz-gtk/roominfo.c
+   M /trunk/gtk-client/ggz-gtk/types.c
+   M /trunk/gtk-client/src/main.c
+
+Move main_window variable into ggz_gtk structure.
+------------------------------------------------------------------------
+r10247 | jdorje | 2008-07-09 05:39:44 +0200 (Mi, 09. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/chat.c
+   M /trunk/gtk-client/ggz-gtk/client.c
+   M /trunk/gtk-client/ggz-gtk/client.h
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+   M /trunk/gtk-client/ggz-gtk/props.c
+
+Move the win_main variable into the ggz_gtk structure.
+------------------------------------------------------------------------
+r10246 | jdorje | 2008-07-09 05:17:17 +0200 (Mi, 09. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/client.c
+   M /trunk/gtk-client/ggz-gtk/client.h
+
+Move ggznotebook variable into the ggz_gtk structure.
+------------------------------------------------------------------------
+r10245 | jdorje | 2008-07-09 05:11:29 +0200 (Mi, 09. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/client.c
+   M /trunk/gtk-client/ggz-gtk/client.h
+   M /trunk/gtk-client/ggz-gtk/game.c
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+
+Move embedded protocol strings into ggz_gtk structure.
+------------------------------------------------------------------------
+r10244 | jdorje | 2008-07-09 05:06:25 +0200 (Mi, 09. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/client.c
+   M /trunk/gtk-client/ggz-gtk/client.h
+   M /trunk/gtk-client/ggz-gtk/game.c
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+   M /trunk/gtk-client/ggz-gtk/login.c
+
+Move some global variables into a ggz_gtk structure.
+------------------------------------------------------------------------
+r10243 | jdorje | 2008-07-09 04:00:29 +0200 (Mi, 09. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/about.c
+   M /trunk/gtk-client/ggz-gtk/chat.c
+   M /trunk/gtk-client/ggz-gtk/chat.h
+   M /trunk/gtk-client/ggz-gtk/client.c
+   M /trunk/gtk-client/ggz-gtk/ggzutils.c
+   M /trunk/gtk-client/ggz-gtk/ggzutils.h
+   M /trunk/gtk-client/ggz-gtk/motd.c
+   M /trunk/gtk-client/ggz-gtk/props.c
+
+Segregate colors/xtext code.
+------------------------------------------------------------------------
+r10242 | jdorje | 2008-07-09 02:48:24 +0200 (Mi, 09. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+   M /trunk/gtk-client/ggz-gtk/login.c
+   M /trunk/gtk-client/ggz-gtk/login.h
+   M /trunk/gtk-client/ggz-gtk/props.c
+   M /trunk/gtk-client/src/main.c
+
+Encapsulate login dialog code better; remove global variables.
+------------------------------------------------------------------------
+r10241 | jdorje | 2008-07-09 01:09:47 +0200 (Mi, 09. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/chat.c
+
+Fix incorrect strength length (?).
+------------------------------------------------------------------------
+r10240 | jdorje | 2008-07-08 22:11:19 +0200 (Di, 08. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/types.c
+
+Fix minor shadowing problem.
+------------------------------------------------------------------------
+r10231 | jdorje | 2008-07-08 21:30:17 +0200 (Di, 08. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/client.c
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+   M /trunk/gtk-client/ggz-gtk/launch.c
+   M /trunk/gtk-client/ggz-gtk/playerlist.c
+   M /trunk/gtk-client/ggz-gtk/props.c
+   M /trunk/gtk-client/ggz-gtk/roomlist.c
+   M /trunk/gtk-client/ggz-gtk/tablelist.c
+
+Fix some minor problems with shadowed variables and functions.
+------------------------------------------------------------------------
+r10230 | jdorje | 2008-07-08 21:26:50 +0200 (Di, 08. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/about.c
+
+Restructure static variables.
+------------------------------------------------------------------------
+r10229 | jdorje | 2008-07-08 20:55:50 +0200 (Di, 08. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/pick_module.c
+
+Restructure static variables.
+------------------------------------------------------------------------
+r10200 | jdorje | 2008-07-08 06:15:32 +0200 (Di, 08. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/xtext.c
+
+Fix mismatching callback function prototype.
+------------------------------------------------------------------------
+r10199 | jdorje | 2008-07-08 06:12:00 +0200 (Di, 08. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/chat.c
+   M /trunk/gtk-client/ggz-gtk/chat.h
+   M /trunk/gtk-client/ggz-gtk/client.c
+   M /trunk/gtk-client/ggz-gtk/xtext.c
+
+Fix mismatching callback function prototype.
+------------------------------------------------------------------------
+r10192 | jdorje | 2008-07-08 05:50:06 +0200 (Di, 08. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/playerlist.c
+
+Fix invalid pointer comparison.
+------------------------------------------------------------------------
+r10183 | jdorje | 2008-07-08 04:57:12 +0200 (Di, 08. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/support.h
+
+Remove duplicate variable declaration.
+------------------------------------------------------------------------
+r10177 | jdorje | 2008-07-08 03:52:20 +0200 (Di, 08. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/about.c
+   M /trunk/gtk-client/ggz-gtk/chat.c
+
+Fix strange gcc warning about ambiguous else statement.
+------------------------------------------------------------------------
+r10148 | jdorje | 2008-07-04 03:49:57 +0200 (Fr, 04. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/game.c
+   M /trunk/gtk-client/ggz-gtk/game.h
+   M /trunk/gtk-client/ggz-gtk/ggzutils.c
+   M /trunk/gtk-client/ggz-gtk/ggzutils.h
+   M /trunk/gtk-client/ggz-gtk/pick_module.h
+   M /trunk/gtk-client/ggz-gtk/playerinfo.c
+   M /trunk/gtk-client/ggz-gtk/playerinfo.h
+   M /trunk/gtk-client/ggz-gtk/roominfo.c
+   M /trunk/gtk-client/ggz-gtk/roominfo.h
+
+Add const qualifiers for some params.
+------------------------------------------------------------------------
+r10146 | jdorje | 2008-07-03 21:14:29 +0200 (Do, 03. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/game.c
+
+Remove static fd variable.
+------------------------------------------------------------------------
+r10145 | jdorje | 2008-07-03 21:10:52 +0200 (Do, 03. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/game.c
+
+Remove static game variable.
+------------------------------------------------------------------------
+r10131 | jdorje | 2008-07-01 06:07:19 +0200 (Di, 01. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+
+Random assertions.
+------------------------------------------------------------------------
+r10117 | jdorje | 2008-06-30 08:26:37 +0200 (Mo, 30. Jun 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/docs/autogen.sh
+   M /trunk/ggz-client-libs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/gtk-games/autogen.sh
+   M /trunk/kde-client/autogen.sh
+   M /trunk/kde-games/autogen.sh
+   M /trunk/libggz/autogen.sh
+   M /trunk/playground/agrue/autogen.sh
+   M /trunk/playground/irc/autogen.sh
+   M /trunk/sdl-games/autogen.sh
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+Exit with return value 1 on failure.  Previously if an autotool failed
+autogen would exit with a success value.
+
+All autogen files other than the python module one are updated.
+
+------------------------------------------------------------------------
+r10091 | jdorje | 2008-06-29 11:46:27 +0200 (So, 29. Jun 2008) | 1 line
+Geänderte Pfade:
+   D /trunk/ggz-client-libs/m4/iconv.m4
+   D /trunk/ggzd/m4/iconv.m4
+   D /trunk/grubby/m4/iconv.m4
+   D /trunk/gtk-client/m4/iconv.m4
+   D /trunk/gtk-games/m4/iconv.m4
+   D /trunk/kde-client/m4/iconv.m4
+   D /trunk/kde-games/m4/iconv.m4
+   A /trunk/libggz/src/ggz (von /trunk/ggzd/m4/iconv.m4:10089)
+   D /trunk/playground/agrue/m4/iconv.m4
+   D /trunk/playground/irc/m4/iconv.m4
+   D /trunk/sdl-games/m4/iconv.m4
+   D /trunk/txt-client/m4/iconv.m4
+   D /trunk/utils/m4/iconv.m4
+
+Move iconv.m4 into ggz common m4 directory.
+------------------------------------------------------------------------
+r10052 | jdorje | 2008-06-23 04:08:14 +0200 (Mo, 23. Jun 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/login.c
+
+Fix profile checking.
+------------------------------------------------------------------------
+r10051 | jdorje | 2008-06-23 03:52:30 +0200 (Mo, 23. Jun 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/login.c
+
+Change gtkentry to gtkcombobox in some code.
+------------------------------------------------------------------------
+r10038 | jdorje | 2008-06-07 07:13:44 +0200 (Sa, 07. Jun 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/about.c
+
+Fix buffer overflow.  (Reported by gcc 4.3.)
+
+------------------------------------------------------------------------
+r10013 | jdorje | 2008-05-30 22:01:43 +0200 (Fr, 30. Mai 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/chat.c
+   M /trunk/gtk-client/ggz-gtk/ggzclient.c
+   M /trunk/gtk-client/ggz-gtk/login.c
+   M /trunk/gtk-client/ggz-gtk/pick_module.c
+   M /trunk/gtk-client/ggz-gtk/playerinfo.c
+
+This fixes a number of places that were reported to be UTF-8 unsafe.  In most 
+cases snprintf calls are replaced by g_strdup_printf.  Some places are left 
+intact with FIXME comments.
+
+------------------------------------------------------------------------
+r10012 | jdorje | 2008-05-30 21:33:56 +0200 (Fr, 30. Mai 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/gtk-client/ggz-gtk/launch.c
+
+Minor typo fix.
+------------------------------------------------------------------------
+r10004 | josef | 2008-05-25 11:12:02 +0200 (So, 25. Mai 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/docs/ChangeLog
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggzd/ChangeLog
+   M /trunk/grubby/ChangeLog
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/java/ChangeLog
+   M /trunk/kde-client/ChangeLog
+   M /trunk/kde-games/ChangeLog
+   M /trunk/libggz/ChangeLog
+   M /trunk/python/ChangeLog
+   M /trunk/sdl-games/ChangeLog
+   M /trunk/txt-client/ChangeLog
+   M /trunk/utils/ChangeLog
+
+- prepend 5300 lines of change summaries to the changelog files
+
+
+------------------------------------------------------------------------
+r9993 | josef | 2008-05-24 08:41:33 +0200 (Sa, 24. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README
@@ -33,7 +518,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9955 | jdorje | 2008-04-14 23:11:25 +0200 (Mo, 14 Apr 2008) | 5 lines
+r9955 | jdorje | 2008-04-14 23:11:25 +0200 (Mo, 14. Apr 2008) | 5 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/support.h
@@ -44,7 +529,7 @@ is always the domain used for internal strings.
 This should fix translation issues with the embedded ggz-gtk library.
 
 ------------------------------------------------------------------------
-r9951 | oojah | 2008-04-13 00:32:00 +0200 (So, 13 Apr 2008) | 2 lines
+r9951 | oojah | 2008-04-13 00:32:00 +0200 (So, 13. Apr 2008) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/src/main.c
@@ -52,7 +537,7 @@ Geänderte Pfade:
 Store rc and debug files in $APPDATA (usually C:\Documents and Settings\username\Application Data) instead of $HOME when on Windows.
 
 ------------------------------------------------------------------------
-r9946 | josef | 2008-04-12 13:59:55 +0200 (Sa, 12 Apr 2008) | 3 lines
+r9946 | josef | 2008-04-12 13:59:55 +0200 (Sa, 12. Apr 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -75,13 +560,13 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9942 | jdorje | 2008-04-12 08:58:33 +0200 (Sa, 12 Apr 2008) | 1 line
+r9942 | jdorje | 2008-04-12 08:58:33 +0200 (Sa, 12. Apr 2008) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/xtext.c
 
 Avoid harmless compiler warning.
 ------------------------------------------------------------------------
-r9854 | josef | 2008-03-20 21:37:13 +0100 (Do, 20 Mär 2008) | 3 lines
+r9854 | josef | 2008-03-20 21:37:13 +0100 (Do, 20. Mär 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/configure.ac
    M /trunk/ggzd/configure.ac
@@ -92,7 +577,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9618 | josef | 2008-01-28 00:34:27 +0100 (Mo, 28 Jan 2008) | 3 lines
+r9618 | josef | 2008-01-28 00:34:27 +0100 (Mo, 28. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/about.c
 
@@ -100,7 +585,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9574 | josef | 2008-01-20 11:58:24 +0100 (So, 20 Jan 2008) | 3 lines
+r9574 | josef | 2008-01-20 11:58:24 +0100 (So, 20. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/ggzclient.c
    M /trunk/kde-client/ggz-kde/ggzcore++/src/GGZCoreRoom.cpp
@@ -113,7 +598,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9493 | josef | 2008-01-12 18:02:50 +0100 (Sa, 12 Jan 2008) | 3 lines
+r9493 | josef | 2008-01-12 18:02:50 +0100 (Sa, 12. Jan 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/src/main.c
 
@@ -121,7 +606,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9429 | josef | 2007-12-11 10:15:58 +0100 (Di, 11 Dez 2007) | 3 lines
+r9429 | josef | 2007-12-11 10:15:58 +0100 (Di, 11. Dez 2007) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/pidgin-plugin/simple.c
 
@@ -129,7 +614,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9402 | josef | 2007-12-01 13:30:50 +0100 (Sa, 01 Dez 2007) | 4 lines
+r9402 | josef | 2007-12-01 13:30:50 +0100 (Sa, 01. Dez 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/grubby/m4/i18n.mk
@@ -143,7 +628,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9401 | josef | 2007-12-01 13:30:41 +0100 (Sa, 01 Dez 2007) | 4 lines
+r9401 | josef | 2007-12-01 13:30:41 +0100 (Sa, 01. Dez 2007) | 4 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/docs/autogen.sh
@@ -164,13 +649,13 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9394 | jdorje | 2007-12-01 01:30:32 +0100 (Sa, 01 Dez 2007) | 1 line
+r9394 | jdorje | 2007-12-01 01:30:32 +0100 (Sa, 01. Dez 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
 
 GTK_DISABLE_DEPRECATED for debug compilations.
 ------------------------------------------------------------------------
-r9393 | jdorje | 2007-12-01 01:29:32 +0100 (Sa, 01 Dez 2007) | 1 line
+r9393 | jdorje | 2007-12-01 01:29:32 +0100 (Sa, 01. Dez 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/license.c
    M /trunk/gtk-client/ggz-gtk/motd.c
@@ -180,19 +665,19 @@ Geänderte Pfade:
 
 Remove unnecessary gtk_widget_ref/unref calls.
 ------------------------------------------------------------------------
-r9392 | jdorje | 2007-12-01 01:28:59 +0100 (Sa, 01 Dez 2007) | 1 line
+r9392 | jdorje | 2007-12-01 01:28:59 +0100 (Sa, 01. Dez 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
 
 Tooltips cleanup for 2.12.
 ------------------------------------------------------------------------
-r9391 | jdorje | 2007-12-01 00:59:18 +0100 (Sa, 01 Dez 2007) | 1 line
+r9391 | jdorje | 2007-12-01 00:59:18 +0100 (Sa, 01. Dez 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/about.c
 
 Clean up 'about' dialog.
 ------------------------------------------------------------------------
-r9374 | josef | 2007-11-21 17:34:52 +0100 (Mi, 21 Nov 2007) | 5 lines
+r9374 | josef | 2007-11-21 17:34:52 +0100 (Mi, 21. Nov 2007) | 5 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/gtk-client/Makefile.am
@@ -203,7 +688,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9365 | josef | 2007-11-18 12:00:46 +0100 (So, 18 Nov 2007) | 16 lines
+r9365 | josef | 2007-11-18 12:00:46 +0100 (So, 18. Nov 2007) | 16 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/gtk-client/Makefile.am
@@ -232,7 +717,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9353 | josef | 2007-11-11 22:42:06 +0100 (So, 11 Nov 2007) | 5 lines
+r9353 | josef | 2007-11-11 22:42:06 +0100 (So, 11. Nov 2007) | 5 lines
 Geänderte Pfade:
    M /trunk
    M /trunk/gtk-client/po/Makefile.am
@@ -318,7 +803,7 @@ Geänderte Pfade:
  
 
 ------------------------------------------------------------------------
-r9168 | josef | 2007-07-04 17:18:44 +0200 (Mi, 04 Jul 2007) | 5 lines
+r9168 | josef | 2007-07-04 17:18:44 +0200 (Mi, 04. Jul 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/ggzclient.c
 
@@ -328,7 +813,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9161 | josef | 2007-06-28 16:15:32 +0200 (Do, 28 Jun 2007) | 5 lines
+r9161 | josef | 2007-06-28 16:15:32 +0200 (Do, 28. Jun 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/props.c
 
@@ -338,7 +823,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9156 | josef | 2007-06-20 19:56:44 +0200 (Mi, 20 Jun 2007) | 9 lines
+r9156 | josef | 2007-06-20 19:56:44 +0200 (Mi, 20. Jun 2007) | 9 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/am.po
    M /trunk/gtk-client/po/ar.po
@@ -422,7 +907,7 @@ The insertations are actually reformatted lines. Shouldn't do any harm but is st
 
 
 ------------------------------------------------------------------------
-r9154 | josef | 2007-06-20 19:37:40 +0200 (Mi, 20 Jun 2007) | 5 lines
+r9154 | josef | 2007-06-20 19:37:40 +0200 (Mi, 20. Jun 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/Makefile.am
 
@@ -432,7 +917,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9150 | josef | 2007-06-20 19:02:51 +0200 (Mi, 20 Jun 2007) | 5 lines
+r9150 | josef | 2007-06-20 19:02:51 +0200 (Mi, 20. Jun 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/gl.po
    D /trunk/gtk-client/po/ku.po
@@ -443,7 +928,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9147 | josef | 2007-06-20 18:28:17 +0200 (Mi, 20 Jun 2007) | 5 lines
+r9147 | josef | 2007-06-20 18:28:17 +0200 (Mi, 20. Jun 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/am.po
    M /trunk/gtk-client/po/be.po
@@ -469,7 +954,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9146 | josef | 2007-06-20 17:50:56 +0200 (Mi, 20 Jun 2007) | 5 lines
+r9146 | josef | 2007-06-20 17:50:56 +0200 (Mi, 20. Jun 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/ar.po
    M /trunk/gtk-client/po/cs.po
@@ -495,32 +980,32 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9143 | jdorje | 2007-06-11 04:54:07 +0200 (Mo, 11 Jun 2007) | 1 line
+r9143 | jdorje | 2007-06-11 04:54:07 +0200 (Mo, 11. Jun 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/props.c
 
 Replace the deprecated GtkCombo with a GtkComboBox.
 ------------------------------------------------------------------------
-r9140 | jdorje | 2007-05-28 21:31:35 +0200 (Mo, 28 Mai 2007) | 1 line
+r9140 | jdorje | 2007-05-28 21:31:35 +0200 (Mo, 28. Mai 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/login.c
 
 Replace the deprecated GtkCombo with a GtkComboBox.
 ------------------------------------------------------------------------
-r9139 | jdorje | 2007-05-28 09:13:58 +0200 (Mo, 28 Mai 2007) | 2 lines
+r9139 | jdorje | 2007-05-28 09:13:58 +0200 (Mo, 28. Mai 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/launch.c
 
 Replace the deprecated GtkCombo with a GtkComboBox.
 
 ------------------------------------------------------------------------
-r9138 | jdorje | 2007-05-28 08:11:26 +0200 (Mo, 28 Mai 2007) | 1 line
+r9138 | jdorje | 2007-05-28 08:11:26 +0200 (Mo, 28. Mai 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/launch.c
 
 Minor GTK cleanups.
 ------------------------------------------------------------------------
-r9137 | jdorje | 2007-05-28 06:32:22 +0200 (Mo, 28 Mai 2007) | 2 lines
+r9137 | jdorje | 2007-05-28 06:32:22 +0200 (Mo, 28. Mai 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/xtext.c
    M /trunk/gtk-client/ggz-gtk/xtext.h
@@ -528,7 +1013,7 @@ Geänderte Pfade:
 Work around idiotic signedness warnings in xtext by adding lots of casts.
 
 ------------------------------------------------------------------------
-r9129 | oojah | 2007-05-21 23:30:31 +0200 (Mo, 21 Mai 2007) | 2 lines
+r9129 | oojah | 2007-05-21 23:30:31 +0200 (Mo, 21. Mai 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/ggz-config/ggz-config.c
    M /trunk/grubby/grubby/src/main.c
@@ -537,7 +1022,7 @@ Geänderte Pfade:
 Improved some english strings.
 
 ------------------------------------------------------------------------
-r9073 | jdorje | 2007-04-29 03:09:54 +0200 (So, 29 Apr 2007) | 7 lines
+r9073 | jdorje | 2007-04-29 03:09:54 +0200 (So, 29. Apr 2007) | 7 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/ggz-wrapper/server.c
    M /trunk/ggz-client-libs/ggzcore/ggzcore.h
@@ -555,7 +1040,7 @@ Note also that contrary to previous documentation, GGZ_PROTOCOL_ERROR is not
 deprecated, nor does it look like it has ever been.
 
 ------------------------------------------------------------------------
-r9039 | josef | 2007-04-12 10:34:50 +0200 (Do, 12 Apr 2007) | 8 lines
+r9039 | josef | 2007-04-12 10:34:50 +0200 (Do, 12. Apr 2007) | 8 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/login.c
 
@@ -568,7 +1053,7 @@ BACKPORT ggz-0-0-14-branch
 
 
 ------------------------------------------------------------------------
-r9037 | josef | 2007-04-12 10:05:09 +0200 (Do, 12 Apr 2007) | 5 lines
+r9037 | josef | 2007-04-12 10:05:09 +0200 (Do, 12. Apr 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/Makefile.am
    A /trunk/gtk-client/po/am.po
@@ -649,7 +1134,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r9019 | jdorje | 2007-03-30 07:35:54 +0200 (Fr, 30 Mär 2007) | 1 line
+r9019 | jdorje | 2007-03-30 07:35:54 +0200 (Fr, 30. Mär 2007) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/ggzcore/server.c
    M /trunk/ggzd/ggzd/control.c
@@ -660,19 +1145,19 @@ Geänderte Pfade:
 
 Remove 'random' password generation from the server.
 ------------------------------------------------------------------------
-r9018 | jdorje | 2007-03-30 03:26:41 +0200 (Fr, 30 Mär 2007) | 1 line
+r9018 | jdorje | 2007-03-30 03:26:41 +0200 (Fr, 30. Mär 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/login.c
 
 Add more cases for login_failed.
 ------------------------------------------------------------------------
-r9017 | jdorje | 2007-03-30 03:19:49 +0200 (Fr, 30 Mär 2007) | 1 line
+r9017 | jdorje | 2007-03-30 03:19:49 +0200 (Fr, 30. Mär 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/chat.c
 
 Remove unused variables.
 ------------------------------------------------------------------------
-r8987 | jdorje | 2007-02-19 03:50:30 +0100 (Mo, 19 Feb 2007) | 1 line
+r8987 | jdorje | 2007-02-19 03:50:30 +0100 (Mo, 19. Feb 2007) | 1 line
 Geänderte Pfade:
    M /trunk/community/setup/scripts/ggz2phpbb.conf.in
    M /trunk/community/setup/sql/trigger/ggzsync_trigger.c
@@ -818,7 +1303,7 @@ Geänderte Pfade:
 
 Fix eol-style on .c, .h, .in, and .am files.
 ------------------------------------------------------------------------
-r8984 | jdorje | 2007-02-11 07:32:46 +0100 (So, 11 Feb 2007) | 1 line
+r8984 | jdorje | 2007-02-11 07:32:46 +0100 (So, 11. Feb 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/Makefile.am
    A /trunk/gtk-client/ggz-gtk/ggz_gtk_host.svg
@@ -826,7 +1311,7 @@ Geänderte Pfade:
 
 Add host icon.
 ------------------------------------------------------------------------
-r8979 | josef | 2007-02-07 12:51:24 +0100 (Mi, 07 Feb 2007) | 5 lines
+r8979 | josef | 2007-02-07 12:51:24 +0100 (Mi, 07. Feb 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/gtk-client/doc/Makefile.am
 
@@ -836,49 +1321,49 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8978 | jdorje | 2007-02-03 04:40:58 +0100 (Sa, 03 Feb 2007) | 1 line
+r8978 | jdorje | 2007-02-03 04:40:58 +0100 (Sa, 03. Feb 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/chat.c
 
 Fix more issues with dashes and translation.
 ------------------------------------------------------------------------
-r8977 | jdorje | 2007-02-03 04:36:09 +0100 (Sa, 03 Feb 2007) | 1 line
+r8977 | jdorje | 2007-02-03 04:36:09 +0100 (Sa, 03. Feb 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/chat.c
 
 Translate /me command the same as the others.
 ------------------------------------------------------------------------
-r8976 | jdorje | 2007-02-03 04:14:16 +0100 (Sa, 03 Feb 2007) | 1 line
+r8976 | jdorje | 2007-02-03 04:14:16 +0100 (Sa, 03. Feb 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/chat.c
 
 Don't translate dashes.
 ------------------------------------------------------------------------
-r8974 | jdorje | 2007-02-02 06:05:32 +0100 (Fr, 02 Feb 2007) | 1 line
+r8974 | jdorje | 2007-02-02 06:05:32 +0100 (Fr, 02. Feb 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/chat.c
 
 Improve translation of command usage strings.
 ------------------------------------------------------------------------
-r8973 | jdorje | 2007-02-02 01:29:51 +0100 (Fr, 02 Feb 2007) | 1 line
+r8973 | jdorje | 2007-02-02 01:29:51 +0100 (Fr, 02. Feb 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/chat.c
 
 Clean up translation of command help.
 ------------------------------------------------------------------------
-r8972 | jdorje | 2007-02-02 00:16:55 +0100 (Fr, 02 Feb 2007) | 1 line
+r8972 | jdorje | 2007-02-02 00:16:55 +0100 (Fr, 02. Feb 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/login.c
 
 Numbers aren't translated.
 ------------------------------------------------------------------------
-r8971 | jdorje | 2007-02-02 00:15:47 +0100 (Fr, 02 Feb 2007) | 1 line
+r8971 | jdorje | 2007-02-02 00:15:47 +0100 (Fr, 02. Feb 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/chat.c
 
 Define INADDR_NONE if not present.  Reported by gnome bugzilla.
 ------------------------------------------------------------------------
-r8970 | oojah | 2007-02-02 00:09:19 +0100 (Fr, 02 Feb 2007) | 2 lines
+r8970 | oojah | 2007-02-02 00:09:19 +0100 (Fr, 02. Feb 2007) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/chat.c
    M /trunk/gtk-client/ggz-gtk/client.c
@@ -888,7 +1373,7 @@ Geänderte Pfade:
 English string improvements.
 
 ------------------------------------------------------------------------
-r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16 Jan 2007) | 8 lines
+r8950 | josef | 2007-01-16 19:42:07 +0100 (Di, 16. Jan 2007) | 8 lines
 Geänderte Pfade:
    M /trunk/community/ChangeLog
    M /trunk/docs/ChangeLog
@@ -916,7 +1401,7 @@ However we have to do so since no tool seems to be able to reproduce our old for
 
 
 ------------------------------------------------------------------------
-r8949 | josef | 2007-01-16 19:23:42 +0100 (Di, 16 Jan 2007) | 5 lines
+r8949 | josef | 2007-01-16 19:23:42 +0100 (Di, 16. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -939,7 +1424,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16 Jan 2007) | 5 lines
+r8947 | josef | 2007-01-16 19:14:12 +0100 (Di, 16. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README.GGZ
@@ -1017,7 +1502,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8945 | josef | 2007-01-16 18:42:57 +0100 (Di, 16 Jan 2007) | 5 lines
+r8945 | josef | 2007-01-16 18:42:57 +0100 (Di, 16. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/ggzcore/Makefile.am
    M /trunk/ggz-client-libs/ggzcore/ggzcore.h
@@ -1036,7 +1521,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8942 | josef | 2007-01-16 17:22:43 +0100 (Di, 16 Jan 2007) | 5 lines
+r8942 | josef | 2007-01-16 17:22:43 +0100 (Di, 16. Jan 2007) | 5 lines
 Geänderte Pfade:
    M /trunk/community/setup/scripts/mundomap/map.png
    M /trunk/community/web/db/ggzicons/misc/karma_bad.png
@@ -1126,7 +1611,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8882 | josef | 2007-01-09 18:46:35 +0100 (Di, 09 Jan 2007) | 7 lines
+r8882 | josef | 2007-01-09 18:46:35 +0100 (Di, 09. Jan 2007) | 7 lines
 Geänderte Pfade:
    M /trunk/gtk-client/src/main.c
 
@@ -1138,7 +1623,7 @@ In the long run, libggzmeta should be used by all core clients, which contains a
 
 
 ------------------------------------------------------------------------
-r8852 | josef | 2007-01-08 14:36:45 +0100 (Mo, 08 Jan 2007) | 9 lines
+r8852 | josef | 2007-01-08 14:36:45 +0100 (Mo, 08. Jan 2007) | 9 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz-client-libs/autogen.sh
@@ -1164,7 +1649,7 @@ But I'm sure we had a reason not to and I don't want to break it right now.
 
 
 ------------------------------------------------------------------------
-r8817 | jdorje | 2007-01-05 00:33:33 +0100 (Fr, 05 Jan 2007) | 1 line
+r8817 | jdorje | 2007-01-05 00:33:33 +0100 (Fr, 05. Jan 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/Makefile.am
    M /trunk/gtk-client/autogen.sh
@@ -1175,20 +1660,20 @@ Geänderte Pfade:
 
 Use externals for common GGZ m4 files.
 ------------------------------------------------------------------------
-r8814 | jdorje | 2007-01-04 23:52:40 +0100 (Do, 04 Jan 2007) | 1 line
+r8814 | jdorje | 2007-01-04 23:52:40 +0100 (Do, 04. Jan 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/Makefile.am
 
 Distribute images.
 ------------------------------------------------------------------------
-r8811 | jdorje | 2007-01-04 23:39:18 +0100 (Do, 04 Jan 2007) | 1 line
+r8811 | jdorje | 2007-01-04 23:39:18 +0100 (Do, 04. Jan 2007) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.h
    M /trunk/gtk-client/ggz-gtk/ggzclient.h
 
 Header file cleanups.
 ------------------------------------------------------------------------
-r8802 | josef | 2007-01-04 13:41:51 +0100 (Do, 04 Jan 2007) | 7 lines
+r8802 | josef | 2007-01-04 13:41:51 +0100 (Do, 04. Jan 2007) | 7 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1211,7 +1696,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8777 | josef | 2007-01-02 13:09:25 +0100 (Di, 02 Jan 2007) | 9 lines
+r8777 | josef | 2007-01-02 13:09:25 +0100 (Di, 02. Jan 2007) | 9 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1236,7 +1721,7 @@ shall now be happy again.
 
 
 ------------------------------------------------------------------------
-r8771 | jdorje | 2006-12-28 10:28:29 +0100 (Do, 28 Dez 2006) | 1 line
+r8771 | jdorje | 2006-12-28 10:28:29 +0100 (Do, 28. Dez 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/Makefile.am
    A /trunk/gtk-client/ggz-gtk/ggzutils.c
@@ -1246,7 +1731,7 @@ Geänderte Pfade:
 
 Move perm_name into a new file ggzutils, and use it for the playerinfo.
 ------------------------------------------------------------------------
-r8764 | josef | 2006-12-27 12:18:08 +0100 (Mi, 27 Dez 2006) | 6 lines
+r8764 | josef | 2006-12-27 12:18:08 +0100 (Mi, 27. Dez 2006) | 6 lines
 Geänderte Pfade:
    M /trunk/gtk-client/Makefile.am
    M /trunk/gtk-client/configure.ac
@@ -1260,7 +1745,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8763 | jdorje | 2006-12-27 11:02:33 +0100 (Mi, 27 Dez 2006) | 1 line
+r8763 | jdorje | 2006-12-27 11:02:33 +0100 (Mi, 27. Dez 2006) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/ggzcore/ggzcore.h
    M /trunk/ggz-client-libs/ggzcore/net.h
@@ -1280,19 +1765,19 @@ Geänderte Pfade:
 
 Add permissions administration.
 ------------------------------------------------------------------------
-r8756 | jdorje | 2006-12-27 03:43:20 +0100 (Mi, 27 Dez 2006) | 1 line
+r8756 | jdorje | 2006-12-27 03:43:20 +0100 (Mi, 27. Dez 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/playerlist.c
 
 Added interface for changing permissions via menu.
 ------------------------------------------------------------------------
-r8755 | jdorje | 2006-12-26 08:45:15 +0100 (Di, 26 Dez 2006) | 1 line
+r8755 | jdorje | 2006-12-26 08:45:15 +0100 (Di, 26. Dez 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/playerlist.c
 
 Add admin actions (kick/gag/ban) to menu.
 ------------------------------------------------------------------------
-r8749 | jdorje | 2006-12-25 03:07:57 +0100 (Mo, 25 Dez 2006) | 3 lines
+r8749 | jdorje | 2006-12-25 03:07:57 +0100 (Mo, 25. Dez 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/ggzd/ggzd/ggzduedit.c
    M /trunk/gtk-client/ggz-gtk/playerinfo.c
@@ -1304,7 +1789,7 @@ Change permissions string accesssors to ggz_perm_to_string and
 ggz_string_to_perm to match the other string accessors.
 
 ------------------------------------------------------------------------
-r8747 | jdorje | 2006-12-24 10:18:47 +0100 (So, 24 Dez 2006) | 2 lines
+r8747 | jdorje | 2006-12-24 10:18:47 +0100 (So, 24. Dez 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/ggzcore/ggzcore.h
    M /trunk/ggz-client-libs/ggzcore/netxml.c
@@ -1318,7 +1803,7 @@ Geänderte Pfade:
 Make permissions visible to the clients.
 
 ------------------------------------------------------------------------
-r8725 | josef | 2006-12-13 16:42:32 +0100 (Mi, 13 Dez 2006) | 3 lines
+r8725 | josef | 2006-12-13 16:42:32 +0100 (Mi, 13. Dez 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1336,13 +1821,13 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8705 | jdorje | 2006-12-06 02:04:14 +0100 (Mi, 06 Dez 2006) | 1 line
+r8705 | jdorje | 2006-12-06 02:04:14 +0100 (Mi, 06. Dez 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/game.c
 
 Fix problem where embedded-game rooms are not revealed properly.
 ------------------------------------------------------------------------
-r8668 | josef | 2006-11-20 15:13:06 +0100 (Mo, 20 Nov 2006) | 3 lines
+r8668 | josef | 2006-11-20 15:13:06 +0100 (Mo, 20. Nov 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/de.po
    M /trunk/gtk-client/po/es.po
@@ -1354,7 +1839,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8651 | josef | 2006-11-09 07:47:54 +0100 (Do, 09 Nov 2006) | 8 lines
+r8651 | josef | 2006-11-09 07:47:54 +0100 (Do, 09. Nov 2006) | 8 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/configure.ac
    M /trunk/ggz-client-libs/ggzcore/Makefile.am
@@ -1385,13 +1870,13 @@ Now there are both INTLLIBS and LIB_GETTEXT in the gtk+ modules. This seems to b
 
 
 ------------------------------------------------------------------------
-r8615 | jdorje | 2006-10-04 04:37:04 +0200 (Mi, 04 Okt 2006) | 1 line
+r8615 | jdorje | 2006-10-04 04:37:04 +0200 (Mi, 04. Okt 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/launch.c
 
 Fix bugs in launch dialog for selecting bots.
 ------------------------------------------------------------------------
-r8607 | jdorje | 2006-10-02 23:36:27 +0200 (Mo, 02 Okt 2006) | 1 line
+r8607 | jdorje | 2006-10-02 23:36:27 +0200 (Mo, 02. Okt 2006) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1407,7 +1892,7 @@ Geänderte Pfade:
 
 Josef forgot to propogate the ggz.m4 changes.
 ------------------------------------------------------------------------
-r8595 | josef | 2006-09-24 22:02:30 +0200 (So, 24 Sep 2006) | 5 lines
+r8595 | josef | 2006-09-24 22:02:30 +0200 (So, 24. Sep 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
    M /trunk/gtk-client/ggz-gtk/Makefile.am
@@ -1418,19 +1903,19 @@ This commit live from a pub in Dublin.
 
 
 ------------------------------------------------------------------------
-r8592 | jdorje | 2006-09-22 04:47:32 +0200 (Fr, 22 Sep 2006) | 1 line
+r8592 | jdorje | 2006-09-22 04:47:32 +0200 (Fr, 22. Sep 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/Makefile.am
 
 Fix installation of images.
 ------------------------------------------------------------------------
-r8591 | jdorje | 2006-09-22 03:48:53 +0200 (Fr, 22 Sep 2006) | 1 line
+r8591 | jdorje | 2006-09-22 03:48:53 +0200 (Fr, 22. Sep 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/Makefile.am
 
 Always define ggzgtkdatadir.
 ------------------------------------------------------------------------
-r8589 | jdorje | 2006-09-20 09:30:11 +0200 (Mi, 20 Sep 2006) | 3 lines
+r8589 | jdorje | 2006-09-20 09:30:11 +0200 (Mi, 20. Sep 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
 
@@ -1438,7 +1923,7 @@ No need to use modules with embedded ggz - maybe this should be checked for
 by ggzcore already?
 
 ------------------------------------------------------------------------
-r8587 | jdorje | 2006-09-20 04:15:08 +0200 (Mi, 20 Sep 2006) | 1 line
+r8587 | jdorje | 2006-09-20 04:15:08 +0200 (Mi, 20. Sep 2006) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1455,14 +1940,14 @@ Geänderte Pfade:
 
 Add AC_GGZ_CHECK_SERVER macro.
 ------------------------------------------------------------------------
-r8586 | jdorje | 2006-09-20 04:02:27 +0200 (Mi, 20 Sep 2006) | 1 line
+r8586 | jdorje | 2006-09-20 04:02:27 +0200 (Mi, 20. Sep 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
    M /trunk/gtk-client/ggz-gtk/Makefile.am
 
 Add an INSTALL conditional for easy importing of the library.
 ------------------------------------------------------------------------
-r8583 | jdorje | 2006-09-19 17:26:31 +0200 (Di, 19 Sep 2006) | 3 lines
+r8583 | jdorje | 2006-09-19 17:26:31 +0200 (Di, 19. Sep 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/ggz-config/Makefile.am
    M /trunk/ggz-client-libs/ggzcore/Makefile.am
@@ -1487,7 +1972,7 @@ Don't define PREFIX in config.h, as this makes it impossible to change
 the prefix at compile time (as per GNU standards).
 
 ------------------------------------------------------------------------
-r8582 | josef | 2006-09-15 14:57:23 +0200 (Fr, 15 Sep 2006) | 9 lines
+r8582 | josef | 2006-09-15 14:57:23 +0200 (Fr, 15. Sep 2006) | 9 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/launch.c
 
@@ -1501,13 +1986,13 @@ means of launching if this is not wanted, e.g. for tourneys).
 
 
 ------------------------------------------------------------------------
-r8577 | jdorje | 2006-09-12 02:11:46 +0200 (Di, 12 Sep 2006) | 1 line
+r8577 | jdorje | 2006-09-12 02:11:46 +0200 (Di, 12. Sep 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/po/Makefile.am
 
 Update posources for new directory.
 ------------------------------------------------------------------------
-r8576 | jdorje | 2006-09-12 01:41:19 +0200 (Di, 12 Sep 2006) | 1 line
+r8576 | jdorje | 2006-09-12 01:41:19 +0200 (Di, 12. Sep 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/Makefile.am
    M /trunk/gtk-client/configure.ac
@@ -1519,34 +2004,34 @@ Geänderte Pfade:
 
 Move main program source into a separate directory from the library.
 ------------------------------------------------------------------------
-r8575 | jdorje | 2006-09-08 10:09:27 +0200 (Fr, 08 Sep 2006) | 1 line
+r8575 | jdorje | 2006-09-08 10:09:27 +0200 (Fr, 08. Sep 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/doc/Makefile.am
 
 Simplify ggzgtkdatadir definition.
 ------------------------------------------------------------------------
-r8574 | jdorje | 2006-09-08 07:50:10 +0200 (Fr, 08 Sep 2006) | 1 line
+r8574 | jdorje | 2006-09-08 07:50:10 +0200 (Fr, 08. Sep 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
    M /trunk/gtk-client/ggz-gtk/Makefile.am
 
 Simplify ggzgtkdatadir definition.
 ------------------------------------------------------------------------
-r8570 | jdorje | 2006-09-04 05:06:24 +0200 (Mo, 04 Sep 2006) | 1 line
+r8570 | jdorje | 2006-09-04 05:06:24 +0200 (Mo, 04. Sep 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
    M /trunk/gtk-client/ggz-gtk/Makefile.am
 
 Fix ggzgtkdatadir substitution.
 ------------------------------------------------------------------------
-r8569 | jdorje | 2006-09-03 21:39:01 +0200 (So, 03 Sep 2006) | 1 line
+r8569 | jdorje | 2006-09-03 21:39:01 +0200 (So, 03. Sep 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/Makefile.am
    A /trunk/gtk-client/m4/system.m4
 
 Add system.m4 file.
 ------------------------------------------------------------------------
-r8567 | jdorje | 2006-09-03 07:35:12 +0200 (So, 03 Sep 2006) | 5 lines
+r8567 | jdorje | 2006-09-03 07:35:12 +0200 (So, 03. Sep 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/Makefile.am
    M /trunk/ggz-client-libs/configure.ac
@@ -1585,19 +2070,19 @@ code conforms to GNU standards as the prefix may be changed at compile time;
 see the autoconf manual for details.
 
 ------------------------------------------------------------------------
-r8564 | jdorje | 2006-08-31 21:05:43 +0200 (Do, 31 Aug 2006) | 1 line
+r8564 | jdorje | 2006-08-31 21:05:43 +0200 (Do, 31. Aug 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/login.c
 
 Fix sensitivity of login fields.
 ------------------------------------------------------------------------
-r8549 | jdorje | 2006-08-29 01:21:24 +0200 (Di, 29 Aug 2006) | 1 line
+r8549 | jdorje | 2006-08-29 01:21:24 +0200 (Di, 29. Aug 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/playerlist.c
 
 Sort players alphabetically in list.
 ------------------------------------------------------------------------
-r8543 | jdorje | 2006-08-27 07:00:21 +0200 (So, 27 Aug 2006) | 3 lines
+r8543 | jdorje | 2006-08-27 07:00:21 +0200 (So, 27. Aug 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/chat.c
 
@@ -1605,13 +2090,13 @@ Add preliminary support for administrative room commands. This allows easy
 demonstration of how buggy those commands are.
 
 ------------------------------------------------------------------------
-r8542 | jdorje | 2006-08-27 06:45:09 +0200 (So, 27 Aug 2006) | 1 line
+r8542 | jdorje | 2006-08-27 06:45:09 +0200 (So, 27. Aug 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/ggzclient.c
 
 Fix handling of lag and stats events which do not receive room parameters.
 ------------------------------------------------------------------------
-r8533 | jdorje | 2006-08-26 03:26:29 +0200 (Sa, 26 Aug 2006) | 8 lines
+r8533 | jdorje | 2006-08-26 03:26:29 +0200 (Sa, 26. Aug 2006) | 8 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/ggzcore/game.c
    M /trunk/ggz-client-libs/ggzcore/ggzcore.h
@@ -1636,14 +2121,14 @@ than an id/number value.  A new function, ggzcore_server_get_room_num, is
 added that allows the recovery of the room number of a particular room.
 
 ------------------------------------------------------------------------
-r8532 | jdorje | 2006-08-26 01:28:47 +0200 (Sa, 26 Aug 2006) | 1 line
+r8532 | jdorje | 2006-08-26 01:28:47 +0200 (Sa, 26. Aug 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/playerinfo.c
    M /trunk/gtk-client/ggz-gtk/playerlist.c
 
 Fixes for host players.
 ------------------------------------------------------------------------
-r8452 | jdorje | 2006-08-01 21:53:36 +0200 (Di, 01 Aug 2006) | 2 lines
+r8452 | jdorje | 2006-08-01 21:53:36 +0200 (Di, 01. Aug 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/games/ggz-games/Makefile.am
    M /trunk/docs/games/ggz-games/tictactoe/Makefile.am
@@ -1692,14 +2177,14 @@ Geänderte Pfade:
 Enable keyword substitution for all .c, .h, .ac, and .am files.
 
 ------------------------------------------------------------------------
-r8434 | jdorje | 2006-08-01 02:11:14 +0200 (Di, 01 Aug 2006) | 1 line
+r8434 | jdorje | 2006-08-01 02:11:14 +0200 (Di, 01. Aug 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/gaim-plugin/Makefile.am
    M /trunk/gtk-client/ggz-gtk/Makefile.am
 
 Minor makefile cleanups.
 ------------------------------------------------------------------------
-r8412 | jdorje | 2006-07-28 02:48:14 +0200 (Fr, 28 Jul 2006) | 1 line
+r8412 | jdorje | 2006-07-28 02:48:14 +0200 (Fr, 28. Jul 2006) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1716,19 +2201,19 @@ Geänderte Pfade:
 
 Extensions to AC_GGZ_VERSION.
 ------------------------------------------------------------------------
-r8411 | jdorje | 2006-07-27 19:16:54 +0200 (Do, 27 Jul 2006) | 1 line
+r8411 | jdorje | 2006-07-27 19:16:54 +0200 (Do, 27. Jul 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
 
 Require libggz version 0.0.14.
 ------------------------------------------------------------------------
-r8405 | jdorje | 2006-07-26 19:21:01 +0200 (Mi, 26 Jul 2006) | 1 line
+r8405 | jdorje | 2006-07-26 19:21:01 +0200 (Mi, 26. Jul 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/Makefile.am
 
 Fix EXTRA_DIST.
 ------------------------------------------------------------------------
-r8373 | josef | 2006-07-19 13:41:33 +0200 (Mi, 19 Jul 2006) | 3 lines
+r8373 | josef | 2006-07-19 13:41:33 +0200 (Mi, 19. Jul 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/game.c
 
@@ -1736,7 +2221,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8355 | josef | 2006-07-12 17:55:43 +0200 (Mi, 12 Jul 2006) | 3 lines
+r8355 | josef | 2006-07-12 17:55:43 +0200 (Mi, 12. Jul 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/m4/gaim.m4
 
@@ -1744,13 +2229,13 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8350 | jdorje | 2006-07-11 05:48:10 +0200 (Di, 11 Jul 2006) | 1 line
+r8350 | jdorje | 2006-07-11 05:48:10 +0200 (Di, 11. Jul 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/roomlist.c
 
 Room sorting (finally).
 ------------------------------------------------------------------------
-r8222 | jdorje | 2006-06-20 04:59:29 +0200 (Di, 20 Jun 2006) | 1 line
+r8222 | jdorje | 2006-06-20 04:59:29 +0200 (Di, 20. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/client.h
@@ -1760,7 +2245,7 @@ Geänderte Pfade:
 
 Use notebook form for first-login page.
 ------------------------------------------------------------------------
-r8180 | jdorje | 2006-06-12 23:56:56 +0200 (Mo, 12 Jun 2006) | 2 lines
+r8180 | jdorje | 2006-06-12 23:56:56 +0200 (Mo, 12. Jun 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/about.c
    M /trunk/gtk-client/ggz-gtk/client.c
@@ -1790,7 +2275,7 @@ Geänderte Pfade:
 Use a notebook for the varius game states, rather than so many popup windows.
 
 ------------------------------------------------------------------------
-r8177 | josef | 2006-06-12 10:49:11 +0200 (Mo, 12 Jun 2006) | 10 lines
+r8177 | josef | 2006-06-12 10:49:11 +0200 (Mo, 12. Jun 2006) | 10 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
    M /trunk/gtk-client/ggz-gtk/client.c
@@ -1808,25 +2293,25 @@ The fix introduces AC_GGZ_UNQUOTEDPATH, which hopefully turns out to be working.
 
 
 ------------------------------------------------------------------------
-r8176 | jdorje | 2006-06-12 06:11:50 +0200 (Mo, 12 Jun 2006) | 1 line
+r8176 | jdorje | 2006-06-12 06:11:50 +0200 (Mo, 12. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/ggzclient.c
 
 Raise login dialog on disconnect.
 ------------------------------------------------------------------------
-r8175 | jdorje | 2006-06-12 05:18:56 +0200 (Mo, 12 Jun 2006) | 1 line
+r8175 | jdorje | 2006-06-12 05:18:56 +0200 (Mo, 12. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/roomlist.c
 
 Track 'other rooms' players.
 ------------------------------------------------------------------------
-r8174 | jdorje | 2006-06-12 05:03:15 +0200 (Mo, 12 Jun 2006) | 1 line
+r8174 | jdorje | 2006-06-12 05:03:15 +0200 (Mo, 12. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/roomlist.c
 
 Simpler/faster room updating.
 ------------------------------------------------------------------------
-r8173 | jdorje | 2006-06-12 04:26:00 +0200 (Mo, 12 Jun 2006) | 3 lines
+r8173 | jdorje | 2006-06-12 04:26:00 +0200 (Mo, 12. Jun 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/roomlist.c
 
@@ -1834,19 +2319,19 @@ Put the room size to the left of the room name, so that it is still visible
 after the room list is expanded.
 
 ------------------------------------------------------------------------
-r8172 | jdorje | 2006-06-12 04:22:10 +0200 (Mo, 12 Jun 2006) | 1 line
+r8172 | jdorje | 2006-06-12 04:22:10 +0200 (Mo, 12. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/roomlist.c
 
 Fixes for room updating.
 ------------------------------------------------------------------------
-r8171 | jdorje | 2006-06-12 03:40:14 +0200 (Mo, 12 Jun 2006) | 1 line
+r8171 | jdorje | 2006-06-12 03:40:14 +0200 (Mo, 12. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/ggzclient.c
 
 No need for a GGZ_TYPE_LIST handle anymore.
 ------------------------------------------------------------------------
-r8170 | jdorje | 2006-06-12 03:36:49 +0200 (Mo, 12 Jun 2006) | 4 lines
+r8170 | jdorje | 2006-06-12 03:36:49 +0200 (Mo, 12. Jun 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/ggzclient.c
 
@@ -1855,13 +2340,13 @@ Geänderte Pfade:
 - Autojoin a sensible room on connection (not always room 0).
 
 ------------------------------------------------------------------------
-r8169 | jdorje | 2006-06-12 03:29:34 +0200 (Mo, 12 Jun 2006) | 1 line
+r8169 | jdorje | 2006-06-12 03:29:34 +0200 (Mo, 12. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/roomlist.c
 
 Remove misplaced ggz_free call.
 ------------------------------------------------------------------------
-r8168 | jdorje | 2006-06-12 03:19:58 +0200 (Mo, 12 Jun 2006) | 1 line
+r8168 | jdorje | 2006-06-12 03:19:58 +0200 (Mo, 12. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/game.c
    M /trunk/gtk-client/ggz-gtk/game.h
@@ -1869,37 +2354,37 @@ Geänderte Pfade:
 
 Move supported check into a helper function.
 ------------------------------------------------------------------------
-r8167 | jdorje | 2006-06-12 03:14:29 +0200 (Mo, 12 Jun 2006) | 1 line
+r8167 | jdorje | 2006-06-12 03:14:29 +0200 (Mo, 12. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/roomlist.c
 
 Show unsupported rooms in a collapsed tree entry.
 ------------------------------------------------------------------------
-r8166 | jdorje | 2006-06-12 02:40:12 +0200 (Mo, 12 Jun 2006) | 1 line
+r8166 | jdorje | 2006-06-12 02:40:12 +0200 (Mo, 12. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/ggzclient.c
 
 Update room list when game types are received.
 ------------------------------------------------------------------------
-r8156 | oojah | 2006-06-11 23:13:19 +0200 (So, 11 Jun 2006) | 1 line
+r8156 | oojah | 2006-06-11 23:13:19 +0200 (So, 11. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/login.c
 
 Fixed english.
 ------------------------------------------------------------------------
-r8155 | jdorje | 2006-06-11 22:37:55 +0200 (So, 11 Jun 2006) | 1 line
+r8155 | jdorje | 2006-06-11 22:37:55 +0200 (So, 11. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/props.c
 
 Simplify options packing.
 ------------------------------------------------------------------------
-r8154 | jdorje | 2006-06-11 22:17:43 +0200 (So, 11 Jun 2006) | 1 line
+r8154 | jdorje | 2006-06-11 22:17:43 +0200 (So, 11. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/props.c
 
 Remove unnecessary gtk_widget_show calls.
 ------------------------------------------------------------------------
-r8145 | josef | 2006-06-09 10:44:15 +0200 (Fr, 09 Jun 2006) | 5 lines
+r8145 | josef | 2006-06-09 10:44:15 +0200 (Fr, 09. Jun 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
    M /trunk/gtk-client/doc/Makefile.am
@@ -1911,7 +2396,7 @@ Watch out for other occurrences! Will check this later
 
 
 ------------------------------------------------------------------------
-r8137 | jdorje | 2006-06-08 19:13:23 +0200 (Do, 08 Jun 2006) | 2 lines
+r8137 | jdorje | 2006-06-08 19:13:23 +0200 (Do, 08. Jun 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/ggz-gtk.h
@@ -1919,13 +2404,13 @@ Geänderte Pfade:
 Make string parameters to ggz_gtk_initialize const.
 
 ------------------------------------------------------------------------
-r8113 | jdorje | 2006-06-07 02:24:55 +0200 (Mi, 07 Jun 2006) | 1 line
+r8113 | jdorje | 2006-06-07 02:24:55 +0200 (Mi, 07. Jun 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
 
 Simplify rhetorical conditional.
 ------------------------------------------------------------------------
-r8107 | josef | 2006-06-06 09:39:20 +0200 (Di, 06 Jun 2006) | 5 lines
+r8107 | josef | 2006-06-06 09:39:20 +0200 (Di, 06. Jun 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/ggzclient.c
    M /trunk/gtk-client/ggz-gtk/roomlist.c
@@ -1936,7 +2421,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8081 | josef | 2006-05-30 14:59:51 +0200 (Di, 30 Mai 2006) | 8 lines
+r8081 | josef | 2006-05-30 14:59:51 +0200 (Di, 30. Mai 2006) | 8 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1960,7 +2445,7 @@ and --libdir=/usr/lib64 doesn't break the prefix search anymore.
 
 
 ------------------------------------------------------------------------
-r8073 | josef | 2006-05-29 09:37:27 +0200 (Mo, 29 Mai 2006) | 3 lines
+r8073 | josef | 2006-05-29 09:37:27 +0200 (Mo, 29. Mai 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/ggzclient.c
 
@@ -1968,7 +2453,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8059 | josef | 2006-05-24 11:13:55 +0200 (Mi, 24 Mai 2006) | 3 lines
+r8059 | josef | 2006-05-24 11:13:55 +0200 (Mi, 24. Mai 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/TODO
 
@@ -1976,7 +2461,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8046 | josef | 2006-05-22 08:51:28 +0200 (Mo, 22 Mai 2006) | 7 lines
+r8046 | josef | 2006-05-22 08:51:28 +0200 (Mo, 22. Mai 2006) | 7 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -1999,7 +2484,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8033 | josef | 2006-05-11 12:19:35 +0200 (Do, 11 Mai 2006) | 4 lines
+r8033 | josef | 2006-05-11 12:19:35 +0200 (Do, 11. Mai 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
    M /trunk/gtk-client/gaim-plugin/simple.c
@@ -2010,7 +2495,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8030 | josef | 2006-05-10 18:35:52 +0200 (Mi, 10 Mai 2006) | 3 lines
+r8030 | josef | 2006-05-10 18:35:52 +0200 (Mi, 10. Mai 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk.desktop
 
@@ -2018,13 +2503,13 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r8025 | phh | 2006-05-08 19:02:27 +0200 (Mo, 08 Mai 2006) | 1 line
+r8025 | phh | 2006-05-08 19:02:27 +0200 (Mo, 08. Mai 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/gaim-plugin/simple.c
 
 Thib_G patch (mainly configuration)
 ------------------------------------------------------------------------
-r7942 | josef | 2006-03-16 16:15:01 +0100 (Do, 16 Mär 2006) | 3 lines
+r7942 | josef | 2006-03-16 16:15:01 +0100 (Do, 16. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/community/ChangeLog
    M /trunk/docs/ChangeLog
@@ -2046,7 +2531,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7940 | josef | 2006-03-16 15:34:24 +0100 (Do, 16 Mär 2006) | 7 lines
+r7940 | josef | 2006-03-16 15:34:24 +0100 (Do, 16. Mär 2006) | 7 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/first.c
    M /trunk/gtk-client/ggz-gtk/server.c
@@ -2059,7 +2544,7 @@ This must be synchronised with the calls in main.c as far as I could trace it.
 
 
 ------------------------------------------------------------------------
-r7912 | josef | 2006-03-14 14:54:27 +0100 (Di, 14 Mär 2006) | 3 lines
+r7912 | josef | 2006-03-14 14:54:27 +0100 (Di, 14. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/README
    M /trunk/gnome-client/README
@@ -2076,7 +2561,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7911 | josef | 2006-03-14 14:53:58 +0100 (Di, 14 Mär 2006) | 3 lines
+r7911 | josef | 2006-03-14 14:53:58 +0100 (Di, 14. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/QuickStart.GGZ
    M /trunk/docs/autogen.sh
@@ -2105,7 +2590,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7905 | josef | 2006-03-14 14:47:11 +0100 (Di, 14 Mär 2006) | 4 lines
+r7905 | josef | 2006-03-14 14:47:11 +0100 (Di, 14. Mär 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/NEWS
@@ -2156,7 +2641,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7903 | josef | 2006-03-14 14:45:48 +0100 (Di, 14 Mär 2006) | 3 lines
+r7903 | josef | 2006-03-14 14:45:48 +0100 (Di, 14. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -2176,7 +2661,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7894 | josef | 2006-03-07 11:17:50 +0100 (Di, 07 Mär 2006) | 3 lines
+r7894 | josef | 2006-03-07 11:17:50 +0100 (Di, 07. Mär 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/de.po
    M /trunk/gtk-client/po/ggz-gtk.pot
@@ -2185,7 +2670,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7892 | josef | 2006-03-07 11:04:43 +0100 (Di, 07 Mär 2006) | 5 lines
+r7892 | josef | 2006-03-07 11:04:43 +0100 (Di, 07. Mär 2006) | 5 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/Makefile.am
    M /trunk/gtk-client/ggz-gtk/first.c
@@ -2196,7 +2681,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7845 | josef | 2006-02-08 18:48:35 +0100 (Mi, 08 Feb 2006) | 4 lines
+r7845 | josef | 2006-02-08 18:48:35 +0100 (Mi, 08. Feb 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
    M /trunk/gtk-client/ggz-gtk/login.c
@@ -2206,14 +2691,14 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7798 | jdorje | 2006-01-20 07:50:40 +0100 (Fr, 20 Jan 2006) | 2 lines
+r7798 | jdorje | 2006-01-20 07:50:40 +0100 (Fr, 20. Jan 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
 
 Revert to r7794: the last change breaks config.h.
 
 ------------------------------------------------------------------------
-r7795 | josef | 2006-01-19 20:45:05 +0100 (Do, 19 Jan 2006) | 4 lines
+r7795 | josef | 2006-01-19 20:45:05 +0100 (Do, 19. Jan 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
 
@@ -2222,13 +2707,13 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7785 | jdorje | 2006-01-16 20:17:14 +0100 (Mo, 16 Jan 2006) | 1 line
+r7785 | jdorje | 2006-01-16 20:17:14 +0100 (Mo, 16. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/login.c
 
 Fix email entry problem.
 ------------------------------------------------------------------------
-r7782 | jdorje | 2006-01-14 06:29:03 +0100 (Sa, 14 Jan 2006) | 1 line
+r7782 | jdorje | 2006-01-14 06:29:03 +0100 (Sa, 14. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -2245,13 +2730,13 @@ Geänderte Pfade:
 
 Fix AM_CONDITIONAL problem.
 ------------------------------------------------------------------------
-r7774 | jdorje | 2006-01-13 06:15:46 +0100 (Fr, 13 Jan 2006) | 1 line
+r7774 | jdorje | 2006-01-13 06:15:46 +0100 (Fr, 13. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/login.c
 
 Remove spurious printf.
 ------------------------------------------------------------------------
-r7773 | jdorje | 2006-01-13 06:14:42 +0100 (Fr, 13 Jan 2006) | 1 line
+r7773 | jdorje | 2006-01-13 06:14:42 +0100 (Fr, 13. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/first.c
@@ -2262,63 +2747,63 @@ Geänderte Pfade:
 
 Allow setting of a default profile.
 ------------------------------------------------------------------------
-r7772 | jdorje | 2006-01-12 04:49:44 +0100 (Do, 12 Jan 2006) | 1 line
+r7772 | jdorje | 2006-01-12 04:49:44 +0100 (Do, 12. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
 
 Disable stats menu entries.
 ------------------------------------------------------------------------
-r7771 | jdorje | 2006-01-12 01:14:00 +0100 (Do, 12 Jan 2006) | 1 line
+r7771 | jdorje | 2006-01-12 01:14:00 +0100 (Do, 12. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/roominfo.c
 
 Minor cleanups.
 ------------------------------------------------------------------------
-r7770 | jdorje | 2006-01-12 00:46:01 +0100 (Do, 12 Jan 2006) | 1 line
+r7770 | jdorje | 2006-01-12 00:46:01 +0100 (Do, 12. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/props.c
 
 Fix long-standing typo bug.
 ------------------------------------------------------------------------
-r7769 | jdorje | 2006-01-12 00:38:33 +0100 (Do, 12 Jan 2006) | 1 line
+r7769 | jdorje | 2006-01-12 00:38:33 +0100 (Do, 12. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/types.c
 
 Remove stub filtering.
 ------------------------------------------------------------------------
-r7768 | jdorje | 2006-01-12 00:35:09 +0100 (Do, 12 Jan 2006) | 1 line
+r7768 | jdorje | 2006-01-12 00:35:09 +0100 (Do, 12. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/types.c
 
 Minor cleanups.
 ------------------------------------------------------------------------
-r7767 | jdorje | 2006-01-11 19:15:47 +0100 (Mi, 11 Jan 2006) | 1 line
+r7767 | jdorje | 2006-01-11 19:15:47 +0100 (Mi, 11. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/ggzclient.c
 
 Remove stats button.
 ------------------------------------------------------------------------
-r7766 | jdorje | 2006-01-11 19:05:06 +0100 (Mi, 11 Jan 2006) | 1 line
+r7766 | jdorje | 2006-01-11 19:05:06 +0100 (Mi, 11. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/ggzclient.c
 
 Remove connect button.
 ------------------------------------------------------------------------
-r7765 | jdorje | 2006-01-11 18:21:58 +0100 (Mi, 11 Jan 2006) | 1 line
+r7765 | jdorje | 2006-01-11 18:21:58 +0100 (Mi, 11. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/ggzclient.c
 
 Don't rename window in embedded mode.
 ------------------------------------------------------------------------
-r7764 | jdorje | 2006-01-11 17:39:22 +0100 (Mi, 11 Jan 2006) | 1 line
+r7764 | jdorje | 2006-01-11 17:39:22 +0100 (Mi, 11. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/login.c
 
 Minor cleanups.
 ------------------------------------------------------------------------
-r7763 | jdorje | 2006-01-11 17:22:24 +0100 (Mi, 11 Jan 2006) | 3 lines
+r7763 | jdorje | 2006-01-11 17:22:24 +0100 (Mi, 11. Jan 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
 
@@ -2326,7 +2811,7 @@ Disable reconnect: it takes over the whole client and tries to reconnect; if
 you try to connect to a different server instead you cannot.
 
 ------------------------------------------------------------------------
-r7762 | jdorje | 2006-01-11 08:00:16 +0100 (Mi, 11 Jan 2006) | 1 line
+r7762 | jdorje | 2006-01-11 08:00:16 +0100 (Mi, 11. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -2343,7 +2828,7 @@ Geänderte Pfade:
 
 ggz-gtk support in ggz.m4.
 ------------------------------------------------------------------------
-r7757 | jdorje | 2006-01-09 19:03:06 +0100 (Mo, 09 Jan 2006) | 3 lines
+r7757 | jdorje | 2006-01-09 19:03:06 +0100 (Mo, 09. Jan 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/ggzclient.c
@@ -2358,14 +2843,14 @@ Remove duplicate server variables (two of them were non-static, causing
 symbol conflicts and intermittent crashes - oops).
 
 ------------------------------------------------------------------------
-r7756 | jdorje | 2006-01-09 06:47:25 +0100 (Mo, 09 Jan 2006) | 1 line
+r7756 | jdorje | 2006-01-09 06:47:25 +0100 (Mo, 09. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/playerlist.c
    M /trunk/gtk-client/ggz-gtk/roomlist.c
 
 Show menus.
 ------------------------------------------------------------------------
-r7754 | jdorje | 2006-01-09 03:43:39 +0100 (Mo, 09 Jan 2006) | 4 lines
+r7754 | jdorje | 2006-01-09 03:43:39 +0100 (Mo, 09. Jan 2006) | 4 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/Makefile.am
    M /trunk/gtk-client/ggz-gtk/client.c
@@ -2376,7 +2861,7 @@ goes in a separate header file since it does not depend on GTK presence (for
 instance, it is used in Freeciv in the common client code).
 
 ------------------------------------------------------------------------
-r7753 | jdorje | 2006-01-09 02:30:19 +0100 (Mo, 09 Jan 2006) | 3 lines
+r7753 | jdorje | 2006-01-09 02:30:19 +0100 (Mo, 09. Jan 2006) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/game.c
 
@@ -2384,7 +2869,7 @@ Don't call the game-launched callback until ggzcore reports the game was
 actually launched.
 
 ------------------------------------------------------------------------
-r7752 | jdorje | 2006-01-09 02:13:11 +0100 (Mo, 09 Jan 2006) | 1 line
+r7752 | jdorje | 2006-01-09 02:13:11 +0100 (Mo, 09. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/ggz-gtk.h
@@ -2392,7 +2877,7 @@ Geänderte Pfade:
 
 Provide reconnect parameter.
 ------------------------------------------------------------------------
-r7744 | jdorje | 2006-01-07 21:05:33 +0100 (Sa, 07 Jan 2006) | 1 line
+r7744 | jdorje | 2006-01-07 21:05:33 +0100 (Sa, 07. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/playerlist.c
    M /trunk/gtk-client/ggz-gtk/roomlist.c
@@ -2400,26 +2885,26 @@ Geänderte Pfade:
 
 Cleanups.
 ------------------------------------------------------------------------
-r7740 | jdorje | 2006-01-07 05:03:54 +0100 (Sa, 07 Jan 2006) | 1 line
+r7740 | jdorje | 2006-01-07 05:03:54 +0100 (Sa, 07. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/chat.c
 
 Make vars static.
 ------------------------------------------------------------------------
-r7739 | jdorje | 2006-01-07 04:29:34 +0100 (Sa, 07 Jan 2006) | 1 line
+r7739 | jdorje | 2006-01-07 04:29:34 +0100 (Sa, 07. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/ggzclient.c
    M /trunk/gtk-client/ggz-gtk/ggzclient.h
 
 Make numrooms static.
 ------------------------------------------------------------------------
-r7738 | jdorje | 2006-01-07 04:13:54 +0100 (Sa, 07 Jan 2006) | 1 line
+r7738 | jdorje | 2006-01-07 04:13:54 +0100 (Sa, 07. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/game.c
 
 Make game static.
 ------------------------------------------------------------------------
-r7737 | jdorje | 2006-01-06 23:34:17 +0100 (Fr, 06 Jan 2006) | 1 line
+r7737 | jdorje | 2006-01-06 23:34:17 +0100 (Fr, 06. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/Makefile.am
    M /trunk/gtk-client/ggz-gtk/client.c
@@ -2432,13 +2917,13 @@ Geänderte Pfade:
 
 Make it a real library.
 ------------------------------------------------------------------------
-r7736 | jdorje | 2006-01-06 09:28:12 +0100 (Fr, 06 Jan 2006) | 1 line
+r7736 | jdorje | 2006-01-06 09:28:12 +0100 (Fr, 06. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/Makefile.am
 
 Preliminary (static) library separation.
 ------------------------------------------------------------------------
-r7735 | jdorje | 2006-01-06 09:27:50 +0100 (Fr, 06 Jan 2006) | 1 line
+r7735 | jdorje | 2006-01-06 09:27:50 +0100 (Fr, 06. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/client.h
@@ -2447,7 +2932,7 @@ Geänderte Pfade:
 
 More embedding code.
 ------------------------------------------------------------------------
-r7734 | jdorje | 2006-01-06 08:00:42 +0100 (Fr, 06 Jan 2006) | 1 line
+r7734 | jdorje | 2006-01-06 08:00:42 +0100 (Fr, 06. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/client.h
@@ -2456,26 +2941,26 @@ Geänderte Pfade:
 
 Code for embedding GGZ.
 ------------------------------------------------------------------------
-r7733 | jdorje | 2006-01-06 07:32:07 +0100 (Fr, 06 Jan 2006) | 1 line
+r7733 | jdorje | 2006-01-06 07:32:07 +0100 (Fr, 06. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/client.h
 
 Separate widget creation.
 ------------------------------------------------------------------------
-r7732 | jdorje | 2006-01-06 07:18:19 +0100 (Fr, 06 Jan 2006) | 1 line
+r7732 | jdorje | 2006-01-06 07:18:19 +0100 (Fr, 06. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
 
 Simplify gtk_widget_show some more.
 ------------------------------------------------------------------------
-r7731 | jdorje | 2006-01-06 06:45:55 +0100 (Fr, 06 Jan 2006) | 1 line
+r7731 | jdorje | 2006-01-06 06:45:55 +0100 (Fr, 06. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
 
 Remove unnecessary refs.
 ------------------------------------------------------------------------
-r7730 | jdorje | 2006-01-06 06:31:52 +0100 (Fr, 06 Jan 2006) | 1 line
+r7730 | jdorje | 2006-01-06 06:31:52 +0100 (Fr, 06. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/Makefile.am
    M /trunk/gtk-client/ggz-gtk/xtext-ggz.h
@@ -2485,20 +2970,20 @@ Geänderte Pfade:
 
 Upgrade to xtext from 2.6.0.
 ------------------------------------------------------------------------
-r7729 | jdorje | 2006-01-06 06:14:03 +0100 (Fr, 06 Jan 2006) | 1 line
+r7729 | jdorje | 2006-01-06 06:14:03 +0100 (Fr, 06. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/roominfo.c
 
 Fix compiler warning.
 ------------------------------------------------------------------------
-r7728 | jdorje | 2006-01-06 05:55:08 +0100 (Fr, 06 Jan 2006) | 1 line
+r7728 | jdorje | 2006-01-06 05:55:08 +0100 (Fr, 06. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/main.c
 
 Simplify gtk_widget_show.
 ------------------------------------------------------------------------
-r7727 | jdorje | 2006-01-06 02:21:19 +0100 (Fr, 06 Jan 2006) | 1 line
+r7727 | jdorje | 2006-01-06 02:21:19 +0100 (Fr, 06. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/client.h
@@ -2506,7 +2991,7 @@ Geänderte Pfade:
 
 New function client_initialize.
 ------------------------------------------------------------------------
-r7726 | jdorje | 2006-01-06 02:08:10 +0100 (Fr, 06 Jan 2006) | 1 line
+r7726 | jdorje | 2006-01-06 02:08:10 +0100 (Fr, 06. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/game.c
@@ -2515,27 +3000,27 @@ Geänderte Pfade:
 
 Rename function.
 ------------------------------------------------------------------------
-r7725 | jdorje | 2006-01-06 01:56:55 +0100 (Fr, 06 Jan 2006) | 1 line
+r7725 | jdorje | 2006-01-06 01:56:55 +0100 (Fr, 06. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/login.c
    M /trunk/gtk-client/ggz-gtk/main.c
 
 Move symbol into correct file.
 ------------------------------------------------------------------------
-r7724 | jdorje | 2006-01-06 01:15:10 +0100 (Fr, 06 Jan 2006) | 1 line
+r7724 | jdorje | 2006-01-06 01:15:10 +0100 (Fr, 06. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/server.h
 
 Missing include.
 ------------------------------------------------------------------------
-r7723 | jdorje | 2006-01-05 23:21:02 +0100 (Do, 05 Jan 2006) | 2 lines
+r7723 | jdorje | 2006-01-05 23:21:02 +0100 (Do, 05. Jan 2006) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/support.h
 
 Don't redefine intl symbols.
 
 ------------------------------------------------------------------------
-r7722 | jdorje | 2006-01-03 21:31:25 +0100 (Di, 03 Jan 2006) | 1 line
+r7722 | jdorje | 2006-01-03 21:31:25 +0100 (Di, 03. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/ggzclient.c
    M /trunk/gtk-client/ggz-gtk/tablelist.c
@@ -2543,7 +3028,7 @@ Geänderte Pfade:
 
 Encapsulate tablelist slightly.
 ------------------------------------------------------------------------
-r7720 | jdorje | 2006-01-03 07:56:57 +0100 (Di, 03 Jan 2006) | 1 line
+r7720 | jdorje | 2006-01-03 07:56:57 +0100 (Di, 03. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/roomlist.c
@@ -2551,7 +3036,7 @@ Geänderte Pfade:
 
 Revert - other lists don't use the win_main.
 ------------------------------------------------------------------------
-r7719 | jdorje | 2006-01-03 07:55:00 +0100 (Di, 03 Jan 2006) | 1 line
+r7719 | jdorje | 2006-01-03 07:55:00 +0100 (Di, 03. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/roomlist.c
@@ -2559,7 +3044,7 @@ Geänderte Pfade:
 
 Use global win_main in roomlist.
 ------------------------------------------------------------------------
-r7718 | jdorje | 2006-01-03 07:48:59 +0100 (Di, 03 Jan 2006) | 1 line
+r7718 | jdorje | 2006-01-03 07:48:59 +0100 (Di, 03. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/game.c
@@ -2576,13 +3061,13 @@ Geänderte Pfade:
 
 Move win_main into encapsulated section.
 ------------------------------------------------------------------------
-r7717 | jdorje | 2006-01-03 07:14:23 +0100 (Di, 03 Jan 2006) | 1 line
+r7717 | jdorje | 2006-01-03 07:14:23 +0100 (Di, 03. Jan 2006) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/playerinfo.c
 
 Encapsulate playerinfo.
 ------------------------------------------------------------------------
-r7690 | josef | 2005-12-29 12:31:27 +0100 (Do, 29 Dez 2005) | 4 lines
+r7690 | josef | 2005-12-29 12:31:27 +0100 (Do, 29. Dez 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/README.GGZ
    M /trunk/docs/autogen.sh
@@ -2635,7 +3120,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7684 | jdorje | 2005-12-29 02:59:00 +0100 (Do, 29 Dez 2005) | 1 line
+r7684 | jdorje | 2005-12-29 02:59:00 +0100 (Do, 29. Dez 2005) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/chat.c
    M /trunk/gtk-client/ggz-gtk/chat.h
@@ -2643,7 +3128,7 @@ Geänderte Pfade:
 
 Fix fatal errors in chat friend/ignore code.
 ------------------------------------------------------------------------
-r7682 | jdorje | 2005-12-28 05:13:31 +0100 (Mi, 28 Dez 2005) | 1 line
+r7682 | jdorje | 2005-12-28 05:13:31 +0100 (Mi, 28. Dez 2005) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/chat.c
    M /trunk/gtk-client/ggz-gtk/chat.h
@@ -2654,7 +3139,7 @@ Geänderte Pfade:
 
 Encapsulate playerlist.c.
 ------------------------------------------------------------------------
-r7681 | jdorje | 2005-12-28 01:47:17 +0100 (Mi, 28 Dez 2005) | 1 line
+r7681 | jdorje | 2005-12-28 01:47:17 +0100 (Mi, 28. Dez 2005) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/client.c
    M /trunk/gtk-client/ggz-gtk/game.c
@@ -2667,7 +3152,7 @@ Geänderte Pfade:
 
 Encapsulate msgbox more.
 ------------------------------------------------------------------------
-r7680 | jdorje | 2005-12-27 22:42:26 +0100 (Di, 27 Dez 2005) | 1 line
+r7680 | jdorje | 2005-12-27 22:42:26 +0100 (Di, 27. Dez 2005) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/roominfo.c
    M /trunk/gtk-client/ggz-gtk/roominfo.h
@@ -2675,7 +3160,7 @@ Geänderte Pfade:
 
 Encapsulate roominfo more.
 ------------------------------------------------------------------------
-r7679 | jdorje | 2005-12-27 22:37:52 +0100 (Di, 27 Dez 2005) | 1 line
+r7679 | jdorje | 2005-12-27 22:37:52 +0100 (Di, 27. Dez 2005) | 1 line
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/ggzclient.c
    M /trunk/gtk-client/ggz-gtk/roomlist.c
@@ -2683,7 +3168,7 @@ Geänderte Pfade:
 
 Encapsulate room_list more.
 ------------------------------------------------------------------------
-r7660 | josef | 2005-12-12 12:54:49 +0100 (Mo, 12 Dez 2005) | 5 lines
+r7660 | josef | 2005-12-12 12:54:49 +0100 (Mo, 12. Dez 2005) | 5 lines
 Geänderte Pfade:
    M /trunk/community/web/articles
    M /trunk/community/web/common
@@ -2986,7 +3471,7 @@ This week's XXL commit!
 
 
 ------------------------------------------------------------------------
-r7601 | josef | 2005-09-28 01:37:04 +0200 (Mi, 28 Sep 2005) | 4 lines
+r7601 | josef | 2005-09-28 01:37:04 +0200 (Mi, 28. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/configure.ac
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -3015,14 +3500,14 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7598 | jdorje | 2005-09-27 06:47:13 +0200 (Di, 27 Sep 2005) | 2 lines
+r7598 | jdorje | 2005-09-27 06:47:13 +0200 (Di, 27. Sep 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/roomlist.c
 
 Treat the return value of ggzcore_room_get_name as a const.
 
 ------------------------------------------------------------------------
-r7593 | josef | 2005-09-25 20:25:14 +0200 (So, 25 Sep 2005) | 3 lines
+r7593 | josef | 2005-09-25 20:25:14 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
    M /trunk/ggz-client-libs/ChangeLog
@@ -3043,7 +3528,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7575 | josef | 2005-09-25 18:09:32 +0200 (So, 25 Sep 2005) | 3 lines
+r7575 | josef | 2005-09-25 18:09:32 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/Makefile.am
 
@@ -3051,7 +3536,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7551 | josef | 2005-09-25 12:11:25 +0200 (So, 25 Sep 2005) | 3 lines
+r7551 | josef | 2005-09-25 12:11:25 +0200 (So, 25. Sep 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/community/Makefile
    M /trunk/community/web/common/htconf-dist
@@ -3074,7 +3559,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7550 | josef | 2005-09-25 11:54:30 +0200 (So, 25 Sep 2005) | 4 lines
+r7550 | josef | 2005-09-25 11:54:30 +0200 (So, 25. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/community/NEWS
    M /trunk/community/README.GGZ
@@ -3123,7 +3608,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7547 | josef | 2005-09-23 23:54:25 +0200 (Fr, 23 Sep 2005) | 4 lines
+r7547 | josef | 2005-09-23 23:54:25 +0200 (Fr, 23. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/community/COPYING
    M /trunk/ggz-client-libs/COPYING
@@ -3146,7 +3631,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7528 | josef | 2005-09-17 21:45:53 +0200 (Sa, 17 Sep 2005) | 6 lines
+r7528 | josef | 2005-09-17 21:45:53 +0200 (Sa, 17. Sep 2005) | 6 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk/game.c
    M /trunk/gtk-client/ggz-gtk/game.h
@@ -3159,7 +3644,7 @@ before.
 
 
 ------------------------------------------------------------------------
-r7516 | josef | 2005-09-15 20:00:53 +0200 (Do, 15 Sep 2005) | 4 lines
+r7516 | josef | 2005-09-15 20:00:53 +0200 (Do, 15. Sep 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz-client-libs/autogen.sh
@@ -3189,7 +3674,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7464 | josef | 2005-08-20 23:41:45 +0200 (Sa, 20 Aug 2005) | 4 lines
+r7464 | josef | 2005-08-20 23:41:45 +0200 (Sa, 20. Aug 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -3213,7 +3698,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7392 | josef | 2005-08-13 19:46:02 +0200 (Sa, 13 Aug 2005) | 3 lines
+r7392 | josef | 2005-08-13 19:46:02 +0200 (Sa, 13. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/m4/ggz.m4
 
@@ -3221,7 +3706,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7367 | josef | 2005-08-06 10:32:26 +0200 (Sa, 06 Aug 2005) | 4 lines
+r7367 | josef | 2005-08-06 10:32:26 +0200 (Sa, 06. Aug 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/m4/ggz.m4
    M /trunk/ggzd/m4/ggz.m4
@@ -3240,7 +3725,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7351 | josef | 2005-08-03 12:10:05 +0200 (Mi, 03 Aug 2005) | 3 lines
+r7351 | josef | 2005-08-03 12:10:05 +0200 (Mi, 03. Aug 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/doc/ggz-gtk-chat.png
    M /trunk/gtk-client/doc/ggz-gtk-launch.png
@@ -3250,7 +3735,7 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7332 | josef | 2005-08-02 22:55:14 +0200 (Di, 02 Aug 2005) | 6 lines
+r7332 | josef | 2005-08-02 22:55:14 +0200 (Di, 02. Aug 2005) | 6 lines
 Geänderte Pfade:
    D /trunk/ggz/src/frontend/gtk
    D /trunk/ggz/src/frontend/kde
@@ -3266,14 +3751,14 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r7237 | josef | 2005-05-21 15:51:31 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7237 | josef | 2005-05-21 15:51:31 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/gtk-client/doc/ggz-gtk-handbook.html
 
 - and the HTML file for the help, too
 
 ------------------------------------------------------------------------
-r7236 | josef | 2005-05-21 15:51:06 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7236 | josef | 2005-05-21 15:51:06 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/gtk-client/doc
    A /trunk/gtk-client/doc/.cvsignore
@@ -3285,7 +3770,7 @@ Geänderte Pfade:
 - whooops, forgot to add the ggz-gtk documentation
 
 ------------------------------------------------------------------------
-r7216 | josef | 2005-05-21 13:13:11 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7216 | josef | 2005-05-21 13:13:11 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/NEWS
@@ -3352,7 +3837,7 @@ Geänderte Pfade:
 - common files synchronisation and README update for 0.0.11
 
 ------------------------------------------------------------------------
-r7214 | josef | 2005-05-21 12:46:02 +0200 (Sa, 21 Mai 2005) | 2 lines
+r7214 | josef | 2005-05-21 12:46:02 +0200 (Sa, 21. Mai 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/ggz/game_clients/configure.ac
@@ -3372,7 +3857,7 @@ Geänderte Pfade:
 - LET version = 0.0.11
 
 ------------------------------------------------------------------------
-r7204 | josef | 2005-05-21 11:31:23 +0200 (Sa, 21 Mai 2005) | 7 lines
+r7204 | josef | 2005-05-21 11:31:23 +0200 (Sa, 21. Mai 2005) | 7 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/gtk/client.c
    M /trunk/ggz/src/frontend/gtk/ggzclient.c
@@ -3395,7 +3880,7 @@ Geänderte Pfade:
 - related: replace xchat-derived parser with g_spawn_commandline etc.
 
 ------------------------------------------------------------------------
-r7182 | josef | 2005-05-06 23:19:56 +0200 (Fr, 06 Mai 2005) | 5 lines
+r7182 | josef | 2005-05-06 23:19:56 +0200 (Fr, 06. Mai 2005) | 5 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-txt-client/m4/ggz.m4
@@ -3415,7 +3900,7 @@ Geänderte Pfade:
 - fixes ggzcore linkage force in ggzmod problem
 
 ------------------------------------------------------------------------
-r7099 | perez | 2005-04-09 18:22:44 +0200 (Sa, 09 Apr 2005) | 6 lines
+r7099 | perez | 2005-04-09 18:22:44 +0200 (Sa, 09. Apr 2005) | 6 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/es.po
 
@@ -3426,7 +3911,7 @@ Modified Files:
 	We correct some lines.
 
 ------------------------------------------------------------------------
-r7031 | josef | 2005-03-23 17:31:42 +0100 (Mi, 23 Mär 2005) | 2 lines
+r7031 | josef | 2005-03-23 17:31:42 +0100 (Mi, 23. Mär 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/Makefile.am
    A /trunk/gtk-client/po/es.po
@@ -3435,7 +3920,7 @@ Geänderte Pfade:
 - moving gtk-client's es_AR.po to es.po so non-argentinos can use it as well
 
 ------------------------------------------------------------------------
-r6946 | josef | 2005-02-27 20:16:23 +0100 (So, 27 Feb 2005) | 2 lines
+r6946 | josef | 2005-02-27 20:16:23 +0100 (So, 27. Feb 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/Makefile.am
    A /trunk/gtk-client/ggz-gtk.desktop
@@ -3443,7 +3928,7 @@ Geänderte Pfade:
 - XDG menu entry for ggz-gtk (without icon)
 
 ------------------------------------------------------------------------
-r6918 | josef | 2005-02-04 16:59:43 +0100 (Fr, 04 Feb 2005) | 2 lines
+r6918 | josef | 2005-02-04 16:59:43 +0100 (Fr, 04. Feb 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -3460,7 +3945,7 @@ Geänderte Pfade:
 - synchronize
 
 ------------------------------------------------------------------------
-r6866 | jdorje | 2005-01-24 02:39:48 +0100 (Mo, 24 Jan 2005) | 7 lines
+r6866 | jdorje | 2005-01-24 02:39:48 +0100 (Mo, 24. Jan 2005) | 7 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz/src/ggzcore/game.c
@@ -3493,7 +3978,7 @@ library dependency.  This is solved by linking ggzcore in along with
 ggzmod inside AC_GGZ_GGZMOD.
 
 ------------------------------------------------------------------------
-r6856 | josef | 2005-01-23 22:23:07 +0100 (So, 23 Jan 2005) | 2 lines
+r6856 | josef | 2005-01-23 22:23:07 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/ChangeLog
@@ -3527,7 +4012,7 @@ Geänderte Pfade:
 - authors and changelog
 
 ------------------------------------------------------------------------
-r6844 | josef | 2005-01-23 14:20:29 +0100 (So, 23 Jan 2005) | 2 lines
+r6844 | josef | 2005-01-23 14:20:29 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/NEWS
    M /trunk/ggz/game_clients/NEWS
@@ -3547,7 +4032,7 @@ Geänderte Pfade:
 - news update
 
 ------------------------------------------------------------------------
-r6843 | josef | 2005-01-23 14:12:48 +0100 (So, 23 Jan 2005) | 2 lines
+r6843 | josef | 2005-01-23 14:12:48 +0100 (So, 23. Jan 2005) | 2 lines
 Geänderte Pfade:
    A /trunk/community/NEWS
    M /trunk/docs/QuickStart.GGZ
@@ -3589,7 +4074,7 @@ Geänderte Pfade:
 - updated common files
 
 ------------------------------------------------------------------------
-r6836 | josef | 2005-01-23 12:37:59 +0100 (So, 23 Jan 2005) | 4 lines
+r6836 | josef | 2005-01-23 12:37:59 +0100 (So, 23. Jan 2005) | 4 lines
 Geänderte Pfade:
    M /trunk/gtk-client/Makefile.am
 
@@ -3598,7 +4083,7 @@ Geänderte Pfade:
 Why do we need glibc21.m4 and all that stuff? This seems unnecessary.
 
 ------------------------------------------------------------------------
-r6824 | jdorje | 2005-01-22 20:22:53 +0100 (Sa, 22 Jan 2005) | 2 lines
+r6824 | jdorje | 2005-01-22 20:22:53 +0100 (Sa, 22. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-txt-client/m4/ggz.m4
@@ -3615,7 +4100,7 @@ Geänderte Pfade:
 Search for .la files instead of .so.
 
 ------------------------------------------------------------------------
-r6813 | josef | 2005-01-22 16:38:16 +0100 (Sa, 22 Jan 2005) | 2 lines
+r6813 | josef | 2005-01-22 16:38:16 +0100 (Sa, 22. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz-txt-client/man/ggz-txt.6
    M /trunk/ggzd/man/ggzd.6
@@ -3636,7 +4121,7 @@ Geänderte Pfade:
 - updated version numbers
 
 ------------------------------------------------------------------------
-r6812 | josef | 2005-01-22 16:28:57 +0100 (Sa, 22 Jan 2005) | 2 lines
+r6812 | josef | 2005-01-22 16:28:57 +0100 (Sa, 22. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/configure.ac
    M /trunk/docs/games/game-development/ggz-game-development-guide.texi
@@ -3657,7 +4142,7 @@ Geänderte Pfade:
 - version number bump
 
 ------------------------------------------------------------------------
-r6675 | jdorje | 2005-01-14 08:01:43 +0100 (Fr, 14 Jan 2005) | 3 lines
+r6675 | jdorje | 2005-01-14 08:01:43 +0100 (Fr, 14. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/Makefile.am
@@ -3696,7 +4181,7 @@ Add support for libintl and libiconv to AC_GGZ_INTL.  This is needed to
 compile at all on non-glibc systems.
 
 ------------------------------------------------------------------------
-r6671 | jdorje | 2005-01-14 04:57:03 +0100 (Fr, 14 Jan 2005) | 2 lines
+r6671 | jdorje | 2005-01-14 04:57:03 +0100 (Fr, 14. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po
    M /trunk/gtk-client/po/.cvsignore
@@ -3704,7 +4189,7 @@ Geänderte Pfade:
 Update .cvsignore.
 
 ------------------------------------------------------------------------
-r6645 | jdorje | 2005-01-13 07:42:30 +0100 (Do, 13 Jan 2005) | 2 lines
+r6645 | jdorje | 2005-01-13 07:42:30 +0100 (Do, 13. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/gtk/chat.c
    M /trunk/ggz/src/frontend/gtk/first.c
@@ -3714,7 +4199,7 @@ Geänderte Pfade:
 Miscellaneous bootstrap improvements for compiling on windows.
 
 ------------------------------------------------------------------------
-r6643 | jdorje | 2005-01-13 03:23:59 +0100 (Do, 13 Jan 2005) | 2 lines
+r6643 | jdorje | 2005-01-13 03:23:59 +0100 (Do, 13. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -3732,7 +4217,7 @@ Geänderte Pfade:
 Fix a typo in checking for libintl.h and locale.h.
 
 ------------------------------------------------------------------------
-r6641 | jdorje | 2005-01-13 02:45:15 +0100 (Do, 13 Jan 2005) | 3 lines
+r6641 | jdorje | 2005-01-13 02:45:15 +0100 (Do, 13. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -3751,7 +4236,7 @@ Define ENABLE_NLS if NLS is present.  This is standard, even though it's
 not helpful for most packages since NLS is manditory.
 
 ------------------------------------------------------------------------
-r6638 | jdorje | 2005-01-11 18:36:35 +0100 (Di, 11 Jan 2005) | 3 lines
+r6638 | jdorje | 2005-01-11 18:36:35 +0100 (Di, 11. Jan 2005) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-txt-client/m4/ggz.m4
@@ -3769,7 +4254,7 @@ Make AC_GGZ_INTL fail if the gettext functions are not available.  It also
 checks for the header files but doesn't fail if they're not present.
 
 ------------------------------------------------------------------------
-r6636 | jdorje | 2005-01-11 04:14:32 +0100 (Di, 11 Jan 2005) | 2 lines
+r6636 | jdorje | 2005-01-11 04:14:32 +0100 (Di, 11. Jan 2005) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/kde/ggzcore++/src/Makefile.am
    M /trunk/ggz/src/frontend/kde/src/Makefile.am
@@ -3815,14 +4300,14 @@ Geänderte Pfade:
 Replace deprated INCLUDES directive with AM_CPPFLAGS.
 
 ------------------------------------------------------------------------
-r6543 | josef | 2004-12-21 15:52:47 +0100 (Di, 21 Dez 2004) | 2 lines
+r6543 | josef | 2004-12-21 15:52:47 +0100 (Di, 21. Dez 2004) | 2 lines
 Geänderte Pfade:
    A /trunk/gtk-client/m4/i18n.mk
 
 - shared i18n rules
 
 ------------------------------------------------------------------------
-r6542 | josef | 2004-12-21 15:52:08 +0100 (Di, 21 Dez 2004) | 2 lines
+r6542 | josef | 2004-12-21 15:52:08 +0100 (Di, 21. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/Makefile.am
    M /trunk/gtk-client/po/de.po
@@ -3834,21 +4319,21 @@ Geänderte Pfade:
 - drastically simplification of makefile due to new i18n include
 
 ------------------------------------------------------------------------
-r6539 | oojah | 2004-12-21 12:31:40 +0100 (Di, 21 Dez 2004) | 2 lines
+r6539 | oojah | 2004-12-21 12:31:40 +0100 (Di, 21. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/Makefile.am
 
 Prepended installation paths with ${DESTDIR} to fix sandbox installation problems on gentoo.
 
 ------------------------------------------------------------------------
-r6503 | josef | 2004-12-16 01:54:48 +0100 (Do, 16 Dez 2004) | 2 lines
+r6503 | josef | 2004-12-16 01:54:48 +0100 (Do, 16. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/gaim-plugin/Makefile.am
 
 - link in libggz (since we use it to get the list of game modules)
 
 ------------------------------------------------------------------------
-r6496 | josef | 2004-12-15 23:01:41 +0100 (Mi, 15 Dez 2004) | 2 lines
+r6496 | josef | 2004-12-15 23:01:41 +0100 (Mi, 15. Dez 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/Makefile.am
    M /trunk/gtk-client/configure.ac
@@ -3862,7 +4347,7 @@ Geänderte Pfade:
 - gaim plugin for GGZ!
 
 ------------------------------------------------------------------------
-r6475 | josef | 2004-12-15 00:53:44 +0100 (Mi, 15 Dez 2004) | 4 lines
+r6475 | josef | 2004-12-15 00:53:44 +0100 (Mi, 15. Dez 2004) | 4 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/de.po
    M /trunk/gtk-client/po/ggz-gtk.pot
@@ -3873,7 +4358,7 @@ Geänderte Pfade:
 - taking over the pt_BR translations (the Spanish one however needs somebody)
 
 ------------------------------------------------------------------------
-r6427 | josef | 2004-11-28 01:51:41 +0100 (So, 28 Nov 2004) | 3 lines
+r6427 | josef | 2004-11-28 01:51:41 +0100 (So, 28. Nov 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
    M /trunk/gtk-client/m4/ggz-debug.m4
@@ -3884,7 +4369,7 @@ Geänderte Pfade:
 - remove Gtk+ 1.2 checks
 
 ------------------------------------------------------------------------
-r6376 | jdorje | 2004-11-15 20:37:11 +0100 (Mo, 15 Nov 2004) | 2 lines
+r6376 | jdorje | 2004-11-15 20:37:11 +0100 (Mo, 15. Nov 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/configure.ac
    M /trunk/gtk-client/configure.ac
@@ -3892,35 +4377,35 @@ Geänderte Pfade:
 Disable deprecated when compiling with DEBUG.
 
 ------------------------------------------------------------------------
-r6375 | jdorje | 2004-11-15 04:34:02 +0100 (Mo, 15 Nov 2004) | 2 lines
+r6375 | jdorje | 2004-11-15 04:34:02 +0100 (Mo, 15. Nov 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/Makefile.am
 
 Add sv.po to the distribution.
 
 ------------------------------------------------------------------------
-r6373 | josef | 2004-11-14 23:42:08 +0100 (So, 14 Nov 2004) | 2 lines
+r6373 | josef | 2004-11-14 23:42:08 +0100 (So, 14. Nov 2004) | 2 lines
 Geänderte Pfade:
    A /trunk/gtk-client/po/sv.po
 
 - Swedish translation done by kettil
 
 ------------------------------------------------------------------------
-r6359 | josef | 2004-11-14 00:37:19 +0100 (So, 14 Nov 2004) | 2 lines
+r6359 | josef | 2004-11-14 00:37:19 +0100 (So, 14. Nov 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/de.po
 
 - fix fuzzy translations
 
 ------------------------------------------------------------------------
-r6325 | jdorje | 2004-11-11 05:28:05 +0100 (Do, 11 Nov 2004) | 2 lines
+r6325 | jdorje | 2004-11-11 05:28:05 +0100 (Do, 11. Nov 2004) | 2 lines
 Geänderte Pfade:
    A /trunk/gtk-client/indent.pro
 
 Add indentation file.
 
 ------------------------------------------------------------------------
-r6255 | jdorje | 2004-11-04 23:38:30 +0100 (Do, 04 Nov 2004) | 2 lines
+r6255 | jdorje | 2004-11-04 23:38:30 +0100 (Do, 04. Nov 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/gtk/Makefile.am
    M /trunk/ggz/src/frontend/gtk/about.c
@@ -3959,7 +4444,7 @@ Geänderte Pfade:
 Switch from XPM to PNG.
 
 ------------------------------------------------------------------------
-r6153 | josef | 2004-07-18 02:37:08 +0200 (So, 18 Jul 2004) | 2 lines
+r6153 | josef | 2004-07-18 02:37:08 +0200 (So, 18. Jul 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
    M /trunk/ggz/game_clients/ChangeLog
@@ -3979,14 +4464,14 @@ Geänderte Pfade:
 - changelog update
 
 ------------------------------------------------------------------------
-r6137 | josef | 2004-07-17 06:03:34 +0200 (Sa, 17 Jul 2004) | 2 lines
+r6137 | josef | 2004-07-17 06:03:34 +0200 (Sa, 17. Jul 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/Makefile.am
 
 - look for *.mo files in builddir, not in srcdir
 
 ------------------------------------------------------------------------
-r6117 | josef | 2004-07-16 21:08:39 +0200 (Fr, 16 Jul 2004) | 2 lines
+r6117 | josef | 2004-07-16 21:08:39 +0200 (Fr, 16. Jul 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/AUTHORS
    M /trunk/docs/NEWS
@@ -4063,7 +4548,7 @@ Geänderte Pfade:
 - 0.0.9 updates propagation
 
 ------------------------------------------------------------------------
-r6104 | josef | 2004-07-13 19:30:25 +0200 (Di, 13 Jul 2004) | 3 lines
+r6104 | josef | 2004-07-13 19:30:25 +0200 (Di, 13. Jul 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/de.po
    M /trunk/gtk-client/po/es_AR.po
@@ -4074,14 +4559,14 @@ Geänderte Pfade:
 - German translation update
 
 ------------------------------------------------------------------------
-r5968 | josef | 2004-03-12 22:30:58 +0100 (Fr, 12 Mär 2004) | 2 lines
+r5968 | josef | 2004-03-12 22:30:58 +0100 (Fr, 12. Mär 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
 
 - remove $enable_gtk line since Gtk+ 2.x is required
 
 ------------------------------------------------------------------------
-r5963 | jdorje | 2004-02-28 06:05:41 +0100 (Sa, 28 Feb 2004) | 2 lines
+r5963 | jdorje | 2004-02-28 06:05:41 +0100 (Sa, 28. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/gtk/Makefile.am
    M /trunk/ggz/src/frontend/gtk/chat.c
@@ -4105,7 +4590,7 @@ Geänderte Pfade:
 Compile ggz-gtk with gtk2 only.
 
 ------------------------------------------------------------------------
-r5956 | jdorje | 2004-02-21 09:51:32 +0100 (Sa, 21 Feb 2004) | 7 lines
+r5956 | jdorje | 2004-02-21 09:51:32 +0100 (Sa, 21. Feb 2004) | 7 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -4128,7 +4613,7 @@ Geänderte Pfade:
 - Propogate the changes back into all modules.
 
 ------------------------------------------------------------------------
-r5950 | jdorje | 2004-02-21 06:46:24 +0100 (Sa, 21 Feb 2004) | 2 lines
+r5950 | jdorje | 2004-02-21 06:46:24 +0100 (Sa, 21. Feb 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po
    M /trunk/gtk-client/po/.cvsignore
@@ -4136,7 +4621,7 @@ Geänderte Pfade:
 Add files to .cvsignore.
 
 ------------------------------------------------------------------------
-r5894 | josef | 2004-02-10 19:04:35 +0100 (Di, 10 Feb 2004) | 6 lines
+r5894 | josef | 2004-02-10 19:04:35 +0100 (Di, 10. Feb 2004) | 6 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/Makefile.am
 
@@ -4147,7 +4632,7 @@ This is a bit complex, but might well be converted to a rule-based translation
 Nevertheless this works so far.
 
 ------------------------------------------------------------------------
-r5886 | josef | 2004-02-10 09:49:09 +0100 (Di, 10 Feb 2004) | 2 lines
+r5886 | josef | 2004-02-10 09:49:09 +0100 (Di, 10. Feb 2004) | 2 lines
 Geänderte Pfade:
    D /trunk/gtk-client/debian
    D /trunk/gtk-client/ggz-gtk-client.spec
@@ -4155,7 +4640,7 @@ Geänderte Pfade:
 - eighth round of removals of distribution files
 
 ------------------------------------------------------------------------
-r5796 | josef | 2004-02-05 12:51:03 +0100 (Do, 05 Feb 2004) | 3 lines
+r5796 | josef | 2004-02-05 12:51:03 +0100 (Do, 05. Feb 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/man/ggz-gtk.6
 
@@ -4163,7 +4648,7 @@ Geänderte Pfade:
 - mention Gtk+ 2.x
 
 ------------------------------------------------------------------------
-r5790 | josef | 2004-02-05 11:46:53 +0100 (Do, 05 Feb 2004) | 7 lines
+r5790 | josef | 2004-02-05 11:46:53 +0100 (Do, 05. Feb 2004) | 7 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
    M /trunk/ggz/game_clients/ChangeLog
@@ -4253,7 +4738,7 @@ Geänderte Pfade:
 - ChangeLog updates
 
 ------------------------------------------------------------------------
-r5770 | josef | 2004-01-31 11:54:44 +0100 (Sa, 31 Jan 2004) | 2 lines
+r5770 | josef | 2004-01-31 11:54:44 +0100 (Sa, 31. Jan 2004) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -4277,7 +4762,7 @@ Geänderte Pfade:
 - sync common files
 
 ------------------------------------------------------------------------
-r5756 | josef | 2004-01-27 19:24:56 +0100 (Di, 27 Jan 2004) | 3 lines
+r5756 | josef | 2004-01-27 19:24:56 +0100 (Di, 27. Jan 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/gtk/Makefile.am
    M /trunk/ggz/src/frontend/gtk/game.c
@@ -4288,7 +4773,7 @@ Geänderte Pfade:
 - link against ggzmod (strangely enough, kggz doesn't need that?)
 
 ------------------------------------------------------------------------
-r5739 | dr_maux | 2004-01-17 19:42:36 +0100 (Sa, 17 Jan 2004) | 3 lines
+r5739 | dr_maux | 2004-01-17 19:42:36 +0100 (Sa, 17. Jan 2004) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/autogen.sh
    M /trunk/gtk-client/configure.ac
@@ -4297,21 +4782,21 @@ Geänderte Pfade:
 - don't output success of enable_gettext anymore since AM_WITH_NLS is used
 
 ------------------------------------------------------------------------
-r5730 | dr_maux | 2003-12-31 18:27:00 +0100 (Mi, 31 Dez 2003) | 2 lines
+r5730 | dr_maux | 2003-12-31 18:27:00 +0100 (Mi, 31. Dez 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
 
 - use new-style AC_INIT
 
 ------------------------------------------------------------------------
-r5707 | jdorje | 2003-12-06 03:41:47 +0100 (Sa, 06 Dez 2003) | 2 lines
+r5707 | jdorje | 2003-12-06 03:41:47 +0100 (Sa, 06. Dez 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
 
 Add checks to satisfy autoscan.
 
 ------------------------------------------------------------------------
-r5704 | jdorje | 2003-12-05 02:01:11 +0100 (Fr, 05 Dez 2003) | 2 lines
+r5704 | jdorje | 2003-12-05 02:01:11 +0100 (Fr, 05. Dez 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/configure.ac
    M /trunk/ggz/game_clients/m4/ggz-debug.m4
@@ -4321,7 +4806,7 @@ Geänderte Pfade:
 Move the -Wall test into the AC_GGZ_DEBUG macro.
 
 ------------------------------------------------------------------------
-r5697 | jdorje | 2003-12-04 09:12:45 +0100 (Do, 04 Dez 2003) | 2 lines
+r5697 | jdorje | 2003-12-04 09:12:45 +0100 (Do, 04. Dez 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/Makefile.am
    M /trunk/gtk-client/configure.ac
@@ -4330,7 +4815,7 @@ Geänderte Pfade:
 Use the AC_GGZ_DEBUG macro to determine debugging info.
 
 ------------------------------------------------------------------------
-r5693 | jdorje | 2003-12-04 08:15:41 +0100 (Do, 04 Dez 2003) | 3 lines
+r5693 | jdorje | 2003-12-04 08:15:41 +0100 (Do, 04. Dez 2003) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -4341,7 +4826,7 @@ Use AM_CONFIG_HEADER instead of AC_CONFIG_HEADER.  This is required by
 automake.
 
 ------------------------------------------------------------------------
-r5661 | jdorje | 2003-10-02 07:50:31 +0200 (Do, 02 Okt 2003) | 2 lines
+r5661 | jdorje | 2003-10-02 07:50:31 +0200 (Do, 02. Okt 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/gtk/Makefile.am
    M /trunk/gtk-client/Makefile.am
@@ -4356,14 +4841,14 @@ Geänderte Pfade:
 Add more rigorous checking for NLS linkage.
 
 ------------------------------------------------------------------------
-r5645 | dr_maux | 2003-09-15 09:12:16 +0200 (Mo, 15 Sep 2003) | 2 lines
+r5645 | dr_maux | 2003-09-15 09:12:16 +0200 (Mo, 15. Sep 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/autogen.sh
 
 - strip off y from a x.x.x-y version number (to be promoted to all autogens)
 
 ------------------------------------------------------------------------
-r5600 | oojah | 2003-05-19 12:08:17 +0200 (Mo, 19 Mai 2003) | 2 lines
+r5600 | oojah | 2003-05-19 12:08:17 +0200 (Mo, 19. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/gtk/client.c
    M /trunk/gtk-client/po/de.po
@@ -4374,14 +4859,14 @@ Geänderte Pfade:
 Fixed Tooltip typo - 'Lave' -> 'Leave'.
 
 ------------------------------------------------------------------------
-r5592 | dr_maux | 2003-05-17 12:22:23 +0200 (Sa, 17 Mai 2003) | 2 lines
+r5592 | dr_maux | 2003-05-17 12:22:23 +0200 (Sa, 17. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/Makefile.am
 
 - fix 'make distcheck': provide uninstall-local
 
 ------------------------------------------------------------------------
-r5588 | dr_maux | 2003-05-17 10:10:42 +0200 (Sa, 17 Mai 2003) | 2 lines
+r5588 | dr_maux | 2003-05-17 10:10:42 +0200 (Sa, 17. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/ChangeLog
    M /trunk/ggz-client-libs/ChangeLog
@@ -4399,7 +4884,7 @@ Geänderte Pfade:
 - update changelog
 
 ------------------------------------------------------------------------
-r5583 | dr_maux | 2003-05-16 20:34:45 +0200 (Fr, 16 Mai 2003) | 2 lines
+r5583 | dr_maux | 2003-05-16 20:34:45 +0200 (Fr, 16. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -4417,21 +4902,21 @@ Geänderte Pfade:
 - apply autogen.sh changes from libggz
 
 ------------------------------------------------------------------------
-r5579 | dr_maux | 2003-05-11 17:40:21 +0200 (So, 11 Mai 2003) | 2 lines
+r5579 | dr_maux | 2003-05-11 17:40:21 +0200 (So, 11. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/Makefile.am
 
 - fix for srcdir != builddir
 
 ------------------------------------------------------------------------
-r5569 | dr_maux | 2003-05-11 11:22:57 +0200 (So, 11 Mai 2003) | 2 lines
+r5569 | dr_maux | 2003-05-11 11:22:57 +0200 (So, 11. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/man/ggz-gtk.6
 
 - man page update
 
 ------------------------------------------------------------------------
-r5563 | dr_maux | 2003-05-11 01:54:28 +0200 (So, 11 Mai 2003) | 2 lines
+r5563 | dr_maux | 2003-05-11 01:54:28 +0200 (So, 11. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/configure.ac
    M /trunk/ggz-client-libs/configure.ac
@@ -4449,7 +4934,7 @@ Geänderte Pfade:
 - set the package version number (via configure.ac) to 0.0.7
 
 ------------------------------------------------------------------------
-r5561 | dr_maux | 2003-05-11 01:46:58 +0200 (So, 11 Mai 2003) | 2 lines
+r5561 | dr_maux | 2003-05-11 01:46:58 +0200 (So, 11. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/README
    M /trunk/grubby/README
@@ -4460,7 +4945,7 @@ Geänderte Pfade:
 - version update
 
 ------------------------------------------------------------------------
-r5547 | dr_maux | 2003-05-11 01:16:06 +0200 (So, 11 Mai 2003) | 2 lines
+r5547 | dr_maux | 2003-05-11 01:16:06 +0200 (So, 11. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/NEWS
    M /trunk/gtk-client/QuickStart.GGZ
@@ -4470,7 +4955,7 @@ Geänderte Pfade:
 - update common files for 0.0.7 in gtk-client
 
 ------------------------------------------------------------------------
-r5539 | dr_maux | 2003-05-10 16:38:57 +0200 (Sa, 10 Mai 2003) | 2 lines
+r5539 | dr_maux | 2003-05-10 16:38:57 +0200 (Sa, 10. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -4488,7 +4973,7 @@ Geänderte Pfade:
 - sync autogen.sh
 
 ------------------------------------------------------------------------
-r5500 | dr_maux | 2003-05-05 15:03:41 +0200 (Mo, 05 Mai 2003) | 2 lines
+r5500 | dr_maux | 2003-05-05 15:03:41 +0200 (Mo, 05. Mai 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-txt-client/m4/ggz.m4
@@ -4503,7 +4988,7 @@ Geänderte Pfade:
 - add -fsigned-char
 
 ------------------------------------------------------------------------
-r5486 | dr_maux | 2003-03-29 21:54:01 +0100 (Sa, 29 Mär 2003) | 3 lines
+r5486 | dr_maux | 2003-03-29 21:54:01 +0100 (Sa, 29. Mär 2003) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/gtk/ggzclient.c
    M /trunk/gtk-client/po/de.po
@@ -4515,7 +5000,7 @@ Geänderte Pfade:
 - update German translation
 
 ------------------------------------------------------------------------
-r5476 | dr_maux | 2003-03-29 11:33:32 +0100 (Sa, 29 Mär 2003) | 2 lines
+r5476 | dr_maux | 2003-03-29 11:33:32 +0100 (Sa, 29. Mär 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -4533,7 +5018,7 @@ Geänderte Pfade:
 - apply improverished autogen globally
 
 ------------------------------------------------------------------------
-r5475 | dr_maux | 2003-03-29 11:27:44 +0100 (Sa, 29 Mär 2003) | 2 lines
+r5475 | dr_maux | 2003-03-29 11:27:44 +0100 (Sa, 29. Mär 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/m4/ggz.m4
    M /trunk/ggz-client-libs/m4/ggz.m4
@@ -4550,7 +5035,7 @@ Geänderte Pfade:
 - update GGZ macro file
 
 ------------------------------------------------------------------------
-r5413 | dr_maux | 2003-02-16 14:02:09 +0100 (So, 16 Feb 2003) | 2 lines
+r5413 | dr_maux | 2003-02-16 14:02:09 +0100 (So, 16. Feb 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/autogen.sh
    M /trunk/ggz-client-libs/autogen.sh
@@ -4568,14 +5053,14 @@ Geänderte Pfade:
 - new autogen.sh
 
 ------------------------------------------------------------------------
-r5369 | jdorje | 2003-02-04 09:56:24 +0100 (Di, 04 Feb 2003) | 2 lines
+r5369 | jdorje | 2003-02-04 09:56:24 +0100 (Di, 04. Feb 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.ac
 
 Update more autoconf code for autoconf2.5x.
 
 ------------------------------------------------------------------------
-r5368 | jdorje | 2003-02-04 09:53:23 +0100 (Di, 04 Feb 2003) | 3 lines
+r5368 | jdorje | 2003-02-04 09:53:23 +0100 (Di, 04. Feb 2003) | 3 lines
 Geänderte Pfade:
    D /trunk/gtk-client/acconfig.h
    M /trunk/gtk-client/configure.ac
@@ -4584,7 +5069,7 @@ Remove acconfig.h; make sure AC_DEFINE and AC_DEFINE_UNQUOTED macro calls
 all have three parameters.
 
 ------------------------------------------------------------------------
-r5358 | jdorje | 2003-02-04 02:55:26 +0100 (Di, 04 Feb 2003) | 2 lines
+r5358 | jdorje | 2003-02-04 02:55:26 +0100 (Di, 04. Feb 2003) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/autogen.sh
    A /trunk/ggz/game_clients/configure.ac
@@ -4605,14 +5090,14 @@ Geänderte Pfade:
 Step 1 of autoconf2.5x-only support: rename configure.in as configure.ac.
 
 ------------------------------------------------------------------------
-r5285 | jdorje | 2002-12-15 11:05:56 +0100 (So, 15 Dez 2002) | 2 lines
+r5285 | jdorje | 2002-12-15 11:05:56 +0100 (So, 15. Dez 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.in
 
 Auto-detect GTK1.2 or GTK2.0 linkage.
 
 ------------------------------------------------------------------------
-r5283 | jdorje | 2002-12-15 09:33:48 +0100 (So, 15 Dez 2002) | 4 lines
+r5283 | jdorje | 2002-12-15 09:33:48 +0100 (So, 15. Dez 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/gtk-client/Makefile.am
    D /trunk/gtk-client/acinclude.ggz
@@ -4627,7 +5112,7 @@ directory in building acinclude.m4.  Add GTK and GTK+-2.0 m4 files to
 this directory.
 
 ------------------------------------------------------------------------
-r4929 | jdorje | 2002-10-16 02:07:30 +0200 (Mi, 16 Okt 2002) | 16 lines
+r4929 | jdorje | 2002-10-16 02:07:30 +0200 (Mi, 16. Okt 2002) | 16 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/ggz-client-libs/acinclude.ggz
@@ -4657,7 +5142,7 @@ the first parameter to the macro.  But this way is more consistent, in
 my opinion.
 
 ------------------------------------------------------------------------
-r4871 | jdorje | 2002-10-12 03:14:33 +0200 (Sa, 12 Okt 2002) | 6 lines
+r4871 | jdorje | 2002-10-12 03:14:33 +0200 (Sa, 12. Okt 2002) | 6 lines
 Geänderte Pfade:
    M /trunk/gtk-client/acconfig.h
    M /trunk/gtk-client/configure.in
@@ -4669,14 +5154,14 @@ and GTK2 will be #defined.  Of course, this doesn't yield very good
 results at this point.
 
 ------------------------------------------------------------------------
-r4848 | jdorje | 2002-10-10 19:30:09 +0200 (Do, 10 Okt 2002) | 2 lines
+r4848 | jdorje | 2002-10-10 19:30:09 +0200 (Do, 10. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.in
 
 Bump gtk-client version to 0.0.7pre.
 
 ------------------------------------------------------------------------
-r4795 | jdorje | 2002-10-07 23:28:18 +0200 (Mo, 07 Okt 2002) | 2 lines
+r4795 | jdorje | 2002-10-07 23:28:18 +0200 (Mo, 07. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/NEWS
    M /trunk/ggz/game_clients/NEWS
@@ -4693,7 +5178,7 @@ Geänderte Pfade:
 Rewrote NEWS for 0.0.6, and propogated it to all modules.
 
 ------------------------------------------------------------------------
-r4794 | dr_maux | 2002-10-07 23:16:10 +0200 (Mo, 07 Okt 2002) | 2 lines
+r4794 | dr_maux | 2002-10-07 23:16:10 +0200 (Mo, 07. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/ChangeLog
    M /trunk/ggz/game_clients/ChangeLog
@@ -4710,7 +5195,7 @@ Geänderte Pfade:
 - update changelog for 0.0.6
 
 ------------------------------------------------------------------------
-r4783 | dr_maux | 2002-10-01 20:53:52 +0200 (Di, 01 Okt 2002) | 2 lines
+r4783 | dr_maux | 2002-10-01 20:53:52 +0200 (Di, 01. Okt 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/gnome-client/configure.in
    M /trunk/gtk-client/configure.in
@@ -4720,7 +5205,7 @@ Geänderte Pfade:
 - use configure.in for AC_INIT
 
 ------------------------------------------------------------------------
-r4760 | dr_maux | 2002-09-29 14:11:26 +0200 (So, 29 Sep 2002) | 2 lines
+r4760 | dr_maux | 2002-09-29 14:11:26 +0200 (So, 29. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.in
    M /trunk/gtk-client/man/ggz-gtk.6
@@ -4728,7 +5213,7 @@ Geänderte Pfade:
 - finalize ggz-gtk version numbers
 
 ------------------------------------------------------------------------
-r4746 | dr_maux | 2002-09-27 10:58:31 +0200 (Fr, 27 Sep 2002) | 2 lines
+r4746 | dr_maux | 2002-09-27 10:58:31 +0200 (Fr, 27. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh
    M /trunk/ggz/game_clients/autogen.sh
@@ -4746,7 +5231,7 @@ Geänderte Pfade:
 - new autogen
 
 ------------------------------------------------------------------------
-r4723 | dr_maux | 2002-09-26 13:20:39 +0200 (Do, 26 Sep 2002) | 3 lines
+r4723 | dr_maux | 2002-09-26 13:20:39 +0200 (Do, 26. Sep 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/gtk/Makefile.am
    M /trunk/gtk-client/acinclude.ggz
@@ -4757,7 +5242,7 @@ Geänderte Pfade:
 - fix charset in Spanish translation
 
 ------------------------------------------------------------------------
-r4679 | dr_maux | 2002-09-24 09:36:20 +0200 (Di, 24 Sep 2002) | 2 lines
+r4679 | dr_maux | 2002-09-24 09:36:20 +0200 (Di, 24. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/QuickStart.GGZ
    M /trunk/docs/README.GGZ
@@ -4783,7 +5268,7 @@ Geänderte Pfade:
 - update intro docs
 
 ------------------------------------------------------------------------
-r4674 | jdorje | 2002-09-24 00:45:37 +0200 (Di, 24 Sep 2002) | 3 lines
+r4674 | jdorje | 2002-09-24 00:45:37 +0200 (Di, 24. Sep 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/ggz-client-libs/acinclude.ggz
@@ -4800,7 +5285,7 @@ Update acinclude.ggz in the txt-client, and label acinclude.ggz as being
 included in txt-client.
 
 ------------------------------------------------------------------------
-r4631 | jdorje | 2002-09-19 18:18:33 +0200 (Do, 19 Sep 2002) | 2 lines
+r4631 | jdorje | 2002-09-19 18:18:33 +0200 (Do, 19. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/ggz-client-libs/acinclude.ggz
@@ -4815,7 +5300,7 @@ Geänderte Pfade:
 Include gnome-client on the list of modules that use acinclude.ggz.
 
 ------------------------------------------------------------------------
-r4566 | dr_maux | 2002-09-15 11:57:47 +0200 (So, 15 Sep 2002) | 3 lines
+r4566 | dr_maux | 2002-09-15 11:57:47 +0200 (So, 15. Sep 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/gtk/main.c
    M /trunk/gtk-client/configure.in
@@ -4825,7 +5310,7 @@ Geänderte Pfade:
 - use correct PACKAGE_LOCALE_DIR to setup i18n stuff
 
 ------------------------------------------------------------------------
-r4552 | dr_maux | 2002-09-13 19:26:45 +0200 (Fr, 13 Sep 2002) | 5 lines
+r4552 | dr_maux | 2002-09-13 19:26:45 +0200 (Fr, 13. Sep 2002) | 5 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/de.po
    M /trunk/gtk-client/po/es_AR.po
@@ -4838,14 +5323,14 @@ Geänderte Pfade:
 - updated (merged) and did some pseudo translation already
 
 ------------------------------------------------------------------------
-r4407 | dr_maux | 2002-09-04 21:43:02 +0200 (Mi, 04 Sep 2002) | 2 lines
+r4407 | dr_maux | 2002-09-04 21:43:02 +0200 (Mi, 04. Sep 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.in
 
 - bump number to 0.0.6pre, so people are not confused
 
 ------------------------------------------------------------------------
-r4376 | jdorje | 2002-08-20 22:49:40 +0200 (Di, 20 Aug 2002) | 2 lines
+r4376 | jdorje | 2002-08-20 22:49:40 +0200 (Di, 20. Aug 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/ggz/game_clients/configure.in
@@ -4862,7 +5347,7 @@ Geänderte Pfade:
 Changed -I<directory> to -isystem<directory> to avoid warnings in gcc3.
 
 ------------------------------------------------------------------------
-r4201 | dr_maux | 2002-05-15 21:46:16 +0200 (Mi, 15 Mai 2002) | 2 lines
+r4201 | dr_maux | 2002-05-15 21:46:16 +0200 (Mi, 15. Mai 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggzd
    M /trunk/ggzd/.cvsignore
@@ -4874,7 +5359,7 @@ Geänderte Pfade:
 - shut up autom4te
 
 ------------------------------------------------------------------------
-r4175 | dr_maux | 2002-05-06 10:11:40 +0200 (Mo, 06 Mai 2002) | 4 lines
+r4175 | dr_maux | 2002-05-06 10:11:40 +0200 (Mo, 06. Mai 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/gtk-client/debian/control
    M /trunk/gtk-client/debian/menu
@@ -4884,7 +5369,7 @@ Geänderte Pfade:
 - suggest games by version, not by core client source version
 
 ------------------------------------------------------------------------
-r3961 | bmh | 2002-04-13 07:37:33 +0200 (Sa, 13 Apr 2002) | 3 lines
+r3961 | bmh | 2002-04-13 07:37:33 +0200 (Sa, 13. Apr 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz-client-libs/ChangeLog
    M /trunk/gtk-client/ChangeLog
@@ -4893,14 +5378,14 @@ Geänderte Pfade:
 - Updated ChangeLog for 0.0.5
 
 ------------------------------------------------------------------------
-r3951 | dr_maux | 2002-04-13 06:20:34 +0200 (Sa, 13 Apr 2002) | 2 lines
+r3951 | dr_maux | 2002-04-13 06:20:34 +0200 (Sa, 13. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/debian/rules
 
 - install pixmaps correctly
 
 ------------------------------------------------------------------------
-r3950 | rgade | 2002-04-13 06:09:03 +0200 (Sa, 13 Apr 2002) | 3 lines
+r3950 | rgade | 2002-04-13 06:09:03 +0200 (Sa, 13. Apr 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk-client.spec
 
@@ -4908,7 +5393,7 @@ Geänderte Pfade:
 - Added pixmap dir (DOH!)
 
 ------------------------------------------------------------------------
-r3945 | rgade | 2002-04-13 06:01:40 +0200 (Sa, 13 Apr 2002) | 3 lines
+r3945 | rgade | 2002-04-13 06:01:40 +0200 (Sa, 13. Apr 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.in
    M /trunk/gtk-client/ggz-gtk-client.spec
@@ -4917,14 +5402,14 @@ Geänderte Pfade:
 - Updated RPM Spec for 0.0.5
 
 ------------------------------------------------------------------------
-r3943 | dr_maux | 2002-04-13 05:58:05 +0200 (Sa, 13 Apr 2002) | 2 lines
+r3943 | dr_maux | 2002-04-13 05:58:05 +0200 (Sa, 13. Apr 2002) | 2 lines
 Geänderte Pfade:
    A /trunk/gtk-client/debian/menu
 
 - add menu entry for ggz-gtk
 
 ------------------------------------------------------------------------
-r3942 | bmh | 2002-04-13 05:56:14 +0200 (Sa, 13 Apr 2002) | 3 lines
+r3942 | bmh | 2002-04-13 05:56:14 +0200 (Sa, 13. Apr 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/AUTHORS
    M /trunk/gtk-client/NEWS
@@ -4936,14 +5421,14 @@ Geänderte Pfade:
 - Documentation updates
 
 ------------------------------------------------------------------------
-r3890 | riq | 2002-04-11 05:08:26 +0200 (Do, 11 Apr 2002) | 2 lines
+r3890 | riq | 2002-04-11 05:08:26 +0200 (Do, 11. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/es_AR.po
 
 updated translation (still missing some words)
 
 ------------------------------------------------------------------------
-r3867 | dr_maux | 2002-04-09 23:28:39 +0200 (Di, 09 Apr 2002) | 2 lines
+r3867 | dr_maux | 2002-04-09 23:28:39 +0200 (Di, 09. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/debian/control
    M /trunk/gtk-client/debian/rules
@@ -4951,7 +5436,7 @@ Geänderte Pfade:
 - finalize gtk+ client (e.g. gettext)
 
 ------------------------------------------------------------------------
-r3853 | dr_maux | 2002-04-08 20:57:27 +0200 (Mo, 08 Apr 2002) | 2 lines
+r3853 | dr_maux | 2002-04-08 20:57:27 +0200 (Mo, 08. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/debian/control
    M /trunk/gtk-client/debian/control
@@ -4959,14 +5444,14 @@ Geänderte Pfade:
 - update more control files
 
 ------------------------------------------------------------------------
-r3809 | dr_maux | 2002-04-07 10:14:04 +0200 (So, 07 Apr 2002) | 2 lines
+r3809 | dr_maux | 2002-04-07 10:14:04 +0200 (So, 07. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/debian/rules
 
 - fix pixmap installation
 
 ------------------------------------------------------------------------
-r3808 | dr_maux | 2002-04-07 10:10:51 +0200 (So, 07 Apr 2002) | 2 lines
+r3808 | dr_maux | 2002-04-07 10:10:51 +0200 (So, 07. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/debian
    M /trunk/gtk-client/debian/.cvsignore
@@ -4980,7 +5465,7 @@ Geänderte Pfade:
 - debianize Gtk+ client
 
 ------------------------------------------------------------------------
-r3778 | dr_maux | 2002-04-06 17:39:12 +0200 (Sa, 06 Apr 2002) | 2 lines
+r3778 | dr_maux | 2002-04-06 17:39:12 +0200 (Sa, 06. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/ggz-client-libs/acinclude.ggz
@@ -4993,7 +5478,7 @@ Geänderte Pfade:
 - sync acinclude.ggz
 
 ------------------------------------------------------------------------
-r3758 | dr_maux | 2002-04-06 00:03:05 +0200 (Sa, 06 Apr 2002) | 2 lines
+r3758 | dr_maux | 2002-04-06 00:03:05 +0200 (Sa, 06. Apr 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/docs/README.GGZ
    M /trunk/ggz/game_clients/QuickStart.GGZ
@@ -5015,7 +5500,7 @@ Geänderte Pfade:
 - update installation instructions and overview
 
 ------------------------------------------------------------------------
-r3739 | jdorje | 2002-04-05 06:39:31 +0200 (Fr, 05 Apr 2002) | 6 lines
+r3739 | jdorje | 2002-04-05 06:39:31 +0200 (Fr, 05. Apr 2002) | 6 lines
 Geänderte Pfade:
    M /trunk/gtk-client/acconfig.h
    M /trunk/gtk-client/configure.in
@@ -5027,7 +5512,7 @@ This means if you toggle NLS, you can rebuild things and all dependencies
 will be taken care of automatically.
 
 ------------------------------------------------------------------------
-r3691 | dr_maux | 2002-03-27 00:37:11 +0100 (Mi, 27 Mär 2002) | 2 lines
+r3691 | dr_maux | 2002-03-27 00:37:11 +0100 (Mi, 27. Mär 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client
    M /trunk/gtk-client/.cvsignore
@@ -5035,7 +5520,7 @@ Geänderte Pfade:
 - cosmetical: add stamp-h1
 
 ------------------------------------------------------------------------
-r3650 | dr_maux | 2002-03-24 17:31:45 +0100 (So, 24 Mär 2002) | 2 lines
+r3650 | dr_maux | 2002-03-24 17:31:45 +0100 (So, 24. Mär 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/de.po
    M /trunk/gtk-client/po/es_AR.po
@@ -5045,7 +5530,7 @@ Geänderte Pfade:
 - prepare translations for ggz-gtk-client
 
 ------------------------------------------------------------------------
-r3473 | jdorje | 2002-02-26 03:57:27 +0100 (Di, 26 Feb 2002) | 3 lines
+r3473 | jdorje | 2002-02-26 03:57:27 +0100 (Di, 26. Feb 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/acconfig.h
    M /trunk/gtk-client/configure.in
@@ -5056,14 +5541,14 @@ Change autoconf system so that if DEBUG is not defined (--enable-debug,
 currently on by default) we'll get NDEBUG defined instead.
 
 ------------------------------------------------------------------------
-r3344 | jdorje | 2002-02-13 02:30:27 +0100 (Mi, 13 Feb 2002) | 2 lines
+r3344 | jdorje | 2002-02-13 02:30:27 +0100 (Mi, 13. Feb 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.in
 
 Fixed errors in --disable-FEATURE options (for gettext and debug).
 
 ------------------------------------------------------------------------
-r3343 | jdorje | 2002-02-13 01:49:34 +0100 (Mi, 13 Feb 2002) | 4 lines
+r3343 | jdorje | 2002-02-13 01:49:34 +0100 (Mi, 13. Feb 2002) | 4 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.in
 
@@ -5072,7 +5557,7 @@ Geänderte Pfade:
 - Added "Gettext support" to the list of options printed out at the end.
 
 ------------------------------------------------------------------------
-r3228 | jdorje | 2002-02-03 21:36:17 +0100 (So, 03 Feb 2002) | 2 lines
+r3228 | jdorje | 2002-02-03 21:36:17 +0100 (So, 03. Feb 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/gtk-client/acinclude.ggz
@@ -5080,14 +5565,14 @@ Geänderte Pfade:
 Updated acinclude.ggz from changes made in ggzd.
 
 ------------------------------------------------------------------------
-r3088 | jdorje | 2002-01-12 11:15:28 +0100 (Sa, 12 Jan 2002) | 2 lines
+r3088 | jdorje | 2002-01-12 11:15:28 +0100 (Sa, 12. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.in
 
 Added libggz check.
 
 ------------------------------------------------------------------------
-r3087 | jdorje | 2002-01-12 11:13:19 +0100 (Sa, 12 Jan 2002) | 2 lines
+r3087 | jdorje | 2002-01-12 11:13:19 +0100 (Sa, 12. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    A /trunk/ggz-client-libs/acinclude.ggz
@@ -5101,7 +5586,7 @@ Geänderte Pfade:
 Added acinclude.ggz to ggzd and ggz-client-libs.
 
 ------------------------------------------------------------------------
-r3086 | jdorje | 2002-01-12 11:05:20 +0100 (Sa, 12 Jan 2002) | 2 lines
+r3086 | jdorje | 2002-01-12 11:05:20 +0100 (Sa, 12. Jan 2002) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/grubby/acinclude.ggz
@@ -5113,7 +5598,7 @@ Geänderte Pfade:
 Added libggz support to acinclude.ggz.
 
 ------------------------------------------------------------------------
-r3011 | jdorje | 2002-01-08 10:21:08 +0100 (Di, 08 Jan 2002) | 3 lines
+r3011 | jdorje | 2002-01-08 10:21:08 +0100 (Di, 08. Jan 2002) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/grubby/acinclude.ggz
@@ -5126,7 +5611,7 @@ Added acinclude to utils/ module, and updated the years on the
 copyright notice.
 
 ------------------------------------------------------------------------
-r2928 | jdorje | 2001-12-18 03:21:12 +0100 (Di, 18 Dez 2001) | 2 lines
+r2928 | jdorje | 2001-12-18 03:21:12 +0100 (Di, 18. Dez 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client
    M /trunk/gtk-client/.cvsignore
@@ -5134,7 +5619,7 @@ Geänderte Pfade:
 Added acinclude.m4 to .cvsignore.
 
 ------------------------------------------------------------------------
-r2921 | jdorje | 2001-12-17 21:03:24 +0100 (Mo, 17 Dez 2001) | 2 lines
+r2921 | jdorje | 2001-12-17 21:03:24 +0100 (Mo, 17. Dez 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/autogen.sh
    M /trunk/gtk-client/configure.in
@@ -5142,7 +5627,7 @@ Geänderte Pfade:
 Converted ggz-gtk autoconf process to use acinclude.ggz.
 
 ------------------------------------------------------------------------
-r2917 | jdorje | 2001-12-17 09:14:12 +0100 (Mo, 17 Dez 2001) | 3 lines
+r2917 | jdorje | 2001-12-17 09:14:12 +0100 (Mo, 17. Dez 2001) | 3 lines
 Geänderte Pfade:
    A /trunk/ggz/game_clients/acinclude.ggz
    M /trunk/grubby/acinclude.ggz
@@ -5154,7 +5639,7 @@ Updated acinclude.ggz to check for new ggzmod; added it to gtk-games and
 gtk-client.
 
 ------------------------------------------------------------------------
-r2498 | bmh | 2001-09-18 02:45:13 +0200 (Di, 18 Sep 2001) | 3 lines
+r2498 | bmh | 2001-09-18 02:45:13 +0200 (Di, 18. Sep 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/acconfig.h
 
@@ -5162,7 +5647,7 @@ Geänderte Pfade:
 - Put GGZDATADIR in list of defines
 
 ------------------------------------------------------------------------
-r2495 | bmh | 2001-09-18 02:43:19 +0200 (Di, 18 Sep 2001) | 4 lines
+r2495 | bmh | 2001-09-18 02:43:19 +0200 (Di, 18. Sep 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.in
 
@@ -5171,7 +5656,7 @@ Geänderte Pfade:
   --prefix specified to configure
 
 ------------------------------------------------------------------------
-r2481 | jdorje | 2001-09-14 23:19:30 +0200 (Fr, 14 Sep 2001) | 4 lines
+r2481 | jdorje | 2001-09-14 23:19:30 +0200 (Fr, 14. Sep 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/gtk-client/ggz-gtk-client.spec
 
@@ -5180,7 +5665,7 @@ Updated RPM spec file for 0.0.5pre.
 All looks good here.  However, if w
 
 ------------------------------------------------------------------------
-r1922 | jzaun | 2001-07-06 19:27:49 +0200 (Fr, 06 Jul 2001) | 3 lines
+r1922 | jzaun | 2001-07-06 19:27:49 +0200 (Fr, 06. Jul 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.in
    M /trunk/gtk-client/po/de.po
@@ -5192,7 +5677,7 @@ Geänderte Pfade:
 - Updated version to 0.0.5pre
 
 ------------------------------------------------------------------------
-r1743 | rgade | 2001-06-18 04:46:19 +0200 (Mo, 18 Jun 2001) | 3 lines
+r1743 | rgade | 2001-06-18 04:46:19 +0200 (Mo, 18. Jun 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/rpm/ggz-gtk-games.spec
    M /trunk/ggz-client-libs/ggz-client-libs.spec
@@ -5204,7 +5689,7 @@ Geänderte Pfade:
   aren't part of the distros they needn't be tagged as such
 
 ------------------------------------------------------------------------
-r1733 | rgade | 2001-06-17 22:56:23 +0200 (So, 17 Jun 2001) | 2 lines
+r1733 | rgade | 2001-06-17 22:56:23 +0200 (So, 17. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/ChangeLog
    M /trunk/ggz-client-libs/ChangeLog
@@ -5218,7 +5703,7 @@ Geänderte Pfade:
 - Updated ChangeLog
 
 ------------------------------------------------------------------------
-r1718 | bmh | 2001-06-14 23:57:35 +0200 (Do, 14 Jun 2001) | 3 lines
+r1718 | bmh | 2001-06-14 23:57:35 +0200 (Do, 14. Jun 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/NEWS
    M /trunk/gtk-client/NEWS
@@ -5228,7 +5713,7 @@ Geänderte Pfade:
 - Updated NEWS file for 0.0.4
 
 ------------------------------------------------------------------------
-r1710 | bmh | 2001-06-14 10:23:53 +0200 (Do, 14 Jun 2001) | 5 lines
+r1710 | bmh | 2001-06-14 10:23:53 +0200 (Do, 14. Jun 2001) | 5 lines
 Geänderte Pfade:
    M /trunk/gtk-client/Makefile.am
    A /trunk/gtk-client/QuickStart.GGZ
@@ -5242,7 +5727,7 @@ Geänderte Pfade:
 - Include docs in tarball
 
 ------------------------------------------------------------------------
-r1702 | bmh | 2001-06-14 08:12:20 +0200 (Do, 14 Jun 2001) | 4 lines
+r1702 | bmh | 2001-06-14 08:12:20 +0200 (Do, 14. Jun 2001) | 4 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/gtk/Makefile.am
    M /trunk/gtk-client/man/Makefile.am
@@ -5253,7 +5738,7 @@ Geänderte Pfade:
   Leaving it blank causes 'make dist' to choke
 
 ------------------------------------------------------------------------
-r1651 | bmh | 2001-06-05 03:31:00 +0200 (Di, 05 Jun 2001) | 3 lines
+r1651 | bmh | 2001-06-05 03:31:00 +0200 (Di, 05. Jun 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/man
    A /trunk/gtk-client/man/.cvsignore
@@ -5262,7 +5747,7 @@ Geänderte Pfade:
 - Added .cvsignore file to ignore Makefile and Makefile.in
 
 ------------------------------------------------------------------------
-r1630 | perdig | 2001-06-02 21:57:00 +0200 (Sa, 02 Jun 2001) | 3 lines
+r1630 | perdig | 2001-06-02 21:57:00 +0200 (Sa, 02. Jun 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/pt_BR.po
 
@@ -5270,21 +5755,21 @@ Geänderte Pfade:
 - Updated brazilian portuguese translation
 
 ------------------------------------------------------------------------
-r1621 | riq | 2001-06-02 17:24:02 +0200 (Sa, 02 Jun 2001) | 2 lines
+r1621 | riq | 2001-06-02 17:24:02 +0200 (Sa, 02. Jun 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/gtk-client/po/es_AR.po
 
 added spanish (Argentinian) translation for gtk client
 
 ------------------------------------------------------------------------
-r1619 | dr_maux | 2001-06-02 06:34:50 +0200 (Sa, 02 Jun 2001) | 2 lines
+r1619 | dr_maux | 2001-06-02 06:34:50 +0200 (Sa, 02. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/man/Makefile.am
 
 - fix makefile bug
 
 ------------------------------------------------------------------------
-r1617 | dr_maux | 2001-06-02 05:16:27 +0200 (Sa, 02 Jun 2001) | 2 lines
+r1617 | dr_maux | 2001-06-02 05:16:27 +0200 (Sa, 02. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/ggz/game_clients/po/Makefile.am
    M /trunk/ggz/game_clients/po/hastings/de.po
@@ -5296,14 +5781,14 @@ Geänderte Pfade:
 - force "make messages"
 
 ------------------------------------------------------------------------
-r1616 | dr_maux | 2001-06-02 05:10:16 +0200 (Sa, 02 Jun 2001) | 2 lines
+r1616 | dr_maux | 2001-06-02 05:10:16 +0200 (Sa, 02. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/configure.in
 
 - now go in, change
 
 ------------------------------------------------------------------------
-r1615 | dr_maux | 2001-06-02 05:09:48 +0200 (Sa, 02 Jun 2001) | 2 lines
+r1615 | dr_maux | 2001-06-02 05:09:48 +0200 (Sa, 02. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po/de.po
    M /trunk/gtk-client/po/ggz-gtk.pot
@@ -5312,7 +5797,7 @@ Geänderte Pfade:
 - revoked commit
 
 ------------------------------------------------------------------------
-r1614 | dr_maux | 2001-06-02 05:07:53 +0200 (Sa, 02 Jun 2001) | 2 lines
+r1614 | dr_maux | 2001-06-02 05:07:53 +0200 (Sa, 02. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client
    M /trunk/gtk-client/.cvsignore
@@ -5321,7 +5806,7 @@ Geänderte Pfade:
 - removed dumb spaces
 
 ------------------------------------------------------------------------
-r1610 | dr_maux | 2001-06-02 02:07:47 +0200 (Sa, 02 Jun 2001) | 2 lines
+r1610 | dr_maux | 2001-06-02 02:07:47 +0200 (Sa, 02. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/po
    A /trunk/gtk-client/po/.cvsignore
@@ -5329,7 +5814,7 @@ Geänderte Pfade:
 - cvsignore update
 
 ------------------------------------------------------------------------
-r1609 | dr_maux | 2001-06-02 02:07:04 +0200 (Sa, 02 Jun 2001) | 2 lines
+r1609 | dr_maux | 2001-06-02 02:07:04 +0200 (Sa, 02. Jun 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/Makefile.am
    M /trunk/gtk-client/configure.in
@@ -5337,7 +5822,7 @@ Geänderte Pfade:
 - modified build process
 
 ------------------------------------------------------------------------
-r1608 | dr_maux | 2001-06-02 02:06:35 +0200 (Sa, 02 Jun 2001) | 3 lines
+r1608 | dr_maux | 2001-06-02 02:06:35 +0200 (Sa, 02. Jun 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/gtk/first.c
    M /trunk/ggz/src/frontend/gtk/main.c
@@ -5352,7 +5837,7 @@ Geänderte Pfade:
 - re-added German and Portuguese translation
 
 ------------------------------------------------------------------------
-r1594 | jzaun | 2001-05-30 23:31:27 +0200 (Mi, 30 Mai 2001) | 3 lines
+r1594 | jzaun | 2001-05-30 23:31:27 +0200 (Mi, 30. Mai 2001) | 3 lines
 Geänderte Pfade:
    M /trunk/ggz/src/frontend/gtk/client.c
    M /trunk/gtk-client/configure.in
@@ -5361,7 +5846,7 @@ Geänderte Pfade:
 -- Fixed spelling
 
 ------------------------------------------------------------------------
-r1577 | dr_maux | 2001-05-30 15:27:35 +0200 (Mi, 30 Mai 2001) | 2 lines
+r1577 | dr_maux | 2001-05-30 15:27:35 +0200 (Mi, 30. Mai 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/ggz/game_clients/debian
    A /trunk/ggz/game_clients/debian/.cvsignore
@@ -5398,7 +5883,7 @@ Geänderte Pfade:
 - debianized source tree
 
 ------------------------------------------------------------------------
-r1567 | rgade | 2001-05-29 00:11:27 +0200 (Di, 29 Mai 2001) | 2 lines
+r1567 | rgade | 2001-05-29 00:11:27 +0200 (Di, 29. Mai 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/Makefile.am
    M /trunk/gtk-client/configure.in
@@ -5409,14 +5894,14 @@ Geänderte Pfade:
 - Added ggz-gtk(6) man page for installation and distribution
 
 ------------------------------------------------------------------------
-r1547 | rgade | 2001-05-21 00:32:35 +0200 (Mo, 21 Mai 2001) | 2 lines
+r1547 | rgade | 2001-05-21 00:32:35 +0200 (Mo, 21. Mai 2001) | 2 lines
 Geänderte Pfade:
    M /trunk/gtk-client/README
 
 - General info for the Gtk client package
 
 ------------------------------------------------------------------------
-r1544 | rgade | 2001-05-20 23:02:03 +0200 (So, 20 Mai 2001) | 2 lines
+r1544 | rgade | 2001-05-20 23:02:03 +0200 (So, 20. Mai 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/easysock/README.GGZ
    A /trunk/ggz/game_clients/README.GGZ
@@ -5425,7 +5910,7 @@ Geänderte Pfade:
 - Added README.GGZ to each client module
 
 ------------------------------------------------------------------------
-r1430 | rgade | 2001-04-22 20:38:32 +0200 (So, 22 Apr 2001) | 2 lines
+r1430 | rgade | 2001-04-22 20:38:32 +0200 (So, 22. Apr 2001) | 2 lines
 Geänderte Pfade:
    A /trunk/gtk-client/ggz-gtk-client.spec
    D /trunk/gtk-client/ggz-gtk.spec
@@ -5433,7 +5918,7 @@ Geänderte Pfade:
 - Updated RPM spec file to new distro name
 
 ------------------------------------------------------------------------
-r1364 | bmh | 2001-03-31 06:16:24 +0200 (Sa, 31 Mär 2001) | 3 lines
+r1364 | bmh | 2001-03-31 06:16:24 +0200 (Sa, 31. Mär 2001) | 3 lines
 Geänderte Pfade:
    A /trunk/gtk-client/Makefile.am
    A /trunk/gtk-client/TODO
@@ -5442,7 +5927,7 @@ Geänderte Pfade:
 - Oops.  Forgot Makefile.am
 
 ------------------------------------------------------------------------
-r1363 | bmh | 2001-03-31 06:15:58 +0200 (Sa, 31 Mär 2001) | 4 lines
+r1363 | bmh | 2001-03-31 06:15:58 +0200 (Sa, 31. Mär 2001) | 4 lines
 Geänderte Pfade:
    D /trunk/ggz/src/frontend/gtk/AUTHORS
    D /trunk/ggz/src/frontend/gtk/COPYING
