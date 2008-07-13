@@ -1,6 +1,6 @@
 project(kggzdmod)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/.. ${GGZDMOD_INCLUDES})
 
 set(kggzdmod_LIB_SRCS
 	event.cpp
@@ -11,4 +11,4 @@ set(kggzdmod_LIB_SRCS
 
 kde4_add_library(kggzdmod SHARED ${kggzdmod_LIB_SRCS})
 
-target_link_libraries(kggzdmod ${KDE4_KDECORE_LIBS} ${QT_QTNETWORK_LIBRARY} ggzdmod)
+target_link_libraries(kggzdmod ${KDE4_KDECORE_LIBS} ${QT_QTNETWORK_LIBRARY} ${GGZDMOD_LIBRARY})

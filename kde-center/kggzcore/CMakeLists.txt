@@ -1,6 +1,6 @@
 project(kggzcore)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/.. ${GGZCORE_INCLUDES})
 
 set(kggzcore_LIB_SRCS
 	coreclient.cpp
@@ -17,4 +17,4 @@ set(kggzcore_LIB_SRCS
 
 kde4_add_library(kggzcore SHARED ${kggzcore_LIB_SRCS})
 
-target_link_libraries(kggzcore ${KDE4_KDECORE_LIBS} ${QT_QTNETWORK_LIBRARY} ggzcore)
+target_link_libraries(kggzcore ${KDE4_KDECORE_LIBS} ${QT_QTNETWORK_LIBRARY} ${GGZCORE_LIBRARY})

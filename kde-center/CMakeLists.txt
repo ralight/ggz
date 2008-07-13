@@ -1,14 +1,15 @@
 project(ggz-kde-center)
 
 cmake_minimum_required(VERSION 2.6)
-
-# FIXME: detect dynamically!
-set(GGZ_INCLUDES "/home/josef/sys/include")
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/)
 
 find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
-include_directories(${QDBUS_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR} ${KDE4_INCLUDES} ${GGZ_INCLUDES})
+include_directories(${QDBUS_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR} ${KDE4_INCLUDES})
+
+find_package(GGZDMod REQUIRED)
+find_package(GGZCore REQUIRED)
 
 add_subdirectory(kggzdmod)
 add_subdirectory(kggzcore)
