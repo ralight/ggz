@@ -217,6 +217,7 @@ void ModulePrivate::handler(GGZdMod *mod, GGZdModEvent event, const void *data)
 
 		emit signalEvent(e);
 	}
+#if 0
 	else if(event == GGZDMOD_EVENT_SAVEDGAME)
 	{
 		QString savegame = (const char*)data;
@@ -228,6 +229,7 @@ void ModulePrivate::handler(GGZdMod *mod, GGZdModEvent event, const void *data)
 
 		emit signalEvent(e);
 	}
+#endif
 	else if(event == GGZDMOD_EVENT_ERROR)
 	{
 		QString message((char*)data);
@@ -263,7 +265,7 @@ void ModulePrivate::sendRequest(Request request)
 	}
 	if(requesttype == Request::log)
 	{
-		ggzdmod_log(s_ggzdmod, request.data["message"].toUtf8().data());
+		ggzdmod_log(s_ggzdmod, "%s", request.data["message"].toUtf8().data());
 	}
 	if(requesttype == Request::result)
 	{
@@ -297,7 +299,6 @@ void ModulePrivate::connect()
 	ggzdmod_set_handler(s_ggzdmod, GGZDMOD_EVENT_SPECTATOR_SEAT, &ggzdmod_handler);
 	ggzdmod_set_handler(s_ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, &ggzdmod_handler);
 	ggzdmod_set_handler(s_ggzdmod, GGZDMOD_EVENT_SPECTATOR_DATA, &ggzdmod_handler);
-	ggzdmod_set_handler(s_ggzdmod, GGZDMOD_EVENT_SAVEDGAME, &ggzdmod_handler);
 	ggzdmod_set_handler(s_ggzdmod, GGZDMOD_EVENT_ERROR, &ggzdmod_handler);
 
 	kDebug() << "[kggzdmod] debug: connect() is finished";
@@ -423,5 +424,5 @@ Module *Module::instance()
 	return s_module;
 }
 
-//#include "module.moc"
-//#include "module_private.moc"
+#include "module.moc"
+#include "module_private.moc"

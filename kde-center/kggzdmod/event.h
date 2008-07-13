@@ -6,6 +6,8 @@
 
 #include <kggzdmod/module.h>
 
+#include "kggzdmod_export.h"
+
 // FIXME: use Player or separate classes?
 #define PlayerSeat Player
 #define SpectatorSeat Player
@@ -36,7 +38,7 @@ class Player;
  *
  * @author Josef Spillner (josef@ggzgamingzone.org)
  */
-class Event
+class KGGZDMOD_EXPORT Event
 {
 	friend class ModulePrivate;
 	friend class StateEvent;
@@ -115,7 +117,7 @@ class Event
  *
  * @author Josef Spillner (josef@ggzgamingzone.org)
  */
-class StateEvent : public Event
+class KGGZDMOD_EXPORT StateEvent : public Event
 {
 	public:
 		StateEvent(const Event& event);
@@ -139,7 +141,7 @@ class StateEvent : public Event
  *
  * @author Josef Spillner (josef@ggzgamingzone.org)
  */
-class PlayerSeatEvent : public Event
+class KGGZDMOD_EXPORT PlayerSeatEvent : public Event
 {
 	public:
 		PlayerSeatEvent(const Event& event);
@@ -170,7 +172,7 @@ class PlayerSeatEvent : public Event
  *
  * @author Josef Spillner (josef@ggzgamingzone.org)
  */
-class PlayerDataEvent : public Event
+class KGGZDMOD_EXPORT PlayerDataEvent : public Event
 {
 	public:
 		PlayerDataEvent(const Event& event);
@@ -192,7 +194,7 @@ class PlayerDataEvent : public Event
  *
  * @author Josef Spillner (josef@ggzgamingzone.org)
  */
-class SpectatorSeatEvent : public Event
+class KGGZDMOD_EXPORT SpectatorSeatEvent : public Event
 {
 	public:
 		SpectatorSeatEvent(const Event& event);
@@ -217,7 +219,7 @@ class SpectatorSeatEvent : public Event
  *
  * @author Josef Spillner (josef@ggzgamingzone.org)
  */
-class SpectatorDataEvent : public Event
+class KGGZDMOD_EXPORT SpectatorDataEvent : public Event
 {
 	public:
 		SpectatorDataEvent(const Event& event);
@@ -235,7 +237,7 @@ class SpectatorDataEvent : public Event
  *
  * @author Josef Spillner (josef@ggzgamingzone.org)
  */
-class SavegameEvent : public Event
+class KGGZDMOD_EXPORT SavegameEvent : public Event
 {
 	public:
 		SavegameEvent(const Event& event);
@@ -254,7 +256,7 @@ class SavegameEvent : public Event
  *
  * @author Josef Spillner (josef@ggzgamingzone.org)
  */
-class ErrorEvent : public Event
+class KGGZDMOD_EXPORT ErrorEvent : public Event
 {
 	public:
 		ErrorEvent(const Event& event);

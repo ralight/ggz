@@ -3,6 +3,8 @@
 
 #include <qstring.h>
 
+#include "kggzdmod_export.h"
+
 namespace KGGZdMod
 {
 
@@ -22,7 +24,7 @@ class PlayerPrivate;
  *
  * @author Josef Spillner (josef@ggzgamingzone.org)
  */
-class Player
+class KGGZDMOD_EXPORT Player
 {
 	friend class ModulePrivate;
 	friend class PlayerSeatEvent;

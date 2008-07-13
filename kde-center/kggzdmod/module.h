@@ -27,6 +27,8 @@
 #include <QObject>
 #include <QList>
 
+#include "kggzdmod_export.h"
+
 namespace KGGZdMod
 {
 
@@ -57,7 +59,7 @@ class Event;
  *
  * @author Josef Spillner (josef@ggzgamingzone.org)
  */
-class Module : public QObject
+class KGGZDMOD_EXPORT Module : public QObject
 {
 	Q_OBJECT
 	public:

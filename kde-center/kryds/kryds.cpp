@@ -5,6 +5,8 @@
 
 #include <kdebug.h>
 
+#include <time.h>
+
 #include <QCoreApplication>
 
 // FIXME: these should appear in protocol

@@ -4,6 +4,8 @@
 #include <QMap>
 #include <QString>
 
+#include "kggzdmod_export.h"
+
 namespace KGGZdMod
 {
 
@@ -16,7 +18,7 @@ namespace KGGZdMod
  *
  * @author Josef Spillner (josef@ggzgamingzone.org)
  */
-class Request
+class KGGZDMOD_EXPORT Request
 {
 	public:
 		/**
@@ -75,7 +77,7 @@ class Request
  *
  * @author Josef Spillner (josef@ggzgamingzone.org)
  */
-class StateRequest : public Request
+class KGGZDMOD_EXPORT StateRequest : public Request
 {
 	public:
 		StateRequest(/*Module::State*/int state);
@@ -92,7 +94,7 @@ class StateRequest : public Request
  *
  * @author Josef Spillner (josef@ggzgamingzone.org)
  */
-class LogRequest : public Request
+class KGGZDMOD_EXPORT LogRequest : public Request
 {
 	public:
 		LogRequest(QString message);
@@ -108,7 +110,7 @@ class LogRequest : public Request
  *
  * @author Josef Spillner (josef@ggzgamingzone.org)
  */
-class ResultRequest : public Request
+class KGGZDMOD_EXPORT ResultRequest : public Request
 {
 	public:
 		ResultRequest();
@@ -126,7 +128,7 @@ class ResultRequest : public Request
  *
  * @author Josef Spillner (josef@ggzgamingzone.org)
  */
-class SavegameRequest : public Request
+class KGGZDMOD_EXPORT SavegameRequest : public Request
 {
 	public:
 		SavegameRequest(QString filename);
