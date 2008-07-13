@@ -9,6 +9,9 @@ The older 'ggz-kde-client' and 'ggz-kde-games' packages have
 also been moved here because some of their contents still need
 to be ported. Already ported games and apps are marked with [ported].
 
+The only pending new, non-ported application will be the complete
+rewrite of KGGZ which is scheduled for ~August 2008.
+
 Summary of GGZ-in-KDE4-efforts as of July 2008:
 
 * In this directory (incubator)
@@ -27,6 +30,7 @@ Summary of GGZ-in-KDE4-efforts as of July 2008:
  - plasma-kggz [||||      ] - Plasma widget to succeed GGZap
  - ktictactux  [||||||    ] - Tic-Tac-Toe game client [ported]
  - kgrubby     [||||||||  ] - Graphical configuration of grubby
+ - kryds       [||||||    ] - game server for TTT based on kggzdmod
 
 * In (lib)kdegames (KDE SVN)
  - cmake       [|||||     ] - CMake files for GGZ library checks
