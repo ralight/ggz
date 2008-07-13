@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 10280 2008-07-11 20:35:30Z jdorje $
+ * $Id: ggzclient.c 10337 2008-07-13 16:45:09Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -1039,15 +1039,13 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id,
 	return GGZ_HOOK_OK;
 }
 
-
-static GGZHookReturn ggz_server_error(GGZServerEvent id,
-				      const void *event_data,
-				      const void *user_data)
+static void ggz_server_error(const char *msg_type,
+			     const char *msg_explanation)
 {
 	gchar *msg;
-	const GGZErrorEventData *error = event_data;
 
-	ggz_debug("connection", "Server protocol error %s.", error->message);
+	ggz_debug("connection", "%s: %s.",
+		  msg_type, msg_explanation);
 
 	assert(ggz_gtk.server_tag != 0);
 	g_source_remove(ggz_gtk.server_tag);
@@ -1060,12 +1058,22 @@ static GGZHookReturn ggz_server_error(GGZServerEvent id,
 
 	if (ggzcore_server_get_state(ggz_gtk.server)
 	    != GGZ_STATE_RECONNECTING) {
-		msg = g_strdup_printf(_("Server error: %s"),
-				      error->message);
+		msg = g_strdup_printf(_("%s: %s"),
+				      msg_type, msg_explanation);
 		msgbox(msg, _("Error"),
 		       MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 		g_free(msg);
 	}
+}
+
+
+static GGZHookReturn ggz_proto_error(GGZServerEvent id,
+				     const void *event_data,
+				     const void *user_data)
+{
+	const GGZErrorEventData *error = event_data;
+
+	ggz_server_error(_("Server error"), error->message);
 
 	return GGZ_HOOK_OK;
 }
@@ -1074,13 +1082,9 @@ static GGZHookReturn ggz_net_error(GGZServerEvent id,
 				   const void *event_data,
 				   const void *user_data)
 {
-	ggz_debug("connection", "Net error.");
+	const char *message = event_data;
 
-	server_disconnect();
-
-	clear_room_list();
-	clear_player_list();
-	clear_table_list();
+	ggz_server_error(_("Network error"), message);
 
 	return GGZ_HOOK_OK;
 }
@@ -1189,7 +1193,7 @@ void ggz_event_init(GGZServer * server)
 	ggzcore_server_add_event_hook(server, GGZ_NET_ERROR,
 				      ggz_net_error);
 	ggzcore_server_add_event_hook(server, GGZ_PROTOCOL_ERROR,
-				      ggz_server_error);
+				      ggz_proto_error);
 	ggzcore_server_add_event_hook(server, GGZ_CHAT_FAIL,
 				      ggz_chat_fail);
 	ggzcore_server_add_event_hook(server, GGZ_STATE_CHANGE,
