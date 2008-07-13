@@ -14,10 +14,10 @@ Toplevel::Toplevel()
 	setCentralWidget(m_app);
 
 	menu_file = new KMenu(this);
-	action_save = menu_file->addAction(KIconLoader::global()->loadIcon("filesave", KIconLoader::Small),
+	action_save = menu_file->addAction(KIconLoader::global()->loadIcon("document-save", KIconLoader::Small),
 		i18n("Save"));
 	menu_file->addSeparator();
-	action_quit = menu_file->addAction(KIconLoader::global()->loadIcon("exit", KIconLoader::Small),
+	action_quit = menu_file->addAction(KIconLoader::global()->loadIcon("application-exit", KIconLoader::Small),
 		i18n("Quit"));
 
 	action_save->setEnabled(false);

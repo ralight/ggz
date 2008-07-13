@@ -16,7 +16,7 @@ class Plugin : public KDialog
 
 		void addRow(QStringList row);
 		int numRows();
-		QStringList getRow(int number);
+		QStringList getRow(int row);
 
 	protected slots:
 		void slotChanged(int row, int col);

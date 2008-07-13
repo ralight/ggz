@@ -37,7 +37,7 @@ App::App(QWidget *parent)
 	QVBoxLayout *vbox_general, *vbox_plugins, *vbox_profile;
 	QHBoxLayout *hbox_profile, *hbox_profile2;
 	QPushButton *profile_add;
-	QFrame *frame_grubby;
+	QLabel *frame_grubby;
 	QMap<QString, QString> pluginnames, plugininfos;
 
 	tab_profile = new QWidget();
@@ -45,12 +45,10 @@ App::App(QWidget *parent)
 	tab_plugins = new QWidget();
 
 	QPixmap grubby(d.findResource("data", "kgrubby/kgrubby.png"));
-	frame_grubby = new QFrame();
+	frame_grubby = new QLabel();
+	frame_grubby->setFrameStyle(QFrame::Panel | QFrame::Raised);
 	frame_grubby->setFixedSize(grubby.width(), grubby.height());
-
-	QPalette palette;
-	palette.setBrush(frame_grubby->backgroundRole(), QBrush(grubby));
-	frame_grubby->setPalette(palette);
+	frame_grubby->setPixmap(grubby);
 
 	m_profile = new QComboBox();
 
@@ -74,7 +72,7 @@ App::App(QWidget *parent)
 		m_profile_remove->setEnabled(false);
 
 	m_networktypelabel = new QLabel(i18n("Network type"));
-	m_networktype = new QComboBox(tab_general);
+	m_networktype = new QComboBox();
 	m_networktype->addItem(i18n("GGZ Gaming Zone"));
 	m_networktype->addItem(i18n("IRC"));
 	m_networktype->addItem(i18n("SILC"));
