@@ -27,6 +27,8 @@
 
 // Forward declaration
 class QWhiteFrame;
+class QPaintEvent;
+class QLabel;
 
 // TicTacToe GUI for KDE
 class KTicTacTux : public QWidget
@@ -74,6 +76,9 @@ class KTicTacTux : public QWidget
 		// Emit game over status
 		void signalGameOver();
 
+	protected:
+		void paintEvent(QPaintEvent *event);
+
 	private:
 		// Wait for bot or network input
 		void opponentTurn();
@@ -114,6 +119,10 @@ class KTicTacTux : public QWidget
 		KTicTacTuxProto *proto;
 		// Theme image placeholders
 		QString m_t1, m_t2;
+		// The surrounding area
+		QLabel *m_container;
+		// old container size
+		QSize m_oldsize;
 };
 
 #endif

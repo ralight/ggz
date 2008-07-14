@@ -39,7 +39,7 @@ KTicTacTuxWin::KTicTacTuxWin()
 	mgame = new KMenu(this);
 	mgame->setTitle(i18n("Game"));
 	action_sync = mgame->addAction(KIconLoader::global()->loadIcon("view-refresh", KIconLoader::Small), i18n("Synchronize"));
-	action_score = mgame->addAction(KIconLoader::global()->loadIcon("history", KIconLoader::Small), i18n("View score"));
+	action_score = mgame->addAction(KIconLoader::global()->loadIcon("view-history", KIconLoader::Small), i18n("View score"));
 	mgame->addSeparator();
 	action_theme = mgame->addAction(KIconLoader::global()->loadIcon("get-hot-new-stuff", KIconLoader::Small), i18n("Get themes"));
 	mgame->addSeparator();
@@ -283,7 +283,7 @@ void KTicTacTuxWin::loadThemes()
 				m_player2[file] = (*it) + player2;
 
 				m_themenames[count] = name;
-				QAction *action_theme = mtheme->addAction(KIconLoader::global()->loadIcon("imagegallery", KIconLoader::Small), name);
+				QAction *action_theme = mtheme->addAction(KIconLoader::global()->loadIcon("games-config-theme", KIconLoader::Small), name);
 				m_themeactions << action_theme;
 				count++;
 			}

@@ -40,19 +40,15 @@ KTicTacTux::KTicTacTux()
 {
 	QVBoxLayout *vbox, *vbox2;
 	QHBoxLayout *hbox[3];
-	QLabel *container;
-	KStandardDirs d;
 
-	container = new QLabel();
-	QPixmap pix(d.findResource("data", "ktictactux/bg.png"));
-	container->setPixmap(pix);
+	m_container = new QLabel();
 
 	vbox = new QVBoxLayout();
 	setLayout(vbox);
-	vbox->addWidget(container);
+	vbox->addWidget(m_container);
 
 	vbox2 = new QVBoxLayout();
-	container->setLayout(vbox2);
+	m_container->setLayout(vbox2);
 	vbox2->addStretch(1);
 	for(int j = 0; j < 3; j++)
 	{
@@ -510,5 +506,20 @@ void KTicTacTux::seats()
 
 	seats = new KGGZSeatsDialog();
 	seats->setMod(proto->mod);
+}
+
+void KTicTacTux::paintEvent(QPaintEvent *event)
+{
+	KStandardDirs d;
+
+	Q_UNUSED(event);
+
+	if(size() != m_oldsize)
+	{
+		QPixmap pix(d.findResource("data", "ktictactux/bg.png"));
+		pix = pix.scaled(m_container->size(), Qt::IgnoreAspectRatio);
+		m_container->setPixmap(pix);
+		m_oldsize = size();
+	}
 }
 
