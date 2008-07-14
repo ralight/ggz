@@ -382,7 +382,7 @@ void KTicTacTux::slotEvent(const KGGZMod::Event& event)
 	if(event.type() == KGGZMod::Event::seat)
 	{
 		proto->state = proto->statewait;
-		emit signalScore(i18n("Network game with %1").arg((*proto->mod->players().at(!proto->num())).name()));
+		emit signalScore(i18n("Network game with %1", (*proto->mod->players().at(!proto->num())).name()));
 	}
 }
 

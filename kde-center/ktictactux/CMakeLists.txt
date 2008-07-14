@@ -16,6 +16,7 @@ target_link_libraries(ktictactux ${KDE4_KDEUI_LIBS} ${KDE4_KNEWSTUFF2_LIBS} -L..
 
 install(TARGETS ktictactux ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES ktictactux.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
+install(FILES ktictactux.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
 install(FILES bg.png DESTINATION ${DATA_INSTALL_DIR}/ktictactux)
 
 add_subdirectory(themes)

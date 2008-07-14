@@ -38,7 +38,7 @@ KTicTacTuxProto::~KTicTacTuxProto()
 
 int KTicTacTuxProto::num()
 {
-	if(!mod) return -1;
+	if(!mod) return 0;
 	return mod->self()->seat();
 }
 

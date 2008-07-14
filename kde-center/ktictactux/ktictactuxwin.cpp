@@ -141,7 +141,6 @@ void KTicTacTuxWin::slotMenu(QAction *action)
 		d.mkdir(QDir::home().path() + "/.ggz");
 		d.mkdir(QDir::home().path() + "/.ggz/games");
 		d.mkdir(QDir::home().path() + "/.ggz/games/ktictactux");
-		//KNS::DownloadDialog::open("ktictactux/theme");
 		KNS::Entry::List entries = KNS::Engine::download();
 	}
 	else if(action == action_ggzplayers)
@@ -208,7 +207,7 @@ void KTicTacTuxWin::score()
 
 	KMessageBox::information(this,
 		i18n("You won %1 times, lost %2 times and tied %3 times against the AI. "
-			"%4").arg(ailost).arg(aiwon).arg(aitied).arg(comment),
+			"%4", ailost, aiwon, aitied, comment),
 		i18n("KTicTacTux score"));
 }
 
@@ -237,7 +236,7 @@ void KTicTacTuxWin::slotNetworkScore(int wins, int losses, int ties)
 		KMessageBox::information(this,
 			i18n("Human players have been beaten %1 times by you; you lost %2 times. "
 				"%3 ties were achieved. "
-				"%4").arg(wins).arg(losses).arg(ties).arg(comment),
+				"%4", wins, losses, ties, comment),
 			i18n("KTicTacTux network score"));
 	}
 }

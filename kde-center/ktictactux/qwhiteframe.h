@@ -8,12 +8,13 @@
 #define Q_WHITEFRAME_H
 
 // Qt includes
-#include <qframe.h>
+#include <qlabel.h>
 #include <qevent.h>
-#include <QMouseEvent>
+
+class QMouseEvent;
 
 // A special Qt class
-class QWhiteFrame : public QFrame
+class QWhiteFrame : public QLabel
 {
 	Q_OBJECT
 	public:

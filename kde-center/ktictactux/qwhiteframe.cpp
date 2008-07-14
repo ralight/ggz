@@ -6,12 +6,12 @@
 
 // Includes
 #include "qwhiteframe.h"
-#include <QFrame>
-#include <QMouseEvent>
+
+#include <qevent.h>
 
 // Constructor which defines a style
 QWhiteFrame::QWhiteFrame(int id)
-: QFrame()
+: QLabel()
 {
 	m_id = id;
 	setFrameStyle(QFrame::Panel | QFrame::Sunken);
@@ -27,9 +27,8 @@ QWhiteFrame::~QWhiteFrame()
 // Return self-pointer when user clicks with a mouse
 void QWhiteFrame::mousePressEvent(QMouseEvent *event)
 {
-	Q_UNUSED(event);
-
-	emit signalSelected(this);
+	if(event->button() == Qt::LeftButton)
+		emit signalSelected(this);
 }
 
 // Retrieve widget id
@@ -40,8 +39,5 @@ int QWhiteFrame::id()
 
 void QWhiteFrame::setPixmap(QPixmap pix)
 {
-	QPalette palette(QColor(255, 255, 255));
-	if(!pix.isNull())
-		palette.setBrush(backgroundRole(), QBrush(pix));
-	setPalette(palette);
+	QLabel::setPixmap(pix);
 }
