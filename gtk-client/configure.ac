@@ -1,5 +1,5 @@
 dnl Configuration for the Gtk+ core client
-# $Id: configure.ac 10338 2008-07-13 16:55:05Z jdorje $
+# $Id: configure.ac 10342 2008-07-14 20:41:00Z josef $
 dnl ======================================
 
 AC_INIT([GGZ Gtk+ client], [snapshot-0.99.4], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
@@ -123,3 +123,9 @@ echo "When complete, su to root and type \"make install\" to"
 echo "install the software."
 echo ""
 
+if test "$enable_visibility" = yes; then
+	echo ""
+	echo "*** WARNING ***"
+	echo "You have enabled symbol visibility restrictions."
+	echo "This feature hasn't been tested much yet."
+fi

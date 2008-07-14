@@ -177,3 +177,10 @@ echo ""
 echo "When complete, su to root"
 echo "and type \"make install\" to"
 echo "install the client software."
+
+if test "$enable_visibility" = yes; then
+	echo ""
+	echo "*** WARNING ***"
+	echo "You have enabled symbol visibility restrictions."
+	echo "This feature hasn't been tested much yet."
+fi

@@ -300,3 +300,10 @@ echo "To compile and install server:"
 echo "    'make install'"
 echo "To compile and test server locally without installing:"
 echo "    'make test && ./ggzd/ggzd -F -f ./ggzd/ggzd.test'"
+
+if test "$enable_visibility" = yes; then
+	echo ""
+	echo "*** WARNING ***"
+	echo "You have enabled symbol visibility restrictions."
+	echo "This feature hasn't been tested much yet."
+fi
