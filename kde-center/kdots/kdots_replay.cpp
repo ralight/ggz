@@ -13,13 +13,15 @@
 
 #include <klocale.h>
 
-#include <qlayout.h>
-#include <qdir.h>
-#include <qstringlist.h>
-#include <qpushbutton.h>
+#include <QLabel>
+#include <QLayout>
+#include <QDir>
+#include <QStringList>
+#include <QPushButton>
+#include <QListWidget>
 
-KDotsReplay::KDotsReplay(QWidget *parent, const char *name)
-: QWidget(parent, name)
+KDotsReplay::KDotsReplay()
+: QWidget()
 {
 	QVBoxLayout *vbox, *vbox2;
 	QHBoxLayout *hbox;
@@ -27,40 +29,44 @@ KDotsReplay::KDotsReplay(QWidget *parent, const char *name)
 	QStringList replays;
 	QStringList::Iterator it;
 
-	dots = new QDots(this);
+	dots = new QDots();
 	dots->setFixedSize(400, 400);
 
-	slider = new QSlider(QSlider::Horizontal, this);
+	slider = new QSlider(Qt::Horizontal);
 	slider->setEnabled(false);
 
-	ok = new QPushButton(i18n("Close"), this);
+	ok = new QPushButton(i18n("Close"));
 
-	listbox = new QListBox(this);	
+	listbox = new QListWidget();	
 	QDir dir(QDir::home().path() + "/.ggz/games/kdots");
-	replays = dir.entryList("*");
+	replays = dir.entryList(QStringList("*"));
 	for(it = replays.begin(); it != replays.end(); it++)
 	{
 		if((*it) == ".") continue;
 		if((*it) == "..") continue;
-		listbox->insertItem((*it));
+		QListWidgetItem *item = new QListWidgetItem((*it));
+		listbox->addItem(item);
 	}
 
-	label = new QLabel(i18n("Position"), this);
+	label = new QLabel(i18n("Position"));
 
-	hbox = new QHBoxLayout(this, 5);
-	vbox2 = new QVBoxLayout(hbox, 5);
-	vbox2->add(listbox);
-	vbox2->add(ok);
-	vbox = new QVBoxLayout(hbox, 5);
-	vbox->add(dots);
-	vbox->add(label);
-	vbox->add(slider);
+	hbox = new QHBoxLayout();
+	setLayout(hbox);
+	vbox2 = new QVBoxLayout();
+	hbox->addLayout(vbox2);
+	vbox2->addWidget(listbox);
+	vbox2->addWidget(ok);
+	vbox = new QVBoxLayout();
+	hbox->addLayout(vbox);
+	vbox->addWidget(dots);
+	vbox->addWidget(label);
+	vbox->addWidget(slider);
 
 	connect(ok, SIGNAL(clicked()), SLOT(close()));
 	connect(slider, SIGNAL(valueChanged(int)), SLOT(slotPosition(int)));
 	connect(listbox, SIGNAL(highlighted(const QString&)), SLOT(slotLoad(const QString&)));
 
-	setCaption(i18n("KDots Replay"));
+	setWindowTitle(i18n("KDots Replay"));
 	show();
 }
 

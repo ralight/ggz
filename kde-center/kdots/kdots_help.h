@@ -13,15 +13,15 @@
 #define KDOTS_HELP_H
 
 #include <qwidget.h>
-#include <qevent.h>
+#include <QEvent>
 
 class KDotsHelp : public QWidget
 {
 	Q_OBJECT
 	public:
-		KDotsHelp(QWidget *parent = NULL, const char *name = NULL);
+		KDotsHelp();
 		~KDotsHelp();
-	public slots:
+	public Q_SLOTS:
 		void slotAccepted();
 	protected:
 		void paintEvent(QPaintEvent *e);

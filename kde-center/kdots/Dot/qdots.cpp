@@ -11,10 +11,10 @@
 
 #include "qdots.h"
 
-#include <qimage.h>
-#include <qpainter.h>
-#include <qpen.h>
-#include <qvector.h>
+#include <QImage>
+#include <QPainter>
+#include <QPen>
+#include <QVector>
 #include <QPixmap>
 #include <QResizeEvent>
 #include <QMouseEvent>

@@ -11,9 +11,9 @@
 
 #include "vdots.h"
 
-#include <qfile.h>
-#include <qtextstream.h>
-#include <qstringlist.h>
+#include <QFile>
+#include <QTextStream>
+#include <QStringList>
 
 VDots::VDots()
 : Dots()

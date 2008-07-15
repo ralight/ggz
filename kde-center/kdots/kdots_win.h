@@ -15,10 +15,13 @@
 #include <kmainwindow.h>
 #include <kmenubar.h>
 
+#include <kggzmod/module.h>
+
 class KDots;
 class KDotsAbout;
 class KDotsHelp;
 class KDotsReplay;
+class QAction;
 
 class KDotsWin : public KMainWindow
 {
@@ -27,19 +30,9 @@ class KDotsWin : public KMainWindow
 		KDotsWin(bool ggzmode);
 		~KDotsWin();
 
-		enum MenuItems
-		{
-			menuhelp,
-			menuabout,
-			menuquit,
-			menusync,
-			menureplay,
-			menuseats
-		};
-	
-	public slots:
-		void slotMenu(int id);
-		void slotStatus(const char *message);
+	public Q_SLOTS:
+		void slotMenu(QAction *action);
+		void slotStatus(QString);
 		void slotColor(const QColor& color);
 
 	private:
@@ -48,7 +41,13 @@ class KDotsWin : public KMainWindow
 		KDotsHelp *kdots_help;
 		KDotsReplay *kdots_replay;
 		QWidget *m_color;
+
+		QAction *action_help;
+		QAction *action_about;
+		QAction *action_quit;
+		QAction *action_sync;
+		QAction *action_replay;
+		QAction *action_seats;
 };
 
 #endif
-

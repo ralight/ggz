@@ -12,7 +12,7 @@
 #ifndef DOTS_H
 #define DOTS_H
 
-#include <qlist.h>
+#include <QList>
 
 struct move_t
 {

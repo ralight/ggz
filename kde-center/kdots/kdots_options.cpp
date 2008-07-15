@@ -13,11 +13,12 @@
 
 #include <klocale.h>
 
-#include <qpushbutton.h>
-#include <qlayout.h>
+#include <QPushButton>
+#include <QLayout>
+#include <QLabel>
 
-KDotsOptions::KDotsOptions(QWidget *parent, const char *name)
-: QWidget(parent, name)
+KDotsOptions::KDotsOptions()
+: QWidget()
 {
 	QPushButton *ok;
 	QVBoxLayout *vbox, *vbox1, *vbox2, *vbox3;
@@ -25,56 +26,61 @@ KDotsOptions::KDotsOptions(QWidget *parent, const char *name)
 	QLabel *labelh, *labelv;
 	QLabel *title, *desc;
 
-	title = new QLabel(i18n("Options"), this);
+	title = new QLabel(i18n("Options"));
 	//QFont font("helvetica", 11);
 	QFont font = title->font();
 	font.setBold(TRUE);
 	title->setFont(font);
 
-	desc = new QLabel(i18n("Please specify the board size here."), this);
+	desc = new QLabel(i18n("Please specify the board size here."));
 
-	labelh = new QLabel(i18n("Horizontal"), this);
-	labelv = new QLabel(i18n("Vertical"), this);
+	labelh = new QLabel(i18n("Horizontal"));
+	labelv = new QLabel(i18n("Vertical"));
 
-	sliderh = new QSlider(QSlider::Horizontal, this);
+	sliderh = new QSlider(Qt::Horizontal);
 	sliderh->setRange(2, 24);
 	sliderh->setValue(7);
-	sliderh->setTickmarks(QSlider::Below);
+	sliderh->setTickPosition(QSlider::TicksBelow);
 	sliderh->setTickInterval(1);
 	sliderh->setPageStep(1);
 
-	sliderv = new QSlider(QSlider::Horizontal, this);
+	sliderv = new QSlider(Qt::Horizontal);
 	sliderv->setRange(2, 24);
 	sliderv->setValue(7);
-	sliderv->setTickmarks(QSlider::Below);
+	sliderv->setTickPosition(QSlider::TicksBelow);
 	sliderv->setTickInterval(1);
 	sliderv->setPageStep(1);
 
-	labelhn = new QLabel("7", this);
-	labelvn = new QLabel("7", this);
+	labelhn = new QLabel("7");
+	labelvn = new QLabel("7");
 
-	ok = new QPushButton("OK", this);
+	ok = new QPushButton("OK");
 
-	vbox = new QVBoxLayout(this, 5);
-	vbox->add(title);
-	vbox->add(desc);
-	hbox = new QHBoxLayout(vbox, 5);
-	vbox1 = new QVBoxLayout(hbox, 5);
-	vbox2 = new QVBoxLayout(hbox, 5);
-	vbox3 = new QVBoxLayout(hbox, 5);
-	vbox1->add(labelh);
-	vbox1->add(labelv);
-	vbox2->add(sliderh);
-	vbox2->add(sliderv);
-	vbox3->add(labelhn);
-	vbox3->add(labelvn);
-	vbox->add(ok);
+	vbox = new QVBoxLayout();
+	setLayout(vbox);
+	vbox->addWidget(title);
+	vbox->addWidget(desc);
+	hbox = new QHBoxLayout();
+	vbox->addLayout(hbox);
+	vbox1 = new QVBoxLayout();
+	hbox->addLayout(vbox1);
+	vbox2 = new QVBoxLayout();
+	hbox->addLayout(vbox2);
+	vbox3 = new QVBoxLayout();
+	hbox->addLayout(vbox3);
+	vbox1->addWidget(labelh);
+	vbox1->addWidget(labelv);
+	vbox2->addWidget(sliderh);
+	vbox2->addWidget(sliderv);
+	vbox3->addWidget(labelhn);
+	vbox3->addWidget(labelvn);
+	vbox->addWidget(ok);
 
 	connect(ok, SIGNAL(clicked()), SLOT(slotAccepted()));
 	connect(sliderh, SIGNAL(valueChanged(int)), SLOT(slotValueHorizontal(int)));
 	connect(sliderv, SIGNAL(valueChanged(int)), SLOT(slotValueVertical(int)));
 
-	setCaption(i18n("KDots Options"));
+	setWindowTitle(i18n("KDots Options"));
 	//resize(300, 150);
 	show();
 }

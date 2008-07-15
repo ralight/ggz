@@ -19,31 +19,34 @@
 #include <klocale.h>
 
 #include <qmenubar.h>
-#include <qlayout.h>
-#include <qsocketnotifier.h>
-#include <qdir.h>
-#include <qdatetime.h>
+#include <QLayout>
+#include <QSocketNotifier>
+#include <QDir>
+#include <QDateTime>
 
 #include <iostream>
 #include <cstdlib>
 
-KDots::KDots(bool ggzmode, QWidget *parent, const char *name)
-: QWidget(parent, name)
+KDots::KDots(bool ggzmode)
+: QWidget()
 {
 	QVBoxLayout *vbox;
 	QSocketNotifier *sn;
 
-	dots = new QDots(this, "qdots");
+	dots = new QDots();
 
-	vbox = new QVBoxLayout(this, 5);
-	vbox->add(dots);
+	vbox = new QVBoxLayout();
+	setLayout(vbox);
+	vbox->addWidget(dots);
 
 	kdots_options = NULL;
 
 	connect(dots, SIGNAL(signalTurn(int, int, int)), SLOT(slotTurn(int, int, int)));
 
-	setEraseColor(QColor(100, 100, 100));
-	setCaption("KDE Dots");
+	// FIXME: background colour
+	//setEraseColor(QColor(100, 100, 100));
+
+	//setCaption("KDE Dots");
 	setFixedSize(400, 400);
 	show();
 
@@ -80,7 +83,7 @@ void KDots::slotOptions()
 
 	if(!kdots_options)
 	{
-		kdots_options = new KDotsOptions(NULL, "kdots_options");
+		kdots_options = new KDotsOptions();
 		connect(kdots_options, SIGNAL(signalAccepted(int, int)), this, SLOT(slotStart(int, int)));
 	}
 	kdots_options->show();
@@ -224,7 +227,7 @@ void KDots::slotInput()
 			proto->state = proto->statechoose;
 			proto->turn = -1;
 			emit signalStatus(i18n("Game over!"));
-			str.sprintf(i18n("The game is over.\nYou reached %i points, your opponent %i.\n\nPlay another game?"),
+			str = i18n("The game is over.\nYou reached %1 points, your opponent %2.\n\nPlay another game?" ,
 				dots->count(proto->num), dots->count((proto->num + 1) % 2));
 			ret = KMessageBox::questionYesNo(this, str, i18n("Game over"));
 			if(ret == KMessageBox::Yes) gameinit();

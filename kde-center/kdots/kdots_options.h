@@ -13,20 +13,20 @@
 #define KDOTS_OPTIONS_H
 
 #include <qwidget.h>
-#include <qslider.h>
-#include <qlabel.h>
+#include <QSlider>
+#include <QLabel>
 
 class KDotsOptions : public QWidget
 {
 	Q_OBJECT
 	public:
-		KDotsOptions(QWidget *parent = NULL, const char *name = NULL);
+		KDotsOptions();
 		~KDotsOptions();
-	public slots:
+	public Q_SLOTS:
 		void slotAccepted();
 		void slotValueHorizontal(int value);
 		void slotValueVertical(int value);
-	signals:
+	Q_SIGNALS:
 		void signalAccepted(int horizontal, int vertical);
 	private:
 		QSlider *sliderh, *sliderv;

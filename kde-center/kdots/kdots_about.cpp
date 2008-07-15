@@ -13,18 +13,22 @@
 
 #include <kapplication.h>
 #include <klocale.h>
+#include <kstandarddirs.h>
 
-#include <qpushbutton.h>
-#include <qpixmap.h>
-#include <qpainter.h>
-#include <qpen.h>
+#include <QPushButton>
+#include <QPixmap>
+#include <QPainter>
+#include <QPen>
+//Added by qt3to4:
+#include <QMouseEvent>
+#include <QPaintEvent>
+#include <ktoolinvocation.h>
 
-#include "config.h"
-
-KDotsAbout::KDotsAbout(QWidget *parent, const char *name)
-: QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
+KDotsAbout::KDotsAbout()
+: QWidget()
 {
 	QPushButton *ok;
+	KStandardDirs d;
 
 	m_font = QFont("courier", 16);
 	m_repaint = 0;
@@ -37,9 +41,12 @@ KDotsAbout::KDotsAbout(QWidget *parent, const char *name)
 
 	setMouseTracking(true);
 
-	m_bg = new QPixmap(GGZDATADIR "/kdots/snowdragon.png");
-	setErasePixmap(*m_bg);
-	setCaption(i18n("About KDots"));
+	//setErasePixmap(QPixmap(d.findResource("data", "/kdots/snowdragon.png")));
+	m_bg = new QPixmap(d.findResource("data", "/kdots/snowdragon.png"));
+	//setErasePixmap(*m_bg);
+	// FIXME: background pixmap
+
+	setWindowTitle(i18n("About KDots"));
 	setFixedSize(400, 305);
 }
 
@@ -71,7 +78,7 @@ void KDotsAbout::mousePressEvent(QMouseEvent *e)
 
 	if(m_highlight)
 	{
-		kapp->invokeBrowser("http://www.ggzgamingzone.org/gameclients/kdots/");
+		KToolInvocation::invokeBrowser("http://www.ggzgamingzone.org/gameclients/kdots/");
 	}
 }
 
@@ -98,7 +105,7 @@ void KDotsAbout::paintEvent(QPaintEvent *e)
 {
 	QPainter p;
 	QPen pen;
-	const QPixmap *pix;
+	QPixmap *pix;
 
 	Q_UNUSED(e);
 
@@ -124,7 +131,9 @@ void KDotsAbout::paintEvent(QPaintEvent *e)
 	p.drawText(20, 200, measure(i18n("Thanks to www.drachenburg.de")));
 	p.drawText(20, 220, measure(i18n("for their dragon images!")));
 	p.end();
-	setErasePixmap(*pix);
+
+	// FIXME: background pixmap
+	//setErasePixmap(*pix);
 
 	delete pix;
 

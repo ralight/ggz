@@ -14,18 +14,18 @@
 #include "kdots_about.h"
 #include "kdots_help.h"
 #include "kdots_replay.h"
-
 #include "kdots_proto.h"
-#include "kggzseatsdialog.h"
+
+#include <kggzgames/kggzseatsdialog.h>
 
 #include <klocale.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kstatusbar.h>
 
 KDotsWin::KDotsWin(bool ggzmode)
 : KMainWindow()
 {
-	KPopupMenu *menu_game, *menu_help;
+	KMenu *menu_game, *menu_help;
 
 	kdots_help = NULL;
 	kdots_about = NULL;
@@ -33,40 +33,44 @@ KDotsWin::KDotsWin(bool ggzmode)
 
 	m_color = new QWidget(statusBar());
 	statusBar()->insertItem(i18n("Launching KDots..."), 1, 1);
-	statusBar()->addWidget(m_color, 1, true);
+	statusBar()->addWidget(m_color, 1);
 
-	menu_game = new KPopupMenu(this);
-	menu_game->insertItem(i18n("Synchronize"), menusync);
-	menu_game->insertItem(i18n("Seats..."), menuseats);
-	menu_game->insertSeparator();
-	menu_game->insertItem(i18n("Replay games..."), menureplay);
-	menu_game->insertSeparator();
-	menu_game->insertItem(i18n("Quit"), menuquit);
+	menu_game = new KMenu(this);
+	menu_game->setTitle(i18n("Game"));
+	action_sync = menu_game->addAction(i18n("Synchronize"));
+	action_seats = menu_game->addAction(i18n("Seats..."));
+	menu_game->addSeparator();
+	action_replay = menu_game->addAction(i18n("Replay games..."));
+	menu_game->addSeparator();
+	action_quit = menu_game->addAction(i18n("Quit"));
 
-	menu_help = new KPopupMenu(this);
-	menu_help->insertItem(i18n("Game Help"), menuhelp);
-	menu_help->insertSeparator();
-	menu_help->insertItem(i18n("About"), menuabout);
+	menu_help = new KMenu(this);
+	menu_help->setTitle(i18n("Help"));
+	action_help = menu_help->addAction(i18n("Game Help"));
+	menu_help->addSeparator();
+	action_about = menu_help->addAction(i18n("About"));
 	
-	menuBar()->insertItem(i18n("Game"), menu_game);
-	menuBar()->insertItem(i18n("Help"), menu_help);
+	menuBar()->addMenu(menu_game);
+	menuBar()->addMenu(menu_help);
 
-	connect(menu_game, SIGNAL(activated(int)), SLOT(slotMenu(int)));
-	connect(menu_help, SIGNAL(activated(int)), SLOT(slotMenu(int)));
+	connect(menu_game, SIGNAL(triggered(QAction*)), SLOT(slotMenu(QAction*)));
+	connect(menu_help, SIGNAL(triggered(QAction*)), SLOT(slotMenu(QAction*)));
 
-	m_dots = new KDots(ggzmode, this, "KDots"); 
+	m_dots = new KDots(ggzmode); 
 	setCentralWidget(m_dots);
 
-	connect(m_dots, SIGNAL(signalStatus(const char*)), SLOT(slotStatus(const char*)));
+	connect(m_dots, SIGNAL(signalStatus(QString)), SLOT(slotStatus(QString)));
 	connect(m_dots, SIGNAL(signalColor(const QColor&)), SLOT(slotColor(const QColor&)));
 
 	if(ggzmode)
+	{
 		slotStatus(i18n("Waiting for opponent..."));
+	}
 	else
 	{
 		slotStatus(i18n("Replay-only mode"));
-		menu_game->setItemEnabled(menusync, false);
-		menu_game->setItemEnabled(menuseats, false);
+		action_sync->setEnabled(false);
+		action_seats->setEnabled(false);
 	}
 
 	setFixedSize(400, 400);
@@ -78,45 +82,47 @@ KDotsWin::~KDotsWin()
 {
 }
 
-void KDotsWin::slotMenu(int id)
+void KDotsWin::slotMenu(QAction *action)
 {
-	KGGZSeatsDialog *seats;
-
-	switch(id)
+	if(action == action_about)
 	{
-		case menuabout:
-			if(!kdots_about) kdots_about = new KDotsAbout(NULL, "KDotsAbout");
-			kdots_about->show();
-			break;
-		case menuhelp:
-			if(!kdots_help) kdots_help = new KDotsHelp(NULL, "KDotsHelp");
-			kdots_help->show();
-			break;
-		case menuquit:
-			close();
-			break;
-		case menusync:
-			m_dots->slotSync();
-			break;
-		case menureplay:
-			if(!kdots_replay) kdots_replay = new KDotsReplay(NULL, "KDotsReplay");
-			kdots_replay->show();
-			break;
-		case menuseats:
-			/*seats = new KGGZSeatsDialog();
-			seats->setMod(m_dots->getProto()->getMod());*/
-			// FIXME: disabled until kdots uses kggzmod
-			break;
+		if(!kdots_about) kdots_about = new KDotsAbout();
+		kdots_about->show();
+	}
+	else if(action == action_help)
+	{
+		if(!kdots_help) kdots_help = new KDotsHelp();
+		kdots_help->show();
+	}
+	else if(action == action_quit)
+	{
+		close();
+	}
+	else if(action == action_sync)
+	{
+		m_dots->slotSync();
+	}
+	else if(action == action_replay)
+	{
+		if(!kdots_replay) kdots_replay = new KDotsReplay();
+		kdots_replay->show();
+	}
+	else if(action == action_seats)
+	{
+		/*KGGZSeatsDialog *seats = new KGGZSeatsDialog();
+		seats->setMod(m_dots->getProto()->getMod());*/
+		// FIXME: disabled until kdots uses kggzmod
 	}
 }
 
-void KDotsWin::slotStatus(const char *message)
+void KDotsWin::slotStatus(QString message)
 {
 	statusBar()->changeItem(message, 1);
 }
 
 void KDotsWin::slotColor(const QColor& color)
 {
-	m_color->setEraseColor(QColor(color));
+	// FIXME: background colour
+	//m_color->setEraseColor(QColor(color));
 }
 

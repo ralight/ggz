@@ -13,7 +13,7 @@
 #define KDOTS_ABOUT_H
 
 #include <qwidget.h>
-#include <qevent.h>
+#include <QEvent>
 
 class QPixmap;
 
@@ -21,9 +21,9 @@ class KDotsAbout : public QWidget
 {
 	Q_OBJECT
 	public:
-		KDotsAbout(QWidget *parent = NULL, const char *name = NULL);
+		KDotsAbout();
 		~KDotsAbout();
-	public slots:
+	public Q_SLOTS:
 		void slotAccepted();
 	protected:
 		void paintEvent(QPaintEvent *e);

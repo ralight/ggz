@@ -14,8 +14,8 @@
 
 #include "vdots.h"
 #include <qwidget.h>
-#include <qevent.h>
-#include <qpixmap.h>
+#include <QEvent>
+#include <QPixmap>
 
 class QDots : public QWidget, public VDots
 {
@@ -24,7 +24,7 @@ class QDots : public QWidget, public VDots
 		QDots();
 		~QDots();
 		void refreshBoard();
-	signals:
+	Q_SIGNALS:
 		void signalTurn(int x, int y, int direction);
 	protected:
 		void resizeEvent(QResizeEvent *e);

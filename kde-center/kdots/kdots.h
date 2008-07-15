@@ -13,7 +13,7 @@
 #define KDOTS_H
 
 #include <qwidget.h>
-#include <qevent.h>
+#include <QEvent>
 
 class KDotsProto;
 class KDotsOptions;
@@ -23,7 +23,7 @@ class KDots : public QWidget
 {
 	Q_OBJECT
 	public:
-		KDots(bool ggzmode, QWidget *parent = NULL, const char *name = NULL);
+		KDots(bool ggzmode);
 		~KDots();
 		void gameinit();
 		void gamesync();
@@ -31,7 +31,7 @@ class KDots : public QWidget
 
 		KDotsProto *getProto();
 
-	public slots:
+	public Q_SLOTS:
 		void slotOptions();
 		void slotStart(int horizontal, int vertical);
 		void slotTurn(int x, int y, int direction);
@@ -39,8 +39,8 @@ class KDots : public QWidget
 		void slotSync();
 		void slotDispatch();
 
-	signals:
-		void signalStatus(const char *message);
+	Q_SIGNALS:
+		void signalStatus(QString message);
 		void signalColor(const QColor& color);
 
 	private:

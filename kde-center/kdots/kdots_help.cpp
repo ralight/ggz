@@ -12,17 +12,19 @@
 #include "kdots_help.h"
 
 #include <klocale.h>
+#include <kstandarddirs.h>
 
-#include <qpushbutton.h>
-#include <qpixmap.h>
-#include <qpainter.h>
+#include <QPushButton>
+#include <QPixmap>
+#include <QPainter>
+//Added by qt3to4:
+#include <QPaintEvent>
 
-#include "config.h"
-
-KDotsHelp::KDotsHelp(QWidget *parent, const char *name)
-: QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
+KDotsHelp::KDotsHelp()
+: QWidget()
 {
 	QPushButton *ok;
+	KStandardDirs d;
 
 	m_font = QFont("courier", 16);
 	m_repaint = 0;
@@ -30,11 +32,12 @@ KDotsHelp::KDotsHelp(QWidget *parent, const char *name)
 	ok = new QPushButton(i18n("OK"), this);
 	ok->move(200, 340);
 
-	setErasePixmap(QPixmap(GGZDATADIR "/kdots/firedragon.png"));
+	// FIXME: background pixmap
+	//setErasePixmap(QPixmap(d.findResource("data", "/kdots/firedragon.png")));
 
 	connect(ok, SIGNAL(clicked()), SLOT(slotAccepted()));
 
-	setCaption(i18n("KDots Help"));
+	setWindowTitle(i18n("KDots Help"));
 	setFixedSize(500, 398);
 }
 
