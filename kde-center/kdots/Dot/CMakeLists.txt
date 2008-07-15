@@ -6,5 +6,5 @@ set(dot_LIB_SRCS
 
 kde4_add_library(dot STATIC ${dot_LIB_SRCS})
 
-target_link_libraries(dot ${KDE4_KDECORE_LIBS} ${QT_QTCORE_LIBRARY})
+target_link_libraries(dot ${QT_QTCORE_LIBRARY})
 

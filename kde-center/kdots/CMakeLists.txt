@@ -18,7 +18,7 @@ kde4_add_executable(kdots ${kdots_SRCS})
 kde4_add_app_icon(kdots_SRCS hi*-app-kdots.png)
 kde4_install_icons(${ICON_INSTALL_DIR})
 
-target_link_libraries(kdots ${KDE4_KDEUI_LIBS} ${KDE4_KNEWSTUFF2_LIBS} kggzmod kggzgames ../lib/libdot.a)
+target_link_libraries(kdots ${KDE4_KDEUI_LIBS} ${KDE4_KNEWSTUFF2_LIBS} kggzmod kggzgames dot ${GGZDMOD_LIBRARY} ggzmod ggz)
 
 install(TARGETS kdots ${INSTALL_TARGETS_DEFAULT_ARGS})
 #install(FILES kdots.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
