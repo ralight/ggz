@@ -12,12 +12,19 @@
 #ifndef KDOTS_PROTO_H
 #define KDOTS_PROTO_H
 
-#include <ggzmod.h>
+//#include <ggzmod.h>
+#include <qglobal.h>
 
 #define MAX_WIDTH 25
 #define MAX_HEIGHT 25
 
+namespace KGGZMod
+{
+	class Module;
+};
+
 class KDots;
+class KGGZPacket;
 
 class KDotsProto
 {
@@ -80,8 +87,8 @@ class KDotsProto
 		void init();
 		void sync();
 		void dispatch();
-		static void handle_server(GGZMod *mod, GGZModEvent e,
-					  const void *data);
+		//static void handle_server(GGZMod *mod, GGZModEvent e,
+		//			  const void *data);
 
 		void getPlayers();
 		void getSeat();
@@ -95,23 +102,25 @@ class KDotsProto
 		int getSyncScore();
 		void getOppMove(int direction);
 
-		GGZMod *getMod();
+		//GGZMod *getMod();
 		
 		int state;
-		int fd;
-		int fdcontrol;
+		//int fd;
+		//int fdcontrol;
 		int num;
 		char players[2][32];
-		char width, height;
+		qint8 width, height;
 		int turn;
 		int movex, movey;
 		int m_lastx, m_lasty;
 		int m_lastdir;
 
 	private:
-		GGZMod *mod;
-		KDots *gameobject;
-		static KDotsProto *self;
+		//GGZMod *mod;
+		//KDots *gameobject;
+		//static KDotsProto *self;
+		//KGGZMod::Module *m_mod;
+		KGGZPacket *m_packet;
 };
 
 #endif

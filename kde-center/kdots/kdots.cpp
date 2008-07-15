@@ -31,7 +31,7 @@ KDots::KDots(bool ggzmode)
 : QWidget()
 {
 	QVBoxLayout *vbox;
-	QSocketNotifier *sn;
+	//QSocketNotifier *sn;
 
 	dots = new QDots();
 
@@ -57,8 +57,8 @@ KDots::KDots(bool ggzmode)
 		proto->turn = -1;
 		proto->num = -2;
 
-		sn = new QSocketNotifier(proto->fdcontrol, QSocketNotifier::Read, this);
-		connect(sn, SIGNAL(activated(int)), SLOT(slotDispatch()));
+		//sn = new QSocketNotifier(proto->fdcontrol, QSocketNotifier::Read, this);
+		//connect(sn, SIGNAL(activated(int)), SLOT(slotDispatch()));
 	}
 	else proto = NULL;
 }
@@ -294,14 +294,17 @@ void KDots::gamesync()
 
 void KDots::input()
 {
+/*
 	QSocketNotifier *sn;
 
 	sn = new QSocketNotifier(proto->fd, QSocketNotifier::Read, this);
 	connect(sn, SIGNAL(activated(int)), SLOT(slotInput()));
+*/
+	// FIXME: setup kggzmod signals here
 }
 
-void KDots::slotDispatch()
+/*void KDots::slotDispatch()
 {
 	proto->dispatch();
-}
+}*/
 

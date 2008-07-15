@@ -37,7 +37,7 @@ class KDots : public QWidget
 		void slotTurn(int x, int y, int direction);
 		void slotInput();
 		void slotSync();
-		void slotDispatch();
+		/*void slotDispatch();*/
 
 	Q_SIGNALS:
 		void signalStatus(QString message);
