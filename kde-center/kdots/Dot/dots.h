@@ -12,7 +12,7 @@
 #ifndef DOTS_H
 #define DOTS_H
 
-#include <qvaluelist.h>
+#include <qlist.h>
 
 struct move_t
 {
@@ -55,7 +55,7 @@ class Dots
 		void cleanup();
 
 		int m_cols, m_rows;
-		QValueList<Move> m_moves;
+		QList<Move> m_moves;
 	private:
 		void assignBorder(int x, int y, int direction, int side);
 

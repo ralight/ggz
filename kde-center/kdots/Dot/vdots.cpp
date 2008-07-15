@@ -71,10 +71,10 @@ int VDots::vSetBorderValue(int x, int y, int side)
 
 void VDots::save(QString filename)
 {
-	QValueList<Move>::Iterator it;
+	QList<Move>::Iterator it;
 
 	QFile f(filename);
-	if(!f.open(IO_WriteOnly)) return;
+	if(!f.open(QIODevice::WriteOnly)) return;
 
 	QTextStream t(&f);
 	t << "format" << endl;
@@ -100,7 +100,7 @@ void VDots::load(QString filename)
 	m_moves.clear();
 
 	QFile f(filename);
-	if(!f.open(IO_ReadOnly)) return;
+	if(!f.open(QIODevice::ReadOnly)) return;
 
 	QTextStream t(&f);
 	t >> s;
@@ -114,19 +114,19 @@ void VDots::load(QString filename)
 
 	resizeBoard(w, h);
 
-	while(!t.eof())
+	while(!t.atEnd())
 	{
 		Move m;
 		t >> s;
-		sl = sl.split(",", s);
+		sl = s.split(",");
 		if(sl.count() != 4) return;
-		s = *(sl.at(0));
+		s = sl.at(0);
 		m.x = s.toInt();
-		s = *(sl.at(1));
+		s = sl.at(1);
 		m.y = s.toInt();
-		s = *(sl.at(2));
+		s = sl.at(2);
 		m.side = s.toInt();
-		s = *(sl.at(3));
+		s = sl.at(3);
 		m.direction = s.toInt();
 		m_moves.append(m);
 	}
@@ -141,7 +141,7 @@ int VDots::positions()
 
 void VDots::step(int position)
 {
-	QValueList<Move>::Iterator it;
+	QList<Move>::Iterator it;
 	int i;
 
 	for(it = m_moves.begin(); it != m_moves.end(); it++)

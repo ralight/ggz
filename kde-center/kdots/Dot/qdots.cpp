@@ -14,18 +14,23 @@
 #include <qimage.h>
 #include <qpainter.h>
 #include <qpen.h>
-#include <qmemarray.h>
+#include <qvector.h>
+#include <QPixmap>
+#include <QResizeEvent>
+#include <QMouseEvent>
+#include <QPaintEvent>
 
-#include "config.h"
+// FIXME!
+#define GGZDATADIR "XXX"
 
 QPixmap *bgpix;
 QImage *bgimg, *fgimg;
-QMemArray<int> *m_shadow;
-QMemArray<int> *m_shadowlines;
+QVector<int> *m_shadow;
+QVector<int> *m_shadowlines;
 int m_arywidth, m_aryheight;
 
-QDots::QDots(QWidget* parent, const char* name)
-: QWidget(parent, name), VDots()
+QDots::QDots()
+: QWidget(), VDots()
 {
 	bgpix = NULL;
 	fgimg = NULL;
@@ -35,9 +40,11 @@ QDots::QDots(QWidget* parent, const char* name)
 
 	bgpix = new QPixmap(GGZDATADIR "/kdots/dragon.png");
 	grayscale(bgpix);
-	bgimg = new QImage(bgpix->convertToImage());
-	fgimg = new QImage(bgpix->convertToImage());
-	setErasePixmap(*bgpix);
+	bgimg = new QImage(bgpix->toImage());
+	fgimg = new QImage(bgpix->toImage());
+
+	// FIXME: painting methods
+	//setErasePixmap(*bgpix);
 }
 
 QDots::~QDots()
@@ -55,7 +62,7 @@ void QDots::grayscale(QPixmap *pix)
 	QImage *tmp;
 	QRgb rgb;
 
-	tmp = new QImage(bgpix->convertToImage());
+	tmp = new QImage(bgpix->toImage());
 
 	for(int j = 0; j < pix->height(); j++)
 		for(int i = 0; i < pix->width(); i++)
@@ -129,7 +136,7 @@ void QDots::paintEvent(QPaintEvent *e)
 		{
 			if(m_shadow->at((j - 1) * m_arywidth + i - 1) != content(i - 1, j - 1))
 			{
-				m_shadow->at((j - 1) * m_arywidth + i - 1) = content(i - 1, j - 1);
+				(*m_shadow)[(j - 1) * m_arywidth + i - 1] = content(i - 1, j - 1);
 				for(int y = 0; y < tileheight; y++)
 					for(int x = 0; x < tilewidth; x++)
 					{
@@ -150,14 +157,14 @@ void QDots::paintEvent(QPaintEvent *e)
 				p.end();
 				updatescreen = 1;
 
-				m_shadowlines->at(((j - 1) * m_cols + (i - 1)) * 2) = -2;
-				m_shadowlines->at(((j) * m_cols + (i - 1)) * 2) = -2;
-				m_shadowlines->at(((j - 1) * m_cols + (i)) * 2) = -2;
-				m_shadowlines->at(((j) * m_cols + (i)) * 2) = -2;
-				m_shadowlines->at(((j - 1) * m_cols + (i - 1)) * 2 + 1) = -2;
-				m_shadowlines->at(((j) * m_cols + (i - 1)) * 2 + 1) = -2;
-				m_shadowlines->at(((j - 1) * m_cols + (i)) * 2 + 1) = -2;
-				m_shadowlines->at(((j) * m_cols + (i)) * 2 + 1) = -2;
+				(*m_shadowlines)[((j - 1) * m_cols + (i - 1)) * 2] = -2;
+				(*m_shadowlines)[((j) * m_cols + (i - 1)) * 2] = -2;
+				(*m_shadowlines)[((j - 1) * m_cols + (i)) * 2] = -2;
+				(*m_shadowlines)[((j) * m_cols + (i)) * 2] = -2;
+				(*m_shadowlines)[((j - 1) * m_cols + (i - 1)) * 2 + 1] = -2;
+				(*m_shadowlines)[((j) * m_cols + (i - 1)) * 2 + 1] = -2;
+				(*m_shadowlines)[((j - 1) * m_cols + (i)) * 2 + 1] = -2;
+				(*m_shadowlines)[((j) * m_cols + (i)) * 2 + 1] = -2;
 			}
 		}
 	}
@@ -169,7 +176,7 @@ void QDots::paintEvent(QPaintEvent *e)
 		{
 			if((i < m_cols) && (m_shadowlines->at(((j - 1) * m_cols + (i - 1)) * 2) != border(i - 1, j - 1, right)))
 			{
-				m_shadowlines->at(((j - 1) * m_cols + (i - 1)) * 2) = border(i - 1, j - 1, right);
+				(*m_shadowlines)[((j - 1) * m_cols + (i - 1)) * 2] = border(i - 1, j - 1, right);
 				if(border(i - 1, j - 1, right) != -1) p.setPen(Qt::darkBlue);
 				else p.setPen(Qt::yellow);
 				p.drawLine(i * ws, j * hs, (i + 1) * ws, j * hs);
@@ -179,7 +186,7 @@ void QDots::paintEvent(QPaintEvent *e)
 
 			if((j < m_rows) && (m_shadowlines->at(((j - 1) * m_cols + (i - 1)) * 2 + 1) != border(i - 1, j - 1, down)))
 			{
-				m_shadowlines->at(((j - 1) * m_cols + (i - 1)) * 2 + 1) = border(i - 1, j - 1, down);
+				(*m_shadowlines)[((j - 1) * m_cols + (i - 1)) * 2 + 1] = border(i - 1, j - 1, down);
 				if(border(i - 1, j - 1, down) != -1) p.setPen(Qt::darkBlue);
 				else p.setPen(Qt::yellow);
 				p.drawLine(i * ws, j * hs, i * ws, (j + 1) * hs);
@@ -199,7 +206,9 @@ void QDots::paintEvent(QPaintEvent *e)
 	}
 	p.end();
 
-	if(updatescreen) setErasePixmap(*bgpix);
+	// FIXME: painting function
+	//if(updatescreen)
+	//	setErasePixmap(*bgpix);
 }
 
 void QDots::mousePressEvent(QMouseEvent *e)
@@ -226,16 +235,16 @@ void QDots::refreshBoard()
 	if(m_shadow) delete m_shadow;
 	if(m_shadowlines) delete m_shadowlines;
 
-	m_shadow = new QMemArray<int>((m_cols - 1) * (m_rows - 1));
-	m_shadowlines = new QMemArray<int>(m_cols * m_rows * 2);
+	m_shadow = new QVector<int>((m_cols - 1) * (m_rows - 1));
+	m_shadowlines = new QVector<int>(m_cols * m_rows * 2);
 	for(int j = 0; j < m_rows - 1; j++)
 		for(int i = 0; i < m_cols - 1; i++)
-			m_shadow->at(j * (m_cols - 1) + i) = -1;
+			(*m_shadow)[j * (m_cols - 1) + i] = -1;
 	for(int j = 0; j < m_rows; j++)
 		for(int i = 0; i < m_cols; i++)
 		{
-			m_shadowlines->at((j * m_cols + i) * 2) = 0;
-			m_shadowlines->at((j * m_cols + i) * 2 + 1) = 0;
+			(*m_shadowlines)[(j * m_cols + i) * 2] = 0;
+			(*m_shadowlines)[(j * m_cols + i) * 2 + 1] = 0;
 		}
 	m_arywidth = m_cols - 1;
 	m_aryheight = m_rows - 1;
@@ -244,8 +253,10 @@ void QDots::refreshBoard()
 	p.drawImage(0, 0, *bgimg, 0, 0, width(), height());
 	p.end();
 	if(fgimg) delete fgimg;
-	fgimg = new QImage(bgpix->convertToImage());
-	setErasePixmap(*bgpix);
+	fgimg = new QImage(bgpix->toImage());
+
+	// FIXME: painting method
+	//setErasePixmap(*bgpix);
 
 	resizeEvent(NULL);
 	repaint();
