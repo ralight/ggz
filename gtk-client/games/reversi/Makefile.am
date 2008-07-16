@@ -1,11 +1,11 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 8466 2006-08-04 01:13:52Z jdorje $
+#  $Id: Makefile.am 10350 2008-07-16 01:30:46Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
 SUBDIRS = .
 
-AM_CPPFLAGS = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
+AM_CPPFLAGS = -I$(srcdir)/../common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
 		$(GTK_CFLAGS)
 
 install-data-local:
@@ -23,7 +23,7 @@ ggz_reversi_SOURCES = \
 	options_dlg.c	options_dlg.h \
 	support.c	support.h
 
-ggz_reversi_LDADD =	$(top_builddir)/common/libgtk-games.a		\
+ggz_reversi_LDADD =	$(builddir)/../common/libgtk-games.a		\
 			$(GTK_LIBS) $(INTLLIBS) $(LDADD)	\
 			$(LIB_GGZMOD) $(LIB_GGZ)
 ggz_reversi_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)

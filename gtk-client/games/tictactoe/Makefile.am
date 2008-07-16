@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
+AM_CPPFLAGS = -I$(srcdir)/../common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
 		$(GTK_CFLAGS)
 
 EXTRA_DIST = module.dsc.in
@@ -18,7 +18,7 @@ ggz_ttt_SOURCES =			\
 	support.c	support.h	\
 	net.c		net.h
 
-ggz_ttt_LDADD =	$(top_builddir)/common/libgtk-games.a			\
+ggz_ttt_LDADD =	$(builddir)/../common/libgtk-games.a			\
 		$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
 		$(LIB_GGZMOD) $(LIB_GGZ)
 ggz_ttt_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)

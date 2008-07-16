@@ -1,13 +1,13 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8481 2006-08-07 07:35:04Z jdorje $
+# $Id: Makefile.am 10350 2008-07-16 01:30:46Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
 SUBDIRS = common client .
 
-AM_CPPFLAGS =	-I$(top_srcdir)/common/ \
-		-I$(top_srcdir)/ggzcards/common \
-		-I$(top_srcdir)/ggzcards/client \
+AM_CPPFLAGS =	-I$(srcdir)/../common/ \
+		-I$(srcdir)/common \
+		-I$(srcdir)/client \
 		$(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
 		$(GTK_CFLAGS)
 
@@ -39,10 +39,10 @@ ggz_ggzcards_SOURCES = \
 # Note: if library X depends on library Y, then library X must be listed
 # first here.  If there's a circular dependency you may have to list the
 # libs twice!
-ggz_ggzcards_LDADD =	$(top_builddir)/common/libgtk-games.a		\
+ggz_ggzcards_LDADD =	$(builddir)/../common/libgtk-games.a		\
 			$(GTK_LIBS) $(INTLLIBS) $(LDADD)			\
-			$(top_builddir)/ggzcards/client/libclient.a	\
-			$(top_builddir)/ggzcards/common/libcommon.a	\
+			$(builddir)/client/libclient.a	\
+			$(builddir)/common/libcommon.a	\
 			$(LIB_GGZMOD) $(LIB_GGZ)
 
 ggz_ggzcards_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
