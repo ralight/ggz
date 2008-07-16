@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 10268 2008-07-10 20:31:20Z jdorje $
+ * $Id: net.c 10352 2008-07-16 05:31:13Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1132,9 +1132,9 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 	}
 	else if (!XML_ParseBuffer(net->parser, len, done)) {
 		ggz_debug(GGZ_DBG_XML, "Parse error at line %d, col %d:%s",
-			XML_GetCurrentLineNumber(net->parser),
-			XML_GetCurrentColumnNumber(net->parser),
-			XML_ErrorString(XML_GetErrorCode(net->parser)));
+			  (int) XML_GetCurrentLineNumber(net->parser),
+			  (int) XML_GetCurrentColumnNumber(net->parser),
+			  XML_ErrorString(XML_GetErrorCode(net->parser)));
 
 		_net_send_result(net, "protocol", E_BAD_XML);
 		done = 1;
