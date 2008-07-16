@@ -1,8 +1,9 @@
-EXTRA_DIST = README.GGZ QuickStart.GGZ Doxyfile
+EXTRA_DIST = README.GGZ QuickStart.GGZ Doxyfile \
+	README.client INSTALL.client indent.pro
 
-SUBDIRS = src tests man
+SUBDIRS = libggz ggzmod-ggz ggzcore ggzmod ggz-config man tests desktop po
 
 ACLOCAL_AMFLAGS = -I m4 -I m4/ggz
 
 pkgconfigdir = $(datadir)/pkgconfig
-pkgconfig_DATA = libggz.pc
+pkgconfig_DATA = libggz.pc ggzmod.pc ggzcore.pc

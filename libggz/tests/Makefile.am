@@ -1,5 +1,6 @@
-AM_CPPFLAGS = -I$(top_srcdir)/src/
-LDADD = $(top_builddir)/src/libggz.la
+AM_CPPFLAGS = -I$(top_srcdir)/libggz/ -I$(top_srcdir)/ggzmod-ggz
+LDADD = $(top_builddir)/libggz/libggz.la \
+	$(top_builddir)/ggzmod-ggz/libggzmod-ggz.la
 
 check_PROGRAMS = \
 	debugmsg \
@@ -12,7 +13,9 @@ check_PROGRAMS = \
 	tls \
 	test16 \
 	test64 \
-	hashing
+	hashing \
+	ggzmodtest \
+	ggzmodgametest
 
 debugmsg_SOURCES = debugmsg.c
 dio_SOURCES = dio.c
@@ -25,6 +28,8 @@ tls_SOURCES = tls.c
 test16_SOURCES = test16.c
 test64_SOURCES = test64.c
 hashing_SOURCES = hashing.c
+ggzmodtest_SOURCES = ggzmodtest.c
+ggzmodgametest_SOURCES = ggzmodgametest.c
 
 TESTS = debugmsg dio cfgtest ggzcommon read_line misc strcmp tls test16 test64 hashing
 

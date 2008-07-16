@@ -11,6 +11,47 @@ AM_MAINTAINER_MODE
 AC_GGZ_PLATFORM_BASE
 AC_PROG_LIBTOOL
 AC_GGZ_PLATFORM
+AC_GGZ_INTL
+
+# Check for header files
+# ======================
+AC_CHECK_HEADERS([fcntl.h limits.h sys/time.h time.h \
+                  unistd.h], [],
+                 [AC_MSG_ERROR([cannot find required header file])])
+AC_CHECK_HEADERS([netdb.h sys/socket.h winsock2.h])
+AC_HEADER_SYS_WAIT
+AC_HEADER_TIME
+
+
+# Check for typedefs, structures, and compiler characteristics
+# ============================================================
+AC_C_CONST
+AC_TYPE_SIZE_T
+AC_TYPE_SIGNAL
+
+AC_GGZ_PLATFORM_POSIX_NET
+AH_BOTTOM(
+[/* Controls whether socketpair or local sockets are used for ggzmod connection */
+#if defined HAVE_FORK && defined HAVE_SOCKETPAIR
+#  define USE_SOCKETPAIR
+#endif
+
+/* Controls whether ggzmod-ggz or ggzmod-game makes the channel connection */
+#if defined GGZ_HAVE_SENDMSG && defined USE_SOCKETPAIR
+#  define USE_SOCKETFD
+#endif])
+
+# Check for library functions
+# ===========================
+AC_CHECK_FUNCS([dup2 strcasecmp strchr strerror \
+                malloc vprintf], [],
+               [AC_MSG_ERROR([cannot find required function])])
+AC_CHECK_FUNCS([fork select]) # These fail; dunno why
+AC_CHECK_FUNCS([close hstrerror kill socketpair alarm getenv setenv])
+AC_FUNC_FORK
+AC_FUNC_SELECT_ARGTYPES
+AC_FUNC_VPRINTF
+FUNC_MKDIR_TAKES_ONE_ARG
 
 # Find pthread library & libanl
 # =============================
@@ -21,6 +62,15 @@ AC_GGZ_PTHREADS
 AC_GGZ_GCRYPT
 AC_GGZ_TLS
 
+# Check for expat
+# ===============
+AC_CHECK_LIB(expat, XML_ParserCreate, [LIB_EXPAT="-lexpat"],
+             [AC_MSG_ERROR(cannot find expat library)])
+AC_CHECK_HEADER(expat.h, [],
+                [AC_MSG_ERROR(cannot find expat.h header)])
+AC_SUBST(LIB_EXPAT)
+
+
 # Debug modes
 # ===========
 AC_GGZ_DEBUG
@@ -28,17 +78,33 @@ AC_GGZ_DEBUG
 # Libggz settings
 # ===============
 AM_CONDITIONAL(INSTALL_LIBGGZ, true)
+AM_CONDITIONAL(INSTALL_GGZMOD, true)
+AM_CONDITIONAL(INSTALL_GGZCORE, true)
 AC_GGZ_VISIBILITY
 
 # Makefile creation
 # =================
 AC_CONFIG_FILES([
-  Makefile 
-  src/Makefile
-  src/security/Makefile
-  tests/Makefile
-  man/Makefile
-  libggz.pc
+	   Makefile 
+	   libggz.pc
+	   ggzmod.pc
+	   ggzcore.pc
+	   libggz/Makefile
+	   libggz/security/Makefile
+	   tests/Makefile
+	   ggzcore/Makefile
+	   ggzmod/Makefile
+	   ggzmod-ggz/Makefile
+	   ggz-config/Makefile
+	   man/Makefile
+	   man/ggz-config.6
+	   man/ggz.modules.5
+	   man/ggzmod_h.3
+	   man/ggzcore_h.3
+	   desktop/Makefile
+	   po/Makefile
+	   po/ggzcore/Makefile
+	   po/ggz-config/Makefile
 ])
 AC_OUTPUT
 

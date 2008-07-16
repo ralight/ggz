@@ -24,6 +24,10 @@ AC_ARG_ENABLE([cmd_client],
 AC_ARG_ENABLE([debug],
 	AC_HELP_STRING([--disable-debug], [Turn off debugging (on by default)]),,
 	enable_debug=yes)
+AC_ARG_ENABLE([ggzwrap],
+              AS_HELP_STRING([--disable-ggzwrap], [Don't build ggz wrapper]),
+              [enable_ggzwrap=$enableval], [enable_ggzwrap="yes"])
+
 
 dnl Check for standard build environment
 dnl ====================================
@@ -113,14 +117,20 @@ if test "$enable_metaserv" = no; then
 	enable_telggz=no
 fi
 
-if test "$enable_cmd_client" = yes || test "$enable_telggz" = yes; then
+if test "$enable_cmd_client" = yes || test "$enable_telggz" = yes || test "$enable_ggzwrap" = yes; then
 	AC_GGZ_GGZCORE
+fi
+if test "$enable_ggzwrap" = yes; then
+	AC_GGZ_GGZMOD
+	AC_GGZ_CONFIG("true", ignore)
 fi
 
 AM_CONDITIONAL([COND_CMDCLIENT], [test "$enable_cmd_client" = yes])
 AM_CONDITIONAL([COND_METASERV], [test "$enable_metaserv" = yes])
 AM_CONDITIONAL([COND_GGZCOMM], [test "$enable_ggzcomm" = yes])
 AM_CONDITIONAL([COND_TELGGZ], [test "$enable_telggz" = yes])
+AM_CONDITIONAL([COND_GGZWRAP], [test "$enable_ggzwrap" = yes])
+
 
 AC_SUBST(LDADD)
 
@@ -133,6 +143,8 @@ AC_CONFIG_FILES([
 	metaserv/libmeta/Makefile
 	metaserv/metaserv/Makefile
 	ggzcomm/Makefile
+	ggz-wrapper/Makefile
+	ggzwrap/Makefile
 	motds/Makefile
 	man/Makefile
 ])

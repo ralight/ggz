@@ -7,14 +7,12 @@ else
 noinst_LTLIBRARIES = libggzmod.la
 endif
 
-libggzmod_la_CPPFLAGS = $(LIBGGZ_INCLUDES) -I$(top_srcdir)/ggzcore
+AM_CPPFLAGS = -I$(top_srcdir)/libggz -I$(top_srcdir)/ggzcore
 
-libggzmod_la_LIBADD = $(top_builddir)/ggzcore/libggzcore.la
-if INSTALL_GGZMOD
-libggzmod_la_LIBADD += $(LIB_GGZ)
-endif
+libggzmod_la_LIBADD = $(top_builddir)/ggzcore/libggzcore.la \
+	$(top_builddir)/libggz/libggz.la
 
-libggzmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 5:0:1
+libggzmod_la_LDFLAGS = -version-info 5:0:1
 if SYMBOL_VISIBILITY
 libggzmod_la_LDFLAGS += -Wl,--version-script=linker.map
 libggzmod_la_DEPENDENCIES = linker.map
