@@ -1,13 +1,12 @@
-///////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 //
-// KDots
-// Connect the Dots game for KDE, using the Dots classes
-// Copyright (C) 2001, 2002 Josef Spillner
-// dr_maux@users.sourceforge.net
-// The MindX Open Source Project
-// http://mindx.sourceforge.net/games/kdots/
+// KDots: Connect the Dots game for KDE 4
+// http://www.ggzgamingzone.org/gameclients/kdots/
 //
-///////////////////////////////////////////////////////////////
+// Copyright (C) 2001 - 2008 Josef Spillner <josef@ggzgamingzone.org>
+// Published under the conditions of the GNU GPL, see COPYING
+//
+/////////////////////////////////////////////////////////////////////
 
 #include "kdots.h"
 #include "kdots_options.h"
@@ -17,6 +16,7 @@
 
 #include <kmessagebox.h>
 #include <klocale.h>
+#include <kstandarddirs.h>
 
 #include <qmenubar.h>
 #include <QLayout>
@@ -31,9 +31,12 @@ KDots::KDots(bool ggzmode)
 : QWidget()
 {
 	QVBoxLayout *vbox;
+	KStandardDirs d;
 	//QSocketNotifier *sn;
 
 	dots = new QDots();
+	QPixmap pix(d.findResource("data", "kdots/dragon.png"));
+	dots->setBackgroundImage(pix);
 
 	vbox = new QVBoxLayout();
 	setLayout(vbox);

@@ -1,28 +1,26 @@
-///////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 //
-// KDots
-// Connect the Dots game for KDE, using the Dots classes
-// Copyright (C) 2001, 2002 Josef Spillner
-// dr_maux@users.sourceforge.net
-// The MindX Open Source Project
-// http://mindx.sourceforge.net/gameclients/kdots/
+// KDots: Connect the Dots game for KDE 4
+// http://www.ggzgamingzone.org/gameclients/kdots/
 //
-///////////////////////////////////////////////////////////////
+// Copyright (C) 2001 - 2008 Josef Spillner <josef@ggzgamingzone.org>
+// Published under the conditions of the GNU GPL, see COPYING
+//
+/////////////////////////////////////////////////////////////////////
 
 #include "kdots_about.h"
 
 #include <kapplication.h>
 #include <klocale.h>
 #include <kstandarddirs.h>
-
-#include <QPushButton>
-#include <QPixmap>
-#include <QPainter>
-#include <QPen>
-//Added by qt3to4:
-#include <QMouseEvent>
-#include <QPaintEvent>
 #include <ktoolinvocation.h>
+#include <kaboutdata.h>
+#include <kdebug.h>
+
+#include <qpushbutton.h>
+#include <qpixmap.h>
+#include <qpainter.h>
+#include <qpen.h>
 
 KDotsAbout::KDotsAbout()
 : QWidget()
@@ -30,43 +28,38 @@ KDotsAbout::KDotsAbout()
 	QPushButton *ok;
 	KStandardDirs d;
 
-	m_font = QFont("courier", 16);
-	m_repaint = 0;
-	m_highlight = 0;
+	setAttribute(Qt::WA_NoSystemBackground);
 
-	ok = new QPushButton(i18n("OK"), this);
-	ok->move(150, 250);
-
-	connect(ok, SIGNAL(clicked()), SLOT(slotAccepted()));
+	m_font = QFont("courier", 20);
+	m_highlight = false;
+	m_setup = true;
 
 	setMouseTracking(true);
 
-	//setErasePixmap(QPixmap(d.findResource("data", "/kdots/snowdragon.png")));
-	m_bg = new QPixmap(d.findResource("data", "/kdots/snowdragon.png"));
-	//setErasePixmap(*m_bg);
-	// FIXME: background pixmap
-
 	setWindowTitle(i18n("About KDots"));
-	setFixedSize(400, 305);
+	setFixedSize(600, 457);
+
+	QPixmap bg(d.findResource("data", "kdots/snowdragon.png"));
+	m_bg = new QPixmap(bg.scaled(size(), Qt::IgnoreAspectRatio));
+
+	ok = new QPushButton(i18n("Close"), this);
+	ok->move((width() - ok->width()) / 2, height() - 50);
+
+	connect(ok, SIGNAL(clicked()), SLOT(close()));
 }
 
 KDotsAbout::~KDotsAbout()
 {
-}
-
-void KDotsAbout::slotAccepted()
-{
-	close();
+	delete m_bg;
 }
 
 QString KDotsAbout::measure(QString s)
 {
 	QFontMetrics m(m_font);
-	while(m.width(s) > 360)
+	while(m.width(s) > width() - 20)
 	{
 		m_font.setPointSize(m_font.pointSize() - 1);
 		m = QFontMetrics(m_font);
-		m_repaint = 1;
 	}
 
 	return s;
@@ -74,11 +67,12 @@ QString KDotsAbout::measure(QString s)
 
 void KDotsAbout::mousePressEvent(QMouseEvent *e)
 {
-	Q_UNUSED(e);
-
-	if(m_highlight)
+	if(e->button() == Qt::LeftButton)
 	{
-		KToolInvocation::invokeBrowser("http://www.ggzgamingzone.org/gameclients/kdots/");
+		if(m_highlight)
+		{
+			KToolInvocation::invokeBrowser(KGlobal::mainComponent().aboutData()->homepage());
+		}
 	}
 }
 
@@ -88,16 +82,14 @@ void KDotsAbout::mouseMoveEvent(QMouseEvent *e)
 	{
 		if(!m_highlight)
 		{
-			m_highlight = 1;
-			m_repaint = 0;
-			repaint();
+			m_highlight = true;
+			update();
 		}
 	}
 	else if(m_highlight)
 	{
-		m_highlight = 0;
-		m_repaint = 0;
-		repaint();
+		m_highlight = false;
+		update();
 	}
 }
 
@@ -105,20 +97,26 @@ void KDotsAbout::paintEvent(QPaintEvent *e)
 {
 	QPainter p;
 	QPen pen;
-	QPixmap *pix;
+	QPixmap dummy;
+	QPaintDevice *dev;
 
 	Q_UNUSED(e);
 
-	if(m_repaint == -1) return;
+	dev = this;
+	if(m_setup)
+	{
+		dummy = m_bg->copy();
+		dev = &dummy;
+	}
 
-	pix = new QPixmap(*m_bg);
-	p.begin(pix);
+	p.begin(dev);
+	p.drawImage(0, 0, m_bg->toImage());
 	m_font.setBold(true);
 	p.setFont(m_font);
-	p.drawText(100, 40, measure(i18n("Connect The Dots for KDE")));
+	p.drawText(20, 40, measure(i18n("Connect The Dots for KDE 4")));
 	m_font.setBold(false);
 	p.setFont(m_font);
-	p.drawText(20, 80, measure("Copyright (C) 2001 - 2004 Josef Spillner"));
+	p.drawText(20, 80, measure("Copyright (C) 2001 - 2008 Josef Spillner"));
 	p.drawText(20, 100, measure("josef@ggzgamingzone.org"));
 	p.drawText(20, 140, measure(i18n("This game is part of the GGZ Gaming Zone.")));
 	if(m_highlight)
@@ -127,25 +125,16 @@ void KDotsAbout::paintEvent(QPaintEvent *e)
 		p.setPen(QColor(255, 0, 0));
 	}
 	p.drawText(20, 160, measure("http://www.ggzgamingzone.org/gameclients/kdots/"));
-	if(m_highlight) p.setPen(pen);
+	if(m_highlight)
+		p.setPen(pen);
 	p.drawText(20, 200, measure(i18n("Thanks to www.drachenburg.de")));
 	p.drawText(20, 220, measure(i18n("for their dragon images!")));
 	p.end();
 
-	// FIXME: background pixmap
-	//setErasePixmap(*pix);
-
-	delete pix;
-
-	if(m_repaint)
+	if(m_setup)
 	{
-		m_repaint = 0;
-		repaint();
-	}
-	else
-	{
-		m_repaint = -1;
-		show();
+		m_setup = false;
+		update();
 	}
 }
 

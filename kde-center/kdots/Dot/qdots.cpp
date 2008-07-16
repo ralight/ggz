@@ -1,29 +1,22 @@
-///////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 //
-// Dots
-// C++ Class Set for Connect the Dots games
-// Copyright (C) 2001, 2002 Josef Spillner
-// dr_maux@users.sourceforge.net
-// The MindX Open Source Project
-// http://mindx.sourceforge.net/games/kdots/
+// Dots: C++ classes for Connect the Dots games
+// http://www.ggzgamingzone.org/gameclients/kdots/
 //
-///////////////////////////////////////////////////////////////
+// Copyright (C) 2001 - 2008 Josef Spillner <josef@ggzgamingzone.org>
+// Published under the conditions of the GNU GPL, see COPYING
+//
+/////////////////////////////////////////////////////////////////////
 
 #include "qdots.h"
 
-#include <QImage>
-#include <QPainter>
-#include <QPen>
-#include <QVector>
-#include <QPixmap>
-#include <QResizeEvent>
-#include <QMouseEvent>
-#include <QPaintEvent>
+#include <qimage.h>
+#include <qpainter.h>
+#include <qpen.h>
+#include <qvector.h>
+#include <qpixmap.h>
+#include <qevent.h>
 
-// FIXME!
-#define GGZDATADIR "XXX"
-
-QPixmap *bgpix;
 QImage *bgimg, *fgimg;
 QVector<int> *m_shadow;
 QVector<int> *m_shadowlines;
@@ -32,28 +25,31 @@ int m_arywidth, m_aryheight;
 QDots::QDots()
 : QWidget(), VDots()
 {
-	bgpix = NULL;
 	fgimg = NULL;
 	bgimg = NULL;
 	m_shadow = NULL;
 	m_shadowlines = NULL;
 
-	bgpix = new QPixmap(GGZDATADIR "/kdots/dragon.png");
-	grayscale(bgpix);
-	bgimg = new QImage(bgpix->toImage());
-	fgimg = new QImage(bgpix->toImage());
-
-	// FIXME: painting methods
-	//setErasePixmap(*bgpix);
+	m_bg = NULL;
 }
 
 QDots::~QDots()
 {
-	if(bgpix) delete bgpix;
+	delete m_bg;
+
 	if(bgimg) delete bgimg;
 	if(fgimg) delete fgimg;
 	if(m_shadow) delete m_shadow;
 	if(m_shadowlines) delete m_shadowlines;
+}
+
+void QDots::setBackgroundImage(QPixmap bg)
+{
+	m_bg = new QPixmap(bg);
+
+	grayscale(m_bg);
+	bgimg = new QImage(m_bg->toImage());
+	fgimg = new QImage(m_bg->toImage());
 }
 
 void QDots::grayscale(QPixmap *pix)
@@ -62,7 +58,7 @@ void QDots::grayscale(QPixmap *pix)
 	QImage *tmp;
 	QRgb rgb;
 
-	tmp = new QImage(bgpix->toImage());
+	tmp = new QImage(pix->toImage());
 
 	for(int j = 0; j < pix->height(); j++)
 		for(int i = 0; i < pix->width(); i++)
@@ -103,7 +99,7 @@ void QDots::resizeEvent(QResizeEvent *e)
 
 	vResizeBoard(w, h);
 
-	repaint();
+	//update();
 }
 
 void QDots::paintEvent(QPaintEvent *e)
@@ -152,7 +148,7 @@ void QDots::paintEvent(QPaintEvent *e)
 						}
 						fgimg->setPixel(i * tilewidth + x, j * tileheight + y, rgb);
 					}
-				p.begin(bgpix);
+				p.begin(m_bg);
 				p.drawImage(i * tilewidth, j * tileheight, *fgimg, i * tilewidth, j * tileheight, tilewidth, tileheight);
 				p.end();
 				updatescreen = 1;
@@ -169,7 +165,7 @@ void QDots::paintEvent(QPaintEvent *e)
 		}
 	}
 
-	p.begin(bgpix);
+	p.begin(m_bg);
 	for(int j = 1; j <= m_rows; j++)
 	{
 		for(int i = 1; i <= m_cols; i++)
@@ -206,9 +202,13 @@ void QDots::paintEvent(QPaintEvent *e)
 	}
 	p.end();
 
+	p.begin(this);
+	p.drawImage(0, 0, m_bg->toImage());
+	p.end();
+
 	// FIXME: painting function
 	//if(updatescreen)
-	//	setErasePixmap(*bgpix);
+	//	setErasePixmap(*m_bg);
 }
 
 void QDots::mousePressEvent(QMouseEvent *e)
@@ -249,16 +249,17 @@ void QDots::refreshBoard()
 	m_arywidth = m_cols - 1;
 	m_aryheight = m_rows - 1;
 
-	p.begin(bgpix);
+	p.begin(m_bg);
 	p.drawImage(0, 0, *bgimg, 0, 0, width(), height());
 	p.end();
 	if(fgimg) delete fgimg;
-	fgimg = new QImage(bgpix->toImage());
+	fgimg = new QImage(m_bg->toImage());
 
 	// FIXME: painting method
-	//setErasePixmap(*bgpix);
+	//setErasePixmap(*m_bg);
 
 	resizeEvent(NULL);
-	repaint();
+	//repaint();
+	update();
 }
 

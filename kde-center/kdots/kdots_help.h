@@ -1,19 +1,20 @@
-///////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 //
-// KDots
-// Connect the Dots game for KDE, using the Dots classes
-// Copyright (C) 2001, 2002 Josef Spillner
-// dr_maux@users.sourceforge.net
-// The MindX Open Source Project
-// http://mindx.sourceforge.net/games/kdots/
+// KDots: Connect the Dots game for KDE 4
+// http://www.ggzgamingzone.org/gameclients/kdots/
 //
-///////////////////////////////////////////////////////////////
+// Copyright (C) 2001 - 2008 Josef Spillner <josef@ggzgamingzone.org>
+// Published under the conditions of the GNU GPL, see COPYING
+//
+/////////////////////////////////////////////////////////////////////
 
 #ifndef KDOTS_HELP_H
 #define KDOTS_HELP_H
 
 #include <qwidget.h>
-#include <QEvent>
+#include <qevent.h>
+
+class QPixmap;
 
 class KDotsHelp : public QWidget
 {
@@ -21,14 +22,14 @@ class KDotsHelp : public QWidget
 	public:
 		KDotsHelp();
 		~KDotsHelp();
-	public Q_SLOTS:
-		void slotAccepted();
 	protected:
 		void paintEvent(QPaintEvent *e);
 	private:
 		QString measure(QString s);
-		int m_repaint;
+
+		bool m_setup;
 		QFont m_font;
+		QPixmap *m_bg;
 };
 
 #endif

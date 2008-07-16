@@ -1,21 +1,24 @@
-///////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 //
-// Dots
-// C++ Class Set for Connect the Dots games
-// Copyright (C) 2001, 2002 Josef Spillner
-// dr_maux@users.sourceforge.net
-// The MindX Open Source Project
-// http://mindx.sourceforge.net/games/kdots/
+// Dots: C++ classes for Connect the Dots games
+// http://www.ggzgamingzone.org/gameclients/kdots/
 //
-///////////////////////////////////////////////////////////////
+// Copyright (C) 2001 - 2008 Josef Spillner <josef@ggzgamingzone.org>
+// Published under the conditions of the GNU GPL, see COPYING
+//
+/////////////////////////////////////////////////////////////////////
 
 #ifndef QDOTS_H
 #define QDOTS_H
 
 #include "vdots.h"
+
 #include <qwidget.h>
-#include <QEvent>
-#include <QPixmap>
+#include <qpixmap.h>
+
+class QMouseEvent;
+class QPaintEvent;
+class QResizeEvent;
 
 class QDots : public QWidget, public VDots
 {
@@ -24,6 +27,7 @@ class QDots : public QWidget, public VDots
 		QDots();
 		~QDots();
 		void refreshBoard();
+		void setBackgroundImage(QPixmap bg);
 	Q_SIGNALS:
 		void signalTurn(int x, int y, int direction);
 	protected:
@@ -34,6 +38,7 @@ class QDots : public QWidget, public VDots
 		void grayscale(QPixmap *pix);
 
 		int m_xoffset, m_yoffset;
+		QPixmap *m_bg;
 };
 
 #endif
