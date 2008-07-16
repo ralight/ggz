@@ -217,8 +217,8 @@ dnl
 AC_DEFUN([AC_GGZ_VISIBILITY],
 [
 	AC_ARG_ENABLE([visibility],
-		AS_HELP_STRING([--enable-visibility], [Restrict library symbol visibility]),
-		[enable_visibility=$enableval], [enable_visibility="no"])
+		AS_HELP_STRING([--disable-visibility],[Don't restrict library symbol visibility]),
+		[enable_visibility=$enableval], [enable_visibility="yes"])
 	AM_CONDITIONAL(SYMBOL_VISIBILITY, test "$enable_visibility" = yes)
 ])
 
