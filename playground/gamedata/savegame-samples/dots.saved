@@ -1,0 +1,6 @@
+player1 join Human
+player2 join Bot
+width 7
+height 7
+player1 move 1 2 vertical
+player2 move 2 2 horizontal
