@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 10374 2008-07-17 14:32:35Z josef $
+ * $Id: ggz-config.c 10375 2008-07-17 14:44:23Z josef $
  *
  * Configuration query and module install program.
  *
@@ -726,7 +726,11 @@ static int list_modules(void)
 	num = ggzcore_module_get_num();
 	printf(_("%i modules found in the GGZ registry(ies).\n"), num);
 	for(i = 0; i < num; i++) {
-		/* FIXME: get_nth_module() is not offered by ggzcore */
+		GGZModule *module = ggzcore_module_get_nth(i);
+		printf(_("Module: %s %s (%s)\n"),
+			ggzcore_module_get_name(module),
+			ggzcore_module_get_version(module),
+			ggzcore_module_get_frontend(module));
 	}
 
 	return ret;

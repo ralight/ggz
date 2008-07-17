@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/23/00
- * $Id: module.c 10373 2008-07-17 14:31:14Z josef $
+ * $Id: module.c 10375 2008-07-17 14:44:23Z josef $
  *
  * This fils contains functions for handling client-side game modules
  *
@@ -136,6 +136,12 @@ int ggzcore_module_get_num_by_type(const char *game,
 		return -1;
 
 	return _ggzcore_module_get_num_by_type(game, engine, version);
+}
+
+
+GGZModule *ggzcore_module_get_nth(const unsigned int num)
+{
+	return _ggzcore_module_get_nth(num);
 }
 
 
@@ -439,6 +445,22 @@ int _ggzcore_module_get_num_by_type(const char *game,
 
 
 	return numcount;
+}
+
+
+GGZModule *_ggzcore_module_get_nth(const unsigned int num)
+{
+	int i = 0;
+	GGZListEntry *cur;
+
+	for (cur = ggz_list_head(module_list); cur;
+	     cur = ggz_list_next(cur)) {
+	     	if(i == num)
+			return ggz_list_get_data(cur);
+		i++;
+	}
+
+	return NULL;
 }
 
 

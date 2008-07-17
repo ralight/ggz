@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 10332 2008-07-13 16:05:32Z josef $
+ * $Id: ggzcore.h 10375 2008-07-17 14:44:23Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -1499,6 +1499,9 @@ int ggzcore_module_add(const char *name,
 		       const char *help_path,
 		       GGZModuleEnvironment environment);		       
 
+
+/** @brief Returns the n-th module */
+GGZModule* ggzcore_module_get_nth(unsigned int num);
 
 /** @brief Returns how many modules support this game and protocol */
 int ggzcore_module_get_num_by_type(const char *game, 

@@ -43,6 +43,7 @@ GGZModule *_ggzcore_module_get_nth_by_type(const char *game,
 					   const char *version,
 					   const unsigned int num);
 
+GGZModule *_ggzcore_module_get_nth(const unsigned int num);
 
 void _ggzcore_module_cleanup(void);
 
