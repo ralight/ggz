@@ -9,6 +9,7 @@
 /////////////////////////////////////////////////////////////////////
 
 #include "kdots_win.h"
+#include "kdots_replay.h"
 
 #include <kapplication.h>
 #include <kcmdlineargs.h>
@@ -18,6 +19,7 @@
 int main(int argc, char **argv)
 {
 	KDotsWin *kdotswin;
+	KDotsReplay *kdotsreplay;
 	KAboutData *about;
 
 	about = new KAboutData("kdots",
@@ -30,13 +32,25 @@ int main(int argc, char **argv)
 		ki18n("This game is part of the GGZ Gaming Zone."),
 		"http://www.ggzgamingzone.org/gameclients/kdots/",
 		"josef@ggzgamingzone.org");
-	about->addAuthor(ki18n("Josef Spillner"), ki18n("Author."), "josef@ggzgamingzone.org");
+	about->addAuthor(ki18n("Josef Spillner"), ki18n("Author"), "josef@ggzgamingzone.org");
 
+	KCmdLineOptions options;
+	options.add("replay <file>", ki18n("Savegame file for replay"));
 	KCmdLineArgs::init(argc, argv, about);
+	KCmdLineArgs::addCmdLineOptions(options);
 
 	KApplication a;
 
-	kdotswin = new KDotsWin(KGGZMod::Module::isGGZ());
+	KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+	if(args->isSet("replay"))
+	{
+		kdotsreplay = new KDotsReplay();
+		kdotsreplay->replay(args->getOption("replay"));
+	}
+	else
+	{
+		kdotswin = new KDotsWin(KGGZMod::Module::isGGZ());
+	}
 
 	return a.exec();
 }

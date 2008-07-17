@@ -121,7 +121,8 @@ void KDotsWin::slotStatus(QString message)
 
 void KDotsWin::slotColor(const QColor& color)
 {
-	// FIXME: background colour
-	//m_color->setEraseColor(QColor(color));
+	QPalette palette = m_color->palette();
+	palette.setBrush(QPalette::Window, color);
+	m_color->setPalette(palette);
 }
 

@@ -36,7 +36,6 @@ KDotsAbout::KDotsAbout()
 
 	setMouseTracking(true);
 
-	setWindowTitle(i18n("About KDots"));
 	setFixedSize(600, 457);
 
 	QPixmap bg(d.findResource("data", "kdots/snowdragon.png"));
@@ -46,6 +45,9 @@ KDotsAbout::KDotsAbout()
 	ok->move((width() - ok->width()) / 2, height() - 50);
 
 	connect(ok, SIGNAL(clicked()), SLOT(close()));
+
+	setWindowTitle(i18n("About KDots"));
+	show();
 }
 
 KDotsAbout::~KDotsAbout()

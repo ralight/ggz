@@ -19,8 +19,8 @@ class VDots : public Dots
 		VDots();
 		~VDots();
 
-		void save(QString filename);
-		void load(QString filename);
+		bool save(QString filename);
+		bool load(QString filename);
 		int positions();
 		void step(int position);
 	protected:

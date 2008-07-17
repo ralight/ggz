@@ -157,11 +157,12 @@ void KDots::slotSync()
 void KDots::slotInput()
 {
 	int op;
-	int ret;
+	int msgret;
 	QString str;
 	QString savegame, savepath;
 	char status;
 	QDir dir;
+	bool ret;
 
 	if(proto->state == proto->statedone) return;
 
@@ -216,24 +217,30 @@ void KDots::slotInput()
 			}
 			break;
 		case KDotsProto::msggameover:
-			savepath = QDir::home().path() + "/.ggz";
-			dir.mkdir(savepath);
-			savepath += "/games";
-			dir.mkdir(savepath);
-			savepath += "/kdots";
-			dir.mkdir(savepath);
+			savepath = QDir::home().path() + "/.ggz/games/kdots";
+			dir.mkpath(savepath);
 			savegame = QString("%1-%2-%3").arg(
-					QDateTime::currentDateTime().toString()).arg(proto->players[0]).arg(proto->players[1]);
-			dots->save(savepath + "/" + savegame);
+				QDateTime::currentDateTime().toString()).arg(proto->players[0]).arg(proto->players[1]);
+			ret = dots->save(savepath + "/" + savegame);
+			if(!ret)
+			{
+				KMessageBox::error(this,
+					i18n("The savegame could not be saved"),
+					i18n("Savegame error"));
+				return;
+			}
 			status = proto->getStatus();
 			if(status == -1) exit(-1);
 			proto->state = proto->statechoose;
 			proto->turn = -1;
 			emit signalStatus(i18n("Game over!"));
-			str = i18n("The game is over.\nYou reached %1 points, your opponent %2.\n\nPlay another game?" ,
+			str = i18n("The game is over.\nYou reached %1 points, your opponent %2.\n\nPlay another game?",
 				dots->count(proto->num), dots->count((proto->num + 1) % 2));
-			ret = KMessageBox::questionYesNo(this, str, i18n("Game over"));
-			if(ret == KMessageBox::Yes) gameinit();
+			msgret = KMessageBox::questionYesNo(this, str, i18n("Game over"));
+			if(msgret == KMessageBox::Yes)
+			{
+				gameinit();
+			}
 			else
 			{
 				proto->state = proto->statedone;

@@ -28,7 +28,6 @@ KDotsHelp::KDotsHelp()
 	m_font = QFont("courier", 20);
 	m_setup = true;
 
-	setWindowTitle(i18n("KDots Help"));
 	setFixedSize(600, 477);
 
 	QPixmap bg(d.findResource("data", "kdots/firedragon.png"));
@@ -38,6 +37,9 @@ KDotsHelp::KDotsHelp()
 	ok->move((width() - ok->width()) / 2, height() - 50);
 
 	connect(ok, SIGNAL(clicked()), SLOT(close()));
+
+	setWindowTitle(i18n("KDots Help"));
+	show();
 }
 
 KDotsHelp::~KDotsHelp()

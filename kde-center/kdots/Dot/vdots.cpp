@@ -10,9 +10,10 @@
 
 #include "vdots.h"
 
-#include <QFile>
-#include <QTextStream>
-#include <QStringList>
+#include <qfile.h>
+#include <qtextstream.h>
+#include <qstringlist.h>
+#include <qdebug.h>
 
 VDots::VDots()
 : Dots()
@@ -68,69 +69,151 @@ int VDots::vSetBorderValue(int x, int y, int side)
 	return setBorderValue(dx, dy, direction, side, Dots::check);
 }
 
-void VDots::save(QString filename)
+bool VDots::save(QString filename)
 {
 	QList<Move>::Iterator it;
 
 	QFile f(filename);
-	if(!f.open(QIODevice::WriteOnly)) return;
+	if(!f.open(QIODevice::WriteOnly))
+		return false;
 
 	QTextStream t(&f);
-	t << "format" << endl;
-	t << 1 << endl;
-	t << "boardsize" << endl;
-	t << m_cols - 1 << endl;
-	t << m_rows - 1 << endl;
+	t << "width " << m_cols << endl;
+	t << "height " << m_rows << endl;
+	t << "player1 join Human" << endl;
+	t << "player2 join AI" << endl;
 	for(it = m_moves.begin(); it != m_moves.end(); it++)
 	{
-		t << (*it).x << "," << (*it).y << "," << (*it).side << "," << (*it).direction;
+		int dir = (*it).direction;
+		int x = (*it).x;
+		int y = (*it).y;
+		if(dir == 0)
+		{
+			dir = 1;
+			x -= 1;
+		}
+		if(dir == 2)
+		{
+			dir = 3;
+			y -= 1;
+		}
+
+		QString dirstr;
+		if(dir == 1)
+			dirstr = "horizontal";
+		else
+			dirstr = "vertical";
+
+		t << "player" << ((*it).side + 1) << " move " << x << " " << y << " " << dirstr;
 		t << endl;
 	}
 
 	f.close();
+
+	return true;
 }
 
-void VDots::load(QString filename)
+bool VDots::load(QString filename)
 {
 	QString s;
 	QStringList sl;
-	int format, w, h;
+	int w = -1;
+	int h = -1;
+	QString game;
+	QString playeraction;
+	QString playername;
+	QString dirstr;
+	int x, y;
+	int side, dir;
+	bool setup = false;
 
 	m_moves.clear();
 
 	QFile f(filename);
-	if(!f.open(QIODevice::ReadOnly)) return;
+	if(!f.open(QIODevice::ReadOnly))
+		return false;
 
 	QTextStream t(&f);
-	t >> s;
-	if(s != "format") return;
-	t >> format;
-	if(format != 1) return;
-	t >> s;
-	if(s != "boardsize") return;
-	t >> w;
-	t >> h;
-
-	resizeBoard(w, h);
 
 	while(!t.atEnd())
 	{
-		Move m;
 		t >> s;
-		sl = s.split(",");
-		if(sl.count() != 4) return;
-		s = sl.at(0);
-		m.x = s.toInt();
-		s = sl.at(1);
-		m.y = s.toInt();
-		s = sl.at(2);
-		m.side = s.toInt();
-		s = sl.at(3);
-		m.direction = s.toInt();
-		m_moves.append(m);
+		if(s.isEmpty())
+			break;
+
+		if((s == "player1") || (s == "player2"))
+		{
+			t >> playeraction;
+			if(playeraction == "join")
+			{
+				t >> playername;
+			}
+			else if(playeraction == "leave")
+			{
+				t >> playername;
+			}
+			else if((playeraction == "move") && (setup))
+			{
+				t >> x;
+				t >> y;
+				t >> dirstr;
+
+				if(dirstr == "vertical")
+					dir = 3;
+				else if(dirstr == "horizontal")
+					dir = 1;
+				else
+					return false;
+
+				if(s == "player1")
+					side = 0;
+				else
+					side = 1;
+
+				Move m;
+				m.x = x;
+				m.y = y;
+				m.side = side;
+				m.direction = dir;
+				m_moves.append(m);
+			}
+			else if((playeraction == "winner") && (setup))
+			{
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else if(s == "width")
+		{
+			t >> w;
+		}
+		else if(s == "height")
+		{
+			t >> h;
+		}
+		else if((s == "tie") && (setup))
+		{
+			t >> game;
+			if(game != "game")
+				return false;
+		}
+		else
+		{
+			return false;
+		}
+
+		if((w != -1) && (h != -1) && (!setup))
+		{
+			resizeBoard(w, h);
+			setup = true;
+		}
 	}
 
 	f.close();
+
+	return true;
 }
 
 int VDots::positions()

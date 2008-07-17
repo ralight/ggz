@@ -12,11 +12,12 @@
 #define KDOTS_REPLAY_H
 
 #include <qwidget.h>
-#include <QSlider>
-#include <QLabel>
+#include <qslider.h>
+#include <qlabel.h>
 
 class QDots;
 class QListWidget;
+class QListWidgetItem;
 
 class KDotsReplay : public QWidget
 {
@@ -24,9 +25,10 @@ class KDotsReplay : public QWidget
 	public:
 		KDotsReplay();
 		~KDotsReplay();
+		void replay(QString filename);
 	public Q_SLOTS:
 		void slotPosition(int value);
-		void slotLoad(const QString& filename);
+		void slotLoad(QListWidgetItem *item);
 	private:
 		QSlider *slider;
 		QLabel *label;

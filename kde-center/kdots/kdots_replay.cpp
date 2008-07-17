@@ -12,13 +12,15 @@
 #include "qdots.h"
 
 #include <klocale.h>
+#include <kstandarddirs.h>
+#include <kmessagebox.h>
 
-#include <QLabel>
-#include <QLayout>
-#include <QDir>
-#include <QStringList>
-#include <QPushButton>
-#include <QListWidget>
+#include <qlabel.h>
+#include <qlayout.h>
+#include <qdir.h>
+#include <qstringlist.h>
+#include <qpushbutton.h>
+#include <qlistwidget.h>
 
 KDotsReplay::KDotsReplay()
 : QWidget()
@@ -28,9 +30,12 @@ KDotsReplay::KDotsReplay()
 	QPushButton *ok;
 	QStringList replays;
 	QStringList::Iterator it;
+	KStandardDirs d;
 
 	dots = new QDots();
 	dots->setFixedSize(400, 400);
+	QPixmap pix(d.findResource("data", "kdots/dragon.png"));
+	dots->setBackgroundImage(pix);
 
 	slider = new QSlider(Qt::Horizontal);
 	slider->setEnabled(false);
@@ -64,7 +69,7 @@ KDotsReplay::KDotsReplay()
 
 	connect(ok, SIGNAL(clicked()), SLOT(close()));
 	connect(slider, SIGNAL(valueChanged(int)), SLOT(slotPosition(int)));
-	connect(listbox, SIGNAL(highlighted(const QString&)), SLOT(slotLoad(const QString&)));
+	connect(listbox, SIGNAL(itemActivated(QListWidgetItem*)), SLOT(slotLoad(QListWidgetItem*)));
 
 	setWindowTitle(i18n("KDots Replay"));
 	show();
@@ -76,20 +81,35 @@ KDotsReplay::~KDotsReplay()
 
 void KDotsReplay::slotPosition(int value)
 {
-	label->setText(i18n("Position: %1").arg(value));
+	label->setText(i18n("Position: %1", value));
 
 	dots->step(value);
 	dots->repaint();
 }
 
-void KDotsReplay::slotLoad(const QString& filename)
+void KDotsReplay::replay(QString filename)
 {
-	dots->load(QDir::home().path() + "/.ggz/games/kdots/" + filename);
+	bool ret = dots->load(filename);
+	if(!ret)
+	{
+		KMessageBox::error(this,
+			i18n("The savegame could not be loaded"),
+			i18n("Savegame error"));
+		return;
+	}
+
 	dots->refreshBoard();
 
 	slider->setRange(0, dots->positions());
 	slider->setValue(0);
 	slider->setEnabled(true);
 	slotPosition(0);
+}
+
+void KDotsReplay::slotLoad(QListWidgetItem *item)
+{
+	QString filename = item->text();
+	filename = QDir::home().path() + "/.ggz/games/kdots/" + filename;
+	replay(filename);
 }
 
