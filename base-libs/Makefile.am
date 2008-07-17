@@ -1,4 +1,4 @@
-EXTRA_DIST = README.GGZ QuickStart.GGZ Doxyfile \
+EXTRA_DIST = README.GGZ QuickStart.GGZ \
 	README.client INSTALL.client indent.pro
 
 SUBDIRS = libggz ggzmod-ggz ggzcore ggzmod ggz-config man tests desktop po

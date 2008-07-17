@@ -1,6 +1,6 @@
-# Configuration for libggz
-# ========================
-AC_INIT([GGZ common libraries], [snapshot-0.99.4], [ggz-dev@mail.ggzgamingzone.org], [libggz])
+# Configuration for GGZ Base Libraries
+# ====================================
+AC_INIT([GGZ base libraries], [snapshot-0.99.4], [ggz-dev@mail.ggzgamingzone.org], [base-libs])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -125,7 +125,7 @@ if test "$enable_threading" = yes; then
 fi
 echo ""
 echo "-------------------------"
-echo "At the prompt type \"make\" to compile libggz."
+echo "At the prompt type \"make\" to compile the GGZ base libraries."
 echo ""
 echo "When complete, type \"make install\" to install the library.  You "
 echo "may need to perform this step as root."

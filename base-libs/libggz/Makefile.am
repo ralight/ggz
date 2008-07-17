@@ -33,3 +33,4 @@ libggz_la_SOURCES = \
 	ggz_common.h \
 	ggz_common.c
 
+EXTRA_DIST = Doxyfile
