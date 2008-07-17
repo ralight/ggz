@@ -50,7 +50,7 @@ case $dbtype in
 		# FIXME: and we clearly don't want it to show up in 'ps'
 	;;
 	*)
-		echo "Error: database type is unknown."
+		echo "Error: database type '$dbtype' is unknown."
 		exit 1
 	;;
 esac
