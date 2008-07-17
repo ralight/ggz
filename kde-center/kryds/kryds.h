@@ -1,3 +1,13 @@
+/////////////////////////////////////////////////////////////////////
+//
+// Kryds: Tic-Tac-Toe game server for KDE 4
+// http://www.ggzgamingzone.org/gameclients/kdots/
+//
+// Copyright (C) 2008 Josef Spillner <josef@ggzgamingzone.org>
+// Published under the conditions of the GNU GPL, see COPYING
+//
+/////////////////////////////////////////////////////////////////////
+
 #ifndef KRYDS_H
 #define KRYDS_H
 

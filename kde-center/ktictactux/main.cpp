@@ -1,8 +1,12 @@
-//////////////////////////////////////////////////////////////////////
-// KTicTacTux
+/////////////////////////////////////////////////////////////////////
+//
+// KTicTacTux: Tic-Tac-Toe game for KDE 4
+// http://www.ggzgamingzone.org/gameclients/ktictactux/
+//
 // Copyright (C) 2001 - 2008 Josef Spillner <josef@ggzgamingzone.org>
-// Published under GNU GPL conditions
-//////////////////////////////////////////////////////////////////////
+// Published under the conditions of the GNU GPL, see COPYING
+//
+/////////////////////////////////////////////////////////////////////
 
 // KTicTacTux includes
 #include "ktictactuxwin.h"
@@ -28,7 +32,7 @@ int main(int argc, char **argv)
 		"0.99.4",
 		ki18n("This is a TicTacToe game for KDE."),
 		KAboutData::License_GPL,
-		ki18n("Copyright (C) 2001 - 2006 Josef Spillner"),
+		ki18n("Copyright (C) 2001 - 2008 Josef Spillner"),
 		ki18n("This game is part of the GGZ Gaming Zone."),
 		"http://www.ggzgamingzone.org/gameclients/ktictactux/",
 		"josef@ggzgamingzone.org");
