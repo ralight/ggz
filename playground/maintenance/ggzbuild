@@ -53,13 +53,53 @@ def readconfig(configfile):
 
 	return config
 
+shellcode = """
+forceautogen=0
+if [ -f configure ]
+then
+	configure_time=`stat -c %Y configure`
+	configure_ac_time=`stat -c %Y configure.ac`
+
+	if [ $configure_time -gt $configure_ac_time ]
+	then
+		if [ -d m4 ]
+		then
+			for macrofile in m4/*
+			do
+				macro_time=`stat -c %Y $macrofile`
+
+				if [ $macro_time -gt $configure_time ]
+				then
+					echo "-- $macrofile was modified"
+					forceautogen=1
+				fi
+			done
+		fi
+	else
+		echo "-- configure.ac was modified"
+		forceautogen=1
+	fi
+else
+	echo "-- configure missing"
+	forceautogen=1
+fi
+
+if [ $forceautogen = 1 ]; then
+	echo "-- force autogen.sh rerun"
+	exit 1
+fi
+"""
+
 def build(module, config, install, srcdir):
 	out("GGZBUILD: module = " + module)
 
 	args = config.setdefault(module, "")
 	args += " " + config.setdefault("GLOBAL", "")
 
-	if not os.path.exists(srcdir + "/configure"):
+	ret = os.system(shellcode)
+
+	#if not os.path.exists(srcdir + "/configure"):
+	if ret:
 		cmd = srcdir + "/autogen.sh " + args
 	else:
 		cmd = srcdir + "/configure " + args
