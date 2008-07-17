@@ -1,0 +1,2 @@
+KTicTacTux:
+http://newstuff.kde.org/repo/ktictactux/
