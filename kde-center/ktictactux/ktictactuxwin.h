@@ -20,6 +20,7 @@
 // Qt includes
 #include <qmap.h>
 #include <qlist.h>
+#include <qdir.h>
 
 // Forward declarations
 class KMenu;
@@ -56,6 +57,8 @@ class KTicTacTuxWin : public KMainWindow
 		void slotGameOver();
 
 	private:
+		void scanDir(QDir dir, bool scanmore);
+
 		// The game itself
 		KTicTacTux *m_tux;
 		// The menus;

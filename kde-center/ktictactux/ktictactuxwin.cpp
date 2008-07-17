@@ -112,6 +112,7 @@ void KTicTacTuxWin::changeTheme(QString theme)
 	// fall back to default if no theme is set or theme is no more installed
 	if((theme.isEmpty()) || m_player1[theme].isEmpty())
 	{
+		kDebug() << "Theme fallback triggered!";
 		theme = d->findResource("data", "ktictactux/classic");
 	}
 
@@ -119,7 +120,7 @@ void KTicTacTuxWin::changeTheme(QString theme)
 	for(int i = 0; i < m_themeactions.count(); i++)
 	{
 		QAction *action = m_themeactions.at(i);
-		if(m_themes[action->text()] == theme)
+		if(m_themes[m_themenames[i]] == theme)
 			action->setChecked(true);
 		else
 			action->setChecked(false);
@@ -148,6 +149,21 @@ void KTicTacTuxWin::slotMenu(QAction *action)
 	{
 		d.mkpath(QDir::home().path() + "/.ggz/games/ktictactux");
 		KNS::Entry::List entries = KNS::Engine::download();
+		for(int i = 0; i < entries.size(); i++)
+		{
+			KNS::Entry *entry = entries.at(i);
+			QStringList files = entry->installedFiles();
+			for(int j = 0; j < files.size(); j++)
+			{
+				QString file = files.at(j);
+				QDir dir(file);
+				if(dir.exists())
+				{
+					kDebug() << "KNS theme addition:" << file;
+					scanDir(dir, false);
+				}
+			}
+		}
 	}
 	else if(action == action_ggzplayers)
 	{
@@ -258,13 +274,56 @@ void KTicTacTuxWin::slotGameOver()
 		action_score->setEnabled(false);
 }
 
+// Scan a theme directory
+void KTicTacTuxWin::scanDir(QDir dir, bool scanmore)
+{
+	QString name, player1, player2;
+	QString file;
+
+	QStringList entries = dir.entryList(QDir::Files);
+	for(QStringList::iterator it = entries.begin(); it != entries.end(); it++)
+	{
+		if((*it).right(4) == ".png")
+			continue;
+		file = dir.path() + "/" + (*it);
+		kDebug() << "Check file:" << file << endl;
+		KConfig conf(file, KConfig::SimpleConfig);
+		if(conf.hasGroup("Description"))
+		{
+			KConfigGroup cg = KConfigGroup(&conf, "Description");
+			name = cg.readEntry("name");
+			cg = KConfigGroup(&conf, "Pixmaps");
+			player1 = cg.readEntry("player1");
+			player2 = cg.readEntry("player2");
+			kDebug() << "Found themes:" << player1 << player2;
+
+			m_themes[name] = file;
+			m_player1[file] = dir.path() + "/" + player1;
+			m_player2[file] = dir.path() + "/" + player2;
+
+			m_themenames[m_themeactions.count()] = name;
+			QAction *action_theme = mtheme->addAction(KIconLoader::global()->loadIcon("games-config-theme", KIconLoader::Small), name);
+			action_theme->setCheckable(true);
+			m_themeactions << action_theme;
+		}
+	}
+
+	if(scanmore)
+	{
+		QStringList entries = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+		for(QStringList::iterator it = entries.begin(); it != entries.end(); it++)
+		{
+			QDir subdir(dir.path() + "/" + (*it));
+			kDebug() << "Scan sub dir:" << (*it) << endl;
+			scanDir(subdir, false);
+		}
+	}
+}
+
 // Read in all themes
 void KTicTacTuxWin::loadThemes()
 {
 	KStandardDirs *d = KGlobal::dirs();
-	QString name, player1, player2;
-	QString file;
-	int count = 0;
 
 	// Recursively scan all data directories
 	kDebug() << "loadThemes" << endl;
@@ -272,36 +331,11 @@ void KTicTacTuxWin::loadThemes()
 	for(QStringList::iterator it = list.begin(); it != list.end(); it++)
 	{
 		QDir dir((*it));
-		kDebug() << "Scan dir: " << (*it) << endl;
-		QStringList entries = dir.entryList(QDir::Files);
-		for(QStringList::iterator it2 = entries.begin(); it2 != entries.end(); it2++)
-		{
-			if((*it2).right(4) == ".png")
-				continue;
-			file = (*it) + (*it2);
-			kDebug() << "Check file: " << file << endl;
-			KConfig conf(file, KConfig::SimpleConfig);
-			if(conf.hasGroup("Description"))
-			{
-				KConfigGroup cg = KConfigGroup(&conf, "Description");
-				name = cg.readEntry("name");
-				cg = KConfigGroup(&conf, "Pixmaps");
-				player1 = cg.readEntry("player1");
-				player2 = cg.readEntry("player2");
-
-				m_themes[name] = file;
-				m_player1[file] = (*it) + player1;
-				m_player2[file] = (*it) + player2;
-
-				m_themenames[count] = name;
-				QAction *action_theme = mtheme->addAction(KIconLoader::global()->loadIcon("games-config-theme", KIconLoader::Small), name);
-				m_themeactions << action_theme;
-				count++;
-			}
-		}
+		kDebug() << "Scan dir:" << (*it) << endl;
+		scanDir(dir, true);
 	}
 
-	if(count == 0)
+	if(m_themes.size() == 0)
 	{
 		KMessageBox::error(this,
 			i18n("No pixmap themes could be found"),
