@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/23/00
- * $Id: module.c 10147 2008-07-03 19:22:39Z jdorje $
+ * $Id: module.c 10373 2008-07-17 14:31:14Z josef $
  *
  * This fils contains functions for handling client-side game modules
  *
@@ -103,6 +103,7 @@ static void _ggzcore_module_init(GGZModule * module,
 static void _ggzcore_module_free(GGZModule * module);
 static void _ggzcore_module_read(GGZModule * mod, char *id);
 static int _ggzcore_module_add(GGZModule * module);
+static int _ggzcore_module_setup_registry(const char *registry);
 
 static char *_ggzcore_module_conf_filename(void);
 static void _ggzcore_module_print(const GGZModule *);
@@ -284,12 +285,9 @@ GGZModuleEnvironment ggzcore_module_get_environment(const GGZModule * module)
  */
 int _ggzcore_module_setup(void)
 {
-	char *file;
-	char **ids;
-	char **games;
-	int i, j, count_types, count_modules, status;
-	GGZModule *module;
+	char *file, *fileptr;
 	int ret;
+	const char *registries;
 
 	if (mod_handle != -1) {
 		ggz_debug(GGZCORE_DBG_MODULE,
@@ -304,9 +302,41 @@ int _ggzcore_module_setup(void)
 
 	file = _ggzcore_module_conf_filename();
 	ggz_debug(GGZCORE_DBG_MODULE, "Reading %s", file);
-	mod_handle = ggz_conf_parse(file, GGZ_CONF_RDONLY);
+	ret = _ggzcore_module_setup_registry(file);
 	/* Free up space taken by name */
 	ggz_free(file);
+
+	/* If the environment variable GGZ_REGISTRIES is set, then
+	 * treat each of its entries as an additional ggz.modules
+	 * file. */
+	registries = getenv("GGZ_REGISTRIES");
+	if (registries) {
+		file = ggz_strdup(registries);
+		fileptr = file;
+		fileptr = strtok(fileptr, ":");
+		while(fileptr) {
+			ret = _ggzcore_module_setup_registry(fileptr);
+			if(ret == -1)
+				/*ignore*/;
+			fileptr = strtok(NULL, ":");
+		}
+		ggz_free(file);
+	}
+
+	_ggzcore_module_list_print();
+
+	return ret;
+}
+
+int _ggzcore_module_setup_registry(const char *registry)
+{
+	char **ids;
+	char **games;
+	int i, j, count_types, count_modules, status;
+	GGZModule *module;
+	int ret;
+
+	mod_handle = ggz_conf_parse(registry, GGZ_CONF_RDONLY);
 
 	if (mod_handle == -1) {
 		ggz_debug(GGZCORE_DBG_MODULE,
@@ -353,8 +383,6 @@ int _ggzcore_module_setup(void)
 	}
 
 	_ggz_free_chars(games);
-
-	_ggzcore_module_list_print();
 
 	return ret;
 }
