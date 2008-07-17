@@ -36,7 +36,7 @@ which can replay the savegame files, possibly when running standalone.
 
 * Connect the Dots
   format: own format
-  documentation: (missing)
+  documentation: see ggz-games/dots/savegames.txt
   server: write-only
   community: yes
   clients: KDots supports replays

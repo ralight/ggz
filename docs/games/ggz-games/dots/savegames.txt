@@ -1,0 +1,20 @@
+The Connect the Dots (CtD, or Dots) savegame format is very similar to the one
+from Tic-Tac-Toe. Some differences result from the fact that the board size
+is configurable. Only the moves are considered, not the claims of squares,
+since most clients will have to understand and implement this association
+anyway.
+Game continuations are not yet supported!
+
+Setup phase:
+ playerX join PLAYERxNAME
+ playerX leave PLAYERxNAME
+ width WIDTH
+ height HEIGHT
+
+Game phase:
+ playerX move X Y (vertical|horizontal)
+
+End of game:
+ tie game
+ playerX winner
+
