@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 10210 2008-07-08 16:04:32Z jdorje $
+ * $Id: ggz-config.c 10374 2008-07-17 14:32:35Z josef $
  *
  * Configuration query and module install program.
  *
@@ -38,6 +38,7 @@
 #include <dirent.h>
 
 #include <ggz.h>
+#include <ggzcore.h>
 
 #include "protocol.h"
 
@@ -68,6 +69,7 @@ static int moddest = 0;
 static char *destdir = NULL;
 static int install_mod = 0;
 static int remove_mod = 0;
+static int list_mods = 0;
 static int check_file = 0;
 
 /* Command line options */
@@ -89,6 +91,7 @@ static struct option options[] =
 	{"destdir", no_argument, 0, 'D'},
 	{"help", no_argument, 0, 'h'},
 	{"usage", no_argument, 0, 'u'},
+	{"list", no_argument, 0, 'l'},
 	{0, 0, 0, 0}
 };
 
@@ -109,6 +112,7 @@ static char *options_help[] = {
 	 N_("Use $DESTDIR as offset to ggz.modules file"),
 	 N_("Display help"),
 	 N_("Display usage"),
+	 N_("List all currently registered game modules"),
 	 NULL
 };
 
@@ -705,6 +709,30 @@ static int which(const char *executable)
 }
 
 
+/* This is so far the only function which works using standard ggzcore
+ * interface to mimic the view of core clients. */
+static int list_modules(void)
+{
+	int ret = 0;
+	GGZOptions options;
+	int num, i;
+
+	options.flags = GGZ_OPT_MODULES;
+
+	ret = ggzcore_init(options);
+	if(ret == -1)
+		return -1;
+
+	num = ggzcore_module_get_num();
+	printf(_("%i modules found in the GGZ registry(ies).\n"), num);
+	for(i = 0; i < num; i++) {
+		/* FIXME: get_nth_module() is not offered by ggzcore */
+	}
+
+	return ret;
+}
+
+
 static int check_module_file(void)
 {
 	int	global;
@@ -1117,6 +1145,9 @@ int main(int argc, char *argv[])
 			case 'C':
 				check_file = 1;
 				break;
+			case 'l':
+				list_mods = 1;
+				break;
 			case 'c':
 				printf("%s\n", GGZCONFDIR);
 				return 0;
@@ -1145,13 +1176,16 @@ int main(int argc, char *argv[])
 	}
 
 	/* Execute at least one operation (install or remove or check) */
-	if(install_mod + remove_mod + check_file != 1) {
+	if(install_mod + remove_mod + check_file + list_mods != 1) {
 		fprintf(stderr, _("No operation specified, try --help.\n"));
 		return 1;
 	}
 
 	if(check_file)
 		return check_module_file();
+
+	if(list_mods)
+		return list_modules();
 
 	if(modfile == NULL) {
 		if(copydir) {
