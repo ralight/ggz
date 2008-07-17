@@ -68,6 +68,7 @@ AC_CONFIG_FILES([Makefile
 	games/ggz-games/tictactoe/Makefile
 	games/ggz-games/hastings/Makefile
 	games/ggz-games/ggzcards/Makefile
+	games/ggz-games/dots/Makefile
 	games/game-development/Makefile
 	games/modules/Makefile
 	ggz-project/Makefile
