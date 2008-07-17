@@ -3,13 +3,15 @@ from Tic-Tac-Toe. Some differences result from the fact that the board size
 is configurable. Only the moves are considered, not the claims of squares,
 since most clients will have to understand and implement this association
 anyway.
-Game continuations are not yet supported!
+Game continuations are not yet really supported like in TTT!
 
 Setup phase:
- playerX join PLAYERxNAME
- playerX leave PLAYERxNAME
  width WIDTH
  height HEIGHT
+
+Setup and game phase:
+ playerX join PLAYERxNAME
+ playerX leave PLAYERxNAME
 
 Game phase:
  playerX move X Y (vertical|horizontal)
@@ -18,3 +20,8 @@ End of game:
  tie game
  playerX winner
 
+Note that the KDots client has its own, internal savegame format. This is a
+legacy from the past and needs to be converted to a common Dots format!
+Hence it isn't of interest for documentation here.
+
+Examples for savegames are given in /playground/gamedata/savegame-examples.
