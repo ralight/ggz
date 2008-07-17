@@ -20,8 +20,8 @@ End of game:
  tie game
  playerX winner
 
-Note that the KDots client has its own, internal savegame format. This is a
-legacy from the past and needs to be converted to a common Dots format!
-Hence it isn't of interest for documentation here.
+Note that the KDots client up to GGZ 0.0.14 had its own, internal savegame
+format. This was a legacy from the past and meanwhile it uses the format
+described above. Hence it isn't of interest for documentation here.
 
 Examples for savegames are given in /playground/gamedata/savegame-examples.
