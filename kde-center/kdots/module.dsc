@@ -1,7 +1,7 @@
 # KDots description file
 [ModuleInfo]
 Author = Josef Spillner
-CommandLine = @ggzexecmoddir@/kdots_client --ggz --icon @prefix@/share/icons/hicolor/32x32/apps/kdots.png
+CommandLine = kdots_client
 Frontend = kde
 Homepage = http://www.ggzgamingzone.org/gameclients/kdots/
 Name = KDots

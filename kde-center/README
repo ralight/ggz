@@ -21,6 +21,8 @@ Contents of the ggz-kde-center package:
 
 	- ktictactux, the well-known GGZ example game Tic-Tac-Toe,
 	  in a fresh look for KDE 4
+	- kdots, a Connect the Dots game client, now ported to
+	  KDE 4 and with better savegame support
 	- kryds, a game server for Tic-Tac-Toe using kggzdmod
 
 Most of them have their own README for more information on them.

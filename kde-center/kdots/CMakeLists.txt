@@ -31,3 +31,5 @@ install(FILES
 )
 
 add_subdirectory(Dot)
+
+register_ggz_module(module.dsc)

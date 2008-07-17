@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 2.6)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/)
 
 include(GGZKDECenterPackage)
+include(GGZ)
 
 find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
@@ -19,3 +20,4 @@ add_subdirectory(plasma-kggz)
 add_subdirectory(kgrubby)
 add_subdirectory(ktictactux)
 add_subdirectory(kryds)
+add_subdirectory(kdots)

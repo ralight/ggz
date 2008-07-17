@@ -20,3 +20,5 @@ install(FILES ktictactux.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
 install(FILES bg.png DESTINATION ${DATA_INSTALL_DIR}/ktictactux)
 
 add_subdirectory(themes)
+
+register_ggz_module(module.dsc)
