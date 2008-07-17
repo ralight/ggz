@@ -77,8 +77,10 @@ KTicTacTuxWin::KTicTacTuxWin()
 	KSharedConfig::Ptr conf = KGlobal::config();
 	KConfigGroup cg = KConfigGroup(conf, "Settings");
 	QString theme = cg.readEntry("theme");
-	if(!theme.isEmpty()) changeTheme(theme);
-	else changeTheme(QString::null);
+	if(!theme.isEmpty())
+		changeTheme(theme);
+	else
+		changeTheme(QString());
 
 	setCaption(i18n("KTicTacTux"));
 	resize(250, 250);
@@ -102,13 +104,13 @@ void KTicTacTuxWin::slotScore(const QString &score)
 	statusBar()->changeItem(score, 2);
 }
 
-// Change the theme
+// Change the theme, theme parameter points to file
 void KTicTacTuxWin::changeTheme(QString theme)
 {
 	KStandardDirs *d = KGlobal::dirs();
 
 	// fall back to default if no theme is set or theme is no more installed
-	if((theme == QString::null) || m_player1[theme] == QString::null)
+	if((theme.isEmpty()) || m_player1[theme].isEmpty())
 	{
 		theme = d->findResource("data", "ktictactux/classic");
 	}
@@ -117,8 +119,10 @@ void KTicTacTuxWin::changeTheme(QString theme)
 	for(int i = 0; i < m_themeactions.count(); i++)
 	{
 		QAction *action = m_themeactions.at(i);
-		if(m_themes[action->text()] == theme) action->setChecked(true);
-		else action->setChecked(false);
+		if(m_themes[action->text()] == theme)
+			action->setChecked(true);
+		else
+			action->setChecked(false);
 	}
 
 	// Update pixmaps
@@ -142,9 +146,7 @@ void KTicTacTuxWin::slotMenu(QAction *action)
 	}
 	else if(action == action_theme)
 	{
-		d.mkdir(QDir::home().path() + "/.ggz");
-		d.mkdir(QDir::home().path() + "/.ggz/games");
-		d.mkdir(QDir::home().path() + "/.ggz/games/ktictactux");
+		d.mkpath(QDir::home().path() + "/.ggz/games/ktictactux");
 		KNS::Entry::List entries = KNS::Engine::download();
 	}
 	else if(action == action_ggzplayers)
@@ -155,17 +157,20 @@ void KTicTacTuxWin::slotMenu(QAction *action)
 	{
 		close();
 	}
-
-	for(int i = 0; i < m_themeactions.count(); i++)
+	else
 	{
-		QAction *action2 = m_themeactions.at(i);
-		if(action == action2)
+		for(int i = 0; i < m_themeactions.count(); i++)
 		{
-			changeTheme(m_themes[m_themenames[i]]);
-			KSharedConfig::Ptr conf = KGlobal::config();
-			KConfigGroup cg = KConfigGroup(conf, "Settings");
-			cg.writeEntry("theme", m_themes[action->text()]);
-			conf->sync();
+			QAction *action2 = m_themeactions.at(i);
+			if(action == action2)
+			{
+				QString theme = m_themes[m_themenames[i]];
+				changeTheme(theme);
+				KSharedConfig::Ptr conf = KGlobal::config();
+				KConfigGroup cg = KConfigGroup(conf, "Settings");
+				cg.writeEntry("theme", theme);
+				conf->sync();
+			}
 		}
 	}
 }
@@ -249,7 +254,8 @@ void KTicTacTuxWin::slotNetworkScore(int wins, int losses, int ties)
 void KTicTacTuxWin::slotGameOver()
 {
 	action_sync->setEnabled(false);
-	if(m_networked) action_score->setEnabled(false);
+	if(m_networked)
+		action_score->setEnabled(false);
 }
 
 // Read in all themes
@@ -270,7 +276,8 @@ void KTicTacTuxWin::loadThemes()
 		QStringList entries = dir.entryList(QDir::Files);
 		for(QStringList::iterator it2 = entries.begin(); it2 != entries.end(); it2++)
 		{
-			if((*it2).right(4) == ".png") continue;
+			if((*it2).right(4) == ".png")
+				continue;
 			file = (*it) + (*it2);
 			kDebug() << "Check file: " << file << endl;
 			KConfig conf(file, KConfig::SimpleConfig);

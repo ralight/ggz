@@ -1,10 +1,10 @@
 [Description]
-name=Tux/Kandalf (classic)
-name[de]=Tux/Kandalf (klassisch)
-name[fr]=Tux/Kandalf (classique)
-name[it]=Tux/Kandalf (classico)
+name=Tux versus Konqi (classic)
+name[de]=Tux gegen Konqi (klassisch)
+name[fr]=Tux contre Konqi (classique)
+name[it]=Tux contra Koni (classico)
 
 [Pixmaps]
 player1=tux.png
-player2=merlin.png
+player2=konqi.png
 

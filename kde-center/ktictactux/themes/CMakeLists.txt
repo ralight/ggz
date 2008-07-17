@@ -1,6 +1,6 @@
 install(FILES
 	tux.png
-	merlin.png
+	konqi.png
 	kde.png
 	gnome.png
 	cross.png
