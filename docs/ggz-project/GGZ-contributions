@@ -38,12 +38,15 @@ Imported from other projects
 ----------------------------
 
 * Country flags
-  Taken from KDE (license ok)
+  Taken from KDE SVN, licence LGPL
   - www/pics/site/flags/*.png
 
-* Kandalf, Tux, ... icons
-  Taken from KDE/GNOME (license ok)
+* KTicTacTux themes
   - kde-games/ktictactux/themes/???.png
+    kde.png: taken from KDE SVN, LGPL
+    gnome.png: taken from GNOME website, LGPL?
+    konqi.png: taken from KDE clipart website, LGPL
+    tux.png: taken from GNU website, GPL
 
 * Chess figures
   Taken from xboard
@@ -60,6 +63,8 @@ Imported from other projects
 
 * Widelands theme in GGZ Community
   - community/images/widelands
+* Freeciv theme in GGZ Community
+  - community/images/freeciv
 
 Code reuse
 ----------
