@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10311 2008-07-12 17:11:51Z josef $
+ * $Id: ggzdb_pgsql.c 10381 2008-07-21 19:41:51Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -168,27 +168,6 @@ static void releaseconnection(PGconn *conn)
 	pthread_mutex_unlock(&mutex);
 }
 
-/* Helper function: replace all patterns in a string */
-static char *strreplace(const char *str, const char *pattern, const char *subst)
-{
-	char *ss, *sstmp;
-	char *ptr;
-
-	ss = ggz_strdup(str);
-
-	while((ptr = strstr(ss, pattern)))
-	{
-		sstmp = ggz_strdup(ss);
-		memcpy(sstmp, ss, ptr - ss);
-		memcpy(sstmp + (ptr - ss), subst, strlen(subst));
-		memcpy(sstmp + (ptr - ss) + strlen(subst), ptr + strlen(pattern), strlen(str) - strlen(pattern) - (ptr - ss) + 1);
-		ggz_free(ss);
-		ss = sstmp;
-	}
-
-	return ss;
-}
-
 /* Initialize the database tables from an external SQL schema file */
 static int setupschema(PGconn *conn, const char *filename)
 {
@@ -211,7 +190,7 @@ static int setupschema(PGconn *conn, const char *filename)
 	{
 		if(strlen(buffer) == 1)
 		{
-			substbuffer = strreplace(completebuffer, "%PREFIX%", "");
+			substbuffer = _ggzdb_strreplace(completebuffer, "%PREFIX%", "");
 			res = PQexec(conn, substbuffer);
 			if((PQresultStatus(res) != PGRES_EMPTY_QUERY)
 			&& (PQresultStatus(res) != PGRES_COMMAND_OK))
