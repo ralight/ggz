@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/23/00
- * $Id: module.c 10375 2008-07-17 14:44:23Z josef $
+ * $Id: module.c 10382 2008-07-23 22:37:51Z josef $
  *
  * This fils contains functions for handling client-side game modules
  *
@@ -30,6 +30,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <dirent.h>
 
 #include <ggz.h>
 
@@ -291,9 +292,11 @@ GGZModuleEnvironment ggzcore_module_get_environment(const GGZModule * module)
  */
 int _ggzcore_module_setup(void)
 {
-	char *file, *fileptr;
+	char *file, *fileptr, *dirpath, *dirfile;
 	int ret;
 	const char *registries;
+	DIR *dir;
+	struct dirent *entry;
 
 	if (mod_handle != -1) {
 		ggz_debug(GGZCORE_DBG_MODULE,
@@ -306,9 +309,29 @@ int _ggzcore_module_setup(void)
 				      _ggzcore_module_destroy, 0);
 	num_modules = 0;
 
+	/* Check for central ggz.modules file first. */
 	file = _ggzcore_module_conf_filename();
 	ggz_debug(GGZCORE_DBG_MODULE, "Reading %s", file);
 	ret = _ggzcore_module_setup_registry(file);
+
+	/* Check for extra module registry files in ggz.modules.d. */
+	dirpath = ggz_strbuild("%s.d", file);
+	dir = opendir(dirpath);
+	if (dir) {
+		while ((entry = readdir(dir)) != NULL) {
+			if((!strcmp(entry->d_name, "."))
+			|| (!strcmp(entry->d_name, "..")))
+				continue;
+			dirfile = ggz_strbuild("%s/%s", dirpath, entry->d_name);
+			ret = _ggzcore_module_setup_registry(dirfile);
+			if(ret == -1)
+				/*ignore*/;
+			ggz_free(dirfile);
+		}
+		closedir(dir);
+	}
+	ggz_free(dirpath);
+
 	/* Free up space taken by name */
 	ggz_free(file);
 
