@@ -41,7 +41,7 @@ else
 	enable_ggzcore=no
 	enable_ancillary=no
 fi
-AC_GGZ_CONFIG(["true"], [ignore])
+AC_GGZ_CONFIG(["true"], [ignore], ["ggz-python"])
 AC_GGZ_INTL
 
 dnl Other checks

@@ -30,7 +30,7 @@ AC_GGZ_INTL
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZCORE
 AC_GGZ_GGZMOD("true", ignore)
-AC_GGZ_CONFIG
+AC_GGZ_CONFIG("true", ignore, "ggz-grubby")
 
 if test "x$ggzmod_includes" != "x"; then
 	AC_DEFINE([GAMES], 1, [Compile internal game engines])

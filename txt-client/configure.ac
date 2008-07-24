@@ -27,7 +27,7 @@ AC_GGZ_INTL
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZMOD
 AC_GGZ_GGZCORE
-AC_GGZ_CONFIG
+AC_GGZ_CONFIG("true", ignore, "ggz-txt-client")
 
 dnl Check for header files
 dnl ======================
