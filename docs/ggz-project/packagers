@@ -13,8 +13,8 @@ General information
 -------------------
 
 Most of GGZ can be packaged. Out of the 16 packages we currently release,
-only ggz-java and ggz-community are not yet prepared. It is expected that
-sooner or later, this will change, but for now 14 packages will make up
+only ggz-community is not yet well-prepared. It is expected that
+sooner or later, this will change, but for now 12 packages will make up
 a complete GGZ installations.
 
 In most cases, distributors will opt for a higher number due to some
@@ -23,8 +23,9 @@ server package actually contains the server, game servers and libraries.
 
 Most packages are straight-forward: configure, make, make install. The game
 client packages however are registered centrally by the 'ggz-config' utility.
-Binary packages of them need 3 extra lines, explained below in the paragraph
-about directories.
+Binary packages of them once needed 3 extra lines, explained below in the
+paragraph about directories. However, as of July 2008 this is no longer true
+and a simple unpacking process is enough!
 
 Finally, once GGZ packaging is done, check to see if any other games in
 the distribution provide GGZ support! Information about those is available
@@ -65,4 +66,7 @@ This happens with a call to ggz-config, but instead of giving it a module.dsc
 file as its parameter, give it --noregistry=DIR.
 Usually this is placed into post-installation and pre-removal scripts or
 sections of the packaging file.
+
+All of these issues are now gone if --registry=PKGNAME is given to ggz-config,
+which is the default for all autoconf-based modules in GGZ.
 
