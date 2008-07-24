@@ -476,6 +476,7 @@ dnl ------------------------------------------------------------------------
 dnl Try to find the ggz-config binary.
 dnl Sets GGZ_CONFIG to the path/name of the program.
 dnl Sets also: ggz_gamedir, ggz_datadir etc.
+dnl Takes a 3rd, optional parameter: [registry]
 dnl ------------------------------------------------------------------------
 dnl
 AC_DEFUN([AC_GGZ_CONFIG],
@@ -564,6 +565,9 @@ else
     GGZ_CONFIG="${ggz_config}/ggz-config"
     if test "$enable_noregistry" = yes; then
       GGZ_CONFIG="$GGZ_CONFIG --noregistry=$enableval"
+    fi
+    if test "$3" != ""; then
+      GGZ_CONFIG="$GGZ_CONFIG --registry=$3"
     fi
     AC_SUBST(GGZ_CONFIG)
 
