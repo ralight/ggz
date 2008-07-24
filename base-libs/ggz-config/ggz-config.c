@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 10383 2008-07-24 19:08:22Z josef $
+ * $Id: ggz-config.c 10384 2008-07-24 19:25:58Z josef $
  *
  * Configuration query and module install program.
  *
@@ -336,7 +336,8 @@ static int open_conffile(void)
 {
 	const char *global_filename = "ggz.modules";
 	char *global_pathname, *global_dirname;
-	int global;
+	int global = -1;
+	GGZConfType conftype;
 
 	if(registry)
 		if(moddest)
@@ -353,30 +354,44 @@ static int open_conffile(void)
 			global_pathname = ggz_strbuild("%s/%s",
 				GGZCONFDIR, global_filename);
 
-	global = ggz_conf_parse(global_pathname, GGZ_CONF_RDONLY);
+	if(install_mod + remove_mod + check_file == 0) {
+		conftype = GGZ_CONF_RDONLY;
+	} else {
+		conftype = GGZ_CONF_RDWR;
+	}
+
+	global = ggz_conf_parse(global_pathname, conftype);
 	if(global < 0) {
-		printf(_("Setting up GGZ game modules configuration in %s\n"), global_pathname);
-		if(registry) {
-			if(moddest)
-				global_dirname = ggz_strbuild("%s/%s/%s.d",
-					destdir, GGZCONFDIR, global_filename);
-			else
-				global_dirname = ggz_strbuild("%s/%s.d",
-					GGZCONFDIR, global_filename);
-			ggz_mkdir(global_dirname, 0700);
-			ggz_free(global_dirname);
-		}
-		global = ggz_conf_parse(global_pathname, GGZ_CONF_CREATE | GGZ_CONF_RDWR);
-		if(global < 0) {
-			fprintf(stderr, _("Insufficient permission to install modules\n"));
+		if(install_mod + remove_mod + check_file == 1) {
+			printf(_("Setting up GGZ game modules configuration in %s\n"), global_pathname);
+			if(registry) {
+				if(moddest)
+					global_dirname = ggz_strbuild("%s/%s/%s.d",
+						destdir, GGZCONFDIR, global_filename);
+				else
+					global_dirname = ggz_strbuild("%s/%s.d",
+						GGZCONFDIR, global_filename);
+				ggz_mkdir(global_dirname, 0700);
+				ggz_free(global_dirname);
+			}
+			conftype |= GGZ_CONF_CREATE;
+
+			global = ggz_conf_parse(global_pathname, conftype);
+			if(global < 0) {
+				fprintf(stderr, _("Insufficient permission to alter modules registry\n"));
+				ggz_free(global_pathname);
+				ggz_conf_cleanup();
+				return -1;
+			} else {
+#ifndef HAVE_WINSOCK2_H
+				/* HACK: chmod flags aren't available on windows. */
+				chmod(global_pathname, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+#endif
+			}
+		} else {
+			fprintf(stderr, _("Insufficient permission read modules registry\n"));
 			ggz_free(global_pathname);
 			ggz_conf_cleanup();
-			return -1;
-		} else {
-#ifndef HAVE_WINSOCK2_H
-			/* HACK: chmod flags aren't available on windows. */
-			chmod(global_pathname, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-#endif
 		}
 	}
 	ggz_free(global_pathname);
