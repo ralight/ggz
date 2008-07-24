@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 10375 2008-07-17 14:44:23Z josef $
+ * $Id: ggz-config.c 10383 2008-07-24 19:08:22Z josef $
  *
  * Configuration query and module install program.
  *
@@ -71,6 +71,7 @@ static int install_mod = 0;
 static int remove_mod = 0;
 static int list_mods = 0;
 static int check_file = 0;
+static char *registry = NULL;
 
 /* Command line options */
 /* If they are changed make sure to edit the manpage! */
@@ -87,6 +88,7 @@ static struct option options[] =
 	{"modfile", required_argument, 0, 'm'},
 	{"iconfile", required_argument, 0, 'I'},
 	{"noregistry", required_argument, 0, 'n'},
+	{"registry", required_argument, 0, 'R'},
 	{"force", no_argument, 0, 'f'},
 	{"destdir", no_argument, 0, 'D'},
 	{"help", no_argument, 0, 'h'},
@@ -107,7 +109,8 @@ static char *options_help[] = {
 	 N_("Check/repair module installation file"),
 	 N_("Specifies module installation file (needs argument)"),
 	 N_("Specifies icon file to use for the game (needs argument)"),
-	 N_("Use auxiliary directory for configuration data instead of the ggz.modules file (needs argument)"),
+	 N_("Use auxiliary directory for module registration instead of ggz.modules (needs argument)"),
+	 N_("Use a custom modules registry instead of ggz.modules (needs argument)"),
 	 N_("Install over an existing module"),
 	 N_("Use $DESTDIR as offset to ggz.modules file"),
 	 N_("Display help"),
@@ -115,6 +118,18 @@ static char *options_help[] = {
 	 N_("List all currently registered game modules"),
 	 NULL
 };
+
+
+/* Helper function for cross-platform mkdir() */
+/* FIXME: move into libggz? */
+static int ggz_mkdir(const char *dirname, mode_t mode)
+{
+#ifdef MKDIR_TAKES_ONE_ARG
+	return mkdir(dirname);
+#else
+	return mkdir(dirname, mode);
+#endif
+}
 
 
 static int load_modfile(void)
@@ -319,32 +334,50 @@ static void purge_engine_id(int global, char *engine_id)
 
 static int open_conffile(void)
 {
-	char *global_filename = "ggz.modules";
-	char *global_pathname;
+	const char *global_filename = "ggz.modules";
+	char *global_pathname, *global_dirname;
 	int global;
 
-	if(moddest)
-		global_pathname = ggz_strbuild("%s/%s/%s",
-			destdir, GGZCONFDIR, global_filename);
+	if(registry)
+		if(moddest)
+			global_pathname = ggz_strbuild("%s/%s/%s.d/%s",
+				destdir, GGZCONFDIR, global_filename, registry);
+		else
+			global_pathname = ggz_strbuild("%s/%s.d/%s",
+				GGZCONFDIR, global_filename, registry);
 	else
-		global_pathname = ggz_strbuild("%s/%s",
-			GGZCONFDIR, global_filename);
+		if(moddest)
+			global_pathname = ggz_strbuild("%s/%s/%s",
+				destdir, GGZCONFDIR, global_filename);
+		else
+			global_pathname = ggz_strbuild("%s/%s",
+				GGZCONFDIR, global_filename);
 
 	global = ggz_conf_parse(global_pathname, GGZ_CONF_RDONLY);
 	if(global < 0) {
 		printf(_("Setting up GGZ game modules configuration in %s\n"), global_pathname);
-	}
-	global = ggz_conf_parse(global_pathname, GGZ_CONF_CREATE | GGZ_CONF_RDWR);
-	if(global < 0) {
-		fprintf(stderr, _("Insufficient permission to install modules\n"));
-		ggz_free(global_pathname);
-		ggz_conf_cleanup();
-		return -1;
-	} else {
+		if(registry) {
+			if(moddest)
+				global_dirname = ggz_strbuild("%s/%s/%s.d",
+					destdir, GGZCONFDIR, global_filename);
+			else
+				global_dirname = ggz_strbuild("%s/%s.d",
+					GGZCONFDIR, global_filename);
+			ggz_mkdir(global_dirname, 0700);
+			ggz_free(global_dirname);
+		}
+		global = ggz_conf_parse(global_pathname, GGZ_CONF_CREATE | GGZ_CONF_RDWR);
+		if(global < 0) {
+			fprintf(stderr, _("Insufficient permission to install modules\n"));
+			ggz_free(global_pathname);
+			ggz_conf_cleanup();
+			return -1;
+		} else {
 #ifndef HAVE_WINSOCK2_H
-		/* HACK: chmod flags aren't available on windows. */
-		chmod(global_pathname, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+			/* HACK: chmod flags aren't available on windows. */
+			chmod(global_pathname, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 #endif
+		}
 	}
 	ggz_free(global_pathname);
 
@@ -395,11 +428,7 @@ static void handle_icon(void)
 
 			strcpy(path, GGZDATADIR);
 			strcat(path, "/ggz-config/");
-#ifdef MKDIR_TAKES_ONE_ARG
-			mkdir(path);
-#else
-			mkdir(path, 0700);
-#endif
+			ggz_mkdir(path, 0700);
 			strcat(path, modicon);
 			ret = filecopy(iconfile, path);
 			if(ret != 0) modicon = NULL;
@@ -1098,14 +1127,14 @@ int main(int argc, char *argv[])
 	/* Parse the command line options */
 	while(1)
 	{
-		opt = getopt_long(argc, argv, "cgdvpirCm:I:n:fDhu", options, &optindex);
+		opt = getopt_long(argc, argv, "cgdvpirCm:I:n:fDhulR:", options, &optindex);
 		if(opt == -1) break;
 		switch(opt)
 		{
 			case 'h':
 				printf(_("GGZ-Config - the GGZ Gaming Zone Configuration Utility\n"));
 				printf(_("Copyright (C) 2001 Rich Gade, rgade@users.sourceforge.net\n"));
-				printf(_("Copyright (C) 2002 - 2007 The GGZ Gaming Zone developers\n"));
+				printf(_("Copyright (C) 2002 - 2008 The GGZ Gaming Zone developers\n"));
 				printf(_("Published under the terms of the GNU GPL\n"));
 				printf("\n");
 				printf(_("Recognized options:\n"));
@@ -1145,6 +1174,9 @@ int main(int argc, char *argv[])
 				break;
 			case 'r':
 				remove_mod = 1;
+				break;
+			case 'R':
+				registry = optarg;
 				break;
 			case 'C':
 				check_file = 1;
@@ -1221,7 +1253,7 @@ int main(int argc, char *argv[])
 		else
 			rc = -1;
 	} else {
-			rc = noregister_all();
+		rc = noregister_all();
 	}
 
 	return rc;
