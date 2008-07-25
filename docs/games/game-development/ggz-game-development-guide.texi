@@ -38,7 +38,7 @@ Published under the GNU General Public License.
 
 @titlepage
 @title The GGZ Game Development Guide
-@subtitle Development of games for the GGZ Gaming Zone 0.99.2+
+@subtitle Development of games for the GGZ Gaming Zone 0.99.4+
 @author GGZ Development Team
 
 @page
@@ -66,14 +66,14 @@ See @url{http://www.ggzgamingzone.org/docs/guides/gamedev/} for the latest editi
 
 @menu
 * Foreword:: General notes about this document
-* The GGZ System:: How games can use the GGZ Gaming Zone
+* The World of GGZ Games:: How games can use the GGZ Gaming Zone
 * Diving into GGZ:: Preparing a developer installation
 * Game Clients:: Get into the player's eye
 * Game Servers:: Where the real magic takes place
 * Programming Details:: Network, configuration, tools etc.
 
 @c @detailmenu
-@c The GGZ System
+@c The World of GGZ Games
 @c * foo....
 @c @end detailmenu
 @end menu
@@ -95,17 +95,17 @@ this or against that. Instead, a general collection of hints is presented,
 divided into the major differences on the client side (frontends) and the
 server side (programming languages).
 This guide covers the following platforms for GGZ game development:
-KDE/Qt, GNOME/Gtk+, Python (with Pygame), SDL and pure C/C++ without any
-toolkits.
+KDE/Qt, GNOME/Gtk+, Python (with SDL/Pygame), pure SDL in C, Java and pure
+C/C++ environments without any graphical toolkits.
 
 The more games provide GGZ support, the more fun it becomes. After reading
 this guide, all questions about how to provide GGZ support from a game
 developer's perspective should be answered.
 
-@node The GGZ System
-@chapter The GGZ System
+@node The World of GGZ Games
+@chapter The World of GGZ Games
 
-@section Native GGZ Games ("internal")
+@section Games already shipped with GGZ
 
 With more than a dozen games available, which can be played using nearly two
 dozen game clients, GGZ offers a solid bunch of different
@@ -126,7 +126,13 @@ to find out programming details. In particular, the Tic-Tac-Toe game is
 simple enough that it has been awarded the title of being the example game
 for all platforms.
 
-@section Games which want to use GGZ ("external")
+@section Externally developed games which use GGZ
+
+GGZ offers wonderful features to consider for integration into any game.
+With little work, game developers can foster player communities, integrate
+flexible protocols and promote their game to a wider audience.
+The chapters on client and server development will discuss the available
+options in detail.
 
 External game work no different to internal ones. However, a few assumptions
 can be made, for example, most external game have been present before they got
@@ -170,8 +176,8 @@ Building GGZ from source is quite easy but depending on the package a number of
 tools might be needed. Most parts (C/C++) are autotools-based,
 meaning they use automake, autoconf and libtool to produce makefiles.
 The Python package uses autoconf only and the Java package uses the ant system.
-GGZ Community comes with its own hand-rolled system. The two KDE packages might
-switch to CMake in the future. Aligning with the build system of the respective
+GGZ Community comes with its own hand-rolled system. The KDE package has
+switched to CMake recently. Aligning with the build system of the respective
 platform has proven to be the best and easiest for developers of the platform
 in question, but of course where they all come together (in GGZ) some care is
 needed.
@@ -203,9 +209,11 @@ conditionally. Thus, the game will compile and run even without GGZ, but
 if GGZ is available it will offer more features. To detect GGZ libraries,
 the file ggz.m4 can be added to acinclude.m4 in case of autoconf-based
 C/C++ games. This file should be updated from time to time to reflect changes
-in GGZ.
+in GGZ. For CMake-based games, there's GGZ.cmake to detect a base GGZ
+setup and then there's FindGGZDMod.cmake and FindGGZCore.cmake for
+the respective base libraries.
 
-Both of these files can be found at
+All of these files can be found at
 @url{http://dev.ggzgamingzone.org/external.php}, a web page which also
 contains general information about external games and development thereof.
 
@@ -628,9 +636,8 @@ is used in GGZ. It contains a dialog for player management, system
 integration code and at its core the kggzmod library which was already
 introduced earlier.
 
-After GGZ version 0.0.14, the GGZ KDE clients and games will use KDE 4
-and as such automatically get access to the port of the former GGZ KDE
-Games library which is then part of libkdegames.
+After GGZ version 0.0.14, the GGZ KDE clients and games packages underwent
+porting to KDE 4 and were merged into the new ggz-kde-center package.
 
 @subsection Gtk+, GNOME (C)
 
@@ -881,14 +888,17 @@ They are available as part of the ggz-python package.
 
 @subsection Ruby Development
 
-There is a ruby wrapper for ggzdmod in development: ruggzdmod.
-In the future, the GGZ server will also be available as a complete ruby
-implementation, which will come with a native game server interface.
+There are two ruby wrappers for GGZ libraries available in the playground:
+ruggzdmod for game servers and ruggzmod for game clients.
+In addition, the RubyToe game serves as an example game with client based
+on the Ruby bindings to Qt4, server and plugged-in AI module.
 
 @subsection Java development
 
 Java game server developers can use jggzdmod, which is a complete
-reimplementation of the ggzdmod library.
+reimplementation of the ggzdmod library. The jancillary native module
+is a wrapper around some libc and libggz functions on and makes it easy
+to integrate Java-based game servers with the system.
 
 @node Programming Details
 @chapter Programming Details
@@ -924,6 +934,8 @@ The ggzdmod_report_savegame() call should however not be performed after the
 game is over. Instead, calling this function as early as possible makes it
 possible to create a continuous savegame, which can be used for game
 continuation in case of a game server crash.
+Automatic savegame reloading support was implemented in GGZ 0.99.3.
+On-demand loading code is currently under development.
 
 @subsection Named bots
 
@@ -1293,13 +1305,18 @@ client, the GGZBoard chess module and a special client for DROPS
 An interface compatible to GGZChess exists for the inclusion of the GNU Chess
 AI program into chess games.
 
-@subsection Data updates with SDLNewStuff
+@subsection Data updates with Get Hot New Stuff
 
 Levels, graphics files and other kind of data can be shared using the
 Get Hot New Stuff framework. In GGZ, the KDE game clients provide support
-for KNewStuff, whereas the Python/SDL games can use SDLNewStuff.
+for KNewStuff2 which comes with the KDE libraries, whereas the Python/SDL
+games can use the SDLNewStuff library which is shipped in the ggz-python
+package.
 For SDL games written in C, a special implementation written for Widelands
-(but not integrated) exists.
+(but not integrated) exists in the playground.
+
+On @url{http://newstuff.kde.org/} the repository for the example game
+KTicTacTux can be found.
 
 @c End of body =================================================
 @c Footer ======================================================
