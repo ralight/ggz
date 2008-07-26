@@ -70,7 +70,7 @@
 
 # Announcements (none by default), metaserver must point to a GGZ metaserver
 #AnnounceLAN = 1
-#AnnounceMetaserver = localhost
+#AnnounceMetaserver = meta.ggzgamingzone.org
 #AnnounceMetaserverUsername = ggzd
 #AnnounceMetaserverPassword = ggzd
 
