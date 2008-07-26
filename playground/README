@@ -105,10 +105,13 @@
 		Server and repository maintenance scripts for GGZ developers.
 		Also some website tools and documentation.
 
-	Meta:
-		Metacle, the metaserver aggregator.
+	Metacle:
+		Metacle, the metaserver aggregator on metacle.ggzgamingzone.org.
 		Will stay here for quite some time since it is intended to be run
 		on one server only.
+
+	Meta:
+		Website for the GGZ meta server on meta.ggzgamingzone.org.
 
 	MingW:
 		Information on how to compile GGZ on windows.
