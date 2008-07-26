@@ -963,7 +963,8 @@ static int metaserv_work(int fd, int session)
 		ret = read(fd, buffer, sizeof(buffer));
 		if(ret > 0)
 		{
-			buffer[ret - 1] = 0;
+			if(buffer[ret - 1] == '\n') buffer[ret - 1] = 0;
+			if(buffer[ret - 1] == '\r') buffer[ret - 1] = 0;
 			if(verbosity == 2)
 				logline("[%i] Request: buffer=%s", session, buffer);
 			else
