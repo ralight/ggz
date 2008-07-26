@@ -7,7 +7,9 @@ CREATE TABLE tournaments (
 	"game" character varying(256),
 	"room" character varying(256),
 	"date" bigint,
-	"organizer" character varying(256)
+	"organizer" character varying(256),
+	"players" bigint,
+	"signup" boolean
 );
 
 CREATE TABLE tournamentplayers (
