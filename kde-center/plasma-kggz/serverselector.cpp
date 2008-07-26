@@ -2,12 +2,19 @@
 #include <QtGui/QLayout>
 #include <QtGui/QListWidget>
 
+#include <qtcpsocket.h>
+#include <qurl.h>
+#include <qxmlstream.h>
+
 #include <klocale.h>
+#include <kmessagebox.h>
 
 #include "serverselector.h"
 
+#define GGZ_PROTOCOL_VERSION "10"
+
 ServerSelector::ServerSelector(QWidget *parent)
-: QDialog(parent)
+: QDialog(parent), m_sock(NULL)
 {
 	m_serverlist = new QListWidget();
 
@@ -70,7 +77,47 @@ void ServerSelector::slotSelectionChanged()
 
 void ServerSelector::setMetaUri(QString uri)
 {
-	Q_UNUSED(uri);
+	QUrl url(uri);
+	m_sock = new QTcpSocket(this);
+	connect(m_sock, SIGNAL(connected()), SLOT(slotConnected()));
+	connect(m_sock, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(slotError(QAbstractSocket::SocketError)));
+	connect(m_sock, SIGNAL(readyRead()), SLOT(slotData()));
+	m_sock->connectToHost(url.host(), url.port(15689));
+}
+
+void ServerSelector::slotConnected()
+{
+	QString query;
+	QXmlStreamWriter writer(&query);
+	writer.writeStartElement("query");
+	writer.writeAttribute("class", "ggz");
+	writer.writeAttribute("type", "connection");
+	writer.writeStartElement("option");
+	writer.writeAttribute("name", "protocol");
+	writer.writeCharacters(GGZ_PROTOCOL_VERSION);
+	writer.writeEndElement();
+	writer.writeEndElement();
+
+	qDebug("Query: %s", qPrintable(query));
+
+	m_sock->write(query.toUtf8());
+}
+
+void ServerSelector::slotData()
+{
+	QByteArray raw = m_sock->readAll();
+	QString response = QString::fromUtf8(raw.data());
+
+	qDebug("Response: %s", qPrintable(response));
+}
+
+void ServerSelector::slotError(QAbstractSocket::SocketError error)
+{
+	Q_UNUSED(error);
+
+	KMessageBox::error(this,
+		i18n("The list of servers cannot be retrieved."),
+		i18n("Metaserver failure"));
 }
 
 #include "serverselector.moc"
