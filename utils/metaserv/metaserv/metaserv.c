@@ -902,7 +902,7 @@ static char *metamagic(const char *rawuri)
 
 	uri = strdup(rawuri);
 
-	if((strlen(uri) > 5) && (!strncmp(uri, "<?xml ", 5)))
+	if((strlen(uri) > 5) && (!strncmp(uri, "<", 1)))
 	{
 		ret = metaserv_xml(uri);
 		free(uri);
@@ -971,6 +971,7 @@ static int metaserv_work(int fd, int session)
 			result = metamagic(buffer);
 
 			stream = fdopen(fd, "w");
+			setbuf(stream, NULL);
 			if(stream)
 			{
 				if(result)
@@ -986,7 +987,6 @@ static int metaserv_work(int fd, int session)
 					fprintf(stream, "\n");
 					logline("[%i] No result", session);
 				}
-				fflush(stream);
 				/*fclose(stream);*/
 			}
 			else logline("[%i] Broken pipe", session);

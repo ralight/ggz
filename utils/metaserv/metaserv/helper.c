@@ -31,6 +31,7 @@ void logline(const char *fmt, ...)
 		f = fopen(logfile, "a");
 		closefile = 1;
 	}
+	setbuf(f, NULL);
 
 	if(f)
 	{

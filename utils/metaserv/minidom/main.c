@@ -14,8 +14,16 @@ int main(int argc, char *argv[])
 	ELE *ele;
 	char *file;
 
-	file = "example.xml";
-	if(argc == 2) file = argv[1];
+	if(argc == 2)
+	{
+		file = argv[1];
+	}
+	else
+	{
+		fprintf(stderr, "Syntax: minidom [file]\n");
+		return 1;
+	}
+
 	dom = minidom_load(file);
 	minidom_dump(dom);
 
@@ -28,8 +36,14 @@ int main(int argc, char *argv[])
 		if(ele) printf("Found: %s\n", ele->value);
 
 		minidom_free(dom);
-	}
 
-	return 0;
+		return 0;
+	}
+	else
+	{
+		fprintf(stderr, "Error loading file '%s'.\n", file);
+
+		return 1;
+	}
 }
 
