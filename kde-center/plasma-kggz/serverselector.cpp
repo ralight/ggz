@@ -5,6 +5,7 @@
 #include <qtcpsocket.h>
 #include <qurl.h>
 #include <qxmlstream.h>
+#include <qdom.h>
 
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -17,9 +18,6 @@ ServerSelector::ServerSelector(QWidget *parent)
 : QDialog(parent), m_sock(NULL)
 {
 	m_serverlist = new QListWidget();
-
-	QListWidgetItem *item = new QListWidgetItem("ggz://live.ggzgamingzone.org");
-	m_serverlist->addItem(item);
 
 	m_button = new QPushButton(i18n("Select this server"));
 	m_button->setEnabled(false);
@@ -47,14 +45,15 @@ ServerSelector::~ServerSelector()
 {
 }
 
-QString ServerSelector::server()
+GGZServer ServerSelector::server()
 {
+	GGZServer server;
 	QListWidgetItem *item = m_serverlist->currentItem();
 
 	if(item)
-		return item->text();
+		return m_servers[item->text()];
 
-	return QString();
+	return server;
 }
 
 void ServerSelector::slotServerSelected()
@@ -63,7 +62,7 @@ void ServerSelector::slotServerSelected()
 
 	if(item)
 	{
-		emit signalServerSelected(item->text());
+		emit signalServerSelected(m_servers[item->text()]);
 		accept();
 	}
 }
@@ -109,6 +108,47 @@ void ServerSelector::slotData()
 	QString response = QString::fromUtf8(raw.data());
 
 	qDebug("Response: %s", qPrintable(response));
+
+	QDomDocument dom;
+	if(!dom.setContent(response))
+	{
+		KMessageBox::error(this,
+			i18n("The metaserver didn't return a useful response."),
+			i18n("Metaserver failure"));
+		return;
+	}
+
+	QDomElement resultset = dom.documentElement();
+	QDomNode resultnode = resultset.firstChild();
+	while(!resultnode.isNull())
+	{
+		QDomElement result = resultnode.toElement();
+		QString uri = result.attribute("uri");
+
+		QListWidgetItem *item = new QListWidgetItem(uri);
+		m_serverlist->addItem(item);
+
+		QString api;
+
+		QDomNode optionnode = result.firstChild();
+		while(!optionnode.isNull())
+		{
+			QDomElement option = optionnode.toElement();
+			QString optname = option.attribute("name");
+
+			if(optname == "api")
+				api = option.text();
+
+			optionnode = optionnode.nextSibling();
+		}
+
+		GGZServer server;
+		server.setUri(uri);
+		server.setApi(api);
+		m_servers[uri] = server;
+
+		resultnode = resultnode.nextSibling();
+	}
 }
 
 void ServerSelector::slotError(QAbstractSocket::SocketError error)

@@ -58,7 +58,12 @@ void PlasmaKGGZ::init()
 	KConfigGroup cg = config();
 	if(cg.readEntry("username").isEmpty())
 	{
-		activity(i18n("Unconfigured."));
+		activity(i18n("Unconfigured account."));
+		return;
+	}
+	if(cg.readEntry("ggzuri").isEmpty())
+	{
+		activity(i18n("Unconfigured server."));
 		return;
 	}
 
@@ -76,11 +81,7 @@ void PlasmaKGGZ::init()
 
 	activity(i18n("Connecting..."));
 
-	QString ggzuri = cg.readEntry("ggzuri");
-	if(ggzuri.isEmpty())
-		ggzuri = "ggz://localhost:5688";
-
-	m_core->setUrl(ggzuri);
+	m_core->setUrl(cg.readEntry("ggzuri"));
 	m_core->setUsername(cg.readEntry("username"));
 	m_core->initiateLogin();
 } 
@@ -88,6 +89,8 @@ void PlasmaKGGZ::init()
 void PlasmaKGGZ::paintInterface(QPainter *p,
 	const QStyleOptionGraphicsItem *option, const QRect &contentsRect)
 {
+	Q_UNUSED(option);
+
 	p->setRenderHint(QPainter::SmoothPixmapTransform);
 	p->setRenderHint(QPainter::Antialiasing);
 
@@ -140,7 +143,11 @@ void PlasmaKGGZ::createConfigurationInterface(KConfigDialog *parent)
 	m_config->setUsername(cg.readEntry("username"));
 	m_config->setPassword(cg.readEntry("password"));
 	m_config->setRoomname(cg.readEntry("roomname"));
-	m_config->setGGZUri(cg.readEntry("ggzuri"));
+
+	GGZServer server;
+	server.setUri(cg.readEntry("ggzuri"));
+	server.setApi(cg.readEntry("ggzapi"));
+	m_config->setGGZServer(server);
 
 	connect(parent, SIGNAL(applyClicked()), SLOT(slotConfiguration()));
 	connect(parent, SIGNAL(okClicked()), SLOT(slotConfiguration()));
@@ -182,7 +189,10 @@ void PlasmaKGGZ::slotConfiguration()
 	cg.writeEntry("username", m_config->username());
 	cg.writeEntry("password", m_config->password());
 	cg.writeEntry("roomname", m_config->roomname());
-	cg.writeEntry("ggzuri", m_config->ggzUri());
+
+	GGZServer server = m_config->ggzServer();
+	cg.writeEntry("ggzuri", server.uri());
+	cg.writeEntry("ggzapi", server.api());
 	cg.sync();
 
 	if((!m_core) || (m_config->username() != m_core->username()))
@@ -322,6 +332,9 @@ void PlasmaKGGZ::slotEvent(KGGZCore::CoreClient::EventMessage message)
 
 void PlasmaKGGZ::slotFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::Error::ErrorCode error)
 {
+	// FIXME!
+	Q_UNUSED(error);
+
 	switch(message)
 	{
 		case KGGZCore::Room::tablelaunched:

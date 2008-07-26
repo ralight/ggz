@@ -2,7 +2,11 @@
 #include <QtGui/QLayout>
 #include <QtGui/QListWidget>
 
+#include <qdom.h>
+
 #include <klocale.h>
+#include <kio/job.h>
+#include <kmessagebox.h>
 
 #include "roomselector.h"
 
@@ -10,9 +14,6 @@ RoomSelector::RoomSelector(QWidget *parent)
 : QDialog(parent)
 {
 	m_roomlist = new QListWidget();
-
-	QListWidgetItem *item = new QListWidgetItem("Tic-Tac-Toe");
-	m_roomlist->addItem(item);
 
 	m_button = new QPushButton(i18n("Select this room"));
 	m_button->setEnabled(false);
@@ -68,9 +69,58 @@ void RoomSelector::slotSelectionChanged()
 	m_button->setEnabled((item != NULL));
 }
 
-void RoomSelector::setGGZUri(QString uri)
+void RoomSelector::setGGZApi(QString uri)
 {
-	Q_UNUSED(uri);
+	m_data.clear();
+
+	if(uri.endsWith("/"))
+		uri.chop(1);
+	uri += "/rooms";
+
+	KIO::TransferJob *job = KIO::get(KUrl(uri), KIO::NoReload, KIO::HideProgressInfo);
+	connect(job, SIGNAL(data(KIO::Job*, const QByteArray&)), SLOT(slotData(KIO::Job*, const QByteArray&)));
+	connect(job, SIGNAL(result(KJob*)), SLOT(slotResult(KJob*)));
+}
+
+void RoomSelector::slotData(KIO::Job *job, const QByteArray &data)
+{
+	Q_UNUSED(job);
+
+	m_data.append(data);
+}
+
+void RoomSelector::slotResult(KJob *job)
+{
+	if(job->error())
+	{
+		KMessageBox::error(this,
+			i18n("The list of rooms cannot be retrieved."),
+			i18n("Web Service API failure"));
+		return;
+	}
+	qDebug("XML: %s", m_data.data());
+
+	QDomDocument dom;
+	if(!dom.setContent(m_data))
+	{
+		KMessageBox::error(this,
+			i18n("The list of rooms is malformatted."),
+			i18n("Web Service API failure"));
+		return;
+	}
+
+	QDomElement rooms = dom.documentElement();
+	QDomNode roomnode = rooms.firstChild();
+	while(!roomnode.isNull())
+	{
+		QDomElement room = roomnode.toElement();
+		QString name = room.attribute("name");
+
+		QListWidgetItem *item = new QListWidgetItem(name);
+		m_roomlist->addItem(item);
+
+		roomnode = roomnode.nextSibling();
+	}
 }
 
 #include "roomselector.moc"

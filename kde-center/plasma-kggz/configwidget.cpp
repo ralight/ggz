@@ -46,11 +46,12 @@ ConfigWidget::ConfigWidget(QWidget *parent)
 	QPushButton *serverbutton = new QPushButton(i18n("Select..."));
 	layout->addWidget(serverbutton, 0, 2);
 
-	QPushButton *roombutton = new QPushButton(i18n("Select..."));
-	layout->addWidget(roombutton, 3, 2);
+	m_roombutton = new QPushButton(i18n("Select..."));
+	m_roombutton->setEnabled(false);
+	layout->addWidget(m_roombutton, 3, 2);
 
 	connect(serverbutton, SIGNAL(clicked()), SLOT(slotSelectServer()));
-	connect(roombutton, SIGNAL(clicked()), SLOT(slotSelectRoom()));
+	connect(m_roombutton, SIGNAL(clicked()), SLOT(slotSelectRoom()));
 }
 
 ConfigWidget::~ConfigWidget()
@@ -90,29 +91,20 @@ QString ConfigWidget::roomname() const
 void ConfigWidget::setGGZServer(const GGZServer &server)
 {
 	m_ggzserver->setText(server.uri());
+
+	m_server = server;
+	m_roombutton->setEnabled(!server.api().isEmpty());
 }
 
 GGZServer ConfigWidget::ggzServer() const
 {
-	GGZServer server;
-	server.setUri(m_ggzserver->text());
-	return server;
-}
-
-void ConfigWidget::setGGZUri(const QString &uri)
-{
-	m_ggzserver->setText(uri);
-}
-
-QString ConfigWidget::ggzUri() const
-{
-	return m_ggzserver->text();
+	return m_server;
 }
 
 void ConfigWidget::slotSelectRoom()
 {
 	RoomSelector selector(this);
-	selector.setGGZUri(m_ggzserver->text());
+	selector.setGGZApi(m_server.api());
 	int status = selector.exec();
 	if(status == QDialog::Accepted)
 	{
@@ -127,7 +119,7 @@ void ConfigWidget::slotSelectServer()
 	int status = selector.exec();
 	if(status == QDialog::Accepted)
 	{
-		m_ggzserver->setText(selector.server());
+		setGGZServer(selector.server());
 	}
 }
 

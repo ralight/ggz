@@ -6,6 +6,7 @@
 #include "ggzserver.h"
 
 class QLineEdit;
+class QPushButton;
 
 class ConfigWidget : public QWidget
 {
@@ -24,9 +25,6 @@ class ConfigWidget : public QWidget
 		void setRoomname(const QString &roomname);
 		QString roomname() const;
 
-		void setGGZUri(const QString &uri);
-		QString ggzUri() const;
-
 		void setGGZServer(const GGZServer &server);
 		GGZServer ggzServer() const;
 
@@ -39,6 +37,8 @@ class ConfigWidget : public QWidget
 		QLineEdit *m_password;
 		QLineEdit *m_roomname;
 		QLineEdit *m_ggzserver;
+		GGZServer m_server;
+		QPushButton *m_roombutton;
 };
 
 #endif

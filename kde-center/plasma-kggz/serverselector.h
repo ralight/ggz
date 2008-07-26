@@ -19,10 +19,10 @@ class ServerSelector : public QDialog
 		~ServerSelector();
 
 		void setMetaUri(QString uri);
-		QString server();
+		GGZServer server();
 
 	signals:
-		void signalServerSelected(const QString &server);
+		void signalServerSelected(const GGZServer &server);
 
 	private slots:
 		void slotServerSelected();
@@ -36,6 +36,7 @@ class ServerSelector : public QDialog
 		QListWidget *m_serverlist;
 		QPushButton *m_button;
 		QTcpSocket *m_sock;
+		QMap<QString, GGZServer> m_servers;
 };
 
 #endif

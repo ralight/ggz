@@ -12,8 +12,12 @@ class GGZServer
 		void setUri(const QString &uri);
 		QString uri() const;
 
+		void setApi(const QString &api);
+		QString api() const;
+
 	private:
 		QString m_uri;
+		QString m_api;
 };
 
 #endif
