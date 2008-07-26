@@ -115,12 +115,17 @@ void ConfigWidget::slotSelectRoom()
 void ConfigWidget::slotSelectServer()
 {
 	ServerSelector selector(this);
-	selector.setMetaUri("ggz://meta.ggzgamingzone.org:15689");
+	selector.setMetaUri(m_metaserver);
 	int status = selector.exec();
 	if(status == QDialog::Accepted)
 	{
 		setGGZServer(selector.server());
 	}
+}
+
+void ConfigWidget::setMetaserver(const QString &metaserver)
+{
+	m_metaserver = metaserver;
 }
 
 #include "configwidget.moc"

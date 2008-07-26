@@ -127,7 +127,12 @@ void PlasmaKGGZ::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 		QString url = KShell::quoteArg(m_core->url());
 
-		KProcess::startDetached("ggz-gtk", QStringList() << url);
+		KConfigGroup cg = config();
+		QString coreclient = cg.readEntry("coreclient");
+		if(coreclient.isEmpty())
+			coreclient = "ggz-gtk";
+
+		KProcess::startDetached(coreclient, QStringList() << url);
 	}
 
 	event->ignore();
@@ -148,6 +153,11 @@ void PlasmaKGGZ::createConfigurationInterface(KConfigDialog *parent)
 	server.setUri(cg.readEntry("ggzuri"));
 	server.setApi(cg.readEntry("ggzapi"));
 	m_config->setGGZServer(server);
+
+	QString metauri = cg.readEntry("metaserver");
+	if(metauri.isEmpty())
+		metauri = "ggzmeta://meta.ggzgamingzone.org:15689";
+	m_config->setMetaserver(metauri);
 
 	connect(parent, SIGNAL(applyClicked()), SLOT(slotConfiguration()));
 	connect(parent, SIGNAL(okClicked()), SLOT(slotConfiguration()));

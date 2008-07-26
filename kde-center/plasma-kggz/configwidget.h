@@ -16,6 +16,8 @@ class ConfigWidget : public QWidget
 		ConfigWidget(QWidget *parent);
 		~ConfigWidget();
 
+		void setMetaserver(const QString &metaserver);
+
 		void setUsername(const QString &username);
 		QString username() const;
 
@@ -39,6 +41,7 @@ class ConfigWidget : public QWidget
 		QLineEdit *m_ggzserver;
 		GGZServer m_server;
 		QPushButton *m_roombutton;
+		QString m_metaserver;
 };
 
 #endif
