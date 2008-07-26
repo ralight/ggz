@@ -14,6 +14,7 @@ class ConfigWidget;
 class PlasmaKGGZ : public Plasma::Applet
 {
 	Q_OBJECT
+
 	public:
 		PlasmaKGGZ(QObject *parent, const QVariantList &args);
 		~PlasmaKGGZ();

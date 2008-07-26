@@ -3,11 +3,13 @@
 
 #include <qwidget.h>
 
+#include "ggzserver.h"
+
 class QLineEdit;
 
 class ConfigWidget : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 	public:
 		ConfigWidget(QWidget *parent);
@@ -22,10 +24,20 @@ class ConfigWidget : public QWidget
 		void setRoomname(const QString &roomname);
 		QString roomname() const;
 
+		void setGGZUri(const QString &uri);
+		QString ggzUri() const;
+
+		void setGGZServer(const GGZServer &server);
+		GGZServer ggzServer() const;
+
+	private slots:
+		void slotSelectRoom();
+
 	private:
 		QLineEdit *m_username;
 		QLineEdit *m_password;
 		QLineEdit *m_roomname;
+		QLineEdit *m_ggzserver;
 };
 
 #endif

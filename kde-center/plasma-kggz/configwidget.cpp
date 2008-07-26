@@ -1,34 +1,51 @@
 #include <QtGui/QGridLayout>
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
+#include <QtGui/QPushButton>
 
 #include <klocale.h>
 
 #include "configwidget.h"
+#include "roomselector.h"
 
 ConfigWidget::ConfigWidget(QWidget *parent)
 : QWidget(parent)
 {
-	QGridLayout *layout = new QGridLayout(this);
+	QLabel *label;
 
-	m_username = new QLineEdit(this);
-	m_password = new QLineEdit(this);
-	m_roomname = new QLineEdit(this);
+	QGridLayout *layout = new QGridLayout();
+	setLayout(layout);
 
-	QLabel *label = new QLabel(i18n("Username:"), this);
-	label->setBuddy(m_username);
+	m_username = new QLineEdit();
+	m_password = new QLineEdit();
+	m_roomname = new QLineEdit();
+	m_ggzserver = new QLineEdit();
+	m_roomname->setReadOnly(true);
+
+	label = new QLabel(i18n("GGZ Server:"));
+	label->setBuddy(m_ggzserver);
 	layout->addWidget(label, 0, 0);
-	layout->addWidget(m_username, 0, 1);
+	layout->addWidget(m_ggzserver, 0, 1);
 
-	label = new QLabel(i18n("Password:"), this);
-	label->setBuddy(m_password);
+	label = new QLabel(i18n("Username:"));
+	label->setBuddy(m_username);
 	layout->addWidget(label, 1, 0);
-	layout->addWidget(m_password, 1, 1);
+	layout->addWidget(m_username, 1, 1);
 
-	label = new QLabel(i18n("Roomname:"), this);
-	label->setBuddy(m_roomname);
+	label = new QLabel(i18n("Password:"));
+	label->setBuddy(m_password);
 	layout->addWidget(label, 2, 0);
-	layout->addWidget(m_roomname, 2, 1);
+	layout->addWidget(m_password, 2, 1);
+
+	label = new QLabel(i18n("Roomname:"));
+	label->setBuddy(m_roomname);
+	layout->addWidget(label, 3, 0);
+	layout->addWidget(m_roomname, 3, 1);
+
+	QPushButton *button = new QPushButton(i18n("Select..."));
+	layout->addWidget(button, 3, 2),
+
+	connect(button, SIGNAL(clicked()), SLOT(slotSelectRoom()));
 }
 
 ConfigWidget::~ConfigWidget()
@@ -63,6 +80,39 @@ void ConfigWidget::setRoomname(const QString &roomname)
 QString ConfigWidget::roomname() const
 {
 	return m_roomname->text();
+}
+
+void ConfigWidget::setGGZServer(const GGZServer &server)
+{
+	m_ggzserver->setText(server.uri());
+}
+
+GGZServer ConfigWidget::ggzServer() const
+{
+	GGZServer server;
+	server.setUri(m_ggzserver->text());
+	return server;
+}
+
+void ConfigWidget::setGGZUri(const QString &uri)
+{
+	m_ggzserver->setText(uri);
+}
+
+QString ConfigWidget::ggzUri() const
+{
+	return m_ggzserver->text();
+}
+
+void ConfigWidget::slotSelectRoom()
+{
+	RoomSelector selector(this);
+	selector.setGGZUri(m_ggzserver->text());
+	int status = selector.exec();
+	if(status == QDialog::Accepted)
+	{
+		setRoomname(selector.room());
+	}
 }
 
 #include "configwidget.moc"

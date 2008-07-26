@@ -76,7 +76,11 @@ void PlasmaKGGZ::init()
 
 	activity(i18n("Connecting..."));
 
-	m_core->setUrl("ggz://localhost:5688");
+	QString ggzuri = cg.readEntry("ggzuri");
+	if(ggzuri.isEmpty())
+		ggzuri = "ggz://localhost:5688";
+
+	m_core->setUrl(ggzuri);
 	m_core->setUsername(cg.readEntry("username"));
 	m_core->initiateLogin();
 } 
@@ -136,6 +140,7 @@ void PlasmaKGGZ::createConfigurationInterface(KConfigDialog *parent)
 	m_config->setUsername(cg.readEntry("username"));
 	m_config->setPassword(cg.readEntry("password"));
 	m_config->setRoomname(cg.readEntry("roomname"));
+	m_config->setGGZUri(cg.readEntry("ggzuri"));
 
 	connect(parent, SIGNAL(applyClicked()), SLOT(slotConfiguration()));
 	connect(parent, SIGNAL(okClicked()), SLOT(slotConfiguration()));
@@ -177,6 +182,7 @@ void PlasmaKGGZ::slotConfiguration()
 	cg.writeEntry("username", m_config->username());
 	cg.writeEntry("password", m_config->password());
 	cg.writeEntry("roomname", m_config->roomname());
+	cg.writeEntry("ggzuri", m_config->ggzUri());
 	cg.sync();
 
 	if((!m_core) || (m_config->username() != m_core->username()))

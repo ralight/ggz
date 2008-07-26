@@ -9,7 +9,12 @@ include_directories(
    ..
 )
  
-set(plasmakggz_SRCS plasma-kggz.cpp configwidget.cpp)
+set(plasmakggz_SRCS
+	plasma-kggz.cpp
+	configwidget.cpp
+	ggzserver.cpp
+	roomselector.cpp
+)
  
 kde4_add_plugin(plasma_applet_kggz ${plasmakggz_SRCS})
 #target_link_libraries(plasma_applet_kggz
