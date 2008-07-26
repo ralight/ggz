@@ -6,9 +6,11 @@
 #include <qurl.h>
 #include <qxmlstream.h>
 #include <qdom.h>
+#include <qlabel.h>
 
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <kstandarddirs.h>
 
 #include "serverselector.h"
 
@@ -17,6 +19,8 @@
 ServerSelector::ServerSelector(QWidget *parent)
 : QDialog(parent), m_sock(NULL)
 {
+	KStandardDirs d;
+
 	m_serverlist = new QListWidget();
 
 	m_button = new QPushButton(i18n("Select this server"));
@@ -28,8 +32,17 @@ ServerSelector::ServerSelector(QWidget *parent)
 	hbox->addWidget(m_button);
 	hbox->addWidget(cancel);
 
+	QLabel *logo = new QLabel();
+	logo->setFixedSize(64, 64);
+	logo->setPixmap(QPixmap(d.findResource("data", "plasma-kggz/ggzmetaserv.png")));
+
+	QHBoxLayout *hboxtop = new QHBoxLayout();
+	hboxtop->addWidget(logo);
+	hboxtop->addStretch(1);
+
 	QVBoxLayout *vbox = new QVBoxLayout();
 	setLayout(vbox);
+	vbox->addLayout(hboxtop);
 	vbox->addWidget(m_serverlist);
 	vbox->addLayout(hbox);
 
