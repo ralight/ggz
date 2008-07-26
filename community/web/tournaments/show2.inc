@@ -11,7 +11,7 @@ $game = $database->result($res, $i, "game");
 $date = $database->result($res, $i, "date");
 $organizer = $database->result($res, $i, "organizer");
 $signup = $database->result($res, $i, "signup");
-$players = $database->result($res, $i, "players");
+$numplayers = $database->result($res, $i, "players");
 
 $datestr = date("d.m.Y", $date);
 $signupstr = ($signup ? "yes" : "no");
@@ -39,6 +39,7 @@ if (Auth::username()) :
 		endif;
 	}
 endif;
+$players = array();
 for ($i = 0; $i < $database->numrows($res); $i++)
 {
 	$name = $database->result($res, $i, "name");
