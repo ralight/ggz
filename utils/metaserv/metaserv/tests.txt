@@ -14,3 +14,7 @@ Custom query:
 
 <?xml version="1.0"?><query class="ggz" type="connection" delta="100"><option name="protocol">10</option></query>
 
+Get the GGZ Community Web Service API for a certain GGZ server:
+
+<?xml version="1.0"?><query class="ggz" type="api"><option name="ref">ggz://live.ggzgamingzone.org:5688</option></query>
+
