@@ -33,9 +33,15 @@ echo "<br><br>\n";
 
 $organizer = Auth::username();
 
+$signup = "f";
+if ($form_mode == "signup") :
+	$signup = "t";
+endif;
+
 $database->exec("INSERT INTO tournaments " .
-	"(name, game, room, date, organizer) VALUES " .
-	"('%^', '%^', '%^', '%^', '%^')", array($form_name, $gametype, $form_room, $datestamp, $organizer));
+	"(name, game, room, date, organizer, players, signup) VALUES " .
+	"('%^', '%^', '%^', '%^', '%^', '%^', '%^')",
+	array($form_name, $gametype, $form_room, $datestamp, $organizer, $form_participants, $signup));
 
 $res = $database->exec("SELECT MAX(id) FROM tournaments", NULL);
 $tid = $database->result($res, 0, "max");
@@ -47,7 +53,11 @@ for($i = 0; $i < $form_participants; $i++)
 	$name = $$varname;
 	$number = $ar[$i];
 	$database->exec("INSERT INTO tournamentplayers (id, number, name) VALUES ('%^', '%^', '%^')", array($tid, $number, $name));
-	echo "Registered player $name as number $number.<br>\n";
+	if ($name) :
+		echo "Registered player $name as number $number.<br>\n";
+	else :
+		echo "Place $number remains open for signup<br>\n";
+	endif;
 }
 ?>
 

@@ -10,25 +10,49 @@ $name = $database->result($res, $i, "name");
 $game = $database->result($res, $i, "game");
 $date = $database->result($res, $i, "date");
 $organizer = $database->result($res, $i, "organizer");
+$signup = $database->result($res, $i, "signup");
+$players = $database->result($res, $i, "players");
 
 $datestr = date("d.m.Y", $date);
+$signupstr = ($signup ? "yes" : "no");
 
 echo "Selected tournament: $name<br>\n";
 echo "Game type: <a href=\"/db/games/?lookup=$game\">$game</a><br>\n";
 echo "Organized by: <a href=\"/db/players/?lookup=$organizer\">$organizer</a><br>\n";
-echo "Starting: $datestr<br><br>\n";
+echo "Starting: $datestr<br>\n";
+echo "Open for signup: $signupstr<br>\n";
+echo "<br>\n";
 
 echo "Participants:<br><br>\n";
 $res = $database->exec("SELECT * FROM tournamentplayers WHERE id = '%^'", array($tid));
 $num = 0;
 $match = new Match($tid);
 $match->loadtournament();
-for($i = 0; $i < $database->numrows($res); $i++)
+$eligible = false;
+if (Auth::username()) :
+	$eligible = true;
+	for ($i = 0; $i < $database->numrows($res); $i++)
+	{
+		$name = $database->result($res, $i, "name");
+		if ($name == Auth::username()) :
+			$eligible = false;
+		endif;
+	}
+endif;
+for ($i = 0; $i < $database->numrows($res); $i++)
 {
 	$name = $database->result($res, $i, "name");
 	$number = $database->result($res, $i, "number");
 
-	echo $match->link($name);
+	if ($name) :
+		echo $match->link($name);
+	else :
+		if ($eligible) :
+			echo "<a href='signup.php?tid=$tid&number=$number'>Sign up for this place!</a>";
+		else :
+			echo "Place open for signup.";
+		endif;
+	endif;
 	echo "<br>\n";
 
 	$num++;
@@ -177,7 +201,7 @@ else:
 	if (Auth::username() == $organizer) :
 		echo "<a href='index.php?page=show2&tid=$tid&approved=1'>Approve this result!</a>\n";
 	else :
-		echo "$Waiting for approval by tournament organizer.\n";
+		echo "Waiting for approval by tournament organizer.\n";
 	endif;
 endif;
 

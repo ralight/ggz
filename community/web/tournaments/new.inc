@@ -47,6 +47,15 @@ a certain number of AI players will join the games.
 
 <br><br>
 
+Participation mode:
+
+<select name="form_mode">
+<option value="fixed">Assignment by organizer</option>
+<option value="signup">Signup by participants</option>
+</select>
+
+<br><br>
+
 <input type="submit" value="Next page">
 
 </form>

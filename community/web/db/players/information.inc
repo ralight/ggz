@@ -133,7 +133,20 @@ endif;
 <?php
 //include_once("auth.php");
 //$ggzuser = $lookup;
+$tournaments = 0;
 $res = $database->exec("SELECT * FROM tournaments WHERE organizer = '%^'", array($ggzuser));
+$tournaments += $database->numrows($res);
+for ($i = 0; $i < $database->numrows($res); $i++)
+{
+	$name = $database->result($res, $i, "name");
+	$tid = $database->result($res, $i, "id");
+
+	echo "<a href='/db/tournaments/?lookup=$tid'>$name</a> (organizer)<br>\n";
+}
+$res = $database->exec("SELECT id, name FROM tournaments WHERE id IN " .
+	"(SELECT id FROM tournamentplayers WHERE name = '%^')",
+	array($ggzuser));
+$tournaments += $database->numrows($res);
 for ($i = 0; $i < $database->numrows($res); $i++)
 {
 	$name = $database->result($res, $i, "name");
@@ -141,8 +154,8 @@ for ($i = 0; $i < $database->numrows($res); $i++)
 
 	echo "<a href='/db/tournaments/?lookup=$tid'>$name</a><br>\n";
 }
-if ($i == 0) :
-	echo "The player hasn't participated in any tournament so far.";
+if ($tournaments == 0) :
+	echo "The player hasn't organized or participated in any tournament so far.";
 endif;
 ?>
 	</div>

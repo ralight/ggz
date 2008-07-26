@@ -3,6 +3,9 @@
 <?php
 
 $freeform = false;
+if ($form_mode == "signup") :
+	$freeform = true;
+endif;
 
 if (!$freeform) :
 	$res = $database->exec("SELECT handle FROM users ORDER BY handle DESC", null);
@@ -40,5 +43,6 @@ All players must be registered on the GGZ server.
 <input type="hidden" name="form_room" value="<?php echo $form_room; ?>">
 <input type="hidden" name="form_date" value="<?php echo $form_date; ?>">
 <input type="hidden" name="form_participants" value="<?php echo $form_participants; ?>">
+<input type="hidden" name="form_mode" value="<?php echo $form_mode; ?>">
 
 </form>
