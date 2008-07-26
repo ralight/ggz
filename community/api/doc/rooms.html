@@ -1,0 +1,58 @@
+<html>
+<head>
+<title>
+GGZ Community API - Documentation
+</title>
+<style type="text/css">
+table
+{
+width: 100%;
+}
+.pane
+{
+background-color: #f0ffd0;
+border-style: solid;
+border-width: 1px;
+border-color: #777777;
+padding: 4px;
+vertical-align: top;
+}
+.sidepane
+{
+font-size: small;
+}
+</style>
+</head>
+<body>
+
+<table>
+<tr><td colspan="2">
+
+<center>
+<img src="/api.png">
+</center>
+
+</td></tr>
+<tr><td class="pane">
+
+<b>The Room resource</b>
+<br/><br/>
+GGZ servers all have a number of rooms, usually an entry room and a number of
+rooms associated with game types.
+<br/><br/>
+
+<i>/rooms (GET)</i>
+<br/><br/>
+GET: List all rooms. The format is:
+<pre>
+&lt;rooms&gt;
+&lt;room name="$translatedname" refname="$untranslatedname"/&gt;
+&lt;/rooms&gt;
+</pre>
+<br/>
+
+</td></tr>
+</table>
+
+</body>
+</html>

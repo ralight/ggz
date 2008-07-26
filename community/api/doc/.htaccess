@@ -1,2 +1,3 @@
+RedirectMatch /doc/$ /doc/index.html
 RedirectMatch ^([^\.]*)$ $1.html
 

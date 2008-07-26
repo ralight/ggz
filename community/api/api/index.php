@@ -1,15 +1,15 @@
 <?php
 
-// =============================================================
+// ==================================================================
 // GGZ Community Web Services API
-// Copyright (C) 2007 Josef Spillner <josef@ggzgamingzone.org>
+// Copyright (C) 2007 - 2008 Josef Spillner <josef@ggzgamingzone.org>
 // Published under GNU GPL conditions
 //
 // For a permanent reference installation, please refer to
 // http://api.ggzcommunity.org/
-// =============================================================
+// ==================================================================
 
-// -------------------------------------------------------------
+// ------------------------------------------------------------------
 // Helper function to quote REST parameters in POST/PUT input data
 // Since we use directory-style REST, we always have to add slashes
 // to resource paths
@@ -29,7 +29,7 @@ function quote($s)
 	endif;
 }
 
-// -------------------------------------------------------------
+// ------------------------------------------------------------------
 // Read the configuration file
 // This will give us $ggzcommunitydir, $limitrows, $readonly and $debug
 
@@ -52,7 +52,7 @@ if ($limitrows > 0) :
 	$limit = "LIMIT '$limitrows' OFFSET '$offset'";
 endif;
 
-// -------------------------------------------------------------
+// ------------------------------------------------------------------
 // Connect to the database
 
 include_once("database.php");
@@ -64,7 +64,7 @@ if (!$database) :
 	exit;
 endif;
 
-// -------------------------------------------------------------
+// ------------------------------------------------------------------
 // So far so good... start working on the input here
 
 $uri = $_SERVER["SCRIPT_NAME"];
@@ -128,13 +128,32 @@ if (isset($_SERVER["PHP_AUTH_USER"])) :
 	endif;
 endif;
 
-// -------------------------------------------------------------
+// ------------------------------------------------------------------
 // Resource and method handling
 
 ob_start();
 
 if ($resource == "") :
 	echo "GGZ Community Web Services API";
+elseif ($topresource == "rooms") :
+	if ($subresource == "") :
+		if ($method == "GET") :
+			$res = $database->exec("SELECT name FROM rooms ORDER BY id $limit", null);
+
+			echo "<rooms>";
+			for($i = 0; $i < $database->numrows($res); $i++)
+			{
+				$refname = $database->result($res, $i, 0);
+				$roomname = $refname;
+				echo "<room name='$roomname' refname='$refname'/>";
+			}
+			echo "</rooms>";
+		else :
+			$error = true;
+		endif;
+	else :
+		$error = true;
+	endif;
 elseif ($topresource == "players") :
 	if ($subresource == "") :
 		if ($method == "GET") :
@@ -484,7 +503,7 @@ else:
 	$error = true;
 endif;
 
-// -------------------------------------------------------------
+// ------------------------------------------------------------------
 // Finish the script
 
 if ($autherror) :
