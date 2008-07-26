@@ -22,6 +22,8 @@ include("international.php");
 |
 <a href="https://api.ggzcommunity.org/">WS API</a>
 |
+<a href="http://meta.ggzgamingzone.org/">Metaserver</a>
+|
 <a href="http://metacle.ggzgamingzone.org/">Metacle</a>
 </td>
 </tr>
