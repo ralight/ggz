@@ -4,7 +4,7 @@
 		<connection version="0.0.14.1" preference="100" location="nottingham/uk" speed="1000" protocol="10" name="GGZ Community">
 		ggz://live.ggzgamingzone.org:5688
 		</connection>
-		<connection version="0.99.4" preference="50" location="atlanta/usa" speed="1000" protocol="10" name="Akademy 2008 Tournament Site">
+		<connection version="0.99.4" preference="50" location="atlanta/usa" speed="1000" protocol="10" name="Akademy 2008 Tournament Site" api="http://api.ggzcommunity.org/api/">
 		ggz://akademy08.ggzcommunity.org:5688
 		</connection>
 
