@@ -14,6 +14,7 @@ set(plasmakggz_SRCS
 	configwidget.cpp
 	ggzserver.cpp
 	roomselector.cpp
+	serverselector.cpp
 )
  
 kde4_add_plugin(plasma_applet_kggz ${plasmakggz_SRCS})

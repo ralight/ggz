@@ -7,6 +7,7 @@
 
 #include "configwidget.h"
 #include "roomselector.h"
+#include "serverselector.h"
 
 ConfigWidget::ConfigWidget(QWidget *parent)
 : QWidget(parent)
@@ -20,7 +21,7 @@ ConfigWidget::ConfigWidget(QWidget *parent)
 	m_password = new QLineEdit();
 	m_roomname = new QLineEdit();
 	m_ggzserver = new QLineEdit();
-	m_roomname->setReadOnly(true);
+	m_password->setEchoMode(QLineEdit::Password);
 
 	label = new QLabel(i18n("GGZ Server:"));
 	label->setBuddy(m_ggzserver);
@@ -42,10 +43,14 @@ ConfigWidget::ConfigWidget(QWidget *parent)
 	layout->addWidget(label, 3, 0);
 	layout->addWidget(m_roomname, 3, 1);
 
-	QPushButton *button = new QPushButton(i18n("Select..."));
-	layout->addWidget(button, 3, 2),
+	QPushButton *serverbutton = new QPushButton(i18n("Select..."));
+	layout->addWidget(serverbutton, 0, 2);
 
-	connect(button, SIGNAL(clicked()), SLOT(slotSelectRoom()));
+	QPushButton *roombutton = new QPushButton(i18n("Select..."));
+	layout->addWidget(roombutton, 3, 2);
+
+	connect(serverbutton, SIGNAL(clicked()), SLOT(slotSelectServer()));
+	connect(roombutton, SIGNAL(clicked()), SLOT(slotSelectRoom()));
 }
 
 ConfigWidget::~ConfigWidget()
@@ -112,6 +117,17 @@ void ConfigWidget::slotSelectRoom()
 	if(status == QDialog::Accepted)
 	{
 		setRoomname(selector.room());
+	}
+}
+
+void ConfigWidget::slotSelectServer()
+{
+	ServerSelector selector(this);
+	selector.setMetaUri("ggz://meta.ggzgamingzone.org:15689");
+	int status = selector.exec();
+	if(status == QDialog::Accepted)
+	{
+		m_ggzserver->setText(selector.server());
 	}
 }
 

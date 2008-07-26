@@ -32,6 +32,7 @@ class ConfigWidget : public QWidget
 
 	private slots:
 		void slotSelectRoom();
+		void slotSelectServer();
 
 	private:
 		QLineEdit *m_username;

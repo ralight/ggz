@@ -32,6 +32,7 @@ RoomSelector::RoomSelector(QWidget *parent)
 	connect(cancel, SIGNAL(clicked()), SLOT(reject()));
 	connect(m_roomlist, SIGNAL(itemSelectionChanged()), SLOT(slotSelectionChanged()));
 
+	setWindowTitle(i18n("Room selection from GGZ server"));
 	show();
 }
 
