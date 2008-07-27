@@ -72,6 +72,7 @@ class KTicTacTuxWin : public KMainWindow
 		// Menu ids
 		QAction *action_sync;
 		QAction *action_score;
+		QAction *action_highscores;
 		QAction *action_theme;
 		QAction *action_quit;
 		QAction *action_ggzplayers;

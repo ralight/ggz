@@ -43,6 +43,7 @@ KTicTacTuxWin::KTicTacTuxWin()
 	mgame = new KMenu(this);
 	mgame->setTitle(i18n("Game"));
 	action_sync = mgame->addAction(KIconLoader::global()->loadIcon("view-refresh", KIconLoader::Small), i18n("Synchronize"));
+	action_highscores = mgame->addAction(KIconLoader::global()->loadIcon("view-history", KIconLoader::Small), i18n("View highscores"));
 	action_score = mgame->addAction(KIconLoader::global()->loadIcon("view-history", KIconLoader::Small), i18n("View score"));
 	mgame->addSeparator();
 	action_theme = mgame->addAction(KIconLoader::global()->loadIcon("get-hot-new-stuff", KIconLoader::Small), i18n("Get themes"));
@@ -145,6 +146,10 @@ void KTicTacTuxWin::slotMenu(QAction *action)
 	{
 		score();
 	}
+	else if(action == action_highscores)
+	{
+		m_tux->highscores();
+	}
 	else if(action == action_theme)
 	{
 		d.mkpath(QDir::home().path() + "/.ggz/games/ktictactux");
@@ -194,8 +199,10 @@ void KTicTacTuxWin::slotMenu(QAction *action)
 /// Enable network functionality
 void KTicTacTuxWin::enableNetwork(bool enabled)
 {
-	action_sync->setEnabled(enabled);
 	m_networked = enabled;
+
+	action_sync->setEnabled(enabled);
+	action_highscores->setEnabled(enabled);
 
 	mggz->setEnabled(enabled);
 

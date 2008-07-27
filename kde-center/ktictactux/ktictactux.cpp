@@ -16,6 +16,7 @@
 
 // GGZ-KDE-Games includes
 #include <kggzgames/kggzseatsdialog.h>
+#include <kggzgames/kggzrankingsdialog.h>
 #include <kggznet/kggzpacket.h>
 #include <kggzmod/player.h>
 
@@ -44,6 +45,8 @@ KTicTacTux::KTicTacTux()
 {
 	QVBoxLayout *vbox, *vbox2;
 	QHBoxLayout *hbox[3];
+
+	m_rankings = NULL;
 
 	m_container = new QLabel();
 
@@ -392,7 +395,7 @@ void KTicTacTux::sync()
 	proto->sendSync();
 }
 
-// Statistics
+// Statistics of own games on GGZ
 void KTicTacTux::statistics()
 {
 	proto->getStatistics();
@@ -401,6 +404,14 @@ void KTicTacTux::statistics()
 		emit signalNetworkScore(proto->stats_wins, proto->stats_losses, proto->stats_ties);
 	else
 		emit signalNetworkScore(-1, -1, -1);
+}
+
+// Display game-wide highscores of all players on GGZ
+void KTicTacTux::highscores()
+{
+	proto->mod->sendRequest(KGGZMod::RankingsRequest());
+	if(!m_rankings)
+		m_rankings = new KGGZRankingsDialog(this);
 }
 
 // Network error
@@ -416,6 +427,9 @@ void KTicTacTux::slotError()
 	// however the core client will kill our game client then
 	delete proto;
 	proto = NULL;
+
+	// FIXME 2: we should disable all network actions in case the
+	// game keeps running
 }
 
 // Network data

@@ -33,6 +33,7 @@
 class QWhiteFrame;
 class QPaintEvent;
 class QLabel;
+class KGGZRankingsDialog;
 
 // TicTacToe GUI for KDE
 class KTicTacTux : public QWidget
@@ -51,8 +52,10 @@ class KTicTacTux : public QWidget
 		void init();
 		// Request a synchonization
 		void sync();
-		// Request network scores
+		// Request personal network scores
 		void statistics();
+		// Request highscores
+		void highscores();
 		// Network operation
 		void network();
 		// Display seats dialog
@@ -127,6 +130,8 @@ class KTicTacTux : public QWidget
 		QLabel *m_container;
 		// old container size
 		QSize m_oldsize;
+		// Rankings dialog
+		KGGZRankingsDialog *m_rankings;
 };
 
 #endif

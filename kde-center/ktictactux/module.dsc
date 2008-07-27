@@ -1,7 +1,7 @@
 # KTicTacTux description file
 [ModuleInfo]
 Author = Josef Spillner
-CommandLine = ktictactux_client
+CommandLine = ktictactux
 Frontend = kde
 Homepage = http://www.ggzgamingzone.org/gameclients/ktictactux/
 Name = KTicTacTux
