@@ -22,6 +22,9 @@ class KDotsHelp;
 class KDotsReplay;
 class QAction;
 
+class KGGZRankingsDialog;
+class KGGZSeatsDialog;
+
 class KDotsWin : public KMainWindow
 {
 	Q_OBJECT
@@ -47,6 +50,10 @@ class KDotsWin : public KMainWindow
 		QAction *action_sync;
 		QAction *action_replay;
 		QAction *action_seats;
+		QAction *action_rankings;
+
+		KGGZRankingsDialog *m_rankings;
+		KGGZSeatsDialog *m_seats;
 };
 
 #endif

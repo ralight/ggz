@@ -16,6 +16,8 @@
 #include "kdots_proto.h"
 
 #include <kggzgames/kggzseatsdialog.h>
+#include <kggzgames/kggzrankingsdialog.h>
+#include <kggzmod/request.h>
 
 #include <klocale.h>
 #include <kmenu.h>
@@ -30,6 +32,9 @@ KDotsWin::KDotsWin(bool ggzmode)
 	kdots_about = NULL;
 	kdots_replay = NULL;
 
+	m_rankings = NULL;
+	m_seats = NULL;
+
 	m_color = new QWidget(statusBar());
 	statusBar()->insertItem(i18n("Launching KDots..."), 1, 1);
 	statusBar()->addWidget(m_color, 1);
@@ -38,6 +43,7 @@ KDotsWin::KDotsWin(bool ggzmode)
 	menu_game->setTitle(i18n("Game"));
 	action_sync = menu_game->addAction(i18n("Synchronize"));
 	action_seats = menu_game->addAction(i18n("Seats..."));
+	action_rankings = menu_game->addAction(i18n("Rankings..."));
 	menu_game->addSeparator();
 	action_replay = menu_game->addAction(i18n("Replay games..."));
 	menu_game->addSeparator();
@@ -70,6 +76,7 @@ KDotsWin::KDotsWin(bool ggzmode)
 		slotStatus(i18n("Replay-only mode"));
 		action_sync->setEnabled(false);
 		action_seats->setEnabled(false);
+		action_rankings->setEnabled(false);
 	}
 
 	setFixedSize(400, 400);
@@ -108,9 +115,16 @@ void KDotsWin::slotMenu(QAction *action)
 	}
 	else if(action == action_seats)
 	{
-		/*KGGZSeatsDialog *seats = new KGGZSeatsDialog();
-		seats->setMod(m_dots->getProto()->getMod());*/
-		// FIXME: disabled until kdots uses kggzmod
+		if(!m_seats)
+			m_seats = new KGGZSeatsDialog();
+		m_seats->show();
+	}
+	else if(action == action_rankings)
+	{
+		delete m_rankings;
+		m_rankings = new KGGZRankingsDialog(this);
+
+		KGGZMod::Module::instance()->sendRequest(KGGZMod::RankingsRequest());
 	}
 }
 
