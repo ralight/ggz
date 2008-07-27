@@ -30,3 +30,6 @@ use unless one wants all-bots games indeed.
 
 Note: a high-level view can be found in launcheroverview.png
 
+Note: redirected output from ggz-faketable should be displayed with
+'less -r'.
+

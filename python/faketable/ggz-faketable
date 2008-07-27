@@ -312,7 +312,7 @@ def initserver(sock, gamename, seats, seatnames, clientexecutable):
 					err("FIXME: unhandled opcode savegamereport")
 				else:
 					err("Game server protocol error: unknown opcode " + str(op))
-					raise "unexpected opcode error"
+					raise "unexpected server opcode error"
 			else:
 				client = None
 				for csock in csocks:
@@ -347,7 +347,19 @@ def initserver(sock, gamename, seats, seatnames, clientexecutable):
 				elif op == ClientProtocol.REQ_CHAT:
 					err("FIXME: unhandled client opcode reqchat")
 				elif op == ClientProtocol.REQ_INFO:
-					err("FIXME: unhandled client opcode reqinfo")
+					s = client.recv(4)
+					seatnum = net_toint(s)
+					out("Send some fake player infos for player " + str(seatnum))
+
+					entries = ""
+					for i in range(len(seats)):
+						seat = seats[i]
+						entries += net_int(seat)
+						entries += net_string("Realname")
+						entries += net_string("Photo-URL")
+						entries += net_string("Hostname")
+					msg = net_int(ClientProtocol.MSG_GAME_INFO) + net_int(len(seats)) + entries
+					client.send(msg)
 				elif op == ClientProtocol.REQ_RANKINGS:
 					out("Send some fake rankings...")
 					rankings = net_string("firstplace") + net_int(1) + net_int(100)
@@ -356,7 +368,7 @@ def initserver(sock, gamename, seats, seatnames, clientexecutable):
 					client.send(msg)
 				else:
 					err("Game client protocol error: unknown opcode " + str(op))
-					raise "unexpected opcode error"
+					raise "unexpected client opcode error"
 
 	return pids
 
