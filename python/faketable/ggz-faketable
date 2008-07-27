@@ -349,7 +349,11 @@ def initserver(sock, gamename, seats, seatnames, clientexecutable):
 				elif op == ClientProtocol.REQ_INFO:
 					err("FIXME: unhandled client opcode reqinfo")
 				elif op == ClientProtocol.REQ_RANKINGS:
-					err("FIXME: unhandled client opcode reqrankings")
+					out("Send some fake rankings...")
+					rankings = net_string("firstplace") + net_int(1) + net_int(100)
+					rankings += net_string("secondplace") + net_int(2) + net_int(90)
+					msg = net_int(ClientProtocol.MSG_GAME_RANKINGS) + net_int(2) + rankings
+					client.send(msg)
 				else:
 					err("Game client protocol error: unknown opcode " + str(op))
 					raise "unexpected opcode error"
@@ -469,6 +473,12 @@ def main():
 		err("Error: communication abortion, kill game server")
 		parentsock.close()
 		os.kill(pid, signal.SIGKILL)
+		#for cpid in pids:
+		#	err("Error: kill game client, too")
+		#	os.kill(cpid, signal.SIGKILL)
+		#	# FIXME: this should be entirely optional
+		#	# as game clients are supposed to handle this by themselves
+		#	# - And in fact it won't work since pids isn't set after an exception!
 		raise
 
 	try:
