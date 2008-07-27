@@ -536,7 +536,7 @@ void KTicTacTux::seats()
 {
 	if(!m_seats)
 		m_seats = new KGGZSeatsDialog();
-	m_seats->setMod(proto->mod);
+	//m_seats->setMod(proto->mod);
 	m_seats->show();
 }
 
