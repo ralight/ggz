@@ -47,6 +47,7 @@ KTicTacTux::KTicTacTux()
 	QHBoxLayout *hbox[3];
 
 	m_rankings = NULL;
+	m_seats = NULL;
 
 	m_container = new QLabel();
 
@@ -373,6 +374,7 @@ void KTicTacTux::setOpponent(int type)
 		proto->packet = new KGGZPacket();
 
 		connect(proto->packet, SIGNAL(signalPacket()), SLOT(slotPacket()));
+		connect(proto->packet, SIGNAL(signalError()), SLOT(slotError()));
 		connect(proto->mod, SIGNAL(signalError()), SLOT(slotError()));
 		connect(proto->mod, SIGNAL(signalNetwork(int)), proto->packet, SLOT(slotNetwork(int)));
 		connect(proto->mod, SIGNAL(signalEvent(const KGGZMod::Event&)), SLOT(slotEvent(const KGGZMod::Event&)));
@@ -417,19 +419,31 @@ void KTicTacTux::highscores()
 // Network error
 void KTicTacTux::slotError()
 {
-	disconnect(proto->mod, 0, 0, 0);
+	// FIXME: we should do this before displaying the message box
+	// however the core client will kill our game client then
+	// -> the core clients should be fixed not to do that
+
+	if(proto->mod)
+	{
+		proto->mod->disconnect();
+		proto->mod->deleteLater();
+		proto->mod = NULL;
+	}
+	if(proto->packet)
+	{
+		proto->packet->disconnect();
+		proto->packet->deleteLater();
+		proto->packet = NULL;
+	}
+
+	// FIXME: we could make the dialog smarter to recognise a NULL mod
+	delete m_seats;
+
+	emit signalError();
 
 	KMessageBox::error(this,
 		i18n("A network error has occurred. The game will be terminated."),
 		i18n("Network error"));
-
-	// FIXME: we should do this before displaying the message box
-	// however the core client will kill our game client then
-	delete proto;
-	proto = NULL;
-
-	// FIXME 2: we should disable all network actions in case the
-	// game keeps running
 }
 
 // Network data
@@ -520,10 +534,10 @@ void KTicTacTux::setTheme(QString t1, QString t2)
 // Displays the player management dialog
 void KTicTacTux::seats()
 {
-	KGGZSeatsDialog *seats;
-
-	seats = new KGGZSeatsDialog();
-	seats->setMod(proto->mod);
+	if(!m_seats)
+		m_seats = new KGGZSeatsDialog();
+	m_seats->setMod(proto->mod);
+	m_seats->show();
 }
 
 void KTicTacTux::paintEvent(QPaintEvent *event)

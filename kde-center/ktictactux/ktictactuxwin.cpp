@@ -69,6 +69,8 @@ KTicTacTuxWin::KTicTacTuxWin()
 	connect(m_tux, SIGNAL(signalScore(const QString &)), SLOT(slotScore(const QString &)));
 	connect(m_tux, SIGNAL(signalNetworkScore(int, int, int)), SLOT(slotNetworkScore(int, int, int)));
 	connect(m_tux, SIGNAL(signalGameOver()), SLOT(slotGameOver()));
+	connect(m_tux, SIGNAL(signalError()), SLOT(slotError()));
+
 	connect(mgame, SIGNAL(triggered(QAction*)), SLOT(slotMenu(QAction*)));
 	connect(mggz, SIGNAL(triggered(QAction*)), SLOT(slotMenu(QAction*)));
 	connect(mtheme, SIGNAL(triggered(QAction*)), SLOT(slotMenu(QAction*)));
@@ -350,3 +352,7 @@ void KTicTacTuxWin::loadThemes()
 	}
 }
 
+void KTicTacTuxWin::slotError()
+{
+	enableNetwork(false);
+}

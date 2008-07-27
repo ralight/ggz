@@ -55,6 +55,8 @@ class KTicTacTuxWin : public KMainWindow
 		void slotMenu(QAction *action);
 		// Game is over
 		void slotGameOver();
+		// Network error
+		void slotError();
 
 	private:
 		void scanDir(QDir dir, bool scanmore);

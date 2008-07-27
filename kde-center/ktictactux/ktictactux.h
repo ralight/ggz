@@ -34,6 +34,7 @@ class QWhiteFrame;
 class QPaintEvent;
 class QLabel;
 class KGGZRankingsDialog;
+class KGGZSeatsDialog;
 
 // TicTacToe GUI for KDE
 class KTicTacTux : public QWidget
@@ -82,6 +83,8 @@ class KTicTacTux : public QWidget
 		void signalNetworkScore(int wins, int losses, int ties);
 		// Emit game over status
 		void signalGameOver();
+		// Emit network error
+		void signalError();
 
 	protected:
 		void paintEvent(QPaintEvent *event);
@@ -132,6 +135,8 @@ class KTicTacTux : public QWidget
 		QSize m_oldsize;
 		// Rankings dialog
 		KGGZRankingsDialog *m_rankings;
+		// Seats dialog
+		KGGZSeatsDialog *m_seats;
 };
 
 #endif
