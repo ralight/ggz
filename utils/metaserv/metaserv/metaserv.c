@@ -143,7 +143,6 @@ static char *metaserv_lookup_class(ELE **ele, const char *category, const char *
 	char *tmpatt;
 	char tmp[1024];
 	char *lastupdate;
-	int length;
 	int skip;
 	char classstr[128];
 
@@ -227,11 +226,9 @@ static char *metaserv_lookup_class(ELE **ele, const char *category, const char *
 					}
 					if(att[j]->value)
 					{
-						length = strlen(xmlret) + strlen(att[j]->name);
-						length += strlen(att[j]->value) + 25;
-						xmlret = (char*)realloc(xmlret, length);
 						snprintf(tmp, sizeof(tmp), "<option name=\"%s\">%s</option>",
 							att[j]->name, att[j]->value);
+						xmlret = (char*)realloc(xmlret, strlen(xmlret) + strlen(tmp) + 1);
 						strcat(xmlret, tmp);
 					}
 					else logline("ALERT: key=%s without value", att[j]->name);
@@ -909,9 +906,6 @@ static char *metamagic(const char *rawuri)
 		return ret;
 	}
 
-	if(uri[strlen(uri) - 1] == '\n') uri[strlen(uri) - 1] = 0;
-	if(uri[strlen(uri) - 1] == '\r') uri[strlen(uri) - 1] = 0;
-
 	ret = metaserv_uri(uri);
 
 	free(uri);
@@ -960,11 +954,12 @@ static int metaserv_work(int fd, int session)
 	logline("[%i] Enter main loop", session);
 	while(1)
 	{
-		ret = read(fd, buffer, sizeof(buffer));
+		ret = read(fd, buffer, sizeof(buffer) - 1);
 		if(ret > 0)
 		{
-			if(buffer[ret - 1] == '\n') buffer[ret - 1] = 0;
-			if(buffer[ret - 1] == '\r') buffer[ret - 1] = 0;
+			buffer[ret] = 0;
+			if(buffer[strlen(buffer) - 1] == '\n') buffer[strlen(buffer) - 1] = 0;
+			if(buffer[strlen(buffer) - 1] == '\r') buffer[strlen(buffer) - 1] = 0;
 			if(verbosity == 2)
 				logline("[%i] Request: buffer=%s", session, buffer);
 			else
@@ -1077,6 +1072,7 @@ static void metaserv_daemon()
 		ret = pthread_create(thread, NULL, metaserv_worker, arg);
 		if(ret) close(fd);
 		else pthread_detach(*thread);
+		free(thread);
 	}
 }
 

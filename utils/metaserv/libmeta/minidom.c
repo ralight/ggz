@@ -98,7 +98,7 @@ static int strpos(const char *s, char c)
 }
 
 /* Add a complete tag to an element, return the new child */
-static ELE *minidom_makechild(ELE *parent, char *tag)
+static ELE *minidom_makechild(ELE *parent, const char *tag)
 {
 	char *token;
 	int i, j, k, l, len, size, count;
@@ -202,6 +202,7 @@ DOM *minidom_parse(const char *stream)
 
 	if(!stream) return NULL;
 	cs = minidom_cleanstream(stream);
+	if(!cs) return NULL;
 
 	dom = (DOM*)malloc(sizeof(DOM));
 	dom->processed = 0;
@@ -230,13 +231,13 @@ DOM *minidom_parse(const char *stream)
 			else error = 1;
 			if((int)i != lastmark)
 			{
-				if(token) free(token);
 				token = (char*)malloc(i - lastmark + 1);
 				memcpy(token, cs + lastmark, i - lastmark);
 				token[i - lastmark] = 0;
 				/*printf("  --> content: %s\n", token);*/
 				cp->value = (char*)malloc(strlen(token) + 1);
 				strcpy(cp->value, token);
+				free(token);
 
 				for(j = strlen(cp->value) - 1; (j > 0) && (cp->value[j] == ' '); j--)
 					cp->value[j] = 0;
@@ -245,16 +246,18 @@ DOM *minidom_parse(const char *stream)
 				memmove(cp->value, cp->value + j, strlen(cp->value) - j + 1);
 			}
 		}
-		if(cs[i] == '>')
+		else if(cs[i] == '>')
 		{
 			if(mark != -1)
 			{
-				if(token) free(token);
 				token = (char*)malloc(i - mark + 1);
 				memcpy(token, cs + mark, i - mark);
 				token[i - mark] = 0;
 				/*printf("--> token: %s\n", token);*/
-				if((token[0] == '/') && (cp)) cp = cp->parent;
+				if((token[0] == '/') && (cp))
+				{
+					cp = cp->parent;
+				}
 				else
 				{
 					if(token[i - mark - 1] == '/')
@@ -279,6 +282,7 @@ DOM *minidom_parse(const char *stream)
 				}
 				mark = -1;
 				lastmark = i + 1;
+				free(token);
 			}
 			else error = 1;
 		}
@@ -415,10 +419,49 @@ void minidom_internal_dump(ELE *ele, FILE *file, int indent, int start)
 	indent--;
 }
 
+void minidom_free_element(ELE *ele)
+{
+	int i;
+
+	if(!ele) return;
+
+	if(ele->at)
+	{
+		i = 0;
+		while(ele->at[i])
+		{
+			if(ele->at[i]->value)
+				free(ele->at[i]->value);
+			free(ele->at[i]->name);
+			free(ele->at[i]);
+			i++;
+		}
+		free(ele->at);
+	}
+
+	if(ele->el)
+	{
+		i = 0;
+		while(ele->el[i])
+		{
+			minidom_free_element(ele->el[i]);
+			i++;
+		}
+		free(ele->el);
+	}
+
+	if(ele->value)
+		free(ele->value);
+	free(ele->name);
+
+	free(ele);
+}
+
 /* Clean up after all operations */
 void minidom_free(DOM *dom)
 {
 	if(!dom) return;
+	minidom_free_element(dom->el);
 	free(dom);
 	dom = NULL;
 }
