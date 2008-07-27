@@ -200,6 +200,12 @@ def initclient(clientsock, serversock, parentsock, childsock, clientexecutable, 
 		msg = net_int(ClientProtocol.MSG_GAME_PLAYER)
 		msg += net_string(seatname) + net_int(0) + net_int(0)
 		parentsock.send(msg)
+
+		# FIXME: depend on actual configuration
+		msg = net_int(ClientProtocol.MSG_GAME_SEAT)
+		msg += net_int(1) + net_int(Protocol.SEAT_BOT) + net_string("xx-bot")
+		parentsock.send(msg)
+
 		###clientsock.close()
 	else:
 		err("Error: fork failed")
@@ -353,7 +359,8 @@ def initserver(sock, gamename, seats, seatnames, clientexecutable):
 
 					entries = ""
 					for i in range(len(seats)):
-						seat = seats[i]
+						#seat = seats[i]
+						seat = i
 						entries += net_int(seat)
 						entries += net_string("Realname")
 						entries += net_string("Photo-URL")
