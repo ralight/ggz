@@ -1,0 +1,29 @@
+Asynchronous nameserver lookups in GGZ
+--------------------------------------
+
+Rationale:
+Networking operations in GGZ applications should never block.
+This can be achieved by using appropriate binary network
+protocols based on the DIO paradigm, or by using text or
+XML protocols.
+However, name server lookups have due to historical reasons
+traditionally been blocking. Some higher-level toolkits
+bring their own APIs, but for applications based on libc and
+libggz we need to provide a simple equivalent, preferably
+without enforcing a main loop like all the toolkits do.
+
+GAI/ANL:
+GAI, or getaddrinfo(), is the new libc function for name
+server lookups, replacing gethostname() and its ilk. There
+is a GNU libc extension called getaddrinfo_a() which can
+perform the lookup asynchronously by either sending a
+signal or creating a new thread when it completes. To use
+it, the linker line needs to contain -lanl.
+
+Issue:
+There seems to be a bug in libanl or libc's aio layer which
+makes the lookup crash sometimes, independent of the
+form of delivery. This needs further debugging until the
+appropriate code, which is already in libggz, can be
+enabled by default and recommended for use.
+

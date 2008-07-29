@@ -9,6 +9,7 @@
 #include <netdb.h>
 #include <pthread.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <unistd.h>
 #include <signal.h>
@@ -20,8 +21,10 @@
 
 #if TRIGGER_BUG
 # if !LOOKUP_THREAD || !LOOKUP_ASYNC
-#  error Bug won't be triggered even though requested
+#  error Bug will not be triggered even though requested
 # endif
+#else
+# warning Bug will not be triggered
 #endif
 
 #if !TRIGGER_BUG
@@ -46,18 +49,18 @@ static void print_address(struct addrinfo *res)
 
 static void print_addresses(struct addrinfo *res)
 {
-		struct addrinfo *ptr;
+	struct addrinfo *ptr;
 
-		printf("Results:\n");
+	printf("Results:\n");
 
-		/* Iterate over result list */
-		for(ptr = res; ptr; ptr = ptr->ai_next)
-		{
-			print_address(ptr);
-		}
+	/* Iterate over result list */
+	for(ptr = res; ptr; ptr = ptr->ai_next)
+	{
+		print_address(ptr);
+	}
 
-		/* Free list */
-		freeaddrinfo(res);
+	/* Free list */
+	freeaddrinfo(res);
 }
 
 static void check_error(struct gaicb *req)
@@ -140,11 +143,17 @@ int main(int argc, char *argv[])
 #endif
 	setbuf(stdout, NULL);
 
+	struct addrinfo *addrinforesult = (struct addrinfo*)malloc(sizeof(struct addrinfo));
+
 	/* Create request */
 	req = (struct gaicb*)malloc(sizeof(struct gaicb));
-	req->ar_name = host;
+	req->ar_name = strdup(host);
 	req->ar_service = NULL;
 	req->ar_request = NULL;
+	req->ar_result = addrinforesult;
+
+	/* FIXME: the host duplication and the allocation of addrinforesult
+	 * and its assignment to ar_result were added recently but do not help. */
 
 #if LOOKUP_THREAD
 	sigev.sigev_notify = SIGEV_THREAD;
@@ -166,12 +175,13 @@ int main(int argc, char *argv[])
 		(LOOKUP_THREAD ? "thread" : "signal"));
 
 	/* Perform lookup */
+	printf("entering getaddr_a call!\n");
 #if LOOKUP_ASYNC
 	ret = getaddrinfo_a(GAI_NOWAIT, &req, 1, &sigev);
 #else
 	ret = getaddrinfo_a(GAI_WAIT, &req, 1, &sigev);
-	printf("returned from getaddr_a call!\n");
 #endif
+	printf("returned from getaddr_a call!\n");
 
 	if(ret)
 	{
