@@ -6,7 +6,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/)
 include(GGZKDECenterPackage)
 include(GGZ)
 
-set(GGZ_REGISTRYNAME "kde-center")
+set(GGZ_REGISTRYNAME "ggz-kde-center")
 
 find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
