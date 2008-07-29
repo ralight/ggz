@@ -27,3 +27,5 @@ form of delivery. This needs further debugging until the
 appropriate code, which is already in libggz, can be
 enabled by default and recommended for use.
 
+See also:
+http://0pointer.de/lennart/projects/libasyncns/
