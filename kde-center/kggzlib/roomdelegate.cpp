@@ -3,6 +3,8 @@
 #include "roomtreeview.h"
 #include "modelview.h"
 
+#include <kstandarddirs.h>
+
 #include <qpainter.h>
 #include <qabstractitemmodel.h>
 #include <qtooltip.h>
@@ -14,6 +16,8 @@ RoomDelegate::RoomDelegate(QWidget *parent)
 
 void RoomDelegate::paint(QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
+	KStandardDirs d;
+
 	void *roomptr = index.model()->data(index, ROOM_ROLE).value<void*>();
 	Room *room = static_cast<Room*>(roomptr);
 
@@ -101,21 +105,21 @@ void RoomDelegate::paint(QPainter *painter, const QStyleOptionViewItem& option, 
 
 			QPixmap pix;
 
-			pix = QPixmap("icons/rating.png");
+			pix = QPixmap(d.findResource("data", "kggzlib/icons/rating.png"));
 			if(!(room->favourite()))
 			{
 				pix = QIcon(pix).pixmap(QSize(16, 16), QIcon::Disabled);
 			}
 			painter->drawPixmap(QRect(trect.x(), trect.y(), pix.height(), pix.height()), pix);
 
-			pix = QPixmap("icons/dialog-cancel.png");
+			pix = QPixmap(d.findResource("data", "kggzlib/icons/dialog-cancel.png"));
 			if(!(room->access() == Room::Locked))
 			{
 				pix = QIcon(pix).pixmap(QSize(16, 16), QIcon::Disabled);
 			}
 			painter->drawPixmap(QRect(trect.x() + 16, trect.y(), pix.height(), pix.height()), pix);
 
-			pix = QPixmap("icons/tagua.png");
+			pix = QPixmap(d.findResource("data", "kggzlib/icons/tagua.png"));
 			if(!(room->module()))
 			{
 				pix = QIcon(pix).pixmap(QSize(16, 16), QIcon::Disabled);

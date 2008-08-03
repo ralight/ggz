@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = roomlist
 
-INCLUDEPATH += ../playerlist
+INCLUDEPATH += /home/josef/home.checkout/projects/ggz-trunk/kde-center/kggzlib
+LIBS += -L/home/josef/home.checkout/projects/ggz-trunk/kde-center/BUILD/lib -lkggzlib -L/home/josef/sys/kde4/lib -lkio
 
-HEADERS += roomlist.h ../playerlist/qrecursivesortfilterproxymodel.h room.h roomdelegate.h roomtreeview.h modelview.h
-SOURCES += roomlist.cpp ../playerlist/qrecursivesortfilterproxymodel.cpp room.cpp roomdelegate.cpp roomtreeview.cpp main.cpp
+SOURCES += main.cpp

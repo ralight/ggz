@@ -6,6 +6,9 @@
 #include "qrecursivesortfilterproxymodel.h"
 #include "modelview.h"
 
+// KDE includes
+#include <kstandarddirs.h>
+
 // Qt includes
 #include <qstandarditemmodel.h>
 #include <qlayout.h>
@@ -98,11 +101,13 @@ RoomList::RoomList()
 
 void RoomList::addRoom(Room *room)
 {
+	KStandardDirs d;
+
 	m_rooms[room->name()] = room;
 
 	QStandardItem *itemname = new QStandardItem();
 	itemname->setFlags(ROFLAGS);
-	itemname->setIcon(QIcon("games/" + room->logo()));
+	itemname->setIcon(QIcon(d.findResource("data", "kggzlib/games/" + room->logo())));
 	itemname->setText(room->name());
 	itemname->setData(QVariant::fromValue((void*)room), ROOM_ROLE);
 
