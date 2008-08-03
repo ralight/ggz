@@ -3,6 +3,9 @@
 #include "qrecursivesortfilterproxymodel.h"
 #include "player.h"
 
+// KDE includes
+#include <kstandarddirs.h>
+
 // Qt includes
 #include <qtreeview.h>
 #include <qstandarditemmodel.h>
@@ -89,6 +92,8 @@ PlayerList::PlayerList()
 
 void PlayerList::addPlayer(Player *player)
 {
+	KStandardDirs d;
+
 	m_players[player->name()] = player;
 
 	QString pixmap = "guest.png";
@@ -115,12 +120,12 @@ void PlayerList::addPlayer(Player *player)
 
 	QStandardItem *itemname = new QStandardItem();
 	itemname->setFlags(ROFLAGS);
-	itemname->setIcon(QIcon("players/" + pixmap));
+	itemname->setIcon(QIcon(d.findResource("data", "kggzlib/players/" + pixmap)));
 	itemname->setText(player->name());
 
 	QStandardItem *itemlagstats = new QStandardItem();
 	itemlagstats->setFlags(ROFLAGS);
-	itemlagstats->setIcon(QIcon("players/" + lagpixmap));
+	itemlagstats->setIcon(QIcon(d.findResource("data", "kggzlib/players/" + lagpixmap)));
 	itemlagstats->setText(player->statistics());
 
 	QStandardItem *item = m_itemothers;

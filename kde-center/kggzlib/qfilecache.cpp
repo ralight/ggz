@@ -26,7 +26,7 @@ void QFileCache::save(QString url, QPixmap pixmap)
 	pixmap.save(QFileCache::cachepath(url));
 }
 
-QString cachepath(QString url)
+QString QFileCache::cachepath(QString url)
 {
 	KStandardDirs d;
 	QString cachedir = d.saveLocation("cache") + "/asyncpixmaps/";
