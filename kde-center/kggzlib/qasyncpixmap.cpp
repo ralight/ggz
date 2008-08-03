@@ -20,12 +20,12 @@
 
 #include "qasyncpixmap.h"
 
+#include "qfilecache.h"
+
 #include <kio/job.h>
 #include <kio/scheduler.h>
-#include <kstandarddirs.h>
 
 #include <QtCore/QFile>
-#include <QtCore/QDir>
 
 QAsyncPixmap::QAsyncPixmap(const QString& url, QObject* parent)
         : QObject(parent), QPixmap(), m_url(url)
@@ -33,10 +33,7 @@ QAsyncPixmap::QAsyncPixmap(const QString& url, QObject* parent)
     if (load(url)) {
         // ok
     } else if (!m_url.isEmpty()) {
-        KStandardDirs d;
-        QString cachedir = d.saveLocation("cache") + "/asyncpixmaps/";
-        QString cachename = m_url.toUtf8().toBase64();
-        if (load(cachedir + cachename + ".png")) {
+        if (load(QFileCache::instance()->cachepath(m_url))) {
      	   // ok
         } else {
             KIO::TransferJob *job = KIO::get(m_url, KIO::NoReload, KIO::HideProgressInfo);
@@ -65,9 +62,5 @@ void QAsyncPixmap::slotDownload(KJob *job)
     m_buffer.clear();
     emit signalLoaded(m_url, *this);
 
-    KStandardDirs d;
-    QString cachedir = d.saveLocation("cache") + "/asyncpixmaps/";
-    QDir().mkpath(cachedir);
-    QString cachename = m_url.toUtf8().toBase64();
-    save(cachedir + cachename + ".png");
+    QFileCache::instance()->save(m_url, *this);
 }

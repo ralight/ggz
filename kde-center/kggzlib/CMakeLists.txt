@@ -7,6 +7,7 @@ set(kggzlib_LIB_SRCS
 	player.cpp
 	playerlist.cpp
 	qasyncpixmap.cpp
+	qfilecache.cpp
 	qrecursivesortfilterproxymodel.cpp
 )
 
