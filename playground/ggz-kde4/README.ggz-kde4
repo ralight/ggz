@@ -18,8 +18,10 @@ Summary of GGZ-in-KDE4-efforts as of July 2008:
  - kggz-ng     [          ] - the successor to KGGZ (in planning stage)
  - kconnectx   [||||||    ] - KConnectX demo game for kggzmod [ported]
 
+ - doc
  - kde-games-kde3
  - kde-client-kde3
+ - kggzlib-tests
 
 * In ggz-kde-center
  - kggzlib
