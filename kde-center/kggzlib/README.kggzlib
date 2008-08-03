@@ -1,0 +1,32 @@
+This library provides a useful bunch of widgets and other classes
+which are used by KGGZ applications like Vencedor.
+
+General Qt extension classes
+----------------------------
+ qasyncpixmap.cpp/h -> can load pixmaps asynchronously, from KNS2
+ qfilecache.cpp/h   -> can cache pixmaps on disk
+ qrecursivesortfilterproxymodel.cpp/h -> can filter items recursively
+
+Connection dialog
+-----------------
+ connectiondialog.cpp/h -> main class
+
+Player list
+-----------
+ players/ -> icons
+
+ player.cpp/h -> representation of GGZ player
+ playerlist.cpp/h -> main class
+
+Room list
+---------
+ games/ -> icons
+ icons/ -> icons
+
+ room.cpp/h -> representation of GGZ room
+ roomlist.cpp/h -> main class
+
+ modelview.h -> custom model-view definitions
+ roomdelegate.cpp/h -> model-view delegate
+ roomtreeview.cpp/h -> model-view view
+

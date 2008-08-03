@@ -9,6 +9,10 @@ set(kggzlib_LIB_SRCS
 	qasyncpixmap.cpp
 	qfilecache.cpp
 	qrecursivesortfilterproxymodel.cpp
+	room.cpp
+	roomlist.cpp
+	roomdelegate.cpp
+	roomtreeview.cpp
 )
 
 kde4_add_library(kggzlib STATIC ${kggzlib_LIB_SRCS})
@@ -34,4 +38,18 @@ install(FILES
 	players/team-member.png
 	players/you.png
 	DESTINATION ${DATA_INSTALL_DIR}/kggzlib/players
+)
+
+install(FILES
+	icons/dialog-cancel.png
+	icons/rating.png
+	icons/tagua.png
+	DESTINATION ${DATA_INSTALL_DIR}/kggzlib/icons
+)
+
+install(FILES
+	games/chess.png
+	games/dots.png
+	games/tictactoe.png
+	DESTINATION ${DATA_INSTALL_DIR}/kggzlib/games
 )
