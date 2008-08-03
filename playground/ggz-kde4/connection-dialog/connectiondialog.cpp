@@ -1,6 +1,9 @@
 // Connection dialog includes
 #include "connectiondialog.h"
 
+// KGGZ includes
+# include "qasyncpixmap.h"
+
 // Qt includes
 #include <qlistview.h>
 #include <qitemdelegate.h>
@@ -26,7 +29,16 @@ public:
 		QString url = datamap["url"].toString();
 		QString name = datamap["name"].toString();
 		QString logintype = datamap["logintype"].toString();
-		QString icon = datamap["icon"].toString();
+
+		//QPixmap pix = index.data(Qt::UserRole + 2).value<QPixmap>();
+		QPixmap pix = datamap["pixmap"].value<QPixmap>();
+		if(pix.isNull())
+		{
+			//QString icon = datamap["icon"].toString();
+			//pix = QPixmap(icon);
+			////index.setData(pix, Qt::UserRole + 2);
+			//datamap["pixmap"] = pix.scaled(QSize(32, 32), Qt::KeepAspectRatio);
+		}
 
 		int x = option.rect.left();
 		int y = option.rect.top();
@@ -40,7 +52,7 @@ public:
 			loginstring = "You'll apply for an account.";
 
 		painter->save();
-		painter->drawPixmap(x + 10, y + 29, QPixmap(icon));
+		painter->drawPixmap(x + 10, y + 29, pix);
 		painter->setFont(QFont(QString(), 15));
 		painter->drawText(x + 50, y + 30, name);
 		painter->setFont(QFont(QString(), 8));
@@ -93,10 +105,41 @@ ConnectionDialog::ConnectionDialog()
 	mymap2["url"] = "ggz://live.ggzgamingzone.org";
 	mymap2["name"] = "GGZ Live server";
 	mymap2["logintype"] = "registered";
-	mymap2["icon"] = "ggzlogo.png";
+	//mymap2["icon"] = "ggzlogo.png";
+	mymap2["icon"] = "/home/josef/home.checkout/projects/ggz-trunk/playground/ggz-kde4/connection-dialog/ggzlogo.png";
 	QStandardItem *item2 = new QStandardItem();
 	item2->setData(mymap2);
 	model->appendRow(item2);
+
+	QMap<QString, QVariant> mymap3;
+	mymap3["url"] = "ggz://live.ggzgamingzone.org";
+	mymap3["name"] = "Josef's server";
+	mymap3["logintype"] = "guest";
+	mymap3["icon"] = "http://us.ggzgamingzone.org/~josef/cestmoi2.png";
+	QStandardItem *item3 = new QStandardItem();
+	item3->setData(mymap3);
+	model->appendRow(item3);
+
+	for(int i = 0; i < model->rowCount(); i++)
+	{
+		QStandardItem *item = model->item(i);
+		QMap<QString, QVariant> map = item->data().toMap();
+		QString url = map["icon"].toString();
+
+		m_apixmaps[url] = item;
+
+		QAsyncPixmap *apixmap = new QAsyncPixmap(url, this);
+		if(!apixmap->isNull())
+		{
+			QMap<QString, QVariant> map = item->data().toMap();
+			map["pixmap"] = apixmap->scaled(QSize(32, 32), Qt::KeepAspectRatio);
+			item->setData(map);
+		}
+
+		connect(apixmap,
+			SIGNAL(signalLoaded(const QString&, const QPixmap&)),
+			SLOT(slotLoaded(const QString&, const QPixmap&)));
+	}
 
 	ItemDelegate *delegate = new ItemDelegate();
 
@@ -107,7 +150,18 @@ ConnectionDialog::ConnectionDialog()
 	connect(cancel_button, SIGNAL(clicked()), SLOT(close()));
 
 	setWindowTitle("Connect to Gaming Zone");
-	resize(320, 250);
+	resize(320, 350);
 	show();
+}
+
+void ConnectionDialog::slotLoaded(const QString& url, const QPixmap& pixmap)
+{
+	QStandardItem *item = m_apixmaps[url];
+	if(!item)
+		return;
+
+	QMap<QString, QVariant> map = item->data().toMap();
+	map["pixmap"] = pixmap.scaled(QSize(32, 32), Qt::KeepAspectRatio);
+	item->setData(map);
 }
 
