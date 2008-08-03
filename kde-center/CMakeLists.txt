@@ -18,6 +18,7 @@ find_package(GGZCore REQUIRED)
 
 add_subdirectory(kggzdmod)
 add_subdirectory(kggzcore)
+add_subdirectory(kggzlib)
 add_subdirectory(plasma-kggz)
 add_subdirectory(kgrubby)
 add_subdirectory(ktictactux)
