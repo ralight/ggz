@@ -4,7 +4,10 @@ project(kggzlib)
 
 set(kggzlib_LIB_SRCS
 	connectiondialog.cpp
+	player.cpp
+	playerlist.cpp
 	qasyncpixmap.cpp
+	qrecursivesortfilterproxymodel.cpp
 )
 
 kde4_add_library(kggzlib STATIC ${kggzlib_LIB_SRCS})

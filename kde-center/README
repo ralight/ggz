@@ -15,6 +15,7 @@ Contents of the ggz-kde-center package:
 	- kggzdmod, a C++ KDE/Qt wrapper for the ggzdmod library, used
 	  in game server development
 
+	- kggzlib, containing several widgets for use in KGGZ applications
 	- plasma-kggz, a Plasma widget to receive invitations for
 	  games and join them with a core client
 	- kgrubby, a configuration utility for the chatbot Grubby
