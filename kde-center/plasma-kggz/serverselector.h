@@ -4,7 +4,7 @@
 #include <qdialog.h>
 #include <qabstractsocket.h>
 
-#include "ggzserver.h"
+#include <kggzlib/ggzserver.h>
 
 class QListWidget;
 class QPushButton;

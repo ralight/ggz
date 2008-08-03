@@ -7,7 +7,10 @@
 #include <QPixmap>
 #include <QMap>
 
+#include "ggzserver.h"
+
 class QStandardItem;
+class QStandardItemModel;
 
 // The game window
 class ConnectionDialog : public QWidget
@@ -16,12 +19,14 @@ class ConnectionDialog : public QWidget
 	public:
 		// Constructor
 		ConnectionDialog();
+		void addServer(const GGZServer& server);
 
 	private slots:
 		void slotLoaded(const QString& url, const QPixmap& pixmap);
 
 	private:
 		QMap<QString, QStandardItem*> m_apixmaps;
+		QStandardItemModel *m_model;
 };
 
 #endif

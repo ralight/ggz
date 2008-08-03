@@ -4,6 +4,7 @@ project(kggzlib)
 
 set(kggzlib_LIB_SRCS
 	connectiondialog.cpp
+	ggzserver.cpp
 	player.cpp
 	playerlist.cpp
 	qasyncpixmap.cpp
@@ -17,6 +18,7 @@ set(kggzlib_LIB_SRCS
 
 kde4_add_library(kggzlib STATIC ${kggzlib_LIB_SRCS})
 
+set_target_properties(kggzlib PROPERTIES COMPILE_FLAGS -fPIC)
 #target_link_libraries(kggzlib ${KDE4_KDECORE_LIBS} ${QT_QTNETWORK_LIBRARY})
 
 install(FILES

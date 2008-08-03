@@ -90,60 +90,11 @@ ConnectionDialog::ConnectionDialog()
 	vbox->addLayout(hbox);
 	setLayout(vbox);
 
-	QStandardItemModel *model = new QStandardItemModel();
-
-	QMap<QString, QVariant> mymap;
-	mymap["url"] = "ggz://localhost:5688";
-	mymap["name"] = "Honest Harry's Server";
-	mymap["logintype"] = "guest";
-	mymap["icon"] = "honestharry.png";
-	QStandardItem *item = new QStandardItem();
-	item->setData(mymap);
-	model->appendRow(item);
-
-	QMap<QString, QVariant> mymap2;
-	mymap2["url"] = "ggz://live.ggzgamingzone.org";
-	mymap2["name"] = "GGZ Live server";
-	mymap2["logintype"] = "registered";
-	//mymap2["icon"] = "ggzlogo.png";
-	mymap2["icon"] = "/home/josef/home.checkout/projects/ggz-trunk/playground/ggz-kde4/connection-dialog/ggzlogo.png";
-	QStandardItem *item2 = new QStandardItem();
-	item2->setData(mymap2);
-	model->appendRow(item2);
-
-	QMap<QString, QVariant> mymap3;
-	mymap3["url"] = "ggz://live.ggzgamingzone.org";
-	mymap3["name"] = "Josef's server";
-	mymap3["logintype"] = "guest";
-	mymap3["icon"] = "http://us.ggzgamingzone.org/~josef/cestmoi2.png";
-	QStandardItem *item3 = new QStandardItem();
-	item3->setData(mymap3);
-	model->appendRow(item3);
-
-	for(int i = 0; i < model->rowCount(); i++)
-	{
-		QStandardItem *item = model->item(i);
-		QMap<QString, QVariant> map = item->data().toMap();
-		QString url = map["icon"].toString();
-
-		m_apixmaps[url] = item;
-
-		QAsyncPixmap *apixmap = new QAsyncPixmap(url, this);
-		if(!apixmap->isNull())
-		{
-			QMap<QString, QVariant> map = item->data().toMap();
-			map["pixmap"] = apixmap->scaled(QSize(32, 32), Qt::KeepAspectRatio);
-			item->setData(map);
-		}
-
-		connect(apixmap,
-			SIGNAL(signalLoaded(const QString&, const QPixmap&)),
-			SLOT(slotLoaded(const QString&, const QPixmap&)));
-	}
+	m_model = new QStandardItemModel();
 
 	ItemDelegate *delegate = new ItemDelegate();
 
-	listview->setModel(model);
+	listview->setModel(m_model);
 	listview->setItemDelegate(delegate);
 	listview->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
@@ -152,6 +103,36 @@ ConnectionDialog::ConnectionDialog()
 	setWindowTitle("Connect to Gaming Zone");
 	resize(320, 350);
 	show();
+}
+
+void ConnectionDialog::addServer(const GGZServer& server)
+{
+	QMap<QString, QVariant> map;
+	map["url"] = server.uri();
+	map["name"] = server.name();
+	map["logintype"] = server.loginType();
+	//map["icon"] = server.icon();
+	QStandardItem *item = new QStandardItem();
+	item->setData(map);
+	m_model->appendRow(item);
+
+	//QMap<QString, QVariant> map = item->data().toMap();
+	//QString url = map["icon"].toString();
+
+	m_apixmaps[server.icon()] = item;
+
+	QAsyncPixmap *apixmap = new QAsyncPixmap(server.icon(), this);
+	if(!apixmap->isNull())
+	{
+		QMap<QString, QVariant> map = item->data().toMap();
+		map["pixmap"] = apixmap->scaled(QSize(32, 32), Qt::KeepAspectRatio);
+		item->setData(map);
+	}
+
+	connect(apixmap,
+		SIGNAL(signalLoaded(const QString&, const QPixmap&)),
+		SLOT(slotLoaded(const QString&, const QPixmap&)));
+
 }
 
 void ConnectionDialog::slotLoaded(const QString& url, const QPixmap& pixmap)

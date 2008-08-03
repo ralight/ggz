@@ -12,7 +12,6 @@ include_directories(
 set(plasmakggz_SRCS
 	plasma-kggz.cpp
 	configwidget.cpp
-	ggzserver.cpp
 	roomselector.cpp
 	serverselector.cpp
 )
@@ -22,7 +21,7 @@ kde4_add_plugin(plasma_applet_kggz ${plasmakggz_SRCS})
 #                      ${PLASMA_LIBS} ${KDE4_KDEUI_LIBS})
 target_link_libraries(plasma_applet_kggz
    -lplasma ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS}
-   -L../lib -lkggzcore)
+   -L../lib -lkggzcore -lkggzlib)
  
 install(TARGETS plasma_applet_kggz
         DESTINATION ${PLUGIN_INSTALL_DIR})

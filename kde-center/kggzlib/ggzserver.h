@@ -15,9 +15,23 @@ class GGZServer
 		void setApi(const QString &api);
 		QString api() const;
 
+		void setName(const QString &name);
+		QString name() const;
+
+		void setIcon(const QString &icon);
+		QString icon() const;
+
+		void setLoginType(const QString &logintype);
+		QString loginType() const;
+
 	private:
 		QString m_uri;
 		QString m_api;
+		QString m_name;
+		QString m_icon;
+
+		// Profile
+		QString m_logintype;
 };
 
 #endif

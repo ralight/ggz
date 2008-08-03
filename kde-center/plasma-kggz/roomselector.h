@@ -3,8 +3,6 @@
 
 #include <qdialog.h>
 
-#include "ggzserver.h"
-
 class QListWidget;
 class QPushButton;
 

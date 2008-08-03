@@ -3,7 +3,7 @@
 
 #include <qwidget.h>
 
-#include "ggzserver.h"
+#include <kggzlib/ggzserver.h>
 
 class QLineEdit;
 class QPushButton;
