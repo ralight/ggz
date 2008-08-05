@@ -142,6 +142,8 @@ void ServerSelector::slotData()
 		m_serverlist->addItem(item);
 
 		QString api;
+		QString logo;
+		QString name;
 
 		QDomNode optionnode = result.firstChild();
 		while(!optionnode.isNull())
@@ -151,13 +153,19 @@ void ServerSelector::slotData()
 
 			if(optname == "api")
 				api = option.text();
+			else if(optname == "logo")
+				logo = option.text();
+			else if(optname == "name")
+				name = option.text();
 
 			optionnode = optionnode.nextSibling();
 		}
 
 		GGZServer server;
 		server.setUri(uri);
+		server.setName(name);
 		server.setApi(api);
+		server.setIcon(logo);
 		m_servers[uri] = server;
 
 		resultnode = resultnode.nextSibling();

@@ -23,16 +23,18 @@ ConnectionProfiles::ConnectionProfiles()
 	hbox->addStretch();
 	hbox->addWidget(close_button);
 
-	ConfigWidget *configwidget = new ConfigWidget(this, false);
+	m_configwidget = new ConfigWidget(this, false);
 
 	QVBoxLayout *vbox = new QVBoxLayout();
 	vbox->addWidget(m_serverlist);
-	vbox->addWidget(configwidget);
+	vbox->addWidget(m_configwidget);
 	vbox->addLayout(hbox);
 	setLayout(vbox);
 
 	connect(close_button, SIGNAL(clicked()), SLOT(close()));
 	connect(update_button, SIGNAL(clicked()), SLOT(slotUpdate()));
+
+	connect(m_serverlist, SIGNAL(signalSelected(const GGZServer&)), SLOT(slotSelected(const GGZServer&)));
 
 	setWindowTitle("Manage GGZ profiles");
 	resize(400, 350);
@@ -54,9 +56,7 @@ void ConnectionProfiles::slotUpdate()
 	int status = selector.exec();
 	if(status == QDialog::Accepted)
 	{
-		//setGGZServer(selector.server());
-		// FIXME: add selector.server() to server list,
-		// but not to profile list yet!
+		addServer(selector.server());
 	}
 }
 
@@ -65,3 +65,7 @@ void ConnectionProfiles::setMetaserver(const QString &metaserver)
 	m_metaserver = metaserver;
 }
 
+void ConnectionProfiles::slotSelected(const GGZServer& server)
+{
+	m_configwidget->setGGZServer(server);
+}

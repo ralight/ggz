@@ -21,6 +21,12 @@ class ServerList : public QWidget
 		ServerList();
 		void addServer(const GGZServer& server);
 
+	public slots:
+		void selected(const GGZServer& server);
+
+	signals:
+		void signalSelected(const GGZServer& server);
+
 	private slots:
 		void slotLoaded(const QString& url, const QPixmap& pixmap);
 

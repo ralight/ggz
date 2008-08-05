@@ -7,6 +7,7 @@
 #include "ggzserver.h"
 
 class ServerList;
+class QPushButton;
 
 // The game window
 class ConnectionDialog : public QWidget
@@ -20,9 +21,11 @@ class ConnectionDialog : public QWidget
 	private slots:
 		void slotManage();
 		void slotConnect();
+		void slotSelected(const GGZServer& server);
 
 	private:
 		ServerList *m_serverlist;
+		QPushButton *m_connect_button;
 };
 
 #endif

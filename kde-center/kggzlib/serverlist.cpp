@@ -14,8 +14,8 @@
 class ItemDelegate : public QItemDelegate
 {
 public:
-	ItemDelegate()
-	: QItemDelegate()
+	ItemDelegate(QWidget *parent = NULL)
+	: QItemDelegate(parent)
 	{
 	}
 
@@ -49,6 +49,8 @@ public:
 			loginstring = "You're already registered.";
 		else if(logintype == "firsttime")
 			loginstring = "You'll apply for an account.";
+		else
+			loginstring = "Unconfigured login profile.";
 
 		painter->save();
 		painter->drawPixmap(x + 10, y + 29, pix);
@@ -58,6 +60,18 @@ public:
 		painter->drawText(x + 50, y + 50, url);
 		painter->drawText(x + 50, y + 70, loginstring);
 		painter->restore();
+
+		if(option.state & QStyle::State_Selected)
+		{
+			// FIXME: might be better to use a separate selection method from Qt
+			GGZServer server;
+			server.setUri(datamap["url"].toString());
+			server.setName(datamap["name"].toString());
+			server.setLoginType(datamap["logintype"].toString());
+			server.setIcon(datamap["icon"].toString());
+			server.setApi(datamap["api"].toString());
+			dynamic_cast<ServerList*>(parent())->selected(server);
+		}
 	}
 
 	QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -80,7 +94,7 @@ ServerList::ServerList()
 
 	m_model = new QStandardItemModel();
 
-	ItemDelegate *delegate = new ItemDelegate();
+	ItemDelegate *delegate = new ItemDelegate(this);
 
 	listview->setModel(m_model);
 	listview->setItemDelegate(delegate);
@@ -93,7 +107,8 @@ void ServerList::addServer(const GGZServer& server)
 	map["url"] = server.uri();
 	map["name"] = server.name();
 	map["logintype"] = server.loginType();
-	//map["icon"] = server.icon();
+	map["icon"] = server.icon();
+	map["api"] = server.api();
 	QStandardItem *item = new QStandardItem();
 	item->setData(map);
 	m_model->appendRow(item);
@@ -127,3 +142,8 @@ void ServerList::slotLoaded(const QString& url, const QPixmap& pixmap)
 	item->setData(map);
 }
 
+// FIXME: This method shouldn't be necessary if we got the signal right
+void ServerList::selected(const GGZServer& server)
+{
+	emit signalSelected(server);
+}

@@ -15,13 +15,14 @@ ConnectionDialog::ConnectionDialog()
 	m_serverlist = new ServerList();
 
 	QPushButton *manage_button = new QPushButton("Manage profiles...");
-	QPushButton *connect_button = new QPushButton("Connect");
+	m_connect_button = new QPushButton("Connect");
+	m_connect_button->setEnabled(false);
 	QPushButton *cancel_button = new QPushButton("Cancel");
 
 	QHBoxLayout *hbox = new QHBoxLayout();
 	hbox->addWidget(manage_button);
 	hbox->addStretch();
-	hbox->addWidget(connect_button);
+	hbox->addWidget(m_connect_button);
 	hbox->addWidget(cancel_button);
 
 	QVBoxLayout *vbox = new QVBoxLayout();
@@ -30,8 +31,10 @@ ConnectionDialog::ConnectionDialog()
 	setLayout(vbox);
 
 	connect(cancel_button, SIGNAL(clicked()), SLOT(close()));
-	connect(connect_button, SIGNAL(clicked()), SLOT(slotConnect()));
+	connect(m_connect_button, SIGNAL(clicked()), SLOT(slotConnect()));
 	connect(manage_button, SIGNAL(clicked()), SLOT(slotManage()));
+
+	connect(m_serverlist, SIGNAL(signalSelected(const GGZServer&)), SLOT(slotSelected(const GGZServer&)));
 
 	setWindowTitle("Connect to Gaming Zone");
 	resize(320, 350);
@@ -52,4 +55,10 @@ void ConnectionDialog::slotManage()
 void ConnectionDialog::slotConnect()
 {
 	// FIXME: ...
+}
+
+void ConnectionDialog::slotSelected(const GGZServer& server)
+{
+	bool enabled = (!server.uri().isEmpty());
+	m_connect_button->setEnabled(enabled);
 }

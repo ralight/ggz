@@ -7,6 +7,7 @@
 #include "ggzserver.h"
 
 class ServerList;
+class ConfigWidget;
 
 // The game window
 class ConnectionProfiles : public QWidget
@@ -21,10 +22,12 @@ class ConnectionProfiles : public QWidget
 
 	private slots:
 		void slotUpdate();
+		void slotSelected(const GGZServer& server);
 
 	private:
 		ServerList *m_serverlist;
 		QString m_metaserver;
+		ConfigWidget *m_configwidget;
 };
 
 #endif
