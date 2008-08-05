@@ -38,7 +38,7 @@ class KGGZCORE_EXPORT CoreClientBase : public QObject
 {
 	Q_OBJECT
 	public:
-		CoreClientBase(QObject *parent = NULL);
+		CoreClientBase(QObject *parent = NULL, bool embedded = false);
 		~CoreClientBase();
 
 		void setConnectionInfo(const char *host, int port, const char *username, const char *password, const char *email, GGZLoginType mode, int tls);
@@ -61,7 +61,7 @@ class KGGZCORE_EXPORT CoreClientBase : public QObject
 		void slotSocket(int socket);
 
 	private:
-		void init();
+		void init(bool embedded);
 
 		void callback_server(unsigned int id, const void *event_data);
 		void handle_server_pre(unsigned int id);

@@ -72,6 +72,7 @@ class KTicTacTuxWin : public KMainWindow
 		QMap<int, QString> m_themenames;
 
 		// Menu ids
+		QAction *action_connect;
 		QAction *action_sync;
 		QAction *action_score;
 		QAction *action_highscores;

@@ -28,12 +28,12 @@
 
 using namespace KGGZCore;
 
-CoreClient::CoreClient(QObject *parent)
+CoreClient::CoreClient(QObject *parent, bool embedded)
 : QObject(parent)
 {
 	m_room = NULL;
 
-	m_base = new CoreClientBase(this);
+	m_base = new CoreClientBase(this, embedded);
 
 	m_port = 5688;
 	m_mode = guest;

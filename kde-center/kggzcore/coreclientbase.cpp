@@ -28,14 +28,14 @@
 
 using namespace KGGZCore;
 
-CoreClientBase::CoreClientBase(QObject *parent)
+CoreClientBase::CoreClientBase(QObject *parent, bool embedded)
 : QObject(parent)
 {
 	m_server = NULL;
 	m_sn = NULL;
 	m_roombase = NULL;
 
-	init();
+	init(embedded);
 }
 
 CoreClientBase::~CoreClientBase()
@@ -46,11 +46,13 @@ CoreClientBase::~CoreClientBase()
 	ggzcore_destroy();
 }
 
-void CoreClientBase::init()
+void CoreClientBase::init(bool embedded)
 {
 	GGZOptions options;
 
 	options.flags = (GGZOptionFlags)(GGZ_OPT_PARSER | GGZ_OPT_MODULES | GGZ_OPT_RECONNECT);
+	if(embedded)
+		options.flags = (GGZOptionFlags)(options.flags | GGZ_OPT_EMBEDDED);
 
 	int ret = ggzcore_init(options);
 	if(ret == -1)

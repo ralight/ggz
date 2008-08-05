@@ -1,5 +1,5 @@
 This library provides a useful bunch of widgets and other classes
-which are used by KGGZ applications like Vencedor.
+which are used by KGGZ applications like Vencedor and Plasma-KGGZ.
 
 General Qt extension classes
 ----------------------------
@@ -9,6 +9,7 @@ General Qt extension classes
 
 Connection dialog
 -----------------
+ ggzserver.cpp/h -> representation of a GGZ server
  connectiondialog.cpp/h -> main class
 
 Player list

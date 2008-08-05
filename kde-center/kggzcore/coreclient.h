@@ -39,7 +39,7 @@ class KGGZCORE_EXPORT CoreClient : public QObject
 {
 	Q_OBJECT
 	public:
-		CoreClient(QObject *parent = NULL);
+		CoreClient(QObject *parent = NULL, bool embedded = false);
 		~CoreClient();
 
 		enum FeedbackMessage

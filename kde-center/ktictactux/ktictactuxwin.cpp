@@ -26,6 +26,8 @@
 
 #include <knewstuff2/engine.h>
 
+#include <kggzlib/connectiondialog.h>
+
 // Qt includes
 #include <qdir.h>
 #include <qstringlist.h>
@@ -42,6 +44,7 @@ KTicTacTuxWin::KTicTacTuxWin()
 
 	mgame = new KMenu(this);
 	mgame->setTitle(i18n("Game"));
+	action_connect = mgame->addAction(KIconLoader::global()->loadIcon("network-connect", KIconLoader::Small), i18n("Connect"));
 	action_sync = mgame->addAction(KIconLoader::global()->loadIcon("view-refresh", KIconLoader::Small), i18n("Synchronize"));
 	action_highscores = mgame->addAction(KIconLoader::global()->loadIcon("view-history", KIconLoader::Small), i18n("View highscores"));
 	action_score = mgame->addAction(KIconLoader::global()->loadIcon("view-history", KIconLoader::Small), i18n("View score"));
@@ -140,7 +143,12 @@ void KTicTacTuxWin::slotMenu(QAction *action)
 	QDir d;
 
 	// Standard menu entries
-	if(action == action_sync)
+	if(action == action_connect)
+	{
+		ConnectionDialog *dialog = new ConnectionDialog();
+		// FIXME: ...
+	}
+	else if(action == action_sync)
 	{
 		m_tux->sync();
 	}
@@ -205,6 +213,8 @@ void KTicTacTuxWin::enableNetwork(bool enabled)
 
 	action_sync->setEnabled(enabled);
 	action_highscores->setEnabled(enabled);
+
+	action_connect->setEnabled(!enabled);
 
 	mggz->setEnabled(enabled);
 
