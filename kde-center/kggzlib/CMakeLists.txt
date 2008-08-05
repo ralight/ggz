@@ -14,6 +14,11 @@ set(kggzlib_LIB_SRCS
 	roomlist.cpp
 	roomdelegate.cpp
 	roomtreeview.cpp
+	serverlist.cpp
+	connectionprofiles.cpp
+	configwidget.cpp
+	roomselector.cpp
+	serverselector.cpp
 )
 
 kde4_add_library(kggzlib STATIC ${kggzlib_LIB_SRCS})

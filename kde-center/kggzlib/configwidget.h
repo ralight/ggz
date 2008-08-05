@@ -13,7 +13,7 @@ class ConfigWidget : public QWidget
 	Q_OBJECT
 
 	public:
-		ConfigWidget(QWidget *parent);
+		ConfigWidget(QWidget *parent, bool servereditable);
 		~ConfigWidget();
 
 		void setMetaserver(const QString &metaserver);

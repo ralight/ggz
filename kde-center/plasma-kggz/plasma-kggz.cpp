@@ -1,6 +1,6 @@
 #include "plasma-kggz.h"
 
-#include "configwidget.h"
+#include <kggzlib/configwidget.h>
 
 #include <qpainter.h>
 #include <qfontmetrics.h>
@@ -140,7 +140,7 @@ void PlasmaKGGZ::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void PlasmaKGGZ::createConfigurationInterface(KConfigDialog *parent)
 {
-	m_config = new ConfigWidget(parent);
+	m_config = new ConfigWidget(parent, true);
 
 	parent->addPage(m_config, parent->windowTitle(), icon());
 

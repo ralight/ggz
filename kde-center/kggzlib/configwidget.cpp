@@ -9,7 +9,7 @@
 #include "roomselector.h"
 #include "serverselector.h"
 
-ConfigWidget::ConfigWidget(QWidget *parent)
+ConfigWidget::ConfigWidget(QWidget *parent, bool servereditable)
 : QWidget(parent)
 {
 	QLabel *label;
@@ -22,6 +22,10 @@ ConfigWidget::ConfigWidget(QWidget *parent)
 	m_roomname = new QLineEdit();
 	m_ggzserver = new QLineEdit();
 	m_password->setEchoMode(QLineEdit::Password);
+	if(!servereditable)
+	{
+		m_ggzserver->setEnabled(false);
+	}
 
 	label = new QLabel(i18n("GGZ Server:"));
 	label->setBuddy(m_ggzserver);
@@ -43,14 +47,21 @@ ConfigWidget::ConfigWidget(QWidget *parent)
 	layout->addWidget(label, 3, 0);
 	layout->addWidget(m_roomname, 3, 1);
 
-	QPushButton *serverbutton = new QPushButton(i18n("Select..."));
-	layout->addWidget(serverbutton, 0, 2);
+	QPushButton *serverbutton = NULL;
+	if(servereditable)
+	{
+		serverbutton = new QPushButton(i18n("Select..."));
+		layout->addWidget(serverbutton, 0, 2);
+	}
 
 	m_roombutton = new QPushButton(i18n("Select..."));
 	m_roombutton->setEnabled(false);
 	layout->addWidget(m_roombutton, 3, 2);
 
-	connect(serverbutton, SIGNAL(clicked()), SLOT(slotSelectServer()));
+	if(serverbutton)
+	{
+		connect(serverbutton, SIGNAL(clicked()), SLOT(slotSelectServer()));
+	}
 	connect(m_roombutton, SIGNAL(clicked()), SLOT(slotSelectRoom()));
 }
 
