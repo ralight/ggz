@@ -18,6 +18,9 @@ class ConnectionDialog : public QWidget
 		ConnectionDialog();
 		void addServer(const GGZServer& server);
 
+	//signals:
+	//	void signalSelected(QString uri);
+
 	private slots:
 		void slotManage();
 		void slotConnect();
@@ -26,6 +29,7 @@ class ConnectionDialog : public QWidget
 	private:
 		ServerList *m_serverlist;
 		QPushButton *m_connect_button;
+		QString m_uri;
 };
 
 #endif

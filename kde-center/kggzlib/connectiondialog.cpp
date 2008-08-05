@@ -5,6 +5,8 @@
 #include "serverlist.h"
 #include "connectionprofiles.h"
 
+#include <kggzcore/coreclient.h>
+
 // Qt includes
 #include <qlayout.h>
 #include <qpushbutton.h>
@@ -54,6 +56,11 @@ void ConnectionDialog::slotManage()
 
 void ConnectionDialog::slotConnect()
 {
+	m_connect_button->setEnabled(false);
+
+	KGGZCore::CoreClient *coreclient = new KGGZCore::CoreClient(this, true);
+	coreclient->setUrl(m_uri);
+	coreclient->initiateLogin();
 	// FIXME: ...
 }
 
@@ -61,4 +68,6 @@ void ConnectionDialog::slotSelected(const GGZServer& server)
 {
 	bool enabled = (!server.uri().isEmpty());
 	m_connect_button->setEnabled(enabled);
+	if(enabled)
+		m_uri = server.uri();
 }
