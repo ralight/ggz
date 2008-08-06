@@ -28,8 +28,5 @@ char *_ggz_sql_unescape(const char *str);
 /* Free a ggzdbSavegamePlayers structure */
 void _ggzdb_sgpstr_free(void *str);
 
-/* Replace all patterns in a string */
-char *_ggzdb_strreplace(const char *str, const char *pattern, const char *subst);
-
 #endif
 

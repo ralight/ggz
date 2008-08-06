@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10381 2008-07-21 19:41:51Z oojah $
+ * $Id: ggzdb_pgsql.c 10443 2008-08-06 09:40:48Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -174,7 +174,6 @@ static int setupschema(PGconn *conn, const char *filename)
 	char buffer[1024];
 	PGresult *res;
 	char *completebuffer = NULL;
-	char *substbuffer;
 	int len;
 	int i;
 	int rc = 1;
@@ -190,8 +189,7 @@ static int setupschema(PGconn *conn, const char *filename)
 	{
 		if(strlen(buffer) == 1)
 		{
-			substbuffer = _ggzdb_strreplace(completebuffer, "%PREFIX%", "");
-			res = PQexec(conn, substbuffer);
+			res = PQexec(conn, completebuffer);
 			if((PQresultStatus(res) != PGRES_EMPTY_QUERY)
 			&& (PQresultStatus(res) != PGRES_COMMAND_OK))
 			{
@@ -201,7 +199,6 @@ static int setupschema(PGconn *conn, const char *filename)
 			}
 			PQclear(res);
 
-			ggz_free(substbuffer);
 			ggz_free(completebuffer);
 			completebuffer = NULL;
 			continue;

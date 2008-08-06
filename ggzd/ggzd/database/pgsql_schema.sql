@@ -4,7 +4,7 @@
 -- FIXME: this schema needs to be improved based on mysql_schema.sql
 -- FIXME: (and vice-versa)
 
-CREATE TABLE "%PREFIX%users" (
+CREATE TABLE "users" (
 	"id" serial NOT NULL,
 	"handle" character varying(256) NOT NULL,
 	"password" character varying(256),
@@ -16,7 +16,7 @@ CREATE TABLE "%PREFIX%users" (
 	"confirmed" boolean
 );
 
-CREATE TABLE "%PREFIX%stats" (
+CREATE TABLE "stats" (
 	"id" serial NOT NULL,
 	"handle" character varying(256),
 	"game" character varying(256),
@@ -29,12 +29,12 @@ CREATE TABLE "%PREFIX%stats" (
 	"highscore" bigint
 );
 
-CREATE TABLE "%PREFIX%control" (
+CREATE TABLE "control" (
 	"key" character varying(256),
 	"value" character varying(256)
 );
 
-CREATE TABLE "%PREFIX%matches" (
+CREATE TABLE "matches" (
 	"id" serial NOT NULL,
 	"date" bigint,
 	"game" character varying(256),
@@ -42,14 +42,14 @@ CREATE TABLE "%PREFIX%matches" (
 	"savegame" character varying(256)
 );
 
-CREATE TABLE "%PREFIX%matchplayers" (
+CREATE TABLE "matchplayers" (
 	"id" serial NOT NULL,
 	"match" bigint,
 	"handle" character varying(256),
 	"playertype" character varying(256)
 );
 
-CREATE TABLE "%PREFIX%savegames" (
+CREATE TABLE "savegames" (
 	"id" serial NOT NULL,
 	"date" bigint,
 	"game" character varying(256),
@@ -59,7 +59,7 @@ CREATE TABLE "%PREFIX%savegames" (
 	"stamp" bigint
 );
 
-CREATE TABLE "%PREFIX%savegameplayers" (
+CREATE TABLE "savegameplayers" (
 	"id" serial NOT NULL,
 	"tableid" bigint,
 	"stamp" bigint,

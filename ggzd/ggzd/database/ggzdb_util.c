@@ -120,24 +120,3 @@ void _ggzdb_sgpstr_free(void *str)
 	ggz_free(sp);
 }
 
-/* Helper function: replace all patterns in a string */
-char *_ggzdb_strreplace(const char *str, const char *pattern, const char *subst)
-{
-	char *ss, *sstmp;
-	char *ptr;
-
-	ss = ggz_strdup(str);
-
-	while((ptr = strstr(ss, pattern)))
-	{
-		sstmp = ggz_strdup(ss);
-		memcpy(sstmp, ss, ptr - ss);
-		memcpy(sstmp + (ptr - ss), subst, strlen(subst));
-		memcpy(sstmp + (ptr - ss) + strlen(subst), ptr + strlen(pattern), strlen(str) - strlen(pattern) - (ptr - ss) + 1);
-		ggz_free(ss);
-		ss = sstmp;
-	}
-
-	return ss;
-}
-
