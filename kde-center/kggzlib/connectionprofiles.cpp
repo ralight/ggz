@@ -10,8 +10,8 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 
-ConnectionProfiles::ConnectionProfiles()
-: QWidget()
+ConnectionProfiles::ConnectionProfiles(QWidget *parent)
+: QDialog(parent)
 {
 	m_serverlist = new ServerList();
 
@@ -31,7 +31,7 @@ ConnectionProfiles::ConnectionProfiles()
 	vbox->addLayout(hbox);
 	setLayout(vbox);
 
-	connect(close_button, SIGNAL(clicked()), SLOT(close()));
+	connect(close_button, SIGNAL(clicked()), SLOT(accept()));
 	connect(update_button, SIGNAL(clicked()), SLOT(slotUpdate()));
 
 	connect(m_serverlist, SIGNAL(signalSelected(const GGZServer&)), SLOT(slotSelected(const GGZServer&)));
@@ -68,4 +68,18 @@ void ConnectionProfiles::setMetaserver(const QString &metaserver)
 void ConnectionProfiles::slotSelected(const GGZServer& server)
 {
 	m_configwidget->setGGZServer(server);
+}
+
+QList<GGZServer> ConnectionProfiles::profiles()
+{
+	QList<GGZServer> servers = m_serverlist->servers();
+	QList<GGZServer> profiles;
+	for(int i = 0; i < servers.size(); i++)
+	{
+		GGZServer server = servers.at(i);
+		//if(!server.logintype())
+		// FIXME: ...
+		profiles.append(server);
+	}
+	return profiles;
 }

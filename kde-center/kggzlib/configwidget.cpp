@@ -26,6 +26,9 @@ ConfigWidget::ConfigWidget(QWidget *parent, bool servereditable)
 	{
 		m_ggzserver->setEnabled(false);
 	}
+	m_username->setEnabled(false);
+	m_password->setEnabled(false);
+	m_roomname->setEnabled(false);
 
 	label = new QLabel(i18n("GGZ Server:"));
 	label->setBuddy(m_ggzserver);
@@ -104,7 +107,12 @@ void ConfigWidget::setGGZServer(const GGZServer &server)
 	m_ggzserver->setText(server.uri());
 
 	m_server = server;
-	m_roombutton->setEnabled(!server.api().isEmpty());
+
+	bool enabled = !server.api().isEmpty();
+	m_roombutton->setEnabled(enabled);
+	m_roomname->setEnabled(enabled);
+	m_username->setEnabled(enabled);
+	m_password->setEnabled(enabled);
 }
 
 GGZServer ConfigWidget::ggzServer() const

@@ -50,8 +50,16 @@ void ConnectionDialog::addServer(const GGZServer& server)
 
 void ConnectionDialog::slotManage()
 {
-	ConnectionProfiles *prof = new ConnectionProfiles();
-	// FIXME: ...
+	ConnectionProfiles prof(this);
+	prof.exec();
+
+	m_serverlist->clear();
+	QList<GGZServer> profiles = prof.profiles();
+	for(int i = 0; i < profiles.size(); i++)
+	{
+		GGZServer server = profiles.at(i);
+		addServer(server);
+	}
 }
 
 void ConnectionDialog::slotConnect()

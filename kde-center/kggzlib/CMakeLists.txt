@@ -51,6 +51,7 @@ install(FILES
 	icons/dialog-cancel.png
 	icons/rating.png
 	icons/tagua.png
+	icons/ggzmetaserv.png
 	DESTINATION ${DATA_INSTALL_DIR}/kggzlib/icons
 )
 

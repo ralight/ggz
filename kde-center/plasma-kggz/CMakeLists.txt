@@ -26,7 +26,4 @@ install(TARGETS plasma_applet_kggz
 install(FILES plasma-applet-kggz.desktop
         DESTINATION ${SERVICES_INSTALL_DIR})
 
-install(FILES ggzmetaserv.png
-        DESTINATION ${DATA_INSTALL_DIR}/plasma-kggz)
-
 kde4_install_icons(${ICON_INSTALL_DIR})

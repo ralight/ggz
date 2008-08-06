@@ -3,6 +3,7 @@
 
 // KGGZ includes
 #include "qasyncpixmap.h"
+#include "ggzserver.h"
 
 // Qt includes
 #include <qlistview.h>
@@ -60,18 +61,6 @@ public:
 		painter->drawText(x + 50, y + 50, url);
 		painter->drawText(x + 50, y + 70, loginstring);
 		painter->restore();
-
-		if(option.state & QStyle::State_Selected)
-		{
-			// FIXME: might be better to use a separate selection method from Qt
-			GGZServer server;
-			server.setUri(datamap["url"].toString());
-			server.setName(datamap["name"].toString());
-			server.setLoginType(datamap["logintype"].toString());
-			server.setIcon(datamap["icon"].toString());
-			server.setApi(datamap["api"].toString());
-			dynamic_cast<ServerList*>(parent())->selected(server);
-		}
 	}
 
 	QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -99,6 +88,9 @@ ServerList::ServerList()
 	listview->setModel(m_model);
 	listview->setItemDelegate(delegate);
 	listview->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+	QItemSelectionModel *ism = listview->selectionModel();
+	connect(ism, SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), SLOT(slotActivated(const QItemSelection&, const QItemSelection&)));
 }
 
 void ServerList::addServer(const GGZServer& server)
@@ -112,6 +104,8 @@ void ServerList::addServer(const GGZServer& server)
 	QStandardItem *item = new QStandardItem();
 	item->setData(map);
 	m_model->appendRow(item);
+
+	m_servers.append(server);
 
 	//QMap<QString, QVariant> map = item->data().toMap();
 	//QString url = map["icon"].toString();
@@ -142,8 +136,42 @@ void ServerList::slotLoaded(const QString& url, const QPixmap& pixmap)
 	item->setData(map);
 }
 
-// FIXME: This method shouldn't be necessary if we got the signal right
-void ServerList::selected(const GGZServer& server)
+void ServerList::slotActivated(const QItemSelection& selected, const QItemSelection& deselected)
 {
-	emit signalSelected(server);
+	QModelIndexList sel_indexes = selected.indexes();
+	for(int i = 0; i < sel_indexes.size(); i++)
+	{
+		QModelIndex index = sel_indexes.at(i);
+		QStandardItem *item = m_model->itemFromIndex(index);
+
+		GGZServer server;
+		QMap<QString, QVariant> map = item->data().toMap();
+		server.setUri(map["url"].toString());
+		server.setName(map["name"].toString());
+		server.setLoginType(map["logintype"].toString());
+		server.setIcon(map["icon"].toString());
+		server.setApi(map["api"].toString());
+		emit signalSelected(server);
+	}
+	QModelIndexList desel_indexes = deselected.indexes();
+	for(int i = 0; i < desel_indexes.size(); i++)
+	{
+		//QModelIndex index = desel_indexes.at(i);
+		//QStandardItem *item = m_model->itemFromIndex(index);
+
+		GGZServer server;
+		emit signalSelected(server);
+	}
+}
+
+QList<GGZServer> ServerList::servers()
+{
+	return m_servers;
+}
+
+void ServerList::clear()
+{
+	m_servers.clear();
+	m_apixmaps.clear();
+	m_model->clear();
 }

@@ -34,7 +34,7 @@ ServerSelector::ServerSelector(QWidget *parent)
 
 	QLabel *logo = new QLabel();
 	logo->setFixedSize(64, 64);
-	logo->setPixmap(QPixmap(d.findResource("data", "plasma-kggz/ggzmetaserv.png")));
+	logo->setPixmap(QPixmap(d.findResource("data", "kggzlib/icons/ggzmetaserv.png")));
 
 	QHBoxLayout *hboxtop = new QHBoxLayout();
 	hboxtop->addWidget(logo);
@@ -82,9 +82,9 @@ void ServerSelector::slotServerSelected()
 
 void ServerSelector::slotSelectionChanged()
 {
-	QListWidgetItem *item = m_serverlist->currentItem();
+	QList<QListWidgetItem*> items = m_serverlist->selectedItems();
 
-	m_button->setEnabled((item != NULL));
+	m_button->setEnabled(!items.empty());
 }
 
 void ServerSelector::setMetaUri(QString uri)
