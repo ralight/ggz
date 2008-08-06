@@ -25,6 +25,7 @@ class ConnectionProfiles : public QDialog
 	private slots:
 		void slotUpdate();
 		void slotSelected(const GGZServer& server);
+		void slotChanged(const GGZServer& server);
 
 	private:
 		ServerList *m_serverlist;

@@ -35,6 +35,7 @@ ConnectionProfiles::ConnectionProfiles(QWidget *parent)
 	connect(update_button, SIGNAL(clicked()), SLOT(slotUpdate()));
 
 	connect(m_serverlist, SIGNAL(signalSelected(const GGZServer&)), SLOT(slotSelected(const GGZServer&)));
+	connect(m_configwidget, SIGNAL(signalChanged(const GGZServer&)), SLOT(slotChanged(const GGZServer&)));
 
 	setWindowTitle("Manage GGZ profiles");
 	resize(400, 350);
@@ -82,4 +83,9 @@ QList<GGZServer> ConnectionProfiles::profiles()
 		profiles.append(server);
 	}
 	return profiles;
+}
+
+void ConnectionProfiles::slotChanged(const GGZServer& server)
+{
+	m_serverlist->updateServer(server);
 }

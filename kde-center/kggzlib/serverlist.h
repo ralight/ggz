@@ -22,6 +22,7 @@ class ServerList : public QWidget
 		void addServer(const GGZServer& server);
 		QList<GGZServer> servers();
 		void clear();
+		void updateServer(const GGZServer& server);
 
 	signals:
 		void signalSelected(const GGZServer& server);

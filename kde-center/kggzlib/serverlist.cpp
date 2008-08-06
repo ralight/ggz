@@ -136,6 +136,21 @@ void ServerList::slotLoaded(const QString& url, const QPixmap& pixmap)
 	item->setData(map);
 }
 
+void ServerList::updateServer(const GGZServer& server)
+{
+	for(int i = 0; i < m_model->rowCount(); i++)
+	{
+		QStandardItem *item = m_model->item(i);
+
+		QMap<QString, QVariant> map = item->data().toMap();
+		if(map["url"] == server.uri())
+		{
+			map["logintype"] = server.loginType();
+			item->setData(map);
+		}
+	}
+}
+
 void ServerList::slotActivated(const QItemSelection& selected, const QItemSelection& deselected)
 {
 	QModelIndexList sel_indexes = selected.indexes();
