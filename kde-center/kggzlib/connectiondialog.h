@@ -27,6 +27,8 @@ class ConnectionDialog : public QWidget
 		void slotSelected(const GGZServer& server);
 
 	private:
+		void load();
+
 		ServerList *m_serverlist;
 		QPushButton *m_connect_button;
 		QString m_uri;

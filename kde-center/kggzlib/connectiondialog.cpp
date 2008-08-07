@@ -7,6 +7,11 @@
 
 #include <kggzcore/coreclient.h>
 
+#include <kconfig.h>
+#include <kconfiggroup.h>
+#include <ksharedconfig.h>
+#include <kglobal.h>
+
 // Qt includes
 #include <qlayout.h>
 #include <qpushbutton.h>
@@ -38,9 +43,30 @@ ConnectionDialog::ConnectionDialog()
 
 	connect(m_serverlist, SIGNAL(signalSelected(const GGZServer&)), SLOT(slotSelected(const GGZServer&)));
 
+	load();
+
 	setWindowTitle("Connect to Gaming Zone");
 	resize(320, 350);
 	show();
+}
+
+void ConnectionDialog::load()
+{
+	KSharedConfig::Ptr conf = KGlobal::config();
+	for(int i = 0; true; i++)
+	{
+		KConfigGroup cg = KConfigGroup(conf, "Profile" + QString::number(i));
+		//if(!cg.isValid())
+		if(cg.keyList().size() == 0)
+			break;
+
+		GGZServer server;
+		server.setUri(cg.readEntry("Uri"));
+		server.setApi(cg.readEntry("Api"));
+		server.setName(cg.readEntry("Name"));
+		server.setIcon(cg.readEntry("Icon"));
+		addServer(server);
+	}
 }
 
 void ConnectionDialog::addServer(const GGZServer& server)
@@ -55,10 +81,18 @@ void ConnectionDialog::slotManage()
 
 	m_serverlist->clear();
 	QList<GGZServer> profiles = prof.profiles();
+	KSharedConfig::Ptr conf = KGlobal::config();
 	for(int i = 0; i < profiles.size(); i++)
 	{
 		GGZServer server = profiles.at(i);
 		addServer(server);
+
+		KConfigGroup cg = KConfigGroup(conf, "Profile" + QString::number(i));
+		cg.writeEntry("Uri", server.uri());
+		cg.writeEntry("Api", server.api());
+		cg.writeEntry("Name", server.name());
+		cg.writeEntry("Icon", server.icon());
+		conf->sync();
 	}
 }
 
