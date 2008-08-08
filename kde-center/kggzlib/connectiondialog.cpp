@@ -87,19 +87,14 @@ void ConnectionDialog::slotManage()
 
 void ConnectionDialog::slotConnect()
 {
-	m_connect_button->setEnabled(false);
-
-	KGGZCore::CoreClient *coreclient = new KGGZCore::CoreClient(this, true);
-	coreclient->setUrl(m_uri);
-	coreclient->initiateLogin();
-	// FIXME: see if it works and then call accept() ...
+	//m_connect_button->setEnabled(false);
+	accept();
 }
 
 void ConnectionDialog::slotSelected(const GGZProfile& profile, int pos)
 {
 	Q_UNUSED(pos);
 
-qDebug("** %s", qPrintable(profile.ggzServer().uri()));
 	bool enabled = (!profile.ggzServer().uri().isEmpty());
 	m_connect_button->setEnabled(enabled);
 	if(enabled)

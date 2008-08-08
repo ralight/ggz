@@ -110,7 +110,7 @@ void ServerSelector::slotConnected()
 	writer.writeEndElement();
 	writer.writeEndElement();
 
-	qDebug("Query: %s", qPrintable(query));
+	//qDebug("Query: %s", qPrintable(query));
 
 	m_sock->write(query.toUtf8());
 }
@@ -120,7 +120,7 @@ void ServerSelector::slotData()
 	QByteArray raw = m_sock->readAll();
 	QString response = QString::fromUtf8(raw.data());
 
-	qDebug("Response: %s", qPrintable(response));
+	//qDebug("Response: %s", qPrintable(response));
 
 	QDomDocument dom;
 	if(!dom.setContent(response))

@@ -1,6 +1,7 @@
 #include "plasma-kggz.h"
 
 #include <kggzlib/configwidget.h>
+#include <kggzlib/util.h>
 
 #include <qpainter.h>
 #include <qfontmetrics.h>
@@ -145,14 +146,9 @@ void PlasmaKGGZ::createConfigurationInterface(KConfigDialog *parent)
 	parent->addPage(m_config, parent->windowTitle(), icon());
 
 	KConfigGroup cg = config();
-	m_config->setUsername(cg.readEntry("username"));
-	m_config->setPassword(cg.readEntry("password"));
-	m_config->setRoomname(cg.readEntry("roomname"));
-
-	GGZServer server;
-	server.setUri(cg.readEntry("ggzuri"));
-	server.setApi(cg.readEntry("ggzapi"));
-	m_config->setGGZServer(server);
+	Util util;
+	GGZProfile profile = util.loadprofile(cg);
+	m_config->setGGZProfile(profile);
 
 	QString metauri = cg.readEntry("metaserver");
 	if(metauri.isEmpty())
@@ -195,24 +191,19 @@ void PlasmaKGGZ::slotConfiguration()
 {
 	kDebug() << "slotConfiguration!";
 
+	GGZProfile profile = m_config->ggzProfile();
 	KConfigGroup cg = config();
-	cg.writeEntry("username", m_config->username());
-	cg.writeEntry("password", m_config->password());
-	cg.writeEntry("roomname", m_config->roomname());
+	Util util;
+	util.saveprofile(profile, cg, KGlobal::config());
 
-	GGZServer server = m_config->ggzServer();
-	cg.writeEntry("ggzuri", server.uri());
-	cg.writeEntry("ggzapi", server.api());
-	cg.sync();
-
-	if((!m_core) || (m_config->username() != m_core->username()))
+	if((!m_core) || (profile.username() != m_core->username()))
 	{
 		delete m_core;
 		init();
 	}
-	else if((m_core->room()) && (m_config->roomname() != m_core->room()->name()))
+	else if((m_core->room()) && (profile.roomname() != m_core->room()->name()))
 	{
-		m_core->initiateRoomChange(m_config->roomname());
+		m_core->initiateRoomChange(profile.roomname());
 	}
 }
 

@@ -98,7 +98,7 @@ void RoomSelector::slotResult(KJob *job)
 			i18n("Web Service API failure"));
 		return;
 	}
-	qDebug("XML: %s", m_data.data());
+	//qDebug("XML: %s", m_data.data());
 
 	QDomDocument dom;
 	if(!dom.setContent(m_data))

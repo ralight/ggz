@@ -15,6 +15,7 @@ class ConnectionDialog : public QDialog
 	public:
 		// Constructor
 		ConnectionDialog(QWidget *parent = NULL);
+		QString uri();
 
 	private slots:
 		void slotManage();
