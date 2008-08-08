@@ -145,8 +145,8 @@ void KTicTacTuxWin::slotMenu(QAction *action)
 	// Standard menu entries
 	if(action == action_connect)
 	{
-		ConnectionDialog *dialog = new ConnectionDialog();
-		// FIXME: ...
+		ConnectionDialog dialog(this);
+		dialog.exec();
 	}
 	else if(action == action_sync)
 	{
