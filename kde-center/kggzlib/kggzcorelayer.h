@@ -1,0 +1,32 @@
+#ifndef KGGZLIB_KGGZCORELAYER_HEADER
+#define KGGZLIB_KGGZCORELAYER_HEADER
+
+#include <kggzcore/coreclient.h>
+#include <kggzcore/room.h>
+ 
+class KGGZCoreLayer : public QObject
+{
+	Q_OBJECT
+
+	public:
+		KGGZCoreLayer(QObject *parent = NULL);
+		~KGGZCoreLayer();
+ 
+		void ggzcore(QString uri);
+
+	protected:
+		void activity(QString activity);
+
+	protected slots:
+		void slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
+		void slotAnswer(KGGZCore::CoreClient::AnswerMessage message);
+		void slotEvent(KGGZCore::CoreClient::EventMessage message);
+		void slotFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
+		void slotAnswer(KGGZCore::Room::AnswerMessage message);
+		void slotEvent(KGGZCore::Room::EventMessage message);
+ 
+ 	private:
+		KGGZCore::CoreClient *m_core;
+};
+ 
+#endif

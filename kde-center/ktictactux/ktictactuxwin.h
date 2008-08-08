@@ -25,6 +25,7 @@
 // Forward declarations
 class KMenu;
 class QAction;
+class KGGZCoreLayer;
 
 // The game window
 class KTicTacTuxWin : public KMainWindow
@@ -81,6 +82,8 @@ class KTicTacTuxWin : public KMainWindow
 		QAction *action_ggzplayers;
 		QAction *action_themes;
 		QList<QAction*> m_themeactions;
+
+		KGGZCoreLayer *m_corelayer;
 };
 
 #endif

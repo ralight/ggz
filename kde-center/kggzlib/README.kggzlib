@@ -38,3 +38,6 @@ Room list
  roomdelegate.cpp/h -> model-view delegate
  roomtreeview.cpp/h -> model-view view
 
+Other GGZ classes
+-----------------
+ kggzcorelayer.cpp/h - Qt convenience class for KGGZCore::CoreClient

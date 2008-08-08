@@ -21,6 +21,7 @@ set(kggzlib_LIB_SRCS
 	serverselector.cpp
 	util.cpp
 	ggzprofile.cpp
+	kggzcorelayer.cpp
 )
 
 kde4_add_library(kggzlib STATIC ${kggzlib_LIB_SRCS})

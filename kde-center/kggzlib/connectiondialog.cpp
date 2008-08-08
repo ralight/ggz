@@ -100,3 +100,9 @@ void ConnectionDialog::slotSelected(const GGZProfile& profile, int pos)
 	if(enabled)
 		m_uri = profile.ggzServer().uri();
 }
+
+QString ConnectionDialog::uri()
+{
+	// FIXME: return fully-qualified GGZ URI
+	return m_uri;
+}

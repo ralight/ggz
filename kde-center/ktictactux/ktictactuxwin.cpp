@@ -27,6 +27,7 @@
 #include <knewstuff2/engine.h>
 
 #include <kggzlib/connectiondialog.h>
+#include <kggzlib/kggzcorelayer.h>
 
 // Qt includes
 #include <qdir.h>
@@ -40,6 +41,7 @@ KTicTacTuxWin::KTicTacTuxWin()
 	m_tux = new KTicTacTux();
 	setCentralWidget(m_tux);
 
+	m_corelayer = NULL;
 	m_networked = false;
 
 	mgame = new KMenu(this);
@@ -96,6 +98,7 @@ KTicTacTuxWin::KTicTacTuxWin()
 // Destructor
 KTicTacTuxWin::~KTicTacTuxWin()
 {
+	delete m_corelayer;
 }
 
 // Display the game status
@@ -147,6 +150,10 @@ void KTicTacTuxWin::slotMenu(QAction *action)
 	{
 		ConnectionDialog dialog(this);
 		dialog.exec();
+		enableNetwork(true);
+		if(!m_corelayer)
+			m_corelayer = new KGGZCoreLayer(this);
+		m_corelayer->ggzcore(dialog.uri());
 	}
 	else if(action == action_sync)
 	{
