@@ -7,10 +7,11 @@
 #include <QPixmap>
 #include <QMap>
 
+#include "ggzprofile.h"
+
 class QStandardItem;
 class QStandardItemModel;
 class QItemSelection;
-class GGZServer;
 
 // The game window
 class ServerList : public QWidget
@@ -19,13 +20,13 @@ class ServerList : public QWidget
 	public:
 		// Constructor
 		ServerList();
-		void addServer(const GGZServer& server);
-		QList<GGZServer> servers();
+		void addProfile(const GGZProfile& profile);
+		QList<GGZProfile> profiles();
 		void clear();
-		void updateServer(const GGZServer& server);
+		void updateProfile(const GGZProfile& profile, int pos);
 
 	signals:
-		void signalSelected(const GGZServer& server);
+		void signalSelected(const GGZProfile& profile, int pos);
 
 	private slots:
 		void slotLoaded(const QString& url, const QPixmap& pixmap);
@@ -34,7 +35,8 @@ class ServerList : public QWidget
 	private:
 		QMap<QString, QStandardItem*> m_apixmaps;
 		QStandardItemModel *m_model;
-		QList<GGZServer> m_servers;
+		QList<GGZProfile> m_profiles;
+		QList<GGZProfile*> m_profptrs;
 };
 
 #endif

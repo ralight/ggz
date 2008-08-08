@@ -3,7 +3,7 @@
 
 #include <qwidget.h>
 
-#include <kggzlib/ggzserver.h>
+#include <kggzlib/ggzprofile.h>
 
 class QLineEdit;
 class QPushButton;
@@ -17,38 +17,13 @@ class ConfigWidget : public QWidget
 		ConfigWidget(QWidget *parent, bool servereditable);
 		~ConfigWidget();
 
-		enum LoginType
-		{
-			guest,
-			firsttime,
-			registered
-		};
-
 		void setMetaserver(const QString &metaserver);
 
-		void setUsername(const QString &username);
-		QString username() const;
-
-		void setPassword(const QString &password);
-		QString password() const;
-
-		void setRoomname(const QString &roomname);
-		QString roomname() const;
-
-		void setRealname(const QString &realname);
-		QString realname() const;
-
-		void setEmail(const QString &email);
-		QString email() const;
-
-		void setLoginType(LoginType type);
-		LoginType loginType() const;
-
-		void setGGZServer(const GGZServer &server);
-		GGZServer ggzServer() const;
+		void setGGZProfile(const GGZProfile &profile);
+		GGZProfile ggzProfile();
 
 	signals:
-		void signalChanged(const GGZServer &server);
+		void signalChanged(const GGZProfile &profile);
 
 	private slots:
 		void slotSelectRoom();
@@ -63,7 +38,7 @@ class ConfigWidget : public QWidget
 		QLineEdit *m_email;
 		QComboBox *m_logintype;
 		QLineEdit *m_ggzserver;
-		GGZServer m_server;
+		GGZProfile m_profile;
 		QPushButton *m_roombutton;
 		QString m_metaserver;
 };

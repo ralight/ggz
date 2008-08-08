@@ -10,12 +10,14 @@ General Qt extension classes
 Connection dialog
 -----------------
  ggzserver.cpp/h -> representation of a GGZ server
+ ggzprofile.cpp/h -> representation of a GGZ profile for a server
  serverlist.cpp/h -> list of servers
  connectiondialog.cpp/h -> main class
 
  roomselector.cpp/h
  serverselector.cpp/h
  configwidget.cpp/h
+ util.cpp/h
 
 Player list
 -----------

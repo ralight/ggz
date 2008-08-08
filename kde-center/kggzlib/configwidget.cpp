@@ -36,9 +36,9 @@ ConfigWidget::ConfigWidget(QWidget *parent, bool servereditable)
 	m_roomname->setEnabled(false);
 
 	m_logintype = new QComboBox();
-	m_logintype->addItem("Guest", guest);
-	m_logintype->addItem("First time", firsttime);
-	m_logintype->addItem("Registered user", registered);
+	m_logintype->addItem("Guest", GGZProfile::guest);
+	m_logintype->addItem("First time", GGZProfile::firsttime);
+	m_logintype->addItem("Registered user", GGZProfile::registered);
 	m_logintype->setEnabled(false);
 
 	label = new QLabel(i18n("GGZ Server:"));
@@ -99,76 +99,25 @@ ConfigWidget::~ConfigWidget()
 {
 }
 
-void ConfigWidget::setUsername(const QString &username)
+void ConfigWidget::setGGZProfile(const GGZProfile &profile)
 {
-	m_username->setText(username);
-}
+	m_profile = profile;
+	GGZServer server = profile.ggzServer();
 
-QString ConfigWidget::username() const
-{
-	return m_username->text();
-}
-
-void ConfigWidget::setPassword(const QString &password)
-{
-	m_password->setText(password);
-}
-
-QString ConfigWidget::password() const
-{
-	return m_password->text();
-}
-
-void ConfigWidget::setRoomname(const QString &roomname)
-{
-	m_roomname->setText(roomname);
-}
-
-QString ConfigWidget::roomname() const
-{
-	return m_roomname->text();
-}
-
-void ConfigWidget::setRealname(const QString &realname)
-{
-	m_realname->setText(realname);
-}
-
-QString ConfigWidget::realname() const
-{
-	return m_realname->text();
-}
-
-void ConfigWidget::setEmail(const QString &email)
-{
-	m_email->setText(email);
-}
-
-QString ConfigWidget::email() const
-{
-	return m_email->text();
-}
-
-void ConfigWidget::setLoginType(LoginType type)
-{
-	int index = m_logintype->findData(type);
-	m_logintype->setCurrentIndex(index);
-}
-
-ConfigWidget::LoginType ConfigWidget::loginType() const
-{
-	int type = m_logintype->itemData(m_logintype->currentIndex()).toInt();
-	return (LoginType)type;
-}
-
-void ConfigWidget::setGGZServer(const GGZServer &server)
-{
 	m_ggzserver->setText(server.uri());
 
-	m_server = server;
+	m_username->setText(profile.username());
+	m_password->setText(profile.password());
+	m_roomname->setText(profile.roomname());
+	m_realname->setText(profile.realname());
+	m_email->setText(profile.email());
+	int index = m_logintype->findData(profile.loginType());
+	m_logintype->setCurrentIndex(index);
 
-	bool enabled = !server.api().isEmpty();
-	m_roombutton->setEnabled(enabled);
+	bool apienabled = !server.api().isEmpty();
+	m_roombutton->setEnabled(apienabled);
+
+	bool enabled = !server.uri().isEmpty();
 	m_roomname->setEnabled(enabled);
 	m_username->setEnabled(enabled);
 	m_password->setEnabled(enabled);
@@ -176,22 +125,30 @@ void ConfigWidget::setGGZServer(const GGZServer &server)
 	m_realname->setEnabled(enabled);
 	m_logintype->setEnabled(enabled);
 
-	slotLoginType(-1);
+	//slotLoginType(-1);
 }
 
-GGZServer ConfigWidget::ggzServer() const
+GGZProfile ConfigWidget::ggzProfile()
 {
-	return m_server;
+	m_profile.setUsername(m_username->text());
+	m_profile.setPassword(m_password->text());
+	m_profile.setRoomname(m_roomname->text());
+	m_profile.setRealname(m_realname->text());
+	m_profile.setEmail(m_email->text());
+	int type = m_logintype->itemData(m_logintype->currentIndex()).toInt();
+	m_profile.setLoginType((GGZProfile::LoginType)type);
+
+	return m_profile;
 }
 
 void ConfigWidget::slotSelectRoom()
 {
 	RoomSelector selector(this);
-	selector.setGGZApi(m_server.api());
+	selector.setGGZApi(m_profile.ggzServer().api());
 	int status = selector.exec();
 	if(status == QDialog::Accepted)
 	{
-		setRoomname(selector.room());
+		m_profile.setRoomname(selector.room());
 	}
 }
 
@@ -202,7 +159,9 @@ void ConfigWidget::slotSelectServer()
 	int status = selector.exec();
 	if(status == QDialog::Accepted)
 	{
-		setGGZServer(selector.server());
+		GGZProfile profile;
+		profile.setGGZServer(selector.server());
+		setGGZProfile(profile);
 	}
 }
 
@@ -213,38 +172,29 @@ void ConfigWidget::setMetaserver(const QString &metaserver)
 
 void ConfigWidget::slotLoginType(int index)
 {
-	Q_UNUSED(index);
+	GGZProfile::LoginType type = (GGZProfile::LoginType)m_logintype->itemData(index).toInt();
 
-	LoginType type = loginType();
-	if(type == guest)
+	if(type == GGZProfile::guest)
 	{
 		m_password->setEnabled(false);
 		m_email->setEnabled(false);
 		m_realname->setEnabled(false);
 	}
-	else if(type == firsttime)
+	else if(type == GGZProfile::firsttime)
 	{
 		m_password->setEnabled(true);
 		m_email->setEnabled(true);
 		m_realname->setEnabled(true);
 	}
-	else if(type == registered)
+	else if(type == GGZProfile::registered)
 	{
 		m_password->setEnabled(true);
 		m_email->setEnabled(false);
 		m_realname->setEnabled(false);
 	}
 
-	QString strtype;
-	if(type == guest)
-		strtype = "guest";
-	else if(type == firsttime)
-		strtype = "firsttime";
-	else if(type == registered)
-		strtype = "registered";
-
-	m_server.setLoginType(strtype);
-	emit signalChanged(m_server);
+	m_profile.setLoginType(type),
+	emit signalChanged(m_profile);
 }
 
 #include "configwidget.moc"

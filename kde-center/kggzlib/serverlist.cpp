@@ -3,7 +3,7 @@
 
 // KGGZ includes
 #include "qasyncpixmap.h"
-#include "ggzserver.h"
+#include "ggzprofile.h"
 
 // Qt includes
 #include <qlistview.h>
@@ -15,6 +15,12 @@
 class ItemDelegate : public QItemDelegate
 {
 public:
+	enum Roles
+	{
+		ProfileRole = Qt::UserRole + 1,
+		PixmapRole = Qt::UserRole + 2
+	};
+
 	ItemDelegate(QWidget *parent = NULL)
 	: QItemDelegate(parent)
 	{
@@ -25,13 +31,9 @@ public:
 		if(option.state & QStyle::State_Selected)
 			painter->fillRect(option.rect, option.palette.highlight());
 
-		QMap<QString, QVariant> datamap = index.data(Qt::UserRole + 1).toMap();
-		QString url = datamap["url"].toString();
-		QString name = datamap["name"].toString();
-		QString logintype = datamap["logintype"].toString();
+		GGZProfile *profile = reinterpret_cast<GGZProfile*>(index.data(ProfileRole).value<void*>());
 
-		//QPixmap pix = index.data(Qt::UserRole + 2).value<QPixmap>();
-		QPixmap pix = datamap["pixmap"].value<QPixmap>();
+		QPixmap pix = index.data(PixmapRole).value<QPixmap>();
 		if(pix.isNull())
 		{
 			//QString icon = datamap["icon"].toString();
@@ -44,21 +46,26 @@ public:
 		int y = option.rect.top();
 
 		QString loginstring;
-		if(logintype == "guest")
+		GGZProfile::LoginType logintype = profile->loginType();
+		if(logintype == GGZProfile::guest)
 			loginstring = "You'll play as a guest.";
-		else if(logintype == "registered")
+		else if(logintype == GGZProfile::registered)
 			loginstring = "You're already registered.";
-		else if(logintype == "firsttime")
+		else if(logintype == GGZProfile::firsttime)
 			loginstring = "You'll apply for an account.";
 		else
 			loginstring = "Unconfigured login profile.";
 
+		QString username = profile->username();
+		if(!username.isEmpty())
+			loginstring += " [" + username + "]";
+
 		painter->save();
 		painter->drawPixmap(x + 10, y + 29, pix);
 		painter->setFont(QFont(QString(), 15));
-		painter->drawText(x + 50, y + 30, name);
+		painter->drawText(x + 50, y + 30, profile->ggzServer().name());
 		painter->setFont(QFont(QString(), 8));
-		painter->drawText(x + 50, y + 50, url);
+		painter->drawText(x + 50, y + 50, profile->ggzServer().uri());
 		painter->drawText(x + 50, y + 70, loginstring);
 		painter->restore();
 	}
@@ -93,31 +100,28 @@ ServerList::ServerList()
 	connect(ism, SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), SLOT(slotActivated(const QItemSelection&, const QItemSelection&)));
 }
 
-void ServerList::addServer(const GGZServer& server)
+void ServerList::addProfile(const GGZProfile& profile)
 {
-	QMap<QString, QVariant> map;
-	map["url"] = server.uri();
-	map["name"] = server.name();
-	map["logintype"] = server.loginType();
-	map["icon"] = server.icon();
-	map["api"] = server.api();
+	m_profiles.append(profile);
+
+	GGZProfile *profptr = new GGZProfile(profile);
+	profptr->assign(profile);
+
+	m_profptrs.append(profptr);
+
 	QStandardItem *item = new QStandardItem();
-	item->setData(map);
+	item->setData(QVariant::fromValue<void*>(profptr), ItemDelegate::ProfileRole);
+	item->setData(QPixmap(), ItemDelegate::PixmapRole);
 	m_model->appendRow(item);
 
-	m_servers.append(server);
-
-	//QMap<QString, QVariant> map = item->data().toMap();
-	//QString url = map["icon"].toString();
-
+	GGZServer server = profile.ggzServer();
 	m_apixmaps[server.icon()] = item;
 
 	QAsyncPixmap *apixmap = new QAsyncPixmap(server.icon(), this);
 	if(!apixmap->isNull())
 	{
-		QMap<QString, QVariant> map = item->data().toMap();
-		map["pixmap"] = apixmap->scaled(QSize(32, 32), Qt::KeepAspectRatio);
-		item->setData(map);
+		QPixmap pix = apixmap->scaled(QSize(32, 32), Qt::KeepAspectRatio);
+		item->setData(pix, ItemDelegate::PixmapRole);
 	}
 
 	connect(apixmap,
@@ -131,62 +135,56 @@ void ServerList::slotLoaded(const QString& url, const QPixmap& pixmap)
 	if(!item)
 		return;
 
-	QMap<QString, QVariant> map = item->data().toMap();
-	map["pixmap"] = pixmap.scaled(QSize(32, 32), Qt::KeepAspectRatio);
-	item->setData(map);
+	QPixmap pix = pixmap.scaled(QSize(32, 32), Qt::KeepAspectRatio);
+	item->setData(pix, ItemDelegate::PixmapRole);
 }
 
-void ServerList::updateServer(const GGZServer& server)
+void ServerList::updateProfile(const GGZProfile& profile, int pos)
 {
-	for(int i = 0; i < m_model->rowCount(); i++)
-	{
-		QStandardItem *item = m_model->item(i);
+	if(pos == -1)
+		return;
 
-		QMap<QString, QVariant> map = item->data().toMap();
-		if(map["url"] == server.uri())
-		{
-			map["logintype"] = server.loginType();
-			item->setData(map);
-		}
-	}
+	m_profiles[pos] = profile;
+
+	QStandardItem *item = m_model->item(pos);
+
+	GGZProfile *oldprofile = reinterpret_cast<GGZProfile*>(item->data(ItemDelegate::ProfileRole).value<void*>());
+	oldprofile->assign(profile);
+	item->setData(QVariant::fromValue<void*>(oldprofile), ItemDelegate::ProfileRole);
 }
 
 void ServerList::slotActivated(const QItemSelection& selected, const QItemSelection& deselected)
 {
+	QModelIndexList desel_indexes = deselected.indexes();
 	QModelIndexList sel_indexes = selected.indexes();
+	if(sel_indexes.size() == 0)
+	{
+		for(int i = 0; i < desel_indexes.size(); i++)
+		{
+			GGZProfile profile;
+			emit signalSelected(profile, -1);
+		}
+	}
 	for(int i = 0; i < sel_indexes.size(); i++)
 	{
 		QModelIndex index = sel_indexes.at(i);
 		QStandardItem *item = m_model->itemFromIndex(index);
 
-		GGZServer server;
-		QMap<QString, QVariant> map = item->data().toMap();
-		server.setUri(map["url"].toString());
-		server.setName(map["name"].toString());
-		server.setLoginType(map["logintype"].toString());
-		server.setIcon(map["icon"].toString());
-		server.setApi(map["api"].toString());
-		emit signalSelected(server);
-	}
-	QModelIndexList desel_indexes = deselected.indexes();
-	for(int i = 0; i < desel_indexes.size(); i++)
-	{
-		//QModelIndex index = desel_indexes.at(i);
-		//QStandardItem *item = m_model->itemFromIndex(index);
-
-		GGZServer server;
-		emit signalSelected(server);
+		GGZProfile *profile = reinterpret_cast<GGZProfile*>(item->data(ItemDelegate::ProfileRole).value<void*>());
+		emit signalSelected(*profile, index.row());
 	}
 }
 
-QList<GGZServer> ServerList::servers()
+QList<GGZProfile> ServerList::profiles()
 {
-	return m_servers;
+	return m_profiles;
 }
 
 void ServerList::clear()
 {
-	m_servers.clear();
+	m_profiles.clear();
 	m_apixmaps.clear();
 	m_model->clear();
+	qDeleteAll(m_profptrs);
+	m_profptrs.clear();
 }

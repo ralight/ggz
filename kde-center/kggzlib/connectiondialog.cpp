@@ -4,9 +4,12 @@
 // KGGZ includes
 #include "serverlist.h"
 #include "connectionprofiles.h"
+#include "util.h"
+#include "ggzprofile.h"
 
 #include <kggzcore/coreclient.h>
 
+// KDE includes
 #include <kconfig.h>
 #include <kconfiggroup.h>
 #include <ksharedconfig.h>
@@ -16,8 +19,8 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 
-ConnectionDialog::ConnectionDialog()
-: QWidget()
+ConnectionDialog::ConnectionDialog(QWidget *parent)
+: QDialog(parent)
 {
 	m_serverlist = new ServerList();
 
@@ -37,11 +40,11 @@ ConnectionDialog::ConnectionDialog()
 	vbox->addLayout(hbox);
 	setLayout(vbox);
 
-	connect(cancel_button, SIGNAL(clicked()), SLOT(close()));
+	connect(cancel_button, SIGNAL(clicked()), SLOT(reject()));
 	connect(m_connect_button, SIGNAL(clicked()), SLOT(slotConnect()));
 	connect(manage_button, SIGNAL(clicked()), SLOT(slotManage()));
 
-	connect(m_serverlist, SIGNAL(signalSelected(const GGZServer&)), SLOT(slotSelected(const GGZServer&)));
+	connect(m_serverlist, SIGNAL(signalSelected(const GGZProfile&, int)), SLOT(slotSelected(const GGZProfile&, int)));
 
 	load();
 
@@ -52,6 +55,8 @@ ConnectionDialog::ConnectionDialog()
 
 void ConnectionDialog::load()
 {
+	m_serverlist->clear();
+
 	KSharedConfig::Ptr conf = KGlobal::config();
 	for(int i = 0; true; i++)
 	{
@@ -60,18 +65,16 @@ void ConnectionDialog::load()
 		if(cg.keyList().size() == 0)
 			break;
 
-		GGZServer server;
-		server.setUri(cg.readEntry("Uri"));
-		server.setApi(cg.readEntry("Api"));
-		server.setName(cg.readEntry("Name"));
-		server.setIcon(cg.readEntry("Icon"));
-		addServer(server);
+		Util util;
+		GGZProfile profile = util.loadprofile(cg);
+		if(profile.configured())
+			addProfile(profile);
 	}
 }
 
-void ConnectionDialog::addServer(const GGZServer& server)
+void ConnectionDialog::addProfile(const GGZProfile& profile)
 {
-	m_serverlist->addServer(server);
+	m_serverlist->addProfile(profile);
 }
 
 void ConnectionDialog::slotManage()
@@ -79,21 +82,7 @@ void ConnectionDialog::slotManage()
 	ConnectionProfiles prof(this);
 	prof.exec();
 
-	m_serverlist->clear();
-	QList<GGZServer> profiles = prof.profiles();
-	KSharedConfig::Ptr conf = KGlobal::config();
-	for(int i = 0; i < profiles.size(); i++)
-	{
-		GGZServer server = profiles.at(i);
-		addServer(server);
-
-		KConfigGroup cg = KConfigGroup(conf, "Profile" + QString::number(i));
-		cg.writeEntry("Uri", server.uri());
-		cg.writeEntry("Api", server.api());
-		cg.writeEntry("Name", server.name());
-		cg.writeEntry("Icon", server.icon());
-		conf->sync();
-	}
+	load();
 }
 
 void ConnectionDialog::slotConnect()
@@ -103,13 +92,16 @@ void ConnectionDialog::slotConnect()
 	KGGZCore::CoreClient *coreclient = new KGGZCore::CoreClient(this, true);
 	coreclient->setUrl(m_uri);
 	coreclient->initiateLogin();
-	// FIXME: ...
+	// FIXME: see if it works and then call accept() ...
 }
 
-void ConnectionDialog::slotSelected(const GGZServer& server)
+void ConnectionDialog::slotSelected(const GGZProfile& profile, int pos)
 {
-	bool enabled = (!server.uri().isEmpty());
+	Q_UNUSED(pos);
+
+qDebug("** %s", qPrintable(profile.ggzServer().uri()));
+	bool enabled = (!profile.ggzServer().uri().isEmpty());
 	m_connect_button->setEnabled(enabled);
 	if(enabled)
-		m_uri = server.uri();
+		m_uri = profile.ggzServer().uri();
 }

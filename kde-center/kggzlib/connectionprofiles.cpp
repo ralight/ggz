@@ -1,17 +1,26 @@
 // Connection dialog includes
 #include "connectionprofiles.h"
 
+#include "util.h"
+
 // KGGZ includes
 #include "serverlist.h"
 #include "configwidget.h"
 #include "serverselector.h"
+#include "ggzprofile.h"
+
+// KDE includes
+#include <kconfig.h>
+#include <kconfiggroup.h>
+#include <ksharedconfig.h>
+#include <kglobal.h>
 
 // Qt includes
 #include <qlayout.h>
 #include <qpushbutton.h>
 
 ConnectionProfiles::ConnectionProfiles(QWidget *parent)
-: QDialog(parent)
+: QDialog(parent), m_pos(-1)
 {
 	m_serverlist = new ServerList();
 
@@ -31,23 +40,40 @@ ConnectionProfiles::ConnectionProfiles(QWidget *parent)
 	vbox->addLayout(hbox);
 	setLayout(vbox);
 
-	connect(close_button, SIGNAL(clicked()), SLOT(accept()));
+	connect(close_button, SIGNAL(clicked()), SLOT(slotAccept()));
 	connect(update_button, SIGNAL(clicked()), SLOT(slotUpdate()));
 
-	connect(m_serverlist, SIGNAL(signalSelected(const GGZServer&)), SLOT(slotSelected(const GGZServer&)));
-	connect(m_configwidget, SIGNAL(signalChanged(const GGZServer&)), SLOT(slotChanged(const GGZServer&)));
+	connect(m_serverlist, SIGNAL(signalSelected(const GGZProfile&, int)), SLOT(slotSelected(const GGZProfile&, int)));
+	connect(m_configwidget, SIGNAL(signalChanged(const GGZProfile&)), SLOT(slotChanged(const GGZProfile&)));
+
+	load();
 
 	setWindowTitle("Manage GGZ profiles");
-	resize(400, 350);
+	resize(400, 450);
 	show();
-
-	// FIXME: use kconfig
-	m_metaserver = "ggzmeta://meta.ggzgamingzone.org:15689";
 }
 
-void ConnectionProfiles::addServer(const GGZServer& server)
+void ConnectionProfiles::load()
 {
-	m_serverlist->addServer(server);
+	KSharedConfig::Ptr conf = KGlobal::config();
+	for(int i = 0; true; i++)
+	{
+		KConfigGroup cg = KConfigGroup(conf, "Profile" + QString::number(i));
+		//if(!cg.isValid())
+		if(cg.keyList().size() == 0)
+			break;
+
+		Util util;
+		addProfile(util.loadprofile(cg));
+	}
+
+	KConfigGroup cg = KConfigGroup(conf, "Settings");
+	m_metaserver = cg.readEntry("Metaserver", "ggzmeta://meta.ggzgamingzone.org:15689");
+}
+
+void ConnectionProfiles::addProfile(const GGZProfile& profile)
+{
+	m_serverlist->addProfile(profile);
 }
 
 void ConnectionProfiles::slotUpdate()
@@ -57,7 +83,11 @@ void ConnectionProfiles::slotUpdate()
 	int status = selector.exec();
 	if(status == QDialog::Accepted)
 	{
-		addServer(selector.server());
+		GGZProfile profile;
+		profile.setGGZServer(selector.server());
+		addProfile(profile);
+
+		save(profile);
 	}
 }
 
@@ -66,26 +96,58 @@ void ConnectionProfiles::setMetaserver(const QString &metaserver)
 	m_metaserver = metaserver;
 }
 
-void ConnectionProfiles::slotSelected(const GGZServer& server)
+void ConnectionProfiles::slotSelected(const GGZProfile& profile, int pos)
 {
-	m_configwidget->setGGZServer(server);
+	m_serverlist->updateProfile(m_configwidget->ggzProfile(), m_pos);
+
+	m_pos = pos;
+	save(profile);
+
+	m_configwidget->setGGZProfile(profile);
 }
 
-QList<GGZServer> ConnectionProfiles::profiles()
+QList<GGZProfile> ConnectionProfiles::profiles()
 {
-	QList<GGZServer> servers = m_serverlist->servers();
-	QList<GGZServer> profiles;
-	for(int i = 0; i < servers.size(); i++)
+	QList<GGZProfile> profiles = m_serverlist->profiles();
+	QList<GGZProfile> configuredprofiles;
+	for(int i = 0; i < profiles.size(); i++)
 	{
-		GGZServer server = servers.at(i);
-		//if(!server.logintype())
-		// FIXME: ...
-		profiles.append(server);
+		GGZProfile profile = profiles.at(i);
+		if(profile.configured())
+			configuredprofiles.append(profile);
 	}
-	return profiles;
+	return configuredprofiles;
 }
 
-void ConnectionProfiles::slotChanged(const GGZServer& server)
+void ConnectionProfiles::slotChanged(const GGZProfile& profile)
 {
-	m_serverlist->updateServer(server);
+	m_serverlist->updateProfile(profile, m_pos);
+
+	save(profile);
+}
+
+void ConnectionProfiles::save(const GGZProfile& profile)
+{
+	// FIXME: would be better to just save this profile
+	// but would need unique identifier
+	Q_UNUSED(profile);
+
+	KSharedConfig::Ptr conf = KGlobal::config();
+	QList<GGZProfile> profiles = m_serverlist->profiles();
+	for(int i = 0; i < m_serverlist->profiles().size(); i++)
+	{
+		GGZProfile profile = profiles.at(i);
+
+		KConfigGroup cg = KConfigGroup(conf, "Profile" + QString::number(i));
+		Util util;
+		util.saveprofile(profile, cg, conf);
+	}
+}
+
+void ConnectionProfiles::slotAccept()
+{
+	m_serverlist->updateProfile(m_configwidget->ggzProfile(), m_pos);
+	save(m_serverlist->profiles().at(m_pos));
+
+	accept();
 }

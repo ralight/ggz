@@ -4,10 +4,9 @@
 // Qt includes
 #include <QDialog>
 
-#include "ggzserver.h"
-
 class ServerList;
 class ConfigWidget;
+class GGZProfile;
 
 // The game window
 class ConnectionProfiles : public QDialog
@@ -16,21 +15,26 @@ class ConnectionProfiles : public QDialog
 	public:
 		// Constructor
 		ConnectionProfiles(QWidget *parent = NULL);
-		void addServer(const GGZServer& server);
 
 		void setMetaserver(const QString &metaserver);
 
-		QList<GGZServer> profiles();
+		QList<GGZProfile> profiles();
 
 	private slots:
 		void slotUpdate();
-		void slotSelected(const GGZServer& server);
-		void slotChanged(const GGZServer& server);
+		void slotSelected(const GGZProfile& profile, int pos);
+		void slotChanged(const GGZProfile& profile);
+		void slotAccept();
 
 	private:
+		void load();
+		void save(const GGZProfile& profile);
+		void addProfile(const GGZProfile& profile);
+
 		ServerList *m_serverlist;
 		QString m_metaserver;
 		ConfigWidget *m_configwidget;
+		int m_pos;
 };
 
 #endif

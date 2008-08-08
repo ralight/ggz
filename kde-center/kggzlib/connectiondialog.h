@@ -2,32 +2,28 @@
 #define CONNECTION_DIALOG_H
 
 // Qt includes
-#include <QWidget>
-
-#include "ggzserver.h"
+#include <QDialog>
 
 class ServerList;
 class QPushButton;
+class GGZProfile;
 
 // The game window
-class ConnectionDialog : public QWidget
+class ConnectionDialog : public QDialog
 {
 	Q_OBJECT
 	public:
 		// Constructor
-		ConnectionDialog();
-		void addServer(const GGZServer& server);
-
-	//signals:
-	//	void signalSelected(QString uri);
+		ConnectionDialog(QWidget *parent = NULL);
 
 	private slots:
 		void slotManage();
 		void slotConnect();
-		void slotSelected(const GGZServer& server);
+		void slotSelected(const GGZProfile& profile, int pos);
 
 	private:
 		void load();
+		void addProfile(const GGZProfile& profile);
 
 		ServerList *m_serverlist;
 		QPushButton *m_connect_button;

@@ -47,13 +47,3 @@ QString GGZServer::icon() const
 {
 	return m_icon;
 }
-
-void GGZServer::setLoginType(const QString &logintype)
-{
-	m_logintype = logintype;
-}
-
-QString GGZServer::loginType() const
-{
-	return m_logintype;
-}
