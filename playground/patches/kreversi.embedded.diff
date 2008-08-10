@@ -1,0 +1,129 @@
+Index: kreversiui.rc
+===================================================================
+--- kreversiui.rc	(Revision 839281)
++++ kreversiui.rc	(Arbeitskopie)
+@@ -4,6 +4,7 @@
+ 
+ <MenuBar>
+   <Menu name="game">
++    <Action name="game_connect" />
+     <Action name="game_seats" />
+   </Menu>
+   <Menu name="view"><text>&amp;View</text>
+Index: mainwindow.h
+===================================================================
+--- mainwindow.h	(Revision 839281)
++++ mainwindow.h	(Arbeitskopie)
+@@ -34,6 +34,7 @@
+ class KToggleAction;
+ class QListWidget;
+ class QLabel;
++class KGGZCoreLayer;
+ 
+ class KReversiMainWindow : public KXmlGuiWindow
+ {
+@@ -52,6 +53,8 @@
+     void slotShowMovesHistory(bool);
+     void slotHighscores();
+     void slotSeats();
++    void slotConnect();
++    void slotConnectionReady();
+ private:
+     virtual void showEvent( QShowEvent* );
+     void setupActions();
+@@ -77,7 +80,9 @@
+     QAction* m_hintAct;
+     QAction* m_demoAct;
+     QAction* m_seatsAct;
++    QAction* m_connectAct;
+     KSelectAction* m_animSpeedAct;
+     KToggleAction* m_coloredChipsAct;
++    KGGZCoreLayer *m_corelayer;
+ };
+ #endif
+Index: CMakeLists.txt
+===================================================================
+--- CMakeLists.txt	(Revision 839281)
++++ CMakeLists.txt	(Arbeitskopie)
+@@ -3,7 +3,7 @@
+ add_subdirectory( sounds ) 
+ add_subdirectory( icons ) 
+ 
+-include_directories( ${CMAKE_SOURCE_DIR}/libkdegames/highscore)
++include_directories( ${CMAKE_SOURCE_DIR}/libkdegames/highscore /home/josef/home.checkout/projects/ggz-trunk/kde-center)
+ 
+ ########### next target ###############
+ 
+@@ -23,7 +23,7 @@
+ kde4_add_app_icon(kreversi_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/icons/hi*-app-kreversi.png")
+ kde4_add_executable(kreversi ${kreversi_SRCS})
+ 
+-target_link_libraries(kreversi ${KDE4_KDEUI_LIBS} kdegames ${KGGZGAMES_LIBS})
++target_link_libraries(kreversi ${KDE4_KDEUI_LIBS} kdegames ${KGGZGAMES_LIBS} kggzcore -L/home/josef/home.checkout/projects/ggz-trunk/kde-center/BUILD/lib -lkggzlib)
+ install(TARGETS kreversi  ${INSTALL_TARGETS_DEFAULT_ARGS} )
+ 
+ register_ggz_module(module.dsc)
+Index: mainwindow.cpp
+===================================================================
+--- mainwindow.cpp	(Revision 839281)
++++ mainwindow.cpp	(Arbeitskopie)
+@@ -28,6 +28,9 @@
+ 
+ #include <kggzgames/kggzseatsdialog.h>
+ #include <kggzmod/module.h>
++#include <kggzlib/connectiondialog.h>
++#include <kggzlib/kggzcorelayer.h>
++#include <kggzcore/player.h>
+ #include <kaction.h>
+ #include <kactioncollection.h>
+ #include <ktoggleaction.h>
+@@ -74,7 +77,7 @@
+     : KXmlGuiWindow(parent), m_scene(0), m_game(0),
+       m_historyLabel(0), m_historyView(0),
+       m_firstShow( true ), m_startInDemoMode( startDemo ), m_lowestSkill(1),
+-      m_undoAct(0), m_hintAct(0), m_demoAct(0)
++      m_undoAct(0), m_hintAct(0), m_demoAct(0), m_corelayer(0)
+ {
+     statusBar()->insertItem( i18n("Your turn."), 0 );
+     statusBar()->insertItem( i18n("You: %1", 2), PLAYER_STATUSBAR_ID );
+@@ -121,6 +124,12 @@
+     m_hintAct = KStandardGameAction::hint(m_scene, SLOT(slotHint()), actionCollection());
+     m_demoAct = KStandardGameAction::demo(this, SLOT(slotToggleDemoMode()), actionCollection());
+ 
++    m_connectAct = actionCollection()->addAction( "game_connect" );
++    m_connectAct->setIcon( KIcon("network-connect") );
++    m_connectAct->setText( i18n("Connect to GGZ Gaming Zone") );
++    m_connectAct->setShortcut( Qt::Key_C );
++    connect(m_connectAct, SIGNAL(triggered(bool)), SLOT(slotConnect()) );
++
+     m_seatsAct = actionCollection()->addAction( "game_seats" );
+     m_seatsAct->setIcon( KIcon("roll") );
+     m_seatsAct->setText( i18n("Players and Seats") );
+@@ -426,6 +435,27 @@
+     }
+ }
+ 
++void KReversiMainWindow::slotConnect()
++{
++	ConnectionDialog dialog(this);
++	dialog.exec();
++	if(!m_corelayer)
++	{
++		m_corelayer = new KGGZCoreLayer(this, "Reversi", "4");
++		connect(m_corelayer, SIGNAL(signalReady()), SLOT(slotConnectionReady()));
++	}
++	m_corelayer->ggzcore(dialog.uri());
++}
++
++void KReversiMainWindow::slotConnectionReady()
++{
++	QList<KGGZCore::Player> seats;
++	seats << KGGZCore::Player("somebot", KGGZCore::Player::bot);
++	m_corelayer->configureTable(seats);
++
++	slotNewGame();
++}
++
+ void KReversiMainWindow::slotSeats()
+ {
+     KGGZSeatsDialog *dlg = new KGGZSeatsDialog();
