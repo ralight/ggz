@@ -3,7 +3,9 @@
 
 #include <qstring.h>
 
-class Room
+#include "kggzlib_export.h"
+
+class KGGZLIB_EXPORT Room
 {
 	public:
 		Room(QString name);

@@ -22,12 +22,40 @@ set(kggzlib_LIB_SRCS
 	util.cpp
 	ggzprofile.cpp
 	kggzcorelayer.cpp
+	kggzlib_export.h
 )
 
-kde4_add_library(kggzlib STATIC ${kggzlib_LIB_SRCS})
+kde4_add_library(kggzlib SHARED ${kggzlib_LIB_SRCS})
 
-set_target_properties(kggzlib PROPERTIES COMPILE_FLAGS -fPIC)
-#target_link_libraries(kggzlib ${KDE4_KDECORE_LIBS} ${QT_QTNETWORK_LIBRARY})
+#set_target_properties(kggzlib PROPERTIES COMPILE_FLAGS -fPIC)
+target_link_libraries(kggzlib ${KDE4_KIO_LIBS} ${QT_QTNETWORK_LIBRARY} ${QT_QTXML_LIBRARY} kggzcore)
+set_target_properties(kggzlib PROPERTIES SOVERSION 0.0.0)
+
+install(TARGETS kggzlib ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(FILES
+	configwidget.h
+	connectiondialog.h
+	connectionprofiles.h
+	ggzprofile.h
+	ggzserver.h
+	kggzcorelayer.h
+	kggzlib_export.h
+	modelview.h
+	player.h
+	playerlist.h
+	qasyncpixmap.h
+	qfilecache.h
+	qrecursivesortfilterproxymodel.h
+	roomdelegate.h
+	room.h
+	roomlist.h
+	roomselector.h
+	roomtreeview.h
+	serverlist.h
+	serverselector.h
+	util.h
+	DESTINATION ${INCLUDE_INSTALL_DIR}/kggzlib
+)
 
 install(FILES
 	players/admin.png

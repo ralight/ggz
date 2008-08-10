@@ -25,6 +25,8 @@
 #include <QtCore/QObject>
 #include <QtCore/QByteArray>
 
+#include "kggzlib_export.h"
+
 class KJob;
 namespace KIO
 {
@@ -43,7 +45,7 @@ class Job;
  *
  * @internal
  */
-class QAsyncPixmap : public QObject, public QPixmap
+class KGGZLIB_EXPORT QAsyncPixmap : public QObject, public QPixmap
 {
     Q_OBJECT
 public:

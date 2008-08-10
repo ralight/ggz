@@ -6,11 +6,13 @@
 
 #include <kggzlib/ggzserver.h>
 
+#include "kggzlib_export.h"
+
 class QListWidget;
 class QPushButton;
 class QTcpSocket;
 
-class ServerSelector : public QDialog
+class KGGZLIB_EXPORT ServerSelector : public QDialog
 {
 	Q_OBJECT
 

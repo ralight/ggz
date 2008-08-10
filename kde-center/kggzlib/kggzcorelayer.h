@@ -4,12 +4,14 @@
 #include <kggzcore/coreclient.h>
 #include <kggzcore/room.h>
 
+#include "kggzlib_export.h"
+
 namespace KGGZCore
 {
 	class Player;
 }
  
-class KGGZCoreLayer : public QObject
+class KGGZLIB_EXPORT KGGZCoreLayer : public QObject
 {
 	Q_OBJECT
 

@@ -3,10 +3,12 @@
 
 #include <qsortfilterproxymodel.h>
 
+#include "kggzlib_export.h"
+
 // This is like QSortFilterProxyModel
 // however, when searching for models, it also honours parent items whose children match
 
-class QRecursiveSortFilterProxyModel : public QSortFilterProxyModel
+class KGGZLIB_EXPORT QRecursiveSortFilterProxyModel : public QSortFilterProxyModel
 {
 	Q_OBJECT
 	public:

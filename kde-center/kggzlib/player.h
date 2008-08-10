@@ -3,7 +3,9 @@
 
 #include <qstring.h>
 
-class Player
+#include "kggzlib_export.h"
+
+class KGGZLIB_EXPORT Player
 {
 	public:
 		Player(QString name);

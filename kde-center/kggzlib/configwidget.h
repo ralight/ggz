@@ -5,11 +5,13 @@
 
 #include <kggzlib/ggzprofile.h>
 
+#include "kggzlib_export.h"
+
 class QLineEdit;
 class QPushButton;
 class QComboBox;
 
-class ConfigWidget : public QWidget
+class KGGZLIB_EXPORT ConfigWidget : public QWidget
 {
 	Q_OBJECT
 

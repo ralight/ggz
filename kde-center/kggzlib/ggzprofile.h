@@ -5,7 +5,9 @@
 
 #include "ggzserver.h"
 
-class GGZProfile
+#include "kggzlib_export.h"
+
+class KGGZLIB_EXPORT GGZProfile
 {
 	public:
 		GGZProfile();

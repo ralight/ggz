@@ -3,6 +3,8 @@
 
 #include <qdialog.h>
 
+#include "kggzlib_export.h"
+
 class QListWidget;
 class QPushButton;
 
@@ -12,7 +14,7 @@ namespace KIO
 };
 class KJob;
 
-class RoomSelector : public QDialog
+class KGGZLIB_EXPORT RoomSelector : public QDialog
 {
 	Q_OBJECT
 

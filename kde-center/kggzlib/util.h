@@ -3,10 +3,12 @@
 
 #include <ksharedconfig.h>
 
+#include "kggzlib_export.h"
+
 class GGZProfile;
 class KConfigGroup;
 
-class Util
+class KGGZLIB_EXPORT Util
 {
 	public:
 		void saveprofile(const GGZProfile& profile, KConfigGroup& cg, KSharedConfig::Ptr conf);

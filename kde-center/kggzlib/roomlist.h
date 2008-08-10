@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <QMap>
 
+#include "kggzlib_export.h"
+
 class QStandardItemModel;
 class QStandardItem;
 class QRecursiveSortFilterProxyModel;
@@ -13,7 +15,7 @@ class RoomTreeView;
 class Room;
 
 // List of rooms
-class RoomList : public QWidget
+class KGGZLIB_EXPORT RoomList : public QWidget
 {
 	Q_OBJECT
 	public:

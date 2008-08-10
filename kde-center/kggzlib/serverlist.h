@@ -9,12 +9,14 @@
 
 #include "ggzprofile.h"
 
+#include "kggzlib_export.h"
+
 class QStandardItem;
 class QStandardItemModel;
 class QItemSelection;
 
 // The game window
-class ServerList : public QWidget
+class KGGZLIB_EXPORT ServerList : public QWidget
 {
 	Q_OBJECT
 	public:

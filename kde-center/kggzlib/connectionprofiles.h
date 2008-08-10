@@ -4,12 +4,14 @@
 // Qt includes
 #include <QDialog>
 
+#include "kggzlib_export.h"
+
 class ServerList;
 class ConfigWidget;
 class GGZProfile;
 
 // The game window
-class ConnectionProfiles : public QDialog
+class KGGZLIB_EXPORT ConnectionProfiles : public QDialog
 {
 	Q_OBJECT
 	public:

@@ -3,7 +3,9 @@
 
 #include <qitemdelegate.h>
 
-class RoomDelegate : public QItemDelegate
+#include "kggzlib_export.h"
+
+class KGGZLIB_EXPORT RoomDelegate : public QItemDelegate
 {
 	Q_OBJECT
 	public:

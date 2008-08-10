@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <QMap>
 
+#include "kggzlib_export.h"
+
 class QStandardItemModel;
 class QStandardItem;
 class QTreeView;
@@ -13,7 +15,7 @@ class Player;
 class QModelIndex;
 
 // List of players
-class PlayerList : public QWidget
+class KGGZLIB_EXPORT PlayerList : public QWidget
 {
 	Q_OBJECT
 	public:
