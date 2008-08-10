@@ -25,6 +25,7 @@ class KGGZCoreLayer : public QObject
 
 	protected:
 		void activity(QString activity);
+		void checkTables();
 
 	protected slots:
 		void slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZCore::Error::ErrorCode error);

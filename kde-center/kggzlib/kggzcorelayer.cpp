@@ -23,6 +23,30 @@ void KGGZCoreLayer::activity(QString activity)
 {
 	qDebug("=== %s ===", qPrintable(activity));
 }
+
+void KGGZCoreLayer::checkTables()
+{
+	QList<KGGZCore::Table*> tables = m_core->room()->tables();
+	qDebug() << "#count:" << tables.size();
+	for(int i = 0; i < tables.size(); i++)
+	{
+		KGGZCore::Table *table = tables.at(i);
+		qDebug() << "# -" << table->description();
+		QList<KGGZCore::Player*> players = table->players();
+		for(int j = 0; j < players.size(); j++)
+		{
+			KGGZCore::Player *p = players.at(j);
+			qDebug() << "#  -" << p->name() << p->type();
+			if(p->type() == KGGZCore::Player::reserved)
+			{
+				if(m_core->username() == p->name())
+				{
+					qDebug("~~~~ invitation to table %i (%s)!", i, qPrintable(table->description()));
+				}
+			}
+		}
+	}
+}
  
 void KGGZCoreLayer::ggzcore(QString uri)
 {
@@ -165,7 +189,7 @@ void KGGZCoreLayer::slotAnswer(KGGZCore::Room::AnswerMessage message)
 			break;
 		case KGGZCore::Room::tablelist:
 			qDebug() << "#tables";
-			//checkTables();
+			checkTables();
 			//roominfo();
 			break;
 	}
@@ -184,7 +208,7 @@ void KGGZCoreLayer::slotEvent(KGGZCore::Room::EventMessage message)
 			break;
 		case KGGZCore::Room::tableupdate:
 			qDebug() << "#tables(update)";
-			//checkTables();
+			checkTables();
 			//roominfo();
 			break;
 		case KGGZCore::Room::playerlag:
@@ -227,6 +251,7 @@ void KGGZCoreLayer::slotTableReady()
 
 void KGGZCoreLayer::configureTable(QList<KGGZCore::Player> seats)
 {
+	seats.prepend(KGGZCore::Player(m_core->username(), KGGZCore::Player::player));
 	m_seats = seats;
 }
  
