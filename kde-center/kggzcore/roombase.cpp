@@ -198,6 +198,12 @@ void RoomBase::callback_room(unsigned int id, const void *event_data) const
 		errorcode = ((const GGZErrorEventData*)event_data)->status;
 	}
 
+	if(id == GGZ_TABLE_LAUNCHED)
+	{
+		//GGZServer *server = ggzcore_room_get_server(room());
+		//ggzcore_room_join_table(room, id, 0);
+	}
+
 	if((id == GGZ_TABLE_JOIN_FAIL)
 	|| (id == GGZ_TABLE_LEAVE_FAIL))
 	{

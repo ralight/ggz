@@ -94,6 +94,9 @@ class KGGZCORE_EXPORT Room : public QObject
 		QList<Table*> tables();
 		QList<Player*> players();
 
+		QString protocolEngine();
+		QString protocolVersion();
+
 		void launchtable(QList<Player> seats);
 		void launchmodule();
 

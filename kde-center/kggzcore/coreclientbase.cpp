@@ -22,6 +22,7 @@
 
 #include <kggzcore/misc.h>
 #include <kggzcore/roombase.h>
+#include <kggzcore/room.h>
 
 #include <QSocketNotifier>
 #include <QStringList>
@@ -123,14 +124,31 @@ void CoreClientBase::switchRoom(const char *name)
 QStringList CoreClientBase::roomnames()
 {
 	QStringList names;
-
 	for(int i = 0; i < ggzcore_server_get_num_rooms(m_server); i++)
 	{
 		GGZRoom *room = ggzcore_server_get_nth_room(m_server, i);
 		names << ggzcore_room_get_name(room);
 	}
 
+
 	return names;
+}
+
+QList<Room*> CoreClientBase::rooms()
+{
+	QList<Room*> rooms;
+
+	for(int i = 0; i < ggzcore_server_get_num_rooms(m_server); i++)
+	{
+		GGZRoom *ggzroom = ggzcore_server_get_nth_room(m_server, i);
+		RoomBase *roombase = new RoomBase(this);
+		roombase->setRoom(ggzroom);
+		Room *room = new Room();
+		room->init(roombase);
+		rooms << room;
+	}
+
+	return rooms;
 }
 
 int CoreClientBase::state()

@@ -63,6 +63,20 @@ QList<Player*> Room::players()
 	return m_players;
 }
 
+QString Room::protocolEngine()
+{
+	GGZGameType *gametype = ggzcore_room_get_gametype(m_base->room());
+	QString protengine = ggzcore_gametype_get_prot_engine(gametype);
+	return protengine;
+}
+
+QString Room::protocolVersion()
+{
+	GGZGameType *gametype = ggzcore_room_get_gametype(m_base->room());
+	QString protversion = ggzcore_gametype_get_prot_version(gametype);
+	return protversion;
+}
+
 void Room::launchtable(QList<Player> seats)
 {
 	GGZGameType *gametype = ggzcore_room_get_gametype(m_base->room());

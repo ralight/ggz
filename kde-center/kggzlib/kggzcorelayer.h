@@ -14,7 +14,7 @@ class KGGZCoreLayer : public QObject
 	Q_OBJECT
 
 	public:
-		KGGZCoreLayer(QObject *parent = NULL);
+		KGGZCoreLayer(QObject *parent = NULL, QString protengine = QString(), QString protversion = QString());
 		~KGGZCoreLayer();
  
 		void ggzcore(QString uri);
@@ -41,9 +41,12 @@ class KGGZCoreLayer : public QObject
  
  	private:
 		void launchmodule();
+		void switchroom();
 
 		KGGZCore::CoreClient *m_core;
 		QList<KGGZCore::Player> m_seats;
+		QString m_protengine;
+		QString m_protversion;
 };
  
 #endif

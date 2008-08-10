@@ -126,6 +126,11 @@ Room *CoreClient::room()
 	return m_room;
 }
 
+QList<Room*> CoreClient::rooms()
+{
+	return m_base->rooms();
+}
+
 QString CoreClient::textmotd()
 {
 	return m_base->textmotd();

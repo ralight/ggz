@@ -381,7 +381,7 @@ void KTicTacTuxWin::slotError()
 void KTicTacTuxWin::slotReady()
 {
 	QList<KGGZCore::Player> seats;
-	seats << KGGZCore::Player("someplayer", KGGZCore::Player::reserved);
+	//seats << KGGZCore::Player("someplayer", KGGZCore::Player::reserved);
 	seats << KGGZCore::Player("somebot", KGGZCore::Player::bot);
 	m_corelayer->configureTable(seats);
 	enableNetwork(true);

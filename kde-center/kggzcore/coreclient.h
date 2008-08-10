@@ -98,6 +98,7 @@ class KGGZCORE_EXPORT CoreClient : public QObject
 
 		QStringList roomnames();
 		Room *room();
+		QList<Room*> rooms();
 
 		QString textmotd();
 		QString webmotd();
@@ -120,6 +121,7 @@ class KGGZCORE_EXPORT CoreClient : public QObject
 		CoreClientBase *m_base;
 		QStringList m_roomnames;
 		Room *m_room;
+		QList<Room*> m_rooms;
 };
 
 }

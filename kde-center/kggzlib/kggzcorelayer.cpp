@@ -8,10 +8,12 @@
 #include <klocale.h>
 #include <qdebug.h>
 
-KGGZCoreLayer::KGGZCoreLayer(QObject *parent)
+KGGZCoreLayer::KGGZCoreLayer(QObject *parent, QString protengine, QString protversion)
 : QObject(parent),
 	m_core(0)
 {
+	m_protversion = protversion;
+	m_protengine = protengine;
 }
  
 KGGZCoreLayer::~KGGZCoreLayer()
@@ -118,27 +120,36 @@ void KGGZCoreLayer::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, 
 
 void KGGZCoreLayer::slotAnswer(KGGZCore::CoreClient::AnswerMessage message)
 {
-	int num;
-
 	switch(message)
 	{
 		case KGGZCore::CoreClient::roomlist:
-			num = m_core->roomnames().count();
-			if(num > 0)
-			{
-				// FIXME: depend on room type!
-				QString roomname = "Tic-Tac-Toe";
-				//KConfigGroup cg = config();
-				//QString roomname = cg.readEntry("roomname");
-				//if((roomname.isEmpty()) | (!m_core->roomnames().contains(roomname)))
-				//	roomname = m_core->roomnames().at(0);
-				m_core->initiateRoomChange(roomname);
-			}
+			switchroom();
 			break;
 		case KGGZCore::CoreClient::typelist:
+			switchroom();
 			break;
 		case KGGZCore::CoreClient::motd:
 			break;
+	}
+}
+
+void KGGZCoreLayer::switchroom()
+{
+	QList<KGGZCore::Room*> rooms = m_core->rooms();
+	if(rooms.size() > 0)
+	{
+		for(int i = 0; i < rooms.size(); i++)
+		{
+			KGGZCore::Room *room = rooms.at(i);
+			if((room->protocolEngine() == m_protengine)
+			&& (room->protocolVersion() == m_protversion))
+			{
+				m_core->initiateRoomChange(room->name());
+				break;
+			}
+		}
+		qDeleteAll(rooms);
+		rooms.clear();
 	}
 }
 
