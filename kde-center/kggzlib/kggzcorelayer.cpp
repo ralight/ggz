@@ -26,7 +26,7 @@ void KGGZCoreLayer::activity(QString activity)
  
 void KGGZCoreLayer::ggzcore(QString uri)
 {
-	m_core = new KGGZCore::CoreClient(this);
+	m_core = new KGGZCore::CoreClient(this, true);
 
 	connect(m_core,
 		SIGNAL(signalFeedback(KGGZCore::CoreClient::FeedbackMessage, KGGZCore::Error::ErrorCode)),
@@ -81,6 +81,7 @@ void KGGZCoreLayer::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, 
 			connect(m_core->room(),
 				SIGNAL(signalEvent(KGGZCore::Room::EventMessage)),
 				SLOT(slotEvent(KGGZCore::Room::EventMessage)));
+			launchtable();
 			break;
 		case KGGZCore::CoreClient::chat:
 			break;
@@ -101,11 +102,12 @@ void KGGZCoreLayer::slotAnswer(KGGZCore::CoreClient::AnswerMessage message)
 			num = m_core->roomnames().count();
 			if(num > 0)
 			{
-				QString roomname;
+				// FIXME: depend on room type!
+				QString roomname = "Tic-Tac-Toe";
 				//KConfigGroup cg = config();
 				//QString roomname = cg.readEntry("roomname");
 				//if((roomname.isEmpty()) | (!m_core->roomnames().contains(roomname)))
-					roomname = m_core->roomnames().at(0);
+				//	roomname = m_core->roomnames().at(0);
 				m_core->initiateRoomChange(roomname);
 			}
 			break;
@@ -146,6 +148,9 @@ void KGGZCoreLayer::slotFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCo
 	switch(message)
 	{
 		case KGGZCore::Room::tablelaunched:
+			activity(i18n("A table has been launched"));
+			m_core->room()->launchmodule();
+			emit signalReady();
 			break;
 		case KGGZCore::Room::tablejoined:
 			break;
@@ -195,6 +200,14 @@ void KGGZCoreLayer::slotEvent(KGGZCore::Room::EventMessage message)
 		case KGGZCore::Room::libraryerror:
 			break;
 	}
+}
+
+void KGGZCoreLayer::launchtable()
+{
+	//KGGZCore::Table *table = new KGGZCore::Table("*embedded*");
+	//table->launch(m_core);
+
+	m_core->room()->launch();
 }
  
 #include "kggzcorelayer.moc"

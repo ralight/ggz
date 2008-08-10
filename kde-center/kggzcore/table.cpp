@@ -48,3 +48,8 @@ void Table::addPlayer(Player *p)
 	m_players << p;
 }
 
+//void Table::launch(CoreClient *client)
+//{
+// FIXME: ???
+//}
+

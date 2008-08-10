@@ -30,6 +30,7 @@ namespace KGGZCore
 {
 
 class Player;
+class CoreClient;
 
 class KGGZCORE_EXPORT Table : public QObject
 {
@@ -42,6 +43,8 @@ class KGGZCORE_EXPORT Table : public QObject
 
 		QList<Player*> players();
 		void addPlayer(Player *player);
+
+		//void launch(CoreClient *client);
 
 	private:
 		QString m_description;

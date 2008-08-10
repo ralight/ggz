@@ -14,6 +14,9 @@ class KGGZCoreLayer : public QObject
  
 		void ggzcore(QString uri);
 
+	signals:
+		void signalReady();
+
 	protected:
 		void activity(QString activity);
 
@@ -26,6 +29,8 @@ class KGGZCoreLayer : public QObject
 		void slotEvent(KGGZCore::Room::EventMessage message);
  
  	private:
+		void launchtable();
+
 		KGGZCore::CoreClient *m_core;
 };
  

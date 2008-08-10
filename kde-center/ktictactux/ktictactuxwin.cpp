@@ -150,9 +150,11 @@ void KTicTacTuxWin::slotMenu(QAction *action)
 	{
 		ConnectionDialog dialog(this);
 		dialog.exec();
-		enableNetwork(true);
 		if(!m_corelayer)
+		{
 			m_corelayer = new KGGZCoreLayer(this);
+			connect(m_corelayer, SIGNAL(signalReady()), SLOT(slotReady()));
+		}
 		m_corelayer->ggzcore(dialog.uri());
 	}
 	else if(action == action_sync)
@@ -372,4 +374,9 @@ void KTicTacTuxWin::loadThemes()
 void KTicTacTuxWin::slotError()
 {
 	enableNetwork(false);
+}
+
+void KTicTacTuxWin::slotReady()
+{
+	enableNetwork(true);
 }

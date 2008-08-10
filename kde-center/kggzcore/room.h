@@ -94,6 +94,9 @@ class KGGZCORE_EXPORT Room : public QObject
 		QList<Table*> tables();
 		QList<Player*> players();
 
+		void launch();
+		void launchmodule();
+
 	signals:
 		void signalFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
 		void signalAnswer(KGGZCore::Room::AnswerMessage message);

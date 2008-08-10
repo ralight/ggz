@@ -50,9 +50,11 @@ void CoreClientBase::init(bool embedded)
 {
 	GGZOptions options;
 
-	options.flags = (GGZOptionFlags)(GGZ_OPT_PARSER | GGZ_OPT_MODULES | GGZ_OPT_RECONNECT);
+	options.flags = (GGZOptionFlags)(GGZ_OPT_PARSER | GGZ_OPT_RECONNECT);
 	if(embedded)
 		options.flags = (GGZOptionFlags)(options.flags | GGZ_OPT_EMBEDDED);
+	else
+		options.flags = (GGZOptionFlags)(options.flags | GGZ_OPT_MODULES);
 
 	int ret = ggzcore_init(options);
 	if(ret == -1)

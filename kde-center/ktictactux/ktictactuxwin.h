@@ -59,6 +59,10 @@ class KTicTacTuxWin : public KMainWindow
 		// Network error
 		void slotError();
 
+	private slots:
+		// Embedded ggzcore is ready
+		void slotReady();
+
 	private:
 		void scanDir(QDir dir, bool scanmore);
 

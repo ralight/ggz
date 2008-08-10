@@ -22,6 +22,7 @@
 
 #include <kggzcore/roombase.h>
 #include <kggzcore/table.h>
+#include <kggzcore/player.h>
 
 using namespace KGGZCore;
 
@@ -60,6 +61,30 @@ QList<Table*> Room::tables()
 QList<Player*> Room::players()
 {
 	return m_players;
+}
+
+void Room::launch()
+{
+	GGZGameType *gametype = ggzcore_room_get_gametype(m_base->room());
+qDebug(">>launch>> gametype=%s", ggzcore_gametype_get_name(gametype));
+
+	GGZTable *table = ggzcore_table_new();
+	ggzcore_table_init(table, gametype, "*embedded*", 2);
+	ggzcore_table_set_seat(table, 0, GGZ_SEAT_OPEN, "player");
+	ggzcore_table_set_seat(table, 1, GGZ_SEAT_BOT, "aiplayer");
+
+	int ret = ggzcore_room_launch_table(m_base->room(), table);
+qDebug(">>launch>> ret=%i", ret);
+}
+
+void Room::launchmodule()
+{
+	GGZGame *game = ggzcore_game_new();
+	GGZServer *server = ggzcore_room_get_server(m_base->room());
+	ggzcore_game_init(game, server, NULL);
+
+	int ret = ggzcore_game_launch(game);
+qDebug(">>launchmodule>> ret=%i", ret);
 }
 
 void Room::init(RoomBase *base)
