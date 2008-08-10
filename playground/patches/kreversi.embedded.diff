@@ -45,21 +45,12 @@ Index: CMakeLists.txt
 ===================================================================
 --- CMakeLists.txt	(Revision 839281)
 +++ CMakeLists.txt	(Arbeitskopie)
-@@ -3,7 +3,7 @@
- add_subdirectory( sounds ) 
- add_subdirectory( icons ) 
- 
--include_directories( ${CMAKE_SOURCE_DIR}/libkdegames/highscore)
-+include_directories( ${CMAKE_SOURCE_DIR}/libkdegames/highscore /home/josef/home.checkout/projects/ggz-trunk/kde-center)
- 
- ########### next target ###############
- 
 @@ -23,7 +23,7 @@
  kde4_add_app_icon(kreversi_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/icons/hi*-app-kreversi.png")
  kde4_add_executable(kreversi ${kreversi_SRCS})
  
 -target_link_libraries(kreversi ${KDE4_KDEUI_LIBS} kdegames ${KGGZGAMES_LIBS})
-+target_link_libraries(kreversi ${KDE4_KDEUI_LIBS} kdegames ${KGGZGAMES_LIBS} kggzcore -L/home/josef/home.checkout/projects/ggz-trunk/kde-center/BUILD/lib -lkggzlib)
++target_link_libraries(kreversi ${KDE4_KDEUI_LIBS} kdegames ${KGGZGAMES_LIBS} kggzcore kggzlib)
  install(TARGETS kreversi  ${INSTALL_TARGETS_DEFAULT_ARGS} )
  
  register_ggz_module(module.dsc)
