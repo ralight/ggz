@@ -33,6 +33,7 @@ CoreClientBase::CoreClientBase(QObject *parent, bool embedded)
 {
 	m_server = NULL;
 	m_sn = NULL;
+	m_channelsn = NULL;
 	m_roombase = NULL;
 
 	init(embedded);
@@ -207,6 +208,22 @@ void CoreClientBase::handle_server_post(unsigned int id)
 		connect(m_sn, SIGNAL(activated(int)), SLOT(slotSocket(int)));
 	}
 
+	if(id == GGZ_CHANNEL_CONNECTED)
+	{
+		m_channelsn = new QSocketNotifier(ggzcore_server_get_channel(m_server), QSocketNotifier::Read, this);
+		connect(m_channelsn, SIGNAL(activated(int)), SLOT(slotChannel(int)));
+	}
+
+	if(id == GGZ_CHANNEL_READY)
+	{
+		disconnect(m_channelsn);
+		m_channelsn->deleteLater();
+		m_channelsn = NULL;
+
+		GGZGame *game = ggzcore_server_get_cur_game(m_server);
+		ggzcore_game_set_server_fd(game, ggzcore_server_get_channel(m_server));
+	}
+
 	if(id == GGZ_NEGOTIATED)
 	{
 		ggzcore_server_login(m_server);
@@ -220,7 +237,9 @@ void CoreClientBase::handle_server_post(unsigned int id)
 
 	if(id == GGZ_LOGOUT)
 	{
-		delete m_sn;
+		disconnect(m_sn);
+		m_sn->deleteLater();
+		m_sn = NULL;
 	}
 }
 
@@ -244,6 +263,17 @@ void CoreClientBase::slotSocket(int socket)
 		ggzcore_server_read_data(m_server, socket);
 
 	qDebug("----- socket reading done.");
+	qDebug("--------------------------------");
+}
+
+void CoreClientBase::slotChannel(int socket)
+{
+	qDebug("--------------------------------");
+	qDebug("----- channel activity...");
+
+	ggzcore_server_read_data(m_server, socket);
+
+	qDebug("----- channel reading done.");
 	qDebug("--------------------------------");
 }
 

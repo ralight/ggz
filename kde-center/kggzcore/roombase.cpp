@@ -24,16 +24,21 @@
 #include <kggzcore/table.h>
 #include <kggzcore/player.h>
 
+#include <QSocketNotifier>
+
 using namespace KGGZCore;
 
 RoomBase::RoomBase(QObject *parent)
 : QObject(parent)
 {
 	m_room = NULL;
+	m_game = NULL;
+	m_sn = NULL;
 }
 
 RoomBase::~RoomBase()
 {
+	delete m_sn;
 }
 
 void RoomBase::setRoom(GGZRoom *room)
@@ -59,6 +64,30 @@ void RoomBase::setRoom(GGZRoom *room)
 
 	ggzcore_room_list_players(m_room);
 	ggzcore_room_list_tables(m_room);
+}
+
+void RoomBase::setup(GGZGame *game)
+{
+	ggzcore_game_add_event_hook_full(game, GGZ_GAME_LAUNCHED, &RoomBase::cb_game, this);
+	ggzcore_game_add_event_hook_full(game, GGZ_GAME_LAUNCH_FAIL, &RoomBase::cb_game, this);
+	ggzcore_game_add_event_hook_full(game, GGZ_GAME_NEGOTIATED, &RoomBase::cb_game, this);
+	ggzcore_game_add_event_hook_full(game, GGZ_GAME_NEGOTIATE_FAIL, &RoomBase::cb_game, this);
+	ggzcore_game_add_event_hook_full(game, GGZ_GAME_PLAYING, &RoomBase::cb_game, this);
+
+	m_game = game;
+}
+
+void RoomBase::slotGameSocket(int socket)
+{
+	Q_UNUSED(socket);
+
+	qDebug("--------------------------------");
+	qDebug("----- game socket activity...");
+
+	ggzcore_game_read_data(m_game);
+
+	qDebug("----- game socket reading done.");
+	qDebug("--------------------------------");
 }
 
 GGZRoom *RoomBase::room() const
@@ -104,6 +133,30 @@ QList<Table*> RoomBase::buildtables()
 	}
 
 	return tables;
+}
+
+void RoomBase::callback_game(unsigned int id, const void *event_data)
+{
+	qDebug("cb_game! id=%i event=%s", id, Misc::gamemessagename(id).toUtf8().data());
+
+	Q_UNUSED(event_data);
+
+	if(id == GGZ_GAME_LAUNCHED)
+	{
+		m_sn = new QSocketNotifier(ggzcore_game_get_control_fd(m_game), QSocketNotifier::Read, this);
+		connect(m_sn, SIGNAL(activated(int)), SLOT(slotGameSocket(int)));
+
+		//qDebug("##hack## read from fd %i", ggzcore_game_get_control_fd(m_game));
+		// FIXME: hack
+		//ggzcore_game_read_data(m_game);
+	}
+	else if(id == GGZ_GAME_NEGOTIATED)
+	{
+		GGZServer *server = ggzcore_room_get_server(room());
+		ggzcore_server_create_channel(server);
+	}
+
+	emit signalBaseGame(id);
 }
 
 void RoomBase::callback_room(unsigned int id, const void *event_data) const
@@ -173,6 +226,17 @@ GGZHookReturn RoomBase::cb_room(unsigned int id, const void *event_data, const v
 	qDebug("cb_room-static!");
 
 	static_cast<const RoomBase*>(user_data)->callback_room(id, event_data);
+
+	return GGZ_HOOK_OK;
+}
+
+GGZHookReturn RoomBase::cb_game(unsigned int id, const void *event_data, const void *user_data)
+{
+	qDebug("cb_game-static!");
+
+	const RoomBase *base = static_cast<const RoomBase*>(user_data);
+	RoomBase *ncbase = (RoomBase*)base;
+	ncbase->callback_game(id, event_data);
 
 	return GGZ_HOOK_OK;
 }

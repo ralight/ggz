@@ -162,6 +162,32 @@ QString Misc::roommessagename(int id)
 	return s;
 }
 
+QString Misc::gamemessagename(int id)
+{
+	QString s;
+
+	switch(id)
+	{
+		case GGZ_GAME_LAUNCHED:
+			s = "game launched";
+			break;
+		case GGZ_GAME_LAUNCH_FAIL:
+			s = "game launch failed";
+			break;
+		case GGZ_GAME_NEGOTIATED:
+			s = "game negotiated";
+			break;
+		case GGZ_GAME_NEGOTIATE_FAIL:
+			s = "game negotiation failed";
+			break;
+		case GGZ_GAME_PLAYING:
+			s = "game playing";
+			break;
+	}
+
+	return s;
+}
+
 QString Misc::statename(int id)
 {
 	QString s;

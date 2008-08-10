@@ -27,9 +27,13 @@ class KGGZCoreLayer : public QObject
 		void slotFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
 		void slotAnswer(KGGZCore::Room::AnswerMessage message);
 		void slotEvent(KGGZCore::Room::EventMessage message);
+
+	private slots:
+		void slotModuleReady();
+		void slotTableReady();
  
  	private:
-		void launchtable();
+		void launchmodule();
 
 		KGGZCore::CoreClient *m_core;
 };

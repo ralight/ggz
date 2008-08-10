@@ -33,6 +33,7 @@ class KGGZCORE_EXPORT Misc
 	public:
 		static QString messagename(int id);
 		static QString roommessagename(int id);
+		static QString gamemessagename(int id);
 		static QString statename(int id);
 };
 

@@ -27,6 +27,8 @@
 
 #include "kggzcore_export.h"
 
+class QSocketNotifier;
+
 namespace KGGZCore
 {
 
@@ -46,18 +48,28 @@ class KGGZCORE_EXPORT RoomBase : public QObject
 		QList<Table*> buildtables();
 		QList<Player*> buildplayers();
 
+		void setup(GGZGame *game);
+
 	signals:
 		void signalBaseError();
 		void signalBaseRoom(int id, int code) const;
+		void signalBaseGame(int id);
+
+	private slots:
+		void slotGameSocket(int socket);
 
 	private:
 		void callback_room(unsigned int id, const void *event_data) const;
 		void handle_room_pre(unsigned int id) const;
 		void handle_room_post(unsigned int id) const;
+		void callback_game(unsigned int id, const void *event_data);
 
 		static GGZHookReturn cb_room(unsigned int id, const void *event_data, const void *user_data);
+		static GGZHookReturn cb_game(unsigned int id, const void *event_data, const void *user_data);
 
 		GGZRoom *m_room;
+		GGZGame *m_game;
+		QSocketNotifier *m_sn;
 };
 
 }

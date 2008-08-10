@@ -81,7 +81,7 @@ void KGGZCoreLayer::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, 
 			connect(m_core->room(),
 				SIGNAL(signalEvent(KGGZCore::Room::EventMessage)),
 				SLOT(slotEvent(KGGZCore::Room::EventMessage)));
-			launchtable();
+			launchmodule();
 			break;
 		case KGGZCore::CoreClient::chat:
 			break;
@@ -149,8 +149,6 @@ void KGGZCoreLayer::slotFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCo
 	{
 		case KGGZCore::Room::tablelaunched:
 			activity(i18n("A table has been launched"));
-			m_core->room()->launchmodule();
-			emit signalReady();
 			break;
 		case KGGZCore::Room::tablejoined:
 			break;
@@ -202,12 +200,29 @@ void KGGZCoreLayer::slotEvent(KGGZCore::Room::EventMessage message)
 	}
 }
 
-void KGGZCoreLayer::launchtable()
+void KGGZCoreLayer::launchmodule()
 {
 	//KGGZCore::Table *table = new KGGZCore::Table("*embedded*");
 	//table->launch(m_core);
 
-	m_core->room()->launch();
+	connect(m_core->room(),
+		SIGNAL(signalModuleReady()),
+		SLOT(slotModuleReady()));
+	connect(m_core->room(),
+		SIGNAL(signalTableReady()),
+		SLOT(slotTableReady()));
+
+	m_core->room()->launchmodule();
+}
+
+void KGGZCoreLayer::slotModuleReady()
+{
+	emit signalReady();
+}
+
+void KGGZCoreLayer::slotTableReady()
+{
+	m_core->room()->launchtable();
 }
  
 #include "kggzcorelayer.moc"

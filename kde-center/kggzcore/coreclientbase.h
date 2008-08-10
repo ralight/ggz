@@ -59,6 +59,7 @@ class KGGZCORE_EXPORT CoreClientBase : public QObject
 
 	private slots:
 		void slotSocket(int socket);
+		void slotChannel(int socket);
 
 	private:
 		void init(bool embedded);
@@ -70,7 +71,7 @@ class KGGZCORE_EXPORT CoreClientBase : public QObject
 		static GGZHookReturn cb_server(unsigned int id, const void *event_data, const void *user_data);
 
 		GGZServer *m_server;
-		QSocketNotifier *m_sn;
+		QSocketNotifier *m_sn, *m_channelsn;
 		RoomBase *m_roombase;
 		QString m_motd, m_webmotd;
 };
