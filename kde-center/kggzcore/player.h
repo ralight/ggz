@@ -43,11 +43,14 @@ class KGGZCORE_EXPORT Player : public QObject
 			abandoned
 		};
 
+		Player(const Player& player);
+		Player& operator=(const Player& player);
+
 		Player(QString name, PlayerType type);
 		~Player();
 
-		QString name();
-		PlayerType type();
+		QString name() const;
+		PlayerType type() const;
 
 	private:
 		QString m_name;

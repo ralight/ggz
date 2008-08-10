@@ -23,21 +23,36 @@
 using namespace KGGZCore;
 
 Player::Player(QString name, PlayerType type)
+: QObject()
 {
 	m_name = name;
 	m_type = type;
+}
+
+Player::Player(const Player& player)
+: QObject()
+{
+	m_type = player.type();
+	m_name = player.name();
+}
+
+Player& Player::operator=(const Player& player)
+{
+	m_type = player.type();
+	m_name = player.name();
+	return *this;
 }
 
 Player::~Player()
 {
 }
 
-QString Player::name()
+QString Player::name() const
 {
 	return m_name;
 }
 
-Player::PlayerType Player::type()
+Player::PlayerType Player::type() const
 {
 	return m_type;
 }

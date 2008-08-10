@@ -29,6 +29,8 @@
 #include <kggzlib/connectiondialog.h>
 #include <kggzlib/kggzcorelayer.h>
 
+#include <kggzcore/player.h>
+
 // Qt includes
 #include <qdir.h>
 #include <qstringlist.h>
@@ -378,5 +380,9 @@ void KTicTacTuxWin::slotError()
 
 void KTicTacTuxWin::slotReady()
 {
+	QList<KGGZCore::Player> seats;
+	seats << KGGZCore::Player("someplayer", KGGZCore::Player::reserved);
+	seats << KGGZCore::Player("somebot", KGGZCore::Player::bot);
+	m_corelayer->configureTable(seats);
 	enableNetwork(true);
 }

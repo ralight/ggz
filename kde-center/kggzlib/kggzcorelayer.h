@@ -3,6 +3,11 @@
 
 #include <kggzcore/coreclient.h>
 #include <kggzcore/room.h>
+
+namespace KGGZCore
+{
+	class Player;
+}
  
 class KGGZCoreLayer : public QObject
 {
@@ -13,6 +18,7 @@ class KGGZCoreLayer : public QObject
 		~KGGZCoreLayer();
  
 		void ggzcore(QString uri);
+		void configureTable(QList<KGGZCore::Player> seats);
 
 	signals:
 		void signalReady();
@@ -36,6 +42,7 @@ class KGGZCoreLayer : public QObject
 		void launchmodule();
 
 		KGGZCore::CoreClient *m_core;
+		QList<KGGZCore::Player> m_seats;
 };
  
 #endif

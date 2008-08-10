@@ -222,7 +222,12 @@ void KGGZCoreLayer::slotModuleReady()
 
 void KGGZCoreLayer::slotTableReady()
 {
-	m_core->room()->launchtable();
+	m_core->room()->launchtable(m_seats);
+}
+
+void KGGZCoreLayer::configureTable(QList<KGGZCore::Player> seats)
+{
+	m_seats = seats;
 }
  
 #include "kggzcorelayer.moc"

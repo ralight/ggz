@@ -94,7 +94,7 @@ class KGGZCORE_EXPORT Room : public QObject
 		QList<Table*> tables();
 		QList<Player*> players();
 
-		void launchtable();
+		void launchtable(QList<Player> seats);
 		void launchmodule();
 
 	signals:
