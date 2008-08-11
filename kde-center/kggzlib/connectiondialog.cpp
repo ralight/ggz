@@ -49,7 +49,7 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
 	load();
 
 	setWindowTitle("Connect to Gaming Zone");
-	resize(320, 350);
+	resize(400, 350);
 	show();
 }
 

@@ -58,7 +58,7 @@ ConnectionProfiles::ConnectionProfiles(QWidget *parent)
 	load();
 
 	setWindowTitle("Manage GGZ profiles");
-	resize(400, 450);
+	resize(400, 550);
 	show();
 }
 

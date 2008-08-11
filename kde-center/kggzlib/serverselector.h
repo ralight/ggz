@@ -8,9 +8,11 @@
 
 #include "kggzlib_export.h"
 
-class QListWidget;
 class QPushButton;
 class QTcpSocket;
+class QProgressBar;
+class GGZProfile;
+class ServerList;
 
 class KGGZLIB_EXPORT ServerSelector : public QDialog
 {
@@ -23,22 +25,22 @@ class KGGZLIB_EXPORT ServerSelector : public QDialog
 		void setMetaUri(QString uri);
 		GGZServer server();
 
-	signals:
-		void signalServerSelected(const GGZServer &server);
+	//signals:
+	//	void signalServerSelected(const GGZServer &server);
 
 	private slots:
-		void slotServerSelected();
-		void slotSelectionChanged();
+		void slotSelected(const GGZProfile& profile, int pos);
 
 		void slotConnected();
 		void slotError(QAbstractSocket::SocketError error);
 		void slotData();
 
 	private:
-		QListWidget *m_serverlist;
+		ServerList *m_serverlist;
 		QPushButton *m_button;
 		QTcpSocket *m_sock;
-		QMap<QString, GGZServer> m_servers;
+		GGZServer m_server;
+		QProgressBar *m_indicator;
 };
 
 #endif

@@ -1,18 +1,20 @@
+#include "serverselector.h"
+
 #include <QtGui/QPushButton>
 #include <QtGui/QLayout>
-#include <QtGui/QListWidget>
 
 #include <qtcpsocket.h>
 #include <qurl.h>
 #include <qxmlstream.h>
 #include <qdom.h>
 #include <qlabel.h>
+#include <qprogressbar.h>
 
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
 
-#include "serverselector.h"
+#include "serverlist.h"
 
 #define GGZ_PROTOCOL_VERSION "10"
 
@@ -21,7 +23,7 @@ ServerSelector::ServerSelector(QWidget *parent)
 {
 	KStandardDirs d;
 
-	m_serverlist = new QListWidget();
+	m_serverlist = new ServerList();
 
 	m_button = new QPushButton(i18n("Select this server"));
 	m_button->setEnabled(false);
@@ -36,6 +38,11 @@ ServerSelector::ServerSelector(QWidget *parent)
 	logo->setFixedSize(64, 64);
 	logo->setPixmap(QPixmap(d.findResource("data", "kggzlib/icons/ggzmetaserv.png")));
 
+	m_indicator = new QProgressBar();
+	m_indicator->setEnabled(false);
+	m_indicator->setMinimum(0);
+	m_indicator->setMaximum(0);
+
 	QHBoxLayout *hboxtop = new QHBoxLayout();
 	hboxtop->addWidget(logo);
 	hboxtop->addStretch(1);
@@ -44,13 +51,15 @@ ServerSelector::ServerSelector(QWidget *parent)
 	setLayout(vbox);
 	vbox->addLayout(hboxtop);
 	vbox->addWidget(m_serverlist);
+	vbox->addWidget(m_indicator);
 	vbox->addLayout(hbox);
 
-	connect(m_button, SIGNAL(clicked()), SLOT(slotServerSelected()));
+	connect(m_button, SIGNAL(clicked()), SLOT(accept()));
 	connect(cancel, SIGNAL(clicked()), SLOT(reject()));
-	connect(m_serverlist, SIGNAL(itemSelectionChanged()), SLOT(slotSelectionChanged()));
+	connect(m_serverlist, SIGNAL(signalSelected(const GGZProfile&, int)), SLOT(slotSelected(const GGZProfile&, int)));
 
 	setWindowTitle(i18n("Server selection from metaserver"));
+	resize(400, 550);
 	show();
 }
 
@@ -60,35 +69,19 @@ ServerSelector::~ServerSelector()
 
 GGZServer ServerSelector::server()
 {
-	GGZServer server;
-	QListWidgetItem *item = m_serverlist->currentItem();
-
-	if(item)
-		return m_servers[item->text()];
-
-	return server;
+	return m_server;
 }
 
-void ServerSelector::slotServerSelected()
+void ServerSelector::slotSelected(const GGZProfile& profile, int pos)
 {
-	QListWidgetItem *item = m_serverlist->currentItem();
-
-	if(item)
-	{
-		emit signalServerSelected(m_servers[item->text()]);
-		accept();
-	}
-}
-
-void ServerSelector::slotSelectionChanged()
-{
-	QList<QListWidgetItem*> items = m_serverlist->selectedItems();
-
-	m_button->setEnabled(!items.empty());
+	m_server = profile.ggzServer();
+	m_button->setEnabled((pos != -1));
 }
 
 void ServerSelector::setMetaUri(QString uri)
 {
+	m_indicator->setEnabled(true);
+
 	QUrl url(uri);
 	m_sock = new QTcpSocket(this);
 	connect(m_sock, SIGNAL(connected()), SLOT(slotConnected()));
@@ -117,6 +110,7 @@ void ServerSelector::slotConnected()
 
 void ServerSelector::slotData()
 {
+
 	QByteArray raw = m_sock->readAll();
 	QString response = QString::fromUtf8(raw.data());
 
@@ -128,6 +122,7 @@ void ServerSelector::slotData()
 		KMessageBox::error(this,
 			i18n("The metaserver didn't return a useful response."),
 			i18n("Metaserver failure"));
+		m_indicator->setEnabled(false);
 		return;
 	}
 
@@ -137,9 +132,6 @@ void ServerSelector::slotData()
 	{
 		QDomElement result = resultnode.toElement();
 		QString uri = result.attribute("uri");
-
-		QListWidgetItem *item = new QListWidgetItem(uri);
-		m_serverlist->addItem(item);
 
 		QString api;
 		QString logo;
@@ -166,14 +158,21 @@ void ServerSelector::slotData()
 		server.setName(name);
 		server.setApi(api);
 		server.setIcon(logo);
-		m_servers[uri] = server;
+		GGZProfile profile;
+		profile.setGGZServer(server);
+		m_serverlist->addProfile(profile);
 
 		resultnode = resultnode.nextSibling();
 	}
+
+	m_indicator->setEnabled(false);
+	m_indicator->setMaximum(1);
 }
 
 void ServerSelector::slotError(QAbstractSocket::SocketError error)
 {
+	m_indicator->setEnabled(false);
+
 	Q_UNUSED(error);
 
 	KMessageBox::error(this,
