@@ -1,9 +1,9 @@
-SET(GGZDMOD_FOUND "NO")
+SET(GGZDMOD_FOUND FALSE)
 
 FIND_PROGRAM(PKGCONFIG_EXECUTABLE NAMES pkg-config PATHS /usr/bin/ /usr/local/bin)
 EXEC_PROGRAM(${PKGCONFIG_EXECUTABLE} ARGS 'ggzdmod >= snapshot-0.99.4' RETURN_VALUE _return)
 if(_return STREQUAL "0")
-  SET(GGZDMOD_FOUND "YES")
+  SET(GGZDMOD_FOUND TRUE)
 endif(_return STREQUAL "0")
 
 if(GGZDMOD_FOUND)
@@ -11,5 +11,5 @@ if(GGZDMOD_FOUND)
   EXEC_PROGRAM(${PKGCONFIG_EXECUTABLE} ARGS --variable=includedir ggzdmod OUTPUT_VARIABLE GGZDMOD_INCLUDES)
   MESSAGE(STATUS "Found ggzdmod (library ${GGZDMOD_LIBRARY}, headers ${GGZDMOD_INCLUDES}).")
 else(GGZDMOD_FOUND)
-  MESSAGE(FATAL_ERROR "Could not find ggzdmod.")
+  MESSAGE(STATUS "Could not find ggzdmod. Game servers will be disable.")
 endif(GGZDMOD_FOUND)
