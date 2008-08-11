@@ -1,0 +1,5 @@
+(done) - kns repository for TTT
+- common widget with setBackgroundPixmap() functionality?
+- common itemdelegate base class with qstyleoption (see palapeli puzzlelibrarydelegate)
+- table/seats configuration dialogue is desperately missing
+
