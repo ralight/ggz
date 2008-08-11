@@ -26,6 +26,7 @@ class KGGZLIB_EXPORT ServerList : public QWidget
 		QList<GGZProfile> profiles();
 		void clear();
 		void updateProfile(const GGZProfile& profile, int pos);
+		void removeProfile(int pos);
 
 	signals:
 		void signalSelected(const GGZProfile& profile, int pos);
@@ -39,6 +40,7 @@ class KGGZLIB_EXPORT ServerList : public QWidget
 		QStandardItemModel *m_model;
 		QList<GGZProfile> m_profiles;
 		QList<GGZProfile*> m_profptrs;
+		bool m_deletionmode;
 };
 
 #endif

@@ -9,6 +9,7 @@
 class ServerList;
 class ConfigWidget;
 class GGZProfile;
+class QPushButton;
 
 // The game window
 class KGGZLIB_EXPORT ConnectionProfiles : public QDialog
@@ -27,6 +28,8 @@ class KGGZLIB_EXPORT ConnectionProfiles : public QDialog
 		void slotSelected(const GGZProfile& profile, int pos);
 		void slotChanged(const GGZProfile& profile);
 		void slotAccept();
+		void slotAdd();
+		void slotRemove();
 
 	private:
 		void load();
@@ -37,6 +40,7 @@ class KGGZLIB_EXPORT ConnectionProfiles : public QDialog
 		QString m_metaserver;
 		ConfigWidget *m_configwidget;
 		int m_pos;
+		QPushButton *m_remove_button;
 };
 
 #endif

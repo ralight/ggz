@@ -98,6 +98,8 @@ ServerList::ServerList()
 
 	QItemSelectionModel *ism = listview->selectionModel();
 	connect(ism, SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), SLOT(slotActivated(const QItemSelection&, const QItemSelection&)));
+
+	m_deletionmode = false;
 }
 
 void ServerList::addProfile(const GGZProfile& profile)
@@ -139,9 +141,50 @@ void ServerList::slotLoaded(const QString& url, const QPixmap& pixmap)
 	item->setData(pix, ItemDelegate::PixmapRole);
 }
 
-void ServerList::updateProfile(const GGZProfile& profile, int pos)
+void ServerList::removeProfile(int pos)
 {
 	if(pos == -1)
+		return;
+
+	// FIXME: This whole method is very complicated but apparently
+	// there are some bugs in QStandardItemModel which do not work
+	// intuitive enough.
+
+	m_deletionmode = true;
+
+	m_profiles.removeAt(pos);
+	QStandardItem *item = m_model->takeItem(pos);
+	delete item;
+
+	m_model->removeRow(pos);
+
+	GGZProfile *profptr = m_profptrs.takeAt(pos);
+	delete profptr;
+
+	int newpos = pos - 1;
+	if(newpos == -1)
+		newpos = 0;
+	if(newpos < m_profiles.size())
+	{
+		GGZProfile profile = m_profiles.at(newpos);
+		emit signalSelected(profile, newpos);
+	}
+	else
+	{
+		emit signalSelected(GGZProfile(), -1);
+	}
+
+	m_deletionmode = false;
+}
+
+void ServerList::updateProfile(const GGZProfile& profile, int pos)
+{
+	if(m_deletionmode)
+		return;
+
+	if(pos == -1)
+		return;
+	if(pos >= m_profiles.size())
 		return;
 
 	m_profiles[pos] = profile;
@@ -155,6 +198,9 @@ void ServerList::updateProfile(const GGZProfile& profile, int pos)
 
 void ServerList::slotActivated(const QItemSelection& selected, const QItemSelection& deselected)
 {
+	if(m_deletionmode)
+		return;
+
 	QModelIndexList desel_indexes = deselected.indexes();
 	QModelIndexList sel_indexes = selected.indexes();
 	if(sel_indexes.size() == 0)
