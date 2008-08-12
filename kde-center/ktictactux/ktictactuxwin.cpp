@@ -300,6 +300,10 @@ void KTicTacTuxWin::slotNetworkScore(int wins, int losses, int ties)
 void KTicTacTuxWin::slotGameOver()
 {
 	action_sync->setEnabled(false);
+	action_connect->setEnabled(false);
+	action_highscores->setEnabled(false);
+	action_ggzplayers->setEnabled(false);
+
 	if(m_networked)
 		action_score->setEnabled(false);
 }

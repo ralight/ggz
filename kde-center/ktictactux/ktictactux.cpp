@@ -138,9 +138,9 @@ void KTicTacTux::slotSelected(QWidget *widget)
 // Prepare your turn
 void KTicTacTux::yourTurn()
 {
-	if((m_opponent == PLAYER_AI) || (proto->state == proto->statemove))
-		emit signalStatus(i18n("Your turn"));
 	proto->state = proto->statemove;
+	//if((m_opponent == PLAYER_AI) || (proto->state == proto->statemove))
+	emit signalStatus(i18n("Your turn"));
 }
 
 // Handle the opponent's turn
@@ -267,7 +267,13 @@ void KTicTacTux::announce(QString str)
 {
 	int ret;
 
-	if(m_opponent == PLAYER_NETWORK) return;
+	if(m_opponent == PLAYER_NETWORK)
+	{
+		KMessageBox::information(this,
+			str,
+			i18n("Game over"));
+		return;
+	}
 
 	// Announce the new score
 	emit signalScore(i18n("Score: you %1, opponent %2", m_score_you, m_score_opp));
@@ -413,8 +419,11 @@ void KTicTacTux::slotEvent(const KGGZMod::Event& event)
 {
 	if(event.type() == KGGZMod::Event::seat)
 	{
-		proto->state = proto->statewait;
-		emit signalScore(i18n("Network game with %1", (*proto->mod->players().at(!proto->num())).name()));
+		if(proto->state == proto->stateinit)
+		{
+			proto->state = proto->statewait;
+			emit signalScore(i18n("Network game with %1", (*proto->mod->players().at(!proto->num())).name()));
+		}
 	}
 }
 
@@ -477,6 +486,7 @@ void KTicTacTux::slotError()
 void KTicTacTux::slotPacket(tictactoeOpcodes::Opcode opcode, const msg& message)
 {
 	rspmove rsp;
+	msggameover mgo;
 
 	kDebug() << "Network data arriving from packet reader";
 	kDebug() << " Opcode is" << opcode;
@@ -484,9 +494,8 @@ void KTicTacTux::slotPacket(tictactoeOpcodes::Opcode opcode, const msg& message)
 	switch(opcode)
 	{
 		case tictactoeOpcodes::message_reqmove:
-			proto->state = proto->statemove;
 			m_turn = proto->num();
-			emit signalStatus(i18n("Your move"));
+			yourTurn();
 			break;
 		case tictactoeOpcodes::message_rspmove:
 			rsp = reinterpret_cast<const rspmove&>(message);
@@ -520,6 +529,8 @@ void KTicTacTux::slotPacket(tictactoeOpcodes::Opcode opcode, const msg& message)
 			break;
 		case tictactoeOpcodes::message_msggameover:
 			proto->state = proto->statedone;
+			mgo = reinterpret_cast<const msggameover&>(message);
+			m_winner = mgo.winner;
 			gameOver();
 			break;
 		case tictactoeOpcodes::message_sndmove:

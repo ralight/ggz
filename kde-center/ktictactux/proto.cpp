@@ -74,9 +74,9 @@ void tictactoe::ggzcomm_network_main()
 
 void tictactoe::ggzcomm_ready()
 {
-	int opcode;
+	qint32 opcode;
 
-	*packet->outputstream() >> opcode;
+	*packet->inputstream() >> opcode;
 
 	if(requirelink)
 	{
@@ -108,9 +108,11 @@ void tictactoe::ggzcomm_set_fd(int usefd)
 {
 	fd = usefd;
 	if(!packet)
+	{
 		packet = new KGGZPacket();
-	connect(packet, SIGNAL(signalError()), SIGNAL(signalError()));
-	connect(packet, SIGNAL(signalPacket()), SLOT(ggzcomm_ready()));
+		connect(packet, SIGNAL(signalError()), SIGNAL(signalError()));
+		connect(packet, SIGNAL(signalPacket()), SLOT(ggzcomm_ready()));
+	}
 }
 
 void tictactoe::ggzcomm_set_socket(KGGZPacket *usepacket)
