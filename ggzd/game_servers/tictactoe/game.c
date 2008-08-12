@@ -87,7 +87,7 @@
 #define TTT_NO_WINNER    2
 
 /* Whether or not DIO is used (FIXME: until ggzcomm supports spectators) */
-#define TTT_USE_DIO      0
+#define TTT_USE_DIO      1
 
 /* === Variables, types and functions === */
 
