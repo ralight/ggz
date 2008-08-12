@@ -6,6 +6,7 @@
 #include "connectionprofiles.h"
 #include "util.h"
 #include "ggzprofile.h"
+#include "kggzcorelayer.h"
 
 #include <kggzcore/coreclient.h>
 
@@ -18,9 +19,10 @@
 // Qt includes
 #include <qlayout.h>
 #include <qpushbutton.h>
+#include <qprogressbar.h>
 
 ConnectionDialog::ConnectionDialog(QWidget *parent)
-: QDialog(parent)
+: QDialog(parent), m_corelayer(NULL)
 {
 	m_serverlist = new ServerList();
 
@@ -35,8 +37,14 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
 	hbox->addWidget(m_connect_button);
 	hbox->addWidget(cancel_button);
 
+	m_indicator = new QProgressBar();
+	m_indicator->setEnabled(false);
+	m_indicator->setMinimum(0);
+	m_indicator->setMaximum(0);
+
 	QVBoxLayout *vbox = new QVBoxLayout();
 	vbox->addWidget(m_serverlist);
+	vbox->addWidget(m_indicator);
 	vbox->addLayout(hbox);
 	setLayout(vbox);
 
@@ -51,6 +59,12 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
 	setWindowTitle("Connect to Gaming Zone");
 	resize(400, 350);
 	show();
+}
+
+void ConnectionDialog::setGame(QString engine, QString version)
+{
+	m_engine = engine;
+	m_version = version;
 }
 
 void ConnectionDialog::load()
@@ -87,7 +101,18 @@ void ConnectionDialog::slotManage()
 
 void ConnectionDialog::slotConnect()
 {
-	//m_connect_button->setEnabled(false);
+	m_connect_button->setEnabled(false);
+	m_indicator->setEnabled(true);
+
+	m_corelayer = new KGGZCoreLayer(this, m_engine, m_version);
+	connect(m_corelayer, SIGNAL(signalReady()), SLOT(slotReady()));
+	m_corelayer->ggzcore(uri());
+}
+
+void ConnectionDialog::slotReady()
+{
+	m_connect_button->setEnabled(true);
+	m_indicator->setEnabled(false);
 	accept();
 }
 
@@ -105,4 +130,9 @@ QString ConnectionDialog::uri()
 {
 	// FIXME: return fully-qualified GGZ URI
 	return m_uri;
+}
+
+KGGZCoreLayer *ConnectionDialog::layer() const
+{
+	return m_corelayer;
 }
