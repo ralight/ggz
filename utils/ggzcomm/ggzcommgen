@@ -1727,7 +1727,7 @@ class GGZComm
 				if library == "kggzraw" then
 					f.puts "\t*raw >> opcode;"
 				elsif library == "kggzpacket" then
-					f.puts "\t*packet->outputstream() >> opcode;"
+					f.puts "\t*packet->inputstream() >> opcode;"
 				else
 					f.puts "\t*socket >> opcode;"
 				end
