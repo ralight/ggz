@@ -1705,7 +1705,7 @@ class GGZComm
 				f.puts "\tpacket->slotNetwork(fd);"
 				f.puts "}"
 				f.puts ""
-				f.puts "void " + @engine + "::ggcomm_ready()"
+				f.puts "void " + @engine + "::ggzcomm_ready()"
 				f.puts "{"
 			end
 			if not xmlcode
