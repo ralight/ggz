@@ -33,6 +33,7 @@ void ggzcomm_reqmove(GGZCommIO *io)
 	ggz_dio_packet_start(io->dio);
 	ggz_dio_put_int(io->dio, reqmove);
 	ggz_dio_packet_end(io->dio);
+	ggz_dio_flush(io->dio);
 }
 
 void ggzcomm_rspmove(GGZCommIO *io)
@@ -41,6 +42,7 @@ void ggzcomm_rspmove(GGZCommIO *io)
 	ggz_dio_put_int(io->dio, rspmove);
 	ggz_dio_put_char(io->dio, variables.status);
 	ggz_dio_packet_end(io->dio);
+	ggz_dio_flush(io->dio);
 }
 
 void ggzcomm_msgmove(GGZCommIO *io)
@@ -50,6 +52,7 @@ void ggzcomm_msgmove(GGZCommIO *io)
 	ggz_dio_put_int(io->dio, variables.player);
 	ggz_dio_put_int(io->dio, variables.move);
 	ggz_dio_packet_end(io->dio);
+	ggz_dio_flush(io->dio);
 }
 
 void ggzcomm_sndsync(GGZCommIO *io)
@@ -64,6 +67,7 @@ void ggzcomm_sndsync(GGZCommIO *io)
 		ggz_dio_put_char(io->dio, variables.space[i1]);
 	}
 	ggz_dio_packet_end(io->dio);
+	ggz_dio_flush(io->dio);
 }
 
 void ggzcomm_msggameover(GGZCommIO *io)
@@ -72,6 +76,7 @@ void ggzcomm_msggameover(GGZCommIO *io)
 	ggz_dio_put_int(io->dio, msggameover);
 	ggz_dio_put_char(io->dio, variables.winner);
 	ggz_dio_packet_end(io->dio);
+	ggz_dio_flush(io->dio);
 }
 
 static void ggzcomm_network_main_cb(GGZDataIO *dio, void *userdata)
@@ -118,7 +123,7 @@ void ggzcomm_set_error_callback(error_func_type f)
 
 GGZCommIO *ggzcomm_io_allocate(int fd)
 {
-	GGZCommIO *io = malloc(sizeof(GGZCommIO));
+	GGZCommIO *io = ggz_malloc(sizeof(GGZCommIO));
 	io->dio = ggz_dio_new(fd);
 	return io;
 }
