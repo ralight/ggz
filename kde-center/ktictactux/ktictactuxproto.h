@@ -13,13 +13,13 @@
 
 #include <qobject.h>
 
+#include "proto.h"
+
 // Forward declarations
 namespace KGGZMod
 {
 	class Module;
 };
-
-class KGGZPacket;
 
 // Generic TicTacToe client protocol handler
 class KTicTacTuxProto
@@ -29,25 +29,6 @@ class KTicTacTuxProto
 		KTicTacTuxProto();
 		// Destructor
 		~KTicTacTuxProto();
-
-		// Opcodes which come from the server
-		enum ServerMessages
-		{
-			msgmove = 2,
-			msggameover = 3,
-			reqmove = 4,
-			rspmove = 5,
-			sndsync = 6,
-			sndstats = 7
-		};
-
-		// Opcodes to be sent to the server
-		enum ClientMessages
-		{
-			sndmove = 0,
-			reqsync = 1,
-			reqstats = 2
-		};
 
 		// Collection of known errors
 		enum Errors
@@ -104,34 +85,32 @@ class KTicTacTuxProto
 		// Initialize protocol
 		void init();
 
-		// Read opcode
-		int getOp();
 		// Get the seats
-		int getSeat();
+		//int getSeat();
 		// Get the player names
-		int getPlayers();
+		//int getPlayers();
 		// Reveive move status
-		int getMoveStatus();
+		void handleMoveStatus(const rspmove& move);
 		// Receive the network opponent's move
-		int getOpponentMove();
+		void handleOpponentMove(const msgmove& move);
 		// Request synchronization
-		int getSync();
+		void handleSync(const sndsync& sync);
 		// Ask whether the game is over
-		int getGameOver();
+		//int getGameOver();
 		// Get statistics
 		void getStatistics();
 
 		// Send decision on a new game
-		int sendOptions();
+		//int sendOptions();
 		// Send out own move
-		int sendMyMove();
+		void sendMyMove();
 		// Synchronize game
 		void sendSync();
 
 		// GGZ game module object
 		KGGZMod::Module *mod;
-		// GGZ packet reader
-		KGGZPacket *packet;
+		// GGZ auto-generated packet reader
+		tictactoe *proto;
 
 		// Seat number
 		int num();

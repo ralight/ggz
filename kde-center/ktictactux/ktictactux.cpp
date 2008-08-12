@@ -17,7 +17,6 @@
 // GGZ-KDE-Games includes
 #include <kggzgames/kggzseatsdialog.h>
 #include <kggzgames/kggzrankingsdialog.h>
-#include <kggznet/kggzpacket.h>
 #include <kggzmod/player.h>
 
 // KDE includes
@@ -371,12 +370,12 @@ void KTicTacTux::setOpponent(int type)
 	{
 		emit signalScore(i18n("Network game"));
 		proto->mod = new KGGZMod::Module("ktictactux");
-		proto->packet = new KGGZPacket();
+		proto->proto = new tictactoe();
 
-		connect(proto->packet, SIGNAL(signalPacket()), SLOT(slotPacket()));
-		connect(proto->packet, SIGNAL(signalError()), SLOT(slotError()));
+		connect(proto->proto, SIGNAL(signalNotification(tictactoeOpcodes::Opcode, const msg&)), SLOT(slotPacket(tictactoeOpcodes::Opcode, const msg&)));
+		connect(proto->proto, SIGNAL(signalError()), SLOT(slotError()));
 		connect(proto->mod, SIGNAL(signalError()), SLOT(slotError()));
-		connect(proto->mod, SIGNAL(signalNetwork(int)), proto->packet, SLOT(slotNetwork(int)));
+		connect(proto->mod, SIGNAL(signalNetwork(int)), proto->proto, SLOT(slotNetwork(int)));
 		connect(proto->mod, SIGNAL(signalEvent(const KGGZMod::Event&)), SLOT(slotEvent(const KGGZMod::Event&)));
 	}
 	emit signalStatus(i18n("Waiting for opponent!"));
@@ -429,11 +428,11 @@ void KTicTacTux::slotError()
 		proto->mod->deleteLater();
 		proto->mod = NULL;
 	}
-	if(proto->packet)
+	if(proto->proto)
 	{
-		proto->packet->disconnect();
-		proto->packet->deleteLater();
-		proto->packet = NULL;
+		proto->proto->disconnect();
+		proto->proto->deleteLater();
+		proto->proto = NULL;
 	}
 
 	// FIXME: we could make the dialog smarter to recognise a NULL mod
@@ -447,25 +446,25 @@ void KTicTacTux::slotError()
 }
 
 // Network data
-void KTicTacTux::slotPacket()
+void KTicTacTux::slotPacket(tictactoeOpcodes::Opcode opcode, const msg& message)
 {
-	int op;
+	rspmove rsp;
 
 	kDebug() << "Network data arriving from packet reader" << endl;
 
-	op = proto->getOp();
+	kDebug() << "Opcode is " << opcode << endl;
 
-	kDebug() << "Opcode is " << op << endl;
-
-	switch(op)
+	switch(opcode)
 	{
-		case KTicTacTuxProto::reqmove:
+		case tictactoeOpcodes::message_reqmove:
 			proto->state = proto->statemove;
 			m_turn = proto->num();
 			emit signalStatus(i18n("Your move"));
 			break;
-		case KTicTacTuxProto::rspmove:
-			switch(proto->getMoveStatus())
+		case tictactoeOpcodes::message_rspmove:
+			rsp = reinterpret_cast<const rspmove&>(message);
+			proto->handleMoveStatus(rsp);
+			switch((KTicTacTuxProto::Errors)rsp.status)
 			{
 				case KTicTacTuxProto::errstate:
 					emit signalStatus(i18n("*server*"));
@@ -484,17 +483,20 @@ void KTicTacTux::slotPacket()
 			}
 			getNextTurn();
 			break;
-		case KTicTacTuxProto::msgmove:
-			proto->getOpponentMove();
-			if(proto->num() < 0) emit signalStatus(i18n("Watching the game"));
+		case tictactoeOpcodes::message_msgmove:
+			proto->handleOpponentMove(reinterpret_cast<const msgmove&>(message));
+			if(proto->num() < 0)
+				emit signalStatus(i18n("Watching the game"));
 			break;
-		case KTicTacTuxProto::sndsync:
-			proto->getSync();
+		case tictactoeOpcodes::message_sndsync:
+			proto->handleSync(reinterpret_cast<const sndsync&>(message));
 			break;
-		case KTicTacTuxProto::msggameover:
-			proto->getGameOver();
+		case tictactoeOpcodes::message_msggameover:
 			proto->state = proto->statedone;
 			gameOver();
+			break;
+		case tictactoeOpcodes::message_sndmove:
+		case tictactoeOpcodes::message_reqsync:
 			break;
 		default:
 			slotError();

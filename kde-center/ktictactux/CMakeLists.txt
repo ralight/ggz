@@ -5,7 +5,9 @@ set(ktictactux_SRCS
 	ktictactuxproto.cpp
 	ktictactuxwin.cpp
 	main.cpp
-	qwhiteframe.cpp)
+	qwhiteframe.cpp
+	proto.cpp
+)
 
 kde4_add_executable(ktictactux ${ktictactux_SRCS})
 

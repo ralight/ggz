@@ -10,12 +10,12 @@
 
 // KTicTacTux includes
 #include "ktictactuxproto.h"
+#include "proto.h"
 
 // GGZ-KDE-Games includes
 #include <kggzmod/module.h>
 #include <kggzmod/player.h>
 #include <kggzmod/statistics.h>
-#include <kggznet/kggzpacket.h>
 
 // System includes
 #include <stdio.h>
@@ -30,19 +30,20 @@ KTicTacTuxProto::KTicTacTuxProto()
 	stats_forfeits = -1;
 
 	mod = NULL;
-	packet = NULL;
+	proto = NULL;
 }
 
 // Even more empty destructor
 KTicTacTuxProto::~KTicTacTuxProto()
 {
-	delete packet;
+	delete proto;
 	delete mod;
 }
 
 int KTicTacTuxProto::num()
 {
-	if(!mod) return 0;
+	if(!mod)
+		return 0;
 	return mod->self()->seat();
 }
 
@@ -55,72 +56,45 @@ void KTicTacTuxProto::init()
 	turn = none;
 }
 
-// Get opcode
-int KTicTacTuxProto::getOp()
-{
-	int op;
-
-	*packet->inputstream() >> op;
-
-	return op;
-}
-
 // Ask whether move was ok
-int KTicTacTuxProto::getMoveStatus()
+void KTicTacTuxProto::handleMoveStatus(const rspmove& xmove)
 {
-	qint8 status;
-
-	*packet->inputstream() >> status;
-
-	if(status == 0) board[move % 3][move / 3] = player;
-
-	return 1;
+	if(xmove.status == 0)
+		board[move % 3][move / 3] = player;
 }
 
 // Get opponent's move
-int KTicTacTuxProto::getOpponentMove()
+void KTicTacTuxProto::handleOpponentMove(const msgmove& move)
 {
-	int move;
-	int nummove;
-
-	*packet->inputstream() >> nummove;
-	*packet->inputstream() >> move;
-
 	if(num() < 0)
 	{
-		if(nummove == 0) board[move % 3][move / 3] = opponent;
-		else board[move % 3][move / 3] = player;
+		if(move.player == 0)
+			board[move.move % 3][move.move / 3] = opponent;
+		else
+			board[move.move % 3][move.move / 3] = player;
 	}
-	else board[move % 3][move / 3] = opponent;
-
-	return 1;
+	else
+	{
+		board[move.move % 3][move.move / 3] = opponent;
+	}
 }
 
 // Oooops... volunteers :-)
-int KTicTacTuxProto::getSync()
+void KTicTacTuxProto::handleSync(const sndsync& sync)
 {
 	qint8 space;
 
-	*packet->inputstream() >> turn;
-
 	for(int i = 0; i < 9; i++)
 	{
-		*packet->inputstream() >> space;
+		qint8 space = sync.space[i];
 
-		if(space == 0) board[i % 3][i / 3] = opponent;
-		else if(space == 1) board[i % 3][i / 3] = player;
-		else board[i % 3][i / 3] = none;
+		if(space == 0)
+			board[i % 3][i / 3] = opponent;
+		else if(space == 1)
+			board[i % 3][i / 3] = player;
+		else
+			board[i % 3][i / 3] = none;
 	}
-
-	return 1;
-}
-
-// Read the winner over the network
-int KTicTacTuxProto::getGameOver()
-{
-	*packet->inputstream() >> winner;
-
-	return winner;
 }
 
 // Read statistics
@@ -142,28 +116,25 @@ void KTicTacTuxProto::getStatistics()
 }
 
 // Send the options
-int KTicTacTuxProto::sendOptions()
+/*int KTicTacTuxProto::sendOptions()
 {
 	*packet->outputstream() << 0;
 	packet->flush();
 
 	return 1;
-}
+}*/
 
 // Send the own move, to be approved
-int KTicTacTuxProto::sendMyMove()
+void KTicTacTuxProto::sendMyMove()
 {
-	*packet->outputstream() << sndmove;
-	*packet->outputstream() << move;
-	packet->flush();
-
-	return 1;
+	sndmove xmove;
+	xmove.move_c = move;
+	proto->ggzcomm_sndmove(xmove);
 }
 
 // Synchronize game
 void KTicTacTuxProto::sendSync()
 {
-	*packet->outputstream() << reqsync;
-	packet->flush();
+	proto->ggzcomm_reqsync(reqsync());
 }
 

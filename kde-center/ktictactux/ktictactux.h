@@ -13,6 +13,7 @@
 
 // KTicTacTux includes
 #include "ktictactuxproto.h"
+#include "proto.h"
 
 // GGZ-KDE-Games includes
 #include <kggzmod/module.h>
@@ -68,7 +69,7 @@ class KTicTacTux : public QWidget
 		// Evaluate user input
 		void slotSelected(QWidget *widget);
 		// Network input (quantized packets) from GGZ
-		void slotPacket();
+		void slotPacket(tictactoeOpcodes::Opcode opcode, const msg& message);
 		// Network error
 		void slotError();
 		// Input from GGZ
