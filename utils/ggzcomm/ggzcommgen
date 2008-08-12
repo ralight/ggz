@@ -1318,7 +1318,7 @@ class GGZComm
 				f.puts ""
 			else
 				if library == "dio" then
-					f.puts "GGZCommIO *io = userdata;"
+					f.puts "\tGGZCommIO *io = userdata;"
 				end
 			end
 			if mode == "debug":
