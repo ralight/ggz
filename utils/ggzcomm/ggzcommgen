@@ -500,6 +500,10 @@ class GGZCommEvent
 
 		if @section != role then
 			x += "\temit signalNotification(" + engine + "Opcodes::message_" + name + ", message);\n"
+		else
+			if qtmode == "kggzpacket"
+				x += "\tpacket->flush();\n"
+			end
 		end
 
 		return x
