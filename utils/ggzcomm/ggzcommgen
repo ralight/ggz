@@ -1394,7 +1394,7 @@ class GGZComm
 			f.puts ""
 			f.puts "GGZCommIO *ggzcomm_io_allocate(int fd)"
 			f.puts "{"
-			f.puts "\tGGZCommIO *io = malloc(sizeof(GGZCommIO));"
+			f.puts "\tGGZCommIO *io = ggz_malloc(sizeof(GGZCommIO));"
 			if library == "dio"
 				f.puts "\tio->dio = ggz_dio_new(fd);"
 			else
