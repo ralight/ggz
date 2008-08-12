@@ -185,6 +185,8 @@ void game_init(GGZdMod *ggzdmod)
 	/* Setup the network callbacks for GGZComm */
 	ggzcomm_set_notifier_callback(game_network_data);
 	ggzcomm_set_error_callback(game_network_error);
+
+	ggzdmod_log(ttt_game.ggz, "Game initialized");
 }
 
 
@@ -392,6 +394,7 @@ static void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event,
 #endif
 
 	ggzdmod_set_state(ttt_game.ggz, new_state);
+	ggzdmod_log(ttt_game.ggz, "State change to %i", new_state);
 }
 
 
