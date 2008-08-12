@@ -228,8 +228,10 @@ def initserver(sock, gamename, seats, seatnames, clientexecutable):
 		if seat == Protocol.SEAT_RESERVED or seat == Protocol.SEAT_BOT:
 			seatname = seatnames[i]
 			seatsmsg += net_string(seatname)
+	savegame = ""
 
-	msg = net_int(Protocol.MSG_GAME_LAUNCH) + net_string(gamename) + seatsmsg
+	msg = net_int(Protocol.MSG_GAME_LAUNCH) + net_string(gamename)
+	msg += net_string(savegame) + seatsmsg
 	#print "MSG", msg
 	#for m in msg:
 	#	print "[" + str(ord(m)) + "]",
@@ -315,7 +317,10 @@ def initserver(sock, gamename, seats, seatnames, clientexecutable):
 						score = net_toint(s)
 						out("- #" + str(i) + " Player " + playername + ": " + str(score))
 				elif op == Protocol.MSG_SAVEGAME_REPORT:
-					err("FIXME: unhandled opcode savegamereport")
+					s = sock.recv(4)
+					strlen = net_toint(s)
+					s = sock.recv(strlen)
+					out("Savegame: " + s)
 				else:
 					err("Game server protocol error: unknown opcode " + str(op))
 					raise "unexpected server opcode error"
