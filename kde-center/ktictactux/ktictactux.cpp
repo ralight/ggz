@@ -95,14 +95,30 @@ void KTicTacTux::slotSelected(QWidget *widget)
 	QWhiteFrame *tmp;
 	int id;
 
-	if(proto->state != proto->statemove) return;
-	if(m_turn != proto->num()) return;
+	kDebug() << "Selection";
+	kDebug() << " State:" << proto->state << "vs." << proto->statemove;
+	kDebug() << " Turn:" << m_turn << "vs." << proto->num();
+	if(proto->state != proto->statemove)
+	{
+		KMessageBox::sorry(this,
+			i18n("The game isn't in move state yet."),
+			i18n("Move"));
+		return;
+	}
+	if(m_turn != proto->num())
+	{
+		KMessageBox::sorry(this,
+			i18n("It is not your turn yet."),
+			i18n("Move"));
+		return;
+	}
 
 	tmp = reinterpret_cast<QWhiteFrame*>(widget);
 	id = tmp->id();
 
-	if(proto->board[id % 3][id / 3] == proto->player) return;
-	if(proto->board[id % 3][id / 3] == proto->opponent) return;
+	if((proto->board[id % 3][id / 3] == proto->player)
+	|| (proto->board[id % 3][id / 3] == proto->opponent))
+		return;
 
 	if(m_opponent == PLAYER_AI)
 	{
@@ -122,7 +138,8 @@ void KTicTacTux::slotSelected(QWidget *widget)
 // Prepare your turn
 void KTicTacTux::yourTurn()
 {
-	if((m_opponent == PLAYER_AI) || (proto->state == proto->statemove)) emit signalStatus(i18n("Your turn"));
+	if((m_opponent == PLAYER_AI) || (proto->state == proto->statemove))
+		emit signalStatus(i18n("Your turn"));
 	proto->state = proto->statemove;
 }
 
@@ -163,8 +180,10 @@ void KTicTacTux::getNextTurn()
 {
 	m_turn = (++m_turn) % 2;
 
-	if(m_turn == proto->num()) yourTurn();
-	else opponentTurn();
+	if(m_turn == proto->num())
+		yourTurn();
+	else
+		opponentTurn();
 
 	drawBoard();
 }
@@ -203,16 +222,20 @@ int KTicTacTux::gameOver()
 				if(m_winner == proto->opponent)
 				{
 					m_score_opp++;
-					if(m_opponent == PLAYER_NETWORK) cg.writeEntry("humanwon", cg.readEntry("humanwon").toInt() + 1);
-					else cg.writeEntry("aiwon", cg.readEntry("aiwon").toInt() + 1);
+					if(m_opponent == PLAYER_NETWORK)
+						cg.writeEntry("humanwon", cg.readEntry("humanwon").toInt() + 1);
+					else
+						cg.writeEntry("aiwon", cg.readEntry("aiwon").toInt() + 1);
 					conf->sync();
 					announce(i18n("You lost the game."));
 				}
 				else
 				{
 					m_score_you++;
-					if(m_opponent == PLAYER_NETWORK) cg.writeEntry("humanlost", cg.readEntry("humanlost").toInt() + 1);
-					else cg.writeEntry("ailost", cg.readEntry("ailost").toInt() + 1);
+					if(m_opponent == PLAYER_NETWORK)
+						cg.writeEntry("humanlost", cg.readEntry("humanlost").toInt() + 1);
+					else
+						cg.writeEntry("ailost", cg.readEntry("ailost").toInt() + 1);
 					conf->sync();
 					announce(i18n("You are the winner!"));
 				}
@@ -226,8 +249,10 @@ int KTicTacTux::gameOver()
 	{
 		emit signalStatus(i18n("Game Over!"));
 
-		if(m_opponent == PLAYER_NETWORK) cg.writeEntry("humantied", cg.readEntry("humantied").toInt() + 1);
-		else cg.writeEntry("aitied", cg.readEntry("aitied").toInt() + 1);
+		if(m_opponent == PLAYER_NETWORK)
+			cg.writeEntry("humantied", cg.readEntry("humantied").toInt() + 1);
+		else
+			cg.writeEntry("aitied", cg.readEntry("aitied").toInt() + 1);
 		conf->sync();
 		announce(i18n("The game is over. There is no winner."));
 		emit signalGameOver();
@@ -247,7 +272,9 @@ void KTicTacTux::announce(QString str)
 	// Announce the new score
 	emit signalScore(i18n("Score: you %1, opponent %2", m_score_you, m_score_opp));
 
-	ret = KMessageBox::questionYesNo(this, str + "\n\n" + i18n("Play another game?"), i18n("Game over"));
+	ret = KMessageBox::questionYesNo(this,
+		str + "\n\n" + i18n("Play another game?"),
+		i18n("Game over"));
 
 	switch(ret)
 	{
@@ -358,7 +385,8 @@ int KTicTacTux::trip(int value)
 	int ret;
 
 	ret = value % 3;
-	if(ret < 0) ret = 3 + ret;
+	if(ret < 0)
+		ret = 3 + ret;
 	return ret;
 }
 
@@ -450,9 +478,8 @@ void KTicTacTux::slotPacket(tictactoeOpcodes::Opcode opcode, const msg& message)
 {
 	rspmove rsp;
 
-	kDebug() << "Network data arriving from packet reader" << endl;
-
-	kDebug() << "Opcode is " << opcode << endl;
+	kDebug() << "Network data arriving from packet reader";
+	kDebug() << " Opcode is" << opcode;
 
 	switch(opcode)
 	{
@@ -559,6 +586,7 @@ void KTicTacTux::paintEvent(QPaintEvent *event)
 
 void KTicTacTux::slotNetwork(int fd)
 {
+	kDebug() << "Network activity...";
 	proto->proto->ggzcomm_set_fd(fd);
 	proto->proto->ggzcomm_network_main();
 }
