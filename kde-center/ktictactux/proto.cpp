@@ -107,7 +107,10 @@ void tictactoe::ggzcomm_ready()
 void tictactoe::ggzcomm_set_fd(int usefd)
 {
 	fd = usefd;
-	packet = new KGGZPacket();
+	if(!packet)
+		packet = new KGGZPacket();
+	connect(packet, SIGNAL(signalError()), SIGNAL(signalError()));
+	connect(packet, SIGNAL(signalPacket()), SLOT(ggzcomm_ready()));
 }
 
 void tictactoe::ggzcomm_set_socket(KGGZPacket *usepacket)

@@ -82,8 +82,6 @@ void KTicTacTuxProto::handleOpponentMove(const msgmove& move)
 // Oooops... volunteers :-)
 void KTicTacTuxProto::handleSync(const sndsync& sync)
 {
-	qint8 space;
-
 	for(int i = 0; i < 9; i++)
 	{
 		qint8 space = sync.space[i];
@@ -115,14 +113,16 @@ void KTicTacTuxProto::getStatistics()
 	}
 }
 
+#if 0
 // Send the options
-/*int KTicTacTuxProto::sendOptions()
+int KTicTacTuxProto::sendOptions()
 {
 	*packet->outputstream() << 0;
 	packet->flush();
 
 	return 1;
-}*/
+}
+#endif
 
 // Send the own move, to be approved
 void KTicTacTuxProto::sendMyMove()

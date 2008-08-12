@@ -375,7 +375,7 @@ void KTicTacTux::setOpponent(int type)
 		connect(proto->proto, SIGNAL(signalNotification(tictactoeOpcodes::Opcode, const msg&)), SLOT(slotPacket(tictactoeOpcodes::Opcode, const msg&)));
 		connect(proto->proto, SIGNAL(signalError()), SLOT(slotError()));
 		connect(proto->mod, SIGNAL(signalError()), SLOT(slotError()));
-		connect(proto->mod, SIGNAL(signalNetwork(int)), proto->proto, SLOT(slotNetwork(int)));
+		connect(proto->mod, SIGNAL(signalNetwork(int)), SLOT(slotNetwork(int)));
 		connect(proto->mod, SIGNAL(signalEvent(const KGGZMod::Event&)), SLOT(slotEvent(const KGGZMod::Event&)));
 	}
 	emit signalStatus(i18n("Waiting for opponent!"));
@@ -555,5 +555,11 @@ void KTicTacTux::paintEvent(QPaintEvent *event)
 		m_container->setPixmap(pix);
 		m_oldsize = size();
 	}
+}
+
+void KTicTacTux::slotNetwork(int fd)
+{
+	proto->proto->ggzcomm_set_fd(fd);
+	proto->proto->ggzcomm_network_main();
 }
 

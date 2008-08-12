@@ -95,13 +95,9 @@ class KTicTacTuxProto
 		void handleOpponentMove(const msgmove& move);
 		// Request synchronization
 		void handleSync(const sndsync& sync);
-		// Ask whether the game is over
-		//int getGameOver();
 		// Get statistics
 		void getStatistics();
 
-		// Send decision on a new game
-		//int sendOptions();
 		// Send out own move
 		void sendMyMove();
 		// Synchronize game
