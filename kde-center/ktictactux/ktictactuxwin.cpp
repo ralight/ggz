@@ -92,7 +92,7 @@ KTicTacTuxWin::KTicTacTuxWin()
 		changeTheme(QString());
 
 	setCaption(i18n("KTicTacTux"));
-	resize(250, 250);
+	resize(300, 300);
 	show();
 }
 
@@ -376,7 +376,7 @@ void KTicTacTuxWin::slotError()
 void KTicTacTuxWin::connectcore()
 {
 	ConnectionDialog dialog(this);
-	dialog.setGame("Tic-Tac-Toe", "dio/5+dev");
+	dialog.setGame("TicTacToe", "dio/5+dev");
 	if(dialog.exec() == QDialog::Accepted)
 	{
 		QList<KGGZCore::Player> seats;
