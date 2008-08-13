@@ -57,12 +57,15 @@ void PlasmaKGGZ::init()
 	}
 
 	KConfigGroup cg = config();
-	if(cg.readEntry("username").isEmpty())
+	Util util;
+	GGZProfile profile = util.loadprofile(cg);
+
+	if(profile.username().isEmpty())
 	{
 		activity(i18n("Unconfigured account."));
 		return;
 	}
-	if(cg.readEntry("ggzuri").isEmpty())
+	if(profile.ggzServer().uri().isEmpty())
 	{
 		activity(i18n("Unconfigured server."));
 		return;
@@ -82,8 +85,17 @@ void PlasmaKGGZ::init()
 
 	activity(i18n("Connecting..."));
 
-	m_core->setUrl(cg.readEntry("ggzuri"));
-	m_core->setUsername(cg.readEntry("username"));
+	KGGZCore::CoreClient::LoginType corelogintype = KGGZCore::CoreClient::guest;
+	if(profile.loginType() == GGZProfile::registered)
+		corelogintype = KGGZCore::CoreClient::normal;
+	else if(profile.loginType() == GGZProfile::firsttime)
+		corelogintype = KGGZCore::CoreClient::firsttime;
+
+	m_core->setUrl(profile.ggzServer().uri());
+	m_core->setUsername(profile.username());
+	m_core->setPassword(profile.password());
+	m_core->setEmail(profile.email());
+	m_core->setMode(corelogintype);
 	m_core->initiateLogin();
 } 
  
@@ -296,7 +308,9 @@ void PlasmaKGGZ::slotAnswer(KGGZCore::CoreClient::AnswerMessage message)
 			if(num > 0)
 			{
 				KConfigGroup cg = config();
-				QString roomname = cg.readEntry("roomname");
+				Util util;
+				GGZProfile profile = util.loadprofile(cg);
+				QString roomname = profile.roomname();
 				if((roomname.isEmpty()) | (!m_core->roomnames().contains(roomname)))
 					roomname = m_core->roomnames().at(0);
 				m_core->initiateRoomChange(roomname);
