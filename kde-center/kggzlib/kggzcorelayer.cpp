@@ -162,13 +162,14 @@ void KGGZCoreLayer::switchroom()
 		for(int i = 0; i < rooms.size(); i++)
 		{
 			KGGZCore::Room *room = rooms.at(i);
+			KGGZCore::GameType gt = room->gametype();
 			qDebug("ROOM: %s/%s vs. %s/%s",
-				qPrintable(room->protocolEngine()),
+				qPrintable(gt.protocolEngine()),
 				qPrintable(m_protengine),
-				qPrintable(room->protocolVersion()),
+				qPrintable(gt.protocolVersion()),
 				qPrintable(m_protversion));
-			if((room->protocolEngine() == m_protengine)
-			&& (room->protocolVersion() == m_protversion))
+			if((gt.protocolEngine() == m_protengine)
+			&& (gt.protocolVersion() == m_protversion))
 			{
 				m_core->initiateRoomChange(room->name());
 				activity(i18n("Switch to room %1", room->name()));

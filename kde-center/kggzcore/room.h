@@ -25,6 +25,7 @@
 #include <QObject>
 
 #include <kggzcore/error.h>
+#include <kggzcore/gametype.h>
 
 #include "kggzcore_export.h"
 
@@ -94,8 +95,7 @@ class KGGZCORE_EXPORT Room : public QObject
 		QList<Table*> tables();
 		QList<Player*> players();
 
-		QString protocolEngine();
-		QString protocolVersion();
+		GameType gametype() const;
 
 		void launchtable(QList<Player> seats);
 		void launchmodule();

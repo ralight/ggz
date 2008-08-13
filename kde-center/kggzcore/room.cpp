@@ -63,18 +63,27 @@ QList<Player*> Room::players()
 	return m_players;
 }
 
-QString Room::protocolEngine()
+GameType Room::gametype() const
 {
-	GGZGameType *gametype = ggzcore_room_get_gametype(m_base->room());
-	QString protengine = ggzcore_gametype_get_prot_engine(gametype);
-	return protengine;
-}
+	GameType gametype;
+	GGZGameType *ggzgametype = ggzcore_room_get_gametype(m_base->room());
 
-QString Room::protocolVersion()
-{
-	GGZGameType *gametype = ggzcore_room_get_gametype(m_base->room());
-	QString protversion = ggzcore_gametype_get_prot_version(gametype);
-	return protversion;
+	gametype.setName(ggzcore_gametype_get_name(ggzgametype));
+	gametype.setVersion(ggzcore_gametype_get_version(ggzgametype));
+	gametype.setAuthor(ggzcore_gametype_get_author(ggzgametype));
+	gametype.setDescription(ggzcore_gametype_get_desc(ggzgametype));
+	gametype.setUrl(QUrl(ggzcore_gametype_get_url(ggzgametype)));
+
+	gametype.setProtocolEngine(ggzcore_gametype_get_prot_engine(ggzgametype));
+	gametype.setProtocolVersion(ggzcore_gametype_get_prot_version(ggzgametype));
+
+	gametype.setMaxPlayers(ggzcore_gametype_get_max_players(ggzgametype));
+	gametype.setMaxBots(ggzcore_gametype_get_max_bots(ggzgametype));
+
+	gametype.setAllowSpectators(ggzcore_gametype_get_spectators_allowed(ggzgametype));
+	gametype.setAllowPeers(ggzcore_gametype_get_peers_allowed(ggzgametype));
+
+	return gametype;
 }
 
 void Room::launchtable(QList<Player> seats)

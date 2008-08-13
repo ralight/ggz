@@ -11,6 +11,7 @@ set(kggzcore_LIB_SRCS
 	roombase.cpp
 	table.cpp
 	player.cpp
+	gametype.cpp
 )
 
 kde4_add_library(kggzcore SHARED ${kggzcore_LIB_SRCS})
