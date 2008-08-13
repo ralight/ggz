@@ -1,7 +1,7 @@
-Index: src/ksquaresui.rc
+Index: ksquaresui.rc
 ===================================================================
---- src/ksquaresui.rc	(Revision 839281)
-+++ src/ksquaresui.rc	(Arbeitskopie)
+--- ksquaresui.rc	(Revision 839281)
++++ ksquaresui.rc	(Arbeitskopie)
 @@ -11,6 +11,7 @@
  	<MenuBar>
  	<Menu noMerge="1" name="onlinegame">
@@ -10,28 +10,19 @@ Index: src/ksquaresui.rc
  		<Action name="rankings" />
  		<Action name="seats" />
  	</Menu>
-Index: src/ksquareswindow.h
+Index: ksquareswindow.h
 ===================================================================
---- src/ksquareswindow.h	(Revision 839281)
-+++ src/ksquareswindow.h	(Arbeitskopie)
-@@ -22,6 +22,7 @@
- class GameBoardScene;
- class KGGZRankingsDialog;
- class KGGZSeatsDialog;
-+class KGGZCoreLayer;
- 
- /**
-  * @short Mainwindow class
-@@ -60,6 +61,8 @@
+--- ksquareswindow.h	(Revision 839281)
++++ ksquareswindow.h	(Arbeitskopie)
+@@ -60,6 +60,7 @@
  		void slotMoveRequest(int x1, int y1, int x2, int y2);
  		void slotRankingsRequest();
  		void slotSeatsRequest();
 +		void slotConnection();
-+		void slotConnectionReady();
  
  	private:
  		enum StatusBarItem
-@@ -70,6 +73,7 @@
+@@ -70,6 +71,7 @@
  
  		//void setupAccel();
  		void setupActions();
@@ -39,18 +30,10 @@ Index: src/ksquareswindow.h
  		Ui::prefs_ai ui_prefs_ai;
  		Ui::prefs_display ui_prefs_display;
  		///The game board view
-@@ -85,6 +89,7 @@
- 		//Network scores and player list
- 		KGGZRankingsDialog *m_rankingsdlg;
- 		KGGZSeatsDialog *m_seatsdlg;
-+		KGGZCoreLayer *m_corelayer;
- 
- 		//KToggleAction *m_toolbarAction;
- 		//KToggleAction *m_statusbarAction;
-Index: src/CMakeLists.txt
+Index: CMakeLists.txt
 ===================================================================
---- src/CMakeLists.txt	(Revision 839281)
-+++ src/CMakeLists.txt	(Arbeitskopie)
+--- CMakeLists.txt	(Revision 839281)
++++ CMakeLists.txt	(Arbeitskopie)
 @@ -22,7 +22,7 @@
  kde4_add_app_icon(ksquares_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/hi*-app-ksquares.png")
  kde4_add_executable(ksquares ${ksquares_SRCS})
@@ -60,10 +43,10 @@ Index: src/CMakeLists.txt
  
  install(TARGETS ksquares ${INSTALL_TARGETS_DEFAULT_ARGS})
  
-Index: src/ksquareswindow.cpp
+Index: ksquareswindow.cpp
 ===================================================================
---- src/ksquareswindow.cpp	(Revision 839281)
-+++ src/ksquareswindow.cpp	(Arbeitskopie)
+--- ksquareswindow.cpp	(Revision 839281)
++++ ksquareswindow.cpp	(Arbeitskopie)
 @@ -31,6 +31,9 @@
  #include <kggzmod/module.h>
  #include <kggzgames/kggzrankingsdialog.h>
@@ -74,15 +57,7 @@ Index: src/ksquareswindow.cpp
  
  //generated
  #include "settings.h"
-@@ -43,16 +46,14 @@
- #include "newgamedialog.h"
- #include "scoresdialog.h"
- 
--KSquaresWindow::KSquaresWindow() : KXmlGuiWindow(), m_view(new GameBoardView(this)), m_scene(0), m_proto(0), m_rankingsdlg(0), m_seatsdlg(0)
-+KSquaresWindow::KSquaresWindow() : KXmlGuiWindow(), m_view(new GameBoardView(this)), m_scene(0), m_proto(0), m_rankingsdlg(0), m_seatsdlg(0), m_corelayer(0)
- {
- 	setCentralWidget(m_view);
- 	QTimer::singleShot(0, this, SLOT(initObject()));
+@@ -50,9 +53,7 @@
  
  	if(KGGZMod::Module::isGGZ())
  	{
@@ -136,29 +111,23 @@ Index: src/ksquareswindow.cpp
  	}
  
  	KStandardGameAction::quit(this, SLOT(close()), actionCollection());
-@@ -523,4 +539,25 @@
+@@ -523,4 +539,19 @@
  	m_seatsdlg->show();
  }
  
 +void KSquaresWindow::slotConnection()
 +{
 +	ConnectionDialog dialog(this);
++	dialog.setGame("Dots", "4");
 +	dialog.exec();
-+	if(!m_corelayer)
++	if(dialog.exec() == QDialog::Accepted)
 +	{
-+		m_corelayer = new KGGZCoreLayer(this, "Dots", "4");
-+		connect(m_corelayer, SIGNAL(signalReady()), SLOT(slotConnectionReady()));
++		QList<KGGZCore::Player> seats;
++		seats << KGGZCore::Player("somebot", KGGZCore::Player::bot);
++		dialog.layer()->configureTable(seats);
++
++		initGGZ();
 +	}
-+	m_corelayer->ggzcore(dialog.uri());
-+}
-+
-+void KSquaresWindow::slotConnectionReady()
-+{
-+	QList<KGGZCore::Player> seats;
-+	seats << KGGZCore::Player("somebot", KGGZCore::Player::bot);
-+	m_corelayer->configureTable(seats);
-+
-+	initGGZ();
 +}
 +
  #include "ksquareswindow.moc"
