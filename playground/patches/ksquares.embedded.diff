@@ -1,7 +1,7 @@
-Index: ksquaresui.rc
+Index: src/ksquaresui.rc
 ===================================================================
---- ksquaresui.rc	(Revision 839281)
-+++ ksquaresui.rc	(Arbeitskopie)
+--- src/ksquaresui.rc	(Revision 839281)
++++ src/ksquaresui.rc	(Arbeitskopie)
 @@ -11,6 +11,7 @@
  	<MenuBar>
  	<Menu noMerge="1" name="onlinegame">
@@ -10,10 +10,10 @@ Index: ksquaresui.rc
  		<Action name="rankings" />
  		<Action name="seats" />
  	</Menu>
-Index: ksquareswindow.h
+Index: src/ksquareswindow.h
 ===================================================================
---- ksquareswindow.h	(Revision 839281)
-+++ ksquareswindow.h	(Arbeitskopie)
+--- src/ksquareswindow.h	(Revision 839281)
++++ src/ksquareswindow.h	(Arbeitskopie)
 @@ -60,6 +60,7 @@
  		void slotMoveRequest(int x1, int y1, int x2, int y2);
  		void slotRankingsRequest();
@@ -30,10 +30,10 @@ Index: ksquareswindow.h
  		Ui::prefs_ai ui_prefs_ai;
  		Ui::prefs_display ui_prefs_display;
  		///The game board view
-Index: CMakeLists.txt
+Index: src/CMakeLists.txt
 ===================================================================
---- CMakeLists.txt	(Revision 839281)
-+++ CMakeLists.txt	(Arbeitskopie)
+--- src/CMakeLists.txt	(Revision 839281)
++++ src/CMakeLists.txt	(Arbeitskopie)
 @@ -22,7 +22,7 @@
  kde4_add_app_icon(ksquares_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/hi*-app-ksquares.png")
  kde4_add_executable(ksquares ${ksquares_SRCS})
@@ -43,10 +43,10 @@ Index: CMakeLists.txt
  
  install(TARGETS ksquares ${INSTALL_TARGETS_DEFAULT_ARGS})
  
-Index: ksquareswindow.cpp
+Index: src/ksquareswindow.cpp
 ===================================================================
---- ksquareswindow.cpp	(Revision 839281)
-+++ ksquareswindow.cpp	(Arbeitskopie)
+--- src/ksquareswindow.cpp	(Revision 839281)
++++ src/ksquareswindow.cpp	(Arbeitskopie)
 @@ -31,6 +31,9 @@
  #include <kggzmod/module.h>
  #include <kggzgames/kggzrankingsdialog.h>
@@ -111,7 +111,7 @@ Index: ksquareswindow.cpp
  	}
  
  	KStandardGameAction::quit(this, SLOT(close()), actionCollection());
-@@ -523,4 +539,19 @@
+@@ -523,4 +539,18 @@
  	m_seatsdlg->show();
  }
  
@@ -119,7 +119,6 @@ Index: ksquareswindow.cpp
 +{
 +	ConnectionDialog dialog(this);
 +	dialog.setGame("Dots", "4");
-+	dialog.exec();
 +	if(dialog.exec() == QDialog::Accepted)
 +	{
 +		QList<KGGZCore::Player> seats;
