@@ -2,4 +2,6 @@
 - common widget with setBackgroundPixmap() functionality?
 - common itemdelegate base class with qstyleoption (see palapeli puzzlelibrarydelegate)
 - table/seats configuration dialogue is desperately missing
+- standard action for "Connect to GGZ Gaming Zone"
+- make use of module.dsc file for KDE-based games?
 
