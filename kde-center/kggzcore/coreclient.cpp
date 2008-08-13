@@ -187,18 +187,21 @@ void CoreClient::slotBaseServer(int id, int code)
 			emit signalFeedback(connection, errorcode);
 			break;
 		case GGZ_CONNECT_FAIL:
+			errorcode = Error::generic_error;
 			emit signalFeedback(connection, errorcode);
 			break;
 		case GGZ_NEGOTIATED:
 			emit signalFeedback(negotiation, errorcode);
 			break;
 		case GGZ_NEGOTIATE_FAIL:
+			errorcode = Error::generic_error;
 			emit signalFeedback(negotiation, errorcode);
 			break;
 		case GGZ_LOGGED_IN:
 			emit signalFeedback(login, errorcode);
 			break;
 		case GGZ_LOGIN_FAIL:
+			errorcode = (Error::ErrorCode)code;
 			emit signalFeedback(login, errorcode);
 			break;
 		case GGZ_ENTERED:
@@ -208,6 +211,7 @@ void CoreClient::slotBaseServer(int id, int code)
 			emit signalFeedback(roomenter, errorcode);
 			break;
 		case GGZ_ENTER_FAIL:
+			errorcode = (Error::ErrorCode)code;
 			emit signalFeedback(roomenter, errorcode);
 			break;
 		case GGZ_LOGOUT:
@@ -216,6 +220,7 @@ void CoreClient::slotBaseServer(int id, int code)
 			emit signalFeedback(logout, errorcode);
 			break;
 		case GGZ_CHAT_FAIL:
+			errorcode = (Error::ErrorCode)code;
 			emit signalFeedback(chat, errorcode);
 			break;
 		case GGZ_CHANNEL_CONNECTED:

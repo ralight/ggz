@@ -80,7 +80,9 @@ class KGGZCORE_EXPORT Error
 			user_type,
 			user_found,
 			user_taken,
-			bad_password
+			bad_password,
+
+			generic_error
 		};
 
 		static QString errormessage(ErrorCode error);
