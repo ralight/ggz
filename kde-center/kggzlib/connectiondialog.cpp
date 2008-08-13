@@ -107,7 +107,8 @@ void ConnectionDialog::slotConnect()
 	m_indicator->setEnabled(true);
 	m_indicator->setMaximum(0);
 
-	m_corelayer = new KGGZCoreLayer(this, m_engine, m_version);
+	// FIXME: core layer doesn't have parent and will leak happily
+	m_corelayer = new KGGZCoreLayer(NULL, m_engine, m_version);
 	connect(m_corelayer, SIGNAL(signalReady(bool)), SLOT(slotReady(bool)));
 	m_corelayer->ggzcore(uri());
 }
