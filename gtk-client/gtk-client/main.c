@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 10276 2008-07-10 22:32:14Z jdorje $
+ * $Id: main.c 10493 2008-08-13 12:09:33Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -144,6 +144,9 @@ int main (int argc, char *argv[])
 	gtk_init(&argc, &argv);
 #endif
 
+	main_window = ggz_gtk_create_main_window(option_log);
+	gtk_widget_show_all(main_window);
+
 	/* Auto-connect to GGZ URI */
 	if (option_url) {
 		ggz_uri_t uri;
@@ -162,9 +165,6 @@ int main (int argc, char *argv[])
 
 		ggz_uri_free(uri);
 	}
-
-	main_window = ggz_gtk_create_main_window(option_log);
-	gtk_widget_show_all(main_window);
 
 	gtk_main();
 
