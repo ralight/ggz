@@ -44,6 +44,8 @@ int KTicTacTuxProto::num()
 {
 	if(!mod)
 		return 0;
+	if(!mod->self())
+		return 0;
 	return mod->self()->seat();
 }
 

@@ -494,6 +494,7 @@ void KTicTacTux::slotPacket(tictactoeOpcodes::Opcode opcode, const msg& message)
 	switch(opcode)
 	{
 		case tictactoeOpcodes::message_reqmove:
+			// FIXME: proto->num() might arrive late through kggzmod
 			m_turn = proto->num();
 			yourTurn();
 			break;
