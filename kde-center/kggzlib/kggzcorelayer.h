@@ -23,7 +23,7 @@ class KGGZLIB_EXPORT KGGZCoreLayer : public QObject
 		void configureTable(QList<KGGZCore::Player> seats);
 
 	signals:
-		void signalReady();
+		void signalReady(bool ready);
 
 	protected:
 		void activity(QString activity);
@@ -44,11 +44,13 @@ class KGGZLIB_EXPORT KGGZCoreLayer : public QObject
  	private:
 		void launchmodule();
 		void switchroom();
+		void notready();
 
 		KGGZCore::CoreClient *m_core;
 		QList<KGGZCore::Player> m_seats;
 		QString m_protengine;
 		QString m_protversion;
+		bool m_typedrooms;
 };
  
 #endif

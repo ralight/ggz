@@ -28,7 +28,7 @@ class KGGZLIB_EXPORT ConnectionDialog : public QDialog
 		void slotManage();
 		void slotConnect();
 		void slotSelected(const GGZProfile& profile, int pos);
-		void slotReady();
+		void slotReady(bool ready);
 
 	private:
 		void load();

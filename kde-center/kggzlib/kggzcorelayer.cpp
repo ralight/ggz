@@ -14,6 +14,7 @@ KGGZCoreLayer::KGGZCoreLayer(QObject *parent, QString protengine, QString protve
 {
 	m_protversion = protversion;
 	m_protengine = protengine;
+	m_typedrooms = false;
 }
  
 KGGZCoreLayer::~KGGZCoreLayer()
@@ -79,21 +80,36 @@ void KGGZCoreLayer::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, 
 	{
 		case KGGZCore::CoreClient::connection:
 			if(error == KGGZCore::Error::no_status)
+			{
 				activity(i18n("Negotiating..."));
+			}
 			else
+			{
 				activity(i18n("Connection failed!"));
+				notready();
+			}
 			break;
 		case KGGZCore::CoreClient::negotiation:
 			if(error == KGGZCore::Error::no_status)
+			{
 				activity(i18n("Logging in..."));
+			}
 			else
+			{
 				activity(i18n("Negotiation failed!"));
+				notready();
+			}
 			break;
 		case KGGZCore::CoreClient::login:
 			if(error == KGGZCore::Error::no_status)
+			{
 				activity(i18n("Entering the room..."));
+			}
 			else
+			{
 				activity(i18n("Login failed!"));
+				notready();
+			}
 			break;
 		case KGGZCore::CoreClient::roomenter:
 			activity(i18n("In the room %1!", m_core->room()->name()));
@@ -123,10 +139,14 @@ void KGGZCoreLayer::slotAnswer(KGGZCore::CoreClient::AnswerMessage message)
 	switch(message)
 	{
 		case KGGZCore::CoreClient::roomlist:
-			switchroom();
+			if(m_typedrooms)
+				switchroom();
+			m_typedrooms = true;
 			break;
 		case KGGZCore::CoreClient::typelist:
-			switchroom();
+			if(m_typedrooms)
+				switchroom();
+			m_typedrooms = true;
 			break;
 		case KGGZCore::CoreClient::motd:
 			break;
@@ -135,21 +155,35 @@ void KGGZCoreLayer::slotAnswer(KGGZCore::CoreClient::AnswerMessage message)
 
 void KGGZCoreLayer::switchroom()
 {
+	bool canswitch = false;
 	QList<KGGZCore::Room*> rooms = m_core->rooms();
 	if(rooms.size() > 0)
 	{
 		for(int i = 0; i < rooms.size(); i++)
 		{
 			KGGZCore::Room *room = rooms.at(i);
+			qDebug("ROOM: %s/%s vs. %s/%s",
+				qPrintable(room->protocolEngine()),
+				qPrintable(m_protengine),
+				qPrintable(room->protocolVersion()),
+				qPrintable(m_protversion));
 			if((room->protocolEngine() == m_protengine)
 			&& (room->protocolVersion() == m_protversion))
 			{
 				m_core->initiateRoomChange(room->name());
+				activity(i18n("Switch to room %1", room->name()));
+				canswitch = true;
 				break;
 			}
 		}
 		qDeleteAll(rooms);
 		rooms.clear();
+	}
+
+	if(!canswitch)
+	{
+		activity(i18n("No suitable room or game server found"));
+		notready();
 	}
 }
 
@@ -252,7 +286,14 @@ void KGGZCoreLayer::launchmodule()
 
 void KGGZCoreLayer::slotModuleReady()
 {
-	emit signalReady();
+	emit signalReady(true);
+}
+
+void KGGZCoreLayer::notready()
+{
+	m_core->deleteLater();
+	m_core = NULL;
+	emit signalReady(false);
 }
 
 void KGGZCoreLayer::slotTableReady()

@@ -15,6 +15,8 @@
 #include <kconfiggroup.h>
 #include <ksharedconfig.h>
 #include <kglobal.h>
+#include <klocale.h>
+#include <kmessagebox.h>
 
 // Qt includes
 #include <qlayout.h>
@@ -40,7 +42,7 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
 	m_indicator = new QProgressBar();
 	m_indicator->setEnabled(false);
 	m_indicator->setMinimum(0);
-	m_indicator->setMaximum(0);
+	m_indicator->setMaximum(1);
 
 	QVBoxLayout *vbox = new QVBoxLayout();
 	vbox->addWidget(m_serverlist);
@@ -103,17 +105,29 @@ void ConnectionDialog::slotConnect()
 {
 	m_connect_button->setEnabled(false);
 	m_indicator->setEnabled(true);
+	m_indicator->setMaximum(0);
 
 	m_corelayer = new KGGZCoreLayer(this, m_engine, m_version);
-	connect(m_corelayer, SIGNAL(signalReady()), SLOT(slotReady()));
+	connect(m_corelayer, SIGNAL(signalReady(bool)), SLOT(slotReady(bool)));
 	m_corelayer->ggzcore(uri());
 }
 
-void ConnectionDialog::slotReady()
+void ConnectionDialog::slotReady(bool ready)
 {
 	m_connect_button->setEnabled(true);
 	m_indicator->setEnabled(false);
-	accept();
+	m_indicator->setMaximum(1);
+
+	if(ready)
+	{
+		accept();
+	}
+	else
+	{
+		KMessageBox::error(this,
+			i18n("The connection cannot be established."),
+			i18n("Connection failed"));
+	}
 }
 
 void ConnectionDialog::slotSelected(const GGZProfile& profile, int pos)
