@@ -43,7 +43,6 @@ KTicTacTuxWin::KTicTacTuxWin()
 	m_tux = new KTicTacTux();
 	setCentralWidget(m_tux);
 
-	m_corelayer = NULL;
 	m_networked = false;
 
 	mgame = new KMenu(this);
@@ -100,7 +99,6 @@ KTicTacTuxWin::KTicTacTuxWin()
 // Destructor
 KTicTacTuxWin::~KTicTacTuxWin()
 {
-	delete m_corelayer;
 }
 
 // Display the game status
@@ -150,14 +148,7 @@ void KTicTacTuxWin::slotMenu(QAction *action)
 	// Standard menu entries
 	if(action == action_connect)
 	{
-		ConnectionDialog dialog(this);
-		dialog.exec();
-		if(!m_corelayer)
-		{
-			m_corelayer = new KGGZCoreLayer(this);
-			connect(m_corelayer, SIGNAL(signalReady()), SLOT(slotReady()));
-		}
-		m_corelayer->ggzcore(dialog.uri());
+		connectcore();
 	}
 	else if(action == action_sync)
 	{
@@ -382,11 +373,16 @@ void KTicTacTuxWin::slotError()
 	enableNetwork(false);
 }
 
-void KTicTacTuxWin::slotReady()
+void KTicTacTuxWin::connectcore()
 {
-	QList<KGGZCore::Player> seats;
-	//seats << KGGZCore::Player("someplayer", KGGZCore::Player::reserved);
-	seats << KGGZCore::Player("somebot", KGGZCore::Player::bot);
-	m_corelayer->configureTable(seats);
-	enableNetwork(true);
+	ConnectionDialog dialog(this);
+	dialog.setGame("Tic-Tac-Toe", "dio/5+dev");
+	dialog.exec();
+	if(dialog.exec() == QDialog::Accepted)
+	{
+		QList<KGGZCore::Player> seats;
+		seats << KGGZCore::Player("somebot", KGGZCore::Player::bot);
+		dialog.layer()->configureTable(seats);
+		enableNetwork(true);
+	}
 }

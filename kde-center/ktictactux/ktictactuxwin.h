@@ -25,7 +25,6 @@
 // Forward declarations
 class KMenu;
 class QAction;
-class KGGZCoreLayer;
 
 // The game window
 class KTicTacTuxWin : public KMainWindow
@@ -59,12 +58,9 @@ class KTicTacTuxWin : public KMainWindow
 		// Network error
 		void slotError();
 
-	private slots:
-		// Embedded ggzcore is ready
-		void slotReady();
-
 	private:
 		void scanDir(QDir dir, bool scanmore);
+		void connectcore();
 
 		// The game itself
 		KTicTacTux *m_tux;
@@ -86,8 +82,6 @@ class KTicTacTuxWin : public KMainWindow
 		QAction *action_ggzplayers;
 		QAction *action_themes;
 		QList<QAction*> m_themeactions;
-
-		KGGZCoreLayer *m_corelayer;
 };
 
 #endif
