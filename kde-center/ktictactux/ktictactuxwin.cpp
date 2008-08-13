@@ -377,7 +377,6 @@ void KTicTacTuxWin::connectcore()
 {
 	ConnectionDialog dialog(this);
 	dialog.setGame("Tic-Tac-Toe", "dio/5+dev");
-	dialog.exec();
 	if(dialog.exec() == QDialog::Accepted)
 	{
 		QList<KGGZCore::Player> seats;
