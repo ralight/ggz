@@ -327,9 +327,6 @@ AC_DEFUN([AC_GGZ_DATABASE_MYSQL],
 		[
 			AC_CHECK_HEADER(mysql/mysql.h, [mysql=yes],
 			[
-				mysql=yes
-			],
-			[
 				if test "$enable_mysql" = yes; then
 					AC_MSG_ERROR([cannot configure mysql (mysql-dev headers needed)])
 				fi
@@ -403,7 +400,7 @@ AC_DEFUN([AC_GGZ_DATABASE_DBI],
 	else
 		AC_CHECK_LIB(dbi, dbi_conn_new,
 		[
-			AC_CHECK_HEADER(dbi/dbi.h,[dbi=yes],
+			AC_CHECK_HEADER(dbi/dbi.h, [dbi=yes],
 			[
 				if test "$enable_dbi" = yes; then
 					AC_MSG_ERROR([cannot configure dbi (dbi-dev headers needed)])
