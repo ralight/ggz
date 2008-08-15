@@ -129,7 +129,7 @@ void ConnectionDialog::slotReady(bool ready)
 		if(dlg.exec() == QDialog::Accepted)
 		{
 			QList<KGGZCore::Player> seats;
-			for(int i = 0; i < dlg.seats(); i++)
+			for(int i = 1; i < dlg.seats(); i++)
 			{
 				TableConfiguration::SeatTypes seattype = dlg.seatType(i);
 				if(seattype == TableConfiguration::seatopen)
