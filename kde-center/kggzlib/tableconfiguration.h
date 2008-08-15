@@ -28,26 +28,6 @@ class KGGZLIB_EXPORT TableConfiguration : public QDialog
 		// Destructor
 		~TableConfiguration();
 
-		// Initialize the dialog with the given parameters
-		void initLauncher(QString playername, int maxplayers, int maxbots);
-		// Return the customizable room description
-		QString description();
-		// Return the number of seats wanted
-		int seats();
-		// For each seat, return the set type
-		int seatType(int seat);
-		// Enable/disable seat combinations
-		void setSeatAssignment(int seat, int enabled);
-		// Return the reservation name
-		QString reservation(int seat);
-
-		// Add a named bot
-		void addBot(QString botname, QString botclass);
-		// Add a buddy
-		void addBuddy(QString buddyname);
-		// Add a grubby
-		void addGrubby(QString grubbyname);
-
 		// All possible seat types
 		enum SeatTypes
 		{
@@ -60,6 +40,26 @@ class KGGZLIB_EXPORT TableConfiguration : public QDialog
 			seatbotreserved,
 			seatplayerreserved
 		};
+
+		// Initialize the dialog with the given parameters
+		void initLauncher(QString playername, int maxplayers, int maxbots);
+		// Return the customizable room description
+		QString description();
+		// Return the number of seats wanted
+		int seats();
+		// For each seat, return the set type
+		SeatTypes seatType(int seat);
+		// Enable/disable seat combinations
+		void setSeatAssignment(int seat, int enabled);
+		// Return the reservation name
+		QString reservation(int seat);
+
+		// Add a named bot
+		void addBot(QString botname, QString botclass);
+		// Add a buddy
+		void addBuddy(QString buddyname);
+		// Add a grubby
+		void addGrubby(QString grubbyname);
 
 	//signals:
 	//	// Emitted if table is to be launched
@@ -75,19 +75,17 @@ class KGGZLIB_EXPORT TableConfiguration : public QDialog
 
 	private:
 		// Set the type of the given seat
-		void setSeatType(int seat, int seattype);
+		void setSeatType(int seat, SeatTypes seattype);
 		// Return the i18n'd name of a seat type
-		QString typeName(int seattype);
+		QString typeName(SeatTypes seattype);
 		// Composite pixmaps (FIXME: taken from KGGZUsers)
 		QPixmap composite(QPixmap bottom, QPixmap top);
 		QPixmap greyscale(QPixmap orig);
 		// Prevent a name from being used again
 		//void addReservation(int id);
-		void addReservation(int seat, QString name);
+		void addReservation(int seat, QString name, SeatTypes seattype);
 		// Liberate a name for usage again
-		void freeReservation(int seat, QString name);
-		// Reservation name received
-		void reservation(QString player, QStandardItem *tmp);
+		void freeReservation(int seat, QString name, SeatTypes seattype);
 
 		// Widget holding all seat entries
 		QTreeView *m_seats;
@@ -126,6 +124,7 @@ class KGGZLIB_EXPORT TableConfiguration : public QDialog
 
 		QMap<QString, bool> m_buddies_reserved;
 		QMap<QString, bool> m_namedbots_reserved;
+		QMap<QString, bool> m_players_reserved;
 };
 
 #endif

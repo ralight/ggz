@@ -53,8 +53,8 @@ TableConfiguration::TableConfiguration(QWidget *parent)
 	m_model->setHeaderData(2, Qt::Horizontal, i18n("Reservation"), Qt::DisplayRole);
 
 	m_seats = new QTreeView();
+	m_seats->setRootIsDecorated(false);
 	m_seats ->setContextMenuPolicy(Qt::CustomContextMenu);
-	//m_seats->setSorting(-1, true);
 
 	m_seats->setModel(m_model);
 
@@ -106,9 +106,9 @@ void TableConfiguration::slotSelected(const QPoint& pos)
 		return;
 
 	int seat = index.row();
-	QStandardItem *item_seat = m_model->item(seat, 0);
-	QStandardItem *item_player = m_model->item(seat, 1);
-	QStandardItem *item_reservation = m_model->item(seat, 2);
+	//QStandardItem *item_seat = m_model->item(seat, 0);
+	//QStandardItem *item_player = m_model->item(seat, 1);
+	//QStandardItem *item_reservation = m_model->item(seat, 2);
 
 	if(seat == 0)
 		return;
@@ -128,7 +128,7 @@ void TableConfiguration::slotSelected(const QPoint& pos)
 	QMenu *reservemenu = popup.addMenu(i18n("Reservation"));
 	action_reserved = reservemenu->addAction(i18n("Player"));
 
-	if(m_namedbots.size() > 0)
+	if((m_namedbots.size() > 0) || (m_grubbies.size() > 0))
 	{
 		QMenu *botmenu = reservemenu->addMenu(i18n("Individual bot"));
 
@@ -139,7 +139,7 @@ void TableConfiguration::slotSelected(const QPoint& pos)
 		for(int i = 0; i < m_grubbies.size(); i++)
 		{
 			QString grubbyname = m_grubbies.at(i);
-			if(m_namedbots_reserved[grubbyname])
+			if(!m_namedbots_reserved[grubbyname])
 			{
 				QAction *action = botmenu->addAction(grubbypix, grubbyname);
 				actions_namedbots.append(action);
@@ -151,14 +151,16 @@ void TableConfiguration::slotSelected(const QPoint& pos)
 		{
 			QString botname = it.key();
 			QString botclass = it.value();
-			if(m_namedbots_reserved[botname])
+			if(!m_namedbots_reserved[botname])
 			{
 				QAction *action = botmenu->addAction(botpix, QString("%1 (%2)").arg(botname).arg(botclass));
+				action->setData(botname);
 				actions_namedbots.append(action);
 			}
 			it++;
 		}
 	}
+
 	if(m_buddies.size() > 0)
 	{
 		QMenu *buddymenu = reservemenu->addMenu(i18n("Buddy"));
@@ -171,7 +173,7 @@ void TableConfiguration::slotSelected(const QPoint& pos)
 		for(int i = 0; i < m_buddies.size(); i++)
 		{
 			QString buddyname = m_buddies.at(i);
-			if(m_buddies_reserved[buddyname])
+			if(!m_buddies_reserved[buddyname])
 			{
 				QAction *action = buddymenu->addAction(pix3, buddyname);
 				actions_buddies.append(action);
@@ -180,6 +182,8 @@ void TableConfiguration::slotSelected(const QPoint& pos)
 	}
 
 	QAction *action = popup.exec(m_seats->mapToGlobal(pos));
+
+	freeReservation(seat, m_reservations[seat], seatType(seat));
 
 	if(action == action_seatbot)
 	{
@@ -194,19 +198,23 @@ void TableConfiguration::slotSelected(const QPoint& pos)
 		QString str = KInputDialog::getText(i18n("Reservation"), i18n("Name of the player:"));
 		if(!str.isEmpty())
 		{
-			addReservation(seat, str);
-			setSeatType(seat, seatplayerreserved);
+			if(m_players_reserved.contains(str))
+			{
+				KMessageBox::error(this,
+					i18n("The player %1 is already on a seat.", str),
+					i18n("Double assignment"));
+				return;
+			}
+			addReservation(seat, str, seatplayerreserved);
 		}
 	}
 	else if(actions_namedbots.contains(action))
 	{
-		addReservation(seat, action->text());
-		setSeatType(seat, seatbotreserved);
+		addReservation(seat, action->data().toString(), seatbotreserved);
 	}
 	else if(actions_buddies.contains(action))
 	{
-		addReservation(seat, action->text());
-		setSeatType(seat, seatbuddyreserved);
+		addReservation(seat, action->text(), seatbuddyreserved);
 	}
 }
 
@@ -275,69 +283,72 @@ void TableConfiguration::initLauncher(QString playername, int maxplayers, int ma
 		m_model->appendRow(items);
 	}
 
-	m_slider->setMinimum(1);
+	m_slider->setMinimum(2);
 	m_slider->setMaximum(maxplayers);
 	m_slider->setValue(maxplayers);
 	m_slider->setEnabled(true);
 
-	if(maxplayers >= 2)
+	addReservation(0, playername, seatplayer);
+	for(int i = 1; i < maxplayers; i++)
 	{
-		setSeatType(0, seatplayer);
-		for(int i = 1; i < maxplayers; i++)
-		{
-			if(i <= maxbots)
-				setSeatType(i, seatbot);
-			else
-				setSeatType(i, seatopen);
-		}
+		if(i <= maxbots)
+			setSeatType(i, seatbot);
+		else
+			setSeatType(i, seatopen);
 	}
 
 	m_ok->setEnabled(true);
 }
 
-int TableConfiguration::seatType(int seat)
+TableConfiguration::SeatTypes TableConfiguration::seatType(int seat)
 {
-	int ret;
+	SeatTypes ret;
 
-	if((seat <= 0) || (seat >= m_array.size()))
+	if((seat < 0) || (seat >= m_array.size()))
 		return seatunknown;
 
-	ret = m_array.at(seat);
+	ret = (SeatTypes)m_array.at(seat);
 
 	return ret;
 }
 
 void TableConfiguration::setSeatAssignment(int seat, int enabled)
 {
-	if((seat <= 0) || (seat >= m_assignment.size()))
+	if((seat < 0) || (seat >= m_assignment.size()))
 		return;
 
 	m_assignment[seat] = enabled;
 }
 
-void TableConfiguration::setSeatType(int seat, int seattype)
+void TableConfiguration::setSeatType(int seat, SeatTypes seattype)
 {
-	int oldtype;
 	QString pixmap;
 	KStandardDirs d;
 
-	if((seat <= 0) || (seat >= m_array.size()))
+	if((seat < 0) || (seat >= m_array.size()))
 		return;
 
-	QStandardItem *item_seat = m_model->item(seat, 0);
+	//QStandardItem *item_seat = m_model->item(seat, 0);
 	QStandardItem *item_player = m_model->item(seat, 1);
 	QStandardItem *item_reservation = m_model->item(seat, 2);
 
-	oldtype = seatType(seat);
+	SeatTypes oldtype = seatType(seat);
 
 	item_player->setText(typeName(seattype));
+	item_reservation->setText(m_reservations[seat]);
 
 	if(seattype == seatopen)
+	{
 		pixmap = "guest.png";
+	}
 	else if(seattype == seatbot)
+	{
 		pixmap = "bot.png";
+	}
 	else if(seattype == seatplayerreserved)
+	{
 		pixmap = "player.png";
+	}
 	else if(seattype == seatbotreserved)
 	{
 		pixmap = "bot.png";
@@ -350,6 +361,7 @@ void TableConfiguration::setSeatType(int seat, int seattype)
 			}
 		}
 	}
+
 	QPixmap pix = QPixmap(d.findResource("data", "kggzlib/players/" + pixmap));
 	item_player->setIcon(pix);
 
@@ -367,23 +379,11 @@ void TableConfiguration::setSeatType(int seat, int seattype)
 		QPixmap pix3 = composite(pix1, pix2);
 		item_player->setIcon(pix3);
 	}
-
-	if(seattype != seatplayerreserved)
+	else if(seattype == seatunused)
 	{
-		freeReservation(seat, item_reservation->text());
-		if(m_reservations.contains(seat))
-		{
-			item_reservation->setText(m_reservations[seat]);
-			//addReservation(seat, m_reservations[seat]);
-		}
-		else if(seattype == seatplayer)
-		{
-			item_reservation->setText(m_playername);
-		}
-		else
-		{
-			item_reservation->setText(QString());
-		}
+		QPixmap pix = QPixmap(d.findResource("data", "kggzlib/players/player.png"));
+		pix = greyscale(pix);
+		item_player->setIcon(pix);
 	}
 
 	if(seattype == seatbuddyreserved)
@@ -392,15 +392,10 @@ void TableConfiguration::setSeatType(int seat, int seattype)
 	}
 	else if(seattype == seatbotreserved)
 	{
-		int orig = seattype;
-		seattype = seatbot;
-		if(m_reservations.contains(seat))
-		{
-			if(m_grubbies.contains(m_reservations[seat]))
-			{
-				seattype = seatplayerreserved;
-			}
-		}
+		if(m_grubbies.contains(m_reservations[seat]))
+			seattype = seatplayerreserved;
+		else
+			seattype = seatbot;
 	}
 
 	if((seattype == seatbot) && (oldtype != seatbot))
@@ -411,23 +406,33 @@ void TableConfiguration::setSeatType(int seat, int seattype)
 	m_array[seat] = seattype;
 }
 
-void TableConfiguration::addReservation(int seat, QString name)
+void TableConfiguration::addReservation(int seat, QString name, SeatTypes seattype)
 {
-	m_buddies_reserved[name] = true;
-	m_namedbots_reserved[name] = true;
+	if(seattype == seatbuddyreserved)
+		m_buddies_reserved[name] = true;
+	else if(seattype == seatbotreserved)
+		m_namedbots_reserved[name] = true;
+	else if(seattype == seatplayerreserved)
+		m_players_reserved[name] = true;
 
 	m_reservations[seat] = name;
+
+	setSeatType(seat, seattype);
 }
 
-void TableConfiguration::freeReservation(int seat, QString name)
+void TableConfiguration::freeReservation(int seat, QString name, SeatTypes seattype)
 {
+	Q_UNUSED(seattype);
+
+	// FIXME: doesn't differentiate between types yet
 	m_buddies_reserved[name] = false;
 	m_namedbots_reserved[name] = false;
+	m_players_reserved[name] = false;
 
 	m_reservations[seat] = QString();
 }
 
-QString TableConfiguration::typeName(int seattype)
+QString TableConfiguration::typeName(SeatTypes seattype)
 {
 	QString ret;
 
@@ -461,55 +466,9 @@ QString TableConfiguration::typeName(int seattype)
 	return ret;
 }
 
-// FIXME: merge with KInputDialog
-void TableConfiguration::reservation(QString player, QStandardItem *tmp)
-{
-	m_seats->setEnabled(true);
-
-	if(player.isEmpty())
-		return;
-
-	for(int i = 0; i < seats(); i++)
-	{
-		if(player == reservation(i))
-		{
-			KMessageBox::error(this,
-				i18n("The player %1 is already on a seat.", player),
-				i18n("Double assignment"));
-			m_seats->setEnabled(true);
-			return;
-		}
-	}
-
-	if(tmp)
-	{
-		//freeReservation(tmp->text(2));
-		freeReservation(0, tmp->text());
-
-		int id = seatplayerreserved;
-
-		QMap<int, QString>::Iterator it;
-		for(it = m_reservations.begin(); it != m_reservations.end(); it++)
-		{
-			if(it.value() == player)
-			{
-				id = -(it.key());
-				//if(m_buddies.size() > 0)
-				//	m_buddies.setItemEnabled(id, false);
-				//if(m_namedbots.size() > 0)
-				//	m_namedbots.setItemEnabled(id, false);
-			}
-		}
-
-		//tmp->setText(2, player);
-		tmp->setText(player);
-		setSeatType(m_seat, id);
-	}
-}
-
 QString TableConfiguration::reservation(int seat)
 {
-	if((seat <= 0) || (seat >= m_array.size()))
+	if((seat < 0) || (seat >= m_array.size()))
 		return QString();
 
 	QStandardItem *item_reservation = m_model->item(seat, 2);
@@ -549,7 +508,7 @@ QPixmap TableConfiguration::composite(QPixmap bottom, QPixmap top)
 		}
 	}
 
-	comp.fromImage(bottomim);
+	comp = comp.fromImage(bottomim);
 
 	return comp;
 }
@@ -567,11 +526,15 @@ QPixmap TableConfiguration::greyscale(QPixmap orig)
 		for(int i = 0; i < orig.width(); i++)
 		{
 			rgb = origim.pixel(i, j);
-			origim.setPixel(i, j, qRgb(qBlue(rgb), qBlue(rgb), qBlue(rgb)));
+			if(qAlpha(rgb))
+			{
+				int mix = (qRed(rgb) + qGreen(rgb) + qBlue(rgb)) / 3;
+				origim.setPixel(i, j, qRgb(mix, mix, mix));
+			}
 		}
 	}
 
-	comp.fromImage(origim);
+	comp = comp.fromImage(origim);
 
 	return comp;
 }
