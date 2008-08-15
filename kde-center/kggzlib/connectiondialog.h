@@ -41,6 +41,7 @@ class KGGZLIB_EXPORT ConnectionDialog : public QDialog
 		QProgressBar *m_indicator;
 		QString m_engine;
 		QString m_version;
+		QString m_username;
 };
 
 #endif

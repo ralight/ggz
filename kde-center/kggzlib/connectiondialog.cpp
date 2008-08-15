@@ -10,6 +10,7 @@
 #include "tableconfiguration.h"
 
 #include <kggzcore/coreclient.h>
+#include <kggzcore/player.h>
 
 // KDE includes
 #include <kconfig.h>
@@ -123,9 +124,29 @@ void ConnectionDialog::slotReady(bool ready)
 	if(ready)
 	{
 		TableConfiguration dlg(this);
-		dlg.exec();
+		// FIXME: use real numbers from ggzcore
+		dlg.initLauncher(m_username, 2, 1);
+		if(dlg.exec() == QDialog::Accepted)
+		{
+			QList<KGGZCore::Player> seats;
+			for(int i = 0; i < dlg.seats(); i++)
+			{
+				TableConfiguration::SeatTypes seattype = dlg.seatType(i);
+				if(seattype == TableConfiguration::seatopen)
+					seats << KGGZCore::Player(dlg.reservation(i), KGGZCore::Player::open);
+				else if(seattype == TableConfiguration::seatbot)
+					seats << KGGZCore::Player(dlg.reservation(i), KGGZCore::Player::bot);
+				else if(seattype == TableConfiguration::seatplayer)
+					seats << KGGZCore::Player(dlg.reservation(i), KGGZCore::Player::player);
+			}
+			m_corelayer->configureTable(seats);
 
-		accept();
+			accept();
+		}
+		else
+		{
+			reject();
+		}
 	}
 	else
 	{
@@ -142,7 +163,10 @@ void ConnectionDialog::slotSelected(const GGZProfile& profile, int pos)
 	bool enabled = (!profile.ggzServer().uri().isEmpty());
 	m_connect_button->setEnabled(enabled);
 	if(enabled)
+	{
 		m_uri = profile.ggzServer().uri();
+		m_username = profile.username();
+	}
 }
 
 QString ConnectionDialog::uri()
