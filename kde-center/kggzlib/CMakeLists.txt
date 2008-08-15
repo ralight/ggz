@@ -23,6 +23,7 @@ set(kggzlib_LIB_SRCS
 	ggzprofile.cpp
 	kggzcorelayer.cpp
 	tableconfiguration.cpp
+	kggzaction.cpp
 )
 
 kde4_add_library(kggzlib SHARED ${kggzlib_LIB_SRCS})
@@ -58,6 +59,7 @@ install(FILES
 	kggzcorelayer.h
 	kggzlib_export.h
 	tableconfiguration.h
+	kggzaction.h
 	DESTINATION ${INCLUDE_INSTALL_DIR}/kggzlib
 )
 
