@@ -379,9 +379,9 @@ void KTicTacTuxWin::connectcore()
 	dialog.setGame("TicTacToe", "dio/5+dev");
 	if(dialog.exec() == QDialog::Accepted)
 	{
-		QList<KGGZCore::Player> seats;
-		seats << KGGZCore::Player("somebot", KGGZCore::Player::bot);
-		dialog.layer()->configureTable(seats);
+		//QList<KGGZCore::Player> seats;
+		//seats << KGGZCore::Player("somebot", KGGZCore::Player::bot);
+		//dialog.layer()->configureTable(seats);
 		enableNetwork(true);
 	}
 }
