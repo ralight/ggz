@@ -16,6 +16,7 @@ int main(int argc, char **argv)
 	KComponentData data("connectiondialog");
 
 	TableConfiguration dlg(NULL);
+	dlg.initLauncher("josef", 10, 5);
 	dlg.exec();
 
 	return a.exec();
