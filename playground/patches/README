@@ -4,8 +4,11 @@ be merged with the sources.
 Current patches
 ---------------
 
-php_auth.diff:
- Patch to PHP HTTP authentication example.
+Integration of KGGZ libraries into KDE Games package:
+ kdegames.embedded.diff
+
+Patch to PHP HTTP authentication example:
+ php_auth.diff
 
 Widelands GGZ integration:
  widelands.netmenu.diff
