@@ -7,6 +7,7 @@
 #include "util.h"
 #include "ggzprofile.h"
 #include "kggzcorelayer.h"
+#include "tableconfiguration.h"
 
 #include <kggzcore/coreclient.h>
 
@@ -121,6 +122,9 @@ void ConnectionDialog::slotReady(bool ready)
 
 	if(ready)
 	{
+		TableConfiguration dlg(this);
+		dlg.exec();
+
 		accept();
 	}
 	else
