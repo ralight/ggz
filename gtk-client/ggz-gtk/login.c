@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 10250 2008-07-09 18:44:38Z jdorje $
+ * $Id: login.c 10510 2008-08-17 21:41:41Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -328,6 +328,14 @@ static void login_cancel_button_clicked(GtkButton * button, gpointer data)
 }
 
 
+static gboolean ggz_check_resolvfd(GIOChannel * source, GIOCondition cond,
+				   gpointer data)
+{
+	ggz_resolver_work();
+	return 1;
+}
+
+
 static void login_start_session(void)
 {
 	GtkWidget *tmp;
@@ -410,6 +418,17 @@ static void login_start_session(void)
 
 	/* Start connection */
 	ggzcore_server_connect(ggz_gtk.server);
+
+	/* Asynchronous hostname lookups */
+	if (ggz_resolver_fd() != -1) {
+		GIOChannel *channel;
+
+		channel = g_io_channel_unix_new(ggz_resolver_fd());
+		guint tmp_tag = g_io_add_watch(channel, G_IO_IN,
+			ggz_check_resolvfd,
+			GINT_TO_POINTER(ggz_resolver_fd()));
+		g_io_channel_unref(channel);
+	}
 }
 
 

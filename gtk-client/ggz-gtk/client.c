@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 10276 2008-07-10 22:32:14Z jdorje $
+ * $Id: client.c 10510 2008-08-17 21:41:41Z josef $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -790,7 +790,7 @@ void ggz_gtk_initialize(gboolean reconnect,
 	ggzcore_conf_initialize(global_conf, user_conf);
 	g_free(user_conf);
 
-	opt.flags = GGZ_OPT_PARSER;
+	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_THREADED_IO;
 #if 0
 	/* Reconnect is disabled since the whole application locks up while
 	 * trying to reconnect.  If you try to connect to a different
