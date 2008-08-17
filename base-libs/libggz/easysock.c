@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 10130 2008-07-01 04:00:32Z jdorje $
+ * $Id: easysock.c 10508 2008-08-17 20:50:36Z josef $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -40,7 +40,7 @@ DEBUG_MEM
 
 #include "config.h"
 
-#ifdef GAI_A
+#if defined GAI_A || ASYNCNS
 #define _GNU_SOURCE
 #endif
 
@@ -61,6 +61,9 @@ DEBUG_MEM
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#endif
+#ifdef ASYNCNS
+#include <asyncns.h>
 #endif
 
 #include <stdio.h>
@@ -83,6 +86,13 @@ static ggzNetworkNotify _notify_func = NULL;
 static unsigned int ggz_alloc_limit = 32768;
 static unsigned int ggz_socketcreation = 0;
 static unsigned int ggz_socketport = 0;
+
+#ifdef ASYNCNS
+static asyncns_t *global_ans = NULL;
+#endif
+#ifdef GAI_A
+static struct gaicb *global_req = NULL;
+#endif
 
 
 int ggz_set_io_error_func(ggzIOError func)
@@ -134,6 +144,11 @@ static void ggz_network_shutdown(void)
 #ifdef HAVE_WINSOCK2_H
 	WSACleanup();
 #endif
+#ifdef ASYNCNS
+	if (global_ans) {
+		asyncns_free(global_ans);
+	}
+#endif
 }
 
 
@@ -154,6 +169,12 @@ int ggz_init_network(void)
 		initialized = 1;
 
 		atexit(ggz_network_shutdown);
+
+#ifdef ASYNCNS
+		if (!global_ans) {
+			global_ans = asyncns_new(2);
+		}
+#endif
 	}
 
 	return 0;
@@ -977,8 +998,6 @@ int ggz_set_network_notify_func(ggzNetworkNotify func)
 }
 
 #ifdef GAI_A
-static struct gaicb *global_req = NULL;
-
 static void ggz_resolved(sigval_t arg)
 {
 	char hostname[64];
@@ -1008,6 +1027,55 @@ static void ggz_resolved(sigval_t arg)
 }
 #endif
 
+int ggz_resolver_fd(void)
+{
+#ifdef ASYNCNS
+	ggz_init_network(); /* Just in case. */
+	ggz_debug(GGZ_SOCKET_DEBUG, "ASYNC: query fd");
+	return asyncns_fd(global_ans);
+#else
+	return -1;
+#endif
+}
+
+void ggz_resolver_work(void)
+{
+#ifdef ASYNCNS
+	ggz_debug(GGZ_SOCKET_DEBUG, "ASYNC: let resolver work");
+	asyncns_wait(global_ans, 1);
+
+	asyncns_query_t *query;
+	query = asyncns_getnext(global_ans);
+	if (query) {
+		struct addrinfo *res;
+		int ret;
+		char hostname[64];
+
+		ret = asyncns_getaddrinfo_done(global_ans, query, &res);
+		if (!ret) {
+			ret = getnameinfo(res->ai_addr, res->ai_addrlen,
+				hostname, sizeof(hostname), NULL, 0, NI_NUMERICHOST);
+			if (ret) {
+				(*_notify_func)(NULL, -1);
+			} else {
+				if(!ggz_socketcreation) {
+					(*_notify_func)(hostname, -1);
+				} else {
+					ret = ggz_make_socket(GGZ_SOCK_CLIENT, ggz_socketport, hostname);
+					ggz_socketcreation = 0;
+					(*_notify_func)(hostname, ret);
+				}
+			}
+			asyncns_freeaddrinfo(res);
+		} else {
+		  	(*_notify_func)(NULL, -1);
+		}
+	} else {
+		(*_notify_func)(NULL, -1);
+	}
+#endif
+}
+
 const char *ggz_resolvename(const char *name)
 {
 	if (_notify_func) {
@@ -1030,10 +1098,29 @@ const char *ggz_resolvename(const char *name)
 		if (ret) {
 		  	(*_notify_func)(name, -2);
 		}
+#elif ASYNCNS
+		/* Start asynchronous query */
+		ggz_debug(GGZ_SOCKET_DEBUG, "ASYNC: start query");
+		ggz_init_network(); /* Just in case. */
+
+		struct addrinfo hints;
+		memset(&hints, 0, sizeof(hints));
+		hints.ai_family = PF_UNSPEC;
+		hints.ai_socktype = SOCK_STREAM;
+		hints.ai_flags = AI_IDN;
+
+		asyncns_query_t *query;
+		ggz_debug(GGZ_SOCKET_DEBUG, "ASYNC: start query now");
+		query = asyncns_getaddrinfo(global_ans, name, NULL, &hints);
+		ggz_debug(GGZ_SOCKET_DEBUG, "ASYNC: answer: %p", query);
+		if (!query) {
+			(*_notify_func)(name, -2);
+		}
 #else
 		/* Pass back unresolved name */
 		(*_notify_func)(name, -2);
 #endif
+		/* Resolving is work in progress */
 		return NULL;
 	} else {
 		return name;

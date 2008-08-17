@@ -1506,6 +1506,22 @@ const char *ggz_resolvename(const char *name);
  */
 const char *ggz_getpeername(int fd, int resolve);
 
+/** @brief Worker descriptor for asynchronous resolver.
+ *
+ *  The file descriptor returned by this function should be
+ *  included into a library's or an application's mainloop.
+ *  If \b -1 is returned, no integration needs to be done.
+ */
+int ggz_resolver_fd(void);
+
+/** @brief Work on the asynchronous name resolver.
+ *
+ *  Whenever there is any activity on the file descriptor
+ *  returned by \ref ggz_resolver_fd, this method should
+ *  be called to handle the pending data on the descriptor.
+ */
+void ggz_resolver_work(void);
+
 
 /****************************************************************************
  * Creating a socket.

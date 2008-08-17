@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/23/00
- * $Id: module.c 10382 2008-07-23 22:37:51Z josef $
+ * $Id: module.c 10508 2008-08-17 20:50:36Z josef $
  *
  * This fils contains functions for handling client-side game modules
  *
@@ -613,6 +613,7 @@ void _ggzcore_module_cleanup(void)
 		ggz_list_free(module_list);
 	num_modules = 0;
 
+	// FIXME: abolish mod_handle and always close registry file immediately
 	ggz_conf_close(mod_handle);
 	mod_handle = -1;
 }

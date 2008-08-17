@@ -17,8 +17,8 @@ dnl
 dnl ------------------------------------------------------------------------
 dnl Content of this file:
 dnl ------------------------------------------------------------------------
-dnl AC_GGZ_ASYNC - find out if libanl is available which makes resolving
-dnl                non-blocking
+dnl AC_GGZ_ASYNC - find out if libanl or libasyncns is available which makes
+dnl                resolving non-blocking
 dnl                -> called automatically by AC_GGZ_PTHREADS
 dnl AC_GGZ_PTHREADS - look for a pthreads implementation
 dnl AC_GGZ_INTL - ensure proper i18n tools installation
@@ -29,7 +29,7 @@ dnl ------------------------------------------------------------------------
 dnl Check if asynchronous hostname lookups are possible
 dnl Automake variables: $(LIB_ASYNC)
 dnl Autoconf variables: $enable_anl
-dnl Defines: GAI_A
+dnl Defines: GAI_A or ASYNCNS
 dnl ------------------------------------------------------------------------
 dnl
 AC_DEFUN([AC_GGZ_ASYNC],
@@ -38,7 +38,16 @@ AC_DEFUN([AC_GGZ_ASYNC],
     AC_HELP_STRING([--enable-anl], [Enable asynchronous hostname lookups]),
     [enable_anl=$enableval],
     [enable_anl=no])
+
   if test $enable_anl != "no"; then
+    AC_CHECK_LIB(asyncns, asyncns_new,
+      [AC_DEFINE([ASYNCNS], 1, [Support for asynchronous lookups with asyncns])
+       enable_anl=yes
+       LIB_ASYNC="-lasyncns"],
+      [enable_anl=next])
+  fi
+
+  if test $enable_anl = "next"; then
     AC_CHECK_LIB(anl, getaddrinfo_a,
       [AC_DEFINE([GAI_A], 1, [Support for asynchronous hostname lookups])
        enable_anl=yes

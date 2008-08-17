@@ -89,6 +89,8 @@ global:
     ggz_remove_io_error_func;
     ggz_remove_io_exit_func;
     ggz_resolvename;
+    ggz_resolver_fd;
+    ggz_resolver_work;
     ggz_set_io_alloc_limit;
     ggz_set_io_error_func;
     ggz_set_io_exit_func;
