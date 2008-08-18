@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10443 2008-08-06 09:40:48Z oojah $
+ * $Id: ggzdb_pgsql.c 10512 2008-08-18 23:33:53Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -231,7 +231,7 @@ static int upgrade(PGconn *conn, const char *oldversion, const char *newversion)
 {
 	char upgradefile[1024];
 
-	snprintf(upgradefile, sizeof(upgradefile), "%s/upgrade_%s_%s.sql",
+	snprintf(upgradefile, sizeof(upgradefile), "%s/pgsql_upgrade_%s_%s.sql",
 		GGZDDATADIR, oldversion, newversion);
 
 	return setupschema(conn, upgradefile);
