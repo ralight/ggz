@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10315 2008-07-12 18:56:41Z oojah $
+ * $Id: ggzdb_mysql.c 10513 2008-08-19 11:54:12Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -176,10 +176,10 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	email_quoted = _ggzdb_escape(pe->email);
 
 	snprintf(query, sizeof(query), "INSERT INTO `users` "
-		"(`handle`, `password`, `name`, `email`, `lastlogin`, `perms`, `firstlogin`) VALUES "
-		"('%s', '%s', '%s', '%s', %li, %u, %li)",
+		"(`handle`, `password`, `name`, `email`, `lastlogin`, `perms`, `firstlogin`, `confirmed`) "
+		"VALUES ('%s', '%s', '%s', '%s', %li, %u, %li, %u)",
 		handle_quoted, password_quoted, name_quoted, email_quoted,
-		pe->last_login, pe->perms, time(NULL));
+		pe->last_login, pe->perms, time(NULL), pe->confirmed);
 
 	free(email_quoted);
 	free(name_quoted);
@@ -210,10 +210,12 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	char *handle_quoted;
 
 	handle_quoted = _ggzdb_escape(pe->handle);
-	snprintf(query, sizeof(query), "SELECT "
-		"`password`,`name`,`email`,`lastlogin`,`perms` FROM `users` WHERE "
-		"`handle` = %s('%s')",
+	snprintf(query, sizeof(query),
+		"SELECT "
+		"`password`,`name`,`email`,`lastlogin`,`perms`,`confirmed` "
+		"FROM `users` WHERE `handle` = %s('%s')",
 		lower(), handle_quoted);
+
 	free(handle_quoted);
 
 	pthread_mutex_lock(&mutex);
@@ -231,6 +233,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 				strncpy(pe->email, row[2], sizeof(pe->email));
 				pe->last_login = atol(row[3]);
 				pe->perms = atol(row[4]);
+				pe->confirmed = atol(row[5]);
 				mysql_free_result(res);
 				return GGZDB_NO_ERROR;
 			}
@@ -264,10 +267,13 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	name_quoted = _ggzdb_escape(pe->name);
 	email_quoted = _ggzdb_escape(pe->email);
 
-	snprintf(query, sizeof(query), "UPDATE `users` SET "
-		"`password`='%s',`name`='%s',`email`='%s',`lastlogin`=%li,`perms`=%u WHERE "
+	snprintf(query, sizeof(query),
+		"UPDATE `users` SET "
+		"`password`='%s',`name`='%s',`email`='%s',"
+		"`lastlogin`=%li,`perms`=%u,`confirmed`=%u WHERE "
 		"`handle`=%s('%s')",
-		password_quoted, name_quoted, email_quoted, pe->last_login, pe->perms,
+		password_quoted, name_quoted, email_quoted,
+		pe->last_login, pe->perms, pe->confirmed,
 		lower(), handle_quoted);
 
 	free(email_quoted);
@@ -298,8 +304,10 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 		mysql_free_result(iterres);
 	}
 
-	snprintf(query, sizeof(query), "SELECT "
-		"`id`,`handle`,`password`,`name`,`email`,`lastlogin`,`perms` FROM `users`");
+	snprintf(query, sizeof(query),
+		"SELECT "
+		"`id`,`handle`,`password`,`name`,`email`,`lastlogin`,`perms`,`confirmed`"
+		"FROM `users`");
 
 	pthread_mutex_lock(&mutex);
 	mysql_rc = mysql_query(conn, query);
@@ -316,6 +324,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 			strncpy(pe->email, row[4], sizeof(pe->email));
 			pe->last_login = atol(row[5]);
 			pe->perms = atol(row[6]);
+			pe->confirmed = atol(row[7]);
 			itercount = 0;
 			return GGZDB_NO_ERROR;
 		} else {
@@ -351,6 +360,7 @@ GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 		strncpy(pe->email, row[4], sizeof(pe->email));
 		pe->last_login = atol(row[5]);
 		pe->perms = atol(row[6]);
+		pe->confirmed = atol(row[7]);
 		return GGZDB_NO_ERROR;
 	} else {
 		mysql_free_result(iterres);
