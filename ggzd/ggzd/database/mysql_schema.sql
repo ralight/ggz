@@ -48,6 +48,12 @@ CREATE TABLE `stats` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+CREATE TABLE `control` (
+	`key` varchar(256),
+	`value` varchar(256)
+);
+
+
 CREATE TABLE `matches` (
 	`id` int(11) NOT NULL auto_increment,
 	`date` int(11) NOT NULL default '0',
