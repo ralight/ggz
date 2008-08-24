@@ -15,5 +15,5 @@ include $(top_srcdir)/m4/test.mk
 
 ACLOCAL_AMFLAGS = -I m4 -I m4/ggz
 
-pkgconfigdir = $(datadir)/pkgconfig
+pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = ggzdmod.pc
