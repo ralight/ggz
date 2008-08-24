@@ -41,3 +41,24 @@ GGZProfile Util::loadprofile(const KConfigGroup& cg) const
 
 	return profile;
 }
+
+QPixmap Util::composite(QPixmap bottom, QPixmap top)
+{
+	QPixmap comp;
+
+	QImage topim = top.toImage();
+	QImage bottomim = bottom.toImage();
+
+	for(int j = 0; j < bottom.height(); j++)
+	{
+		for(int i = 0; i < bottom.width(); i++)
+		{
+			if(qAlpha(topim.pixel(i, j)))
+				bottomim.setPixel(i, j, topim.pixel(i, j));
+		}
+	}
+
+	comp = comp.fromImage(bottomim);
+
+	return comp;
+}

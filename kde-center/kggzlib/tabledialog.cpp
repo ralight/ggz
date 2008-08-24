@@ -75,6 +75,8 @@ void TableDialog::load()
 		int open = cg.readEntry("open").toInt();
 		int bots = cg.readEntry("bots").toInt();
 		int reserved = cg.readEntry("reserved").toInt();
+		KGGZCore::Player p(QString(), KGGZCore::Player::player);
+		table.addPlayer(p);
 		for(int j = 0; j < reserved; j++)
 		{
 			KGGZCore::Player p(QString(), KGGZCore::Player::reserved);
@@ -98,6 +100,7 @@ void TableDialog::load()
 
 void TableDialog::slotManage()
 {
+	// FIXME: use m_table to determine current configuration
 	TableConfiguration dlg(this);
 	dlg.initLauncher(m_identity, m_gametype.maxPlayers(), m_gametype.maxBots());
 	QMap<QString, QString> namedbots = m_gametype.namedBots();

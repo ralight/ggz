@@ -3,8 +3,12 @@
 
 // KGGZ includes
 #include "qasyncpixmap.h"
+#include "util.h"
 #include <kggzcore/player.h>
 #include <kggzcore/table.h>
+
+// KDE includes
+#include <kstandarddirs.h>
 
 // Qt includes
 #include <qlistview.h>
@@ -31,17 +35,19 @@ public:
 
 	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 	{
+		KStandardDirs d;
+
 		if(option.state & QStyle::State_Selected)
 			painter->fillRect(option.rect, option.palette.highlight());
 
 		KGGZCore::Table table = index.data(TableRole).value<KGGZCore::Table>();
-		QPixmap pix = index.data(PixmapRole).value<QPixmap>();
+		//QPixmap pix = index.data(PixmapRole).value<QPixmap>();
 
 		int x = option.rect.left();
 		int y = option.rect.top();
 
-		QString infostring = QString("Playing against %1 players and %2 bots.").arg(
-			table.players().count()).arg(table.players().count());
+		int numplayers = 0;
+		int numbots = 0;
 
 		/*GGZProfile::LoginType logintype = profile->loginType();
 		if(logintype == GGZProfile::guest)
@@ -54,12 +60,44 @@ public:
 			loginstring = "Unconfigured login profile.";*/
 
 		painter->save();
-		painter->drawPixmap(x + 10, y + 29, pix);
+		for(int i = 0; i < table.players().size(); i++)
+		{
+			KGGZCore::Player player = table.players().at(i);
+			QString pixmap;
+			if(player.type() == KGGZCore::Player::open)
+			{
+				pixmap = "guest.png";
+				numplayers++;
+			}
+			else if(player.type() == KGGZCore::Player::reserved)
+			{
+				pixmap = "player.png";
+				numplayers++;
+			}
+			else if(player.type() == KGGZCore::Player::bot)
+			{
+				pixmap = "bot.png";
+				numbots++;
+			}
+			QPixmap pix(d.findResource("data", "kggzlib/players/" + pixmap));
+			if(player.type() == KGGZCore::Player::player)
+			{
+				QPixmap pix1 = QPixmap(d.findResource("data", "kggzlib/players/player.png"));
+				QPixmap pix2 = QPixmap(d.findResource("data", "kggzlib/players/you.png"));
+				pix = Util::composite(pix1, pix2);
+			}
+			painter->drawPixmap(x + 10 + i * 35, y + 60, pix);
+		}
+
+		QString infostring = QString("Playing against %1 players and %2 bots.").arg(
+			numplayers).arg(numbots);
+
+		//painter->drawPixmap(x + 10, y + 29, pix);
 		painter->setFont(QFont(QString(), 15));
-		painter->drawText(x + 50, y + 30, table.description());
+		painter->drawText(x + 10, y + 30, table.description());
 		painter->setFont(QFont(QString(), 8));
-		painter->drawText(x + 50, y + 50, "XXXXXXXXXXXXXXXXXXXXXXXXX");
-		painter->drawText(x + 50, y + 70, infostring);
+		//painter->drawText(x + 50, y + 50, "XXXXXXXXXXXXXXXXXXXXXXXXX");
+		painter->drawText(x + 10, y + 50, infostring);
 		painter->restore();
 	}
 

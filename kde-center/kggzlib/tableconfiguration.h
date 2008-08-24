@@ -79,7 +79,6 @@ class KGGZLIB_EXPORT TableConfiguration : public QDialog
 		// Return the i18n'd name of a seat type
 		QString typeName(SeatTypes seattype);
 		// Composite pixmaps (FIXME: taken from KGGZUsers)
-		QPixmap composite(QPixmap bottom, QPixmap top);
 		QPixmap greyscale(QPixmap orig);
 		// Prevent a name from being used again
 		//void addReservation(int id);

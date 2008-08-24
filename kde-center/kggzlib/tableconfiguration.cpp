@@ -1,6 +1,9 @@
 // Header file
 #include "tableconfiguration.h"
 
+// KGGZ includes
+#include "util.h"
+
 // KDE includes
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -170,7 +173,7 @@ void TableConfiguration::slotSelected(const QPoint& pos)
 		KStandardDirs d;
 		QPixmap pix = QPixmap(d.findResource("data", "kggzlib/players/player.png"));
 		QPixmap pix2 = QPixmap(d.findResource("data", "kggzlib/players/buddy.png"));
-		QPixmap pix3 = composite(pix, pix2);
+		QPixmap pix3 = Util::composite(pix, pix2);
 
 		for(int i = 0; i < m_buddies.size(); i++)
 		{
@@ -371,14 +374,14 @@ void TableConfiguration::setSeatType(int seat, SeatTypes seattype)
 	{
 		QPixmap pix1 = QPixmap(d.findResource("data", "kggzlib/players/player.png"));
 		QPixmap pix2 = QPixmap(d.findResource("data", "kggzlib/players/you.png"));
-		QPixmap pix3 = composite(pix1, pix2);
+		QPixmap pix3 = Util::composite(pix1, pix2);
 		item_player->setIcon(pix3);
 	}
 	else if(seattype == seatbuddyreserved)
 	{
 		QPixmap pix1 = QPixmap(d.findResource("data", "kggzlib/players/player.png"));
 		QPixmap pix2 = QPixmap(d.findResource("data", "kggzlib/players/buddy.png"));
-		QPixmap pix3 = composite(pix1, pix2);
+		QPixmap pix3 = Util::composite(pix1, pix2);
 		item_player->setIcon(pix3);
 	}
 	else if(seattype == seatunused)
@@ -491,28 +494,6 @@ void TableConfiguration::addBuddy(QString buddyname)
 void TableConfiguration::addGrubby(QString grubbyname)
 {
 	m_grubbies.append(grubbyname);
-}
-
-// FIXME: taken from KGGZUsers
-QPixmap TableConfiguration::composite(QPixmap bottom, QPixmap top)
-{
-	QPixmap comp;
-
-	QImage topim = top.toImage();
-	QImage bottomim = bottom.toImage();
-
-	for(int j = 0; j < bottom.height(); j++)
-	{
-		for(int i = 0; i < bottom.width(); i++)
-		{
-			if(qAlpha(topim.pixel(i, j)))
-				bottomim.setPixel(i, j, topim.pixel(i, j));
-		}
-	}
-
-	comp = comp.fromImage(bottomim);
-
-	return comp;
 }
 
 // FIXME: use kimagefx?
