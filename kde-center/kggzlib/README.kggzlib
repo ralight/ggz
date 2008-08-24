@@ -1,5 +1,6 @@
 This library provides a useful bunch of widgets and other classes
-which are used by KGGZ applications like Vencedor and Plasma-KGGZ.
+which are used by KGGZ applications like Vencedor and Plasma-KGGZ
+as well as inside games with embedded kggzcore support.
 
 General Qt extension classes
 ----------------------------
@@ -12,12 +13,19 @@ Connection dialog
  ggzserver.cpp/h -> representation of a GGZ server
  ggzprofile.cpp/h -> representation of a GGZ profile for a server
  serverlist.cpp/h -> list of servers
+ connectionprofiles.cpp/h -> editor for profiles
  connectiondialog.cpp/h -> main class
 
  roomselector.cpp/h
  serverselector.cpp/h
  configwidget.cpp/h
  util.cpp/h
+
+Table dialog
+------------
+ tableconfiguration.cpp/h -> editor for table configurations
+ tablelist.cpp/h -> list of table configurations
+ tabledialog.cpp/h -> main class
 
 Player list
 -----------

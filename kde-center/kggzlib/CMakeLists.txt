@@ -24,6 +24,8 @@ set(kggzlib_LIB_SRCS
 	kggzcorelayer.cpp
 	tableconfiguration.cpp
 	kggzaction.cpp
+	tablelist.cpp
+	tabledialog.cpp
 )
 
 kde4_add_library(kggzlib SHARED ${kggzlib_LIB_SRCS})
@@ -60,6 +62,8 @@ install(FILES
 	kggzlib_export.h
 	tableconfiguration.h
 	kggzaction.h
+	tablelist.h
+	tabledialog.h
 	DESTINATION ${INCLUDE_INSTALL_DIR}/kggzlib
 )
 
