@@ -24,28 +24,55 @@
 
 using namespace KGGZCore;
 
-Table::Table(QString description)
+Table::Table(const QString& description)
 {
 	m_description = description;
+}
+
+Table::Table()
+{
+}
+
+Table::Table(const Table& table)
+: QObject()
+{
+	init(table);
+}
+
+Table& Table::operator=(const Table& table)
+{
+	init(table);
+	return *this;
+}
+
+void Table::init(const Table& table)
+{
+	m_description = table.description();
+	m_players = table.players();
 }
 
 Table::~Table()
 {
 }
 
-QString Table::description()
+QString Table::description() const
 {
 	return m_description;
 }
 
-QList<Player*> Table::players()
+void Table::setSeats(QList<Player> seats)
 {
-	return m_players;
+	m_players = seats;
 }
 
-void Table::addPlayer(Player *p)
+void Table::addPlayer(const Player& p)
 {
 	m_players << p;
+}
+
+QList<Player> Table::players() const
+{
+	return m_players;
 }
 
 //void Table::launch(CoreClient *client)

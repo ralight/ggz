@@ -95,9 +95,9 @@ GGZRoom *RoomBase::room() const
 	return m_room;
 }
 
-QList<Player*> RoomBase::buildplayers()
+QList<Player> RoomBase::buildplayers()
 {
-	QList<Player*> players;
+	QList<Player> players;
 
 	for(int i = 0; i < ggzcore_room_get_num_players(m_room); i++)
 	{
@@ -106,28 +106,30 @@ QList<Player*> RoomBase::buildplayers()
 		//GGZSeatType type = ggzcore_player_get_type(player);
 		//KGGZCore::Player::PlayerType ktype = (KGGZCore::Player::PlayerType)type;
 		KGGZCore::Player::PlayerType ktype = KGGZCore::Player::none;
-		Player *p = new Player(name, ktype);
+		//Player *p = new Player(name, ktype);
+		Player p(name, ktype);
 		players << p;
 	}
 
 	return players;
 }
 
-QList<Table*> RoomBase::buildtables()
+QList<Table> RoomBase::buildtables()
 {
-	QList<Table*> tables;
+	QList<Table> tables;
 
 	for(int i = 0; i < ggzcore_room_get_num_tables(m_room); i++)
 	{
 		GGZTable *t = ggzcore_room_get_nth_table(m_room, i);
-		Table *table = new Table(ggzcore_table_get_desc(t));
+		Table table(ggzcore_table_get_desc(t));
 		for(int j = 0; j < ggzcore_table_get_num_seats(t); j++)
 		{
 			QString name = ggzcore_table_get_nth_player_name(t, j);
 			GGZSeatType type = ggzcore_table_get_nth_player_type(t, j);
 			KGGZCore::Player::PlayerType ktype = (KGGZCore::Player::PlayerType)type;
-			Player *p = new Player(name, ktype);
-			table->addPlayer(p);
+			//Player *p = new Player(name, ktype);
+			Player p(name, ktype);
+			table.addPlayer(p);
 		}
 		tables << table;
 	}

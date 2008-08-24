@@ -53,6 +53,8 @@ class KGGZCORE_EXPORT Player : public QObject
 		PlayerType type() const;
 
 	private:
+		void init(const Player& player);
+
 		QString m_name;
 		PlayerType m_type;
 };

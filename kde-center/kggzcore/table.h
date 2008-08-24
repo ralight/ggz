@@ -24,31 +24,38 @@
 #include <QString>
 #include <QObject>
 
+#include <kggzcore/player.h>
 #include "kggzcore_export.h"
 
 namespace KGGZCore
 {
 
-class Player;
-class CoreClient;
+//class CoreClient;
 
 class KGGZCORE_EXPORT Table : public QObject
 {
 	Q_OBJECT
 	public:
-		Table(QString description);
+		Table();
+		Table(const Table& table);
+		Table& operator=(const Table& table);
+
+		Table(const QString& description);
 		~Table();
 
-		QString description();
+		QString description() const;
 
-		QList<Player*> players();
-		void addPlayer(Player *player);
+		void setSeats(QList<Player> seats);
+		void addPlayer(const Player& player);
+		QList<Player> players() const;
 
 		//void launch(CoreClient *client);
 
 	private:
+		void init(const Table& table);
+
 		QString m_description;
-		QList<Player*> m_players;
+		QList<Player> m_players;
 };
 
 }

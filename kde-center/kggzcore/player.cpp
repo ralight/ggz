@@ -32,15 +32,19 @@ Player::Player(QString name, PlayerType type)
 Player::Player(const Player& player)
 : QObject()
 {
-	m_type = player.type();
-	m_name = player.name();
+	init(player);
 }
 
 Player& Player::operator=(const Player& player)
 {
+	init(player);
+	return *this;
+}
+
+void Player::init(const Player& player)
+{
 	m_type = player.type();
 	m_name = player.name();
-	return *this;
 }
 
 Player::~Player()

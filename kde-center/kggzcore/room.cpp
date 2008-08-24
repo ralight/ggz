@@ -53,12 +53,12 @@ bool Room::restricted()
 	return ggzcore_room_get_closed(m_base->room());
 }
 
-QList<Table*> Room::tables()
+QList<Table> Room::tables() const
 {
 	return m_tables;
 }
 
-QList<Player*> Room::players()
+QList<Player> Room::players() const
 {
 	return m_players;
 }
@@ -158,12 +158,12 @@ void Room::slotBaseRoom(int id, int code)
 	switch(xid)
 	{
 		case GGZ_PLAYER_LIST:
-			qDeleteAll(m_players);
+			//qDeleteAll(m_players);
 			m_players = m_base->buildplayers();
 			emit signalAnswer(playerlist);
 			break;
 		case GGZ_TABLE_LIST:
-			qDeleteAll(m_tables);
+			//qDeleteAll(m_tables);
 			m_tables = m_base->buildtables();
 			emit signalAnswer(tablelist);
 			break;
@@ -171,17 +171,17 @@ void Room::slotBaseRoom(int id, int code)
 			emit signalEvent(chat);
 			break;
 		case GGZ_ROOM_ENTER:
-			qDeleteAll(m_players);
+			//qDeleteAll(m_players);
 			m_players = m_base->buildplayers();
 			emit signalEvent(enter);
 			break;
 		case GGZ_ROOM_LEAVE:
-			qDeleteAll(m_players);
+			//qDeleteAll(m_players);
 			m_players = m_base->buildplayers();
 			emit signalEvent(leave);
 			break;
 		case GGZ_TABLE_UPDATE:
-			qDeleteAll(m_tables);
+			//qDeleteAll(m_tables);
 			m_tables = m_base->buildtables();
 			emit signalEvent(tableupdate);
 			break;

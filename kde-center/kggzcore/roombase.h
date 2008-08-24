@@ -45,8 +45,8 @@ class KGGZCORE_EXPORT RoomBase : public QObject
 		void setRoom(GGZRoom *room);
 		GGZRoom *room() const;
 
-		QList<Table*> buildtables();
-		QList<Player*> buildplayers();
+		QList<Table> buildtables();
+		QList<Player> buildplayers();
 
 		void setup(GGZGame *game);
 

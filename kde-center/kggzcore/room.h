@@ -26,6 +26,8 @@
 
 #include <kggzcore/error.h>
 #include <kggzcore/gametype.h>
+#include <kggzcore/table.h>
+#include <kggzcore/player.h>
 
 #include "kggzcore_export.h"
 
@@ -33,8 +35,6 @@ namespace KGGZCore
 {
 
 class RoomBase;
-class Table;
-class Player;
 
 class KGGZCORE_EXPORT Room : public QObject
 {
@@ -92,8 +92,8 @@ class KGGZCORE_EXPORT Room : public QObject
 		QString description();
 		bool restricted();
 
-		QList<Table*> tables();
-		QList<Player*> players();
+		QList<Table> tables() const;
+		QList<Player> players() const;
 
 		GameType gametype() const;
 
@@ -114,8 +114,8 @@ class KGGZCORE_EXPORT Room : public QObject
 
 	private:
 		RoomBase *m_base;
-		QList<Table*> m_tables;
-		QList<Player*> m_players;
+		QList<Table> m_tables;
+		QList<Player> m_players;
 };
 
 }
