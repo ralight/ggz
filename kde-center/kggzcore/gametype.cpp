@@ -144,3 +144,13 @@ bool GameType::allowPeers() const
 {
 	return m_allowpeers;
 }
+
+void GameType::addNamedBot(QString name, QString botclass)
+{
+	m_namedbots[name] = botclass;
+}
+
+QMap<QString, QString> GameType::namedBots() const
+{
+	return m_namedbots;
+}

@@ -8,6 +8,7 @@
 
 #include <kggzcore/coreclient.h>
 #include <kggzcore/player.h>
+#include <kggzcore/gametype.h>
 
 // KDE includes
 #include <kconfig.h>
@@ -78,6 +79,14 @@ void TableDialog::load()
 void TableDialog::slotManage()
 {
 	TableConfiguration tableconf(this);
+	tableconf.initLauncher(m_identity, m_gametype.maxPlayers(), m_gametype.maxBots());
+	QMap<QString, QString> namedbots = m_gametype.namedBots();
+	QMap<QString, QString>::const_iterator it = namedbots.begin();
+	while(it != namedbots.end())
+	{
+		tableconf.addBot(it.key(), it.value());
+		it++;
+	}
 	tableconf.exec();
 
 	load();
@@ -101,6 +110,16 @@ void TableDialog::slotUse()
 		m_username = profile.username();
 	}
 }*/
+
+void TableDialog::setGameType(const KGGZCore::GameType& gametype)
+{
+	m_gametype = gametype;
+}
+
+void TableDialog::setIdentity(QString identity)
+{
+	m_identity = identity;
+}
 
 QList<KGGZCore::Player> TableDialog::seats()
 {

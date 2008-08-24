@@ -23,13 +23,14 @@
 
 #include <QString>
 #include <QUrl>
+#include <QMap>
 
 #include "kggzcore_export.h"
 
 namespace KGGZCore
 {
 
-// FIXME: valid* methods and named bots stuff
+// FIXME: valid* methods
 
 class KGGZCORE_EXPORT GameType
 {
@@ -67,6 +68,9 @@ class KGGZCORE_EXPORT GameType
 		bool allowSpectators() const;
 		bool allowPeers() const;
 
+		void addNamedBot(QString name, QString botclass);
+		QMap<QString, QString> namedBots() const;
+
 	private:
 		QString m_name;
 		QString m_version;
@@ -82,6 +86,8 @@ class KGGZCORE_EXPORT GameType
 
 		bool m_allowspectators;
 		bool m_allowpeers;
+
+		QMap<QString, QString> m_namedbots;
 };
 
 }

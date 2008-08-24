@@ -112,6 +112,8 @@ void TableConfiguration::slotSelected(const QPoint& pos)
 
 	if(seat == 0)
 		return;
+	if(seat >= m_curplayers)
+		return;
 
 	QAction *action_seatbot = NULL;
 	QAction *action_seatopen = NULL;

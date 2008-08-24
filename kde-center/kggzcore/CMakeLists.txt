@@ -27,6 +27,7 @@ install(FILES
 	room.h
 	player.h
 	table.h
+	gametype.h
 	kggzcore_export.h
 	DESTINATION ${INCLUDE_INSTALL_DIR}/kggzcore
 )
