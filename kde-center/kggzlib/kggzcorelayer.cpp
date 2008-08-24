@@ -29,22 +29,22 @@ void KGGZCoreLayer::activity(QString activity)
 
 void KGGZCoreLayer::checkTables()
 {
-	QList<KGGZCore::Table*> tables = m_core->room()->tables();
+	QList<KGGZCore::Table> tables = m_core->room()->tables();
 	qDebug() << "#count:" << tables.size();
 	for(int i = 0; i < tables.size(); i++)
 	{
-		KGGZCore::Table *table = tables.at(i);
-		qDebug() << "# -" << table->description();
-		QList<KGGZCore::Player*> players = table->players();
+		KGGZCore::Table table = tables.at(i);
+		qDebug() << "# -" << table.description();
+		QList<KGGZCore::Player> players = table.players();
 		for(int j = 0; j < players.size(); j++)
 		{
-			KGGZCore::Player *p = players.at(j);
-			qDebug() << "#  -" << p->name() << p->type();
-			if(p->type() == KGGZCore::Player::reserved)
+			KGGZCore::Player p = players.at(j);
+			qDebug() << "#  -" << p.name() << p.type();
+			if(p.type() == KGGZCore::Player::reserved)
 			{
-				if(m_core->username() == p->name())
+				if(m_core->username() == p.name())
 				{
-					qDebug("~~~~ invitation to table %i (%s)!", i, qPrintable(table->description()));
+					qDebug("~~~~ invitation to table %i (%s)!", i, qPrintable(table.description()));
 				}
 			}
 		}

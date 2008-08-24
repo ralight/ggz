@@ -24,7 +24,8 @@ class KGGZLIB_EXPORT TableDialog : public QDialog
 		void setGameType(const KGGZCore::GameType& gametype);
 		void setIdentity(QString identity);
 
-		QList<KGGZCore::Player> seats();
+		QList<KGGZCore::Player> seats() const;
+		QString description() const;
 
 	private slots:
 		void slotManage();
@@ -39,6 +40,7 @@ class KGGZLIB_EXPORT TableDialog : public QDialog
 		QPushButton *m_use_button;
 		KGGZCore::GameType m_gametype;
 		QString m_identity;
+		QString m_description;
 };
 
 #endif

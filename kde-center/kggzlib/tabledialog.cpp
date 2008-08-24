@@ -8,6 +8,7 @@
 
 #include <kggzcore/coreclient.h>
 #include <kggzcore/player.h>
+#include <kggzcore/table.h>
 #include <kggzcore/gametype.h>
 
 // KDE includes
@@ -78,18 +79,37 @@ void TableDialog::load()
 
 void TableDialog::slotManage()
 {
-	TableConfiguration tableconf(this);
-	tableconf.initLauncher(m_identity, m_gametype.maxPlayers(), m_gametype.maxBots());
+	TableConfiguration dlg(this);
+	dlg.initLauncher(m_identity, m_gametype.maxPlayers(), m_gametype.maxBots());
 	QMap<QString, QString> namedbots = m_gametype.namedBots();
 	QMap<QString, QString>::const_iterator it = namedbots.begin();
 	while(it != namedbots.end())
 	{
-		tableconf.addBot(it.key(), it.value());
+		dlg.addBot(it.key(), it.value());
 		it++;
 	}
-	tableconf.exec();
+	if(dlg.exec() == QDialog::Accepted)
+	{
+		KGGZCore::Table table(dlg.description());
 
-	load();
+		QList<KGGZCore::Player> seats;
+		for(int i = 1; i < dlg.seats(); i++)
+		{
+			TableConfiguration::SeatTypes seattype = dlg.seatType(i);
+			if(seattype == TableConfiguration::seatopen)
+				seats << KGGZCore::Player(dlg.reservation(i), KGGZCore::Player::open);
+			else if(seattype == TableConfiguration::seatbot)
+				seats << KGGZCore::Player(dlg.reservation(i), KGGZCore::Player::bot);
+			else if(seattype == TableConfiguration::seatplayer)
+				seats << KGGZCore::Player(dlg.reservation(i), KGGZCore::Player::player);
+		}
+		seats.prepend(KGGZCore::Player(m_identity, KGGZCore::Player::player));
+		// FIXME: replace prepend() with correct seats[0]
+
+		table.setSeats(seats);
+		m_tablelist->addConfiguration(table);
+		//load();
+	}
 }
 
 void TableDialog::slotUse()
@@ -121,9 +141,15 @@ void TableDialog::setIdentity(QString identity)
 	m_identity = identity;
 }
 
-QList<KGGZCore::Player> TableDialog::seats()
+QList<KGGZCore::Player> TableDialog::seats() const
 {
 	QList<KGGZCore::Player> m_seats;
 	// FIXME: !!!
 	return m_seats;
 }
+
+QString TableDialog::description() const
+{
+	return m_description;
+}
+
