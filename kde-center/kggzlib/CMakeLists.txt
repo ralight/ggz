@@ -102,3 +102,5 @@ install(FILES
 	games/tictactoe.png
 	DESTINATION ${DATA_INSTALL_DIR}/kggzlib/games
 )
+
+install(FILES kggzlib.rc DESTINATION ${CONFIG_INSTALL_DIR})

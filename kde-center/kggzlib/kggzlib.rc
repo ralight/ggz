@@ -1,0 +1,16 @@
+[Table0]
+description=Play against a bot
+open=0
+bots=1
+reserved=0
+
+[Table1]
+description=Invite a friend
+open=0
+bots=0
+reserved=1
+
+[Table2]
+description=Custom table
+modifiable=true
+open=1

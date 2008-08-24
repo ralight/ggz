@@ -304,7 +304,7 @@ void KGGZCoreLayer::slotTableReady()
 
 void KGGZCoreLayer::configureTable(QList<KGGZCore::Player> seats)
 {
-	seats.prepend(KGGZCore::Player(m_core->username(), KGGZCore::Player::player));
+	//seats.prepend(KGGZCore::Player(m_core->username(), KGGZCore::Player::player));
 	m_seats = seats;
 }
  

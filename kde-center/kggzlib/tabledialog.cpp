@@ -49,7 +49,7 @@ TableDialog::TableDialog(QWidget *parent)
 	connect(m_use_button, SIGNAL(clicked()), SLOT(slotUse()));
 	connect(manage_button, SIGNAL(clicked()), SLOT(slotManage()));
 
-	//connect(m_serverlist, SIGNAL(signalSelected(const GGZProfile&, int)), SLOT(slotSelected(const GGZProfile&, int)));
+	connect(m_tablelist, SIGNAL(signalSelected(const KGGZCore::Table&, int)), SLOT(slotSelected(const KGGZCore::Table&, int)));
 
 	load();
 
@@ -61,8 +61,9 @@ TableDialog::TableDialog(QWidget *parent)
 void TableDialog::load()
 {
 	m_tablelist->clear();
+	m_mods.clear();
 
-	KSharedConfig::Ptr conf = KGlobal::config();
+	KSharedConfig::Ptr conf = KSharedConfig::openConfig("kggzlib.rc"); //KGlobal::config();
 	for(int i = 0; true; i++)
 	{
 		KConfigGroup cg = KConfigGroup(conf, "Table" + QString::number(i));
@@ -70,10 +71,28 @@ void TableDialog::load()
 		if(cg.keyList().size() == 0)
 			break;
 
-		//Util util;
-		//GGZProfile profile = util.loadprofile(cg);
-		//if(profile.configured())
-		//	addProfile(profile);
+		KGGZCore::Table table(cg.readEntry("description"));
+		int open = cg.readEntry("open").toInt();
+		int bots = cg.readEntry("bots").toInt();
+		int reserved = cg.readEntry("reserved").toInt();
+		for(int j = 0; j < reserved; j++)
+		{
+			KGGZCore::Player p(QString(), KGGZCore::Player::reserved);
+			table.addPlayer(p);
+		}
+		for(int j = 0; j < open; j++)
+		{
+			KGGZCore::Player p(QString(), KGGZCore::Player::open);
+			table.addPlayer(p);
+		}
+		for(int j = 0; j < bots; j++)
+		{
+			KGGZCore::Player p(QString(), KGGZCore::Player::bot);
+			table.addPlayer(p);
+		}
+		m_tablelist->addConfiguration(table);
+
+		m_mods.append(cg.readEntry("modifiable", true));
 	}
 }
 
@@ -118,18 +137,15 @@ void TableDialog::slotUse()
 	accept();
 }
 
-/*void TableDialog::slotSelected(const GGZProfile& profile, int pos)
+void TableDialog::slotSelected(const KGGZCore::Table& table, int pos)
 {
 	Q_UNUSED(pos);
 
-	bool enabled = (!profile.ggzServer().uri().isEmpty());
-	m_connect_button->setEnabled(enabled);
-	if(enabled)
-	{
-		m_uri = profile.ggzServer().uri();
-		m_username = profile.username();
-	}
-}*/
+	m_table = table;
+
+	bool enabled = (table.players().size() > 0);
+	m_use_button->setEnabled(enabled);
+}
 
 void TableDialog::setGameType(const KGGZCore::GameType& gametype)
 {
@@ -141,15 +157,8 @@ void TableDialog::setIdentity(QString identity)
 	m_identity = identity;
 }
 
-QList<KGGZCore::Player> TableDialog::seats() const
+KGGZCore::Table TableDialog::table() const
 {
-	QList<KGGZCore::Player> m_seats;
-	// FIXME: !!!
-	return m_seats;
-}
-
-QString TableDialog::description() const
-{
-	return m_description;
+	return m_table;
 }
 

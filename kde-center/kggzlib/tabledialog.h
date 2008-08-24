@@ -5,16 +5,12 @@
 #include <QDialog>
 
 #include <kggzcore/gametype.h>
+#include <kggzcore/table.h>
 
 #include "kggzlib_export.h"
 
 class TableList;
 class QPushButton;
-
-namespace KGGZCore
-{
-	class Player;
-}
 
 class KGGZLIB_EXPORT TableDialog : public QDialog
 {
@@ -24,13 +20,12 @@ class KGGZLIB_EXPORT TableDialog : public QDialog
 		void setGameType(const KGGZCore::GameType& gametype);
 		void setIdentity(QString identity);
 
-		QList<KGGZCore::Player> seats() const;
-		QString description() const;
+		KGGZCore::Table table() const;
 
 	private slots:
 		void slotManage();
 		void slotUse();
-		//void slotSelected(const GGZProfile& profile, int pos);
+		void slotSelected(const KGGZCore::Table& table, int pos);
 
 	private:
 		void load();
@@ -41,6 +36,8 @@ class KGGZLIB_EXPORT TableDialog : public QDialog
 		KGGZCore::GameType m_gametype;
 		QString m_identity;
 		QString m_description;
+		KGGZCore::Table m_table;
+		QList<bool> m_mods;
 };
 
 #endif

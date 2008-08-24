@@ -7,7 +7,7 @@
 #include "util.h"
 #include "ggzprofile.h"
 #include "kggzcorelayer.h"
-#include "tableconfiguration.h"
+#include "tabledialog.h"
 
 #include <kggzcore/coreclient.h>
 #include <kggzcore/player.h>
@@ -123,23 +123,16 @@ void ConnectionDialog::slotReady(bool ready)
 
 	if(ready)
 	{
-		TableConfiguration dlg(this);
-		// FIXME: use real numbers from ggzcore
-		dlg.initLauncher(m_username, 2, 1);
+		TableDialog dlg(this);
+		// FIXME: use real gametype from ggzcore
+		KGGZCore::GameType gametype;
+		gametype.setMaxPlayers(2);
+		gametype.setMaxBots(1);
+		dlg.setGameType(gametype);
+		dlg.setIdentity(m_username);
 		if(dlg.exec() == QDialog::Accepted)
 		{
-			QList<KGGZCore::Player> seats;
-			for(int i = 1; i < dlg.seats(); i++)
-			{
-				TableConfiguration::SeatTypes seattype = dlg.seatType(i);
-				if(seattype == TableConfiguration::seatopen)
-					seats << KGGZCore::Player(dlg.reservation(i), KGGZCore::Player::open);
-				else if(seattype == TableConfiguration::seatbot)
-					seats << KGGZCore::Player(dlg.reservation(i), KGGZCore::Player::bot);
-				else if(seattype == TableConfiguration::seatplayer)
-					seats << KGGZCore::Player(dlg.reservation(i), KGGZCore::Player::player);
-			}
-			m_corelayer->configureTable(seats);
+			m_corelayer->configureTable(dlg.table().players());
 
 			accept();
 		}
