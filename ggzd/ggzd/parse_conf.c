@@ -320,11 +320,11 @@ void parse_conf_file(void)
 	} else {
 		char *global_conf = ggz_strbuild("%s/ggzd.conf", GGZDCONFDIR);
 
-		if((c_handle = ggz_conf_parse(global_conf, GGZ_CONF_RDONLY)) >= 0)
+		if((c_handle = ggz_conf_parse(global_conf, GGZ_CONF_RDONLY | GGZ_CONF_TRY)) >= 0)
 			ggz_debug(GGZ_DBG_CONFIGURATION,
 				"Reading global conf file : %s", global_conf);
 		else
-			ggz_error_msg("WARNING:  No configuration file loaded!");
+			log_msg(GGZ_LOG_NOTICE, "Running in default configuration, please configure!");
 
 		ggz_free(global_conf);
 	}
