@@ -9,6 +9,7 @@
 
 // KDE includes
 #include <kstandarddirs.h>
+#include <klocale.h>
 
 // Qt includes
 #include <qlistview.h>
@@ -89,8 +90,13 @@ public:
 			painter->drawPixmap(x + 10 + i * 35, y + 60, pix);
 		}
 
-		QString infostring = QString("Playing against %1 players and %2 bots.").arg(
-			numplayers).arg(numbots);
+		QString infostring;
+		if((numbots > 0) && (numplayers > 0))
+			infostring = i18n("Playing against %1 players and %2 computer players.", numplayers, numbots);
+		else if(numbots > 0)
+			infostring = i18n("Playing alone against %1 computer players.", numbots);
+		else if(numplayers > 0)
+			infostring = i18n("Playing against %1 players.", numplayers);
 
 		//painter->drawPixmap(x + 10, y + 29, pix);
 		painter->setFont(QFont(QString(), 15));

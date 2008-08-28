@@ -127,7 +127,7 @@ void TableConfiguration::slotSelected(const QPoint& pos)
 	QMenu popup(this);
 	action_seatopen = popup.addAction(i18n("Open seat"));
 	if((m_curbots < m_maxbots) || ((m_curbots = m_maxbots) && (m_maxbots > 0)))
-		action_seatbot = popup.addAction(i18n("Bot player"));
+		action_seatbot = popup.addAction(i18n("Computer player"));
 
 	popup.addSeparator();
 	QMenu *reservemenu = popup.addMenu(i18n("Reservation"));
@@ -450,7 +450,7 @@ QString TableConfiguration::typeName(SeatTypes seattype)
 			ret = i18n("Open");
 			break;
 		case seatbot:
-			ret = i18n("Bot");
+			ret = i18n("Computer");
 			break;
 		case seatplayerreserved:
 			ret = i18n("Reserved");
