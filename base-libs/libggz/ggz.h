@@ -384,7 +384,8 @@ char *ggz_intlstring_translated(const ggz_intlstring *string, const char *lang);
 typedef enum {
 	GGZ_CONF_RDONLY = ((unsigned char) 0x01), /**< Read only */
 	GGZ_CONF_RDWR = ((unsigned char) 0x02),   /**< Read and write */
-	GGZ_CONF_CREATE = ((unsigned char) 0x04)  /**< Create file */
+	GGZ_CONF_CREATE = ((unsigned char) 0x04), /**< Create file */
+	GGZ_CONF_TRY = ((unsigned char) 0x08)     /**< Missing file is no error */
 } GGZConfType;
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 10206 2008-07-08 15:44:48Z jdorje $
+ * $Id: conf.c 10526 2008-08-28 18:38:07Z josef $
  *
  * Internal functions for handling configuration files
  *
@@ -590,7 +590,7 @@ int ggz_conf_parse(const char *path, const GGZConfType options)
 	GGZList		*section_list;
 	GGZListEntry	*file_entry;
 
-	int		opt_create, opt_rdonly, opt_rdwr;
+	int		opt_create, opt_rdonly, opt_rdwr, opt_try;
 	int		t_file;
 
 
@@ -602,8 +602,10 @@ int ggz_conf_parse(const char *path, const GGZConfType options)
 	opt_create = ((options & GGZ_CONF_CREATE) == GGZ_CONF_CREATE);
 	opt_rdonly = ((options & GGZ_CONF_RDONLY) == GGZ_CONF_RDONLY);
 	opt_rdwr = ((options & GGZ_CONF_RDWR) == GGZ_CONF_RDWR);
+	opt_try = ((options & GGZ_CONF_TRY) == GGZ_CONF_TRY);
 
 	if((opt_rdonly && (opt_rdwr || opt_create)) ||
+	   (opt_rdwr && opt_try) ||
 	   (!opt_rdonly && !opt_rdwr)) {
 		ggz_error_msg("ggzcore_conf_parse: Invalid options");
 		return -1;
@@ -627,7 +629,9 @@ int ggz_conf_parse(const char *path, const GGZConfType options)
 
 	/* Check read or writablity of file */
 	if(opt_rdonly && access(path, R_OK)) {
-		ggz_error_sys("Unable to read file %s", path);
+		if(!opt_try) {
+			ggz_error_sys("Unable to read file %s", path);
+		}
 		return -1;
 	}
 	if(opt_rdwr && access(path, R_OK | W_OK)) {
