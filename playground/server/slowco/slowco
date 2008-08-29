@@ -3,7 +3,7 @@
 
 # the interface
 iface=lo
-delay=220
+delay=2200
 
 # end of config section
 
