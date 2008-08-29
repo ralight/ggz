@@ -22,6 +22,9 @@ Contents right now:
 * events
   High-resolution timer for multiple reoccurring events
 
+* fdtrack
+  Tracking of where file descriptors are opened and closed
+
 * games
   A tiny wrapper for the Velena AI engine in ConnectX
 
@@ -34,6 +37,9 @@ Contents right now:
 * passwords
   Some checks so we can improve cracklib
   a few issues are written in the source file, see 'omnicrack'
+
+* slowco
+  Simulation of a sloooow network connection
 
 * udpgames
   Attempt to make playing UDP-based games on GGZ possible

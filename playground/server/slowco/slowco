@@ -1,0 +1,35 @@
+#!/bin/sh
+# derived from tutorial by pipitas
+
+# the interface
+iface=lo
+delay=220
+
+# end of config section
+
+cmd=$1
+ifaceopt=$2
+
+if [ -z $cmd ]; then
+	echo "Error: call slowco start|stop [iface]" 2>&1
+	exit 1
+fi
+if [ ! -z $ifaceopt ]; then
+	iface=$ifaceopt
+fi
+
+case $cmd in
+	start)
+		/sbin/tc qdisc add dev $iface root handle 1:0 netem delay ${delay}msec
+	;;
+	stop)
+		/sbin/tc qdisc del dev $iface root
+	;;
+	*)
+		echo "Error: unknown command $cmd" 2>&1
+		exit 1
+	;;
+esac
+
+/sbin/tc qdisc show dev $iface
+
