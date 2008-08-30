@@ -25,6 +25,32 @@ bring as many multiplayer features into as many games as possible!
 ** ggz-kde-center to complete the package list.
 ** Note that the final package structure might change.
 
+New and pending features in this snapshot release (0.99.5):
+
+TODO: This list is not yet finished!
+
+- {general} ggz-client-libs and libggz were replaced by ggz-base-libs
+- {general} ggz-gtk-games was merged into ggz-gtk-client
+- {general} several core clients are now 100% non-blocking
+
+- [ggz-base-libs] support for asynchronous name resolver, internal & asyncns
+- [ggz-base-libs] internal support for asynchronous connection creation
+- [ggz-base-libs] support for multiple ggz.modules files
+- [ggz-python] some extensions to ggz-faketable like player information
+- [ggz-community] dynamic room support to the web service API
+- [ggz-community] tournament setup now with player signups
+- [ggz-server] ongoing improvements and consolidation of database plugins
+- [ggz-docs] documentation of Connect the Dots savegame format
+- [ggz-utils] move of some of the runtime applications from ggz-client-libs
+- [ggz-kde-center] addition of CMake macros for to configure a GGZ build
+- [ggz-kde-center] embedded kggzcore support so that games can connect to GGZ
+- [ggz-kde-center] addition of generated protocol and GGZ highscores in KTicTacTux
+- [ggz-kde-center] addition Qt4-ported and much improved KDots game
+- [ggz-kde-center] new kggzlib connection profile dialogue with server list
+- [ggz-kde-center] new kggzlib integration class for kggzcore
+- [ggz-kde-center] new kggzlib table configuration dialogue
+- [ggz-kde-center] several further enhancements to kggzcore library
+
 New and pending features in this snapshot release (0.99.4):
 
 - {general} ggz-kde-{games,client} were replaced by ggz-kde-center
