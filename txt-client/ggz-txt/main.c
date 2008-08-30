@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 9786 2008-03-08 08:06:23Z josef $
+ * $Id: main.c 10541 2008-08-30 11:20:14Z josef $
  *
  * Main loop
  *
@@ -172,7 +172,7 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES;
+	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES | GGZ_OPT_THREADED_IO;
 	ggzcore_init(opt);
 	ggz_tls_init(NULL, NULL, NULL);
 
