@@ -33,6 +33,11 @@ what GGZ is!
 <br/>
 <a href="/about/"><img src="/pics/site/actions/messagebox_info.png"/></a>
 <br/><br/>
+<b>Watch</b><br/>
+screenshots and videos!
+<br/>
+<a href="/screenshots/"><img src="/pics/site/actions/edit-find.png"/></a>
+<br/><br/>
 <b>Download</b><br/>
 GGZ on your desktop!
 <br/>
