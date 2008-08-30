@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 10260 2008-07-10 01:04:50Z jdorje $
+ * $Id: game.c 10548 2008-08-30 15:36:53Z josef $
  *
  * Functions for handling game events
  *
@@ -238,6 +238,15 @@ static GGZHookReturn game_launch_fail(GGZGameEvent id,
 }
 
 
+static gboolean game_check_asyncfd(GIOChannel * source, GIOCondition cond,
+				   gpointer data)
+{
+	ggz_async_event();
+	g_source_remove(ggz_gtk.resolv_tag);
+	return 1;
+}
+
+
 static GGZHookReturn game_negotiated(GGZGameEvent id,
 				     const void *event_data,
 				     const void *user_data)
@@ -247,6 +256,16 @@ static GGZHookReturn game_negotiated(GGZGameEvent id,
 #ifndef HAVE_WINSOCK_H
 	ggzcore_server_create_channel(ggz_gtk.server);
 #endif
+
+	if(ggz_async_fd() != -1) {
+		GIOChannel *channel;
+
+		channel = g_io_channel_unix_new(ggz_async_fd());
+		ggz_gtk.resolv_tag = g_io_add_watch(channel, G_IO_IN,
+			game_check_asyncfd,
+			GINT_TO_POINTER(ggz_async_fd()));
+		g_io_channel_unref(channel);
+	}
 
 	return GGZ_HOOK_OK;
 }
