@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.h 9973 2008-05-07 07:15:27Z jdorje $
+ * $Id: server.h 10542 2008-08-30 11:27:50Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -145,5 +145,6 @@ void _ggzcore_server_queue_players_changed(GGZServer * server);
 /* Options enabled for ggzcore */
 void _ggzcore_server_set_reconnect(void);
 void _ggzcore_server_set_threaded_io(void);
+int _ggzcore_server_get_threaded_io(void);
 
 #endif /* __SERVER_H__ */

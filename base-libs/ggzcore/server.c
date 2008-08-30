@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 10539 2008-08-30 11:02:49Z josef $
+ * $Id: server.c 10542 2008-08-30 11:27:50Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -1677,5 +1677,10 @@ void _ggzcore_server_set_reconnect(void)
 void _ggzcore_server_set_threaded_io(void)
 {
 	thread_policy = 1;
+}
+
+int _ggzcore_server_get_threaded_io(void)
+{
+	return thread_policy;
 }
 
