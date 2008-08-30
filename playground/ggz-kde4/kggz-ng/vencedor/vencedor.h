@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include <kggzcore/coreclient.h>
+#include <kggzcore/room.h>
 
 class PlayerList;
 class RoomList;
@@ -19,8 +20,12 @@ class Vencedor : public QMainWindow
 		void slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
 		void slotAnswer(KGGZCore::CoreClient::AnswerMessage message);
 		void slotEvent(KGGZCore::CoreClient::EventMessage message);
+		void slotFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
+		void slotAnswer(KGGZCore::Room::AnswerMessage message);
+		void slotEvent(KGGZCore::Room::EventMessage message);
 
 		void slotConnect();
+		void slotAbout();
 
 	private:
 		KGGZCore::CoreClient *m_core;

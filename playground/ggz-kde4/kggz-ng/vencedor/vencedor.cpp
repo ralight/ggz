@@ -8,14 +8,19 @@
 #include <klocale.h>
 //#include <kactioncollection.h>
 #include <kstandarddirs.h>
+#include <kiconloader.h>
+#include <kicon.h>
+#include <kaboutapplicationdialog.h>
+#include <kcomponentdata.h>
 
-#include <kggzcore/room.h>
+//#include <kggzcore/room.h>
 #include <kggzcore/misc.h>
 
 #include <kggzlib/room.h>
 #include <kggzlib/roomlist.h>
+#include <kggzlib/player.h>
 #include <kggzlib/playerlist.h>
-#include <kggzlib/kggzaction.h>
+//#include <kggzlib/kggzaction.h>
 #include <kggzlib/connectiondialog.h>
 
 #include <kchat.h>
@@ -58,17 +63,36 @@ Vencedor::Vencedor(QString url)
 	centralwidget->setLayout(hbox);
 
 	QToolBar *toolbar = new QToolBar();
+	addToolBar(Qt::TopToolBarArea, toolbar);
+
 	// FIXME: This is too bizarre!
 	//toolbar->addAction(kggzAction(QString(), this, NULL, KActionCollection(), "connect-ggz"));
 	QString ggzicon = d.findResource("data", "kggzlib/games/chess.png");
 	QAction *action_connect = new QAction(QIcon(ggzicon), i18n("Connect to GGZ Gaming Zone"), this);
 	connect(action_connect, SIGNAL(triggered(bool)), SLOT(slotConnect()));
 	toolbar->addAction(action_connect);
-	addToolBar(Qt::TopToolBarArea, toolbar);
+
+	QPixmap icon_about = KIconLoader::global()->loadIcon("help-about", KIconLoader::Small);
+	QAction *action_about = new QAction(QIcon(icon_about), i18n("About Vencedor"), this);
+	connect(action_about, SIGNAL(triggered(bool)), SLOT(slotAbout()));
+	toolbar->addAction(action_about);
+
+	QPixmap icon_quit = KIconLoader::global()->loadIcon("application-exit", KIconLoader::Small);
+	QAction *action_quit = new QAction(QIcon(icon_quit), i18n("Quit"), this);
+	connect(action_quit, SIGNAL(triggered(bool)), SLOT(close()));
+	toolbar->addAction(action_quit);
 
 	setWindowTitle(i18n("Vencedor"));
 	resize(800, 700);
 	show();
+}
+
+void Vencedor::slotAbout()
+{
+	const KComponentData component = KGlobal::mainComponent();
+	const KAboutData *about = component.aboutData();
+	KAboutApplicationDialog dlg(about, this);
+	dlg.exec();
 }
 
 void Vencedor::slotConnect()
@@ -79,7 +103,7 @@ void Vencedor::slotConnect()
 
 void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZCore::Error::ErrorCode error)
 {
-	KGGZCore::Room *room;
+	//KGGZCore::Room *room;
 
 	Q_UNUSED(error);
 
@@ -93,7 +117,16 @@ void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZC
 			break;
 		case KGGZCore::CoreClient::roomenter:
 			//if(error == KGGZCore::Error::no_status)
-			room = m_core->room();
+			//room = m_core->room();
+			connect(m_core->room(),
+				SIGNAL(signalFeedback(KGGZCore::Room::FeedbackMessage, KGGZCore::Error::ErrorCode)),
+				SLOT(slotFeedback(KGGZCore::Room::FeedbackMessage, KGGZCore::Error::ErrorCode)));
+			connect(m_core->room(),
+				SIGNAL(signalAnswer(KGGZCore::Room::AnswerMessage)),
+				SLOT(slotAnswer(KGGZCore::Room::AnswerMessage)));
+			connect(m_core->room(),
+				SIGNAL(signalEvent(KGGZCore::Room::EventMessage)),
+				SLOT(slotEvent(KGGZCore::Room::EventMessage)));
 			break;
 		case KGGZCore::CoreClient::chat:
 			break;
@@ -142,6 +175,75 @@ void Vencedor::slotEvent(KGGZCore::CoreClient::EventMessage message)
 		case KGGZCore::CoreClient::protoerror:
 			break;
 		case KGGZCore::CoreClient::libraryerror:
+			break;
+	}
+}
+
+void Vencedor::slotFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::Error::ErrorCode error)
+{
+	// FIXME!
+	Q_UNUSED(error);
+
+	switch(message)
+	{
+		case KGGZCore::Room::tablelaunched:
+			//activity(i18n("A table has been launched"));
+			break;
+		case KGGZCore::Room::tablejoined:
+			break;
+		case KGGZCore::Room::tableleft:
+			break;
+	}
+}
+
+void Vencedor::slotAnswer(KGGZCore::Room::AnswerMessage message)
+{
+	QList<KGGZCore::Player> players;
+
+	switch(message)
+	{
+		case KGGZCore::Room::playerlist:
+			players = m_core->room()->players();
+			for(int i = 0; i < players.count(); i++)
+			{
+				KGGZCore::Player player = players.at(i);
+				Player *p = new Player(player.name());
+				m_players->addPlayer(p);
+			}
+			break;
+		case KGGZCore::Room::tablelist:
+			//qDebug() << "#tables";
+			//checkTables();
+			//roominfo();
+			break;
+	}
+}
+
+void Vencedor::slotEvent(KGGZCore::Room::EventMessage message)
+{
+	switch(message)
+	{
+		case KGGZCore::Room::chat:
+			//chat(i18n("Players are chatting..."));
+			break;
+		case KGGZCore::Room::enter:
+			break;
+		case KGGZCore::Room::leave:
+			break;
+		case KGGZCore::Room::tableupdate:
+			//qDebug() << "#tables(update)";
+			//checkTables();
+			//roominfo();
+			break;
+		case KGGZCore::Room::playerlag:
+			break;
+		case KGGZCore::Room::stats:
+			break;
+		case KGGZCore::Room::count:
+			break;
+		case KGGZCore::Room::perms:
+			break;
+		case KGGZCore::Room::libraryerror:
 			break;
 	}
 }
