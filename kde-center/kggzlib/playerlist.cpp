@@ -74,20 +74,7 @@ PlayerList::PlayerList()
 
 	setWindowTitle("GGZ gets a more flexible player list!");
 	resize(320, 300);
-	show();
-
-	Player *player1 = new Player("someadmin");
-	player1->setRole(Player::Admin);
-	player1->setStatistics("0-1-5");
-	player1->setLag(25);
-	player1->setRelation(Player::Buddy);
-	addPlayer(player1);
-
-	Player *player2 = new Player("somehost");
-	player2->setRole(Player::Host);
-	player2->setStatistics("12-4-5");
-	player2->setLag(69);
-	addPlayer(player2);
+	//show();
 }
 
 void PlayerList::addPlayer(Player *player)

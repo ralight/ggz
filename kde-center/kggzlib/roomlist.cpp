@@ -77,26 +77,7 @@ RoomList::RoomList()
 
 	setWindowTitle("GGZ gets a more flexible room list!");
 	resize(500, 400);
-	show();
-
-	Room *room1 = new Room("Tic-Tac-Toe");
-	room1->setLogo("tictactoe.png");
-	room1->setDescription("A room to do fun things in...");
-	room1->setPlayers(99);
-	room1->setFavourite(99);
-	addRoom(room1);
-
-	Room *room2 = new Room("Chess");
-	room2->setLogo("chess.png");
-	room2->setModule(true);
-	room2->setPlayers(42);
-	addRoom(room2);
-
-	Room *room3 = new Room("Connect The Dots");
-	room3->setLogo("dots.png");
-	room3->setDescription("Elite players only");
-	room3->setAccess(Room::Locked);
-	addRoom(room3);
+	//show();
 }
 
 void RoomList::addRoom(Room *room)
