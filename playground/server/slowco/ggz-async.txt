@@ -1,0 +1,30 @@
+Approaches to avoid blocking network operations in GGZ
+======================================================
+
+1) Resolving the name of the server, traditionally a blocking call with
+   gethostbyname() or getaddrinfo().
+   There are three ways to overcome this problem:
+   a) use getaddrinfo_a: this is broken, see server/async/issue.txt
+   b) use an external library: libggz can do that with libasyncns
+   c) use a thread which can block: libggz could do that with threaded connect
+
+   GGZ would use c) with the alternative of b) because it is more portable,
+   although it requires an extra dependency library.
+
+2) Connecting to the server, traditionally a blocking call with connect().
+   There is one way to overcome this problem:
+   a) use a thread which can block: libggz could do that with threaded connect
+
+   GGZ would use a) inside ggzcore so that all the way from the invocation of
+   ggzcore_server_connect() to the arrival of GGZ_CONNECTED nothing will
+   block and the application can do whatever it wants.
+
+3) Sending packets forth and back, traditionally blocking calls with read()
+   and write().
+   There are several ways to overcome this problem, including:
+   a) using quantised packets with the DIO protocol layer
+   b) using a SAX parser with an XML protocol layer
+
+   GGZ would use both methods in its games depending on what the game author
+   wants. Using GGZComm makes this an easy choice because the two protocol
+   implementations can be generated automatically and be switched quickly.
