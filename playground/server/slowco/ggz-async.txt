@@ -28,3 +28,37 @@ Approaches to avoid blocking network operations in GGZ
    GGZ would use both methods in its games depending on what the game author
    wants. Using GGZComm makes this an easy choice because the two protocol
    implementations can be generated automatically and be switched quickly.
+
+-----------------------------------------------------------------------------
+
+Notes on how libggz works:
+ - asynchrony can be proved by
+   - ggz_async, for resolver and connection (requires pthreads)
+   - libasyncns, for resolver only
+   - gai_a, for resolver only
+
+ - if ggz_resolvename() is called, it
+   - returns immediately with hostname instead of IP address
+     (if no asynchrony is available)
+   - returns immediately with NULL
+     (otherwise)
+   + invokes ggzNetworkNotify callback with its immediate return
+     argument or with the resolved IP address
+     (whenever the callback is set)
+   + notifies on ggz_async_fd() with GGZ_ASYNC_RESOLVER
+
+ - if ggz_make_socket() is called with GGZ_CLIENT_SOCK_ASYNC, it
+   - ignores the request to asynchrony, creates the socket in blocking
+     mode and returns it
+     (if no asynchrony is available)
+   - resolves the name first and returns GGZ_SOCKET_PENDING, and
+     creates the socket in blocking mode after this event
+     (if only gai_a or libasyncns are available)
+   - runs both name resolving and socket creation in another thread
+     and returns GGZ_SOCKET_PENDING
+     (if ggz_async is available)
+   + invokes ggzNetworkNotify callback with its immediate return
+     argument or with the resolved IP address
+     (whenever the callback is set)
+   + notifies on ggz_async_fd() with GGZ_ASYNC_RESOLVER and GGZ_ASYNC_CONNECT
+
