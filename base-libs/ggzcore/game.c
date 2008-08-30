@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 10147 2008-07-03 19:22:39Z jdorje $
+ * $Id: game.c 10550 2008-08-30 16:35:22Z josef $
  *
  * This fils contains functions for handling games being played
  *
@@ -440,12 +440,17 @@ static void _ggzcore_game_handle_state(GGZMod * mod, GGZModEvent event,
 
 	switch (*prev) {
 	case GGZMOD_STATE_CREATED:
-		ggz_debug(GGZCORE_DBG_GAME, "game negotiated");
-		_ggzcore_game_send_player_stats(game);
-		_ggzcore_game_event(game, GGZ_GAME_NEGOTIATED, NULL);
-		if (new != GGZMOD_STATE_CONNECTED) {
+		if (new == GGZMOD_STATE_DONE) {
+			/* This happens on a launch error */
+			_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL, NULL);
+			/* FIXME: should we call abort_game(game)? */
+		} else if (new != GGZMOD_STATE_CONNECTED) {
 			ggz_error_msg("Game changed state from created "
 				      "to %d.", new);
+		} else {
+			ggz_debug(GGZCORE_DBG_GAME, "game negotiated");
+			_ggzcore_game_send_player_stats(game);
+			_ggzcore_game_event(game, GGZ_GAME_NEGOTIATED, NULL);
 		}
 		break;
 	case GGZMOD_STATE_CONNECTED:
