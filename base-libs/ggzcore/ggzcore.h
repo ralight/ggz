@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 10375 2008-07-17 14:44:23Z josef $
+ * $Id: ggzcore.h 10547 2008-08-30 15:36:17Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -368,7 +368,9 @@ typedef enum {
 	 *  created.  This event will alert that the channel has been
 	 *  established.  The channel's FD should then be monitored for
 	 *  input, which should then be passed back to the server object
-	 *  for handling.
+	 *  for handling. Similar to GGZ_CONNECTED, the connection may
+	 *  still be established in the background, and ggz_async_fd()
+	 *  should be used to monitor it.
 	 *  @param data NULL
 	 *  @note This event is deprecated and should not be used.
 	 *  @see ggzcore_server_get_channel

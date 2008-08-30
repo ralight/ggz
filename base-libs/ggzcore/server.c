@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 10542 2008-08-30 11:27:50Z josef $
+ * $Id: server.c 10547 2008-08-30 15:36:17Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -1103,6 +1103,14 @@ static void connection_callback(const char *address, int fd)
 }
 
 
+static void channel_callback(const char *address, int fd)
+{
+	ggz_debug(GGZCORE_DBG_SERVER, "Channel created asynchronously");
+	_ggzcore_net_set_fd(reconnect_server->net, fd);
+	_ggzcore_server_event(reconnect_server, GGZ_CHANNEL_CONNECTED, NULL);
+}
+
+
 int _ggzcore_server_connect(GGZServer * server)
 {
 	int status;
@@ -1163,8 +1171,8 @@ int _ggzcore_server_create_channel(GGZServer *server)
 	port = _ggzcore_net_get_port(server->net);
 	_ggzcore_net_init(server->channel, server, host, port, 0);
 	status = _ggzcore_net_connect(server->channel);
-	
-	if (status < 0) {
+
+	if (status < 0 && status != GGZ_SOCKET_PENDING) {
 		ggz_debug(GGZCORE_DBG_SERVER, "Channel creation failed");
 #ifdef HAVE_HSTRERROR
 		errmsg = (char*)hstrerror(h_errno);
@@ -1175,8 +1183,16 @@ int _ggzcore_server_create_channel(GGZServer *server)
 		_ggzcore_server_event(server, GGZ_CHANNEL_FAIL, errmsg);
  	}
 	else {
-		ggz_debug(GGZCORE_DBG_SERVER, "Channel created");
-		_ggzcore_server_event(server, GGZ_CHANNEL_CONNECTED, NULL);
+		if (status != GGZ_SOCKET_PENDING) {
+			ggz_debug(GGZCORE_DBG_SERVER, "Channel created");
+			_ggzcore_server_event(server, GGZ_CHANNEL_CONNECTED, NULL);
+		} else {
+			if (thread_policy) {
+				ggz_set_network_notify_func(channel_callback);
+				reconnect_server = server;
+			}
+			ggz_debug(GGZCORE_DBG_SERVER, "Channel creation deferred");
+		}
  	}
 
 	return status;
@@ -1188,6 +1204,7 @@ int ggzcore_channel_connect(const char *host, unsigned int port,
 {
 	GGZServer *server;
 	int fd;
+	int ret;
 
 	/* Hack, hack, hack.  The below really needs to be fixed up with some
 	 * error handling.  There's also a major problem that it blocks the
@@ -1203,11 +1220,11 @@ int ggzcore_channel_connect(const char *host, unsigned int port,
 		return -1;
 	}
 
-	if (_ggzcore_server_connect(server) < 0) {
+	ret = _ggzcore_server_connect(server);
+	if (ret < 0 && ret != GGZ_SOCKET_PENDING) {
 		ggzcore_server_free(server);
 		return -1;
 	}
-	fd = _ggzcore_net_get_fd(server->net);
 
 	while (1) {
 		fd_set active_fd_set;
@@ -1215,10 +1232,15 @@ int ggzcore_channel_connect(const char *host, unsigned int port,
 		struct timeval timeout = {.tv_sec = 30,.tv_usec = 0 };
 
 		FD_ZERO(&active_fd_set);
-		FD_SET(fd, &active_fd_set);
+		if(ggz_async_fd() != -1) {
+			fd = ggz_async_fd();
+			FD_SET(fd, &active_fd_set);
+		} else {
+			fd = _ggzcore_net_get_fd(server->net);
+			FD_SET(fd, &active_fd_set);
+		}
 
-		status =
-		    select(fd + 1, &active_fd_set, NULL, NULL, &timeout);
+		status = select(fd + 1, &active_fd_set, NULL, NULL, &timeout);
 		if (status < 0) {
 			if (errno == EINTR)
 				continue;
@@ -1228,8 +1250,12 @@ int ggzcore_channel_connect(const char *host, unsigned int port,
 			/* Timed out. */
 			return -1;
 		} else if (status > 0 && FD_ISSET(fd, &active_fd_set)) {
-			if (ggzcore_server_read_data(server, fd) < 0) {
-				return -1;
+			if(ggz_async_fd() != -1) {
+				ggz_async_event();
+			} else {
+				if (ggzcore_server_read_data(server, fd) < 0) {
+					return -1;
+				}
 			}
 		}
 
