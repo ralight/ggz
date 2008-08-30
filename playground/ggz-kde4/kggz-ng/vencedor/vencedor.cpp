@@ -1,8 +1,13 @@
 #include "vencedor.h"
 
 #include <QLayout>
+#include <QToolBar>
+#include <QIcon>
+#include <QAction>
 
 #include <klocale.h>
+//#include <kactioncollection.h>
+#include <kstandarddirs.h>
 
 #include <kggzcore/room.h>
 #include <kggzcore/misc.h>
@@ -10,12 +15,16 @@
 #include <kggzlib/room.h>
 #include <kggzlib/roomlist.h>
 #include <kggzlib/playerlist.h>
+#include <kggzlib/kggzaction.h>
+#include <kggzlib/connectiondialog.h>
 
 #include <kchat.h>
 
 Vencedor::Vencedor(QString url)
 : QMainWindow()
 {
+	KStandardDirs d;
+
 	m_core = new KGGZCore::CoreClient(this);
 
 	connect(m_core,
@@ -48,9 +57,24 @@ Vencedor::Vencedor(QString url)
 
 	centralwidget->setLayout(hbox);
 
+	QToolBar *toolbar = new QToolBar();
+	// FIXME: This is too bizarre!
+	//toolbar->addAction(kggzAction(QString(), this, NULL, KActionCollection(), "connect-ggz"));
+	QString ggzicon = d.findResource("data", "kggzlib/games/chess.png");
+	QAction *action_connect = new QAction(QIcon(ggzicon), i18n("Connect to GGZ Gaming Zone"), this);
+	connect(action_connect, SIGNAL(triggered(bool)), SLOT(slotConnect()));
+	toolbar->addAction(action_connect);
+	addToolBar(Qt::TopToolBarArea, toolbar);
+
 	setWindowTitle(i18n("Vencedor"));
 	resize(800, 700);
 	show();
+}
+
+void Vencedor::slotConnect()
+{
+	ConnectionDialog dlg(this);
+	dlg.exec();
 }
 
 void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZCore::Error::ErrorCode error)

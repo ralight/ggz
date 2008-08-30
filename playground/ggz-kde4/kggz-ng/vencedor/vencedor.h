@@ -20,6 +20,8 @@ class Vencedor : public QMainWindow
 		void slotAnswer(KGGZCore::CoreClient::AnswerMessage message);
 		void slotEvent(KGGZCore::CoreClient::EventMessage message);
 
+		void slotConnect();
+
 	private:
 		KGGZCore::CoreClient *m_core;
 		KChat *m_chat;
