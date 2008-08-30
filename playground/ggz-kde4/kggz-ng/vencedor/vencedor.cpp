@@ -20,6 +20,7 @@
 #include <kggzlib/roomlist.h>
 #include <kggzlib/player.h>
 #include <kggzlib/playerlist.h>
+#include <kggzlib/tablelist.h>
 //#include <kggzlib/kggzaction.h>
 #include <kggzlib/connectiondialog.h>
 
@@ -50,11 +51,13 @@ Vencedor::Vencedor(QString url)
 
 	m_rooms = new RoomList();
 	m_players = new PlayerList();
+	m_tables = new TableList();
 	m_chat = new KChat(centralwidget, false);
 
 	QVBoxLayout *vbox = new QVBoxLayout();
 	vbox->addWidget(m_rooms);
 	vbox->addWidget(m_players);
+	vbox->addWidget(m_tables);
 
 	QHBoxLayout *hbox = new QHBoxLayout();
 	hbox->addLayout(vbox);
@@ -82,6 +85,14 @@ Vencedor::Vencedor(QString url)
 	connect(action_quit, SIGNAL(triggered(bool)), SLOT(close()));
 	toolbar->addAction(action_quit);
 
+	toolbar->addSeparator();
+
+	QPixmap icon_launch = KIconLoader::global()->loadIcon("start-here", KIconLoader::Small);
+	QAction *action_launch = new QAction(QIcon(icon_launch), i18n("Launch a new game"), this);
+	connect(action_launch, SIGNAL(triggered(bool)), SLOT(slotLaunch()));
+	action_launch->setEnabled(false);
+	toolbar->addAction(action_launch);
+
 	setWindowTitle(i18n("Vencedor"));
 	resize(800, 700);
 	show();
@@ -99,6 +110,10 @@ void Vencedor::slotConnect()
 {
 	ConnectionDialog dlg(this);
 	dlg.exec();
+}
+
+void Vencedor::slotLaunch()
+{
 }
 
 void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZCore::Error::ErrorCode error)
@@ -153,8 +168,8 @@ void Vencedor::slotAnswer(KGGZCore::CoreClient::AnswerMessage message)
 		case KGGZCore::CoreClient::typelist:
 			break;
 		case KGGZCore::CoreClient::motd:
-			qDebug("MOTD web url: %s", qPrintable(m_core->textmotd()));
-			qDebug("MOTD web text:\n%s", qPrintable(m_core->webmotd()));
+			qDebug("MOTD web url: %s", qPrintable(m_core->webmotd()));
+			qDebug("MOTD web text:\n%s", qPrintable(m_core->textmotd()));
 			break;
 	}
 }
@@ -199,6 +214,7 @@ void Vencedor::slotFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::E
 void Vencedor::slotAnswer(KGGZCore::Room::AnswerMessage message)
 {
 	QList<KGGZCore::Player> players;
+	QList<KGGZCore::Table> tables;
 
 	switch(message)
 	{
@@ -212,9 +228,12 @@ void Vencedor::slotAnswer(KGGZCore::Room::AnswerMessage message)
 			}
 			break;
 		case KGGZCore::Room::tablelist:
-			//qDebug() << "#tables";
-			//checkTables();
-			//roominfo();
+			tables = m_core->room()->tables();
+			for(int i = 0; i < tables.count(); i++)
+			{
+				KGGZCore::Table table = tables.at(i);
+				m_tables->addConfiguration(table);
+			}
 			break;
 	}
 }

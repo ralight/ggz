@@ -8,6 +8,7 @@
 
 class PlayerList;
 class RoomList;
+class TableList;
 class KChat;
 
 class Vencedor : public QMainWindow
@@ -26,12 +27,14 @@ class Vencedor : public QMainWindow
 
 		void slotConnect();
 		void slotAbout();
+		void slotLaunch();
 
 	private:
 		KGGZCore::CoreClient *m_core;
 		KChat *m_chat;
 		PlayerList *m_players;
 		RoomList *m_rooms;
+		TableList *m_tables;
 };
 
 #endif
