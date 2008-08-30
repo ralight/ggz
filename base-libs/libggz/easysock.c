@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 10508 2008-08-17 20:50:36Z josef $
+ * $Id: easysock.c 10536 2008-08-30 10:52:15Z josef $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -65,6 +65,9 @@ DEBUG_MEM
 #ifdef ASYNCNS
 #include <asyncns.h>
 #endif
+#ifndef NO_THREADING
+#include <pthread.h>
+#endif
 
 #include <stdio.h>
 #include <string.h>
@@ -80,13 +83,26 @@ DEBUG_MEM
 #define SA struct sockaddr  
 #define HOSTNAMELEN 1024
 
+/* Thread argument structure for connectorthread() */
+struct ggz_async_t
+{
+	const char *host;
+	int port;
+	int fd;
+	char *ipaddress;
+	pthread_mutex_t lock;
+	int notifyfd;
+};
+
 static ggzIOError _err_func = NULL;
 static ggzIOExit _exit_func = exit;
 static ggzNetworkNotify _notify_func = NULL;
 static unsigned int ggz_alloc_limit = 32768;
 static unsigned int ggz_socketcreation = 0;
 static unsigned int ggz_socketport = 0;
+static int ggz_makesocket_listener = -1;
 
+static struct ggz_async_t global_makesocket_data;
 #ifdef ASYNCNS
 static asyncns_t *global_ans = NULL;
 #endif
@@ -278,7 +294,7 @@ static int es_connect(const char *host, int port)
 	h = gethostbyname(host);
 	if (!h) {
 		if (_err_func) {
-			const char *msg = "could-not-create-socket-error";
+			const char *msg = "could-not-get-host-by-name-error";
 			(*_err_func) (msg, GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
 		}
 		return -1;
@@ -338,6 +354,88 @@ static int es_connect(const char *host, int port)
 }
 
 
+#ifndef NO_THREADING
+static void *connectorthread(void *arg)
+{
+	struct ggz_async_t *args;
+	int fd;
+	const char *address;
+	
+	args = (struct ggz_async_t*)arg;
+
+	if(args->fd != GGZ_SOCKET_RESOLVEONLY) {
+		fd = es_connect(args->host, args->port);
+
+		pthread_mutex_lock(&args->lock);
+		args->fd = fd;
+		pthread_mutex_unlock(&args->lock);
+		ggz_debug(GGZ_SOCKET_DEBUG, "[thread] connection fd: %i", args->fd);
+	} else {
+		address = ggz_resolvename(args->host, GGZ_RESOLVE_SYNC);
+
+		pthread_mutex_lock(&args->lock);
+		args->ipaddress = ggz_strdup(address);
+		pthread_mutex_unlock(&args->lock);
+		ggz_debug(GGZ_SOCKET_DEBUG, "[thread] ip address: %s", args->ipaddress);
+	}
+
+	ggz_debug(GGZ_SOCKET_DEBUG, "[thread] notify listeners");
+	write(args->notifyfd, "!", 1);
+	close(args->notifyfd);
+	return NULL;
+}
+#endif /* !NO_THREADING */
+
+static int es_threaded_connect(const char *host, int port, GGZSockType type, int socketcreation)
+{
+#ifdef NO_THREADING
+	return es_connect(host, port);
+#else
+	pthread_t t;
+	int ret;
+
+	int fd_pair[2];
+
+	if(type != GGZ_SOCK_CLIENT_ASYNC) {
+		return es_connect(host, port);
+	}
+
+	ret = socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair);
+	if(ret != 0) {
+		ggz_debug(GGZ_SOCKET_DEBUG, "{socketpair failed}");
+		return -1;
+	}
+
+	ggz_debug(GGZ_SOCKET_DEBUG, "[mainloop] listener = %i, notifier = %i",
+		fd_pair[0], fd_pair[1]);
+
+	global_makesocket_data.notifyfd = fd_pair[1];
+	global_makesocket_data.host = host;
+	global_makesocket_data.port = port;
+	if(socketcreation)
+		global_makesocket_data.fd = GGZ_SOCKET_PENDING;
+	else
+		global_makesocket_data.fd = GGZ_SOCKET_RESOLVEONLY;
+	global_makesocket_data.ipaddress = NULL;
+	ret = pthread_mutex_init(&global_makesocket_data.lock, NULL);
+	if(ret != 0) {
+		ggz_debug(GGZ_SOCKET_DEBUG, "{pthread_mutex_init failed}");
+		return -1;
+	}
+
+	ret = pthread_create(&t, NULL, connectorthread, &global_makesocket_data);
+	if(ret != 0) {
+		ggz_debug(GGZ_SOCKET_DEBUG, "{pthread_create failed}");
+		return -1;
+	}
+
+	ggz_makesocket_listener = fd_pair[0];
+	ggz_socketcreation = socketcreation;
+	return GGZ_SOCKET_PENDING;
+#endif
+}
+
+
 int ggz_make_socket(const GGZSockType type, const unsigned short port, 
 		   const char *server)
 {
@@ -359,13 +457,22 @@ int ggz_make_socket(const GGZSockType type, const unsigned short port,
 		break;
 
 	case GGZ_SOCK_CLIENT:
-		if ((_notify_func) && (!ggz_socketcreation)) {
+	case GGZ_SOCK_CLIENT_ASYNC:
+#if defined NO_THREADING && (defined ASYNCNS || defined GAI_A)
+		if ((type == GGZ_SOCK_CLIENT_ASYNC) && (!ggz_socketcreation)) {
 			ggz_socketcreation = 1;
 			ggz_socketport = port;
-			ggz_resolvename(server);
-			return -3;
+			server = ggz_resolvename(server, GGZ_RESOLVE_TRYASYNC);
+			if(!server) {
+				return GGZ_SOCKET_PENDING;
+			} else {
+				ggz_socketcreation = 0;
+				type = GGZ_SOCK_CLIENT;
+			}
 		}
-		if ( (sock = es_connect(server, port)) < 0) {
+#endif
+		sock = es_threaded_connect(server, port, type, 1);
+		if ((sock < 0) && (sock != GGZ_SOCKET_PENDING)) {
 			if (_err_func)
 				(*_err_func) (strerror(errno), GGZ_IO_CREATE, 
 					      sock, GGZ_DATA_NONE);
@@ -427,6 +534,9 @@ int ggz_make_unix_socket(const GGZSockType type, const char* name)
 					      sock, GGZ_DATA_NONE);
 			return -1;
 		}
+		break;
+	case GGZ_SOCK_CLIENT_ASYNC:
+		return -1;
 		break;
 	}
 	return sock;
@@ -1027,19 +1137,58 @@ static void ggz_resolved(sigval_t arg)
 }
 #endif
 
-int ggz_resolver_fd(void)
+int ggz_async_fd(void)
 {
-#ifdef ASYNCNS
 	ggz_init_network(); /* Just in case. */
+
+	/* Asynchronous socket creation with ggz_async */
+	if(ggz_makesocket_listener)
+		return ggz_makesocket_listener;
+
+#ifdef ASYNCNS
+	/* Asynchronous name resolver with libasyncns */
 	ggz_debug(GGZ_SOCKET_DEBUG, "ASYNC: query fd");
 	return asyncns_fd(global_ans);
 #else
+	/* For gai_a or if ggz_async is not available or not requested */
 	return -1;
 #endif
 }
 
-void ggz_resolver_work(void)
+GGZAsyncEvent ggz_async_event(void)
 {
+	GGZAsyncEvent event;
+
+	memset(&event, 0, sizeof(event));
+	event.type = GGZ_ASYNC_NOOP;
+
+	/* Asynchronous socket creation or name resolver with ggz_async */
+	if(ggz_makesocket_listener) {
+		if(!ggz_socketcreation) {
+			close(ggz_makesocket_listener);
+			ggz_makesocket_listener = -1;
+
+			event.type = GGZ_ASYNC_RESOLVER;
+			event.port = ggz_socketport;
+			event.address = global_makesocket_data.ipaddress;
+
+			if(_notify_func)
+				(*_notify_func)(event.address, GGZ_SOCKET_RESOLVEONLY);
+		} else {
+			close(ggz_makesocket_listener);
+			ggz_makesocket_listener = -1;
+			ggz_socketcreation = 0;
+
+			event.type = GGZ_ASYNC_CONNECT;
+			event.socket = global_makesocket_data.fd;
+
+			if(_notify_func)
+				(*_notify_func)(NULL, event.socket);
+		}
+		return event;
+	}
+
+	/* Asynchronous name resolver with libasyncns */
 #ifdef ASYNCNS
 	ggz_debug(GGZ_SOCKET_DEBUG, "ASYNC: let resolver work");
 	asyncns_wait(global_ans, 1);
@@ -1051,80 +1200,147 @@ void ggz_resolver_work(void)
 		int ret;
 		char hostname[64];
 
+		event.type = GGZ_ASYNC_RESOLVER;
+
 		ret = asyncns_getaddrinfo_done(global_ans, query, &res);
 		if (!ret) {
 			ret = getnameinfo(res->ai_addr, res->ai_addrlen,
 				hostname, sizeof(hostname), NULL, 0, NI_NUMERICHOST);
 			if (ret) {
-				(*_notify_func)(NULL, -1);
+				if(_notify_func)
+					(*_notify_func)(NULL, -1);
 			} else {
 				if(!ggz_socketcreation) {
-					(*_notify_func)(hostname, -1);
+					if(_notify_func)
+						(*_notify_func)(hostname, GGZ_SOCKET_RESOLVEONLY);
+
+					event.address = ggz_strdup(hostname);
+					event.port = ggz_socketport;
 				} else {
+					if(_notify_func)
+						(*_notify_func)(hostname, GGZ_SOCKET_PENDING);
+
+					/* Establish connection in blocking mode */
 					ret = ggz_make_socket(GGZ_SOCK_CLIENT, ggz_socketport, hostname);
 					ggz_socketcreation = 0;
-					(*_notify_func)(hostname, ret);
+
+					event.type = GGZ_ASYNC_CONNECT;
+					event.socket = ret;
+					if(_notify_func)
+						(*_notify_func)(hostname, ret);
 				}
 			}
 			asyncns_freeaddrinfo(res);
 		} else {
-		  	(*_notify_func)(NULL, -1);
+			if(_notify_func)
+		  		(*_notify_func)(NULL, -1);
 		}
 	} else {
-		(*_notify_func)(NULL, -1);
+		if(_notify_func)
+			(*_notify_func)(NULL, -1);
 	}
 #endif
+
+	return event;
 }
 
-const char *ggz_resolvename(const char *name)
+static const char *ggz_resolvename_blocking(const char *name)
 {
-	if (_notify_func) {
-#ifdef GAI_A
-	  	/* Start asynchronous lookup */
-	  	struct sigevent sigev;
-		struct gaicb *req;
-		int ret;
+	struct addrinfo hints, *res;
+	struct in_addr addr;
+	int ret;
+	const char *resolvedname;
 
-		req = ggz_malloc(sizeof(*req));
-		req->ar_name = name;
-		req->ar_service = NULL;
-		req->ar_request = NULL;
-		sigev.sigev_notify = SIGEV_THREAD;
-		sigev.sigev_value.sival_ptr = NULL;
-		sigev.sigev_notify_function = ggz_resolved;
-		sigev.sigev_notify_attributes = NULL;
-		global_req = req;
-		ret = getaddrinfo_a(GAI_NOWAIT, &req, 1, &sigev);
-		if (ret) {
-		  	(*_notify_func)(name, -2);
-		}
-#elif ASYNCNS
-		/* Start asynchronous query */
-		ggz_debug(GGZ_SOCKET_DEBUG, "ASYNC: start query");
-		ggz_init_network(); /* Just in case. */
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_family = AF_INET;
 
-		struct addrinfo hints;
-		memset(&hints, 0, sizeof(hints));
-		hints.ai_family = PF_UNSPEC;
-		hints.ai_socktype = SOCK_STREAM;
-		hints.ai_flags = AI_IDN;
+	ret = getaddrinfo(name, NULL, &hints, &res);
+	if(ret) {
+		ggz_debug(GGZ_SOCKET_DEBUG, "Cannot resolve '%s' in blocking mode.", name);
+		return ggz_strdup(name);
+	}
 
-		asyncns_query_t *query;
-		ggz_debug(GGZ_SOCKET_DEBUG, "ASYNC: start query now");
-		query = asyncns_getaddrinfo(global_ans, name, NULL, &hints);
-		ggz_debug(GGZ_SOCKET_DEBUG, "ASYNC: answer: %p", query);
-		if (!query) {
-			(*_notify_func)(name, -2);
-		}
-#else
-		/* Pass back unresolved name */
-		(*_notify_func)(name, -2);
-#endif
-		/* Resolving is work in progress */
-		return NULL;
+	addr.s_addr = ((struct sockaddr_in *)(res->ai_addr))->sin_addr.s_addr;
+	freeaddrinfo(res);
+
+	resolvedname = ggz_strdup(inet_ntoa(addr));
+	return resolvedname;
+}
+
+const char *ggz_resolvename(const char *name, GGZResolveType type)
+{
+	const char *resolvedname;
+	if(type == GGZ_RESOLVE_SYNC)
+	{
+		resolvedname = ggz_resolvename_blocking(name);
+		/*if (_notify_func)
+			(*_notify_func)(resolvedname, GGZ_SOCKET_RESOLVEONLY);*/
+		return resolvedname;
+	}
+
+#ifndef NO_THREADING
+	/* Start asynchronous lookup with ggz_async */
+	int sock = es_threaded_connect(name, 0, GGZ_SOCK_CLIENT_ASYNC, 0);
+	if(sock == GGZ_SOCKET_PENDING) {
+		resolvedname = NULL;
 	} else {
+		resolvedname = ggz_resolvename_blocking(name);
+		if (_notify_func)
+			(*_notify_func)(resolvedname, GGZ_SOCKET_RESOLVEONLY);
+	}
+	return resolvedname;
+#elif defined GAI_A
+  	/* Start asynchronous lookup with gai_a */
+  	struct sigevent sigev;
+	struct gaicb *req;
+	int ret;
+
+	req = ggz_malloc(sizeof(*req));
+	req->ar_name = name;
+	req->ar_service = NULL;
+	req->ar_request = NULL;
+	sigev.sigev_notify = SIGEV_THREAD;
+	sigev.sigev_value.sival_ptr = NULL;
+	sigev.sigev_notify_function = ggz_resolved;
+	sigev.sigev_notify_attributes = NULL;
+	global_req = req;
+	ret = getaddrinfo_a(GAI_NOWAIT, &req, 1, &sigev);
+	if (ret) {
+		/* Pass back unresolved name */
+	  	(*_notify_func)(name, -2);
 		return name;
 	}
+	/* Resolving is work in progress */
+	return NULL;
+#elif ASYNCNS
+	/* Start asynchronous query with libasyncns */
+	ggz_debug(GGZ_SOCKET_DEBUG, "ASYNC: start query");
+	ggz_init_network(); /* Just in case. */
+
+	struct addrinfo hints;
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = PF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_flags = AI_IDN;
+
+	asyncns_query_t *query;
+	ggz_debug(GGZ_SOCKET_DEBUG, "ASYNC: start query now");
+	query = asyncns_getaddrinfo(global_ans, name, NULL, &hints);
+	ggz_debug(GGZ_SOCKET_DEBUG, "ASYNC: answer: %p", query);
+	if (!query) {
+		/* Pass back unresolved name */
+		(*_notify_func)(name, -2);
+		return name;
+	}
+	/* Resolving is work in progress */
+	return NULL;
+#else
+	/* Pass back unresolved name */
+	if(_notify_func)
+		(*_notify_func)(name, -2);
+	return name;
+#endif
 }
 
 const char *ggz_getpeername(int fd, int resolve)
@@ -1147,7 +1363,7 @@ const char *ggz_getpeername(int fd, int resolve)
 	{
 		ip = (char*)ggz_malloc(HOSTNAMELEN);
 		ret = getnameinfo((struct sockaddr*)&addr, addrsize,
-			ip, HOSTNAMELEN, NULL, 0, NI_NUMERICHOST);
+			ip, HOSTNAMELEN, NULL, 0, 0);
 		if(ret != 0)
 		{
 				ggz_free(ip);

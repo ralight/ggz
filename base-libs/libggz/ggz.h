@@ -1461,7 +1461,7 @@ int ggz_init_network(void);
  *  This function type will be called whenever a hostname has been resolved
  *  or a socket has been created asynchronously.
  *  @param status The IP address of the host name
- *  @param socket File descriptor or error code like in ggz_make_socket
+ *  @param socket File descriptor or error code like in ggz_make_socket, or GGZ_SOCKET_RESOLVEONLY
  */
 typedef void (*ggzNetworkNotify) (const char *address, int socket);
 
@@ -1475,23 +1475,37 @@ typedef void (*ggzNetworkNotify) (const char *address, int socket);
  */
 int ggz_set_network_notify_func(ggzNetworkNotify func);
 
+/** @brief Type of socket creation.
+ *
+ *  Sockets can be created for servers or for clients.
+ */
+typedef enum {
+	GGZ_RESOLVE_SYNC,     /**< Conventional synchronous resolving */
+	GGZ_RESOLVE_ASYNC,    /**< Asynchronous resolving, may return unresolved name */
+	GGZ_RESOLVE_TRYASYNC  /**< Asynchronous resolving, may fall back to synchronous */
+} GGZResolveType;
+
 /** @brief Resolve a host name.
  *
  *  In order to prevent blocking GUIs, this function can handle
  *  resolving a hostname into a numerical address asynchronously.
  *  The notification function will be called whenever it finishes.
  *  It receives as its argument the address, which might still be the
- *  same hostname in the case of errors. The result should be passed
- *  to gethostbyname() to receive the network data structures.
- *  If no notification function is set, this function returns the hostname
- *  as it is, without any lookup. If no GAI support is available, but a
- *  notification function is set, it is called with the unresolved hostname,
- *  too.
+ *  same hostname in the case of errors when using \ref GGZ_RESOLVE_ASYNC.
+ *  This might also happen if no support for asynchronous name resolving
+ *  is available.
+ *  The result should in such a case be passed to gethostbyname() to receive
+ *  the network data structures.
+ *  If resolving is in progress, NULL is returned, and eventually
+ *  the callback will be invoked with GGZ_SOCKET_RESOLVEONLY.
+ *  Otherwise, the returned host name or IP address needs to be ggz_free()'d
+ *  by the receiver.
  *  @param name Hostname to resolve
  *  @return The hostname in case no notification function is set, or NULL
- *  @todo Should this resolve synchronously in the special cases above?
+ *  @see ggz_async_fd
+ *  @see ggz_async_event
  */
-const char *ggz_resolvename(const char *name);
+const char *ggz_resolvename(const char *name, GGZResolveType type);
 
 
 /** @brief Get the IP address or host name of a connected peer.
@@ -1507,21 +1521,49 @@ const char *ggz_resolvename(const char *name);
  */
 const char *ggz_getpeername(int fd, int resolve);
 
-/** @brief Worker descriptor for asynchronous resolver.
+/** @brief Worker descriptor for asynchronous resolver and socket creation.
  *
  *  The file descriptor returned by this function should be
  *  included into a library's or an application's mainloop.
  *  If \b -1 is returned, no integration needs to be done.
+ *  @note The descriptor can change over time, so one should always
+ *  call the function and not store its value.
  */
-int ggz_resolver_fd(void);
+int ggz_async_fd(void);
 
-/** @brief Work on the asynchronous name resolver.
+/** @brief Type of an asynchronous notification event.
+ *
+ *  @see GGZAsyncEvent
+ */
+typedef enum {
+	GGZ_ASYNC_RESOLVER, /**< A name was resolved. */
+	GGZ_ASYNC_CONNECT,  /**< A socket has been connected. */
+	GGZ_ASYNC_NOOP      /**< No event happened. */
+} GGZAsyncType;
+
+/** @brief An asynchronous notification event.
+ *
+ *  Events are returned by \ref ggz_async_event which is usually called
+ *  after activity on the file descriptor returned by \ref ggz_async_fd.
+ *  The data attached to these events is made available in addition to
+ *  possible callbacks like \ref ggzNetworkNotify.
+ */
+typedef struct {
+	GGZAsyncType type;   /**< Type of the event */
+	const char *address; /**< IP address, only for \ref GGZ_ASYNC_RESOLVER */
+	int port;            /**< Port, only for \ref GGZ_ASYNC_RESOLVER */
+	int socket;          /**< Socket, only for \ref GGZ_ASYNC_CONNECT */
+} GGZAsyncEvent;
+
+/** @brief Work on the asynchronous name resolver an socket creation.
  *
  *  Whenever there is any activity on the file descriptor
- *  returned by \ref ggz_resolver_fd, this method should
+ *  returned by \ref ggz_async_fd, this method should
  *  be called to handle the pending data on the descriptor.
+ *  If the event is of type \ref GGZ_ASYNC_RESOLVER, the address
+ *  field must be ggz_free()'d.
  */
-void ggz_resolver_work(void);
+GGZAsyncEvent ggz_async_event(void);
 
 
 /****************************************************************************
@@ -1541,8 +1583,13 @@ void ggz_resolver_work(void);
  */
 typedef enum {
 	GGZ_SOCK_SERVER, /**< Just listen on a particular port. */
-	GGZ_SOCK_CLIENT  /**< Connect to a particular port of a server. */
+	GGZ_SOCK_CLIENT,  /**< Connect to a particular port of a server. */
+	GGZ_SOCK_CLIENT_ASYNC /**< Establish an asynchronous connection. */
 } GGZSockType;
+
+/* Special values for ggz_make_socket() and ggzNetworkNotify() callback */
+#define GGZ_SOCKET_PENDING -3
+#define GGZ_SOCKET_RESOLVEONLY -4
 
 /** @brief Make a socket connection.
  *
@@ -1552,14 +1599,17 @@ typedef enum {
  *    - For a client socket, we'll connect to a server that is (hopefully)
  *      listening at the given port and hostname.
  *
- *  Note that when a ggzNetworkNotify callback has been set up, this function
- *  returns immediately and creates the socket later on.
+ *  Note that when an asynchronous connection is requested,
+ *  this function returns immediately and creates the socket later on.
+ *  To be notified about name resolving, the ggzNetworkNotify
+ *  callback can be set up. The use of \ref ggz_async_fd and
+ *  \ref ggz_async_work is required in that case.
  *
- *  @param type The type of socket (server or client)
+ *  @param type The type of socket (of type \ref GGZSockType)
  *  @param port The port to listen/connect to
  *  @param server The server hostname for clients, the interface address else
  *  @return File descriptor on success, -1 on creation error, -2 on lookup
- *  error, -3 when using asynchronous creation
+ *  error, -3 (GGZ_SOCKET_PENDING) when using asynchronous creation
  */
 int ggz_make_socket(const GGZSockType type, 
 		    const unsigned short port, 
@@ -1581,7 +1631,7 @@ int ggz_make_socket_or_die(const GGZSockType type,
  *      create it.
  *    - For a client socket, we connect to a pre-existing socket file.
  *
- *  @param type The type of socket (server or client)
+ *  @param type The type of socket (except for \ref GGZ_SOCK_CLIENT_ASYNC)
  *  @param name The name of the socket file
  *  @return The socket FD on success, -1 on error
  *  @note When possible, this should not be used.  Use socketpair() instead.
