@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 9786 2008-03-08 08:06:23Z josef $
+ * $Id: server.c 10540 2008-08-30 11:16:58Z josef $
  *
  * Functions for handling server events
  *
@@ -88,6 +88,13 @@ void server_progresswait(void)
 	output_debug("queue: free!");
 }
 
+static void asyncconnection(void)
+{
+	output_debug("async connection callback");
+	ggz_async_event();
+	loop_remove_fd(ggz_async_fd());
+}
+
 void server_init(char *host, int port, GGZLoginType type, char *login,
 		 char *password, int usetls, char *email)
 {
@@ -105,6 +112,9 @@ void server_init(char *host, int port, GGZLoginType type, char *login,
 		ggz_free(sessiondump);
 
 	ggzcore_server_connect(server);
+
+	if (ggz_async_fd() != -1)
+		loop_add_fd(ggz_async_fd(), asyncconnection, NULL);
 }
 
 

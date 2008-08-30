@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 9786 2008-03-08 08:06:23Z josef $
+ * $Id: output.c 10540 2008-08-30 11:16:58Z josef $
  *
  * Functions for display text/messages
  *
@@ -139,6 +139,7 @@ void output_banner(void)
 	output_text(_("--Maintained by the GGZ Gaming Zone developers (C) 2001 - 2005"));
 	output_text(_("--Type /help to see a list of possible commands."));
 
+	output_debug("This is a development version with debugging messages.");
 	output_debug("using tls handler: %s", ggz_tls_support_name());
 }
 
