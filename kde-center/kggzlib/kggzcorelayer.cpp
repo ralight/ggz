@@ -68,7 +68,7 @@ void KGGZCoreLayer::ggzcore(QString uri)
 	activity(i18n("Connecting..."));
 
 	m_core->setUrl(uri);
-	m_core->setUsername("foo-dev");
+	m_core->setUsername("foo-dev"); // FIXME: always give fully-qualified URLs
 	m_core->initiateLogin();
 } 
  
