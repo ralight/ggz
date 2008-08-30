@@ -21,6 +21,9 @@ Compares es_connect() to es_threaded_connect().
 
 #include <pthread.h>
 
+/* If set to 1, use select() instead of lock & variable check */
+#define INTEGRATION_FD 1
+
 static int es_connect(const char *host, int port)
 {
 	int sockfd;
@@ -34,14 +37,13 @@ static int es_connect(const char *host, int port)
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
 
-	printf("getaddrinfo...\n");
 	if ((n = getaddrinfo(host, serv, &hints, &res)) != 0) {
+		printf("{getaddrinfo failed!}");
 		return -1;
 	}
 
 	ressave = res;
 
-	printf("check result set...\n");
 	do {
 		sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 		if (sockfd < 0)
@@ -58,7 +60,6 @@ static int es_connect(const char *host, int port)
 
 	freeaddrinfo(ressave);
 
-	printf("done...\n");
 	return(sockfd);
 }
 
@@ -68,6 +69,7 @@ struct conn_t
 	int port;
 	int fd;
 	pthread_mutex_t lock;
+	int notifyfd;
 };
 
 static void *connectorthread(void *arg)
@@ -82,17 +84,49 @@ static void *connectorthread(void *arg)
 	pthread_mutex_lock(&args->lock);
 	args->fd = fd;
 	pthread_mutex_unlock(&args->lock);
+	printf("[thread] connection fd: %i\n", args->fd);
 
-	printf("FD(async): %i\n", args->fd);
+#if INTEGRATION_FD
+	printf("[thread] notify listeners\n");
+	write(args->notifyfd, "!", 1);
+	close(args->notifyfd);
+#endif
 }
 
-static int es_threaded_ready(struct conn_t *args)
+static int es_threaded_ready(struct conn_t *args, int pollfd)
 {
 	int ret = 0;
+#if INTEGRATION_FD
+	fd_set set;
+	struct timeval zeroval;
+
+	FD_ZERO(&set);
+	FD_SET(pollfd, &set);
+	zeroval.tv_sec = 0;
+	zeroval.tv_usec = 0;
+	ret = select(pollfd + 1, &set, NULL, NULL, &zeroval);
+	if(ret > 0)
+	{
+		printf("[mainloop-check] Got notification through listener=%i\n", ret);
+		if(FD_ISSET(pollfd, &set))
+		{
+			char buf;
+			read(pollfd, &buf, 1);
+			printf("[mainloop-check] Message: [%i]\n", (char)buf);
+		}
+		close(pollfd);
+		ret = 1;
+	}
+	else
+	{
+		ret = 0;
+	}
+#else
 	pthread_mutex_lock(&args->lock);
 	if(args->fd != -1)
 		ret = 1;
 	pthread_mutex_unlock(&args->lock);
+#endif
 	return ret;
 }
 
@@ -100,21 +134,48 @@ static int es_threaded_connect(const char *host, int port)
 {
 	pthread_t t;
 	struct conn_t args;
+	int ret;
+	int pollfd = -1;
 
-	printf("-- assign\n");
+#if INTEGRATION_FD
+	int fd_pair[2];
+
+	ret = socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair);
+	if(ret != 0)
+	{
+		printf("{socketpair failed}");
+		return -1;
+	}
+	args.notifyfd = fd_pair[1];
+
+	printf("[mainloop] listener = %i, notifier = %i\n",
+		fd_pair[0], fd_pair[1]);
+#endif
+
 	args.host = host;
 	args.port = port;
 	args.fd = -1;
-	printf("-- mutex_init\n");
-	pthread_mutex_init(&args.lock, NULL);
-
-	printf("-- thread_create\n");
-	pthread_create(&t, NULL, connectorthread, &args);
-
-	printf("-- while...\n");
-	while(!es_threaded_ready(&args))
+	ret = pthread_mutex_init(&args.lock, NULL);
+	if(ret != 0)
 	{
-		printf("...\n");
+		printf("{pthread_mutex_init failed}");
+		return -1;
+	}
+
+	ret = pthread_create(&t, NULL, connectorthread, &args);
+	if(ret != 0)
+	{
+		printf("{pthread_create failed}");
+		return -1;
+	}
+
+#if INTEGRATION_FD
+	pollfd = fd_pair[0];
+#endif
+
+	while(!es_threaded_ready(&args, pollfd))
+	{
+		printf("[mainloop] ...\n");
 		usleep(250000);
 	}
 
@@ -126,10 +187,17 @@ int main(int argc, char *argv[])
 	int fd;
 
 	setbuf(stdout, NULL);
+
+	printf(">> es_connect (blocking)\n");
 	fd = es_connect("localhost", 80);
-	printf("FD(es_connect): %i\n", fd);
+	printf("<< FD(es_connect): %i\n", fd);
+	close(fd);
+
+	printf(">> es_threaded_connect (asynchronous)\n");
 	fd = es_threaded_connect("localhost", 80);
-	printf("FD(es_threaded_connect): %i\n", fd);
+	printf("<< FD(es_threaded_connect): %i\n", fd);
+	close(fd);
+
 	return 0;
 }
 
