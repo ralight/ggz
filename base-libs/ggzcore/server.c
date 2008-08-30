@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 10547 2008-08-30 15:36:17Z josef $
+ * $Id: server.c 10549 2008-08-30 16:10:17Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -1106,7 +1106,7 @@ static void connection_callback(const char *address, int fd)
 static void channel_callback(const char *address, int fd)
 {
 	ggz_debug(GGZCORE_DBG_SERVER, "Channel created asynchronously");
-	_ggzcore_net_set_fd(reconnect_server->net, fd);
+	_ggzcore_net_set_fd(reconnect_server->channel, fd);
 	_ggzcore_server_event(reconnect_server, GGZ_CHANNEL_CONNECTED, NULL);
 }
 
