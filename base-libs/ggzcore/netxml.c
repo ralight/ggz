@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 10268 2008-07-10 20:31:20Z jdorje $
+ * $Id: netxml.c 10539 2008-08-30 11:02:49Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -362,10 +362,12 @@ int _ggzcore_net_connect(GGZNet * net)
 {
 	ggz_debug(GGZCORE_DBG_NET, "Connecting to %s:%d",
 		  net->host, net->port);
-	net->fd = ggz_make_socket(GGZ_SOCK_CLIENT, net->port, net->host);
+	net->fd = ggz_make_socket(GGZ_SOCK_CLIENT_ASYNC, net->port, net->host);
 
 	if (net->fd >= 0)
 		return 0;	/* success */
+	else if (net->fd == GGZ_SOCKET_PENDING)
+		return net->fd; /* asynchronous deferral */
 	else
 		return net->fd;	/* error */
 }

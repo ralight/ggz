@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 10269 2008-07-10 20:36:27Z jdorje $
+ * $Id: server.c 10539 2008-08-30 11:02:49Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -1124,7 +1124,7 @@ int _ggzcore_server_connect(GGZServer * server)
 		status = _ggzcore_net_get_fd(server->net);
 	}
 
-	if (status == -3) {
+	if (status == GGZ_SOCKET_PENDING) {
 		/* Asynchronous lookup */
 		/*printf("<gai> start lookup\n");*/
 		return 0;
