@@ -3,9 +3,13 @@
 #include <QApplication>
 #include <QTextCodec>
 
+#include <kcomponentdata.h>
+
 int main(int argc, char **argv)
 {
 	QApplication app(argc, argv);
+
+	KComponentData data("vencedor");
 
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("utf-8"));
 

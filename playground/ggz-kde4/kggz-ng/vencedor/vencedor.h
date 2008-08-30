@@ -5,7 +5,9 @@
 
 #include <kggzcore/coreclient.h>
 
-class QTreeWidget;
+class PlayerList;
+class RoomList;
+class KChat;
 
 class Vencedor : public QMainWindow
 {
@@ -20,7 +22,9 @@ class Vencedor : public QMainWindow
 
 	private:
 		KGGZCore::CoreClient *m_core;
-		QTreeWidget *m_roomwidget;
+		KChat *m_chat;
+		PlayerList *m_players;
+		RoomList *m_rooms;
 };
 
 #endif

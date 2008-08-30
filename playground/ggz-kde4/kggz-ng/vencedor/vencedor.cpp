@@ -1,10 +1,17 @@
 #include "vencedor.h"
 
-#include <QTreeWidget>
 #include <QLayout>
+
+#include <klocale.h>
 
 #include <kggzcore/room.h>
 #include <kggzcore/misc.h>
+
+#include <kggzlib/room.h>
+#include <kggzlib/roomlist.h>
+#include <kggzlib/playerlist.h>
+
+#include <kchat.h>
 
 Vencedor::Vencedor(QString url)
 : QMainWindow()
@@ -27,16 +34,22 @@ Vencedor::Vencedor(QString url)
 	QWidget *centralwidget = new QWidget();
 	setCentralWidget(centralwidget);
 
-	m_roomwidget = new QTreeWidget();
-	m_roomwidget->setColumnCount(1);
-	m_roomwidget->setHeaderLabels(QStringList("Rooms"));
+	m_rooms = new RoomList();
+	m_players = new PlayerList();
+	m_chat = new KChat(centralwidget, false);
 
-	QVBoxLayout *layout = new QVBoxLayout();
-	layout->addWidget(m_roomwidget);
-	//layout->addStretch();
-	centralwidget->setLayout(layout);
+	QVBoxLayout *vbox = new QVBoxLayout();
+	vbox->addWidget(m_rooms);
+	vbox->addWidget(m_players);
 
-	setWindowTitle("Vencedor");
+	QHBoxLayout *hbox = new QHBoxLayout();
+	hbox->addLayout(vbox);
+	hbox->addWidget(m_chat);
+
+	centralwidget->setLayout(hbox);
+
+	setWindowTitle(i18n("Vencedor"));
+	resize(800, 700);
 	show();
 }
 
@@ -69,18 +82,16 @@ void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZC
 
 void Vencedor::slotAnswer(KGGZCore::CoreClient::AnswerMessage message)
 {
-	QList<QTreeWidgetItem*> items;
-
 	switch(message)
 	{
 		case KGGZCore::CoreClient::roomlist:
 			m_core->initiateRoomChange(m_core->roomnames().at(0));
 			for(int i = 0; i < m_core->roomnames().count(); i++)
 			{
-				items.append(new QTreeWidgetItem((QTreeWidget*)0,
-					QStringList(m_core->roomnames().at(i))));
+				Room *room = new Room(m_core->roomnames().at(i));
+				room->setPlayers(0);
+				m_rooms->addRoom(room);
 			}
-			m_roomwidget->insertTopLevelItems(0, items);
 			break;
 		case KGGZCore::CoreClient::typelist:
 			break;
