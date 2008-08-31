@@ -41,6 +41,7 @@ Players represent registered players on GGZ. They can have different privilege
 levels, for example normal players, hosts and administrators, and they can be
 bots (chat bots and game AI players). Guest players, however, will not appear
 in the database.
+For registered players, lists of buddies and ignored players can be stored.
 <br/><br/>
 
 <i>/players (GET)</i>
@@ -76,6 +77,20 @@ $playername, HTTP password is the old $password.
 <br/><br/>
 DELETE: Remove a player.
 This operation needs authentication: HTTP username is
+$playername, HTTP password is $password.
+<br/><br/>
+
+<i>/players/$playername/buddies/$buddyname (POST, DELETE)</i>
+<i>/players/$playername/ignored/$buddyname (POST, DELETE)</i>
+<br/><br/>
+POST: Add a player to the list friends or ignored players.
+The format is:
+<pre>
+&lt;player name="$playername"/&gt;
+</pre>
+<br/>
+DELETE: Remove a player.
+Both POST and DELETE operations needs authentication: HTTP username is
 $playername, HTTP password is $password.
 <br/><br/>
 

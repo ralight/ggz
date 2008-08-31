@@ -75,6 +75,7 @@ $resourceparts = explode("/", $resource);
 $topresource = resourcequote($resourceparts[0]);
 $subresource = resourcequote($resourceparts[1]);
 $subsubresource = resourcequote($resourceparts[2]);
+$subsubsubresource = resourcequote($resourceparts[3]);
 
 $error = false;
 $autherror = false;
@@ -170,73 +171,41 @@ elseif ($topresource == "players") :
 			$error = true;
 		endif;
 	else :
-		$playername = $subresource;
-		if ($playername != $user) :
-			$authenticated = false;
-		endif;
+		if ($subsubresource == "") :
+			$playername = $subresource;
+			if ($playername != $user) :
+				$authenticated = false;
+			endif;
 
-		if ($method == "GET") :
-			$res = $database->exec("SELECT email, name FROM users WHERE handle = '%^'",
-				array($playername));
-
-			if ($database->numrows($res) == 1) :
-				$email = $database->result($res, 0, 0);
-				$realname = $database->result($res, 0, 1);
-
-				$res = $database->exec("SELECT photo FROM userinfo WHERE handle = '%^'",
+			if ($method == "GET") :
+				$res = $database->exec("SELECT email, name FROM users WHERE handle = '%^'",
 					array($playername));
+
 				if ($database->numrows($res) == 1) :
-					$photo = $database->result($res, 0, 0);
-				else :
-					$photo = "";
-				endif;
+					$email = $database->result($res, 0, 0);
+					$realname = $database->result($res, 0, 1);
 
-				if (!$internalerror) :
-					echo "<player name='$playername'>";
-					echo "<email>$email</email>";
-					echo "<realname>$realname</realname>";
-					if ($photo) :
-						echo "<photo>$photo</photo>";
+					$res = $database->exec("SELECT photo FROM userinfo WHERE handle = '%^'",
+						array($playername));
+					if ($database->numrows($res) == 1) :
+						$photo = $database->result($res, 0, 0);
+					else :
+						$photo = "";
 					endif;
-					echo "</player>";
-				endif;
-			else:
-				$error = true;
-			endif;
-		elseif ($method == "POST") :
-			if (($xmlroot) && ($xmlroot->tagName == "player")) :
-				$nodes = $xmlroot->getElementsByTagName("*");
-				foreach ($nodes as $node)
-				{
-					if ($node->nodeName == "password") :
-						$password = $node->nodeValue;
-					elseif ($node->nodeName == "email") :
-						$email = $node->nodeValue;
-					elseif ($node->nodeName == "realname") :
-						$realname = $node->nodeValue;
-					elseif ($node->nodeName == "photo") :
-						$photo = $node->nodeValue;
+
+					if (!$internalerror) :
+						echo "<player name='$playername'>";
+						echo "<email>$email</email>";
+						echo "<realname>$realname</realname>";
+						if ($photo) :
+							echo "<photo>$photo</photo>";
+						endif;
+						echo "</player>";
 					endif;
-				}
-
-				$stamp = time();
-				define("PERM_JOIN_TABLE", 1);
-				define("PERM_LAUNCH_TABLE", 2);
-				define("PERM_ROOMS_LOGIN", 4);
-				$perms = PERM_JOIN_TABLE + PERM_LAUNCH_TABLE + PERM_ROOMS_LOGIN;
-
-				$database->exec("INSERT INTO users (handle, password, name, email, firstlogin, permissions) " .
-					"VALUES ('%^', '%^', '%^', '%^', %^, %^)",
-					array($playername, $password, $realname, $email, $stamp, $perms));
-
-				$database->exec("INSERT INTO userinfo (handle, photo) VALUES ('%^', '%^')",
-					array($playername, $photo));
-				# FIXME: check duplicates, let db do it?
-			else :
-				$inputerror = true;
-			endif;
-		elseif ($method == "PUT") :
-			if ($authenticated) :
+				else:
+					$error = true;
+				endif;
+			elseif ($method == "POST") :
 				if (($xmlroot) && ($xmlroot->tagName == "player")) :
 					$nodes = $xmlroot->getElementsByTagName("*");
 					foreach ($nodes as $node)
@@ -252,28 +221,100 @@ elseif ($topresource == "players") :
 						endif;
 					}
 
-					$database->exec("UPDATE users SET password = '%^', email = '%^', name = '%^' " .
-						"WHERE handle = '%^'",
-						array($password, $email, $realname, $playername));
+					$stamp = time();
+					define("PERM_JOIN_TABLE", 1);
+					define("PERM_LAUNCH_TABLE", 2);
+					define("PERM_ROOMS_LOGIN", 4);
+					$perms = PERM_JOIN_TABLE + PERM_LAUNCH_TABLE + PERM_ROOMS_LOGIN;
 
-					$database->exec("UPDATE userinfo SET photo = '%^' WHERE handle = '%^'",
-						array($photo, $playername));
+					$database->exec("INSERT INTO users (handle, password, name, email, firstlogin, permissions) " .
+						"VALUES ('%^', '%^', '%^', '%^', %^, %^)",
+						array($playername, $password, $realname, $email, $stamp, $perms));
+
+					$database->exec("INSERT INTO userinfo (handle, photo) VALUES ('%^', '%^')",
+						array($playername, $photo));
 					# FIXME: check duplicates, let db do it?
 				else :
 					$inputerror = true;
 				endif;
+			elseif ($method == "PUT") :
+				if ($authenticated) :
+					if (($xmlroot) && ($xmlroot->tagName == "player")) :
+						$nodes = $xmlroot->getElementsByTagName("*");
+						foreach ($nodes as $node)
+						{
+							if ($node->nodeName == "password") :
+								$password = $node->nodeValue;
+							elseif ($node->nodeName == "email") :
+								$email = $node->nodeValue;
+							elseif ($node->nodeName == "realname") :
+								$realname = $node->nodeValue;
+							elseif ($node->nodeName == "photo") :
+								$photo = $node->nodeValue;
+							endif;
+						}
+
+						$database->exec("UPDATE users SET password = '%^', email = '%^', name = '%^' " .
+							"WHERE handle = '%^'",
+							array($password, $email, $realname, $playername));
+
+						$database->exec("UPDATE userinfo SET photo = '%^' WHERE handle = '%^'",
+							array($photo, $playername));
+						# FIXME: check duplicates, let db do it?
+					else :
+						$inputerror = true;
+					endif;
+				else :
+					$autherror = true;
+				endif;
+			elseif ($method == "DELETE") :
+				if ($authenticated) :
+					$database->exec("DELETE FROM users WHERE handle = '%^'",
+						array($playername));
+					$database->exec("DELETE FROM userinfo WHERE handle = '%^'",
+						array($playername));
+					# FIXME: check presence etc.
+				else :
+					$autherror = true;
+				endif;
 			else :
-				$autherror = true;
+				$error = true;
 			endif;
-		elseif ($method == "DELETE") :
-			if ($authenticated) :
-				$database->exec("DELETE FROM users WHERE handle = '%^'",
-					array($playername));
-				$database->exec("DELETE FROM userinfo WHERE handle = '%^'",
-					array($playername));
-				# FIXME: check presence etc.
+		elseif (($subsubresource == "buddies") || ($subsubresource == "ignored")) :
+			$targetplayername = $subsubsubresource;
+			if ($targetplayername == "") :
+				$error = true;
+				// FIXME: list retrieval if authenticated
 			else :
-				$autherror = true;
+				$ignored = "f";
+				if ($subsubresource == "ignored") :
+					$ignored = "t";
+				endif;
+				$buddy = "f";
+				if ($subsubresource == "buddies") :
+					$buddy = "t";
+				endif;
+				if ($method == "POST") :
+					if ($authenticated) :
+						// FIXME: check if username exists and is unlisted
+						$database->exec("INSERT INTO karma (fromhandle, tohandle, isignored, isbuddy) " .
+							"VALUES ('%^', '%^', '%^', '%^')",
+							array($playername, $targetplayername, $ignored, $buddy));
+					else :
+						$autherror = true;
+					endif;
+				elseif ($method == "DELETE") :
+					if ($authenticated) :
+						// FIXME: check if username exists and is already listed
+						$database->exec("UPDATE karma SET isignored = 'f', isbuddy = 'f' " .
+							"WHERE fromhandle = '%^' AND tohandle = '%^'",
+							array($playername, $targetplayername));
+					else :
+						$autherror = true;
+					endif;
+				else :
+					$error = true;
+				endif;
 			endif;
 		else :
 			$error = true;

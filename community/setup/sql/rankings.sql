@@ -50,5 +50,7 @@ CREATE TABLE "auth" (
 CREATE TABLE "karma" (
 	"fromhandle" character varying(256),
 	"tohandle" character varying(256),
-	"karma" integer
+	"karma" integer,
+	"isbuddy" boolean,
+	"isignored" boolean
 );
