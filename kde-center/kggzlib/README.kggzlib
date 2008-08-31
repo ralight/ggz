@@ -49,3 +49,4 @@ Room list
 Other GGZ classes
 -----------------
  kggzcorelayer.cpp/h - Qt convenience class for KGGZCore::CoreClient
+ wsinteractor.cpp/h - integration with GGZ Community Web Service API

@@ -26,6 +26,7 @@ set(kggzlib_LIB_SRCS
 	kggzaction.cpp
 	tablelist.cpp
 	tabledialog.cpp
+	wsinteractor.cpp
 )
 
 kde4_add_library(kggzlib SHARED ${kggzlib_LIB_SRCS})
@@ -64,6 +65,7 @@ install(FILES
 	kggzaction.h
 	tablelist.h
 	tabledialog.h
+	wsinteractor.h
 	DESTINATION ${INCLUDE_INSTALL_DIR}/kggzlib
 )
 

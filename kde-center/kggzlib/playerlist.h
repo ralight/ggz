@@ -5,6 +5,9 @@
 #include <QWidget>
 #include <QMap>
 #include <QList>
+#include <QByteArray>
+
+#include <kggzlib/ggzserver.h>
 
 #include "kggzlib_export.h"
 
@@ -14,6 +17,7 @@ class QTreeView;
 class QRecursiveSortFilterProxyModel;
 class Player;
 class QModelIndex;
+class WSInteractor;
 
 // List of players
 class KGGZLIB_EXPORT PlayerList : public QWidget
@@ -23,19 +27,21 @@ class KGGZLIB_EXPORT PlayerList : public QWidget
 		// Constructor
 		PlayerList();
 		void addPlayer(Player *player);
-		void setCommunityUrl(QString url);
+		void setGGZServer(const GGZServer& ggzserver);
 	private slots:
 		void slotSearch(const QString& text);
 		void slotSelected(const QPoint& index);
 	private:
 		void mount(QList<QStandardItem*> childitems, Player *player);
+		QByteArray playertoxml(Player *player);
 
 		QStandardItemModel *m_model;
 		QRecursiveSortFilterProxyModel *m_proxymodel;
 		QTreeView *m_treeview;
 		QStandardItem *m_itemfriends, *m_itemignored, *m_itemothers;
 		QMap<QString, Player*> m_players;
-		QString m_url;
+		GGZServer m_ggzserver;
+		WSInteractor *m_interactor;
 };
 
 #endif

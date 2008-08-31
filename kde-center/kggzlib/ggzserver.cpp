@@ -28,6 +28,16 @@ QString GGZServer::api() const
 	return m_api;
 }
 
+void GGZServer::setCommunity(const QString &community)
+{
+	m_community = community;
+}
+
+QString GGZServer::community() const
+{
+	return m_community;
+}
+
 void GGZServer::setName(const QString &name)
 {
 	m_name = name;

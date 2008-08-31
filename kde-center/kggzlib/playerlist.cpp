@@ -2,6 +2,7 @@
 #include "playerlist.h"
 #include "qrecursivesortfilterproxymodel.h"
 #include "player.h"
+#include "wsinteractor.h"
 
 // KDE includes
 #include <kstandarddirs.h>
@@ -17,6 +18,8 @@
 #include <qlineedit.h>
 #include <qlabel.h>
 #include <qmenu.h>
+
+#include <qdom.h>
 
 PlayerList::PlayerList()
 : QWidget()
@@ -62,6 +65,8 @@ PlayerList::PlayerList()
 	m_treeview->setModel(m_proxymodel);
 	m_treeview->expandAll();
 
+	m_interactor = new WSInteractor(this);
+
 	connect(searchbox, SIGNAL(textChanged(const QString&)), SLOT(slotSearch(const QString&)));
 	connect(m_treeview, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(slotSelected(const QPoint&)));
 
@@ -70,9 +75,9 @@ PlayerList::PlayerList()
 	//show();
 }
 
-void PlayerList::setCommunityUrl(QString url)
+void PlayerList::setGGZServer(const GGZServer& ggzserver)
 {
-	m_url = url;
+	m_ggzserver = ggzserver;
 }
 
 void PlayerList::addPlayer(Player *player)
@@ -169,7 +174,7 @@ void PlayerList::slotSelected(const QPoint& pos)
 		}
 		menu.addSeparator();
 		action_chat = menu.addAction(i18n("Private chat..."));
-		if(!m_url.isEmpty())
+		if(!m_ggzserver.community().isEmpty())
 			action_community = menu.addAction(i18n("Visit community profile..."));
 
 		QAction *action = menu.exec(mapToGlobal(pos));
@@ -178,24 +183,50 @@ void PlayerList::slotSelected(const QPoint& pos)
 			player->setRelation(Player::Unknown);
 			QList<QStandardItem*> childitems = m_itemfriends->takeRow(index.row());
 			mount(childitems, player);
+
+			if(!m_ggzserver.api().isEmpty())
+			{
+				QString url = m_ggzserver.api() + "/api/players/SELF/buddies/" + name;
+				m_interactor->remove(url);
+			}
 		}
 		else if(action == action_addbuddy)
 		{
 			player->setRelation(Player::Buddy);
 			QList<QStandardItem*> childitems = m_itemothers->takeRow(index.row());
 			mount(childitems, player);
+
+			if(!m_ggzserver.api().isEmpty())
+			{
+				QString url = m_ggzserver.api() + "/api/players/SELF/buddies/" + name;
+				QByteArray xmldata = playertoxml(player);
+				m_interactor->post(url, xmldata);
+			}
 		}
 		else if(action == action_removeignored)
 		{
 			player->setRelation(Player::Unknown);
 			QList<QStandardItem*> childitems = m_itemignored->takeRow(index.row());
 			mount(childitems, player);
+
+			if(!m_ggzserver.api().isEmpty())
+			{
+				QString url = m_ggzserver.api() + "/api/players/SELF/ignored/" + name;
+				m_interactor->remove(url);
+			}
 		}
 		else if(action == action_addignored)
 		{
 			player->setRelation(Player::Ignored);
 			QList<QStandardItem*> childitems = m_itemothers->takeRow(index.row());
 			mount(childitems, player);
+
+			if(!m_ggzserver.api().isEmpty())
+			{
+				QString url = m_ggzserver.api() + "/api/players/SELF/ignored/" + name;
+				QByteArray xmldata = playertoxml(player);
+				m_interactor->post(url, xmldata);
+			}
 		}
 		else if(action == action_chat)
 		{
@@ -203,8 +234,20 @@ void PlayerList::slotSelected(const QPoint& pos)
 		}
 		else if(action == action_community)
 		{
-			QString playerurl = m_url + "/db/players?lookup=" + name;
+			QString playerurl = m_ggzserver.community() + "/db/players?lookup=" + name;
 			KToolInvocation::invokeBrowser(playerurl);
 		}
 	}
 }
+
+QByteArray PlayerList::playertoxml(Player *player)
+{
+	QDomDocument xmldoc;
+	QDomElement el = xmldoc.createElement("player");
+	xmldoc.appendChild(el);
+	QDomText txt = xmldoc.createTextNode(player->name());
+	el.appendChild(txt);
+	QByteArray xmldata = xmldoc.toByteArray();
+	return xmldata;
+}
+

@@ -17,6 +17,9 @@ class KGGZLIB_EXPORT GGZServer
 		void setApi(const QString &api);
 		QString api() const;
 
+		void setCommunity(const QString &community);
+		QString community() const;
+
 		void setName(const QString &name);
 		QString name() const;
 
@@ -28,6 +31,7 @@ class KGGZLIB_EXPORT GGZServer
 		QString m_api;
 		QString m_name;
 		QString m_icon;
+		QString m_community;
 };
 
 #endif
