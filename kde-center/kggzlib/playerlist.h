@@ -7,7 +7,7 @@
 #include <QList>
 #include <QByteArray>
 
-#include <kggzlib/ggzserver.h>
+#include <kggzlib/ggzprofile.h>
 
 #include "kggzlib_export.h"
 
@@ -27,7 +27,7 @@ class KGGZLIB_EXPORT PlayerList : public QWidget
 		// Constructor
 		PlayerList();
 		void addPlayer(Player *player);
-		void setGGZServer(const GGZServer& ggzserver);
+		void setGGZProfile(const GGZProfile& ggzprofile);
 	private slots:
 		void slotSearch(const QString& text);
 		void slotSelected(const QPoint& index);
@@ -40,7 +40,7 @@ class KGGZLIB_EXPORT PlayerList : public QWidget
 		QTreeView *m_treeview;
 		QStandardItem *m_itemfriends, *m_itemignored, *m_itemothers;
 		QMap<QString, Player*> m_players;
-		GGZServer m_ggzserver;
+		GGZProfile m_ggzprofile;
 		WSInteractor *m_interactor;
 };
 

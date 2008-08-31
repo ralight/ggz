@@ -75,9 +75,9 @@ PlayerList::PlayerList()
 	//show();
 }
 
-void PlayerList::setGGZServer(const GGZServer& ggzserver)
+void PlayerList::setGGZProfile(const GGZProfile& ggzprofile)
 {
-	m_ggzserver = ggzserver;
+	m_ggzprofile = ggzprofile;
 }
 
 void PlayerList::addPlayer(Player *player)
@@ -158,6 +158,11 @@ void PlayerList::slotSelected(const QPoint& pos)
 		QAction *action_chat = NULL;
 		QAction *action_community = NULL;
 
+		GGZServer ggzserver = m_ggzprofile.ggzServer();
+		QString user = m_ggzprofile.username();
+		QString pass = m_ggzprofile.password();
+		QString baseurl = ggzserver.api() + "/api/players/" + user;
+
 		QMenu menu;
 		if(player->relation() == Player::Buddy)
 		{
@@ -174,7 +179,7 @@ void PlayerList::slotSelected(const QPoint& pos)
 		}
 		menu.addSeparator();
 		action_chat = menu.addAction(i18n("Private chat..."));
-		if(!m_ggzserver.community().isEmpty())
+		if(!ggzserver.community().isEmpty())
 			action_community = menu.addAction(i18n("Visit community profile..."));
 
 		QAction *action = menu.exec(mapToGlobal(pos));
@@ -184,9 +189,9 @@ void PlayerList::slotSelected(const QPoint& pos)
 			QList<QStandardItem*> childitems = m_itemfriends->takeRow(index.row());
 			mount(childitems, player);
 
-			if(!m_ggzserver.api().isEmpty())
+			if(!ggzserver.api().isEmpty())
 			{
-				QString url = m_ggzserver.api() + "/api/players/SELF/buddies/" + name;
+				QString url = baseurl + "/buddies/" + name;
 				m_interactor->remove(url);
 			}
 		}
@@ -196,9 +201,9 @@ void PlayerList::slotSelected(const QPoint& pos)
 			QList<QStandardItem*> childitems = m_itemothers->takeRow(index.row());
 			mount(childitems, player);
 
-			if(!m_ggzserver.api().isEmpty())
+			if(!ggzserver.api().isEmpty())
 			{
-				QString url = m_ggzserver.api() + "/api/players/SELF/buddies/" + name;
+				QString url = baseurl + "/buddies/" + name;
 				QByteArray xmldata = playertoxml(player);
 				m_interactor->post(url, xmldata);
 			}
@@ -209,9 +214,9 @@ void PlayerList::slotSelected(const QPoint& pos)
 			QList<QStandardItem*> childitems = m_itemignored->takeRow(index.row());
 			mount(childitems, player);
 
-			if(!m_ggzserver.api().isEmpty())
+			if(!ggzserver.api().isEmpty())
 			{
-				QString url = m_ggzserver.api() + "/api/players/SELF/ignored/" + name;
+				QString url = baseurl + "/ignored/" + name;
 				m_interactor->remove(url);
 			}
 		}
@@ -221,9 +226,9 @@ void PlayerList::slotSelected(const QPoint& pos)
 			QList<QStandardItem*> childitems = m_itemothers->takeRow(index.row());
 			mount(childitems, player);
 
-			if(!m_ggzserver.api().isEmpty())
+			if(!ggzserver.api().isEmpty())
 			{
-				QString url = m_ggzserver.api() + "/api/players/SELF/ignored/" + name;
+				QString url = baseurl + "/ignored/" + name;
 				QByteArray xmldata = playertoxml(player);
 				m_interactor->post(url, xmldata);
 			}
@@ -234,7 +239,7 @@ void PlayerList::slotSelected(const QPoint& pos)
 		}
 		else if(action == action_community)
 		{
-			QString playerurl = m_ggzserver.community() + "/db/players?lookup=" + name;
+			QString playerurl = ggzserver.community() + "/db/players?lookup=" + name;
 			KToolInvocation::invokeBrowser(playerurl);
 		}
 	}

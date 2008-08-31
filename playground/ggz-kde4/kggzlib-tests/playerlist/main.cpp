@@ -1,6 +1,7 @@
 // Player list includes
 #include <kggzlib/playerlist.h>
 #include <kggzlib/player.h>
+#include <kggzlib/ggzprofile.h>
 
 // Qt includes
 #include <qapplication.h>
@@ -19,7 +20,13 @@ int main(int argc, char **argv)
 	GGZServer ggzserver;
 	ggzserver.setCommunity("http://akademy08.ggzcommunity.org/");
 	ggzserver.setApi("http://api.ggzcommunity.local/");
-	list->setGGZServer(ggzserver);
+
+	GGZProfile ggzprofile;
+	ggzprofile.setUsername("admin");
+	ggzprofile.setPassword("admin");
+	ggzprofile.setGGZServer(ggzserver);
+
+	list->setGGZProfile(ggzprofile);
 
 	Player *player1 = new Player("someadmin");
 	player1->setRole(Player::Admin);
