@@ -15,6 +15,7 @@ int main(int argc, char **argv)
 	KComponentData data("playerlist");
 
 	PlayerList *list = new PlayerList();
+	list->setCommunityUrl("http://akademy08.ggzcommunity.org/");
 
 	Player *player1 = new Player("someadmin");
 	player1->setRole(Player::Admin);
