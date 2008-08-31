@@ -5,6 +5,8 @@
 
 // KDE includes
 #include <kstandarddirs.h>
+#include <klocale.h>
+#include <ktoolinvocation.h>
 
 // Qt includes
 #include <qtreeview.h>
@@ -16,21 +18,15 @@
 #include <qlabel.h>
 #include <qmenu.h>
 
-static Qt::ItemFlags ROFLAGS =
-	Qt::ItemIsSelectable |
-	Qt::ItemIsDragEnabled |
-	Qt::ItemIsDropEnabled |
-	Qt::ItemIsUserCheckable |
-	Qt::ItemIsEnabled;
-
 PlayerList::PlayerList()
 : QWidget()
 {
 	m_treeview = new QTreeView();
 	m_treeview->setContextMenuPolicy(Qt::CustomContextMenu);
+	m_treeview->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 	QLineEdit *searchbox = new QLineEdit();
-	QLabel *searchlabel = new QLabel("Search for:");
+	QLabel *searchlabel = new QLabel(i18n("Search for:"));
 
 	QHBoxLayout *hbox = new QHBoxLayout();
 	hbox->addWidget(searchlabel);
@@ -45,22 +41,19 @@ PlayerList::PlayerList()
 	m_model->setColumnCount(2);
 
 	m_itemfriends = new QStandardItem();
-	m_itemfriends->setText("Friends");
-	m_itemfriends->setFlags(ROFLAGS);
+	m_itemfriends->setText(i18n("Friends"));
 	m_model->appendRow(m_itemfriends);
 
 	m_itemignored = new QStandardItem();
-	m_itemignored->setText("Ignored");
-	m_itemignored->setFlags(ROFLAGS);
+	m_itemignored->setText(i18n("Ignored"));
 	m_model->appendRow(m_itemignored);
 
 	m_itemothers = new QStandardItem();
-	m_itemothers->setText("Others");
-	m_itemothers->setFlags(ROFLAGS);
+	m_itemothers->setText(i18n("Others"));
 	m_model->appendRow(m_itemothers);
 
-	m_model->setHeaderData(0, Qt::Horizontal, QString("Player"), Qt::DisplayRole);
-	m_model->setHeaderData(1, Qt::Horizontal, QString("Properties"), Qt::DisplayRole);
+	m_model->setHeaderData(0, Qt::Horizontal, i18n("Player"), Qt::DisplayRole);
+	m_model->setHeaderData(1, Qt::Horizontal, i18n("Properties"), Qt::DisplayRole);
 
 	m_proxymodel = new QRecursiveSortFilterProxyModel(this);
 	m_proxymodel->setSourceModel(m_model);
@@ -72,9 +65,14 @@ PlayerList::PlayerList()
 	connect(searchbox, SIGNAL(textChanged(const QString&)), SLOT(slotSearch(const QString&)));
 	connect(m_treeview, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(slotSelected(const QPoint&)));
 
-	setWindowTitle("GGZ gets a more flexible player list!");
+	//setWindowTitle("GGZ gets a more flexible player list!");
 	resize(320, 300);
 	//show();
+}
+
+void PlayerList::setCommunityUrl(QString url)
+{
+	m_url = url;
 }
 
 void PlayerList::addPlayer(Player *player)
@@ -106,24 +104,27 @@ void PlayerList::addPlayer(Player *player)
 		lagpixmap = "lag1.png";
 
 	QStandardItem *itemname = new QStandardItem();
-	itemname->setFlags(ROFLAGS);
 	itemname->setIcon(QIcon(d.findResource("data", "kggzlib/players/" + pixmap)));
 	itemname->setText(player->name());
 
 	QStandardItem *itemlagstats = new QStandardItem();
-	itemlagstats->setFlags(ROFLAGS);
 	itemlagstats->setIcon(QIcon(d.findResource("data", "kggzlib/players/" + lagpixmap)));
 	itemlagstats->setText(player->statistics());
 
+	QList<QStandardItem*> childitems;
+	childitems << itemname;
+	childitems << itemlagstats;
+	mount(childitems, player);
+}
+
+void PlayerList::mount(QList<QStandardItem*> childitems, Player *player)
+{
 	QStandardItem *item = m_itemothers;
 	if(player->relation() == Player::Buddy)
 		item = m_itemfriends;
 	else if(player->relation() == Player::Ignored)
 		item = m_itemignored;
 
-	QList<QStandardItem*> childitems;
-	childitems << itemname;
-	childitems << itemlagstats;
 	item->appendRow(childitems);
 }
 
@@ -145,22 +146,65 @@ void PlayerList::slotSelected(const QPoint& pos)
 	{
 		Player *player = m_players[name];
 
+		QAction *action_removebuddy = NULL;
+		QAction *action_removeignored = NULL;
+		QAction *action_addbuddy = NULL;
+		QAction *action_addignored = NULL;
+		QAction *action_chat = NULL;
+		QAction *action_community = NULL;
+
 		QMenu menu;
 		if(player->relation() == Player::Buddy)
 		{
-			menu.addAction("Remove from buddy list");
+			action_removebuddy = menu.addAction(i18n("Remove from buddy list"));
 		}
 		else if(player->relation() == Player::Ignored)
 		{
-			menu.addAction("Remove from list of ignored players");
+			action_removeignored = menu.addAction(i18n("Remove from list of ignored players"));
 		}
 		else
 		{
-			menu.addAction("Add to list of ignored players.");
-			menu.addAction("Add to buddy list");
+			action_addignored = menu.addAction(i18n("Add to list of ignored players."));
+			action_addbuddy = menu.addAction(i18n("Add to buddy list"));
 		}
 		menu.addSeparator();
-		menu.addAction("Chat...");
-		menu.exec(mapToGlobal(pos));
+		action_chat = menu.addAction(i18n("Private chat..."));
+		if(!m_url.isEmpty())
+			action_community = menu.addAction(i18n("Visit community profile..."));
+
+		QAction *action = menu.exec(mapToGlobal(pos));
+		if(action == action_removebuddy)
+		{
+			player->setRelation(Player::Unknown);
+			QList<QStandardItem*> childitems = m_itemfriends->takeRow(index.row());
+			mount(childitems, player);
+		}
+		else if(action == action_addbuddy)
+		{
+			player->setRelation(Player::Buddy);
+			QList<QStandardItem*> childitems = m_itemothers->takeRow(index.row());
+			mount(childitems, player);
+		}
+		else if(action == action_removeignored)
+		{
+			player->setRelation(Player::Unknown);
+			QList<QStandardItem*> childitems = m_itemignored->takeRow(index.row());
+			mount(childitems, player);
+		}
+		else if(action == action_addignored)
+		{
+			player->setRelation(Player::Ignored);
+			QList<QStandardItem*> childitems = m_itemothers->takeRow(index.row());
+			mount(childitems, player);
+		}
+		else if(action == action_chat)
+		{
+			// FIXME: private modal(?) k(ggz)chat window
+		}
+		else if(action == action_community)
+		{
+			QString playerurl = m_url + "/db/players?lookup=" + name;
+			KToolInvocation::invokeBrowser(playerurl);
+		}
 	}
 }

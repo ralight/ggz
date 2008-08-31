@@ -4,6 +4,7 @@
 // Qt includes
 #include <QWidget>
 #include <QMap>
+#include <QList>
 
 #include "kggzlib_export.h"
 
@@ -22,15 +23,19 @@ class KGGZLIB_EXPORT PlayerList : public QWidget
 		// Constructor
 		PlayerList();
 		void addPlayer(Player *player);
+		void setCommunityUrl(QString url);
 	private slots:
 		void slotSearch(const QString& text);
 		void slotSelected(const QPoint& index);
 	private:
+		void mount(QList<QStandardItem*> childitems, Player *player);
+
 		QStandardItemModel *m_model;
 		QRecursiveSortFilterProxyModel *m_proxymodel;
 		QTreeView *m_treeview;
 		QStandardItem *m_itemfriends, *m_itemignored, *m_itemothers;
 		QMap<QString, Player*> m_players;
+		QString m_url;
 };
 
 #endif
