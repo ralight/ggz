@@ -15,7 +15,11 @@ int main(int argc, char **argv)
 	KComponentData data("playerlist");
 
 	PlayerList *list = new PlayerList();
-	list->setCommunityUrl("http://akademy08.ggzcommunity.org/");
+
+	GGZServer ggzserver;
+	ggzserver.setCommunity("http://akademy08.ggzcommunity.org/");
+	ggzserver.setApi("http://api.ggzcommunity.local/");
+	list->setGGZServer(ggzserver);
 
 	Player *player1 = new Player("someadmin");
 	player1->setRole(Player::Admin);
