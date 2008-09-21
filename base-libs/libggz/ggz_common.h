@@ -258,7 +258,7 @@ GGZAdminType ggz_string_to_admintype(const char *type_str);
  * 
  *  The string should contain "true" or "false".
  *  @param str The string in question.
- *  @param dflt The default, if the string is unreadible or NULL.
+ *  @param dflt The default, if the string is unreadable or NULL.
  *  @return The boolean value.
  */
 int ggz_str_to_bool(const char *str, int dflt);
