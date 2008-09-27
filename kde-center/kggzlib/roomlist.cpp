@@ -74,6 +74,7 @@ RoomList::RoomList()
 	connect(searchbox, SIGNAL(textChanged(const QString&)), SLOT(slotSearch(const QString&)));
 	connect(m_treeview, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(slotSelected(const QPoint&)));
 	connect(m_treeview, SIGNAL(signalToolTip(QPoint)), delegate, SLOT(slotToolTip(QPoint)));
+	connect(m_treeview, SIGNAL(doubleClicked(const QModelIndex&)), SLOT(slotSelectedLeft(const QModelIndex&)));
 
 	setWindowTitle("GGZ gets a more flexible room list!");
 	resize(500, 400);
@@ -147,5 +148,17 @@ void RoomList::slotFavourites()
 	{
 		Room *room = m_rooms[m_action_name];
 		room->setFavourite(!room->favourite());
+	}
+}
+
+void RoomList::slotSelectedLeft(const QModelIndex& index)
+{
+	if(!index.isValid())
+		return;
+
+	QString name = m_proxymodel->data(index).toString();
+	if(m_rooms.contains(name))
+	{
+		emit signalSelected(name);
 	}
 }

@@ -10,6 +10,7 @@ class PlayerList;
 class RoomList;
 class TableList;
 class KChat;
+class QAction;
 
 class Vencedor : public QMainWindow
 {
@@ -29,12 +30,16 @@ class Vencedor : public QMainWindow
 		void slotAbout();
 		void slotLaunch();
 
+		void slotRoom(const QString& name);
+		void slotChat(int id, const QString& msg);
+
 	private:
 		KGGZCore::CoreClient *m_core;
 		KChat *m_chat;
 		PlayerList *m_players;
 		RoomList *m_rooms;
 		TableList *m_tables;
+		QAction *m_action_launch;
 };
 
 #endif

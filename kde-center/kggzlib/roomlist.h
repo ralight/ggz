@@ -22,9 +22,12 @@ class KGGZLIB_EXPORT RoomList : public QWidget
 		// Constructor
 		RoomList();
 		void addRoom(Room *room);
+	signals:
+		void signalSelected(const QString& name);
 	private slots:
 		void slotSearch(const QString& text);
 		void slotSelected(const QPoint& pos);
+		void slotSelectedLeft(const QModelIndex& index);
 		void slotFavourites();
 	private:
 		QStandardItemModel *m_model;

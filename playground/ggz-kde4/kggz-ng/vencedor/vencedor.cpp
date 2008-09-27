@@ -88,10 +88,13 @@ Vencedor::Vencedor(QString url)
 	toolbar->addSeparator();
 
 	QPixmap icon_launch = KIconLoader::global()->loadIcon("start-here", KIconLoader::Small);
-	QAction *action_launch = new QAction(QIcon(icon_launch), i18n("Launch a new game"), this);
-	connect(action_launch, SIGNAL(triggered(bool)), SLOT(slotLaunch()));
-	action_launch->setEnabled(false);
-	toolbar->addAction(action_launch);
+	m_action_launch = new QAction(QIcon(icon_launch), i18n("Launch a new game"), this);
+	connect(m_action_launch, SIGNAL(triggered(bool)), SLOT(slotLaunch()));
+	m_action_launch->setEnabled(false);
+	toolbar->addAction(m_action_launch);
+
+	connect(m_chat, SIGNAL(signalSendMessage(int, const QString)), SLOT(slotChat(int, const QString&)));
+	connect(m_rooms, SIGNAL(signalSelected(const QString&)), SLOT(slotRoom(const QString)));
 
 	setWindowTitle(i18n("Vencedor"));
 	resize(800, 700);
@@ -114,6 +117,19 @@ void Vencedor::slotConnect()
 
 void Vencedor::slotLaunch()
 {
+}
+
+void Vencedor::slotChat(int id, const QString& msg)
+{
+	Q_UNUSED(id);
+	Q_UNUSED(msg);
+
+	//m_core->room()->chat(); ...
+}
+
+void Vencedor::slotRoom(const QString& name)
+{
+	m_core->initiateRoomChange(name);
 }
 
 void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZCore::Error::ErrorCode error)
@@ -142,6 +158,11 @@ void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZC
 			connect(m_core->room(),
 				SIGNAL(signalEvent(KGGZCore::Room::EventMessage)),
 				SLOT(slotEvent(KGGZCore::Room::EventMessage)));
+
+			if(!m_core->room()->gametype().name().isEmpty())
+				m_action_launch->setEnabled(true);
+			else
+				m_action_launch->setEnabled(false);
 			break;
 		case KGGZCore::CoreClient::chat:
 			break;
