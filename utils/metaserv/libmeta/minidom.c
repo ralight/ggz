@@ -419,7 +419,7 @@ void minidom_internal_dump(ELE *ele, FILE *file, int indent, int start)
 	indent--;
 }
 
-void minidom_free_element(ELE *ele)
+static void minidom_free_element(ELE *ele)
 {
 	int i;
 
