@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 10384 2008-07-24 19:25:58Z josef $
+ * $Id: ggz-config.c 10568 2008-10-15 17:11:45Z jdorje $
  *
  * Configuration query and module install program.
  *
@@ -758,12 +758,10 @@ static int which(const char *executable)
 static int list_modules(void)
 {
 	int ret = 0;
-	GGZOptions options;
+	const GGZOptions opt = {.flags = GGZ_OPT_MODULES};
 	int num, i;
 
-	options.flags = GGZ_OPT_MODULES;
-
-	ret = ggzcore_init(options);
+	ret = ggzcore_init(opt);
 	if(ret == -1)
 		return -1;
 
@@ -771,6 +769,7 @@ static int list_modules(void)
 	printf(_("%i modules found in the GGZ registry(ies).\n"), num);
 	for(i = 0; i < num; i++) {
 		GGZModule *module = ggzcore_module_get_nth(i);
+
 		printf(_("Module: %s %s (%s)\n"),
 			ggzcore_module_get_name(module),
 			ggzcore_module_get_version(module),
