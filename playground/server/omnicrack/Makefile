@@ -1,12 +1,14 @@
+CFLAGS = -fPIC
+
 prefix = /usr/local
 
 all: hash crack lib
 
 crack:
-	gcc -O2 -Wall -Werror -o omnicrack omnicrack.c hasher.c main.c -licui18n -DWITH_ICU -DDEBUG
+	gcc -O2 -Wall -Werror -o omnicrack omnicrack.c hasher.c main.c -licui18n -DWITH_ICU -DDEBUG $(CFLAGS)
 
 lib:
-	gcc -shared -o libomnicrack.so omnicrack.c hasher.c -licui18n -DWITH_ICU -DDEBUG
+	gcc -shared -o libomnicrack.so omnicrack.c hasher.c -licui18n -DWITH_ICU -DDEBUG $(CFLAGS)
 
 install:
 	cp omnicrack.h $(prefix)/include
