@@ -32,7 +32,8 @@ Contents right now:
   Frontend for the real-time statistics feature
 
 * omnicrack
-  Next-generation password strength checker (see also 'passwords')
+  Next-generation password strength checker (see also 'passwords');
+  this library has moved to http://omnicrack.coolprojects.org/
 
 * passwords
   Some checks so we can improve cracklib
