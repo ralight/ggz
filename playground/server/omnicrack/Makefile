@@ -1,22 +1,32 @@
-CFLAGS = -fPIC
+CFLAGS = -fPIC -DDEBUG -DWITH_ICU -O2 -Wall -Werror
+LIBS = -licui18n
+CC = gcc
 
 prefix = /usr/local
 
-all: hash crack lib
+all: libomnicrack.so omnicrackdict omnicrack test
 
-crack:
-	gcc -O2 -Wall -Werror -o omnicrack omnicrack.c hasher.c main.c -licui18n -DWITH_ICU -DDEBUG $(CFLAGS)
+libomnicrack.so: omnicrack.o hasher.o
+	#ar cru libomnicrack.a $^
+	#ranlib libomnicrack.a
+	#gcc -shared -o $@ libomnicrack.a $(LIBS)
+	gcc -shared -o $@ $^ $(LIBS)
 
-lib:
-	gcc -shared -o libomnicrack.so omnicrack.c hasher.c -licui18n -DWITH_ICU -DDEBUG $(CFLAGS)
+omnicrack: main.o | libomnicrack.so
+	gcc -o $@ $^ -L. -lomnicrack
+
+omnicrackdict: omnicrackdict.o | libomnicrack.so
+	gcc -o $@ $^ -L. -lomnicrack
+
+test: test.o | libomnicrack.so
+	gcc -o $@ $^ -L. -lomnicrack
 
 install:
 	cp omnicrack.h $(prefix)/include
 	cp libomnicrack.so $(prefix)/lib
-
-hash:
-	gcc -O2 -Wall -Werror -o omnicrackdict omnicrackdict.c hasher.c
+	cp omnicrackdict $(prefix)/bin
 
 clean:
-	rm -f hasher omnicrack
+	rm -f omnicrackdict omnicrack test
+	rm -f *.o *.a *.so
 

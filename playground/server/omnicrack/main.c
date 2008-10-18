@@ -13,17 +13,6 @@ static void check(const char *password, const char *dictpath)
 
 int main(int argc, char *argv[])
 {
-#ifdef DEBUG
-	check("dull", NULL);         // Short English
-	check("acquittance", NULL);  // Long English
-	check("mäh", NULL);          // German sheep
-	check("95 Klöße", NULL);     // German food (yummy), numbered
-	check("ðłđ", NULL);          // Nordic and Polish
-	check("_#§/X", NULL);        // ASCII
-	check("උකජණ", NULL);         // Sinhala
-	check("ЉЖЗ 朠朵末粍", NULL); // Cyrillic and Chinese (Han) mixed
-#endif
-
 	if((argc < 2) || (argc > 3))
 	{
 		fprintf(stderr, "Error, check syntax:\n");
