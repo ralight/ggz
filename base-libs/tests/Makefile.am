@@ -1,5 +1,6 @@
-AM_CPPFLAGS = -I$(top_srcdir)/libggz/ -I$(top_srcdir)/ggzmod-ggz
+AM_CPPFLAGS = -I$(top_srcdir)/libggz/ -I$(top_srcdir)/ggzmod -I$(top_srcdir)/ggzmod-ggz
 LDADD = $(top_builddir)/libggz/libggz.la \
+	$(top_builddir)/ggzmod/libggzmod.la \
 	$(top_builddir)/ggzmod-ggz/libggzmod-ggz.la
 
 check_PROGRAMS = \

@@ -11,8 +11,8 @@ libggz_la_LIBADD = security/libggzsecurity.la $(LIB_ASYNC) $(LIB_PTHREADS)
 
 libggz_la_LDFLAGS = -version-info 5:0:3
 if SYMBOL_VISIBILITY
-libggz_la_LDFLAGS += -Wl,--version-script=linker.map
-libggz_la_DEPENDENCIES = linker.map
+libggz_la_LDFLAGS += -Wl,--version-script=$(srcdir)/linker.map
+libggz_la_DEPENDENCIES = $(srcdir)/linker.map
 endif
 
 libggz_la_SOURCES = \
@@ -33,4 +33,4 @@ libggz_la_SOURCES = \
 	ggz_common.h \
 	ggz_common.c
 
-EXTRA_DIST = Doxyfile
+EXTRA_DIST = Doxyfile linker.map

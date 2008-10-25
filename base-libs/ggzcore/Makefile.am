@@ -1,4 +1,4 @@
-EXTRA_DIST = Doxyfile
+EXTRA_DIST = Doxyfile linker.map
 
 if INSTALL_GGZCORE
 lib_LTLIBRARIES = libggzcore.la
@@ -18,8 +18,8 @@ libggzcore_la_LIBADD = $(top_builddir)/ggzmod-ggz/libggzmod-ggz.la \
 
 libggzcore_la_LDFLAGS = -version-info 9:0:0
 if SYMBOL_VISIBILITY
-libggzcore_la_LDFLAGS += -Wl,--version-script=linker.map
-libggzcore_la_DEPENDENCIES = linker.map
+libggzcore_la_LDFLAGS += -Wl,--version-script=$(srcdir)/linker.map
+libggzcore_la_DEPENDENCIES = $(srcdir)/linker.map
 endif
 
 libggzcore_la_SOURCES =	conf.c \
