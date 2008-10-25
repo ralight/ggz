@@ -1,4 +1,4 @@
-version = snapshot-0.99.4
+version = snapshot-0.99.5pre
 
 CONFIGURATION = .ggzcommunity.setup
 
