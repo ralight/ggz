@@ -78,8 +78,8 @@ libggz_gtk_la_LIBADD = $(GTK_LIBS) $(LDADD) $(LIBS) $(INTLLIBS) \
 libggz_gtk_la_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLAGS) -version-info 1:0:0
 
 if SYMBOL_VISIBILITY
-libggz_gtk_la_LDFLAGS += -Wl,--version-script=linker.map
-libggz_gtk_la_DEPENDENCIES = linker.map
+libggz_gtk_la_LDFLAGS += -Wl,--version-script=$(srcdir)/linker.map
+libggz_gtk_la_DEPENDENCIES = $(srcdir)/linker.map
 endif
 
 #if WIN32
@@ -89,3 +89,5 @@ endif
 #ggz-gtk-icon.o: ggz-gtk-icon.rc
 #	i586-mingw32msvc-windres -i $< $@
 #endif
+
+EXTRA_DIST = linker.map
