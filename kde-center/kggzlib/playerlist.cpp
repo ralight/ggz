@@ -4,7 +4,7 @@
 #include "player.h"
 
 // Lokarest includes
-#include <lokarest.h>
+#include <lokarest/lokarest.h>
 
 // KDE includes
 #include <kstandarddirs.h>
