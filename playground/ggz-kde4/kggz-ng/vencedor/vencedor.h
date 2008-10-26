@@ -35,12 +35,16 @@ class Vencedor : public QMainWindow
 		void slotChat(int id, const QString& msg);
 
 	private:
+		void enable(bool enabled);
+		void connection(const QString& url);
+
 		KGGZCore::CoreClient *m_core;
 		KChat *m_chat;
 		PlayerList *m_players;
 		RoomList *m_rooms;
 		TableList *m_tables;
 		QAction *m_action_launch;
+		QAction *m_action_connect;
 };
 
 #endif

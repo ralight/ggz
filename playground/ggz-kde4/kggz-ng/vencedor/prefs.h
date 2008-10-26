@@ -11,7 +11,7 @@ class Prefs : public KConfigSkeleton
 		static Prefs *self();
 
 	private:
-		QString m_syncurl;
+		bool sync;
 };
 
 #endif

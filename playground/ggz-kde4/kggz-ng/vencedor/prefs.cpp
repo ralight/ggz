@@ -7,7 +7,7 @@ Prefs::Prefs()
 	s_prefs = this;
 
 	setCurrentGroup("Settings");
-	addItemString("syncurl", m_syncurl);
+	addItemBool("sync", sync);
 }
 
 Prefs *Prefs::self()

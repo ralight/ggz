@@ -6,6 +6,7 @@
 #include <QToolBar>
 #include <QIcon>
 #include <QAction>
+#include <QCheckBox>
 
 #include <klocale.h>
 //#include <kactioncollection.h>
@@ -34,21 +35,6 @@ Vencedor::Vencedor(QString url)
 {
 	KStandardDirs d;
 
-	m_core = new KGGZCore::CoreClient(this);
-
-	connect(m_core,
-		SIGNAL(signalFeedback(KGGZCore::CoreClient::FeedbackMessage, KGGZCore::Error::ErrorCode)),
-		SLOT(slotFeedback(KGGZCore::CoreClient::FeedbackMessage, KGGZCore::Error::ErrorCode)));
-	connect(m_core,
-		SIGNAL(signalAnswer(KGGZCore::CoreClient::AnswerMessage)),
-		SLOT(slotAnswer(KGGZCore::CoreClient::AnswerMessage)));
-	connect(m_core,
-		SIGNAL(signalEvent(KGGZCore::CoreClient::EventMessage)),
-		SLOT(slotEvent(KGGZCore::CoreClient::EventMessage)));
-
-	m_core->setUrl(url);
-	m_core->initiateLogin();
-
 	QWidget *centralwidget = new QWidget();
 	setCentralWidget(centralwidget);
 
@@ -74,9 +60,9 @@ Vencedor::Vencedor(QString url)
 	// FIXME: This is too bizarre!
 	//toolbar->addAction(kggzAction(QString(), this, NULL, KActionCollection(), "connect-ggz"));
 	QString ggzicon = d.findResource("data", "kggzlib/games/chess.png");
-	QAction *action_connect = new QAction(QIcon(ggzicon), i18n("Connect to GGZ Gaming Zone"), this);
-	connect(action_connect, SIGNAL(triggered(bool)), SLOT(slotConnect()));
-	toolbar->addAction(action_connect);
+	m_action_connect = new QAction(QIcon(ggzicon), i18n("Connect to GGZ Gaming Zone"), this);
+	connect(m_action_connect, SIGNAL(triggered(bool)), SLOT(slotConnect()));
+	toolbar->addAction(m_action_connect);
 
 	QPixmap icon_about = KIconLoader::global()->loadIcon("help-about", KIconLoader::Small);
 	QAction *action_about = new QAction(QIcon(icon_about), i18n("About Vencedor"), this);
@@ -104,9 +90,33 @@ Vencedor::Vencedor(QString url)
 	connect(m_chat, SIGNAL(signalSendMessage(int, const QString)), SLOT(slotChat(int, const QString&)));
 	connect(m_rooms, SIGNAL(signalSelected(const QString&)), SLOT(slotRoom(const QString)));
 
+	enable(false);
+
 	setWindowTitle(i18n("Vencedor"));
 	resize(800, 700);
 	show();
+
+	connection(url);
+}
+
+void Vencedor::connection(const QString& url)
+{
+	m_action_connect->setEnabled(false);
+
+	m_core = new KGGZCore::CoreClient(this);
+
+	connect(m_core,
+		SIGNAL(signalFeedback(KGGZCore::CoreClient::FeedbackMessage, KGGZCore::Error::ErrorCode)),
+		SLOT(slotFeedback(KGGZCore::CoreClient::FeedbackMessage, KGGZCore::Error::ErrorCode)));
+	connect(m_core,
+		SIGNAL(signalAnswer(KGGZCore::CoreClient::AnswerMessage)),
+		SLOT(slotAnswer(KGGZCore::CoreClient::AnswerMessage)));
+	connect(m_core,
+		SIGNAL(signalEvent(KGGZCore::CoreClient::EventMessage)),
+		SLOT(slotEvent(KGGZCore::CoreClient::EventMessage)));
+
+	m_core->setUrl(url);
+	m_core->initiateLogin();
 }
 
 void Vencedor::slotAbout()
@@ -119,12 +129,23 @@ void Vencedor::slotAbout()
 
 void Vencedor::slotConfig()
 {
-	KConfigDialog dlg(this, "settings", Prefs::self());
+	if(KConfigDialog::showDialog("settings"))
+		return;
+
+	KConfigDialog *dialog = new KConfigDialog(this, "settings", Prefs::self());
 
 	QWidget *root = new QWidget();
 
-	dlg.addPage(root, i18n("Settings"), "ggz");
-	dlg.exec();
+	QCheckBox *kcfg_sync = new QCheckBox(i18n("Synchronise preferences with server"));
+
+	QVBoxLayout *vbox = new QVBoxLayout();
+	vbox->addWidget(kcfg_sync);
+
+	root->setLayout(vbox);
+
+	dialog->addPage(root, i18n("Settings"), "ggz");
+
+	dialog->show();
 }
 
 void Vencedor::slotConnect()
@@ -148,6 +169,15 @@ void Vencedor::slotChat(int id, const QString& msg)
 void Vencedor::slotRoom(const QString& name)
 {
 	m_core->initiateRoomChange(name);
+}
+
+void Vencedor::enable(bool enabled)
+{
+	m_rooms->setEnabled(enabled);
+	m_players->setEnabled(enabled);
+	m_tables->setEnabled(enabled);
+	m_chat->setEnabled(enabled);
+	m_action_connect->setEnabled(!enabled);
 }
 
 void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZCore::Error::ErrorCode error)
@@ -229,6 +259,7 @@ void Vencedor::slotEvent(KGGZCore::CoreClient::EventMessage message)
 		case KGGZCore::CoreClient::protoerror:
 			break;
 		case KGGZCore::CoreClient::libraryerror:
+			enable(false);
 			break;
 	}
 }
