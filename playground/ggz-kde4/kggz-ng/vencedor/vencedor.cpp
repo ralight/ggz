@@ -1,5 +1,7 @@
 #include "vencedor.h"
 
+#include "prefs.h"
+
 #include <QLayout>
 #include <QToolBar>
 #include <QIcon>
@@ -12,6 +14,7 @@
 #include <kicon.h>
 #include <kaboutapplicationdialog.h>
 #include <kcomponentdata.h>
+#include <kconfigdialog.h>
 
 //#include <kggzcore/room.h>
 #include <kggzcore/misc.h>
@@ -80,6 +83,11 @@ Vencedor::Vencedor(QString url)
 	connect(action_about, SIGNAL(triggered(bool)), SLOT(slotAbout()));
 	toolbar->addAction(action_about);
 
+	QPixmap icon_config = KIconLoader::global()->loadIcon("configure", KIconLoader::Small);
+	QAction *action_config = new QAction(QIcon(icon_config), i18n("Configuration"), this);
+	connect(action_config, SIGNAL(triggered(bool)), SLOT(slotConfig()));
+	toolbar->addAction(action_config);
+
 	QPixmap icon_quit = KIconLoader::global()->loadIcon("application-exit", KIconLoader::Small);
 	QAction *action_quit = new QAction(QIcon(icon_quit), i18n("Quit"), this);
 	connect(action_quit, SIGNAL(triggered(bool)), SLOT(close()));
@@ -106,6 +114,16 @@ void Vencedor::slotAbout()
 	const KComponentData component = KGlobal::mainComponent();
 	const KAboutData *about = component.aboutData();
 	KAboutApplicationDialog dlg(about, this);
+	dlg.exec();
+}
+
+void Vencedor::slotConfig()
+{
+	KConfigDialog dlg(this, "settings", Prefs::self());
+
+	QWidget *root = new QWidget();
+
+	dlg.addPage(root, i18n("Settings"), "ggz");
 	dlg.exec();
 }
 

@@ -28,6 +28,7 @@ class Vencedor : public QMainWindow
 
 		void slotConnect();
 		void slotAbout();
+		void slotConfig();
 		void slotLaunch();
 
 		void slotRoom(const QString& name);
