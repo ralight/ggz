@@ -13,9 +13,11 @@ include(KDE4Defaults)
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 include_directories(${QDBUS_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR} ${KDE4_INCLUDES})
 
-#find_package(GGZDMod REQUIRED)
 macro_optional_find_package(GGZDMod)
 macro_log_feature(GGZDMOD_FOUND "ggzdmod" "GGZ base library for game servers" "http://www.ggzgamingzone.org" FALSE "" "Needed to compile the game servers.")
+
+macro_optional_find_package(Lokarest)
+macro_log_feature(LOKAREST_FOUND "lokarest" "RESTful web service handling" "http://techbase.kde.org/Projects/LokaRest" FALSE "" "Needed for GGZ Community synchronisation.")
 
 find_package(GGZCore REQUIRED)
 
