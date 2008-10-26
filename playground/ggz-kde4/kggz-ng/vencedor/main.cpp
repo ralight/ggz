@@ -21,17 +21,25 @@ int main(int argc, char **argv)
 		"josef@ggzgamingzone.org");
 	about.addAuthor(ki18n("Josef Spillner"), ki18n("Maintainer"), "josef@ggzgamingzone.org");
 
+	KCmdLineOptions options;
+	options.add("+[url]", ki18n("URL of the GGZ Gaming Zone server"));
+
 	KCmdLineArgs::init(argc, argv, &about);
+	KCmdLineArgs::addCmdLineOptions(options);
 
 	KApplication app;
+	KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
 	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("utf-8"));
 
 	QString url;
-	if(argc == 2)
-		url = argv[1];
+	if(args->count() == 1)
+		url = args->arg(0);
 	else
 		url = "ggz://guest9999@localhost:5688";
+	// FIXME: should recognise if username is missing but host/port are given
+
+	args->clear();
 
 	Vencedor *vencedor = new Vencedor(url);
 	Q_UNUSED(vencedor);
