@@ -26,13 +26,12 @@ set(kggzlib_LIB_SRCS
 	kggzaction.cpp
 	tablelist.cpp
 	tabledialog.cpp
-	wsinteractor.cpp
 )
 
 kde4_add_library(kggzlib SHARED ${kggzlib_LIB_SRCS})
 
 #set_target_properties(kggzlib PROPERTIES COMPILE_FLAGS -fPIC)
-target_link_libraries(kggzlib ${KDE4_KIO_LIBS} ${QT_QTNETWORK_LIBRARY} ${QT_QTXML_LIBRARY} kggzcore)
+target_link_libraries(kggzlib ${KDE4_KIO_LIBS} ${QT_QTNETWORK_LIBRARY} ${QT_QTXML_LIBRARY} ${LOKAREST_LIBRARY} kggzcore)
 set_target_properties(kggzlib PROPERTIES SOVERSION 0.0.0)
 
 install(TARGETS kggzlib ${INSTALL_TARGETS_DEFAULT_ARGS})
@@ -65,7 +64,6 @@ install(FILES
 	kggzaction.h
 	tablelist.h
 	tabledialog.h
-	wsinteractor.h
 	DESTINATION ${INCLUDE_INSTALL_DIR}/kggzlib
 )
 

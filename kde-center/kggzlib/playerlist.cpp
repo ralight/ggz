@@ -2,7 +2,9 @@
 #include "playerlist.h"
 #include "qrecursivesortfilterproxymodel.h"
 #include "player.h"
-#include "wsinteractor.h"
+
+// Lokarest includes
+#include <lokarest.h>
 
 // KDE includes
 #include <kstandarddirs.h>
@@ -65,7 +67,7 @@ PlayerList::PlayerList()
 	m_treeview->setModel(m_proxymodel);
 	m_treeview->expandAll();
 
-	m_interactor = new WSInteractor(this);
+	m_interactor = new LokaRest(this);
 
 	connect(searchbox, SIGNAL(textChanged(const QString&)), SLOT(slotSearch(const QString&)));
 	connect(m_treeview, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(slotSelected(const QPoint&)));
@@ -192,7 +194,7 @@ void PlayerList::slotSelected(const QPoint& pos)
 			if(!ggzserver.api().isEmpty())
 			{
 				QString url = baseurl + "/buddies/" + name;
-				m_interactor->remove(url);
+				m_interactor->schedule(StateTransfer(StateTransfer::del, Resource(url, QString(), QByteArray())));
 			}
 		}
 		else if(action == action_addbuddy)
@@ -205,7 +207,7 @@ void PlayerList::slotSelected(const QPoint& pos)
 			{
 				QString url = baseurl + "/buddies/" + name;
 				QByteArray xmldata = playertoxml(player);
-				m_interactor->post(url, xmldata);
+				m_interactor->schedule(StateTransfer(StateTransfer::put, Resource(url, "application/ggzapi+xml", xmldata)));
 			}
 		}
 		else if(action == action_removeignored)
@@ -217,7 +219,7 @@ void PlayerList::slotSelected(const QPoint& pos)
 			if(!ggzserver.api().isEmpty())
 			{
 				QString url = baseurl + "/ignored/" + name;
-				m_interactor->remove(url);
+				m_interactor->schedule(StateTransfer(StateTransfer::del, Resource(url, QString(), QByteArray())));
 			}
 		}
 		else if(action == action_addignored)
@@ -230,7 +232,7 @@ void PlayerList::slotSelected(const QPoint& pos)
 			{
 				QString url = baseurl + "/ignored/" + name;
 				QByteArray xmldata = playertoxml(player);
-				m_interactor->post(url, xmldata);
+				m_interactor->schedule(StateTransfer(StateTransfer::put, Resource(url, "application/ggzapi+xml", xmldata)));
 			}
 		}
 		else if(action == action_chat)

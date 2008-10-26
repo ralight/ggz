@@ -17,7 +17,7 @@ class QTreeView;
 class QRecursiveSortFilterProxyModel;
 class Player;
 class QModelIndex;
-class WSInteractor;
+class LokaRest;
 
 // List of players
 class KGGZLIB_EXPORT PlayerList : public QWidget
@@ -41,7 +41,7 @@ class KGGZLIB_EXPORT PlayerList : public QWidget
 		QStandardItem *m_itemfriends, *m_itemignored, *m_itemothers;
 		QMap<QString, Player*> m_players;
 		GGZProfile m_ggzprofile;
-		WSInteractor *m_interactor;
+		LokaRest *m_interactor;
 };
 
 #endif
