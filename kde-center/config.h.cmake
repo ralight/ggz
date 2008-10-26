@@ -1,0 +1,1 @@
+#cmakedefine LOKAREST_FOUND

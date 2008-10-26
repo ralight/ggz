@@ -1,6 +1,6 @@
 project(kggzlib)
 
-#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
+include_directories(${LOKAREST_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR}/..)
 
 set(kggzlib_LIB_SRCS
 	connectiondialog.cpp

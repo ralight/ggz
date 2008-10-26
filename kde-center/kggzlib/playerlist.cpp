@@ -1,10 +1,15 @@
+// Configuration
+#include "config.h"
+
 // Player list includes
 #include "playerlist.h"
 #include "qrecursivesortfilterproxymodel.h"
 #include "player.h"
 
 // Lokarest includes
+#ifdef LOKAREST_FOUND
 #include <lokarest/lokarest.h>
+#endif
 
 // KDE includes
 #include <kstandarddirs.h>
@@ -67,7 +72,9 @@ PlayerList::PlayerList()
 	m_treeview->setModel(m_proxymodel);
 	m_treeview->expandAll();
 
+#ifdef LOKAREST_FOUND
 	m_interactor = new LokaRest(this);
+#endif
 
 	connect(searchbox, SIGNAL(textChanged(const QString&)), SLOT(slotSearch(const QString&)));
 	connect(m_treeview, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(slotSelected(const QPoint&)));
@@ -194,7 +201,9 @@ void PlayerList::slotSelected(const QPoint& pos)
 			if(!ggzserver.api().isEmpty())
 			{
 				QString url = baseurl + "/buddies/" + name;
+#ifdef LOKAREST_FOUND
 				m_interactor->schedule(StateTransfer(StateTransfer::del, Resource(url, QString(), QByteArray())));
+#endif
 			}
 		}
 		else if(action == action_addbuddy)
@@ -207,7 +216,9 @@ void PlayerList::slotSelected(const QPoint& pos)
 			{
 				QString url = baseurl + "/buddies/" + name;
 				QByteArray xmldata = playertoxml(player);
+#ifdef LOKAREST_FOUND
 				m_interactor->schedule(StateTransfer(StateTransfer::put, Resource(url, "application/ggzapi+xml", xmldata)));
+#endif
 			}
 		}
 		else if(action == action_removeignored)
@@ -219,7 +230,9 @@ void PlayerList::slotSelected(const QPoint& pos)
 			if(!ggzserver.api().isEmpty())
 			{
 				QString url = baseurl + "/ignored/" + name;
+#ifdef LOKAREST_FOUND
 				m_interactor->schedule(StateTransfer(StateTransfer::del, Resource(url, QString(), QByteArray())));
+#endif
 			}
 		}
 		else if(action == action_addignored)
@@ -232,7 +245,9 @@ void PlayerList::slotSelected(const QPoint& pos)
 			{
 				QString url = baseurl + "/ignored/" + name;
 				QByteArray xmldata = playertoxml(player);
+#ifdef LOKAREST_FOUND
 				m_interactor->schedule(StateTransfer(StateTransfer::put, Resource(url, "application/ggzapi+xml", xmldata)));
+#endif
 			}
 		}
 		else if(action == action_chat)

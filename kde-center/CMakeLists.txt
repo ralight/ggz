@@ -21,6 +21,8 @@ macro_log_feature(LOKAREST_FOUND "lokarest" "RESTful web service handling" "http
 
 find_package(GGZCore REQUIRED)
 
+configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+
 if(GGZDMOD_FOUND)
   add_subdirectory(kggzdmod)
 endif(GGZDMOD_FOUND)
