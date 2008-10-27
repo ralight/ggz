@@ -10,6 +10,18 @@
 <language>fr-fr</language>
 
 <item>
+<title><i>27.10.2008: GGZ for mobile use, and other news</i> (by josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+A <a href="http://ggz-mobile.garage.maemo.org/">garage project</a> for porting
+GGZ to mobile devices has been created. This will not produce anything usable
+quickly, but will allow us to work towards this goal whenever possible.
+In other news, several changes have been happening in the KDE and Gtk+
+core clients and another snapshot will follow soon.
+</full>
+</item>
+
+<item>
 <title><i>13.07.2008: Developer snapshot 0.99.4</i> (by josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>
