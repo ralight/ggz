@@ -205,61 +205,61 @@ int KTicTacTux::gameOver()
 	KSharedConfig::Ptr conf = KGlobal::config();
 	KConfigGroup cg = KConfigGroup(conf, "Score");
 
-	// evaluate if game is still in progress
-	if(m_x != -1)
-	{
-		getAI();
-		if(m_winner)
-		{
-			emit signalStatus(i18n("Game Over!"));
-
-			if((m_opponent == PLAYER_NETWORK) && (proto->num() < 0))
-			{
-				announce(i18n("The game is over."));
-			}
-			else
-			{
-				if(m_winner == proto->opponent)
-				{
-					m_score_opp++;
-					if(m_opponent == PLAYER_NETWORK)
-						cg.writeEntry("humanwon", cg.readEntry("humanwon").toInt() + 1);
-					else
-						cg.writeEntry("aiwon", cg.readEntry("aiwon").toInt() + 1);
-					conf->sync();
-					announce(i18n("You lost the game."));
-				}
-				else
-				{
-					m_score_you++;
-					if(m_opponent == PLAYER_NETWORK)
-						cg.writeEntry("humanlost", cg.readEntry("humanlost").toInt() + 1);
-					else
-						cg.writeEntry("ailost", cg.readEntry("ailost").toInt() + 1);
-					conf->sync();
-					announce(i18n("You are the winner!"));
-				}
-			}
-			emit signalGameOver();
-			return 1;
-		}
-		else return 0;
-	}
-	else
+	getAI();
+	if(m_winner)
 	{
 		emit signalStatus(i18n("Game Over!"));
 
-		if(m_opponent == PLAYER_NETWORK)
-			cg.writeEntry("humantied", cg.readEntry("humantied").toInt() + 1);
+		if((m_opponent == PLAYER_NETWORK) && (proto->num() < 0))
+		{
+			announce(i18n("The game is over."));
+		}
 		else
-			cg.writeEntry("aitied", cg.readEntry("aitied").toInt() + 1);
-		conf->sync();
-		announce(i18n("The game is over. There is no winner."));
-		emit signalGameOver();
-		return 1;
+		{
+			if(m_winner == proto->opponent)
+			{
+				m_score_opp++;
+				if(m_opponent == PLAYER_NETWORK)
+					cg.writeEntry("humanwon", cg.readEntry("humanwon").toInt() + 1);
+				else
+					cg.writeEntry("aiwon", cg.readEntry("aiwon").toInt() + 1);
+				conf->sync();
+				announce(i18n("You lost the game."));
+			}
+			else
+			{
+				m_score_you++;
+				if(m_opponent == PLAYER_NETWORK)
+					cg.writeEntry("humanlost", cg.readEntry("humanlost").toInt() + 1);
+				else
+					cg.writeEntry("ailost", cg.readEntry("ailost").toInt() + 1);
+				conf->sync();
+				announce(i18n("You are the winner!"));
+			}
+		}
+	}
+	else
+	{
+		// evaluate if game is still in progress
+		if(m_x != -1)
+		{
+			return 0;
+		}
+		else
+		{
+			emit signalStatus(i18n("Game Over!"));
+
+			if(m_opponent == PLAYER_NETWORK)
+				cg.writeEntry("humantied", cg.readEntry("humantied").toInt() + 1);
+			else
+				cg.writeEntry("aitied", cg.readEntry("aitied").toInt() + 1);
+			conf->sync();
+			announce(i18n("The game is over. There is no winner."));
+		}
 	}
 
-	return 0;
+	emit signalGameOver();
+	return 1;
 }
 
 // Ask for yet another game (some people can't get enough)
@@ -338,14 +338,14 @@ void KTicTacTux::getAI()
 			}
 	}
 
-	m_seewinner = 0;
+	m_seewinner = false;
 
 	// Go straight for the middle if possible
 	if(c == proto->none)
 	{
 		m_x = 1;
 		m_y = 1;
-		m_seewinner = 1;
+		m_seewinner = true;
 	}
 
 	// Normal AI operations
@@ -377,7 +377,7 @@ void KTicTacTux::getAIAt(int xo, int yo, int xp, int yp)
 					m_x = trip(x + xp * 2);
 					m_y = trip(y + yp * 2);
 					// take unlimited chance
-					if(proto->board[trip(x)][trip(y)] == proto->opponent) m_seewinner = 1;
+					if(proto->board[trip(x)][trip(y)] == proto->opponent) m_seewinner = true;
 				}
 			}
 			else m_winner = proto->board[trip(x + xp * 2)][trip(y + yp * 2)];

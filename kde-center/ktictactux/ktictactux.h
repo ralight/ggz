@@ -125,7 +125,7 @@ class KTicTacTux : public QWidget
 		// Indicates that there's a winner
 		int m_winner;
 		// Indicates that there'll be a winner
-		int m_seewinner;
+		bool m_seewinner;
 		// Type of the opponent
 		int m_opponent;
 		// Internal protocol class
