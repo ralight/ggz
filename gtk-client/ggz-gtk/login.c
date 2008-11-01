@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 10538 2008-08-30 11:00:49Z josef $
+ * $Id: login.c 10587 2008-11-01 00:50:24Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -488,6 +488,7 @@ void login_set_entries(Server server)
 {
 	GtkWidget *tmp;
 	gchar *port;
+	gchar *username = server.login, *password = server.password;
 
 	login.entries_update = TRUE;
 
@@ -520,13 +521,13 @@ void login_set_entries(Server server)
 		break;
 	}
 
+	if (!username) username = "";
 	tmp = ggz_lookup_widget(login.dialog, "name_entry");
-	gtk_entry_set_text(GTK_ENTRY(tmp), server.login);
+	gtk_entry_set_text(GTK_ENTRY(tmp), username);
 
-	if (server.type == GGZ_LOGIN && server.password != NULL) {
-		tmp = ggz_lookup_widget(login.dialog, "pass_entry");
-		gtk_entry_set_text(GTK_ENTRY(tmp), server.password);
-	}
+	if (server.type != GGZ_LOGIN || !password) password = "";
+	tmp = ggz_lookup_widget(login.dialog, "pass_entry");
+	gtk_entry_set_text(GTK_ENTRY(tmp), password);
 
 	login.entries_update = FALSE;
 }
