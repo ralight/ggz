@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 10548 2008-08-30 15:36:53Z josef $
+ * $Id: game.c 10588 2008-11-01 02:04:54Z jdorje $
  *
  * Functions for handling game events
  *
@@ -167,14 +167,12 @@ void game_channel_ready(void)
 void game_quit(void)
 {
 	GGZGame *game = ggzcore_server_get_cur_game(ggz_gtk.server);
-	int fd = ggzcore_game_get_control_fd(game);
 
-	if (fd != -1) {
-		assert(ggz_gtk.game_tag != 0);
-		g_source_remove(ggz_gtk.game_tag);
-		ggz_gtk.game_tag = 0;
-		fd = -1;
-	}
+	assert(ggzcore_game_get_control_fd(game) == -1);
+	assert(ggz_gtk.game_tag != 0);
+
+	g_source_remove(ggz_gtk.game_tag);
+	ggz_gtk.game_tag = 0;
 }
 
 
