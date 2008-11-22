@@ -1,23 +1,22 @@
-/*
- * File: misc.c
- * Author: Rich Gade
- * Project: GGZ Core Client Lib
- * Date: 11/06/01
+/**
+ * libggz - Programming in C with comfort, safety and network awareness.
+ * This library is part of the ggz-base-libs package.
  *
- * Miscellaneous convenience functions
+ * misc.c: Miscellaneous convenience functions.
  *
- * Copyright (C) 2001 Brent Hendricks.
+ * Copyright (C) 2001 Brent Hendricks
+ * Copyright (C) 2002-2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -385,7 +384,6 @@ void ggz_free_file_struct(GGZFile *file)
 static int safe_string_compare(const char *s1, const char *s2,
 			       int (*cmp_func)(const char *a, const char *b))
 {
-	
 	if (s1 == NULL) {
 		if (s2 == NULL) /* If they're both NULL, consider them equal */
 			return 0;
@@ -395,7 +393,7 @@ static int safe_string_compare(const char *s1, const char *s2,
 
 	if (s2 == NULL)
 		return 1;
-	
+
 	/* If both strings are non-NULL, do normal string compare */
 	return cmp_func(s1, s2);
 }

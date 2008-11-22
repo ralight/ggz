@@ -1,26 +1,23 @@
-/*
- * File: numberlist.c
- * Author: GGZ Dev Team
- * Project: GGZ Common Library
- * Date: 01/13/2002
- * $Id: numberlist.c 8625 2006-10-21 09:58:04Z jdorje $
+/**
+ * libggz - Programming in C with comfort, safety and network awareness.
+ * This library is part of the ggz-base-libs package.
  *
- * This provides GGZ-specific functionality that is common to
+ * numberlist.c: This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
  * game-client.
  *
- * Copyright (C) 2002 GGZ Development Team.
+ * Copyright (C) 2002-2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -88,7 +85,7 @@ GGZNumberList ggz_numberlist_read(const char *text)
 			}
 		} else {
 			int val = atoi(this);
-		  
+
 			if (val <= 0 || val > 32)
 				error = 1;
 			else if (list.values & (1 << (val - 1)))
@@ -108,7 +105,7 @@ GGZNumberList ggz_numberlist_read(const char *text)
 
 char *ggz_numberlist_write(GGZNumberList *list)
 {
-	/* The theoretical maximum string length is less than this. */ 
+	/* The theoretical maximum string length is less than this. */
 	char str[256] = "";
 	int i;
 

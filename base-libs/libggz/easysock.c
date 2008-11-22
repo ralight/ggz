@@ -1,25 +1,23 @@
-/*
- * File: easysock.c
- * Author: Brent Hendricks
- * Project: libeasysock
- * Date: 4/16/98
- * $Id: easysock.c 10536 2008-08-30 10:52:15Z josef $
+/**
+ * libggz - Programming in C with comfort, safety and network awareness.
+ * This library is part of the ggz-base-libs package.
  *
- * A library of useful routines to make life easier while using 
- * sockets
+ * easysock.c: A library of useful routines to make life easier
+ * while using sockets.
  *
- * Copyright (C) 1998-2001 Brent Hendricks.
+ * Copyright (C) 1998-2001 Brent Hendricks
+ * Copyright (C) 2002-2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -80,7 +78,7 @@ DEBUG_MEM
 
 #include "support.h"
 
-#define SA struct sockaddr  
+#define SA struct sockaddr
 #define HOSTNAMELEN 1024
 
 /* Thread argument structure for connectorthread() */
@@ -360,7 +358,7 @@ static void *connectorthread(void *arg)
 	struct ggz_async_t *args;
 	int fd;
 	const char *address;
-	
+
 	args = (struct ggz_async_t*)arg;
 
 	if(args->fd != GGZ_SOCKET_RESOLVEONLY) {
@@ -436,7 +434,7 @@ static int es_threaded_connect(const char *host, int port, GGZSockType type, int
 }
 
 
-int ggz_make_socket(const GGZSockType type, const unsigned short port, 
+int ggz_make_socket(const GGZSockType type, const unsigned short port,
 		   const char *server)
 {
 	int sock = -1;
@@ -450,7 +448,7 @@ int ggz_make_socket(const GGZSockType type, const unsigned short port,
 	case GGZ_SOCK_SERVER:
 		if ( (sock = es_bind(server, port)) < 0) {
 			if (_err_func)
-				(*_err_func) (strerror(errno), GGZ_IO_CREATE, 
+				(*_err_func) (strerror(errno), GGZ_IO_CREATE,
 					      sock, GGZ_DATA_NONE);
 			return -1;
 		}
@@ -474,7 +472,7 @@ int ggz_make_socket(const GGZSockType type, const unsigned short port,
 		sock = es_threaded_connect(server, port, type, 1);
 		if ((sock < 0) && (sock != GGZ_SOCKET_PENDING)) {
 			if (_err_func)
-				(*_err_func) (strerror(errno), GGZ_IO_CREATE, 
+				(*_err_func) (strerror(errno), GGZ_IO_CREATE,
 					      sock, GGZ_DATA_NONE);
 			return -1;
 		}
@@ -485,14 +483,14 @@ int ggz_make_socket(const GGZSockType type, const unsigned short port,
 }
 
 
-int ggz_make_socket_or_die(const GGZSockType type, const unsigned short port, 
+int ggz_make_socket_or_die(const GGZSockType type, const unsigned short port,
 			  const char *server)
 {
 	int sock;
-	
+
 	if ( (sock = ggz_make_socket(type, port, server)) < 0)
 		(*_exit_func) (-1);
-	
+
 	return sock;
 }
 
@@ -503,14 +501,13 @@ int ggz_make_unix_socket(const GGZSockType type, const char* name)
 	struct sockaddr_un addr;
 
 	ggz_init_network(); /* Just in case. */
-	
+
 	if ( (sock = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0) {
 		if (_err_func)
 			(*_err_func) (strerror(errno), GGZ_IO_CREATE, -1, GGZ_DATA_NONE);
 		return -1;
 	}
 
-	
 	memset(&addr, 0, sizeof(addr));
 	addr.sun_family = AF_LOCAL;
 	/* Copy in filename up to the limit, leaving room for \0 term. */
@@ -522,7 +519,7 @@ int ggz_make_unix_socket(const GGZSockType type, const char* name)
 		unlink(name);
 		if (bind(sock, (SA *)&addr, SUN_LEN(&addr)) < 0 ) {
 			if (_err_func)
-				(*_err_func) (strerror(errno), GGZ_IO_CREATE, 
+				(*_err_func) (strerror(errno), GGZ_IO_CREATE,
 					      sock, GGZ_DATA_NONE);
 			return -1;
 		}
@@ -530,7 +527,7 @@ int ggz_make_unix_socket(const GGZSockType type, const char* name)
 	case GGZ_SOCK_CLIENT:
 		if (connect(sock, (SA *)&addr, sizeof(addr)) < 0) {
 			if (_err_func)
-				(*_err_func) (strerror(errno), GGZ_IO_CREATE, 
+				(*_err_func) (strerror(errno), GGZ_IO_CREATE,
 					      sock, GGZ_DATA_NONE);
 			return -1;
 		}
@@ -546,14 +543,14 @@ int ggz_make_unix_socket(const GGZSockType type, const char* name)
 }
 
 
-int ggz_make_unix_socket_or_die(const GGZSockType type, const char* name) 
+int ggz_make_unix_socket_or_die(const GGZSockType type, const char* name)
 {
 #if GGZ_HAVE_PF_LOCAL
 	int sock;
-	
+
 	if ( (sock = ggz_make_unix_socket(type, name)) < 0)
 		(*_exit_func) (-1);
-	
+
 	return sock;
 #else
 	return -1;
@@ -600,7 +597,7 @@ int ggz_read_char(const int sock, char *message)
 			(*_err_func) ("fd closed", GGZ_IO_READ, sock, GGZ_DATA_CHAR);
 		return -1;
 	}
-	
+
 	ggz_debug(GGZ_SOCKET_DEBUG, "Received \"%d\" : char.", *message);
 	return 0;
 }
@@ -647,7 +644,7 @@ void ggz_write_int_or_die(const int sock, const int data)
 int ggz_read_int(const int sock, int *message)
 {
 	int data, status;
-	
+
 	if ( (status = ggz_readn(sock, &data, sizeof(int))) < 0) {
 		ggz_debug(GGZ_SOCKET_DEBUG, "Error receiving int: %s",
 			  strerror(errno));
@@ -655,14 +652,14 @@ int ggz_read_int(const int sock, int *message)
 			(*_err_func) (strerror(errno), GGZ_IO_READ, sock, GGZ_DATA_INT);
 		return -1;
 	}
-	
+
 	if ((unsigned)status < sizeof(int)) {
 		ggz_debug(GGZ_SOCKET_DEBUG, "Warning: fd is closed.");
 		if (_err_func)
 			(*_err_func) ("fd closed", GGZ_IO_READ, sock, GGZ_DATA_INT);
 		return -1;
 	}
-	
+
 	*message = ntohl(data);
 	ggz_debug(GGZ_SOCKET_DEBUG, "Received \"%d\" : int.", *message);
 	return 0;
@@ -689,17 +686,17 @@ int ggz_write_string(const int sock, const char *message)
 	}
 
 	size = strlen(message) * sizeof(char) + 1;
-	
+
 	if (ggz_write_int(sock, size) < 0)
 		return -1;
-	
+
 	if (ggz_writen(sock, message, size) < 0) {
 		ggz_debug(GGZ_SOCKET_DEBUG, "Error sending string.");
 		if (_err_func)
 			(*_err_func) (strerror(errno), GGZ_IO_WRITE, sock, GGZ_DATA_STRING);
 		return -1;
 	}
-	
+
 	ggz_debug(GGZ_SOCKET_DEBUG, "Sent \"%s\" : string.", message);
 	return 0;
 }
@@ -750,14 +747,14 @@ int ggz_read_string(const int sock, char *message, const unsigned int len)
 
 	if (ggz_read_int(sock, (int*)&size) < 0)
 		return -1;
-	
+
 	if (size > len) {
 		ggz_debug(GGZ_SOCKET_DEBUG, "String too long for buffer.");
 		if (_err_func)
 			(*_err_func) ("String too long", GGZ_IO_READ, sock, GGZ_DATA_STRING);
 		return -1;
 	}
-	
+
 	if ( (status = ggz_readn(sock, message, size)) < 0) {
 		ggz_debug(GGZ_SOCKET_DEBUG, "Error receiving string: %s",
 			  strerror(errno));
@@ -772,10 +769,10 @@ int ggz_read_string(const int sock, char *message, const unsigned int len)
 			(*_err_func) ("fd closed", GGZ_IO_READ, sock, GGZ_DATA_STRING);
 		return -1;
 	}
-	
+
 	/* Guarantee NULL-termination */
 	message[len-1] = '\0';
-	
+
 	ggz_debug(GGZ_SOCKET_DEBUG, "Received \"%s\" : string.", message);
 	return 0;
 }
@@ -806,7 +803,7 @@ int ggz_read_string_alloc(const int sock, char **message)
 				      sock, GGZ_DATA_STRING);
 		return -1;
 	}
-	
+
 	/* FIXME: what happens if we don't have enough memory?  Exiting in
 	   this case seems like a security risk. */
 	*message = ggz_malloc((size+1) * sizeof(char));
@@ -818,7 +815,7 @@ int ggz_read_string_alloc(const int sock, char **message)
 			(*_err_func) (strerror(errno), GGZ_IO_READ, sock, GGZ_DATA_STRING);
 		return -1;
 	}
-	
+
 	/* ggz_malloc zeroes memory, but we do it again anyway. */
 	(*message)[size] = 0;
 
@@ -892,7 +889,7 @@ int ggz_writen(const int sock, const void *vptr, size_t n)
 			else
 				return (-1);	/* error */
 		}
-		
+
 		nleft -= nwritten;
 		ptr += nwritten;
 	}
@@ -1018,7 +1015,6 @@ int ggz_read_fd(int sock, int *recvfd)
 	int newfd;
 #endif
 
-
 #ifdef	HAVE_MSGHDR_MSG_CONTROL
 	union {
 		struct cmsghdr cm;
@@ -1088,12 +1084,12 @@ int ggz_read_fd(int sock, int *recvfd)
 		if (_err_func)
 			(*_err_func) ("Bad msg", GGZ_IO_READ, sock, GGZ_DATA_FD);
 		return -1;
-	}		
+	}
 
 	/* Everything is good */
 	*recvfd = newfd;
 #endif
-	
+
 	ggz_debug(GGZ_SOCKET_DEBUG, "Received \"%d\" : fd.", *recvfd);
 	return 0;
 #else

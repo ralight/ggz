@@ -1,5 +1,8 @@
 /**
- * libggz - Programming in C with comfort, safety and network awareness
+ * libggz - Programming in C with comfort, safety and network awareness.
+ * This library is part of the ggz-base-libs package.
+ *
+ * ggz_dio.h: Header with DIO declarations.
  *
  * Copyright (C) 1996-2006 Freeciv Dev Team
  * Copyright (C) 2006-2008 GGZ Gaming Zone Development Team
@@ -8,12 +11,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA

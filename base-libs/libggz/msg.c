@@ -1,24 +1,22 @@
-/*
- * File: msg.c
- * Author: Brent Hendricks
- * Project: GGZ Core Client Lib
- * Date: 9/15/00
- * $Id: msg.c 8898 2007-01-12 09:40:44Z josef $
+/**
+ * libggz - Programming in C with comfort, safety and network awareness.
+ * This library is part of the ggz-base-libs package.
  *
- * Debug and error messages
+ * msg.c: Debug and error messages.
  *
- * Copyright (C) 2000-2002 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks
+ * Copyright (C) 2003-2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -80,7 +78,7 @@ static GGZDebugHandlerFunc handler_func = NULL;
 void ggz_debug_init(const char **types, const char* file)
 {
 	int i;
-	
+
 	if (file && (debug_file = fopen(file, "a")) == NULL)
 		ggz_error_sys_exit("fopen() to open %s", file);
 
@@ -90,7 +88,7 @@ void ggz_debug_init(const char **types, const char* file)
 		for (i = 0; types[i]; i++)
 			ggz_debug_enable(types[i]);
 	}
-	
+
 	/* We do the actual enabling last, so none of the steps up to
            this point will generate debugging messages */
 	debug_enabled = 1;
@@ -116,7 +114,6 @@ void ggz_debug_enable(const char *type)
 {
 	/* Make sure type exists and debugging is enabled */
 	if (type) {
-		
 		/* if the list doesn't exist, create it */
 		if (!debug_types) {
 			/* Setup list of debugging types */
@@ -125,7 +122,7 @@ void ggz_debug_enable(const char *type)
 						      ggz_list_destroy_str,
 						      GGZ_LIST_REPLACE_DUPS);
 		}
-		
+
 		ggz_list_insert(debug_types, (char*)type);
 	}
 }
@@ -244,11 +241,11 @@ void ggz_error_msg_exit(const char *fmt, ...)
 void ggz_debug_cleanup(GGZCheckType check)
 {
 	GGZList *list;
-	
+
 	/* Turn off debug handling first so nothing after this
            generates a message */
 	debug_enabled = 0;
-	
+
 	if (debug_types) {
 		/* Turn off debug handling by setting types to NULL */
 		list = debug_types;
@@ -282,13 +279,12 @@ static void err_doit(int priority, const char* prefix,
 	if (prefix)
 		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
 		         "(%s) ", prefix);
-	
 
 	vsnprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), fmt, ap);
 	if (err)
 		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
 		         ": %s", strerror(errno));
-			
+
 	if (handler_func) {
 		(*handler_func)(priority, buf);
 	} else if (debug_file) {
@@ -300,16 +296,16 @@ static void err_doit(int priority, const char* prefix,
 		fputs(buf, stderr);
 		fputs("\n", stderr);
 	}
-	
+
 	fflush(NULL);
 }
 
 #if 0 /* currently unused */
 /* For debug purposes only */
-void ggz_debug_debug(void) 
+void ggz_debug_debug(void)
 {
 	GGZListEntry *entry;
-	
+
 	printf("Debugging subsystem status\n");
 	printf("Debug file is %p\n", debug_file);
 	if (debug_types) {
@@ -322,7 +318,7 @@ void ggz_debug_debug(void)
 		}
 
 	}
-	else 
+	else
 		printf("No debugging types list\n");
 }
 #endif

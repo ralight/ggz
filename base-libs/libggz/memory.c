@@ -1,24 +1,22 @@
-/*
- * File: memory.c
- * Author: Rich Gade
- * Project: GGZ Core Client Lib
- * Date: 02/15/01
- * $Id: memory.c 9541 2008-01-15 17:21:26Z josef $
+/**
+ * libggz - Programming in C with comfort, safety and network awareness.
+ * This library is part of the ggz-base-libs package.
  *
- * This is the code for handling memory allocation for ggzcore
+ * memory.c: This is the code for handling memory allocation for ggzcore.
  *
- * Copyright (C) 2001-2002 Brent Hendricks.
+ * Copyright (C) 2001-2002 Brent Hendricks
+ * Copyright (C) 2003-2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -244,7 +242,7 @@ int ggz_memory_check(void)
 				memptr->funcname, memptr->tag, memptr->line);
 			memptr = memptr->next;
 		}
-		
+
 		flag = -1;
 	} else {
 		ggz_log(GGZ_MEM_DEBUG, "All clean!");

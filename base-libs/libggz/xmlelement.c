@@ -1,23 +1,22 @@
-/*
- * File: xmlelement.c
- * Author: Brent Hendricks
- * Project: GGZ Core Client Lib
- * Date: 8/31/01
+/**
+ * libggz - Programming in C with comfort, safety and network awareness.
+ * This library is part of the ggz-base-libs package.
  *
- * This is the code for handling the an XML element
+ * xmlelement.c: This is the code for handling the an XML element.
  *
- * Copyright (C) 2000,2001 Brent Hendricks.
+ * Copyright (C) 2000-2001 Brent Hendricks
+ * Copyright (C) 2002-2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -43,7 +42,7 @@ GGZXMLElement *ggz_xmlelement_new(const char *tag, const char * const *attrs,
 	GGZXMLElement *element;
 
 	element = ggz_malloc(sizeof(GGZXMLElement));
-	
+
 	ggz_xmlelement_init(element, tag, attrs, process, free_func);
 
 	return element;
@@ -65,7 +64,7 @@ void ggz_xmlelement_init(GGZXMLElement *element, const char *tag,
 						      GGZ_LIST_ALLOW_DUPS);
 		element->text = NULL;
 		element->process = process;
-		
+
 		for (i = 0; attrs[i]; i++)
 			ggz_list_insert(element->attributes, (void *)attrs[i]);
 
@@ -101,7 +100,7 @@ const char* ggz_xmlelement_get_attr(GGZXMLElement *element, const char *attr)
 			value = ggz_list_get_data(ggz_list_next(item));
 			break;
 		}
-			
+
 		/* Every other item is a value */
 		item = ggz_list_next(ggz_list_next(item));
 	}
@@ -140,7 +139,7 @@ void ggz_xmlelement_add_text(GGZXMLElement *element, const char *text, int len)
 			new_len = old_len + len + 1;
 			element->text = ggz_realloc(element->text, new_len);
 		}
-		
+
 		strncat(element->text, text, len);
 		element->text[new_len - 1] = '\0';
 	}
@@ -164,6 +163,6 @@ void ggz_xmlelement_free(GGZXMLElement *element)
 
 static void ggz_xmlelement_do_free(GGZXMLElement *element)
 {
-	if (element) 
+	if (element)
 		ggz_free(element);
 }

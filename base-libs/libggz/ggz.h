@@ -1,5 +1,8 @@
 /**
- * libggz - Programming in C with comfort, safety and network awareness
+ * libggz - Programming in C with comfort, safety and network awareness.
+ * This library is part of the ggz-base-libs package.
+ *
+ * ggz.h: Header with general symbol and function declarations.
  *
  * Copyright (C) 2001 Brent Hendricks
  * Copyright (C) 2002-2008 GGZ Gaming Zone Development Team
@@ -8,12 +11,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -96,7 +99,7 @@ extern "C" {
  * You can then call ggz_memory_check() to make sure all allocated
  * memory has been freed.  Note that you will need to enable MEMORY
  * debugging to see this.
- * 
+ *
  * @{
  */
 
@@ -105,39 +108,39 @@ extern "C" {
  */
 #define GGZ_MEM_DEBUG "ggz_mem"
 
-/** 
+/**
  * Macro for memory allocation
- * 
+ *
  * @param size the size of memory to allocate, in bytes
- * 
+ *
  * @return a pointer to the newly allocated and zeroed memory
  */
 #define ggz_malloc(size) _ggz_malloc(size, _GGZFUNCTION_, " in " __FILE__, __LINE__)
 
-/** 
+/**
  * Macro for resizing previously allocated memory
- * 
+ *
  * @param mem pointer to memory to reallocate
  * @param size new size requested, in bytes
- * 
+ *
  * @return pointer to allocated memory
  */
 #define ggz_realloc(mem, size) _ggz_realloc(mem, size, _GGZFUNCTION_, " in " __FILE__, __LINE__)
 
-/** 
- * Macro for freeing memory previously allocated 
- * 
+/**
+ * Macro for freeing memory previously allocated
+ *
  * @param mem pointer to allocated memory
- * 
+ *
  * @return failure code
  */
 #define ggz_free(mem) _ggz_free(mem, _GGZFUNCTION_, " in " __FILE__,  __LINE__)
 
-/** 
+/**
  * Macro for duplicating string
- * 
+ *
  * @param string string to duplicate
- * 
+ *
  * @return pointer to new string
  *
  * @note It is safe to pass a NULL string.
@@ -145,59 +148,59 @@ extern "C" {
 #define ggz_strdup(string) _ggz_strdup(string, _GGZFUNCTION_, " in " __FILE__,  __LINE__)
 
 
-/** 
+/**
  * Function to actually perform memory allocation.  Don't call this
  * directly.  Instead, call ggz_malloc().
- * 
+ *
  * @param size size of memory to allocate, in bytes
  * @param funcname string describing the calling function
  * @param tag string describing the calling function's context
  * @param line linenumber
- * 
+ *
  * @return pointer to newly allocated, zeroed memory
 */
 void * _ggz_malloc(const size_t size, const char *funcname,
                    const char * tag, int line);
 
-/** 
+/**
  * Function to perform memory reallocation.  Don't call this
  * directly.  Instead, call ggz_realloc().
- * 
+ *
  * @param ptr pointer to memory to reallocate
  * @param size new size, in bytes
  * @param funcname string describing the calling function
  * @param tag string describing the calling function's context
  * @param line linenumber
- * 
+ *
  * @return pointer to allocated memory
 */
 void * _ggz_realloc(const void * ptr, const size_t size,
                     const char *funcname, const char * tag, int line)
                     ggz__attribute((warn_unused_result));
 
-/** 
+/**
  * Function to free allocated memory.  Don't call this
  * directly.  Instead, call ggz_free().
- * 
+ *
  * @param ptr pointer to memory
  * @param funcname string describing the calling function
  * @param tag string describing the calling function's context
  * @param line linenumber
- * 
+ *
  * @return 0 on success, -1 on error
 */
 int _ggz_free(const void * ptr, const char *funcname,
               const char * tag, int line);
 
-/** 
+/**
  * Function to copy a string.  Don't call this
  * directly.  Instead, call ggz_strdup().
- * 
+ *
  * @param ptr string to duplicate
  * @param funcname string describing the calling function
  * @param tag string describing the calling function's context
  * @param line linenumber
- * 
+ *
  * @return newly allocated string
  *
  * @note It is safe to pass a NULL string.
@@ -233,10 +236,10 @@ char * ggz_strncpy(char * dst, const char * src, size_t n);
  */
 char *ggz_strbuild(const char *fmt, ...);
 
-/** 
+/**
  * Check memory allocated against memory freed and display any discrepancies.
- * 
- * 
+ *
+ *
  * @return 0 if no allocated memory remains, -1 otherwise
  */
 int ggz_memory_check(void);
@@ -350,7 +353,7 @@ ggz_intlstring *ggz_intlstring_fromintlstring(const ggz_intlstring* string);
 /** @brief Free an internationalized string
  *
  *  Only use this for strings which were created with \ref
- *  ggz_intlstring_fromstring or read with \ref ggz_conf_read_intlstring. 
+ *  ggz_intlstring_fromstring or read with \ref ggz_conf_read_intlstring.
  *
  *  @param string The internationalized string to be destroyed
  */
@@ -377,7 +380,7 @@ char *ggz_intlstring_translated(const ggz_intlstring *string, const char *lang);
  */
 #define GGZ_CONF_DEBUG "ggz_conf"
 
-/** 
+/**
  * Specifies the mode for opening a configuration file.
  * @see ggz_conf_parse()
  */
@@ -553,7 +556,7 @@ int ggz_conf_remove_key	(int	handle,
  * @note The array is allocated via standard ggz_malloc() calls and the
  * caller is expected to be responsible for calling ggz_free() on the string
  * values and the associated array structure when they no longer need the
- * list. 
+ * list.
  */
 int ggz_conf_get_sections (int handle,
 			 int	*argcp,
@@ -572,7 +575,7 @@ int ggz_conf_get_sections (int handle,
  * @note The array is allocated via standard ggz_malloc() calls and the
  * caller is expected to be responsible for calling ggz_free() on the string
  * values and the associated array structure when they no longer need the
- * list. 
+ * list.
  */
 int ggz_conf_get_keys (int handle,
 			 const char *section,
@@ -605,7 +608,7 @@ ggz_intlstring *ggz_conf_read_intlstring(int handle,
 
 
 /**
- * @defgroup list List functions 
+ * @defgroup list List functions
  *
  * Data Structures and functions for manipulating linked-lists.
  * @{
@@ -720,7 +723,7 @@ GGZList *ggz_list_create (ggzEntryCompare compare_func,
  * @param list Pointer to a ::GGZList
  * @param data Pointer to data to be inserted
  * @return -1 on failure, 0 is the item was inserted, and 1 if the
- * item replaced an existing list item 
+ * item replaced an existing list item
  * @note Replacement of duplicate items only occurs if #GGZ_LIST_REPLACE_DUPS
  * was passed to ggz_list_create().
  */
@@ -778,7 +781,7 @@ void *ggz_list_get_data		(GGZListEntry *entry);
  * @param data Pointer to data to search for
  * @return Pointer to the ::GGZListEntry containing the specifed node
  * (NULL if the data could not be found or if no compare_func was
- * specified at list-creation time) 
+ * specified at list-creation time)
  */
 GGZListEntry *ggz_list_search	(GGZList *list, void *data);
 
@@ -793,7 +796,7 @@ GGZListEntry *ggz_list_search	(GGZList *list, void *data);
  * @param compare_func Comparison function
  * @return Pointer to the ::GGZListEntry containing the specified node
  * (NULL if the data could not be found or if no compare_func was
- * specified) 
+ * specified)
  */
 GGZListEntry *ggz_list_search_alt(GGZList *list, void *data,
 				  ggzEntryCompare compare_func);
@@ -839,8 +842,8 @@ int ggz_list_count		(GGZList *list);
  *  ggz_list_create() when creating a list that stores character
  *  strings.
  *
- * @param a A string to compare 
- * @param b A second string to compare 
+ * @param a A string to compare
+ * @param b A second string to compare
  * @return The result of strcmp() on a and b, or 1 if either is NULL
  * */
 int ggz_list_compare_str	(void *a, void *b);
@@ -927,12 +930,12 @@ void ggz_stack_free(GGZStack *stack);
 
 
 /**
- * @defgroup xml XML parsing 
+ * @defgroup xml XML parsing
  *
  * Utility functions for doing simple XML parsing.  These can be used
  * with streaming XML parsers, and don't have the overhead of a full
  * DOM tree.  ::GGZXMLElement represents a single element, along with
- * its attributes and text data.  
+ * its attributes and text data.
  *
  * @note This does not parse your XML.  It is simply for use to store
  * the data as you are parsing.
@@ -946,7 +949,6 @@ void ggz_stack_free(GGZStack *stack);
  *  to be invoked as a method on instances of GGZXMLElement.
  */
 struct _GGZXMLElement {
-	
 	char *tag;           /**< The name of the element */
 	char *text;          /**< Text content of an element */
 	GGZList *attributes; /**< List of attributes on the element */
@@ -970,7 +972,7 @@ typedef struct _GGZXMLElement GGZXMLElement;
  * objects.  If provided, this will be invoked by
  * ggz_xmlelement_free(), and in addition to any user-defined
  * processing should call ggz_free() the element itself.
- * @return Pointer to a newly allocated ::GGZXMLElement object 
+ * @return Pointer to a newly allocated ::GGZXMLElement object
  */
 GGZXMLElement* ggz_xmlelement_new(const char *tag, const char * const *attrs,
 	void (*process)(void*, GGZXMLElement*), void (*free)(GGZXMLElement*));
@@ -986,7 +988,7 @@ GGZXMLElement* ggz_xmlelement_new(const char *tag, const char * const *attrs,
  * objects.  If provided, this will be invoked by
  * ggz_xmlelement_free(), and in addition to any user-defined
  * processing should call ggz_free() the element itself.
- * @return Pointer to a newly allocated ::GGZXMLElement object 
+ * @return Pointer to a newly allocated ::GGZXMLElement object
  */
 void ggz_xmlelement_init(GGZXMLElement *element, const char *tag,
 	const char * const *attrs,
@@ -996,7 +998,7 @@ void ggz_xmlelement_init(GGZXMLElement *element, const char *tag,
 /** @brief Set ancillary data on a ::GGZXMLElement object.
  *
  * Associate some extra data with an XML element.
- * 
+ *
  * @param element Pointer to an XML element
  * @param data Pointer to user-supplied data
  * @return The element's name
@@ -1017,7 +1019,7 @@ const char *ggz_xmlelement_get_tag(GGZXMLElement *element);
  * @param element Pointer to an XML element
  * @param attr An attribute name
  * @return The value of the attribute, or NULL is there is no such
- * attribute present 
+ * attribute present
  */
 const char *ggz_xmlelement_get_attr(GGZXMLElement *element, const char *attr);
 
@@ -1058,7 +1060,7 @@ void ggz_xmlelement_free(GGZXMLElement *element);
 
 /**
  * @defgroup debug Debug/error logging
- * 
+ *
  * Functions for debugging and error messages.
  * @{
  */
@@ -1088,7 +1090,7 @@ typedef void (*GGZDebugHandlerFunc)(int priority, const char *msg);
 
 /**
  * @brief Initialize and configure debugging for the program.
- * 
+ *
  * This should be called early in the program to set up the debugging routines.
  * @param types A null-terminated list of arbitrary string debugging "types"
  * @param file A file to write debugging output to, or NULL for none
@@ -1311,13 +1313,13 @@ int ggz_strcmp(const char *s1, const char *s2);
  *  @return The comparison value.
  */
 int ggz_strcasecmp(const char *s1, const char *s2);
- 
+
 /** @} */
 
 
 /**
  * @defgroup easysock Easysock IO
- * 
+ *
  * Simple functions for reading/writing binary data across file descriptors.
  *
  * @{
@@ -1568,11 +1570,11 @@ GGZAsyncEvent ggz_async_event(void);
 
 /****************************************************************************
  * Creating a socket.
- * 
+ *
  * type  :  one of GGZ_SERVER or GGZ_CLIENT
- * port  :  tcp port number 
+ * port  :  tcp port number
  * server:  hostname to connect to (only relevant for client)
- * 
+ *
  * Returns socket fd or -1 on error
  ***************************************************************************/
 
@@ -1611,8 +1613,8 @@ typedef enum {
  *  @return File descriptor on success, -1 on creation error, -2 on lookup
  *  error, -3 (GGZ_SOCKET_PENDING) when using asynchronous creation
  */
-int ggz_make_socket(const GGZSockType type, 
-		    const unsigned short port, 
+int ggz_make_socket(const GGZSockType type,
+		    const unsigned short port,
 		    const char *server);
 
 /** @brief Make a socket connection, exiting on error.
@@ -1620,7 +1622,7 @@ int ggz_make_socket(const GGZSockType type,
  *  Aside from the error condition, this is identical to ggz_make_socket().
  */
 int ggz_make_socket_or_die(const GGZSockType type,
-			   const unsigned short port, 
+			   const unsigned short port,
 			   const char *server);
 
 /** @brief Connect to a unix domain socket.
@@ -1706,7 +1708,7 @@ int ggz_write_int(const int sock, const int data);
 void ggz_write_int_or_die(const int sock, const int data);
 
 /** @brief Read an integer from the socket in network byte order.
- *  
+ *
  *  @see ggz_write_int
  *
  *  @param sock The socket to read from
@@ -1844,7 +1846,7 @@ void ggz_read_string_alloc_or_die(const int sock, char **data);
 int ggz_write_fd(const int sock, int sendfd);
 
 /** @brief Read a file descriptor from the given (local) socket.
- *  
+ *
  *  @see ggz_write_fd
  *
  *  @param sock The socket to read from
@@ -1907,8 +1909,7 @@ int ggz_close_socket(const int sock);
  *  Contains a string and its length, so that NULL-safe
  *  functions are possible.
  */
-typedef struct
-{
+typedef struct {
 	char *hash;		/**< Hash value */
 	int hashlen;	/**< Length of the hash value, in bytes */
 } hash_t;

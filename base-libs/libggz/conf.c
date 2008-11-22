@@ -1,25 +1,22 @@
-/*
- * File: conf.c
- * Author: Rich Gade
- * Project: GGZ Core Client Lib
- *          Modified from confio for use by server (rgade - 08/06/01)
- * Date: 11/27/00
- * $Id: conf.c 10526 2008-08-28 18:38:07Z josef $
+/**
+ * libggz - Programming in C with comfort, safety and network awareness.
+ * This library is part of the ggz-base-libs package.
  *
- * Internal functions for handling configuration files
+ * conf.c: Internal functions for handling configuration files.
  *
- * Copyright (C) 2000-2002 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks
+ * Copyright (C) 2003-2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -200,7 +197,7 @@ int ggz_conf_read_list(int handle, const char *section, const char *key,
 		}
 
 		*argvp = (char **) ggz_malloc((*argcp + 1) * sizeof(char *));
-		
+
 		/* Manually null-terminate list. */
 		(*argvp)[*argcp] = NULL;
 
@@ -294,7 +291,7 @@ int ggz_conf_write_string(int handle, const char *section,
 	if(ggz_list_insert(s_data->entry_list, &e_data) < 0) {
 		ggz_debug(GGZ_CONF_DEBUG,
 			  "ggz_conf_write_string: insertion error");
-			  
+
 		return -1;
 	}
 
@@ -387,7 +384,7 @@ int ggz_conf_remove_section(int handle, const char *section)
 	if(!f_data->writeable) {
 		ggz_debug(GGZ_CONF_DEBUG,
 			  "ggz_conf_remove_section: file is read-only");
-			  
+
 		return -1;
 	}
 
@@ -999,7 +996,7 @@ int make_path(const char *full, mode_t mode)
 
 		/* If this is the last token, it's the file name - break */
 		if (!next) break;
-		
+
 		*next = '\0';
 
 		/* While there's still stuff left, it's a directory */
@@ -1023,7 +1020,7 @@ int make_path(const char *full, mode_t mode)
 
 		/* If this is the last token, it's the file name - break */
 		if (!next) break;
-		
+
 		*next = '\0';
 
 		/* While there's still stuff left, it's a directory */
@@ -1230,7 +1227,7 @@ ggz_intlstring *ggz_conf_read_intlstring(int handle,
 
 	rc = ggz_conf_get_keys(handle, section, &argcp, &argvp);
 	if(rc != 0)
-	{		
+	{
 		return NULL;
 	}
 
