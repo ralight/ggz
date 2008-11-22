@@ -25,6 +25,7 @@
 #include <kggzlib/player.h>
 #include <kggzlib/playerlist.h>
 #include <kggzlib/tablelist.h>
+#include <kggzlib/tabledialog.h>
 //#include <kggzlib/kggzaction.h>
 #include <kggzlib/connectiondialog.h>
 
@@ -156,6 +157,8 @@ void Vencedor::slotConnect()
 
 void Vencedor::slotLaunch()
 {
+	TableDialog dlg(this);
+	dlg.exec();
 }
 
 void Vencedor::slotChat(int id, const QString& msg)
@@ -211,6 +214,7 @@ void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZC
 				m_action_launch->setEnabled(true);
 			else
 				m_action_launch->setEnabled(false);
+			enable(true);
 			break;
 		case KGGZCore::CoreClient::chat:
 			break;
