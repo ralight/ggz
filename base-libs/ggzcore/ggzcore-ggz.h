@@ -1,10 +1,10 @@
-/* 
+/*
  * File: ggzcore-ggz.h
  * Author: GGZ Dev Team
  * Project: ggzcore
  * Date: 01/16/2005
  * Desc: GGZ client<->server network connection (GGZ side)
- * $Id: ggzcore-ggz.h 7889 2006-03-07 09:57:32Z josef $
+ * $Id: ggzcore-ggz.h 10597 2008-11-23 21:35:34Z josef $
  *
  * This file contains the GGZ-only interface for the ggzcore library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -17,12 +17,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA

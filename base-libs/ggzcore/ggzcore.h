@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 10547 2008-08-30 15:36:17Z josef $
+ * $Id: ggzcore.h 10597 2008-11-23 21:35:34Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -13,12 +13,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -97,10 +97,8 @@ typedef enum {
 
 /** Options structure for ggzcore library */
 typedef struct _GGZOptions {
-	
 	/** Option flags */
 	GGZOptionFlags flags;
-
 } GGZOptions;
 
 
@@ -170,8 +168,8 @@ typedef enum {
 } GGZHookReturn;
 
 /** GGZ Event hook function type, used as a callback for events */
-typedef GGZHookReturn (*GGZHookFunc)(unsigned int id, 
-				     const void* event_data, 
+typedef GGZHookReturn (*GGZHookFunc)(unsigned int id,
+				     const void* event_data,
 				     const void* user_data);
 
 /** @brief GGZ object destroy function type
@@ -189,10 +187,10 @@ typedef void (*GGZDestroyFunc)(void* data);
 typedef enum {
 	/** Standard login; uname and correct passwd needed. */
 	GGZ_LOGIN,
-	
-	/** Guest login; only a uname is required. */	
+
+	/** Guest login; only a uname is required. */
 	GGZ_LOGIN_GUEST,
-	
+
 	/** New user login; only a uname is required.  Password will be
 	 *  assigned by the server (but can be passed along). */
 	GGZ_LOGIN_NEW
@@ -292,7 +290,7 @@ typedef enum {
 	 *  accessed through ggzcore_server_get_num_rooms() and
 	 *  ggzcore_server_get_nth_room().  Until this event arrives these
 	 *  functions will be useless!
-	 *  @param data NULL 
+	 *  @param data NULL
 	 *  @see ggzcore_server_read_data*/
 	GGZ_ROOM_LIST,
 
@@ -597,7 +595,7 @@ typedef enum {
 	GGZ_STATE_ONLINE, /**< Connected, but not doing anything. */
 	GGZ_STATE_LOGGING_IN, /**< In the process of logging in. */
 	GGZ_STATE_LOGGED_IN, /**< Online and logged in! */
-	GGZ_STATE_ENTERING_ROOM, /**< Moving into a room. */ 
+	GGZ_STATE_ENTERING_ROOM, /**< Moving into a room. */
 	GGZ_STATE_IN_ROOM, /**< Online, logged in, and in a room. */
 	GGZ_STATE_BETWEEN_ROOMS, /**< Moving between rooms. */
 	GGZ_STATE_LAUNCHING_TABLE, /**< Trying to launch a table. */
@@ -658,15 +656,15 @@ int ggzcore_server_reset(GGZServer *server);
  *  @note More than one handler can be registered for each event.
  */
 int ggzcore_server_add_event_hook(GGZServer *server,
-				  const GGZServerEvent event, 
+				  const GGZServerEvent event,
 				  const GGZHookFunc func);
 
 /** @brief Register a callback handler for a server event.
  *  @see ggzcore_server_add_event_hook
  *  @param data An arbitrary pointer that will be passed to the hook function.
- */					
+ */
 int ggzcore_server_add_event_hook_full(GGZServer *server,
-				       const GGZServerEvent event, 
+				       const GGZServerEvent event,
 				       const GGZHookFunc func,
 				       const void *data);
 
@@ -680,7 +678,7 @@ int ggzcore_server_add_event_hook_full(GGZServer *server,
  *  @see ggzcore_server_remove_event_hook_id
  */
 int ggzcore_server_remove_event_hook(GGZServer *server,
-				     const GGZServerEvent event, 
+				     const GGZServerEvent event,
 				     const GGZHookFunc func);
 
 /** @brief Remove a hook function with given ID from the event's hook list.
@@ -692,7 +690,7 @@ int ggzcore_server_remove_event_hook(GGZServer *server,
  *  @note The hook ID is given by ggzcore_server_add_event_hook
  */
 int ggzcore_server_remove_event_hook_id(GGZServer *server,
-					const GGZServerEvent event, 
+					const GGZServerEvent event,
 					const unsigned int hook_id);
 
 /*
@@ -807,7 +805,7 @@ int ggzcore_server_get_fd(const GGZServer *server);
 /** @brief Get the socket used for direct gane connections
  *
  *  This returns the file descriptor of the socket for
- *  the TCP game connection.  This will be handed off to a game module 
+ *  the TCP game connection.  This will be handed off to a game module
  *  when it is ready.
  *  Needed only for channels set up by ggzcore.
  *
@@ -843,7 +841,7 @@ int ggzcore_server_get_num_players(const GGZServer *server);
 int ggzcore_server_get_num_rooms(const GGZServer *server);
 
 /** @brief Return the nth room on the server, or NULL on error. */
-GGZRoom* ggzcore_server_get_nth_room(const GGZServer *server, 
+GGZRoom* ggzcore_server_get_nth_room(const GGZServer *server,
 				     const unsigned int num);
 
 /** @brief Return the number (position in the room list) of the room.
@@ -868,7 +866,7 @@ GGZPlayer* ggzcore_server_get_player(GGZServer *server, const char *name);
 int ggzcore_server_get_num_gametypes(const GGZServer *server);
 
 /** @brief Get the nth gametype, or NULL on error. */
-GGZGameType* ggzcore_server_get_nth_gametype(const GGZServer *server, 
+GGZGameType* ggzcore_server_get_nth_gametype(const GGZServer *server,
 					     const unsigned int num);
 
 /** @brief Return the player's current game. */
@@ -1049,7 +1047,7 @@ int ggzcore_room_get_closed(const GGZRoom *room);
  *  @see ggzcore_room_remove_event_hook_id
  */
 int ggzcore_room_add_event_hook(GGZRoom *room,
-				const GGZRoomEvent event, 
+				const GGZRoomEvent event,
 				const GGZHookFunc func);
 
 /** @brief Register a handler (hook) for thee room event, with data.
@@ -1065,7 +1063,7 @@ int ggzcore_room_add_event_hook(GGZRoom *room,
  *  @see ggzcore_room_add_event_hook
  */
 int ggzcore_room_add_event_hook_full(GGZRoom *room,
-				     const GGZRoomEvent event, 
+				     const GGZRoomEvent event,
 				     const GGZHookFunc func,
 				     const void *data);
 
@@ -1081,7 +1079,7 @@ int ggzcore_room_add_event_hook_full(GGZRoom *room,
  *  @see ggzcore_room_add_event_hook
  */
 int ggzcore_room_remove_event_hook(GGZRoom *room,
-				   const GGZRoomEvent event, 
+				   const GGZRoomEvent event,
 				   const GGZHookFunc func);
 
 /** @brief Remove a hook from an event, by ID.
@@ -1095,7 +1093,7 @@ int ggzcore_room_remove_event_hook(GGZRoom *room,
  *  @see ggzcore_room_add_event_hook
  */
 int ggzcore_room_remove_event_hook_id(GGZRoom *room,
-				      const GGZRoomEvent event, 
+				      const GGZRoomEvent event,
 				      const unsigned int hook_id);
 
 
@@ -1148,7 +1146,7 @@ int ggzcore_room_launch_table(GGZRoom *room, GGZTable *table);
  *  @param table_id The table to join.
  *  @param spectator TRUE if you wish to spectate, FALSE if you want to play
  *  @return 0 on success, negative on (any) failure */
-int ggzcore_room_join_table(GGZRoom *room, const unsigned int table_id, 
+int ggzcore_room_join_table(GGZRoom *room, const unsigned int table_id,
 			    int spectator);
 
 /** @brief Leave the table you are currently playing at.
@@ -1293,7 +1291,7 @@ const char *ggzcore_table_get_nth_spectator_name(const GGZTable *table,
 
 /** @brief Return the type of a player at the table, or GGZ_PLAYER_NONE on
  *  error. */
-GGZSeatType ggzcore_table_get_nth_player_type(const GGZTable *table, 
+GGZSeatType ggzcore_table_get_nth_player_type(const GGZTable *table,
 					      unsigned int num);
 
 
@@ -1373,8 +1371,8 @@ int ggzcore_conf_initialize	(const char	*g_path,
  *
  * @return int : 0 if successful, -1 on error
  */
-int ggzcore_conf_write_string(const char *section, 
-			      const char *key, 
+int ggzcore_conf_write_string(const char *section,
+			      const char *key,
 			      const char *value);
 
 /** ggzcore_conf_write_int() - Write a integer to the user config file
@@ -1385,8 +1383,8 @@ int ggzcore_conf_write_string(const char *section,
  *
  * @return int : 0 if successful, -1 on error
  */
-int ggzcore_conf_write_int(const char *section, 
-			   const char *key, 
+int ggzcore_conf_write_int(const char *section,
+			   const char *key,
 			   int value);
 
 /** ggzcore_conf_write_list() - Write a list to the user config file
@@ -1398,9 +1396,9 @@ int ggzcore_conf_write_int(const char *section,
  *
  * @return int : 0 if successful, -1 on error
  */
-int ggzcore_conf_write_list(const char *section, 
-			    const char *key, 
-			    int argc, 
+int ggzcore_conf_write_list(const char *section,
+			    const char *key,
+			    int argc,
 			    char **argv);
 
 /** ggzcore_conf_read_string() - Read a string from the configuration file(s)
@@ -1417,8 +1415,8 @@ int ggzcore_conf_write_list(const char *section,
  * @note The default may be set to NULL, in which case a NULL will be
  * returned if the value could not be found in either configuration file.
  */
-char * ggzcore_conf_read_string(const char *section, 
-				const char *key, 
+char * ggzcore_conf_read_string(const char *section,
+				const char *key,
 				const char *def);
 
 /** ggzcore_conf_read_int() - Read a integer from the configuration file(s)
@@ -1448,9 +1446,9 @@ int ggzcore_conf_read_int(const char *section, const char *key, int def);
  *
  * @return int : 0 if successful, -1 on error
  */
-int ggzcore_conf_read_list(const char *section, 
-			   const char *key, 
-			   int *argcp, 
+int ggzcore_conf_read_list(const char *section,
+			   const char *key,
+			   int *argcp,
 			   char ***argvp);
 
 /** ggzcore_conf_remove_section() - Removes a section from the user config file
@@ -1499,19 +1497,19 @@ int ggzcore_module_add(const char *name,
 		       const char *exe_path,
 		       const char *icon_path,
 		       const char *help_path,
-		       GGZModuleEnvironment environment);		       
+		       GGZModuleEnvironment environment);
 
 
 /** @brief Returns the n-th module */
 GGZModule* ggzcore_module_get_nth(unsigned int num);
 
 /** @brief Returns how many modules support this game and protocol */
-int ggzcore_module_get_num_by_type(const char *game, 
+int ggzcore_module_get_num_by_type(const char *game,
 				   const char *engine,
 				   const char *version);
 
 /** @brief Returns n-th module that supports this game and protocol */
-GGZModule* ggzcore_module_get_nth_by_type(const char *game, 
+GGZModule* ggzcore_module_get_nth_by_type(const char *game,
 					  const char *engine,
 					  const char *version,
 					  unsigned int num);
@@ -1567,7 +1565,7 @@ void ggzcore_game_free(GGZGame *game);
  *  @see ggzcore_room_add_event_hook
  */
 int ggzcore_game_add_event_hook(GGZGame *game,
-				const GGZGameEvent event, 
+				const GGZGameEvent event,
 				const GGZHookFunc func);
 
 /** @brief Register a hook for a game event.
@@ -1575,7 +1573,7 @@ int ggzcore_game_add_event_hook(GGZGame *game,
  *  @see ggzcore_room_add_event_hook_full
  */
 int ggzcore_game_add_event_hook_full(GGZGame *game,
-				     const GGZGameEvent event, 
+				     const GGZGameEvent event,
 				     const GGZHookFunc func,
 				     const void *data);
 
@@ -1584,7 +1582,7 @@ int ggzcore_game_add_event_hook_full(GGZGame *game,
  *  @see ggzcore_room_remove_event_hook
  */
 int ggzcore_game_remove_event_hook(GGZGame *game,
-				   const GGZGameEvent event, 
+				   const GGZGameEvent event,
 				   const GGZHookFunc func);
 
 /** @brief Remove a specified hook from a game event.
@@ -1592,7 +1590,7 @@ int ggzcore_game_remove_event_hook(GGZGame *game,
  *  @see ggzcore_room_remove_event_hook_id
  */
 int ggzcore_game_remove_event_hook_id(GGZGame *game,
-				      const GGZGameEvent event, 
+				      const GGZGameEvent event,
 				      const unsigned int hook_id);
 
 /** @brief Return the control (ggzmod) socket for the game. */
@@ -1615,6 +1613,6 @@ int ggzcore_game_read_data(GGZGame *game);
 
 #ifdef __cplusplus
 }
-#endif 
+#endif
 
 #endif  /* __GGZCORE_H__ */

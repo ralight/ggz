@@ -3,7 +3,7 @@
  * Author: Justin Zaun
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: table.c 10213 2008-07-08 16:26:11Z jdorje $
+ * $Id: table.c 10597 2008-11-23 21:35:34Z josef $
  *
  * This fils contains functions for handling tables
  *
@@ -13,12 +13,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -40,7 +40,7 @@
 #include "room.h"
 #include "table.h"
 
-/* 
+/*
  * The Table structure is meant to be a node in a linked list of
  * the tables in the current room .
  */
@@ -48,18 +48,18 @@
 
 /* Table Information */
 struct _GGZTable {
- 
+
 	/* Pointer to room this table resides in */
 	GGZRoom *room;
 
         /* Server ID of table */
         int id;
- 
+
         /* Game Type */
 	const GGZGameType *gametype;
 
 	/* Table description */
-	const char * desc;        
+	const char * desc;
 
         /* Table state */
         GGZTableState state;
@@ -127,7 +127,7 @@ static int _ggzcore_table_get_seat_count(const GGZTable *table,
 	for (i = 0; i < table->num_seats; i++)
 		if (table->seats[i].type == type)
 			count++;
-	
+
 	return count;
 }
 
@@ -220,13 +220,13 @@ int ggzcore_table_set_seat(GGZTable *table,
 	/* Check table and seat number. */
 	if (!table || seat_num >= table->num_seats)
 		return -1;
-		
+
 	/* GGZ clients should only ever set seats to OPEN, BOT, or RESERVED. */
 	if (type != GGZ_SEAT_OPEN
 	    && type != GGZ_SEAT_BOT
 	    && type != GGZ_SEAT_RESERVED)
 		return -1;
-		
+
 	/* If we set a seat to RESERVED, we need a reservation name. */
 	if (type == GGZ_SEAT_RESERVED && !name)
 		return -1;
@@ -245,7 +245,7 @@ int ggzcore_table_set_seat(GGZTable *table,
 
 		if (!(net = _ggzcore_server_get_net(server)))
 			return -1;
-		
+
 		return _ggzcore_net_send_table_seat_update(net, table, &seat);
 	}
 
@@ -264,7 +264,7 @@ int ggzcore_table_set_desc(GGZTable *table, const char *desc)
 	/* Check table and seat number. */
 	if (!table)
 		return -1;
-		
+
 	/* If the table is newly created and not involved in a game
            yet, users may change desc all they want */
 	if (table->state == GGZ_TABLE_CREATED)
@@ -279,7 +279,7 @@ int ggzcore_table_set_desc(GGZTable *table, const char *desc)
 
 		if (!(net = _ggzcore_server_get_net(server)))
 			return -1;
-		
+
 		return _ggzcore_net_send_table_desc_update(net, table, desc);
 	}
 
@@ -294,7 +294,7 @@ int ggzcore_table_remove_player(GGZTable *table, const char *name)
 
 	if (table && name) {
 		for (i = 0; i < table->num_seats; i++)
-			if (table->seats[i].name != NULL 
+			if (table->seats[i].name != NULL
 			    && strcmp(table->seats[i].name, name) == 0) {
 				GGZTableSeat seat = {i, GGZ_SEAT_OPEN, NULL};
 
@@ -302,7 +302,7 @@ int ggzcore_table_remove_player(GGZTable *table, const char *name)
 				status = 0;
 			}
 	}
-	
+
 	return status;
 }
 
@@ -333,7 +333,7 @@ const GGZRoom *ggzcore_table_get_room(const GGZTable *table)
 		return NULL;
 }
 
-     
+
 const char * ggzcore_table_get_desc(const GGZTable *table)
 {
 	if (table)
@@ -365,7 +365,7 @@ int ggzcore_table_get_seat_count(const GGZTable *table, GGZSeatType type)
 {
 	if (table)
 		return _ggzcore_table_get_seat_count(table, type);
-	else 
+	else
 		return -1;
 }
 
@@ -407,10 +407,10 @@ const char *ggzcore_table_get_nth_spectator_name(const GGZTable *table,
 
 	return _ggzcore_table_get_nth_spectator_name(table, num);
 }
-					           
 
-/* 
- * Internal library functions (prototypes in table.h) 
+
+/*
+ * Internal library functions (prototypes in table.h)
  * NOTE:All of these functions assume valid inputs!
  */
 
@@ -425,7 +425,7 @@ GGZTable* _ggzcore_table_new(void)
 }
 
 
-void _ggzcore_table_init(GGZTable *table, 
+void _ggzcore_table_init(GGZTable *table,
 			 const GGZGameType *gametype,
 			 const char *desc,
 			 const unsigned int num_seats,
@@ -433,7 +433,7 @@ void _ggzcore_table_init(GGZTable *table,
 			 const int id)
 {
 	int i;
-	
+
 	table->room = NULL;
 	table->gametype = gametype;
 	table->id = id;
@@ -479,7 +479,7 @@ void _ggzcore_table_free(GGZTable *table)
 				ggz_free(table->spectator_seats[i].name);
 		ggz_free(table->spectator_seats);
 	}
-	
+
 	ggz_free(table);
 
 }
@@ -502,7 +502,7 @@ void _ggzcore_table_set_state(GGZTable *table, const GGZTableState state)
 	ggz_debug(GGZCORE_DBG_TABLE, "Table %d new state %d",
 		  table->id, state);
 	table->state = state;
-	
+
 	/* If we're in a room, notify it of a table event */
 	if (table->room)
 		_ggzcore_room_table_event(table->room, GGZ_TABLE_UPDATE, NULL);
@@ -519,7 +519,7 @@ void _ggzcore_table_set_desc(GGZTable *table, const char *desc)
 	table->desc = ggz_strdup(desc);
 
 	/* If we're in a room, notify it of a table event */
-	if (table->room) 
+	if (table->room)
 		_ggzcore_room_table_event(table->room, GGZ_TABLE_UPDATE, NULL);
 }
 
@@ -542,7 +542,7 @@ void _ggzcore_table_set_seat(GGZTable *table, GGZTableSeat *seat)
 	table->seats[seat->index].index = seat->index;
 	table->seats[seat->index].type = seat->type;
 	table->seats[seat->index].name = ggz_strdup(seat->name);
-	
+
 	/* Check for specific seat changes */
 	if (seat->type == GGZ_SEAT_PLAYER) {
 		ggz_debug(GGZCORE_DBG_TABLE, "%s joining seat %d at table %d",
@@ -557,11 +557,11 @@ void _ggzcore_table_set_seat(GGZTable *table, GGZTableSeat *seat)
 			_ggzcore_room_player_set_table(table->room,
 						       oldseat.name, -1);
 	} else {
-		if (table->room) 
+		if (table->room)
 			_ggzcore_room_table_event(table->room,
 						  GGZ_TABLE_UPDATE, NULL);
 	}
-	
+
 	/* Get rid of the old seat. */
 	if (oldseat.name)
 		ggz_free(oldseat.name);
@@ -686,7 +686,7 @@ void* _ggzcore_table_create(void* p)
 			    src->state, src->id);
 
 	/* FIXME: copy players as well */
-	
+
 	return new;
 }
 

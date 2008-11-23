@@ -3,10 +3,10 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/01/00
- * $Id: hook.h 7889 2006-03-07 09:57:32Z josef $
+ * $Id: hook.h 10597 2008-11-23 21:35:34Z josef $
  *
  * This is the code for handling hook functions
- * 
+ *
  * Many of the ideas for this interface come from the hook mechanism in GLib
  *
  * Copyright (C) 2000 Brent Hendricks.
@@ -15,12 +15,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -34,7 +34,7 @@
 typedef struct _GGZHookList GGZHookList;
 
 /* _ggzcore_hook_list_init() - Allocate room for and initialize a hook
- *                             list structure 
+ *                             list structure
  *
  * Receives:
  * unsigned int id       : ID code of event for this hook list
@@ -47,15 +47,15 @@ GGZHookList *_ggzcore_hook_list_init(const unsigned int id);
 
 /* _ggzcore_hook_add()      - Add hook function to list
  * _ggzcore_hook_add_full() - Add hook function to list, specifying
- *                            all parameters 
- * 
+ *                            all parameters
+ *
  * Receives:
  * GGZHookList* list     : Hooklist to which we are adding function
  * GGZHookFunc func      : Callback function
  * void* user_data       : "User" data to pass to callback
  *
  * Returns:
- * int : id for this callback 
+ * int : id for this callback
  */
 int _ggzcore_hook_add(GGZHookList * list, const GGZHookFunc func);
 int _ggzcore_hook_add_full(GGZHookList * list,

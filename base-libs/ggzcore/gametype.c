@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: gametype.c 7889 2006-03-07 09:57:32Z josef $
+ * $Id: gametype.c 10597 2008-11-23 21:35:34Z josef $
  *
  * This file contains functions for hadiling game types.
  *
@@ -13,12 +13,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -38,7 +38,7 @@
 
 /* Structure describing specific game type */
 struct _GGZGameType {
-	
+
 	/* Name of the game */
 	char *name;
 
@@ -68,7 +68,7 @@ struct _GGZGameType {
 
 	/* Whether spectators are allowed or not */
 	unsigned int spectators_allowed;
-	
+
 	/* ID of this game on the server */
 	unsigned int id;
 
@@ -90,7 +90,7 @@ GGZGameType* _ggzcore_gametype_new(void)
 	GGZGameType *gametype;
 
 	gametype = ggz_malloc(sizeof(*gametype));
-	
+
 	/* FIXME: any fields we should fill in defaults? */
 	return gametype;
 }
@@ -98,7 +98,7 @@ GGZGameType* _ggzcore_gametype_new(void)
 
 void _ggzcore_gametype_init(GGZGameType *gametype,
 			    const unsigned int id,
-			    const char* name, 
+			    const char* name,
 			    const char* version,
 			    const char* prot_engine,
 			    const char* prot_version,
@@ -115,7 +115,7 @@ void _ggzcore_gametype_init(GGZGameType *gametype,
 	gametype->bot_allow_list = bot_allow_list;
 	gametype->spectators_allowed = spectators_allowed;
 	gametype->peers_allowed = peers_allowed;
-	
+
 	gametype->name = ggz_strdup(name);
 	gametype->version = ggz_strdup(version);
 	gametype->prot_engine = ggz_strdup(prot_engine);
@@ -285,7 +285,7 @@ void* _ggzcore_gametype_create(void* p)
 			       src->player_allow_list, src->bot_allow_list,
 			       src->spectators_allowed, src->peers_allowed,
 			       src->desc, src->author, src->url);
-	
+
 	return new;
 }
 

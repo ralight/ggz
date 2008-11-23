@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/01/00
- * $Id: hook.c 7939 2006-03-16 14:33:16Z josef $
+ * $Id: hook.c 10597 2008-11-23 21:35:34Z josef $
  *
  * This is the code for handling hook functions
  *
@@ -15,12 +15,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -84,7 +84,7 @@ static void _ggzcore_hook_remove_actual(GGZHookList * list,
 
 
 /* _ggzcore_hook_list_init() - Allocate room for and initialize a hook
- *                             list structure 
+ *                             list structure
  *
  * Receives:
  * unsigned int id       : ID code of event for this hook list
@@ -110,7 +110,7 @@ GGZHookList *_ggzcore_hook_list_init(const unsigned int id)
  * GGZHookFunc func  : Callback function
  *
  * Returns:
- * int : id for this callback 
+ * int : id for this callback
  */
 int _ggzcore_hook_add(GGZHookList * list, const GGZHookFunc func)
 {
@@ -119,8 +119,8 @@ int _ggzcore_hook_add(GGZHookList * list, const GGZHookFunc func)
 
 
 /* _ggzcore_hook_add_full() - Add hook function to list, specifying
- *                            all parameters 
- * 
+ *                            all parameters
+ *
  * Receives:
  * GGZHookList* list     : Hooklist to which we are adding function
  * GGZHookFunc func      : Callback function
@@ -128,7 +128,7 @@ int _ggzcore_hook_add(GGZHookList * list, const GGZHookFunc func)
  * GGZDestroyFunc destroy: function to call to free user data
  *
  * Returns:
- * int : id for this callback 
+ * int : id for this callback
  */
 int _ggzcore_hook_add_full(GGZHookList * list,
 			   const GGZHookFunc func, const void *user_data)
@@ -209,7 +209,7 @@ int _ggzcore_hook_remove_id(GGZHookList * list, const unsigned int id)
  *
  * Receives:
  * GGZHookList* list : Hooklist from which to remove hoook
- * GGZHookFunc func  : pointer to hook function 
+ * GGZHookFunc func  : pointer to hook function
  *
  * Returns:
  * int : 0 if successful, -1 on error

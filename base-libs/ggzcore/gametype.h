@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: gametype.h 7889 2006-03-07 09:57:32Z josef $
+ * $Id: gametype.h 10597 2008-11-23 21:35:34Z josef $
  *
  * This file contains functions for handling game types.
  *
@@ -13,12 +13,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -38,7 +38,7 @@ GGZGameType* _ggzcore_gametype_new(void);
 /* Initialize a gametype with the given properties */
 void _ggzcore_gametype_init(GGZGameType *gametype,
 			    const unsigned int id,
-			    const char* name, 
+			    const char* name,
 			    const char* version,
 			    const char* prot_engine,
 			    const char* prot_version,
@@ -47,7 +47,7 @@ void _ggzcore_gametype_init(GGZGameType *gametype,
 			    unsigned int spectators_allowed,
 			    unsigned int peers_allowed,
 			    const char* desc,
-			    const char* author, 
+			    const char* author,
 			    const char *url);
 
 void _ggzcore_gametype_add_namedbot(GGZGameType *gametype,

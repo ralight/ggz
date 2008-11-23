@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 11/30/00
- * $Id: conf.c 7889 2006-03-07 09:57:32Z josef $
+ * $Id: conf.c 10597 2008-11-23 21:35:34Z josef $
  *
  * External functions for handling configuration files
  *
@@ -13,12 +13,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -81,7 +81,6 @@ int ggzcore_conf_initialize(const char *g_path, const char *u_path)
 		g_handle = ggz_conf_parse(g_path, GGZ_CONF_RDONLY);
 	if(u_path)
 		u_handle = ggz_conf_parse(u_path, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
-					  
 
 	/* We consider it "success" if EITHER file is sucessfully opened */
 	if(g_handle != -1 || u_handle != -1)

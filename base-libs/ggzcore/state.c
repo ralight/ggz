@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: state.c 8265 2006-06-24 08:22:26Z jdorje $
+ * $Id: state.c 10597 2008-11-23 21:35:34Z josef $
  *
  * Code for handling state manipulations
  *
@@ -13,12 +13,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -37,7 +37,7 @@
 
 /* Structure to represent state transition pairs */
 struct _GGZTransition {
-	
+
 	/* Transition ID */
 	GGZTransID id;
 
@@ -51,7 +51,7 @@ struct _GGZState {
 
 	/* Unique id number */
 	GGZStateID id;
-	
+
 	/* Descriptive string (mainly for debugging purposes) */
 	const char *name;
 
@@ -177,7 +177,7 @@ static struct _GGZState _ggz_states[] = {
 	{GGZ_STATE_OFFLINE,         "offline",         _offline_transitions},
 	{GGZ_STATE_CONNECTING,      "connecting",      _connecting_transitions},
 	{GGZ_STATE_RECONNECTING,    "reconnecting",    _reconnecting_transitions},
-	{GGZ_STATE_ONLINE,          "online",          _online_transitions}, 
+	{GGZ_STATE_ONLINE,          "online",          _online_transitions},
 	{GGZ_STATE_LOGGING_IN,      "logging_in",      _logging_in_transitions},
 	{GGZ_STATE_LOGGED_IN,       "logged_in",       _logged_in_transitions},
 	{GGZ_STATE_ENTERING_ROOM,   "entering_room",   _entering_room_transitions},
@@ -202,7 +202,7 @@ void _ggzcore_state_transition(GGZTransID trans, GGZStateID *cur)
 	GGZStateID next = -1;
 
 	transitions = _ggz_states[*cur].transitions;
-	
+
 	/* Look through valid transitions to see if this one is OK */
 	while (transitions[i].id != -1) {
 		if (transitions[i].id == trans) {
@@ -213,12 +213,12 @@ void _ggzcore_state_transition(GGZTransID trans, GGZStateID *cur)
 	}
 
 	if (next != *cur && next != -1) {
-		ggz_debug(GGZCORE_DBG_STATE, "State transition %s -> %s", 
-			  _ggz_states[*cur].name, 
+		ggz_debug(GGZCORE_DBG_STATE, "State transition %s -> %s",
+			  _ggz_states[*cur].name,
 			  _ggz_states[next].name);
 		*cur = next;
 	} else if (next == -1) {
-		ggz_error_msg("No state transition for %d from %s!", 
+		ggz_error_msg("No state transition for %d from %s!",
 			      trans, _ggz_states[*cur].name);
 	}
 }

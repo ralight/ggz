@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 10550 2008-08-30 16:35:22Z josef $
+ * $Id: game.c 10597 2008-11-23 21:35:34Z josef $
  *
  * This fils contains functions for handling games being played
  *
@@ -13,12 +13,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -264,8 +264,8 @@ int ggzcore_game_launch(GGZGame * game)
 }
 
 
-/* 
- * Internal library functions (prototypes in room.h) 
+/*
+ * Internal library functions (prototypes in room.h)
  * NOTE:All of these functions assume valid inputs!
  */
 
@@ -879,7 +879,7 @@ static char *_ggzcore_game_get_path(char **argv)
 	if (mod_path[0] != '/') {
 		ggz_debug(GGZCORE_DBG_GAME,
 			  "Module has relative path, prepending gamedir");
-		/* Calcualate string length, leaving room for a slash 
+		/* Calcualate string length, leaving room for a slash
 		   and the trailing null */
 		len = strlen(GAMEDIR) + strlen(mod_path) + 2;
 		path = ggz_malloc(len);
