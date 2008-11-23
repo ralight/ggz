@@ -16,6 +16,7 @@
 #include <kaboutapplicationdialog.h>
 #include <kcomponentdata.h>
 #include <kconfigdialog.h>
+#include <kmessagebox.h>
 
 //#include <kggzcore/room.h>
 #include <kggzcore/misc.h>
@@ -192,10 +193,31 @@ void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZC
 	switch(message)
 	{
 		case KGGZCore::CoreClient::connection:
+			if(error == KGGZCore::Error::generic_error)
+			{
+				KMessageBox::error(this,
+					i18n("Unable to connect."),
+					i18n("Connection"));
+				slotConnect();
+			}
 			break;
 		case KGGZCore::CoreClient::negotiation:
+			if(error == KGGZCore::Error::generic_error)
+			{
+				KMessageBox::error(this,
+					i18n("Wrong protocol."),
+					i18n("Connection"));
+				slotConnect();
+			}
 			break;
 		case KGGZCore::CoreClient::login:
+			if(error == KGGZCore::Error::generic_error)
+			{
+				KMessageBox::error(this,
+					i18n("Unable to login."),
+					i18n("Connection"));
+				slotConnect();
+			}
 			break;
 		case KGGZCore::CoreClient::roomenter:
 			//if(error == KGGZCore::Error::no_status)
