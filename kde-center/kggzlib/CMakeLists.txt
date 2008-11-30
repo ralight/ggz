@@ -1,6 +1,9 @@
 project(kggzlib)
 
-include_directories(${LOKAREST_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR}/..)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/..)
+if(LOKAREST_FOUND)
+  include_directories(${LOKAREST_INCLUDES})
+endif(LOKAREST_FOUND)
 
 set(kggzlib_LIB_SRCS
 	connectiondialog.cpp
@@ -31,7 +34,11 @@ set(kggzlib_LIB_SRCS
 kde4_add_library(kggzlib SHARED ${kggzlib_LIB_SRCS})
 
 #set_target_properties(kggzlib PROPERTIES COMPILE_FLAGS -fPIC)
-target_link_libraries(kggzlib ${KDE4_KIO_LIBS} ${QT_QTNETWORK_LIBRARY} ${QT_QTXML_LIBRARY} ${LOKAREST_LIBRARY} kggzcore)
+target_link_libraries(kggzlib ${KDE4_KIO_LIBS} ${QT_QTNETWORK_LIBRARY} ${QT_QTXML_LIBRARY} kggzcore)
+if(LOKAREST_FOUND)
+  target_link_libraries(kggzlib ${LOKAREST_LIBRARY})
+endif(LOKAREST_FOUND)
+
 set_target_properties(kggzlib PROPERTIES SOVERSION 0.0.0)
 
 install(TARGETS kggzlib ${INSTALL_TARGETS_DEFAULT_ARGS})
