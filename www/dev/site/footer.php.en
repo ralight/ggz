@@ -25,6 +25,10 @@ include("international.php");
 <a href="http://meta.ggzgamingzone.org/">Metaserver</a>
 |
 <a href="http://metacle.ggzgamingzone.org/">Metacle</a>
+|
+Distribution:
+<a href="http://pkg-ggz.alioth.debian.org/">pkg-ggz</a>,
+<a href="http://ggz-mobile.garage.maemo.org/">ggz-mobile</a>
 </td>
 </tr>
 </table>
