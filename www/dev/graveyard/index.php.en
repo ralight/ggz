@@ -14,6 +14,15 @@ If you want to help reviving one of the games, feel free to contact the
 GGZ developers!
 <br/><br/>
 
+<i>Freelords:</i><br/>
+<a href="http://ggzgamingzone.org/gameclients/freelords/">Client</a> and
+<a href="http://ggzgamingzone.org/gameservers/freelords/">Server</a>
+from external, GGZ support seems to be unmaintained due to switch
+from SDL to Java.<br/>
+<a href="http://ggzgamingzone.org/engines/tuxman/">Engine</a>
+is not supported in GGZ anymore<br/>
+<br/>
+
 <i>La Pocha:</i><br/>
 <a href="http://www.ggzgamingzone.org/gameclients/lapocha/">Client</a>
 from GGZ, has been removed in r6153 (29.10.2004) from gtk-games.<br/>

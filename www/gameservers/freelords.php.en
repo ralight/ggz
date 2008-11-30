@@ -1,5 +1,16 @@
 <?php include_once("../site/header.php"); ?>
 
+<table class='pane'>
+<tr>
+<td>
+<font color='#ff0000'>Warning:</font>
+This application is not maintained anymore.
+Visit the <a href="http://dev.ggzgamingzone.org/graveyard/">graveyard</a>
+for more information.
+</td>
+</tr>
+</table>
+
 <table class="content">
 <tr>
 <td>
@@ -13,7 +24,7 @@ Strategy game for 2-8 players.
 This game server is not a GGZ project but it does provide GGZ support.
 The project homepage is:
 <br/>
-<a href="http://www.freelords.org/">www.freelords.org</a>.
+<a href="http://freelords.sourceforge.netorg/">freelords.sourceforge.net</a>.
 </td></tr>
 </table>
 <br/>
@@ -46,7 +57,7 @@ It provides basic GGZ support.
 <br/>
 
 <i>Homepage of the Freelords server</i><br/>
-<a href="http://www.freelords.org/" target="blank">http://www.freelords.org/</a>
+<a href="http://freelords.sourceforge.net/" target="blank">http://freelords.sourceforge.net/</a>
 
 </td><td>
 
