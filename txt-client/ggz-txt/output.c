@@ -43,27 +43,30 @@
 
 
 /* Color Codes */
-#define COLOR_BRIGHT_GREY	"\e[1m\e[30m"
-#define COLOR_BRIGHT_RED	"\e[1m\e[31m"
 #define COLOR_BRIGHT_GREEN	"\e[1m\e[32m"
-#define COLOR_BRIGHT_ORANGE	"\e[1m\e[33m"
 #define COLOR_BRIGHT_BLUE	"\e[1m\e[34m"
 #define COLOR_BRIGHT_PINK	"\e[1m\e[35m"
-#define COLOR_BRIGHT_PURPLE	"\e[1m\e[36m"
 #define COLOR_BRIGHT_WHITE	"\e[1m\e[37m"
+/*#define COLOR_BRIGHT_GREY	"\e[1m\e[30m"*/
+/*#define COLOR_BRIGHT_RED	"\e[1m\e[31m"*/
+/*#define COLOR_BRIGHT_ORANGE	"\e[1m\e[33m"*/
+/*#define COLOR_BRIGHT_PURPLE	"\e[1m\e[36m"*/
 #define COLOR_GREY		"\e[0m\e[30m"
-#define COLOR_RED		"\e[0m\e[31m"
 #define COLOR_GREEN		"\e[0m\e[32m"
 #define COLOR_ORANGE		"\e[0m\e[33m"
 #define COLOR_BLUE		"\e[0m\e[34m"
-#define COLOR_PINK		"\e[0m\e[35m"
-#define COLOR_PURPLE		"\e[0m\e[36m"
 #define COLOR_WHITE		"\e[0m\e[37m"
+/*#define COLOR_RED		"\e[0m\e[31m"*/
+/*#define COLOR_PINK		"\e[0m\e[35m"*/
+/*#define COLOR_PURPLE		"\e[0m\e[36m"*/
 
-/* Escape sequences */
-#define SEQUENCE_BEEP    "\007" /* Output a beep signal */
-#define SEQUENCE_SAVE    "\e7"  /* Save cursor */
-#define SEQUENCE_RESTORE "\e8"  /* Restore cursor */
+/* Escape sequences; see man console_codes(4) */
+#define SEQUENCE_BEEP    "\007"  /* Output a beep signal */
+#define SEQUENCE_SAVE    "\e7"   /* Save cursor */
+#define SEQUENCE_RESTORE "\e8"   /* Restore cursor */
+#define SEQUENCE_ERASE   "\e[K"  /* Erase from cursor until end of line */
+#define SEQUENCE_ERASEWL "\e[2K" /* Erase whole line */
+#define SEQUENCE_ERASEDP "\e[2J" /* Erase whole display*/
 
 /* Highest line number in the message buffer */
 #define MAX_LINES 100
@@ -137,7 +140,7 @@ void output_banner(void)
 	output_text(_("--Type /help to see a list of possible commands."));
 
 	output_debug("This is a development version with debugging messages.");
-	output_debug("using tls handler: %s", ggz_tls_support_name());
+	output_debug("Using TLS handler: %s", ggz_tls_support_name());
 }
 
 void output_prompt(void)
@@ -145,15 +148,16 @@ void output_prompt(void)
 	if(!output_enabled) return;
 
 	output_goto(window.ws_row, 0);
-	printf("\e[2K");
+	printf("%s", SEQUENCE_ERASEWL);
 	output_goto(window.ws_row - 1, 0);
 
 #ifndef HAVE_READLINE_READLINE_H
-	printf("\e[2K%sGGZ%s>%s ",
+	printf("%s%sGGZ%s>%s ",
+		SEQUENCE_ERASEWL,
 		COLOR_BRIGHT_WHITE, COLOR_GREY,
 		COLOR_WHITE);
 #else
-	printf("\e[2K");
+	printf("%s", SEQUENCE_ERASEWL);
 #endif
 }
 
@@ -234,9 +238,9 @@ void output_draw_text(void)
 	for (x = window.ws_row - 4 - chat_offset; x >= 0 + chat_offset; x--)
 	{
 		if (chat[x])
-			printf("\e[K%s\n", chat[x]);
+			printf("%s%s\n", SEQUENCE_ERASE, chat[x]);
 		else
-			printf("\e[K\n");
+			printf("%s\n", SEQUENCE_ERASE);
 	}
 	printf("%s", SEQUENCE_RESTORE);
 }
@@ -248,7 +252,8 @@ void output_chat(GGZChatType type, const char *player, const char *message)
 
 	if(!output_enabled) return;
 
-	if(1 == 1) {
+	/* FIXME: we always append the timestamp */
+	if(true) {
 		t = time(NULL);
 		strftime(timestamp, sizeof(timestamp), "%X ", localtime(&t));
 	} else {
@@ -412,42 +417,42 @@ void output_status(void)
 	{
 		output_goto(window.ws_row - 3, 0);
 		output_label(_("Username"));
-		printf("\e[K%s", user);
+		printf("%s%s", SEQUENCE_ERASE, user);
 	} else {
 		output_goto(window.ws_row - 3, 0);
 		output_label(_("Username"));
-		printf("\e[K");
+		printf("%s", SEQUENCE_ERASE);
 	}
 
 	if(host)
 	{
 		output_goto(window.ws_row - 3, 28);
 		output_label(_("Server"));
-		printf("\e[K%s", host);
+		printf("%s%s", SEQUENCE_ERASE, host);
 		if(players_on_server > 0)
 			printf(_(" (%i players)"), players_on_server);
 	} else {
 		output_goto(window.ws_row - 3, 28);
 		output_label(_("Server"));
-		printf("\e[K");
+		printf("%s", SEQUENCE_ERASE);
 	}
 
 	output_goto(window.ws_row - 3, window.ws_col - 19);
 	output_label(_("Status"));
-	printf("\e[K%s", currentstatus);
+	printf("%s%s", SEQUENCE_ERASE, currentstatus);
 
 	if (ggzcore_server_is_in_room(server))
 	{
 		output_goto(window.ws_row - 2, 0);
 		output_label(_("Room"));
-		/*printf("\e[K %d -- %s", roomnum, roomname);*/
-		printf("\e[K %s", roomname);
+		/*printf("%s %d -- %s", SEQUENCE_ERASE, roomnum, roomname);*/
+		printf("%s %s", SEQUENCE_ERASE, roomname);
 		if(players_in_room > 0)
 			printf(_(" (%i players)"), players_in_room);
 	} else {
 		output_goto(window.ws_row - 2, 0);
 		output_label(_("Room"));
-		printf("\e[K");
+		printf("%s", SEQUENCE_ERASE);
 	}
 
 	currenttime = ggz_strdup(ctime(&now));
@@ -465,7 +470,7 @@ void output_status(void)
 
 	output_goto(window.ws_row - 2, window.ws_col - 19);
 	output_label(_("Time"));
-	printf("\e[K%s", displaytime);
+	printf("%s%s", SEQUENCE_ERASE, displaytime);
 
 	printf("%s", SEQUENCE_RESTORE);
 }
@@ -505,7 +510,7 @@ void output_init(int reverse)
 
 	setbuf(stdout, NULL);
 
-	printf("\e[2J");
+	printf("%s", SEQUENCE_ERASEDP);
 	ioctl(tty_des, TIOCGWINSZ, &window);
 	printf("\e[0;%dr", window.ws_row-4);
 
@@ -525,7 +530,7 @@ void output_resize(void)
 	   window2.ws_col != window.ws_col)
 	{
 		output_goto(0, 0);
-		printf("\e[2J");
+		printf("%s", SEQUENCE_ERASEDP);
 		window = window2;
 		printf("\e[0;%dr", window.ws_row-4);
 		output_prompt();
@@ -542,7 +547,7 @@ void output_shutdown(void)
 	if(!output_enabled) return;
 
 	printf("\e[0;%dr",window.ws_row);
-	printf("\ec\e[2J");
+	printf("\ec%s", SEQUENCE_ERASEDP);
 
 	for (i = 0; chat[i]; i++)
 		ggz_free(chat[i]);
