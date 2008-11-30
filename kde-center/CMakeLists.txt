@@ -35,5 +35,6 @@ if(GGZDMOD_FOUND)
   add_subdirectory(kryds)
 endif(GGZDMOD_FOUND)
 add_subdirectory(kdots)
+add_subdirectory(vencedor)
 
 macro_display_feature_log()
