@@ -156,10 +156,15 @@ void Vencedor::slotConfig()
 void Vencedor::slotConnect()
 {
 	ConnectionDialog dlg(this);
-	dlg.setCore(true);
-	if(dlg.exec())
+	dlg.setCoreMode(true);
+	if(dlg.exec() == QDialog::Accepted)
+	{
+		// FIXME: the instance in connectiondialog is not ours
+		// FIXME: rather crude sharing, must switch to kggzcorelayer entirely!
+		m_core = dlg.core();
 		enable(true);
-	// FIXME: the instance in connectiondialog is not ours, add sharing?
+		handleRoomlist();
+	}
 }
 
 void Vencedor::slotLaunch()
@@ -258,13 +263,7 @@ void Vencedor::slotAnswer(KGGZCore::CoreClient::AnswerMessage message)
 	switch(message)
 	{
 		case KGGZCore::CoreClient::roomlist:
-			m_core->initiateRoomChange(m_core->roomnames().at(0));
-			for(int i = 0; i < m_core->roomnames().count(); i++)
-			{
-				Room *room = new Room(m_core->roomnames().at(i));
-				room->setPlayers(0);
-				m_rooms->addRoom(room);
-			}
+			handleRoomlist();
 			break;
 		case KGGZCore::CoreClient::typelist:
 			break;
@@ -366,6 +365,17 @@ void Vencedor::slotEvent(KGGZCore::Room::EventMessage message)
 			break;
 		case KGGZCore::Room::libraryerror:
 			break;
+	}
+}
+
+void Vencedor::handleRoomlist()
+{
+	m_core->initiateRoomChange(m_core->roomnames().at(0));
+	for(int i = 0; i < m_core->roomnames().count(); i++)
+	{
+		Room *room = new Room(m_core->roomnames().at(i));
+		room->setPlayers(0);
+		m_rooms->addRoom(room);
 	}
 }
 

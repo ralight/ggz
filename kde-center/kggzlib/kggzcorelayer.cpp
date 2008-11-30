@@ -313,4 +313,9 @@ void KGGZCoreLayer::launch()
 	launchmodule();
 }
 
+KGGZCore::CoreClient *KGGZCoreLayer::core()
+{
+	return m_core;
+}
+
 #include "kggzcorelayer.moc"

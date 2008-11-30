@@ -23,6 +23,8 @@ class KGGZLIB_EXPORT KGGZCoreLayer : public QObject
 		void configureTable(QList<KGGZCore::Player> seats);
 		void launch();
 
+		KGGZCore::CoreClient *core();
+
 	signals:
 		void signalReady(bool ready);
 		void signalRoomReady(bool ready);

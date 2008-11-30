@@ -12,6 +12,11 @@ class GGZProfile;
 class KGGZCoreLayer;
 class QProgressBar;
 
+namespace KGGZCore
+{
+	class CoreClient;
+}
+
 // The game window
 class KGGZLIB_EXPORT ConnectionDialog : public QDialog
 {
@@ -24,7 +29,8 @@ class KGGZLIB_EXPORT ConnectionDialog : public QDialog
 
 		KGGZCoreLayer *layer() const;
 
-		void setCore(bool core);
+		void setCoreMode(bool coremode);
+		KGGZCore::CoreClient *core();
 
 	private slots:
 		void slotManage();
@@ -46,7 +52,7 @@ class KGGZLIB_EXPORT ConnectionDialog : public QDialog
 		QString m_version;
 		QString m_username;
 
-		bool m_core;
+		bool m_coremode;
 };
 
 #endif

@@ -26,7 +26,7 @@
 #include <qprogressbar.h>
 
 ConnectionDialog::ConnectionDialog(QWidget *parent)
-: QDialog(parent), m_corelayer(NULL), m_core(false)
+: QDialog(parent), m_corelayer(NULL), m_coremode(false)
 {
 	m_serverlist = new ServerList();
 
@@ -174,18 +174,27 @@ KGGZCoreLayer *ConnectionDialog::layer() const
 	return m_corelayer;
 }
 
-void ConnectionDialog::setCore(bool core)
+void ConnectionDialog::setCoreMode(bool coremode)
 {
-	m_core = core;
+	m_coremode = coremode;
 }
 
 void ConnectionDialog::slotRoomReady(bool ready)
 {
-	if((ready) && (!m_core))
+	if((ready) && (!m_coremode))
 		m_corelayer->launch();
 
-	if(m_core)
+	if(m_coremode)
 	{
 		accept();
 	}
 }
+
+KGGZCore::CoreClient *ConnectionDialog::core()
+{
+	if(!m_corelayer)
+		return NULL;
+
+	return m_corelayer->core();
+}
+
