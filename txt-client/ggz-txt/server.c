@@ -1,13 +1,11 @@
 /*
- * File: server.c
- * Author: Brent Hendricks
- * Project: GGZ Text Client 
- * Date: 9/26/00
- * $Id: server.c 10543 2008-08-30 11:40:09Z josef $
+ * ggz-txt - Command-line core client for the GGZ Gaming Zone.
+ * This application is part of the ggz-txt-client package.
  *
- * Functions for handling server events
+ * server.c: Functions for handling server events.
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000 Brent Hendricks
+ * Copyright (C) 2001-2008 GGZ Gaming Zone Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +21,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
-
 
 #include <config.h>
 #include "server.h"
@@ -180,7 +177,7 @@ static GGZHookReturn server_connect_fail(GGZServerEvent id,
 
 	output_text(_("--- Connection failed: %s"), msg);
 
-	/* For the time being disconnect at not to confuse us 
+	/* For the time being disconnect at not to confuse us
 	   ggzcore_event_enqueue(GGZ_USER_LOGOUT, NULL, NULL); */
 	return GGZ_HOOK_OK;
 }

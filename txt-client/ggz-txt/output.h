@@ -1,12 +1,11 @@
 /*
- * File: output.h
- * Author: Brent Hendricks
- * Project: GGZ Text Client 
- * Date: 9/26/00
+ * ggz-txt - Command-line core client for the GGZ Gaming Zone.
+ * This application is part of the ggz-txt-client package.
  *
- * Functions for display text/messages
+ * output.h: Functions for displaying text/messages.
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000 Brent Hendricks
+ * Copyright (C) 2001-2008 GGZ Gaming Zone Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +21,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
-
 
 #ifndef __OUTPUT_H__
 #define __OUTPUT_H__

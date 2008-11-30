@@ -1,13 +1,11 @@
 /*
- * File: main.c
- * Author: Brent Hendricks
- * Project: GGZ Text Client 
- * Date: 9/15/00
- * $Id: main.c 10541 2008-08-30 11:20:14Z josef $
+ * ggz-txt - Command-line core client for the GGZ Gaming Zone.
+ * This application is part of the ggz-txt-client package.
  *
- * Main loop
+ * main.c: Main loop.
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000 Brent Hendricks
+ * Copyright (C) 2001-2008 GGZ Gaming Zone Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

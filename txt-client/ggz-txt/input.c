@@ -1,13 +1,11 @@
 /*
- * File: input.c
- * Author: Brent Hendricks
- * Project: GGZ Text Client 
- * Date: 9/26/00
- * $Id: input.c 9786 2008-03-08 08:06:23Z josef $
+ * ggz-txt - Command-line core client for the GGZ Gaming Zone.
+ * This application is part of the ggz-txt-client package.
  *
- * Functions for inputing commands from the user
+ * input.c: Functions for inputing commands from the user.
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000 Brent Hendricks
+ * Copyright (C) 2001-2008 GGZ Gaming Zone Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +21,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
-
 
 #include <config.h>
 
@@ -79,11 +76,10 @@ void input_commandhandler(char *current)
 	char *command;
 
 	if (input_is_command(current)) {
-		
 		/* Point at command (minus the prefix char) */
 		command = strsep(&current, delim);
 		command++;
-		
+
 		output_debug("--- Command is %s", command);
 
 		if (strcmp(command, "connect") == 0) {
@@ -231,7 +227,7 @@ static void input_handle_connect(char* line)
 		host = "localhost";
 		portnum = 5688;
 	}
-	
+
 	type = GGZ_LOGIN_GUEST;
 	pwd = NULL;
 	email = NULL;
@@ -241,7 +237,7 @@ static void input_handle_connect(char* line)
 		login = arg;
 	else
 		login = getenv("LOGNAME");
-	
+
 	arg = strsep(&line, delim);
 	if (arg && strcmp(arg, "") != 0)
 	{

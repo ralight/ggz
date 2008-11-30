@@ -1,17 +1,10 @@
 /*
- * File: strsep.c
- * Author: Brent Hendricks, Jason Short
- * Project: GGZ
- * Date: 11/06/01
- * $Id: strsep.c 6696 2005-01-16 07:10:13Z jdorje $
+ * ggz-txt - Command-line core client for the GGZ Gaming Zone.
+ * This application is part of the ggz-txt-client package.
  *
- * Local copy of strsep for systems that don't have it.  This file should
- * always be compiled (but only for executables, not for libraries - don't
- * use strsep in libraries), and requires that AC_CHECK_FUNCS([strsep]) be
- * in configure.ac.  We could use AC_REPLACE_FUNCS but that seems more
- * complicated.
+ * strsep.c: Replacement functions for strsep().
  *
- * Copyright (C) 2001-2005 GGZ Development Team
+ * Copyright (C) 2001-2008 GGZ Gaming Zone Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +19,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ */
+
+/*
+ * Local copy of strsep for systems that don't have it.  This file should
+ * always be compiled (but only for executables, not for libraries - don't
+ * use strsep in libraries), and requires that AC_CHECK_FUNCS([strsep]) be
+ * in configure.ac.  We could use AC_REPLACE_FUNCS but that seems more
+ * complicated.
  */
 
 #ifdef HAVE_CONFIG_H

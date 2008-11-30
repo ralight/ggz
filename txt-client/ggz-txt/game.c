@@ -1,13 +1,11 @@
 /*
- * File: game.c
- * Author: Brent Hendricks
- * Project: GGZ Text Client 
- * Date: 3/1/01
- * $Id: game.c 9494 2008-01-12 17:26:10Z josef $
+ * ggz-txt - Command-line core client for the GGZ Gaming Zone.
+ * This application is part of the ggz-txt-client package.
  *
- * Functions for handling game events
+ * game.c: Functions for handling game events.
  *
- * Copyright (C) 2000-2002 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks
+ * Copyright (C) 2003-2008 GGZ Gaming Zone Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

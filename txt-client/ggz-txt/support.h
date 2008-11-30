@@ -1,12 +1,10 @@
 /*
- * File: support.h
- * Author: Jason Short
- * Project: GGZ TXT Client
- * $Id: support.h 6696 2005-01-16 07:10:13Z jdorje $
+ * ggz-txt - Command-line core client for the GGZ Gaming Zone.
+ * This application is part of the ggz-txt-client package.
  *
- * Support code
+ * support.h: Support code.
  *
- * Copyright (C) 2005 GGZ Development Team
+ * Copyright (C) 2005-2008 GGZ Gaming Zone Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

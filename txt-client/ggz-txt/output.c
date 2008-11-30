@@ -1,13 +1,10 @@
 /*
- * File: output.c
- * Author: Brent Hendricks
- * Project: GGZ Text Client 
- * Date: 9/26/00
- * $Id: output.c 10540 2008-08-30 11:16:58Z josef $
+ * ggz-txt - Command-line core client for the GGZ Gaming Zone.
+ * This application is part of the ggz-txt-client package.
  *
- * Functions for display text/messages
+ * output.c: Functions for displaying text/messages.
  *
- * Copyright (C) 2000-2005 GGZ Development Team
+ * Copyright (C) 2000-2008 GGZ Gaming Zone Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -209,8 +206,10 @@ static void output_text_write(const char *message)
 void output_debug(char* fmt, ...)
 {
 	char message[1024];	/* FIXME: Make me dynamic */
-	char messagecol[1024];
 	va_list ap;
+#ifdef DEBUG
+	char messagecol[1024];
+#endif
 
 	va_start(ap, fmt);
 	vsnprintf(message, sizeof(message), fmt, ap);
@@ -405,7 +404,7 @@ void output_status(void)
 		roomname = ggzcore_room_get_name(room);
 		/*roomnum = ggzcore_room_get_num(room);*/
 	}
-	
+
 	now = time(NULL);
 
 	printf("%s", SEQUENCE_SAVE);
@@ -419,7 +418,7 @@ void output_status(void)
 		output_label(_("Username"));
 		printf("\e[K");
 	}
-	
+
 	if(host)
 	{
 		output_goto(window.ws_row - 3, 28);
@@ -436,7 +435,7 @@ void output_status(void)
 	output_goto(window.ws_row - 3, window.ws_col - 19);
 	output_label(_("Status"));
 	printf("\e[K%s", currentstatus);
-	
+
 	if (ggzcore_server_is_in_room(server))
 	{
 		output_goto(window.ws_row - 2, 0);
@@ -445,7 +444,6 @@ void output_status(void)
 		printf("\e[K %s", roomname);
 		if(players_in_room > 0)
 			printf(_(" (%i players)"), players_in_room);
-		
 	} else {
 		output_goto(window.ws_row - 2, 0);
 		output_label(_("Room"));

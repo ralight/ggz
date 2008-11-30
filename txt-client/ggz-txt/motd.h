@@ -1,10 +1,11 @@
 /*
- * File: about.c
- * Author: Justin Zaun
- * Project: GGZ text Client
- * $Id: motd.h 4835 2002-10-10 01:30:13Z jdorje $
+ * ggz-txt - Command-line core client for the GGZ Gaming Zone.
+ * This application is part of the ggz-txt-client package.
  *
- * Copyright (C) 2000 Justin Zaun.
+ * motd.h: Handling of the Message Of The Day (MOTD).
+ *
+ * Copyright (C) 2000 Justin Zaun
+ * Copyright (C) 2001-2008 GGZ Gaming Zone Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

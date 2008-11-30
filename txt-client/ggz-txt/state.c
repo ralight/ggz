@@ -1,13 +1,11 @@
 /*
- * File: server.c
- * Author: Brent Hendricks
- * Project: GGZ Text Client 
- * Date: 9/26/00
- * $Id: state.c 4868 2002-10-11 19:35:05Z jdorje $
+ * ggz-txt - Command-line core client for the GGZ Gaming Zone.
+ * This application is part of the ggz-txt-client package.
  *
- * Functions for handling server events
+ * state.c: Client and connection state handling.
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000 Brent Hendricks
+ * Copyright (C) 2001-2008 GGZ Gaming Zone Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +43,7 @@ char* state_get(void)
 
 	if (!server)
 		return "Offline";
-	
+
 	state = ggzcore_server_get_state(server);
 
 	switch (state) {
@@ -86,6 +84,5 @@ char* state_get(void)
 		break;
 	default:
 		return "**none**";
-		
 	}
 }
