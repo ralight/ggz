@@ -1,0 +1,5 @@
+File=prefs.kcfg
+ClassName=Prefs
+Singleton=true
+CustomAdditions=false
+#Mutators=XMutator

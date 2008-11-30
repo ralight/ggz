@@ -98,7 +98,8 @@ Vencedor::Vencedor(QString url)
 	resize(800, 700);
 	show();
 
-	connection(url);
+	if(Prefs::autoconnect())
+		connection(url);
 }
 
 void Vencedor::connection(const QString& url)
@@ -139,9 +140,11 @@ void Vencedor::slotConfig()
 	QWidget *root = new QWidget();
 
 	QCheckBox *kcfg_sync = new QCheckBox(i18n("Synchronise preferences with server"));
+	QCheckBox *kcfg_autoconnect = new QCheckBox(i18n("Automatically connect to previous session"));
 
 	QVBoxLayout *vbox = new QVBoxLayout();
 	vbox->addWidget(kcfg_sync);
+	vbox->addWidget(kcfg_autoconnect);
 
 	root->setLayout(vbox);
 

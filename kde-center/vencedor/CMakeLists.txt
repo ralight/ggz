@@ -6,6 +6,10 @@ set(vencedor_SRCS
 	main.cpp
 )
 
+include_directories(${CMAKE_BUILD_DIR})
+
+kde4_add_kcfg_files(vencedor_SRCS prefs.kcfgc)
+
 kde4_add_executable(vencedor ${vencedor_SRCS})
 
 #kde4_add_app_icon(vencedor_SRCS hi*-app-vencedor.png)
