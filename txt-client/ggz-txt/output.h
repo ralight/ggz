@@ -65,4 +65,8 @@ void output_log_init(const char *logfile);
 void output_log(char* fmt, ...)
      ggz__attribute((format(printf, 1, 2)));
 
+void output_setprompt(char *prompt, int size);
+
+void output_restoreinput(void);
+
 #endif /*__OUTPUT_H__*/

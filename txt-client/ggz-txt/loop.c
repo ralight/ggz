@@ -142,6 +142,7 @@ void loop(void)
 		/* FIXME: make this an "idle" type func? */
 		output_resize();
 		output_status();
+		output_restoreinput();
 	}
 
 	if (num_fds > 0) {

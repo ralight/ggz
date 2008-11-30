@@ -149,11 +149,13 @@ void input_commandline(char *text)
 	char line[LINE_LENGTH];
 #else
 	char *rline;
+	char prompt[32];
 #endif
 	char *current;
 
 #ifdef HAVE_READLINE_READLINE_H
-	if(!text) rline = readline("GGZ>> ");
+	output_setprompt(prompt, sizeof(prompt));
+	if(!text) rline = readline(prompt);
 	else rline = text;
 	if(!rline) {
 		game_quit();

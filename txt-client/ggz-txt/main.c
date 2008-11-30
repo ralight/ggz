@@ -65,8 +65,8 @@ static RETSIGTYPE term_handle(int signum)
 	rl_cleanup_after_signal();
 	rl_reset_terminal(NULL);
 #endif
-	ggzcore_destroy(); 
-	output_shutdown(); 
+	ggzcore_destroy();
+	output_shutdown();
 
 	exit(1);
 }
@@ -112,6 +112,9 @@ int main(int argc, char *argv[])
 	char command[1024];
 #ifdef HAVE_READLINE_HISTORY_H
 	char *historyfile;
+#endif
+#ifdef HAVE_READLINE_READLINE_H
+	char prompt[32];
 #endif
 
 #ifdef ENABLE_NLS
@@ -191,8 +194,8 @@ int main(int argc, char *argv[])
 	historyfile = ggz_strbuild("%s/.ggz/ggz-text.history", getenv("HOME"));
 	read_history(historyfile);
 # endif
-	/*rl_callback_handler_install("\e[2K\e[1m\e[37mGGZ\e[1m\e[30m>\e[1m\e[37m ", input_commandline);*/
-	rl_callback_handler_install("GGZ>> ", input_commandline);
+	output_setprompt(prompt, sizeof(prompt));
+	rl_callback_handler_install(prompt, input_commandline);
 	fcntl(STDIN_FILENO, F_SETFD, O_NONBLOCK);
 	loop_add_fd(STDIN_FILENO, rl_callback_read_char, NULL);
 #else
@@ -247,7 +250,7 @@ int main(int argc, char *argv[])
 #ifdef DEBUG
 	ggz_debug_cleanup(GGZ_CHECK_MEM);
 #endif
-	
+
 	return 0;
 }
 

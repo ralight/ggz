@@ -45,7 +45,7 @@
 /* Color Codes */
 #define COLOR_BRIGHT_GREEN	"\e[1m\e[32m"
 #define COLOR_BRIGHT_BLUE	"\e[1m\e[34m"
-#define COLOR_BRIGHT_PINK	"\e[1m\e[35m"
+#define COLOR_BRIGHT_PINK	"\e[1m\e[33m" /*\e[35m*/
 #define COLOR_BRIGHT_WHITE	"\e[1m\e[37m"
 /*#define COLOR_BRIGHT_GREY	"\e[1m\e[30m"*/
 /*#define COLOR_BRIGHT_RED	"\e[1m\e[31m"*/
@@ -136,11 +136,19 @@ void output_banner(void)
 
 	output_text(_("Welcome to the text-only GGZ client!"));
 	output_text(_("--Written by Brent Hendricks & Justin Zaun (C) 2000"));
-	output_text(_("--Maintained by the GGZ Gaming Zone developers (C) 2001 - 2005"));
+	output_text(_("--Maintained by the GGZ Gaming Zone developers (C) 2001 - 2008"));
 	output_text(_("--Type /help to see a list of possible commands."));
 
 	output_debug("This is a development version with debugging messages.");
 	output_debug("Using TLS handler: %s", ggz_tls_support_name());
+}
+
+void output_setprompt(char *prompt, int size)
+{
+	/*snprintf(prompt, sizeof(prompt), "%sGGZ%sX>>%s ",
+		COLOR_BRIGHT_WHITE, COLOR_GREY, COLOR_WHITE);*/
+	/* FIXME: we cannot have a coloured prompt with readline for some reason */
+	ggz_strncpy(prompt, "GGZ>> ", sizeof(prompt));
 }
 
 void output_prompt(void)
@@ -157,7 +165,7 @@ void output_prompt(void)
 		COLOR_BRIGHT_WHITE, COLOR_GREY,
 		COLOR_WHITE);
 #else
-	printf("%s", SEQUENCE_ERASEWL);
+	printf("%s%s", SEQUENCE_ERASEWL, COLOR_WHITE);
 #endif
 }
 
@@ -207,6 +215,11 @@ static void output_text_write(const char *message)
 #endif
 }
 
+void output_restoreinput(void)
+{
+	printf("%s", COLOR_WHITE);
+}
+
 void output_debug(char* fmt, ...)
 {
 	char message[1024];	/* FIXME: Make me dynamic */
@@ -235,8 +248,7 @@ void output_draw_text(void)
 
 	printf("%s", SEQUENCE_SAVE);
 	output_goto(0, 0);
-	for (x = window.ws_row - 4 - chat_offset; x >= 0 + chat_offset; x--)
-	{
+	for (x = window.ws_row - 4 - chat_offset; x >= 0 + chat_offset; x--) {
 		if (chat[x])
 			printf("%s%s\n", SEQUENCE_ERASE, chat[x]);
 		else
@@ -299,7 +311,7 @@ void output_rooms(int allrooms)
 		type = ggzcore_room_get_gametype(room);
 		players = ggzcore_room_get_num_players(room);
 		if(players) occupied++;
-		if(players || allrooms){
+		if(players || allrooms) {
 			if (type)
 				output_text(_("-- Room %d : %s (%s) (Players: %d)"), i,
 						ggzcore_room_get_name(room),
@@ -410,29 +422,24 @@ void output_status(void)
 		/*roomnum = ggzcore_room_get_num(room);*/
 	}
 
-	now = time(NULL);
-
 	printf("%s", SEQUENCE_SAVE);
-	if(user)
-	{
-		output_goto(window.ws_row - 3, 0);
+
+	output_goto(window.ws_row - 3, 0);
+	if(user) {
 		output_label(_("Username"));
 		printf("%s%s", SEQUENCE_ERASE, user);
 	} else {
-		output_goto(window.ws_row - 3, 0);
 		output_label(_("Username"));
 		printf("%s", SEQUENCE_ERASE);
 	}
 
-	if(host)
-	{
-		output_goto(window.ws_row - 3, 28);
+	output_goto(window.ws_row - 3, (int)(window.ws_col / 2) - 12);
+	if(host) {
 		output_label(_("Server"));
 		printf("%s%s", SEQUENCE_ERASE, host);
 		if(players_on_server > 0)
 			printf(_(" (%i players)"), players_on_server);
 	} else {
-		output_goto(window.ws_row - 3, 28);
 		output_label(_("Server"));
 		printf("%s", SEQUENCE_ERASE);
 	}
@@ -441,20 +448,19 @@ void output_status(void)
 	output_label(_("Status"));
 	printf("%s%s", SEQUENCE_ERASE, currentstatus);
 
-	if (ggzcore_server_is_in_room(server))
-	{
-		output_goto(window.ws_row - 2, 0);
+	output_goto(window.ws_row - 2, 0);
+	if (ggzcore_server_is_in_room(server)) {
 		output_label(_("Room"));
 		/*printf("%s %d -- %s", SEQUENCE_ERASE, roomnum, roomname);*/
 		printf("%s %s", SEQUENCE_ERASE, roomname);
 		if(players_in_room > 0)
 			printf(_(" (%i players)"), players_in_room);
 	} else {
-		output_goto(window.ws_row - 2, 0);
 		output_label(_("Room"));
 		printf("%s", SEQUENCE_ERASE);
 	}
 
+	now = time(NULL);
 	currenttime = ggz_strdup(ctime(&now));
 	currenttime[strlen(currenttime)-1] = '\0';
 	displaytime[0] = currenttime[11];
@@ -486,15 +492,13 @@ void output_label(char *label)
 {
 	if(!output_enabled) return;
 
-	if(reverse_display)
-	{
+	if(reverse_display) {
 		printf("%s%c%s%s: %s",
 			COLOR_BLUE, label[0],
 			COLOR_BRIGHT_BLUE, &label[1],
 			COLOR_BRIGHT_PINK);
 	}
-	else
-	{
+	else {
 		printf("%s%c%s%s: %s",
 			COLOR_BRIGHT_WHITE, label[0],
 			COLOR_BRIGHT_GREEN, &label[1],
@@ -527,8 +531,7 @@ void output_resize(void)
 	ioctl(tty_des, TIOCGWINSZ, &window2);
 
 	if(window2.ws_row != window.ws_row ||
-	   window2.ws_col != window.ws_col)
-	{
+	   window2.ws_col != window.ws_col) {
 		output_goto(0, 0);
 		printf("%s", SEQUENCE_ERASEDP);
 		window = window2;
