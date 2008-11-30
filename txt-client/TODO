@@ -1,3 +1,10 @@
+New TODO items:
+---------------
+* coloured readline prompt using escape sequences
+* ggzcomm-generated network layer for TTTXT
+* i18n in TTTXT, requires some good magic for the escape sequences
+* more text games once it works correctly?
+
 Todo for 0.0.6:
 ---------------
 (maybe) profile list (similar to ncftp)
