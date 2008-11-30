@@ -140,7 +140,7 @@ Other distributors with (unfortunately) partial or outdated GGZ packages include
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/fedora.png">
 </div>
-<a href="http://koji.fedoraproject.org/koji/search?match=glob&type=package&terms=*ggz*">Fedora Core/Red Hat</a> (0.0.14.1)
+<a href="http://koji.fedoraproject.org/koji/search?match=glob&type=package&terms=*ggz*">Fedora</a> (0.0.14.1)
 </li>
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
