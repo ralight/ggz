@@ -1,31 +1,31 @@
-/* 
- * File: io-ggz.h
- * Author: GGZ Dev Team
- * Project: ggzmod
- * Date: 11/18/01
- * Desc: Functions for reading/writing messages from/to game modules, GGZ side
- * $Id: io-ggz.h 9542 2008-01-15 18:36:42Z josef $
+/*
+ * GGZMOD-GGZ - C implementation of the GGZ client-client protocol (GGZ side).
+ * This file is part of the package ggz-base-libs.
  *
- * This file contains the backend for the ggzmod library.  This
- * library facilitates the communication between the GGZ core client (ggz)
- * and game clients.  This file provides backend code that can be
- * used at both ends.
+ * io-ggz.h: Reading/writing messages from/to game modules, GGZ side.
  *
- * Copyright (C) 2001 GGZ Dev Team.
+ * Copyright (C) 2001 - 2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+/*
+ * This file contains the backend for the ggzmod library.  This
+ * library facilitates the communication between the GGZ core client (ggz)
+ * and game clients.  This file provides backend code that can be
+ * used at both ends.
  */
 
 #ifndef __GGZ_IO_GGZ_H__

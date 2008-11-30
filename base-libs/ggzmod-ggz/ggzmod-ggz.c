@@ -1,31 +1,28 @@
-/* 
- * File: ggzmod-ggz.c
- * Author: GGZ Dev Team
- * Project: ggzmod
- * Date: 10/14/01
- * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.c 9982 2008-05-12 10:17:19Z josef $
+/*
+ * GGZMOD-GGZ - C implementation of the GGZ client-client protocol (GGZ side).
+ * This file is part of the package ggz-base-libs.
  *
- * This file contains the backend for the ggzmod library.  This
- * library facilitates the communication between the GGZ core client (ggz)
- * and game clients.  The file provides an interface similar to ggzmod.c,
- * but a different implementation.
+ * ggzmod-ggz.c: GGZ game module functions, GGZ side.
  *
- * Copyright (C) 2001-2002 GGZ Development Team.
+ * Copyright (C) 2001 - 2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+/*
+ * Note: see ggzmod-ggz.h for additional information on this file.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -63,7 +60,7 @@
 #include "protocol.h"
 
 
-/* 
+/*
  * internal function prototypes
  */
 
@@ -86,7 +83,7 @@ static GGZSpectatorSeat* spectator_seat_copy(GGZSpectatorSeat *orig);
 static int spectator_seat_compare(GGZSpectatorSeat *a, GGZSpectatorSeat *b);
 static void spectator_seat_free(GGZSpectatorSeat *seat);
 
-/* 
+/*
  * Creating/destroying a ggzmod object
  */
 
@@ -177,7 +174,7 @@ void ggzmod_ggz_free(GGZMod * ggzmod)
 
 	if (ggzmod->fd != -1)
 		(void)ggzmod_ggz_disconnect(ggzmod);
-	
+
 	if (ggzmod->server_host) ggz_free(ggzmod->server_host);
 	if (ggzmod->server_handle) ggz_free(ggzmod->server_handle);
 
@@ -188,7 +185,7 @@ void ggzmod_ggz_free(GGZMod * ggzmod)
 
 	if (ggzmod->pwd)
 		ggz_free(ggzmod->pwd);
-	
+
 	if (ggzmod->argv) {
 		for (i = 0; ggzmod->argv[i]; i++)
 			if (ggzmod->argv[i])
@@ -201,7 +198,7 @@ void ggzmod_ggz_free(GGZMod * ggzmod)
 }
 
 
-/* 
+/*
  * Accesor functions for GGZMod
  */
 
@@ -238,7 +235,7 @@ void ggzmod_ggz_set_module(GGZMod * ggzmod, const char *pwd, char **argv)
 	int i;
 
 	ggz_debug("GGZMOD", "Setting arguments");
-	
+
 	if (!ggzmod)
 		return;
 
@@ -246,7 +243,7 @@ void ggzmod_ggz_set_module(GGZMod * ggzmod, const char *pwd, char **argv)
 		_ggzmod_ggz_error(ggzmod, "Cannot set module args from module");
 		return;
 	}
-		
+
 	/* Check parameters */
 	if (!argv || !argv[0]) {
 		_ggzmod_ggz_error(ggzmod, "Bad module arguments");
@@ -257,11 +254,11 @@ void ggzmod_ggz_set_module(GGZMod * ggzmod, const char *pwd, char **argv)
 	for (i = 0; argv[i]; i++) {}
 
 	ggz_debug("GGZMOD", "Set %d arguments", i);
-	
+
 	ggzmod->argv = ggz_malloc(sizeof(char*)*(i+1));
 	ggzmod->pwd = ggz_strdup(pwd);
-	
-	for (i = 0; argv[i]; i++) 
+
+	for (i = 0; argv[i]; i++)
 		ggzmod->argv[i] = ggz_strdup(argv[i]);
 }
 
@@ -525,7 +522,7 @@ int ggzmod_ggz_inform_chat(GGZMod * ggzmod, const char *player, const char *msg)
 }
 
 
-/* 
+/*
  * GGZmod actions
  */
 
@@ -536,7 +533,7 @@ int ggzmod_ggz_connect(GGZMod * ggzmod)
 
 	if (ggzmod->type == GGZMOD_GGZ) {
 		/* For the ggz side, we fork the game and then send the launch message */
-		
+
 		if (ggzmod->argv) {
 			if (game_fork(ggzmod) < 0) {
 				_ggzmod_ggz_error(ggzmod, "Error: table fork failed");
@@ -549,13 +546,13 @@ int ggzmod_ggz_connect(GGZMod * ggzmod)
 				return -1;
 			}
 		}
-		
+
 		if (send_game_launch(ggzmod) < 0) {
 			_ggzmod_ggz_error(ggzmod, "Error sending launch to game");
 			return -1;
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -576,7 +573,7 @@ int ggzmod_ggz_dispatch(GGZMod * ggzmod)
 	FD_SET(ggzmod->fd, &read_fd_set);
 
 	timeout.tv_sec = timeout.tv_usec = 0;	/* is this really portable? */
-	
+
 	status = select(ggzmod->fd + 1, &read_fd_set, NULL, NULL, &timeout);
 
 	if (status == 0) {
@@ -587,7 +584,7 @@ int ggzmod_ggz_dispatch(GGZMod * ggzmod)
 			return 0;
 		return -1;
 	}
-	
+
 	return _ggzmod_ggz_handle_event(ggzmod, read_fd_set);
 }
 
@@ -606,7 +603,7 @@ int ggzmod_ggz_disconnect(GGZMod * ggzmod)
 
 	if (ggzmod->type == GGZMOD_GGZ) {
 		/* For the ggz side, we kill the game client and close the socket */
-		
+
 #ifdef HAVE_KILL
 		/* Make sure game client is dead */
 		if (ggzmod->pid > 0) {
@@ -626,11 +623,11 @@ int ggzmod_ggz_disconnect(GGZMod * ggzmod)
 		}
 #  endif
 #endif
-		
+
 		_ggzmod_ggz_set_state(ggzmod, GGZMOD_STATE_DONE);
 		/* FIXME: what other cleanups should we do? */
 	}
-	
+
 	/* We no longer free the seat data here.  It will stick around until
 	   ggzmod_ggz_free is called or it is used again. */
 
@@ -648,7 +645,7 @@ int ggzmod_ggz_disconnect(GGZMod * ggzmod)
 static int _ggzmod_ggz_handle_event(GGZMod * ggzmod, fd_set read_fds)
 {
 	int status = 0;
-	
+
 	if (FD_ISSET(ggzmod->fd, &read_fds)) {
 		status = _io_ggz_read_data(ggzmod);
 		if (status < 0) {
@@ -677,7 +674,7 @@ static void _ggzmod_ggz_set_state(GGZMod * ggzmod, GGZModState state)
 
 
 
-/* 
+/*
  * ggz specific actions
  */
 
@@ -738,7 +735,7 @@ static void ggz_setenv(const char *name, const char *value)
 /* Common setup for normal mode and embedded mode.  This does partial
    prep work for the GGZ socket connection between game client and GGZ
    client.
-   
+
    There are two possible results of this function:
 
    1. The GGZ end of the socket goes into fd_pair[0] and the game end
@@ -863,9 +860,9 @@ static int game_fork(GGZMod * ggzmod)
 		if (fd_pair[1] >= 0) ggz_close_socket(fd_pair[1]);
 
 		ggzmod->pid = pid;
-		
+
 		/* FIXME: should we delete the argv arguments? */
-		
+
 		/* That's all! */
 	}
 #else

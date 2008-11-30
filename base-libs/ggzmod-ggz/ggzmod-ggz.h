@@ -1,33 +1,32 @@
-/* 
- * File: ggzmod-ggz.h
- * Author: GGZ Dev Team
- * Project: ggzmod
- * Date: 10/20/02
- * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.h 9542 2008-01-15 18:36:42Z josef $
+/*
+ * GGZMOD-GGZ - C implementation of the GGZ client-client protocol (GGZ side).
+ * This file is part of the package ggz-base-libs.
  *
- * This file contains the GGZ-only interface for the ggzmod library.  This
- * library facilitates the communication between the GGZ core client (ggz)
- * and game clients.  The file must be kept synchronized with the game's
- * library part (ggzmod.h, mod.h).
+ * ggzmod-ggz.h: GGZ game module functions, GGZ side.
  *
- * Copyright (C) 2002 GGZ Development Team.
+ * Copyright (C) 2002 - 2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+/*
+ * This file contains the GGZ-only interface for the ggzmod library.  This
+ * library facilitates the communication between the GGZ core client (ggz)
+ * and game clients.  The file must be kept synchronized with the game's
+ * library part (ggzmod.h, mod.h).
+ */
 
 #ifndef __GGZMOD_GGZ_H__
 #define __GGZMOD_GGZ_H__
@@ -175,7 +174,6 @@ void ggzmod_ggz_set_transaction_handler(GGZMod * ggzmod, GGZModTransaction t,
  *  @note The pwd directory must already exist.
  */
 void ggzmod_ggz_set_module(GGZMod * ggzmod, const char *pwd, char **args);
-		       
 
 /** @brief Set the host and port for the game server connection
  *  @param ggzmod The GGZMod object.
