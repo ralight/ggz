@@ -1,6 +1,8 @@
 /*
- * TTTXT - Console client for TicTacToe
- * Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
+ * TTTXT - Console client for the Tic-Tac-Toe game.
+ * This application is part of the ggz-txt-client package.
+ *
+ * Copyright (C) 2004-2008 Josef Spillner <josef@ggzgamingzone.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -136,7 +138,7 @@ static void drawabout(void)
 	printf("%s", COLOR_WHITE);
 
 	gotoxy(10, 5);
-	printf("Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>");
+	printf("Copyright (C) 2004-2008 Josef Spillner <josef@ggzgamingzone.org>");
 	gotoxy(10, 6);
 	printf("This game is part of the GGZ Gaming Zone.");
 	gotoxy(10, 7);
@@ -364,7 +366,7 @@ int main(int argc, char *argv[])
 
 	ggzmode = 0;
 
-	if((argc == 2) && (!strcmp(argv[1], "--ggz")))
+	if(ggzmod_is_ggz_mode())
 	{
 		ggzmode = 1;
 
@@ -464,6 +466,4 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
-
-
 
