@@ -59,7 +59,7 @@ GGZ support:
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/slackware.png">
 </div>
-<a href="http://www.slacky.eu/index.php?option=com_content&task=view&id=2376&Itemid=56">Slackware</a> (0.0.14)
+<a href="http://www.slacky.eu/index.php?option=com_content&task=view&id=5158&Itemid=56">Slackware</a> (0.0.14.1)
 </li>
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
@@ -72,20 +72,20 @@ GGZ support:
 <img src="/pics/distros/debian.png">
 </div>
 <a href="http://packages.debian.org/search?keywords=GGZ&searchon=all">Debian</a>
-(0.0.14)
-(see also <a href="http://alioth.debian.org/projects/pkg-ggz/">Alioth</a> packaging page)
+(0.0.14.1)
+(see also <a href="http://pkg-ggz.alioth.debian.org/">Alioth</a> packaging page)
 </li>
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/ubuntu.png">
 </div>
-<a href="http://packages.ubuntu.com/cgi-bin/search_packages.pl?keywords=ggz">Ubuntu</a> (0.0.14)
+<a href="http://packages.ubuntu.com/search?keywords=ggz">Ubuntu</a> (0.0.14.1)
 </li>
 <li>
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/freebsd.png">
 </div>
-<a href="http://www.freshports.org/search.php?query=ggz&search=go&num=10&stype=name&method=match&deleted=excludedeleted&start=1&casesensitivity=caseinsensitive">FreeBSD</a> (0.0.14)
+<a href="http://www.freshports.org/search.php?query=ggz&search=go&num=10&stype=name&method=match&deleted=excludedeleted&start=1&casesensitivity=caseinsensitive">FreeBSD</a> (0.0.14.1)
 </li>
 <!--
 <li>
@@ -99,19 +99,25 @@ GGZ support:
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/sourcemage.png">
 </div>
-<a href="http://codex.sourcemage.org/listing.html">SourceMage</a> (0.0.14)
+<a href="http://codex.sourcemage.org/listing.html">SourceMage</a> (0.0.14.1)
 </li>
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/gentoo.png">
 </div>
-<a href="http://packages.gentoo.org/category/dev-games">Gentoo</a> (0.0.14)
+<a href="http://packages.gentoo.org/category/dev-games">Gentoo</a> (0.0.14.1)
 </li>
 <li>
 <div style="position:absolute;right:82px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/mandriva.png">
 </div>
 <a href="http://club.mandriva.com/xwiki/bin/view/rpms/Category/Games/Other">Mandriva</a> (0.0.14)
+</li>
+<li>
+<div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
+<img src="/pics/distros/lunar.png">
+</div>
+<a href="http://modules.lunar-linux.org/index.php?option=moonbase&section=games">Lunar Linux</a> (0.0.14.1)
 </li>
 </ul>
 
@@ -132,32 +138,21 @@ Other distributors with (unfortunately) partial or outdated GGZ packages include
 </li>
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
-<img src="/pics/distros/lunar.png">
-</div>
-Lunar Linux (0.0.12?, search broken)
-<!--
-<a href="http://modules.lunar-linux.org/index.php?option=moonbase&section=games">Lunar Linux</a> (0.0.12)
--->
-</li>
-<li>
-<div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/fedora.png">
 </div>
-<a href="http://koji.fedoraproject.org/koji/search?match=glob&type=package&terms=*ggz*">Fedora Core/Red Hat</a> (0.0.14, updates are coming in)
+<a href="http://koji.fedoraproject.org/koji/search?match=glob&type=package&terms=*ggz*">Fedora Core/Red Hat</a> (0.0.14.1)
 </li>
-<!--
 <li>
 <div style="position:absolute;right:50px;width:32px;height:32px;overflow:visible">
 <img src="/pics/distros/arch.png">
 </div>
-<a href="http://www.archlinux.org/packages.php?s_repo=all&s_category=all&s_keyword=ggz&s_lastupdate=&pp=50">ArchLinux</a> (only libs, and outdated)
-</li>
--->
-<li>
-<a href="http://pkgsrc.se/search.php?so=ggz">NetBSD</a> (0.0.14)
+<a href="http://www.archlinux.org/packages/?arch=&repo=&q=ggz&last_update=&limit=50">ArchLinux</a> (0.0.14.1)
 </li>
 <li>
-<a href="http://www.sisyphus.ru/find.shtml?request=ggz">ALT Linux</a> (0.0.14, via Sisyphus)
+<a href="http://pkgsrc.se/search.php?so=ggz">NetBSD</a> (0.0.14.1)
+</li>
+<li>
+<a href="http://www.sisyphus.ru/find.shtml?request=ggz">ALT Linux</a> (0.0.14.1, via Sisyphus)
 </li>
 </ul>
 
