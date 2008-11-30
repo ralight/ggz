@@ -26,7 +26,7 @@
 #include <qprogressbar.h>
 
 ConnectionDialog::ConnectionDialog(QWidget *parent)
-: QDialog(parent), m_corelayer(NULL)
+: QDialog(parent), m_corelayer(NULL), m_core(false)
 {
 	m_serverlist = new ServerList();
 
@@ -112,6 +112,7 @@ void ConnectionDialog::slotConnect()
 	// FIXME: core layer doesn't have parent and will leak happily
 	m_corelayer = new KGGZCoreLayer(NULL, m_engine, m_version);
 	connect(m_corelayer, SIGNAL(signalReady(bool)), SLOT(slotReady(bool)));
+	connect(m_corelayer, SIGNAL(signalRoomReady(bool)), SLOT(slotRoomReady(bool)));
 	m_corelayer->ggzcore(uri());
 }
 
@@ -171,4 +172,20 @@ QString ConnectionDialog::uri()
 KGGZCoreLayer *ConnectionDialog::layer() const
 {
 	return m_corelayer;
+}
+
+void ConnectionDialog::setCore(bool core)
+{
+	m_core = core;
+}
+
+void ConnectionDialog::slotRoomReady(bool ready)
+{
+	if((ready) && (!m_core))
+		m_corelayer->launch();
+
+	if(m_core)
+	{
+		accept();
+	}
 }

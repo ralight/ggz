@@ -4,7 +4,7 @@
 #include <kggzcore/misc.h>
 #include <kggzcore/table.h>
 #include <kggzcore/player.h>
- 
+
 #include <klocale.h>
 #include <qdebug.h>
 
@@ -16,7 +16,7 @@ KGGZCoreLayer::KGGZCoreLayer(QObject *parent, QString protengine, QString protve
 	m_protengine = protengine;
 	m_typedrooms = false;
 }
- 
+
 KGGZCoreLayer::~KGGZCoreLayer()
 {
 	delete m_core;
@@ -50,7 +50,7 @@ void KGGZCoreLayer::checkTables()
 		}
 	}
 }
- 
+
 void KGGZCoreLayer::ggzcore(QString uri)
 {
 	m_core = new KGGZCore::CoreClient(this, true);
@@ -70,8 +70,8 @@ void KGGZCoreLayer::ggzcore(QString uri)
 	m_core->setUrl(uri);
 	m_core->setUsername("foo-dev"); // FIXME: always give fully-qualified URLs
 	m_core->initiateLogin();
-} 
- 
+}
+
 void KGGZCoreLayer::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZCore::Error::ErrorCode error)
 {
 	Q_UNUSED(error);
@@ -123,7 +123,7 @@ void KGGZCoreLayer::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, 
 			connect(m_core->room(),
 				SIGNAL(signalEvent(KGGZCore::Room::EventMessage)),
 				SLOT(slotEvent(KGGZCore::Room::EventMessage)));
-			launchmodule();
+			emit signalRoomReady(true);
 			break;
 		case KGGZCore::CoreClient::chat:
 			break;
@@ -307,5 +307,10 @@ void KGGZCoreLayer::configureTable(QList<KGGZCore::Player> seats)
 	//seats.prepend(KGGZCore::Player(m_core->username(), KGGZCore::Player::player));
 	m_seats = seats;
 }
- 
+
+void KGGZCoreLayer::launch()
+{
+	launchmodule();
+}
+
 #include "kggzcorelayer.moc"

@@ -156,7 +156,10 @@ void Vencedor::slotConfig()
 void Vencedor::slotConnect()
 {
 	ConnectionDialog dlg(this);
-	dlg.exec();
+	dlg.setCore(true);
+	if(dlg.exec())
+		enable(true);
+	// FIXME: the instance in connectiondialog is not ours, add sharing?
 }
 
 void Vencedor::slotLaunch()

@@ -10,7 +10,7 @@ namespace KGGZCore
 {
 	class Player;
 }
- 
+
 class KGGZLIB_EXPORT KGGZCoreLayer : public QObject
 {
 	Q_OBJECT
@@ -18,12 +18,14 @@ class KGGZLIB_EXPORT KGGZCoreLayer : public QObject
 	public:
 		KGGZCoreLayer(QObject *parent = NULL, QString protengine = QString(), QString protversion = QString());
 		~KGGZCoreLayer();
- 
+
 		void ggzcore(QString uri);
 		void configureTable(QList<KGGZCore::Player> seats);
+		void launch();
 
 	signals:
 		void signalReady(bool ready);
+		void signalRoomReady(bool ready);
 
 	protected:
 		void activity(QString activity);
@@ -40,8 +42,8 @@ class KGGZLIB_EXPORT KGGZCoreLayer : public QObject
 	private slots:
 		void slotModuleReady();
 		void slotTableReady();
- 
- 	private:
+
+	private:
 		void launchmodule();
 		void switchroom();
 		void notready();
@@ -52,5 +54,5 @@ class KGGZLIB_EXPORT KGGZCoreLayer : public QObject
 		QString m_protversion;
 		bool m_typedrooms;
 };
- 
+
 #endif

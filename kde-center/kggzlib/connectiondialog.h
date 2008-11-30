@@ -24,11 +24,14 @@ class KGGZLIB_EXPORT ConnectionDialog : public QDialog
 
 		KGGZCoreLayer *layer() const;
 
+		void setCore(bool core);
+
 	private slots:
 		void slotManage();
 		void slotConnect();
 		void slotSelected(const GGZProfile& profile, int pos);
 		void slotReady(bool ready);
+		void slotRoomReady(bool ready);
 
 	private:
 		void load();
@@ -42,6 +45,8 @@ class KGGZLIB_EXPORT ConnectionDialog : public QDialog
 		QString m_engine;
 		QString m_version;
 		QString m_username;
+
+		bool m_core;
 };
 
 #endif
