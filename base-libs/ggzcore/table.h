@@ -1,12 +1,11 @@
 /*
- * File: player.h
- * Author: Brent Hendricks
- * Project: GGZ Core Client Lib
- * Date: 6/5/00
+ * GGZCORE: Core client-side interface to the GGZ Gaming Zone protocol.
+ * This library is part of the ggz-base-libs package.
  *
- * This fils contains functions for handling players
+ * table.h: This file contains functions for handling tables.
  *
- * Copyright (C) 1998 Brent Hendricks.
+ * Copyright (C) 1998 Brent Hendricks
+ * Copyright (C) 2001-2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,7 +21,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 
 #ifndef __TABLE_H_
 #define __TABLE_H_

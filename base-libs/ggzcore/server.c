@@ -1,13 +1,11 @@
 /*
- * File: server.c
- * Author: Brent Hendricks
- * Project: GGZ Core Client Lib
- * Date: 1/19/01
- * $Id: server.c 10597 2008-11-23 21:35:34Z josef $
+ * GGZCORE: Core client-side interface to the GGZ Gaming Zone protocol.
+ * This library is part of the ggz-base-libs package.
  *
- * Code for handling server connection state and properties
+ * server.c: Code for handling server connection state and properties.
  *
- * Copyright (C) 2001 Brent Hendricks.
+ * Copyright (C) 2001 Brent Hendricks
+ * Copyright (C) 2002-2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

@@ -1,12 +1,11 @@
 /*
- * File: conf.h
- * Author: Rich Gade
- * Project: GGZ Core Client Lib
- * Date: 11/30/00
+ * GGZCORE: Core client-side interface to the GGZ Gaming Zone protocol.
+ * This library is part of the ggz-base-libs package.
  *
- * External functions for handling configuration files
+ * conf.h: External functions for handling configuration files.
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000 Brent Hendricks
+ * Copyright (C) 2001-2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

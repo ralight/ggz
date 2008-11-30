@@ -1,17 +1,10 @@
 /*
- * File: ggzcore-ggz.h
- * Author: GGZ Dev Team
- * Project: ggzcore
- * Date: 01/16/2005
- * Desc: GGZ client<->server network connection (GGZ side)
- * $Id: ggzcore-ggz.h 10597 2008-11-23 21:35:34Z josef $
+ * GGZCORE: Core client-side interface to the GGZ Gaming Zone protocol.
+ * This library is part of the ggz-base-libs package.
  *
- * This file contains the GGZ-only interface for the ggzcore library.  This
- * library facilitates the communication between the GGZ server (ggzd)
- * and GGZ client.  The functions provided in this file are intended for use
- * inside ggzmod.
+ * ggzcore-ggz.h: GGZ client<->server network connection (GGZ side).
  *
- * Copyright (C) 2005 GGZ Development Team.
+ * Copyright (C) 2005-2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,6 +21,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+/*
+ * This file contains the GGZ-only interface for the ggzcore library.
+ * This library facilitates the communication between the GGZ server (ggzd)
+ * and GGZ client.  The functions provided in this file are intended for use
+ * inside ggzmod.
+ */
 
 #ifndef __GGZCORE_GGZ_H__
 #define __GGZCORE_GGZ_H__

@@ -1,13 +1,11 @@
 /*
- * File: gametype.h
- * Author: GGZ Development Team
- * Project: GGZ Core Client Lib
- * Date: 6/5/00
- * $Id: gametype.h 10597 2008-11-23 21:35:34Z josef $
+ * GGZCORE: Core client-side interface to the GGZ Gaming Zone protocol.
+ * This library is part of the ggz-base-libs package.
  *
- * This file contains functions for handling game types.
+ * gametype.h: This file contains functions for handling game types.
  *
- * Copyright (C) 1998-2005 GGZ Development Team.
+ * Copyright (C) 1998 Brent Hendricks
+ * Copyright (C) 2000-2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

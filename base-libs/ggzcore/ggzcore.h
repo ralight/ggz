@@ -1,13 +1,10 @@
 /*
- * File: ggzcore.h
- * Author: GGZ Development Team
- * Project: GGZ Core Client Lib
- * Date: 9/15/00
- * $Id: ggzcore.h 10597 2008-11-23 21:35:34Z josef $
+ * GGZCORE: Core client-side interface to the GGZ Gaming Zone protocol.
+ * This library is part of the ggz-base-libs package.
  *
- * Interface file to be included by client frontends
+ * ggzcore.h: Interface file to be included by GGZ client frontends.
  *
- * Copyright (C) 2000-2005 GGZ Development Team.
+ * Copyright (C) 2000-2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,7 +20,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 
 #ifndef __GGZCORE_H__
 #define __GGZCORE_H__

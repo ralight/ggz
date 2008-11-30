@@ -1,13 +1,9 @@
 /*
- * File: ggz-config.c
- * Author: Rich Gade
- * Project: GGZ Core Client Lib
- * Date: 02/19/01
- * $Id: ggz-config.c 10568 2008-10-15 17:11:45Z jdorje $
+ * ggz-config: Configuration query and module install program.
+ * This tool is part of the ggz-base-libs package.
  *
- * Configuration query and module install program.
- *
- * Copyright (C) 2001 Rich Gade.
+ * Copyright (C) 2001 Rich Gade
+ * Copyright (C) 2002-2008 GGZ Gaming Zone Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -636,7 +632,7 @@ static int noregister_all()
 	DIR *d;
 	struct dirent *e;
 	int ret;
-	
+
 	d = opendir(copydir);
 	if(!d) {
 		fprintf(stderr, _("Could not open auxiliary directory\n"));

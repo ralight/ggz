@@ -1,13 +1,11 @@
 /*
- * File: net.h
- * Author: Brent Hendricks
- * Project: GGZ Core Client Lib
- * Date: 9/22/00
- * $Id: net.h 10597 2008-11-23 21:35:34Z josef $
+ * GGZCORE: Core client-side interface to the GGZ Gaming Zone protocol.
+ * This library is part of the ggz-base-libs package.
  *
- * Code for performing network I/O
+ * net.h: Code for performing network I/O.
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000 Brent Hendricks
+ * Copyright (C) 2001-2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,7 +21,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 
 #ifndef __NET_H__
 #define __NET_H__

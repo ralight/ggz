@@ -1,18 +1,19 @@
-/* 
- * GGZMOD - C implementation of the GGZ client-client protocol
+/*
+ * GGZMOD - C implementation of the GGZ client-client protocol.
+ * This file is part of the package ggz-base-libs.
  *
- * Copyright (C) 2001 - 2008 GGZ Development Team.
+ * Copyright (C) 2001 - 2008 GGZ Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -54,7 +55,7 @@
 #include "io.h"
 #include "protocol.h"
 
-/* 
+/*
  * internal function prototypes
  */
 
@@ -70,7 +71,7 @@ static GGZSpectatorSeat* spectator_seat_copy(GGZSpectatorSeat *orig);
 static int spectator_seat_compare(GGZSpectatorSeat *a, GGZSpectatorSeat *b);
 static void spectator_seat_free(GGZSpectatorSeat *seat);
 
-/* 
+/*
  * Creating/destroying a ggzmod object
  */
 
@@ -156,7 +157,7 @@ static void ggz_setenv(const char *name, const char *value)
 
 int ggzmod_is_ggz_mode(void)
 {
-	char *ggzmode = ggz_getenv("GGZMODE");	  
+	char *ggzmode = ggz_getenv("GGZMODE");
 	return (ggzmode && strcmp(ggzmode, "true") == 0);
 }
 
@@ -265,10 +266,10 @@ void ggzmod_free(GGZMod * ggzmod)
 	if (!ggzmod) {
 		return;
 	}
-	
+
 	if (ggzmod->fd != -1)
 		(void)ggzmod_disconnect(ggzmod);
-	
+
 	if (ggzmod->server_host) ggz_free(ggzmod->server_host);
 	if (ggzmod->server_handle) ggz_free(ggzmod->server_handle);
 
@@ -284,7 +285,7 @@ void ggzmod_free(GGZMod * ggzmod)
 }
 
 
-/* 
+/*
  * Accesor functions for GGZMod
  */
 
@@ -708,7 +709,7 @@ static int ggzmod_connect_port(void)
 }
 
 
-/* 
+/*
  * GGZmod actions
  */
 
@@ -733,7 +734,7 @@ int ggzmod_connect(GGZMod * ggzmod)
 	}
 	ggzmod->fd = ggzsocket;
 	ggz_debug("GGZMOD", "Connected with socket %d.\n", ggzmod->fd);
-	
+
 	return 0;
 }
 
@@ -807,7 +808,7 @@ int ggzmod_disconnect(GGZMod * ggzmod)
 static int _ggzmod_handle_event(GGZMod * ggzmod, fd_set read_fds)
 {
 	int status = 0;
-	
+
 	if (FD_ISSET(ggzmod->fd, &read_fds)) {
 		status = _io_read_data(ggzmod);
 		if (status < 0) {
@@ -834,7 +835,7 @@ static void _ggzmod_set_state(GGZMod * ggzmod, GGZModState state)
 
 	/* If we are the game module, send the new state to GGZ */
 	if (ggzmod->type == GGZMOD_GAME) {
-		ggz_debug("GGZMOD", "Game setting state to %d", 
+		ggz_debug("GGZMOD", "Game setting state to %d",
 			    state);
 		if (_io_send_state(ggzmod->fd, state) < 0)
 			/* FIXME: do some sort of error handling? */

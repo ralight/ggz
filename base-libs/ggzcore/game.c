@@ -1,13 +1,11 @@
 /*
- * File: game.c
- * Author: Brent Hendricks
- * Project: GGZ Core Client Lib
- * Date: 2/28/2001
- * $Id: game.c 10597 2008-11-23 21:35:34Z josef $
+ * GGZCORE: Core client-side interface to the GGZ Gaming Zone protocol.
+ * This library is part of the ggz-base-libs package.
  *
- * This fils contains functions for handling games being played
+ * game.c: This file contains functions for handling games being played.
  *
- * Copyright (C) 1998 Brent Hendricks.
+ * Copyright (C) 1998 Brent Hendricks
+ * Copyright (C) 2000-2008 GGZ Gaming Zone Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

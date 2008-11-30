@@ -1,18 +1,19 @@
-/* 
- * GGZMOD - C implementation of the GGZ client-client protocol
+/*
+ * GGZMOD - C implementation of the GGZ client-client protocol.
+ * This file is part of the package ggz-base-libs.
  *
- * Copyright (C) 2001 - 2008 GGZ Development Team.
+ * Copyright (C) 2001 - 2008 GGZ Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -128,7 +129,7 @@ typedef enum {
 	 *  @see GGZModState */
 	GGZMOD_EVENT_STATE,
 
-	/** @brief A new server connection has been made 
+	/** @brief A new server connection has been made
 	 * This event occurs when a new connection to the game server
 	 * has been made, either by the core client or by the game client
 	 * itself.  The fd is passed as the event's data.
@@ -274,7 +275,7 @@ typedef void (*GGZModHandler) (GGZMod * mod, GGZModEvent e, const void *data);
 
 /** @brief Is the program running in GGZ mode?
  *
- *  Call this function to see if the program was actually launched by GGZ. 
+ *  Call this function to see if the program was actually launched by GGZ.
  *  This can be used to give an error message if the executable is run
  *  outside of the GGZ environment, or for games that will run both inside
  *  and outside of GGZ.
@@ -297,7 +298,7 @@ int ggzmod_is_ggz_mode(void);
  */
 int ggzmod_check_library(const char *iface);
 
-/* 
+/*
  * Creation functions
  */
 
@@ -316,7 +317,7 @@ GGZMod *ggzmod_new(GGZModType type);
  */
 void ggzmod_free(GGZMod * ggzmod);
 
-/* 
+/*
  * Accessor functions
  */
 
@@ -419,7 +420,7 @@ void ggzmod_set_gamedata(GGZMod * ggzmod, void * data);
 void ggzmod_set_handler(GGZMod * ggzmod, GGZModEvent e, GGZModHandler func);
 
 
-/* 
+/*
  * Event/Data handling
  */
 
@@ -436,7 +437,7 @@ void ggzmod_set_handler(GGZMod * ggzmod, GGZModEvent e, GGZModHandler func);
  */
 int ggzmod_dispatch(GGZMod * ggzmod);
 
-/* 
+/*
  * Control functions
  */
 
