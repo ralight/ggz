@@ -26,6 +26,8 @@ Contents of the ggz-kde-center package:
 	  KDE 4 and with better savegame support
 	- kryds, a game server for Tic-Tac-Toe using kggzdmod
 
+	- vencedor, a core client to connect to GGZ servers
+
 Most of them have their own README for more information on them.
 
 Please read 'INSTALL' if you aren't experienced with the build yet.
