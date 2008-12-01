@@ -81,12 +81,17 @@ if test "x$need_libtool" = "x1"; then
 	echo -n "[libtoolize]"
 	(cd $srcdir && libtoolize --force --copy >/dev/null) || { echo "libtoolize failed."; exit 1; }
 fi
+
 echo -n "[aclocal]"
+ACLOCAL_FLAGS=""
 if test -d $srcdir/m4; then
-	(cd $srcdir && aclocal -I m4 -I m4/ggz) || { echo "aclocal failed."; exit 1; }
-else
-	(cd $srcdir && aclocal) || { echo "aclocal failed."; exit 1; }
+	ACLOCAL_FLAGS="$ACLOCAL_FLAGS -I m4"
 fi
+if test -d $srcdir/m4/ggz; then
+	ACLOCAL_FLAGS="$ACLOCAL_FLAGS -I m4/ggz"
+fi
+(cd $srcdir && aclocal $ACLOCAL_FLAGS) || { echo "aclocal failed."; exit 1; }
+
 echo -n "[autoheader]"
 (cd $srcdir && autoheader) || { echo "autoheader failed."; exit 1; }
 echo -n "[automake]"
