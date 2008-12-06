@@ -67,12 +67,12 @@ public:
 			QString pixmap;
 			if(player.type() == KGGZCore::Player::open)
 			{
-				pixmap = "guest.png";
+				pixmap = "ox-guest.png";
 				numplayers++;
 			}
 			else if(player.type() == KGGZCore::Player::reserved)
 			{
-				pixmap = "player.png";
+				pixmap = "ox-player.png";
 				numplayers++;
 			}
 			else if(player.type() == KGGZCore::Player::bot)
@@ -83,7 +83,7 @@ public:
 			QPixmap pix(d.findResource("data", "kggzlib/players/" + pixmap));
 			if(player.type() == KGGZCore::Player::player)
 			{
-				QPixmap pix1 = QPixmap(d.findResource("data", "kggzlib/players/player.png"));
+				QPixmap pix1 = QPixmap(d.findResource("data", "kggzlib/players/ox-player.png"));
 				QPixmap pix2 = QPixmap(d.findResource("data", "kggzlib/players/you.png"));
 				pix = Util::composite(pix1, pix2);
 			}

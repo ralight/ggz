@@ -95,13 +95,13 @@ void PlayerList::addPlayer(Player *player)
 
 	m_players[player->name()] = player;
 
-	QString pixmap = "guest.png";
+	QString pixmap = "ox-guest.png";
 	if(player->role() == Player::Admin)
-		pixmap = "admin.png";
+		pixmap = "ox-admin.png";
 	else if(player->role() == Player::Host)
 		pixmap = "host.png";
 	else if(player->role() == Player::Registered)
-		pixmap = "registered.png";
+		pixmap = "player.png";
 	else if(player->role() == Player::Bot)
 		pixmap = "bot.png";
 
