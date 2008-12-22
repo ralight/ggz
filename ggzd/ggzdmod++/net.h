@@ -20,7 +20,9 @@
 #ifndef GGZDMODPP_NET_H
 #define GGZDMODPP_NET_H
 
-#if defined __GNUC__ && (__GNUC__ >= 3)
+#if defined __GNUC__ && (__GNUC__ * 100 + __GNUC_MINOR__ >= 403)
+#include <tr1/unordered_map>
+#elif defined __GNUC__ && (__GNUC__ >= 3)
 #include <ext/hash_map>
 #else
 #include <hash_map>
@@ -88,7 +90,9 @@ class Net
 		int m_fd;
 		int waitforchannel;
 		int buffered;
-#if defined __GNUC__ && (__GNUC__ >= 3)
+#if defined __GNUC__ && (__GNUC__ * 100 + __GNUC_MINOR__ >= 403)
+		std::tr1::unordered_map<int, Queue> queues;
+#elif defined __GNUC__ && (__GNUC__ >= 3)
 		__gnu_cxx::hash_map<int, Queue> queues;
 #else
 		hash_map<int, Queue> queues;
