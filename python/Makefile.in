@@ -96,7 +96,7 @@ ancillary-build:
 
 ggzchess-build:
 	@echo Building library PyGGZChess
-	cd chess && make
+	cd chess && $(MAKE)
 	cd pyggzchess && python setup.py build
 
 clean:
@@ -131,11 +131,11 @@ ggzchess-install:
 
 po-build:
 	@echo Building internationalization files
-	cd po && make all-local
+	cd po && $(MAKE) all-local
 
 po-install:
 	@echo Installing internationalization files
-	cd po && make install prefix=$(DESTDIR)$(prefix)
+	cd po && $(MAKE) install prefix=$(DESTDIR)$(prefix)
 
 man-install:
 	@echo Installing manual pages
