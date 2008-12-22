@@ -196,10 +196,10 @@ static PyMethodDef pyrsvgsdl_methods[] =
 
 static PyMethodDef pyrsvgsdl_surface_methods[] =
 {
-	{"data", pyrsvgsdl_surface_data, METH_VARARGS},
-	{"width", pyrsvgsdl_surface_width, METH_VARARGS},
-	{"height", pyrsvgsdl_surface_height, METH_VARARGS},
-	{"qtconversion", pyrsvgsdl_surface_qtconversion, METH_VARARGS},
+	{"data", (PyCFunction)pyrsvgsdl_surface_data, METH_VARARGS},
+	{"width", (PyCFunction)pyrsvgsdl_surface_width, METH_VARARGS},
+	{"height", (PyCFunction)pyrsvgsdl_surface_height, METH_VARARGS},
+	{"qtconversion", (PyCFunction)pyrsvgsdl_surface_qtconversion, METH_VARARGS},
 	{NULL, NULL, 0}
 };
 
