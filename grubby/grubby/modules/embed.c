@@ -18,6 +18,12 @@
 #include "config.h"
 
 #ifdef EMBED_RUBY
+/* FIXME: ruby's config.h shouldn't declare those */
+#undef PACKAGE_NAME
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+#undef PACKAGE_STRING
+#undef PACKAGE_BUGREPORT
 #include <ruby.h>
 #endif
 #ifdef EMBED_PERL
@@ -262,7 +268,7 @@ Guru *gurumod_exec(Guru *message)
 
 				Tcl_EvalFile(inter, script);
 
-				message->message = Tcl_GetVar(inter, "answer", 0);
+				message->message = strdup(Tcl_GetVar(inter, "answer", 0));
 				return message;
 			}
 #endif
