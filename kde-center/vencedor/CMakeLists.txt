@@ -2,7 +2,6 @@ project(vencedor)
 
 set(vencedor_SRCS
 	vencedor.cpp
-	prefs.cpp
 	main.cpp
 )
 
