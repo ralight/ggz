@@ -57,6 +57,10 @@ FUNC_MKDIR_TAKES_ONE_ARG
 # =============================
 AC_GGZ_PTHREADS
 
+# Garbage collection
+# ==================
+AC_GGZ_GC
+
 # Encryption: TLS library and gcrypt
 # ==================================
 AC_GGZ_GCRYPT
@@ -123,6 +127,7 @@ echo "    Threading support..$enable_threading"
 if test "$enable_threading" = yes; then
 	echo "      GAI asynchronous resolver: $enable_anl"
 fi
+echo "    Garbage collection.$enable_gc"
 echo ""
 echo "-------------------------"
 echo "At the prompt type \"make\" to compile the GGZ base libraries."
@@ -142,4 +147,11 @@ if test "$enable_visibility" = yes; then
 	echo "*** WARNING ***"
 	echo "You have enabled symbol visibility restrictions."
 	echo "This feature hasn't been tested much yet."
+fi
+
+if test "$enable_gc" = yes; then
+	echo ""
+	echo "*** WARNING ***"
+	echo "You have selected garbage collection in libggz."
+	echo "This feature is experimental."
 fi

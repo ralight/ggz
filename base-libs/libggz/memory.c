@@ -29,6 +29,12 @@
 #ifndef NO_THREADING
 #include <pthread.h>
 #endif
+#ifdef WITH_GC
+#ifdef DEBUG_MEM
+#define GC_DEBUG
+#endif
+#include <gc.h>
+#endif
 
 #include "ggz.h"
 
@@ -104,6 +110,13 @@ static void * _ggz_allocate(const unsigned int size,
 
 void * _ggz_malloc(const size_t size, const char *funcname, const char *tag, int line)
 {
+#ifdef WITH_GC
+	if(!alloc) {
+		alloc = malloc(1);
+		GC_init();
+	}
+	return GC_malloc(size);
+#else
 	void *new;
 
 	/* Sanity checks */
@@ -122,12 +135,16 @@ void * _ggz_malloc(const size_t size, const char *funcname, const char *tag, int
 	memset(new, 0, size);
 
 	return new;
+#endif
 }
 
 
 void * _ggz_realloc(const void *ptr, const size_t size,
                     const char *funcname, const char *tag, int line)
 {
+#ifdef WITH_GC
+	return GC_realloc((void*)ptr, size);
+#else
 	struct _memptr *targetmem;
 	void *new;
 
@@ -179,11 +196,16 @@ void * _ggz_realloc(const void *ptr, const size_t size,
 	_ggz_free(targetmem->ptr, funcname, tag, line);
 
 	return new;
+#endif
 }
 
 
 int _ggz_free(const void *ptr, const char *funcname, const char *tag, int line)
 {
+#ifdef WITH_GC
+	/* This is garbage-collected, so no need to call GC_free() */
+	return 0;
+#else
 	struct _memptr *prev, *targetmem;
 	unsigned int oldsize;
 
@@ -222,6 +244,7 @@ int _ggz_free(const void *ptr, const char *funcname, const char *tag, int line)
 	free(targetmem); /* should be the only "free" call */
 
 	return 0;
+#endif
 }
 
 
