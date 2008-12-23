@@ -99,6 +99,10 @@ static void found_thread(sigval_t arg)
 
 		/*free(arg.sival_ptr);*/
 	}
+	else
+	{
+		printf("Error: no results delivered\n");
+	}
 }
 #endif
 
