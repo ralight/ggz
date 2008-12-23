@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 10630 2008-12-23 18:12:00Z josef $
+ * $Id: main.c 10636 2008-12-23 20:35:49Z josef $
  *
  * Main program code for ggz-cmd program.
  *
@@ -255,11 +255,17 @@ static GGZHookReturn server_failure(GGZServerEvent id,
 				    const void *event_data,
 				    const void *user_data)
 {
-	const GGZErrorEventData *msg = event_data;
+	const char *message = NULL;
+	if (id != GGZ_CONNECT_FAIL) {
+		const GGZErrorEventData *msg = event_data;
+		message = msg->message;
+	} else {
+		message = event_data;
+	}
 
 	ggz_debug(DBG_MAIN, "GGZ failure: event %d.", id);
 	fprintf(errorstream(stderr),
-		"ggz-cmd: Could not connect to server: %s\n", msg->message);
+		"ggz-cmd: Could not connect to server: %s\n", message);
 	exit(exitcode(STATUS_CRITICAL));
 }
 
