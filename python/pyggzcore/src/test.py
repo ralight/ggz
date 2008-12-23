@@ -67,7 +67,7 @@ s = ggzcoresimple.server
 print "** server is", s
 print "** server dict is", inspect.getmembers(s)
 
-s.set_hostinfo("localhost", 5688, 1)
+s.set_hostinfo("localhost", 5688, ggzcoresimple.CONNECTION_SECURE_OPTIONAL)
 s.set_logininfo(ggzcoresimple.LOGIN_GUEST, "player", "")
 s.connect()
 

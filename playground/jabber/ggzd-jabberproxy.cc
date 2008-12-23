@@ -442,7 +442,7 @@ static void *ggzthread(void *arg)
 	}
 
 	// FIXME: jid might not always be valid as GGZ username
-	ggzcore_server_set_hostinfo(server, info->server.c_str(), 5688, 0);
+	ggzcore_server_set_hostinfo(server, info->server.c_str(), 5688, GGZ_CONNECTION_SECURE_OPTIONAL);
 	ggzcore_server_set_logininfo(server, mode, info->jid.c_str(), info->password.c_str(), NULL);
 
 	int success = ggzcore_server_connect(server);

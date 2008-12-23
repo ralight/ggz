@@ -96,10 +96,16 @@ void server_init(char *host, int port, GGZLoginType type, char *login,
 		 char *password, int usetls, char *email)
 {
 	char *sessiondump;
+	GGZConnectionPolicy policy;
+
+	if (usetls)
+		policy = GGZ_CONNECTION_SECURE_REQUIRED;
+	else
+		policy = GGZ_CONNECTION_SECURE_OPTIONAL;
 
 	output_debug("connection info: host=%s port=%i tls=%i", host, port, usetls);
 	server = ggzcore_server_new();
-	ggzcore_server_set_hostinfo(server, host, port, usetls);
+	ggzcore_server_set_hostinfo(server, host, port, policy);
 	ggzcore_server_set_logininfo(server, type, login, password, email);
 	server_register(server);
 	sessiondump =

@@ -100,7 +100,7 @@ struct _GGZNet {
 	FILE *dump_file;
 
 	/* Whether to use TLS or not */
-	int use_tls;
+	GGZConnectionPolicy policy;
 };
 
 /* Game data structure */
@@ -250,7 +250,7 @@ GGZNet *_ggzcore_net_new(void)
 	/* Set fd to invalid value */
 	net->fd = -1;
 	net->dump_file = NULL;
-	net->use_tls = -1;
+	net->policy = GGZ_CONNECTION_CLEAR;
 
 	return net;
 }
@@ -258,13 +258,13 @@ GGZNet *_ggzcore_net_new(void)
 
 void _ggzcore_net_init(GGZNet * net, GGZServer * server,
 		       const char *host, unsigned int port,
-		       unsigned int use_tls)
+		       GGZConnectionPolicy policy)
 {
 	net->server = server;
 	net->host = ggz_strdup(host);
 	net->port = port;
 	net->fd = -1;
-	net->use_tls = use_tls;
+	net->policy = policy;
 
 	/* Init parser */
 	if (!(net->parser = XML_ParserCreate("UTF-8")))
@@ -319,9 +319,9 @@ int _ggzcore_net_get_fd(GGZNet * net)
 }
 
 
-int _ggzcore_net_get_tls(GGZNet * net)
+GGZConnectionPolicy _ggzcore_net_get_policy(GGZNet * net)
 {
-	return net->use_tls;
+	return net->policy;
 }
 
 
@@ -1155,10 +1155,14 @@ void _ggzcore_net_handle_server(GGZNet * net, GGZXMLElement * element)
 		_ggzcore_net_send_header(net);
 
 		/* If TLS is enabled set it up */
-		if (tls && !strcmp(tls, "yes")
-		    && _ggzcore_net_get_tls(net) == 1
-		    && ggz_tls_support_query())
-			_ggzcore_net_negotiate_tls(net);
+		if (tls && !strcmp(tls, "yes")) {
+			if (_ggzcore_net_get_policy(net) != GGZ_CONNECTION_CLEAR) {
+		    		if (ggz_tls_support_query())
+					_ggzcore_net_negotiate_tls(net);
+				else if(_ggzcore_net_get_policy(net) == GGZ_CONNECTION_SECURE_REQUIRED)
+					_ggzcore_net_error(net, _("Secure connections not enabled."));
+			}
+		}
 
 		_ggzcore_server_set_negotiate_status(net->server, net, E_OK);
 	} else
@@ -2597,13 +2601,13 @@ static void _ggzcore_net_negotiate_tls(GGZNet * net)
 	int ret;
 
 	_ggzcore_net_send_line(net, "<TLS_START/>");
-	/* This should return a status one day to tell client if */
-	/* the handshake failed for some reason */
-	ret =
-	    ggz_tls_enable_fd(net->fd, GGZ_TLS_CLIENT,
-			      GGZ_TLS_VERIFY_NONE);
-	if (!ret)
-		net->use_tls = 0;
+
+	ret = ggz_tls_enable_fd(net->fd, GGZ_TLS_CLIENT, GGZ_TLS_VERIFY_NONE);
+	if (!ret) {
+		if (net->policy == GGZ_CONNECTION_SECURE_REQUIRED) {
+			_ggzcore_net_error(net, _("Secure connection could not be established."));
+		}
+	}
 }
 
 

@@ -91,9 +91,9 @@ void CoreClientBase::init(bool embedded)
 	ggzcore_server_add_event_hook_full(m_server, GGZ_SERVER_ROOMS_CHANGED, &CoreClientBase::cb_server, this);
 }
 
-void CoreClientBase::setConnectionInfo(const char *host, int port, const char *username, const char *password, const char *email, GGZLoginType mode, int tls)
+void CoreClientBase::setConnectionInfo(const char *host, int port, const char *username, const char *password, const char *email, GGZLoginType mode, GGZConnectionPolicy policy)
 {
-	ggzcore_server_set_hostinfo(m_server, host, port, tls);
+	ggzcore_server_set_hostinfo(m_server, host, port, policy);
 	ggzcore_server_set_logininfo(m_server, mode, username, password, email);
 }
 

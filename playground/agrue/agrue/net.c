@@ -88,7 +88,7 @@ void net_connect(const char *host, int port, Agrue *agrue)
 		ggzcore_server_add_event_hook_full(server, GGZ_LOGOUT, net_hook_logout, agrue);
 	}
 
-	ggzcore_server_set_hostinfo(server, host, port, 0);
+	ggzcore_server_set_hostinfo(server, host, port, GGZ_CONNECTION_SECURE_OPTIONAL);
 	ggzcore_server_connect(server);
 }
 

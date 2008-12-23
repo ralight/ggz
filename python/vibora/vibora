@@ -507,7 +507,7 @@ def ggz_progress(uri):
 	ggzcoresimple.setHandler(ggzcoresimple.EVENT_ROOM, ggz_room_event)
 	ggzcoresimple.setHandler(ggzcoresimple.EVENT_GAME, ggz_game_event)
 
-	ggzcoresimple.server.set_hostinfo(uri.host, uri.port, 1)
+	ggzcoresimple.server.set_hostinfo(uri.host, uri.port, ggzcoresimple.CONNECTION_SECURE_OPTIONAL)
 	if uri.password:
 		ggzcoresimple.server.set_logininfo(ggzcoresimple.LOGIN, uri.username, uri.password)
 	else:

@@ -615,6 +615,19 @@ typedef enum {
 	GGZ_ENVIRONMENT_XFULLSCREEN /**< X11 fullscreen mode */
 } GGZModuleEnvironment;
 
+/** @brief The connection security policy.
+ *
+ *  Regulates the encryption of the GGZ protocol. Core clients need to
+ *  be prepared to either fall back to plain text or to notify the user
+ *  if encryption is not available. Usually one should use
+ *  \ref GGZ_CONNECTION_SECURE_OPTIONAL by default.
+ */
+typedef enum {
+	GGZ_CONNECTION_CLEAR,
+	GGZ_CONNECTION_SECURE_OPTIONAL,
+	GGZ_CONNECTION_SECURE_REQUIRED
+} GGZConnectionPolicy;
+
 /* Server object related functions */
 /* ------------------------------- */
 
@@ -701,7 +714,7 @@ int ggzcore_server_remove_event_hook_id(GGZServer *server,
  *  @param server The GGZ server object.
  *  @param host A string containing the hostname.
  *  @param port The port to connect to.
- *  @param use_tls If set, the connection will be encrypted.
+ *  @param policy The connection's encryption policy.
  *  @return 0 on success, -1 on error.
  *  @note Should never fail when given valid input.
  *  @see ggzcore_server_connect
@@ -709,7 +722,7 @@ int ggzcore_server_remove_event_hook_id(GGZServer *server,
 int ggzcore_server_set_hostinfo(GGZServer *server,
 				const char *host,
 				const unsigned int port,
-				const unsigned int use_tls);
+				const GGZConnectionPolicy policy);
 
 /** @brief Set login info for logging in to the server.
  *

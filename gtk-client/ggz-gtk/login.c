@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 10587 2008-11-01 00:50:24Z jdorje $
+ * $Id: login.c 10630 2008-12-23 18:12:00Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -390,7 +390,8 @@ static void login_start_session(void)
 	/* Create new server object and set connection/login info */
 	assert(ggz_gtk.server == NULL);
 	ggz_gtk.server = ggzcore_server_new();
-	ggzcore_server_set_hostinfo(ggz_gtk.server, host, port, 0);
+	ggzcore_server_set_hostinfo(ggz_gtk.server, host, port,
+				    GGZ_CONNECTION_SECURE_OPTIONAL);
 	ggzcore_server_set_logininfo(ggz_gtk.server, type,
 				     username, password, email);
 

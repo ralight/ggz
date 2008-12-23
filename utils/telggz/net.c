@@ -49,7 +49,7 @@ void net_login(const char *username, const char *password)
 
 	if(!host) host = "localhost";
 	if(!port) port = 5688;
-	ggzcore_server_set_hostinfo(server, host, port, 0);
+	ggzcore_server_set_hostinfo(server, host, port, GGZ_CONNECTION_SECURE_OPTIONAL);
 	printf("Logging in as %s...\n", m_username);
 	ggzcore_server_connect(server);
 }

@@ -92,18 +92,18 @@ void CoreClient::setMode(LoginType mode)
 
 void CoreClient::initiateLogin()
 {
-	int tls;
+	GGZConnectionPolicy policy;
 	GGZLoginType mode = GGZ_LOGIN_GUEST;
 
-	if(m_tls) tls = 1;
-	else tls = 0;
+	if(m_tls) policy = GGZ_CONNECTION_SECURE_REQUIRED;
+	else policy = GGZ_CONNECTION_SECURE_OPTIONAL;
 
 	if(m_mode == guest) mode = GGZ_LOGIN_GUEST;
 	else if(m_mode == normal) mode = GGZ_LOGIN;
 	else if(m_mode == firsttime) mode = GGZ_LOGIN_NEW;
 
 	m_base->setConnectionInfo(m_host.toUtf8().data(), m_port, m_username.toUtf8().data(),
-		m_password.toUtf8().data(), m_email.toUtf8().data(), mode, tls);
+		m_password.toUtf8().data(), m_email.toUtf8().data(), mode, policy);
 	m_base->startConnection();
 }
 

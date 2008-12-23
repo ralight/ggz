@@ -1036,6 +1036,10 @@ void initggzcoresimple(void)
 	PyModule_AddIntConstant(core, "ENVIRONMENT_XWINDOW", GGZ_ENVIRONMENT_XWINDOW);
 	PyModule_AddIntConstant(core, "ENVIRONMENT_XFULLSCREEN", GGZ_ENVIRONMENT_XFULLSCREEN);
 
+	PyModule_AddIntConstant(core, "CONNECTION_CLEAR", GGZ_CONNECTION_CLEAR);
+	PyModule_AddIntConstant(core, "CONNECTION_SECURE_OPTIONAL", GGZ_CONNECTION_SECURE_OPTIONAL);
+	PyModule_AddIntConstant(core, "CONNECTION_SECURE_REQUIRED", GGZ_CONNECTION_SECURE_REQUIRED);
+
 	coreserver = pyggzcoresimple_new_server(NULL, NULL);
 	coreroom = Py_None;
 	coregame = Py_None;

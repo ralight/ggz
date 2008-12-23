@@ -239,12 +239,12 @@ void ggzcore_server_free(GGZServer * server)
 
 int ggzcore_server_set_hostinfo(GGZServer * server, const char *host,
 				const unsigned int port,
-				const unsigned int use_tls)
+				const GGZConnectionPolicy policy)
 {
 	/* Check for valid arguments */
 	if (server && host && server->state == GGZ_STATE_OFFLINE) {
 		_ggzcore_net_init(server->net, server, host, port,
-				  use_tls);
+				  policy);
 		return 0;
 	} else
 		return -1;
@@ -690,14 +690,14 @@ GGZStateID _ggzcore_server_get_state(const GGZServer * server)
 }
 
 
-int _ggzcore_server_get_tls(const GGZServer * server)
+GGZConnectionPolicy _ggzcore_server_get_policy(const GGZServer * server)
 {
-	int tls;
+	GGZConnectionPolicy policy;
 
-	tls = 0;
+	policy = GGZ_CONNECTION_SECURE_OPTIONAL;
 	if (server && server->net)
-		tls = _ggzcore_net_get_tls(server->net);
-	return tls;
+		policy = _ggzcore_net_get_policy(server->net);
+	return policy;
 }
 
 
@@ -1595,15 +1595,16 @@ void _ggzcore_server_change_state(GGZServer * server, GGZTransID trans)
 #ifdef SUPPORT_RECONNECT
 		if (reconnect_policy) {
 			char *host;
-			int port, use_tls;
+			int port;
+			GGZConnectionPolicy policy;
 
 			reconnect_server = server;
 			host = ggz_strdup(_ggzcore_net_get_host(server->net));
 			port = _ggzcore_net_get_port(server->net);
-			use_tls = _ggzcore_net_get_tls(server->net);
+			policy = _ggzcore_net_get_policy(server->net);
 			_ggzcore_net_free(server->net);
 			server->net = _ggzcore_net_new();
-			_ggzcore_net_init(server->net, server, host, port, use_tls);
+			_ggzcore_net_init(server->net, server, host, port, policy);
 			ggz_free(host);
 
 			_ggzcore_server_clear_reconnect(server);

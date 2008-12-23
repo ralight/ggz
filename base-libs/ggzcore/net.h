@@ -35,7 +35,8 @@ GGZNet *_ggzcore_net_new(void);
 void _ggzcore_net_init(GGZNet * net,
 		       GGZServer * server,
 		       const char *host,
-		       unsigned int port, unsigned int use_tls);
+		       unsigned int port,
+		       GGZConnectionPolicy policy);
 
 int _ggzcore_net_set_dump_file(GGZNet * net, const char *filename);
 void _ggzcore_net_set_fd(GGZNet * net, int fd);
@@ -45,7 +46,7 @@ void _ggzcore_net_free(GGZNet * net);
 const char *_ggzcore_net_get_host(GGZNet * net);
 unsigned int _ggzcore_net_get_port(GGZNet * net);
 int _ggzcore_net_get_fd(GGZNet * net);
-int _ggzcore_net_get_tls(GGZNet * net);
+GGZConnectionPolicy _ggzcore_net_get_policy(GGZNet * net);
 
 int _ggzcore_net_connect(GGZNet * net);
 

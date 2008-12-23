@@ -42,7 +42,7 @@ class KGGZCORE_EXPORT CoreClientBase : public QObject
 		CoreClientBase(QObject *parent = NULL, bool embedded = false);
 		~CoreClientBase();
 
-		void setConnectionInfo(const char *host, int port, const char *username, const char *password, const char *email, GGZLoginType mode, int tls);
+		void setConnectionInfo(const char *host, int port, const char *username, const char *password, const char *email, GGZLoginType mode, GGZConnectionPolicy policy);
 		void startConnection();
 		void switchRoom(const char *name);
 

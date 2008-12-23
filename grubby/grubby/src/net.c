@@ -178,7 +178,7 @@ void net_connect(const char *host, int port, const char *name, const char *passw
 	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_CONNECTED, net_hook_channel);
 	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_READY, net_hook_ready);
 
-	ggzcore_server_set_hostinfo(server, host, port, 0);
+	ggzcore_server_set_hostinfo(server, host, port, GGZ_CONNECTION_SECURE_OPTIONAL);
 	ggzcore_server_connect(server);
 }
 
