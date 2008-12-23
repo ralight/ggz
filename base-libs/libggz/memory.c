@@ -36,9 +36,9 @@
 #endif
 #ifndef NO_THREADING
 #define GC_THREADS
-#define GC_REDIRECT_TO_LOCAL
 /* Only for gc >= 7.0 */
 /*#include <gc.h>*/
+#define GC_REDIRECT_TO_LOCAL
 #include <gc_local_alloc.h>
 #else
 #include <gc.h>

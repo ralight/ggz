@@ -2,7 +2,7 @@ SUBDIRS = security
 
 if INSTALL_LIBGGZ
 lib_LTLIBRARIES = libggz.la
-include_HEADERS = ggz.h ggz_common.h ggz_dio.h
+include_HEADERS = ggz.h ggz_common.h ggz_dio.h ggz_threads.h
 else
 noinst_LTLIBRARIES = libggz.la
 endif
