@@ -47,6 +47,7 @@ const char *_ggzcore_net_get_host(GGZNet * net);
 unsigned int _ggzcore_net_get_port(GGZNet * net);
 int _ggzcore_net_get_fd(GGZNet * net);
 GGZConnectionPolicy _ggzcore_net_get_policy(GGZNet * net);
+int _ggzcore_net_get_tls(GGZNet * net);
 
 int _ggzcore_net_connect(GGZNet * net);
 

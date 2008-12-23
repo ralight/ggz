@@ -701,6 +701,17 @@ GGZConnectionPolicy _ggzcore_server_get_policy(const GGZServer * server)
 }
 
 
+int _ggzcore_server_get_tls(const GGZServer * server)
+{
+	int tls;
+
+	tls = 0;
+	if (server && server->net)
+		tls = _ggzcore_net_get_tls(server->net);
+	return tls;
+}
+
+
 int _ggzcore_server_get_num_players(const GGZServer * server)
 {
 	int rooms = ggzcore_server_get_num_rooms(server), i, total = 0;

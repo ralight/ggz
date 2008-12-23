@@ -101,6 +101,9 @@ struct _GGZNet {
 
 	/* Whether to use TLS or not */
 	GGZConnectionPolicy policy;
+
+	/* Whether TLS is currently active */
+	int tls_active;
 };
 
 /* Game data structure */
@@ -250,6 +253,7 @@ GGZNet *_ggzcore_net_new(void)
 	/* Set fd to invalid value */
 	net->fd = -1;
 	net->dump_file = NULL;
+	net->tls_active = 0;
 	net->policy = GGZ_CONNECTION_CLEAR;
 
 	return net;
@@ -322,6 +326,12 @@ int _ggzcore_net_get_fd(GGZNet * net)
 GGZConnectionPolicy _ggzcore_net_get_policy(GGZNet * net)
 {
 	return net->policy;
+}
+
+
+int _ggzcore_net_get_tls(GGZNet * net)
+{
+	return net->tls_active;
 }
 
 
@@ -2607,6 +2617,9 @@ static void _ggzcore_net_negotiate_tls(GGZNet * net)
 		if (net->policy == GGZ_CONNECTION_SECURE_REQUIRED) {
 			_ggzcore_net_error(net, _("Secure connection could not be established."));
 		}
+	} else {
+		net->tls_active = 1;
+		/* FIXME: we could have tls_is_active in libggz in addition to tls_support_query */
 	}
 }
 
