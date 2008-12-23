@@ -1172,6 +1172,9 @@ void _ggzcore_net_handle_server(GGZNet * net, GGZXMLElement * element)
 				else if(_ggzcore_net_get_policy(net) == GGZ_CONNECTION_SECURE_REQUIRED)
 					_ggzcore_net_error(net, _("Secure connections not enabled."));
 			}
+		} else {
+			if(_ggzcore_net_get_policy(net) == GGZ_CONNECTION_SECURE_REQUIRED)
+				_ggzcore_net_error(net, _("Secure connections not offered by server."));
 		}
 
 		_ggzcore_server_set_negotiate_status(net->server, net, E_OK);
