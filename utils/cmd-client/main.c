@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 10636 2008-12-23 20:35:49Z josef $
+ * $Id: main.c 10637 2008-12-23 20:46:30Z josef $
  *
  * Main program code for ggz-cmd program.
  *
@@ -69,6 +69,7 @@ typedef enum {
 typedef struct {
 	char *host;
 	int port;
+	int tls;
 
 	GGZLoginType login_type;
 	char *login;
@@ -108,7 +109,7 @@ static FILE *errorstream(FILE *stream)
 static void print_help(char *exec_name)
 {
 	fprintf(stderr,
-		"Usage: %s [<host>[:<port>] <login> <passwd>] <command> "
+		"Usage: %s [<host>[:<port>][:tls] <login> <passwd>] <command> "
 		"[<command opts> ...]\n",
 		exec_name);
 	fprintf(stderr,
@@ -190,12 +191,18 @@ static int parse_arguments(int argc, char **argv, GGZCommand * cmd)
 	/* argv[0] -> command name. */
 
 	cmd->host = argv[1];
-	
+	cmd->tls = 0;
+
 	port_num = strchr(cmd->host, ':');
 	if (port_num) {
 		*port_num = '\0';
 		port_num++;
-		sscanf(port_num, "%d", &cmd->port);
+		if (!strcmp(port_num, "tls")) {
+			cmd->port = 5688;
+			cmd->tls = 1;
+		} else {
+			sscanf(port_num, "%d", &cmd->port);
+		}
 	} else
 		cmd->port = 5688;
 
@@ -203,6 +210,10 @@ static int parse_arguments(int argc, char **argv, GGZCommand * cmd)
 	cmd->login_type = GGZ_LOGIN;
 	cmd->login = argv[2];
 	cmd->passwd = argv[3];
+
+	if(!strcmp(cmd->passwd, "")) {
+		cmd->login_type = GGZ_LOGIN_GUEST;
+	}
 
 	cmd_name = argv[4];
 	if (!strcasecmp(cmd_name, GGZ_CMD_ANNOUNCE_CMD)) {
@@ -218,9 +229,6 @@ static int parse_arguments(int argc, char **argv, GGZCommand * cmd)
 	} else if (!strcasecmp(cmd_name, GGZ_CMD_CHECKNAGIOS_CMD)){
 		cmd->command = GGZ_CMD_CHECKNAGIOS;
 		cmd->data = NULL;
-		if(!strcmp(cmd->passwd, "")) {
-			cmd->login_type = GGZ_LOGIN_GUEST;
-		}
 		nagiosexit = 1;
 	} else {
 		print_help(argv[0]);
@@ -309,9 +317,16 @@ static GGZHookReturn server_room_entered(GGZServerEvent id,
 
 static void exec_command(GGZCommand * cmd)
 {
+	GGZConnectionPolicy policy;
+
+	if (cmd->tls)
+		policy = GGZ_CONNECTION_SECURE_REQUIRED;
+	else
+		policy = GGZ_CONNECTION_SECURE_OPTIONAL;
+
 	server = ggzcore_server_new();
 	ggzcore_server_set_hostinfo(server, cmd->host, cmd->port,
-				    GGZ_CONNECTION_SECURE_OPTIONAL);
+				    policy);
 	ggzcore_server_set_logininfo(server, cmd->login_type,
 				     cmd->login, cmd->passwd, NULL);
 
