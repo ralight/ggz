@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-12 16:13+0100\n"
+"POT-Creation-Date: 2008-12-23 17:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,144 +16,150 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../ggz-txt/input.c:139
+#: ../ggz-txt/input.c:135
 #, c-format
 msgid "--- Client version: %s"
 msgstr ""
 
-#: ../ggz-txt/input.c:142
+#: ../ggz-txt/input.c:138
 #, c-format
 msgid "--- Unknown command, try %chelp."
 msgstr ""
 
-#: ../ggz-txt/input.c:262 ../ggz-txt/input.c:368 ../ggz-txt/input.c:411
-#: ../ggz-txt/input.c:457 ../ggz-txt/input.c:634
+#: ../ggz-txt/input.c:255
+#, c-format
+msgid "Registering new login %s..."
+msgstr ""
+
+#: ../ggz-txt/input.c:269 ../ggz-txt/input.c:386 ../ggz-txt/input.c:429
+#: ../ggz-txt/input.c:475 ../ggz-txt/input.c:658
 msgid "You must connect to a server first."
 msgstr ""
 
-#: ../ggz-txt/input.c:316
+#: ../ggz-txt/input.c:304 ../ggz-txt/input.c:319 ../ggz-txt/input.c:433
+#: ../ggz-txt/input.c:479
+msgid "You must join a room first."
+msgstr ""
+
+#: ../ggz-txt/input.c:333
 msgid "List what?"
 msgstr ""
 
-#: ../ggz-txt/input.c:326 ../ggz-txt/input.c:338
+#: ../ggz-txt/input.c:343 ../ggz-txt/input.c:355
 msgid "Join what?"
 msgstr ""
 
-#: ../ggz-txt/input.c:330
+#: ../ggz-txt/input.c:347
 #, c-format
 msgid "Joining a %s"
 msgstr ""
 
-#: ../ggz-txt/input.c:379
+#: ../ggz-txt/input.c:397
 #, c-format
 msgid "Room %s does not exist."
 msgstr ""
 
-#: ../ggz-txt/input.c:382
+#: ../ggz-txt/input.c:400
 msgid "Join which room?"
 msgstr ""
 
-#: ../ggz-txt/input.c:397
+#: ../ggz-txt/input.c:415
 msgid "Describe which room?"
 msgstr ""
 
-#: ../ggz-txt/input.c:415 ../ggz-txt/input.c:461
-msgid "You must join a room first."
-msgstr ""
-
-#: ../ggz-txt/input.c:449
+#: ../ggz-txt/input.c:467
 msgid "Error: Missing player name."
 msgstr ""
 
-#: ../ggz-txt/input.c:450 ../ggz-txt/input.c:471
+#: ../ggz-txt/input.c:468 ../ggz-txt/input.c:489
 msgid "Syntax: /msg <player> <msg>"
 msgstr ""
 
-#: ../ggz-txt/input.c:470
+#: ../ggz-txt/input.c:488
 msgid "Error: Missing message."
 msgstr ""
 
-#: ../ggz-txt/input.c:481
+#: ../ggz-txt/input.c:499
 msgid "Send message to which table?"
 msgstr ""
 
-#: ../ggz-txt/input.c:514
+#: ../ggz-txt/input.c:533
 msgid "You must be in a room to launch a game."
 msgstr ""
 
-#: ../ggz-txt/input.c:520
+#: ../ggz-txt/input.c:539
 msgid "No game types defined for this room. Maybe try 'list types'?"
-msgstr ""
-
-#: ../ggz-txt/input.c:528
-#, c-format
-msgid "Launching game of %s, (%s-%s)"
-msgstr ""
-
-#: ../ggz-txt/input.c:541
-#, c-format
-msgid "No suitable game modules (out of %i) defined for that game."
-msgstr ""
-
-#: ../ggz-txt/input.c:542
-#, c-format
-msgid "Download one from %s."
 msgstr ""
 
 #: ../ggz-txt/input.c:547
 #, c-format
+msgid "Launching game of %s, (%s-%s)"
+msgstr ""
+
+#: ../ggz-txt/input.c:563
+#, c-format
+msgid "No suitable game modules (out of %i) defined for that game."
+msgstr ""
+
+#: ../ggz-txt/input.c:564
+#, c-format
+msgid "Download one from %s."
+msgstr ""
+
+#: ../ggz-txt/input.c:569
+#, c-format
 msgid "Found %i game modules, using frontend '%s'."
 msgstr ""
 
-#: ../ggz-txt/input.c:586
+#: ../ggz-txt/input.c:608
 msgid "Join which table?"
 msgstr ""
 
-#: ../ggz-txt/input.c:600
+#: ../ggz-txt/input.c:624
 msgid "That table doesn't exist! Maybe try '/list tables'?"
 msgstr ""
 
-#: ../ggz-txt/input.c:663
+#: ../ggz-txt/input.c:687
 msgid "Kicking a player requires a reason."
 msgstr ""
 
-#: ../ggz-txt/input.c:667
+#: ../ggz-txt/input.c:691
 msgid "Unknown admin command."
 msgstr ""
 
-#: ../ggz-txt/main.c:141
+#: ../ggz-txt/main.c:133
 #, c-format
 msgid "The GGZ Gaming Zone Text Client\n"
 msgstr ""
 
-#: ../ggz-txt/main.c:142
+#: ../ggz-txt/main.c:134
 #, c-format
 msgid ""
 "http://www.ggzgamingzone.org/clients/console/\n"
 "\n"
 msgstr ""
 
-#: ../ggz-txt/main.c:143
+#: ../ggz-txt/main.c:135
 #, c-format
 msgid "Call: ggz-txt [options] [uri]:\n"
 msgstr ""
 
-#: ../ggz-txt/main.c:144
+#: ../ggz-txt/main.c:136
 #, c-format
 msgid "-r / --reverse: Use reverse colours\n"
 msgstr ""
 
-#: ../ggz-txt/main.c:145
+#: ../ggz-txt/main.c:137
 #, c-format
 msgid "-h / --help: Display this help\n"
 msgstr ""
 
-#: ../ggz-txt/main.c:146
+#: ../ggz-txt/main.c:138
 #, c-format
 msgid "-v / --version: Display version information\n"
 msgstr ""
 
-#: ../ggz-txt/main.c:240
+#: ../ggz-txt/main.c:224
 #, c-format
 msgid "Startup command: %s"
 msgstr ""
@@ -171,11 +177,12 @@ msgid "---"
 msgstr ""
 
 #: ../ggz-txt/output.c:112
-msgid "--- /connect [<server>[:<port>][:tls]] [<nick>] [<password>]"
+msgid "--- /connect [<server>[:<port>][:tls]] [<nick>] [<password>] [<email>]"
 msgstr ""
 
 #: ../ggz-txt/output.c:113
-msgid "---    Connect to a GGZ server and log in"
+msgid ""
+"---    Connect to a GGZ server and log in, or register with email address"
 msgstr ""
 
 #: ../ggz-txt/output.c:114
@@ -273,209 +280,214 @@ msgid "--Written by Brent Hendricks & Justin Zaun (C) 2000"
 msgstr ""
 
 #: ../ggz-txt/output.c:139
-msgid "--Maintained by the GGZ Gaming Zone developers (C) 2001 - 2005"
+msgid "--Maintained by the GGZ Gaming Zone developers (C) 2001 - 2008"
 msgstr ""
 
 #: ../ggz-txt/output.c:140
 msgid "--Type /help to see a list of possible commands."
 msgstr ""
 
-#: ../ggz-txt/output.c:260
+#: ../ggz-txt/output.c:277
 #, c-format
 msgid "%s--- You've been beeped by %s."
 msgstr ""
 
-#: ../ggz-txt/output.c:297
+#: ../ggz-txt/output.c:316
 #, c-format
 msgid "-- Room %d : %s (%s) (Players: %d)"
 msgstr ""
 
-#: ../ggz-txt/output.c:302
+#: ../ggz-txt/output.c:321
 #, c-format
 msgid "-- Room %d : %s (Players: %d)"
 msgstr ""
 
-#: ../ggz-txt/output.c:321
+#: ../ggz-txt/output.c:326
+#, c-format
+msgid "%i rooms on server, %i having players inside."
+msgstr ""
+
+#: ../ggz-txt/output.c:341
 #, c-format
 msgid "-- Gametype %d : %s"
 msgstr ""
 
-#: ../ggz-txt/output.c:340
+#: ../ggz-txt/output.c:360
 msgid "Players in current room"
 msgstr ""
 
-#: ../ggz-txt/output.c:346
+#: ../ggz-txt/output.c:366
 #, c-format
 msgid "-- %s %s %s"
 msgstr ""
 
-#: ../ggz-txt/output.c:348
+#: ../ggz-txt/output.c:368
 #, c-format
 msgid "at table %d"
 msgstr ""
 
-#: ../ggz-txt/output.c:349
+#: ../ggz-txt/output.c:369
 msgid "(Administrator)"
 msgstr ""
 
-#: ../ggz-txt/output.c:350
+#: ../ggz-txt/output.c:370
 msgid "(Host)"
 msgstr ""
 
-#: ../ggz-txt/output.c:351
+#: ../ggz-txt/output.c:371
 msgid "(Bot)"
 msgstr ""
 
-#: ../ggz-txt/output.c:352
+#: ../ggz-txt/output.c:372
 msgid "(Guest)"
 msgstr ""
 
-#: ../ggz-txt/output.c:370
+#: ../ggz-txt/output.c:390
 msgid "Tables in current room:"
 msgstr ""
 
-#: ../ggz-txt/output.c:377
+#: ../ggz-txt/output.c:397
 msgid "No tables"
 msgstr ""
 
-#: ../ggz-txt/output.c:411 ../ggz-txt/output.c:415
+#: ../ggz-txt/output.c:429 ../ggz-txt/output.c:432
 msgid "Username"
 msgstr ""
 
-#: ../ggz-txt/output.c:422 ../ggz-txt/output.c:428
+#: ../ggz-txt/output.c:438 ../ggz-txt/output.c:443
 msgid "Server"
 msgstr ""
 
-#: ../ggz-txt/output.c:425 ../ggz-txt/output.c:443
+#: ../ggz-txt/output.c:441 ../ggz-txt/output.c:457
 #, c-format
 msgid " (%i players)"
 msgstr ""
 
-#: ../ggz-txt/output.c:433
+#: ../ggz-txt/output.c:448
 msgid "Status"
 msgstr ""
 
-#: ../ggz-txt/output.c:439 ../ggz-txt/output.c:447
+#: ../ggz-txt/output.c:453 ../ggz-txt/output.c:459
 msgid "Room"
 msgstr ""
 
-#: ../ggz-txt/output.c:465
+#: ../ggz-txt/output.c:478
 msgid "Time"
 msgstr ""
 
-#: ../ggz-txt/output.c:557
+#: ../ggz-txt/output.c:567
 #, c-format
 msgid "Table %d : %s"
 msgstr ""
 
-#: ../ggz-txt/output.c:564
+#: ../ggz-txt/output.c:574
 #, c-format
 msgid "-- Seat %d: %s"
 msgstr ""
 
-#: ../ggz-txt/output.c:568
+#: ../ggz-txt/output.c:578
 #, c-format
 msgid "-- Seat %d: Reserved for %s"
 msgstr ""
 
-#: ../ggz-txt/output.c:572
+#: ../ggz-txt/output.c:582
 #, c-format
 msgid "-- Seat %d: -Bot-"
 msgstr ""
 
-#: ../ggz-txt/output.c:575
+#: ../ggz-txt/output.c:585
 #, c-format
 msgid "-- Seat %d: -Open-"
 msgstr ""
 
-#: ../ggz-txt/output.c:578
+#: ../ggz-txt/output.c:588
 msgid "-- Not a seat"
 msgstr ""
 
-#: ../ggz-txt/output.c:581
+#: ../ggz-txt/output.c:591
 msgid "Internal error"
 msgstr ""
 
-#: ../ggz-txt/server.c:110 ../ggz-txt/server.c:261
+#: ../ggz-txt/server.c:133 ../ggz-txt/server.c:284
 msgid "--- Disconnected"
 msgstr ""
 
-#: ../ggz-txt/server.c:137
+#: ../ggz-txt/server.c:160
 #, c-format
 msgid "--- Connected to %s."
 msgstr ""
 
-#: ../ggz-txt/server.c:155
+#: ../ggz-txt/server.c:178
 #, c-format
 msgid "--- Connection failed: %s"
 msgstr ""
 
-#: ../ggz-txt/server.c:179
+#: ../ggz-txt/server.c:202
 #, c-format
 msgid "--- Logged into %s."
 msgstr ""
 
-#: ../ggz-txt/server.c:198
+#: ../ggz-txt/server.c:221
 #, c-format
 msgid "--- Login failed: %s"
 msgstr ""
 
-#: ../ggz-txt/server.c:215
+#: ../ggz-txt/server.c:238
 #, c-format
 msgid "--- Entered room %s."
 msgstr ""
 
-#: ../ggz-txt/server.c:241
+#: ../ggz-txt/server.c:264
 #, c-format
 msgid "--- Enter failed: %s"
 msgstr ""
 
-#: ../ggz-txt/server.c:292
+#: ../ggz-txt/server.c:315
 msgid "--- Network error: disconnected"
 msgstr ""
 
-#: ../ggz-txt/server.c:305
+#: ../ggz-txt/server.c:328
 #, c-format
 msgid "--- Server error: %s disconnected"
 msgstr ""
 
-#: ../ggz-txt/server.c:318
+#: ../ggz-txt/server.c:341
 #, c-format
 msgid "--- Chat failed: %s"
 msgstr ""
 
-#: ../ggz-txt/server.c:380
+#: ../ggz-txt/server.c:403
 #, c-format
 msgid "--> %s entered the room."
 msgstr ""
 
-#: ../ggz-txt/server.c:391
+#: ../ggz-txt/server.c:414
 #, c-format
 msgid "<-- %s left the room."
 msgstr ""
 
-#: ../ggz-txt/server.c:401
+#: ../ggz-txt/server.c:424
 msgid "-- Table launched"
 msgstr ""
 
-#: ../ggz-txt/server.c:411
+#: ../ggz-txt/server.c:434
 #, c-format
 msgid "-- Table launch failed: %s"
 msgstr ""
 
-#: ../ggz-txt/server.c:425
+#: ../ggz-txt/server.c:448
 msgid "-- Table joined"
 msgstr ""
 
-#: ../ggz-txt/server.c:435
+#: ../ggz-txt/server.c:458
 #, c-format
 msgid "-- Table join failed: %s"
 msgstr ""
 
-#: ../ggz-txt/server.c:453
+#: ../ggz-txt/server.c:476
 msgid "-- Left table"
 msgstr ""
 
-#: ../ggz-txt/server.c:465
+#: ../ggz-txt/server.c:488
 msgid "-- Table leave failed"
 msgstr ""
