@@ -1,9 +1,13 @@
-==================================================
-The GGZ Gaming Zone - base-libs - Snapshot 0.99.4+
-==================================================
+=========================================================
+The GGZ Gaming Zone - Base Libraries - Snapshot 0.99.5pre
+=========================================================
 
-This package contains the GGZ base libraries. The following
-libraries and tools are included:
+This package contains the GGZ Gaming Zone base libraries.
+The libraries provide the common procedures and utilities required to run
+the GGZ clients and games. The routines are shared by other packages in
+order to ease coding and promote compatibility and stability.
+
+The following libraries and tools are included:
 
 * libggz, containing many convenience functions for C programming. It is used
   by the GGZ Gaming Zone server (ggzd), the other libraries in this package,
