@@ -29,11 +29,20 @@
 #ifndef NO_THREADING
 #include <pthread.h>
 #endif
+
 #ifdef WITH_GC
 #ifdef DEBUG_MEM
 #define GC_DEBUG
 #endif
+#ifndef NO_THREADING
+#define GC_THREADS
+#define GC_REDIRECT_TO_LOCAL
+/* Only for gc >= 7.0 */
+/*#include <gc.h>*/
+#include <gc_local_alloc.h>
+#else
 #include <gc.h>
+#endif
 #endif
 
 #include "ggz.h"
