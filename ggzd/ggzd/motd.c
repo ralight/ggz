@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 10214 2008-07-08 16:44:13Z jdorje $
+ * $Id: motd.c 10635 2008-12-23 19:24:59Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -28,7 +28,7 @@
 #endif
 
 #include <fcntl.h>
-#include <pthread.h>
+#include <ggz_threads.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

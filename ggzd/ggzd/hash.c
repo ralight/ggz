@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/08/2000
  * Desc: Functions for handling the player name hash tables
- * $Id: hash.c 10067 2008-06-24 22:01:07Z jdorje $
+ * $Id: hash.c 10635 2008-12-23 19:24:59Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -28,7 +28,7 @@
 #endif
 
 #include <ctype.h>
-#include <pthread.h>
+#include <ggz_threads.h>
 #include <stdlib.h>
 #include <string.h>
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 10214 2008-07-08 16:44:13Z jdorje $
+ * $Id: transit.c 10635 2008-12-23 19:24:59Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,7 +27,7 @@
 # include <config.h>		/* Site specific config */
 #endif
 
-#include <pthread.h>
+#include <ggz_threads.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>

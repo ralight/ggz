@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with the room and chat facility
- * $Id: room.h 9812 2008-03-08 22:03:46Z josef $
+ * $Id: room.h 10635 2008-12-23 19:24:59Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -26,7 +26,7 @@
 #ifndef _GGZ_ROOM_H
 #define _GGZ_ROOM_H
 
-#include <pthread.h>
+#include <ggz_threads.h>
 
 #include "event.h"
 #include "players.h"

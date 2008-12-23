@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 10212 2008-07-08 16:25:37Z jdorje $
+ * $Id: stats.c 10635 2008-12-23 19:24:59Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -27,7 +27,7 @@
 # include <config.h>		/* Site specific config */
 #endif
 
-#include <pthread.h>
+#include <ggz_threads.h>
 #include <stdlib.h>
 #include <string.h>
 

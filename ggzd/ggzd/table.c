@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 10214 2008-07-08 16:44:13Z jdorje $
+ * $Id: table.c 10635 2008-12-23 19:24:59Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -28,7 +28,7 @@
 #endif
 
 #include <errno.h>
-#include <pthread.h>
+#include <ggz_threads.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

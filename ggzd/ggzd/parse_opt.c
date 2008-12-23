@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 10293 2008-07-12 08:39:50Z josef $
+ * $Id: parse_opt.c 10635 2008-12-23 19:24:59Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -30,7 +30,7 @@
 #include <ctype.h>
 #include <dirent.h>
 #include <getopt.h>
-#include <pthread.h>
+#include <ggz_threads.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

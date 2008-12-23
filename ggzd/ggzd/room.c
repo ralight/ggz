@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 10265 2008-07-10 05:21:21Z jdorje $
+ * $Id: room.c 10635 2008-12-23 19:24:59Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,7 +27,7 @@
 # include <config.h>		/* Site specific config */
 #endif
 
-#include <pthread.h>
+#include <ggz_threads.h>
 #include <stdlib.h>
 #include <string.h>
 

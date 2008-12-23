@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 10212 2008-07-08 16:25:37Z jdorje $
+ * $Id: err_func.c 10635 2008-12-23 19:24:59Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -31,7 +31,7 @@
 #define SYSLOG_NAMES
 
 #include <errno.h>
-#include <pthread.h>
+#include <ggz_threads.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>

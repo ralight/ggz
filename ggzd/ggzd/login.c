@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 10204 2008-07-08 06:39:36Z jdorje $
+ * $Id: login.c 10635 2008-12-23 19:24:59Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,7 +27,7 @@
 # include <config.h>		/* Site specific config */
 #endif
 
-#include <pthread.h>
+#include <ggz_threads.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 10214 2008-07-08 16:44:13Z jdorje $
+ * $Id: control.c 10635 2008-12-23 19:24:59Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -30,7 +30,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <netinet/in.h>
-#include <pthread.h>
+#include <ggz_threads.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <sys/socket.h>

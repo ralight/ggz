@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 10214 2008-07-08 16:44:13Z jdorje $
+ * $Id: event.c 10635 2008-12-23 19:24:59Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -28,7 +28,7 @@
 #endif
 
 #include <ctype.h>
-#include <pthread.h>
+#include <ggz_threads.h>
 #include <stdlib.h>
 
 #include "client.h"

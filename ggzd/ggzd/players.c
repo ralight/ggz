@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 10214 2008-07-08 16:44:13Z jdorje $
+ * $Id: players.c 10635 2008-12-23 19:24:59Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -36,7 +36,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <netdb.h>
-#include <pthread.h>
+#include <ggz_threads.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
