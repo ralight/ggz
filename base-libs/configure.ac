@@ -89,10 +89,11 @@ AC_GGZ_VISIBILITY
 # Makefile creation
 # =================
 AC_CONFIG_FILES([
-	   Makefile 
+	   Makefile
 	   libggz.pc
 	   ggzmod.pc
 	   ggzcore.pc
+	   libggz/ggz_threads.h
 	   libggz/Makefile
 	   libggz/security/Makefile
 	   tests/Makefile

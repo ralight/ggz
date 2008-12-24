@@ -21,8 +21,9 @@ bring as many multiplayer features into as many games as possible!
 ** The snapshot series contains staggered releases. 0.99.1 contained libggz,
 ** ggz-server, ggz-client-libs and ggz-txt-client. 0.99.2 added ggz-python,
 ** ggz-java and ggz-grubby. 0.99.3 added ggz-docs, ggz-community,
-** ggz-gtk-games, ggz-gtk-client and ggz-utils. 0.99.4 now adds
-** ggz-kde-center to complete the package list.
+** ggz-gtk-games, ggz-gtk-client and ggz-utils. 0.99.4 added
+** ggz-kde-center to complete the package list. 0.99.5 now starts
+** the package consolidation.
 ** Note that the final package structure might change.
 
 New and pending features in this snapshot release (0.99.5):
@@ -36,12 +37,16 @@ TODO: This list is not yet finished!
 - [ggz-base-libs] support for asynchronous name resolver, internal & asyncns
 - [ggz-base-libs] internal support for asynchronous connection creation
 - [ggz-base-libs] support for multiple ggz.modules files
+- [ggz-base-libs] experimental garbage collection support in libggz
+- [ggz-base-libs] better handling of TLS encryption policies
 - [ggz-python] some extensions to ggz-faketable like player information
 - [ggz-community] dynamic room support to the web service API
 - [ggz-community] tournament setup now with player signups
+- [ggz-community] web service API now covers buddies and foes
 - [ggz-server] ongoing improvements and consolidation of database plugins
 - [ggz-docs] documentation of Connect the Dots savegame format
 - [ggz-utils] move of some of the runtime applications from ggz-client-libs
+- [ggz-utils] translations for ggz-cmd
 - [ggz-kde-center] addition of CMake macros for to configure a GGZ build
 - [ggz-kde-center] embedded kggzcore support so that games can connect to GGZ
 - [ggz-kde-center] addition of generated protocol and GGZ highscores in KTicTacTux
@@ -50,6 +55,8 @@ TODO: This list is not yet finished!
 - [ggz-kde-center] new kggzlib integration class for kggzcore
 - [ggz-kde-center] new kggzlib table configuration dialogue
 - [ggz-kde-center] several further enhancements to kggzcore library
+- [ggz-kde-center] synchronisation with GGZ-Community through Lokarest
+- [ggz-kde-center] addition of Vencedor, the new KDE 4 core client
 
 New and pending features in this snapshot release (0.99.4):
 

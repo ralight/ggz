@@ -55,7 +55,12 @@ if test "$gc" = yes || test "$gc" = boehm; then
 		AC_SUBST(GC_INCLUDES)
 		AC_SUBST(LIB_GC)
 		enable_gc=yes
+		usegc=1
+	else
+		usegc=0
 	fi
+
+	AC_SUBST(usegc)
 fi
 ])
 
