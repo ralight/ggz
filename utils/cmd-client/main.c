@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 10637 2008-12-23 20:46:30Z josef $
+ * $Id: main.c 10639 2008-12-24 08:11:13Z josef $
  *
  * Main program code for ggz-cmd program.
  *
@@ -264,7 +264,8 @@ static GGZHookReturn server_failure(GGZServerEvent id,
 				    const void *user_data)
 {
 	const char *message = NULL;
-	if (id != GGZ_CONNECT_FAIL) {
+	if ((id != GGZ_CONNECT_FAIL)
+	&& (id != GGZ_NET_ERROR)) {
 		const GGZErrorEventData *msg = event_data;
 		message = msg->message;
 	} else {
