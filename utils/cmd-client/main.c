@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 10639 2008-12-24 08:11:13Z josef $
+ * $Id: main.c 10640 2008-12-24 08:24:14Z josef $
  *
  * Main program code for ggz-cmd program.
  *
@@ -41,6 +41,15 @@
 
 #include <ggz.h>
 #include <ggzcore.h>
+
+#ifdef ENABLE_NLS
+#  include <locale.h>
+#  include <libintl.h>
+#  define _(x) gettext(x)
+#else
+#  define _(x) x
+#endif
+#define N_(x) x
 
 #define DBG_MAIN "main"
 
@@ -109,11 +118,11 @@ static FILE *errorstream(FILE *stream)
 static void print_help(char *exec_name)
 {
 	fprintf(stderr,
-		"Usage: %s [<host>[:<port>][:tls] <login> <passwd>] <command> "
-		"[<command opts> ...]\n",
+		_("Usage: %s [<host>[:<port>][:tls] <login> <passwd>] <command> "
+		"[<command opts> ...]\n"),
 		exec_name);
 	fprintf(stderr,
-		"  Commands include:\n"
+		_("  Commands include:\n"
 		"    " GGZ_CMD_ANNOUNCE_CMD
 		" <message> - announce message from room 0\n"
 		"    " GGZ_CMD_CHECKONLINE_CMD
@@ -121,10 +130,7 @@ static void print_help(char *exec_name)
 		"    " GGZ_CMD_CHECKNAGIOS_CMD
 		" - nagios check for server status\n"
 		"    " GGZ_CMD_BATCH_CMD
-		" <batchfile> - execute commands from batchfile\n");
-	fprintf(stderr,
-		"  Bugs and issues:\n"
-		"    - Only two commands are currently supported.\n");
+		" <batchfile> - execute commands from batchfile\n"));
 
 }
 
@@ -203,8 +209,9 @@ static int parse_arguments(int argc, char **argv, GGZCommand * cmd)
 		} else {
 			sscanf(port_num, "%d", &cmd->port);
 		}
-	} else
+	} else {
 		cmd->port = 5688;
+	}
 
 	/* We only allow standard logins, no guest ones. */
 	cmd->login_type = GGZ_LOGIN;
@@ -254,7 +261,7 @@ static void wait_for_input(int fd)
 		ggz_error_sys_exit("Select error while blocking.");
 
 	if (!FD_ISSET(fd, &my_fd_set)) {
-		fprintf(errorstream(stderr), "Connection to server timed out.\n");
+		fprintf(errorstream(stderr), _("Connection to server timed out.\n"));
 		exit(exitcode(STATUS_WARNING));
 	}
 }
@@ -274,7 +281,7 @@ static GGZHookReturn server_failure(GGZServerEvent id,
 
 	ggz_debug(DBG_MAIN, "GGZ failure: event %d.", id);
 	fprintf(errorstream(stderr),
-		"ggz-cmd: Could not connect to server: %s\n", message);
+		_("ggz-cmd: Could not connect to server: %s\n"), message);
 	exit(exitcode(STATUS_CRITICAL));
 }
 
@@ -384,7 +391,7 @@ static void exec_command(GGZCommand * cmd)
 
 	if(cmd->command == GGZ_CMD_CHECKNAGIOS)
 	{
-		printf("ggz-cmd: Everything OK\n");
+		printf(_("ggz-cmd: Everything OK\n"));
 	}
 
 	/* FIXME: we don't officially disconnect, we just close
@@ -395,7 +402,7 @@ static void initialize_debugging(void)
 {
 #ifdef DEBUG
 	const char* debug_types[] = {DBG_MAIN,
-				     GGZCORE_DBG_CONF, GGZCORE_DBG_GAME, 
+				     GGZCORE_DBG_CONF, GGZCORE_DBG_GAME,
 				     GGZCORE_DBG_HOOK, GGZCORE_DBG_MODULE,
 				     GGZCORE_DBG_NET, GGZCORE_DBG_POLL,
 				     GGZCORE_DBG_ROOM, GGZCORE_DBG_SERVER,
@@ -408,6 +415,12 @@ static void initialize_debugging(void)
 
 int main(int argc, char **argv)
 {
+#ifdef ENABLE_NLS
+	bindtextdomain("ggz-cmd", LOCALEDIR);
+	textdomain("ggz-cmd");
+	setlocale(LC_ALL, "");
+#endif
+
 	initialize_debugging();
 
 	if (parse_arguments(argc, argv, &command) < 0) {

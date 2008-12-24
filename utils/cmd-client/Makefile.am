@@ -5,7 +5,8 @@ ggz_cmd_SOURCES = main.c
 ggz_cmd_LDFLAGS = $(GGZCORE_LDFLAGS)
 ggz_cmd_LDADD = $(LDADD) $(LIB_GGZCORE)
 
-AM_CPPFLAGS = $(GGZCORE_INCLUDES)
+AM_CPPFLAGS = $(GGZCORE_INCLUDES) \
+	-DLOCALEDIR=\"$(localedir)\"
 
 dist_bin_SCRIPTS = ggz-sql
 
