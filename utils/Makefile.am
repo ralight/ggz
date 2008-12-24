@@ -11,7 +11,7 @@ if COND_GGZCOMM
 GGZCOMM_DIR = ggzcomm
 endif
 
-SUBDIRS = man motds ggz-wrapper $(METASERV_DIR) $(TELGGZ_DIR) $(CMDCLIENT_DIR) $(GGZCOMM_DIR)
+SUBDIRS = man motds ggz-wrapper $(METASERV_DIR) $(TELGGZ_DIR) $(CMDCLIENT_DIR) $(GGZCOMM_DIR) po
 
 if COND_GGZWRAP
 SUBDIRS += ggzwrap

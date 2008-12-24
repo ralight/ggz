@@ -147,6 +147,8 @@ AC_CONFIG_FILES([
 	ggzwrap/Makefile
 	motds/Makefile
 	man/Makefile
+	po/Makefile
+	po/ggz-cmd/Makefile
 ])
 AC_OUTPUT
 
@@ -159,5 +161,6 @@ echo "    TelGGZ......$enable_telggz"
 echo "    MetaServ....$enable_metaserv"
 echo "    cmd-client..$enable_cmd_client"
 echo "    GGZComm.....$enable_ggzcomm"
+echo "    ggzwrap.....$enable_ggzwrap"
 echo "Build options:"
 echo "    Debug.......$enable_debug"
