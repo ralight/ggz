@@ -1,8 +1,20 @@
 GGZ URIs
 --------
 
+The GGZ Gaming Zone service defines a URI format for locating
+servers, game rooms and games.
+
+The GGZ URI format is intended to conform to RFC 3987 [IRI] and
+RFC 3986 [URI]. It follows the design consideration given in the
+advisory document RFC 4395 alias BCP 115 and is intended to be
+submitted for standardisation according to the procedures in the
+same document.
+
 Format:
-ggz://user@host:port/#room/table
+ggz://[user@]host[:port][/#room[/table]]
+
+## FIXME: define character set and normalisation rules (e.g. case
+## sensitivity) for each URL component.
 
 Everything beside the host is optional.
 If a table is given, the action is to join the game on it.
@@ -19,14 +31,17 @@ Host:
 - hostname of the server ggzd runs on
 
 Port:
-- ggzd port number, or 5688 by default
+- ggzd port number, or 5688 by default {registered with IANA as 'ggz'}
 
 Room:
 - room name or number as per ggzcore numbering (name is better)
 - FIXME: room numbers shouldn't really be used anymore
+- FIXME: do we really want the "#" in here? It's not used for IRC URLs either
 
 Table:
 - table id in the specific room
+- FIXME: this could use "#" to designate a fragment
+  (advantage: we keep the door to hierarchical rooms open)
 
 Examples include:
 ggz://live.ggzgamingzone.org/#Tic-Tac-Toe (join TTT room)
