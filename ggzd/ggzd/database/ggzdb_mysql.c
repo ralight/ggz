@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10513 2008-08-19 11:54:12Z oojah $
+ * $Id: ggzdb_mysql.c 10647 2008-12-27 19:35:04Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -64,7 +64,8 @@ static const char *lower(void)
 /* Function to initialize the mysql database system */
 GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 {
-	int rc;
+	int rc = GGZ_OK;
+	int mysql_rc;
 	char query[4096];
 	my_bool reconnect = true;
 	MYSQL_RES *res;
@@ -95,15 +96,15 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 		"(`id` int4 AUTO_INCREMENT PRIMARY KEY, `handle` varchar(255), `password` varchar(255), "
 		"`name` varchar(255), `email` varchar(255), `lastlogin` int8, `perms` int8, `firstlogin` int8)");
 
-	rc = mysql_query(conn, query);
+	mysql_rc = mysql_query(conn, query);
 
 	/* Check if we have canonicalstr() available. This would also be possible
 	 * by checking the mysql.func table for the presence of the function, but
 	 * that assumes read access to the mysql table.  */
 	mysql_canonicalstr = 0;
 	snprintf(query, sizeof(query), "SELECT canonicalstr(\"Fuß¹²³\")");
-	rc = mysql_query(conn, query);
-	if(!rc){
+	mysql_rc = mysql_query(conn, query);
+	if(!mysql_rc){
 		res = mysql_store_result(conn);
 		if(res){
 			row = mysql_fetch_row(res);
@@ -115,7 +116,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	}
 
 	/* Hack. */
-	return GGZ_OK;
+	return rc;
 }
 
 
