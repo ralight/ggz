@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10512 2008-08-18 23:33:53Z oojah $
+ * $Id: ggzdb_pgsql.c 10658 2008-12-27 22:54:43Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -235,14 +235,6 @@ static int upgrade(PGconn *conn, const char *oldversion, const char *newversion)
 		GGZDDATADIR, oldversion, newversion);
 
 	return setupschema(conn, upgradefile);
-}
-
-/* String canonicalization for comparison */
-static const char *lower(void)
-{
-	if(pg_canonicalstr)
-		return "canonicalstr";
-	return "lower";
 }
 
 /* Exported functions */
@@ -536,7 +528,7 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	PGconn *conn;
 	PGresult *res;
 	char query[4096];
-	char *handle_quoted;
+	char *handle_canonical, *handle_quoted;
 	char *password_quoted;
 	char *name_quoted;
 	char *email_quoted;
@@ -547,7 +539,10 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 		return GGZDB_ERR_DB;
 	}
 
-	handle_quoted = _ggzdb_escape(pe->handle);
+	handle_canonical = username_canonical(pe->handle);
+	handle_quoted = _ggzdb_escape(handle_canonical);
+	ggz_free(handle_canonical);
+
 	password_quoted = _ggzdb_escape(pe->password);
 	name_quoted = _ggzdb_escape(pe->name);
 	email_quoted = _ggzdb_escape(pe->email);
@@ -558,8 +553,6 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 		 handle_quoted, password_quoted, name_quoted, email_quoted,
 		 pe->last_login, pe->perms, time(NULL), pe->confirmed);
 
-	if (handle_quoted)
-		free(handle_quoted);
 	if (password_quoted)
 		free(password_quoted);
 	if (name_quoted)
@@ -569,13 +562,9 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 
 	res = PQexec(conn, query);
 
-	handle_quoted = _ggzdb_escape(pe->handle);
-
-	/* FIXME: provide server-side function for Unicode-safe stringprep */
-	/* FIXME: here and elsewhere (e.g. for ggzdb_mysql.c) */
 	snprintf(query, sizeof(query), "DELETE FROM stats "
-		 "WHERE %s(handle) = %s('%s')",
-		 lower(), lower(), handle_quoted);
+		 "WHERE handle = '%s'",
+		 handle_quoted);
 
 	if (handle_quoted)
 		free(handle_quoted);
@@ -601,7 +590,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	PGconn *conn;
 	PGresult *res;
 	char query[4096];
-	char *handle_quoted;
+	char *handle_canonical, *handle_quoted;
 
 	conn = claimconnection();
 	if (!conn) {
@@ -609,13 +598,15 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 		return GGZDB_ERR_DB;
 	}
 
-	handle_quoted = _ggzdb_escape(pe->handle);
+	handle_canonical = username_canonical(pe->handle);
+	handle_quoted = _ggzdb_escape(handle_canonical);
+	ggz_free(handle_canonical);
 
 	snprintf(query, sizeof(query),
 		 "SELECT "
 		 "password, name, email, lastlogin, permissions, confirmed "
-		 "FROM users WHERE %s(handle) = %s('%s')",
-		 lower(), lower(), handle_quoted);
+		 "FROM users WHERE handle = '%s'",
+		 handle_quoted);
 
 	free(handle_quoted);
 
@@ -654,7 +645,7 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	PGconn *conn;
 	PGresult *res;
 	char query[4096];
-	char *handle_quoted;
+	char *handle_canonical, *handle_quoted;
 	char *password_quoted;
 	char *name_quoted;
 	char *email_quoted;
@@ -665,7 +656,10 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 		return GGZDB_ERR_DB;
 	}
 
-	handle_quoted = _ggzdb_escape(pe->handle);
+	handle_canonical = username_canonical(pe->handle);
+	handle_quoted = _ggzdb_escape(handle_canonical);
+	ggz_free(handle_canonical);
+
 	password_quoted = _ggzdb_escape(pe->password);
 	name_quoted = _ggzdb_escape(pe->name);
 	email_quoted = _ggzdb_escape(pe->email);
@@ -674,10 +668,10 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 		 "UPDATE users SET "
 		 "password = '%s', name = '%s', email = '%s', "
 		 "lastlogin = %li, permissions = %u, confirmed = '%u' WHERE "
-		 "%s(handle) = %s('%s')",
+		 "handle = '%s'",
 		 password_quoted, name_quoted, email_quoted,
 		 pe->last_login, pe->perms, pe->confirmed,
-		 lower(), lower(), handle_quoted);
+		 handle_quoted);
 
 	if (handle_quoted)
 		free(handle_quoted);
@@ -708,7 +702,7 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 	PGconn *conn;
 	PGresult *res;
 	char query[4096];
-	char *handle_quoted;
+	char *handle_canonical, *handle_quoted;
 
 	conn = claimconnection();
 	if (!conn) {
@@ -716,13 +710,15 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 		return GGZDB_ERR_DB;
 	}
 
-	handle_quoted = _ggzdb_escape(pe->handle);
+	handle_canonical = username_canonical(pe->handle);
+	handle_quoted = _ggzdb_escape(handle_canonical);
+	ggz_free(handle_canonical);
 
 	snprintf(query, sizeof(query),
 		 "SELECT "
 		 "id, photo "
-		 "FROM userinfo WHERE %s(handle) = %s('%s')",
-		 lower(), lower(), handle_quoted);
+		 "FROM userinfo WHERE handle = '%s'",
+		 handle_quoted);
 
 	free(handle_quoted);
 
@@ -868,7 +864,7 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 	PGresult *res;
 	char query[4096];
 	GGZDBResult rc = GGZDB_ERR_DB;
-	char *player_quoted;
+	char *player_canonical, *player_quoted;
 	char *game_quoted;
 
 	conn = claimconnection();
@@ -877,14 +873,17 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 		return rc;
 	}
 
-	player_quoted = _ggzdb_escape(stats->player);
+	player_canonical = username_canonical(stats->player);
+	player_quoted = _ggzdb_escape(player_canonical);
+	ggz_free(player_canonical);
+
 	game_quoted = _ggzdb_escape(stats->game);
 
 	snprintf(query, sizeof(query),
 		"SELECT "
 		"wins, losses, ties, forfeits, rating, ranking, highscore "
-		"FROM stats WHERE %s(handle) = %s('%s') AND game = '%s'",
-		lower(), lower(), player_quoted, game_quoted);
+		"FROM stats WHERE handle = '%s' AND game = '%s'",
+		player_quoted, game_quoted);
 
 	free(game_quoted);
 	free(player_quoted);
@@ -918,7 +917,7 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 	PGresult *res, *res2;
 	char query[4096];
 	int rc = GGZDB_ERR_DB;
-	char *player_quoted;
+	char *player_canonical, *player_quoted;
 	char *game_quoted;
 
 	conn = claimconnection();
@@ -927,17 +926,20 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 		return rc;
 	}
 
-	player_quoted = _ggzdb_escape(stats->player);
+	player_canonical = username_canonical(stats->player);
+	player_quoted = _ggzdb_escape(player_canonical);
+	ggz_free(player_canonical);
+
 	game_quoted = _ggzdb_escape(stats->game);
 
 	snprintf(query, sizeof(query),
 		"UPDATE stats "
 		"SET wins = %i, losses = %i, ties = %i, forfeits = %i, "
 		"rating = %f, ranking = %u, highscore = %li "
-		"WHERE %s(handle) = %s('%s') AND game = '%s'",
+		"WHERE handle = '%s' AND game = '%s'",
 		stats->wins, stats->losses, stats->ties, stats->forfeits,
 		stats->rating, stats->ranking, stats->highest_score,
-		lower(), lower(), player_quoted, game_quoted);
+		player_quoted, game_quoted);
 
 	res = PQexec(conn, query);
 
@@ -983,7 +985,7 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	char query[4096];
 	int rc = GGZDB_ERR_DB;
 	char *number, *playertype;
-	char *player_quoted;
+	char *player_canonical, *player_quoted;
 
 	conn = claimconnection();
 	if (!conn) {
@@ -1009,7 +1011,9 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	else if(stats->player_type == GGZ_PLAYER_NORMAL) playertype = "registered";
 	else if(stats->player_type == GGZ_PLAYER_BOT) playertype = "bot";
 
-	player_quoted = _ggzdb_escape(stats->player);
+	player_canonical = username_canonical(stats->player);
+	player_quoted = _ggzdb_escape(player_canonical);
+	ggz_free(player_canonical);
 
 	snprintf(query, sizeof(query),
 		"INSERT INTO matchplayers "
@@ -1357,7 +1361,7 @@ GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *nam
 	PGresult *res;
 	char query[4096];
 	int rc = GGZDB_ERR_DB;
-	char *name_quoted;
+	char *name_canonical, *name_quoted;
 
 	conn = claimconnection();
 	if (!conn) {
@@ -1373,7 +1377,9 @@ GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *nam
 	res = PQexec(conn, query);
 	PQclear(res);
 
-	name_quoted = _ggzdb_escape(name);
+	name_canonical = username_canonical(name);
+	name_quoted = _ggzdb_escape(name_canonical);
+	ggz_free(name_canonical);
 
 	snprintf(query, sizeof(query),
 		"INSERT INTO savegameplayers "
