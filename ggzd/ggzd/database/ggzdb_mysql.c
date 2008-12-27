@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10655 2008-12-27 22:12:01Z oojah $
+ * $Id: ggzdb_mysql.c 10656 2008-12-27 22:23:24Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -303,10 +303,10 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 		handle_quoted, password_quoted, name_quoted, email_quoted,
 		pe->last_login, pe->perms, time(NULL), pe->confirmed);
 
-	ggz_free(email_quoted);
-	ggz_free(name_quoted);
-	ggz_free(password_quoted);
-	ggz_free(handle_quoted);
+	free(email_quoted);
+	free(name_quoted);
+	free(password_quoted);
+	free(handle_quoted);
 
 	pthread_mutex_lock(&mutex);
 	rc = mysql_query(conn, query);
@@ -338,7 +338,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 		"FROM `users` WHERE `handle` = %s('%s')",
 		lower(), handle_quoted);
 
-	ggz_free(handle_quoted);
+	free(handle_quoted);
 
 	pthread_mutex_lock(&mutex);
 	rc = mysql_query(conn, query);
@@ -398,10 +398,10 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 		pe->last_login, pe->perms, pe->confirmed,
 		lower(), handle_quoted);
 
-	ggz_free(email_quoted);
-	ggz_free(name_quoted);
-	ggz_free(password_quoted);
-	ggz_free(handle_quoted);
+	free(email_quoted);
+	free(name_quoted);
+	free(password_quoted);
+	free(handle_quoted);
 
 	pthread_mutex_lock(&mutex);
 	mysql_rc = mysql_query(conn, query);
@@ -566,8 +566,8 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 		ret = GGZDB_ERR_DB;
 	}
 
-	ggz_free(game_quoted);
-	ggz_free(player_quoted);
+	free(game_quoted);
+	free(player_quoted);
 
 	_ggzdb_stats_match(stats);
 
@@ -592,8 +592,8 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 			"FROM `stats` WHERE `handle`=%s('%s') AND `game`='%s'",
 			lower(), player_quoted, game_quoted);
 
-	ggz_free(game_quoted);
-	ggz_free(player_quoted);
+	free(game_quoted);
+	free(player_quoted);
 
 	pthread_mutex_lock(&mutex);
 	mysql_rc = mysql_query(conn, query);
@@ -680,7 +680,7 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	 * it will make "number" point to freed memory.
 	 */
 	mysql_free_result(res);
-	ggz_free(player_quoted);
+	free(player_quoted);
 
 	mysql_rc = mysql_query(conn, query);
 	pthread_mutex_unlock(&mutex);
@@ -730,9 +730,9 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const ch
 		"(%li,'%s','%s','%s')",
 		time(NULL), game_quoted, winner_quoted, savegame_quoted);
 
-	ggz_free(winner_quoted);
-	ggz_free(savegame_quoted);
-	ggz_free(game_quoted);
+	free(winner_quoted);
+	free(savegame_quoted);
+	free(game_quoted);
 
 	mysql_rc = mysql_query(conn, query);
 	pthread_mutex_unlock(&mutex);
@@ -771,9 +771,9 @@ GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const cha
 		time(NULL), game_quoted, owner_quoted, savegame_quoted, tableid.thread,
 		tableid.starttime);
 
-	ggz_free(savegame_quoted);
-	ggz_free(owner_quoted);
-	ggz_free(game_quoted);
+	free(savegame_quoted);
+	free(owner_quoted);
+	free(game_quoted);
 
 	mysql_rc = mysql_query(conn, query);
 	pthread_mutex_unlock(&mutex);
@@ -802,7 +802,7 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 		 "FROM `userinfo` WHERE `handle`=%s('%s')",
 		 lower(), handle_quoted);
 
-	ggz_free(handle_quoted);
+	free(handle_quoted);
 
 	pthread_mutex_lock(&mutex);
 	mysql_rc = mysql_query(conn, query);
@@ -848,7 +848,7 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGa
 		"WHERE `game` = '%s' AND `ranking` <> 0 ORDER BY `ranking` ASC LIMIT %i",
 		game_quoted, number);
 
-	ggz_free(game_quoted);
+	free(game_quoted);
 
 	pthread_mutex_lock(&mutex);
 	mysql_rc = mysql_query(conn, query);
@@ -917,8 +917,8 @@ GGZList *_ggzdb_savegames(const char *game, const char *owner)
 	snprintf(query, sizeof(query), "SELECT savegame FROM savegames "
 		"WHERE game = '%s' AND owner = '%s'",
 		game_quoted, owner_quoted);
-	ggz_free(owner_quoted);
-	ggz_free(game_quoted);
+	free(owner_quoted);
+	free(game_quoted);
 
 	pthread_mutex_lock(&mutex);
 
@@ -964,7 +964,7 @@ GGZList *_ggzdb_savegame_owners(const char *game)
 	snprintf(query, sizeof(query),
 		"SELECT owner, tableid, stamp, savegame FROM savegames WHERE game = '%s'",
 		game_quoted);
-	ggz_free(game_quoted);
+	free(game_quoted);
 
 	pthread_mutex_lock(&mutex);
 	mysql_rc = mysql_query(conn, query);
@@ -1052,7 +1052,7 @@ GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *nam
 		"(tableid, stamp, seat, handle, seattype) VALUES "
 		"(%li, %li, %i, '%s', '%s')",
 		tableid.thread, tableid.starttime, seat, name_quoted, ggz_seattype_to_string(type));
-	ggz_free(name_quoted);
+	free(name_quoted);
 
 	mysql_rc = mysql_query(conn, query);
 	if(!mysql_rc && mysql_affected_rows(conn) == 1){
@@ -1095,8 +1095,8 @@ GGZDBResult _ggzdb_rooms(RoomStruct *rooms, int num)
 			name_quoted, description_quoted, "???",
 			room.max_players, room.max_tables, "none");
 
-		ggz_free(name_quoted);
-		ggz_free(description_quoted);
+		free(name_quoted);
+		free(description_quoted);
 		
 		mysql_rc = mysql_query(conn, query);
 		if(!mysql_rc && mysql_affected_rows(conn) == 1){
