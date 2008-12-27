@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10648 2008-12-27 20:04:03Z oojah $
+ * $Id: ggzdb_mysql.c 10651 2008-12-27 21:33:33Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -133,10 +133,14 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 {
 	int rc = GGZ_OK;
 	int mysql_rc;
+	int ret;
 	char query[4096];
 	my_bool reconnect = true;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
+	int init;
+	char *version;
+	char schemafile[1024];
 
 	if(conn) return GGZ_OK;
 
