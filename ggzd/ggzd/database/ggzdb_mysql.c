@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10656 2008-12-27 22:23:24Z oojah $
+ * $Id: ggzdb_mysql.c 10657 2008-12-27 22:41:55Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -48,17 +48,8 @@ static MYSQL *conn = NULL;
 static MYSQL_RES *iterres = NULL;
 static int itercount;
 static pthread_mutex_t mutex;
-static int mysql_canonicalstr;
 
 /* Internal functions */
-
-/* String canonicalization for comparison */
-static const char *lower(void)
-{
-	if(mysql_canonicalstr)
-		return "canonicalstr";
-	return "lower";
-}
 
 /* Initialize the database tables from an external SQL schema file */
 static int setupschema(const char *filename)
@@ -161,23 +152,6 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	{
 		ggz_error_msg("Couldn't initialize database.");
 		return GGZ_ERROR;
-	}
-
-	/* Check if we have canonicalstr() available. This would also be possible
-	 * by checking the mysql.func table for the presence of the function, but
-	 * that assumes read access to the mysql table.  */
-	mysql_canonicalstr = 0;
-	snprintf(query, sizeof(query), "SELECT canonicalstr(\"Fuß¹²³\")");
-	mysql_rc = mysql_query(conn, query);
-	if(!mysql_rc){
-		res = mysql_store_result(conn);
-		if(res){
-			row = mysql_fetch_row(res);
-			if(!strcmp(row[0], "fuss123")){
-				mysql_canonicalstr = 1;
-			}
-			mysql_free_result(res);
-		}
 	}
 
 	/* Check whether the database is ok */
@@ -287,12 +261,15 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 {
 	int rc;
 	char query[4096];
-	char *handle_quoted;
+	char *handle_canonical, *handle_quoted;
 	char *password_quoted;
 	char *name_quoted;
 	char *email_quoted;
 
-	handle_quoted = _ggzdb_escape(pe->handle);
+	handle_canonical = username_canonical(pe->handle);
+	handle_quoted = _ggzdb_escape(handle_canonical);
+	ggz_free(handle_canonical);
+
 	password_quoted = _ggzdb_escape(pe->password);
 	name_quoted = _ggzdb_escape(pe->name);
 	email_quoted = _ggzdb_escape(pe->email);
@@ -329,14 +306,17 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char query[4096];
-	char *handle_quoted;
+	char *handle_canonical, *handle_quoted;
 
-	handle_quoted = _ggzdb_escape(pe->handle);
+	handle_canonical = username_canonical(pe->handle);
+	handle_quoted = _ggzdb_escape(handle_canonical);
+	ggz_free(handle_canonical);
+
 	snprintf(query, sizeof(query),
 		"SELECT "
 		"`password`,`name`,`email`,`lastlogin`,`perms`,`confirmed` "
-		"FROM `users` WHERE `handle` = %s('%s')",
-		lower(), handle_quoted);
+		"FROM `users` WHERE `handle` = '%s'",
+		handle_quoted);
 
 	free(handle_quoted);
 
@@ -379,12 +359,15 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 {
 	int mysql_rc;
 	char query[4096];
-	char *handle_quoted;
+	char *handle_canonical, *handle_quoted;
 	char *password_quoted;
 	char *name_quoted;
 	char *email_quoted;
 
-	handle_quoted = _ggzdb_escape(pe->handle);
+	handle_canonical = username_canonical(pe->handle);
+	handle_quoted = _ggzdb_escape(handle_canonical);
+	ggz_free(handle_canonical);
+
 	password_quoted = _ggzdb_escape(pe->password);
 	name_quoted = _ggzdb_escape(pe->name);
 	email_quoted = _ggzdb_escape(pe->email);
@@ -393,10 +376,10 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 		"UPDATE `users` SET "
 		"`password`='%s',`name`='%s',`email`='%s',"
 		"`lastlogin`=%li,`perms`=%u,`confirmed`=%u WHERE "
-		"`handle`=%s('%s')",
+		"`handle`='%s'",
 		password_quoted, name_quoted, email_quoted,
 		pe->last_login, pe->perms, pe->confirmed,
-		lower(), handle_quoted);
+		handle_quoted);
 
 	free(email_quoted);
 	free(name_quoted);
@@ -523,20 +506,23 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 	char query[4096];
 	int mysql_rc;
 	GGZDBResult ret = GGZDB_ERR_DB;
-	char *player_quoted;
+	char *player_canonical, *player_quoted;
 	char *game_quoted;
 
-	player_quoted = _ggzdb_escape(stats->player);
+	player_canonical = username_canonical(stats->player);
+	player_quoted = _ggzdb_escape(player_canonical);
+	ggz_free(player_canonical);
+
 	game_quoted = _ggzdb_escape(stats->game);
 
 	snprintf(query, sizeof(query),
 		"UPDATE `stats` "
 		"SET `wins`=%i,`losses`=%i,`ties`=%i,`forfeits`=%i,"
 		"`rating`=%f,`ranking`=%u,`highscore`=%li "
-		"WHERE `handle` = %s('%s') AND `game`='%s'",
+		"WHERE `handle` = '%s' AND `game`='%s'",
 		stats->wins, stats->losses, stats->ties, stats->forfeits,
 		stats->rating, stats->ranking, stats->highest_score,
-		lower(), player_quoted, game_quoted);
+		player_quoted, game_quoted);
 
 	pthread_mutex_lock(&mutex);
 	mysql_rc = mysql_query(conn, query);
@@ -580,17 +566,20 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 	int mysql_rc;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char *player_quoted;
+	char *player_canonical, *player_quoted;
 	char *game_quoted;
 
-	player_quoted = _ggzdb_escape(stats->player);
+	player_canonical = username_canonical(stats->player);
+	player_quoted = _ggzdb_escape(player_canonical);
+	ggz_free(player_canonical);
+
 	game_quoted = _ggzdb_escape(stats->game);
 	
 	snprintf(query, sizeof(query),
 			"SELECT "
 			"`wins`,`losses`,`ties`,`forfeits`,`rating`,`ranking`,`highscore` "
-			"FROM `stats` WHERE `handle`=%s('%s') AND `game`='%s'",
-			lower(), player_quoted, game_quoted);
+			"FROM `stats` WHERE `handle`='%s' AND `game`='%s'",
+			player_quoted, game_quoted);
 
 	free(game_quoted);
 	free(player_quoted);
@@ -632,7 +621,7 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char *number, *playertype;
-	char *player_quoted;
+	char *player_canonical, *player_quoted;
 
 	snprintf(query, sizeof(query),
 		"SELECT MAX(`id`) FROM `matches`");
@@ -667,7 +656,9 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	else if(stats->player_type == GGZ_PLAYER_NORMAL) playertype = "registered";
 	else if(stats->player_type == GGZ_PLAYER_BOT) playertype = "bot";
 
-	player_quoted = _ggzdb_escape(stats->player);
+	player_canonical = username_canonical(stats->player);
+	player_quoted = _ggzdb_escape(player_canonical);
+	ggz_free(player_canonical);
 
 	snprintf(query, sizeof(query),
 		"INSERT INTO `matchplayers` "
@@ -792,15 +783,17 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	char query[4096];
-	char *handle_quoted;
+	char *handle_canonical, *handle_quoted;
 
-	handle_quoted = _ggzdb_escape(pe->handle);
+	handle_canonical = username_canonical(pe->handle);
+	handle_quoted = _ggzdb_escape(handle_canonical);
+	ggz_free(handle_canonical);
 
 	snprintf(query, sizeof(query),
 		 "SELECT "
 		 "`id`,`photo` "
-		 "FROM `userinfo` WHERE `handle`=%s('%s')",
-		 lower(), handle_quoted);
+		 "FROM `userinfo` WHERE `handle`='%s'",
+		 handle_quoted);
 
 	free(handle_quoted);
 
@@ -1037,7 +1030,7 @@ GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *nam
 	int mysql_rc;
 	int rc = GGZDB_ERR_DB;
 	char query[4096];
-	char *name_quoted;
+	char *name_canonical, *name_quoted;
 
 	snprintf(query, sizeof(query), "DELETE FROM savegameplayers "
 		"WHERE tableid=%li AND stamp=%li AND seat=%i",
@@ -1046,7 +1039,10 @@ GGZDBResult _ggzdb_savegame_player(ggzdbStamp tableid, int seat, const char *nam
 	pthread_mutex_lock(&mutex);
 	mysql_query(conn, query);
 	
-	name_quoted = _ggzdb_escape(name);
+	name_canonical = username_canonical(name);
+	name_quoted = _ggzdb_escape(name_canonical);
+	ggz_free(name_canonical);
+
 	snprintf(query, sizeof(query),
 		"INSERT INTO savegameplayers "
 		"(tableid, stamp, seat, handle, seattype) VALUES "
