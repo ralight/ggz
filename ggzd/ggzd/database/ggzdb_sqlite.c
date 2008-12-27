@@ -27,6 +27,7 @@
 #include "ggzd.h"
 #include "ggzdb.h"
 #include "ggzdb_proto.h"
+#include "ggzdb_util.h"
 
 
 /* Internal variables */
@@ -130,11 +131,16 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 {
 	int rc;
 	char query[4096];
+	char *handle_canonical;
+
+	handle_canonical = username_canonical(pe->handle);
 
 	sqlite3_snprintf(sizeof(query), query, "INSERT INTO users "
 		"(handle, password, name, email, lastlogin, permissions) VALUES "
 		"('%q', '%q', '%q', '%q', %li, %u)",
-		pe->handle, pe->password, pe->name, pe->email, pe->last_login, pe->perms);
+		handle_canonical, pe->password, pe->name, pe->email, pe->last_login, pe->perms);
+	
+	ggz_free(handle_canonical);
 
 	rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
 
@@ -153,11 +159,16 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 {
 	int rc;
 	char query[4096];
+	char *handle_canonical;
+
+	handle_canonical = username_canonical(pe->handle);
 
 	sqlite3_snprintf(sizeof(query), query, "SELECT "
 		"password, name, email, lastlogin, permissions FROM users WHERE "
 		"handle = '%q'",
-		pe->handle);
+		handle_canonical);
+
+	ggz_free(handle_canonical);
 
 	rc = sqlite3_prepare(conn, query, strlen(query), &res, NULL);
 
@@ -188,11 +199,17 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 {
 	int rc;
 	char query[4096];
+	char *handle_canonical;
+
+	handle_canonical = username_canonical(pe->handle);
+
 
 	sqlite3_snprintf(sizeof(query), query, "UPDATE users SET "
 		"password = '%q', name = '%q', email = '%q', lastlogin = %li, permissions = %u WHERE "
 		"handle = '%q'",
-		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
+		pe->password, pe->name, pe->email, pe->last_login, pe->perms, handle_canonical);
+
+	ggz_free(handle_canonical);
 
 	rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
 

@@ -17,7 +17,7 @@ ggzdbdir = $(libdir)/ggzd/database
 ggzdb_LTLIBRARIES =
 
 if GGZDB_SQLITE
-libggzdb_sqlite_la_SOURCES = ggzdb_sqlite.c ggzdb_proto.h
+libggzdb_sqlite_la_SOURCES = ggzdb_sqlite.c ggzdb_util.c ggzdb_util.h ggzdb_proto.h
 libggzdb_sqlite_la_LDFLAGS = -module -avoid-version
 libggzdb_sqlite_la_LIBADD = $(LIB_SQLITE)
 ggzdb_LTLIBRARIES += libggzdb_sqlite.la
