@@ -225,6 +225,7 @@ AC_CONFIG_FILES([Makefile
 	ggzd/Makefile 
 	ggzd/database/Makefile
 	ggzd/database/proc/Makefile
+	ggzd/database/schema/Makefile
 	ggzd/meta/Makefile
 	ggzd/ggzd.conf.example
 	ggzd/ggzd.test

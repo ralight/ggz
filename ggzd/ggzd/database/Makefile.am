@@ -2,7 +2,7 @@ if COND_DBPROC
 DBPROC_DIR = proc
 endif
 
-SUBDIRS = $(DBPROC_DIR)
+SUBDIRS = schema $(DBPROC_DIR)
 
 AM_CPPFLAGS = $(DATABASE_INCLUDES) $(LIBGGZ_INCLUDES) \
 	-I$(top_srcdir)/ggzd -I$(top_srcdir)/ggzdmod \
@@ -56,6 +56,4 @@ calcrankings_SOURCES = calcrankings.c
 calcrankings_LDFLAGS = $(LIBGGZ_LDFLAGS)
 calcrankings_LDADD = $(LIB_GGZ) libggzdb_pgsql.la
 endif
-
-dist_ggzddata_DATA = mysql_schema.sql pgsql_schema.sql pgsql_upgrade_0.7_0.8.sql
 
