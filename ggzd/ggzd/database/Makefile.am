@@ -1,13 +1,10 @@
-if COND_DBPROC
-DBPROC_DIR = proc
-endif
-
-SUBDIRS = schema $(DBPROC_DIR)
+SUBDIRS = schema
 
 AM_CPPFLAGS = $(DATABASE_INCLUDES) $(LIBGGZ_INCLUDES) \
 	-I$(top_srcdir)/ggzd -I$(top_srcdir)/ggzdmod \
 	-DGGZDEXECMODDIR=\"$(ggzdexecmoddir)\" \
-	-DGGZDCONFDIR=\"$(ggzdconfdir)\"
+	-DGGZDCONFDIR=\"$(ggzdconfdir)\" \
+	$(ICU_INCLUDES)
 
 noinst_LIBRARIES = libggzdb.a
 libggzdb_a_SOURCES = \
@@ -54,6 +51,6 @@ if GGZDB_PGSQL
 noinst_PROGRAMS = calcrankings
 calcrankings_SOURCES = calcrankings.c
 calcrankings_LDFLAGS = $(LIBGGZ_LDFLAGS)
-calcrankings_LDADD = $(LIB_GGZ) libggzdb_pgsql.la
+calcrankings_LDADD = $(LIB_GGZ) $(LIB_ICU) libggzdb_pgsql.la
 endif
 

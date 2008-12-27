@@ -28,5 +28,11 @@ char *_ggz_sql_unescape(const char *str);
 /* Free a ggzdbSavegamePlayers structure */
 void _ggzdb_sgpstr_free(void *str);
 
+/*
+ * Function to return the normalized version of a string (e.g. username)
+ * according to a "stringprep" profile.
+ */
+char *username_canonical(const char *username);
+
 #endif
 

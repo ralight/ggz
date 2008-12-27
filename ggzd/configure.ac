@@ -47,9 +47,6 @@ AC_ARG_WITH([tcp-wrappers],
 	AS_HELP_STRING([--with-tcp-wrappers],
 	[Build with tcp-wrappers support]),
 	[libwrap=yes], [libwrap=no])
-AC_ARG_ENABLE([dbproc],
-	AS_HELP_STRING([--enable-dbproc],[Build stored procedures]),
-	[enable_dbproc=yes], [enable_dbproc=no])
 
 
 # Check for GGZ Requirements
@@ -209,7 +206,6 @@ AC_DEFINE([GGZ_SERVER], 1, [Tell preprocessor we're compiling server code])
 dnl Which progs to compile
 dnl ======================
 
-AM_CONDITIONAL([COND_DBPROC], [test "$enable_dbproc" = yes])
 AM_CONDITIONAL([COND_COMPILE_SERVER], [test "$enable_server" = yes])
 AM_CONDITIONAL([COND_COMPILE_GAMES], [test "$enable_games" = yes])
 
@@ -224,7 +220,6 @@ AC_CONFIG_FILES([Makefile
 	ggzdmod++/Makefile
 	ggzd/Makefile 
 	ggzd/database/Makefile
-	ggzd/database/proc/Makefile
 	ggzd/database/schema/Makefile
 	ggzd/meta/Makefile
 	ggzd/ggzd.conf.example
@@ -280,7 +275,6 @@ echo ""
 echo "Build options"  
 echo "    Build Server.........$enable_server"
 echo "    Build Game Servers...$enable_games"
-echo "    Build Procedures.....$enable_dbproc"
 echo "Configuration options"
 echo "    db4 database.........$db4"
 echo "    pgsql database.......$pgsql"
