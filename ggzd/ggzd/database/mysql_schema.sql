@@ -1,23 +1,22 @@
 
 CREATE TABLE `users` (
 	`id` int(11) NOT NULL auto_increment,
-	`handle` varchar(25) NOT NULL default '',
-	`password` varchar(32) NOT NULL default '',
-	`name` varchar(255) NOT NULL default '',
-	`email` varchar(255) NOT NULL default '',
+	`handle` varchar(256) NOT NULL default '',
+	`password` varchar(256) NOT NULL default '',
+	`name` varchar(256) NOT NULL default '',
+	`email` varchar(256) NOT NULL default '',
 	`firstlogin` timestamp NOT NULL,
 	`lastlogin` timestamp NOT NULL,
 	`perms` int(11) NOT NULL default '7',
-	`confirmed` boolean,
-	PRIMARY KEY  (`id`),
+	`confirmed` boolean NOT NULL default 0,
+	PRIMARY KEY (`id`),
 	UNIQUE KEY `handle` (`handle`),
-	KEY `player_get_first` (`password`,`name`,`email`,`lastlogin`,`perms`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `userinfo` (
 	`id` int(11) NOT NULL auto_increment,
-	`user_id` int(11) NOT NULL,
+	`handle` varchar(256) NOT NULL,
 	`photo` text NOT NULL,
 	`gender` text NOT NULL,
 	`country` text NOT NULL,
@@ -26,14 +25,13 @@ CREATE TABLE `userinfo` (
 	`longitude` double NOT NULL default '0',
 	`latitude` double NOT NULL default '0',
 	`alterpass` text NOT NULL,
-	PRIMARY KEY  (`id`),
-	CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+	PRIMARY KEY (`id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `stats` (
 	`id` int(11) NOT NULL auto_increment,
-	`user_id` int(11) NOT NULL default '0',
+	`handle` varchar(256),
 	`game` text NOT NULL,
 	`wins` int(11) NOT NULL default '0',
 	`losses` int(11) NOT NULL default '0',
@@ -42,9 +40,7 @@ CREATE TABLE `stats` (
 	`rating` double NOT NULL default '0',
 	`ranking` int(11) NOT NULL default '0',
 	`highscore` int(11) NOT NULL default '0',
-	PRIMARY KEY  (`id`),
-	KEY `stats_lookup` (`username`(30),`game`(30)),
-	CONSTRAINT `userid` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+	PRIMARY KEY (`id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -58,31 +54,30 @@ CREATE TABLE `matches` (
 	`id` int(11) NOT NULL auto_increment,
 	`date` int(11) NOT NULL default '0',
 	`game` text NOT NULL,
-	`winner` text NOT NULL,
+	`winner` varchar(256),
 	`savegame` text,
-	PRIMARY KEY  (`id`)
+	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `matchplayers` (
 	`id` int(11) NOT NULL auto_increment,
-	`match_id` int(11) NOT NULL default '0',
-	`username` text NOT NULL,
-	`playertype` text NOT NULL,
-	PRIMARY KEY  (`id`),
-	CONSTRAINT `match_id` FOREIGN KEY (`match_id`) REFERENCES `matches` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+	`match` int(11) NOT NULL default '0',
+	`handle` varchar(256),
+	`playertype` varchar(256) NOT NULL,
+	PRIMARY KEY (`id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `savegames` (
 	`id` int(11) NOT NULL auto_increment,
 	`date` int(11) NOT NULL default '0',
-	`game` text NOT NULL,
-	`owner` text NOT NULL,
-	`savegame` text NOT NULL,
+	`game` varchar(256) NOT NULL,
+	`owner` varchar(256) NOT NULL,
+	`savegame` varchar(256) NOT NULL,
 	`tableid` int(11) NOT NULL default '0',
 	`stamp` int(11) NOT NULL default '0',
-	PRIMARY KEY  (`id`)
+	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -91,24 +86,19 @@ CREATE TABLE `savegameplayers` (
 	`tableid` int(11) NOT NULL default '0',
 	`stamp` int(11) NOT NULL default '0',
 	`seat` int(11) NOT NULL default '0',
-	`handle` text NOT NULL,
-	`seattype` text NOT NULL,
-	PRIMARY KEY  (`id`),
-	--CONSTRAINT `savegame` FOREIGN KEY (`savegame`) REFERENCES `savegames` (`tableid`) ON UPDATE CASCADE ON DELETE CASCADE
+	`handle` varchar(256),
+	`seattype` varchar(256) NOT NULL,
+	PRIMARY KEY (`id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `teammembers` (
 	`id` int(11) NOT NULL auto_increment,
-	`team_id` int(11) NOT NULL default '0',
-	`user_id` int(11) NOT NULL default '0',
 	`teamname` text NOT NULL,
 	`username` text NOT NULL,
 	`role` text NOT NULL,
 	`entrydate` int(11) NOT NULL default '0',
-	PRIMARY KEY  (`id`),
-	CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
-	CONSTRAINT `team_id` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+	PRIMARY KEY (`id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -120,7 +110,7 @@ CREATE TABLE `teams` (
 	`foundingdate` int(11) NOT NULL default '0',
 	`founder` text NOT NULL,
 	`homepage` text NOT NULL
-	PRIMARY KEY  (`id`),
+	PRIMARY KEY (`id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -130,7 +120,7 @@ CREATE TABLE `tournamentplayers` (
 	`number` int(11) NOT NULL default '0',
 	`name` text NOT NULL,
 	`playertype` text NOT NULL,
-	PRIMARY KEY  (`id`)
+	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -140,7 +130,7 @@ CREATE TABLE `tournaments` (
 	`game` text NOT NULL,
 	`date` int(11) NOT NULL default '0',
 	`organizer` text NOT NULL,
-	PRIMARY KEY  (`id`)
+	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
