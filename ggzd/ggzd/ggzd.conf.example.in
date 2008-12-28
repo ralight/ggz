@@ -52,6 +52,8 @@
 #   DatabaseType: pgsql, mysql or sqlite
 #   Will be selected automatically if not set.
 #DatabaseType = @default_db@
+#	DatabaseOption can be used to set options for the different database
+#	backends. It is not currently used.
 #DatabaseOption = 
 #   Database hashing: plain, md5, sha1 or ripemd160
 #DatabaseHashing = plain
