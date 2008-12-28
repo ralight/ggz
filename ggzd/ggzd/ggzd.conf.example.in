@@ -49,11 +49,9 @@
 #DatabaseName = ggz
 #DatabaseUsername = ggzd
 #DatabasePassword = ggzd
-#   DatabaseType: pgsql, mysql, sqlite, dbi, ...
+#   DatabaseType: pgsql, mysql or sqlite
 #   Will be selected automatically if not set.
 #DatabaseType = @default_db@
-#   If DatabaseType is dbi then DatabaseOption is used to choose which DBI
-#   backend to use.
 #DatabaseOption = 
 #   Database hashing: plain, md5, sha1 or ripemd160
 #DatabaseHashing = plain

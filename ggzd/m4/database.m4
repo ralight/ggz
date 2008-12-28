@@ -7,8 +7,7 @@
 #   $mysql => yes or no
 #   $pgsql => yes or no
 #   $sqlite => yes or no
-#   $dbi => yes or no
-#   $(LIB_MYSQL), $(LIB_PGSQL), $(LIB_SQLITE), $(LIB_DBI) => library linkages
+#   $(LIB_MYSQL), $(LIB_PGSQL), $(LIB_SQLITE) => library linkages
 #   $(DATABASE_INCLUDES) => headers for all database modules
 # All configured database modules will be compiled
 # and made available as dynamically-loadable backends (plugins).
@@ -25,7 +24,6 @@
 # AC_GGZ_DATABASE_MYSQL - MySQL 3.x/4.x
 # AC_GGZ_DATABASE_PGSQL - PostgreSQL 7.x/8.x
 # AC_GGZ_DATABASE_SQLITE - SQLite embedded database
-# AC_GGZ_DATABASE_DBI - DB-independent abstraction library
 
 AC_DEFUN([AC_GGZ_DATABASE_PGSQL],
 [
@@ -148,42 +146,6 @@ AC_DEFUN([AC_GGZ_DATABASE_SQLITE],
 
 ])
 
-AC_DEFUN([AC_GGZ_DATABASE_DBI],
-[
-	AC_ARG_ENABLE([dbi],
-	              [AC_HELP_STRING([--enable-dbi=yes/no/auto],[Force or disable dbi support])],
-		      [enable_dbi=$enableval],[enable_dbi=auto])
-	if test "$enable_dbi" = no; then
-		AC_MSG_NOTICE([skipping dbi test])
-		dbi=no
-	else
-		AC_CHECK_LIB(dbi, dbi_conn_new,
-		[
-			AC_CHECK_HEADER(dbi/dbi.h, [dbi=yes],
-			[
-				if test "$enable_dbi" = yes; then
-					AC_MSG_ERROR([cannot configure dbi (dbi-dev headers needed)])
-				fi
-				dbi=no
-			])
-		],
-		[
-			if test "$enable_dbi" = yes; then
-				AC_MSG_ERROR([cannot configure dbi (dbi library needed)])
-			fi
-			dbi=no
-		])
-	fi
-
-	if test "$dbi" = yes; then
-		LIB_DBI="-ldbi"
-		AC_SUBST(LIB_DBI)
-		AC_MSG_NOTICE([Configuring dbi database module.])
-		default_db=dbi
-	fi
-	AM_CONDITIONAL([GGZDB_DBI], [test "$dbi" = yes])
-])
-
 AC_DEFUN([AC_GGZ_DATABASE],
 [
 	# Initialisation
@@ -191,7 +153,6 @@ AC_DEFUN([AC_GGZ_DATABASE],
 
 	# Check if each module type is supported.  The *last* available
 	# module in this list will be made the default.
-	AC_GGZ_DATABASE_DBI
 	AC_GGZ_DATABASE_MYSQL
 	AC_GGZ_DATABASE_PGSQL
 	AC_GGZ_DATABASE_SQLITE
