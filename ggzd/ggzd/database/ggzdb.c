@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 10202 2008-07-08 05:43:38Z jdorje $
+ * $Id: ggzdb.c 10665 2008-12-28 18:53:33Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -72,8 +72,9 @@ ggzdbStamp unique_thread_id(void)
 	return stamp;
 }
 
-/* Return the most suitable database backend, which must be ggz_free()'d */
-char *ggzdb_get_default_backend(void)
+/* Return the most suitable database backend, which is a constant #define and
+ * must not be freed */
+const char *ggzdb_get_default_backend(void)
 {
 	return DEFAULT_DB;
 }
@@ -100,9 +101,6 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 		ggz_error_msg_exit("%s (%s) is not a suitable database module (%s)",
 			backend, backendmodule, dlerror());
 	}
-
-	if(primarybackend)
-		ggz_free(primarybackend);
 
 #define DL_LOAD(x) (x) = dlsym(ggzdbhandle, #x)
 

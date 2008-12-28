@@ -111,7 +111,7 @@ ggzdbStamp unique_thread_id(void);
 GGZReturn ggzdb_init(ggzdbConnection connection, bool standalone);
 void ggzdb_close(void);
 
-char *ggzdb_get_default_backend(void);
+const char *ggzdb_get_default_backend(void);
 
 GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *);
 GGZDBResult ggzdb_player_update(ggzdbPlayerEntry *);
