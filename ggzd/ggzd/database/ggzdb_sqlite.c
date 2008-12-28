@@ -135,10 +135,10 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 
 	handle_canonical = username_canonical(pe->handle);
 
-	sqlite3_snprintf(sizeof(query), query, "INSERT INTO users "
-		"(handle, password, name, email, lastlogin, permissions) VALUES "
+	sqlite3_snprintf(sizeof(query), query, "INSERT INTO `users` "
+		"(`handle`, `password`, `name`, `email`, `lastlogin`, `permissions`, `confirmed`) VALUES "
 		"('%q', '%q', '%q', '%q', %li, %u)",
-		handle_canonical, pe->password, pe->name, pe->email, pe->last_login, pe->perms);
+		handle_canonical, pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->confirmed);
 	
 	ggz_free(handle_canonical);
 
@@ -164,8 +164,8 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	handle_canonical = username_canonical(pe->handle);
 
 	sqlite3_snprintf(sizeof(query), query, "SELECT "
-		"password, name, email, lastlogin, permissions FROM users WHERE "
-		"handle = '%q'",
+		"`password`, `name`, `email`, `lastlogin`, `permissions`, `confirmed` FROM `users` WHERE "
+		"`handle` = '%q'",
 		handle_canonical);
 
 	ggz_free(handle_canonical);
@@ -181,6 +181,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 			strncpy(pe->email, (char*)sqlite3_column_text(res, 2), sizeof(pe->email));
 			pe->last_login = sqlite3_column_int(res, 3);
 			pe->perms = sqlite3_column_int(res, 4);
+			pe->confirmed = sqlite3_column_int(res, 5);
 			return GGZDB_NO_ERROR;
 		} else {
 			/* This is supposed to happen if we look up a
@@ -204,10 +205,14 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	handle_canonical = username_canonical(pe->handle);
 
 
-	sqlite3_snprintf(sizeof(query), query, "UPDATE users SET "
-		"password = '%q', name = '%q', email = '%q', lastlogin = %li, permissions = %u WHERE "
-		"handle = '%q'",
-		pe->password, pe->name, pe->email, pe->last_login, pe->perms, handle_canonical);
+	sqlite3_snprintf(sizeof(query), query,
+		"UPDATE `users` SET "
+		"`password` = '%q', `name` = '%q', `email` = '%q', "
+		"`lastlogin` = %li, `permissions` = %u, `confirmed` = %u WHERE "
+		"`handle` = '%q'",
+		pe->password, pe->name, pe->email,
+		pe->last_login, pe->perms, pe->confirmed,
+		handle_canonical);
 
 	ggz_free(handle_canonical);
 
@@ -232,8 +237,10 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 	int result;
 	char query[4096];
 
-	sqlite3_snprintf(sizeof(query), query, "SELECT "
-		"id, handle, password, name, email, lastlogin, permissions FROM users");
+	sqlite3_snprintf(sizeof(query), query,
+		"SELECT "
+		"`id`, `handle`, `password`, `name`, `email`, `lastlogin`, `permissions`,`confirmed` "
+		"FROM `users`");
 
 	result = sqlite3_prepare(conn, query, strlen(query), &res, NULL);
 
@@ -245,9 +252,10 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 			strncpy(pe->handle, (char*)sqlite3_column_text(res, 1), sizeof(pe->handle));
 			strncpy(pe->password, (char*)sqlite3_column_text(res, 2), sizeof(pe->password));
 			strncpy(pe->name, (char*)sqlite3_column_text(res, 3), sizeof(pe->name));
-			strncpy(pe->email, (char*)sqlite3_column_text(res, 5), sizeof(pe->email));
+			strncpy(pe->email, (char*)sqlite3_column_text(res, 4), sizeof(pe->email));
 			pe->last_login = sqlite3_column_int(res, 5);
 			pe->perms = sqlite3_column_int(res, 6);
+			pe->confirmed = sqlite3_column_int(res, 7);
 			return GGZDB_NO_ERROR;
 		} else {
 			ggz_error_msg("No entries found.");
@@ -272,6 +280,7 @@ GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 		strncpy(pe->email, (char*)sqlite3_column_text(res, 4), sizeof(pe->email));
 		pe->last_login = sqlite3_column_int(res, 5);
 		pe->perms = sqlite3_column_int(res, 6);
+		pe->confirmed = sqlite3_column_int(res, 7);
 		return GGZDB_NO_ERROR;
 	} else {
 		result = sqlite3_finalize(res);
