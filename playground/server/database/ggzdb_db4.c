@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db4 sytle database
- * $Id: ggzdb_db4.c 10156 2008-07-05 12:08:03Z oojah $
+ * $Id: ggzdb_db4.c 10660 2008-12-28 00:15:59Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *

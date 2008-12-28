@@ -34,12 +34,6 @@ libggzdb_pgsql_la_LDFLAGS = -module -avoid-version
 libggzdb_pgsql_la_LIBADD = $(LIB_PGSQL)
 ggzdb_LTLIBRARIES += libggzdb_pgsql.la
 endif
-if GGZDB_DB4
-libggzdb_db4_la_SOURCES = ggzdb_db4.c ggzdb_proto.h
-libggzdb_db4_la_LDFLAGS = -module -avoid-version
-libggzdb_db4_la_LIBADD = $(LIB_DB4)
-ggzdb_LTLIBRARIES += libggzdb_db4.la
-endif
 if GGZDB_DBI
 libggzdb_dbi_la_SOURCES = ggzdb_dbi.c ggzdb_proto.h
 libggzdb_dbi_la_LDFLAGS = -module -avoid-version

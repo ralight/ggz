@@ -49,7 +49,7 @@
 #DatabaseName = ggz
 #DatabaseUsername = ggzd
 #DatabasePassword = ggzd
-#   DatabaseType: pgsql, mysql, sqlite, db4, dbi, ...
+#   DatabaseType: pgsql, mysql, sqlite, dbi, ...
 #   Will be selected automatically if not set.
 #DatabaseType = @default_db@
 #   If DatabaseType is dbi then DatabaseOption is used to choose which DBI
