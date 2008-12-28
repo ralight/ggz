@@ -245,9 +245,9 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 			strncpy(pe->handle, (char*)sqlite3_column_text(res, 1), sizeof(pe->handle));
 			strncpy(pe->password, (char*)sqlite3_column_text(res, 2), sizeof(pe->password));
 			strncpy(pe->name, (char*)sqlite3_column_text(res, 3), sizeof(pe->name));
-			strncpy(pe->email, (char*)sqlite3_column_text(res, 4), sizeof(pe->email));
-			pe->last_login = sqlite3_column_int(res, 4);
-			pe->perms = sqlite3_column_int(res, 5);
+			strncpy(pe->email, (char*)sqlite3_column_text(res, 5), sizeof(pe->email));
+			pe->last_login = sqlite3_column_int(res, 5);
+			pe->perms = sqlite3_column_int(res, 6);
 			return GGZDB_NO_ERROR;
 		} else {
 			ggz_error_msg("No entries found.");
