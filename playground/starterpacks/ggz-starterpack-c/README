@@ -1,0 +1,9 @@
+GGZ Starterpack for Game Development in C
+=========================================
+
+To compile the game client and server, type:
+- autoreconf --install
+  (only needed when running from SVN)
+- ./configure
+- make
+
