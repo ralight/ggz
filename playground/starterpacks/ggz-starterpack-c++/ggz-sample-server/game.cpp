@@ -35,16 +35,12 @@ Game::Game(QObject *parent)
 	m_module->loop();
 }
 
-void Kryds::slotEvent(const KGGZdMod::Event& event)
+void Game::slotEvent(const KGGZdMod::Event& event)
 {
 	kDebug() << "GGZ event:" << event.type();
 
-	if(event.type() == KGGZdMod::Event::state)
-	{
-		KGGZdMod::StateEvent se(event);
-		kDebug() << "State change: from" << se.oldstate() << "to" << se.state();
-	}
-	else if(event.type() == KGGZdMod::Event::playerseat)
+	/* Only a few events are shown here, there are many more available */
+	if(event.type() == KGGZdMod::Event::playerseat)
 	{
 		KGGZdMod::PlayerSeatEvent pse(event);
 		kDebug() << "Player seat change at #" << pse.seat().seat() << ": from"
@@ -63,35 +59,16 @@ void Kryds::slotEvent(const KGGZdMod::Event& event)
 		if(!open)
 		{
 			kDebug() << "All seats full, start/continue game";
-			if(!m_started)
-			{
-				m_started = true;
-
-				m_module->sendRequest(KGGZdMod::StateRequest(KGGZdMod::Module::playing));
-
-				m_turn = 1;
-				for(int i = 0; i < 9; i++)
-					m_board[i] = -1;
-
-				nextPlayer();
-			}
 		}
 		else
 		{
 			kDebug() << "Not all seats full, delay/interrupt game";
 		}
 	}
-	else if(event.type() == KGGZdMod::Event::spectatorseat)
-	{
-		//KGGZdMod::SpectatorSeatEvent e(event);
-		// ...
-	}
 	else if(event.type() == KGGZdMod::Event::playerdata)
 	{
 		KGGZdMod::PlayerDataEvent e(event);
 
-		// FIXME: introduce findPlayerBySeat() method?
-		// FIXME: or can we rely on at() method?
 		QList<KGGZdMod::Player*> players = m_module->players();
 		for(int i = 0; i < players.size(); i++)
 		{
@@ -103,16 +80,6 @@ void Kryds::slotEvent(const KGGZdMod::Event& event)
 			}
 		}
 	}
-	else if(event.type() == KGGZdMod::Event::spectatordata)
-	{
-		//KGGZdMod::SpectatorDataEvent e(event);
-		// ...
-	}
-	else if(event.type() == KGGZdMod::Event::savegame)
-	{
-		//KGGZdMod::SavegameEvent e(event);
-		// ...
-	}
 	else if(event.type() == KGGZdMod::Event::error)
 	{
 		KGGZdMod::ErrorEvent e(event);
@@ -123,13 +90,13 @@ void Kryds::slotEvent(const KGGZdMod::Event& event)
 	}
 }
 
-void Kryds::handleInput(KGGZdMod::Player *p)
+void Game::handleInput(KGGZdMod::Player *p)
 {
 	kDebug() << "Input from player at #" << p->seat();
 
 	m_currentplayer = p;
 
-	tictactoe proto;
+	ggz_starterpack proto;
 	connect(&proto,
 		SIGNAL(signalNotification(ggz_starterpackOpcodes::Opcode, const msg&)),
 		SLOT(slotNotification(ggz_starterpackOpcodes::Opcode, const msg&)));
@@ -141,59 +108,21 @@ void Kryds::handleInput(KGGZdMod::Player *p)
 	m_currentplayer = 0;
 }
 
-void Kryds::slotNotification(ggz_starterpackOpcodes::Opcode messagetype, const msg& message)
+void Game::slotNotification(ggz_starterpackOpcodes::Opcode messagetype, const msg& message)
 {
-	if(messagetype == ggz_starterpackOpcodes::message_sndmove)
-	{
-		const sndmove *m = static_cast<const sndmove*>(&message);
-		kDebug() << "Move:" << m->move_c;
+	/* Here we would receive messages from the client. But the starterpack
+	protocol doesn't involve such messages. */
 
-		int ret = TTT_OK;
-		if(m_module->state() != KGGZdMod::Module::playing)
-			ret = TTT_ERR_STATE;
-		else if(m_turn != m_currentplayer->seat())
-			ret = TTT_ERR_TURN;
-		else if((m->move_c < 0) || (m->move_c >= 9))
-			ret = TTT_ERR_BOUND;
-		else if(m_board[m->move_c] != -1)
-			ret = TTT_ERR_FULL;
-
-		rspmove rsp;
-		rsp.status = ret;
-
-		msgmove msg;
-		msg.player = m_turn;
-		msg.move = m->move_c;
-
-		tictactoe proto;
-		proto.ggzcomm_set_fd(m_currentplayer->fd());
-		proto.ggzcomm_rspmove(rsp);
-
-		QList<KGGZdMod::Player*> players = m_module->players();
-		KGGZdMod::Player *opp = players.at(1 - m_turn);
-		if(opp->fd() != -1)
-		{
-			proto.ggzcomm_set_fd(opp->fd());
-			proto.ggzcomm_msgmove(msg);
-		}
-
-		if(ret == TTT_OK)
-		{
-			m_board[m->move_c] = m_turn;
-			detectGameOver();
-		}
-	}
-	else if(messagetype == ggz_starterpackOpcodes::message_reqsync)
-	{
-	}
+	Q_UNUSED(messagetype);
+	Q_UNUSED(message);
 }
 
-void Kryds::slotError()
+void Game::slotError()
 {
 	kError() << "Something bad has happened with a game client!";
 }
 
-void Kryds::shutdown()
+void Game::shutdown()
 {
 	kError() << "Something bad has happened with the GGZ connection!";
 

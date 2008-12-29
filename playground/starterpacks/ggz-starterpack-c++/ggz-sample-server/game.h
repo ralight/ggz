@@ -21,11 +21,11 @@ namespace KGGZdMod
 	class Player;
 };
 
-class Kryds : public QObject
+class Game : public QObject
 {
 	Q_OBJECT
 	public:
-		Kryds(QObject *parent = NULL);
+		Game(QObject *parent = NULL);
 	private slots:
  		void slotEvent(const KGGZdMod::Event& event);
 		void slotNotification(ggz_starterpackOpcodes::Opcode messagetype, const msg& message);
