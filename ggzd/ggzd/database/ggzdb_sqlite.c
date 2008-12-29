@@ -32,7 +32,82 @@
 
 /* Internal variables */
 static sqlite3 *conn = NULL;
-static sqlite3_stmt *res = NULL;
+static sqlite3_stmt *iterres = NULL;
+
+/* Internal functions */
+
+/* Initialize the database tables from an external SQL schema file */
+static int setupschema(const char *filename)
+{
+	char buffer[1024];
+	int sqlite_rc;
+	char *completebuffer = NULL;
+	int len;
+	unsigned int i;
+	int rc = 1;
+	char *sqlerror = NULL;
+
+	FILE *f = fopen(filename, "r");
+	if(!f)
+	{
+		ggz_error_msg("Schema read error from %s.", filename);
+		return 0;
+	}
+
+	while(fgets(buffer, sizeof(buffer), f))
+	{
+		if(strlen(buffer) == 1 && completebuffer)
+		{
+			sqlite_rc = sqlite3_exec(conn, completebuffer, NULL, NULL, &sqlerror);
+
+			if(sqlite_rc != SQLITE_OK)
+			{
+				ggz_error_msg("Table creation error %s.", sqlerror);
+				rc = 0;
+			}
+			if(sqlerror)
+			{
+				sqlite3_free(sqlerror);
+				sqlerror = NULL;
+			}
+
+			ggz_free(completebuffer);
+			completebuffer = NULL;
+			continue;
+		}
+
+		buffer[strlen(buffer) - 1] = '\0';
+		for(i = 0; i < strlen(buffer); i++)
+		{
+			if(buffer[i] == '\t') buffer[i] = ' ';
+		}
+
+		len = (completebuffer ? strlen(completebuffer) : 0);
+		completebuffer = (char*)ggz_realloc(completebuffer,
+			len + strlen(buffer) + 1);
+		if(len)
+			strncat(completebuffer, buffer, strlen(buffer) + 1);
+		else
+			strncpy(completebuffer, buffer, strlen(buffer) + 1);
+	}
+
+	if(completebuffer) ggz_free(completebuffer);
+
+	fclose(f);
+
+	return rc;
+}
+
+/* Upgrade a database */
+static int upgrade(const char *oldversion, const char *newversion)
+{
+	char upgradefile[1024];
+
+	snprintf(upgradefile, sizeof(upgradefile), "%s/sqlite_upgrade_%s_%s.sql",
+		GGZDDATADIR, oldversion, newversion);
+
+	return setupschema(upgradefile);
+}
 
 
 /* Function to initialize the database system */
@@ -40,7 +115,11 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 {
 	int rc;
 	char query[4096];
-	bool created = true;
+	sqlite3_stmt *res = NULL;
+	int init;
+	char version[100];
+	char schemafile[1024];
+	int sqlite_rc;
 
 	if(conn) return GGZ_OK;
 
@@ -53,45 +132,56 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 		return GGZ_ERROR;
 	}
 
-	sqlite3_snprintf(sizeof(query), query, "SELECT value FROM control WHERE key = 'version'");
-
-	rc = sqlite3_prepare(conn, query, strlen(query), &res, NULL);
-
-	if (rc != SQLITE_OK)
+	/* Check whether the database is ok */
+	init = 1;
+	sqlite3_snprintf(sizeof(query), query, "SELECT `value` FROM `control` WHERE `key` = 'version'");
+	sqlite_rc = sqlite3_prepare_v2(conn, query, strlen(query), &res, NULL);
+	if(sqlite_rc == SQLITE_OK)
 	{
-		sqlite3_snprintf(sizeof(query), query, "CREATE TABLE users "
-			"(id INTEGER PRIMARY KEY AUTOINCREMENT, handle TEXT, password TEXT, "
-			"name TEXT, email TEXT, lastlogin INT, permissions INT)");
-
-		rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
-
-		if(rc != SQLITE_OK)
-			created = false;
-
-		sqlite3_snprintf(sizeof(query), query, "CREATE TABLE control "
-			"(key varchar(256), value varchar(256))");
-
-		rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
-
-		if(rc != SQLITE_OK)
-			created = false;
-
-		sqlite3_snprintf(sizeof(query), query, "INSERT INTO control "
-			"(key, value) VALUES ('version', '%q')", GGZDB_VERSION_ID);
-
-		rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
-
-		if(rc != SQLITE_OK)
-			created = false;
-
-		if(!created)
+		sqlite_rc = sqlite3_step(res);
+		if(sqlite_rc == SQLITE_ROW)
 		{
-			ggz_error_msg("Couldn't create database tables.");
+			init = 0;
+			strncpy(version, (char*)sqlite3_column_text(res, 0), sizeof(version));
+			if(strcmp(version, GGZDB_VERSION_ID))
+			{
+				/* Perform upgrade if possible */
+				ggz_error_msg("Wrong database version: %s present, %s needed.\n", version, GGZDB_VERSION_ID);
+				if(!upgrade(version, GGZDB_VERSION_ID))
+				{
+					ggz_error_msg_exit("Database upgrade failed.\n");
+					rc = GGZDB_ERR_DB;
+				}
+			}
+		}else{
+			rc = GGZDB_ERR_DB;
 		}
+		sqlite3_finalize(res);
+	}else{
+		rc = GGZDB_ERR_DB;
 	}
 
-	/* Hack. */
-	return GGZ_OK;
+	/* Initialize the database if needed */
+	if(init)
+	{
+		snprintf(schemafile, sizeof(schemafile), "%s/sqlite_schema.sql", GGZDDATADIR);
+
+		if(!setupschema(schemafile))
+			rc = GGZDB_ERR_DB;
+
+		sqlite3_snprintf(sizeof(query), query, "INSERT INTO `control` "
+			"(`key`, `value`) VALUES ('version', '%q')", GGZDB_VERSION_ID);
+
+		sqlite_rc = sqlite3_exec(conn, query, NULL, NULL, NULL);
+
+		if(sqlite_rc != SQLITE_OK)
+			rc = GGZDB_ERR_DB;
+
+		if(rc == GGZDB_ERR_DB)
+			ggz_error_msg_exit("Could not initialize the database (with %s).\n", schemafile);
+	}
+
+	return rc;
 }
 
 
@@ -160,6 +250,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	int rc;
 	char query[4096];
 	char *handle_canonical;
+	sqlite3_stmt *res = NULL;
 
 	handle_canonical = username_canonical(pe->handle);
 
@@ -242,20 +333,20 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 		"`id`, `handle`, `password`, `name`, `email`, `lastlogin`, `permissions`,`confirmed` "
 		"FROM `users`");
 
-	result = sqlite3_prepare(conn, query, strlen(query), &res, NULL);
+	result = sqlite3_prepare(conn, query, strlen(query), &iterres, NULL);
 
 	if (result == SQLITE_OK) {
-		result = sqlite3_step(res);
+		result = sqlite3_step(iterres);
 
 		if (result == SQLITE_ROW) {
-			pe->user_id = sqlite3_column_int(res, 0);
-			strncpy(pe->handle, (char*)sqlite3_column_text(res, 1), sizeof(pe->handle));
-			strncpy(pe->password, (char*)sqlite3_column_text(res, 2), sizeof(pe->password));
-			strncpy(pe->name, (char*)sqlite3_column_text(res, 3), sizeof(pe->name));
-			strncpy(pe->email, (char*)sqlite3_column_text(res, 4), sizeof(pe->email));
-			pe->last_login = sqlite3_column_int(res, 5);
-			pe->perms = sqlite3_column_int(res, 6);
-			pe->confirmed = sqlite3_column_int(res, 7);
+			pe->user_id = sqlite3_column_int(iterres, 0);
+			strncpy(pe->handle, (char*)sqlite3_column_text(iterres, 1), sizeof(pe->handle));
+			strncpy(pe->password, (char*)sqlite3_column_text(iterres, 2), sizeof(pe->password));
+			strncpy(pe->name, (char*)sqlite3_column_text(iterres, 3), sizeof(pe->name));
+			strncpy(pe->email, (char*)sqlite3_column_text(iterres, 4), sizeof(pe->email));
+			pe->last_login = sqlite3_column_int(iterres, 5);
+			pe->perms = sqlite3_column_int(iterres, 6);
+			pe->confirmed = sqlite3_column_int(iterres, 7);
 			return GGZDB_NO_ERROR;
 		} else {
 			ggz_error_msg("No entries found.");
@@ -270,21 +361,21 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 
 GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 {
-	int result = sqlite3_step(res);
+	int result = sqlite3_step(iterres);
 
 	if(result == SQLITE_ROW) {
-		pe->user_id = sqlite3_column_int(res, 0);
-		strncpy(pe->handle, (char*)sqlite3_column_text(res, 1), sizeof(pe->handle));
-		strncpy(pe->password, (char*)sqlite3_column_text(res, 2), sizeof(pe->password));
-		strncpy(pe->name, (char*)sqlite3_column_text(res, 3), sizeof(pe->name));
-		strncpy(pe->email, (char*)sqlite3_column_text(res, 4), sizeof(pe->email));
-		pe->last_login = sqlite3_column_int(res, 5);
-		pe->perms = sqlite3_column_int(res, 6);
-		pe->confirmed = sqlite3_column_int(res, 7);
+		pe->user_id = sqlite3_column_int(iterres, 0);
+		strncpy(pe->handle, (char*)sqlite3_column_text(iterres, 1), sizeof(pe->handle));
+		strncpy(pe->password, (char*)sqlite3_column_text(iterres, 2), sizeof(pe->password));
+		strncpy(pe->name, (char*)sqlite3_column_text(iterres, 3), sizeof(pe->name));
+		strncpy(pe->email, (char*)sqlite3_column_text(iterres, 4), sizeof(pe->email));
+		pe->last_login = sqlite3_column_int(iterres, 5);
+		pe->perms = sqlite3_column_int(iterres, 6);
+		pe->confirmed = sqlite3_column_int(iterres, 7);
 		return GGZDB_NO_ERROR;
 	} else {
-		result = sqlite3_finalize(res);
-		res = NULL;
+		result = sqlite3_finalize(iterres);
+		iterres = NULL;
 		return GGZDB_ERR_NOTFOUND;
 	}
 }
