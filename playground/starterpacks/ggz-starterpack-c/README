@@ -34,6 +34,10 @@ However, it's much easier to test GGZ games with a single tool called
 ggz-faketable which you can find in the ggz-python package. It will
 save a lot of time!
 
+Invocation example: /path/to/ggz-faketable \
+	ggz-sample-server/ggz-sample-server-c \
+	ggz-sample-client/ggz-sample-client-c
+
 And then?
 ---------
 
