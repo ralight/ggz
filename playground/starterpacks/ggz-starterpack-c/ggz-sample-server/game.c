@@ -39,6 +39,9 @@ void game_init(GGZdMod *ggzdmod)
 /* Callback for ggzdmod JOIN, LEAVE, and SEAT events */
 static void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
+	const GGZSeat *old_seat = data;
+	GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
+
 	GGZCommIO *io = ggzcomm_io_allocate(new_seat.fd);
 	ggzcomm_hello(io);
 }

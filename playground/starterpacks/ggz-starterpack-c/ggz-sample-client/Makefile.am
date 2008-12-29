@@ -20,6 +20,7 @@ ggz_sample_client_c_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 include modversion.mk
 include ggz.mk
 
-PROTOCOL = $(top_srcdir)/common/ggz-starterpack.protocol
+PROTOCOL = $(top_srcdir)/common/ggz_starterpack
 SOURCEFILE = net
+ROLE = client
 include $(top_srcdir)/common/protocol.mk

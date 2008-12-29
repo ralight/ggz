@@ -16,6 +16,7 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
 #AC_PROG_RANLIB
+AM_PROG_CC_C_O
 
 dnl Check for GGZ Requirements
 dnl ==========================

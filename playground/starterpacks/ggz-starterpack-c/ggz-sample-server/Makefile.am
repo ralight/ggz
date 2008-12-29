@@ -13,8 +13,9 @@ ggz_sample_server_c_SOURCES = \
 ggz_sample_server_c_CPPFLAGS = $(GGZDMOD_INCLUDES)
 ggz_sample_server_c_LDADD = $(LIB_GGZDMOD)
 
-PROTOCOL = $(top_srcdir)/common/ggz-starterpack.protocol
+PROTOCOL = $(top_srcdir)/common/ggz_starterpack
 SOURCEFILE = net
+ROLE = server
 include $(top_srcdir)/common/protocol.mk
 
 dist_ggzdgame_DATA = ggz-sample-server.dsc
