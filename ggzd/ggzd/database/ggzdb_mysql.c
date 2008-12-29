@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10668 2008-12-28 22:49:20Z oojah $
+ * $Id: ggzdb_mysql.c 10681 2008-12-29 17:38:23Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -865,7 +865,7 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGa
 			stats->rating = atof(row[4]);
 			stats->ranking = atol(row[5]);
 			stats->highest_score = atol(row[6]);
-			snprintf(stats->player, MAX_USER_NAME_LEN, row[7]);
+			snprintf(stats->player, MAX_USER_NAME_LEN, "%s", row[7]);
 		}
 
 		mysql_free_result(res);
