@@ -1,56 +1,46 @@
-/////////////////////////////////////////////////////////////////////
 //
-// KTicTacTux: Tic-Tac-Toe game for KDE 4
-// http://www.ggzgamingzone.org/gameclients/ktictactux/
+// GGZ Starterpack for C++ - Sample Client
+// Copyright (C) 2008 GGZ Development Team
 //
-// Copyright (C) 2001 - 2008 Josef Spillner <josef@ggzgamingzone.org>
-// Published under the conditions of the GNU GPL, see COPYING
-//
-/////////////////////////////////////////////////////////////////////
+// This code is made available as public domain; you can use it as a base
+// for your own game, as long as its licence is compatible with the libraries
+// you use.
 
-// KTicTacTux includes
-#include "ktictactuxwin.h"
+#include "gamewin.h"
 
-// GGZ-KDE includes
-//#include <kggzsystem.h>
-
-// KDE includes
 #include <kapplication.h>
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
 #include <klocale.h>
+#include <kggzmod/module.h>
 
-// Main function, including the about data
 int main(int argc, char **argv)
 {
 	KAboutData *aboutData;
-	KTicTacTuxWin *ktictactuxwin;
+	GameWin *gamewin;
 
-	aboutData = new KAboutData("ktictactux",
+	aboutData = new KAboutData("ggz-sample-client-c++",
 		0,
-		ki18n("KTicTacTux"),
-		"0.99.4",
-		ki18n("This is a TicTacToe game for KDE."),
+		ki18n("GGZ Starterpack for C++ - Sample Client"),
+		"0.1",
+		ki18n("A kggzmod-based game client."),
 		KAboutData::License_GPL,
-		ki18n("Copyright (C) 2001 - 2008 Josef Spillner"),
-		ki18n("This game is part of the GGZ Gaming Zone."),
-		"http://www.ggzgamingzone.org/gameclients/ktictactux/",
-		"josef@ggzgamingzone.org");
-	aboutData->addAuthor(ki18n("Josef Spillner"), ki18n("Inventor"), "josef@ggzgamingzone.org");
+		ki18n("Copyright (C) You!"),
+		KLocalizedString(),
+		"http://www.ggzgamingzone.org/");
 
 	KCmdLineArgs::init(argc, argv, aboutData);
 
 	KApplication a;
-	//KGGZSystem::ensureInstallation();
 
-	ktictactuxwin = new KTicTacTuxWin();
+	gamewin = new GameWin();
 	if(KGGZMod::Module::isGGZ())
 	{
-		ktictactuxwin->enableNetwork(true);
+		gamewin->enableNetwork(true);
 	}
 	else
 	{
-		ktictactuxwin->enableNetwork(false);
+		gamewin->enableNetwork(false);
 	}
 
 	return a.exec();
