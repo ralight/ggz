@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10681 2008-12-29 17:38:23Z oojah $
+ * $Id: ggzdb_mysql.c 10682 2008-12-29 17:42:56Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -46,7 +46,7 @@
 /* Internal variables */
 static MYSQL *conn = NULL;
 static MYSQL_RES *iterres = NULL;
-static int itercount;
+static unsigned int itercount;
 static pthread_mutex_t mutex;
 
 /* Internal functions */
@@ -58,7 +58,7 @@ static int setupschema(const char *filename)
 	int mysql_rc;
 	char *completebuffer = NULL;
 	int len;
-	int i;
+	unsigned int i;
 	int rc = 1;
 
 	FILE *f = fopen(filename, "r");
@@ -831,7 +831,7 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGa
 	int rc = GGZDB_ERR_DB;
 	int mysql_rc;
 	ggzdbPlayerGameStats *stats;
-	int i;
+	unsigned int i;
 	char *game_quoted;
 
 	game_quoted = _ggzdb_escape(game);
@@ -903,7 +903,7 @@ GGZList *_ggzdb_savegames(const char *game, const char *owner)
 	char *game_quoted;
 	char *owner_quoted;
 	char *savegame;
-	int i;
+	unsigned int i;
 
 	game_quoted = _ggzdb_escape(game);
 	owner_quoted = _ggzdb_escape(owner);
@@ -948,7 +948,8 @@ GGZList *_ggzdb_savegame_owners(const char *game)
 	char *owner;
 	char *savegame;
 	ggzdbStamp tableid;
-	int i, j;
+	unsigned int i;
+	int j;
 	ggzdbSavegamePlayers *sp;
 	MYSQL_RES *res, *res2;
 	MYSQL_ROW row, row2;
