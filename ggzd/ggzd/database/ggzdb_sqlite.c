@@ -136,9 +136,9 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	handle_canonical = username_canonical(pe->handle);
 
 	sqlite3_snprintf(sizeof(query), query, "INSERT INTO `users` "
-		"(`handle`, `password`, `name`, `email`, `lastlogin`, `permissions`, `confirmed`) VALUES "
-		"('%q', '%q', '%q', '%q', %li, %u, %u)",
-		handle_canonical, pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->confirmed);
+		"(`handle`, `password`, `name`, `email`, `lastlogin`, `permissions`, `firstlogin`, `confirmed`) VALUES "
+		"('%q', '%q', '%q', '%q', %li, %u, %li, %u)",
+		handle_canonical, pe->password, pe->name, pe->email, pe->last_login, pe->perms, time(NULL), pe->confirmed);
 	
 	ggz_free(handle_canonical);
 
