@@ -1,33 +1,22 @@
+# GGZ Starterpack for C: Game server description file
+# This file is copied into the ggzd directory for game descriptions so that
+# ggzd knows which executable to launch.
+
 [GameInfo]
-Author = Brent Hendricks
-Description = Simple GGZ game module for playing Tic-Tac-Toe
-Description[de] = Einfaches GGZ-Spielmodul für Tic-Tac-Toe
-Description[pt] = Módulo de jogo GGZ simples para jogar o Tic-Tac-Toe
-Description[fr] = Module simple pour jouer Tic-Tac-Toe
-Homepage = http://www.ggzgamingzone.org/gameservers/tictactoe/
-Name = TicTacToe
-Name[en_AU] = RicRacRoo
-Version = 0.0.10
+Author = You!
+Name = GGZ Sample Server for C
+Description = Doesn't do anything yet
+Version = 1.0
+Homepage = http://www.ggzgamingzone.org/
 
 [LaunchInfo]
-ExecutablePath = ggzd.tictactoe
-# Set ExecutableArgs in the room file
+ExecutablePath = ggz-sample-server-c
 
 [Protocol]
-Engine = TicTacToe
-Version = dio/5+dev
+Engine = Starterpack
+Version = 1.0
 
 [TableOptions]
-AllowLeave = 1
 BotsAllowed = 1
 PlayersAllowed = 2
-AllowSpectators = 1
-AllowRestore = 1
-
-[Statistics]
-Records = 1
-
-[NamedBots]
-Alfred = easy
-Tarantula = hard
 

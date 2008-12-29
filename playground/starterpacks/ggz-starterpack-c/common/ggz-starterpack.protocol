@@ -1,0 +1,22 @@
+<!--
+This GGZComm protocol definition file represents the version 1.0 of the
+dummy protocol for the GGZ starterpack. The only message is a greeting from
+the server to the client after the initial connection.
+
+Note that you don't have to use GGZComm when using GGZ, it's an independent
+add-on provided for convenience! You can use any TCP-based protocol with any
+networking library you want, like SDL_net or GNet. Of course, using GGZComm
+makes it easy to switch protocols and networking libraries, because the
+application code will not contain any dependency on a specific networking
+library, so maybe using it is still a good idea :)
+-->
+<?xml version="1.0"?>
+<ggzcomm engine="ggz-starterpack" version="1.0">
+	<definitions>
+		<def name="hello" value="999"/>
+	</definitions>
+	<server>
+		<event name="hello"/>
+	</server>
+</ggzcomm>
+

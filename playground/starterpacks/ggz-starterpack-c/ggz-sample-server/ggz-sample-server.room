@@ -1,16 +1,11 @@
-[RoomInfo]
-# This is the short name for the room
-Name = Tic-Tac-Toe
-Name[de] = Tic-Tac-Toe-Spiel
-# This is the long descriptive name for the room
-Description = Example Tic-Tac-Toe Room
-Description[de] = Beispielraum für Tic-Tac-Toe
-Description[pt] = Sala para jogar o TTT
-# The gametype should match up to the Name of an added game
-GameType = TicTacToe
-# Any additional game arguments specific to this room
-#ExecutableArgs = 
+# GGZ Starterpack for C: Game room description file
+# There can be many rooms per game type created by administrators, but
+# usually there is only one room definition shipped with the game server.
+# This file is copied into the ggzd directory for room descriptions.
 
-# These set maximum values for this room
-MaxPlayers = 150
-MaxTables = 45
+[RoomInfo]
+Name = GGZ Sample Room for C
+Description = Not much to see here
+GameType = GGZ Sample Server for C
+MaxPlayers = 50
+MaxTables = 10

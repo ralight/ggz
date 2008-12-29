@@ -6,10 +6,10 @@
 # file) so the game client knows about its own name and version.
 
 [ModuleInfo]
-Name = GGZ Sample Client
+Name = GGZ Sample Client for C
 Version = 1.0
 Author = You!
-CommandLine = ggz-sample-client
+CommandLine = ggz-sample-client-c
 Frontend = gtk
 Homepage = http://www.ggzgamingzone.org/
 ProtocolEngine = Starterpack

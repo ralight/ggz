@@ -3,31 +3,23 @@ AM_CPPFLAGS = -I$(srcdir)/../common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
 
 EXTRA_DIST = module.dsc.in
 
-install-data-local:
-	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
+ggzexecmod_PROGRAMS = ggz-sample-client-c
 
-uninstall-local:
-	-$(GGZ_CONFIG) -D --remove --modfile=module.dsc
-
-ggzexecmod_PROGRAMS = ggz.ttt
-
-ggz_ttt_SOURCES =			\
+ggz_sample_client_c_SOURCES =			\
 	game.h				\
 	main.c				\
 	main_win.c	main_win.h	\
 	support.c	support.h	\
 	net.c		net.h
 
-ggz_ttt_LDADD =	$(builddir)/../common/libgtk-games.a			\
-		$(GTK_LIBS) $(INTLLIBS) $(LDADD)		\
+ggz_sample_client_c_LDADD =	$(builddir)/../common/libgtk-games.a			\
+		$(GTK_LIBS) $(INTLLIBS) $(LDADD) \
 		$(LIB_GGZMOD) $(LIB_GGZ)
-ggz_ttt_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
-
-pixmapdir = $(ggzdatadir)/tictactoe/pixmaps
-dist_pixmap_DATA = o.svg x.svg
+ggz_sample_client_c_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
 include modversion.mk
+include ggz.mk
 
-PROTOCOL = tictactoe
+PROTOCOL = $(top_srcdir)/common/ggz-starterpack.protocol
 SOURCEFILE = net
-include protocol.mk
+include $(top_srcdir)/common/protocol.mk
