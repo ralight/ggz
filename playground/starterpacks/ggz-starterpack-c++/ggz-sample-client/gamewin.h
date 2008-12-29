@@ -11,6 +11,7 @@
 
 #include "net.h"
 
+#include <kggzmod/module.h>
 #include <kmainwindow.h>
 #include <qmap.h>
 #include <qlist.h>
@@ -19,6 +20,11 @@
 class KMenu;
 class QAction;
 
+namespace KGGZMod
+{
+	class Module;
+};
+
 class GameWin : public KMainWindow
 {
 	Q_OBJECT
@@ -26,15 +32,18 @@ class GameWin : public KMainWindow
 		GameWin();
 		void enableNetwork(bool enabled);
 
-	public slots:
+	private slots:
 		void slotStatus(const QString &status);
 		void slotError();
+		void slotNetwork(int fd);
+		void slotPacket(ggz_starterpackOpcodes::Opcode opcode, const msg& message);
 
 	private:
 		void connectcore();
 		void slotMenu(QAction *action);
 
 		ggz_starterpack *m_proto;
+		KGGZMod::Module *m_mod;
 		KMenu *mgame;
 		bool m_networked;
 

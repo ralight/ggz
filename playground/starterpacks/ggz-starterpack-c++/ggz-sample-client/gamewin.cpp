@@ -34,12 +34,12 @@
 GameWin::GameWin()
 : KMainWindow()
 {
-	m_proto = new ggz_starterpack();
-
 	QWidget *cwidget = new QWidget();
 	cwidget->setFixedSize(QSize(500, 500));
 	setCentralWidget(cwidget);
 
+	m_proto = NULL;
+	m_mod = NULL;
 	m_networked = false;
 
 	mgame = new KMenu(this);
@@ -54,9 +54,6 @@ GameWin::GameWin()
 
 	statusBar()->insertItem(i18n("Status"), 1, 1);
 	statusBar()->insertItem(i18n("No HELLO message in sight"), 2, 1);
-
-	connect(m_proto, SIGNAL(signalError()), SLOT(slotError()));
-// FIXME: m_proto signalNotification
 
 	connect(mgame, SIGNAL(triggered(QAction*)), SLOT(slotMenu(QAction*)));
 
@@ -93,8 +90,39 @@ void GameWin::enableNetwork(bool enabled)
 	action_connect->setEnabled(!enabled);
 	action_ggzplayers->setEnabled(enabled);
 
-// FIXME: init GGZ stuff if enabled
-//	m_tux->init();
+	m_proto = new ggz_starterpack();
+	m_mod = new KGGZMod::Module("ggz-sample-client-c++");
+
+	connect(m_proto, SIGNAL(signalNotification(ggz_starterpackOpcodes::Opcode, const msg&)), SLOT(slotPacket(ggz_starterpackOpcodes::Opcode, const msg&)));
+	connect(m_proto, SIGNAL(signalError()), SLOT(slotError()));
+	connect(m_mod, SIGNAL(signalError()), SLOT(slotError()));
+	connect(m_mod, SIGNAL(signalNetwork(int)), SLOT(slotNetwork(int)));
+	//connect(m_mod, SIGNAL(signalEvent(const KGGZMod::Event&)), SLOT(slotEvent(const KGGZMod::Event&)));
+}
+
+void GameWin::slotNetwork(int fd)
+{
+	kDebug() << "Network activity...";
+
+	m_proto->ggzcomm_set_fd(fd);
+	m_proto->ggzcomm_network_main();
+}
+
+void GameWin::slotPacket(ggz_starterpackOpcodes::Opcode opcode, const msg& message)
+{
+	kDebug() << "Network data arriving from packet reader";
+
+	Q_UNUSED(message);
+
+	switch(opcode)
+	{
+		case ggz_starterpackOpcodes::message_hello:
+			slotStatus(i18n("Received HELLO message!"));
+			break;
+		default:
+			slotError();
+			break;
+	}
 }
 
 void GameWin::slotError()

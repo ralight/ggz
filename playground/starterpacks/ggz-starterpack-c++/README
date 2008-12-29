@@ -1,0 +1,54 @@
+GGZ Starterpack for Game Development in C++
+===========================================
+
+Overview
+--------
+
+Writing games for GGZ is not hard. Now it becomes even easier with the
+availability of 'starterpacks' designed to be a base for your own games!
+
+This starterpack is aimed at C++ programmers, and shows how to use the
+GGZ libraries in game servers and clients written in C++. There are a number
+of technologies selected for you, which are explained briefly:
+- The client uses the KDE libraries to draw its window, and the KGGZ libraries
+  to interface with GGZ in a KDE-like manner. You can also use other C++
+  UI libraries, although the level of GGZ integration will differ.
+  For the server, a pure C++ library called ggzdmod++ is also available if
+  a dependency on KDE (through kggzdmod) is not an option.
+- The network communication uses the kggzpacket library which comes with
+  KGGZ. You can also use others if you like, have a look at the file
+  common/ggz_starterpack.protocol for more information!
+- No sound, graphics, i18n or other aspects are covered by the starterpack.
+  The idea is to keep it as tiny as possible to make it easy to understand.
+
+Installation
+------------
+
+To compile the game client and server, type:
+- mkdir BUILD; cd BUILD
+- cmake [-DCMAKE_INSTALL_PREFIX=/path/to/kde4] ..
+- make && make install
+
+If you've got a GGZ server installed locally, the installation will be
+registered with it and you can start the server and then launch any
+GGZ core client to login and join the sample room.
+However, it's much easier to test GGZ games with a single tool called
+ggz-faketable which you can find in the ggz-python package. It will
+save a lot of time!
+
+Invocation example: /path/to/ggz-faketable \
+	BUILD/ggz-sample-server/ggz-sample-server-c++ \
+	BUILD/ggz-sample-client/ggz-sample-client-c++
+
+And then?
+---------
+
+Once you've got the sample game running, it's time to extend it. Both
+the game logics and additional GGZ handlers (e.g. for spectators or
+highscores) are good candidates to start with. Have a look at existing
+GGZ games to get more inspiration, especially KTicTacTux for a C++
+client and Kryds for a C++ server!
+
+Don't hesitate to ask for help on the ggz-dev mailing list or the #ggz
+channel on IRC!
+
