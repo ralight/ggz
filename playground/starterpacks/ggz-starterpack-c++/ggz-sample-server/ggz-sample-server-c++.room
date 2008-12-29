@@ -1,0 +1,11 @@
+# GGZ Starterpack for C++: Game room description file
+# There can be many rooms per game type created by administrators, but
+# usually there is only one room definition shipped with the game server.
+# This file is copied into the ggzd directory for room descriptions.
+
+[RoomInfo]
+Name = GGZ Sample Room for C++
+Description = Not much to see here
+GameType = GGZ Sample Server for C++
+MaxPlayers = 50
+MaxTables = 10

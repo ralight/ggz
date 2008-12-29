@@ -1,14 +1,12 @@
-/////////////////////////////////////////////////////////////////////
 //
-// Kryds: Tic-Tac-Toe game server for KDE 4
-// http://www.ggzgamingzone.org/gameservers/kryds/
+// GGZ Starterpack for C++ - Sample Server
+// Copyright (C) 2008 GGZ Development Team
 //
-// Copyright (C) 2008 Josef Spillner <josef@ggzgamingzone.org>
-// Published under the conditions of the GNU GPL, see COPYING
-//
-/////////////////////////////////////////////////////////////////////
+// This code is made available as public domain; you can use it as a base
+// for your own game, as long as its licence is compatible with the libraries
+// you use.
 
-#include "kryds.h"
+#include "game.h"
 
 #include <QCoreApplication>
 
@@ -19,15 +17,15 @@
 
 int main(int argc, char **argv)
 {
-	KAboutData about("kryds",
+	KAboutData about("ggz-sample-server-c++",
 		QByteArray(),
-		ki18n("Kryds"),
+		ki18n("GGZ Starterpack for C++ - Sample Server"),
 		"0.1",
-		ki18n("TTT game server based on kggzdmod"),
+		ki18n("A kggzdmod-based game server"),
 		KAboutData::License_GPL_V2,
-		ki18n("Copyright (C) 2008 Josef Spillner"),
+		ki18n("Copyright (C) You!"),
 		KLocalizedString(),
-		"http://www.ggzgamingzone.org/gameservers/kryds/"
+		"http://www.ggzgamingzone.org/"
 	);
 	KComponentData cd(about);
 
@@ -39,11 +37,8 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	qDebug("test debug: qDebug()");
-	kDebug() << "test debug: kDebug()";
-
-	Kryds *kryds = new Kryds();
-	Q_UNUSED(kryds);
+	Game *game = new Game();
+	Q_UNUSED(game);
 
 	return a.exec();
 }

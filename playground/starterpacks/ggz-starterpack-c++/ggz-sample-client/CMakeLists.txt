@@ -5,7 +5,7 @@ set(ggz-sample-client-c++_SRCS
 	ktictactuxproto.cpp
 	ktictactuxwin.cpp
 	main.cpp
-	proto.cpp
+	net.cpp
 )
 
 kde4_add_executable(ggz-sample-client-c++ ${ggz-sample-client-c++_SRCS})

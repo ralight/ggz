@@ -1,17 +1,15 @@
-/////////////////////////////////////////////////////////////////////
 //
-// Kryds: Tic-Tac-Toe game server for KDE 4
-// http://www.ggzgamingzone.org/gameservers/kryds/
+// GGZ Starterpack for C++ - Sample Server
+// Copyright (C) 2008 GGZ Development Team
 //
-// Copyright (C) 2008 Josef Spillner <josef@ggzgamingzone.org>
-// Published under the conditions of the GNU GPL, see COPYING
-//
-/////////////////////////////////////////////////////////////////////
+// This code is made available as public domain; you can use it as a base
+// for your own game, as long as its licence is compatible with the libraries
+// you use.
 
-#ifndef KRYDS_H
-#define KRYDS_H
+#ifndef SAMPLE_GAME_H
+#define SAMPLE_GAME_H
 
-#include "tictactoe_server.h"
+#include "net.h"
 
 #include <QObject>
 
@@ -30,7 +28,7 @@ class Kryds : public QObject
 		Kryds(QObject *parent = NULL);
 	private slots:
  		void slotEvent(const KGGZdMod::Event& event);
-		void slotNotification(tictactoeOpcodes::Opcode messagetype, const msg& message);
+		void slotNotification(ggz_starterpackOpcodes::Opcode messagetype, const msg& message);
 		void slotError();
 	private:
 		void nextPlayer();

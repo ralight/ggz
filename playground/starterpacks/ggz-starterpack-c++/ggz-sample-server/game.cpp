@@ -1,14 +1,12 @@
-/////////////////////////////////////////////////////////////////////
 //
-// Kryds: Tic-Tac-Toe game server for KDE 4
-// http://www.ggzgamingzone.org/gameservers/kryds/
+// GGZ Starterpack for C++ - Sample Server
+// Copyright (C) 2008 GGZ Development Team
 //
-// Copyright (C) 2008 Josef Spillner <josef@ggzgamingzone.org>
-// Published under the conditions of the GNU GPL, see COPYING
-//
-/////////////////////////////////////////////////////////////////////
+// This code is made available as public domain; you can use it as a base
+// for your own game, as long as its licence is compatible with the libraries
+// you use.
 
-#include "kryds.h"
+#include "game.h"
 
 #include <kggzdmod/module.h>
 #include <kggzdmod/player.h>
@@ -19,23 +17,14 @@
 
 #include <QCoreApplication>
 
-// FIXME: these should appear in protocol
-#define TTT_OK           0
-#define TTT_ERR_STATE   -1
-#define TTT_ERR_TURN    -2
-#define TTT_ERR_BOUND   -3
-#define TTT_ERR_FULL    -4
-
-#define TTT_NO_WINNER    2
-
-Kryds::Kryds(QObject *parent)
+Game::Game(QObject *parent)
 : QObject(parent)
 {
 	m_started = false;
 	m_turn = -1;
 	m_currentplayer = 0;
 
-	m_module = new KGGZdMod::Module("Kryds");
+	m_module = new KGGZdMod::Module("Sample Server C++");
 
 	connect(m_module,
 		SIGNAL(signalEvent(const KGGZdMod::Event&)),
@@ -134,76 +123,6 @@ void Kryds::slotEvent(const KGGZdMod::Event& event)
 	}
 }
 
-void Kryds::nextPlayer()
-{
-	QList<KGGZdMod::Player*> players = m_module->players();
-
-	m_turn = 1 - m_turn;
-
-	if(players.at(m_turn)->fd() != -1)
-	{
-		// Human player
-
-		tictactoe proto;
-		proto.ggzcomm_set_fd(players.at(m_turn)->fd());
-		proto.ggzcomm_reqmove(reqmove());
-	}
-	else
-	{
-		// Bot player
-
-		int move;
-		while(true)
-		{
-			move = random() % 9;
-			if(m_board[move] == -1)
-				break;
-		}
-		m_board[move] = m_turn;
-
-		msgmove m;
-		m.player = m_turn;
-		m.move = move;
-
-		tictactoe proto;
-		proto.ggzcomm_set_fd(players.at(1 - m_turn)->fd());
-		proto.ggzcomm_msgmove(m);
-
-		detectGameOver();
-	}
-}
-
-void Kryds::detectGameOver()
-{
-	bool over = true;
-
-	for(int i = 0; i < 9; i++)
-		if(m_board[i] == -1)
-			over = false;
-
-	// TODO: we check for full board but not for win yet
-
-	if(!over)
-		nextPlayer();
-	else
-	{
-		msggameover over;
-		over.winner = TTT_NO_WINNER;
-
-		tictactoe proto;
-		QList<KGGZdMod::Player*> players = m_module->players();
-		for(int i = 0; i < players.size(); i++)
-		{
-			KGGZdMod::Player *p = players.at(i);
-			if(p->fd() != -1)
-			{
-				proto.ggzcomm_set_fd(p->fd());
-				proto.ggzcomm_msggameover(over);
-			}
-		}
-	}
-}
-
 void Kryds::handleInput(KGGZdMod::Player *p)
 {
 	kDebug() << "Input from player at #" << p->seat();
@@ -212,8 +131,8 @@ void Kryds::handleInput(KGGZdMod::Player *p)
 
 	tictactoe proto;
 	connect(&proto,
-		SIGNAL(signalNotification(tictactoeOpcodes::Opcode, const msg&)),
-		SLOT(slotNotification(tictactoeOpcodes::Opcode, const msg&)));
+		SIGNAL(signalNotification(ggz_starterpackOpcodes::Opcode, const msg&)),
+		SLOT(slotNotification(ggz_starterpackOpcodes::Opcode, const msg&)));
 	connect(&proto, SIGNAL(signalError()), SLOT(slotError()));
 
 	proto.ggzcomm_set_fd(p->fd());
@@ -222,9 +141,9 @@ void Kryds::handleInput(KGGZdMod::Player *p)
 	m_currentplayer = 0;
 }
 
-void Kryds::slotNotification(tictactoeOpcodes::Opcode messagetype, const msg& message)
+void Kryds::slotNotification(ggz_starterpackOpcodes::Opcode messagetype, const msg& message)
 {
-	if(messagetype == tictactoeOpcodes::message_sndmove)
+	if(messagetype == ggz_starterpackOpcodes::message_sndmove)
 	{
 		const sndmove *m = static_cast<const sndmove*>(&message);
 		kDebug() << "Move:" << m->move_c;
@@ -264,7 +183,7 @@ void Kryds::slotNotification(tictactoeOpcodes::Opcode messagetype, const msg& me
 			detectGameOver();
 		}
 	}
-	else if(messagetype == tictactoeOpcodes::message_reqsync)
+	else if(messagetype == ggz_starterpackOpcodes::message_reqsync)
 	{
 	}
 }
@@ -272,23 +191,14 @@ void Kryds::slotNotification(tictactoeOpcodes::Opcode messagetype, const msg& me
 void Kryds::slotError()
 {
 	kError() << "Something bad has happened with a game client!";
-
-	// FIXME: do something with m_currentplayer, like disconnecting
 }
 
 void Kryds::shutdown()
 {
 	kError() << "Something bad has happened with the GGZ connection!";
-	//deleteLater();
-	// FIXME: deleteLater would require Qt mainloop, but we use ggzdmod loop
-	// TODO: make it possible to hook in Qt mainloop
 
 	if(m_module)
 	{
-		//m_module->sendRequest(KGGZdMod::StateRequest(KGGZdMod::Module::done));
-		// FIXME: the above can only be done for game client disconnects
-		// otherwise it would trigger an error immediately again!
-
 		m_module->disconnect();
 		delete m_module;
 		m_module = 0;

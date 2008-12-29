@@ -1,0 +1,14 @@
+all: clienthandler serverhandler
+
+clienthandler:
+	ggzcommgen --language c++ --interface kggzpacket --role client ggz_starterpack
+	mv ggz_starterpack_client.cpp ../ggz-sample-client/net.cpp
+	mv ggz_starterpack_client.h ../ggz-sample-client/net.h
+	sed -i "s/ggz_starterpack_client.h/net.h/" ../ggz-sample-client/net.cpp
+
+serverhandler:
+	ggzcommgen --language c++ --interface kggzpacket --role server ggz_starterpack
+	mv ggz_starterpack_server.cpp ../ggz-sample-server/net.cpp
+	mv ggz_starterpack_server.h ../ggz-sample-server/net.h
+	sed -i "s/ggz_starterpack_server.h/net.h/" ../ggz-sample-server/net.cpp
+

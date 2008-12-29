@@ -1,8 +1,8 @@
 project(ggz-sample-server)
 
 set(ggz-sample-server-c++_SRCS
-	kryds.cpp
-	tictactoe_server.cpp
+	game.cpp
+	net.cpp
 	main.cpp
 )
 
