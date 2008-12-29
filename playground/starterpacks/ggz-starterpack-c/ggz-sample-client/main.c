@@ -11,6 +11,7 @@
 #include <ggz.h>
 #include <ggz_common.h>
 #include <ggzmod.h>
+#include <stdlib.h>
 
 #include "game.h"
 #include "main_win.h"
@@ -66,8 +67,48 @@ static gboolean game_handle_io(GGZMod * mod)
 	return TRUE;
 }
 
+static gboolean handle_game_server(GIOChannel * channel, GIOCondition cond,
+				   gpointer data)
+{
+	GGZMod *mod = data;
+
+	return game_handle_io(mod);
+}
+
+static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e,
+				 const void *data)
+{
+	const int *fd = data;
+	GIOChannel *channel;
+
+	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
+	channel = g_io_channel_unix_new(*fd);
+	g_io_add_watch(channel, G_IO_IN, handle_game_server, mod);
+}
+
+static gboolean handle_ggz(GIOChannel * channel, GIOCondition cond,
+			   gpointer data)
+{
+	GGZMod *mod = data;
+
+	return (ggzmod_dispatch(mod) >= 0);
+}
+
 void game_init(void)
 {
-	game.ggzmod = init_ggz_gtk(GTK_WINDOW(main_win), game_handle_io);
+	GIOChannel *channel;
+
+	if (!ggzmod_is_ggz_mode()) {
+		printf("This program should only be run from within GGZ.\n");
+		exit(1);
+	}
+
+	/* Connect to GGZ; usually there are a lot more handlers */
+	game.ggzmod = ggzmod_new(GGZMOD_GAME);
+	ggzmod_set_handler(game.ggzmod, GGZMOD_EVENT_SERVER, handle_ggzmod_server);
+	ggzmod_connect(game.ggzmod);
+
+	channel = g_io_channel_unix_new(ggzmod_get_fd(game.ggzmod));
+	g_io_add_watch(channel, G_IO_IN, handle_ggz, game.ggzmod);
 }
 
