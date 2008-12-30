@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10690 2008-12-30 02:10:09Z oojah $
+ * $Id: ggzdb_mysql.c 10705 2008-12-30 12:00:26Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -51,58 +51,18 @@ static pthread_mutex_t mutex;
 
 /* Internal functions */
 
-/* Initialize the database tables from an external SQL schema file */
-static int setupschema(const char *filename)
+static int ggz_mysql_exec(void *dbconn, const char *query, char *error, size_t errorlen)
 {
-	char buffer[1024];
-	int mysql_rc;
-	char *completebuffer = NULL;
-	int len;
-	unsigned int i;
 	int rc = 1;
+	int mysql_rc;
 
-	FILE *f = fopen(filename, "r");
-	if(!f)
+	mysql_rc = mysql_query(conn, query);
+	if(mysql_rc)
 	{
-		ggz_error_msg("Schema read error from %s.", filename);
-		return 0;
+		if(error)
+			strncpy(error, mysql_error(conn), errorlen);
+		rc = 0;
 	}
-
-	while(fgets(buffer, sizeof(buffer), f))
-	{
-		if(strlen(buffer) == 1 && completebuffer)
-		{
-			mysql_rc = mysql_query(conn, completebuffer);
-			if(mysql_rc)
-			{
-				ggz_error_msg("Table creation error %s.",
-					mysql_error(conn));
-				rc = 0;
-			}
-
-			ggz_free(completebuffer);
-			completebuffer = NULL;
-			continue;
-		}
-
-		buffer[strlen(buffer) - 1] = '\0';
-		for(i = 0; i < strlen(buffer); i++)
-		{
-			if(buffer[i] == '\t') buffer[i] = ' ';
-		}
-
-		len = (completebuffer ? strlen(completebuffer) : 0);
-		completebuffer = (char*)ggz_realloc(completebuffer,
-			len + strlen(buffer) + 1);
-		if(len)
-			strncat(completebuffer, buffer, strlen(buffer) + 1);
-		else
-			strncpy(completebuffer, buffer, strlen(buffer) + 1);
-	}
-
-	if(completebuffer) ggz_free(completebuffer);
-
-	fclose(f);
 
 	return rc;
 }
@@ -115,7 +75,7 @@ static int upgrade(const char *oldversion, const char *newversion)
 	snprintf(upgradefile, sizeof(upgradefile), "%s/mysql_upgrade_%s_%s.sql",
 		GGZDDATADIR, oldversion, newversion);
 
-	return setupschema(upgradefile);
+	return _ggz_setupschema(upgradefile, ggz_mysql_exec, conn);
 }
 
 
@@ -124,7 +84,6 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 {
 	int rc = GGZ_OK;
 	int mysql_rc;
-	int ret;
 	char query[4096];
 	my_bool reconnect = true;
 	MYSQL_RES *res;
@@ -196,8 +155,8 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	{
 		snprintf(schemafile, sizeof(schemafile), "%s/mysql_schema.sql", GGZDDATADIR);
 
-		ret = setupschema(schemafile);
-		if(!ret) rc = GGZDB_ERR_DB;
+		if(!_ggz_setupschema(schemafile, ggz_mysql_exec, conn))
+			rc = GGZDB_ERR_DB;
 
 		snprintf(query, sizeof(query), "INSERT INTO `control` "
 			"(`key`, `value`) VALUES ('version', '%s')", GGZDB_VERSION_ID);
