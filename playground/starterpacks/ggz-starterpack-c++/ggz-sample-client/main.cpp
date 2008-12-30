@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 	KAboutData *aboutData;
 	GameWin *gamewin;
 
-	aboutData = new KAboutData("ggz-sample-client-c++",
+	aboutData = new KAboutData("ggz-sample-client-cpp",
 		0,
 		ki18n("GGZ Starterpack for C++ - Sample Client"),
 		"0.1",

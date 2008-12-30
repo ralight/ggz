@@ -90,14 +90,17 @@ void GameWin::enableNetwork(bool enabled)
 	action_connect->setEnabled(!enabled);
 	action_ggzplayers->setEnabled(enabled);
 
-	m_proto = new ggz_starterpack();
-	m_mod = new KGGZMod::Module("ggz-sample-client-c++");
+	if(enabled)
+	{
+		m_proto = new ggz_starterpack();
+		m_mod = new KGGZMod::Module("ggz-sample-client-c++");
 
-	connect(m_proto, SIGNAL(signalNotification(ggz_starterpackOpcodes::Opcode, const msg&)), SLOT(slotPacket(ggz_starterpackOpcodes::Opcode, const msg&)));
-	connect(m_proto, SIGNAL(signalError()), SLOT(slotError()));
-	connect(m_mod, SIGNAL(signalError()), SLOT(slotError()));
-	connect(m_mod, SIGNAL(signalNetwork(int)), SLOT(slotNetwork(int)));
-	//connect(m_mod, SIGNAL(signalEvent(const KGGZMod::Event&)), SLOT(slotEvent(const KGGZMod::Event&)));
+		connect(m_proto, SIGNAL(signalNotification(ggz_starterpackOpcodes::Opcode, const msg&)), SLOT(slotPacket(ggz_starterpackOpcodes::Opcode, const msg&)));
+		connect(m_proto, SIGNAL(signalError()), SLOT(slotError()));
+		connect(m_mod, SIGNAL(signalError()), SLOT(slotError()));
+		connect(m_mod, SIGNAL(signalNetwork(int)), SLOT(slotNetwork(int)));
+		//connect(m_mod, SIGNAL(signalEvent(const KGGZMod::Event&)), SLOT(slotEvent(const KGGZMod::Event&)));
+	}
 }
 
 void GameWin::slotNetwork(int fd)

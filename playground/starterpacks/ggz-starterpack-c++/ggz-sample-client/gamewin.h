@@ -37,10 +37,10 @@ class GameWin : public KMainWindow
 		void slotError();
 		void slotNetwork(int fd);
 		void slotPacket(ggz_starterpackOpcodes::Opcode opcode, const msg& message);
+		void slotMenu(QAction *action);
 
 	private:
 		void connectcore();
-		void slotMenu(QAction *action);
 
 		ggz_starterpack *m_proto;
 		KGGZMod::Module *m_mod;
