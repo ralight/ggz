@@ -1,0 +1,34 @@
+<?php include_once("site/header.php"); ?>
+
+<table class="content">
+<tr>
+<td>
+
+<b>Starterpacks</b><br/>
+The GGZ starterpacks are ready-to-build, ready-to-hack-on bundles
+which have been created specifically for the purpose of rapid development
+of new GGZ-powered games.
+<br/><br/>
+
+<b>Available packs</b><br/>
+Currently, there are two packs available: for C and C++.
+<br/>
+<br/>
+Starterpack for C: Uses Gtk+ frontend. Communicates via raw binary protocol,
+implemented through libggz/easysock. Based on ggzmod and ggzdmod libraries.
+<br/>
+Download: <tt>svn co svn://svn.ggzgamingzone.org/svn/playground/starterpacks/ggz-starterpack-c</tt>
+<br/>
+<br/>
+Starterpack for C++: Uses KDE 4 frontend. Communicates via packetized binary protocol,
+implemented through kggznet. Based on kggzmod and kggzdmod libraries.
+<br/>
+Download: <tt>svn co svn://svn.ggzgamingzone.org/svn/playground/starterpacks/ggz-starterpack-c++</tt>
+<br/><br/>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("site/footer.php"); ?>
+

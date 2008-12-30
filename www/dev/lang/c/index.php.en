@@ -36,6 +36,9 @@ C is also the base language for most of the language bindings.
 Within GGZ, we use libggz to overcome some of the shortcomings and misdesign of C.
 <br/><br/>
 
+There's a <a href="/starterpacks/">starterpack</a> available for programming GGZ games in C!
+<br/><br/>
+
 <i>Largest shared libraries written in C</i><br/>
 
 <table class="list">

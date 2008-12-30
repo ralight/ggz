@@ -33,6 +33,9 @@ some libraries made it into the official kdegames package.
 There are however also a couple of game servers written in this language.
 <br/><br/>
 
+There's a <a href="/starterpacks/">starterpack</a> available for programming GGZ games in C++!
+<br/><br/>
+
 <i>Largest shared libraries written in C++</i><br/>
 
 <table class="list">
