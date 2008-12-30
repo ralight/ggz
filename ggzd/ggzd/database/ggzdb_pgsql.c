@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10658 2008-12-27 22:54:43Z oojah $
+ * $Id: ggzdb_pgsql.c 10689 2008-12-30 02:06:39Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -604,7 +604,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 
 	snprintf(query, sizeof(query),
 		 "SELECT "
-		 "password, name, email, lastlogin, permissions, confirmed "
+		 "`id`, password, name, email, lastlogin, permissions, confirmed "
 		 "FROM users WHERE handle = '%s'",
 		 handle_quoted);
 
@@ -614,12 +614,13 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 
 	if (PQresultStatus(res) == PGRES_TUPLES_OK) {
 		if(PQntuples(res) == 1)	{
-			strncpy(pe->password, PQgetvalue(res, 0, 0), sizeof(pe->password));
-			strncpy(pe->name, PQgetvalue(res, 0, 1), sizeof(pe->name));
-			strncpy(pe->email, PQgetvalue(res, 0, 2), sizeof(pe->email));
-			pe->last_login = atol(PQgetvalue(res, 0, 3));
-			pe->perms = atol(PQgetvalue(res, 0, 4));
-			pe->confirmed = (!ggz_strcmp(PQgetvalue(res, 0, 5), "t") ? 1 : 0);
+			pe->user_id = atoi(PQgetvalue(iterres, 0, 0));
+			strncpy(pe->password, PQgetvalue(res, 0, 1), sizeof(pe->password));
+			strncpy(pe->name, PQgetvalue(res, 0, 2), sizeof(pe->name));
+			strncpy(pe->email, PQgetvalue(res, 0, 3), sizeof(pe->email));
+			pe->last_login = atol(PQgetvalue(res, 0, 4));
+			pe->perms = atol(PQgetvalue(res, 0, 5));
+			pe->confirmed = (!ggz_strcmp(PQgetvalue(res, 0, 6), "t") ? 1 : 0);
 			rc = GGZDB_NO_ERROR;
 		} else	{
 			/* This is supposed to happen when we look up

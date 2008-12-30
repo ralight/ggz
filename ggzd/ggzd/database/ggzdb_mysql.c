@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10682 2008-12-29 17:42:56Z oojah $
+ * $Id: ggzdb_mysql.c 10689 2008-12-30 02:06:39Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -314,7 +314,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 
 	snprintf(query, sizeof(query),
 		"SELECT "
-		"`password`,`name`,`email`,`lastlogin`,`perms`,`confirmed` "
+		"`id`,`password`,`name`,`email`,`lastlogin`,`perms`,`confirmed` "
 		"FROM `users` WHERE `handle` = '%s'",
 		handle_quoted);
 
@@ -330,12 +330,13 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 			if(mysql_num_rows(res) == 1) {
 				row = mysql_fetch_row(res);
 
-				strncpy(pe->password, row[0], sizeof(pe->password));
-				strncpy(pe->name, row[1], sizeof(pe->name));
-				strncpy(pe->email, row[2], sizeof(pe->email));
-				pe->last_login = atol(row[3]);
-				pe->perms = atol(row[4]);
-				pe->confirmed = atol(row[5]);
+				pe->user_id = atoi(row[0]);
+				strncpy(pe->password, row[1], sizeof(pe->password));
+				strncpy(pe->name, row[2], sizeof(pe->name));
+				strncpy(pe->email, row[3], sizeof(pe->email));
+				pe->last_login = atol(row[4]);
+				pe->perms = atol(row[5]);
+				pe->confirmed = atol(row[6]);
 				mysql_free_result(res);
 				return GGZDB_NO_ERROR;
 			}

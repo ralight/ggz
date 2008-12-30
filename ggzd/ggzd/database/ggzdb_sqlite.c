@@ -255,7 +255,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	handle_canonical = username_canonical(pe->handle);
 
 	sqlite3_snprintf(sizeof(query), query, "SELECT "
-		"`password`, `name`, `email`, `lastlogin`, `permissions`, `confirmed` FROM `users` WHERE "
+		"`id`, `password`, `name`, `email`, `lastlogin`, `permissions`, `confirmed` FROM `users` WHERE "
 		"`handle` = '%q'",
 		handle_canonical);
 
@@ -267,12 +267,13 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 		rc = sqlite3_step(res);
 
 		if (rc == SQLITE_ROW) {
-			strncpy(pe->password, (char*)sqlite3_column_text(res, 0), sizeof(pe->password));
-			strncpy(pe->name, (char*)sqlite3_column_text(res, 1), sizeof(pe->name));
-			strncpy(pe->email, (char*)sqlite3_column_text(res, 2), sizeof(pe->email));
-			pe->last_login = sqlite3_column_int(res, 3);
-			pe->perms = sqlite3_column_int(res, 4);
-			pe->confirmed = sqlite3_column_int(res, 5);
+			pe->user_id = sqlite3_column_int(res, 0);
+			strncpy(pe->password, (char*)sqlite3_column_text(res, 1), sizeof(pe->password));
+			strncpy(pe->name, (char*)sqlite3_column_text(res, 2), sizeof(pe->name));
+			strncpy(pe->email, (char*)sqlite3_column_text(res, 3), sizeof(pe->email));
+			pe->last_login = sqlite3_column_int(res, 4);
+			pe->perms = sqlite3_column_int(res, 5);
+			pe->confirmed = sqlite3_column_int(res, 6);
 			return GGZDB_NO_ERROR;
 		} else {
 			/* This is supposed to happen if we look up a
