@@ -26,9 +26,9 @@ AC_DEFUN([AC_GGZ_GC],
 AC_ARG_WITH([gc],
 	AS_HELP_STRING([--with-gc@<:@=TYPE@:>@],
 	[type of garbage collector: boehm - auto if no TYPE]),
-	[gc=$withval], [gc=no])
+	[enable_gc=$withval], [enable_gc=no])
 
-if test "$gc" = yes || test "$gc" = boehm; then
+if test "$enable_gc" = yes || test "$enable_gc" = boehm; then
 	AC_CHECK_LIB(gc, GC_malloc,
 	[
 		AC_CHECK_HEADERS([gc/gc.h],
@@ -36,25 +36,24 @@ if test "$gc" = yes || test "$gc" = boehm; then
 			gc=boehm
 		],
 		[
-			if test "$gc" = boehm; then
+			if test "$enable_gc" = boehm; then
 				AC_MSG_ERROR([cannot configure boehm (headers needed)])
 			fi
 		])
 	],
 	[
-		if test "$gc" = boehm; then
+		if test "$enable_gc" = boehm; then
 			AC_MSG_ERROR([cannot configure boehm (library needed)])
 		fi
 	],
 	[-lgc])
 
-	if test "$gc" = boehm; then
+	if test "$enable_gc" = boehm; then
 		AC_DEFINE(WITH_GC, 1, [Use boehm for garbage collection])
 		GC_INCLUDES="-I/usr/include/gc"
 		LIB_GC="-lgc"
 		AC_SUBST(GC_INCLUDES)
 		AC_SUBST(LIB_GC)
-		enable_gc=yes
 		usegc=1
 	else
 		usegc=0
