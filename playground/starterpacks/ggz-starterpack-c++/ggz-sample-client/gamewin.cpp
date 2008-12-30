@@ -63,11 +63,17 @@ GameWin::GameWin()
 
 void GameWin::slotStatus(const QString &status)
 {
+	/* Here we change the statusbar text. */
+
 	statusBar()->changeItem(status, 1);
 }
 
 void GameWin::slotMenu(QAction *action)
 {
+	/* Here we handle the user-chosen menu action for connecting to GGZ,
+	for listing all players, bots and spectators on the GGZ table, and
+	for leaving the application. */
+
 	if(action == action_connect)
 	{
 		connectcore();
@@ -85,6 +91,11 @@ void GameWin::slotMenu(QAction *action)
 
 void GameWin::enableNetwork(bool enabled)
 {
+	/* Here we switch into GGZ mode. This is either done on startup, when
+	we run in the context of a GGZ core client, or interactively by the
+	player through the menu. When this method is called, the switch is
+	already finished. */
+
 	m_networked = enabled;
 
 	action_connect->setEnabled(!enabled);
@@ -99,12 +110,23 @@ void GameWin::enableNetwork(bool enabled)
 		connect(m_proto, SIGNAL(signalError()), SLOT(slotError()));
 		connect(m_mod, SIGNAL(signalError()), SLOT(slotError()));
 		connect(m_mod, SIGNAL(signalNetwork(int)), SLOT(slotNetwork(int)));
-		//connect(m_mod, SIGNAL(signalEvent(const KGGZMod::Event&)), SLOT(slotEvent(const KGGZMod::Event&)));
+	}
+	else
+	{
+		delete m_proto;
+		m_proto = NULL;
+		delete m_mod;
+		m_mod = NULL;
 	}
 }
 
 void GameWin::slotNetwork(int fd)
 {
+	/* Here kggzmod tells us that the game server sent some data, maybe a
+	message or a part of it. We let the auto-generated protocol handler take
+	care of that. It will then emit signalNotification() or signalError().
+	We handle notifications in slotPacket(). */
+
 	kDebug() << "Network activity...";
 
 	m_proto->ggzcomm_set_fd(fd);
@@ -113,6 +135,10 @@ void GameWin::slotNetwork(int fd)
 
 void GameWin::slotPacket(ggz_starterpackOpcodes::Opcode opcode, const msg& message)
 {
+	/* Here we receive a valid packet which contains a message. There is
+	only one message in the Starterpack protocol so we simply display it
+	in the statusbar. */
+
 	kDebug() << "Network data arriving from packet reader";
 
 	Q_UNUSED(message);
@@ -130,11 +156,22 @@ void GameWin::slotPacket(ggz_starterpackOpcodes::Opcode opcode, const msg& messa
 
 void GameWin::slotError()
 {
+	/* Here we receive an error message either from GGZ (via kggzmod) or from
+	the GGZComm-generated protocol handler. We leave the client running but
+	disable all network actions. This means that the game server will receive
+	a broken connection event. */
+
 	enableNetwork(false);
 }
 
 void GameWin::connectcore()
 {
+	/* Here we connect to GGZ. Of course, if the game clien was launched
+	through ggz-faketable or from a GGZ core client, we don't have to do
+	that since we're already connected! But if not, the game client itself
+	becomes a core client and manages the connection to the GGZ server,
+	offering a list of connection profiles to select from. */
+
 	ConnectionDialog dialog(this);
 	dialog.setGame("Starterpack", "1.0");
 	if(dialog.exec() == QDialog::Accepted)
