@@ -24,6 +24,13 @@ of technologies selected for you, which are explained briefly:
 Installation
 ------------
 
+The following dependencies are needed, either from a distribution or from
+SVN:
+- libkdegames from KDE SVN
+  - which in turn requires kdelibs
+- the ggz-kde-center package from GGZ SVN
+  - which in turn requires ggz-base-libs and ggz-server/ggzdmod
+
 To compile the game client and server, type:
 - mkdir BUILD; cd BUILD
 - cmake [-DCMAKE_INSTALL_PREFIX=/path/to/kde4/or/path/to/ggz] ..

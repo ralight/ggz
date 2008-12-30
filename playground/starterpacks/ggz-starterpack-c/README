@@ -21,6 +21,12 @@ of technologies selected for you, which are explained briefly:
 Installation
 ------------
 
+The following dependencies are needed, either from a distribution or from
+SVN:
+- ggz-base-libs/ggzmod for the client
+- ggz-server/ggzdmod for the server
+- gtk+-2.0
+
 To compile the game client and server, type:
 - autoreconf --install
   (only needed when running from SVN)
