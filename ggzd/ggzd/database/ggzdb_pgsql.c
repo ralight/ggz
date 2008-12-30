@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10700 2008-12-30 11:07:53Z oojah $
+ * $Id: ggzdb_pgsql.c 10704 2008-12-30 11:59:06Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -168,60 +168,22 @@ static void releaseconnection(PGconn *conn)
 	pthread_mutex_unlock(&mutex);
 }
 
-/* Initialize the database tables from an external SQL schema file */
-static int setupschema(PGconn *conn, const char *filename)
+static int _ggz_pgsql_exec(void *dbconn, const char *query, char *error, size_t errorlen)
 {
-	char buffer[1024];
-	PGresult *res;
-	char *completebuffer = NULL;
-	int len;
-	int i;
 	int rc = 1;
+	PGresult *res;
 
-	FILE *f = fopen(filename, "r");
-	if(!f)
+	res = PQexec((PGconn *)dbconn, query);
+	if((PQresultStatus(res) != PGRES_EMPTY_QUERY)
+		&& (PQresultStatus(res) != PGRES_COMMAND_OK))
 	{
-		ggz_error_msg("Schema read error from %s.", filename);
-		return 0;
-	}
-
-	while(fgets(buffer, sizeof(buffer), f))
-	{
-		if(strlen(buffer) == 1)
+		if(error)
 		{
-			res = PQexec(conn, completebuffer);
-			if((PQresultStatus(res) != PGRES_EMPTY_QUERY)
-			&& (PQresultStatus(res) != PGRES_COMMAND_OK))
-			{
-				ggz_error_msg("Table creation error %i.",
-					PQresultStatus(res));
-				rc = 0;
-			}
-			PQclear(res);
-
-			ggz_free(completebuffer);
-			completebuffer = NULL;
-			continue;
+			snprintf(error, errorlen, "%i", PQresultStatus(res));
 		}
-
-		buffer[strlen(buffer) - 1] = '\0';
-		for(i = 0; i < strlen(buffer); i++)
-		{
-			if(buffer[i] == '\t') buffer[i] = ' ';
-		}
-
-		len = (completebuffer ? strlen(completebuffer) : 0);
-		completebuffer = (char*)ggz_realloc(completebuffer,
-			len + strlen(buffer) + 1);
-		if(len)
-			strncat(completebuffer, buffer, strlen(buffer) + 1);
-		else
-			strncpy(completebuffer, buffer, strlen(buffer) + 1);
+		rc = 0;
 	}
-
-	if(completebuffer) ggz_free(completebuffer);
-
-	fclose(f);
+	PQclear(res);
 
 	return rc;
 }
@@ -234,7 +196,7 @@ static int upgrade(PGconn *conn, const char *oldversion, const char *newversion)
 	snprintf(upgradefile, sizeof(upgradefile), "%s/pgsql_upgrade_%s_%s.sql",
 		GGZDDATADIR, oldversion, newversion);
 
-	return setupschema(conn, upgradefile);
+	return _ggz_setupschema(upgradefile, _ggz_pgsql_exec, conn);
 }
 
 /* Exported functions */
@@ -245,7 +207,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	PGconn *conn;
 	PGresult *res;
 	char query[4096];
-	int rc, ret;
+	int rc;
 	int init;
 	char *version;
 	char schemafile[1024];
@@ -313,8 +275,8 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	{
 		snprintf(schemafile, sizeof(schemafile), "%s/pgsql_schema.sql", GGZDDATADIR);
 
-		ret = setupschema(conn, schemafile);
-		if(!ret) rc = GGZDB_ERR_DB;
+		if(!_ggz_setupschema(schemafile, _ggz_pgsql_exec, conn))
+			rc = GGZDB_ERR_DB;
 
 		snprintf(query, sizeof(query), "INSERT INTO control "
 			"(key, value) VALUES ('version', '%s')", GGZDB_VERSION_ID);
