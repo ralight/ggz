@@ -12,4 +12,5 @@ target_link_libraries(ggz-sample-server-c++ ${KDE4_KDECORE_LIBS} kggzdmod kggzne
 
 install(TARGETS ggz-sample-server-c++ ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-#install(FILES ggz-sample-server-c++.dsc DESTINATION ${DATA_INSTALL_DIR}/...)
+install(FILES ggz-sample-server-c++.dsc DESTINATION ${GGZ_GAMEDESC_INSTALL_DIR})
+install(FILES ggz-sample-server-c++.room DESTINATION ${GGZ_ROOMDESC_INSTALL_DIR})

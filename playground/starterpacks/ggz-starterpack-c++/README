@@ -26,8 +26,11 @@ Installation
 
 To compile the game client and server, type:
 - mkdir BUILD; cd BUILD
-- cmake [-DCMAKE_INSTALL_PREFIX=/path/to/kde4] ..
+- cmake [-DCMAKE_INSTALL_PREFIX=/path/to/kde4/or/path/to/ggz] ..
 - make && make install
+
+Note: If your GGZ prefix and your KDE prefix differ, you'll have to decide
+for one of them. CMake will tell you what to do in such cases.
 
 If you've got a GGZ server installed locally, the installation will be
 registered with it and you can start the server and then launch any
