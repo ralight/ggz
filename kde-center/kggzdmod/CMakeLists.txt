@@ -20,5 +20,6 @@ install(FILES
 	module.h
 	player.h
 	request.h
+	kggzdmod_export.h
 	DESTINATION ${INCLUDE_INSTALL_DIR}/kggzdmod
 )
