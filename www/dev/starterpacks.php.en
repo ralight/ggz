@@ -17,13 +17,13 @@ Currently, there are two packs available: for C and C++.
 Starterpack for C: Uses Gtk+ frontend. Communicates via raw binary protocol,
 implemented through libggz/easysock. Based on ggzmod and ggzdmod libraries.
 <br/>
-Download: <tt>svn co svn://svn.ggzgamingzone.org/svn/playground/starterpacks/ggz-starterpack-c</tt>
+Download: <tt>svn co svn://svn.ggzgamingzone.org/svn/trunk/playground/starterpacks/ggz-starterpack-c</tt>
 <br/>
 <br/>
 Starterpack for C++: Uses KDE 4 frontend. Communicates via packetized binary protocol,
 implemented through kggznet. Based on kggzmod and kggzdmod libraries.
 <br/>
-Download: <tt>svn co svn://svn.ggzgamingzone.org/svn/playground/starterpacks/ggz-starterpack-c++</tt>
+Download: <tt>svn co svn://svn.ggzgamingzone.org/svn/trunk/playground/starterpacks/ggz-starterpack-c++</tt>
 <br/><br/>
 
 </td>
