@@ -32,7 +32,7 @@
 
 /* Anytime structures change, bump the version id */
 /* Must be fewer than 7 characters. */
-#define GGZDB_VERSION_ID	"0.8"
+#define GGZDB_VERSION_ID	"0.9"
 
 /* For ggzdb_player_XXX */
 typedef struct {
