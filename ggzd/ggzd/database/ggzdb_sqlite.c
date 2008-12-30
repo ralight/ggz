@@ -36,64 +36,24 @@ static sqlite3_stmt *iterres = NULL;
 
 /* Internal functions */
 
-/* Initialize the database tables from an external SQL schema file */
-static int setupschema(const char *filename)
+static int ggz_sqlite_exec(void *dbconn, const char *query, char *error, size_t errorlen)
 {
-	char buffer[1024];
-	int sqlite_rc;
-	char *completebuffer = NULL;
-	int len;
-	unsigned int i;
 	int rc = 1;
+	int sqlite_rc;
 	char *sqlerror = NULL;
 
-	FILE *f = fopen(filename, "r");
-	if(!f)
+	sqlite_rc = sqlite3_exec(conn, query, NULL, NULL, &sqlerror);
+
+	if(sqlite_rc != SQLITE_OK)
 	{
-		ggz_error_msg("Schema read error from %s.", filename);
-		return 0;
+		strncpy(error, sqlerror, errorlen);
+		rc = 0;
 	}
-
-	while(fgets(buffer, sizeof(buffer), f))
+	if(sqlerror)
 	{
-		if(strlen(buffer) == 1 && completebuffer)
-		{
-			sqlite_rc = sqlite3_exec(conn, completebuffer, NULL, NULL, &sqlerror);
-
-			if(sqlite_rc != SQLITE_OK)
-			{
-				ggz_error_msg("Table creation error %s.", sqlerror);
-				rc = 0;
-			}
-			if(sqlerror)
-			{
-				sqlite3_free(sqlerror);
-				sqlerror = NULL;
-			}
-
-			ggz_free(completebuffer);
-			completebuffer = NULL;
-			continue;
-		}
-
-		buffer[strlen(buffer) - 1] = '\0';
-		for(i = 0; i < strlen(buffer); i++)
-		{
-			if(buffer[i] == '\t') buffer[i] = ' ';
-		}
-
-		len = (completebuffer ? strlen(completebuffer) : 0);
-		completebuffer = (char*)ggz_realloc(completebuffer,
-			len + strlen(buffer) + 1);
-		if(len)
-			strncat(completebuffer, buffer, strlen(buffer) + 1);
-		else
-			strncpy(completebuffer, buffer, strlen(buffer) + 1);
+		sqlite3_free(sqlerror);
+		sqlerror = NULL;
 	}
-
-	if(completebuffer) ggz_free(completebuffer);
-
-	fclose(f);
 
 	return rc;
 }
@@ -106,7 +66,7 @@ static int upgrade(const char *oldversion, const char *newversion)
 	snprintf(upgradefile, sizeof(upgradefile), "%s/sqlite_upgrade_%s_%s.sql",
 		GGZDDATADIR, oldversion, newversion);
 
-	return setupschema(upgradefile);
+	return _ggz_setupschema(upgradefile, ggz_sqlite_exec, conn);
 }
 
 
@@ -166,7 +126,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	{
 		snprintf(schemafile, sizeof(schemafile), "%s/sqlite_schema.sql", GGZDDATADIR);
 
-		if(!setupschema(schemafile))
+		if(!_ggz_setupschema(schemafile, ggz_sqlite_exec, conn))
 			rc = GGZDB_ERR_DB;
 
 		sqlite3_snprintf(sizeof(query), query, "INSERT INTO `control` "
