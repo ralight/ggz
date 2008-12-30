@@ -2,16 +2,121 @@
 
 CREATE TABLE `users` (
 	`id` INTEGER PRIMARY KEY AUTOINCREMENT,
-	`handle` TEXT,
-	`password` TEXT,
-	`name` TEXT,
-	`email` TEXT,
-	`lastlogin` INT,
-	`permissions` INT
+	`handle` VARCHAR(256) NOT NULL,
+	`password` VARCHAR(256) NOT NULL,
+	`name` VARCHAR(256) NOT NULL,
+	`email` VARCHAR(256) NOT NULL,
+	`firstlogin` TIMESTAMP,
+	`lastlogin` TIMESTAMP,
+	`perms` INT DEFAULT 7,
+	`confirmed` INT DEFAULT 0
 );
 
 CREATE TABLE `control` (
-	`key` varchar(256),
-	`value` varchar(256)
+	`key` VARCHAR(256),
+	`value` VARCHAR(256)
+);
+
+CREATE TABLE `userinfo` (
+	`id` INTEGER PRIMARY KEY AUTOINCREMENT,
+	`handle` VARCHAR(256) NOT NULL,
+	`photo` TEXT NOT NULL,
+	`gender` TEXT NOT NULL,
+	`country` TEXT NOT NULL,
+	`pubkey` TEXT NOT NULL,
+	`blogfeed` TEXT NOT NULL,
+	`longitude` DOUBLE NOT NULL DEFAULT '0',
+	`latitude` DOUBLE NOT NULL DEFAULT '0',
+	`alterpass` TEXT NOT NULL
+);
+
+
+CREATE TABLE `stats` (
+	`id` INTEGER PRIMARY KEY AUTOINCREMENT,
+	`handle` VARCHAR(256),
+	`game` TEXT NOT NULL,
+	`wins` INTEGER NOT NULL DEFAULT '0',
+	`losses` INTEGER NOT NULL DEFAULT '0',
+	`ties` INTEGER NOT NULL DEFAULT '0',
+	`forfeits` INTEGER NOT NULL DEFAULT '0',
+	`rating` DOUBLE NOT NULL DEFAULT '0',
+	`ranking` INTEGER NOT NULL DEFAULT '0',
+	`highscore` INTEGER NOT NULL DEFAULT '0'
+);
+
+
+CREATE TABLE `matches` (
+	`id` INTEGER PRIMARY KEY AUTOINCREMENT,
+	`date` INTEGER NOT NULL DEFAULT '0',
+	`game` TEXT NOT NULL,
+	`winner` VARCHAR(256),
+	`savegame` TEXT
+);
+
+
+CREATE TABLE `matchplayers` (
+	`id` INTEGER PRIMARY KEY AUTOINCREMENT,
+	`match` INTEGER NOT NULL DEFAULT '0',
+	`handle` VARCHAR(256),
+	`playertype` VARCHAR(256) NOT NULL
+);
+
+
+CREATE TABLE `savegames` (
+	`id` INTEGER PRIMARY KEY AUTOINCREMENT,
+	`date` INTEGER NOT NULL DEFAULT '0',
+	`game` VARCHAR(256) NOT NULL,
+	`owner` VARCHAR(256) NOT NULL,
+	`savegame` VARCHAR(256) NOT NULL,
+	`tableid` INTEGER NOT NULL DEFAULT '0',
+	`stamp` INTEGER NOT NULL DEFAULT '0'
+);
+
+
+CREATE TABLE `savegameplayers` (
+	`id` INTEGER PRIMARY KEY AUTOINCREMENT,
+	`tableid` INTEGER NOT NULL DEFAULT '0',
+	`stamp` INTEGER NOT NULL DEFAULT '0',
+	`seat` INTEGER NOT NULL DEFAULT '0',
+	`handle` VARCHAR(256),
+	`seattype` VARCHAR(256) NOT NULL
+);
+
+
+CREATE TABLE `teammembers` (
+	`id` INTEGER PRIMARY KEY AUTOINCREMENT,
+	`teamname` TEXT NOT NULL,
+	`username` TEXT NOT NULL,
+	`role` TEXT NOT NULL,
+	`entrydate` INTEGER NOT NULL DEFAULT '0'
+);
+
+
+CREATE TABLE `teams` (
+	`id` INTEGER PRIMARY KEY AUTOINCREMENT,
+	`teamname` TEXT NOT NULL,
+	`fullname` TEXT NOT NULL,
+	`icon` TEXT NOT NULL,
+	`foundingdate` INTEGER NOT NULL DEFAULT '0',
+	`founder` TEXT NOT NULL,
+	`homepage` TEXT NOT NULL
+);
+
+
+CREATE TABLE `tournamentplayers` (
+	`id` INTEGER PRIMARY KEY AUTOINCREMENT,
+	`tid` INTEGER NOT NULL DEFAULT '0',
+	`number` INTEGER NOT NULL DEFAULT '0',
+	`name` TEXT NOT NULL,
+	`playertype` TEXT NOT NULL
+);
+
+
+CREATE TABLE `tournaments` (
+	`id` INTEGER PRIMARY KEY AUTOINCREMENT,
+	`name` TEXT NOT NULL,
+	`game` TEXT NOT NULL,
+	`date` INTEGER NOT NULL DEFAULT '0',
+	`organizer` TEXT NOT NULL
 );
 
