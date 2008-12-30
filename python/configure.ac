@@ -29,9 +29,6 @@ AC_PROG_MAKE_SET
 
 dnl GGZ checks
 dnl ==========
-AC_GGZ_INIT([defaults], [export])
-AC_GGZ_LIBGGZ(["true"], [disable_wrappers=true])
-
 AC_CHECK_HEADER(
 	[python2.5/Python.h],
 	[],
@@ -40,17 +37,29 @@ AC_CHECK_HEADER(
 	]
 )
 
-if test "x$disable_wrappers" != "xtrue"; then
-	AC_GGZ_GGZMOD(["true"], [enable_ggzmod=no])
-	AC_GGZ_GGZDMOD(["true"], [enable_ggzdmod=no])
-	AC_GGZ_GGZCORE(["true"], [enable_ggzcore=no])
-else
+if test "x$disable_wrappers" = "xtrue"; then
 	enable_ggzmod=no
 	enable_ggzdmod=no
 	enable_ggzcore=no
 	enable_ancillary=no
 	enable_ggzchess=no
 fi
+
+AC_GGZ_INIT([defaults], [export])
+
+if test "$enable_ancillary" != "no"; then
+	AC_GGZ_LIBGGZ(["true"], [enable_ancillary=no])
+fi
+if test "$enable_ggzmod" != "no"; then
+	AC_GGZ_GGZMOD(["true"], [enable_ggzmod=no])
+fi
+if test "$enable_ggzdmod" != "no"; then
+	AC_GGZ_GGZDMOD(["true"], [enable_ggzdmod=no])
+fi
+if test "$enable_ggzcore" != "no"; then
+	AC_GGZ_GGZCORE(["true"], [enable_ggzcore=no])
+fi
+
 AC_GGZ_CONFIG(["true"], [ignore], ["ggz-python"])
 AC_GGZ_INTL
 

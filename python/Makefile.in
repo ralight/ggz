@@ -168,7 +168,9 @@ install-rest:
 	cp xadrez-chines/themes/dark/*.png $(DESTDIR)$(datadir)/ggz/xadrez-chines/themes/dark
 	cp xadrez-chines/themes/orig/*.png $(DESTDIR)$(datadir)/ggz/xadrez-chines/themes/orig
 	$(ggz-config) --install --force --modfile=xadrez-chines/module.dsc
+	mkdir -p $(DESTDIR)$(ggzd_confdir)/games
 	cp xadrez-chines/xadrez-chines-server.dsc $(DESTDIR)$(ggzd_confdir)/games
+	mkdir -p $(DESTDIR)$(ggzd_confdir)/rooms
 	cp xadrez-chines/xadrez-chines-server.room $(DESTDIR)$(ggzd_confdir)/rooms
 	mkdir -p $(DESTDIR)$(xdg_datadir)
 	cp xadrez-chines/xadrez-chines.desktop $(DESTDIR)$(xdg_datadir)
