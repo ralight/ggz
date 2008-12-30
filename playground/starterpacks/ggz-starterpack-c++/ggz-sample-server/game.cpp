@@ -84,6 +84,7 @@ void Game::slotEvent(const KGGZdMod::Event& event)
 			KGGZdMod::Player *p = findPlayerBySeat(pse.seat().seat());
 			ggz_starterpack proto;
 			proto.ggzcomm_set_fd(p->fd());
+			proto.ggzcomm_network_main();
 			proto.ggzcomm_hello(hello());
 		}
 		else
