@@ -1,0 +1,6 @@
+[RoomInfo]
+Name = Tic-Tac-Toe Alternative
+Description = Alternative TTT room with Kryds server
+GameType = TicTacToe
+MaxPlayers = 150
+MaxTables = 45
