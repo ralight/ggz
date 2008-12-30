@@ -343,7 +343,7 @@ void parse_conf_file(void)
 
 	/* The default database type */
 	if(!opt.db.type)
-		opt.db.type = ggzdb_get_default_backend();
+		opt.db.type = ggz_strdup(ggzdb_get_default_backend());
 
 	/* If no game_exec_dir, default it to GGZDEXECMODDIR */
 	if(!opt.game_exec_dir)
