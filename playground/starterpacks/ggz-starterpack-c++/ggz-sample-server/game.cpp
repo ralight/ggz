@@ -13,16 +13,12 @@
 
 #include <kdebug.h>
 
-#include <time.h>
-
 #include <QCoreApplication>
 
 Game::Game(QObject *parent)
 : QObject(parent)
 {
-	m_started = false;
-	m_turn = -1;
-	m_currentplayer = 0;
+	/* Here we initialise the GGZ server module, which has a single signal. */
 
 	m_module = new KGGZdMod::Module("Sample Server C++");
 
@@ -30,16 +26,50 @@ Game::Game(QObject *parent)
 		SIGNAL(signalEvent(const KGGZdMod::Event&)),
 		SLOT(slotEvent(const KGGZdMod::Event&)));
 
-	srandom(time(NULL));
-
 	m_module->loop();
+}
+
+bool Game::allSeatsFull()
+{
+	/* Helper method: Check if all seats are full. */
+
+	int open = 0;
+	QList<KGGZdMod::Player*> players = m_module->players();
+	for(int i = 0; i < players.size(); i++)
+	{
+		kDebug() << "* player at #" << i << "is" << players.at(i)->type();
+		if(players.at(i)->type() == KGGZdMod::Player::open)
+			open++;
+	}
+
+	return (open == 0);
+}
+
+KGGZdMod::Player *Game::findPlayerBySeat(int seatnum)
+{
+	/* Helper method: return the n-th seat. */
+
+	QList<KGGZdMod::Player*> players = m_module->players();
+	for(int i = 0; i < players.size(); i++)
+	{
+		if(players.at(i)->seat() == seatnum)
+		{
+			return players.at(i);
+		}
+	}
+	return NULL;
 }
 
 void Game::slotEvent(const KGGZdMod::Event& event)
 {
+	/* Here, we handle events which come from the GGZ server, or more precisely
+	from the game table within the server. Only a few events are shown here, there
+	are many more available, e.g. for spectators or for resuming interrupted
+	games. In the starterpack server, all we do is wait for joining players and
+	then send them the HELLO message. */
+
 	kDebug() << "GGZ event:" << event.type();
 
-	/* Only a few events are shown here, there are many more available */
 	if(event.type() == KGGZdMod::Event::playerseat)
 	{
 		KGGZdMod::PlayerSeatEvent pse(event);
@@ -47,18 +77,14 @@ void Game::slotEvent(const KGGZdMod::Event& event)
 			<< pse.oldseat().name() << "to" << pse.seat().name() <<
 			"(seat change type " << pse.change() << ")";
 
-		int open = 0;
-		QList<KGGZdMod::Player*> players = m_module->players();
-		for(int i = 0; i < players.size(); i++)
-		{
-			kDebug() << "* player at #" << i << "is" << players.at(i)->type();
-			if(players.at(i)->type() == KGGZdMod::Player::open)
-				open++;
-		}
-
-		if(!open)
+		if(allSeatsFull())
 		{
 			kDebug() << "All seats full, start/continue game";
+
+			KGGZdMod::Player *p = findPlayerBySeat(pse.seat().seat());
+			ggz_starterpack proto;
+			proto.ggzcomm_set_fd(p->fd());
+			proto.ggzcomm_hello(hello());
 		}
 		else
 		{
@@ -69,32 +95,26 @@ void Game::slotEvent(const KGGZdMod::Event& event)
 	{
 		KGGZdMod::PlayerDataEvent e(event);
 
-		QList<KGGZdMod::Player*> players = m_module->players();
-		for(int i = 0; i < players.size(); i++)
-		{
-			if(players.at(i)->seat() == e.seat().seat())
-			{
-				KGGZdMod::Player *p = players.at(i);
-				handleInput(p);
-				break;
-			}
-		}
+		KGGZdMod::Player *p = findPlayerBySeat(e.seat().seat());
+		handleInput(p);
 	}
 	else if(event.type() == KGGZdMod::Event::error)
 	{
 		KGGZdMod::ErrorEvent e(event);
 		kError() << e.message();
-
-		// share GGZ error handler with game client handler
 		shutdown();
 	}
 }
 
 void Game::handleInput(KGGZdMod::Player *p)
 {
-	kDebug() << "Input from player at #" << p->seat();
+	/* Here we handle any input from the client. We don't know yet what the input
+	is at that point, therefore we create a message parser from the auto-generated
+	class ggz_starterpack. The protocol is defined in the definition file
+	../common/ggz_starterpack.protocol. The protocol can generate notifications
+	for each valid message, and errors for invalid messages. */
 
-	m_currentplayer = p;
+	kDebug() << "Input from player at #" << p->seat();
 
 	ggz_starterpack proto;
 	connect(&proto,
@@ -104,8 +124,6 @@ void Game::handleInput(KGGZdMod::Player *p)
 
 	proto.ggzcomm_set_fd(p->fd());
 	proto.ggzcomm_network_main();
-
-	m_currentplayer = 0;
 }
 
 void Game::slotNotification(ggz_starterpackOpcodes::Opcode messagetype, const msg& message)
@@ -119,11 +137,26 @@ void Game::slotNotification(ggz_starterpackOpcodes::Opcode messagetype, const ms
 
 void Game::slotError()
 {
+	/* Here we have to decide what to do if we receive an invalid message.
+	For KGGZPacket-based protocols, we can assume that the network connection is
+	all fine, else we would have received an error in slotEvent already.
+	But maybe the client speaks a different protocol or tries to cheat.
+	Therefore, just like in the case of connection errors, we simply terminate
+	the game server. */
+
 	kError() << "Something bad has happened with a game client!";
+
+	shutdown();
 }
 
 void Game::shutdown()
 {
+	/* Here we terminate the game server, because we either have a broken
+	network connection or received an unknown or invalid message from the
+	client. Of course, real games would do something more sophisticated
+	like just cutting off the player who caused the trouble, maybe
+	replacing him/her with a bot. */
+
 	kError() << "Something bad has happened with the GGZ connection!";
 
 	if(m_module)

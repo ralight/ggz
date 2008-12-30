@@ -26,21 +26,22 @@ class Game : public QObject
 	Q_OBJECT
 	public:
 		Game(QObject *parent = NULL);
+
 	private slots:
  		void slotEvent(const KGGZdMod::Event& event);
 		void slotNotification(ggz_starterpackOpcodes::Opcode messagetype, const msg& message);
 		void slotError();
+
 	private:
 		void nextPlayer();
 		void detectGameOver();
 		void handleInput(KGGZdMod::Player *p);
 		void shutdown();
 
+		bool allSeatsFull();
+		KGGZdMod::Player *findPlayerBySeat(int seatnum);
+
 		KGGZdMod::Module *m_module;
-		KGGZdMod::Player *m_currentplayer;
-		bool m_started;
-		int m_turn;
-		int m_board[9];
 };
 
 #endif
