@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10689 2008-12-30 02:06:39Z oojah $
+ * $Id: ggzdb_pgsql.c 10699 2008-12-30 11:05:45Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -79,7 +79,7 @@ connection_t;
 /* Internal functions */
 
 /* Take a connection from the pool */
-static PGconn *claimconnection()
+static PGconn *claimconnection(void)
 {
 	GGZListEntry *entry;
 	connection_t *conn;
