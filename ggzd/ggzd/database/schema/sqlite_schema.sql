@@ -8,7 +8,7 @@ CREATE TABLE `users` (
 	`email` VARCHAR(256) NOT NULL,
 	`firstlogin` TIMESTAMP,
 	`lastlogin` TIMESTAMP,
-	`perms` INT DEFAULT 7,
+	`permissions` INT DEFAULT 7,
 	`confirmed` INT DEFAULT 0
 );
 

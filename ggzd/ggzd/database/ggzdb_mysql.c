@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10689 2008-12-30 02:06:39Z oojah $
+ * $Id: ggzdb_mysql.c 10690 2008-12-30 02:10:09Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -275,7 +275,7 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	email_quoted = _ggzdb_escape(pe->email);
 
 	snprintf(query, sizeof(query), "INSERT INTO `users` "
-		"(`handle`, `password`, `name`, `email`, `lastlogin`, `perms`, `firstlogin`, `confirmed`) "
+		"(`handle`, `password`, `name`, `email`, `lastlogin`, `permissions`, `firstlogin`, `confirmed`) "
 		"VALUES ('%s', '%s', '%s', '%s', %li, %u, %li, %u)",
 		handle_quoted, password_quoted, name_quoted, email_quoted,
 		pe->last_login, pe->perms, time(NULL), pe->confirmed);
@@ -314,7 +314,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 
 	snprintf(query, sizeof(query),
 		"SELECT "
-		"`id`,`password`,`name`,`email`,`lastlogin`,`perms`,`confirmed` "
+		"`id`,`password`,`name`,`email`,`lastlogin`,`permissions`,`confirmed` "
 		"FROM `users` WHERE `handle` = '%s'",
 		handle_quoted);
 
@@ -376,7 +376,7 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	snprintf(query, sizeof(query),
 		"UPDATE `users` SET "
 		"`password`='%s',`name`='%s',`email`='%s',"
-		"`lastlogin`=%li,`perms`=%u,`confirmed`=%u WHERE "
+		"`lastlogin`=%li,`permissions`=%u,`confirmed`=%u WHERE "
 		"`handle`='%s'",
 		password_quoted, name_quoted, email_quoted,
 		pe->last_login, pe->perms, pe->confirmed,
@@ -412,7 +412,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 
 	snprintf(query, sizeof(query),
 		"SELECT "
-		"`id`,`handle`,`password`,`name`,`email`,`lastlogin`,`perms`,`confirmed` "
+		"`id`,`handle`,`password`,`name`,`email`,`lastlogin`,`permissions`,`confirmed` "
 		"FROM `users`");
 
 	pthread_mutex_lock(&mutex);

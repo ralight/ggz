@@ -7,7 +7,7 @@ CREATE TABLE `users` (
 	`email` varchar(256) NOT NULL default '',
 	`firstlogin` timestamp NOT NULL,
 	`lastlogin` timestamp NOT NULL,
-	`perms` int(11) NOT NULL default '7',
+	`permissions` int(11) NOT NULL default '7',
 	`confirmed` boolean NOT NULL default 0,
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `handle` (`handle`),
