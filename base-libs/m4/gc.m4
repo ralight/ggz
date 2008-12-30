@@ -28,6 +28,8 @@ AC_ARG_WITH([gc],
 	[type of garbage collector: boehm - auto if no TYPE]),
 	[enable_gc=$withval], [enable_gc=no])
 
+usegc=0
+
 if test "$enable_gc" = yes || test "$enable_gc" = boehm; then
 	AC_CHECK_LIB(gc, GC_malloc,
 	[
@@ -55,11 +57,9 @@ if test "$enable_gc" = yes || test "$enable_gc" = boehm; then
 		AC_SUBST(GC_INCLUDES)
 		AC_SUBST(LIB_GC)
 		usegc=1
-	else
-		usegc=0
 	fi
-
-	AC_SUBST(usegc)
 fi
+
+AC_SUBST(usegc)
 ])
 
