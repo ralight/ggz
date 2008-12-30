@@ -29,6 +29,7 @@
 #endif
 
 #include <ggz.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -212,5 +213,62 @@ char *username_canonical(const char *username)
 #else
 	return ggz_strdup(username);
 #endif
+}
+
+/* Initialize the database tables from an external SQL schema file. */
+int _ggz_setupschema(const char *filename, GGZDBExecSQL sql_exec, void *sql_conn)
+{
+	char buffer[1024];
+	char sql_error[256];
+	int sql_rc;
+	char *completebuffer = NULL;
+	int len;
+	unsigned int i;
+	int rc = 1;
+
+	FILE *f = fopen(filename, "r");
+	if(!f)
+	{
+		ggz_error_msg("Schema read error from %s.", filename);
+		return 0;
+	}
+
+	while(fgets(buffer, sizeof(buffer), f))
+	{
+		if(strlen(buffer) == 1 && completebuffer)
+		{
+			sql_rc = sql_exec(sql_conn, completebuffer, sql_error, sizeof(sql_error));
+			if(!sql_rc)
+			{
+				ggz_error_msg("Table creation error %s.",
+					sql_error);
+				rc = 0;
+			}
+
+			ggz_free(completebuffer);
+			completebuffer = NULL;
+			continue;
+		}
+
+		buffer[strlen(buffer) - 1] = '\0';
+		for(i = 0; i < strlen(buffer); i++)
+		{
+			if(buffer[i] == '\t') buffer[i] = ' ';
+		}
+
+		len = (completebuffer ? strlen(completebuffer) : 0);
+		completebuffer = (char*)ggz_realloc(completebuffer,
+			len + strlen(buffer) + 1);
+		if(len)
+			strncat(completebuffer, buffer, strlen(buffer) + 1);
+		else
+			strncpy(completebuffer, buffer, strlen(buffer) + 1);
+	}
+
+	if(completebuffer) ggz_free(completebuffer);
+
+	fclose(f);
+
+	return rc;
 }
 

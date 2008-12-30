@@ -19,6 +19,20 @@
 
 #ifndef GGZDB_UTIL_H
 
+/* Function declaration for a callback to execute a query on a DB.
+ * Should return 1 on success, 0 on failure.
+ * dbconn is a pointer to the DB specific connection handle.
+ * query is the SQL string to execute.
+ * error is a pre-allocated string of length errorlen that any error message
+ * should be copied into.
+ */
+typedef int (*GGZDBExecSQL) (void *dbconn, const char *query, char *error, size_t errorlen);
+
+/* Backend independent schema setup function using the GGZDBExecSQL callback
+ * function to get the DB specific query execution.
+ */
+int _ggz_setupschema(const char *filename, GGZDBExecSQL sql_exec, void *sql_conn);
+
 /* Escape a string for SQL */
 char *_ggz_sql_escape(const char *str);
 
