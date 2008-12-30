@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10704 2008-12-30 11:59:06Z oojah $
+ * $Id: ggzdb_pgsql.c 10707 2008-12-30 12:06:11Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -55,7 +55,6 @@
 /* Internal variables */
 static PGresult *iterres = NULL;
 static int itercount;
-static int pg_canonicalstr;
 
 static pthread_mutex_t mutex;
 static GGZList *list;
@@ -249,22 +248,6 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 					ggz_error_msg_exit("Database upgrade failed.\n");
 					rc = GGZDB_ERR_DB;
 				}
-			}
-		}
-		PQclear(res);
-	}
-
-	/* Check if we have canonicalstr() available */
-	pg_canonicalstr = 0;
-	res = PQexec(conn, "SELECT COUNT(*) FROM pg_proc WHERE proname = 'canonicalstr'");
-	if(PQresultStatus(res) == PGRES_TUPLES_OK)
-	{
-		if(PQntuples(res) == 1)
-		{
-			const char *value = PQgetvalue(res, 0, 0);
-			if(strcmp(value, "0"))
-			{
-				pg_canonicalstr = 1;
 			}
 		}
 		PQclear(res);
