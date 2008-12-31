@@ -199,7 +199,12 @@ class GGZBoard:
 			return None
 		if filename[-4:] == ".png":
 			return pygame.image.load(filename)
-		if "rsvgsdl" not in dir():
+		needsfallback = False
+		try:
+			dir(rsvgsdl)
+		except:
+			needsfallback = True
+		if needsfallback:
 			surface = pygame.image.load(filename + ".png")
 			surface = pygame.transform.scale(surface, (width, height))
 			return surface
