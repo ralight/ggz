@@ -240,31 +240,33 @@ def initserver(sock, gamename, seats, seatnames, clientexecutable):
 
 	poller.register(sock.fileno(), select.POLLIN)
 
-	# Setup a game client if seat is open and a game executable has been set
-	if seats[0] == Protocol.SEAT_OPEN:
-		out("Put a human into the first seat")
-		(clientsock, serversock) = socket.socketpair()
-		(parentsock, childsock) = socket.socketpair()
-		playermsg = net_int(Protocol.SEAT_PLAYER) + net_string(seatnames[0])
-		msg = net_int(Protocol.MSG_GAME_SEAT) + net_int(0) + playermsg
-		sock.send(msg)
-		ancillary.write_fd(sock.fileno(), serversock.fileno())
-		###serversock.close()
+	# Setup a game client for each open seat if game executable has been set
+	for i in range(len(seats)):
+		seat = seats[i]
+		if (i == 0 and seat == Protocol.SEAT_OPEN) or (i > 0 and seat == Protocol.SEAT_RESERVED):
+			out("Put a human into the seat # " + str(i))
+			(clientsock, serversock) = socket.socketpair()
+			(parentsock, childsock) = socket.socketpair()
+			playermsg = net_int(Protocol.SEAT_PLAYER) + net_string(seatnames[i])
+			msg = net_int(Protocol.MSG_GAME_SEAT) + net_int(i) + playermsg
+			sock.send(msg)
+			ancillary.write_fd(sock.fileno(), serversock.fileno())
+			###serversock.close()
 
-		if clientexecutable:
-			pid = initclient(clientsock, serversock, parentsock, childsock, clientexecutable, seatnames[0])
-			pids.append(pid)
-			csocks.append(parentsock)
-			poller.register(parentsock.fileno(), select.POLLIN)
+			if clientexecutable:
+				pid = initclient(clientsock, serversock, parentsock, childsock, clientexecutable, seatnames[i])
+				pids.append(pid)
+				csocks.append(parentsock)
+				poller.register(parentsock.fileno(), select.POLLIN)
+			else:
+				err("No game client executable known, forcing server-only mode")
 		else:
-			err("No game client executable known, forcing server-only mode")
-	else:
-		# FIXME: this is a bug in ggzdmod, if the first seat is already a bot we
-		# shouldn't have to tell ggzdmod-game again!
-		out("Put a bot into the first seat")
-		playermsg = net_int(Protocol.SEAT_BOT) + net_string("somebot")
-		msg = net_int(Protocol.MSG_GAME_SEAT) + net_int(0) + playermsg
-		sock.send(msg)
+			# FIXME: this is a bug in ggzdmod, if the respective seat is already a bot we
+			# shouldn't have to tell ggzdmod-game again!
+			out("Put a bot into the seat # " + str(i))
+			botmsg = net_int(Protocol.SEAT_BOT) + net_string(seatnames[i])
+			msg = net_int(Protocol.MSG_GAME_SEAT) + net_int(i) + botmsg
+			sock.send(msg)
 
 	while True:
 		fdtuples = poller.poll()
