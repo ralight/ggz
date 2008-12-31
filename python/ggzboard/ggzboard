@@ -42,7 +42,11 @@ except:
 	sys.path = ["../pyggzmod/build/lib." + arch] + sys.path
 	sys.path = ["../pyggzchess/build/lib." + arch] + sys.path
 
-import rsvgsdl
+try:
+	import rsvgsdl
+except:
+	print "## Warning: no SVG support possible, relying on pre-rendered images"
+
 import sdlnewstuff
 
 import playertable
@@ -195,6 +199,10 @@ class GGZBoard:
 			return None
 		if filename[-4:] == ".png":
 			return pygame.image.load(filename)
+		if "rsvgsdl" not in dir():
+			surface = pygame.image.load(filename + ".png")
+			surface = pygame.transform.scale(surface, (width, height))
+			return surface
 		if filename[0] != "/":
 			# pyrsvgsdl needs absolute filenames
 			filename = os.getcwd() + "/" + filename
