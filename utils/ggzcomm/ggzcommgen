@@ -1813,6 +1813,8 @@ class GGZComm
 				f.puts "\traw->setNetwork(fd);"
 			elsif library == "kggzpacket" then
 				f.puts "\tpacket = new KGGZPacket();"
+				f.puts "\tconnect(packet, SIGNAL(signalError()), SIGNAL(signalError()));"
+				f.puts "\tconnect(packet, SIGNAL(signalPacket()), SLOT(ggzcomm_ready()));"
 			end
 			f.puts "}"
 			f.puts ""
