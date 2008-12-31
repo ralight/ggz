@@ -129,7 +129,7 @@ class GGZBoardUI:
 				pygame.display.toggle_fullscreen()
 		else:
 			self.currentres = self.origres
-			self.screen = pygame.display.set_mode(self.currentres, DOUBLEBUF)
+			self.screen = pygame.display.set_mode(self.currentres, DOUBLEBUF | RESIZABLE)
 
 		if self.origsurface.get_size() == self.currentres:
 			self.surface = self.deepcopy(self.origsurface)
@@ -137,20 +137,28 @@ class GGZBoardUI:
 			self.surface = pygame.transform.scale(self.origsurface, self.currentres)
 		self.backgroundarea = self.deepcopy(self.surface)
 
+		# On some platforms Pygame hides the mouse
+		#pygame.mouse.set_visible(True)
+
 	def deepcopy(self, surface):
 		s = pygame.Surface(surface.get_size())
 		s.blit(surface, (0, 0))
 		return s
 
 	def setsurface(self, surface):
-			if surface:
-				self.origsurface = pygame.image.load(DATAPATH + surface)
-				self.surface = pygame.transform.scale(self.origsurface, self.currentres)
-				self.backgroundarea = self.deepcopy(self.surface)
-			else:
-				self.origsurface = pygame.Surface(self.currentres)
-				self.surface = self.deepcopy(self.origsurface)
-				self.backgroundarea = self.deepcopy(self.surface)
+		if surface:
+			self.origsurface = pygame.image.load(DATAPATH + surface)
+			self.surface = pygame.transform.scale(self.origsurface, self.currentres)
+			self.backgroundarea = self.deepcopy(self.surface)
+		else:
+			self.origsurface = pygame.Surface(self.currentres)
+			self.surface = self.deepcopy(self.origsurface)
+			self.backgroundarea = self.deepcopy(self.surface)
+
+	def resize(self, size):
+		self.origres = size
+		self.currentres = size
+		self.surface = pygame.transform.scale(self.origsurface, self.currentres)
 
 class GGZBoard:
 	def __init__(self):
@@ -292,7 +300,7 @@ class GGZBoard:
 			# Pygame up to 1.7 don't know the current screen resolution
 			pass
 
-		self.ui.screen = pygame.display.set_mode(self.ui.currentres, DOUBLEBUF)
+		self.ui.screen = pygame.display.set_mode(self.ui.currentres, DOUBLEBUF | RESIZABLE)
 		self.ui.setsurface(self.conf.background)
 		if self.conf.fullscreen:
 			self.ui.togglefullscreen()
@@ -369,6 +377,10 @@ class GGZBoard:
 								print game.selection
 								return game.selection[i]
 
+			if event.type == VIDEORESIZE:
+				ui.resize(event.size)
+				updatescreen = 2
+
 			if updatescreen:
 				ui.backgroundarea = ui.deepcopy(ui.surface)
 				ui.backgroundarea.blit(title, (20, 30))
@@ -412,6 +424,8 @@ class GGZBoard:
 					#	overlay.set_alpha(70)
 					#	ui.backgroundarea.blit(overlay, (bx, by))
 
+				if updatescreen == 2:
+					ui.screen = pygame.display.set_mode(ui.currentres, DOUBLEBUF | RESIZABLE)
 				ui.screen.blit(ui.backgroundarea, (0, 0))
 				updatescreen = 0
 
@@ -465,6 +479,10 @@ class GGZBoard:
 					selected = 1
 					quit = 1
 
+			if event.type == VIDEORESIZE:
+				ui.resize(event.size)
+				updatescreen = 2
+
 			if updatescreen:
 				ui.backgroundarea = ui.deepcopy(ui.surface)
 				ui.backgroundarea.blit(title, (20, 30))
@@ -501,6 +519,8 @@ class GGZBoard:
 				img = ui.smallfont.render(_("Return to game"), 1, (255, 200, 0))
 				ui.backgroundarea.blit(img, (x + 10, y + 1))
 
+				if updatescreen == 2:
+					ui.screen = pygame.display.set_mode(ui.currentres, DOUBLEBUF | RESIZABLE)
 				ui.screen.blit(ui.backgroundarea, (0, 0))
 				updatescreen = 0
 
@@ -553,6 +573,10 @@ class GGZBoard:
 						if selected == 8:
 							quit = 1
 
+			if event.type == VIDEORESIZE:
+				ui.resize(event.size)
+				updatescreen = 2
+
 			if updatescreen:
 				ui.backgroundarea = ui.deepcopy(ui.surface)
 				ui.backgroundarea.blit(title, (20, 30))
@@ -583,6 +607,8 @@ class GGZBoard:
 				img = ui.smallfont.render(_("Return to main screen"), 1, (255, 200, 0))
 				ui.backgroundarea.blit(img, (30, i * 50 + 100 + 10))
 
+				if updatescreen == 2:
+					ui.screen = pygame.display.set_mode(ui.currentres, DOUBLEBUF | RESIZABLE)
 				ui.screen.blit(ui.backgroundarea, (0, 0))
 				updatescreen = 0
 
@@ -641,6 +667,10 @@ class GGZBoard:
 						elif selected == len(self.modulefilelist) + 2:
 							self.shutdown = 1
 
+			if event.type == VIDEORESIZE:
+				ui.resize(event.size)
+				updatescreen = 2
+
 			if updatescreen:
 				ui.backgroundarea = ui.deepcopy(ui.surface)
 				ui.backgroundarea.blit(title, (20, 30))
@@ -675,6 +705,8 @@ class GGZBoard:
 				img = ui.smallfont.render(_("Quit..."), 1, (255, 200, 0))
 				ui.backgroundarea.blit(img, (30, i * 50 + 100 + 10))
 
+				if updatescreen == 2:
+					ui.screen = pygame.display.set_mode(ui.currentres, DOUBLEBUF | RESIZABLE)
 				ui.screen.blit(ui.backgroundarea, (0, 0))
 				updatescreen = 0
 
@@ -737,6 +769,10 @@ class GGZBoard:
 						elif selected == len(themes.keys()) + 1:
 							back = 1
 
+			if event.type == VIDEORESIZE:
+				ui.resize(event.size)
+				updatescreen = 2
+
 			if updatescreen:
 				ui.backgroundarea = ui.deepcopy(ui.surface)
 				ui.backgroundarea.blit(title, (20, 30))
@@ -762,6 +798,8 @@ class GGZBoard:
 				img = ui.smallfont.render(_("Back..."), 1, (255, 200, 0))
 				ui.backgroundarea.blit(img, (30, i * 50 + 100 + 10))
 
+				if updatescreen == 2:
+					ui.screen = pygame.display.set_mode(ui.currentres, DOUBLEBUF | RESIZABLE)
 				ui.screen.blit(ui.backgroundarea, (0, 0))
 				updatescreen = 0
 
@@ -1014,6 +1052,10 @@ class GGZBoard:
 					updatescreen = 1
 					net.modified = 0
 
+			if event.type == VIDEORESIZE:
+				ui.resize(event.size)
+				updatescreen = 2
+
 			if updatescreen:
 				ui.backgroundarea = ui.deepcopy(ui.surface)
 				ui.backgroundarea.blit(title, (20, 30))
@@ -1168,6 +1210,8 @@ class GGZBoard:
 					ui.backgroundarea.blit(img, (xpos + 10, y + 1))
 					i += 1
 
+				if updatescreen == 2:
+					ui.screen = pygame.display.set_mode(ui.currentres, DOUBLEBUF | RESIZABLE)
 				ui.screen.blit(ui.backgroundarea, (0, 0))
 				updatescreen = 0
 
