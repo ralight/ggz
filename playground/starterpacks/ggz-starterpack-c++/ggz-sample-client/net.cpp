@@ -50,6 +50,8 @@ void ggz_starterpack::ggzcomm_set_fd(int usefd)
 {
 	fd = usefd;
 	packet = new KGGZPacket();
+	connect(packet, SIGNAL(signalError()), SIGNAL(signalError()));
+	connect(packet, SIGNAL(signalPacket()), SLOT(ggzcomm_ready()));
 }
 
 void ggz_starterpack::ggzcomm_set_socket(KGGZPacket *usepacket)
