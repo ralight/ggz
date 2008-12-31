@@ -31,6 +31,10 @@ SVN:
 - the ggz-kde-center package from GGZ SVN
   - which in turn requires ggz-base-libs and ggz-server/ggzdmod
 
+Until GGZ 1.0 is released, these packages can be installed from SVN:
+  svn co svn://svn.ggzgamingzone.org/svn/trunk/{base-libs,ggzd,kde-center}
+  svn co svn://anonsvn.kde.org/home/kde/trunk/KDE/{kdelibs,kdegames}
+
 To compile the game client and server, type:
 - mkdir BUILD; cd BUILD
 - cmake [-DCMAKE_INSTALL_PREFIX=/path/to/kde4/or/path/to/ggz] ..
