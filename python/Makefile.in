@@ -235,13 +235,21 @@ install-ggzboard:
 	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/connectx
 	mkdir -p $(DESTDIR)$(datadir)/ggz/ggzboard/shogi
 	cp ggzboard/checkers/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/checkers
+	cp ggzboard/checkers/*.svg.png $(DESTDIR)$(datadir)/ggz/ggzboard/checkers
 	cp ggzboard/chess/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/chess
+	cp ggzboard/chess/*.svg.png $(DESTDIR)$(datadir)/ggz/ggzboard/chess
 	cp ggzboard/go/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/go
+	cp ggzboard/go/*.svg.png $(DESTDIR)$(datadir)/ggz/ggzboard/go
 	cp ggzboard/hnefatafl/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/hnefatafl
+	cp ggzboard/hnefatafl/*.svg.png $(DESTDIR)$(datadir)/ggz/ggzboard/hnefatafl
 	cp ggzboard/reversi/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/reversi
+	cp ggzboard/reversi/*.svg.png $(DESTDIR)$(datadir)/ggz/ggzboard/reversi
 	cp ggzboard/madn/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/madn
+	cp ggzboard/madn/*.svg.png $(DESTDIR)$(datadir)/ggz/ggzboard/madn
 	cp ggzboard/connectx/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/connectx
+	cp ggzboard/connectx/*.svg.png $(DESTDIR)$(datadir)/ggz/ggzboard/connectx
 	cp ggzboard/shogi/*.svg $(DESTDIR)$(datadir)/ggz/ggzboard/shogi
+	cp ggzboard/shogi/*.svg.png $(DESTDIR)$(datadir)/ggz/ggzboard/shogi
 	mkdir -p $(DESTDIR)$(py_privmoddir)/ggzboard
 	cp ggzboard/ggzboard_net.py $(DESTDIR)$(py_privmoddir)/ggzboard
 	cp ggzboard/bogaprot.py $(DESTDIR)$(py_privmoddir)/ggzboard
