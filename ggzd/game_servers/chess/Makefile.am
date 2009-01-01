@@ -1,10 +1,8 @@
-EXTRA_DIST = chess.dsc chess.room
-
 SUBDIRS = libcgc
 
 ggzdexecmod_PROGRAMS = ggzd.chess
-ggzdgame_DATA = chess.dsc
-ggzdroom_DATA = chess.room
+dist_ggzdgame_DATA = chess.dsc
+dist_ggzdroom_DATA = chess.room
 
 ggzd_chess_SOURCES = main.c \
 	chess.h \

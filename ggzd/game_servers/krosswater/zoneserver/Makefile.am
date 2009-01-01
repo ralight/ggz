@@ -1,5 +1,3 @@
-SUBDIRS = .
-
 AM_CPPFLAGS = -I $(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
 
 noinst_LTLIBRARIES = libzoneserver.la

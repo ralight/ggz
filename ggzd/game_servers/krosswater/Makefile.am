@@ -1,6 +1,3 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6959 2005-03-04 00:18:42Z josef $
-
 SUBDIRS = stackpath zoneserver
 
 ggzdexecmod_PROGRAMS = krosswater_server
@@ -16,8 +13,6 @@ AM_CPPFLAGS = -I $(top_srcdir)/game_servers/krosswater/stackpath  \
 	   -I $(top_srcdir)/ggzdmod \
 	   $(LIBGGZ_INCLUDES)
 
-ggzdroom_DATA = krosswater.room
-ggzdgame_DATA = krosswater.dsc
-
-EXTRA_DIST = krosswater.dsc krosswater.room
+dist_ggzdroom_DATA = krosswater.room
+dist_ggzdgame_DATA = krosswater.dsc
 

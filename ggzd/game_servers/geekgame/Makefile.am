@@ -1,9 +1,5 @@
-SUBDIRS = .
-
-ggzdgame_DATA = geekgame.dsc
-ggzdroom_DATA = geekgame.room
-
-EXTRA_DIST = $(ggzdgame_DATA) $(ggzdroom_DATA)
+dist_ggzdgame_DATA = geekgame.dsc
+dist_ggzdroom_DATA = geekgame.room
 
 ggzdexecmod_PROGRAMS = geekgameserver
 geekgameserver_SOURCES = main.cpp geekgame.cpp

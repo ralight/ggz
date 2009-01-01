@@ -1,9 +1,6 @@
-EXTRA_DIST = reversi.dsc reversi.room
-
 ggzdexecmod_PROGRAMS = ggzd.reversi
-ggzdgame_DATA = reversi.dsc
-ggzdroom_DATA = reversi.room
-
+dist_ggzdgame_DATA = reversi.dsc
+dist_ggzdroom_DATA = reversi.room
 
 ggzd_reversi_SOURCES = 	main.c \
 			game.c \

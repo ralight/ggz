@@ -1,13 +1,8 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 9016 2007-03-30 00:09:05Z jdorje $
-
-SUBDIRS = common client config games ai .
+SUBDIRS = common client config games ai
 
 EXTRA_DIST = TODO
 
 ggzdexecmod_PROGRAMS = ggzd.ggzcards
-ggzdgame_DATA =
-ggzdroom_DATA =
 
 ggzd_ggzcards_SOURCES = ai.c ai.h \
 			bid.c bid.h \

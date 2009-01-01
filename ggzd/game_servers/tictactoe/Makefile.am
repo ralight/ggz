@@ -1,8 +1,6 @@
-EXTRA_DIST = tictactoe.dsc tictactoe.room
-
 ggzdexecmod_PROGRAMS = ggzd.tictactoe
-ggzdgame_DATA = tictactoe.dsc
-ggzdroom_DATA = tictactoe.room
+dist_ggzdgame_DATA = tictactoe.dsc
+dist_ggzdroom_DATA = tictactoe.room
 
 ggzd_tictactoe_SOURCES = \
 	main.c \

@@ -1,12 +1,7 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 8279 2006-06-27 07:29:39Z josef $
-
 SUBDIRS = qtserv variants
 
-ggzdgame_DATA = muehle.dsc
-ggzdroom_DATA = muehle.room
-
-EXTRA_DIST = $(ggzdgame_DATA) $(ggzdroom_DATA)
+dist_ggzdgame_DATA = muehle.dsc
+dist_ggzdroom_DATA = muehle.room
 
 ggzdexecmod_PROGRAMS = muehleserv
 muehleserv_SOURCES = muehleserver.cpp loader.cpp main.cpp net.cpp

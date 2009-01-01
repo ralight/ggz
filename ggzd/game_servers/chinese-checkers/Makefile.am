@@ -1,8 +1,6 @@
-EXTRA_DIST = ccheckers.dsc ccheckers.room
-
 ggzdexecmod_PROGRAMS = ggzd.ccheckers
-ggzdgame_DATA = ccheckers.dsc
-ggzdroom_DATA = ccheckers.room
+dist_ggzdgame_DATA = ccheckers.dsc
+dist_ggzdroom_DATA = ccheckers.room
 
 ggzd_ccheckers_SOURCES = main.c \
 			 game.c \

@@ -1,12 +1,5 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 10089 2008-06-29 09:30:27Z jdorje $
-
-SUBDIRS = .
-
 aimoduledir = $(ggzddatadir)/ggzcards
-aimodule_DATA = spades.aispec suaro.aispec
-
-EXTRA_DIST = $(aimodule_DATA)
+dist_aimodule_DATA = spades.aispec suaro.aispec
 
 # Each of these programs shares a whole set of common code
 # in this directory, plus depends on the common and client
@@ -29,8 +22,6 @@ AILIB = $(top_builddir)/game_servers/ggzcards/client/libclient.a \
 	$(top_builddir)/game_servers/ggzcards/common/libcommon.a \
 	libggzcardsai.a \
 	$(LDADD) $(LIB_GGZ)
-
-#LDFLAGS = $(LIBGGZ_LDFLAGS)
 
 ggzd_ggzcards_ai_random_SOURCES = random.c
 ggzd_ggzcards_ai_random_LDADD = $(AILIB)

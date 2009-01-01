@@ -1,13 +1,6 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6959 2005-03-04 00:18:42Z josef $
-
-EXTRA_DIST = escape.dsc escape.room
-
-SUBDIRS = .
-
 ggzdexecmod_PROGRAMS = ggzd.escape
-ggzdgame_DATA = escape.dsc
-ggzdroom_DATA = escape.room
+dist_ggzdgame_DATA = escape.dsc
+dist_ggzdroom_DATA = escape.room
 
 ggzd_escape_SOURCES = main.c \
 		      game.c \

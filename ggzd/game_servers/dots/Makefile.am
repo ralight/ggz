@@ -1,8 +1,6 @@
-EXTRA_DIST = dots.dsc dots.room
-
 ggzdexecmod_PROGRAMS = ggzd.dots
-ggzdgame_DATA = dots.dsc
-ggzdroom_DATA = dots.room
+dist_ggzdgame_DATA = dots.dsc
+dist_ggzdroom_DATA = dots.room
 
 ggzd_dots_SOURCES = main.c \
 		    game.c \

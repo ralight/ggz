@@ -1,9 +1,5 @@
-SUBDIRS = .
-
-ggzdgame_DATA = widelands.dsc
-ggzdroom_DATA = widelands.room
-
-EXTRA_DIST = $(ggzdgame_DATA) $(ggzdroom_DATA)
+dist_ggzdgame_DATA = widelands.dsc
+dist_ggzdroom_DATA = widelands.room
 
 ggzdexecmod_PROGRAMS = widelands_server
 widelands_server_SOURCES = main.cpp widelands_server.cpp
