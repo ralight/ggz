@@ -9,9 +9,6 @@ libraries which are usually available on Windows, equivalent to libc.
 It also pulls in the binutils which can work on executables of the
 mingw32 architecture.
 
-Location of the header files:
-/usr/i586-mingw32msvc/include/*.h
-
 2) Cross-compilation
 
 ./configure [...] --host=i586-mingw32msvc
@@ -22,4 +19,31 @@ executed on a Windows machine.
 Currently, the configuration of ggz-base-libs fails as soon as it needs
 a library not part of conventional libc.
 This applies to gettext, pthreads, expat etc.
+
+3) Additional packages
+
+Some packages are available pre-compiled for the mingw32 architecture
+(actually COFF) on http://sourceforge.net/projects/mingwrep/.
+The zip files downloaded from there need to be unpacked, and the header
+and library files copied into the respective mingw32 directories.
+
+Location of the header files and libraries:
+/usr/i586-mingw32msvc/include
+/usr/i586-mingw32msvc/lib
+
+The following libraries are avilable:
+- gettext
+- expat
+
+The following libraries are missing:
+- pthreads (use --disable-threading)
+
+Having followed these instructions, the configure script is supposed to
+succeed.
+
+4) Compilation
+
+The compilation will succeed. However, the linker is going to screw up
+on the definition of _getaddrinfo and _freeaddrinfo. The variants without
+underscore seem to be in ws2tcpip.h, but for some reason not used.
 
