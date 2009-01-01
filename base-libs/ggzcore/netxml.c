@@ -1134,7 +1134,7 @@ void _ggzcore_net_handle_server(GGZNet * net, GGZXMLElement * element)
 {
 	const char *name, *id, *status, *tls;
 	int version;
-	int *chatlen;
+	unsigned int *chatlen;
 
 	if (!element)
 		return;
