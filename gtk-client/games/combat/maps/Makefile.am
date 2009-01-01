@@ -1,9 +1,5 @@
-## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4666 2002-09-23 12:33:57Z jdorje $
-
-SUBDIRS = .
-
-map_DATA =	8x8.127742			\
+mapdir = $(ggzdatadir)/combat/maps
+dist_map_DATA =	8x8.127742			\
 		Bridge.127237			\
 		Checkers+Options.5003353	\
 		Checkers.4227780237		\
@@ -17,7 +13,3 @@ map_DATA =	8x8.127742			\
 		Plenty_of_options.8183865	\
 		Small.4176275962
 
-# $(DESTDIR) prepended automatically
-mapdir = $(ggzdatadir)/combat/maps
-
-EXTRA_DIST = $(map_DATA)
