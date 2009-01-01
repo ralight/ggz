@@ -236,7 +236,7 @@ static void _ggzcore_net_negotiate_tls(GGZNet * net);
 static int _ggzcore_net_send_table_seat(GGZNet * net, GGZTableSeat * seat);
 static void _ggzcore_net_send_header(GGZNet * net);
 static int _ggzcore_net_send_pong(GGZNet * net, const char *id);
-static int _ggzcore_net_send_line(GGZNet * net, char *line, ...)
+static int _ggzcore_net_send_line(GGZNet * net, const char *line, ...)
 ggz__attribute((format(printf, 2, 3)));
 static int str_to_int(const char *str, int dflt);
 
@@ -2627,7 +2627,7 @@ static void _ggzcore_net_negotiate_tls(GGZNet * net)
 }
 
 
-static int _ggzcore_net_send_line(GGZNet * net, char *line, ...)
+static int _ggzcore_net_send_line(GGZNet * net, const char *line, ...)
 {
 	char buf[4096];
 	va_list ap;
