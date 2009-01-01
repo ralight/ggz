@@ -93,7 +93,7 @@ AC_EGREP_CPP(PF_LOCAL,
                             AC_DEFINE([PF_LOCAL], PF_UNIX,
 				      [PF_UNIX is available])
 			    AC_DEFINE([AF_LOCAL], AF_UNIX,
-				      [AF_UNIX is available])])], 
+				      [AF_UNIX is available])])],
              AC_MSG_RESULT(yes))
 
 
@@ -184,6 +184,28 @@ AM_CONDITIONAL(INSTALL_GGZDMOD, true)
 dnl Various dirs
 dnl ============
 
+# See docs/ggz-project/packagers for FHS considerations
+# We leave the values intact for explicit user overrides
+if test "$prefix" = "/usr"; then
+	if test "$localstatedir" = "\${prefix}/var"; then
+		localstatedir="/var/lib"
+	fi
+	if test "$sysconfdir" = "\${prefix}/etc"; then
+		sysconfdir="/etc"
+	fi
+elif test "$prefix" = "/usr/local"; then
+	if test "$localstatedir" = "\${prefix}/var"; then
+		localstatedir="/var/local"
+	fi
+	if test "$sbindir" = "\${exec_prefix}/sbin"; then
+		sbindir="\${bindir}"
+	fi
+else
+	if test "$sbindir" = "\${exec_prefix}/sbin"; then
+		sbindir="\${bindir}"
+	fi
+fi
+
 ggzdconfdir="$sysconfdir/ggzd"
 ggzdexecmoddir="$libdir/ggzd"
 ggzdstatedir="$localstatedir/ggzd"
@@ -218,7 +240,7 @@ AC_GGZ_VISIBILITY
 AC_CONFIG_FILES([Makefile
 	ggzdmod/Makefile
 	ggzdmod++/Makefile
-	ggzd/Makefile 
+	ggzd/Makefile
 	ggzd/database/Makefile
 	ggzd/database/schema/Makefile
 	ggzd/meta/Makefile
@@ -272,7 +294,7 @@ dnl Status Output
 dnl =============
 
 echo ""
-echo "Build options"  
+echo "Build options"
 echo "    Build Server.........$enable_server"
 echo "    Build Game Servers...$enable_games"
 echo "Configuration options"

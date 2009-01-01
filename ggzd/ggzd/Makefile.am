@@ -2,7 +2,8 @@ SUBDIRS = database meta
 
 EXTRA_DIST = ggzd.conf.example.in ggzd.test.in ggzd.motd entry.room username.policy
 
-bin_PROGRAMS = ggzd ggzduedit
+sbin_PROGRAMS = ggzd
+bin_PROGRAMS = ggzduedit
 
 ggzdroom_DATA = entry.room
 ggzdconf_DATA = ggzd.conf.example ggzd.motd username.policy
