@@ -627,7 +627,7 @@ static int install_module(void)
 }
 
 
-static int noregister_all()
+static int noregister_all(void)
 {
 	DIR *d;
 	struct dirent *e;
