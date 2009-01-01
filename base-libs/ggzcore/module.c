@@ -471,7 +471,7 @@ int _ggzcore_module_get_num_by_type(const char *game,
 
 GGZModule *_ggzcore_module_get_nth(const unsigned int num)
 {
-	int i = 0;
+	unsigned int i = 0;
 	GGZListEntry *cur;
 
 	for (cur = ggz_list_head(module_list); cur;
@@ -492,7 +492,8 @@ GGZModule *_ggzcore_module_get_nth_by_type(const char *game,
 					   const char *version,
 					   const unsigned int num)
 {
-	int i, total, status, count;
+	int status;
+	unsigned int i, total, count;
 	char **ids;
 	GGZModule *module, *found = NULL;
 	GGZListEntry *entry;
