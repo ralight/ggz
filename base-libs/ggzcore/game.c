@@ -281,7 +281,7 @@ struct _GGZGame *_ggzcore_game_new(void)
 void _ggzcore_game_init(struct _GGZGame *game,
 			GGZServer * server, GGZModule * module)
 {
-	int i;
+	unsigned int i;
 	GGZRoom *room = _ggzcore_server_get_cur_room(server);
 
 	game->server = server;
@@ -603,7 +603,7 @@ static void _ggzcore_game_handle_rankings(GGZMod * mod, GGZModTransaction t,
 
 void _ggzcore_game_free(struct _GGZGame *game)
 {
-	int i;
+	unsigned int i;
 
 	ggz_debug(GGZCORE_DBG_GAME, "Destroying game object");
 
