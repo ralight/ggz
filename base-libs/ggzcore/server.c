@@ -1658,7 +1658,7 @@ void _ggzcore_server_queue_players_changed(GGZServer * server)
 }
 
 
-void _ggzcore_server_net_error(GGZServer * server, char *message)
+void _ggzcore_server_net_error(GGZServer * server, const char *message)
 {
 	_ggzcore_server_change_state(server, GGZ_TRANS_NET_ERROR);
 	_ggzcore_server_event(server, GGZ_NET_ERROR, message);
