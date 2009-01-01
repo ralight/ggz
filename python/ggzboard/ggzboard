@@ -198,6 +198,25 @@ class GGZBoard:
 			surface.fill(color, ((x1, y1 + h), (w, 1)))
 			surface.fill(color, ((x1 + w, y1), (1, h)))
 
+	def svgqtsurface(self, filename, width, height):
+		from PyQt4 import QtSvg, QtGui, QtCore
+		pix = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32)
+		p = QtGui.QPainter(pix)
+		r = QtSvg.QSvgRenderer(filename)
+		r.render(p)
+		p.end()
+		#buf = QtCore.QBuffer()
+		#pix.save(buf, "PNG")
+		#... = len(buf.data())
+		# FIXME: Qt's QImage can only save into file formats like PNG, not
+		# return the whole buffer (at least bits() doesn't work with PyQt).
+		# PyGame, on the other hand, can only load raw data from RAM with
+		# fromstring(), and doesn't understand file formats in memory.
+		# Therefore, we have to write to $HOME excessively!
+		pixpath = os.getenv("HOME") + "/.ggzboard_cache.png"
+		pix.save(pixpath)
+		return pygame.image.load(pixpath)
+
 	def svgsurface(self, filename, width, height):
 		if not filename:
 			return None
@@ -208,6 +227,12 @@ class GGZBoard:
 			dir(rsvgsdl)
 		except:
 			needsfallback = True
+		if needsfallback:
+			try:
+				surface = self.svgqtsurface(filename, width, height)
+				return surface
+			except:
+				pass
 		if needsfallback:
 			surface = pygame.image.load(filename + ".png")
 			surface = pygame.transform.scale(surface, (width, height))
