@@ -1,4 +1,4 @@
-#serial AM2
+#serial 0
 dnl From Bruno Haible.
 
 AC_DEFUN([AM_ICONV],
