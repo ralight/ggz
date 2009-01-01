@@ -70,3 +70,21 @@ sections of the packaging file.
 All of these issues are now gone if --registry=PKGNAME is given to ggz-config,
 which is the default for all autoconf-based modules in GGZ.
 
+Directory layout for ggzd
+-------------------------
+
+The GGZ server is intended to integrate well into systems according to the
+Filesystem Hierarchy Standard (FHS). Therefore, the following default paths
+are chosen depending on the selected prefix.
+
+Type:         | System-wide addon  | System-integrated  | Custom addon
+Prefix:       | /usr/local         | /usr               | <custom>
+--------------+--------------------+--------------------+--------------------
+binaries      | /usr/local/bin     | /usr/bin           | <custom>/bin
+root binaries | /usr/local/bin     | /usr/sbin      [*] | <custom>/bin
+configuration | /usr/local/etc     | /etc           [*] | <custom>/etc
+variable data | /var/local     [*] | /var/lib       [*] | <custom>/var
+
+Currently, '$libexecdir' is not used for game servers, they are instead
+placed into '$libdir/ggzd'.
+
