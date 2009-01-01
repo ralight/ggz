@@ -226,7 +226,7 @@ static GGZRankingsData *_ggzcore_net_rankings_get_data(GGZXMLElement * game);
 static void _ggzcore_net_rankings_add_ranking(GGZXMLElement *, int, int, const char *);
 
 /* Trigger network error event */
-static void _ggzcore_net_error(GGZNet * net, char *message);
+static void _ggzcore_net_error(GGZNet * net, const char *message);
 
 /* Dump network data to debugging file */
 static void _ggzcore_net_dump_data(GGZNet * net, char *data, int size);
@@ -1061,7 +1061,7 @@ static void _ggzcore_net_parse_text(void *data, const char *text, int len)
 }
 
 
-static void _ggzcore_net_error(GGZNet * net, char *message)
+static void _ggzcore_net_error(GGZNet * net, const char *message)
 {
 	ggz_debug(GGZCORE_DBG_NET, "Network error: %s", message);
 	_ggzcore_net_disconnect(net);
