@@ -314,7 +314,7 @@ if test "$tls_type" = yes -o "$tls_type" = GnuTLS; then
   AC_GGZ_GNUTLS
   if test "$have_gnutls" = yes; then
     GGZTLS_INCLUDES="-I $gnutls_includes"
-    GGZTLS_LDFLAGS="-L $gnutls_libraries"
+    GGZTLS_LDFLAGS="-L$gnutls_libraries"
     LIB_GGZTLS=$gnutls_lib
     AC_MSG_RESULT([using GnuTLS])
     AC_DEFINE_UNQUOTED([GGZ_TLS_GNUTLS], 1,
@@ -330,7 +330,7 @@ then
   AC_PATH_SSL
   if test "$have_ssl" = yes; then
     GGZTLS_INCLUDES="-I $ssl_includes"
-    GGZTLS_LDFLAGS="-L $ssl_libraries"
+    GGZTLS_LDFLAGS="-L$ssl_libraries"
     LIB_GGZTLS=$ssl_lib
     AC_MSG_RESULT([using OpenSSL])
     AC_DEFINE_UNQUOTED([GGZ_TLS_OPENSSL], 1,
@@ -346,7 +346,7 @@ then
   AC_GGZ_NSS
   if test "$have_nss" = yes; then
     GGZTLS_INCLUDES="-I $nss_includes"
-    GGZTLS_LDFLAGS="-L $nss_libraries"
+    GGZTLS_LDFLAGS="-L$nss_libraries"
     LIB_GGZTLS=$nss_lib
     AC_MSG_RESULT([using NSS])
     AC_DEFINE_UNQUOTED([GGZ_TLS_NSS], 1,
