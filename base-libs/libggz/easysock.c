@@ -82,6 +82,7 @@ DEBUG_MEM
 #define HOSTNAMELEN 1024
 
 /* Thread argument structure for connectorthread() */
+#ifndef NO_THREADING
 struct ggz_async_t
 {
 	const char *host;
@@ -91,6 +92,7 @@ struct ggz_async_t
 	pthread_mutex_t lock;
 	int notifyfd;
 };
+#endif
 
 static ggzIOError _err_func = NULL;
 static ggzIOExit _exit_func = exit;
@@ -100,7 +102,9 @@ static unsigned int ggz_socketcreation = 0;
 static unsigned int ggz_socketport = 0;
 static int ggz_makesocket_listener = -1;
 
+#ifndef NO_THREADING
 static struct ggz_async_t global_makesocket_data;
+#endif
 #ifdef ASYNCNS
 static asyncns_t *global_ans = NULL;
 #endif
@@ -1166,7 +1170,9 @@ GGZAsyncEvent ggz_async_event(void)
 
 			event.type = GGZ_ASYNC_RESOLVER;
 			event.port = ggz_socketport;
+#ifndef NO_THREADING
 			event.address = global_makesocket_data.ipaddress;
+#endif
 
 			if(_notify_func)
 				(*_notify_func)(event.address, GGZ_SOCKET_RESOLVEONLY);
@@ -1176,7 +1182,9 @@ GGZAsyncEvent ggz_async_event(void)
 			ggz_socketcreation = 0;
 
 			event.type = GGZ_ASYNC_CONNECT;
+#ifndef NO_THREADING
 			event.socket = global_makesocket_data.fd;
+#endif
 
 			if(_notify_func)
 				(*_notify_func)(NULL, event.socket);
