@@ -458,7 +458,7 @@ bool ggz_perms_is_admin(GGZPermset perms)
 
 void ggz_perms_init_from_list(GGZPermset *perms, GGZPerm *list, size_t listsz)
 {
-	int i;
+	unsigned int i;
 
 	*perms = 0;
 	for (i = 0; i < listsz; i++) {
