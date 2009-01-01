@@ -154,11 +154,11 @@ char *username_canonical(const char *username)
 		return NULL;
 	}
 
-	ustr = (UChar*)malloc(strlen(username) * 4);
+	ustr = (UChar*)ggz_malloc(strlen(username) * 4);
 	length = strlen(username) * 4;
 
 	ustr = u_strFromUTF8(ustr, length, &length, username, -1, &error);
-	free(ustr);
+	ggz_free(ustr);
 	if(U_FAILURE(error)) {
 #if 0
 		elog(ERROR, "Error: conversion failure");
@@ -166,7 +166,7 @@ char *username_canonical(const char *username)
 		usprep_close(profile);
 		return NULL;
 	}
-	ustr = (UChar*)malloc(sizeof(UChar) * length);
+	ustr = (UChar*)ggz_malloc(sizeof(UChar) * length);
 	if(!ustr) {
 #if 0
 		elog(ERROR, "Error: malloc failure");
@@ -177,22 +177,22 @@ char *username_canonical(const char *username)
 	ustr = u_strFromUTF8(ustr, length, NULL, username, -1, &error);
 
 	length2 = length * 4;
-	ustr2 = (UChar*)malloc(sizeof(UChar) * length2);
+	ustr2 = (UChar*)ggz_malloc(sizeof(UChar) * length2);
 
 	numchars = usprep_prepare(profile, ustr, length, ustr2, length2, USPREP_DEFAULT, NULL, &error);
-	free(ustr);
+	ggz_free(ustr);
 	if(U_FAILURE(error))
 	{
 #if 0
 		elog(ERROR, "Error: stringprep failure");
 #endif
-		free(ustr2);
+		ggz_free(ustr2);
 		usprep_close(profile);
 		return NULL;
 	}
 
 	length = length2 * 4;
-	canonical = malloc(length);
+	canonical = ggz_malloc(length);
 	error = U_ZERO_ERROR;
 	u_strToUTF8(canonical, length, &length, ustr2, numchars, &error);
 	if(U_FAILURE(error))
@@ -200,13 +200,13 @@ char *username_canonical(const char *username)
 #if 0
 		elog(ERROR, "Error: conversion failure");
 #endif
-		free(canonical);
-		free(ustr2);
+		ggz_free(canonical);
+		ggz_free(ustr2);
 		usprep_close(profile);
 		return NULL;
 	}
 
-	free(ustr2);
+	ggz_free(ustr2);
 	usprep_close(profile);
 
 	return canonical;
