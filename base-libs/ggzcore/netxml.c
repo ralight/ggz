@@ -1081,7 +1081,7 @@ static GGZXMLElement *_ggzcore_net_new_element(const char *tag,
 					       const char *const *attrs)
 {
 	void (*process_func) (GGZNet *net, GGZXMLElement *element) = NULL;
-	int i;
+	unsigned int i;
 	struct {
 		const char *tag;
 		void (*process_func)(GGZNet *net, GGZXMLElement *element);
