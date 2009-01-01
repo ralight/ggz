@@ -1,0 +1,25 @@
+Here's how to cross-compile GGZ for Mingw:
+
+1) Installation of required packages
+
+$ apt-get install mingw32
+
+This pulls in the mingw32-runtime package containing header files and
+libraries which are usually available on Windows, equivalent to libc.
+It also pulls in the binutils which can work on executables of the
+mingw32 architecture.
+
+Location of the header files:
+/usr/i586-mingw32msvc/include/*.h
+
+2) Cross-compilation
+
+./configure [...] --host=i586-mingw32msvc
+
+All checks should then return results as if the configure script was
+executed on a Windows machine.
+
+Currently, the configuration of ggz-base-libs fails as soon as it needs
+a library not part of conventional libc.
+This applies to gettext, pthreads, expat etc.
+
