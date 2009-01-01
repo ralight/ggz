@@ -43,7 +43,7 @@
 #include "table.h"
 
 /* Array of GGZRoom messages */
-static char *_ggzcore_room_events[] = {
+static const char *_ggzcore_room_events[] = {
 	"GGZ_PLAYER_LIST",
 	"GGZ_TABLE_LIST",
 	"GGZ_CHAT_EVENT",
