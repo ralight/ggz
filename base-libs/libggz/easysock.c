@@ -38,7 +38,7 @@ DEBUG_MEM
 
 #include "config.h"
 
-#if defined GAI_A || ASYNCNS
+#if defined GAI_A || defined ASYNCNS
 #define _GNU_SOURCE
 #endif
 
