@@ -50,6 +50,7 @@ DEBUG_MEM
 #include <sys/param.h>
 
 #ifdef HAVE_WINSOCK2_H
+#define _WIN32_WINNT 0x0501
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #else
