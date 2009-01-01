@@ -67,7 +67,7 @@ static char *_ggzcore_game_get_path(char **argv);
 
 
 /* Array of GGZGame messages */
-static char *_ggzcore_game_events[] = {
+static const char *_ggzcore_game_events[] = {
 	"GGZ_GAME_LAUNCHED",
 	"GGZ_GAME_LAUNCH_FAIL",
 	"GGZ_GAME_NEGOTIATED",
