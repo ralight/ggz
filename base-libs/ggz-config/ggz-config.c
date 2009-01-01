@@ -496,7 +496,7 @@ static int remove_module(void)
 
 static int noregister_module(void)
 {
-	char *suffix = ".module.dsc";
+	const char *suffix = ".module.dsc";
 	char *global_pathname;
 	char fixedmodname[strlen(modname) + 1];
 	unsigned int i;
@@ -719,7 +719,7 @@ static int which(const char *executable)
 		return ret;
 	}
 
-	char *path = getenv("PATH");
+	const char *path = getenv("PATH");
 	if(!path)
 	{
 		path = "/bin:/usr/bin:.";
