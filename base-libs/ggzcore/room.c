@@ -191,7 +191,7 @@ static unsigned int _ggzcore_room_get_num_players(const GGZRoom * room)
 static GGZPlayer *_ggzcore_room_get_nth_player(const GGZRoom * room,
 					       const unsigned int num)
 {
-	int i;
+	unsigned int i;
 	GGZListEntry *cur;
 
 	cur = ggz_list_head(room->players);
@@ -233,7 +233,7 @@ static struct _GGZTable *_ggzcore_room_get_nth_table(const GGZRoom * room,
 						     const unsigned int
 						     num)
 {
-	int i;
+	unsigned int i;
 	GGZListEntry *cur;
 
 	cur = ggz_list_head(room->tables);
@@ -536,7 +536,7 @@ void _ggzcore_room_init(GGZRoom * room,
 			const unsigned int game,
 			const char *desc, const int player_count)
 {
-	int i;
+	unsigned int i;
 
 	room->server = server;
 	room->id = id;
@@ -557,7 +557,7 @@ void _ggzcore_room_init(GGZRoom * room,
 
 void _ggzcore_room_free(GGZRoom * room)
 {
-	int i;
+	unsigned int i;
 
 	if (room->name)
 		ggz_free(room->name);
