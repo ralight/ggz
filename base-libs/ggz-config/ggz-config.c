@@ -94,7 +94,7 @@ static struct option options[] =
 };
 
 /* Help for the command line options */
-static char *options_help[] = {
+static const char *options_help[] = {
 	 N_("Query GGZCONFDIR - location of configuration directory"),
 	 N_("Query GGZGAMEDIR - location of game modules directory"),
 	 N_("Query GGZDATADIR - location of game data directory"),
