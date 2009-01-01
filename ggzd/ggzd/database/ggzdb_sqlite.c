@@ -114,11 +114,9 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 				}
 			}
 		}else{
-			rc = GGZDB_ERR_DB;
+			ggz_error_msg_exit("Error whilst talking to sqlite table `control`. This probably means there is a problem with your database. Please contact the ggz developers for help.\n");
 		}
 		sqlite3_finalize(res);
-	}else{
-		rc = GGZDB_ERR_DB;
 	}
 
 	/* Initialize the database if needed */
