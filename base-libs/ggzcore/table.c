@@ -120,7 +120,8 @@ static int _ggzcore_table_get_num_seats(const GGZTable *table)
 static int _ggzcore_table_get_seat_count(const GGZTable *table,
 					 GGZSeatType type)
 {
-	int i, count = 0;
+	unsigned int i;
+	int count = 0;
 
 	for (i = 0; i < table->num_seats; i++)
 		if (table->seats[i].type == type)
@@ -288,7 +289,8 @@ int ggzcore_table_set_desc(GGZTable *table, const char *desc)
 
 int ggzcore_table_remove_player(GGZTable *table, const char *name)
 {
-	int i, status = -1;
+	unsigned int i;
+	int status = -1;
 
 	if (table && name) {
 		for (i = 0; i < table->num_seats; i++)
@@ -430,7 +432,7 @@ void _ggzcore_table_init(GGZTable *table,
 			 const GGZTableState state,
 			 const int id)
 {
-	int i;
+	unsigned int i;
 
 	table->room = NULL;
 	table->gametype = gametype;
@@ -459,7 +461,7 @@ void _ggzcore_table_init(GGZTable *table,
 
 void _ggzcore_table_free(GGZTable *table)
 {
-	int i;
+	unsigned int i;
 
 	if (table->desc)
 		ggz_free(table->desc);
