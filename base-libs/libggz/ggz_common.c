@@ -469,7 +469,7 @@ void ggz_perms_init_from_list(GGZPermset *perms, GGZPerm *list, size_t listsz)
 
 void ggz_perms_set(GGZPermset *perms, GGZPerm perm, bool val)
 {
-	if (perm >= 0 || perm < GGZ_PERM_COUNT) {
+	if (perm >= 0 && perm < GGZ_PERM_COUNT) {
 		if (val) {
 			/* Set bit */
 			(*perms) |= (1 << perm);
