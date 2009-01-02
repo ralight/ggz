@@ -526,7 +526,7 @@ static char *metaserv_update(const char *class, const char *category, const char
 	char *xmlret = NULL;
 	char *ret;
 	char tmp[1024];
-	char *status;
+	const char *status;
 	ELE *ele, *ele2, *ele3;
 	char *att2;
 	ATT **att3;
