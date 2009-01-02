@@ -300,7 +300,7 @@ static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e,
 	ggz_dio_set_auto_flush(dio, true);
 }
 
-static void ggz_init()
+static void ggz_init(void)
 {
 	int i, ret;
 
