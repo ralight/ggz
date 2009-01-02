@@ -1,54 +1,87 @@
-.TH "ggz.h" 3 "21 May 2005" "Version 0.0.11" "LibGGZ" \" -*- nroff -*-
+.TH "ggz.h" 3 "2 Jan 2009" "Version snapshot-0.99.5+" "LibGGZ" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-ggz.h \- 
+ggz.h \- Programming in C with comfort, safety and network awareness. 
 .SH SYNOPSIS
 .br
 .PP
 \fC#include <sys/types.h>\fP
 .br
 
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBggz_intlstring\fP"
+.br
+.RI "\fIInternationalized string. \fP"
+.ti -1c
+.RI "struct \fB_GGZListEntry\fP"
+.br
+.RI "\fIA single entry in a \fBGGZList\fP. \fP"
+.ti -1c
+.RI "struct \fB_GGZList\fP"
+.br
+.RI "\fISimple doubly-linked list. \fP"
+.ti -1c
+.RI "struct \fB_GGZXMLElement\fP"
+.br
+.RI "\fIObject representing a single XML element. \fP"
+.ti -1c
+.RI "struct \fBGGZAsyncEvent\fP"
+.br
+.RI "\fIAn asynchronous notification event. \fP"
+.ti -1c
+.RI "struct \fBhash_t\fP"
+.br
+.RI "\fIHash data structure. \fP"
+.ti -1c
+.RI "struct \fBggz_uri_t\fP"
+.br
+.RI "\fIData type describing a generic URI. \fP"
+.in -1c
 .SS "Defines"
 
 .in +1c
 .ti -1c
 .RI "#define \fBLIBGGZ_VERSION_MAJOR\fP   0"
 .br
+.RI "\fIlibggz - Programming in C with comfort, safety and network awareness. \fP"
 .ti -1c
-.RI "#define \fBLIBGGZ_VERSION_MINOR\fP   0"
+.RI "#define \fBLIBGGZ_VERSION_MINOR\fP   99"
 .br
 .ti -1c
-.RI "#define \fBLIBGGZ_VERSION_MICRO\fP   11"
+.RI "#define \fBLIBGGZ_VERSION_MICRO\fP   5"
 .br
 .ti -1c
-.RI "#define \fBLIBGGZ_VERSION_IFACE\fP   '3:1:1'"
+.RI "#define \fBLIBGGZ_VERSION_IFACE\fP   '5:0:3+devel'"
 .br
 .ti -1c
 .RI "#define \fBggz__attribute\fP(att)"
 .br
 .RI "\fIAllow easy use of GCC's 'attribute' macro for debugging. \fP"
 .ti -1c
-.RI "#define \fB_GGZFUNCTION_\fP   __FUNCTION__"
+.RI "#define \fB_GGZFUNCTION_\fP   __func__"
 .br
 .ti -1c
 .RI "#define \fBGGZ_MEM_DEBUG\fP   'ggz_mem'"
 .br
 .RI "\fIDebugging type for memory debugging. \fP"
 .ti -1c
-.RI "#define \fBggz_malloc\fP(size)   _ggz_malloc(size, _GGZFUNCTION_ ' in ' __FILE__, __LINE__)"
+.RI "#define \fBggz_malloc\fP(size)   _ggz_malloc(size, _GGZFUNCTION_, ' in ' __FILE__, __LINE__)"
 .br
 .RI "\fIMacro for memory allocation. \fP"
 .ti -1c
-.RI "#define \fBggz_realloc\fP(mem, size)   _ggz_realloc(mem, size, _GGZFUNCTION_ ' in ' __FILE__, __LINE__)"
+.RI "#define \fBggz_realloc\fP(mem, size)   _ggz_realloc(mem, size, _GGZFUNCTION_, ' in ' __FILE__, __LINE__)"
 .br
 .RI "\fIMacro for resizing previously allocated memory. \fP"
 .ti -1c
-.RI "#define \fBggz_free\fP(mem)   _ggz_free(mem, _GGZFUNCTION_ ' in ' __FILE__,  __LINE__)"
+.RI "#define \fBggz_free\fP(mem)   _ggz_free(mem, _GGZFUNCTION_, ' in ' __FILE__,  __LINE__)"
 .br
 .RI "\fIMacro for freeing memory previously allocated. \fP"
 .ti -1c
-.RI "#define \fBggz_strdup\fP(string)   _ggz_strdup(string, _GGZFUNCTION_ ' in ' __FILE__,  __LINE__)"
+.RI "#define \fBggz_strdup\fP(string)   _ggz_strdup(string, _GGZFUNCTION_, ' in ' __FILE__,  __LINE__)"
 .br
 .RI "\fIMacro for duplicating string. \fP"
 .ti -1c
@@ -67,6 +100,12 @@ ggz.h \-
 .RI "#define \fBGGZ_SOCKET_DEBUG\fP   'socket'"
 .br
 .RI "\fIggz_debug debugging type for Easysock debugging. \fP"
+.ti -1c
+.RI "#define \fBGGZ_SOCKET_PENDING\fP   -3"
+.br
+.ti -1c
+.RI "#define \fBGGZ_SOCKET_RESOLVEONLY\fP   -4"
+.br
 .in -1c
 .SS "Typedefs"
 
@@ -84,19 +123,19 @@ ggz.h \-
 .br
 .RI "\fIA function type to destroy an entry in a \fBGGZList\fP. \fP"
 .ti -1c
-.RI "typedef \fB_GGZListEntry\fP \fBGGZListEntry\fP"
+.RI "typedef struct \fB_GGZListEntry\fP \fBGGZListEntry\fP"
 .br
 .RI "\fIA single entry in a \fBGGZList\fP. \fP"
 .ti -1c
-.RI "typedef \fB_GGZList\fP \fBGGZList\fP"
+.RI "typedef struct \fB_GGZList\fP \fBGGZList\fP"
 .br
 .RI "\fISimple doubly-linked list. \fP"
 .ti -1c
-.RI "typedef \fB_GGZList\fP \fBGGZStack\fP"
+.RI "typedef struct \fB_GGZList\fP \fBGGZStack\fP"
 .br
 .RI "\fISimple implementation of stacks using \fBGGZList\fP. \fP"
 .ti -1c
-.RI "typedef \fB_GGZXMLElement\fP \fBGGZXMLElement\fP"
+.RI "typedef struct \fB_GGZXMLElement\fP \fBGGZXMLElement\fP"
 .br
 .RI "\fIObject representing a single XML element. \fP"
 .ti -1c
@@ -104,7 +143,7 @@ ggz.h \-
 .br
 .RI "\fIA callback function to handle debugging output. \fP"
 .ti -1c
-.RI "typedef _GGZFile \fBGGZFile\fP"
+.RI "typedef struct _GGZFile \fBGGZFile\fP"
 .br
 .RI "\fIStructure used internally by \fBggz_read_line()\fP. \fP"
 .ti -1c
@@ -115,12 +154,16 @@ ggz.h \-
 .RI "typedef void(* \fBggzIOExit\fP )(int status)"
 .br
 .RI "\fIAn exit function type. \fP"
+.ti -1c
+.RI "typedef void(* \fBggzNetworkNotify\fP )(const char *address, int socket)"
+.br
+.RI "\fIA network resolver function type. \fP"
 .in -1c
 .SS "Enumerations"
 
 .in +1c
 .ti -1c
-.RI "enum \fBGGZConfType\fP { \fBGGZ_CONF_RDONLY\fP =  ((unsigned char) 0x01), \fBGGZ_CONF_RDWR\fP =  ((unsigned char) 0x02), \fBGGZ_CONF_CREATE\fP =  ((unsigned char) 0x04) }"
+.RI "enum \fBGGZConfType\fP { \fBGGZ_CONF_RDONLY\fP =  ((unsigned char) 0x01), \fBGGZ_CONF_RDWR\fP =  ((unsigned char) 0x02), \fBGGZ_CONF_CREATE\fP =  ((unsigned char) 0x04), \fBGGZ_CONF_TRY\fP =  ((unsigned char) 0x08) }"
 .br
 .RI "\fISpecifies the mode for opening a configuration file. \fP"
 .ti -1c
@@ -136,7 +179,15 @@ ggz.h \-
 .br
 .RI "\fIA data type for the GGZ socket function error handler. \fP"
 .ti -1c
-.RI "enum \fBGGZSockType\fP { \fBGGZ_SOCK_SERVER\fP, \fBGGZ_SOCK_CLIENT\fP }"
+.RI "enum \fBGGZResolveType\fP { \fBGGZ_RESOLVE_SYNC\fP, \fBGGZ_RESOLVE_ASYNC\fP, \fBGGZ_RESOLVE_TRYASYNC\fP }"
+.br
+.RI "\fIType of socket creation. \fP"
+.ti -1c
+.RI "enum \fBGGZAsyncType\fP { \fBGGZ_ASYNC_RESOLVER\fP, \fBGGZ_ASYNC_CONNECT\fP, \fBGGZ_ASYNC_NOOP\fP }"
+.br
+.RI "\fIType of an asynchronous notification event. \fP"
+.ti -1c
+.RI "enum \fBGGZSockType\fP { \fBGGZ_SOCK_SERVER\fP, \fBGGZ_SOCK_CLIENT\fP, \fBGGZ_SOCK_CLIENT_ASYNC\fP }"
 .br
 .RI "\fIA socket type. \fP"
 .ti -1c
@@ -152,25 +203,57 @@ ggz.h \-
 
 .in +1c
 .ti -1c
-.RI "void * \fB_ggz_malloc\fP (const size_t size, const char *tag, int line)"
+.RI "void * \fB_ggz_malloc\fP (const size_t size, const char *funcname, const char *tag, int line)"
 .br
 .RI "\fIFunction to actually perform memory allocation. \fP"
 .ti -1c
-.RI "void * \fB_ggz_realloc\fP (const void *ptr, const size_t size, const char *tag, int line)"
+.RI "void * \fB_ggz_realloc\fP (const void *ptr, const size_t size, const char *funcname, const char *tag, int line) ggz__attribute((warn_unused_result))"
 .br
 .RI "\fIFunction to perform memory reallocation. \fP"
 .ti -1c
-.RI "int \fB_ggz_free\fP (const void *ptr, const char *tag, int line)"
+.RI "int \fB_ggz_free\fP (const void *ptr, const char *funcname, const char *tag, int line)"
 .br
 .RI "\fIFunction to free allocated memory. \fP"
 .ti -1c
-.RI "char * \fB_ggz_strdup\fP (const char *ptr, const char *tag, int line)"
+.RI "char * \fB_ggz_strdup\fP (const char *ptr, const char *funcname, const char *tag, int line) ggz__attribute((warn_unused_result))"
 .br
 .RI "\fIFunction to copy a string. \fP"
 .ti -1c
-.RI "int \fBggz_memory_check\fP (void)"
+.RI "char * \fBggz_strncpy\fP (char *dst, const char *src, size_t n)"
+.br
+.RI "\fISafe version of strncpy. \fP"
+.ti -1c
+.RI "char * \fBggz_strbuild\fP (const char *fmt,...) ggz__attribute((format(printf"
+.br
+.RI "\fISafe construction of formatted strings in memory. \fP"
+.ti -1c
+.RI "char int \fBggz_memory_check\fP (void)"
 .br
 .RI "\fICheck memory allocated against memory freed and display any discrepancies. \fP"
+.ti -1c
+.RI "int \fBggz_check_library\fP (const char *iface)"
+.br
+.RI "\fICheck if the library in use is the one the application was compiled against. \fP"
+.ti -1c
+.RI "\fBggz_intlstring\fP * \fBggz_intlstring_new\fP (void)"
+.br
+.RI "\fICreate a new internationalized string. \fP"
+.ti -1c
+.RI "\fBggz_intlstring\fP * \fBggz_intlstring_fromstring\fP (const char *str)"
+.br
+.RI "\fICreate an internationalized string from an ordinary string. \fP"
+.ti -1c
+.RI "\fBggz_intlstring\fP * \fBggz_intlstring_fromintlstring\fP (const \fBggz_intlstring\fP *string)"
+.br
+.RI "\fICopy an internationalized string. \fP"
+.ti -1c
+.RI "void \fBggz_intlstring_free\fP (\fBggz_intlstring\fP *string)"
+.br
+.RI "\fIFree an internationalized string. \fP"
+.ti -1c
+.RI "char * \fBggz_intlstring_translated\fP (const \fBggz_intlstring\fP *string, const char *lang)"
+.br
+.RI "\fIReturn the most appropriate of the contained strings. \fP"
 .ti -1c
 .RI "void \fBggz_conf_cleanup\fP (void)"
 .br
@@ -227,6 +310,10 @@ ggz.h \-
 .RI "int \fBggz_conf_get_keys\fP (int handle, const char *section, int *argcp, char ***argvp)"
 .br
 .RI "\fIThis function returns a list of all keys within a section in a config file. \fP"
+.ti -1c
+.RI "\fBggz_intlstring\fP * \fBggz_conf_read_intlstring\fP (int handle, const char *section, const char *key)"
+.br
+.RI "\fIReads a potentially translated string value from an open configuration file. \fP"
 .ti -1c
 .RI "\fBGGZList\fP * \fBggz_list_create\fP (\fBggzEntryCompare\fP compare_func, \fBggzEntryCreate\fP create_func, \fBggzEntryDestroy\fP destroy_func, int options)"
 .br
@@ -308,11 +395,11 @@ ggz.h \-
 .br
 .RI "\fIFree the stack. \fP"
 .ti -1c
-.RI "\fBGGZXMLElement\fP * \fBggz_xmlelement_new\fP (const char *tag, const char *const *attrs, void(*process)(), void(*free)())"
+.RI "\fBGGZXMLElement\fP * \fBggz_xmlelement_new\fP (const char *tag, const char *const *attrs, void(*process)(void *, \fBGGZXMLElement\fP *), void(*free)(\fBGGZXMLElement\fP *))"
 .br
 .RI "\fICreate a new \fBGGZXMLElement\fP element. \fP"
 .ti -1c
-.RI "void \fBggz_xmlelement_init\fP (\fBGGZXMLElement\fP *element, const char *tag, const char *const *attrs, void(*process)(), void(*free)())"
+.RI "void \fBggz_xmlelement_init\fP (\fBGGZXMLElement\fP *element, const char *tag, const char *const *attrs, void(*process)(void *, \fBGGZXMLElement\fP *), void(*free)(\fBGGZXMLElement\fP *))"
 .br
 .RI "\fIInitialize a \fBGGZXMLElement\fP. \fP"
 .ti -1c
@@ -403,6 +490,10 @@ ggz.h \-
 .br
 .RI "\fISetup a file structure to use with \fBggz_read_line()\fP. \fP"
 .ti -1c
+.RI "int \fBggz_make_path\fP (const char *full)"
+.br
+.RI "\fICreate directories to fill out a path. \fP"
+.ti -1c
 .RI "char * \fBggz_read_line\fP (\fBGGZFile\fP *file)"
 .br
 .RI "\fIRead a line of arbitrary length from a file. \fP"
@@ -446,6 +537,26 @@ ggz.h \-
 .RI "int \fBggz_init_network\fP (void)"
 .br
 .RI "\fIInitialize the network. \fP"
+.ti -1c
+.RI "int \fBggz_set_network_notify_func\fP (\fBggzNetworkNotify\fP func)"
+.br
+.RI "\fISet the ggz/easysock resolver notification function. \fP"
+.ti -1c
+.RI "const char * \fBggz_resolvename\fP (const char *name, \fBGGZResolveType\fP type)"
+.br
+.RI "\fIResolve a host name. \fP"
+.ti -1c
+.RI "const char * \fBggz_getpeername\fP (int fd, int resolve)"
+.br
+.RI "\fIGet the IP address or host name of a connected peer. \fP"
+.ti -1c
+.RI "int \fBggz_async_fd\fP (void)"
+.br
+.RI "\fIWorker descriptor for asynchronous resolver and socket creation. \fP"
+.ti -1c
+.RI "\fBGGZAsyncEvent\fP \fBggz_async_event\fP (void)"
+.br
+.RI "\fIWork on the asynchronous name resolver an socket creation. \fP"
 .ti -1c
 .RI "int \fBggz_make_socket\fP (const \fBGGZSockType\fP type, const unsigned short port, const char *server)"
 .br
@@ -523,6 +634,10 @@ ggz.h \-
 .br
 .RI "\fIRead and allocate a string from the given socket. \fP"
 .ti -1c
+.RI "int \fBggz_read_string_alloc_null\fP (const int sock, char **data)"
+.br
+.RI "\fIRead and allocate a string from the given socket. \fP"
+.ti -1c
 .RI "void \fBggz_read_string_alloc_or_die\fP (const int sock, char **data)"
 .br
 .RI "\fIRead and allocate string from the given socket, exiting on error. \fP"
@@ -543,6 +658,10 @@ ggz.h \-
 .br
 .RI "\fIRead a sequence of bytes from the socket. \fP"
 .ti -1c
+.RI "int \fBggz_close_socket\fP (const int sock)"
+.br
+.RI "\fIClose a socket - equivalent to close() on unix. \fP"
+.ti -1c
 .RI "\fBhash_t\fP \fBggz_hash_create\fP (const char *algo, const char *text)"
 .br
 .RI "\fICreate a hash over a text. \fP"
@@ -550,6 +669,10 @@ ggz.h \-
 .RI "\fBhash_t\fP \fBggz_hmac_create\fP (const char *algo, const char *text, const char *secret)"
 .br
 .RI "\fICreate a HMAC hash over a text. \fP"
+.ti -1c
+.RI "char * \fBggz_base16_encode\fP (const char *text, int length)"
+.br
+.RI "\fIEncodes text to base16. \fP"
 .ti -1c
 .RI "char * \fBggz_base64_encode\fP (const char *text, int length)"
 .br
@@ -567,6 +690,10 @@ ggz.h \-
 .br
 .RI "\fICheck TLS support. \fP"
 .ti -1c
+.RI "const char * \fBggz_tls_support_name\fP (void)"
+.br
+.RI "\fIName of the TLS implementation. \fP"
+.ti -1c
 .RI "int \fBggz_tls_enable_fd\fP (int fdes, \fBGGZTLSType\fP whoami, \fBGGZTLSVerificationType\fP verify)"
 .br
 .RI "\fIEnable TLS for a file descriptor. \fP"
@@ -575,47 +702,61 @@ ggz.h \-
 .br
 .RI "\fIDisable TLS for a file descriptor. \fP"
 .ti -1c
-.RI "size_t \fBggz_tls_write\fP (int fd, void *ptr, size_t n)"
+.RI "ssize_t \fBggz_tls_write\fP (int fd, void *ptr, size_t n)"
 .br
 .RI "\fIWrite some bytes to a secured file descriptor. \fP"
 .ti -1c
-.RI "size_t \fBggz_tls_read\fP (int fd, void *ptr, size_t n)"
+.RI "ssize_t \fBggz_tls_read\fP (int fd, void *ptr, size_t n)"
 .br
 .RI "\fIRead from a secured file descriptor. \fP"
+.ti -1c
+.RI "\fBggz_uri_t\fP \fBggz_uri_from_string\fP (const char *uristring)"
+.br
+.RI "\fICreate a new URI object from a string describing an URI. \fP"
+.ti -1c
+.RI "char * \fBggz_uri_to_string\fP (\fBggz_uri_t\fP uri)"
+.br
+.RI "\fIConvert an URI object back into a string. \fP"
+.ti -1c
+.RI "void \fBggz_uri_free\fP (\fBggz_uri_t\fP uri)"
+.br
+.RI "\fIFree an URI object (or rather, its contents). \fP"
 .in -1c
 .SH "Detailed Description"
 .PP 
-\fBAuthor:\fP
-.RS 4
-Brent M. Hendricks 
-.RE
+Programming in C with comfort, safety and network awareness. 
+
+This file contains libggz functions which are not specific to GGZ at all but rather give C developers a great tool to create more robust and powerful applications.
 .PP
-\fBDate:\fP
-.RS 4
-Fri Nov 2 23:32:17 2001 
+Two more header files beside \fBggz.h\fP are provided by libggz:
+.IP "\(bu" 2
+ggz_dio.h contains functions for sending and receiving network packets
+.IP "\(bu" 2
+ggz_common.h contains various enumerations used by the GGZ applications 
 .PP
-\fBId\fP.RS 4
-\fBggz.h\fP,v 1.59 2005/05/21 10:19:22 josef Exp 
-.RE
-.PP
-.RE
-.PP
-Header file for ggz components lib
-.PP
-Copyright (C) 2001 Brent Hendricks.
-.PP
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
-.PP
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-.PP
-You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA 
+
 .SH "Define Documentation"
 .PP 
+.SS "#define LIBGGZ_VERSION_MAJOR   0"
+.PP
+libggz - Programming in C with comfort, safety and network awareness. 
+.PP
+This library is part of the ggz-base-libs package.
+.PP
+\fBggz.h\fP: Header with general symbol and function declarations.
+.PP
+Copyright (C) 2001 Brent Hendricks Copyright (C) 2002-2008 GGZ Gaming Zone Development Team
+.PP
+This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
+.PP
+This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA 
 .SS "#define ggz__attribute(att)"
 .PP
 Allow easy use of GCC's 'attribute' macro for debugging. 
 .PP
-Under gcc, we use the __attribute__ macro to check variadic arguments, for instance to printf-style functions. Other compilers may be able to do something similar, but this is generally unnecessary since it's only realy purpose is to give warning messages when the developer compiles the code. 
+Under gcc, we use the __attribute__ macro to check variadic arguments, for instance to printf-style functions. Other compilers may be able to do something similar, but this is generally unnecessary since it's only real purpose is to give warning messages when the developer compiles the code. 
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for LibGGZ from the source code.

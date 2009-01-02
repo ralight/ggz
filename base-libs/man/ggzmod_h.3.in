@@ -1,8 +1,8 @@
-.TH "ggzmod.h" 3 "21 May 2005" "Version 0.0.11" "GGZMod" \" -*- nroff -*-
+.TH "ggzmod.h" 3 "2 Jan 2009" "Version snapshot-0.99.5+" "GGZMod" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-ggzmod.h \- Common functions for interfacing a game server and GGZ. 
+ggzmod.h \- Common functions for interfacing a game client and GGZ. 
 .SH SYNOPSIS
 .br
 .PP
@@ -11,6 +11,27 @@ ggzmod.h \- Common functions for interfacing a game server and GGZ.
 \fC#include <ggz_common.h>\fP
 .br
 
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBGGZSeat\fP"
+.br
+.RI "\fIA seat at a GGZ game table. \fP"
+.ti -1c
+.RI "struct \fBGGZSpectatorSeat\fP"
+.br
+.RI "\fIA game spectator entry. \fP"
+.ti -1c
+.RI "struct \fBGGZChat\fP"
+.br
+.ti -1c
+.RI "struct \fBGGZPlayerInfo\fP"
+.br
+.ti -1c
+.RI "struct \fBGGZRanking\fP"
+.br
+.in -1c
 .SS "Defines"
 
 .in +1c
@@ -18,20 +39,20 @@ ggzmod.h \- Common functions for interfacing a game server and GGZ.
 .RI "#define \fBGGZMOD_VERSION_MAJOR\fP   0"
 .br
 .ti -1c
-.RI "#define \fBGGZMOD_VERSION_MINOR\fP   0"
+.RI "#define \fBGGZMOD_VERSION_MINOR\fP   99"
 .br
 .ti -1c
-.RI "#define \fBGGZMOD_VERSION_MICRO\fP   11"
+.RI "#define \fBGGZMOD_VERSION_MICRO\fP   5"
 .br
 .ti -1c
-.RI "#define \fBGGZMOD_VERSION_IFACE\fP   '3:1:1'"
+.RI "#define \fBGGZMOD_VERSION_IFACE\fP   '5:0:1+dev'"
 .br
 .in -1c
 .SS "Typedefs"
 
 .in +1c
 .ti -1c
-.RI "typedef \fBGGZMod\fP \fBGGZMod\fP"
+.RI "typedef struct \fBGGZMod\fP \fBGGZMod\fP"
 .br
 .RI "\fIA GGZmod object, used for tracking a ggz<->table connection. \fP"
 .ti -1c
@@ -47,7 +68,7 @@ ggzmod.h \- Common functions for interfacing a game server and GGZ.
 .br
 .RI "\fITable states. \fP"
 .ti -1c
-.RI "enum \fBGGZModEvent\fP { \fBGGZMOD_EVENT_STATE\fP, \fBGGZMOD_EVENT_SERVER\fP, \fBGGZMOD_EVENT_PLAYER\fP, \fBGGZMOD_EVENT_SEAT\fP, \fBGGZMOD_EVENT_SPECTATOR_SEAT\fP, \fBGGZMOD_EVENT_CHAT\fP, \fBGGZMOD_EVENT_STATS\fP, \fBGGZMOD_EVENT_ERROR\fP }"
+.RI "enum \fBGGZModEvent\fP { \fBGGZMOD_EVENT_STATE\fP, \fBGGZMOD_EVENT_SERVER\fP, \fBGGZMOD_EVENT_PLAYER\fP, \fBGGZMOD_EVENT_SEAT\fP, \fBGGZMOD_EVENT_SPECTATOR_SEAT\fP, \fBGGZMOD_EVENT_CHAT\fP, \fBGGZMOD_EVENT_STATS\fP, \fBGGZMOD_EVENT_INFO\fP, \fBGGZMOD_EVENT_RANKINGS\fP, \fBGGZMOD_EVENT_ERROR\fP }"
 .br
 .RI "\fICallback events. \fP"
 .ti -1c
@@ -58,6 +79,14 @@ ggzmod.h \- Common functions for interfacing a game server and GGZ.
 .SS "Functions"
 
 .in +1c
+.ti -1c
+.RI "int \fBggzmod_is_ggz_mode\fP (void)"
+.br
+.RI "\fIIs the program running in GGZ mode? \fP"
+.ti -1c
+.RI "int \fBggzmod_check_library\fP (const char *iface)"
+.br
+.RI "\fICheck if the correct library is used. \fP"
 .ti -1c
 .RI "\fBGGZMod\fP * \fBggzmod_new\fP (\fBGGZModType\fP type)"
 .br
@@ -145,7 +174,7 @@ ggzmod.h \- Common functions for interfacing a game server and GGZ.
 .ti -1c
 .RI "void \fBggzmod_request_bot\fP (\fBGGZMod\fP *ggzmod, int seat_num)"
 .br
-.RI "\fIChange the requested seat from an opean seat to a bot. \fP"
+.RI "\fIChange the requested seat from an open seat to a bot. \fP"
 .ti -1c
 .RI "void \fBggzmod_request_open\fP (\fBGGZMod\fP *ggzmod, int seat_num)"
 .br
@@ -186,18 +215,30 @@ ggzmod.h \- Common functions for interfacing a game server and GGZ.
 .RI "int \fBggzmod_spectator_get_highscore\fP (\fBGGZMod\fP *ggzmod, \fBGGZSpectatorSeat\fP *seat, int *highscore)"
 .br
 .RI "\fIGet the spectator's highscore. \fP"
+.ti -1c
+.RI "int \fBggzmod_player_request_info\fP (\fBGGZMod\fP *ggzmod, int seat_num)"
+.br
+.RI "\fIRequest extended player information for one or more players. \fP"
+.ti -1c
+.RI "GGZPlayerInfo * \fBggzmod_player_get_info\fP (\fBGGZMod\fP *ggzmod, int seat)"
+.br
+.RI "\fIGet the extended information for the specified seat. \fP"
+.ti -1c
+.RI "int \fBggzmod_player_request_rankings\fP (\fBGGZMod\fP *ggzmod)"
+.br
+.RI "\fIRequest rankings information for the current room. \fP"
 .in -1c
 .SH "Detailed Description"
 .PP 
-Common functions for interfacing a game server and GGZ. 
+Common functions for interfacing a game client and GGZ. 
 
-This file contains all libggzmod functions used by game servers to interface with GGZ (and vice versa). Just include \fBggzmod.h\fP and make sure your program is linked with libggzmod. Then use the functions below as appropriate.
+This file contains all libggzmod functions used by game clients to interface with GGZ. Just include \fBggzmod.h\fP and make sure your program is linked with libggzmod. Then use the functions below as appropriate.
 .PP
 GGZmod currently provides an event-driven interface. Data from communication sockets is read in by the library, and a handler function (registered as a callback) is invoked to handle any events. The calling program should not read/write data from/to the GGZ socket unless it really knows what it is doing.
 .PP
-That this does not apply to the client sockets: ggzmod provides one file desriptor for communicating (TCP) to each client. If data is ready to be read by one of these file descriptors ggzmod may invoke the appropriate handler (see below), but will never actually read any data.
+This does not apply to the game server sockets: ggzmod provides one file desriptor for communicating (TCP) to the game server. If data is ready to be read this file descriptor, ggzmod may invoke the appropriate handler (see below), but will never actually read any data.
 .PP
-For more information, see the documentation at http://ggz.sf.net/. 
+For more information, see the documentation at http://www.ggzgamingzone.org/. 
 .SH "Typedef Documentation"
 .PP 
 .SS "typedef struct \fBGGZMod\fP \fBGGZMod\fP"
@@ -251,7 +292,7 @@ Each of these is a possible GGZmod event. For each event, the table may register
 .PP
 
 .PP
-\fBEnumeration values: \fP
+\fBEnumerator: \fP
 .in +1c
 .TP
 \fB\fIGGZMOD_EVENT_STATE \fP\fP
@@ -265,7 +306,14 @@ Module status changed This event occurs when the game's status changes. The old 
 
 .TP
 \fB\fIGGZMOD_EVENT_SERVER \fP\fP
-A new server connection has been made This event occurs when a new connection to the game server has been made. The fd is passed as the event's data. 
+A new server connection has been made This event occurs when a new connection to the game server has been made, either by the core client or by the game client itself. The fd is passed as the event's data. 
+.PP
+\fBSee also:\fP
+.RS 4
+\fBggzmod_connect\fP 
+.RE
+.PP
+
 .TP
 \fB\fIGGZMOD_EVENT_PLAYER \fP\fP
 The player's seat status has changed. 
@@ -288,7 +336,7 @@ A chat message event.
 This event occurs when we receive a chat. The chat may have originated in another game client or from the GGZ client; in either case it will be routed to us. The chat information (a GGZChat*) is passed as the event's data. Note that the chat may originate with a player or a spectator, and they may have changed seats or left the table by the time it gets to us. 
 .TP
 \fB\fIGGZMOD_EVENT_STATS \fP\fP
-A player's stats have been updated. 
+A players' stats have been updated. 
 .PP
 \fBSee also:\fP
 .RS 4
@@ -301,12 +349,17 @@ A player's stats have been updated.
 \fBggzmod_player_get_highscore\fP 
 .RE
 .PP
-\fBParameters:\fP
-.RS 4
-\fIdata\fP The name of the player whose stats have changed. 
-.RE
-.PP
 
+.TP
+\fB\fIGGZMOD_EVENT_INFO \fP\fP
+Player information has arrived. 
+.PP
+Information has been requested about one or more players and it has now arrived. The event data is a GGZList* which contains GGZPlayerInfo entries. 
+.TP
+\fB\fIGGZMOD_EVENT_RANKINGS \fP\fP
+Game rankings for this room has arrived. 
+.PP
+Contains information about the top players in this room, based on previously played games. The event data is a GGZList* which contains GGZRanking entries. 
 .TP
 \fB\fIGGZMOD_EVENT_ERROR \fP\fP
 An error has occurred This event occurs when a GGZMod error has occurred. An error message (a char*) will be passed as the event's data. GGZMod may attempt to recover from the error, but it is not guaranteed that the GGZ connection will continue to work after an error has happened. 
@@ -316,11 +369,11 @@ Table states.
 .PP
 Each table has a current 'state' that is tracked by ggzmod. First the table is executed and begins running. Then it receives a launch event from GGZ and begins waiting for players. At some point a game will be started and played at the table, after which it may return to waiting. Eventually the table will probably halt and then the program will exit.
 .PP
-More specifically, the game is in the CREATED state when it is first executed. It moves to the CONNECTED state after GGZ first communicates with it, and to WAITING after the connection is established with the game server. After this, the game server may use ggzmod_set_state to change between WAITING, PLAYING, and DONE states. A WAITING game is considered waiting for players (or whatever), while a PLAYING game is actively being played (this information may be, but currently is not, propogated back to GGZ for display purposes). Once the state is changed to DONE, the table is considered dead and will exit shortly thereafter (ggzmod_loop will stop looping, etc.) (see the kill_on_exit game option).
+More specifically, the game is in the CREATED state when it is first executed. It moves to the CONNECTED state after GGZ first communicates with it, and to WAITING after the connection is established with the game server. After this, the game server may use ggzmod_set_state to change between WAITING, PLAYING, and DONE states. A WAITING game is considered waiting for players (or whatever), while a PLAYING game is actively being played (this information may be, but currently is not, propogated back to GGZ for display purposes). Once the state is changed to DONE, the table is considered dead and will exit shortly thereafter.
 .PP
 Each time the game state changes, a GGZMOD_EVENT_STATE event will be propogated to the game server. 
 .PP
-\fBEnumeration values: \fP
+\fBEnumerator: \fP
 .in +1c
 .TP
 \fB\fIGGZMOD_STATE_CREATED \fP\fP
@@ -343,7 +396,7 @@ The 'type' of ggzmod.
 .PP
 The 'flavor' of GGZmod object this is. Affects what operations are allowed. 
 .PP
-\fBEnumeration values: \fP
+\fBEnumerator: \fP
 .in +1c
 .TP
 \fB\fIGGZMOD_GGZ \fP\fP
@@ -353,15 +406,28 @@ Used by the ggz client ('ggz').
 Used by the game client ('table'). 
 .SH "Function Documentation"
 .PP 
+.SS "int ggzmod_check_library (const char * iface)"
+.PP
+Check if the correct library is used. 
+.PP
+Check if the library in use is the one the application was compiled against. This is determined by comparing the current value of GGZMOD_VERSION_IFACE with the one which was present at the time of compilation. It transitively also checks for libggz, although applications should check as well if they make use of it explicitly.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIiface\fP GGZMOD_VERSION_IFACE
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+1 if this is the case, 0 otherwise. 
+.RE
+.PP
+
 .SS "int ggzmod_connect (\fBGGZMod\fP * ggzmod)"
 .PP
 Connect to ggz. 
 .PP
-Call this function to make an initial GGZ <-> game connection.
-.IP "\(bu" 2
-When called by the game server, this function makes the physical connection to ggz.
-.IP "\(bu" 2
-When called by ggz, it will launch a table and connect to it. 
+Call this function to make an initial GGZ core client <-> game client connection. Afterwards 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -372,18 +438,13 @@ When called by ggz, it will launch a table and connect to it.
 .RS 4
 0 on success, -1 on failure. 
 .RE
-.PP
-
 .PP
 
 .SS "int ggzmod_disconnect (\fBGGZMod\fP * ggzmod)"
 .PP
 Disconnect from ggz. 
 .PP
-.IP "\(bu" 2
-When called by the game server, this function stops the connection to GGZ. It should only be called when the table is ready to exit.
-.IP "  \(bu" 4
-When called by the GGZ server, this function will kill and clean up after the table. 
+This terminates the link between the game client and the GGZ core client. 
 .PP
 \fBParameters:\fP
 .RS 4
@@ -394,10 +455,6 @@ When called by the GGZ server, this function will kill and clean up after the ta
 .RS 4
 0 on success, -1 on failure. 
 .RE
-.PP
-
-.PP
-
 .PP
 
 .SS "int ggzmod_dispatch (\fBGGZMod\fP * ggzmod)"
@@ -603,6 +660,23 @@ The type of the GGZMod object (GGZ or GAME).
 .RE
 .PP
 
+.SS "int ggzmod_is_ggz_mode (void)"
+.PP
+Is the program running in GGZ mode? 
+.PP
+Call this function to see if the program was actually launched by GGZ. This can be used to give an error message if the executable is run outside of the GGZ environment, or for games that will run both inside and outside of GGZ. 
+.PP
+\fBReturns:\fP
+.RS 4
+A boolean value indicating whether the program is running in GGZ. 
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+Should only be called by game clients, not by GGZ itself. 
+.RE
+.PP
+
 .SS "\fBGGZMod\fP* ggzmod_new (\fBGGZModType\fP type)"
 .PP
 Create a new ggzmod object. 
@@ -627,6 +701,23 @@ Get the player's highscore.
 \fBReturns:\fP
 .RS 4
 TRUE if there is a highscore; FALSE if not or on error. 
+.RE
+.PP
+
+.SS "GGZPlayerInfo* ggzmod_player_get_info (\fBGGZMod\fP * ggzmod, int seat)"
+.PP
+Get the extended information for the specified seat. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIggzmod\fP The GGZMod object. 
+.br
+\fIseat\fP The seat number (0..(number of seats - 1)). 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+A valid GGZPlayerInfo structure, if seat is valid and has info. 
 .RE
 .PP
 
@@ -660,6 +751,40 @@ TRUE if there is a record; FALSE if not or on error.
 .RE
 .PP
 
+.SS "int ggzmod_player_request_info (\fBGGZMod\fP * ggzmod, int seat_num)"
+.PP
+Request extended player information for one or more players. 
+.PP
+Depending on the seat parameter (-1 or valid number), this function asynchronously requests information about player(s), which will arrive with a GGZMOD_EVENT_INFO event. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIggzmod\fP The ggzmod object. 
+.br
+\fIseat_num\fP The seat number to request info for, or -1 to select all. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+TRUE if seat is -1 or valid number, FALSE for non-player seats. 
+.RE
+.PP
+
+.SS "int ggzmod_player_request_rankings (\fBGGZMod\fP * ggzmod)"
+.PP
+Request rankings information for the current room. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIggzmod\fP The GGZMod object. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+TRUE if successful, FALSE if there's any error 
+.RE
+.PP
+
 .SS "void ggzmod_request_boot (\fBGGZMod\fP * ggzmod, const char * name)"
 .PP
 Boot a player. Only the game host may do this. 
@@ -674,7 +799,7 @@ Boot a player. Only the game host may do this.
 
 .SS "void ggzmod_request_bot (\fBGGZMod\fP * ggzmod, int seat_num)"
 .PP
-Change the requested seat from an opean seat to a bot. 
+Change the requested seat from an open seat to a bot. 
 .PP
 \fBParameters:\fP
 .RS 4
