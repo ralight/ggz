@@ -36,7 +36,7 @@
 #include "output.h"
 #include "motd.h"
 
-static char *color_sequences[] = { "\e[0m\e[37m" /* 0 */ ,
+static const char *color_sequences[] = { "\e[0m\e[37m" /* 0 */ ,
 				   "\e[0m\e[34m" /* 1 */ ,
 				   "\e[0m\e[31m" /* 2 */ ,
 				   "\e[1m\e[33m" /* 3 */ ,
