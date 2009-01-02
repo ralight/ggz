@@ -124,20 +124,27 @@ void TableConfiguration::slotSelected(const QPoint& pos)
 	QList<QAction*> actions_namedbots;
 	QList<QAction*> actions_buddies;
 
+	KStandardDirs d;
+
 	QMenu popup(this);
-	action_seatopen = popup.addAction(i18n("Open seat"));
+	QPixmap openpix = QPixmap(d.findResource("data", "kggzlib/players/ox-empty.png"));
+	action_seatopen = popup.addAction(openpix, i18n("Open seat"));
 	if((m_curbots < m_maxbots) || ((m_curbots = m_maxbots) && (m_maxbots > 0)))
-		action_seatbot = popup.addAction(i18n("Computer player"));
+	{
+		QPixmap botpix = QPixmap(d.findResource("data", "kggzlib/players/ox-bot.png"));
+		action_seatbot = popup.addAction(botpix, i18n("Computer player"));
+	}
 
 	popup.addSeparator();
 	QMenu *reservemenu = popup.addMenu(i18n("Reservation"));
-	action_reserved = reservemenu->addAction(i18n("Player"));
+
+	QPixmap playerpix = QPixmap(d.findResource("data", "kggzlib/players/ox-player.png"));
+	action_reserved = reservemenu->addAction(playerpix, i18n("Specific player..."));
 
 	if((m_namedbots.size() > 0) || (m_grubbies.size() > 0))
 	{
 		QMenu *botmenu = reservemenu->addMenu(i18n("Individual bot"));
 
-		KStandardDirs d;
 		QPixmap grubbypix = QPixmap(d.findResource("data", "kggzlib/players/botgrubby.png"));
 		QPixmap botpix = QPixmap(d.findResource("data", "kggzlib/players/ox-bot.png"));
 
@@ -344,7 +351,7 @@ void TableConfiguration::setSeatType(int seat, SeatTypes seattype)
 
 	if(seattype == seatopen)
 	{
-		pixmap = "ox-guest.png";
+		pixmap = "ox-empty.png";
 	}
 	else if(seattype == seatbot)
 	{
@@ -386,9 +393,8 @@ void TableConfiguration::setSeatType(int seat, SeatTypes seattype)
 	}
 	else if(seattype == seatunused)
 	{
-		/*QPixmap pix = QPixmap(d.findResource("data", "kggzlib/players/ox-player.png"));
-		pix = greyscale(pix);*/
 		QPixmap pix = QPixmap(d.findResource("data", "kggzlib/players/ox-empty.png"));
+		pix = greyscale(pix);
 		item_player->setIcon(pix);
 	}
 

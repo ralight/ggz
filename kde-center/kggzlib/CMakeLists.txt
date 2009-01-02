@@ -76,23 +76,32 @@ install(FILES
 
 install(FILES
 	players/ox-admin.png
+	players/ox-admin.svg
 	players/ox-banned.png
-	players/botgrubby.png
+	players/ox-banned.svg
 	players/ox-bot.png
+	players/ox-bot.svg
 	players/ox-buddy.png
+	players/ox-buddy.svg
 	players/ox-guest.png
+	players/ox-guest.svg
 	players/ox-host.png
+	players/ox-host.svg
 	players/ox-empty.png
+	players/ox-empty.svg
+	players/ox-player.png
+	players/ox-player.svg
+	players/ox-self.png
+	players/ox-self.svg
+	players/botgrubby.png
 	players/lag0.png
 	players/lag1.png
 	players/lag2.png
 	players/lag3.png
 	players/lag4.png
 	players/lag5.png
-	players/ox-player.png
 	players/team-founder.png
 	players/team-member.png
-	players/ox-self.png
 	DESTINATION ${DATA_INSTALL_DIR}/kggzlib/players
 )
 
@@ -101,6 +110,10 @@ install(FILES
 	icons/rating.png
 	icons/tagua.png
 	icons/ggzmetaserv.png
+	icons/server_local.png
+	icons/server_local.svg
+	icons/server_online.png
+	icons/server_online.svg
 	DESTINATION ${DATA_INSTALL_DIR}/kggzlib/icons
 )
 
