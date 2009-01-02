@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 10635 2008-12-23 19:24:59Z josef $
+ * $Id: login.c 10778 2009-01-02 02:38:30Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -92,7 +92,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 
 	new_pw[0] = '\0';
 	if(password)
-		snprintf(new_pw, sizeof(new_pw), password);
+		snprintf(new_pw, sizeof(new_pw), "%s", password);
 
 	ggz_debug(GGZ_DBG_CONNECTION, "Player %p attempting login as %d",
 		  (void *)player, type);

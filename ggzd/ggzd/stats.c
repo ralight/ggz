@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 10635 2008-12-23 19:24:59Z josef $
+ * $Id: stats.c 10778 2009-01-02 02:38:30Z oojah $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -275,7 +275,7 @@ void report_statistics(int room, int gametype,
 		}
 
 		snprintf(player.handle, sizeof(player.handle),
-			 report->names[i]);
+			 "%s", report->names[i]);
 
 		/* Find out player type */
 		if (report->types[i] == GGZ_SEAT_BOT) {
@@ -317,7 +317,7 @@ void report_statistics(int room, int gametype,
 
 		if (report->types[i] == GGZ_SEAT_PLAYER) {
 			snprintf(stats[i].player, sizeof(stats[i].player),
-				 report->names[i]);
+				 "%s", report->names[i]);
 		} else if (report->types[i] == GGZ_SEAT_BOT) {
 			if(!ggz_strcmp(report->names[i], "AI")) {
 				snprintf(stats[i].player, sizeof(stats[i].player),
@@ -532,7 +532,7 @@ void stats_rt_report(void)
 	for(i = 0; i < rt->num_rooms; i++)
 	{
 		snprintf(rt->rooms[i], STATS_RT_MAX_ROOMNAME_LEN,
-			ggz_intlstring_translated(rooms[i].name, NULL));
+			"%s", ggz_intlstring_translated(rooms[i].name, NULL));
 		rt->players[i] = rooms[i].player_count;
 		rt->tables[i] = rooms[i].table_count;
 	}
