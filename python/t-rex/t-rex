@@ -2,13 +2,25 @@
 # -*- coding: utf-8 -*-
 #
 # Tournament table launcher
-# Copyright (C) 2008 Josef Spillner <josef@ggzgamingzone.org>
+# Copyright (C) 2008, 2009 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
 import os, sys
 import ConfigParser
-import pg
 import math
+
+try:
+	import pyPgSQL.PgSQL
+except:
+	print "# Warning: PostgreSQL handler not available"
+try:
+	import pysqlite2._sqlite
+except:
+	print "# Warning: SQlite handler not available"
+try:
+	import MySQLdb
+except:
+	print "# Warning: MySQL handler not available"
 
 try:
 	import ggzsettings
@@ -176,12 +188,14 @@ def played(cns, p1, p2):
 	y = {}
 	number = 0
 
-	q1 = cns.query("SELECT match FROM matchplayers WHERE handle = '" + p1 + "'")
-	for row in q1.dictresult():
+	q1 = cns.cursor()
+	q1.execute("SELECT match FROM matchplayers WHERE handle = '" + p1 + "'")
+	for row in q1.fetchall():
 		x[row["match"]] = row["match"]
 
-	q2 = cns.query("SELECT match FROM matchplayers WHERE handle = '" + p2 + "'")
-	for row in q2.dictresult():
+	q2 = cns.cursor()
+	q2.execute("SELECT match FROM matchplayers WHERE handle = '" + p2 + "'")
+	for row in q2.fetchall():
 		if x.has_key(row["match"]):
 			y[number] = row["match"]
 			number += 1
@@ -190,9 +204,10 @@ def played(cns, p1, p2):
 		#print "//", pair
 		match = y[pair]
 		# FIXME: use correct date of match
-		q = cns.query("SELECT id, winner FROM matches WHERE id = '" + str(match) + "' AND date > '0'")
-		if len(q.dictresult()) == 1:
-			winner = q.dictresult()[0]["winner"]
+		q = cns.cursor()
+		q.execute("SELECT id, winner FROM matches WHERE id = '" + str(match) + "' AND date > '0'")
+		if len(q.fetchall()) == 1:
+			winner = q.fetchall()[0]["winner"]
 			#print "//", winner
 			return winner
 
@@ -200,20 +215,22 @@ def played(cns, p1, p2):
 
 def main(cns):
 	global global_tournamenttables
-	
+
 	global_tournamenttables = {}
 	players = {}
 
-	q = cns.query("SELECT name, room, id, game FROM tournaments")
-	for row in q.dictresult():
+	q = cns.cursor()
+	q.execute("SELECT name, room, id, game FROM tournaments")
+	for row in q.fetchall():
 		name = row["name"]
 		room = row["room"]
 		id = row["id"]
 		game = row["game"]
 		print "Tournament", name, "of game", game, "in", room
 
-		qp = cns.query("SELECT name, number FROM tournamentplayers WHERE id = '" + str(id) + "'")
-		for row in qp.dictresult():
+		qp = cns.cursor()
+		qp.execute("SELECT name, number FROM tournamentplayers WHERE id = '" + str(id) + "'")
+		for row in qp.fetchall():
 			pname = row["name"]
 			pnumber = row["number"]
 			if not players.has_key(id):
@@ -288,25 +305,37 @@ if __name__ == '__main__':
 		print "t-rex - the GGZ Gaming Zone tournament table manager"
 		sys.exit(0)
 
+	configfile = sys.argv[1]
+
 	ini = ConfigParser.SafeConfigParser()
-	files = ini.read(sys.argv[1])
+	files = ini.read(configfile)
 	if len(files) == 0:
 		print "Error: configuration file not found"
 		sys.exit(1)
 
 	if ini.has_section("General"):
-		dbhost = ini.get("General", "DatabaseHost")
-		dbport = ini.get("General", "DatabasePort")
-		dbname = ini.get("General", "DatabaseName")
-		dbuser = ini.get("General", "DatabaseUsername")
-		dbpass = ini.get("General", "DatabasePassword")
 		dbtype = ini.get("General", "DatabaseType")
+		if dbtype != "sqlite":
+			dbhost = ini.get("General", "DatabaseHost")
+			dbport = ini.get("General", "DatabasePort")
+			dbname = ini.get("General", "DatabaseName")
+			dbuser = ini.get("General", "DatabaseUsername")
+			dbpass = ini.get("General", "DatabasePassword")
+		else:
+			dbhost = None
+			dbport = None
+			dbname = None
+			dbuser = None
+			dbpass = None
 
-	if dbtype != "pgsql":
-		print "Error: currently works for pgsql databases only"
-		sys.exit(1)
-
-	cns = pg.DB(host=dbhost, port=int(dbport), dbname=dbname, user=dbuser, passwd=dbpass)
+	if dbtype == "pgsql":
+		cns = pyPgSQL.PgSQL.connect(host=dbhost, port=int(dbport), database=dbname, user=dbuser, password=dbpass)
+	elif dbtype == "sqlite":
+		# FIXME: locator hack, maybe use ggz-config?
+		dbstore = os.path.dirname(configfile) + "/../../var/ggzd/ggzd.sqlite"
+		cns = pysqlite2._sqlite.connect(dbstore)
+	else:
+		cns = MySQLdb.connect(host=dbhost, port=int(dbport), db=dbname, user=dbuser, passwd=dbpass)
 
 	main(cns)
 
