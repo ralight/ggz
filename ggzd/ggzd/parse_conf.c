@@ -40,7 +40,7 @@
 
 /* Log types name lookup tables*/
 struct LogTypes {
-	char *name;
+	const char *name;
 	unsigned type;
 };
 static const struct LogTypes log_types[] = {
@@ -95,7 +95,7 @@ unsigned parse_log_types(int num, char **entry)
 static void parse_dbg_types(int num, char **entry)
 {
 	int i, j;
-	char *dbg_types[] = {
+	const char *dbg_types[] = {
 		GGZ_DBG_CONFIGURATION,
 		GGZ_DBG_PROCESS,
 		GGZ_DBG_CONNECTION,

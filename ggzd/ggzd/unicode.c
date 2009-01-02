@@ -19,7 +19,7 @@
 #ifdef WITH_ICU
 struct blockassignment_t
 {
-	char *name;
+	const char *name;
 	UBlockCode code;
 	bool enabled;
 };
