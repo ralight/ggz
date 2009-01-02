@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10707 2008-12-30 12:06:11Z oojah $
+ * $Id: ggzdb_pgsql.c 10771 2009-01-02 00:42:07Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -930,7 +930,8 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	PGresult *res;
 	char query[4096];
 	int rc = GGZDB_ERR_DB;
-	char *number, *playertype;
+	char *number;
+	const char *playertype;
 	char *player_canonical, *player_quoted;
 
 	conn = claimconnection();
