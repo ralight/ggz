@@ -1,5 +1,5 @@
 ** Intermediate snapshot release of base GGZ Gaming Zone components
-** Version 0.99.4 - targeted at developers only - API+ABI breakage included
+** Version 0.99.5 - targeted at developers only - API+ABI breakage included
 ** Please follow the GGZ 0.0.14 branch to get a complete and stable version
 
 The GGZ Gaming Zone (GGZ) is an open-sourced Internet gaming center.
@@ -28,11 +28,11 @@ bring as many multiplayer features into as many games as possible!
 
 New and pending features in this snapshot release (0.99.5):
 
-TODO: This list is not yet finished!
-
 - {general} ggz-client-libs and libggz were replaced by ggz-base-libs
 - {general} ggz-gtk-games was merged into ggz-gtk-client
 - {general} several core clients are now 100% non-blocking
+- {general} code cleanups, especially constness and printf conventions
+- {general} the GGZ functionality is now showcases with starterpacks
 
 - [ggz-base-libs] support for asynchronous name resolver, internal & asyncns
 - [ggz-base-libs] internal support for asynchronous connection creation
@@ -40,10 +40,13 @@ TODO: This list is not yet finished!
 - [ggz-base-libs] experimental garbage collection support in libggz
 - [ggz-base-libs] better handling of TLS encryption policies
 - [ggz-python] some extensions to ggz-faketable like player information
+- [ggz-python] alternative SVG renderer based on PyQt4, and PNG fallbacks
+- [ggz-python] resizable SDL window in GGZBoard
 - [ggz-community] dynamic room support to the web service API
 - [ggz-community] tournament setup now with player signups
 - [ggz-community] web service API now covers buddies and foes
 - [ggz-server] ongoing improvements and consolidation of database plugins
+- [ggz-server] deprecation of Berkeley DB and DBI plugins
 - [ggz-docs] documentation of Connect the Dots savegame format
 - [ggz-utils] move of some of the runtime applications from ggz-client-libs
 - [ggz-utils] translations for ggz-cmd
@@ -57,6 +60,7 @@ TODO: This list is not yet finished!
 - [ggz-kde-center] several further enhancements to kggzcore library
 - [ggz-kde-center] synchronisation with GGZ-Community through Lokarest
 - [ggz-kde-center] addition of Vencedor, the new KDE 4 core client
+- [ggz-kde-center] new Oxygen player icons
 
 New and pending features in this snapshot release (0.99.4):
 
