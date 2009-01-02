@@ -76,10 +76,10 @@ install(FILES
 
 install(FILES
 	players/ox-admin.png
-	players/banned.png
+	players/ox-banned.png
 	players/botgrubby.png
-	players/bot.png
-	players/buddy.png
+	players/ox-bot.png
+	players/ox-buddy.png
 	players/ox-guest.png
 	players/host.png
 	players/lag0.png

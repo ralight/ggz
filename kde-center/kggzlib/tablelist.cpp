@@ -78,7 +78,7 @@ public:
 			}
 			else if(player.type() == KGGZCore::Player::bot)
 			{
-				pixmap = "bot.png";
+				pixmap = "ox-bot.png";
 				numbots++;
 			}
 			else if(player.type() == KGGZCore::Player::player)

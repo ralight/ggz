@@ -139,7 +139,7 @@ void TableConfiguration::slotSelected(const QPoint& pos)
 
 		KStandardDirs d;
 		QPixmap grubbypix = QPixmap(d.findResource("data", "kggzlib/players/botgrubby.png"));
-		QPixmap botpix = QPixmap(d.findResource("data", "kggzlib/players/bot.png"));
+		QPixmap botpix = QPixmap(d.findResource("data", "kggzlib/players/ox-bot.png"));
 
 		for(int i = 0; i < m_grubbies.size(); i++)
 		{
@@ -171,9 +171,9 @@ void TableConfiguration::slotSelected(const QPoint& pos)
 		QMenu *buddymenu = reservemenu->addMenu(i18n("Buddy"));
 
 		KStandardDirs d;
-		QPixmap pix = QPixmap(d.findResource("data", "kggzlib/players/ox-player.png"));
-		QPixmap pix2 = QPixmap(d.findResource("data", "kggzlib/players/buddy.png"));
-		QPixmap pix3 = Util::composite(pix, pix2);
+		QPixmap pix1 = QPixmap(d.findResource("data", "kggzlib/players/ox-player.png"));
+		QPixmap pix2 = QPixmap(d.findResource("data", "kggzlib/players/ox-buddy.png"));
+		QPixmap pix3 = Util::composite(pix1, pix2);
 
 		for(int i = 0; i < m_buddies.size(); i++)
 		{
@@ -348,7 +348,7 @@ void TableConfiguration::setSeatType(int seat, SeatTypes seattype)
 	}
 	else if(seattype == seatbot)
 	{
-		pixmap = "bot.png";
+		pixmap = "ox-bot.png";
 	}
 	else if(seattype == seatplayerreserved)
 	{
@@ -356,7 +356,7 @@ void TableConfiguration::setSeatType(int seat, SeatTypes seattype)
 	}
 	else if(seattype == seatbotreserved)
 	{
-		pixmap = "bot.png";
+		pixmap = "ox-bot.png";
 		if(m_reservations.contains(seat))
 		{
 			if(m_grubbies.contains(m_reservations[seat]))
@@ -380,7 +380,7 @@ void TableConfiguration::setSeatType(int seat, SeatTypes seattype)
 	else if(seattype == seatbuddyreserved)
 	{
 		QPixmap pix1 = QPixmap(d.findResource("data", "kggzlib/players/ox-player.png"));
-		QPixmap pix2 = QPixmap(d.findResource("data", "kggzlib/players/buddy.png"));
+		QPixmap pix2 = QPixmap(d.findResource("data", "kggzlib/players/ox-buddy.png"));
 		QPixmap pix3 = Util::composite(pix1, pix2);
 		item_player->setIcon(pix3);
 	}

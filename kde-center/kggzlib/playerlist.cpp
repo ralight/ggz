@@ -5,6 +5,7 @@
 #include "playerlist.h"
 #include "qrecursivesortfilterproxymodel.h"
 #include "player.h"
+#include "util.h"
 
 // Lokarest includes
 #ifdef LOKAREST_FOUND
@@ -103,7 +104,7 @@ void PlayerList::addPlayer(Player *player)
 	else if(player->role() == Player::Registered)
 		pixmap = "player.png";
 	else if(player->role() == Player::Bot)
-		pixmap = "bot.png";
+		pixmap = "ox-bot.png";
 
 	QString lagpixmap = "lag0.png";
 	if(player->lag() == 100)
@@ -117,8 +118,23 @@ void PlayerList::addPlayer(Player *player)
 	else if(player->lag() > 20)
 		lagpixmap = "lag1.png";
 
+	QPixmap pix(d.findResource("data", "kggzlib/players/" + pixmap));
+
+	if(player->relation() == Player::Buddy)
+	{
+		pixmap = "ox-buddy.png";
+		QPixmap pix2(d.findResource("data", "kggzlib/players/" + pixmap));
+		pix = Util::composite(pix, pix2);
+	}
+	else if(player->relation() == Player::Ignored)
+	{
+		pixmap = "ox-banned.png";
+		QPixmap pix2(d.findResource("data", "kggzlib/players/" + pixmap));
+		pix = Util::composite(pix, pix2);
+	}
+
 	QStandardItem *itemname = new QStandardItem();
-	itemname->setIcon(QIcon(d.findResource("data", "kggzlib/players/" + pixmap)));
+	itemname->setIcon(QIcon(pix));
 	itemname->setText(player->name());
 
 	QStandardItem *itemlagstats = new QStandardItem();
