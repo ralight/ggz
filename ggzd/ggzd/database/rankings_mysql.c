@@ -36,7 +36,7 @@ static void rankings_calculate(GGZRankings *rankings, const char *game, const ch
 	MYSQL_ROW row;
 	int rc;
 	char query[256];
-	int i, rank;
+	unsigned int i, rank;
 	char *handle;
 	int considered;
 
