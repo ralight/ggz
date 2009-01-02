@@ -1,14 +1,14 @@
 # Tradução do ggz-txt para o Português Brasileiro.
-# Copyright (C) 2004 - 2008 Josef Spillner
+# Copyright (C) 2004 - 2009 Josef Spillner
 # This file is distributed under the same license as the ggz-txt-client package.
 # Josef Spillner <josef@ggzgamingzone.org>
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.0.14+\n"
+"Project-Id-Version: 0.99.4+\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-23 17:36+0100\n"
-"PO-Revision-Date: 2008-01-12 16:13+0100\n"
+"POT-Creation-Date: 2009-01-02 10:07+0100\n"
+"PO-Revision-Date: 2009-01-02 10:07+0100\n"
 "Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Português Brasileiro <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -180,12 +180,15 @@ msgstr "---"
 
 #: ../ggz-txt/output.c:112
 msgid "--- /connect [<server>[:<port>][:tls]] [<nick>] [<password>] [<email>]"
-msgstr "--- /connect [<servidor>[:<port>][:tls]] [<apelido>] [<senha>] [<email>]"
+msgstr ""
+"--- /connect [<servidor>[:<port>][:tls]] [<apelido>] [<senha>] [<email>]"
 
 #: ../ggz-txt/output.c:113
 msgid ""
 "---    Connect to a GGZ server and log in, or register with email address"
-msgstr "---    Conectar para um servidor GGZ e autenticar nele, ou registrar com endereço email"
+msgstr ""
+"---    Conectar para um servidor GGZ e autenticar nele, ou registrar com "
+"endereço email"
 
 #: ../ggz-txt/output.c:114
 msgid "--- /disconnect                                  Disconnect from server"
@@ -421,89 +424,94 @@ msgid "-- Not a seat"
 msgstr "-- Não é vaga"
 
 #: ../ggz-txt/output.c:591
+#, c-format
+msgid "-- Seat %d: Abandoned by %s"
+msgstr "-- Vaga %d: Abandonado por %s"
+
+#: ../ggz-txt/output.c:595
 msgid "Internal error"
 msgstr "Erro no inteiro"
 
-#: ../ggz-txt/server.c:133 ../ggz-txt/server.c:284
+#: ../ggz-txt/server.c:139 ../ggz-txt/server.c:290
 msgid "--- Disconnected"
 msgstr "--- Desconectado"
 
-#: ../ggz-txt/server.c:160
+#: ../ggz-txt/server.c:166
 #, c-format
 msgid "--- Connected to %s."
 msgstr "--- Conectado para %s."
 
-#: ../ggz-txt/server.c:178
+#: ../ggz-txt/server.c:184
 #, c-format
 msgid "--- Connection failed: %s"
 msgstr "--- Conexão falhou: %s"
 
-#: ../ggz-txt/server.c:202
+#: ../ggz-txt/server.c:208
 #, c-format
 msgid "--- Logged into %s."
 msgstr "--- Entrou para %s."
 
-#: ../ggz-txt/server.c:221
+#: ../ggz-txt/server.c:227
 #, c-format
 msgid "--- Login failed: %s"
 msgstr "--- Entrar falhou: %s"
 
-#: ../ggz-txt/server.c:238
+#: ../ggz-txt/server.c:244
 #, c-format
 msgid "--- Entered room %s."
 msgstr "--- Entrou para sala %s."
 
-#: ../ggz-txt/server.c:264
+#: ../ggz-txt/server.c:270
 #, c-format
 msgid "--- Enter failed: %s"
 msgstr "--- Entrar na sala falhou: %s"
 
-#: ../ggz-txt/server.c:315
+#: ../ggz-txt/server.c:321
 msgid "--- Network error: disconnected"
 msgstr "--- Erro da rede: desconectado"
 
-#: ../ggz-txt/server.c:328
+#: ../ggz-txt/server.c:334
 #, c-format
 msgid "--- Server error: %s disconnected"
 msgstr "--- Erro do servidor: %s desconectado"
 
-#: ../ggz-txt/server.c:341
+#: ../ggz-txt/server.c:347
 #, c-format
 msgid "--- Chat failed: %s"
 msgstr "--- Bate-papo falhou: %s"
 
-#: ../ggz-txt/server.c:403
+#: ../ggz-txt/server.c:409
 #, c-format
 msgid "--> %s entered the room."
 msgstr "--> %s entrou na sala."
 
-#: ../ggz-txt/server.c:414
+#: ../ggz-txt/server.c:420
 #, c-format
 msgid "<-- %s left the room."
 msgstr "<-- %s saiu da sala."
 
-#: ../ggz-txt/server.c:424
+#: ../ggz-txt/server.c:430
 msgid "-- Table launched"
 msgstr "-- Lançou mesa"
 
-#: ../ggz-txt/server.c:434
+#: ../ggz-txt/server.c:440
 #, c-format
 msgid "-- Table launch failed: %s"
 msgstr "-- Erro lançando mesa: %s"
 
-#: ../ggz-txt/server.c:448
+#: ../ggz-txt/server.c:454
 msgid "-- Table joined"
 msgstr "-- Entrou na mesa"
 
-#: ../ggz-txt/server.c:458
+#: ../ggz-txt/server.c:464
 #, c-format
 msgid "-- Table join failed: %s"
 msgstr "-- Error entrando mesa: %s"
 
-#: ../ggz-txt/server.c:476
+#: ../ggz-txt/server.c:482
 msgid "-- Left table"
 msgstr "-- Saiu da mesa"
 
-#: ../ggz-txt/server.c:488
+#: ../ggz-txt/server.c:494
 msgid "-- Table leave failed"
 msgstr "-- Erro saindo da mesa"
