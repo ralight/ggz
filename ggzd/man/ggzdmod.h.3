@@ -1,4 +1,4 @@
-.TH "ggzdmod.h" 3 "21 May 2005" "Version 0.0.11" "GGZdMod" \" -*- nroff -*-
+.TH "ggzdmod.h" 3 "2 Jan 2009" "Version snapshot-0.99.5+" "GGZdMod" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -11,6 +11,14 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 \fC#include <ggz_common.h>\fP
 .br
 
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBGGZSeat\fP"
+.br
+.RI "\fIA seat at a GGZ game table. \fP"
+.in -1c
 .SS "Defines"
 
 .in +1c
@@ -18,20 +26,27 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 .RI "#define \fBGGZDMOD_VERSION_MAJOR\fP   0"
 .br
 .ti -1c
-.RI "#define \fBGGZDMOD_VERSION_MINOR\fP   0"
+.RI "#define \fBGGZDMOD_VERSION_MINOR\fP   99"
 .br
 .ti -1c
-.RI "#define \fBGGZDMOD_VERSION_MICRO\fP   11"
+.RI "#define \fBGGZDMOD_VERSION_MICRO\fP   5"
 .br
 .ti -1c
-.RI "#define \fBGGZDMOD_VERSION_IFACE\fP   '4:0:0'"
+.RI "#define \fBGGZDMOD_VERSION_IFACE\fP   '6:0:0+dev'"
+.br
+.ti -1c
+.RI "#define \fBGGZDMOD_DEBUG\fP   'GGZDMOD'"
+.br
+.RI "\fIggz_debug debugging type for ggzdmod debuggin. \fP"
+.ti -1c
+.RI "#define \fBGGZSpectator\fP   \fBGGZSeat\fP"
 .br
 .in -1c
 .SS "Typedefs"
 
 .in +1c
 .ti -1c
-.RI "typedef \fBGGZdMod\fP \fBGGZdMod\fP"
+.RI "typedef struct \fBGGZdMod\fP \fBGGZdMod\fP"
 .br
 .RI "\fIA GGZdmod object, used for tracking a ggzd<->table connection. \fP"
 .ti -1c
@@ -47,7 +62,7 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 .br
 .RI "\fITable states. \fP"
 .ti -1c
-.RI "enum \fBGGZdModEvent\fP { \fBGGZDMOD_EVENT_STATE\fP, \fBGGZDMOD_EVENT_JOIN\fP, \fBGGZDMOD_EVENT_LEAVE\fP, \fBGGZDMOD_EVENT_SEAT\fP, \fBGGZDMOD_EVENT_SPECTATOR_JOIN\fP, \fBGGZDMOD_EVENT_SPECTATOR_LEAVE\fP, \fBGGZDMOD_EVENT_SPECTATOR_SEAT\fP, \fBGGZDMOD_EVENT_LOG\fP, \fBGGZDMOD_EVENT_PLAYER_DATA\fP, \fBGGZDMOD_EVENT_SPECTATOR_DATA\fP, \fBGGZDMOD_EVENT_GAMEREPORT\fP, \fBGGZDMOD_EVENT_SAVEGAMEREPORT\fP, \fBGGZDMOD_EVENT_REQ_NUM_SEATS\fP, \fBGGZDMOD_EVENT_REQ_BOOT\fP, \fBGGZDMOD_EVENT_REQ_BOT\fP, \fBGGZDMOD_EVENT_REQ_OPEN\fP, \fBGGZDMOD_EVENT_ERROR\fP }"
+.RI "enum \fBGGZdModEvent\fP { \fBGGZDMOD_EVENT_STATE\fP, \fBGGZDMOD_EVENT_JOIN\fP, \fBGGZDMOD_EVENT_LEAVE\fP, \fBGGZDMOD_EVENT_SEAT\fP, \fBGGZDMOD_EVENT_SPECTATOR_JOIN\fP, \fBGGZDMOD_EVENT_SPECTATOR_LEAVE\fP, \fBGGZDMOD_EVENT_SPECTATOR_SEAT\fP, \fBGGZDMOD_EVENT_PLAYER_DATA\fP, \fBGGZDMOD_EVENT_SPECTATOR_DATA\fP, \fBGGZDMOD_EVENT_ERROR\fP }"
 .br
 .RI "\fICallback events. \fP"
 .ti -1c
@@ -61,6 +76,14 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 .SS "Functions"
 
 .in +1c
+.ti -1c
+.RI "int \fBggzdmod_is_ggz_mode\fP (void)"
+.br
+.RI "\fIIs the program running in GGZ mode? \fP"
+.ti -1c
+.RI "int \fBggzdmod_check_library\fP (const char *iface)"
+.br
+.RI "\fICheck if the correct library is used. \fP"
 .ti -1c
 .RI "\fBGGZdMod\fP * \fBggzdmod_new\fP (\fBGGZdModType\fP type)"
 .br
@@ -82,6 +105,10 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 .br
 .RI "\fIGet the current state of the table. \fP"
 .ti -1c
+.RI "const char * \fBggzdmod_get_savedgame\fP (\fBGGZdMod\fP *ggzdmod)"
+.br
+.RI "\fIGet savegame name or return NULL if there is none. \fP"
+.ti -1c
 .RI "int \fBggzdmod_get_num_seats\fP (\fBGGZdMod\fP *ggzdmod)"
 .br
 .RI "\fIGet the total number of seats at the table. \fP"
@@ -89,6 +116,14 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 .RI "\fBGGZSeat\fP \fBggzdmod_get_seat\fP (\fBGGZdMod\fP *ggzdmod, int seat)"
 .br
 .RI "\fIGet all data for the specified seat. \fP"
+.ti -1c
+.RI "char * \fBggzdmod_get_bot_class\fP (\fBGGZdMod\fP *ggzdmod, const char *name)"
+.br
+.RI "\fIReturn class for named bot. \fP"
+.ti -1c
+.RI "void \fBggzdmod_set_playerdata\fP (\fBGGZdMod\fP *ggzdmod, bool is_spectator, int seat_num, void *playerdata)"
+.br
+.RI "\fISet a playerdata pointer. \fP"
 .ti -1c
 .RI "void * \fBggzdmod_get_gamedata\fP (\fBGGZdMod\fP *ggzdmod)"
 .br
@@ -102,7 +137,7 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 .br
 .RI "\fIGet the maximum number of spectators. This function returns the maximum number of spectator seats available. A game can use this to iterate over the spectator seats to look for spectators occupying them. Since spectators may come and go at any point and there is no theoretical limit on the number of spectators, you should consider this value to be dynamic and call this function again each time you're looking for spectators. \fP"
 .ti -1c
-.RI "\fBGGZSpectator\fP \fBggzdmod_get_spectator\fP (\fBGGZdMod\fP *ggzdmod, int spectator)"
+.RI "\fBGGZSeat\fP \fBggzdmod_get_spectator\fP (\fBGGZdMod\fP *ggzdmod, int spectator)"
 .br
 .RI "\fIGet a spectator's data. \fP"
 .ti -1c
@@ -178,7 +213,7 @@ This file contains all libggzdmod functions used by game servers to interface wi
 .PP
 GGZdmod currently provides an event-driven interface. Data from communication sockets is read in by the library, and a handler function (registered as a callback) is invoked to handle any events. The calling program should not read/write data from/to the GGZ socket unless it really knows what it is doing.
 .PP
-That this does not apply to the client sockets: ggzdmod provides one file desriptor for communicating (TCP) to each client. If data is ready to be read by one of these file descriptors ggzdmod may invoke the appropriate handler (see below), but will never actually read any data.
+This does not apply to the sockets of the game clients: ggzdmod provides one file desriptor for communicating (TCP) to each client. If data is ready to be read by one of these file descriptors ggzdmod may invoke the appropriate handler (see below), but will never actually read any data.
 .PP
 Here is a fairly complete example. In this game we register a handler for each of the possible callbacks. This particular game is played only when all seats are full; when any seats are empty it must wait (much like a card or board game).
 .PP
@@ -193,7 +228,7 @@ Here is a fairly complete example. In this game we register a handler for each o
                              const void *data);
 
      // Other game-defined functions (not ggz-related).
-     void game_init(GGZdMod *ggz); // initialize a game
+     void game_init(GGZdMod *ggz);     // initialize a game
      void game_launch(void);           // handle a game 'launch'
      void game_end(void);              // called before the table shuts down
      void resume_playing(void);        // we have enough players to play
@@ -312,7 +347,21 @@ Here is a fairly complete example. In this game we register a handler for each o
 .fi
 .PP
 .PP
-For more information, see the documentation at http://ggz.sf.net/. 
+For more information, see the documentation at http://www.ggzgamingzone.org/. 
+.SH "Define Documentation"
+.PP 
+.SS "#define GGZDMOD_DEBUG   'GGZDMOD'"
+.PP
+ggz_debug debugging type for ggzdmod debuggin. 
+.PP
+To enable ggzdmod debugging, add this to the list of debugging types. 
+.PP
+\fBSee also:\fP
+.RS 4
+ggz_debug_enable 
+.RE
+.PP
+
 .SH "Typedef Documentation"
 .PP 
 .SS "typedef struct \fBGGZdMod\fP \fBGGZdMod\fP"
@@ -342,17 +391,17 @@ GGZDMOD_EVENT_LEAVE: The old seat (GGZSeat*)
 .IP "\(bu" 2
 GGZDMOD_EVENT_SEAT: The old seat (GGZSeat*)
 .IP "\(bu" 2
-GGZDMOD_EVENT_SPECTATOR_JOIN: The old spectator's data (GGZSpectator*)
+GGZDMOD_EVENT_SPECTATOR_JOIN: The old spectator's data (GGZSeat*)
 .IP "\(bu" 2
-GGZDMOD_EVENT_SPECTATOR_LEAVE: The old spectator's data (GGZSpectator*)
+GGZDMOD_EVENT_SPECTATOR_LEAVE: The old spectator's data (GGZSeat*)
 .IP "\(bu" 2
-GGZDMOD_EVENT_LOG: The message string (char*)
+GGZDMOD_EVENT_SPECTATOR_SEAT: The old spectator's data (GGZSeat*)
 .IP "\(bu" 2
 GGZDMOD_EVENT_PLAYER_DATA: The player number (int*)
 .IP "\(bu" 2
 GGZDMOD_EVENT_SPECTATOR_DATA: The spectator number (int*)
 .IP "\(bu" 2
-GGZDMOD_EVENT_ERROR: An error string (char*) 
+GGZDMOD_EVENT_ERROR: An error string (const char*) 
 .PP
 .RE
 .PP
@@ -374,7 +423,7 @@ Each of these is a possible GGZdmod event. For each event, the table may registe
 .PP
 
 .PP
-\fBEnumeration values: \fP
+\fBEnumerator: \fP
 .in +1c
 .TP
 \fB\fIGGZDMOD_EVENT_STATE \fP\fP
@@ -388,64 +437,56 @@ Module status changed This event occurs when the game's status changes. The old 
 
 .TP
 \fB\fIGGZDMOD_EVENT_JOIN \fP\fP
-Player joined This event occurs when a player joins the table. The old seat (a GGZSeat*) is passed as the event's data. The seat information will be updated before the event is invoked. 
-.PP
-\fBNote:\fP
-.RS 4
-This event is deprecated. 
-.RE
+Player joined This event occurs when a player has joined the table. The old seat (a GGZSeat*) is passed as the event's data. The seat information will be updated before the event is invoked. Hence, the new seat data can be read by using \fBggzdmod_get_seat()\fP in the event handler with the old seat's number. 
 .PP
 \fBSee also:\fP
 .RS 4
-\fBGGZDMOD_EVENT_SEAT\fP. 
+\fBGGZSeat\fP 
+.PP
+\fBggzdmod_get_seat\fP 
 .RE
 .PP
 
 .TP
 \fB\fIGGZDMOD_EVENT_LEAVE \fP\fP
-Player left This event occurs when a player leaves the table. The old seat (a GGZSeat*) is passed as the event's data. The seat information will be updated before the event is invoked. 
-.PP
-\fBNote:\fP
-.RS 4
-This event is deprecated. 
-.RE
+Player left This event occurs when a player has left the table. The old seat (a GGZSeat*) is passed as the event's data. The seat information will be updated before the event is invoked. Hence, the new seat data can be read by using \fBggzdmod_get_seat()\fP in the event handler with the old seat's number. 
 .PP
 \fBSee also:\fP
 .RS 4
-\fBGGZDMOD_EVENT_SEAT\fP. 
+\fBGGZSeat\fP 
+.PP
+\fBggzdmod_get_seat\fP 
 .RE
 .PP
 
 .TP
 \fB\fIGGZDMOD_EVENT_SEAT \fP\fP
-General seat change This event occurs when a seat change other than a player leave/join happens. The old seat (a GGZSeat*) is passed as the event's data. The seat information will be updated before the event is invoked. This event will replace the JOIN and LEAVE events. Games are advised to register the same handler for all three and to check the seat event by comparing the new and old seats. Possible operations include open|reserved->player, player->open, open->bot, bot->open, reserved->open, open->reserved, and bot->bot. Name changes are allowed but there is no player->player (i.e., player swap) seat event. 
+General seat change This event occurs when a seat change other than a player leave/join happens. The old seat (a GGZSeat*) is passed as the event's data. The seat information will be updated before the event is invoked. Operations include changing of reserved or abandoned seats to open, swapping bot players in and out, making a reservation on an open seat, or even an open seat changing to a player seat if a player changes seats. Note that no new connections are provided nor are connections removed in a SEAT event; thus, if a player is removed via this event you can be sure another SEAT or SPECTATOR_SEAT event will be provided shortly to re-add him to a new location. Similar to the corresponding JOIN and LEAVE events, the current seat can be read with \fBggzdmod_get_seat()\fP. 
 .TP
 \fB\fIGGZDMOD_EVENT_SPECTATOR_JOIN \fP\fP
-A spectator joins the game. The data of the old spectator (GGZSpectator*) is passed as the data for the event. It can be assumed that the spectator seat was previously empty, so the name and socket given will be invalid (NULL/-1). 
+A spectator has joined the game. The data of the old spectator (GGZSeat*) is passed as the data for the event. It can be assumed that the spectator seat was previously empty, so the name and socket given will be invalid (NULL/-1). Information on the spectator can be read with \fBggzdmod_get_spectator()\fP with the number of the old seat. 
 .TP
 \fB\fIGGZDMOD_EVENT_SPECTATOR_LEAVE \fP\fP
-A spectator left the game The old spectator data can be obtained via the (GGZSpectator*) which is passed as the event data. 
+A spectator has left the game The old spectator data can be obtained via the (GGZSeat*) which is passed as the event data. Information on the spectator can be read with \fBggzdmod_get_spectator()\fP with the number of the old seat. 
 .TP
 \fB\fIGGZDMOD_EVENT_SPECTATOR_SEAT \fP\fP
-A spectator seat changed. The old spectator data can be obtained via the (GGZSpectator*) which is passed as the event data. This may someday replace both SPECTATOR_JOIN and SPECTATOR_LEAVE. 
-.TP
-\fB\fIGGZDMOD_EVENT_LOG \fP\fP
-Module log request This event occurs when a log request happens. This will only be used by the GGZ server; the game server should use ggzdmod_log to generate the log. 
+A spectator seat changed. The old spectator data can be obtained via the (GGZSeat*) which is passed as the event data. The same caveats apply as to GGZDMOD_EVENT_SEAT. 
+.PP
+\fBSee also:\fP
+.RS 4
+\fBGGZDMOD_EVENT_SEAT\fP 
+.RE
+.PP
+
 .TP
 \fB\fIGGZDMOD_EVENT_PLAYER_DATA \fP\fP
-Data available from player This event occurs when there is data ready to be read from one of the player sockets. The player number (an int*) is passed as the event's data. 
+Data available from player This event occurs when there is data ready to be read from one of the player sockets. The player number (an int*) is passed as the event's data. Call \fBggzdmod_get_seat()\fP with that number to find out the file descriptor to read from. 
 .TP
 \fB\fIGGZDMOD_EVENT_SPECTATOR_DATA \fP\fP
-Data available from spectator For games which support spectators, this indicates that one of them sent some data to the game server. 
-.TP
-\fB\fIGGZDMOD_EVENT_GAMEREPORT \fP\fP
-For GGZ only. Reports the results of a game. 
-.TP
-\fB\fIGGZDMOD_EVENT_SAVEGAMEREPORT \fP\fP
-For GGZ only. Reports a savegame. 
+Data available from spectator For games which support spectators, this indicates that one of them sent some data to the game server. The spectator's number (an int*) is sent as the event's data. Call \fBggzdmod_get_spectator()\fP with that number to find out the file descriptor to read from. 
 .TP
 \fB\fIGGZDMOD_EVENT_ERROR \fP\fP
-An error has occurred This event occurs when a GGZdMod error has occurred. An error message (a char*) will be passed as the event's data. GGZdMod may attempt to recover from the error, but it is not guaranteed that the GGZ connection will continue to work after an error has happened. 
+An error has occurred This event occurs when a GGZdMod error has occurred. An error message (a const char*) will be passed as the event's data. GGZdMod may attempt to recover from the error, but it is not guaranteed that the GGZ connection will continue to work after an error has happened. 
 .SS "enum \fBGGZdModState\fP"
 .PP
 Table states. 
@@ -456,7 +497,7 @@ More specifically, the game is in the CREATED state when it is first executed. I
 .PP
 Each time the game state changes, a GGZDMOD_EVENT_STATE event will be propogated to the game server. 
 .PP
-\fBEnumeration values: \fP
+\fBEnumerator: \fP
 .in +1c
 .TP
 \fB\fIGGZDMOD_STATE_CREATED \fP\fP
@@ -476,17 +517,17 @@ The 'type' of ggzdmod.
 .PP
 The 'flavor' of GGZdmod object this is. Affects what operations are allowed. 
 .PP
-\fBEnumeration values: \fP
+\fBEnumerator: \fP
 .in +1c
 .TP
 \fB\fIGGZDMOD_GGZ \fP\fP
-Used by the ggz server ('ggzd'). 
+Used by the GGZ server ('ggzd'). 
 .TP
 \fB\fIGGZDMOD_GAME \fP\fP
 Used by the game server ('table'). 
 .SS "enum \fBGGZGameResult\fP"
 .PP
-\fBEnumeration values: \fP
+\fBEnumerator: \fP
 .in +1c
 .TP
 \fB\fIGGZ_GAME_FORFEIT \fP\fP
@@ -510,6 +551,23 @@ This is a debugging function that will log all available information about the G
 \fBReturns:\fP
 .RS 4
 void; errors in ggzdmod_log are ignored. 
+.RE
+.PP
+
+.SS "int ggzdmod_check_library (const char * iface)"
+.PP
+Check if the correct library is used. 
+.PP
+Check if the library in use is the one the application was compiled against. This is determined by comparing the current value of GGZDMOD_VERSION_IFACE with the one which was present at the time of compilation. It transitively also checks for libggz, although applications should check as well if they make use of it explicitly.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIiface\fP GGZDMOD_VERSION_IFACE
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+1 if this is the case, 0 otherwise. 
 .RE
 .PP
 
@@ -583,7 +641,7 @@ Disconnect from ggz.
 .PP
 .IP "\(bu" 2
 When called by the game server, this function stops the connection to GGZ. It should only be called when the table is ready to exit.
-.IP "  \(bu" 4
+.IP "\(bu" 2
 When called by the GGZ server, this function will kill and clean up after the table. 
 .PP
 \fBParameters:\fP
@@ -595,8 +653,6 @@ When called by the GGZ server, this function will kill and clean up after the ta
 .RS 4
 0 on success, -1 on failure. 
 .RE
-.PP
-
 .PP
 
 .PP
@@ -637,6 +693,23 @@ After the connection is through, the object may be freed.
 \fBParameters:\fP
 .RS 4
 \fIggzdmod\fP The GGZdMod object. 
+.RE
+.PP
+
+.SS "char* ggzdmod_get_bot_class (\fBGGZdMod\fP * ggzdmod, const char * name)"
+.PP
+Return class for named bot. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIggzdmod\fP The GGZdMod object. 
+.br
+\fIname\fP Name of the bot. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The bot's class, or NULL for anonymous bots. 
 .RE
 .PP
 
@@ -714,6 +787,28 @@ While in GGZDMOD_STATE_CREATED, we don't know the number of seats.
 .RE
 .PP
 
+.SS "const char* ggzdmod_get_savedgame (\fBGGZdMod\fP * ggzdmod)"
+.PP
+Get savegame name or return NULL if there is none. 
+.PP
+For games that support loading of savegames, the savegame name will be passed in to the game server at launch time. When the state is changed out of CREATED the game server should do most of its initialization, including loading the savegame. The value returned here will be identical to what was passed in in ggzdmod_report_savegame earlier. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIggzdmod\fP The GGZdMod object. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The savegame name, or NULL on error or if there is no restore 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBggzdmod_report_savegame\fP 
+.RE
+.PP
+
 .SS "\fBGGZSeat\fP ggzdmod_get_seat (\fBGGZdMod\fP * ggzdmod, int seat)"
 .PP
 Get all data for the specified seat. 
@@ -731,7 +826,7 @@ A valid \fBGGZSeat\fP structure, if seat is a valid seat.
 .RE
 .PP
 
-.SS "\fBGGZSpectator\fP ggzdmod_get_spectator (\fBGGZdMod\fP * ggzdmod, int spectator)"
+.SS "\fBGGZSeat\fP ggzdmod_get_spectator (\fBGGZdMod\fP * ggzdmod, int spectator)"
 .PP
 Get a spectator's data. 
 .PP
@@ -744,7 +839,7 @@ Get a spectator's data.
 .PP
 \fBReturns:\fP
 .RS 4
-A valid \fBGGZSpectator\fP structure, if arguments are valid. 
+A valid \fBGGZSeat\fP structure, if arguments are valid. 
 .RE
 .PP
 
@@ -775,6 +870,23 @@ Get the type of the ggzdmod object.
 \fBReturns:\fP
 .RS 4
 The type of the GGZdMod object (GGZ or GAME). 
+.RE
+.PP
+
+.SS "int ggzdmod_is_ggz_mode (void)"
+.PP
+Is the program running in GGZ mode? 
+.PP
+Call this function to see if the program was actually launched by GGZ. This can be used to give an error message if the executable is run outside of the GGZ environment, or for games that will run both inside and outside of GGZ. 
+.PP
+\fBReturns:\fP
+.RS 4
+A boolean value indicating whether the program is running in GGZ. 
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+Should only be called by game servers, not by GGZ itself. 
 .RE
 .PP
 
@@ -920,6 +1032,24 @@ As described above, GGZdmod uses an event-driven structure. Each time an event i
 \fBSee also:\fP
 .RS 4
 \fBggzdmod_get_gamedata\fP 
+.RE
+.PP
+
+.SS "void ggzdmod_set_playerdata (\fBGGZdMod\fP * ggzdmod, bool is_spectator, int seat_num, void * playerdata)"
+.PP
+Set a playerdata pointer. 
+.PP
+Each GGZ seat (regular or spectator) can be given a 'playerdata' pointer that is available through ggzdmod_get_seat. This is useful for preserving state data when a particular player changes seat, as the playerdata will be preserved across the seat change.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIggzdmod\fP The GGZdMod object. 
+.br
+\fIis_spectator\fP true iff it is a spectator seat 
+.br
+\fIseat_num\fP The number of the seat 
+.br
+\fIplayerdata\fP An arbitrary pointer to be set as the playerdata 
 .RE
 .PP
 
