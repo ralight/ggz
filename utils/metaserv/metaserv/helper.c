@@ -56,7 +56,7 @@ void logline(const char *fmt, ...)
 char *xml_strdup(const char *s, int attribute, int url)
 {
 	char *s2 = NULL;
-	int i;
+	unsigned int i;
 	int j = 0;
 
 	if(!s) return s2;
