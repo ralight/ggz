@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 10780 2009-01-02 13:02:26Z oojah $
+ * $Id: net.c 10782 2009-01-02 13:32:56Z oojah $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1233,7 +1233,7 @@ static GGZXMLElement* _net_new_element(const char *tag,
 				       const char * const *attrs)
 {
 	void (*process_func)(GGZNetIO *net, GGZXMLElement *element) = NULL;
-	int i;
+	unsigned int i;
 	struct {
 		const char *tag;
 		void (*process_func)(GGZNetIO *net, GGZXMLElement *element);
