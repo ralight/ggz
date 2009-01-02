@@ -37,7 +37,7 @@
 #include "state.h"
 
 
-char* state_get(void)
+const char* state_get(void)
 {
 	GGZStateID state;
 
