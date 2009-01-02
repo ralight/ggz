@@ -27,7 +27,7 @@
 
 #define LIBGGZ_VERSION_MAJOR 0
 #define LIBGGZ_VERSION_MINOR 99
-#define LIBGGZ_VERSION_MICRO 4
+#define LIBGGZ_VERSION_MICRO 5
 #define LIBGGZ_VERSION_IFACE "5:0:3+devel"
 
 #include <sys/types.h>
