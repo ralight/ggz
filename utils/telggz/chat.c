@@ -41,7 +41,7 @@ void chat_connect(const char *host, int port, const char *username, const char *
 	net_login(username, password);
 }
 
-static char *chat_input()
+static char *chat_input(void)
 {
 	char *s;
 	int ret;
@@ -54,7 +54,7 @@ static char *chat_input()
 	return s;
 }
 
-int chat_getserver()
+int chat_getserver(void)
 {
 	char *s;
 	int ret;
@@ -65,12 +65,12 @@ int chat_getserver()
 	return ret;
 }
 
-char *chat_getusername()
+char *chat_getusername(void)
 {
 	return chat_input();
 }
 
-char *chat_getpassword()
+char *chat_getpassword(void)
 {
 	return chat_input();
 }
@@ -108,7 +108,7 @@ static char **chat_list(char *buffer)
 	return list;
 }
 
-void chat_loop()
+void chat_loop(void)
 {
 	char buffer[BUFSIZE];
 	int ret;
