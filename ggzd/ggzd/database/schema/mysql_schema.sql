@@ -16,7 +16,6 @@ CREATE TABLE `users` (
 
 CREATE TABLE `userinfo` (
 	`id` int(11) NOT NULL auto_increment,
-	`handle` varchar(256) NOT NULL,
 	`photo` text NOT NULL,
 	`gender` text NOT NULL,
 	`country` text NOT NULL,

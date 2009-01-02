@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10780 2009-01-02 13:02:26Z oojah $
+ * $Id: ggzdb_pgsql.c 10804 2009-01-02 23:11:48Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -662,8 +662,10 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 
 	snprintf(query, sizeof(query),
 		 "SELECT "
-		 "id, photo "
-		 "FROM userinfo WHERE handle = '%s'",
+		 "`id`, `photo` "
+		 "FROM `userinfo` "
+		 "JOIN `users` ON `users`.`id`=`userinfo`.`user_id` "
+		 "WHERE handle = '%s'",
 		 handle_quoted);
 
 	free(handle_quoted);

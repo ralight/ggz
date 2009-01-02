@@ -18,7 +18,7 @@ CREATE TABLE "users" (
 
 CREATE TABLE "userinfo" (
 	"id" serial NOT NULL,
-	"handle" varchar(256) NOT NULL,
+	"user_id" integer NOT NULL,
 	"photo" text NOT NULL,
 	"gender" text NOT NULL,
 	"country" text NOT NULL,

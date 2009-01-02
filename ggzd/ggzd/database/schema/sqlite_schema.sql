@@ -19,7 +19,7 @@ CREATE TABLE `control` (
 
 CREATE TABLE `userinfo` (
 	`id` INTEGER PRIMARY KEY AUTOINCREMENT,
-	`handle` VARCHAR(256) NOT NULL,
+	`user_id` INTEGER,
 	`photo` TEXT NOT NULL,
 	`gender` TEXT NOT NULL,
 	`country` TEXT NOT NULL,

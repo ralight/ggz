@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10769 2009-01-02 00:39:52Z oojah $
+ * $Id: ggzdb_mysql.c 10804 2009-01-02 23:11:48Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -753,7 +753,9 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 	snprintf(query, sizeof(query),
 		 "SELECT "
 		 "`id`,`photo` "
-		 "FROM `userinfo` WHERE `handle`='%s'",
+		 "FROM `userinfo` "
+		 "JOIN `users` ON `users`.`id`=`userinfo`.`user_id` "
+		 "WHERE `users`handle`='%s'",
 		 handle_quoted);
 
 	free(handle_quoted);
