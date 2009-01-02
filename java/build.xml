@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  - This Ant build file is designed to work Ant 1.6.x. 
+  - This Ant build file is designed to work Ant 1.6.x.
   -->
 <project name="ggz-java" default="rebuild-distribution" basedir=".">
 	<!-- set global properties for this build -->
@@ -18,8 +18,8 @@
 		<!-- Output the Ant library dir so we know where to put the SVN JAR files. -->
 		<echo message="ant.library.dir=${ant.library.dir}" />
 
-		<!-- Load the svn task. This assumes that the svn jar files are on the Ant 
-		     classpath. Usually they will be located in ANT_HOME/lib. You can find 
+		<!-- Load the svn task. This assumes that the svn jar files are on the Ant
+		     classpath. Usually they will be located in ANT_HOME/lib. You can find
 		     the latest version of svnant on http://subclipse.tigris.org -->
 		<taskdef resource="svntask.properties" />
 
@@ -46,7 +46,7 @@
 		<!-- Read current values. -->
 		<property name="version.major" value="0" />
 		<property name="version.minor" value="99" />
-		<property name="version.revision" value="5pre" />
+		<property name="version.revision" value="5" />
 		<property name="version.string" value="${version.major}.${version.minor}.${version.revision}.${build.number}" />
 
 		<!-- Include SVN revision in JAR file name to avoid cache problems. -->

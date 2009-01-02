@@ -2,7 +2,7 @@
 # Makefile.in for use with autoconf (but not automake)
 
 # Release version number
-version = snapshot-0.99.5pre
+version = snapshot-0.99.5
 
 # prefix: All-purpose prefix (/usr)
 prefix = @prefix@

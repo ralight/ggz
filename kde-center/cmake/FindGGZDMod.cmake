@@ -1,7 +1,7 @@
 SET(GGZDMOD_FOUND FALSE)
 
 FIND_PROGRAM(PKGCONFIG_EXECUTABLE NAMES pkg-config PATHS /usr/bin/ /usr/local/bin)
-EXEC_PROGRAM(${PKGCONFIG_EXECUTABLE} ARGS 'ggzdmod >= snapshot-0.99.4' RETURN_VALUE _return)
+EXEC_PROGRAM(${PKGCONFIG_EXECUTABLE} ARGS 'ggzdmod >= snapshot-0.99.5' RETURN_VALUE _return)
 if(_return STREQUAL "0")
   SET(GGZDMOD_FOUND TRUE)
 endif(_return STREQUAL "0")

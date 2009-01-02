@@ -1,7 +1,7 @@
 # Configuration for the GGZ server
 # ================================
 
-AC_INIT([GGZ server], [snapshot-0.99.5pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
+AC_INIT([GGZ server], [snapshot-0.99.5], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -54,7 +54,7 @@ AC_ARG_WITH([tcp-wrappers],
 AC_GGZ_INIT(defaults, export)
 AC_GGZ_INTL
 AC_GGZ_LIBGGZ
-AC_GGZ_VERSION(0, 99, 4)
+AC_GGZ_VERSION(0, 99, 5)
 
 # Check for header files
 # ======================

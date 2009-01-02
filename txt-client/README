@@ -1,18 +1,18 @@
 ===============================================================
-The GGZ Gaming Zone - Console (Text) Frontend - Snapshot 0.99.4
+The GGZ Gaming Zone - Console (Text) Frontend - Snapshot 0.99.5
 ===============================================================
 
 This core client is not only useful for environments where no
 graphical desktop is available, but does also serve as a reference
 implementation of the ggzcore functionality.
- 
+
 Please read 'INSTALL' if you aren't experienced with the build yet.
 For an overall view on the GGZ setup procedures, please consult the
 file README.GGZ.
- 
+
 If you encounter any bugs, please send them to the mailing list,
 	<ggz-dev@mail.ggzgamingzone.org>.
 Or use the bug tracker at http://bugs.ggzgamingzone.org/.
- 
+
 Have fun!
     - The GGZ Gaming Zone Development Team
