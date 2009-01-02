@@ -1,4 +1,1474 @@
 ------------------------------------------------------------------------
+r10694 | josef | 2008-12-30 10:14:16 +0100 (Di, 30. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/CMakeLists.txt
+   M /trunk/kde-center/cmake/GGZ.cmake
+   M /trunk/kde-center/kryds/CMakeLists.txt
+   A /trunk/kde-center/kryds/kryds.room (von /trunk/ggzd/game_servers/tictactoe/tictactoe.room:10619)
+
+- merge improvements from C++ starterpack, so finally Kryds gets registered properly with ggzd
+
+
+------------------------------------------------------------------------
+r10692 | josef | 2008-12-30 09:22:03 +0100 (Di, 30. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzdmod/CMakeLists.txt
+
+- we need to install the export header
+
+
+------------------------------------------------------------------------
+r10630 | josef | 2008-12-23 19:12:00 +0100 (Di, 23. Dez 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/ggzcore.h
+   M /trunk/base-libs/ggzcore/net.h
+   M /trunk/base-libs/ggzcore/netxml.c
+   M /trunk/base-libs/ggzcore/server.c
+   M /trunk/grubby/grubby/src/net.c
+   M /trunk/gtk-client/ggz-gtk/login.c
+   M /trunk/kde-center/kggzcore/coreclient.cpp
+   M /trunk/kde-center/kggzcore/coreclientbase.cpp
+   M /trunk/kde-center/kggzcore/coreclientbase.h
+   M /trunk/playground/agrue/agrue/net.c
+   M /trunk/playground/jabber/ggzd-jabberproxy.cc
+   M /trunk/python/pyggzcore/src/pyggzcoresimple_init.c
+   M /trunk/python/pyggzcore/src/test.py
+   M /trunk/python/t-rex/t-rex
+   M /trunk/python/vibora/vibora
+   M /trunk/txt-client/ggz-txt/server.c
+   M /trunk/utils/cmd-client/main.c
+   M /trunk/utils/ggz-wrapper/server.c
+   M /trunk/utils/telggz/net.c
+
+- turn boolean TLS option into an enumerated security policy
+- this turns on "use if available" by default for all clients
+- Vencedor and ggz-txt can also require encryption, while other clients cannot
+
+
+------------------------------------------------------------------------
+r10625 | josef | 2008-12-22 21:21:31 +0100 (Mo, 22. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/vencedor/CMakeLists.txt
+
+- this source file is now generated at build time
+
+
+------------------------------------------------------------------------
+r10619 | josef | 2008-12-06 10:03:12 +0100 (Sa, 06. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   A /trunk/kde-center/kggzlib/icons/server_local.png
+   A /trunk/kde-center/kggzlib/icons/server_online.png
+   M /trunk/kde-center/kggzlib/playerlist.cpp
+   D /trunk/kde-center/kggzlib/players/admin.png
+   D /trunk/kde-center/kggzlib/players/guest.png
+   A /trunk/kde-center/kggzlib/players/ox-admin.png
+   A /trunk/kde-center/kggzlib/players/ox-guest.png
+   A /trunk/kde-center/kggzlib/players/ox-player.png
+   D /trunk/kde-center/kggzlib/players/player.png
+   M /trunk/kde-center/kggzlib/tableconfiguration.cpp
+   M /trunk/kde-center/kggzlib/tablelist.cpp
+
+- first new Oxygen icons from HalfLeft (Sean Wilson <suseux@googlemail...>)
+
+
+------------------------------------------------------------------------
+r10617 | josef | 2008-11-30 21:23:08 +0100 (So, 30. Nov 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/cmake/FindLokarest.cmake
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+
+- fix bug reported by smajewsky: never refer to $LOKAREST_* if Lokarest was not found during the configuration
+
+
+------------------------------------------------------------------------
+r10616 | josef | 2008-11-30 20:09:23 +0100 (So, 30. Nov 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+   M /trunk/kde-center/kggzlib/connectiondialog.h
+   M /trunk/kde-center/kggzlib/kggzcorelayer.cpp
+   M /trunk/kde-center/kggzlib/kggzcorelayer.h
+   M /trunk/kde-center/vencedor/vencedor.cpp
+   M /trunk/kde-center/vencedor/vencedor.h
+
+- handover of ggzcore object after connection has been finished
+
+
+------------------------------------------------------------------------
+r10615 | josef | 2008-11-30 19:56:47 +0100 (So, 30. Nov 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzcore/kggzcore_export.h
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+   M /trunk/kde-center/kggzlib/connectiondialog.h
+   M /trunk/kde-center/kggzlib/kggzcorelayer.cpp
+   M /trunk/kde-center/kggzlib/kggzcorelayer.h
+   M /trunk/kde-center/kggzlib/kggzlib_export.h
+   M /trunk/kde-center/vencedor/vencedor.cpp
+
+- avoid auto-launch of game in the case of core clients
+- and of course: more useless whitespace removal
+
+
+------------------------------------------------------------------------
+r10614 | josef | 2008-11-30 19:21:49 +0100 (So, 30. Nov 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/README
+
+- mention vencedor now that it is part of this package
+
+
+------------------------------------------------------------------------
+r10613 | josef | 2008-11-30 19:20:34 +0100 (So, 30. Nov 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/vencedor/CMakeLists.txt
+   D /trunk/kde-center/vencedor/prefs.cpp
+   D /trunk/kde-center/vencedor/prefs.h
+   A /trunk/kde-center/vencedor/prefs.kcfg
+   A /trunk/kde-center/vencedor/prefs.kcfgc
+   M /trunk/kde-center/vencedor/runvencedor.sh
+   M /trunk/kde-center/vencedor/vencedor.cpp
+
+- switch preferences system over to auto-generated preferences file
+
+
+------------------------------------------------------------------------
+r10612 | josef | 2008-11-30 18:48:35 +0100 (So, 30. Nov 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/CMakeLists.txt
+   A /trunk/kde-center/vencedor/CMakeLists.txt
+   A /trunk/kde-center/vencedor/vencedor.desktop
+   D /trunk/kde-center/vencedor/vencedor.pro
+
+- switch to CMake
+- include dummy desktop file from kggz, needs new icon at least
+
+
+------------------------------------------------------------------------
+r10611 | josef | 2008-11-30 18:42:15 +0100 (So, 30. Nov 2008) | 3 lines
+Geänderte Pfade:
+   A /trunk/kde-center/vencedor (von /trunk/playground/ggz-kde4/kggz-ng/vencedor:10566)
+   R /trunk/kde-center/vencedor/main.cpp (von /trunk/playground/ggz-kde4/kggz-ng/vencedor/main.cpp:10582)
+   A /trunk/kde-center/vencedor/prefs.cpp (von /trunk/playground/ggz-kde4/kggz-ng/vencedor/prefs.cpp:10584)
+   A /trunk/kde-center/vencedor/prefs.h (von /trunk/playground/ggz-kde4/kggz-ng/vencedor/prefs.h:10584)
+   R /trunk/kde-center/vencedor/runvencedor.sh (von /trunk/playground/ggz-kde4/kggz-ng/vencedor/runvencedor.sh:10582)
+   R /trunk/kde-center/vencedor/vencedor.cpp (von /trunk/playground/ggz-kde4/kggz-ng/vencedor/vencedor.cpp:10596)
+   R /trunk/kde-center/vencedor/vencedor.h (von /trunk/playground/ggz-kde4/kggz-ng/vencedor/vencedor.h:10584)
+   R /trunk/kde-center/vencedor/vencedor.pro (von /trunk/playground/ggz-kde4/kggz-ng/vencedor/vencedor.pro:10583)
+   D /trunk/playground/ggz-kde4/kggz-ng/vencedor
+
+- move new core client into client package to stimulate its development
+
+
+------------------------------------------------------------------------
+r10586 | josef | 2008-10-30 20:30:22 +0100 (Do, 30. Okt 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/ktictactux.cpp
+   M /trunk/kde-center/ktictactux/ktictactux.h
+
+- fix bug reported by Terrell Kelley: recognise human as winner even if no empty squares are left
+- transform boolean variable m_seewinner into an actual boolean type
+
+
+------------------------------------------------------------------------
+r10581 | josef | 2008-10-26 16:29:47 +0100 (So, 26. Okt 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/CMakeLists.txt
+   A /trunk/kde-center/config.h.cmake
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   M /trunk/kde-center/kggzlib/playerlist.cpp
+
+- do not enable sync functionality if lokarest is not found; what remains is a purely local buddy list just like the old KGGZ had
+
+
+------------------------------------------------------------------------
+r10580 | josef | 2008-10-26 13:34:07 +0100 (So, 26. Okt 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/playerlist.cpp
+
+- the library has its own include directory
+
+
+------------------------------------------------------------------------
+r10579 | josef | 2008-10-26 13:22:05 +0100 (So, 26. Okt 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   M /trunk/kde-center/kggzlib/README.kggzlib
+   M /trunk/kde-center/kggzlib/playerlist.cpp
+   M /trunk/kde-center/kggzlib/playerlist.h
+   D /trunk/kde-center/kggzlib/wsinteractor.cpp
+   D /trunk/kde-center/kggzlib/wsinteractor.h
+
+- remove old WSInterActor class in favour of new lightweight Lokarest framework
+
+
+------------------------------------------------------------------------
+r10578 | josef | 2008-10-26 10:24:23 +0100 (So, 26. Okt 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/CMakeLists.txt
+   A /trunk/kde-center/cmake/FindLokarest.cmake
+
+- addition of cmake macro file to find the lokarest library, needed for Vencedor's synchronisation capabilities
+
+
+------------------------------------------------------------------------
+r10576 | josef | 2008-10-25 21:05:03 +0200 (Sa, 25. Okt 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/configure.ac
+   M /trunk/community/Makefile
+   M /trunk/docs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/java/build.xml
+   M /trunk/kde-center/cmake/GGZKDECenterPackage.cmake
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- bump to snapshot-0.99.5pre already
+
+
+------------------------------------------------------------------------
+r10566 | josef | 2008-09-27 22:28:47 +0200 (Sa, 27. Sep 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/roomlist.cpp
+   M /trunk/kde-center/kggzlib/roomlist.h
+   M /trunk/playground/ggz-kde4/kggz-ng/vencedor/vencedor.cpp
+   M /trunk/playground/ggz-kde4/kggz-ng/vencedor/vencedor.h
+
+- initiate room changes when double-clicking on a room
+- adapt the game launch button to whether a gametype is active for the current room
+- add still empty method to send out chat
+
+
+------------------------------------------------------------------------
+r10562 | josef | 2008-08-31 14:19:41 +0200 (So, 31. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/playerlist.cpp
+   M /trunk/kde-center/kggzlib/playerlist.h
+   M /trunk/playground/ggz-kde4/kggzlib-tests/playerlist/main.cpp
+
+- promote server argument to profile so we can get the user's identity
+
+
+------------------------------------------------------------------------
+r10559 | josef | 2008-08-31 09:57:18 +0200 (So, 31. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   M /trunk/kde-center/kggzlib/README.kggzlib
+   M /trunk/kde-center/kggzlib/ggzserver.cpp
+   M /trunk/kde-center/kggzlib/ggzserver.h
+   M /trunk/kde-center/kggzlib/playerlist.cpp
+   M /trunk/kde-center/kggzlib/playerlist.h
+   A /trunk/kde-center/kggzlib/wsinteractor.cpp
+   A /trunk/kde-center/kggzlib/wsinteractor.h
+
+- start of integration with GGZ Community API: synchronised removals and additions of buddies and foes
+
+
+------------------------------------------------------------------------
+r10557 | josef | 2008-08-31 09:03:31 +0200 (So, 31. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/playerlist.cpp
+   M /trunk/kde-center/kggzlib/playerlist.h
+
+- make adding and removing buddies and foes work
+- additional menu entry to visit a player's profile on GGZ Community through the browser
+
+
+------------------------------------------------------------------------
+r10552 | josef | 2008-08-30 19:25:48 +0200 (Sa, 30. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/playerlist.cpp
+   M /trunk/kde-center/kggzlib/roomlist.cpp
+   M /trunk/playground/ggz-kde4/kggzlib-tests/playerlist/main.cpp
+   M /trunk/playground/ggz-kde4/kggzlib-tests/playerlist/playerlist.pro
+   M /trunk/playground/ggz-kde4/kggzlib-tests/roomlist/main.cpp
+   M /trunk/playground/ggz-kde4/kggzlib-tests/roomlist/roomlist.pro
+
+- move fake item creation outside of the library into the test apps
+
+
+------------------------------------------------------------------------
+r10551 | josef | 2008-08-30 19:04:49 +0200 (Sa, 30. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/kggzcorelayer.cpp
+   M /trunk/kde-center/plasma-kggz/plasma-kggz.cpp
+
+- fix plasma-kggz compilation
+
+
+------------------------------------------------------------------------
+r10529 | josef | 2008-08-28 21:49:15 +0200 (Do, 28. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/tableconfiguration.cpp
+   M /trunk/kde-center/kggzlib/tablelist.cpp
+
+- make Helg and users happy by using less technical naming
+
+
+------------------------------------------------------------------------
+r10523 | josef | 2008-08-24 22:01:40 +0200 (So, 24. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/tableconfiguration.cpp
+   M /trunk/kde-center/kggzlib/tableconfiguration.h
+   M /trunk/kde-center/kggzlib/tabledialog.cpp
+   M /trunk/kde-center/kggzlib/tablelist.cpp
+   M /trunk/kde-center/kggzlib/util.cpp
+   M /trunk/kde-center/kggzlib/util.h
+
+- display current seat configuration graphically with cute little icons
+
+
+------------------------------------------------------------------------
+r10522 | josef | 2008-08-24 21:34:41 +0200 (So, 24. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+   M /trunk/kde-center/kggzlib/kggzcorelayer.cpp
+   A /trunk/kde-center/kggzlib/kggzlib.rc
+   M /trunk/kde-center/kggzlib/tabledialog.cpp
+   M /trunk/kde-center/kggzlib/tabledialog.h
+
+- add pre-configured table configuration profiles
+- use the table configuration profile dialogue instead of just calling the configuration editor in the connection dialogue
+
+
+------------------------------------------------------------------------
+r10521 | josef | 2008-08-24 19:48:23 +0200 (So, 24. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/kggzcorelayer.cpp
+   M /trunk/kde-center/kggzlib/tabledialog.cpp
+   M /trunk/kde-center/kggzlib/tabledialog.h
+   M /trunk/kde-center/kggzlib/tablelist.cpp
+   M /trunk/kde-center/kggzlib/tablelist.h
+
+- further work on the table configuration list widget, making use of the simplified value-based kggzcore classes
+
+
+------------------------------------------------------------------------
+r10520 | josef | 2008-08-24 19:46:51 +0200 (So, 24. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzcore/player.cpp
+   M /trunk/kde-center/kggzcore/player.h
+   M /trunk/kde-center/kggzcore/room.cpp
+   M /trunk/kde-center/kggzcore/room.h
+   M /trunk/kde-center/kggzcore/roombase.cpp
+   M /trunk/kde-center/kggzcore/roombase.h
+   M /trunk/kde-center/kggzcore/table.cpp
+   M /trunk/kde-center/kggzcore/table.h
+
+- transform player and table classes from pointer-based to value-based ones
+
+
+------------------------------------------------------------------------
+r10518 | josef | 2008-08-24 14:00:08 +0200 (So, 24. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzcore/CMakeLists.txt
+   M /trunk/kde-center/kggzcore/gametype.cpp
+   M /trunk/kde-center/kggzcore/gametype.h
+   M /trunk/kde-center/kggzlib/tableconfiguration.cpp
+   M /trunk/kde-center/kggzlib/tabledialog.cpp
+   M /trunk/kde-center/kggzlib/tabledialog.h
+
+- support for selected bots in the table configuration dialogue
+
+
+------------------------------------------------------------------------
+r10516 | josef | 2008-08-24 13:30:11 +0200 (So, 24. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   M /trunk/kde-center/kggzlib/README.kggzlib
+   A /trunk/kde-center/kggzlib/tabledialog.cpp
+   A /trunk/kde-center/kggzlib/tabledialog.h
+   A /trunk/kde-center/kggzlib/tablelist.cpp
+   A /trunk/kde-center/kggzlib/tablelist.h
+
+- add classes for selecting the table configuration profiles, which can in turn invoke the configuration editor
+
+
+------------------------------------------------------------------------
+r10507 | josef | 2008-08-15 16:55:24 +0200 (Fr, 15. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   A /trunk/kde-center/kggzlib/kggzaction.cpp
+   A /trunk/kde-center/kggzlib/kggzaction.h
+
+- first try for a standard action, to be used in all games which use kxmlgui
+
+
+------------------------------------------------------------------------
+r10505 | josef | 2008-08-15 15:18:23 +0200 (Fr, 15. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+
+- do not add the first seat since it's always included by default anyway
+
+
+------------------------------------------------------------------------
+r10504 | josef | 2008-08-15 14:54:43 +0200 (Fr, 15. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/TODO
+
+- yet another todo item
+
+
+------------------------------------------------------------------------
+r10503 | josef | 2008-08-15 14:48:51 +0200 (Fr, 15. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+   M /trunk/kde-center/kggzlib/connectiondialog.h
+
+- convert the table configuration dialogue settings to a kggzcore seat configuration
+
+
+------------------------------------------------------------------------
+r10502 | josef | 2008-08-15 14:47:50 +0200 (Fr, 15. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+
+- replace manual configuration with kggz-internal TableConfiguration dialogue
+
+
+------------------------------------------------------------------------
+r10501 | josef | 2008-08-15 14:38:00 +0200 (Fr, 15. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/tableconfiguration.cpp
+   M /trunk/kde-center/kggzlib/tableconfiguration.h
+
+- further improvements to make it nearly complete
+
+
+------------------------------------------------------------------------
+r10499 | josef | 2008-08-15 13:43:32 +0200 (Fr, 15. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+   A /trunk/kde-center/kggzlib/tableconfiguration.cpp
+   A /trunk/kde-center/kggzlib/tableconfiguration.h
+
+- first rough version of a Qt 4 port of the old KGGZ table configuration dialogue
+
+
+------------------------------------------------------------------------
+r10496 | josef | 2008-08-13 19:03:03 +0200 (Mi, 13. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzcore/CMakeLists.txt
+   A /trunk/kde-center/kggzcore/gametype.cpp
+   A /trunk/kde-center/kggzcore/gametype.h
+   M /trunk/kde-center/kggzcore/room.cpp
+   M /trunk/kde-center/kggzcore/room.h
+   M /trunk/kde-center/kggzlib/kggzcorelayer.cpp
+
+- addition of a new C++ class to represent game types, this will be needed for the new table configuration dialogue
+
+
+------------------------------------------------------------------------
+r10492 | josef | 2008-08-13 14:07:20 +0200 (Mi, 13. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/plasma-kggz/plasma-kggz.cpp
+
+- always use utility class to load profiles
+- convert between kggzcore and kggzlib login type definitions
+
+
+------------------------------------------------------------------------
+r10490 | josef | 2008-08-13 11:52:00 +0200 (Mi, 13. Aug 2008) | 7 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/ktictactux.cpp
+   M /trunk/kde-center/ktictactux/ktictactuxproto.cpp
+
+- quick hack: in case the game servers is faster than ggzmod assigning the seat number, assume that we're in seat zero
+
+The real fix is to not let the game client proceed to some sort of PLAYING state (i.e. accepting messages from the game server)
+until it has received full information about all players, including itself. Alternatively, it should be smart about the
+asynchronous arrivals of this information.
+
+
+------------------------------------------------------------------------
+r10489 | josef | 2008-08-13 11:48:14 +0200 (Mi, 13. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+
+- do not bind the object to its parent dialogue since it would go to hell with it and disconnect from ggzcore, which is not what we want
+
+
+------------------------------------------------------------------------
+r10488 | josef | 2008-08-13 11:07:12 +0200 (Mi, 13. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+
+- the protocol name doesn't have dashes in it
+- somewhat bigger default window size since some styles require more space
+
+
+------------------------------------------------------------------------
+r10487 | josef | 2008-08-13 11:05:43 +0200 (Mi, 13. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzcore/coreclient.cpp
+   M /trunk/kde-center/kggzcore/error.h
+
+- introduce a generic error code for connection errors and such which are not under the control of ggzd
+
+
+------------------------------------------------------------------------
+r10486 | josef | 2008-08-13 11:02:14 +0200 (Mi, 13. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+   M /trunk/kde-center/kggzlib/connectiondialog.h
+   M /trunk/kde-center/kggzlib/kggzcorelayer.cpp
+   M /trunk/kde-center/kggzlib/kggzcorelayer.h
+
+- react on errors from kggzcore
+
+
+------------------------------------------------------------------------
+r10485 | josef | 2008-08-13 10:29:20 +0200 (Mi, 13. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+
+- no double exec()
+
+
+------------------------------------------------------------------------
+r10484 | josef | 2008-08-13 09:52:31 +0200 (Mi, 13. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+   M /trunk/kde-center/ktictactux/ktictactuxwin.h
+
+- adapt KTicTacTux to improved connection dialogue API
+
+
+------------------------------------------------------------------------
+r10482 | josef | 2008-08-13 09:49:41 +0200 (Mi, 13. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/TODO
+
+- more TODO items
+
+
+------------------------------------------------------------------------
+r10481 | josef | 2008-08-12 21:53:50 +0200 (Di, 12. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+   M /trunk/kde-center/kggzlib/connectiondialog.h
+
+- move most of the kggzcorelayer handling into the dialogue
+- this somehow breaks the clean separation between dialogues and functionality, but it is much nicer for the user
+
+
+------------------------------------------------------------------------
+r10480 | josef | 2008-08-12 21:16:35 +0200 (Di, 12. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/ktictactux.cpp
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+   M /trunk/kde-center/ktictactux/proto.cpp
+
+- better (and finally complete) handling of game over
+
+
+------------------------------------------------------------------------
+r10476 | josef | 2008-08-12 19:30:16 +0200 (Di, 12. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/ktictactux.cpp
+   M /trunk/kde-center/ktictactux/module.dsc
+
+- more userfriendly feedback on network errors
+- some reformatting
+
+
+------------------------------------------------------------------------
+r10470 | josef | 2008-08-12 17:18:52 +0200 (Di, 12. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/ktictactux.cpp
+   M /trunk/kde-center/ktictactux/ktictactux.h
+   M /trunk/kde-center/ktictactux/ktictactuxproto.cpp
+   M /trunk/kde-center/ktictactux/ktictactuxproto.h
+   M /trunk/kde-center/ktictactux/proto.cpp
+
+- several small fixes but it still doesn't really work
+
+
+------------------------------------------------------------------------
+r10469 | josef | 2008-08-12 16:54:32 +0200 (Di, 12. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/proto.cpp
+
+- regenerate protocol with latest ggzcomm fix
+
+
+------------------------------------------------------------------------
+r10467 | josef | 2008-08-12 16:46:06 +0200 (Di, 12. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/CMakeLists.txt
+   M /trunk/kde-center/ktictactux/ktictactux.cpp
+   M /trunk/kde-center/ktictactux/ktictactux.h
+   M /trunk/kde-center/ktictactux/ktictactuxproto.cpp
+   M /trunk/kde-center/ktictactux/ktictactuxproto.h
+   A /trunk/kde-center/ktictactux/proto.cpp
+   A /trunk/kde-center/ktictactux/proto.h
+
+- experimental conversion to auto-generated network protocol using KGGZPacket
+
+
+------------------------------------------------------------------------
+r10464 | josef | 2008-08-11 20:36:15 +0200 (Mo, 11. Aug 2008) | 3 lines
+Geänderte Pfade:
+   A /trunk/kde-center/TODO
+
+- what still needs to be done
+
+
+------------------------------------------------------------------------
+r10462 | josef | 2008-08-11 20:16:10 +0200 (Mo, 11. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+   M /trunk/kde-center/kggzlib/connectionprofiles.cpp
+   M /trunk/kde-center/kggzlib/serverselector.cpp
+   M /trunk/kde-center/kggzlib/serverselector.h
+
+- replace custom temporary metaserver widget with new cool serverlist widget which shall be used everywhere for server and profile lists
+- add infinite progressbar to metaserver dialogue
+
+
+------------------------------------------------------------------------
+r10461 | josef | 2008-08-11 19:13:12 +0200 (Mo, 11. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/CMakeLists.txt
+   M /trunk/kde-center/cmake/FindGGZDMod.cmake
+
+- improved display of optional dependencies
+
+
+------------------------------------------------------------------------
+r10460 | josef | 2008-08-11 18:48:33 +0200 (Mo, 11. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/CMakeLists.txt
+
+- make ggzdmod dependency optional
+
+
+------------------------------------------------------------------------
+r10459 | josef | 2008-08-11 18:21:31 +0200 (Mo, 11. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/connectionprofiles.cpp
+   M /trunk/kde-center/kggzlib/connectionprofiles.h
+   M /trunk/kde-center/kggzlib/serverlist.cpp
+   M /trunk/kde-center/kggzlib/serverlist.h
+
+- manual addition and removal of GGZ servers is now possible, in case someone doesn't like the fine selection offered by the GGZ metaserver
+
+
+------------------------------------------------------------------------
+r10457 | josef | 2008-08-10 18:58:30 +0200 (So, 10. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   M /trunk/kde-center/kggzlib/configwidget.h
+   M /trunk/kde-center/kggzlib/connectiondialog.h
+   M /trunk/kde-center/kggzlib/connectionprofiles.h
+   M /trunk/kde-center/kggzlib/ggzprofile.h
+   M /trunk/kde-center/kggzlib/ggzserver.h
+   M /trunk/kde-center/kggzlib/kggzcorelayer.h
+   A /trunk/kde-center/kggzlib/kggzlib_export.h
+   M /trunk/kde-center/kggzlib/player.h
+   M /trunk/kde-center/kggzlib/playerlist.h
+   M /trunk/kde-center/kggzlib/qasyncpixmap.h
+   M /trunk/kde-center/kggzlib/qfilecache.h
+   M /trunk/kde-center/kggzlib/qrecursivesortfilterproxymodel.h
+   M /trunk/kde-center/kggzlib/room.h
+   M /trunk/kde-center/kggzlib/roomdelegate.h
+   M /trunk/kde-center/kggzlib/roomlist.h
+   M /trunk/kde-center/kggzlib/roomselector.h
+   M /trunk/kde-center/kggzlib/roomtreeview.h
+   M /trunk/kde-center/kggzlib/serverlist.h
+   M /trunk/kde-center/kggzlib/serverselector.h
+   M /trunk/kde-center/kggzlib/util.h
+   M /trunk/kde-center/ktictactux/CMakeLists.txt
+   M /trunk/kde-center/plasma-kggz/CMakeLists.txt
+
+- turn kggzlib into a shared library because it will actually be useful to many games
+
+
+------------------------------------------------------------------------
+r10455 | josef | 2008-08-10 16:16:04 +0200 (So, 10. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzcore/coreclient.cpp
+   M /trunk/kde-center/kggzcore/coreclient.h
+   M /trunk/kde-center/kggzcore/coreclientbase.cpp
+   M /trunk/kde-center/kggzcore/coreclientbase.h
+   M /trunk/kde-center/kggzcore/room.cpp
+   M /trunk/kde-center/kggzcore/room.h
+   M /trunk/kde-center/kggzcore/roombase.cpp
+   M /trunk/kde-center/kggzlib/kggzcorelayer.cpp
+   M /trunk/kde-center/kggzlib/kggzcorelayer.h
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+
+- do not hardcode room; instead infer it from the protocol version and engine
+
+
+------------------------------------------------------------------------
+r10454 | josef | 2008-08-10 15:12:22 +0200 (So, 10. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/kggzcorelayer.cpp
+   M /trunk/kde-center/kggzlib/kggzcorelayer.h
+
+- reimplement convenient view of table configurations, but as a text-only view (to be overridden by graphical clients)
+
+
+------------------------------------------------------------------------
+r10453 | josef | 2008-08-10 13:36:42 +0200 (So, 10. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzcore/player.cpp
+   M /trunk/kde-center/kggzcore/player.h
+   M /trunk/kde-center/kggzcore/room.cpp
+   M /trunk/kde-center/kggzcore/room.h
+   M /trunk/kde-center/kggzlib/kggzcorelayer.cpp
+   M /trunk/kde-center/kggzlib/kggzcorelayer.h
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+
+- make table configurable from the (possibly embedded) core client
+
+
+------------------------------------------------------------------------
+r10452 | josef | 2008-08-10 12:50:54 +0200 (So, 10. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzcore/coreclientbase.cpp
+   M /trunk/kde-center/kggzcore/coreclientbase.h
+   M /trunk/kde-center/kggzcore/misc.cpp
+   M /trunk/kde-center/kggzcore/misc.h
+   M /trunk/kde-center/kggzcore/room.cpp
+   M /trunk/kde-center/kggzcore/room.h
+   M /trunk/kde-center/kggzcore/roombase.cpp
+   M /trunk/kde-center/kggzcore/roombase.h
+   M /trunk/kde-center/kggzlib/kggzcorelayer.cpp
+   M /trunk/kde-center/kggzlib/kggzcorelayer.h
+
+- implement game events and channel handling which is very difficult but apparently needed for embedded gaming
+
+
+------------------------------------------------------------------------
+r10451 | josef | 2008-08-10 10:43:06 +0200 (So, 10. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzcore/coreclientbase.cpp
+   M /trunk/kde-center/kggzcore/room.cpp
+   M /trunk/kde-center/kggzcore/room.h
+   M /trunk/kde-center/kggzcore/table.cpp
+   M /trunk/kde-center/kggzcore/table.h
+   M /trunk/kde-center/kggzlib/kggzcorelayer.cpp
+   M /trunk/kde-center/kggzlib/kggzcorelayer.h
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+   M /trunk/kde-center/ktictactux/ktictactuxwin.h
+
+- drive embedded core clients by implementing server-side table launch and client-side fake module launch
+
+
+------------------------------------------------------------------------
+r10450 | josef | 2008-08-08 15:00:44 +0200 (Fr, 08. Aug 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   M /trunk/kde-center/kggzlib/README.kggzlib
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+   A /trunk/kde-center/kggzlib/kggzcorelayer.cpp
+   A /trunk/kde-center/kggzlib/kggzcorelayer.h
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+   M /trunk/kde-center/ktictactux/ktictactuxwin.h
+
+- copy all kggzcore handlers in new class KGGZCoreLayer
+
+Ideally this could be a second base class, but only one QObject-using base class may be active at one time!
+
+
+------------------------------------------------------------------------
+r10449 | josef | 2008-08-08 14:40:25 +0200 (Fr, 08. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+   M /trunk/kde-center/kggzlib/connectiondialog.h
+   M /trunk/kde-center/kggzlib/roomselector.cpp
+   M /trunk/kde-center/kggzlib/serverselector.cpp
+   M /trunk/kde-center/plasma-kggz/plasma-kggz.cpp
+
+- adapt plasma applet to improved kggzlib API, saving 13 lines of code
+
+
+------------------------------------------------------------------------
+r10448 | josef | 2008-08-08 13:28:53 +0200 (Fr, 08. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   M /trunk/kde-center/kggzlib/README.kggzlib
+   M /trunk/kde-center/kggzlib/configwidget.cpp
+   M /trunk/kde-center/kggzlib/configwidget.h
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+   M /trunk/kde-center/kggzlib/connectiondialog.h
+   M /trunk/kde-center/kggzlib/connectionprofiles.cpp
+   M /trunk/kde-center/kggzlib/connectionprofiles.h
+   A /trunk/kde-center/kggzlib/ggzprofile.cpp
+   A /trunk/kde-center/kggzlib/ggzprofile.h
+   M /trunk/kde-center/kggzlib/ggzserver.cpp
+   M /trunk/kde-center/kggzlib/ggzserver.h
+   M /trunk/kde-center/kggzlib/serverlist.cpp
+   M /trunk/kde-center/kggzlib/serverlist.h
+   A /trunk/kde-center/kggzlib/util.cpp
+   A /trunk/kde-center/kggzlib/util.h
+
+- major overhaul of the new connection dialogue to differentiate better between server and login profiles
+- all profiles are now persistent so the dialogue handling is finished and only the connection procedure needs to be tracked!
+
+
+------------------------------------------------------------------------
+r10447 | josef | 2008-08-08 13:27:40 +0200 (Fr, 08. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+
+- invoke the connection dialogue as a real modal dialogue instead of just displaying another window
+
+
+------------------------------------------------------------------------
+r10446 | josef | 2008-08-08 00:13:35 +0200 (Fr, 08. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+   M /trunk/kde-center/kggzlib/connectiondialog.h
+
+- make profile list persistent (but server list not yet)
+
+
+------------------------------------------------------------------------
+r10445 | josef | 2008-08-07 00:37:30 +0200 (Do, 07. Aug 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/configwidget.cpp
+   M /trunk/kde-center/kggzlib/configwidget.h
+   M /trunk/kde-center/kggzlib/connectionprofiles.cpp
+   M /trunk/kde-center/kggzlib/connectionprofiles.h
+   M /trunk/kde-center/kggzlib/serverlist.cpp
+   M /trunk/kde-center/kggzlib/serverlist.h
+
+- pass login type from profile configuration to the changed profile
+- add email and realname fields
+- depend enabled fields on chosen login type
+
+
+------------------------------------------------------------------------
+r10444 | josef | 2008-08-06 23:45:19 +0200 (Mi, 06. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   M /trunk/kde-center/kggzlib/configwidget.cpp
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+   M /trunk/kde-center/kggzlib/connectionprofiles.cpp
+   M /trunk/kde-center/kggzlib/connectionprofiles.h
+   A /trunk/kde-center/kggzlib/icons/ggzmetaserv.png (von /trunk/kde-center/plasma-kggz/ggzmetaserv.png:10426)
+   M /trunk/kde-center/kggzlib/serverlist.cpp
+   M /trunk/kde-center/kggzlib/serverlist.h
+   M /trunk/kde-center/kggzlib/serverselector.cpp
+   M /trunk/kde-center/plasma-kggz/CMakeLists.txt
+   D /trunk/kde-center/plasma-kggz/ggzmetaserv.png
+
+- move ggzmetaserv icon to kggzlib so all KGGZ apps can find it
+- more flexible model/view handling so now server profiles can be passed back to the application eventually
+
+
+------------------------------------------------------------------------
+r10442 | josef | 2008-08-05 22:57:58 +0200 (Di, 05. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+   M /trunk/kde-center/kggzlib/connectiondialog.h
+
+- small addition: pass the current server object (although not the profile yet) to the connection method so kggzcore gets at least activated
+
+
+------------------------------------------------------------------------
+r10441 | josef | 2008-08-05 22:34:52 +0200 (Di, 05. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+   M /trunk/kde-center/kggzlib/connectiondialog.h
+   M /trunk/kde-center/kggzlib/connectionprofiles.cpp
+   M /trunk/kde-center/kggzlib/connectionprofiles.h
+   M /trunk/kde-center/kggzlib/serverlist.cpp
+   M /trunk/kde-center/kggzlib/serverlist.h
+   M /trunk/kde-center/kggzlib/serverselector.cpp
+
+- introduce interaction and data passing between the dialogues
+- now the only missing part is saving/loading the configuration files
+
+
+------------------------------------------------------------------------
+r10440 | josef | 2008-08-05 19:32:51 +0200 (Di, 05. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   M /trunk/kde-center/kggzlib/README.kggzlib
+   A /trunk/kde-center/kggzlib/configwidget.cpp (von /trunk/kde-center/plasma-kggz/configwidget.cpp:10426)
+   A /trunk/kde-center/kggzlib/configwidget.h (von /trunk/kde-center/plasma-kggz/configwidget.h:10438)
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+   M /trunk/kde-center/kggzlib/connectiondialog.h
+   A /trunk/kde-center/kggzlib/connectionprofiles.cpp
+   A /trunk/kde-center/kggzlib/connectionprofiles.h
+   A /trunk/kde-center/kggzlib/roomselector.cpp (von /trunk/kde-center/plasma-kggz/roomselector.cpp:10426)
+   A /trunk/kde-center/kggzlib/roomselector.h (von /trunk/kde-center/plasma-kggz/roomselector.h:10438)
+   A /trunk/kde-center/kggzlib/serverlist.cpp
+   A /trunk/kde-center/kggzlib/serverlist.h
+   A /trunk/kde-center/kggzlib/serverselector.cpp (von /trunk/kde-center/plasma-kggz/serverselector.cpp:10426)
+   A /trunk/kde-center/kggzlib/serverselector.h (von /trunk/kde-center/plasma-kggz/serverselector.h:10438)
+   M /trunk/kde-center/plasma-kggz/CMakeLists.txt
+   D /trunk/kde-center/plasma-kggz/configwidget.cpp
+   D /trunk/kde-center/plasma-kggz/configwidget.h
+   M /trunk/kde-center/plasma-kggz/plasma-kggz.cpp
+   D /trunk/kde-center/plasma-kggz/roomselector.cpp
+   D /trunk/kde-center/plasma-kggz/roomselector.h
+   D /trunk/kde-center/plasma-kggz/serverselector.cpp
+   D /trunk/kde-center/plasma-kggz/serverselector.h
+
+- move more classes from Plasma-KGGZ into kggzlib
+- further work on the new 3-layer connection dialogue (profiles, local server list, list in metaserver)
+
+
+------------------------------------------------------------------------
+r10439 | josef | 2008-08-05 18:33:37 +0200 (Di, 05. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzcore/coreclient.cpp
+   M /trunk/kde-center/kggzcore/coreclient.h
+   M /trunk/kde-center/kggzcore/coreclientbase.cpp
+   M /trunk/kde-center/kggzcore/coreclientbase.h
+   M /trunk/kde-center/kggzlib/README.kggzlib
+   M /trunk/kde-center/ktictactux/CMakeLists.txt
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+   M /trunk/kde-center/ktictactux/ktictactuxwin.h
+
+- prepare kggzcore to be used in embedded mode
+- prepare ktictactux to use kggzcore in embedded mode
+
+
+------------------------------------------------------------------------
+r10438 | josef | 2008-08-03 23:02:33 +0200 (So, 03. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   M /trunk/kde-center/kggzlib/connectiondialog.cpp
+   M /trunk/kde-center/kggzlib/connectiondialog.h
+   A /trunk/kde-center/kggzlib/ggzserver.cpp (von /trunk/kde-center/plasma-kggz/ggzserver.cpp:10426)
+   A /trunk/kde-center/kggzlib/ggzserver.h (von /trunk/kde-center/plasma-kggz/ggzserver.h:10426)
+   M /trunk/kde-center/plasma-kggz/CMakeLists.txt
+   M /trunk/kde-center/plasma-kggz/configwidget.h
+   D /trunk/kde-center/plasma-kggz/ggzserver.cpp
+   D /trunk/kde-center/plasma-kggz/ggzserver.h
+   M /trunk/kde-center/plasma-kggz/roomselector.h
+   M /trunk/kde-center/plasma-kggz/serverselector.h
+   M /trunk/playground/ggz-kde4/kggzlib-tests/connection-dialog/main.cpp
+
+- make connection dialoge better accessible from the outside and remove internal server list
+- this requires sharing the GGZServer class so it moves from plasma-kggz to the almighty kggzlib
+
+
+------------------------------------------------------------------------
+r10436 | josef | 2008-08-03 17:10:54 +0200 (So, 03. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/roomdelegate.cpp
+   M /trunk/kde-center/kggzlib/roomlist.cpp
+   M /trunk/playground/ggz-kde4/roomlist/roomlist.pro
+
+- finish the move by loading pixmaps from correct places again
+- fix up remaining .pro file
+
+
+------------------------------------------------------------------------
+r10435 | josef | 2008-08-03 17:06:02 +0200 (So, 03. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   A /trunk/kde-center/kggzlib/README.kggzlib
+   A /trunk/kde-center/kggzlib/games (von /trunk/playground/ggz-kde4/roomlist/games:10428)
+   A /trunk/kde-center/kggzlib/icons (von /trunk/playground/ggz-kde4/roomlist/icons:10428)
+   A /trunk/kde-center/kggzlib/modelview.h (von /trunk/playground/ggz-kde4/roomlist/modelview.h:10428)
+   A /trunk/kde-center/kggzlib/room.cpp (von /trunk/playground/ggz-kde4/roomlist/room.cpp:10428)
+   A /trunk/kde-center/kggzlib/room.h (von /trunk/playground/ggz-kde4/roomlist/room.h:10428)
+   A /trunk/kde-center/kggzlib/roomdelegate.cpp (von /trunk/playground/ggz-kde4/roomlist/roomdelegate.cpp:10428)
+   A /trunk/kde-center/kggzlib/roomdelegate.h (von /trunk/playground/ggz-kde4/roomlist/roomdelegate.h:10428)
+   A /trunk/kde-center/kggzlib/roomlist.cpp (von /trunk/playground/ggz-kde4/roomlist/roomlist.cpp:10428)
+   A /trunk/kde-center/kggzlib/roomlist.h (von /trunk/playground/ggz-kde4/roomlist/roomlist.h:10428)
+   A /trunk/kde-center/kggzlib/roomtreeview.cpp (von /trunk/playground/ggz-kde4/roomlist/roomtreeview.cpp:10428)
+   A /trunk/kde-center/kggzlib/roomtreeview.h (von /trunk/playground/ggz-kde4/roomlist/roomtreeview.h:10428)
+   D /trunk/playground/ggz-kde4/roomlist/games
+   D /trunk/playground/ggz-kde4/roomlist/icons
+   D /trunk/playground/ggz-kde4/roomlist/modelview.h
+   D /trunk/playground/ggz-kde4/roomlist/room.cpp
+   D /trunk/playground/ggz-kde4/roomlist/room.h
+   D /trunk/playground/ggz-kde4/roomlist/roomdelegate.cpp
+   D /trunk/playground/ggz-kde4/roomlist/roomdelegate.h
+   D /trunk/playground/ggz-kde4/roomlist/roomlist.cpp
+   D /trunk/playground/ggz-kde4/roomlist/roomlist.h
+   D /trunk/playground/ggz-kde4/roomlist/roomtreeview.cpp
+   D /trunk/playground/ggz-kde4/roomlist/roomtreeview.h
+
+- last move to kggzlib: the room list
+
+
+------------------------------------------------------------------------
+r10434 | josef | 2008-08-03 16:51:43 +0200 (So, 03. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   M /trunk/kde-center/kggzlib/playerlist.cpp
+   M /trunk/kde-center/kggzlib/qfilecache.cpp
+   M /trunk/playground/ggz-kde4/README.ggz-kde4
+   M /trunk/playground/ggz-kde4/kggz-ng/vencedor/runvencedor.sh
+
+- complete move of playerlist by installing all player icons and reading them from the correct directory
+
+
+------------------------------------------------------------------------
+r10433 | josef | 2008-08-03 16:43:44 +0200 (So, 03. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   M /trunk/kde-center/kggzlib/qasyncpixmap.cpp
+   A /trunk/kde-center/kggzlib/qfilecache.cpp
+   A /trunk/kde-center/kggzlib/qfilecache.h
+
+- move caching functionality into a class on its own
+
+
+------------------------------------------------------------------------
+r10432 | josef | 2008-08-03 16:28:08 +0200 (So, 03. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/README
+   M /trunk/kde-center/kggzlib/CMakeLists.txt
+   A /trunk/kde-center/kggzlib/player.cpp (von /trunk/playground/ggz-kde4/playerlist/player.cpp:10428)
+   A /trunk/kde-center/kggzlib/player.h (von /trunk/playground/ggz-kde4/playerlist/player.h:10428)
+   A /trunk/kde-center/kggzlib/playerlist.cpp (von /trunk/playground/ggz-kde4/playerlist/playerlist.cpp:10428)
+   A /trunk/kde-center/kggzlib/playerlist.h (von /trunk/playground/ggz-kde4/playerlist/playerlist.h:10428)
+   A /trunk/kde-center/kggzlib/players (von /trunk/playground/ggz-kde4/playerlist/players:10428)
+   A /trunk/kde-center/kggzlib/qrecursivesortfilterproxymodel.cpp (von /trunk/playground/ggz-kde4/playerlist/qrecursivesortfilterproxymodel.cpp:10428)
+   A /trunk/kde-center/kggzlib/qrecursivesortfilterproxymodel.h (von /trunk/playground/ggz-kde4/playerlist/qrecursivesortfilterproxymodel.h:10428)
+   D /trunk/playground/ggz-kde4/playerlist/player.cpp
+   D /trunk/playground/ggz-kde4/playerlist/player.h
+   D /trunk/playground/ggz-kde4/playerlist/playerlist.cpp
+   D /trunk/playground/ggz-kde4/playerlist/playerlist.h
+   M /trunk/playground/ggz-kde4/playerlist/playerlist.pro
+   D /trunk/playground/ggz-kde4/playerlist/players
+   D /trunk/playground/ggz-kde4/playerlist/qrecursivesortfilterproxymodel.cpp
+   D /trunk/playground/ggz-kde4/playerlist/qrecursivesortfilterproxymodel.h
+
+- move more widgets: player list
+- this class then needs to allow remote player photos and use the on-disk pixmap cache
+
+
+------------------------------------------------------------------------
+r10431 | josef | 2008-08-03 16:18:43 +0200 (So, 03. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/CMakeLists.txt
+   A /trunk/kde-center/kggzlib
+   A /trunk/kde-center/kggzlib/CMakeLists.txt
+   A /trunk/kde-center/kggzlib/connectiondialog.cpp (von /trunk/playground/ggz-kde4/connection-dialog/connectiondialog.cpp:10430)
+   A /trunk/kde-center/kggzlib/connectiondialog.h (von /trunk/playground/ggz-kde4/connection-dialog/connectiondialog.h:10430)
+   A /trunk/kde-center/kggzlib/qasyncpixmap.cpp (von /trunk/playground/ggz-kde4/connection-dialog/qasyncpixmap.cpp:10430)
+   A /trunk/kde-center/kggzlib/qasyncpixmap.h (von /trunk/playground/ggz-kde4/connection-dialog/qasyncpixmap.h:10430)
+   D /trunk/playground/ggz-kde4/connection-dialog/connectiondialog.cpp
+   D /trunk/playground/ggz-kde4/connection-dialog/connectiondialog.h
+   M /trunk/playground/ggz-kde4/connection-dialog/connectiondialog.pro
+   D /trunk/playground/ggz-kde4/connection-dialog/qasyncpixmap.cpp
+   D /trunk/playground/ggz-kde4/connection-dialog/qasyncpixmap.h
+
+- start moving widgets into new static library, commence with connection dialogue
+
+
+------------------------------------------------------------------------
+r10427 | josef | 2008-08-03 10:57:53 +0200 (So, 03. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kggzcore/CMakeLists.txt
+
+- do not forget to install the symbol export header
+
+
+------------------------------------------------------------------------
+r10426 | josef | 2008-07-29 21:31:58 +0200 (Di, 29. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/CMakeLists.txt
+
+- add ggz-* prefix
+
+
+------------------------------------------------------------------------
+r10417 | josef | 2008-07-27 12:00:24 +0200 (So, 27. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kdots/kdots_win.cpp
+   M /trunk/kde-center/kdots/kdots_win.h
+   M /trunk/kde-center/kdots/module.dsc
+
+- offer rankings dialogue to online players
+
+
+------------------------------------------------------------------------
+r10415 | josef | 2008-07-27 10:40:04 +0200 (So, 27. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/ktictactux.cpp
+
+- no need to set the module, it is set automatically
+
+
+------------------------------------------------------------------------
+r10413 | josef | 2008-07-27 10:16:49 +0200 (So, 27. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/ktictactux.cpp
+   M /trunk/kde-center/ktictactux/ktictactux.h
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+   M /trunk/kde-center/ktictactux/ktictactuxwin.h
+
+- more complete error handling
+
+
+------------------------------------------------------------------------
+r10412 | josef | 2008-07-27 08:00:56 +0200 (So, 27. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/ktictactux.cpp
+   M /trunk/kde-center/ktictactux/ktictactux.h
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+   M /trunk/kde-center/ktictactux/ktictactuxwin.h
+   M /trunk/kde-center/ktictactux/module.dsc
+
+- support for the rankings dialog
+
+
+------------------------------------------------------------------------
+r10410 | josef | 2008-07-26 22:58:52 +0200 (Sa, 26. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/plasma-kggz/configwidget.cpp
+   M /trunk/kde-center/plasma-kggz/configwidget.h
+   M /trunk/kde-center/plasma-kggz/plasma-kggz.cpp
+
+- make the metaserver and the coreclient configurable
+
+
+------------------------------------------------------------------------
+r10407 | josef | 2008-07-26 22:42:12 +0200 (Sa, 26. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/plasma-kggz/CMakeLists.txt
+   A /trunk/kde-center/plasma-kggz/ggzmetaserv.png
+   M /trunk/kde-center/plasma-kggz/serverselector.cpp
+
+- display logo of ggzmetaserv in the server selection dialogue
+
+
+------------------------------------------------------------------------
+r10406 | josef | 2008-07-26 18:50:04 +0200 (Sa, 26. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/plasma-kggz/CMakeLists.txt
+   M /trunk/kde-center/plasma-kggz/configwidget.cpp
+   M /trunk/kde-center/plasma-kggz/configwidget.h
+   M /trunk/kde-center/plasma-kggz/ggzserver.cpp
+   M /trunk/kde-center/plasma-kggz/ggzserver.h
+   M /trunk/kde-center/plasma-kggz/plasma-kggz.cpp
+   M /trunk/kde-center/plasma-kggz/roomselector.cpp
+   M /trunk/kde-center/plasma-kggz/roomselector.h
+   M /trunk/kde-center/plasma-kggz/serverselector.cpp
+   M /trunk/kde-center/plasma-kggz/serverselector.h
+
+- implementation of the query of the GGZ Community API to get the list of rooms
+
+
+------------------------------------------------------------------------
+r10401 | josef | 2008-07-26 15:38:50 +0200 (Sa, 26. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/plasma-kggz/serverselector.cpp
+   M /trunk/kde-center/plasma-kggz/serverselector.h
+
+- perform a real query on the metaserver, although only an empty answer can be read thus far
+
+
+------------------------------------------------------------------------
+r10400 | josef | 2008-07-26 15:12:29 +0200 (Sa, 26. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/plasma-kggz/CMakeLists.txt
+   M /trunk/kde-center/plasma-kggz/configwidget.cpp
+   M /trunk/kde-center/plasma-kggz/configwidget.h
+   M /trunk/kde-center/plasma-kggz/roomselector.cpp
+   A /trunk/kde-center/plasma-kggz/serverselector.cpp
+   A /trunk/kde-center/plasma-kggz/serverselector.h
+
+- prepare the listing of GGZ servers in the config dialogue
+
+
+------------------------------------------------------------------------
+r10392 | josef | 2008-07-26 11:42:48 +0200 (Sa, 26. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/plasma-kggz/CMakeLists.txt
+   M /trunk/kde-center/plasma-kggz/configwidget.cpp
+   M /trunk/kde-center/plasma-kggz/configwidget.h
+   A /trunk/kde-center/plasma-kggz/ggzserver.cpp
+   A /trunk/kde-center/plasma-kggz/ggzserver.h
+   M /trunk/kde-center/plasma-kggz/plasma-kggz.cpp
+   M /trunk/kde-center/plasma-kggz/plasma-kggz.h
+   A /trunk/kde-center/plasma-kggz/roomselector.cpp
+   A /trunk/kde-center/plasma-kggz/roomselector.h
+
+- make the URI of the GGZ server configurable, not everybody has ggzd on localhost
+- prepare configuration dialoge to fetch list of rooms from the web API
+
+
+------------------------------------------------------------------------
+r10389 | josef | 2008-07-24 21:56:33 +0200 (Do, 24. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/CMakeLists.txt
+   M /trunk/kde-center/cmake/GGZ.cmake
+   M /trunk/kde-center/ktictactux/CMakeLists.txt
+
+- also adapt cmake-based apps to per-package ggz.modules file
+
+
+------------------------------------------------------------------------
+r10368 | josef | 2008-07-17 11:39:52 +0200 (Do, 17. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/ktictactux.knsrc
+   D /trunk/kde-center/ktictactux/ktictactuxrc
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+   M /trunk/kde-center/ktictactux/ktictactuxwin.h
+
+- addition of click'n'go theme installation for KTicTacTux
+- try out the Browser War game!
+
+
+------------------------------------------------------------------------
+r10366 | josef | 2008-07-17 10:44:19 +0200 (Do, 17. Jul 2008) | 5 lines
+Geänderte Pfade:
+   A /trunk/community/AUTHORS
+   M /trunk/docs/AUTHORS
+   M /trunk/ggzd/AUTHORS
+   M /trunk/grubby/AUTHORS
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/java/AUTHORS
+   M /trunk/kde-center/AUTHORS
+   M /trunk/libggz/AUTHORS
+   M /trunk/python/AUTHORS
+   M /trunk/txt-client/AUTHORS
+   M /trunk/utils/AUTHORS
+
+- version update
+- link to central credits file
+- ggz-community didn't have an AUTHORS file yet
+
+
+------------------------------------------------------------------------
+r10364 | josef | 2008-07-17 10:29:09 +0200 (Do, 17. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+   M /trunk/kde-center/ktictactux/themes/CMakeLists.txt
+   M /trunk/kde-center/ktictactux/themes/circle.png
+   M /trunk/kde-center/ktictactux/themes/classic
+   M /trunk/kde-center/ktictactux/themes/cross.png
+   M /trunk/kde-center/ktictactux/themes/gnome.png
+   M /trunk/kde-center/ktictactux/themes/kde.png
+   A /trunk/kde-center/ktictactux/themes/konqi.png
+   D /trunk/kde-center/ktictactux/themes/merlin.png
+   M /trunk/kde-center/ktictactux/themes/tux.png
+
+- fix the persistency of the theme configuration
+- update all theme graphics
+
+
+------------------------------------------------------------------------
+r10363 | josef | 2008-07-17 09:48:07 +0200 (Do, 17. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/CMakeLists.txt
+   M /trunk/kde-center/README
+   A /trunk/kde-center/cmake/GGZ.cmake
+   M /trunk/kde-center/kdots/CMakeLists.txt
+   A /trunk/kde-center/kdots/module.dsc (von /trunk/kde-center/kdots/module.dsc.in:10345)
+   D /trunk/kde-center/kdots/module.dsc.in
+   M /trunk/kde-center/ktictactux/CMakeLists.txt
+   A /trunk/kde-center/ktictactux/module.dsc (von /trunk/kde-center/ktictactux/module.dsc.in:10341)
+   D /trunk/kde-center/ktictactux/module.dsc.in
+
+- include GGZ.cmake which gives us the macro register_ggz_module()
+
+
+------------------------------------------------------------------------
+r10362 | josef | 2008-07-17 09:38:14 +0200 (Do, 17. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kryds/kryds.cpp
+   M /trunk/kde-center/kryds/kryds.h
+   M /trunk/kde-center/kryds/main.cpp
+
+- fix URL
+
+
+------------------------------------------------------------------------
+r10361 | josef | 2008-07-17 09:36:27 +0200 (Do, 17. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kryds/kryds.cpp
+   M /trunk/kde-center/kryds/kryds.h
+   M /trunk/kde-center/kryds/main.cpp
+   M /trunk/kde-center/ktictactux/ktictactux.cpp
+   M /trunk/kde-center/ktictactux/ktictactux.h
+   M /trunk/kde-center/ktictactux/ktictactuxproto.cpp
+   M /trunk/kde-center/ktictactux/ktictactuxproto.h
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+   M /trunk/kde-center/ktictactux/ktictactuxwin.h
+   M /trunk/kde-center/ktictactux/main.cpp
+   M /trunk/kde-center/ktictactux/qwhiteframe.cpp
+   M /trunk/kde-center/ktictactux/qwhiteframe.h
+
+- update and addition of copyright headers
+
+
+------------------------------------------------------------------------
+r10359 | josef | 2008-07-17 09:21:26 +0200 (Do, 17. Jul 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kdots/Dot/vdots.cpp
+   M /trunk/kde-center/kdots/Dot/vdots.h
+   M /trunk/kde-center/kdots/kdots.cpp
+   M /trunk/kde-center/kdots/kdots_about.cpp
+   M /trunk/kde-center/kdots/kdots_help.cpp
+   M /trunk/kde-center/kdots/kdots_replay.cpp
+   M /trunk/kde-center/kdots/kdots_replay.h
+   M /trunk/kde-center/kdots/kdots_win.cpp
+   M /trunk/kde-center/kdots/main.cpp
+
+- make the replay window work again after the Qt4 port
+- also make it accessible directly from the command line with --replay <filename>
+- port savegame format to common Dots format
+
+
+------------------------------------------------------------------------
+r10355 | josef | 2008-07-16 22:31:33 +0200 (Mi, 16. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kdots/Dot/dots.cpp
+   M /trunk/kde-center/kdots/Dot/dots.h
+   M /trunk/kde-center/kdots/Dot/qdots.cpp
+   M /trunk/kde-center/kdots/Dot/qdots.h
+   M /trunk/kde-center/kdots/Dot/test.cpp
+   M /trunk/kde-center/kdots/Dot/vdots.cpp
+   M /trunk/kde-center/kdots/Dot/vdots.h
+   M /trunk/kde-center/kdots/kdots.cpp
+   M /trunk/kde-center/kdots/kdots.h
+   M /trunk/kde-center/kdots/kdots_about.cpp
+   M /trunk/kde-center/kdots/kdots_about.h
+   M /trunk/kde-center/kdots/kdots_help.cpp
+   M /trunk/kde-center/kdots/kdots_help.h
+   M /trunk/kde-center/kdots/kdots_options.cpp
+   M /trunk/kde-center/kdots/kdots_options.h
+   M /trunk/kde-center/kdots/kdots_proto.cpp
+   M /trunk/kde-center/kdots/kdots_proto.h
+   M /trunk/kde-center/kdots/kdots_replay.cpp
+   M /trunk/kde-center/kdots/kdots_replay.h
+   M /trunk/kde-center/kdots/kdots_win.cpp
+   M /trunk/kde-center/kdots/kdots_win.h
+   M /trunk/kde-center/kdots/main.cpp
+
+- update the copyright headers
+- overhaul the background image painting; more testing needed in multiplayer mode
+
+
+------------------------------------------------------------------------
+r10349 | josef | 2008-07-15 22:49:54 +0200 (Di, 15. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kdots/CMakeLists.txt
+   M /trunk/kde-center/kdots/kdots.cpp
+   M /trunk/kde-center/kdots/kdots.h
+   M /trunk/kde-center/kdots/kdots_proto.cpp
+   M /trunk/kde-center/kdots/kdots_proto.h
+
+- handcrafted and ongoing port from ggzdmod to kggzdmod
+
+
+------------------------------------------------------------------------
+r10348 | josef | 2008-07-15 21:31:10 +0200 (Di, 15. Jul 2008) | 6 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kdots/CMakeLists.txt
+   M /trunk/kde-center/kdots/Dot/CMakeLists.txt
+
+- link against ggzmod and libggz
+- also link against ggzdmod, not because we need it but because it gives us the correct -L flag
+
+This is a very gross hack, and the usage of ggzmod needs to go away soon.
+
+
+------------------------------------------------------------------------
+r10347 | josef | 2008-07-15 16:20:13 +0200 (Di, 15. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/kdots/Dot/dots.h
+   M /trunk/kde-center/kdots/Dot/qdots.cpp
+   M /trunk/kde-center/kdots/Dot/qdots.h
+   M /trunk/kde-center/kdots/Dot/vdots.cpp
+   M /trunk/kde-center/kdots/kdots.cpp
+   M /trunk/kde-center/kdots/kdots.h
+   M /trunk/kde-center/kdots/kdots_about.cpp
+   M /trunk/kde-center/kdots/kdots_about.h
+   M /trunk/kde-center/kdots/kdots_help.cpp
+   M /trunk/kde-center/kdots/kdots_help.h
+   M /trunk/kde-center/kdots/kdots_options.cpp
+   M /trunk/kde-center/kdots/kdots_options.h
+   M /trunk/kde-center/kdots/kdots_replay.cpp
+   M /trunk/kde-center/kdots/kdots_replay.h
+   M /trunk/kde-center/kdots/kdots_win.cpp
+   M /trunk/kde-center/kdots/kdots_win.h
+   M /trunk/kde-center/kdots/main.cpp
+
+- very rough porting of the game, which killed background images temporarily and doesn't make it link yet, although it compiles
+
+
+------------------------------------------------------------------------
+r10346 | josef | 2008-07-15 07:53:53 +0200 (Di, 15. Jul 2008) | 4 lines
+Geänderte Pfade:
+   A /trunk/kde-center/kdots/CMakeLists.txt
+   A /trunk/kde-center/kdots/Dot/CMakeLists.txt
+   D /trunk/kde-center/kdots/Dot/Makefile.am
+   M /trunk/kde-center/kdots/Dot/dots.h
+   M /trunk/kde-center/kdots/Dot/qdots.cpp
+   M /trunk/kde-center/kdots/Dot/qdots.h
+   M /trunk/kde-center/kdots/Dot/vdots.cpp
+   D /trunk/kde-center/kdots/Makefile.am
+
+- port from automake to cmake
+- port the dots library to Qt4, but not the whole yet
+
+
+------------------------------------------------------------------------
+r10345 | josef | 2008-07-15 07:29:57 +0200 (Di, 15. Jul 2008) | 3 lines
+Geänderte Pfade:
+   A /trunk/kde-center/kdots (von /trunk/playground/ggz-kde4/kde-games-kde3/kdots:10341)
+
+- prepare for porting to KDE 4
+
+
+------------------------------------------------------------------------
+r10344 | josef | 2008-07-14 23:39:50 +0200 (Mo, 14. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/ktictactux.cpp
+   M /trunk/kde-center/ktictactux/ktictactux.h
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+
+- with some extra effort, draw background always in scaled mode
+- use new icons with correct names according to the current icon themes
+
+
+------------------------------------------------------------------------
+r10343 | josef | 2008-07-14 23:19:26 +0200 (Mo, 14. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/ktictactux/CMakeLists.txt
+   M /trunk/kde-center/ktictactux/ktictactux.cpp
+   A /trunk/kde-center/ktictactux/ktictactux.knsrc
+   M /trunk/kde-center/ktictactux/ktictactuxproto.cpp
+   M /trunk/kde-center/ktictactux/ktictactuxwin.cpp
+   M /trunk/kde-center/ktictactux/qwhiteframe.cpp
+   M /trunk/kde-center/ktictactux/qwhiteframe.h
+
+- some further porting
+
+
+------------------------------------------------------------------------
+r10334 | josef | 2008-07-13 18:30:23 +0200 (So, 13. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/kde-center/cmake/FindGGZCore.cmake
+   M /trunk/kde-center/cmake/FindGGZDMod.cmake
+
+- require 0.99.4 just to be on the safe side
+
+
+------------------------------------------------------------------------
+r10329 | josef | 2008-07-13 17:15:43 +0200 (So, 13. Jul 2008) | 4 lines
+Geänderte Pfade:
+   A /trunk/kde-center/ChangeLog
+   A /trunk/kde-center/NEWS
+   A /trunk/kde-center/QuickStart.GGZ
+
+- summary of changes since 0.99.3 for the news file
+- also addition of some other standard files
+
+
+------------------------------------------------------------------------
 r10328 | josef | 2008-07-13 16:27:58 +0200 (So, 13. Jul 2008) | 4 lines
 Geänderte Pfade:
    A /trunk/kde-center/AUTHORS

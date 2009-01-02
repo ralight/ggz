@@ -1,4 +1,187 @@
 ------------------------------------------------------------------------
+r10630 | josef | 2008-12-23 19:12:00 +0100 (Di, 23. Dez 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/ggzcore.h
+   M /trunk/base-libs/ggzcore/net.h
+   M /trunk/base-libs/ggzcore/netxml.c
+   M /trunk/base-libs/ggzcore/server.c
+   M /trunk/grubby/grubby/src/net.c
+   M /trunk/gtk-client/ggz-gtk/login.c
+   M /trunk/kde-center/kggzcore/coreclient.cpp
+   M /trunk/kde-center/kggzcore/coreclientbase.cpp
+   M /trunk/kde-center/kggzcore/coreclientbase.h
+   M /trunk/playground/agrue/agrue/net.c
+   M /trunk/playground/jabber/ggzd-jabberproxy.cc
+   M /trunk/python/pyggzcore/src/pyggzcoresimple_init.c
+   M /trunk/python/pyggzcore/src/test.py
+   M /trunk/python/t-rex/t-rex
+   M /trunk/python/vibora/vibora
+   M /trunk/txt-client/ggz-txt/server.c
+   M /trunk/utils/cmd-client/main.c
+   M /trunk/utils/ggz-wrapper/server.c
+   M /trunk/utils/telggz/net.c
+
+- turn boolean TLS option into an enumerated security policy
+- this turns on "use if available" by default for all clients
+- Vencedor and ggz-txt can also require encryption, while other clients cannot
+
+
+------------------------------------------------------------------------
+r10626 | josef | 2008-12-22 21:56:36 +0100 (Mo, 22. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/grubby/grubby/modules/embed.c
+
+- fix warnings with crude workarounds
+
+
+------------------------------------------------------------------------
+r10618 | jdorje | 2008-12-01 05:57:03 +0100 (Mo, 01. Dez 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/base-libs/autogen.sh
+   M /trunk/docs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+Add check for m4/ggz directory presence before including it.
+------------------------------------------------------------------------
+r10598 | josef | 2008-11-26 23:37:13 +0100 (Mi, 26. Nov 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/grubby/grubby/modules/badword.c
+
+- skip empty badword matches
+
+
+------------------------------------------------------------------------
+r10576 | josef | 2008-10-25 21:05:03 +0200 (Sa, 25. Okt 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/configure.ac
+   M /trunk/community/Makefile
+   M /trunk/docs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/java/build.xml
+   M /trunk/kde-center/cmake/GGZKDECenterPackage.cmake
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- bump to snapshot-0.99.5pre already
+
+
+------------------------------------------------------------------------
+r10388 | josef | 2008-07-24 21:40:19 +0200 (Do, 24. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/grubby/configure.ac
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/configure.ac
+
+- port all autoconf-based packages to per-package ggz.modules
+
+
+------------------------------------------------------------------------
+r10376 | josef | 2008-07-17 20:01:05 +0200 (Do, 17. Jul 2008) | 6 lines
+Geänderte Pfade:
+   M /trunk/ggzd/m4
+   M /trunk/grubby/m4
+   M /trunk/gtk-client/m4
+   M /trunk/txt-client/m4
+   M /trunk/utils/m4
+
+- update svn:externals to point to base-libs
+
+Note: I'd like to use SVN's new relative paths here, however with svn+ssh it will ask the password
+for each such directory instead of reusing the existing SSH connection.
+
+
+------------------------------------------------------------------------
+r10366 | josef | 2008-07-17 10:44:19 +0200 (Do, 17. Jul 2008) | 5 lines
+Geänderte Pfade:
+   A /trunk/community/AUTHORS
+   M /trunk/docs/AUTHORS
+   M /trunk/ggzd/AUTHORS
+   M /trunk/grubby/AUTHORS
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/java/AUTHORS
+   M /trunk/kde-center/AUTHORS
+   M /trunk/libggz/AUTHORS
+   M /trunk/python/AUTHORS
+   M /trunk/txt-client/AUTHORS
+   M /trunk/utils/AUTHORS
+
+- version update
+- link to central credits file
+- ggz-community didn't have an AUTHORS file yet
+
+
+------------------------------------------------------------------------
+r10331 | josef | 2008-07-13 17:37:43 +0200 (So, 13. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/java/Makefile
+   M /trunk/java/build.xml
+   M /trunk/libggz/configure.ac
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- bump all version numbers, but also all libggz requirements, to 0.99.4
+
+
+------------------------------------------------------------------------
+r10330 | josef | 2008-07-13 17:31:32 +0200 (So, 13. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/community/NEWS
+   M /trunk/community/README
+   M /trunk/docs/ChangeLog
+   M /trunk/docs/NEWS
+   M /trunk/docs/README
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggzd/ChangeLog
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/grubby/ChangeLog
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README
+   M /trunk/java/ChangeLog
+   M /trunk/java/NEWS
+   M /trunk/libggz/ChangeLog
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/README
+   M /trunk/python/ChangeLog
+   M /trunk/python/NEWS
+   M /trunk/python/README
+   M /trunk/txt-client/ChangeLog
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README
+   M /trunk/utils/ChangeLog
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+
+- massive update to changelog due to SVN format change, ~67,000 lines of diff
+- synchronise updated news file and bump version number in readme files
+
+
+------------------------------------------------------------------------
 r10117 | jdorje | 2008-06-30 08:26:37 +0200 (Mo, 30. Jun 2008) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh

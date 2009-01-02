@@ -1,4 +1,215 @@
 ------------------------------------------------------------------------
+r10725 | josef | 2009-01-01 11:52:03 +0100 (Do, 01. Jan 2009) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/ggz-project/packagers
+
+- explain integration of ggzd into FHS
+
+
+------------------------------------------------------------------------
+r10646 | josef | 2008-12-25 20:04:39 +0100 (Do, 25. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/spec/Uri-spec.txt
+
+- addition of a couple of pointers to up-to-date IETF documents of relevance to us
+
+
+------------------------------------------------------------------------
+r10618 | jdorje | 2008-12-01 05:57:03 +0100 (Mo, 01. Dez 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/base-libs/autogen.sh
+   M /trunk/docs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+Add check for m4/ggz directory presence before including it.
+------------------------------------------------------------------------
+r10591 | josef | 2008-11-16 19:03:58 +0100 (So, 16. Nov 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/games/game-development/ggz-game-development-guide.texi
+   M /trunk/docs/server/hosting/ggz-hosting-guide.texi
+
+- apply 'sections.diff' from the debian packages
+
+
+------------------------------------------------------------------------
+r10576 | josef | 2008-10-25 21:05:03 +0200 (Sa, 25. Okt 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/configure.ac
+   M /trunk/community/Makefile
+   M /trunk/docs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/java/build.xml
+   M /trunk/kde-center/cmake/GGZKDECenterPackage.cmake
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- bump to snapshot-0.99.5pre already
+
+
+------------------------------------------------------------------------
+r10495 | josef | 2008-08-13 18:30:11 +0200 (Mi, 13. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/presentation/README.talks
+
+- one more talk given about new kde-center features
+
+
+------------------------------------------------------------------------
+r10390 | josef | 2008-07-25 23:34:50 +0200 (Fr, 25. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/games/game-development/ggz-game-development-guide.texi
+
+- some overdue updates on changed package structure, more ruby code etc.
+
+
+------------------------------------------------------------------------
+r10387 | josef | 2008-07-24 21:36:43 +0200 (Do, 24. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/ggz-project/packagers
+
+- real men document their changes to long-lasting packaging issues
+
+
+------------------------------------------------------------------------
+r10369 | josef | 2008-07-17 14:46:16 +0200 (Do, 17. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+
+- we need to create the makefile for Dots
+
+
+------------------------------------------------------------------------
+r10366 | josef | 2008-07-17 10:44:19 +0200 (Do, 17. Jul 2008) | 5 lines
+Geänderte Pfade:
+   A /trunk/community/AUTHORS
+   M /trunk/docs/AUTHORS
+   M /trunk/ggzd/AUTHORS
+   M /trunk/grubby/AUTHORS
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/java/AUTHORS
+   M /trunk/kde-center/AUTHORS
+   M /trunk/libggz/AUTHORS
+   M /trunk/python/AUTHORS
+   M /trunk/txt-client/AUTHORS
+   M /trunk/utils/AUTHORS
+
+- version update
+- link to central credits file
+- ggz-community didn't have an AUTHORS file yet
+
+
+------------------------------------------------------------------------
+r10365 | josef | 2008-07-17 10:33:28 +0200 (Do, 17. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/ggz-project/GGZ-contributions
+
+- update on where the theme graphics have been taken from
+
+
+------------------------------------------------------------------------
+r10360 | josef | 2008-07-17 09:23:07 +0200 (Do, 17. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/docs/games/ggz-games/dots/savegames.txt
+   M /trunk/playground/gamedata/savegame-samples/kdots.saved
+
+- document that KDots now reads and writes regular Dots savegames
+- still improve the old KDots sample just in case... :-)
+
+
+------------------------------------------------------------------------
+r10358 | josef | 2008-07-17 08:47:59 +0200 (Do, 17. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/games/ggz-games/dots/savegames.txt
+
+- document the unfortunate difference between Dots server and KDots savegames
+
+
+------------------------------------------------------------------------
+r10356 | josef | 2008-07-17 07:58:08 +0200 (Do, 17. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/games/ggz-games/Makefile.am
+   A /trunk/docs/games/ggz-games/dots
+   A /trunk/docs/games/ggz-games/dots/Makefile.am
+   A /trunk/docs/games/ggz-games/dots/dots-design.txt (von /trunk/docs/games/ggz-games/dots-design.txt:10341)
+   A /trunk/docs/games/ggz-games/dots/savegames.txt
+   D /trunk/docs/games/ggz-games/dots-design.txt
+   M /trunk/docs/games/savegames.txt
+
+- document the Dots savegame format
+
+
+------------------------------------------------------------------------
+r10331 | josef | 2008-07-13 17:37:43 +0200 (So, 13. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/java/Makefile
+   M /trunk/java/build.xml
+   M /trunk/libggz/configure.ac
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- bump all version numbers, but also all libggz requirements, to 0.99.4
+
+
+------------------------------------------------------------------------
+r10330 | josef | 2008-07-13 17:31:32 +0200 (So, 13. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/community/NEWS
+   M /trunk/community/README
+   M /trunk/docs/ChangeLog
+   M /trunk/docs/NEWS
+   M /trunk/docs/README
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggzd/ChangeLog
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/grubby/ChangeLog
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README
+   M /trunk/java/ChangeLog
+   M /trunk/java/NEWS
+   M /trunk/libggz/ChangeLog
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/README
+   M /trunk/python/ChangeLog
+   M /trunk/python/NEWS
+   M /trunk/python/README
+   M /trunk/txt-client/ChangeLog
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README
+   M /trunk/utils/ChangeLog
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+
+- massive update to changelog due to SVN format change, ~67,000 lines of diff
+- synchronise updated news file and bump version number in readme files
+
+
+------------------------------------------------------------------------
 r10117 | jdorje | 2008-06-30 08:26:37 +0200 (Mo, 30. Jun 2008) | 5 lines
 Geänderte Pfade:
    M /trunk/docs/autogen.sh

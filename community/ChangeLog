@@ -1,4 +1,145 @@
 ------------------------------------------------------------------------
+r10576 | josef | 2008-10-25 21:05:03 +0200 (Sa, 25. Okt 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/configure.ac
+   M /trunk/community/Makefile
+   M /trunk/docs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/java/build.xml
+   M /trunk/kde-center/cmake/GGZKDECenterPackage.cmake
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- bump to snapshot-0.99.5pre already
+
+
+------------------------------------------------------------------------
+r10561 | josef | 2008-08-31 14:18:15 +0200 (So, 31. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/api/api/index.php
+   M /trunk/community/api/doc/players.html
+   M /trunk/community/setup/sql/rankings.sql
+
+- extend database and GGZ Community API to manage buddies and foes
+
+
+------------------------------------------------------------------------
+r10404 | josef | 2008-07-26 16:36:44 +0200 (Sa, 26. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/tournaments/show2.inc
+
+- fix PHP variable mixup
+
+
+------------------------------------------------------------------------
+r10403 | josef | 2008-07-26 16:32:33 +0200 (Sa, 26. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/setup/sql/tournaments.sql
+
+- the tournaments table needs more columns in order to handle self-signup tourneys
+
+
+------------------------------------------------------------------------
+r10402 | josef | 2008-07-26 16:31:34 +0200 (Sa, 26. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/web/db/players/information.inc
+   M /trunk/community/web/tournaments/new.inc
+   M /trunk/community/web/tournaments/new2.inc
+   M /trunk/community/web/tournaments/new3.inc
+   M /trunk/community/web/tournaments/show2.inc
+   A /trunk/community/web/tournaments/signup.php
+
+- make it possible for players to sign up themselves to tournaments as long as there are open spots
+
+
+------------------------------------------------------------------------
+r10391 | josef | 2008-07-26 10:54:34 +0200 (Sa, 26. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/api/api/index.php
+   M /trunk/community/api/doc/.htaccess
+   A /trunk/community/api/doc/rooms.html
+   M /trunk/community/api/index.html
+
+- new API method to retrieve the list of rooms, which is useful for setup routines in clients before logging in
+
+
+------------------------------------------------------------------------
+r10366 | josef | 2008-07-17 10:44:19 +0200 (Do, 17. Jul 2008) | 5 lines
+Geänderte Pfade:
+   A /trunk/community/AUTHORS
+   M /trunk/docs/AUTHORS
+   M /trunk/ggzd/AUTHORS
+   M /trunk/grubby/AUTHORS
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/java/AUTHORS
+   M /trunk/kde-center/AUTHORS
+   M /trunk/libggz/AUTHORS
+   M /trunk/python/AUTHORS
+   M /trunk/txt-client/AUTHORS
+   M /trunk/utils/AUTHORS
+
+- version update
+- link to central credits file
+- ggz-community didn't have an AUTHORS file yet
+
+
+------------------------------------------------------------------------
+r10335 | josef | 2008-07-13 18:36:17 +0200 (So, 13. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/community/Makefile
+   M /trunk/community/web/tournaments/export.php
+
+- forgot this bump
+
+
+------------------------------------------------------------------------
+r10330 | josef | 2008-07-13 17:31:32 +0200 (So, 13. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/community/NEWS
+   M /trunk/community/README
+   M /trunk/docs/ChangeLog
+   M /trunk/docs/NEWS
+   M /trunk/docs/README
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggzd/ChangeLog
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/grubby/ChangeLog
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README
+   M /trunk/java/ChangeLog
+   M /trunk/java/NEWS
+   M /trunk/libggz/ChangeLog
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/README
+   M /trunk/python/ChangeLog
+   M /trunk/python/NEWS
+   M /trunk/python/README
+   M /trunk/txt-client/ChangeLog
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README
+   M /trunk/utils/ChangeLog
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+
+- massive update to changelog due to SVN format change, ~67,000 lines of diff
+- synchronise updated news file and bump version number in readme files
+
+
+------------------------------------------------------------------------
 r10171 | josef | 2008-07-06 14:50:26 +0200 (So, 06. Jul 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/web/db/players/finderform.inc

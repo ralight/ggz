@@ -1,4 +1,780 @@
 ------------------------------------------------------------------------
+r10778 | oojah | 2009-01-02 03:38:30 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/login.c
+   M /trunk/ggzd/ggzd/stats.c
+
+Always use a format argument for printf style functions, even if the only other argument is a string.
+
+------------------------------------------------------------------------
+r10776 | oojah | 2009-01-02 02:54:40 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/net.c
+
+Always use a format argument for printf style functions, even if the only other argument is a string.
+
+------------------------------------------------------------------------
+r10775 | oojah | 2009-01-02 02:53:31 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/net.c
+
+printf style fmt arguments should be const.
+
+------------------------------------------------------------------------
+r10774 | oojah | 2009-01-02 02:51:10 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/players.c
+
+Always use a format argument for printf style functions, even if the only other argument is a string.
+
+------------------------------------------------------------------------
+r10773 | oojah | 2009-01-02 02:48:31 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/parse_conf.c
+   M /trunk/ggzd/ggzd/unicode.c
+
+More const strings.
+
+------------------------------------------------------------------------
+r10772 | oojah | 2009-01-02 02:48:17 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/daemon.c
+
+Always declare functions with empty argument lists as void.
+
+------------------------------------------------------------------------
+r10771 | oojah | 2009-01-02 01:42:07 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_pgsql.c
+
+More const strings.
+
+------------------------------------------------------------------------
+r10770 | oojah | 2009-01-02 01:41:57 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/rankings_mysql.c
+
+Fix signed/unsigned comparisons.
+
+------------------------------------------------------------------------
+r10769 | oojah | 2009-01-02 01:39:52 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_mysql.c
+   M /trunk/ggzd/ggzd/database/rankings.c
+
+More const strings.
+
+------------------------------------------------------------------------
+r10740 | oojah | 2009-01-01 18:34:36 +0100 (Do, 01. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_util.c
+
+Use ggz_malloc/ggz_free in username_canonical().
+
+------------------------------------------------------------------------
+r10739 | oojah | 2009-01-01 18:31:06 +0100 (Do, 01. Jan 2009) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_sqlite.c
+
+Not being able to prepare an sqlite query for the control table isn't an error - it just means the table doesn't exist and so the db needs initialising.
+Not being able to read anything from the control table is an error.
+
+------------------------------------------------------------------------
+r10729 | josef | 2009-01-01 12:30:15 +0100 (Do, 01. Jan 2009) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/game_servers/chess/Makefile.am
+   M /trunk/ggzd/game_servers/chess/libcgc/Makefile.am
+   M /trunk/ggzd/game_servers/chinese-checkers/Makefile.am
+   M /trunk/ggzd/game_servers/combat/Makefile.am
+   M /trunk/ggzd/game_servers/dots/Makefile.am
+   M /trunk/ggzd/game_servers/escape/Makefile.am
+   M /trunk/ggzd/game_servers/geekgame/Makefile.am
+   M /trunk/ggzd/game_servers/ggzcards/Makefile.am
+   M /trunk/ggzd/game_servers/ggzcards/ai/Makefile.am
+   M /trunk/ggzd/game_servers/ggzcards/client/Makefile.am
+   M /trunk/ggzd/game_servers/ggzcards/common/Makefile.am
+   M /trunk/ggzd/game_servers/ggzcards/config/Makefile.am
+   M /trunk/ggzd/game_servers/ggzcards/games/Makefile.am
+   M /trunk/ggzd/game_servers/hastings/Makefile.am
+   M /trunk/ggzd/game_servers/hastings/maps/Makefile.am
+   M /trunk/ggzd/game_servers/krosswater/Makefile.am
+   M /trunk/ggzd/game_servers/krosswater/stackpath/Makefile.am
+   M /trunk/ggzd/game_servers/krosswater/zoneserver/Makefile.am
+   M /trunk/ggzd/game_servers/muehle/Makefile.am
+   M /trunk/ggzd/game_servers/muehle/qtserv/Makefile.am
+   M /trunk/ggzd/game_servers/muehle/variants/Makefile.am
+   M /trunk/ggzd/game_servers/reversi/Makefile.am
+   M /trunk/ggzd/game_servers/tictactoe/Makefile.am
+   M /trunk/ggzd/game_servers/widelands/Makefile.am
+
+- again more than 100 lines saved by cleaning up makefiles and removing EXTRA_DIST when dist_data_* is enough
+
+
+------------------------------------------------------------------------
+r10726 | josef | 2009-01-01 11:59:31 +0100 (Do, 01. Jan 2009) | 4 lines
+Geänderte Pfade:
+   M /trunk/ggzd/configure.ac
+   M /trunk/ggzd/ggzd/Makefile.am
+
+- better integration into FHS by using sensible default values for configuration and modifiable data directories
+- this prevents, among other things, the use of the invalid directory /usr/local/var which resulted in an error during sqlite initialisation
+
+
+------------------------------------------------------------------------
+r10708 | oojah | 2008-12-30 20:38:52 +0100 (Di, 30. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb.h
+
+Bump DB version number to reflect recent changes.
+
+------------------------------------------------------------------------
+r10707 | oojah | 2008-12-30 13:06:11 +0100 (Di, 30. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_pgsql.c
+
+pgsql no longer needs to check for the presence of the canonicalstr stored procedure.
+
+------------------------------------------------------------------------
+r10706 | oojah | 2008-12-30 13:01:19 +0100 (Di, 30. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_sqlite.c
+
+Convert sqlite backend to use the generic _ggz_setupschema function.
+
+------------------------------------------------------------------------
+r10705 | oojah | 2008-12-30 13:00:26 +0100 (Di, 30. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_mysql.c
+
+Convert mysql backend to use the generic _ggz_setupschema function.
+
+------------------------------------------------------------------------
+r10704 | oojah | 2008-12-30 12:59:06 +0100 (Di, 30. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_pgsql.c
+
+Convert pgsql backend to use the generic _ggz_setupschema function.
+
+------------------------------------------------------------------------
+r10703 | oojah | 2008-12-30 12:44:27 +0100 (Di, 30. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_util.c
+   M /trunk/ggzd/ggzd/database/ggzdb_util.h
+
+Add a generic setupschema function by making use of callbacks to execute the backend specific query code.
+
+------------------------------------------------------------------------
+r10700 | oojah | 2008-12-30 12:07:53 +0100 (Di, 30. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_pgsql.c
+
+Always use a format argument in printf calls, even if the only other argument is a string.
+
+------------------------------------------------------------------------
+r10699 | oojah | 2008-12-30 12:05:45 +0100 (Di, 30. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_pgsql.c
+
+Always declare empty funtion arguments as void.
+
+------------------------------------------------------------------------
+r10691 | oojah | 2008-12-30 03:19:47 +0100 (Di, 30. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/parse_conf.c
+
+strdup the value for opt.db.type if it is not defined in ggzd.conf. This means that the value is always dynamically allocated and so can be free'd.
+
+------------------------------------------------------------------------
+r10690 | oojah | 2008-12-30 03:10:09 +0100 (Di, 30. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_mysql.c
+   M /trunk/ggzd/ggzd/database/schema/mysql_schema.sql
+   M /trunk/ggzd/ggzd/database/schema/sqlite_schema.sql
+
+Use `permissions` as column name across all three DB backends. This brings mysql into line with the other two.
+
+------------------------------------------------------------------------
+r10689 | oojah | 2008-12-30 03:06:39 +0100 (Di, 30. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_mysql.c
+   M /trunk/ggzd/ggzd/database/ggzdb_pgsql.c
+   M /trunk/ggzd/ggzd/database/ggzdb_sqlite.c
+
+Populate ggzdbPlayerEntry.user_id entry in "normal" player get query.
+
+------------------------------------------------------------------------
+r10688 | oojah | 2008-12-30 02:30:27 +0100 (Di, 30. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/schema/sqlite_schema.sql
+
+sqlite schema that matches those for mysql/pgsql. Note that sqlite doesn't support ALTER COLUMN so upgrades aren't possible due to some column data types changing and the `permissions` column being renamed to `perms` to match the other DBs.
+
+------------------------------------------------------------------------
+r10686 | oojah | 2008-12-29 22:10:40 +0100 (Mo, 29. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/schema/Makefile.am
+
+Distribute the sqlite schema.
+
+------------------------------------------------------------------------
+r10685 | oojah | 2008-12-29 21:51:58 +0100 (Mo, 29. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_sqlite.c
+
+Add support for loading external schemas (and upgrading) to sqlite.
+
+------------------------------------------------------------------------
+r10682 | oojah | 2008-12-29 18:42:56 +0100 (Mo, 29. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_mysql.c
+
+Fix some signed/unsigned comparisons.
+
+------------------------------------------------------------------------
+r10681 | oojah | 2008-12-29 18:38:23 +0100 (Mo, 29. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_mysql.c
+
+Always use a format string with snprintf, even if the only argument is a string.
+
+------------------------------------------------------------------------
+r10680 | oojah | 2008-12-29 18:37:53 +0100 (Mo, 29. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_sqlite.c
+
+Add sqlite support for the firstlogin column.
+
+------------------------------------------------------------------------
+r10679 | oojah | 2008-12-29 18:34:32 +0100 (Mo, 29. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_sqlite.c
+
+Add missing printf format qualifier from r10669.
+
+------------------------------------------------------------------------
+r10669 | oojah | 2008-12-28 23:54:32 +0100 (So, 28. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_sqlite.c
+
+Add code support for the confirmed flag to the sqlite backend.
+
+------------------------------------------------------------------------
+r10668 | oojah | 2008-12-28 23:49:20 +0100 (So, 28. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_mysql.c
+
+Insert missing spaces in sql statements.
+
+------------------------------------------------------------------------
+r10667 | oojah | 2008-12-28 23:43:32 +0100 (So, 28. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_sqlite.c
+
+Fix incorrect column numbers in get_first().
+
+------------------------------------------------------------------------
+r10666 | oojah | 2008-12-28 23:18:28 +0100 (So, 28. Dez 2008) | 2 lines
+Geänderte Pfade:
+   A /trunk/ggzd/ggzd/database/schema/sqlite_schema.sql
+
+sqlite schema as currently defined in the code.
+
+------------------------------------------------------------------------
+r10665 | oojah | 2008-12-28 19:53:33 +0100 (So, 28. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb.c
+   M /trunk/ggzd/ggzd/database/ggzdb.h
+
+ggzdb_get_default_backend() no longer returns a value created with ggz_malloc() so it must not be freed with ggz_free(). The value now comes from a constant string #define in config.h.
+
+------------------------------------------------------------------------
+r10664 | oojah | 2008-12-28 01:42:42 +0100 (So, 28. Dez 2008) | 2 lines
+Geänderte Pfade:
+   D /trunk/ggzd/ggzd/database/proc
+   A /trunk/playground/server/database/proc (von /trunk/ggzd/ggzd/database/proc:10661)
+
+Move DB stored procedures to playground.
+
+------------------------------------------------------------------------
+r10663 | oojah | 2008-12-28 01:24:21 +0100 (So, 28. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/ggzd.conf.example.in
+
+Add note on DatabaseOption status in ggzd.conf.
+
+------------------------------------------------------------------------
+r10662 | oojah | 2008-12-28 01:22:13 +0100 (So, 28. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/configure.ac
+   M /trunk/ggzd/ggzd/database/Makefile.am
+   D /trunk/ggzd/ggzd/database/ggzdb_dbi.c
+   M /trunk/ggzd/ggzd/ggzd.conf.example.in
+   M /trunk/ggzd/m4/database.m4
+   A /trunk/playground/server/database/ggzdb_dbi.c (von /trunk/ggzd/ggzd/database/ggzdb_dbi.c:10657)
+
+Remove support for the dbi backend in ggzd. The actual dbi code has been moved to playground/server/database/
+
+------------------------------------------------------------------------
+r10661 | oojah | 2008-12-28 01:19:36 +0100 (So, 28. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/ggzd.conf.example.in
+
+Remove further db4 traces.
+
+------------------------------------------------------------------------
+r10660 | oojah | 2008-12-28 01:15:59 +0100 (So, 28. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/configure.ac
+   M /trunk/ggzd/ggzd/database/Makefile.am
+   D /trunk/ggzd/ggzd/database/ggzdb_db4.c
+   M /trunk/ggzd/ggzd/ggzd.conf.example.in
+   M /trunk/ggzd/m4/database.m4
+   A /trunk/playground/server/database/ggzdb_db4.c (von /trunk/ggzd/ggzd/database/ggzdb_db4.c:10657)
+
+Remove support for the db4 backend in ggzd. The actual db4 code has been moved to playground/server/database/
+
+------------------------------------------------------------------------
+r10659 | oojah | 2008-12-28 00:08:06 +0100 (So, 28. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/Makefile.am
+   M /trunk/ggzd/ggzd/database/ggzdb_sqlite.c
+
+Use username_canonical() in the sqlite backend.
+
+------------------------------------------------------------------------
+r10658 | oojah | 2008-12-27 23:54:43 +0100 (Sa, 27. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_pgsql.c
+
+Convert the pgsql backend to use username_canonical() from ggzdb_util.c.
+
+
+------------------------------------------------------------------------
+r10657 | oojah | 2008-12-27 23:41:55 +0100 (Sa, 27. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_mysql.c
+
+Convert the mysql backend to use username_canonical() from ggzdb_util.c.
+
+------------------------------------------------------------------------
+r10656 | oojah | 2008-12-27 23:23:24 +0100 (Sa, 27. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_mysql.c
+
+Revert r10655 - the escaped strings are coming from a DB backend specific _ggzdb_escape() function, not _ggzdb_sql_escape().
+
+------------------------------------------------------------------------
+r10655 | oojah | 2008-12-27 23:12:01 +0100 (Sa, 27. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_mysql.c
+
+Strings returned from _ggz_sql_escape() should be freed with ggz_free() not free().
+
+------------------------------------------------------------------------
+r10654 | oojah | 2008-12-27 23:07:15 +0100 (Sa, 27. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/configure.ac
+   M /trunk/ggzd/ggzd/database/Makefile.am
+   A /trunk/ggzd/ggzd/database/README.canonicalstr (von /trunk/ggzd/ggzd/database/proc/README.proc:10650)
+   M /trunk/ggzd/ggzd/database/ggzdb_util.c
+   M /trunk/ggzd/ggzd/database/ggzdb_util.h
+
+Make canonicalstr() available to all database backends. Step 1 - move canonicalstr() into ggzdb_util.c. the ggzd/database/proc directory is now not used, although it is still present for the time being. The pgsql and mysql backends will not perform string canonicalisation using this revision, that will follow in a later step.
+
+------------------------------------------------------------------------
+r10653 | oojah | 2008-12-27 22:40:17 +0100 (Sa, 27. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/schema
+
+Ignore Makefile and Makefile.in
+
+------------------------------------------------------------------------
+r10652 | oojah | 2008-12-27 22:35:50 +0100 (Sa, 27. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/configure.ac
+   M /trunk/ggzd/ggzd/database/Makefile.am
+   D /trunk/ggzd/ggzd/database/mysql_schema.sql
+   D /trunk/ggzd/ggzd/database/pgsql_schema.sql
+   D /trunk/ggzd/ggzd/database/pgsql_upgrade_0.7_0.8.sql
+   D /trunk/ggzd/ggzd/database/pgsql_upgrade_0.8_0.9.sql
+   A /trunk/ggzd/ggzd/database/schema
+   A /trunk/ggzd/ggzd/database/schema/Makefile.am
+   A /trunk/ggzd/ggzd/database/schema/mysql_schema.sql (von /trunk/ggzd/ggzd/database/mysql_schema.sql:10650)
+   A /trunk/ggzd/ggzd/database/schema/pgsql_schema.sql (von /trunk/ggzd/ggzd/database/pgsql_schema.sql:10650)
+   A /trunk/ggzd/ggzd/database/schema/pgsql_upgrade_0.7_0.8.sql (von /trunk/ggzd/ggzd/database/pgsql_upgrade_0.7_0.8.sql:10650)
+   A /trunk/ggzd/ggzd/database/schema/pgsql_upgrade_0.8_0.9.sql (von /trunk/ggzd/ggzd/database/pgsql_upgrade_0.8_0.9.sql:10650)
+
+Move schema files to a separate directory to keep things tidy.
+
+------------------------------------------------------------------------
+r10651 | oojah | 2008-12-27 22:33:33 +0100 (Sa, 27. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_mysql.c
+
+Add missing variables from r10648.
+
+------------------------------------------------------------------------
+r10650 | oojah | 2008-12-27 21:47:59 +0100 (Sa, 27. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/pgsql_schema.sql
+   A /trunk/ggzd/ggzd/database/pgsql_upgrade_0.8_0.9.sql
+
+Bring the pgsql schema to table/column name/column type parity with the mysql schema. The upgrade file contains the changes so far - this doesn't include everything that will end up version 0.9.
+
+------------------------------------------------------------------------
+r10649 | oojah | 2008-12-27 21:45:52 +0100 (Sa, 27. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/mysql_schema.sql
+
+Bring the mysql schema up to table/column name/column type parity with the pgsql schema. 
+
+------------------------------------------------------------------------
+r10648 | oojah | 2008-12-27 21:04:03 +0100 (Sa, 27. Dez 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_mysql.c
+
+Include code for carrying out initial mysql database creation or upgrading. Note that because there has previously been no versioning of the mysql database it is not possible to carry out automatic upgrades from previous incarnations of the DB code.
+
+------------------------------------------------------------------------
+r10647 | oojah | 2008-12-27 20:35:04 +0100 (Sa, 27. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_mysql.c
+
+Separate function and mysql return codes in _ggzdb_init() in preparation for proper DB init/upgrade code.
+
+
+------------------------------------------------------------------------
+r10635 | josef | 2008-12-23 20:24:59 +0100 (Di, 23. Dez 2008) | 8 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/client.c
+   M /trunk/ggzd/ggzd/client.h
+   M /trunk/ggzd/ggzd/control.c
+   M /trunk/ggzd/ggzd/datatypes.h
+   M /trunk/ggzd/ggzd/err_func.c
+   M /trunk/ggzd/ggzd/event.c
+   M /trunk/ggzd/ggzd/hash.c
+   M /trunk/ggzd/ggzd/login.c
+   M /trunk/ggzd/ggzd/motd.c
+   M /trunk/ggzd/ggzd/parse_opt.c
+   M /trunk/ggzd/ggzd/players.c
+   M /trunk/ggzd/ggzd/players.h
+   M /trunk/ggzd/ggzd/room.c
+   M /trunk/ggzd/ggzd/room.h
+   M /trunk/ggzd/ggzd/stats.c
+   M /trunk/ggzd/ggzd/table.c
+   M /trunk/ggzd/ggzd/table.h
+   M /trunk/ggzd/ggzd/transit.c
+
+- switch to using ggz_threads.h
+
+It seems to work now.
+There is one (minor) issue left: gc.h doesn't define the prototype GC_dlopen()
+for Linux, only for Solaris. This results in a warning during compilation
+of ggzdb.c.
+
+
+------------------------------------------------------------------------
+r10620 | josef | 2008-12-22 12:09:29 +0100 (Mo, 22. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzdmod++/net.h
+
+- GCC 4.3 deprecates <hash_map> in favour of official C++ TR1 extension class <unordered_map>
+
+
+------------------------------------------------------------------------
+r10618 | jdorje | 2008-12-01 05:57:03 +0100 (Mo, 01. Dez 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/base-libs/autogen.sh
+   M /trunk/docs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+Add check for m4/ggz directory presence before including it.
+------------------------------------------------------------------------
+r10590 | oojah | 2008-11-09 20:01:59 +0100 (So, 09. Nov 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/game_servers/geekgame/main.cpp
+   M /trunk/ggzd/game_servers/muehle/main.cpp
+   M /trunk/ggzd/game_servers/widelands/main.cpp
+
+Add missing headers needed for gcc-4.4 as reported by Martin Michlmayr.
+
+------------------------------------------------------------------------
+r10576 | josef | 2008-10-25 21:05:03 +0200 (Sa, 25. Okt 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/configure.ac
+   M /trunk/community/Makefile
+   M /trunk/docs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/java/build.xml
+   M /trunk/kde-center/cmake/GGZKDECenterPackage.cmake
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- bump to snapshot-0.99.5pre already
+
+
+------------------------------------------------------------------------
+r10575 | josef | 2008-10-25 21:00:09 +0200 (Sa, 25. Okt 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzdmod/Makefile.am
+
+- synchronise linker.map changes from base-libs
+
+
+------------------------------------------------------------------------
+r10527 | josef | 2008-08-28 20:39:38 +0200 (Do, 28. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/parse_conf.c
+
+- ggzd.conf is optional
+
+
+------------------------------------------------------------------------
+r10525 | josef | 2008-08-24 23:06:23 +0200 (So, 24. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/Makefile.am
+   M /trunk/base-libs/ggzcore.pc.in
+   M /trunk/base-libs/ggzmod.pc.in
+   M /trunk/base-libs/libggz.pc.in
+   M /trunk/ggzd/Makefile.am
+   M /trunk/ggzd/ggzdmod.pc.in
+
+- apply slightly adapted pkgconfig patches from Rex Dieter
+
+
+------------------------------------------------------------------------
+r10515 | oojah | 2008-08-21 10:03:58 +0200 (Do, 21. Aug 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/mysql_schema.sql
+
+- Add control table to mysql schema.
+
+------------------------------------------------------------------------
+r10513 | oojah | 2008-08-19 13:54:12 +0200 (Di, 19. Aug 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_mysql.c
+
+Add code support for the player->confirmed flag under mysql.
+
+------------------------------------------------------------------------
+r10512 | oojah | 2008-08-19 01:33:53 +0200 (Di, 19. Aug 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/Makefile.am
+   M /trunk/ggzd/ggzd/database/ggzdb_pgsql.c
+   A /trunk/ggzd/ggzd/database/pgsql_upgrade_0.7_0.8.sql (von /trunk/ggzd/ggzd/database/upgrade_0.7_0.8.sql:10511)
+   D /trunk/ggzd/ggzd/database/upgrade_0.7_0.8.sql
+
+- Database upgrade files are database specific, so rename to pgsql_upgrade_0.7_0.8.sql.
+
+------------------------------------------------------------------------
+r10491 | josef | 2008-08-13 12:32:19 +0200 (Mi, 13. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/m4/database.m4
+
+- wrong number of macro arguments led to MySQL being configured despite the headers not being found
+
+
+------------------------------------------------------------------------
+r10477 | josef | 2008-08-12 19:53:51 +0200 (Di, 12. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/game_servers/tictactoe/net.c
+
+- regenerated protocol handler (flush all DIO packages)
+
+
+------------------------------------------------------------------------
+r10475 | josef | 2008-08-12 19:28:47 +0200 (Di, 12. Aug 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/ggzd/game_servers/tictactoe/game.c
+   M /trunk/ggzd/game_servers/tictactoe/net.c
+   M /trunk/ggzd/game_servers/tictactoe/net.h
+   M /trunk/ggzd/game_servers/tictactoe/tictactoe.dsc
+
+- freshly regenerated protocol implementation
+- go back to DIO finally
+- have protocol layer appear in the protocol version
+
+
+------------------------------------------------------------------------
+r10471 | josef | 2008-08-12 18:05:32 +0200 (Di, 12. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/game_servers/tictactoe/game.c
+
+- add a couple of debug messages
+
+
+------------------------------------------------------------------------
+r10443 | oojah | 2008-08-06 11:40:48 +0200 (Mi, 06. Aug 2008) | 13 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_pgsql.c
+   M /trunk/ggzd/ggzd/database/ggzdb_util.c
+   M /trunk/ggzd/ggzd/database/ggzdb_util.h
+   M /trunk/ggzd/ggzd/database/pgsql_schema.sql
+
+Remove _ggzdb_strreplace() function.
+This was used to replace %PREFIX% strings in the pgsql schema prior to loading
+into the db. With accompanying code in the ggzdb_pgsql.c module, the server
+admin could've selected db table prefixes.
+
+I've removed this for the following reasons:
+
+* _ggzdb_strreplace was broken, as pointed out by Jason.
+* Specifying table prefixes is essentially only useful/desired where the end
+  user doesn't have the ability to devote an entire database to ggzd. In this
+  case the implied lack of available resources means that db4/sqlite databases
+  should be more than sufficient.
+
+------------------------------------------------------------------------
+r10399 | josef | 2008-07-26 14:20:23 +0200 (Sa, 26. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/ggzd.conf.example.in
+
+- point to meta.g.o, but still disable by default
+
+
+------------------------------------------------------------------------
+r10381 | oojah | 2008-07-21 21:41:51 +0200 (Mo, 21. Jul 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/database/ggzdb_pgsql.c
+   M /trunk/ggzd/ggzd/database/ggzdb_util.c
+   M /trunk/ggzd/ggzd/database/ggzdb_util.h
+
+More ggzdb_pgsql.c/strreplace() to ggzdb_util.c/_ggzdb_strreplace() so that it can be used by ggzdb_mysql.c.
+
+------------------------------------------------------------------------
+r10376 | josef | 2008-07-17 20:01:05 +0200 (Do, 17. Jul 2008) | 6 lines
+Geänderte Pfade:
+   M /trunk/ggzd/m4
+   M /trunk/grubby/m4
+   M /trunk/gtk-client/m4
+   M /trunk/txt-client/m4
+   M /trunk/utils/m4
+
+- update svn:externals to point to base-libs
+
+Note: I'd like to use SVN's new relative paths here, however with svn+ssh it will ask the password
+for each such directory instead of reusing the existing SSH connection.
+
+
+------------------------------------------------------------------------
+r10366 | josef | 2008-07-17 10:44:19 +0200 (Do, 17. Jul 2008) | 5 lines
+Geänderte Pfade:
+   A /trunk/community/AUTHORS
+   M /trunk/docs/AUTHORS
+   M /trunk/ggzd/AUTHORS
+   M /trunk/grubby/AUTHORS
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/java/AUTHORS
+   M /trunk/kde-center/AUTHORS
+   M /trunk/libggz/AUTHORS
+   M /trunk/python/AUTHORS
+   M /trunk/txt-client/AUTHORS
+   M /trunk/utils/AUTHORS
+
+- version update
+- link to central credits file
+- ggz-community didn't have an AUTHORS file yet
+
+
+------------------------------------------------------------------------
+r10352 | jdorje | 2008-07-16 07:31:13 +0200 (Mi, 16. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/ggzd/ggzd/net.c
+
+Force printf-style paramaters to be the correct type.
+------------------------------------------------------------------------
+r10342 | josef | 2008-07-14 22:41:00 +0200 (Mo, 14. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/gtk-client/configure.ac
+
+- always warn about --enable-visibility=yes because we cannot know yet what is going to happen on unusual compilers, linkers etc.
+
+
+------------------------------------------------------------------------
+r10332 | josef | 2008-07-13 18:05:32 +0200 (So, 13. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.h
+   M /trunk/ggzd/ggzdmod/ggzdmod.h
+   M /trunk/libggz/src/ggz.h
+
+- bump library version numbers
+
+
+------------------------------------------------------------------------
+r10331 | josef | 2008-07-13 17:37:43 +0200 (So, 13. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/java/Makefile
+   M /trunk/java/build.xml
+   M /trunk/libggz/configure.ac
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- bump all version numbers, but also all libggz requirements, to 0.99.4
+
+
+------------------------------------------------------------------------
+r10330 | josef | 2008-07-13 17:31:32 +0200 (So, 13. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/community/NEWS
+   M /trunk/community/README
+   M /trunk/docs/ChangeLog
+   M /trunk/docs/NEWS
+   M /trunk/docs/README
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggzd/ChangeLog
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/grubby/ChangeLog
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README
+   M /trunk/java/ChangeLog
+   M /trunk/java/NEWS
+   M /trunk/libggz/ChangeLog
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/README
+   M /trunk/python/ChangeLog
+   M /trunk/python/NEWS
+   M /trunk/python/README
+   M /trunk/txt-client/ChangeLog
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README
+   M /trunk/utils/ChangeLog
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+
+- massive update to changelog due to SVN format change, ~67,000 lines of diff
+- synchronise updated news file and bump version number in readme files
+
+
+------------------------------------------------------------------------
 r10315 | oojah | 2008-07-12 20:56:41 +0200 (Sa, 12. Jul 2008) | 2 lines
 Geänderte Pfade:
    M /trunk/ggzd/ggzd/database/ggzdb_mysql.c

@@ -1,4 +1,847 @@
 ------------------------------------------------------------------------
+r10777 | oojah | 2009-01-02 03:17:58 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/libggz/ggz.h
+   M /trunk/base-libs/libggz/security/ggz_tls_gnutls.c
+   M /trunk/base-libs/libggz/security/ggz_tls_none.c
+   M /trunk/base-libs/libggz/security/ggz_tls_nss.c
+   M /trunk/base-libs/libggz/security/ggz_tls_openssl.c
+
+ggz_tls_read and ggz_tls_write should have ssize_t return type, not size_t. This bug would prevent those functions ever returning an error - hopefully this will be the fix that solves the leaking sockets.
+
+------------------------------------------------------------------------
+r10757 | oojah | 2009-01-02 00:48:57 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggz-config/ggz-config.c
+
+Always declare functions with empty argument lists as void.
+
+------------------------------------------------------------------------
+r10756 | oojah | 2009-01-02 00:47:46 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggz-config/ggz-config.c
+
+More strings that should be const.
+
+------------------------------------------------------------------------
+r10755 | oojah | 2009-01-02 00:43:33 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggz-config/ggz-config.c
+
+const string array should be const.
+
+------------------------------------------------------------------------
+r10754 | oojah | 2009-01-02 00:41:49 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/table.c
+
+Fix signed/unsigned comparisons.
+
+------------------------------------------------------------------------
+r10753 | oojah | 2009-01-02 00:31:08 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/room.c
+
+Fix signed/unsigned comparisons.
+
+------------------------------------------------------------------------
+r10752 | oojah | 2009-01-02 00:20:12 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/room.c
+
+const string array should be const.
+
+------------------------------------------------------------------------
+r10751 | oojah | 2009-01-02 00:13:38 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/netxml.c
+
+Fixed signed and unsigned type in conditional expression.
+
+------------------------------------------------------------------------
+r10750 | oojah | 2009-01-02 00:11:44 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/netxml.c
+
+"message" argument of _ggzcore_net_error() should be const.
+
+------------------------------------------------------------------------
+r10749 | oojah | 2009-01-02 00:11:12 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/server.c
+   M /trunk/base-libs/ggzcore/server.h
+
+"message" argument of _ggzcore_server_net_error() should be const.
+
+------------------------------------------------------------------------
+r10748 | oojah | 2009-01-02 00:07:27 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/netxml.c
+
+Fix signed/unsigned comparisons.
+
+------------------------------------------------------------------------
+r10747 | oojah | 2009-01-02 00:06:14 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/netxml.c
+
+"line" argument of _ggzcore_net_send_line() should be const.
+
+------------------------------------------------------------------------
+r10746 | oojah | 2009-01-02 00:03:37 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/module.c
+
+Fix signed/unsigned comparisons.
+
+------------------------------------------------------------------------
+r10745 | oojah | 2009-01-02 00:00:44 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/game.c
+
+Fix signed/unsigned comparisons.
+
+------------------------------------------------------------------------
+r10744 | oojah | 2009-01-01 23:58:16 +0100 (Do, 01. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/game.c
+
+const string array should be const.
+
+------------------------------------------------------------------------
+r10743 | oojah | 2009-01-01 23:51:05 +0100 (Do, 01. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/libggz/ggz_common.c
+
+Test for perm should check that it is between 0 and GGZ_PERM_COUNT, so should be && not ||.
+
+------------------------------------------------------------------------
+r10742 | oojah | 2009-01-01 23:49:18 +0100 (Do, 01. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/libggz/ggz_common.c
+
+Fix signed/unsigned comparison.
+
+------------------------------------------------------------------------
+r10741 | oojah | 2009-01-01 23:46:00 +0100 (Do, 01. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/libggz/easysock.c
+
+Fix incorrect defined test.
+
+------------------------------------------------------------------------
+r10738 | josef | 2009-01-01 17:34:36 +0100 (Do, 01. Jan 2009) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/libggz/easysock.c
+
+- ok, we need to fake our windows version, I have no clue what this does but it helps for compilation
+
+
+------------------------------------------------------------------------
+r10737 | josef | 2009-01-01 17:27:39 +0100 (Do, 01. Jan 2009) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/m4/tls.m4
+
+- make libtool 2.0.x happy by removing spaces after -L
+
+
+------------------------------------------------------------------------
+r10735 | josef | 2009-01-01 17:16:51 +0100 (Do, 01. Jan 2009) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/libggz/easysock.c
+
+- quick fix to allow compilation when using --disable-threading
+
+
+------------------------------------------------------------------------
+r10733 | josef | 2009-01-01 16:00:54 +0100 (Do, 01. Jan 2009) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/m4/ggz/iconv.m4
+   M /trunk/base-libs/m4/ggz/mkdir.m4
+
+- modify M4 files so that autoconf 2.63 doesn't throw warnings anymore
+
+
+------------------------------------------------------------------------
+r10731 | josef | 2009-01-01 12:33:45 +0100 (Do, 01. Jan 2009) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/desktop/Makefile.am
+
+- away with EXTRA_DIST
+
+
+------------------------------------------------------------------------
+r10710 | josef | 2008-12-30 21:42:18 +0100 (Di, 30. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/m4/gc.m4
+
+- the obvious fix for the empty #define issue
+
+
+------------------------------------------------------------------------
+r10709 | josef | 2008-12-30 21:33:43 +0100 (Di, 30. Dez 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/base-libs/m4/gc.m4
+
+- use $enable_gc so that the status output works
+
+This does not fix the strange #define issue yet in cases where boehm-gc isn't used.
+
+
+------------------------------------------------------------------------
+r10645 | josef | 2008-12-24 10:28:51 +0100 (Mi, 24. Dez 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/base-libs/NEWS
+   M /trunk/base-libs/configure.ac
+   M /trunk/base-libs/m4/gc.m4
+
+- add ggz_threads.h file which was forgotten in the previous commit
+- keep track of latest news so we can get 0.99.5 out in a few days
+
+
+------------------------------------------------------------------------
+r10641 | josef | 2008-12-24 09:26:40 +0100 (Mi, 24. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/libggz/Makefile.am
+
+- distribute the template for the header file
+
+
+------------------------------------------------------------------------
+r10638 | josef | 2008-12-23 21:49:07 +0100 (Di, 23. Dez 2008) | 9 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/netxml.c
+
+- be more strict: recognise if TLS is not offered by server, and if it's required then bail out
+
+There are now three barriers to take for the clients: server must offer TLS, libggz must have a
+TLS handler compiled in, and the handshake must succeed.
+
+FIXME: Apparently the disconnection deceives the state model in ggzcore, leading to a crash
+(event 13). This must be fixed.
+
+
+------------------------------------------------------------------------
+r10634 | josef | 2008-12-23 20:23:34 +0100 (Di, 23. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/libggz/ggz_threads.h.in
+
+- we have to assume it's available in /usr/include/gc
+
+
+------------------------------------------------------------------------
+r10633 | josef | 2008-12-23 20:12:30 +0100 (Di, 23. Dez 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/base-libs/libggz
+   M /trunk/base-libs/libggz/Makefile.am
+   A /trunk/base-libs/libggz/ggz_threads.h.in
+   M /trunk/base-libs/libggz/memory.c
+
+- new header file <ggz_threads.h> as a replacement for <pthread.h>
+- the purpose is to encapsulate garbage collection function symbol redirection
+
+
+------------------------------------------------------------------------
+r10632 | josef | 2008-12-23 19:40:37 +0100 (Di, 23. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/net.h
+   M /trunk/base-libs/ggzcore/netxml.c
+   M /trunk/base-libs/ggzcore/server.c
+
+- reintroduce the ggzcore_server_get_tls() function so we can check if the policy was met when it is set to optional
+
+
+------------------------------------------------------------------------
+r10631 | josef | 2008-12-23 19:29:15 +0100 (Di, 23. Dez 2008) | 7 lines
+Geänderte Pfade:
+   M /trunk/base-libs/libggz/memory.c
+
+- prepare libggz for threaded garbage collection, using a speed optimisation for currently available versions
+
+FIXME: In order to make it finally work, all files including pthreads.h must also contain the same header
+block as was added here. We might want to create a ggz_threads.h file, but it might still cause trouble
+when mixed with other pthreads code. So maybe activation at runtime for safety reasons is needed.
+
+
+------------------------------------------------------------------------
+r10630 | josef | 2008-12-23 19:12:00 +0100 (Di, 23. Dez 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/ggzcore.h
+   M /trunk/base-libs/ggzcore/net.h
+   M /trunk/base-libs/ggzcore/netxml.c
+   M /trunk/base-libs/ggzcore/server.c
+   M /trunk/grubby/grubby/src/net.c
+   M /trunk/gtk-client/ggz-gtk/login.c
+   M /trunk/kde-center/kggzcore/coreclient.cpp
+   M /trunk/kde-center/kggzcore/coreclientbase.cpp
+   M /trunk/kde-center/kggzcore/coreclientbase.h
+   M /trunk/playground/agrue/agrue/net.c
+   M /trunk/playground/jabber/ggzd-jabberproxy.cc
+   M /trunk/python/pyggzcore/src/pyggzcoresimple_init.c
+   M /trunk/python/pyggzcore/src/test.py
+   M /trunk/python/t-rex/t-rex
+   M /trunk/python/vibora/vibora
+   M /trunk/txt-client/ggz-txt/server.c
+   M /trunk/utils/cmd-client/main.c
+   M /trunk/utils/ggz-wrapper/server.c
+   M /trunk/utils/telggz/net.c
+
+- turn boolean TLS option into an enumerated security policy
+- this turns on "use if available" by default for all clients
+- Vencedor and ggz-txt can also require encryption, while other clients cannot
+
+
+------------------------------------------------------------------------
+r10627 | josef | 2008-12-23 08:56:30 +0100 (Di, 23. Dez 2008) | 6 lines
+Geänderte Pfade:
+   M /trunk/base-libs/INSTALL
+   D /trunk/base-libs/INSTALL.client
+   M /trunk/base-libs/README
+   D /trunk/base-libs/README.client
+   M /trunk/base-libs/tests
+
+- ignore ggzmod test executables
+- update generic installation instructions with latest version from autoconf
+- get rid of package-specific installation instructions, these can be found in more detail in the packager guide
+- merge README.client information so we don't have 3 readme files in this package
+
+
+------------------------------------------------------------------------
+r10624 | josef | 2008-12-22 20:52:06 +0100 (Mo, 22. Dez 2008) | 3 lines
+Geänderte Pfade:
+   A /trunk/base-libs/m4/gc.m4
+
+- add missing macro file, spotted by canophone
+
+
+------------------------------------------------------------------------
+r10623 | josef | 2008-12-22 20:08:36 +0100 (Mo, 22. Dez 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/base-libs/configure.ac
+   M /trunk/base-libs/libggz/Makefile.am
+   M /trunk/base-libs/libggz/memory.c
+
+- experimental support for the Boehm-Demers-Weiser conservative garbage collector
+- no more dangerous memory leaks or double-free's! in exchange for slightly less predictable performance slumps
+
+
+------------------------------------------------------------------------
+r10618 | jdorje | 2008-12-01 05:57:03 +0100 (Mo, 01. Dez 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/base-libs/autogen.sh
+   M /trunk/docs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+Add check for m4/ggz directory presence before including it.
+------------------------------------------------------------------------
+r10607 | josef | 2008-11-30 15:50:08 +0100 (So, 30. Nov 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzmod-ggz/ggzmod-ggz.c
+   M /trunk/base-libs/ggzmod-ggz/ggzmod-ggz.h
+   M /trunk/base-libs/ggzmod-ggz/io-ggz.c
+   M /trunk/base-libs/ggzmod-ggz/io-ggz.h
+   M /trunk/base-libs/ggzmod-ggz/mod-ggz.h
+   M /trunk/base-libs/ggzmod-ggz/protocol.h
+
+- the useless whitespace police strikes again
+- adapt copyright header style here as well, and update them
+
+
+------------------------------------------------------------------------
+r10606 | josef | 2008-11-30 15:35:37 +0100 (So, 30. Nov 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggz-config/ggz-config.c
+   M /trunk/base-libs/ggzcore/conf.c
+   M /trunk/base-libs/ggzcore/conf.h
+   M /trunk/base-libs/ggzcore/game.c
+   M /trunk/base-libs/ggzcore/game.h
+   M /trunk/base-libs/ggzcore/gametype.c
+   M /trunk/base-libs/ggzcore/gametype.h
+   M /trunk/base-libs/ggzcore/ggzcore-ggz.h
+   M /trunk/base-libs/ggzcore/ggzcore.h
+   M /trunk/base-libs/ggzcore/hook.c
+   M /trunk/base-libs/ggzcore/hook.h
+   M /trunk/base-libs/ggzcore/init.c
+   M /trunk/base-libs/ggzcore/module.c
+   M /trunk/base-libs/ggzcore/module.h
+   M /trunk/base-libs/ggzcore/net.h
+   M /trunk/base-libs/ggzcore/netxml.c
+   M /trunk/base-libs/ggzcore/player.c
+   M /trunk/base-libs/ggzcore/player.h
+   M /trunk/base-libs/ggzcore/protocol.h
+   M /trunk/base-libs/ggzcore/room.c
+   M /trunk/base-libs/ggzcore/room.h
+   M /trunk/base-libs/ggzcore/server.c
+   M /trunk/base-libs/ggzcore/server.h
+   M /trunk/base-libs/ggzcore/state.c
+   M /trunk/base-libs/ggzcore/state.h
+   M /trunk/base-libs/ggzcore/table.c
+   M /trunk/base-libs/ggzcore/table.h
+   M /trunk/base-libs/ggzmod/ggzmod.c
+   M /trunk/base-libs/ggzmod/ggzmod.h
+   M /trunk/base-libs/ggzmod/io.c
+   M /trunk/base-libs/ggzmod/io.h
+   M /trunk/base-libs/ggzmod/mod.h
+   M /trunk/base-libs/ggzmod/protocol.h
+
+- useless whitespace removal, completing this package
+- copyright header updates for more consistency
+
+
+------------------------------------------------------------------------
+r10597 | josef | 2008-11-23 22:35:34 +0100 (So, 23. Nov 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/conf.c
+   M /trunk/base-libs/ggzcore/conf.h
+   M /trunk/base-libs/ggzcore/game.c
+   M /trunk/base-libs/ggzcore/game.h
+   M /trunk/base-libs/ggzcore/gametype.c
+   M /trunk/base-libs/ggzcore/gametype.h
+   M /trunk/base-libs/ggzcore/ggzcore-ggz.h
+   M /trunk/base-libs/ggzcore/ggzcore.h
+   M /trunk/base-libs/ggzcore/hook.c
+   M /trunk/base-libs/ggzcore/hook.h
+   M /trunk/base-libs/ggzcore/init.c
+   M /trunk/base-libs/ggzcore/module.c
+   M /trunk/base-libs/ggzcore/module.h
+   M /trunk/base-libs/ggzcore/net.h
+   M /trunk/base-libs/ggzcore/netxml.c
+   M /trunk/base-libs/ggzcore/player.c
+   M /trunk/base-libs/ggzcore/player.h
+   M /trunk/base-libs/ggzcore/protocol.h
+   M /trunk/base-libs/ggzcore/room.c
+   M /trunk/base-libs/ggzcore/room.h
+   M /trunk/base-libs/ggzcore/server.c
+   M /trunk/base-libs/ggzcore/server.h
+   M /trunk/base-libs/ggzcore/state.c
+   M /trunk/base-libs/ggzcore/state.h
+   M /trunk/base-libs/ggzcore/table.c
+   M /trunk/base-libs/ggzcore/table.h
+   D /trunk/base-libs/ggzcore/user.c
+   D /trunk/base-libs/ggzcore/user.h
+
+- remove useless whitespace
+- remove useless file pair user.[ch] which was empty
+
+
+------------------------------------------------------------------------
+r10595 | josef | 2008-11-23 20:07:42 +0100 (So, 23. Nov 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/module.c
+
+- reset list to NULL to prevent segfault when calling this function twice
+- this may be related to embedded mode where no module list is loaded at all
+
+
+------------------------------------------------------------------------
+r10593 | josef | 2008-11-22 16:46:53 +0100 (Sa, 22. Nov 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/base-libs/libggz/conf.c
+   M /trunk/base-libs/libggz/easysock.c
+   M /trunk/base-libs/libggz/ggz.h
+   M /trunk/base-libs/libggz/ggz_common.c
+   M /trunk/base-libs/libggz/ggz_common.h
+   M /trunk/base-libs/libggz/ggz_dio.c
+   M /trunk/base-libs/libggz/ggz_dio.h
+   M /trunk/base-libs/libggz/list.c
+   M /trunk/base-libs/libggz/memory.c
+   M /trunk/base-libs/libggz/misc.c
+   M /trunk/base-libs/libggz/misc.h
+   M /trunk/base-libs/libggz/msg.c
+   M /trunk/base-libs/libggz/numberlist.c
+   M /trunk/base-libs/libggz/stack.c
+   M /trunk/base-libs/libggz/support.h
+   M /trunk/base-libs/libggz/uri.c
+   M /trunk/base-libs/libggz/xmlelement.c
+
+- removal of superfluous whitespace noise and empty lines consisting of only spaces and/or tabs
+- copyright header updates and unification
+
+
+------------------------------------------------------------------------
+r10576 | josef | 2008-10-25 21:05:03 +0200 (Sa, 25. Okt 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/configure.ac
+   M /trunk/community/Makefile
+   M /trunk/docs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/java/build.xml
+   M /trunk/kde-center/cmake/GGZKDECenterPackage.cmake
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- bump to snapshot-0.99.5pre already
+
+
+------------------------------------------------------------------------
+r10574 | josef | 2008-10-25 20:59:16 +0200 (Sa, 25. Okt 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/Makefile.am
+   M /trunk/base-libs/ggzmod/Makefile.am
+   M /trunk/base-libs/libggz/Makefile.am
+   M /trunk/base-libs/tests/Makefile.am
+
+- refer to linker maps using absolute path, needed for 'make distcheck'
+- link test applications against game-side ggzmod also because one of them is actually a game sort of thing
+
+
+------------------------------------------------------------------------
+r10568 | jdorje | 2008-10-15 19:11:45 +0200 (Mi, 15. Okt 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/base-libs/ggz-config/ggz-config.c
+
+Avoid shadowing global 'options' variable name.
+------------------------------------------------------------------------
+r10563 | oojah | 2008-09-21 11:28:17 +0200 (So, 21. Sep 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/libggz/ggz_common.h
+
+Documentation typo.
+
+------------------------------------------------------------------------
+r10550 | josef | 2008-08-30 18:35:22 +0200 (Sa, 30. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/game.c
+
+- first step towards solving the issue of launching non-existing game clients which currently leads to yet another ggz-gtk crash
+
+
+------------------------------------------------------------------------
+r10549 | josef | 2008-08-30 18:10:17 +0200 (Sa, 30. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/server.c
+
+- set channel fd, not server fd
+
+
+------------------------------------------------------------------------
+r10547 | josef | 2008-08-30 17:36:17 +0200 (Sa, 30. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/ggzcore.h
+   M /trunk/base-libs/ggzcore/server.c
+
+- make channels also async-aware
+
+
+------------------------------------------------------------------------
+r10546 | josef | 2008-08-30 15:16:17 +0200 (Sa, 30. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/NEWS
+
+- tentative high-level changelog despite the snapshot being a few days from getting ready
+
+
+------------------------------------------------------------------------
+r10542 | josef | 2008-08-30 13:27:50 +0200 (Sa, 30. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/netxml.c
+   M /trunk/base-libs/ggzcore/server.c
+   M /trunk/base-libs/ggzcore/server.h
+
+- make it work again with synchronous clients, although it is not encouraged
+
+
+------------------------------------------------------------------------
+r10539 | josef | 2008-08-30 13:02:49 +0200 (Sa, 30. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/netxml.c
+   M /trunk/base-libs/ggzcore/server.c
+
+- force asynchronous connection
+
+
+------------------------------------------------------------------------
+r10536 | josef | 2008-08-30 12:52:15 +0200 (Sa, 30. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/base-libs/libggz/easysock.c
+   M /trunk/base-libs/libggz/ggz.h
+   M /trunk/base-libs/libggz/linker.map
+
+- API additions and functionality enhancements according to the asynchrony behaviour document
+- this adds both asynchronous ggz_resolvename() and ggz_make_socket() without any external dependencies
+
+
+------------------------------------------------------------------------
+r10526 | josef | 2008-08-28 20:38:07 +0200 (Do, 28. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/libggz/conf.c
+   M /trunk/base-libs/libggz/ggz.h
+
+- new ggz_conf flag to express that a config file is optional on purpose
+
+
+------------------------------------------------------------------------
+r10525 | josef | 2008-08-24 23:06:23 +0200 (So, 24. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/Makefile.am
+   M /trunk/base-libs/ggzcore.pc.in
+   M /trunk/base-libs/ggzmod.pc.in
+   M /trunk/base-libs/libggz.pc.in
+   M /trunk/ggzd/Makefile.am
+   M /trunk/ggzd/ggzdmod.pc.in
+
+- apply slightly adapted pkgconfig patches from Rex Dieter
+
+
+------------------------------------------------------------------------
+r10508 | josef | 2008-08-17 22:50:36 +0200 (So, 17. Aug 2008) | 6 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/module.c
+   M /trunk/base-libs/libggz/easysock.c
+   M /trunk/base-libs/libggz/ggz.h
+   M /trunk/base-libs/libggz/linker.map
+   M /trunk/base-libs/m4/ggz/system.m4
+
+- addition of support for asynchronous name resolver using libasyncns
+
+This is a good alternative to libanl. It requires two additional libggz functions,
+which is less ideal, but at least it works and doesn't crash.
+
+
+------------------------------------------------------------------------
+r10420 | oojah | 2008-07-27 18:29:08 +0200 (So, 27. Jul 2008) | 2 lines
+Geänderte Pfade:
+   M /trunk/base-libs/configure.ac
+
+Dist package name should be ggz-base-libs not base-libs.
+
+------------------------------------------------------------------------
+r10386 | josef | 2008-07-24 21:31:35 +0200 (Do, 24. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/m4/ggz/ggz.m4
+
+- the actual supporting code for the per-package module registry
+
+
+------------------------------------------------------------------------
+r10384 | josef | 2008-07-24 21:25:58 +0200 (Do, 24. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggz-config/ggz-config.c
+
+- differentiate better between read and write errors
+
+
+------------------------------------------------------------------------
+r10383 | josef | 2008-07-24 21:08:22 +0200 (Do, 24. Jul 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggz-config/ggz-config.c
+
+- fix a brace-position bug which went unnoticed many years and caused needless read-write opening of ggz.modules
+- new option -R/--registry to specify a file in ggz.modules.d/
+- consolidate MKDIR_TAKES_ONE_ARG stuff
+
+
+------------------------------------------------------------------------
+r10382 | josef | 2008-07-24 00:37:51 +0200 (Do, 24. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/module.c
+
+- check for additional ggz.modules-lookalike files in ggz.modules.d/ so distros will not easily get the packaging wrong
+
+
+------------------------------------------------------------------------
+r10375 | josef | 2008-07-17 16:44:23 +0200 (Do, 17. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggz-config/ggz-config.c
+   M /trunk/base-libs/ggzcore/ggzcore.h
+   M /trunk/base-libs/ggzcore/linker.map
+   M /trunk/base-libs/ggzcore/module.c
+   M /trunk/base-libs/ggzcore/module.h
+
+- addition of ggzcore_module_get_nth() function to get a module without any filtering on gametype or protocol
+
+
+------------------------------------------------------------------------
+r10374 | josef | 2008-07-17 16:32:35 +0200 (Do, 17. Jul 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggz-config/ggz-config.c
+
+- new command --list to list all installed game modules
+
+Note: This needs an additional function in ggzcore which doesn't exist yet to become truely useful.
+
+
+------------------------------------------------------------------------
+r10373 | josef | 2008-07-17 16:31:14 +0200 (Do, 17. Jul 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/module.c
+
+- highly experimental support for multiple ggz.modules files
+
+This is what some distributors wanted. It is however just a shift from using post-(de)installation hooks to setting up a global GGZ_REGISTRIES variable. Useful for hackers with many out-of-prefix installations, though.
+
+
+------------------------------------------------------------------------
+r10372 | josef | 2008-07-17 15:28:11 +0200 (Do, 17. Jul 2008) | 4 lines
+Geänderte Pfade:
+   D /trunk/base-libs/Doxyfile
+   M /trunk/base-libs/Makefile.am
+   M /trunk/base-libs/README
+   M /trunk/base-libs/configure.ac
+   A /trunk/base-libs/libggz/Doxyfile (von /trunk/base-libs/Doxyfile:10371)
+   M /trunk/base-libs/libggz/Makefile.am
+
+- move libggz Doxyfile into the appropriate subdirectory
+- adapt autoconf file and README to merged package contents
+
+
+------------------------------------------------------------------------
+r10371 | josef | 2008-07-17 14:57:29 +0200 (Do, 17. Jul 2008) | 3 lines
+Geänderte Pfade:
+   A /trunk/base-libs (von /trunk/libggz:10365)
+   R /trunk/base-libs/AUTHORS (von /trunk/libggz/AUTHORS:10366)
+   D /trunk/libggz
+
+- rename module to base-libs to not confuse it with libggz itself
+
+
+------------------------------------------------------------------------
+r10354 | jdorje | 2008-07-16 18:59:11 +0200 (Mi, 16. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/libggz/m4/ggz/ggz.m4
+
+Enable visibility controls by default.
+------------------------------------------------------------------------
+r10353 | jdorje | 2008-07-16 18:21:44 +0200 (Mi, 16. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/libggz/man
+
+Fix svn:ignore.
+------------------------------------------------------------------------
+r10351 | jdorje | 2008-07-16 07:10:58 +0200 (Mi, 16. Jul 2008) | 1 line
+Geänderte Pfade:
+   D /trunk/ggz-client-libs
+   A /trunk/libggz/ChangeLog.client-libs (von /trunk/ggz-client-libs/ChangeLog:10350)
+   A /trunk/libggz/INSTALL.client (von /trunk/ggz-client-libs/INSTALL:10350)
+   M /trunk/libggz/Makefile.am
+   A /trunk/libggz/README.client (von /trunk/ggz-client-libs/README:10350)
+   M /trunk/libggz/configure.ac
+   A /trunk/libggz/desktop (von /trunk/ggz-client-libs/desktop:10350)
+   A /trunk/libggz/ggz-config (von /trunk/ggz-client-libs/ggz-config:10350)
+   M /trunk/libggz/ggz-config/Makefile.am
+   A /trunk/libggz/ggzcore (von /trunk/ggz-client-libs/ggzcore:10350)
+   M /trunk/libggz/ggzcore/Makefile.am
+   A /trunk/libggz/ggzcore.pc.in (von /trunk/ggz-client-libs/ggzcore.pc.in:10350)
+   A /trunk/libggz/ggzmod (von /trunk/ggz-client-libs/ggzmod:10350)
+   M /trunk/libggz/ggzmod/Makefile.am
+   A /trunk/libggz/ggzmod-ggz (von /trunk/ggz-client-libs/ggzmod-ggz:10350)
+   M /trunk/libggz/ggzmod-ggz/Makefile.am
+   A /trunk/libggz/ggzmod.pc.in (von /trunk/ggz-client-libs/ggzmod.pc.in:10350)
+   A /trunk/libggz/indent.pro (von /trunk/ggz-client-libs/indent.pro:10350)
+   A /trunk/libggz/libggz (von /trunk/libggz/src:10350)
+   A /trunk/libggz/m4/i18n.mk (von /trunk/ggz-client-libs/m4/i18n.mk:10350)
+   M /trunk/libggz/man/Makefile.am
+   A /trunk/libggz/man/ggz-config.6.in (von /trunk/ggz-client-libs/man/ggz-config.6.in:10350)
+   A /trunk/libggz/man/ggz.7 (von /trunk/ggz-client-libs/man/ggz.7:10350)
+   A /trunk/libggz/man/ggz.modules.5.in (von /trunk/ggz-client-libs/man/ggz.modules.5.in:10350)
+   A /trunk/libggz/man/ggzcore_h.3.in (von /trunk/ggz-client-libs/man/ggzcore_h.3.in:10350)
+   A /trunk/libggz/man/ggzmod_h.3.in (von /trunk/ggz-client-libs/man/ggzmod_h.3.in:10350)
+   A /trunk/libggz/po (von /trunk/ggz-client-libs/po:10350)
+   D /trunk/libggz/src
+   M /trunk/libggz/tests/Makefile.am
+   A /trunk/libggz/tests/ggzmodgametest.c (von /trunk/ggz-client-libs/tests/ggzmodgametest.c:10350)
+   A /trunk/libggz/tests/ggzmodtest.c (von /trunk/ggz-client-libs/tests/ggzmodtest.c:10350)
+   M /trunk/utils/Makefile.am
+   M /trunk/utils/configure.ac
+   A /trunk/utils/ggz-wrapper (von /trunk/ggz-client-libs/ggz-wrapper:10350)
+   M /trunk/utils/ggz-wrapper/Makefile.am
+   A /trunk/utils/ggzwrap (von /trunk/ggz-client-libs/ggzwrap:10350)
+   M /trunk/utils/ggzwrap/Makefile.am
+   M /trunk/utils/man/Makefile.am
+   A /trunk/utils/man/ggz-wrapper.6 (von /trunk/ggz-client-libs/man/ggz-wrapper.6:10350)
+   A /trunk/utils/man/ggz.6 (von /trunk/ggz-client-libs/man/ggz.6:10350)
+   A /trunk/utils/man/ggzwrap.1 (von /trunk/ggz-client-libs/man/ggzwrap.1:10350)
+
+Break up ggz-client-libs, merging it into libggz and utils.
+------------------------------------------------------------------------
+r10336 | jdorje | 2008-07-13 18:40:59 +0200 (So, 13. Jul 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/libggz/m4/ggz/ggz.m4
+
+0.99.4 is not compatible with older ggzdmods; require the new one.
+------------------------------------------------------------------------
+r10332 | josef | 2008-07-13 18:05:32 +0200 (So, 13. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/ggz-client-libs/ggzcore/ggzcore.h
+   M /trunk/ggz-client-libs/ggzmod/ggzmod.h
+   M /trunk/ggzd/ggzdmod/ggzdmod.h
+   M /trunk/libggz/src/ggz.h
+
+- bump library version numbers
+
+
+------------------------------------------------------------------------
+r10331 | josef | 2008-07-13 17:37:43 +0200 (So, 13. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/java/Makefile
+   M /trunk/java/build.xml
+   M /trunk/libggz/configure.ac
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- bump all version numbers, but also all libggz requirements, to 0.99.4
+
+
+------------------------------------------------------------------------
+r10330 | josef | 2008-07-13 17:31:32 +0200 (So, 13. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/community/NEWS
+   M /trunk/community/README
+   M /trunk/docs/ChangeLog
+   M /trunk/docs/NEWS
+   M /trunk/docs/README
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggzd/ChangeLog
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/grubby/ChangeLog
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README
+   M /trunk/java/ChangeLog
+   M /trunk/java/NEWS
+   M /trunk/libggz/ChangeLog
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/README
+   M /trunk/python/ChangeLog
+   M /trunk/python/NEWS
+   M /trunk/python/README
+   M /trunk/txt-client/ChangeLog
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README
+   M /trunk/utils/ChangeLog
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+
+- massive update to changelog due to SVN format change, ~67,000 lines of diff
+- synchronise updated news file and bump version number in readme files
+
+
+------------------------------------------------------------------------
 r10299 | oojah | 2008-07-12 12:30:21 +0200 (Sa, 12. Jul 2008) | 2 lines
 Geänderte Pfade:
    M /trunk/libggz/src/ggz.h

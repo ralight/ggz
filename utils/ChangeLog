@@ -1,4 +1,426 @@
 ------------------------------------------------------------------------
+r10768 | oojah | 2009-01-02 01:30:53 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/utils/telggz/chat.c
+
+Always declare functions with empty argument lists as void.
+
+------------------------------------------------------------------------
+r10767 | oojah | 2009-01-02 01:28:55 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/utils/metaserv/metaserv/helper.c
+
+Fix signed/unsigned comparisons.
+
+------------------------------------------------------------------------
+r10766 | oojah | 2009-01-02 01:27:39 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/utils/metaserv/metaserv/metaserv.c
+
+String should be const.
+
+------------------------------------------------------------------------
+r10765 | oojah | 2009-01-02 01:25:54 +0100 (Fr, 02. Jan 2009) | 2 lines
+Geänderte Pfade:
+   M /trunk/utils/metaserv/libmeta/meta.c
+   M /trunk/utils/metaserv/metaserv/metaserv.c
+
+Always declare functions with empty argument lists as void.
+
+------------------------------------------------------------------------
+r10714 | josef | 2008-12-31 11:15:22 +0100 (Mi, 31. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/utils/ggzcomm/ggzcommgen
+
+- when we only give an fd and not a full packet objects, the signals should still be connected to slots
+
+
+------------------------------------------------------------------------
+r10642 | josef | 2008-12-24 09:38:17 +0100 (Mi, 24. Dez 2008) | 7 lines
+Geänderte Pfade:
+   M /trunk/utils/Makefile.am
+   M /trunk/utils/configure.ac
+   A /trunk/utils/m4/i18n.mk (von /trunk/grubby/m4/i18n.mk:10619)
+   A /trunk/utils/po
+   A /trunk/utils/po/Makefile.am
+   A /trunk/utils/po/ggz-cmd
+   A /trunk/utils/po/ggz-cmd/Makefile.am
+   A /trunk/utils/po/ggz-cmd/de.po
+   A /trunk/utils/po/ggz-cmd/ggz-cmd.pot
+
+- translation framework for ggz-utils (really high time...)
+- German translation for ggz-cmd
+
+FIXME: we should propagate gtk-games' ggz_intl.[ch] to libggz and make it
+more generic so we can preload ggzcore messages etc. more easily.
+
+
+------------------------------------------------------------------------
+r10640 | josef | 2008-12-24 09:24:14 +0100 (Mi, 24. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/utils/cmd-client/Makefile.am
+   M /trunk/utils/cmd-client/main.c
+
+- prepare for i18n
+
+
+------------------------------------------------------------------------
+r10639 | josef | 2008-12-24 09:11:13 +0100 (Mi, 24. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/utils/cmd-client/main.c
+
+- network errors also only return a string
+
+
+------------------------------------------------------------------------
+r10637 | josef | 2008-12-23 21:46:30 +0100 (Di, 23. Dez 2008) | 6 lines
+Geänderte Pfade:
+   M /trunk/utils/cmd-client/main.c
+
+- allow invocation with guaranteed encryption, syntactically similar to what ggz-txt does
+
+FIXME: We should add this to Uri-spec.txt somehow and then use the libggz URI parser
+to cut down the code size.
+
+
+------------------------------------------------------------------------
+r10636 | josef | 2008-12-23 21:35:49 +0100 (Di, 23. Dez 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/utils/cmd-client/main.c
+
+- not all failure events return a GGZErrorEventData structure
+
+We really have to re-think the inconsistency of using strings sometimes, error structures in other times and casually returning NULL!
+
+
+------------------------------------------------------------------------
+r10630 | josef | 2008-12-23 19:12:00 +0100 (Di, 23. Dez 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/ggzcore.h
+   M /trunk/base-libs/ggzcore/net.h
+   M /trunk/base-libs/ggzcore/netxml.c
+   M /trunk/base-libs/ggzcore/server.c
+   M /trunk/grubby/grubby/src/net.c
+   M /trunk/gtk-client/ggz-gtk/login.c
+   M /trunk/kde-center/kggzcore/coreclient.cpp
+   M /trunk/kde-center/kggzcore/coreclientbase.cpp
+   M /trunk/kde-center/kggzcore/coreclientbase.h
+   M /trunk/playground/agrue/agrue/net.c
+   M /trunk/playground/jabber/ggzd-jabberproxy.cc
+   M /trunk/python/pyggzcore/src/pyggzcoresimple_init.c
+   M /trunk/python/pyggzcore/src/test.py
+   M /trunk/python/t-rex/t-rex
+   M /trunk/python/vibora/vibora
+   M /trunk/txt-client/ggz-txt/server.c
+   M /trunk/utils/cmd-client/main.c
+   M /trunk/utils/ggz-wrapper/server.c
+   M /trunk/utils/telggz/net.c
+
+- turn boolean TLS option into an enumerated security policy
+- this turns on "use if available" by default for all clients
+- Vencedor and ggz-txt can also require encryption, while other clients cannot
+
+
+------------------------------------------------------------------------
+r10618 | jdorje | 2008-12-01 05:57:03 +0100 (Mo, 01. Dez 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/base-libs/autogen.sh
+   M /trunk/docs/autogen.sh
+   M /trunk/ggzd/autogen.sh
+   M /trunk/grubby/autogen.sh
+   M /trunk/gtk-client/autogen.sh
+   M /trunk/txt-client/autogen.sh
+   M /trunk/utils/autogen.sh
+
+Add check for m4/ggz directory presence before including it.
+------------------------------------------------------------------------
+r10576 | josef | 2008-10-25 21:05:03 +0200 (Sa, 25. Okt 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/configure.ac
+   M /trunk/community/Makefile
+   M /trunk/docs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/java/build.xml
+   M /trunk/kde-center/cmake/GGZKDECenterPackage.cmake
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- bump to snapshot-0.99.5pre already
+
+
+------------------------------------------------------------------------
+r10573 | josef | 2008-10-25 18:59:58 +0200 (Sa, 25. Okt 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/utils/ggzcomm/README.ggzcomm
+
+- refer to related projects for the "we need something better" crowd
+
+
+------------------------------------------------------------------------
+r10567 | jdorje | 2008-10-15 19:05:43 +0200 (Mi, 15. Okt 2008) | 1 line
+Geänderte Pfade:
+   M /trunk/utils/metaserv/libmeta/minidom.c
+
+Mark function static to avoid missing-prototype warning.
+------------------------------------------------------------------------
+r10514 | josef | 2008-08-19 23:04:00 +0200 (Di, 19. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/utils/ggzcomm/README.ggzcomm
+
+- document ability to generate DIO code with KGGZPacket for C++
+
+
+------------------------------------------------------------------------
+r10479 | josef | 2008-08-12 19:59:20 +0200 (Di, 12. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/utils/ggzcomm/ggzcommgen
+
+- another bugfix: opcode must be read from input stream and not from write-only output stream
+
+
+------------------------------------------------------------------------
+r10478 | josef | 2008-08-12 19:54:23 +0200 (Di, 12. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/utils/ggzcomm/ggzcommgen
+
+- when using DIO, always use flush after writing
+- we could use autoflush as well, but at least it works reliably now
+
+
+------------------------------------------------------------------------
+r10474 | josef | 2008-08-12 19:24:10 +0200 (Di, 12. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/utils/ggzcomm/ggzcommgen
+
+- correct indentation
+
+
+------------------------------------------------------------------------
+r10473 | josef | 2008-08-12 19:22:35 +0200 (Di, 12. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/utils/ggzcomm/ggzcommgen
+
+- use ggz_malloc instead of malloc; fix propagated from manual changes to TTT protocol implementation
+
+
+------------------------------------------------------------------------
+r10468 | josef | 2008-08-12 16:53:52 +0200 (Di, 12. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/utils/ggzcomm/ggzcommgen
+
+- we want to flush DIO packets
+
+
+------------------------------------------------------------------------
+r10466 | josef | 2008-08-12 15:58:11 +0200 (Di, 12. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/utils/ggzcomm/ggzcommgen
+
+- there was a typo
+
+
+------------------------------------------------------------------------
+r10465 | josef | 2008-08-12 15:53:54 +0200 (Di, 12. Aug 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/utils/ggzcomm/ggzcommgen
+
+- add ability to generate code for KGGZPacket-using games (i.e. for DIO-based protocols)
+
+
+------------------------------------------------------------------------
+r10418 | josef | 2008-07-27 13:19:30 +0200 (So, 27. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/utils/metaserv/libmeta/minidom.c
+   M /trunk/utils/metaserv/metaserv/metaserv.c
+
+- make ggzmetaserv valgrind-clean at least for simple invocations
+- the two biggest offenders were leaks and a not necessarily null-terminated input buffer
+
+
+------------------------------------------------------------------------
+r10409 | josef | 2008-07-26 22:58:20 +0200 (Sa, 26. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/utils/metaserv/metaserv/metaserv.c
+
+- always trim the read buffer early on
+
+
+------------------------------------------------------------------------
+r10405 | josef | 2008-07-26 17:38:38 +0200 (Sa, 26. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/utils/metaserv/metaserv/helper.c
+   M /trunk/utils/metaserv/metaserv/metaserv.c
+   M /trunk/utils/metaserv/minidom/main.c
+
+- do not assume presence of <?xml tag
+- always flush all output buffers by default
+
+
+------------------------------------------------------------------------
+r10398 | josef | 2008-07-26 13:35:17 +0200 (Sa, 26. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/utils/metaserv/metaserv/tests.txt
+
+- document how to retrieve the entry to api.ggzcommunity.org
+
+
+------------------------------------------------------------------------
+r10376 | josef | 2008-07-17 20:01:05 +0200 (Do, 17. Jul 2008) | 6 lines
+Geänderte Pfade:
+   M /trunk/ggzd/m4
+   M /trunk/grubby/m4
+   M /trunk/gtk-client/m4
+   M /trunk/txt-client/m4
+   M /trunk/utils/m4
+
+- update svn:externals to point to base-libs
+
+Note: I'd like to use SVN's new relative paths here, however with svn+ssh it will ask the password
+for each such directory instead of reusing the existing SSH connection.
+
+
+------------------------------------------------------------------------
+r10370 | josef | 2008-07-17 14:48:08 +0200 (Do, 17. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/utils/cmd-client/ggz-sql
+
+- more clue when something goes wrong
+
+
+------------------------------------------------------------------------
+r10366 | josef | 2008-07-17 10:44:19 +0200 (Do, 17. Jul 2008) | 5 lines
+Geänderte Pfade:
+   A /trunk/community/AUTHORS
+   M /trunk/docs/AUTHORS
+   M /trunk/ggzd/AUTHORS
+   M /trunk/grubby/AUTHORS
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/java/AUTHORS
+   M /trunk/kde-center/AUTHORS
+   M /trunk/libggz/AUTHORS
+   M /trunk/python/AUTHORS
+   M /trunk/txt-client/AUTHORS
+   M /trunk/utils/AUTHORS
+
+- version update
+- link to central credits file
+- ggz-community didn't have an AUTHORS file yet
+
+
+------------------------------------------------------------------------
+r10351 | jdorje | 2008-07-16 07:10:58 +0200 (Mi, 16. Jul 2008) | 1 line
+Geänderte Pfade:
+   D /trunk/ggz-client-libs
+   A /trunk/libggz/ChangeLog.client-libs (von /trunk/ggz-client-libs/ChangeLog:10350)
+   A /trunk/libggz/INSTALL.client (von /trunk/ggz-client-libs/INSTALL:10350)
+   M /trunk/libggz/Makefile.am
+   A /trunk/libggz/README.client (von /trunk/ggz-client-libs/README:10350)
+   M /trunk/libggz/configure.ac
+   A /trunk/libggz/desktop (von /trunk/ggz-client-libs/desktop:10350)
+   A /trunk/libggz/ggz-config (von /trunk/ggz-client-libs/ggz-config:10350)
+   M /trunk/libggz/ggz-config/Makefile.am
+   A /trunk/libggz/ggzcore (von /trunk/ggz-client-libs/ggzcore:10350)
+   M /trunk/libggz/ggzcore/Makefile.am
+   A /trunk/libggz/ggzcore.pc.in (von /trunk/ggz-client-libs/ggzcore.pc.in:10350)
+   A /trunk/libggz/ggzmod (von /trunk/ggz-client-libs/ggzmod:10350)
+   M /trunk/libggz/ggzmod/Makefile.am
+   A /trunk/libggz/ggzmod-ggz (von /trunk/ggz-client-libs/ggzmod-ggz:10350)
+   M /trunk/libggz/ggzmod-ggz/Makefile.am
+   A /trunk/libggz/ggzmod.pc.in (von /trunk/ggz-client-libs/ggzmod.pc.in:10350)
+   A /trunk/libggz/indent.pro (von /trunk/ggz-client-libs/indent.pro:10350)
+   A /trunk/libggz/libggz (von /trunk/libggz/src:10350)
+   A /trunk/libggz/m4/i18n.mk (von /trunk/ggz-client-libs/m4/i18n.mk:10350)
+   M /trunk/libggz/man/Makefile.am
+   A /trunk/libggz/man/ggz-config.6.in (von /trunk/ggz-client-libs/man/ggz-config.6.in:10350)
+   A /trunk/libggz/man/ggz.7 (von /trunk/ggz-client-libs/man/ggz.7:10350)
+   A /trunk/libggz/man/ggz.modules.5.in (von /trunk/ggz-client-libs/man/ggz.modules.5.in:10350)
+   A /trunk/libggz/man/ggzcore_h.3.in (von /trunk/ggz-client-libs/man/ggzcore_h.3.in:10350)
+   A /trunk/libggz/man/ggzmod_h.3.in (von /trunk/ggz-client-libs/man/ggzmod_h.3.in:10350)
+   A /trunk/libggz/po (von /trunk/ggz-client-libs/po:10350)
+   D /trunk/libggz/src
+   M /trunk/libggz/tests/Makefile.am
+   A /trunk/libggz/tests/ggzmodgametest.c (von /trunk/ggz-client-libs/tests/ggzmodgametest.c:10350)
+   A /trunk/libggz/tests/ggzmodtest.c (von /trunk/ggz-client-libs/tests/ggzmodtest.c:10350)
+   M /trunk/utils/Makefile.am
+   M /trunk/utils/configure.ac
+   A /trunk/utils/ggz-wrapper (von /trunk/ggz-client-libs/ggz-wrapper:10350)
+   M /trunk/utils/ggz-wrapper/Makefile.am
+   A /trunk/utils/ggzwrap (von /trunk/ggz-client-libs/ggzwrap:10350)
+   M /trunk/utils/ggzwrap/Makefile.am
+   M /trunk/utils/man/Makefile.am
+   A /trunk/utils/man/ggz-wrapper.6 (von /trunk/ggz-client-libs/man/ggz-wrapper.6:10350)
+   A /trunk/utils/man/ggz.6 (von /trunk/ggz-client-libs/man/ggz.6:10350)
+   A /trunk/utils/man/ggzwrap.1 (von /trunk/ggz-client-libs/man/ggzwrap.1:10350)
+
+Break up ggz-client-libs, merging it into libggz and utils.
+------------------------------------------------------------------------
+r10331 | josef | 2008-07-13 17:37:43 +0200 (So, 13. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/java/Makefile
+   M /trunk/java/build.xml
+   M /trunk/libggz/configure.ac
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- bump all version numbers, but also all libggz requirements, to 0.99.4
+
+
+------------------------------------------------------------------------
+r10330 | josef | 2008-07-13 17:31:32 +0200 (So, 13. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/community/NEWS
+   M /trunk/community/README
+   M /trunk/docs/ChangeLog
+   M /trunk/docs/NEWS
+   M /trunk/docs/README
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggzd/ChangeLog
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/grubby/ChangeLog
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README
+   M /trunk/java/ChangeLog
+   M /trunk/java/NEWS
+   M /trunk/libggz/ChangeLog
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/README
+   M /trunk/python/ChangeLog
+   M /trunk/python/NEWS
+   M /trunk/python/README
+   M /trunk/txt-client/ChangeLog
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README
+   M /trunk/utils/ChangeLog
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+
+- massive update to changelog due to SVN format change, ~67,000 lines of diff
+- synchronise updated news file and bump version number in readme files
+
+
+------------------------------------------------------------------------
 r10308 | jdorje | 2008-07-12 18:07:21 +0200 (Sa, 12. Jul 2008) | 1 line
 Geänderte Pfade:
    M /trunk/utils/telggz/net.c

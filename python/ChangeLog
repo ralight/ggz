@@ -1,4 +1,330 @@
 ------------------------------------------------------------------------
+r10732 | josef | 2009-01-01 13:06:51 +0100 (Do, 01. Jan 2009) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+
+- highly experimental and suboptimal support for Qt4's SVG renderer as an alternative to RSVG
+
+
+------------------------------------------------------------------------
+r10724 | josef | 2008-12-31 21:53:13 +0100 (Mi, 31. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/faketable/ggz-faketable
+
+- support for more than one human player simply by launching multiple clients
+
+
+------------------------------------------------------------------------
+r10722 | josef | 2008-12-31 15:32:03 +0100 (Mi, 31. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+
+- the GGZBoard window can now be resized, although it flickers badly (a pygame issue)
+
+
+------------------------------------------------------------------------
+r10721 | josef | 2008-12-31 14:42:02 +0100 (Mi, 31. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+
+- we must get the screen resolution before the first window is created
+
+
+------------------------------------------------------------------------
+r10720 | josef | 2008-12-31 13:35:48 +0100 (Mi, 31. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+
+- better fallback detection
+
+
+------------------------------------------------------------------------
+r10719 | josef | 2008-12-31 13:20:12 +0100 (Mi, 31. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+   A /trunk/python/ggzboard/backgammon/bg.svg.png
+   A /trunk/python/ggzboard/checkers/king-black.svg.png
+   A /trunk/python/ggzboard/checkers/king-white.svg.png
+   A /trunk/python/ggzboard/checkers/piece-black.svg.png
+   A /trunk/python/ggzboard/checkers/piece-white.svg.png
+   A /trunk/python/ggzboard/chess/bishop_b.svg.png
+   A /trunk/python/ggzboard/chess/bishop_w.svg.png
+   A /trunk/python/ggzboard/chess/king_b.svg.png
+   A /trunk/python/ggzboard/chess/king_w.svg.png
+   A /trunk/python/ggzboard/chess/knight_b.svg.png
+   A /trunk/python/ggzboard/chess/knight_w.svg.png
+   A /trunk/python/ggzboard/chess/pawn_b.svg.png
+   A /trunk/python/ggzboard/chess/pawn_w.svg.png
+   A /trunk/python/ggzboard/chess/queen_b.svg.png
+   A /trunk/python/ggzboard/chess/queen_w.svg.png
+   A /trunk/python/ggzboard/chess/rook_b.svg.png
+   A /trunk/python/ggzboard/chess/rook_w.svg.png
+   A /trunk/python/ggzboard/connectx/player1.svg.png
+   A /trunk/python/ggzboard/connectx/player2.svg.png
+   A /trunk/python/ggzboard/go/piece-black.svg.png
+   A /trunk/python/ggzboard/go/piece-white.svg.png
+   A /trunk/python/ggzboard/hnefatafl/king-white.svg.png
+   A /trunk/python/ggzboard/hnefatafl/piece-black.svg.png
+   A /trunk/python/ggzboard/hnefatafl/piece-white.svg.png
+   A /trunk/python/ggzboard/madn/dice-1.svg.png
+   A /trunk/python/ggzboard/madn/dice-2.svg.png
+   A /trunk/python/ggzboard/madn/dice-3.svg.png
+   A /trunk/python/ggzboard/madn/dice-4.svg.png
+   A /trunk/python/ggzboard/madn/dice-5.svg.png
+   A /trunk/python/ggzboard/madn/dice-6.svg.png
+   A /trunk/python/ggzboard/madn/poeppel-black.svg.png
+   A /trunk/python/ggzboard/madn/poeppel-blue.svg.png
+   A /trunk/python/ggzboard/madn/poeppel-green.svg.png
+   A /trunk/python/ggzboard/madn/poeppel-red.svg.png
+   A /trunk/python/ggzboard/madn/poeppel-yellow.svg.png
+   A /trunk/python/ggzboard/reversi/piece-black.svg.png
+   A /trunk/python/ggzboard/reversi/piece-white.svg.png
+   A /trunk/python/ggzboard/shogi/b-bishop.svg.png
+   A /trunk/python/ggzboard/shogi/b-gold-general.svg.png
+   A /trunk/python/ggzboard/shogi/b-king.svg.png
+   A /trunk/python/ggzboard/shogi/b-knight.svg.png
+   A /trunk/python/ggzboard/shogi/b-lance.svg.png
+   A /trunk/python/ggzboard/shogi/b-pawn.svg.png
+   A /trunk/python/ggzboard/shogi/b-rook.svg.png
+   A /trunk/python/ggzboard/shogi/b-silver-general.svg.png
+   A /trunk/python/ggzboard/shogi/bishop.svg.png
+   A /trunk/python/ggzboard/shogi/gold-general.svg.png
+   A /trunk/python/ggzboard/shogi/king.svg.png
+   A /trunk/python/ggzboard/shogi/knight.svg.png
+   A /trunk/python/ggzboard/shogi/lance.svg.png
+   A /trunk/python/ggzboard/shogi/pawn.svg.png
+   A /trunk/python/ggzboard/shogi/rook.svg.png
+   A /trunk/python/ggzboard/shogi/silver-general.svg.png
+
+- add all prerendered images to SVN and install them
+
+
+------------------------------------------------------------------------
+r10718 | josef | 2008-12-31 13:15:13 +0100 (Mi, 31. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/ggzboard/ggzboard
+
+- fall back to PNGs if no SVG loader is present
+
+
+------------------------------------------------------------------------
+r10713 | josef | 2008-12-30 22:22:08 +0100 (Di, 30. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/INSTALL
+
+- Python 2.5 is now standard
+
+
+------------------------------------------------------------------------
+r10712 | josef | 2008-12-30 22:21:01 +0100 (Di, 30. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+
+- slightly more flexible build option so that using all --disable-* flags results in an empty build
+
+
+------------------------------------------------------------------------
+r10630 | josef | 2008-12-23 19:12:00 +0100 (Di, 23. Dez 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/base-libs/ggzcore/ggzcore.h
+   M /trunk/base-libs/ggzcore/net.h
+   M /trunk/base-libs/ggzcore/netxml.c
+   M /trunk/base-libs/ggzcore/server.c
+   M /trunk/grubby/grubby/src/net.c
+   M /trunk/gtk-client/ggz-gtk/login.c
+   M /trunk/kde-center/kggzcore/coreclient.cpp
+   M /trunk/kde-center/kggzcore/coreclientbase.cpp
+   M /trunk/kde-center/kggzcore/coreclientbase.h
+   M /trunk/playground/agrue/agrue/net.c
+   M /trunk/playground/jabber/ggzd-jabberproxy.cc
+   M /trunk/python/pyggzcore/src/pyggzcoresimple_init.c
+   M /trunk/python/pyggzcore/src/test.py
+   M /trunk/python/t-rex/t-rex
+   M /trunk/python/vibora/vibora
+   M /trunk/txt-client/ggz-txt/server.c
+   M /trunk/utils/cmd-client/main.c
+   M /trunk/utils/ggz-wrapper/server.c
+   M /trunk/utils/telggz/net.c
+
+- turn boolean TLS option into an enumerated security policy
+- this turns on "use if available" by default for all clients
+- Vencedor and ggz-txt can also require encryption, while other clients cannot
+
+
+------------------------------------------------------------------------
+r10622 | josef | 2008-12-22 14:12:03 +0100 (Mo, 22. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/pyrsvgsdl/src/pyrsvgsdl.c
+
+- while module-level methods don't needs this conversion, apparently class-level ones do (untested!)
+
+
+------------------------------------------------------------------------
+r10621 | josef | 2008-12-22 12:29:08 +0100 (Mo, 22. Dez 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/Makefile.in
+
+- substitute $(MAKE) for make
+
+
+------------------------------------------------------------------------
+r10576 | josef | 2008-10-25 21:05:03 +0200 (Sa, 25. Okt 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/base-libs/configure.ac
+   M /trunk/community/Makefile
+   M /trunk/docs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/java/build.xml
+   M /trunk/kde-center/cmake/GGZKDECenterPackage.cmake
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- bump to snapshot-0.99.5pre already
+
+
+------------------------------------------------------------------------
+r10472 | josef | 2008-08-12 19:13:43 +0200 (Di, 12. Aug 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/python/faketable/ggz-faketable
+
+- adapt to changed ggzdmod protocol: include savegame name on startup
+- handle savegame request from game server
+
+
+------------------------------------------------------------------------
+r10423 | josef | 2008-07-29 20:41:11 +0200 (Di, 29. Jul 2008) | 5 lines
+Geänderte Pfade:
+   M /trunk/python/configure.ac
+
+- quick fix: if no Python headers are installed, don't build chess wrapper or any other wrapper
+
+(LRL leftovers)
+
+
+------------------------------------------------------------------------
+r10416 | josef | 2008-07-27 11:21:22 +0200 (So, 27. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/faketable/ggz-faketable
+
+- send a dummy seat change message for a bot, independent of whether we play against one or not
+
+
+------------------------------------------------------------------------
+r10414 | josef | 2008-07-27 10:34:33 +0200 (So, 27. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/faketable/README.ggz-faketable
+   M /trunk/python/faketable/ggz-faketable
+
+- implementation of fake player info response
+
+
+------------------------------------------------------------------------
+r10411 | josef | 2008-07-27 07:59:07 +0200 (So, 27. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/python/faketable/ggz-faketable
+
+- implement a fake rankings result
+
+
+------------------------------------------------------------------------
+r10388 | josef | 2008-07-24 21:40:19 +0200 (Do, 24. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/grubby/configure.ac
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/configure.ac
+
+- port all autoconf-based packages to per-package ggz.modules
+
+
+------------------------------------------------------------------------
+r10366 | josef | 2008-07-17 10:44:19 +0200 (Do, 17. Jul 2008) | 5 lines
+Geänderte Pfade:
+   A /trunk/community/AUTHORS
+   M /trunk/docs/AUTHORS
+   M /trunk/ggzd/AUTHORS
+   M /trunk/grubby/AUTHORS
+   M /trunk/gtk-client/AUTHORS
+   M /trunk/java/AUTHORS
+   M /trunk/kde-center/AUTHORS
+   M /trunk/libggz/AUTHORS
+   M /trunk/python/AUTHORS
+   M /trunk/txt-client/AUTHORS
+   M /trunk/utils/AUTHORS
+
+- version update
+- link to central credits file
+- ggz-community didn't have an AUTHORS file yet
+
+
+------------------------------------------------------------------------
+r10331 | josef | 2008-07-13 17:37:43 +0200 (So, 13. Jul 2008) | 3 lines
+Geänderte Pfade:
+   M /trunk/docs/configure.ac
+   M /trunk/ggz-client-libs/configure.ac
+   M /trunk/ggzd/configure.ac
+   M /trunk/grubby/configure.ac
+   M /trunk/gtk-client/configure.ac
+   M /trunk/gtk-games/configure.ac
+   M /trunk/java/Makefile
+   M /trunk/java/build.xml
+   M /trunk/libggz/configure.ac
+   M /trunk/python/Makefile.in
+   M /trunk/python/configure.ac
+   M /trunk/txt-client/configure.ac
+   M /trunk/utils/configure.ac
+
+- bump all version numbers, but also all libggz requirements, to 0.99.4
+
+
+------------------------------------------------------------------------
+r10330 | josef | 2008-07-13 17:31:32 +0200 (So, 13. Jul 2008) | 4 lines
+Geänderte Pfade:
+   M /trunk/community/ChangeLog
+   M /trunk/community/NEWS
+   M /trunk/community/README
+   M /trunk/docs/ChangeLog
+   M /trunk/docs/NEWS
+   M /trunk/docs/README
+   M /trunk/ggz-client-libs/ChangeLog
+   M /trunk/ggz-client-libs/NEWS
+   M /trunk/ggz-client-libs/README
+   M /trunk/ggzd/ChangeLog
+   M /trunk/ggzd/NEWS
+   M /trunk/ggzd/README
+   M /trunk/grubby/ChangeLog
+   M /trunk/grubby/NEWS
+   M /trunk/grubby/README
+   M /trunk/gtk-client/ChangeLog
+   M /trunk/gtk-client/NEWS
+   M /trunk/gtk-client/README
+   M /trunk/gtk-games/ChangeLog
+   M /trunk/gtk-games/NEWS
+   M /trunk/gtk-games/README
+   M /trunk/java/ChangeLog
+   M /trunk/java/NEWS
+   M /trunk/libggz/ChangeLog
+   M /trunk/libggz/NEWS
+   M /trunk/libggz/README
+   M /trunk/python/ChangeLog
+   M /trunk/python/NEWS
+   M /trunk/python/README
+   M /trunk/txt-client/ChangeLog
+   M /trunk/txt-client/NEWS
+   M /trunk/txt-client/README
+   M /trunk/utils/ChangeLog
+   M /trunk/utils/NEWS
+   M /trunk/utils/README
+
+- massive update to changelog due to SVN format change, ~67,000 lines of diff
+- synchronise updated news file and bump version number in readme files
+
+
+------------------------------------------------------------------------
 r10004 | josef | 2008-05-25 11:12:02 +0200 (So, 25. Mai 2008) | 3 lines
 Geänderte Pfade:
    M /trunk/community/ChangeLog
