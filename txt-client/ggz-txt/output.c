@@ -178,7 +178,7 @@ void output_text(const char* fmt, ...)
 	vsnprintf(message, sizeof(message), fmt, ap);
 	va_end(ap);
 
-	ggz_debug(DEBUG_CLIENT, message);
+	ggz_debug(DEBUG_CLIENT, "%s", message);
 	if(!output_enabled) return;
 	output_text_write(message);
 }
@@ -233,7 +233,7 @@ void output_debug(const char* fmt, ...)
 	va_end(ap);
 
 #ifdef DEBUG
-	ggz_debug(DEBUG_CLIENT, message);
+	ggz_debug(DEBUG_CLIENT, "%s", message);
 	if(!output_enabled) return;
 	snprintf(messagecol, sizeof(messagecol), "%s%s%s", COLOR_ORANGE, message, COLOR_WHITE);
 	output_text_write(messagecol);
