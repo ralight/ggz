@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 10776 2009-01-02 01:54:40Z oojah $
+ * $Id: net.c 10780 2009-01-02 13:02:26Z oojah $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1953,7 +1953,7 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 	table->room = player_get_room(net->client->data);
 
 	if (desc)
-		snprintf(table->desc, sizeof(table->desc), "%s", desc);
+		ggz_strncpy(table->desc, desc, sizeof(table->desc));
 
 	/* Add seats */
 	for (entry = ggz_list_head(seats);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 10774 2009-01-02 01:51:10Z oojah $
+ * $Id: players.c 10780 2009-01-02 13:02:26Z oojah $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -974,7 +974,7 @@ GGZPlayerHandlerStatus player_table_info(GGZPlayer *player, int seat_num)
 
 	for (i = first; i < last; i++) {
 		if (table->seat_types[i] == GGZ_SEAT_PLAYER) {
-			snprintf(entry.handle, sizeof(entry.handle), "%s", player->name);
+			ggz_strncpy(entry.handle, player->name, sizeof(entry.handle));
 			status = ggzdb_player_get(&entry);
 
 			do_send = 1;
@@ -985,7 +985,7 @@ GGZPlayerHandlerStatus player_table_info(GGZPlayer *player, int seat_num)
 			if (status == GGZDB_NO_ERROR) {
 				realname = ggz_strdup(entry.name);
 
-				snprintf(extentry.handle, sizeof(extentry.handle), "%s", player->name);
+				ggz_strncpy(extentry.handle, player->name, sizeof(extentry.handle));
 				status = ggzdb_player_get_extended(&extentry);
 				if (status == GGZDB_NO_ERROR) {
 					photo = ggz_strdup(extentry.photo);
@@ -1585,7 +1585,7 @@ GGZPlayerHandlerStatus player_perms_admin(GGZPlayer *player,
 	if (ggz_perms_is_set(rcvr->perms, perm) != set) {
 		ggzdbPlayerEntry entry;
 
-		snprintf(entry.handle, sizeof(entry.handle), "%s", rcvr->name);
+		ggz_strncpy(entry.handle, rcvr->name, sizeof(entry.handle));
 		if (ggzdb_player_get(&entry) != GGZDB_NO_ERROR) {
 			pthread_rwlock_unlock(&rcvr->lock);
 			if (net_send_admin_result(player->client->net,

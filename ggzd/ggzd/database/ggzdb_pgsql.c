@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10771 2009-01-02 00:42:07Z oojah $
+ * $Id: ggzdb_pgsql.c 10780 2009-01-02 13:02:26Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -1137,7 +1137,7 @@ GGZDBResult _ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGa
 			stats->rating = atof(PQgetvalue(res, i, 4));
 			stats->ranking = atol(PQgetvalue(res, i, 5));
 			stats->highest_score = atol(PQgetvalue(res, i, 6));
-			snprintf(stats->player, MAX_USER_NAME_LEN, "%s", PQgetvalue(res, i, 7));
+			ggz_strncpy(stats->player, PQgetvalue(res, i, 7), MAX_USER_NAME_LEN);
 		}
 	}
 	PQclear(res);

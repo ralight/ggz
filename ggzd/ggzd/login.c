@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 10778 2009-01-02 02:38:30Z oojah $
+ * $Id: login.c 10780 2009-01-02 13:02:26Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -92,7 +92,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 
 	new_pw[0] = '\0';
 	if(password)
-		snprintf(new_pw, sizeof(new_pw), "%s", password);
+		ggz_strncpy(new_pw, password, sizeof(new_pw));
 
 	ggz_debug(GGZ_DBG_CONNECTION, "Player %p attempting login as %d",
 		  (void *)player, type);
@@ -145,7 +145,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 	reason = E_NO_STATUS;
 
 	/* Check guest names vs. the database */
-	snprintf(db_pe.handle, sizeof(db_pe.handle), "%s", name);
+	ggz_strncpy(db_pe.handle, name, sizeof(db_pe.handle));
 	db_status = ggzdb_player_get(&db_pe);
 	if(type == GGZ_LOGIN_GUEST && db_status != GGZDB_ERR_NOTFOUND) {
 		ggz_debug(GGZ_DBG_CONNECTION,
@@ -204,7 +204,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 		}
 
 		/* Password is verified, update their last login */
-		snprintf(db_pe.handle, sizeof(db_pe.handle), "%s", name);
+		ggz_strncpy(db_pe.handle, name, sizeof(db_pe.handle));
 		db_pe.last_login = time(NULL);
 		if (ggzdb_player_update(&db_pe) != 0)
 			ggz_error_msg("Player database update failed (%s)", name);
@@ -257,7 +257,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 		perms_init_from_db(&player->perms, &db_pe);
 		log_login_regd();
 	}
-	snprintf(player->name, sizeof(player->name), "%s", name);
+	ggz_strncpy(player->name, name, sizeof(player->name));
 	ip_addr = player->client->addr;
 
 	/* FIXME: not all of these values need to be set with
