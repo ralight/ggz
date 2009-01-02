@@ -587,6 +587,10 @@ static void output_table_info(GGZTable *table)
 		case GGZ_SEAT_NONE:
 			output_text(_("-- Not a seat"));
 			break;
+		case GGZ_SEAT_ABANDONED:
+			output_text(_("-- Seat %d: Abandoned by %s"), i,
+				    ggzcore_table_get_nth_player_name(table, i));
+			break;
 		default:
 			output_text(_("Internal error"));
 		}
