@@ -3,7 +3,7 @@
  *  Copyright (C) 1996 Thomas Koenig
  *
  *  Modified 6/24/00 by Brent Hendricks for use with the GGZ project.
- *  $Id: daemon.c 10067 2008-06-24 22:01:07Z jdorje $
+ *  $Id: daemon.c 10772 2009-01-02 01:48:17Z oojah $
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -138,7 +138,7 @@ void daemon_init(void)
 }
 
 
-void daemon_cleanup()
+void daemon_cleanup(void)
 {
 	const char pid_filename[] = "ggzd.pid";
 	char pid_file[strlen(opt.data_dir) + strlen(pid_filename) + 2];
