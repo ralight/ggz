@@ -47,7 +47,7 @@ KTicTacTuxWin::KTicTacTuxWin()
 
 	mgame = new KMenu(this);
 	mgame->setTitle(i18n("Game"));
-	action_connect = mgame->addAction(KIconLoader::global()->loadIcon("network-connect", KIconLoader::Small), i18n("Connect"));
+	action_connect = mgame->addAction(KIconLoader::global()->loadIcon("network-connect", KIconLoader::Small), i18n("Connect to GGZ Gaming Zone"));
 	action_sync = mgame->addAction(KIconLoader::global()->loadIcon("view-refresh", KIconLoader::Small), i18n("Synchronize"));
 	action_highscores = mgame->addAction(KIconLoader::global()->loadIcon("view-history", KIconLoader::Small), i18n("View highscores"));
 	action_score = mgame->addAction(KIconLoader::global()->loadIcon("view-history", KIconLoader::Small), i18n("View score"));
@@ -291,7 +291,7 @@ void KTicTacTuxWin::slotNetworkScore(int wins, int losses, int ties)
 void KTicTacTuxWin::slotGameOver()
 {
 	action_sync->setEnabled(false);
-	action_connect->setEnabled(false);
+	//action_connect->setEnabled(false);
 	action_highscores->setEnabled(false);
 	action_ggzplayers->setEnabled(false);
 
