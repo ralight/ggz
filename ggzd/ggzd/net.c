@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 10352 2008-07-16 05:31:13Z jdorje $
+ * $Id: net.c 10775 2009-01-02 01:53:31Z oojah $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -174,7 +174,7 @@ static GGZReturn _net_send_room_player_count(GGZNetIO *net,
 					     int room_id, int player_count);
 static GGZReturn _net_send_room_delete(GGZNetIO *net,
 					     int room_id);
-static GGZReturn _net_send_line(GGZNetIO *net, char *line, ...)
+static GGZReturn _net_send_line(GGZNetIO *net, const char *line, ...)
 				ggz__attribute((format(printf, 2, 3)));
 
 static GGZAuthData* _net_authdata_new(void);
@@ -917,7 +917,7 @@ GGZReturn net_send_table_update(GGZNetIO *net, GGZTableUpdateType opcode,
 				GGZTable *table, void* seat_data,
 				int room_id)
 {
-	char *action = NULL;
+	const char *action = NULL;
 
 	switch (opcode) {
 	case GGZ_TABLE_UPDATE_DELETE:
@@ -1002,7 +1002,7 @@ GGZReturn _net_send_room_delete(GGZNetIO *net, int room_id)
 GGZReturn net_send_room_update(GGZNetIO *net, GGZRoomUpdateType opcode,
 			       int room_id, int player_count, RoomStruct *room)
 {
-	char *action = NULL;
+	const char *action = NULL;
 
 	switch (opcode) {
 	case GGZ_ROOM_UPDATE_PLAYER_COUNT:
@@ -2434,7 +2434,7 @@ GGZReturn net_send_rankings_list_end(GGZNetIO *net)
 }
 
 
-static GGZReturn _net_send_line(GGZNetIO *net, char *line, ...)
+static GGZReturn _net_send_line(GGZNetIO *net, const char *line, ...)
 {
 	char buf[4096];
 	va_list ap;
