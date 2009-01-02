@@ -40,7 +40,7 @@ static int meta_connect_internal(const char *hostname, int port);
 /* === Public functions === */
 /* ======================== */
 
-ServerEntry **meta_network_load()
+ServerEntry **meta_network_load(void)
 {
 	FILE *f;
 	char cachefile[1024];

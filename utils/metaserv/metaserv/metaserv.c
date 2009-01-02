@@ -64,7 +64,7 @@ static int daemonport = 0;
 static int verbosity = 0;
 static pthread_mutex_t mutex;
 
-static void metaserv_cache()
+static void metaserv_cache(void)
 {
 	char tmp[1024];
 
@@ -80,7 +80,7 @@ static void metaserv_cache()
 	}
 }
 
-static char *metaserv_list()
+static char *metaserv_list(void)
 {
 	const char *header = "<?xml version=\"1.0\"?><resultset referer=\"list\">";
 	const char *footer = "</resultset>";
@@ -938,7 +938,7 @@ static void metaserv_init(const char *configfile)
 	}
 }
 
-static void metaserv_shutdown()
+static void metaserv_shutdown(void)
 {
 	logline("Shutdown");
 	minidom_free(configuration);
@@ -1027,7 +1027,7 @@ static void *metaserv_worker(void *arg)
 	return NULL;
 }
 
-static void metaserv_daemon()
+static void metaserv_daemon(void)
 {
 	int sock;
 	struct sockaddr_in name;
