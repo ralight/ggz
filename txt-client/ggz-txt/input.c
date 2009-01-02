@@ -66,7 +66,7 @@ static void input_handle_admin(char* line);
 static char delim[] = " \n";
 static char command_prefix = '/';
 
-void input_command()
+void input_command(void)
 {
 	input_commandline(NULL);
 }
