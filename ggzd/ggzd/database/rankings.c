@@ -70,7 +70,7 @@ int rankings_loadmodels(GGZRankings *rankings, const char *path)
 	char *name;
 	int count;
 	char filename[1024];
-	char *model;
+	const char *model;
 	char ***rankingmodels = NULL;
 
 	if(rankings->conn)

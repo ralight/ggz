@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10705 2008-12-30 12:00:26Z oojah $
+ * $Id: ggzdb_mysql.c 10769 2009-01-02 00:39:52Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -580,7 +580,8 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	int mysql_rc;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
-	char *number, *playertype;
+	char *number;
+	const char *playertype;
 	char *player_canonical, *player_quoted;
 
 	snprintf(query, sizeof(query),
