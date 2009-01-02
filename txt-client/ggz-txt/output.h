@@ -32,10 +32,10 @@ void output_banner(void);
 
 void output_prompt(void);
 
-void output_text(char* fmt, ...)
+void output_text(const char* fmt, ...)
      ggz__attribute((format(printf, 1, 2)));
 
-void output_debug(char* fmt, ...)
+void output_debug(const char* fmt, ...)
      ggz__attribute((format(printf, 1, 2)));
 
 void output_chat(GGZChatType type, const char *player, const char *message);

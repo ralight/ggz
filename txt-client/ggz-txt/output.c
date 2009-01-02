@@ -169,7 +169,7 @@ void output_prompt(void)
 #endif
 }
 
-void output_text(char* fmt, ...)
+void output_text(const char* fmt, ...)
 {
 	char message[1024];	/* FIXME: Make me dynamic */
 	va_list ap;
@@ -220,7 +220,7 @@ void output_restoreinput(void)
 	printf("%s", COLOR_WHITE);
 }
 
-void output_debug(char* fmt, ...)
+void output_debug(const char* fmt, ...)
 {
 	char message[1024];	/* FIXME: Make me dynamic */
 	va_list ap;
