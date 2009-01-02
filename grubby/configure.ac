@@ -109,7 +109,7 @@ if test "$enable_ruby" = yes; then
 		enable_ruby=no
 	else
 		ruby_includes="-I $ruby_includes"
-		ruby_libraries="-L $ruby_libraries -l$rver"
+		ruby_libraries="-L$ruby_libraries -l$rver"
 		AC_MSG_RESULT(ok.)
 		AC_SUBST(ruby_includes)
 		AC_SUBST(ruby_libraries)
@@ -132,7 +132,7 @@ if test "$enable_python" = yes; then
 			this_is_not_the_right_version=1
 		else
 			python_includes="-I $python_incdir"
-			python_libraries="-L $python_libdir -lpython$ver"
+			python_libraries="-L$python_libdir -lpython$ver"
 			usever=$ver
 		fi
 	done
@@ -163,7 +163,7 @@ if test "$enable_tcl" = yes; then
 			this_is_not_the_right_version=1
 		else
 			tcl_includes="-I $tcl_incdir"
-			tcl_libraries="-L $tcl_libdir -ltcl$ver"
+			tcl_libraries="-L$tcl_libdir -ltcl$ver"
 			usever=$ver
 		fi
 	done
@@ -230,7 +230,7 @@ if test "$enable_silc" = yes; then
 		enable_silc=no
 	else
 		SILC_INCLUDES="-I $silc_includes"
-		SILC_LDFLAGS="-L $silc_libraries"
+		SILC_LDFLAGS="-L$silc_libraries"
 		LIB_SILC="-lsilcclient -lsilc"
 		AC_MSG_RESULT(ok.)
 		AC_SUBST(SILC_INCLUDES)
