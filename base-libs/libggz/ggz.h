@@ -2063,7 +2063,7 @@ int ggz_tls_disable_fd(int fdes);
  *  @param n Length of the data to write, in bytes
  *  @return Actual number of bytes written
  */
-size_t ggz_tls_write(int fd, void *ptr, size_t n);
+ssize_t ggz_tls_write(int fd, void *ptr, size_t n);
 
 /** @brief Read from a secured file descriptor.
  *
@@ -2074,7 +2074,7 @@ size_t ggz_tls_write(int fd, void *ptr, size_t n);
  *  @param n Number of bytes to read, and minimum size of the buffer
  *  @return Actually read number of bytes
  */
-size_t ggz_tls_read(int fd, void *ptr, size_t n);
+ssize_t ggz_tls_read(int fd, void *ptr, size_t n);
 
 /** @} */
 

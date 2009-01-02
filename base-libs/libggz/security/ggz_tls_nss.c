@@ -150,7 +150,7 @@ int ggz_tls_disable_fd(int fdes)
 	return 0;
 }
 
-size_t ggz_tls_write(int fd, void *ptr, size_t n)
+ssize_t ggz_tls_write(int fd, void *ptr, size_t n)
 {
 	struct list_entry *entry;
 	struct list_entry entrycmp;
@@ -175,7 +175,7 @@ size_t ggz_tls_write(int fd, void *ptr, size_t n)
 	}
 }
 
-size_t ggz_tls_read(int fd, void *ptr, size_t n)
+ssize_t ggz_tls_read(int fd, void *ptr, size_t n)
 {
 	struct list_entry *entry;
 	struct list_entry entrycmp;

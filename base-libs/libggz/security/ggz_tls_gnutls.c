@@ -195,7 +195,7 @@ static int check_fd(int fdes)
 }
 
 
-size_t ggz_tls_write(int fd, void *ptr, size_t n)
+ssize_t ggz_tls_write(int fd, void *ptr, size_t n)
 {
 	if(check_fd(fd))
 		return gnutls_write(state[fd], ptr, n);
@@ -209,7 +209,7 @@ size_t ggz_tls_write(int fd, void *ptr, size_t n)
 }
 
 
-size_t ggz_tls_read(int fd, void *ptr, size_t n)
+ssize_t ggz_tls_read(int fd, void *ptr, size_t n)
 {
 	if(check_fd(fd))
 		return gnutls_read(state[fd], ptr, n);

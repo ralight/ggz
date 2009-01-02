@@ -304,7 +304,7 @@ static int list_entry_compare(const void *a, const void *b)
 }
 
 /* Read from a file descriptor */
-size_t ggz_tls_read(int fd, void *buffer, size_t size)
+ssize_t ggz_tls_read(int fd, void *buffer, size_t size)
 {
 	SSL *handler;
 	struct list_entry *entry;
@@ -355,7 +355,7 @@ size_t ggz_tls_read(int fd, void *buffer, size_t size)
 }
 
 /* Write to a file descriptor */
-size_t ggz_tls_write(int fd, void *s, size_t size)
+ssize_t ggz_tls_write(int fd, void *s, size_t size)
 {
 	struct list_entry *entry;
 	struct list_entry entrycmp;
