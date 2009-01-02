@@ -234,7 +234,8 @@ char * ggz_strncpy(char * dst, const char * src, size_t n);
  *
  * @return formatted string which needs to be \ref ggz_free()'d.
  */
-char *ggz_strbuild(const char *fmt, ...);
+char *ggz_strbuild(const char *fmt, ...)
+                   ggz__attribute((format(printf, 1, 2)));
 
 /**
  * Check memory allocated against memory freed and display any discrepancies.
