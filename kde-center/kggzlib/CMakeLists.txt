@@ -81,7 +81,8 @@ install(FILES
 	players/ox-bot.png
 	players/ox-buddy.png
 	players/ox-guest.png
-	players/host.png
+	players/ox-host.png
+	players/ox-empty.png
 	players/lag0.png
 	players/lag1.png
 	players/lag2.png
@@ -91,7 +92,7 @@ install(FILES
 	players/ox-player.png
 	players/team-founder.png
 	players/team-member.png
-	players/you.png
+	players/ox-self.png
 	DESTINATION ${DATA_INSTALL_DIR}/kggzlib/players
 )
 

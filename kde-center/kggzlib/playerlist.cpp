@@ -100,9 +100,9 @@ void PlayerList::addPlayer(Player *player)
 	if(player->role() == Player::Admin)
 		pixmap = "ox-admin.png";
 	else if(player->role() == Player::Host)
-		pixmap = "host.png";
+		pixmap = "ox-host.png";
 	else if(player->role() == Player::Registered)
-		pixmap = "player.png";
+		pixmap = "ox-player.png";
 	else if(player->role() == Player::Bot)
 		pixmap = "ox-bot.png";
 
@@ -216,8 +216,8 @@ void PlayerList::slotSelected(const QPoint& pos)
 
 			if(!ggzserver.api().isEmpty())
 			{
-				QString url = baseurl + "/buddies/" + name;
 #ifdef LOKAREST_FOUND
+				QString url = baseurl + "/buddies/" + name;
 				m_interactor->schedule(StateTransfer(StateTransfer::del, Resource(url, QString(), QByteArray())));
 #endif
 			}
@@ -230,9 +230,9 @@ void PlayerList::slotSelected(const QPoint& pos)
 
 			if(!ggzserver.api().isEmpty())
 			{
+#ifdef LOKAREST_FOUND
 				QString url = baseurl + "/buddies/" + name;
 				QByteArray xmldata = playertoxml(player);
-#ifdef LOKAREST_FOUND
 				m_interactor->schedule(StateTransfer(StateTransfer::put, Resource(url, "application/ggzapi+xml", xmldata)));
 #endif
 			}
@@ -245,8 +245,8 @@ void PlayerList::slotSelected(const QPoint& pos)
 
 			if(!ggzserver.api().isEmpty())
 			{
-				QString url = baseurl + "/ignored/" + name;
 #ifdef LOKAREST_FOUND
+				QString url = baseurl + "/ignored/" + name;
 				m_interactor->schedule(StateTransfer(StateTransfer::del, Resource(url, QString(), QByteArray())));
 #endif
 			}
@@ -259,9 +259,9 @@ void PlayerList::slotSelected(const QPoint& pos)
 
 			if(!ggzserver.api().isEmpty())
 			{
+#ifdef LOKAREST_FOUND
 				QString url = baseurl + "/ignored/" + name;
 				QByteArray xmldata = playertoxml(player);
-#ifdef LOKAREST_FOUND
 				m_interactor->schedule(StateTransfer(StateTransfer::put, Resource(url, "application/ggzapi+xml", xmldata)));
 #endif
 			}
