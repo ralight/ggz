@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 10775 2009-01-02 01:53:31Z oojah $
+ * $Id: net.c 10776 2009-01-02 01:54:40Z oojah $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -391,7 +391,7 @@ GGZReturn net_send_motd(GGZNetIO *net)
 		
 	for (i = 0; i < num; i++) {
 		line = motd_get_line(i);
-		_net_send_line(net, line);
+		_net_send_line(net, "%s", line);
 		ggz_free(line);
 	}
 
