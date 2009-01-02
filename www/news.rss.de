@@ -10,6 +10,18 @@
 <language>de-de</language>
 
 <item>
+<title><i>02.01.2009: Developer snapshot 0.99.5</i> (by josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+A dazzling snapshot after more than half a year of waiting, but it's definitely
+worth it. A consolidated package structure, tons of new features which are
+summarised in the
+<a href="http://svn.ggzgamingzone.org/trac.cgi/browser/trunk/base-libs/NEWS">NEWS</a>
+file, and further progress towards the next full release.
+</full>
+</item>
+
+<item>
 <title><i>27.10.2008: GGZ for mobile use, and other news</i> (by josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>

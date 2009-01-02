@@ -3,10 +3,10 @@
 <table class="content">
 <tr>
 <td colspan="2">
-<b>GGZ Snapshot 0.99.4 Downloads</b><br/>
+<b>GGZ Snapshot 0.99.5 Downloads</b><br/>
 <br/>
 <i>Source code release</i><br/>
-This is the fourth in a series of snapshots leading to a GGZ 1.0 release.
+This is the fifth in a series of snapshots leading to a GGZ 1.0 release.
 The GGZ Gaming Zone project releases its components as source code, which
 can be downloaded here. In the special case of this snapshot release,
 only twelve of our countless <a href="/packages/">packages</a> have been
@@ -31,19 +31,17 @@ ibiblio Mirror, USA:<br/>
 Thanks to <a href="http://www.ibiblio.org/">ibiblio</a> for providing the mirror!
 In case it doesn't work, please access our <a href="http://ftp.ggzgamingzone.org/pub/ggz/snapshots/">FTP server</a> directly.
 </td><td bgcolor="#ffd000" valign="top">
-<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/libggz-snapshot-0.99.4.tar.gz">libggz-snapshot-0.99.4.tar.gz</a><br/>
-<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-client-libs-snapshot-0.99.4.tar.gz">ggz-client-libs-snapshot-0.99.4.tar.gz</a><br/>
-<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-server-snapshot-0.99.4.tar.gz">ggz-server-snapshot-0.99.4.tar.gz</a><br/>
-<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-txt-client-snapshot-0.99.4.tar.gz">ggz-txt-client-snapshot-0.99.4.tar.gz</a><br/>
-<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-grubby-snapshot-0.99.4.tar.gz">ggz-grubby-snapshot-0.99.4.tar.gz</a><br/>
-<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-python-snapshot-0.99.4.tar.gz">ggz-python-snapshot-0.99.4.tar.gz</a><br/>
-<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-java-snapshot-0.99.4.tar.gz">ggz-java-snapshot-0.99.4.tar.gz</a><br/>
-<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-gtk-client-snapshot-0.99.4.tar.gz">ggz-gtk-client-snapshot-0.99.4.tar.gz</a><br/>
-<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-gtk-games-snapshot-0.99.4.tar.gz">ggz-gtk-games-snapshot-0.99.4.tar.gz</a><br/>
-<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-utils-snapshot-0.99.4.tar.gz">ggz-utils-snapshot-0.99.4.tar.gz</a><br/>
-<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-docs-snapshot-0.99.4.tar.gz">ggz-docs-snapshot-0.99.4.tar.gz</a><br/>
-<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-community-snapshot-0.99.4.tar.gz">ggz-community-snapshot-0.99.4.tar.gz</a><br/>
-<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-kde-center-0.99.4.tar.gz">ggz-kde-center-0.99.4.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-base-libs-snapshot-0.99.5.tar.gz">ggz-base-libs-snapshot-0.99.5.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-server-snapshot-0.99.5.tar.gz">ggz-server-snapshot-0.99.5.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-txt-client-snapshot-0.99.5.tar.gz">ggz-txt-client-snapshot-0.99.5.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-grubby-snapshot-0.99.5.tar.gz">ggz-grubby-snapshot-0.99.5.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-python-snapshot-0.99.5.tar.gz">ggz-python-snapshot-0.99.5.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-java-snapshot-0.99.5.tar.gz">ggz-java-snapshot-0.99.5.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-gtk-client-snapshot-0.99.5.tar.gz">ggz-gtk-client-snapshot-0.99.5.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-utils-snapshot-0.99.5.tar.gz">ggz-utils-snapshot-0.99.5.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-docs-snapshot-0.99.5.tar.gz">ggz-docs-snapshot-0.99.5.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-community-snapshot-0.99.5.tar.gz">ggz-community-snapshot-0.99.5.tar.gz</a><br/>
+<a href="http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/ggz/snapshots/ggz-kde-center-snapshot-0.99.5.tar.gz">ggz-kde-center-snapshot-0.99.5.tar.gz</a><br/>
 </td></tr>
 
 <tr><td bgcolor="#ffd000" valign="top">
