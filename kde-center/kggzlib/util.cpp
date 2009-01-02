@@ -49,9 +49,12 @@ QPixmap Util::composite(QPixmap bottom, QPixmap top)
 	QImage topim = top.toImage();
 	QImage bottomim = bottom.toImage();
 
-	for(int j = 0; j < bottom.height(); j++)
+	int width = qMin(bottom.width(), top.width());
+	int height = qMin(bottom.height(), top.height());
+
+	for(int j = 0; j < height; j++)
 	{
-		for(int i = 0; i < bottom.width(); i++)
+		for(int i = 0; i < width; i++)
 		{
 			if(qAlpha(topim.pixel(i, j)))
 				bottomim.setPixel(i, j, topim.pixel(i, j));

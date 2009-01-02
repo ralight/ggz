@@ -32,6 +32,7 @@ public:
 	TableItemDelegate(QWidget *parent = NULL)
 	: QItemDelegate(parent)
 	{
+		size = 64;
 	}
 
 	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -80,14 +81,21 @@ public:
 				pixmap = "bot.png";
 				numbots++;
 			}
+			else if(player.type() == KGGZCore::Player::player)
+			{
+				pixmap = "ox-player.png";
+			}
+
 			QPixmap pix(d.findResource("data", "kggzlib/players/" + pixmap));
+			pix = pix.scaled(QSize(size, size), Qt::KeepAspectRatio);
 			if(player.type() == KGGZCore::Player::player)
 			{
-				QPixmap pix1 = QPixmap(d.findResource("data", "kggzlib/players/ox-player.png"));
-				QPixmap pix2 = QPixmap(d.findResource("data", "kggzlib/players/you.png"));
-				pix = Util::composite(pix1, pix2);
+				pixmap = "you.png";
+				QPixmap pixoverlay(d.findResource("data", "kggzlib/players/" + pixmap));
+				pixoverlay = pixoverlay.scaled(QSize(size, size), Qt::KeepAspectRatio);
+				pix = Util::composite(pix, pixoverlay);
 			}
-			painter->drawPixmap(x + 10 + i * 35, y + 60, pix);
+			painter->drawPixmap(x + 10 + i * (size + 3), y + 60, pix);
 		}
 
 		QString infostring;
@@ -112,8 +120,11 @@ public:
 		Q_UNUSED(option);
 		Q_UNUSED(index);
 
-		return QSize(100, 90);
+		return QSize(30 + size * 2, 60 + size);
 	}
+
+private:
+	int size;
 };
 
 TableList::TableList()
