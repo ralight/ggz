@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.c 9899 2008-03-29 20:07:29Z josef $
+ * $Id: game.c 10781 2009-01-02 13:18:07Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -45,7 +45,7 @@ static FILE *savegame = NULL;
 /* Private functions */
 static int game_get_options(int);
 static int game_handle_newgame(int);
-static void game_save(char *fmt, ...);
+static void game_save(const char *fmt, ...);
 
 
 /* Setup game state and board */
@@ -785,7 +785,7 @@ static int game_handle_newgame(int seat)
 }
 
 
-static void game_save(char *fmt, ...)
+static void game_save(const char *fmt, ...)
 {
 	int fd;
 	char *savegamepath, *savegamename;

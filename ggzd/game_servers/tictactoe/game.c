@@ -141,7 +141,7 @@ static int game_do_move(int move);
 static char game_check_move(int num, int move);
 static char game_check_win(void);
 #ifdef GGZSAVEDGAMES
-static void game_save(char *fmt, ...);
+static void game_save(const char *fmt, ...);
 #endif
 
 /* === Implementation part === */
@@ -772,7 +772,7 @@ static char game_check_win(void)
 #define TEMPLATE "savegame.XXXXXX"
 
 /* Saves the progress of a game */
-static void game_save(char *fmt, ...)
+static void game_save(const char *fmt, ...)
 {
 	int fd;
 	char *savegamepath, *savegamename;

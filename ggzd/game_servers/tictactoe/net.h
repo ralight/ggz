@@ -30,7 +30,7 @@ struct variables_t
 	char space[9];
 	char winner;
 };
-struct variables_t variables;
+extern struct variables_t variables;
 
 void ggzcomm_network_main(GGZCommIO *io);
 

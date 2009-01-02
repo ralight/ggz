@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 9912 2008-03-30 12:54:38Z josef $
+ * $Id: game.c 10781 2009-01-02 13:18:07Z oojah $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -44,7 +44,7 @@ static struct rvr_game_t rvr_game;
 static FILE *savegame = NULL;
 
 // Forward declarations
-static void game_save(char *fmt, ...);
+static void game_save(const char *fmt, ...);
 
 // Initializes everything
 void game_init(GGZdMod *ggzdmod) {
@@ -572,7 +572,7 @@ void game_update_scores(void) {
 	}
 }
 
-static void game_save(char *fmt, ...)
+static void game_save(const char *fmt, ...)
 {
 	int fd;
 	char *savegamepath, *savegamename;

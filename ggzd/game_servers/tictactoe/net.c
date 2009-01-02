@@ -7,6 +7,7 @@
 #include <ggz.h>
 #include <ggz_dio.h>
 
+struct variables_t variables;
 
 static notifier_func_type notifier_func = NULL;
 static error_func_type error_func = NULL;

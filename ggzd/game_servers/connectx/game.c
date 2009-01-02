@@ -4,7 +4,7 @@
  * Project: GGZ ConnectX game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 9898 2008-03-29 19:56:07Z josef $
+ * $Id: game.c 10781 2009-01-02 13:18:07Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -115,7 +115,7 @@ static int game_read_options(int seat);
 //static int game_handle_newgame(int seat);
 static void game_bot_init(void);
 
-static void game_save(char *fmt, ...);
+static void game_save(const char *fmt, ...);
 
 static char game_check_win(void);
 int game_check_tile(int x, int y, int d, int count);
@@ -802,7 +802,7 @@ static int game_handle_newgame(int seat)
 }
 #endif
 
-static void game_save(char *fmt, ...)
+static void game_save(const char *fmt, ...)
 {
 	int fd;
 	char *savegamepath, *savegamename;

@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 10221 2008-07-08 17:42:19Z jdorje $
+ * $Id: game.c 10781 2009-01-02 13:18:07Z oojah $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -95,7 +95,7 @@ static void game_send_gameover(char code);
 static void game_send_draw(int seat);
 
 /* PGN savegame function */
-static void game_save(char *fmt, ...);
+static void game_save(const char *fmt, ...);
 
 
 /* Lazy way of doing things */
@@ -863,7 +863,7 @@ static void game_send_draw(int seat)
   ggz_write_char(fd, CHESS_REQ_DRAW);
 }
 
-static void game_save(char *fmt, ...)
+static void game_save(const char *fmt, ...)
 {
   int fd;
   char *savegamepath;
