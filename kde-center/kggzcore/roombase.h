@@ -42,7 +42,7 @@ class KGGZCORE_EXPORT RoomBase : public QObject
 		RoomBase(QObject *parent = NULL);
 		~RoomBase();
 
-		void setRoom(GGZRoom *room);
+		void setRoom(GGZRoom *room, bool active);
 		GGZRoom *room() const;
 
 		QList<Table> buildtables();

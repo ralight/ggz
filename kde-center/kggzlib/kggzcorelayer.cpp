@@ -170,10 +170,10 @@ void KGGZCoreLayer::switchroom()
 		{
 			KGGZCore::Room *room = rooms.at(i);
 			KGGZCore::GameType gt = room->gametype();
-			qDebug("ROOM: %s/%s vs. %s/%s",
+			qDebug("ROOM: %s/%s (offered) vs. %s/%s (needed)",
 				qPrintable(gt.protocolEngine()),
-				qPrintable(m_protengine),
 				qPrintable(gt.protocolVersion()),
+				qPrintable(m_protengine),
 				qPrintable(m_protversion));
 			if((gt.protocolEngine() == m_protengine)
 			&& (gt.protocolVersion() == m_protversion))

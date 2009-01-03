@@ -41,9 +41,12 @@ RoomBase::~RoomBase()
 	delete m_sn;
 }
 
-void RoomBase::setRoom(GGZRoom *room)
+void RoomBase::setRoom(GGZRoom *room, bool active)
 {
 	m_room = room;
+
+	if(!active)
+		return;
 
 	ggzcore_room_add_event_hook_full(m_room, GGZ_PLAYER_LIST, &RoomBase::cb_room, this);
 	ggzcore_room_add_event_hook_full(m_room, GGZ_TABLE_LIST, &RoomBase::cb_room, this);

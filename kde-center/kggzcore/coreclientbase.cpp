@@ -27,6 +27,11 @@
 #include <QSocketNotifier>
 #include <QStringList>
 
+#define RECV_DEBUG 1
+#if RECV_DEBUG
+#include <sys/socket.h>
+#endif
+
 using namespace KGGZCore;
 
 CoreClientBase::CoreClientBase(QObject *parent, bool embedded)
@@ -142,7 +147,7 @@ QList<Room*> CoreClientBase::rooms()
 	{
 		GGZRoom *ggzroom = ggzcore_server_get_nth_room(m_server, i);
 		RoomBase *roombase = new RoomBase(this);
-		roombase->setRoom(ggzroom);
+		roombase->setRoom(ggzroom, false);
 		Room *room = new Room();
 		room->init(roombase);
 		rooms << room;
@@ -205,7 +210,7 @@ void CoreClientBase::handle_server_pre(unsigned int id)
 	{
 		delete m_roombase;
 		m_roombase = new RoomBase(this);
-		m_roombase->setRoom(ggzcore_server_get_cur_room(m_server));
+		m_roombase->setRoom(ggzcore_server_get_cur_room(m_server), true);
 	}
 	else if((id == GGZ_NET_ERROR)
 	     || (id == GGZ_PROTOCOL_ERROR))
@@ -276,6 +281,17 @@ void CoreClientBase::slotSocket(int socket)
 {
 	qDebug("--------------------------------");
 	qDebug("----- socket activity...");
+
+#if RECV_DEBUG
+	char buf[4096];
+	int n = recv(socket, buf, sizeof(buf) - 1, MSG_PEEK);
+	qDebug("PEEKED: %i", n);
+	if(n > 0)
+	{
+		buf[n] = '\0';
+		qDebug("PEEKBUFFER: '%s'", buf);
+	}
+#endif
 
 	if(ggzcore_server_data_is_pending(m_server))
 		ggzcore_server_read_data(m_server, socket);
