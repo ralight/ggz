@@ -29,19 +29,19 @@ include("top.inc");
 		those are called hosts. And very few others, who run the site
 		and can add rooms, those are called administrators.
 		<br><br>
-		<img src="/db/ggzicons/players/guest.png">
+		<?php Config::icon("guest", 16, ""); ?>
 		Guest player, not registered
 		<br>
-		<img src="/db/ggzicons/players/player.png">
+		<?php Config::icon("player", 16, ""); ?>
 		Registered player
 		<br>
-		<img src="/db/ggzicons/players/host.png">
+		<?php Config::icon("host", 16, ""); ?>
 		Host player
 		<br>
-		<img src="/db/ggzicons/players/admin.png">
+		<?php Config::icon("admin", 16, ""); ?>
 		Admin player
 		<br>
-		<img src="/db/ggzicons/players/bot.png">
+		<?php Config::icon("bot", 16, ""); ?>
 		Bot player (chat bot or game bot)
 		<br>
 	</div>

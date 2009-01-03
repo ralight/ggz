@@ -225,27 +225,27 @@ class Player
 		endif;
 
 		$desc = "Guest";
-		$pic = "guest.png";
+		$pic = "guest";
 		if ($botstatus == 't') :
-			$pic = "bot.png";
+			$pic = "bot";
 			$desc = "AI/bot player";
 		elseif ($this->registered) :
 			$desc = "Player";
-			$pic = "player.png";
+			$pic = "player";
 			if ($adminprivs == 't') :
-				$pic = "admin.png";
+				$pic = "admin";
 				$desc = "Administrator";
 			elseif ($hostprivs == 't') :
-				$pic = "host.png";
+				$pic = "host";
 				$desc = "Host";
 			endif;
 			if (($this->handle) && ($this->handle == Auth::username())) :
-				$pic = "you.png";
+				$pic = "self";
 				$desc = "Yourself";
 			endif;
 		endif;
 
-		echo "<img src='/db/ggzicons/players/$pic' width=16 height=16 title='$desc'>\n";
+		Config::icon($pic, 16, $desc);
 	}
 
 	function admin()

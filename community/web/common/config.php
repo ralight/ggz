@@ -9,7 +9,7 @@ class Config
 	var $unconfigured;
 
 	var $roomfilter;
-	
+
 	function Config($file)
 	{
 		global $communityname;
@@ -36,11 +36,13 @@ class Config
 		global $ggzconfigfile;
 
 		global $communitytheme;
+		global $communityicontheme;
 
 		$ret = @include_once($file);
 		if (!$ret) :
 			$this->config = array();
 			$this->theme = "default";
+			$this->icontheme = "ox";
 			$this->unconfigured = true;
 			return;
 		endif;
@@ -72,6 +74,7 @@ class Config
 		if (!$dbname) :
 			$this->config = array();
 			$this->theme = "default";
+			$this->icontheme = "ox";
 			$this->unconfigured = true;
 			return;
 		endif;
@@ -112,8 +115,12 @@ class Config
 		if (!$communitytheme) :
 			$communitytheme = "default";
 		endif;
+		if (!$communityicontheme) :
+			$communityicontheme = "ox";
+		endif;
 
 		$this->theme = $communitytheme;
+		$this->icontheme = $communityicontheme;
 
 		$this->features = $features;
 	}
@@ -193,6 +200,19 @@ class Config
 	function theme($image)
 	{
 		echo Config::gettheme($image);
+	}
+
+	function geticon($image, $size, $desc)
+	{
+		global $config_object;
+
+		return "<img src='/db/ggzicons/players/" . $config_object->icontheme . "-$image.png' width='$size' height='$size' title='$desc'/>\n";
+	}
+
+	function icon($image, $size, $desc)
+	{
+		$size *= 2;
+		echo Config::geticon($image, $size, $desc);
 	}
 
 	function themename()

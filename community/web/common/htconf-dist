@@ -53,6 +53,10 @@ $communitytls = false;
 # - use either 'default'/'' or 'widelands' or 'freeciv'
 $communitytheme = "";
 
+# The graphical style for the icons
+# - use 'ox'/''
+$communityicontheme = "";
+
 # Use this array to customize the features of this installation
 # - when not set, all values default to true
 #$features = array(
