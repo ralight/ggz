@@ -11,6 +11,7 @@ class QPushButton;
 class GGZProfile;
 class KGGZCoreLayer;
 class QProgressBar;
+class TableDialog;
 
 namespace KGGZCore
 {
@@ -38,6 +39,7 @@ class KGGZLIB_EXPORT ConnectionDialog : public QDialog
 		void slotSelected(const GGZProfile& profile, int pos);
 		void slotReady(bool ready);
 		void slotRoomReady(bool ready);
+		void slotTable(int result);
 
 	private:
 		void load();
@@ -51,6 +53,7 @@ class KGGZLIB_EXPORT ConnectionDialog : public QDialog
 		QString m_engine;
 		QString m_version;
 		QString m_username;
+		TableDialog *m_tabledlg;
 
 		bool m_coremode;
 };
