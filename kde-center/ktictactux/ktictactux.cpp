@@ -411,8 +411,13 @@ void KTicTacTux::setOpponent(int type)
 		connect(proto->mod, SIGNAL(signalError()), SLOT(slotError()));
 		connect(proto->mod, SIGNAL(signalNetwork(int)), SLOT(slotNetwork(int)));
 		connect(proto->mod, SIGNAL(signalEvent(const KGGZMod::Event&)), SLOT(slotEvent(const KGGZMod::Event&)));
+
+		emit signalStatus(i18n("Starting up..."));
 	}
-	emit signalStatus(i18n("Waiting for opponent!"));
+	else
+	{
+		emit signalStatus(i18n("Waiting for opponent!"));
+	}
 }
 
 void KTicTacTux::slotEvent(const KGGZMod::Event& event)
@@ -421,8 +426,21 @@ void KTicTacTux::slotEvent(const KGGZMod::Event& event)
 	{
 		if(proto->state == proto->stateinit)
 		{
+			emit signalStatus(i18n("Waiting for opponent!"));
 			proto->state = proto->statewait;
-			emit signalScore(i18n("Network game with %1", (*proto->mod->players().at(!proto->num())).name()));
+		}
+
+		if(proto->mod->players().size() == 2)
+		{
+			// FIXME: bots should never be unnamed, either kggzmod or ggzd should take care of that
+			QString name = (*proto->mod->players().at(!proto->num())).name();
+			if(name.isEmpty())
+				name = i18n("AI#%1", !proto->num());
+			emit signalScore(i18n("Network game with %1", name));
+		}
+		else
+		{
+			emit signalScore(i18n("Network game with unknown peer"));
 		}
 	}
 }

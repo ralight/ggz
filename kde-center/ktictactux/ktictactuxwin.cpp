@@ -92,7 +92,7 @@ KTicTacTuxWin::KTicTacTuxWin()
 		changeTheme(QString());
 
 	setCaption(i18n("KTicTacTux"));
-	resize(300, 300);
+	resize(400, 350);
 	show();
 }
 
