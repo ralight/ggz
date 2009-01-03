@@ -37,6 +37,7 @@ CoreClient::CoreClient(QObject *parent, bool embedded)
 
 	m_port = 5688;
 	m_mode = guest;
+	m_tls = false;
 
 	connect(m_base, SIGNAL(signalBaseError()), SLOT(slotBaseError()));
 	connect(m_base, SIGNAL(signalBaseServer(int, int)), SLOT(slotBaseServer(int, int)));
