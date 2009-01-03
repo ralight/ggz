@@ -11,6 +11,9 @@
 #include <qstandarditemmodel.h>
 #include <qlayout.h>
 #include <qpainter.h>
+#include <qurl.h>
+
+#include <kstandarddirs.h>
 
 class ItemDelegate : public QItemDelegate
 {
@@ -117,9 +120,22 @@ void ServerList::addProfile(const GGZProfile& profile)
 	m_model->appendRow(item);
 
 	GGZServer server = profile.ggzServer();
-	m_apixmaps[server.icon()] = item;
 
-	QAsyncPixmap *apixmap = new QAsyncPixmap(server.icon(), this);
+	QString icon = server.icon();
+	if(icon.isEmpty())
+	{
+		KStandardDirs d;
+		icon = d.findResource("data", "kggzlib/icons/server_online.png");
+		QUrl qurl(server.uri());
+		if(qurl.host() == "localhost")
+		{
+			icon = d.findResource("data", "kggzlib/icons/server_local.png");
+		}
+	}
+
+	m_apixmaps[icon] = item;
+
+	QAsyncPixmap *apixmap = new QAsyncPixmap(icon, this);
 	if(!apixmap->isNull())
 	{
 		QPixmap pix = apixmap->scaled(QSize(32, 32), Qt::KeepAspectRatio);

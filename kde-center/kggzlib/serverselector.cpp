@@ -13,6 +13,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
+#include <dnssd/servicebrowser.h>
 
 #include "serverlist.h"
 
@@ -61,6 +62,8 @@ ServerSelector::ServerSelector(QWidget *parent)
 	setWindowTitle(i18n("Server selection from metaserver"));
 	resize(400, 550);
 	show();
+
+	zeroconfQuery();
 }
 
 ServerSelector::~ServerSelector()
@@ -110,7 +113,6 @@ void ServerSelector::slotConnected()
 
 void ServerSelector::slotData()
 {
-
 	QByteArray raw = m_sock->readAll();
 	QString response = QString::fromUtf8(raw.data());
 
@@ -178,6 +180,38 @@ void ServerSelector::slotError(QAbstractSocket::SocketError error)
 	KMessageBox::error(this,
 		i18n("The list of servers cannot be retrieved."),
 		i18n("Metaserver failure"));
+}
+
+void ServerSelector::slotZeroconfAdded(DNSSD::RemoteService::Ptr ptr)
+{
+	ptr->resolve();
+
+	KStandardDirs d;
+	QString uri = QString("ggz://%1:%2").arg(ptr->hostName()).arg(ptr->port());
+	QString logo = d.findResource("data", "kggzlib/icons/server_online.png");
+	QString name = ptr->serviceName();
+
+	if(m_lanservers.contains(uri))
+		return;
+	m_lanservers << uri;
+
+	GGZServer server;
+	server.setUri(uri);
+	server.setName(name);
+	//server.setApi(api);
+	server.setIcon(logo);
+	GGZProfile profile;
+	profile.setGGZServer(server);
+	m_serverlist->addProfile(profile);
+}
+
+void ServerSelector::zeroconfQuery()
+{
+	DNSSD::ServiceBrowser *browser = new DNSSD::ServiceBrowser("_ggz._tcp");
+	connect(browser,
+		SIGNAL(serviceAdded(DNSSD::RemoteService::Ptr)),
+		SLOT(slotZeroconfAdded(DNSSD::RemoteService::Ptr)));
+	browser->startBrowse();
 }
 
 #include "serverselector.moc"

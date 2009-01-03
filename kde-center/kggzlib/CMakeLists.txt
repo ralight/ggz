@@ -34,7 +34,7 @@ set(kggzlib_LIB_SRCS
 kde4_add_library(kggzlib SHARED ${kggzlib_LIB_SRCS})
 
 #set_target_properties(kggzlib PROPERTIES COMPILE_FLAGS -fPIC)
-target_link_libraries(kggzlib ${KDE4_KIO_LIBS} ${QT_QTNETWORK_LIBRARY} ${QT_QTXML_LIBRARY} kggzcore)
+target_link_libraries(kggzlib ${KDE4_KIO_LIBS} ${KDE4_KDNSSD_LIBS} ${QT_QTNETWORK_LIBRARY} ${QT_QTXML_LIBRARY} kggzcore)
 if(LOKAREST_FOUND)
   target_link_libraries(kggzlib ${LOKAREST_LIBRARY})
 endif(LOKAREST_FOUND)

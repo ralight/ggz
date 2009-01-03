@@ -4,6 +4,8 @@
 #include <qdialog.h>
 #include <qabstractsocket.h>
 
+#include <dnssd/remoteservice.h>
+
 #include <kggzlib/ggzserver.h>
 
 #include "kggzlib_export.h"
@@ -35,12 +37,17 @@ class KGGZLIB_EXPORT ServerSelector : public QDialog
 		void slotError(QAbstractSocket::SocketError error);
 		void slotData();
 
+		void slotZeroconfAdded(DNSSD::RemoteService::Ptr ptr);
+
 	private:
+		void zeroconfQuery();
+
 		ServerList *m_serverlist;
 		QPushButton *m_button;
 		QTcpSocket *m_sock;
 		GGZServer m_server;
 		QProgressBar *m_indicator;
+		QStringList m_lanservers;
 };
 
 #endif
