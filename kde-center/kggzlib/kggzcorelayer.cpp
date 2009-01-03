@@ -6,6 +6,7 @@
 #include <kggzcore/player.h>
 
 #include <klocale.h>
+#include <kuser.h>
 #include <qdebug.h>
 
 KGGZCoreLayer::KGGZCoreLayer(QObject *parent, QString protengine, QString protversion)
@@ -67,8 +68,14 @@ void KGGZCoreLayer::ggzcore(QString uri)
 
 	activity(i18n("Connecting..."));
 
-	m_core->setUrl(uri);
-	m_core->setUsername("foo-dev"); // FIXME: always give fully-qualified URLs
+	QUrl qurl(uri);
+	if(qurl.port() == -1)
+		qurl.setPort(5688);
+	if(qurl.userName().isEmpty())
+		qurl.setUserName(KUser().loginName());
+
+	m_core->setUrl(qurl.toString());
+	//m_core->setUsername();
 	m_core->initiateLogin();
 }
 
