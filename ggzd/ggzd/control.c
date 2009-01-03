@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 10635 2008-12-23 19:24:59Z josef $
+ * $Id: control.c 10806 2009-01-03 09:29:15Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -632,7 +632,11 @@ int main(int argc, char *argv[])
 
 	/* Announce server if requested */
 	if(opt.announce_lan)
-		zeroconf_publish("GGZ Gaming Zone", "_ggz._tcp.", opt.main_port);
+	{
+		char *servername = ggz_strbuild("GGZ Gaming Zone: %s", opt.server_name);
+		zeroconf_publish(servername, "_ggz._tcp.", opt.main_port);
+		ggz_free(servername);
+	}
 
 	if(opt.announce_metaserver)
 		meta_announce(opt.announce_metaserver, opt.metausername, opt.metapassword);
