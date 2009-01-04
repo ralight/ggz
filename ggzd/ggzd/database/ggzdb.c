@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 10665 2008-12-28 18:53:33Z oojah $
+ * $Id: ggzdb.c 10815 2009-01-04 17:47:36Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -48,12 +48,10 @@ static const char *db_hashencoding;
 /* Internal variables */
 static char db_needs_init = 1;
 static char player_needs_init = 1;
-static char stats_needs_init = 1;
 static void *ggzdbhandle = NULL; /* For e.g. ggzdb_mysql.so */
 
 /* Internal functions */
 static GGZDBResult ggzdb_player_init(void);
-static GGZDBResult ggzdb_stats_init(void);
 static void ggzdb_player_lowercase(ggzdbPlayerEntry *pe, char *orig);
 
 /* Helper function to get guaranteed uniqueness over time and (local) space  */
@@ -118,7 +116,6 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 	DL_LOAD(_ggzdb_player_get_extended);
 	DL_LOAD(_ggzdb_player_next_uid);
 	DL_LOAD(_ggzdb_player_drop_cursor);
-	DL_LOAD(_ggzdb_init_stats);
 	DL_LOAD(_ggzdb_stats_lookup);
 	DL_LOAD(_ggzdb_stats_update);
 	DL_LOAD(_ggzdb_stats_newmatch);
@@ -384,13 +381,7 @@ GGZDBResult ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 	GGZDBResult rc = GGZDB_NO_ERROR;
 
 	_ggzdb_enter();
-
-	if (stats_needs_init)
-		rc = ggzdb_stats_init();
-
-	if (rc == GGZDB_NO_ERROR)
-		rc = _ggzdb_stats_lookup(stats);
-
+	rc = _ggzdb_stats_lookup(stats);
 	_ggzdb_exit();
 
 	return rc;
@@ -402,13 +393,7 @@ GGZDBResult ggzdb_stats_newmatch(const char *game, const char *winner, const cha
 	GGZDBResult rc = GGZDB_NO_ERROR;
 
 	_ggzdb_enter();
-
-	if (stats_needs_init)
-		rc = ggzdb_stats_init();
-
-	if (rc == GGZDB_NO_ERROR)
-		rc = _ggzdb_stats_newmatch(game, winner, savegame);
-
+	rc = _ggzdb_stats_newmatch(game, winner, savegame);
 	_ggzdb_exit();
 
 	return rc;
@@ -420,13 +405,7 @@ GGZDBResult ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 	GGZDBResult rc = GGZDB_NO_ERROR;
 
 	_ggzdb_enter();
-
-	if (stats_needs_init)
-		rc = ggzdb_stats_init();
-
-	if (rc == GGZDB_NO_ERROR)
-		rc = _ggzdb_stats_update(stats);
-
+	rc = _ggzdb_stats_update(stats);
 	_ggzdb_exit();
 
 	return rc;
@@ -444,13 +423,7 @@ GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char
 	}
 
 	_ggzdb_enter();
-
-	if (stats_needs_init)
-		rc = ggzdb_stats_init();
-
-	if (rc == GGZDB_NO_ERROR)
-		rc = _ggzdb_stats_savegame(game, owner, savegame, tableid);
-
+	rc = _ggzdb_stats_savegame(game, owner, savegame, tableid);
 	_ggzdb_exit();
 
 	return rc;
@@ -462,13 +435,7 @@ GGZDBResult ggzdb_stats_toprankings(const char *game, int number, ggzdbPlayerGam
 	GGZDBResult rc = GGZDB_NO_ERROR;
 
 	_ggzdb_enter();
-
-	if (stats_needs_init)
-		rc = ggzdb_stats_init();
-
-	if (rc == GGZDB_NO_ERROR)
-		rc = _ggzdb_stats_toprankings(game, number, rankings);
-
+	rc = _ggzdb_stats_toprankings(game, number, rankings);
 	_ggzdb_exit();
 
 	return rc;
@@ -480,13 +447,7 @@ GGZDBResult ggzdb_stats_calcrankings(const char *game)
 	GGZDBResult rc = GGZDB_NO_ERROR;
 
 	_ggzdb_enter();
-
-	if (stats_needs_init)
-		rc = ggzdb_stats_init();
-
-	if (rc == GGZDB_NO_ERROR)
-		rc = _ggzdb_stats_calcrankings(game);
-
+	rc = _ggzdb_stats_calcrankings(game);
 	_ggzdb_exit();
 
 	return rc;
@@ -498,13 +459,7 @@ GGZList *ggzdb_savegames(const char *game, const char *owner)
 	GGZDBResult rc = GGZDB_NO_ERROR;
 
 	_ggzdb_enter();
-
-	if (stats_needs_init)
-		rc = ggzdb_stats_init();
-
-	if (rc == GGZDB_NO_ERROR)
-		list = _ggzdb_savegames(game, owner);
-
+	list = _ggzdb_savegames(game, owner);
 	_ggzdb_exit();
 
 	return list;
@@ -516,13 +471,7 @@ GGZList *ggzdb_savegame_owners(const char *game)
 	GGZDBResult rc = GGZDB_NO_ERROR;
 
 	_ggzdb_enter();
-
-	if (stats_needs_init)
-		rc = ggzdb_stats_init();
-
-	if (rc == GGZDB_NO_ERROR)
-		list = _ggzdb_savegame_owners(game);
-
+	list = _ggzdb_savegame_owners(game);
 	_ggzdb_exit();
 
 	return list;
@@ -533,13 +482,7 @@ GGZDBResult ggzdb_savegameplayer(ggzdbStamp tableid, int seat, const char *name,
 	GGZDBResult rc = GGZDB_NO_ERROR;
 
 	_ggzdb_enter();
-
-	if (stats_needs_init)
-		rc = ggzdb_stats_init();
-
-	if (rc == GGZDB_NO_ERROR)
-		rc = _ggzdb_savegame_player(tableid, seat, name, type);
-
+	rc = _ggzdb_savegame_player(tableid, seat, name, type);
 	_ggzdb_exit();
 
 	return rc;
@@ -550,13 +493,7 @@ GGZDBResult ggzdb_rooms(RoomStruct *rooms, int num)
 	GGZDBResult rc = GGZDB_NO_ERROR;
 
 	_ggzdb_enter();
-
-	if (stats_needs_init)
-		rc = ggzdb_stats_init();
-
-	if (rc == GGZDB_NO_ERROR)
-		rc = _ggzdb_rooms(rooms, num);
-
+	rc = _ggzdb_rooms(rooms, num);
 	_ggzdb_exit();
 
 	return rc;
@@ -568,13 +505,7 @@ RoomStruct* ggzdb_reconfiguration_room(void)
 	GGZDBResult rc = GGZDB_NO_ERROR;
 
 	_ggzdb_enter();
-
-	if (stats_needs_init)
-		rc = ggzdb_stats_init();
-
-	if (rc == GGZDB_NO_ERROR)
-		rooms = _ggzdb_reconfiguration_room();
-
+	rooms = _ggzdb_reconfiguration_room();
 	_ggzdb_exit();
 
 	return rooms;
@@ -595,22 +526,6 @@ static GGZDBResult ggzdb_player_init(void)
 
 	if (rc == GGZDB_NO_ERROR)
 		player_needs_init = 0;
-
-	return rc;
-}
-
-
-static GGZDBResult ggzdb_stats_init(void)
-{
-	GGZDBResult rc;
-
-	if (db_needs_init)
-		return GGZDB_ERR_INIT;
-
-	rc = _ggzdb_init_stats();
-
-	if (rc == GGZDB_NO_ERROR)
-		stats_needs_init = 0;
 
 	return rc;
 }

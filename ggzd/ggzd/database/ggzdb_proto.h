@@ -109,9 +109,6 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry * player);
 void _ggzdb_player_drop_cursor(void);
 
 
-/** Initialize the stats database.  Return NO_ERROR or ERR_DB. */
-GGZDBResult _ggzdb_init_stats(void);
-
 /** Look up game stats.  The "player" and "game" field should be already
  *  filled in; everything else is filled in by the function.  If the entry
  *  is not found, return GGZDB_ERR_NOTFOUND. 

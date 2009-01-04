@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10804 2009-01-02 23:11:48Z oojah $
+ * $Id: ggzdb_pgsql.c 10815 2009-01-04 17:47:36Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -799,11 +799,6 @@ unsigned int _ggzdb_player_next_uid(void)
 	/* But does that mean 0 should be returned?  GGZ might need to
 	   know more?  --JDS */
 	return 0;
-}
-
-GGZDBResult _ggzdb_init_stats(void)
-{
-	return GGZDB_NO_ERROR;
 }
 
 GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)

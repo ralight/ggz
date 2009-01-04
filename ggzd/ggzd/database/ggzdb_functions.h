@@ -38,7 +38,6 @@ GGZDBResult (*_ggzdb_player_get_extended)(ggzdbPlayerExtendedEntry * player);
 unsigned int (*_ggzdb_player_next_uid)(void);
 void (*_ggzdb_player_drop_cursor)(void);
 
-GGZDBResult (*_ggzdb_init_stats)(void);
 GGZDBResult (*_ggzdb_stats_lookup)(ggzdbPlayerGameStats *stats);
 GGZDBResult (*_ggzdb_stats_update)(ggzdbPlayerGameStats *stats);
 GGZDBResult (*_ggzdb_stats_newmatch)(const char *game, const char *winner, const char *savegame);
