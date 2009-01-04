@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the mysql style database
- * $Id: ggzdb_mysql.c 10815 2009-01-04 17:47:36Z oojah $
+ * $Id: ggzdb_mysql.c 10816 2009-01-04 17:53:13Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -205,13 +205,6 @@ void _ggzdb_enter(void)
 void _ggzdb_exit(void)
 {
 	/*mysql_thread_end();*/
-}
-
-
-/* Function to initialize the player table */
-GGZDBResult _ggzdb_init_player(void)
-{
-	return GGZDB_NO_ERROR;
 }
 
 

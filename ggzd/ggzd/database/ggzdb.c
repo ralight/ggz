@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 10815 2009-01-04 17:47:36Z oojah $
+ * $Id: ggzdb.c 10816 2009-01-04 17:53:13Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -47,11 +47,9 @@ static const char *db_hashencoding;
 
 /* Internal variables */
 static char db_needs_init = 1;
-static char player_needs_init = 1;
 static void *ggzdbhandle = NULL; /* For e.g. ggzdb_mysql.so */
 
 /* Internal functions */
-static GGZDBResult ggzdb_player_init(void);
 static void ggzdb_player_lowercase(ggzdbPlayerEntry *pe, char *orig);
 
 /* Helper function to get guaranteed uniqueness over time and (local) space  */
@@ -107,7 +105,6 @@ int ggzdb_init(ggzdbConnection connection, bool standalone)
 	DL_LOAD(_ggzdb_close);
 	DL_LOAD(_ggzdb_enter);
 	DL_LOAD(_ggzdb_exit);
-	DL_LOAD(_ggzdb_init_player);
 	DL_LOAD(_ggzdb_player_add);
 	DL_LOAD(_ggzdb_player_get);
 	DL_LOAD(_ggzdb_player_update);
@@ -200,34 +197,29 @@ GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *pe)
 	ggzdb_player_lowercase(pe, orig);
 
 	_ggzdb_enter();
-	if(player_needs_init)
-		rc = ggzdb_player_init();
 
-	if(rc == GGZDB_NO_ERROR)
+	if((!strcmp(db_hashing, "md5"))
+	|| (!strcmp(db_hashing, "sha1"))
+	|| (!strcmp(db_hashing, "ripemd160")))
 	{
-		if((!strcmp(db_hashing, "md5"))
-		|| (!strcmp(db_hashing, "sha1"))
-		|| (!strcmp(db_hashing, "ripemd160")))
-		{
-			hash = ggz_hash_create(db_hashing, pe->password);
-			if(!strcmp(db_hashencoding, "base16")){
-				password_enc = ggz_base16_encode(hash.hash, hash.hashlen);
-			}else{
-				password_enc = ggz_base64_encode(hash.hash, hash.hashlen);
-			}
-			if(hash.hash)
-				ggz_free(hash.hash);
-
-			if(password_enc)
-			{
-				origpassword = ggz_strdup(pe->password);
-				snprintf(pe->password, sizeof(pe->password), "%s", password_enc);
-				ggz_free(password_enc);
-			}
-			// FIXME - shouldn't failing to encrypt the password be an error?
+		hash = ggz_hash_create(db_hashing, pe->password);
+		if(!strcmp(db_hashencoding, "base16")){
+			password_enc = ggz_base16_encode(hash.hash, hash.hashlen);
+		}else{
+			password_enc = ggz_base64_encode(hash.hash, hash.hashlen);
 		}
-		rc = _ggzdb_player_add(pe);
+		if(hash.hash)
+			ggz_free(hash.hash);
+
+		if(password_enc)
+		{
+			origpassword = ggz_strdup(pe->password);
+			snprintf(pe->password, sizeof(pe->password), "%s", password_enc);
+			ggz_free(password_enc);
+		}
+		// FIXME - shouldn't failing to encrypt the password be an error?
 	}
+	rc = _ggzdb_player_add(pe);
 
 	/* Restore the original name */
 	strcpy(pe->handle, orig);
@@ -254,11 +246,7 @@ GGZDBResult ggzdb_player_get(ggzdbPlayerEntry *pe)
 	ggz_debug(GGZ_DBG_CONNECTION, "Getting player (%s) as (%s)..", orig, pe->handle);
 	
 	_ggzdb_enter();
-	if(player_needs_init)
-		rc = ggzdb_player_init();
-
-	if(rc == GGZDB_NO_ERROR)
-		rc = _ggzdb_player_get(pe);
+	rc = _ggzdb_player_get(pe);
 
 	ggz_debug(GGZ_DBG_CONNECTION, "result was %d", rc);
 
@@ -280,11 +268,7 @@ GGZDBResult ggzdb_player_update(ggzdbPlayerEntry *pe)
 	ggzdb_player_lowercase(pe, orig);
 
 	_ggzdb_enter();
-	if(player_needs_init)
-		rc = ggzdb_player_init();
-
-	if(rc == GGZDB_NO_ERROR)
-		rc = _ggzdb_player_update(pe);
+	rc = _ggzdb_player_update(pe);
 
 	/* Restore the original name */
 	strcpy(pe->handle, orig);
@@ -299,14 +283,11 @@ unsigned int ggzdb_player_next_uid(void)
 {
 	GGZDBResult rc = GGZDB_NO_ERROR;
 	int ret = -1;
+
 	_ggzdb_enter();
-	if(player_needs_init)
-		rc = ggzdb_player_init();
-
-	if(rc == GGZDB_NO_ERROR)
-		ret = _ggzdb_player_next_uid();
-
+	ret = _ggzdb_player_next_uid();
 	_ggzdb_exit();
+
 	return ret;
 }
 
@@ -314,14 +295,11 @@ unsigned int ggzdb_player_next_uid(void)
 GGZDBResult ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 {
 	GGZDBResult rc = GGZDB_NO_ERROR;
+
 	_ggzdb_enter();
-	if(player_needs_init)
-		rc = ggzdb_player_init();
-
-	if(rc == GGZDB_NO_ERROR)
-		rc = _ggzdb_player_get_first(pe);
-
+	rc = _ggzdb_player_get_first(pe);
 	_ggzdb_exit();
+
 	return rc;
 }
 
@@ -329,14 +307,11 @@ GGZDBResult ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 GGZDBResult ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 {
 	GGZDBResult rc = GGZDB_NO_ERROR;
+
 	_ggzdb_enter();
-	if(player_needs_init)
-		rc = ggzdb_player_init();
-
-	if(rc == GGZDB_NO_ERROR)
-		rc = _ggzdb_player_get_next(pe);
-
+	rc = _ggzdb_player_get_next(pe);
 	_ggzdb_exit();
+
 	return rc;
 }
 
@@ -344,13 +319,9 @@ GGZDBResult ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 void ggzdb_player_drop_cursor(void)
 {
 	GGZDBResult rc = GGZDB_NO_ERROR;
+
 	_ggzdb_enter();
-	if(player_needs_init)
-		rc = ggzdb_player_init();
-
-	if(rc == GGZDB_NO_ERROR)
-		_ggzdb_player_drop_cursor();
-
+	_ggzdb_player_drop_cursor();
 	_ggzdb_exit();
 }
 
@@ -363,15 +334,10 @@ GGZDBResult ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 	ggz_debug(GGZ_DBG_CONNECTION, "Getting player %s's extended info.", pe->handle);
 	
 	_ggzdb_enter();
-	if(player_needs_init)
-		rc = ggzdb_player_init();
-
-	if(rc == GGZDB_NO_ERROR)
-		rc = _ggzdb_player_get_extended(pe);
-
+	rc = _ggzdb_player_get_extended(pe);
 	ggz_debug(GGZ_DBG_CONNECTION, "result was %d", rc);
-
 	_ggzdb_exit();
+
 	return rc;
 }
 
@@ -513,23 +479,6 @@ RoomStruct* ggzdb_reconfiguration_room(void)
 
 
 /*** INTERNAL FUNCTIONS ***/
-
-/* Function to initialize player tables if necessary */
-static GGZDBResult ggzdb_player_init(void)
-{
-	GGZDBResult rc;
-
-	if(db_needs_init)
-		return GGZDB_ERR_INIT;
-
-	rc = _ggzdb_init_player();
-
-	if (rc == GGZDB_NO_ERROR)
-		player_needs_init = 0;
-
-	return rc;
-}
-
 
 static void ggzdb_player_lowercase(ggzdbPlayerEntry *pe, char *buf)
 {

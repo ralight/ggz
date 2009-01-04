@@ -27,7 +27,6 @@ void (*_ggzdb_close)(void);
 void (*_ggzdb_enter)(void);
 void (*_ggzdb_exit)(void);
 
-GGZDBResult (*_ggzdb_init_player)(void);
 GGZDBResult (*_ggzdb_player_add)(ggzdbPlayerEntry * player);
 GGZDBResult (*_ggzdb_player_get)(ggzdbPlayerEntry * player);
 GGZDBResult (*_ggzdb_player_update)(ggzdbPlayerEntry * player);

@@ -37,12 +37,6 @@ void _ggzdb_enter(void);
 /** @brief Unlock the database access again */
 void _ggzdb_exit(void);
 
-/** @brief Initialize the player database in non-SQL plugins.
- *
- *  @return GGZDB_NO_ERROR or GGZDB_ERR_DB
- */
-GGZDBResult _ggzdb_init_player(void);
-
 /** @brief Try to add a player.
  *
  *  Attempt to add a new player to the database.  If the player already

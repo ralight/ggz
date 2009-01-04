@@ -167,13 +167,6 @@ void _ggzdb_exit(void)
 }
 
 
-/* Function to initialize the player table */
-GGZDBResult _ggzdb_init_player(void)
-{
-	return GGZDB_NO_ERROR;
-}
-
-
 /* Function to add a player record */
 GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 {
