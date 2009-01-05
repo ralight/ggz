@@ -1,4 +1,11 @@
-These are the current implementations of libgensecure.
+libggz offers some functions to make working with TLS-encrypted connections
+easier. Native TLS libraries are abstracted from because their availability
+differs a lot. The abstraction is probably not without flaws, however for the
+given purpose, namely to sufficiently secure players from snoopers, it should
+fulfil its purpose.
+
+These are the current implementations of libggz's TLS library wrappers.
+Only one wrapper can be used, and needs to be compiled into libggz.
 
 none.c:
 	Dummy wrapper for read/write calls. This implementation does therefore not
@@ -12,4 +19,9 @@ openssl.c:
 	OpenSSL doesn't support anon-DH, so a certificate and private key are
 	_essential_. However, both are not really examined, so the statement
 	encryption yes, authentication no applies here as well.
+
+nss.c:
+	Netscape Security Services. Currently provides encryption via DHA, although
+	certificate and key should allow for other algorithms. No authentication
+	at the moment.
 
