@@ -109,6 +109,7 @@ install(FILES
 	icons/dialog-cancel.png
 	icons/rating.png
 	icons/tagua.png
+	icons/ggz.png
 	icons/ggzmetaserv.png
 	icons/server_local.png
 	icons/server_local.svg

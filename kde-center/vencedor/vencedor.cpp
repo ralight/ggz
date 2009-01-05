@@ -61,10 +61,17 @@ Vencedor::Vencedor(QString url)
 
 	// FIXME: This is too bizarre!
 	//toolbar->addAction(kggzAction(QString(), this, NULL, KActionCollection(), "connect-ggz"));
-	QString ggzicon = d.findResource("data", "kggzlib/games/chess.png");
+	QString ggzicon = d.findResource("data", "kggzlib/icons/ggz.png");
 	m_action_connect = new QAction(QIcon(ggzicon), i18n("Connect to GGZ Gaming Zone"), this);
 	connect(m_action_connect, SIGNAL(triggered(bool)), SLOT(slotConnect()));
 	toolbar->addAction(m_action_connect);
+
+	QPixmap icon_disconnect = KIconLoader::global()->loadIcon("network-disconnect", KIconLoader::Small);
+	m_action_disconnect = new QAction(QIcon(icon_disconnect), i18n("Disconnect"), this);
+	connect(m_action_disconnect, SIGNAL(triggered(bool)), SLOT(slotDisconnect()));
+	toolbar->addAction(m_action_disconnect);
+
+	toolbar->addSeparator();
 
 	QPixmap icon_about = KIconLoader::global()->loadIcon("help-about", KIconLoader::Small);
 	QAction *action_about = new QAction(QIcon(icon_about), i18n("About Vencedor"), this);
@@ -119,6 +126,7 @@ void Vencedor::connection(const QString& url)
 		SLOT(slotEvent(KGGZCore::CoreClient::EventMessage)));
 
 	m_core->setUrl(url);
+	m_core->setTLS(Prefs::enforcetls());
 	m_core->initiateLogin();
 }
 
@@ -141,16 +149,25 @@ void Vencedor::slotConfig()
 
 	QCheckBox *kcfg_sync = new QCheckBox(i18n("Synchronise preferences with server"));
 	QCheckBox *kcfg_autoconnect = new QCheckBox(i18n("Automatically connect to previous session"));
+	QCheckBox *kcfg_enforcetls = new QCheckBox(i18n("Require encryption and reject unencrypted servers"));
 
 	QVBoxLayout *vbox = new QVBoxLayout();
 	vbox->addWidget(kcfg_sync);
 	vbox->addWidget(kcfg_autoconnect);
+	vbox->addWidget(kcfg_enforcetls);
 
 	root->setLayout(vbox);
 
 	dialog->addPage(root, i18n("Settings"), "ggz");
 
 	dialog->show();
+}
+
+void Vencedor::slotDisconnect()
+{
+	enable(false);
+	delete m_core;
+	m_core = NULL;
 }
 
 void Vencedor::slotConnect()
@@ -193,6 +210,7 @@ void Vencedor::enable(bool enabled)
 	m_tables->setEnabled(enabled);
 	m_chat->setEnabled(enabled);
 	m_action_connect->setEnabled(!enabled);
+	m_action_disconnect->setEnabled(enabled);
 }
 
 void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZCore::Error::ErrorCode error)

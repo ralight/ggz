@@ -13,5 +13,9 @@
         <label>Automatically connect to previous session</label>
         <default>false</default>
     </entry>
+    <entry name="enforcetls" type="Bool">
+        <label>Require encryption and reject unencrypted servers</label>
+        <default>false</default>
+    </entry>
   </group>
 </kcfg>

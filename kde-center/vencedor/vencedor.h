@@ -27,6 +27,7 @@ class Vencedor : public QMainWindow
 		void slotEvent(KGGZCore::Room::EventMessage message);
 
 		void slotConnect();
+		void slotDisconnect();
 		void slotAbout();
 		void slotConfig();
 		void slotLaunch();
@@ -46,6 +47,7 @@ class Vencedor : public QMainWindow
 		TableList *m_tables;
 		QAction *m_action_launch;
 		QAction *m_action_connect;
+		QAction *m_action_disconnect;
 };
 
 #endif
