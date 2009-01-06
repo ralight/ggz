@@ -28,6 +28,8 @@
 #include <string.h>
 #include <signal.h>
 
+#include <ggz.h>
+
 static pid_t pid;
 static int enginechannel;
 static int death;
@@ -55,7 +57,9 @@ void velena_ai_init(int rows, int columns, int level)
 
 int velena_ai_move(int column)
 {
-	snprintf(board, sizeof(board), "%s%i", board, column);
+	char *boardstr = ggz_strbuild("%s%i", board, column);
+	ggz_strncpy(board, boardstr, sizeof(board));
+	ggz_free(boardstr);
 
 	/* FIXME: how can we know if a player move succeeded? */
 	/* -> check min/max column at least */
