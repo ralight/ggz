@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 10261 2008-07-10 01:16:54Z jdorje $
+ * $Id: launch.c 10830 2009-01-09 19:49:45Z josef $
  *
  * Code for launching games through the GTK client
  *
@@ -76,6 +76,34 @@ void launch_dialog_close(void)
 
 void launch_create_or_raise(void)
 {
+	GGZRoom *room;
+	GGZGameType *gt;
+	int num;
+
+	room = ggzcore_server_get_cur_room(ggz_gtk.server);
+	gt = ggzcore_room_get_gametype(room);
+
+	const char *name = ggzcore_gametype_get_name(gt);
+	const char *engine = ggzcore_gametype_get_prot_engine(gt);
+	const char *version = ggzcore_gametype_get_prot_version(gt);
+
+	/* Check how many modules are registered for this game type */
+	ggzcore_reload();
+	num = ggzcore_module_get_num_by_type(name, engine, version);
+
+	if (num == 0) {
+		gchar *message;
+		message = g_strdup_printf(_("You don't have this game "
+					    "installed. You can download\n"
+					    "it from %s."),
+					  ggzcore_gametype_get_url(gt));
+		msgbox(message, _("Launch Error"), MSGBOX_OKONLY,
+		       MSGBOX_STOP, MSGBOX_NORMAL);
+		g_free(message);
+
+		return;
+	}
+
 	if (!ggz_gtk.launch_dialog) {
 		/* Dialog for setting table seats */
 		ggz_gtk.launch_dialog = create_dlg_launch();

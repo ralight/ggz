@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 10588 2008-11-01 02:04:54Z jdorje $
+ * $Id: game.c 10830 2009-01-09 19:49:45Z josef $
  *
  * Functions for handling game events
  *
@@ -61,20 +61,11 @@ static GGZModule *pick_module(GGZGameType * gt)
 	int num;
 	GGZModuleEnvironment env;
 
-	/* Check how many modules are registered for this game type */
+	/* Check (again) how many modules are registered for this game type */
 	ggzcore_reload();
 	num = ggzcore_module_get_num_by_type(name, engine, version);
 
 	if (num == 0) {
-		gchar *message;
-		message = g_strdup_printf(_("You don't have this game "
-					    "installed. You can download\n"
-					    "it from %s."),
-					  ggzcore_gametype_get_url(gt));
-		msgbox(message, _("Launch Error"), MSGBOX_OKONLY,
-		       MSGBOX_STOP, MSGBOX_NORMAL);
-		g_free(message);
-
 		return NULL;
 	}
 
@@ -168,6 +159,8 @@ void game_quit(void)
 {
 	GGZGame *game = ggzcore_server_get_cur_game(ggz_gtk.server);
 
+	/* FIXME: The first assertion is currently totally bogus
+	in the case of game server errors. See r10588 for solution. */
 	assert(ggzcore_game_get_control_fd(game) == -1);
 	assert(ggz_gtk.game_tag != 0);
 
