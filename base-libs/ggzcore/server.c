@@ -1150,8 +1150,12 @@ int _ggzcore_server_connect(GGZServer * server)
 	if (status < 0) {
 		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_FAIL);
 #ifdef HAVE_HSTRERROR
+		/* Unknown shouldn't happen - see ggz-cmd vs. ggz-txt */
 		if (h_errno == 0)
-			errmsg = strerror(errno);
+			if (errno == 0)
+				errmsg = _("Unknown reason");
+			else
+				errmsg = strerror(errno);
 		else
 			errmsg = (char *)hstrerror(h_errno);
 #else
