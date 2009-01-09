@@ -102,7 +102,7 @@ static void _ggzcore_module_init(GGZModule * module,
 static void _ggzcore_module_free(GGZModule * module);
 static void _ggzcore_module_read(GGZModule * mod, char *id);
 static int _ggzcore_module_add(GGZModule * module);
-static int _ggzcore_module_setup_registry(const char *registry);
+static int _ggzcore_module_setup_registry(const char *registry, int required);
 
 static char *_ggzcore_module_conf_filename(void);
 static void _ggzcore_module_print(const GGZModule *);
@@ -310,7 +310,7 @@ int _ggzcore_module_setup(void)
 	/* Check for central ggz.modules file first. */
 	file = _ggzcore_module_conf_filename();
 	ggz_debug(GGZCORE_DBG_MODULE, "Reading %s", file);
-	ret = _ggzcore_module_setup_registry(file);
+	ret = _ggzcore_module_setup_registry(file, 0);
 
 	/* Check for extra module registry files in ggz.modules.d. */
 	dirpath = ggz_strbuild("%s.d", file);
@@ -321,7 +321,7 @@ int _ggzcore_module_setup(void)
 			|| (!strcmp(entry->d_name, "..")))
 				continue;
 			dirfile = ggz_strbuild("%s/%s", dirpath, entry->d_name);
-			ret = _ggzcore_module_setup_registry(dirfile);
+			ret = _ggzcore_module_setup_registry(dirfile, 1);
 			if(ret == -1)
 				/*ignore*/;
 			ggz_free(dirfile);
@@ -342,7 +342,7 @@ int _ggzcore_module_setup(void)
 		fileptr = file;
 		fileptr = strtok(fileptr, ":");
 		while(fileptr) {
-			ret = _ggzcore_module_setup_registry(fileptr);
+			ret = _ggzcore_module_setup_registry(fileptr, 1);
 			if(ret == -1)
 				/*ignore*/;
 			fileptr = strtok(NULL, ":");
@@ -355,7 +355,7 @@ int _ggzcore_module_setup(void)
 	return ret;
 }
 
-int _ggzcore_module_setup_registry(const char *registry)
+int _ggzcore_module_setup_registry(const char *registry, int required)
 {
 	char **ids;
 	char **games;
@@ -363,7 +363,10 @@ int _ggzcore_module_setup_registry(const char *registry)
 	GGZModule *module;
 	int ret;
 
-	mod_handle = ggz_conf_parse(registry, GGZ_CONF_RDONLY);
+	GGZConfType conftype = GGZ_CONF_RDONLY;
+	if (!required)
+		conftype |= GGZ_CONF_TRY;
+	mod_handle = ggz_conf_parse(registry, conftype);
 
 	if (mod_handle == -1) {
 		ggz_debug(GGZCORE_DBG_MODULE,
