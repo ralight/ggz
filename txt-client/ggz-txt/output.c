@@ -404,7 +404,7 @@ void output_status(void)
 	char *currenttime;	/* String formatted time */
 	char displaytime[9];	/* What we display */
 	const char *user = NULL, *host = NULL, *roomname = NULL;
-	char *currentstatus = NULL;
+	const char *currentstatus = NULL;
 	GGZRoom *room;
 
 	if(!output_enabled) return;

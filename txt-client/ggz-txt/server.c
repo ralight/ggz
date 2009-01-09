@@ -189,6 +189,18 @@ static GGZHookReturn server_connect_fail(GGZServerEvent id,
 }
 
 
+static GGZHookReturn server_negotiate_fail(GGZServerEvent id,
+					 const void *event_data,
+					 const void *user_data)
+{
+	server_workinprogress(COMMAND_CONNECT, 0);
+
+	output_text(_("--- Protocol negotiation failed."));
+
+	return GGZ_HOOK_OK;
+}
+
+
 static GGZHookReturn server_negotiated(GGZServerEvent id,
 				       const void *event_data,
 				       const void *user_data)
@@ -585,7 +597,7 @@ static void server_register(GGZServer * server)
 	ggzcore_server_add_event_hook(server, GGZ_NEGOTIATED,
 				      server_negotiated);
 	ggzcore_server_add_event_hook(server, GGZ_NEGOTIATE_FAIL,
-				      server_connect_fail);
+				      server_negotiate_fail);
 	ggzcore_server_add_event_hook(server, GGZ_LOGGED_IN,
 				      server_login_ok);
 	ggzcore_server_add_event_hook(server, GGZ_LOGIN_FAIL,
