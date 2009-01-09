@@ -1311,16 +1311,8 @@ class GGZComm
 				f.puts "\tchar opcode;"
 			end
 			f.puts ""
-			if role == "client"
-				f.puts "\tif(!io)"
-				f.puts "\t{"
-				f.puts "\t\tio = ggzcomm_io_allocate(fd);"
-				f.puts "\t}"
-				f.puts ""
-			else
-				if library == "dio" then
-					f.puts "\tGGZCommIO *io = userdata;"
-				end
+			if library == "dio" then
+				f.puts "\tGGZCommIO *io = userdata;"
 			end
 			if mode == "debug":
 				f.puts "#ifdef GGZCOMM_DEBUG"
@@ -1370,13 +1362,19 @@ class GGZComm
 			if library == "dio"
 				f.print "void ggzcomm_network_main("
 				if role == "client"
-					f.print "void"
+					f.print "int fd"
 				else
-					#f.print "GGZDataIO *dio"
 					f.print "GGZCommIO *io"
 				end
 				f.puts ")\n"
 				f.puts "{"
+				if role == "client"
+					f.puts "\tif(!io)"
+					f.puts "\t{"
+					f.puts "\t\tio = ggzcomm_io_allocate(fd);"
+					f.puts "\t}"
+					f.puts ""
+				end
 				f.puts "\tggz_dio_set_read_callback(io->dio, ggzcomm_network_main_cb, io);"
 				f.puts "\tif(ggz_dio_read_data(io->dio) < 0)"
 				f.puts "\t\tggzcomm_error();"
