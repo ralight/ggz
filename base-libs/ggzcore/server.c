@@ -1150,7 +1150,10 @@ int _ggzcore_server_connect(GGZServer * server)
 	if (status < 0) {
 		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_FAIL);
 #ifdef HAVE_HSTRERROR
-		errmsg = (char *)hstrerror(h_errno);
+		if (h_errno == 0)
+			errmsg = strerror(errno);
+		else
+			errmsg = (char *)hstrerror(h_errno);
 #else
 		/* Not all systems have hstrerror. */
 		errmsg = _("Unable to connect");
