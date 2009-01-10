@@ -79,9 +79,8 @@ struct _GGZModule {
 };
 
 /* List of modules */
-static GGZList *module_list;
+static GGZList *module_list = NULL;
 static unsigned int num_modules;
-static int mod_handle = -1;
 static int embedded_module = 0;
 
 /* static internal functions */
@@ -100,7 +99,7 @@ static void _ggzcore_module_init(GGZModule * module,
 				 const char *help_path);
 #endif /* #if 0 */
 static void _ggzcore_module_free(GGZModule * module);
-static void _ggzcore_module_read(GGZModule * mod, char *id);
+static void _ggzcore_module_read(GGZModule * mod, char *id, int mod_handle);
 static int _ggzcore_module_add(GGZModule * module);
 static int _ggzcore_module_setup_registry(const char *registry, int required);
 
@@ -150,8 +149,10 @@ GGZModule *ggzcore_module_get_nth_by_type(const char *game,
 					  const char *version,
 					  const unsigned int num)
 {
-	/* FIXME: should check bounds on num */
 	if (!game || !engine || !version)
+		return NULL;
+
+	if ((num < 0) || (num >= num_modules))
 		return NULL;
 
 	return _ggzcore_module_get_nth_by_type(game, engine, version, num);
@@ -296,7 +297,7 @@ int _ggzcore_module_setup(void)
 	DIR *dir;
 	struct dirent *entry;
 
-	if (mod_handle != -1) {
+	if (module_list != NULL) {
 		ggz_debug(GGZCORE_DBG_MODULE,
 			  "module_setup() called twice");
 		return -1;
@@ -362,6 +363,7 @@ int _ggzcore_module_setup_registry(const char *registry, int required)
 	int i, j, count_types, count_modules, status;
 	GGZModule *module;
 	int ret;
+	int mod_handle;
 
 	GGZConfType conftype = GGZ_CONF_RDONLY;
 	if (!required)
@@ -396,7 +398,7 @@ int _ggzcore_module_setup_registry(const char *registry, int required)
 
 		for (j = 0; j < count_modules; j++) {
 			module = _ggzcore_module_new();
-			_ggzcore_module_read(module, ids[j]);
+			_ggzcore_module_read(module, ids[j], mod_handle);
 			_ggzcore_module_add(module);
 			ggz_debug(GGZCORE_DBG_MODULE, "Module %d: %s", j,
 				  ids[j]);
@@ -413,6 +415,8 @@ int _ggzcore_module_setup_registry(const char *registry, int required)
 	}
 
 	_ggz_free_chars(games);
+
+	ggz_conf_close(mod_handle);
 
 	return ret;
 }
@@ -436,39 +440,24 @@ int _ggzcore_module_is_embedded(void)
 }
 
 
-/* FIXME: do this right.  We should parse through module_list not
-   re-read the config file */
 int _ggzcore_module_get_num_by_type(const char *game,
 				    const char *engine,
 				    const char *version)
 {
-	int count, status, i, numcount;
-	char **ids;
-	GGZModule module;
+	GGZListEntry *cur;
+	int count = 0;
 
-	/* Get total count for this engine (regardless of version) */
-	status =
-	    ggz_conf_read_list(mod_handle, "Games", engine, &count, &ids);
+	/* FIXME: we ignore 'game', is this needed at all? */
 
-	if (status < 0)
-		return 0;
-
-	numcount = count;
-	for (i = 0; i < count; i++) {
-		_ggzcore_module_read(&module, ids[i]);
-		/* Subtract out modules that aren't the same protocol */
-		if (ggz_strcmp(engine, module.prot_engine) != 0
-		    || (version
-			&& ggz_strcmp(version, module.prot_version) != 0)
-		    /* || game not included in game list */
-		    )
-			numcount--;
+	for (cur = ggz_list_head(module_list); cur; cur = ggz_list_next(cur)) {
+		GGZModule *module = ggz_list_get_data(cur);
+		if ((ggz_strcmp(engine, module->prot_engine) == 0)
+		&& (ggz_strcmp(version, module->prot_version) == 0)) {
+			count++;
+		}
 	}
 
-	_ggz_free_chars(ids);
-
-
-	return numcount;
+	return count;
 }
 
 
@@ -488,57 +477,27 @@ GGZModule *_ggzcore_module_get_nth(const unsigned int num)
 }
 
 
-/* FIXME: do this right.  We should parse through module_list not
-   re-read the config file */
 GGZModule *_ggzcore_module_get_nth_by_type(const char *game,
 					   const char *engine,
 					   const char *version,
 					   const unsigned int num)
 {
-	int status;
-	unsigned int i, total, count;
-	char **ids;
-	GGZModule *module, *found = NULL;
-	GGZListEntry *entry;
+	GGZListEntry *cur;
+	int count = 0;
 
-	status =
-	    ggz_conf_read_list(mod_handle, "Games", engine, &total, &ids);
+	/* FIXME: we ignore 'game', is this needed at all? */
 
-	ggz_debug(GGZCORE_DBG_MODULE, "Found %d modules matching %s",
-		  total, engine);
-
-	if (status < 0)
-		return NULL;
-
-	if (num >= total) {
-		_ggz_free_chars(ids);
-		return NULL;
-	}
-
-	count = 0;
-	for (i = 0; i < total; i++) {
-		module = _ggzcore_module_new();
-		_ggzcore_module_read(module, ids[i]);
-		if (ggz_strcmp(version, module->prot_version) == 0) {
-			/* FIXME:  also check to see if 'game' is in supported list */
+	for (cur = ggz_list_head(module_list); cur; cur = ggz_list_next(cur)) {
+		GGZModule *module = ggz_list_get_data(cur);
+		if ((ggz_strcmp(engine, module->prot_engine) == 0)
+		&& (ggz_strcmp(version, module->prot_version) == 0)) {
 			if (count++ == num) {
-				/* Now find same module in list */
-				entry =
-				    ggz_list_search(module_list, module);
-				found = ggz_list_get_data(entry);
-				_ggzcore_module_free(module);
-				break;
+				return module;
 			}
 		}
-		_ggzcore_module_free(module);
 	}
 
-	/* Free the rest of the ggz_conf memory */
-	_ggz_free_chars(ids);
-
-
-	/* Return found module (if any) */
-	return found;
+	return NULL;
 }
 
 
@@ -616,10 +575,6 @@ void _ggzcore_module_cleanup(void)
 		module_list = NULL;
 	}
 	num_modules = 0;
-
-	// FIXME: abolish mod_handle and always close registry file immediately
-	ggz_conf_close(mod_handle);
-	mod_handle = -1;
 }
 
 
@@ -719,7 +674,7 @@ static char *_ggzcore_module_conf_filename(void)
 }
 
 
-static void _ggzcore_module_read(GGZModule * mod, char *id)
+static void _ggzcore_module_read(GGZModule * mod, char *id, int mod_handle)
 {
 	int argc;
 	char *environment;
