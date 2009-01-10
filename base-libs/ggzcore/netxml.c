@@ -992,7 +992,7 @@ int _ggzcore_net_read_data(GGZNet * net)
 	done = (len == 0);
 	if (done) {
 		if(net->server) {
-			_ggzcore_server_protocol_error(net->server, E_BAD_XML);
+			_ggzcore_net_error(net, "Connection has been interrupted");
 		} else {
 			/* Application doesn't handle reconnection properly */
 			ggz_debug(GGZCORE_DBG_NET, "Error: application shut down GGZ!");
@@ -1170,11 +1170,11 @@ void _ggzcore_net_handle_server(GGZNet * net, GGZXMLElement * element)
 		    		if (ggz_tls_support_query())
 					_ggzcore_net_negotiate_tls(net);
 				else if(_ggzcore_net_get_policy(net) == GGZ_CONNECTION_SECURE_REQUIRED)
-					_ggzcore_net_error(net, _("Secure connections not enabled."));
+					_ggzcore_net_error(net, _("Secure connections not enabled"));
 			}
 		} else {
 			if(_ggzcore_net_get_policy(net) == GGZ_CONNECTION_SECURE_REQUIRED)
-				_ggzcore_net_error(net, _("Secure connections not offered by server."));
+				_ggzcore_net_error(net, _("Secure connections not offered by server"));
 		}
 
 		_ggzcore_server_set_negotiate_status(net->server, net, E_OK);

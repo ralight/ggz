@@ -1106,7 +1106,7 @@ void _ggzcore_server_reset(GGZServer * server)
 
 static void connection_callback(const char *address, int fd)
 {
-	/*printf("<gai> called back! [%s][%i]\n", address, fd);*/
+	ggz_debug(GGZCORE_DBG_SERVER, "<gai> called back! [%s][%i]", address, fd);
 	_ggzcore_net_set_fd(reconnect_server->net, fd);
 	_ggzcore_server_connect(NULL);
 }
@@ -1143,7 +1143,7 @@ int _ggzcore_server_connect(GGZServer * server)
 
 	if (status == GGZ_SOCKET_PENDING) {
 		/* Asynchronous lookup */
-		/*printf("<gai> start lookup\n");*/
+		ggz_debug(GGZCORE_DBG_SERVER, "<gai> start lookup");
 		return 0;
 	}
 
@@ -1165,8 +1165,9 @@ int _ggzcore_server_connect(GGZServer * server)
 		_ggzcore_server_event(server, GGZ_CONNECT_FAIL, errmsg);
 	} else
 		_ggzcore_server_event(server, GGZ_CONNECTED, NULL);
+
 	if (thread_policy) {
-		/*printf("<gai> return %i\n", status);*/
+		ggz_debug(GGZCORE_DBG_SERVER, "<gai> return %i", status);
 	}
 
 	return status;
