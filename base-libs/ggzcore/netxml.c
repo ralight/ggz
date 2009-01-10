@@ -1177,7 +1177,8 @@ void _ggzcore_net_handle_server(GGZNet * net, GGZXMLElement * element)
 				_ggzcore_net_error(net, _("Secure connections not offered by server"));
 		}
 
-		_ggzcore_server_set_negotiate_status(net->server, net, E_OK);
+		if(net->fd >= 0)
+			_ggzcore_server_set_negotiate_status(net->server, net, E_OK);
 	} else
 		_ggzcore_server_set_negotiate_status(net->server, net, E_UNKNOWN);
 }
