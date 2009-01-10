@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 10834 2009-01-10 10:49:21Z josef $
+ * $Id: main.c 10848 2009-01-10 22:17:45Z josef $
  *
  * Main program code for ggz-cmd program.
  *
@@ -41,6 +41,7 @@
 
 #include <ggz.h>
 #include <ggzcore.h>
+#include <ggzcore_mainloop.h>
 
 #ifdef ENABLE_NLS
 #  include <locale.h>
@@ -88,9 +89,10 @@ typedef struct {
 } GGZCommand;
 
 GGZCommand command;
+/* FIXME: add user_data to ggzcore_mainloop? */
+GGZCommand *global_cmd;
 
 static GGZServer *server = NULL;
-static int server_fd = -1;
 static int in_room = 0;
 static int nagiosexit = 0;
 
@@ -245,73 +247,17 @@ static int parse_arguments(int argc, char **argv, GGZCommand * cmd)
 	return 0;
 }
 
-static void wait_for_input(int fd)
-{
-	fd_set my_fd_set;
-	int status;
-	struct timeval timeout = {.tv_sec = 10, .tv_usec = 0};
-
-	assert(fd >= 0);
-
-	FD_ZERO(&my_fd_set);
-	FD_SET(fd, &my_fd_set);
-
-	status = select(fd + 1, &my_fd_set, NULL, NULL, &timeout);
-	if (status < 0)
-		ggz_error_sys_exit("Select error while blocking.");
-
-	if (!FD_ISSET(fd, &my_fd_set)) {
-		fprintf(errorstream(stderr), _("Connection to server timed out.\n"));
-		exit(exitcode(STATUS_WARNING));
-	}
-}
-
 static GGZHookReturn server_failure(GGZServerEvent id,
 				    const void *event_data,
 				    const void *user_data)
 {
-	const char *message = NULL;
-	if ((id != GGZ_CONNECT_FAIL)
-	&& (id != GGZ_NET_ERROR)) {
-		const GGZErrorEventData *msg = event_data;
-		message = msg->message;
-	} else {
-		message = event_data;
-	}
+	const GGZErrorEventData *msg = event_data;
+	const char *message = msg->message;
 
 	ggz_debug(DBG_MAIN, "GGZ failure: event %d.", id);
 	fprintf(errorstream(stderr),
-		_("ggz-cmd: Could not connect to server: %s\n"), message);
+		_("ggz-cmd: Could not enter room: %s\n"), message);
 	exit(exitcode(STATUS_CRITICAL));
-}
-
-static GGZHookReturn server_connected(GGZServerEvent id,
-				      const void *event_data,
-				      const void *user_data)
-{
-	ggz_debug(DBG_MAIN, "Connected to server.");
-	server_fd = ggzcore_server_get_fd(server);
-	return GGZ_HOOK_OK;
-}
-
-static GGZHookReturn server_negotiated(GGZServerEvent id,
-				       const void *event_data,
-				       const void *user_data)
-{
-	ggz_debug(DBG_MAIN, "Server negotiated.");
-	ggzcore_server_login(server);
-	return GGZ_HOOK_OK;
-}
-
-static GGZHookReturn server_logged_in(GGZServerEvent id,
-				      const void *event_data,
-				      const void *user_data)
-{
-	ggz_debug(DBG_MAIN, "Logged in to server.");
-
-	ggzcore_server_list_rooms(server, 0);
-
-	return GGZ_HOOK_OK;
 }
 
 static GGZHookReturn server_room_entered(GGZServerEvent id,
@@ -319,49 +265,22 @@ static GGZHookReturn server_room_entered(GGZServerEvent id,
 					 const void *user_data)
 {
 	ggz_debug(DBG_MAIN, "Entered room 0.");
+
 	in_room = 1;
+
+	assert(command.data);
+	ggzcore_room_chat(ggzcore_server_get_cur_room(server),
+			  GGZ_CHAT_ANNOUNCE, NULL, command.data);
+	ggz_debug(DBG_MAIN, "Sending announcement.");
+
 	return GGZ_HOOK_OK;
 }
 
-static void exec_command(GGZCommand * cmd)
+static GGZHookReturn server_roomlist(GGZServerEvent id,
+				    const void *event_data,
+				    const void *user_data)
 {
-	GGZConnectionPolicy policy;
-
-	if (cmd->tls)
-		policy = GGZ_CONNECTION_SECURE_REQUIRED;
-	else
-		policy = GGZ_CONNECTION_SECURE_OPTIONAL;
-
-	server = ggzcore_server_new();
-	ggzcore_server_set_hostinfo(server, cmd->host, cmd->port,
-				    policy);
-	ggzcore_server_set_logininfo(server, cmd->login_type,
-				     cmd->login, cmd->passwd, NULL);
-
-	/* Register necessary events. */
-	ggzcore_server_add_event_hook(server, GGZ_CONNECT_FAIL,
-				      server_failure);
-	ggzcore_server_add_event_hook(server, GGZ_CONNECTED,
-				      server_connected);
-	ggzcore_server_add_event_hook(server, GGZ_NEGOTIATED,
-				      server_negotiated);
-	ggzcore_server_add_event_hook(server, GGZ_NEGOTIATE_FAIL,
-				      server_failure);
-	ggzcore_server_add_event_hook(server, GGZ_LOGGED_IN,
-				      server_logged_in);
-	ggzcore_server_add_event_hook(server, GGZ_LOGIN_FAIL, server_failure);
-
-	ggzcore_server_add_event_hook(server, GGZ_NET_ERROR, server_failure);
-	ggzcore_server_add_event_hook(server, GGZ_PROTOCOL_ERROR,
-				      server_failure);
-
-	ggzcore_server_connect(server);
-
-	do {
-		wait_for_input(server_fd);
-		ggzcore_server_read_data(server, server_fd);
-	} while (ggzcore_server_get_num_rooms(server) <= 0);
-
+	GGZCommand *cmd = (GGZCommand*)user_data;
 
 	/* Now we're ready to execute the command(s), but how we do it
 	   depends on the command itself.  Right now this is hard-wired
@@ -377,16 +296,6 @@ static void exec_command(GGZCommand * cmd)
 				  ggzcore_server_get_num_rooms(server));
 			exit(exitcode(STATUS_WARNING));
 		}
-
-		do {
-			wait_for_input(server_fd);
-			ggzcore_server_read_data(server, server_fd);
-		} while (!in_room);
-
-		assert(command.data);
-		ggzcore_room_chat(ggzcore_server_get_cur_room(server),
-				  GGZ_CHAT_ANNOUNCE, NULL, command.data);
-		ggz_debug(DBG_MAIN, "Sending announcement.");
 	}
 
 	if(cmd->command == GGZ_CMD_CHECKNAGIOS)
@@ -396,11 +305,53 @@ static void exec_command(GGZCommand * cmd)
 
 	/* FIXME: we don't officially disconnect, we just close
 	   the communication! */
+
+	return GGZ_HOOK_OK;
+}
+
+static void mainloopfunc(GGZCoreMainLoopEvent id, const char *message, GGZServer *server)
+{
+	if(id == GGZCORE_MAINLOOP_READY) {
+		//printf("READY: %s\n", message);
+		ggzcore_server_add_event_hook_full(server, GGZ_ROOM_LIST, server_roomlist, global_cmd);
+		ggzcore_server_list_rooms(server, 0);
+	} else if(id == GGZCORE_MAINLOOP_WAIT) {
+		//fprintf(stderr, "WARNING: %s\n", message);
+		exit(exitcode(STATUS_WARNING));
+	} else if(id == GGZCORE_MAINLOOP_ABORT) {
+		//fprintf(stderr, "ERROR: %s\n", message);
+		exit(exitcode(STATUS_CRITICAL));
+	}
+}
+
+static void exec_command(GGZCommand * cmd)
+{
+	GGZCoreMainLoop mainloop;
+
+	mainloop.func = mainloopfunc;
+	mainloop.reconnect = 1;
+	mainloop.loop = 0;
+	mainloop.async = 0;
+	mainloop.debug = 0;
+
+	mainloop.tls = cmd->tls;
+	if(cmd->login_type == GGZ_LOGIN_GUEST)
+		mainloop.uri = ggz_strbuild("%s@%s:%i",
+			cmd->login, cmd->host, cmd->port);
+	else
+		mainloop.uri = ggz_strbuild("%s:%s@%s:%i",
+			cmd->login, cmd->passwd, cmd->host, cmd->port);
+
+	global_cmd = cmd;
+
+	(void)ggzcore_mainloop_start(mainloop);
 }
 
 static void initialize_debugging(void)
 {
 #ifdef DEBUG
+	/* FIXME: We should be able to use GGZCoreMainLoop.debug but
+	there's no way to add one type to that list. */
 	const char* debug_types[] = {DBG_MAIN,
 				     GGZCORE_DBG_CONF, GGZCORE_DBG_GAME,
 				     GGZCORE_DBG_HOOK, GGZCORE_DBG_MODULE,
@@ -423,18 +374,11 @@ int main(int argc, char **argv)
 
 	initialize_debugging();
 
-	GGZOptions opt;
-	/*opt.flags = GGZ_OPT_THREADED_IO | GGZ_OPT_RECONNECT;*/
-	opt.flags = GGZ_OPT_RECONNECT;
-	ggzcore_init(opt);
-
 	if (parse_arguments(argc, argv, &command) < 0) {
 		return -1;
 	}
 
 	if(command.command != GGZ_CMD_BATCH) exec_command(&command);
-
-	ggzcore_destroy();
 
 	return exitcode(STATUS_OK);
 }
