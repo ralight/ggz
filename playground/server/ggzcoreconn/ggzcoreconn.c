@@ -66,7 +66,6 @@ static void mainloopfunc(GGZCoreMainLoopEvent id, const char *message, GGZServer
 		fprintf(stderr, "WARNING: %s\n", message);
 	} else if(id == GGZCORE_MAINLOOP_ABORT) {
 		fprintf(stderr, "ERROR: %s\n", message);
-//		exit(-1);
 	}
 }
 
