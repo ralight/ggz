@@ -5,6 +5,8 @@
 #ifndef GGZCOMM_TICTACTOE_H
 #define GGZCOMM_TICTACTOE_H
 
+#include <ggz_dio.h>
+
 #define sndmove 0
 #define reqsync 1
 #define reqmove 4
