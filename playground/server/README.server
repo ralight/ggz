@@ -28,6 +28,11 @@ Contents right now:
 * games
   A tiny wrapper for the Velena AI engine in ConnectX
 
+* ggzcoreconn
+  Not really related to ggzd, but instead providing a tool to test
+  various connection models from ggzcore to ggzd, including asynchrony,
+  encryption and reconnection.
+
 * ggztop
   Frontend for the real-time statistics feature
 
