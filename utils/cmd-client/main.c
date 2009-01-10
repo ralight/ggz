@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 10640 2008-12-24 08:24:14Z josef $
+ * $Id: main.c 10834 2009-01-10 10:49:21Z josef $
  *
  * Main program code for ggz-cmd program.
  *
@@ -423,11 +423,18 @@ int main(int argc, char **argv)
 
 	initialize_debugging();
 
+	GGZOptions opt;
+	/*opt.flags = GGZ_OPT_THREADED_IO | GGZ_OPT_RECONNECT;*/
+	opt.flags = GGZ_OPT_RECONNECT;
+	ggzcore_init(opt);
+
 	if (parse_arguments(argc, argv, &command) < 0) {
 		return -1;
 	}
 
 	if(command.command != GGZ_CMD_BATCH) exec_command(&command);
+
+	ggzcore_destroy();
 
 	return exitcode(STATUS_OK);
 }
