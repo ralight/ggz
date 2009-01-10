@@ -1358,7 +1358,7 @@ int _ggzcore_server_logout(GGZServer * server)
 
 int _ggzcore_server_disconnect(GGZServer * server)
 {
-	ggz_debug(GGZCORE_DBG_SERVER, "Disconnecting");
+	ggz_debug(GGZCORE_DBG_SERVER, "Disconnecting and going offline");
 	_ggzcore_net_disconnect(server->net);
 
 	/* Force the server object into the offline state */
@@ -1602,7 +1602,7 @@ static void reconnect_alarm(int sig)
 		reconnect_server->state = GGZ_STATE_RECONNECTING;
 		alarm(reconnect_timeout);
 	} else {
-		reconnect_server->state = GGZ_STATE_ONLINE;
+		_ggzcore_server_change_state(reconnect_server, GGZ_TRANS_CONN_OK);
 		_ggzcore_server_event(reconnect_server, GGZ_CONNECTED, NULL);
 	}
 }
@@ -1616,6 +1616,8 @@ void _ggzcore_server_change_state(GGZServer * server, GGZTransID trans)
 			char *host;
 			int port;
 			GGZConnectionPolicy policy;
+
+			ggz_debug(GGZCORE_DBG_SERVER, "Setting up reconnection attempt");
 
 			reconnect_server = server;
 			host = ggz_strdup(_ggzcore_net_get_host(server->net));

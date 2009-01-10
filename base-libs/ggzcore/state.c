@@ -72,7 +72,7 @@ static struct _GGZTransition _connecting_transitions[] = {
 };
 
 static struct _GGZTransition _reconnecting_transitions[] = {
-	{GGZ_TRANS_CONN_OK,      GGZ_STATE_ONLINE},
+	{GGZ_TRANS_CONN_OK,      GGZ_STATE_CONNECTING},
 	{GGZ_TRANS_CONN_FAIL,    GGZ_STATE_RECONNECTING},
 	{-1, -1}
 };
