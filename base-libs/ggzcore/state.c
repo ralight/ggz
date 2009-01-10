@@ -67,6 +67,7 @@ static struct _GGZTransition _offline_transitions[] = {
 static struct _GGZTransition _connecting_transitions[] = {
 	{GGZ_TRANS_CONN_OK,      GGZ_STATE_ONLINE},
 	{GGZ_TRANS_CONN_FAIL,    GGZ_STATE_OFFLINE},
+	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
 	{-1, -1}
 };
 
