@@ -5,6 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <errno.h>
 
 #include <ggz.h>
 #include <ggzcore.h>
@@ -58,7 +59,8 @@ static void wait_for_input(int sfd, int afd, int timeout)
 
 	status = select(maxfd + 1, &my_fd_set, NULL, NULL, timeoutptr);
 	if(status < 0)
-		ggz_error_sys_exit("Select error while blocking.");
+		if(errno != EINTR)
+			ggz_error_sys_exit("Select error while blocking");
 
 	if(sfd >= 0) {
 		if(!FD_ISSET(sfd, &my_fd_set)) {
@@ -92,8 +94,12 @@ static GGZHookReturn server_failure(GGZServerEvent id, const void *event_data, c
 		message = event_data;
 	}
 
-	fprintf(stderr, "ERROR: Could not connect to server, or other issue: %s.\n", message);
-	quit(-1);
+	if(ggzcore_server_get_state(server) == GGZ_STATE_RECONNECTING) {
+		fprintf(stderr, "ERROR: Connection broke temporarily: %s.\n", message);
+	} else {
+		fprintf(stderr, "ERROR: Could not connect to server, or other issue: %s.\n", message);
+		quit(-1);
+	}
 
 	return GGZ_HOOK_OK;
 }
