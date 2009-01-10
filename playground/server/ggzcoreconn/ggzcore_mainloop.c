@@ -4,9 +4,10 @@
 #include <errno.h>
 
 #include <ggz.h>
-#include <stdio.h> // tmp
 
-#define DBG_MAINLOOP "GGZCORE:MAINLOOP"
+#define DBG_MAINLOOP "GGZCORE:MAINLOOP<<>>"
+
+#define _(x) x
 
 static void ggzcore_mainloop_quit(GGZCoreMainLoop *mainloop, int retval)
 {
@@ -55,7 +56,7 @@ static void ggzcore_mainloop_event(GGZCoreMainLoop *mainloop, int sfd, int afd, 
 
 	if(sfd >= 0) {
 		if(!FD_ISSET(sfd, &my_fd_set)) {
-			ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_ABORT, "Connection to server timed out");
+			ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_ABORT, _("Connection to server timed out"));
 		}
 	}
 
@@ -89,11 +90,11 @@ static GGZHookReturn ggzcore_mainloop_server_failure(GGZServerEvent id, const vo
 	if(ggzcore_server_get_state(mainloop->server) == GGZ_STATE_RECONNECTING) {
 		ggz_debug(DBG_MAINLOOP, "ERROR: Connection broke temporarily: %s.", message);
 
-		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_WAIT, "Connection broke temporarily");
+		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_WAIT, _("Connection broke temporarily"));
 	} else {
 		ggz_debug(DBG_MAINLOOP, "ERROR: Could not connect to server, or other issue: %s.", message);
 
-		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_ABORT, "Connection could not be established");
+		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_ABORT, _("Connection could not be established"));
 	}
 
 	return GGZ_HOOK_OK;
@@ -116,7 +117,7 @@ static GGZHookReturn ggzcore_mainloop_server_negotiated(GGZServerEvent id, const
 	if(rc) {
 		ggz_debug(DBG_MAINLOOP, "ERROR: Login process could not be initiated.");
 
-		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_ABORT, "Login could not be established");
+		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_ABORT, _("Login could not be established"));
 	}
 
 	return GGZ_HOOK_OK;
@@ -128,7 +129,7 @@ static GGZHookReturn ggzcore_mainloop_server_logged_in(GGZServerEvent id, const 
 
 	GGZCoreMainLoop *mainloop = (GGZCoreMainLoop*)user_data;
 
-	ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_READY, "Connection established and login succeeded");
+	ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_READY, _("Connection established and login succeeded"));
 
 	return GGZ_HOOK_OK;
 }
