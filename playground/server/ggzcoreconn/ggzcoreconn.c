@@ -17,6 +17,7 @@ typedef struct {
 	int async;
 	int reconnect;
 	int debug;
+	int loop;
 } GGZConnectionVariety;
 
 static GGZServer *server = NULL;
@@ -35,11 +36,15 @@ static void quit(int retval)
 	exit(retval);
 }
 
-static void wait_for_input(int sfd, int afd)
+static void wait_for_input(int sfd, int afd, int timeout)
 {
 	fd_set my_fd_set;
 	int status;
-	struct timeval timeout = {.tv_sec = 10, .tv_usec = 0};
+	struct timeval stdtimeout = {.tv_sec = 10, .tv_usec = 0};
+	struct timeval *timeoutptr = &stdtimeout;
+
+	if(!timeout)
+		timeoutptr = NULL;
 
 	FD_ZERO(&my_fd_set);
 	if(sfd >= 0)
@@ -51,7 +56,7 @@ static void wait_for_input(int sfd, int afd)
 	if(afd > sfd)
 		maxfd = afd;
 
-	status = select(maxfd + 1, &my_fd_set, NULL, NULL, &timeout);
+	status = select(maxfd + 1, &my_fd_set, NULL, NULL, timeoutptr);
 	if(status < 0)
 		ggz_error_sys_exit("Select error while blocking.");
 
@@ -119,7 +124,9 @@ static GGZHookReturn server_logged_in(GGZServerEvent id, const void *event_data,
 
 	printf("Connection established and login succeeded.\n");
 
-	quit(0);
+	int loop = *(int*)user_data;
+	if(!loop)
+		quit(0);
 
 	return GGZ_HOOK_OK;
 }
@@ -152,21 +159,25 @@ static void coreconnect(GGZConnectionVariety connvar)
 	ggzcore_server_add_event_hook(server, GGZ_CONNECTED, server_connected);
 	ggzcore_server_add_event_hook(server, GGZ_NEGOTIATED, server_negotiated);
 	ggzcore_server_add_event_hook(server, GGZ_NEGOTIATE_FAIL, server_failure);
-	ggzcore_server_add_event_hook(server, GGZ_LOGGED_IN, server_logged_in);
+	ggzcore_server_add_event_hook_full(server, GGZ_LOGGED_IN, server_logged_in, &connvar.loop);
 	ggzcore_server_add_event_hook(server, GGZ_LOGIN_FAIL, server_failure);
 	ggzcore_server_add_event_hook(server, GGZ_NET_ERROR, server_failure);
 	ggzcore_server_add_event_hook(server, GGZ_PROTOCOL_ERROR, server_failure);
 
 	ggzcore_server_connect(server);
 
-	do {
+	while(1) {
 		int sfd = ggzcore_server_get_fd(server);
 		int afd = ggz_async_fd();
 
-		wait_for_input(sfd, afd);
+		int timeout = 1;
+		if(ggzcore_server_is_online(server))
+			timeout = 0;
+
+		wait_for_input(sfd, afd, timeout);
 		if(sfd != -1)
 			ggzcore_server_read_data(server, sfd);
-	} while (ggzcore_server_get_num_rooms(server) <= 0);
+	}
 }
 
 static void initialize_debugging(void)
@@ -189,7 +200,8 @@ static GGZConnectionVariety parse(int argc, char **argv)
 		.tls = 0,
 		.async = 0,
 		.reconnect = 0,
-		.debug = 0
+		.debug = 0,
+		.loop = 0
 	};
 
 	struct option opts[] = {
@@ -197,6 +209,7 @@ static GGZConnectionVariety parse(int argc, char **argv)
 		{"reconnect", 0, &connvar.reconnect, 1},
 		{"async", 0, &connvar.async, 1},
 		{"debug", 0, &connvar.debug, 1},
+		{"loop", 0, &connvar.loop, 1},
 		{0, 0, 0, }
 	};
 	int index;
@@ -221,11 +234,11 @@ static GGZConnectionVariety parse(int argc, char **argv)
 	}
 
 	if(!valid) {
-		fprintf(stderr, "Syntax: ggzcoreconn [--tls] [--reconnect] [--async] <GGZ URI>\n");
+		fprintf(stderr, "Syntax: ggzcoreconn [--tls] [--reconnect] [--async] [--loop] [--debug] <GGZ URI>\n");
 		connvar.uri = NULL;
 	} else {
-		printf("Connection: tls=%i async=%i reconnect=%i uri=%s\n",
-			connvar.tls, connvar.async, connvar.reconnect, connvar.uri);
+		printf("Connection: tls=%i async=%i reconnect=%i loop=%i uri=%s\n",
+			connvar.tls, connvar.async, connvar.reconnect, connvar.loop, connvar.uri);
 	}
 
 	return connvar;
