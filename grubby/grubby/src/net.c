@@ -12,6 +12,7 @@
 #include "i18n.h"
 #include <ggz.h>
 #include <ggzcore.h>
+#include <ggzcore_mainloop.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -35,8 +36,6 @@ static int channelfd = -1;
 static time_t lasttick = 0;
 
 /* Prototypes */
-static GGZHookReturn net_hook_connect(unsigned int id, const void *event_data, const void *user_data);
-static GGZHookReturn net_hook_login(unsigned int id, const void *event_data, const void *user_data);
 static GGZHookReturn net_hook_roomlist(unsigned int id, const void *event_data, const void *user_data);
 static GGZHookReturn net_hook_enter(unsigned int id, const void *event_data, const void *user_data);
 static GGZHookReturn net_hook_fail(unsigned int id, const void *event_data, const void *user_data);
@@ -57,16 +56,6 @@ static GGZHookReturn net_hook_ready(unsigned int id, const void *event_data, con
 
 static void net_internal_game(GGZPlayer *player, int tableid);
 static void net_internal_gameprepare(const char *playername);
-
-/* Initialize the net functions */
-static void net_internal_init(void)
-{
-	GGZOptions opt;
-	int ret;
-
-	opt.flags = GGZ_OPT_MODULES | GGZ_OPT_PARSER;
-	ret = ggzcore_init(opt);
-}
 
 /* Set up the logfile or close it again */
 void net_logfile(const char *logfile)
@@ -146,10 +135,36 @@ static void net_internal_queueadd(const char *player, const char *message, int t
 
 void net_cleanup()
 {
-	ggzcore_server_logout(server);
-	ggzcore_server_disconnect(server);
-	ggzcore_server_free(server);
-	ggzcore_destroy();
+}
+
+static void mainloopfunc(GGZCoreMainLoopEvent id, const char *message, GGZServer *func_server)
+{
+	if(id == GGZCORE_MAINLOOP_READY)
+	{
+		printf("READY: %s\n", message);
+
+		server = func_server;
+
+		ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL, net_hook_fail);
+		ggzcore_server_add_event_hook(server, GGZ_CHAT_FAIL, net_hook_chatfail);
+		ggzcore_server_add_event_hook(server, GGZ_ENTERED, net_hook_enter);
+		ggzcore_server_add_event_hook(server, GGZ_ROOM_LIST, net_hook_roomlist);
+		ggzcore_server_add_event_hook(server, GGZ_TYPE_LIST, net_hook_typelist);
+		ggzcore_server_add_event_hook(server, GGZ_CHANNEL_CONNECTED, net_hook_channel);
+		ggzcore_server_add_event_hook(server, GGZ_CHANNEL_READY, net_hook_ready);
+
+		ggzcore_server_list_rooms(server, 0);
+		ggzcore_server_list_gametypes(server, 1);
+	}
+	else if(id == GGZCORE_MAINLOOP_WAIT)
+	{
+		fprintf(stderr, "WARNING: %s\n", message);
+	}
+	else if(id == GGZCORE_MAINLOOP_ABORT)
+	{
+		//fprintf(stderr, "ERROR: %s\n", message);
+		status = NET_ERROR;
+	}
 }
 
 /* Transparently connect to any host */
@@ -158,28 +173,19 @@ void net_connect(const char *host, int port, const char *name, const char *passw
 	guruname = (char*)name;
 	gurupassword = (char*)password;
 
-	net_internal_init();
+	GGZCoreMainLoop mainloop;
 
-	server = ggzcore_server_new();
+	if(password)
+		mainloop.uri = ggz_strbuild("ggz://%s:%s@%s:%i", name, password, host, port);
+	else
+		mainloop.uri = ggz_strbuild("ggz://%s@%s:%i", name, host, port);
+	mainloop.reconnect = 1;
+	mainloop.loop = 1;
+	mainloop.func = mainloopfunc;
 
-	ggzcore_server_add_event_hook(server, GGZ_CONNECTED, net_hook_connect);
-	ggzcore_server_add_event_hook(server, GGZ_CONNECT_FAIL, net_hook_fail);
-	ggzcore_server_add_event_hook(server, GGZ_NEGOTIATE_FAIL, net_hook_fail);
-	ggzcore_server_add_event_hook(server, GGZ_LOGIN_FAIL, net_hook_fail);
-	ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL, net_hook_fail);
-	ggzcore_server_add_event_hook(server, GGZ_PROTOCOL_ERROR, net_hook_fail);
-	ggzcore_server_add_event_hook(server, GGZ_NET_ERROR, net_hook_fail);
-	ggzcore_server_add_event_hook(server, GGZ_CHAT_FAIL, net_hook_chatfail);
-	ggzcore_server_add_event_hook(server, GGZ_ENTERED, net_hook_enter);
-	ggzcore_server_add_event_hook(server, GGZ_LOGGED_IN, net_hook_login);
-	ggzcore_server_add_event_hook(server, GGZ_ROOM_LIST, net_hook_roomlist);
-	ggzcore_server_add_event_hook(server, GGZ_TYPE_LIST, net_hook_typelist);
+	(void)ggzcore_mainloop_start(mainloop);
 
-	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_CONNECTED, net_hook_channel);
-	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_READY, net_hook_ready);
-
-	ggzcore_server_set_hostinfo(server, host, port, GGZ_CONNECTION_SECURE_OPTIONAL);
-	ggzcore_server_connect(server);
+	ggz_free(mainloop.uri);
 }
 
 /* Change the current room */
@@ -210,7 +216,6 @@ void net_join(const char *room)
 int net_status(void)
 {
 	int ret;
-	int fd;
 	fd_set set;
 	struct timeval to;
 	struct timeval *top;
@@ -224,22 +229,6 @@ int net_status(void)
 
 	/*if(ggzcore_server_data_is_pending(server))
 		ggzcore_server_read_data(server, ggzcore_server_get_fd(server));*/
-
-	if(channelfd == -1)
-	{
-		fd = ggzcore_server_get_fd(server);
-
-		if (fd < 0) {
-			fprintf(stderr, "Could not connect to server.\n");
-			exit(EXIT_FAILURE);
-		}
-
-		FD_ZERO(&set);
-		FD_SET(fd, &set);
-
-		ret = select(fd + 1, &set, NULL, NULL, top);
-		if(ret == 1) ggzcore_server_read_data(server, fd);
-	}
 
 	if(gamefd != -1)
 	{
@@ -300,8 +289,6 @@ void net_output(Guru *output)
 
 	/* Handle multi-line answers */
 	if(!output->message) return;
-/*printf("DEBUG: output is at %i\n", output);
-printf("DEBUG: net_output(%s)\n", output->message);*/
 	msg = ggz_strdup(output->message);
 	token = strtok(msg, "\n");
 	while(token)
@@ -326,32 +313,6 @@ printf("DEBUG: net_output(%s)\n", output->message);*/
 		token = strtok(NULL, "\n");
 	}
 	ggz_free(msg);
-}
-
-/* Callback for successful connection */
-GGZHookReturn net_hook_connect(unsigned int id, const void *event_data, const void *user_data)
-{
-	/*nasty ggzcore bug?*/
-	while((!ggzcore_server_is_online(server)) && (status == NET_NOOP))
-		ggzcore_server_read_data(server, ggzcore_server_get_fd(server));
-
-	if(status == NET_NOOP)
-	{
-		if(gurupassword)
-			ggzcore_server_set_logininfo(server, GGZ_LOGIN, guruname, gurupassword, NULL);
-		else
-			ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST, guruname, NULL, NULL);
-		ggzcore_server_login(server);
-	}
-	return GGZ_HOOK_OK;
-}
-
-/* Callback for login */
-GGZHookReturn net_hook_login(unsigned int id, const void *event_data, const void *user_data)
-{
-	ggzcore_server_list_rooms(server, 0);
-	ggzcore_server_list_gametypes(server, 1);
-	return GGZ_HOOK_OK;
 }
 
 /* Callback for rooms list */
@@ -440,7 +401,7 @@ void net_internal_game(GGZPlayer *player, int tableid)
 	{
 		table = ggzcore_room_get_nth_table(room, tableid);
 	}
-	
+
 	if(table)
 	{
 		tableid = ggzcore_table_get_id(table);
@@ -575,7 +536,7 @@ GGZHookReturn net_hook_chat(unsigned int id, const void *event_data, const void 
 			chat->sender, chat->message);
 		fflush(logstream);
 	}
-	
+
 	return GGZ_HOOK_OK;
 }
 
