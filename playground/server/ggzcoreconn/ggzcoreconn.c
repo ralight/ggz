@@ -16,9 +16,24 @@ typedef struct {
 	int tls;
 	int async;
 	int reconnect;
+	int debug;
 } GGZConnectionVariety;
 
 static GGZServer *server = NULL;
+
+static void quit(int retval)
+{
+	if(server) {
+		ggzcore_server_disconnect(server);
+		ggzcore_server_free(server);
+		server = NULL;
+	}
+	ggzcore_destroy();
+
+	ggz_debug(DBG_MAIN, "Cleaned up, quitting now.");
+
+	exit(retval);
+}
 
 static void wait_for_input(int sfd, int afd)
 {
@@ -27,9 +42,9 @@ static void wait_for_input(int sfd, int afd)
 	struct timeval timeout = {.tv_sec = 10, .tv_usec = 0};
 
 	FD_ZERO(&my_fd_set);
-	if(sfd != -1)
+	if(sfd >= 0)
 		FD_SET(sfd, &my_fd_set);
-	if(afd != -1)
+	if(afd >= 0)
 		FD_SET(afd, &my_fd_set);
 
 	int maxfd = sfd;
@@ -40,31 +55,31 @@ static void wait_for_input(int sfd, int afd)
 	if(status < 0)
 		ggz_error_sys_exit("Select error while blocking.");
 
-	if(sfd != -1) {
+	if(sfd >= 0) {
 		if(!FD_ISSET(sfd, &my_fd_set)) {
-			fprintf(stderr, "Connection to server timed out.\n");
-			exit(-1);
+			fprintf(stderr, "ERROR: Connection to server timed out.\n");
+			quit(-1);
 		}
 	}
 
-	if(afd != -1) {
+	if(afd >= 0) {
 		GGZAsyncEvent ev = ggz_async_event();
 		if(ev.type == GGZ_ASYNC_RESOLVER) {
-			printf("ASYNC: Resolver returned address %s:%i\n", ev.address, ev.port);
+			ggz_debug(DBG_MAIN, "ASYNC: Resolver returned address %s:%i", ev.address, ev.port);
 		} else if(ev.type == GGZ_ASYNC_CONNECT) {
-			printf("ASYNC: Connection established on socket %i\n", ev.socket);
+			ggz_debug(DBG_MAIN, "ASYNC: Connection established on socket %i", ev.socket);
 		} else {
-			printf("ASYNC: Noop\n");
+			ggz_debug(DBG_MAIN, "ASYNC: Noop");
 		}
 	}
 }
 
-static GGZHookReturn server_failure(GGZServerEvent id,
-				    const void *event_data,
-				    const void *user_data)
+static GGZHookReturn server_failure(GGZServerEvent id, const void *event_data, const void *user_data)
 {
+	ggz_debug(DBG_MAIN, "GGZ failure: event %d.", id);
+
 	const char *message = NULL;
-	if ((id != GGZ_CONNECT_FAIL)
+	if((id != GGZ_CONNECT_FAIL)
 	&& (id != GGZ_NET_ERROR)) {
 		const GGZErrorEventData *msg = event_data;
 		message = msg->message;
@@ -72,50 +87,42 @@ static GGZHookReturn server_failure(GGZServerEvent id,
 		message = event_data;
 	}
 
-	ggz_debug(DBG_MAIN, "GGZ failure: event %d.", id);
-	fprintf(stderr,
-		"ggz-cmd: Could not connect to server: %s\n", message);
-	exit(-1);
+	fprintf(stderr, "ERROR: Could not connect to server, or other issue: %s.\n", message);
+	quit(-1);
+
+	return GGZ_HOOK_OK;
 }
 
-static GGZHookReturn server_connected(GGZServerEvent id,
-				      const void *event_data,
-				      const void *user_data)
+static GGZHookReturn server_connected(GGZServerEvent id, const void *event_data, const void *user_data)
 {
 	ggz_debug(DBG_MAIN, "Connected to server.");
+
 	return GGZ_HOOK_OK;
 }
 
-static GGZHookReturn server_negotiated(GGZServerEvent id,
-				       const void *event_data,
-				       const void *user_data)
+static GGZHookReturn server_negotiated(GGZServerEvent id, const void *event_data, const void *user_data)
 {
 	ggz_debug(DBG_MAIN, "Server negotiated.");
-	ggzcore_server_login(server);
+
+	int rc = ggzcore_server_login(server);
+	if(rc) {
+		fprintf(stderr, "ERROR: Login process could not be initiated.\n");
+		quit(-1);
+	}
+
 	return GGZ_HOOK_OK;
 }
 
-static GGZHookReturn server_logged_in(GGZServerEvent id,
-				      const void *event_data,
-				      const void *user_data)
+static GGZHookReturn server_logged_in(GGZServerEvent id, const void *event_data, const void *user_data)
 {
 	ggz_debug(DBG_MAIN, "Logged in to server.");
 
-	ggzcore_server_list_rooms(server, 0);
+	printf("Connection established and login succeeded.\n");
+
+	quit(0);
 
 	return GGZ_HOOK_OK;
 }
-
-#if 0
-static GGZHookReturn server_room_entered(GGZServerEvent id,
-					 const void *event_data,
-					 const void *user_data)
-{
-	ggz_debug(DBG_MAIN, "Entered room 0.");
-//	in_room = 1;
-	return GGZ_HOOK_OK;
-}
-#endif
 
 static void coreconnect(GGZConnectionVariety connvar)
 {
@@ -181,13 +188,15 @@ static GGZConnectionVariety parse(int argc, char **argv)
 		.uri = NULL,
 		.tls = 0,
 		.async = 0,
-		.reconnect = 0
+		.reconnect = 0,
+		.debug = 0
 	};
 
 	struct option opts[] = {
 		{"tls", 0, &connvar.tls, 1},
 		{"reconnect", 0, &connvar.reconnect, 1},
 		{"async", 0, &connvar.async, 1},
+		{"debug", 0, &connvar.debug, 1},
 		{0, 0, 0, }
 	};
 	int index;
@@ -207,12 +216,12 @@ static GGZConnectionVariety parse(int argc, char **argv)
 	if(optind == argc - 1) {
 		connvar.uri = argv[optind];
 	} else {
-		printf("ERROR: Missing URL.\n");
+		fprintf(stderr, "ERROR: Missing URL.\n");
 		valid = 0;
 	}
 
 	if(!valid) {
-		printf("Syntax: ggzcoreconn [--tls] [--reconnect] [--async] <GGZ URI>\n");
+		fprintf(stderr, "Syntax: ggzcoreconn [--tls] [--reconnect] [--async] <GGZ URI>\n");
 		connvar.uri = NULL;
 	} else {
 		printf("Connection: tls=%i async=%i reconnect=%i uri=%s\n",
@@ -224,11 +233,12 @@ static GGZConnectionVariety parse(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
-	initialize_debugging();
-
 	GGZConnectionVariety connvar = parse(argc, argv);
 	if(!connvar.uri)
 		return -1;
+
+	if(connvar.debug)
+		initialize_debugging();
 
 	GGZOptions opt;
 	opt.flags = 0;
@@ -240,7 +250,7 @@ int main(int argc, char **argv)
 
 	coreconnect(connvar);
 
-	ggzcore_destroy();
+	quit(0);
 
 	return 0;
 }
