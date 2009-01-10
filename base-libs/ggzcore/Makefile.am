@@ -2,7 +2,7 @@ EXTRA_DIST = Doxyfile linker.map
 
 if INSTALL_GGZCORE
 lib_LTLIBRARIES = libggzcore.la
-include_HEADERS = ggzcore.h
+include_HEADERS = ggzcore.h ggzcore_mainloop.h
 else
 noinst_LTLIBRARIES = libggzcore.la
 endif
@@ -31,6 +31,8 @@ libggzcore_la_SOURCES =	conf.c \
 			gametype.h \
 			ggzcore.h \
 			ggzcore-ggz.h \
+			ggzcore_mainloop.h \
+			ggzcore_mainloop.c \
 			hook.c \
 			hook.h \
 			module.c \

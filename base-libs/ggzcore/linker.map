@@ -48,6 +48,7 @@ global:
     ggzcore_gametype_num_bots_is_valid;
     ggzcore_gametype_num_players_is_valid;
     ggzcore_init;
+    ggzcore_mainloop_start;
     ggzcore_module_add;
     ggzcore_module_get_argv;
     ggzcore_module_get_author;
