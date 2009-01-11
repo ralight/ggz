@@ -2091,7 +2091,7 @@ ssize_t ggz_tls_read(int fd, void *ptr, size_t n);
  *
  *  URIs can describe GGZ connections, but also other arbitrary
  *  network resources. URIs are of the form
- *  [protocol://][user@]host[:port][/path].
+ *  [protocol://][user@]host[:port][/room][/table].
  */
 typedef struct
 {
@@ -2099,8 +2099,9 @@ typedef struct
 	char *user;	/**< The user part */
 	char *password;	/**< The password part */
 	char *host;	/**< The host part */
-	int port;	/**< The port part */
-	char *path;	/**< The path part */
+	int port;	/**< The port part, usually 5688 */
+	char *room;	/**< The room part */
+	char *table;	/**< The table part */
 } ggz_uri_t;
 
 /** @brief Create a new URI object from a string describing an URI.
@@ -2116,13 +2117,14 @@ ggz_uri_t ggz_uri_from_string(const char *uristring);
 /** @brief Convert an URI object back into a string.
  *
  *  The string must be free'd with ggz_free() after use.
- *  Passwords will not be shown, but their existence will be marked with
- *  asterisks.
+ *  Passwords will not be shown and their existence will be marked with
+ *  asterisks if \ref display is set to 1.
  *
  *  @param uri: URI object
+ *  @param display: Purpose of the URI is displaying to users
  *  @return String representation of the object
  */
-char *ggz_uri_to_string(ggz_uri_t uri);
+char *ggz_uri_to_string(ggz_uri_t uri, int display);
 
 /** @brief Free an URI object (or rather, its contents).
  *

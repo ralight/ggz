@@ -43,7 +43,8 @@ ggz_uri_t ggz_uri_from_string(const char *uristring)
 	uri.password = NULL;
 	uri.host = NULL;
 	uri.port = 0;
-	uri.path = NULL;
+	uri.room = NULL;
+	uri.table = NULL;
 
 	if(!uristring) return uri;
 
@@ -96,7 +97,19 @@ ggz_uri_t ggz_uri_from_string(const char *uristring)
 		if(!port) port = ggz_strdup(base);
 		else uri.host = ggz_strdup(base);
 		base = ptr + 1;
-		uri.path = ggz_strdup(base);
+
+		ptr = strstr(base, "/");
+		if(ptr)
+		{
+			*ptr = '\0';
+			uri.room = ggz_strdup(base);
+			base = ptr + 1;
+			uri.table = ggz_strdup(base);
+		}
+		else
+		{
+			uri.room = ggz_strdup(base);
+		}
 	}
 	else
 	{
@@ -115,28 +128,33 @@ ggz_uri_t ggz_uri_from_string(const char *uristring)
 	return uri;
 }
 
-char *ggz_uri_to_string(ggz_uri_t uri)
+char *ggz_uri_to_string(ggz_uri_t uri, int display)
 {
 	char protocol[32];
 	char user[128];
 	char password[128];
 	char host[128];
 	char port[32];
-	char path[128];
+	char room[64];
+	char table[64];
 
 	protocol[0] = '\0';
 	user[0] = '\0';
 	password[0] = '\0';
 	host[0] = '\0';
 	port[0] = '\0';
-	path[0] = '\0';
+	room[0] = '\0';
+	table[0] = '\0';
 
 	if(uri.protocol)
 		snprintf(protocol, sizeof(protocol), "%s://", uri.protocol);
 	if(uri.user)
 	{
 		if(uri.password)
-			snprintf(user, sizeof(user), "%s:*****@", uri.user);
+			if(display)
+				snprintf(user, sizeof(user), "%s:*****@", uri.user);
+			else
+				snprintf(user, sizeof(user), "%s:%s@", uri.user, uri.password);
 		else
 			snprintf(user, sizeof(user), "%s@", uri.user);
 	}
@@ -144,11 +162,13 @@ char *ggz_uri_to_string(ggz_uri_t uri)
 		snprintf(host, sizeof(host), "%s", uri.host);
 	if(uri.port > 0)
 		snprintf(port, sizeof(port), ":%i", uri.port);
-	if(uri.path)
-		snprintf(path, sizeof(path), "%s", uri.path);
+	if(uri.room)
+		snprintf(room, sizeof(room), "%s", uri.room);
+	if(uri.table)
+		snprintf(table, sizeof(table), "%s", uri.table);
 
-	char *s = (char*)malloc(256);
-	snprintf(s, 256, "%s%s%s%s%s", protocol, user, host, port, path);
+	char *s = (char*)ggz_malloc(256);
+	snprintf(s, 256, "%s%s%s%s%s%s", protocol, user, host, port, room, table);
 	return s;
 }
 
@@ -162,14 +182,17 @@ void ggz_uri_free(ggz_uri_t uri)
 		ggz_free(uri.password);
 	if(uri.host)
 		ggz_free(uri.host);
-	if(uri.path)
-		ggz_free(uri.path);
+	if(uri.room)
+		ggz_free(uri.room);
+	if(uri.table)
+		ggz_free(uri.table);
 
 	uri.protocol = NULL;
 	uri.user = NULL;
 	uri.password = NULL;
 	uri.host = NULL;
 	uri.port = 0;
-	uri.path = NULL;
+	uri.room = NULL;
+	uri.table = NULL;
 }
 
