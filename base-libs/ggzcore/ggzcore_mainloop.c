@@ -2,6 +2,7 @@
 
 #include <unistd.h>
 #include <errno.h>
+#include <stdlib.h>
 
 #include <ggz.h>
 
@@ -18,7 +19,9 @@ static void ggzcore_mainloop_quit(GGZCoreMainLoop *mainloop, int retval)
 
 static void ggzcore_mainloop_callback(GGZCoreMainLoop *mainloop, GGZCoreMainLoopEvent id, const char *message)
 {
-	ggz_debug(DBG_MAINLOOP, "Callback message: %s.", message);
+	ggz_debug(DBG_MAINLOOP, "%s: Callback message: %s.",
+		(id == GGZCORE_MAINLOOP_ABORT ? "ABORT" : (id == GGZCORE_MAINLOOP_WAIT ? "WARNING" : "INFO")),
+		message);
 
 	if(id == GGZCORE_MAINLOOP_ABORT)
 		ggzcore_mainloop_quit(mainloop, -1);
@@ -88,17 +91,17 @@ static GGZHookReturn ggzcore_mainloop_server_failure(GGZServerEvent id, const vo
 	GGZCoreMainLoop *mainloop = (GGZCoreMainLoop*)user_data;
 
 	if(id == GGZ_ENTER_FAIL) {
-		ggz_debug(DBG_MAINLOOP, "WARNING: Room not accessible: %s.", message);
-
-		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_WAIT, _("Room not existing or restricted access"));
+		char *errstr = ggz_strbuild(_("Room not existing or restricted access: %s"), message);
+		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_WAIT, errstr);
+		ggz_free(errstr);
 	} else if(ggzcore_server_get_state(mainloop->server) == GGZ_STATE_RECONNECTING) {
-		ggz_debug(DBG_MAINLOOP, "WARNING: Connection broke temporarily: %s.", message);
-
-		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_WAIT, _("Connection broke temporarily"));
+		char *errstr = ggz_strbuild(_("Connection broke temporarily: %s."), message);
+		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_WAIT, errstr);
+		ggz_free(errstr);
 	} else {
-		ggz_debug(DBG_MAINLOOP, "ERROR: Could not connect to server, or other issue: %s.", message);
-
-		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_ABORT, _("Connection could not be established"));
+		char *errstr = ggz_strbuild(_("Could not connect to server, or other issue: %s."), message);
+		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_ABORT, errstr);
+		ggz_free(errstr);
 	}
 
 	return GGZ_HOOK_OK;
@@ -119,9 +122,7 @@ static GGZHookReturn ggzcore_mainloop_server_negotiated(GGZServerEvent id, const
 
 	int rc = ggzcore_server_login(mainloop->server);
 	if(rc) {
-		ggz_debug(DBG_MAINLOOP, "ERROR: Login process could not be initiated.");
-
-		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_ABORT, _("Login could not be established"));
+		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_ABORT, _("Login could not be initiated"));
 	}
 
 	return GGZ_HOOK_OK;
@@ -136,6 +137,8 @@ static GGZHookReturn ggzcore_mainloop_server_logged_in(GGZServerEvent id, const 
 	if(!mainloop->room) {
 		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_READY, _("Connection established and login succeeded"));
 	} else {
+		ggz_debug(DBG_MAINLOOP, "Requesting room and game type lists.");
+
 		ggzcore_server_list_rooms(mainloop->server, 1);
 		ggzcore_server_list_gametypes(mainloop->server, 1);
 	}
@@ -167,9 +170,9 @@ static GGZHookReturn ggzcore_mainloop_server_roomlist(GGZServerEvent id, const v
 		}
 	}
 
-	ggz_debug(DBG_MAINLOOP, "WARNING: Room not found: %s.", mainloop->room);
-
-	ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_WAIT, _("Room not existing"));
+	char *errstr = ggz_strbuild(_("Room not existing: %s"), mainloop->room);
+	ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_WAIT, errstr);
+	ggz_free(errstr);
 
 	return GGZ_HOOK_OK;
 }
@@ -225,6 +228,11 @@ int ggzcore_mainloop_start(GGZCoreMainLoop mainloop)
 	if(!uri.port)
 		uri.port = 5688;
 
+	if(!uri.user) {
+		uri.user = ggz_strbuild("%s-%i", getenv("USER"), rand() % 10000);
+		ggz_debug(DBG_MAINLOOP, "Auto-creating user name: %s", uri.user);
+	}
+
 	GGZServer *server = ggzcore_server_new();
 	ggzcore_server_set_hostinfo(server, uri.host, uri.port, policy);
 	ggzcore_server_set_logininfo(server, logintype, uri.user, uri.password, NULL);
@@ -238,6 +246,21 @@ int ggzcore_mainloop_start(GGZCoreMainLoop mainloop)
 		ggzcore_server_add_event_hook_full(server, GGZ_ENTER_FAIL, ggzcore_mainloop_server_failure, &mainloop);
 	} else {
 		mainloop.room = NULL;
+	}
+
+	if(uri.table) {
+		mainloop.table = ggz_strdup(uri.table);
+	} else {
+		if(mainloop.mode == GGZCORE_MAINLOOP_CHATONLY) {
+			/* ok */
+		} else if(mainloop.mode == GGZCORE_MAINLOOP_LAUNCH) {
+			mainloop.table = ggz_strbuild("unnamed-%i", rand() % 10000);
+			ggz_debug(DBG_MAINLOOP, "Auto-creating table name: %s", mainloop.table);
+		} else {
+			/* FIXME: More checks e.g. if room given needed. */
+			ggzcore_mainloop_callback(&mainloop, GGZCORE_MAINLOOP_ABORT, _("Table missing for joining or spectating"));
+			return -1;
+		}
 	}
 
 	ggz_uri_free(uri);
@@ -276,6 +299,10 @@ int ggzcore_mainloop_start(GGZCoreMainLoop mainloop)
 	if(mainloop.room) {
 		ggz_free(mainloop.room);
 		mainloop.room = NULL;
+	}
+	if(mainloop.table) {
+		ggz_free(mainloop.table);
+		mainloop.table = NULL;
 	}
 	ggzcore_destroy();
 

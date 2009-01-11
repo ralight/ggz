@@ -9,6 +9,13 @@ typedef enum {
 	GGZCORE_MAINLOOP_ABORT
 } GGZCoreMainLoopEvent;
 
+typedef enum {
+	GGZCORE_MAINLOOP_CHATONLY,
+	GGZCORE_MAINLOOP_LAUNCH,
+	GGZCORE_MAINLOOP_JOIN,
+	GGZCORE_MAINLOOP_SPECTATE
+} GGZCoreMainLoopTableMode;
+
 typedef void (*GGZCoreMainLoopFunc)(GGZCoreMainLoopEvent id, const char *message, GGZServer *server);
 
 typedef struct {
@@ -19,10 +26,12 @@ typedef struct {
 	int debug;
 	int loop;
 	GGZCoreMainLoopFunc func;
+	GGZCoreMainLoopTableMode mode;
 
 	GGZServer *server;
 	int status;
 	char *room;
+	char *table;
 } GGZCoreMainLoop;
 
 int ggzcore_mainloop_start(GGZCoreMainLoop mainloop);
