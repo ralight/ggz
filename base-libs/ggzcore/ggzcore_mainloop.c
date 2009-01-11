@@ -87,8 +87,12 @@ static GGZHookReturn ggzcore_mainloop_server_failure(GGZServerEvent id, const vo
 
 	GGZCoreMainLoop *mainloop = (GGZCoreMainLoop*)user_data;
 
-	if(ggzcore_server_get_state(mainloop->server) == GGZ_STATE_RECONNECTING) {
-		ggz_debug(DBG_MAINLOOP, "ERROR: Connection broke temporarily: %s.", message);
+	if(id == GGZ_ENTER_FAIL) {
+		ggz_debug(DBG_MAINLOOP, "WARNING: Room not found: %s.", message);
+
+		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_WAIT, _("Room not existing or restricted access"));
+	} else if(ggzcore_server_get_state(mainloop->server) == GGZ_STATE_RECONNECTING) {
+		ggz_debug(DBG_MAINLOOP, "WARNING: Connection broke temporarily: %s.", message);
 
 		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_WAIT, _("Connection broke temporarily"));
 	} else {
@@ -129,7 +133,46 @@ static GGZHookReturn ggzcore_mainloop_server_logged_in(GGZServerEvent id, const 
 
 	GGZCoreMainLoop *mainloop = (GGZCoreMainLoop*)user_data;
 
-	ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_READY, _("Connection established and login succeeded"));
+	if(!mainloop->room) {
+		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_READY, _("Connection established and login succeeded"));
+	} else {
+		ggzcore_server_list_rooms(mainloop->server, 1);
+		ggzcore_server_list_gametypes(mainloop->server, 1);
+	}
+
+	return GGZ_HOOK_OK;
+}
+
+static GGZHookReturn ggzcore_mainloop_server_entered(GGZServerEvent id, const void *event_data, const void *user_data)
+{
+	ggz_debug(DBG_MAINLOOP, "Entered room.");
+
+	return GGZ_HOOK_OK;
+}
+
+static GGZHookReturn ggzcore_mainloop_server_roomlist(GGZServerEvent id, const void *event_data, const void *user_data)
+{
+	ggz_debug(DBG_MAINLOOP, "Room list arrived.");
+
+	GGZCoreMainLoop *mainloop = (GGZCoreMainLoop*)user_data;
+
+	int num = ggzcore_server_get_num_rooms(mainloop->server);
+	int i;
+	for(i = 0; i < num; i++) {
+		GGZRoom *room = ggzcore_server_get_nth_room(mainloop->server, i);
+		const char *roomname = ggzcore_room_get_name(room);
+		if(!ggz_strcmp(roomname, mainloop->room)) {
+			ggzcore_server_join_room(mainloop->server, room);
+			break;
+		}
+	}
+
+	return GGZ_HOOK_OK;
+}
+
+static GGZHookReturn ggzcore_mainloop_server_typelist(GGZServerEvent id, const void *event_data, const void *user_data)
+{
+	ggz_debug(DBG_MAINLOOP, "Game type list arrived.");
 
 	return GGZ_HOOK_OK;
 }
@@ -182,10 +225,21 @@ int ggzcore_mainloop_start(GGZCoreMainLoop mainloop)
 	ggzcore_server_set_hostinfo(server, uri.host, uri.port, policy);
 	ggzcore_server_set_logininfo(server, logintype, uri.user, uri.password, NULL);
 
+	if(uri.room) {
+		mainloop.room = ggz_strdup(uri.room);
+
+		ggzcore_server_add_event_hook_full(server, GGZ_ROOM_LIST, ggzcore_mainloop_server_roomlist, &mainloop);
+		ggzcore_server_add_event_hook_full(server, GGZ_TYPE_LIST, ggzcore_mainloop_server_typelist, &mainloop);
+		ggzcore_server_add_event_hook_full(server, GGZ_ENTERED, ggzcore_mainloop_server_entered, &mainloop);
+		ggzcore_server_add_event_hook_full(server, GGZ_ENTER_FAIL, ggzcore_mainloop_server_failure, &mainloop);
+	} else {
+		mainloop.room = NULL;
+	}
+
 	ggz_uri_free(uri);
 
-	ggzcore_server_add_event_hook_full(server, GGZ_CONNECT_FAIL, ggzcore_mainloop_server_failure, &mainloop);
 	ggzcore_server_add_event_hook_full(server, GGZ_CONNECTED, ggzcore_mainloop_server_connected, &mainloop);
+	ggzcore_server_add_event_hook_full(server, GGZ_CONNECT_FAIL, ggzcore_mainloop_server_failure, &mainloop);
 	ggzcore_server_add_event_hook_full(server, GGZ_NEGOTIATED, ggzcore_mainloop_server_negotiated, &mainloop);
 	ggzcore_server_add_event_hook_full(server, GGZ_NEGOTIATE_FAIL, ggzcore_mainloop_server_failure, &mainloop);
 	ggzcore_server_add_event_hook_full(server, GGZ_LOGGED_IN, ggzcore_mainloop_server_logged_in, &mainloop);
@@ -214,6 +268,10 @@ int ggzcore_mainloop_start(GGZCoreMainLoop mainloop)
 		ggzcore_server_disconnect(mainloop.server);
 		ggzcore_server_free(mainloop.server);
 		mainloop.server = NULL;
+	}
+	if(mainloop.room) {
+		ggz_free(mainloop.room);
+		mainloop.room = NULL;
 	}
 	ggzcore_destroy();
 

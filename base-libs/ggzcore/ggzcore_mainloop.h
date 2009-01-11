@@ -22,6 +22,7 @@ typedef struct {
 
 	GGZServer *server;
 	int status;
+	char *room;
 } GGZCoreMainLoop;
 
 int ggzcore_mainloop_start(GGZCoreMainLoop mainloop);
