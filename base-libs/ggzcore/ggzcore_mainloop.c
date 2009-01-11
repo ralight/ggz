@@ -88,7 +88,7 @@ static GGZHookReturn ggzcore_mainloop_server_failure(GGZServerEvent id, const vo
 	GGZCoreMainLoop *mainloop = (GGZCoreMainLoop*)user_data;
 
 	if(id == GGZ_ENTER_FAIL) {
-		ggz_debug(DBG_MAINLOOP, "WARNING: Room not found: %s.", message);
+		ggz_debug(DBG_MAINLOOP, "WARNING: Room not accessible: %s.", message);
 
 		ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_WAIT, _("Room not existing or restricted access"));
 	} else if(ggzcore_server_get_state(mainloop->server) == GGZ_STATE_RECONNECTING) {
@@ -163,9 +163,13 @@ static GGZHookReturn ggzcore_mainloop_server_roomlist(GGZServerEvent id, const v
 		const char *roomname = ggzcore_room_get_name(room);
 		if(!ggz_strcmp(roomname, mainloop->room)) {
 			ggzcore_server_join_room(mainloop->server, room);
-			break;
+			return GGZ_HOOK_OK;
 		}
 	}
+
+	ggz_debug(DBG_MAINLOOP, "WARNING: Room not found: %s.", mainloop->room);
+
+	ggzcore_mainloop_callback(mainloop, GGZCORE_MAINLOOP_WAIT, _("Room not existing"));
 
 	return GGZ_HOOK_OK;
 }
