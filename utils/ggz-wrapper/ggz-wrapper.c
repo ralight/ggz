@@ -3,7 +3,7 @@
  * Author: Josef Spillner
  * Project: GGZ Client libs
  * Date: 2004
- * $Id: ggz-wrapper.c 10209 2008-07-08 16:03:03Z jdorje $
+ * $Id: ggz-wrapper.c 10849 2009-01-11 09:25:29Z josef $
  *
  * Code for a wrapper for GGZ games
  *
@@ -34,35 +34,25 @@
 #include <getopt.h>
 #include <string.h>
 
+#include <ggz.h>
+
 #include "server.h"
 #include "loop.h"
 #include "game.h"
 
-#define DEFAULT_SERVER   "live.ggzgamingzone.org"
-#define DEFAULT_PORT     5688
-#define DEFAULT_GAMENAME "TicTacToe"
-#define DEFAULT_NICKNAME NULL
-#define DEFAULT_PASSWORD NULL
-#define DEFAULT_DESTNICK NULL
-
 #define _(x) x
 
-char *game_name;
-char *dst_nick;
-char *frontend;
-
-static void usage(void) {
+static void usage(int retval) {
 	printf(_("ggz-wrapper: Dummy core client for the GGZ Gaming Zone\n"));
+	printf(_("Syntax: ggz-wrapper [options] [<GGZ URI>]\n"));
 	printf(_("\n"));
 	printf(_("Options:\n"));
-	printf(_("[-g <gametype>] Type of game to play\n"));
-	printf(_("[-u <user>    ] Your nickname\n"));
-	printf(_("[-p <password>] Password (empty for guest logins)\n"));
-	printf(_("[-s <server>  ] Server hostname\n"));
-	printf(_("[-P <port>    ] Server port\n"));
-	printf(_("[-d <destnick>] Nickname of opponent\n"));
-	printf(_("[-f <frontend>] Preferred game client frontend\n"));
-	exit(0);
+	printf(_("[-g | --gametype <gametype>] Type of game to play, in any room\n"));
+//	printf(_("[-p <password>] Password (empty for guest logins)\n"));
+	printf(_("[-d | --destnick <destnick>] Nickname of human opponent, bot otherwise\n"));
+	printf(_("[-f | --frontend <frontend>] Preferred game client frontend\n"));
+	printf(_("Options can also be set in ~/.ggz/ggz-wrapper.rc\n"));
+	exit(retval);
 }
 
 int main(int argc, char **argv) {
@@ -70,71 +60,67 @@ int main(int argc, char **argv) {
 	{
 		{"help", no_argument, 0, 'h'},
 		{"gametype", required_argument, 0, 'g'},
-		{"user", required_argument, 0, 'u'},
-		{"password", required_argument, 0, 'p'},
-		{"server", required_argument, 0, 's'},
-		{"port", required_argument, 0, 'P'},
+//		{"password", required_argument, 0, 'p'},
 		{"destnick", required_argument, 0, 'd'},
 		{"frontend", required_argument, 0, 'f'},
 		{0, 0, 0, 0}
 	};
-	char optstring[] = "g:u:p:s:d:P:f:h";
+//	char optstring[] = "g:p:d:f:h";
+	char optstring[] = "g:d:f:h";
 	char randomuser[64];
 
 	int optch;
 	int optindex;
 
-	char *host = DEFAULT_SERVER;
-	char *password = DEFAULT_PASSWORD;
-	char *nick = DEFAULT_NICKNAME;
-	int port = DEFAULT_PORT;
+//	char *password = NULL;
+	char *uristr = NULL;
 
-	game_name = DEFAULT_GAMENAME;
-	dst_nick = DEFAULT_DESTNICK;
-	frontend = NULL;
+	char *game_name = NULL;
+	char *dst_nick = NULL;
+	char *frontend = NULL;
 
 	while((optch = getopt_long(argc, argv, optstring, options, &optindex)) != -1) {
 		switch(optch) {
 			case 'g':
 				game_name = optarg;
 				break;
-			case 'u':
-				nick = optarg;
-				break;
-			case 'p':
-				password = optarg;
-				break;
-			case 's':
-				host = optarg;
-				break;
+//			case 'p':
+//				password = optarg;
+//				break;
 			case 'd':
 				dst_nick = optarg;
-				break;
-			case 'P':
-				port = atoi(optarg);
 				break;
 			case 'f':
 				frontend = optarg;
 				break;
 			case 'h':
-				usage();
+				usage(0);
 				break;
 			default:
 				printf(_("Option %c unknown, try --help.\n"), optch);
-				usage();
+				usage(1);
 				break;
 		}
 	}
 
-	if(!nick) {
-		snprintf(randomuser, sizeof(randomuser), _("guest%i"), rand() % 10000);
-		nick = strdup(randomuser);
+	if(optind != argc - 1) {
+		printf(_("No GGZ URI given.\n"));
+		usage(1);
 	}
+	uristr = argv[optind];
 
-	if(password)
-		server_init(host, port, GGZ_LOGIN, nick, password);
-	else
-		server_init(host, port, GGZ_LOGIN_GUEST, nick, password);
-	loop();
+	ggz_uri_t uri = ggz_uri_from_string(uristr);
+	if(!uri.user) {
+		// FIXME: this could go into ggzcore_mainloop
+		snprintf(randomuser, sizeof(randomuser), _("%s-%i"), getenv("USER"), rand() % 10000);
+		uri.user = strdup(randomuser);
+	}
+	uristr = ggz_uri_to_string(uri);
+
+	server_init(uristr, dst_nick, frontend, game_name);
+
+	ggz_free(uristr);
+	ggz_uri_free(uri);
+
 	return 0;
 }

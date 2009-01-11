@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 10209 2008-07-08 16:03:03Z jdorje $
+ * $Id: game.c 10849 2009-01-11 09:25:29Z josef $
  *
  * Functions for handling game events
  *
@@ -50,6 +50,8 @@ static GGZHookReturn game_negotiate_fail(GGZGameEvent, const void *,
 static GGZHookReturn game_playing(GGZGameEvent, const void *,
 				  const void *);
 
+void game_register(GGZServer *server);
+
 static GGZGame *game = NULL;
 static GGZGameType *gametype = NULL;
 static int gameindex = -1;
@@ -60,7 +62,7 @@ static int readserver = 1;
 #endif
 static int usebot = 0;
 
-void game_init(GGZModule * module, GGZGameType * type, int index,
+void game_init(GGZServer *server, GGZModule * module, GGZGameType * type, int index,
 	       const char *nick, int bot)
 {
 	if (game) {
@@ -76,7 +78,7 @@ void game_init(GGZModule * module, GGZGameType * type, int index,
 
 	game = ggzcore_game_new();
 	ggzcore_game_init(game, server, module);
-	game_register();
+	game_register(server);
 	ggzcore_game_launch(game);
 }
 
@@ -106,6 +108,9 @@ static void game_process(void)
 #ifdef GGZ_ENABLE_DEPRECATED
 static void channel_process(void)
 {
+	GGZServer *server = NULL;
+	/* FIXME: loop.h should add 'user_data' parameter */
+
 	if (!readserver)
 		return;
 	if (server) {
@@ -116,8 +121,9 @@ static void channel_process(void)
 }
 
 
-void game_channel_connected(int sock)
+void game_channel_connected(GGZServer *server)
 {
+	int sock = ggzcore_server_get_channel(server);
 	loop_add_fd(sock, channel_process, NULL);
 }
 
@@ -127,20 +133,20 @@ void game_channel_ready(int sock)
 	ggzcore_game_set_server_fd(game, sock);
 	readserver = 0;
 }
-
-
 #endif
-void game_register(void)
+
+void game_register(GGZServer *server)
 {
-	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCHED,
-				    game_launched);
-	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCH_FAIL,
-				    game_launch_fail);
-	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATED,
-				    game_negotiated);
-	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATE_FAIL,
-				    game_negotiate_fail);
-	ggzcore_game_add_event_hook(game, GGZ_GAME_PLAYING, game_playing);
+	ggzcore_game_add_event_hook_full(game, GGZ_GAME_LAUNCHED,
+				    game_launched, server);
+	ggzcore_game_add_event_hook_full(game, GGZ_GAME_LAUNCH_FAIL,
+				    game_launch_fail, server);
+	ggzcore_game_add_event_hook_full(game, GGZ_GAME_NEGOTIATED,
+				    game_negotiated, server);
+	ggzcore_game_add_event_hook_full(game, GGZ_GAME_NEGOTIATE_FAIL,
+				    game_negotiate_fail, server);
+	ggzcore_game_add_event_hook_full(game, GGZ_GAME_PLAYING,
+				    game_playing, server);
 }
 
 
@@ -170,6 +176,7 @@ static GGZHookReturn game_negotiated(GGZGameEvent id,
 {
 #ifdef GGZ_ENABLE_DEPRECATED
 
+	GGZServer *server = (GGZServer*)user_data;
 	ggzcore_server_create_channel(server);
 
 #endif
@@ -193,6 +200,7 @@ static GGZHookReturn game_playing(GGZGameEvent id, const void *event_data,
 	GGZRoom *room;
 	GGZTable *table;
 
+	GGZServer *server = (GGZServer*)user_data;
 	room = ggzcore_server_get_cur_room(server);
 
 	if (gameindex < 0) {

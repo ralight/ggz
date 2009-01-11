@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.h 10209 2008-07-08 16:03:03Z jdorje $
+ * $Id: game.h 10849 2009-01-11 09:25:29Z josef $
  *
  * Functions for handling game events
  *
@@ -24,16 +24,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <ggzcore.h>
 
-#include "ggzcore.h"
-
-void game_init(GGZModule *module, GGZGameType *type, int index, const char *nick, int bot);
+void game_init(GGZServer *server, GGZModule *module, GGZGameType *type, int index, const char *nick, int bot);
 
 void game_quit(void);
 
 void game_destroy(void);
 
-void game_channel_connected(int fd);
+void game_channel_connected(GGZServer *server);
 void game_channel_ready(int fd);
-void game_register(void);
 
