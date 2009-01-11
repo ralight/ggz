@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 10851 2009-01-11 11:28:04Z josef $
+ * $Id: server.c 10857 2009-01-11 15:12:53Z josef $
  *
  * Functions for handling server events
  *
@@ -71,7 +71,6 @@ static GGZHookReturn server_channel_connected(GGZServerEvent id,
 					      const void *, const void *);
 static GGZHookReturn server_channel_ready(GGZServerEvent id, const void *,
 					  const void *);
-
 #endif
 
 static GGZHookReturn room_list_players(GGZRoomEvent id, const void *,

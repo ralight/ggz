@@ -3,7 +3,7 @@
  * Author: Josef Spillner
  * Project: GGZ Client libs
  * Date: 2004
- * $Id: ggz-wrapper.c 10851 2009-01-11 11:28:04Z josef $
+ * $Id: ggz-wrapper.c 10857 2009-01-11 15:12:53Z josef $
  *
  * Code for a wrapper for GGZ games
  *
@@ -90,7 +90,6 @@ int main(int argc, char **argv) {
 		{0, 0, 0, 0}
 	};
 	char optstring[] = "g:d:f:ph";
-	char randomuser[64];
 
 	int optch;
 	int optindex;
@@ -149,11 +148,6 @@ int main(int argc, char **argv) {
 		printf("\n");
 
 		uri.password = ggz_strdup(password);
-	}
-	if(!uri.user) {
-		// FIXME: this could go into ggzcore_mainloop
-		snprintf(randomuser, sizeof(randomuser), _("%s-%i"), getenv("USER"), rand() % 10000);
-		uri.user = ggz_strdup(randomuser);
 	}
 	uristr = ggz_uri_to_string(uri, 0);
 
