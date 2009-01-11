@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
 
 		for(i = 0; metaservers[i]; i++)
 		{
-			uristr = ggz_uri_to_string(metaservers[i]->uri);
+			uristr = ggz_uri_to_string(metaservers[i]->uri, 1);
 			printf("* consulting metaserver %s\n", uristr);
 			free(uristr);
 		}

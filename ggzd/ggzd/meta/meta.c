@@ -40,7 +40,7 @@ static int meta_connect_internal(const char *hostname, int port);
 /* === Public functions === */
 /* ======================== */
 
-ServerEntry **meta_network_load()
+ServerEntry **meta_network_load(void)
 {
 	FILE *f;
 	char cachefile[1024];
@@ -92,7 +92,7 @@ void meta_network_store(ServerEntry **servers)
 	{
 		for(i = 0; servers[i]; i++)
 		{
-			uristr = ggz_uri_to_string(servers[i]->uri);
+			uristr = ggz_uri_to_string(servers[i]->uri, 1);
 			fprintf(f, "%s\n", uristr);
 			free(uristr);
 		}
@@ -125,7 +125,7 @@ int meta_add(ServerEntry *server, const char *classname, const char *category,
 
 	if(fd >= 0)
 	{
-		serveruri = ggz_uri_to_string(server->uri);
+		serveruri = ggz_uri_to_string(server->uri, 1);
 		strcpy(options, "");
 		if(server->attributes)
 		{
@@ -253,6 +253,8 @@ void meta_server_free(ServerEntry *server)
 
 	if(server->attributes) free(server->attributes);
 
+	ggz_uri_free(server->uri);
+
 	free(server);
 }
 
@@ -356,12 +358,12 @@ ServerEntry **meta_list_server(ServerEntry **list, ServerEntry *server)
 
 	if(list)
 	{
-		uristr = ggz_uri_to_string(server->uri);
+		uristr = ggz_uri_to_string(server->uri, 1);
 		skip = 0;
 
 		for(count = 0; list[count]; count++)
 		{
-			uristr2 = ggz_uri_to_string(list[count]->uri);
+			uristr2 = ggz_uri_to_string(list[count]->uri, 1);
 			if(!strcmp(uristr, uristr2)) skip = 1;
 			free(uristr2);
 		}
@@ -412,7 +414,7 @@ ServerEntry **meta_queryall(ServerEntry **servers, const char *classname,
 
 	for(i = 0; servers[i]; i++)
 	{
-		uristr = ggz_uri_to_string(servers[i]->uri);
+		uristr = ggz_uri_to_string(servers[i]->uri, 1);
 		result = meta_query(uristr, classname, category, restriction);
 		free(uristr);
 		if(result)

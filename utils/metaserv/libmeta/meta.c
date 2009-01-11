@@ -92,7 +92,7 @@ void meta_network_store(ServerEntry **servers)
 	{
 		for(i = 0; servers[i]; i++)
 		{
-			uristr = ggz_uri_to_string(servers[i]->uri);
+			uristr = ggz_uri_to_string(servers[i]->uri, 1);
 			fprintf(f, "%s\n", uristr);
 			free(uristr);
 		}
@@ -125,7 +125,7 @@ int meta_add(ServerEntry *server, const char *classname, const char *category,
 
 	if(fd >= 0)
 	{
-		serveruri = ggz_uri_to_string(server->uri);
+		serveruri = ggz_uri_to_string(server->uri, 1);
 		strcpy(options, "");
 		if(server->attributes)
 		{
@@ -175,7 +175,7 @@ int meta_add(ServerEntry *server, const char *classname, const char *category,
 				minidom_free(dom);
 			}
 
-			free(s);
+			ggz_free(s);
 		}
 	}
 
@@ -211,8 +211,8 @@ void meta_server_attribute(ServerEntry *server,
 
 	server->attributes = (ServerAttribute*)realloc(server->attributes,
 		(i + 2) * sizeof(ServerAttribute));
-	server->attributes[i].key = strdup(key);
-	server->attributes[i].value = strdup(value);
+	server->attributes[i].key = ggz_strdup(key);
+	server->attributes[i].value = ggz_strdup(value);
 	server->attributes[i + 1].key = NULL;
 	server->attributes[i + 1].value = NULL;
 }
@@ -246,8 +246,8 @@ void meta_server_free(ServerEntry *server)
 	{
 		for(i = 0; server->attributes[i].key; i++)
 		{
-			free(server->attributes[i].key);
-			free(server->attributes[i].value);
+			ggz_free(server->attributes[i].key);
+			ggz_free(server->attributes[i].value);
 		}
 	}
 
@@ -342,6 +342,7 @@ ServerEntry **meta_query(const char *metaserveruri, const char *classname,
 			}
 			minidom_free(dom);
 		}
+		ggz_free(s);
 	}
 
 	return list;
@@ -357,12 +358,12 @@ ServerEntry **meta_list_server(ServerEntry **list, ServerEntry *server)
 
 	if(list)
 	{
-		uristr = ggz_uri_to_string(server->uri);
+		uristr = ggz_uri_to_string(server->uri, 1);
 		skip = 0;
 
 		for(count = 0; list[count]; count++)
 		{
-			uristr2 = ggz_uri_to_string(list[count]->uri);
+			uristr2 = ggz_uri_to_string(list[count]->uri, 1);
 			if(!strcmp(uristr, uristr2)) skip = 1;
 			free(uristr2);
 		}
@@ -413,7 +414,7 @@ ServerEntry **meta_queryall(ServerEntry **servers, const char *classname,
 
 	for(i = 0; servers[i]; i++)
 	{
-		uristr = ggz_uri_to_string(servers[i]->uri);
+		uristr = ggz_uri_to_string(servers[i]->uri, 1);
 		result = meta_query(uristr, classname, category, restriction);
 		free(uristr);
 		if(result)
@@ -490,7 +491,7 @@ static char *meta_query_internal(int fd, const char *text)
 	if(ret2 > 0)
 	{
 		buffer[ret2 - 1] = 0;
-		ret = strdup(buffer);
+		ret = ggz_strdup(buffer);
 	}
 	else ret = NULL;
 
