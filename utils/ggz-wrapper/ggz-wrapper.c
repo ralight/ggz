@@ -3,7 +3,7 @@
  * Author: Josef Spillner
  * Project: GGZ Client libs
  * Date: 2004
- * $Id: ggz-wrapper.c 10849 2009-01-11 09:25:29Z josef $
+ * $Id: ggz-wrapper.c 10851 2009-01-11 11:28:04Z josef $
  *
  * Code for a wrapper for GGZ games
  *
@@ -33,6 +33,7 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <string.h>
+#include <termios.h>
 
 #include <ggz.h>
 
@@ -48,11 +49,34 @@ static void usage(int retval) {
 	printf(_("\n"));
 	printf(_("Options:\n"));
 	printf(_("[-g | --gametype <gametype>] Type of game to play, in any room\n"));
-//	printf(_("[-p <password>] Password (empty for guest logins)\n"));
+	printf(_("[-p | --password <password>] Interactive password query\n"));
 	printf(_("[-d | --destnick <destnick>] Nickname of human opponent, bot otherwise\n"));
 	printf(_("[-f | --frontend <frontend>] Preferred game client frontend\n"));
 	printf(_("Options can also be set in ~/.ggz/ggz-wrapper.rc\n"));
 	exit(retval);
+}
+
+/* FIXME: This function is shared with ggzduedit */
+static void echomode(int echo)
+{
+	static struct termios t_orig;
+	struct termios t;
+	FILE *termin;
+
+	termin = fopen("/dev/tty", "r");
+	if(!termin) termin = stdin;
+
+	if(echo)
+	{
+		tcsetattr(fileno(termin), TCSAFLUSH, &t_orig);
+	}
+	else
+	{
+		tcgetattr(fileno(termin), &t);
+		t_orig = t;
+		t.c_lflag &= ~ECHO;
+		tcsetattr(fileno(termin), TCSAFLUSH, &t);
+	}
 }
 
 int main(int argc, char **argv) {
@@ -60,19 +84,19 @@ int main(int argc, char **argv) {
 	{
 		{"help", no_argument, 0, 'h'},
 		{"gametype", required_argument, 0, 'g'},
-//		{"password", required_argument, 0, 'p'},
+		{"password", no_argument, 0, 'p'},
 		{"destnick", required_argument, 0, 'd'},
 		{"frontend", required_argument, 0, 'f'},
 		{0, 0, 0, 0}
 	};
-//	char optstring[] = "g:p:d:f:h";
-	char optstring[] = "g:d:f:h";
+	char optstring[] = "g:d:f:ph";
 	char randomuser[64];
 
 	int optch;
 	int optindex;
 
-//	char *password = NULL;
+	int querypassword = 0;
+
 	char *uristr = NULL;
 
 	char *game_name = NULL;
@@ -84,9 +108,9 @@ int main(int argc, char **argv) {
 			case 'g':
 				game_name = optarg;
 				break;
-//			case 'p':
-//				password = optarg;
-//				break;
+			case 'p':
+				querypassword = 1;
+				break;
 			case 'd':
 				dst_nick = optarg;
 				break;
@@ -97,25 +121,41 @@ int main(int argc, char **argv) {
 				usage(0);
 				break;
 			default:
-				printf(_("Option %c unknown, try --help.\n"), optch);
+				fprintf(stderr, _("Option %c unknown, try --help.\n"), optch);
 				usage(1);
 				break;
 		}
 	}
 
 	if(optind != argc - 1) {
-		printf(_("No GGZ URI given.\n"));
+		fprintf(stderr, _("No GGZ URI given.\n"));
 		usage(1);
 	}
 	uristr = argv[optind];
 
 	ggz_uri_t uri = ggz_uri_from_string(uristr);
+	if(querypassword) {
+		if(!uri.user) {
+			fprintf(stderr, _("Password input requested but no username given.\n"));
+			exit(1);
+		}
+		char password[64];
+
+		printf(_("Password: "));
+		fflush(NULL);
+		echomode(0);
+		fgets(password, sizeof(password), stdin);
+		echomode(1);
+		printf("\n");
+
+		uri.password = ggz_strdup(password);
+	}
 	if(!uri.user) {
 		// FIXME: this could go into ggzcore_mainloop
 		snprintf(randomuser, sizeof(randomuser), _("%s-%i"), getenv("USER"), rand() % 10000);
-		uri.user = strdup(randomuser);
+		uri.user = ggz_strdup(randomuser);
 	}
-	uristr = ggz_uri_to_string(uri);
+	uristr = ggz_uri_to_string(uri, 0);
 
 	server_init(uristr, dst_nick, frontend, game_name);
 

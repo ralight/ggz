@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 10849 2009-01-11 09:25:29Z josef $
+ * $Id: server.c 10851 2009-01-11 11:28:04Z josef $
  *
  * Functions for handling server events
  *
@@ -446,6 +446,14 @@ static GGZHookReturn server_list_types(GGZServerEvent id,
 	wrapper_t *wrapper = (wrapper_t*)user_data;
 
 	num = ggzcore_server_get_num_rooms(wrapper->server);
+	if(!wrapper->game_name) {
+		/* Select random room if no game type is required */
+		int rnd = random() % num;
+		room = ggzcore_server_get_nth_room(wrapper->server, rnd);
+		ggzcore_server_join_room(wrapper->server, room);
+		return GGZ_HOOK_OK;
+	}
+
 	found = 0;
 	for (i = 0; i < num; i++) {
 		room = ggzcore_server_get_nth_room(wrapper->server, i);
@@ -453,7 +461,7 @@ static GGZHookReturn server_list_types(GGZServerEvent id,
 		if (type) {
 			name = ggzcore_gametype_get_name(type);
 			if (name && wrapper->game_name
-			    && strcmp(name, wrapper->game_name) == 0) {
+			&& strcmp(name, wrapper->game_name) == 0) {
 				ggzcore_server_join_room(wrapper->server, room);
 				found = 1;
 				break;
