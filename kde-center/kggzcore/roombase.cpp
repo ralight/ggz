@@ -172,7 +172,33 @@ void RoomBase::callback_room(unsigned int id, const void *event_data) const
 
 	if(id == GGZ_CHAT_EVENT)
 	{
-		// FIXME: read GGZChatEventData
+		const GGZChatEventData *chat = (const GGZChatEventData*)event_data;
+
+		KGGZCore::Room::ChatType chattype = KGGZCore::Room::chatunknown;
+		switch(chat->type)
+		{
+			case GGZ_CHAT_NORMAL:
+				chattype = KGGZCore::Room::chatnormal;
+				break;
+			case GGZ_CHAT_ANNOUNCE:
+				chattype = KGGZCore::Room::chatannounce;
+				break;
+			case GGZ_CHAT_PERSONAL:
+				chattype = KGGZCore::Room::chatprivate;
+				break;
+			case GGZ_CHAT_BEEP:
+				chattype = KGGZCore::Room::chatbeep;
+				break;
+			case GGZ_CHAT_TABLE:
+				chattype = KGGZCore::Room::chattable;
+				break;
+			case GGZ_CHAT_UNKNOWN:
+				/* default */
+				break;
+		}
+
+		emit signalBaseRoomChat(chat->sender, chat->message, chattype);
+		return;
 	}
 
 	if((id == GGZ_ROOM_ENTER)

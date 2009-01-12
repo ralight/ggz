@@ -99,10 +99,10 @@ void Room::sendchat(QString message, QString receiver, ChatType type)
 			chattype = GGZ_CHAT_ANNOUNCE;
 			break;
 		case chatprivate:
-			chattype = GGZ_CHAT_BEEP;
+			chattype = GGZ_CHAT_PERSONAL;
 			break;
 		case chatbeep:
-			chattype = GGZ_CHAT_PERSONAL;
+			chattype = GGZ_CHAT_BEEP;
 			break;
 		case chattable:
 			chattype = GGZ_CHAT_TABLE;
@@ -162,6 +162,9 @@ void Room::init(RoomBase *base)
 
 	connect(m_base, SIGNAL(signalBaseError()), SLOT(slotBaseError()));
 	connect(m_base, SIGNAL(signalBaseRoom(int, int)), SLOT(slotBaseRoom(int, int)));
+
+	connect(m_base, SIGNAL(signalBaseRoomChat(QString, QString, KGGZCore::Room::ChatType)),
+		SIGNAL(signalChat(QString, QString, KGGZCore::Room::ChatType)));
 }
 
 void Room::slotBaseError()

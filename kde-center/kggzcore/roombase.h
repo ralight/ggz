@@ -25,6 +25,8 @@
 
 #include <QObject>
 
+#include <kggzcore/room.h>
+
 #include "kggzcore_export.h"
 
 class QSocketNotifier;
@@ -54,6 +56,8 @@ class KGGZCORE_EXPORT RoomBase : public QObject
 		void signalBaseError();
 		void signalBaseRoom(int id, int code) const;
 		void signalBaseGame(int id);
+
+		void signalBaseRoomChat(QString sender, QString message, KGGZCore::Room::ChatType type) const;
 
 	private slots:
 		void slotGameSocket(int socket);

@@ -106,6 +106,7 @@ class KGGZCORE_EXPORT Room : public QObject
 		void signalFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
 		void signalAnswer(KGGZCore::Room::AnswerMessage message);
 		void signalEvent(KGGZCore::Room::EventMessage message);
+		void signalChat(QString sender, QString message, KGGZCore::Room::ChatType type);
 		void signalModuleReady();
 		void signalTableReady();
 

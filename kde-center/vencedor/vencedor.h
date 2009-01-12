@@ -25,6 +25,7 @@ class Vencedor : public QMainWindow
 		void slotFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
 		void slotAnswer(KGGZCore::Room::AnswerMessage message);
 		void slotEvent(KGGZCore::Room::EventMessage message);
+		void slotChat(QString sender, QString message, KGGZCore::Room::ChatType type);
 
 		void slotConnect();
 		void slotDisconnect();

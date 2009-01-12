@@ -276,6 +276,9 @@ void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZC
 			connect(m_core->room(),
 				SIGNAL(signalEvent(KGGZCore::Room::EventMessage)),
 				SLOT(slotEvent(KGGZCore::Room::EventMessage)));
+			connect(m_core->room(),
+				SIGNAL(signalChat(QString, QString, KGGZCore::Room::ChatType)),
+				SLOT(slotChat(QString, QString, KGGZCore::Room::ChatType)));
 
 			if(!m_core->room()->gametype().name().isEmpty())
 				m_action_launch->setEnabled(true);
@@ -402,6 +405,14 @@ void Vencedor::slotEvent(KGGZCore::Room::EventMessage message)
 		case KGGZCore::Room::libraryerror:
 			break;
 	}
+}
+
+void Vencedor::slotChat(QString sender, QString message, KGGZCore::Room::ChatType type)
+{
+	if(type == KGGZCore::Room::chatprivate)
+		m_chat->addSystemMessage(sender, message);
+	else
+		m_chat->addMessage(sender, message);
 }
 
 void Vencedor::handleRoomlist()
