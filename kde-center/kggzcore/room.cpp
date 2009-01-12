@@ -86,6 +86,34 @@ GameType Room::gametype() const
 	return gametype;
 }
 
+void Room::sendchat(QString message, QString receiver, ChatType type)
+{
+	GGZChatType chattype = GGZ_CHAT_UNKNOWN;
+
+	switch(type)
+	{
+		case chatnormal:
+			chattype = GGZ_CHAT_NORMAL;
+			break;
+		case chatannounce:
+			chattype = GGZ_CHAT_ANNOUNCE;
+			break;
+		case chatprivate:
+			chattype = GGZ_CHAT_BEEP;
+			break;
+		case chatbeep:
+			chattype = GGZ_CHAT_PERSONAL;
+			break;
+		case chattable:
+			chattype = GGZ_CHAT_TABLE;
+			break;
+		default:
+			return;
+	}
+
+	ggzcore_room_chat(m_base->room(), chattype, receiver.toUtf8(), message.toUtf8());
+}
+
 void Room::launchtable(QList<Player> seats)
 {
 	GGZGameType *gametype = ggzcore_room_get_gametype(m_base->room());

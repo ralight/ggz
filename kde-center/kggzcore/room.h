@@ -97,6 +97,8 @@ class KGGZCORE_EXPORT Room : public QObject
 
 		GameType gametype() const;
 
+		void sendchat(QString message, QString receiver, ChatType type);
+
 		void launchtable(QList<Player> seats);
 		void launchmodule();
 

@@ -111,6 +111,9 @@ Vencedor::Vencedor(QString url)
 
 void Vencedor::connection(const QString& url)
 {
+	// FIXME: This is currently working differently from the dialogue-driven connection
+	// FIXME: We need to use kggzcorelayer here, too
+
 	m_action_connect->setEnabled(false);
 
 	m_core = new KGGZCore::CoreClient(this);
@@ -181,6 +184,18 @@ void Vencedor::slotConnect()
 		m_core = dlg.core();
 		enable(true);
 		handleRoomlist();
+
+		// FIXME: This part is now called after we enter the first room
+		// In the event of this room having a game attached, we wouldn't run 'our' room_entered hook
+		connect(m_core,
+			SIGNAL(signalFeedback(KGGZCore::CoreClient::FeedbackMessage, KGGZCore::Error::ErrorCode)),
+			SLOT(slotFeedback(KGGZCore::CoreClient::FeedbackMessage, KGGZCore::Error::ErrorCode)));
+		connect(m_core,
+			SIGNAL(signalAnswer(KGGZCore::CoreClient::AnswerMessage)),
+			SLOT(slotAnswer(KGGZCore::CoreClient::AnswerMessage)));
+		connect(m_core,
+			SIGNAL(signalEvent(KGGZCore::CoreClient::EventMessage)),
+			SLOT(slotEvent(KGGZCore::CoreClient::EventMessage)));
 	}
 }
 
@@ -195,7 +210,8 @@ void Vencedor::slotChat(int id, const QString& msg)
 	Q_UNUSED(id);
 	Q_UNUSED(msg);
 
-	//m_core->room()->chat(); ...
+	kDebug() << "CHAT:" << id << msg;
+	m_core->room()->sendchat(msg, QString(), KGGZCore::Room::chatnormal);
 }
 
 void Vencedor::slotRoom(const QString& name)
@@ -268,6 +284,8 @@ void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZC
 			enable(true);
 			break;
 		case KGGZCore::CoreClient::chat:
+			// FIXME: how can we access the chat message here?
+			// FIXME: a separate signal would probably be the best idea...
 			break;
 		case KGGZCore::CoreClient::channel:
 			break;
