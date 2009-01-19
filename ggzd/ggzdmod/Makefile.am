@@ -7,7 +7,7 @@ else
 noinst_LTLIBRARIES = libggzdmod.la
 endif
 
-libggzdmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 6:0:0
+libggzdmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 7:0:0
 if SYMBOL_VISIBILITY
 libggzdmod_la_LDFLAGS += -Wl,--version-script=$(srcdir)/linker.map
 libggzdmod_la_DEPENDENCIES = $(srcdir)/linker.map

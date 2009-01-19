@@ -47,7 +47,7 @@
 #define GGZMOD_VERSION_MAJOR 0
 #define GGZMOD_VERSION_MINOR 99
 #define GGZMOD_VERSION_MICRO 5
-#define GGZMOD_VERSION_IFACE "5:0:1+dev"
+#define GGZMOD_VERSION_IFACE "5:0:1+dev=6.0.0"
 
 #include <ggz.h> /* libggz */
 #include <ggz_common.h>

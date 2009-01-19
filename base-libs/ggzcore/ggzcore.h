@@ -27,7 +27,7 @@
 #define GGZCORE_VERSION_MAJOR 0
 #define GGZCORE_VERSION_MINOR 99
 #define GGZCORE_VERSION_MICRO 5
-#define GGZCORE_VERSION_IFACE "9:0:0+devel"
+#define GGZCORE_VERSION_IFACE "9:0:0+dev=10.0.0"
 
 #include <stdarg.h>
 #include <sys/types.h>

@@ -16,7 +16,7 @@ libggzcore_la_LIBADD = $(top_builddir)/ggzmod-ggz/libggzmod-ggz.la \
 		       $(LIB_EXPAT) $(LIB_GETTEXT) \
 		       $(top_builddir)/libggz/libggz.la
 
-libggzcore_la_LDFLAGS = -version-info 9:0:0
+libggzcore_la_LDFLAGS = -version-info 10:0:0
 if SYMBOL_VISIBILITY
 libggzcore_la_LDFLAGS += -Wl,--version-script=$(srcdir)/linker.map
 libggzcore_la_DEPENDENCIES = $(srcdir)/linker.map

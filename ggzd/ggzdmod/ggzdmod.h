@@ -183,7 +183,7 @@
 #define GGZDMOD_VERSION_MAJOR 0
 #define GGZDMOD_VERSION_MINOR 99
 #define GGZDMOD_VERSION_MICRO 5
-#define GGZDMOD_VERSION_IFACE "6:0:0+dev"
+#define GGZDMOD_VERSION_IFACE "6:0:0+dev=7.0.0"
 
 #ifdef __cplusplus
 extern "C" {

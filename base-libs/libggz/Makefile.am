@@ -10,7 +10,7 @@ endif
 libggz_la_LIBADD = security/libggzsecurity.la $(LIB_ASYNC) $(LIB_PTHREADS) $(LIB_GC)
 libggz_la_CPPFLAGS = $(GC_INCLUDES)
 
-libggz_la_LDFLAGS = -version-info 5:0:3
+libggz_la_LDFLAGS = -version-info 6:0:0
 if SYMBOL_VISIBILITY
 libggz_la_LDFLAGS += -Wl,--version-script=$(srcdir)/linker.map
 libggz_la_DEPENDENCIES = $(srcdir)/linker.map
