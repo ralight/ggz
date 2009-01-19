@@ -20,6 +20,11 @@
 #ifndef GGZDMODPP_GAMESERVER_H
 #define GGZDMODPP_GAMESERVER_H
 
+#define GGZDMODPP_VERSION_MAJOR 0
+#define GGZDMODPP_VERSION_MINOR 99
+#define GGZDMODPP_VERSION_MICRO 5
+#define GGZDMODPP_VERSION_IFACE "1:0:0+dev=2.0.0"
+
 #include <string>
 
 /* Forward declarations of internal classes */
