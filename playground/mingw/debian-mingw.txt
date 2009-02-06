@@ -22,6 +22,9 @@ This applies to gettext, pthreads, expat etc.
 
 3) Additional packages
 
+(Update:) Several additional libraries exist prepackaged for MingW at
+https://launchpad.net/~tobydox/+archive/ppa.
+
 Some packages are available pre-compiled for the mingw32 architecture
 (actually COFF) on http://sourceforge.net/projects/mingwrep/.
 The zip files downloaded from there need to be unpacked, and the header
