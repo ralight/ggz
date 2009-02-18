@@ -1,5 +1,7 @@
 project(vencedor)
 
+add_subdirectory(icons)
+
 set(vencedor_SRCS
 	vencedor.cpp
 	main.cpp
