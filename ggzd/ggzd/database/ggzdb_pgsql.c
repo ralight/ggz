@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 10816 2009-01-04 17:53:13Z oojah $
+ * $Id: ggzdb_pgsql.c 10866 2009-02-18 18:22:32Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -542,7 +542,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 
 	snprintf(query, sizeof(query),
 		 "SELECT "
-		 "`id`, password, name, email, lastlogin, permissions, confirmed "
+		 "id, password, name, email, lastlogin, permissions, confirmed "
 		 "FROM users WHERE handle = '%s'",
 		 handle_quoted);
 
@@ -552,7 +552,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 
 	if (PQresultStatus(res) == PGRES_TUPLES_OK) {
 		if(PQntuples(res) == 1)	{
-			pe->user_id = atoi(PQgetvalue(iterres, 0, 0));
+			pe->user_id = atoi(PQgetvalue(res, 0, 0));
 			strncpy(pe->password, PQgetvalue(res, 0, 1), sizeof(pe->password));
 			strncpy(pe->name, PQgetvalue(res, 0, 2), sizeof(pe->name));
 			strncpy(pe->email, PQgetvalue(res, 0, 3), sizeof(pe->email));
@@ -655,9 +655,9 @@ GGZDBResult _ggzdb_player_get_extended(ggzdbPlayerExtendedEntry *pe)
 
 	snprintf(query, sizeof(query),
 		 "SELECT "
-		 "`id`, `photo` "
-		 "FROM `userinfo` "
-		 "JOIN `users` ON `users`.`id`=`userinfo`.`user_id` "
+		 "id, photo "
+		 "FROM userinfo "
+		 "JOIN users ON users.id = userinfo.user_id "
 		 "WHERE handle = '%s'",
 		 handle_quoted);
 
