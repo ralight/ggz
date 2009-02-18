@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 10806 2009-01-03 09:29:15Z josef $
+ * $Id: control.c 10865 2009-02-18 18:10:51Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -333,7 +333,8 @@ static void meta_announce(const char *metaserveruri, const char *username, const
 	uri.host = hostname;
 	uri.user = NULL;
 	uri.port = 5688;
-	uri.path = NULL;
+	uri.room = NULL;
+	uri.table = NULL;
 
 	server = meta_server_new(uri);
 
@@ -373,7 +374,7 @@ static void meta_announce(const char *metaserveruri, const char *username, const
 		uri.host = hostname;
 		uri.user = NULL;
 		uri.port = 5688;
-		uri.path = roomname;
+		uri.room = roomname;
 
 		server = meta_server_new(uri);
 
