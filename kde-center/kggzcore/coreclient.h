@@ -34,6 +34,7 @@ namespace KGGZCore
 
 class CoreClientBase;
 class Room;
+class Module;
 
 class KGGZCORE_EXPORT CoreClient : public QObject
 {
@@ -99,6 +100,8 @@ class KGGZCORE_EXPORT CoreClient : public QObject
 		QStringList roomnames();
 		Room *room();
 		QList<Room*> rooms();
+
+		QList<Module> modules();
 
 		QString textmotd();
 		QString webmotd();

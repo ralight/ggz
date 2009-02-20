@@ -23,6 +23,7 @@
 #include <kggzcore/coreclientbase.h>
 #include <kggzcore/room.h>
 //#include <kggzcore/roombase.h>
+#include <kggzcore/module.h>
 
 #include <QUrl>
 
@@ -130,6 +131,11 @@ Room *CoreClient::room()
 QList<Room*> CoreClient::rooms()
 {
 	return m_base->rooms();
+}
+
+QList<Module> CoreClient::modules()
+{
+	return m_base->modules();
 }
 
 QString CoreClient::textmotd()

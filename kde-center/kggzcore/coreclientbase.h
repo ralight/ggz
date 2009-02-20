@@ -34,6 +34,7 @@ namespace KGGZCore
 
 class RoomBase;
 class Room;
+class Module;
 
 class KGGZCORE_EXPORT CoreClientBase : public QObject
 {
@@ -49,6 +50,8 @@ class KGGZCORE_EXPORT CoreClientBase : public QObject
 		QStringList roomnames();
 		QList<Room*> rooms();
 		int state();
+
+		QList<Module> modules();
 
 		RoomBase *roombase();
 

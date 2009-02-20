@@ -32,6 +32,7 @@ class Vencedor : public QMainWindow
 		void slotAbout();
 		void slotConfig();
 		void slotLaunch();
+		void slotModules();
 
 		void slotRoom(const QString& name);
 		void slotChatEntered(int id, const QString& msg);

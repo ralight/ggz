@@ -12,6 +12,7 @@ set(kggzcore_LIB_SRCS
 	table.cpp
 	player.cpp
 	gametype.cpp
+	module.cpp
 )
 
 kde4_add_library(kggzcore SHARED ${kggzcore_LIB_SRCS})
@@ -28,6 +29,7 @@ install(FILES
 	player.h
 	table.h
 	gametype.h
+	module.h
 	kggzcore_export.h
 	DESTINATION ${INCLUDE_INSTALL_DIR}/kggzcore
 )

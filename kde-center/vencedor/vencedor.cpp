@@ -29,6 +29,7 @@
 #include <kggzlib/tabledialog.h>
 //#include <kggzlib/kggzaction.h>
 #include <kggzlib/connectiondialog.h>
+#include <kggzlib/moduledialog.h>
 
 #include <kchat.h>
 
@@ -77,6 +78,11 @@ Vencedor::Vencedor(QString url)
 	QAction *action_about = new QAction(QIcon(icon_about), i18n("About Vencedor"), this);
 	connect(action_about, SIGNAL(triggered(bool)), SLOT(slotAbout()));
 	toolbar->addAction(action_about);
+
+	QPixmap icon_modules = KIconLoader::global()->loadIcon("help-hint", KIconLoader::Small);
+	QAction *action_modules = new QAction(QIcon(icon_modules), i18n("Game Modules"), this);
+	connect(action_modules, SIGNAL(triggered(bool)), SLOT(slotModules()));
+	toolbar->addAction(action_modules);
 
 	QPixmap icon_config = KIconLoader::global()->loadIcon("configure", KIconLoader::Small);
 	QAction *action_config = new QAction(QIcon(icon_config), i18n("Configuration"), this);
@@ -151,6 +157,12 @@ void Vencedor::slotAbout()
 	const KComponentData component = KGlobal::mainComponent();
 	const KAboutData *about = component.aboutData();
 	KAboutApplicationDialog dlg(about, this);
+	dlg.exec();
+}
+
+void Vencedor::slotModules()
+{
+	ModuleDialog dlg(this);
 	dlg.exec();
 }
 

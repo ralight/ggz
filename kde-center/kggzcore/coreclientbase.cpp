@@ -23,6 +23,7 @@
 #include <kggzcore/misc.h>
 #include <kggzcore/roombase.h>
 #include <kggzcore/room.h>
+#include <kggzcore/module.h>
 
 #include <QSocketNotifier>
 #include <QStringList>
@@ -154,6 +155,21 @@ QList<Room*> CoreClientBase::rooms()
 	}
 
 	return rooms;
+}
+
+QList<Module> CoreClientBase::modules()
+{
+	QList<Module> modules;
+
+	for(unsigned int i = 0; i < ggzcore_module_get_num(); i++)
+	{
+		GGZModule *ggzmodule = ggzcore_module_get_nth(i);
+		Module module;
+		module.setName(ggzcore_module_get_name(ggzmodule));
+		modules << module;
+	}
+
+	return modules;
 }
 
 int CoreClientBase::state()
