@@ -89,6 +89,17 @@ PlayerList::PlayerList()
 	//show();
 }
 
+void PlayerList::clear()
+{
+	//m_model->clear();
+	m_itemself->removeRows(0, m_itemself->rowCount());
+	m_itemfriends->removeRows(0, m_itemself->rowCount());
+	m_itemignored->removeRows(0, m_itemself->rowCount());
+	m_itemothers->removeRows(0, m_itemself->rowCount());
+
+	m_players.clear();
+}
+
 void PlayerList::setGGZProfile(const GGZProfile& ggzprofile)
 {
 	m_ggzprofile = ggzprofile;

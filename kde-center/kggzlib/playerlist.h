@@ -29,6 +29,7 @@ class KGGZLIB_EXPORT PlayerList : public QWidget
 		void addPlayer(Player *player);
 		void setGGZProfile(const GGZProfile& ggzprofile);
 		void setSelf(const QString& name);
+		void clear();
 	private slots:
 		void slotSearch(const QString& text);
 		void slotSelected(const QPoint& index);

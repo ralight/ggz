@@ -389,6 +389,7 @@ void Vencedor::slotAnswer(KGGZCore::Room::AnswerMessage message)
 	switch(message)
 	{
 		case KGGZCore::Room::playerlist:
+			m_players->clear();
 			players = m_core->room()->players();
 			for(int i = 0; i < players.count(); i++)
 			{
