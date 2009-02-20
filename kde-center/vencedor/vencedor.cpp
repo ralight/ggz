@@ -30,6 +30,7 @@
 //#include <kggzlib/kggzaction.h>
 #include <kggzlib/connectiondialog.h>
 #include <kggzlib/moduledialog.h>
+#include <kggzlib/kggzcorelayer.h>
 
 #include <kchat.h>
 
@@ -227,8 +228,18 @@ void Vencedor::slotConnect()
 
 void Vencedor::slotLaunch()
 {
-	TableDialog dlg(this);
-	dlg.exec();
+	TableDialog tabledlg(this);
+	// FIXME: see ConnectionDialog.cpp
+	KGGZCore::GameType gametype = m_core->room()->gametype();
+	tabledlg.setGameType(gametype);
+	tabledlg.setIdentity(m_core->username());
+	if(tabledlg.exec() == QDialog::Accepted)
+	{
+		KGGZCoreLayer *corelayer = new KGGZCoreLayer(this);
+		corelayer->setCore(m_core);
+		corelayer->configureTable(tabledlg.table().players());
+		corelayer->launch();
+	}
 }
 
 void Vencedor::slotChatEntered(int id, const QString& msg)

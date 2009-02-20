@@ -325,4 +325,9 @@ KGGZCore::CoreClient *KGGZCoreLayer::core()
 	return m_core;
 }
 
+void KGGZCoreLayer::setCore(KGGZCore::CoreClient *core)
+{
+	m_core = core;
+}
+
 #include "kggzcorelayer.moc"

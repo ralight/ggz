@@ -24,6 +24,7 @@ class KGGZLIB_EXPORT KGGZCoreLayer : public QObject
 		void launch();
 
 		KGGZCore::CoreClient *core();
+		void setCore(KGGZCore::CoreClient *core);
 
 	signals:
 		void signalReady(bool ready);
