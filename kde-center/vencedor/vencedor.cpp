@@ -96,7 +96,7 @@ Vencedor::Vencedor(QString url)
 	m_action_launch->setEnabled(false);
 	toolbar->addAction(m_action_launch);
 
-	connect(m_chat, SIGNAL(signalSendMessage(int, const QString)), SLOT(slotChat(int, const QString&)));
+	connect(m_chat, SIGNAL(signalSendMessage(int, const QString)), SLOT(slotChatEntered(int, const QString&)));
 	connect(m_rooms, SIGNAL(signalSelected(const QString&)), SLOT(slotRoom(const QString)));
 	connect(m_rooms, SIGNAL(signalFavourite(const QString&, bool)), SLOT(slotFavourite(const QString, bool)));
 
@@ -197,6 +197,7 @@ void Vencedor::slotConnect()
 		m_core = dlg.core();
 		enable(true);
 		handleRoomlist();
+		m_players->setSelf(m_core->username());
 
 		// FIXME: This part is now called after we enter the first room
 		// In the event of this room having a game attached, we wouldn't run 'our' room_entered hook
@@ -218,7 +219,7 @@ void Vencedor::slotLaunch()
 	dlg.exec();
 }
 
-void Vencedor::slotChat(int id, const QString& msg)
+void Vencedor::slotChatEntered(int id, const QString& msg)
 {
 	Q_UNUSED(id);
 	Q_UNUSED(msg);
@@ -275,6 +276,10 @@ void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZC
 					i18n("Unable to login."),
 					i18n("Connection"));
 				slotConnect();
+			}
+			else
+			{
+				m_players->setSelf(m_core->username());
 			}
 			break;
 		case KGGZCore::CoreClient::roomenter:

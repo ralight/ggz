@@ -51,6 +51,10 @@ PlayerList::PlayerList()
 	m_model = new QStandardItemModel();
 	m_model->setColumnCount(2);
 
+	m_itemself = new QStandardItem();
+	m_itemself->setText(i18n("Myself"));
+	m_model->appendRow(m_itemself);
+
 	m_itemfriends = new QStandardItem();
 	m_itemfriends->setText(i18n("Friends"));
 	m_model->appendRow(m_itemfriends);
@@ -90,6 +94,11 @@ void PlayerList::setGGZProfile(const GGZProfile& ggzprofile)
 	m_ggzprofile = ggzprofile;
 }
 
+void PlayerList::setSelf(const QString& name)
+{
+	m_self = name;
+}
+
 void PlayerList::addPlayer(Player *player)
 {
 	KStandardDirs d;
@@ -105,6 +114,8 @@ void PlayerList::addPlayer(Player *player)
 		pixmap = "ox-player.png";
 	else if(player->role() == Player::Bot)
 		pixmap = "ox-bot.png";
+	else if(player->name() == m_self)
+		pixmap = "ox-self.png";
 
 	QString lagpixmap = "lag0.png";
 	if(player->lag() == 100)
@@ -157,6 +168,8 @@ void PlayerList::mount(QList<QStandardItem*> childitems, Player *player)
 		item = m_itemfriends;
 	else if(player->relation() == Player::Ignored)
 		item = m_itemignored;
+	if(player->name() == m_self)
+		item = m_itemself;
 
 	item->appendRow(childitems);
 }
@@ -210,7 +223,20 @@ void PlayerList::slotSelected(const QPoint& pos)
 		if(!ggzserver.community().isEmpty())
 			action_community = menu.addAction(i18n("Visit community profile..."));
 
+		if(name == m_self)
+		{
+			if(action_chat)
+				action_chat->setEnabled(false);
+			if(action_addignored)
+				action_addignored->setEnabled(false);
+			if(action_addbuddy)
+				action_addbuddy->setEnabled(false);
+		}
+
 		QAction *action = menu.exec(mapToGlobal(pos));
+		if(!action)
+			return;
+
 		if(action == action_removebuddy)
 		{
 			player->setRelation(Player::Unknown);

@@ -34,7 +34,7 @@ class Vencedor : public QMainWindow
 		void slotLaunch();
 
 		void slotRoom(const QString& name);
-		void slotChat(int id, const QString& msg);
+		void slotChatEntered(int id, const QString& msg);
 
 		void slotFavourite(const QString& roomname, bool favourite);
 

@@ -28,6 +28,7 @@ class KGGZLIB_EXPORT PlayerList : public QWidget
 		PlayerList();
 		void addPlayer(Player *player);
 		void setGGZProfile(const GGZProfile& ggzprofile);
+		void setSelf(const QString& name);
 	private slots:
 		void slotSearch(const QString& text);
 		void slotSelected(const QPoint& index);
@@ -38,10 +39,11 @@ class KGGZLIB_EXPORT PlayerList : public QWidget
 		QStandardItemModel *m_model;
 		QRecursiveSortFilterProxyModel *m_proxymodel;
 		QTreeView *m_treeview;
-		QStandardItem *m_itemfriends, *m_itemignored, *m_itemothers;
+		QStandardItem *m_itemself, *m_itemfriends, *m_itemignored, *m_itemothers;
 		QMap<QString, Player*> m_players;
 		GGZProfile m_ggzprofile;
 		LokaRest *m_interactor;
+		QString m_self;
 };
 
 #endif

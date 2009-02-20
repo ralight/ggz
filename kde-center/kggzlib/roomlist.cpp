@@ -76,7 +76,7 @@ RoomList::RoomList()
 	connect(m_treeview, SIGNAL(signalToolTip(QPoint)), delegate, SLOT(slotToolTip(QPoint)));
 	connect(m_treeview, SIGNAL(doubleClicked(const QModelIndex&)), SLOT(slotSelectedLeft(const QModelIndex&)));
 
-	setWindowTitle("GGZ gets a more flexible room list!");
+	//setWindowTitle("GGZ gets a more flexible room list!");
 	resize(500, 400);
 	//show();
 }
