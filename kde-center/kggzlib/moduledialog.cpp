@@ -1,36 +1,56 @@
 // Module configuration dialog includes
 #include "moduledialog.h"
+#include "qrecursivesortfilterproxymodel.h"
 
 // KGGZ includes
 #include <kggzcore/module.h>
 #include <kggzcore/coreclient.h>
 
+// KDE includes
+#include <klocale.h>
+
 // Qt includes
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qtablewidget.h>
+#include <qlabel.h>
+#include <qlineedit.h>
+#include <qstandarditemmodel.h>
 
 ModuleDialog::ModuleDialog(QWidget *parent)
 : QDialog(parent)
 {
-	m_modules = new QTableWidget();
-	m_modules->setColumnCount(10);
-
-	QStringList labels;
-	labels << "Name";
-	labels << "Version";
-	labels << "Protocol engine";
-	labels << "Protocol version";
-	labels << "Author";
-	labels << "Frontend";
-	labels << "Homepage";
-	labels << "Help path";
-	labels << "Icon path";
-	labels << "Environment";
-	m_modules->setHorizontalHeaderLabels(labels);
+	m_modules = new QTableView();
 	m_modules->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
+	m_model = new QStandardItemModel();
+	m_model->setColumnCount(10);
+
+	m_model->setHeaderData(0, Qt::Horizontal, i18n("Name"), Qt::DisplayRole);
+	m_model->setHeaderData(1, Qt::Horizontal, i18n("Version"), Qt::DisplayRole);
+	m_model->setHeaderData(2, Qt::Horizontal, i18n("Protocol engine"), Qt::DisplayRole);
+	m_model->setHeaderData(3, Qt::Horizontal, i18n("Protocol version"), Qt::DisplayRole);
+	m_model->setHeaderData(4, Qt::Horizontal, i18n("Author"), Qt::DisplayRole);
+	m_model->setHeaderData(5, Qt::Horizontal, i18n("Frontend"), Qt::DisplayRole);
+	m_model->setHeaderData(6, Qt::Horizontal, i18n("Homepage"), Qt::DisplayRole);
+	m_model->setHeaderData(7, Qt::Horizontal, i18n("Help path"), Qt::DisplayRole);
+	m_model->setHeaderData(8, Qt::Horizontal, i18n("Icon path"), Qt::DisplayRole);
+	m_model->setHeaderData(9, Qt::Horizontal, i18n("Environment"), Qt::DisplayRole);
+
+	m_proxymodel = new QRecursiveSortFilterProxyModel(this);
+	m_proxymodel->setSourceModel(m_model);
+	m_proxymodel->setDynamicSortFilter(true);
+
+	m_modules->setModel(m_proxymodel);
+
 	QPushButton *dismiss_button = new QPushButton("Dismiss");
+
+	QLineEdit *searchinput = new QLineEdit();
+	QLabel *searchlabel = new QLabel(i18n("Search for:"));
+
+	QHBoxLayout *searchbox = new QHBoxLayout();
+	searchbox->addWidget(searchlabel);
+	searchbox->addWidget(searchinput);
 
 	QHBoxLayout *hbox = new QHBoxLayout();
 	hbox->addStretch();
@@ -38,10 +58,12 @@ ModuleDialog::ModuleDialog(QWidget *parent)
 
 	QVBoxLayout *vbox = new QVBoxLayout();
 	vbox->addWidget(m_modules);
+	vbox->addLayout(searchbox);
 	vbox->addLayout(hbox);
 	setLayout(vbox);
 
 	connect(dismiss_button, SIGNAL(clicked()), SLOT(close()));
+	connect(searchinput, SIGNAL(textChanged(const QString&)), SLOT(slotSearch(const QString&)));
 
 	load();
 
@@ -54,7 +76,6 @@ void ModuleDialog::load()
 {
 	KGGZCore::CoreClient core;
 	QList<KGGZCore::Module> modules = core.modules();
-	m_modules->setRowCount(modules.size());
 
 	for(int i = 0; i < modules.size(); i++)
 	{
@@ -69,30 +90,42 @@ void ModuleDialog::load()
 
 		QString env = envnames[module.environment()];
 
-		QTableWidgetItem *item_name = new QTableWidgetItem(module.name());
-		m_modules->setItem(i, 0, item_name);
-		QTableWidgetItem *item_version = new QTableWidgetItem(module.version());
-		m_modules->setItem(i, 1, item_version);
-		QTableWidgetItem *item_protoengine = new QTableWidgetItem(module.protocolEngine());
-		m_modules->setItem(i, 2, item_protoengine);
-		QTableWidgetItem *item_protoversion = new QTableWidgetItem(module.protocolVersion());
-		m_modules->setItem(i, 3, item_protoversion);
-		QTableWidgetItem *item_author = new QTableWidgetItem(module.author());
-		m_modules->setItem(i, 4, item_author);
-		QTableWidgetItem *item_frontend = new QTableWidgetItem(module.frontend());
-		m_modules->setItem(i, 5, item_frontend);
-		QTableWidgetItem *item_homepage = new QTableWidgetItem(module.homepage());
-		m_modules->setItem(i, 6, item_homepage);
-		QTableWidgetItem *item_helppath = new QTableWidgetItem(module.helpPath());
-		m_modules->setItem(i, 7, item_helppath);
-		QTableWidgetItem *item_iconpath = new QTableWidgetItem(module.iconPath());
-		m_modules->setItem(i, 8, item_iconpath);
-		QTableWidgetItem *item_environment = new QTableWidgetItem(env);
-		m_modules->setItem(i, 9, item_environment);
+		QList<QStandardItem*> items;
+
+		QStandardItem *item_name = new QStandardItem(module.name());
+		QStandardItem *item_version = new QStandardItem(module.version());
+		QStandardItem *item_protoengine = new QStandardItem(module.protocolEngine());
+		QStandardItem *item_protoversion = new QStandardItem(module.protocolVersion());
+		QStandardItem *item_author = new QStandardItem(module.author());
+		QStandardItem *item_frontend = new QStandardItem(module.frontend());
+		QStandardItem *item_homepage = new QStandardItem(module.homepage());
+		QStandardItem *item_helppath = new QStandardItem(module.helpPath());
+		QStandardItem *item_iconpath = new QStandardItem(module.iconPath());
+		QStandardItem *item_environment = new QStandardItem(env);
+
+		items << item_name;
+		items << item_version;
+		items << item_protoengine;
+		items << item_protoversion;
+		items << item_author;
+		items << item_frontend;
+		items << item_homepage;
+		items << item_helppath;
+		items << item_iconpath;
+		items << item_environment;
+
+		m_model->appendRow(items);
 	}
 
 	m_modules->resizeColumnsToContents();
 	// FIXME: enabling sorting before will mess up the item order...
 	m_modules->setSortingEnabled(true);
+}
+
+void ModuleDialog::slotSearch(const QString& text)
+{
+	m_proxymodel->setFilterRegExp(QRegExp(text, Qt::CaseInsensitive, QRegExp::FixedString));
+	m_proxymodel->setFilterKeyColumn(0);
+	//m_modules->expandAll();
 }
 

@@ -5,7 +5,9 @@
 
 #include "kggzlib_export.h"
 
-class QTableWidget;
+class QTableView;
+class QRecursiveSortFilterProxyModel;
+class QStandardItemModel;
 
 class KGGZLIB_EXPORT ModuleDialog : public QDialog
 {
@@ -13,10 +15,15 @@ class KGGZLIB_EXPORT ModuleDialog : public QDialog
 	public:
 		ModuleDialog(QWidget *parent = NULL);
 
+	private slots:
+		void slotSearch(const QString& text);
+
 	private:
 		void load();
 
-		QTableWidget *m_modules;
+		QTableView *m_modules;
+		QRecursiveSortFilterProxyModel *m_proxymodel;
+		QStandardItemModel *m_model;
 };
 
 #endif
