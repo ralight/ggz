@@ -123,7 +123,10 @@ void RoomList::slotSelected(const QPoint& pos)
 	if(!index.isValid())
 		return;
 
-	QString name = m_proxymodel->data(index).toString();
+	void *roomptr = index.model()->data(index, ROOM_ROLE).value<void*>();
+	Room *room = static_cast<Room*>(roomptr);
+
+	QString name = room->name();
 	if(m_rooms.contains(name))
 	{
 		Room *room = m_rooms[name];
@@ -148,6 +151,8 @@ void RoomList::slotFavourites()
 	{
 		Room *room = m_rooms[m_action_name];
 		room->setFavourite(!room->favourite());
+
+		emit signalFavourite(room->name(), room->favourite());
 	}
 }
 

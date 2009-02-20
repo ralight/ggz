@@ -24,6 +24,7 @@ class KGGZLIB_EXPORT RoomList : public QWidget
 		void addRoom(Room *room);
 	signals:
 		void signalSelected(const QString& name);
+		void signalFavourite(const QString& roomname, bool favourite);
 	private slots:
 		void slotSearch(const QString& text);
 		void slotSelected(const QPoint& pos);

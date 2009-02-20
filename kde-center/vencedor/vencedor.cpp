@@ -98,6 +98,7 @@ Vencedor::Vencedor(QString url)
 
 	connect(m_chat, SIGNAL(signalSendMessage(int, const QString)), SLOT(slotChat(int, const QString&)));
 	connect(m_rooms, SIGNAL(signalSelected(const QString&)), SLOT(slotRoom(const QString)));
+	connect(m_rooms, SIGNAL(signalFavourite(const QString&, bool)), SLOT(slotFavourite(const QString, bool)));
 
 	enable(false);
 
@@ -105,14 +106,20 @@ Vencedor::Vencedor(QString url)
 	resize(800, 700);
 	show();
 
-	if(Prefs::autoconnect())
+	if(!url.isEmpty())
 		connection(url);
+	else if(Prefs::autoconnect())
+		connection(url);
+	// FIXME: autoconnect() should work on previously used profile
 }
 
 void Vencedor::connection(const QString& url)
 {
 	// FIXME: This is currently working differently from the dialogue-driven connection
 	// FIXME: We need to use kggzcorelayer here, too
+
+	// FIXME: should recognise if username is missing but host/port are given
+	// FIXME: guest mode unless URI is known to refer to registered profile
 
 	m_action_connect->setEnabled(false);
 
@@ -131,6 +138,12 @@ void Vencedor::connection(const QString& url)
 	m_core->setUrl(url);
 	m_core->setTLS(Prefs::enforcetls());
 	m_core->initiateLogin();
+}
+
+void Vencedor::slotFavourite(const QString& roomname, bool favourite)
+{
+	KConfigGroup favgroup = KGlobal::config()->group("Favourites");
+	favgroup.writeEntry(roomname, favourite);
 }
 
 void Vencedor::slotAbout()
@@ -417,11 +430,17 @@ void Vencedor::slotChat(QString sender, QString message, KGGZCore::Room::ChatTyp
 
 void Vencedor::handleRoomlist()
 {
+	KConfigGroup favgroup = KGlobal::config()->group("Favourites");
+
 	m_core->initiateRoomChange(m_core->roomnames().at(0));
 	for(int i = 0; i < m_core->roomnames().count(); i++)
 	{
-		Room *room = new Room(m_core->roomnames().at(i));
+		QString roomname = m_core->roomnames().at(i);
+		bool fav = favgroup.readEntry(roomname, false);
+
+		Room *room = new Room(roomname);
 		room->setPlayers(0);
+		room->setFavourite(fav);
 		m_rooms->addRoom(room);
 	}
 }

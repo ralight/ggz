@@ -145,6 +145,9 @@ void PlayerList::addPlayer(Player *player)
 	childitems << itemname;
 	childitems << itemlagstats;
 	mount(childitems, player);
+
+	m_treeview->resizeColumnToContents(0);
+	m_treeview->resizeColumnToContents(1);
 }
 
 void PlayerList::mount(QList<QStandardItem*> childitems, Player *player)

@@ -35,9 +35,6 @@ int main(int argc, char **argv)
 	QString url;
 	if(args->count() == 1)
 		url = args->arg(0);
-	else
-		url = "ggz://guest9999@localhost:5688";
-	// FIXME: should recognise if username is missing but host/port are given
 
 	args->clear();
 
