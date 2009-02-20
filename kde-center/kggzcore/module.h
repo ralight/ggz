@@ -32,11 +32,57 @@ class KGGZCORE_EXPORT Module
 {
 	public:
 		Module();
+
+		enum Environment
+		{
+			passive,
+			console,
+			framebuffer,
+			xwindow,
+			xfullscreen
+		};
+
 		void setName(const QString& name);
-		QString name();
+		QString name() const;
+
+		void setVersion(const QString& version);
+		QString version() const;
+
+		void setProtocolEngine(const QString& protocolengine);
+		QString protocolEngine() const;
+
+		void setProtocolVersion(const QString& protocolversion);
+		QString protocolVersion() const;
+
+		void setAuthor(const QString& author);
+		QString author() const;
+
+		void setFrontend(const QString& frontend);
+		QString frontend() const;
+
+		void setHomepage(const QString& homepage);
+		QString homepage() const;
+
+		void setHelpPath(const QString& helppath);
+		QString helpPath() const;
+
+		void setIconPath(const QString& iconpath);
+		QString iconPath() const;
+
+		void setEnvironment(const Environment& environment);
+		Environment environment() const;
 
 	private:
 		QString m_name;
+		QString m_version;
+		QString m_protocolengine;
+		QString m_protocolversion;
+		QString m_author;
+		QString m_frontend;
+		QString m_homepage;
+		QString m_helppath;
+		QString m_iconpath;
+		Environment m_environment;
 };
 
 }

@@ -166,6 +166,15 @@ QList<Module> CoreClientBase::modules()
 		GGZModule *ggzmodule = ggzcore_module_get_nth(i);
 		Module module;
 		module.setName(ggzcore_module_get_name(ggzmodule));
+		module.setVersion(ggzcore_module_get_version(ggzmodule));
+		module.setProtocolEngine(ggzcore_module_get_prot_engine(ggzmodule));
+		module.setProtocolVersion(ggzcore_module_get_prot_version(ggzmodule));
+		module.setAuthor(ggzcore_module_get_author(ggzmodule));
+		module.setFrontend(ggzcore_module_get_frontend(ggzmodule));
+		module.setHomepage(ggzcore_module_get_url(ggzmodule));
+		module.setHelpPath(ggzcore_module_get_icon_path(ggzmodule));
+		module.setIconPath(ggzcore_module_get_help_path(ggzmodule));
+		module.setEnvironment((Module::Environment)ggzcore_module_get_environment(ggzmodule));
 		modules << module;
 	}
 

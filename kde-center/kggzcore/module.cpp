@@ -31,8 +31,98 @@ void Module::setName(const QString& name)
 	m_name = name;
 }
 
-QString Module::name()
+QString Module::name() const
 {
 	return m_name;
+}
+
+void Module::setVersion(const QString& version)
+{
+	m_version = version;
+}
+
+QString Module::version() const
+{
+	return m_version;
+}
+
+void Module::setProtocolEngine(const QString& protocolengine)
+{
+	m_protocolengine = protocolengine;
+}
+
+QString Module::protocolEngine() const
+{
+	return m_protocolengine;
+}
+
+void Module::setProtocolVersion(const QString& protocolversion)
+{
+	m_protocolversion = protocolversion;
+}
+
+QString Module::protocolVersion() const
+{
+	return m_protocolversion;
+}
+
+void Module::setAuthor(const QString& author)
+{
+	m_author = author;
+}
+
+QString Module::author() const
+{
+	return m_author;
+}
+
+void Module::setFrontend(const QString& frontend)
+{
+	m_frontend = frontend;
+}
+
+QString Module::frontend() const
+{
+	return m_frontend;
+}
+
+void Module::setHomepage(const QString& homepage)
+{
+	m_homepage = homepage;
+}
+
+QString Module::homepage() const
+{
+	return m_homepage;
+}
+
+void Module::setHelpPath(const QString& helppath)
+{
+	m_helppath = helppath;
+}
+
+QString Module::helpPath() const
+{
+	return m_helppath;
+}
+
+void Module::setIconPath(const QString& iconpath)
+{
+	m_iconpath = iconpath;
+}
+
+QString Module::iconPath() const
+{
+	return m_iconpath;
+}
+
+void Module::setEnvironment(const Environment& environment)
+{
+	m_environment = environment;
+}
+
+Module::Environment Module::environment() const
+{
+	return m_environment;
 }
 
