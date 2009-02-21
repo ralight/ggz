@@ -6,9 +6,18 @@ actions between the web (i.e. GGZ Community portals) and the desktop.
 All of these synchronisations should be subject to privacy control.
 
 In order to make it work, Vencedor must be compiled with the Lokarest
-library.
+library. Using this library with the GGZ login credentials passed to
+the remote HTTP API, a synchronisation becomes possible. At the moment,
+neither resync from the API to the client is handled, which means that
+the local configuration file which mirrors the preferences is essential.
+Furthermore, no error handling and no privacy protection is implemented.
+
+It will only work for GGZ servers which are known to provide an API. This
+information is usually conveyed through the metaserver. It will not be
+known for random connection profiles, only for those which were derived
+from metaserver entries.
 
 Currently, the following preferences are subject to synchronisation:
-- players: buddies and ignored players
-- rooms: favourite rooms
+- players: buddies and ignored players (/api/players/$player/buddies/$buddy...)
+- rooms: favourite rooms (/api/players/$player/favouriterooms/$room)
 
