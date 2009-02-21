@@ -144,6 +144,9 @@ char *username_canonical(const char *username)
 	int32_t length2;
 	UErrorCode error = U_ZERO_ERROR;
 
+	if(!strlen(username))
+		return ggz_strdup(username);
+
 	status = U_ZERO_ERROR;
 	profile = usprep_open(NULL, "uidna", &status);
 	if(U_FAILURE(status))

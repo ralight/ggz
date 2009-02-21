@@ -295,6 +295,9 @@ char *username_canonical(const char *username)
 	int32_t length2;
 	UErrorCode error = U_ZERO_ERROR;
 
+	if(!strlen(username))
+		return ggz_strdup(username);
+
 	status = U_ZERO_ERROR;
 	/* FIXME: we need GGZ-specific or SASL datafile here */
 	/* FIXME: IBM sucks again, "uidna" isn't documented anywhere */
