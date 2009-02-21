@@ -26,6 +26,7 @@
 #include <qlabel.h>
 #include <qmenu.h>
 
+#include <qurl.h>
 #include <qdom.h>
 
 static Qt::ItemFlags ROFLAGS =
@@ -180,6 +181,10 @@ void RoomList::slotFavourites()
 		QString baseurl = ggzserver.api() + "/api/players/" + user;
 
 		QString url = baseurl + "/favouriterooms/" + room->name();
+		QUrl uri(url);
+		uri.setUserName(user);
+		uri.setPassword(pass);
+		url = uri.toString();
 		if(room->favourite())
 		{
 			QByteArray xmldata; // = roomtoxml(room->name());

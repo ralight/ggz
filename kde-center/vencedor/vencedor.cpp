@@ -247,6 +247,7 @@ void Vencedor::handleSession()
 	GGZProfile profile;
 	profile.setGGZServer(server);
 	profile.setUsername(m_core->username());
+	profile.setPassword(m_core->password());
 	m_players->setGGZProfile(profile);
 	m_rooms->setGGZProfile(profile);
 }

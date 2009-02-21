@@ -107,6 +107,7 @@ class KGGZCORE_EXPORT CoreClient : public QObject
 		QString webmotd();
 
 		QString username();
+		QString password();
 		QString url();
 
 		// FIXME: we don't have an enum yet

@@ -153,6 +153,11 @@ QString CoreClient::username()
 	return m_username;
 }
 
+QString CoreClient::password()
+{
+	return m_password;
+}
+
 QString CoreClient::url()
 {
 	QUrl url;
