@@ -1,0 +1,121 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
+<!ENTITY vencedor "<application>Vencedor</application>">
+<!ENTITY ggz "GGZ Gaming Zone">
+<!ENTITY kappname "&vencedor;">
+<!ENTITY package "kdegames">
+<!ENTITY % English "INCLUDE">
+<!ENTITY % addindex "IGNORE">
+]>
+
+<book lang="&language;">
+<bookinfo>
+<title>The &vencedor; Handbook</title>
+
+<authorgroup>
+<author>
+<firstname>Josef</firstname>
+<surname>Spillner</surname>
+<affiliation><address><email>josef@ggzgamingzone.org</email></address></affiliation>
+</author>
+<!-- TRANS:ROLES_OF_TRANSLATORS -->
+</authorgroup>
+
+<copyright>
+<year>2009</year>
+<holder>Josef Spillner</holder>
+</copyright>
+
+<legalnotice>&FDLNotice;</legalnotice>
+
+<date>2009-02-21</date>
+<releaseinfo>0.0.x</releaseinfo>
+
+<abstract>
+<para>
+&kdiamond;, an online gaming and social network center.</para>
+</abstract>
+
+<keywordset>
+<keyword>GGZ</keyword>
+<keyword>GGZ Gaming Zone</keyword>
+<keyword>KGGZ</keyword>
+<keyword>KDE</keyword>
+<keyword>kdegames</keyword>
+<keyword>game</keyword>
+<keyword>online game</keyword>
+<keyword>Vencedor</keyword>
+</keywordset>
+</bookinfo>
+
+<chapter id="introduction">
+<title>Introduction</title>
+
+<para>
+&vencedor; is an online gaming center with built-in social network and privacy features.
+</para>
+
+<para>
+Using &vencedor;, you can connect to online gaming servers based on &ggz; technology.
+</para>
+</chapter>
+
+<chapter id="how-to-connect">
+<title>How to Connect</title>
+
+<para>
+...
+</para>
+</chapter>
+
+<chapter id="credits">
+<title>Credits and License</title>
+
+<para>
+&kdiamond;
+</para>
+<para>
+Program copyright 2009 by Josef Spillner <email>josef@ggzgamingzone.org</email>
+</para>
+<para>
+Documentation copyright 2009 by Josef Spillner <email>josef@ggzgamingzone.org</email>
+</para>
+
+<!-- TRANS:CREDIT_FOR_TRANSLATORS -->
+
+&underFDL;
+&underGPL;
+
+</chapter>
+
+<appendix id="installation">
+<title>Installation</title>
+
+<sect1 id="getting-vencedor">
+<title>How to obtain &vencedor;</title>
+
+&install.intro.documentation;
+
+</sect1>
+
+<sect1 id="compilation">
+<title>Compilation and Installation</title>
+
+&install.compile.documentation;
+
+</sect1>
+</appendix>
+
+&documentation.index;
+</book>
+<!--
+Local Variables:
+mode: sgml
+sgml-minimize-attributes:nil
+sgml-general-insert-case:lower
+sgml-always-quote-attributes:t
+sgml-indent-step:0
+sgml-indent-data:t
+End:
+-->
+

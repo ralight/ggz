@@ -17,6 +17,7 @@
 #include <kcomponentdata.h>
 #include <kconfigdialog.h>
 #include <kmessagebox.h>
+#include <ktoolinvocation.h>
 
 //#include <kggzcore/room.h>
 #include <kggzcore/misc.h>
@@ -74,6 +75,11 @@ Vencedor::Vencedor(QString url)
 	toolbar->addAction(m_action_disconnect);
 
 	toolbar->addSeparator();
+
+	QPixmap icon_help = KIconLoader::global()->loadIcon("help-contents", KIconLoader::Small);
+	QAction *action_help = new QAction(QIcon(icon_help), i18n("Help"), this);
+	connect(action_help, SIGNAL(triggered(bool)), SLOT(slotHelp()));
+	toolbar->addAction(action_help);
 
 	QPixmap icon_about = KIconLoader::global()->loadIcon("help-about", KIconLoader::Small);
 	QAction *action_about = new QAction(QIcon(icon_about), i18n("About Vencedor"), this);
@@ -159,6 +165,11 @@ void Vencedor::slotAbout()
 	const KAboutData *about = component.aboutData();
 	KAboutApplicationDialog dlg(about, this);
 	dlg.exec();
+}
+
+void Vencedor::slotHelp()
+{
+	KToolInvocation::invokeBrowser("help:/vencedor/index.html");
 }
 
 void Vencedor::slotModules()
