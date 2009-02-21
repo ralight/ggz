@@ -130,9 +130,9 @@ void Room::launchtable(QString tablename, QList<Player> seats)
 	qDebug(">>launchtable>> ret=%i", ret);
 }
 
-void Room::launchmodule(bool embedded)
+void Room::launchmodule(bool embedded, QString modname)
 {
-	// FIXME: hardcoded module selection; replace with selection dialogue
+	qDebug(">>launchmodule>>");
 	GGZModule *module = NULL;
 
 	if(!embedded)
@@ -150,11 +150,16 @@ void Room::launchmodule(bool embedded)
 		}
 		else
 		{
-			module = ggzcore_module_get_nth_by_type(name, engine, version, 0);
+			for(int i = 0; i < num; i++)
+			{
+				GGZModule *modtmp = ggzcore_module_get_nth_by_type(name, engine, version, i);
+				QString nametmp = ggzcore_module_get_name(modtmp);
+				if((nametmp == modname) || (modname.isEmpty()))
+					module = modtmp;
+			}
 		}
 	}
 
-	qDebug(">>launchmodule>>");
 	GGZGame *game = ggzcore_game_new();
 	GGZServer *server = ggzcore_room_get_server(m_base->room());
 	ggzcore_game_init(game, server, module);

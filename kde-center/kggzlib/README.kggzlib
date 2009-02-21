@@ -49,6 +49,10 @@ Room list
 Other GGZ classes
 -----------------
  kggzcorelayer.cpp/h - Qt convenience class for KGGZCore::CoreClient
+ kggzaction.cpp/h - Standard KDE action for connecting to GGZ
+ moduledialog.cpp/h - List of installed GGZ game client modules
+ modulelist.cpp/h - List of applicable GGZ game client modules in a room
+ moduleselector.cpp/h - Module selection in a room
 
 External dependencies
 ---------------------

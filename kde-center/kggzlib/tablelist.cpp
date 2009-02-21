@@ -145,7 +145,9 @@ TableList::TableList()
 	listview->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 	QItemSelectionModel *ism = listview->selectionModel();
-	connect(ism, SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), SLOT(slotActivated(const QItemSelection&, const QItemSelection&)));
+	connect(ism,
+		SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+		SLOT(slotActivated(const QItemSelection&, const QItemSelection&)));
 
 	m_deletionmode = false;
 }

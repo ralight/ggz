@@ -30,6 +30,8 @@ set(kggzlib_LIB_SRCS
 	tablelist.cpp
 	tabledialog.cpp
 	moduledialog.cpp
+	modulelist.cpp
+	moduleselector.cpp
 )
 
 kde4_add_library(kggzlib SHARED ${kggzlib_LIB_SRCS})
@@ -73,6 +75,8 @@ install(FILES
 	tablelist.h
 	tabledialog.h
 	moduledialog.h
+	modulelist.h
+	moduleselector.h
 	DESTINATION ${INCLUDE_INSTALL_DIR}/kggzlib
 )
 

@@ -1,5 +1,7 @@
 #include "kggzcorelayer.h"
 
+#include "moduleselector.h"
+
 #include <kggzcore/room.h>
 #include <kggzcore/misc.h>
 #include <kggzcore/table.h>
@@ -285,6 +287,24 @@ void KGGZCoreLayer::launchmodule()
 	//KGGZCore::Table *table = new KGGZCore::Table("*embedded*");
 	//table->launch(m_core);
 
+	QString modname;
+	if(!m_embedded)
+	{
+		ModuleSelector selector(NULL);
+		selector.setModules(m_core->modules());
+		KGGZCore::GameType gt = m_core->room()->gametype();
+		selector.setGameType(gt.protocolEngine(), gt.protocolVersion());
+		if(selector.exec() == QDialog::Accepted)
+		{
+			KGGZCore::Module module = selector.module();
+			modname = module.name();
+		}
+		else
+		{
+			return;
+		}
+	}
+
 	connect(m_core->room(),
 		SIGNAL(signalModuleReady()),
 		SLOT(slotModuleReady()));
@@ -292,7 +312,7 @@ void KGGZCoreLayer::launchmodule()
 		SIGNAL(signalTableReady()),
 		SLOT(slotTableReady()));
 
-	m_core->room()->launchmodule(m_embedded);
+	m_core->room()->launchmodule(m_embedded, modname);
 }
 
 void KGGZCoreLayer::slotModuleReady()
