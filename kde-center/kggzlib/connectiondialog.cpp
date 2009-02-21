@@ -165,12 +165,17 @@ void ConnectionDialog::slotSelected(const GGZProfile& profile, int pos)
 	{
 		m_uri = profile.ggzServer().uri();
 		m_username = profile.username();
+
+		// FIXME: This cannot capture first-time vs. anonymous
+		QUrl qurl(m_uri);
+		qurl.setUserName(profile.username());
+		qurl.setPassword(profile.password());
+		m_uri = qurl.toString();
 	}
 }
 
 QString ConnectionDialog::uri()
 {
-	// FIXME: return fully-qualified GGZ URI
 	return m_uri;
 }
 

@@ -44,6 +44,7 @@ class Vencedor : public QMainWindow
 		void enable(bool enabled);
 		void connection(const QString& url);
 		void handleRoomlist();
+		void handleSession();
 
 		KGGZCore::CoreClient *m_core;
 		KChat *m_chat;

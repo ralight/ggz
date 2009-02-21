@@ -221,15 +221,7 @@ void Vencedor::slotConnect()
 		m_core = dlg.core();
 		enable(true);
 		handleRoomlist();
-		m_players->setSelf(m_core->username());
-
-		// FIXME: Where to get profile from?
-		GGZServer server;
-		server.setApi("http://api.ggzcommunity.local/");
-		GGZProfile profile;
-		profile.setGGZServer(server);
-		m_players->setGGZProfile(profile);
-		m_rooms->setGGZProfile(profile);
+		handleSession();
 
 		// FIXME: This part is now called after we enter the first room
 		// In the event of this room having a game attached, we wouldn't run 'our' room_entered hook
@@ -243,6 +235,20 @@ void Vencedor::slotConnect()
 			SIGNAL(signalEvent(KGGZCore::CoreClient::EventMessage)),
 			SLOT(slotEvent(KGGZCore::CoreClient::EventMessage)));
 	}
+}
+
+void Vencedor::handleSession()
+{
+	m_players->setSelf(m_core->username());
+
+	// FIXME: Where to get profile from?
+	GGZServer server;
+	server.setApi("http://api.ggzcommunity.local/");
+	GGZProfile profile;
+	profile.setGGZServer(server);
+	profile.setUsername(m_core->username());
+	m_players->setGGZProfile(profile);
+	m_rooms->setGGZProfile(profile);
 }
 
 void Vencedor::slotLaunch()
@@ -321,7 +327,7 @@ void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZC
 			}
 			else
 			{
-				m_players->setSelf(m_core->username());
+				handleSession();
 			}
 			break;
 		case KGGZCore::CoreClient::roomenter:

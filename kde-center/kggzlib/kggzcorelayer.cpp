@@ -80,6 +80,11 @@ void KGGZCoreLayer::ggzcore(QString uri, bool embedded)
 		qurl.setUserName(KUser().loginName());
 
 	m_core->setUrl(qurl.toString());
+	// FIXME: See connectiondialog.cpp for first-time issue
+	if(qurl.password().isEmpty())
+		m_core->setMode(KGGZCore::CoreClient::guest);
+	else
+		m_core->setMode(KGGZCore::CoreClient::normal);
 	//m_core->setUsername();
 	m_core->initiateLogin();
 }

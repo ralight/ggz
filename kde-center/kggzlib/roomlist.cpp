@@ -1,3 +1,6 @@
+// Configuration
+#include "config.h"
+
 // Player list includes
 #include "roomlist.h"
 #include "room.h"
@@ -179,8 +182,8 @@ void RoomList::slotFavourites()
 		QString url = baseurl + "/favouriterooms/" + room->name();
 		if(room->favourite())
 		{
-			QByteArray xmldata = roomtoxml(room->name());
-			m_interactor->schedule(StateTransfer(StateTransfer::put, Resource(url, "application/ggzapi+xml", xmldata)));
+			QByteArray xmldata; // = roomtoxml(room->name());
+			m_interactor->schedule(StateTransfer(StateTransfer::post, Resource(url, "application/ggzapi+xml", xmldata)));
 		}
 		else
 		{
@@ -202,6 +205,7 @@ void RoomList::slotSelectedLeft(const QModelIndex& index)
 	}
 }
 
+#if 0
 QByteArray RoomList::roomtoxml(QString roomname)
 {
 	QDomDocument xmldoc;
@@ -212,3 +216,4 @@ QByteArray RoomList::roomtoxml(QString roomname)
 	QByteArray xmldata = xmldoc.toByteArray();
 	return xmldata;
 }
+#endif
