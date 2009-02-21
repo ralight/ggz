@@ -223,6 +223,14 @@ void Vencedor::slotConnect()
 		handleRoomlist();
 		m_players->setSelf(m_core->username());
 
+		// FIXME: Where to get profile from?
+		GGZServer server;
+		server.setApi("http://api.ggzcommunity.local/");
+		GGZProfile profile;
+		profile.setGGZServer(server);
+		m_players->setGGZProfile(profile);
+		m_rooms->setGGZProfile(profile);
+
 		// FIXME: This part is now called after we enter the first room
 		// In the event of this room having a game attached, we wouldn't run 'our' room_entered hook
 		connect(m_core,

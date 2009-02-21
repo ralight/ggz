@@ -6,6 +6,11 @@
 #include "qrecursivesortfilterproxymodel.h"
 #include "modelview.h"
 
+// Lokarest includes
+#ifdef LOKAREST_FOUND
+#include <lokarest/lokarest.h>
+#endif
+
 // KDE includes
 #include <kstandarddirs.h>
 
@@ -17,6 +22,8 @@
 #include <qlineedit.h>
 #include <qlabel.h>
 #include <qmenu.h>
+
+#include <qdom.h>
 
 static Qt::ItemFlags ROFLAGS =
 	Qt::ItemIsSelectable |
@@ -71,6 +78,10 @@ RoomList::RoomList()
 	m_treeview->resizeColumnToContents(0);
 	m_treeview->resizeColumnToContents(1);
 
+#ifdef LOKAREST_FOUND
+	m_interactor = new LokaRest(this);
+#endif
+
 	connect(searchbox, SIGNAL(textChanged(const QString&)), SLOT(slotSearch(const QString&)));
 	connect(m_treeview, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(slotSelected(const QPoint&)));
 	connect(m_treeview, SIGNAL(signalToolTip(QPoint)), delegate, SLOT(slotToolTip(QPoint)));
@@ -79,6 +90,11 @@ RoomList::RoomList()
 	//setWindowTitle("GGZ gets a more flexible room list!");
 	resize(500, 400);
 	//show();
+}
+
+void RoomList::setGGZProfile(const GGZProfile& ggzprofile)
+{
+	m_ggzprofile = ggzprofile;
 }
 
 void RoomList::addRoom(Room *room)
@@ -153,6 +169,24 @@ void RoomList::slotFavourites()
 		room->setFavourite(!room->favourite());
 
 		emit signalFavourite(room->name(), room->favourite());
+
+#ifdef LOKAREST_FOUND
+		GGZServer ggzserver = m_ggzprofile.ggzServer();
+		QString user = m_ggzprofile.username();
+		QString pass = m_ggzprofile.password();
+		QString baseurl = ggzserver.api() + "/api/players/" + user;
+
+		QString url = baseurl + "/favouriterooms/" + room->name();
+		if(room->favourite())
+		{
+			QByteArray xmldata = roomtoxml(room->name());
+			m_interactor->schedule(StateTransfer(StateTransfer::put, Resource(url, "application/ggzapi+xml", xmldata)));
+		}
+		else
+		{
+			m_interactor->schedule(StateTransfer(StateTransfer::del, Resource(url, QString(), QByteArray())));
+		}
+#endif
 	}
 }
 
@@ -166,4 +200,15 @@ void RoomList::slotSelectedLeft(const QModelIndex& index)
 	{
 		emit signalSelected(name);
 	}
+}
+
+QByteArray RoomList::roomtoxml(QString roomname)
+{
+	QDomDocument xmldoc;
+	QDomElement el = xmldoc.createElement("room");
+	xmldoc.appendChild(el);
+	QDomText txt = xmldoc.createTextNode(roomname);
+	el.appendChild(txt);
+	QByteArray xmldata = xmldoc.toByteArray();
+	return xmldata;
 }

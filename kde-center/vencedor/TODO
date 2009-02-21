@@ -1,0 +1,8 @@
+* application
+  * window title: include connection URI? (see kggz)
+  * status bar needed?
+  * larger toolbuttons, to be consistent with games
+* connection dialogue
+  * honour firsttime/registered settings
+  * switch firsttime to registered if successful
+
