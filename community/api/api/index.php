@@ -71,6 +71,8 @@ $uri = $_SERVER["SCRIPT_NAME"];
 $method = $_SERVER["REQUEST_METHOD"];
 $resource = str_replace("/api/", "", $uri);
 
+//$resource = str_replace("//", "/", $resource);
+
 $resourceparts = explode("/", $resource);
 $topresource = resourcequote($resourceparts[0]);
 $subresource = resourcequote($resourceparts[1]);
@@ -281,6 +283,10 @@ elseif ($topresource == "players") :
 				$error = true;
 			endif;
 		elseif (($subsubresource == "buddies") || ($subsubresource == "ignored")) :
+			$playername = $subresource;
+			if ($playername != $user) :
+				$authenticated = false;
+			endif;
 			$targetplayername = $subsubsubresource;
 			if ($targetplayername == "") :
 				$error = true;
@@ -317,6 +323,10 @@ elseif ($topresource == "players") :
 				endif;
 			endif;
 		elseif ($subsubresource == "favouriterooms") :
+			$playername = $subresource;
+			if ($playername != $user) :
+				$authenticated = false;
+			endif;
 			$roomname = $subsubsubresource;
 			if ($roomname == "") :
 				$error = true;
