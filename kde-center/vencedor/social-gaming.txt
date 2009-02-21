@@ -1,0 +1,14 @@
+Social Gaming/Social Network integration
+----------------------------------------
+
+Vencedor is a web service-enabled application which can synchronise user
+actions between the web (i.e. GGZ Community portals) and the desktop.
+All of these synchronisations should be subject to privacy control.
+
+In order to make it work, Vencedor must be compiled with the Lokarest
+library.
+
+Currently, the following preferences are subject to synchronisation:
+- players: buddies and ignored players
+- rooms: favourite rooms
+
