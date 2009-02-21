@@ -113,7 +113,7 @@ void ConnectionDialog::slotConnect()
 	m_corelayer = new KGGZCoreLayer(NULL, m_engine, m_version);
 	connect(m_corelayer, SIGNAL(signalReady(bool)), SLOT(slotReady(bool)));
 	connect(m_corelayer, SIGNAL(signalRoomReady(bool)), SLOT(slotRoomReady(bool)));
-	m_corelayer->ggzcore(uri());
+	m_corelayer->ggzcore(uri(), !m_coremode);
 }
 
 void ConnectionDialog::slotReady(bool ready)

@@ -114,13 +114,13 @@ void Room::sendchat(QString message, QString receiver, ChatType type)
 	ggzcore_room_chat(m_base->room(), chattype, receiver.toUtf8(), message.toUtf8());
 }
 
-void Room::launchtable(QList<Player> seats)
+void Room::launchtable(QString tablename, QList<Player> seats)
 {
 	GGZGameType *gametype = ggzcore_room_get_gametype(m_base->room());
 	qDebug(">>launchtable>> gametype=%s", ggzcore_gametype_get_name(gametype));
 
 	GGZTable *table = ggzcore_table_new();
-	ggzcore_table_init(table, gametype, "*embedded*", seats.size());
+	ggzcore_table_init(table, gametype, tablename.toUtf8(), seats.size());
 	for(int i = 0; i < seats.size(); i++)
 	{
 		ggzcore_table_set_seat(table, i, (GGZSeatType)seats.at(i).type(), seats.at(i).name().toUtf8());

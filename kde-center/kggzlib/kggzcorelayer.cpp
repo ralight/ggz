@@ -52,9 +52,9 @@ void KGGZCoreLayer::checkTables()
 	}
 }
 
-void KGGZCoreLayer::ggzcore(QString uri)
+void KGGZCoreLayer::ggzcore(QString uri, bool embedded)
 {
-	m_core = new KGGZCore::CoreClient(this, true);
+	m_core = new KGGZCore::CoreClient(this, embedded);
 
 	connect(m_core,
 		SIGNAL(signalFeedback(KGGZCore::CoreClient::FeedbackMessage, KGGZCore::Error::ErrorCode)),
@@ -306,13 +306,15 @@ void KGGZCoreLayer::notready()
 
 void KGGZCoreLayer::slotTableReady()
 {
-	m_core->room()->launchtable(m_seats);
+	m_core->room()->launchtable(m_tablename, m_seats);
 }
 
 void KGGZCoreLayer::configureTable(QList<KGGZCore::Player> seats)
 {
 	//seats.prepend(KGGZCore::Player(m_core->username(), KGGZCore::Player::player));
 	m_seats = seats;
+	// FIXME: make table name configurable
+	m_tablename = "*embedded*";
 }
 
 void KGGZCoreLayer::launch()

@@ -19,7 +19,7 @@ class KGGZLIB_EXPORT KGGZCoreLayer : public QObject
 		KGGZCoreLayer(QObject *parent = NULL, QString protengine = QString(), QString protversion = QString());
 		~KGGZCoreLayer();
 
-		void ggzcore(QString uri);
+		void ggzcore(QString uri, bool embedded);
 		void configureTable(QList<KGGZCore::Player> seats);
 		void launch();
 
@@ -56,6 +56,7 @@ class KGGZLIB_EXPORT KGGZCoreLayer : public QObject
 		QString m_protengine;
 		QString m_protversion;
 		bool m_typedrooms;
+		QString m_tablename;
 };
 
 #endif

@@ -99,7 +99,7 @@ class KGGZCORE_EXPORT Room : public QObject
 
 		void sendchat(QString message, QString receiver, ChatType type);
 
-		void launchtable(QList<Player> seats);
+		void launchtable(QString tablename, QList<Player> seats);
 		void launchmodule();
 
 	signals:
