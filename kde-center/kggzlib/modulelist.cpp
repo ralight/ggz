@@ -47,10 +47,28 @@ public:
 		int y = option.rect.top();
 
 		painter->save();
+		QMap<QString, QString> frontends;
+		frontends["gtk"] = "gnome";
+		frontends["gnome"] = "gnome";
+		frontends["qt"] = "kde";
+		frontends["kde"] = "kde";
+		frontends["sdl"] = "sdl";
+		frontends["x11"] = "x11";
+		frontends["console"] = "console";
+		frontends["grubby"] = "grubby";
+
+		QString pixmap = "game.png";
+		if(frontends.contains(module.frontend()))
+			pixmap = QString("game_%1.png").arg(frontends[module.frontend()]);
+
+		QPixmap pix(d.findResource("data", "kggzlib/frontends/" + pixmap));
+		//pix = pix.scaled(QSize(size, size), Qt::KeepAspectRatio);
+		painter->drawPixmap(x + 10, y + 60, pix);
+
 		painter->setFont(QFont(QString(), 15));
 		painter->drawText(x + 10, y + 30, module.name());
 		painter->setFont(QFont(QString(), 8));
-		painter->drawText(x + 10, y + 50, module.frontend());
+		painter->drawText(x + 10, y + 50, module.homepage());
 		painter->restore();
 	}
 

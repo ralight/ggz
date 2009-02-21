@@ -131,4 +131,16 @@ install(FILES
 	DESTINATION ${DATA_INSTALL_DIR}/kggzlib/games
 )
 
+install(FILES
+	frontends/game.png
+	frontends/game_console.png
+	frontends/game_gnome.png
+	frontends/game_grubby.png
+	frontends/game_java.png
+	frontends/game_kde.png
+	frontends/game_sdl.png
+	frontends/game_x11.png
+	DESTINATION ${DATA_INSTALL_DIR}/kggzlib/frontends
+)
+
 install(FILES kggzlib.rc DESTINATION ${CONFIG_INSTALL_DIR})
