@@ -216,3 +216,24 @@ rankings_tournaments($lookup);
 rankings_matches_summary($lookup);
 ?>
 	</div>
+	<h2>
+		<span class="itemleader">:: </span>
+		Favourite rooms
+		<span class="itemleader"> :: </span>
+		<a name="database"></a>
+	</h2>
+	<div class="text">
+<?php
+$res = $database->exec("SELECT room FROM favouriterooms WHERE handle = '%^'",
+	array($ggzuser));
+for ($i = 0; $i < $database->numrows($res); $i++)
+{
+	$room = $database->result($res, $i, "room");
+
+	echo "$room<br>\n";
+}
+if ($database->numrows($res) == 0) :
+	echo "The player hasn't chosen any favourites.";
+endif;
+?>
+	</div>
