@@ -316,6 +316,33 @@ elseif ($topresource == "players") :
 					$error = true;
 				endif;
 			endif;
+		elseif ($subsubresource == "favouriterooms") :
+			$roomname = $subsubsubresource;
+			if ($roomname == "") :
+				$error = true;
+			else :
+				if ($method == "POST") :
+					if ($authenticated) :
+						// FIXME: check if username+room exists and is unlisted
+						$database->exec("INSERT INTO favouriterooms (handle, room) " .
+							"VALUES ('%^', '%^')",
+							array($playername, $roomname));
+					else :
+						$autherror = true;
+					endif;
+				elseif ($method == "DELETE") :
+					if ($authenticated) :
+						// FIXME: check if username+room exists and is already listed
+						$database->exec("DELETE FROM favouriterooms " .
+							"WHERE handle = '%^' AND room = '%^'",
+							array($playername, $roomname));
+					else :
+						$autherror = true;
+					endif;
+				else :
+					$error = true;
+				endif;
+			endif;
 		else :
 			$error = true;
 		endif;

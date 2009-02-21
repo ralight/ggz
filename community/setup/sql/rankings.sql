@@ -54,3 +54,9 @@ CREATE TABLE "karma" (
 	"isbuddy" boolean,
 	"isignored" boolean
 );
+
+CREATE TABLE "favouriterooms" (
+	"id" serial NOT NULL,
+	"handle" varchar(256),
+	"room" varchar(256)
+);
