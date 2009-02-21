@@ -100,7 +100,7 @@ class KGGZCORE_EXPORT Room : public QObject
 		void sendchat(QString message, QString receiver, ChatType type);
 
 		void launchtable(QString tablename, QList<Player> seats);
-		void launchmodule();
+		void launchmodule(bool embedded);
 
 	signals:
 		void signalFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
