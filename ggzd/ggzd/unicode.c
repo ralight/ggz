@@ -295,6 +295,8 @@ char *username_canonical(const char *username)
 	int32_t length2;
 	UErrorCode error = U_ZERO_ERROR;
 
+	if(!username)
+		return NULL;
 	if(!strlen(username))
 		return ggz_strdup(username);
 
