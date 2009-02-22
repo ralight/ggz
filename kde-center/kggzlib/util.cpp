@@ -4,6 +4,8 @@
 
 #include <kconfiggroup.h>
 
+#include <qurl.h>
+
 void Util::saveprofile(const GGZProfile& profile, KConfigGroup& cg, KSharedConfig::Ptr conf)
 {
 	GGZServer server = profile.ggzServer();
@@ -64,4 +66,38 @@ QPixmap Util::composite(QPixmap bottom, QPixmap top)
 	comp = comp.fromImage(bottomim);
 
 	return comp;
+}
+
+GGZProfile Util::uriToProfile(const QString& uri)
+{
+	QUrl qurl(uri);
+	if(qurl.scheme().isEmpty())
+	{
+		qurl.setScheme("ggz");
+		if(qurl.host().isEmpty())
+		{
+			// FIXME: Qt seems to prefer path over host
+			qurl.setHost(qurl.path());
+			qurl.setPath(QString());
+		}
+	}
+	if(qurl.port() == -1)
+		qurl.setPort(5688);
+
+	GGZProfile profile;
+	if(!qurl.userName().isEmpty())
+		profile.setUsername(qurl.userName());
+	if(!qurl.password().isEmpty())
+		profile.setPassword(qurl.password());
+	if(!qurl.path().isEmpty())
+		profile.setRoomname(qurl.path());
+	// FIXME: parse path correctly according to GGZ URI draft
+
+	QString serveruri = qurl.toString(QUrl::RemoveUserInfo | QUrl::RemovePath);
+
+	GGZServer server;
+	server.setUri(serveruri);
+	profile.setGGZServer(server);
+
+	return profile;
 }

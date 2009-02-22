@@ -19,7 +19,6 @@
 // Qt includes
 #include <qlayout.h>
 #include <qpushbutton.h>
-#include <qurl.h>
 
 ConnectionSingle::ConnectionSingle(QWidget *parent)
 : QDialog(parent)
@@ -55,34 +54,7 @@ ConnectionSingle::ConnectionSingle(QWidget *parent)
 // FIXME: Duplicate in ConnectionProfiles; move to Util?
 void ConnectionSingle::presetServer(const QString& uri)
 {
-	QUrl qurl(uri);
-	if(qurl.scheme().isEmpty())
-	{
-		qurl.setScheme("ggz");
-		if(qurl.host().isEmpty())
-		{
-			// FIXME: Qt seems to prefer path over host
-			qurl.setHost(qurl.path());
-			qurl.setPath(QString());
-		}
-	}
-	if(qurl.port() == -1)
-		qurl.setPort(5688);
-
-	GGZProfile profile;
-	if(!qurl.userName().isEmpty())
-		profile.setUsername(qurl.userName());
-	if(!qurl.password().isEmpty())
-		profile.setPassword(qurl.password());
-	if(!qurl.path().isEmpty())
-		profile.setRoomname(qurl.path());
-	// FIXME: parse path correctly according to GGZ URI draft
-
-	QString serveruri = qurl.toString(QUrl::RemoveUserInfo | QUrl::RemovePath);
-
-	GGZServer server;
-	server.setUri(serveruri);
-	profile.setGGZServer(server);
+	GGZProfile profile = Util::uriToProfile(uri);
 	addProfile(profile, true);
 
 	m_configwidget->setGGZProfile(profile);

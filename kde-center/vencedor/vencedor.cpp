@@ -47,7 +47,9 @@ Vencedor::Vencedor(QString url)
 	m_rooms = new RoomList();
 	m_players = new PlayerList();
 	m_tables = new TableList();
+
 	m_chat = new KChat(centralwidget, false);
+	m_chat->setAutoAddMessages(false);
 
 	QVBoxLayout *vbox = new QVBoxLayout();
 	vbox->addWidget(m_rooms);
@@ -298,10 +300,41 @@ void Vencedor::slotLaunch()
 void Vencedor::slotChatEntered(int id, const QString& msg)
 {
 	Q_UNUSED(id);
-	Q_UNUSED(msg);
 
 	kDebug() << "CHAT:" << id << msg;
-	m_core->room()->sendchat(msg, QString(), KGGZCore::Room::chatnormal);
+	// FIXME TODO: chatannounce, chattable
+
+	KGGZCore::Room::ChatType type = KGGZCore::Room::chatnormal;
+	QString receiver;
+	QString message = msg;
+
+	if((msg.length() > 0) && (msg.startsWith("/")))
+	{
+		QStringList list = message.split(" ");
+		QString cmd = list.at(0);
+		if(cmd == "/beep")
+		{
+			if(list.size() != 2)
+			{
+				return;
+			}
+			message = QString();
+			type = KGGZCore::Room::chatbeep;
+			receiver = list.at(1);
+		}
+		else if(cmd == "/msg")
+		{
+			if(list.size() < 3)
+			{
+				return;
+			}
+			message = msg.section(" ", 2);
+			type = KGGZCore::Room::chatprivate;
+			receiver = list.at(1);
+		}
+	}
+
+	m_core->room()->sendchat(message, receiver, type);
 }
 
 void Vencedor::slotRoom(const QString& name)
@@ -504,6 +537,12 @@ void Vencedor::slotEvent(KGGZCore::Room::EventMessage message)
 
 void Vencedor::slotChat(QString sender, QString message, KGGZCore::Room::ChatType type)
 {
+	if(type == KGGZCore::Room::chatprivate)
+		message.prepend("[PRIVATE] ");
+	else if(type == KGGZCore::Room::chatbeep)
+		message = "BEEP";
+
+	// FIXME: colours and style?
 	if(type == KGGZCore::Room::chatprivate)
 		m_chat->addSystemMessage(sender, message);
 	else
