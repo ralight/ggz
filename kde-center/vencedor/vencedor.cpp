@@ -113,9 +113,22 @@ Vencedor::Vencedor(QString url)
 	m_action_launch->setEnabled(false);
 	toolbar->addAction(m_action_launch);
 
+	QPixmap icon_join = KIconLoader::global()->loadIcon("start-here", KIconLoader::Small);
+	m_action_join = new QAction(QIcon(icon_join), i18n("Join a running new game"), this);
+	connect(m_action_join, SIGNAL(triggered(bool)), SLOT(slotJoin()));
+	m_action_join->setEnabled(false);
+	toolbar->addAction(m_action_join);
+
+	QPixmap icon_spectate = KIconLoader::global()->loadIcon("start-here", KIconLoader::Small);
+	m_action_spectate = new QAction(QIcon(icon_spectate), i18n("Spectate a running game"), this);
+	connect(m_action_spectate, SIGNAL(triggered(bool)), SLOT(slotSpectate()));
+	m_action_spectate->setEnabled(false);
+	toolbar->addAction(m_action_spectate);
+
 	connect(m_chat, SIGNAL(signalSendMessage(int, const QString)), SLOT(slotChatEntered(int, const QString&)));
-	connect(m_rooms, SIGNAL(signalSelected(const QString&)), SLOT(slotRoom(const QString)));
-	connect(m_rooms, SIGNAL(signalFavourite(const QString&, bool)), SLOT(slotFavourite(const QString, bool)));
+	connect(m_rooms, SIGNAL(signalSelected(const QString&)), SLOT(slotRoom(const QString&)));
+	connect(m_rooms, SIGNAL(signalFavourite(const QString&, bool)), SLOT(slotFavourite(const QString&, bool)));
+	connect(m_tables, SIGNAL(signalSelected(const KGGZCore::Table&, int)), SLOT(slotTable(const KGGZCore::Table, int)));
 
 	enable(false);
 
@@ -298,6 +311,20 @@ void Vencedor::slotLaunch()
 	}
 }
 
+void Vencedor::slotJoin()
+{
+	KGGZCoreLayer *corelayer = new KGGZCoreLayer(this);
+	corelayer->setCore(m_core);
+	corelayer->join(m_tablenum, false);
+}
+
+void Vencedor::slotSpectate()
+{
+	KGGZCoreLayer *corelayer = new KGGZCoreLayer(this);
+	corelayer->setCore(m_core);
+	corelayer->join(m_tablenum, true);
+}
+
 void Vencedor::slotChatEntered(int id, const QString& msg)
 {
 	Q_UNUSED(id);
@@ -341,6 +368,16 @@ void Vencedor::slotChatEntered(int id, const QString& msg)
 void Vencedor::slotRoom(const QString& name)
 {
 	m_core->initiateRoomChange(name);
+}
+
+void Vencedor::slotTable(const KGGZCore::Table& table, int pos)
+{
+	Q_UNUSED(table);
+
+	m_tablenum = pos;
+
+	m_action_join->setEnabled((pos != -1));
+	m_action_spectate->setEnabled((pos != -1));
 }
 
 void Vencedor::enable(bool enabled)
@@ -497,6 +534,9 @@ void Vencedor::slotAnswer(KGGZCore::Room::AnswerMessage message)
 			}
 			break;
 		case KGGZCore::Room::tablelist:
+			m_tables->clear();
+			// FIXME: shouldn't be necessary to enforce the disabled join/spectate buttons
+			slotTable(KGGZCore::Table(), -1);
 			tables = m_core->room()->tables();
 			for(int i = 0; i < tables.count(); i++)
 			{

@@ -28,7 +28,7 @@ class KGGZLIB_EXPORT TableList : public QWidget
 		void clear();
 
 	signals:
-		void signalSelected(const KGGZCore::Table& profile, int pos);
+		void signalSelected(const KGGZCore::Table& table, int pos);
 
 	private slots:
 		//void slotLoaded(const QString& url, const QPixmap& pixmap);

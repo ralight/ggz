@@ -334,7 +334,10 @@ void KGGZCoreLayer::notready()
 
 void KGGZCoreLayer::slotTableReady()
 {
-	m_core->room()->launchtable(m_tablename, m_seats);
+	if(m_tablenum == (unsigned int)-1)
+		m_core->room()->launchtable(m_tablename, m_seats);
+	else
+		m_core->room()->jointable(m_tablenum, m_spectator);
 }
 
 void KGGZCoreLayer::configureTable(QList<KGGZCore::Player> seats)
@@ -347,6 +350,13 @@ void KGGZCoreLayer::configureTable(QList<KGGZCore::Player> seats)
 
 void KGGZCoreLayer::launch()
 {
+	launchmodule();
+}
+
+void KGGZCoreLayer::join(unsigned int tablenum, bool spectator)
+{
+	m_tablenum = tablenum;
+	m_spectator = spectator;
 	launchmodule();
 }
 

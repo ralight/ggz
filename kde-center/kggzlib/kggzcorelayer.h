@@ -22,6 +22,7 @@ class KGGZLIB_EXPORT KGGZCoreLayer : public QObject
 		void ggzcore(QString uri, bool embedded);
 		void configureTable(QList<KGGZCore::Player> seats);
 		void launch();
+		void join(unsigned int tablenum, bool spectator);
 
 		KGGZCore::CoreClient *core();
 		void setCore(KGGZCore::CoreClient *core);
@@ -58,6 +59,8 @@ class KGGZLIB_EXPORT KGGZCoreLayer : public QObject
 		bool m_typedrooms;
 		QString m_tablename;
 		bool m_embedded;
+		unsigned int m_tablenum;
+		bool m_spectator;
 };
 
 #endif

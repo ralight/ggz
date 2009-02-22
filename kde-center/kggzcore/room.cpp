@@ -130,6 +130,12 @@ void Room::launchtable(QString tablename, QList<Player> seats)
 	qDebug(">>launchtable>> ret=%i", ret);
 }
 
+void Room::jointable(unsigned int tablenum, bool spectate)
+{
+	int ret = ggzcore_room_join_table(m_base->room(), tablenum, (spectate ? 1 : 0));
+	qDebug(">>jointable>> ret=%i", ret);
+}
+
 void Room::launchmodule(bool embedded, QString modname)
 {
 	qDebug(">>launchmodule>>");
