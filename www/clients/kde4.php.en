@@ -1,0 +1,33 @@
+<?php include_once("../site/header.php"); ?>
+
+<table class="content">
+<tr>
+<td>
+
+<b>KDE 4 client: Vencedor</b><br/>
+<br/>
+
+<table class="twoside">
+<tr>
+<td>
+
+<i>Features</i><br/>
+<ul>
+<li>integrated into KDE 4 online gaming system
+<li>still in development...
+</ul>
+
+</td><td>
+
+<img src="/clients/pics/vencedor.png"><br/>
+
+</td>
+</tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+<?php include_once("../site/footer.php"); ?>
+
