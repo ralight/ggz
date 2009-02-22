@@ -1,0 +1,16 @@
+[Protocol]
+exec=vencedor %u
+protocol=ggz
+input=none
+output=none
+helper=true
+reading=false
+writing=false
+deleting=false
+linking=false
+makedir=false
+moving=false
+listing=
+#source=false
+Icon=ggz
+Class=:internet

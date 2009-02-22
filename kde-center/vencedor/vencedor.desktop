@@ -12,8 +12,8 @@ Comment[fr]=Core Client GGZ
 Comment[pt]=Cliente núcleo do GGZ
 
 Type=Application
-Exec=vencedor
-#Icon=vencedor
+Exec=vencedor %u
+Icon=vencedor
 X-DocPath=vencedor/index.html
 Terminal=false
 Categories=X-GGZ;Network;KDE;Qt;

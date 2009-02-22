@@ -21,5 +21,7 @@ target_link_libraries(vencedor ${KDE4_KDEUI_LIBS} -L../lib kggzcore kggzgames kg
 
 install(TARGETS vencedor ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES vencedor.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
+install(FILES ggz.protocol DESTINATION ${SERVICES_INSTALL_DIR})
+
 #install(FILES bg.png DESTINATION ${DATA_INSTALL_DIR}/vencedor)
 
