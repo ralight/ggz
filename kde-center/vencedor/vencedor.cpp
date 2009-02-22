@@ -7,6 +7,7 @@
 #include <QIcon>
 #include <QAction>
 #include <QCheckBox>
+#include <QApplication>
 
 #include <klocale.h>
 //#include <kactioncollection.h>
@@ -538,12 +539,24 @@ void Vencedor::slotEvent(KGGZCore::Room::EventMessage message)
 void Vencedor::slotChat(QString sender, QString message, KGGZCore::Room::ChatType type)
 {
 	if(type == KGGZCore::Room::chatprivate)
+	{
 		message.prepend("[PRIVATE] ");
+	}
 	else if(type == KGGZCore::Room::chatbeep)
-		message = "BEEP";
+	{
+		QApplication::beep();
+		message = "[BEEP]";
+	}
 
 	// FIXME: colours and style?
-	if(type == KGGZCore::Room::chatprivate)
+	QFont namefont = m_chat->nameFont();
+	QFont smfont = m_chat->systemMessageFont();
+	namefont.setItalic(true);
+	smfont.setBold(true);
+	m_chat->setNameFont(namefont);
+	m_chat->setSystemMessageFont(smfont);
+
+	if(type != KGGZCore::Room::chatnormal)
 		m_chat->addSystemMessage(sender, message);
 	else
 		m_chat->addMessage(sender, message);
