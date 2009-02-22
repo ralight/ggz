@@ -19,6 +19,7 @@ set(kggzlib_LIB_SRCS
 	roomtreeview.cpp
 	serverlist.cpp
 	connectionprofiles.cpp
+	connectionsingle.cpp
 	configwidget.cpp
 	roomselector.cpp
 	serverselector.cpp
@@ -49,6 +50,7 @@ install(FILES
 	configwidget.h
 	connectiondialog.h
 	connectionprofiles.h
+	connectionsingle.h
 	ggzprofile.h
 	ggzserver.h
 	kggzcorelayer.h

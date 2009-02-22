@@ -30,7 +30,7 @@
 #include <kggzlib/tabledialog.h>
 //#include <kggzlib/kggzaction.h>
 #include <kggzlib/connectiondialog.h>
-#include <kggzlib/connectionprofiles.h>
+#include <kggzlib/connectionsingle.h>
 #include <kggzlib/moduledialog.h>
 #include <kggzlib/kggzcorelayer.h>
 
@@ -134,13 +134,13 @@ void Vencedor::connection(const QString& url)
 
 	// FIXME: should recognise if username is missing but host/port are given
 	// FIXME: guest mode unless URI is known to refer to registered profile
-	ConnectionProfiles cp(this);
+	GGZProfile profile;
+	ConnectionSingle cs(this);
 	// cp.setMetaserver(...);
-	cp.presetServer(url);
-	if(cp.exec() == QDialog::Accepted)
+	cs.presetServer(url);
+	if(cs.exec() == QDialog::Accepted)
 	{
-		QList<GGZProfile> profiles = cp.profiles();
-		// ...
+		profile = cs.profile();
 	}
 	else
 	{
@@ -161,7 +161,21 @@ void Vencedor::connection(const QString& url)
 		SIGNAL(signalEvent(KGGZCore::CoreClient::EventMessage)),
 		SLOT(slotEvent(KGGZCore::CoreClient::EventMessage)));
 
-	m_core->setUrl(url);
+	QUrl uri = profile.ggzServer().uri();
+	uri.setUserName(profile.username());
+	uri.setPassword(profile.password());
+	uri.setPath(profile.roomname());
+	QString customurl = uri.toString();
+
+	KGGZCore::CoreClient::LoginType loginmode = KGGZCore::CoreClient::normal;
+	if(profile.loginType() == GGZProfile::guest)
+		loginmode = KGGZCore::CoreClient::guest;
+	else if(profile.loginType() == GGZProfile::firsttime)
+		loginmode = KGGZCore::CoreClient::firsttime;
+
+	m_core->setUrl(customurl);
+	m_core->setEmail(profile.email());
+	m_core->setMode(loginmode);
 	m_core->setTLS(Prefs::enforcetls());
 	m_core->initiateLogin();
 }
