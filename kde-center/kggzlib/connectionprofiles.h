@@ -23,6 +23,8 @@ class KGGZLIB_EXPORT ConnectionProfiles : public QDialog
 
 		QList<GGZProfile> profiles();
 
+		void presetServer(const QString& uri);
+
 	private slots:
 		void slotUpdate();
 		void slotSelected(const GGZProfile& profile, int pos);
@@ -34,7 +36,7 @@ class KGGZLIB_EXPORT ConnectionProfiles : public QDialog
 	private:
 		void load();
 		void save(const GGZProfile& profile);
-		void addProfile(const GGZProfile& profile);
+		void addProfile(const GGZProfile& profile, bool selected);
 
 		ServerList *m_serverlist;
 		QString m_metaserver;

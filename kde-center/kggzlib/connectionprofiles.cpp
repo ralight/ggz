@@ -74,16 +74,51 @@ void ConnectionProfiles::load()
 			break;
 
 		Util util;
-		addProfile(util.loadprofile(cg));
+		addProfile(util.loadprofile(cg), false);
 	}
 
 	KConfigGroup cg = KConfigGroup(conf, "Settings");
 	m_metaserver = cg.readEntry("Metaserver", "ggzmeta://meta.ggzgamingzone.org:15689");
 }
 
-void ConnectionProfiles::addProfile(const GGZProfile& profile)
+void ConnectionProfiles::presetServer(const QString& uri)
+{
+	QUrl qurl(uri);
+	if(qurl.scheme().isEmpty())
+	{
+		qurl.setScheme("ggz");
+		if(qurl.host().isEmpty())
+		{
+			// FIXME: Qt seems to prefer path over host
+			qurl.setHost(qurl.path());
+			qurl.setPath(QString());
+		}
+	}
+	if(qurl.port() == -1)
+		qurl.setPort(5688);
+
+	GGZProfile profile;
+	if(!qurl.userName().isEmpty())
+		profile.setUsername(qurl.userName());
+	if(!qurl.password().isEmpty())
+		profile.setPassword(qurl.password());
+	if(!qurl.path().isEmpty())
+		profile.setRoomname(qurl.path());
+	// FIXME: parse path correctly according to GGZ URI draft
+
+	QString serveruri = qurl.toString(QUrl::RemoveUserInfo | QUrl::RemovePath);
+
+	GGZServer server;
+	server.setUri(serveruri);
+	profile.setGGZServer(server);
+	addProfile(profile, true);
+}
+
+void ConnectionProfiles::addProfile(const GGZProfile& profile, bool selected)
 {
 	m_serverlist->addProfile(profile);
+	if(selected)
+		m_serverlist->selectProfile(profile);
 }
 
 void ConnectionProfiles::slotAdd()
@@ -91,37 +126,7 @@ void ConnectionProfiles::slotAdd()
 	QString uri = KInputDialog::getText(i18n("Profile addition"), i18n("GGZ server location:"));
 
 	if(!uri.isNull())
-	{
-		QUrl qurl(uri);
-		if(qurl.scheme().isEmpty())
-		{
-			qurl.setScheme("ggz");
-			if(qurl.host().isEmpty())
-			{
-				// FIXME: Qt seems to prefer path over host
-				qurl.setHost(qurl.path());
-				qurl.setPath(QString());
-			}
-		}
-		if(qurl.port() == -1)
-			qurl.setPort(5688);
-
-		GGZProfile profile;
-		if(!qurl.userName().isEmpty())
-			profile.setUsername(qurl.userName());
-		if(!qurl.password().isEmpty())
-			profile.setPassword(qurl.password());
-		if(!qurl.path().isEmpty())
-			profile.setRoomname(qurl.path());
-		// FIXME: parse path correctly according to GGZ URI draft
-
-		uri = qurl.toString(QUrl::RemoveUserInfo | QUrl::RemovePath);
-
-		GGZServer server;
-		server.setUri(uri);
-		profile.setGGZServer(server);
-		addProfile(profile);
-	}
+		presetServer(uri);
 }
 
 void ConnectionProfiles::slotRemove()
@@ -138,7 +143,7 @@ void ConnectionProfiles::slotUpdate()
 	{
 		GGZProfile profile;
 		profile.setGGZServer(selector.server());
-		addProfile(profile);
+		addProfile(profile, true);
 
 		save(profile);
 	}

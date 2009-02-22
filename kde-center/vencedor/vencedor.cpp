@@ -30,6 +30,7 @@
 #include <kggzlib/tabledialog.h>
 //#include <kggzlib/kggzaction.h>
 #include <kggzlib/connectiondialog.h>
+#include <kggzlib/connectionprofiles.h>
 #include <kggzlib/moduledialog.h>
 #include <kggzlib/kggzcorelayer.h>
 
@@ -133,6 +134,18 @@ void Vencedor::connection(const QString& url)
 
 	// FIXME: should recognise if username is missing but host/port are given
 	// FIXME: guest mode unless URI is known to refer to registered profile
+	ConnectionProfiles cp(this);
+	// cp.setMetaserver(...);
+	cp.presetServer(url);
+	if(cp.exec() == QDialog::Accepted)
+	{
+		QList<GGZProfile> profiles = cp.profiles();
+		// ...
+	}
+	else
+	{
+		return;
+	}
 
 	m_action_connect->setEnabled(false);
 

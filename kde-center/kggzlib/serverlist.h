@@ -14,6 +14,7 @@
 class QStandardItem;
 class QStandardItemModel;
 class QItemSelection;
+class QListView;
 
 // The game window
 class KGGZLIB_EXPORT ServerList : public QWidget
@@ -27,6 +28,7 @@ class KGGZLIB_EXPORT ServerList : public QWidget
 		void clear();
 		void updateProfile(const GGZProfile& profile, int pos);
 		void removeProfile(int pos);
+		void selectProfile(const GGZProfile& profile);
 
 	signals:
 		void signalSelected(const GGZProfile& profile, int pos);
@@ -41,6 +43,7 @@ class KGGZLIB_EXPORT ServerList : public QWidget
 		QList<GGZProfile> m_profiles;
 		QList<GGZProfile*> m_profptrs;
 		bool m_deletionmode;
+		QListView *m_listview;
 };
 
 #endif

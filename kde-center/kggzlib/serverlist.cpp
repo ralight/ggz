@@ -85,22 +85,24 @@ public:
 ServerList::ServerList()
 : QWidget()
 {
-	QListView *listview = new QListView();
+	m_listview = new QListView();
 
 	QVBoxLayout *vbox = new QVBoxLayout();
-	vbox->addWidget(listview);
+	vbox->addWidget(m_listview);
 	setLayout(vbox);
 
 	m_model = new QStandardItemModel();
 
 	ItemDelegate *delegate = new ItemDelegate(this);
 
-	listview->setModel(m_model);
-	listview->setItemDelegate(delegate);
-	listview->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	m_listview->setModel(m_model);
+	m_listview->setItemDelegate(delegate);
+	m_listview->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-	QItemSelectionModel *ism = listview->selectionModel();
-	connect(ism, SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), SLOT(slotActivated(const QItemSelection&, const QItemSelection&)));
+	QItemSelectionModel *ism = m_listview->selectionModel();
+	connect(ism,
+		SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+		SLOT(slotActivated(const QItemSelection&, const QItemSelection&)));
 
 	m_deletionmode = false;
 }
@@ -145,6 +147,13 @@ void ServerList::addProfile(const GGZProfile& profile)
 	connect(apixmap,
 		SIGNAL(signalLoaded(const QString&, const QPixmap&)),
 		SLOT(slotLoaded(const QString&, const QPixmap&)));
+}
+
+void ServerList::selectProfile(const GGZProfile& profile)
+{
+	// FIXME: Currently, always the last item in a list is selected
+	Q_UNUSED(profile);
+	m_listview->setCurrentIndex(m_model->index(m_model->rowCount() - 1, 0));
 }
 
 void ServerList::slotLoaded(const QString& url, const QPixmap& pixmap)
@@ -209,6 +218,8 @@ void ServerList::updateProfile(const GGZProfile& profile, int pos)
 
 	GGZProfile *oldprofile = reinterpret_cast<GGZProfile*>(item->data(ItemDelegate::ProfileRole).value<void*>());
 	oldprofile->assign(profile);
+
+	// FIXME: Redrawing doesn't happen automatically
 	item->setData(QVariant::fromValue<void*>(oldprofile), ItemDelegate::ProfileRole);
 }
 
