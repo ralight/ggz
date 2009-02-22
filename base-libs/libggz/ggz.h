@@ -1250,6 +1250,12 @@ char * ggz_xml_escape(const char *str);
  */
 char * ggz_xml_unescape(const char *str);
 
+/**
+ * Switch the terminal to non-echo-mode to prevent passwords from being shown.
+ * @param echo False for switching to non-echo mode, true for reverting
+ */
+void ggz_echomode(int echo);
+
 /** @brief Structure used internally by ggz_read_line().
  */
 typedef struct _GGZFile GGZFile;

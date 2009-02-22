@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <stdarg.h>  /* For va_list */
 #include <stdlib.h>
+#include <termios.h> /* ggz_echomode */
 
 #include "ggz.h"
 
@@ -444,3 +445,25 @@ int ggz_check_library(const char *iface)
 	return !ggz_strcmp(iface, LIBGGZ_VERSION_IFACE);
 }
 
+/* Password input mode, inspired by psql */
+void ggz_echomode(int echo)
+{
+	static struct termios t_orig;
+	struct termios t;
+	FILE *termin;
+
+	termin = fopen("/dev/tty", "r");
+	if(!termin) termin = stdin;
+
+	if(echo)
+	{
+		tcsetattr(fileno(termin), TCSAFLUSH, &t_orig);
+	}
+	else
+	{
+		tcgetattr(fileno(termin), &t);
+		t_orig = t;
+		t.c_lflag &= ~ECHO;
+		tcsetattr(fileno(termin), TCSAFLUSH, &t);
+	}
+}

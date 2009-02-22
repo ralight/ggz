@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 10125 2008-06-30 22:18:05Z jdorje $
+ * $Id: ggzduedit.c 10898 2009-02-22 19:58:28Z josef $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -34,7 +34,6 @@
 #include <string.h>
 #include <time.h>
 #include <getopt.h>
-#include <termios.h>
 
 #include "ggzdb.h"
 #include "datatypes.h" /* For Options type */
@@ -434,29 +433,6 @@ static int main_menu(void)
 	return 1;
 }
 
-/* Password input mode, inspired by psql */
-static void echomode(int echo)
-{
-	static struct termios t_orig;
-	struct termios t;
-	FILE *termin;
-
-	termin = fopen("/dev/tty", "r");
-	if(!termin) termin = stdin;
-
-	if(echo)
-	{
-		tcsetattr(fileno(termin), TCSAFLUSH, &t_orig);
-	}
-	else
-	{
-		tcgetattr(fileno(termin), &t);
-		t_orig = t;
-		t.c_lflag &= ~ECHO;
-		tcsetattr(fileno(termin), TCSAFLUSH, &t);
-	}
-}
-
 int main(int argc, char **argv)
 {
 	int rc;
@@ -501,9 +477,9 @@ int main(int argc, char **argv)
 				{
 					printf("Password: ");
 					fflush(NULL);
-					echomode(0);
+					ggz_echomode(0);
 					fgets(password, sizeof(password), stdin);
-					echomode(1);
+					ggz_echomode(1);
 					printf("\n");
 					password[strlen(password) - 1] = '\0';
 					optarg = password;

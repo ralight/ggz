@@ -3,7 +3,7 @@
  * Author: Josef Spillner
  * Project: GGZ Client libs
  * Date: 2004
- * $Id: ggz-wrapper.c 10857 2009-01-11 15:12:53Z josef $
+ * $Id: ggz-wrapper.c 10898 2009-02-22 19:58:28Z josef $
  *
  * Code for a wrapper for GGZ games
  *
@@ -54,29 +54,6 @@ static void usage(int retval) {
 	printf(_("[-f | --frontend <frontend>] Preferred game client frontend\n"));
 	printf(_("Options can also be set in ~/.ggz/ggz-wrapper.rc\n"));
 	exit(retval);
-}
-
-/* FIXME: This function is shared with ggzduedit */
-static void echomode(int echo)
-{
-	static struct termios t_orig;
-	struct termios t;
-	FILE *termin;
-
-	termin = fopen("/dev/tty", "r");
-	if(!termin) termin = stdin;
-
-	if(echo)
-	{
-		tcsetattr(fileno(termin), TCSAFLUSH, &t_orig);
-	}
-	else
-	{
-		tcgetattr(fileno(termin), &t);
-		t_orig = t;
-		t.c_lflag &= ~ECHO;
-		tcsetattr(fileno(termin), TCSAFLUSH, &t);
-	}
 }
 
 int main(int argc, char **argv) {
@@ -142,9 +119,9 @@ int main(int argc, char **argv) {
 
 		printf(_("Password: "));
 		fflush(NULL);
-		echomode(0);
+		ggz_echomode(0);
 		fgets(password, sizeof(password), stdin);
-		echomode(1);
+		ggz_echomode(1);
 		printf("\n");
 
 		uri.password = ggz_strdup(password);
