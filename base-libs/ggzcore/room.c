@@ -272,20 +272,6 @@ static struct _GGZTable *_ggzcore_room_get_table_by_id(const GGZRoom * room,
  */
 
 
-GGZRoom *ggzcore_room_new(void)
-{
-	return _ggzcore_room_new();
-}
-
-
-/* De-allocate room object and its children */
-void ggzcore_room_free(GGZRoom * room)
-{
-	if (room)
-		_ggzcore_room_free(room);
-}
-
-
 GGZServer *ggzcore_room_get_server(const GGZRoom * room)
 {
 	if (room)

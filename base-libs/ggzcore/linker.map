@@ -80,7 +80,6 @@ global:
     ggzcore_room_add_event_hook_full;
     ggzcore_room_admin;
     ggzcore_room_chat;
-    ggzcore_room_free;
     ggzcore_room_get_closed;
     ggzcore_room_get_desc;
     ggzcore_room_get_gametype;
@@ -97,7 +96,6 @@ global:
     ggzcore_room_leave_table;
     ggzcore_room_list_players;
     ggzcore_room_list_tables;
-    ggzcore_room_new;
     ggzcore_room_remove_event_hook;
     ggzcore_room_remove_event_hook_id;
     ggzcore_server_add_event_hook;

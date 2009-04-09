@@ -996,13 +996,6 @@ void ggzcore_server_free(GGZServer *server);
 /* Functions for manipulating GGZRoom objects */
 /* ------------------------------------------ */
 
-/** @brief Allocate space for a new room object */
-GGZRoom* ggzcore_room_new(void);
-
-/** @brief De-allocate room object and its children */
-void ggzcore_room_free(GGZRoom *room);
-
-
 /** @brief Return the server for this room (or NULL on error). */
 GGZServer *ggzcore_room_get_server(const GGZRoom *room);
 
@@ -1220,6 +1213,9 @@ int ggzcore_player_get_ranking(const GGZPlayer *player, int *ranking);
 int ggzcore_player_get_highscore(const GGZPlayer *player, int *highscore);
 
 
+/* Functions for manipulating GGZTable objects */
+/* ------------------------------------------- */
+
 /** @brief Create a new table object.
  *  @note Useful when launching a game. */
 GGZTable* ggzcore_table_new(void);
@@ -1303,6 +1299,9 @@ const char *ggzcore_table_get_nth_spectator_name(const GGZTable *table,
 GGZSeatType ggzcore_table_get_nth_player_type(const GGZTable *table,
 					      unsigned int num);
 
+
+/* Functions for manipulating GGZGametype objects */
+/* ---------------------------------------------- */
 
 /** @brief Get the ID of this gametype.
  *  @note This is not normally useful for a GGZ client to know. */
