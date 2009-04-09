@@ -1493,22 +1493,6 @@ int ggzcore_conf_commit(void);
 /** @brief This returns the number of registered modules */
 unsigned int ggzcore_module_get_num(void);
 
-
-/** This adds a local module to the list.  It returns 0 if successful or
-    -1 on failure. */
-int ggzcore_module_add(const char *name,
-	               const char *version,
-	               const char *prot_engine,
-	               const char *prot_version,
-                       const char *author,
-		       const char *frontend,
-		       const char *url,
-		       const char *exe_path,
-		       const char *icon_path,
-		       const char *help_path,
-		       GGZModuleEnvironment environment);
-
-
 /** @brief Returns the n-th module */
 GGZModule* ggzcore_module_get_nth(unsigned int num);
 

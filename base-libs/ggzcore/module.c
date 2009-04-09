@@ -159,24 +159,6 @@ GGZModule *ggzcore_module_get_nth_by_type(const char *game,
 }
 
 
-/* This adds a local module to the list.  It returns 0 if successful or
-   -1 on failure. */
-int ggzcore_module_add(const char *name,
-		       const char *version,
-		       const char *prot_engine,
-		       const char *prot_version,
-		       const char *author,
-		       const char *frontend,
-		       const char *url,
-		       const char *exe_path,
-		       const char *icon_path,
-		       const char *help_path,
-		       GGZModuleEnvironment environment)
-{
-	return -1;
-}
-
-
 /* These functions lookup a particular property of a module.  I've added
    icon to the list we discussed at the meeting.  This is an optional xpm
    file that the module can provide to use for representing the game
