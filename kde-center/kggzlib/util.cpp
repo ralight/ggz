@@ -102,3 +102,29 @@ GGZProfile Util::uriToProfile(const QString& uri)
 
 	return profile;
 }
+
+// FIXME: use kimagefx?
+QPixmap Util::greyscale(QPixmap orig)
+{
+	QPixmap comp;
+	QRgb rgb;
+
+	QImage origim = orig.toImage();
+
+	for(int j = 0; j < orig.height(); j++)
+	{
+		for(int i = 0; i < orig.width(); i++)
+		{
+			rgb = origim.pixel(i, j);
+			if(qAlpha(rgb))
+			{
+				int mix = (qRed(rgb) + qGreen(rgb) + qBlue(rgb)) / 3;
+				origim.setPixel(i, j, qRgb(mix, mix, mix));
+			}
+		}
+	}
+
+	comp = comp.fromImage(origim);
+
+	return comp;
+}

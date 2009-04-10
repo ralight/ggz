@@ -4,6 +4,7 @@
 // KGGZ includes
 #include "qasyncpixmap.h"
 #include "util.h"
+#include "tableconfiguration.h"
 #include <kggzcore/player.h>
 #include <kggzcore/table.h>
 
@@ -148,6 +149,9 @@ TableList::TableList()
 	connect(ism,
 		SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
 		SLOT(slotActivated(const QItemSelection&, const QItemSelection&)));
+	connect(listview,
+		SIGNAL(doubleClicked(const QModelIndex&)),
+		SLOT(slotDetails(const QModelIndex&)));
 
 	m_deletionmode = false;
 }
@@ -255,6 +259,16 @@ void TableList::slotActivated(const QItemSelection& selected, const QItemSelecti
 		KGGZCore::Table table = item->data(TableItemDelegate::TableRole).value<KGGZCore::Table>();
 		emit signalSelected(table, index.row());
 	}
+}
+
+void TableList::slotDetails(const QModelIndex& index)
+{
+	QStandardItem *item = m_model->itemFromIndex(index);
+	KGGZCore::Table table = item->data(TableItemDelegate::TableRole).value<KGGZCore::Table>();
+
+	TableConfiguration tableconf(this);
+	// FIXME: initialise and make read-only
+	tableconf.exec();
 }
 
 /*KGGZCore::Table TableList::configuration() const

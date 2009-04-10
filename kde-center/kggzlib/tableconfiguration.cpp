@@ -394,7 +394,7 @@ void TableConfiguration::setSeatType(int seat, SeatTypes seattype)
 	else if(seattype == seatunused)
 	{
 		QPixmap pix = QPixmap(d.findResource("data", "kggzlib/players/ox-empty.png"));
-		pix = greyscale(pix);
+		pix = Util::greyscale(pix);
 		item_player->setIcon(pix);
 	}
 
@@ -503,28 +503,3 @@ void TableConfiguration::addGrubby(QString grubbyname)
 	m_grubbies.append(grubbyname);
 }
 
-// FIXME: use kimagefx?
-QPixmap TableConfiguration::greyscale(QPixmap orig)
-{
-	QPixmap comp;
-	QRgb rgb;
-
-	QImage origim = orig.toImage();
-
-	for(int j = 0; j < orig.height(); j++)
-	{
-		for(int i = 0; i < orig.width(); i++)
-		{
-			rgb = origim.pixel(i, j);
-			if(qAlpha(rgb))
-			{
-				int mix = (qRed(rgb) + qGreen(rgb) + qBlue(rgb)) / 3;
-				origim.setPixel(i, j, qRgb(mix, mix, mix));
-			}
-		}
-	}
-
-	comp = comp.fromImage(origim);
-
-	return comp;
-}

@@ -17,6 +17,7 @@ class KGGZLIB_EXPORT Util
 		GGZProfile loadprofile(const KConfigGroup& cg) const;
 
 		static QPixmap composite(QPixmap bottom, QPixmap top);
+		static QPixmap greyscale(QPixmap orig);
 
 		static GGZProfile uriToProfile(const QString& uri);
 };

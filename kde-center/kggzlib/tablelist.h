@@ -15,6 +15,7 @@
 class QStandardItem;
 class QStandardItemModel;
 class QItemSelection;
+class QModelIndex;
 
 class KGGZLIB_EXPORT TableList : public QWidget
 {
@@ -33,6 +34,7 @@ class KGGZLIB_EXPORT TableList : public QWidget
 	private slots:
 		//void slotLoaded(const QString& url, const QPixmap& pixmap);
 		void slotActivated(const QItemSelection& index, const QItemSelection& prev);
+		void slotDetails(const QModelIndex& index);
 
 	private:
 		//QMap<QString, QStandardItem*> m_apixmaps;
