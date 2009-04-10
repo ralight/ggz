@@ -9,6 +9,8 @@
 #include <QAction>
 #include <QCheckBox>
 #include <QApplication>
+#include <QComboBox>
+#include <QLabel>
 
 #include <klocale.h>
 //#include <kactioncollection.h>
@@ -20,6 +22,7 @@
 #include <kconfigdialog.h>
 #include <kmessagebox.h>
 #include <ktoolinvocation.h>
+#include <kcodecs.h>
 
 //#include <kggzcore/room.h>
 #include <kggzcore/misc.h>
@@ -234,11 +237,18 @@ void Vencedor::slotConfig()
 	QCheckBox *kcfg_sync = new QCheckBox(i18n("Synchronise preferences with server"));
 	QCheckBox *kcfg_autoconnect = new QCheckBox(i18n("Automatically connect to previous session"));
 	QCheckBox *kcfg_enforcetls = new QCheckBox(i18n("Require encryption and reject unencrypted servers"));
+	QComboBox *kcfg_motd = new QComboBox();
+	kcfg_motd->addItem(i18n("Always"), Prefs::EnumMotddisplay::always);
+	kcfg_motd->addItem(i18n("Never"), Prefs::EnumMotddisplay::never);
+	kcfg_motd->addItem(i18n("New messages only"), Prefs::EnumMotddisplay::newonly);
+	QLabel *label_motd = new QLabel(i18n("Display of the Message Of The Day (MOTD)"));
 
 	QVBoxLayout *vbox = new QVBoxLayout();
 	vbox->addWidget(kcfg_sync);
 	vbox->addWidget(kcfg_autoconnect);
 	vbox->addWidget(kcfg_enforcetls);
+	vbox->addWidget(label_motd);
+	vbox->addWidget(kcfg_motd);
 
 	root->setLayout(vbox);
 
@@ -473,10 +483,35 @@ void Vencedor::slotAnswer(KGGZCore::CoreClient::AnswerMessage message)
 		case KGGZCore::CoreClient::typelist:
 			break;
 		case KGGZCore::CoreClient::motd:
-			Motd motd(this);
-			motd.setText(m_core->textmotd());
-			motd.setWebpage(m_core->webmotd());
-			motd.exec();
+			bool display = false;
+			if(Prefs::motddisplay() == Prefs::EnumMotddisplay::always)
+			{
+				display = true;
+			}
+			else if(Prefs::motddisplay() == Prefs::EnumMotddisplay::newonly)
+			{
+				KMD5 md5text(m_core->textmotd().toUtf8());
+				KMD5 md5web(m_core->webmotd().toUtf8());
+				QString md5sumtext = md5text.hexDigest().data();
+				QString md5sumweb = md5web.hexDigest().data();
+
+				KConfigGroup motdgroup = KGlobal::config()->group("MOTD");
+				QString md5sumtextold = motdgroup.readEntry("md5sumtext", QString());
+				QString md5sumwebold = motdgroup.readEntry("md5sumweb", QString());
+				if((md5sumtext != md5sumtextold) || (md5sumweb != md5sumwebold))
+				{
+					motdgroup.writeEntry("md5sumtext", md5sumtext);
+					motdgroup.writeEntry("md5sumweb", md5sumweb);
+					display = true;
+				}
+			}
+			if(display)
+			{
+				Motd motd(this);
+				motd.setText(m_core->textmotd());
+				motd.setWebpage(m_core->webmotd());
+				motd.exec();
+			}
 			break;
 	}
 }
