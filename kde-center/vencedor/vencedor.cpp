@@ -1,6 +1,7 @@
 #include "vencedor.h"
 
 #include "prefs.h"
+#include "motd.h"
 
 #include <QLayout>
 #include <QToolBar>
@@ -472,8 +473,10 @@ void Vencedor::slotAnswer(KGGZCore::CoreClient::AnswerMessage message)
 		case KGGZCore::CoreClient::typelist:
 			break;
 		case KGGZCore::CoreClient::motd:
-			qDebug("MOTD web url: %s", qPrintable(m_core->webmotd()));
-			qDebug("MOTD web text:\n%s", qPrintable(m_core->textmotd()));
+			Motd motd(this);
+			motd.setText(m_core->textmotd());
+			motd.setWebpage(m_core->webmotd());
+			motd.exec();
 			break;
 	}
 }
