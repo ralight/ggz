@@ -14,6 +14,8 @@ GGZ server (ggzd)
 * database hashing type should be added to the user table
 * support for dbus notifications (interesting for developers who will
   make use of ggzd on the desktop in combination with a control GUI)
+* MOTD delivery as RSS so clients can selectively filter out old entries
+  and admins can easily add news using web frontends
 
 Libraries (ggzdmod, ggzdmod++)
 ------------------------------
