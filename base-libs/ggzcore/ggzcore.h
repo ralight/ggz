@@ -83,7 +83,7 @@ extern "C" {
 
 /* GGZCore library features */
 typedef enum {
-	GGZ_OPT_PARSER      = 0x0001, /* %0000 0000 */ /**< Load the default configuration file (unused). */
+	GGZ_OPT_PARSER      = 0x0001, /* %0000 0001 */ /**< Load the default configuration file (unused). */
 	GGZ_OPT_MODULES     = 0x0002, /* %0000 0010 */ /**< Load the game module list. */
 	GGZ_OPT_THREADED_IO = 0x0004, /* %0000 0100 */ /**< Provide multi-threaded network IO (for asynchronous lookups). */
 	GGZ_OPT_EMBEDDED    = 0x0008, /* %0000 1000 */ /**< Run game with integrated core client. */
@@ -157,10 +157,10 @@ typedef struct _GGZGame     GGZGame;
 
 /** GGZ Hook function return types */
 typedef enum {
-	GGZ_HOOK_OK, /**< Success! */
+	GGZ_HOOK_OK,     /**< Success! */
 	GGZ_HOOK_REMOVE, /**< Remove this hook immediately. */
-	GGZ_HOOK_ERROR, /**< A localized error. */
-	GGZ_HOOK_CRISIS /**< A major error; stop processing the event. */
+	GGZ_HOOK_ERROR,  /**< A localized error. */
+	GGZ_HOOK_CRISIS  /**< A major error; stop processing the event. */
 } GGZHookReturn;
 
 /** GGZ Event hook function type, used as a callback for events */
@@ -178,17 +178,18 @@ typedef void (*GGZDestroyFunc)(void* data);
 /**
  * This controls the type of login a user chooses.  A different
  * value will require different information to be sent to
- * the server.
+ * the server through \ref ggzcore_server_set_logininfo.
  */
 typedef enum {
-	/** Standard login; uname and correct passwd needed. */
+	/** Standard login; username and correct password needed. */
 	GGZ_LOGIN,
 
-	/** Guest login; only a uname is required. */
+	/** Guest login; only a username is required. */
 	GGZ_LOGIN_GUEST,
 
-	/** New user login; only a uname is required.  Password will be
-	 *  assigned by the server (but can be passed along). */
+	/** New user login; only a username is required.  Password will be
+	 *  assigned by the server (but can be passed along). Email address
+         *  can be passed along as well. */
 	GGZ_LOGIN_NEW
 } GGZLoginType;
 
@@ -212,7 +213,7 @@ typedef struct {
 /** @brief The data associated with a GGZ_MOTD_LOADED server event. */
 typedef struct {
 	const char *motd; /**< MOTD text message */
-	const char *url; /**< URL of a graphical MOTD webpage, or NULL */
+	const char *url;  /**< URL of a graphical MOTD webpage, or NULL */
 } GGZMotdEventData;
 
 /**
@@ -401,8 +402,8 @@ typedef enum {
 
 /** @brief The data associated with a GGZ_CHAT_EVENT room event. */
 typedef struct {
-	GGZChatType type; /**< The type of chat. */
-	const char *sender; /**< The person who sent the message, or NULL */
+	GGZChatType type;    /**< The type of chat. */
+	const char *sender;  /**< The person who sent the message, or NULL */
 	const char *message; /**< The message itself (in UTF-8), or NULL */
 } GGZChatEventData;
 
@@ -518,7 +519,7 @@ typedef enum {
 	/** A player's stats have been updated.
 	 *  @see GGZ_PLAYER_LIST
 	 *  @see ggzcore_player_get_record
-	 *  @see  ggzcore_player_get_rating
+	 *  @see ggzcore_player_get_rating
 	 *  @see ggzcore_player_get_ranking
 	 *  @see ggzcore_player_get_highscore
 	 *  @param data The name of the player whose stats have changed. */
@@ -585,20 +586,20 @@ typedef enum {
  *  determining what actions are possible.
  */
 typedef enum {
-	GGZ_STATE_OFFLINE, /**< Not connected (at all) */
-	GGZ_STATE_CONNECTING, /**< In the process of connecting. */
-	GGZ_STATE_RECONNECTING, /**< Continuous reconnection attempts. */
-	GGZ_STATE_ONLINE, /**< Connected, but not doing anything. */
-	GGZ_STATE_LOGGING_IN, /**< In the process of logging in. */
-	GGZ_STATE_LOGGED_IN, /**< Online and logged in! */
-	GGZ_STATE_ENTERING_ROOM, /**< Moving into a room. */
-	GGZ_STATE_IN_ROOM, /**< Online, logged in, and in a room. */
-	GGZ_STATE_BETWEEN_ROOMS, /**< Moving between rooms. */
+	GGZ_STATE_OFFLINE,         /**< Not connected (at all) */
+	GGZ_STATE_CONNECTING,      /**< In the process of connecting. */
+	GGZ_STATE_RECONNECTING,    /**< Continuous reconnection attempts. */
+	GGZ_STATE_ONLINE,          /**< Connected, but not doing anything. */
+	GGZ_STATE_LOGGING_IN,      /**< In the process of logging in. */
+	GGZ_STATE_LOGGED_IN,       /**< Online and logged in! */
+	GGZ_STATE_ENTERING_ROOM,   /**< Moving into a room. */
+	GGZ_STATE_IN_ROOM,         /**< Online, logged in, and in a room. */
+	GGZ_STATE_BETWEEN_ROOMS,   /**< Moving between rooms. */
 	GGZ_STATE_LAUNCHING_TABLE, /**< Trying to launch a table. */
-	GGZ_STATE_JOINING_TABLE, /**< Trying to join a table. */
-	GGZ_STATE_AT_TABLE, /**< Online, loggied in, in a room, at a table. */
-	GGZ_STATE_LEAVING_TABLE, /**< Waiting to leave a table. */
-	GGZ_STATE_LOGGING_OUT /**< In the process of logging out. */
+	GGZ_STATE_JOINING_TABLE,   /**< Trying to join a table. */
+	GGZ_STATE_AT_TABLE,        /**< Online, loggied in, in a room, at a table. */
+	GGZ_STATE_LEAVING_TABLE,   /**< Waiting to leave a table. */
+	GGZ_STATE_LOGGING_OUT      /**< In the process of logging out. */
 } GGZStateID;
 
 
@@ -608,11 +609,11 @@ typedef enum {
  *  own environment.
  */
 typedef enum {
-	GGZ_ENVIRONMENT_PASSIVE, /**< No GUI, no interaction with user */
-	GGZ_ENVIRONMENT_CONSOLE, /**< Text console */
+	GGZ_ENVIRONMENT_PASSIVE,     /**< No GUI, no interaction with user */
+	GGZ_ENVIRONMENT_CONSOLE,     /**< Text console */
 	GGZ_ENVIRONMENT_FRAMEBUFFER, /**< VESA or framebuffer */
-	GGZ_ENVIRONMENT_XWINDOW, /**< X11 windowed mode (default) */
-	GGZ_ENVIRONMENT_XFULLSCREEN /**< X11 fullscreen mode */
+	GGZ_ENVIRONMENT_XWINDOW,     /**< X11 windowed mode (default) */
+	GGZ_ENVIRONMENT_XFULLSCREEN  /**< X11 fullscreen mode */
 } GGZModuleEnvironment;
 
 /** @brief The connection security policy.
