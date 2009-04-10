@@ -13,7 +13,7 @@
 
 KGGZCoreLayer::KGGZCoreLayer(QObject *parent, QString protengine, QString protversion)
 : QObject(parent),
-	m_core(0), m_embedded(false)
+	m_core(0), m_embedded(false), m_tablenum(-1)
 {
 	m_protversion = protversion;
 	m_protengine = protengine;

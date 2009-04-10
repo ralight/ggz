@@ -42,7 +42,8 @@
 #include <kchat.h>
 
 Vencedor::Vencedor(QString url)
-: QMainWindow()
+: QMainWindow(),
+	m_tablenum(-1)
 {
 	KStandardDirs d;
 
