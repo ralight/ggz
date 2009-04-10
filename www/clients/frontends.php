@@ -15,6 +15,7 @@ switch($uri)
 	case "telggz": $uri = "telnet"; break;
 	case "wggz": $uri = "windows"; break;
 	case "vibora": $uri = "sdl"; break;
+	case "vencedor": $uri = "kde4"; break;
 }
 
 if ($origuri != $uri) :
