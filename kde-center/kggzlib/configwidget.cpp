@@ -93,6 +93,8 @@ ConfigWidget::ConfigWidget(QWidget *parent, bool servereditable)
 	}
 	connect(m_roombutton, SIGNAL(clicked()), SLOT(slotSelectRoom()));
 	connect(m_logintype, SIGNAL(currentIndexChanged(int)), SLOT(slotLoginType(int)));
+
+	slotLoginType(m_logintype->findData(GGZProfile::guest));
 }
 
 ConfigWidget::~ConfigWidget()
@@ -120,12 +122,7 @@ void ConfigWidget::setGGZProfile(const GGZProfile &profile)
 	bool enabled = !server.uri().isEmpty();
 	m_roomname->setEnabled(enabled);
 	m_username->setEnabled(enabled);
-	m_password->setEnabled(enabled);
-	m_email->setEnabled(enabled);
-	m_realname->setEnabled(enabled);
 	m_logintype->setEnabled(enabled);
-
-	//slotLoginType(-1);
 }
 
 GGZProfile ConfigWidget::ggzProfile()

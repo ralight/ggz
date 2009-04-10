@@ -71,15 +71,11 @@ QPixmap Util::composite(QPixmap bottom, QPixmap top)
 GGZProfile Util::uriToProfile(const QString& uri)
 {
 	QUrl qurl(uri);
-	if(qurl.scheme().isEmpty())
+	if((qurl.scheme().isEmpty()) || (qurl.host().isEmpty()))
 	{
-		qurl.setScheme("ggz");
-		if(qurl.host().isEmpty())
-		{
-			// FIXME: Qt seems to prefer path over host
-			qurl.setHost(qurl.path());
-			qurl.setPath(QString());
-		}
+		// Even in tolerant parsing mode, the scheme must be present
+		// When a password is given, username becomes scheme and hostname becomes empty
+		qurl = QUrl("ggz://" + uri);
 	}
 	if(qurl.port() == -1)
 		qurl.setPort(5688);
@@ -92,6 +88,11 @@ GGZProfile Util::uriToProfile(const QString& uri)
 	if(!qurl.path().isEmpty())
 		profile.setRoomname(qurl.path());
 	// FIXME: parse path correctly according to GGZ URI draft
+
+	if(!qurl.password().isEmpty())
+		profile.setLoginType(GGZProfile::registered);
+	else
+		profile.setLoginType(GGZProfile::guest);
 
 	QString serveruri = qurl.toString(QUrl::RemoveUserInfo | QUrl::RemovePath);
 
