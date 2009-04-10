@@ -82,6 +82,11 @@ Vencedor::Vencedor(QString url)
 	connect(m_action_disconnect, SIGNAL(triggered(bool)), SLOT(slotDisconnect()));
 	toolbar->addAction(m_action_disconnect);
 
+	QPixmap icon_motd = KIconLoader::global()->loadIcon("mail-mark-read", KIconLoader::Small);
+	m_action_motd = new QAction(QIcon(icon_motd), i18n("Message of the day"), this);
+	connect(m_action_motd, SIGNAL(triggered(bool)), SLOT(slotMotd()));
+	toolbar->addAction(m_action_motd);
+
 	toolbar->addSeparator();
 
 	QPixmap icon_help = KIconLoader::global()->loadIcon("help-contents", KIconLoader::Small);
@@ -391,8 +396,19 @@ void Vencedor::slotTable(const KGGZCore::Table& table, int pos)
 	m_action_spectate->setEnabled((pos != -1));
 }
 
+void Vencedor::slotMotd()
+{
+	Motd motd(this);
+	motd.setText(m_core->textmotd());
+	motd.setWebpage(m_core->webmotd());
+	motd.exec();
+}
+
 void Vencedor::enable(bool enabled)
 {
+	if(!enabled)
+		m_action_motd->setEnabled(enabled);
+
 	m_rooms->setEnabled(enabled);
 	m_players->setEnabled(enabled);
 	m_tables->setEnabled(enabled);
@@ -505,13 +521,9 @@ void Vencedor::slotAnswer(KGGZCore::CoreClient::AnswerMessage message)
 					display = true;
 				}
 			}
+			m_action_motd->setEnabled(true);
 			if(display)
-			{
-				Motd motd(this);
-				motd.setText(m_core->textmotd());
-				motd.setWebpage(m_core->webmotd());
-				motd.exec();
-			}
+				slotMotd();
 			break;
 	}
 }

@@ -34,6 +34,7 @@ class Vencedor : public QMainWindow
 		void slotConfig();
 		void slotLaunch();
 		void slotJoin();
+		void slotMotd();
 		void slotSpectate();
 		void slotModules();
 
@@ -59,6 +60,7 @@ class Vencedor : public QMainWindow
 		QAction *m_action_spectate;
 		QAction *m_action_connect;
 		QAction *m_action_disconnect;
+		QAction *m_action_motd;
 		unsigned int m_tablenum;
 };
 
