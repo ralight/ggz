@@ -40,6 +40,7 @@ ModuleDialog::ModuleDialog(QWidget *parent)
 	m_proxymodel = new QRecursiveSortFilterProxyModel(this);
 	m_proxymodel->setSourceModel(m_model);
 	m_proxymodel->setDynamicSortFilter(true);
+	m_proxymodel->setFilterKeyColumn(-1);
 
 	m_modules->setModel(m_proxymodel);
 
@@ -125,7 +126,6 @@ void ModuleDialog::load()
 void ModuleDialog::slotSearch(const QString& text)
 {
 	m_proxymodel->setFilterRegExp(QRegExp(text, Qt::CaseInsensitive, QRegExp::FixedString));
-	m_proxymodel->setFilterKeyColumn(0);
 	//m_modules->expandAll();
 }
 

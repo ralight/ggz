@@ -15,6 +15,8 @@ class KGGZLIB_EXPORT QRecursiveSortFilterProxyModel : public QSortFilterProxyMod
 		QRecursiveSortFilterProxyModel(QObject *parent = 0);
 	protected:
 		bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
+	private:
+		bool filterAcceptsCell(const QModelIndex &index) const;
 };
 
 #endif

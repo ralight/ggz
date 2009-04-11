@@ -7,8 +7,26 @@ QRecursiveSortFilterProxyModel::QRecursiveSortFilterProxyModel(QObject *parent)
 
 bool QRecursiveSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
-	QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
+	int start = 0;
+	int end = sourceModel()->columnCount();
+	if(filterKeyColumn() != -1)
+	{
+		start = filterKeyColumn();
+		end = filterKeyColumn() + 1;
+	}
 
+	for(int i = start; i < end; i++)
+	{
+		QModelIndex index = sourceModel()->index(sourceRow, i, sourceParent);
+		if(filterAcceptsCell(index))
+			return true;
+	}
+
+	return false;
+}
+
+bool QRecursiveSortFilterProxyModel::filterAcceptsCell(const QModelIndex &index) const
+{
 	if(sourceModel()->data(index).toString().contains(filterRegExp()))
 		return true;
 
