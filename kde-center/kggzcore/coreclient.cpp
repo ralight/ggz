@@ -55,6 +55,9 @@ void CoreClient::setUrl(QString url)
 	m_port = qurl.port(5688);
 	m_username = qurl.userName();
 	m_password = qurl.password();
+	m_roomname = qurl.path();
+	if(!m_roomname.isEmpty())
+		m_roomname = m_roomname.remove(0, 1);
 }
 
 void CoreClient::setHost(QString host)
@@ -111,6 +114,7 @@ void CoreClient::initiateLogin()
 
 void CoreClient::initiateRoomChange(QString roomname)
 {
+	m_roomname = roomname;
 	m_base->switchRoom(roomname.toUtf8().data());
 }
 
@@ -158,6 +162,11 @@ QString CoreClient::password()
 	return m_password;
 }
 
+QString CoreClient::roomname()
+{
+	return m_roomname;
+}
+
 QString CoreClient::url()
 {
 	QUrl url;
@@ -166,6 +175,7 @@ QString CoreClient::url()
 	url.setPort(m_port);
 	url.setUserName(m_username);
 	url.setPassword(m_password);
+	url.setPath(m_roomname);
 	return url.toString();
 }
 

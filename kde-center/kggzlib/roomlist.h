@@ -27,6 +27,7 @@ class KGGZLIB_EXPORT RoomList : public QWidget
 		RoomList();
 		void setGGZProfile(const GGZProfile& ggzprofile);
 		void addRoom(Room *room);
+		void select(const QString& name);
 	signals:
 		void signalSelected(const QString& name);
 		void signalFavourite(const QString& roomname, bool favourite);

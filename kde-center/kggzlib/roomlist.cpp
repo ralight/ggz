@@ -130,6 +130,19 @@ void RoomList::addRoom(Room *room)
 	item->appendRow(childitems);
 }
 
+void RoomList::select(const QString& name)
+{
+	QList<QStandardItem*> items = m_model->findItems(name, Qt::MatchExactly | Qt::MatchRecursive);
+
+	if(items.size() == 1)
+	{
+		m_treeview->scrollTo(items.at(0)->index());
+		// FIXME: this leads to a crash, and the line above doesn't cause any scrolling effect
+		//QItemSelectionModel *selmodel = m_treeview->selectionModel();
+		//selmodel->select(items.at(0)->index(), QItemSelectionModel::SelectCurrent);
+	}
+}
+
 void RoomList::slotSearch(const QString& text)
 {
 	m_proxymodel->setFilterRegExp(QRegExp(text, Qt::CaseInsensitive, QRegExp::FixedString));

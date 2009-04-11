@@ -478,10 +478,11 @@ void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZC
 			else
 				m_action_launch->setEnabled(false);
 			enable(true);
+			m_chat->addSystemMessage(i18n("Vencedor"), i18n("Entered room %1.").arg(m_core->roomname()));
+			m_rooms->select(m_core->roomname());
 			break;
 		case KGGZCore::CoreClient::chat:
-			// FIXME: how can we access the chat message here?
-			// FIXME: a separate signal would probably be the best idea...
+			// FIXME: This is only chat failure, see room chat for incoming messages
 			break;
 		case KGGZCore::CoreClient::channel:
 			break;
@@ -603,11 +604,13 @@ void Vencedor::slotEvent(KGGZCore::Room::EventMessage message)
 	switch(message)
 	{
 		case KGGZCore::Room::chat:
-			//chat(i18n("Players are chatting..."));
+			// FIXME: this is now in slotChat()
 			break;
 		case KGGZCore::Room::enter:
+			m_chat->addSystemMessage(i18n("Vencedor"), i18n("--> %1 has entered the room.").arg("SOMEBODY"));
 			break;
 		case KGGZCore::Room::leave:
+			m_chat->addSystemMessage(i18n("Vencedor"), i18n("<-- %1 has left the room.").arg("SOMEBODY"));
 			break;
 		case KGGZCore::Room::tableupdate:
 			//qDebug() << "#tables(update)";
@@ -657,7 +660,6 @@ void Vencedor::handleRoomlist()
 {
 	KConfigGroup favgroup = KGlobal::config()->group("Favourites");
 
-	m_core->initiateRoomChange(m_core->roomnames().at(0));
 	for(int i = 0; i < m_core->roomnames().count(); i++)
 	{
 		QString roomname = m_core->roomnames().at(i);
@@ -668,5 +670,11 @@ void Vencedor::handleRoomlist()
 		room->setFavourite(fav);
 		m_rooms->addRoom(room);
 	}
+
+	QString joinroom = m_core->roomname();
+	if(joinroom.isEmpty())
+		joinroom = m_core->roomnames().at(0);
+
+	m_core->initiateRoomChange(joinroom);
 }
 

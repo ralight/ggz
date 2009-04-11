@@ -108,6 +108,7 @@ class KGGZCORE_EXPORT CoreClient : public QObject
 
 		QString username();
 		QString password();
+		QString roomname();
 		QString url();
 
 		// FIXME: we don't have an enum yet
@@ -118,7 +119,7 @@ class KGGZCORE_EXPORT CoreClient : public QObject
 		void slotBaseServer(int id, int code);
 
 	private:
-		QString m_host, m_username, m_password, m_email;
+		QString m_host, m_username, m_password, m_email, m_roomname;
 		int m_port;
 		bool m_tls;
 		LoginType m_mode;

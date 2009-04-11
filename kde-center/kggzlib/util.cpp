@@ -86,7 +86,7 @@ GGZProfile Util::uriToProfile(const QString& uri)
 	if(!qurl.password().isEmpty())
 		profile.setPassword(qurl.password());
 	if(!qurl.path().isEmpty())
-		profile.setRoomname(qurl.path());
+		profile.setRoomname(qurl.path().remove(0, 1));
 	// FIXME: parse path correctly according to GGZ URI draft
 
 	if(!qurl.password().isEmpty())
