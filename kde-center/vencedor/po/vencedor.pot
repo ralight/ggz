@@ -1,0 +1,134 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-04-11 19:41+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../motd.cpp:59
+msgid "Close"
+msgstr ""
+
+#: ../motd.cpp:69
+msgid "Message Of The Day (MOTD)"
+msgstr ""
+
+#: ../vencedor.cpp:77
+msgid "Connect to GGZ Gaming Zone"
+msgstr ""
+
+#: ../vencedor.cpp:82
+msgid "Disconnect"
+msgstr ""
+
+#: ../vencedor.cpp:87
+msgid "Message of the day"
+msgstr ""
+
+#: ../vencedor.cpp:94
+msgid "Help"
+msgstr ""
+
+#: ../vencedor.cpp:99
+msgid "About Vencedor"
+msgstr ""
+
+#: ../vencedor.cpp:104
+msgid "Game Modules"
+msgstr ""
+
+#: ../vencedor.cpp:109
+msgid "Configuration"
+msgstr ""
+
+#: ../vencedor.cpp:114
+msgid "Quit"
+msgstr ""
+
+#: ../vencedor.cpp:121
+msgid "Launch a new game"
+msgstr ""
+
+#: ../vencedor.cpp:127
+msgid "Join a running new game"
+msgstr ""
+
+#: ../vencedor.cpp:133
+msgid "Spectate a running game"
+msgstr ""
+
+#: ../vencedor.cpp:145 ../vencedor.cpp:481 ../vencedor.cpp:610
+#: ../vencedor.cpp:613
+msgid "Vencedor"
+msgstr ""
+
+#: ../vencedor.cpp:243
+msgid "Synchronise preferences with server"
+msgstr ""
+
+#: ../vencedor.cpp:244
+msgid "Automatically connect to previous session"
+msgstr ""
+
+#: ../vencedor.cpp:245
+msgid "Require encryption and reject unencrypted servers"
+msgstr ""
+
+#: ../vencedor.cpp:247
+msgid "Always"
+msgstr ""
+
+#: ../vencedor.cpp:248
+msgid "Never"
+msgstr ""
+
+#: ../vencedor.cpp:249
+msgid "New messages only"
+msgstr ""
+
+#: ../vencedor.cpp:250
+msgid "Display of the Message Of The Day (MOTD)"
+msgstr ""
+
+#: ../vencedor.cpp:261
+msgid "Settings"
+msgstr ""
+
+#: ../vencedor.cpp:433
+msgid "Unable to connect."
+msgstr ""
+
+#: ../vencedor.cpp:434 ../vencedor.cpp:443 ../vencedor.cpp:452
+msgid "Connection"
+msgstr ""
+
+#: ../vencedor.cpp:442
+msgid "Wrong protocol."
+msgstr ""
+
+#: ../vencedor.cpp:451
+msgid "Unable to login."
+msgstr ""
+
+#: ../vencedor.cpp:481
+msgid "Entered room %1."
+msgstr ""
+
+#: ../vencedor.cpp:610
+msgid "--> %1 has entered the room."
+msgstr ""
+
+#: ../vencedor.cpp:613
+msgid "<-- %1 has left the room."
+msgstr ""

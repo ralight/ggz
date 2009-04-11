@@ -1,0 +1,133 @@
+# Deutsche Übersetzung von Vencedor.
+# Copyright (C) 2009 Josef Spillner
+# This file is distributed under the same license as the ggz-kde-center package.
+# Josef Spillner <josef@ggzgamingzone.org>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.99.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-04-11 19:41+0200\n"
+"PO-Revision-Date: 2009-04-11 19:41+0200\n"
+"Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
+"Language-Team: Deutsch <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../motd.cpp:59
+msgid "Close"
+msgstr "Schließen"
+
+#: ../motd.cpp:69
+msgid "Message Of The Day (MOTD)"
+msgstr "Nachricht des Tages"
+
+#: ../vencedor.cpp:77
+msgid "Connect to GGZ Gaming Zone"
+msgstr "Zur GGZ Gaming Zone verbinden"
+
+#: ../vencedor.cpp:82
+msgid "Disconnect"
+msgstr "Trennen"
+
+#: ../vencedor.cpp:87
+msgid "Message of the day"
+msgstr "Nachricht des Tages"
+
+#: ../vencedor.cpp:94
+msgid "Help"
+msgstr "Hilfe"
+
+#: ../vencedor.cpp:99
+msgid "About Vencedor"
+msgstr "Über Vencedor"
+
+#: ../vencedor.cpp:104
+msgid "Game Modules"
+msgstr "Spielmodule"
+
+#: ../vencedor.cpp:109
+msgid "Configuration"
+msgstr "Konfiguration"
+
+#: ../vencedor.cpp:114
+msgid "Quit"
+msgstr "Beenden"
+
+#: ../vencedor.cpp:121
+msgid "Launch a new game"
+msgstr "Ein neues Spiel beginnen"
+
+#: ../vencedor.cpp:127
+msgid "Join a running new game"
+msgstr "Einem laufenden Spiel beitreten"
+
+#: ../vencedor.cpp:133
+msgid "Spectate a running game"
+msgstr "Einem laufenden Spiel zuschauen"
+
+#: ../vencedor.cpp:145 ../vencedor.cpp:481 ../vencedor.cpp:610
+#: ../vencedor.cpp:613
+msgid "Vencedor"
+msgstr "Vencedor"
+
+#: ../vencedor.cpp:243
+msgid "Synchronise preferences with server"
+msgstr "Einstellungen mit Server abgleichen"
+
+#: ../vencedor.cpp:244
+msgid "Automatically connect to previous session"
+msgstr "Automatisch zur vorherigen Sitzung verbinden"
+
+#: ../vencedor.cpp:245
+msgid "Require encryption and reject unencrypted servers"
+msgstr "Verschlüsselung erfordern und unverschlüsselte Server ablehnen"
+
+#: ../vencedor.cpp:247
+msgid "Always"
+msgstr "Immer"
+
+#: ../vencedor.cpp:248
+msgid "Never"
+msgstr "Niemals"
+
+#: ../vencedor.cpp:249
+msgid "New messages only"
+msgstr "Nur neue Nachrichten"
+
+#: ../vencedor.cpp:250
+msgid "Display of the Message Of The Day (MOTD)"
+msgstr "Nachrichten des Tages anzeigen"
+
+#: ../vencedor.cpp:261
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: ../vencedor.cpp:433
+msgid "Unable to connect."
+msgstr "Konnte nicht verbinden."
+
+#: ../vencedor.cpp:434 ../vencedor.cpp:443 ../vencedor.cpp:452
+msgid "Connection"
+msgstr "Verbindung"
+
+#: ../vencedor.cpp:442
+msgid "Wrong protocol."
+msgstr "Falsches Protokoll"
+
+#: ../vencedor.cpp:451
+msgid "Unable to login."
+msgstr "Konnte nicht einloggen."
+
+#: ../vencedor.cpp:481
+msgid "Entered room %1."
+msgstr "Raum %1 betreten."
+
+#: ../vencedor.cpp:610
+msgid "--> %1 has entered the room."
+msgstr "--> %1 hat den Raum betreten."
+
+#: ../vencedor.cpp:613
+msgid "<-- %1 has left the room."
+msgstr "<-- %1 hat den Raum verlassen."
