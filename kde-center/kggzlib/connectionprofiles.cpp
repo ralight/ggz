@@ -27,10 +27,10 @@ ConnectionProfiles::ConnectionProfiles(QWidget *parent)
 {
 	m_serverlist = new ServerList();
 
-	QPushButton *add_button = new QPushButton("Add");
-	m_remove_button = new QPushButton("Remove");
-	QPushButton *update_button = new QPushButton("Update sites...");
-	QPushButton *close_button = new QPushButton("Close");
+	QPushButton *add_button = new QPushButton(i18n("Add"));
+	m_remove_button = new QPushButton(i18n("Remove"));
+	QPushButton *update_button = new QPushButton(i18n("Update sites..."));
+	QPushButton *close_button = new QPushButton(i18n("Close"));
 	m_remove_button->setEnabled(false);
 
 	QHBoxLayout *hbox = new QHBoxLayout();
@@ -58,7 +58,7 @@ ConnectionProfiles::ConnectionProfiles(QWidget *parent)
 
 	load();
 
-	setWindowTitle("Manage GGZ profiles");
+	setWindowTitle(i18n("Manage GGZ profiles"));
 	resize(400, 550);
 	show();
 }

@@ -29,10 +29,10 @@ TableDialog::TableDialog(QWidget *parent)
 {
 	m_tablelist = new TableList();
 
-	QPushButton *manage_button = new QPushButton("Manage tables...");
-	m_use_button = new QPushButton("Play on this table");
+	QPushButton *manage_button = new QPushButton(i18n("Manage tables..."));
+	m_use_button = new QPushButton(i18n("Play on this table"));
 	m_use_button->setEnabled(false);
-	QPushButton *cancel_button = new QPushButton("Cancel");
+	QPushButton *cancel_button = new QPushButton(i18n("Cancel"));
 
 	QHBoxLayout *hbox = new QHBoxLayout();
 	hbox->addWidget(manage_button);
@@ -53,7 +53,7 @@ TableDialog::TableDialog(QWidget *parent)
 
 	load();
 
-	setWindowTitle("Table configuration");
+	setWindowTitle(i18n("Table configuration"));
 	resize(400, 350);
 	show();
 }

@@ -14,6 +14,7 @@
 #include <qurl.h>
 
 #include <kstandarddirs.h>
+#include <klocale.h>
 
 class ItemDelegate : public QItemDelegate
 {
@@ -51,13 +52,13 @@ public:
 		QString loginstring;
 		GGZProfile::LoginType logintype = profile->loginType();
 		if(logintype == GGZProfile::guest)
-			loginstring = "You'll play as a guest.";
+			loginstring = i18n("You'll play as a guest.");
 		else if(logintype == GGZProfile::registered)
-			loginstring = "You're already registered.";
+			loginstring = i18n("You're already registered.");
 		else if(logintype == GGZProfile::firsttime)
-			loginstring = "You'll apply for an account.";
+			loginstring = i18n("You'll apply for an account.");
 		else
-			loginstring = "Unconfigured login profile.";
+			loginstring = i18n("Unconfigured login profile.");
 
 		QString username = profile->username();
 		if(!username.isEmpty())

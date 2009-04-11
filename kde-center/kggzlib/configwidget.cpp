@@ -36,9 +36,9 @@ ConfigWidget::ConfigWidget(QWidget *parent, bool servereditable)
 	m_roomname->setEnabled(false);
 
 	m_logintype = new QComboBox();
-	m_logintype->addItem("Guest", GGZProfile::guest);
-	m_logintype->addItem("First time", GGZProfile::firsttime);
-	m_logintype->addItem("Registered user", GGZProfile::registered);
+	m_logintype->addItem(i18n("Guest"), GGZProfile::guest);
+	m_logintype->addItem(i18n("First time"), GGZProfile::firsttime);
+	m_logintype->addItem(i18n("Registered user"), GGZProfile::registered);
 	m_logintype->setEnabled(false);
 
 	label = new QLabel(i18n("GGZ Server:"));

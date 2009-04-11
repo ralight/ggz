@@ -43,7 +43,7 @@ ModuleDialog::ModuleDialog(QWidget *parent)
 
 	m_modules->setModel(m_proxymodel);
 
-	QPushButton *dismiss_button = new QPushButton("Dismiss");
+	QPushButton *dismiss_button = new QPushButton(i18n("Dismiss"));
 
 	QLineEdit *searchinput = new QLineEdit();
 	QLabel *searchlabel = new QLabel(i18n("Search for:"));
@@ -67,7 +67,7 @@ ModuleDialog::ModuleDialog(QWidget *parent)
 
 	load();
 
-	setWindowTitle("Game Modules");
+	setWindowTitle(i18n("Game Modules"));
 	resize(500, 350);
 	show();
 }

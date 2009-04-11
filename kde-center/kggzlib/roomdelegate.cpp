@@ -4,6 +4,7 @@
 #include "modelview.h"
 
 #include <kstandarddirs.h>
+#include <klocale.h>
 
 #include <qpainter.h>
 #include <qabstractitemmodel.h>
@@ -173,33 +174,33 @@ void RoomDelegate::slotToolTip(QPoint pos)
 				{
 					if(room->favourite())
 					{
-						text = "Favourite room!";
+						text = i18n("Favourite room!");
 					}
 					else
 					{
-						text = "Room is not a favourite";
+						text = i18n("Room is not a favourite");
 					}
 				}
 				else if((x >= 16) && (x < 32))
 				{
 					if(room->access() == Room::Locked)
 					{
-						text = "Room is locked, you cannot join.";
+						text = i18n("Room is locked, you cannot join.");
 					}
 					else
 					{
-						text = "Room is open for you to join.";
+						text = i18n("Room is open for you to join.");
 					}
 				}
 				else if((x >= 32) && (x < 48))
 				{
 					if(room->module())
 					{
-						text = "You can play a game here.";
+						text = i18n("You can play a game here.");
 					}
 					else
 					{
-						text = "No suitable game clients found, only chat possible.";
+						text = i18n("No suitable game clients found, only chat possible.");
 					}
 				}
 			}

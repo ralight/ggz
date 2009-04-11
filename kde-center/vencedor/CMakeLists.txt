@@ -2,6 +2,7 @@ project(vencedor)
 
 add_subdirectory(icons)
 add_subdirectory(doc)
+add_subdirectory(po)
 
 set(vencedor_SRCS
 	vencedor.cpp

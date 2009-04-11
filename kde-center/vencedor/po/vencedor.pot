@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-11 19:56+0200\n"
+"POT-Creation-Date: 2009-04-11 20:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,8 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../motd.cpp:59 ../../kggzlib/tableconfiguration.cpp:88
+#: ../motd.cpp:59 ../../kggzlib/connectionprofiles.cpp:33
+#: ../../kggzlib/tableconfiguration.cpp:88
 msgid "Close"
 msgstr ""
 
@@ -44,7 +45,7 @@ msgstr ""
 msgid "About Vencedor"
 msgstr ""
 
-#: ../vencedor.cpp:104
+#: ../vencedor.cpp:104 ../../kggzlib/moduledialog.cpp:70
 msgid "Game Modules"
 msgstr ""
 
@@ -133,6 +134,18 @@ msgstr ""
 msgid "<-- %1 has left the room."
 msgstr ""
 
+#: ../../kggzlib/configwidget.cpp:39
+msgid "Guest"
+msgstr ""
+
+#: ../../kggzlib/configwidget.cpp:40
+msgid "First time"
+msgstr ""
+
+#: ../../kggzlib/configwidget.cpp:41
+msgid "Registered user"
+msgstr ""
+
 #: ../../kggzlib/configwidget.cpp:44
 msgid "GGZ Server:"
 msgstr ""
@@ -165,6 +178,25 @@ msgstr ""
 msgid "Select..."
 msgstr ""
 
+#: ../../kggzlib/connectiondialog.cpp:33
+msgid "Manage profiles..."
+msgstr ""
+
+#: ../../kggzlib/connectiondialog.cpp:34 ../../kggzlib/connectionsingle.cpp:28
+msgid "Connect"
+msgstr ""
+
+#: ../../kggzlib/connectiondialog.cpp:36 ../../kggzlib/connectionsingle.cpp:29
+#: ../../kggzlib/moduleselector.cpp:25 ../../kggzlib/roomselector.cpp:21
+#: ../../kggzlib/serverselector.cpp:32 ../../kggzlib/tableconfiguration.cpp:83
+#: ../../kggzlib/tabledialog.cpp:35
+msgid "Cancel"
+msgstr ""
+
+#: ../../kggzlib/connectiondialog.cpp:63
+msgid "Connect to Gaming Zone"
+msgstr ""
+
 #: ../../kggzlib/connectiondialog.cpp:142
 msgid "The connection cannot be established."
 msgstr ""
@@ -173,12 +205,32 @@ msgstr ""
 msgid "Connection failed"
 msgstr ""
 
+#: ../../kggzlib/connectionprofiles.cpp:30
+msgid "Add"
+msgstr ""
+
+#: ../../kggzlib/connectionprofiles.cpp:31
+msgid "Remove"
+msgstr ""
+
+#: ../../kggzlib/connectionprofiles.cpp:32
+msgid "Update sites..."
+msgstr ""
+
+#: ../../kggzlib/connectionprofiles.cpp:61
+msgid "Manage GGZ profiles"
+msgstr ""
+
 #: ../../kggzlib/connectionprofiles.cpp:99
 msgid "Profile addition"
 msgstr ""
 
 #: ../../kggzlib/connectionprofiles.cpp:99
 msgid "GGZ server location:"
+msgstr ""
+
+#: ../../kggzlib/connectionsingle.cpp:49
+msgid "Establish new GGZ profile"
 msgstr ""
 
 #: ../../kggzlib/kggzcorelayer.cpp:74
@@ -269,17 +321,17 @@ msgstr ""
 msgid "Environment"
 msgstr ""
 
+#: ../../kggzlib/moduledialog.cpp:46
+msgid "Dismiss"
+msgstr ""
+
 #: ../../kggzlib/moduledialog.cpp:49 ../../kggzlib/playerlist.cpp:40
+#: ../../kggzlib/roomlist.cpp:47
 msgid "Search for:"
 msgstr ""
 
 #: ../../kggzlib/moduleselector.cpp:22
 msgid "Select this game client"
-msgstr ""
-
-#: ../../kggzlib/moduleselector.cpp:25 ../../kggzlib/roomselector.cpp:21
-#: ../../kggzlib/serverselector.cpp:32 ../../kggzlib/tableconfiguration.cpp:83
-msgid "Cancel"
 msgstr ""
 
 #: ../../kggzlib/moduleselector.cpp:49
@@ -334,6 +386,46 @@ msgstr ""
 msgid "Visit community profile..."
 msgstr ""
 
+#: ../../kggzlib/roomdelegate.cpp:177
+msgid "Favourite room!"
+msgstr ""
+
+#: ../../kggzlib/roomdelegate.cpp:181
+msgid "Room is not a favourite"
+msgstr ""
+
+#: ../../kggzlib/roomdelegate.cpp:188
+msgid "Room is locked, you cannot join."
+msgstr ""
+
+#: ../../kggzlib/roomdelegate.cpp:192
+msgid "Room is open for you to join."
+msgstr ""
+
+#: ../../kggzlib/roomdelegate.cpp:199
+msgid "You can play a game here."
+msgstr ""
+
+#: ../../kggzlib/roomdelegate.cpp:203
+msgid "No suitable game clients found, only chat possible."
+msgstr ""
+
+#: ../../kggzlib/roomlist.cpp:71
+msgid "Room"
+msgstr ""
+
+#: ../../kggzlib/roomlist.cpp:72
+msgid "Information"
+msgstr ""
+
+#: ../../kggzlib/roomlist.cpp:173
+msgid "Remove from favourites"
+msgstr ""
+
+#: ../../kggzlib/roomlist.cpp:175
+msgid "Add to favourites"
+msgstr ""
+
 #: ../../kggzlib/roomselector.cpp:18
 msgid "Select this room"
 msgstr ""
@@ -352,6 +444,22 @@ msgstr ""
 
 #: ../../kggzlib/roomselector.cpp:107
 msgid "The list of rooms is malformatted."
+msgstr ""
+
+#: ../../kggzlib/serverlist.cpp:55
+msgid "You'll play as a guest."
+msgstr ""
+
+#: ../../kggzlib/serverlist.cpp:57
+msgid "You're already registered."
+msgstr ""
+
+#: ../../kggzlib/serverlist.cpp:59
+msgid "You'll apply for an account."
+msgstr ""
+
+#: ../../kggzlib/serverlist.cpp:61
+msgid "Unconfigured login profile."
 msgstr ""
 
 #: ../../kggzlib/serverselector.cpp:29
@@ -404,7 +512,7 @@ msgstr ""
 msgid "Launch a game"
 msgstr ""
 
-#: ../../kggzlib/tableconfiguration.cpp:128
+#: ../../kggzlib/tableconfiguration.cpp:128 ../../kggzlib/tabledialog.cpp:56
 msgid "Table configuration"
 msgstr ""
 
@@ -478,6 +586,14 @@ msgstr ""
 
 #: ../../kggzlib/tableconfiguration.cpp:523
 msgid "unknown"
+msgstr ""
+
+#: ../../kggzlib/tabledialog.cpp:32
+msgid "Manage tables..."
+msgstr ""
+
+#: ../../kggzlib/tabledialog.cpp:33
+msgid "Play on this table"
 msgstr ""
 
 #: ../../kggzlib/tablelist.cpp:104

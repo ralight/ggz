@@ -25,8 +25,8 @@ ConnectionSingle::ConnectionSingle(QWidget *parent)
 {
 	m_serverlist = new ServerList();
 
-	QPushButton *connect_button = new QPushButton("Connect");
-	QPushButton *cancel_button = new QPushButton("Cancel");
+	QPushButton *connect_button = new QPushButton(i18n("Connect"));
+	QPushButton *cancel_button = new QPushButton(i18n("Cancel"));
 
 	QHBoxLayout *hbox = new QHBoxLayout();
 	hbox->addStretch();
@@ -46,7 +46,7 @@ ConnectionSingle::ConnectionSingle(QWidget *parent)
 
 	connect(m_configwidget, SIGNAL(signalChanged(const GGZProfile&)), SLOT(slotChanged(const GGZProfile&)));
 
-	setWindowTitle("Establish new GGZ profile");
+	setWindowTitle(i18n("Establish new GGZ profile"));
 	resize(400, 550);
 	show();
 }

@@ -16,6 +16,7 @@
 
 // KDE includes
 #include <kstandarddirs.h>
+#include <klocale.h>
 
 // Qt includes
 #include <qstandarditemmodel.h>
@@ -43,7 +44,7 @@ RoomList::RoomList()
 	m_treeview->setContextMenuPolicy(Qt::CustomContextMenu);
 
 	QLineEdit *searchbox = new QLineEdit();
-	QLabel *searchlabel = new QLabel("Search for:");
+	QLabel *searchlabel = new QLabel(i18n("Search for:"));
 
 	QHBoxLayout *hbox = new QHBoxLayout();
 	hbox->addWidget(searchlabel);
@@ -67,8 +68,8 @@ RoomList::RoomList()
 	m_itemchat->setFlags(ROFLAGS);
 	m_model->appendRow(m_itemchat);
 
-	m_model->setHeaderData(0, Qt::Horizontal, QString("Room"), Qt::DisplayRole);
-	m_model->setHeaderData(1, Qt::Horizontal, QString("Information"), Qt::DisplayRole);
+	m_model->setHeaderData(0, Qt::Horizontal, i18n("Room"), Qt::DisplayRole);
+	m_model->setHeaderData(1, Qt::Horizontal, i18n("Information"), Qt::DisplayRole);
 
 	m_proxymodel = new QRecursiveSortFilterProxyModel(this);
 	m_proxymodel->setSourceModel(m_model);
@@ -169,9 +170,9 @@ void RoomList::slotSelected(const QPoint& pos)
 
 		QAction *action_favourites;
 		if(room->favourite())
-			action_favourites = menu.addAction("Remove from favourites");
+			action_favourites = menu.addAction(i18n("Remove from favourites"));
 		else
-			action_favourites = menu.addAction("Add to favourites");
+			action_favourites = menu.addAction(i18n("Add to favourites"));
 		connect(action_favourites, SIGNAL(triggered()), SLOT(slotFavourites()));
 
 		menu.exec(mapToGlobal(pos));

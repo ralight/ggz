@@ -30,10 +30,10 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
 {
 	m_serverlist = new ServerList();
 
-	QPushButton *manage_button = new QPushButton("Manage profiles...");
-	m_connect_button = new QPushButton("Connect");
+	QPushButton *manage_button = new QPushButton(i18n("Manage profiles..."));
+	m_connect_button = new QPushButton(i18n("Connect"));
 	m_connect_button->setEnabled(false);
-	QPushButton *cancel_button = new QPushButton("Cancel");
+	QPushButton *cancel_button = new QPushButton(i18n("Cancel"));
 
 	QHBoxLayout *hbox = new QHBoxLayout();
 	hbox->addWidget(manage_button);
@@ -60,7 +60,7 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
 
 	load();
 
-	setWindowTitle("Connect to Gaming Zone");
+	setWindowTitle(i18n("Connect to Gaming Zone"));
 	resize(400, 350);
 	show();
 }
