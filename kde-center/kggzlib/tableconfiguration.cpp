@@ -30,24 +30,30 @@ static Qt::ItemFlags ROFLAGS =
 	Qt::ItemIsUserCheckable |
 	Qt::ItemIsEnabled;
 
-TableConfiguration::TableConfiguration(QWidget *parent)
-: QDialog(parent)
+TableConfiguration::TableConfiguration(QWidget *parent, bool readonly)
+: QDialog(parent),
+	m_seat(-1), m_readonly(readonly)
 {
 	QVBoxLayout *vbox;
 	QHBoxLayout *hbox;
 	QLabel *label2, *label3;
 	QPushButton *cancel;
 
-	m_seat = -1;
-
-	m_slider = new QSlider();
-	m_slider->setOrientation(Qt::Horizontal);
-	m_slider->setMinimum(0);
-	m_slider->setMaximum(0);
-	m_slider->setTickInterval(1);
-	m_slider->setTickPosition(QSlider::TicksBelow);
-	m_slider->setPageStep(1);
-	m_slider->setEnabled(false);
+	if(!m_readonly)
+	{
+		m_slider = new QSlider();
+		m_slider->setOrientation(Qt::Horizontal);
+		m_slider->setMinimum(0);
+		m_slider->setMaximum(0);
+		m_slider->setTickInterval(1);
+		m_slider->setTickPosition(QSlider::TicksBelow);
+		m_slider->setPageStep(1);
+		m_slider->setEnabled(false);
+	}
+	else
+	{
+		m_slider = NULL;
+	}
 
 	m_model = new QStandardItemModel();
 	m_model->setColumnCount(3);
@@ -64,37 +70,62 @@ TableConfiguration::TableConfiguration(QWidget *parent)
 	m_edit = new QLineEdit();
 
 	m_label = new QLabel(QString());
-	label2 = new QLabel(i18n("Seat assignments (right-click to change):"));
+	if(!m_readonly)
+		label2 = new QLabel(i18n("Seat assignments (right-click to change):"));
+	else
+		label2 = new QLabel(i18n("Seat assignments:"));
 	label3 = new QLabel(i18n("Game description:"));
 
-	m_ok = new QPushButton(i18n("Create table"));
-	m_ok->setEnabled(false);
-	cancel = new QPushButton(i18n("Cancel"));
+	if(!m_readonly)
+	{
+		m_ok = new QPushButton(i18n("Create table"));
+		m_ok->setEnabled(false);
+		cancel = new QPushButton(i18n("Cancel"));
+	}
+	else
+	{
+		m_ok = NULL;
+		cancel = new QPushButton(i18n("Close"));
+	}
+
+	if(m_readonly)
+	{
+		m_edit->setEnabled(false);
+	}
 
 	vbox = new QVBoxLayout();
 	setLayout(vbox);
 	vbox->addWidget(m_label);
-	vbox->addWidget(m_slider);
+	if(m_slider)
+		vbox->addWidget(m_slider);
 	vbox->addWidget(label2);
 	vbox->addWidget(m_seats);
 	vbox->addWidget(label3);
 	vbox->addWidget(m_edit);
 
 	hbox = new QHBoxLayout();
-	hbox->addWidget(m_ok);
+	hbox->addStretch();
+	if(m_ok)
+		hbox->addWidget(m_ok);
 	hbox->addWidget(cancel);
 
 	vbox->addLayout(hbox);
 
-	connect(m_seats,
-		SIGNAL(customContextMenuRequested(const QPoint&)),
-		SLOT(slotSelected(const QPoint&)));
-	connect(m_slider, SIGNAL(valueChanged(int)), SLOT(slotChanged(int)));
-	connect(m_ok, SIGNAL(clicked()), SLOT(slotAccepted()));
+	if(!m_readonly)
+		connect(m_seats,
+			SIGNAL(customContextMenuRequested(const QPoint&)),
+			SLOT(slotSelected(const QPoint&)));
+	if(m_slider)
+		connect(m_slider, SIGNAL(valueChanged(int)), SLOT(slotChanged(int)));
+	if(m_ok)
+		connect(m_ok, SIGNAL(clicked()), SLOT(slotAccepted()));
 	connect(cancel, SIGNAL(clicked()), SLOT(reject()));
 
 	resize(450, 450);
-	setWindowTitle(i18n("Launch a game"));
+	if(!m_readonly)
+		setWindowTitle(i18n("Launch a game"));
+	else
+		setWindowTitle(i18n("Table configuration"));
 	show();
 }
 
@@ -295,21 +326,28 @@ void TableConfiguration::initLauncher(QString playername, int maxplayers, int ma
 		m_model->appendRow(items);
 	}
 
-	m_slider->setMinimum(2);
-	m_slider->setMaximum(maxplayers);
-	m_slider->setValue(maxplayers);
-	m_slider->setEnabled(true);
-
-	addReservation(0, playername, seatplayer);
-	for(int i = 1; i < maxplayers; i++)
+	if(m_slider)
 	{
-		if(i <= maxbots)
-			setSeatType(i, seatbot);
-		else
-			setSeatType(i, seatopen);
+		m_slider->setMinimum(2);
+		m_slider->setMaximum(maxplayers);
+		m_slider->setValue(maxplayers);
+		m_slider->setEnabled(true);
 	}
 
-	m_ok->setEnabled(true);
+	if(!m_readonly)
+	{
+		addReservation(0, playername, seatplayer);
+		for(int i = 1; i < maxplayers; i++)
+		{
+			if(i <= maxbots)
+				setSeatType(i, seatbot);
+			else
+				setSeatType(i, seatopen);
+		}
+	}
+
+	if(m_ok)
+		m_ok->setEnabled(true);
 }
 
 TableConfiguration::SeatTypes TableConfiguration::seatType(int seat)
@@ -416,6 +454,16 @@ void TableConfiguration::setSeatType(int seat, SeatTypes seattype)
 		m_curbots--;
 
 	m_array[seat] = seattype;
+}
+
+void TableConfiguration::setReservation(int seat, QString name)
+{
+	addReservation(seat, name, seatplayerreserved);
+}
+
+void TableConfiguration::setDescription(QString description)
+{
+	m_edit->setText(description);
 }
 
 void TableConfiguration::addReservation(int seat, QString name, SeatTypes seattype)

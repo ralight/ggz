@@ -266,8 +266,31 @@ void TableList::slotDetails(const QModelIndex& index)
 	QStandardItem *item = m_model->itemFromIndex(index);
 	KGGZCore::Table table = item->data(TableItemDelegate::TableRole).value<KGGZCore::Table>();
 
-	TableConfiguration tableconf(this);
-	// FIXME: initialise and make read-only
+	TableConfiguration tableconf(this, true);
+	QList<KGGZCore::Player> players = table.players();
+	// FIXME: get player's identity here so we can highlight the player's own seat
+	tableconf.initLauncher(QString(), players.size(), 0);
+	for(int i = 0; i < players.size(); i++)
+	{
+		KGGZCore::Player player = players.at(i);
+		TableConfiguration::SeatTypes type = TableConfiguration::seatunknown;
+		if(player.type() == KGGZCore::Player::open)
+			type = TableConfiguration::seatopen;
+		else if(player.type() == KGGZCore::Player::bot)
+			type = TableConfiguration::seatbot;
+		else if(player.type() == KGGZCore::Player::player)
+			type = TableConfiguration::seatplayer;
+		else if(player.type() == KGGZCore::Player::reserved)
+			type = TableConfiguration::seatplayerreserved;
+		else if(player.type() == KGGZCore::Player::abandoned)
+			type = TableConfiguration::seatplayerreserved;
+		tableconf.setSeatType(i, type);
+		if((player.type() == KGGZCore::Player::reserved)
+		|| (player.type() == KGGZCore::Player::reserved))
+			tableconf.setReservation(i, player.name());
+		// FIXME: no way to distinguish from bot/buddy reservations here
+	}
+	tableconf.setDescription(table.description());
 	tableconf.exec();
 }
 

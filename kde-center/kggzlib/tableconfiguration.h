@@ -24,7 +24,7 @@ class KGGZLIB_EXPORT TableConfiguration : public QDialog
 	Q_OBJECT
 	public:
 		// Constructor
-		TableConfiguration(QWidget *parent = NULL);
+		TableConfiguration(QWidget *parent, bool readonly = false);
 		// Destructor
 		~TableConfiguration();
 
@@ -61,6 +61,11 @@ class KGGZLIB_EXPORT TableConfiguration : public QDialog
 		// Add a grubby
 		void addGrubby(QString grubbyname);
 
+		// The set* methods are for displaying tables only with readonly=true
+		void setDescription(QString description);
+		void setSeatType(int seat, SeatTypes type);
+		void setReservation(int seat, QString name);
+
 	//signals:
 	//	// Emitted if table is to be launched
 	//	void signalLaunch();
@@ -75,11 +80,10 @@ class KGGZLIB_EXPORT TableConfiguration : public QDialog
 
 	private:
 		// Set the type of the given seat
-		void setSeatType(int seat, SeatTypes seattype);
+	//	void setSeatType(int seat, SeatTypes seattype);
 		// Return the i18n'd name of a seat type
 		QString typeName(SeatTypes seattype);
 		// Prevent a name from being used again
-		//void addReservation(int id);
 		void addReservation(int seat, QString name, SeatTypes seattype);
 		// Liberate a name for usage again
 		void freeReservation(int seat, QString name, SeatTypes seattype);
@@ -122,6 +126,8 @@ class KGGZLIB_EXPORT TableConfiguration : public QDialog
 		QMap<QString, bool> m_buddies_reserved;
 		QMap<QString, bool> m_namedbots_reserved;
 		QMap<QString, bool> m_players_reserved;
+
+		bool m_readonly;
 };
 
 #endif
