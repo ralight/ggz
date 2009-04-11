@@ -1,7 +1,8 @@
 #EXTRA_DIST = vencedor.pot de.po
 
 CATALOG = vencedor
-POSOURCES = ../*.cpp
+POSOURCES = ../*.cpp ../../kggzlib/*.cpp
+POFILES = de.po
 
 XGETTEXT = xgettext
 MSGMERGE = msgmerge

@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.99.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-11 19:41+0200\n"
-"PO-Revision-Date: 2009-04-11 19:41+0200\n"
+"POT-Creation-Date: 2009-04-11 19:56+0200\n"
+"PO-Revision-Date: 2009-04-11 19:56+0200\n"
 "Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../motd.cpp:59
+#: ../motd.cpp:59 ../../kggzlib/tableconfiguration.cpp:88
 msgid "Close"
 msgstr "Schließen"
 
@@ -23,7 +23,7 @@ msgstr "Schließen"
 msgid "Message Of The Day (MOTD)"
 msgstr "Nachricht des Tages"
 
-#: ../vencedor.cpp:77
+#: ../vencedor.cpp:77 ../../kggzlib/kggzaction.cpp:14
 msgid "Connect to GGZ Gaming Zone"
 msgstr "Zur GGZ Gaming Zone verbinden"
 
@@ -131,3 +131,362 @@ msgstr "--> %1 hat den Raum betreten."
 #: ../vencedor.cpp:613
 msgid "<-- %1 has left the room."
 msgstr "<-- %1 hat den Raum verlassen."
+
+#: ../../kggzlib/configwidget.cpp:44
+msgid "GGZ Server:"
+msgstr "GGZ-Server:"
+
+#: ../../kggzlib/configwidget.cpp:49
+msgid "Login mode:"
+msgstr "Loginmodus:"
+
+#: ../../kggzlib/configwidget.cpp:54
+msgid "Username:"
+msgstr "Benutzername:"
+
+#: ../../kggzlib/configwidget.cpp:59
+msgid "Password:"
+msgstr "Passwort:"
+
+#: ../../kggzlib/configwidget.cpp:64
+msgid "Real name:"
+msgstr "Vollständiger Name:"
+
+#: ../../kggzlib/configwidget.cpp:69
+msgid "E-mail address:"
+msgstr "E-Mail-Adresse:"
+
+#: ../../kggzlib/configwidget.cpp:74
+msgid "Room name:"
+msgstr "Raumname:"
+
+#: ../../kggzlib/configwidget.cpp:82 ../../kggzlib/configwidget.cpp:86
+msgid "Select..."
+msgstr "Auswählen..."
+
+#: ../../kggzlib/connectiondialog.cpp:142
+msgid "The connection cannot be established."
+msgstr "Die Verbindung konnte nicht hergestellt werden."
+
+#: ../../kggzlib/connectiondialog.cpp:143
+msgid "Connection failed"
+msgstr "Verbindung fehlgeschlagen"
+
+#: ../../kggzlib/connectionprofiles.cpp:99
+msgid "Profile addition"
+msgstr "Profilerzeugung"
+
+#: ../../kggzlib/connectionprofiles.cpp:99
+msgid "GGZ server location:"
+msgstr "Ort des GGZ-Servers:"
+
+#: ../../kggzlib/kggzcorelayer.cpp:74
+msgid "Connecting..."
+msgstr "Verbinde..."
+
+#: ../../kggzlib/kggzcorelayer.cpp:101
+msgid "Negotiating..."
+msgstr "Handle aus..."
+
+#: ../../kggzlib/kggzcorelayer.cpp:105
+msgid "Connection failed!"
+msgstr "Verbindung fehlgeschlagen!"
+
+#: ../../kggzlib/kggzcorelayer.cpp:112
+msgid "Logging in..."
+msgstr "Logge ein..."
+
+#: ../../kggzlib/kggzcorelayer.cpp:116
+msgid "Negotiation failed!"
+msgstr "Aushandlung fehlgeschlagen!"
+
+#: ../../kggzlib/kggzcorelayer.cpp:123
+msgid "Entering the room..."
+msgstr "Betrete den Raum..."
+
+#: ../../kggzlib/kggzcorelayer.cpp:127
+msgid "Login failed!"
+msgstr "Login fehlgeschlagen!"
+
+#: ../../kggzlib/kggzcorelayer.cpp:132
+msgid "In the room %1!"
+msgstr "Im Raum %1!"
+
+#: ../../kggzlib/kggzcorelayer.cpp:192
+msgid "Switch to room %1"
+msgstr "Zu Raum %1 wechseln"
+
+#: ../../kggzlib/kggzcorelayer.cpp:203
+msgid "No suitable room or game server found"
+msgstr "Kein passender Raum oder Spieleserver gefunden"
+
+#: ../../kggzlib/kggzcorelayer.cpp:214
+msgid "Reconnecting..."
+msgstr "Verbinde erneut..."
+
+#: ../../kggzlib/kggzcorelayer.cpp:238
+msgid "A table has been launched"
+msgstr "Ein Spieltisch wurde gestartet"
+
+#: ../../kggzlib/moduledialog.cpp:29
+msgid "Name"
+msgstr "Name"
+
+#: ../../kggzlib/moduledialog.cpp:30
+msgid "Version"
+msgstr "Version"
+
+#: ../../kggzlib/moduledialog.cpp:31
+msgid "Protocol engine"
+msgstr "Protokollname"
+
+#: ../../kggzlib/moduledialog.cpp:32
+msgid "Protocol version"
+msgstr "Protokollversion"
+
+#: ../../kggzlib/moduledialog.cpp:33
+msgid "Author"
+msgstr "Autor"
+
+#: ../../kggzlib/moduledialog.cpp:34
+msgid "Frontend"
+msgstr "Oberfläche"
+
+#: ../../kggzlib/moduledialog.cpp:35
+msgid "Homepage"
+msgstr "Webseite"
+
+#: ../../kggzlib/moduledialog.cpp:36
+msgid "Help path"
+msgstr "Hilfepfad"
+
+#: ../../kggzlib/moduledialog.cpp:37
+msgid "Icon path"
+msgstr "Iconpfad"
+
+#: ../../kggzlib/moduledialog.cpp:38
+msgid "Environment"
+msgstr "Umgebung"
+
+#: ../../kggzlib/moduledialog.cpp:49 ../../kggzlib/playerlist.cpp:40
+msgid "Search for:"
+msgstr "Suchen nach:"
+
+#: ../../kggzlib/moduleselector.cpp:22
+msgid "Select this game client"
+msgstr "Dieses Spiel auswählen"
+
+#: ../../kggzlib/moduleselector.cpp:25 ../../kggzlib/roomselector.cpp:21
+#: ../../kggzlib/serverselector.cpp:32 ../../kggzlib/tableconfiguration.cpp:83
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: ../../kggzlib/moduleselector.cpp:49
+msgid "Game client module selection"
+msgstr "Auswahl eines Spielmoduls"
+
+#: ../../kggzlib/playerlist.cpp:55
+msgid "Myself"
+msgstr "Ich selbst"
+
+#: ../../kggzlib/playerlist.cpp:59
+msgid "Friends"
+msgstr "Freunde"
+
+#: ../../kggzlib/playerlist.cpp:63
+msgid "Ignored"
+msgstr "Ignorierte Spieler"
+
+#: ../../kggzlib/playerlist.cpp:67
+msgid "Others"
+msgstr "Andere"
+
+#: ../../kggzlib/playerlist.cpp:70 ../../kggzlib/tableconfiguration.cpp:61
+msgid "Player"
+msgstr "Spieler"
+
+#: ../../kggzlib/playerlist.cpp:71
+msgid "Properties"
+msgstr "Eigenschaften"
+
+#: ../../kggzlib/playerlist.cpp:221
+msgid "Remove from buddy list"
+msgstr "Von der Freundesliste entfernen"
+
+#: ../../kggzlib/playerlist.cpp:225
+msgid "Remove from list of ignored players"
+msgstr "Von der Liste der ignorierten Spieler entfernen"
+
+#: ../../kggzlib/playerlist.cpp:229
+msgid "Add to list of ignored players."
+msgstr "Zur Liste der ignorierten Spieler hinzufügen."
+
+#: ../../kggzlib/playerlist.cpp:230
+msgid "Add to buddy list"
+msgstr "Zur Freundesliste hinzufügen"
+
+#: ../../kggzlib/playerlist.cpp:233
+msgid "Private chat..."
+msgstr "Privates Gespräch..."
+
+#: ../../kggzlib/playerlist.cpp:235
+msgid "Visit community profile..."
+msgstr "Gemeinschaftswebseite besuchen..."
+
+#: ../../kggzlib/roomselector.cpp:18
+msgid "Select this room"
+msgstr "Diesen Raum auswählen"
+
+#: ../../kggzlib/roomselector.cpp:36
+msgid "Room selection from GGZ server"
+msgstr "Raumauswahl auf GGZ-Server"
+
+#: ../../kggzlib/roomselector.cpp:97
+msgid "The list of rooms cannot be retrieved."
+msgstr "Die Raumliste kann nicht heruntergeladen werden."
+
+#: ../../kggzlib/roomselector.cpp:98 ../../kggzlib/roomselector.cpp:108
+msgid "Web Service API failure"
+msgstr "Fehler im Webservice."
+
+#: ../../kggzlib/roomselector.cpp:107
+msgid "The list of rooms is malformatted."
+msgstr "Die Raumliste ist fehlerhaft formatiert."
+
+#: ../../kggzlib/serverselector.cpp:29
+msgid "Select this server"
+msgstr "Diesen Server auswählen"
+
+#: ../../kggzlib/serverselector.cpp:62
+msgid "Server selection from metaserver"
+msgstr "Serverauswahl vom Metaserver"
+
+#: ../../kggzlib/serverselector.cpp:125
+msgid "The metaserver didn't return a useful response."
+msgstr "Der Metaserver lieferte keine verwertbare Antwort zurück."
+
+#: ../../kggzlib/serverselector.cpp:126 ../../kggzlib/serverselector.cpp:182
+msgid "Metaserver failure"
+msgstr "Metaserverfehler"
+
+#: ../../kggzlib/serverselector.cpp:181
+msgid "The list of servers cannot be retrieved."
+msgstr "Die Liste der Server kann nicht heruntergeladen werden."
+
+#: ../../kggzlib/tableconfiguration.cpp:60
+msgid "Seat"
+msgstr "Sitz"
+
+#: ../../kggzlib/tableconfiguration.cpp:62
+#: ../../kggzlib/tableconfiguration.cpp:170
+#: ../../kggzlib/tableconfiguration.cpp:241
+msgid "Reservation"
+msgstr "Reservierung"
+
+#: ../../kggzlib/tableconfiguration.cpp:74
+msgid "Seat assignments (right-click to change):"
+msgstr "Sitzverteilung (Rechtsklick für Änderung):"
+
+#: ../../kggzlib/tableconfiguration.cpp:76
+msgid "Seat assignments:"
+msgstr "Sitzverteilung:"
+
+#: ../../kggzlib/tableconfiguration.cpp:77
+msgid "Game description:"
+msgstr "Spielbeschreibung"
+
+#: ../../kggzlib/tableconfiguration.cpp:81
+msgid "Create table"
+msgstr "Spieltisch aufstellen"
+
+#: ../../kggzlib/tableconfiguration.cpp:126
+msgid "Launch a game"
+msgstr "Ein Spiel beginnen"
+
+#: ../../kggzlib/tableconfiguration.cpp:128
+msgid "Table configuration"
+msgstr "Spieltischkonfiguration"
+
+#: ../../kggzlib/tableconfiguration.cpp:162
+msgid "Open seat"
+msgstr "Freier Sitz"
+
+#: ../../kggzlib/tableconfiguration.cpp:166
+msgid "Computer player"
+msgstr "Computerspieler"
+
+#: ../../kggzlib/tableconfiguration.cpp:173
+msgid "Specific player..."
+msgstr "Reservierung für Spieler..."
+
+#: ../../kggzlib/tableconfiguration.cpp:177
+msgid "Individual bot"
+msgstr "Bestimmter Computerspieler"
+
+#: ../../kggzlib/tableconfiguration.cpp:209
+msgid "Buddy"
+msgstr "Freund"
+
+#: ../../kggzlib/tableconfiguration.cpp:241
+msgid "Name of the player:"
+msgstr "Name des Spielers:"
+
+#: ../../kggzlib/tableconfiguration.cpp:247
+msgid "The player %1 is already on a seat."
+msgstr "Der Spieler %1 belegt bereits einen Sitz."
+
+#: ../../kggzlib/tableconfiguration.cpp:248
+msgid "Double assignment"
+msgstr "Doppelbelegung"
+
+#: ../../kggzlib/tableconfiguration.cpp:277
+msgid "Number of players: %1 (out of %2)"
+msgstr "Anzahl Spieler: %1 (von %2)"
+
+#: ../../kggzlib/tableconfiguration.cpp:410
+msgid "Chat bot"
+msgstr "Chat-Computerspieler"
+
+#: ../../kggzlib/tableconfiguration.cpp:502
+msgid "(Yourself)"
+msgstr "(Ich selbst)"
+
+#: ../../kggzlib/tableconfiguration.cpp:505
+msgid "Open"
+msgstr "offen"
+
+#: ../../kggzlib/tableconfiguration.cpp:508
+msgid "Computer"
+msgstr "Computer"
+
+#: ../../kggzlib/tableconfiguration.cpp:511
+msgid "Reserved"
+msgstr "reserviert"
+
+#: ../../kggzlib/tableconfiguration.cpp:514
+msgid "(unused)"
+msgstr "(unbenutzt)"
+
+#: ../../kggzlib/tableconfiguration.cpp:517
+msgid "Reserved for buddy"
+msgstr "reserviert für Freund"
+
+#: ../../kggzlib/tableconfiguration.cpp:520
+msgid "Indidivudal bot"
+msgstr "Computerspieler"
+
+#: ../../kggzlib/tableconfiguration.cpp:523
+msgid "unknown"
+msgstr "unbekannt"
+
+#: ../../kggzlib/tablelist.cpp:104
+msgid "Playing against %1 players and %2 computer players."
+msgstr "Spiel gegen %1 Spieler und %2 Computerspieler."
+
+#: ../../kggzlib/tablelist.cpp:106
+msgid "Playing alone against %1 computer players."
+msgstr "Spiel allein gegen %1 Computerspieler."
+
+#: ../../kggzlib/tablelist.cpp:108
+msgid "Playing against %1 players."
+msgstr "Spiel gegen %1 Spieler."
