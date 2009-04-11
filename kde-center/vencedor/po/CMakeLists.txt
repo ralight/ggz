@@ -1,4 +1,4 @@
-# taken from kradio
+# taken from kradio, extended with srcdir != builddir fixes
 
 FIND_PROGRAM(GETTEXT_MSGFMT_EXECUTABLE msgfmt)
 
@@ -13,7 +13,7 @@ ELSE(NOT GETTEXT_MSGFMT_EXECUTABLE)
 
         ADD_CUSTOM_TARGET(translations ALL)
 
-        FILE(GLOB PO_FILES *.po)
+        FILE(GLOB PO_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.po)
 
         FOREACH(_poFile ${PO_FILES})
                 GET_FILENAME_COMPONENT(_poFileName ${_poFile} NAME)
