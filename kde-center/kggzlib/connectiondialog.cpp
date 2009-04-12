@@ -128,14 +128,14 @@ void ConnectionDialog::slotReady(bool ready)
 		// FIXME: support for join/spectate in addition to launch goes here...
 		GameCoreClient *gcc = new GameCoreClient(m_corelayer->core());
 
-		m_tabledlg = new TableDialog(this);
-		KGGZCore::GameType gametype = m_corelayer->core()->room()->gametype();
-		m_tabledlg->setGameType(gametype);
-		m_tabledlg->setIdentity(m_username);
-		m_tabledlg->setModal(true);
-		m_tabledlg->show();
+//		m_tabledlg = new TableDialog(this);
+//		KGGZCore::GameType gametype = m_corelayer->core()->room()->gametype();
+//		m_tabledlg->setGameType(gametype);
+//		m_tabledlg->setIdentity(m_username);
+//		m_tabledlg->setModal(true);
+//		m_tabledlg->show();
 
-		connect(m_tabledlg, SIGNAL(finished(int)), SLOT(slotTable(int)));
+//		connect(m_tabledlg, SIGNAL(finished(int)), SLOT(slotTable(int)));
 	}
 	else
 	{

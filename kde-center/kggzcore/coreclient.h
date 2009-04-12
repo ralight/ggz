@@ -113,6 +113,7 @@ class KGGZCORE_EXPORT CoreClient : public QObject
 
 		// FIXME: we don't have an enum yet
 		int state();
+		bool embedded();
 
 	private slots:
 		void slotBaseError();
@@ -127,6 +128,7 @@ class KGGZCORE_EXPORT CoreClient : public QObject
 		QStringList m_roomnames;
 		Room *m_room;
 		QList<Room*> m_rooms;
+		bool m_embedded;
 };
 
 }

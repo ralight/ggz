@@ -3,6 +3,7 @@
 #include "playerlist.h"
 #include "tablelist.h"
 #include "roomlist.h"
+#include "tabledialog.h"
 #include "kggzcorelayer.h"
 
 #include <kggzcore/coreclient.h>
@@ -48,6 +49,10 @@ EmbeddedCoreClient::EmbeddedCoreClient(KGGZCore::CoreClient *core, bool withroom
 	m_action_spectate->setEnabled(false);
 
 	connect(m_tables, SIGNAL(signalSelected(const KGGZCore::Table&, int)), SLOT(slotTable(const KGGZCore::Table, int)));
+
+	connect(m_action_launch, SIGNAL(triggered(bool)), SLOT(slotLaunch()));
+	connect(m_action_join, SIGNAL(triggered(bool)), SLOT(slotJoin()));
+	connect(m_action_spectate, SIGNAL(triggered(bool)), SLOT(slotSpectate()));
 }
 
 KChat *EmbeddedCoreClient::widget_chat()
@@ -92,18 +97,18 @@ void EmbeddedCoreClient::slotChat(QString sender, QString message, KGGZCore::Roo
 // FIXME: core layer must be shared?! etc.
 void EmbeddedCoreClient::slotLaunch()
 {
-//	TableDialog tabledlg(this);
-//	// FIXME: see ConnectionDialog.cpp
-//	KGGZCore::GameType gametype = m_core->room()->gametype();
-//	tabledlg.setGameType(gametype);
-//	tabledlg.setIdentity(m_core->username());
-//	if(tabledlg.exec() == QDialog::Accepted)
-//	{
-//		KGGZCoreLayer *corelayer = new KGGZCoreLayer(this);
-//		corelayer->setCore(m_core);
-//		corelayer->configureTable(tabledlg.table().players());
-//		corelayer->launch();
-//	}
+	TableDialog tabledlg(/*this*/NULL);
+	// FIXME: see ConnectionDialog.cpp for asynchronous+modal variant
+	KGGZCore::GameType gametype = m_core->room()->gametype();
+	tabledlg.setGameType(gametype);
+	tabledlg.setIdentity(m_core->username());
+	if(tabledlg.exec() == QDialog::Accepted)
+	{
+		KGGZCoreLayer *corelayer = new KGGZCoreLayer(this);
+		corelayer->setCore(m_core);
+		corelayer->configureTable(tabledlg.table().description(), tabledlg.table().players());
+		corelayer->launch();
+	}
 }
 
 void EmbeddedCoreClient::slotJoin()

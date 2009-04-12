@@ -33,7 +33,6 @@ class Vencedor : public QMainWindow
 		void slotAbout();
 		void slotHelp();
 		void slotConfig();
-		void slotLaunch();
 		void slotMotd();
 		void slotModules();
 

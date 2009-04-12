@@ -13,7 +13,7 @@
 
 KGGZCoreLayer::KGGZCoreLayer(QObject *parent, QString protengine, QString protversion)
 : QObject(parent),
-	m_core(0), m_embedded(false), m_tablenum(-1)
+	m_core(0), m_tablenum(-1)
 {
 	m_protversion = protversion;
 	m_protengine = protengine;
@@ -57,9 +57,6 @@ void KGGZCoreLayer::checkTables()
 void KGGZCoreLayer::ggzcore(QString uri, bool embedded)
 {
 	m_core = new KGGZCore::CoreClient(this, embedded);
-
-	// FIXME: introduce KGGZCore::CoreClient::isEmbedded()?
-	m_embedded = embedded;
 
 	connect(m_core,
 		SIGNAL(signalFeedback(KGGZCore::CoreClient::FeedbackMessage, KGGZCore::Error::ErrorCode)),
@@ -293,7 +290,7 @@ void KGGZCoreLayer::launchmodule()
 	//table->launch(m_core);
 
 	QString modname;
-	if(!m_embedded)
+	if(!m_core->embedded())
 	{
 		ModuleSelector selector(NULL);
 		selector.setModules(m_core->modules());
@@ -317,7 +314,7 @@ void KGGZCoreLayer::launchmodule()
 		SIGNAL(signalTableReady()),
 		SLOT(slotTableReady()));
 
-	m_core->room()->launchmodule(m_embedded, modname);
+	m_core->room()->launchmodule(m_core->embedded(), modname);
 }
 
 void KGGZCoreLayer::slotModuleReady()

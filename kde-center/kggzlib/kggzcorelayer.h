@@ -58,7 +58,6 @@ class KGGZLIB_EXPORT KGGZCoreLayer : public QObject
 		QString m_protversion;
 		bool m_typedrooms;
 		QString m_tablename;
-		bool m_embedded;
 		unsigned int m_tablenum;
 		bool m_spectator;
 };

@@ -112,14 +112,9 @@ Vencedor::Vencedor(QString url)
 
 	toolbar->addSeparator();
 
-	connect(m_ecc->action_launch(), SIGNAL(triggered(bool)), SLOT(slotLaunch()));
 	m_ecc->action_launch()->setEnabled(false);
 	toolbar->addAction(m_ecc->action_launch());
-
-	connect(m_ecc->action_join(), SIGNAL(triggered(bool)), SLOT(slotJoin()));
 	toolbar->addAction(m_ecc->action_join());
-
-	connect(m_ecc->action_spectate(), SIGNAL(triggered(bool)), SLOT(slotSpectate()));
 	toolbar->addAction(m_ecc->action_spectate());
 
 	connect(m_ecc->widget_chat(), SIGNAL(signalSendMessage(int, const QString)), SLOT(slotChatEntered(int, const QString&)));
@@ -296,22 +291,6 @@ void Vencedor::handleSession()
 	profile.setPassword(m_core->password());
 	m_ecc->widget_players()->setGGZProfile(profile);
 	m_ecc->widget_rooms()->setGGZProfile(profile);
-}
-
-void Vencedor::slotLaunch()
-{
-	TableDialog tabledlg(this);
-	// FIXME: see ConnectionDialog.cpp
-	KGGZCore::GameType gametype = m_core->room()->gametype();
-	tabledlg.setGameType(gametype);
-	tabledlg.setIdentity(m_core->username());
-	if(tabledlg.exec() == QDialog::Accepted)
-	{
-		KGGZCoreLayer *corelayer = new KGGZCoreLayer(this);
-		corelayer->setCore(m_core);
-		corelayer->configureTable(tabledlg.table().description(), tabledlg.table().players());
-		corelayer->launch();
-	}
 }
 
 void Vencedor::slotChatEntered(int id, const QString& msg)

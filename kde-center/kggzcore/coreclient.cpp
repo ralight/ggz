@@ -35,6 +35,7 @@ CoreClient::CoreClient(QObject *parent, bool embedded)
 	m_room = NULL;
 
 	m_base = new CoreClientBase(this, embedded);
+	m_embedded = embedded;
 
 	m_port = 5688;
 	m_mode = guest;
@@ -182,6 +183,11 @@ QString CoreClient::url()
 int CoreClient::state()
 {
 	return m_base->state();
+}
+
+bool CoreClient::embedded()
+{
+	return m_embedded;
 }
 
 void CoreClient::slotBaseError()
