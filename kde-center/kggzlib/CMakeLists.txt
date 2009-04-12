@@ -33,12 +33,13 @@ set(kggzlib_LIB_SRCS
 	moduledialog.cpp
 	modulelist.cpp
 	moduleselector.cpp
+	embeddedcoreclient.cpp
 )
 
 kde4_add_library(kggzlib SHARED ${kggzlib_LIB_SRCS})
 
 #set_target_properties(kggzlib PROPERTIES COMPILE_FLAGS -fPIC)
-target_link_libraries(kggzlib ${KDE4_KIO_LIBS} ${KDE4_KDNSSD_LIBS} ${QT_QTNETWORK_LIBRARY} ${QT_QTXML_LIBRARY} kggzcore)
+target_link_libraries(kggzlib ${KDE4_KIO_LIBS} ${KDE4_KDNSSD_LIBS} ${QT_QTNETWORK_LIBRARY} ${QT_QTXML_LIBRARY} kggzcore kdegames)
 if(LOKAREST_FOUND)
   target_link_libraries(kggzlib ${LOKAREST_LIBRARY})
 endif(LOKAREST_FOUND)
@@ -79,6 +80,7 @@ install(FILES
 	moduledialog.h
 	modulelist.h
 	moduleselector.h
+	embeddedcoreclient.h
 	DESTINATION ${INCLUDE_INSTALL_DIR}/kggzlib
 )
 

@@ -79,8 +79,6 @@ class KGGZLIB_EXPORT TableConfiguration : public QDialog
 		void slotChanged(int value);
 
 	private:
-		// Set the type of the given seat
-	//	void setSeatType(int seat, SeatTypes seattype);
 		// Return the i18n'd name of a seat type
 		QString typeName(SeatTypes seattype);
 		// Prevent a name from being used again
@@ -106,9 +104,7 @@ class KGGZLIB_EXPORT TableConfiguration : public QDialog
 		QLabel *m_label;
 		// Holds the maximum number of bots
 		int m_maxbots;
-		// Holds the maximum number of spectators
-		int m_maxspectators;
-		// Holds the current number of players, spectators and bots
+		// Holds the current number of players and bots
 		int m_curplayers;
 		// Current number of bots
 		int m_curbots;
