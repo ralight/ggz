@@ -11,6 +11,7 @@ class RoomList;
 class TableList;
 class KChat;
 class QAction;
+class EmbeddedCoreClient;
 
 class Vencedor : public QMainWindow
 {
@@ -33,14 +34,11 @@ class Vencedor : public QMainWindow
 		void slotHelp();
 		void slotConfig();
 		void slotLaunch();
-		void slotJoin();
 		void slotMotd();
-		void slotSpectate();
 		void slotModules();
 
 		void slotRoom(const QString& name);
 		void slotChatEntered(int id, const QString& msg);
-		void slotTable(const KGGZCore::Table& table, int pos);
 
 		void slotFavourite(const QString& roomname, bool favourite);
 
@@ -51,17 +49,10 @@ class Vencedor : public QMainWindow
 		void handleSession();
 
 		KGGZCore::CoreClient *m_core;
-		KChat *m_chat;
-		PlayerList *m_players;
-		RoomList *m_rooms;
-		TableList *m_tables;
-		QAction *m_action_launch;
-		QAction *m_action_join;
-		QAction *m_action_spectate;
 		QAction *m_action_connect;
 		QAction *m_action_disconnect;
 		QAction *m_action_motd;
-		unsigned int m_tablenum;
+		EmbeddedCoreClient *m_ecc;
 };
 
 #endif

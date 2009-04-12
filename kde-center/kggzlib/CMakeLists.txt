@@ -34,6 +34,7 @@ set(kggzlib_LIB_SRCS
 	modulelist.cpp
 	moduleselector.cpp
 	embeddedcoreclient.cpp
+	gamecoreclient.cpp
 )
 
 kde4_add_library(kggzlib SHARED ${kggzlib_LIB_SRCS})
@@ -81,6 +82,7 @@ install(FILES
 	modulelist.h
 	moduleselector.h
 	embeddedcoreclient.h
+	gamecoreclient.h
 	DESTINATION ${INCLUDE_INSTALL_DIR}/kggzlib
 )
 

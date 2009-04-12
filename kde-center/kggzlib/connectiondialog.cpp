@@ -8,7 +8,7 @@
 #include "ggzprofile.h"
 #include "kggzcorelayer.h"
 #include "tabledialog.h"
-#include "embeddedcoreclient.h"
+#include "gamecoreclient.h"
 
 #include <kggzcore/coreclient.h>
 #include <kggzcore/player.h>
@@ -126,7 +126,7 @@ void ConnectionDialog::slotReady(bool ready)
 	if(ready)
 	{
 		// FIXME: support for join/spectate in addition to launch goes here...
-		EmbeddedCoreClient *ecc = new EmbeddedCoreClient(m_core);
+		GameCoreClient *gcc = new GameCoreClient(m_corelayer->core());
 
 		m_tabledlg = new TableDialog(this);
 		KGGZCore::GameType gametype = m_corelayer->core()->room()->gametype();

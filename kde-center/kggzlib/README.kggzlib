@@ -53,7 +53,11 @@ Other GGZ classes
  moduledialog.cpp/h - List of installed GGZ game client modules
  modulelist.cpp/h - List of applicable GGZ game client modules in a room
  moduleselector.cpp/h - Module selection in a room
+ embeddedcoreclient.cpp/h - Management functionality for core client widgets
+ gamecoreclient.cpp/h - Embedded core clients tailored for use in games
 
 External dependencies
 ---------------------
  Lokarest library - integration with GGZ Community Web Service API
+ Libkdegames - for KChat
+

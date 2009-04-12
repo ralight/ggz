@@ -1,7 +1,7 @@
 #ifndef EMBEDDED_CORE_CLIENT_H
 #define EMBEDDED_CORE_CLIENT_H
 
-#include <QMainWindow>
+#include <QObject>
 
 #include <kggzcore/room.h>
 
@@ -10,17 +10,29 @@
 class PlayerList;
 class TableList;
 class KChat;
+class RoomList;
+
+class QAction;
 
 namespace KGGZCore
 {
 	class CoreClient;
 }
 
-class KGGZLIB_EXPORT EmbeddedCoreClient : public QMainWindow
+class KGGZLIB_EXPORT EmbeddedCoreClient : public QObject
 {
 	Q_OBJECT
 	public:
-		EmbeddedCoreClient(KGGZCore::CoreClient *core);
+		EmbeddedCoreClient(KGGZCore::CoreClient *core, bool withrooms);
+
+		KChat *widget_chat();
+		PlayerList *widget_players();
+		TableList *widget_tables();
+		RoomList *widget_rooms();
+
+		QAction *action_launch();
+		QAction *action_join();
+		QAction *action_spectate();
 
 	private slots:
 		void slotChat(QString sender, QString message, KGGZCore::Room::ChatType type);
@@ -39,6 +51,7 @@ class KGGZLIB_EXPORT EmbeddedCoreClient : public QMainWindow
 		KChat *m_chat;
 		PlayerList *m_players;
 		TableList *m_tables;
+		RoomList *m_rooms;
 
 		QAction *m_action_launch;
 		QAction *m_action_join;

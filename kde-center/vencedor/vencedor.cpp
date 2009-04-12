@@ -38,33 +38,28 @@
 #include <kggzlib/connectionsingle.h>
 #include <kggzlib/moduledialog.h>
 #include <kggzlib/kggzcorelayer.h>
+#include <kggzlib/embeddedcoreclient.h>
 
 #include <kchat.h>
 
 Vencedor::Vencedor(QString url)
-: QMainWindow(),
-	m_tablenum(-1)
+: QMainWindow()
 {
 	KStandardDirs d;
+
+	m_ecc = new EmbeddedCoreClient(NULL, true);
 
 	QWidget *centralwidget = new QWidget();
 	setCentralWidget(centralwidget);
 
-	m_rooms = new RoomList();
-	m_players = new PlayerList();
-	m_tables = new TableList();
-
-	m_chat = new KChat(centralwidget, false);
-	m_chat->setAutoAddMessages(false);
-
 	QVBoxLayout *vbox = new QVBoxLayout();
-	vbox->addWidget(m_rooms);
-	vbox->addWidget(m_players);
-	vbox->addWidget(m_tables);
+	vbox->addWidget(m_ecc->widget_rooms());
+	vbox->addWidget(m_ecc->widget_players());
+	vbox->addWidget(m_ecc->widget_tables());
 
 	QHBoxLayout *hbox = new QHBoxLayout();
 	hbox->addLayout(vbox);
-	hbox->addWidget(m_chat);
+	hbox->addWidget(m_ecc->widget_chat());
 
 	centralwidget->setLayout(hbox);
 
@@ -117,28 +112,19 @@ Vencedor::Vencedor(QString url)
 
 	toolbar->addSeparator();
 
-	QPixmap icon_launch = KIconLoader::global()->loadIcon("start-here", KIconLoader::Small);
-	m_action_launch = new QAction(QIcon(icon_launch), i18n("Launch a new game"), this);
-	connect(m_action_launch, SIGNAL(triggered(bool)), SLOT(slotLaunch()));
-	m_action_launch->setEnabled(false);
-	toolbar->addAction(m_action_launch);
+	connect(m_ecc->action_launch(), SIGNAL(triggered(bool)), SLOT(slotLaunch()));
+	m_ecc->action_launch()->setEnabled(false);
+	toolbar->addAction(m_ecc->action_launch());
 
-	QPixmap icon_join = KIconLoader::global()->loadIcon("start-here", KIconLoader::Small);
-	m_action_join = new QAction(QIcon(icon_join), i18n("Join a running new game"), this);
-	connect(m_action_join, SIGNAL(triggered(bool)), SLOT(slotJoin()));
-	m_action_join->setEnabled(false);
-	toolbar->addAction(m_action_join);
+	connect(m_ecc->action_join(), SIGNAL(triggered(bool)), SLOT(slotJoin()));
+	toolbar->addAction(m_ecc->action_join());
 
-	QPixmap icon_spectate = KIconLoader::global()->loadIcon("start-here", KIconLoader::Small);
-	m_action_spectate = new QAction(QIcon(icon_spectate), i18n("Spectate a running game"), this);
-	connect(m_action_spectate, SIGNAL(triggered(bool)), SLOT(slotSpectate()));
-	m_action_spectate->setEnabled(false);
-	toolbar->addAction(m_action_spectate);
+	connect(m_ecc->action_spectate(), SIGNAL(triggered(bool)), SLOT(slotSpectate()));
+	toolbar->addAction(m_ecc->action_spectate());
 
-	connect(m_chat, SIGNAL(signalSendMessage(int, const QString)), SLOT(slotChatEntered(int, const QString&)));
-	connect(m_rooms, SIGNAL(signalSelected(const QString&)), SLOT(slotRoom(const QString&)));
-	connect(m_rooms, SIGNAL(signalFavourite(const QString&, bool)), SLOT(slotFavourite(const QString&, bool)));
-	connect(m_tables, SIGNAL(signalSelected(const KGGZCore::Table&, int)), SLOT(slotTable(const KGGZCore::Table, int)));
+	connect(m_ecc->widget_chat(), SIGNAL(signalSendMessage(int, const QString)), SLOT(slotChatEntered(int, const QString&)));
+	connect(m_ecc->widget_rooms(), SIGNAL(signalSelected(const QString&)), SLOT(slotRoom(const QString&)));
+	connect(m_ecc->widget_rooms(), SIGNAL(signalFavourite(const QString&, bool)), SLOT(slotFavourite(const QString&, bool)));
 
 	enable(false);
 
@@ -299,7 +285,7 @@ void Vencedor::slotConnect()
 
 void Vencedor::handleSession()
 {
-	m_players->setSelf(m_core->username());
+	m_ecc->widget_players()->setSelf(m_core->username());
 
 	// FIXME: Where to get profile from?
 	GGZServer server;
@@ -308,8 +294,8 @@ void Vencedor::handleSession()
 	profile.setGGZServer(server);
 	profile.setUsername(m_core->username());
 	profile.setPassword(m_core->password());
-	m_players->setGGZProfile(profile);
-	m_rooms->setGGZProfile(profile);
+	m_ecc->widget_players()->setGGZProfile(profile);
+	m_ecc->widget_rooms()->setGGZProfile(profile);
 }
 
 void Vencedor::slotLaunch()
@@ -326,20 +312,6 @@ void Vencedor::slotLaunch()
 		corelayer->configureTable(tabledlg.table().description(), tabledlg.table().players());
 		corelayer->launch();
 	}
-}
-
-void Vencedor::slotJoin()
-{
-	KGGZCoreLayer *corelayer = new KGGZCoreLayer(this);
-	corelayer->setCore(m_core);
-	corelayer->join(m_tablenum, false);
-}
-
-void Vencedor::slotSpectate()
-{
-	KGGZCoreLayer *corelayer = new KGGZCoreLayer(this);
-	corelayer->setCore(m_core);
-	corelayer->join(m_tablenum, true);
 }
 
 void Vencedor::slotChatEntered(int id, const QString& msg)
@@ -387,16 +359,6 @@ void Vencedor::slotRoom(const QString& name)
 	m_core->initiateRoomChange(name);
 }
 
-void Vencedor::slotTable(const KGGZCore::Table& table, int pos)
-{
-	Q_UNUSED(table);
-
-	m_tablenum = pos;
-
-	m_action_join->setEnabled((pos != -1));
-	m_action_spectate->setEnabled((pos != -1));
-}
-
 void Vencedor::slotMotd()
 {
 	Motd motd(this);
@@ -410,10 +372,10 @@ void Vencedor::enable(bool enabled)
 	if(!enabled)
 		m_action_motd->setEnabled(enabled);
 
-	m_rooms->setEnabled(enabled);
-	m_players->setEnabled(enabled);
-	m_tables->setEnabled(enabled);
-	m_chat->setEnabled(enabled);
+	m_ecc->widget_rooms()->setEnabled(enabled);
+	m_ecc->widget_players()->setEnabled(enabled);
+	m_ecc->widget_tables()->setEnabled(enabled);
+	m_ecc->widget_chat()->setEnabled(enabled);
 	m_action_connect->setEnabled(!enabled);
 	m_action_disconnect->setEnabled(enabled);
 }
@@ -474,12 +436,12 @@ void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZC
 				SLOT(slotChat(QString, QString, KGGZCore::Room::ChatType)));
 
 			if(!m_core->room()->gametype().name().isEmpty())
-				m_action_launch->setEnabled(true);
+				m_ecc->action_launch()->setEnabled(true);
 			else
-				m_action_launch->setEnabled(false);
+				m_ecc->action_launch()->setEnabled(false);
 			enable(true);
-			m_chat->addSystemMessage(i18n("Vencedor"), i18n("Entered room %1.").arg(m_core->roomname()));
-			m_rooms->select(m_core->roomname());
+			m_ecc->widget_chat()->addSystemMessage(i18n("Vencedor"), i18n("Entered room %1.").arg(m_core->roomname()));
+			m_ecc->widget_rooms()->select(m_core->roomname());
 			break;
 		case KGGZCore::CoreClient::chat:
 			// FIXME: This is only chat failure, see room chat for incoming messages
@@ -576,24 +538,25 @@ void Vencedor::slotAnswer(KGGZCore::Room::AnswerMessage message)
 	switch(message)
 	{
 		case KGGZCore::Room::playerlist:
-			m_players->clear();
+			m_ecc->widget_players()->clear();
 			players = m_core->room()->players();
 			for(int i = 0; i < players.count(); i++)
 			{
 				KGGZCore::Player player = players.at(i);
 				Player *p = new Player(player.name());
-				m_players->addPlayer(p);
+				m_ecc->widget_players()->addPlayer(p);
 			}
 			break;
 		case KGGZCore::Room::tablelist:
-			m_tables->clear();
+			m_ecc->widget_tables()->clear();
 			// FIXME: shouldn't be necessary to enforce the disabled join/spectate buttons
-			slotTable(KGGZCore::Table(), -1);
+			// FIXME: needs to be integrated with EmbeddedCoreClient now, e.g. setTables(tables)
+			//slotTable(KGGZCore::Table(), -1);
 			tables = m_core->room()->tables();
 			for(int i = 0; i < tables.count(); i++)
 			{
 				KGGZCore::Table table = tables.at(i);
-				m_tables->addConfiguration(table);
+				m_ecc->widget_tables()->addConfiguration(table);
 			}
 			break;
 	}
@@ -607,10 +570,10 @@ void Vencedor::slotEvent(KGGZCore::Room::EventMessage message)
 			// FIXME: this is now in slotChat()
 			break;
 		case KGGZCore::Room::enter:
-			m_chat->addSystemMessage(i18n("Vencedor"), i18n("--> %1 has entered the room.").arg("SOMEBODY"));
+			m_ecc->widget_chat()->addSystemMessage(i18n("Vencedor"), i18n("--> %1 has entered the room.").arg("SOMEBODY"));
 			break;
 		case KGGZCore::Room::leave:
-			m_chat->addSystemMessage(i18n("Vencedor"), i18n("<-- %1 has left the room.").arg("SOMEBODY"));
+			m_ecc->widget_chat()->addSystemMessage(i18n("Vencedor"), i18n("<-- %1 has left the room.").arg("SOMEBODY"));
 			break;
 		case KGGZCore::Room::tableupdate:
 			//qDebug() << "#tables(update)";
@@ -643,17 +606,17 @@ void Vencedor::slotChat(QString sender, QString message, KGGZCore::Room::ChatTyp
 	}
 
 	// FIXME: colours and style?
-	QFont namefont = m_chat->nameFont();
-	QFont smfont = m_chat->systemMessageFont();
+	QFont namefont = m_ecc->widget_chat()->nameFont();
+	QFont smfont = m_ecc->widget_chat()->systemMessageFont();
 	namefont.setItalic(true);
 	smfont.setBold(true);
-	m_chat->setNameFont(namefont);
-	m_chat->setSystemMessageFont(smfont);
+	m_ecc->widget_chat()->setNameFont(namefont);
+	m_ecc->widget_chat()->setSystemMessageFont(smfont);
 
 	if(type != KGGZCore::Room::chatnormal)
-		m_chat->addSystemMessage(sender, message);
+		m_ecc->widget_chat()->addSystemMessage(sender, message);
 	else
-		m_chat->addMessage(sender, message);
+		m_ecc->widget_chat()->addMessage(sender, message);
 }
 
 void Vencedor::handleRoomlist()
@@ -668,7 +631,7 @@ void Vencedor::handleRoomlist()
 		Room *room = new Room(roomname);
 		room->setPlayers(0);
 		room->setFavourite(fav);
-		m_rooms->addRoom(room);
+		m_ecc->widget_rooms()->addRoom(room);
 	}
 
 	QString joinroom = m_core->roomname();

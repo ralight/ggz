@@ -28,7 +28,7 @@
 
 #include <kggzlib/connectiondialog.h>
 #include <kggzlib/kggzcorelayer.h>
-#include <kggzlib/embeddedcoreclient.h>
+#include <kggzlib/gamecoreclient.h>
 
 #include <kggzcore/player.h>
 
@@ -191,7 +191,7 @@ void KTicTacTuxWin::slotMenu(QAction *action)
 	else if(action == action_ggzcontrol)
 	{
 		// FIXME: initialise all content and make it a singleton
-		EmbeddedCoreClient *ecc = new EmbeddedCoreClient();
+		GameCoreClient *gcc = new GameCoreClient(NULL);
 	}
 	else if(action == action_quit)
 	{
