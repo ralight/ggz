@@ -80,6 +80,7 @@ class KTicTacTuxWin : public KMainWindow
 		QAction *action_theme;
 		QAction *action_quit;
 		QAction *action_ggzplayers;
+		QAction *action_ggzcontrol;
 		QAction *action_themes;
 		QList<QAction*> m_themeactions;
 };

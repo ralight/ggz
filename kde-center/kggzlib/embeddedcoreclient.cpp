@@ -3,6 +3,8 @@
 #include "playerlist.h"
 #include "tablelist.h"
 
+#include <kggzcore/coreclient.h>
+
 #include <QLayout>
 #include <QToolBar>
 #include <QIcon>
@@ -15,9 +17,9 @@
 
 // FIXME: in addition to the chat widget, there's also the game chat which could be part of libkggzgames
 
-EmbeddedCoreClient::EmbeddedCoreClient()
+EmbeddedCoreClient::EmbeddedCoreClient(KGGZCore::CoreClient *core)
 : QMainWindow(),
-	m_tablenum(-1)
+	m_tablenum(-1), m_core(core)
 {
 	// FIXME: the layout is nearly identical to the one in Vencedor, with the exception of the room list
 

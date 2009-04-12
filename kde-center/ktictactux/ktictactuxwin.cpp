@@ -28,6 +28,7 @@
 
 #include <kggzlib/connectiondialog.h>
 #include <kggzlib/kggzcorelayer.h>
+#include <kggzlib/embeddedcoreclient.h>
 
 #include <kggzcore/player.h>
 
@@ -59,6 +60,7 @@ KTicTacTuxWin::KTicTacTuxWin()
 	mggz = new KMenu(this);
 	mggz->setTitle(i18n("GGZ"));
 	action_ggzplayers = mggz->addAction(KIconLoader::global()->loadIcon("ggz", KIconLoader::Small), i18n("Seats && Spectators"));
+	action_ggzcontrol = mggz->addAction(KIconLoader::global()->loadIcon("ggz", KIconLoader::Small), i18n("Control panel"));
 
 	mtheme = new KMenu(this);
 	mtheme->setTitle(i18n("Theme"));
@@ -185,6 +187,11 @@ void KTicTacTuxWin::slotMenu(QAction *action)
 	else if(action == action_ggzplayers)
 	{
 		m_tux->seats();
+	}
+	else if(action == action_ggzcontrol)
+	{
+		// FIXME: initialise all content and make it a singleton
+		EmbeddedCoreClient *ecc = new EmbeddedCoreClient();
 	}
 	else if(action == action_quit)
 	{

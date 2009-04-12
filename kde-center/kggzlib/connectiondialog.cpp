@@ -126,14 +126,10 @@ void ConnectionDialog::slotReady(bool ready)
 	if(ready)
 	{
 		// FIXME: support for join/spectate in addition to launch goes here...
-		// FIXME: right now, this leads to a crash when closing the connection dialogue
-		//EmbeddedCoreClient *ecc = new EmbeddedCoreClient();
+		EmbeddedCoreClient *ecc = new EmbeddedCoreClient(m_core);
 
 		m_tabledlg = new TableDialog(this);
-		// FIXME: use real gametype from ggzcore
-		KGGZCore::GameType gametype;
-		gametype.setMaxPlayers(2);
-		gametype.setMaxBots(1);
+		KGGZCore::GameType gametype = m_corelayer->core()->room()->gametype();
 		m_tabledlg->setGameType(gametype);
 		m_tabledlg->setIdentity(m_username);
 		m_tabledlg->setModal(true);
@@ -152,7 +148,7 @@ void ConnectionDialog::slotReady(bool ready)
 void ConnectionDialog::slotTable(int result)
 {
 	if(result == QDialog::Accepted)
-		m_corelayer->configureTable(m_tabledlg->table().players());
+		m_corelayer->configureTable(m_tabledlg->table().description(), m_tabledlg->table().players());
 
 	delete m_tabledlg;
 	m_tabledlg = NULL;

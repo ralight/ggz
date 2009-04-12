@@ -340,12 +340,11 @@ void KGGZCoreLayer::slotTableReady()
 		m_core->room()->jointable(m_tablenum, m_spectator);
 }
 
-void KGGZCoreLayer::configureTable(QList<KGGZCore::Player> seats)
+void KGGZCoreLayer::configureTable(QString description, QList<KGGZCore::Player> seats)
 {
 	//seats.prepend(KGGZCore::Player(m_core->username(), KGGZCore::Player::player));
 	m_seats = seats;
-	// FIXME: make table name configurable
-	m_tablename = "*embedded*";
+	m_tablename = description;
 }
 
 void KGGZCoreLayer::launch()

@@ -323,7 +323,7 @@ void Vencedor::slotLaunch()
 	{
 		KGGZCoreLayer *corelayer = new KGGZCoreLayer(this);
 		corelayer->setCore(m_core);
-		corelayer->configureTable(tabledlg.table().players());
+		corelayer->configureTable(tabledlg.table().description(), tabledlg.table().players());
 		corelayer->launch();
 	}
 }

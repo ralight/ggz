@@ -20,7 +20,7 @@ class KGGZLIB_EXPORT KGGZCoreLayer : public QObject
 		~KGGZCoreLayer();
 
 		void ggzcore(QString uri, bool embedded);
-		void configureTable(QList<KGGZCore::Player> seats);
+		void configureTable(QString description, QList<KGGZCore::Player> seats);
 		void launch();
 		void join(unsigned int tablenum, bool spectator);
 

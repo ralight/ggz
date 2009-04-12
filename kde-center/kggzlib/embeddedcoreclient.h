@@ -11,24 +11,31 @@ class PlayerList;
 class TableList;
 class KChat;
 
+namespace KGGZCore
+{
+	class CoreClient;
+}
+
 class KGGZLIB_EXPORT EmbeddedCoreClient : public QMainWindow
 {
 	Q_OBJECT
 	public:
-		EmbeddedCoreClient();
+		EmbeddedCoreClient(KGGZCore::CoreClient *core);
 
+	private slots:
 		void slotChat(QString sender, QString message, KGGZCore::Room::ChatType type);
 
 		void slotLaunch();
 		void slotJoin();
 		void slotSpectate();
 		// FIXME: slotMotd() as well? + slotChatEntered!
-	private slots:
+
 		void slotTable(const KGGZCore::Table& table, int pos);
 	private:
 		void handleRoomlist();
 
-		//KGGZCore::CoreClient *m_core;
+		KGGZCore::CoreClient *m_core;
+
 		KChat *m_chat;
 		PlayerList *m_players;
 		TableList *m_tables;
