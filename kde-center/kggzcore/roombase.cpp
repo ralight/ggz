@@ -38,6 +38,26 @@ RoomBase::RoomBase(QObject *parent)
 
 RoomBase::~RoomBase()
 {
+	if(m_room)
+	{
+		ggzcore_room_remove_event_hook(m_room, GGZ_PLAYER_LIST, &RoomBase::cb_room);
+		ggzcore_room_remove_event_hook(m_room, GGZ_TABLE_LIST, &RoomBase::cb_room);
+		ggzcore_room_remove_event_hook(m_room, GGZ_CHAT_EVENT, &RoomBase::cb_room);
+		ggzcore_room_remove_event_hook(m_room, GGZ_ROOM_ENTER, &RoomBase::cb_room);
+		ggzcore_room_remove_event_hook(m_room, GGZ_ROOM_LEAVE, &RoomBase::cb_room);
+		ggzcore_room_remove_event_hook(m_room, GGZ_TABLE_UPDATE, &RoomBase::cb_room);
+		ggzcore_room_remove_event_hook(m_room, GGZ_TABLE_LAUNCHED, &RoomBase::cb_room);
+		ggzcore_room_remove_event_hook(m_room, GGZ_TABLE_LAUNCH_FAIL, &RoomBase::cb_room);
+		ggzcore_room_remove_event_hook(m_room, GGZ_TABLE_JOINED, &RoomBase::cb_room);
+		ggzcore_room_remove_event_hook(m_room, GGZ_TABLE_JOIN_FAIL, &RoomBase::cb_room);
+		ggzcore_room_remove_event_hook(m_room, GGZ_TABLE_LEFT, &RoomBase::cb_room);
+		ggzcore_room_remove_event_hook(m_room, GGZ_TABLE_LEAVE_FAIL, &RoomBase::cb_room);
+		ggzcore_room_remove_event_hook(m_room, GGZ_PLAYER_LAG, &RoomBase::cb_room);
+		ggzcore_room_remove_event_hook(m_room, GGZ_PLAYER_STATS, &RoomBase::cb_room);
+		ggzcore_room_remove_event_hook(m_room, GGZ_PLAYER_COUNT, &RoomBase::cb_room);
+		ggzcore_room_remove_event_hook(m_room, GGZ_PLAYER_PERMS, &RoomBase::cb_room);
+	}
+
 	delete m_sn;
 }
 

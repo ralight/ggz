@@ -73,6 +73,8 @@ void EmbeddedCoreClient::setCore(KGGZCore::CoreClient *core)
 	m_core = core;
 	m_corelayer->setCore(core);
 
+	//QObject::disconnect(m_core->room(), 0, this, 0);
+
 	connect(m_core->room(),
 		SIGNAL(signalFeedback(KGGZCore::Room::FeedbackMessage, KGGZCore::Error::ErrorCode)),
 		SLOT(slotFeedback(KGGZCore::Room::FeedbackMessage, KGGZCore::Error::ErrorCode)));

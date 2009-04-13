@@ -364,11 +364,14 @@ void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZC
 			//if(error == KGGZCore::Error::no_status)
 			//room = m_core->room();
 
+			// FIXME: something like EmbeddedCoreClient::slotTable needed
 			if(!m_core->room()->gametype().name().isEmpty())
 				m_ecc->action_launch()->setEnabled(true);
 			else
 				m_ecc->action_launch()->setEnabled(false);
 			enable(true);
+			// FIXME: core remains the same, only room changes
+			m_ecc->setCore(m_core);
 			m_ecc->widget_chat()->addSystemMessage(i18n("Vencedor"), i18n("Entered room %1.").arg(m_core->roomname()));
 			m_ecc->widget_rooms()->select(m_core->roomname());
 			break;
