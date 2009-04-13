@@ -117,7 +117,6 @@ Vencedor::Vencedor(QString url)
 	toolbar->addAction(m_ecc->action_join());
 	toolbar->addAction(m_ecc->action_spectate());
 
-	connect(m_ecc->widget_chat(), SIGNAL(signalSendMessage(int, const QString)), SLOT(slotChatEntered(int, const QString&)));
 	connect(m_ecc->widget_rooms(), SIGNAL(signalSelected(const QString&)), SLOT(slotRoom(const QString&)));
 	connect(m_ecc->widget_rooms(), SIGNAL(signalFavourite(const QString&, bool)), SLOT(slotFavourite(const QString&, bool)));
 
@@ -293,46 +292,6 @@ void Vencedor::handleSession()
 	m_ecc->widget_rooms()->setGGZProfile(profile);
 }
 
-void Vencedor::slotChatEntered(int id, const QString& msg)
-{
-	Q_UNUSED(id);
-
-	kDebug() << "CHAT:" << id << msg;
-	// FIXME TODO: chatannounce, chattable
-
-	KGGZCore::Room::ChatType type = KGGZCore::Room::chatnormal;
-	QString receiver;
-	QString message = msg;
-
-	if((msg.length() > 0) && (msg.startsWith("/")))
-	{
-		QStringList list = message.split(" ");
-		QString cmd = list.at(0);
-		if(cmd == "/beep")
-		{
-			if(list.size() != 2)
-			{
-				return;
-			}
-			message = QString();
-			type = KGGZCore::Room::chatbeep;
-			receiver = list.at(1);
-		}
-		else if(cmd == "/msg")
-		{
-			if(list.size() < 3)
-			{
-				return;
-			}
-			message = msg.section(" ", 2);
-			type = KGGZCore::Room::chatprivate;
-			receiver = list.at(1);
-		}
-	}
-
-	m_core->room()->sendchat(message, receiver, type);
-}
-
 void Vencedor::slotRoom(const QString& name)
 {
 	m_core->initiateRoomChange(name);
@@ -490,112 +449,6 @@ void Vencedor::slotEvent(KGGZCore::CoreClient::EventMessage message)
 			enable(false);
 			break;
 	}
-}
-
-void Vencedor::slotFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::Error::ErrorCode error)
-{
-	// FIXME!
-	Q_UNUSED(error);
-
-	switch(message)
-	{
-		case KGGZCore::Room::tablelaunched:
-			//activity(i18n("A table has been launched"));
-			break;
-		case KGGZCore::Room::tablejoined:
-			break;
-		case KGGZCore::Room::tableleft:
-			break;
-	}
-}
-
-void Vencedor::slotAnswer(KGGZCore::Room::AnswerMessage message)
-{
-	QList<KGGZCore::Player> players;
-	QList<KGGZCore::Table> tables;
-
-	switch(message)
-	{
-		case KGGZCore::Room::playerlist:
-			m_ecc->widget_players()->clear();
-			players = m_core->room()->players();
-			for(int i = 0; i < players.count(); i++)
-			{
-				KGGZCore::Player player = players.at(i);
-				Player *p = new Player(player.name());
-				m_ecc->widget_players()->addPlayer(p);
-			}
-			break;
-		case KGGZCore::Room::tablelist:
-			m_ecc->widget_tables()->clear();
-			// FIXME: shouldn't be necessary to enforce the disabled join/spectate buttons
-			// FIXME: needs to be integrated with EmbeddedCoreClient now, e.g. setTables(tables)
-			//slotTable(KGGZCore::Table(), -1);
-			tables = m_core->room()->tables();
-			for(int i = 0; i < tables.count(); i++)
-			{
-				KGGZCore::Table table = tables.at(i);
-				m_ecc->widget_tables()->addConfiguration(table);
-			}
-			break;
-	}
-}
-
-void Vencedor::slotEvent(KGGZCore::Room::EventMessage message)
-{
-	switch(message)
-	{
-		case KGGZCore::Room::chat:
-			// FIXME: this is now in slotChat()
-			break;
-		case KGGZCore::Room::enter:
-			m_ecc->widget_chat()->addSystemMessage(i18n("Vencedor"), i18n("--> %1 has entered the room.").arg("SOMEBODY"));
-			break;
-		case KGGZCore::Room::leave:
-			m_ecc->widget_chat()->addSystemMessage(i18n("Vencedor"), i18n("<-- %1 has left the room.").arg("SOMEBODY"));
-			break;
-		case KGGZCore::Room::tableupdate:
-			//qDebug() << "#tables(update)";
-			//checkTables();
-			//roominfo();
-			break;
-		case KGGZCore::Room::playerlag:
-			break;
-		case KGGZCore::Room::stats:
-			break;
-		case KGGZCore::Room::count:
-			break;
-		case KGGZCore::Room::perms:
-			break;
-		case KGGZCore::Room::libraryerror:
-			break;
-	}
-}
-
-void Vencedor::slotChat(QString sender, QString message, KGGZCore::Room::ChatType type)
-{
-	if(type == KGGZCore::Room::chatprivate)
-	{
-		message.prepend("[PRIVATE] ");
-	}
-	else if(type == KGGZCore::Room::chatbeep)
-	{
-		QApplication::beep();
-		message = "[BEEP]";
-	}
-
-	// FIXME: colours and style?
-	QFont namefont = m_ecc->widget_chat()->nameFont();
-	QFont smfont = m_ecc->widget_chat()->systemMessageFont();
-	namefont.setItalic(true);
-	smfont.setBold(true);
-	m_ecc->widget_chat()->setNameFont(namefont);
-	m_ecc->widget_chat()->setSystemMessageFont(smfont);
-
-	if(type != KGGZCore::Room::chatnormal)
-		m_ecc->widget_chat()->addSystemMessage(sender, message);
-	else
-		m_ecc->widget_chat()->addMessage(sender, message);
 }
 
 void Vencedor::handleRoomlist()

@@ -23,10 +23,6 @@ class Vencedor : public QMainWindow
 		void slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
 		void slotAnswer(KGGZCore::CoreClient::AnswerMessage message);
 		void slotEvent(KGGZCore::CoreClient::EventMessage message);
-		void slotFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
-		void slotAnswer(KGGZCore::Room::AnswerMessage message);
-		void slotEvent(KGGZCore::Room::EventMessage message);
-		void slotChat(QString sender, QString message, KGGZCore::Room::ChatType type);
 
 		void slotConnect();
 		void slotDisconnect();
@@ -37,7 +33,6 @@ class Vencedor : public QMainWindow
 		void slotModules();
 
 		void slotRoom(const QString& name);
-		void slotChatEntered(int id, const QString& msg);
 
 		void slotFavourite(const QString& roomname, bool favourite);
 

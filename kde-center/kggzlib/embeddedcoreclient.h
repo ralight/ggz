@@ -35,16 +35,22 @@ class KGGZLIB_EXPORT EmbeddedCoreClient : public QObject
 		QAction *action_spectate();
 
 	private slots:
-		void slotChat(QString sender, QString message, KGGZCore::Room::ChatType type);
-
 		void slotLaunch();
 		void slotJoin();
 		void slotSpectate();
-		// FIXME: slotMotd() as well? + slotChatEntered!
+		// FIXME: slotMotd() as well?
 
+		void slotChatEntered(int id, const QString& msg);
 		void slotTable(const KGGZCore::Table& table, int pos);
+
+		void slotFeedback(KGGZCore::Room::FeedbackMessage message, KGGZCore::Error::ErrorCode error);
+		void slotAnswer(KGGZCore::Room::AnswerMessage message);
+		void slotEvent(KGGZCore::Room::EventMessage message);
+		void slotChat(QString sender, QString message, KGGZCore::Room::ChatType type);
+
 	private:
 		void handleRoomlist();
+		void handleTablelist();
 
 		KGGZCore::CoreClient *m_core;
 
