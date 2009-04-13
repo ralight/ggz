@@ -44,6 +44,8 @@ KTicTacTuxWin::KTicTacTuxWin()
 	m_tux = new KTicTacTux();
 	setCentralWidget(m_tux);
 
+	m_core = NULL;
+	m_gcc = NULL;
 	m_networked = false;
 
 	mgame = new KMenu(this);
@@ -61,6 +63,9 @@ KTicTacTuxWin::KTicTacTuxWin()
 	mggz->setTitle(i18n("GGZ"));
 	action_ggzplayers = mggz->addAction(KIconLoader::global()->loadIcon("ggz", KIconLoader::Small), i18n("Seats && Spectators"));
 	action_ggzcontrol = mggz->addAction(KIconLoader::global()->loadIcon("ggz", KIconLoader::Small), i18n("Control panel"));
+
+	action_ggzplayers->setCheckable(true);
+	action_ggzcontrol->setCheckable(true);
 
 	mtheme = new KMenu(this);
 	mtheme->setTitle(i18n("Theme"));
@@ -101,6 +106,8 @@ KTicTacTuxWin::KTicTacTuxWin()
 // Destructor
 KTicTacTuxWin::~KTicTacTuxWin()
 {
+	if(action_ggzcontrol->isChecked())
+		delete m_gcc;
 }
 
 // Display the game status
@@ -187,11 +194,23 @@ void KTicTacTuxWin::slotMenu(QAction *action)
 	else if(action == action_ggzplayers)
 	{
 		m_tux->seats();
+		// FIXME: not yet well integrated with checkable actions
 	}
 	else if(action == action_ggzcontrol)
 	{
-		// FIXME: initialise all content and make it a singleton
-		GameCoreClient *gcc = new GameCoreClient(NULL);
+		if(action_ggzcontrol->isChecked())
+		{
+			m_gcc = new GameCoreClient(m_core, NULL);
+			m_gcc->setAttribute(Qt::WA_DeleteOnClose);
+			connect(m_gcc, SIGNAL(destroyed()), action, SLOT(toggle()));
+		}
+		else
+		{
+			// FIXME: this is done because the destruction of m_gcc reverts it again
+			action_ggzcontrol->setChecked(true);
+			delete m_gcc;
+			m_gcc = NULL;
+		}
 	}
 	else if(action == action_quit)
 	{
@@ -301,6 +320,7 @@ void KTicTacTuxWin::slotGameOver()
 	//action_connect->setEnabled(false);
 	action_highscores->setEnabled(false);
 	action_ggzplayers->setEnabled(false);
+	action_ggzcontrol->setEnabled(false);
 
 	if(m_networked)
 		action_score->setEnabled(false);
@@ -386,9 +406,15 @@ void KTicTacTuxWin::connectcore()
 	dialog.setGame("TicTacToe", "dio/5+dev");
 	if(dialog.exec() == QDialog::Accepted)
 	{
-		//QList<KGGZCore::Player> seats;
-		//seats << KGGZCore::Player("somebot", KGGZCore::Player::bot);
-		//dialog.layer()->configureTable(seats);
 		enableNetwork(true);
+
+		// The three lines below are completely optional and required only for the menu integration
+		// with the ggz control panel action
+		m_core = dialog.core();
+		m_gcc = dialog.gamecoreclient();
+		action_ggzcontrol->setChecked(true);
+		m_gcc->setAttribute(Qt::WA_DeleteOnClose);
+		connect(m_gcc, SIGNAL(destroyed()), action_ggzcontrol, SLOT(toggle()));
 	}
 }
+

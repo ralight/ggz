@@ -138,7 +138,7 @@ void Room::jointable(unsigned int tablenum, bool spectate)
 
 void Room::launchmodule(bool embedded, QString modname)
 {
-	qDebug(">>launchmodule>>");
+	qDebug(">>launchmodule>> [embedded=%i]", embedded);
 	GGZModule *module = NULL;
 
 	if(!embedded)

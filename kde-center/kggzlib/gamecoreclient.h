@@ -6,6 +6,7 @@
 #include "kggzlib_export.h"
 
 class EmbeddedCoreClient;
+class KGGZCoreLayer;
 
 namespace KGGZCore
 {
@@ -16,7 +17,8 @@ class KGGZLIB_EXPORT GameCoreClient : public QMainWindow
 {
 	Q_OBJECT
 	public:
-		GameCoreClient(KGGZCore::CoreClient *core);
+		GameCoreClient(KGGZCore::CoreClient *core, KGGZCoreLayer *layer);
+
 	private:
 		EmbeddedCoreClient *m_ecc;
 };

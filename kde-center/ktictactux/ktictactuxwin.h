@@ -25,6 +25,12 @@
 // Forward declarations
 class KMenu;
 class QAction;
+class GameCoreClient;
+
+namespace KGGZCore
+{
+	class CoreClient;
+}
 
 // The game window
 class KTicTacTuxWin : public KMainWindow
@@ -71,6 +77,9 @@ class KTicTacTuxWin : public KMainWindow
 		// List of themes
 		QMap<QString, QString> m_themes, m_player1, m_player2;
 		QMap<int, QString> m_themenames;
+		// Core client integration
+		KGGZCore::CoreClient *m_core;
+		GameCoreClient *m_gcc;
 
 		// Menu ids
 		QAction *action_connect;

@@ -12,6 +12,7 @@ class GGZProfile;
 class KGGZCoreLayer;
 class QProgressBar;
 class TableDialog;
+class GameCoreClient;
 
 namespace KGGZCore
 {
@@ -32,6 +33,8 @@ class KGGZLIB_EXPORT ConnectionDialog : public QDialog
 
 		void setCoreMode(bool coremode);
 		KGGZCore::CoreClient *core();
+
+		GameCoreClient *gamecoreclient();
 
 	private slots:
 		void slotManage();
@@ -54,6 +57,7 @@ class KGGZLIB_EXPORT ConnectionDialog : public QDialog
 		QString m_version;
 		QString m_username;
 		TableDialog *m_tabledlg;
+		GameCoreClient *m_gcc;
 
 		bool m_coremode;
 };

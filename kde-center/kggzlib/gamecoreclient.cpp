@@ -17,10 +17,10 @@
 
 #include <kchat.h>
 
-GameCoreClient::GameCoreClient(KGGZCore::CoreClient *core)
+GameCoreClient::GameCoreClient(KGGZCore::CoreClient *core, KGGZCoreLayer *layer)
 : QMainWindow()
 {
-	m_ecc = new EmbeddedCoreClient(core, false);
+	m_ecc = new EmbeddedCoreClient(core, layer, false);
 
 	// FIXME: the layout is nearly identical to the one in Vencedor, with the exception of the room list
 

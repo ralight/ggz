@@ -20,14 +20,22 @@
 
 // FIXME: in addition to the chat widget, there's also the game chat which could be part of libkggzgames
 
-EmbeddedCoreClient::EmbeddedCoreClient(KGGZCore::CoreClient *core, bool withrooms)
+EmbeddedCoreClient::EmbeddedCoreClient(KGGZCore::CoreClient *core, KGGZCoreLayer *layer, bool withrooms)
 : QObject(),
-	m_core(core), m_tablenum(-1)
+	m_core(core), m_corelayer(layer), m_tablenum(-1)
 {
 	if(withrooms)
 		m_rooms = new RoomList();
 	else
 		m_rooms = NULL;
+
+	if(!m_corelayer)
+	{
+		m_corelayer = new KGGZCoreLayer(this);
+		m_corelayer->setCore(m_core);
+	}
+	if(!m_core)
+		m_core = m_corelayer->core();
 
 	m_players = new PlayerList();
 	m_tables = new TableList();
@@ -37,17 +45,14 @@ EmbeddedCoreClient::EmbeddedCoreClient(KGGZCore::CoreClient *core, bool withroom
 
 	QPixmap icon_launch = KIconLoader::global()->loadIcon("start-here", KIconLoader::Small);
 	m_action_launch = new QAction(QIcon(icon_launch), i18n("Launch a new game"), this);
-	connect(m_action_launch, SIGNAL(triggered(bool)), SLOT(slotLaunch()));
 //	m_action_launch->setEnabled(false);
 
 	QPixmap icon_join = KIconLoader::global()->loadIcon("start-here", KIconLoader::Small);
 	m_action_join = new QAction(QIcon(icon_join), i18n("Join a running new game"), this);
-	connect(m_action_join, SIGNAL(triggered(bool)), SLOT(slotJoin()));
 	m_action_join->setEnabled(false);
 
 	QPixmap icon_spectate = KIconLoader::global()->loadIcon("start-here", KIconLoader::Small);
 	m_action_spectate = new QAction(QIcon(icon_spectate), i18n("Spectate a running game"), this);
-	connect(m_action_spectate, SIGNAL(triggered(bool)), SLOT(slotSpectate()));
 	m_action_spectate->setEnabled(false);
 
 	connect(m_chat, SIGNAL(signalSendMessage(int, const QString)), SLOT(slotChatEntered(int, const QString&)));
@@ -56,6 +61,17 @@ EmbeddedCoreClient::EmbeddedCoreClient(KGGZCore::CoreClient *core, bool withroom
 	connect(m_action_launch, SIGNAL(triggered(bool)), SLOT(slotLaunch()));
 	connect(m_action_join, SIGNAL(triggered(bool)), SLOT(slotJoin()));
 	connect(m_action_spectate, SIGNAL(triggered(bool)), SLOT(slotSpectate()));
+
+	setCore(m_core);
+}
+
+void EmbeddedCoreClient::setCore(KGGZCore::CoreClient *core)
+{
+	if(!core)
+		return;
+
+	m_core = core;
+	m_corelayer->setCore(core);
 
 	connect(m_core->room(),
 		SIGNAL(signalFeedback(KGGZCore::Room::FeedbackMessage, KGGZCore::Error::ErrorCode)),
@@ -106,7 +122,6 @@ QAction *EmbeddedCoreClient::action_spectate()
 	return m_action_spectate;
 }
 
-// FIXME: core layer must be shared?! etc.
 void EmbeddedCoreClient::slotLaunch()
 {
 	TableDialog tabledlg(/*this*/NULL);
@@ -116,25 +131,19 @@ void EmbeddedCoreClient::slotLaunch()
 	tabledlg.setIdentity(m_core->username());
 	if(tabledlg.exec() == QDialog::Accepted)
 	{
-		KGGZCoreLayer *corelayer = new KGGZCoreLayer(this);
-		corelayer->setCore(m_core);
-		corelayer->configureTable(tabledlg.table().description(), tabledlg.table().players());
-		corelayer->launch();
+		m_corelayer->configureTable(tabledlg.table().description(), tabledlg.table().players());
+		m_corelayer->launch();
 	}
 }
 
 void EmbeddedCoreClient::slotJoin()
 {
-	KGGZCoreLayer *corelayer = new KGGZCoreLayer(this);
-	corelayer->setCore(m_core);
-	corelayer->join(m_tablenum, false);
+	m_corelayer->join(m_tablenum, false);
 }
 
 void EmbeddedCoreClient::slotSpectate()
 {
-	KGGZCoreLayer *corelayer = new KGGZCoreLayer(this);
-	corelayer->setCore(m_core);
-	corelayer->join(m_tablenum, true);
+	m_corelayer->join(m_tablenum, true);
 }
 
 void EmbeddedCoreClient::handleRoomlist()

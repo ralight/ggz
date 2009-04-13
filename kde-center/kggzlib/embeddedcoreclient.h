@@ -11,6 +11,7 @@ class PlayerList;
 class TableList;
 class KChat;
 class RoomList;
+class KGGZCoreLayer;
 
 class QAction;
 
@@ -23,7 +24,9 @@ class KGGZLIB_EXPORT EmbeddedCoreClient : public QObject
 {
 	Q_OBJECT
 	public:
-		EmbeddedCoreClient(KGGZCore::CoreClient *core, bool withrooms);
+		EmbeddedCoreClient(KGGZCore::CoreClient *core, KGGZCoreLayer *layer, bool withrooms);
+
+		void setCore(KGGZCore::CoreClient *core);
 
 		KChat *widget_chat();
 		PlayerList *widget_players();
@@ -53,6 +56,7 @@ class KGGZLIB_EXPORT EmbeddedCoreClient : public QObject
 		void handleTablelist();
 
 		KGGZCore::CoreClient *m_core;
+		KGGZCoreLayer *m_corelayer;
 
 		KChat *m_chat;
 		PlayerList *m_players;

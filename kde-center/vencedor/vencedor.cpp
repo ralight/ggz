@@ -47,7 +47,7 @@ Vencedor::Vencedor(QString url)
 {
 	KStandardDirs d;
 
-	m_ecc = new EmbeddedCoreClient(NULL, true);
+	m_ecc = new EmbeddedCoreClient(NULL, NULL, true);
 
 	QWidget *centralwidget = new QWidget();
 	setCentralWidget(centralwidget);
@@ -156,6 +156,7 @@ void Vencedor::connection(const QString& url)
 	m_action_connect->setEnabled(false);
 
 	m_core = new KGGZCore::CoreClient(this);
+	m_ecc->setCore(m_core);
 
 	connect(m_core,
 		SIGNAL(signalFeedback(KGGZCore::CoreClient::FeedbackMessage, KGGZCore::Error::ErrorCode)),
@@ -248,6 +249,7 @@ void Vencedor::slotDisconnect()
 	enable(false);
 	delete m_core;
 	m_core = NULL;
+	m_ecc->setCore(m_core);
 }
 
 void Vencedor::slotConnect()
@@ -259,6 +261,7 @@ void Vencedor::slotConnect()
 		// FIXME: the instance in connectiondialog is not ours
 		// FIXME: rather crude sharing, must switch to kggzcorelayer entirely!
 		m_core = dlg.core();
+		m_ecc->setCore(m_core);
 		enable(true);
 		handleRoomlist();
 		handleSession();
@@ -360,18 +363,6 @@ void Vencedor::slotFeedback(KGGZCore::CoreClient::FeedbackMessage message, KGGZC
 		case KGGZCore::CoreClient::roomenter:
 			//if(error == KGGZCore::Error::no_status)
 			//room = m_core->room();
-			connect(m_core->room(),
-				SIGNAL(signalFeedback(KGGZCore::Room::FeedbackMessage, KGGZCore::Error::ErrorCode)),
-				SLOT(slotFeedback(KGGZCore::Room::FeedbackMessage, KGGZCore::Error::ErrorCode)));
-			connect(m_core->room(),
-				SIGNAL(signalAnswer(KGGZCore::Room::AnswerMessage)),
-				SLOT(slotAnswer(KGGZCore::Room::AnswerMessage)));
-			connect(m_core->room(),
-				SIGNAL(signalEvent(KGGZCore::Room::EventMessage)),
-				SLOT(slotEvent(KGGZCore::Room::EventMessage)));
-			connect(m_core->room(),
-				SIGNAL(signalChat(QString, QString, KGGZCore::Room::ChatType)),
-				SLOT(slotChat(QString, QString, KGGZCore::Room::ChatType)));
 
 			if(!m_core->room()->gametype().name().isEmpty())
 				m_ecc->action_launch()->setEnabled(true);

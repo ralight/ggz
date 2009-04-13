@@ -27,7 +27,7 @@
 #include <qprogressbar.h>
 
 ConnectionDialog::ConnectionDialog(QWidget *parent)
-: QDialog(parent), m_corelayer(NULL), m_tabledlg(NULL), m_coremode(false)
+: QDialog(parent), m_corelayer(NULL), m_tabledlg(NULL), m_gcc(NULL), m_coremode(false)
 {
 	m_serverlist = new ServerList();
 
@@ -119,14 +119,9 @@ void ConnectionDialog::slotConnect()
 
 void ConnectionDialog::slotReady(bool ready)
 {
-	m_connect_button->setEnabled(true);
-	m_indicator->setEnabled(false);
-	m_indicator->setMaximum(1);
-
 	if(ready)
 	{
-		// FIXME: support for join/spectate in addition to launch goes here...
-		GameCoreClient *gcc = new GameCoreClient(m_corelayer->core());
+		accept();
 
 //		m_tabledlg = new TableDialog(this);
 //		KGGZCore::GameType gametype = m_corelayer->core()->room()->gametype();
@@ -142,18 +137,24 @@ void ConnectionDialog::slotReady(bool ready)
 		KMessageBox::error(this,
 			i18n("The connection cannot be established."),
 			i18n("Connection failed"));
+
+		m_connect_button->setEnabled(true);
+		m_indicator->setEnabled(false);
+		m_indicator->setMaximum(1);
 	}
 }
 
 void ConnectionDialog::slotTable(int result)
 {
-	if(result == QDialog::Accepted)
-		m_corelayer->configureTable(m_tabledlg->table().description(), m_tabledlg->table().players());
+	Q_UNUSED(result);
 
-	delete m_tabledlg;
-	m_tabledlg = NULL;
+//	if(result == QDialog::Accepted)
+//		m_corelayer->configureTable(m_tabledlg->table().description(), m_tabledlg->table().players());
 
-	done(result);
+//	delete m_tabledlg;
+//	m_tabledlg = NULL;
+
+//	done(result);
 }
 
 void ConnectionDialog::slotSelected(const GGZProfile& profile, int pos)
@@ -192,8 +193,11 @@ void ConnectionDialog::setCoreMode(bool coremode)
 
 void ConnectionDialog::slotRoomReady(bool ready)
 {
+	// FIXME: The launch code is now in EmbeddedCoreClient, although it might belong here as well...
 	if((ready) && (!m_coremode))
-		m_corelayer->launch();
+		//m_corelayer->launch();
+		// FIXME: support for join/spectate in addition to launch goes here...
+		m_gcc = new GameCoreClient(m_corelayer->core(), m_corelayer);
 
 	if(m_coremode)
 	{
@@ -207,5 +211,10 @@ KGGZCore::CoreClient *ConnectionDialog::core()
 		return NULL;
 
 	return m_corelayer->core();
+}
+
+GameCoreClient *ConnectionDialog::gamecoreclient()
+{
+	return m_gcc;
 }
 
