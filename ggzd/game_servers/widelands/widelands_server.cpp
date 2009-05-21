@@ -53,17 +53,17 @@ void WidelandsServer::stateEvent()
 }
 
 // Player join hook
-void WidelandsServer::joinEvent(int player)
+void WidelandsServer::joinEvent(Client *client)
 {
 	std::cout << "WidelandsServer: joinEvent" << std::endl;
 
 	// Send greeter
-	int channel = fd(player);
+	int channel = fd(client->number);
 	ggz_write_int(channel, op_greeting);
 	ggz_write_string(channel, "widelands server");
 	ggz_write_int(channel, WIDELANDS_PROTOCOL);
 
-	if(!player) ggz_write_int(channel, op_request_ip);
+	if(!client->number) ggz_write_int(channel, op_request_ip);
 	else
 	{
 		ggz_write_int(channel, op_broadcast_ip);
@@ -72,28 +72,28 @@ void WidelandsServer::joinEvent(int player)
 }
 
 // Player leave event
-void WidelandsServer::leaveEvent(int player)
+void WidelandsServer::leaveEvent(Client *client)
 {
 	std::cout << "WidelandsServer: leaveEvent" << std::endl;
 }
 
 // Spectator join event (ignored)
-void WidelandsServer::spectatorJoinEvent(int spectator)
+void WidelandsServer::spectatorJoinEvent(Client *client)
 {
 }
 
 // Spectator leave event (ignored)
-void WidelandsServer::spectatorLeaveEvent(int spectator)
+void WidelandsServer::spectatorLeaveEvent(Client *client)
 {
 }
 
 // Spectator data event (ignored)
-void WidelandsServer::spectatorDataEvent(int spectator)
+void WidelandsServer::spectatorDataEvent(Client *client)
 {
 }
 
 // Game data event
-void WidelandsServer::dataEvent(int player)
+void WidelandsServer::dataEvent(Client *client)
 {
 	int opcode;
 	char *ip;
@@ -105,7 +105,7 @@ void WidelandsServer::dataEvent(int player)
 	std::cout << "WidelandsServer: dataEvent" << std::endl;
 
 	// Read data
-	int channel = fd(player);
+	int channel = fd(client->number);
 
 	ggz_read_int(channel, &opcode);
 	switch(opcode)

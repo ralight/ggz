@@ -18,6 +18,7 @@
 // FIXME: The already nearly non-existing protocol can nowadays be reduced
 // further by setting AllowPeers=1 and letting the game client read the
 // extended player information after join events.
+// FIXME: We're half-way there... :)
 
 #ifndef WIDELANDS_SERVER_H
 #define WIDELANDS_SERVER_H
@@ -36,12 +37,12 @@ class WidelandsServer : public GGZGameServer
 		WidelandsServer();
 		~WidelandsServer();
 		void stateEvent();
-		void joinEvent(int player);
-		void leaveEvent(int player);
-		void spectatorJoinEvent(int spectator);
-		void spectatorLeaveEvent(int spectator);
-		void spectatorDataEvent(int spectator);
-		void dataEvent(int player);
+		void joinEvent(Client *client);
+		void leaveEvent(Client *client);
+		void spectatorJoinEvent(Client *client);
+		void spectatorLeaveEvent(Client *client);
+		void spectatorDataEvent(Client *client);
+		void dataEvent(Client *client);
 		void errorEvent();
 
 	private:
