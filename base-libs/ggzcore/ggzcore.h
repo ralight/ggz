@@ -1589,7 +1589,9 @@ int ggzcore_game_remove_event_hook_id(GGZGame *game,
 /** @brief Return the control (ggzmod) socket for the game. */
 int  ggzcore_game_get_control_fd(const GGZGame *game);
 
-/** @brief Return the game's server socket. Needed only for channels set up by ggzcore. */
+/** @brief Set the game's server socket. Needed only for channels set up by ggzcore.
+ *  This function needs to be called after receiving a CHANNEL_READY event.
+ */
 void ggzcore_game_set_server_fd(GGZGame *game, unsigned int fd);
 
 /** @brief Return the module set for the game. */
