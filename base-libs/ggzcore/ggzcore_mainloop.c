@@ -6,6 +6,11 @@
 
 #include <ggz.h>
 
+#ifdef WIN32
+/* This provides "fd_set" support when compiling on Windows. */
+#include <winsock2.h>
+#endif
+
 #define DBG_MAINLOOP "GGZCORE:MAINLOOP<<>>"
 
 #define _(x) x
