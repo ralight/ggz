@@ -11,7 +11,7 @@
 
 # Originally written by Jason Short for Freeciv.  Imported and updated for
 # GGZ.  The canonical copy of this resides in the libggz module.
-# $Id: c99.m4 9076 2007-04-30 07:55:48Z josef $
+# $Id: c99.m4 10930 2009-06-20 22:00:19Z josef $
 
 # Check C99-style variadic macros (required):
 #
@@ -46,7 +46,8 @@ AC_DEFUN([AC_C99_VARIABLE_ARRAYS],
   AC_CACHE_CHECK([for C99 variable arrays],
     [ac_cv_c99_variable_arrays],
     [AC_TRY_COMPILE(
-        [],
+        [#include <string.h>
+         #include <stdio.h>],
         [char *s1 = "foo", *s2 = "bar";
          char s3[strlen(s1) + strlen(s2) + 1];
          sprintf(s3, "%s%s", s1, s2);],
