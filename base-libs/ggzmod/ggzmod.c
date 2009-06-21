@@ -147,10 +147,18 @@ static char *ggz_getenv(const char *name)
 /* Sets an environment variable (always overwrites) */
 static void ggz_setenv(const char *name, const char *value)
 {
+#ifdef WIN32
+char *str = ggz_malloc(strlen(name) + 1 + strlen(value) + 1);
+sprintf(str, "%s=%s", name, value);
+if (putenv(str) != EXIT_SUCCESS) {
+	free(str);
+}
+#else
 #ifdef HAVE_SETENV
 	setenv(name, value, 1);
 #else
 	SetEnvironmentVariable(name, value);
+#endif
 #endif
 }
 
