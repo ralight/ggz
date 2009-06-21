@@ -115,6 +115,7 @@ void net_connect(const char *host, int port, const char *name, const char *passw
 	/*fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);*/
 
 	status = NET_GOTREADY;
+	printf("Ready for chat!\n");
 }
 
 /* Change the current room (dummy function for netconsole) */

@@ -65,29 +65,23 @@ Guru *gurumod_exec(Guru *message)
 
 	bad = 0;
 	you = 0;
-	j = 0;
-	while((message->list) && (message->list[j]))
+	for(j = 0; ((message->list) && (message->list[j])); j++)
 	{
-		i = 0;
-		while((badwordlist) && (badwordlist[i]))
+		for(i = 0; ((badwordlist) && (badwordlist[i])); i++)
 		{
 			if(!strcmp(badwordlist[i], ""))
 				continue;
 			if(!strcasecmp(message->list[j], badwordlist[i])) bad = 1;
-			i++;
 		}
 		if(!strcasecmp(message->list[j], "you")) you = 1;
-		j++;
 	}
 	if(!bad)
 	{
-		i = 0;
-		while((badwordlist) && (badwordlist[i]))
+		for(i = 0; ((badwordlist) && (badwordlist[i])); i++)
 		{
 			if(!strcmp(badwordlist[i], ""))
 				continue;
 			if(strstr(message->message, badwordlist[i])) bad = 1;
-			i++;
 		}
 	}
 
