@@ -228,8 +228,8 @@ static void get_config_options(int ch)
 	}
 
 	/* [Files] */
-	opt.motd_file = ggz_conf_read_string(ch, "Files", "MOTD", NULL);
-	opt.motd_web = ggz_conf_read_string(ch, "Files", "WebMOTD", NULL);
+	opt.motd_file = ggz_conf_read_intlstring(ch, "Files", "MOTD");
+	opt.motd_web = ggz_conf_read_intlstring(ch, "Files", "WebMOTD");
 
 	/* [Logs] */
 	opt.dump_file = ggz_conf_read_string(ch, "Logs", "DumpFile", NULL);
@@ -376,7 +376,6 @@ void parse_conf_file(void)
 	if(!opt.db.hashencoding)
 		opt.db.hashencoding = ggz_strdup("base64");
 
-	if(!opt.motd_file)
-		opt.motd_file = ggz_strdup("ggzd.motd");
-
+	if(!ggz_intlstring_translated(opt.motd_file, NULL))
+		opt.motd_file = ggz_intlstring_fromstring("ggzd.motd");
 }

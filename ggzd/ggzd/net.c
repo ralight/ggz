@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 10782 2009-01-02 13:32:56Z oojah $
+ * $Id: net.c 10931 2009-06-21 10:01:01Z josef $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -383,12 +383,17 @@ GGZReturn net_send_motd(GGZNetIO *net)
 {
 	int i, num;
 	char *line;
-	
+
+	const char *language = net->client->language;
+
 	_net_send_line(net, "<MOTD PRIORITY='normal' URL='%s'><![CDATA[",
-		(opt.motd_web ? opt.motd_web : ""));
+		(opt.motd_web ? ggz_intlstring_translated(opt.motd_web, language) : ""));
+
+	// FIXME: This is certainly not threadsafe. Needs an on-demand strategy with cache for speed/memory tradeoff.
+	motd_read_file(ggz_intlstring_translated(opt.motd_file, language));
 
 	num = motd_get_num_lines();
-		
+
 	for (i = 0; i < num; i++) {
 		line = motd_get_line(i);
 		_net_send_line(net, "%s", line);

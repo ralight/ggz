@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 10635 2008-12-23 19:24:59Z josef $
+ * $Id: motd.c 10931 2009-06-21 10:01:01Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -197,7 +197,7 @@ void motd_read_file(const char *file)
 /* Returns 'true' if motd is defined */
 bool motd_is_defined(void)
 {
-	return (motd_info.motd_text != NULL);
+	return (ggz_intlstring_translated(opt.motd_file, NULL) != NULL);
 }
 
 
@@ -397,7 +397,7 @@ static char *motd_get_tables(int option,
 		/* Get total number of tables */
 		pthread_rwlock_rdlock(&state.lock);
 		num_tables = state.tables;
-		pthread_rwlock_unlock(&state.lock);		
+		pthread_rwlock_unlock(&state.lock);
 	}
 	else
 		num_tables = 0;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 10635 2008-12-23 19:24:59Z josef $
+ * $Id: datatypes.h 10931 2009-06-21 10:01:01Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -54,8 +54,8 @@ typedef struct {
 	const char *game_exec_dir;
 	const char *conf_dir;
 	const char *data_dir;
-	const char *motd_file;
-	const char *motd_web;
+	ggz_intlstring *motd_file;
+	ggz_intlstring *motd_web;
 	const char *admin_name;
 	const char *admin_email;
 	const char *server_name;
@@ -122,7 +122,7 @@ typedef struct GameInfo {
 	ggz_intlstring *desc;     /* Game description string; cleanup() */
 	char *author;   /* String containing name(s) of author(s); cleanup() */
 	char *homepage; /* Contains a web address for the game; cleanup() */
-	
+
 	/* Masks for how many overall players, bots and spectators are allowed
 	   to be selected for the game. */
 	GGZNumberList player_allow_list;

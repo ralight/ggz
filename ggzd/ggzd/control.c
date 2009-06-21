@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 10865 2009-02-18 18:10:51Z josef $
+ * $Id: control.c 10931 2009-06-21 10:01:01Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -176,8 +176,8 @@ static void cleanup_data(void)
 	if (opt.game_exec_dir) data_free(opt.game_exec_dir);
 	if (opt.conf_dir) data_free(opt.conf_dir);
 	if (opt.data_dir) data_free(opt.data_dir);
-	if (opt.motd_file) data_free(opt.motd_file);
-	if (opt.motd_web) data_free(opt.motd_web);
+	if (opt.motd_file) data_intlfree(opt.motd_file);
+	if (opt.motd_web) data_intlfree(opt.motd_web);
 	if (opt.admin_name) data_free(opt.admin_name);
 	if (opt.admin_email) data_free(opt.admin_email);
 	if (opt.server_name) data_free(opt.server_name);
@@ -592,7 +592,6 @@ int main(int argc, char *argv[])
 	/* Parse options */
 	parse_args(argc, argv);
 	parse_conf_file();
-	motd_read_file(opt.motd_file);
 
 	logfile_initialize();
 
