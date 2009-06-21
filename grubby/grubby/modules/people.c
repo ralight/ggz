@@ -74,7 +74,7 @@ Guru *gurumod_exec(Guru *message)
 			}
 			else
 			{
-				info = ggz_strbuild(_("Hi %s, I'm %s. I have never seen you before here.\nType '%s help' to change this :)"),
+				info = ggz_strbuild(__("Hi %s, I'm %s. I have never seen you before here.\nType '%s help' to change this :)"),
 					message->player, message->guru, message->guru);
 			}
 			message->message = strdup(info);
@@ -161,18 +161,27 @@ Guru *gurumod_exec(Guru *message)
 		&& (!strcmp(message->list[2], "is")))
 		{
 			name = message->list[3];
-			p = guru_player_lookup(name);
-			if(p)
+			if(!strcmp(name, message->guru))
 			{
-				realname = (p->realname ? p->realname : "unknown");
-				contact = (p->contact ? p->contact : "unknown");
-				language = (p->language ? p->language : "unknown");
-				info = ggz_strbuild("%s: %s, %s: %s, %s: %s",
-					__("Name"), realname, __("Contact"), contact, __("Language"), language);
+				info = ggz_strbuild(__("May I introduce myself? I'm %s, your friendly chat bot."), message->guru);
 				message->message = strdup(info);
 				ggz_free(info);
 			}
-			else message->message = __("Sorry, I don't know who this is.");
+			else
+			{
+				p = guru_player_lookup(name);
+				if(p)
+				{
+					realname = (p->realname ? p->realname : "unknown");
+					contact = (p->contact ? p->contact : "unknown");
+					language = (p->language ? p->language : "unknown");
+					info = ggz_strbuild("%s: %s, %s: %s, %s: %s",
+						__("Name"), realname, __("Contact"), contact, __("Language"), language);
+					message->message = strdup(info);
+					ggz_free(info);
+				}
+				else message->message = __("Sorry, I don't know who this is.");
+			}
 			return message;
 		}
 	}
