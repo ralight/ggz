@@ -1,5 +1,6 @@
 // Widelands server for GGZ
 // Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
+// Copyright (C) 2009 The Widelands Development Team
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,11 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-// FIXME: The already nearly non-existing protocol can nowadays be reduced
-// further by setting AllowPeers=1 and letting the game client read the
-// extended player information after join events.
-// FIXME: We're half-way there... :)
 
 #ifndef WIDELANDS_SERVER_H
 #define WIDELANDS_SERVER_H
@@ -50,7 +46,7 @@ class WidelandsServer : public GGZGameServer
 		void game_stop();
 		void game_end();
 
-		char *m_ip;
+		char * m_ip;
 };
 
 #endif

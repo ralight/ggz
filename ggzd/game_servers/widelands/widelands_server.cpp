@@ -1,5 +1,6 @@
 // Widelands server for GGZ
 // Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
+// Copyright (C) 2009 The Widelands Development Team
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -43,7 +44,8 @@ WidelandsServer::WidelandsServer()
 // Destructor
 WidelandsServer::~WidelandsServer()
 {
-	if(m_ip) ggz_free(m_ip);
+	if(m_ip)
+		ggz_free(m_ip);
 }
 
 // State change hook
@@ -53,98 +55,124 @@ void WidelandsServer::stateEvent()
 }
 
 // Player join hook
-void WidelandsServer::joinEvent(Client *client)
+void WidelandsServer::joinEvent(Client * const client)
 {
 	std::cout << "WidelandsServer: joinEvent" << std::endl;
 
 	// Send greeter
-	int channel = fd(client->number);
+	int const channel = fd(client->number);
 	ggz_write_int(channel, op_greeting);
 	ggz_write_string(channel, "widelands server");
 	ggz_write_int(channel, WIDELANDS_PROTOCOL);
 
-	if(!client->number) ggz_write_int(channel, op_request_ip);
-	else
-	{
+	if (client->number == 0) {
+		ggz_write_int(channel, op_request_ip);
+		changeState(GGZGameServer::playing);
+	} else {
 		ggz_write_int(channel, op_broadcast_ip);
 		ggz_write_string(channel, m_ip);
 	}
 }
 
 // Player leave event
-void WidelandsServer::leaveEvent(Client *client)
+void WidelandsServer::leaveEvent(Client *)
 {
 	std::cout << "WidelandsServer: leaveEvent" << std::endl;
 }
 
 // Spectator join event (ignored)
-void WidelandsServer::spectatorJoinEvent(Client *client)
+void WidelandsServer::spectatorJoinEvent(Client *)
 {
 }
 
 // Spectator leave event (ignored)
-void WidelandsServer::spectatorLeaveEvent(Client *client)
+void WidelandsServer::spectatorLeaveEvent(Client *)
 {
 }
 
 // Spectator data event (ignored)
-void WidelandsServer::spectatorDataEvent(Client *client)
+void WidelandsServer::spectatorDataEvent(Client *)
 {
 }
 
 // Game data event
-void WidelandsServer::dataEvent(Client *client)
+void WidelandsServer::dataEvent(Client * const client)
 {
 	int opcode;
-	char *ip;
-
-	struct sockaddr *addr;
-	socklen_t addrsize;
-	int ret;
 
 	std::cout << "WidelandsServer: dataEvent" << std::endl;
 
 	// Read data
-	int channel = fd(client->number);
+	int const channel = fd(client->number);
 
 	ggz_read_int(channel, &opcode);
-	switch(opcode)
-	{
-		case op_reply_ip:
-			// Do not use IP provided by client
-			// instead, determine peer IP address
-			ggz_read_string_alloc(channel, &ip);
-			std::cout << "IP: " << ip << std::endl;
-			//m_ip = ggz_strdup(ip);
-			ggz_free(ip);
+	switch (opcode) {
+	case op_reply_ip:
+		char * ip;
 
-			addrsize = 256;
-			addr = (struct sockaddr*)malloc(addrsize);
-			ret = getpeername(channel, addr, &addrsize);
+		//  Do not use IP provided by client. Instead, determine peer IP address.
+		ggz_read_string_alloc(channel, &ip);
+		std::cout << "IP: " << ip << std::endl;
+		//  m_ip = ggz_strdup(ip);
+		ggz_free(ip);
 
-			// FIXME: IPv4 compatibility?
-			if(addr->sa_family == AF_INET6)
-			{
-				ip = (char*)ggz_malloc(INET6_ADDRSTRLEN);
-				inet_ntop(AF_INET6, (void*)&(((struct sockaddr_in6*)addr)->sin6_addr),
-					ip, INET6_ADDRSTRLEN);
-			}
-			else if(addr->sa_family == AF_INET)
-			{
-				ip = (char*)ggz_malloc(INET_ADDRSTRLEN);
-				inet_ntop(AF_INET, (void*)&(((struct sockaddr_in*)addr)->sin_addr),
-					ip, INET_ADDRSTRLEN);
-			}
-			else ip = NULL;
+		socklen_t addrsize = 256;
+		struct sockaddr * const addr =
+			static_cast<struct sockaddr *>(malloc(addrsize));
+		int const ret = getpeername(channel, addr, &addrsize);
 
-			std::cout << "broadcast IP: " << ip << std::endl;
-			m_ip = ggz_strdup(ip);
-			ggz_free(ip);
+		//  FIXME: IPv4 compatibility?
+		if (addr->sa_family == AF_INET6) {
+			ip = static_cast<char *>(ggz_malloc(INET6_ADDRSTRLEN));
+			inet_ntop
+				(AF_INET6,
+				 static_cast<void *>
+				 	(&(static_cast<struct sockaddr_in6 *>(addr))->sin6_addr),
+				 ip,
+				 INET6_ADDRSTRLEN);
+		} else if(addr->sa_family == AF_INET) {
+			ip = static_cast<char *>(ggz_malloc(INET_ADDRSTRLEN));
+			inet_ntop
+				(AF_INET,
+				 static_cast<void *>
+				 	(&(static_cast<struct sockaddr_in *>(addr))->sin_addr),
+				 ip,
+				 INET_ADDRSTRLEN);
+		} else {
+			ip = NULL;
+			std::cout << "GAME: unreachable -> done!" << std::endl;
+			ggz_write_int(channel, op_unreachable);
+			changeState(GGZGameServer::done);
 			break;
-		default:
-			// Discard
-			std::cerr << "ERROR!" << std::endl;
-			break;
+		}
+
+		std::cout << "broadcast IP: " << ip << std::endl;
+		m_ip = ggz_strdup(ip);
+		ggz_free(ip);
+		{ //  test for connectablity
+			addrinfo * ai = 0;
+			if (getaddrinfo(m_ip, "7396", 0, &ai)) {
+				std::cout << "GAME: unreachable -> done!" << std::endl;
+				ggz_write_int(channel, op_unreachable);
+				changeState(GGZGameServer::done);
+				break;
+			}
+		}
+		std::cout << "GAME: reachable -> waiting!" << std::endl;
+		changeState(GGZGameServer::waiting);
+		break;
+	case op_state_playing:
+		std::cout << "GAME: playing!" << std::endl;
+		changeState(GGZGameServer::playing);
+		break;
+	case op_state_done:
+		std::cout << "GAME: done!" << std::endl;
+		changeState(GGZGameServer::done);
+		break;
+	default:
+		//  Discard
+		std::cerr << "ERROR!" << std::endl;
+		break;
 	}
 }
 
@@ -165,4 +193,3 @@ void WidelandsServer::game_stop()
 void WidelandsServer::game_end()
 {
 }
-

@@ -1,7 +1,6 @@
 [GameInfo]
-Author = Josef Spillner
+Author = Josef Spillner, Peter Schwanemann (additions and updates)
 Description = Widelands server!
-Description[de] = Ein Server für Widelands!
 Homepage = http://www.widelands.org/
 Name = Widelands
 Version = build-14
@@ -16,7 +15,7 @@ Version = 1
 [TableOptions]
 AllowLeave = 1
 BotsAllowed = 0
-PlayersAllowed = 2..16
+PlayersAllowed = 1..16
 KillWhenEmpty = 1
 AllowSpectators = 0
 AllowRestore = 1

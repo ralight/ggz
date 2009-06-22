@@ -1,10 +1,10 @@
 [RoomInfo]
 Name = Widelands
-Name[de] = Widelands-Raum
+Name[de] = Widelands
 Description = An open source buildup strategy game
 Description[de] = Ein freies Aufbaustrategiespiel
 GameType = Widelands
 # Any additional game arguments specific to this room
-#ExecutableArgs = 
+#ExecutableArgs =
 MaxPlayers = 150
 MaxTables = 45
