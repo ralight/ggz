@@ -2,7 +2,7 @@
  * File: license.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: license.c 10255 2008-07-09 21:47:49Z jdorje $
+ * $Id: license.c 10939 2009-07-13 19:34:11Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -241,12 +241,12 @@ GtkWidget *create_dlg_license(void)
 	GTK_WIDGET_SET_FLAGS(close_button, GTK_CAN_DEFAULT);
 
 	g_signal_connect(GTK_OBJECT(dlg_license), "destroy",
-			 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+			 G_CALLBACK(gtk_widget_destroyed),
 			 &license_dialog);
 	g_signal_connect(GTK_OBJECT(dlg_license), "realize",
-			 GTK_SIGNAL_FUNC(license_realize), NULL);
+			 G_CALLBACK(license_realize), NULL);
 	g_signal_connect_swapped(GTK_OBJECT(close_button), "clicked",
-				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
+				 G_CALLBACK(gtk_widget_destroy),
 				 GTK_OBJECT(dlg_license));
 
 	gtk_widget_grab_focus(close_button);

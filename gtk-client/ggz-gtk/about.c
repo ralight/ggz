@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 10266 2008-07-10 05:36:38Z jdorje $
+ * $Id: about.c 10939 2009-07-13 19:34:11Z josef $
  *
  * About dialog: Displays information about the authors and the application.
  *
@@ -111,11 +111,11 @@ static GtkWidget *create_dlg_about(void)
 	GTK_WIDGET_UNSET_FLAGS(background, GTK_CAN_DEFAULT);
 
 	g_signal_connect(dlg_about, "realize",
-			 GTK_SIGNAL_FUNC(about_realize), NULL);
+			 G_CALLBACK(about_realize), NULL);
 	g_signal_connect(background, "expose_event",
-			 GTK_SIGNAL_FUNC(about_update), NULL);
+			 G_CALLBACK(about_update), NULL);
 	g_signal_connect(dlg_about, "response",
-			 GTK_SIGNAL_FUNC(about_response), NULL);
+			 G_CALLBACK(about_response), NULL);
 
 	return dlg_about;
 }

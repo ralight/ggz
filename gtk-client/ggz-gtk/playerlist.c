@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 10273 2008-07-10 21:28:22Z jdorje $
+ * $Id: playerlist.c 10939 2009-07-13 19:34:11Z josef $
  * 
  * List of players in the current room
  * 
@@ -228,30 +228,30 @@ static GtkWidget *create_mnu_player(GGZPlayer *player, gboolean is_friend,
 		pdata->perm = p;
 
 		g_signal_connect_data(GTK_OBJECT(perms[p]), "activate",
-			GTK_SIGNAL_FUNC(client_player_perm_activate),
+			G_CALLBACK(client_player_perm_activate),
 			pdata, permdata_free, 0);
 	}
 
 	g_signal_connect(GTK_OBJECT(info), "activate",
-			 GTK_SIGNAL_FUNC(client_player_info_activate),
+			 G_CALLBACK(client_player_info_activate),
 			 player);
 	g_signal_connect(GTK_OBJECT(friends), "activate",
-			 GTK_SIGNAL_FUNC(client_player_friends_activate),
+			 G_CALLBACK(client_player_friends_activate),
 			 player);
 	g_signal_connect(GTK_OBJECT(ignore), "activate",
-			 GTK_SIGNAL_FUNC(client_player_ignore_activate),
+			 G_CALLBACK(client_player_ignore_activate),
 			 player);
 	g_signal_connect(GTK_OBJECT(kick), "activate",
-			 GTK_SIGNAL_FUNC(client_player_kick_activate),
+			 G_CALLBACK(client_player_kick_activate),
 			 player);
 	g_signal_connect(GTK_OBJECT(gag), "activate",
-			 GTK_SIGNAL_FUNC(client_player_gag_activate),
+			 G_CALLBACK(client_player_gag_activate),
 			 player);
 	g_signal_connect(GTK_OBJECT(ungag), "activate",
-			 GTK_SIGNAL_FUNC(client_player_ungag_activate),
+			 G_CALLBACK(client_player_ungag_activate),
 			 player);
 	g_signal_connect(GTK_OBJECT(ban), "activate",
-			 GTK_SIGNAL_FUNC(client_player_ban_activate),
+			 G_CALLBACK(client_player_ban_activate),
 			 player);
 
 	return mnu_player;
@@ -513,7 +513,7 @@ GtkWidget *create_player_list(GtkWidget *parent)
 	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 	g_signal_connect(tree, "button-press-event",
-			 GTK_SIGNAL_FUNC(player_list_event), NULL);
+			 G_CALLBACK(player_list_event), NULL);
 
 	player_list = tree;
 	return tree;

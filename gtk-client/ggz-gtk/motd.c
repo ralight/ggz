@@ -2,7 +2,7 @@
  * File: motd.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: motd.c 10266 2008-07-10 05:36:38Z jdorje $
+ * $Id: motd.c 10939 2009-07-13 19:34:11Z josef $
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -194,10 +194,10 @@ static GtkWidget *create_dlg_motd(void)
 	gtk_container_add(GTK_CONTAINER(motd_scrolledwindow), motd_text);
 
 	g_signal_connect(dlg_motd, "destroy",
-			 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+			 G_CALLBACK(gtk_widget_destroyed),
 			 &motd_dialog);
 	g_signal_connect(dlg_motd, "response",
-			 GTK_SIGNAL_FUNC(gtk_widget_destroy), NULL);
+			 G_CALLBACK(gtk_widget_destroy), NULL);
 
 	return dlg_motd;
 }

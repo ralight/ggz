@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Text Client 
  * Date: 11/5/2002
- * $Id: pick_module.c 10248 2008-07-09 04:12:22Z jdorje $
+ * $Id: pick_module.c 10939 2009-07-13 19:34:11Z josef $
  *
  * Dialog window to pick a module for your game
  *
@@ -114,7 +114,7 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules, int *modulenumbers
 		}
 
 		g_signal_connect(GTK_OBJECT(frontend), "toggled",
-				   GTK_SIGNAL_FUNC(on_button_toggled),
+				   G_CALLBACK(on_button_toggled),
 				   GINT_TO_POINTER(modulenumbers[i]));
 		g_free(text);
 	}
@@ -143,9 +143,9 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules, int *modulenumbers
 	GTK_WIDGET_SET_FLAGS(button1, GTK_CAN_DEFAULT);
 
 	g_signal_connect(GTK_OBJECT(preserve), "toggled",
-			   GTK_SIGNAL_FUNC(on_preserve_toggled), NULL);
+			   G_CALLBACK(on_preserve_toggled), NULL);
 	g_signal_connect(GTK_OBJECT(button1), "clicked",
-			   GTK_SIGNAL_FUNC(on_pickmodule_ok_clicked), NULL);
+			   G_CALLBACK(on_pickmodule_ok_clicked), NULL);
 
 
 	return pick_module_dlg;

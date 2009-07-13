@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 10250 2008-07-09 18:44:38Z jdorje $
+ * $Id: roomlist.c 10939 2009-07-13 19:34:11Z josef $
  * 
  * List of rooms in the server
  * 
@@ -154,10 +154,10 @@ static GtkWidget *create_mnu_room(GGZRoom *room)
 				    GTK_ACCEL_VISIBLE);
 
 	g_signal_connect (GTK_OBJECT (info), "activate",
-			  GTK_SIGNAL_FUNC (client_room_info_activate),
+			  G_CALLBACK (client_room_info_activate),
 			  room);
 	g_signal_connect (GTK_OBJECT (join), "activate",
-			  GTK_SIGNAL_FUNC (client_room_join_activate),
+			  G_CALLBACK (client_room_join_activate),
 			  room);
 
 	gtk_menu_set_accel_group (GTK_MENU (mnu_room), accel_group);
@@ -435,7 +435,7 @@ GtkWidget *create_room_list(GtkWidget *window)
 	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 	g_signal_connect(tree, "button-press-event",
-			 GTK_SIGNAL_FUNC(room_list_event), NULL);
+			 G_CALLBACK(room_list_event), NULL);
 
 	room_list = tree;
 	return tree;

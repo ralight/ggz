@@ -729,7 +729,7 @@ gtk_xtext_init (GtkXText * xtext)
 
 	xtext->adj = (GtkAdjustment *) gtk_adjustment_new (0, 0, 1, 1, 1, 1);
 	g_object_ref (G_OBJECT (xtext->adj));
-	gtk_object_sink ((GtkObject *) xtext->adj);
+	g_object_ref_sink (G_OBJECT (xtext->adj));
 
 	xtext->vc_signal_tag = g_signal_connect (G_OBJECT (xtext->adj),
 				"value_changed", G_CALLBACK (gtk_xtext_adjustment_changed), xtext);
@@ -2374,7 +2374,7 @@ gtk_xtext_class_init (GtkXTextClass * class)
 	widget_class = (GtkWidgetClass *) class;
 	xtext_class = (GtkXTextClass *) class;
 
-	parent_class = gtk_type_class (gtk_widget_get_type ());
+	parent_class = g_type_class_peek (gtk_widget_get_type ());
 
 	xtext_signals[WORD_CLICK] =
 		g_signal_new ("word_click",

@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 10510 2008-08-17 21:41:41Z josef $
+ * $Id: client.c 10939 2009-07-13 19:34:11Z josef $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -689,7 +689,7 @@ client_realize                    (GtkWidget       *widget,
 	/* URL Handiler */
 	tmp->urlcheck_function = chat_checkurl;
 	g_signal_connect (GTK_OBJECT (tmp), "word_click",
-		GTK_SIGNAL_FUNC (chat_word_clicked), NULL);
+		G_CALLBACK (chat_word_clicked), NULL);
 
 	gtk_xtext_refresh(tmp,0);
 
@@ -1324,105 +1324,105 @@ static GtkWidget *create_main_dlg(GtkWidget *main_window)
   gtk_box_pack_start (GTK_BOX (status_box), statebar, FALSE, TRUE, 0);
 
   g_signal_connect (GTK_OBJECT (connect), "activate",
-                      GTK_SIGNAL_FUNC (client_connect_activate),
+                      G_CALLBACK (client_connect_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (disconnect), "activate",
-                      GTK_SIGNAL_FUNC (client_disconnect_activate),
+                      G_CALLBACK (client_disconnect_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT(exit_mnu), "activate",
-                      GTK_SIGNAL_FUNC (client_exit_activate),
+                      G_CALLBACK (client_exit_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (launch), "activate",
-                      GTK_SIGNAL_FUNC (client_launch_activate),
+                      G_CALLBACK (client_launch_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (join), "activate",
-                      GTK_SIGNAL_FUNC (client_joinm_activate),
+                      G_CALLBACK (client_joinm_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (watch), "activate",
-                      GTK_SIGNAL_FUNC (client_watchm_activate),
+                      G_CALLBACK (client_watchm_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (leave), "activate",
-                      GTK_SIGNAL_FUNC (client_leave_activate),
+                      G_CALLBACK (client_leave_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (properties), "activate",
-                      GTK_SIGNAL_FUNC (client_properties_activate),
+                      G_CALLBACK (client_properties_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (room_toggle), "toggled",
-		    GTK_SIGNAL_FUNC(widget_toggle_activate),
+		    G_CALLBACK(widget_toggle_activate),
 		    room_scrolledwindow);
   g_signal_connect (GTK_OBJECT(player_toggle), "toggled",
-		    GTK_SIGNAL_FUNC(widget_toggle_activate),
+		    G_CALLBACK(widget_toggle_activate),
 		    player_scrolledwindow);
 #ifdef STATS
   g_signal_connect (GTK_OBJECT (server_stats), "activate",
-                      GTK_SIGNAL_FUNC (client_server_stats_activate),
+                      G_CALLBACK (client_server_stats_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (player_stats), "activate",
-                      GTK_SIGNAL_FUNC (client_player_stats_activate),
+                      G_CALLBACK (client_player_stats_activate),
                       NULL);
 #endif
   g_signal_connect (GTK_OBJECT (game_types), "activate",
-                      GTK_SIGNAL_FUNC (client_game_types_activate),
+                      G_CALLBACK (client_game_types_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (motd), "activate",
-                      GTK_SIGNAL_FUNC (client_motd_activate),
+                      G_CALLBACK (client_motd_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (about), "activate",
-                      GTK_SIGNAL_FUNC (client_about_activate),
+                      G_CALLBACK (client_about_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (license), "activate",
-                      GTK_SIGNAL_FUNC (client_license_activate),
+                      G_CALLBACK (client_license_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (ggz_help), "activate",
-                      GTK_SIGNAL_FUNC (client_ggz_help_activate),
+                      G_CALLBACK (client_ggz_help_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (game_help), "activate",
-                      GTK_SIGNAL_FUNC (client_game_help_activate),
+                      G_CALLBACK (client_game_help_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (goto_web1), "activate",
-                      GTK_SIGNAL_FUNC (client_goto_web1_activate),
+                      G_CALLBACK (client_goto_web1_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (disconnect_button), "clicked",
-                      GTK_SIGNAL_FUNC (client_disconnect_button_clicked),
+                      G_CALLBACK (client_disconnect_button_clicked),
                       NULL);
   g_signal_connect (GTK_OBJECT (launch_button), "clicked",
-                      GTK_SIGNAL_FUNC (client_launch_button_clicked),
+                      G_CALLBACK (client_launch_button_clicked),
                       NULL);
   g_signal_connect (GTK_OBJECT (join_button), "clicked",
-                      GTK_SIGNAL_FUNC (client_join_button_clicked),
+                      G_CALLBACK (client_join_button_clicked),
                       NULL);
   g_signal_connect (GTK_OBJECT (watch_button), "clicked",
-		      GTK_SIGNAL_FUNC (client_watch_button_clicked),
+		      G_CALLBACK (client_watch_button_clicked),
 		      NULL);
   g_signal_connect (GTK_OBJECT (leave_button), "clicked",
-                      GTK_SIGNAL_FUNC (client_leave_button_clicked),
+                      G_CALLBACK (client_leave_button_clicked),
                       NULL);
   g_signal_connect (GTK_OBJECT (props_button), "clicked",
-                      GTK_SIGNAL_FUNC (client_props_button_clicked),
+                      G_CALLBACK (client_props_button_clicked),
                       NULL);
 #ifdef STATS
   g_signal_connect (GTK_OBJECT (stats_button), "clicked",
-                      GTK_SIGNAL_FUNC (client_stats_button_clicked),
+                      G_CALLBACK (client_stats_button_clicked),
                       NULL);
 #endif
   g_signal_connect (GTK_OBJECT (exit_button), "clicked",
-                      GTK_SIGNAL_FUNC (client_exit_button_clicked),
+                      G_CALLBACK (client_exit_button_clicked),
                       NULL);
   g_signal_connect (GTK_OBJECT (scrolledwindow3), "size_request",
-                      GTK_SIGNAL_FUNC (client_tables_size_request),
+                      G_CALLBACK (client_tables_size_request),
                       NULL);
   g_signal_connect (GTK_OBJECT (chat_entry), "activate",
-                      GTK_SIGNAL_FUNC (client_chat_entry_activate),
+                      G_CALLBACK (client_chat_entry_activate),
                       chat_entry);
   g_signal_connect_after (GTK_OBJECT (chat_entry), "key_press_event",
-                            GTK_SIGNAL_FUNC (client_chat_entry_key_press_event),
+                            G_CALLBACK (client_chat_entry_key_press_event),
                             NULL);
   g_signal_connect (GTK_OBJECT (send_button), "clicked",
-                      GTK_SIGNAL_FUNC (client_send_button_clicked),
+                      G_CALLBACK (client_send_button_clicked),
                       NULL);
 
   g_signal_connect(GTK_OBJECT(main_vbox), "realize",
-		   GTK_SIGNAL_FUNC (client_realize),
+		   G_CALLBACK (client_realize),
 		   NULL);
 
   gtk_widget_grab_focus (chat_entry);
@@ -1491,7 +1491,7 @@ GtkWidget *ggz_gtk_create_main_window(const char *option_log)
 	gtk_container_add (GTK_CONTAINER (main_window), main_vbox);
 
 	g_signal_connect(GTK_OBJECT(main_window), "delete_event",
-			 GTK_SIGNAL_FUNC (client_exit_activate),
+			 G_CALLBACK (client_exit_activate),
 			 NULL);
 
 	ggz_sensitivity_init();

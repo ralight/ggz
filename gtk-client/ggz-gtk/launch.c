@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 10830 2009-01-09 19:49:45Z josef $
+ * $Id: launch.c 10939 2009-07-13 19:34:11Z josef $
  *
  * Code for launching games through the GTK client
  *
@@ -639,21 +639,21 @@ GtkWidget *create_dlg_launch(void)
 	GTK_WIDGET_SET_FLAGS(cancel_button, GTK_CAN_DEFAULT);
 
 	g_signal_connect(GTK_OBJECT(dlg_launch), "destroy",
-			   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+			   G_CALLBACK(gtk_widget_destroyed),
 			   &ggz_gtk.launch_dialog);
 	g_signal_connect(GTK_OBJECT(dlg_launch), "realize",
-			   GTK_SIGNAL_FUNC(launch_fill_defaults), NULL);
+			   G_CALLBACK(launch_fill_defaults), NULL);
 	g_signal_connect(GTK_OBJECT(seats_combo), "changed",
-			   GTK_SIGNAL_FUNC(launch_seats_changed), NULL);
+			   G_CALLBACK(launch_seats_changed), NULL);
 	for (i = 0; i < num_seats; i++) {
 		g_signal_connect(GTK_OBJECT(seats[i].resv), "toggled",
-				   GTK_SIGNAL_FUNC(launch_resv_toggle),
+				   G_CALLBACK(launch_resv_toggle),
 				   seats[i].name);
 	}
 	g_signal_connect(GTK_OBJECT(launch_button), "clicked",
-			   GTK_SIGNAL_FUNC(launch_start_game), NULL);
+			   G_CALLBACK(launch_start_game), NULL);
 	g_signal_connect(GTK_OBJECT(cancel_button), "clicked",
-			   GTK_SIGNAL_FUNC(launch_cancel_button_clicked),
+			   G_CALLBACK(launch_cancel_button_clicked),
 			   NULL);
 
 	return dlg_launch;

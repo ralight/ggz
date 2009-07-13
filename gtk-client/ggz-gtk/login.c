@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 10630 2008-12-23 18:12:00Z josef $
+ * $Id: login.c 10939 2009-07-13 19:34:11Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -775,33 +775,33 @@ GtkWidget *create_dlg_login(const char *default_profile)
 	GTK_WIDGET_SET_FLAGS(connect_button, GTK_CAN_DEFAULT);
 
 	g_signal_connect(GTK_OBJECT(dlg_login), "realize",
-			 GTK_SIGNAL_FUNC(login_fill_defaults),
+			 G_CALLBACK(login_fill_defaults),
 			 ggz_strdup(default_profile));
 	g_signal_connect(GTK_OBJECT(dlg_login), "destroy",
-			 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+			 G_CALLBACK(gtk_widget_destroyed),
 			 &login.dialog);
 	g_signal_connect(GTK_OBJECT(profile_combo), "changed",
-			 GTK_SIGNAL_FUNC(login_profile_changed),
+			 G_CALLBACK(login_profile_changed),
 			 dlg_login);
 	g_signal_connect(GTK_OBJECT(edit_profiles_button), "clicked",
-			 GTK_SIGNAL_FUNC(login_edit_profiles), dlg_login);
+			 G_CALLBACK(login_edit_profiles), dlg_login);
 	g_signal_connect(GTK_OBJECT(host_entry), "changed",
-			 GTK_SIGNAL_FUNC(login_entry_changed), NULL);
+			 G_CALLBACK(login_entry_changed), NULL);
 	g_signal_connect(GTK_OBJECT(name_entry), "changed",
-			 GTK_SIGNAL_FUNC(login_entry_changed), NULL);
+			 G_CALLBACK(login_entry_changed), NULL);
 	g_signal_connect(GTK_OBJECT(pass_entry), "changed",
-			 GTK_SIGNAL_FUNC(login_entry_changed), NULL);
+			 G_CALLBACK(login_entry_changed), NULL);
 	g_signal_connect(GTK_OBJECT(normal_radio), "toggled",
-			 GTK_SIGNAL_FUNC(login_normal_toggled), dlg_login);
+			 G_CALLBACK(login_normal_toggled), dlg_login);
 	g_signal_connect(GTK_OBJECT(guest_radio), "toggled",
-			 GTK_SIGNAL_FUNC(login_guest_toggled), dlg_login);
+			 G_CALLBACK(login_guest_toggled), dlg_login);
 	g_signal_connect(GTK_OBJECT(first_radio), "toggled",
-			 GTK_SIGNAL_FUNC(login_first_toggled), dlg_login);
+			 G_CALLBACK(login_first_toggled), dlg_login);
 	g_signal_connect(GTK_OBJECT(connect_button), "clicked",
-			 GTK_SIGNAL_FUNC(login_connect_button_clicked),
+			 G_CALLBACK(login_connect_button_clicked),
 			 NULL);
 	g_signal_connect(GTK_OBJECT(cancel_button), "clicked",
-			 GTK_SIGNAL_FUNC(login_cancel_button_clicked),
+			 G_CALLBACK(login_cancel_button_clicked),
 			 NULL);
 
 	return dlg_login;

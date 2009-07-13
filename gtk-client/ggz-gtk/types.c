@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: types.c 10250 2008-07-09 18:44:38Z jdorje $
+ * $Id: types.c 10939 2009-07-13 19:34:11Z josef $
  *
  * This dialog is used to display information about a selected room to
  * the user.
@@ -278,14 +278,14 @@ GtkWidget *create_dlg_types(void)
 	GTK_WIDGET_SET_FLAGS(close_button, GTK_CAN_DEFAULT);
 
 	g_signal_connect(dlg_types, "destroy",
-			 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+			 G_CALLBACK(gtk_widget_destroyed),
 			 &types_dialog);
 #ifdef FILTER
 	g_signal_connect(filter_button, "clicked",
-			 GTK_SIGNAL_FUNC(types_filter_button), NULL);
+			 G_CALLBACK(types_filter_button), NULL);
 #endif
 	g_signal_connect_swapped(close_button, "clicked",
-				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
+				 G_CALLBACK(gtk_widget_destroy),
 				 dlg_types);
 
 	return dlg_types;
@@ -310,9 +310,9 @@ GtkWidget *create_menu1(void)
 	gtk_container_add(GTK_CONTAINER(menu1), goto_web_site);
 
 	g_signal_connect(GTK_OBJECT(upgrade_game), "activate",
-			 GTK_SIGNAL_FUNC(types_upgrade), NULL);
+			 G_CALLBACK(types_upgrade), NULL);
 	g_signal_connect(GTK_OBJECT(goto_web_site), "activate",
-			 GTK_SIGNAL_FUNC(types_URL), NULL);
+			 G_CALLBACK(types_URL), NULL);
 
 	return menu1;
 }

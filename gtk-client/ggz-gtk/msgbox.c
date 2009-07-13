@@ -2,7 +2,7 @@
  * File: msgbox.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: msgbox.c 10248 2008-07-09 04:12:22Z jdorje $
+ * $Id: msgbox.c 10939 2009-07-13 19:34:11Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -196,23 +196,23 @@ MBReturn msgbox(gchar *textmessage, gchar *title, MBType type,
 
 	g_signal_connect (GTK_OBJECT (btnok),
 				"clicked",
-				GTK_SIGNAL_FUNC (DialogOKClicked),
+				G_CALLBACK (DialogOKClicked),
 				dialogwindow);
 	g_signal_connect (GTK_OBJECT (btncancel),
 				"clicked",
-				GTK_SIGNAL_FUNC (DialogCancelClicked),
+				G_CALLBACK (DialogCancelClicked),
 				dialogwindow);
 	g_signal_connect (GTK_OBJECT (btnyes),
 				"clicked",
-				GTK_SIGNAL_FUNC (DialogYesClicked),
+				G_CALLBACK (DialogYesClicked),
 				dialogwindow);
 	g_signal_connect (GTK_OBJECT (btnno),
 				"clicked",
-				GTK_SIGNAL_FUNC (DialogNoClicked),
+				G_CALLBACK (DialogNoClicked),
 				dialogwindow);
 	g_signal_connect (GTK_OBJECT (dialogwidget),
 				"destroy",
-				GTK_SIGNAL_FUNC (CloseTheApp),
+				G_CALLBACK (CloseTheApp),
 				dialogwindow);
 
 	if (modal == MSGBOX_MODAL)

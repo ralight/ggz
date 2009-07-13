@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: tablelist.c 10250 2008-07-09 18:44:38Z jdorje $
+ * $Id: tablelist.c 10939 2009-07-13 19:34:11Z josef $
  * 
  * List of tables in the current room
  * 
@@ -86,12 +86,12 @@ static GtkWidget *create_mnu_table(void)
 
 #if 0				/* not implemented */
 	g_signal_connect(GTK_OBJECT(join), "activate",
-			   GTK_SIGNAL_FUNC(client_join_table_activate),
+			   G_CALLBACK(client_join_table_activate),
 			   GINT_TO_POINTER(table_num));
 	g_signal_connect(GTK_OBJECT(leave), "activate",
-			   GTK_SIGNAL_FUNC(client_leave_activate), NULL);
+			   G_CALLBACK(client_leave_activate), NULL);
 	g_signal_connect(GTK_OBJECT(info), "activate",
-			   GTK_SIGNAL_FUNC(client_table_info_activate),
+			   G_CALLBACK(client_table_info_activate),
 			   GINT_TO_POINTER(table_num));
 #endif
 
@@ -212,7 +212,7 @@ GtkWidget *create_table_list(GtkWidget * window)
 	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 	g_signal_connect(tree, "button-press-event",
-			 GTK_SIGNAL_FUNC(table_list_event), NULL);
+			 G_CALLBACK(table_list_event), NULL);
 
 	table_list = tree;
 

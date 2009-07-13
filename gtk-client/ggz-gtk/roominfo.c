@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: roominfo.c 10248 2008-07-09 04:12:22Z jdorje $
+ * $Id: roominfo.c 10939 2009-07-13 19:34:11Z josef $
  *
  * This dialog is used to display information about a selected room to
  * the user. 
@@ -117,9 +117,9 @@ static GtkWidget *create_dlg_info(GtkWidget *parent)
 			 2, 3, 3, 4, GTK_EXPAND, 0, 0, 0);
 
 	g_signal_connect(dlg_info, "destroy",
-			 GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dialog);
+			 G_CALLBACK(gtk_widget_destroyed), &dialog);
 	g_signal_connect(dlg_info, "response",
-			 GTK_SIGNAL_FUNC(gtk_widget_destroy), NULL);
+			 G_CALLBACK(gtk_widget_destroy), NULL);
 
 	return dlg_info;
 }

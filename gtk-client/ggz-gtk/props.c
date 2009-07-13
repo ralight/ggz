@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 10266 2008-07-10 05:36:38Z jdorje $
+ * $Id: props.c 10939 2009-07-13 19:34:11Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -783,7 +783,7 @@ static GtkWidget *tree_new(GtkWidget *window)
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
 	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 	g_signal_connect(selection, "changed",
-			 GTK_SIGNAL_FUNC(props_profile_list_select),
+			 G_CALLBACK(props_profile_list_select),
 			 store);
 
 	return tree;
@@ -1388,46 +1388,46 @@ GtkWidget* create_props_dlg(void)
   GTK_WIDGET_SET_FLAGS (button3, GTK_CAN_DEFAULT);
 
   g_signal_connect (GTK_OBJECT (dlg_props), "realize",
-                      GTK_SIGNAL_FUNC (dlg_props_realize),
+                      G_CALLBACK (dlg_props_realize),
                       NULL);
   g_signal_connect (GTK_OBJECT (dlg_props), "destroy",
-                      GTK_SIGNAL_FUNC (gtk_widget_destroyed),
+                      G_CALLBACK (gtk_widget_destroyed),
                       &props_dialog);
   g_signal_connect (GTK_OBJECT (props_profile_box), "realize",
-                      GTK_SIGNAL_FUNC (props_profile_box_realized),
+                      G_CALLBACK (props_profile_box_realized),
                       NULL);
   g_signal_connect (GTK_OBJECT (profile_entry), "changed",
-                      GTK_SIGNAL_FUNC (props_profile_entry_changed),
+                      G_CALLBACK (props_profile_entry_changed),
                       NULL);
   g_signal_connect (GTK_OBJECT (normal_radio), "toggled",
-                      GTK_SIGNAL_FUNC (props_normal_toggled),
+                      G_CALLBACK (props_normal_toggled),
                       dlg_props);
   g_signal_connect (GTK_OBJECT (add_button), "clicked",
-                      GTK_SIGNAL_FUNC (props_add_button_clicked),
+                      G_CALLBACK (props_add_button_clicked),
                       NULL);
   g_signal_connect (GTK_OBJECT (modify_button), "clicked",
-                      GTK_SIGNAL_FUNC (props_modify_button_clicked),
+                      G_CALLBACK (props_modify_button_clicked),
                       NULL);
   g_signal_connect (GTK_OBJECT (delete_button), "clicked",
-                      GTK_SIGNAL_FUNC (props_delete_button_clicked),
+                      G_CALLBACK (props_delete_button_clicked),
                       NULL);
   g_signal_connect (GTK_OBJECT (Font_button), "clicked",
-                      GTK_SIGNAL_FUNC (props_Font_button_clicked),
+                      G_CALLBACK (props_Font_button_clicked),
                       NULL);
   g_signal_connect (GTK_OBJECT (black_radio), "toggled",
-                      GTK_SIGNAL_FUNC (props_color_type_toggled),
+                      G_CALLBACK (props_color_type_toggled),
                       NULL);
   g_signal_connect (GTK_OBJECT (white_radio), "toggled",
-                      GTK_SIGNAL_FUNC (props_color_type_toggled),
+                      G_CALLBACK (props_color_type_toggled),
                       NULL);
   g_signal_connect (GTK_OBJECT (button1), "clicked",
-                      GTK_SIGNAL_FUNC (props_ok_button_clicked),
+                      G_CALLBACK (props_ok_button_clicked),
                       NULL);
   g_signal_connect (GTK_OBJECT (button2), "clicked",
-                      GTK_SIGNAL_FUNC (props_apply_button_clicked),
+                      G_CALLBACK (props_apply_button_clicked),
                       NULL);
   g_signal_connect (GTK_OBJECT (button3), "clicked",
-                      GTK_SIGNAL_FUNC (props_cancel_button_clicked),
+                      G_CALLBACK (props_cancel_button_clicked),
                       NULL);
 
   gtk_widget_show_all(dlg_props);
@@ -1461,16 +1461,16 @@ create_dlg_props_font (void)
   GTK_WIDGET_SET_FLAGS (apply_button1, GTK_CAN_DEFAULT);
 
   g_signal_connect (GTK_OBJECT (dlg_props_font), "destroy",
-                      GTK_SIGNAL_FUNC (gtk_widget_destroyed),
+                      G_CALLBACK (gtk_widget_destroyed),
                       &props_font_dialog);
   g_signal_connect (GTK_OBJECT (ok_button1), "clicked",
-                      GTK_SIGNAL_FUNC (props_fok_button_clicked),
+                      G_CALLBACK (props_fok_button_clicked),
                       NULL);
   g_signal_connect (GTK_OBJECT (cancel_button1), "clicked",
-                      GTK_SIGNAL_FUNC (props_fcancel_button_clicked),
+                      G_CALLBACK (props_fcancel_button_clicked),
                       NULL);
   g_signal_connect (GTK_OBJECT (apply_button1), "clicked",
-                      GTK_SIGNAL_FUNC (props_fapply_button_clicked),
+                      G_CALLBACK (props_fapply_button_clicked),
                       NULL);
 
   return dlg_props_font;

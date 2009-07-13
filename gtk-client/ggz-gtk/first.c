@@ -2,7 +2,7 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 8222 2006-06-20 02:59:29Z jdorje $
+ * $Id: first.c 10939 2009-07-13 19:34:11Z josef $
  *
  * Displayes information about the authors and the application.
  *
@@ -203,10 +203,10 @@ GtkWidget* create_dlg_first (void)
   GTK_WIDGET_SET_FLAGS (button_no, GTK_CAN_DEFAULT);
 
   g_signal_connect (GTK_OBJECT (button_yes), "clicked",
-                      GTK_SIGNAL_FUNC (first_button_yes_activate),
+                      G_CALLBACK (first_button_yes_activate),
                       NULL);
   g_signal_connect (GTK_OBJECT (button_no), "clicked",
-                      GTK_SIGNAL_FUNC (first_button_no_activate),
+                      G_CALLBACK (first_button_no_activate),
                       NULL);
 
   gtk_widget_show_all(frame);
