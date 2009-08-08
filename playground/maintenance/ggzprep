@@ -20,6 +20,8 @@ if [ -z "$1" ]; then
 		distro=hoary
 	elif test $distro = "Ubuntu" && test $version = "6.06 (LTS)"; then
 		distro=dapper
+	elif test $distro = "Ubuntu" && test $version = "9.04"; then
+		distro=jaunty
 	else
 		echo "!!! Error: This distribution is not yet supported."
 		exit
@@ -155,6 +157,65 @@ ENDOFPACKAGESLIST
 
 fi
 
+if test $distro = "jaunty"; then
+
+cat > $tmpfile << ENDOFPACKAGESLIST
+
+gnuchess
+gnubg
+gnugo
+gnushogi
+libxml-parser-ruby1.8
+
+ant
+make
+autoconf
+automake1.9
+libtool
+g++
+java-gcj-compat-dev
+
+ngrep
+sloccount
+netcat
+vim
+
+libavahi-compat-howl-dev
+libdb4.6-dev
+libexpat1-dev
+libgnomeui-dev
+libgnutls-dev
+libgtk2.0-dev
+libperl-dev
+libreadline5-dev
+librsvg2-dev
+libsdl1.2-dev
+libsdl-image1.2-dev
+libsdl-ttf2.0-dev
+libsdl-mixer1.2-dev
+libsilc-dev
+docbook-dsssl
+docbook
+gs
+pidgin-dev
+gettext
+jade
+kdelibs5-dev
+lynx
+python-all-dev
+python-pygame
+ruby1.8-dev
+ruby
+sgml2x
+tetex-bin
+texi2html
+texinfo
+transfig
+
+ENDOFPACKAGESLIST
+
+fi
+
 if test $distro = "hoary"; then
 
 # Differences to dapper:
@@ -221,6 +282,10 @@ fi
 
 # Finally, install the packages and remove temporary file
 
-apt-get install `cat $tmpfile`
+if test $distro = "jaunty"; then
+	sudo apt-get install `cat $tmpfile`
+else
+	apt-get install `cat $tmpfile`
+fi
 rm $tmpfile
 
