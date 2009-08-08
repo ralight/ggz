@@ -133,7 +133,7 @@ if config.has_key("SOURCEDIR"):
 else:
 	srcdir = "."
 
-if os.path.exists(srcdir + "/libggz") and os.path.exists(srcdir + "/ggz-client-libs"):
+if os.path.exists(srcdir + "/base-libs"):
 	out("GGZBUILD: global invocation")
 
 	install = True
