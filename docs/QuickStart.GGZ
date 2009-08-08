@@ -1,8 +1,13 @@
 The GGZ Gaming Zone - Client Setup
 ==================================
 
-Installation Requirements for the release 0.0.14
-------------------------------------------------
+This file documents the quick and easy installation procedure
+of all GGZ components available from the GGZ project. For additional
+GGZ components, find a list in README.GGZ. If the quick instructions
+below don't work, please contact the developers.
+
+Installation Requirements for the release 0.99.5+
+-------------------------------------------------
 
 The GGZ Gaming Zone client is built from three separate packages
 (these may be available as an integrated package in the future), upon
@@ -50,12 +55,11 @@ General Installation Guidelines
 -------------------------------
 
 Client packages should be installed in this order:
-   libggz
-   ggz-client-libs
+   ggz-base-libs
    ggz-xxx-client (where xxx is the user interface the client supports)
 
 You do not need to install all of the client frontends, only the one
-for your preferred environment.  Following this, the game packages
+for your preferred environment.  Following this, additional game packages
 (ggz-xxx-games) and/or individual games may be installed.
 
 For most packages, the installation is as simple as:
@@ -82,46 +86,32 @@ instructions, please read the INSTALL file that accompanies each of
 the packages.
 
 
-Installing libggz
------------------
-
-Unpack the libggz sources.  They should extract into a directory
-named libggz-X.X.X.  Enter that directory and run the following
-commands:
-
-./configure
-make
-make install (as root)
-
-This will install the libggz library under /usr/local.  You may also
-need to run ldconfig (as root) on some systems.
-
-The following important features exist:
---disable-debug: omit debug code
---with-gcrypt: enable hash functions
---with-tls: enable encryptions functions
---enable-anl: enable asynchronous resolver functions
-
-
-Installing ggz-client-libs
+Installing ggz-base-libs
 --------------------------
 
-Before installing ggz-client-libs, you must have the expat
+Before installing ggz-base-libs, you must have the expat
 library installed (the previous dependency popt is no longer
 required).  You may obtain it from
 
 http://prdownloads.sourceforge.net/expat/
 
-Unpack the ggz-client-libs sources.  They should extract into a
-directory named ggz-client-libs-X.X.X.  Enter that directory and run
+Unpack the ggz-base-libs sources.  They should extract into a
+directory named ggz-base-libs-X.X.X.  Enter that directory and run
 the following commands:
 
 ./configure
 make
 make install (as root)
 
-This will install the GGZ client libraries and the ggz-config tool under
-/usr/local.  You may also need to run ldconfig as root on some systems.
+This will install the GGZ common libraries, client libraries and the
+ggz-config tool under /usr/local.  You may also need to run ldconfig as root
+on some systems.
+
+The following important features exist:
+--disable-debug: omit debug code
+--with-gcrypt: enable hash functions
+--with-tls: enable encryptions functions
+--enable-anl: enable asynchronous resolver functions
 
 
 Gtk Client Installation
@@ -146,55 +136,37 @@ This will install the gtk client under /usr/local.
 KDE Client Installation
 -----------------------
 
-The KDE client requires that the KDE libraries 3.X be installed.
+The KDE client requires that the KDE libraries 4.X be installed.
 These can be downloaded from http://www.kde.org.  We recommend the
-latest stable version, 3.5.1.  As KDE depends on Qt, you will need Qt
-version >= 3.0 (3.3.5 is recommended as it is the version which
-KDE 3.5 development was based on).
+latest stable version, 4.3.  As KDE depends on Qt, you will need Qt
+version >= 4.0.
 
-Unpack the ggz-kde-client sources.  They should extract into a
-directory named ggz-kde-client-X.X.X.  Enter that directory and run
+Unpack the ggz-kde-center sources.  They should extract into a
+directory named ggz-kde-center-X.X.X.  Enter that directory and run
 the following commands:
 
 Typical Installation:
-./configure
-make
+cmake -DCMAKE_INSTALL_PREFIX=...
 make install (as root)
 
 This will install the KDE client under your KDE installation.  You may
 also need to run ldconfig as root on some systems.
 Make sure to use the same configuration prefix as KDE does, otherwise
 no menu entries will show up, and programs might not work as expected.
-Advanced users can use the KDEDIRS environment variable.
+Advanced users can use the KDEDIRS environment variable and cmake
+flags such as -DFORCE_GGZREGISTRY, see cmake/modules/GGZ.cmake for details.
 
 
-GNOME Client Installation
--------------------------
-
-The GNOME client requires that the GNOME libraries 2.X be installed.
-You can get them from http://www.gnome.org. The recommended version
-is GNOME 2.8.0.
-
-Unpack the ggz-gnome-client sources.  They should extract into a
-directory named ggz-gnome-client-X.X.X.  Enter tjat directory and run
-the following commands:
-
-./configure
-make
-make install (as root)
-
-You will then find the GNOME client under /usr/local.
-
-
-Gtk/KDE/SDL Games Installation
-------------------------------
+Additional Games Installation
+-----------------------------
 
 Remember that all game modules can be used with any client.  Just
 because you're using one frontend for your client doesn't mean you
 can't use the games for the other frontend.
 
-Whether you are installing a single game, or the full gtk-games or
-kde-games or sdl-games package, the instructions are the same.
+Whether you are installing a single game, or packages such as ggz-python,
+the instructions are the same. Most games use the GGZ build macros for
+integrating properly with GGZ.
 The ggz-config program must be on the path, and it will automatically
 set all the proper installation directory options for you.
 
@@ -214,8 +186,8 @@ Troubleshooting/Tips
    after reinstalling ggz-client-libs - this will save you from
    recompiling all of the clients and games.
 
-2) Both libggz and ggz-client-libs require you to run ldconfig after
-   installing!  The same applies to the kde-client package.
+2) The ggz-base-libs package require you to run ldconfig after
+   installing! The same applies to the kde-center package.
 
 3) Always use the 'make (un)install' script to add or remove a game client.
    This insures that the ggz-config program will update ggz.modules to note
