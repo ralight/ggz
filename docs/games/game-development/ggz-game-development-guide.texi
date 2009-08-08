@@ -112,8 +112,10 @@ dozen game clients, GGZ offers a solid bunch of different
 games by itself. They're all developed based on a client/server model.
 So how does that work?
 
-The player, using a GGZ core client to chat with others in a room, launches a
-game which he wants to play with some others. Technically, a table is created
+The player is either connecting to GGZ from within a running game, or using a
+generic GGZ core client to chat with others in game-specific rooms and eventually
+launch a game which he wants to play with some others.
+Technically, a table is created
 to hold that game, and the player is put onto that table, occupying one seat.
 The other available seats can be left empty, filled up with bots or used by
 other players. The quantity of each type is determined by the game server, for
@@ -266,8 +268,8 @@ the library actually works!
 
 A launched game client gets a control channel on its way, which it connects to
 a callback to receive control messages from the GGZ core client which launched
-the game.
-Then it requests a direct game connection, which results in the creation of a
+the game client.
+Then it requests a direct game connection to the game server, which results in the creation of a
 game channel, which gets connected to a callback too.
 This game channel is then used to communicate with the game server.
 Therefore, game clients usually run with two active connections all the time,
