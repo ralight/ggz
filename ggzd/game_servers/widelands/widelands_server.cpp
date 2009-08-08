@@ -99,6 +99,9 @@ void WidelandsServer::spectatorDataEvent(Client *)
 void WidelandsServer::dataEvent(Client * const client)
 {
 	int opcode;
+	int ret;
+	struct sockaddr* addr;
+	socklen_t addrsize;
 
 	std::cout << "WidelandsServer: dataEvent" << std::endl;
 
@@ -116,10 +119,9 @@ void WidelandsServer::dataEvent(Client * const client)
 		//  m_ip = ggz_strdup(ip);
 		ggz_free(ip);
 
-		socklen_t addrsize = 256;
-		struct sockaddr * const addr =
-			static_cast<struct sockaddr *>(malloc(addrsize));
-		int const ret = getpeername(channel, addr, &addrsize);
+		addrsize = 256;
+		addr = static_cast<struct sockaddr *>(malloc(addrsize));
+		ret = getpeername(channel, addr, &addrsize);
 
 		//  FIXME: IPv4 compatibility?
 		if (addr->sa_family == AF_INET6) {
@@ -127,7 +129,7 @@ void WidelandsServer::dataEvent(Client * const client)
 			inet_ntop
 				(AF_INET6,
 				 static_cast<void *>
-				 	(&(static_cast<struct sockaddr_in6 *>(addr))->sin6_addr),
+				 	(&(reinterpret_cast<struct sockaddr_in6 *>(addr))->sin6_addr),
 				 ip,
 				 INET6_ADDRSTRLEN);
 		} else if(addr->sa_family == AF_INET) {
@@ -135,7 +137,7 @@ void WidelandsServer::dataEvent(Client * const client)
 			inet_ntop
 				(AF_INET,
 				 static_cast<void *>
-				 	(&(static_cast<struct sockaddr_in *>(addr))->sin_addr),
+				 	(&(reinterpret_cast<struct sockaddr_in *>(addr))->sin_addr),
 				 ip,
 				 INET_ADDRSTRLEN);
 		} else {
