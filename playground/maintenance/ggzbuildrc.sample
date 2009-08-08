@@ -8,20 +8,20 @@ GLOBAL = --prefix=$HOME/ggz/installation
 # Per-module options for when 'ggzbuild' is run within a module top-level
 # directory
 
-libggz = --disable-debug --with-tls=GnuTLS
+base-libs = --disable-debug --with-tls=GnuTLS
 docs = --enable-spec --enable-guides
 
 # MODULES is used for global installation only
 # Use this for running 'ggzbuild' from the top-level directory
 # This is handy for first-time installations directly from SVN!
 
-MODULES = base-libs ggzd txt-client utils grubby docs python sdl-games kde-games kde-client gtk-games gtk-client
+MODULES = base-libs ggzd txt-client utils grubby docs python gtk-client kde-center
 
 # Server layout:
 # Use the following to get an off-the-shelf server setup with
 # the best from GGZ
 
-#libggz = --disable-debug --with-tls=GnuTLS
+#base-libs = --disable-debug --with-tls=GnuTLS
 #python = --disable-rsvgsdl
-#MODULES = libggz ggzd ggz-client-libs txt-client utils grubby python
+#MODULES = base-libs ggzd txt-client utils grubby python
 
