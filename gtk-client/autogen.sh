@@ -64,7 +64,16 @@ need_libtool=0
 version_check "autoconf" "2.60"
 version_check "automake" "1.9"
 if test "x$need_libtool" = "x1"; then
-	version_check "libtool" "1.5.20"
+	old_bailout=$bailout
+	bailout=0
+	version_check "glibtool" "1.5.20"
+	if test "x$bailout" = "x1"; then
+		bailout=0
+		version_check "libtool" "1.5.20"
+	fi
+	if test "x$bailout" = "0"; then
+		bailout=$old_bailout
+	fi
 fi
 version_check "gettext" "0.15"
 
@@ -79,7 +88,12 @@ fi
 
 if test "x$need_libtool" = "x1"; then
 	echo -n "[libtoolize]"
-	(cd $srcdir && libtoolize --force --copy >/dev/null) || { echo "libtoolize failed."; exit 1; }
+	libtoolize=libtoolize
+	which $libtoolize >/dev/null
+	if test "x$?" = "x1"; then
+		libtoolize=glibtoolize
+	fi
+	(cd $srcdir && $libtoolize --force --copy >/dev/null) || { echo "$libtoolize failed."; exit 1; }
 fi
 
 echo -n "[aclocal]"
