@@ -2,6 +2,7 @@
 *
 * Guru - functional example of a next-generation grubby
 * Copyright (C) 2001 - 2004 Josef Spillner <josef@ggzgamingzone.org>
+* Additions (C) 2009 Peter Schwanemann <nasenbaer_peter@users.sf.net>
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
 ********************************************************************/
@@ -13,10 +14,11 @@
 #include "i18n.h"
 
 /* Learning modes */
-#define mode_none  0
-#define mode_teach 1
-#define mode_learn 2
-#define mode_try   3
+#define mode_none    0
+#define mode_explain 1
+#define mode_learn   2
+#define mode_try     3
+#define mode_teach   4
 
 /* Grubby's knowledge base */
 #define db_file "/grubby/learning.db"
@@ -137,6 +139,14 @@ Guru *gurumod_exec(Guru *message)
 	{
 		if((i > 2) && (!strcasecmp(message->list[1], "what")))
 		{
+			mode = mode_explain;
+			request = message->list[3];
+		}
+	}
+	else
+	{
+		if((i > 2) && (!strcasecmp(message->list[1], "teach")))
+		{
 			mode = mode_teach;
 			request = message->list[3];
 		}
@@ -153,11 +163,21 @@ Guru *gurumod_exec(Guru *message)
 			learn(message->list);
 			ret = __("OK, learned that.");
 			break;
-		case mode_teach:
+		case mode_explain:
 		case mode_try:
 			ret = teach(request);
 			if(!ret) ret = __("You're too curious - I don't know everything.");
 			break;
+		case mode_teach:
+			ret = teach(request);
+			if(!ret) {
+				ret = __("I can't teach that - I don't know it myself.");
+				break;
+			}
+			message->message = ret;
+			message->type    = GURU_PRIVMSG;
+			message->player  = message->list[2];
+			return message;
 	}
 
 	message->message = ret;
