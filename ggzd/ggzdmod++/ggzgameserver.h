@@ -25,6 +25,12 @@
 #define GGZDMODPP_VERSION_MICRO 5
 #define GGZDMODPP_VERSION_IFACE "1:0:0+dev=2.0.0"
 
+
+// GGZ includes
+// needed for "enum GGZGameResult", as enums are not forward declareable
+#include <ggzdmod.h>
+
+// std includes
 #include <string>
 
 /* Forward declarations of internal classes */
@@ -168,6 +174,8 @@ class GGZGameServer
 		}
 
 		void reportSave(const char *);
+
+		void reportGame(int *teams, GGZGameResult *results, int *scores);
 
 	private:
 		GGZGameServerPrivate *m_private;

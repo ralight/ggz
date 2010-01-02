@@ -20,9 +20,6 @@
 // Header file
 #include "ggzgameserver.h"
 
-// GGZ includes
-#include <ggzdmod.h>
-
 // System includes
 #include <iostream>
 #include <map>
@@ -245,6 +242,11 @@ void GGZGameServer::changeState(State state)
 void GGZGameServer::reportSave(const char *savedGame)
 {
 	ggzdmod_report_savegame(m_private->ggzdmod(), savedGame);
+}
+
+void GGZGameServer::reportGame(int *teams, GGZGameResult *results, int *scores)
+{
+	ggzdmod_report_game(m_private->ggzdmod(), teams, results, scores);
 }
 
 // Implementation of the internal class
